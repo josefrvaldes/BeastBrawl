@@ -1,0 +1,28 @@
+{
+    "env": {
+        "myDefaultIncludePath": ["${workspaceFolder}", "${workspaceFolder}/include"],
+        "myCompilerPath": "/usr/local/bin/gcc-7"
+    },
+    "configurations": [
+      {
+        "name": "Manjaro",
+        "intelliSenseMode": "clang-x64",
+        "includePath": [
+            "${myDefaultIncludePath}", 
+            "/usr/lib/gcc/x86_64-pc-linux-gnu/9.2.0/include/",
+            "/usr/include/irrlicht/"
+        ],
+        "defines": ["FOO", "BAR=100"],
+        "forcedInclude": ["${workspaceFolder}/include/config.h"],
+        "compilerPath": "/usr/bin/clang",
+        "cStandard": "c11",
+        "cppStandard": "c++17",
+        "browse": {
+            "path": ["${workspaceFolder}"],
+            "limitSymbolsToIncludedHeaders": true,
+            "databaseFilename": ""
+        }
+      }
+    ],
+    "version": 4
+  }
