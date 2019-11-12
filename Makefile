@@ -10,7 +10,7 @@ NAME_EXE	:= Beast_Brawl
 
 #Esto compila y crea los .o (aqui aun no entra en juego el linker)
 %.o: %.cpp
-	mkdir $(OBJ_PATH) ; $(CC) -o $(OBJ_PATH)$@ -c $^ $(INCLUDE) $(INCLUDE_IRR)
+	mkdir -p $(OBJ_PATH) ; $(CC) -o $(OBJ_PATH)$@ -c $^ $(INCLUDE) $(INCLUDE_IRR)
 
 #Esto crea el ejecutable
 $(NAME_EXE): $(OBJECTS)
@@ -27,7 +27,8 @@ exe:
 
 .PHONY: clean
 clean:
-	cd $(OBJ_PATH) ; rm -rf $(OBJECTS) ; cd .. ; rmdir $(OBJ_PATH) ; rm -rf $(NAME_EXE)
+	#cd $(OBJ_PATH) ; rm -rf $(OBJECTS) ; cd .. ; rmdir $(OBJ_PATH) ; rm -rf $(NAME_EXE)
+	rm -Rf obj && rm -f Beast_Brawl
 
 .PHONY: all
 all:
