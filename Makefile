@@ -28,7 +28,7 @@ exe:
 .PHONY: clean
 clean:
 	#cd $(OBJ_PATH) ; rm -rf $(OBJECTS) ; cd .. ; rmdir $(OBJ_PATH) ; rm -rf $(NAME_EXE)
-	rm -Rf obj && rm -f Beast_Brawl
+	rm -Rf $(OBJ_PATH) && rm -f $(NAME_EXE)
 
 .PHONY: all
 all:
