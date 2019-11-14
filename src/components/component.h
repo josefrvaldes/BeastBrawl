@@ -1,7 +1,7 @@
 #ifndef __COMPONENT_H__
 #define __COMPONENT_H__
 
-enum CompType { Position };
+enum CompType { Position, Speed };
 
 class Component
 {
