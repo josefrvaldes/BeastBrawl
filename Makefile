@@ -1,25 +1,36 @@
 SOURCES  	:= $(wildcard *.cpp)
-OBJECTS  	:= $(subst .cpp,.o,$(SOURCES))
-OBJ_PATH    := obj/
-SRC_PATH	:= src/
+OBJ_PATH    := obj
+SRC_PATH	:= src
 LIBS 	    := /usr/lib/libIrrlicht.so
 INCLUDE     := -I.
 INCLUDE_IRR := -I /usr/include/irrlicht
 CC			:= g++
 NAME_EXE	:= Beast_Brawl
 
-#Esto compila y crea los .o (aqui aun no entra en juego el linker)
-%.o: %.cpp
-	mkdir -p $(OBJ_PATH) ; $(CC) -o $(OBJ_PATH)$@ -c $^ $(INCLUDE) $(INCLUDE_IRR)
+ALLCPPS		:= $(shell find src/ -type f -iname *.cpp)
+ALLCPPSOBJ	:= $(patsubst %.cpp,%.o,$(ALLCPPS))
+SUBDIRS		:= $(shell find src/ -type d)
+OBJSUBDIRS  := $(patsubst $(SRC_PATH)%,$(OBJ_PATH)%,$(SUBDIRS))
+
 
 #Esto crea el ejecutable
-$(NAME_EXE): $(OBJECTS)
-	cd $(OBJ_PATH) && $(CC) -o ../$@ $^ $(INCLUDE) $(LIBS)
+$(NAME_EXE): $(OBJSUBDIRS) $(ALLCPPSOBJ)
+	$(CC) -o $(NAME_EXE) $(patsubst $(SRC_PATH)%,$(OBJ_PATH)%,$(ALLCPPSOBJ)) $(INCLUDE) $(LIBS)
+	
+
+#Esto compila y crea los .o (aqui aun no entra en juego el linker)
+%.o: %.cpp
+	$(CC) -o $(patsubst $(SRC_PATH)%,$(OBJ_PATH)%,$@) -c $^ $(INCLUDE) $(INCLUDE_IRR)
+
+
+$(OBJSUBDIRS):
+	mkdir -p $(OBJSUBDIRS)
 
 
 info:
-	$(info $(SOURCES))
-	$(info $(OBJECTS))
+	$(info $(SUBDIRS))
+	$(info $(ALLCPPS))
+	$(info $(ALLCPPSOBJ))
 
 .PHONY: exe
 exe:
@@ -27,8 +38,7 @@ exe:
 
 .PHONY: clean
 clean:
-	#cd $(OBJ_PATH) ; rm -rf $(OBJECTS) ; cd .. ; rmdir $(OBJ_PATH) ; rm -rf $(NAME_EXE)
-	rm -Rf $(OBJ_PATH) && rm -f $(NAME_EXE)
+	rm -Rf $(OBJ_PATH)/ && rm -f $(NAME_EXE)
 
 .PHONY: all
 all:
