@@ -15,7 +15,8 @@ public:
     ~Entity(){};
 
     unordered_map<CompType, Component> getComponents() { return m_components; };
-    void AddComponent(Component c);
+    void AddComponent(Component &c);
+    bool HasComponent(CompType type);
 
 protected:
     unordered_map<CompType, Component> m_components;

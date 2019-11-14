@@ -1,11 +1,11 @@
 #include "position.h"
 
-Position::Position()
+CPosition::CPosition()
 {
     m_compType = CompType::Position;
 }
 
-Position::~Position()
+CPosition::~CPosition()
 {
     
 }

@@ -3,11 +3,11 @@
 
 #include "component.h"
 
-class Position : public Component
+class CPosition : public Component
 {
 public:
-    Position();
-    ~Position();
+    CPosition();
+    ~CPosition();
 
     float GetX() { return m_x; };
     float GetY() { return m_y; };
