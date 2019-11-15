@@ -3,9 +3,18 @@
 #include "components/speed.h"
 #include "systems/physics.h"
 
+#include "include/Game.h"
+
 
 int main()
 {
+    Game *game = Game::GetInstance();
+    
+    game->SetState(State::States::MENU);
+    game->InitGame();
+
+    return 0;
+    /*
     // creamos a nuestro hero
     Hero *hero = new Hero();
     cout << "Nuestro hero tiene position? " << hero->HasComponent(CompType::Position) << endl;
@@ -51,5 +60,5 @@ int main()
 
     delete speed;
     delete posObtenida;
-    delete hero;
+    delete hero;*/
 }
