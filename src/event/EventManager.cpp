@@ -7,14 +7,35 @@ EventManager& EventManager::GetInstance() {
 }
 
 
-
+//Realiza y vacia todos los eventos que estaban añadidos
+//O(n)
+//Acceso: O(1)
 void EventManager::Update(){
-    
+
+/** Version con cola 
+    while(!eventQueue.empty()){
+        Event e = eventQueue.front(); //Cojemos el primero en la lista
+        eventQueue.pop(); // Lo sacamos de la lista
+
+        cout << "Procesando evento con prioridad: " << e.type << endl;
+
+        //Tratamos el evento
+        auto mapByType = eventListenerMap.find(e.type);
+
+        if(mapByType!=eventListenerMap.end()){
+            auto eventVector = mapByType->second;   // El vector de listeners del mapa segun el EventType
+
+            for(Listener listener : eventVector){
+                listener.function(e.data);
+            }
+        }
+   }
+*/    
    while(!eventList.empty()){
         Event e = eventList.front(); //Cojemos el primero en la lista
         eventList.pop_front(); // Lo sacamos de la lista
 
-        std::cout << "Procesando evento con prioridad: " << e.type << std::endl;
+        cout << "Procesando evento con prioridad: " << e.type << endl;
 
         //Tratamos el evento
         auto mapByType = eventListenerMap.find(e.type);
@@ -28,17 +49,21 @@ void EventManager::Update(){
         }
    }
 }
-//Añade un evento a la cola de eventos
-void EventManager::AddEvent(Event e){
-    eventQueue.push(e);
 
-    std::list <Event> :: iterator it; 
+//Añade un evento a la cola de eventos
+// O(n) -> Recorremos la lista iterativamente hasta encontrar el valor directamente superior
+void EventManager::AddEvent(Event e){
+    //FIXME: Descomentar esto para que funcione con cola
+    //eventQueue.push(e);
+
+    list <Event> :: iterator it; 
 
     //Si es el primer evento lo añadimos al comienzo
     if(eventList.size() == 0){
         eventList.push_front(e);
     }else{
-        //Recorremos la lista para añadirlo ordenado
+        //TODO: Implementar un algoritmo de busqueda e insercion mas optimo
+        //Movemos el iterator hasta posicionarlo antes del siguiente valor mas grande
         for(it = eventList.begin(); it != eventList.end(); ++it){
             if(e.type <= it->type){
                 break;
@@ -60,7 +85,7 @@ void EventManager::Suscribe(Listener listener){
     //Si entra es que no habia uno ya creado de ese tipo
     if(iterator == eventListenerMap.end()){
         ListenerVector listenerVector;
-        iterator = eventListenerMap.insert(std::pair<EventType,ListenerVector>(listener.type, listenerVector)).first;
+        iterator = eventListenerMap.insert(pair<EventType,ListenerVector>(listener.type, listenerVector)).first;
     }
 
     iterator->second.push_back(listener);
