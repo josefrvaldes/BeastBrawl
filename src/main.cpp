@@ -2,10 +2,20 @@
 #include "components/position.h"
 #include "components/speed.h"
 #include "systems/physics.h"
+#include "EventManager/EventManager.h"
 
 #include "Game.h"
+#include <iostream>
+#include <list>
 
+void pruebaEvent1(Data d){
+    
+    std::cout << "Soy pruebaEvent1"<< "\n";
+}
 
+void pruebaEvent2(Data d){
+    std::cout << "Soy pruebaEvent2"<< "\n";
+}
 
 int main()
 {
@@ -13,6 +23,21 @@ int main()
     
     game->SetState(State::States::INGAME);
     game->InitGame();
+
+    EventManager eventManager = EventManager::GetInstance();
+    eventManager.Suscribe(Listener {EventType::PRIORIDAD1,pruebaEvent1});
+    eventManager.Suscribe(Listener {EventType::PRIORIDAD2,pruebaEvent2});
+
+    Data d;
+    d.id = 15;
+
+    eventManager.AddEvent(Event {EventType::PRIORIDAD3,d}); 
+    eventManager.AddEvent(Event {EventType::PRIORIDAD1,d});
+    eventManager.AddEvent(Event {EventType::PRIORIDAD2,d});
+    eventManager.AddEvent(Event {EventType::PRIORIDAD1,d});
+
+    
+    eventManager.Update();  
 
     return 0;
     /*
