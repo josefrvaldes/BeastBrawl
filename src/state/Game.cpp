@@ -1,6 +1,7 @@
 #include "include/Game.h"
 #include "include/State.h"
 #include "include/StateMenu.h"
+#include "include/StateInGame.h"
 
 using namespace std;
 
@@ -48,7 +49,7 @@ void Game::SetState(State::States stateType){
             //currentState = new StateMap();
             break;
         case State::INGAME:
-            //currentState = new StateInGame();
+            currentState = new StateInGame();
             break;
         case State::ENDRACE:
             //currentState = new StateEndRace();
@@ -69,5 +70,5 @@ void Game::InitGame(){
 
 void Game::MainLoop(){
     currentState->Update();
-    //for(;;);   bucle del juego
+    //for(;;);  // To-Do: crear bucle del juego
 }
