@@ -1,4 +1,4 @@
-#include "EventManager.h"
+#include "../../include/EventManager/EventManager.h"
 #include <iostream>
 
 EventManager& EventManager::GetInstance() {

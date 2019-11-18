@@ -1,5 +1,5 @@
 COMPILING_TEXT 	   := @echo -e "\033[0m \033[0;33m Compiling:\033[0m"
-COMPILING_TEXT_OK  := @echo -e "\033[0m \033[0;32m [OK] :)\033[0m"
+COMPILING_TEXT_OK  := @echo -e "\033[0m \033[0;32m [All compiled succesfully]\033[0m"
 LINKING_TEXT       := @echo -e "\033[0m \033[0;33m Linking...\033[0m"
 LINKING_TEXT_OK    := @echo -e "\033[0m \033[0;32m [Linked succesfully]\033[0m"
 ALL_CLEANED_TEXT   := @echo -e "\033[0m \033[0;32m [Cleaned succesfully]\033[0m"
@@ -25,6 +25,7 @@ OBJSUBDIRS  := $(patsubst $(SRC_PATH)%,$(OBJ_PATH)%,$(SUBDIRS))
 
 #Esto crea el ejecutable
 $(NAME_EXE): $(OBJSUBDIRS) $(ALLCPPSOBJ)
+	$(COMPILING_TEXT_OK)
 	$(JUMP_LINE)
 	$(LINKING_TEXT)
 	$(CC) -o $(NAME_EXE) $(patsubst $(SRC_PATH)%,$(OBJ_PATH)%,$(ALLCPPSOBJ)) $(INCLUDE) $(LIBS)
@@ -37,7 +38,7 @@ $(NAME_EXE): $(OBJSUBDIRS) $(ALLCPPSOBJ)
 	$(PRUEBA_TEXT)
 	$(COMPILING_TEXT) $<
 	@$(CC) $(CXXFLAGS) -o $(patsubst $(SRC_PATH)%,$(OBJ_PATH)%,$@) -c $^ $(INCLUDE) $(INCLUDE_IRR) 
-	$(COMPILING_TEXT_OK)
+	
 
 $(OBJSUBDIRS):
 	@mkdir -p $(OBJSUBDIRS)
