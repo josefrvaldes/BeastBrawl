@@ -2,7 +2,7 @@
 #include "components/position.h"
 #include "components/speed.h"
 #include "systems/physics.h"
-#include "include/EventManager/EventManager.h"
+#include "EventManager/EventManager.h"
 
 #include "include/Game.h"
 #include <iostream>
