@@ -1,4 +1,4 @@
-#include "include/StateInGame.h"
+#include "StateInGame.h"
 #include <iostream>
 
 using namespace std;

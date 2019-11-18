@@ -1,7 +1,7 @@
-#include "include/Game.h"
-#include "include/State.h"
-#include "include/StateMenu.h"
-#include "include/StateInGame.h"
+#include "Game.h"
+#include "State/State.h"
+#include "State/StateMenu.h"
+#include "State/StateInGame.h"
 
 using namespace std;
 

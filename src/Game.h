@@ -2,7 +2,7 @@
 #define GAME_H
 
 #include <iostream>
-#include "State.h"
+#include "State/State.h"
 
 
 class Game{

@@ -2,7 +2,7 @@
 #define STATEINGAME_H
 
 
-#include "Game.h"
+#include "../Game.h"
 
 
 class StateInGame : public State{

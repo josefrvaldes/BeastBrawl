@@ -2,7 +2,7 @@
 #define STATEMENU_H
 
 
-#include "Game.h"
+#include "../Game.h"
 
 
 class StateMenu : public State{
