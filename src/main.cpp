@@ -5,17 +5,19 @@
 #include "behaviourTree/behaviourTree.h"
 #include "behaviourTree/selector.h"
 #include "behaviourTree/sequence.h"
+#include "behaviourTree/decorator.h"
 
 #include "include/Game.h"
 
 #include <iostream>
+#include <cstdint>
 using namespace std;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //                           COMPROBAR BEHAVIOR TREE
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 bool door = false; // imaginemos que door=false es = puerta cerrada "door is open?"
-bool key  = true;  // tenemos una llave
+bool key  = false;  // tenemos una llave
 // ACCION DE ABRIR LA PUERTA
 struct openDoor : public behaviourTree { 
 		virtual bool run() override {
@@ -46,6 +48,50 @@ struct haveKey : public behaviourTree {
 			return  key;
 		}
 };
+
+
+///// DECORATORS //////
+struct Minimum : public Decorator {  // Tiene que intentar coger la llave 3 veces para que la pueda coger
+    uint32_t totalTries = 3;
+    uint32_t numTries = 0;
+    virtual bool run() override {
+        if(numTries>=totalTries)
+            return getChild()->run();
+        numTries++;
+        cout << "Fallamos al coger la llave, intento: " << numTries << endl;
+        return false;
+        
+    }
+};
+
+struct Limit : public Decorator {  // Decorator Limit
+    uint32_t totalLimit = 3;
+    uint32_t numLimit = 0;
+    virtual bool run() override {
+        if(numLimit>=totalLimit)
+            return false;
+        numLimit++;
+        return getChild()->run();
+    }
+};
+
+struct UntilFail : public Decorator {  // Decorator UntilFail
+    virtual bool run() override {
+        while(true){
+            bool result = getChild()->run();
+            if(!result) { 
+                break; 
+            }
+        }
+        return true;
+    }
+};
+
+struct Inverter : public Decorator {  // Decorator Inverter
+    virtual bool run() override {
+        return !(getChild()->run());
+    }
+};
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -64,10 +110,10 @@ int main()
                         // 
         ///////////////////////////////////////////////////////////////////////////////////
         //                                      //                                       //
-// La pueta esta abierta?                     SEQUENCE                           // coger llave
-                                    ///////////////////////////////
-                                    //                          //
-                                // tengo llave?             //abrir puerta
+// La pueta esta abierta?                     SEQUENCE                               DECORATOR (minimum) (3 intentos)
+                                    ///////////////////////////////                      //
+                                    //                          //                       //
+                                // tengo llave?             //abrir puerta        // coger llave
 
 
     selector* selector1 = new selector;
@@ -78,15 +124,21 @@ int main()
     openDoor* abrirPuerta = new openDoor;
     getKey* cogerLlave = new getKey;
 
+    Minimum* tryCatchKey3 = new Minimum;
+
     selector1->addChild(puertaAbiertaSiNo);
     selector1->addChild(sequence1);
-    selector1->addChild(cogerLlave);
+    selector1->addChild(tryCatchKey3);
 
     sequence1->addChild(tengoLlaveSiNo);
     sequence1->addChild(abrirPuerta);
 
+    tryCatchKey3->addChild(cogerLlave);
+
 	cout << "--------------------" << endl;
-    while (!selector1->run()){} // If the operation starting from the root fails, keep trying until it succeeds.
+    while (door==false){
+        selector1->run();
+    } // If the operation starting from the root fails, keep trying until it succeeds.
 	cout << "--------------------" << endl;
 
 
