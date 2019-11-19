@@ -7,6 +7,7 @@
 #include "Game.h"
 #include <iostream>
 #include <list>
+#include <string>
 
 
 
@@ -62,16 +63,36 @@ int main()
     game->SetState(State::States::INGAME);
     game->InitGame();
 
- 
+
+    EventManager eventManager = EventManager::GetInstance();
+    eventManager.Suscribe(Listener {EventType::PRIORIDAD1,pruebaEvent1, "suscriptor1"});
+    eventManager.Suscribe(Listener {EventType::PRIORIDAD1,pruebaEvent1, "suscriptor2"});
+    eventManager.Suscribe(Listener {EventType::PRIORIDAD2,pruebaEvent2, "suscriptor3"});
+
+
+    eventManager.AddEvent(Event {EventType::PRIORIDAD1,d});
+    eventManager.AddEvent(Event {EventType::PRIORIDAD2,d});
+    eventManager.AddEvent(Event {EventType::PRIORIDAD1,d});
+    
+    eventManager.Update();  
+    cout << "------------------------------\n";
+    eventManager.UnSuscribe(EventType::PRIORIDAD1,"suscriptor2");
+
+    eventManager.AddEvent(Event {EventType::PRIORIDAD1,d});
+    eventManager.AddEvent(Event {EventType::PRIORIDAD2,d});
+    eventManager.AddEvent(Event {EventType::PRIORIDAD1,d});
+
+    
+    eventManager.Update();  
 
 // ask user for driver
   video::E_DRIVER_TYPE driverType=driverChoiceConsole();
   if (driverType==video::EDT_COUNT)
     return 1;
 
+
   // create device
   MyEventReceiver receiver;
-
   IrrlichtDevice* device = createDevice(driverType,
       core::dimension2d<u32>(640, 480), 16, false, false, false, &receiver);
 
