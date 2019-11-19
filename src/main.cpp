@@ -2,8 +2,51 @@
 #include "components/position.h"
 #include "components/speed.h"
 #include "systems/physics.h"
+#include "behaviourTree/behaviourTree.h"
+#include "behaviourTree/selector.h"
+#include "behaviourTree/sequence.h"
 
 #include "include/Game.h"
+
+#include <iostream>
+using namespace std;
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+//                           COMPROBAR BEHAVIOR TREE
+////////////////////////////////////////////////////////////////////////////////////////////////////
+bool door = false; // imaginemos que door=false es = puerta cerrada "door is open?"
+bool key  = true;  // tenemos una llave
+// ACCION DE ABRIR LA PUERTA
+struct openDoor : public behaviourTree { 
+		virtual bool run() override {
+            door = true;
+            cout << "Abrimos la puerta" << endl;
+            return true;
+		}
+};
+//ACCION COGER LA LLAVE
+struct getKey : public behaviourTree { 
+		virtual bool run() override {
+            key = true;
+            cout << "Cogemos la llave" << endl;
+            return true;
+		}
+};
+//CONDICION PUERTA ABIERTA?
+struct haveDoorOpen : public behaviourTree { 
+		virtual bool run() override {
+            cout << "Comprobamos si la puerta esta abierta: " << boolalpha << door << endl;
+            return door;
+		}
+};
+//CONDICION TENEMOS LLAVE?
+struct haveKey : public behaviourTree { 
+		virtual bool run() override {
+            cout << "Comprobamos si tenemos la llave: " << boolalpha << key << endl;
+			return  key;
+		}
+};
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 int main()
@@ -12,6 +55,41 @@ int main()
     
     game->SetState(State::States::MENU);
     game->InitGame();
+
+
+
+
+    //BehaviorTree BASICO
+                    // SELECTOR1
+                        // 
+        ///////////////////////////////////////////////////////////////////////////////////
+        //                                      //                                       //
+// La pueta esta abierta?                     SEQUENCE                           // coger llave
+                                    ///////////////////////////////
+                                    //                          //
+                                // tengo llave?             //abrir puerta
+
+
+    selector* selector1 = new selector;
+    sequence* sequence1 = new sequence;
+
+    haveDoorOpen* puertaAbiertaSiNo = new haveDoorOpen;
+    haveKey* tengoLlaveSiNo = new haveKey;
+    openDoor* abrirPuerta = new openDoor;
+    getKey* cogerLlave = new getKey;
+
+    selector1->addChild(puertaAbiertaSiNo);
+    selector1->addChild(sequence1);
+    selector1->addChild(cogerLlave);
+
+    sequence1->addChild(tengoLlaveSiNo);
+    sequence1->addChild(abrirPuerta);
+
+	cout << "--------------------" << endl;
+    while (!selector1->run()){} // If the operation starting from the root fails, keep trying until it succeeds.
+	cout << "--------------------" << endl;
+
+
 
     return 0;
     /*
@@ -61,4 +139,5 @@ int main()
     delete speed;
     delete posObtenida;
     delete hero;*/
+
 }
