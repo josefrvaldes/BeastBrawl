@@ -2,7 +2,7 @@
 #include "components/position.h"
 #include "components/speed.h"
 #include "systems/physics.h"
-//#include "EventManager/EventManager.h"
+#include "EventManager/EventManager.h"
 
 #include "Game.h"
 #include <iostream>
@@ -23,6 +23,16 @@
 #include "driverChoice.h"
 
 using namespace irr;
+
+
+
+void pruebaEvent1(Data d){
+    
+    std::cout << "Soy pruebaEvent1"<< "\n";
+}
+void pruebaEvent2(Data d){
+    std::cout << "Soy pruebaEvent2"<< "\n";
+}
 
 
 
@@ -69,6 +79,7 @@ int main()
     eventManager.Suscribe(Listener {EventType::PRIORIDAD1,pruebaEvent1, "suscriptor2"});
     eventManager.Suscribe(Listener {EventType::PRIORIDAD2,pruebaEvent2, "suscriptor3"});
 
+    Data d;
 
     eventManager.AddEvent(Event {EventType::PRIORIDAD1,d});
     eventManager.AddEvent(Event {EventType::PRIORIDAD2,d});
@@ -85,6 +96,9 @@ int main()
     
     eventManager.Update();  
 
+
+
+// --------------------------- IRLICH ---------------------------------------
 // ask user for driver
   video::E_DRIVER_TYPE driverType=driverChoiceConsole();
   if (driverType==video::EDT_COUNT)
@@ -94,7 +108,7 @@ int main()
   // create device
   MyEventReceiver receiver;
   IrrlichtDevice* device = createDevice(driverType,
-      core::dimension2d<u32>(640, 480), 16, false, false, false, &receiver);
+      core::dimension2d<u32>(1280, 720), 16, false, false, false, &receiver);
 
   if (device == 0)
     return 1; // could not create selected driver.
