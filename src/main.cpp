@@ -7,6 +7,7 @@
 #include "Game.h"
 #include <iostream>
 #include <list>
+#include <string>
 
 void pruebaEvent1(Data d){
     
@@ -25,13 +26,22 @@ int main()
     game->InitGame();
 
     EventManager eventManager = EventManager::GetInstance();
-    eventManager.Suscribe(Listener {EventType::PRIORIDAD1,pruebaEvent1});
-    eventManager.Suscribe(Listener {EventType::PRIORIDAD2,pruebaEvent2});
+    eventManager.Suscribe(Listener {EventType::PRIORIDAD1,pruebaEvent1, "suscriptor1"});
+    eventManager.Suscribe(Listener {EventType::PRIORIDAD1,pruebaEvent1, "suscriptor2"});
+    eventManager.Suscribe(Listener {EventType::PRIORIDAD2,pruebaEvent2, "suscriptor3"});
 
     Data d;
     d.id = 15;
 
-    eventManager.AddEvent(Event {EventType::PRIORIDAD3,d}); 
+    eventManager.AddEvent(Event {EventType::PRIORIDAD1,d});
+    eventManager.AddEvent(Event {EventType::PRIORIDAD2,d});
+    eventManager.AddEvent(Event {EventType::PRIORIDAD1,d});
+
+    
+    eventManager.Update();  
+    cout << "------------------------------\n";
+    eventManager.UnSuscribe(EventType::PRIORIDAD1,"suscriptor2");
+
     eventManager.AddEvent(Event {EventType::PRIORIDAD1,d});
     eventManager.AddEvent(Event {EventType::PRIORIDAD2,d});
     eventManager.AddEvent(Event {EventType::PRIORIDAD1,d});

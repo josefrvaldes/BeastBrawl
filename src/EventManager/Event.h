@@ -1,5 +1,8 @@
+#pragma once
+
 #include <cstdint>
 #include <vector>
+#include <string>
 
 using namespace std;
 
@@ -25,6 +28,7 @@ struct Event {
 struct Listener{
     EventType type;
     void (*function)(Data); // Puntero a funcion 
+    string name;            // Nombre del listener
 };
 
 typedef vector<Listener> ListenerVector; // Se usará para poder tener varios listener del mismo EventType en el hash map
