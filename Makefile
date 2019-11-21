@@ -18,7 +18,7 @@ NAME_EXE	:= Beast_Brawl
 CXXFLAGS 	+= -g -Wall -std=c++14
 
 ALLCPPS		:= $(shell find src/ -type f -iname *.cpp)
-ALLCPPSOBJ	:= $(patsubst %.cpp,%.o,$(ALLCPPS))
+ALLCPPSOBJ	:= $(patsubst $(SRC_PATH)/%.cpp,$(OBJ_PATH)/%.o,$(ALLCPPS))
 SUBDIRS		:= $(shell find src/ -type d)
 OBJSUBDIRS  := $(patsubst $(SRC_PATH)%,$(OBJ_PATH)%,$(SUBDIRS))
 
@@ -34,10 +34,10 @@ $(NAME_EXE): $(OBJSUBDIRS) $(ALLCPPSOBJ)
 
 
 #Esto compila y crea los .o (aqui aun no entra en juego el linker)
-%.o: %.cpp
+$(OBJ_PATH)/%.o: $(SRC_PATH)/%.cpp
 	$(PRUEBA_TEXT)
 	$(COMPILING_TEXT) $<
-	@$(CC) $(CXXFLAGS) -o $(patsubst $(SRC_PATH)%,$(OBJ_PATH)%,$@) -c $^ $(INCLUDE) $(INCLUDE_IRR) 
+	@$(CC) $(CXXFLAGS) -o $@ -c $^ $(INCLUDE) $(INCLUDE_IRR) 
 	
 
 $(OBJSUBDIRS):
