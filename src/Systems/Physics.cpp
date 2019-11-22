@@ -1,4 +1,4 @@
-#include "physics.h"
+#include "Physics.h"
 
 void Physics::move(CSpeed *s, CPosition *p)
 {

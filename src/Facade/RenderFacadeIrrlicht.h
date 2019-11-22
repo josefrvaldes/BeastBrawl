@@ -1,21 +1,12 @@
-#ifndef __FACADEIRRLICHT_H__
-#define __FACADEIRRLICHT_H__
+#ifndef __RENDERFACADEIRRLICHT_H__
+#define __RENDERFACADEIRRLICHT_H__
 
 #include <iostream>
-#include "Facade.h"
+#include "RenderFacade.h"
 #include <irrlicht.h>
-#include "driverChoice.h"
-#include <vector>
+#include <unordered_map>
 
 using namespace irr;
-using namespace core;
-using namespace scene;
-using namespace video;
-using namespace io;
-using namespace gui;
-
-using namespace std;
-
 
 class MyEventReceiver : public IEventReceiver
 {
@@ -47,21 +38,30 @@ private:
 	bool KeyIsDown[KEY_KEY_CODES_COUNT];
 };
 
-class FacadeIrrlicht : public Facade {
+class RenderFacadeIrrlicht : public RenderFacade {
     public:
-        FacadeIrrlicht();
-        void FacadeInit() override;
-        void AddSphere();
-        ~FacadeIrrlicht();
+        RenderFacadeIrrlicht();
+        ~RenderFacadeIrrlicht();
+        uint16_t FacadeAddObject(GameObject*) override;
+		void FacadeAddCamera() override;
+		bool FacadeRun() override;
+		uint32_t FacadeGetTime() override;
+		void FacadeCheckInput(float) override;
+		int FacadeGetFPS() override;
+		void FacadeSetWindowCaption(std::string) override;
+		void FacadeBeginScene() override;
+		void FacadeDrawAll() override;
+		void FacadeEndScene() override;
+		void FacadeDeviceDrop() override;
+		void FacadeDraw() override;
 
     private:
-        E_DRIVER_TYPE driverType;
         IrrlichtDevice* device;
-        IVideoDriver* driver;
-        ISceneManager* smgr;
+        video::IVideoDriver* driver;
+        scene::ISceneManager* smgr;
         MyEventReceiver receiver;
 
-        vector<ISceneNode*> sphereVector;
+        unordered_map<uint16_t,scene::ISceneNode*> sceneObjects; // CId - ISceneNode*
 };
 
 

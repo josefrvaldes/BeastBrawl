@@ -1,4 +1,4 @@
-#include "hero.h"
+#include "Hero.h"
 #include "iostream"
 
 class Position;

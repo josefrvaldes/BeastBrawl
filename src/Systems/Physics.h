@@ -1,8 +1,8 @@
 #ifndef __PHYSICS_H__
 #define __PHYSICS_H__
 
-#include "../components/speed.h"
-#include "../components/position.h"
+#include "../Components/CSpeed.h"
+#include "../Components/CPosition.h"
 
 class Physics
 {

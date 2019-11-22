@@ -15,7 +15,7 @@ INCLUDE     := -I.
 INCLUDE_IRR := -I /usr/include/irrlicht
 CC			:= g++
 NAME_EXE	:= Beast_Brawl
-CXXFLAGS 	+= -g -Wall -std=c++14
+CXXFLAGS 	+= -g -Wall -std=c++17
 
 ALLCPPS		:= $(shell find src/ -type f -iname *.cpp)
 ALLCPPSOBJ	:= $(patsubst $(SRC_PATH)/%.cpp,$(OBJ_PATH)/%.o,$(ALLCPPS))

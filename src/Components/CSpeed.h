@@ -1,7 +1,6 @@
-#ifndef __SPEED_H__
-#define __SPEED_H__
+#pragma once
 
-#include "component.h"
+#include "Component.h"
 #include <string>
 #include <iostream>
 
@@ -29,5 +28,3 @@ private:
     float m_vy;
     float m_vz;
 };
-
-#endif

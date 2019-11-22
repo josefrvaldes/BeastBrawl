@@ -1,7 +1,7 @@
 #include <cstdint>
 #include <vector>
 
-using namespace std;
+//using namespace std;
 
 //El orden de los enums define la prioridad del evento
 enum EventType{
@@ -27,4 +27,4 @@ struct Listener{
     void (*function)(Data); // Puntero a funcion 
 };
 
-typedef vector<Listener> ListenerVector; // Se usará para poder tener varios listener del mismo EventType en el hash map
+typedef std::vector<Listener> ListenerVector; // Se usará para poder tener varios listener del mismo EventType en el hash map

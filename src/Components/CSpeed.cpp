@@ -1,4 +1,4 @@
-#include "speed.h"
+#include "CSpeed.h"
 
 CSpeed::CSpeed()
 {

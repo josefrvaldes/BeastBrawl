@@ -1,4 +1,4 @@
-#include "entity.h"
+#include "Entity.h"
 
 void Entity::AddComponent(Component *c)
 {

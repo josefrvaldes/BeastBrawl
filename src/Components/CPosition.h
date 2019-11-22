@@ -1,7 +1,6 @@
-#ifndef __POSITION_H__
-#define __POSITION_H__
+#pragma once
 
-#include "component.h"
+#include "Component.h"
 #include <string>
 #include <iostream>
 
@@ -33,5 +32,3 @@ private:
     float m_y;
     float m_z;
 };
-
-#endif
