@@ -1,4 +1,3 @@
-//TODO: Hacer SINGLETON las clases RenderFacadeManager y InputFacadeManager que no se por que no me deja
 
 #include "Entities/Hero.h"
 #include "Entities/GameObject.h"
@@ -18,7 +17,7 @@
 #include <iostream>
 #include <list>
 #include <cstdint>
-
+#include <memory>
 
 void pruebaEvent1(Data d){
     
@@ -32,7 +31,7 @@ void pruebaEvent2(Data d){
 
 int main()
 {
-    /*Game *game = Game::GetInstance();
+    Game *game = Game::GetInstance();
     
     game->SetState(State::States::INGAME);
     game->InitGame();
@@ -51,7 +50,7 @@ int main()
 
     
     eventManager.Update();  
-*/
+
     GameObject *go = new GameObject();
 
     Component* cId   = new CId();
@@ -65,14 +64,14 @@ int main()
     go->AddComponent(cTexture);
     go->AddComponent(cMesh);
 
-	RenderFacadeManager* renderFacadeManager = new RenderFacadeManager();
-	renderFacadeManager->InitializeIrrlicht();
+	RenderFacadeManager renderFacadeManager = RenderFacadeManager::GetInstance();
+	renderFacadeManager.InitializeIrrlicht();
 
     //InputFacadeManager* inputFacadeManager = new InputFacadeManager();
     //inputFacadeManager->InitializeIrrlicht();
     
     //auto inputEngine  = inputFacadeManager->GetInputFacade();
-	auto renderEngine = renderFacadeManager->GetRenderFacade();
+	auto renderEngine = renderFacadeManager.GetRenderFacade();
 	renderEngine->FacadeAddObject(go);
     
     renderEngine->FacadeAddCamera();

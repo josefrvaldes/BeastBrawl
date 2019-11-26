@@ -19,7 +19,7 @@ public:
     }
 
     RenderFacade *GetRenderFacade() { return facade; };
-    RenderFacadeManager& GetInstance();
+    static RenderFacadeManager& GetInstance();
 
 private:
     RenderFacade *facade;
