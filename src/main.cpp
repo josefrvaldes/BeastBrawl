@@ -12,7 +12,6 @@
 
 
 
-
 #ifdef _MSC_VER
 // We'll also define this to stop MSVC complaining about sprintf().
 #define _CRT_SECURE_NO_WARNINGS
