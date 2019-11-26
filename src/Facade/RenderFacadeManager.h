@@ -1,12 +1,11 @@
-#ifndef __RENDERFACADEMANAGER_H__
-#define __RENDERFACADEMANAGER_H__
+#pragma once
 
 #include <iostream>
 #include "RenderFacade.h"
 #include "RenderFacadeIrrlicht.h"
 
-class RenderFacadeManager
-{
+class RenderFacadeManager{
+
 public:
     RenderFacadeManager() : facade(nullptr){}
     ~RenderFacadeManager(){ delete facade;};
@@ -20,9 +19,8 @@ public:
     }
 
     RenderFacade *GetRenderFacade() { return facade; };
+    RenderFacadeManager& GetInstance();
 
 private:
     RenderFacade *facade;
 };
-
-#endif

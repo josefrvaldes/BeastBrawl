@@ -5,6 +5,7 @@
 #include <cstdint>
 #include <string>
 #include "../Entities/GameObject.h"
+#include "../EventManager/EventManager.h"
 
 class RenderFacade {
     public:
@@ -23,7 +24,8 @@ class RenderFacade {
         virtual void FacadeDeviceDrop() = 0;
         virtual void FacadeDraw() = 0;
 
-    private:
+    protected:
+        EventManager eventManager;
 };
 
 

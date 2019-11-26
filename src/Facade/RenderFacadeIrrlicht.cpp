@@ -1,4 +1,5 @@
 #include "RenderFacadeIrrlicht.h"
+
 #include "../Components/CPosition.h"
 #include "../Components/CType.h"
 #include "../Components/CId.h"
@@ -6,18 +7,26 @@
 #include "../Components/CMesh.h"
 #include "../Components/CTransformable.h"
 #include "../Components/Component.h"
+#include "RenderFacadeManager.h"
 
-
+//PUNTEROS A FUNCIONES
+void MoveUp(Data d);
 
 
 RenderFacadeIrrlicht::RenderFacadeIrrlicht(){
-     // ask user for driver
+	eventManager = EventManager::GetInstance();
+
+	eventManager.Suscribe(Listener {EventType::PRESS_W,MoveUp});
+    // ask user for driver
 	device = createDevice(video::EDT_OPENGL, core::dimension2d<u32>(1280, 720), 16, false, false, false, &receiver);
 	driver = device->getVideoDriver();
 	smgr = device->getSceneManager();
 
 }
 
+void RenderFacadeIrrlicht::AddReceiver(MyEventReceiver receiver){
+	device->setEventReceiver(&receiver);
+}
 
 
 
@@ -69,16 +78,16 @@ uint16_t RenderFacadeIrrlicht::FacadeAddObject(GameObject *go){
 			break;
 	}
 
-	std::string path = "../../" + cTexture->GetTexture();
+	std::string path = "media/" + cTexture->GetTexture();
 	if(node){
 		std::cout << "Entra aqui\n";
 		node->setID(cId->GetId());
 		node->setPosition(core::vector3df(cTransformable->GetPosX(),cTransformable->GetPosY(),cTransformable->GetPosZ()));
 		node->setRotation(core::vector3df(cTransformable->GetRotX(),cTransformable->GetRotY(),cTransformable->GetRotZ()));
 		node->setScale(core::vector3df(cTransformable->GetScaleX(),cTransformable->GetScaleY(),cTransformable->GetScaleZ()));
-		//node->setMaterialTexture(0, driver->getTexture(path.c_str())); //Obligado incluir el c_str() si no irrlicht no carga solo con un string
-		auto texture = driver->getTexture(path.c_str());
-		node->setMaterialTexture(0, texture);
+		node->setMaterialTexture(0, driver->getTexture(path.c_str())); //Obligado incluir el c_str() si no irrlicht no carga solo con un string
+		//auto texture = driver->getTexture("wall.bmp");
+		//node->setMaterialTexture(0, texture);
 
 		node->setMaterialFlag(video::EMF_LIGHTING, false);
 
@@ -108,6 +117,7 @@ uint32_t RenderFacadeIrrlicht::FacadeGetTime(){
 }
 
 void RenderFacadeIrrlicht::FacadeCheckInput(float frameDeltaTime){
+	
 	core::vector3df nodePosition = sceneObjects.find(0)->second->getPosition();
 	const f32 MOVEMENT_SPEED = 5.f;
 
@@ -121,8 +131,12 @@ void RenderFacadeIrrlicht::FacadeCheckInput(float frameDeltaTime){
 	else if(receiver.IsKeyDown(irr::KEY_KEY_D))
 		nodePosition.X += MOVEMENT_SPEED * frameDeltaTime;
 
+	if(receiver.IsKeyDown(irr::KEY_ESCAPE)){
+		device->closeDevice();
+	}
 	sceneObjects.find(0)->second->setPosition(nodePosition);
 	//node->setPosition(nodePosition);
+	
 }
 
 int RenderFacadeIrrlicht::FacadeGetFPS(){
@@ -168,4 +182,19 @@ void RenderFacadeIrrlicht::FacadeDeviceDrop(){
 
 RenderFacadeIrrlicht::~RenderFacadeIrrlicht(){
 
+}
+
+
+//PUNTEROS A FUNCIONES
+
+void MoveUp(Data d){
+	//TODO: En las funciones delegadas necesitas acceder al RenderManager para que me de los objetos de la escena
+	//core::vector3df nodePosition = sceneObjects.find(0)->second->getPosition();
+	const f32 MOVEMENT_SPEED = 5.f;
+
+	//nodePosition.Y += MOVEMENT_SPEED * frameDeltaTime;
+	//nodePosition.Y += MOVEMENT_SPEED;
+
+	//sceneObjects.find(0)->second->setPosition(nodePosition);
+	//node->setPosition(nodePosition);
 }

@@ -1,3 +1,4 @@
+#pragma once
 #include <cstdint>
 #include <vector>
 
@@ -5,6 +6,7 @@
 
 //El orden de los enums define la prioridad del evento
 enum EventType{
+    PRESS_W,
     PRIORIDAD1,
     PRIORIDAD2,
     PRIORIDAD3

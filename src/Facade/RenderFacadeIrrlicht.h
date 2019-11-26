@@ -1,15 +1,17 @@
-#ifndef __RENDERFACADEIRRLICHT_H__
-#define __RENDERFACADEIRRLICHT_H__
+#pragma once
 
 #include <iostream>
 #include "RenderFacade.h"
-#include <irrlicht.h>
 #include <unordered_map>
+#include "../EventManager/EventManager.h"
+#include "../EventManager/Event.h"
+//#include "InputFacadeIrrlicht.h"
+#include "../../lib/irrlicht/irrlicht.h"
 
 using namespace irr;
 
-class MyEventReceiver : public IEventReceiver
-{
+class MyEventReceiver : public IEventReceiver{
+
 public:
 	// This is the one method that we have to implement
 	virtual bool OnEvent(const SEvent& event)
@@ -55,6 +57,8 @@ class RenderFacadeIrrlicht : public RenderFacade {
 		void FacadeDeviceDrop() override;
 		void FacadeDraw() override;
 
+		void AddReceiver(MyEventReceiver);
+
     private:
         IrrlichtDevice* device;
         video::IVideoDriver* driver;
@@ -64,5 +68,3 @@ class RenderFacadeIrrlicht : public RenderFacade {
         unordered_map<uint16_t,scene::ISceneNode*> sceneObjects; // CId - ISceneNode*
 };
 
-
-#endif 
