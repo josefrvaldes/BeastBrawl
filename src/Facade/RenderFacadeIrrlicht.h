@@ -44,7 +44,7 @@ class RenderFacadeIrrlicht : public RenderFacade {
     public:
         RenderFacadeIrrlicht();
         ~RenderFacadeIrrlicht();
-        uint16_t FacadeAddObject(GameObject*) override;
+        uint16_t FacadeAddObject(Entity*) override;
 		void FacadeAddCamera() override;
 		bool FacadeRun() override;
 		uint32_t FacadeGetTime() override;

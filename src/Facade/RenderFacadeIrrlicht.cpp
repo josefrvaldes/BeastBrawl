@@ -33,7 +33,7 @@ void RenderFacadeIrrlicht::AddReceiver(MyEventReceiver receiver){
 //INPUTS : Una entidad GameObject
 //RETURNS: El Id del objeto añadido
 //TODO: Llevar cuidado con las rutas de las texturas si luego se mueven las carpetas
-uint16_t RenderFacadeIrrlicht::FacadeAddObject(GameObject *go){
+uint16_t RenderFacadeIrrlicht::FacadeAddObject(Entity *go){
 
 	//Fuente: https://stackoverflow.com/questions/11855018/c-inheritance-downcasting
 	//Como convertir un Component en cualquier tipo de sus subclases para poder usar los metodos propios

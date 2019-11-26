@@ -4,14 +4,14 @@
 #include <iostream>
 #include <cstdint>
 #include <string>
-#include "../Entities/GameObject.h"
+#include "../Entities/Entity.h"
 #include "../EventManager/EventManager.h"
 
 class RenderFacade {
     public:
         //RenderFacade();
         virtual ~RenderFacade() = default;
-        virtual uint16_t FacadeAddObject(GameObject*) = 0;
+        virtual uint16_t FacadeAddObject(Entity*) = 0;
         virtual void FacadeAddCamera() = 0;
         virtual bool FacadeRun() = 0;
         virtual uint32_t FacadeGetTime() = 0;

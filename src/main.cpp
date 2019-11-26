@@ -62,7 +62,8 @@ int main()
     
     eventManager.Update();  
 
-    GameObject *go = new GameObject();
+    Hero *h = new Hero();
+    /*GameObject *go = new GameObject();
 
     Component* cId   = new CId();
     Component* cType = new CType(ModelType::Sphere);
@@ -73,7 +74,7 @@ int main()
     go->AddComponent(cType);
     go->AddComponent(cTransformable);
     go->AddComponent(cTexture);
-    go->AddComponent(cMesh);
+    go->AddComponent(cMesh);*/
 
 	RenderFacadeManager renderFacadeManager = RenderFacadeManager::GetInstance();
 	renderFacadeManager.InitializeIrrlicht();
@@ -83,7 +84,7 @@ int main()
     
     //auto inputEngine  = inputFacadeManager->GetInputFacade();
 	auto renderEngine = renderFacadeManager.GetRenderFacade();
-	renderEngine->FacadeAddObject(go);
+	renderEngine->FacadeAddObject(h);
     
     renderEngine->FacadeAddCamera();
 
