@@ -6,8 +6,12 @@
 #include "../Components/CTexture.h"
 #include "../Components/CMesh.h"
 #include "../Components/CTransformable.h"
+#include "../Components/CCamera.h"
 #include "../Components/Component.h"
 #include "RenderFacadeManager.h"
+#include <math.h>
+
+#define PI 3.14159
 
 //PUNTEROS A FUNCIONES
 void MoveUp(Data d);
@@ -103,9 +107,27 @@ uint16_t RenderFacadeIrrlicht::FacadeAddObject(Entity *go){
 }
 
 
-void RenderFacadeIrrlicht::FacadeAddCamera(){
-	smgr->addCameraSceneNodeFPS();
+void RenderFacadeIrrlicht::FacadeAddCamera(Entity* goCamera){
+	camera1 = smgr->addCameraSceneNode();
 	device->getCursorControl()->setVisible(false);
+
+	auto components = goCamera->GetComponents();
+
+	//TODO: Encontrar una mejor manera para acceder a los componentes ya que asi se tarda demasiado
+	auto mapTransformable = components.find(CompType::Transformable);
+	auto cTransformable = static_cast<CTransformable*>(mapTransformable->second);
+
+	auto mapCamera = components.find(CompType::CameraValues);
+	auto cCamera = static_cast<CCamera*>(mapCamera->second);
+	std::cout << cCamera->GetTarY() << std::endl;
+
+	float posX = cCamera->GetTarX()-40.0*sin(((cTransformable->GetRotX())*PI)/180.0);
+	float posZ = cCamera->GetTarZ()-40.0*cos(((cTransformable->GetRotZ())*PI)/180.0);;
+	camera1->setTarget(core::vector3df(cCamera->GetTarX(), cCamera->GetTarY(), cCamera->GetTarZ())); 
+	camera1->setPosition(core::vector3df(posX, cTransformable->GetPosY(), posZ));
+
+
+
 }
 
 bool RenderFacadeIrrlicht::FacadeRun(){

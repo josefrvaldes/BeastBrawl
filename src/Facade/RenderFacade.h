@@ -12,7 +12,7 @@ class RenderFacade {
         //RenderFacade();
         virtual ~RenderFacade() = default;
         virtual uint16_t FacadeAddObject(Entity*) = 0;
-        virtual void FacadeAddCamera() = 0;
+        virtual void FacadeAddCamera(Entity*) = 0;
         virtual bool FacadeRun() = 0;
         virtual uint32_t FacadeGetTime() = 0;
         virtual void FacadeCheckInput(float) = 0;

@@ -45,7 +45,7 @@ class RenderFacadeIrrlicht : public RenderFacade {
         RenderFacadeIrrlicht();
         ~RenderFacadeIrrlicht();
         uint16_t FacadeAddObject(Entity*) override;
-		void FacadeAddCamera() override;
+		void FacadeAddCamera(Entity*) override;
 		bool FacadeRun() override;
 		uint32_t FacadeGetTime() override;
 		void FacadeCheckInput(float) override;
@@ -64,6 +64,7 @@ class RenderFacadeIrrlicht : public RenderFacade {
         video::IVideoDriver* driver;
         scene::ISceneManager* smgr;
         MyEventReceiver receiver;
+		scene::ICameraSceneNode* camera1;
 
         unordered_map<uint16_t,scene::ISceneNode*> sceneObjects; // CId - ISceneNode*
 };

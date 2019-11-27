@@ -8,7 +8,9 @@ enum CompType {
     Type, 
     Texture, 
     Mesh,
-    Transformable 
+    Transformable,
+    CameraValues,
+    CarValues
 };
 
 class Component

@@ -1,13 +1,8 @@
 
 #include "Entities/Hero.h"
 #include "Entities/GameObject.h"
-#include "Components/CPosition.h"
-#include "Components/CSpeed.h"
-#include "Components/CId.h"
-#include "Components/CType.h"
-#include "Components/CTexture.h"
-#include "Components/CMesh.h"
-#include "Components/CTransformable.h"
+#include "Entities/Camera.h"
+#include "Entities/ObstacleGround.h"
 #include "Systems/Physics.h"
 #include "EventManager/EventManager.h"
 #include "Facade/RenderFacadeManager.h"
@@ -62,19 +57,9 @@ int main()
     
     eventManager.Update();  
 
-    Hero *h = new Hero();
-    /*GameObject *go = new GameObject();
-
-    Component* cId   = new CId();
-    Component* cType = new CType(ModelType::Sphere);
-    Component* cTransformable = new CTransformable(10.0,20.0,30.0,    0.0,0.0,0.0,    1.0,1.0,1.0);
-    Component* cTexture = new CTexture(std::string("wall.bmp"));
-    Component* cMesh   = new CMesh(std::string("media/ninja.b3d"));
-    go->AddComponent(cId);
-    go->AddComponent(cType);
-    go->AddComponent(cTransformable);
-    go->AddComponent(cTexture);
-    go->AddComponent(cMesh);*/
+    Hero *h = new Hero(10.0,20.0,30.0,    0.0,0.0,0.0,    1.0,1.0,1.0);
+    Camera *cam = new Camera(10.0,20.0,30.0,    0.0,0.0,0.0,    1.0,1.0,1.0);
+    ObstacleGround *ground = new ObstacleGround(10.0,10.0,30.0,    0.0,0.0,0.0,    100.0,1.0,100.0);
 
 	RenderFacadeManager renderFacadeManager = RenderFacadeManager::GetInstance();
 	renderFacadeManager.InitializeIrrlicht();
@@ -86,7 +71,8 @@ int main()
 	auto renderEngine = renderFacadeManager.GetRenderFacade();
 	renderEngine->FacadeAddObject(h);
     
-    renderEngine->FacadeAddCamera();
+    renderEngine->FacadeAddCamera(cam);
+    renderEngine->FacadeAddObject(ground);
 
     int lastFPS = -1;
     uint32_t then = renderEngine->FacadeGetTime();
