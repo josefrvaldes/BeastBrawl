@@ -2,15 +2,15 @@
 
 #include "membershipFunctions.h"
 
-float MembershipFunctions::calculateMembership(float currentValue, float minValue, float maxValue)const{
+float MembershipFunctions::calculateMembership(float currentValue, float minValue, float maxValue){
     return (currentValue / (maxValue-minValue)) - (minValue / (maxValue-minValue));
 }
 
-float MembershipFunctions::calculateMembershipInverse(float currentValue, float minValue, float maxValue)const{
+float MembershipFunctions::calculateMembershipInverse(float currentValue, float minValue, float maxValue){
     return (-currentValue / (maxValue-minValue)) + (maxValue / (maxValue-minValue));
 }
 
-float MembershipFunctions::membershipGrade(float currentValue, float minValue, float maxValue)const{
+float MembershipFunctions::membershipGrade(float currentValue, float minValue, float maxValue){
     if(currentValue <= minValue)
         return  0.f;
     else if(currentValue > minValue && currentValue < maxValue)
@@ -19,7 +19,7 @@ float MembershipFunctions::membershipGrade(float currentValue, float minValue, f
         return  1.f;
 }
 
-float MembershipFunctions::membershipGradeInverse(float currentValue, float minValue, float maxValue)const{
+float MembershipFunctions::membershipGradeInverse(float currentValue, float minValue, float maxValue){
     if(currentValue <= minValue)
         return  0.f;
     else if(currentValue > minValue && currentValue < maxValue)
@@ -28,7 +28,7 @@ float MembershipFunctions::membershipGradeInverse(float currentValue, float minV
         return  1.f;
 }
 
-float MembershipFunctions::membershipTriangle(float currentValue, float minValue, float peakValue, float maxValue)const{
+float MembershipFunctions::membershipTriangle(float currentValue, float minValue, float peakValue, float maxValue){
     if(currentValue <= minValue)
         return  0.f;
     else if(currentValue > minValue && currentValue < peakValue)
@@ -41,7 +41,7 @@ float MembershipFunctions::membershipTriangle(float currentValue, float minValue
         return  0.f;
 }
 
-float MembershipFunctions::membershipTrapezoid(float currentValue, float minValue, float minPeakValue, float maxPeakValue, float maxValue)const{
+float MembershipFunctions::membershipTrapezoid(float currentValue, float minValue, float minPeakValue, float maxPeakValue, float maxValue){
     if(currentValue <= minValue)
         return  0.f;
     else if(currentValue > minValue && currentValue < minPeakValue)

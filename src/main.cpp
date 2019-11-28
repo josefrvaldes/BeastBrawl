@@ -3,6 +3,7 @@
 #include "components/speed.h"
 #include "systems/physics.h"
 #include "EventManager/EventManager.h"
+#include "fuzzyLogic/fuzzyLogic.h"
 
 #include "Game.h"
 #include <iostream>
@@ -95,6 +96,11 @@ int main()
 
     
     eventManager.Update();  
+
+// --------------------------- FUZZY LOGIC ----------------------------------
+//
+//FuzzyLogic fm;
+//FuzzyVariable& DistToTarget = fm.CreateFLV("DistToTarget");
 
 
 

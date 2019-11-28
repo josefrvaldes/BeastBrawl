@@ -8,15 +8,15 @@ struct MembershipFunctions{
         MembershipFunctions() {}
         ~MembershipFunctions() {}
         // Funciones de membresia en forma de grado normal e inverso
-        float membershipGrade(float currentValue, float minValue, float maxValue)const;
-        float membershipGradeInverse(float currentValue, float minValue, float maxValue)const;
+        static float membershipGrade(float currentValue, float minValue, float maxValue);
+        static float membershipGradeInverse(float currentValue, float minValue, float maxValue);
         // Funcion de membresia en forma de triangulo
-        float membershipTriangle(float currentValue, float minValue, float peakValue, float maxValue)const;
+        static float membershipTriangle(float currentValue, float minValue, float peakValue, float maxValue);
         // Funcion de membresia en forma de trapezoide
-        float membershipTrapezoid(float currentValue, float minValue, float minPeakValue, float maxPeakValue, float maxValue)const;  
+        static float membershipTrapezoid(float currentValue, float minValue, float minPeakValue, float maxPeakValue, float maxValue);  
         // Calcular en nivel de membresia entre 2 valores
-        float calculateMembership(float currentValue, float minValue, float maxValue)const;  
-        float calculateMembershipInverse(float currentValue, float minValue, float maxValue)const;  
+        static float calculateMembership(float currentValue, float minValue, float maxValue);  
+        static float calculateMembershipInverse(float currentValue, float minValue, float maxValue);  
 
     //private:
     // de momento sin variables extra
