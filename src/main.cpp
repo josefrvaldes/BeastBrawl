@@ -58,8 +58,10 @@ int main()
         const float frameDeltaTime = (float)(now - then) / 100.0;
         then = now;
         //inputEngine->CheckInputs(*car);
-        renderEngine->FacadeCheckInput(frameDeltaTime,*car);
+        renderEngine->FacadeCheckInput(frameDeltaTime,*car,*cam);
         renderEngine->UpdateTransformable(car);
+        renderEngine->UpdateCamera(cam);
+
         renderEngine->FacadeDraw();
 
 

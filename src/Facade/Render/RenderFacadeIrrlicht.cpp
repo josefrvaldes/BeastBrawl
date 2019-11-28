@@ -81,32 +81,25 @@ const uint16_t RenderFacadeIrrlicht::FacadeAddObject(Entity *go){
 		node->setRotation(core::vector3df(cTransformable->GetRotX(),cTransformable->GetRotY(),cTransformable->GetRotZ()));
 		node->setScale(core::vector3df(cTransformable->GetScaleX(),cTransformable->GetScaleY(),cTransformable->GetScaleZ()));
 		node->setMaterialTexture(0, driver->getTexture(path.c_str())); //Obligado incluir el c_str() si no irrlicht no carga solo con un string
-		//auto texture = driver->getTexture("wall.bmp");
-		//node->setMaterialTexture(0, texture);
-
 		node->setMaterialFlag(video::EMF_LIGHTING, false);
 
 	}
 
-	//sceneObjects[cId->GetId()] = node;
-
-	//auto obj = sceneObjects.find(cId->GetId());
-	//std::cout << "Añadido el objeto con ID: " << obj->first << std::endl;
 
 
 	return cId->GetId();
 }
 
-        
+//TODO: Esto proximamente le pasaremos todos los entities y los modificará 1 a 1  
 void RenderFacadeIrrlicht::UpdateTransformable(Entity* go){
+	//Cogemos los componentes de ID y CTransformable 
 	auto components = go->GetComponents();
-
 	auto mapTransformable = components.find(CompType::TransformableComp);
 	auto cTransformable = static_cast<CTransformable*>(mapTransformable->second);
-
 	auto mapId = components.find(CompType::IdComp);
 	auto cId = static_cast<CId*>(mapId->second);
 
+	// Cogemos el nodo de irrlicht con el ID igual al que le hemos pasado
 	scene::ISceneNode* node = smgr->getSceneNodeFromId(cId->GetId());
 
 	//Actualiza la posicion del objeto de irrlicht
@@ -120,6 +113,24 @@ void RenderFacadeIrrlicht::UpdateTransformable(Entity* go){
 	
 }
 
+//Reajusta la camara 
+void RenderFacadeIrrlicht::UpdateCamera(Entity* cam){
+
+	//Cogemos los componentes de la camara
+	auto components = cam->GetComponents();
+	auto mapTransformable = components.find(CompType::TransformableComp);
+	auto cTransformable = static_cast<CTransformable*>(mapTransformable->second);
+
+	//Cogemos la posicion de nuestro coche
+	core::vector3df targetPosition  = smgr->getSceneNodeFromId(0)->getPosition();
+    targetPosition.Y += 17;
+    camera1->setTarget(targetPosition);
+
+	camera1->setPosition(core::vector3df(cTransformable->GetPosX(),cTransformable->GetPosY(),cTransformable->GetPosZ()));
+
+}
+
+//Añade la camara, esto se llama una sola vez al crear el juego
 void RenderFacadeIrrlicht::FacadeAddCamera(Entity* goCamera){
 	camera1 = smgr->addCameraSceneNode();
 	device->getCursorControl()->setVisible(false);
@@ -150,11 +161,12 @@ uint32_t RenderFacadeIrrlicht::FacadeGetTime(){
 	return device->getTimer()->getTime();
 }
 
-void RenderFacadeIrrlicht::FacadeCheckInput(float frameDeltaTime, Entity& car){
+void RenderFacadeIrrlicht::FacadeCheckInput(float frameDeltaTime, Entity& car, Entity& cam){
 	
 	Data d;
-	d.deltaTime = frameDeltaTime;
+	d.deltaTime  = frameDeltaTime;
 	d.gameObject = &car;
+	d.camera	 = &cam;
 
 	if(receiver.IsKeyDown(KEY_KEY_W)){
         eventManager->AddEvent(Event {EventType::PRESS_W,d});
@@ -191,6 +203,7 @@ void RenderFacadeIrrlicht::FacadeSetWindowCaption(std::string title){
 	device->setWindowCaption(txt);
 }
 
+//Toda la rutina de limpiar y dibujar de irrlicht
 void RenderFacadeIrrlicht::FacadeDraw(){
 	driver->beginScene(true, true, video::SColor(255,113,113,133));
 	smgr->drawAll(); // draw the 3d scene

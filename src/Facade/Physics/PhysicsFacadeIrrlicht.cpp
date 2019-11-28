@@ -14,6 +14,7 @@
 #define PI 3.141592
 
 void CalculatePosition(CCar* cCar, CTransformable* cTransformable, Data d);
+void CalculatePositionCamera(CTransformable* cTransformableCar,CTransformable* cTransformableCamera, CCamera* cCamera);
 // PUNTEROS A FUNCIONES
 void PressW(Data d);
 void PressA(Data d);
@@ -36,7 +37,11 @@ PhysicsFacadeIrrlicht::PhysicsFacadeIrrlicht(){
 
 
 //PUNTEROS A FUNCIONES
+
+//Entra cuando se presiona la W
 void PressW(Data d){
+
+    
     //Guardamos en variables los componentes
     auto components = d.gameObject->GetComponents();
     auto mapTransform = components.find(CompType::TransformableComp);
@@ -55,12 +60,12 @@ void PressW(Data d){
    
 }
 
+//Entra cuando se presiona la S
 void PressS(Data d){
     //Guardamos en variables los componentes
     auto components = d.gameObject->GetComponents();
     auto mapTransform = components.find(CompType::TransformableComp);
 	auto cTransformable = static_cast<CTransformable*>(mapTransform->second);
-    
     auto mapCar = components.find(CompType::CarComp);
     auto cCar        = static_cast<CCar*>(mapCar->second);
 
@@ -72,12 +77,21 @@ void PressS(Data d){
     CalculatePosition(cCar,cTransformable, d);
 }
 
+//Entra cuando se presiona la A
 void PressA(Data d){
-    //Guardamos en variables los componentes
+
+    //Componentes de la camara
+    auto componentsCam = d.camera->GetComponents();
+    auto mapCamera = componentsCam.find(CompType::CameraComp);
+    auto cCamera = static_cast<CCamera*>(mapCamera->second);
+    auto mapTransformCamera = componentsCam.find(CompType::TransformableComp);
+	auto cTransformableCam = static_cast<CTransformable*>(mapTransformCamera->second);
+
+
+    //Componentes del coche
     auto components = d.gameObject->GetComponents();
     auto mapTransform = components.find(CompType::TransformableComp);
-	auto cTransformable = static_cast<CTransformable*>(mapTransform->second);
-    
+	auto cTransformable = static_cast<CTransformable*>(mapTransform->second);   
     auto mapCar = components.find(CompType::CarComp);
     auto cCar        = static_cast<CCar*>(mapCar->second);
 
@@ -87,11 +101,29 @@ void PressA(Data d){
             //Aumentamos la rotacion hacia la izquierda
             cCar->SetWheelRotation(cCar->GetWheelRotation() - 0.5);
         }
+
+        if(cCamera->GetRotExtraY()>-15){
+            cCamera->SetRotExtraY(cCamera->GetRotExtraY() - 0.5);
+        }
+
+
     }
     CalculatePosition(cCar,cTransformable, d);
+    CalculatePositionCamera(cTransformable,cTransformableCam,cCamera);
+
 }
 
+//Entra cuando se presiona la D
 void PressD(Data d){
+
+    //Componentes de la camara
+    auto componentsCam = d.camera->GetComponents();
+    auto mapCamera = componentsCam.find(CompType::CameraComp);
+    auto cCamera = static_cast<CCamera*>(mapCamera->second);
+    auto mapTransformCamera = componentsCam.find(CompType::TransformableComp);
+	auto cTransformableCam = static_cast<CTransformable*>(mapTransformCamera->second);
+
+
     //Guardamos en variables los componentes
     auto components = d.gameObject->GetComponents();
     auto mapTransform = components.find(CompType::TransformableComp);
@@ -107,11 +139,16 @@ void PressD(Data d){
             cCar->SetWheelRotation(cCar->GetWheelRotation() + 0.5);
         }
 
+        if(cCamera->GetRotExtraY()<15){
+            cCamera->SetRotExtraY(cCamera->GetRotExtraY() + 0.5);
+        }
     }
     CalculatePosition(cCar,cTransformable, d);
+    CalculatePositionCamera(cTransformable,cTransformableCam,cCamera);
+
 }
 
-
+//Aqui entra cuando no se esta presionando ni W ni S
 void NoWSPress(Data d){
 
     //Guardamos en variables los componentes
@@ -130,15 +167,24 @@ void NoWSPress(Data d){
     }
 
     CalculatePosition(cCar,cTransformable, d);
+    
 
 }
 
+//Aqui entra cuando no se esta presionando ni A ni D
 void NoADPress(Data d){
-    //Guardamos en variables los componentes
+
+    //Componentes de la camara
+    auto componentsCam = d.camera->GetComponents();
+    auto mapCamera = componentsCam.find(CompType::CameraComp);
+    auto cCamera = static_cast<CCamera*>(mapCamera->second);
+    auto mapTransformCamera = componentsCam.find(CompType::TransformableComp);
+	auto cTransformableCam = static_cast<CTransformable*>(mapTransformCamera->second);
+
+    //Componentes del coche
     auto components = d.gameObject->GetComponents();
     auto mapTransform = components.find(CompType::TransformableComp);
 	auto cTransformable = static_cast<CTransformable*>(mapTransform->second);
-    
     auto mapCar = components.find(CompType::CarComp);
     auto cCar        = static_cast<CCar*>(mapCar->second);
 
@@ -149,8 +195,21 @@ void NoADPress(Data d){
     }else{
         cCar->SetWheelRotation(0);
     }
+
+    if(cCamera->GetRotExtraY()>=0.7){
+        cCamera->SetRotExtraY(cCamera->GetRotExtraY() - 0.7);
+    }else if(cCamera->GetRotExtraY()<=-0.7){
+        cCamera->SetRotExtraY(cCamera->GetRotExtraY() + 0.7);
+    }else{
+        cCamera->SetRotExtraY(0);        
+    }
+
+    CalculatePosition(cCar,cTransformable, d);
+    CalculatePositionCamera(cTransformable,cTransformableCam,cCamera);
+
 }
 
+//Calcula la posicion del coche (duda con las formulas preguntar a Jose)
 void CalculatePosition(CCar* cCar, CTransformable* cTransformable, Data d){
     float angleRotation = (cTransformable->GetRotY()*PI) /180.0;
 
@@ -162,4 +221,11 @@ void CalculatePosition(CCar* cCar, CTransformable* cTransformable, Data d){
     if(cCar->GetWheelRotation()!=0){
         cTransformable->SetRotY(cTransformable->GetRotY()+ (cCar->GetWheelRotation()*0.20));
     }
+}
+
+//Calcula la posicion de la camara (duda con las formulas preguntar a Jose)
+void CalculatePositionCamera(CTransformable* cTransformableCar,CTransformable* cTransformableCamera, CCamera* cCamera){
+    cTransformableCamera->SetPosY(cTransformableCar->GetPosY() + 20);
+    cTransformableCamera->SetPosX(cTransformableCar->GetPosX()-40*sin(((cTransformableCar->GetRotY()-cCamera->GetRotExtraY())*PI)/180.0));
+    cTransformableCamera->SetPosZ(cTransformableCar->GetPosZ()-40*cos(((cTransformableCar->GetRotY()-cCamera->GetRotExtraY())*PI)/180.0));
 }

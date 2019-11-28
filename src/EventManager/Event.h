@@ -23,6 +23,7 @@ enum EventType{
 struct Data{
     uint16_t id;
     Entity* gameObject;
+    Entity* camera;
     float deltaTime;
 };
 

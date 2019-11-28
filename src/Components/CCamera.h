@@ -19,6 +19,13 @@ public:
 
     float GetRotExtraY() { return m_rotExtraY; };
 
+    void SetTarX(float tarX) {m_tarx = tarX;};
+    void SetTarY(float tarY) {m_tary = tarY;};
+    void SetTarZ(float tarZ) {m_tarz = tarZ;};
+
+    void SetRotExtraY(float rotExtraY) { m_rotExtraY = rotExtraY; };
+
+
 
     friend ostream &operator<<(ostream &out, CCamera &c)
     {

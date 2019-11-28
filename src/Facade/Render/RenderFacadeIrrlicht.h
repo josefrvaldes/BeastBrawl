@@ -18,10 +18,11 @@ class RenderFacadeIrrlicht : public RenderFacade {
         ~RenderFacadeIrrlicht();
         const uint16_t FacadeAddObject(Entity*) override;
         void UpdateTransformable(Entity*) override;
+        void UpdateCamera(Entity*) override;
 		void FacadeAddCamera(Entity*) override;
 		bool FacadeRun() override;
 		uint32_t FacadeGetTime() override;
-		void FacadeCheckInput(float, Entity&) override;
+		void FacadeCheckInput(float, Entity&, Entity&) override;
 		int FacadeGetFPS() override;
 		void FacadeSetWindowCaption(std::string) override;
 		void FacadeBeginScene() override;
