@@ -1,8 +1,12 @@
 #include "EventManager.h"
 #include <iostream>
+EventManager* EventManager::instance = 0;
 
-EventManager& EventManager::GetInstance() {
-    static EventManager instance;
+EventManager* EventManager::GetInstance() {
+    //static EventManager instance;
+    if(instance==0){
+        instance = new EventManager();
+    }
     return instance;
 }
 
@@ -31,11 +35,12 @@ void EventManager::Update(){
         }
    }
 */    
-   while(!eventList.empty()){
+
+    while(!eventList.empty()){
         Event e = eventList.front(); //Cojemos el primero en la lista
         eventList.pop_front(); // Lo sacamos de la lista
 
-        std::cout << "Procesando evento con prioridad: " << e.type << std::endl;
+        //std::cout << "Procesando evento con prioridad: " << e.type << std::endl;
 
         //Tratamos el evento
         auto mapByType = eventListenerMap.find(e.type);
@@ -89,6 +94,7 @@ void EventManager::Suscribe(const Listener listener){
     }
 
     iterator->second.push_back(listener);
+    std::cout << "Añadido el Listener: " << listener.name << "\n";
 
 }
 

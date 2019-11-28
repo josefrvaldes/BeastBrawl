@@ -1,12 +1,11 @@
-
 #include "Entities/Hero.h"
 #include "Entities/GameObject.h"
 #include "Entities/Camera.h"
-#include "Entities/ObstacleGround.h"
 #include "Systems/Physics.h"
 #include "EventManager/EventManager.h"
-#include "Facade/RenderFacadeManager.h"
-//#include "Facade/InputFacadeManager.h"
+#include "Facade/Render/RenderFacadeManager.h"
+#include "Facade/Input/InputFacadeManager.h"
+#include "Facade/Physics/PhysicsFacadeManager.h"
 
 #include "Game.h"
 #include <iostream>
@@ -17,16 +16,6 @@
 
 
 
-
-void pruebaEvent1(Data d){
-    
-    std::cout << "Soy pruebaEvent1"<< "\n";
-}
-void pruebaEvent2(Data d){
-    std::cout << "Soy pruebaEvent2"<< "\n";
-}
-
-
 int main()
 {
     Game *game = Game::GetInstance();
@@ -34,57 +23,43 @@ int main()
     game->SetState(State::States::INGAME);
     game->InitGame();
 
+    EventManager* eventManager = EventManager::GetInstance();
 
-    EventManager eventManager = EventManager::GetInstance();
-    eventManager.Suscribe(Listener {EventType::PRIORIDAD1,pruebaEvent1, "suscriptor1"});
-    eventManager.Suscribe(Listener {EventType::PRIORIDAD1,pruebaEvent1, "suscriptor2"});
-    eventManager.Suscribe(Listener {EventType::PRIORIDAD2,pruebaEvent2, "suscriptor3"});
-
-    Data d;
-
-    eventManager.AddEvent(Event {EventType::PRIORIDAD1,d});
-    eventManager.AddEvent(Event {EventType::PRIORIDAD2,d});
-    eventManager.AddEvent(Event {EventType::PRIORIDAD1,d});
-    
-    eventManager.Update();  
-    cout << "------------------------------\n";
-    eventManager.UnSuscribe(EventType::PRIORIDAD1,"suscriptor2");
-
-    eventManager.AddEvent(Event {EventType::PRIORIDAD1,d});
-    eventManager.AddEvent(Event {EventType::PRIORIDAD2,d});
-    eventManager.AddEvent(Event {EventType::PRIORIDAD1,d});
-
-    
-    eventManager.Update();  
-
-    Hero *h = new Hero(10.0,20.0,30.0,    0.0,0.0,0.0,    1.0,1.0,1.0);
+    GameObject *car = new GameObject(10.0,20.0,30.0,    0.0,0.0,0.0,    1.0,1.0,1.0, "particle.bmp", "ninja.b3d",20,0.15,0.1,0.25);
+    GameObject *ground = new GameObject(10.0,10.0,30.0,    0.0,0.0,0.0,    100.0,1.0,100.0, "wall.jpg", "ninja.b3d",20,0.15,0.1,0.25);
     Camera *cam = new Camera(10.0,20.0,30.0,    0.0,0.0,0.0,    1.0,1.0,1.0);
-    ObstacleGround *ground = new ObstacleGround(10.0,10.0,30.0,    0.0,0.0,0.0,    100.0,1.0,100.0);
 
-	RenderFacadeManager renderFacadeManager = RenderFacadeManager::GetInstance();
-	renderFacadeManager.InitializeIrrlicht();
+	RenderFacadeManager* renderFacadeManager = RenderFacadeManager::GetInstance();
+	renderFacadeManager->InitializeIrrlicht();
 
-    //InputFacadeManager* inputFacadeManager = new InputFacadeManager();
-    //inputFacadeManager->InitializeIrrlicht();
+    InputFacadeManager* inputFacadeManager = InputFacadeManager::GetInstance();
+    inputFacadeManager->InitializeIrrlicht();
+
+    PhysicsFacadeManager* physicsFacadeManager = PhysicsFacadeManager::GetInstance();
+    physicsFacadeManager->InitializeIrrlicht();
     
-    //auto inputEngine  = inputFacadeManager->GetInputFacade();
-	auto renderEngine = renderFacadeManager.GetRenderFacade();
-	renderEngine->FacadeAddObject(h);
+    //Almacenamos los motores
+	auto renderEngine   = renderFacadeManager->GetRenderFacade();
+    auto inputEngine    = inputFacadeManager->GetInputFacade();
+    auto physicsEngine  = physicsFacadeManager->GetPhysicsFacade();
+
+	const uint16_t carID    = renderEngine->FacadeAddObject(car);
+    const uint16_t groundID = renderEngine->FacadeAddObject(ground);
     
     renderEngine->FacadeAddCamera(cam);
-    renderEngine->FacadeAddObject(ground);
 
     int lastFPS = -1;
     uint32_t then = renderEngine->FacadeGetTime();
 
     while(renderEngine->FacadeRun()){
+        eventManager->Update();  
         const uint32_t now = renderEngine->FacadeGetTime();
         
-        const float frameDeltaTime = (float)(now - then) / 1000.0;
+        const float frameDeltaTime = (float)(now - then) / 100.0;
         then = now;
-        //inputEngine->CheckInputs();
-        renderEngine->FacadeCheckInput(frameDeltaTime);
-
+        //inputEngine->CheckInputs(*car);
+        renderEngine->FacadeCheckInput(frameDeltaTime,*car);
+        renderEngine->UpdateTransformable(car);
         renderEngine->FacadeDraw();
 
 

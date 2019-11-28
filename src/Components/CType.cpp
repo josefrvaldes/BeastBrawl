@@ -1,6 +1,7 @@
 #include "CType.h"
 
-CType::CType(ModelType model){
-    m_compType = CompType::Type;
-    m_type = model;
+CType::CType(ModelType model)
+: m_type(model)
+{
+    m_compType = CompType::TypeComp;
 }

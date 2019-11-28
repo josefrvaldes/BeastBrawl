@@ -7,7 +7,6 @@
 class RenderFacadeManager{
 
 public:
-    RenderFacadeManager() : facade(nullptr){}
     ~RenderFacadeManager(){ delete facade;};
 
     void InitializeIrrlicht() {
@@ -19,8 +18,10 @@ public:
     }
 
     RenderFacade *GetRenderFacade() { return facade; };
-    static RenderFacadeManager& GetInstance();
+    static RenderFacadeManager* GetInstance();
 
 private:
+    RenderFacadeManager() : facade(nullptr){}
     RenderFacade *facade;
+    static RenderFacadeManager* instance;
 };

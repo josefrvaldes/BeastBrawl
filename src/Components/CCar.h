@@ -10,15 +10,19 @@ class CCar : public Component
 {
 public:
     CCar();
-    CCar(float speed, float maxSpeed, float acceleration, float wheelRotation, float carFriction, float carSlowDown);
+    CCar(float maxSpeed,float acceleration, float carFriction, float carSlowDown);
     ~CCar();
 
     float GetSpeed() { return m_speed; };
     float GetMaxSpeed() { return m_maxSpeed; };
     float GetAcceleration() { return m_acceleration; };
     float GetWheelRotation() { return m_wheelRotation; };
-    float GetCarFriction() { return m_carFriction; };
-    float GetCarSlowDown() { return m_carSlowDown; };
+    float GetFriction() { return m_carFriction; };
+    float GetSlowDown() { return m_carSlowDown; };
+
+    void SetSpeed(float speed){ m_speed = speed;};
+    void SetAcceleration(float acceleration){ m_acceleration = acceleration;};
+    void SetWheelRotation(float wheelRotation){ m_wheelRotation = wheelRotation;};
 
     friend ostream &operator<<(ostream &out, CCar &c)
     {
@@ -27,10 +31,10 @@ public:
     }
 
 private:
-    float m_speed;
+    float m_speed = 0;
     float m_maxSpeed;
-    float m_acceleration;
-    float m_wheelRotation;
+    float m_acceleration = 0;
+    float m_wheelRotation = 0;
     float m_carFriction;
     float m_carSlowDown;
 

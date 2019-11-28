@@ -4,10 +4,9 @@
 #include "InputFacade.h"
 #include "InputFacadeIrrlicht.h"
 
-class InputFacadeManager
-{
+class InputFacadeManager{
+
 public:
-    InputFacadeManager() : facade(nullptr){}
     ~InputFacadeManager(){ delete facade;};
 
     void InitializeIrrlicht() {
@@ -19,7 +18,10 @@ public:
     }
 
     InputFacade *GetInputFacade() { return facade; };
+    static InputFacadeManager* GetInstance();
 
 private:
+    InputFacadeManager() : facade(nullptr){}
     InputFacade *facade;
+    static InputFacadeManager* instance;
 };

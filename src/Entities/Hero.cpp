@@ -13,8 +13,6 @@ using namespace std;
 
 Hero::Hero()
 {
-    cout << "Soy el hero y compilo" << endl;
-    cout << "Me voy a poner un componente para probar" << endl;
     Component* cId   = new CId();
     Component* cType = new CType(ModelType::Cube);
     Component* cTransformable = new CTransformable(10.0,20.0,30.0,    0.0,0.0,0.0,    1.0,1.0,1.0);
@@ -30,8 +28,6 @@ Hero::Hero()
 
 Hero::Hero(float posX, float posY, float posZ, float rotX, float rotY, float rotZ, float scaX, float scaY, float scaZ)
 {
-    cout << "Soy el hero y compilo" << endl;
-    cout << "Me voy a poner un componente para probar" << endl;
     Component* cId   = new CId();
     Component* cType = new CType(ModelType::Cube);
     Component* cTransformable = new CTransformable(posX, posY, posZ, rotX, rotY, rotZ, scaX, scaY, scaZ);

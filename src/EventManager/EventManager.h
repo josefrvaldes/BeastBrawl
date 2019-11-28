@@ -8,15 +8,16 @@ class EventManager{
 
     public:
 
-        EventManager() {}
         ~EventManager() {}
-        static EventManager& GetInstance();
+        static EventManager* GetInstance();
         void Suscribe(Listener);
         void UnSuscribe(EventType, string);
         void AddEvent(Event);
         void Update();
 
     private:
+        EventManager() {}
+        static EventManager* instance;
         void ShowSuscribers();
         //FIXME: Al final tendremos que escoger si usar la cola o la lista
         std::queue<Event> eventQueue;

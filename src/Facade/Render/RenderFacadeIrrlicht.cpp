@@ -1,68 +1,60 @@
 #include "RenderFacadeIrrlicht.h"
 
-#include "../Components/CPosition.h"
-#include "../Components/CType.h"
-#include "../Components/CId.h"
-#include "../Components/CTexture.h"
-#include "../Components/CMesh.h"
-#include "../Components/CTransformable.h"
-#include "../Components/CCamera.h"
-#include "../Components/Component.h"
-#include "RenderFacadeManager.h"
+#include "../../Components/CPosition.h"
+#include "../../Components/CType.h"
+#include "../../Components/CId.h"
+#include "../../Components/CTexture.h"
+#include "../../Components/CMesh.h"
+#include "../../Components/CTransformable.h"
+#include "../../Components/CCamera.h"
+#include "../../Components/Component.h"
 #include <math.h>
 
 #define PI 3.14159
 
 //PUNTEROS A FUNCIONES
-void MoveUp(Data d);
 
 
 RenderFacadeIrrlicht::RenderFacadeIrrlicht(){
 	eventManager = EventManager::GetInstance();
 
-	eventManager.Suscribe(Listener {EventType::PRESS_W,MoveUp});
-    // ask user for driver
+	auto inputFacade = InputFacadeManager::GetInstance()->GetInputFacade();
+	auto inputFacadeIrrlicht = static_cast<InputFacadeIrrlicht*>(inputFacade);	
 	device = createDevice(video::EDT_OPENGL, core::dimension2d<u32>(1280, 720), 16, false, false, false, &receiver);
 	driver = device->getVideoDriver();
 	smgr = device->getSceneManager();
-
 }
-
-void RenderFacadeIrrlicht::AddReceiver(MyEventReceiver receiver){
-	device->setEventReceiver(&receiver);
-}
-
 
 
 //INPUTS : Una entidad GameObject
 //RETURNS: El Id del objeto añadido
 //TODO: Llevar cuidado con las rutas de las texturas si luego se mueven las carpetas
-uint16_t RenderFacadeIrrlicht::FacadeAddObject(Entity *go){
+const uint16_t RenderFacadeIrrlicht::FacadeAddObject(Entity *go){
 
 	//Fuente: https://stackoverflow.com/questions/11855018/c-inheritance-downcasting
 	//Como convertir un Component en cualquier tipo de sus subclases para poder usar los metodos propios
 	auto components = go->GetComponents();
 
 	//TODO: Encontrar una mejor manera para acceder a los componentes ya que asi se tarda demasiado
-	auto mapTransformable = components.find(CompType::Transformable);
+	auto mapTransformable = components.find(CompType::TransformableComp);
 	auto cTransformable = static_cast<CTransformable*>(mapTransformable->second);
 
-	auto mapId = components.find(CompType::Id);
+	auto mapId = components.find(CompType::IdComp);
 	auto cId = static_cast<CId*>(mapId->second);
 
-	auto mapTexture = components.find(CompType::Texture);
+	auto mapTexture = components.find(CompType::TextureComp);
 	auto cTexture = static_cast<CTexture*>(mapTexture->second);
 
-	auto mapType = components.find(CompType::Type);
+	auto mapType = components.find(CompType::TypeComp);
 	auto cType 	 = static_cast<CType*>(mapType->second);
 
-	auto mapMesh = components.find(CompType::Mesh);
+	auto mapMesh = components.find(CompType::MeshComp);
 	auto cMesh	 = static_cast<CMesh*>(mapMesh->second);
 
 
 	//Switch para añadir el tipo de objeto
 	scene::ISceneNode* node;
-	std::string meshPath = "../../" + cMesh->GetMesh();
+	std::string meshPath = "media/" + cMesh->GetMesh();
 
 	switch(cType->GetType()){
 		case ModelType::Sphere:
@@ -84,7 +76,6 @@ uint16_t RenderFacadeIrrlicht::FacadeAddObject(Entity *go){
 
 	std::string path = "media/" + cTexture->GetTexture();
 	if(node){
-		std::cout << "Entra aqui\n";
 		node->setID(cId->GetId());
 		node->setPosition(core::vector3df(cTransformable->GetPosX(),cTransformable->GetPosY(),cTransformable->GetPosZ()));
 		node->setRotation(core::vector3df(cTransformable->GetRotX(),cTransformable->GetRotY(),cTransformable->GetRotZ()));
@@ -97,15 +88,37 @@ uint16_t RenderFacadeIrrlicht::FacadeAddObject(Entity *go){
 
 	}
 
-	sceneObjects[cId->GetId()] = node;
+	//sceneObjects[cId->GetId()] = node;
 
-	auto obj = sceneObjects.find(cId->GetId());
-	std::cout << "Añadido el objeto con ID: " << obj->first << std::endl;
+	//auto obj = sceneObjects.find(cId->GetId());
+	//std::cout << "Añadido el objeto con ID: " << obj->first << std::endl;
 
 
 	return cId->GetId();
 }
 
+        
+void RenderFacadeIrrlicht::UpdateTransformable(Entity* go){
+	auto components = go->GetComponents();
+
+	auto mapTransformable = components.find(CompType::TransformableComp);
+	auto cTransformable = static_cast<CTransformable*>(mapTransformable->second);
+
+	auto mapId = components.find(CompType::IdComp);
+	auto cId = static_cast<CId*>(mapId->second);
+
+	scene::ISceneNode* node = smgr->getSceneNodeFromId(cId->GetId());
+
+	//Actualiza la posicion del objeto de irrlicht
+	node->setPosition(core::vector3df(cTransformable->GetPosX(),cTransformable->GetPosY(),cTransformable->GetPosZ()));
+
+	//Actualiza la rotacion del objeto de irrlicht
+	node->setRotation(core::vector3df(cTransformable->GetRotX(),cTransformable->GetRotY(),cTransformable->GetRotZ()));
+
+	//Actualiza el escalado del objeto de irrlicht
+	node->setScale(core::vector3df(cTransformable->GetScaleX(),cTransformable->GetScaleY(),cTransformable->GetScaleZ()));
+	
+}
 
 void RenderFacadeIrrlicht::FacadeAddCamera(Entity* goCamera){
 	camera1 = smgr->addCameraSceneNode();
@@ -114,12 +127,11 @@ void RenderFacadeIrrlicht::FacadeAddCamera(Entity* goCamera){
 	auto components = goCamera->GetComponents();
 
 	//TODO: Encontrar una mejor manera para acceder a los componentes ya que asi se tarda demasiado
-	auto mapTransformable = components.find(CompType::Transformable);
+	auto mapTransformable = components.find(CompType::TransformableComp);
 	auto cTransformable = static_cast<CTransformable*>(mapTransformable->second);
 
-	auto mapCamera = components.find(CompType::CameraValues);
+	auto mapCamera = components.find(CompType::CameraComp);
 	auto cCamera = static_cast<CCamera*>(mapCamera->second);
-	std::cout << cCamera->GetTarY() << std::endl;
 
 	float posX = cCamera->GetTarX()-40.0*sin(((cTransformable->GetRotX())*PI)/180.0);
 	float posZ = cCamera->GetTarZ()-40.0*cos(((cTransformable->GetRotZ())*PI)/180.0);;
@@ -138,26 +150,28 @@ uint32_t RenderFacadeIrrlicht::FacadeGetTime(){
 	return device->getTimer()->getTime();
 }
 
-void RenderFacadeIrrlicht::FacadeCheckInput(float frameDeltaTime){
+void RenderFacadeIrrlicht::FacadeCheckInput(float frameDeltaTime, Entity& car){
 	
-	core::vector3df nodePosition = sceneObjects.find(0)->second->getPosition();
-	const f32 MOVEMENT_SPEED = 5.f;
+	Data d;
+	d.deltaTime = frameDeltaTime;
+	d.gameObject = &car;
 
-	if(receiver.IsKeyDown(irr::KEY_KEY_W))
-		nodePosition.Y += MOVEMENT_SPEED * frameDeltaTime;
-	else if(receiver.IsKeyDown(irr::KEY_KEY_S))
-		nodePosition.Y -= MOVEMENT_SPEED * frameDeltaTime;
-
-	if(receiver.IsKeyDown(irr::KEY_KEY_A))
-		nodePosition.X -= MOVEMENT_SPEED * frameDeltaTime;
-	else if(receiver.IsKeyDown(irr::KEY_KEY_D))
-		nodePosition.X += MOVEMENT_SPEED * frameDeltaTime;
-
-	if(receiver.IsKeyDown(irr::KEY_ESCAPE)){
-		device->closeDevice();
+	if(receiver.IsKeyDown(KEY_KEY_W)){
+        eventManager->AddEvent(Event {EventType::PRESS_W,d});
+	}else if(receiver.IsKeyDown(KEY_KEY_S)){
+        eventManager->AddEvent(Event {EventType::PRESS_S,d});
+	}else{
+		eventManager->AddEvent(Event {EventType::NO_W_S_PRESS,d});
 	}
-	sceneObjects.find(0)->second->setPosition(nodePosition);
-	//node->setPosition(nodePosition);
+	
+	if(receiver.IsKeyDown(KEY_KEY_D)){
+        eventManager->AddEvent(Event {EventType::PRESS_D,d});
+	}else if(receiver.IsKeyDown(KEY_KEY_A)){
+        eventManager->AddEvent(Event {EventType::PRESS_A,d});
+	}else{
+		eventManager->AddEvent(Event {EventType::NO_A_D_PRESS,d});
+	}
+
 	
 }
 
@@ -204,19 +218,4 @@ void RenderFacadeIrrlicht::FacadeDeviceDrop(){
 
 RenderFacadeIrrlicht::~RenderFacadeIrrlicht(){
 
-}
-
-
-//PUNTEROS A FUNCIONES
-
-void MoveUp(Data d){
-	//TODO: En las funciones delegadas necesitas acceder al RenderManager para que me de los objetos de la escena
-	//core::vector3df nodePosition = sceneObjects.find(0)->second->getPosition();
-	const f32 MOVEMENT_SPEED = 5.f;
-
-	//nodePosition.Y += MOVEMENT_SPEED * frameDeltaTime;
-	//nodePosition.Y += MOVEMENT_SPEED;
-
-	//sceneObjects.find(0)->second->setPosition(nodePosition);
-	//node->setPosition(nodePosition);
 }

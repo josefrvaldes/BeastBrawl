@@ -2,12 +2,18 @@
 #include <cstdint>
 #include <vector>
 #include <string>
+#include "../Entities/Entity.h"
 
 using namespace std;
 
 //El orden de los enums define la prioridad del evento
 enum EventType{
     PRESS_W,
+    PRESS_A,
+    PRESS_D,
+    PRESS_S,
+    NO_W_S_PRESS,
+    NO_A_D_PRESS,
     PRIORIDAD1,
     PRIORIDAD2,
     PRIORIDAD3
@@ -16,6 +22,8 @@ enum EventType{
 
 struct Data{
     uint16_t id;
+    Entity* gameObject;
+    float deltaTime;
 };
 
 struct Event {
