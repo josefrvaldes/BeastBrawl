@@ -15,6 +15,7 @@
 
 void CalculatePosition(CCar* cCar, CTransformable* cTransformable, Data d);
 void CalculatePositionCamera(CTransformable* cTransformableCar,CTransformable* cTransformableCamera, CCamera* cCamera);
+
 // PUNTEROS A FUNCIONES
 void PressW(Data d);
 void PressA(Data d);

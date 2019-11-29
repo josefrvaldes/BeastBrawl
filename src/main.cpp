@@ -51,6 +51,7 @@ int main()
     int lastFPS = -1;
     uint32_t then = renderEngine->FacadeGetTime();
 
+    //GameLoop
     while(renderEngine->FacadeRun()){
         eventManager->Update();  
         const uint32_t now = renderEngine->FacadeGetTime();
