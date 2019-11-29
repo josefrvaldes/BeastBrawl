@@ -6,23 +6,26 @@ void FuzzyVariable::AdjustRangeToFit(double min, double max){
 	m_dMaxRange = max;
 }
 
-void FuzzyVariable::AddLeftShoulderSet(std::string name, double minBound, double peak, double maxBound){
+FzSet FuzzyVariable::AddLeftShoulderSet(std::string name, double minBound, double peak, double maxBound){
     AdjustRangeToFit(minBound, maxBound);
     double min = peak - minBound;
     double max = maxBound - peak;
     m_MemberSets[name] = new FuzzySet_LeftShoulder(peak, min, max);
+    return *(new FzSet( *(m_MemberSets[name]) ));
 }
-void FuzzyVariable::AddRightShoulderSet(std::string name, double minBound, double peak, double maxBound){
+FzSet FuzzyVariable::AddRightShoulderSet(std::string name, double minBound, double peak, double maxBound){
     AdjustRangeToFit(minBound, maxBound);
     double min = peak - minBound;
     double max = maxBound - peak;
     m_MemberSets[name] = new FuzzySet_RightShoulder(peak, min, max);
+    return *(new FzSet( *(m_MemberSets[name]) ));
 }
-void FuzzyVariable::AddTriangularSet(std::string name, double minBound, double peak, double maxBound){
+FzSet FuzzyVariable::AddTriangularSet(std::string name, double minBound, double peak, double maxBound){
     AdjustRangeToFit(minBound, maxBound);
     double min = peak - minBound;
     double max = maxBound - peak;
     m_MemberSets[name] = new FuzzySet_Triangle(peak, min, max);
+    return *(new FzSet( *(m_MemberSets[name]) ));
 }
 //void FuzzyVariable::AddSingletonSet(std::string name, double minBound, double peak, double maxBound){
 

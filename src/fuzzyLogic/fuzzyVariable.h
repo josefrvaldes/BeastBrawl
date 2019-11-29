@@ -3,7 +3,7 @@
 #include "fuzzySet_Triangle.h"
 #include "fuzzySet_RightShoulder.h"
 #include "fuzzySet_LeftShoulder.h"
-
+#include "FzSet.h"
 
 
 #include <map>
@@ -39,9 +39,9 @@ public:
     //added the m_dMinRange and m_dMaxRange are adjusted accordingly. All of the
     //methods return a proxy class representing the newly created instance. This
     //proxy set can be used as an operand when creating the rule base.
-    void AddLeftShoulderSet(std::string name, double minBound, double peak, double maxBound);
-    void AddRightShoulderSet(std::string name, double minBound, double peak, double maxBound);
-    void AddTriangularSet(std::string name, double minBound, double peak, double maxBound);
+    FzSet AddLeftShoulderSet(std::string name, double minBound, double peak, double maxBound);
+    FzSet AddRightShoulderSet(std::string name, double minBound, double peak, double maxBound);
+    FzSet AddTriangularSet(std::string name, double minBound, double peak, double maxBound);
     //void AddSingletonSet(std::string name, double minBound, double peak, double maxBound);
 
     //fuzzify a value by calculating its DOM in each of this variable's subsets

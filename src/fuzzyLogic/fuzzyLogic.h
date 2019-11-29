@@ -5,6 +5,7 @@
 #include <string>
 #include "fuzzyVariable.h"
 #include "fuzzyRules.h"
+#include "FzAND.h"
 
 
 using namespace std;

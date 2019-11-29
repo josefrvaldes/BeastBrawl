@@ -34,6 +34,6 @@ public:
     void ClearDOM() override;
     // method for updating the DOM of a consequent when a rule fires
     void ORwithDOM(double val) override;
-
+	
 	
 };
