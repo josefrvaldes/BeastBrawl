@@ -3,7 +3,7 @@
 
 class FuzzyTerm{
 public:
-    virtual ~FuzzyTerm(){}
+    virtual ~FuzzyTerm()=default;
     //all terms must implement a virtual constructor
     virtual FuzzyTerm* Clone()const = 0;
     //retrieves the degree of membership of the term

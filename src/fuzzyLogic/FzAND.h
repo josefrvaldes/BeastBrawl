@@ -1,3 +1,5 @@
+#pragma once
+
 #include "fuzzyTerm.h"
 
 #include <vector>
@@ -10,7 +12,6 @@ private:
 	vector<FuzzyTerm*> arrayFzAND;
 
     //it doesn't make sense to allow clients to copy rules
-
     FzAND& operator=(const FzAND&);
 
 
@@ -19,20 +20,20 @@ public:
 	~FzAND();
 	//crear un AND con 2
 	//FzAND(FuzzyTerm& one, FuzzyTerm& two):arrayFzAND.push_back(one.Clone()),   
-	//                                          arrayFzAND.push_back(two.Clone()){}
-	//FzAND(FuzzyTerm& one, FuzzyTerm& two);
+	//                                         arrayFzAND.push_back(two.Clone()){}
+	FzAND(FuzzyTerm& one, FuzzyTerm& two);
 	// crear un AND de 3
-	//FzAND(FuzzyTerm& one, FuzzyTerm& two, FuzzyTerm& three);
+	FzAND(FuzzyTerm& one, FuzzyTerm& two, FuzzyTerm& three);
 	// crear un AND de 4
-	//FzAND(FuzzyTerm& one, FuzzyTerm& two, FuzzyTerm& three, FuzzyTerm& four);
+	FzAND(FuzzyTerm& one, FuzzyTerm& two, FuzzyTerm& three, FuzzyTerm& four);
 
-    virtual FuzzyTerm* Clone()const{return new FzAND(*this);}
+    FuzzyTerm* Clone()const override{return new FzAND(*this);};
     //retrieves the degree of membership of the term
-    virtual double GetDOM()const;
+    double GetDOM()const override;
     //clears the degree of membership of the term
-    virtual void ClearDOM();
+    void ClearDOM() override;
     // method for updating the DOM of a consequent when a rule fires
-    virtual void ORwithDOM(double val);
+    void ORwithDOM(double val) override;
 
 	
 };

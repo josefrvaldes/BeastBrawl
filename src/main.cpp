@@ -99,8 +99,10 @@ int main()
 
 // --------------------------- FUZZY LOGIC ----------------------------------
 //
-//FuzzyLogic fm;
-//FuzzyVariable& DistToTarget = fm.CreateFLV("DistToTarget");
+FuzzyLogic fm;
+FuzzyVariable& DistToTarget = fm.CreateFLV("DistToTarget");
+FuzzyVariable& Desirability = fm.CreateFLV("Desirability");
+FuzzyVariable& AmmoStatus = fm.CreateFLV("AmmoStatus");
 
 
 

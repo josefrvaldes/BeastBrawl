@@ -2,16 +2,33 @@
 
 #include <vector>
 
+FzAND::	~FzAND(){
+	
+}
 
-//FzAND::FzAND(FuzzyTerm& one, FuzzyTerm& two){
+FzAND::FzAND(const FzAND&){
 
-//}
+}
+
+
+//	vector<FuzzyTerm*> arrayFzAND;
+FzAND::FzAND(FuzzyTerm& one, FuzzyTerm& two){
+	arrayFzAND.push_back(one.Clone());
+	arrayFzAND.push_back(two.Clone());	
+}
 // crear un AND de 3
-//FzAND::FzAND(FuzzyTerm& one, FuzzyTerm& two, FuzzyTerm& three){
-//}
+FzAND::FzAND(FuzzyTerm& one, FuzzyTerm& two, FuzzyTerm& three){
+	arrayFzAND.push_back(one.Clone());
+	arrayFzAND.push_back(two.Clone());
+	arrayFzAND.push_back(three.Clone());
+}
 // crear un AND de 4
-//FzAND::FzAND(FuzzyTerm& one, FuzzyTerm& two, FuzzyTerm& three, FuzzyTerm& four){
-//}
+FzAND::FzAND(FuzzyTerm& one, FuzzyTerm& two, FuzzyTerm& three, FuzzyTerm& four){
+	arrayFzAND.push_back(one.Clone());
+	arrayFzAND.push_back(two.Clone());
+	arrayFzAND.push_back(three.Clone());
+	arrayFzAND.push_back(four.Clone());
+}
 
 /*
 EJEMPLO CLONE()

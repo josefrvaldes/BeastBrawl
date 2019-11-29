@@ -2,6 +2,13 @@
 
 #include <cassert>
 
+
+
+FuzzyLogic::~FuzzyLogic(){
+
+}
+
+
 void FuzzyLogic::AddRule(FuzzyTerm& antecedent, FuzzyTerm& consequence){
     m_Rules.push_back(new FuzzyRule(antecedent, consequence));
 }
