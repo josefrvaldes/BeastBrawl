@@ -10,21 +10,8 @@ class CCamera : public Component
 {
 public:
     CCamera();
-    CCamera(float tarx, float tary, float tarz, float rotExtraY);
+    CCamera(float _tarx, float _tary, float _tarz, float _rotExtraY);
     ~CCamera();
-
-    float GetTarX() { return m_tarx; };
-    float GetTarY() { return m_tary; };
-    float GetTarZ() { return m_tarz; };
-
-    float GetRotExtraY() { return m_rotExtraY; };
-
-    void SetTarX(float tarX) {m_tarx = tarX;};
-    void SetTarY(float tarY) {m_tary = tarY;};
-    void SetTarZ(float tarZ) {m_tarz = tarZ;};
-
-    void SetRotExtraY(float rotExtraY) { m_rotExtraY = rotExtraY; };
-
 
 
     friend ostream &operator<<(ostream &out, CCamera &c)
@@ -33,10 +20,9 @@ public:
         return out;
     }
 
-private:
-    float m_tarx;
-    float m_tary;
-    float m_tarz;
+    float tarX;
+    float tarY;
+    float tarZ;
 
-    float m_rotExtraY;
+    float rotExtraY;
 };

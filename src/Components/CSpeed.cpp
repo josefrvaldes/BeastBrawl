@@ -3,17 +3,17 @@
 CSpeed::CSpeed()
 {
     m_compType = CompType::SpeedComp;
-    m_vx = 0;
-    m_vy = 0;
-    m_vz = 0;
+    x = 0;
+    y = 0;
+    z = 0;
 }
 
 CSpeed::CSpeed(float vx, float vy, float vz)
 {
     m_compType = CompType::SpeedComp;
-    m_vx = vx;
-    m_vy = vy;
-    m_vz = vz;
+    x = vx;
+    y = vy;
+    z = vz;
 }
 
 CSpeed::~CSpeed()

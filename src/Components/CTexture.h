@@ -9,8 +9,5 @@ public:
     CTexture(std::string);
     ~CTexture();
 
-    std::string GetTexture() { return m_texture;};
-
-private:
-    std::string m_texture;
+    std::string texture;
 };

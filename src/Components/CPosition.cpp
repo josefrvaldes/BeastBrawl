@@ -3,13 +3,13 @@
 CPosition::CPosition()
 {
     m_compType = CompType::PositionComp;
-    m_x = 0;
-    m_y = 0;
-    m_z = 0;
+    x = 0;
+    y = 0;
+    z = 0;
 }
 
-CPosition::CPosition(float x, float y, float z)
-: m_x(x), m_y(y), m_z(z)
+CPosition::CPosition(float _x, float _y, float _z)
+: x(_x), y(_y), z(_z)
 {
     m_compType = CompType::PositionComp;
 }

@@ -60,16 +60,16 @@ void PhysicsFacadeIrrlicht::Update(Entity* car, Entity* cam){
 
     //Actualizamos el valor en la estructura de irrlicht
     // Cogemos el nodo de irrlicht con el ID igual al que le hemos pasado
-	scene::ISceneNode* node = smgr->getSceneNodeFromId(cId->GetId());
+	scene::ISceneNode* node = smgr->getSceneNodeFromId(cId->id);
 
 	//Actualiza la posicion del objeto de irrlicht
-	node->setPosition(core::vector3df(cTransformable->GetPosX(),cTransformable->GetPosY(),cTransformable->GetPosZ()));
+	node->setPosition(core::vector3df(cTransformable->posX, cTransformable->posY, cTransformable->posZ));
 
 	//Actualiza la rotacion del objeto de irrlicht
-	node->setRotation(core::vector3df(cTransformable->GetRotX(),cTransformable->GetRotY(),cTransformable->GetRotZ()));
+	node->setRotation(core::vector3df(cTransformable->rotX, cTransformable->rotY, cTransformable->rotZ));
 
 	//Actualiza el escalado del objeto de irrlicht
-	node->setScale(core::vector3df(cTransformable->GetScaleX(),cTransformable->GetScaleY(),cTransformable->GetScaleZ()));
+	node->setScale(core::vector3df(cTransformable->scaleX, cTransformable->scaleY, cTransformable->scaleZ));
 
 
     //Actualizamos la camara
@@ -90,7 +90,7 @@ void PhysicsFacadeIrrlicht::UpdateCam(Entity* cam){
     targetPosition.Y += 17;
     camera1->setTarget(targetPosition);
 
-	camera1->setPosition(core::vector3df(cTransformable->GetPosX(),cTransformable->GetPosY(),cTransformable->GetPosZ()));
+	camera1->setPosition(core::vector3df(cTransformable->posX, cTransformable->posY, cTransformable->posZ));
 }
 
 
@@ -113,9 +113,9 @@ void PressW(Data d){
     auto cCar        = static_cast<CCar*>(mapCar->second);
 
     //Aumentamos la velocidad
-    cCar->SetSpeed(cCar->GetSpeed()+cCar->GetAcceleration());
-    if(cCar->GetSpeed()>=cCar->GetMaxSpeed()){
-        cCar->SetSpeed(cCar->GetMaxSpeed());
+    cCar->speed += cCar->acceleration;
+    if(cCar->speed >= cCar->maxSpeed){
+        cCar->speed = cCar->maxSpeed;
     }
 
     CalculatePosition(cCar,cTransformable, d);
@@ -132,9 +132,9 @@ void PressS(Data d){
     auto cCar        = static_cast<CCar*>(mapCar->second);
 
     //Reducimos la velocidad
-    cCar->SetSpeed(cCar->GetSpeed() - cCar->GetAcceleration());
-    if(cCar->GetSpeed()<0){
-        cCar->SetSpeed(0);
+    cCar->speed -= cCar->acceleration;
+    if(cCar->speed < 0){
+        cCar->speed = 0;
     }
     CalculatePosition(cCar,cTransformable, d);
 }
@@ -158,14 +158,14 @@ void PressA(Data d){
     auto cCar        = static_cast<CCar*>(mapCar->second);
 
 
-    if(cCar->GetSpeed()>=3){
-        if(cCar->GetWheelRotation()>-10){
+    if(cCar->speed >= 3){
+        if(cCar->wheelRotation > -10){
             //Aumentamos la rotacion hacia la izquierda
-            cCar->SetWheelRotation(cCar->GetWheelRotation() - 0.5);
+            cCar->wheelRotation -= 0.5;
         }
 
-        if(cCamera->GetRotExtraY()>-15){
-            cCamera->SetRotExtraY(cCamera->GetRotExtraY() - 0.5);
+        if(cCamera->rotExtraY > -15) {
+            cCamera->rotExtraY -= 0.5;
         }
 
 
@@ -195,14 +195,14 @@ void PressD(Data d){
     auto cCar        = static_cast<CCar*>(mapCar->second);
 
 
-    if(cCar->GetSpeed()>=3){
-        if(cCar->GetWheelRotation()<10){
+    if(cCar->speed >= 3){
+        if(cCar->wheelRotation < 10){
             //Aumentamos la rotacion hacia la derecha
-            cCar->SetWheelRotation(cCar->GetWheelRotation() + 0.5);
+            cCar->wheelRotation += 0.5;
         }
 
-        if(cCamera->GetRotExtraY()<15){
-            cCamera->SetRotExtraY(cCamera->GetRotExtraY() + 0.5);
+        if(cCamera->rotExtraY < 15){
+            cCamera->rotExtraY += 0.5;
         }
     }
     CalculatePosition(cCar,cTransformable, d);
@@ -221,10 +221,10 @@ void NoWSPress(Data d){
     auto mapCar = components.find(CompType::CarComp);
     auto cCar        = static_cast<CCar*>(mapCar->second);
 
-    if(cCar->GetSpeed()>0){
-        cCar->SetSpeed(cCar->GetSpeed() - cCar->GetFriction());
-        if(cCar->GetSpeed()<0){
-            cCar->SetSpeed(0);
+    if(cCar->speed > 0){
+        cCar->speed -= cCar->friction;
+        if(cCar->speed < 0){
+            cCar->speed = 0;
         }
     }
 
@@ -250,20 +250,20 @@ void NoADPress(Data d){
     auto mapCar = components.find(CompType::CarComp);
     auto cCar        = static_cast<CCar*>(mapCar->second);
 
-    if(cCar->GetWheelRotation()>=0.7){
-        cCar->SetWheelRotation(cCar->GetWheelRotation() - 0.7);
-    }else if(cCar->GetWheelRotation()<=-0.7){
-        cCar->SetWheelRotation(cCar->GetWheelRotation() + 0.7);
+    if(cCar->wheelRotation >= 0.7){
+        cCar->wheelRotation -= 0.7;
+    }else if(cCar->wheelRotation <= -0.7){
+        cCar->wheelRotation += 0.7;
     }else{
-        cCar->SetWheelRotation(0);
+        cCar->wheelRotation = 0;
     }
 
-    if(cCamera->GetRotExtraY()>=0.7){
-        cCamera->SetRotExtraY(cCamera->GetRotExtraY() - 0.7);
-    }else if(cCamera->GetRotExtraY()<=-0.7){
-        cCamera->SetRotExtraY(cCamera->GetRotExtraY() + 0.7);
+    if(cCamera->rotExtraY >= 0.7){
+        cCamera->rotExtraY -= 0.7;
+    }else if(cCamera->rotExtraY <= -0.7){
+        cCamera->rotExtraY += 0.7;
     }else{
-        cCamera->SetRotExtraY(0);        
+        cCamera->rotExtraY = 0;        
     }
 
     CalculatePosition(cCar,cTransformable, d);
@@ -273,21 +273,21 @@ void NoADPress(Data d){
 
 //Calcula la posicion del coche (duda con las formulas preguntar a Jose)
 void CalculatePosition(CCar* cCar, CTransformable* cTransformable, Data d){
-    float angleRotation = (cTransformable->GetRotY()*PI) /180.0;
+    float angleRotation = (cTransformable->rotY * PI) /180.0;
 
     //Modificamos la posicion en X y Z en funcion del angulo
-    cTransformable->SetPosX(cTransformable->GetPosX() + sin(angleRotation)*cCar->GetSpeed()*d.deltaTime);
-    cTransformable->SetPosZ(cTransformable->GetPosZ() + cos(angleRotation)*cCar->GetSpeed()*d.deltaTime);
+    cTransformable->posX += sin(angleRotation) * cCar->speed * d.deltaTime;
+    cTransformable->posZ += cos(angleRotation) * cCar->speed * d.deltaTime;
 
     //Si tiene rotacion, rotamos el coche
-    if(cCar->GetWheelRotation()!=0){
-        cTransformable->SetRotY(cTransformable->GetRotY()+ (cCar->GetWheelRotation()*0.20));
+    if(cCar->wheelRotation != 0){
+        cTransformable->rotY += cCar->wheelRotation * 0.20;
     }
 }
 
 //Calcula la posicion de la camara (duda con las formulas preguntar a Jose)
 void CalculatePositionCamera(CTransformable* cTransformableCar,CTransformable* cTransformableCamera, CCamera* cCamera){
-    cTransformableCamera->SetPosY(cTransformableCar->GetPosY() + 20);
-    cTransformableCamera->SetPosX(cTransformableCar->GetPosX()-40*sin(((cTransformableCar->GetRotY()-cCamera->GetRotExtraY())*PI)/180.0));
-    cTransformableCamera->SetPosZ(cTransformableCar->GetPosZ()-40*cos(((cTransformableCar->GetRotY()-cCamera->GetRotExtraY())*PI)/180.0));
+    cTransformableCamera->posY = cTransformableCar->posY + 20;
+    cTransformableCamera->posX = (cTransformableCar->posX - 40 * sin(((cTransformableCar->rotY - cCamera->rotExtraY)*PI)/180.0));
+    cTransformableCamera->posZ = (cTransformableCar->posZ - 40 * cos(((cTransformableCar->rotY - cCamera->rotExtraY)*PI)/180.0));
 }

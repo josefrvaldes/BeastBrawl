@@ -1,7 +1,7 @@
 #include "CType.h"
 
 CType::CType(ModelType model)
-: m_type(model)
+: type(model)
 {
     m_compType = CompType::TypeComp;
 }

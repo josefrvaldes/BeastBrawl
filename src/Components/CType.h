@@ -19,14 +19,11 @@ public:
     CType(ModelType model);
     ~CType();
 
-    ModelType GetType() { return m_type; }
-
     friend ostream &operator<<(ostream &out, CType &c)
     {
-        out << "(" << c.GetType()<< ")";
+        out << "(" << c.type << ")";
         return out;
     }
 
-private:
-    ModelType m_type;
+    ModelType type;
 };

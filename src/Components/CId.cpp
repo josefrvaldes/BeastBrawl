@@ -2,13 +2,12 @@
 
 uint16_t CId::numIds = 0;
 
-CId::CId(){
+CId::CId() {
     m_compType = CompType::IdComp;
-    m_id = numIds;
+    id = numIds;
 
     cout << "Creado componente con ID: " << numIds << endl;
     numIds++;
-
 }
 
 

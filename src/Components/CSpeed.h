@@ -13,18 +13,13 @@ public:
     CSpeed(float vx, float vy, float vz);
     ~CSpeed();
 
-    float GetVX() { return m_vx; };
-    float GetVY() { return m_vy; };
-    float GetVZ() { return m_vz; };
-
     friend ostream &operator<<(ostream &out, CSpeed &c)
     {
-        out << "(" << c.GetVX() << "," << c.GetVY() << "," << c.GetVZ() << ")";
+        out << "(" << c.x << "," << c.y << "," << c.z << ")";
         return out;
     }
 
-private:
-    float m_vx;
-    float m_vy;
-    float m_vz;
+    float x;
+    float y;
+    float z;
 };

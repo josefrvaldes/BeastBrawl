@@ -43,17 +43,17 @@ Car::Car(float posX, float posY, float posZ, float rotX, float rotY, float rotZ,
     : Car()
 {
     CTransformable *cTransformable = (CTransformable *)m_components[CompType::TransformableComp];
-    cTransformable->SetPosX(posX);
-    cTransformable->SetPosY(posY);
-    cTransformable->SetPosZ(posZ);
+    cTransformable->posX = posX;
+    cTransformable->posY = posY;
+    cTransformable->posZ = posZ;
 
-    cTransformable->SetRotX(rotX);
-    cTransformable->SetRotY(rotY);
-    cTransformable->SetRotZ(rotZ);
+    cTransformable->rotX = rotX;
+    cTransformable->rotY = rotY;
+    cTransformable->rotZ = rotZ;
 
-    cTransformable->SetScaleX(scaX);
-    cTransformable->SetScaleY(scaY);
-    cTransformable->SetScaleZ(scaZ);
+    cTransformable->scaleX = scaX;
+    cTransformable->scaleY = scaY;
+    cTransformable->scaleZ = scaZ;
 
 
 }

@@ -9,8 +9,6 @@ public:
     CMesh(std::string);
     ~CMesh();
 
-    std::string GetMesh() { return m_mesh;};
 
-private:
-    std::string m_mesh;
+    std::string mesh;
 };

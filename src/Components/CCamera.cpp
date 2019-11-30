@@ -1,7 +1,7 @@
 #include "CCamera.h"
 
-CCamera::CCamera(float tarx, float tary, float tarz, float rotExtraY)
-: m_tarx(tarx), m_tary(tary), m_tarz(tarz), m_rotExtraY(rotExtraY)
+CCamera::CCamera(float _tarx, float _tary, float _tarz, float _rotExtraY)
+: tarX(_tarx), tarY(_tary), tarZ(_tarz), rotExtraY(_rotExtraY)
 {
     m_compType = CompType::CameraComp;
 }

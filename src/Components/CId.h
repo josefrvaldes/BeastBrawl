@@ -12,15 +12,14 @@ public:
     CId();
     ~CId();
 
-    uint16_t GetId() { return m_id; }
-
     friend ostream &operator<<(ostream &out, CId &c)
     {
-        out << "(" << c.GetId()<< ")";
+        out << "(" << c.id << ")";
         return out;
     }
 
+    uint16_t id;
+
 private:
-    uint16_t m_id;
     static uint16_t numIds;  //Lleva la cuenta del id
 };

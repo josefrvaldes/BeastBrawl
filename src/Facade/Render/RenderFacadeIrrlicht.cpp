@@ -54,9 +54,9 @@ const uint16_t RenderFacadeIrrlicht::FacadeAddObject(Entity *go){
 
 	//Switch para añadir el tipo de objeto
 	scene::ISceneNode* node;
-	std::string meshPath = "media/" + cMesh->GetMesh();
+	std::string meshPath = "media/" + cMesh->mesh;
 
-	switch(cType->GetType()){
+	switch(cType->type){
 		case ModelType::Sphere:
 			node = smgr->addSphereSceneNode();
 			break;
@@ -74,12 +74,12 @@ const uint16_t RenderFacadeIrrlicht::FacadeAddObject(Entity *go){
 			break;
 	}
 
-	std::string path = "media/" + cTexture->GetTexture();
+	std::string path = "media/" + cTexture->texture;
 	if(node){
-		node->setID(cId->GetId());
-		node->setPosition(core::vector3df(cTransformable->GetPosX(),cTransformable->GetPosY(),cTransformable->GetPosZ()));
-		node->setRotation(core::vector3df(cTransformable->GetRotX(),cTransformable->GetRotY(),cTransformable->GetRotZ()));
-		node->setScale(core::vector3df(cTransformable->GetScaleX(),cTransformable->GetScaleY(),cTransformable->GetScaleZ()));
+		node->setID(cId->id);
+		node->setPosition(core::vector3df(cTransformable->posX, cTransformable->posY, cTransformable->posZ));
+		node->setRotation(core::vector3df(cTransformable->rotX, cTransformable->rotY, cTransformable->rotZ));
+		node->setScale(core::vector3df(cTransformable->scaleX, cTransformable->scaleY, cTransformable->scaleZ));
 		node->setMaterialTexture(0, driver->getTexture(path.c_str())); //Obligado incluir el c_str() si no irrlicht no carga solo con un string
 		node->setMaterialFlag(video::EMF_LIGHTING, false);
 
@@ -87,7 +87,7 @@ const uint16_t RenderFacadeIrrlicht::FacadeAddObject(Entity *go){
 
 
 
-	return cId->GetId();
+	return cId->id;
 }
 
 //TODO: Esto proximamente le pasaremos todos los entities y los modificará 1 a 1  
@@ -100,16 +100,16 @@ void RenderFacadeIrrlicht::UpdateTransformable(Entity* go){
 	auto cId = static_cast<CId*>(mapId->second);
 
 	// Cogemos el nodo de irrlicht con el ID igual al que le hemos pasado
-	scene::ISceneNode* node = smgr->getSceneNodeFromId(cId->GetId());
+	scene::ISceneNode* node = smgr->getSceneNodeFromId(cId->id);
 
 	//Actualiza la posicion del objeto de irrlicht
-	node->setPosition(core::vector3df(cTransformable->GetPosX(),cTransformable->GetPosY(),cTransformable->GetPosZ()));
+	node->setPosition(core::vector3df(cTransformable->posX, cTransformable->posY, cTransformable->posZ));
 
 	//Actualiza la rotacion del objeto de irrlicht
-	node->setRotation(core::vector3df(cTransformable->GetRotX(),cTransformable->GetRotY(),cTransformable->GetRotZ()));
+	node->setRotation(core::vector3df(cTransformable->rotX, cTransformable->rotY, cTransformable->rotZ));
 
 	//Actualiza el escalado del objeto de irrlicht
-	node->setScale(core::vector3df(cTransformable->GetScaleX(),cTransformable->GetScaleY(),cTransformable->GetScaleZ()));
+	node->setScale(core::vector3df(cTransformable->scaleX, cTransformable->scaleY, cTransformable->scaleZ));
 	
 }
 
@@ -126,7 +126,7 @@ void RenderFacadeIrrlicht::UpdateCamera(Entity* cam){
     targetPosition.Y += 17;
     camera1->setTarget(targetPosition);
 
-	camera1->setPosition(core::vector3df(cTransformable->GetPosX(),cTransformable->GetPosY(),cTransformable->GetPosZ()));
+	camera1->setPosition(core::vector3df(cTransformable->posX, cTransformable->posY, cTransformable->posZ));
 
 }
 
@@ -144,13 +144,10 @@ void RenderFacadeIrrlicht::FacadeAddCamera(Entity* goCamera){
 	auto mapCamera = components.find(CompType::CameraComp);
 	auto cCamera = static_cast<CCamera*>(mapCamera->second);
 
-	float posX = cCamera->GetTarX()-40.0*sin(((cTransformable->GetRotX())*PI)/180.0);
-	float posZ = cCamera->GetTarZ()-40.0*cos(((cTransformable->GetRotZ())*PI)/180.0);;
-	camera1->setTarget(core::vector3df(cCamera->GetTarX(), cCamera->GetTarY(), cCamera->GetTarZ())); 
-	camera1->setPosition(core::vector3df(posX, cTransformable->GetPosY(), posZ));
-
-
-
+	float posX = cCamera->tarX - 40.0*sin(((cTransformable->rotX)*PI)/180.0);
+	float posZ = cCamera->tarZ - 40.0*cos(((cTransformable->rotZ)*PI)/180.0);;
+	camera1->setTarget(core::vector3df(cCamera->tarX, cCamera->tarY, cCamera->tarZ)); 
+	camera1->setPosition(core::vector3df(posX, cTransformable->posY, posZ));
 }
 
 bool RenderFacadeIrrlicht::FacadeRun(){
