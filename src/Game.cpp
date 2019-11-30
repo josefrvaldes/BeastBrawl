@@ -1,7 +1,5 @@
 #include "Game.h"
-#include "State/State.h"
-#include "State/StateMenu.h"
-#include "State/StateInGame.h"
+
 
 using namespace std;
 

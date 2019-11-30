@@ -9,9 +9,9 @@ using namespace std;
 //El orden de los enums define la prioridad del evento
 enum EventType{
     PRESS_W,
+    PRESS_S,
     PRESS_A,
     PRESS_D,
-    PRESS_S,
     NO_W_S_PRESS,
     NO_A_D_PRESS,
     PRIORIDAD1,

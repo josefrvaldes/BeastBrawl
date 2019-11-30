@@ -16,6 +16,7 @@
 void CalculatePosition(CCar* cCar, CTransformable* cTransformable, Data d);
 void CalculatePositionCamera(CTransformable* cTransformableCar,CTransformable* cTransformableCamera, CCamera* cCamera);
 
+//TODO: Cambiar en los punteros a funciones en vez de ir pasandole datos por Event cogerlos del EntityManager
 // PUNTEROS A FUNCIONES
 void PressW(Data d);
 void PressA(Data d);
@@ -42,7 +43,6 @@ PhysicsFacadeIrrlicht::PhysicsFacadeIrrlicht(){
 //Entra cuando se presiona la W
 void PressW(Data d){
 
-    
     //Guardamos en variables los componentes
     auto components = d.gameObject->GetComponents();
     auto mapTransform = components.find(CompType::TransformableComp);

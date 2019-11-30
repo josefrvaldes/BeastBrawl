@@ -1,8 +1,10 @@
-#ifndef GAME_H
-#define GAME_H
+#pragma once
 
 #include <iostream>
 #include "State/State.h"
+#include "State/StateMenu.h"
+#include "State/StateInGame.h"
+
 
 
 class Game{
@@ -27,5 +29,3 @@ class Game{
         void MainLoop();
 };
 
-
-#endif // GAME_H

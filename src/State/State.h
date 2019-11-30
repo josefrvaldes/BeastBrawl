@@ -1,5 +1,5 @@
-#ifndef STATE_H
-#define STATE_H
+#pragma once
+
 
 #include <iostream>
 
@@ -17,6 +17,3 @@ class State{
     private:
 
 };
-
-
-#endif // STATE_H
