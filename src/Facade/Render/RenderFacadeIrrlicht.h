@@ -31,6 +31,9 @@ class RenderFacadeIrrlicht : public RenderFacade {
 		void FacadeDeviceDrop() override;
 		void FacadeDraw() override;
 
+		scene::ISceneManager* GetSceneManager() {return smgr;};
+		scene::ICameraSceneNode* GetCamera1() {return camera1;};
+
 
     private:
         IrrlichtDevice* device;
@@ -39,6 +42,6 @@ class RenderFacadeIrrlicht : public RenderFacade {
 		scene::ICameraSceneNode* camera1;
 		MyEventReceiver receiver;
 
-        unordered_map<uint16_t,scene::ISceneNode*> sceneObjects; // CId - ISceneNode*
+        //unordered_map<uint16_t,scene::ISceneNode*> sceneObjects; // CId - ISceneNode*
 };
 

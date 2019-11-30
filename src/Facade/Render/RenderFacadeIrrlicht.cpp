@@ -93,7 +93,6 @@ const uint16_t RenderFacadeIrrlicht::FacadeAddObject(Entity *go){
 //TODO: Esto proximamente le pasaremos todos los entities y los modificará 1 a 1  
 void RenderFacadeIrrlicht::UpdateTransformable(Entity* go){
 	//Cogemos los componentes de ID y CTransformable 
-
 	auto components = go->GetComponents();
 	auto mapTransformable = components.find(CompType::TransformableComp);
 	auto cTransformable = static_cast<CTransformable*>(mapTransformable->second);
@@ -169,9 +168,6 @@ void RenderFacadeIrrlicht::FacadeCheckInput(float frameDeltaTime, Entity& car, E
 	d.gameObject = &car;
 	d.camera	 = &cam;
 
-	if(receiver.IsKeyDown(KEY_ESCAPE)){
-		device->closeDevice();
-	}
 	if(receiver.IsKeyDown(KEY_KEY_W)){
         eventManager->AddEvent(Event {EventType::PRESS_W,d});
 	}else if(receiver.IsKeyDown(KEY_KEY_S)){
@@ -234,5 +230,8 @@ void RenderFacadeIrrlicht::FacadeDeviceDrop(){
 
 
 RenderFacadeIrrlicht::~RenderFacadeIrrlicht(){
-
+	delete device;
+	delete driver;
+	delete smgr;
+	delete camera1;
 }

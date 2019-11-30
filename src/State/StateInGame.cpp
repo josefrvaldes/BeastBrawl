@@ -58,8 +58,9 @@ void StateInGame::Update(){
     then = now;
     //inputEngine->CheckInputs(*car);
     renderEngine->FacadeCheckInput(frameDeltaTime,*car,*cam);
-    renderEngine->UpdateTransformable(car);
-    renderEngine->UpdateCamera(cam);
+    physicsEngine->Update(car, cam);
+    //renderEngine->UpdateTransformable(car);
+    //renderEngine->UpdateCamera(cam);
 
     renderEngine->FacadeDraw();
 

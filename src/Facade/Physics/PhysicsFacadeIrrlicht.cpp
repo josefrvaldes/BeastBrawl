@@ -1,5 +1,6 @@
 #include "PhysicsFacadeIrrlicht.h"
 
+
 #include "../../Components/CPosition.h"
 #include "../../Components/CType.h"
 #include "../../Components/CId.h"
@@ -35,8 +36,68 @@ PhysicsFacadeIrrlicht::PhysicsFacadeIrrlicht(){
     eventManager->Suscribe(Listener {EventType::PRESS_S,PressS,"pressS"});
     eventManager->Suscribe(Listener {EventType::NO_W_S_PRESS,NoWSPress,"noWSPress"});
     eventManager->Suscribe(Listener {EventType::NO_A_D_PRESS,NoADPress,"noADPress"});
+
+    auto renderFacadeManager = RenderFacadeManager::GetInstance();
+    auto renderEngine = renderFacadeManager->GetRenderFacade();
+    renderEngineIrrlicht = static_cast<RenderFacadeIrrlicht*>(renderEngine);
+    smgr = renderEngineIrrlicht->GetSceneManager();
+
 }
 
+
+//TODO: Aqui debera recibir el array de entidades (o acceder mediante singleton)
+void PhysicsFacadeIrrlicht::Update(Entity* car, Entity* cam){
+    
+
+    auto smgr = renderEngineIrrlicht->GetSceneManager();
+
+    //Guardamos en variables los componentes
+    auto components = car->GetComponents();
+    auto mapTransform = components.find(CompType::TransformableComp);
+	auto cTransformable = static_cast<CTransformable*>(mapTransform->second);
+    auto mapId = components.find(CompType::IdComp);
+	auto cId = static_cast<CId*>(mapId->second);
+
+    //Actualizamos el valor en la estructura de irrlicht
+    // Cogemos el nodo de irrlicht con el ID igual al que le hemos pasado
+	scene::ISceneNode* node = smgr->getSceneNodeFromId(cId->GetId());
+
+	//Actualiza la posicion del objeto de irrlicht
+	node->setPosition(core::vector3df(cTransformable->GetPosX(),cTransformable->GetPosY(),cTransformable->GetPosZ()));
+
+	//Actualiza la rotacion del objeto de irrlicht
+	node->setRotation(core::vector3df(cTransformable->GetRotX(),cTransformable->GetRotY(),cTransformable->GetRotZ()));
+
+	//Actualiza el escalado del objeto de irrlicht
+	node->setScale(core::vector3df(cTransformable->GetScaleX(),cTransformable->GetScaleY(),cTransformable->GetScaleZ()));
+
+
+    //Actualizamos la camara
+    UpdateCam(cam);
+    
+
+}
+
+void PhysicsFacadeIrrlicht::UpdateCam(Entity* cam){
+    //Cogemos los componentes de la camara
+	auto components = cam->GetComponents();
+	auto mapTransformable = components.find(CompType::TransformableComp);
+	auto cTransformable = static_cast<CTransformable*>(mapTransformable->second);
+
+	//Cogemos la posicion de nuestro coche
+    auto camera1 = renderEngineIrrlicht->GetCamera1();
+	core::vector3df targetPosition  = smgr->getSceneNodeFromId(0)->getPosition();
+    targetPosition.Y += 17;
+    camera1->setTarget(targetPosition);
+
+	camera1->setPosition(core::vector3df(cTransformable->GetPosX(),cTransformable->GetPosY(),cTransformable->GetPosZ()));
+}
+
+
+
+PhysicsFacadeIrrlicht::~PhysicsFacadeIrrlicht(){
+
+}
 
 //PUNTEROS A FUNCIONES
 
