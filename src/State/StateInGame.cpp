@@ -50,31 +50,30 @@ void StateInGame::Render(){
 
 
 void StateInGame::Update(){
-    while(renderEngine->FacadeRun()){
-        eventManager->Update();  
-        const uint32_t now = renderEngine->FacadeGetTime();
-        
-        const float frameDeltaTime = (float)(now - then) / 100.0;
-        then = now;
-        //inputEngine->CheckInputs(*car);
-        renderEngine->FacadeCheckInput(frameDeltaTime,*car,*cam);
-        renderEngine->UpdateTransformable(car);
-        renderEngine->UpdateCamera(cam);
+    
+    eventManager->Update();  
+    const uint32_t now = renderEngine->FacadeGetTime();
+    
+    const float frameDeltaTime = (float)(now - then) / 100.0;
+    then = now;
+    //inputEngine->CheckInputs(*car);
+    renderEngine->FacadeCheckInput(frameDeltaTime,*car,*cam);
+    renderEngine->UpdateTransformable(car);
+    renderEngine->UpdateCamera(cam);
 
-        renderEngine->FacadeDraw();
+    renderEngine->FacadeDraw();
 
 
-        int fps = renderEngine->FacadeGetFPS();
-		if (lastFPS != fps)
-		{
-			std::string tmp("Movement Example - Irrlicht Engine [");
-			tmp += "] fps: ";
-			tmp += fps;
+    int fps = renderEngine->FacadeGetFPS();
+    if (lastFPS != fps)
+    {
+        std::string tmp("Movement Example - Irrlicht Engine [");
+        tmp += "] fps: ";
+        tmp += fps;
 
-			renderEngine->FacadeSetWindowCaption(tmp);
-			lastFPS = fps;
-		}
-
+        renderEngine->FacadeSetWindowCaption(tmp);
+        lastFPS = fps;
     }
-    renderEngine->FacadeDeviceDrop();
+
+    
 }
