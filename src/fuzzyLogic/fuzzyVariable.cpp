@@ -31,7 +31,7 @@ FzSet FuzzyVariable::AddTriangularSet(std::string name, double minBound, double 
 
 //}
 
-    //fuzzify a value by calculating its DOM in each of this variable's subsets
+//fuzzify a value by calculating its DOM in each of this variable's subsets
 // CALCULAMOS EL VALOR DIFUSO PARA CADA MEMBRESIA
 void FuzzyVariable::Fuzzify(double val){
 
