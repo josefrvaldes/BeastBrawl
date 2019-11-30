@@ -274,6 +274,7 @@ void NoADPress(Data d){
 //Calcula la posicion del coche (duda con las formulas preguntar a Jose)
 void CalculatePosition(CCar* cCar, CTransformable* cTransformable, Data d){
     float angleRotation = (cTransformable->rotY * PI) /180.0;
+    
 
     //Modificamos la posicion en X y Z en funcion del angulo
     cTransformable->posX += sin(angleRotation) * cCar->speed * d.deltaTime;

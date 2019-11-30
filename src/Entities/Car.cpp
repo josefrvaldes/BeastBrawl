@@ -20,7 +20,7 @@ Car::Car()
     float scaX = 1.0,  scaY = 1.0,  scaZ = 1.0;
     string texture = "particle.bmp";
     string mesh    = "media/ninja.b3d";
-    float maxSpeed = 20.0, acceleration = 15.0, friction = 0.1, slowDown = 0.25;
+    float maxSpeed = 20.0, acceleration = .15, friction = 0.1, slowDown = 0.25;
     
     CId* cId   = new CId();
     CType* cType = new CType(ModelType::Cube);
