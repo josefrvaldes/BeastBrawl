@@ -8,7 +8,7 @@ FzAND::	~FzAND(){
 }
 
 FzAND::FzAND(const FzAND&){
-
+	
 }
 
 

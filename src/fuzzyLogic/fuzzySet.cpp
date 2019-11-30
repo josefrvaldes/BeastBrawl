@@ -7,7 +7,6 @@ void FuzzySet::ORwithDOM(double val){
 //accessor methods
 double FuzzySet::GetRepresentativeVal()const{
 	return m_dRepresentativeValue;
-
 }
 void FuzzySet::SetDOM(double val){
 	if(val >= 0 && val<= 1)
