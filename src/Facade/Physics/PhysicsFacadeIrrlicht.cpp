@@ -62,6 +62,7 @@ void PhysicsFacadeIrrlicht::UpdateCam(Entity* cam){
 	auto cTransformable = static_cast<CTransformable*>(mapTransformable->second);
 
 	//Cogemos la posicion de nuestro coche
+    //TODO: cambiar ese 0 por el id de CarManager
     auto camera1 = renderEngineIrrlicht->GetCamera1();
 	core::vector3df targetPosition  = smgr->getSceneNodeFromId(0)->getPosition();
     targetPosition.Y += 17;

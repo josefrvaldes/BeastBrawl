@@ -9,8 +9,8 @@ StateInGame::StateInGame(){
     
     eventManager = EventManager::GetInstance();
 
-    manPowerUps = new ManPowerUp();
     car = new Car();
+    manPowerUps = new ManPowerUp();
     ground = new GameObject(10.0,10.0,30.0,    0.0,0.0,0.0,    100.0,1.0,100.0, "wall.jpg", "ninja.b3d", 20,0.15,0.1,0.25);
     cam = new Camera(10.0,20.0,30.0,    0.0,0.0,0.0,    1.0,1.0,1.0);
 
