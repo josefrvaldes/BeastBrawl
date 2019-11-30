@@ -9,7 +9,7 @@ StateInGame::StateInGame(){
     
     eventManager = EventManager::GetInstance();
 
-    //car = new Car(10.0, 200.0, -300.0,    0.0,0.0,0.0,    1.0,1.0,1.0, "particle.bmp", "ninja.b3d", 20,0.15,0.1,0.25);
+    manPowerUps = new ManPowerUp();
     car = new Car();
     ground = new GameObject(10.0,10.0,30.0,    0.0,0.0,0.0,    100.0,1.0,100.0, "wall.jpg", "ninja.b3d", 20,0.15,0.1,0.25);
     cam = new Camera(10.0,20.0,30.0,    0.0,0.0,0.0,    1.0,1.0,1.0);
@@ -29,9 +29,14 @@ StateInGame::StateInGame(){
     inputEngine    = inputFacadeManager->GetInputFacade();
     physicsEngine  = physicsFacadeManager->GetPhysicsFacade();
 
+    
+    
     renderEngine->FacadeAddObject(car);
     renderEngine->FacadeAddObject(ground);
     
+    for(PowerUp *pu : manPowerUps->GetEntities()) 
+        renderEngine->FacadeAddObject(pu);
+        
     renderEngine->FacadeAddCamera(cam);
 
     lastFPS = -1;
@@ -51,13 +56,15 @@ void StateInGame::Render(){
 }
 
 
-void StateInGame::Update(){
-    
+void StateInGame::Update()
+{    
     eventManager->Update();  
     const uint32_t now = renderEngine->FacadeGetTime();
     
     const float frameDeltaTime = (float)(now - then) / 100.0;
     then = now;
+
+    
     //inputEngine->CheckInputs(*car);
     renderEngine->FacadeCheckInput(frameDeltaTime,*car,*cam);
     physicsEngine->Update(car, cam);

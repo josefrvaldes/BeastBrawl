@@ -17,6 +17,7 @@ class RenderFacadeIrrlicht : public RenderFacade {
         RenderFacadeIrrlicht();
         ~RenderFacadeIrrlicht();
         const uint16_t FacadeAddObject(Entity*) override;
+		const void FacadeAddObjects(vector<Entity*>) override;
         void UpdateTransformable(Entity*) override;
         void UpdateCamera(Entity*) override;
 		void FacadeAddCamera(Entity*) override;

@@ -13,6 +13,9 @@ public:
     Car();
     Car(float posX, float posY, float posZ, float rotX, float rotY, float rotZ, float scaX, float scaY, float scaZ, string texture, string mesh, float maxSpeed, float acceleration, float carFriction, float carSlowDown);
     ~Car();
+
+
+
 };
 
 #endif

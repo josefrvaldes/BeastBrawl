@@ -12,7 +12,11 @@ class PowerUp : public Entity
 
 public:
     PowerUp();
+    PowerUp(float x, float y, float z);
     ~PowerUp();
+
+
+private:
 };
 
 #endif

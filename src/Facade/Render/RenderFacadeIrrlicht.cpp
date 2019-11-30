@@ -25,6 +25,11 @@ RenderFacadeIrrlicht::RenderFacadeIrrlicht(){
 	smgr = device->getSceneManager();
 }
 
+const void RenderFacadeIrrlicht::FacadeAddObjects(vector<Entity*> entities) {
+	for(Entity *e : entities) {
+		FacadeAddObject(e);
+	}
+}
 
 //INPUTS : Una entidad GameObject
 //RETURNS: El Id del objeto añadido
@@ -144,8 +149,8 @@ void RenderFacadeIrrlicht::FacadeAddCamera(Entity* goCamera){
 	auto mapCamera = components.find(CompType::CameraComp);
 	auto cCamera = static_cast<CCamera*>(mapCamera->second);
 
-	float posX = cCamera->tarX - 40.0*sin(((cTransformable->rotX)*PI)/180.0);
-	float posZ = cCamera->tarZ - 40.0*cos(((cTransformable->rotZ)*PI)/180.0);;
+	float posX = cCamera->tarX - 40.0 * sin(((cTransformable->rotX)*PI)/180.0);
+	float posZ = cCamera->tarZ - 40.0 * cos(((cTransformable->rotZ)*PI)/180.0);;
 	camera1->setTarget(core::vector3df(cCamera->tarX, cCamera->tarY, cCamera->tarZ)); 
 	camera1->setPosition(core::vector3df(posX, cTransformable->posY, posZ));
 }
@@ -158,8 +163,8 @@ uint32_t RenderFacadeIrrlicht::FacadeGetTime(){
 	return device->getTimer()->getTime();
 }
 
-void RenderFacadeIrrlicht::FacadeCheckInput(float frameDeltaTime, Entity& car, Entity& cam){
-	
+void RenderFacadeIrrlicht::FacadeCheckInput(float frameDeltaTime, Entity& car, Entity& cam)
+{	
 	Data d;
 	d.deltaTime  = frameDeltaTime;
 	d.gameObject = &car;
@@ -180,8 +185,6 @@ void RenderFacadeIrrlicht::FacadeCheckInput(float frameDeltaTime, Entity& car, E
 	}else{
 		eventManager->AddEvent(Event {EventType::NO_A_D_PRESS,d});
 	}
-
-	
 }
 
 int RenderFacadeIrrlicht::FacadeGetFPS(){

@@ -12,6 +12,7 @@ class RenderFacade {
         //RenderFacade();
         virtual ~RenderFacade() = default;
         virtual const uint16_t FacadeAddObject(Entity*) = 0;
+        virtual const void FacadeAddObjects(vector<Entity*>) = 0;
         virtual void FacadeAddCamera(Entity*) = 0;
         virtual void UpdateTransformable(Entity*) = 0;
         virtual void UpdateCamera(Entity*) = 0;

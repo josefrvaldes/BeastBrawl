@@ -7,7 +7,9 @@
 #include "../Entities/Car.h"
 #include "../Entities/GameObject.h"
 #include "../Entities/Camera.h"
+#include "../Entities/PowerUp.h"
 #include "../Systems/Physics.h"
+#include "../Managers/ManPowerUp.h"
 #include "../EventManager/EventManager.h"
 #include "../Facade/Render/RenderFacadeManager.h"
 #include "../Facade/Input/InputFacadeManager.h"
@@ -40,6 +42,7 @@ class StateInGame : public State{
         RenderFacade* renderEngine;
         InputFacade* inputEngine;
         PhysicsFacade* physicsEngine;
+        ManPowerUp *manPowerUps;
 
         int lastFPS = -1;
         uint32_t then;
