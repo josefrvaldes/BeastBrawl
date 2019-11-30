@@ -1,4 +1,5 @@
 #include "fuzzyVariable.h"
+#include <iostream>
 
 
 void FuzzyVariable::AdjustRangeToFit(double min, double max){
@@ -46,8 +47,26 @@ void FuzzyVariable::Fuzzify(double val){
 }
 
 
-double FuzzyVariable::DeFuzzifyMaxAv()const{
+double FuzzyVariable::DeFuzzifyMaxAv(){
     double crispValue = 0.0;
+    double numerador = 0.0;
+    double denominador = 0.0;
+    
+    std::map<std::string, FuzzySet*>::iterator actualSet = m_MemberSets.begin();
+
+    // al ser un mapa necesitamos el .second para acceder a la segunda variable
+    for (actualSet=m_MemberSets.begin(); actualSet != m_MemberSets.end(); ++actualSet){
+        numerador += (*actualSet).second->GetRepresentativeVal() * (*actualSet).second->GetDOM();
+        denominador += (*actualSet).second->GetDOM();
+
+        std::cout << "Valor Representativo: " << (*actualSet).second->GetRepresentativeVal() << std::endl;
+        std::cout << "Valor DOM: " << (*actualSet).second->GetDOM() << std::endl;  // T0-Do :  ALGO DEL GetDOM ESTA MAL !!!!
+    }
+
+    if(denominador!=0)
+        crispValue = numerador / denominador;
+    
+    // calcular maxAv
     return crispValue;
 
 }

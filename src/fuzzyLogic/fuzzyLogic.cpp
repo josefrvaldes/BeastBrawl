@@ -41,14 +41,15 @@ double FuzzyLogic::DeFuzzify(const std::string& NameOfFLV){
 	//clear the DOMs of all the consequents
 	SetConfidencesOfConsequentsToZero();
 	//std::cout << "pasamos por el SetConfidencesOfConsequentsToZero()" << std::endl;
-	//process the rules
-
+	
+	//process the rules 
     std::vector<FuzzyRule*>::iterator actualRule;
 	for (actualRule = m_Rules.begin(); actualRule != m_Rules.end(); ++actualRule){
 	//std::cout << "entramos al for, NO al calculate" << std::endl;
 		(*actualRule)->Calculate();
 	//std::cout << "entramos al for, SI al calculate" << std::endl;
 	}
+
 
 	std::cout << "bucle con el calculo de las diferentes reglas" << std::endl;
 	//now defuzzify the resultant conclusion using the specified method

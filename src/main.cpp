@@ -136,7 +136,7 @@ fm.AddRule( *(new FzAND(Target_Far, Ammo_Low)), Undesirable);
 
 // cout de FuzzyLogic
   std::cout << "defuzzificacion: " << resultadoDefuzzification << std::endl;
-  std::cout << "Siempre da 0 porque aun no esta hecho el metodo"<< std::endl;
+  std::cout << "------------------------------"<< std::endl;
 
 
 

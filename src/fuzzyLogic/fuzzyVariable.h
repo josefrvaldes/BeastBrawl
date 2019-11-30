@@ -47,6 +47,6 @@ public:
     //fuzzify a value by calculating its DOM in each of this variable's subsets
     void Fuzzify(double val);
     //defuzzify the variable using the MaxAv method
-    double DeFuzzifyMaxAv()const;
+    double DeFuzzifyMaxAv();
 
 };
