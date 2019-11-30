@@ -1,18 +1,25 @@
-#ifndef __PHYSICS_H__
-#define __PHYSICS_H__
+#pragma once
 
-#include "../Components/CSpeed.h"
-#include "../Components/CPosition.h"
+#include "../Components/CType.h"
+#include "../Components/CId.h"
+#include "../Components/CTransformable.h"
+#include "../Components/CCamera.h"
+#include "../Components/Component.h"
+#include "../Components/CCar.h"
+
+#include "../EventManager/EventManager.h"
+#include "../EventManager/Event.h"
+
+#include <math.h>
+#define PI 3.141592
 
 class Physics
 {
 public:
-    Physics(){};
-    ~Physics(){};
-    static void move(CSpeed *s, CPosition *p);
+    Physics();
+    ~Physics();
 
 protected:
 private:
+    EventManager* eventManager;
 };
-
-#endif
