@@ -9,7 +9,6 @@ using namespace std;
 
 class ManPowerUp
 {
-
 public:
     ManPowerUp();
     ~ManPowerUp();

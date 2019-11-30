@@ -9,8 +9,9 @@ StateInGame::StateInGame(){
     
     eventManager = EventManager::GetInstance();
 
-    car = new GameObject(10.0,20.0,30.0,    0.0,0.0,0.0,    1.0,1.0,1.0, "particle.bmp", "ninja.b3d",20,0.15,0.1,0.25);
-    ground = new GameObject(10.0,10.0,30.0,    0.0,0.0,0.0,    100.0,1.0,100.0, "wall.jpg", "ninja.b3d",20,0.15,0.1,0.25);
+    //car = new Car(10.0, 200.0, -300.0,    0.0,0.0,0.0,    1.0,1.0,1.0, "particle.bmp", "ninja.b3d", 20,0.15,0.1,0.25);
+    car = new Car();
+    ground = new GameObject(10.0,10.0,30.0,    0.0,0.0,0.0,    100.0,1.0,100.0, "wall.jpg", "ninja.b3d", 20,0.15,0.1,0.25);
     cam = new Camera(10.0,20.0,30.0,    0.0,0.0,0.0,    1.0,1.0,1.0);
 
 	renderFacadeManager = RenderFacadeManager::GetInstance();
@@ -75,6 +76,4 @@ void StateInGame::Update(){
         renderEngine->FacadeSetWindowCaption(tmp);
         lastFPS = fps;
     }
-
-    
 }

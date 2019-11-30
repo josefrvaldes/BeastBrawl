@@ -4,6 +4,7 @@
 
 #include "../Game.h"
 #include "../Entities/Hero.h"
+#include "../Entities/Car.h"
 #include "../Entities/GameObject.h"
 #include "../Entities/Camera.h"
 #include "../Systems/Physics.h"
@@ -29,7 +30,7 @@ class StateInGame : public State{
 
     private:
         EventManager* eventManager;
-        GameObject* car;
+        Car* car;
         GameObject* ground;
         Camera* cam;
         RenderFacadeManager* renderFacadeManager;
