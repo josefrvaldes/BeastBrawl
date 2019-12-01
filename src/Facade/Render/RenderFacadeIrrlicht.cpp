@@ -28,7 +28,7 @@ RenderFacadeIrrlicht::RenderFacadeIrrlicht(){
 const void RenderFacadeIrrlicht::FacadeAddObjects(vector<Entity*> entities) {
 	for(Entity *e : entities) {
 		FacadeAddObject(e);
-	}
+	} 
 }
 
 //INPUTS : Una entidad GameObject
