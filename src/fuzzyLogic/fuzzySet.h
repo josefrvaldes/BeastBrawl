@@ -25,8 +25,9 @@ public:
     void ORwithDOM(double val);
     //accessor methods
     double GetRepresentativeVal()const;
-    void ClearDOM(){m_dDOM = 0.0;}
-    double GetDOM()const{return m_dDOM;}
+    void ClearDOM();
+    double GetDOM()const;
     // no comprobar lo que enviamos....
     void SetDOM(double val);
+    void SetReprsentativeValue(double newRepresentative);
 };

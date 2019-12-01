@@ -126,12 +126,12 @@ fm.AddRule( *(new FzAND(Target_Medium, Ammo_Loads)), VeryDesirable);
 fm.AddRule( *(new FzAND(Target_Medium, Ammo_Okay)), VeryDesirable);
 fm.AddRule( *(new FzAND(Target_Medium, Ammo_Low)), Desirable);
 fm.AddRule( *(new FzAND(Target_Far, Ammo_Loads)), Desirable);
-fm.AddRule( *(new FzAND(Target_Far, Ammo_Okay)), Desirable);
+fm.AddRule( *(new FzAND(Target_Far, Ammo_Okay)), Undesirable);
 fm.AddRule( *(new FzAND(Target_Far, Ammo_Low)), Undesirable);
 
 
-  std::cout << "La fuzzificacion de DistToTarget deberia de ser: 0 - 0.Alto - 0.33"<< std::endl;
-  std::cout << "La fuzzificacion de AmmoStatus deberia de ser  : 0 - 0.2    - 0.78"<< std::endl;
+  //std::cout << "La fuzzificacion de DistToTarget deberia de ser: 0 - 0.Alto - 0.33"<< std::endl;
+  //std::cout << "La fuzzificacion de AmmoStatus deberia de ser  : 0 - 0.2    - 0.78"<< std::endl;
 
 
 
