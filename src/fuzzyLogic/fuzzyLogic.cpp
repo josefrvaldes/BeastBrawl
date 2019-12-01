@@ -26,7 +26,8 @@ void FuzzyLogic::SetConfidencesOfConsequentsToZero(){
 }
 
 void FuzzyLogic::Fuzzify(const std::string& NameOfFLV, double val){
-
+	std::cout << "Fuzzificamos a: " << NameOfFLV << std::endl;
+	std::cout << "--------------------------------------" << std::endl;
 	m_Variables[NameOfFLV]->Fuzzify(val);
 
 }

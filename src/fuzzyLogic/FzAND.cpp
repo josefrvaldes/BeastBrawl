@@ -7,9 +7,8 @@ FzAND::	~FzAND(){
 	
 }
 
-FzAND::FzAND(const FzAND&){
-	
-}
+//FzAND::FzAND(const FzAND& a){
+//}
 
 
 //	vector<FuzzyTerm*> arrayFzAND;
@@ -46,11 +45,10 @@ EJEMPLO CLONE()
 // puerta AND = minimo
 double FzAND::GetDOM()const{
 	//std::cout << "hola4" << std::endl;
-	auto curTerm = arrayFzAND.begin();
 	// DUDA en el ejemplo se iguala a 0, supomgo que esta mal
 	double minDOM = 1000000;
 	//std::cout << "hola5" << std::endl;
-	for (curTerm = arrayFzAND.begin(); curTerm != arrayFzAND.end(); ++curTerm){
+	for (auto curTerm = arrayFzAND.begin(); curTerm != arrayFzAND.end(); ++curTerm){
 		if( (*curTerm)->GetDOM() < minDOM  )
 			minDOM = (*curTerm)->GetDOM();
 	}
@@ -58,16 +56,14 @@ double FzAND::GetDOM()const{
 }
 //clears the degree of membership of the term
 void FzAND::ClearDOM(){
-	auto curTerm = arrayFzAND.begin();
-	for (curTerm = arrayFzAND.begin(); curTerm != arrayFzAND.end(); ++curTerm){
+	for (auto curTerm = arrayFzAND.begin(); curTerm != arrayFzAND.end(); ++curTerm){
 		(*curTerm)->ClearDOM();
 	}	
 }
 // method for updating the DOM of a consequent when a rule fires
 void FzAND::ORwithDOM(double val){
 	//std::cout << "hola3" << std::endl;
-	auto curTerm = arrayFzAND.begin();
-	for (curTerm = arrayFzAND.begin(); curTerm != arrayFzAND.end(); ++curTerm){
+	for (auto curTerm = arrayFzAND.begin(); curTerm != arrayFzAND.end(); ++curTerm){
 		(*curTerm)->ORwithDOM(val);
 	}
 }

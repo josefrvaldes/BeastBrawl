@@ -16,7 +16,7 @@ private:
 
 
 public:
-    FzAND(const FzAND&);
+   // FzAND(const FzAND&);
 	~FzAND();
 	//crear un AND con 2
 	//FzAND(FuzzyTerm& one, FuzzyTerm& two):arrayFzAND.push_back(one.Clone()),   
