@@ -1,5 +1,4 @@
 #pragma once
-
 #include "Event.h"
 #include <queue>
 #include <map>
@@ -9,20 +8,21 @@ class EventManager{
 
     public:
 
-        EventManager() {}
         ~EventManager() {}
-        static EventManager& GetInstance();
+        static EventManager* GetInstance();
         void Suscribe(Listener);
         void UnSuscribe(EventType, string);
         void AddEvent(Event);
         void Update();
 
     private:
+        EventManager() {}
+        static EventManager* instance;
         void ShowSuscribers();
         //FIXME: Al final tendremos que escoger si usar la cola o la lista
-        queue<Event> eventQueue;
-        list<Event> eventList;
+        //std::queue<Event> eventQueue;
+        std::list<Event> eventList;
         
-        map<EventType, ListenerVector> eventListenerMap; //Mapa con el tipo de evento y un vector con los listeners suscritos a dicho evento
+        std::map<EventType, ListenerVector> eventListenerMap; //Mapa con el tipo de evento y un vector con los listeners suscritos a dicho evento
 
 };

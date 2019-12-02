@@ -1,7 +1,5 @@
 #include "Game.h"
-#include "State/State.h"
-#include "State/StateMenu.h"
-#include "State/StateInGame.h"
+
 
 using namespace std;
 
@@ -10,6 +8,7 @@ Game* Game::game = 0;
 
 Game::Game(){
     // constructor
+    renderFacadeManager = RenderFacadeManager::GetInstance();   
 }
 
 
@@ -69,6 +68,13 @@ void Game::InitGame(){
 
 
 void Game::MainLoop(){
-    currentState->Update();
+        renderFacadeManager->GetRenderFacade()->FacadeSetWindowCaption("Beast Brawl");
+
+    while(renderFacadeManager->GetRenderFacade()->FacadeRun()){
+        currentState->Update();
+
+    }
+
+    renderFacadeManager->GetRenderFacade()->FacadeDeviceDrop();
     //for(;;);  // To-Do: crear bucle del juego
 }

@@ -1,8 +1,11 @@
-#ifndef GAME_H
-#define GAME_H
+#pragma once
 
 #include <iostream>
 #include "State/State.h"
+#include "State/StateMenu.h"
+#include "State/StateInGame.h"
+#include "Facade/Render/RenderFacadeManager.h"
+
 
 
 class Game{
@@ -21,11 +24,10 @@ class Game{
         //State::States ActualState;
         State *currentState;
         State *lastState;
+        RenderFacadeManager* renderFacadeManager;
 
         Game();
         virtual ~Game();
         void MainLoop();
 };
 
-
-#endif // GAME_H
