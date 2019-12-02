@@ -3,7 +3,6 @@
 
 
 #include "../Game.h"
-#include "../Entities/Hero.h"
 #include "../Entities/Car.h"
 #include "../Entities/GameObject.h"
 #include "../Entities/Camera.h"
@@ -17,6 +16,7 @@
 #include "../Systems/Physics.h"
 #include "../fuzzyLogic/fuzzyLogic.h"
 #include "../behaviourTree/behaviourTree.h"
+#include "../../lib/glm/vec3.hpp"
 
 #include <iostream>
 #include <list>

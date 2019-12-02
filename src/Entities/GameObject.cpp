@@ -16,7 +16,7 @@ GameObject::GameObject()
 {
     Component* cId   = new CId();
     Component* cType = new CType(ModelType::Cube);
-    Component* cTransformable = new CTransformable(10.0,20.0,30.0,    0.0,0.0,0.0,    1.0,1.0,1.0);
+    Component* cTransformable = new CTransformable(glm::vec3(10.0f,20.0f,30.0f),    glm::vec3(0.0f,0.0f,0.0f),    glm::vec3(1.0f,1.0f,1.0f));
     Component* cTexture = new CTexture(std::string("particle.bmp"));
     Component* cMesh   = new CMesh(std::string("media/ninja.b3d"));
     AddComponent(cId);
@@ -27,20 +27,18 @@ GameObject::GameObject()
 }
 
 
-GameObject::GameObject(float posX, float posY, float posZ, float rotX, float rotY, float rotZ, float scaX, float scaY, float scaZ, string texture, string mesh, float maxSpeed, float acceleration , float carFriction, float carSlowDown)
+GameObject::GameObject(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale, string texture, string mesh)
 {
     Component* cId   = new CId();
     Component* cType = new CType(ModelType::Cube);
-    Component* cTransformable = new CTransformable(posX, posY, posZ, rotX, rotY, rotZ, scaX, scaY, scaZ);
+    Component* cTransformable = new CTransformable(pos, rot, scale);
     Component* cTexture = new CTexture(texture);
     Component* cMesh   = new CMesh(mesh);
-    Component* cCar = new CCar(maxSpeed,acceleration,carFriction,carSlowDown);
     AddComponent(cId);
     AddComponent(cType);
     AddComponent(cTransformable);
     AddComponent(cTexture);
     AddComponent(cMesh);
-    AddComponent(cCar);
 }
 
 GameObject::~GameObject()
