@@ -23,7 +23,8 @@ ManPowerUp::ManPowerUp()
 
 ManPowerUp::~ManPowerUp()
 {
-    
+    powerUps.clear();
+    powerUps.shrink_to_fit();
 }
 
 

@@ -15,7 +15,7 @@ using namespace irr;
 class RenderFacadeIrrlicht : public RenderFacade {
     public:
         RenderFacadeIrrlicht();
-        ~RenderFacadeIrrlicht();
+        ~RenderFacadeIrrlicht() override;
         const uint16_t FacadeAddObject(Entity*) override;
 		const void FacadeAddObjects(vector<Entity*>) override;
         void UpdateTransformable(Entity*) override;
@@ -23,7 +23,7 @@ class RenderFacadeIrrlicht : public RenderFacade {
 		void FacadeAddCamera(Entity*) override;
 		bool FacadeRun() override;
 		uint32_t FacadeGetTime() override;
-		void FacadeCheckInput(float, Entity&, Entity&) override;
+		void FacadeCheckInput(float, Entity*, Entity*) override;
 		int FacadeGetFPS() override;
 		void FacadeSetWindowCaption(std::string) override;
 		void FacadeBeginScene() override;

@@ -15,7 +15,7 @@ public:
 
     friend ostream &operator<<(ostream &out, CCar &c)
     {
-        //cout << "(" << c.GetX() << "," << c.GetY() << "," << c.GetZ() << ")";
+        //out << "(" << c.GetX() << "," << c.GetY() << "," << c.GetZ() << ")";
         return out;
     }
 
@@ -25,6 +25,5 @@ public:
     float wheelRotation = 0;
     float friction;
     float slowDown;
-    float reverseMaxSpeed = -6;
 
 };

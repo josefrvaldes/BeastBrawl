@@ -47,6 +47,9 @@ StateInGame::StateInGame(){
 
 StateInGame::~StateInGame(){
     // destructor
+    delete car;
+    delete ground;
+    delete cam;
 }
 
 
@@ -66,20 +69,12 @@ void StateInGame::Update()
 
     
     //inputEngine->CheckInputs(*car);
-    renderEngine->FacadeCheckInput(frameDeltaTime,*car,*cam);
+    renderEngine->FacadeCheckInput(frameDeltaTime,car,cam);
     physicsEngine->Update(car, cam);
 
     renderEngine->FacadeDraw();
 
 
     int fps = renderEngine->FacadeGetFPS();
-    if (lastFPS != fps)
-    {
-        std::string tmp("Movement Example - Irrlicht Engine [");
-        tmp += "] fps: ";
-        tmp += fps;
-
-        renderEngine->FacadeSetWindowCaption(tmp);
-        lastFPS = fps;
-    }
+    lastFPS = fps;
 }
