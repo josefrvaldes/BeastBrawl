@@ -118,6 +118,9 @@ void TurnLeft(Data d){
             //Aumentamos la rotacion hacia la izquierda
             cCar->wheelRotation -= 0.5;
         }
+        if(cCamera->rotExtraY > -15) {
+            cCamera->rotExtraY -= 0.5;
+        }
     }
     
     if(cCar->speed>=0)
@@ -159,6 +162,9 @@ void TurnRight(Data d){
         if(cCar->wheelRotation < 10){
             //Aumentamos la rotacion hacia la derecha
             cCar->wheelRotation += 0.5;
+        }
+        if(cCamera->rotExtraY < 15){
+            cCamera->rotExtraY += 0.5;
         }
     }
     
