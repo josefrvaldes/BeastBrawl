@@ -262,7 +262,7 @@ void CalculatePositionReverse(CCar* cCar, CTransformable* cTransformable, Data d
     
     //Modificamos la posicion en X y Z en funcion del angulo
     cTransformable->position.x += sin(angleRotation) * cCar->speed * d.deltaTime;
-    cTransformable->position.x += cos(angleRotation) * cCar->speed * d.deltaTime;
+    cTransformable->position.z += cos(angleRotation) * cCar->speed * d.deltaTime;
 
     //Si tiene rotacion, rotamos el coche
     if(cCar->wheelRotation != 0){
