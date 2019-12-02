@@ -40,13 +40,13 @@ void PhysicsFacadeIrrlicht::Update(Entity* car, Entity* cam){
 	scene::ISceneNode* node = smgr->getSceneNodeFromId(cId->id);
 
 	//Actualiza la posicion del objeto de irrlicht
-	node->setPosition(core::vector3df(cTransformable->posX, cTransformable->posY, cTransformable->posZ));
+	node->setPosition(core::vector3df(cTransformable->position.x, cTransformable->position.y, cTransformable->position.z));
 
 	//Actualiza la rotacion del objeto de irrlicht
-	node->setRotation(core::vector3df(cTransformable->rotX, cTransformable->rotY, cTransformable->rotZ));
+	node->setRotation(core::vector3df(cTransformable->rotation.x, cTransformable->rotation.y, cTransformable->rotation.z));
 
 	//Actualiza el escalado del objeto de irrlicht
-	node->setScale(core::vector3df(cTransformable->scaleX, cTransformable->scaleY, cTransformable->scaleZ));
+	node->setScale(core::vector3df(cTransformable->scale.x, cTransformable->scale.y, cTransformable->scale.z));
 
 
     //Actualizamos la camara
@@ -68,7 +68,7 @@ void PhysicsFacadeIrrlicht::UpdateCam(Entity* cam){
     targetPosition.Y += 17;
     camera1->setTarget(targetPosition);
 
-	camera1->setPosition(core::vector3df(cTransformable->posX, cTransformable->posY, cTransformable->posZ));
+	camera1->setPosition(core::vector3df(cTransformable->position.x, cTransformable->position.y, cTransformable->position.z));
 }
 
 

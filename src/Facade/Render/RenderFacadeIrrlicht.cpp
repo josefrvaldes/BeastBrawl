@@ -82,9 +82,9 @@ const uint16_t RenderFacadeIrrlicht::FacadeAddObject(Entity *go){
 	std::string path = "media/" + cTexture->texture;
 	if(node){
 		node->setID(cId->id);
-		node->setPosition(core::vector3df(cTransformable->posX, cTransformable->posY, cTransformable->posZ));
-		node->setRotation(core::vector3df(cTransformable->rotX, cTransformable->rotY, cTransformable->rotZ));
-		node->setScale(core::vector3df(cTransformable->scaleX, cTransformable->scaleY, cTransformable->scaleZ));
+		node->setPosition(core::vector3df(cTransformable->position.x, cTransformable->position.y, cTransformable->position.z));
+		node->setRotation(core::vector3df(cTransformable->rotation.x, cTransformable->rotation.y, cTransformable->rotation.z));
+		node->setScale(core::vector3df(cTransformable->scale.x, cTransformable->scale.y, cTransformable->scale.z));
 		node->setMaterialTexture(0, driver->getTexture(path.c_str())); //Obligado incluir el c_str() si no irrlicht no carga solo con un string
 		node->setMaterialFlag(video::EMF_LIGHTING, false);
 
@@ -108,13 +108,13 @@ void RenderFacadeIrrlicht::UpdateTransformable(Entity* go){
 	scene::ISceneNode* node = smgr->getSceneNodeFromId(cId->id);
 
 	//Actualiza la posicion del objeto de irrlicht
-	node->setPosition(core::vector3df(cTransformable->posX, cTransformable->posY, cTransformable->posZ));
+	node->setPosition(core::vector3df(cTransformable->position.x, cTransformable->position.y, cTransformable->position.z));
 
 	//Actualiza la rotacion del objeto de irrlicht
-	node->setRotation(core::vector3df(cTransformable->rotX, cTransformable->rotY, cTransformable->rotZ));
+	node->setRotation(core::vector3df(cTransformable->rotation.x, cTransformable->rotation.y, cTransformable->rotation.z));
 
 	//Actualiza el escalado del objeto de irrlicht
-	node->setScale(core::vector3df(cTransformable->scaleX, cTransformable->scaleY, cTransformable->scaleZ));
+	node->setScale(core::vector3df(cTransformable->scale.x, cTransformable->scale.y, cTransformable->scale.z));
 	
 }
 
@@ -132,7 +132,7 @@ void RenderFacadeIrrlicht::UpdateCamera(Entity* cam){
     targetPosition.Y += 17;
     camera1->setTarget(targetPosition);
 
-	camera1->setPosition(core::vector3df(cTransformable->posX, cTransformable->posY, cTransformable->posZ));
+	camera1->setPosition(core::vector3df(cTransformable->position.x, cTransformable->position.y, cTransformable->position.z));
 
 }
 
@@ -150,10 +150,10 @@ void RenderFacadeIrrlicht::FacadeAddCamera(Entity* goCamera){
 	auto mapCamera = components.find(CompType::CameraComp);
 	auto cCamera = static_cast<CCamera*>(mapCamera->second);
 
-	float posX = cCamera->tarX - 40.0 * sin(((cTransformable->rotX)*PI)/180.0);
-	float posZ = cCamera->tarZ - 40.0 * cos(((cTransformable->rotZ)*PI)/180.0);;
+	float posX = cCamera->tarX - 40.0 * sin(((cTransformable->rotation.x)*PI)/180.0);
+	float posZ = cCamera->tarZ - 40.0 * cos(((cTransformable->rotation.z)*PI)/180.0);;
 	camera1->setTarget(core::vector3df(cCamera->tarX, cCamera->tarY, cCamera->tarZ)); 
-	camera1->setPosition(core::vector3df(posX, cTransformable->posY, posZ));
+	camera1->setPosition(core::vector3df(posX, cTransformable->position.y, posZ));
 }
 
 bool RenderFacadeIrrlicht::FacadeRun(){

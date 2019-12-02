@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Component.h"
+#include "../../lib/glm/vec3.hpp"
 #include <string>
 #include <iostream>
 
@@ -10,7 +11,7 @@ class CTransformable : public Component
 {
 public:
     CTransformable();
-    CTransformable(float posx, float posy, float posz, float rotx, float roty, float rotz, float scalex, float scaley, float scalez);
+    CTransformable(glm::vec3 _pos, glm::vec3 _rot, glm::vec3 _scale);
     ~CTransformable();
 
     friend ostream &operator<<(ostream &out, CTransformable &c)
@@ -19,15 +20,7 @@ public:
         return out;
     }
 
-    float posX;
-    float posY;
-    float posZ;
-
-    float rotX;
-    float rotY;
-    float rotZ;
-
-    float scaleX;
-    float scaleY;
-    float scaleZ;
+    glm::vec3 position;
+    glm::vec3 rotation;
+    glm::vec3 scale;
 };
