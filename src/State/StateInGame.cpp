@@ -3,6 +3,86 @@
 
 using namespace std;
 
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+//                           COMPROBAR BEHAVIOR TREE
+////////////////////////////////////////////////////////////////////////////////////////////////////
+//bool door = false; // imaginemos que door=false es = puerta cerrada "door is open?"
+//bool key  = false;  // tenemos una llave
+//// ACCION DE ABRIR LA PUERTA
+//struct openDoor : public behaviourTree { 
+//		virtual bool run() override {
+//            door = true;
+//            cout << "Abrimos la puerta" << endl;
+//            return true;
+//		}
+//};
+////ACCION COGER LA LLAVE
+//struct getKey : public behaviourTree { 
+//		virtual bool run() override {
+//            key = true;
+//            cout << "Cogemos la llave" << endl;
+//            return true;
+//		}
+//};
+////CONDICION PUERTA ABIERTA?
+//struct haveDoorOpen : public behaviourTree { 
+//		virtual bool run() override {
+//            cout << "Comprobamos si la puerta esta abierta: " << boolalpha << door << endl;
+//            return door;
+//		}
+//};
+////CONDICION TENEMOS LLAVE?
+//struct haveKey : public behaviourTree { 
+//		virtual bool run() override {
+//            cout << "Comprobamos si tenemos la llave: " << boolalpha << key << endl;
+//			return  key;
+//		}
+//};
+/////// DECORATORS //////
+//struct Minimum : public Decorator {  // Tiene que intentar coger la llave 3 veces para que la pueda coger
+//    uint32_t totalTries = 3;
+//    uint32_t numTries = 0;
+//    virtual bool run() override {
+//        if(numTries>=totalTries)
+//            return getChild()->run();
+//        numTries++;
+//        cout << "Fallamos al coger la llave, intento: " << numTries << endl;
+//        return false;
+//        
+//    }
+//};
+//struct Limit : public Decorator {  // Decorator Limit
+//    uint32_t totalLimit = 3;
+//    uint32_t numLimit = 0;
+//    virtual bool run() override {
+//        if(numLimit>=totalLimit)
+//            return false;
+//        numLimit++;
+//        return getChild()->run();
+//    }
+//};
+//struct UntilFail : public Decorator {  // Decorator UntilFail
+//    virtual bool run() override {
+//        while(true){
+//            bool result = getChild()->run();
+//            if(!result) { 
+//                break; 
+//            }
+//        }
+//        return true;
+//    }
+//};
+//struct Inverter : public Decorator {  // Decorator Inverter
+//    virtual bool run() override {
+//        return !(getChild()->run());
+//    }
+//};
+
+
+
+
+
 StateInGame::StateInGame(){
     // constructor
     std::cout << "Estado InGame Creado" << std::endl;
@@ -68,6 +148,44 @@ fm.AddRule( *(new FzAND(Target_Far, Ammo_Low)), Undesirable);
 
 
 // --------------------------- FIN FUZZY LOGIC ----------------------------------
+
+// --------------------------- BEHAVIOR TREE ----------------------------------
+
+    //BehaviorTree BASICO
+                    // SELECTOR1
+                        // 
+        ///////////////////////////////////////////////////////////////////////////////////
+        //                                      //                                       //
+// La pueta esta abierta?                     SEQUENCE                               DECORATOR (minimum) (3 intentos)
+                                    ///////////////////////////////                      //
+                                    //                          //                       //
+//                                // tengo llave?             //abrir puerta        // coger llave
+//    selector* selector1 = new selector;
+//    sequence* sequence1 = new sequence;
+//
+//    haveDoorOpen* puertaAbiertaSiNo = new haveDoorOpen;
+//    haveKey* tengoLlaveSiNo = new haveKey;
+//    openDoor* abrirPuerta = new openDoor;
+//    getKey* cogerLlave = new getKey;
+//
+//    Minimum* tryCatchKey3 = new Minimum;
+//
+//    selector1->addChild(puertaAbiertaSiNo);
+//    selector1->addChild(sequence1);
+//    selector1->addChild(tryCatchKey3);
+//
+//    sequence1->addChild(tengoLlaveSiNo);
+//    sequence1->addChild(abrirPuerta);
+//
+//    tryCatchKey3->addChild(cogerLlave);
+//
+//	cout << "--------------------" << endl;
+//    while (door==false){
+//        selector1->run();
+//    } // If the operation starting from the root fails, keep trying until it succeeds.
+//	cout << "--------------------" << endl;
+//
+
 
 
 

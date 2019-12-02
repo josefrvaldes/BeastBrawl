@@ -16,6 +16,7 @@
 #include "../Facade/Physics/PhysicsFacadeManager.h"
 #include "../Systems/Physics.h"
 #include "../fuzzyLogic/fuzzyLogic.h"
+#include "../behaviourTree/behaviourTree.h"
 
 #include <iostream>
 #include <list>
