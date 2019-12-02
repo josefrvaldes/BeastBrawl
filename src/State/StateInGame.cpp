@@ -30,7 +30,47 @@ StateInGame::StateInGame(){
     physicsEngine  = physicsFacadeManager->GetPhysicsFacade();
 
     
-    
+
+// --------------------------- FUZZY LOGIC  "COUT TEMPORALES" ----------------------------------
+FuzzyLogic fm;
+
+FuzzyVariable& DistToTarget = fm.CreateFLV("DistToTarget");
+FzSet Target_Close = DistToTarget.AddLeftShoulderSet("Target_Close", 0, 25, 150);
+FzSet Target_Medium = DistToTarget.AddTriangularSet("Target_Medium", 25, 150, 300);
+FzSet Target_Far = DistToTarget.AddRightShoulderSet("Target_Far", 150, 300, 400);
+
+FuzzyVariable& AmmoStatus = fm.CreateFLV("AmmoStatus");
+FzSet Ammo_Low = AmmoStatus.AddLeftShoulderSet("Ammo_Low", 0, 0, 10);
+FzSet Ammo_Okay = AmmoStatus.AddTriangularSet("Ammo_Okay", 0, 10, 30);
+FzSet Ammo_Loads = AmmoStatus.AddRightShoulderSet("Ammo_Loads", 10, 30, 40);
+
+FuzzyVariable& Desirability = fm.CreateFLV("Desirability");
+FzSet Undesirable = Desirability.AddLeftShoulderSet("Undesirable", 0, 25, 50);
+FzSet Desirable = Desirability.AddTriangularSet("Desirable", 25, 50, 75);
+FzSet VeryDesirable = Desirability.AddRightShoulderSet("VeryDesirable", 50, 75, 100);
+// To-Do: revisar el new por que no se tiene que hacer
+fm.AddRule( *(new FzAND(Target_Close, Ammo_Loads)), Undesirable);
+fm.AddRule( *(new FzAND(Target_Close, Ammo_Okay)), Undesirable);
+fm.AddRule( *(new FzAND(Target_Close, Ammo_Low)), Undesirable);
+fm.AddRule( *(new FzAND(Target_Medium, Ammo_Loads)), VeryDesirable);
+fm.AddRule( *(new FzAND(Target_Medium, Ammo_Okay)), VeryDesirable);
+fm.AddRule( *(new FzAND(Target_Medium, Ammo_Low)), Desirable);
+fm.AddRule( *(new FzAND(Target_Far, Ammo_Loads)), Desirable);
+fm.AddRule( *(new FzAND(Target_Far, Ammo_Okay)), Undesirable);
+fm.AddRule( *(new FzAND(Target_Far, Ammo_Low)), Undesirable);
+// seguimos con las pruebas
+  fm.Fuzzify("DistToTarget", 200); // AQUI ES DONDE SE LLAMA AL CALCULATEDOM()
+  fm.Fuzzify("AmmoStatus", 8);
+  double resultadoDefuzzification = fm.DeFuzzify("Desirability");
+// cout de FuzzyLogic
+  std::cout << "defuzzificacion: " << resultadoDefuzzification << std::endl;
+  std::cout << "------------------------------"<< std::endl;
+
+
+// --------------------------- FIN FUZZY LOGIC ----------------------------------
+
+
+
     renderEngine->FacadeAddObject(car);
     renderEngine->FacadeAddObject(ground);
     

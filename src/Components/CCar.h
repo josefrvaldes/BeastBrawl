@@ -19,10 +19,11 @@ public:
         return out;
     }
 
-    float speed = 0;
+    float speed = 0.0;
     float maxSpeed;
-    float acceleration = 0;
-    float wheelRotation = 0;
+    float acceleration = 0.0;
+    float reverseMaxSpeed = -6.0;
+    float wheelRotation = 0.0;
     float friction;
     float slowDown;
 

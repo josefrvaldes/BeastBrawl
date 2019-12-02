@@ -15,6 +15,7 @@
 #include "../Facade/Input/InputFacadeManager.h"
 #include "../Facade/Physics/PhysicsFacadeManager.h"
 #include "../Systems/Physics.h"
+#include "../fuzzyLogic/fuzzyLogic.h"
 
 #include <iostream>
 #include <list>
