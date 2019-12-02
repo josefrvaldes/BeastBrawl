@@ -137,6 +137,7 @@ fm.AddRule( *(new FzAND(Target_Far, Ammo_Low)), Undesirable);
 
 
 
+
 // seguimos con las pruebas
   fm.Fuzzify("DistToTarget", 200); // AQUI ES DONDE SE LLAMA AL CALCULATEDOM()
   fm.Fuzzify("AmmoStatus", 8);
