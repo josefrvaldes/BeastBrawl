@@ -18,6 +18,78 @@ PhysicsIA::PhysicsIA(){
 
 }
 
+//#include <cmath>
+//
+//float dot(Vec3 a, Vec3 b)  //calculates dot product of a and b
+//{
+//    return a.x * b.x + a.y * b.y + a.z * b.z;
+//}
+//
+//float mag(Vec3 a)  //calculates magnitude of a
+//{
+//    return std::sqrt(a.x * a.x + a.y * a.y + a.z * a.z);
+//}
+//
+//int main()
+//{
+//    Vec3 v1, v2;
+//
+//    v1.x = 203;
+//    v1.y = 355;
+//    v1.z = 922;
+//
+//    v2.x = 6;
+//    v2.y = 13;
+//    v2.z = 198;
+//
+//    float angle = std::acos(dot(v1,v2)/(mag(v1)*mag(v2)));
+//}
+//
+
+//     vectorX=jugador1->getBody()->getPosition().x+32-sprite->getPosition().x;
+//     vectorY=jugador1->getBody()->getPosition().y+32-sprite->getPosition().y;
+//    //vMagnitud= (vectorX*vectorX)+(vectorY*vectorY);
+//    //divisorUnitario=sqrt(vMagnitud);
+//    //angleRads = atan2(-vectorY, vectorX);
+//    //angleDegs = angleRads * 180 / PI;
+//    float angle = std::acos(dot(v1,v2)/(mag(v1)*mag(v2)));
+
+float dot(glm::vec3 a, glm::vec3 b){  //calculates dot product of a and b{
+    return a.x * b.x + a.y * b.y + a.z * b.z;
+}
+float mag(glm::vec3 a){  //calculates magnitude of a{
+    return std::sqrt(a.x * a.x + a.y * a.y + a.z * a.z);
+}
+glm::vec3 vector2P(glm::vec3 posAnterior, glm::vec3 posSiguiente){
+    return glm::vec3(posSiguiente.x - posAnterior.x, posSiguiente.y - posAnterior.y, posSiguiente.z - posAnterior.z);
+}
+
+void calculateAngle(WayPoint* wayPointNext, Car* car){
+    auto components = car->GetComponents();
+    auto cTransformable = static_cast<CTransformable*>(components[CompType::TransformableComp]);
+    auto cLastPosition = static_cast<CLastPosition*>(components[CompType::LastPositionComp]);
+    glm::vec3 posActualCar   = cTransformable->position;
+    glm::vec3 posPreviousCar = cLastPosition->position;
+    glm::vec3 vecDirCar = vector2P(posPreviousCar, posActualCar);
+
+    glm::vec3 vecWayPoint = glm::vec3(wayPointNext->getPosX(),wayPointNext->getPosY(),wayPointNext->getPosZ());
+    glm::vec3 vecDirWay = vector2P(posActualCar, vecWayPoint);
+
+
+    //glm::vec3 vector1 = glm::vec3(1.0f,1.0f, 1.f);
+    //glm::vec3 vector2 = glm::vec3(0.0f,0.0f, 0.f);
+    //float angle = std::acos(dot(vector1,vector2)/(mag(vector1)*mag(vector2)));
+    float angle = std::acos(dot(vecDirCar,vecDirWay)/(mag(vecDirCar)*mag(vecDirWay)));
+
+    std::cout << "EL ANGULO ES:     " << angle << std::endl;
+
+}
+
+
+
+
+
+
 
 void PhysicsIA::update(vector<WayPoint *> wayPoints, Car* car){
     //void calcularDirIA();
