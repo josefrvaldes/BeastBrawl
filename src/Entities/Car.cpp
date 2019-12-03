@@ -1,5 +1,5 @@
 #include "Car.h"
-#include "../Components/CPosition.h"
+#include "../Components/CLastPosition.h"
 #include "../Components/CSpeed.h"
 #include "../Components/CId.h"
 #include "../Components/CType.h"
@@ -12,8 +12,7 @@
 class Position;
 using namespace std;
 
-Car::Car()
-{
+Car::Car(){
     // default values
     glm::vec3 pos   = glm::vec3(10.0f, 20.0f, 30.0f);
     glm::vec3 rot   = glm::vec3(0.0f, 0.0f, 0.0f);

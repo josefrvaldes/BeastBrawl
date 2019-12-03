@@ -1,5 +1,4 @@
-#ifndef __MAN_POWERUP_H__
-#define __MAN_POWERUP_H__
+#pragma once
 
 #include <iostream>
 #include <map>
@@ -26,5 +25,3 @@ private:
 	vector<PowerUp *> powerUps;
     void SubscribeToEvents();
 };
-
-#endif

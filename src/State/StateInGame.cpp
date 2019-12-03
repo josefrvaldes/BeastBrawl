@@ -91,6 +91,14 @@ StateInGame::StateInGame(){
 
     car = new Car();
     manPowerUps = new ManPowerUp();
+    manWayPoint = new ManWayPoint();
+
+    //CreatePowerUp(30, 20, 30);
+    manWayPoint->CreateWayPoint(-150.0,25.0,-150.0);
+    carIA = new Car(-150.0,20.0,-150.0);
+    manWayPoint->CreateWayPoint(150.0,25.0,-150.0);
+    manWayPoint->CreateWayPoint(150.0,25.0,150.0);
+    manWayPoint->CreateWayPoint(-150.0,25.0,150.0);
     ground = new GameObject(glm::vec3(10.0f,10.0f,30.0f),    glm::vec3(0.0f,0.0f,0.0f),    glm::vec3(100.0f,1.0f,100.0f), "wall.jpg", "ninja.b3d");
     cam = new Camera(glm::vec3(10.0f,40.0f,30.0f),    glm::vec3(0.0f,0.0f,0.0f),    glm::vec3(1.0f,1.0f,1.0f));
 
@@ -109,6 +117,7 @@ StateInGame::StateInGame(){
     inputEngine    = inputFacadeManager->GetInputFacade();
     physicsEngine  = physicsFacadeManager->GetPhysicsFacade();
 
+    physicsIA = new PhysicsIA();
     
 
 // --------------------------- FUZZY LOGIC  "COUT TEMPORALES" ----------------------------------
@@ -185,11 +194,16 @@ fm.AddRule( *(new FzAND(Target_Far, Ammo_Low)), Undesirable);
 //    } // If the operation starting from the root fails, keep trying until it succeeds.
 //	cout << "--------------------" << endl;
 //
+    //wayPoint1 = new WayPoint();
 
-
-
+    for(WayPoint *way : manWayPoint->GetEntities()){
+        cout << "Vamos a crear mini puntos de control -> power ups de mientras" << endl;
+        manPowerUps->CreatePowerUp(way->getPosX(), way->getPosY(), way->getPosZ());
+    }
+    //cout << "el tamanyo normal es: " << manWayPoint.size() << endl;
 
     renderEngine->FacadeAddObject(car);
+    renderEngine->FacadeAddObject(carIA);
     renderEngine->FacadeAddObject(ground);
     
     for(PowerUp *pu : manPowerUps->GetEntities()) 
@@ -229,6 +243,8 @@ void StateInGame::Update()
     //inputEngine->CheckInputs(*car);
     renderEngine->FacadeCheckInput(frameDeltaTime,car,cam);
     physicsEngine->Update(car, cam);
+
+    physicsIA->update(manWayPoint->GetEntities() , carIA);
 
     renderEngine->FacadeDraw();
 

@@ -17,7 +17,7 @@ void EjecutarMeHanCogido(Data d)
 ManPowerUp::ManPowerUp()
 {
     SubscribeToEvents();
-    CreatePowerUp(30, 30, 30);
+    //CreatePowerUp(30, 20, 30);
     cout << "Hemos creado un powerup, ahora tenemos " << powerUps.size() << " powerups" << endl;
 }
 

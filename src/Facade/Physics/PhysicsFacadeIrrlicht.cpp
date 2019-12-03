@@ -1,7 +1,7 @@
 #include "PhysicsFacadeIrrlicht.h"
 
 
-#include "../../Components/CPosition.h"
+//#include "../../Components/CPosition.h"
 #include "../../Components/CType.h"
 #include "../../Components/CId.h"
 #include "../../Components/CTexture.h"

@@ -1,5 +1,4 @@
-#ifndef __POWERUP_H__
-#define __POWERUP_H__
+#pragma once
 
 #include "Entity.h"
 #include "../../lib/glm/vec3.hpp"
@@ -19,5 +18,3 @@ public:
 
 private:
 };
-
-#endif

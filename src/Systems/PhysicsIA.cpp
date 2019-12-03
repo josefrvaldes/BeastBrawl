@@ -1,35 +1,44 @@
-#include "Physics.h"
+#include "PhysicsIA.h"
 
-void CalculatePosition(CCar* cCar, CTransformable* cTransformable, Data d);
-void CalculatePositionReverse(CCar* cCar, CTransformable* cTransformable, Data d);
-void CalculatePositionCamera(CTransformable* cTransformableCar,CTransformable* cTransformableCamera, CCamera* cCamera);
+
+void CalculatePositionIA(CCar* cCar, CTransformable* cTransformable, Data d);
+void CalculatePositionReverseIA(CCar* cCar, CTransformable* cTransformable, Data d);
+void CalculatePositionCameraIA(CTransformable* cTransformableCar,CTransformable* cTransformableCamera, CCamera* cCamera);
 
 //TODO: Cambiar en los punteros a funciones en vez de ir pasandole datos por Event cogerlos del EntityManager
 // PUNTEROS A FUNCIONES
-void Accelerate(Data d);
-void Decelerate(Data d);
-void TurnLeft(Data d);
-void TurnRight(Data d);
-void NotAcceleratingOrDecelerating(Data d);
-void NotTurning(Data d);
+void AccelerateIA(Data d);
+void DecelerateIA(Data d);
+void TurnLeftIA(Data d);
+void TurnRightIA(Data d);
+void NotAcceleratingOrDeceleratingIA(Data d);
+void NotTurningIA(Data d);
 
-Physics::Physics(){
-    eventManager = EventManager::GetInstance();
-
-    //Se suscriben los listeners
-    eventManager->Suscribe(Listener {EventType::PRESS_I,Accelerate,"accelerate"});
-    eventManager->Suscribe(Listener {EventType::PRESS_A,TurnLeft,"turnLeft"});
-    eventManager->Suscribe(Listener {EventType::PRESS_D,TurnRight,"turnRight"});
-    eventManager->Suscribe(Listener {EventType::PRESS_O,Decelerate,"decelerate"});
-    eventManager->Suscribe(Listener {EventType::NO_I_O_PRESS,NotAcceleratingOrDecelerating,"notAcceleratingOrDecelerating"});
-    eventManager->Suscribe(Listener {EventType::NO_A_D_PRESS,NotTurning,"notTurning"});
+PhysicsIA::PhysicsIA(){
 }
 
 
 //PUNTEROS A FUNCIONES
 
+
+// Angulo para el siguiente wayPoint
+//void calculateAngle2P(CPosition actualPos, CPosition nextPos){
+
+//}
+
+//int decimas = 0;
+//int centensimas = 0;
+//int unidades = 0;
+
+
+
+void PhysicsIA::update(vector<WayPoint *> wayPoints, Car* car){
+    //void calcularDirIA();
+    std::cout << "HOLAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" << std::endl;
+}
+
 //Entra cuando se presiona la I
-void Accelerate(Data d){
+void AccelerateIA(Data d){
     //Componentes de la camara
     auto componentsCam = d.camera->GetComponents();
     auto mapCamera = componentsCam.find(CompType::CameraComp);
@@ -51,14 +60,14 @@ void Accelerate(Data d){
     }
 
     if(cCar->speed>=0)
-        CalculatePosition(cCar,cTransformable, d);
+        CalculatePositionIA(cCar,cTransformable, d);
     else
-        CalculatePositionReverse(cCar,cTransformable, d);
-    CalculatePositionCamera(cTransformable,cTransformableCam,cCamera);
+        CalculatePositionReverseIA(cCar,cTransformable, d);
+    CalculatePositionCameraIA(cTransformable,cTransformableCam,cCamera);
 }
 
 //Entra cuando se presiona la O
-void Decelerate(Data d){
+void DecelerateIA(Data d){
     //Componentes de la camara
     auto componentsCam = d.camera->GetComponents();
     auto mapCamera = componentsCam.find(CompType::CameraComp);
@@ -79,14 +88,14 @@ void Decelerate(Data d){
     }
     
     if(cCar->speed>=0)
-        CalculatePosition(cCar,cTransformable, d);
+        CalculatePositionIA(cCar,cTransformable, d);
     else
-        CalculatePositionReverse(cCar,cTransformable, d);
-    CalculatePositionCamera(cTransformable,cTransformableCam,cCamera);
+        CalculatePositionReverseIA(cCar,cTransformable, d);
+    CalculatePositionCameraIA(cTransformable,cTransformableCam,cCamera);
 }
 
 //Entra cuando se presiona la A
-void TurnLeft(Data d){
+void TurnLeftIA(Data d){
 
     //Componentes de la camara
     auto componentsCam = d.camera->GetComponents();
@@ -118,37 +127,18 @@ void TurnLeft(Data d){
             //Aumentamos la rotacion hacia la izquierda
             cCar->wheelRotation -= 0.5;
         }
-        if(cCamera->rotExtraY > -15) {
-            cCamera->rotExtraY -= 0.5;
-        }
-    }else{  // en caso de que estes rotando y la velocidad sea baja
-        if(cCar->wheelRotation >= 0.7){
-            cCar->wheelRotation -= 0.7;
-        }else if(cCar->wheelRotation <= -0.7){
-            cCar->wheelRotation += 0.7;
-        }else{
-            cCar->wheelRotation = 0;
-        }
-
-        if(cCamera->rotExtraY >= 0.7){
-            cCamera->rotExtraY -= 0.7;
-        }else if(cCamera->rotExtraY <= -0.7){
-            cCamera->rotExtraY += 0.7;
-        }else{
-            cCamera->rotExtraY = 0;        
-        }
     }
     
     if(cCar->speed>=0)
-        CalculatePosition(cCar,cTransformable, d);
+        CalculatePositionIA(cCar,cTransformable, d);
     else
-        CalculatePositionReverse(cCar,cTransformable, d);
-    CalculatePositionCamera(cTransformable,cTransformableCam,cCamera);
+        CalculatePositionReverseIA(cCar,cTransformable, d);
+    CalculatePositionCameraIA(cTransformable,cTransformableCam,cCamera);
 
 }
 
 //Entra cuando se presiona la D
-void TurnRight(Data d){
+void TurnRightIA(Data d){
     //Componentes de la camara
     auto componentsCam = d.camera->GetComponents();
     auto mapCamera = componentsCam.find(CompType::CameraComp);
@@ -179,36 +169,17 @@ void TurnRight(Data d){
             //Aumentamos la rotacion hacia la derecha
             cCar->wheelRotation += 0.5;
         }
-        if(cCamera->rotExtraY < 15){
-            cCamera->rotExtraY += 0.5;
-        }
-    }else{
-        if(cCar->wheelRotation >= 0.7){
-            cCar->wheelRotation -= 0.7;
-        }else if(cCar->wheelRotation <= -0.7){
-            cCar->wheelRotation += 0.7;
-        }else{
-            cCar->wheelRotation = 0;
-        }
-
-        if(cCamera->rotExtraY >= 0.7){
-            cCamera->rotExtraY -= 0.7;
-        }else if(cCamera->rotExtraY <= -0.7){
-            cCamera->rotExtraY += 0.7;
-        }else{
-            cCamera->rotExtraY = 0;        
-        }
     }
     
     if(cCar->speed>=0)
-        CalculatePosition(cCar,cTransformable, d);
+        CalculatePositionIA(cCar,cTransformable, d);
     else
-        CalculatePositionReverse(cCar,cTransformable, d);
-    CalculatePositionCamera(cTransformable,cTransformableCam,cCamera);
+        CalculatePositionReverseIA(cCar,cTransformable, d);
+    CalculatePositionCameraIA(cTransformable,cTransformableCam,cCamera);
 }
 
 //Aqui entra cuando no se esta presionando ni I ni O
-void NotAcceleratingOrDecelerating(Data d){
+void NotAcceleratingOrDeceleratingIA(Data d){
     //Componentes de la camara
     auto componentsCam = d.camera->GetComponents();
     auto mapCamera = componentsCam.find(CompType::CameraComp);
@@ -234,14 +205,14 @@ void NotAcceleratingOrDecelerating(Data d){
     }
 
     if(cCar->speed>=0)
-        CalculatePosition(cCar,cTransformable, d);
+        CalculatePositionIA(cCar,cTransformable, d);
     else
-        CalculatePositionReverse(cCar,cTransformable, d);
-    CalculatePositionCamera(cTransformable,cTransformableCam,cCamera);
+        CalculatePositionReverseIA(cCar,cTransformable, d);
+    CalculatePositionCameraIA(cTransformable,cTransformableCam,cCamera);
 }
 
 //Aqui entra cuando no se esta presionando ni A ni D
-void NotTurning(Data d){
+void NotTurningIA(Data d){
     //Componentes de la camara
     auto componentsCam = d.camera->GetComponents();
     auto mapCamera = componentsCam.find(CompType::CameraComp);
@@ -273,44 +244,44 @@ void NotTurning(Data d){
     }
 
     if(cCar->speed>=0)
-        CalculatePosition(cCar,cTransformable, d);
+        CalculatePositionIA(cCar,cTransformable, d);
     else
-        CalculatePositionReverse(cCar,cTransformable, d);
-    CalculatePositionCamera(cTransformable,cTransformableCam,cCamera);
+        CalculatePositionReverseIA(cCar,cTransformable, d);
+    CalculatePositionCameraIA(cTransformable,cTransformableCam,cCamera);
 }
 
 //Calcula la posicion del coche (duda con las formulas preguntar a Jose)
-void CalculatePosition(CCar* cCar, CTransformable* cTransformable, Data d){
-    float angleRotation = (cTransformable->rotation.y * PI) /180.0;
+void CalculatePositionIA(CCar* cCar, CTransformable* cTransformable, Data d){
+    float angleRotation = (cTransformable->rotY * PI) /180.0;
     
     //Modificamos la posicion en X y Z en funcion del angulo
-    cTransformable->position.x += sin(angleRotation) * cCar->speed * d.deltaTime;
-    cTransformable->position.z += cos(angleRotation) * cCar->speed * d.deltaTime;
+    cTransformable->posX += sin(angleRotation) * cCar->speed * d.deltaTime;
+    cTransformable->posZ += cos(angleRotation) * cCar->speed * d.deltaTime;
 
     //Si tiene rotacion, rotamos el coche
     if(cCar->wheelRotation != 0){
-        cTransformable->rotation.y += cCar->wheelRotation * 0.20;
+        cTransformable->rotY += cCar->wheelRotation * 0.20;
     }
 }
 
 
 //Calcula la posicion del coche (duda con las formulas preguntar a Jose)
-void CalculatePositionReverse(CCar* cCar, CTransformable* cTransformable, Data d){
-    float angleRotation = (cTransformable->rotation.y * PI) /180.0;
+void CalculatePositionReverseIA(CCar* cCar, CTransformable* cTransformable, Data d){
+    float angleRotation = (cTransformable->rotY * PI) /180.0;
     
     //Modificamos la posicion en X y Z en funcion del angulo
-    cTransformable->position.x += sin(angleRotation) * cCar->speed * d.deltaTime;
-    cTransformable->position.z += cos(angleRotation) * cCar->speed * d.deltaTime;
+    cTransformable->posX += sin(angleRotation) * cCar->speed * d.deltaTime;
+    cTransformable->posZ += cos(angleRotation) * cCar->speed * d.deltaTime;
 
     //Si tiene rotacion, rotamos el coche
     if(cCar->wheelRotation != 0){
-        cTransformable->rotation.y -= cCar->wheelRotation * 0.20;
+        cTransformable->rotY -= cCar->wheelRotation * 0.20;
     }
 }
 
 //Calcula la posicion de la camara (duda con las formulas preguntar a Jose)
-void CalculatePositionCamera(CTransformable* cTransformableCar,CTransformable* cTransformableCamera, CCamera* cCamera){
-    cTransformableCamera->position.y = cTransformableCar->position.y + 20;
-    cTransformableCamera->position.x = (cTransformableCar->position.x - 40 * sin(((cTransformableCar->rotation.y - cCamera->rotExtraY)*PI)/180.0));
-    cTransformableCamera->position.z = (cTransformableCar->position.z - 40 * cos(((cTransformableCar->rotation.y - cCamera->rotExtraY)*PI)/180.0));
+void CalculatePositionCameraIA(CTransformable* cTransformableCar,CTransformable* cTransformableCamera, CCamera* cCamera){
+    cTransformableCamera->posY = cTransformableCar->posY + 20;
+    cTransformableCamera->posX = (cTransformableCar->posX - 40 * sin(((cTransformableCar->rotY - cCamera->rotExtraY)*PI)/180.0));
+    cTransformableCamera->posZ = (cTransformableCar->posZ - 40 * cos(((cTransformableCar->rotY - cCamera->rotExtraY)*PI)/180.0));
 }

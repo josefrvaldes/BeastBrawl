@@ -2,7 +2,7 @@
 #define __COMPONENT_H__
 
 enum CompType { 
-    PositionComp, 
+    LastPositionComp, 
     SpeedComp, 
     IdComp, 
     TypeComp, 

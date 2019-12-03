@@ -7,13 +7,16 @@
 #include "../Entities/GameObject.h"
 #include "../Entities/Camera.h"
 #include "../Entities/PowerUp.h"
+#include "../Entities/WayPoint.h"
 #include "../Systems/Physics.h"
 #include "../Managers/ManPowerUp.h"
+#include "../Managers/ManWayPoint.h"
 #include "../EventManager/EventManager.h"
 #include "../Facade/Render/RenderFacadeManager.h"
 #include "../Facade/Input/InputFacadeManager.h"
 #include "../Facade/Physics/PhysicsFacadeManager.h"
 #include "../Systems/Physics.h"
+#include "../Systems/PhysicsIA.h"
 #include "../fuzzyLogic/fuzzyLogic.h"
 #include "../behaviourTree/behaviourTree.h"
 #include "../../lib/glm/vec3.hpp"
@@ -36,6 +39,7 @@ class StateInGame : public State{
     private:
         EventManager* eventManager;
         Car* car;
+        Car* carIA;
         GameObject* ground;
         Camera* cam;
         RenderFacadeManager* renderFacadeManager;
@@ -45,6 +49,8 @@ class StateInGame : public State{
         InputFacade* inputEngine;
         PhysicsFacade* physicsEngine;
         ManPowerUp *manPowerUps;
+        ManWayPoint *manWayPoint;
+        PhysicsIA* physicsIA;
 
         int lastFPS = -1;
         uint32_t then;
