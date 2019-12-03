@@ -4,13 +4,15 @@
 #include <iostream>
 #include <map>
 
+#include "../../lib/glm/vec3.hpp"
+
 using namespace std;
 
 class WayPoint : public Entity{
 public:
     WayPoint();
     ~WayPoint();
-    WayPoint(float x, float y, float z);
+    WayPoint(glm::vec3 _position);
 
     float getPosX(){ return posX;}
     float getPosY(){ return posY;}

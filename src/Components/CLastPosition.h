@@ -18,7 +18,7 @@ public:
 
     friend ostream &operator<<(ostream &out, CLastPosition &c)
     {
-        out << "(" << c.x << "," << c.y << "," << c.z << ")";
+        cout << "(" << c.position.x << "," << c.position.y << "," << c.position.z << ")";
         return out;
     }
 

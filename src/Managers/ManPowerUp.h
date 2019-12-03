@@ -3,6 +3,7 @@
 #include <iostream>
 #include <map>
 #include <vector>
+#include "../../lib/glm/vec3.hpp"
 
 using namespace std;
 
@@ -15,7 +16,7 @@ public:
     ManPowerUp();
     ~ManPowerUp();
 
-    void CreatePowerUp(float x, float y, float z);
+    void CreatePowerUp(glm::vec3 _position);
     void CreatePowerUp();
     vector<PowerUp *> GetEntities() const {
         return powerUps;

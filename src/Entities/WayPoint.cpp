@@ -15,24 +15,21 @@ using namespace std;
 WayPoint::WayPoint()
 {
     // default values
-    float posX = 0.0,  posY = 0.0,  posZ = 0.0;
-    float rotX = 0.0,  rotY = 0.0,  rotZ = 0.0;
-    float scaX = 1.0,  scaY = 1.0,  scaZ = 1.0;
-    CTransformable* cTransformable = new CTransformable(posX, posY, posZ, rotX, rotY, rotZ, scaX, scaY, scaZ); 
+    CTransformable* cTransformable = new CTransformable(glm::vec3(0.0f,0.0f,0.0f), glm::vec3(0.0f,0.0f,0.0f), glm::vec3(1.0f,1.0f,1.0f)); 
     AddComponent(cTransformable);
     cout << "Acabamos de llamar al constructor default de powerup, su transformable es " << cTransformable << endl;
 }
 
-WayPoint::WayPoint(float pX, float pY, float pZ) 
+WayPoint::WayPoint(glm::vec3 _position) 
     : WayPoint(){
     CTransformable *cTransformable = (CTransformable *)m_components[CompType::TransformableComp];
-    cTransformable->posX = pX;
-    cTransformable->posY = pY;
-    cTransformable->posZ = pZ;
+    cTransformable->position.x = _position.x;
+    cTransformable->position.y = _position.y;
+    cTransformable->position.z = _position.z;
 
-    posX = pX;
-    posY = pY;
-    posZ = pZ;
+    posX = _position.x;
+    posY = _position.y;
+    posZ = _position.z;
 }
 
 

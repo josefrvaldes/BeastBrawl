@@ -94,11 +94,11 @@ StateInGame::StateInGame(){
     manWayPoint = new ManWayPoint();
 
     //CreatePowerUp(30, 20, 30);
-    manWayPoint->CreateWayPoint(-150.0,25.0,-150.0);
-    carIA = new Car(-150.0,20.0,-150.0);
-    manWayPoint->CreateWayPoint(150.0,25.0,-150.0);
-    manWayPoint->CreateWayPoint(150.0,25.0,150.0);
-    manWayPoint->CreateWayPoint(-150.0,25.0,150.0);
+    manWayPoint->CreateWayPoint(glm::vec3(-150.0f,25.0f,-150.0f));
+    carIA = new Car(glm::vec3(-150.0f,20.0f,-150.0f));
+    manWayPoint->CreateWayPoint(glm::vec3(150.0f,25.0f,-150.0f));
+    manWayPoint->CreateWayPoint(glm::vec3(150.0f,25.0f,150.0f));
+    manWayPoint->CreateWayPoint(glm::vec3(-150.0f,25.0f,150.0f));
     ground = new GameObject(glm::vec3(10.0f,10.0f,30.0f),    glm::vec3(0.0f,0.0f,0.0f),    glm::vec3(100.0f,1.0f,100.0f), "wall.jpg", "ninja.b3d");
     cam = new Camera(glm::vec3(10.0f,40.0f,30.0f),    glm::vec3(0.0f,0.0f,0.0f),    glm::vec3(1.0f,1.0f,1.0f));
 
@@ -198,7 +198,7 @@ fm.AddRule( *(new FzAND(Target_Far, Ammo_Low)), Undesirable);
 
     for(WayPoint *way : manWayPoint->GetEntities()){
         cout << "Vamos a crear mini puntos de control -> power ups de mientras" << endl;
-        manPowerUps->CreatePowerUp(way->getPosX(), way->getPosY(), way->getPosZ());
+        manPowerUps->CreatePowerUp(glm::vec3(way->getPosX(), way->getPosY(), way->getPosZ()));
     }
     //cout << "el tamanyo normal es: " << manWayPoint.size() << endl;
 

@@ -34,13 +34,13 @@ PowerUp::PowerUp()
     cout << "Acabamos de llamar al constructor default de powerup, su transformable es " << cTransformable << endl;
 }
 
-PowerUp::PowerUp(float posX, float posY, float posZ) 
+PowerUp::PowerUp(glm::vec3 _position) 
     : PowerUp()
 {
-    //CTransformable *cTransformable = (CTransformable *)m_components[CompType::TransformableComp];
-    //cTransformable->posX = posX;
-    //cTransformable->posY = posY;
-    //cTransformable->posZ = posZ;
+    CTransformable *cTransformable = (CTransformable *)m_components[CompType::TransformableComp];
+    cTransformable->position.x = _position.x;
+    cTransformable->position.y = _position.y;
+    cTransformable->position.z = _position.z;
 }
 
 

@@ -12,7 +12,7 @@ class PowerUp : public Entity
 
 public:
     PowerUp();
-    PowerUp(float x, float y, float z);
+    PowerUp(glm::vec3 _position);
     ~PowerUp();
 
 

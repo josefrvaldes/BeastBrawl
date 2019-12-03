@@ -16,8 +16,8 @@ ManWayPoint::~ManWayPoint(){
     waypoints.shrink_to_fit();
 }
 
-void ManWayPoint::CreateWayPoint(float x, float y, float z) {
-	WayPoint *p = new WayPoint(x, y, z);
+void ManWayPoint::CreateWayPoint(glm::vec3 _position) {
+	WayPoint *p = new WayPoint(_position);
     waypoints.push_back(p);
     cout << "Creado waypoints, ahora tenemos " << waypoints.size() << " waypoints" << endl;
 }

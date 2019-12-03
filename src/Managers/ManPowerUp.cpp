@@ -28,9 +28,9 @@ ManPowerUp::~ManPowerUp()
 }
 
 
-void ManPowerUp::CreatePowerUp(float x, float y, float z) 
+void ManPowerUp::CreatePowerUp(glm::vec3 _position) 
 {
-	PowerUp *p = new PowerUp(x, y, z);
+	PowerUp *p = new PowerUp(_position);
     powerUps.push_back(p);
 }
 

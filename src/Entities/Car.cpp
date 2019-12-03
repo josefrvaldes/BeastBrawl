@@ -59,6 +59,19 @@ Car::Car(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale,
 
 }
 
+
+
+Car::Car(glm::vec3 _position) 
+    : Car()
+{
+    CTransformable *cTransformable = (CTransformable *)m_components[CompType::TransformableComp];
+    cTransformable->position.x = _position.x;
+    cTransformable->position.y = _position.y;
+    cTransformable->position.z = _position.z;
+}
+
+
+
 Car::~Car()
 {
     
