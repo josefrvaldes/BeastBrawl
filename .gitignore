@@ -1,3 +1,6 @@
 obj/
-.vscode/
+.vscode/launch.json
+.vscode/c_cpp_properties.json
+.vscode/c_cpp_properties.json.old
+.vscode/settings.json
 Beast_Brawl

@@ -15,16 +15,13 @@ using namespace std;
 PowerUp::PowerUp()
 {
     // default values
-    float posX = 0.0,  posY = 0.0,  posZ = 0.0;
-    float rotX = 0.0,  rotY = 0.0,  rotZ = 0.0;
-    float scaX = 1.0,  scaY = 1.0,  scaZ = 1.0;
     string texture = "earth.jpg";
     string mesh    = "media/ninja.b3d";
     float maxSpeed = 20.0, acceleration = .15, friction = 0.1, slowDown = 0.25;
     
     CId* cId   = new CId();
     CType* cType = new CType(ModelType::Cube);
-    CTransformable* cTransformable = new CTransformable(posX, posY, posZ, rotX, rotY, rotZ, scaX, scaY, scaZ); 
+    CTransformable* cTransformable = new CTransformable(glm::vec3(0.0f,0.0f,0.0f), glm::vec3(0.0f,0.0f,0.0f), glm::vec3(1.0f,1.0f,1.0f)); 
     CTexture* cTexture = new CTexture(texture);
     CMesh* cMesh   = new CMesh(mesh);
     CCar* cCar = new CCar(maxSpeed, acceleration, friction, slowDown);
@@ -40,10 +37,10 @@ PowerUp::PowerUp()
 PowerUp::PowerUp(float posX, float posY, float posZ) 
     : PowerUp()
 {
-    CTransformable *cTransformable = (CTransformable *)m_components[CompType::TransformableComp];
-    cTransformable->posX = posX;
-    cTransformable->posY = posY;
-    cTransformable->posZ = posZ;
+    //CTransformable *cTransformable = (CTransformable *)m_components[CompType::TransformableComp];
+    //cTransformable->posX = posX;
+    //cTransformable->posY = posY;
+    //cTransformable->posZ = posZ;
 }
 
 

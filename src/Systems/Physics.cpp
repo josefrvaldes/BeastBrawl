@@ -118,6 +118,9 @@ void TurnLeft(Data d){
             //Aumentamos la rotacion hacia la izquierda
             cCar->wheelRotation -= 0.5;
         }
+        if(cCamera->rotExtraY > -15) {
+            cCamera->rotExtraY -= 0.5;
+        }
     }
     
     if(cCar->speed>=0)
@@ -159,6 +162,9 @@ void TurnRight(Data d){
         if(cCar->wheelRotation < 10){
             //Aumentamos la rotacion hacia la derecha
             cCar->wheelRotation += 0.5;
+        }
+        if(cCamera->rotExtraY < 15){
+            cCamera->rotExtraY += 0.5;
         }
     }
     
@@ -243,36 +249,36 @@ void NotTurning(Data d){
 
 //Calcula la posicion del coche (duda con las formulas preguntar a Jose)
 void CalculatePosition(CCar* cCar, CTransformable* cTransformable, Data d){
-    float angleRotation = (cTransformable->rotY * PI) /180.0;
+    float angleRotation = (cTransformable->rotation.y * PI) /180.0;
     
     //Modificamos la posicion en X y Z en funcion del angulo
-    cTransformable->posX += sin(angleRotation) * cCar->speed * d.deltaTime;
-    cTransformable->posZ += cos(angleRotation) * cCar->speed * d.deltaTime;
+    cTransformable->position.x += sin(angleRotation) * cCar->speed * d.deltaTime;
+    cTransformable->position.z += cos(angleRotation) * cCar->speed * d.deltaTime;
 
     //Si tiene rotacion, rotamos el coche
     if(cCar->wheelRotation != 0){
-        cTransformable->rotY += cCar->wheelRotation * 0.20;
+        cTransformable->rotation.y += cCar->wheelRotation * 0.20;
     }
 }
 
 
 //Calcula la posicion del coche (duda con las formulas preguntar a Jose)
 void CalculatePositionReverse(CCar* cCar, CTransformable* cTransformable, Data d){
-    float angleRotation = (cTransformable->rotY * PI) /180.0;
+    float angleRotation = (cTransformable->rotation.y * PI) /180.0;
     
     //Modificamos la posicion en X y Z en funcion del angulo
-    cTransformable->posX += sin(angleRotation) * cCar->speed * d.deltaTime;
-    cTransformable->posZ += cos(angleRotation) * cCar->speed * d.deltaTime;
+    cTransformable->position.x += sin(angleRotation) * cCar->speed * d.deltaTime;
+    cTransformable->position.z += cos(angleRotation) * cCar->speed * d.deltaTime;
 
     //Si tiene rotacion, rotamos el coche
     if(cCar->wheelRotation != 0){
-        cTransformable->rotY -= cCar->wheelRotation * 0.20;
+        cTransformable->rotation.y -= cCar->wheelRotation * 0.20;
     }
 }
 
 //Calcula la posicion de la camara (duda con las formulas preguntar a Jose)
 void CalculatePositionCamera(CTransformable* cTransformableCar,CTransformable* cTransformableCamera, CCamera* cCamera){
-    cTransformableCamera->posY = cTransformableCar->posY + 20;
-    cTransformableCamera->posX = (cTransformableCar->posX - 40 * sin(((cTransformableCar->rotY - cCamera->rotExtraY)*PI)/180.0));
-    cTransformableCamera->posZ = (cTransformableCar->posZ - 40 * cos(((cTransformableCar->rotY - cCamera->rotExtraY)*PI)/180.0));
+    cTransformableCamera->position.y = cTransformableCar->position.y + 20;
+    cTransformableCamera->position.x = (cTransformableCar->position.x - 40 * sin(((cTransformableCar->rotation.y - cCamera->rotExtraY)*PI)/180.0));
+    cTransformableCamera->position.z = (cTransformableCar->position.z - 40 * cos(((cTransformableCar->rotation.y - cCamera->rotExtraY)*PI)/180.0));
 }
