@@ -1,4 +1,3 @@
- 
 COMPILING_TEXT 	   := @echo -e "\033[0m \033[0;33m Compiling:\033[0m"
 COMPILING_TEXT_OK  := @echo -e "\033[0m \033[0;32m [All compiled succesfully]\033[0m"
 LINKING_TEXT       := @echo -e "\033[0m \033[0;33m Linking...\033[0m"
@@ -11,7 +10,7 @@ JUMP_LINE		   := @echo
 SOURCES  	:= $(wildcard *.cpp)
 OBJ_PATH    := obj
 SRC_PATH	:= src
-LIBS 	    := lib/irrlicht/libIrrlicht.so
+LIBS 	    := -L./lib/irrlicht -lIrrlicht
 INCLUDE     := -I.
 INCLUDE_IRR := -I /lib/irrlicht/irrlicht.h
 CC			:= g++
@@ -35,7 +34,7 @@ $(NAME_EXE): $(OBJSUBDIRS) $(ALLCPPSOBJ)
 	$(COMPILING_TEXT_OK)
 	$(JUMP_LINE)
 	$(LINKING_TEXT)
-	$(CC) -o $(NAME_EXE) $(patsubst $(SRC_PATH)%,$(OBJ_PATH)%,$(ALLCPPSOBJ)) $(INCLUDE) $(LIBS)
+	$(CC) -o $(NAME_EXE) $(patsubst $(SRC_PATH)%,$(OBJ_PATH)%,$(ALLCPPSOBJ)) $(INCLUDE) $(LIBS) 
 	$(LINKING_TEXT_OK)
 	$(JUMP_LINE)
 
@@ -58,7 +57,7 @@ info:
 
 .PHONY: exe
 exe:
-	@./$(NAME_EXE)
+	@sh ./$(NAME_EXE).sh
 
 .PHONY: clean
 clean:

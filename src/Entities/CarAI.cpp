@@ -1,4 +1,4 @@
-#include "Car.h"
+#include "CarAI.h"
 #include "../Components/CLastPosition.h"
 #include "../Components/CSpeed.h"
 #include "../Components/CId.h"
@@ -7,14 +7,15 @@
 #include "../Components/CMesh.h"
 #include "../Components/CTransformable.h"
 #include "../Components/CCar.h"
+#include "../Components/CWayPoint.h"
 #include <iostream>
 
 class Position;
 using namespace std;
 
-Car::Car(){
+CarAI::CarAI(){
     // default values
-    glm::vec3 pos   = glm::vec3(-20.0f, 20.0f, -300.0f);
+    glm::vec3 pos   = glm::vec3(10.0f, 20.0f, 30.0f);
     glm::vec3 rot   = glm::vec3(0.0f, 0.0f, 0.0f);
     glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f);
     string texture = "particle.bmp";
@@ -27,16 +28,18 @@ Car::Car(){
     CTexture* cTexture = new CTexture(texture);
     CMesh* cMesh   = new CMesh(mesh);
     CCar* cCar = new CCar(maxSpeed, acceleration, friction, slowDown);
+    CWayPoint* cWayPoint = new CWayPoint();
     AddComponent(cId);
     AddComponent(cType);
     AddComponent(cTransformable);
     AddComponent(cTexture);
     AddComponent(cMesh);
     AddComponent(cCar);
+    AddComponent(cWayPoint);
     cout << "Acabamos de llamar al constructor default de car, su transformable es " << cTransformable << endl;
 }
 
-Car::Car(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale,
+CarAI::CarAI(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale,
     string texture, string mesh, 
     float maxSpeed, float acceleration , float carFriction, float carSlowDown) 
 {
@@ -61,8 +64,8 @@ Car::Car(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale,
 
 
 
-Car::Car(glm::vec3 _position) 
-    : Car()
+CarAI::CarAI(glm::vec3 _position) 
+    : CarAI()
 {
     CTransformable *cTransformable = (CTransformable *)m_components[CompType::TransformableComp];
     cTransformable->position.x = _position.x;
@@ -72,7 +75,14 @@ Car::Car(glm::vec3 _position)
 
 
 
-Car::~Car()
+CarAI::~CarAI()
 {
+    
+}
+
+
+void CarAI::SetWayPoint(glm::vec3 waypoint){
+    CWayPoint *cWayPoint = (CWayPoint *)m_components[CompType::WayPointComp];
+    cWayPoint->position = waypoint;
     
 }

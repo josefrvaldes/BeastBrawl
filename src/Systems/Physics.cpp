@@ -1,7 +1,7 @@
 #include "Physics.h"
 
-void CalculatePosition(CCar* cCar, CTransformable* cTransformable, Data d);
-void CalculatePositionReverse(CCar* cCar, CTransformable* cTransformable, Data d);
+void CalculatePosition(CCar* cCar, CTransformable* cTransformable, float deltaTime);
+void CalculatePositionReverse(CCar* cCar, CTransformable* cTransformable, float deltaTime);
 void CalculatePositionCamera(CTransformable* cTransformableCar,CTransformable* cTransformableCamera, CCamera* cCamera);
 
 //TODO: Cambiar en los punteros a funciones en vez de ir pasandole datos por Event cogerlos del EntityManager
@@ -44,6 +44,7 @@ void Accelerate(Data d){
     auto mapCar = components.find(CompType::CarComp);
     auto cCar        = static_cast<CCar*>(mapCar->second);
 
+
     //Aumentamos la velocidad
     cCar->speed += cCar->acceleration;
     if(cCar->speed > cCar->maxSpeed){
@@ -51,9 +52,9 @@ void Accelerate(Data d){
     }
 
     if(cCar->speed>=0)
-        CalculatePosition(cCar,cTransformable, d);
+        CalculatePosition(cCar,cTransformable, d.deltaTime);
     else
-        CalculatePositionReverse(cCar,cTransformable, d);
+        CalculatePositionReverse(cCar,cTransformable, d.deltaTime);
     CalculatePositionCamera(cTransformable,cTransformableCam,cCamera);
 }
 
@@ -79,9 +80,9 @@ void Decelerate(Data d){
     }
     
     if(cCar->speed>=0)
-        CalculatePosition(cCar,cTransformable, d);
+        CalculatePosition(cCar,cTransformable, d.deltaTime);
     else
-        CalculatePositionReverse(cCar,cTransformable, d);
+        CalculatePositionReverse(cCar,cTransformable, d.deltaTime);
     CalculatePositionCamera(cTransformable,cTransformableCam,cCamera);
 }
 
@@ -140,9 +141,9 @@ void TurnLeft(Data d){
     }
     
     if(cCar->speed>=0)
-        CalculatePosition(cCar,cTransformable, d);
+        CalculatePosition(cCar,cTransformable, d.deltaTime);
     else
-        CalculatePositionReverse(cCar,cTransformable, d);
+        CalculatePositionReverse(cCar,cTransformable, d.deltaTime);
     CalculatePositionCamera(cTransformable,cTransformableCam,cCamera);
 
 }
@@ -201,9 +202,9 @@ void TurnRight(Data d){
     }
     
     if(cCar->speed>=0)
-        CalculatePosition(cCar,cTransformable, d);
+        CalculatePosition(cCar,cTransformable, d.deltaTime);
     else
-        CalculatePositionReverse(cCar,cTransformable, d);
+        CalculatePositionReverse(cCar,cTransformable, d.deltaTime);
     CalculatePositionCamera(cTransformable,cTransformableCam,cCamera);
 }
 
@@ -234,9 +235,9 @@ void NotAcceleratingOrDecelerating(Data d){
     }
 
     if(cCar->speed>=0)
-        CalculatePosition(cCar,cTransformable, d);
+        CalculatePosition(cCar,cTransformable, d.deltaTime);
     else
-        CalculatePositionReverse(cCar,cTransformable, d);
+        CalculatePositionReverse(cCar,cTransformable, d.deltaTime);
     CalculatePositionCamera(cTransformable,cTransformableCam,cCamera);
 }
 
@@ -273,19 +274,19 @@ void NotTurning(Data d){
     }
 
     if(cCar->speed>=0)
-        CalculatePosition(cCar,cTransformable, d);
+        CalculatePosition(cCar,cTransformable, d.deltaTime);
     else
-        CalculatePositionReverse(cCar,cTransformable, d);
+        CalculatePositionReverse(cCar,cTransformable, d.deltaTime);
     CalculatePositionCamera(cTransformable,cTransformableCam,cCamera);
 }
 
 //Calcula la posicion del coche (duda con las formulas preguntar a Jose)
-void CalculatePosition(CCar* cCar, CTransformable* cTransformable, Data d){
+void CalculatePosition(CCar* cCar, CTransformable* cTransformable, float deltaTime){
     float angleRotation = (cTransformable->rotation.y * PI) /180.0;
     
     //Modificamos la posicion en X y Z en funcion del angulo
-    cTransformable->position.x += sin(angleRotation) * cCar->speed * d.deltaTime;
-    cTransformable->position.z += cos(angleRotation) * cCar->speed * d.deltaTime;
+    cTransformable->position.x += sin(angleRotation) * cCar->speed * deltaTime;
+    cTransformable->position.z += cos(angleRotation) * cCar->speed * deltaTime;
 
     //Si tiene rotacion, rotamos el coche
     if(cCar->wheelRotation != 0){
@@ -295,12 +296,12 @@ void CalculatePosition(CCar* cCar, CTransformable* cTransformable, Data d){
 
 
 //Calcula la posicion del coche (duda con las formulas preguntar a Jose)
-void CalculatePositionReverse(CCar* cCar, CTransformable* cTransformable, Data d){
+void CalculatePositionReverse(CCar* cCar, CTransformable* cTransformable, float deltaTime){
     float angleRotation = (cTransformable->rotation.y * PI) /180.0;
     
     //Modificamos la posicion en X y Z en funcion del angulo
-    cTransformable->position.x += sin(angleRotation) * cCar->speed * d.deltaTime;
-    cTransformable->position.z += cos(angleRotation) * cCar->speed * d.deltaTime;
+    cTransformable->position.x += sin(angleRotation) * cCar->speed * deltaTime;
+    cTransformable->position.z += cos(angleRotation) * cCar->speed * deltaTime;
 
     //Si tiene rotacion, rotamos el coche
     if(cCar->wheelRotation != 0){

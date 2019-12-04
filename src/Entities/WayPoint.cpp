@@ -20,16 +20,8 @@ WayPoint::WayPoint()
     cout << "Acabamos de llamar al constructor default de powerup, su transformable es " << cTransformable << endl;
 }
 
-WayPoint::WayPoint(glm::vec3 _position) 
-    : WayPoint(){
-    CTransformable *cTransformable = (CTransformable *)m_components[CompType::TransformableComp];
-    cTransformable->position.x = _position.x;
-    cTransformable->position.y = _position.y;
-    cTransformable->position.z = _position.z;
-
-    posX = _position.x;
-    posY = _position.y;
-    posZ = _position.z;
+WayPoint::WayPoint(glm::vec3 _position) {
+    position = _position;
 }
 
 

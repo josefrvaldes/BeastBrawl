@@ -7,12 +7,6 @@
 class Position;
 using namespace std;
 
-void EjecutarMeHanCogido(Data d) 
-{
-    cout << "Han cogido un powerup, madafaka!!" << endl;
-}
-
-
 
 ManPowerUp::ManPowerUp()
 {
@@ -44,8 +38,8 @@ void ManPowerUp::CreatePowerUp()
 
 void ManPowerUp::SubscribeToEvents() 
 {
-    EventManager *em = EventManager::GetInstance();
-    em->Suscribe(Listener {EventType::POWER_UP_COGIDO, EjecutarMeHanCogido, "EjecutarMeHanCogido"});
+    //EventManager *em = EventManager::GetInstance();
+    //em->Suscribe(Listener {EventType::POWER_UP_COGIDO, EjecutarMeHanCogido, "EjecutarMeHanCogido"});
 }
 
 

@@ -3,7 +3,7 @@
 
 using namespace std;
 
-
+ #pragma region Behaviour Tree
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //                           COMPROBAR BEHAVIOR TREE
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -79,6 +79,7 @@ using namespace std;
 //    }
 //};
 
+ #pragma endregion Behaviour Tree
 
 
 
@@ -95,10 +96,13 @@ StateInGame::StateInGame(){
 
     //CreatePowerUp(30, 20, 30);
     manWayPoint->CreateWayPoint(glm::vec3(-150.0f,25.0f,-150.0f));
-    carIA = new Car(glm::vec3(-150.0f,20.0f,-150.0f));
+    carAI = new CarAI(glm::vec3(-199.0f,20.0f,150.0f));
     manWayPoint->CreateWayPoint(glm::vec3(150.0f,25.0f,-150.0f));
     manWayPoint->CreateWayPoint(glm::vec3(150.0f,25.0f,150.0f));
-    manWayPoint->CreateWayPoint(glm::vec3(-150.0f,25.0f,150.0f));
+    manWayPoint->CreateWayPoint(glm::vec3(-200.0f,25.0f,150.0f));
+    carAI->SetWayPoint(manWayPoint->GetEntities()[3]->position);
+
+
     ground = new GameObject(glm::vec3(10.0f,10.0f,30.0f),    glm::vec3(0.0f,0.0f,0.0f),    glm::vec3(100.0f,1.0f,100.0f), "wall.jpg", "ninja.b3d");
     cam = new Camera(glm::vec3(10.0f,40.0f,30.0f),    glm::vec3(0.0f,0.0f,0.0f),    glm::vec3(1.0f,1.0f,1.0f));
 
@@ -117,9 +121,10 @@ StateInGame::StateInGame(){
     inputEngine    = inputFacadeManager->GetInputFacade();
     physicsEngine  = physicsFacadeManager->GetPhysicsFacade();
 
-    physicsIA = new PhysicsIA();
+    physicsAI = new PhysicsAI();
     
 
+    #pragma region FuzzyLogic
 // --------------------------- FUZZY LOGIC  "COUT TEMPORALES" ----------------------------------
 FuzzyLogic fm;
 
@@ -194,16 +199,20 @@ fm.AddRule( *(new FzAND(Target_Far, Ammo_Low)), Undesirable);
 //    } // If the operation starting from the root fails, keep trying until it succeeds.
 //	cout << "--------------------" << endl;
 //
+
+    #pragma endregion 
+   
+   
     //wayPoint1 = new WayPoint();
 
     for(WayPoint *way : manWayPoint->GetEntities()){
         cout << "Vamos a crear mini puntos de control -> power ups de mientras" << endl;
-        manPowerUps->CreatePowerUp(glm::vec3(way->getPosX(), way->getPosY(), way->getPosZ()));
+        manPowerUps->CreatePowerUp(glm::vec3(way->position));
     }
     //cout << "el tamanyo normal es: " << manWayPoint.size() << endl;
 
     renderEngine->FacadeAddObject(car);
-    renderEngine->FacadeAddObject(carIA);
+    renderEngine->FacadeAddObject(carAI);
     renderEngine->FacadeAddObject(ground);
     
     for(PowerUp *pu : manPowerUps->GetEntities()) 
@@ -242,9 +251,10 @@ void StateInGame::Update()
     
     //inputEngine->CheckInputs(*car);
     renderEngine->FacadeCheckInput(frameDeltaTime,car,cam);
-    physicsEngine->Update(car, cam);
+    physicsEngine->UpdateCar(car, cam);
+    physicsEngine->UpdateCarAI(carAI);
 
-    physicsIA->update(manWayPoint->GetEntities() , carIA);
+    physicsAI->Update(manWayPoint->GetEntities() , carAI, frameDeltaTime);
 
     renderEngine->FacadeDraw();
 

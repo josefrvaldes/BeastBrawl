@@ -1,5 +1,4 @@
-#ifndef __CAR_H__
-#define __CAR_H__
+#pragma once
 
 #include "Entity.h"
 #include "../../lib/glm/vec3.hpp"
@@ -16,8 +15,5 @@ public:
     Car(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale, string texture, string mesh, float maxSpeed, float acceleration, float carFriction, float carSlowDown);
     ~Car();
 
-
-
 };
 
-#endif

@@ -7,8 +7,10 @@
 #include "../Components/CCamera.h"
 #include "../Components/Component.h"
 #include "../Components/CCar.h"
+#include "../Components/CWayPoint.h"
 
-#include "../Entities/Car.h"
+#include "../Entities/CarAI.h"
+#include "../Entities/Entity.h"
 
 #include "../Managers/ManWayPoint.h"
 #include "../Entities/WayPoint.h"
@@ -17,18 +19,19 @@
 #include "../EventManager/Event.h"
 
 #include <vector>
+#include <stdlib.h>     /* srand, rand */
 
 #include <math.h>
 using namespace std;
 #define PI 3.141592
 
-class PhysicsIA
+class PhysicsAI
 {
 public:
-    PhysicsIA();
-    ~PhysicsIA();
+    PhysicsAI();
+    ~PhysicsAI();
 
-    void update(vector<WayPoint *> wayPoints, Car* car);
+    void Update(vector<WayPoint *> wayPoints, CarAI* car, float deltaTime);
 
 protected:
 private:

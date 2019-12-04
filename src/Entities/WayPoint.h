@@ -14,10 +14,8 @@ public:
     ~WayPoint();
     WayPoint(glm::vec3 _position);
 
-    float getPosX(){ return posX;}
-    float getPosY(){ return posY;}
-    float getPosZ(){ return posZ;}   
 
+    glm::vec3 position;
+    float radious = 5.0;
 private:
-    float posX, posY, posZ;
 };
