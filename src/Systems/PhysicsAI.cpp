@@ -18,8 +18,8 @@ float calculateAngle(CWayPoint* wayPointNext, CarAI* car){
     
     //Calculo de angulo en radianes
     //Fuente: https://math.stackexchange.com/questions/1201337/finding-the-angle-between-two-points
-    float x = (cTransformable->position.x - wayPointNext->position.x);
-    float z = (cTransformable->position.z - wayPointNext->position.z) ;
+    float x = (wayPointNext->position.x - cTransformable->position.x );
+    float z = (wayPointNext->position.z - cTransformable->position.z);
 
     float angle = atan2(z,x);
 
@@ -45,11 +45,12 @@ void PhysicsAI::Update(vector<WayPoint *> wayPoints, CarAI* car, float deltaTime
         && (cWayPoint->position.x - radious) < cTransformable->position.x && (cWayPoint->position.x + radious) >= cTransformable->position.x){
             //Ha llegado al rango vamos a buscarle otro waypoint
             //TODO: Ya veremos como gestionamos el cambiar de waypoint de momento lo pongo al azar
+            int indx = rand() % wayPoints.size();
             cout << "Cambiamos de WayPoint\n";
-            car->SetWayPoint(wayPoints[3]->position);
+            car->SetWayPoint(wayPoints[indx]->position);
         }
-    //cTransformable->position.x += sin(angle) * 2;
-    //cTransformable->position.z += cos(angle) * 2;
+    cTransformable->position.x += cos(angle) * 5;
+    cTransformable->position.z += sin(angle) * 5;
     //Aumentamos la velocidad
     /**
     cCar->speed += cCar->acceleration;
