@@ -1,8 +1,8 @@
 #include "PhysicsAI.h"
 
 
-void CalculatePositionAI(CCar* cCar, CTransformable* cTransformable, float deltaTime);
-void CalculatePositionReverseAI(CCar* cCar, CTransformable* cTransformable, float deltaTime);
+void CalculatePositionAI(CCar* cCar, CTransformable* cTransformable, float deltaTime, float angle);
+void CalculatePositionReverseAI(CCar* cCar, CTransformable* cTransformable, float deltaTime, float angle);
 
 
 PhysicsAI::PhysicsAI(){
@@ -106,6 +106,12 @@ void PhysicsAI::Update(vector<WayPoint *> wayPoints, CarAI* car, float deltaTime
             int indx = rand() % wayPoints.size();
             cout << "Cambiamos de WayPoint\n";
             car->SetWayPoint(wayPoints[indx]->position);
+    }else{
+        //Aumentamos la velocidad
+        cCar->wheelRotation = angle;
+        cCar->speed += cCar->acceleration;
+        if(cCar->speed > cCar->maxSpeed){
+            cCar->speed = cCar->maxSpeed;
         }
 
     float angle = calculateAngle(cWayPoint, car);
@@ -136,21 +142,21 @@ void PhysicsAI::Update(vector<WayPoint *> wayPoints, CarAI* car, float deltaTime
         cCar->speed = cCar->maxSpeed;
     }
 
-    if(cCar->speed>=0)
-        CalculatePositionAI(cCar,cTransformable, deltaTime);
-    else
-        CalculatePositionReverseAI(cCar,cTransformable, deltaTime);
-    */
+        if(cCar->speed>=0){
+            CalculatePositionAI(cCar,cTransformable,deltaTime,angle);            
+        }
+        
+    }
+    
 }
 
 
 //Calcula la posicion del coche (duda con las formulas preguntar a Jose)
-void CalculatePositionAI(CCar* cCar, CTransformable* cTransformable, float deltaTime){
-    float angleRotation = (cTransformable->rotation.y * PI) /180.0;
+void CalculatePositionAI(CCar* cCar, CTransformable* cTransformable, float deltaTime, float angle){
     
     //Modificamos la posicion en X y Z en funcion del angulo
-    cTransformable->position.x += sin(angleRotation) * cCar->speed * deltaTime;
-    cTransformable->position.z += cos(angleRotation) * cCar->speed * deltaTime;
+    cTransformable->position.x += cos(angle) * cCar->speed * deltaTime;
+    cTransformable->position.z += sin(angle) * cCar->speed * deltaTime;
 
     //Si tiene rotacion, rotamos el coche
     if(cCar->wheelRotation != 0){
@@ -160,12 +166,11 @@ void CalculatePositionAI(CCar* cCar, CTransformable* cTransformable, float delta
 
 
 //Calcula la posicion del coche (duda con las formulas preguntar a Jose)
-void CalculatePositionReverseAI(CCar* cCar, CTransformable* cTransformable, float deltaTime){
-    float angleRotation = (cTransformable->rotation.y * PI) /180.0;
+void CalculatePositionReverseAI(CCar* cCar, CTransformable* cTransformable, float deltaTime, float angle){
     
     //Modificamos la posicion en X y Z en funcion del angulo
-    cTransformable->position.x += sin(angleRotation) * cCar->speed * deltaTime;
-    cTransformable->position.z += cos(angleRotation) * cCar->speed * deltaTime;
+    cTransformable->position.x += cos(angle) * cCar->speed * deltaTime;
+    cTransformable->position.z += sin(angle) * cCar->speed * deltaTime;
 
     //Si tiene rotacion, rotamos el coche
     if(cCar->wheelRotation != 0){
