@@ -35,11 +35,15 @@ public:
 
     void InitPhysicsIA(CarAI* car);
     void Update(vector<WayPoint *> wayPoints, CarAI* car, float deltaTime);
-    void fuzzyRulesVelocity(CarAI* car);
+    void fuzzyRules(CarAI* car);
+    void fuzzyRulesVelocity(float maxSpeed, float minSpeed, float accelerationCar);
+    void fuzzyRulesAngle();
     float calculateFuzzyVelocity(float speedCar, float angle);
+    float calculateFuzzyDirection(float distance, float direction);
 
 protected:
 private:
     uint32_t actualWayPoint = 0;
     FuzzyLogic flVelocity;
+    FuzzyLogic flAngle;
 };
