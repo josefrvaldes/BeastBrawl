@@ -18,6 +18,8 @@
 #include "../EventManager/EventManager.h"
 #include "../EventManager/Event.h"
 
+#include "../fuzzyLogic/fuzzyLogic.h"
+
 #include <vector>
 #include <stdlib.h>     /* srand, rand */
 
@@ -31,9 +33,13 @@ public:
     PhysicsAI();
     ~PhysicsAI();
 
+    void InitPhysicsIA(CarAI* car);
     void Update(vector<WayPoint *> wayPoints, CarAI* car, float deltaTime);
+    void fuzzyRulesVelocity(CarAI* car);
+    float calculateFuzzyVelocity(float speedCar, float angle);
 
 protected:
 private:
     uint32_t actualWayPoint = 0;
+    FuzzyLogic flVelocity;
 };

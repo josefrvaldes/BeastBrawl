@@ -74,7 +74,7 @@ void Decelerate(Data d){
     auto cCar        = static_cast<CCar*>(mapCar->second);
 
     //Reducimos la velocidad
-    cCar->speed -= cCar->acceleration;
+    cCar->speed -= cCar->slowDown;
     if(cCar->speed < cCar->reverseMaxSpeed){ // no se supere la velocidad marcha atras
         cCar->speed = cCar->reverseMaxSpeed;
     }
