@@ -20,7 +20,7 @@ CarAI::CarAI(){
     glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f);
     string texture = "particle.bmp";
     string mesh    = "media/ninja.b3d";
-    float maxSpeed = 20.0, acceleration = .15, friction = 0.1, slowDown = 0.25;
+    float maxSpeed = 20.0, acceleration = 0.15, friction = 0.1, slowDown = 0.25;
     
     CId* cId   = new CId();
     CType* cType = new CType(ModelType::Cube);

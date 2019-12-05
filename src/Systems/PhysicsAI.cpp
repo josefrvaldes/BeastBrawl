@@ -18,14 +18,13 @@ void PhysicsAI::fuzzyRulesVelocity(CarAI* car){
     float maxSpeed = cCar->maxSpeed;
     float minSpeed = cCar->reverseMaxSpeed;
     float accelerationCar = cCar->acceleration;
-    float breakCar = cCar->slowDown;
     //float algo = cCar->
 
 
     FuzzyVariable& ActualVelocity = flVelocity.CreateFLV("ActualVelocity");
-    FzSet Velocity_Slow = ActualVelocity.AddLeftShoulderSet("Velocity_Slow", minSpeed, minSpeed/2, 0);
-    FzSet Velocity_Normal = ActualVelocity.AddTriangularSet("Velocity_Normal", minSpeed/2, 0,maxSpeed/2);
-    FzSet Velocity_High = ActualVelocity.AddRightShoulderSet("Velocity_High", 0, maxSpeed/2, maxSpeed);
+    FzSet Velocity_Slow = ActualVelocity.AddLeftShoulderSet("Velocity_Slow", minSpeed, 0, 5);
+    FzSet Velocity_Normal = ActualVelocity.AddTriangularSet("Velocity_Normal", 0, 5, maxSpeed/2);
+    FzSet Velocity_High = ActualVelocity.AddRightShoulderSet("Velocity_High", 5, maxSpeed/2, maxSpeed);
 
     FuzzyVariable& Angle = flVelocity.CreateFLV("Angle");
     FzSet Angle_Slow = Angle.AddLeftShoulderSet("Angle_Slow", 0, 30, 60);
@@ -38,8 +37,8 @@ void PhysicsAI::fuzzyRulesVelocity(CarAI* car){
     //FzSet Distance_Far = Distance.AddRightShoulderSet("Distance_Far", 10, 30, 40);
 
     FuzzyVariable& Acceleration = flVelocity.CreateFLV("Acceleration");
-    FzSet Accelerate_Brake = Acceleration.AddLeftShoulderSet("Accelerate_Brake", breakCar, breakCar/2, 0);
-    FzSet Accelerate_None = Acceleration.AddTriangularSet("Accelerate_None", breakCar/2, 0,accelerationCar/2);
+    FzSet Accelerate_Brake = Acceleration.AddLeftShoulderSet("Accelerate_Brake", -accelerationCar, -accelerationCar/2, 0);
+    FzSet Accelerate_None = Acceleration.AddTriangularSet("Accelerate_None", -accelerationCar/2, 0,accelerationCar/2);
     FzSet Accelerate_Max = Acceleration.AddRightShoulderSet("Accelerate_Max", 0, accelerationCar/2, accelerationCar);
     // To-Do: revisar el new por que no se tiene que hacer
     flVelocity.AddRule( *(new FzAND(Velocity_Slow, Angle_Slow)), Accelerate_Max);
@@ -80,7 +79,9 @@ float PhysicsAI::calculateFuzzyVelocity(float speedCar, float angle){
     flVelocity.Fuzzify("ActualVelocity", speedCar); // AQUI ES DONDE SE LLAMA AL CALCULATEDOM()
     flVelocity.Fuzzify("Angle", angle);
 
-    return flVelocity.DeFuzzify("Acceleration");  
+    float defuzzificacion = flVelocity.DeFuzzify("Acceleration"); 
+    std::cout << "LA DEFUZZIFICACION DA:  " << defuzzificacion << std::endl;
+    return defuzzificacion;
 }
 
 void PhysicsAI::InitPhysicsIA(CarAI* car){
@@ -116,7 +117,9 @@ void PhysicsAI::Update(vector<WayPoint *> wayPoints, CarAI* car, float deltaTime
             angleRange = angle;
 
         cout << "Angulo Positivo: " << angleRange*180/PI << endl;
-        float fuzzyAceleration = calculateFuzzyVelocity(cCar->speed, angleRange);
+        if(cCar->speed == 0)
+            cCar->speed = 20;
+        float fuzzyAceleration = calculateFuzzyVelocity(cCar->speed, angleRange*180/PI);
         //Aumentamos la velocidad
         cCar->wheelRotation = angle;
         cCar->speed += fuzzyAceleration;

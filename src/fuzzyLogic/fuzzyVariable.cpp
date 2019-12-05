@@ -59,8 +59,8 @@ double FuzzyVariable::DeFuzzifyMaxAv(){
         numerador += (*actualSet).second->GetRepresentativeVal() * (*actualSet).second->GetDOM();
         denominador += (*actualSet).second->GetDOM();
 
-        std::cout << "Valor Representativo de " << (*actualSet).first  << ": " << (*actualSet).second->GetRepresentativeVal() << std::endl;
-        std::cout << "Valor DOM de " << (*actualSet).first << ": " << (*actualSet).second->GetDOM() << std::endl;  // T0-Do :  ALGO DEL GetDOM ESTA MAL !!!!
+        //std::cout << "Valor Representativo de " << (*actualSet).first  << ": " << (*actualSet).second->GetRepresentativeVal() << std::endl;
+        //std::cout << "Valor DOM de " << (*actualSet).first << ": " << (*actualSet).second->GetDOM() << std::endl;  // T0-Do :  ALGO DEL GetDOM ESTA MAL !!!!
     }
 
     if(denominador!=0)
