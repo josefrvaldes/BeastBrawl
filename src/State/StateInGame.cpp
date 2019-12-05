@@ -98,11 +98,8 @@ StateInGame::StateInGame(){
     manWayPoint->CreateWayPoint(glm::vec3(-10.0f,25.0f,-150.0f));
     carAI = new CarAI(glm::vec3(400.0f,20.0f,-150.0f));
     manWayPoint->CreateWayPoint(glm::vec3(150.0f,25.0f,-150.0f));
-    manWayPoint->CreateWayPoint(glm::vec3(58.0f,25.0f,150.0f));
+    manWayPoint->CreateWayPoint(glm::vec3(150.0f,25.0f,150.0f));
     manWayPoint->CreateWayPoint(glm::vec3(-150.0f,25.0f,150.0f));
-    manWayPoint->CreateWayPoint(glm::vec3(-20.0f,25.0f,10.0f));
-    manWayPoint->CreateWayPoint(glm::vec3(-150.0f,25.0f,-90.0f));
-    manWayPoint->CreateWayPoint(glm::vec3(-300.0f,25.0f,150.0f));
     carAI->SetWayPoint(manWayPoint->GetEntities()[3]->position);
 
 
