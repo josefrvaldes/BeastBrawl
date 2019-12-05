@@ -94,6 +94,7 @@ void PhysicsAI::Update(vector<WayPoint *> wayPoints, CarAI* car, float deltaTime
     auto cWayPoint     = static_cast<CWayPoint*>(components[CompType::WayPointComp]);
     auto cCar        = static_cast<CCar*>(components[CompType::CarComp]);
     float angleRange = 0;
+    float angle = 0;
     float radious = cWayPoint->radious;
 
     //TODO: Cambiar por valores del coche y todas esas vainas
@@ -107,27 +108,21 @@ void PhysicsAI::Update(vector<WayPoint *> wayPoints, CarAI* car, float deltaTime
             cout << "Cambiamos de WayPoint\n";
             car->SetWayPoint(wayPoints[indx]->position);
     }else{
+
+        angle = calculateAngle(cWayPoint, car);
+        if (angle < 0)
+            angleRange = angle*(-1);
+        else
+            angleRange = angle;
+
+        cout << "Angulo Positivo: " << angleRange*180/PI << endl;
+        float fuzzyAceleration = calculateFuzzyVelocity(cCar->speed, angleRange);
         //Aumentamos la velocidad
         cCar->wheelRotation = angle;
-        cCar->speed += cCar->acceleration;
+        cCar->speed += fuzzyAceleration;
         if(cCar->speed > cCar->maxSpeed){
             cCar->speed = cCar->maxSpeed;
         }
-
-    float angle = calculateAngle(cWayPoint, car);
-    if (angle < 0)
-        angleRange = angle*(-1);
-    else
-        angleRange = angle;
-    cout << "Angulo Positivo: " << angleRange*180/PI << endl;
-
-    float fuzzyAceleration = calculateFuzzyVelocity(cCar->speed, angleRange);
-
-
-    //lo que modificara la defizzificacion sera la velocidad
-    cCar->speed += fuzzyAceleration;
-    if(cCar->speed > cCar->maxSpeed){
-        cCar->speed = cCar->maxSpeed;
     }
 
 
@@ -146,7 +141,7 @@ void PhysicsAI::Update(vector<WayPoint *> wayPoints, CarAI* car, float deltaTime
             CalculatePositionAI(cCar,cTransformable,deltaTime,angle);            
         }
         
-    }
+    }*/
     
 }
 
