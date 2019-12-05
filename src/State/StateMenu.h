@@ -8,10 +8,10 @@
 class StateMenu : public State{
     public:
         StateMenu();
-        virtual ~StateMenu();
+        ~StateMenu();
         void Update();
         void Render();
-        virtual States GetState() { return State::States::MENU; };
+        States GetState() { return State::States::MENU; };
 
 
     private:

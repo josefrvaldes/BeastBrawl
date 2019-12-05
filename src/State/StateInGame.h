@@ -27,10 +27,10 @@
 class StateInGame : public State{
     public:
         StateInGame();
-        virtual ~StateInGame();
+        ~StateInGame();
         void Update();
         void Render();
-        virtual States GetState() { return State::States::INGAME; };
+        States GetState() { return State::States::INGAME; };
 
 
     private:

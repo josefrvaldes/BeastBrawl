@@ -7,12 +7,20 @@ using namespace std;
 
 int main()
 {
-
-    Game *game = Game::GetInstance();
+    try
+    {
+       Game *game = Game::GetInstance();
 
     
-    game->SetState(State::States::INGAME);
-    game->InitGame();
+        game->SetState(State::States::INGAME);
+        game->InitGame();
+    }
+    catch(...)
+    {
+        std::cout << "Algo ha fallado" << std::endl;
+    }
+    
+    
 	
 	return 0;
 }

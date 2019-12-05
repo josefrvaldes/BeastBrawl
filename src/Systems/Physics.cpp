@@ -121,6 +121,22 @@ void TurnLeft(Data d){
         if(cCamera->rotExtraY > -15) {
             cCamera->rotExtraY -= 0.5;
         }
+    }else{
+        if(cCar->wheelRotation >= 0.7){
+            cCar->wheelRotation -= 0.7;
+        }else if(cCar->wheelRotation <= -0.7){
+            cCar->wheelRotation += 0.7;
+        }else{
+            cCar->wheelRotation = 0;
+        }
+
+        if(cCamera->rotExtraY >= 0.7){
+            cCamera->rotExtraY -= 0.7;
+        }else if(cCamera->rotExtraY <= -0.7){
+            cCamera->rotExtraY += 0.7;
+        }else{
+            cCamera->rotExtraY = 0;        
+        }
     }
     
     if(cCar->speed>=0)
@@ -165,6 +181,22 @@ void TurnRight(Data d){
         }
         if(cCamera->rotExtraY < 15){
             cCamera->rotExtraY += 0.5;
+        }
+    }else{
+        if(cCar->wheelRotation >= 0.7){
+            cCar->wheelRotation -= 0.7;
+        }else if(cCar->wheelRotation <= -0.7){
+            cCar->wheelRotation += 0.7;
+        }else{
+            cCar->wheelRotation = 0;
+        }
+
+        if(cCamera->rotExtraY >= 0.7){
+            cCamera->rotExtraY -= 0.7;
+        }else if(cCamera->rotExtraY <= -0.7){
+            cCamera->rotExtraY += 0.7;
+        }else{
+            cCamera->rotExtraY = 0;        
         }
     }
     
