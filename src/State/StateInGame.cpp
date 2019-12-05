@@ -253,13 +253,13 @@ void StateInGame::Update()
     const float frameDeltaTime = (float)(now - then) / 100.0;
     then = now;
 
-    
+    physicsAI->Update(manWayPoint->GetEntities() , carAI, frameDeltaTime);
     //inputEngine->CheckInputs(*car);
     renderEngine->FacadeCheckInput(frameDeltaTime,car,cam);
     physicsEngine->UpdateCar(car, cam);
     physicsEngine->UpdateCarAI(carAI);
 
-    physicsAI->Update(manWayPoint->GetEntities() , carAI, frameDeltaTime);
+    
 
     renderEngine->FacadeDraw();
 

@@ -88,16 +88,34 @@ void PhysicsAI::fuzzyRulesAngle(){
 
 
 //Nos devuelve el angulo en radianos entre el coche y el waypoint
-float calculateAngle(CWayPoint* wayPointNext, CarAI* car){
+float calculateAngle(CWayPoint* wayPointNext, CarAI* car,CCar* cCar){
     auto components = car->GetComponents();
     auto cTransformable = static_cast<CTransformable*>(components[CompType::TransformableComp]);
     //Calculo de angulo en radianes
     //Fuente: https://math.stackexchange.com/questions/1201337/finding-the-angle-between-two-points
     float x = (wayPointNext->position.x - cTransformable->position.x );
     float z = (wayPointNext->position.z - cTransformable->position.z);
-    float angle = atan2(z,x);
+    //float angle = atan2(z,x);
     //cout << "Angulo: " << angle*180/PI << endl;
-    return angle;
+    //return angle;
+
+    
+    // se calcula el siguiente punto al que avanzara el coche
+    float angleRotation = (cTransformable->rotation.y * PI) / 180.0;
+    float posXSiguiente = cTransformable->position.x + cos(angleRotation) * cCar->speed;
+    float posZSiguiente = cTransformable->position.z + sin(angleRotation) * cCar->speed;
+
+    // se calcula el vector entre el siguiente punto y y el punto actual del coche
+    float xCoche = (posXSiguiente - cTransformable->position.x );
+    float zCoche = (posZSiguiente - cTransformable->position.z);
+
+    // se calcula el angulo
+    float numerador = xCoche*x + zCoche*z;
+    float denominador = sqrt(xCoche*xCoche + zCoche*zCoche) * sqrt(x*x + z*z);
+    float angle2 = acos(numerador/denominador);
+
+    //std::cout << "Angulo: " << angle2 << std::endl; 
+    return angle2;
 }
 
 
@@ -106,7 +124,7 @@ float PhysicsAI::calculateFuzzyVelocity(float speedCar, float angle){
     flVelocity.Fuzzify("Angle", angle);
 
     float defuzzificacion = flVelocity.DeFuzzify("Acceleration"); 
-    std::cout << "LA DEFUZZIFICACION DA:  " << defuzzificacion << std::endl;
+    //std::cout << "LA DEFUZZIFICACION DA:  " << defuzzificacion << std::endl;
     return defuzzificacion;
 }
 
@@ -115,7 +133,7 @@ float PhysicsAI::calculateFuzzyDirection(float distance, float direction){
     flAngle.Fuzzify("Direction", direction);
 
     float defuzzificacion = flAngle.DeFuzzify("Rotation"); 
-    std::cout << "LA DEFUZZIFICACION DA:  " << defuzzificacion << std::endl;
+    //std::cout << "LA DEFUZZIFICACION DA:  " << defuzzificacion << std::endl;
     return defuzzificacion;
 }
 
@@ -147,13 +165,13 @@ void PhysicsAI::Update(vector<WayPoint *> wayPoints, CarAI* car, float deltaTime
             car->SetWayPoint(wayPoints[indx]->position);
     }else{
 
-        angle = calculateAngle(cWayPoint, car);
+        angle = calculateAngle(cWayPoint, car, cCar);
         if (angle < 0)
             angleRange = angle*(-1);
         else
             angleRange = angle;
 
-        cout << "Angulo Positivo: " << angleRange*180/PI << endl;
+        //cout << "Angulo Positivo: " << angleRange*180/PI << endl;
         if(cCar->speed == 0)
             cCar->speed = 20;
             //std::cout << "VOY A ENTRAR A VELOCITY DIFUSA" <<std::endl;
@@ -162,19 +180,26 @@ void PhysicsAI::Update(vector<WayPoint *> wayPoints, CarAI* car, float deltaTime
 
         //Aumentamos la velocidad
         //cCar->wheelRotation = angle
+        //cout << "Angulo: " << fuzzyRotation << endl;
         cCar->wheelRotation = fuzzyRotation;
         cCar->speed += fuzzyAceleration;
         if(cCar->speed > cCar->maxSpeed){
             cCar->speed = cCar->maxSpeed;
         }
+
+
+        // calculamos las posiciones
+        float angleRotation = (cTransformable->rotation.y * PI) / 180.0;
+        cTransformable->position.x += cos(angleRotation) * cCar->speed * deltaTime;
+        cTransformable->position.z += sin(angleRotation) * cCar->speed * deltaTime;
+        if(cCar->wheelRotation != 0){
+            cTransformable->rotation.y += cCar->wheelRotation * 0.20;
+        }
     }
 
 
 
-    float angleRotation = (cTransformable->rotation.y * PI) / 180.0;
-    cTransformable->position.x += cos(angleRotation) * cCar->speed * deltaTime;
-    cTransformable->position.z += sin(angleRotation) * cCar->speed * deltaTime;
-
+    
     //std::cout << "Car speed" << cCar->speed << std::endl;
     //Aumentamos la velocidad
     /**
@@ -189,9 +214,7 @@ void PhysicsAI::Update(vector<WayPoint *> wayPoints, CarAI* car, float deltaTime
         
     }*/
         //Si tiene rotacion, rotamos el coche
-    if(cCar->wheelRotation != 0){
-        cTransformable->rotation.y += cCar->wheelRotation * 0.20;
-    }
+    
 }
 
 
