@@ -12,22 +12,22 @@ FzAND::	~FzAND(){
 
 
 //	vector<FuzzyTerm*> arrayFzAND;
-FzAND::FzAND(FuzzyTerm& one, FuzzyTerm& two){
-	arrayFzAND.push_back(one.Clone());
-	arrayFzAND.push_back(two.Clone());	
+FzAND::FzAND(shared_ptr<FuzzyTerm> one, shared_ptr<FuzzyTerm> two){
+	arrayFzAND.push_back(static_cast<shared_ptr<FuzzyTerm>>(one->Clone()));
+	arrayFzAND.push_back(static_cast<shared_ptr<FuzzyTerm>>(two->Clone()));	
 }
 // crear un AND de 3
-FzAND::FzAND(FuzzyTerm& one, FuzzyTerm& two, FuzzyTerm& three){
-	arrayFzAND.push_back(one.Clone());
-	arrayFzAND.push_back(two.Clone());
-	arrayFzAND.push_back(three.Clone());
+FzAND::FzAND(shared_ptr<FuzzyTerm> one, shared_ptr<FuzzyTerm> two, shared_ptr<FuzzyTerm> three){
+	arrayFzAND.push_back(static_cast<shared_ptr<FuzzyTerm>>(one->Clone()));
+	arrayFzAND.push_back(static_cast<shared_ptr<FuzzyTerm>>(two->Clone()));
+	arrayFzAND.push_back(static_cast<shared_ptr<FuzzyTerm>>(three->Clone()));
 }
 // crear un AND de 4
-FzAND::FzAND(FuzzyTerm& one, FuzzyTerm& two, FuzzyTerm& three, FuzzyTerm& four){
-	arrayFzAND.push_back(one.Clone());
-	arrayFzAND.push_back(two.Clone());
-	arrayFzAND.push_back(three.Clone());
-	arrayFzAND.push_back(four.Clone());
+FzAND::FzAND(shared_ptr<FuzzyTerm> one, shared_ptr<FuzzyTerm> two, shared_ptr<FuzzyTerm> three, shared_ptr<FuzzyTerm> four){
+	arrayFzAND.push_back(static_cast<shared_ptr<FuzzyTerm>>(one->Clone()));
+	arrayFzAND.push_back(static_cast<shared_ptr<FuzzyTerm>>(two->Clone()));
+	arrayFzAND.push_back(static_cast<shared_ptr<FuzzyTerm>>(three->Clone()));
+	arrayFzAND.push_back(static_cast<shared_ptr<FuzzyTerm>>(four->Clone()));
 }
 
 /*

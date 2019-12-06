@@ -1,22 +1,25 @@
 #pragma once
 
 #include "fuzzyTerm.h"
+#include <memory>
+
+using namespace std;
 
 class FuzzyRule
 {
 private:
     //antecedent (usually a composite of several fuzzy sets and operators)
-    const FuzzyTerm* m_pAntecedent;
+    const shared_ptr<FuzzyTerm> m_pAntecedent;
     //consequence (usually a single fuzzy set, but can be several ANDed together)
-    FuzzyTerm* m_pConsequence;
+    shared_ptr<FuzzyTerm> m_pConsequence;
     //it doesn't make sense to allow clients to copy rules
-    FuzzyRule(const FuzzyRule&);
-    FuzzyRule& operator=(const FuzzyRule&);
+    FuzzyRule(const shared_ptr<FuzzyRule>);
+    shared_ptr<FuzzyRule> operator=(const shared_ptr<FuzzyRule>);
 public:
-    FuzzyRule(FuzzyTerm& ant, FuzzyTerm& con):m_pAntecedent(ant.Clone()),
-                                                    m_pConsequence(con.Clone()){}
+    FuzzyRule(shared_ptr<FuzzyTerm> ant, shared_ptr<FuzzyTerm> con):m_pAntecedent(ant->Clone()),
+                                                    m_pConsequence(con->Clone()){}
 
-    ~FuzzyRule(){delete m_pAntecedent; delete m_pConsequence;}
+    ~FuzzyRule(){}
     void SetConfidenceOfConsequentToZero(){m_pConsequence->ClearDOM();}
     //this method updates the DOM (the confidence) of the consequent term with
     //the DOM of the antecedent term.

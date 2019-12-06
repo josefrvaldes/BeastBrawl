@@ -2,35 +2,31 @@
 #include "lib/glm/vec3.hpp"
 #include <iostream>
 #include <memory>
+#include <map>
 
 using namespace std;
 
-// class Pointer{
-//     public:
-//     Pointer(int _a){
-//         a = _a;
-//         cout << "Creado\n";
-//     }
+class Pointer{
+    public:
+    Pointer(int _a){
+        a = _a;
+        cout << "Creado\n";
+    }
 
-//     ~Pointer(){
-//         cout << "Eliminado\n";
-//     }
+    ~Pointer(){
+        cout << "Eliminado\n";
+    }
 
-//     int a;
-// };
+    int a;
+};
 int main()
 {
     
-    // shared_ptr<Pointer> p1 = make_shared<Pointer>(5);
-    // {
+    
+    map<string,shared_ptr<Pointer>> mapa;
+    shared_ptr<Pointer> ptr = make_shared<Pointer>(5);
 
-    //     {
-    //         shared_ptr<Pointer> p2 = p1;
-    //         cout << p1.use_count() << endl;
-    //     }
-    //     cout << p1.use_count() << endl;
-    // }
-
+    mapa["hola"] = ptr;
 
     try
     {
