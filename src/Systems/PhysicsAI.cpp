@@ -100,10 +100,11 @@ float calculateAngle(CWayPoint* wayPointNext, CarAI* car,CCar* cCar){
     float angleRotation = (cTransformable->rotation.y * PI) / 180.0;
     float posXSiguiente = cTransformable->position.x - cos(angleRotation) * cCar->speed;
     float posZSiguiente = cTransformable->position.z + sin(angleRotation) * cCar->speed;
-
     // se calcula el vector entre el siguiente punto y y el punto actual del coche
     float xCoche = (posXSiguiente - cTransformable->position.x );
     float zCoche = (posZSiguiente - cTransformable->position.z);
+    //float atanCozee = atan2(zCoche,xCoche)*180/PI;
+    //std::cout << atanCozee << " --- PosX-Y( " << cTransformable->position.x << " , " << cTransformable->position.z << ") -- ( " << posXSiguiente << " , " << posZSiguiente << " )" << std::endl; 
 
     // se calcula el angulo entre los dos vectores
     float numerador = xCoche*vetorWaypointX + zCoche*vetorWaypointZ;
@@ -115,10 +116,11 @@ float calculateAngle(CWayPoint* wayPointNext, CarAI* car,CCar* cCar){
 
     // calcular si tiene que girar a la izquierda o derecha
     float valueAtan2 = atan2(vetorWaypointZ,vetorWaypointX)*180/PI;
+    valueAtan2 = 180.0 - valueAtan2; // se le restan ya que el eje empieza en el lado contrario 
     if(valueAtan2<0)
         valueAtan2 += 360;
 
-    //calcular opuesto
+    ////calcular opuesto
     float oppositeAngleAtan2 = 0.0;
     if(valueAtan2<180)
         oppositeAngleAtan2 = valueAtan2 + 180;
@@ -126,10 +128,13 @@ float calculateAngle(CWayPoint* wayPointNext, CarAI* car,CCar* cCar){
         oppositeAngleAtan2 = valueAtan2 - 180;
     
     // sentido de giro
-    //if(cTransformable->rotation.y<valueAtan2 || cTransformable->rotation.y>oppositeAngleAtan2)
-    //    angle2 = angle2*(-1);
-    std::cout << "Angulooo: " << angle2 << endl; // primero la Z, luego la X
-    return angle2;
+    float prueba = 0.0;
+    if(cTransformable->rotation.y>oppositeAngleAtan2 && cTransformable->rotation.y<valueAtan2)
+        prueba = angle2;
+    else
+        prueba = angle2 * (-1);
+    //std::cout << "Atan2: " << prueba << " ----- Atan: " << valueAtan2  << " Opo: " << oppositeAngleAtan2 << "   Rot: " << cTransformable->rotation.y << endl; // primero la Z, luego la X
+    return prueba;
 }
 
 
@@ -199,6 +204,7 @@ void PhysicsAI::Update(vector<WayPoint *> wayPoints, CarAI* car, float deltaTime
         //cCar->wheelRotation = angle
         
         cCar->wheelRotation = fuzzyRotation;
+        //std::cout << "DeFuzzyRot: " << fuzzyRotation << std::endl;
         cCar->speed += fuzzyAceleration;
         if(cCar->speed > cCar->maxSpeed){
             cCar->speed = cCar->maxSpeed;

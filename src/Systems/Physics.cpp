@@ -104,7 +104,7 @@ void TurnLeft(Data d){
     auto mapCar = components.find(CompType::CarComp);
     auto cCar        = static_cast<CCar*>(mapCar->second);
 
-
+    
     if(cCar->speed >= 3){
         if(cCar->wheelRotation > -10){
             //Aumentamos la rotacion hacia la izquierda
@@ -165,7 +165,6 @@ void TurnRight(Data d){
     auto mapCar = components.find(CompType::CarComp);
     auto cCar        = static_cast<CCar*>(mapCar->second);
 
-
     if(cCar->speed >= 3){
         if(cCar->wheelRotation < 10){
             //Aumentamos la rotacion hacia la derecha
@@ -200,6 +199,7 @@ void TurnRight(Data d){
             cCamera->rotExtraY = 0;        
         }
     }
+    
     
     if(cCar->speed>=0)
         CalculatePosition(cCar,cTransformable, d.deltaTime);

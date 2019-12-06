@@ -16,7 +16,7 @@ using namespace std;
 CarAI::CarAI(){
     // default values
     glm::vec3 pos   = glm::vec3(10.0f, 20.0f, 30.0f);
-    glm::vec3 rot   = glm::vec3(0.0f, 270.0f, 0.0f);
+    glm::vec3 rot   = glm::vec3(0.0f, 90.0f, 0.0f);
     glm::vec3 scale = glm::vec3(1.0f, 0.7f, 0.5f);
     string texture = "particle.bmp";
     string mesh    = "media/ninja.b3d";
