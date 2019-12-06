@@ -285,13 +285,18 @@ void CalculatePosition(CCar* cCar, CTransformable* cTransformable, float deltaTi
     float angleRotation = (cTransformable->rotation.y * PI) /180.0;
     
     //Modificamos la posicion en X y Z en funcion del angulo
-    cTransformable->position.x += sin(angleRotation) * cCar->speed * deltaTime;
-    cTransformable->position.z += cos(angleRotation) * cCar->speed * deltaTime;
+    cTransformable->position.x -= cos(angleRotation) * cCar->speed * deltaTime;
+    cTransformable->position.z += sin(angleRotation) * cCar->speed * deltaTime;
 
     //Si tiene rotacion, rotamos el coche
     if(cCar->wheelRotation != 0){
         cTransformable->rotation.y += cCar->wheelRotation * 0.20;
+        if(cTransformable->rotation.y>=360.0)
+            cTransformable->rotation.y -= 360.0;
+        else if(cTransformable->rotation.y < 0.0)
+            cTransformable->rotation.y += 360.0;
     }
+    //std::cout << "Angulo rot: " << cTransformable->rotation.y << std::endl;
 }
 
 
@@ -300,18 +305,22 @@ void CalculatePositionReverse(CCar* cCar, CTransformable* cTransformable, float 
     float angleRotation = (cTransformable->rotation.y * PI) /180.0;
     
     //Modificamos la posicion en X y Z en funcion del angulo
-    cTransformable->position.x += sin(angleRotation) * cCar->speed * deltaTime;
-    cTransformable->position.z += cos(angleRotation) * cCar->speed * deltaTime;
+    cTransformable->position.x -= cos(angleRotation) * cCar->speed * deltaTime;
+    cTransformable->position.z += sin(angleRotation) * cCar->speed * deltaTime;
 
     //Si tiene rotacion, rotamos el coche
     if(cCar->wheelRotation != 0){
         cTransformable->rotation.y -= cCar->wheelRotation * 0.20;
+        if(cTransformable->rotation.y>=360.0)
+            cTransformable->rotation.y -= 360.0;
+        else if(cTransformable->rotation.y < 0.0)
+            cTransformable->rotation.y += 360.0;
     }
 }
 
 //Calcula la posicion de la camara (duda con las formulas preguntar a Jose)
 void CalculatePositionCamera(CTransformable* cTransformableCar,CTransformable* cTransformableCamera, CCamera* cCamera){
     cTransformableCamera->position.y = cTransformableCar->position.y + 20;
-    cTransformableCamera->position.x = (cTransformableCar->position.x - 40 * sin(((cTransformableCar->rotation.y - cCamera->rotExtraY)*PI)/180.0));
-    cTransformableCamera->position.z = (cTransformableCar->position.z - 40 * cos(((cTransformableCar->rotation.y - cCamera->rotExtraY)*PI)/180.0));
+    cTransformableCamera->position.x = (cTransformableCar->position.x + 40 * cos(((cTransformableCar->rotation.y - cCamera->rotExtraY)*PI)/180.0));
+    cTransformableCamera->position.z = (cTransformableCar->position.z - 40 * sin(((cTransformableCar->rotation.y - cCamera->rotExtraY)*PI)/180.0));
 }
