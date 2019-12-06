@@ -16,7 +16,7 @@ INCLUDE     := -I.
 INCLUDE_IRR := -I /lib/irrlicht/irrlicht.h
 CC			:= g++
 NAME_EXE	:= Beast_Brawl
-CXXFLAGS 	+= -Wall -std=c++17
+CXXFLAGS 	+= -Wall -Wno-unknown-pragmas -std=c++17 # el no-unknown-pragmas es para que no salga el warning de los pragma region
 
 ALLCPPS		:= $(shell find src/ -type f -iname *.cpp)
 ALLCPPSOBJ	:= $(patsubst $(SRC_PATH)/%.cpp,$(OBJ_PATH)/%.o,$(ALLCPPS))

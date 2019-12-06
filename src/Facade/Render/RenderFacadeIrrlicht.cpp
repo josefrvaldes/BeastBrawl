@@ -58,7 +58,7 @@ const uint16_t RenderFacadeIrrlicht::FacadeAddObject(Entity *go){
 
 
 	//Switch para añadir el tipo de objeto
-	scene::ISceneNode* node;
+	scene::ISceneNode* node = nullptr;
 	std::string meshPath = "media/" + cMesh->mesh;
 
 	switch(cType->type){

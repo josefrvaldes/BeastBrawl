@@ -1,116 +1,112 @@
 #include "StateInGame.h"
+//#include "../Aliases.h"
 #include <iostream>
-
 
 #pragma region BT
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //                           COMPROBAR BEHAVIOR TREE
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-bool door = false; // imaginemos que door=false es = puerta cerrada "door is open?"
-bool key  = false;  // tenemos una llave
+bool door = false;  // imaginemos que door=false es = puerta cerrada "door is open?"
+bool key = false;   // tenemos una llave
 // ACCION DE ABRIR LA PUERTA
-struct openDoor : public behaviourTree { 
-		virtual bool run() override {
-           door = true;
-           cout << "Abrimos la puerta" << endl;
-           return true;
-		}
+struct openDoor : public behaviourTree {
+    virtual bool run() override {
+        door = true;
+        cout << "Abrimos la puerta" << endl;
+        return true;
+    }
 };
 //ACCION COGER LA LLAVE
-struct getKey : public behaviourTree { 
-		virtual bool run() override {
-           key = true;
-           cout << "Cogemos la llave" << endl;
-           return true;
-		}
+struct getKey : public behaviourTree {
+    virtual bool run() override {
+        key = true;
+        cout << "Cogemos la llave" << endl;
+        return true;
+    }
 };
 //CONDICION PUERTA ABIERTA?
-struct haveDoorOpen : public behaviourTree { 
-		virtual bool run() override {
-           cout << "Comprobamos si la puerta esta abierta: " << boolalpha << door << endl;
-           return door;
-		}
+struct haveDoorOpen : public behaviourTree {
+    virtual bool run() override {
+        cout << "Comprobamos si la puerta esta abierta: " << boolalpha << door << endl;
+        return door;
+    }
 };
 //CONDICION TENEMOS LLAVE?
-struct haveKey : public behaviourTree { 
-		virtual bool run() override {
-           cout << "Comprobamos si tenemos la llave: " << boolalpha << key << endl;
-			return  key;
-		}
+struct haveKey : public behaviourTree {
+    virtual bool run() override {
+        cout << "Comprobamos si tenemos la llave: " << boolalpha << key << endl;
+        return key;
+    }
 };
 ///// DECORATORS //////
 struct Minimum : public Decorator {  // Tiene que intentar coger la llave 3 veces para que la pueda coger
-   uint32_t totalTries = 3;
-   uint32_t numTries = 0;
-   virtual bool run() override {
-       if(numTries>=totalTries)
-           return getChild()->run();
-       numTries++;
-       cout << "Fallamos al coger la llave, intento: " << numTries << endl;
-       return false;
-       
-   }
+    uint32_t totalTries = 3;
+    uint32_t numTries = 0;
+    virtual bool run() override {
+        if (numTries >= totalTries)
+            return getChild()->run();
+        numTries++;
+        cout << "Fallamos al coger la llave, intento: " << numTries << endl;
+        return false;
+    }
 };
 struct Limit : public Decorator {  // Decorator Limit
-   uint32_t totalLimit = 3;
-   uint32_t numLimit = 0;
-   virtual bool run() override {
-       if(numLimit>=totalLimit)
-           return false;
-       numLimit++;
-       return getChild()->run();
-   }
+    uint32_t totalLimit = 3;
+    uint32_t numLimit = 0;
+    virtual bool run() override {
+        if (numLimit >= totalLimit)
+            return false;
+        numLimit++;
+        return getChild()->run();
+    }
 };
 struct UntilFail : public Decorator {  // Decorator UntilFail
-   virtual bool run() override {
-       while(true){
-           bool result = getChild()->run();
-           if(!result) { 
-               break; 
-           }
-       }
-       return true;
-   }
+    virtual bool run() override {
+        while (true) {
+            bool result = getChild()->run();
+            if (!result) {
+                break;
+            }
+        }
+        return true;
+    }
 };
 struct Inverter : public Decorator {  // Decorator Inverter
-   virtual bool run() override {
-       return !(getChild()->run());
-   }
+    virtual bool run() override {
+        return !(getChild()->run());
+    }
 };
 
 #pragma endregion
 
-
-
-StateInGame::StateInGame(){
+StateInGame::StateInGame() {
     // constructor
     cout << "Estado InGame Creado" << std::endl;
-    
+
     eventManager = EventManager::GetInstance();
 
     car = make_shared<Car>();
     manPowerUps = make_shared<ManPowerUp>();
-    ground = make_shared<GameObject>(glm::vec3(10.0f,10.0f,30.0f),    glm::vec3(0.0f,0.0f,0.0f),    glm::vec3(100.0f,1.0f,100.0f), "wall.jpg", "ninja.b3d");
-    cam = make_shared<Camera>(glm::vec3(10.0f,40.0f,30.0f),    glm::vec3(0.0f,0.0f,0.0f),    glm::vec3(1.0f,1.0f,1.0f));
+    ground = make_shared<GameObject>(glm::vec3(10.0f, 10.0f, 30.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(100.0f, 1.0f, 100.0f), "wall.jpg", "ninja.b3d");
+    cam = make_shared<Camera>(glm::vec3(10.0f, 40.0f, 30.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f));
 
-	renderFacadeManager = RenderFacadeManager::GetInstance();
-	renderFacadeManager->InitializeIrrlicht();
+    renderFacadeManager = RenderFacadeManager::GetInstance();
+    renderFacadeManager->InitializeIrrlicht();
 
     inputFacadeManager = InputFacadeManager::GetInstance();
     inputFacadeManager->InitializeIrrlicht();
 
     physicsFacadeManager = PhysicsFacadeManager::GetInstance();
     physicsFacadeManager->InitializeIrrlicht();
-    
-    Physics* physics = new Physics();
-    //Almacenamos los motores
-	renderEngine   = renderFacadeManager->GetRenderFacade();
-    inputEngine    = inputFacadeManager->GetInputFacade();
-    physicsEngine  = physicsFacadeManager->GetPhysicsFacade();
 
+    Physics *physics = new Physics();
+    //Almacenamos los motores
+    renderEngine = renderFacadeManager->GetRenderFacade();
+    inputEngine = inputFacadeManager->GetInputFacade();
+    physicsEngine = physicsFacadeManager->GetPhysicsFacade();
 
 #pragma region FL
-
+/*
 // --------------------------- FUZZY LOGIC  "COUT TEMPORALES" ----------------------------------
     shared_ptr<FuzzyLogic> fm = make_shared<FuzzyLogic>();
 
@@ -146,10 +142,31 @@ StateInGame::StateInGame(){
     std::cout << "defuzzificacion: " << resultadoDefuzzification << std::endl;
     std::cout << "------------------------------"<< std::endl;
 
+    FuzzyVariable &Desirability = fm.CreateFLV("Desirability");
+    FzSet Undesirable = Desirability.AddLeftShoulderSet("Undesirable", 0, 25, 50);
+    FzSet Desirable = Desirability.AddTriangularSet("Desirable", 25, 50, 75);
+    FzSet VeryDesirable = Desirability.AddRightShoulderSet("VeryDesirable", 50, 75, 100);
+    // To-Do: revisar el new por que no se tiene que hacer
+    fm.AddRule(*(new FzAND(Target_Close, Ammo_Loads)), Undesirable);
+    fm.AddRule(*(new FzAND(Target_Close, Ammo_Okay)), Undesirable);
+    fm.AddRule(*(new FzAND(Target_Close, Ammo_Low)), Undesirable);
+    fm.AddRule(*(new FzAND(Target_Medium, Ammo_Loads)), VeryDesirable);
+    fm.AddRule(*(new FzAND(Target_Medium, Ammo_Okay)), VeryDesirable);
+    fm.AddRule(*(new FzAND(Target_Medium, Ammo_Low)), Desirable);
+    fm.AddRule(*(new FzAND(Target_Far, Ammo_Loads)), Desirable);
+    fm.AddRule(*(new FzAND(Target_Far, Ammo_Okay)), Undesirable);
+    fm.AddRule(*(new FzAND(Target_Far, Ammo_Low)), Undesirable);
+    // seguimos con las pruebas
+    fm.Fuzzify("DistToTarget", 200); // AQUI ES DONDE SE LLAMA AL CALCULATEDOM()
+    fm.Fuzzify("AmmoStatus", 8);
+    double resultadoDefuzzification = fm.DeFuzzify("Desirability");
+    // cout de FuzzyLogic
+    std::cout << "defuzzificacion: " << resultadoDefuzzification << std::endl;
+    std::cout << "------------------------------" << std::endl;
 
-// --------------------------- FIN FUZZY LOGIC ----------------------------------
+    // --------------------------- FIN FUZZY LOGIC ----------------------------------
 
-// --------------------------- BEHAVIOR TREE ----------------------------------
+    // --------------------------- BEHAVIOR TREE ----------------------------------
 
     //BehaviorTree BASICO
                     // SELECTOR1
@@ -185,51 +202,40 @@ StateInGame::StateInGame(){
    } // If the operation starting from the root fails, keep trying until it succeeds.
 	cout << "--------------------" << endl;
 //
-
+*/
 #pragma endregion
-
-
 
     renderEngine->FacadeAddObject(car.get());
     renderEngine->FacadeAddObject(ground.get());
-    
-    for(PowerUp *pu : manPowerUps->GetEntities()) 
+
+    for (PowerUp *pu : manPowerUps->GetEntities())
         renderEngine->FacadeAddObject(pu);
-        
+
     renderEngine->FacadeAddCamera(cam.get());
 
     lastFPS = -1;
     then = renderEngine->FacadeGetTime();
 }
 
-
-
-StateInGame::~StateInGame(){
+StateInGame::~StateInGame() {
     // destructor
 }
 
-
-
-void StateInGame::Render(){
-
+void StateInGame::Render() {
 }
 
-
-void StateInGame::Update()
-{    
-    eventManager->Update();  
+void StateInGame::Update() {
+    eventManager->Update();
     const uint32_t now = renderEngine->FacadeGetTime();
-    
+
     const float frameDeltaTime = (float)(now - then) / 100.0;
     then = now;
 
-    
     //inputEngine->CheckInputs(*car);
-    renderEngine->FacadeCheckInput(frameDeltaTime,car.get(),cam.get());
+    renderEngine->FacadeCheckInput(frameDeltaTime, car.get(), cam.get());
     physicsEngine->Update(car.get(), cam.get());
 
     renderEngine->FacadeDraw();
-
 
     int fps = renderEngine->FacadeGetFPS();
     lastFPS = fps;
