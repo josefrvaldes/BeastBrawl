@@ -19,12 +19,12 @@ PowerUp::PowerUp()
     string mesh    = "media/ninja.b3d";
     float maxSpeed = 20.0, acceleration = .15, friction = 0.1, slowDown = 0.25;
     
-    CId* cId   = new CId();
-    CType* cType = new CType(ModelType::Cube);
-    CTransformable* cTransformable = new CTransformable(glm::vec3(0.0f,0.0f,0.0f), glm::vec3(0.0f,0.0f,0.0f), glm::vec3(1.0f,1.0f,1.0f)); 
-    CTexture* cTexture = new CTexture(texture);
-    CMesh* cMesh   = new CMesh(mesh);
-    CCar* cCar = new CCar(maxSpeed, acceleration, friction, slowDown);
+    shared_ptr<CId> cId   = make_shared<CId>();
+    shared_ptr<CType> cType = make_shared<CType>(ModelType::Cube);
+    shared_ptr<CTransformable> cTransformable = make_shared<CTransformable>(glm::vec3(0.0f,0.0f,0.0f), glm::vec3(0.0f,0.0f,0.0f), glm::vec3(1.0f,1.0f,1.0f)); 
+    shared_ptr<CTexture> cTexture = make_shared<CTexture>(texture);
+    shared_ptr<CMesh> cMesh   = make_shared<CMesh>(mesh);
+    shared_ptr<CCar> cCar = make_shared<CCar>(maxSpeed, acceleration, friction, slowDown);
     AddComponent(cId);
     AddComponent(cType);
     AddComponent(cTransformable);

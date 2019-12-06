@@ -11,7 +11,7 @@ class CPosition : public Component
 public:
     CPosition();
     CPosition(float x, float y, float z);
-    ~CPosition();
+    ~CPosition(){};
 
     friend ostream &operator<<(ostream &out, CPosition &c)
     {

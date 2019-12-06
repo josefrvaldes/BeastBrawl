@@ -15,7 +15,6 @@ Game::Game(){
 
 Game::~Game(){
     // destructor
-    delete currentState;
     delete game;    // To-Do mirar donde poner este delete
 }
 
@@ -36,7 +35,7 @@ void Game::SetState(State::States stateType){
             //currentState = new StateIntro();
             break;
         case State::MENU:
-            currentState = new StateMenu();
+            currentState = make_shared<StateMenu>();
             break;
         case State::CONTROLS:
             //currentState = new StateControls();
@@ -48,7 +47,7 @@ void Game::SetState(State::States stateType){
             //currentState = new StateMap();
             break;
         case State::INGAME:
-            currentState = new StateInGame();
+            currentState = make_shared<StateInGame>();
             break;
         case State::ENDRACE:
             //currentState = new StateEndRace();
@@ -68,13 +67,12 @@ void Game::InitGame(){
 
 
 void Game::MainLoop(){
-        renderFacadeManager->GetRenderFacade()->FacadeSetWindowCaption("Beast Brawl");
+    renderFacadeManager->GetRenderFacade()->FacadeSetWindowCaption("Beast Brawl");
 
     while(renderFacadeManager->GetRenderFacade()->FacadeRun()){
         currentState->Update();
 
     }
-
     renderFacadeManager->GetRenderFacade()->FacadeDeviceDrop();
     //for(;;);  // To-Do: crear bucle del juego
 }

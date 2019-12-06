@@ -11,7 +11,7 @@ class CWheel : public Component
 public:
     CWheel();
     CWheel(float _offsetX,float _offsetZ);
-    ~CWheel();
+    ~CWheel(){};
 
     friend ostream &operator<<(ostream &out, CWheel &c)
     {

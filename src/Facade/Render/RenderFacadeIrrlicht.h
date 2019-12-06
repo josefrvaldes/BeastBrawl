@@ -1,14 +1,17 @@
 #pragma once
 
-#include <iostream>
 #include "RenderFacade.h"
-#include <unordered_map>
 #include "../../../lib/irrlicht/irrlicht.h"
 #include "../../EventManager/EventManager.h"
 #include "../../EventManager/Event.h"
 #include "../Input/InputFacadeIrrlicht.h"
 #include "../Input/InputFacadeManager.h"
 
+#include <iostream>
+#include <unordered_map>
+#include <memory>
+
+using namespace std;
 using namespace irr;
 
 

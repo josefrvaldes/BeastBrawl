@@ -11,7 +11,7 @@ class CSpeed : public Component
 public:
     CSpeed();
     CSpeed(float vx, float vy, float vz);
-    ~CSpeed();
+    ~CSpeed(){};
 
     friend ostream &operator<<(ostream &out, CSpeed &c)
     {

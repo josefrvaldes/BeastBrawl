@@ -11,7 +11,7 @@ class CCamera : public Component
 public:
     CCamera();
     CCamera(float _tarx, float _tary, float _tarz, float _rotExtraY);
-    ~CCamera();
+    ~CCamera(){};
 
 
     friend ostream &operator<<(ostream &out, CCamera &c)

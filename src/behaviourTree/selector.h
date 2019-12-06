@@ -1,6 +1,8 @@
 #include "composite.h"
 
+#include <memory>
 
+using namespace std;
 class selector: public composite{
 
   public:

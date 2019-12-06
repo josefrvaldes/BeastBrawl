@@ -16,7 +16,3 @@ CSpeed::CSpeed(float vx, float vy, float vz)
     z = vz;
 }
 
-CSpeed::~CSpeed()
-{
-    
-}

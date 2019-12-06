@@ -10,8 +10,3 @@ CId::CId() {
     numIds++;
 }
 
-
-CId::~CId(){
-
-    
-}

@@ -16,6 +16,9 @@
 #include "../Systems/Physics.h"
 #include "../fuzzyLogic/fuzzyLogic.h"
 #include "../behaviourTree/behaviourTree.h"
+#include "../behaviourTree/selector.h"
+#include "../behaviourTree/decorator.h"
+#include "../behaviourTree/sequence.h"
 #include "../../lib/glm/vec3.hpp"
 
 #include <iostream>
@@ -35,16 +38,16 @@ class StateInGame : public State{
 
     private:
         EventManager* eventManager;
-        Car* car;
-        GameObject* ground;
-        Camera* cam;
+        shared_ptr<Car> car;
+        shared_ptr<GameObject> ground;
+        shared_ptr<Camera> cam;
+        shared_ptr<ManPowerUp> manPowerUps;
         RenderFacadeManager* renderFacadeManager;
         InputFacadeManager* inputFacadeManager;
         PhysicsFacadeManager* physicsFacadeManager;
         RenderFacade* renderEngine;
         InputFacade* inputEngine;
         PhysicsFacade* physicsEngine;
-        ManPowerUp *manPowerUps;
 
         int lastFPS = -1;
         uint32_t then;

@@ -7,7 +7,7 @@
 class CTexture : public Component{
 public:
     CTexture(std::string);
-    ~CTexture();
+    ~CTexture(){};
 
     std::string texture;
 };
