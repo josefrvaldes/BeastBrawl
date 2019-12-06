@@ -102,7 +102,7 @@ StateInGame::StateInGame(){
     physicsFacadeManager = PhysicsFacadeManager::GetInstance();
     physicsFacadeManager->InitializeIrrlicht();
     
-    Physics* physics = new Physics();
+    unique_ptr<Physics> physics = make_unique<Physics>();
     //Almacenamos los motores
 	renderEngine   = renderFacadeManager->GetRenderFacade();
     inputEngine    = inputFacadeManager->GetInputFacade();
@@ -193,8 +193,8 @@ StateInGame::StateInGame(){
     renderEngine->FacadeAddObject(car.get());
     renderEngine->FacadeAddObject(ground.get());
     
-    for(PowerUp *pu : manPowerUps->GetEntities()) 
-        renderEngine->FacadeAddObject(pu);
+    for(shared_ptr<PowerUp> pu : manPowerUps->GetEntities()) 
+        renderEngine->FacadeAddObject(pu.get());
         
     renderEngine->FacadeAddCamera(cam.get());
 

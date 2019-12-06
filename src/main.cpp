@@ -6,31 +6,12 @@
 
 using namespace std;
 
-class Pointer{
-    public:
-    Pointer(int _a){
-        a = _a;
-        cout << "Creado\n";
-    }
-
-    ~Pointer(){
-        cout << "Eliminado\n";
-    }
-
-    int a;
-};
 int main()
 {
-    
-    
-    map<string,shared_ptr<Pointer>> mapa;
-    shared_ptr<Pointer> ptr = make_shared<Pointer>(5);
-
-    mapa["hola"] = ptr;
 
     try
     {
-       Game *game = Game::GetInstance();
+       shared_ptr<Game> game = Game::GetInstance();
 
     
         game->SetState(State::States::INGAME);

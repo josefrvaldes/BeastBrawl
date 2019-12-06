@@ -1,27 +1,29 @@
 #pragma once
 
 #include <iostream>
+#include <memory>
 #include "InputFacade.h"
 #include "InputFacadeIrrlicht.h"
 
+using namespace std;
 class InputFacadeManager{
 
 public:
-    ~InputFacadeManager(){ delete facade;};
+    ~InputFacadeManager(){};
+    InputFacadeManager(){};
 
     void InitializeIrrlicht() {
-        facade = new InputFacadeIrrlicht();
+        facade = make_shared<InputFacadeIrrlicht>();
     }
 
     void InitializeClover() {
         // TODO: crear motor de clover
     }
 
-    InputFacade *GetInputFacade() { return facade; };
-    static InputFacadeManager* GetInstance();
+    shared_ptr<InputFacade> GetInputFacade() { return facade; };
+    static shared_ptr<InputFacadeManager> GetInstance();
 
 private:
-    InputFacadeManager() : facade(nullptr){}
-    InputFacade *facade;
-    static InputFacadeManager* instance;
+    shared_ptr<InputFacade> facade;
+    static const shared_ptr<InputFacadeManager> instance;
 };

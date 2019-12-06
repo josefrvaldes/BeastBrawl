@@ -11,15 +11,18 @@
 #include "../EventManager/Event.h"
 
 #include <math.h>
+#include <memory>
+
+using namespace std;
 #define PI 3.141592
 
 class Physics
 {
 public:
     Physics();
-    ~Physics();
+    ~Physics(){};
 
 protected:
 private:
-    EventManager* eventManager;
+    
 };

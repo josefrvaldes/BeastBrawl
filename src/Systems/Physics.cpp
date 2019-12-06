@@ -14,7 +14,7 @@ void NotAcceleratingOrDecelerating(Data d);
 void NotTurning(Data d);
 
 Physics::Physics(){
-    eventManager = EventManager::GetInstance();
+    shared_ptr<EventManager> eventManager = EventManager::GetInstance();
 
     //Se suscriben los listeners
     eventManager->Suscribe(Listener {EventType::PRESS_I,Accelerate,"accelerate"});

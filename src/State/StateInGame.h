@@ -37,17 +37,17 @@ class StateInGame : public State{
 
 
     private:
-        EventManager* eventManager;
+        shared_ptr<EventManager> eventManager;
         shared_ptr<Car> car;
         shared_ptr<GameObject> ground;
         shared_ptr<Camera> cam;
         shared_ptr<ManPowerUp> manPowerUps;
-        RenderFacadeManager* renderFacadeManager;
-        InputFacadeManager* inputFacadeManager;
-        PhysicsFacadeManager* physicsFacadeManager;
-        RenderFacade* renderEngine;
-        InputFacade* inputEngine;
-        PhysicsFacade* physicsEngine;
+        shared_ptr<RenderFacadeManager> renderFacadeManager;
+        shared_ptr<InputFacadeManager> inputFacadeManager;
+        shared_ptr<PhysicsFacadeManager> physicsFacadeManager;
+        shared_ptr<RenderFacade> renderEngine;
+        shared_ptr<InputFacade> inputEngine;
+        shared_ptr<PhysicsFacade> physicsEngine;
 
         int lastFPS = -1;
         uint32_t then;

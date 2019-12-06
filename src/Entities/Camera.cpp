@@ -22,7 +22,6 @@ Camera::Camera(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale)
 {
     shared_ptr<Component> cId   = make_shared<CId>();
     shared_ptr<Component> cTransformable = make_shared<CTransformable>(pos,rot,scale);
-    //Component* cTransformable = new CTransformable(posX, posY+20, posZ, rotX, rotY, rotZ, scaX, scaY, scaZ);
     shared_ptr<Component> cCamera = make_shared<CCamera>(pos.x,pos.y+17,pos.z,   0.0);
     AddComponent(cId);
     AddComponent(cTransformable);
