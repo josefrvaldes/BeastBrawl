@@ -16,7 +16,7 @@
 
 
 RenderFacadeIrrlicht::RenderFacadeIrrlicht(){
-	eventManager = EventManager::GetInstance();
+	
 
 	//auto inputFacade = InputFacadeManager::GetInstance()->GetInputFacade();
 	//auto inputFacadeIrrlicht = static_cast<InputFacadeIrrlicht*>(inputFacade);	
@@ -166,6 +166,7 @@ uint32_t RenderFacadeIrrlicht::FacadeGetTime(){
 
 void RenderFacadeIrrlicht::FacadeCheckInput(float frameDeltaTime, Entity* car, Entity* cam)
 {	
+	shared_ptr<EventManager> eventManager = EventManager::GetInstance();
 	Data d;
 	d.deltaTime  = frameDeltaTime;
 	d.gameObject = car;

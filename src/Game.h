@@ -11,7 +11,9 @@ using namespace std;
 
 class Game{
     public:
-        static Game* GetInstance();
+        Game(){};
+        virtual ~Game(){};
+        static shared_ptr<Game> GetInstance();
         void SetState(State::States stateType);
         shared_ptr<State> GetState() { return currentState; };
         shared_ptr<State> GetLastState() { return lastState; };
@@ -21,14 +23,11 @@ class Game{
 
 
     private:
-        static Game *game;
+        static const shared_ptr<Game> game;
         //State::States ActualState;
         shared_ptr<State> currentState;
         shared_ptr<State> lastState;
-        RenderFacadeManager* renderFacadeManager;
 
-        Game();
-        virtual ~Game();
         void MainLoop();
 };
 

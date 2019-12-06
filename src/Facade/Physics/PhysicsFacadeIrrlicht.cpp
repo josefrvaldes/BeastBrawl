@@ -16,7 +16,7 @@ PhysicsFacadeIrrlicht::PhysicsFacadeIrrlicht(){
 
     auto renderFacadeManager = RenderFacadeManager::GetInstance();
     auto renderEngine = renderFacadeManager->GetRenderFacade();
-    renderEngineIrrlicht = static_cast<RenderFacadeIrrlicht*>(renderEngine);
+    renderEngineIrrlicht = static_pointer_cast<RenderFacadeIrrlicht>(renderEngine);
     smgr = renderEngineIrrlicht->GetSceneManager();
 
 }
@@ -26,7 +26,6 @@ PhysicsFacadeIrrlicht::PhysicsFacadeIrrlicht(){
 void PhysicsFacadeIrrlicht::Update(Entity* car, Entity* cam){
     
 
-    auto smgr = renderEngineIrrlicht->GetSceneManager();
 
     //Guardamos en variables los componentes
     auto components = car->GetComponents();

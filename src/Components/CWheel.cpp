@@ -12,10 +12,10 @@ CWheel::CWheel(){
 CWheel::CWheel(float _offsetX,float _offsetZ) : offsetX(_offsetX), offsetZ(_offsetZ){
     m_compType = CompType::WheelComp;
     
-    CId* cIdTL  = new CId();
-    CId* cIdTR   = new CId();
-    CId* cIdBL   = new CId();
-    CId* cIdBR   = new CId();
+    shared_ptr<CId> cIdTL  = make_shared<CId>();
+    shared_ptr<CId> cIdTR   = make_shared<CId>();
+    shared_ptr<CId> cIdBL   = make_shared<CId>();
+    shared_ptr<CId> cIdBR   = make_shared<CId>();
     IdWheelTopLeft = cIdTL->id;
     IdWheelTopRight = cIdTR->id;
     IdWheelBottomLeft = cIdBL->id;

@@ -1,7 +1,7 @@
 #include "InputFacadeIrrlicht.h"
 
 InputFacadeIrrlicht::InputFacadeIrrlicht(){
-    eventManager = EventManager::GetInstance();
+    //eventManager = EventManager::GetInstance();
 	//RenderFacadeManager::GetInstance().GetRenderFacade()->AddReceiver(receiver);
 }
 
@@ -19,14 +19,7 @@ void InputFacadeIrrlicht::CheckInputs(Entity& go){
 
 }
 
-MyEventReceiver* InputFacadeIrrlicht::GetReceiver(){
-	return receiver;
-}
 
-void InputFacadeIrrlicht::SetDevice(uintptr_t device_ptr){
-	device = reinterpret_cast<IrrlichtDevice*>(device_ptr);
-	device->setEventReceiver(receiver);
-}
 
 InputFacadeIrrlicht::~InputFacadeIrrlicht(){
 	

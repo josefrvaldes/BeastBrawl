@@ -3,29 +3,15 @@
 
 using namespace std;
 
-Game* Game::game = 0;
-
-
-Game::Game(){
-    // constructor
-    renderFacadeManager = RenderFacadeManager::GetInstance();   
-}
-
-
-
-Game::~Game(){
-    // destructor
-    delete game;    // To-Do mirar donde poner este delete
-}
-
-
-
-Game* Game::GetInstance(){
-    if(game == 0){
-        game = new Game();
-    }
+const shared_ptr<Game> Game::game = make_shared<Game>();
+shared_ptr<Game> Game::GetInstance() {
+    //static EventManager instance;
+    // if(instance==nullptr){
+    //     instance = make_shared<EventManager>();
+    // }
     return game;
 }
+
 
 
 
@@ -67,6 +53,8 @@ void Game::InitGame(){
 
 
 void Game::MainLoop(){
+    shared_ptr<RenderFacadeManager> renderFacadeManager = RenderFacadeManager::GetInstance();   
+
     renderFacadeManager->GetRenderFacade()->FacadeSetWindowCaption("Beast Brawl");
 
     while(renderFacadeManager->GetRenderFacade()->FacadeRun()){

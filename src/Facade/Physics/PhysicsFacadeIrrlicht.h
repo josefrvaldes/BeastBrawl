@@ -1,11 +1,13 @@
 #pragma once
 
 #include <iostream>
+#include <memory>
 #include "PhysicsFacade.h"
 #include "../Render/RenderFacadeManager.h"
 #include "../Render/RenderFacadeIrrlicht.h"
 #include "../../../lib/irrlicht/irrlicht.h"
 
+using namespace std;
 class PhysicsFacadeIrrlicht : public PhysicsFacade{
     public:
         PhysicsFacadeIrrlicht();
@@ -15,6 +17,6 @@ class PhysicsFacadeIrrlicht : public PhysicsFacade{
 
     private:
         void UpdateCam(Entity*);
-        RenderFacadeIrrlicht* renderEngineIrrlicht;
+        shared_ptr<RenderFacadeIrrlicht> renderEngineIrrlicht;
         scene::ISceneManager* smgr;
 };
