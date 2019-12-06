@@ -3,29 +3,21 @@
 
 #include <iostream>
 #include <map>
-#include <vector>
 #include <memory>
-
+#include <vector>
+#include "Manager.h"
 
 using namespace std;
 
-class PowerUp;
-
-class ManPowerUp
-{
-
-public:
+class ManPowerUp : public Manager {
+   public:
     ManPowerUp();
     ~ManPowerUp();
 
     void CreatePowerUp(float x, float y, float z);
     void CreatePowerUp();
-    vector<shared_ptr<PowerUp>> GetEntities() const {
-        return powerUps;
-    };
 
-private:
-	vector<shared_ptr<PowerUp>> powerUps;
+   private:
     void SubscribeToEvents();
 };
 
