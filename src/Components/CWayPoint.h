@@ -23,5 +23,5 @@ public:
     }
 
     glm::vec3 position;
-    float radious = 5.0f;
+    float radious = 30.0f;
 };
