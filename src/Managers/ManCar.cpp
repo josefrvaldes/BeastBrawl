@@ -19,12 +19,12 @@ ManCar::~ManCar() {
 }
 
 void ManCar::CreateMainCar() {
-    shared_ptr<Car> p = make_shared<Car>();
-    entities.push_back(p);
+    car = make_shared<Car>();
 }
 
 void ManCar::CreateCar() {
-    car = make_shared<Car>();
+    shared_ptr<Car> p = make_shared<Car>();
+    entities.push_back(p);
 }
 
 void ManCar::SubscribeToEvents() {

@@ -89,7 +89,6 @@ StateInGame::StateInGame() {
     manCars = make_shared<ManCar>();
     ground = make_shared<GameObject>(glm::vec3(10.0f, 10.0f, 30.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(100.0f, 1.0f, 100.0f), "wall.jpg", "ninja.b3d");
     cam = make_shared<Camera>(glm::vec3(10.0f, 40.0f, 30.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f));
-    car = make_shared<Car>();
 
     renderFacadeManager = RenderFacadeManager::GetInstance();
     renderFacadeManager->InitializeIrrlicht();
@@ -206,7 +205,7 @@ StateInGame::StateInGame() {
 */
 #pragma endregion
 
-    renderEngine->FacadeAddObjectCar(car.get());
+    renderEngine->FacadeAddObjectCar(manCars.get()->GetCar().get());
     renderEngine->FacadeAddObject(ground.get());
 
     for (shared_ptr<Entity> pu : manPowerUps->GetEntities())
@@ -233,9 +232,9 @@ void StateInGame::Update() {
     then = now;
 
     //inputEngine->CheckInputs(*car);
-    renderEngine->FacadeCheckInput(frameDeltaTime, car.get(), cam.get());
+    renderEngine->FacadeCheckInput(frameDeltaTime, manCars.get()->GetCar().get(), cam.get());
     renderEngine->UpdateCamera(cam.get());
-    physicsEngine->Update(car.get(), cam.get());
+    physicsEngine->Update(manCars.get()->GetCar().get(), cam.get());
 
     renderEngine->FacadeDraw();
 

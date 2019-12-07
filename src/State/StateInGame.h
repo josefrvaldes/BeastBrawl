@@ -38,7 +38,6 @@ class StateInGame : public State {
     shared_ptr<EventManager> eventManager;
     shared_ptr<GameObject> ground;
     shared_ptr<Camera> cam;
-    shared_ptr<Car> car;
     shared_ptr<ManPowerUp> manPowerUps;
     shared_ptr<ManCar> manCars;
     shared_ptr<RenderFacadeManager> renderFacadeManager;
