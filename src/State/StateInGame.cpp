@@ -81,14 +81,20 @@ struct Inverter : public Decorator {  // Decorator Inverter
 
 StateInGame::StateInGame() {
     // constructor
+    deltaTime = make_shared<float>(1.2);
+    cout << "Hemos inicializado el stateInGame" << endl;
+    cout << "Tenemos un delta time con los siguientes datos en StateInGame " << deltaTime << "," << *deltaTime << "," << &deltaTime << endl;
     cout << "Estado InGame Creado" << endl;
+    physics = make_unique<Physics>(deltaTime.get());
+    cout << "Tenemos en StateInGame un shared_ptr physics con dir de memoria " << physics << endl;
+    cout << "Tenemos en StateInGame un physics con dir de memoria " << physics.get() << endl;
 
     eventManager = EventManager::GetInstance();
-
+    
     manPowerUps = make_shared<ManPowerUp>();
-    manCars = make_shared<ManCar>();
     ground = make_shared<GameObject>(glm::vec3(10.0f, 10.0f, 30.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(100.0f, 1.0f, 100.0f), "wall.jpg", "ninja.b3d");
     cam = make_shared<Camera>(glm::vec3(10.0f, 40.0f, 30.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f));
+    manCars = make_shared<ManCar>(physics.get(), cam.get());
 
     renderFacadeManager = RenderFacadeManager::GetInstance();
     renderFacadeManager->InitializeIrrlicht();
@@ -99,7 +105,6 @@ StateInGame::StateInGame() {
     physicsFacadeManager = PhysicsFacadeManager::GetInstance();
     physicsFacadeManager->InitializeIrrlicht();
 
-    unique_ptr<Physics> physics = make_unique<Physics>();
     //Almacenamos los motores
     renderEngine = renderFacadeManager->GetRenderFacade();
     inputEngine = inputFacadeManager->GetInputFacade();
@@ -228,14 +233,15 @@ void StateInGame::Update() {
     eventManager->Update();
     const uint32_t now = renderEngine->FacadeGetTime();
 
-    const float frameDeltaTime = (float)(now - then) / 100.0;
+    float *aux = deltaTime.get();
+    *aux = (float)(now - then) / 100.0;
     then = now;
+    // cout << "Tenemos un delta time con los siguientes datos en UpdateStateInGame " << deltaTime << "," << *deltaTime << "," << &deltaTime << endl;
 
     //inputEngine->CheckInputs(*car);
-    renderEngine->FacadeCheckInput(frameDeltaTime, manCars.get()->GetCar().get(), cam.get());
+    renderEngine->FacadeCheckInput(deltaTime.get(), manCars.get()->GetCar().get(), cam.get());
     renderEngine->UpdateCamera(cam.get());
     physicsEngine->Update(manCars.get()->GetCar().get(), cam.get());
-
     renderEngine->FacadeDraw();
 
     int fps = renderEngine->FacadeGetFPS();

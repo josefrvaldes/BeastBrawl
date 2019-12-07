@@ -149,10 +149,10 @@ uint32_t RenderFacadeIrrlicht::FacadeGetTime() {
     return device->getTimer()->getTime();
 }
 
-void RenderFacadeIrrlicht::FacadeCheckInput(float frameDeltaTime, Entity* car, Entity* cam) {
+void RenderFacadeIrrlicht::FacadeCheckInput(float *frameDeltaTime, Entity* car, Entity* cam) {
     shared_ptr<EventManager> eventManager = EventManager::GetInstance();
     Data d;
-    d.deltaTime = frameDeltaTime;
+    d.deltaTime = *frameDeltaTime;
     d.gameObject = car;
     d.camera = cam;
 

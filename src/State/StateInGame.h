@@ -46,6 +46,8 @@ class StateInGame : public State {
     shared_ptr<RenderFacade> renderEngine;
     shared_ptr<InputFacade> inputEngine;
     shared_ptr<PhysicsFacade> physicsEngine;
+    shared_ptr<Physics> physics;
+    shared_ptr<float> deltaTime;
 
     int lastFPS = -1;
     uint32_t then;

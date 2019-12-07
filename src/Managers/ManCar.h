@@ -9,10 +9,13 @@
 using namespace std;
 class Car;
 class Data;
+class Physics;
+class Camera;
 
 class ManCar : public Manager {
    public:
     ManCar();
+    ManCar(Physics *, Camera *);
     ~ManCar();
 
     void CreateCar();
@@ -22,6 +25,8 @@ class ManCar : public Manager {
     };
 
    private:
+    Physics *physics;
+    Camera *cam;
     void SubscribeToEvents();
     void AcelerarCoche(Data d);
     shared_ptr<Car> car;

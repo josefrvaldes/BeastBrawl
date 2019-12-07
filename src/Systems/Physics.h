@@ -1,14 +1,14 @@
 #pragma once
 
-#include "../Components/CType.h"
+#include "../Components/CCamera.h"
+#include "../Components/CCar.h"
 #include "../Components/CId.h"
 #include "../Components/CTransformable.h"
-#include "../Components/CCamera.h"
+#include "../Components/CType.h"
 #include "../Components/Component.h"
-#include "../Components/CCar.h"
 
-#include "../EventManager/EventManager.h"
 #include "../EventManager/Event.h"
+#include "../EventManager/EventManager.h"
 
 #include <math.h>
 #include <memory>
@@ -16,13 +16,17 @@
 using namespace std;
 #define PI 3.141592
 
-class Physics
-{
-public:
-    Physics();
-    ~Physics(){};
+class Car;
+class Camera;
 
-protected:
-private:
-    
+class Physics {
+   public:
+    Physics(float *);
+    ~Physics(){};
+    void Accelerate(Car *, Camera *);
+
+   protected:
+   private:
+    float *deltaTime;
+    int prueba;
 };
