@@ -25,8 +25,7 @@ void CalculatePosition(CCar *cCar, CTransformable *cTransformable, float *deltaT
 //Calcula la posicion del coche (duda con las formulas preguntar a Jose)
 void CalculatePositionReverse(CCar *cCar, CTransformable *cTransformable, float *deltaTime) {
     float angleRotation = (cTransformable->rotation.y * PI) / 180.0;
-    cout << "Tenemos un delta time con los siguientes datos en CalculatePosition " << deltaTime << "," << *deltaTime << "," << &deltaTime << endl
-         << endl;
+    //cout << "Tenemos un delta time con los siguientes datos en CalculatePosition " << deltaTime << "," << *deltaTime << "," << &deltaTime << endl;
 
     float auxDelta = *deltaTime;
     //Modificamos la posicion en X y Z en funcion del angulo
@@ -48,15 +47,12 @@ void CalculatePositionCamera(CTransformable *cTransformableCar, CTransformable *
 
 //Entra cuando se presiona la I
 void Physics::Accelerate(Car *car, Camera *cam) {
-    // cout << "En accelerate la dir de memoria del this es " << this << endl;
-
-    //cout << "El delta time de physics es " << *deltaTime << " y su memoria es " << deltaTime << endl;
     //Componentes de la camara
     auto componentsCam = cam->GetComponents();
     auto cCamera = static_cast<CCamera *>(componentsCam[CompType::CameraComp].get());
     auto cTransformableCam = static_cast<CTransformable *>(componentsCam[CompType::TransformableComp].get());
 
-    //Guardamos en variables los componentes
+    //Componentes del coche
     auto components = car->GetComponents();
     auto cTransformable = static_cast<CTransformable *>(components[CompType::TransformableComp].get());
     auto cCar = static_cast<CCar *>(components[CompType::CarComp].get());
@@ -67,7 +63,6 @@ void Physics::Accelerate(Car *car, Camera *cam) {
         cCar->speed = cCar->maxSpeed;
     }
 
-    // cout << "Tenemos un delta time con los siguientes datos en Accelerate " << deltaTime << "," << *deltaTime << "," << &deltaTime << endl;
     if (cCar->speed >= 0)
         CalculatePosition(cCar, cTransformable, deltaTime);
     else
@@ -82,7 +77,7 @@ void Physics::Decelerate(Car *car, Camera *cam) {
     auto cCamera = static_cast<CCamera *>(componentsCam[CompType::CameraComp].get());
     auto cTransformableCam = static_cast<CTransformable *>(componentsCam[CompType::TransformableComp].get());
 
-    //Guardamos en variables los componentes
+    //Componentes del coche
     auto components = car->GetComponents();
     auto cTransformable = static_cast<CTransformable *>(components[CompType::TransformableComp].get());
     auto cCar = static_cast<CCar *>(components[CompType::CarComp].get());
@@ -110,7 +105,7 @@ void Physics::TurnLeft(Car *car, Camera *cam) {
     //Componentes del coche
     auto components = car->GetComponents();
     auto cTransformable = static_cast<CTransformable *>(components[CompType::TransformableComp].get());
-    auto cCar = static_cast<CCar *>(components[CompType::TransformableComp].get());
+    auto cCar = static_cast<CCar *>(components[CompType::CarComp].get());
 
     if (cCar->speed >= 3) {
         if (cCar->wheelRotation > -10) {
@@ -164,7 +159,7 @@ void Physics::TurnRight(Car *car, Camera *cam) {
     //Componentes del coche
     auto components = car->GetComponents();
     auto cTransformable = static_cast<CTransformable *>(components[CompType::TransformableComp].get());
-    auto cCar = static_cast<CCar *>(components[CompType::TransformableComp].get());
+    auto cCar = static_cast<CCar *>(components[CompType::CarComp].get());
 
     if (cCar->speed >= 3) {
         if (cCar->wheelRotation < 10) {
@@ -215,7 +210,7 @@ void Physics::NotAcceleratingOrDecelerating(Car *car, Camera *cam) {
     auto cCamera = static_cast<CCamera *>(componentsCam[CompType::CameraComp].get());
     auto cTransformableCam = static_cast<CTransformable *>(componentsCam[CompType::TransformableComp].get());
 
-    //Guardamos en variables los componentes
+    //Componentes del coche
     auto components = car->GetComponents();
     auto cTransformable = static_cast<CTransformable *>(components[CompType::TransformableComp].get());
     auto cCar = static_cast<CCar *>(components[CompType::CarComp].get());
@@ -244,7 +239,7 @@ void Physics::NotTurning(Car *car, Camera *cam) {
     auto cCamera = static_cast<CCamera *>(componentsCam[CompType::CameraComp].get());
     auto cTransformableCam = static_cast<CTransformable *>(componentsCam[CompType::TransformableComp].get());
 
-    //Guardamos en variables los componentes
+    //Componentes del coche
     auto components = car->GetComponents();
     auto cTransformable = static_cast<CTransformable *>(components[CompType::TransformableComp].get());
     auto cCar = static_cast<CCar *>(components[CompType::CarComp].get());

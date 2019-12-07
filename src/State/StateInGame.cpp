@@ -83,11 +83,7 @@ StateInGame::StateInGame() {
     // constructor
     deltaTime = make_shared<float>(1.2);
     cout << "Hemos inicializado el stateInGame" << endl;
-    cout << "Tenemos un delta time con los siguientes datos en StateInGame " << deltaTime << "," << *deltaTime << "," << &deltaTime << endl;
-    cout << "Estado InGame Creado" << endl;
     physics = make_unique<Physics>(deltaTime.get());
-    cout << "Tenemos en StateInGame un shared_ptr physics con dir de memoria " << physics << endl;
-    cout << "Tenemos en StateInGame un physics con dir de memoria " << physics.get() << endl;
 
     eventManager = EventManager::GetInstance();
     
@@ -227,23 +223,21 @@ StateInGame::~StateInGame() {
 }
 
 void StateInGame::Render() {
+    renderEngine->FacadeDraw();
 }
 
 void StateInGame::Update() {
     eventManager->Update();
     const uint32_t now = renderEngine->FacadeGetTime();
 
-    float *aux = deltaTime.get();
-    *aux = (float)(now - then) / 100.0;
+    // actualizamos el deltatime
+    *deltaTime.get() = (float)(now - then) / 100.0;
     then = now;
-    // cout << "Tenemos un delta time con los siguientes datos en UpdateStateInGame " << deltaTime << "," << *deltaTime << "," << &deltaTime << endl;
 
-    //inputEngine->CheckInputs(*car);
     renderEngine->FacadeCheckInput();
     renderEngine->UpdateCamera(cam.get());
     physicsEngine->Update(manCars.get()->GetCar().get(), cam.get());
-    renderEngine->FacadeDraw();
-
+    
     int fps = renderEngine->FacadeGetFPS();
     lastFPS = fps;
 }

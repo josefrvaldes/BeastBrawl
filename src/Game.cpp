@@ -59,6 +59,7 @@ void Game::MainLoop(){
 
     while(renderFacadeManager->GetRenderFacade()->FacadeRun()){
         currentState->Update();
+        currentState->Render();
     }
     renderFacadeManager->GetRenderFacade()->FacadeDeviceDrop();
     //for(;;);  // To-Do: crear bucle del juego
