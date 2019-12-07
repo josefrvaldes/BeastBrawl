@@ -16,7 +16,7 @@ class PhysicsFacadeIrrlicht : public PhysicsFacade{
 
 
     private:
-        void UpdateCam(Entity*);
+        //void UpdateCam(Entity*, uint16_t);
         shared_ptr<RenderFacadeIrrlicht> renderEngineIrrlicht;
         scene::ISceneManager* smgr;
 };
