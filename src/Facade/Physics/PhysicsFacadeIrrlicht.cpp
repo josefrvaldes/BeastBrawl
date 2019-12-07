@@ -39,23 +39,4 @@ void PhysicsFacadeIrrlicht::Update(Entity* car, Entity* cam) {
 
     //Actualiza el escalado del objeto de irrlicht
     node->setScale(core::vector3df(cTransformable->scale.x, cTransformable->scale.y, cTransformable->scale.z));
-
-    //Actualizamos la camara
-    //UpdateCam(cam);
 }
-
-// void PhysicsFacadeIrrlicht::UpdateCam(Entity* cam, uint16_t idCar){
-//     //Cogemos los componentes de la camara
-// 	auto components = cam->GetComponents();
-// 	auto mapTransformable = components.find(CompType::TransformableComp);
-// 	auto cTransformable = static_cast<CTransformable*>(mapTransformable->second.get());
-
-// 	//Cogemos la posicion de nuestro coche
-//     //TODO: cambiar ese 0 por el id de CarManager
-//     auto camera1 = renderEngineIrrlicht->GetCamera1();
-// 	core::vector3df targetPosition  = smgr->getSceneNodeFromId(idCar)->getPosition();
-//     targetPosition.Y += 17;
-//     camera1->setTarget(targetPosition);
-
-// 	camera1->setPosition(core::vector3df(cTransformable->position.x, cTransformable->position.y, cTransformable->position.z));
-// }

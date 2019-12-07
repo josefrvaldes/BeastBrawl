@@ -46,7 +46,7 @@ const uint16_t RenderFacadeIrrlicht::FacadeAddObject(Entity* entity) {
     scene::ISceneNode* node = nullptr;
     std::string meshPath = "media/" + cMesh->mesh;
 
-	// añadimos el node al sceneManager dependiendo del tipo de node que sea
+    // añadimos el node al sceneManager dependiendo del tipo de node que sea
     switch (cType->type) {
         case ModelType::Sphere:
             node = smgr->addSphereSceneNode();
@@ -65,7 +65,7 @@ const uint16_t RenderFacadeIrrlicht::FacadeAddObject(Entity* entity) {
             break;
     }
 
-	// y ahora a ese node, le ponemos sus parámetros
+    // y ahora a ese node, le ponemos sus parámetros
     std::string path = "media/" + cTexture->texture;
     if (node) {
         node->setID(cId->id);
@@ -136,7 +136,7 @@ void RenderFacadeIrrlicht::FacadeAddCamera(Entity* camera) {
 
     float posX = cCamera->tarX - 40.0 * sin(((cTransformable->rotation.x) * PI) / 180.0);
     float posZ = cCamera->tarZ - 40.0 * cos(((cTransformable->rotation.z) * PI) / 180.0);
-    
+
     camera1->setTarget(core::vector3df(cCamera->tarX, cCamera->tarY, cCamera->tarZ));
     camera1->setPosition(core::vector3df(posX, cTransformable->position.y, posZ));
 }

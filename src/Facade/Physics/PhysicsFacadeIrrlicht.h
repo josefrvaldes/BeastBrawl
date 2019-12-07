@@ -2,21 +2,19 @@
 
 #include <iostream>
 #include <memory>
-#include "PhysicsFacade.h"
-#include "../Render/RenderFacadeManager.h"
-#include "../Render/RenderFacadeIrrlicht.h"
 #include "../../../lib/irrlicht/irrlicht.h"
+#include "../Render/RenderFacadeIrrlicht.h"
+#include "../Render/RenderFacadeManager.h"
+#include "PhysicsFacade.h"
 
 using namespace std;
-class PhysicsFacadeIrrlicht : public PhysicsFacade{
-    public:
-        PhysicsFacadeIrrlicht();
-        void Update(Entity*, Entity*) override;
-        ~PhysicsFacadeIrrlicht();
+class PhysicsFacadeIrrlicht : public PhysicsFacade {
+   public:
+    PhysicsFacadeIrrlicht();
+    void Update(Entity*, Entity*) override;
+    ~PhysicsFacadeIrrlicht();
 
-
-    private:
-        //void UpdateCam(Entity*, uint16_t);
-        shared_ptr<RenderFacadeIrrlicht> renderEngineIrrlicht;
-        scene::ISceneManager* smgr;
+   private:
+    shared_ptr<RenderFacadeIrrlicht> renderEngineIrrlicht;
+    scene::ISceneManager* smgr;
 };

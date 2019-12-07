@@ -13,7 +13,7 @@ void TurnRight(Data d);
 void NotAcceleratingOrDecelerating(Data d);
 void NotTurning(Data d);
 
-Physics::Physics(){
+Physics::Physics() {
     shared_ptr<EventManager> eventManager = EventManager::GetInstance();
 
     //Se suscriben los listeners
@@ -28,15 +28,14 @@ Physics::Physics(){
 //PUNTEROS A FUNCIONES
 
 //Entra cuando se presiona la I
-void Accelerate(Data d)
-{
+void Accelerate(Data d) {
     //Componentes de la camara
     auto componentsCam = d.camera->GetComponents();
     auto mapCamera = componentsCam.find(CompType::CameraComp);
     auto cCamera = static_cast<CCamera *>(mapCamera->second.get());
     auto mapTransformCamera = componentsCam.find(CompType::TransformableComp);
     auto cTransformableCam = static_cast<CTransformable *>(mapTransformCamera->second.get());
-    
+
     //Guardamos en variables los componentes
     auto components = d.gameObject->GetComponents();
     auto mapTransform = components.find(CompType::TransformableComp);
@@ -47,8 +46,7 @@ void Accelerate(Data d)
 
     //Aumentamos la velocidad
     cCar->speed += cCar->acceleration;
-    if (cCar->speed > cCar->maxSpeed)
-    {
+    if (cCar->speed > cCar->maxSpeed) {
         cCar->speed = cCar->maxSpeed;
     }
 
@@ -60,8 +58,7 @@ void Accelerate(Data d)
 }
 
 //Entra cuando se presiona la O
-void Decelerate(Data d)
-{
+void Decelerate(Data d) {
     //Componentes de la camara
     auto componentsCam = d.camera->GetComponents();
     auto mapCamera = componentsCam.find(CompType::CameraComp);
@@ -77,8 +74,7 @@ void Decelerate(Data d)
 
     //Reducimos la velocidad
     cCar->speed -= cCar->acceleration;
-    if (cCar->speed < cCar->reverseMaxSpeed)
-    { // no se supere la velocidad marcha atras
+    if (cCar->speed < cCar->reverseMaxSpeed) {  // no se supere la velocidad marcha atras
         cCar->speed = cCar->reverseMaxSpeed;
     }
 
@@ -90,9 +86,7 @@ void Decelerate(Data d)
 }
 
 //Entra cuando se presiona la A
-void TurnLeft(Data d)
-{
-
+void TurnLeft(Data d) {
     //Componentes de la camara
     auto componentsCam = d.camera->GetComponents();
     auto mapCamera = componentsCam.find(CompType::CameraComp);
@@ -107,56 +101,37 @@ void TurnLeft(Data d)
     auto mapCar = components.find(CompType::CarComp);
     auto cCar = static_cast<CCar *>(mapCar->second.get());
 
-    if (cCar->speed >= 3)
-    {
-        if (cCar->wheelRotation > -10)
-        {
+    if (cCar->speed >= 3) {
+        if (cCar->wheelRotation > -10) {
             //Aumentamos la rotacion hacia la izquierda
             cCar->wheelRotation -= 0.5;
         }
 
-        if (cCamera->rotExtraY > -15)
-        {
+        if (cCamera->rotExtraY > -15) {
             cCamera->rotExtraY -= 0.5;
         }
-    }
-    else if (cCar->speed <= -3)
-    {
-        if (cCar->wheelRotation > -10)
-        {
+    } else if (cCar->speed <= -3) {
+        if (cCar->wheelRotation > -10) {
             //Aumentamos la rotacion hacia la izquierda
             cCar->wheelRotation -= 0.5;
         }
-        if (cCamera->rotExtraY > -15)
-        {
+        if (cCamera->rotExtraY > -15) {
             cCamera->rotExtraY -= 0.5;
         }
-    }
-    else
-    {
-        if (cCar->wheelRotation >= 0.7)
-        {
+    } else {
+        if (cCar->wheelRotation >= 0.7) {
             cCar->wheelRotation -= 0.7;
-        }
-        else if (cCar->wheelRotation <= -0.7)
-        {
+        } else if (cCar->wheelRotation <= -0.7) {
             cCar->wheelRotation += 0.7;
-        }
-        else
-        {
+        } else {
             cCar->wheelRotation = 0;
         }
 
-        if (cCamera->rotExtraY >= 0.7)
-        {
+        if (cCamera->rotExtraY >= 0.7) {
             cCamera->rotExtraY -= 0.7;
-        }
-        else if (cCamera->rotExtraY <= -0.7)
-        {
+        } else if (cCamera->rotExtraY <= -0.7) {
             cCamera->rotExtraY += 0.7;
-        }
-        else
-        {
+        } else {
             cCamera->rotExtraY = 0;
         }
     }
@@ -169,8 +144,7 @@ void TurnLeft(Data d)
 }
 
 //Entra cuando se presiona la D
-void TurnRight(Data d)
-{
+void TurnRight(Data d) {
     //Componentes de la camara
     auto componentsCam = d.camera->GetComponents();
     auto mapCamera = componentsCam.find(CompType::CameraComp);
@@ -186,56 +160,37 @@ void TurnRight(Data d)
     auto mapCar = components.find(CompType::CarComp);
     auto cCar = static_cast<CCar *>(mapCar->second.get());
 
-    if (cCar->speed >= 3)
-    {
-        if (cCar->wheelRotation < 10)
-        {
+    if (cCar->speed >= 3) {
+        if (cCar->wheelRotation < 10) {
             //Aumentamos la rotacion hacia la derecha
             cCar->wheelRotation += 0.5;
         }
 
-        if (cCamera->rotExtraY < 15)
-        {
+        if (cCamera->rotExtraY < 15) {
             cCamera->rotExtraY += 0.5;
         }
-    }
-    else if (cCar->speed <= -3)
-    {
-        if (cCar->wheelRotation < 10)
-        {
+    } else if (cCar->speed <= -3) {
+        if (cCar->wheelRotation < 10) {
             //Aumentamos la rotacion hacia la derecha
             cCar->wheelRotation += 0.5;
         }
-        if (cCamera->rotExtraY < 15)
-        {
+        if (cCamera->rotExtraY < 15) {
             cCamera->rotExtraY += 0.5;
         }
-    }
-    else
-    {
-        if (cCar->wheelRotation >= 0.7)
-        {
+    } else {
+        if (cCar->wheelRotation >= 0.7) {
             cCar->wheelRotation -= 0.7;
-        }
-        else if (cCar->wheelRotation <= -0.7)
-        {
+        } else if (cCar->wheelRotation <= -0.7) {
             cCar->wheelRotation += 0.7;
-        }
-        else
-        {
+        } else {
             cCar->wheelRotation = 0;
         }
 
-        if (cCamera->rotExtraY >= 0.7)
-        {
+        if (cCamera->rotExtraY >= 0.7) {
             cCamera->rotExtraY -= 0.7;
-        }
-        else if (cCamera->rotExtraY <= -0.7)
-        {
+        } else if (cCamera->rotExtraY <= -0.7) {
             cCamera->rotExtraY += 0.7;
-        }
-        else
-        {
+        } else {
             cCamera->rotExtraY = 0;
         }
     }
@@ -248,8 +203,7 @@ void TurnRight(Data d)
 }
 
 //Aqui entra cuando no se esta presionando ni I ni O
-void NotAcceleratingOrDecelerating(Data d)
-{
+void NotAcceleratingOrDecelerating(Data d) {
     //Componentes de la camara
     auto componentsCam = d.camera->GetComponents();
     auto mapCamera = componentsCam.find(CompType::CameraComp);
@@ -264,14 +218,11 @@ void NotAcceleratingOrDecelerating(Data d)
     auto mapCar = components.find(CompType::CarComp);
     auto cCar = static_cast<CCar *>(mapCar->second.get());
 
-    if (cCar->speed > 0)
-    {
+    if (cCar->speed > 0) {
         cCar->speed -= cCar->friction;
         if (cCar->speed < 0)
             cCar->speed = 0;
-    }
-    else if (cCar->speed < 0)
-    {
+    } else if (cCar->speed < 0) {
         cCar->speed += cCar->friction;
         if (cCar->speed > 0)
             cCar->speed = 0;
@@ -285,8 +236,7 @@ void NotAcceleratingOrDecelerating(Data d)
 }
 
 //Aqui entra cuando no se esta presionando ni A ni D
-void NotTurning(Data d)
-{
+void NotTurning(Data d) {
     //Componentes de la camara
     auto componentsCam = d.camera->GetComponents();
     auto mapCamera = componentsCam.find(CompType::CameraComp);
@@ -301,29 +251,19 @@ void NotTurning(Data d)
     auto mapCar = components.find(CompType::CarComp);
     auto cCar = static_cast<CCar *>(mapCar->second.get());
 
-    if (cCar->wheelRotation >= 0.7)
-    {
+    if (cCar->wheelRotation >= 0.7) {
         cCar->wheelRotation -= 0.7;
-    }
-    else if (cCar->wheelRotation <= -0.7)
-    {
+    } else if (cCar->wheelRotation <= -0.7) {
         cCar->wheelRotation += 0.7;
-    }
-    else
-    {
+    } else {
         cCar->wheelRotation = 0;
     }
 
-    if (cCamera->rotExtraY >= 0.7)
-    {
+    if (cCamera->rotExtraY >= 0.7) {
         cCamera->rotExtraY -= 0.7;
-    }
-    else if (cCamera->rotExtraY <= -0.7)
-    {
+    } else if (cCamera->rotExtraY <= -0.7) {
         cCamera->rotExtraY += 0.7;
-    }
-    else
-    {
+    } else {
         cCamera->rotExtraY = 0;
     }
 
@@ -335,8 +275,7 @@ void NotTurning(Data d)
 }
 
 //Calcula la posicion del coche (duda con las formulas preguntar a Jose)
-void CalculatePosition(CCar *cCar, CTransformable *cTransformable, Data d)
-{
+void CalculatePosition(CCar *cCar, CTransformable *cTransformable, Data d) {
     float angleRotation = (cTransformable->rotation.y * PI) / 180.0;
 
     //Modificamos la posicion en X y Z en funcion del angulo
@@ -344,15 +283,13 @@ void CalculatePosition(CCar *cCar, CTransformable *cTransformable, Data d)
     cTransformable->position.z += cos(angleRotation) * cCar->speed * d.deltaTime;
 
     //Si tiene rotacion, rotamos el coche
-    if (cCar->wheelRotation != 0)
-    {
+    if (cCar->wheelRotation != 0) {
         cTransformable->rotation.y += cCar->wheelRotation * 0.20;
     }
 }
 
 //Calcula la posicion del coche (duda con las formulas preguntar a Jose)
-void CalculatePositionReverse(CCar *cCar, CTransformable *cTransformable, Data d)
-{
+void CalculatePositionReverse(CCar *cCar, CTransformable *cTransformable, Data d) {
     float angleRotation = (cTransformable->rotation.y * PI) / 180.0;
 
     //Modificamos la posicion en X y Z en funcion del angulo
@@ -360,15 +297,13 @@ void CalculatePositionReverse(CCar *cCar, CTransformable *cTransformable, Data d
     cTransformable->position.z += cos(angleRotation) * cCar->speed * d.deltaTime;
 
     //Si tiene rotacion, rotamos el coche
-    if (cCar->wheelRotation != 0)
-    {
+    if (cCar->wheelRotation != 0) {
         cTransformable->rotation.y -= cCar->wheelRotation * 0.20;
     }
 }
 
 //Calcula la posicion de la camara (duda con las formulas preguntar a Jose)
-void CalculatePositionCamera(CTransformable *cTransformableCar, CTransformable *cTransformableCamera, CCamera *cCamera)
-{
+void CalculatePositionCamera(CTransformable *cTransformableCar, CTransformable *cTransformableCamera, CCamera *cCamera) {
     cTransformableCamera->position.y = cTransformableCar->position.y + 20;
     cTransformableCamera->position.x = (cTransformableCar->position.x - 40 * sin(((cTransformableCar->rotation.y - cCamera->rotExtraY) * PI) / 180.0));
     cTransformableCamera->position.z = (cTransformableCar->position.z - 40 * cos(((cTransformableCar->rotation.y - cCamera->rotExtraY) * PI) / 180.0));
