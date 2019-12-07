@@ -24,9 +24,13 @@ class Physics {
     Physics(float *);
     ~Physics(){};
     void Accelerate(Car *, Camera *);
+    void TurnLeft(Car *, Camera *);
+    void TurnRight(Car *, Camera *);
+    void NotAcceleratingOrDecelerating(Car *, Camera *);
+    void Decelerate(Car *, Camera *);
+    void NotTurning(Car *, Camera *);
 
    protected:
    private:
     float *deltaTime;
-    int prueba;
 };

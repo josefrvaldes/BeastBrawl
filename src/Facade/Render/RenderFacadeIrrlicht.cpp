@@ -149,12 +149,9 @@ uint32_t RenderFacadeIrrlicht::FacadeGetTime() {
     return device->getTimer()->getTime();
 }
 
-void RenderFacadeIrrlicht::FacadeCheckInput(float *frameDeltaTime, Entity* car, Entity* cam) {
+void RenderFacadeIrrlicht::FacadeCheckInput() {
     shared_ptr<EventManager> eventManager = EventManager::GetInstance();
     Data d;
-    d.deltaTime = *frameDeltaTime;
-    d.gameObject = car;
-    d.camera = cam;
 
     if (receiver.IsKeyDown(KEY_ESCAPE)) {
         device->closeDevice();

@@ -1,11 +1,11 @@
-#include <iostream>
-#include <functional>
 #include "ManCar.h"
-#include "../Entities/Car.h"
+#include <functional>
+#include <iostream>
 #include "../Entities/Camera.h"
-#include "../Systems/Physics.h"
+#include "../Entities/Car.h"
 #include "../EventManager/Event.h"
 #include "../EventManager/EventManager.h"
+#include "../Systems/Physics.h"
 
 class Position;
 using namespace std;
@@ -37,28 +37,70 @@ void ManCar::CreateCar() {
 }
 
 void ManCar::SubscribeToEvents() {
-    Listener listenerAcelerarCoche = Listener(
-        EventType::PRESS_I, 
-        bind(&ManCar::AcelerarCoche, this, placeholders::_1),
-        "EjecutarMeHanCogido");
-    EventManager::GetInstance()->SuscribeMulti(listenerAcelerarCoche);
+    EventManager::GetInstance()->SuscribeMulti(Listener(
+        EventType::PRESS_I,
+        bind(&ManCar::AccelerateCar, this, placeholders::_1),
+        "AccelerateCar"));
+
+    EventManager::GetInstance()->SuscribeMulti(Listener(
+        EventType::PRESS_O,
+        bind(&ManCar::Decelerate, this, placeholders::_1),
+        "Decelerate"));
+
+    EventManager::GetInstance()->SuscribeMulti(Listener(
+        EventType::PRESS_A,
+        bind(&ManCar::TurnLeftCar, this, placeholders::_1),
+        "TurnLeftCar"));
+
+    EventManager::GetInstance()->SuscribeMulti(Listener(
+        EventType::PRESS_D,
+        bind(&ManCar::TurnRightCar, this, placeholders::_1),
+        "TurnRightCar"));
+
+    EventManager::GetInstance()->SuscribeMulti(Listener(
+        EventType::NO_I_O_PRESS,
+        bind(&ManCar::NotAcceleratingOrDecelerating, this, placeholders::_1),
+        "NotAcceleratingOrDecelerating"));
+
+    EventManager::GetInstance()->SuscribeMulti(Listener(
+        EventType::NO_A_D_PRESS,
+        bind(&ManCar::NotTurning, this, placeholders::_1),
+        "NotTurning"));
 }
 
-void ManCar::AcelerarCoche(Data d) {
+void ManCar::TurnLeftCar(Data d) {
+    physics->TurnLeft(car.get(), cam);
+}
+
+void ManCar::NotTurning(Data d) {
+    physics->NotTurning(car.get(), cam);
+}
+
+void ManCar::Decelerate(Data d) {
+    physics->Decelerate(car.get(), cam);
+}
+
+void ManCar::NotAcceleratingOrDecelerating(Data d) {
+    physics->NotAcceleratingOrDecelerating(car.get(), cam);
+}
+
+void ManCar::TurnRightCar(Data d) {
+    physics->TurnRight(car.get(), cam);
+}
+
+void ManCar::AccelerateCar(Data d) {
     // cout << "Se ha llamado al evento acelerar coche" << endl;
-    // cout << "Tenemos en AcelerarCoche un physics con dir de memoria " << physics << endl;
+    // cout << "Tenemos en AccelerateCar un physics con dir de memoria " << physics << endl;
 
     // auto components = car.get()->GetComponents();
     // auto cTransformable = static_cast<CTransformable *>(components[CompType::TransformableComp].get());
 
     // auto componentsCam = cam->GetComponents();
     // auto cTransformableCam = static_cast<CTransformable *>(componentsCam[CompType::TransformableComp].get());
-    
+
     // cout << "La pos del coche antes es " << cTransformable->position.x << "," << cTransformable->position.y << "," <<  cTransformable->position.z << endl;
     // cout << "La pos de la cámara antes es " << cTransformableCam->position.x << "," << cTransformableCam->position.y << "," <<  cTransformableCam->position.z << endl;
     physics->Accelerate(car.get(), cam);
     // cout << "La pos del coche después es " << cTransformable->position.x << "," << cTransformable->position.y << "," <<  cTransformable->position.z << endl;
     // cout << "La pos de la cámara después es " << cTransformableCam->position.x << "," << cTransformableCam->position.y << "," <<  cTransformableCam->position.z << endl;
 }
-
-//eventManager->TriggerEvent(EventType::HAN_COGIDO_A_ALGUIEN, id_mio, id_que_he_cogido);

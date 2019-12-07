@@ -28,6 +28,11 @@ class ManCar : public Manager {
     Physics *physics;
     Camera *cam;
     void SubscribeToEvents();
-    void AcelerarCoche(Data d);
+    void AccelerateCar(Data d);
+    void TurnLeftCar(Data d);
+    void TurnRightCar(Data d);
+    void NotAcceleratingOrDecelerating(Data d);
+    void Decelerate(Data d);
+    void NotTurning(Data d);
     shared_ptr<Car> car;
 };

@@ -27,7 +27,7 @@ class RenderFacadeIrrlicht : public RenderFacade {
 		void FacadeAddCamera(Entity*) override;
 		bool FacadeRun() override;
 		uint32_t FacadeGetTime() override;
-		void FacadeCheckInput(float*, Entity*, Entity*) override;
+		void FacadeCheckInput() override;
 		int FacadeGetFPS() override;
 		void FacadeSetWindowCaption(std::string) override;
 		void FacadeBeginScene() override;

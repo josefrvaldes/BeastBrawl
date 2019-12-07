@@ -239,7 +239,7 @@ void StateInGame::Update() {
     // cout << "Tenemos un delta time con los siguientes datos en UpdateStateInGame " << deltaTime << "," << *deltaTime << "," << &deltaTime << endl;
 
     //inputEngine->CheckInputs(*car);
-    renderEngine->FacadeCheckInput(deltaTime.get(), manCars.get()->GetCar().get(), cam.get());
+    renderEngine->FacadeCheckInput();
     renderEngine->UpdateCamera(cam.get());
     physicsEngine->Update(manCars.get()->GetCar().get(), cam.get());
     renderEngine->FacadeDraw();

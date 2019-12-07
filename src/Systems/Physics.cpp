@@ -2,37 +2,13 @@
 #include "../Entities/Camera.h"
 #include "../Entities/Car.h"
 
-//void CalculatePosition(CCar *cCar, CTransformable *cTransformable, float *deltaTime);
-void CalculatePositionReverse(CCar *cCar, CTransformable *cTransformable, float *deltaTime);
-void CalculatePositionCamera(CTransformable *cTransformableCar, CTransformable *cTransformableCamera, CCamera *cCamera);
+Physics::Physics(float *_deltaTime) : deltaTime(_deltaTime) {
 
-//TODO: Cambiar en los punteros a funciones en vez de ir pasandole datos por Event cogerlos del EntityManager
-// PUNTEROS A FUNCIONES
-//void Accelerate(Data d);
-/*void Decelerate(Data d);
-void TurnLeft(Data d);
-void TurnRight(Data d);
-void NotAcceleratingOrDecelerating(Data d);
-void NotTurning(Data d);*/
-
-Physics::Physics(float *_deltaTime) : deltaTime(_deltaTime), prueba(27) {
-    shared_ptr<EventManager> eventManager = EventManager::GetInstance();
-    // cout << "Hemos inicializado el physics" << endl;
-    // cout << "Tenemos un delta time con los siguientes datos en Physics " << deltaTime << "," << *deltaTime << "," << &deltaTime << endl;
-
-    //Se suscriben los listeners
-    //eventManager->SuscribeMulti(Listener{EventType::PRESS_I, Accelerate, "accelerate"});
-    // eventManager->SuscribeMulti(Listener{EventType::PRESS_A, TurnLeft, "turnLeft"});
-    // eventManager->SuscribeMulti(Listener{EventType::PRESS_D, TurnRight, "turnRight"});
-    // eventManager->SuscribeMulti(Listener{EventType::PRESS_O, Decelerate, "decelerate"});
-    // eventManager->SuscribeMulti(Listener{EventType::NO_I_O_PRESS, NotAcceleratingOrDecelerating, "notAcceleratingOrDecelerating"});
-    // eventManager->SuscribeMulti(Listener{EventType::NO_A_D_PRESS, NotTurning, "notTurning"});
 }
 
-//PUNTEROS A FUNCIONES
 
 //Calcula la posicion del coche (duda con las formulas preguntar a Jose)
-void CalculatePosition(CCar *cCar, CTransformable *cTransformable, float *deltaTime, int prueba) {
+void CalculatePosition(CCar *cCar, CTransformable *cTransformable, float *deltaTime) {
     float angleRotation = (cTransformable->rotation.y * PI) / 180.0;
     // cout << "Tenemos un delta time con los siguientes datos en CalculatePosition " << prueba << "," << deltaTime << "," << *deltaTime << "," << &deltaTime << endl << endl;
     float auxDelta = *deltaTime;
@@ -73,7 +49,7 @@ void CalculatePositionCamera(CTransformable *cTransformableCar, CTransformable *
 //Entra cuando se presiona la I
 void Physics::Accelerate(Car *car, Camera *cam) {
     // cout << "En accelerate la dir de memoria del this es " << this << endl;
-    
+
     //cout << "El delta time de physics es " << *deltaTime << " y su memoria es " << deltaTime << endl;
     //Componentes de la camara
     auto componentsCam = cam->GetComponents();
@@ -93,26 +69,23 @@ void Physics::Accelerate(Car *car, Camera *cam) {
 
     // cout << "Tenemos un delta time con los siguientes datos en Accelerate " << deltaTime << "," << *deltaTime << "," << &deltaTime << endl;
     if (cCar->speed >= 0)
-        CalculatePosition(cCar, cTransformable, deltaTime, prueba);
+        CalculatePosition(cCar, cTransformable, deltaTime);
     else
         CalculatePositionReverse(cCar, cTransformable, deltaTime);
     CalculatePositionCamera(cTransformable, cTransformableCam, cCamera);
 }
 
 //Entra cuando se presiona la O
-/*void Decelerate(Data d) {
+void Physics::Decelerate(Car *car, Camera *cam) {
     //Componentes de la camara
-    auto componentsCam = d.camera->GetComponents();
-    auto mapCamera = componentsCam.find(CompType::CameraComp);
-    auto cCamera = static_cast<CCamera *>(mapCamera->second.get());
-    auto mapTransformCamera = componentsCam.find(CompType::TransformableComp);
-    auto cTransformableCam = static_cast<CTransformable *>(mapTransformCamera->second.get());
+    auto componentsCam = cam->GetComponents();
+    auto cCamera = static_cast<CCamera *>(componentsCam[CompType::CameraComp].get());
+    auto cTransformableCam = static_cast<CTransformable *>(componentsCam[CompType::TransformableComp].get());
+
     //Guardamos en variables los componentes
-    auto components = d.gameObject->GetComponents();
-    auto mapTransform = components.find(CompType::TransformableComp);
-    auto cTransformable = static_cast<CTransformable *>(mapTransform->second.get());
-    auto mapCar = components.find(CompType::CarComp);
-    auto cCar = static_cast<CCar *>(mapCar->second.get());
+    auto components = car->GetComponents();
+    auto cTransformable = static_cast<CTransformable *>(components[CompType::TransformableComp].get());
+    auto cCar = static_cast<CCar *>(components[CompType::CarComp].get());
 
     //Reducimos la velocidad
     cCar->speed -= cCar->acceleration;
@@ -121,27 +94,23 @@ void Physics::Accelerate(Car *car, Camera *cam) {
     }
 
     if (cCar->speed >= 0)
-        CalculatePosition(cCar, cTransformable, d);
+        CalculatePosition(cCar, cTransformable, deltaTime);
     else
-        CalculatePositionReverse(cCar, cTransformable, d);
+        CalculatePositionReverse(cCar, cTransformable, deltaTime);
     CalculatePositionCamera(cTransformable, cTransformableCam, cCamera);
-}*/
+}
 
 //Entra cuando se presiona la A
-/*void TurnLeft(Data d) {
+void Physics::TurnLeft(Car *car, Camera *cam) {
     //Componentes de la camara
-    auto componentsCam = d.camera->GetComponents();
-    auto mapCamera = componentsCam.find(CompType::CameraComp);
-    auto cCamera = static_cast<CCamera *>(mapCamera->second.get());
-    auto mapTransformCamera = componentsCam.find(CompType::TransformableComp);
-    auto cTransformableCam = static_cast<CTransformable *>(mapTransformCamera->second.get());
+    auto componentsCam = cam->GetComponents();
+    auto cCamera = static_cast<CCamera *>(componentsCam[CompType::CameraComp].get());
+    auto cTransformableCam = static_cast<CTransformable *>(componentsCam[CompType::TransformableComp].get());
 
     //Componentes del coche
-    auto components = d.gameObject->GetComponents();
-    auto mapTransform = components.find(CompType::TransformableComp);
-    auto cTransformable = static_cast<CTransformable *>(mapTransform->second.get());
-    auto mapCar = components.find(CompType::CarComp);
-    auto cCar = static_cast<CCar *>(mapCar->second.get());
+    auto components = car->GetComponents();
+    auto cTransformable = static_cast<CTransformable *>(components[CompType::TransformableComp].get());
+    auto cCar = static_cast<CCar *>(components[CompType::TransformableComp].get());
 
     if (cCar->speed >= 3) {
         if (cCar->wheelRotation > -10) {
@@ -179,28 +148,23 @@ void Physics::Accelerate(Car *car, Camera *cam) {
     }
 
     if (cCar->speed >= 0)
-        CalculatePosition(cCar, cTransformable, d);
+        CalculatePosition(cCar, cTransformable, deltaTime);
     else
-        CalculatePositionReverse(cCar, cTransformable, d);
+        CalculatePositionReverse(cCar, cTransformable, deltaTime);
     CalculatePositionCamera(cTransformable, cTransformableCam, cCamera);
-}*/
+}
 
 //Entra cuando se presiona la D
-/*void TurnRight(Data d) {
+void Physics::TurnRight(Car *car, Camera *cam) {
     //Componentes de la camara
-    auto componentsCam = d.camera->GetComponents();
-    auto mapCamera = componentsCam.find(CompType::CameraComp);
-    auto cCamera = static_cast<CCamera *>(mapCamera->second.get());
-    auto mapTransformCamera = componentsCam.find(CompType::TransformableComp);
-    auto cTransformableCam = static_cast<CTransformable *>(mapTransformCamera->second.get());
+    auto componentsCam = cam->GetComponents();
+    auto cCamera = static_cast<CCamera *>(componentsCam[CompType::CameraComp].get());
+    auto cTransformableCam = static_cast<CTransformable *>(componentsCam[CompType::TransformableComp].get());
 
-    //Guardamos en variables los componentes
-    auto components = d.gameObject->GetComponents();
-    auto mapTransform = components.find(CompType::TransformableComp);
-    auto cTransformable = static_cast<CTransformable *>(mapTransform->second.get());
-
-    auto mapCar = components.find(CompType::CarComp);
-    auto cCar = static_cast<CCar *>(mapCar->second.get());
+    //Componentes del coche
+    auto components = car->GetComponents();
+    auto cTransformable = static_cast<CTransformable *>(components[CompType::TransformableComp].get());
+    auto cCar = static_cast<CCar *>(components[CompType::TransformableComp].get());
 
     if (cCar->speed >= 3) {
         if (cCar->wheelRotation < 10) {
@@ -238,27 +202,23 @@ void Physics::Accelerate(Car *car, Camera *cam) {
     }
 
     if (cCar->speed >= 0)
-        CalculatePosition(cCar, cTransformable, d);
+        CalculatePosition(cCar, cTransformable, deltaTime);
     else
-        CalculatePositionReverse(cCar, cTransformable, d);
+        CalculatePositionReverse(cCar, cTransformable, deltaTime);
     CalculatePositionCamera(cTransformable, cTransformableCam, cCamera);
-}*/
+}
 
 //Aqui entra cuando no se esta presionando ni I ni O
-/*void NotAcceleratingOrDecelerating(Data d) {
+void Physics::NotAcceleratingOrDecelerating(Car *car, Camera *cam) {
     //Componentes de la camara
-    auto componentsCam = d.camera->GetComponents();
-    auto mapCamera = componentsCam.find(CompType::CameraComp);
-    auto cCamera = static_cast<CCamera *>(mapCamera->second.get());
-    auto mapTransformCamera = componentsCam.find(CompType::TransformableComp);
-    auto cTransformableCam = static_cast<CTransformable *>(mapTransformCamera->second.get());
-    //Guardamos en variables los componentes
-    auto components = d.gameObject->GetComponents();
-    auto mapTransform = components.find(CompType::TransformableComp);
-    auto cTransformable = static_cast<CTransformable *>(mapTransform->second.get());
+    auto componentsCam = cam->GetComponents();
+    auto cCamera = static_cast<CCamera *>(componentsCam[CompType::CameraComp].get());
+    auto cTransformableCam = static_cast<CTransformable *>(componentsCam[CompType::TransformableComp].get());
 
-    auto mapCar = components.find(CompType::CarComp);
-    auto cCar = static_cast<CCar *>(mapCar->second.get());
+    //Guardamos en variables los componentes
+    auto components = car->GetComponents();
+    auto cTransformable = static_cast<CTransformable *>(components[CompType::TransformableComp].get());
+    auto cCar = static_cast<CCar *>(components[CompType::CarComp].get());
 
     if (cCar->speed > 0) {
         cCar->speed -= cCar->friction;
@@ -271,27 +231,23 @@ void Physics::Accelerate(Car *car, Camera *cam) {
     }
 
     if (cCar->speed >= 0)
-        CalculatePosition(cCar, cTransformable, d);
+        CalculatePosition(cCar, cTransformable, deltaTime);
     else
-        CalculatePositionReverse(cCar, cTransformable, d);
+        CalculatePositionReverse(cCar, cTransformable, deltaTime);
     CalculatePositionCamera(cTransformable, cTransformableCam, cCamera);
-}*/
+}
 
 //Aqui entra cuando no se esta presionando ni A ni D
-/*void NotTurning(Data d) {
+void Physics::NotTurning(Car *car, Camera *cam) {
     //Componentes de la camara
-    auto componentsCam = d.camera->GetComponents();
-    auto mapCamera = componentsCam.find(CompType::CameraComp);
-    auto cCamera = static_cast<CCamera *>(mapCamera->second.get());
-    auto mapTransformCamera = componentsCam.find(CompType::TransformableComp);
-    auto cTransformableCam = static_cast<CTransformable *>(mapTransformCamera->second.get());
+    auto componentsCam = cam->GetComponents();
+    auto cCamera = static_cast<CCamera *>(componentsCam[CompType::CameraComp].get());
+    auto cTransformableCam = static_cast<CTransformable *>(componentsCam[CompType::TransformableComp].get());
 
-    //Componentes del coche
-    auto components = d.gameObject->GetComponents();
-    auto mapTransform = components.find(CompType::TransformableComp);
-    auto cTransformable = static_cast<CTransformable *>(mapTransform->second.get());
-    auto mapCar = components.find(CompType::CarComp);
-    auto cCar = static_cast<CCar *>(mapCar->second.get());
+    //Guardamos en variables los componentes
+    auto components = car->GetComponents();
+    auto cTransformable = static_cast<CTransformable *>(components[CompType::TransformableComp].get());
+    auto cCar = static_cast<CCar *>(components[CompType::CarComp].get());
 
     if (cCar->wheelRotation >= 0.7) {
         cCar->wheelRotation -= 0.7;
@@ -310,8 +266,8 @@ void Physics::Accelerate(Car *car, Camera *cam) {
     }
 
     if (cCar->speed >= 0)
-        CalculatePosition(cCar, cTransformable, d);
+        CalculatePosition(cCar, cTransformable, deltaTime);
     else
-        CalculatePositionReverse(cCar, cTransformable, d);
+        CalculatePositionReverse(cCar, cTransformable, deltaTime);
     CalculatePositionCamera(cTransformable, cTransformableCam, cCamera);
-}*/
+}
