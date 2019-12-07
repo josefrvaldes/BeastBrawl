@@ -3,6 +3,7 @@
 #include "Entity.h"
 #include <iostream>
 #include <map>
+#include <memory>
 
 #include "../../lib/glm/vec3.hpp"
 

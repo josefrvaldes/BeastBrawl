@@ -10,7 +10,7 @@ class CId : public Component
 {
 public:
     CId();
-    ~CId();
+    ~CId(){};
 
     friend ostream &operator<<(ostream &out, CId &c)
     {

@@ -17,7 +17,7 @@ class CType : public Component{
 
 public:
     CType(ModelType model);
-    ~CType();
+    ~CType(){};
 
     friend ostream &operator<<(ostream &out, CType &c)
     {

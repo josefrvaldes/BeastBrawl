@@ -7,7 +7,7 @@
 class CMesh : public Component{
 public:
     CMesh(std::string);
-    ~CMesh();
+    ~CMesh(){};
 
 
     std::string mesh;

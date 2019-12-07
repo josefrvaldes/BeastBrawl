@@ -3,16 +3,16 @@
 #include "fuzzyTerm.h"
 
 #include <vector>
-
+#include <memory>
 using namespace std;
 
 class FzAND : public FuzzyTerm{
 private:
 	//vector con las AND
-	vector<FuzzyTerm*> arrayFzAND;
+	vector<shared_ptr<FuzzyTerm>> arrayFzAND;
 
     //it doesn't make sense to allow clients to copy rules
-    FzAND& operator=(const FzAND&);
+    shared_ptr<FzAND> operator=(const shared_ptr<FzAND>);
 
 
 public:
@@ -21,13 +21,13 @@ public:
 	//crear un AND con 2
 	//FzAND(FuzzyTerm& one, FuzzyTerm& two):arrayFzAND.push_back(one.Clone()),   
 	//                                         arrayFzAND.push_back(two.Clone()){}
-	FzAND(FuzzyTerm& one, FuzzyTerm& two);
+	FzAND(shared_ptr<FuzzyTerm> one, shared_ptr<FuzzyTerm> two);
 	// crear un AND de 3
-	FzAND(FuzzyTerm& one, FuzzyTerm& two, FuzzyTerm& three);
+	FzAND(shared_ptr<FuzzyTerm> one, shared_ptr<FuzzyTerm> two, shared_ptr<FuzzyTerm> three);
 	// crear un AND de 4
-	FzAND(FuzzyTerm& one, FuzzyTerm& two, FuzzyTerm& three, FuzzyTerm& four);
+	FzAND(shared_ptr<FuzzyTerm> one, shared_ptr<FuzzyTerm> two, shared_ptr<FuzzyTerm> three, shared_ptr<FuzzyTerm> four);
 
-    FuzzyTerm* Clone()const override{return new FzAND(*this);};
+    shared_ptr<FuzzyTerm> Clone()const override{return make_shared<FzAND>(*this);};
     //retrieves the degree of membership of the term
     double GetDOM()const override;
     //clears the degree of membership of the term

@@ -14,7 +14,7 @@ void NotAcceleratingOrDecelerating(Data d);
 void NotTurning(Data d);
 
 Physics::Physics(){
-    eventManager = EventManager::GetInstance();
+    shared_ptr<EventManager> eventManager = EventManager::GetInstance();
 
     //Se suscriben los listeners
     eventManager->Suscribe(Listener {EventType::PRESS_I,Accelerate,"accelerate"});
@@ -33,16 +33,16 @@ void Accelerate(Data d){
     //Componentes de la camara
     auto componentsCam = d.camera->GetComponents();
     auto mapCamera = componentsCam.find(CompType::CameraComp);
-    auto cCamera = static_cast<CCamera*>(mapCamera->second);
+    auto cCamera = static_cast<CCamera*>(mapCamera->second.get());
     auto mapTransformCamera = componentsCam.find(CompType::TransformableComp);
-	auto cTransformableCam = static_cast<CTransformable*>(mapTransformCamera->second);
+	auto cTransformableCam = static_cast<CTransformable*>(mapTransformCamera->second.get());
     //Guardamos en variables los componentes
     auto components = d.gameObject->GetComponents();
     auto mapTransform = components.find(CompType::TransformableComp);
-	auto cTransformable = static_cast<CTransformable*>(mapTransform->second);
+	auto cTransformable = static_cast<CTransformable*>(mapTransform->second.get());
     
     auto mapCar = components.find(CompType::CarComp);
-    auto cCar        = static_cast<CCar*>(mapCar->second);
+    auto cCar        = static_cast<CCar*>(mapCar->second.get());
 
 
     //Aumentamos la velocidad
@@ -63,15 +63,15 @@ void Decelerate(Data d){
     //Componentes de la camara
     auto componentsCam = d.camera->GetComponents();
     auto mapCamera = componentsCam.find(CompType::CameraComp);
-    auto cCamera = static_cast<CCamera*>(mapCamera->second);
+    auto cCamera = static_cast<CCamera*>(mapCamera->second.get());
     auto mapTransformCamera = componentsCam.find(CompType::TransformableComp);
-	auto cTransformableCam = static_cast<CTransformable*>(mapTransformCamera->second);
+	auto cTransformableCam = static_cast<CTransformable*>(mapTransformCamera->second.get());
     //Guardamos en variables los componentes
     auto components = d.gameObject->GetComponents();
     auto mapTransform = components.find(CompType::TransformableComp);
-	auto cTransformable = static_cast<CTransformable*>(mapTransform->second);
+	auto cTransformable = static_cast<CTransformable*>(mapTransform->second.get());
     auto mapCar = components.find(CompType::CarComp);
-    auto cCar        = static_cast<CCar*>(mapCar->second);
+    auto cCar        = static_cast<CCar*>(mapCar->second.get());
 
     //Reducimos la velocidad
     cCar->speed -= cCar->slowDown;
@@ -92,17 +92,17 @@ void TurnLeft(Data d){
     //Componentes de la camara
     auto componentsCam = d.camera->GetComponents();
     auto mapCamera = componentsCam.find(CompType::CameraComp);
-    auto cCamera = static_cast<CCamera*>(mapCamera->second);
+    auto cCamera = static_cast<CCamera*>(mapCamera->second.get());
     auto mapTransformCamera = componentsCam.find(CompType::TransformableComp);
-	auto cTransformableCam = static_cast<CTransformable*>(mapTransformCamera->second);
+	auto cTransformableCam = static_cast<CTransformable*>(mapTransformCamera->second.get());
 
 
     //Componentes del coche
     auto components = d.gameObject->GetComponents();
     auto mapTransform = components.find(CompType::TransformableComp);
-	auto cTransformable = static_cast<CTransformable*>(mapTransform->second);   
+	auto cTransformable = static_cast<CTransformable*>(mapTransform->second.get());   
     auto mapCar = components.find(CompType::CarComp);
-    auto cCar        = static_cast<CCar*>(mapCar->second);
+    auto cCar        = static_cast<CCar*>(mapCar->second.get());
 
     
     if(cCar->speed >= 3){
@@ -153,17 +153,17 @@ void TurnRight(Data d){
     //Componentes de la camara
     auto componentsCam = d.camera->GetComponents();
     auto mapCamera = componentsCam.find(CompType::CameraComp);
-    auto cCamera = static_cast<CCamera*>(mapCamera->second);
+    auto cCamera = static_cast<CCamera*>(mapCamera->second.get());
     auto mapTransformCamera = componentsCam.find(CompType::TransformableComp);
-	auto cTransformableCam = static_cast<CTransformable*>(mapTransformCamera->second);
+	auto cTransformableCam = static_cast<CTransformable*>(mapTransformCamera->second.get());
 
     //Guardamos en variables los componentes
     auto components = d.gameObject->GetComponents();
     auto mapTransform = components.find(CompType::TransformableComp);
-	auto cTransformable = static_cast<CTransformable*>(mapTransform->second);
+	auto cTransformable = static_cast<CTransformable*>(mapTransform->second.get());
     
     auto mapCar = components.find(CompType::CarComp);
-    auto cCar        = static_cast<CCar*>(mapCar->second);
+    auto cCar        = static_cast<CCar*>(mapCar->second.get());
 
     if(cCar->speed >= 3){
         if(cCar->wheelRotation < 10){
@@ -213,16 +213,16 @@ void NotAcceleratingOrDecelerating(Data d){
     //Componentes de la camara
     auto componentsCam = d.camera->GetComponents();
     auto mapCamera = componentsCam.find(CompType::CameraComp);
-    auto cCamera = static_cast<CCamera*>(mapCamera->second);
+    auto cCamera = static_cast<CCamera*>(mapCamera->second.get());
     auto mapTransformCamera = componentsCam.find(CompType::TransformableComp);
-	auto cTransformableCam = static_cast<CTransformable*>(mapTransformCamera->second);
+	auto cTransformableCam = static_cast<CTransformable*>(mapTransformCamera->second.get());
     //Guardamos en variables los componentes
     auto components = d.gameObject->GetComponents();
     auto mapTransform = components.find(CompType::TransformableComp);
-	auto cTransformable = static_cast<CTransformable*>(mapTransform->second);
+	auto cTransformable = static_cast<CTransformable*>(mapTransform->second.get());
     
     auto mapCar = components.find(CompType::CarComp);
-    auto cCar        = static_cast<CCar*>(mapCar->second);
+    auto cCar        = static_cast<CCar*>(mapCar->second.get());
 
     if(cCar->speed > 0){
         cCar->speed -= cCar->friction;
@@ -246,16 +246,16 @@ void NotTurning(Data d){
     //Componentes de la camara
     auto componentsCam = d.camera->GetComponents();
     auto mapCamera = componentsCam.find(CompType::CameraComp);
-    auto cCamera = static_cast<CCamera*>(mapCamera->second);
+    auto cCamera = static_cast<CCamera*>(mapCamera->second.get());
     auto mapTransformCamera = componentsCam.find(CompType::TransformableComp);
-	auto cTransformableCam = static_cast<CTransformable*>(mapTransformCamera->second);
+	auto cTransformableCam = static_cast<CTransformable*>(mapTransformCamera->second.get());
 
     //Componentes del coche
     auto components = d.gameObject->GetComponents();
     auto mapTransform = components.find(CompType::TransformableComp);
-	auto cTransformable = static_cast<CTransformable*>(mapTransform->second);
+	auto cTransformable = static_cast<CTransformable*>(mapTransform->second.get());
     auto mapCar = components.find(CompType::CarComp);
-    auto cCar        = static_cast<CCar*>(mapCar->second);
+    auto cCar        = static_cast<CCar*>(mapCar->second.get());
 
     if(cCar->wheelRotation >= 0.7){
         cCar->wheelRotation -= 0.7;

@@ -3,6 +3,7 @@
 #include <iostream>
 #include <map>
 #include <vector>
+#include <memory>
 #include "../../lib/glm/vec3.hpp"
 
 class WayPoint;
@@ -15,11 +16,11 @@ public:
 
     void CreateWayPoint(glm::vec3 _position);
     void CreateWayPoint();
-    vector<WayPoint *> GetEntities() const {
+    vector<shared_ptr<WayPoint>> GetEntities() const {
         return waypoints;
     };
 
 private:
-	vector<WayPoint *> waypoints;
+	vector<shared_ptr<WayPoint>> waypoints;
     //void SubscribeToEvents();
 };

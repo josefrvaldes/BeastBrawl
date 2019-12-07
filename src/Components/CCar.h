@@ -11,7 +11,7 @@ class CCar : public Component
 public:
     CCar();
     CCar(float maxSpeed,float acceleration, float carFriction, float carSlowDown);
-    ~CCar();
+    ~CCar(){};
 
     friend ostream &operator<<(ostream &out, CCar &c)
     {

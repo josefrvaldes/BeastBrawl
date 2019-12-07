@@ -1,6 +1,5 @@
 #include "RenderFacadeIrrlicht.h"
 
-//#include "../../Components/CPosition.h"
 #include "../../Components/CType.h"
 #include "../../Components/CId.h"
 #include "../../Components/CTexture.h"
@@ -16,10 +15,10 @@
 
 
 RenderFacadeIrrlicht::RenderFacadeIrrlicht(){
-	eventManager = EventManager::GetInstance();
+	
 
-	auto inputFacade = InputFacadeManager::GetInstance()->GetInputFacade();
-	auto inputFacadeIrrlicht = static_cast<InputFacadeIrrlicht*>(inputFacade);	
+	//auto inputFacade = InputFacadeManager::GetInstance()->GetInputFacade();
+	//auto inputFacadeIrrlicht = static_cast<InputFacadeIrrlicht*>(inputFacade);	
 	device = createDevice(video::EDT_OPENGL, core::dimension2d<u32>(1280, 720), 16, false, false, false, &receiver);
 	driver = device->getVideoDriver();
 	smgr = device->getSceneManager();
@@ -42,19 +41,19 @@ const uint16_t RenderFacadeIrrlicht::FacadeAddObject(Entity *go){
 
 	//TODO: Encontrar una mejor manera para acceder a los componentes ya que asi se tarda demasiado
 	auto mapTransformable = components.find(CompType::TransformableComp);
-	auto cTransformable = static_cast<CTransformable*>(mapTransformable->second);
+	auto cTransformable = static_cast<CTransformable*>(mapTransformable->second.get());
 
 	auto mapId = components.find(CompType::IdComp);
-	auto cId = static_cast<CId*>(mapId->second);
+	auto cId = static_cast<CId*>(mapId->second.get());
 
 	auto mapTexture = components.find(CompType::TextureComp);
-	auto cTexture = static_cast<CTexture*>(mapTexture->second);
+	auto cTexture = static_cast<CTexture*>(mapTexture->second.get());
 
 	auto mapType = components.find(CompType::TypeComp);
-	auto cType 	 = static_cast<CType*>(mapType->second);
+	auto cType 	 = static_cast<CType*>(mapType->second.get());
 
 	auto mapMesh = components.find(CompType::MeshComp);
-	auto cMesh	 = static_cast<CMesh*>(mapMesh->second);
+	auto cMesh	 = static_cast<CMesh*>(mapMesh->second.get());
 
 
 	//Switch para añadir el tipo de objeto
@@ -100,9 +99,9 @@ void RenderFacadeIrrlicht::UpdateTransformable(Entity* go){
 	//Cogemos los componentes de ID y CTransformable 
 	auto components = go->GetComponents();
 	auto mapTransformable = components.find(CompType::TransformableComp);
-	auto cTransformable = static_cast<CTransformable*>(mapTransformable->second);
+	auto cTransformable = static_cast<CTransformable*>(mapTransformable->second.get());
 	auto mapId = components.find(CompType::IdComp);
-	auto cId = static_cast<CId*>(mapId->second);
+	auto cId = static_cast<CId*>(mapId->second.get());
 
 	// Cogemos el nodo de irrlicht con el ID igual al que le hemos pasado
 	scene::ISceneNode* node = smgr->getSceneNodeFromId(cId->id);
@@ -124,7 +123,7 @@ void RenderFacadeIrrlicht::UpdateCamera(Entity* cam){
 	//Cogemos los componentes de la camara
 	auto components = cam->GetComponents();
 	auto mapTransformable = components.find(CompType::TransformableComp);
-	auto cTransformable = static_cast<CTransformable*>(mapTransformable->second);
+	auto cTransformable = static_cast<CTransformable*>(mapTransformable->second.get());
 
 	//Cogemos la posicion de nuestro coche
 	//TODO: cambiar ese 0 por el Id del CarManager
@@ -145,10 +144,10 @@ void RenderFacadeIrrlicht::FacadeAddCamera(Entity* goCamera){
 
 	//TODO: Encontrar una mejor manera para acceder a los componentes ya que asi se tarda demasiado
 	auto mapTransformable = components.find(CompType::TransformableComp);
-	auto cTransformable = static_cast<CTransformable*>(mapTransformable->second);
+	auto cTransformable = static_cast<CTransformable*>(mapTransformable->second.get());
 
 	auto mapCamera = components.find(CompType::CameraComp);
-	auto cCamera = static_cast<CCamera*>(mapCamera->second);
+	auto cCamera = static_cast<CCamera*>(mapCamera->second.get());
 
 	float posX = cCamera->tarX - 40.0 * sin(((cTransformable->rotation.x)*PI)/180.0);
 	float posZ = cCamera->tarZ - 40.0 * cos(((cTransformable->rotation.z)*PI)/180.0);;
@@ -166,11 +165,15 @@ uint32_t RenderFacadeIrrlicht::FacadeGetTime(){
 
 void RenderFacadeIrrlicht::FacadeCheckInput(float frameDeltaTime, Entity* car, Entity* cam)
 {	
+	shared_ptr<EventManager> eventManager = EventManager::GetInstance();
 	Data d;
 	d.deltaTime  = frameDeltaTime;
 	d.gameObject = car;
 	d.camera	 = cam;
 
+	if(receiver.IsKeyDown(KEY_ESCAPE)){
+		device->closeDevice();
+	}
 	if(receiver.IsKeyDown(KEY_KEY_I)){
         eventManager->AddEvent(Event {EventType::PRESS_I,d});
 	}else if(receiver.IsKeyDown(KEY_KEY_O)){

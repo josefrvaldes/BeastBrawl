@@ -1,5 +1,8 @@
 #include "composite.h"
 
+#include <memory>
+
+using namespace std;
 
 class sequence: public composite{
   

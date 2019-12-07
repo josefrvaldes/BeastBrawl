@@ -4,24 +4,28 @@
 #include "RenderFacade.h"
 #include "RenderFacadeIrrlicht.h"
 
+#include <memory>
+
+using namespace std;
+
 class RenderFacadeManager{
 
 public:
-    ~RenderFacadeManager(){ delete facade;};
+    ~RenderFacadeManager(){};
+    RenderFacadeManager(){};
 
     void InitializeIrrlicht() {
-        facade = new RenderFacadeIrrlicht();
+        facade = make_shared<RenderFacadeIrrlicht>();
     }
 
     void InitializeClover() {
         // TODO: crear motor de clover
     }
 
-    RenderFacade *GetRenderFacade() { return facade; };
-    static RenderFacadeManager* GetInstance();
+    shared_ptr<RenderFacade> GetRenderFacade() { return facade; };
+    static shared_ptr<RenderFacadeManager> GetInstance();
 
 private:
-    RenderFacadeManager() : facade(nullptr){}
-    RenderFacade *facade;
-    static RenderFacadeManager* instance;
+    shared_ptr<RenderFacade> facade;
+    static const shared_ptr<RenderFacadeManager> instance;
 };

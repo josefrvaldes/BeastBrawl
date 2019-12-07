@@ -1,27 +1,29 @@
 #pragma once
 
 #include <iostream>
+#include <memory>
 #include "PhysicsFacade.h"
 #include "PhysicsFacadeIrrlicht.h"
 
+using namespace std;
 class PhysicsFacadeManager{
 
 public:
-    ~PhysicsFacadeManager(){ delete facade;};
+    PhysicsFacadeManager(){};
+    ~PhysicsFacadeManager(){};
 
     void InitializeIrrlicht() {
-        facade = new PhysicsFacadeIrrlicht();
+        facade = make_shared<PhysicsFacadeIrrlicht>();
     }
 
     void InitializeClover() {
         // TODO: crear motor de clover
     }
 
-    PhysicsFacade *GetPhysicsFacade() { return facade; };
-    static PhysicsFacadeManager* GetInstance();
+    shared_ptr<PhysicsFacade> GetPhysicsFacade() { return facade; };
+    static shared_ptr<PhysicsFacadeManager> GetInstance();
 
 private:
-    PhysicsFacadeManager() : facade(nullptr){}
-    PhysicsFacade *facade;
-    static PhysicsFacadeManager* instance;
+    shared_ptr<PhysicsFacade> facade;
+    static const shared_ptr<PhysicsFacadeManager> instance;
 };

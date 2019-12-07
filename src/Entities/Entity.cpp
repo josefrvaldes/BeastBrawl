@@ -1,6 +1,6 @@
 #include "Entity.h"
 
-void Entity::AddComponent(Component *c)
+void Entity::AddComponent(shared_ptr<Component> c)
 {
     m_components[c->getType()] = c;
 }

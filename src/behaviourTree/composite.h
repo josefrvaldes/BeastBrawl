@@ -3,17 +3,18 @@
 
 #include <iostream>
 #include <list>
+#include <memory>
 
 using namespace std;
 
-class composite: public behaviourTree{
+class composite : public behaviourTree{
 
 	public:
-		const list<behaviourTree*>& getChildren() const {return children;}
-		void addChild (behaviourTree* child) {children.push_back(child);}
+		const list<shared_ptr<behaviourTree>>& getChildren() const {return children;}
+		void addChild (shared_ptr<behaviourTree> child) {children.push_back(child);}
 
     private:
-		list<behaviourTree*> children;
+		list<shared_ptr<behaviourTree>> children;
 
 
 };

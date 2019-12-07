@@ -3,30 +3,15 @@
 
 using namespace std;
 
-Game* Game::game = 0;
-
-
-Game::Game(){
-    // constructor
-    renderFacadeManager = RenderFacadeManager::GetInstance();   
-}
-
-
-
-Game::~Game(){
-    // destructor
-    delete currentState;
-    delete game;    // To-Do mirar donde poner este delete
-}
-
-
-
-Game* Game::GetInstance(){
-    if(game == 0){
-        game = new Game();
-    }
+const shared_ptr<Game> Game::game = make_shared<Game>();
+shared_ptr<Game> Game::GetInstance() {
+    //static EventManager instance;
+    // if(instance==nullptr){
+    //     instance = make_shared<EventManager>();
+    // }
     return game;
 }
+
 
 
 
@@ -36,7 +21,7 @@ void Game::SetState(State::States stateType){
             //currentState = new StateIntro();
             break;
         case State::MENU:
-            currentState = new StateMenu();
+            currentState = make_shared<StateMenu>();
             break;
         case State::CONTROLS:
             //currentState = new StateControls();
@@ -48,7 +33,7 @@ void Game::SetState(State::States stateType){
             //currentState = new StateMap();
             break;
         case State::INGAME:
-            currentState = new StateInGame();
+            currentState = make_shared<StateInGame>();
             break;
         case State::ENDRACE:
             //currentState = new StateEndRace();
@@ -68,13 +53,14 @@ void Game::InitGame(){
 
 
 void Game::MainLoop(){
-        renderFacadeManager->GetRenderFacade()->FacadeSetWindowCaption("Beast Brawl");
+    shared_ptr<RenderFacadeManager> renderFacadeManager = RenderFacadeManager::GetInstance();   
+
+    renderFacadeManager->GetRenderFacade()->FacadeSetWindowCaption("Beast Brawl");
 
     while(renderFacadeManager->GetRenderFacade()->FacadeRun()){
         currentState->Update();
 
     }
-
     renderFacadeManager->GetRenderFacade()->FacadeDeviceDrop();
     //for(;;);  // To-Do: crear bucle del juego
 }

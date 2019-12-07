@@ -3,7 +3,9 @@
 #include <iostream>
 #include <map>
 #include <vector>
+#include <memory>
 #include "../../lib/glm/vec3.hpp"
+
 
 using namespace std;
 
@@ -18,11 +20,11 @@ public:
 
     void CreatePowerUp(glm::vec3 _position);
     void CreatePowerUp();
-    vector<PowerUp *> GetEntities() const {
+    vector<shared_ptr<PowerUp>> GetEntities() const {
         return powerUps;
     };
 
 private:
-	vector<PowerUp *> powerUps;
+	vector<shared_ptr<PowerUp>> powerUps;
     void SubscribeToEvents();
 };

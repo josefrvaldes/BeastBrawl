@@ -3,6 +3,7 @@
 #include <iostream>
 #include <map>
 #include <vector>
+#include <memory>
 #include "../../lib/glm/vec3.hpp"
 
 using namespace std;
@@ -18,11 +19,11 @@ public:
 
     void CreateCarAI(glm::vec3 _position);
     void CreateCarAI();
-    vector<CarAI *> GetEntities() const {
+    vector<shared_ptr<CarAI>> GetEntities() const {
         return CarAIs;
     };
 
 private:
-	vector<CarAI *> CarAIs;
+	vector<shared_ptr<CarAI>> CarAIs;
     void SubscribeToEvents();
 };

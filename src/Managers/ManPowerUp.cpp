@@ -24,21 +24,21 @@ ManPowerUp::~ManPowerUp()
 
 void ManPowerUp::CreatePowerUp(glm::vec3 _position) 
 {
-	PowerUp *p = new PowerUp(_position);
+	shared_ptr<PowerUp> p = make_shared<PowerUp>(_position);
     powerUps.push_back(p);
 }
 
 
 void ManPowerUp::CreatePowerUp() 
 {
-	PowerUp *p = new PowerUp();
+	shared_ptr<PowerUp> p = make_shared<PowerUp>();
     powerUps.push_back(p);
 }
 
 
 void ManPowerUp::SubscribeToEvents() 
 {
-    //EventManager *em = EventManager::GetInstance();
+    //shared_ptr<EventManager> em = EventManager::GetInstance();
     //em->Suscribe(Listener {EventType::POWER_UP_COGIDO, EjecutarMeHanCogido, "EjecutarMeHanCogido"});
 }
 

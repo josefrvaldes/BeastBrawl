@@ -14,7 +14,7 @@ PhysicsAI::PhysicsAI(){
 void PhysicsAI::fuzzyRules(CarAI* car){
     auto components = car->GetComponents();
     auto mapCar = components.find(CompType::CarComp);
-    auto cCar        = static_cast<CCar*>(mapCar->second);
+    auto cCar        = static_cast<CCar*>(mapCar->second.get());
     float maxSpeed = cCar->maxSpeed;
     float minSpeed = cCar->reverseMaxSpeed;
     float accelerationCar = cCar->acceleration;
@@ -25,63 +25,63 @@ void PhysicsAI::fuzzyRules(CarAI* car){
 }
 void PhysicsAI::fuzzyRulesVelocity(float maxSpeed, float minSpeed, float accelerationCar){
 
-    FuzzyVariable& ActualVelocity = flVelocity.CreateFLV("ActualVelocity");
-    FzSet Velocity_Slow = ActualVelocity.AddLeftShoulderSet("Velocity_Slow", minSpeed, 0, 5);
-    FzSet Velocity_Normal = ActualVelocity.AddTriangularSet("Velocity_Normal", 0, 5, maxSpeed/2);
-    FzSet Velocity_High = ActualVelocity.AddRightShoulderSet("Velocity_High", 5, maxSpeed/2, maxSpeed);
+    shared_ptr<FuzzyVariable> ActualVelocity = flVelocity->CreateFLV("ActualVelocity");
+    shared_ptr<FzSet> Velocity_Slow = ActualVelocity->AddLeftShoulderSet("Velocity_Slow", minSpeed, 0, 5);
+    shared_ptr<FzSet> Velocity_Normal = ActualVelocity->AddTriangularSet("Velocity_Normal", 0, 5, maxSpeed/2);
+    shared_ptr<FzSet> Velocity_High = ActualVelocity->AddRightShoulderSet("Velocity_High", 5, maxSpeed/2, maxSpeed);
 
-    FuzzyVariable& Angle = flVelocity.CreateFLV("Angle");
-    FzSet Angle_Slow = Angle.AddLeftShoulderSet("Angle_Slow", 0, 30, 60);
-    FzSet Angle_Normal = Angle.AddTriangularSet("Angle_Normal", 30, 60, 120);
-    FzSet Angle_High = Angle.AddRightShoulderSet("Angle_High", 60, 120, 180);
+    shared_ptr<FuzzyVariable> Angle = flVelocity->CreateFLV("Angle");
+    shared_ptr<FzSet> Angle_Slow = Angle->AddLeftShoulderSet("Angle_Slow", 0, 30, 60);
+    shared_ptr<FzSet> Angle_Normal = Angle->AddTriangularSet("Angle_Normal", 30, 60, 120);
+    shared_ptr<FzSet> Angle_High = Angle->AddRightShoulderSet("Angle_High", 60, 120, 180);
 
     //FuzzyVariable& Distance = flVelocity.CreateFLV("Distance");
     //FzSet Distance_Near = Distance.AddLeftShoulderSet("Distance_Near", 0, 0, 10);
     //FzSet Distance_nNormal = Distance.AddTriangularSet("Distance_nNormal", 0, 10, 30);
     //FzSet Distance_Far = Distance.AddRightShoulderSet("Distance_Far", 10, 30, 40);
 
-    FuzzyVariable& Acceleration = flVelocity.CreateFLV("Acceleration");
-    FzSet Accelerate_Brake = Acceleration.AddLeftShoulderSet("Accelerate_Brake", -accelerationCar, -accelerationCar/2, 0);
-    FzSet Accelerate_None = Acceleration.AddTriangularSet("Accelerate_None", -accelerationCar/2, 0,accelerationCar/2);
-    FzSet Accelerate_Max = Acceleration.AddRightShoulderSet("Accelerate_Max", 0, accelerationCar/2, accelerationCar);
+    shared_ptr<FuzzyVariable> Acceleration = flVelocity->CreateFLV("Acceleration");
+    shared_ptr<FzSet> Accelerate_Brake = Acceleration->AddLeftShoulderSet("Accelerate_Brake", -accelerationCar, -accelerationCar/2, 0);
+    shared_ptr<FzSet> Accelerate_None = Acceleration->AddTriangularSet("Accelerate_None", -accelerationCar/2, 0,accelerationCar/2);
+    shared_ptr<FzSet> Accelerate_Max = Acceleration->AddRightShoulderSet("Accelerate_Max", 0, accelerationCar/2, accelerationCar);
     // To-Do: revisar el new por que no se tiene que hacer
-    flVelocity.AddRule( *(new FzAND(Velocity_Slow, Angle_Slow)), Accelerate_Max);
-    flVelocity.AddRule( *(new FzAND(Velocity_Slow, Angle_Normal)), Accelerate_Max);
-    flVelocity.AddRule( *(new FzAND(Velocity_Slow, Angle_High)), Accelerate_None);
-    flVelocity.AddRule( *(new FzAND(Velocity_Normal, Angle_Slow)), Accelerate_Max);
-    flVelocity.AddRule( *(new FzAND(Velocity_Normal, Angle_Normal)), Accelerate_None);
-    flVelocity.AddRule( *(new FzAND(Velocity_Normal, Angle_High)), Accelerate_None);
-    flVelocity.AddRule( *(new FzAND(Velocity_High, Angle_Slow)), Accelerate_Max);
-    flVelocity.AddRule( *(new FzAND(Velocity_High, Angle_Normal)), Accelerate_Brake);
-    flVelocity.AddRule( *(new FzAND(Velocity_High, Angle_High)), Accelerate_Brake);
+    flVelocity->AddRule( (make_shared<FzAND>(Velocity_Slow, Angle_Slow)), Accelerate_Max);
+    flVelocity->AddRule( (make_shared<FzAND>(Velocity_Slow, Angle_Normal)), Accelerate_Max);
+    flVelocity->AddRule( (make_shared<FzAND>(Velocity_Slow, Angle_High)), Accelerate_None);
+    flVelocity->AddRule( (make_shared<FzAND>(Velocity_Normal, Angle_Slow)), Accelerate_Max);
+    flVelocity->AddRule( (make_shared<FzAND>(Velocity_Normal, Angle_Normal)), Accelerate_None);
+    flVelocity->AddRule( (make_shared<FzAND>(Velocity_Normal, Angle_High)), Accelerate_None);
+    flVelocity->AddRule( (make_shared<FzAND>(Velocity_High, Angle_Slow)), Accelerate_Max);
+    flVelocity->AddRule( (make_shared<FzAND>(Velocity_High, Angle_Normal)), Accelerate_Brake);
+    flVelocity->AddRule( (make_shared<FzAND>(Velocity_High, Angle_High)), Accelerate_Brake);
 }
 
 void PhysicsAI::fuzzyRulesAngle(){
 
-    FuzzyVariable& Distance = flAngle.CreateFLV("Distance");
-    FzSet Distance_Near = Distance.AddLeftShoulderSet("Distance_Near", 0, 0, 40);
-    FzSet Distance_Normal = Distance.AddTriangularSet("Distance_Normal", 20, 40, 60);
-    FzSet Distance_Far = Distance.AddRightShoulderSet("Distance_Far", 40, 100, 100);
+    shared_ptr<FuzzyVariable> Distance = flAngle->CreateFLV("Distance");
+    shared_ptr<FzSet> Distance_Near = Distance->AddLeftShoulderSet("Distance_Near", 0, 0, 40);
+    shared_ptr<FzSet> Distance_Normal = Distance->AddTriangularSet("Distance_Normal", 20, 40, 60);
+    shared_ptr<FzSet> Distance_Far = Distance->AddRightShoulderSet("Distance_Far", 40, 100, 100);
 
-    FuzzyVariable& Direction = flAngle.CreateFLV("Direction");
-    FzSet Direction_Left = Direction.AddLeftShoulderSet("Direction_Left", -180, -180, 0);
-    FzSet Direction_Center = Direction.AddTriangularSet("Direction_Center", -20, 0, 20);
-    FzSet Direction_Right = Direction.AddRightShoulderSet("Direction_Right", 0, 180, 180);
+    shared_ptr<FuzzyVariable> Direction = flAngle->CreateFLV("Direction");
+    shared_ptr<FzSet> Direction_Left = Direction->AddLeftShoulderSet("Direction_Left", -180, -180, 0);
+    shared_ptr<FzSet> Direction_Center = Direction->AddTriangularSet("Direction_Center", -20, 0, 20);
+    shared_ptr<FzSet> Direction_Right = Direction->AddRightShoulderSet("Direction_Right", 0, 180, 180);
 
-    FuzzyVariable& Rotation = flAngle.CreateFLV("Rotation");
-    FzSet Rotation_Left = Rotation.AddLeftShoulderSet("Rotation_Left", -10, -5, 0);
-    FzSet Rotation_None = Rotation.AddTriangularSet("Rotation_None", -5, 0, 5);
-    FzSet Rotation_Right = Rotation.AddRightShoulderSet("Rotation_Right", 0, 5, 10);
+    shared_ptr<FuzzyVariable> Rotation = flAngle->CreateFLV("Rotation");
+    shared_ptr<FzSet> Rotation_Left = Rotation->AddLeftShoulderSet("Rotation_Left", -10, -5, 0);
+    shared_ptr<FzSet> Rotation_None = Rotation->AddTriangularSet("Rotation_None", -5, 0, 5);
+    shared_ptr<FzSet> Rotation_Right = Rotation->AddRightShoulderSet("Rotation_Right", 0, 5, 10);
     // To-Do: revisar el new por que no se tiene que hacer
-    flAngle.AddRule( *(new FzAND(Distance_Near, Direction_Left)), Rotation_Left);
-    flAngle.AddRule( *(new FzAND(Distance_Near, Direction_Center)), Rotation_None);
-    flAngle.AddRule( *(new FzAND(Distance_Near, Direction_Right)), Rotation_Right);
-    flAngle.AddRule( *(new FzAND(Distance_Normal, Direction_Left)), Rotation_Left);
-    flAngle.AddRule( *(new FzAND(Distance_Normal, Direction_Center)), Rotation_None);
-    flAngle.AddRule( *(new FzAND(Distance_Normal, Direction_Right)), Rotation_Right);
-    flAngle.AddRule( *(new FzAND(Distance_Far, Direction_Left)), Rotation_Left);
-    flAngle.AddRule( *(new FzAND(Distance_Far, Direction_Center)), Rotation_None);
-    flAngle.AddRule( *(new FzAND(Distance_Far, Direction_Right)), Rotation_Right);
+    flAngle->AddRule( (make_shared<FzAND>(Distance_Near, Direction_Left)), Rotation_Left);
+    flAngle->AddRule( (make_shared<FzAND>(Distance_Near, Direction_Center)), Rotation_None);
+    flAngle->AddRule( (make_shared<FzAND>(Distance_Near, Direction_Right)), Rotation_Right);
+    flAngle->AddRule( (make_shared<FzAND>(Distance_Normal, Direction_Left)), Rotation_Left);
+    flAngle->AddRule( (make_shared<FzAND>(Distance_Normal, Direction_Center)), Rotation_None);
+    flAngle->AddRule( (make_shared<FzAND>(Distance_Normal, Direction_Right)), Rotation_Right);
+    flAngle->AddRule( (make_shared<FzAND>(Distance_Far, Direction_Left)), Rotation_Left);
+    flAngle->AddRule( (make_shared<FzAND>(Distance_Far, Direction_Center)), Rotation_None);
+    flAngle->AddRule( (make_shared<FzAND>(Distance_Far, Direction_Right)), Rotation_Right);
 }
 
 
@@ -90,7 +90,7 @@ void PhysicsAI::fuzzyRulesAngle(){
 //Nos devuelve el angulo en radianos entre el coche y el waypoint
 float calculateAngle(CWayPoint* wayPointNext, CarAI* car,CCar* cCar){
     auto components = car->GetComponents();
-    auto cTransformable = static_cast<CTransformable*>(components[CompType::TransformableComp]);
+    auto cTransformable = static_cast<CTransformable*>(components[CompType::TransformableComp].get());
 
     // calcular vector al wayPoint
     float vetorWaypointX = (wayPointNext->position.x - cTransformable->position.x );
@@ -139,19 +139,19 @@ float calculateAngle(CWayPoint* wayPointNext, CarAI* car,CCar* cCar){
 
 
 float PhysicsAI::calculateFuzzyVelocity(float speedCar, float angle){
-    flVelocity.Fuzzify("ActualVelocity", speedCar); // AQUI ES DONDE SE LLAMA AL CALCULATEDOM()
-    flVelocity.Fuzzify("Angle", angle);
+    flVelocity->Fuzzify("ActualVelocity", speedCar); // AQUI ES DONDE SE LLAMA AL CALCULATEDOM()
+    flVelocity->Fuzzify("Angle", angle);
 
-    float defuzzificacion = flVelocity.DeFuzzify("Acceleration"); 
+    float defuzzificacion = flVelocity->DeFuzzify("Acceleration"); 
     //std::cout << "LA DEFUZZIFICACION DA:  " << defuzzificacion << std::endl;
     return defuzzificacion;
 }
 
 float PhysicsAI::calculateFuzzyDirection(float distance, float direction){
-    flAngle.Fuzzify("Distance", distance); // AQUI ES DONDE SE LLAMA AL CALCULATEDOM()
-    flAngle.Fuzzify("Direction", direction);
+    flAngle->Fuzzify("Distance", distance); // AQUI ES DONDE SE LLAMA AL CALCULATEDOM()
+    flAngle->Fuzzify("Direction", direction);
 
-    float defuzzificacion = flAngle.DeFuzzify("Rotation"); 
+    float defuzzificacion = flAngle->DeFuzzify("Rotation"); 
     //std::cout << "LA DEFUZZIFICACION DA:  " << defuzzificacion << std::endl;
     return defuzzificacion;
 }
@@ -161,12 +161,12 @@ void PhysicsAI::InitPhysicsIA(CarAI* car){
     //fuzzyRulesVelocity(car);
 }
 
-void PhysicsAI::Update(vector<WayPoint *> wayPoints, CarAI* car, float deltaTime){
+void PhysicsAI::Update(vector<shared_ptr<WayPoint>> wayPoints, CarAI* car, float deltaTime){
     //Guardamos en varAIbles los componentes
     auto components = car->GetComponents();
-	auto cTransformable = static_cast<CTransformable*>(components[CompType::TransformableComp]);
-    auto cWayPoint     = static_cast<CWayPoint*>(components[CompType::WayPointComp]);
-    auto cCar        = static_cast<CCar*>(components[CompType::CarComp]);
+	auto cTransformable = static_cast<CTransformable*>(components[CompType::TransformableComp].get());
+    auto cWayPoint     = static_cast<CWayPoint*>(components[CompType::WayPointComp].get());
+    auto cCar        = static_cast<CCar*>(components[CompType::CarComp].get());
     float angleRange = 0;
     float angle = 0;
     float radious = cWayPoint->radious;

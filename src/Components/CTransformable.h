@@ -12,7 +12,7 @@ class CTransformable : public Component
 public:
     CTransformable();
     CTransformable(glm::vec3 _pos, glm::vec3 _rot, glm::vec3 _scale);
-    ~CTransformable();
+    ~CTransformable(){};
 
     friend ostream &operator<<(ostream &out, CTransformable &c)
     {

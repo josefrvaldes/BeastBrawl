@@ -1,5 +1,4 @@
 #include "CarAI.h"
-#include "../Components/CLastPosition.h"
 #include "../Components/CSpeed.h"
 #include "../Components/CId.h"
 #include "../Components/CType.h"
@@ -22,13 +21,13 @@ CarAI::CarAI(){
     string mesh    = "media/ninja.b3d";
     float maxSpeed = 20.0, acceleration = 0.15, friction = 0.1, slowDown = 0.25;
     
-    CId* cId   = new CId();
-    CType* cType = new CType(ModelType::Cube);
-    CTransformable* cTransformable = new CTransformable(pos, rot, scale); 
-    CTexture* cTexture = new CTexture(texture);
-    CMesh* cMesh   = new CMesh(mesh);
-    CCar* cCar = new CCar(maxSpeed, acceleration, friction, slowDown);
-    CWayPoint* cWayPoint = new CWayPoint();
+    shared_ptr<CId> cId   = make_shared<CId>();
+    shared_ptr<CType> cType = make_shared<CType>(ModelType::Cube);
+    shared_ptr<CTransformable> cTransformable = make_shared<CTransformable>(pos, rot, scale); 
+    shared_ptr<CTexture> cTexture = make_shared<CTexture>(texture);
+    shared_ptr<CMesh> cMesh   = make_shared<CMesh>(mesh);
+    shared_ptr<CCar> cCar = make_shared<CCar>(maxSpeed, acceleration, friction, slowDown);
+    shared_ptr<CWayPoint> cWayPoint = make_shared<CWayPoint>();
     AddComponent(cId);
     AddComponent(cType);
     AddComponent(cTransformable);
@@ -45,12 +44,12 @@ CarAI::CarAI(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale,
 {
 
     
-    CId* cId   = new CId();
-    CType* cType = new CType(ModelType::Cube);
-    CTransformable* cTransformable = new CTransformable(pos, rot, scale); 
-    CTexture* cTexture = new CTexture(texture);
-    CMesh* cMesh   = new CMesh(mesh);
-    CCar* cCar = new CCar(maxSpeed, acceleration, carFriction, carSlowDown);
+    shared_ptr<CId> cId   = make_shared<CId>();
+    shared_ptr<CType> cType = make_shared<CType>(ModelType::Cube);
+    shared_ptr<CTransformable> cTransformable = make_shared<CTransformable>(pos, rot, scale); 
+    shared_ptr<CTexture> cTexture = make_shared<CTexture>(texture);
+    shared_ptr<CMesh> cMesh   = make_shared<CMesh>(mesh);
+    shared_ptr<CCar> cCar = make_shared<CCar>(maxSpeed, acceleration, carFriction, carSlowDown);
     AddComponent(cId);
     AddComponent(cType);
     AddComponent(cTransformable);
@@ -67,10 +66,11 @@ CarAI::CarAI(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale,
 CarAI::CarAI(glm::vec3 _position) 
     : CarAI()
 {
-    CTransformable *cTransformable = (CTransformable *)m_components[CompType::TransformableComp];
-    cTransformable->position.x = _position.x;
-    cTransformable->position.y = _position.y;
-    cTransformable->position.z = _position.z;
+
+    //auto components = car->GetComponents();
+    auto mapTransform = m_components.find(CompType::TransformableComp);
+	auto cTransformable = static_cast<CTransformable*>(mapTransform->second.get());
+    cTransformable->position = _position;
 }
 
 
@@ -82,7 +82,8 @@ CarAI::~CarAI()
 
 
 void CarAI::SetWayPoint(glm::vec3 waypoint){
-    CWayPoint *cWayPoint = (CWayPoint *)m_components[CompType::WayPointComp];
+    auto mapTransform = m_components.find(CompType::WayPointComp);
+    auto cWayPoint = static_cast<CWayPoint*>(m_components[CompType::WayPointComp].get());
     cWayPoint->position = waypoint;
     
 }

@@ -2,10 +2,8 @@
 #include "../EventManager/EventManager.h"
 #include "../EventManager/Event.h"
 #include "./ManCarAI.h"
-#include <iostream>
 
-class Position;
-using namespace std;
+
 
 void EjecutarMeHanCogido(Data d) 
 {
@@ -30,14 +28,14 @@ ManCarAI::~ManCarAI()
 
 void ManCarAI::CreateCarAI(glm::vec3 _position) 
 {
-	CarAI *p = new CarAI(_position);
+	shared_ptr<CarAI> p = make_shared<CarAI>(_position);
     CarAIs.push_back(p);
 }
 
 
 void ManCarAI::CreateCarAI() 
 {
-	CarAI *p = new CarAI();
+	shared_ptr<CarAI> p = make_shared<CarAI>();
     CarAIs.push_back(p);
 }
 

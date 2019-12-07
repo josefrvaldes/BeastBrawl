@@ -3,21 +3,24 @@
 #include <queue>
 #include <map>
 #include <list>
+#include <memory>
+
+using namespace std;
 
 class EventManager{
 
     public:
 
-        ~EventManager() {}
-        static EventManager* GetInstance();
+        ~EventManager() {};
+        EventManager() {};
+        static shared_ptr<EventManager> GetInstance();
         void Suscribe(Listener);
         void UnSuscribe(EventType, string);
         void AddEvent(Event);
         void Update();
 
     private:
-        EventManager() {}
-        static EventManager* instance;
+        static const shared_ptr<EventManager> instance;
         void ShowSuscribers();
         //FIXME: Al final tendremos que escoger si usar la cola o la lista
         //std::queue<Event> eventQueue;

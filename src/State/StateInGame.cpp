@@ -1,110 +1,104 @@
 #include "StateInGame.h"
 #include <iostream>
 
-using namespace std;
 
- #pragma region Behaviour Tree
+#pragma region BT
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //                           COMPROBAR BEHAVIOR TREE
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-//bool door = false; // imaginemos que door=false es = puerta cerrada "door is open?"
-//bool key  = false;  // tenemos una llave
-//// ACCION DE ABRIR LA PUERTA
-//struct openDoor : public behaviourTree { 
-//		virtual bool run() override {
-//            door = true;
-//            cout << "Abrimos la puerta" << endl;
-//            return true;
-//		}
-//};
-////ACCION COGER LA LLAVE
-//struct getKey : public behaviourTree { 
-//		virtual bool run() override {
-//            key = true;
-//            cout << "Cogemos la llave" << endl;
-//            return true;
-//		}
-//};
-////CONDICION PUERTA ABIERTA?
-//struct haveDoorOpen : public behaviourTree { 
-//		virtual bool run() override {
-//            cout << "Comprobamos si la puerta esta abierta: " << boolalpha << door << endl;
-//            return door;
-//		}
-//};
-////CONDICION TENEMOS LLAVE?
-//struct haveKey : public behaviourTree { 
-//		virtual bool run() override {
-//            cout << "Comprobamos si tenemos la llave: " << boolalpha << key << endl;
-//			return  key;
-//		}
-//};
-/////// DECORATORS //////
-//struct Minimum : public Decorator {  // Tiene que intentar coger la llave 3 veces para que la pueda coger
-//    uint32_t totalTries = 3;
-//    uint32_t numTries = 0;
-//    virtual bool run() override {
-//        if(numTries>=totalTries)
-//            return getChild()->run();
-//        numTries++;
-//        cout << "Fallamos al coger la llave, intento: " << numTries << endl;
-//        return false;
-//        
-//    }
-//};
-//struct Limit : public Decorator {  // Decorator Limit
-//    uint32_t totalLimit = 3;
-//    uint32_t numLimit = 0;
-//    virtual bool run() override {
-//        if(numLimit>=totalLimit)
-//            return false;
-//        numLimit++;
-//        return getChild()->run();
-//    }
-//};
-//struct UntilFail : public Decorator {  // Decorator UntilFail
-//    virtual bool run() override {
-//        while(true){
-//            bool result = getChild()->run();
-//            if(!result) { 
-//                break; 
-//            }
-//        }
-//        return true;
-//    }
-//};
-//struct Inverter : public Decorator {  // Decorator Inverter
-//    virtual bool run() override {
-//        return !(getChild()->run());
-//    }
-//};
+bool door = false; // imaginemos que door=false es = puerta cerrada "door is open?"
+bool key  = false;  // tenemos una llave
+// ACCION DE ABRIR LA PUERTA
+struct openDoor : public behaviourTree { 
+		virtual bool run() override {
+           door = true;
+           cout << "Abrimos la puerta" << endl;
+           return true;
+		}
+};
+//ACCION COGER LA LLAVE
+struct getKey : public behaviourTree { 
+		virtual bool run() override {
+           key = true;
+           cout << "Cogemos la llave" << endl;
+           return true;
+		}
+};
+//CONDICION PUERTA ABIERTA?
+struct haveDoorOpen : public behaviourTree { 
+		virtual bool run() override {
+           cout << "Comprobamos si la puerta esta abierta: " << boolalpha << door << endl;
+           return door;
+		}
+};
+//CONDICION TENEMOS LLAVE?
+struct haveKey : public behaviourTree { 
+		virtual bool run() override {
+           cout << "Comprobamos si tenemos la llave: " << boolalpha << key << endl;
+			return  key;
+		}
+};
+///// DECORATORS //////
+struct Minimum : public Decorator {  // Tiene que intentar coger la llave 3 veces para que la pueda coger
+   uint32_t totalTries = 3;
+   uint32_t numTries = 0;
+   virtual bool run() override {
+       if(numTries>=totalTries)
+           return getChild()->run();
+       numTries++;
+       cout << "Fallamos al coger la llave, intento: " << numTries << endl;
+       return false;
+       
+   }
+};
+struct Limit : public Decorator {  // Decorator Limit
+   uint32_t totalLimit = 3;
+   uint32_t numLimit = 0;
+   virtual bool run() override {
+       if(numLimit>=totalLimit)
+           return false;
+       numLimit++;
+       return getChild()->run();
+   }
+};
+struct UntilFail : public Decorator {  // Decorator UntilFail
+   virtual bool run() override {
+       while(true){
+           bool result = getChild()->run();
+           if(!result) { 
+               break; 
+           }
+       }
+       return true;
+   }
+};
+struct Inverter : public Decorator {  // Decorator Inverter
+   virtual bool run() override {
+       return !(getChild()->run());
+   }
+};
 
- #pragma endregion Behaviour Tree
-
+#pragma endregion
 
 
 
 StateInGame::StateInGame(){
     // constructor
-    std::cout << "Estado InGame Creado" << std::endl;
+    cout << "Estado InGame Creado" << std::endl;
     
     eventManager = EventManager::GetInstance();
 
-    car = new Car();
-    manPowerUps = new ManPowerUp();
-    manWayPoint = new ManWayPoint();
-
-    //CreatePowerUp(30, 20, 30);
+    car = make_shared<Car>();
+    manPowerUps = make_shared<ManPowerUp>();
+    ground = make_shared<GameObject>(glm::vec3(10.0f,10.0f,30.0f),    glm::vec3(0.0f,0.0f,0.0f),    glm::vec3(100.0f,1.0f,100.0f), "wall.jpg", "ninja.b3d");
+    cam = make_shared<Camera>(glm::vec3(10.0f,40.0f,30.0f),    glm::vec3(0.0f,0.0f,0.0f),    glm::vec3(1.0f,1.0f,1.0f));
+    manWayPoint = make_shared<ManWayPoint>();
     manWayPoint->CreateWayPoint(glm::vec3(-10.0f,25.0f,-150.0f));
-    carAI = new CarAI(glm::vec3(400.0f,20.0f,-150.0f));
+    carAI = make_shared<CarAI>(glm::vec3(100.0f,20.0f,100.0f));
     manWayPoint->CreateWayPoint(glm::vec3(150.0f,25.0f,-150.0f));
     manWayPoint->CreateWayPoint(glm::vec3(150.0f,25.0f,150.0f));
     manWayPoint->CreateWayPoint(glm::vec3(-150.0f,25.0f,150.0f));
     carAI->SetWayPoint(manWayPoint->GetEntities()[3]->position);
-
-
-    ground = new GameObject(glm::vec3(10.0f,10.0f,30.0f),    glm::vec3(0.0f,0.0f,0.0f),    glm::vec3(100.0f,1.0f,100.0f), "wall.jpg", "ninja.b3d");
-    cam = new Camera(glm::vec3(10.0f,40.0f,30.0f),    glm::vec3(0.0f,0.0f,0.0f),    glm::vec3(1.0f,1.0f,1.0f));
 
 	renderFacadeManager = RenderFacadeManager::GetInstance();
 	renderFacadeManager->InitializeIrrlicht();
@@ -115,52 +109,53 @@ StateInGame::StateInGame(){
     physicsFacadeManager = PhysicsFacadeManager::GetInstance();
     physicsFacadeManager->InitializeIrrlicht();
     
-    Physics* physics = new Physics();
+    unique_ptr<Physics> physics = make_unique<Physics>();
     //Almacenamos los motores
 	renderEngine   = renderFacadeManager->GetRenderFacade();
     inputEngine    = inputFacadeManager->GetInputFacade();
     physicsEngine  = physicsFacadeManager->GetPhysicsFacade();
 
-    physicsAI = new PhysicsAI();
+    physicsAI = make_shared<PhysicsAI>();
     
 
-    #pragma region FuzzyLogic
+#pragma region FL
+
 // --------------------------- FUZZY LOGIC  "COUT TEMPORALES" ----------------------------------
-//FuzzyLogic fm;
+   /* shared_ptr<FuzzyLogic> fm = make_shared<FuzzyLogic>();
 
-//FuzzyVariable& DistToTarget = fm.CreateFLV("DistToTarget");
-//FzSet Target_Close = DistToTarget.AddLeftShoulderSet("Target_Close", 0, 25, 150);
-//FzSet Target_Medium = DistToTarget.AddTriangularSet("Target_Medium", 25, 150, 300);
-//FzSet Target_Far = DistToTarget.AddRightShoulderSet("Target_Far", 150, 300, 400);
-//
-//FuzzyVariable& AmmoStatus = fm.CreateFLV("AmmoStatus");
-//FzSet Ammo_Low = AmmoStatus.AddLeftShoulderSet("Ammo_Low", 0, 0, 10);
-//FzSet Ammo_Okay = AmmoStatus.AddTriangularSet("Ammo_Okay", 0, 10, 30);
-//FzSet Ammo_Loads = AmmoStatus.AddRightShoulderSet("Ammo_Loads", 10, 30, 40);
-//
-//FuzzyVariable& Desirability = fm.CreateFLV("Desirability");
-//FzSet Undesirable = Desirability.AddLeftShoulderSet("Undesirable", 0, 25, 50);
-//FzSet Desirable = Desirability.AddTriangularSet("Desirable", 25, 50, 75);
-//FzSet VeryDesirable = Desirability.AddRightShoulderSet("VeryDesirable", 50, 75, 100);
-//// To-Do: revisar el new por que no se tiene que hacer
-//fm.AddRule( *(new FzAND(Target_Close, Ammo_Loads)), Undesirable);
-//fm.AddRule( *(new FzAND(Target_Close, Ammo_Okay)), Undesirable);
-//fm.AddRule( *(new FzAND(Target_Close, Ammo_Low)), Undesirable);
-//fm.AddRule( *(new FzAND(Target_Medium, Ammo_Loads)), VeryDesirable);
-//fm.AddRule( *(new FzAND(Target_Medium, Ammo_Okay)), VeryDesirable);
-//fm.AddRule( *(new FzAND(Target_Medium, Ammo_Low)), Desirable);
-//fm.AddRule( *(new FzAND(Target_Far, Ammo_Loads)), Desirable);
-//fm.AddRule( *(new FzAND(Target_Far, Ammo_Okay)), Undesirable);
-//fm.AddRule( *(new FzAND(Target_Far, Ammo_Low)), Undesirable);
-//// seguimos con las pruebas
-//  fm.Fuzzify("DistToTarget", 200); // AQUI ES DONDE SE LLAMA AL CALCULATEDOM()
-//  fm.Fuzzify("AmmoStatus", 8);
-//  double resultadoDefuzzification = fm.DeFuzzify("Desirability");
-// cout de FuzzyLogic
-//  std::cout << "defuzzificacion: " << resultadoDefuzzification << std::endl;
-//  std::cout << "------------------------------"<< std::endl;
+    shared_ptr<FuzzyVariable> DistToTarget = fm->CreateFLV("DistToTarget");
+    shared_ptr<FzSet> Target_Close = DistToTarget->AddLeftShoulderSet("Target_Close", 0, 25, 150);
+    shared_ptr<FzSet> Target_Medium = DistToTarget->AddTriangularSet("Target_Medium", 25, 150, 300);
+    shared_ptr<FzSet> Target_Far = DistToTarget->AddRightShoulderSet("Target_Far", 150, 300, 400);
 
+    shared_ptr<FuzzyVariable> AmmoStatus = fm->CreateFLV("AmmoStatus");
+    shared_ptr<FzSet> Ammo_Low = AmmoStatus->AddLeftShoulderSet("Ammo_Low", 0, 0, 10);
+    shared_ptr<FzSet> Ammo_Okay = AmmoStatus->AddTriangularSet("Ammo_Okay", 0, 10, 30);
+    shared_ptr<FzSet> Ammo_Loads = AmmoStatus->AddRightShoulderSet("Ammo_Loads", 10, 30, 40);
 
+    shared_ptr<FuzzyVariable> Desirability = fm->CreateFLV("Desirability");
+    shared_ptr<FzSet> Undesirable = Desirability->AddLeftShoulderSet("Undesirable", 0, 25, 50);
+    shared_ptr<FzSet> Desirable = Desirability->AddTriangularSet("Desirable", 25, 50, 75);
+    shared_ptr<FzSet> VeryDesirable = Desirability->AddRightShoulderSet("VeryDesirable", 50, 75, 100);
+    // To-Do: revisar el new por que no se tiene que hacer
+    fm->AddRule( (make_shared<FzAND>(Target_Close, Ammo_Loads)), Undesirable);
+    fm->AddRule( (make_shared<FzAND>(Target_Close, Ammo_Okay)), Undesirable);
+    fm->AddRule( (make_shared<FzAND>(Target_Close, Ammo_Low)), Undesirable);
+    fm->AddRule( (make_shared<FzAND>(Target_Medium, Ammo_Loads)), VeryDesirable);
+    fm->AddRule( (make_shared<FzAND>(Target_Medium, Ammo_Okay)), VeryDesirable);
+    fm->AddRule( (make_shared<FzAND>(Target_Medium, Ammo_Low)), Desirable);
+    fm->AddRule( (make_shared<FzAND>(Target_Far, Ammo_Loads)), Desirable);
+    fm->AddRule( (make_shared<FzAND>(Target_Far, Ammo_Okay)), Undesirable);
+    fm->AddRule( (make_shared<FzAND>(Target_Far, Ammo_Low)), Undesirable);
+    // seguimos con las pruebas
+    fm->Fuzzify("DistToTarget", 200); // AQUI ES DONDE SE LLAMA AL CALCULATEDOM()
+    fm->Fuzzify("AmmoStatus", 8);
+    double resultadoDefuzzification = fm->DeFuzzify("Desirability");
+    // cout de FuzzyLogic
+    std::cout << "defuzzificacion: " << resultadoDefuzzification << std::endl;
+    std::cout << "------------------------------"<< std::endl;
+
+*/
 // --------------------------- FIN FUZZY LOGIC ----------------------------------
 
 // --------------------------- BEHAVIOR TREE ----------------------------------
@@ -174,51 +169,49 @@ StateInGame::StateInGame(){
                                     ///////////////////////////////                      //
                                     //                          //                       //
 //                                // tengo llave?             //abrir puerta        // coger llave
-//    selector* selector1 = new selector;
-//    sequence* sequence1 = new sequence;
-//
-//    haveDoorOpen* puertaAbiertaSiNo = new haveDoorOpen;
-//    haveKey* tengoLlaveSiNo = new haveKey;
-//    openDoor* abrirPuerta = new openDoor;
-//    getKey* cogerLlave = new getKey;
-//
-//    Minimum* tryCatchKey3 = new Minimum;
-//
-//    selector1->addChild(puertaAbiertaSiNo);
-//    selector1->addChild(sequence1);
-//    selector1->addChild(tryCatchKey3);
-//
-//    sequence1->addChild(tengoLlaveSiNo);
-//    sequence1->addChild(abrirPuerta);
-//
-//    tryCatchKey3->addChild(cogerLlave);
-//
-//	cout << "--------------------" << endl;
-//    while (door==false){
-//        selector1->run();
-//    } // If the operation starting from the root fails, keep trying until it succeeds.
-//	cout << "--------------------" << endl;
+   shared_ptr<selector> selector1 = make_shared<selector>();
+   shared_ptr<sequence> sequence1 = make_shared<sequence>();
+
+   shared_ptr<haveDoorOpen> puertaAbiertaSiNo = make_shared<haveDoorOpen>();
+   shared_ptr<haveKey> tengoLlaveSiNo = make_shared<haveKey>();
+   shared_ptr<openDoor>abrirPuerta = make_shared<openDoor>();
+   shared_ptr<getKey> cogerLlave = make_shared<getKey>();
+
+   shared_ptr<Minimum> tryCatchKey3 = make_shared<Minimum>();
+
+   selector1->addChild(puertaAbiertaSiNo);
+   selector1->addChild(sequence1);
+   selector1->addChild(tryCatchKey3);
+
+   sequence1->addChild(tengoLlaveSiNo);
+   sequence1->addChild(abrirPuerta);
+
+   tryCatchKey3->addChild(cogerLlave);
+
+	cout << "--------------------" << endl;
+   while (door==false){
+       selector1->run();
+   } // If the operation starting from the root fails, keep trying until it succeeds.
+	cout << "--------------------" << endl;
 //
 
-    #pragma endregion 
-   
-   
-    //wayPoint1 = new WayPoint();
+#pragma endregion
 
-    for(WayPoint *way : manWayPoint->GetEntities()){
+    for(shared_ptr<WayPoint> way : manWayPoint->GetEntities()){
         cout << "Vamos a crear mini puntos de control -> power ups de mientras" << endl;
         manPowerUps->CreatePowerUp(glm::vec3(way->position));
     }
     //cout << "el tamanyo normal es: " << manWayPoint.size() << endl;
 
-    renderEngine->FacadeAddObject(car);
-    renderEngine->FacadeAddObject(carAI);
-    renderEngine->FacadeAddObject(ground);
+
+    renderEngine->FacadeAddObject(car.get());
+    renderEngine->FacadeAddObject(ground.get());
+    renderEngine->FacadeAddObject(carAI.get());
     
-    for(PowerUp *pu : manPowerUps->GetEntities()) 
-        renderEngine->FacadeAddObject(pu);
+    for(shared_ptr<PowerUp> pu : manPowerUps->GetEntities()) 
+        renderEngine->FacadeAddObject(pu.get());
         
-    renderEngine->FacadeAddCamera(cam);
+    renderEngine->FacadeAddCamera(cam.get());
 
     lastFPS = -1;
     then = renderEngine->FacadeGetTime();
@@ -226,16 +219,13 @@ StateInGame::StateInGame(){
 
     //inicializamos las reglas del cocheIA de velocidad/aceleracion
     //FuzzyLogic flVelocity;
-    physicsAI->InitPhysicsIA(carAI);
+    physicsAI->InitPhysicsIA(carAI.get());
 }
 
 
 
 StateInGame::~StateInGame(){
     // destructor
-    delete car;
-    delete ground;
-    delete cam;
 }
 
 
@@ -253,11 +243,11 @@ void StateInGame::Update()
     const float frameDeltaTime = (float)(now - then) / 100.0;
     then = now;
 
-    physicsAI->Update(manWayPoint->GetEntities() , carAI, frameDeltaTime);
+    physicsAI->Update(manWayPoint->GetEntities() , carAI.get(), frameDeltaTime);
     //inputEngine->CheckInputs(*car);
-    renderEngine->FacadeCheckInput(frameDeltaTime,car,cam);
-    physicsEngine->UpdateCar(car, cam);
-    physicsEngine->UpdateCarAI(carAI);
+    renderEngine->FacadeCheckInput(frameDeltaTime,car.get(),cam.get());
+    physicsEngine->UpdateCar(car.get(), cam.get());
+    physicsEngine->UpdateCarAI(carAI.get());
 
     
 

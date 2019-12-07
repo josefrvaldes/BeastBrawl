@@ -28,5 +28,4 @@ class RenderFacade {
         virtual void FacadeDraw() = 0;
 
     protected:
-        EventManager* eventManager;
 };

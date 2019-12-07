@@ -1,9 +1,6 @@
 #include "../Entities/WayPoint.h"
 #include "./ManWayPoint.h"
-#include <iostream>
 
-class Position;
-using namespace std;
 
 ManWayPoint::ManWayPoint(){
     //SubscribeToEvents();
@@ -17,13 +14,13 @@ ManWayPoint::~ManWayPoint(){
 }
 
 void ManWayPoint::CreateWayPoint(glm::vec3 _position) {
-	WayPoint *p = new WayPoint(_position);
+	shared_ptr<WayPoint> p = make_shared<WayPoint>(_position);
     waypoints.push_back(p);
     cout << "Creado waypoints, ahora tenemos " << waypoints.size() << " waypoints" << endl;
 }
 
 void ManWayPoint::CreateWayPoint() {
-	WayPoint *p = new WayPoint();
+	shared_ptr<WayPoint> p = make_shared<WayPoint>();
     waypoints.push_back(p);
     cout << "Creado waypoints, ahora tenemos " << waypoints.size() << " waypoints" << endl;
 }
