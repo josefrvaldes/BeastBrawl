@@ -1,5 +1,4 @@
 #include "GameObject.h"
-#include "../Components/CPosition.h"
 #include "../Components/CSpeed.h"
 #include "../Components/CId.h"
 #include "../Components/CType.h"

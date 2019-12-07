@@ -2,7 +2,7 @@
 #define __COMPONENT_H__
 
 enum CompType { 
-    PositionComp, 
+    LastPositionComp, 
     SpeedComp, 
     IdComp, 
     TypeComp, 
@@ -10,8 +10,9 @@ enum CompType {
     MeshComp,
     TransformableComp,
     CameraComp,
-    CarComp,
-    WheelComp
+    WheelComp,
+    WayPointComp,
+    CarComp
 };
 
 class Component

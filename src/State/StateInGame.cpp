@@ -92,6 +92,13 @@ StateInGame::StateInGame(){
     manPowerUps = make_shared<ManPowerUp>();
     ground = make_shared<GameObject>(glm::vec3(10.0f,10.0f,30.0f),    glm::vec3(0.0f,0.0f,0.0f),    glm::vec3(100.0f,1.0f,100.0f), "wall.jpg", "ninja.b3d");
     cam = make_shared<Camera>(glm::vec3(10.0f,40.0f,30.0f),    glm::vec3(0.0f,0.0f,0.0f),    glm::vec3(1.0f,1.0f,1.0f));
+    manWayPoint = make_shared<ManWayPoint>();
+    manWayPoint->CreateWayPoint(glm::vec3(-10.0f,25.0f,-150.0f));
+    carAI = make_shared<CarAI>(glm::vec3(100.0f,20.0f,100.0f));
+    manWayPoint->CreateWayPoint(glm::vec3(150.0f,25.0f,-150.0f));
+    manWayPoint->CreateWayPoint(glm::vec3(150.0f,25.0f,150.0f));
+    manWayPoint->CreateWayPoint(glm::vec3(-150.0f,25.0f,150.0f));
+    carAI->SetWayPoint(manWayPoint->GetEntities()[3]->position);
 
 	renderFacadeManager = RenderFacadeManager::GetInstance();
 	renderFacadeManager->InitializeIrrlicht();
@@ -108,11 +115,13 @@ StateInGame::StateInGame(){
     inputEngine    = inputFacadeManager->GetInputFacade();
     physicsEngine  = physicsFacadeManager->GetPhysicsFacade();
 
+    physicsAI = make_shared<PhysicsAI>();
+    
 
 #pragma region FL
 
 // --------------------------- FUZZY LOGIC  "COUT TEMPORALES" ----------------------------------
-    shared_ptr<FuzzyLogic> fm = make_shared<FuzzyLogic>();
+   /* shared_ptr<FuzzyLogic> fm = make_shared<FuzzyLogic>();
 
     shared_ptr<FuzzyVariable> DistToTarget = fm->CreateFLV("DistToTarget");
     shared_ptr<FzSet> Target_Close = DistToTarget->AddLeftShoulderSet("Target_Close", 0, 25, 150);
@@ -146,7 +155,7 @@ StateInGame::StateInGame(){
     std::cout << "defuzzificacion: " << resultadoDefuzzification << std::endl;
     std::cout << "------------------------------"<< std::endl;
 
-
+*/
 // --------------------------- FIN FUZZY LOGIC ----------------------------------
 
 // --------------------------- BEHAVIOR TREE ----------------------------------
@@ -188,10 +197,16 @@ StateInGame::StateInGame(){
 
 #pragma endregion
 
+    for(shared_ptr<WayPoint> way : manWayPoint->GetEntities()){
+        cout << "Vamos a crear mini puntos de control -> power ups de mientras" << endl;
+        manPowerUps->CreatePowerUp(glm::vec3(way->position));
+    }
+    //cout << "el tamanyo normal es: " << manWayPoint.size() << endl;
 
 
     renderEngine->FacadeAddObject(car.get());
     renderEngine->FacadeAddObject(ground.get());
+    renderEngine->FacadeAddObject(carAI.get());
     
     for(shared_ptr<PowerUp> pu : manPowerUps->GetEntities()) 
         renderEngine->FacadeAddObject(pu.get());
@@ -200,6 +215,11 @@ StateInGame::StateInGame(){
 
     lastFPS = -1;
     then = renderEngine->FacadeGetTime();
+
+
+    //inicializamos las reglas del cocheIA de velocidad/aceleracion
+    //FuzzyLogic flVelocity;
+    physicsAI->InitPhysicsIA(carAI.get());
 }
 
 
@@ -223,10 +243,13 @@ void StateInGame::Update()
     const float frameDeltaTime = (float)(now - then) / 100.0;
     then = now;
 
-    
+    physicsAI->Update(manWayPoint->GetEntities() , carAI.get(), frameDeltaTime);
     //inputEngine->CheckInputs(*car);
     renderEngine->FacadeCheckInput(frameDeltaTime,car.get(),cam.get());
-    physicsEngine->Update(car.get(), cam.get());
+    physicsEngine->UpdateCar(car.get(), cam.get());
+    physicsEngine->UpdateCarAI(carAI.get());
+
+    
 
     renderEngine->FacadeDraw();
 

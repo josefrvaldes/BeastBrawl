@@ -28,8 +28,8 @@ void FuzzyLogic::SetConfidencesOfConsequentsToZero(){
 }
 
 void FuzzyLogic::Fuzzify(const std::string& NameOfFLV, double val){
-	std::cout << "Fuzzificamos a: " << NameOfFLV << std::endl;
-	std::cout << "--------------------------------------" << std::endl;
+	//std::cout << "Fuzzificamos a: " << NameOfFLV << std::endl;
+	//std::cout << "--------------------------------------" << std::endl;
 	m_Variables[NameOfFLV]->Fuzzify(val);
 
 }
@@ -54,7 +54,7 @@ double FuzzyLogic::DeFuzzify(const std::string& NameOfFLV){
 	}
 
 
-	std::cout << "bucle con el calculo de las diferentes reglas" << std::endl;
+	//std::cout << "bucle con el calculo de las diferentes reglas" << std::endl;
 	//now defuzzify the resultant conclusion using the specified method
 	return m_Variables[NameOfFLV]->DeFuzzifyMaxAv();
 

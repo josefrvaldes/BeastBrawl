@@ -1,4 +1,3 @@
- 
 COMPILING_TEXT 	   := @echo -e "\033[0m \033[0;33m Compiling:\033[0m"
 COMPILING_TEXT_OK  := @echo -e "\033[0m \033[0;32m [All compiled succesfully]\033[0m"
 LINKING_TEXT       := @echo -e "\033[0m \033[0;33m Linking...\033[0m"

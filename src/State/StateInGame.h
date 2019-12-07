@@ -7,13 +7,18 @@
 #include "../Entities/GameObject.h"
 #include "../Entities/Camera.h"
 #include "../Entities/PowerUp.h"
+#include "../Entities/WayPoint.h"
+#include "../Entities/CarAI.h"
 #include "../Systems/Physics.h"
 #include "../Managers/ManPowerUp.h"
+#include "../Managers/ManWayPoint.h"
+#include "../Managers/ManCarAI.h"
 #include "../EventManager/EventManager.h"
 #include "../Facade/Render/RenderFacadeManager.h"
 #include "../Facade/Input/InputFacadeManager.h"
 #include "../Facade/Physics/PhysicsFacadeManager.h"
 #include "../Systems/Physics.h"
+#include "../Systems/PhysicsAI.h"
 #include "../fuzzyLogic/fuzzyLogic.h"
 #include "../behaviourTree/behaviourTree.h"
 #include "../behaviourTree/selector.h"
@@ -39,6 +44,7 @@ class StateInGame : public State{
     private:
         shared_ptr<EventManager> eventManager;
         shared_ptr<Car> car;
+        shared_ptr<CarAI> carAI;
         shared_ptr<GameObject> ground;
         shared_ptr<Camera> cam;
         shared_ptr<ManPowerUp> manPowerUps;
@@ -48,6 +54,8 @@ class StateInGame : public State{
         shared_ptr<RenderFacade> renderEngine;
         shared_ptr<InputFacade> inputEngine;
         shared_ptr<PhysicsFacade> physicsEngine;
+        shared_ptr<ManWayPoint> manWayPoint;
+        shared_ptr<PhysicsAI> physicsAI;
 
         int lastFPS = -1;
         uint32_t then;

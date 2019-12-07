@@ -7,17 +7,11 @@
 class Position;
 using namespace std;
 
-void EjecutarMeHanCogido(Data d) 
-{
-    cout << "Han cogido un powerup, madafaka!!" << endl;
-}
-
-
 
 ManPowerUp::ManPowerUp()
 {
     SubscribeToEvents();
-    CreatePowerUp(30, 30, 30);
+    //CreatePowerUp(30, 20, 30);
     cout << "Hemos creado un powerup, ahora tenemos " << powerUps.size() << " powerups" << endl;
 }
 
@@ -28,9 +22,9 @@ ManPowerUp::~ManPowerUp()
 }
 
 
-void ManPowerUp::CreatePowerUp(float x, float y, float z) 
+void ManPowerUp::CreatePowerUp(glm::vec3 _position) 
 {
-	shared_ptr<PowerUp> p = make_shared<PowerUp>(x, y, z);
+	shared_ptr<PowerUp> p = make_shared<PowerUp>(_position);
     powerUps.push_back(p);
 }
 
@@ -44,8 +38,8 @@ void ManPowerUp::CreatePowerUp()
 
 void ManPowerUp::SubscribeToEvents() 
 {
-    shared_ptr<EventManager> em = EventManager::GetInstance();
-    em->Suscribe(Listener {EventType::POWER_UP_COGIDO, EjecutarMeHanCogido, "EjecutarMeHanCogido"});
+    //shared_ptr<EventManager> em = EventManager::GetInstance();
+    //em->Suscribe(Listener {EventType::POWER_UP_COGIDO, EjecutarMeHanCogido, "EjecutarMeHanCogido"});
 }
 
 

@@ -11,7 +11,8 @@ using namespace std;
 class PhysicsFacadeIrrlicht : public PhysicsFacade{
     public:
         PhysicsFacadeIrrlicht();
-        void Update(Entity*, Entity*) override;
+        void UpdateCar(Entity*, Entity*) override;
+        void UpdateCarAI(Entity*) override;
         ~PhysicsFacadeIrrlicht();
 
 
