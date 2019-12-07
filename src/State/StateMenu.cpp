@@ -9,10 +9,6 @@ StateMenu::StateMenu(){
 }
 
 
-StateMenu::~StateMenu(){
-    // destructor
-}
-
 
 
 void StateMenu::Render(){
