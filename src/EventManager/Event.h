@@ -1,13 +1,14 @@
 #pragma once
 #include <cstdint>
-#include <vector>
 #include <string>
+#include <vector>
+#include <functional>
 #include "../Entities/Entity.h"
 
 using namespace std;
 
 //El orden de los enums define la prioridad del evento
-enum EventType{
+enum EventType {
     PRESS_I,
     PRESS_O,
     PRESS_A,
@@ -20,7 +21,7 @@ enum EventType{
     POWER_UP_COGIDO
 };
 
-struct Data{
+struct Data {
     uint16_t id;
     Entity* gameObject;
     Entity* camera;
@@ -28,16 +29,28 @@ struct Data{
 };
 
 struct Event {
-
     EventType type;
     Data data;
-
 };
 
-struct Listener{
+struct Listener {
+    uint32_t id = 0;
     EventType type;
-    void (*function)(Data); // Puntero a funcion 
-    string name;            // Nombre del listener
+    //void (*function)(Data);  // Puntero a funcion
+    function<void(Data)> callback;
+    string name;             // Nombre del listener
+    
+    Listener(EventType _type, function<void(Data)> _function, string _name) 
+     : type(_type), callback(_function), name(_name)
+    {
+        
+    }
+
+    Listener(uint32_t _id, EventType _type, function<void(Data)> _callback, string _name) 
+     : id(_id), type(_type), callback(_callback), name(_name)
+    {
+        
+    }    
 };
 
-typedef std::vector<Listener> ListenerVector; // Se usará para poder tener varios listener del mismo EventType en el hash map
+typedef std::vector<Listener> ListenerVector;  // Se usará para poder tener varios listener del mismo EventType en el hash map

@@ -32,8 +32,7 @@ void ManPowerUp::CreatePowerUp() {
 }
 
 void ManPowerUp::SubscribeToEvents() {
-    shared_ptr<EventManager> em = EventManager::GetInstance();
-    em->Suscribe(Listener{EventType::POWER_UP_COGIDO, EjecutarMeHanCogido, "EjecutarMeHanCogido"});
+    EventManager::GetInstance()->SuscribeMulti(Listener{EventType::POWER_UP_COGIDO, EjecutarMeHanCogido, "EjecutarMeHanCogido"});
 }
 
 //eventManager->TriggerEvent(EventType::HAN_COGIDO_A_ALGUIEN, id_mio, id_que_he_cogido);

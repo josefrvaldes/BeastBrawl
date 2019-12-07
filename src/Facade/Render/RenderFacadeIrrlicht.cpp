@@ -176,19 +176,19 @@ void RenderFacadeIrrlicht::FacadeCheckInput(float frameDeltaTime, Entity* car, E
 		device->closeDevice();
 	}
 	if(receiver.IsKeyDown(KEY_KEY_I)){
-        eventManager->AddEvent(Event {EventType::PRESS_I,d});
+        eventManager->AddEventMulti(Event {EventType::PRESS_I,d});
 	}else if(receiver.IsKeyDown(KEY_KEY_O)){
-        eventManager->AddEvent(Event {EventType::PRESS_O,d});
+        eventManager->AddEventMulti(Event {EventType::PRESS_O,d});
 	}else{
-		eventManager->AddEvent(Event {EventType::NO_I_O_PRESS,d});
+		eventManager->AddEventMulti(Event {EventType::NO_I_O_PRESS,d});
 	}
 	
 	if(receiver.IsKeyDown(KEY_KEY_D)){
-        eventManager->AddEvent(Event {EventType::PRESS_D,d});
+        eventManager->AddEventMulti(Event {EventType::PRESS_D,d});
 	}else if(receiver.IsKeyDown(KEY_KEY_A)){
-        eventManager->AddEvent(Event {EventType::PRESS_A,d});
+        eventManager->AddEventMulti(Event {EventType::PRESS_A,d});
 	}else{
-		eventManager->AddEvent(Event {EventType::NO_A_D_PRESS,d});
+		eventManager->AddEventMulti(Event {EventType::NO_A_D_PRESS,d});
 	}
 }
 

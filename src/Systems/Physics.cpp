@@ -17,12 +17,12 @@ Physics::Physics(){
     shared_ptr<EventManager> eventManager = EventManager::GetInstance();
 
     //Se suscriben los listeners
-    eventManager->Suscribe(Listener{EventType::PRESS_I, Accelerate, "accelerate"});
-    eventManager->Suscribe(Listener{EventType::PRESS_A, TurnLeft, "turnLeft"});
-    eventManager->Suscribe(Listener{EventType::PRESS_D, TurnRight, "turnRight"});
-    eventManager->Suscribe(Listener{EventType::PRESS_O, Decelerate, "decelerate"});
-    eventManager->Suscribe(Listener{EventType::NO_I_O_PRESS, NotAcceleratingOrDecelerating, "notAcceleratingOrDecelerating"});
-    eventManager->Suscribe(Listener{EventType::NO_A_D_PRESS, NotTurning, "notTurning"});
+    eventManager->SuscribeMulti(Listener{EventType::PRESS_I, Accelerate, "accelerate"});
+    eventManager->SuscribeMulti(Listener{EventType::PRESS_A, TurnLeft, "turnLeft"});
+    eventManager->SuscribeMulti(Listener{EventType::PRESS_D, TurnRight, "turnRight"});
+    eventManager->SuscribeMulti(Listener{EventType::PRESS_O, Decelerate, "decelerate"});
+    eventManager->SuscribeMulti(Listener{EventType::NO_I_O_PRESS, NotAcceleratingOrDecelerating, "notAcceleratingOrDecelerating"});
+    eventManager->SuscribeMulti(Listener{EventType::NO_A_D_PRESS, NotTurning, "notTurning"});
 }
 
 //PUNTEROS A FUNCIONES

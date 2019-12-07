@@ -10,11 +10,11 @@ void InputFacadeIrrlicht::CheckInputs(Entity& go){
 	//d.gameObject = &go;
 
 	//if(receiver->IsKeyDown(KEY_KEY_W)){
-    //    eventManager->AddEvent(Event {EventType::PRESS_I,d});
+    //    eventManager->AddEventMulti(Event {EventType::PRESS_I,d});
 	//}else if(receiver->IsKeyDown(KEY_KEY_A)){
-    //    eventManager->AddEvent(Event {EventType::PRESS_A,d});
+    //    eventManager->AddEventMulti(Event {EventType::PRESS_A,d});
 	//}else if(receiver->IsKeyDown(KEY_KEY_D)){
-    //    eventManager->AddEvent(Event {EventType::PRESS_D,d});
+    //    eventManager->AddEventMulti(Event {EventType::PRESS_D,d});
 	//}
 
 }
