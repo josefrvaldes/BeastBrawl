@@ -222,6 +222,10 @@ StateInGame::~StateInGame() {
     // destructor
 }
 
+void StateInGame::Input() {
+    renderEngine->FacadeCheckInput();
+}
+
 void StateInGame::Render() {
     renderEngine->FacadeDraw();
 }
@@ -234,7 +238,6 @@ void StateInGame::Update() {
     *deltaTime.get() = (float)(now - then) / 100.0;
     then = now;
 
-    renderEngine->FacadeCheckInput();
     renderEngine->UpdateCamera(cam.get());
     physicsEngine->Update(manCars.get()->GetCar().get(), cam.get());
     

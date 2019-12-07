@@ -30,8 +30,9 @@ class StateInGame : public State {
    public:
     StateInGame();
     ~StateInGame();
-    void Update();
-    void Render();
+    void Input() override;
+    void Update() override;
+    void Render() override;
     States GetState() { return State::States::INGAME; };
 
    private:
