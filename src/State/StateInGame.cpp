@@ -1,6 +1,7 @@
 #include "StateInGame.h"
 #include <iostream>
 
+#include "../Components/CWayPointEdge.h"
 
 #pragma region BT
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -99,6 +100,8 @@ StateInGame::StateInGame(){
     manWayPoint->CreateWayPoint(glm::vec3(150.0f,25.0f,150.0f));
     manWayPoint->CreateWayPoint(glm::vec3(-150.0f,25.0f,150.0f));
     carAI->SetWayPoint(manWayPoint->GetEntities()[3]->position);
+
+
 
 	renderFacadeManager = RenderFacadeManager::GetInstance();
 	renderFacadeManager->InitializeIrrlicht();

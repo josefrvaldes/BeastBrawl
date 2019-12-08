@@ -9,6 +9,8 @@
 #include "../Entities/PowerUp.h"
 #include "../Entities/WayPoint.h"
 #include "../Entities/CarAI.h"
+#include "../Entities/WayPointEdge.h"
+#include "../Entities/Entity.h"
 #include "../Systems/Physics.h"
 #include "../Managers/ManPowerUp.h"
 #include "../Managers/ManWayPoint.h"

@@ -7,8 +7,8 @@ CWayPoint::CWayPoint(){
     position.z = 0;
 }
 
-CWayPoint::CWayPoint(glm::vec3 _pos)
-: position(_pos){
+CWayPoint::CWayPoint(glm::vec3 _pos, int type, int id)
+: position(_pos), m_type(type), m_id(id){
     m_compType = CompType::WayPointComp;
 }
 

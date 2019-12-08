@@ -9,21 +9,20 @@
 using namespace std;
 //using namespace glm;
 
-class CWayPoint : public Component
+class CWayPointEdge : public Component
 {
 public:
-    CWayPoint();
-    CWayPoint(glm::vec3 _pos, int type,int id);
-    ~CWayPoint();
+    CWayPointEdge();
+    CWayPointEdge(int from, int to, double cost);
+    ~CWayPointEdge(){};
 
-    // friend ostream &operator<<(ostream &out, CWayPoint &c)
+    // friend ostream &operator<<(ostream &out, CWayPointEdge &c)
     // {
     //     //cout << "(" << c.position.x << "," << c.position.y << "," << c.position.z << ")";
     //     //return out;
     // }
 
-    glm::vec3 position;
-    int m_type;
-    int m_id;
-    float radious = 30.0f;
+    int m_from;
+    int m_to;
+    double m_cost;
 };
