@@ -170,7 +170,7 @@ void RenderFacadeIrrlicht::FacadeCheckInput(float frameDeltaTime, Entity* car, E
 	d.deltaTime  = frameDeltaTime;
 	d.gameObject = car;
 	d.camera	 = cam;
-
+ 
 	if(receiver.IsKeyDown(KEY_ESCAPE)){
 		device->closeDevice();
 	}
