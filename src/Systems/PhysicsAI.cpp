@@ -179,6 +179,11 @@ void PhysicsAI::Update(vector<shared_ptr<WayPoint>> wayPoints, CarAI* car, float
         && (cWayPoint->position.x - radious) < cTransformable->position.x && (cWayPoint->position.x + radious) >= cTransformable->position.x){
             //Ha llegado al rango vamos a buscarle otro waypoint
             //TODO: Ya veremos como gestionamos el cambiar de waypoint de momento lo pongo al azar
+            // auto components2 = cWayPoint->GetComponents();
+            // auto mapWaypoint = components2.find(CompType::WayPointComp);
+	        // auto cWayPoint = static_cast<CWayPoint*>(mapWaypoint->second.get());
+
+
             int indx = rand() % wayPoints.size();
             cout << "Cambiamos de WayPoint al indice:  " << indx << endl ;
 

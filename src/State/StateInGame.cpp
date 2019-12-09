@@ -6,77 +6,77 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //                           COMPROBAR BEHAVIOR TREE
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-bool door = false; // imaginemos que door=false es = puerta cerrada "door is open?"
-bool key  = false;  // tenemos una llave
-// ACCION DE ABRIR LA PUERTA
-struct openDoor : public behaviourTree { 
-		virtual bool run() override {
-           door = true;
-           cout << "Abrimos la puerta" << endl;
-           return true;
-		}
-};
-//ACCION COGER LA LLAVE
-struct getKey : public behaviourTree { 
-		virtual bool run() override {
-           key = true;
-           cout << "Cogemos la llave" << endl;
-           return true;
-		}
-};
-//CONDICION PUERTA ABIERTA?
-struct haveDoorOpen : public behaviourTree { 
-		virtual bool run() override {
-           cout << "Comprobamos si la puerta esta abierta: " << boolalpha << door << endl;
-           return door;
-		}
-};
-//CONDICION TENEMOS LLAVE?
-struct haveKey : public behaviourTree { 
-		virtual bool run() override {
-           cout << "Comprobamos si tenemos la llave: " << boolalpha << key << endl;
-			return  key;
-		}
-};
-///// DECORATORS //////
-struct Minimum : public Decorator {  // Tiene que intentar coger la llave 3 veces para que la pueda coger
-   uint32_t totalTries = 3;
-   uint32_t numTries = 0;
-   virtual bool run() override {
-       if(numTries>=totalTries)
-           return getChild()->run();
-       numTries++;
-       cout << "Fallamos al coger la llave, intento: " << numTries << endl;
-       return false;
+// bool door = false; // imaginemos que door=false es = puerta cerrada "door is open?"
+// bool key  = false;  // tenemos una llave
+// // ACCION DE ABRIR LA PUERTA
+// struct openDoor : public behaviourTree { 
+// 		virtual bool run() override {
+//            door = true;
+//            cout << "Abrimos la puerta" << endl;
+//            return true;
+// 		}
+// };
+// //ACCION COGER LA LLAVE
+// struct getKey : public behaviourTree { 
+// 		virtual bool run() override {
+//            key = true;
+//            cout << "Cogemos la llave" << endl;
+//            return true;
+// 		}
+// };
+// //CONDICION PUERTA ABIERTA?
+// struct haveDoorOpen : public behaviourTree { 
+// 		virtual bool run() override {
+//            cout << "Comprobamos si la puerta esta abierta: " << boolalpha << door << endl;
+//            return door;
+// 		}
+// };
+// //CONDICION TENEMOS LLAVE?
+// struct haveKey : public behaviourTree { 
+// 		virtual bool run() override {
+//            cout << "Comprobamos si tenemos la llave: " << boolalpha << key << endl;
+// 			return  key;
+// 		}
+// };
+// ///// DECORATORS //////
+// struct Minimum : public Decorator {  // Tiene que intentar coger la llave 3 veces para que la pueda coger
+//    uint32_t totalTries = 3;
+//    uint32_t numTries = 0;
+//    virtual bool run() override {
+//        if(numTries>=totalTries)
+//            return getChild()->run();
+//        numTries++;
+//        cout << "Fallamos al coger la llave, intento: " << numTries << endl;
+//        return false;
        
-   }
-};
-struct Limit : public Decorator {  // Decorator Limit
-   uint32_t totalLimit = 3;
-   uint32_t numLimit = 0;
-   virtual bool run() override {
-       if(numLimit>=totalLimit)
-           return false;
-       numLimit++;
-       return getChild()->run();
-   }
-};
-struct UntilFail : public Decorator {  // Decorator UntilFail
-   virtual bool run() override {
-       while(true){
-           bool result = getChild()->run();
-           if(!result) { 
-               break; 
-           }
-       }
-       return true;
-   }
-};
-struct Inverter : public Decorator {  // Decorator Inverter
-   virtual bool run() override {
-       return !(getChild()->run());
-   }
-};
+//    }
+// };
+// struct Limit : public Decorator {  // Decorator Limit
+//    uint32_t totalLimit = 3;
+//    uint32_t numLimit = 0;
+//    virtual bool run() override {
+//        if(numLimit>=totalLimit)
+//            return false;
+//        numLimit++;
+//        return getChild()->run();
+//    }
+// };
+// struct UntilFail : public Decorator {  // Decorator UntilFail
+//    virtual bool run() override {
+//        while(true){
+//            bool result = getChild()->run();
+//            if(!result) { 
+//                break; 
+//            }
+//        }
+//        return true;
+//    }
+// };
+// struct Inverter : public Decorator {  // Decorator Inverter
+//    virtual bool run() override {
+//        return !(getChild()->run());
+//    }
+// };
 
 #pragma endregion
 
@@ -93,11 +93,12 @@ StateInGame::StateInGame(){
     ground = make_shared<GameObject>(glm::vec3(10.0f,10.0f,30.0f),    glm::vec3(0.0f,0.0f,0.0f),    glm::vec3(100.0f,1.0f,100.0f), "wall.jpg", "ninja.b3d");
     cam = make_shared<Camera>(glm::vec3(10.0f,40.0f,30.0f),    glm::vec3(0.0f,0.0f,0.0f),    glm::vec3(1.0f,1.0f,1.0f));
     manWayPoint = make_shared<ManWayPoint>();
-    manWayPoint->CreateWayPoint(glm::vec3(-10.0f,25.0f,-150.0f));
+    //manWayPoint->CreateWayPoint(glm::vec3(-10.0f,25.0f,-150.0f));
     carAI = make_shared<CarAI>(glm::vec3(100.0f,20.0f,100.0f));
-    manWayPoint->CreateWayPoint(glm::vec3(150.0f,25.0f,-150.0f));
-    manWayPoint->CreateWayPoint(glm::vec3(150.0f,25.0f,150.0f));
-    manWayPoint->CreateWayPoint(glm::vec3(-150.0f,25.0f,150.0f));
+    //manWayPoint->CreateWayPoint(glm::vec3(150.0f,25.0f,-150.0f));
+    //manWayPoint->CreateWayPoint(glm::vec3(150.0f,25.0f,150.0f));
+    //manWayPoint->CreateWayPoint(glm::vec3(-150.0f,25.0f,150.0f));
+    //carAI->SetWayPoint(manWayPoint->GetEntities()[3]->position);
 
     auto components = manWayPoint->GetEntities()[3]->GetComponents();
     auto mapWaypoint = components.find(CompType::WayPointComp);
@@ -174,30 +175,30 @@ StateInGame::StateInGame(){
                                     ///////////////////////////////                      //
                                     //                          //                       //
 //                                // tengo llave?             //abrir puerta        // coger llave
-   shared_ptr<selector> selector1 = make_shared<selector>();
-   shared_ptr<sequence> sequence1 = make_shared<sequence>();
+//    shared_ptr<selector> selector1 = make_shared<selector>();
+//    shared_ptr<sequence> sequence1 = make_shared<sequence>();
 
-   shared_ptr<haveDoorOpen> puertaAbiertaSiNo = make_shared<haveDoorOpen>();
-   shared_ptr<haveKey> tengoLlaveSiNo = make_shared<haveKey>();
-   shared_ptr<openDoor>abrirPuerta = make_shared<openDoor>();
-   shared_ptr<getKey> cogerLlave = make_shared<getKey>();
+//    shared_ptr<haveDoorOpen> puertaAbiertaSiNo = make_shared<haveDoorOpen>();
+//    shared_ptr<haveKey> tengoLlaveSiNo = make_shared<haveKey>();
+//    shared_ptr<openDoor>abrirPuerta = make_shared<openDoor>();
+//    shared_ptr<getKey> cogerLlave = make_shared<getKey>();
 
-   shared_ptr<Minimum> tryCatchKey3 = make_shared<Minimum>();
+//    shared_ptr<Minimum> tryCatchKey3 = make_shared<Minimum>();
 
-   selector1->addChild(puertaAbiertaSiNo);
-   selector1->addChild(sequence1);
-   selector1->addChild(tryCatchKey3);
+//    selector1->addChild(puertaAbiertaSiNo);
+//    selector1->addChild(sequence1);
+//    selector1->addChild(tryCatchKey3);
 
-   sequence1->addChild(tengoLlaveSiNo);
-   sequence1->addChild(abrirPuerta);
+//    sequence1->addChild(tengoLlaveSiNo);
+//    sequence1->addChild(abrirPuerta);
 
-   tryCatchKey3->addChild(cogerLlave);
+//    tryCatchKey3->addChild(cogerLlave);
 
-	cout << "--------------------" << endl;
-   while (door==false){
-       selector1->run();
-   } // If the operation starting from the root fails, keep trying until it succeeds.
-	cout << "--------------------" << endl;
+// 	cout << "--------------------" << endl;
+//    while (door==false){
+//        selector1->run();
+//    } // If the operation starting from the root fails, keep trying until it succeeds.
+// 	cout << "--------------------" << endl;
 //
 
 #pragma endregion
@@ -261,7 +262,7 @@ void StateInGame::Update()
     const float frameDeltaTime = (float)(now - then) / 100.0;
     then = now;
 
-    physicsAI->Update(manWayPoint->GetEntities() , carAI.get(), frameDeltaTime);
+    //physicsAI->Update(manWayPoint->GetEntities() , carAI.get(), frameDeltaTime);
     //inputEngine->CheckInputs(*car);
     renderEngine->FacadeCheckInput(frameDeltaTime,car.get(),cam.get());
     physicsEngine->UpdateCar(car.get(), cam.get());
