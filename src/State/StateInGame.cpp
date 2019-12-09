@@ -1,8 +1,7 @@
 #include "StateInGame.h"
 #include <iostream>
 
-#include "../Components/CWayPointEdge.h"
-
+#include "../Components/CWayPointEdges.h"
 #pragma region BT
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //                           COMPROBAR BEHAVIOR TREE
@@ -202,6 +201,13 @@ StateInGame::StateInGame(){
 
     for(shared_ptr<WayPoint> way : manWayPoint->GetEntities()){
         cout << "Vamos a crear mini puntos de control -> power ups de mientras" << endl;
+
+        /* EJEMPLO AÑADIR EDGES */
+        way->AddEdge(2,300.0);
+        auto components = way->GetComponents();
+        auto mapEdges = components.find(CompType::WayPointEdgesComp);
+	    auto cEdges = static_cast<CWayPointEdges*>(mapEdges->second.get());
+        cout << cEdges->edges[0].cost << endl;
         manPowerUps->CreatePowerUp(glm::vec3(way->position));
     }
     //cout << "el tamanyo normal es: " << manWayPoint.size() << endl;

@@ -1,5 +1,4 @@
 #include "../Entities/WayPoint.h"
-#include "../Entities/WayPointEdge.h"
 #include "./ManWayPoint.h"
 
 

@@ -15,6 +15,7 @@ public:
     ~WayPoint();
     WayPoint(glm::vec3 _position);
     WayPoint(glm::vec3 _position, int type, int id);
+    void AddEdge(int to, float cost);
 
 
     glm::vec3 position; //Posición del waypoint

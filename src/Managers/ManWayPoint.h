@@ -7,12 +7,11 @@
 #include "../../lib/glm/vec3.hpp"
 
 class WayPoint;
-class WayPointEdge;
 using namespace std;
 
 class ManWayPoint{
 public:
-    ManWayPoint();
+    ManWayPoint(); //Aqui leemos el archivo
     ~ManWayPoint();
 
     void CreateWayPoint(glm::vec3 _position);
@@ -21,12 +20,8 @@ public:
         return waypoints;
     };
 
-    vector<shared_ptr<WayPointEdge>> GetEntitiesEdges() const {
-        return waypointsEdges;
-    };
 
 private:
 	vector<shared_ptr<WayPoint>> waypoints;
-	vector<shared_ptr<WayPointEdge>> waypointsEdges;
     //void SubscribeToEvents();
 };
