@@ -213,8 +213,8 @@ void RenderFacadeIrrlicht::FacadeDeviceDrop() {
 }
 
 RenderFacadeIrrlicht::~RenderFacadeIrrlicht() {
-    delete device;
-    delete driver;
-    delete smgr;
-    delete camera1;
+    //delete device;
+    //delete driver;
+    //delete smgr;
+    //delete camera1;
 }
