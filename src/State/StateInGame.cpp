@@ -93,12 +93,7 @@ StateInGame::StateInGame(){
     ground = make_shared<GameObject>(glm::vec3(10.0f,10.0f,30.0f),    glm::vec3(0.0f,0.0f,0.0f),    glm::vec3(100.0f,1.0f,100.0f), "wall.jpg", "ninja.b3d");
     cam = make_shared<Camera>(glm::vec3(10.0f,40.0f,30.0f),    glm::vec3(0.0f,0.0f,0.0f),    glm::vec3(1.0f,1.0f,1.0f));
     manWayPoint = make_shared<ManWayPoint>();
-    //manWayPoint->CreateWayPoint(glm::vec3(-10.0f,25.0f,-150.0f));
     carAI = make_shared<CarAI>(glm::vec3(100.0f,20.0f,100.0f));
-    //manWayPoint->CreateWayPoint(glm::vec3(150.0f,25.0f,-150.0f));
-    //manWayPoint->CreateWayPoint(glm::vec3(150.0f,25.0f,150.0f));
-    //manWayPoint->CreateWayPoint(glm::vec3(-150.0f,25.0f,150.0f));
-    //carAI->SetWayPoint(manWayPoint->GetEntities()[3]->position);
 
     auto components = manWayPoint->GetEntities()[3]->GetComponents();
     auto mapWaypoint = components.find(CompType::WayPointComp);
@@ -126,43 +121,6 @@ StateInGame::StateInGame(){
 
 #pragma region FL
 
-// --------------------------- FUZZY LOGIC  "COUT TEMPORALES" ----------------------------------
-   /* shared_ptr<FuzzyLogic> fm = make_shared<FuzzyLogic>();
-
-    shared_ptr<FuzzyVariable> DistToTarget = fm->CreateFLV("DistToTarget");
-    shared_ptr<FzSet> Target_Close = DistToTarget->AddLeftShoulderSet("Target_Close", 0, 25, 150);
-    shared_ptr<FzSet> Target_Medium = DistToTarget->AddTriangularSet("Target_Medium", 25, 150, 300);
-    shared_ptr<FzSet> Target_Far = DistToTarget->AddRightShoulderSet("Target_Far", 150, 300, 400);
-
-    shared_ptr<FuzzyVariable> AmmoStatus = fm->CreateFLV("AmmoStatus");
-    shared_ptr<FzSet> Ammo_Low = AmmoStatus->AddLeftShoulderSet("Ammo_Low", 0, 0, 10);
-    shared_ptr<FzSet> Ammo_Okay = AmmoStatus->AddTriangularSet("Ammo_Okay", 0, 10, 30);
-    shared_ptr<FzSet> Ammo_Loads = AmmoStatus->AddRightShoulderSet("Ammo_Loads", 10, 30, 40);
-
-    shared_ptr<FuzzyVariable> Desirability = fm->CreateFLV("Desirability");
-    shared_ptr<FzSet> Undesirable = Desirability->AddLeftShoulderSet("Undesirable", 0, 25, 50);
-    shared_ptr<FzSet> Desirable = Desirability->AddTriangularSet("Desirable", 25, 50, 75);
-    shared_ptr<FzSet> VeryDesirable = Desirability->AddRightShoulderSet("VeryDesirable", 50, 75, 100);
-    // To-Do: revisar el new por que no se tiene que hacer
-    fm->AddRule( (make_shared<FzAND>(Target_Close, Ammo_Loads)), Undesirable);
-    fm->AddRule( (make_shared<FzAND>(Target_Close, Ammo_Okay)), Undesirable);
-    fm->AddRule( (make_shared<FzAND>(Target_Close, Ammo_Low)), Undesirable);
-    fm->AddRule( (make_shared<FzAND>(Target_Medium, Ammo_Loads)), VeryDesirable);
-    fm->AddRule( (make_shared<FzAND>(Target_Medium, Ammo_Okay)), VeryDesirable);
-    fm->AddRule( (make_shared<FzAND>(Target_Medium, Ammo_Low)), Desirable);
-    fm->AddRule( (make_shared<FzAND>(Target_Far, Ammo_Loads)), Desirable);
-    fm->AddRule( (make_shared<FzAND>(Target_Far, Ammo_Okay)), Undesirable);
-    fm->AddRule( (make_shared<FzAND>(Target_Far, Ammo_Low)), Undesirable);
-    // seguimos con las pruebas
-    fm->Fuzzify("DistToTarget", 200); // AQUI ES DONDE SE LLAMA AL CALCULATEDOM()
-    fm->Fuzzify("AmmoStatus", 8);
-    double resultadoDefuzzification = fm->DeFuzzify("Desirability");
-    // cout de FuzzyLogic
-    std::cout << "defuzzificacion: " << resultadoDefuzzification << std::endl;
-    std::cout << "------------------------------"<< std::endl;
-
-*/
-// --------------------------- FIN FUZZY LOGIC ----------------------------------
 
 // --------------------------- BEHAVIOR TREE ----------------------------------
 
@@ -203,7 +161,7 @@ StateInGame::StateInGame(){
 
 #pragma endregion
 
-for(shared_ptr<WayPoint> way : manWayPoint->GetEntities()){
+    for(shared_ptr<WayPoint> way : manWayPoint->GetEntities()){
         cout << "Vamos a crear mini puntos de control -> power ups de mientras" << endl;
 
         /* EJEMPLO AÑADIR EDGES */
@@ -262,8 +220,8 @@ void StateInGame::Update()
     const float frameDeltaTime = (float)(now - then) / 100.0;
     then = now;
 
-    //physicsAI->Update(manWayPoint->GetEntities() , carAI.get(), frameDeltaTime);
-    //inputEngine->CheckInputs(*car);
+    physicsAI->Update(manWayPoint->GetEntities() , carAI.get(), frameDeltaTime);
+    inputEngine->CheckInputs(*car);
     renderEngine->FacadeCheckInput(frameDeltaTime,car.get(),cam.get());
     physicsEngine->UpdateCar(car.get(), cam.get());
     physicsEngine->UpdateCarAI(carAI.get());

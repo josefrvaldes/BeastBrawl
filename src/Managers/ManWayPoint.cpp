@@ -4,9 +4,8 @@
 
 //Aqui va a leer directamente el archivo y crear los WayPoints
 ManWayPoint::ManWayPoint(){
-    cout << "ENTRA\n";
     ifstream fe;
-    fe.open("../../WayPoints.txt");
+    fe.open("WayPoints.txt");
     string value; //Valor a leer
     string delimeter = "/"; //Valor para separar
     string token;
@@ -14,9 +13,9 @@ ManWayPoint::ManWayPoint(){
     float x=0,y=0,z=0; //Vec3
     int cont = 0, id=0, type=0;
 
+
     while(!fe.eof()){
         fe >> value;
-
         while((pos = value.find(delimeter)) != string::npos){
             token = value.substr(0,pos);
             value.erase(0,pos+delimeter.length());
