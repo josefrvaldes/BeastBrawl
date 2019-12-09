@@ -1,5 +1,4 @@
 #include "StateInGame.h"
-//#include "../Aliases.h"
 #include <iostream>
 
 #pragma region BT
@@ -86,7 +85,7 @@ StateInGame::StateInGame() {
     physics = make_unique<Physics>(deltaTime.get());
 
     eventManager = EventManager::GetInstance();
-    
+
     manPowerUps = make_shared<ManPowerUp>();
     ground = make_shared<GameObject>(glm::vec3(10.0f, 10.0f, 30.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(100.0f, 1.0f, 100.0f), "wall.jpg", "ninja.b3d");
     cam = make_shared<Camera>(glm::vec3(10.0f, 40.0f, 30.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f));
@@ -226,21 +225,21 @@ void StateInGame::Input() {
     renderEngine->FacadeCheckInput();
 }
 
-void StateInGame::Render() {
-    renderEngine->FacadeDraw();
-}
-
 void StateInGame::Update() {
     eventManager->Update();
-    const uint32_t now = renderEngine->FacadeGetTime();
 
     // actualizamos el deltatime
+    const uint32_t now = renderEngine->FacadeGetTime();
     *deltaTime.get() = (float)(now - then) / 100.0;
     then = now;
 
     renderEngine->UpdateCamera(cam.get());
     physicsEngine->Update(manCars.get()->GetCar().get(), cam.get());
-    
+
     int fps = renderEngine->FacadeGetFPS();
     lastFPS = fps;
+}
+
+void StateInGame::Render() {
+    renderEngine->FacadeDraw();
 }
