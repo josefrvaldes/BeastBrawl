@@ -58,8 +58,9 @@ void Game::MainLoop(){
     renderFacadeManager->GetRenderFacade()->FacadeSetWindowCaption("Beast Brawl");
 
     while(renderFacadeManager->GetRenderFacade()->FacadeRun()){
+        currentState->Input();
         currentState->Update();
-
+        currentState->Render();
     }
     renderFacadeManager->GetRenderFacade()->FacadeDeviceDrop();
     //for(;;);  // To-Do: crear bucle del juego

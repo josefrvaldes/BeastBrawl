@@ -16,6 +16,11 @@ void StateMenu::Render(){
 }
 
 
+void StateMenu::Input(){
+
+}
+
+
 void StateMenu::Update(){
     std::cout << "Actualizado estado menu" << std::endl;
 }

@@ -5,13 +5,6 @@
 
 
 
-void EjecutarMeHanCogido(Data d) 
-{
-    cout << "Han cogido un CarAI, madafaka!!" << endl;
-}
-
-
-
 ManCarAI::ManCarAI()
 {
     SubscribeToEvents();

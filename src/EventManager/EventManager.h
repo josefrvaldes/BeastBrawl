@@ -1,31 +1,30 @@
 #pragma once
-#include "Event.h"
-#include <queue>
-#include <map>
 #include <list>
+#include <map>
 #include <memory>
+#include <queue>
+#include "Event.h"
 
 using namespace std;
 
-class EventManager{
+class EventManager {
+   public:
+    EventManager() : id_single(0){};
+    ~EventManager(){};
+    static shared_ptr<EventManager> GetInstance();
+    void SuscribeMulti(Listener);
+    void Suscribe(Listener);
+    void UnSuscribeMulti(EventType, string);
+    void AddEventMulti(Event);
+    void Update();
 
-    public:
+   private:
+    uint32_t id_single;
+    static const shared_ptr<EventManager> instance;
+    void ShowSuscribers();
+    //FIXME: Al final tendremos que escoger si usar la cola o la lista
+    //std::queue<Event> eventQueue;
+    list<Event> eventList;  // lista de eventos posibles
 
-        ~EventManager() {};
-        EventManager() {};
-        static shared_ptr<EventManager> GetInstance();
-        void Suscribe(Listener);
-        void UnSuscribe(EventType, string);
-        void AddEvent(Event);
-        void Update();
-
-    private:
-        static const shared_ptr<EventManager> instance;
-        void ShowSuscribers();
-        //FIXME: Al final tendremos que escoger si usar la cola o la lista
-        //std::queue<Event> eventQueue;
-        std::list<Event> eventList;
-        
-        std::map<EventType, ListenerVector> eventListenerMap; //Mapa con el tipo de evento y un vector con los listeners suscritos a dicho evento
-
+    map<EventType, ListenerVector> eventListenerMap;  //Mapa con el tipo de evento y un vector con los listeners suscritos a dicho evento
 };

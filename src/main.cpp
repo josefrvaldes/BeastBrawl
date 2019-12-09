@@ -1,28 +1,18 @@
-#include "Game.h"
-#include "lib/glm/vec3.hpp"
 #include <iostream>
 #include <memory>
-#include <map>
+#include "Game.h"
 
 using namespace std;
 
-int main()
-{
+int main() {
+    try {
+        shared_ptr<Game> game = Game::GetInstance();
 
-    try
-    {
-       shared_ptr<Game> game = Game::GetInstance();
-
-    
         game->SetState(State::States::INGAME);
         game->InitGame();
+    } catch (...) {
+        cout << "Algo ha fallado" << endl;
     }
-    catch(...)
-    {
-        std::cout << "Algo ha fallado" << std::endl;
-    }
-    
-    
-	std::cout <<"SALDLASDASD\n";
-	return 0;
+
+    return 0;
 }

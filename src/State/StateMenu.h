@@ -8,9 +8,10 @@
 class StateMenu : public State{
     public:
         StateMenu();
-        ~StateMenu(){};
-        void Update();
-        void Render();
+        ~StateMenu() = default;
+        void Input() override;
+        void Update() override;
+        void Render() override;
         States GetState() { return State::States::MENU; };
 
 

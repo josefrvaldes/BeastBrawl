@@ -82,8 +82,6 @@ CarAI::~CarAI()
 
 
 void CarAI::SetWayPoint(glm::vec3 waypoint){
-    auto mapTransform = m_components.find(CompType::WayPointComp);
     auto cWayPoint = static_cast<CWayPoint*>(m_components[CompType::WayPointComp].get());
     cWayPoint->position = waypoint;
-    
 }
