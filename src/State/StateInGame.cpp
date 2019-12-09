@@ -98,8 +98,11 @@ StateInGame::StateInGame(){
     manWayPoint->CreateWayPoint(glm::vec3(150.0f,25.0f,-150.0f));
     manWayPoint->CreateWayPoint(glm::vec3(150.0f,25.0f,150.0f));
     manWayPoint->CreateWayPoint(glm::vec3(-150.0f,25.0f,150.0f));
-    carAI->SetWayPoint(manWayPoint->GetEntities()[3]->position);
 
+    auto components = manWayPoint->GetEntities()[3]->GetComponents();
+    auto mapWaypoint = components.find(CompType::WayPointComp);
+    auto cWayPoint = static_cast<CWayPoint*>(mapWaypoint->second.get());
+    carAI->SetWayPoint(cWayPoint->position);
 
 
 	renderFacadeManager = RenderFacadeManager::GetInstance();
@@ -199,16 +202,22 @@ StateInGame::StateInGame(){
 
 #pragma endregion
 
-    for(shared_ptr<WayPoint> way : manWayPoint->GetEntities()){
+for(shared_ptr<WayPoint> way : manWayPoint->GetEntities()){
         cout << "Vamos a crear mini puntos de control -> power ups de mientras" << endl;
 
         /* EJEMPLO AÑADIR EDGES */
-        way->AddEdge(2,300.0);
+        //way->AddEdge(2,300.0);
+        //auto components = way->GetComponents();
+        //auto mapEdges = components.find(CompType::WayPointEdgesComp);
+        //auto cEdges = static_cast<CWayPointEdges>(mapEdges->second.get());
+        //cout << cEdges->edges[0].cost << endl;
+
         auto components = way->GetComponents();
-        auto mapEdges = components.find(CompType::WayPointEdgesComp);
-	    auto cEdges = static_cast<CWayPointEdges*>(mapEdges->second.get());
-        cout << cEdges->edges[0].cost << endl;
-        manPowerUps->CreatePowerUp(glm::vec3(way->position));
+        auto mapWaypoint = components.find(CompType::WayPointComp);
+        auto cWayPoint = static_cast<CWayPoint*>(mapWaypoint->second.get());
+
+
+        manPowerUps->CreatePowerUp(glm::vec3(cWayPoint->position));
     }
     //cout << "el tamanyo normal es: " << manWayPoint.size() << endl;
 

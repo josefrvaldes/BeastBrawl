@@ -21,10 +21,6 @@ WayPoint::WayPoint(glm::vec3 _position) {
     shared_ptr<CWayPointEdges> cWayPointEdges = make_shared<CWayPointEdges>();
     AddComponent(cWayPoint);
     AddComponent(cWayPointEdges);
-
-    position = _position;
-    type = 0;
-    id = 0;
 }
 
 WayPoint::WayPoint(glm::vec3 _position, int _type, int _id){

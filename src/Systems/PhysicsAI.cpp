@@ -180,8 +180,15 @@ void PhysicsAI::Update(vector<shared_ptr<WayPoint>> wayPoints, CarAI* car, float
             //Ha llegado al rango vamos a buscarle otro waypoint
             //TODO: Ya veremos como gestionamos el cambiar de waypoint de momento lo pongo al azar
             int indx = rand() % wayPoints.size();
-            cout << "Cambiamos de WayPoint\n";
-            car->SetWayPoint(wayPoints[indx]->position);
+            cout << "Cambiamos de WayPoint al indice:  " << indx << endl ;
+
+
+            auto components = wayPoints[indx]->GetComponents();
+            auto mapWaypoint = components.find(CompType::WayPointComp);
+            auto cWayPoint = static_cast<CWayPoint*>(mapWaypoint->second.get());
+            car->SetWayPoint(cWayPoint->position);
+
+
     }else{
 
         angle = calculateAngle(cWayPoint, car, cCar);

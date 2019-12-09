@@ -25,5 +25,8 @@ public:
     glm::vec3 position;
     int m_type;
     int m_id;
-    float radious = 30.0f;
+    float radious;
+    CWayPoint* padre;
+    bool isFrontera;
+    bool isInterior;
 };
