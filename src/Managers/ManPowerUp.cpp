@@ -9,6 +9,7 @@ using namespace std;
 
 void EjecutarMeHanCogido(Data d) {
     cout << "Han cogido un powerup, madafaka!!" << endl;
+    //debemos, de forma aleatoria asignarle un tipo al powerUp
 }
 
 ManPowerUp::ManPowerUp() {
