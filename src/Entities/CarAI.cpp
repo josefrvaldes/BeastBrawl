@@ -16,13 +16,14 @@ CarAI::CarAI(){
     // default values
     glm::vec3 pos   = glm::vec3(10.0f, 20.0f, 30.0f);
     glm::vec3 rot   = glm::vec3(0.0f, 90.0f, 0.0f);
-    glm::vec3 scale = glm::vec3(1.0f, 0.7f, 0.5f);
-    string texture = "particle.bmp";
-    string mesh    = "media/ninja.b3d";
+    glm::vec3 scale = glm::vec3(0.6f, 0.6f, 0.6f);
+    //string texture = "particle.bmp";
+    string texture = "";
+    string mesh    = "kart_ia.obj";
     float maxSpeed = 20.0, acceleration = 0.15, friction = 0.1, slowDown = 0.25;
     
     shared_ptr<CId> cId   = make_shared<CId>();
-    shared_ptr<CType> cType = make_shared<CType>(ModelType::Cube);
+    shared_ptr<CType> cType = make_shared<CType>(ModelType::AnimatedMesh);
     shared_ptr<CTransformable> cTransformable = make_shared<CTransformable>(pos, rot, scale); 
     shared_ptr<CTexture> cTexture = make_shared<CTexture>(texture);
     shared_ptr<CMesh> cMesh   = make_shared<CMesh>(mesh);
@@ -67,7 +68,6 @@ CarAI::CarAI(glm::vec3 _position)
     : CarAI()
 {
 
-    //auto components = car->GetComponents();
     auto mapTransform = m_components.find(CompType::TransformableComp);
 	auto cTransformable = static_cast<CTransformable*>(mapTransform->second.get());
     cTransformable->position = _position;

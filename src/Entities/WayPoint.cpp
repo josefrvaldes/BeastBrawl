@@ -6,6 +6,7 @@
 #include "../Components/CMesh.h"
 #include "../Components/CTransformable.h"
 #include "../Components/CCar.h"
+#include "../Components/CWayPoint.h"
 #include <iostream>
 
 class Position;
@@ -20,7 +21,12 @@ WayPoint::WayPoint()
 }
 
 WayPoint::WayPoint(glm::vec3 _position) {
-    position = _position;
+    //position = _position;
+}
+
+WayPoint::WayPoint(glm::vec3 _position, int _type, int _id){
+    shared_ptr<CWayPoint> cWayPoint = make_shared<CWayPoint>(_position,_type,_id);
+    AddComponent(cWayPoint);
 }
 
 

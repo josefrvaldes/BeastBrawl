@@ -16,6 +16,7 @@ public:
 
     void CreateWayPoint(glm::vec3 _position);
     void CreateWayPoint();
+    void CreateWayPoint(glm::vec3 _position, int type, int id);
     vector<shared_ptr<WayPoint>> GetEntities() const {
         return waypoints;
     };

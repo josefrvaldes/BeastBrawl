@@ -6,6 +6,7 @@
 #include <list>
 #include <memory>
 #include <string>
+#include <chrono>
 
 #include "../../lib/glm/vec3.hpp"
 #include "../Entities/Camera.h"
@@ -34,6 +35,9 @@
 #include "../behaviourTree/sequence.h"
 #include "../fuzzyLogic/fuzzyLogic.h"
 
+using namespace std;
+using namespace chrono;
+
 class StateInGame : public State {
    public:
     StateInGame();
@@ -58,11 +62,14 @@ class StateInGame : public State {
     shared_ptr<Physics> physics;
     shared_ptr<float> deltaTime;
 
-        shared_ptr<CarAI> carAI;
-        shared_ptr<ManWayPoint> manWayPoint;
-        shared_ptr<PhysicsAI> physicsAI;
+    shared_ptr<CarAI> carAI;
+    shared_ptr<ManWayPoint> manWayPoint;
+    shared_ptr<PhysicsAI> physicsAI;
     int lastFPS = -1;
-    uint32_t then;
+    //uint32_t then;
+    time_point<system_clock> then;
+    vector<float> deltas;
+    float CalculateDelta(float);
 };
 
 #endif  // STATEINGAME_H

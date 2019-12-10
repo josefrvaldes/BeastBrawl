@@ -5,6 +5,11 @@ void Entity::AddComponent(shared_ptr<Component> c)
     m_components[c->getType()] = c;
 }
 
+shared_ptr<Component> Entity::GetComponent(CompType type){
+    return m_components[type];
+}
+
+
 bool Entity::HasComponent(CompType type)
 {
     //return m_components.count(type) > 0;
