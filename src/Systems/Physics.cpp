@@ -64,8 +64,8 @@ void CalculatePositionReverse(CCar *cCar, CTransformable *cTransformable, float 
 
 //Calcula la posicion de la camara (duda con las formulas preguntar a Jose)
 void CalculatePositionCamera(CTransformable *cTransformableCar, CTransformable *cTransformableCamera, CCamera *cCamera) {
-    //cout << "Estamos en physics CalculatePositionCamera" << endl;
-    cTransformableCamera->position.y = cTransformableCar->position.y + 20;
+    // comento la primera linea porque la pos de la cámara en altura (por ahora) es siempre la misma
+    //cTransformableCamera->position.y = cTransformableCar->position.y + 20;
     cTransformableCamera->position.x = (cTransformableCar->position.x + 40 * cos(((cTransformableCar->rotation.y - cCamera->rotExtraY) * PI) / 180.0));
     cTransformableCamera->position.z = (cTransformableCar->position.z - 40 * sin(((cTransformableCar->rotation.y - cCamera->rotExtraY) * PI) / 180.0));
 }

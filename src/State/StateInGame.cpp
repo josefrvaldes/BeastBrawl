@@ -1,6 +1,6 @@
 #include "StateInGame.h"
-#include <iostream>
 #include <chrono>
+#include <iostream>
 
 #include "../Components/CTransformable.h"
 
@@ -8,7 +8,6 @@ typedef std::chrono::high_resolution_clock Clock;
 
 using namespace std;
 using namespace chrono;
-
 
 #pragma region BT
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -90,6 +89,11 @@ struct Inverter : public Decorator {  // Decorator Inverter
 StateInGame::StateInGame() {
     // constructor
     deltaTime = make_shared<float>(1.2);
+    deltas.push_back(1);
+    deltas.push_back(1);
+    deltas.push_back(1);
+    deltas.push_back(1);
+    deltas.push_back(1);
     cout << "Hemos inicializado el stateInGame" << endl;
     physics = make_unique<Physics>(deltaTime.get());
 
@@ -220,7 +224,14 @@ void StateInGame::Update() {
     time_point<system_clock> now = system_clock::now();
     int64_t milis = duration_cast<milliseconds>(now - then).count();
     //const uint32_t now = renderEngine->FacadeGetTime();
-    *deltaTime.get() = (float)(milis) / 100.0;
+
+    // con media
+    float currentDelta = (float)(milis) / 100.0;
+    *deltaTime.get() = CalculateDelta(currentDelta);
+
+    // sin media
+    // *deltaTime.get() = (float)(milis) / 100.0;
+
     then = now;
 
     physicsAI->Update(manWayPoint->GetEntities(), carAI.get(), *deltaTime.get());
@@ -237,4 +248,15 @@ void StateInGame::Update() {
 
 void StateInGame::Render() {
     renderEngine->FacadeDraw();
+}
+
+float StateInGame::CalculateDelta(float currentDelta) {
+    deltas.push_back(currentDelta);
+    deltas.erase(deltas.begin());
+    int size = deltas.size();
+    float sum = 0;
+    for (int i = 0; i < size; i++) {
+        sum += deltas[i];
+    }
+    return sum / size;
 }

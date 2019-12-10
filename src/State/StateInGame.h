@@ -62,12 +62,14 @@ class StateInGame : public State {
     shared_ptr<Physics> physics;
     shared_ptr<float> deltaTime;
 
-        shared_ptr<CarAI> carAI;
-        shared_ptr<ManWayPoint> manWayPoint;
-        shared_ptr<PhysicsAI> physicsAI;
+    shared_ptr<CarAI> carAI;
+    shared_ptr<ManWayPoint> manWayPoint;
+    shared_ptr<PhysicsAI> physicsAI;
     int lastFPS = -1;
     //uint32_t then;
     time_point<system_clock> then;
+    vector<float> deltas;
+    float CalculateDelta(float);
 };
 
 #endif  // STATEINGAME_H
