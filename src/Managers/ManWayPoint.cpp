@@ -19,6 +19,12 @@ void ManWayPoint::CreateWayPoint(glm::vec3 _position) {
     cout << "Creado waypoints, ahora tenemos " << waypoints.size() << " waypoints" << endl;
 }
 
+void ManWayPoint::CreateWayPoint(glm::vec3 _position,int type, int id) {
+	shared_ptr<WayPoint> p = make_shared<WayPoint>(_position,type,id);
+    waypoints.push_back(p);
+    cout << "Creado waypoints, ahora tenemos " << waypoints.size() << " waypoints" << endl;
+}
+
 void ManWayPoint::CreateWayPoint() {
 	shared_ptr<WayPoint> p = make_shared<WayPoint>();
     waypoints.push_back(p);

@@ -67,7 +67,6 @@ CarAI::CarAI(glm::vec3 _position)
     : CarAI()
 {
 
-    //auto components = car->GetComponents();
     auto mapTransform = m_components.find(CompType::TransformableComp);
 	auto cTransformable = static_cast<CTransformable*>(mapTransform->second.get());
     cTransformable->position = _position;

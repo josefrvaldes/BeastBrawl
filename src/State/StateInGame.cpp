@@ -1,6 +1,7 @@
 #include "StateInGame.h"
 #include <iostream>
 
+#include "../Components/CTransformable.h"
 #pragma region BT
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //                           COMPROBAR BEHAVIOR TREE
@@ -89,15 +90,22 @@ StateInGame::StateInGame() {
     manPowerUps = make_shared<ManPowerUp>();
     ground = make_shared<GameObject>(glm::vec3(10.0f,10.0f,30.0f),    glm::vec3(0.0f,0.0f,0.0f),    glm::vec3(100.0f,1.0f,100.0f), "wall.jpg", "ninja.b3d");
     cam = make_shared<Camera>(glm::vec3(10.0f,40.0f,30.0f),    glm::vec3(0.0f,0.0f,0.0f),    glm::vec3(1.0f,1.0f,1.0f));
-    manWayPoint = make_shared<ManWayPoint>();
-    manWayPoint->CreateWayPoint(glm::vec3(-10.0f,25.0f,-150.0f));
     carAI = make_shared<CarAI>(glm::vec3(100.0f,20.0f,100.0f));
-    manWayPoint->CreateWayPoint(glm::vec3(150.0f,25.0f,-150.0f));
-    manWayPoint->CreateWayPoint(glm::vec3(150.0f,25.0f,150.0f));
-    manWayPoint->CreateWayPoint(glm::vec3(-150.0f,25.0f,150.0f));
-    carAI->SetWayPoint(manWayPoint->GetEntities()[3]->position);
+    
+    manWayPoint = make_shared<ManWayPoint>();
+    manWayPoint->CreateWayPoint(glm::vec3(-10.0f,25.0f,-150.0f),0,0);
+    manWayPoint->CreateWayPoint(glm::vec3(150.0f,25.0f,-150.0f),0,0);
+    manWayPoint->CreateWayPoint(glm::vec3(150.0f,25.0f,150.0f),0,0);
+    manWayPoint->CreateWayPoint(glm::vec3(-150.0f,25.0f,150.0f),0,0);
+
+
+    //Le asignamos el waypoint inicial, momentaneo
+    auto cWayPoint = static_cast<CWayPoint*>(manWayPoint->GetEntities()[3]->GetComponent(CompType::WayPointComp).get());
+    carAI->SetWayPoint(cWayPoint->position);
+
     manCars = make_shared<ManCar>(physics.get(), cam.get());
 
+    // Inicializamos las facadas
     renderFacadeManager = RenderFacadeManager::GetInstance();
     renderFacadeManager->InitializeIrrlicht();
 
@@ -156,20 +164,32 @@ StateInGame::StateInGame() {
 
 #pragma endregion
 
+
+    //Posicionamos todos los powerups donde hay waypoints, momentaneo
     for(shared_ptr<WayPoint> way : manWayPoint->GetEntities()){
         cout << "Vamos a crear mini puntos de control -> power ups de mientras" << endl;
-        manPowerUps->CreatePowerUp(glm::vec3(way->position));
-    }
-    //cout << "el tamanyo normal es: " << manWayPoint.size() << endl;
-    renderEngine->FacadeAddObjectCar(manCars.get()->GetCar().get());
-    renderEngine->FacadeAddObject(ground.get());
 
+        /* EJEMPLO AÑADIR EDGES */
+        //way->AddEdge(2,300.0);
+        //auto components = way->GetComponents();
+        //auto mapEdges = components.find(CompType::WayPointEdgesComp);
+        //auto cEdges = static_cast<CWayPointEdges>(mapEdges->second.get());
+        //cout << cEdges->edges[0].cost << endl;
+
+        auto cWayPoint = static_cast<CWayPoint*>(way->GetComponent(CompType::WayPointComp).get());
+
+        manPowerUps->CreatePowerUp(glm::vec3(cWayPoint->position));
+    }
+
+
+    renderEngine->FacadeAddObjectCar(manCars.get()->GetCar().get()); //Añadimos el coche
+    renderEngine->FacadeAddObject(ground.get()); //Añadimos el suelo
+
+    //Añadimos todos los power ups
     for (shared_ptr<Entity> pu : manPowerUps->GetEntities())
         renderEngine->FacadeAddObject(pu.get());
 
     renderEngine->FacadeAddObject(carAI.get());
-    for(shared_ptr<Entity> pu : manPowerUps->GetEntities()) 
-        renderEngine->FacadeAddObject(pu.get());
     renderEngine->FacadeAddCamera(cam.get());
 
     lastFPS = -1;

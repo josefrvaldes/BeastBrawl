@@ -13,15 +13,20 @@ class CWayPoint : public Component
 {
 public:
     CWayPoint();
-    CWayPoint(glm::vec3 _pos);
+    CWayPoint(glm::vec3 _pos, int type,int id);
     ~CWayPoint();
 
-    friend ostream &operator<<(ostream &out, CWayPoint &c)
-    {
-        cout << "(" << c.position.x << "," << c.position.y << "," << c.position.z << ")";
-        return out;
-    }
+    // friend ostream &operator<<(ostream &out, CWayPoint &c)
+    // {
+    //     //cout << "(" << c.position.x << "," << c.position.y << "," << c.position.z << ")";
+    //     //return out;
+    // }
 
     glm::vec3 position;
-    float radious = 30.0f;
+    int m_type;
+    int m_id;
+    float radious;
+    CWayPoint* padre;
+    bool isFrontera;
+    bool isInterior;
 };

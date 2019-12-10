@@ -33,13 +33,12 @@ const void RenderFacadeIrrlicht::FacadeAddObjects(vector<Entity*> entities) {
 const uint16_t RenderFacadeIrrlicht::FacadeAddObject(Entity* entity) {
     //Fuente: https://stackoverflow.com/questions/11855018/c-inheritance-downcasting
     //Como convertir un Component en cualquier tipo de sus subclases para poder usar los metodos propios
-    auto components = entity->GetComponents();
 
-    auto cTransformable = static_cast<CTransformable*>(components[CompType::TransformableComp].get());
-    auto cId = static_cast<CId*>(components[CompType::IdComp].get());
-    auto cTexture = static_cast<CTexture*>(components[CompType::TextureComp].get());
-    auto cType = static_cast<CType*>(components[CompType::TypeComp].get());
-    auto cMesh = static_cast<CMesh*>(components[CompType::MeshComp].get());
+    auto cTransformable = static_cast<CTransformable*>(entity->GetComponent(CompType::TransformableComp).get());
+    auto cId = static_cast<CId*>(entity->GetComponent(CompType::IdComp).get());
+    auto cTexture = static_cast<CTexture*>(entity->GetComponent(CompType::TextureComp).get());
+    auto cType = static_cast<CType*>(entity->GetComponent(CompType::TypeComp).get());
+    auto cMesh = static_cast<CMesh*>(entity->GetComponent(CompType::MeshComp).get());
 
     //Switch para añadir el tipo de objeto
     scene::ISceneNode* node = nullptr;
@@ -89,9 +88,8 @@ const uint16_t RenderFacadeIrrlicht::FacadeAddObjectCar(Entity* entity) {
 //TODO: Esto proximamente le pasaremos todos los entities y los modificará 1 a 1
 void RenderFacadeIrrlicht::UpdateTransformable(Entity* entity) {
     //Cogemos los componentes de ID y CTransformable
-    auto components = entity->GetComponents();
-    auto cTransformable = static_cast<CTransformable*>(components[CompType::TransformableComp].get());
-    auto cId = static_cast<CId*>(components[CompType::IdComp].get());
+    auto cTransformable = static_cast<CTransformable*>(entity->GetComponent(CompType::TransformableComp).get());
+    auto cId = static_cast<CId*>(entity->GetComponent(CompType::IdComp).get());
 
     // Cogemos el nodo de irrlicht con el ID igual al que le hemos pasado
     scene::ISceneNode* node = smgr->getSceneNodeFromId(cId->id);
@@ -109,9 +107,7 @@ void RenderFacadeIrrlicht::UpdateTransformable(Entity* entity) {
 //Reajusta la camara
 void RenderFacadeIrrlicht::UpdateCamera(Entity* cam) {
     //Cogemos los componentes de la camara
-    auto components = cam->GetComponents();
-    auto mapTransformable = components.find(CompType::TransformableComp);
-    auto cTransformable = static_cast<CTransformable*>(mapTransformable->second.get());
+    auto cTransformable = static_cast<CTransformable*>(cam->GetComponent(CompType::TransformableComp).get());
 
     //Cogemos la posicion de nuestro coche
     //TODO: cambiar ese 0 por el Id del CarManager
@@ -127,11 +123,9 @@ void RenderFacadeIrrlicht::FacadeAddCamera(Entity* camera) {
     camera1 = smgr->addCameraSceneNode();
     device->getCursorControl()->setVisible(false);
 
-    auto components = camera->GetComponents();
 
-    //TODO: Encontrar una mejor manera para acceder a los componentes ya que asi se tarda demasiado
-    auto cTransformable = static_cast<CTransformable*>(components[CompType::TransformableComp].get());
-    auto cCamera = static_cast<CCamera*>(components[CompType::CameraComp].get());
+    auto cTransformable = static_cast<CTransformable*>(camera->GetComponent(CompType::TransformableComp).get());
+    auto cCamera = static_cast<CCamera*>(camera->GetComponent(CompType::CameraComp).get());
 
     float posX = cCamera->tarX - 40.0 * sin(((cTransformable->rotation.x) * PI) / 180.0);
     float posZ = cCamera->tarZ - 40.0 * cos(((cTransformable->rotation.z) * PI) / 180.0);
@@ -213,8 +207,4 @@ void RenderFacadeIrrlicht::FacadeDeviceDrop() {
 }
 
 RenderFacadeIrrlicht::~RenderFacadeIrrlicht() {
-    delete device;
-    delete driver;
-    delete smgr;
-    delete camera1;
 }

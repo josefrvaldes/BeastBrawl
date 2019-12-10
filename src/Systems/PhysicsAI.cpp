@@ -12,9 +12,7 @@ PhysicsAI::PhysicsAI(){
 
 
 void PhysicsAI::fuzzyRules(CarAI* car){
-    auto components = car->GetComponents();
-    auto mapCar = components.find(CompType::CarComp);
-    auto cCar        = static_cast<CCar*>(mapCar->second.get());
+    auto cCar        = static_cast<CCar*>(car->GetComponent(CompType::CarComp).get());
     float maxSpeed = cCar->maxSpeed;
     float minSpeed = cCar->reverseMaxSpeed;
     float accelerationCar = cCar->acceleration;
@@ -89,8 +87,7 @@ void PhysicsAI::fuzzyRulesAngle(){
 
 //Nos devuelve el angulo en radianos entre el coche y el waypoint
 float calculateAngle(CWayPoint* wayPointNext, CarAI* car,CCar* cCar){
-    auto components = car->GetComponents();
-    auto cTransformable = static_cast<CTransformable*>(components[CompType::TransformableComp].get());
+    auto cTransformable = static_cast<CTransformable*>(car->GetComponent(CompType::TransformableComp).get());
 
     // calcular vector al wayPoint
     float vetorWaypointX = (wayPointNext->position.x - cTransformable->position.x );
@@ -163,10 +160,9 @@ void PhysicsAI::InitPhysicsIA(CarAI* car){
 
 void PhysicsAI::Update(vector<shared_ptr<WayPoint>> wayPoints, CarAI* car, float deltaTime){
     //Guardamos en varAIbles los componentes
-    auto components = car->GetComponents();
-	auto cTransformable = static_cast<CTransformable*>(components[CompType::TransformableComp].get());
-    auto cWayPoint     = static_cast<CWayPoint*>(components[CompType::WayPointComp].get());
-    auto cCar        = static_cast<CCar*>(components[CompType::CarComp].get());
+	auto cTransformable = static_cast<CTransformable*>(car->GetComponent(CompType::TransformableComp).get());
+    auto cWayPoint     = static_cast<CWayPoint*>(car->GetComponent(CompType::WayPointComp).get());
+    auto cCar        = static_cast<CCar*>(car->GetComponent(CompType::CarComp).get());
     float angleRange = 0;
     float angle = 0;
     float radious = cWayPoint->radious;
@@ -179,9 +175,18 @@ void PhysicsAI::Update(vector<shared_ptr<WayPoint>> wayPoints, CarAI* car, float
         && (cWayPoint->position.x - radious) < cTransformable->position.x && (cWayPoint->position.x + radious) >= cTransformable->position.x){
             //Ha llegado al rango vamos a buscarle otro waypoint
             //TODO: Ya veremos como gestionamos el cambiar de waypoint de momento lo pongo al azar
+            // auto components2 = cWayPoint->GetComponents();
+            // auto mapWaypoint = components2.find(CompType::WayPointComp);
+	        // auto cWayPoint = static_cast<CWayPoint*>(mapWaypoint->second.get());
+
+
             int indx = rand() % wayPoints.size();
-            cout << "Cambiamos de WayPoint\n";
-            car->SetWayPoint(wayPoints[indx]->position);
+            cout << "Cambiamos de WayPoint al indice:  " << indx << endl ;
+
+            auto cWayPoint = static_cast<CWayPoint*>(wayPoints[indx]->GetComponent(CompType::WayPointComp).get());
+            car->SetWayPoint(cWayPoint->position);
+
+
     }else{
 
         angle = calculateAngle(cWayPoint, car, cCar);

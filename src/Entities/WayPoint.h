@@ -14,9 +14,7 @@ public:
     WayPoint();
     ~WayPoint();
     WayPoint(glm::vec3 _position);
+    WayPoint(glm::vec3 _position, int type, int id);
 
-
-    glm::vec3 position;
-    float radious = 5.0;
 private:
 };
