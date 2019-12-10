@@ -1,6 +1,7 @@
 #include "StateInGame.h"
 #include <chrono>
 #include <iostream>
+#include <numeric>
 
 #include "../Components/CTransformable.h"
 
@@ -251,12 +252,9 @@ void StateInGame::Render() {
 }
 
 float StateInGame::CalculateDelta(float currentDelta) {
-    deltas.push_back(currentDelta);
-    deltas.erase(deltas.begin());
-    int size = deltas.size();
-    float sum = 0;
-    for (int i = 0; i < size; i++) {
-        sum += deltas[i];
-    }
-    return sum / size;
+    deltas.push_back(currentDelta);  // añadimos uno
+    deltas.erase(deltas.begin());    // borramos el primero
+
+    // hace la media de las últimas 5 deltas
+    return accumulate(deltas.begin(), deltas.end(), 0.0) / deltas.size();
 }
