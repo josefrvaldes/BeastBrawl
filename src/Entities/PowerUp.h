@@ -7,8 +7,8 @@
 
 using namespace std;
 
-
 enum class type {
+    None,               // 0
     roboJorobo,         // 1
     SuperMegaNitro,     // 2
     PudinDeFrambuesa,   // 3
@@ -20,8 +20,9 @@ enum class type {
 class PowerUp : public Entity{
 
 public:
+
     PowerUp();
-    PowerUp(glm::vec3 _position, type _typePowerUp);
+    PowerUp(glm::vec3 _position);
     ~PowerUp();
 
 

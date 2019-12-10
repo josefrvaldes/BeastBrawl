@@ -30,12 +30,15 @@ PowerUp::PowerUp()
     AddComponent(cMesh);
     //AddComponent(cCar);
 
-    typePowerUp = type::SuperMegaNitro;
+    // al crearlo no se asigna a ninguno ---> es random
+    typePowerUp = type::None;
 
     cout << "Acabamos de llamar al constructor default de powerup, su transformable es " << cTransformable << endl;
+    cout << "Y su typePowerUp es:   " << int(typePowerUp) << endl;
+
 }
 
-PowerUp::PowerUp(glm::vec3 _position, type _typePowerUp) 
+PowerUp::PowerUp(glm::vec3 _position) 
     : PowerUp()
 {
     CTransformable *cTransformable = (CTransformable *)m_components[CompType::TransformableComp].get();
