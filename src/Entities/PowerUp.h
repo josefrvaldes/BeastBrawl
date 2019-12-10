@@ -9,7 +9,7 @@ using namespace std;
 
 enum class type {
     None,               // 0
-    roboJorobo,         // 1
+    RoboJorobo,         // 1
     SuperMegaNitro,     // 2
     PudinDeFrambuesa,   // 3
     EscudoMerluzo,      // 4

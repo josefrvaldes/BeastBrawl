@@ -36,16 +36,16 @@ public:
     PhysicsPowerUp();
     ~PhysicsPowerUp(){};
 
-   // void InitPhysicsIA(CarAI* car);
-   // void Update(vector<shared_ptr<WayPoint>> wayPoints, CarAI* car, float deltaTime);
-   // void fuzzyRules(CarAI* car);
-   // void fuzzyRulesVelocity(float maxSpeed, float minSpeed, float accelerationCar);
-   // void fuzzyRulesAngle();
-   // float calculateFuzzyVelocity(float speedCar, float angle);
-   // float calculateFuzzyDirection(float distance, float direction);
+    //void init();
+    void update();
 
-protected:
 private:
+    void updateRoboJorobo();
+    void updateSuperMegaNitro();
+    void updatePudinDeFrambuesa();
+    void updateEscudoMerluzo();
+    void updateTeleBanana();
+    void updateMelonMolon();
     //uint32_t actualWayPoint = 0;
     //shared_ptr<FuzzyLogic> flVelocity = make_shared<FuzzyLogic>();
     //shared_ptr<FuzzyLogic> flAngle = make_shared<FuzzyLogic>();
