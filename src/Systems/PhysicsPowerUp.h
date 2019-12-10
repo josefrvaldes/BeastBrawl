@@ -37,15 +37,15 @@ public:
     ~PhysicsPowerUp(){};
 
     //void init();
-    void update();
+    void update(vector<shared_ptr<PowerUp>> _PowerUps);
 
 private:
-    void updateRoboJorobo();
-    void updateSuperMegaNitro();
-    void updatePudinDeFrambuesa();
-    void updateEscudoMerluzo();
-    void updateTeleBanana();
-    void updateMelonMolon();
+    void updateRoboJorobo(PowerUp* pu);
+    void updateSuperMegaNitro(PowerUp* pu);
+    void updatePudinDeFrambuesa(PowerUp* pu);
+    void updateEscudoMerluzo(PowerUp* pu);
+    void updateTeleBanana(PowerUp* pu);
+    void updateMelonMolon(PowerUp* pu);
     //uint32_t actualWayPoint = 0;
     //shared_ptr<FuzzyLogic> flVelocity = make_shared<FuzzyLogic>();
     //shared_ptr<FuzzyLogic> flAngle = make_shared<FuzzyLogic>();

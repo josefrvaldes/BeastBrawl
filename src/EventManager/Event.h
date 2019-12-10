@@ -18,7 +18,8 @@ enum EventType {
     PRIORIDAD1,
     PRIORIDAD2,
     PRIORIDAD3,
-    POWER_UP_COGIDO
+    POWER_UP_COGIDO,
+    POWER_UP_LANZADO
 };
 
 struct Data {

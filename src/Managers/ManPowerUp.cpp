@@ -11,6 +11,9 @@ void EjecutarMeHanCogido(Data d) {
     cout << "Han cogido un powerup, madafaka!!" << endl;
     //debemos, de forma aleatoria asignarle un tipo al powerUp
 }
+void EjecutarMeHanLanzado(Data d) {
+    cout << "Han lanzado un powerup, madafaka!!" << endl;
+}
 
 ManPowerUp::ManPowerUp() {
     SubscribeToEvents();
@@ -38,6 +41,7 @@ void ManPowerUp::CreatePowerUp() {
 
 void ManPowerUp::SubscribeToEvents() {
     EventManager::GetInstance()->SuscribeMulti(Listener{EventType::POWER_UP_COGIDO, EjecutarMeHanCogido, "EjecutarMeHanCogido"});
+    EventManager::GetInstance()->SuscribeMulti(Listener{EventType::POWER_UP_LANZADO, EjecutarMeHanLanzado, "EjecutarMeHanLanzado"});
 }
 
 //eventManager->TriggerEvent(EventType::HAN_COGIDO_A_ALGUIEN, id_mio, id_que_he_cogido);

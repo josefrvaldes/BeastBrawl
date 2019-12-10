@@ -25,6 +25,7 @@ public:
     PowerUp(glm::vec3 _position);
     ~PowerUp();
 
+    type getTypePowerUp(){ return typePowerUp; }
 
 private:
     type typePowerUp; 
