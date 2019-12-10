@@ -13,24 +13,26 @@ void EjecutarMeHanCogido(Data d) {
 
 ManPowerUp::ManPowerUp() {
     SubscribeToEvents();
-    CreatePowerUp(glm::vec3(30.0, 30.0, 30.0));
-    cout << "Hemos creado un powerup, ahora tenemos " << entities.size() << " powerups" << endl;
+    //CreatePowerUp(glm::vec3(30.0, 30.0, 30.0));
+    cout << "Hemos creado el manager de powerup, ahora tenemos " << PowerUps.size() << " powerups" << endl;
 }
 
 ManPowerUp::~ManPowerUp() {
     cout << "Llamando al destructor de manpowerup" << endl;
+    PowerUps.clear();
+    PowerUps.shrink_to_fit();
 }
 
 
 void ManPowerUp::CreatePowerUp(glm::vec3 _position) 
 {
 	shared_ptr<PowerUp> p = make_shared<PowerUp>(_position);
-    entities.push_back(p);
+    PowerUps.push_back(p);
 }
 
 void ManPowerUp::CreatePowerUp() {
     shared_ptr<PowerUp> p = make_shared<PowerUp>();
-    entities.push_back(p);
+    PowerUps.push_back(p);
 }
 
 void ManPowerUp::SubscribeToEvents() {

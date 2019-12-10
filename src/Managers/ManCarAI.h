@@ -10,8 +10,7 @@ using namespace std;
 
 class CarAI;
 
-class ManCarAI
-{
+class ManCarAI{
 
 public:
     ManCarAI();

@@ -29,16 +29,23 @@ PowerUp::PowerUp()
     AddComponent(cTexture);
     AddComponent(cMesh);
     //AddComponent(cCar);
+
+    typePowerUp = type::SuperMegaNitro;
+
     cout << "Acabamos de llamar al constructor default de powerup, su transformable es " << cTransformable << endl;
 }
 
-PowerUp::PowerUp(glm::vec3 _position) 
+PowerUp::PowerUp(glm::vec3 _position, type _typePowerUp) 
     : PowerUp()
 {
     CTransformable *cTransformable = (CTransformable *)m_components[CompType::TransformableComp].get();
     cTransformable->position.x = _position.x;
     cTransformable->position.y = _position.y;
     cTransformable->position.z = _position.z;
+
+    //typePowerUp = _typePowerUp;
+
+    //cout << "Creamos un powerUp del tipo:  " << typePowerUp << endl;
 }
 
 
