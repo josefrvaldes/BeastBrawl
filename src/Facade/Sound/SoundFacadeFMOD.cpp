@@ -33,6 +33,7 @@ SoundFacadeFMOD::~SoundFacadeFMOD() {
 //Puntero a funcion
 void SoundFacadeFMOD::SonarClaxon(Data d) {
     SonarUnaVez("pedo");
+    cout << "Estoy entrando en el evento" << endl;
 }
 /*void SoundFacadeFMOD::SonidoPedo(Data d) {
     SonarUnaVez("pedo");
@@ -74,18 +75,6 @@ void SoundFacadeFMOD::InitSoundEngine() {
 
     LoadMasterBank();
 }
-
-/*void SoundFacadeFMOD::InitializeState(int state) {
-    LoadBanks(state);
-    switch (state)
-    {
-    case 0:
-        break;
-    
-    default:
-        break;
-    }
-}*/
 
 void SoundFacadeFMOD::SubscribeToGameEvents(int state) {
     switch (state) {

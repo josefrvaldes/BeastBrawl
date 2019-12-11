@@ -19,6 +19,5 @@ class SoundFacade {
 
     private:
         virtual void LoadBanks(const uint16_t) = 0;
-    //void SubscribeToGameEvents(int state);  
     
 };

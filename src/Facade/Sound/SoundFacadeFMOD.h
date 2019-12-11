@@ -33,7 +33,6 @@ class SoundFacadeFMOD : public SoundFacade {
         void UnloadBank(const char*) override;
 
         void Update() override;
-        //void InitializeState(int state);
 
         unordered_map<string, FMOD::Studio::EventDescription*> GetDescriptions() { return soundDescriptions;};
         unordered_map<string, FMOD::Studio::EventInstance*> GetInstances() { return eventInstances; }
@@ -57,7 +56,6 @@ class SoundFacadeFMOD : public SoundFacade {
         void SonarClaxon(Data);
         void SoniditoTecla(Data);
         void VozAlElegirPersonaje(Data);
-
 
 
         // metodos de sonido

@@ -7,6 +7,13 @@ ALL_CLEANED_TEXT   := @echo -e "\033[0m \033[0;32m [Cleaned succesfully]\033[0m"
 JUMP_LINE		   := @echo
 
 
+ifdef DEBUG
+	CXXFLAGS += -g
+else
+	CXXFLAGS += -O3
+endif
+
+
 SOURCES  	:= $(wildcard *.cpp)
 OBJ_PATH    := obj
 SRC_PATH	:= src
@@ -22,12 +29,6 @@ ALLCPPS		:= $(shell find src/ -type f -iname *.cpp)
 ALLCPPSOBJ	:= $(patsubst $(SRC_PATH)/%.cpp,$(OBJ_PATH)/%.o,$(ALLCPPS))
 SUBDIRS		:= $(shell find src/ -type d)
 OBJSUBDIRS  := $(patsubst $(SRC_PATH)%,$(OBJ_PATH)%,$(SUBDIRS))
-
-ifdef DEBUG
-	CXXFLAGS += -g
-else
-	CXXFLAGS += -O3
-endif
 
 
 #Esto crea el ejecutable
