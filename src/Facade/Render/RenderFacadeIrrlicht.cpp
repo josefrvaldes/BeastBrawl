@@ -172,6 +172,9 @@ void RenderFacadeIrrlicht::FacadeCheckInput() {
     if (receiver.IsKeyDown(KEY_KEY_C)) {
         eventManager->AddEventMulti(Event{EventType::PRESS_C, d});
     }
+    if (receiver.IsKeyDown(KEY_SPACE)) {
+        eventManager->AddEventMulti(Event{EventType::PRESS_SPACE, d});
+    }
 
 
 }

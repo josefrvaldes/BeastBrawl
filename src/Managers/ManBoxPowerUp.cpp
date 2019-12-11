@@ -15,7 +15,7 @@ void ManBoxPowerUp::EjecutarMeHanCogido(Data d) {
         shared_ptr<RenderFacadeManager> renderFacadeManager = RenderFacadeManager::GetInstance();
         shared_ptr<RenderFacade> renderEngine = renderFacadeManager->GetRenderFacade();
         renderEngine->DeleteEntity(BoxPowerUps[0].get());
-
+    
         //debemos, de forma aleatoria asignarle un tipo al powerUp
         BoxPowerUps[0].get()->active = false;
         BoxPowerUps[0].get()->timeStart = system_clock::now();

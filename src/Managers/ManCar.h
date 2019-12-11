@@ -36,5 +36,6 @@ class ManCar : public Manager {
     void Decelerate(Data d);
     void NotTurning(Data d);
     void CatchPowerUp(Data d);
+    void ThrowPowerUp(Data d);
     shared_ptr<Car> car;
 };

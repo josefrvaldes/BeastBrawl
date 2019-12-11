@@ -72,8 +72,25 @@ void ManCar::SubscribeToEvents() {
         EventType::PRESS_C,
         bind(&ManCar::CatchPowerUp, this, placeholders::_1),
         "CatchPowerUp"));
+    
+    EventManager::GetInstance()->SuscribeMulti(Listener(
+        EventType::PRESS_SPACE,
+        bind(&ManCar::ThrowPowerUp, this, placeholders::_1),
+        "ThrowPowerUp"));
 
 }
+
+
+void ManCar::ThrowPowerUp(Data d) {
+    auto cPowerUpCar = static_cast<CPowerUp*>(car.get()->GetComponent(CompType::PowerUpComp).get());
+    if(cPowerUpCar->typePowerUp != typeCPowerUp::None){
+
+        std::cout << "Lanzamos el power up fiiiuuuuum" << std::endl;
+        cPowerUpCar->typePowerUp = typeCPowerUp::None;
+    }
+}
+
+
 
 void ManCar::CatchPowerUp(Data d) {
     // cout << "Han llamado izquierda" << endl;

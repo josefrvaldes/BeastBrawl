@@ -13,6 +13,7 @@ enum EventType {
     PRESS_O,
     PRESS_A,
     PRESS_D,
+    PRESS_SPACE,
     NO_I_O_PRESS,
     NO_A_D_PRESS,
     PRIORIDAD1,
