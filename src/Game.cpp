@@ -51,9 +51,12 @@ void Game::MainLoop() {
 
     //Lo creo aqui porque queria llamar al TerminateSoundEngine despues del bucle.
     SoundFacadeManager* soundFacadeManager = SoundFacadeManager::GetInstance();
+    
     //Si se incluye esta funcion en el constructor de SoundFacadeFMOD da violacion de segmento.
     soundFacadeManager->InitializeFacadeFmod();
     soundFacadeManager->GetSoundFacade()->InitSoundEngine();
+
+    currentState->InitState();
 
     while (renderFacadeManager->GetRenderFacade()->FacadeRun()) {
         currentState->Input();
