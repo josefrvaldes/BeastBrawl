@@ -8,7 +8,9 @@ StateMenu::StateMenu(){
     std::cout << "Estado Menu Creado" << std::endl;
 }
 
+void StateMenu::InitState() {
 
+}
 
 
 void StateMenu::Render(){

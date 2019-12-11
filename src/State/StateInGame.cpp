@@ -214,6 +214,11 @@ StateInGame::~StateInGame() {
     // destructor
 }
 
+void StateInGame::InitState() {
+    soundEngine = SoundFacadeManager::GetInstance()->GetSoundFacade();
+    soundEngine->LoadBanks(2);
+}
+
 void StateInGame::Input() {
     renderEngine->FacadeCheckInput();
 }

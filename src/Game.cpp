@@ -1,6 +1,5 @@
 #include "Game.h"
 
-
 using namespace std;
 
 const shared_ptr<Game> Game::game = make_shared<Game>();
@@ -12,11 +11,8 @@ shared_ptr<Game> Game::GetInstance() {
     return game;
 }
 
-
-
-
-void Game::SetState(State::States stateType){
-    switch(stateType){
+void Game::SetState(State::States stateType) {
+    switch (stateType) {
         case State::INTRO:
             //currentState = new StateIntro();
             break;
@@ -43,25 +39,29 @@ void Game::SetState(State::States stateType){
     }
 }
 
-
-
-void Game::InitGame(){
+void Game::InitGame() {
     // To-Do put window values
     MainLoop();
 }
 
-
-
-void Game::MainLoop(){
-    shared_ptr<RenderFacadeManager> renderFacadeManager = RenderFacadeManager::GetInstance();   
+void Game::MainLoop() {
+    shared_ptr<RenderFacadeManager> renderFacadeManager = RenderFacadeManager::GetInstance();
 
     renderFacadeManager->GetRenderFacade()->FacadeSetWindowCaption("Beast Brawl");
 
-    while(renderFacadeManager->GetRenderFacade()->FacadeRun()){
+    //Lo creo aqui porque queria llamar al TerminateSoundEngine despues del bucle.
+    SoundFacadeManager* soundFacadeManager = SoundFacadeManager::GetInstance();
+    //Si se incluye esta funcion en el constructor de SoundFacadeFMOD da violacion de segmento.
+    soundFacadeManager->InitializeFacadeFmod();
+    soundFacadeManager->GetSoundFacade()->InitSoundEngine();
+
+    while (renderFacadeManager->GetRenderFacade()->FacadeRun()) {
         currentState->Input();
         currentState->Update();
+        soundFacadeManager->GetSoundFacade()->Update();
         currentState->Render();
     }
+    soundFacadeManager->GetSoundFacade()->TerminateSoundEngine();
     renderFacadeManager->GetRenderFacade()->FacadeDeviceDrop();
     //for(;;);  // To-Do: crear bucle del juego
 }

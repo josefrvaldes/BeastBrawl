@@ -123,7 +123,6 @@ void RenderFacadeIrrlicht::FacadeAddCamera(Entity* camera) {
     camera1 = smgr->addCameraSceneNode();
     device->getCursorControl()->setVisible(false);
 
-
     auto cTransformable = static_cast<CTransformable*>(camera->GetComponent(CompType::TransformableComp).get());
     auto cCamera = static_cast<CCamera*>(camera->GetComponent(CompType::CameraComp).get());
 
@@ -148,6 +147,9 @@ void RenderFacadeIrrlicht::FacadeCheckInput() {
 
     if (receiver.IsKeyDown(KEY_ESCAPE)) {
         device->closeDevice();
+    }
+    if (receiver.IsKeyDown(KEY_KEY_1)) {
+        eventManager->AddEventMulti(Event{EventType::PRESS_1, d});
     }
     if (receiver.IsKeyDown(KEY_KEY_I)) {
         //cout << "Pulsamos I" << endl;

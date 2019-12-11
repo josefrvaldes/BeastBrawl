@@ -10,6 +10,7 @@ class StateMenu : public State{
         StateMenu();
         ~StateMenu() = default;
         void Input() override;
+        void InitState() override;
         void Update() override;
         void Render() override;
         States GetState() { return State::States::MENU; };

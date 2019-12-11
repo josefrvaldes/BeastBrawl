@@ -10,9 +10,10 @@ JUMP_LINE		   := @echo
 SOURCES  	:= $(wildcard *.cpp)
 OBJ_PATH    := obj
 SRC_PATH	:= src
-LIBS 	    := -L./lib/irrlicht -lIrrlicht
+LIBS 	    := -L./lib/irrlicht -lIrrlicht -L./lib/fmod -lfmod -lfmodstudio
 INCLUDE     := -I.
 INCLUDE_IRR := -I /lib/irrlicht/irrlicht.h
+INCLUDE_FMOD := -I ./include/fmod/core -I ./include/fmod/studio
 CC			:= g++
 NAME_EXE	:= Beast_Brawl
 CXXFLAGS 	+= -Wall -Wno-unknown-pragmas -std=c++17 # el no-unknown-pragmas es para que no salga el warning de los pragma region

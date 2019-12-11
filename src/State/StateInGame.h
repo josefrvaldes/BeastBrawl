@@ -1,34 +1,33 @@
 #ifndef STATEINGAME_H
 #define STATEINGAME_H
 
+#include <chrono>
 #include <cstdint>
 #include <iostream>
 #include <list>
 #include <memory>
 #include <string>
-#include <chrono>
 
 #include "../../lib/glm/vec3.hpp"
 #include "../Entities/Camera.h"
 #include "../Entities/Car.h"
+#include "../Entities/CarAI.h"
 #include "../Entities/GameObject.h"
 #include "../Entities/PowerUp.h"
 #include "../Entities/WayPoint.h"
-#include "../Entities/CarAI.h"
-#include "../Systems/Physics.h"
-#include "../Managers/ManPowerUp.h"
-#include "../Managers/ManWayPoint.h"
-#include "../Managers/ManCarAI.h"
 #include "../EventManager/EventManager.h"
 #include "../Facade/Input/InputFacadeManager.h"
 #include "../Facade/Physics/PhysicsFacadeManager.h"
 #include "../Facade/Render/RenderFacadeManager.h"
+#include "../Facade/Sound/SoundFacadeManager.h"
+#include "../Facade/Sound/SoundFacade.h"
 #include "../Game.h"
 #include "../Managers/ManCar.h"
+#include "../Managers/ManCarAI.h"
 #include "../Managers/ManPowerUp.h"
+#include "../Managers/ManWayPoint.h"
 #include "../Systems/Physics.h"
 #include "../Systems/PhysicsAI.h"
-#include "../fuzzyLogic/fuzzyLogic.h"
 #include "../behaviourTree/behaviourTree.h"
 #include "../behaviourTree/decorator.h"
 #include "../behaviourTree/selector.h"
@@ -42,6 +41,7 @@ class StateInGame : public State {
    public:
     StateInGame();
     ~StateInGame();
+    void InitState() override;
     void Input() override;
     void Update() override;
     void Render() override;
@@ -59,6 +59,8 @@ class StateInGame : public State {
     shared_ptr<RenderFacade> renderEngine;
     shared_ptr<InputFacade> inputEngine;
     shared_ptr<PhysicsFacade> physicsEngine;
+    //shared_ptr<SoundFacadeManager> soundFacadeManager;
+    SoundFacade *soundEngine;
     shared_ptr<Physics> physics;
     shared_ptr<float> deltaTime;
 
