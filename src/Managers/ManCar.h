@@ -5,6 +5,7 @@
 #include <memory>
 #include <vector>
 #include "Manager.h"
+#include <stdlib.h>     /* srand, rand */
 
 using namespace std;
 class Car;
@@ -34,5 +35,6 @@ class ManCar : public Manager {
     void NotAcceleratingOrDecelerating(Data d);
     void Decelerate(Data d);
     void NotTurning(Data d);
+    void CatchPowerUp(Data d);
     shared_ptr<Car> car;
 };

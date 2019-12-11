@@ -13,6 +13,7 @@
 #include "../Entities/Car.h"
 #include "../Entities/GameObject.h"
 #include "../Entities/PowerUp.h"
+#include "../Entities/BoxPowerUp.h"
 #include "../Entities/WayPoint.h"
 #include "../Entities/CarAI.h"
 #include "../Systems/Physics.h"
@@ -26,6 +27,7 @@
 #include "../Game.h"
 #include "../Managers/ManCar.h"
 #include "../Managers/ManPowerUp.h"
+#include "../Managers/ManBoxPowerUp.h"
 #include "../Systems/Physics.h"
 #include "../Systems/PhysicsAI.h"
 #include "../fuzzyLogic/fuzzyLogic.h"
@@ -52,6 +54,7 @@ class StateInGame : public State {
     shared_ptr<GameObject> ground;
     shared_ptr<Camera> cam;
     shared_ptr<ManPowerUp> manPowerUps;
+    shared_ptr<ManBoxPowerUp> manBoxPowerUps;
     shared_ptr<ManCar> manCars;
     shared_ptr<RenderFacadeManager> renderFacadeManager;
     shared_ptr<InputFacadeManager> inputFacadeManager;

@@ -25,7 +25,7 @@ void CalculatePosition(CCar *cCar, CTransformable *cTransformable, float *deltaT
     */
     float angleRotation = (cTransformable->rotation.y * PI) / 180.0;
     float delta = *deltaTime;
-    cout << "El deltaTime es " << delta << endl;
+    //cout << "El deltaTime es " << delta << endl;
 
     //Modificamos la posicion en X y Z en funcion del angulo
     cTransformable->position.x -= cos(angleRotation) * cCar->speed * delta;
@@ -46,7 +46,7 @@ void CalculatePositionReverse(CCar *cCar, CTransformable *cTransformable, float 
     float angleRotation = (cTransformable->rotation.y * PI) / 180.0;
 
     float delta = *deltaTime;
-    cout << "El deltaTime es (reverse)" << delta << endl;
+    //cout << "El deltaTime es (reverse)" << delta << endl;
 
     //Modificamos la posicion en X y Z en funcion del angulo
     cTransformable->position.z += sin(angleRotation) * cCar->speed * delta;

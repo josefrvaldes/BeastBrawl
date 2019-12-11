@@ -35,6 +35,7 @@ class RenderFacadeIrrlicht : public RenderFacade {
 		void FacadeEndScene() override;
 		void FacadeDeviceDrop() override;
 		void FacadeDraw() override;
+		void DeleteEntity(Entity*) override;
 
 		scene::ISceneManager* GetSceneManager() {return smgr;};
 		scene::ICameraSceneNode* GetCamera1() {return camera1;};

@@ -165,6 +165,15 @@ void RenderFacadeIrrlicht::FacadeCheckInput() {
     } else {
         eventManager->AddEventMulti(Event{EventType::NO_A_D_PRESS, d});
     }
+
+
+
+    // POWERUPS
+    if (receiver.IsKeyDown(KEY_KEY_C)) {
+        eventManager->AddEventMulti(Event{EventType::PRESS_C, d});
+    }
+
+
 }
 
 int RenderFacadeIrrlicht::FacadeGetFPS() {
@@ -207,4 +216,10 @@ void RenderFacadeIrrlicht::FacadeDeviceDrop() {
 }
 
 RenderFacadeIrrlicht::~RenderFacadeIrrlicht() {
+}
+
+void RenderFacadeIrrlicht::DeleteEntity(Entity* entity) {
+    auto cId = static_cast<CId*>(entity->GetComponent(CompType::IdComp).get());
+    scene::ISceneNode* node = smgr->getSceneNodeFromId(cId->id);
+    node->remove();
 }

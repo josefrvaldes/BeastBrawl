@@ -7,10 +7,6 @@
 class Position;
 using namespace std;
 
-void EjecutarMeHanCogido(Data d) {
-    cout << "Han cogido un powerup, madafaka!!" << endl;
-    //debemos, de forma aleatoria asignarle un tipo al powerUp
-}
 void EjecutarMeHanLanzado(Data d) {
     cout << "Han lanzado un powerup, madafaka!!" << endl;
 }
@@ -40,7 +36,7 @@ void ManPowerUp::CreatePowerUp() {
 }
 
 void ManPowerUp::SubscribeToEvents() {
-    EventManager::GetInstance()->SuscribeMulti(Listener{EventType::POWER_UP_COGIDO, EjecutarMeHanCogido, "EjecutarMeHanCogido"});
+    //EventManager::GetInstance()->SuscribeMulti(Listener{EventType::POWER_UP_COGIDO, EjecutarMeHanCogido, "EjecutarMeHanCogido"});
     EventManager::GetInstance()->SuscribeMulti(Listener{EventType::POWER_UP_LANZADO, EjecutarMeHanLanzado, "EjecutarMeHanLanzado"});
 }
 

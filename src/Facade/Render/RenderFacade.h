@@ -27,6 +27,7 @@ class RenderFacade {
     virtual void FacadeEndScene() = 0;
     virtual void FacadeDeviceDrop() = 0;
     virtual void FacadeDraw() = 0;
+    virtual void DeleteEntity(Entity*) = 0;
 
    protected:
     uint16_t idCar = 0;

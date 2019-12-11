@@ -101,6 +101,7 @@ StateInGame::StateInGame() {
     eventManager = EventManager::GetInstance();
 
     manPowerUps = make_shared<ManPowerUp>();
+    manBoxPowerUps = make_shared<ManBoxPowerUp>();
     ground = make_shared<GameObject>(glm::vec3(10.0f, 10.0f, 30.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(100.0f, 1.0f, 100.0f), "wall.jpg", "ninja.b3d");
     cam = make_shared<Camera>(glm::vec3(10.0f, 40.0f, 30.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f));
     carAI = make_shared<CarAI>(glm::vec3(100.0f, 20.0f, 100.0f));
@@ -188,14 +189,14 @@ StateInGame::StateInGame() {
 
         auto cWayPoint = static_cast<CWayPoint*>(way->GetComponent(CompType::WayPointComp).get());
 
-        manPowerUps->CreatePowerUp(glm::vec3(cWayPoint->position));
+        manBoxPowerUps->CreateBoxPowerUp(glm::vec3(cWayPoint->position));
     }
 
     renderEngine->FacadeAddObjectCar(manCars.get()->GetCar().get());  //Añadimos el coche
     renderEngine->FacadeAddObject(ground.get());                      //Añadimos el suelo
 
     //Añadimos todos los power ups
-    for (shared_ptr<Entity> pu : manPowerUps->GetEntities())
+    for (shared_ptr<Entity> pu : manBoxPowerUps->GetEntities())
         renderEngine->FacadeAddObject(pu.get());
 
     renderEngine->FacadeAddObject(carAI.get());
@@ -236,6 +237,13 @@ void StateInGame::Update() {
     then = now;
 
     physicsAI->Update(manWayPoint->GetEntities(), carAI.get(), *deltaTime.get());
+
+
+    // COMPORBACION A PELO COLISIONES ENTRE COCHES-POWERUPS
+        // para hacerlo sencillo - la colision siemre sera entre el coche del jugador y el powerUp 1
+        
+
+
     renderEngine->UpdateCamera(cam.get());
     physicsEngine->UpdateCar(manCars.get()->GetCar().get(), cam.get());
     physicsEngine->UpdateCarAI(carAI.get());

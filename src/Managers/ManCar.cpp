@@ -6,6 +6,7 @@
 #include "../EventManager/Event.h"
 #include "../EventManager/EventManager.h"
 #include "../Systems/Physics.h"
+#include "../Components/CPowerUp.h"
 
 class Position;
 using namespace std;
@@ -66,6 +67,24 @@ void ManCar::SubscribeToEvents() {
         EventType::NO_A_D_PRESS,
         bind(&ManCar::NotTurning, this, placeholders::_1),
         "NotTurning"));
+
+    EventManager::GetInstance()->SuscribeMulti(Listener(
+        EventType::PRESS_C,
+        bind(&ManCar::CatchPowerUp, this, placeholders::_1),
+        "CatchPowerUp"));
+
+}
+
+void ManCar::CatchPowerUp(Data d) {
+    // cout << "Han llamado izquierda" << endl;
+    //physics->TurnLeft(car.get(), cam);
+    int indx = rand() % 6+1;
+    auto cPowerUpCar = static_cast<CPowerUp*>(car.get()->GetComponent(CompType::PowerUpComp).get());
+    if(cPowerUpCar->typePowerUp == typeCPowerUp::None){
+        cPowerUpCar->typePowerUp = (typeCPowerUp)indx;
+        std::cout << "Mi super powerUp es:   " << (int)cPowerUpCar->typePowerUp << std::endl;
+    }
+    //cPowerUp->typePowerUp = dynamic_cast<typeCPowerUp*>(indx);
 }
 
 void ManCar::TurnLeftCar(Data d) {
