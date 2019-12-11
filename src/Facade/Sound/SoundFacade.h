@@ -10,7 +10,7 @@ class SoundFacade {
         virtual void InitSoundEngine() = 0;
         virtual void TerminateSoundEngine() = 0;
 
-        virtual void LoadBanks(const uint16_t) = 0;
+        virtual void SetState(const uint16_t) = 0;
         virtual void LoadBanksInGame() = 0;
         virtual void LoadEvent(const char*) = 0;
         virtual void UnloadBank(const char*) = 0;
@@ -18,6 +18,7 @@ class SoundFacade {
         virtual void Update() = 0;
 
     private:
+        virtual void LoadBanks(const uint16_t) = 0;
     //void SubscribeToGameEvents(int state);  
     
 };

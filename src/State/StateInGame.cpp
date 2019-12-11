@@ -216,7 +216,7 @@ StateInGame::~StateInGame() {
 
 void StateInGame::InitState() {
     soundEngine = SoundFacadeManager::GetInstance()->GetSoundFacade();
-    soundEngine->LoadBanks(2);
+    soundEngine->SetState(2);
 }
 
 void StateInGame::Input() {

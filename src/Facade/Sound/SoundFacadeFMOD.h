@@ -23,7 +23,7 @@ class SoundFacadeFMOD : public SoundFacade {
         void LoadMasterBank();
         void UnloadMasterBank();
 
-        void LoadBanks(const uint16_t) override;
+        void SetState(const uint16_t) override;
         
         void LoadBanksInGame() override;
         void LoadEvent(const char*) override;
@@ -39,6 +39,7 @@ class SoundFacadeFMOD : public SoundFacade {
         unordered_map<string, FMOD::Studio::EventInstance*> GetInstances() { return eventInstances; }
 
     private:
+        void LoadBanks(const uint16_t) override;
         FMOD::System* coreSystem = NULL;
         FMOD::Studio::System* system = NULL;
         FMOD::Studio::Bank* masterBank = NULL;
@@ -50,4 +51,17 @@ class SoundFacadeFMOD : public SoundFacade {
         shared_ptr<EventManager> eventManager;
 
         void SubscribeToGameEvents(int state);
+
+
+        // eventos del juego
+        void SonarClaxon(Data);
+        void SoniditoTecla(Data);
+        void VozAlElegirPersonaje(Data);
+
+
+
+        // metodos de sonido
+        void SonarUnaVez(string);
+        void SonarEnBucle(string);
+        void SonarOjete(string);
 };
