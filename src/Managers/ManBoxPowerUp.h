@@ -24,6 +24,8 @@ class ManBoxPowerUp{
         return BoxPowerUps;
     };
 
+    void resetBox(BoxPowerUp* resetBox);
+
    private:
 	vector<shared_ptr<BoxPowerUp>> BoxPowerUps;
     void SubscribeToEvents();

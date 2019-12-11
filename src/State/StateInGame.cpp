@@ -135,6 +135,8 @@ StateInGame::StateInGame() {
 
     physicsAI = make_shared<PhysicsAI>();
 
+    sysBoxPowerUp = make_shared<SystemBoxPowerUp>();
+
 #pragma region FL
 
     // --------------------------- BEHAVIOR TREE ----------------------------------
@@ -195,7 +197,7 @@ StateInGame::StateInGame() {
     renderEngine->FacadeAddObjectCar(manCars.get()->GetCar().get());  //Añadimos el coche
     renderEngine->FacadeAddObject(ground.get());                      //Añadimos el suelo
 
-    //Añadimos todos los power ups
+    //Añadimos todos los box power ups
     for (shared_ptr<Entity> pu : manBoxPowerUps->GetEntities())
         renderEngine->FacadeAddObject(pu.get());
 
@@ -237,7 +239,7 @@ void StateInGame::Update() {
     then = now;
 
     physicsAI->Update(manWayPoint->GetEntities(), carAI.get(), *deltaTime.get());
-
+    sysBoxPowerUp->update(manBoxPowerUps.get());
 
     // COMPORBACION A PELO COLISIONES ENTRE COCHES-POWERUPS
         // para hacerlo sencillo - la colision siemre sera entre el coche del jugador y el powerUp 1

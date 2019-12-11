@@ -55,4 +55,10 @@ void ManBoxPowerUp::SubscribeToEvents() {
         "EjecutarMeHanCogido"));
 }
 
+void ManBoxPowerUp::resetBox(BoxPowerUp* resetBox){
+    shared_ptr<RenderFacadeManager> renderFacadeManager = RenderFacadeManager::GetInstance();
+    shared_ptr<RenderFacade> renderEngine = renderFacadeManager->GetRenderFacade();
+    renderEngine->FacadeAddObject(resetBox);
+}
+
 //eventManager->TriggerEvent(EventType::HAN_COGIDO_A_ALGUIEN, id_mio, id_que_he_cogido);

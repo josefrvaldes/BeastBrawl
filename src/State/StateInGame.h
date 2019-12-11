@@ -23,6 +23,7 @@
 #include "../EventManager/EventManager.h"
 #include "../Facade/Input/InputFacadeManager.h"
 #include "../Facade/Physics/PhysicsFacadeManager.h"
+#include "../Systems/SystemBoxPowerUp.h"
 #include "../Facade/Render/RenderFacadeManager.h"
 #include "../Game.h"
 #include "../Managers/ManCar.h"
@@ -63,6 +64,7 @@ class StateInGame : public State {
     shared_ptr<InputFacade> inputEngine;
     shared_ptr<PhysicsFacade> physicsEngine;
     shared_ptr<Physics> physics;
+    shared_ptr<SystemBoxPowerUp> sysBoxPowerUp;
     shared_ptr<float> deltaTime;
 
     shared_ptr<CarAI> carAI;

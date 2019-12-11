@@ -32,20 +32,20 @@ void PhysicsPowerUp::update(vector<shared_ptr<PowerUp>> _PowerUps){
 
 
 void PhysicsPowerUp::updateRoboJorobo(PowerUp* pu){
-
+   std::cout << " EY TIO, UPDATE DE ROBOJOROBO" << std::endl;
 }
 void PhysicsPowerUp::updateSuperMegaNitro(PowerUp* pu){
-
+   std::cout << " EY TIO, UPDATE DE SUPER MEGA NITRO" << std::endl;
 }
 void PhysicsPowerUp::updatePudinDeFrambuesa(PowerUp* pu){
-
+   std::cout << " EY TIO, UPDATE DE PUDIN FRAMBUESA" << std::endl;
 }
 void PhysicsPowerUp::updateEscudoMerluzo(PowerUp* pu){
-
+   std::cout << " EY TIO, UPDATE DE ESCUDO MERLUZO" << std::endl;
 }
 void PhysicsPowerUp::updateTeleBanana(PowerUp* pu){
-
+   std::cout << " EY TIO, UPDATE DE TELEBANANA" << std::endl;
 }
 void PhysicsPowerUp::updateMelonMolon(PowerUp* pu){
-
+   std::cout << " EY TIO, UPDATE DE MELONMOLON" << std::endl;
 }
