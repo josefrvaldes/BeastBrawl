@@ -1,11 +1,19 @@
 #pragma once
+#include <stdarg.h>
+#include <any>
 #include <cstdint>
+#include <functional>
+#include <map>
 #include <string>
 #include <vector>
-#include <functional>
+#include "TransientFunction.h"
+#include "../Aliases.h"
+// #include <any>
+// #include <string>
 #include "../Entities/Entity.h"
 
 using namespace std;
+
 
 //El orden de los enums define la prioridad del evento
 enum EventType {
@@ -31,27 +39,44 @@ struct Data {
 
 struct Event {
     EventType type;
-    Data data;
+    DataMap data;
+    Event(EventType _type) : type{_type} {
+    }
+    Event(EventType _type, DataMap _data) : type{_type}, data{_data} {
+    }
 };
 
 struct Listener {
     uint32_t id = 0;
     EventType type;
-    //void (*function)(Data);  // Puntero a funcion
-    function<void(Data)> callback;
-    string name;             // Nombre del listener
-    
-    Listener(EventType _type, function<void(Data)> _function, string _name) 
-     : type(_type), callback(_function), name(_name)
-    {
-        
+    // void (*callback)(Data);  // Puntero a funcion
+    // TransientFunction<void(Data)> callback;  // Puntero a funcion
+    // template<typename T> class Lambda {};
+    // template<typename Out, typename... In> class Lambda<Out(In...)> {};
+    // Lambda<void(Data d)> callback;
+    // template <typename Args>
+    function<void(DataMap)> callback;
+    string name;  // Nombre del listener
+
+    // con transient
+    // Listener(EventType _type, TransientFunction<void(Data)> _callback, string _name)
+    //     : type(_type), callback(_callback), name(_name) {
+    // }
+
+    // con std::function
+    Listener(EventType _type, function<void(DataMap)> _callback, string _name)
+        : type(_type), callback(_callback), name(_name) {
     }
 
-    Listener(uint32_t _id, EventType _type, function<void(Data)> _callback, string _name) 
-     : id(_id), type(_type), callback(_callback), name(_name)
-    {
-        
-    }    
+    // con puntero a función
+    // Listener(EventType _type, void (*_callback)(Data), string _name)
+    //     : type(_type), callback(_callback), name(_name) {
+    // }
+
+    // descomentar cuando haga falta el id del listener
+    /*Listener(uint32_t _id, EventType _type, function<void(Data)> _callback, string _name)
+        : id(_id), type(_type), callback(_callback), name(_name) {
+    }*/
 };
 
 typedef std::vector<Listener> ListenerVector;  // Se usará para poder tener varios listener del mismo EventType en el hash map

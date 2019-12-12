@@ -5,6 +5,7 @@
 #include <memory>
 #include <vector>
 #include "Manager.h"
+#include "../Aliases.h"
 
 using namespace std;
 class Car;
@@ -27,12 +28,13 @@ class ManCar : public Manager {
    private:
     Physics *physics;
     Camera *cam;
+    void AccelerateCar(DataMap d);
     void SubscribeToEvents();
-    void AccelerateCar(Data d);
-    void TurnLeftCar(Data d);
-    void TurnRightCar(Data d);
-    void NotAcceleratingOrDecelerating(Data d);
-    void Decelerate(Data d);
-    void NotTurning(Data d);
+    void TurnLeftCar(DataMap d);
+    void TurnRightCar(DataMap d);
+    void NotAcceleratingOrDecelerating(DataMap d);
+    void Decelerate(DataMap d);
+    void NotTurning(DataMap d);
+
     shared_ptr<Car> car;
 };

@@ -1,6 +1,7 @@
 #include "RenderFacadeIrrlicht.h"
 
 #include <math.h>
+#include "../../Aliases.h"
 #include "../../Components/CCamera.h"
 #include "../../Components/CId.h"
 #include "../../Components/CMesh.h"
@@ -143,29 +144,38 @@ uint32_t RenderFacadeIrrlicht::FacadeGetTime() {
 
 void RenderFacadeIrrlicht::FacadeCheckInput() {
     shared_ptr<EventManager> eventManager = EventManager::GetInstance();
-    Data d;
 
     if (receiver.IsKeyDown(KEY_ESCAPE)) {
         device->closeDevice();
     }
     if (receiver.IsKeyDown(KEY_KEY_1)) {
-        eventManager->AddEventMulti(Event{EventType::PRESS_1, d});
+        eventManager->AddEventMulti(Event{EventType::PRESS_1});
     }
     if (receiver.IsKeyDown(KEY_KEY_I)) {
         //cout << "Pulsamos I" << endl;
-        eventManager->AddEventMulti(Event{EventType::PRESS_I, d});
+        DataMap data;
+        // data["int"] = 123;
+        // data["float"] = 2.4f;
+        // vector<int> vec;
+        // vec.push_back(1);
+        // vec.push_back(2);
+        // vec.push_back(3);
+        // data["vector"] = vec;
+        // cout << "Creamos el data" << endl;
+        // cout << "Se pulsa I y enviamos el data" << endl;
+        eventManager->AddEventMulti(Event{EventType::PRESS_I, data});
     } else if (receiver.IsKeyDown(KEY_KEY_O)) {
-        eventManager->AddEventMulti(Event{EventType::PRESS_O, d});
+        eventManager->AddEventMulti(Event{EventType::PRESS_O});
     } else {
-        eventManager->AddEventMulti(Event{EventType::NO_I_O_PRESS, d});
+        eventManager->AddEventMulti(Event{EventType::NO_I_O_PRESS});
     }
 
     if (receiver.IsKeyDown(KEY_KEY_D)) {
-        eventManager->AddEventMulti(Event{EventType::PRESS_D, d});
+        eventManager->AddEventMulti(Event{EventType::PRESS_D});
     } else if (receiver.IsKeyDown(KEY_KEY_A)) {
-        eventManager->AddEventMulti(Event{EventType::PRESS_A, d});
+        eventManager->AddEventMulti(Event{EventType::PRESS_A});
     } else {
-        eventManager->AddEventMulti(Event{EventType::NO_A_D_PRESS, d});
+        eventManager->AddEventMulti(Event{EventType::NO_A_D_PRESS});
     }
 }
 

@@ -3,11 +3,12 @@
 #include "../Entities/PowerUp.h"
 #include "../EventManager/Event.h"
 #include "../EventManager/EventManager.h"
+#include "../Aliases.h"
 
 class Position;
 using namespace std;
 
-void EjecutarMeHanCogido(Data d) {
+void EjecutarMeHanCogido(DataMap d) {
     cout << "Han cogido un powerup, madafaka!!" << endl;
 }
 

@@ -37,9 +37,27 @@ void ManCar::CreateCar() {
 }
 
 void ManCar::SubscribeToEvents() {
+    // auto accelerateCar = [&](Data d) {
+    //     cout << "Estamos ejecutando lambda " << endl;
+    //     /*Car *c = this->GetCar().get();
+    //     auto components = c->GetComponents();
+    //     CTransformable *trans = static_cast<CTransformable*>(components[CompType::TransformableComp].get()); 
+    //     cout << "El coche está en  " << trans->position.x << "," << trans->position.y << "," << trans->position.z << endl;*/
+    //     //physics->Accelerate(car.get(), cam);
+    // };
+
+    /*int (*accelerate) (Data) = [&](Data d) {
+        physics->Accelerate(car.get(), cam);
+        return 0;
+    };*/
+    //int (*func_pointer) (int) = [](int a) { return a; };
+
+    //accelerateCar(0);
+
+
     EventManager::GetInstance()->SuscribeMulti(Listener(
         EventType::PRESS_I,
-        bind(&ManCar::AccelerateCar, this, placeholders::_1),
+        [&](DataMap d){this->AccelerateCar(d);},
         "AccelerateCar"));
 
     EventManager::GetInstance()->SuscribeMulti(Listener(
@@ -68,32 +86,39 @@ void ManCar::SubscribeToEvents() {
         "NotTurning"));
 }
 
-void ManCar::TurnLeftCar(Data d) {
+void ManCar::TurnLeftCar(DataMap d) {
     // cout << "Han llamado izquierda" << endl;
     physics->TurnLeft(car.get(), cam);
 }
 
-void ManCar::NotTurning(Data d) {
+void ManCar::NotTurning(DataMap d) {
     // cout << "Han llamado not turning" << endl;
     physics->NotTurning(car.get(), cam);
 }
 
-void ManCar::Decelerate(Data d) {
+void ManCar::Decelerate(DataMap d) {
     // cout << "Han llamado decel" << endl;
     physics->Decelerate(car.get(), cam);
 }
 
-void ManCar::NotAcceleratingOrDecelerating(Data d) {
+void ManCar::NotAcceleratingOrDecelerating(DataMap d) {
     // cout << "Han llamado notaccel" << endl;
     physics->NotAcceleratingOrDecelerating(car.get(), cam);
 }
 
-void ManCar::TurnRightCar(Data d) {
+void ManCar::TurnRightCar(DataMap d) {
     // cout << "Han llamado derecha" << endl;
     physics->TurnRight(car.get(), cam);
 }
 
-void ManCar::AccelerateCar(Data d) {
-    // cout << "Han llamado acelerar" << endl;
+void ManCar::AccelerateCar(DataMap d) {
+    // cout << "Estamos en AccelerateCar" << endl;
+    // int mint = any_cast<int>(d["int"]);
+    // cout << "Hemos obtenido el int" << mint << endl;
+    // float mfloat = any_cast<float>(d["float"]);
+    // cout << "Hemos obtenido el float" << endl;
+    // vector<int> mvect = any_cast<vector<int>>(d["vector"]);
+    // cout << "Hemos recibido por evento un int=" << mint << " un float=" << mfloat << " y un vector de int con size=" << mvect.size() << endl;
+    
     physics->Accelerate(car.get(), cam);
 }
