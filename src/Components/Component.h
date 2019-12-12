@@ -16,7 +16,9 @@ enum CompType {
     PowerUpComp,
     BoxPowerUpComp,
     ShieldComp,
-    NitroComp
+    NitroComp,
+    RoboJoroboComp,
+    TotemComp
 };
 
 class Component
