@@ -118,7 +118,18 @@ void ManCar::ThrowPowerUp(Data d) {
     }
 }
 
+/*
+int calculateProbabilityPowerUp(int totalPowerUps, std::vector<int> probabilityPU){
+    int sum_of_weight = 0;
 
+    int rnd = rand() % 100+1; // 100%
+    for(int i=0; i<totalPowerUps; i++) {
+      if(rnd < probabilityPU[i])
+        return i;
+      rnd -= probabilityPU[i];
+    }
+}
+*/
 
 void ManCar::CatchPowerUp(Data d) {
     // cout << "Han llamado izquierda" << endl;
