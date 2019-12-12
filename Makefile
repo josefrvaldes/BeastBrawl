@@ -45,7 +45,7 @@ $(NAME_EXE): $(OBJSUBDIRS) $(ALLCPPSOBJ)
 $(OBJ_PATH)/%.o: $(SRC_PATH)/%.cpp
 	$(PRUEBA_TEXT)
 	$(COMPILING_TEXT) $<
-	@$(CC) $(CXXFLAGS) -o $@ -c $^ $(INCLUDE) $(INCLUDE_IRR) 
+	@$(CC) $(CXXFLAGS) -o $@ -c $^ $(INCLUDE) $(INCLUDE_IRR) $(INCLUDE_FMOD)
 	
 
 $(OBJSUBDIRS):
