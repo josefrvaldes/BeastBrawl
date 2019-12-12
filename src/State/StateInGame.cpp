@@ -256,6 +256,10 @@ void StateInGame::Update() {
     physicsEngine->UpdateCar(manCars.get()->GetCar().get(), cam.get());
     for (shared_ptr<Entity> carAI : manCars->GetEntitiesAI())           // actualizamos los coche IA
         physicsEngine->UpdateCarAI(carAI.get());
+
+    //for(shared_ptr<Entity> actualPowerUp : manPowerUps->GetEntities())
+    //    physicsEngine->UpdatePowerUps(actualPowerUp.get());
+    
     //physicsEngine->UpdateCar(car.get(), cam.get());
 
     //renderEngine->FacadeDraw();
