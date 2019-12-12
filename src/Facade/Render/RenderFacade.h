@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <string>
 #include "../../Entities/Entity.h"
+#include "../../Managers/ManWayPoint.h"
 #include "../../EventManager/EventManager.h"
 
 class GameObject;
@@ -26,6 +27,11 @@ class RenderFacade {
         virtual void FacadeEndScene() = 0;
         virtual void FacadeDeviceDrop() = 0;
         virtual void FacadeDraw() = 0;
+
+
+        //DEBUG
+        virtual void FacadeDrawGraphEdges(ManWayPoint* manWayPoints) = 0;
+        virtual void FacadeDrawBoundingBox(Entity* entity, bool colliding) = 0;
 
     protected:
 };

@@ -29,12 +29,16 @@ WayPoint::WayPoint(glm::vec3 _position, int _type, int _id){
 }
 
 void WayPoint::AddEdge(int to, float cost){
-    auto components = GetComponents();
+    //Tenemos que comprobar si ya tenia un WayPointEdges creado para no pisarlo
+    if(!hasEdge){
+        shared_ptr<CWayPointEdges> cWayPointEdges = make_shared<CWayPointEdges>(to,cost);
+        AddComponent(cWayPointEdges);
+        hasEdge = true;
+    }else{
+        auto cWayPointEdges = static_cast<CWayPointEdges*>(GetComponent(CompType::WayPointEdgesComp).get());
+        cWayPointEdges->AddEdge(to,cost);
+    }
 
-	auto mapEdges = components.find(CompType::WayPointEdgesComp);
-	auto cEdges = static_cast<CWayPointEdges*>(mapEdges->second.get());
-
-    cEdges->AddEdge(to, cost);
 }
 
 WayPoint::~WayPoint(){

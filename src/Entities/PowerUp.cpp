@@ -29,7 +29,6 @@ PowerUp::PowerUp()
     AddComponent(cTexture);
     AddComponent(cMesh);
     //AddComponent(cCar);
-    cout << "Acabamos de llamar al constructor default de powerup, su transformable es " << cTransformable << endl;
 }
 
 PowerUp::PowerUp(glm::vec3 _position) 
@@ -39,6 +38,7 @@ PowerUp::PowerUp(glm::vec3 _position)
     cTransformable->position.x = _position.x;
     cTransformable->position.y = _position.y;
     cTransformable->position.z = _position.z;
+
 }
 
 

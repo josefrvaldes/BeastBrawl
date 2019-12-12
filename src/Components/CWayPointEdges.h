@@ -18,7 +18,7 @@ class CWayPointEdges : public Component
 {
 public:
     CWayPointEdges();
-    CWayPointEdges(int from, int to, float cost);
+    CWayPointEdges(int to, float cost);
     void AddEdge(int to, float cost);
     ~CWayPointEdges(){};
 

@@ -20,6 +20,7 @@
 #include "../Facade/Physics/PhysicsFacadeManager.h"
 #include "../Systems/Physics.h"
 #include "../Systems/PhysicsAI.h"
+#include "../Systems/Collisions.h"
 #include "../fuzzyLogic/fuzzyLogic.h"
 #include "../behaviourTree/behaviourTree.h"
 #include "../behaviourTree/selector.h"
@@ -57,6 +58,7 @@ class StateInGame : public State{
         shared_ptr<PhysicsFacade> physicsEngine;
         shared_ptr<ManWayPoint> manWayPoint;
         shared_ptr<PhysicsAI> physicsAI;
+        shared_ptr<Collisions> collisions;
 
         int lastFPS = -1;
         uint32_t then;

@@ -7,6 +7,10 @@
 #include "../../Components/CTransformable.h"
 #include "../../Components/CCamera.h"
 #include "../../Components/Component.h"
+#include "../../Components/CWayPoint.h"
+#include "../../Components/CWayPointEdges.h"
+#include "../../Components/CDimensions.h"
+#include "../../Entities/WayPoint.h"
 #include <math.h>
 
 #define PI 3.14159
@@ -57,7 +61,7 @@ const uint16_t RenderFacadeIrrlicht::FacadeAddObject(Entity *go){
 
 
 	//Switch para añadir el tipo de objeto
-	scene::ISceneNode* node;
+	scene::ISceneNode* node = 0;
 	std::string meshPath = "media/" + cMesh->mesh;
 
 	switch(cType->type){
@@ -89,7 +93,33 @@ const uint16_t RenderFacadeIrrlicht::FacadeAddObject(Entity *go){
 
 	}
 
+	//Cogemos sus edges
+	core::vector3df* edges = new core::vector3df[8];
+	core::aabbox3df boundingBox;
 
+	boundingBox = node->getTransformedBoundingBox();
+	boundingBox.getEdges(edges);
+	/*
+		   /3--------/7
+		  / |       / |
+		 /  |      /  |
+		1---------5   |
+		|  /2- - -|- -6
+		| /       |  /
+		|/        | /
+		0---------4/
+
+	*/
+
+	//Sacamos sus dimensiones
+	float height = (edges[1].Y - edges[0].Y) * cTransformable->scale.y;
+	float width  = (edges[5].X - edges[1].X) * cTransformable->scale.x;
+	float depth  = (edges[2].Z - edges[0].Z) * cTransformable->scale.z;
+	//cout << "Altura-Anchura-Profundidad: " << width << "-" << height << "-"<< depth << endl;
+	shared_ptr<CDimensions> cDimensions = make_shared<CDimensions>(width,height,depth);
+	go->AddComponent(cDimensions); //Le añadimos el componente CDimensions al Entity que sea
+
+	delete[] edges; 
 
 	return cId->id;
 }
@@ -170,6 +200,10 @@ void RenderFacadeIrrlicht::FacadeCheckInput(float frameDeltaTime, Entity* car, E
 	d.deltaTime  = frameDeltaTime;
 	d.gameObject = car;
 	d.camera	 = cam;
+
+	if(receiver.IsKeyDown(KEY_F3)){
+		showDebug = !showDebug;
+	}
  
 	if(receiver.IsKeyDown(KEY_ESCAPE)){
 		device->closeDevice();
@@ -232,10 +266,81 @@ void RenderFacadeIrrlicht::FacadeDeviceDrop(){
 	device->drop();
 }
 
+//DEBUG dibuja las aristas entre los nodos del grafo
+void RenderFacadeIrrlicht::FacadeDrawGraphEdges(ManWayPoint* manWayPoints){
+	if(!showDebug) return; //Si no esta activado debug retornamos
+
+	//Recorremos todos los WayPoints del manager
+	for(shared_ptr<WayPoint> way : manWayPoints->GetEntities()){
+
+        auto cWayPoint = static_cast<CWayPoint*>(way->GetComponent(CompType::WayPointComp).get());
+        auto cWayPointEdge = static_cast<CWayPointEdges*>(way->GetComponent(CompType::WayPointEdgesComp).get());
+
+		//Recorremos el componente CWayPointEdges->edges para ir arista a arista
+        for(Edge e : cWayPointEdge->edges){
+			//Cogemos la posicion de la arista que apunta e->to
+        	auto cWayPoint2 = static_cast<CWayPoint*>(manWayPoints->GetEntities()[e.to]->GetComponent(CompType::WayPointComp).get());
+			
+
+			video::SMaterial m;
+			m.Lighting=false;
+			driver->setMaterial(m);
+			driver->setTransform(video::ETS_WORLD, core::matrix4());
+			core::vector3df initial = core::vector3df(cWayPoint->position.x,cWayPoint->position.y,cWayPoint->position.z);
+			core::vector3df final = core::vector3df(cWayPoint2->position.x,cWayPoint2->position.y,cWayPoint2->position.z);
+
+			//Usamos un color u otro en funcion de la distancia
+			if(e.cost<300){
+				
+				driver->draw3DLine(initial,final,video::SColor(255,0,0,255));
+			}else if(e.cost>=300 && e.cost<500){
+				driver->draw3DLine(initial,final,video::SColor(255,0,255,0));
+
+			}else if(e.cost>=500){
+				driver->draw3DLine(initial,final,video::SColor(255,255,0,0));
+
+			}
+        }
+
+
+    }
+}
+
+void RenderFacadeIrrlicht::FacadeDrawBoundingBox(Entity* entity, bool colliding){
+	if(!showDebug) return; //Si no esta activado debug retornamos
+
+	auto cId = static_cast<CId*>(entity->GetComponent(CompType::IdComp).get());
+	scene::ISceneNode* node = smgr->getSceneNodeFromId(cId->id);
+
+	//Cogemos sus edges
+	core::aabbox3df boundingBox;
+
+	boundingBox = node->getTransformedBoundingBox();
+	/*
+		   /3--------/7
+		  / |       / |
+		 /  |      /  |
+		1---------5   |
+		|  /2- - -|- -6
+		| /       |  /
+		|/        | /
+		0---------4/
+
+	*/
+
+	video::SMaterial m;
+	m.Lighting=false;
+	driver->setMaterial(m);
+	driver->setTransform(video::ETS_WORLD, core::matrix4());
+	if(colliding){
+
+		driver->draw3DBox(boundingBox,video::SColor(255,255,0,0));
+	}else{
+		driver->draw3DBox(boundingBox,video::SColor(255,0,255,0));
+
+	}
+}
+
 
 RenderFacadeIrrlicht::~RenderFacadeIrrlicht(){
-	delete device;
-	delete driver;
-	delete smgr;
-	delete camera1;
 }

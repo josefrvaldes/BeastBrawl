@@ -17,4 +17,7 @@ public:
     WayPoint(glm::vec3 _position, int type, int id);
     void AddEdge(int to, float cost);
 
+private:
+    bool hasEdge = false;
+
 };

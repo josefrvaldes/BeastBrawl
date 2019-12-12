@@ -13,7 +13,8 @@ enum CompType {
     WheelComp,
     WayPointComp,
     CarComp,
-    WayPointEdgesComp
+    WayPointEdgesComp,
+    DimensionsComp
 };
 
 class Component
