@@ -14,7 +14,9 @@ enum CompType {
     WayPointComp,
     CarComp,
     PowerUpComp,
-    BoxPowerUpComp
+    BoxPowerUpComp,
+    ShieldComp,
+    NitroComp
 };
 
 class Component

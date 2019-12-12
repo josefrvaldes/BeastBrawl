@@ -242,6 +242,7 @@ void StateInGame::Update() {
 
     then = now;
 
+    physics->update(manCars->GetCar().get(),cam.get());
     physicsAI->Update(manWayPoint->GetEntities(), manCars->GetEntitiesAI()[0].get(), *deltaTime.get());
     sysBoxPowerUp->update(manBoxPowerUps.get());
     phisicsPowerUp->update(manPowerUps->GetEntities());
