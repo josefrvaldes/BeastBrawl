@@ -101,10 +101,11 @@ StateInGame::StateInGame() {
     eventManager = EventManager::GetInstance();
 
     manPowerUps = make_shared<ManPowerUp>();
+    phisicsPowerUp = make_shared<PhysicsPowerUp>();
     manBoxPowerUps = make_shared<ManBoxPowerUp>();
     ground = make_shared<GameObject>(glm::vec3(10.0f, 10.0f, 30.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(100.0f, 1.0f, 100.0f), "wall.jpg", "ninja.b3d");
     cam = make_shared<Camera>(glm::vec3(10.0f, 40.0f, 30.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f));
-    carAI = make_shared<CarAI>(glm::vec3(100.0f, 20.0f, 100.0f));
+    //carAI = make_shared<CarAI>(glm::vec3(100.0f, 20.0f, 100.0f));
 
     manWayPoint = make_shared<ManWayPoint>();
     manWayPoint->CreateWayPoint(glm::vec3(-10.0f, 25.0f, -150.0f), 0, 0);
@@ -112,11 +113,13 @@ StateInGame::StateInGame() {
     manWayPoint->CreateWayPoint(glm::vec3(150.0f, 25.0f, 150.0f), 0, 0);
     manWayPoint->CreateWayPoint(glm::vec3(-150.0f, 25.0f, 150.0f), 0, 0);
 
-    //Le asignamos el waypoint inicial, momentaneo
-    auto cWayPoint = static_cast<CWayPoint*>(manWayPoint->GetEntities()[3]->GetComponent(CompType::WayPointComp).get());
-    carAI->SetWayPoint(cWayPoint->position);
+    
 
     manCars = make_shared<ManCar>(physics.get(), cam.get());
+
+    //Le asignamos el waypoint inicial, momentaneo a la IA
+    auto cWayPoint = static_cast<CWayPoint*>(manWayPoint->GetEntities()[3]->GetComponent(CompType::WayPointComp).get());
+    manCars->CreateCarAI(glm::vec3(100.0f, 20.0f, 100.0f), cWayPoint->position);
 
     // Inicializamos las facadas
     renderFacadeManager = RenderFacadeManager::GetInstance();
@@ -194,14 +197,15 @@ StateInGame::StateInGame() {
         manBoxPowerUps->CreateBoxPowerUp(glm::vec3(cWayPoint->position));
     }
 
-    renderEngine->FacadeAddObjectCar(manCars.get()->GetCar().get());  //Añadimos el coche
-    renderEngine->FacadeAddObject(ground.get());                      //Añadimos el suelo
+    renderEngine->FacadeAddObjectCar(manCars.get()->GetCar().get());  //Anyadimos el coche
+    for (shared_ptr<Entity> carAI : manCars->GetEntitiesAI())           // Anyadimos los coche IA
+        renderEngine->FacadeAddObject(carAI.get());
+    renderEngine->FacadeAddObject(ground.get());                      //Anyadimos el suelo
 
     //Añadimos todos los box power ups
     for (shared_ptr<Entity> pu : manBoxPowerUps->GetEntities())
         renderEngine->FacadeAddObject(pu.get());
 
-    renderEngine->FacadeAddObject(carAI.get());
     renderEngine->FacadeAddCamera(cam.get());
 
     lastFPS = -1;
@@ -210,7 +214,7 @@ StateInGame::StateInGame() {
 
     //inicializamos las reglas del cocheIA de velocidad/aceleracion
     //FuzzyLogic flVelocity;
-    physicsAI->InitPhysicsIA(carAI.get());
+    physicsAI->InitPhysicsIA(manCars->GetEntitiesAI()[0].get()); // To-Do: hacer que se le pasen todos los coches IA 
 }
 
 StateInGame::~StateInGame() {
@@ -238,17 +242,19 @@ void StateInGame::Update() {
 
     then = now;
 
-    physicsAI->Update(manWayPoint->GetEntities(), carAI.get(), *deltaTime.get());
+    physicsAI->Update(manWayPoint->GetEntities(), manCars->GetEntitiesAI()[0].get(), *deltaTime.get());
     sysBoxPowerUp->update(manBoxPowerUps.get());
+    phisicsPowerUp->update(manPowerUps->GetEntities());
 
     // COMPORBACION A PELO COLISIONES ENTRE COCHES-POWERUPS
         // para hacerlo sencillo - la colision siemre sera entre el coche del jugador y el powerUp 1
         
 
-
+    // To-Do: Actualizar los powerUp en irrlich
     renderEngine->UpdateCamera(cam.get());
     physicsEngine->UpdateCar(manCars.get()->GetCar().get(), cam.get());
-    physicsEngine->UpdateCarAI(carAI.get());
+    for (shared_ptr<Entity> carAI : manCars->GetEntitiesAI())           // actualizamos los coche IA
+        physicsEngine->UpdateCarAI(carAI.get());
     //physicsEngine->UpdateCar(car.get(), cam.get());
 
     //renderEngine->FacadeDraw();

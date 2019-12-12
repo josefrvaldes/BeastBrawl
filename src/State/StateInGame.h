@@ -19,10 +19,10 @@
 #include "../Systems/Physics.h"
 #include "../Managers/ManPowerUp.h"
 #include "../Managers/ManWayPoint.h"
-#include "../Managers/ManCarAI.h"
 #include "../EventManager/EventManager.h"
 #include "../Facade/Input/InputFacadeManager.h"
 #include "../Facade/Physics/PhysicsFacadeManager.h"
+#include "../Systems/PhysicsPowerUp.h"
 #include "../Systems/SystemBoxPowerUp.h"
 #include "../Facade/Render/RenderFacadeManager.h"
 #include "../Game.h"
@@ -64,6 +64,7 @@ class StateInGame : public State {
     shared_ptr<InputFacade> inputEngine;
     shared_ptr<PhysicsFacade> physicsEngine;
     shared_ptr<Physics> physics;
+    shared_ptr<PhysicsPowerUp> phisicsPowerUp;
     shared_ptr<SystemBoxPowerUp> sysBoxPowerUp;
     shared_ptr<float> deltaTime;
 

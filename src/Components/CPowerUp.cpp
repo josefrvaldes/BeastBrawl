@@ -3,6 +3,10 @@
 CPowerUp::CPowerUp(): typePowerUp(typeCPowerUp::None){
     m_compType = CompType::PowerUpComp;
 }
+
+CPowerUp::CPowerUp(typeCPowerUp _typePowerUp): typePowerUp(_typePowerUp){
+    m_compType = CompType::PowerUpComp;
+}
 /*
 CPowerUp::CPowerUp(glm::vec3 _pos, int type, int id)
 : position(_pos), m_type(type), m_id(id){

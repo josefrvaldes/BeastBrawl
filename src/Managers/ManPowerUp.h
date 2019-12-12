@@ -4,10 +4,12 @@
 #include <map>
 #include <memory>
 #include <vector>
+#include "Manager.h"
 //#include "Manager.h"
 #include "../../lib/glm/vec3.hpp"
 
 class PowerUp;
+class Data;
 
 using namespace std;
 
@@ -16,8 +18,7 @@ class ManPowerUp{
     ManPowerUp();
     ~ManPowerUp();
 
-    void CreatePowerUp(glm::vec3 _position);
-    void CreatePowerUp();
+    
     vector<shared_ptr<PowerUp>> GetEntities() const {
         return PowerUps;
     };
@@ -25,4 +26,5 @@ class ManPowerUp{
    private:
 	vector<shared_ptr<PowerUp>> PowerUps;
     void SubscribeToEvents();
+    void CreatePowerUp(Data d);
 };

@@ -4,6 +4,8 @@
 #include <vector>
 #include <functional>
 #include "../Entities/Entity.h"
+#include "../Components/CTransformable.h"
+#include "../Components/CPowerUp.h"
 
 using namespace std;
 
@@ -20,7 +22,7 @@ enum EventType {
     PRIORIDAD2,
     PRIORIDAD3,
     POWER_UP_COGIDO,
-    POWER_UP_LANZADO,
+    PowerUp_Create,
     PRESS_C
 };
 
@@ -29,6 +31,9 @@ struct Data {
     Entity* gameObject;
     Entity* camera;
     float deltaTime;
+    CTransformable* posCocheSalida;
+    CTransformable* posCochePerseguir;
+    typeCPowerUp typePowerUp;
 };
 
 struct Event {

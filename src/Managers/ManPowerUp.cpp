@@ -7,14 +7,11 @@
 class Position;
 using namespace std;
 
-void EjecutarMeHanLanzado(Data d) {
-    cout << "Han lanzado un powerup, madafaka!!" << endl;
-}
 
 ManPowerUp::ManPowerUp() {
     SubscribeToEvents();
     //CreatePowerUp(glm::vec3(30.0, 30.0, 30.0));
-    cout << "Hemos creado el manager de powerup, ahora tenemos " << PowerUps.size() << " powerups" << endl;
+    cout << "Hemos creado el manager de powerup, ahora tenemos " << endl;
 }
 
 ManPowerUp::~ManPowerUp() {
@@ -24,20 +21,23 @@ ManPowerUp::~ManPowerUp() {
 }
 
 
-void ManPowerUp::CreatePowerUp(glm::vec3 _position) 
-{
-	shared_ptr<PowerUp> p = make_shared<PowerUp>(_position);
+
+
+void ManPowerUp::CreatePowerUp(Data d) {
+    shared_ptr<PowerUp> p = make_shared<PowerUp>(d.posCocheSalida->position, d.posCocheSalida->rotation, d.typePowerUp);
     PowerUps.push_back(p);
+
+    // To-Do: crear el powerUp en irrlich
+    // To-Do: hacer un update constante de los powrUp en el archivo renderFachadeIrrlich igual que tenemos para los coches
 }
 
-void ManPowerUp::CreatePowerUp() {
-    shared_ptr<PowerUp> p = make_shared<PowerUp>();
-    PowerUps.push_back(p);
-}
+
 
 void ManPowerUp::SubscribeToEvents() {
-    //EventManager::GetInstance()->SuscribeMulti(Listener{EventType::POWER_UP_COGIDO, EjecutarMeHanCogido, "EjecutarMeHanCogido"});
-    EventManager::GetInstance()->SuscribeMulti(Listener{EventType::POWER_UP_LANZADO, EjecutarMeHanLanzado, "EjecutarMeHanLanzado"});
+    // lo ejecuta el coche al tirar power up
+    EventManager::GetInstance()->SuscribeMulti(Listener(
+        EventType::PowerUp_Create,
+        bind(&ManPowerUp::CreatePowerUp, this, placeholders::_1),
+        "CreatePowerUp"));
 }
 
-//eventManager->TriggerEvent(EventType::HAN_COGIDO_A_ALGUIEN, id_mio, id_que_he_cogido);

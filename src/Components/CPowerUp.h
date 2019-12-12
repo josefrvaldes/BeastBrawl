@@ -21,6 +21,7 @@ enum class typeCPowerUp {
 class CPowerUp : public Component{
 public:
     CPowerUp();
+    CPowerUp(typeCPowerUp _typePowerUp);
     //CPowerUp(glm::vec3 _pos, int type,int id);
     ~CPowerUp();
 

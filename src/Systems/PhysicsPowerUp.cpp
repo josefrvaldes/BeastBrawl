@@ -1,27 +1,30 @@
 #include "PhysicsPowerUp.h"
+#include "../Components/CPowerUp.h"
 
 
-PhysicsPowerUp::PhysicsPowerUp(){}
+PhysicsPowerUp::PhysicsPowerUp(){
+
+}
 
     //void init();
 void PhysicsPowerUp::update(vector<shared_ptr<PowerUp>> _PowerUps){
 
     for (shared_ptr<PowerUp> pu : _PowerUps){
-        std::cout << "QUE PASAAAAAA!!!!" << std::endl;
+        //std::cout << "QUE PASAAAAAA!!!!" << std::endl;
 
-        type actualPowerUp = pu->getTypePowerUp();
+        typeCPowerUp actualPowerUp = static_cast<CPowerUp*>(pu.get()->GetComponent(CompType::PowerUpComp).get())->typePowerUp;
         switch ( actualPowerUp ){
-           case type::RoboJorobo:       updateRoboJorobo(pu.get());
+           case typeCPowerUp::RoboJorobo:       updateRoboJorobo(pu.get());
               break;
-           case type::SuperMegaNitro:   updateSuperMegaNitro(pu.get());
+           case typeCPowerUp::SuperMegaNitro:   updateSuperMegaNitro(pu.get());
               break;
-           case type::PudinDeFrambuesa: updatePudinDeFrambuesa(pu.get());
+           case typeCPowerUp::PudinDeFrambuesa: updatePudinDeFrambuesa(pu.get());
               break;
-           case type::EscudoMerluzo:    updateEscudoMerluzo(pu.get());
+           case typeCPowerUp::EscudoMerluzo:    updateEscudoMerluzo(pu.get());
               break;
-           case type::TeleBanana:       updateTeleBanana(pu.get());
+           case typeCPowerUp::TeleBanana:       updateTeleBanana(pu.get());
               break;
-           case type::MelonMolon:       updateMelonMolon(pu.get());
+           case typeCPowerUp::MelonMolon:       updateMelonMolon(pu.get());
               break;
            default:
               break;

@@ -6,6 +6,7 @@
 #include "../Components/CMesh.h"
 #include "../Components/CTransformable.h"
 #include "../Components/CCar.h"
+#include "../Components/CPowerUp.h"
 #include <iostream>
 
 class Position;
@@ -28,17 +29,10 @@ PowerUp::PowerUp()
     AddComponent(cTransformable);
     AddComponent(cTexture);
     AddComponent(cMesh);
-    //AddComponent(cCar);
-
-    // al crearlo no se asigna a ninguno ---> es random
-    typePowerUp = type::None;
-
-    cout << "Acabamos de llamar al constructor default de powerup, su transformable es " << cTransformable << endl;
-    cout << "Y su typePowerUp es:   " << int(typePowerUp) << endl;
-
 }
 
-PowerUp::PowerUp(glm::vec3 _position) 
+
+/*PowerUp::PowerUp(glm::vec3 _position) 
     : PowerUp()
 {
     CTransformable *cTransformable = (CTransformable *)m_components[CompType::TransformableComp].get();
@@ -49,7 +43,19 @@ PowerUp::PowerUp(glm::vec3 _position)
     //typePowerUp = _typePowerUp;
 
     //cout << "Creamos un powerUp del tipo:  " << typePowerUp << endl;
-}
+}*/
+
+
+
+ PowerUp::PowerUp(glm::vec3 _position, glm::vec3 _rotation, typeCPowerUp typePowerUp) : PowerUp(){
+    shared_ptr<CPowerUp> cPowerUp = make_shared<CPowerUp>(typePowerUp);
+    AddComponent(cPowerUp);
+    
+    CTransformable *cTransformable = (CTransformable *)m_components[CompType::TransformableComp].get();
+    cTransformable->position = _position;
+    cTransformable->rotation = _rotation;
+
+ }
 
 
 

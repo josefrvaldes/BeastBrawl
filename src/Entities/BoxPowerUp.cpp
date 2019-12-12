@@ -6,6 +6,7 @@
 #include "../Components/CMesh.h"
 #include "../Components/CTransformable.h"
 #include "../Components/CCar.h"
+#include "../Components/CBoxPowerUp.h"
 #include <iostream>
 
 class Position;
@@ -22,11 +23,13 @@ BoxPowerUp::BoxPowerUp(){
     shared_ptr<CTransformable> cTransformable = make_shared<CTransformable>(glm::vec3(0.0f,0.0f,0.0f), glm::vec3(0.0f,0.0f,0.0f), glm::vec3(1.0f,1.0f,1.0f)); 
     shared_ptr<CTexture> cTexture = make_shared<CTexture>(texture);
     shared_ptr<CMesh> cMesh   = make_shared<CMesh>(mesh);
+    shared_ptr<CBoxPowerUp> cBoxPowerUp   = make_shared<CBoxPowerUp>();
     AddComponent(cId);
     AddComponent(cType);
     AddComponent(cTransformable);
     AddComponent(cTexture);
     AddComponent(cMesh);
+    AddComponent(cBoxPowerUp);
     //AddComponent(cCar);
 
     cout << "Acabamos de llamar al constructor default de powerup, su transformable es " << cTransformable << endl;

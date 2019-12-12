@@ -3,6 +3,7 @@
 #include <iostream>
 #include "../Entities/Camera.h"
 #include "../Entities/Car.h"
+#include "../Entities/CarAI.h"
 #include "../EventManager/Event.h"
 #include "../EventManager/EventManager.h"
 #include "../Systems/Physics.h"
@@ -25,7 +26,9 @@ ManCar::ManCar(Physics *_physics, Camera *_cam) : ManCar() {
 }
 
 ManCar::~ManCar() {
-    cout << "Llamando al destructor de manpowerup" << endl;
+    cout << "Llamando al destructor de ManCar" << endl;
+    CarAIs.clear();
+    CarAIs.shrink_to_fit();
 }
 
 void ManCar::CreateMainCar() {
@@ -35,6 +38,21 @@ void ManCar::CreateMainCar() {
 void ManCar::CreateCar() {
     shared_ptr<Car> p = make_shared<Car>();
     entities.push_back(p);
+}
+
+
+void ManCar::CreateCarAI(glm::vec3 _position,  glm::vec3 _waypoint) 
+{
+	shared_ptr<CarAI> p = make_shared<CarAI>(_position);
+    CarAIs.push_back(p);
+    p->SetWayPoint(_waypoint); // tiene que tener un waypoint inicial To-Do: cambiar esto
+}
+
+
+void ManCar::CreateCarAI() 
+{
+	shared_ptr<CarAI> p = make_shared<CarAI>();
+    CarAIs.push_back(p);
 }
 
 void ManCar::SubscribeToEvents() {
@@ -84,7 +102,17 @@ void ManCar::SubscribeToEvents() {
 void ManCar::ThrowPowerUp(Data d) {
     auto cPowerUpCar = static_cast<CPowerUp*>(car.get()->GetComponent(CompType::PowerUpComp).get());
     if(cPowerUpCar->typePowerUp != typeCPowerUp::None){
+        shared_ptr<EventManager> eventManager = EventManager::GetInstance();
+        Data d;
+        d.typePowerUp = cPowerUpCar->typePowerUp;
+        d.posCocheSalida = static_cast<CTransformable*>(car.get()->GetComponent(CompType::TransformableComp).get());
 
+        // To-Do: actualmente se pasa la posicion del coche desde el que sale, falta calcular con un metodo el cTransformable del coche a perseguir y pasarlo
+        // auto cTransCocheSeguir = calcularCocheCercano();
+        //d.cTransformable = cTransCocheSeguir
+
+
+        eventManager->AddEventMulti(Event{EventType::PowerUp_Create, d});
         std::cout << "Lanzamos el power up fiiiuuuuum" << std::endl;
         cPowerUpCar->typePowerUp = typeCPowerUp::None;
     }

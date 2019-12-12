@@ -4,21 +4,34 @@
 #include "../Entities/BoxPowerUp.h"
 #include "../EventManager/Event.h"
 #include "../EventManager/EventManager.h"
+#include "../Components/CBoxPowerUp.h"
+#include "../Components/CId.h"
 
 class Position;
 using namespace std;
 
 void ManBoxPowerUp::EjecutarMeHanCogido(Data d) {
-    if(BoxPowerUps[0].get()->active == true){
+    /*uint32_t contador = 0;
+    uint32_t posVector = 0;
+    for(auto Box : BoxPowerUps){
+        auto cBoxId = static_cast<CId*>(Box.get()->GetComponent(CompType::IdComp).get());
+        if(cBoxId->id == d.id){
+            posVector = contador;
+        }
+        contador++;
+    }*/
+
+    auto cBoxPowerUp = static_cast<CBoxPowerUp*>(BoxPowerUps[0].get()->GetComponent(CompType::BoxPowerUpComp).get());
+    if(cBoxPowerUp->active == true){
         cout << "Han cogido un powerup, madafaka!! sera la primera" << endl;
         //shared_ptr<RenderFacade> renderFacadeManager;
         shared_ptr<RenderFacadeManager> renderFacadeManager = RenderFacadeManager::GetInstance();
         shared_ptr<RenderFacade> renderEngine = renderFacadeManager->GetRenderFacade();
-        renderEngine->DeleteEntity(BoxPowerUps[0].get());
+        renderEngine->DeleteEntity(BoxPowerUps[0].get());       // se elmina la caja en irrlich para que no la dibuje, pero en nuestro array sigue estando
     
         //debemos, de forma aleatoria asignarle un tipo al powerUp
-        BoxPowerUps[0].get()->active = false;
-        BoxPowerUps[0].get()->timeStart = system_clock::now();
+        cBoxPowerUp->active = false;
+        cBoxPowerUp->timeStart = system_clock::now();
     }
 }
 
@@ -55,6 +68,7 @@ void ManBoxPowerUp::SubscribeToEvents() {
         "EjecutarMeHanCogido"));
 }
 
+// se crea la caja de irrlich eliminada anteriormente
 void ManBoxPowerUp::resetBox(BoxPowerUp* resetBox){
     shared_ptr<RenderFacadeManager> renderFacadeManager = RenderFacadeManager::GetInstance();
     shared_ptr<RenderFacade> renderEngine = renderFacadeManager->GetRenderFacade();
