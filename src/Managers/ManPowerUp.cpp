@@ -3,6 +3,7 @@
 #include "../Entities/PowerUp.h"
 #include "../EventManager/Event.h"
 #include "../EventManager/EventManager.h"
+#include "../Facade/Render/RenderFacadeManager.h"
 
 class Position;
 using namespace std;
@@ -24,10 +25,12 @@ ManPowerUp::~ManPowerUp() {
 
 
 void ManPowerUp::CreatePowerUp(Data d) {
-    shared_ptr<PowerUp> p = make_shared<PowerUp>(d.posCocheSalida->position, d.posCocheSalida->rotation, d.typePowerUp);
-    PowerUps.push_back(p);
+    shared_ptr<PowerUp> powerUp = make_shared<PowerUp>(d.posCocheSalida->position, d.posCocheSalida->rotation, d.typePowerUp, d.posCochePerseguir);
+    PowerUps.push_back(powerUp);
 
-    // To-Do: crear el powerUp en irrlich
+    shared_ptr<RenderFacadeManager> renderFacadeManager = RenderFacadeManager::GetInstance();
+    shared_ptr<RenderFacade> renderEngine = renderFacadeManager->GetRenderFacade();
+    renderEngine->FacadeAddObject(powerUp.get());
 }
 
 

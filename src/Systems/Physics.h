@@ -5,6 +5,7 @@
 #include "../Components/CId.h"
 #include "../Components/CTransformable.h"
 #include "../Components/CType.h"
+#include "../Components/CNitro.h"
 #include "../Components/Component.h"
 
 #include "../EventManager/Event.h"

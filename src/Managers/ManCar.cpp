@@ -130,11 +130,11 @@ void ManCar::ThrowPowerUp(Data d) {
                 // To-Do: actualmente se pasa la posicion del coche desde el que sale, falta calcular con un metodo el cTransformable del coche a perseguir y pasarlo
                 // auto cTransCocheSeguir = calcularCocheCercano();
                 //d.cTransformable = cTransCocheSeguir
+                d.posCochePerseguir = d.posCocheSalida; // To-Do: se le mete el coche desde el que sale, deberia ser el que persigue
                 eventManager->AddEventMulti(Event{EventType::PowerUp_Create, d});
 
                 break;
         }
-        
         //std::cout << "Lanzamos el power up fiiiuuuuum" << std::endl;
         cPowerUpCar->typePowerUp = typeCPowerUp::None;
     }

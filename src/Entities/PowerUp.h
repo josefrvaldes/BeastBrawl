@@ -3,6 +3,7 @@
 #include "Entity.h"
 #include "../../lib/glm/vec3.hpp"
 #include "../Components/CPowerUp.h"
+#include "../Components/CTransformable.h"
 #include <iostream>
 #include <map>
 
@@ -14,8 +15,8 @@ class PowerUp : public Entity{
 public:
     PowerUp();
     //PowerUp(glm::vec3 _position);
-    PowerUp(glm::vec3 _position, glm::vec3 _rotation, typeCPowerUp typePowerUp);
-    PowerUp(glm::vec3 _position, glm::vec3 _rotation, typeCPowerUp typePowerUp, string texture, string mesh);
+    PowerUp(glm::vec3 _position, glm::vec3 _rotation, typeCPowerUp typePowerUp, CTransformable* cTransformableTarget);
+    PowerUp(glm::vec3 _position, glm::vec3 _rotation, typeCPowerUp typePowerUp, CTransformable* cTransformableTarget, string texture, string mesh);
     ~PowerUp();
 
 };

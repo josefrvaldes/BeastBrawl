@@ -251,14 +251,13 @@ void StateInGame::Update() {
         // para hacerlo sencillo - la colision siemre sera entre el coche del jugador y el powerUp 1
         
 
-    // To-Do: Actualizar los powerUp en irrlich
     renderEngine->UpdateCamera(cam.get());
     physicsEngine->UpdateCar(manCars.get()->GetCar().get(), cam.get());
     for (shared_ptr<Entity> carAI : manCars->GetEntitiesAI())           // actualizamos los coche IA
         physicsEngine->UpdateCarAI(carAI.get());
 
-    //for(shared_ptr<Entity> actualPowerUp : manPowerUps->GetEntities())
-    //    physicsEngine->UpdatePowerUps(actualPowerUp.get());
+    for(shared_ptr<Entity> actualPowerUp : manPowerUps->GetEntities())    // actualizamos los powerUp en irrlich
+        physicsEngine->UpdatePowerUps(actualPowerUp.get());
     
     //physicsEngine->UpdateCar(car.get(), cam.get());
 

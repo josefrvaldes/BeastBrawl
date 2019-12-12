@@ -20,8 +20,11 @@ void Physics::update(Car* car, Camera* cam){
 
 
 
-    // To-Do: actualizar componentes PowerUps...
+    // To-Do: actualizar componentes PowerUps (nitro, robojorobo y escudo)...
 }
+
+
+
 
 //Calcula la posicion del coche (duda con las formulas preguntar a Jose)
 void Physics::CalculatePosition(CCar *cCar, CTransformable *cTransformable, float *deltaTime) {

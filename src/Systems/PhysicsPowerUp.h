@@ -40,10 +40,7 @@ public:
     void update(vector<shared_ptr<PowerUp>> _PowerUps);
 
 private:
-    void updateRoboJorobo(PowerUp* pu);
-    void updateSuperMegaNitro(PowerUp* pu);
     void updatePudinDeFrambuesa(PowerUp* pu);
-    void updateEscudoMerluzo(PowerUp* pu);
     void updateTeleBanana(PowerUp* pu);
     void updateMelonMolon(PowerUp* pu);
     //uint32_t actualWayPoint = 0;
