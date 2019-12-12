@@ -7,6 +7,10 @@
 #include "../Components/CPowerUp.h"
 #include "../Components/CTransformable.h"
 #include "../Components/CCar.h"
+#include "../Components/CShield.h"
+#include "../Components/CTotem.h"
+#include "../Components/CRoboJorobo.h"
+#include "../Components/CNitro.h"
 #include <iostream>
 
 class Position;
@@ -28,6 +32,11 @@ Car::Car(){
     shared_ptr<CMesh> cMesh   = make_shared<CMesh>(mesh);
     shared_ptr<CCar> cCar = make_shared<CCar>(maxSpeed, acceleration, friction, slowDown);
     shared_ptr<CPowerUp> cPowerUp = make_shared<CPowerUp>();
+    shared_ptr<CShield> cShield = make_shared<CShield>();
+    shared_ptr<CNitro> cNitro = make_shared<CNitro>();
+    shared_ptr<CRoboJorobo> cRoboJorobo = make_shared<CRoboJorobo>();
+    shared_ptr<CTotem> cTotem = make_shared<CTotem>();
+
     AddComponent(cId);
     AddComponent(cType);
     AddComponent(cTransformable);
@@ -35,6 +44,10 @@ Car::Car(){
     AddComponent(cMesh);
     AddComponent(cCar);
     AddComponent(cPowerUp);
+    AddComponent(cShield);
+    AddComponent(cNitro);
+    AddComponent(cRoboJorobo);
+    AddComponent(cTotem);
     cout << "Acabamos de llamar al constructor default de car, su transformable es " << cTransformable << endl;
 }
 
@@ -42,8 +55,6 @@ Car::Car(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale,
     string texture, string mesh, 
     float maxSpeed, float acceleration , float carFriction, float carSlowDown) 
 {
-
-    
     shared_ptr<CId> cId   = make_shared<CId>();
     shared_ptr<CType> cType = make_shared<CType>(ModelType::Cube);
     shared_ptr<CTransformable> cTransformable = make_shared<CTransformable>(pos, rot, scale); 
@@ -51,6 +62,11 @@ Car::Car(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale,
     shared_ptr<CMesh> cMesh   = make_shared<CMesh>(mesh);
     shared_ptr<CCar> cCar = make_shared<CCar>(maxSpeed, acceleration, carFriction, carSlowDown);
     shared_ptr<CPowerUp> cPowerUp = make_shared<CPowerUp>();
+    shared_ptr<CShield> cShield = make_shared<CShield>();
+    shared_ptr<CNitro> cNitro = make_shared<CNitro>();
+    shared_ptr<CRoboJorobo> cRoboJorobo = make_shared<CRoboJorobo>();
+    shared_ptr<CTotem> cTotem = make_shared<CTotem>();
+
     AddComponent(cId);
     AddComponent(cType);
     AddComponent(cTransformable);
@@ -58,6 +74,10 @@ Car::Car(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale,
     AddComponent(cMesh);
     AddComponent(cCar);
     AddComponent(cPowerUp);
+    AddComponent(cShield);
+    AddComponent(cNitro);
+    AddComponent(cRoboJorobo);
+    AddComponent(cTotem);
     cout << "Acabamos de llamar al constructor default de car, su transformable es " << cTransformable << endl;
 
 

@@ -18,7 +18,8 @@ enum CompType {
     ShieldComp,
     NitroComp,
     RoboJoroboComp,
-    TotemComp
+    TotemComp,
+    TargetEntityComp
 };
 
 class Component

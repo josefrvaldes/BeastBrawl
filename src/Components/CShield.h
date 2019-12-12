@@ -14,10 +14,12 @@ using namespace chrono;
 class CShield : public Component{
 public:
     CShield();
-    //CShield(glm::vec3 _pos, int type,int id);
     ~CShield();
+    void activatePowerUp();
+    void deactivePowerUp();
 
     time_point<system_clock> timeStart;
     const int64_t durationTime = 5000;       // 5 segundos
     
+    bool activePowerUp = false;
 };

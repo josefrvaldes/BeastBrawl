@@ -28,7 +28,6 @@ void ManPowerUp::CreatePowerUp(Data d) {
     PowerUps.push_back(p);
 
     // To-Do: crear el powerUp en irrlich
-    // To-Do: hacer un update constante de los powrUp en el archivo renderFachadeIrrlich igual que tenemos para los coches
 }
 
 

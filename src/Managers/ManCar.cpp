@@ -8,6 +8,11 @@
 #include "../EventManager/EventManager.h"
 #include "../Systems/Physics.h"
 #include "../Components/CPowerUp.h"
+#include "../Components/CShield.h"
+#include "../Components/CTotem.h"
+#include "../Components/CRoboJorobo.h"
+#include "../Components/CNitro.h"
+
 
 class Position;
 using namespace std;
@@ -101,19 +106,36 @@ void ManCar::SubscribeToEvents() {
 
 void ManCar::ThrowPowerUp(Data d) {
     auto cPowerUpCar = static_cast<CPowerUp*>(car.get()->GetComponent(CompType::PowerUpComp).get());
+    auto cRoboJorobo = static_cast<CRoboJorobo*>(car->GetComponent(CompType::RoboJoroboComp).get());
+    auto cShield = static_cast<CShield*>(car.get()->GetComponent(CompType::ShieldComp).get());
+    auto cNitro = static_cast<CNitro*>(car.get()->GetComponent(CompType::NitroComp).get());
+    
     if(cPowerUpCar->typePowerUp != typeCPowerUp::None){
-        shared_ptr<EventManager> eventManager = EventManager::GetInstance();
-        Data d;
-        d.typePowerUp = cPowerUpCar->typePowerUp;
-        d.posCocheSalida = static_cast<CTransformable*>(car.get()->GetComponent(CompType::TransformableComp).get());
 
-        // To-Do: actualmente se pasa la posicion del coche desde el que sale, falta calcular con un metodo el cTransformable del coche a perseguir y pasarlo
-        // auto cTransCocheSeguir = calcularCocheCercano();
-        //d.cTransformable = cTransCocheSeguir
+        switch (cPowerUpCar->typePowerUp){
+            case typeCPowerUp::RoboJorobo:
+                cRoboJorobo->activatePowerUp();
+                break;
+            case typeCPowerUp::EscudoMerluzo:
+                cShield->activatePowerUp();
+                break;
+            case typeCPowerUp::SuperMegaNitro:
+                cNitro->activatePowerUp();
+                break;
+            default:
+                shared_ptr<EventManager> eventManager = EventManager::GetInstance();
+                Data d;
+                d.typePowerUp = cPowerUpCar->typePowerUp;
+                d.posCocheSalida = static_cast<CTransformable*>(car.get()->GetComponent(CompType::TransformableComp).get());
+                // To-Do: actualmente se pasa la posicion del coche desde el que sale, falta calcular con un metodo el cTransformable del coche a perseguir y pasarlo
+                // auto cTransCocheSeguir = calcularCocheCercano();
+                //d.cTransformable = cTransCocheSeguir
+                eventManager->AddEventMulti(Event{EventType::PowerUp_Create, d});
 
-
-        eventManager->AddEventMulti(Event{EventType::PowerUp_Create, d});
-        std::cout << "Lanzamos el power up fiiiuuuuum" << std::endl;
+                break;
+        }
+        
+        //std::cout << "Lanzamos el power up fiiiuuuuum" << std::endl;
         cPowerUpCar->typePowerUp = typeCPowerUp::None;
     }
 }

@@ -14,9 +14,9 @@ using namespace chrono;
 class CRoboJorobo : public Component{
 public:
     CRoboJorobo();
-    //CShield(glm::vec3 _pos, int type,int id);
     ~CRoboJorobo();
+    void activatePowerUp();
+    void deactivePowerUp();
 
-    bool active = false;
-    
+    bool activePowerUp = false;
 };

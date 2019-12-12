@@ -14,13 +14,16 @@ using namespace chrono;
 class CNitro : public Component{
 public:
     CNitro();
-    //CNitro(glm::vec3 _pos, int type,int id);
     ~CNitro();
+    void activatePowerUp();
+    void deactivePowerUp();
 
     time_point<system_clock> timeStart;
     const int64_t durationTime = 5000;       // 5 segundos
 
-    float nitroAcceleration = 0.30;
-    float nitroMaxSpeed = 10;
+    float nitroAcceleration = 0;            // este valor se le va a sumar al del coche
+    float nitroMaxSpeed = 0;                // este valor se le va a sumar al del coche
+
+    bool activePowerUp = false;
     
 };
