@@ -8,6 +8,9 @@
 #include "../../lib/glm/vec3.hpp"
 #include "../Facade/Render/RenderFacadeManager.h"
 
+#include "../Components/CBoxPowerUp.h"
+#include "../Components/CId.h"
+
 class BoxPowerUp;
 class Data;
 

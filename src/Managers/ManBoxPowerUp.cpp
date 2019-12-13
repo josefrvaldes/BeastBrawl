@@ -4,8 +4,6 @@
 #include "../Entities/BoxPowerUp.h"
 #include "../EventManager/Event.h"
 #include "../EventManager/EventManager.h"
-#include "../Components/CBoxPowerUp.h"
-#include "../Components/CId.h"
 
 class Position;
 using namespace std;
@@ -20,15 +18,15 @@ void ManBoxPowerUp::EjecutarMeHanCogido(DataMap d) {
         }
         contador++;
     }*/
-
-    auto cBoxPowerUp = static_cast<CBoxPowerUp*>(BoxPowerUps[0].get()->GetComponent(CompType::BoxPowerUpComp).get());
+    auto cBoxPowerUp = any_cast<CBoxPowerUp*>(d["BoxPowerUpComp"]);
+    auto actualBox   = any_cast<shared_ptr<Entity>>(d["actualBox"]);
+    //auto cBoxPowerUp2 = static_cast<CBoxPowerUp*>(BoxPowerUps[0].get()->GetComponent(CompType::BoxPowerUpComp).get());
     if(cBoxPowerUp->active == true){
         cout << "Han cogido un powerup, madafaka!! sera la primera" << endl;
         //shared_ptr<RenderFacade> renderFacadeManager;
         shared_ptr<RenderFacadeManager> renderFacadeManager = RenderFacadeManager::GetInstance();
         shared_ptr<RenderFacade> renderEngine = renderFacadeManager->GetRenderFacade();
-        renderEngine->DeleteEntity(BoxPowerUps[0].get());       // se elmina la caja en irrlich para que no la dibuje, pero en nuestro array sigue estando
-    
+        renderEngine->DeleteEntity(actualBox.get());       // se elmina la caja en irrlich para que no la dibuje, pero en nuestro array sigue estando
         //debemos, de forma aleatoria asignarle un tipo al powerUp
         cBoxPowerUp->active = false;
         cBoxPowerUp->timeStart = system_clock::now();
