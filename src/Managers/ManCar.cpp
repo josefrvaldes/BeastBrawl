@@ -55,7 +55,7 @@ void ManCar::SubscribeToEvents() {
     //accelerateCar(0);
     auto lambdaAccelerate = [&](DataMap d){this->AccelerateCar(d);};
     //
-    auto lambdaGuardaAccel = [&lambdaAccelerate](DataMap d) {lambdaAccelerate(d);};
+    //auto lambdaGuardaAccel = [&lambdaAccelerate](DataMap d) {lambdaAccelerate(d);};
 
 
     EventManager::GetInstance()->SuscribeMulti(Listener(

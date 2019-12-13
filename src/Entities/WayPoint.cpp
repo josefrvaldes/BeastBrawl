@@ -7,21 +7,21 @@
 #include "../Components/CTransformable.h"
 #include "../Components/CCar.h"
 #include "../Components/CWayPoint.h"
+#include "../Components/CWayPointEdges.h"
 #include <iostream>
 
-class Position;
-using namespace std;
 
 WayPoint::WayPoint()
 {
-    // default values
-    shared_ptr<CTransformable> cTransformable = make_shared<CTransformable>(glm::vec3(0.0f,0.0f,0.0f), glm::vec3(0.0f,0.0f,0.0f), glm::vec3(1.0f,1.0f,1.0f)); 
-    AddComponent(cTransformable);
-    cout << "Acabamos de llamar al constructor default de powerup, su transformable es " << cTransformable << endl;
+    
 }
 
+//TODO: Este constructor hay que quitarlo 
 WayPoint::WayPoint(glm::vec3 _position) {
-    //position = _position;
+    shared_ptr<CWayPoint> cWayPoint = make_shared<CWayPoint>(_position,0,0);
+    shared_ptr<CWayPointEdges> cWayPointEdges = make_shared<CWayPointEdges>();
+    AddComponent(cWayPoint);
+    AddComponent(cWayPointEdges);
 }
 
 WayPoint::WayPoint(glm::vec3 _position, int _type, int _id){
@@ -29,6 +29,18 @@ WayPoint::WayPoint(glm::vec3 _position, int _type, int _id){
     AddComponent(cWayPoint);
 }
 
+void WayPoint::AddEdge(int to, float cost){
+    //Tenemos que comprobar si ya tenia un WayPointEdges creado para no pisarlo
+    if(!hasEdge){
+        shared_ptr<CWayPointEdges> cWayPointEdges = make_shared<CWayPointEdges>(to,cost);
+        AddComponent(cWayPointEdges);
+        hasEdge = true;
+    }else{
+        auto cWayPointEdges = static_cast<CWayPointEdges*>(GetComponent(CompType::WayPointEdgesComp).get());
+        cWayPointEdges->AddEdge(to,cost);
+    }
+
+}
 
 WayPoint::~WayPoint(){
 

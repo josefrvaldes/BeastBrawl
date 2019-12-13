@@ -36,6 +36,11 @@ class RenderFacadeIrrlicht : public RenderFacade {
 		void FacadeDeviceDrop() override;
 		void FacadeDraw() override;
 
+		//DEBUG
+        void FacadeDrawGraphEdges(ManWayPoint* manWayPoints) override;
+		void FacadeDrawBoundingBox(Entity* entity, bool colliding) override;
+
+
 		scene::ISceneManager* GetSceneManager() {return smgr;};
 		scene::ICameraSceneNode* GetCamera1() {return camera1;};
 
@@ -46,6 +51,7 @@ class RenderFacadeIrrlicht : public RenderFacade {
         scene::ISceneManager* smgr;
 		scene::ICameraSceneNode* camera1;
 		MyEventReceiver receiver;
+		bool showDebug = false;
 
         //unordered_map<uint16_t,scene::ISceneNode*> sceneObjects; // CId - ISceneNode*
 };

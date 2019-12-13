@@ -15,7 +15,6 @@ void FuzzyLogic::AddRule(shared_ptr<FuzzyTerm> antecedent, shared_ptr<FuzzyTerm>
 shared_ptr<FuzzyVariable> FuzzyLogic::CreateFLV(const string& VarName){
 	m_Variables.insert(std::pair<string,shared_ptr<FuzzyVariable>>(VarName,make_shared<FuzzyVariable>()));
 	//m_Variables[VarName] = fv;
-	cout << "Sale fuzzy variable\n";
 	return	m_Variables[VarName];
 }
 

@@ -37,7 +37,6 @@ public:
     FuzzyVariable(){ 
         m_dMinRange = 0.0;
         m_dMaxRange = 0.0;
-        cout << "Entra fuzzy variable\n";
     };
     ~FuzzyVariable(){};
     //the following methods create instances of the sets named in the method

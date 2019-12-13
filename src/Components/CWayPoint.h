@@ -16,12 +16,6 @@ public:
     CWayPoint(glm::vec3 _pos, int type,int id);
     ~CWayPoint();
 
-    // friend ostream &operator<<(ostream &out, CWayPoint &c)
-    // {
-    //     //cout << "(" << c.position.x << "," << c.position.y << "," << c.position.z << ")";
-    //     //return out;
-    // }
-
     glm::vec3 position;
     int m_type;
     int m_id;

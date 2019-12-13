@@ -4,6 +4,7 @@
 #include <numeric>
 
 #include "../Components/CTransformable.h"
+#include "../Components/CWayPointEdges.h"
 
 typedef std::chrono::high_resolution_clock Clock;
 
@@ -106,13 +107,10 @@ StateInGame::StateInGame() {
     carAI = make_shared<CarAI>(glm::vec3(100.0f, 20.0f, 100.0f));
 
     manWayPoint = make_shared<ManWayPoint>();
-    manWayPoint->CreateWayPoint(glm::vec3(-10.0f, 25.0f, -150.0f), 0, 0);
-    manWayPoint->CreateWayPoint(glm::vec3(150.0f, 25.0f, -150.0f), 0, 0);
-    manWayPoint->CreateWayPoint(glm::vec3(150.0f, 25.0f, 150.0f), 0, 0);
-    manWayPoint->CreateWayPoint(glm::vec3(-150.0f, 25.0f, 150.0f), 0, 0);
 
-    //Le asignamos el waypoint inicial, momentaneo
-    auto cWayPoint = static_cast<CWayPoint*>(manWayPoint->GetEntities()[3]->GetComponent(CompType::WayPointComp).get());
+    auto components = manWayPoint->GetEntities()[3]->GetComponents();
+    auto mapWaypoint = components.find(CompType::WayPointComp);
+    auto cWayPoint = static_cast<CWayPoint*>(mapWaypoint->second.get());
     carAI->SetWayPoint(cWayPoint->position);
 
     manCars = make_shared<ManCar>(physics.get(), cam.get());
@@ -133,6 +131,7 @@ StateInGame::StateInGame() {
     physicsEngine = physicsFacadeManager->GetPhysicsFacade();
 
     physicsAI = make_shared<PhysicsAI>();
+    collisions = make_shared<Collisions>();
 
 #pragma region FL
 
@@ -175,25 +174,33 @@ StateInGame::StateInGame() {
 
 #pragma endregion
 
-    //Posicionamos todos los powerups donde hay waypoints, momentaneo
-    for (shared_ptr<WayPoint> way : manWayPoint->GetEntities()) {
-        cout << "Vamos a crear mini puntos de control -> power ups de mientras" << endl;
+    selector1->addChild(puertaAbiertaSiNo);
+    selector1->addChild(sequence1);
+    selector1->addChild(tryCatchKey3);
 
-        /* EJEMPLO AÑADIR EDGES */
-        //way->AddEdge(2,300.0);
-        //auto components = way->GetComponents();
-        //auto mapEdges = components.find(CompType::WayPointEdgesComp);
-        //auto cEdges = static_cast<CWayPointEdges>(mapEdges->second.get());
-        //cout << cEdges->edges[0].cost << endl;
+    sequence1->addChild(tengoLlaveSiNo);
+    sequence1->addChild(abrirPuerta);
 
-        auto cWayPoint = static_cast<CWayPoint*>(way->GetComponent(CompType::WayPointComp).get());
+    tryCatchKey3->addChild(cogerLlave);
 
-        manPowerUps->CreatePowerUp(glm::vec3(cWayPoint->position));
-    }
+    cout << "--------------------" << endl;
+    while (door == false) {
+        selector1->run();
+    }  // If the operation starting from the root fails, keep trying until it succeeds.
+    cout << "--------------------" << endl;
+    //
 
     renderEngine->FacadeAddObjectCar(manCars.get()->GetCar().get());  //Añadimos el coche
     renderEngine->FacadeAddObject(ground.get());                      //Añadimos el suelo
 
+    for (shared_ptr<WayPoint> way : manWayPoint->GetEntities()) {
+        auto components = way->GetComponents();
+        auto mapWaypoint = components.find(CompType::WayPointComp);
+        auto cWayPoint = static_cast<CWayPoint*>(mapWaypoint->second.get());
+
+        manPowerUps->CreatePowerUp(glm::vec3(cWayPoint->position));
+    }
+    //cout << "el tamanyo normal es: " << manWayPoint.size() << endl;
     //Añadimos todos los power ups
     for (shared_ptr<Entity> pu : manPowerUps->GetEntities())
         renderEngine->FacadeAddObject(pu.get());
@@ -245,15 +252,21 @@ void StateInGame::Update() {
     physicsEngine->UpdateCar(manCars.get()->GetCar().get(), cam.get());
     physicsEngine->UpdateCarAI(carAI.get());
     //physicsEngine->UpdateCar(car.get(), cam.get());
-
-    //renderEngine->FacadeDraw();
-
-    int fps = renderEngine->FacadeGetFPS();
-    lastFPS = fps;
 }
 
 void StateInGame::Render() {
-    renderEngine->FacadeDraw();
+    bool isColliding = collisions->Intersects(manCars.get()->GetCar().get(), carAI.get());
+
+    renderEngine->FacadeBeginScene();
+
+    // renderEngine->FacadeDraw();  //Para dibujar primitivas debe ir entre el drawAll y el endScene
+    renderEngine->FacadeDrawAll();  
+    renderEngine->FacadeDrawGraphEdges(manWayPoint.get());
+    renderEngine->FacadeDrawBoundingBox(manCars.get()->GetCar().get(), isColliding);
+    renderEngine->FacadeDrawBoundingBox(carAI.get(), isColliding);
+    renderEngine->FacadeEndScene();
+    int fps = renderEngine->FacadeGetFPS();
+    lastFPS = fps;
 }
 
 float StateInGame::CalculateDelta(float currentDelta) {

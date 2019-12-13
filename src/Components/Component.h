@@ -12,7 +12,9 @@ enum CompType {
     CameraComp,
     WheelComp,
     WayPointComp,
-    CarComp
+    CarComp,
+    WayPointEdgesComp,
+    DimensionsComp
 };
 
 class Component

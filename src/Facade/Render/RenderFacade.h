@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include "../../Entities/Entity.h"
+#include "../../Managers/ManWayPoint.h"
 #include "../../EventManager/EventManager.h"
 
 class GameObject;
@@ -28,6 +29,11 @@ class RenderFacade {
     virtual void FacadeDeviceDrop() = 0;
     virtual void FacadeDraw() = 0;
 
-   protected:
+
+        //DEBUG
+        virtual void FacadeDrawGraphEdges(ManWayPoint* manWayPoints) = 0;
+        virtual void FacadeDrawBoundingBox(Entity* entity, bool colliding) = 0;
+
+    protected:
     uint16_t idCar = 0;
 };
