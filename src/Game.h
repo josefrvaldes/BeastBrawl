@@ -18,6 +18,7 @@ class Game{
         shared_ptr<State> GetState() { return currentState; };
         shared_ptr<State> GetLastState() { return lastState; };
         void InitGame();
+        int i;
         
 
 

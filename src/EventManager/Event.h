@@ -12,6 +12,8 @@
 // #include <any>
 // #include <string>
 #include "../Entities/Entity.h"
+#include "../Components/CTransformable.h"
+#include "../Components/CPowerUp.h"
 
 using namespace std;
 
@@ -22,12 +24,15 @@ enum EventType {
     PRESS_O,
     PRESS_A,
     PRESS_D,
+    PRESS_SPACE,
     NO_I_O_PRESS,
     NO_A_D_PRESS,
     PRIORIDAD1,
     PRIORIDAD2,
     PRIORIDAD3,
     POWER_UP_COGIDO,
+    PowerUp_Create,
+    PRESS_C,
     PRESS_1
 };
 
@@ -36,6 +41,9 @@ struct Data {
     Entity* gameObject;
     Entity* camera;
     float deltaTime;
+    CTransformable* posCocheSalida;
+    CTransformable* posCochePerseguir;
+    typeCPowerUp typePowerUp;
 };
 
 struct Event {

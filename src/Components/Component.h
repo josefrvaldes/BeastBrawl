@@ -13,6 +13,13 @@ enum CompType {
     WheelComp,
     WayPointComp,
     CarComp,
+    PowerUpComp,
+    BoxPowerUpComp,
+    ShieldComp,
+    NitroComp,
+    RoboJoroboComp,
+    TotemComp,
+    TargetEntityComp,
     WayPointEdgesComp,
     DimensionsComp
 };

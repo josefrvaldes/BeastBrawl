@@ -102,18 +102,20 @@ StateInGame::StateInGame() {
     eventManager = EventManager::GetInstance();
 
     manPowerUps = make_shared<ManPowerUp>();
+    phisicsPowerUp = make_shared<PhysicsPowerUp>();
+    manBoxPowerUps = make_shared<ManBoxPowerUp>();
     ground = make_shared<GameObject>(glm::vec3(10.0f, 10.0f, 30.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(100.0f, 1.0f, 100.0f), "wall.jpg", "ninja.b3d");
     cam = make_shared<Camera>(glm::vec3(10.0f, 40.0f, 30.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f));
-    carAI = make_shared<CarAI>(glm::vec3(100.0f, 20.0f, 100.0f));
 
     manWayPoint = make_shared<ManWayPoint>();
 
-    auto components = manWayPoint->GetEntities()[3]->GetComponents();
-    auto mapWaypoint = components.find(CompType::WayPointComp);
-    auto cWayPoint = static_cast<CWayPoint*>(mapWaypoint->second.get());
-    carAI->SetWayPoint(cWayPoint->position);
+    auto cWayPoint = static_cast<CWayPoint*>(manWayPoint->GetEntities()[3]->GetComponent(CompType::WayPointComp).get());
+
 
     manCars = make_shared<ManCar>(physics.get(), cam.get());
+
+    //Le asignamos el waypoint inicial, momentaneo a la IA
+    manCars->CreateCarAI(glm::vec3(100.0f, 20.0f, 100.0f), cWayPoint->position);
 
     // Inicializamos las facadas
     renderFacadeManager = RenderFacadeManager::GetInstance();
@@ -133,7 +135,120 @@ StateInGame::StateInGame() {
     physicsAI = make_shared<PhysicsAI>();
     collisions = make_shared<Collisions>();
 
-#pragma region FL
+    sysBoxPowerUp = make_shared<SystemBoxPowerUp>();
+
+    // manPowerUps->CreatePowerUp(glm::vec3(cWayPoint->position));
+
+    renderEngine->FacadeAddObjectCar(manCars.get()->GetCar().get());  //Anyadimos el coche
+    for (shared_ptr<Entity> carAI : manCars->GetEntitiesAI())         // Anyadimos los coche IA
+        renderEngine->FacadeAddObject(carAI.get());
+    renderEngine->FacadeAddObject(ground.get());  //Anyadimos el suelo
+
+    for (shared_ptr<WayPoint> way : manWayPoint->GetEntities()) {
+        auto components = way->GetComponents();
+        auto mapWaypoint = components.find(CompType::WayPointComp);
+        auto cWayPoint = static_cast<CWayPoint*>(mapWaypoint->second.get());
+
+        manBoxPowerUps->CreateBoxPowerUp(glm::vec3(cWayPoint->position));
+    }
+    //cout << "el tamanyo normal es: " << manWayPoint.size() << endl;
+    //Añadimos todos los power ups
+    for (shared_ptr<Entity> bpu : manBoxPowerUps->GetEntities())
+        renderEngine->FacadeAddObject(bpu.get());
+
+    renderEngine->FacadeAddCamera(cam.get());
+
+    lastFPS = -1;
+    //then = renderEngine->FacadeGetTime();
+    then = system_clock::now();
+
+    //inicializamos las reglas del cocheIA de velocidad/aceleracion
+    //FuzzyLogic flVelocity;
+    physicsAI->InitPhysicsIA(manCars->GetEntitiesAI()[0].get());  // To-Do: hacer que se le pasen todos los coches IA
+    cout << "después de init physics ai" << endl;
+}
+
+StateInGame::~StateInGame() {
+    // destructor
+}
+
+void StateInGame::InitState() {
+    soundEngine = SoundFacadeManager::GetInstance()->GetSoundFacade();
+    soundEngine->SetState(2);
+}
+
+void StateInGame::Input() {
+    renderEngine->FacadeCheckInput();
+}
+
+void StateInGame::Update() {
+    eventManager->Update();
+
+    // actualizamos el deltatime
+    time_point<system_clock> now = system_clock::now();
+    int64_t milis = duration_cast<milliseconds>(now - then).count();
+    //const uint32_t now = renderEngine->FacadeGetTime();
+
+    // con media
+    float currentDelta = (float)(milis) / 100.0;
+    *deltaTime.get() = CalculateDelta(currentDelta);
+
+    // sin media
+    // *deltaTime.get() = (float)(milis) / 100.0;
+
+    then = now;
+
+    physics->update(manCars->GetCar().get(), cam.get());
+    physicsAI->Update(manWayPoint->GetEntities(), manCars->GetEntitiesAI()[0].get(), *deltaTime.get());
+    sysBoxPowerUp->update(manBoxPowerUps.get());
+    phisicsPowerUp->update(manPowerUps->GetEntities());
+
+    // COMPORBACION A PELO COLISIONES ENTRE COCHES-POWERUPS
+    // para hacerlo sencillo - la colision siemre sera entre el coche del jugador y el powerUp 1
+
+    renderEngine->UpdateCamera(cam.get());
+    physicsEngine->UpdateCar(manCars.get()->GetCar().get(), cam.get());
+    for (shared_ptr<Entity> carAI : manCars->GetEntitiesAI())  // actualizamos los coche IA
+        physicsEngine->UpdateCarAI(carAI.get());
+
+    for (shared_ptr<Entity> actualPowerUp : manPowerUps->GetEntities())  // actualizamos los powerUp en irrlich
+        physicsEngine->UpdatePowerUps(actualPowerUp.get());
+
+    //physicsEngine->UpdateCar(car.get(), cam.get());
+}
+
+void StateInGame::Render() {
+    auto carAI = manCars->GetEntitiesAI()[0].get();
+    bool isColliding = collisions->Intersects(manCars.get()->GetCar().get(), carAI);
+
+    renderEngine->FacadeBeginScene();
+
+    // renderEngine->FacadeDraw();  //Para dibujar primitivas debe ir entre el drawAll y el endScene
+    renderEngine->FacadeDrawAll();
+    renderEngine->FacadeDrawGraphEdges(manWayPoint.get());
+    renderEngine->FacadeDrawBoundingBox(manCars.get()->GetCar().get(), isColliding);
+    renderEngine->FacadeDrawBoundingBox(carAI, isColliding);
+    renderEngine->FacadeEndScene();
+    int fps = renderEngine->FacadeGetFPS();
+    lastFPS = fps;
+}
+
+float StateInGame::CalculateDelta(float currentDelta) {
+    deltas.push_back(currentDelta);  // añadimos uno
+    deltas.erase(deltas.begin());    // borramos el primero
+
+    // hace la media de las últimas 5 deltas
+    return accumulate(deltas.begin(), deltas.end(), 0.0) / deltas.size();
+}
+
+
+
+
+
+/*
+
+
+#pragma region BT
 
     // --------------------------- BEHAVIOR TREE ----------------------------------
 
@@ -174,105 +289,5 @@ StateInGame::StateInGame() {
 
 #pragma endregion
 
-    selector1->addChild(puertaAbiertaSiNo);
-    selector1->addChild(sequence1);
-    selector1->addChild(tryCatchKey3);
 
-    sequence1->addChild(tengoLlaveSiNo);
-    sequence1->addChild(abrirPuerta);
-
-    tryCatchKey3->addChild(cogerLlave);
-
-    cout << "--------------------" << endl;
-    while (door == false) {
-        selector1->run();
-    }  // If the operation starting from the root fails, keep trying until it succeeds.
-    cout << "--------------------" << endl;
-    //
-
-    renderEngine->FacadeAddObjectCar(manCars.get()->GetCar().get());  //Añadimos el coche
-    renderEngine->FacadeAddObject(ground.get());                      //Añadimos el suelo
-
-    for (shared_ptr<WayPoint> way : manWayPoint->GetEntities()) {
-        auto components = way->GetComponents();
-        auto mapWaypoint = components.find(CompType::WayPointComp);
-        auto cWayPoint = static_cast<CWayPoint*>(mapWaypoint->second.get());
-
-        manPowerUps->CreatePowerUp(glm::vec3(cWayPoint->position));
-    }
-    //cout << "el tamanyo normal es: " << manWayPoint.size() << endl;
-    //Añadimos todos los power ups
-    for (shared_ptr<Entity> pu : manPowerUps->GetEntities())
-        renderEngine->FacadeAddObject(pu.get());
-
-    renderEngine->FacadeAddObject(carAI.get());
-    renderEngine->FacadeAddCamera(cam.get());
-
-    lastFPS = -1;
-    //then = renderEngine->FacadeGetTime();
-    then = system_clock::now();
-
-    //inicializamos las reglas del cocheIA de velocidad/aceleracion
-    //FuzzyLogic flVelocity;
-    physicsAI->InitPhysicsIA(carAI.get());
-}
-
-StateInGame::~StateInGame() {
-    // destructor
-}
-
-void StateInGame::InitState() {
-    soundEngine = SoundFacadeManager::GetInstance()->GetSoundFacade();
-    soundEngine->SetState(2);
-}
-
-void StateInGame::Input() {
-    renderEngine->FacadeCheckInput();
-}
-
-void StateInGame::Update() {
-    eventManager->Update();
-
-    // actualizamos el deltatime
-    time_point<system_clock> now = system_clock::now();
-    int64_t milis = duration_cast<milliseconds>(now - then).count();
-    //const uint32_t now = renderEngine->FacadeGetTime();
-
-    // con media
-    float currentDelta = (float)(milis) / 100.0;
-    *deltaTime.get() = CalculateDelta(currentDelta);
-
-    // sin media
-    // *deltaTime.get() = (float)(milis) / 100.0;
-
-    then = now;
-
-    physicsAI->Update(manWayPoint->GetEntities(), carAI.get(), *deltaTime.get());
-    renderEngine->UpdateCamera(cam.get());
-    physicsEngine->UpdateCar(manCars.get()->GetCar().get(), cam.get());
-    physicsEngine->UpdateCarAI(carAI.get());
-    //physicsEngine->UpdateCar(car.get(), cam.get());
-}
-
-void StateInGame::Render() {
-    bool isColliding = collisions->Intersects(manCars.get()->GetCar().get(), carAI.get());
-
-    renderEngine->FacadeBeginScene();
-
-    // renderEngine->FacadeDraw();  //Para dibujar primitivas debe ir entre el drawAll y el endScene
-    renderEngine->FacadeDrawAll();  
-    renderEngine->FacadeDrawGraphEdges(manWayPoint.get());
-    renderEngine->FacadeDrawBoundingBox(manCars.get()->GetCar().get(), isColliding);
-    renderEngine->FacadeDrawBoundingBox(carAI.get(), isColliding);
-    renderEngine->FacadeEndScene();
-    int fps = renderEngine->FacadeGetFPS();
-    lastFPS = fps;
-}
-
-float StateInGame::CalculateDelta(float currentDelta) {
-    deltas.push_back(currentDelta);  // añadimos uno
-    deltas.erase(deltas.begin());    // borramos el primero
-
-    // hace la media de las últimas 5 deltas
-    return accumulate(deltas.begin(), deltas.end(), 0.0) / deltas.size();
-}
+*/

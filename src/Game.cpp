@@ -8,6 +8,7 @@ shared_ptr<Game> Game::GetInstance() {
     // if(instance==nullptr){
     //     instance = make_shared<EventManager>();
     // }
+    game->i = 23;
     return game;
 }
 
@@ -51,7 +52,7 @@ void Game::MainLoop() {
 
     //Lo creo aqui porque queria llamar al TerminateSoundEngine despues del bucle.
     SoundFacadeManager* soundFacadeManager = SoundFacadeManager::GetInstance();
-    
+
     //Si se incluye esta funcion en el constructor de SoundFacadeFMOD da violacion de segmento.
     soundFacadeManager->InitializeFacadeFmod();
     soundFacadeManager->GetSoundFacade()->InitSoundEngine();
@@ -66,5 +67,4 @@ void Game::MainLoop() {
     }
     soundFacadeManager->GetSoundFacade()->TerminateSoundEngine();
     renderFacadeManager->GetRenderFacade()->FacadeDeviceDrop();
-    //for(;;);  // To-Do: crear bucle del juego
 }

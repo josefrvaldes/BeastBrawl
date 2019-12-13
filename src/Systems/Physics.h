@@ -5,10 +5,12 @@
 #include "../Components/CId.h"
 #include "../Components/CTransformable.h"
 #include "../Components/CType.h"
+#include "../Components/CNitro.h"
 #include "../Components/Component.h"
 
 #include "../EventManager/Event.h"
 #include "../EventManager/EventManager.h"
+
 
 #include <math.h>
 #include <memory>
@@ -23,6 +25,7 @@ class Physics {
    public:
     Physics(float *);
     ~Physics(){};
+    void update(Car* car, Camera* cam);
     void Accelerate(Car *, Camera *);
     void TurnLeft(Car *, Camera *);
     void TurnRight(Car *, Camera *);
@@ -33,4 +36,7 @@ class Physics {
    protected:
    private:
     float *deltaTime;
+    void CalculatePosition(CCar *cCar, CTransformable *cTransformable, float *deltaTime);
+    void CalculatePositionReverse(CCar *cCar, CTransformable *cTransformable, float *deltaTime);
+    void CalculatePositionCamera(CTransformable *cTransformableCar, CTransformable *cTransformableCamera, CCamera *cCamera);
 };

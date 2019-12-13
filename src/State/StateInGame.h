@@ -14,19 +14,23 @@
 #include "../Entities/CarAI.h"
 #include "../Entities/GameObject.h"
 #include "../Entities/PowerUp.h"
+#include "../Entities/BoxPowerUp.h"
 #include "../Entities/WayPoint.h"
 #include "../Systems/Physics.h"
-
+#include "../Managers/ManPowerUp.h"
+#include "../Managers/ManWayPoint.h"
 #include "../EventManager/EventManager.h"
 #include "../Facade/Input/InputFacadeManager.h"
 #include "../Facade/Physics/PhysicsFacadeManager.h"
+#include "../Systems/PhysicsPowerUp.h"
+#include "../Systems/SystemBoxPowerUp.h"
 #include "../Facade/Render/RenderFacadeManager.h"
 #include "../Facade/Sound/SoundFacade.h"
 #include "../Facade/Sound/SoundFacadeManager.h"
 #include "../Game.h"
 #include "../Managers/ManCar.h"
-#include "../Managers/ManCarAI.h"
 #include "../Managers/ManPowerUp.h"
+#include "../Managers/ManBoxPowerUp.h"
 #include "../Managers/ManWayPoint.h"
 #include "../Systems/Collisions.h"
 #include "../Systems/Physics.h"
@@ -55,6 +59,7 @@ class StateInGame : public State {
     shared_ptr<GameObject> ground;
     shared_ptr<Camera> cam;
     shared_ptr<ManPowerUp> manPowerUps;
+    shared_ptr<ManBoxPowerUp> manBoxPowerUps;
     shared_ptr<ManCar> manCars;
     shared_ptr<RenderFacadeManager> renderFacadeManager;
     shared_ptr<InputFacadeManager> inputFacadeManager;
@@ -67,9 +72,10 @@ class StateInGame : public State {
     //shared_ptr<SoundFacadeManager> soundFacadeManager;
     SoundFacade *soundEngine;
     shared_ptr<Physics> physics;
+    shared_ptr<PhysicsPowerUp> phisicsPowerUp;
+    shared_ptr<SystemBoxPowerUp> sysBoxPowerUp;
     shared_ptr<float> deltaTime;
 
-    shared_ptr<CarAI> carAI;
     shared_ptr<PhysicsAI> physicsAI;
     int lastFPS = -1;
     //uint32_t then;

@@ -22,9 +22,9 @@ class RenderFacadeIrrlicht : public RenderFacade {
         const uint16_t FacadeAddObject(Entity*) override;
         const uint16_t FacadeAddObjectCar(Entity*) override;
 		const void FacadeAddObjects(vector<Entity*>) override;
+		void FacadeAddCamera(Entity*) override;
         void UpdateTransformable(Entity*) override;
         void UpdateCamera(Entity*) override;
-		void FacadeAddCamera(Entity*) override;
 		bool FacadeRun() override;
 		uint32_t FacadeGetTime() override;
 		void FacadeCheckInput() override;
@@ -35,6 +35,7 @@ class RenderFacadeIrrlicht : public RenderFacade {
 		void FacadeEndScene() override;
 		void FacadeDeviceDrop() override;
 		void FacadeDraw() override;
+		void DeleteEntity(Entity*) override;
 
 		//DEBUG
         void FacadeDrawGraphEdges(ManWayPoint* manWayPoints) override;

@@ -18,6 +18,8 @@
 #define PI 3.14159
 
 //PUNTEROS A FUNCIONES
+RenderFacadeIrrlicht::~RenderFacadeIrrlicht() {
+}
 
 RenderFacadeIrrlicht::RenderFacadeIrrlicht() {
     //auto inputFacade = InputFacadeManager::GetInstance()->GetInputFacade();
@@ -215,6 +217,18 @@ void RenderFacadeIrrlicht::FacadeCheckInput() {
 	if(receiver.IsKeyDown(KEY_F3)){
 		showDebug = !showDebug;
 	}
+
+
+
+    // POWERUPS
+    if (receiver.IsKeyDown(KEY_KEY_C)) {
+        eventManager->AddEventMulti(Event{EventType::PRESS_C});
+    }
+    if (receiver.IsKeyDown(KEY_SPACE)) {
+        eventManager->AddEventMulti(Event{EventType::PRESS_SPACE});
+    }
+
+
 }
 
 int RenderFacadeIrrlicht::FacadeGetFPS() {
@@ -296,6 +310,12 @@ void RenderFacadeIrrlicht::FacadeDrawGraphEdges(ManWayPoint* manWayPoints){
     }
 }
 
+void RenderFacadeIrrlicht::DeleteEntity(Entity* entity) {
+    auto cId = static_cast<CId*>(entity->GetComponent(CompType::IdComp).get());
+    scene::ISceneNode* node = smgr->getSceneNodeFromId(cId->id);
+    node->remove();
+}
+
 void RenderFacadeIrrlicht::FacadeDrawBoundingBox(Entity* entity, bool colliding){
 	if(!showDebug) return; //Si no esta activado debug retornamos
 
@@ -315,7 +335,6 @@ void RenderFacadeIrrlicht::FacadeDrawBoundingBox(Entity* entity, bool colliding)
 		| /       |  /
 		|/        | /
 		0---------4/
-
 	*/
 
 	video::SMaterial m;
@@ -331,6 +350,3 @@ void RenderFacadeIrrlicht::FacadeDrawBoundingBox(Entity* entity, bool colliding)
 	}
 }
 
-
-RenderFacadeIrrlicht::~RenderFacadeIrrlicht(){
-}

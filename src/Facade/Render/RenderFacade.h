@@ -4,13 +4,13 @@
 #include <iostream>
 #include <string>
 #include "../../Entities/Entity.h"
-#include "../../Managers/ManWayPoint.h"
 #include "../../EventManager/EventManager.h"
+#include "../../Managers/ManWayPoint.h"
 
 class GameObject;
 class RenderFacade {
    public:
-    //RenderFacade();
+    //RenderFacade() = default;
     virtual ~RenderFacade() = default;
     virtual const uint16_t FacadeAddObject(Entity*) = 0;
     virtual const uint16_t FacadeAddObjectCar(Entity*) = 0;
@@ -28,12 +28,12 @@ class RenderFacade {
     virtual void FacadeEndScene() = 0;
     virtual void FacadeDeviceDrop() = 0;
     virtual void FacadeDraw() = 0;
+    virtual void DeleteEntity(Entity*) = 0;
 
+    //DEBUG
+    virtual void FacadeDrawGraphEdges(ManWayPoint* manWayPoints) = 0;
+    virtual void FacadeDrawBoundingBox(Entity* entity, bool colliding) = 0;
 
-        //DEBUG
-        virtual void FacadeDrawGraphEdges(ManWayPoint* manWayPoints) = 0;
-        virtual void FacadeDrawBoundingBox(Entity* entity, bool colliding) = 0;
-
-    protected:
+   protected:
     uint16_t idCar = 0;
 };
