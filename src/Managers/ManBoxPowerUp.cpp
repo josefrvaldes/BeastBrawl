@@ -42,7 +42,7 @@ ManBoxPowerUp::ManBoxPowerUp() {
 }
 
 ManBoxPowerUp::~ManBoxPowerUp() {
-    cout << "Llamando al destructor de manpowerup" << endl;
+    cout << "Llamando al destructor de ManBoxPowerUps" << endl;
     BoxPowerUps.clear();
     BoxPowerUps.shrink_to_fit();
 }

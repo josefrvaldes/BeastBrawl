@@ -17,7 +17,7 @@ ManPowerUp::ManPowerUp() {
 }
 
 ManPowerUp::~ManPowerUp() {
-    cout << "Llamando al destructor de manpowerup" << endl;
+    cout << "Llamando al destructor de ManPowerUps" << endl;
     PowerUps.clear();
     PowerUps.shrink_to_fit();
 }
