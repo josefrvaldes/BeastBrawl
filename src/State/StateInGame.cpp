@@ -88,15 +88,8 @@ struct Inverter : public Decorator {  // Decorator Inverter
 #pragma endregion
 
 StateInGame::StateInGame() {
-    // constructor
-    deltaTime = make_shared<float>(1.2);
-    deltas.push_back(1);
-    deltas.push_back(1);
-    deltas.push_back(1);
-    deltas.push_back(1);
-    deltas.push_back(1);
-    cout << "Hemos inicializado el stateInGame" << endl;
-    physics = make_unique<Physics>(deltaTime.get());
+    
+    physics = make_unique<Physics>(deltaTime);
 
     eventManager = EventManager::GetInstance();
 
@@ -201,9 +194,9 @@ StateInGame::StateInGame() {
     renderEngine->FacadeAddObject(carAI.get());
     renderEngine->FacadeAddCamera(cam.get());
 
-    lastFPS = -1;
+    //lastFPS = -1;
     //then = renderEngine->FacadeGetTime();
-    then = system_clock::now();
+    //then = system_clock::now();
 
     //inicializamos las reglas del cocheIA de velocidad/aceleracion
     //FuzzyLogic flVelocity;
@@ -227,40 +220,36 @@ void StateInGame::Update() {
     eventManager->Update();
 
     // actualizamos el deltatime
-    time_point<system_clock> now = system_clock::now();
-    int64_t milis = duration_cast<milliseconds>(now - then).count();
+    //time_point<system_clock> now = system_clock::now();
+    //int64_t milis = duration_cast<milliseconds>(now - then).count();
     //const uint32_t now = renderEngine->FacadeGetTime();
 
     // con media
-    float currentDelta = (float)(milis) / 100.0;
-    *deltaTime.get() = CalculateDelta(currentDelta);
+    //float currentDelta = (float)(milis) / 100.0;
+    //*deltaTime.get() = CalculateDelta(currentDelta);
 
     // sin media
     // *deltaTime.get() = (float)(milis) / 100.0;
 
-    then = now;
+   
 
-    cout << *deltaTime << endl;
-
-    physicsAI->Update(manWayPoint->GetEntities(), carAI.get(), *deltaTime.get());
+    physicsAI->Update(manWayPoint->GetEntities(), carAI.get(), deltaTime);
     renderEngine->UpdateCamera(cam.get());
     physicsEngine->UpdateCar(manCars.get()->GetCar().get(), cam.get());
     physicsEngine->UpdateCarAI(carAI.get());
     //physicsEngine->UpdateCar(car.get(), cam.get());
 
     //renderEngine->FacadeDraw();
-    int fps = renderEngine->FacadeGetFPS();
-    lastFPS = fps;
 }
 
 void StateInGame::Render() {
     renderEngine->FacadeDraw();
 }
 
-float StateInGame::CalculateDelta(float currentDelta) {
-    deltas.push_back(currentDelta);  // añadimos uno
-    deltas.erase(deltas.begin());    // borramos el primero
+// float StateInGame::CalculateDelta(float currentDelta) {
+//     deltas.push_back(currentDelta);  // añadimos uno
+//     deltas.erase(deltas.begin());    // borramos el primero
 
-    // hace la media de las últimas 5 deltas
-    return accumulate(deltas.begin(), deltas.end(), 0.0) / deltas.size();
-}
+//     // hace la media de las últimas 5 deltas
+//     return accumulate(deltas.begin(), deltas.end(), 0.0) / deltas.size();
+// }

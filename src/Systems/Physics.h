@@ -21,7 +21,7 @@ class Camera;
 
 class Physics {
    public:
-    Physics(float *);
+    Physics(float);
     ~Physics(){};
     void Accelerate(Car *, Camera *);
     void TurnLeft(Car *, Camera *);
@@ -32,5 +32,5 @@ class Physics {
 
    protected:
    private:
-    float *deltaTime;
+    float deltaTime;
 };
