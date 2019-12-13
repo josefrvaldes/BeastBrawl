@@ -9,6 +9,9 @@
 #include "../../Components/CType.h"
 #include "../../Components/Component.h"
 
+#include "../../Game.h"
+
+
 #define PI 3.14159
 
 //PUNTEROS A FUNCIONES
@@ -19,6 +22,12 @@ RenderFacadeIrrlicht::RenderFacadeIrrlicht() {
     device = createDevice(video::EDT_OPENGL, core::dimension2d<u32>(1280, 720), 16, false, false, false, &receiver);
     driver = device->getVideoDriver();
     smgr = device->getSceneManager();
+
+}
+
+void RenderFacadeIrrlicht::FacadeInitMenu(){
+    menuBG = driver->getTexture("media/KnekroMenu.jpg");
+    driver->makeColorKeyTexture(menuBG, core::position2d<s32>(0,0));
 }
 
 const void RenderFacadeIrrlicht::FacadeAddObjects(vector<Entity*> entities) {
@@ -167,6 +176,22 @@ void RenderFacadeIrrlicht::FacadeCheckInput() {
     } else {
         eventManager->AddEventMulti(Event{EventType::NO_A_D_PRESS, d});
     }
+
+    //Cambiamos a menu
+    if(receiver.IsKeyDown(KEY_F2)){
+        Game::GetInstance()->SetState(State::MENU);
+    }
+}
+
+void RenderFacadeIrrlicht::FacadeCheckInputMenu(){
+    //Cambiamos a ingame
+    if(receiver.IsKeyDown(KEY_F1)){
+        Game::GetInstance()->SetState(State::INGAME);
+    }
+
+    if (receiver.IsKeyDown(KEY_ESCAPE)) {
+        device->closeDevice();
+    }
 }
 
 int RenderFacadeIrrlicht::FacadeGetFPS() {
@@ -190,6 +215,16 @@ void RenderFacadeIrrlicht::FacadeDraw() {
     smgr->drawAll();  // draw the 3d scene
     driver->endScene();
 }
+
+void RenderFacadeIrrlicht::FacadeDrawMenu(){
+    driver->beginScene(true, true, video::SColor(255, 113, 113, 133));
+    //smgr->drawAll();  // draw the 3d scene
+    driver->draw2DImage(menuBG, core::position2d<s32>(0,0),
+                core::rect<s32>(0,0,1280,720), 0,
+                video::SColor(255,255,255,255), true);
+    driver->endScene();
+}
+
 
 //Limpia la pantalla
 void RenderFacadeIrrlicht::FacadeBeginScene() {

@@ -1,5 +1,5 @@
-#ifndef __CAMERA_H__
-#define __CAMERA_H__
+#pragma once
+
 #include "Entity.h"
 #include "../../lib/glm/vec3.hpp"
 #include <iostream>
@@ -16,4 +16,3 @@ public:
 };
 
 
-#endif

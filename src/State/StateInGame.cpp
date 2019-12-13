@@ -119,13 +119,13 @@ StateInGame::StateInGame() {
 
     // Inicializamos las facadas
     renderFacadeManager = RenderFacadeManager::GetInstance();
-    renderFacadeManager->InitializeIrrlicht();
+    //renderFacadeManager->InitializeIrrlicht();
 
     inputFacadeManager = InputFacadeManager::GetInstance();
-    inputFacadeManager->InitializeIrrlicht();
+    //inputFacadeManager->InitializeIrrlicht();
 
     physicsFacadeManager = PhysicsFacadeManager::GetInstance();
-    physicsFacadeManager->InitializeIrrlicht();
+    //physicsFacadeManager->InitializeIrrlicht();
 
     //Almacenamos los motores
     renderEngine = renderFacadeManager->GetRenderFacade();
@@ -240,6 +240,8 @@ void StateInGame::Update() {
 
     then = now;
 
+    cout << *deltaTime << endl;
+
     physicsAI->Update(manWayPoint->GetEntities(), carAI.get(), *deltaTime.get());
     renderEngine->UpdateCamera(cam.get());
     physicsEngine->UpdateCar(manCars.get()->GetCar().get(), cam.get());
@@ -247,7 +249,6 @@ void StateInGame::Update() {
     //physicsEngine->UpdateCar(car.get(), cam.get());
 
     //renderEngine->FacadeDraw();
-
     int fps = renderEngine->FacadeGetFPS();
     lastFPS = fps;
 }

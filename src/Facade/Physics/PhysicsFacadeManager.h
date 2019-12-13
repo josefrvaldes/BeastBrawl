@@ -9,21 +9,21 @@ using namespace std;
 class PhysicsFacadeManager{
 
 public:
-    PhysicsFacadeManager(){};
-    ~PhysicsFacadeManager(){};
+    ~PhysicsFacadeManager(){delete facade;};
 
     void InitializeIrrlicht() {
-        facade = make_shared<PhysicsFacadeIrrlicht>();
+        facade = new PhysicsFacadeIrrlicht();
     }
 
     void InitializeClover() {
         // TODO: crear motor de clover
     }
 
-    shared_ptr<PhysicsFacade> GetPhysicsFacade() { return facade; };
-    static shared_ptr<PhysicsFacadeManager> GetInstance();
+    PhysicsFacade* GetPhysicsFacade() { return facade; };
+    static PhysicsFacadeManager* GetInstance();
 
 private:
-    shared_ptr<PhysicsFacade> facade;
-    static const shared_ptr<PhysicsFacadeManager> instance;
+    PhysicsFacadeManager() : facade(nullptr){};
+    PhysicsFacade* facade;
+    static PhysicsFacadeManager* instance;
 };

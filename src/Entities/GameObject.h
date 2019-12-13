@@ -1,5 +1,4 @@
-#ifndef __GameObject_H__
-#define __GameObject_H__
+#pragma once
 
 #include "Entity.h"
 #include "../../lib/glm/vec3.hpp"
@@ -15,5 +14,3 @@ public:
     GameObject(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale, string texture, string mesh);
     ~GameObject();
 };
-
-#endif

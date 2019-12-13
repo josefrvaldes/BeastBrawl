@@ -1,5 +1,4 @@
-#ifndef STATEINGAME_H
-#define STATEINGAME_H
+#pragma once
 
 #include <chrono>
 #include <cstdint>
@@ -53,13 +52,13 @@ class StateInGame : public State {
     shared_ptr<Camera> cam;
     shared_ptr<ManPowerUp> manPowerUps;
     shared_ptr<ManCar> manCars;
-    shared_ptr<RenderFacadeManager> renderFacadeManager;
-    shared_ptr<InputFacadeManager> inputFacadeManager;
-    shared_ptr<PhysicsFacadeManager> physicsFacadeManager;
-    shared_ptr<RenderFacade> renderEngine;
-    shared_ptr<InputFacade> inputEngine;
-    shared_ptr<PhysicsFacade> physicsEngine;
-    //shared_ptr<SoundFacadeManager> soundFacadeManager;
+    RenderFacadeManager* renderFacadeManager;
+    InputFacadeManager* inputFacadeManager;
+    PhysicsFacadeManager* physicsFacadeManager;
+    RenderFacade* renderEngine;
+    InputFacade* inputEngine;
+    PhysicsFacade* physicsEngine;
+    shared_ptr<SoundFacadeManager> soundFacadeManager;
     SoundFacade *soundEngine;
     shared_ptr<Physics> physics;
     shared_ptr<float> deltaTime;
@@ -73,5 +72,3 @@ class StateInGame : public State {
     vector<float> deltas;
     float CalculateDelta(float);
 };
-
-#endif  // STATEINGAME_H
