@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 #include "TransientFunction.h"
+#include "Lambda.h"
 #include "../Aliases.h"
 // #include <any>
 // #include <string>
@@ -55,6 +56,9 @@ struct Listener {
     // template<typename Out, typename... In> class Lambda<Out(In...)> {};
     // Lambda<void(Data d)> callback;
     // template <typename Args>
+    // Lambda<void(int)> callback;
+
+
     function<void(DataMap)> callback;
     string name;  // Nombre del listener
 
@@ -67,6 +71,11 @@ struct Listener {
     Listener(EventType _type, function<void(DataMap)> _callback, string _name)
         : type(_type), callback(_callback), name(_name) {
     }
+
+    // con Lambda
+    // Listener(EventType _type, Lambda<void(int)> _callback, string _name)
+    //     : type(_type), callback(_callback), name(_name) {
+    // }
 
     // con puntero a función
     // Listener(EventType _type, void (*_callback)(Data), string _name)

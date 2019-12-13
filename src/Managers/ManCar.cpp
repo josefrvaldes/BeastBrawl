@@ -53,11 +53,15 @@ void ManCar::SubscribeToEvents() {
     //int (*func_pointer) (int) = [](int a) { return a; };
 
     //accelerateCar(0);
+    auto lambdaAccelerate = [&](DataMap d){this->AccelerateCar(d);};
+    //
+    auto lambdaGuardaAccel = [&lambdaAccelerate](DataMap d) {lambdaAccelerate(d);};
 
 
     EventManager::GetInstance()->SuscribeMulti(Listener(
         EventType::PRESS_I,
-        [&](DataMap d){this->AccelerateCar(d);},
+        lambdaAccelerate,
+        // [&](DataMap d){this->AccelerateCar(d);},
         "AccelerateCar"));
 
     EventManager::GetInstance()->SuscribeMulti(Listener(

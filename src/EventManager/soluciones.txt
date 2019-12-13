@@ -60,6 +60,23 @@ CONTRAS
         porque tampoco creo yo que este tío sea más listo que la gente de c++. Es que el código ni siquiera está en github
 
 
+---- sol6 ---- funciones distintas como en android 
+obliga a crear listeners personalizados para una o un grupo de operaciones, entonces tú ya no guardas un array de listener 
+genérico con punteros a funciones, sino que guardas un array de objetos listeners con funciones concretas. 
+Las clases que hacen uso de estas tienen que implementar o tener instancias de estos listeners
+Ejemplo: 
+Listeners/
+    CarListener (y tiene los métodos accelerate, turnLeft, turnRight, etc)
+    OjeteListener (los métodos que sean)
+Así es como se hace en java/android
+PROS
+    no tiene ninguna pérdida de rendimiento. Además cada función puede recibir y devolver cosas totalmente distintas
+    también soluciona el tema de las funciones con distintos tipos de argumentos
+
+CONTRAS
+    ya no es tan genérico, hay que crear distintos listeners
+    habría que ver la implementación exacta en c++
+
 
 
 
@@ -90,3 +107,22 @@ Si lo hago funcionar, problema resuelto. Esto lo soluciona todo 100%
 
 
 ---- sol4 ---- std::optional
+el data antiguo que tenía como 4 o 5 parámetros que no tenían que ver uno con el otro, pero que sean del tipo optional, que pueden
+estar o no
+
+
+
+---- sol5 ---- funciones distintas como en android
+obliga a crear listeners personalizados para una o un grupo de operaciones, entonces tú ya no guardas un array de listener 
+genérico con punteros a funciones, sino que guardas un array de listeners con funciones concretas. 
+Ejemplo: 
+CarListener (y tiene los métodos accelerate, turnLeft, turnRight, etc)
+Así es como se hace en java/android
+PROS
+    no tiene ninguna pérdida de rendimiento. Además cada función puede recibir y devolver cosas totalmente distintas
+
+CONTRAS
+    ya no es tan genérico, hay que crear distintos listeners
+    habría que ver la implementación exacta en c++
+
+
