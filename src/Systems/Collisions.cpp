@@ -1,6 +1,5 @@
 #include "Collisions.h"
 
-
 Collisions::Collisions(){
 
 }
@@ -41,4 +40,34 @@ bool Collisions::Intersects(Entity* entity1,Entity* entity2){
     }
 
     return false;
+}
+
+
+void Collisions::IntersectsCarsPowerUps(vector<Entity*> cars, vector<Entity*> powerUps){
+
+    for(Entity* actualCar : cars){
+        for(Entity* actualPowerUp : powerUps){
+            auto cPowerUp = static_cast<CPowerUp*>(actualPowerUp->GetComponent(CompType::PowerUpComp).get());
+            if(cPowerUp->effectActive == true){                                                                 // SI HACE DANYO
+                if(Intersects(actualCar, actualPowerUp)){   //TRUE
+                    // debemos eliminar el powerUp y hacer danyo al jugador
+                    std::cout << "COLISIONAMOS CON UN POWER UP DEL SUELO LOOOOOOCOOOOOOO" << std::endl;
+                }
+            }
+        }
+    }
+}
+
+void Collisions::IntersectPlayerPowerUps(Entity* car, vector<Entity*> powerUps){
+
+    for(Entity* actualPowerUp : powerUps){
+        auto cPowerUp = static_cast<CPowerUp*>(actualPowerUp->GetComponent(CompType::PowerUpComp).get());
+        if(cPowerUp->effectActive == true){                                                                 // SI HACE DANYO
+            if(Intersects(car, actualPowerUp)){   //TRUE
+                // debemos eliminar el powerUp y hacer danyo al jugador
+                std::cout << "COLISIONAMOS CON UN POWER UP DEL SUELO LOOOOOOCOOOOOOO (EL PLAYEER)" << std::endl;
+            }
+        }
+    }
+
 }

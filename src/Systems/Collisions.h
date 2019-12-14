@@ -7,10 +7,12 @@
 #include "../Components/Component.h"
 #include "../Components/CCar.h"
 #include "../Components/CDimensions.h"
+#include "../Components/CPowerUp.h"
 
 #include "../Entities/Entity.h"
 #include <math.h>
 #include <memory>
+#include <vector>
 
 using namespace std;
 #define PI 3.141592
@@ -21,7 +23,8 @@ public:
     Collisions();
     ~Collisions(){};
     bool Intersects(Entity* car,Entity* carAI);
-
+    void IntersectsCarsPowerUps(vector<Entity*> cars, vector<Entity*> powerUps);
+    void IntersectPlayerPowerUps(Entity* cars, vector<Entity*> powerUps);
 protected:
 private:
     

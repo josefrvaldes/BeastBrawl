@@ -35,6 +35,10 @@ void ManPowerUp::CreatePowerUp(DataMap d) {
     shared_ptr<RenderFacadeManager> renderFacadeManager = RenderFacadeManager::GetInstance();
     shared_ptr<RenderFacade> renderEngine = renderFacadeManager->GetRenderFacade();
     renderEngine->FacadeAddObject(powerUp.get());
+
+    //Cuando creamos el powerUp, ponemos su tiempo inicial de inactivadad --> para no danyarnos a nostros mismos
+    static_cast<CPowerUp*>(powerUp.get()->GetComponent(CompType::PowerUpComp).get())->timeStart = system_clock::now();
+
 }
 
 

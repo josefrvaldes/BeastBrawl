@@ -5,8 +5,10 @@
 #include "Component.h"
 #include <string>
 #include <iostream>
+#include <chrono>
 
 using namespace std;
+using namespace chrono;
 //using namespace glm;
 enum class typeCPowerUp {
     None,               // 0
@@ -31,4 +33,9 @@ public:
     //     //return out;
     // }
     typeCPowerUp typePowerUp = typeCPowerUp::None;   // NONE
+
+    // Tiempo de inactividad mientras sale el powerUp hasta que hace efecto
+    bool effectActive = false;
+    time_point<system_clock> timeStart;
+    const int64_t durationTime = 1000;       // 1 segundo ---> Podra variar dependiendo de cada powerUp
 };

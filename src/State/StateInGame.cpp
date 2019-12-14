@@ -225,16 +225,29 @@ void StateInGame::Update() {
                 if(cBoxPowerUp->active == true){                                                                                    // Vemos si efectivamente esta activo o no, para poder cogerlo
                      if( collisions->Intersects(manCars.get()->GetCar().get(), actualBoxPowerUp.get()) ){                           // Finalmente comprobamos las colisiones entre el coche y el powerUp
                         //std::cout << "HAY COLISION ENTRE COCHE Y POWERUP" << std::endl;
-                        DataMap dataCollisonCarPowerUp;                                                                             // Mejor definirlo en el .h
-                        dataCollisonCarPowerUp["BoxPowerUpComp"] = cBoxPowerUp;                                                     // necesitamos el componente
-                        dataCollisonCarPowerUp["actualBox"] = actualBoxPowerUp;                                                     // y tambien la caja actual (para eliminarla de irrlicht)
-                        eventManager->AddEventMulti(Event{EventType::PRESS_C, dataCollisonCarPowerUp});                             // llamamos al evento --- COMO ODIO QUE SE LLAME ADD Y NO TARGET
+                        DataMap dataCollisonCarBoxPowerUp;                                                                             // Mejor definirlo en el .h
+                        dataCollisonCarBoxPowerUp["BoxPowerUpComp"] = cBoxPowerUp;                                                     // necesitamos el componente
+                        dataCollisonCarBoxPowerUp["actualBox"] = actualBoxPowerUp;                                                     // y tambien la caja actual (para eliminarla de irrlicht)
+                        eventManager->AddEventMulti(Event{EventType::PRESS_C, dataCollisonCarBoxPowerUp});                             // llamamos al evento --- COMO ODIO QUE SE LLAME ADD Y NO TARGET
                     }
                 }
             }
         }
     //}
 
+    //collisions->IntersectPlayerPowerUps(manCars->GetCar().get(), manPowerUps->GetEntities());
+    // llamamos a comprobar las colisiones entre los coches (actualmente solo el prota) y los powerUps lanzados
+
+
+    for(shared_ptr<Entity> actualPowerUp : manPowerUps->GetEntities()){
+        auto cPowerUp = static_cast<CPowerUp*>(actualPowerUp->GetComponent(CompType::PowerUpComp).get());
+        if(cPowerUp->effectActive == true){                                                                 // SI HACE DANYO
+            if(collisions->Intersects(manCars.get()->GetCar().get(), actualPowerUp.get())){   //TRUE
+                // debemos eliminar el powerUp y hacer danyo al jugador
+                std::cout << "COLISIONAMOS CON UN POWER UP DEL SUELO LOOOOOOCOOOOOOO (EL PLAYEER)" << std::endl;
+            }
+        }
+    }
 
 
 }
