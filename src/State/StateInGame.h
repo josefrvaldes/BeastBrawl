@@ -82,6 +82,8 @@ class StateInGame : public State {
     time_point<system_clock> then;
     vector<float> deltas;
     float CalculateDelta(float);
+
+    void Dijkstra(ManWayPoint* graph, int start, int end);
 };
 
 #endif  // STATEINGAME_H
