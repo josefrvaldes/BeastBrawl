@@ -83,7 +83,7 @@ class StateInGame : public State {
     vector<float> deltas;
     float CalculateDelta(float);
 
-    void Dijkstra(ManWayPoint* graph, int start, int end);
+    vector<int> Dijkstra(ManWayPoint* graph, int start, int end);
 };
 
 #endif  // STATEINGAME_H
