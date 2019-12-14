@@ -244,7 +244,7 @@ void StateInGame::Update() {
         if(cPowerUp->effectActive == true){                                                                 // SI HACE DANYO
             if(collisions->Intersects(manCars.get()->GetCar().get(), actualPowerUp.get())){   //TRUE
                 // debemos eliminar el powerUp y hacer danyo al jugador
-                std::cout << "COLISIONAMOS CON UN POWER UP DEL SUELO LOOOOOOCOOOOOOO (EL PLAYEER)" << std::endl;
+                //std::cout << "COLISIONAMOS CON UN POWER UP DEL SUELO LOOOOOOCOOOOOOO (EL PLAYEER)" << std::endl;
             }
         }
     }

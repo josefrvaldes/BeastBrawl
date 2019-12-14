@@ -25,10 +25,13 @@ void Physics::update(Car* car, Camera* cam){
 
     // To-Do: actualizar componentes PowerUps (nitro, robojorobo y escudo)...
     auto cNitro = static_cast<CNitro *>(car->GetComponent(CompType::NitroComp).get());
-    auto cShield = static_cast<CShield *>(car->GetComponent(CompType::ShieldComp).get());
     if(cNitro->activePowerUp==true && duration_cast<milliseconds>(system_clock::now() - cNitro->timeStart).count() > cNitro->durationTime){  // comprueba el tiempo desde que se lanzo
         cNitro->deactivePowerUp();
-        //cout << "Fuera speeed" << endl;
+    }
+
+    auto cShield = static_cast<CShield *>(car->GetComponent(CompType::ShieldComp).get());
+    if(cShield->activePowerUp==true && duration_cast<milliseconds>(system_clock::now() - cShield->timeStart).count() > cShield->durationTime){  // comprueba el tiempo desde que se lanzo
+        cShield->deactivePowerUp();
     }
 }
 
@@ -95,7 +98,9 @@ void Physics::Accelerate(Car *car, Camera *cam) {
     if(cNitro->activePowerUp==false){
         cCar->speed += cCar->acceleration;
         if (cCar->speed > cCar->maxSpeed) {
-            cCar->speed = cCar->maxSpeed;
+            cCar->speed -= cCar->acceleration*4.0;
+            if(cCar->speed < cCar->maxSpeed)
+                cCar->speed = cCar->maxSpeed;
         }
     }else{
         cCar->speed += cNitro->nitroAcceleration;

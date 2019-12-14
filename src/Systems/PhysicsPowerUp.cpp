@@ -39,9 +39,19 @@ void PhysicsPowerUp::updatePudinDeFrambuesa(PowerUp* pu){
             cPuActual->effectActive = true;
             //std::cout << " AQUIIIII EMPEZAMOS REALMENTE" << std::endl;
       }
+       // Movimiento
+      auto cTransformable = static_cast<CTransformable*>(pu->GetComponent(CompType::TransformableComp).get());
+      float angleRotation = (cTransformable->rotation.y * PI) / 180.0;
+      cTransformable->position.x -= cos(angleRotation) * cPuActual->speed;
+      cTransformable->position.z += sin(angleRotation) * cPuActual->speed;
+      cPuActual->speed += cPuActual->deceleration;
+      if(cPuActual->speed > 0)
+         cPuActual->speed = 0; 
    }
-   //std::cout << " EY TIO, UPDATE DE PUDIN FRAMBUESA" << std::endl;
 }
+
+
+
 void PhysicsPowerUp::updateTeleBanana(PowerUp* pu){
    time_point<system_clock> now = system_clock::now();
 
@@ -53,8 +63,11 @@ void PhysicsPowerUp::updateTeleBanana(PowerUp* pu){
             //std::cout << " AQUIIIII EMPEZAMOS REALMENTE" << std::endl;
       }
    }
-   //std::cout << " EY TIO, UPDATE DE TELEBANANA" << std::endl;
 }
+
+
+
+
 void PhysicsPowerUp::updateMelonMolon(PowerUp* pu){
    time_point<system_clock> now = system_clock::now();
 
@@ -66,5 +79,9 @@ void PhysicsPowerUp::updateMelonMolon(PowerUp* pu){
             //std::cout << " AQUIIIII EMPEZAMOS REALMENTE" << std::endl;
       }
    }
-   //std::cout << " EY TIO, UPDATE DE MELONMOLON" << std::endl;
+   // Movimiento
+   auto cTransformable = static_cast<CTransformable*>(pu->GetComponent(CompType::TransformableComp).get());
+   float angleRotation = (cTransformable->rotation.y * PI) / 180.0;
+   cTransformable->position.x -= cos(angleRotation) * cPuActual->speed;
+   cTransformable->position.z += sin(angleRotation) * cPuActual->speed;
 }

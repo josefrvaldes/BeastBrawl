@@ -179,7 +179,9 @@ int calculateProbabilityPowerUp(int totalPowerUps, std::vector<int> probabilityP
 void ManCar::CatchPowerUp(DataMap d) {
     // cout << "Han llamado izquierda" << endl;
     //physics->TurnLeft(car.get(), cam);
+    srand(time(NULL));
     int indx = rand() % 6+1;
+    //indx=3;
     auto cPowerUpCar = static_cast<CPowerUp*>(car.get()->GetComponent(CompType::PowerUpComp).get());
     if(cPowerUpCar->typePowerUp == typeCPowerUp::None){
         cPowerUpCar->typePowerUp = (typeCPowerUp)indx;
