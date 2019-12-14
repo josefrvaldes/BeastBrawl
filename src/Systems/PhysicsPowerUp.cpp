@@ -63,6 +63,16 @@ void PhysicsPowerUp::updateTeleBanana(PowerUp* pu){
             //std::cout << " AQUIIIII EMPEZAMOS REALMENTE" << std::endl;
       }
    }
+   auto cTargetCar = static_cast<CTargetEntity*>(pu->GetComponent(CompType::TargetEntityComp).get());
+   auto cTransformable = static_cast<CTransformable*>(pu->GetComponent(CompType::TransformableComp).get());
+   // Vector
+   float vectorX = cTargetCar->cTransTarget->position.x - cTransformable->position.x;
+   float vectorZ = cTargetCar->cTransTarget->position.z - cTransformable->position.z;
+   // divisor unitario
+   float divisorUnitario = sqrt((vectorX*vectorX) + (vectorZ*vectorZ));
+   // Movimiento
+   cTransformable->position.x += (vectorX/divisorUnitario) * cPuActual->speed;
+   cTransformable->position.z += (vectorZ/divisorUnitario) * cPuActual->speed;
 }
 
 

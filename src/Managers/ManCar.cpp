@@ -157,12 +157,12 @@ void ManCar::ThrowPowerUp(DataMap d) {
                 shared_ptr<EventManager> eventManager = EventManager::GetInstance();
                 DataMap d;
                 d["typePowerUp"] = cPowerUpCar->typePowerUp;
-                CTransformable *transfor = static_cast<CTransformable*>(car.get()->GetComponent(CompType::TransformableComp).get());
-                d["posCocheSalida"] = transfor;
+                d["posCocheSalida"] = static_cast<CTransformable*>(car.get()->GetComponent(CompType::TransformableComp).get());;
                 // To-Do: actualmente se pasa la posicion del coche desde el que sale, falta calcular con un metodo el cTransformable del coche a perseguir y pasarlo
                 // auto cTransCocheSeguir = calcularCocheCercano();
                 //d.cTransformable = cTransCocheSeguir
-                d["posCochePerseguir"] = transfor; // To-Do: se le mete el coche desde el que sale, deberia ser el que persigue
+                CTransformable *transfor2 = static_cast<CTransformable*>(CarAIs[0].get()->GetComponent(CompType::TransformableComp).get());
+                d["posCochePerseguir"] = transfor2; // To-Do: se le mete el coche desde el que sale, deberia ser el que persigue
                 eventManager->AddEventMulti(Event{EventType::PowerUp_Create, d});
 
                 break;

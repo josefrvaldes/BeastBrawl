@@ -3,6 +3,7 @@
 #include "../Components/CType.h"
 #include "../Components/CId.h"
 #include "../Components/CTransformable.h"
+#include "../Components/CTargetEntity.h"
 #include "../Components/CCamera.h"
 #include "../Components/Component.h"
 #include "../Components/CCar.h"
