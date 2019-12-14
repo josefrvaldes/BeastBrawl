@@ -12,6 +12,7 @@ using namespace std;
 using namespace chrono;
 
 #pragma region BT
+/*
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //                           COMPROBAR BEHAVIOR TREE
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -85,8 +86,9 @@ struct Inverter : public Decorator {  // Decorator Inverter
         return !(getChild()->run());
     }
 };
-
+*/
 #pragma endregion
+
 
 StateInGame::StateInGame() {
     // constructor
@@ -158,6 +160,11 @@ StateInGame::StateInGame() {
 
     renderEngine->FacadeAddCamera(cam.get());
 
+
+    // CREAMOS EL TOTEM
+    totem = make_shared<Totem>();
+    renderEngine->FacadeAddObject(totem.get());
+
     lastFPS = -1;
     //then = renderEngine->FacadeGetTime();
     then = system_clock::now();
@@ -215,6 +222,44 @@ void StateInGame::Update() {
         physicsEngine->UpdatePowerUps(actualPowerUp.get());
 
     //physicsEngine->UpdateCar(car.get(), cam.get());
+
+    // COGER POWERUPS - DE MOMENTO SOLO CON EL PLAYER
+    //for(shared_ptr<Entity> actualCar : manCars->GetEntities()){                                                                   // recorremos todos los coches
+        auto cPowerUpCar = static_cast<CPowerUp*>(manCars.get()->GetCar().get()->GetComponent(CompType::PowerUpComp).get());        // debemos acceder al componente PowerUpComp
+        if(cPowerUpCar->typePowerUp == typeCPowerUp::None){                                                                         // solo si no tenemos powerUp podemos coger uno
+            for(shared_ptr<Entity> actualBoxPowerUp: manBoxPowerUps->GetEntities()){                                                // recorremos los powerUps
+                auto cBoxPowerUp = static_cast<CBoxPowerUp*>(actualBoxPowerUp.get()->GetComponent(CompType::BoxPowerUpComp).get()); // debemos acceder al componente BoxPowerUp
+                if(cBoxPowerUp->active == true){                                                                                    // Vemos si efectivamente esta activo o no, para poder cogerlo
+                     if( collisions->Intersects(manCars.get()->GetCar().get(), actualBoxPowerUp.get()) ){                           // Finalmente comprobamos las colisiones entre el coche y el powerUp
+                        //std::cout << "HAY COLISION ENTRE COCHE Y POWERUP" << std::endl;
+                        DataMap dataCollisonCarBoxPowerUp;                                                                             // Mejor definirlo en el .h
+                        dataCollisonCarBoxPowerUp["BoxPowerUpComp"] = cBoxPowerUp;                                                     // necesitamos el componente
+                        dataCollisonCarBoxPowerUp["actualBox"] = actualBoxPowerUp;                                                     // y tambien la caja actual (para eliminarla de irrlicht)
+                        eventManager->AddEventMulti(Event{EventType::CATCH_BOX_POWERUP, dataCollisonCarBoxPowerUp});                             // llamamos al evento --- COMO ODIO QUE SE LLAME ADD Y NO TARGET
+                    }
+                }
+            }
+        }
+    //}
+    //collisions->IntersectPlayerPowerUps(manCars->GetCar().get(), manPowerUps->GetEntities());
+    // llamamos a comprobar las colisiones entre los coches (actualmente solo el prota) y los powerUps lanzados
+
+    // ELIMINAMOS POWERUPS - DE MOMENTO SOLO CON EL PLAYER
+    //for(shared_ptr<Entity> actualCar : manCars->GetEntities()){   
+        for(shared_ptr<Entity> actualPowerUp : manPowerUps->GetEntities()){
+            auto cPowerUp = static_cast<CPowerUp*>(actualPowerUp->GetComponent(CompType::PowerUpComp).get());
+            if(cPowerUp->effectActive == true){                                                                 // SI HACE DANYO
+                if(collisions->Intersects(manCars.get()->GetCar().get(), actualPowerUp.get())){   //TRUE
+                    // debemos eliminar el powerUp y hacer danyo al jugador
+                    DataMap dataCollisonCarPowerUp;                                                                           
+                    dataCollisonCarPowerUp["PowerUp"] = actualPowerUp;              // nos guardamos el puntero para eliminar el powerUp                                             
+                    eventManager->AddEventMulti(Event{EventType::COLLISION_ENTITY_POWERUP, dataCollisonCarPowerUp}); 
+                }
+            }
+        }
+    //}
+
+
 }
 
 void StateInGame::Render() {

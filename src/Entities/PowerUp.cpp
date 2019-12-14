@@ -64,28 +64,24 @@ PowerUp::PowerUp(glm::vec3 _position, glm::vec3 _rotation, typeCPowerUp _typePow
 
     auto *cTarget = (CTargetEntity *)m_components[CompType::TargetEntityComp].get();
     cTarget->cTransTarget = cTransformableTarget;
-}
-
-
-PowerUp::PowerUp(glm::vec3 _position, glm::vec3 _rotation, typeCPowerUp _typePowerUp, CTransformable* cTransformableTarget, string _texture, string _mesh) : PowerUp(){
-    CTransformable *cTransformable = (CTransformable *)m_components[CompType::TransformableComp].get();
-    cTransformable->position = _position;
-    cTransformable->rotation = _rotation;
-
-    CPowerUp *cPowerUp = (CPowerUp *)m_components[CompType::PowerUpComp].get();
-    cPowerUp->typePowerUp = _typePowerUp;
-
-    auto *cTarget = (CTargetEntity *)m_components[CompType::TargetEntityComp].get();
-    cTarget->cTransTarget = cTransformableTarget;
 
     CTexture *cTexture = (CTexture *)m_components[CompType::TextureComp].get();
-    cTexture->texture = _texture;
-
     CMesh *cMesh = (CMesh *)m_components[CompType::MeshComp].get();
-    cMesh->mesh = _mesh;
+    if(_typePowerUp == typeCPowerUp::MelonMolon){           // Melon Molon
+        cTexture->texture = "spheremap.jpg";
+        cMesh->mesh = "media/ninja.b3d";
+        cPowerUp->speed = 8.0;
+    }else if(_typePowerUp == typeCPowerUp::PudinDeFrambuesa){   // Pudin Frambuesa
+        cTexture->texture = "water.jpg";
+        cMesh->mesh = "media/ninja.b3d";
+        cPowerUp->speed = -8.0;
+        cPowerUp->deceleration = 0.40;
+    }else{                                                      // Telebanana
+        cTexture->texture = "stones.jpg";
+        cMesh->mesh = "media/ninja.b3d";
+        cPowerUp->speed = 8.0;
+    }
 }
-
-
 
 
 PowerUp::~PowerUp()

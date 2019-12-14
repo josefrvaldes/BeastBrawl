@@ -12,3 +12,6 @@ class behaviourTree{
         stateNode   state;  
 
 };
+
+// PADRE --> run() no lo implementa
+// COMPOSITE ---> selector o secuenca

@@ -17,13 +17,10 @@ ManPowerUp::ManPowerUp() {
 }
 
 ManPowerUp::~ManPowerUp() {
-    cout << "Llamando al destructor de manpowerup" << endl;
+    cout << "Llamando al destructor de ManPowerUps" << endl;
     PowerUps.clear();
     PowerUps.shrink_to_fit();
 }
-
-
-
 
 void ManPowerUp::CreatePowerUp(DataMap d) {
     typeCPowerUp type = any_cast<typeCPowerUp>(d["typePowerUp"]);
@@ -35,15 +32,35 @@ void ManPowerUp::CreatePowerUp(DataMap d) {
     shared_ptr<RenderFacadeManager> renderFacadeManager = RenderFacadeManager::GetInstance();
     shared_ptr<RenderFacade> renderEngine = renderFacadeManager->GetRenderFacade();
     renderEngine->FacadeAddObject(powerUp.get());
+
+    //Cuando creamos el powerUp, ponemos su tiempo inicial de inactivadad --> para no danyarnos a nostros mismos
+    static_cast<CPowerUp*>(powerUp.get()->GetComponent(CompType::PowerUpComp).get())->timeStart = system_clock::now();
+
+}
+// TODO ELIMINARLO TODO AL MISMO TIEMPO ANTES DE RENDERIZAR CONNNNYO
+void ManPowerUp::DeletePowerUp(DataMap d){
+    shared_ptr<RenderFacadeManager> renderFacadeManager = RenderFacadeManager::GetInstance();
+    shared_ptr<RenderFacade> renderEngine = renderFacadeManager->GetRenderFacade();
+    for(long unsigned int i=0; i< PowerUps.size(); ++i){
+        if(PowerUps[i] == any_cast<shared_ptr<Entity>>(d["PowerUp"])){
+            renderEngine->DeleteEntity(PowerUps[i].get());
+            PowerUps.erase(PowerUps.begin()+i);
+        }
+    }
 }
 
 
-
+// TODO : tener una variable de control para eliminar todas las cosas de los arrays a la vez CUIDADO CON ESOOOO
 void ManPowerUp::SubscribeToEvents() {
     // lo ejecuta el coche al tirar power up
     EventManager::GetInstance()->SuscribeMulti(Listener(
         EventType::PowerUp_Create,
         bind(&ManPowerUp::CreatePowerUp, this, placeholders::_1),
         "CreatePowerUp"));
+
+    EventManager::GetInstance()->SuscribeMulti(Listener(
+        EventType::COLLISION_ENTITY_POWERUP,
+        bind(&ManPowerUp::DeletePowerUp, this, placeholders::_1),
+        "DeletePowerUp"));
 }
 

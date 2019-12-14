@@ -8,6 +8,7 @@
 #include <stdlib.h>     /* srand, rand */
 #include "../../lib/glm/vec3.hpp"
 #include "../Aliases.h"
+#include "../Components/CTransformable.h"
 
 using namespace std;
 class Car;
@@ -29,6 +30,7 @@ class ManCar : public Manager {
     void CreateCarAI();
     void CreateCarAI(glm::vec3 _position, glm::vec3 _waypoint);
     vector<shared_ptr<CarAI>> GetEntitiesAI() const { return CarAIs; };
+    CTransformable* calculateCloserAI();
 
    private:
     Physics *physics;
@@ -40,6 +42,8 @@ class ManCar : public Manager {
     void NotAcceleratingOrDecelerating(DataMap d);
     void Decelerate(DataMap d);
     void NotTurning(DataMap d);
+    void CollisionPowerUp(DataMap d);
+    
 
     
     void ThrowPowerUp(DataMap d);

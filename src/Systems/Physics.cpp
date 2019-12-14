@@ -1,6 +1,9 @@
 #include "Physics.h"
 #include "../Entities/Camera.h"
 #include "../Entities/Car.h"
+#include <chrono>
+
+using namespace chrono;
 
 Physics::Physics(float *_deltaTime) : deltaTime(_deltaTime) {
 }
@@ -21,6 +24,15 @@ void Physics::update(Car* car, Camera* cam){
 
 
     // To-Do: actualizar componentes PowerUps (nitro, robojorobo y escudo)...
+    auto cNitro = static_cast<CNitro *>(car->GetComponent(CompType::NitroComp).get());
+    if(cNitro->activePowerUp==true && duration_cast<milliseconds>(system_clock::now() - cNitro->timeStart).count() > cNitro->durationTime){  // comprueba el tiempo desde que se lanzo
+        cNitro->deactivePowerUp();
+    }
+
+    auto cShield = static_cast<CShield *>(car->GetComponent(CompType::ShieldComp).get());
+    if(cShield->activePowerUp==true && duration_cast<milliseconds>(system_clock::now() - cShield->timeStart).count() > cShield->durationTime){  // comprueba el tiempo desde que se lanzo
+        cShield->deactivePowerUp();
+    }
 }
 
 
@@ -81,10 +93,20 @@ void Physics::CalculatePositionCamera(CTransformable *cTransformableCar, CTransf
 //Entra cuando se presiona la I
 void Physics::Accelerate(Car *car, Camera *cam) {
     auto cCar = static_cast<CCar *>(car->GetComponent(CompType::CarComp).get());
+    auto cNitro = static_cast<CNitro *>(car->GetComponent(CompType::NitroComp).get());
     //Aumentamos la velocidad
-    cCar->speed += cCar->acceleration;
-    if (cCar->speed > cCar->maxSpeed) {
-        cCar->speed = cCar->maxSpeed;
+    if(cNitro->activePowerUp==false){
+        cCar->speed += cCar->acceleration;
+        if (cCar->speed > cCar->maxSpeed) {
+            cCar->speed -= cCar->acceleration*4.0;
+            if(cCar->speed < cCar->maxSpeed)
+                cCar->speed = cCar->maxSpeed;
+        }
+    }else{
+        cCar->speed += cNitro->nitroAcceleration;
+        if (cCar->speed > cNitro->nitroMaxSpeed) {
+            cCar->speed = cNitro->nitroMaxSpeed;
+        }  
     }
 }
 
@@ -92,10 +114,18 @@ void Physics::Accelerate(Car *car, Camera *cam) {
 //Entra cuando se presiona la O
 void Physics::Decelerate(Car *car, Camera *cam) {
     auto cCar = static_cast<CCar *>(car->GetComponent(CompType::CarComp).get());
+    auto cNitro = static_cast<CNitro *>(car->GetComponent(CompType::NitroComp).get());
     //Reducimos la velocidad
-    cCar->speed -= cCar->slowDown;
-    if (cCar->speed < cCar->reverseMaxSpeed) {  // no se supere la velocidad marcha atras
-        cCar->speed = cCar->reverseMaxSpeed;
+    if(cNitro->activePowerUp==false){
+        cCar->speed -= cCar->slowDown;
+        if (cCar->speed < cCar->reverseMaxSpeed) {  // no se supere la velocidad marcha atras
+            cCar->speed = cCar->reverseMaxSpeed;
+        }
+    }else{
+        cCar->speed += cNitro->nitroAcceleration;
+        if (cCar->speed > cNitro->nitroMaxSpeed) {
+            cCar->speed = cNitro->nitroMaxSpeed;
+        }  
     }
 }
 
@@ -196,15 +226,23 @@ void Physics::TurnRight(Car *car, Camera *cam) {
 //Aqui entra cuando no se esta presionando ni I ni O
 void Physics::NotAcceleratingOrDecelerating(Car *car, Camera *cam) {
     auto cCar = static_cast<CCar *>(car->GetComponent(CompType::CarComp).get());
+    auto cNitro = static_cast<CNitro *>(car->GetComponent(CompType::NitroComp).get());
 
-    if (cCar->speed > 0) {
-        cCar->speed -= cCar->friction;
-        if (cCar->speed < 0)
-            cCar->speed = 0;
-    } else if (cCar->speed < 0) {
-        cCar->speed += cCar->friction;
-        if (cCar->speed > 0)
-            cCar->speed = 0;
+    if(cNitro->activePowerUp==false){
+        if (cCar->speed > 0) {
+            cCar->speed -= cCar->friction;
+            if (cCar->speed < 0)
+                cCar->speed = 0;
+        } else if (cCar->speed < 0) {
+            cCar->speed += cCar->friction;
+            if (cCar->speed > 0)
+                cCar->speed = 0;
+        }
+    }else{
+        cCar->speed += cNitro->nitroAcceleration;
+        if (cCar->speed > cNitro->nitroMaxSpeed) {
+            cCar->speed = cNitro->nitroMaxSpeed;
+        }  
     }
 }
 
