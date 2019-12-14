@@ -235,7 +235,7 @@ void StateInGame::Update() {
                         DataMap dataCollisonCarBoxPowerUp;                                                                             // Mejor definirlo en el .h
                         dataCollisonCarBoxPowerUp["BoxPowerUpComp"] = cBoxPowerUp;                                                     // necesitamos el componente
                         dataCollisonCarBoxPowerUp["actualBox"] = actualBoxPowerUp;                                                     // y tambien la caja actual (para eliminarla de irrlicht)
-                        eventManager->AddEventMulti(Event{EventType::PRESS_C, dataCollisonCarBoxPowerUp});                             // llamamos al evento --- COMO ODIO QUE SE LLAME ADD Y NO TARGET
+                        eventManager->AddEventMulti(Event{EventType::CATCH_BOX_POWERUP, dataCollisonCarBoxPowerUp});                             // llamamos al evento --- COMO ODIO QUE SE LLAME ADD Y NO TARGET
                     }
                 }
             }

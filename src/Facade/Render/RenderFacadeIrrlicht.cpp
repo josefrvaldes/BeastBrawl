@@ -219,11 +219,7 @@ void RenderFacadeIrrlicht::FacadeCheckInput() {
 	}
 
 
-
     // POWERUPS
-    if (receiver.IsKeyDown(KEY_KEY_C)) {
-        eventManager->AddEventMulti(Event{EventType::PRESS_C});
-    }
     if (receiver.IsKeyDown(KEY_SPACE)) {
         eventManager->AddEventMulti(Event{EventType::PRESS_SPACE});
     }

@@ -58,10 +58,8 @@ void ManBoxPowerUp::CreateBoxPowerUp() {
 }
 
 void ManBoxPowerUp::SubscribeToEvents() {
-    //EventManager::GetInstance()->SuscribeMulti(Listener{EventType::PRESS_C, EjecutarMeHanCogido, "EjecutarMeHanCogido"});
-
     EventManager::GetInstance()->SuscribeMulti(Listener(
-        EventType::PRESS_C,
+        EventType::CATCH_BOX_POWERUP,
         bind(&ManBoxPowerUp::EjecutarMeHanCogido, this, placeholders::_1),
         "EjecutarMeHanCogido"));
 }

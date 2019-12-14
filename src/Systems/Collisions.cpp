@@ -35,7 +35,7 @@ bool Collisions::Intersects(Entity* entity1,Entity* entity2){
     if(e1MinX <= e2MaxX && e1MaxX >= e2MinX &&
        e1MinY <= e2MaxY && e1MaxY >= e2MinY &&
        e1MinZ <= e2MaxZ && e1MaxZ >= e2MinZ){
-           cout << "chocan\n";
+           //cout << "chocan\n";
            return true;
     }
 

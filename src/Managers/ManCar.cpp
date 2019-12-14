@@ -114,7 +114,7 @@ void ManCar::SubscribeToEvents() {
         "NotTurning"));
 
     EventManager::GetInstance()->SuscribeMulti(Listener(
-        EventType::PRESS_C,
+        EventType::CATCH_BOX_POWERUP,
         bind(&ManCar::CatchPowerUp, this, placeholders::_1),
         "CatchPowerUp"));
     
@@ -132,6 +132,35 @@ void ManCar::SubscribeToEvents() {
 
 void ManCar::CollisionPowerUp(DataMap d){
 
+}
+
+
+
+// calcula el coche IA mas cercano, se introduce el primer elemento de la IA por defecto
+CTransformable* ManCar::calculateCloserAI(){
+    CTransformable* closestAI = static_cast<CTransformable*>(CarAIs[0].get()->GetComponent(CompType::TransformableComp).get());
+    auto cTransCar = static_cast<CTransformable*>(car.get()->GetComponent(CompType::TransformableComp).get());
+    auto cTransCarAI = static_cast<CTransformable*>(CarAIs[0].get()->GetComponent(CompType::TransformableComp).get());
+    float vectorX = cTransCarAI->position.x - cTransCar->position.x;
+    float vectorZ = cTransCarAI->position.z - cTransCar->position.z;
+    float distanceMimum = sqrt((vectorX+vectorX) + (vectorZ+vectorZ));
+
+    float distanceNext = 0.0;
+    float vectorXNext = 0.0;
+    float vectorZNext = 0.0;
+    
+    for(shared_ptr<CarAI> AIcar : CarAIs){
+        auto cTransCarAI2 = static_cast<CTransformable*>(AIcar.get()->GetComponent(CompType::TransformableComp).get()); 
+        vectorXNext = cTransCarAI2->position.x - cTransCar->position.x;     
+        vectorZNext = cTransCarAI2->position.z - cTransCar->position.z;
+        distanceNext = sqrt((vectorXNext+vectorXNext) + (vectorZNext+vectorZNext));
+        if(distanceMimum > distanceNext){
+            distanceMimum = distanceNext;
+            closestAI = cTransCarAI2;
+        }
+    }
+
+    return closestAI;
 }
 
 
@@ -158,11 +187,8 @@ void ManCar::ThrowPowerUp(DataMap d) {
                 DataMap d;
                 d["typePowerUp"] = cPowerUpCar->typePowerUp;
                 d["posCocheSalida"] = static_cast<CTransformable*>(car.get()->GetComponent(CompType::TransformableComp).get());;
-                // To-Do: actualmente se pasa la posicion del coche desde el que sale, falta calcular con un metodo el cTransformable del coche a perseguir y pasarlo
-                // auto cTransCocheSeguir = calcularCocheCercano();
-                //d.cTransformable = cTransCocheSeguir
-                CTransformable *transfor2 = static_cast<CTransformable*>(CarAIs[0].get()->GetComponent(CompType::TransformableComp).get());
-                d["posCochePerseguir"] = transfor2; // To-Do: se le mete el coche desde el que sale, deberia ser el que persigue
+                // To-Do: actualmente solo se pasa el coche mas cercano, calcular aparte si se encuentra en pantalla
+                d["posCochePerseguir"] = calculateCloserAI(); // To-Do: se le mete el coche desde el que sale, deberia ser el que persigue
                 eventManager->AddEventMulti(Event{EventType::PowerUp_Create, d});
 
                 break;

@@ -33,7 +33,7 @@ enum EventType {
     PRIORIDAD3,
     POWER_UP_COGIDO,
     PowerUp_Create,
-    PRESS_C,
+    CATCH_BOX_POWERUP,
     PRESS_1
 };
 
