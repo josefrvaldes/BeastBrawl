@@ -123,6 +123,15 @@ void ManCar::SubscribeToEvents() {
         bind(&ManCar::ThrowPowerUp, this, placeholders::_1),
         "ThrowPowerUp"));
 
+    EventManager::GetInstance()->SuscribeMulti(Listener(
+        EventType::COLLISION_ENTITY_POWERUP,
+        bind(&ManCar::CollisionPowerUp, this, placeholders::_1),
+        "ThrowPowerUp"));
+
+}
+
+void ManCar::CollisionPowerUp(DataMap d){
+
 }
 
 
@@ -181,6 +190,7 @@ void ManCar::CatchPowerUp(DataMap d) {
     //physics->TurnLeft(car.get(), cam);
     srand(time(NULL));
     int indx = rand() % 6+1;
+    //indx = 5;
     //indx=3;
     auto cPowerUpCar = static_cast<CPowerUp*>(car.get()->GetComponent(CompType::PowerUpComp).get());
     if(cPowerUpCar->typePowerUp == typeCPowerUp::None){

@@ -28,4 +28,5 @@ class ManPowerUp{
 	vector<shared_ptr<PowerUp>> PowerUps;
     void SubscribeToEvents();
     void CreatePowerUp(DataMap d);
+    void DeletePowerUp(DataMap d);
 };

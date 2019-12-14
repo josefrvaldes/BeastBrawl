@@ -25,6 +25,7 @@ enum EventType {
     PRESS_A,
     PRESS_D,
     PRESS_SPACE,
+    COLLISION_ENTITY_POWERUP,
     NO_I_O_PRESS,
     NO_A_D_PRESS,
     PRIORIDAD1,

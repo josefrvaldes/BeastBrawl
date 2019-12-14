@@ -234,20 +234,23 @@ void StateInGame::Update() {
             }
         }
     //}
-
     //collisions->IntersectPlayerPowerUps(manCars->GetCar().get(), manPowerUps->GetEntities());
     // llamamos a comprobar las colisiones entre los coches (actualmente solo el prota) y los powerUps lanzados
 
-
-    for(shared_ptr<Entity> actualPowerUp : manPowerUps->GetEntities()){
-        auto cPowerUp = static_cast<CPowerUp*>(actualPowerUp->GetComponent(CompType::PowerUpComp).get());
-        if(cPowerUp->effectActive == true){                                                                 // SI HACE DANYO
-            if(collisions->Intersects(manCars.get()->GetCar().get(), actualPowerUp.get())){   //TRUE
-                // debemos eliminar el powerUp y hacer danyo al jugador
-                //std::cout << "COLISIONAMOS CON UN POWER UP DEL SUELO LOOOOOOCOOOOOOO (EL PLAYEER)" << std::endl;
+    // ELIMINAMOS POWERUPS - DE MOMENTO SOLO CON EL PLAYER
+    //for(shared_ptr<Entity> actualCar : manCars->GetEntities()){   
+        for(shared_ptr<Entity> actualPowerUp : manPowerUps->GetEntities()){
+            auto cPowerUp = static_cast<CPowerUp*>(actualPowerUp->GetComponent(CompType::PowerUpComp).get());
+            if(cPowerUp->effectActive == true){                                                                 // SI HACE DANYO
+                if(collisions->Intersects(manCars.get()->GetCar().get(), actualPowerUp.get())){   //TRUE
+                    // debemos eliminar el powerUp y hacer danyo al jugador
+                    DataMap dataCollisonCarPowerUp;                                                                           
+                    dataCollisonCarPowerUp["PowerUp"] = actualPowerUp;              // nos guardamos el puntero para eliminar el powerUp                                             
+                    eventManager->AddEventMulti(Event{EventType::COLLISION_ENTITY_POWERUP, dataCollisonCarPowerUp}); 
+                }
             }
         }
-    }
+    //}
 
 
 }

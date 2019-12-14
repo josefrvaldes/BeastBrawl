@@ -40,6 +40,7 @@ class ManCar : public Manager {
     void NotAcceleratingOrDecelerating(DataMap d);
     void Decelerate(DataMap d);
     void NotTurning(DataMap d);
+    void CollisionPowerUp(DataMap d);
 
     
     void ThrowPowerUp(DataMap d);
