@@ -12,6 +12,7 @@ using namespace std;
 using namespace chrono;
 
 #pragma region BT
+/*
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //                           COMPROBAR BEHAVIOR TREE
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -85,8 +86,9 @@ struct Inverter : public Decorator {  // Decorator Inverter
         return !(getChild()->run());
     }
 };
-
+*/
 #pragma endregion
+
 
 StateInGame::StateInGame() {
     // constructor
@@ -157,6 +159,11 @@ StateInGame::StateInGame() {
         renderEngine->FacadeAddObject(bpu.get());
 
     renderEngine->FacadeAddCamera(cam.get());
+
+
+    // CREAMOS EL TOTEM
+    totem = make_shared<Totem>();
+    renderEngine->FacadeAddObject(totem.get());
 
     lastFPS = -1;
     //then = renderEngine->FacadeGetTime();

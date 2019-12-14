@@ -15,26 +15,26 @@
 #include "../Entities/GameObject.h"
 #include "../Entities/PowerUp.h"
 #include "../Entities/BoxPowerUp.h"
+#include "../Entities/Totem.h"
 #include "../Entities/WayPoint.h"
-#include "../Systems/Physics.h"
 #include "../Managers/ManPowerUp.h"
 #include "../Managers/ManWayPoint.h"
 #include "../EventManager/EventManager.h"
 #include "../Facade/Input/InputFacadeManager.h"
 #include "../Facade/Physics/PhysicsFacadeManager.h"
-#include "../Systems/PhysicsPowerUp.h"
-#include "../Systems/SystemBoxPowerUp.h"
 #include "../Facade/Render/RenderFacadeManager.h"
 #include "../Facade/Sound/SoundFacade.h"
 #include "../Facade/Sound/SoundFacadeManager.h"
+#include "../Systems/PhysicsPowerUp.h"
+#include "../Systems/SystemBoxPowerUp.h"
+#include "../Systems/Collisions.h"
+#include "../Systems/Physics.h"
+#include "../Systems/PhysicsAI.h"
 #include "../Game.h"
 #include "../Managers/ManCar.h"
 #include "../Managers/ManPowerUp.h"
 #include "../Managers/ManBoxPowerUp.h"
 #include "../Managers/ManWayPoint.h"
-#include "../Systems/Collisions.h"
-#include "../Systems/Physics.h"
-#include "../Systems/PhysicsAI.h"
 #include "../behaviourTree/behaviourTree.h"
 #include "../behaviourTree/decorator.h"
 #include "../behaviourTree/selector.h"
@@ -75,6 +75,8 @@ class StateInGame : public State {
     shared_ptr<PhysicsPowerUp> phisicsPowerUp;
     shared_ptr<SystemBoxPowerUp> sysBoxPowerUp;
     shared_ptr<float> deltaTime;
+
+    shared_ptr<Totem> totem;
 
     shared_ptr<PhysicsAI> physicsAI;
     int lastFPS = -1;
