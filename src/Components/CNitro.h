@@ -19,7 +19,7 @@ public:
     void deactivePowerUp();
 
     time_point<system_clock> timeStart;
-    const int64_t durationTime = 5000;       // 5 segundos
+    const int64_t durationTime = 2500;       // 5 segundos
 
     float nitroAcceleration = 0;            // este valor se le va a sumar al del coche
     float nitroMaxSpeed = 0;                // este valor se le va a sumar al del coche
