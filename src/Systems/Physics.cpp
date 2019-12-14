@@ -110,35 +110,35 @@ void Physics::TurnLeft(Car *car, Camera *cam) {
     auto cCar = static_cast<CCar *>(car->GetComponent(CompType::CarComp).get());
 
     if (cCar->speed >= 3) {
-        if (cCar->wheelRotation > -10) {
+        if (cCar->wheelRotation > -cCar->maxWheelRotation) {
             //Aumentamos la rotacion hacia la izquierda
-            cCar->wheelRotation -= 0.5;
+            cCar->wheelRotation -= cCar->incrementWheelRotation;
         }
 
-        if (cCamera->rotExtraY > -15) {
-            cCamera->rotExtraY -= 0.5;
+        if (cCamera->rotExtraY > -(cCar->maxWheelRotation+cCamera->rotExtraCamera)) {
+            cCamera->rotExtraY -= cCar->incrementWheelRotation;
         }
     } else if (cCar->speed <= -3) {
-        if (cCar->wheelRotation > -10) {
+        if (cCar->wheelRotation > -cCar->maxWheelRotation) {
             //Aumentamos la rotacion hacia la izquierda
-            cCar->wheelRotation -= 0.5;
+            cCar->wheelRotation -= cCar->incrementWheelRotation;
         }
-        if (cCamera->rotExtraY > -15) {
-            cCamera->rotExtraY -= 0.5;
+        if (cCamera->rotExtraY > -(cCar->maxWheelRotation+cCamera->rotExtraCamera)) {
+            cCamera->rotExtraY -= cCar->incrementWheelRotation;
         }
-    } else {
-        if (cCar->wheelRotation >= 0.7) {
-            cCar->wheelRotation -= 0.7;
-        } else if (cCar->wheelRotation <= -0.7) {
-            cCar->wheelRotation += 0.7;
+    } else {    // la rueda vuelve a su sitio original al no dejarte rotar
+        if (cCar->wheelRotation >= cCar->decrementWheelRotation) {
+            cCar->wheelRotation -= cCar->decrementWheelRotation;
+        } else if (cCar->wheelRotation <= -cCar->decrementWheelRotation) {
+            cCar->wheelRotation += cCar->decrementWheelRotation;
         } else {
             cCar->wheelRotation = 0;
         }
 
-        if (cCamera->rotExtraY >= 0.7) {
-            cCamera->rotExtraY -= 0.7;
-        } else if (cCamera->rotExtraY <= -0.7) {
-            cCamera->rotExtraY += 0.7;
+        if (cCamera->rotExtraY >= cCar->decrementWheelRotation) {
+            cCamera->rotExtraY -= cCar->decrementWheelRotation;
+        } else if (cCamera->rotExtraY <= -cCar->decrementWheelRotation) {
+            cCamera->rotExtraY += cCar->decrementWheelRotation;
         } else {
             cCamera->rotExtraY = 0;
         }
@@ -156,35 +156,35 @@ void Physics::TurnRight(Car *car, Camera *cam) {
     auto cCar = static_cast<CCar *>(car->GetComponent(CompType::CarComp).get());
 
     if (cCar->speed >= 3) {
-        if (cCar->wheelRotation < 10) {
+        if (cCar->wheelRotation < cCar->maxWheelRotation) {
             //Aumentamos la rotacion hacia la derecha
-            cCar->wheelRotation += 0.5;
+            cCar->wheelRotation += cCar->incrementWheelRotation;
         }
 
-        if (cCamera->rotExtraY < 15) {
-            cCamera->rotExtraY += 0.5;
+        if (cCamera->rotExtraY < (cCar->maxWheelRotation+cCamera->rotExtraCamera)) {
+            cCamera->rotExtraY += cCar->incrementWheelRotation;
         }
     } else if (cCar->speed <= -3) {
-        if (cCar->wheelRotation < 10) {
+        if (cCar->wheelRotation < cCar->maxWheelRotation) {
             //Aumentamos la rotacion hacia la derecha
-            cCar->wheelRotation += 0.5;
+            cCar->wheelRotation += cCar->incrementWheelRotation;
         }
-        if (cCamera->rotExtraY < 15) {
-            cCamera->rotExtraY += 0.5;
+        if (cCamera->rotExtraY < (cCar->maxWheelRotation+cCamera->rotExtraCamera)) {
+            cCamera->rotExtraY += cCar->incrementWheelRotation;
         }
-    } else {
-        if (cCar->wheelRotation >= 0.7) {
-            cCar->wheelRotation -= 0.7;
-        } else if (cCar->wheelRotation <= -0.7) {
-            cCar->wheelRotation += 0.7;
+    } else {         // la rueda vuelve a su sitio original al no dejarte rotar
+        if (cCar->wheelRotation >= cCar->decrementWheelRotation) {
+            cCar->wheelRotation -= cCar->decrementWheelRotation;
+        } else if (cCar->wheelRotation <= -cCar->decrementWheelRotation) {
+            cCar->wheelRotation += cCar->decrementWheelRotation;
         } else {
             cCar->wheelRotation = 0;
         }
 
-        if (cCamera->rotExtraY >= 0.7) {
-            cCamera->rotExtraY -= 0.7;
-        } else if (cCamera->rotExtraY <= -0.7) {
-            cCamera->rotExtraY += 0.7;
+        if (cCamera->rotExtraY >= cCar->decrementWheelRotation) {
+            cCamera->rotExtraY -= cCar->decrementWheelRotation;
+        } else if (cCamera->rotExtraY <= -cCar->decrementWheelRotation) {
+            cCamera->rotExtraY += cCar->decrementWheelRotation;
         } else {
             cCamera->rotExtraY = 0;
         }
@@ -216,18 +216,18 @@ void Physics::NotTurning(Car *car, Camera *cam) {
     //Componentes del coche
     auto cCar = static_cast<CCar *>(car->GetComponent(CompType::CarComp).get());
 
-    if (cCar->wheelRotation >= 0.7) {
-        cCar->wheelRotation -= 0.7;
-    } else if (cCar->wheelRotation <= -0.7) {
-        cCar->wheelRotation += 0.7;
+    if (cCar->wheelRotation >= cCar->decrementWheelRotation) {
+        cCar->wheelRotation -= cCar->decrementWheelRotation;
+    } else if (cCar->wheelRotation <= -cCar->decrementWheelRotation) {
+        cCar->wheelRotation += cCar->decrementWheelRotation;
     } else {
         cCar->wheelRotation = 0;
     }
 
-    if (cCamera->rotExtraY >= 0.7) {
-        cCamera->rotExtraY -= 0.7;
-    } else if (cCamera->rotExtraY <= -0.7) {
-        cCamera->rotExtraY += 0.7;
+    if (cCamera->rotExtraY >= cCar->decrementWheelRotation) {
+        cCamera->rotExtraY -= cCar->decrementWheelRotation;
+    } else if (cCamera->rotExtraY <= -cCar->decrementWheelRotation) {
+        cCamera->rotExtraY += cCar->decrementWheelRotation;
     } else {
         cCamera->rotExtraY = 0;
     }
