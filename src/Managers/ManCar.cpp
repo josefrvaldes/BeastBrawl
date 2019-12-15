@@ -128,10 +128,37 @@ void ManCar::SubscribeToEvents() {
         bind(&ManCar::CollisionPowerUp, this, placeholders::_1),
         "ThrowPowerUp"));
 
+    EventManager::GetInstance()->SuscribeMulti(Listener(
+        EventType::COLLISION_TOTEM,
+        bind(&ManCar::CatchTotem, this, placeholders::_1),
+        "CatchTotem"));
+
 }
 
-void ManCar::CollisionPowerUp(DataMap d){
 
+
+void ManCar::CatchTotem(DataMap d){
+    std::cout << "Cogemos el Totem locoooo!" << std::endl;
+    auto cTotem = static_cast<CTotem*>(car.get()->GetComponent(CompType::TotemComp).get());
+    cTotem->active = true;
+    cTotem->timeStart = system_clock::now();
+
+}
+
+
+
+void ManCar::CollisionPowerUp(DataMap d){
+    std::cout << "Nos ha dado un powerUp neneeeee!" << std::endl;
+    // debemos desactivar el powerUp y para el contador de tiempo del totem
+    auto cTotem = static_cast<CTotem*>(car.get()->GetComponent(CompType::TotemComp).get());
+    if(cTotem->active == true){
+        cTotem->active = false;
+        cTotem->accumulatedTime +=  duration_cast<milliseconds>(system_clock::now() - cTotem->timeStart).count();
+        std::cout << "El tiempo acumulado del totem hasta ahora es de:  " << cTotem->accumulatedTime << std::endl;
+    }
+    // Reducimos la velocidad -- TODO --> no solo reducir la velocidad a 0
+    auto cCar = static_cast<CCar*>(car.get()->GetComponent(CompType::CarComp).get());
+    cCar->speed = 0.0f;
 }
 
 

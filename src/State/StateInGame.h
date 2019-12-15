@@ -35,6 +35,7 @@
 #include "../Managers/ManPowerUp.h"
 #include "../Managers/ManBoxPowerUp.h"
 #include "../Managers/ManWayPoint.h"
+#include "../Managers/ManTotem.h"
 #include "../behaviourTree/behaviourTree.h"
 #include "../behaviourTree/decorator.h"
 #include "../behaviourTree/selector.h"
@@ -69,6 +70,7 @@ class StateInGame : public State {
     shared_ptr<PhysicsFacade> physicsEngine;
     shared_ptr<Collisions> collisions;
     shared_ptr<ManWayPoint> manWayPoint;
+    shared_ptr<ManTotem> manTotems;
     //shared_ptr<SoundFacadeManager> soundFacadeManager;
     SoundFacade *soundEngine;
     shared_ptr<Physics> physics;

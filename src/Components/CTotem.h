@@ -20,5 +20,6 @@ public:
     bool active = false;
     time_point<system_clock> timeStart;        // reloj que contaviliza, cada vez que tenemos el totem, el tiempo
     const int64_t durationTime = 30000;       // 30 seg, debes mantenerlo en tu poder
+    int64_t accumulatedTime = 0;
     
 };
