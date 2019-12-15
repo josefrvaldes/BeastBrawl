@@ -51,7 +51,6 @@ void PhysicsPowerUp::updatePudinDeFrambuesa(PowerUp* pu){
 }
 
 
-
 void PhysicsPowerUp::updateTeleBanana(PowerUp* pu){
    time_point<system_clock> now = system_clock::now();
 

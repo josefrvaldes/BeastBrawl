@@ -156,6 +156,9 @@ void ManCar::CollisionPowerUp(DataMap d){
         cTotem->accumulatedTime +=  duration_cast<milliseconds>(system_clock::now() - cTotem->timeStart).count();
         std::cout << "El tiempo acumulado del totem hasta ahora es de:  " << cTotem->accumulatedTime << std::endl;
     }
+    // Reducimos la velocidad -- TODO --> no solo reducir la velocidad a 0
+    auto cCar = static_cast<CCar*>(car.get()->GetComponent(CompType::CarComp).get());
+    cCar->speed = 0.0f;
 }
 
 

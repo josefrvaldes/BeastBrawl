@@ -3,6 +3,7 @@
 #include "../EventManager/Event.h"
 #include "../EventManager/EventManager.h"
 #include "../Facade/Render/RenderFacadeManager.h"
+#include "../Components/CTransformable.h"
 
 class Position;
 using namespace std;
@@ -45,17 +46,21 @@ void ManTotem::AppertainCar(DataMap d){
 }
 
 void ManTotem::ResetTotem(DataMap d){
-    glm::vec3 posActualCar = any_cast<glm::vec3>(d["TransfCarPos"]);
-    posActualCar.y = 60;
-    CreateTotem(posActualCar);
+    auto transfActualCar = any_cast<CTransformable*>(d["TransfCarPos"]);
+    glm::vec3 posNewTotem = glm::vec3(0.0f,20.0f,0.0f);
+    float angleRotation = (transfActualCar->rotation.y * 3.141592) / 180.0;
+    posNewTotem.x = transfActualCar->position.x - cos(angleRotation)*(-25);
+    posNewTotem.z = transfActualCar->position.z + sin(angleRotation)*(-25);
+
+    CreateTotem(posNewTotem);
+
     // Debemos de crearlo tambien en iirlicht
     shared_ptr<RenderFacadeManager> renderFacadeManager = RenderFacadeManager::GetInstance();
     shared_ptr<RenderFacade> renderEngine = renderFacadeManager->GetRenderFacade();
-    for(long unsigned int i=0; i< totems.size(); ++i){
-        renderEngine->FacadeAddObject(totems[i].get());
-    }
+    //for(long unsigned int i=0; i< totems.size(); ++i){
+        renderEngine->FacadeAddObject(totems[0].get());
+   // }
 }
-
 
 void ManTotem::SubscribeToEvents() {
     EventManager::GetInstance()->SuscribeMulti(Listener(

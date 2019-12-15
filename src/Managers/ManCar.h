@@ -9,6 +9,7 @@
 #include "../../lib/glm/vec3.hpp"
 #include "../Aliases.h"
 #include "../Components/CTransformable.h"
+#include "../Components/CSpeed.h"
 
 using namespace std;
 class Car;

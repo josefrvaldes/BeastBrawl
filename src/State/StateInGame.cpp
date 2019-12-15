@@ -260,9 +260,9 @@ void StateInGame::Update() {
                     // comprobamos si el coche tenia el totem.. ya que debe de soltarlo
                     if(static_cast<CTotem*>(manCars.get()->GetCar().get()->GetComponent(CompType::TotemComp).get())->active){  // TRUE
                         auto dataTransformableCar = static_cast<CTransformable*>(manCars.get()->GetCar().get()->GetComponent(CompType::TransformableComp).get());
-                        DataMap dataTransfCarPos;                                                                    
-                        dataTransfCarPos["TransfCarPos"] = dataTransformableCar->position;  
-                        eventManager->AddEventMulti(Event{EventType::DROP_TOTEM, dataTransfCarPos});  
+                        DataMap dataTransfCar;                                                                    
+                        dataTransfCar["TransfCarPos"] = dataTransformableCar;  
+                        eventManager->AddEventMulti(Event{EventType::DROP_TOTEM, dataTransfCar});  
                     }
                 }
             }
