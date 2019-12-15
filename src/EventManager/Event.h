@@ -31,6 +31,7 @@ enum EventType {
     PRIORIDAD1,
     PRIORIDAD2,
     PRIORIDAD3,
+    COLLISION_TOTEM,
     POWER_UP_COGIDO,
     PowerUp_Create,
     CATCH_BOX_POWERUP,

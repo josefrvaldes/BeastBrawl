@@ -128,10 +128,27 @@ void ManCar::SubscribeToEvents() {
         bind(&ManCar::CollisionPowerUp, this, placeholders::_1),
         "ThrowPowerUp"));
 
+    EventManager::GetInstance()->SuscribeMulti(Listener(
+        EventType::COLLISION_TOTEM,
+        bind(&ManCar::CatchTotem, this, placeholders::_1),
+        "CatchTotem"));
+
 }
 
-void ManCar::CollisionPowerUp(DataMap d){
 
+
+void ManCar::CatchTotem(DataMap d){
+    std::cout << "Cogemos el Totem locoooo!" << std::endl;
+    auto cTotem = static_cast<CTotem*>(car.get()->GetComponent(CompType::TotemComp).get());
+    cTotem->active = true;
+    cTotem->timeStart = system_clock::now();
+
+}
+
+
+
+void ManCar::CollisionPowerUp(DataMap d){
+    std::cout << "Nos ha dado un powerUp neneeeee!" << std::endl;
 }
 
 
