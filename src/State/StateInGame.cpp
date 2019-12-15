@@ -257,11 +257,12 @@ void StateInGame::Update() {
                 if(collisions->Intersects(manCars.get()->GetCar().get(), actualPowerUp.get())){   //TRUE
                     // debemos eliminar el powerUp y hacer danyo al jugador
                     DataMap dataCollisonCarPowerUp;                                                                           
-                    dataCollisonCarPowerUp["PowerUp"] = actualPowerUp;              // nos guardamos el puntero para eliminar el powerUp                                             
+                    dataCollisonCarPowerUp["PowerUp"] = actualPowerUp;              // nos guardamos el puntero para eliminar el powerUp                           
                     eventManager->AddEventMulti(Event{EventType::COLLISION_ENTITY_POWERUP, dataCollisonCarPowerUp}); 
 
-                    // comprobamos si el coche tenia el totem.. ya que debe de soltarlo
-                    if(static_cast<CTotem*>(manCars.get()->GetCar().get()->GetComponent(CompType::TotemComp).get())->active){  // TRUE
+                    // comprobamos si el coche tenia escudo y el totem.. ya que debe de soltarlo
+                    auto cShield = static_cast<CShield*>(manCars.get()->GetCar().get()->GetComponent(CompType::ShieldComp).get());
+                    if(cShield->activePowerUp==false && static_cast<CTotem*>(manCars.get()->GetCar().get()->GetComponent(CompType::TotemComp).get())->active){  // TRUE
                         auto dataTransformableCar = static_cast<CTransformable*>(manCars.get()->GetCar().get()->GetComponent(CompType::TransformableComp).get());
                         DataMap dataTransfCar;                                                                    
                         dataTransfCar["TransfCarPos"] = dataTransformableCar;  
