@@ -40,9 +40,12 @@
 #include "../behaviourTree/selector.h"
 #include "../behaviourTree/sequence.h"
 #include "../fuzzyLogic/fuzzyLogic.h"
+#include "btBulletDynamicsCommon.h"
 
 using namespace std;
 using namespace chrono;
+
+class CLPhysics;
 
 class StateInGame : public State {
    public:
@@ -78,12 +81,16 @@ class StateInGame : public State {
 
     shared_ptr<Totem> totem;
 
+    unique_ptr<CLPhysics> clPhysics;
+
     shared_ptr<PhysicsAI> physicsAI;
     int lastFPS = -1;
     //uint32_t then;
     time_point<system_clock> then;
     vector<float> deltas;
     float CalculateDelta(float);
+    
+
 };
 
 #endif  // STATEINGAME_H

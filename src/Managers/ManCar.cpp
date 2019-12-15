@@ -12,6 +12,7 @@
 #include "../Components/CTotem.h"
 #include "../Components/CRoboJorobo.h"
 #include "../Components/CNitro.h"
+#include "Manager.h"
 
 
 class Position;
@@ -77,15 +78,14 @@ void ManCar::SubscribeToEvents() {
     //int (*func_pointer) (int) = [](int a) { return a; };
 
     //accelerateCar(0);
-    auto lambdaAccelerate = [&](DataMap d){this->AccelerateCar(d);};
+    // auto lambdaAccelerate = [&](DataMap d){this->AccelerateCar(d);};
     //
     //auto lambdaGuardaAccel = [&lambdaAccelerate](DataMap d) {lambdaAccelerate(d);};
 
 
     EventManager::GetInstance()->SuscribeMulti(Listener(
         EventType::PRESS_I,
-        lambdaAccelerate,
-        // [&](DataMap d){this->AccelerateCar(d);},
+        bind(&ManCar::AccelerateCar, this, placeholders::_1),
         "AccelerateCar"));
 
     EventManager::GetInstance()->SuscribeMulti(Listener(
@@ -261,4 +261,8 @@ void ManCar::AccelerateCar(DataMap d) {
     // cout << "Hemos recibido por evento un int=" << mint << " un float=" << mfloat << " y un vector de int con size=" << mvect.size() << endl;
     
     physics->Accelerate(car.get(), cam);
+}
+
+void ManCar::Integrate(float delta) {
+    //physics->update(GetCar().get(), cam.get());
 }

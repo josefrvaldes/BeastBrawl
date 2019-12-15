@@ -5,6 +5,8 @@
 
 #include "../Components/CTransformable.h"
 #include "../Components/CWayPointEdges.h"
+#include "../CLPhysics/CLPhysics.h"
+#include "../Managers/Manager.h"
 
 typedef std::chrono::high_resolution_clock Clock;
 
@@ -173,6 +175,12 @@ StateInGame::StateInGame() {
     //FuzzyLogic flVelocity;
     physicsAI->InitPhysicsIA(manCars->GetEntitiesAI()[0].get());  // To-Do: hacer que se le pasen todos los coches IA
     cout << "después de init physics ai" << endl;
+
+
+    // CLPhysics
+    clPhysics = make_unique<CLPhysics>();
+    clPhysics->AddManager(*manCars.get());
+    // end CLPhysics
 }
 
 StateInGame::~StateInGame() {
@@ -205,8 +213,10 @@ void StateInGame::Update() {
 
     then = now;
 
-    physics->update(manCars->GetCar().get(), cam.get());
+    
+    physics->update(manCars->GetCar().get(), cam.get()); // por ahora este es nuestro ManCarIntegrate
     physicsAI->Update(manWayPoint->GetEntities(), manCars->GetEntitiesAI()[0].get(), *deltaTime.get());
+    clPhysics->Update(0.1666f);
     sysBoxPowerUp->update(manBoxPowerUps.get());
     phisicsPowerUp->update(manPowerUps->GetEntities());
 

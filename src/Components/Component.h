@@ -21,7 +21,10 @@ enum CompType {
     TotemComp,
     TargetEntityComp,
     WayPointEdgesComp,
-    DimensionsComp
+    DimensionsComp,
+    CompBoundingSphere,
+    CompBoundingAABox,
+    CompBoundingPlane
 };
 
 class Component

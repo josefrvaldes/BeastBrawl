@@ -8,6 +8,7 @@
 #include "../Components/CTransformable.h"
 #include "../Components/CCar.h"
 #include "../Components/CWayPoint.h"
+#include "../Components/CBoundingSphere.h"
 #include <iostream>
 
 class Position;
@@ -30,6 +31,7 @@ CarAI::CarAI(){
     shared_ptr<CCar> cCar = make_shared<CCar>(maxSpeed, acceleration, friction, slowDown);
     shared_ptr<CWayPoint> cWayPoint = make_shared<CWayPoint>();
     shared_ptr<CPowerUp> cPowerUp = make_shared<CPowerUp>();
+    shared_ptr<CBoundingSphere> cBoundSphere = make_shared<CBoundingSphere>(pos, 3.f);
     AddComponent(cId);
     AddComponent(cType);
     AddComponent(cTransformable);
@@ -38,6 +40,7 @@ CarAI::CarAI(){
     AddComponent(cCar);
     AddComponent(cWayPoint);
     AddComponent(cPowerUp);
+    AddComponent(cBoundSphere);
     cout << "Acabamos de llamar al constructor default de car, su transformable es " << cTransformable << endl;
 }
 
