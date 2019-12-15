@@ -246,7 +246,7 @@ void StateInGame::Update() {
     //collisions->IntersectPlayerPowerUps(manCars->GetCar().get(), manPowerUps->GetEntities());
     // llamamos a comprobar las colisiones entre los coches (actualmente solo el prota) y los powerUps lanzados
 
-    // ELIMINAMOS POWERUPS - DE MOMENTO SOLO CON EL PLAYER
+    // NOS HA DADO UN POWERUPS - DE MOMENTO SOLO CON EL PLAYER
     //for(shared_ptr<Entity> actualCar : manCars->GetEntities()){   
         for(shared_ptr<Entity> actualPowerUp : manPowerUps->GetEntities()){
             auto cPowerUp = static_cast<CPowerUp*>(actualPowerUp->GetComponent(CompType::PowerUpComp).get());
@@ -256,6 +256,14 @@ void StateInGame::Update() {
                     DataMap dataCollisonCarPowerUp;                                                                           
                     dataCollisonCarPowerUp["PowerUp"] = actualPowerUp;              // nos guardamos el puntero para eliminar el powerUp                                             
                     eventManager->AddEventMulti(Event{EventType::COLLISION_ENTITY_POWERUP, dataCollisonCarPowerUp}); 
+
+                    // comprobamos si el coche tenia el totem.. ya que debe de soltarlo
+                    if(static_cast<CTotem*>(manCars.get()->GetCar().get()->GetComponent(CompType::TotemComp).get())->active){  // TRUE
+                        auto dataTransformableCar = static_cast<CTransformable*>(manCars.get()->GetCar().get()->GetComponent(CompType::TransformableComp).get());
+                        DataMap dataTransfCarPos;                                                                    
+                        dataTransfCarPos["TransfCarPos"] = dataTransformableCar->position;  
+                        eventManager->AddEventMulti(Event{EventType::DROP_TOTEM, dataTransfCarPos});  
+                    }
                 }
             }
         }

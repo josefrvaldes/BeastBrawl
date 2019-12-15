@@ -30,6 +30,11 @@ Totem::Totem()
     AddComponent(cMesh);
 }
 
+Totem::Totem(glm::vec3 _position) : Totem(){
+
+    CTransformable *cTransformable = (CTransformable *)m_components[CompType::TransformableComp].get();
+    cTransformable->position = _position;
+}
 
 Totem::Totem(glm::vec3 _position, glm::vec3 _rotation) : Totem(){
 
@@ -37,7 +42,6 @@ Totem::Totem(glm::vec3 _position, glm::vec3 _rotation) : Totem(){
     cTransformable->position = _position;
     cTransformable->rotation = _rotation;
 }
-
 
 Totem::Totem(glm::vec3 _position, glm::vec3 _rotation, string _texture, string _mesh) : Totem(){
     CTransformable *cTransformable = (CTransformable *)m_components[CompType::TransformableComp].get();

@@ -26,18 +26,33 @@ void ManTotem::CreateTotem() {
     }
 }
 
+void ManTotem::CreateTotem(glm::vec3 _position) {
+    if(totems.size() == 0){
+        shared_ptr<Totem> totem = make_shared<Totem>(_position);
+        totems.push_back(totem);
+    }
+}
 
 void ManTotem::AppertainCar(DataMap d){
-    std::cout << "El totem pasa a ser de un coche y ya no esta en el mapa" << std::endl;
     shared_ptr<RenderFacadeManager> renderFacadeManager = RenderFacadeManager::GetInstance();
     shared_ptr<RenderFacade> renderEngine = renderFacadeManager->GetRenderFacade();
     for(long unsigned int i=0; i< totems.size(); ++i){
-        std::cout << "Falla aqui ??" << std::endl;
         if(totems[i] == any_cast<shared_ptr<Entity>>(d["Totem"])){
             renderEngine->DeleteEntity(totems[i].get());
             totems.erase(totems.begin()+i);
         }
-        std::cout << "SI" << std::endl;
+    }
+}
+
+void ManTotem::ResetTotem(DataMap d){
+    glm::vec3 posActualCar = any_cast<glm::vec3>(d["TransfCarPos"]);
+    posActualCar.y = 60;
+    CreateTotem(posActualCar);
+    // Debemos de crearlo tambien en iirlicht
+    shared_ptr<RenderFacadeManager> renderFacadeManager = RenderFacadeManager::GetInstance();
+    shared_ptr<RenderFacade> renderEngine = renderFacadeManager->GetRenderFacade();
+    for(long unsigned int i=0; i< totems.size(); ++i){
+        renderEngine->FacadeAddObject(totems[i].get());
     }
 }
 
@@ -47,4 +62,8 @@ void ManTotem::SubscribeToEvents() {
         EventType::COLLISION_TOTEM,
         bind(&ManTotem::AppertainCar, this, placeholders::_1),
         "AppertainCar"));
+    EventManager::GetInstance()->SuscribeMulti(Listener(
+        EventType::DROP_TOTEM,
+        bind(&ManTotem::ResetTotem, this, placeholders::_1),
+        "ResetTotem"));
 }

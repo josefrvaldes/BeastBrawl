@@ -19,6 +19,7 @@ class ManTotem{
     ~ManTotem();
 
     void CreateTotem();
+    void CreateTotem(glm::vec3 _position);
     //shared_ptr<Totem>& GetTotem() { return totem; };
     vector<shared_ptr<Totem>> GetEntities() const {
         return totems;
@@ -28,5 +29,6 @@ class ManTotem{
    // shared_ptr<Totem> totem;
     vector<shared_ptr<Totem>> totems;
     void AppertainCar(DataMap d);
+    void ResetTotem(DataMap d);
     void SubscribeToEvents();
 };

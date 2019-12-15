@@ -35,6 +35,7 @@ enum EventType {
     POWER_UP_COGIDO,
     PowerUp_Create,
     CATCH_BOX_POWERUP,
+    DROP_TOTEM,
     PRESS_1
 };
 

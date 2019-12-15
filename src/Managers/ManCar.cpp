@@ -149,6 +149,13 @@ void ManCar::CatchTotem(DataMap d){
 
 void ManCar::CollisionPowerUp(DataMap d){
     std::cout << "Nos ha dado un powerUp neneeeee!" << std::endl;
+    // debemos desactivar el powerUp y para el contador de tiempo del totem
+    auto cTotem = static_cast<CTotem*>(car.get()->GetComponent(CompType::TotemComp).get());
+    if(cTotem->active == true){
+        cTotem->active = false;
+        cTotem->accumulatedTime +=  duration_cast<milliseconds>(system_clock::now() - cTotem->timeStart).count();
+        std::cout << "El tiempo acumulado del totem hasta ahora es de:  " << cTotem->accumulatedTime << std::endl;
+    }
 }
 
 
