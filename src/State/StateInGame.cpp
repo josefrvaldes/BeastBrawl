@@ -153,7 +153,10 @@ StateInGame::StateInGame() {
         auto mapWaypoint = components.find(CompType::WayPointComp);
         auto cWayPoint = static_cast<CWayPoint*>(mapWaypoint->second.get());
 
-        manBoxPowerUps->CreateBoxPowerUp(glm::vec3(cWayPoint->position));
+        // solo debemos crear las Box si el type del waypoint es "1"
+        //if(cWayPoint->m_type == 1){
+            manBoxPowerUps->CreateBoxPowerUp(glm::vec3(cWayPoint->position));
+        //}
     }
     //cout << "el tamanyo normal es: " << manWayPoint.size() << endl;
     //Añadimos todos los power ups
