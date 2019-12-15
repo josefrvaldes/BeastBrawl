@@ -5,6 +5,8 @@
 #include <cstdint>
 #include <iostream>
 #include <list>
+#include <queue>
+#include <stack>
 #include <memory>
 #include <string>
 
@@ -83,7 +85,6 @@ class StateInGame : public State {
     vector<float> deltas;
     float CalculateDelta(float);
 
-    vector<int> Dijkstra(ManWayPoint* graph, int start, int end);
 };
 
 #endif  // STATEINGAME_H

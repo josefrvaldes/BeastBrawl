@@ -8,6 +8,7 @@
 
 #include "../Components/CTransformable.h"
 #include "../Components/CWayPointEdges.h"
+#include "../Components/CPath.h"
 
 typedef std::chrono::high_resolution_clock Clock;
 
@@ -93,112 +94,7 @@ struct Inverter : public Decorator {  // Decorator Inverter
 
 
 
-std::vector<int> StateInGame::Dijkstra(ManWayPoint* _graph, int start, int end) {
 
-
-    cout << "----------------------------------\n";
-    //Convertir ManWayPoint en una matriz de adyacencia
-    int size = _graph->GetEntities().size();
-    float graph[size][size];
-
-    //Rellenamos de 0 el grafo
-    for(int i = 0; i < size; ++i){
-        for(int j = 0; j < size; ++j){
-            graph[i][j] = INT_MAX;
-        }
-    }
-
-    //Ponemos los costes pertinentes en la matriz de adyacencia
-    //TODO: Cambiar esto para tenerlo guardado en una entidad o algo y no hacerlo cada calculo de Dijkstra
-    for(auto node : _graph->GetEntities()){
-        auto cWayPoint = static_cast<CWayPoint*>(node->GetComponent(CompType::WayPointComp).get());
-        auto cWayPointEdges = static_cast<CWayPointEdges*>(node->GetComponent(CompType::WayPointEdgesComp).get());
-
-        for(auto edge : cWayPointEdges->edges){
-            graph[cWayPoint->id][edge.to] = edge.cost;
-        }
-    }
-
-    //Comenzamos Dijkstra
-    float distanceFromStart[size],pred[size];
-    int visited[size],count,minDistanceFromStart,nextClosestNode,i,j;
-
-
-    for(i=0;i<size;i++) {
-        distanceFromStart[i] = graph[start][i];  //Metemos las ponderaciones a los nodos desde el que iniciamos(Si no tiene es = INT_MAX)
-        pred[i] = start;                
-        visited[i] = 0;
-    }
-
-    //La distancia a si mismo es siempre 0
-    distanceFromStart[start]=0; 
-    visited[start]=1;
-    count=1;
-
-    while(count<size-1) {
-        minDistanceFromStart=INT_MAX;
-
-        for(i=0;i<size;i++){
-            if(distanceFromStart[i] < minDistanceFromStart && !visited[i]) {
-                //Si la distancia al nodo i es menor que la minDistanceFromStart y no esta visitado
-                //Recordatorio: Si nuestro nodo start no esta conectado con i entonces distanceFromStart[1] = INT_MAX y no entrará aquí
-                minDistanceFromStart=distanceFromStart[i]; // Distancia al nodo adyacente mas cercano
-                nextClosestNode=i; //Siguiente nodo adyacente mas cercano
-            }
-        }
-
-        visited[nextClosestNode]=1;
-
-        for(i=0;i<size;i++){
-            if(!visited[i]){
-                //Si la distancia entre (start y nodo i) es mayor que (start y su nodo adyacente) + (su nodo adyacente hasta i)
-                //P.E: ¿De 1 -> 3 es mayor que de 1 -> 2 -> 3?
-                if(minDistanceFromStart + graph[nextClosestNode][i] < distanceFromStart[i]) {
-                    distanceFromStart[i]=minDistanceFromStart + graph[nextClosestNode][i];
-                    pred[i]=nextClosestNode; //Nos guardamos en pred[i] el nodo por el que mas rapido se llega a él (nextClosestNode)
-                }
-            }
-        }
-
-        //if(visited[end]==1) count = size;
-        count++;
-    }
-
-    vector<int> path;
-    int aux = end;
-    path.push_back(aux); //Para guardarnos el final del path
-    //Recorremos pred recursivamente hasta que pred[aux] sea el nodo start
-    while(aux!=start){
-        if(pred[aux]==start) break; //Para que no nos añada el nodo start
-        path.push_back(pred[aux]);
-        aux = pred[aux];
-    }
-
-    std::reverse(path.begin(),path.end());
-    cout << "---------------\n";
-    // //Ruta que tiene que seguir para llegar desde start a end
-    // for(auto node : path){
-    //     cout << node << " - ";
-    // }
-
-    cout << "\n---------------\n";
-    return path;
-    // for(i=0;i<size;i++){
-
-    //     if(i!=start){
-
-    //         cout<<"\nDistance of node " << i <<" = " << distanceFromStart[i];
-    //         cout<<"\nPath = "<<i;
-    //         j=i;
-    //         do{
-    //             j=pred[j];
-    //             cout<<" <- "<<j;
-    //         }while(j!=start);
-    //     }
-    // }
-
-    cout << "\n\n\n";
-}
 
 StateInGame::StateInGame() {
     // constructor
@@ -219,22 +115,32 @@ StateInGame::StateInGame() {
     ground = make_shared<GameObject>(glm::vec3(10.0f, 10.0f, 30.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(100.0f, 1.0f, 100.0f), "wall.jpg", "ninja.b3d");
     cam = make_shared<Camera>(glm::vec3(10.0f, 40.0f, 30.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f));
 
-    manWayPoint = make_shared<ManWayPoint>();
+    manWayPoint = make_shared<ManWayPoint>(); //Se crean todos los waypoints y edges
 
-    auto cWayPoint = static_cast<CWayPoint*>(manWayPoint->GetEntities()[3]->GetComponent(CompType::WayPointComp).get());
+    auto cWayPoint = static_cast<CWayPoint*>(manWayPoint->GetEntities()[2]->GetComponent(CompType::WayPointComp).get());
 
-    //COMPROBAMOS DIJKSTRA
-    auto path = Dijkstra(manWayPoint.get(),0,11);
-
-    //Ruta que tiene que seguir para llegar desde start a end
-    for(auto node : path){
-        cout << node << " - ";
-    }
 
     manCars = make_shared<ManCar>(physics.get(), cam.get());
 
     //Le asignamos el waypoint inicial, momentaneo a la IA
-    manCars->CreateCarAI(glm::vec3(100.0f, 20.0f, 100.0f), cWayPoint->position);
+    manCars->CreateCarAI(glm::vec3(100.0f, 20.0f, 100.0f), cWayPoint);
+    stack<int> pathInit;
+    pathInit.push(0);
+    pathInit.push(1);
+    pathInit.push(2);
+
+    manCars->GetEntitiesAI()[0]->SetPath(pathInit);
+
+    auto cPath = static_cast<CPath*>(manCars->GetEntitiesAI()[0]->GetComponent(CompType::PathComp).get());
+
+    // while(!cPath->stackPath.empty()){
+    //     auto node = cPath->stackPath.top();
+    //     cPath->stackPath.pop();
+    //     cout << node << " - ";
+    // }
+
+
+
 
     // Inicializamos las facadas
     renderFacadeManager = RenderFacadeManager::GetInstance();
@@ -318,7 +224,7 @@ void StateInGame::Update() {
     then = now;
 
     physics->update(manCars->GetCar().get(), cam.get());
-    physicsAI->Update(manWayPoint->GetEntities(), manCars->GetEntitiesAI()[0].get(), *deltaTime.get());
+    physicsAI->Update(manWayPoint.get(), manCars->GetEntitiesAI()[0].get(), *deltaTime.get());
     sysBoxPowerUp->update(manBoxPowerUps.get());
     phisicsPowerUp->update(manPowerUps->GetEntities());
 
