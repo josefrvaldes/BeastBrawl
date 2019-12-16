@@ -1,4 +1,11 @@
 #include "Collisions.h"
+#include "../Entities/PowerUp.h"
+#include "../Entities/Car.h"
+#include "../Entities/CarAI.h"
+#include "../Components/CTotem.h"
+#include "../Components/CShield.h"
+#include "../EventManager/EventManager.h"
+#include "../EventManager/Event.h"
 
 Collisions::Collisions(){
 
@@ -43,29 +50,57 @@ bool Collisions::Intersects(Entity* entity1,Entity* entity2){
 }
 
 
-void Collisions::IntersectsCarsPowerUps(vector<Entity*> cars, vector<Entity*> powerUps){
+void Collisions::IntersectPlayerPowerUps(ManCar* manCars, ManPowerUp* manPowerUps){
 
-    for(Entity* actualCar : cars){
-        for(Entity* actualPowerUp : powerUps){
-            auto cPowerUp = static_cast<CPowerUp*>(actualPowerUp->GetComponent(CompType::PowerUpComp).get());
-            if(cPowerUp->effectActive == true){                                                                 // SI HACE DANYO
-                if(Intersects(actualCar, actualPowerUp)){   //TRUE
-                    // debemos eliminar el powerUp y hacer danyo al jugador
-                    //std::cout << "COLISIONAMOS CON UN POWER UP DEL SUELO LOOOOOOCOOOOOOO" << std::endl;
+    for(shared_ptr<Entity> actualPowerUp : manPowerUps->GetEntities()){
+        auto cPowerUp = static_cast<CPowerUp*>(actualPowerUp->GetComponent(CompType::PowerUpComp).get());
+        if(cPowerUp->effectActive == true){                                                                 // SI HACE DANYO
+            if(Intersects(manCars->GetCar().get(), actualPowerUp.get())){   //TRUE
+                // debemos eliminar el powerUp y hacer danyo al jugador
+                shared_ptr<EventManager> eventManager = EventManager::GetInstance();
+                DataMap dataCollisonCarPowerUp;                                                                           
+                dataCollisonCarPowerUp["PowerUp"] = actualPowerUp;              // nos guardamos el puntero para eliminar el powerUp                           
+                eventManager->AddEventMulti(Event{EventType::COLLISION_ENTITY_POWERUP, dataCollisonCarPowerUp}); 
+
+                // comprobamos si el coche tenia escudo y el totem.. ya que debe de soltarlo
+                auto cShield = static_cast<CShield*>(manCars->GetCar().get()->GetComponent(CompType::ShieldComp).get());
+                if(cShield->activePowerUp==false && static_cast<CTotem*>(manCars->GetCar().get()->GetComponent(CompType::TotemComp).get())->active){  // TRUE
+                    auto dataTransformableCar = static_cast<CTransformable*>(manCars->GetCar().get()->GetComponent(CompType::TransformableComp).get());
+                    DataMap dataTransfCar;                                                                    
+                    dataTransfCar["TransfCarPos"] = dataTransformableCar;  
+                    eventManager->AddEventMulti(Event{EventType::DROP_TOTEM, dataTransfCar});  
                 }
             }
         }
     }
 }
 
-void Collisions::IntersectPlayerPowerUps(Entity* car, vector<Entity*> powerUps){
 
-    for(Entity* actualPowerUp : powerUps){
-        auto cPowerUp = static_cast<CPowerUp*>(actualPowerUp->GetComponent(CompType::PowerUpComp).get());
-        if(cPowerUp->effectActive == true){                                                                 // SI HACE DANYO
-            if(Intersects(car, actualPowerUp)){   //TRUE
-                // debemos eliminar el powerUp y hacer danyo al jugador
-                //std::cout << "COLISIONAMOS CON UN POWER UP DEL SUELO LOOOOOOCOOOOOOO (EL PLAYEER)" << std::endl;
+
+
+void Collisions::IntersectsCarsPowerUps(ManCar* manCars, ManPowerUp* manPowerUps){
+
+    for(shared_ptr<Entity> actualCar : manCars->GetEntitiesAI()){   
+        for(shared_ptr<Entity> actualPowerUp : manPowerUps->GetEntities()){
+            auto cPowerUp = static_cast<CPowerUp*>(actualPowerUp->GetComponent(CompType::PowerUpComp).get());
+            if(cPowerUp->effectActive == true){                                                                 // SI HACE DANYO
+                if(Intersects(actualCar.get(), actualPowerUp.get())){   //TRUE
+                    // debemos eliminar el powerUp y hacer danyo al jugador
+                    shared_ptr<EventManager> eventManager = EventManager::GetInstance();
+                    DataMap dataCollisonCarPowerUp;                                                                           
+                    dataCollisonCarPowerUp["PowerUp"] = actualPowerUp;              // nos guardamos el puntero para eliminar el powerUp
+                    dataCollisonCarPowerUp["carAI"] = actualCar.get();              // nos guardamos el puntero al coche                              
+                    eventManager->AddEventMulti(Event{EventType::COLLISION_ENTITY_AI_POWERUP, dataCollisonCarPowerUp}); 
+                    std::cout << "Soy la IA y me han PEGADOOOOO" << std::endl;
+                    // comprobamos si el coche tenia escudo y el totem.. ya que debe de soltarlo
+                    //auto cShield = static_cast<CShield*>(actualCar.get()->GetComponent(CompType::ShieldComp).get());
+                    //if(cShield->activePowerUp==false && static_cast<CTotem*>(actualCar.get()->GetComponent(CompType::TotemComp).get())->active){  // TRUE
+                    //    auto dataTransformableCar = static_cast<CTransformable*>(actualCar.get()->GetComponent(CompType::TransformableComp).get());
+                    //    DataMap dataTransfCar;                                                                    
+                    //    dataTransfCar["TransfCarPos"] = dataTransformableCar;  
+                    //    eventManager->AddEventMulti(Event{EventType::DROP_TOTEM, dataTransfCar});  
+                    //}
+                }
             }
         }
     }

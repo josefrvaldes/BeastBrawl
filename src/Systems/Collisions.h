@@ -9,6 +9,9 @@
 #include "../Components/CDimensions.h"
 #include "../Components/CPowerUp.h"
 
+#include "../Managers/ManCar.h"
+#include "../Managers/ManPowerUp.h"
+
 #include "../Entities/Entity.h"
 #include <math.h>
 #include <memory>
@@ -23,8 +26,8 @@ public:
     Collisions();
     ~Collisions(){};
     bool Intersects(Entity* car,Entity* carAI);
-    void IntersectsCarsPowerUps(vector<Entity*> cars, vector<Entity*> powerUps);
-    void IntersectPlayerPowerUps(Entity* cars, vector<Entity*> powerUps);
+    void IntersectsCarsPowerUps(ManCar* manCars, ManPowerUp* manPowerUps);
+    void IntersectPlayerPowerUps(ManCar* manCars, ManPowerUp* manPowerUps);
 protected:
 private:
     

@@ -62,5 +62,10 @@ void ManPowerUp::SubscribeToEvents() {
         EventType::COLLISION_ENTITY_POWERUP,
         bind(&ManPowerUp::DeletePowerUp, this, placeholders::_1),
         "DeletePowerUp"));
+    
+    EventManager::GetInstance()->SuscribeMulti(Listener(
+        EventType::COLLISION_ENTITY_AI_POWERUP,
+        bind(&ManPowerUp::DeletePowerUp, this, placeholders::_1),
+        "DeletePowerUp"));
 }
 

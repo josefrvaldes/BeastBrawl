@@ -127,6 +127,11 @@ void ManCar::SubscribeToEvents() {
         EventType::COLLISION_ENTITY_POWERUP,
         bind(&ManCar::CollisionPowerUp, this, placeholders::_1),
         "CollisionPowerUp"));
+    
+    EventManager::GetInstance()->SuscribeMulti(Listener(
+        EventType::COLLISION_ENTITY_AI_POWERUP,
+        bind(&ManCar::CollisionPowerUpAI, this, placeholders::_1),
+        "CollisionPowerUpAI"));
 
     EventManager::GetInstance()->SuscribeMulti(Listener(
         EventType::COLLISION_TOTEM,
@@ -163,6 +168,25 @@ void ManCar::CollisionPowerUp(DataMap d){
         cCar->speed = 0.0f;
     }else{
         std::cout << "El escudo me salvo el culito :D" << std::endl;
+        cShield->deactivePowerUp(); // desactivamos el escudo
+    }
+}
+
+
+void ManCar::CollisionPowerUpAI(DataMap d){
+    // debemos desactivar el powerUp y para el contador de tiempo del totem
+    auto cShield = static_cast<CShield*>(any_cast<Entity*>(d["carAI"])->GetComponent(CompType::ShieldComp).get());
+    if(cShield->activePowerUp == false){            // comprobamos si tiene el escudo
+        auto cTotem = static_cast<CTotem*>(any_cast<Entity*>(d["carAI"])->GetComponent(CompType::TotemComp).get());
+        if(cTotem->active == true){
+            cTotem->active = false;
+            cTotem->accumulatedTime +=  duration_cast<milliseconds>(system_clock::now() - cTotem->timeStart).count();
+            std::cout << "El tiempo acumulado del totem hasta ahora es de:  " << cTotem->accumulatedTime/1000.0 << std::endl;
+        }
+        // Reducimos la velocidad -- TODO --> no solo reducir la velocidad a 0
+        auto cCar = static_cast<CCar*>(any_cast<Entity*>(d["carAI"])->GetComponent(CompType::CarComp).get());
+        cCar->speed = 0.0f;  // To-Do: no funciona en la IA por que la logica difusa no la hace acelerar
+    }else{
         cShield->deactivePowerUp(); // desactivamos el escudo
     }
 }
