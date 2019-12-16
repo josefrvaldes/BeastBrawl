@@ -35,8 +35,8 @@ void ManTotem::CreateTotem(glm::vec3 _position) {
 }
 
 void ManTotem::AppertainCar(DataMap d){
-    shared_ptr<RenderFacadeManager> renderFacadeManager = RenderFacadeManager::GetInstance();
-    shared_ptr<RenderFacade> renderEngine = renderFacadeManager->GetRenderFacade();
+    auto renderFacadeManager = RenderFacadeManager::GetInstance();
+    auto renderEngine = renderFacadeManager->GetRenderFacade();
     for(long unsigned int i=0; i< totems.size(); ++i){
         if(totems[i] == any_cast<shared_ptr<Entity>>(d["Totem"])){
             renderEngine->DeleteEntity(totems[i].get());
@@ -55,8 +55,8 @@ void ManTotem::ResetTotem(DataMap d){
     CreateTotem(posNewTotem);
 
     // Debemos de crearlo tambien en iirlicht
-    shared_ptr<RenderFacadeManager> renderFacadeManager = RenderFacadeManager::GetInstance();
-    shared_ptr<RenderFacade> renderEngine = renderFacadeManager->GetRenderFacade();
+    auto renderFacadeManager = RenderFacadeManager::GetInstance();
+    auto renderEngine = renderFacadeManager->GetRenderFacade();
     //for(long unsigned int i=0; i< totems.size(); ++i){
         renderEngine->FacadeAddObject(totems[0].get());
    // }

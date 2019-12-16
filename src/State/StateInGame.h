@@ -63,6 +63,7 @@ class StateInGame : public State {
     shared_ptr<ManPowerUp> manPowerUps;
     shared_ptr<ManBoxPowerUp> manBoxPowerUps;
     shared_ptr<ManCar> manCars;
+    shared_ptr<ManWayPoint> manWayPoint;
     RenderFacadeManager* renderFacadeManager;
     InputFacadeManager* inputFacadeManager;
     PhysicsFacadeManager* physicsFacadeManager;
@@ -76,10 +77,11 @@ class StateInGame : public State {
     float deltaTime = 0.166666;
     shared_ptr<PhysicsPowerUp> phisicsPowerUp;
     shared_ptr<SystemBoxPowerUp> sysBoxPowerUp;
-
+    shared_ptr<Collisions> collisions;
     shared_ptr<Totem> totem;
 
     shared_ptr<PhysicsAI> physicsAI;
+    shared_ptr<ManTotem> manTotems;
     //int lastFPS = -1;
     //uint32_t then;
     time_point<system_clock> then;

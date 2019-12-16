@@ -225,7 +225,7 @@ void StateInGame::Update() {
    
 
     physics->update(manCars->GetCar().get(), cam.get());
-    physicsAI->Update(manWayPoint.get(), manCars->GetEntitiesAI()[0].get(), *deltaTime.get());
+    physicsAI->Update(manWayPoint.get(), manCars->GetEntitiesAI()[0].get(), deltaTime);
     sysBoxPowerUp->update(manBoxPowerUps.get());
     phisicsPowerUp->update(manPowerUps->GetEntities());
 
@@ -274,6 +274,5 @@ void StateInGame::Render() {
     renderEngine->FacadeDrawBoundingBox(carAI, isColliding);
     renderEngine->FacadeEndScene();
     int fps = renderEngine->FacadeGetFPS();
-    lastFPS = fps;
 }
 

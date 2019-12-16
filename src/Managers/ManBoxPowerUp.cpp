@@ -15,8 +15,8 @@ void ManBoxPowerUp::EjecutarMeHanCogido(DataMap d) {
     if(cBoxPowerUp->active == true){
         cout << "Han cogido un powerup, madafaka!! sera la primera" << endl;
         //shared_ptr<RenderFacade> renderFacadeManager;
-        shared_ptr<RenderFacadeManager> renderFacadeManager = RenderFacadeManager::GetInstance();
-        shared_ptr<RenderFacade> renderEngine = renderFacadeManager->GetRenderFacade();
+        auto renderFacadeManager = RenderFacadeManager::GetInstance();
+        auto renderEngine = renderFacadeManager->GetRenderFacade();
         renderEngine->DeleteEntity(actualBox.get());       // se elmina la caja en irrlich para que no la dibuje, pero en nuestro array sigue estando
         //debemos, de forma aleatoria asignarle un tipo al powerUp
         cBoxPowerUp->active = false;
@@ -63,8 +63,8 @@ void ManBoxPowerUp::SubscribeToEvents() {
 
 // se crea la caja de irrlich eliminada anteriormente
 void ManBoxPowerUp::resetBox(BoxPowerUp* resetBox){
-    shared_ptr<RenderFacadeManager> renderFacadeManager = RenderFacadeManager::GetInstance();
-    shared_ptr<RenderFacade> renderEngine = renderFacadeManager->GetRenderFacade();
+    auto renderFacadeManager = RenderFacadeManager::GetInstance();
+    auto renderEngine = renderFacadeManager->GetRenderFacade();
     renderEngine->FacadeAddObject(resetBox);
 }
 

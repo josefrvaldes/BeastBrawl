@@ -37,8 +37,8 @@ class Physics {
 
    protected:
    private:
-    void CalculatePosition(CCar *cCar, CTransformable *cTransformable, float *deltaTime);
-    void CalculatePositionReverse(CCar *cCar, CTransformable *cTransformable, float *deltaTime);
+    void CalculatePosition(CCar *cCar, CTransformable *cTransformable, float deltaTime);
+    void CalculatePositionReverse(CCar *cCar, CTransformable *cTransformable, float deltaTime);
     void CalculatePositionCamera(CTransformable *cTransformableCar, CTransformable *cTransformableCamera, CCamera *cCamera);
     float deltaTime;
 };

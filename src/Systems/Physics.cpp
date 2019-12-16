@@ -7,8 +7,7 @@ Physics::Physics(float _deltaTime) : deltaTime(_deltaTime) {
 }
 
 //Calcula la posicion del coche (duda con las formulas preguntar a Jose)
-void CalculatePosition(CCar *cCar, CTransformable *cTransformable, float deltaTime) {
-    /*float angleRotation = (cTransformable->rotation.y * PI) / 180.0;
+void CalculatePosition(CCar *cCar, CTransformable *cTransformable, float deltaTime);
 
 void Physics::update(Car* car, Camera* cam){
     // actualizar posiciones
@@ -40,7 +39,7 @@ void Physics::update(Car* car, Camera* cam){
 
 
 //Calcula la posicion del coche (duda con las formulas preguntar a Jose)
-void Physics::CalculatePosition(CCar *cCar, CTransformable *cTransformable, float *deltaTime) {
+void Physics::CalculatePosition(CCar *cCar, CTransformable *cTransformable, float deltaTime) {
     float angleRotation = (cTransformable->rotation.y * PI) / 180.0;
     float delta = deltaTime;
     // cout << "El deltaTime es " << delta << endl;
@@ -60,7 +59,7 @@ void Physics::CalculatePosition(CCar *cCar, CTransformable *cTransformable, floa
 }
 
 //Calcula la posicion del coche (duda con las formulas preguntar a Jose)
-void CalculatePositionReverse(CCar *cCar, CTransformable *cTransformable, float deltaTime) {
+void Physics::CalculatePositionReverse(CCar *cCar, CTransformable *cTransformable, float deltaTime) {
     float angleRotation = (cTransformable->rotation.y * PI) / 180.0;
 
     float delta = deltaTime;
