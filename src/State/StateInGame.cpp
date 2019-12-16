@@ -167,8 +167,8 @@ StateInGame::StateInGame() {
 
 
     // CREAMOS EL TOTEM
-    //manTotems->CreateTotem(glm::vec3(0.0f,20.0f,0.0f));
-    manTotems->CreateTotem();
+    manTotems->CreateTotem(glm::vec3(0.0f,20.0f,0.0f));
+    //manTotems->CreateTotem();
     renderEngine->FacadeAddObject(manTotems->GetEntities()[0].get());
 
     lastFPS = -1;

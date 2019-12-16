@@ -47,7 +47,9 @@ class ManCar : public Manager {
     void CollisionPowerUpAI(DataMap d);
     void CatchTotemPlayer(DataMap d);
     void CatchTotemAI(DataMap d);
-    
+    void ThrowTotem(Car* carLoseTotem);
+    void CatchTotem(Car* carWinTotem);
+    bool useRoboJorobo(Car* newCarWithTotem);
 
     
     void ThrowPowerUp(DataMap d);
