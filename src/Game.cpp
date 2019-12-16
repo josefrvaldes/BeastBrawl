@@ -18,6 +18,7 @@ void Game::SetState(State::States stateType) {
             break;
         case State::MENU:
             currentState = make_shared<StateMenu>();
+            gameStarted = false;
             break;
         case State::CONTROLS:
             //currentState = new StateControls();
@@ -36,6 +37,9 @@ void Game::SetState(State::States stateType) {
             }else{
                 currentState = gameState;
             }
+            break;
+        case State::PAUSE:
+            currentState = make_shared<StatePause>();
             break;
         case State::ENDRACE:
             //currentState = new StateEndRace();

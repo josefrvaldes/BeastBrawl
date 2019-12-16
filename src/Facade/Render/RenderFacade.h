@@ -27,8 +27,11 @@ class RenderFacade {
     virtual void FacadeDeviceDrop() = 0;
     virtual void FacadeDraw() = 0;
     virtual void FacadeDrawMenu() = 0;
+    virtual void FacadeDrawPause() = 0;
     virtual void FacadeInitMenu() = 0;
+    virtual void FacadeInitPause() = 0;
     virtual void FacadeCheckInputMenu() = 0;
+    virtual void FacadeCheckInputPause() = 0;
 
    protected:
     uint16_t idCar = 0;

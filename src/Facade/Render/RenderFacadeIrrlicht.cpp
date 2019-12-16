@@ -26,8 +26,13 @@ RenderFacadeIrrlicht::RenderFacadeIrrlicht() {
 }
 
 void RenderFacadeIrrlicht::FacadeInitMenu(){
-    menuBG = driver->getTexture("media/KnekroMenu.jpg");
+    menuBG = driver->getTexture("media/mainMenu.png");
     driver->makeColorKeyTexture(menuBG, core::position2d<s32>(0,0));
+}
+
+void RenderFacadeIrrlicht::FacadeInitPause(){
+    pauseBG = driver->getTexture("media/pauseMenu.png");
+    driver->makeColorKeyTexture(pauseBG, core::position2d<s32>(0,0));
 }
 
 const void RenderFacadeIrrlicht::FacadeAddObjects(vector<Entity*> entities) {
@@ -179,7 +184,7 @@ void RenderFacadeIrrlicht::FacadeCheckInput() {
 
     //Cambiamos a menu
     if(receiver.IsKeyDown(KEY_F2)){
-        Game::GetInstance()->SetState(State::MENU);
+        Game::GetInstance()->SetState(State::PAUSE);
     }
 }
 
@@ -187,6 +192,24 @@ void RenderFacadeIrrlicht::FacadeCheckInputMenu(){
     //Cambiamos a ingame
     if(receiver.IsKeyDown(KEY_F1)){
         Game::GetInstance()->SetState(State::INGAME);
+    }
+
+    if (receiver.IsKeyDown(KEY_ESCAPE)) {
+        device->closeDevice();
+    }
+}
+
+void RenderFacadeIrrlicht::FacadeCheckInputPause(){
+    //Cambiamos a ingame
+    if(receiver.IsKeyDown(KEY_F3)){
+        Game::GetInstance()->SetState(State::INGAME);
+    }
+
+    if(receiver.IsKeyDown(KEY_F4)){
+        smgr->clear();
+        EventManager::GetInstance()->ClearListeners();
+        EventManager::GetInstance()->ClearEvents();
+        Game::GetInstance()->SetState(State::MENU);
     }
 
     if (receiver.IsKeyDown(KEY_ESCAPE)) {
@@ -220,6 +243,15 @@ void RenderFacadeIrrlicht::FacadeDrawMenu(){
     driver->beginScene(true, true, video::SColor(255, 113, 113, 133));
     //smgr->drawAll();  // draw the 3d scene
     driver->draw2DImage(menuBG, core::position2d<s32>(0,0),
+                core::rect<s32>(0,0,1280,720), 0,
+                video::SColor(255,255,255,255), true);
+    driver->endScene();
+}
+
+void RenderFacadeIrrlicht::FacadeDrawPause(){
+    driver->beginScene(true, true, video::SColor(255, 113, 113, 133));
+    //smgr->drawAll();  // draw the 3d scene
+    driver->draw2DImage(pauseBG, core::position2d<s32>(0,0),
                 core::rect<s32>(0,0,1280,720), 0,
                 video::SColor(255,255,255,255), true);
     driver->endScene();

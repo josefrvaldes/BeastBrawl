@@ -38,8 +38,11 @@ class RenderFacadeIrrlicht : public RenderFacade {
 		void FacadeDeviceDrop() override;
 		void FacadeDraw() override;
 		void FacadeDrawMenu() override;
+		void FacadeDrawPause() override;
 		void FacadeInitMenu() override;
+		void FacadeInitPause() override;
 		void FacadeCheckInputMenu() override;
+		void FacadeCheckInputPause() override;
 
 		scene::ISceneManager* GetSceneManager() {return smgr;};
 		scene::ICameraSceneNode* GetCamera1() {return camera1;};
@@ -52,6 +55,7 @@ class RenderFacadeIrrlicht : public RenderFacade {
 		scene::ICameraSceneNode* camera1;
 		MyEventReceiver receiver;
 		video::ITexture* menuBG;
+		video::ITexture* pauseBG;
 
         //unordered_map<uint16_t,scene::ISceneNode*> sceneObjects; // CId - ISceneNode*
 };
