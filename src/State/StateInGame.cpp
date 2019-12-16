@@ -96,15 +96,8 @@ struct Inverter : public Decorator {  // Decorator Inverter
 
 
 StateInGame::StateInGame() {
-    // constructor
-    deltaTime = make_shared<float>(1.2);
-    deltas.push_back(1);
-    deltas.push_back(1);
-    deltas.push_back(1);
-    deltas.push_back(1);
-    deltas.push_back(1);
-    cout << "Hemos inicializado el stateInGame" << endl;
-    physics = make_unique<Physics>(deltaTime.get());
+    
+    physics = make_unique<Physics>(deltaTime);
 
     eventManager = EventManager::GetInstance();
 
@@ -144,13 +137,13 @@ StateInGame::StateInGame() {
 
     // Inicializamos las facadas
     renderFacadeManager = RenderFacadeManager::GetInstance();
-    renderFacadeManager->InitializeIrrlicht();
+    //renderFacadeManager->InitializeIrrlicht();
 
     inputFacadeManager = InputFacadeManager::GetInstance();
-    inputFacadeManager->InitializeIrrlicht();
+    //inputFacadeManager->InitializeIrrlicht();
 
     physicsFacadeManager = PhysicsFacadeManager::GetInstance();
-    physicsFacadeManager->InitializeIrrlicht();
+    //physicsFacadeManager->InitializeIrrlicht();
 
     //Almacenamos los motores
     renderEngine = renderFacadeManager->GetRenderFacade();
@@ -186,15 +179,14 @@ StateInGame::StateInGame() {
 
     renderEngine->FacadeAddCamera(cam.get());
 
-
+    //lastFPS = -1;
     // CREAMOS EL TOTEM
     //manTotems->CreateTotem(glm::vec3(0.0f,20.0f,0.0f));
     manTotems->CreateTotem();
     renderEngine->FacadeAddObject(manTotems->GetEntities()[0].get());
 
-    lastFPS = -1;
     //then = renderEngine->FacadeGetTime();
-    then = system_clock::now();
+    //then = system_clock::now();
 
     //inicializamos las reglas del cocheIA de velocidad/aceleracion
     //FuzzyLogic flVelocity;
@@ -219,18 +211,18 @@ void StateInGame::Update() {
     eventManager->Update();
 
     // actualizamos el deltatime
-    time_point<system_clock> now = system_clock::now();
-    int64_t milis = duration_cast<milliseconds>(now - then).count();
+    //time_point<system_clock> now = system_clock::now();
+    //int64_t milis = duration_cast<milliseconds>(now - then).count();
     //const uint32_t now = renderEngine->FacadeGetTime();
 
     // con media
-    float currentDelta = (float)(milis) / 100.0;
-    *deltaTime.get() = CalculateDelta(currentDelta);
+    //float currentDelta = (float)(milis) / 100.0;
+    //*deltaTime.get() = CalculateDelta(currentDelta);
 
     // sin media
     // *deltaTime.get() = (float)(milis) / 100.0;
 
-    then = now;
+   
 
     physics->update(manCars->GetCar().get(), cam.get());
     physicsAI->Update(manWayPoint.get(), manCars->GetEntitiesAI()[0].get(), *deltaTime.get());
@@ -285,61 +277,3 @@ void StateInGame::Render() {
     lastFPS = fps;
 }
 
-float StateInGame::CalculateDelta(float currentDelta) {
-    deltas.push_back(currentDelta);  // añadimos uno
-    deltas.erase(deltas.begin());    // borramos el primero
-
-    // hace la media de las últimas 5 deltas
-    return accumulate(deltas.begin(), deltas.end(), 0.0) / deltas.size();
-}
-
-
-
-
-
-/*
-
-
-#pragma region BT
-
-    // --------------------------- BEHAVIOR TREE ----------------------------------
-
-    //BehaviorTree BASICO
-    // SELECTOR1
-    //
-    ///////////////////////////////////////////////////////////////////////////////////
-    //                                      //                                       //
-    // La pueta esta abierta?                     SEQUENCE                               DECORATOR (minimum) (3 intentos)
-    ///////////////////////////////                      //
-    //                          //                       //
-    //                                // tengo llave?             //abrir puerta        // coger llave
-    shared_ptr<selector> selector1 = make_shared<selector>();
-    shared_ptr<sequence> sequence1 = make_shared<sequence>();
-
-    shared_ptr<haveDoorOpen> puertaAbiertaSiNo = make_shared<haveDoorOpen>();
-    shared_ptr<haveKey> tengoLlaveSiNo = make_shared<haveKey>();
-    shared_ptr<openDoor> abrirPuerta = make_shared<openDoor>();
-    shared_ptr<getKey> cogerLlave = make_shared<getKey>();
-
-    shared_ptr<Minimum> tryCatchKey3 = make_shared<Minimum>();
-
-    selector1->addChild(puertaAbiertaSiNo);
-    selector1->addChild(sequence1);
-    selector1->addChild(tryCatchKey3);
-
-    sequence1->addChild(tengoLlaveSiNo);
-    sequence1->addChild(abrirPuerta);
-
-    tryCatchKey3->addChild(cogerLlave);
-
-    cout << "--------------------" << endl;
-    while (door == false) {
-        selector1->run();
-    }  // If the operation starting from the root fails, keep trying until it succeeds.
-    cout << "--------------------" << endl;
-    //
-
-#pragma endregion
-
-
-*/

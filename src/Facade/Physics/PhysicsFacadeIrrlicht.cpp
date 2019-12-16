@@ -12,7 +12,7 @@
 PhysicsFacadeIrrlicht::PhysicsFacadeIrrlicht() {
     auto renderFacadeManager = RenderFacadeManager::GetInstance();
     auto renderEngine = renderFacadeManager->GetRenderFacade();
-    renderEngineIrrlicht = static_pointer_cast<RenderFacadeIrrlicht>(renderEngine);
+    renderEngineIrrlicht = static_cast<RenderFacadeIrrlicht*>(renderEngine);
     smgr = renderEngineIrrlicht->GetSceneManager();
 }
 

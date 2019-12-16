@@ -7,6 +7,8 @@
 #include "../Input/InputFacadeIrrlicht.h"
 #include "../Input/InputFacadeManager.h"
 
+//#include "../../State/State.h"
+
 #include <iostream>
 #include <unordered_map>
 #include <memory>
@@ -36,6 +38,12 @@ class RenderFacadeIrrlicht : public RenderFacade {
 		void FacadeDeviceDrop() override;
 		void FacadeDraw() override;
 		void DeleteEntity(Entity*) override;
+		void FacadeDrawMenu() override;
+		void FacadeDrawPause() override;
+		void FacadeInitMenu() override;
+		void FacadeInitPause() override;
+		void FacadeCheckInputMenu() override;
+		void FacadeCheckInputPause() override;
 
 		//DEBUG
         void FacadeDrawGraphEdges(ManWayPoint* manWayPoints) override;
@@ -53,6 +61,8 @@ class RenderFacadeIrrlicht : public RenderFacade {
 		scene::ICameraSceneNode* camera1;
 		MyEventReceiver receiver;
 		bool showDebug = false;
+		video::ITexture* menuBG;
+		video::ITexture* pauseBG;
 
         //unordered_map<uint16_t,scene::ISceneNode*> sceneObjects; // CId - ISceneNode*
 };

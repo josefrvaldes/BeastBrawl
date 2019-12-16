@@ -6,10 +6,11 @@ using namespace std;
 
 int main() {
     try {
-        shared_ptr<Game> game = Game::GetInstance();
+        Game* game = Game::GetInstance();
 
-        game->SetState(State::States::INGAME);
         game->InitGame();
+        game->SetState(State::States::MENU);
+        game->MainLoop();
     } catch (...) {
         cout << "Algo ha fallado" << endl;
     }

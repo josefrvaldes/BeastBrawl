@@ -1,5 +1,4 @@
-#ifndef DECORATOR_H
-#define DECORATOR_H
+#pragma once
 
 #include "behaviourTree.h"
 #include <memory>
@@ -18,5 +17,3 @@ class Decorator: public behaviourTree{
         shared_ptr<behaviourTree> child;
 };
 
-
-#endif // DECORATOR_H
