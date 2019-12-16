@@ -2,9 +2,13 @@
 #include <chrono>
 #include <iostream>
 #include <numeric>
+#include <stdio.h>
+#include <limits.h>
+#include <algorithm>
 
 #include "../Components/CTransformable.h"
 #include "../Components/CWayPointEdges.h"
+#include "../Components/CPath.h"
 
 typedef std::chrono::high_resolution_clock Clock;
 
@@ -109,15 +113,32 @@ StateInGame::StateInGame() {
     ground = make_shared<GameObject>(glm::vec3(10.0f, 10.0f, 30.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(100.0f, 1.0f, 100.0f), "wall.jpg", "ninja.b3d");
     cam = make_shared<Camera>(glm::vec3(10.0f, 40.0f, 30.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f));
 
-    manWayPoint = make_shared<ManWayPoint>();
+    manWayPoint = make_shared<ManWayPoint>(); //Se crean todos los waypoints y edges
 
-    auto cWayPoint = static_cast<CWayPoint*>(manWayPoint->GetEntities()[3]->GetComponent(CompType::WayPointComp).get());
+    auto cWayPoint = static_cast<CWayPoint*>(manWayPoint->GetEntities()[2]->GetComponent(CompType::WayPointComp).get());
 
 
     manCars = make_shared<ManCar>(physics.get(), cam.get());
 
     //Le asignamos el waypoint inicial, momentaneo a la IA
-    manCars->CreateCarAI(glm::vec3(100.0f, 20.0f, 100.0f), cWayPoint->position);
+    manCars->CreateCarAI(glm::vec3(100.0f, 20.0f, 100.0f), cWayPoint);
+    stack<int> pathInit;
+    pathInit.push(0);
+    pathInit.push(1);
+    pathInit.push(2);
+
+    manCars->GetEntitiesAI()[0]->SetPath(pathInit);
+
+    auto cPath = static_cast<CPath*>(manCars->GetEntitiesAI()[0]->GetComponent(CompType::PathComp).get());
+
+    // while(!cPath->stackPath.empty()){
+    //     auto node = cPath->stackPath.top();
+    //     cPath->stackPath.pop();
+    //     cout << node << " - ";
+    // }
+
+
+
 
     // Inicializamos las facadas
     renderFacadeManager = RenderFacadeManager::GetInstance();
@@ -206,7 +227,7 @@ void StateInGame::Update() {
     then = now;
 
     physics->update(manCars->GetCar().get(), cam.get());
-    physicsAI->Update(manWayPoint->GetEntities(), manCars->GetEntitiesAI()[0].get(), *deltaTime.get());
+    physicsAI->Update(manWayPoint.get(), manCars->GetEntitiesAI()[0].get(), *deltaTime.get());
     sysBoxPowerUp->update(manBoxPowerUps.get());
     phisicsPowerUp->update(manPowerUps->GetEntities());
 

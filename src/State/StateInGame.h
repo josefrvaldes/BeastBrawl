@@ -5,6 +5,8 @@
 #include <cstdint>
 #include <iostream>
 #include <list>
+#include <queue>
+#include <stack>
 #include <memory>
 #include <string>
 
@@ -84,6 +86,7 @@ class StateInGame : public State {
     time_point<system_clock> then;
     vector<float> deltas;
     float CalculateDelta(float);
+
 };
 
 #endif  // STATEINGAME_H

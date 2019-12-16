@@ -46,7 +46,7 @@ void ManCar::CreateCar() {
 }
 
 
-void ManCar::CreateCarAI(glm::vec3 _position,  glm::vec3 _waypoint) 
+void ManCar::CreateCarAI(glm::vec3 _position,  CWayPoint* _waypoint) 
 {
 	shared_ptr<CarAI> p = make_shared<CarAI>(_position);
     CarAIs.push_back(p);

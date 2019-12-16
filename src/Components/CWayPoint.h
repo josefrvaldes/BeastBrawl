@@ -13,14 +13,11 @@ class CWayPoint : public Component
 {
 public:
     CWayPoint();
-    CWayPoint(glm::vec3 _pos, int type,int id);
+    CWayPoint(glm::vec3 _pos, int _type,int _id);
     ~CWayPoint();
 
     glm::vec3 position;
-    int m_type;
-    int m_id;
+    int type;
+    int id;
     float radious;
-    CWayPoint* padre;
-    bool isFrontera;
-    bool isInterior;
 };
