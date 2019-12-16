@@ -45,7 +45,8 @@ class ManCar : public Manager {
     void NotTurning(DataMap d);
     void CollisionPowerUp(DataMap d);
     void CollisionPowerUpAI(DataMap d);
-    void CatchTotem(DataMap d);
+    void CatchTotemPlayer(DataMap d);
+    void CatchTotemAI(DataMap d);
     
 
     

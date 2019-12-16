@@ -134,23 +134,34 @@ void ManCar::SubscribeToEvents() {
         "CollisionPowerUpAI"));
 
     EventManager::GetInstance()->SuscribeMulti(Listener(
-        EventType::COLLISION_TOTEM,
-        bind(&ManCar::CatchTotem, this, placeholders::_1),
-        "CatchTotem"));
+        EventType::COLLISION_PLAYER_TOTEM,
+        bind(&ManCar::CatchTotemPlayer, this, placeholders::_1),
+        "CatchTotemPlayer"));
+
+    EventManager::GetInstance()->SuscribeMulti(Listener(
+        EventType::COLLISION_AI_TOTEM,
+        bind(&ManCar::CatchTotemAI, this, placeholders::_1),
+        "CatchTotemAI"));
 
 }
 
 
 
-void ManCar::CatchTotem(DataMap d){
+void ManCar::CatchTotemAI(DataMap d){
+    std::cout << "Coge el totem una IA -- ERES MUUUY MALO COLEGA!" << std::endl;
+    auto cTotem = static_cast<CTotem*>(any_cast<Entity*>(d["actualCar"])->GetComponent(CompType::TotemComp).get());
+    cTotem->active = true;
+    cTotem->timeStart = system_clock::now();
+
+}
+
+void ManCar::CatchTotemPlayer(DataMap d){
     std::cout << "Cogemos el Totem locoooo!" << std::endl;
     auto cTotem = static_cast<CTotem*>(car.get()->GetComponent(CompType::TotemComp).get());
     cTotem->active = true;
     cTotem->timeStart = system_clock::now();
 
 }
-
-
 
 void ManCar::CollisionPowerUp(DataMap d){
     std::cout << "Nos ha dado un powerUp neneeeee!" << std::endl;
@@ -161,7 +172,7 @@ void ManCar::CollisionPowerUp(DataMap d){
         if(cTotem->active == true){
             cTotem->active = false;
             cTotem->accumulatedTime +=  duration_cast<milliseconds>(system_clock::now() - cTotem->timeStart).count();
-            std::cout << "El tiempo acumulado del totem hasta ahora es de:  " << cTotem->accumulatedTime/1000.0 << std::endl;
+            std::cout << "El tiempo acumulado del totem hasta ahora del PLAYER es de:  " << cTotem->accumulatedTime/1000.0 << std::endl;
         }
         // Reducimos la velocidad -- TODO --> no solo reducir la velocidad a 0
         auto cCar = static_cast<CCar*>(car.get()->GetComponent(CompType::CarComp).get());
@@ -181,12 +192,13 @@ void ManCar::CollisionPowerUpAI(DataMap d){
         if(cTotem->active == true){
             cTotem->active = false;
             cTotem->accumulatedTime +=  duration_cast<milliseconds>(system_clock::now() - cTotem->timeStart).count();
-            std::cout << "El tiempo acumulado del totem hasta ahora es de:  " << cTotem->accumulatedTime/1000.0 << std::endl;
+            std::cout << "El tiempo acumulado del totem hasta ahora de la IA es de:  " << cTotem->accumulatedTime/1000.0 << std::endl;
         }
         // Reducimos la velocidad -- TODO --> no solo reducir la velocidad a 0
         auto cCar = static_cast<CCar*>(any_cast<Entity*>(d["carAI"])->GetComponent(CompType::CarComp).get());
         cCar->speed = 0.0f;  // To-Do: no funciona en la IA por que la logica difusa no la hace acelerar
     }else{
+        std::cout << "El escudo me salvo el culito :D" << std::endl;
         cShield->deactivePowerUp(); // desactivamos el escudo
     }
 }

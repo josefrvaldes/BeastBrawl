@@ -10,7 +10,7 @@ using namespace std;
 
 ManTotem::ManTotem() {
     SubscribeToEvents();
-    CreateTotem();
+   // CreateTotem();
 }
 
 ManTotem::~ManTotem() {
@@ -64,7 +64,11 @@ void ManTotem::ResetTotem(DataMap d){
 
 void ManTotem::SubscribeToEvents() {
     EventManager::GetInstance()->SuscribeMulti(Listener(
-        EventType::COLLISION_TOTEM,
+        EventType::COLLISION_PLAYER_TOTEM,
+        bind(&ManTotem::AppertainCar, this, placeholders::_1),
+        "AppertainCar"));
+    EventManager::GetInstance()->SuscribeMulti(Listener(
+        EventType::COLLISION_AI_TOTEM,
         bind(&ManTotem::AppertainCar, this, placeholders::_1),
         "AppertainCar"));
     EventManager::GetInstance()->SuscribeMulti(Listener(

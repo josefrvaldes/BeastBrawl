@@ -11,6 +11,7 @@
 
 #include "../Managers/ManCar.h"
 #include "../Managers/ManPowerUp.h"
+#include "../Managers/ManTotem.h"
 
 #include "../Entities/Entity.h"
 #include <math.h>
@@ -25,9 +26,12 @@ class Collisions
 public:
     Collisions();
     ~Collisions(){};
-    bool Intersects(Entity* car,Entity* carAI);
+    bool Intersects(Entity* ent1,Entity* ent2);
     void IntersectsCarsPowerUps(ManCar* manCars, ManPowerUp* manPowerUps);
-    void IntersectPlayerPowerUps(ManCar* manCars, ManPowerUp* manPowerUps);
+    void IntersectPlayerPowerUps(Car* carPlayer, ManPowerUp* manPowerUps);
+    void IntersectPlayerTotem(Car* carPlayer, ManTotem* manTotem);
+    void IntersectCarsTotem(ManCar* manCars, ManTotem* manTotem);
+
 protected:
 private:
     

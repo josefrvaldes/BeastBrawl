@@ -167,6 +167,7 @@ StateInGame::StateInGame() {
 
 
     // CREAMOS EL TOTEM
+    //manTotems->CreateTotem(glm::vec3(0.0f,20.0f,0.0f));
     manTotems->CreateTotem();
     renderEngine->FacadeAddObject(manTotems->GetEntities()[0].get());
 
@@ -252,23 +253,13 @@ void StateInGame::Update() {
 
 
     // COLISIONES entre powerUp y player
-    collisions->IntersectPlayerPowerUps(manCars.get(), manPowerUps.get());
+    collisions->IntersectPlayerPowerUps(manCars.get()->GetCar().get(), manPowerUps.get());
     // COLISIONES entre powerUp y IA
     collisions->IntersectsCarsPowerUps(manCars.get(), manPowerUps.get());
-    
-    
-
-
-    // COLISIONAMOS CON EL TOTEM -- ES NUESTRO
-    for(shared_ptr<Entity> actualTotem : manTotems->GetEntities()){
-        if(collisions->Intersects( manCars.get()->GetCar().get(), actualTotem.get()) ){
-            // debemos coger el TOTEM
-            DataMap dataCollisonTotem;                                                                           
-            dataCollisonTotem["Totem"] = actualTotem;              // nos guardamos el puntero para eliminar el powerUp                                             
-            eventManager->AddEventMulti(Event{EventType::COLLISION_TOTEM, dataCollisonTotem});
-        }
-    }
-
+    // COLISIONES entre el Player y el Totem
+    collisions->IntersectPlayerTotem(manCars.get()->GetCar().get(), manTotems.get());
+    // COLISIONES  entre la IA y el Totem
+    collisions->IntersectCarsTotem(manCars.get(), manTotems.get());
 
 
 }
