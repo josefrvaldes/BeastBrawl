@@ -9,15 +9,6 @@ class Position;
 using namespace std;
 
 void ManBoxPowerUp::EjecutarMeHanCogido(DataMap d) {
-    /*uint32_t contador = 0;
-    uint32_t posVector = 0;
-    for(auto Box : BoxPowerUps){
-        auto cBoxId = static_cast<CId*>(Box.get()->GetComponent(CompType::IdComp).get());
-        if(cBoxId->id == d.id){
-            posVector = contador;
-        }
-        contador++;
-    }*/
     auto cBoxPowerUp = any_cast<CBoxPowerUp*>(d["BoxPowerUpComp"]);
     auto actualBox   = any_cast<shared_ptr<Entity>>(d["actualBox"]);
     //auto cBoxPowerUp2 = static_cast<CBoxPowerUp*>(BoxPowerUps[0].get()->GetComponent(CompType::BoxPowerUpComp).get());
@@ -62,7 +53,13 @@ void ManBoxPowerUp::SubscribeToEvents() {
         EventType::CATCH_BOX_POWERUP,
         bind(&ManBoxPowerUp::EjecutarMeHanCogido, this, placeholders::_1),
         "EjecutarMeHanCogido"));
+    
+    EventManager::GetInstance()->SuscribeMulti(Listener(
+        EventType::CATCH_AI_BOX_POWERUP,
+        bind(&ManBoxPowerUp::EjecutarMeHanCogido, this, placeholders::_1),
+        "EjecutarMeHanCogido"));
 }
+
 
 // se crea la caja de irrlich eliminada anteriormente
 void ManBoxPowerUp::resetBox(BoxPowerUp* resetBox){

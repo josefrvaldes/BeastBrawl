@@ -14,6 +14,7 @@ class Totem : public Entity{
 public:
     Totem();
     //PowerUp(glm::vec3 _position);
+    Totem(glm::vec3 _position);
     Totem(glm::vec3 _position, glm::vec3 _rotation);
     Totem(glm::vec3 _position, glm::vec3 _rotation, string texture, string mesh);
     ~Totem();

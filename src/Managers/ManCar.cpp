@@ -117,6 +117,11 @@ void ManCar::SubscribeToEvents() {
         EventType::CATCH_BOX_POWERUP,
         bind(&ManCar::CatchPowerUp, this, placeholders::_1),
         "CatchPowerUp"));
+
+    EventManager::GetInstance()->SuscribeMulti(Listener(
+        EventType::CATCH_AI_BOX_POWERUP,
+        bind(&ManCar::CatchPowerUpAI, this, placeholders::_1),
+        "CatchPowerUpAI"));
     
     EventManager::GetInstance()->SuscribeMulti(Listener(
         EventType::PRESS_SPACE,
@@ -126,12 +131,119 @@ void ManCar::SubscribeToEvents() {
     EventManager::GetInstance()->SuscribeMulti(Listener(
         EventType::COLLISION_ENTITY_POWERUP,
         bind(&ManCar::CollisionPowerUp, this, placeholders::_1),
-        "ThrowPowerUp"));
+        "CollisionPowerUp"));
+    
+    EventManager::GetInstance()->SuscribeMulti(Listener(
+        EventType::COLLISION_ENTITY_AI_POWERUP,
+        bind(&ManCar::CollisionPowerUpAI, this, placeholders::_1),
+        "CollisionPowerUpAI"));
+
+    EventManager::GetInstance()->SuscribeMulti(Listener(
+        EventType::COLLISION_PLAYER_TOTEM,
+        bind(&ManCar::CatchTotemPlayer, this, placeholders::_1),
+        "CatchTotemPlayer"));
+
+    EventManager::GetInstance()->SuscribeMulti(Listener(
+        EventType::COLLISION_AI_TOTEM,
+        bind(&ManCar::CatchTotemAI, this, placeholders::_1),
+        "CatchTotemAI"));
 
 }
 
-void ManCar::CollisionPowerUp(DataMap d){
 
+
+void ManCar::CatchTotemAI(DataMap d){
+    std::cout << "Coge el totem una IA -- ERES MUUUY MALO COLEGA!" << std::endl;
+    auto cTotem = static_cast<CTotem*>(any_cast<Entity*>(d["actualCar"])->GetComponent(CompType::TotemComp).get());
+    cTotem->active = true;
+    cTotem->timeStart = system_clock::now();
+
+}
+
+void ManCar::CatchTotemPlayer(DataMap d){
+    std::cout << "Cogemos el Totem locoooo!" << std::endl;
+    auto cTotem = static_cast<CTotem*>(car.get()->GetComponent(CompType::TotemComp).get());
+    cTotem->active = true;
+    cTotem->timeStart = system_clock::now();
+
+}
+
+void ManCar::CatchTotem(Car* carWinTotem){
+    auto cTotem = static_cast<CTotem*>(carWinTotem->GetComponent(CompType::TotemComp).get());
+    cTotem->active = true;
+    cTotem->timeStart = system_clock::now();
+    std::cout << "Has utilizado el robo jorobo de p*** madre coleeega ahora es tuyo" << std::endl; 
+}
+
+void ManCar::ThrowTotem(Car* carLoseTotem){
+    auto cTotem = static_cast<CTotem*>(carLoseTotem->GetComponent(CompType::TotemComp).get());
+    cTotem->active = false;
+    cTotem->accumulatedTime +=  duration_cast<milliseconds>(system_clock::now() - cTotem->timeStart).count();
+    std::cout << "El tiempo acumulado del totem hasta ahora del jugador es de:  " << cTotem->accumulatedTime/1000.0 << std::endl; 
+}
+
+
+bool ManCar::useRoboJorobo(Car* newCarWithTotem){
+    // recorremos las IA
+    for(shared_ptr<Entity> AIcar : CarAIs){
+        auto cTotem = static_cast<CTotem*>(AIcar.get()->GetComponent(CompType::TotemComp).get()); 
+        // Si algun coche tenia el totem .... lo pierde
+        if(cTotem->active == true){
+            ThrowTotem(static_cast<Car*>(AIcar.get()));
+            //al perderlo se lo asignamos al que ha usado el robo jorobo
+            CatchTotem(newCarWithTotem);
+
+            return true;                                                               // para salirnos y no hacer mas calculos
+        }
+    }
+    // comprobamos el player
+    auto cTotem = static_cast<CTotem*>(car.get()->GetComponent(CompType::TotemComp).get()); 
+    if(cTotem->active == true){
+        ThrowTotem(car.get());
+        //al perderlo se lo asignamos al que ha usado el robo jorobo
+        CatchTotem(newCarWithTotem);
+        return true;                                                               // para salirnos y no hacer mas calculos
+    }
+
+    return false;
+}
+
+
+
+void ManCar::CollisionPowerUp(DataMap d){
+    std::cout << "Nos ha dado un powerUp neneeeee!" << std::endl;
+    // debemos desactivar el powerUp y para el contador de tiempo del totem
+    auto cShield = static_cast<CShield*>(car.get()->GetComponent(CompType::ShieldComp).get());
+    if(cShield->activePowerUp == false){            // comprobamos si tiene el escudo
+        auto cTotem = static_cast<CTotem*>(car.get()->GetComponent(CompType::TotemComp).get());
+        if(cTotem->active == true){
+            ThrowTotem(car.get());
+        }
+        // Reducimos la velocidad -- TODO --> no solo reducir la velocidad a 0
+        auto cCar = static_cast<CCar*>(car.get()->GetComponent(CompType::CarComp).get());
+        cCar->speed = 0.0f;
+    }else{
+        std::cout << "El escudo me salvo el culito :D" << std::endl;
+        cShield->deactivePowerUp(); // desactivamos el escudo
+    }
+}
+
+
+void ManCar::CollisionPowerUpAI(DataMap d){
+    // debemos desactivar el powerUp y para el contador de tiempo del totem
+    auto cShield = static_cast<CShield*>(any_cast<Entity*>(d["carAI"])->GetComponent(CompType::ShieldComp).get());
+    if(cShield->activePowerUp == false){            // comprobamos si tiene el escudo
+        auto cTotem = static_cast<CTotem*>(any_cast<Entity*>(d["carAI"])->GetComponent(CompType::TotemComp).get());
+        if(cTotem->active == true){
+            ThrowTotem(static_cast<Car*>(any_cast<Entity*>(d["carAI"])));
+        }
+        // Reducimos la velocidad -- TODO --> no solo reducir la velocidad a 0
+        auto cCar = static_cast<CCar*>(any_cast<Entity*>(d["carAI"])->GetComponent(CompType::CarComp).get());
+        cCar->speed = 0.0f;  // To-Do: no funciona en la IA por que la logica difusa no la hace acelerar
+    }else{
+        std::cout << "El escudo me salvo el culito :D" << std::endl;
+        cShield->deactivePowerUp(); // desactivamos el escudo
+    }
 }
 
 
@@ -164,17 +276,21 @@ CTransformable* ManCar::calculateCloserAI(){
 }
 
 
+
 void ManCar::ThrowPowerUp(DataMap d) {
     auto cPowerUpCar = static_cast<CPowerUp*>(car.get()->GetComponent(CompType::PowerUpComp).get());
     auto cRoboJorobo = static_cast<CRoboJorobo*>(car->GetComponent(CompType::RoboJoroboComp).get());
     auto cShield = static_cast<CShield*>(car.get()->GetComponent(CompType::ShieldComp).get());
     auto cNitro = static_cast<CNitro*>(car.get()->GetComponent(CompType::NitroComp).get());
-    
+    bool robado = false;  
     if(cPowerUpCar->typePowerUp != typeCPowerUp::None){
 
         switch (cPowerUpCar->typePowerUp){
             case typeCPowerUp::RoboJorobo:
-                cRoboJorobo->activatePowerUp();
+                //cRoboJorobo->activatePowerUp();
+                robado = useRoboJorobo(car.get());
+                if (!robado)
+                    std::cout << "La has cagado, el Totem no lo tenia nadie..." << std::endl; 
                 break;
             case typeCPowerUp::EscudoMerluzo:
                 cShield->activatePowerUp();
@@ -212,13 +328,30 @@ int calculateProbabilityPowerUp(int totalPowerUps, std::vector<int> probabilityP
 */
 
 void ManCar::CatchPowerUp(DataMap d) {
-    // cout << "Han llamado izquierda" << endl;
-    //physics->TurnLeft(car.get(), cam);
+    srand(time(NULL));
+    int indx = rand() % 6+1;
+    //None,               // 0
+    //RoboJorobo,         // 1
+    //SuperMegaNitro,     // 2
+    //PudinDeFrambuesa,   // 3
+    //EscudoMerluzo,      // 4
+    //TeleBanana,         // 5
+    //MelonMolon          // 6
+    //indx = 3;
+    auto cPowerUpCar = static_cast<CPowerUp*>(car.get()->GetComponent(CompType::PowerUpComp).get());
+    if(cPowerUpCar->typePowerUp == typeCPowerUp::None){
+        cPowerUpCar->typePowerUp = (typeCPowerUp)indx;
+        std::cout << "Mi super powerUp es:   " << (int)cPowerUpCar->typePowerUp << std::endl;
+    }
+    //cPowerUp->typePowerUp = dynamic_cast<typeCPowerUp*>(indx);
+}
+
+void ManCar::CatchPowerUpAI(DataMap d) {
     srand(time(NULL));
     int indx = rand() % 6+1;
     //indx = 5;
     //indx=3;
-    auto cPowerUpCar = static_cast<CPowerUp*>(car.get()->GetComponent(CompType::PowerUpComp).get());
+    auto cPowerUpCar = static_cast<CPowerUp*>(any_cast<Entity*>(d["actualCar"])->GetComponent(CompType::PowerUpComp).get());
     if(cPowerUpCar->typePowerUp == typeCPowerUp::None){
         cPowerUpCar->typePowerUp = (typeCPowerUp)indx;
         std::cout << "Mi super powerUp es:   " << (int)cPowerUpCar->typePowerUp << std::endl;

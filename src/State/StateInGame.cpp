@@ -8,6 +8,7 @@
 
 #include "../Components/CTransformable.h"
 #include "../Components/CWayPointEdges.h"
+#include "../Components/CTotem.h"
 #include "../Components/CPath.h"
 
 typedef std::chrono::high_resolution_clock Clock;
@@ -110,6 +111,7 @@ StateInGame::StateInGame() {
     manPowerUps = make_shared<ManPowerUp>();
     phisicsPowerUp = make_shared<PhysicsPowerUp>();
     manBoxPowerUps = make_shared<ManBoxPowerUp>();
+    manTotems = make_shared<ManTotem>();
     ground = make_shared<GameObject>(glm::vec3(10.0f, 10.0f, 30.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(100.0f, 1.0f, 100.0f), "wall.jpg", "ninja.b3d");
     cam = make_shared<Camera>(glm::vec3(10.0f, 40.0f, 30.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f));
 
@@ -172,7 +174,10 @@ StateInGame::StateInGame() {
         auto mapWaypoint = components.find(CompType::WayPointComp);
         auto cWayPoint = static_cast<CWayPoint*>(mapWaypoint->second.get());
 
-        manBoxPowerUps->CreateBoxPowerUp(glm::vec3(cWayPoint->position));
+        // solo debemos crear las Box si el type del waypoint es "1"
+        if(cWayPoint->type == 1){
+            manBoxPowerUps->CreateBoxPowerUp(glm::vec3(cWayPoint->position));
+        }
     }
     //cout << "el tamanyo normal es: " << manWayPoint.size() << endl;
     //Añadimos todos los power ups
@@ -183,8 +188,9 @@ StateInGame::StateInGame() {
 
 
     // CREAMOS EL TOTEM
-    totem = make_shared<Totem>();
-    renderEngine->FacadeAddObject(totem.get());
+    //manTotems->CreateTotem(glm::vec3(0.0f,20.0f,0.0f));
+    manTotems->CreateTotem();
+    renderEngine->FacadeAddObject(manTotems->GetEntities()[0].get());
 
     lastFPS = -1;
     //then = renderEngine->FacadeGetTime();
@@ -244,44 +250,24 @@ void StateInGame::Update() {
 
     //physicsEngine->UpdateCar(car.get(), cam.get());
 
-    // COGER POWERUPS - DE MOMENTO SOLO CON EL PLAYER
-    //for(shared_ptr<Entity> actualCar : manCars->GetEntities()){                                                                   // recorremos todos los coches
-        auto cPowerUpCar = static_cast<CPowerUp*>(manCars.get()->GetCar().get()->GetComponent(CompType::PowerUpComp).get());        // debemos acceder al componente PowerUpComp
-        if(cPowerUpCar->typePowerUp == typeCPowerUp::None){                                                                         // solo si no tenemos powerUp podemos coger uno
-            for(shared_ptr<Entity> actualBoxPowerUp: manBoxPowerUps->GetEntities()){                                                // recorremos los powerUps
-                auto cBoxPowerUp = static_cast<CBoxPowerUp*>(actualBoxPowerUp.get()->GetComponent(CompType::BoxPowerUpComp).get()); // debemos acceder al componente BoxPowerUp
-                if(cBoxPowerUp->active == true){                                                                                    // Vemos si efectivamente esta activo o no, para poder cogerlo
-                     if( collisions->Intersects(manCars.get()->GetCar().get(), actualBoxPowerUp.get()) ){                           // Finalmente comprobamos las colisiones entre el coche y el powerUp
-                        //std::cout << "HAY COLISION ENTRE COCHE Y POWERUP" << std::endl;
-                        DataMap dataCollisonCarBoxPowerUp;                                                                             // Mejor definirlo en el .h
-                        dataCollisonCarBoxPowerUp["BoxPowerUpComp"] = cBoxPowerUp;                                                     // necesitamos el componente
-                        dataCollisonCarBoxPowerUp["actualBox"] = actualBoxPowerUp;                                                     // y tambien la caja actual (para eliminarla de irrlicht)
-                        eventManager->AddEventMulti(Event{EventType::CATCH_BOX_POWERUP, dataCollisonCarBoxPowerUp});                             // llamamos al evento --- COMO ODIO QUE SE LLAME ADD Y NO TARGET
-                    }
-                }
-            }
-        }
-    //}
-    //collisions->IntersectPlayerPowerUps(manCars->GetCar().get(), manPowerUps->GetEntities());
-    // llamamos a comprobar las colisiones entre los coches (actualmente solo el prota) y los powerUps lanzados
-
-    // ELIMINAMOS POWERUPS - DE MOMENTO SOLO CON EL PLAYER
-    //for(shared_ptr<Entity> actualCar : manCars->GetEntities()){   
-        for(shared_ptr<Entity> actualPowerUp : manPowerUps->GetEntities()){
-            auto cPowerUp = static_cast<CPowerUp*>(actualPowerUp->GetComponent(CompType::PowerUpComp).get());
-            if(cPowerUp->effectActive == true){                                                                 // SI HACE DANYO
-                if(collisions->Intersects(manCars.get()->GetCar().get(), actualPowerUp.get())){   //TRUE
-                    // debemos eliminar el powerUp y hacer danyo al jugador
-                    DataMap dataCollisonCarPowerUp;                                                                           
-                    dataCollisonCarPowerUp["PowerUp"] = actualPowerUp;              // nos guardamos el puntero para eliminar el powerUp                                             
-                    eventManager->AddEventMulti(Event{EventType::COLLISION_ENTITY_POWERUP, dataCollisonCarPowerUp}); 
-                }
-            }
-        }
-    //}
 
 
+
+    // COLISIONES entre BoxPowerUp y player
+    collisions->IntersectPlayerBoxPowerUp(manCars.get()->GetCar().get(), manBoxPowerUps.get());
+    // COLISIONES entre BoxPowerUp y IA                                                            
+    collisions->IntersectCarsBoxPowerUp(manCars.get(), manBoxPowerUps.get());
+    // COLISIONES entre powerUp y player
+    collisions->IntersectPlayerPowerUps(manCars.get()->GetCar().get(), manPowerUps.get());
+    // COLISIONES entre powerUp y IA
+    collisions->IntersectsCarsPowerUps(manCars.get(), manPowerUps.get());
+    // COLISIONES entre el Player y el Totem
+    collisions->IntersectPlayerTotem(manCars.get()->GetCar().get(), manTotems.get());
+    // COLISIONES  entre la IA y el Totem
+    collisions->IntersectCarsTotem(manCars.get(), manTotems.get());
 }
+
+
 
 void StateInGame::Render() {
     auto carAI = manCars->GetEntitiesAI()[0].get();
