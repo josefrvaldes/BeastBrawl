@@ -154,9 +154,9 @@ StateInGame::StateInGame() {
         auto cWayPoint = static_cast<CWayPoint*>(mapWaypoint->second.get());
 
         // solo debemos crear las Box si el type del waypoint es "1"
-        //if(cWayPoint->m_type == 1){
+        if(cWayPoint->m_type == 1){
             manBoxPowerUps->CreateBoxPowerUp(glm::vec3(cWayPoint->position));
-        //}
+        }
     }
     //cout << "el tamanyo normal es: " << manWayPoint.size() << endl;
     //Añadimos todos los power ups
@@ -229,29 +229,13 @@ void StateInGame::Update() {
 
     //physicsEngine->UpdateCar(car.get(), cam.get());
 
-    // COGER POWERUPS - DE MOMENTO SOLO CON EL PLAYER
-    //for(shared_ptr<Entity> actualCar : manCars->GetEntities()){                                                                   // recorremos todos los coches
-        auto cPowerUpCar = static_cast<CPowerUp*>(manCars.get()->GetCar().get()->GetComponent(CompType::PowerUpComp).get());        // debemos acceder al componente PowerUpComp
-        if(cPowerUpCar->typePowerUp == typeCPowerUp::None){                                                                         // solo si no tenemos powerUp podemos coger uno
-            for(shared_ptr<Entity> actualBoxPowerUp: manBoxPowerUps->GetEntities()){                                                // recorremos los powerUps
-                auto cBoxPowerUp = static_cast<CBoxPowerUp*>(actualBoxPowerUp.get()->GetComponent(CompType::BoxPowerUpComp).get()); // debemos acceder al componente BoxPowerUp
-                if(cBoxPowerUp->active == true){                                                                                    // Vemos si efectivamente esta activo o no, para poder cogerlo
-                     if( collisions->Intersects(manCars.get()->GetCar().get(), actualBoxPowerUp.get()) ){                           // Finalmente comprobamos las colisiones entre el coche y el powerUp
-                        //std::cout << "HAY COLISION ENTRE COCHE Y POWERUP" << std::endl;
-                        DataMap dataCollisonCarBoxPowerUp;                                                                             // Mejor definirlo en el .h
-                        dataCollisonCarBoxPowerUp["BoxPowerUpComp"] = cBoxPowerUp;                                                     // necesitamos el componente
-                        dataCollisonCarBoxPowerUp["actualBox"] = actualBoxPowerUp;                                                     // y tambien la caja actual (para eliminarla de irrlicht)
-                        eventManager->AddEventMulti(Event{EventType::CATCH_BOX_POWERUP, dataCollisonCarBoxPowerUp});                             // llamamos al evento --- COMO ODIO QUE SE LLAME ADD Y NO TARGET
-                    }
-                }
-            }
-        }
-    //}
-    //collisions->IntersectPlayerPowerUps(manCars->GetCar().get(), manPowerUps->GetEntities());
-    // llamamos a comprobar las colisiones entre los coches (actualmente solo el prota) y los powerUps lanzados
 
 
 
+    // COLISIONES entre BoxPowerUp y player
+    collisions->IntersectPlayerBoxPowerUp(manCars.get()->GetCar().get(), manBoxPowerUps.get());
+    // COLISIONES entre BoxPowerUp y IA                                                            
+    collisions->IntersectCarsBoxPowerUp(manCars.get(), manBoxPowerUps.get());
     // COLISIONES entre powerUp y player
     collisions->IntersectPlayerPowerUps(manCars.get()->GetCar().get(), manPowerUps.get());
     // COLISIONES entre powerUp y IA
@@ -260,8 +244,6 @@ void StateInGame::Update() {
     collisions->IntersectPlayerTotem(manCars.get()->GetCar().get(), manTotems.get());
     // COLISIONES  entre la IA y el Totem
     collisions->IntersectCarsTotem(manCars.get(), manTotems.get());
-
-
 }
 
 

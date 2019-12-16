@@ -117,6 +117,11 @@ void ManCar::SubscribeToEvents() {
         EventType::CATCH_BOX_POWERUP,
         bind(&ManCar::CatchPowerUp, this, placeholders::_1),
         "CatchPowerUp"));
+
+    EventManager::GetInstance()->SuscribeMulti(Listener(
+        EventType::CATCH_AI_BOX_POWERUP,
+        bind(&ManCar::CatchPowerUpAI, this, placeholders::_1),
+        "CatchPowerUpAI"));
     
     EventManager::GetInstance()->SuscribeMulti(Listener(
         EventType::PRESS_SPACE,
@@ -281,13 +286,24 @@ int calculateProbabilityPowerUp(int totalPowerUps, std::vector<int> probabilityP
 */
 
 void ManCar::CatchPowerUp(DataMap d) {
-    // cout << "Han llamado izquierda" << endl;
-    //physics->TurnLeft(car.get(), cam);
     srand(time(NULL));
     int indx = rand() % 6+1;
     //indx = 5;
     //indx=3;
     auto cPowerUpCar = static_cast<CPowerUp*>(car.get()->GetComponent(CompType::PowerUpComp).get());
+    if(cPowerUpCar->typePowerUp == typeCPowerUp::None){
+        cPowerUpCar->typePowerUp = (typeCPowerUp)indx;
+        std::cout << "Mi super powerUp es:   " << (int)cPowerUpCar->typePowerUp << std::endl;
+    }
+    //cPowerUp->typePowerUp = dynamic_cast<typeCPowerUp*>(indx);
+}
+
+void ManCar::CatchPowerUpAI(DataMap d) {
+    srand(time(NULL));
+    int indx = rand() % 6+1;
+    //indx = 5;
+    //indx=3;
+    auto cPowerUpCar = static_cast<CPowerUp*>(any_cast<Entity*>(d["actualCar"])->GetComponent(CompType::PowerUpComp).get());
     if(cPowerUpCar->typePowerUp == typeCPowerUp::None){
         cPowerUpCar->typePowerUp = (typeCPowerUp)indx;
         std::cout << "Mi super powerUp es:   " << (int)cPowerUpCar->typePowerUp << std::endl;

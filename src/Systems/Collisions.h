@@ -11,6 +11,7 @@
 
 #include "../Managers/ManCar.h"
 #include "../Managers/ManPowerUp.h"
+#include "../Managers/ManBoxPowerUp.h"
 #include "../Managers/ManTotem.h"
 
 #include "../Entities/Entity.h"
@@ -31,6 +32,8 @@ public:
     void IntersectPlayerPowerUps(Car* carPlayer, ManPowerUp* manPowerUps);
     void IntersectPlayerTotem(Car* carPlayer, ManTotem* manTotem);
     void IntersectCarsTotem(ManCar* manCars, ManTotem* manTotem);
+    void IntersectPlayerBoxPowerUp(Car* carPlayer, ManBoxPowerUp* manBoxPowerUp);
+    void IntersectCarsBoxPowerUp(ManCar* manCars, ManBoxPowerUp* manBoxPowerUp);
 
 protected:
 private:

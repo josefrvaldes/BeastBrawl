@@ -1,5 +1,6 @@
 #include "Collisions.h"
 #include "../Entities/PowerUp.h"
+#include "../Entities/BoxPowerUp.h"
 #include "../Entities/Car.h"
 #include "../Entities/CarAI.h"
 #include "../Entities/Totem.h"
@@ -134,4 +135,47 @@ void Collisions::IntersectCarsTotem(ManCar* manCars, ManTotem* manTotem){
         }
     }
 
+}
+
+
+
+
+void Collisions::IntersectPlayerBoxPowerUp(Car* carPlayer, ManBoxPowerUp* manBoxPowerUp){
+    auto cPowerUpCar = static_cast<CPowerUp*>(carPlayer->GetComponent(CompType::PowerUpComp).get());                            // debemos acceder al componente PowerUpComp
+    if(cPowerUpCar->typePowerUp == typeCPowerUp::None){                                                                         // solo si no tenemos powerUp podemos coger uno
+        for(shared_ptr<Entity> actualBoxPowerUp: manBoxPowerUp->GetEntities()){                                                 // recorremos los powerUps
+            auto cBoxPowerUp = static_cast<CBoxPowerUp*>(actualBoxPowerUp.get()->GetComponent(CompType::BoxPowerUpComp).get()); // debemos acceder al componente BoxPowerUp
+            if(cBoxPowerUp->active == true){                                                                                    // Vemos si efectivamente esta activo o no, para poder cogerlo
+                if( Intersects(carPlayer, actualBoxPowerUp.get()) ){                                                            // Finalmente comprobamos las colisiones entre el coche y el powerUp
+                    shared_ptr<EventManager> eventManager = EventManager::GetInstance();
+                    DataMap dataCollisonCarBoxPowerUp;                                                                          // Mejor definirlo en el .h
+                    dataCollisonCarBoxPowerUp["BoxPowerUpComp"] = cBoxPowerUp;                                                  // necesitamos el componente
+                    dataCollisonCarBoxPowerUp["actualBox"] = actualBoxPowerUp;                                                  // y tambien la caja actual (para eliminarla de irrlicht)
+                    eventManager->AddEventMulti(Event{EventType::CATCH_BOX_POWERUP, dataCollisonCarBoxPowerUp});                      // llamamos al evento --- COMO ODIO QUE SE LLAME ADD Y NO TARGET
+                }
+            }
+        }
+    }
+}
+
+
+void Collisions::IntersectCarsBoxPowerUp(ManCar* manCars, ManBoxPowerUp* manBoxPowerUp){
+    for(shared_ptr<Entity> actualCar : manCars->GetEntitiesAI()){   
+        auto cPowerUpCar = static_cast<CPowerUp*>(actualCar.get()->GetComponent(CompType::PowerUpComp).get());                        
+        if(cPowerUpCar->typePowerUp == typeCPowerUp::None){                                                                         
+            for(shared_ptr<Entity> actualBoxPowerUp: manBoxPowerUp->GetEntities()){                                                 
+                auto cBoxPowerUp = static_cast<CBoxPowerUp*>(actualBoxPowerUp.get()->GetComponent(CompType::BoxPowerUpComp).get());
+                if(cBoxPowerUp->active == true){                                                                                   
+                    if( Intersects(actualCar.get(), actualBoxPowerUp.get()) ){                                                            
+                        shared_ptr<EventManager> eventManager = EventManager::GetInstance();
+                        DataMap dataCollisonCarBoxPowerUp;                                                                          
+                        dataCollisonCarBoxPowerUp["BoxPowerUpComp"] = cBoxPowerUp;                                                 
+                        dataCollisonCarBoxPowerUp["actualBox"] = actualBoxPowerUp;
+                        dataCollisonCarBoxPowerUp["actualCar"] = actualCar.get();                                              
+                        eventManager->AddEventMulti(Event{EventType::CATCH_AI_BOX_POWERUP, dataCollisonCarBoxPowerUp});                     
+                    }
+                }
+            }
+        }
+    }
 }

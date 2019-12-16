@@ -52,6 +52,7 @@ class ManCar : public Manager {
     
     void ThrowPowerUp(DataMap d);
     void CatchPowerUp(DataMap d);
+    void CatchPowerUpAI(DataMap d);
     shared_ptr<Car> car;
     vector<shared_ptr<CarAI>> CarAIs;
 };
