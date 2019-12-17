@@ -2,9 +2,14 @@
 #include <chrono>
 #include <iostream>
 #include <numeric>
+#include <stdio.h>
+#include <limits.h>
+#include <algorithm>
 
 #include "../Components/CTransformable.h"
 #include "../Components/CWayPointEdges.h"
+#include "../Components/CTotem.h"
+#include "../Components/CPath.h"
 #include "../CLPhysics/CLPhysics.h"
 #include "../Managers/Manager.h"
 
@@ -93,43 +98,66 @@ struct Inverter : public Decorator {  // Decorator Inverter
 
 
 StateInGame::StateInGame() {
-    // constructor
-    deltaTime = make_shared<float>(1.2);
-    deltas.push_back(1);
-    deltas.push_back(1);
-    deltas.push_back(1);
-    deltas.push_back(1);
-    deltas.push_back(1);
-    cout << "Hemos inicializado el stateInGame" << endl;
-    physics = make_unique<Physics>(deltaTime.get());
+    
+    physics = make_unique<Physics>(deltaTime);
 
     eventManager = EventManager::GetInstance();
 
     manPowerUps = make_shared<ManPowerUp>();
     phisicsPowerUp = make_shared<PhysicsPowerUp>();
     manBoxPowerUps = make_shared<ManBoxPowerUp>();
+    manTotems = make_shared<ManTotem>();
     ground = make_shared<GameObject>(glm::vec3(10.0f, 10.0f, 30.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(100.0f, 1.0f, 100.0f), "wall.jpg", "ninja.b3d");
     cam = make_shared<Camera>(glm::vec3(10.0f, 40.0f, 30.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f));
 
-    manWayPoint = make_shared<ManWayPoint>();
+    manWayPoint = make_shared<ManWayPoint>(); //Se crean todos los waypoints y edges
 
-    auto cWayPoint = static_cast<CWayPoint*>(manWayPoint->GetEntities()[3]->GetComponent(CompType::WayPointComp).get());
+    auto cWayPoint = static_cast<CWayPoint*>(manWayPoint->GetEntities()[2]->GetComponent(CompType::WayPointComp).get());
 
 
     manCars = make_shared<ManCar>(physics.get(), cam.get());
-
     //Le asignamos el waypoint inicial, momentaneo a la IA
-    manCars->CreateCarAI(glm::vec3(100.0f, 20.0f, 100.0f), cWayPoint->position);
+    manCars->CreateCarAI(glm::vec3(0.0f, 20.0f, 0.0f), cWayPoint);
+    stack<int> pathInit;
+    pathInit.push(0);
+    pathInit.push(1);
+    pathInit.push(2);
+    manCars->GetEntitiesAI()[0]->SetPath(pathInit);
+
+    auto cPath = static_cast<CPath*>(manCars->GetEntitiesAI()[0]->GetComponent(CompType::PathComp).get());
+
+    // while(!cPath->stackPath.empty()){
+    //     auto node = cPath->stackPath.top();
+    //     cPath->stackPath.pop();
+    //     cout << node << " - ";
+    // }
+    auto cWayPointAI2 = static_cast<CWayPoint*>(manWayPoint->GetEntities()[1]->GetComponent(CompType::WayPointComp).get());
+   //Le asignamos el waypoint inicial, momentaneo a la IA
+    manCars->CreateCarAI(glm::vec3(0.0f, 20.0f, 0.0f), cWayPointAI2);
+    stack<int> pathInit2;
+    pathInit2.push(4);
+    pathInit2.push(0);
+    pathInit2.push(2);
+    manCars->GetEntitiesAI()[1]->SetPath(pathInit2);
+
+    auto cWayPointAI3 = static_cast<CWayPoint*>(manWayPoint->GetEntities()[0]->GetComponent(CompType::WayPointComp).get());
+   //Le asignamos el waypoint inicial, momentaneo a la IA
+    manCars->CreateCarAI(glm::vec3(0.0f, 20.0f, 0.0f), cWayPointAI3);
+    stack<int> pathInit3;
+    pathInit3.push(1);
+    pathInit3.push(3);
+    pathInit3.push(4);
+    manCars->GetEntitiesAI()[2]->SetPath(pathInit3);
 
     // Inicializamos las facadas
     renderFacadeManager = RenderFacadeManager::GetInstance();
-    renderFacadeManager->InitializeIrrlicht();
+    //renderFacadeManager->InitializeIrrlicht();
 
     inputFacadeManager = InputFacadeManager::GetInstance();
-    inputFacadeManager->InitializeIrrlicht();
+    //inputFacadeManager->InitializeIrrlicht();
 
     physicsFacadeManager = PhysicsFacadeManager::GetInstance();
-    physicsFacadeManager->InitializeIrrlicht();
+    //physicsFacadeManager->InitializeIrrlicht();
 
     //Almacenamos los motores
     renderEngine = renderFacadeManager->GetRenderFacade();
@@ -153,7 +181,10 @@ StateInGame::StateInGame() {
         auto mapWaypoint = components.find(CompType::WayPointComp);
         auto cWayPoint = static_cast<CWayPoint*>(mapWaypoint->second.get());
 
-        manBoxPowerUps->CreateBoxPowerUp(glm::vec3(cWayPoint->position));
+        // solo debemos crear las Box si el type del waypoint es "1"
+        if(cWayPoint->type == 1){
+            manBoxPowerUps->CreateBoxPowerUp(glm::vec3(cWayPoint->position));
+        }
     }
     //cout << "el tamanyo normal es: " << manWayPoint.size() << endl;
     //Añadimos todos los power ups
@@ -162,19 +193,25 @@ StateInGame::StateInGame() {
 
     renderEngine->FacadeAddCamera(cam.get());
 
-
+    //lastFPS = -1;
     // CREAMOS EL TOTEM
-    totem = make_shared<Totem>();
-    renderEngine->FacadeAddObject(totem.get());
+    //manTotems->CreateTotem(glm::vec3(0.0f,20.0f,0.0f));
+    manTotems->CreateTotem();
+    renderEngine->FacadeAddObject(manTotems->GetEntities()[0].get());
 
-    lastFPS = -1;
     //then = renderEngine->FacadeGetTime();
-    then = system_clock::now();
+    //then = system_clock::now();
 
     //inicializamos las reglas del cocheIA de velocidad/aceleracion
     //FuzzyLogic flVelocity;
     physicsAI->InitPhysicsIA(manCars->GetEntitiesAI()[0].get());  // To-Do: hacer que se le pasen todos los coches IA
     cout << "después de init physics ai" << endl;
+
+    systemBtPowerUp = make_shared<SystemBtPowerUp>();
+    systemBtPowerUp->update();
+    systemBtPowerUp->update();
+    systemBtPowerUp->update();
+    systemBtPowerUp->update();
 
 
     // CLPhysics
@@ -200,22 +237,26 @@ void StateInGame::Update() {
     eventManager->Update();
 
     // actualizamos el deltatime
-    time_point<system_clock> now = system_clock::now();
-    int64_t milis = duration_cast<milliseconds>(now - then).count();
+    //time_point<system_clock> now = system_clock::now();
+    //int64_t milis = duration_cast<milliseconds>(now - then).count();
     //const uint32_t now = renderEngine->FacadeGetTime();
 
     // con media
-    float currentDelta = (float)(milis) / 100.0;
-    *deltaTime.get() = CalculateDelta(currentDelta);
+    //float currentDelta = (float)(milis) / 100.0;
+    //*deltaTime.get() = CalculateDelta(currentDelta);
 
     // sin media
     // *deltaTime.get() = (float)(milis) / 100.0;
 
-    then = now;
+   
+
+    physics->update(manCars->GetCar().get(), cam.get());
 
     
-    physics->update(manCars->GetCar().get(), cam.get()); // por ahora este es nuestro ManCarIntegrate
-    physicsAI->Update(manWayPoint->GetEntities(), manCars->GetEntitiesAI()[0].get(), *deltaTime.get());
+    for(auto actualAI : manCars->GetEntitiesAI()){
+        physicsAI->Update(manWayPoint.get(),actualAI.get(), deltaTime);
+    }
+
     clPhysics->Update(0.1666f);
     sysBoxPowerUp->update(manBoxPowerUps.get());
     phisicsPowerUp->update(manPowerUps->GetEntities());
@@ -233,44 +274,24 @@ void StateInGame::Update() {
 
     //physicsEngine->UpdateCar(car.get(), cam.get());
 
-    // COGER POWERUPS - DE MOMENTO SOLO CON EL PLAYER
-    //for(shared_ptr<Entity> actualCar : manCars->GetEntities()){                                                                   // recorremos todos los coches
-        auto cPowerUpCar = static_cast<CPowerUp*>(manCars.get()->GetCar().get()->GetComponent(CompType::PowerUpComp).get());        // debemos acceder al componente PowerUpComp
-        if(cPowerUpCar->typePowerUp == typeCPowerUp::None){                                                                         // solo si no tenemos powerUp podemos coger uno
-            for(shared_ptr<Entity> actualBoxPowerUp: manBoxPowerUps->GetEntities()){                                                // recorremos los powerUps
-                auto cBoxPowerUp = static_cast<CBoxPowerUp*>(actualBoxPowerUp.get()->GetComponent(CompType::BoxPowerUpComp).get()); // debemos acceder al componente BoxPowerUp
-                if(cBoxPowerUp->active == true){                                                                                    // Vemos si efectivamente esta activo o no, para poder cogerlo
-                     if( collisions->Intersects(manCars.get()->GetCar().get(), actualBoxPowerUp.get()) ){                           // Finalmente comprobamos las colisiones entre el coche y el powerUp
-                        //std::cout << "HAY COLISION ENTRE COCHE Y POWERUP" << std::endl;
-                        DataMap dataCollisonCarBoxPowerUp;                                                                             // Mejor definirlo en el .h
-                        dataCollisonCarBoxPowerUp["BoxPowerUpComp"] = cBoxPowerUp;                                                     // necesitamos el componente
-                        dataCollisonCarBoxPowerUp["actualBox"] = actualBoxPowerUp;                                                     // y tambien la caja actual (para eliminarla de irrlicht)
-                        eventManager->AddEventMulti(Event{EventType::CATCH_BOX_POWERUP, dataCollisonCarBoxPowerUp});                             // llamamos al evento --- COMO ODIO QUE SE LLAME ADD Y NO TARGET
-                    }
-                }
-            }
-        }
-    //}
-    //collisions->IntersectPlayerPowerUps(manCars->GetCar().get(), manPowerUps->GetEntities());
-    // llamamos a comprobar las colisiones entre los coches (actualmente solo el prota) y los powerUps lanzados
-
-    // ELIMINAMOS POWERUPS - DE MOMENTO SOLO CON EL PLAYER
-    //for(shared_ptr<Entity> actualCar : manCars->GetEntities()){   
-        for(shared_ptr<Entity> actualPowerUp : manPowerUps->GetEntities()){
-            auto cPowerUp = static_cast<CPowerUp*>(actualPowerUp->GetComponent(CompType::PowerUpComp).get());
-            if(cPowerUp->effectActive == true){                                                                 // SI HACE DANYO
-                if(collisions->Intersects(manCars.get()->GetCar().get(), actualPowerUp.get())){   //TRUE
-                    // debemos eliminar el powerUp y hacer danyo al jugador
-                    DataMap dataCollisonCarPowerUp;                                                                           
-                    dataCollisonCarPowerUp["PowerUp"] = actualPowerUp;              // nos guardamos el puntero para eliminar el powerUp                                             
-                    eventManager->AddEventMulti(Event{EventType::COLLISION_ENTITY_POWERUP, dataCollisonCarPowerUp}); 
-                }
-            }
-        }
-    //}
 
 
+
+    // COLISIONES entre BoxPowerUp y player
+    collisions->IntersectPlayerBoxPowerUp(manCars.get()->GetCar().get(), manBoxPowerUps.get());
+    // COLISIONES entre BoxPowerUp y IA                                                            
+    collisions->IntersectCarsBoxPowerUp(manCars.get(), manBoxPowerUps.get());
+    // COLISIONES entre powerUp y player
+    collisions->IntersectPlayerPowerUps(manCars.get()->GetCar().get(), manPowerUps.get());
+    // COLISIONES entre powerUp y IA
+    collisions->IntersectsCarsPowerUps(manCars.get(), manPowerUps.get());
+    // COLISIONES entre el Player y el Totem
+    collisions->IntersectPlayerTotem(manCars.get()->GetCar().get(), manTotems.get());
+    // COLISIONES  entre la IA y el Totem
+    collisions->IntersectCarsTotem(manCars.get(), manTotems.get());
 }
+
+
 
 void StateInGame::Render() {
     auto carAI = manCars->GetEntitiesAI()[0].get();
@@ -283,22 +304,13 @@ void StateInGame::Render() {
     renderEngine->FacadeDrawGraphEdges(manWayPoint.get());
     renderEngine->FacadeDrawBoundingBox(manCars.get()->GetCar().get(), isColliding);
     renderEngine->FacadeDrawBoundingBox(carAI, isColliding);
+
+    for(auto actualPowerUp : manPowerUps->GetEntities())
+        renderEngine->FacadeDrawBoundingBox(actualPowerUp.get(), false);
+
     renderEngine->FacadeEndScene();
     int fps = renderEngine->FacadeGetFPS();
-    lastFPS = fps;
 }
-
-float StateInGame::CalculateDelta(float currentDelta) {
-    deltas.push_back(currentDelta);  // añadimos uno
-    deltas.erase(deltas.begin());    // borramos el primero
-
-    // hace la media de las últimas 5 deltas
-    return accumulate(deltas.begin(), deltas.end(), 0.0) / deltas.size();
-}
-
-
-
-
 
 /*
 
@@ -308,14 +320,15 @@ float StateInGame::CalculateDelta(float currentDelta) {
     // --------------------------- BEHAVIOR TREE ----------------------------------
 
     //BehaviorTree BASICO
-    // SELECTOR1
-    //
-    ///////////////////////////////////////////////////////////////////////////////////
-    //                                      //                                       //
+    //                                  SELECTOR1
+                                            //
+            ///////////////////////////////////////////////////////////////////////////////////
+            //                                      //                                       //
     // La pueta esta abierta?                     SEQUENCE                               DECORATOR (minimum) (3 intentos)
-    ///////////////////////////////                      //
-    //                          //                       //
-    //                                // tengo llave?             //abrir puerta        // coger llave
+                                        ///////////////////////////////                      //
+                                        //                          //                       //
+    //                              // tengo llave?             //abrir puerta        // coger llave
+
     shared_ptr<selector> selector1 = make_shared<selector>();
     shared_ptr<sequence> sequence1 = make_shared<sequence>();
 

@@ -10,15 +10,15 @@
 #include "../State/State.h"
 
 
-class StateMenu : public State{
+class StatePause : public State{
     public:
-        StateMenu();
-        ~StateMenu() = default;
+        StatePause();
+        ~StatePause() = default;
         void Input() override;
         void InitState() override;
         void Update() override;
         void Render() override;
-        States GetState() { return State::States::MENU; };
+        States GetState() { return State::States::PAUSE; };
 
 
     private:

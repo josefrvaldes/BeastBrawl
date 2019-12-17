@@ -1,5 +1,4 @@
-#ifndef __ENTITY_H__
-#define __ENTITY_H__
+#pragma once
 
 #include "../Components/Component.h"
 #include <iostream>
@@ -25,5 +24,3 @@ protected:
 
 private:
 };
-
-#endif

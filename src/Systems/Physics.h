@@ -19,7 +19,7 @@ class CCamera;
 
 class Physics {
    public:
-    Physics(float *);
+    Physics(float);
     ~Physics(){};
     void update(Car* car, Camera* cam);
     void Accelerate(Car *, Camera *);
@@ -31,8 +31,8 @@ class Physics {
 
    protected:
    private:
-    float *deltaTime;
-    void CalculatePosition(CCar *cCar, CTransformable *cTransformable, float *deltaTime);
-    void CalculatePositionReverse(CCar *cCar, CTransformable *cTransformable, float *deltaTime);
+    void CalculatePosition(CCar *cCar, CTransformable *cTransformable, float deltaTime);
+    void CalculatePositionReverse(CCar *cCar, CTransformable *cTransformable, float deltaTime);
     void CalculatePositionCamera(CTransformable *cTransformableCar, CTransformable *cTransformableCamera, CCamera *cCamera);
+    float deltaTime;
 };

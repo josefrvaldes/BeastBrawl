@@ -8,6 +8,11 @@
 #include "../Components/CTransformable.h"
 #include "../Components/CCar.h"
 #include "../Components/CWayPoint.h"
+#include "../Components/CPath.h"
+#include "../Components/CShield.h"
+#include "../Components/CTotem.h"
+#include "../Components/CRoboJorobo.h"
+#include "../Components/CNitro.h"
 #include "../Components/CBoundingSphere.h"
 #include <iostream>
 
@@ -31,6 +36,12 @@ CarAI::CarAI(){
     shared_ptr<CCar> cCar = make_shared<CCar>(maxSpeed, acceleration, friction, slowDown);
     shared_ptr<CWayPoint> cWayPoint = make_shared<CWayPoint>();
     shared_ptr<CPowerUp> cPowerUp = make_shared<CPowerUp>();
+    shared_ptr<CShield> cShield = make_shared<CShield>();
+    shared_ptr<CNitro> cNitro = make_shared<CNitro>();
+    shared_ptr<CRoboJorobo> cRoboJorobo = make_shared<CRoboJorobo>();
+    shared_ptr<CTotem> cTotem = make_shared<CTotem>();
+    shared_ptr<CPath> cPath   = make_shared<CPath>();
+
     shared_ptr<CBoundingSphere> cBoundSphere = make_shared<CBoundingSphere>(pos, 3.f);
     AddComponent(cId);
     AddComponent(cType);
@@ -40,6 +51,11 @@ CarAI::CarAI(){
     AddComponent(cCar);
     AddComponent(cWayPoint);
     AddComponent(cPowerUp);
+    AddComponent(cShield);
+    AddComponent(cNitro);
+    AddComponent(cRoboJorobo);
+    AddComponent(cTotem);
+    AddComponent(cPath);
     AddComponent(cBoundSphere);
     cout << "Acabamos de llamar al constructor default de car, su transformable es " << cTransformable << endl;
 }
@@ -57,6 +73,12 @@ CarAI::CarAI(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale,
     shared_ptr<CMesh> cMesh   = make_shared<CMesh>(mesh);
     shared_ptr<CCar> cCar = make_shared<CCar>(maxSpeed, acceleration, carFriction, carSlowDown);
     shared_ptr<CPowerUp> cPowerUp = make_shared<CPowerUp>();
+    shared_ptr<CShield> cShield = make_shared<CShield>();
+    shared_ptr<CNitro> cNitro = make_shared<CNitro>();
+    shared_ptr<CRoboJorobo> cRoboJorobo = make_shared<CRoboJorobo>();
+    shared_ptr<CTotem> cTotem = make_shared<CTotem>();
+    shared_ptr<CPath> cPath   = make_shared<CPath>();
+
     AddComponent(cId);
     AddComponent(cType);
     AddComponent(cTransformable);
@@ -64,6 +86,11 @@ CarAI::CarAI(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale,
     AddComponent(cMesh);
     AddComponent(cCar);
     AddComponent(cPowerUp);
+    AddComponent(cShield);
+    AddComponent(cNitro);
+    AddComponent(cRoboJorobo);
+    AddComponent(cTotem);
+    AddComponent(cPath);
     cout << "Acabamos de llamar al constructor default de car, su transformable es " << cTransformable << endl;
 
 
@@ -88,7 +115,15 @@ CarAI::~CarAI()
 }
 
 
-void CarAI::SetWayPoint(glm::vec3 waypoint){
+void CarAI::SetWayPoint(CWayPoint* _waypoint){
     auto cWayPoint = static_cast<CWayPoint*>(m_components[CompType::WayPointComp].get());
-    cWayPoint->position = waypoint;
+    cWayPoint->position = _waypoint->position;
+    cWayPoint->id = _waypoint->id;
+}
+
+
+void CarAI::SetPath(stack<int> path){
+    auto cPath = static_cast<CPath*>(m_components[CompType::PathComp].get());
+    cPath->stackPath = path;
+
 }

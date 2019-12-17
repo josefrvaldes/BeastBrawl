@@ -32,7 +32,7 @@ BoxPowerUp::BoxPowerUp(){
     AddComponent(cBoxPowerUp);
     //AddComponent(cCar);
 
-    cout << "Acabamos de llamar al constructor default de powerup, su transformable es " << cTransformable << endl;
+    //cout << "Acabamos de llamar al constructor default de powerup, su transformable es " << cTransformable << endl;
 
 }
 

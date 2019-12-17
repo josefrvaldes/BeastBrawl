@@ -9,23 +9,14 @@ class Position;
 using namespace std;
 
 void ManBoxPowerUp::EjecutarMeHanCogido(DataMap d) {
-    /*uint32_t contador = 0;
-    uint32_t posVector = 0;
-    for(auto Box : BoxPowerUps){
-        auto cBoxId = static_cast<CId*>(Box.get()->GetComponent(CompType::IdComp).get());
-        if(cBoxId->id == d.id){
-            posVector = contador;
-        }
-        contador++;
-    }*/
     auto cBoxPowerUp = any_cast<CBoxPowerUp*>(d["BoxPowerUpComp"]);
     auto actualBox   = any_cast<shared_ptr<Entity>>(d["actualBox"]);
     //auto cBoxPowerUp2 = static_cast<CBoxPowerUp*>(BoxPowerUps[0].get()->GetComponent(CompType::BoxPowerUpComp).get());
     if(cBoxPowerUp->active == true){
         cout << "Han cogido un powerup, madafaka!! sera la primera" << endl;
         //shared_ptr<RenderFacade> renderFacadeManager;
-        shared_ptr<RenderFacadeManager> renderFacadeManager = RenderFacadeManager::GetInstance();
-        shared_ptr<RenderFacade> renderEngine = renderFacadeManager->GetRenderFacade();
+        auto renderFacadeManager = RenderFacadeManager::GetInstance();
+        auto renderEngine = renderFacadeManager->GetRenderFacade();
         renderEngine->DeleteEntity(actualBox.get());       // se elmina la caja en irrlich para que no la dibuje, pero en nuestro array sigue estando
         //debemos, de forma aleatoria asignarle un tipo al powerUp
         cBoxPowerUp->active = false;
@@ -62,12 +53,18 @@ void ManBoxPowerUp::SubscribeToEvents() {
         EventType::CATCH_BOX_POWERUP,
         bind(&ManBoxPowerUp::EjecutarMeHanCogido, this, placeholders::_1),
         "EjecutarMeHanCogido"));
+    
+    EventManager::GetInstance()->SuscribeMulti(Listener(
+        EventType::CATCH_AI_BOX_POWERUP,
+        bind(&ManBoxPowerUp::EjecutarMeHanCogido, this, placeholders::_1),
+        "EjecutarMeHanCogido"));
 }
+
 
 // se crea la caja de irrlich eliminada anteriormente
 void ManBoxPowerUp::resetBox(BoxPowerUp* resetBox){
-    shared_ptr<RenderFacadeManager> renderFacadeManager = RenderFacadeManager::GetInstance();
-    shared_ptr<RenderFacade> renderEngine = renderFacadeManager->GetRenderFacade();
+    auto renderFacadeManager = RenderFacadeManager::GetInstance();
+    auto renderEngine = renderFacadeManager->GetRenderFacade();
     renderEngine->FacadeAddObject(resetBox);
 }
 

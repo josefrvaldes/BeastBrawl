@@ -7,7 +7,6 @@
 #include "../../EventManager/EventManager.h"
 #include "../../Managers/ManWayPoint.h"
 
-class GameObject;
 class RenderFacade {
    public:
     //RenderFacade() = default;
@@ -29,6 +28,12 @@ class RenderFacade {
     virtual void FacadeDeviceDrop() = 0;
     virtual void FacadeDraw() = 0;
     virtual void DeleteEntity(Entity*) = 0;
+    virtual void FacadeDrawMenu() = 0;
+    virtual void FacadeDrawPause() = 0;
+    virtual void FacadeInitMenu() = 0;
+    virtual void FacadeInitPause() = 0;
+    virtual void FacadeCheckInputMenu() = 0;
+    virtual void FacadeCheckInputPause() = 0;
 
     //DEBUG
     virtual void FacadeDrawGraphEdges(ManWayPoint* manWayPoints) = 0;

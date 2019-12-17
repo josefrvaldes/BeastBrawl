@@ -1,10 +1,9 @@
 #include "RenderFacadeManager.h"
 
-const shared_ptr<RenderFacadeManager> RenderFacadeManager::instance = make_shared<RenderFacadeManager>();
-shared_ptr<RenderFacadeManager> RenderFacadeManager::GetInstance() {
-    //static EventManager instance;
-    // if(instance==nullptr){
-    //     instance = make_shared<EventManager>();
-    // }
+RenderFacadeManager* RenderFacadeManager::instance = 0;
+RenderFacadeManager* RenderFacadeManager::GetInstance(){
+    if(instance==0){
+        instance = new RenderFacadeManager();
+    }
     return instance;
 }

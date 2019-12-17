@@ -7,8 +7,9 @@
 #include <vector>
 #include "../../lib/glm/vec3.hpp"
 #include "../Aliases.h"
+#include "../Components/CWayPoint.h"
 #include "../Components/CTransformable.h"
-#include "Manager.h"
+#include "../Components/CSpeed.h"
 
 using namespace std;
 class Car;
@@ -28,7 +29,7 @@ class ManCar : public Manager {
     shared_ptr<Car> &GetCar() { return car; };
 
     void CreateCarAI();
-    void CreateCarAI(glm::vec3 _position, glm::vec3 _waypoint);
+    void CreateCarAI(glm::vec3 _position, CWayPoint* _waypoint);
     vector<shared_ptr<CarAI>> GetEntitiesAI() const { return CarAIs; };
     CTransformable *calculateCloserAI();
     void Integrate(float) override;
@@ -44,9 +45,16 @@ class ManCar : public Manager {
     void Decelerate(DataMap d);
     void NotTurning(DataMap d);
     void CollisionPowerUp(DataMap d);
+    void CollisionPowerUpAI(DataMap d);
+    void CatchTotemPlayer(DataMap d);
+    void CatchTotemAI(DataMap d);
+    void ThrowTotem(Car* carLoseTotem);
+    void CatchTotem(Car* carWinTotem);
+    bool useRoboJorobo(Car* newCarWithTotem);
 
     void ThrowPowerUp(DataMap d);
     void CatchPowerUp(DataMap d);
+    void CatchPowerUpAI(DataMap d);
     shared_ptr<Car> car;
     vector<shared_ptr<CarAI>> CarAIs;
 };

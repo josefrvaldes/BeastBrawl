@@ -29,8 +29,8 @@ void ManPowerUp::CreatePowerUp(DataMap d) {
     shared_ptr<PowerUp> powerUp = make_shared<PowerUp>(transforSalida->position, transforSalida->rotation, type, transforPerse);
     PowerUps.push_back(powerUp);
 
-    shared_ptr<RenderFacadeManager> renderFacadeManager = RenderFacadeManager::GetInstance();
-    shared_ptr<RenderFacade> renderEngine = renderFacadeManager->GetRenderFacade();
+    auto renderFacadeManager = RenderFacadeManager::GetInstance();
+    auto renderEngine = renderFacadeManager->GetRenderFacade();
     renderEngine->FacadeAddObject(powerUp.get());
 
     //Cuando creamos el powerUp, ponemos su tiempo inicial de inactivadad --> para no danyarnos a nostros mismos
@@ -39,8 +39,8 @@ void ManPowerUp::CreatePowerUp(DataMap d) {
 }
 // TODO ELIMINARLO TODO AL MISMO TIEMPO ANTES DE RENDERIZAR CONNNNYO
 void ManPowerUp::DeletePowerUp(DataMap d){
-    shared_ptr<RenderFacadeManager> renderFacadeManager = RenderFacadeManager::GetInstance();
-    shared_ptr<RenderFacade> renderEngine = renderFacadeManager->GetRenderFacade();
+    auto renderFacadeManager = RenderFacadeManager::GetInstance();
+    auto renderEngine = renderFacadeManager->GetRenderFacade();
     for(long unsigned int i=0; i< PowerUps.size(); ++i){
         if(PowerUps[i] == any_cast<shared_ptr<Entity>>(d["PowerUp"])){
             renderEngine->DeleteEntity(PowerUps[i].get());
@@ -60,6 +60,11 @@ void ManPowerUp::SubscribeToEvents() {
 
     EventManager::GetInstance()->SuscribeMulti(Listener(
         EventType::COLLISION_ENTITY_POWERUP,
+        bind(&ManPowerUp::DeletePowerUp, this, placeholders::_1),
+        "DeletePowerUp"));
+    
+    EventManager::GetInstance()->SuscribeMulti(Listener(
+        EventType::COLLISION_ENTITY_AI_POWERUP,
         bind(&ManPowerUp::DeletePowerUp, this, placeholders::_1),
         "DeletePowerUp"));
 }

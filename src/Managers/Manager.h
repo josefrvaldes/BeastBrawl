@@ -1,5 +1,4 @@
-#ifndef __MANAGER__
-#define __MANAGER__
+#pragma once
 
 #include <iostream>
 #include <map>
@@ -24,5 +23,3 @@ class Manager {
     vector<shared_ptr<Entity>> entities;
     virtual void SubscribeToEvents() {};
 };
-
-#endif

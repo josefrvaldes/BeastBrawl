@@ -1,5 +1,4 @@
-#ifndef __COMPONENT_H__
-#define __COMPONENT_H__
+#pragma once
 
 enum CompType { 
     LastPositionComp, 
@@ -24,7 +23,8 @@ enum CompType {
     DimensionsComp,
     CompBoundingSphere,
     CompBoundingAABox,
-    CompBoundingPlane
+    CompBoundingPlane,
+    PathComp
 };
 
 class Component
@@ -41,5 +41,3 @@ protected:
 private:
     
 };
-
-#endif

@@ -1,10 +1,11 @@
-#ifndef STATEINGAME_H
-#define STATEINGAME_H
+#pragma once
 
 #include <chrono>
 #include <cstdint>
 #include <iostream>
 #include <list>
+#include <queue>
+#include <stack>
 #include <memory>
 #include <string>
 
@@ -30,11 +31,13 @@
 #include "../Systems/Collisions.h"
 #include "../Systems/Physics.h"
 #include "../Systems/PhysicsAI.h"
+#include "../Systems/SystemBtPowerUp.h"
 #include "../Game.h"
 #include "../Managers/ManCar.h"
 #include "../Managers/ManPowerUp.h"
 #include "../Managers/ManBoxPowerUp.h"
 #include "../Managers/ManWayPoint.h"
+#include "../Managers/ManTotem.h"
 #include "../behaviourTree/behaviourTree.h"
 #include "../behaviourTree/decorator.h"
 #include "../behaviourTree/selector.h"
@@ -64,33 +67,31 @@ class StateInGame : public State {
     shared_ptr<ManPowerUp> manPowerUps;
     shared_ptr<ManBoxPowerUp> manBoxPowerUps;
     shared_ptr<ManCar> manCars;
-    shared_ptr<RenderFacadeManager> renderFacadeManager;
-    shared_ptr<InputFacadeManager> inputFacadeManager;
-    shared_ptr<PhysicsFacadeManager> physicsFacadeManager;
-    shared_ptr<RenderFacade> renderEngine;
-    shared_ptr<InputFacade> inputEngine;
-    shared_ptr<PhysicsFacade> physicsEngine;
-    shared_ptr<Collisions> collisions;
     shared_ptr<ManWayPoint> manWayPoint;
-    //shared_ptr<SoundFacadeManager> soundFacadeManager;
+    RenderFacadeManager* renderFacadeManager;
+    InputFacadeManager* inputFacadeManager;
+    PhysicsFacadeManager* physicsFacadeManager;
+    RenderFacade* renderEngine;
+    InputFacade* inputEngine;
+    PhysicsFacade* physicsEngine;
+    shared_ptr<SoundFacadeManager> soundFacadeManager;
     SoundFacade *soundEngine;
     shared_ptr<Physics> physics;
+    //shared_ptr<float> deltaTime;
+    float deltaTime = 0.166666;
     shared_ptr<PhysicsPowerUp> phisicsPowerUp;
     shared_ptr<SystemBoxPowerUp> sysBoxPowerUp;
-    shared_ptr<float> deltaTime;
-
+    shared_ptr<Collisions> collisions;
     shared_ptr<Totem> totem;
 
     unique_ptr<CLPhysics> clPhysics;
 
     shared_ptr<PhysicsAI> physicsAI;
-    int lastFPS = -1;
+    shared_ptr<SystemBtPowerUp> systemBtPowerUp;
+    shared_ptr<ManTotem> manTotems;
+    //int lastFPS = -1;
     //uint32_t then;
     time_point<system_clock> then;
-    vector<float> deltas;
-    float CalculateDelta(float);
-    
-
+   // vector<float> deltas;
+    //float CalculateDelta(float);
 };
-
-#endif  // STATEINGAME_H
