@@ -114,14 +114,12 @@ StateInGame::StateInGame() {
 
 
     manCars = make_shared<ManCar>(physics.get(), cam.get());
-
     //Le asignamos el waypoint inicial, momentaneo a la IA
-    manCars->CreateCarAI(glm::vec3(100.0f, 20.0f, 100.0f), cWayPoint);
+    manCars->CreateCarAI(glm::vec3(0.0f, 20.0f, 0.0f), cWayPoint);
     stack<int> pathInit;
     pathInit.push(0);
     pathInit.push(1);
     pathInit.push(2);
-
     manCars->GetEntitiesAI()[0]->SetPath(pathInit);
 
     auto cPath = static_cast<CPath*>(manCars->GetEntitiesAI()[0]->GetComponent(CompType::PathComp).get());
@@ -131,9 +129,23 @@ StateInGame::StateInGame() {
     //     cPath->stackPath.pop();
     //     cout << node << " - ";
     // }
+    auto cWayPointAI2 = static_cast<CWayPoint*>(manWayPoint->GetEntities()[1]->GetComponent(CompType::WayPointComp).get());
+   //Le asignamos el waypoint inicial, momentaneo a la IA
+    manCars->CreateCarAI(glm::vec3(0.0f, 20.0f, 0.0f), cWayPointAI2);
+    stack<int> pathInit2;
+    pathInit2.push(4);
+    pathInit2.push(0);
+    pathInit2.push(2);
+    manCars->GetEntitiesAI()[1]->SetPath(pathInit2);
 
-
-
+    auto cWayPointAI3 = static_cast<CWayPoint*>(manWayPoint->GetEntities()[0]->GetComponent(CompType::WayPointComp).get());
+   //Le asignamos el waypoint inicial, momentaneo a la IA
+    manCars->CreateCarAI(glm::vec3(0.0f, 20.0f, 0.0f), cWayPointAI3);
+    stack<int> pathInit3;
+    pathInit3.push(1);
+    pathInit3.push(3);
+    pathInit3.push(4);
+    manCars->GetEntitiesAI()[2]->SetPath(pathInit3);
 
     // Inicializamos las facadas
     renderFacadeManager = RenderFacadeManager::GetInstance();
@@ -192,6 +204,12 @@ StateInGame::StateInGame() {
     //FuzzyLogic flVelocity;
     physicsAI->InitPhysicsIA(manCars->GetEntitiesAI()[0].get());  // To-Do: hacer que se le pasen todos los coches IA
     cout << "después de init physics ai" << endl;
+
+    systemBtPowerUp = make_shared<SystemBtPowerUp>();
+    systemBtPowerUp->update();
+    systemBtPowerUp->update();
+    systemBtPowerUp->update();
+    systemBtPowerUp->update();
 }
 
 StateInGame::~StateInGame() {
@@ -225,7 +243,12 @@ void StateInGame::Update() {
    
 
     physics->update(manCars->GetCar().get(), cam.get());
-    physicsAI->Update(manWayPoint.get(), manCars->GetEntitiesAI()[0].get(), deltaTime);
+
+    
+    for(auto actualAI : manCars->GetEntitiesAI()){
+        physicsAI->Update(manWayPoint.get(),actualAI.get(), deltaTime);
+    }
+
     sysBoxPowerUp->update(manBoxPowerUps.get());
     phisicsPowerUp->update(manPowerUps->GetEntities());
 
@@ -272,7 +295,58 @@ void StateInGame::Render() {
     renderEngine->FacadeDrawGraphEdges(manWayPoint.get());
     renderEngine->FacadeDrawBoundingBox(manCars.get()->GetCar().get(), isColliding);
     renderEngine->FacadeDrawBoundingBox(carAI, isColliding);
+
+    for(auto actualPowerUp : manPowerUps->GetEntities())
+        renderEngine->FacadeDrawBoundingBox(actualPowerUp.get(), false);
+
     renderEngine->FacadeEndScene();
     int fps = renderEngine->FacadeGetFPS();
 }
 
+/*
+
+
+#pragma region BT
+
+    // --------------------------- BEHAVIOR TREE ----------------------------------
+
+    //BehaviorTree BASICO
+    //                                  SELECTOR1
+                                            //
+            ///////////////////////////////////////////////////////////////////////////////////
+            //                                      //                                       //
+    // La pueta esta abierta?                     SEQUENCE                               DECORATOR (minimum) (3 intentos)
+                                        ///////////////////////////////                      //
+                                        //                          //                       //
+    //                              // tengo llave?             //abrir puerta        // coger llave
+
+    shared_ptr<selector> selector1 = make_shared<selector>();
+    shared_ptr<sequence> sequence1 = make_shared<sequence>();
+
+    shared_ptr<haveDoorOpen> puertaAbiertaSiNo = make_shared<haveDoorOpen>();
+    shared_ptr<haveKey> tengoLlaveSiNo = make_shared<haveKey>();
+    shared_ptr<openDoor> abrirPuerta = make_shared<openDoor>();
+    shared_ptr<getKey> cogerLlave = make_shared<getKey>();
+
+    shared_ptr<Minimum> tryCatchKey3 = make_shared<Minimum>();
+
+    selector1->addChild(puertaAbiertaSiNo);
+    selector1->addChild(sequence1);
+    selector1->addChild(tryCatchKey3);
+
+    sequence1->addChild(tengoLlaveSiNo);
+    sequence1->addChild(abrirPuerta);
+
+    tryCatchKey3->addChild(cogerLlave);
+
+    cout << "--------------------" << endl;
+    while (door == false) {
+        selector1->run();
+    }  // If the operation starting from the root fails, keep trying until it succeeds.
+    cout << "--------------------" << endl;
+    //
+
+#pragma endregion
+
+
+*/

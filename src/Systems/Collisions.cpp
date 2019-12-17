@@ -41,12 +41,13 @@ bool Collisions::Intersects(Entity* entity1,Entity* entity2){
     float e2MaxY = cTransformableE2->position.y + cDimensionsE2->height/2;
     float e2MaxZ = cTransformableE2->position.z + cDimensionsE2->depth/2;
 
-    if(e1MinX <= e2MaxX && e1MaxX >= e2MinX &&
-       e1MinY <= e2MaxY && e1MaxY >= e2MinY &&
-       e1MinZ <= e2MaxZ && e1MaxZ >= e2MinZ){
+    if( (e1MinX <= e2MaxX && e1MaxX >= e2MinX) &&
+        (e1MinY <= e2MaxY && e1MaxY >= e2MinY) &&
+        (e1MinZ <= e2MaxZ && e1MaxZ >= e2MinZ) ){
            //cout << "chocan\n";
            return true;
     }
+
 
     return false;
 }
