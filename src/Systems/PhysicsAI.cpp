@@ -221,10 +221,19 @@ float calculateAngle(CWayPoint* wayPointNext, CarAI* car,CCar* cCar){
     
     // sentido de giro
     float prueba = 0.0;
-    if(cTransformable->rotation.y>oppositeAngleAtan2 && cTransformable->rotation.y<valueAtan2)
-        prueba = angle2;
-    else
-        prueba = angle2 * (-1);
+    if(valueAtan2>=180){ // este if se hace para comprobar que se pueda hacer el && y no caiga en la parte que se reinician los grados
+        if(cTransformable->rotation.y>oppositeAngleAtan2 && cTransformable->rotation.y<valueAtan2)
+            prueba = angle2;
+        else
+            prueba = angle2 * (-1);
+    }else{
+        if(cTransformable->rotation.y>valueAtan2 && cTransformable->rotation.y<oppositeAngleAtan2)
+            prueba = angle2 * (-1);
+        else
+            prueba = angle2;
+    }
+
+
     //std::cout << "Atan2: " << prueba << " ----- Atan: " << valueAtan2  << " Opo: " << oppositeAngleAtan2 << "   Rot: " << cTransformable->rotation.y << endl; // primero la Z, luego la X
     return prueba;
 }

@@ -295,6 +295,10 @@ void StateInGame::Render() {
     renderEngine->FacadeDrawGraphEdges(manWayPoint.get());
     renderEngine->FacadeDrawBoundingBox(manCars.get()->GetCar().get(), isColliding);
     renderEngine->FacadeDrawBoundingBox(carAI, isColliding);
+
+    for(auto actualPowerUp : manPowerUps->GetEntities())
+        renderEngine->FacadeDrawBoundingBox(actualPowerUp.get(), false);
+
     renderEngine->FacadeEndScene();
     int fps = renderEngine->FacadeGetFPS();
 }
