@@ -205,11 +205,10 @@ StateInGame::StateInGame() {
     physicsAI->InitPhysicsIA(manCars->GetEntitiesAI()[0].get());  // To-Do: hacer que se le pasen todos los coches IA
     cout << "después de init physics ai" << endl;
 
+    // BehaivourTree
     systemBtPowerUp = make_shared<SystemBtPowerUp>();
-    systemBtPowerUp->update();
-    systemBtPowerUp->update();
-    systemBtPowerUp->update();
-    systemBtPowerUp->update();
+    systemBtPowerUp->update(manCars->GetEntitiesAI()[0].get(), manCars.get(), manPowerUps.get(), manBoxPowerUps.get(), manTotems.get(), manWayPoint.get());
+    
 }
 
 StateInGame::~StateInGame() {
