@@ -93,7 +93,7 @@ void RenderFacadeIrrlicht::FacadeDrawHUD(Entity* car){
     float time2 = time/10.0;
     core::stringw tiempoStringw = core::stringw(time2);
     font->draw(tiempoStringw,
-                    core::rect<s32>(130,10,300,50),
+                    core::rect<s32>(200,100,300,300),
                     video::SColor(255,255,255,255));
     //Dibujamos powerUp
     driver->draw2DImage(powerUps[currentPowerUp], core::position2d<s32>(50,50),
