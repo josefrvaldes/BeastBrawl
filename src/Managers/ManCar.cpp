@@ -12,6 +12,7 @@
 #include "../Components/CTotem.h"
 #include "../Components/CRoboJorobo.h"
 #include "../Components/CNitro.h"
+#include "../Facade/Render/RenderFacadeManager.h"
 
 
 class Position;
@@ -311,6 +312,9 @@ void ManCar::ThrowPowerUp(DataMap d) {
         }
         //std::cout << "Lanzamos el power up fiiiuuuuum" << std::endl;
         cPowerUpCar->typePowerUp = typeCPowerUp::None;
+        DataMap d;
+        d["typePowerUp"] = cPowerUpCar->typePowerUp;
+        EventManager::GetInstance()->AddEventMulti(Event{EventType::UPDATE_POWERUP_HUD, d});
     }
 }
 
@@ -342,6 +346,11 @@ void ManCar::CatchPowerUp(DataMap d) {
     if(cPowerUpCar->typePowerUp == typeCPowerUp::None){
         cPowerUpCar->typePowerUp = (typeCPowerUp)indx;
         std::cout << "Mi super powerUp es:   " << (int)cPowerUpCar->typePowerUp << std::endl;
+        d["typePowerUp"] = cPowerUpCar->typePowerUp;
+
+        //RenderFacadeManager::GetInstance()->GetRenderFacade()->FacadeUpdatePowerUpHUD(d);
+        EventManager::GetInstance()->AddEventMulti(Event{EventType::UPDATE_POWERUP_HUD, d});
+
     }
     //cPowerUp->typePowerUp = dynamic_cast<typeCPowerUp*>(indx);
 }

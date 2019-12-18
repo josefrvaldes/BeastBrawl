@@ -18,7 +18,7 @@
 #include "../../Game.h"
 
 
-#define PI 3.14159
+//#define PI 3.14159
 
 //PUNTEROS A FUNCIONES
 RenderFacadeIrrlicht::~RenderFacadeIrrlicht() {
@@ -33,6 +33,13 @@ RenderFacadeIrrlicht::RenderFacadeIrrlicht() {
 
 }
 
+void RenderFacadeIrrlicht::FacadeSuscribeEvents(){
+    EventManager::GetInstance()->Suscribe(Listener{
+                EventType::UPDATE_POWERUP_HUD,
+                bind(&RenderFacadeIrrlicht::FacadeUpdatePowerUpHUD, this, placeholders::_1),
+                "facadeUpdatePowerUpHUD"});
+}
+
 void RenderFacadeIrrlicht::FacadeInitMenu(){
     menuBG = driver->getTexture("media/mainMenu.png");
     driver->makeColorKeyTexture(menuBG, core::position2d<s32>(0,0));
@@ -42,6 +49,43 @@ void RenderFacadeIrrlicht::FacadeInitPause(){
     pauseBG = driver->getTexture("media/pauseMenu.png");
     driver->makeColorKeyTexture(pauseBG, core::position2d<s32>(0,0));
 }
+
+void RenderFacadeIrrlicht::FacadeInitHUD(){
+    //Almacenamos los iconos de powerups
+    powerUps[0] = driver->getTexture("media/nonepowerup.jpg");
+    powerUps[1] = driver->getTexture("media/robojorobo.jpg");
+    powerUps[2] = driver->getTexture("media/nitro.jpg");
+    powerUps[3] = driver->getTexture("media/pudin.jpg");
+    powerUps[4] = driver->getTexture("media/escudomerluzo.jpg");
+    powerUps[5] = driver->getTexture("media/telebanana.jpg");
+    powerUps[6] = driver->getTexture("media/melonmolon.jpg");
+
+    driver->makeColorKeyTexture(powerUps[0], core::position2d<s32>(0,0));
+    driver->makeColorKeyTexture(powerUps[1], core::position2d<s32>(0,0));
+    driver->makeColorKeyTexture(powerUps[2], core::position2d<s32>(0,0));
+    driver->makeColorKeyTexture(powerUps[3], core::position2d<s32>(0,0));
+    driver->makeColorKeyTexture(powerUps[4], core::position2d<s32>(0,0));
+    driver->makeColorKeyTexture(powerUps[5], core::position2d<s32>(0,0));
+    driver->makeColorKeyTexture(powerUps[6], core::position2d<s32>(0,0));
+
+
+}
+
+void RenderFacadeIrrlicht::FacadeUpdatePowerUpHUD(DataMap d){
+    typeCPowerUp type = any_cast<typeCPowerUp>(d["typePowerUp"]);
+    cout << "Facada recibe el power up: " << (int)type << endl;
+    currentPowerUp = int(type);
+
+    
+}
+
+void RenderFacadeIrrlicht::FacadeDrawHUD(){
+    driver->draw2DImage(powerUps[currentPowerUp], core::position2d<s32>(50,50),
+                core::rect<s32>(0,0,100,100), 0,
+                video::SColor(255,255,255,255), false);
+
+}
+
 
 const void RenderFacadeIrrlicht::FacadeAddObjects(vector<Entity*> entities) {
     for (Entity* e : entities) {
@@ -235,6 +279,7 @@ void RenderFacadeIrrlicht::FacadeCheckInput() {
 
     // POWERUPS
     if (receiver.IsKeyDown(KEY_SPACE)) {
+
         eventManager->AddEventMulti(Event{EventType::PRESS_SPACE});
     }
 
@@ -389,6 +434,8 @@ void RenderFacadeIrrlicht::FacadeDrawBoundingBox(Entity* entity, bool colliding)
 	core::aabbox3df boundingBox;
 
 	boundingBox = node->getTransformedBoundingBox();
+
+    
 	/*
 		   /3--------/7
 		  / |       / |

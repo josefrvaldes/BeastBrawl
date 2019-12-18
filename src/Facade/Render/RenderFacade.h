@@ -6,6 +6,7 @@
 #include "../../Entities/Entity.h"
 #include "../../EventManager/EventManager.h"
 #include "../../Managers/ManWayPoint.h"
+#include "../../Components/CPowerUp.h"
 
 class RenderFacade {
    public:
@@ -32,8 +33,12 @@ class RenderFacade {
     virtual void FacadeDrawPause() = 0;
     virtual void FacadeInitMenu() = 0;
     virtual void FacadeInitPause() = 0;
+    virtual void FacadeInitHUD() = 0;
     virtual void FacadeCheckInputMenu() = 0;
     virtual void FacadeCheckInputPause() = 0;
+    virtual void FacadeUpdatePowerUpHUD(DataMap d) = 0;
+    virtual void FacadeDrawHUD() = 0;
+    virtual void FacadeSuscribeEvents() = 0;
 
     //DEBUG
     virtual void FacadeDrawGraphEdges(ManWayPoint* manWayPoints) = 0;

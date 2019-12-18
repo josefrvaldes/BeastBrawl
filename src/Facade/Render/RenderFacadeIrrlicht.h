@@ -42,8 +42,12 @@ class RenderFacadeIrrlicht : public RenderFacade {
 		void FacadeDrawPause() override;
 		void FacadeInitMenu() override;
 		void FacadeInitPause() override;
+		void FacadeInitHUD() override;
 		void FacadeCheckInputMenu() override;
 		void FacadeCheckInputPause() override;
+		void FacadeUpdatePowerUpHUD(DataMap d) override;
+		void FacadeDrawHUD() override;
+		void FacadeSuscribeEvents() override;
 
 		//DEBUG
         void FacadeDrawGraphEdges(ManWayPoint* manWayPoints) override;
@@ -63,6 +67,8 @@ class RenderFacadeIrrlicht : public RenderFacade {
 		bool showDebug = false;
 		video::ITexture* menuBG;
 		video::ITexture* pauseBG;
+		video::ITexture* powerUps[7];
+		int currentPowerUp = 0;
 
         //unordered_map<uint16_t,scene::ISceneNode*> sceneObjects; // CId - ISceneNode*
 };
