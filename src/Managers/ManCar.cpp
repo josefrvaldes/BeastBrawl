@@ -48,10 +48,11 @@ void ManCar::UpdateCar(){
 
 void ManCar::UpdateCarAI(){
     for(auto carAI : GetEntitiesAI()){
-        auto cTotem = static_cast<CTotem*>(GetCar()->GetComponent(CompType::TotemComp).get());
+        auto cTotem = static_cast<CTotem*>(carAI->GetComponent(CompType::TotemComp).get());
         if(cTotem->active){
             cTotem->accumulatedTime +=  duration_cast<milliseconds>(system_clock::now() - cTotem->timeStart).count();
             cTotem->timeStart = system_clock::now();
+            //cout << "El totem lo tiene: " << cTotem->accumulatedTime/1000.0 << "\n";
 
         }
 

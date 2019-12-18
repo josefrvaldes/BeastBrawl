@@ -225,6 +225,7 @@ void StateInGame::Update() {
     // *deltaTime.get() = (float)(milis) / 100.0;
 
     manCars->UpdateCar();
+    manCars->UpdateCarAI();
 
     physics->update(manCars->GetCar().get(), cam.get());
     physicsAI->Update(manWayPoint.get(), manCars->GetEntitiesAI()[0].get(), deltaTime);
