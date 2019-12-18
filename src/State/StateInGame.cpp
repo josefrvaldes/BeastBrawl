@@ -224,7 +224,7 @@ void StateInGame::Update() {
     // sin media
     // *deltaTime.get() = (float)(milis) / 100.0;
 
-   
+    manCars->UpdateCar();
 
     physics->update(manCars->GetCar().get(), cam.get());
     physicsAI->Update(manWayPoint.get(), manCars->GetEntitiesAI()[0].get(), deltaTime);
@@ -268,7 +268,7 @@ void StateInGame::Render() {
     bool isColliding = collisions->Intersects(manCars.get()->GetCar().get(), carAI);
 
     renderEngine->FacadeBeginScene();
-    renderEngine->FacadeDrawHUD();
+    renderEngine->FacadeDrawHUD(manCars->GetCar().get());
     // renderEngine->FacadeDraw();  //Para dibujar primitivas debe ir entre el drawAll y el endScene
     renderEngine->FacadeDrawAll();
     renderEngine->FacadeDrawGraphEdges(manWayPoint.get());

@@ -37,7 +37,7 @@ class RenderFacade {
     virtual void FacadeCheckInputMenu() = 0;
     virtual void FacadeCheckInputPause() = 0;
     virtual void FacadeUpdatePowerUpHUD(DataMap d) = 0;
-    virtual void FacadeDrawHUD() = 0;
+    virtual void FacadeDrawHUD(Entity* car) = 0;
     virtual void FacadeSuscribeEvents() = 0;
 
     //DEBUG

@@ -10,8 +10,11 @@
 //#include "../../State/State.h"
 
 #include <iostream>
+#include <string>
 #include <unordered_map>
 #include <memory>
+#include <locale>
+#include <codecvt>
 
 using namespace std;
 using namespace irr;
@@ -46,7 +49,7 @@ class RenderFacadeIrrlicht : public RenderFacade {
 		void FacadeCheckInputMenu() override;
 		void FacadeCheckInputPause() override;
 		void FacadeUpdatePowerUpHUD(DataMap d) override;
-		void FacadeDrawHUD() override;
+		void FacadeDrawHUD(Entity* car) override;
 		void FacadeSuscribeEvents() override;
 
 		//DEBUG
@@ -64,10 +67,11 @@ class RenderFacadeIrrlicht : public RenderFacade {
         scene::ISceneManager* smgr;
 		scene::ICameraSceneNode* camera1;
 		MyEventReceiver receiver;
-		bool showDebug = false;
 		video::ITexture* menuBG;
 		video::ITexture* pauseBG;
 		video::ITexture* powerUps[7];
+		gui::IGUIFont* font;
+		bool showDebug = false;
 		int currentPowerUp = 0;
 
         //unordered_map<uint16_t,scene::ISceneNode*> sceneObjects; // CId - ISceneNode*

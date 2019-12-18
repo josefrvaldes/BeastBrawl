@@ -12,6 +12,7 @@
 #include "../../Components/CWayPoint.h"
 #include "../../Components/CWayPointEdges.h"
 #include "../../Components/CDimensions.h"
+#include "../../Components/CTotem.h"
 #include "../../Entities/WayPoint.h"
 #include <math.h>
 
@@ -30,6 +31,7 @@ RenderFacadeIrrlicht::RenderFacadeIrrlicht() {
     device = createDevice(video::EDT_OPENGL, core::dimension2d<u32>(1280, 720), 16, false, false, false, &receiver);
     driver = device->getVideoDriver();
     smgr = device->getSceneManager();
+    font = device->getGUIEnvironment()->getBuiltInFont();
 
 }
 
@@ -79,7 +81,14 @@ void RenderFacadeIrrlicht::FacadeUpdatePowerUpHUD(DataMap d){
     
 }
 
-void RenderFacadeIrrlicht::FacadeDrawHUD(){
+void RenderFacadeIrrlicht::FacadeDrawHUD(Entity* car){
+    auto cTotem = static_cast<CTotem*>(car->GetComponent(CompType::TotemComp).get());
+    
+    core::stringw tiempoStringw = core::stringw(cTotem->accumulatedTime/1000.0);
+    font->draw(tiempoStringw,
+                    core::rect<s32>(130,10,300,50),
+                    video::SColor(255,255,255,255));
+    //Dibujamos powerUp
     driver->draw2DImage(powerUps[currentPowerUp], core::position2d<s32>(50,50),
                 core::rect<s32>(0,0,100,100), 0,
                 video::SColor(255,255,255,255), false);

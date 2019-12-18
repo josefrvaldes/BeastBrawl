@@ -31,6 +31,17 @@ ManCar::ManCar(Physics *_physics, Camera *_cam) : ManCar() {
     this->cam = _cam;
 }
 
+void ManCar::UpdateCar(){
+    auto cTotem = static_cast<CTotem*>(GetCar()->GetComponent(CompType::TotemComp).get());
+    if(cTotem->active){
+        cTotem->accumulatedTime +=  duration_cast<milliseconds>(system_clock::now() - cTotem->timeStart).count();
+        cTotem->timeStart = system_clock::now();
+
+    }
+    std::cout << "El tiempo acumulado del totem hasta ahora del jugador es de:  " << cTotem->accumulatedTime/1000.0 << std::endl; 
+
+}
+
 ManCar::~ManCar() {
     cout << "Llamando al destructor de ManCar" << endl;
     CarAIs.clear();

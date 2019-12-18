@@ -14,7 +14,6 @@ using namespace chrono;
 class CTotem : public Component{
 public:
     CTotem();
-    //CShield(glm::vec3 _pos, int type,int id);
     ~CTotem();
 
     bool active = false;
