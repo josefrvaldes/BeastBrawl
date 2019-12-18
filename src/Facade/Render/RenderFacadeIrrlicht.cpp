@@ -75,6 +75,8 @@ void RenderFacadeIrrlicht::FacadeInitHUD(){
     driver->makeColorKeyTexture(powerUps[5], core::position2d<s32>(0,0));
     driver->makeColorKeyTexture(powerUps[6], core::position2d<s32>(0,0));
 
+    currentPowerUp = 0;
+
 
 }
 
@@ -94,7 +96,7 @@ void RenderFacadeIrrlicht::FacadeDrawHUD(Entity* car){
     core::stringw tiempoStringw = core::stringw(time2);
     font->draw(tiempoStringw,
                     core::rect<s32>(200,100,300,300),
-                    video::SColor(255,255,255,255));
+                    video::SColor(255,0,0,0));
     //Dibujamos powerUp
     driver->draw2DImage(powerUps[currentPowerUp], core::position2d<s32>(50,50),
                 core::rect<s32>(0,0,100,100), 0,
