@@ -52,6 +52,11 @@ void RenderFacadeIrrlicht::FacadeInitPause(){
     driver->makeColorKeyTexture(pauseBG, core::position2d<s32>(0,0));
 }
 
+void RenderFacadeIrrlicht::FacadeInitEndRace(){
+    endRaceBG = driver->getTexture("media/resultsMenu.png");
+    driver->makeColorKeyTexture(endRaceBG, core::position2d<s32>(0,0));
+}
+
 void RenderFacadeIrrlicht::FacadeInitHUD(){
     //Almacenamos los iconos de powerups
     powerUps[0] = driver->getTexture("media/nonepowerup.jpg");
@@ -76,15 +81,17 @@ void RenderFacadeIrrlicht::FacadeInitHUD(){
 void RenderFacadeIrrlicht::FacadeUpdatePowerUpHUD(DataMap d){
     typeCPowerUp type = any_cast<typeCPowerUp>(d["typePowerUp"]);
     cout << "Facada recibe el power up: " << (int)type << endl;
-    currentPowerUp = int(type);
-
-    
+    currentPowerUp = int(type);    
 }
 
 void RenderFacadeIrrlicht::FacadeDrawHUD(Entity* car){
+    //Dibujamos el texto del tiempo que llevas el totem
     auto cTotem = static_cast<CTotem*>(car->GetComponent(CompType::TotemComp).get());
-    
-    core::stringw tiempoStringw = core::stringw(cTotem->accumulatedTime/1000.0);
+
+    //operaciones para dejarle con un solo decimal
+    int time = cTotem->accumulatedTime / 100.0;
+    float time2 = time/10.0;
+    core::stringw tiempoStringw = core::stringw(time2);
     font->draw(tiempoStringw,
                     core::rect<s32>(130,10,300,50),
                     video::SColor(255,255,255,255));
@@ -329,6 +336,20 @@ void RenderFacadeIrrlicht::FacadeCheckInputPause(){
     }
 }
 
+void RenderFacadeIrrlicht::FacadeCheckInputEndRace(){
+
+    if(receiver.IsKeyDown(KEY_F4)){
+        smgr->clear();
+        EventManager::GetInstance()->ClearListeners();
+        EventManager::GetInstance()->ClearEvents();
+        Game::GetInstance()->SetState(State::MENU);
+    }
+
+    if (receiver.IsKeyDown(KEY_ESCAPE)) {
+        device->closeDevice();
+    }
+}
+
 int RenderFacadeIrrlicht::FacadeGetFPS() {
     return driver->getFPS();
 }
@@ -364,6 +385,16 @@ void RenderFacadeIrrlicht::FacadeDrawPause(){
     driver->beginScene(true, true, video::SColor(255, 113, 113, 133));
     //smgr->drawAll();  // draw the 3d scene
     driver->draw2DImage(pauseBG, core::position2d<s32>(0,0),
+                core::rect<s32>(0,0,1280,720), 0,
+                video::SColor(255,255,255,255), true);
+    driver->endScene();
+}
+
+void RenderFacadeIrrlicht::FacadeDrawEndRace(){
+    driver->beginScene(true, true, video::SColor(255, 113, 113, 133));
+    //smgr->drawAll();  // draw the 3d scene
+    cout << "Dibujamos endrace\n";
+    driver->draw2DImage(endRaceBG, core::position2d<s32>(0,0),
                 core::rect<s32>(0,0,1280,720), 0,
                 video::SColor(255,255,255,255), true);
     driver->endScene();

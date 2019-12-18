@@ -43,11 +43,14 @@ class RenderFacadeIrrlicht : public RenderFacade {
 		void DeleteEntity(Entity*) override;
 		void FacadeDrawMenu() override;
 		void FacadeDrawPause() override;
+		void FacadeDrawEndRace() override;
 		void FacadeInitMenu() override;
 		void FacadeInitPause() override;
+		void FacadeInitEndRace() override;
 		void FacadeInitHUD() override;
 		void FacadeCheckInputMenu() override;
 		void FacadeCheckInputPause() override;
+		void FacadeCheckInputEndRace() override;
 		void FacadeUpdatePowerUpHUD(DataMap d) override;
 		void FacadeDrawHUD(Entity* car) override;
 		void FacadeSuscribeEvents() override;
@@ -69,6 +72,7 @@ class RenderFacadeIrrlicht : public RenderFacade {
 		MyEventReceiver receiver;
 		video::ITexture* menuBG;
 		video::ITexture* pauseBG;
+		video::ITexture* endRaceBG;
 		video::ITexture* powerUps[7];
 		gui::IGUIFont* font;
 		bool showDebug = false;

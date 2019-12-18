@@ -13,6 +13,7 @@
 #include "../Components/CRoboJorobo.h"
 #include "../Components/CNitro.h"
 #include "../Facade/Render/RenderFacadeManager.h"
+#include "../Game.h"
 
 
 class Position;
@@ -38,8 +39,28 @@ void ManCar::UpdateCar(){
         cTotem->timeStart = system_clock::now();
 
     }
-    std::cout << "El tiempo acumulado del totem hasta ahora del jugador es de:  " << cTotem->accumulatedTime/1000.0 << std::endl; 
+    if(cTotem->accumulatedTime/1000.0 > cTotem->durationTime/1000.0){
+        cout << "Has ganado\n";
+        Game::GetInstance()->SetState(State::ENDRACE);
+    }
 
+}
+
+void ManCar::UpdateCarAI(){
+    for(auto carAI : GetEntitiesAI()){
+        auto cTotem = static_cast<CTotem*>(GetCar()->GetComponent(CompType::TotemComp).get());
+        if(cTotem->active){
+            cTotem->accumulatedTime +=  duration_cast<milliseconds>(system_clock::now() - cTotem->timeStart).count();
+            cTotem->timeStart = system_clock::now();
+
+        }
+
+        if(cTotem->accumulatedTime/1000.0 > cTotem->durationTime/1000.0){
+            cout << "Has ganado\n";
+            Game::GetInstance()->SetState(State::ENDRACE);
+
+        }
+    }
 }
 
 ManCar::~ManCar() {
