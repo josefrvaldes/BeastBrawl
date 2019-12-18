@@ -1,0 +1,1 @@
+Ahora mismo el system physics se suscribe ÉL mismo al eventManager, pero eso no me gusta. Deberían suscribirse a eventos "entidades", pero eso sí, mediante sus managers.

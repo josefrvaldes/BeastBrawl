@@ -1,0 +1,128 @@
+################# problema para almacenar funciones #################
+
+
+MEEEEEEEEC error, he hablado sin pensar
+---- sol1 (rápida y fea) ---- Punteros a funciones y doble función static + member
+Se usa puntero a función como al principio cuando lo hizo Rubén. 
+Las funciones que se pasan al listener son estáticas y reciben el mancar por referencia y el data. 
+Y esas funciones son las que luego llaman a las funciones miembro. 
+PROS
+    Es rápida 100%, no tiene ningún coste más allá de que es una función que llama a otra.
+CONTRAS 
+    Es fea porque te obliga a tener las funciones dobles en todas las clases, la estática y la real
+    (update) no funciona
+
+
+
+
+---- sol2 (bonita y lenta) ---- std::function
+Usar std::function, ya sea con bind o con lambda, eso creo que da igual.
+Es la forma en la que está ahora. El EventManager guarda directamente el puntero a una función miembro.
+PROS
+    Es elegante y es la forma oficial de c++ de guardar una función más compleja que un simple puntero a función.
+        Permite guardar lambdas, callables, y funciones de distintos tipos
+CONTRAS
+    Es más lento precisamente por ser tan versátil. Según Fran es lentísimo de la muerte. Según internet sí, es lento
+        pero se puede usar en la mayoría de situaciones, aunque no en situaciones que requieran un alto rendimiento
+        como nuestro caso. (Aunque creo que podría ser perfectamente válida si sacamos los eventos "update" del eventmanager)
+
+
+
+---- sol3 (son los padres) ---- lambdas y magia
+El problema es que fran nos dijo que con lambdas se solucionaba el problema pero no del todo. Puedes crear una lambda que 
+te haga lo que tú quieres hacer, pero luego no puedes mandársela al eventmanager y que éste la almacene para llamarla cuando
+le dé la gana si no la almacenas usando std::function, es decir, la solución de arriba.
+PROS
+    según fran es la respuesta a nuestras plegarias
+CONTRAS
+    no existe o yo no sé hacerlo ¿? osea, me cuesta poner en duda a fran pero él no había visto nuestro código y puede que no entendiera bien la
+    situación, también es muuuuy probable que sí que se pueda pero yo todavía no sé cómo
+
+
+
+---- sol4 (es tan enrevesado que no me alcaro) ---- templates
+Se supone que con templates también se puede hacer lo que queremos, he visto varias soluciones (https://stackoverflow.com/questions/2298242/callback-functions-in-c)
+pero la sintaxis de las templates en estos casos trambólicos se me hace tan larga y tan enrevesada que al final no he conseguido entenderlo.
+CONTRAS
+    son los padres también
+
+
+
+---- sol5 (is this the real life?) ---- transient function
+Es una clase que ha hecho un tío trambólico que promete que hace lo mismo que std::function sin el coste en rendimiento de std::function.
+Es importar un .h y a correr. La sintaxis es súper chachi y legible y teóricamente nos soluciona la papeleta 100%.
+(http://brnz.org/hbr/?p=1767)
+PROS
+    todos los del std::function
+CONTRAS
+    esto es un tío cualquiera que lo ha puesto en su web cualquiera, lo he metido en el código y sale un segmentation fault. 
+        nota: podríamos estudiar su código y ver qué hace y por qué falla, aunque la verdad es que la dejo aquí como opción z 
+        porque tampoco creo yo que este tío sea más listo que la gente de c++. Es que el código ni siquiera está en github
+
+
+---- sol6 ---- funciones distintas como en android 
+obliga a crear listeners personalizados para una o un grupo de operaciones, entonces tú ya no guardas un array de listener 
+genérico con punteros a funciones, sino que guardas un array de objetos listeners con funciones concretas. 
+Las clases que hacen uso de estas tienen que implementar o tener instancias de estos listeners
+Ejemplo: 
+Listeners/
+    CarListener (y tiene los métodos accelerate, turnLeft, turnRight, etc)
+    OjeteListener (los métodos que sean)
+Así es como se hace en java/android
+PROS
+    no tiene ninguna pérdida de rendimiento. Además cada función puede recibir y devolver cosas totalmente distintas
+    también soluciona el tema de las funciones con distintos tipos de argumentos
+
+CONTRAS
+    ya no es tan genérico, hay que crear distintos listeners
+    habría que ver la implementación exacta en c++
+
+
+
+
+
+################# problema para enviar lo que sea en el data #################
+---- sol1 (super chachi pero lenta) ---- std::any
+Nuestro data será un map<string, any>. Podrá almacenar lo que sea y por tanto será flexible 100%
+PROS
+    flexibilidad total, soluciona todos nuestros problemas
+CONTRAS
+    la flexibilidad tiene un coste: lento (cuánto aún no lo sé pq no lo he probado en el mundo real)
+        anotación: este coste solamente lo notaríamos cuando se usase el data, no en todos los eventos
+
+
+---- sol2 (menos chachi y menos lenta) ---- std::variant
+Nuestro map será un map<string, variant<int, float, Entity, Ojete>>. Nos permitirá almacenar 3 o 4 (o los que sea)
+tipos de datos distintos. No tiene coste en rendimiento pero sí en consumo de memoria. Cada dato ocupa lo que el mayor dato.
+No es ningún problema cuando almacenamos int, float, etc etc, pero en cuanto metamos entidades u objetos la cosa se dispara
+PROS
+    mucha flexibilidad, nos permite almacenar casi todo lo que queremos pero tenemos que ir con cabeza
+CONTRAS
+    tiene un coste en memoria
+
+
+
+---- sol3 (???) ---- variadic functions
+Si lo hago funcionar, problema resuelto. Esto lo soluciona todo 100%
+
+
+---- sol4 ---- std::optional
+el data antiguo que tenía como 4 o 5 parámetros que no tenían que ver uno con el otro, pero que sean del tipo optional, que pueden
+estar o no
+
+
+
+---- sol5 ---- funciones distintas como en android
+obliga a crear listeners personalizados para una o un grupo de operaciones, entonces tú ya no guardas un array de listener 
+genérico con punteros a funciones, sino que guardas un array de listeners con funciones concretas. 
+Ejemplo: 
+CarListener (y tiene los métodos accelerate, turnLeft, turnRight, etc)
+Así es como se hace en java/android
+PROS
+    no tiene ninguna pérdida de rendimiento. Además cada función puede recibir y devolver cosas totalmente distintas
+
+CONTRAS
+    ya no es tan genérico, hay que crear distintos listeners
+    habría que ver la implementación exacta en c++
+
+
