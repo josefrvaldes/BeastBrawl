@@ -12,6 +12,8 @@
 #include "../Components/CTotem.h"
 #include "../Components/CRoboJorobo.h"
 #include "../Components/CNitro.h"
+#include "../Facade/Render/RenderFacadeManager.h"
+#include "../Game.h"
 
 
 class Position;
@@ -28,6 +30,38 @@ ManCar::ManCar(Physics *_physics, Camera *_cam) : ManCar() {
     this->physics = _physics;
     cout << "Tenemos en ManCar un physics con dir de memoria " << physics << endl;
     this->cam = _cam;
+}
+
+void ManCar::UpdateCar(){
+    auto cTotem = static_cast<CTotem*>(GetCar()->GetComponent(CompType::TotemComp).get());
+    if(cTotem->active){
+        cTotem->accumulatedTime +=  duration_cast<milliseconds>(system_clock::now() - cTotem->timeStart).count();
+        cTotem->timeStart = system_clock::now();
+
+    }
+    if(cTotem->accumulatedTime/1000.0 > cTotem->durationTime/1000.0){
+        cout << "Has ganado\n";
+        Game::GetInstance()->SetState(State::ENDRACE);
+    }
+
+}
+
+void ManCar::UpdateCarAI(){
+    for(auto carAI : GetEntitiesAI()){
+        auto cTotem = static_cast<CTotem*>(carAI->GetComponent(CompType::TotemComp).get());
+        if(cTotem->active){
+            cTotem->accumulatedTime +=  duration_cast<milliseconds>(system_clock::now() - cTotem->timeStart).count();
+            cTotem->timeStart = system_clock::now();
+            //cout << "El totem lo tiene: " << cTotem->accumulatedTime/1000.0 << "\n";
+
+        }
+
+        if(cTotem->accumulatedTime/1000.0 > cTotem->durationTime/1000.0){
+            cout << "Has ganado\n";
+            Game::GetInstance()->SetState(State::ENDRACE);
+
+        }
+    }
 }
 
 ManCar::~ManCar() {
@@ -311,6 +345,9 @@ void ManCar::ThrowPowerUp(DataMap d) {
         }
         //std::cout << "Lanzamos el power up fiiiuuuuum" << std::endl;
         cPowerUpCar->typePowerUp = typeCPowerUp::None;
+        DataMap d;
+        d["typePowerUp"] = cPowerUpCar->typePowerUp;
+        EventManager::GetInstance()->AddEventMulti(Event{EventType::UPDATE_POWERUP_HUD, d});
     }
 }
 
@@ -342,6 +379,11 @@ void ManCar::CatchPowerUp(DataMap d) {
     if(cPowerUpCar->typePowerUp == typeCPowerUp::None){
         cPowerUpCar->typePowerUp = (typeCPowerUp)indx;
         std::cout << "Mi super powerUp es:   " << (int)cPowerUpCar->typePowerUp << std::endl;
+        d["typePowerUp"] = cPowerUpCar->typePowerUp;
+
+        //RenderFacadeManager::GetInstance()->GetRenderFacade()->FacadeUpdatePowerUpHUD(d);
+        EventManager::GetInstance()->AddEventMulti(Event{EventType::UPDATE_POWERUP_HUD, d});
+
     }
     //cPowerUp->typePowerUp = dynamic_cast<typeCPowerUp*>(indx);
 }

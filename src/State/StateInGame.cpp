@@ -122,7 +122,6 @@ StateInGame::StateInGame() {
     pathInit.push(2);
     manCars->GetEntitiesAI()[0]->SetPath(pathInit);
 
-    auto cPath = static_cast<CPath*>(manCars->GetEntitiesAI()[0]->GetComponent(CompType::PathComp).get());
 
     // while(!cPath->stackPath.empty()){
     //     auto node = cPath->stackPath.top();
@@ -159,6 +158,9 @@ StateInGame::StateInGame() {
 
     //Almacenamos los motores
     renderEngine = renderFacadeManager->GetRenderFacade();
+    renderEngine->FacadeSuscribeEvents();
+    renderEngine->FacadeInitHUD();
+
     inputEngine = inputFacadeManager->GetInputFacade();
     physicsEngine = physicsFacadeManager->GetPhysicsFacade();
 
@@ -240,7 +242,8 @@ void StateInGame::Update() {
     // sin media
     // *deltaTime.get() = (float)(milis) / 100.0;
 
-   
+    manCars->UpdateCar();
+    manCars->UpdateCarAI();
 
     physics->update(manCars->GetCar().get(), cam.get());
 
@@ -289,7 +292,7 @@ void StateInGame::Render() {
     bool isColliding = collisions->Intersects(manCars.get()->GetCar().get(), carAI);
 
     renderEngine->FacadeBeginScene();
-
+    renderEngine->FacadeDrawHUD(manCars->GetCar().get());
     // renderEngine->FacadeDraw();  //Para dibujar primitivas debe ir entre el drawAll y el endScene
     renderEngine->FacadeDrawAll();
     renderEngine->FacadeDrawGraphEdges(manWayPoint.get());
@@ -300,7 +303,6 @@ void StateInGame::Render() {
         renderEngine->FacadeDrawBoundingBox(actualPowerUp.get(), false);
 
     renderEngine->FacadeEndScene();
-    int fps = renderEngine->FacadeGetFPS();
 }
 
 /*
