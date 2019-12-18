@@ -9,6 +9,7 @@
 
 #include "../behaviourTree/Blackboard.h"
 #include "../Components/CPowerUp.h"
+#include "../Components/CTotem.h"
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //                           COMPROBAR BEHAVIOR TREE
@@ -134,23 +135,84 @@ struct DontHavePoweUp : public behaviourTree {
 struct CompPowerUp : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
         auto cPowerUp = static_cast<CPowerUp*>(blackboard->actualCar->GetComponent(CompType::PowerUpComp).get());
-        if( cPowerUp->typePowerUp ==    typeCPowerUp::EscudoMerluzo || 
-            cPowerUp->typePowerUp ==    typeCPowerUp::RoboJorobo    || 
-            cPowerUp->typePowerUp ==    typeCPowerUp::SuperMegaNitro    ){
+        if( cPowerUp->typePowerUp ==    typeCPowerUp::EscudoMerluzo     || 
+            cPowerUp->typePowerUp ==    typeCPowerUp::PudinDeFrambuesa  || 
+            cPowerUp->typePowerUp ==    typeCPowerUp::SuperMegaNitro        ){
             return true;
-        }else
-            return false;
+        }
+        return false;
     }
 };
 
 
 //Condicion -> El powerUp es Nitro, RoboJorobo, EscudoMerluzo
+// TODO -- lo hace jose
 struct ThrowPowerUp : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
         std::cout << "Lanzaaas el powerUp beibeee (realmente no)" << std::endl;
         return true;
     }
 };
+/*
+struct HaveRoboJorobo : public behavihourTree {
+    virtual bool run(Blackboard* blackboard) override {
+        auto cPowerUp = static_cast<CPowerUp*>(blackboard->actualCar->GetComponent(CompType::PowerUpComp).get());
+        if( cPowerUp->typePowerUp == typeCPowerUp::RoboJorobo){
+            return true;
+        }
+        return false;
+    } 
+};
+*/
+
+struct HaveRoboJorobo : public behaviourTree {
+    virtual bool run(Blackboard* blackboard) override {
+        auto cPowerUp = static_cast<CPowerUp*>(blackboard->actualCar->GetComponent(CompType::PowerUpComp).get());
+        if( cPowerUp->typePowerUp == typeCPowerUp::RoboJorobo){
+            return true;
+        }
+        return false;
+    } 
+};
+
+// TODO --> actualmente si tienes tu el totem te lo quitas y te lo vuelve a asiganar
+struct HaveTotemOtherCar : public behaviourTree {
+    virtual bool run(Blackboard* blackboard) override {
+        for(auto AIcar : blackboard->manCars->GetEntities()){
+            auto cTotem = static_cast<CTotem*>(AIcar.get()->GetComponent(CompType::TotemComp).get()); 
+            // Si algun coche tenia el totem .... lo pierde
+            if(cTotem->active == true){
+                // Tirar el powerUp que es el RoboJorobo
+                return true;                                                               // para salirnos y no hacer mas calculos
+            }  
+        }
+        auto cTotem = static_cast<CTotem*>(blackboard->manCars->GetCar().get()->GetComponent(CompType::TotemComp).get()); 
+        if(cTotem->active == true){
+            // Tirar el powerUp que es el RoboJorobo
+            return true;
+        }
+        return false;
+    } 
+};
+
+struct LookEnemy : public behaviourTree {
+    virtual bool run(Blackboard* blackboard) override {
+        std::cout << "te veo y te mato mamon!!!!" << std::endl;
+        // estrategia: que tu vector director y el vector alenemigo tengan una difrencia de maximo 5 grados
+        return true;
+    } 
+};
+
+struct HaveBanana : public behaviourTree {
+    virtual bool run(Blackboard* blackboard) override {
+        auto cPowerUp = static_cast<CPowerUp*>(blackboard->actualCar->GetComponent(CompType::PowerUpComp).get());
+        if( cPowerUp->typePowerUp == typeCPowerUp::TeleBanana){
+            return true;
+        }
+        return false;
+    } 
+};
+
 
 
 
@@ -206,7 +268,23 @@ SystemBtPowerUp::SystemBtPowerUp(){
 
     shared_ptr<sequence> sequence1 = make_shared<sequence>();
     shared_ptr<CompPowerUp> c_compPowerUp = make_shared<CompPowerUp>();             // Condicion -->    ¿El powerUp que tengo es Escudo, Nitro o Pudding?
-   // shared_ptr<ThrowPowerUp> a_throwPowerUp = make_shared<ThrowPowerUp>();           // Accion    -->    Lanzar el powerUp
+    shared_ptr<ThrowPowerUp> a_throwPowerUp = make_shared<ThrowPowerUp>();          // Accion    -->    Lanzar el powerUp
+
+    shared_ptr<sequence> sequence2 = make_shared<sequence>();
+    shared_ptr<HaveRoboJorobo> c_haceRoboJorobo = make_shared<HaveRoboJorobo>();
+    shared_ptr<sequence> sequence21 = make_shared<sequence>();
+    shared_ptr<HaveTotemOtherCar> c_haveTotemOtherCar = make_shared<HaveTotemOtherCar>();
+    // como hijo tenemos el lanzar powerUp.... misma struct que el sequence1
+
+    shared_ptr<selector> selector2 = make_shared<selector>();
+    shared_ptr<sequence> sequence3 = make_shared<sequence>();
+    shared_ptr<LookEnemy> c_lookEnemy = make_shared<LookEnemy>();
+    // como hijo volvemos a tener lanzar el powerUp
+    shared_ptr<sequence> sequence4 = make_shared<sequence>();
+    shared_ptr<HaveBanana> c_haveBanana = make_shared<HaveBanana>();
+    // como no... el hijo lanzar powerUp
+
+    // podemos salir si .. tenemos el melonMolon pero no vemos a nadie
 
 
     // ASIGNACION DEL ARBOL DE DECISIONES
@@ -215,11 +293,29 @@ SystemBtPowerUp::SystemBtPowerUp(){
 
     selectorBehaviourTree->addChild(m_inverter1);
     selectorBehaviourTree->addChild(sequence1);
+    selectorBehaviourTree->addChild(sequence2);
+    selectorBehaviourTree->addChild(selector2);
     selectorBehaviourTree->addChild(c_dontHavePoweUp); // hasta que acabe el arbol para imprimir una salida
 
 
     sequence1->addChild(c_compPowerUp);
-    //sequence1->addChild(a_throwPowerUp);
+    sequence1->addChild(a_throwPowerUp);
+
+    sequence2->addChild(c_haceRoboJorobo);
+    sequence2->addChild(sequence21);
+
+    sequence21->addChild(c_haveTotemOtherCar);
+    sequence21->addChild(a_throwPowerUp);
+
+    selector2->addChild(sequence3);
+    selector2->addChild(sequence4);
+
+    sequence3->addChild(c_lookEnemy);
+    sequence3->addChild(a_throwPowerUp);
+
+    sequence4->addChild(c_haveBanana);
+    sequence4->addChild(a_throwPowerUp);
+
 
     
 }
