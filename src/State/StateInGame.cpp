@@ -122,6 +122,9 @@ StateInGame::StateInGame() {
     pathInit.push(2);
     manCars->GetEntitiesAI()[0]->SetPath(pathInit);
 
+
+   // auto cActualPowerUp = static_cast<CPowerUp*>(manCars->GetEntitiesAI()[0]->GetComponent(CompType::PowerUpComp).get());
+   // cActualPowerUp->typePowerUp = typeCPowerUp::MelonMolon;
     //auto cPath = static_cast<CPath*>(manCars->GetEntitiesAI()[0]->GetComponent(CompType::PathComp).get());
    // auto cActualPowerUp = static_cast<CPowerUp*>(manCars->GetEntitiesAI()[0]->GetComponent(CompType::PowerUpComp).get());
    // cActualPowerUp->typePowerUp = typeCPowerUp::TeleBanana;
@@ -140,6 +143,8 @@ StateInGame::StateInGame() {
     pathInit2.push(2);
     manCars->GetEntitiesAI()[1]->SetPath(pathInit2);
 
+   // auto cActualPowerUp2 = static_cast<CPowerUp*>(manCars->GetEntitiesAI()[1]->GetComponent(CompType::PowerUpComp).get());
+   // cActualPowerUp->typePowerUp = typeCPowerUp::MelonMolon;
 
     auto cWayPointAI3 = static_cast<CWayPoint*>(manWayPoint->GetEntities()[0]->GetComponent(CompType::WayPointComp).get());
    //Le asignamos el waypoint inicial, momentaneo a la IA
@@ -149,6 +154,9 @@ StateInGame::StateInGame() {
     pathInit3.push(3);
     pathInit3.push(4);
     manCars->GetEntitiesAI()[2]->SetPath(pathInit3);
+
+  //  auto cActualPowerUp3 = static_cast<CPowerUp*>(manCars->GetEntitiesAI()[2]->GetComponent(CompType::PowerUpComp).get());
+   // cActualPowerUp->typePowerUp = typeCPowerUp::MelonMolon;
 
     // Inicializamos las facadas
     renderFacadeManager = RenderFacadeManager::GetInstance();

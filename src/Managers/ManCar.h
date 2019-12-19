@@ -61,4 +61,6 @@ class ManCar : public Manager {
     void CatchPowerUpAI(DataMap d);
     shared_ptr<Car> car;
     vector<shared_ptr<CarAI>> CarAIs;
+
+    uint32_t rangeVision;
 };

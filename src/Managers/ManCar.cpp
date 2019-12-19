@@ -20,6 +20,7 @@ using namespace std;
 ManCar::ManCar() {
     SubscribeToEvents();
     CreateMainCar();
+    rangeVision = 20;   // rango de vision de 20 grados 
     cout << "Hemos creado un powerup, ahora tenemos " << entities.size() << " powerups" << endl;
 }
 
@@ -411,7 +412,19 @@ void ManCar::CatchPowerUp(DataMap d) {
 
 void ManCar::CatchPowerUpAI(DataMap d) {
     srand(time(NULL));
-    int indx = rand() % 6+1;
+    int indx = rand() % 100+1;
+    if(indx <= 5)                       // 5%
+        indx = 1;
+    else if(indx > 5 && indx <= 20)     // 15%
+        indx = 2;
+    else if(indx > 20 && indx <= 45)    // 25%
+        indx = 3;
+    else if(indx > 45 && indx <= 60)    // 15%
+        indx = 4;
+    else if(indx > 60 && indx <= 75)    // 15%
+        indx = 5;
+    else if(indx > 75)                  //  25%
+        indx = 6;
     //indx = 5;
     //indx=3;
     auto cPowerUpCar = static_cast<CPowerUp*>(any_cast<Entity*>(d["actualCar"])->GetComponent(CompType::PowerUpComp).get());
@@ -445,16 +458,16 @@ bool ManCar::carInVisionRange(Entity* actualCar, Entity* otherCar){
         valueAtan2 += 360;
 
     //compare with actualCar actualRotation
-    if(cTransformableActual->rotation.y-66 >= 0 && cTransformableActual->rotation.y+66<360){
-        if(cTransformableActual->rotation.y-66<valueAtan2 && cTransformableActual->rotation.y+66>valueAtan2){
+    if(cTransformableActual->rotation.y-rangeVision >= 0 && cTransformableActual->rotation.y+rangeVision<360){
+        if(cTransformableActual->rotation.y-rangeVision<valueAtan2 && cTransformableActual->rotation.y+rangeVision>valueAtan2){
             seeCar=true;
         }
     }else{  // coge el angulo 0 de por medio
-        float rotMin = cTransformableActual->rotation.y-66;
-        float rotMax = cTransformableActual->rotation.y+66;
-        if(cTransformableActual->rotation.y-66 < 0)
+        float rotMin = cTransformableActual->rotation.y-rangeVision;
+        float rotMax = cTransformableActual->rotation.y+rangeVision;
+        if(cTransformableActual->rotation.y-rangeVision < 0)
             rotMin += 360;
-        if(cTransformableActual->rotation.y+66 >= 360)
+        if(cTransformableActual->rotation.y+rangeVision >= 360)
             rotMax -= 360;
         if(rotMin<valueAtan2 || rotMax>valueAtan2){
             seeCar=true;

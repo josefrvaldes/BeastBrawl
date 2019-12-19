@@ -158,9 +158,10 @@ struct HaveTotemOtherCar : public behaviourTree {
 struct LookEnemy : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
         //return false;
-        std::cout << "te veo y te mato mamon!!!! ... porque te estoy viendo" << std::endl;
+        std::cout << "miramos a ver si te veo,,,,,,," << std::endl;
+        return blackboard->manCars->anyCarInVisionRange(blackboard->actualCar);
         // estrategia: que tu vector director y el vector alenemigo tengan una difrencia de maximo 5 grados
-        return true;
+        //return true;
     } 
 };
 
