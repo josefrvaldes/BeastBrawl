@@ -273,6 +273,18 @@ void PhysicsAI::Update(ManWayPoint* graph, CarAI* car, float deltaTime){
     float distance2P = sqrt( pow((cWayPoint->position.x - cTransformable->position.x),2) + pow((cWayPoint->position.z - cTransformable->position.z),2) );
 
 
+    // To-Do: actualizar componentes PowerUps (nitro, robojorobo y escudo)...
+    auto cNitro = static_cast<CNitro *>(car->GetComponent(CompType::NitroComp).get());
+    if(cNitro->activePowerUp==true && duration_cast<milliseconds>(system_clock::now() - cNitro->timeStart).count() > cNitro->durationTime){  // comprueba el tiempo desde que se lanzo
+        cNitro->deactivePowerUp();
+    }
+
+    auto cShield = static_cast<CShield *>(car->GetComponent(CompType::ShieldComp).get());
+    if(cShield->activePowerUp==true && duration_cast<milliseconds>(system_clock::now() - cShield->timeStart).count() > cShield->durationTime){  // comprueba el tiempo desde que se lanzo
+        cShield->deactivePowerUp();
+    }
+    
+
     //Vamos a comprobar si esta en el rango del waypoint
     if((cWayPoint->position.z - radious) < cTransformable->position.z && (cWayPoint->position.z + radious) >= cTransformable->position.z 
         && (cWayPoint->position.x - radious) < cTransformable->position.x && (cWayPoint->position.x + radious) >= cTransformable->position.x){
@@ -324,12 +336,22 @@ void PhysicsAI::Update(ManWayPoint* graph, CarAI* car, float deltaTime){
 
         //Aumentamos la velocidad
         //cCar->wheelRotation = angle
-        
+        auto cNitro = static_cast<CNitro *>(car->GetComponent(CompType::NitroComp).get());
+
         cCar->wheelRotation = fuzzyRotation;
         //std::cout << "DeFuzzyRot: " << fuzzyRotation << std::endl;
-        cCar->speed += fuzzyAceleration;
-        if(cCar->speed > cCar->maxSpeed){
-            cCar->speed = cCar->maxSpeed;
+        if(cNitro->activePowerUp == false){
+            cCar->speed += fuzzyAceleration;
+            if (cCar->speed > cCar->maxSpeed) {
+                cCar->speed -= cCar->acceleration*4.0;
+                if(cCar->speed < cCar->maxSpeed)
+                    cCar->speed = cCar->maxSpeed;
+            }
+        }else{
+            cCar->speed += cNitro->nitroAcceleration;
+            if(cCar->speed > cNitro->nitroMaxSpeed){
+                cCar->speed = cNitro->nitroMaxSpeed;
+            }
         }
 
 
