@@ -38,123 +38,60 @@ void CLPhysics::HandleCollisions() {
     Car *c = manCar->GetCar().get();
     CBoundingSphere *spc = static_cast<CBoundingSphere *>(c->GetComponent(CompType::CompBoundingSphere).get());
     CTransformable *trc = static_cast<CTransformable *>(c->GetComponent(CompType::TransformableComp).get());
-    CSpeed *speedcar = static_cast<CSpeed *>(c->GetComponent(CompType::SpeedComp).get());
     spc->center = trc->position;
 
     vector<shared_ptr<CarAI>> entities = manCar->GetEntitiesAI();
     size_t numEntities = entities.size();
+    // mi coche con todos los coches de AI
     for (size_t i = 0; i < numEntities; i++) {
         CarAI *cai = manCar->GetEntitiesAI()[i].get();
         CBoundingSphere *spcai = static_cast<CBoundingSphere *>(cai->GetComponent(CompType::CompBoundingSphere).get());
         CTransformable *trcai = static_cast<CTransformable *>(cai->GetComponent(CompType::TransformableComp).get());
-        CSpeed *speedcarai = static_cast<CSpeed *>(cai->GetComponent(CompType::SpeedComp).get());
+        HandleCollisions(*trc, *spc, *trcai, *spcai);
+    }
 
-        spcai->center = trcai->position;
-        IntersectData intersData = spc->IntersectSphere(*spcai);
-        if (intersData.intersects) {
-            float anguloCar = trc->rotation.y;
-            vec3 direccionCar;
-            direccionCar.x = cos(anguloCar * M_PI / 180.0);
-            direccionCar.y = 0;
-            direccionCar.z = sin(anguloCar * M_PI / 180.0);
-            float anguloCarAI = trcai->rotation.y;
-            vec3 direccionCarAI;
-            direccionCarAI.x = cos(anguloCarAI * M_PI / 180.0);
-            direccionCarAI.y = 0;
-            direccionCarAI.z = sin(anguloCarAI * M_PI / 180.0);
+    // las ias entre sí
+    for (size_t i = 0; i < numEntities; i++) {
+        for (size_t j = i + 1; j < numEntities; j++) {
+            CarAI *car1 = manCar->GetEntitiesAI()[i].get();
+            CBoundingSphere *spcar1 = static_cast<CBoundingSphere *>(car1->GetComponent(CompType::CompBoundingSphere).get());
+            CTransformable *trcar1 = static_cast<CTransformable *>(car1->GetComponent(CompType::TransformableComp).get());
 
-            vec3 nuevaDirectionCar = glm::reflect(direccionCar, direccionCarAI);
-            vec3 nuevaDirectionCarAI = glm::reflect(direccionCarAI, direccionCar);
-
-            float nuevoAnguloCarRad = atan2(nuevaDirectionCar.x, nuevaDirectionCar.z);
-            float nuevoAnguloCarDeg = nuevoAnguloCarRad * (180.0 / M_PI);
-            float nuevoAnguloCarAIRad = atan2(nuevaDirectionCarAI.x, nuevaDirectionCarAI.z);
-            float nuevoAnguloCarAIDeg = nuevoAnguloCarAIRad * (180.0 / M_PI);
-
-            trc->rotation.y = nuevoAnguloCarDeg;
-            trcai->rotation.y = nuevoAnguloCarAIDeg;
-            cout << endl;
-            //float anguloReflejadoCar = glm::reflect(anguloCar, intersData.direction);
-
-            // float aux = intersData.direction.z;
-            // intersData.direction.z = aux;
-
-            // versión con rotación
-            /*cout << "Intersecta hijodeputa" << endl;
-            cout << "La dirección es "
-                 << intersData.direction.x << ", "
-                 << intersData.direction.y << ", "
-                 << intersData.direction.z << endl;
-            vec3 direction = glm::normalize(intersData.direction);
-            vec3 otherDirection = glm::reflect(direction, trc->rotation);
-            vec3 newRotationCar = glm::reflect(trc->rotation, otherDirection);
-            // trc->rotation.y = trc->rotation.y + 180 >= 360 ? trc->rotation.y - 180 : trc->rotation.y + 180;
-            cout << "La rotation del car era "
-                 << trc->rotation.x << ","
-                 << trc->rotation.y << ","
-                 << trc->rotation.z << endl;
-            trc->rotation = newRotationCar;
-            cout << "La dirección del car es "
-                 << trc->rotation.x << ","
-                 << trc->rotation.y << ","
-                 << trc->rotation.z << endl;
-
-            vec3 newRotationCarAI = glm::reflect(trcai->rotation, direction);
-            cout << "La rotation del carAI era "
-                 << trcai->rotation.x << ","
-                 << trcai->rotation.y << ","
-                 << trcai->rotation.z << endl;
-            trcai->rotation = newRotationCarAI;
-            cout << "La rotation del carAI es "
-                 << trcai->rotation.x << ","
-                 << trcai->rotation.y << ","
-                 << trcai->rotation.z << endl;*/
-
-            // versión con velocidades
-            /*cout << "La dirección es " 
-                << intersData.direction.x << ", "
-                << intersData.direction.y << ", "
-                << intersData.direction.z << endl;
-            vec3 direction = glm::normalize(intersData.direction);
-            vec3 otherDirection = glm::reflect(direction, speedcar->speed);
-            vec3 newSpeedCar = glm::reflect(speedcar->speed, otherDirection);
-            // trc->rotation.y = trc->rotation.y + 180 >= 360 ? trc->rotation.y - 180 : trc->rotation.y + 180;
-            cout << "La dirección del car era " 
-                << speedcar->speed.x << ","
-                << speedcar->speed.y << ","
-                << speedcar->speed.z << endl;
-            *speedcar = newSpeedCar;
-            cout << "La dirección del car es " 
-                << speedcar->speed.x << ","
-                << speedcar->speed.y << ","
-                << speedcar->speed.z << endl;
-
-
-            vec3 newSpeedCarAI = glm::reflect(speedcarai->speed, direction);
-            cout << "La rotation del carAI era " 
-                << speedcarai->speed.x << ","
-                << speedcarai->speed.y << ","
-                << speedcarai->speed.z << endl;
-            *speedcarai = newSpeedCarAI;
-            cout << "La rotation del carAI es " 
-                << speedcarai->speed.x << ","
-                << speedcarai->speed.y << ","
-                << speedcarai->speed.z << endl;*/
-
-            // trc->rotation.y = trc->rotation.y + 180 >= 360 ? trc->rotation.y - 180 : trc->rotation.y + 180;
-            // trcai->rotation.y = trcai->rotation.y + 180 >= 360 ? trcai->rotation.y - 180 : trcai->rotation.y + 180;
-            //trc->rotation.z = trc->rotation.z + 180 % 360;
-            // trcai->rotation.z = trcai->rotation.z + 180 % 360;
-            //trcai->rotation.z = trcai->rotation.z + 180 % 360;
+            CarAI *car2 = manCar->GetEntitiesAI()[j].get();
+            CBoundingSphere *spcar2 = static_cast<CBoundingSphere *>(car2->GetComponent(CompType::CompBoundingSphere).get());
+            CTransformable *trcar2 = static_cast<CTransformable *>(car2->GetComponent(CompType::TransformableComp).get());
+            HandleCollisions(*trcar1, *spcar1, *trcar2, *spcar2);
         }
     }
 }
 
-// void CLPhysics::Integrate(Entity &e, float delta) {
-//     CTransformable *pos = static_cast<CTransformable *>(e.GetComponent(CompType::TransformableComp).get());
-//     CSpeed *speed = static_cast<CSpeed *>(e.GetComponent(CompType::SpeedComp).get());
-//     pos->position = pos->position + speed->speed * delta;
-// }
+void CLPhysics::HandleCollisions(CTransformable &trCar1, CBoundingSphere &spCar1, CTransformable &trCar2, CBoundingSphere &spCar2) {
+    spCar2.center = trCar2.position;
+    IntersectData intersData = spCar1.IntersectSphere(spCar2);
+    if (intersData.intersects) {
+        float anguloCar = trCar1.rotation.y;
+        vec3 direccionCar;
+        direccionCar.x = cos(anguloCar * M_PI / 180.0);
+        direccionCar.y = 0;
+        direccionCar.z = sin(anguloCar * M_PI / 180.0);
+        float anguloCarAI = trCar2.rotation.y;
+        vec3 direccionCarAI;
+        direccionCarAI.x = cos(anguloCarAI * M_PI / 180.0);
+        direccionCarAI.y = 0;
+        direccionCarAI.z = sin(anguloCarAI * M_PI / 180.0);
+
+        vec3 nuevaDirectionCar1 = glm::reflect(direccionCar, direccionCarAI);
+        vec3 nuevaDirectionCar2 = glm::reflect(direccionCarAI, direccionCar);
+
+        float nuevoAnguloCar1Rad = atan2(nuevaDirectionCar1.x, nuevaDirectionCar1.z);
+        float nuevoAnguloCar1Deg = nuevoAnguloCar1Rad * (180.0 / M_PI);
+        float nuevoAnguloCar2Rad = atan2(nuevaDirectionCar2.x, nuevaDirectionCar2.z);
+        float nuevoAnguloCar2Deg = nuevoAnguloCar2Rad * (180.0 / M_PI);
+
+        trCar1.rotation.y = nuevoAnguloCar1Deg;
+        trCar2.rotation.y = nuevoAnguloCar2Deg;
+    }
+}
 
 void CLPhysics::RunTests() {
     CBoundingSphere sp1(vec3(0.f, 0.f, 0.f), 1.f);
