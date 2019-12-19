@@ -107,7 +107,7 @@ struct HavePowerUp : public behaviourTree {
         //return true;
         auto cPowerUp = static_cast<CPowerUp*>(blackboard->actualCar->GetComponent(CompType::PowerUpComp).get());
         if(cPowerUp->typePowerUp == typeCPowerUp::None){
-            std::cout << "No tenemos powerUp" << std::endl;
+            //std::cout << "No tenemos powerUp" << std::endl;
             return false;
         }
         return true;
@@ -153,6 +153,10 @@ struct CompPowerUp : public behaviourTree {
 struct ThrowPowerUp : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
         std::cout << "Lanzaaas el powerUp beibeee (realmente no)" << std::endl;
+        shared_ptr<EventManager> eventManager = EventManager::GetInstance();
+        DataMap d;
+        d["actualCar"] = blackboard->actualCar;
+        eventManager->AddEventMulti(Event{EventType::THROW_POWERUP_AI, d});
         return true;
     }
 };
