@@ -316,57 +316,57 @@ void PhysicsAI::Update(ManWayPoint* graph, CarAI* car, float deltaTime){
             auto cWayPoint = static_cast<CWayPoint*>(graph->GetEntities()[path.top()]->GetComponent(CompType::WayPointComp).get());
             car->SetWayPoint(cWayPoint);
         }           
+    }
+
+    angle = calculateAngle(cWayPoint, car, cCar);
+    if (angle < 0)
+        angleRange = angle*(-1);
+    else
+        angleRange = angle;
+
+    //cout << "Angulo Positivo: " << angleRange*180/PI << endl;
+    if(cCar->speed == 0)
+        cCar->speed = 0.1;
+        //std::cout << "VOY A ENTRAR A VELOCITY DIFUSA" <<std::endl;
+    float fuzzyAceleration = calculateFuzzyVelocity(cCar->speed, angleRange);
+    float fuzzyRotation = 0.0;
+    if(cCar->speed>3 || cCar->speed < -3){
+        fuzzyRotation = calculateFuzzyDirection(distance2P, angle);
+    }
+
+    //Aumentamos la velocidad
+    //cCar->wheelRotation = angle
+    auto cNitro2 = static_cast<CNitro *>(car->GetComponent(CompType::NitroComp).get());
+
+    cCar->wheelRotation = fuzzyRotation;
+    //std::cout << "DeFuzzyRot: " << fuzzyRotation << std::endl;
+    if(cNitro2->activePowerUp == false){
+        cCar->speed += fuzzyAceleration;
+        if (cCar->speed > cCar->maxSpeed) {
+            cCar->speed -= cCar->acceleration*4.0;
+            if(cCar->speed < cCar->maxSpeed)
+                cCar->speed = cCar->maxSpeed;
+        }
     }else{
-
-        angle = calculateAngle(cWayPoint, car, cCar);
-        if (angle < 0)
-            angleRange = angle*(-1);
-        else
-            angleRange = angle;
-
-        //cout << "Angulo Positivo: " << angleRange*180/PI << endl;
-        if(cCar->speed == 0)
-            cCar->speed = 0.1;
-            //std::cout << "VOY A ENTRAR A VELOCITY DIFUSA" <<std::endl;
-        float fuzzyAceleration = calculateFuzzyVelocity(cCar->speed, angleRange);
-        float fuzzyRotation = 0.0;
-        if(cCar->speed>3 || cCar->speed < -3){
-            fuzzyRotation = calculateFuzzyDirection(distance2P, angle);
-        }
-
-        //Aumentamos la velocidad
-        //cCar->wheelRotation = angle
-        auto cNitro = static_cast<CNitro *>(car->GetComponent(CompType::NitroComp).get());
-
-        cCar->wheelRotation = fuzzyRotation;
-        //std::cout << "DeFuzzyRot: " << fuzzyRotation << std::endl;
-        if(cNitro->activePowerUp == false){
-            cCar->speed += fuzzyAceleration;
-            if (cCar->speed > cCar->maxSpeed) {
-                cCar->speed -= cCar->acceleration*4.0;
-                if(cCar->speed < cCar->maxSpeed)
-                    cCar->speed = cCar->maxSpeed;
-            }
-        }else{
-            cCar->speed += cNitro->nitroAcceleration;
-            if(cCar->speed > cNitro->nitroMaxSpeed){
-                cCar->speed = cNitro->nitroMaxSpeed;
-            }
-        }
-
-
-        // calculamos las posiciones
-        float angleRotation = (cTransformable->rotation.y * PI) / 180.0;
-        cTransformable->position.x -= cos(angleRotation) * cCar->speed * deltaTime;
-        cTransformable->position.z += sin(angleRotation) * cCar->speed * deltaTime;
-        if(cCar->wheelRotation != 0){
-            cTransformable->rotation.y += cCar->wheelRotation * 0.20;
-            if(cTransformable->rotation.y>=360.0)
-                cTransformable->rotation.y -= 360.0;
-            else if(cTransformable->rotation.y < 0.0)
-                cTransformable->rotation.y += 360.0;
+        cCar->speed += cNitro2->nitroAcceleration;
+        if(cCar->speed > cNitro2->nitroMaxSpeed){
+            cCar->speed = cNitro2->nitroMaxSpeed;
         }
     }
+
+
+    // calculamos las posiciones
+    float angleRotation = (cTransformable->rotation.y * PI) / 180.0;
+    cTransformable->position.x -= cos(angleRotation) * cCar->speed * deltaTime;
+    cTransformable->position.z += sin(angleRotation) * cCar->speed * deltaTime;
+    if(cCar->wheelRotation != 0){
+        cTransformable->rotation.y += cCar->wheelRotation * 0.20;
+        if(cTransformable->rotation.y>=360.0)
+            cTransformable->rotation.y -= 360.0;
+        else if(cTransformable->rotation.y < 0.0)
+            cTransformable->rotation.y += 360.0;
+    }
+    
 
 
 
