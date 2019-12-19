@@ -115,7 +115,7 @@ StateInGame::StateInGame() {
 
     manCars = make_shared<ManCar>(physics.get(), cam.get());
     //Le asignamos el waypoint inicial, momentaneo a la IA
-    manCars->CreateCarAI(glm::vec3(0.0f, 20.0f, 0.0f), cWayPoint);
+    manCars->CreateCarAI(glm::vec3(50.0f, 20.0f, 50.0f), cWayPoint);
     stack<int> pathInit;
     pathInit.push(0);
     pathInit.push(1);
@@ -123,12 +123,14 @@ StateInGame::StateInGame() {
     manCars->GetEntitiesAI()[0]->SetPath(pathInit);
 
     auto cPath = static_cast<CPath*>(manCars->GetEntitiesAI()[0]->GetComponent(CompType::PathComp).get());
-
+    auto cActualPowerUp = static_cast<CPowerUp*>(manCars->GetEntitiesAI()[0]->GetComponent(CompType::PowerUpComp).get());
+    cActualPowerUp->typePowerUp = typeCPowerUp::MelonMolon;
     // while(!cPath->stackPath.empty()){
     //     auto node = cPath->stackPath.top();
     //     cPath->stackPath.pop();
     //     cout << node << " - ";
     // }
+/*
     auto cWayPointAI2 = static_cast<CWayPoint*>(manWayPoint->GetEntities()[1]->GetComponent(CompType::WayPointComp).get());
    //Le asignamos el waypoint inicial, momentaneo a la IA
     manCars->CreateCarAI(glm::vec3(0.0f, 20.0f, 0.0f), cWayPointAI2);
@@ -146,7 +148,7 @@ StateInGame::StateInGame() {
     pathInit3.push(3);
     pathInit3.push(4);
     manCars->GetEntitiesAI()[2]->SetPath(pathInit3);
-
+*/
     // Inicializamos las facadas
     renderFacadeManager = RenderFacadeManager::GetInstance();
     //renderFacadeManager->InitializeIrrlicht();
@@ -243,11 +245,11 @@ void StateInGame::Update() {
 
     physics->update(manCars->GetCar().get(), cam.get());
 
-    
+  /*  
     for(auto actualAI : manCars->GetEntitiesAI()){
         physicsAI->Update(manWayPoint.get(),actualAI.get(), deltaTime);
     }
-
+*/
     sysBoxPowerUp->update(manBoxPowerUps.get());
     phisicsPowerUp->update(manPowerUps->GetEntities());
 

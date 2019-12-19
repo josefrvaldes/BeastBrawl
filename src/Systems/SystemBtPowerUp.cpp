@@ -104,6 +104,7 @@ struct Inverter : public Decorator {  // Decorator Inverter
 //CONDICION Tenemos powerUp?
 struct HavePowerUp : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
+        //return true;
         auto cPowerUp = static_cast<CPowerUp*>(blackboard->actualCar->GetComponent(CompType::PowerUpComp).get());
         if(cPowerUp->typePowerUp == typeCPowerUp::None){
             std::cout << "No tenemos powerUp" << std::endl;
@@ -117,7 +118,7 @@ struct HavePowerUp : public behaviourTree {
 //Afirmacion No tenemos power up!
 struct DontHavePoweUp : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
-        std::cout << "Tienes power up baby" << std::endl;
+        std::cout << "No power up baby" << std::endl;
         return true;
     }
 };
@@ -138,8 +139,10 @@ struct CompPowerUp : public behaviourTree {
         if( cPowerUp->typePowerUp ==    typeCPowerUp::EscudoMerluzo     || 
             cPowerUp->typePowerUp ==    typeCPowerUp::PudinDeFrambuesa  || 
             cPowerUp->typePowerUp ==    typeCPowerUp::SuperMegaNitro        ){
+            std::cout << "Es o escudo merluzo o Pudign o nitro" << std::endl;
             return true;
         }
+        std::cout << "No es ni escudo merluzo ni Pudign ni nitro" << std::endl;
         return false;
     }
 };
@@ -169,8 +172,10 @@ struct HaveRoboJorobo : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
         auto cPowerUp = static_cast<CPowerUp*>(blackboard->actualCar->GetComponent(CompType::PowerUpComp).get());
         if( cPowerUp->typePowerUp == typeCPowerUp::RoboJorobo){
+            std::cout << "Es el robo jorobo" << std::endl;    
             return true;
         }
+        std::cout << "No es el robo jorobo" << std::endl;  
         return false;
     } 
 };
@@ -182,22 +187,24 @@ struct HaveTotemOtherCar : public behaviourTree {
             auto cTotem = static_cast<CTotem*>(AIcar.get()->GetComponent(CompType::TotemComp).get()); 
             // Si algun coche tenia el totem .... lo pierde
             if(cTotem->active == true){
-                // Tirar el powerUp que es el RoboJorobo
-                return true;                                                               // para salirnos y no hacer mas calculos
-            }  
+                std::cout << "y una IA tiene el totem" << std::endl;  
+                return true;           
+            }                                                    // para salirnos y no hacer mas calculos
         }
         auto cTotem = static_cast<CTotem*>(blackboard->manCars->GetCar().get()->GetComponent(CompType::TotemComp).get()); 
         if(cTotem->active == true){
-            // Tirar el powerUp que es el RoboJorobo
+        std::cout << "y el player tiene el totem" << std::endl;     
             return true;
         }
+        std::cout << "Nadie tiene el totem" << std::endl;     
         return false;
     } 
 };
 
 struct LookEnemy : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
-        std::cout << "te veo y te mato mamon!!!!" << std::endl;
+        //return false;
+        std::cout << "te veo y te mato mamon!!!! ... porque te estoy viendo" << std::endl;
         // estrategia: que tu vector director y el vector alenemigo tengan una difrencia de maximo 5 grados
         return true;
     } 
@@ -207,8 +214,10 @@ struct HaveBanana : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
         auto cPowerUp = static_cast<CPowerUp*>(blackboard->actualCar->GetComponent(CompType::PowerUpComp).get());
         if( cPowerUp->typePowerUp == typeCPowerUp::TeleBanana){
+            std::cout << "Tengo una Banana " << std::endl;
             return true;
         }
+        std::cout << "No es una Banana.. es un melon y no veo a nadie chaoooo " << std::endl;
         return false;
     } 
 };
@@ -266,6 +275,7 @@ SystemBtPowerUp::SystemBtPowerUp(){
 
     shared_ptr<Inverter> m_inverter1 = make_shared<Inverter>();                     // Decorator -->    inverter para Condicion ¿Tengo un PowerUp?
 
+    shared_ptr<selector> selector1 = make_shared<selector>();
     shared_ptr<sequence> sequence1 = make_shared<sequence>();
     shared_ptr<CompPowerUp> c_compPowerUp = make_shared<CompPowerUp>();             // Condicion -->    ¿El powerUp que tengo es Escudo, Nitro o Pudding?
     shared_ptr<ThrowPowerUp> a_throwPowerUp = make_shared<ThrowPowerUp>();          // Accion    -->    Lanzar el powerUp
@@ -286,18 +296,22 @@ SystemBtPowerUp::SystemBtPowerUp(){
 
     // podemos salir si .. tenemos el melonMolon pero no vemos a nadie
 
-
+    std::cout << "------------------------ Behaviour Tree Power Up --------------------------------" << std::endl;
     // ASIGNACION DEL ARBOL DE DECISIONES
 
     m_inverter1->addChild(c_havePowerUp);
 
     selectorBehaviourTree->addChild(m_inverter1);
-    selectorBehaviourTree->addChild(sequence1);
-    selectorBehaviourTree->addChild(sequence2);
+    selectorBehaviourTree->addChild(selector1);
     selectorBehaviourTree->addChild(selector2);
+    //selectorBehaviourTree->addChild(sequence1);
+    //selectorBehaviourTree->addChild(sequence2);
+    //selectorBehaviourTree->addChild(selector2);
     selectorBehaviourTree->addChild(c_dontHavePoweUp); // hasta que acabe el arbol para imprimir una salida
 
-
+    selector1->addChild(sequence1);
+    selector1->addChild(sequence2);
+    
     sequence1->addChild(c_compPowerUp);
     sequence1->addChild(a_throwPowerUp);
 
@@ -305,18 +319,16 @@ SystemBtPowerUp::SystemBtPowerUp(){
     sequence2->addChild(sequence21);
 
     sequence21->addChild(c_haveTotemOtherCar);
-    sequence21->addChild(a_throwPowerUp);
+    sequence21->addChild(a_throwPowerUp);        // no implementado
 
     selector2->addChild(sequence3);
     selector2->addChild(sequence4);
 
-    sequence3->addChild(c_lookEnemy);
+    sequence3->addChild(c_lookEnemy);            // no implementado
     sequence3->addChild(a_throwPowerUp);
 
     sequence4->addChild(c_haveBanana);
     sequence4->addChild(a_throwPowerUp);
-
-
     
 }
 
