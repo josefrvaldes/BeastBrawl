@@ -13,10 +13,10 @@ struct ManBoxPowerUp;
 struct ManTotem;
 struct ManWayPoint;
 
-class SystemBtPowerUp {
+class SystemBtMoveTo {
    public:
-    SystemBtPowerUp();
-    ~SystemBtPowerUp(){};
+    SystemBtMoveTo();
+    ~SystemBtMoveTo(){};
 
     void init();
     void update(CarAI* actualCar, ManCar* manCars, ManPowerUp* manPowerUps, ManBoxPowerUp* manBoxPowerUps, ManTotem* manTotems, ManWayPoint* manWayPoint);

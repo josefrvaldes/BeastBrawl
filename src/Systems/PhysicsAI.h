@@ -7,6 +7,8 @@
 #include "../Components/Component.h"
 #include "../Components/CCar.h"
 #include "../Components/CWayPoint.h"
+#include "../Components/CNitro.h"
+#include "../Components/CShield.h"
 #include "../Components/CWayPointEdges.h"
 #include "../Components/CPath.h"
 
