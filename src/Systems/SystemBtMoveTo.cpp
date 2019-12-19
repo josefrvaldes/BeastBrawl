@@ -17,7 +17,7 @@
 ///// DECORATORS //////
 
 // Decorator Minimun
-struct Minimum : public Decorator {  // Tiene que intentar coger la llave 3 veces para que la pueda coger
+struct Minimum_mt : public Decorator {  // Tiene que intentar coger la llave 3 veces para que la pueda coger
     uint32_t totalTries = 3;
     uint32_t numTries = 0;
     virtual bool run(Blackboard* blackboard) override {
@@ -30,7 +30,7 @@ struct Minimum : public Decorator {  // Tiene que intentar coger la llave 3 vece
 };
 
 // Decorator Limit
-struct Limit : public Decorator {  // Decorator Limit
+struct Limit_mt : public Decorator {  // Decorator Limit
     uint32_t totalLimit = 3;
     uint32_t numLimit = 0;
     virtual bool run(Blackboard* blackboard) override {
@@ -42,7 +42,7 @@ struct Limit : public Decorator {  // Decorator Limit
 };
 
 // Decorator UntilFail
-struct UntilFail : public Decorator {  // Decorator UntilFail
+struct UntilFail_mt : public Decorator {  // Decorator UntilFail
     virtual bool run(Blackboard* blackboard) override {
         while (true) {
             bool result = getChild()->run(blackboard);
@@ -55,7 +55,7 @@ struct UntilFail : public Decorator {  // Decorator UntilFail
 };
 
 // Decorator Inverter
-struct Inverter : public Decorator {  // Decorator Inverter
+struct Inverter_mt : public Decorator {  // Decorator Inverter
     virtual bool run(Blackboard* blackboard) override {
         return !(getChild()->run(blackboard));
     }
@@ -63,7 +63,7 @@ struct Inverter : public Decorator {  // Decorator Inverter
 
 
 //Afirmacion No tenemos power up!
-struct DontHavePoweUp : public behaviourTree {
+struct DontHavePoweUp_mt : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
         std::cout << "No power up baby" << std::endl;
         return true;
@@ -71,7 +71,7 @@ struct DontHavePoweUp : public behaviourTree {
 };
 // ----------------------------------------   CONDICIONES -------------------------------------------
 //CONDICION Tenemos powerUp?
-struct HavePowerUp : public behaviourTree {
+struct HavePowerUp_mt : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
         //return true;
         auto cPowerUp = static_cast<CPowerUp*>(blackboard->actualCar->GetComponent(CompType::PowerUpComp).get());
@@ -83,7 +83,7 @@ struct HavePowerUp : public behaviourTree {
     }
 };
 //CONDICION esa el Totem suelto por el mapa?
-struct TotemAlone : public behaviourTree {
+struct TotemAlone_mt : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
         if( blackboard->manTotems->GetEntities().size() > 0){
             return true;
@@ -92,7 +92,7 @@ struct TotemAlone : public behaviourTree {
     }
 };
 //CONDICION Tenemos un powerUp de ataque? Melon o Banana
-struct HavePowerUpAttack : public behaviourTree {
+struct HavePowerUpAttack_mt : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
         auto cPowerUp = static_cast<CPowerUp*>(blackboard->actualCar->GetComponent(CompType::PowerUpComp).get());
         if( cPowerUp->typePowerUp == typeCPowerUp::MelonMolon || 
@@ -105,7 +105,7 @@ struct HavePowerUpAttack : public behaviourTree {
 };
 // ----------------------------------------     ACCIONES   -------------------------------------------
 //ACCION movernos al totem
-struct MoveToTotem : public behaviourTree {
+struct MoveToTotem_mt : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
         std::cout << "Aqui nos moveriamos hacia el Totem ... tirurirurii" << std::endl;
         return true;
@@ -113,14 +113,14 @@ struct MoveToTotem : public behaviourTree {
 };
 
 //ACCION movernos a un powerUp (seguir en el random que teniamos antes de ir de power up en power up)
-struct MoveToPowerUp : public behaviourTree {
+struct MoveToPowerUp_mt : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
         std::cout << "Aqui nos moveriamos hacia un powerUp ... tirurirurii" << std::endl;
         return true;
     }
 };
 //ACCION movernos al jugador con Totem 
-struct MoveToCarTotem : public behaviourTree {
+struct MoveToCarTotem_mt : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
         std::cout << "Aqui nos moveriamos hacia el jugador que tiene el totem" << std::endl;
         return true;
@@ -146,17 +146,17 @@ SystemBtMoveTo::SystemBtMoveTo(){
 
 
     shared_ptr<sequence> sequence1 = make_shared<sequence>();
-        shared_ptr<TotemAlone> c_totemAlone =   make_shared<TotemAlone>();
-        shared_ptr<MoveToTotem> a_moveToTotem = make_shared<MoveToTotem>();
+        shared_ptr<TotemAlone_mt> c_totemAlone =   make_shared<TotemAlone_mt>();
+        shared_ptr<MoveToTotem_mt> a_moveToTotem = make_shared<MoveToTotem_mt>();
 
     shared_ptr<sequence> sequence2 =    make_shared<sequence>();
-        shared_ptr<Inverter> m_inverter1 =  make_shared<Inverter>();
-            shared_ptr<HavePowerUp> c_havePowerUp = make_shared<HavePowerUp>(); 
-        shared_ptr<MoveToPowerUp> a_moveToPowerUp = make_shared<MoveToPowerUp>(); 
+        shared_ptr<Inverter_mt> m_inverter1 =  make_shared<Inverter_mt>();
+            shared_ptr<HavePowerUp_mt> c_havePowerUp = make_shared<HavePowerUp_mt>(); 
+        shared_ptr<MoveToPowerUp_mt> a_moveToPowerUp = make_shared<MoveToPowerUp_mt>(); 
 
     shared_ptr<sequence> sequence3  = make_shared<sequence>();
-        shared_ptr<HavePowerUpAttack> c_havePowerUpAttack = make_shared<HavePowerUpAttack>();
-        shared_ptr<MoveToCarTotem> a_moveToCarTotem =       make_shared<MoveToCarTotem>();
+        shared_ptr<HavePowerUpAttack_mt> c_havePowerUpAttack = make_shared<HavePowerUpAttack_mt>();
+        shared_ptr<MoveToCarTotem_mt> a_moveToCarTotem =       make_shared<MoveToCarTotem_mt>();
 
 
     std::cout << "------------------------ Behaviour Move To --------------------------------" << std::endl;
