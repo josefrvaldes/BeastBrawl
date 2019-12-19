@@ -314,7 +314,7 @@ void PhysicsAI::Update(ManWayPoint* graph, CarAI* car, float deltaTime){
 
         //cout << "Angulo Positivo: " << angleRange*180/PI << endl;
         if(cCar->speed == 0)
-            cCar->speed = 20;
+            cCar->speed = 0.1;
             //std::cout << "VOY A ENTRAR A VELOCITY DIFUSA" <<std::endl;
         float fuzzyAceleration = calculateFuzzyVelocity(cCar->speed, angleRange);
         float fuzzyRotation = 0.0;
