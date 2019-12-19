@@ -140,7 +140,7 @@ void PhysicsAI::fuzzyRulesVelocity(float maxSpeed, float minSpeed, float acceler
     // To-Do: revisar el new por que no se tiene que hacer
     flVelocity->AddRule( (make_shared<FzAND>(Velocity_Slow, Angle_Slow)), Accelerate_Max);
     flVelocity->AddRule( (make_shared<FzAND>(Velocity_Slow, Angle_Normal)), Accelerate_Max);
-    flVelocity->AddRule( (make_shared<FzAND>(Velocity_Slow, Angle_High)), Accelerate_None);
+    flVelocity->AddRule( (make_shared<FzAND>(Velocity_Slow, Angle_High)), Accelerate_Max);
     flVelocity->AddRule( (make_shared<FzAND>(Velocity_Normal, Angle_Slow)), Accelerate_Max);
     flVelocity->AddRule( (make_shared<FzAND>(Velocity_Normal, Angle_Normal)), Accelerate_None);
     flVelocity->AddRule( (make_shared<FzAND>(Velocity_Normal, Angle_High)), Accelerate_None);
