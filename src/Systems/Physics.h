@@ -16,6 +16,7 @@ class Camera;
 class CCar;
 class CTransformable;
 class CCamera;
+class CSpeed;
 
 class Physics {
    public:
@@ -31,7 +32,7 @@ class Physics {
 
    protected:
    private:
-    void CalculatePosition(CCar *cCar, CTransformable *cTransformable, float deltaTime);
+    void CalculatePosition(CCar *cCar, CTransformable *cTransformable, CSpeed *cSpeed, float deltaTime);
     void CalculatePositionReverse(CCar *cCar, CTransformable *cTransformable, float deltaTime);
     void CalculatePositionCamera(CTransformable *cTransformableCar, CTransformable *cTransformableCamera, CCamera *cCamera);
     float deltaTime;

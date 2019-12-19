@@ -12,6 +12,7 @@
 #include "../Components/CTotem.h"
 #include "../Components/CRoboJorobo.h"
 #include "../Components/CNitro.h"
+#include "../Components/CCar.h"
 #include "Manager.h"
 
 

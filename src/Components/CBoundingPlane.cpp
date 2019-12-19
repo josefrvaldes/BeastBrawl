@@ -12,5 +12,5 @@ IntersectData CBoundingPlane::IntersectSphere(const CBoundingSphere &other) cons
     float distanceFromSpCenter = fabs(glm::dot(normal, other.center) + distance);
     float distanceFromSphere = distanceFromSpCenter - other.radius;
     bool intersects = distanceFromSphere < 0;
-    return IntersectData(intersects, distanceFromSphere);
+    return IntersectData(intersects, normal * distanceFromSphere);
 }

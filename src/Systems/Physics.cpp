@@ -1,12 +1,12 @@
 #include "Physics.h"
 #include <chrono>
 #include "../Components/CCamera.h"
-#include "../Components/CSpeed.h"
 #include "../Components/CCar.h"
 #include "../Components/CId.h"
 #include "../Components/CNitro.h"
 #include "../Components/CRoboJorobo.h"
 #include "../Components/CShield.h"
+#include "../Components/CSpeed.h"
 #include "../Components/CTransformable.h"
 #include "../Components/CType.h"
 #include "../Components/Component.h"
@@ -22,11 +22,17 @@ void Physics::update(Car *car, Camera *cam) {
     auto cCar = static_cast<CCar *>(car->GetComponent(CompType::CarComp).get());
     auto cCamera = static_cast<CCamera *>(cam->GetComponent(CompType::CameraComp).get());
     auto cTransformableCam = static_cast<CTransformable *>(cam->GetComponent(CompType::TransformableComp).get());
+    auto cSpeed = static_cast<CSpeed *>(car->GetComponent(CompType::SpeedComp).get());
     if (cCar->speed >= 0)
-        CalculatePosition(cCar, cTransformable, deltaTime);
+        CalculatePosition(cCar, cTransformable, cSpeed, deltaTime);
     else
         CalculatePositionReverse(cCar, cTransformable, deltaTime);
-    CalculatePositionCamera(cTransformable, cTransformableCam, cCamera);
+    //CalculatePositionCamera(cTransformable, cTransformableCam, cCamera);
+
+    // cout << "La rotation es "
+    //     << cTransformable->rotation.x << ","
+    //     << cTransformable->rotation.y << ","
+    //     << cTransformable->rotation.z << endl;
 
     // To-Do: actualizar componentes PowerUps (nitro, robojorobo y escudo)...
     auto cNitro = static_cast<CNitro *>(car->GetComponent(CompType::NitroComp).get());
@@ -41,23 +47,30 @@ void Physics::update(Car *car, Camera *cam) {
 }
 
 //Calcula la posicion del coche (duda con las formulas preguntar a Jose)
-void Physics::CalculatePosition(CCar *cCar, CTransformable *cTransformable, float deltaTime) {
-    float angleRotation = (cTransformable->rotation.y * PI) / 180.0;
-    float delta = deltaTime;
-    // cout << "El deltaTime es " << delta << endl;
+void Physics::CalculatePosition(CCar *cCar, CTransformable *cTransformable, CSpeed *cSpeed, float deltaTime) {
+        float angleRotation = (cTransformable->rotation.y * PI) / 180.0;
+        float delta = deltaTime;
+        // cout << "El deltaTime es " << delta << endl;
 
-    //Modificamos la posicion en X y Z en funcion del angulo
-    cTransformable->position.x -= cos(angleRotation) * cCar->speed * delta;
-    cTransformable->position.z += sin(angleRotation) * cCar->speed * delta;
+        //Modificamos la posicion en X y Z en funcion del angulo
+
+        cSpeed->speed.x = cos(angleRotation);  // * cCar->speed;
+        cSpeed->speed.z = sin(angleRotation);  // * cCar->speed;
+        cSpeed->speed.y = 0.f;                 // TODO, esto lo cacharreará el CLPhysics
+    
+    cTransformable->position.x -= cSpeed->speed.x * cCar->speed * deltaTime;
+    cTransformable->position.z += cSpeed->speed.z * cCar->speed * deltaTime;
 
     //Si tiene rotacion, rotamos el coche
-    if (cCar->wheelRotation != 0) {
+    // if (cCar->wheelRotation != 0) {
         cTransformable->rotation.y += cCar->wheelRotation * 0.20;
         if (cTransformable->rotation.y >= 360.0)
             cTransformable->rotation.y -= 360.0;
         else if (cTransformable->rotation.y < 0.0)
             cTransformable->rotation.y += 360.0;
-    }
+
+        
+    // }
 }
 
 //Calcula la posicion del coche (duda con las formulas preguntar a Jose)

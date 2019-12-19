@@ -41,7 +41,7 @@ Car::Car() {
     shared_ptr<CTotem> cTotem = make_shared<CTotem>();
 
     // physics
-    shared_ptr<CBoundingSphere> cBoundSphere = make_shared<CBoundingSphere>(pos, 3.f);
+    shared_ptr<CBoundingSphere> cBoundSphere = make_shared<CBoundingSphere>(pos, 20.f);
     // end physics
 
     AddComponent(cId);

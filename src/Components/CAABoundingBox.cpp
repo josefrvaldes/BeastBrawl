@@ -8,5 +8,5 @@ IntersectData CAABoundingBox::IntersectCAABoundingBox(CAABoundingBox &other) con
     vec3 distances = glm::max(distances1, distances2);  // mayor de esas distancias
     float maxDistance = Utils::Vec3MaxValue(distances);
     bool intersects = maxDistance < 0;
-    return IntersectData(intersects, maxDistance);
+    return IntersectData(intersects, distances);
 }

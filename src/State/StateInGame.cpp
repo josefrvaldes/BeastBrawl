@@ -108,7 +108,7 @@ StateInGame::StateInGame() {
     manBoxPowerUps = make_shared<ManBoxPowerUp>();
     manTotems = make_shared<ManTotem>();
     ground = make_shared<GameObject>(glm::vec3(10.0f, -0.5f, 150.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.5f, 1.5f, 1.5f), "", "training_ground.obj");
-    cam = make_shared<Camera>(glm::vec3(10.0f, 40.0f, 30.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f));
+    cam = make_shared<Camera>(glm::vec3(100.0f, 600.0f, 30.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f));
 
     manWayPoint = make_shared<ManWayPoint>(); //Se crean todos los waypoints y edges
 

@@ -10,6 +10,7 @@
 #include "../Components/CWayPoint.h"
 #include "../Components/CTransformable.h"
 #include "../Components/CSpeed.h"
+#include "Manager.h"
 
 using namespace std;
 class Car;
