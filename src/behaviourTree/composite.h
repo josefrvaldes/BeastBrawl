@@ -1,6 +1,6 @@
 #pragma once
-#include "behaviourTree.h"
 
+#include "behaviourTree.h"
 #include <iostream>
 #include <list>
 #include <memory>
@@ -15,6 +15,5 @@ class composite : public behaviourTree{
 
     private:
 		list<shared_ptr<behaviourTree>> children;
-
 
 };

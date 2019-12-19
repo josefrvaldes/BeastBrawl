@@ -22,8 +22,6 @@ public:
     void AddEdge(int to, float cost);
     ~CWayPointEdges(){};
 
-
-
     vector<Edge> edges;
     //int m_from;
     //int m_to;
