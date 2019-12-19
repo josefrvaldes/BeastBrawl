@@ -422,6 +422,71 @@ void ManCar::CatchPowerUpAI(DataMap d) {
     //cPowerUp->typePowerUp = dynamic_cast<typeCPowerUp*>(indx);
 }
 
+
+
+
+bool ManCar::carInVisionRange(Entity* actualCar, Entity* otherCar){
+    float seeCar = false;
+    // calcular un desplazamiento para ser en tercera persona
+    auto cTransformableActual = static_cast<CTransformable*>(actualCar->GetComponent(CompType::TransformableComp).get());
+    float posXActualCar = cTransformableActual->position.x + 40 * cos((cTransformableActual->rotation.y * PI) / 180.0);
+    float posZActualCar = cTransformableActual->position.z - 40 * sin((cTransformableActual->rotation.y * PI) / 180.0);
+
+    // vector between actualCar and otherCar
+    
+    auto cTransformableOther = static_cast<CTransformable*>(otherCar->GetComponent(CompType::TransformableComp).get());
+    float vetorWaypointX = (cTransformableOther->position.x - posXActualCar);
+    float vetorWaypointZ = (cTransformableOther->position.z - posZActualCar);
+
+    // calculate position rotated of otherCar atan2
+    float valueAtan2 = atan2(vetorWaypointZ,vetorWaypointX)*180/PI;
+    valueAtan2 = 180.0 - valueAtan2; // se le restan ya que el eje empieza en el lado contrario 
+    if(valueAtan2<0)
+        valueAtan2 += 360;
+
+    //compare with actualCar actualRotation
+    if(cTransformableActual->rotation.y-66 >= 0 && cTransformableActual->rotation.y+66<360){
+        if(cTransformableActual->rotation.y-66<valueAtan2 && cTransformableActual->rotation.y+66>valueAtan2){
+            seeCar=true;
+        }
+    }else{  // coge el angulo 0 de por medio
+        float rotMin = cTransformableActual->rotation.y-66;
+        float rotMax = cTransformableActual->rotation.y+66;
+        if(cTransformableActual->rotation.y-66 < 0)
+            rotMin += 360;
+        if(cTransformableActual->rotation.y+66 >= 360)
+            rotMax -= 360;
+        if(rotMin<valueAtan2 || rotMax>valueAtan2){
+            seeCar=true;
+        }
+    }
+    return seeCar;
+}
+
+
+// comprobamos si tenemos algun coche en el rango de vision
+bool ManCar::anyCarInVisionRange(Entity* actualCar){
+    bool seeCar = false;
+    for(shared_ptr<Entity> carAI : CarAIs){
+        if(actualCar!=carAI.get()){
+            if(carInVisionRange(actualCar,carAI.get()) == true){
+                seeCar = true;
+            }
+        }
+    }
+    // comprobamos el player
+    if(car.get()!=actualCar){
+        if(carInVisionRange(actualCar,car.get()) == true){
+            seeCar = true;
+        }
+    }
+    return seeCar;
+}
+
+
+
+
+
 void ManCar::TurnLeftCar(DataMap d) {
     // cout << "Han llamado izquierda" << endl;
     physics->TurnLeft(car.get(), cam);
