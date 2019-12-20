@@ -10,6 +10,8 @@
 #include "../Components/CWayPointEdges.h"
 #include "../Components/CTotem.h"
 #include "../Components/CPath.h"
+#include "../Components/CTexture.h"
+#include "../Components/CMesh.h"
 
 typedef std::chrono::high_resolution_clock Clock;
 
@@ -127,6 +129,21 @@ StateInGame::StateInGame() {
     manTotems->CreateTotem();
     renderEngine->FacadeAddObject(manTotems->GetEntities()[0].get());
 
+// --------------------------------------------------------------------------------------------------------------------------------------------
+    totemOnCar = make_shared<Entity>();
+    glm::vec3 postoTemOnCar   = glm::vec3(40.0f, -100.0f, 30.0f);
+    glm::vec3 rotTotemOnCar   = glm::vec3(0.0f, 90.0f, 0.0f);
+    glm::vec3 scaleTotemOnCar = glm::vec3(0.5f, 0.5f, 0.5f);
+    shared_ptr<CId> cIdTotemOnCar   = make_shared<CId>();
+    shared_ptr<CType> cTypeTotemOnCar = make_shared<CType>(ModelType::Cube);
+    shared_ptr<CTransformable> cTransformableTotemOnCar = make_shared<CTransformable>(postoTemOnCar, rotTotemOnCar, scaleTotemOnCar); 
+    totemOnCar->AddComponent(cIdTotemOnCar);
+    totemOnCar->AddComponent(cTypeTotemOnCar);
+    totemOnCar->AddComponent(cTransformableTotemOnCar);
+    totemOnCar->AddComponent(make_shared<CTexture>("particlegreen.jpg"));
+    totemOnCar->AddComponent(make_shared<CMesh>("media/ninja.b3d"));
+    renderEngine->FacadeAddObject(totemOnCar.get());
+// ------------------------------------------------------------------------------------------------------------------------------------------------
     //then = renderEngine->FacadeGetTime();
     //then = system_clock::now();
 
@@ -156,6 +173,41 @@ void StateInGame::Input() {
 
 void StateInGame::Update() {
     eventManager->Update();
+
+
+// --------------------------------------------------------------------------------------------------------------------------------------------------------
+    bool todosFalse = true;
+    auto cTransformTotem = static_cast<CTransformable*>(totemOnCar.get()->GetComponent(CompType::TransformableComp).get());
+    cTransformTotem->rotation.y += 0.1;
+    for (shared_ptr<Entity> carAI : manCars->GetEntitiesAI()){  // actualizamos los coche IA
+        // comprobamos el componente totem y si lo tienen se lo ponemos justo encima para que se sepa quien lo lleva
+        auto cTotem = static_cast<CTotem*>(carAI.get()->GetComponent(CompType::TotemComp).get());
+        if(cTotem->active){ 
+            todosFalse = false;
+            auto cTransformCar = static_cast<CTransformable*>(carAI.get()->GetComponent(CompType::TransformableComp).get()); 
+            cTransformTotem->position.x = cTransformCar->position.x;
+            cTransformTotem->position.z = cTransformCar->position.z;
+            cTransformTotem->position.y = 32.0f;
+            // supuestamente esta el drawAll que te lo hace no?????????????????
+            // si esta cambiando pero no se esta redibujando
+        }
+
+    }
+    if(todosFalse){
+        auto cTotem = static_cast<CTotem*>(manCars.get()->GetCar().get()->GetComponent(CompType::TotemComp).get());
+        if(cTotem->active){  
+            todosFalse = false; 
+            auto cTransformCar = static_cast<CTransformable*>(manCars.get()->GetCar().get()->GetComponent(CompType::TransformableComp).get()); 
+            cTransformTotem->position.x = cTransformCar->position.x;
+            cTransformTotem->position.z = cTransformCar->position.z;
+            cTransformTotem->position.y = 32.0f;
+        }
+    }
+    if(todosFalse)
+        cTransformTotem->position.y = -100.0f;
+
+    renderEngine->UpdateTransformable(totemOnCar.get());
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------
 
     // actualizamos el deltatime
     //time_point<system_clock> now = system_clock::now();
@@ -209,6 +261,7 @@ void StateInGame::Update() {
 
     for (shared_ptr<Entity> actualPowerUp : manPowerUps->GetEntities())  // actualizamos los powerUp en irrlich
         physicsEngine->UpdatePowerUps(actualPowerUp.get());
+
 }
 
 
@@ -223,6 +276,7 @@ void StateInGame::Render() {
     renderEngine->FacadeDrawHUD(manCars->GetCar().get());
     renderEngine->FacadeDrawGraphEdges(manWayPoint.get());
     renderEngine->FacadeDrawBoundingBox(manCars.get()->GetCar().get(), isColliding);
+    
     
     for(auto actualAI : manCars->GetEntitiesAI()){
        renderEngine->FacadeDrawBoundingBox(actualAI.get(), false); 
