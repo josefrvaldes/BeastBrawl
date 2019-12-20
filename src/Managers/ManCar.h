@@ -35,8 +35,8 @@ class ManCar : public Manager {
     void CreateCarAI(glm::vec3 _position, CWayPoint* _waypoint);
     vector<shared_ptr<CarAI>> GetEntitiesAI() const { return CarAIs; };
     CTransformable* calculateCloserCar(Entity* actualCar);
-    bool carInVisionRange(Entity* actualCar, Entity* otherCar);
-    bool anyCarInVisionRange(Entity* actualCar);
+    bool carInVisionRange(Entity* actualCar, Entity* otherCar, uint32_t rangeVision);
+    bool anyCarInVisionRange(Entity* actualCar, uint32_t rangeVision);
 
    private:
     Physics *physics;
@@ -63,6 +63,4 @@ class ManCar : public Manager {
     void CatchPowerUpAI(DataMap d);
     shared_ptr<Car> car;
     vector<shared_ptr<CarAI>> CarAIs;
-
-    uint32_t rangeVision;
 };

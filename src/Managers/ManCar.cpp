@@ -22,30 +22,31 @@ using namespace std;
 ManCar::ManCar() {
     SubscribeToEvents();
     CreateMainCar();
-    rangeVision = 20;   // rango de vision de 20 grados 
     cout << "Hemos creado un powerup, ahora tenemos " << entities.size() << " powerups" << endl;
 }
 
-// TODO: este paso de physics es kk, hay que revisarlo de enviarlo como referencia o algo pero me da error
+
+// TO-DO: este paso de physics es kk, hay que revisarlo de enviarlo como referencia o algo pero me da error
 ManCar::ManCar(Physics *_physics, Camera *_cam) : ManCar() {
     this->physics = _physics;
-    cout << "Tenemos en ManCar un physics con dir de memoria " << physics << endl;
     this->cam = _cam;
 }
 
+
+// comprueba si has superado el tiempo necesario para ganar
 void ManCar::UpdateCar(){
     auto cTotem = static_cast<CTotem*>(GetCar()->GetComponent(CompType::TotemComp).get());
     if(cTotem->active){
         cTotem->accumulatedTime +=  duration_cast<milliseconds>(system_clock::now() - cTotem->timeStart).count();
         cTotem->timeStart = system_clock::now();
-
     }
+
     if(cTotem->accumulatedTime/1000.0 > cTotem->durationTime/1000.0){
         cout << "Has ganado\n";
         Game::GetInstance()->SetState(State::ENDRACE);
     }
-
 }
+
 
 void ManCar::UpdateCarAI(){
     for(auto carAI : GetEntitiesAI()){
@@ -53,17 +54,15 @@ void ManCar::UpdateCarAI(){
         if(cTotem->active){
             cTotem->accumulatedTime +=  duration_cast<milliseconds>(system_clock::now() - cTotem->timeStart).count();
             cTotem->timeStart = system_clock::now();
-            //cout << "El totem lo tiene: " << cTotem->accumulatedTime/1000.0 << "\n";
-
         }
 
         if(cTotem->accumulatedTime/1000.0 > cTotem->durationTime/1000.0){
             cout << "Has ganado\n";
             Game::GetInstance()->SetState(State::ENDRACE);
-
         }
     }
 }
+
 
 ManCar::~ManCar() {
     cout << "Llamando al destructor de ManCar" << endl;
@@ -71,9 +70,11 @@ ManCar::~ManCar() {
     CarAIs.shrink_to_fit();
 }
 
+
 void ManCar::CreateMainCar() {
     car = make_shared<Car>();
 }
+
 
 void ManCar::CreateCar() {
     shared_ptr<Car> p = make_shared<Car>();
@@ -81,19 +82,18 @@ void ManCar::CreateCar() {
 }
 
 
-void ManCar::CreateCarAI(glm::vec3 _position,  CWayPoint* _waypoint) 
-{
+void ManCar::CreateCarAI(glm::vec3 _position,  CWayPoint* _waypoint){
 	shared_ptr<CarAI> p = make_shared<CarAI>(_position);
     CarAIs.push_back(p);
     p->SetWayPoint(_waypoint); // tiene que tener un waypoint inicial To-Do: cambiar esto
 }
 
 
-void ManCar::CreateCarAI() 
-{
+void ManCar::CreateCarAI(){
 	shared_ptr<CarAI> p = make_shared<CarAI>();
     CarAIs.push_back(p);
 }
+
 
 void ManCar::SubscribeToEvents() {
     // auto accelerateCar = [&](Data d) {
@@ -193,34 +193,29 @@ void ManCar::SubscribeToEvents() {
 
 
 void ManCar::CatchTotemAI(DataMap d){
-
-    std::cout << "Coge el totem una IA -- ERES MUUUY MALO COLEGA!" << std::endl;
     auto cTotem = static_cast<CTotem*>(any_cast<Entity*>(d["actualCar"])->GetComponent(CompType::TotemComp).get());
     cTotem->active = true;
     cTotem->timeStart = system_clock::now();
-
 }
 
 void ManCar::CatchTotemPlayer(DataMap d){
-    std::cout << "Cogemos el Totem locoooo!" << std::endl;
     auto cTotem = static_cast<CTotem*>(car.get()->GetComponent(CompType::TotemComp).get());
     cTotem->active = true;
     cTotem->timeStart = system_clock::now();
-
 }
 
 void ManCar::UseTotem(Entity* carWinTotem){
     auto cTotem = static_cast<CTotem*>(carWinTotem->GetComponent(CompType::TotemComp).get());
     cTotem->active = true;
     cTotem->timeStart = system_clock::now();
-    std::cout << "Has utilizado el robo jorobo de p*** madre coleeega ahora es tuyo" << std::endl; 
+    //std::cout << "Has utilizado el robo jorobo de p*** madre coleeega ahora es tuyo" << std::endl; 
 }
 
 void ManCar::ThrowTotem(Entity* carLoseTotem){
     auto cTotem = static_cast<CTotem*>(carLoseTotem->GetComponent(CompType::TotemComp).get());
     cTotem->active = false;
     cTotem->accumulatedTime +=  duration_cast<milliseconds>(system_clock::now() - cTotem->timeStart).count();
-    std::cout << "El tiempo acumulado del totem hasta ahora del jugador es de:  " << cTotem->accumulatedTime/1000.0 << std::endl; 
+    //std::cout << "El tiempo acumulado del totem hasta ahora del jugador es de:  " << cTotem->accumulatedTime/1000.0 << std::endl; 
 }
 
 
@@ -251,7 +246,6 @@ bool ManCar::useRoboJorobo(Entity* newCarWithTotem){
 
 
 void ManCar::CollisionPowerUp(DataMap d){
-    std::cout << "Nos ha dado un powerUp neneeeee!" << std::endl;
     // debemos desactivar el powerUp y para el contador de tiempo del totem
     auto cShield = static_cast<CShield*>(car.get()->GetComponent(CompType::ShieldComp).get());
     if(cShield->activePowerUp == false){            // comprobamos si tiene el escudo
@@ -287,19 +281,30 @@ void ManCar::CollisionPowerUpAI(DataMap d){
 }
 
 
+// se calcula el coche mas cerano
 CTransformable* ManCar::calculateCloserCar(Entity* actualCar){
-    
     // Primero metemos al jugador por lo que no hace falta calcularlo luego
     CTransformable* closestCar = nullptr;
+    bool carPrincipal = false;
     if(actualCar != car.get()){
         closestCar = static_cast<CTransformable*>(car.get()->GetComponent(CompType::TransformableComp).get());
     }else{
         closestCar = static_cast<CTransformable*>(CarAIs[0].get()->GetComponent(CompType::TransformableComp).get());
+        carPrincipal = true;
     }
     auto cTransActualCar = static_cast<CTransformable*>(actualCar->GetComponent(CompType::TransformableComp).get());
     float vectorX = closestCar->position.x - cTransActualCar->position.x;
     float vectorZ = closestCar->position.z - cTransActualCar->position.z;
     float distanceMimum = sqrt((vectorX*vectorX) + (vectorZ*vectorZ));
+
+    // reducimos cierta distancia en caso de que se encuentre en el radio de vision
+    if(carPrincipal == true){
+        if(carInVisionRange(actualCar, CarAIs[0].get(), 66) == true)
+            distanceMimum = distanceMimum/100.0;
+    }else{
+        if(carInVisionRange(actualCar, car.get(), 66) == true)
+            distanceMimum = distanceMimum / 100.0;
+    }
 
     float distanceNext = 0.0;
     float vectorXNext = 0.0;
@@ -311,7 +316,9 @@ CTransformable* ManCar::calculateCloserCar(Entity* actualCar){
             vectorXNext = cTransNextCar->position.x - cTransActualCar->position.x;     
             vectorZNext = cTransNextCar->position.z - cTransActualCar->position.z;
             distanceNext = sqrt((vectorXNext*vectorXNext) + (vectorZNext*vectorZNext));
-            std::cout << "Min: " << distanceMimum << "   Next: " << distanceNext << std::endl;
+            
+            if(carInVisionRange(actualCar, carAI.get(), 66) == true)
+                distanceNext = distanceNext / 100.0;
             if(distanceMimum > distanceNext){
                 distanceMimum = distanceNext;
                 closestCar = cTransNextCar;
@@ -333,7 +340,6 @@ void ManCar::ThrowPowerUp(DataMap d) {
 
         switch (cPowerUpCar->typePowerUp){
             case typeCPowerUp::RoboJorobo:
-                //cRoboJorobo->activatePowerUp();
                 robado = useRoboJorobo(car.get());
                 if (!robado)
                     std::cout << "La has cagado, el Totem no lo tenia nadie..." << std::endl; 
@@ -344,19 +350,21 @@ void ManCar::ThrowPowerUp(DataMap d) {
             case typeCPowerUp::SuperMegaNitro:
                 cNitro->activatePowerUp();
                 break;
-            default:
+            default:  // en caso del melon molon o la telebanana
                 shared_ptr<EventManager> eventManager = EventManager::GetInstance();
                 DataMap data;
                 data["typePowerUp"] = cPowerUpCar->typePowerUp;
                 data["posCocheSalida"] = static_cast<CTransformable*>(car.get()->GetComponent(CompType::TransformableComp).get());;
                 // To-Do: actualmente solo se pasa el coche mas cercano, calcular aparte si se encuentra en pantalla
-                data["posCochePerseguir"] = calculateCloserCar(car.get()); // To-Do: se le mete el coche desde el que sale, deberia ser el que persigue
+                data["posCochePerseguir"] = calculateCloserCar(car.get());
                 eventManager->AddEventMulti(Event{EventType::PowerUp_Create, data});
 
                 break;
         }
-        //std::cout << "Lanzamos el power up fiiiuuuuum" << std::endl;
         cPowerUpCar->typePowerUp = typeCPowerUp::None;
+        DataMap d;
+        d["typePowerUp"] = cPowerUpCar->typePowerUp;
+        EventManager::GetInstance()->AddEventMulti(Event{EventType::UPDATE_POWERUP_HUD, d});
     }
 }
 
@@ -372,7 +380,6 @@ void ManCar::ThrowPowerUpAI(DataMap d) {
     if(cPowerUpCar->typePowerUp != typeCPowerUp::None){
         switch (cPowerUpCar->typePowerUp){
             case typeCPowerUp::RoboJorobo:
-                //cRoboJorobo->activatePowerUp();
                 robado = useRoboJorobo(any_cast<CarAI*>(d["actualCar"]));
                 if (!robado)
                     std::cout << "La has cagado, el Totem no lo tenia nadie..." << std::endl; 
@@ -383,22 +390,18 @@ void ManCar::ThrowPowerUpAI(DataMap d) {
             case typeCPowerUp::SuperMegaNitro:
                 cNitro->activatePowerUp();
                 break;
-            default:
+            default:     // en caso del melon molon o la telebanana
                 shared_ptr<EventManager> eventManager = EventManager::GetInstance();
                 DataMap data;
                 data["typePowerUp"] = cPowerUpCar->typePowerUp;
                 data["posCocheSalida"] = static_cast<CTransformable*>(any_cast<CarAI*>(d["actualCar"])->GetComponent(CompType::TransformableComp).get());;
                 // To-Do: actualmente solo se pasa el coche mas cercano, calcular aparte si se encuentra en pantalla
-                data["posCochePerseguir"] = calculateCloserCar(any_cast<CarAI*>(d["actualCar"])); // To-Do: se le mete el coche desde el que sale, deberia ser el que persigue
+                data["posCochePerseguir"] = calculateCloserCar(any_cast<CarAI*>(d["actualCar"]));
                 eventManager->AddEventMulti(Event{EventType::PowerUp_Create, data});
 
                 break;
         }
-        //std::cout << "Lanzamos el power up fiiiuuuuum" << std::endl;
         cPowerUpCar->typePowerUp = typeCPowerUp::None;
-        DataMap d;
-        d["typePowerUp"] = cPowerUpCar->typePowerUp;
-        EventManager::GetInstance()->AddEventMulti(Event{EventType::UPDATE_POWERUP_HUD, d});
     }
 }
 
@@ -416,19 +419,20 @@ int calculateProbabilityPowerUp(int totalPowerUps, std::vector<int> probabilityP
 */
 
 void ManCar::CatchPowerUp(DataMap d) {
+    // To-Do: porcentajes temporales
     srand(time(NULL));
     int indx = rand() % 100+1;
     if(indx <= 5)                       // 5%
         indx = 1;
     else if(indx > 5 && indx <= 20)     // 15%
         indx = 2;
-    else if(indx > 20 && indx <= 45)    // 25%
+    else if(indx > 20 && indx <= 40)    // 20%
         indx = 3;
-    else if(indx > 45 && indx <= 60)    // 15%
+    else if(indx > 40 && indx <= 55)    // 15%
         indx = 4;
-    else if(indx > 60 && indx <= 75)    // 15%
+    else if(indx > 55 && indx <= 70)    // 15%
         indx = 5;
-    else if(indx > 75)                  //  25%
+    else if(indx > 70)                  //  30%
         indx = 6;
 
     //None,               // 0
@@ -442,45 +446,45 @@ void ManCar::CatchPowerUp(DataMap d) {
     auto cPowerUpCar = static_cast<CPowerUp*>(car.get()->GetComponent(CompType::PowerUpComp).get());
     if(cPowerUpCar->typePowerUp == typeCPowerUp::None){
         cPowerUpCar->typePowerUp = (typeCPowerUp)indx;
-        std::cout << "Mi super powerUp es:   " << (int)cPowerUpCar->typePowerUp << std::endl;
+        std::cout << "Mi PowerUp es:   " << (int)cPowerUpCar->typePowerUp << std::endl;
         d["typePowerUp"] = cPowerUpCar->typePowerUp;
 
         //RenderFacadeManager::GetInstance()->GetRenderFacade()->FacadeUpdatePowerUpHUD(d);
         EventManager::GetInstance()->AddEventMulti(Event{EventType::UPDATE_POWERUP_HUD, d});
-
     }
     //cPowerUp->typePowerUp = dynamic_cast<typeCPowerUp*>(indx);
 }
 
+
 void ManCar::CatchPowerUpAI(DataMap d) {
+    // To-Do: porcentajes temporales
     srand(time(NULL));
     int indx = rand() % 100+1;
     if(indx <= 5)                       // 5%
         indx = 1;
     else if(indx > 5 && indx <= 20)     // 15%
         indx = 2;
-    else if(indx > 20 && indx <= 45)    // 25%
+    else if(indx > 20 && indx <= 40)    // 20%
         indx = 3;
-    else if(indx > 45 && indx <= 60)    // 15%
+    else if(indx > 40 && indx <= 55)    // 15%
         indx = 4;
-    else if(indx > 60 && indx <= 75)    // 15%
+    else if(indx > 55 && indx <= 70)    // 15%
         indx = 5;
-    else if(indx > 75)                  //  25%
+    else if(indx > 70)                  //  30%
         indx = 6;
-    //indx = 5;
-    //indx=3;
+
     auto cPowerUpCar = static_cast<CPowerUp*>(any_cast<Entity*>(d["actualCar"])->GetComponent(CompType::PowerUpComp).get());
     if(cPowerUpCar->typePowerUp == typeCPowerUp::None){
         cPowerUpCar->typePowerUp = (typeCPowerUp)indx;
-        std::cout << "Mi super powerUp es:   " << (int)cPowerUpCar->typePowerUp << std::endl;
+        std::cout << "Power Up de la IA:   " << (int)cPowerUpCar->typePowerUp << std::endl;
     }
     //cPowerUp->typePowerUp = dynamic_cast<typeCPowerUp*>(indx);
 }
 
 
 
-
-bool ManCar::carInVisionRange(Entity* actualCar, Entity* otherCar){
+// calcula si el otro coche se encuentra en el rango de vision del coche actual
+bool ManCar::carInVisionRange(Entity* actualCar, Entity* otherCar, uint32_t rangeVision){
     float seeCar = false;
     // calcular un desplazamiento para ser en tercera persona
     auto cTransformableActual = static_cast<CTransformable*>(actualCar->GetComponent(CompType::TransformableComp).get());
@@ -488,7 +492,6 @@ bool ManCar::carInVisionRange(Entity* actualCar, Entity* otherCar){
     float posZActualCar = cTransformableActual->position.z - 40 * sin((cTransformableActual->rotation.y * PI) / 180.0);
 
     // vector between actualCar and otherCar
-    
     auto cTransformableOther = static_cast<CTransformable*>(otherCar->GetComponent(CompType::TransformableComp).get());
     float vetorWaypointX = (cTransformableOther->position.x - posXActualCar);
     float vetorWaypointZ = (cTransformableOther->position.z - posZActualCar);
@@ -520,18 +523,18 @@ bool ManCar::carInVisionRange(Entity* actualCar, Entity* otherCar){
 
 
 // comprobamos si tenemos algun coche en el rango de vision
-bool ManCar::anyCarInVisionRange(Entity* actualCar){
+bool ManCar::anyCarInVisionRange(Entity* actualCar, uint32_t rangeVision){
     bool seeCar = false;
     for(shared_ptr<Entity> carAI : CarAIs){
         if(actualCar!=carAI.get()){
-            if(carInVisionRange(actualCar,carAI.get()) == true){
+            if(carInVisionRange(actualCar,carAI.get(), rangeVision) == true){
                 seeCar = true;
             }
         }
     }
     // comprobamos el player
     if(car.get()!=actualCar){
-        if(carInVisionRange(actualCar,car.get()) == true){
+        if(carInVisionRange(actualCar,car.get(), rangeVision) == true){
             seeCar = true;
         }
     }

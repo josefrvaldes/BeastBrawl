@@ -2,8 +2,6 @@
 
 CWayPointEdges::CWayPointEdges(){
     m_compType = CompType::WayPointEdgesComp;
-
-    
 }
 
 CWayPointEdges::CWayPointEdges(int to, float cost){

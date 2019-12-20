@@ -24,7 +24,7 @@ struct Minimum_mt : public Decorator {  // Tiene que intentar coger la llave 3 v
         if (numTries >= totalTries)
             return getChild()->run(blackboard);
         numTries++;
-        cout << "Fallamos al coger la llave, intento: " << numTries << endl;
+        //cout << "Fallamos al coger la llave, intento: " << numTries << endl;
         return false;
     }
 };
@@ -97,7 +97,7 @@ struct HavePowerUpAttack_mt : public behaviourTree {
         auto cPowerUp = static_cast<CPowerUp*>(blackboard->actualCar->GetComponent(CompType::PowerUpComp).get());
         if( cPowerUp->typePowerUp == typeCPowerUp::MelonMolon || 
             cPowerUp->typePowerUp == typeCPowerUp::TeleBanana   ){
-            std::cout << "El powerUp era o Melon o Banana" << std::endl;
+            //std::cout << "El powerUp era o Melon o Banana" << std::endl;
             return true;
         }
         return false;

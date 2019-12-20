@@ -22,13 +22,13 @@ void Physics::update(Car* car, Camera* cam){
     CalculatePositionCamera(cTransformable, cTransformableCam, cCamera);
 
 
-
-    // To-Do: actualizar componentes PowerUps (nitro, robojorobo y escudo)...
+    // Actualiza el componente nitro
     auto cNitro = static_cast<CNitro *>(car->GetComponent(CompType::NitroComp).get());
     if(cNitro->activePowerUp==true && duration_cast<milliseconds>(system_clock::now() - cNitro->timeStart).count() > cNitro->durationTime){  // comprueba el tiempo desde que se lanzo
         cNitro->deactivePowerUp();
     }
 
+    // Actualiza el componente escudo
     auto cShield = static_cast<CShield *>(car->GetComponent(CompType::ShieldComp).get());
     if(cShield->activePowerUp==true && duration_cast<milliseconds>(system_clock::now() - cShield->timeStart).count() > cShield->durationTime){  // comprueba el tiempo desde que se lanzo
         cShield->deactivePowerUp();
@@ -42,7 +42,6 @@ void Physics::update(Car* car, Camera* cam){
 void Physics::CalculatePosition(CCar *cCar, CTransformable *cTransformable, float deltaTime) {
     float angleRotation = (cTransformable->rotation.y * PI) / 180.0;
     float delta = deltaTime;
-    // cout << "El deltaTime es " << delta << endl;
 
     //Modificamos la posicion en X y Z en funcion del angulo
     cTransformable->position.x -= cos(angleRotation) * cCar->speed * delta;
@@ -61,9 +60,7 @@ void Physics::CalculatePosition(CCar *cCar, CTransformable *cTransformable, floa
 //Calcula la posicion del coche (duda con las formulas preguntar a Jose)
 void Physics::CalculatePositionReverse(CCar *cCar, CTransformable *cTransformable, float deltaTime) {
     float angleRotation = (cTransformable->rotation.y * PI) / 180.0;
-
     float delta = deltaTime;
-    // cout << "El deltaTime es (reverse)" << delta << endl;
 
     //Modificamos la posicion en X y Z en funcion del angulo
     cTransformable->position.z += sin(angleRotation) * cCar->speed * delta;
@@ -79,6 +76,7 @@ void Physics::CalculatePositionReverse(CCar *cCar, CTransformable *cTransformabl
     }
 }
 
+
 //Calcula la posicion de la camara (duda con las formulas preguntar a Jose)
 void Physics::CalculatePositionCamera(CTransformable *cTransformableCar, CTransformable *cTransformableCamera, CCamera *cCamera) {
     // comento la primera linea porque la pos de la cámara en altura (por ahora) es siempre la misma
@@ -86,7 +84,6 @@ void Physics::CalculatePositionCamera(CTransformable *cTransformableCar, CTransf
     cTransformableCamera->position.x = (cTransformableCar->position.x + 40 * cos(((cTransformableCar->rotation.y - cCamera->rotExtraY) * PI) / 180.0));
     cTransformableCamera->position.z = (cTransformableCar->position.z - 40 * sin(((cTransformableCar->rotation.y - cCamera->rotExtraY) * PI) / 180.0));
 }
-
 
 
 
@@ -135,7 +132,6 @@ void Physics::Decelerate(Car *car, Camera *cam) {
 void Physics::TurnLeft(Car *car, Camera *cam) {
     //Componentes de la camara
     auto cCamera = static_cast<CCamera*>(cam->GetComponent(CompType::CameraComp).get());
-
     //Componentes del coche
     auto cCar = static_cast<CCar *>(car->GetComponent(CompType::CarComp).get());
 
@@ -245,6 +241,7 @@ void Physics::NotAcceleratingOrDecelerating(Car *car, Camera *cam) {
         }  
     }
 }
+
 
 //Aqui entra cuando no se esta presionando ni A ni D
 void Physics::NotTurning(Car *car, Camera *cam) {

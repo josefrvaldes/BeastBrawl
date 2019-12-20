@@ -16,7 +16,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 ///// DECORATORS //////
 
-// Decorator Minimun
+// DECORATOR Minimun
 struct Minimum : public Decorator {  // Tiene que intentar coger la llave 3 veces para que la pueda coger
     uint32_t totalTries = 3;
     uint32_t numTries = 0;
@@ -24,12 +24,12 @@ struct Minimum : public Decorator {  // Tiene que intentar coger la llave 3 vece
         if (numTries >= totalTries)
             return getChild()->run(blackboard);
         numTries++;
-        cout << "Fallamos al coger la llave, intento: " << numTries << endl;
+        //cout << "Fallamos al coger la llave, intento: " << numTries << endl;
         return false;
     }
 };
 
-// Decorator Limit
+// DECORATOR Limit
 struct Limit : public Decorator {  // Decorator Limit
     uint32_t totalLimit = 3;
     uint32_t numLimit = 0;
@@ -41,7 +41,7 @@ struct Limit : public Decorator {  // Decorator Limit
     }
 };
 
-// Decorator UntilFail
+// DECORATOR UntilFail
 struct UntilFail : public Decorator {  // Decorator UntilFail
     virtual bool run(Blackboard* blackboard) override {
         while (true) {
@@ -54,15 +54,17 @@ struct UntilFail : public Decorator {  // Decorator UntilFail
     }
 };
 
-// Decorator Inverter
+// DECORATOR Inverter
 struct Inverter : public Decorator {  // Decorator Inverter
     virtual bool run(Blackboard* blackboard) override {
         return !(getChild()->run(blackboard));
     }
 };
 
+////////////////////////
+///// CONDICIONES///////
 
-//CONDICION Tenemos powerUp?
+//Condicion Tenemos powerUp?
 struct HavePowerUp : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
         //return true;
@@ -79,7 +81,7 @@ struct HavePowerUp : public behaviourTree {
 //Afirmacion No tenemos power up!
 struct DontHavePoweUp : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
-        std::cout << "No power up baby" << std::endl;
+        //std::cout << "No power up baby" << std::endl;
         return true;
     }
 };
@@ -100,10 +102,10 @@ struct CompPowerUp : public behaviourTree {
         if( cPowerUp->typePowerUp ==    typeCPowerUp::EscudoMerluzo     || 
             cPowerUp->typePowerUp ==    typeCPowerUp::PudinDeFrambuesa  || 
             cPowerUp->typePowerUp ==    typeCPowerUp::SuperMegaNitro        ){
-            std::cout << "Es o escudo merluzo o Pudign o nitro" << std::endl;
+            //std::cout << "Es o escudo merluzo o Pudign o nitro" << std::endl;
             return true;
         }
-        std::cout << "No es ni escudo merluzo ni Pudign ni nitro" << std::endl;
+        //std::cout << "No es ni escudo merluzo ni Pudign ni nitro" << std::endl;
         return false;
     }
 };
@@ -113,7 +115,7 @@ struct CompPowerUp : public behaviourTree {
 // TODO -- lo hace jose
 struct ThrowPowerUp : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
-        std::cout << "Lanzaaas el powerUp beibeee" << std::endl;
+        //std::cout << "Lanzaaas el powerUp beibeee" << std::endl;
         shared_ptr<EventManager> eventManager = EventManager::GetInstance();
         DataMap d;
         d["actualCar"] = blackboard->actualCar;
@@ -126,10 +128,10 @@ struct HaveRoboJorobo : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
         auto cPowerUp = static_cast<CPowerUp*>(blackboard->actualCar->GetComponent(CompType::PowerUpComp).get());
         if( cPowerUp->typePowerUp == typeCPowerUp::RoboJorobo){
-            std::cout << "Es el robo jorobo" << std::endl;    
+            //std::cout << "Es el robo jorobo" << std::endl;    
             return true;
         }
-        std::cout << "No es el robo jorobo" << std::endl;  
+        //std::cout << "No es el robo jorobo" << std::endl;  
         return false;
     } 
 };
@@ -141,16 +143,16 @@ struct HaveTotemOtherCar : public behaviourTree {
             auto cTotem = static_cast<CTotem*>(AIcar.get()->GetComponent(CompType::TotemComp).get()); 
             // Si algun coche tenia el totem .... lo pierde
             if(cTotem->active == true){
-                std::cout << "y una IA tiene el totem" << std::endl;  
+                //std::cout << "y una IA tiene el totem" << std::endl;  
                 return true;           
             }                                                    // para salirnos y no hacer mas calculos
         }
         auto cTotem = static_cast<CTotem*>(blackboard->manCars->GetCar().get()->GetComponent(CompType::TotemComp).get()); 
         if(cTotem->active == true){
-        std::cout << "y el player tiene el totem" << std::endl;     
+        //std::cout << "y el player tiene el totem" << std::endl;     
             return true;
         }
-        std::cout << "Nadie tiene el totem" << std::endl;     
+        //std::cout << "Nadie tiene el totem" << std::endl;     
         return false;
     } 
 };
@@ -158,8 +160,8 @@ struct HaveTotemOtherCar : public behaviourTree {
 struct LookEnemy : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
         //return false;
-        std::cout << "miramos a ver si te veo,,,,,,," << std::endl;
-        return blackboard->manCars->anyCarInVisionRange(blackboard->actualCar);
+        //std::cout << "miramos a ver si te veo,,,,,,," << std::endl;
+        return blackboard->manCars->anyCarInVisionRange(blackboard->actualCar, 25);
         // estrategia: que tu vector director y el vector alenemigo tengan una difrencia de maximo 5 grados
         //return true;
     } 
@@ -169,10 +171,10 @@ struct HaveBanana : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
         auto cPowerUp = static_cast<CPowerUp*>(blackboard->actualCar->GetComponent(CompType::PowerUpComp).get());
         if( cPowerUp->typePowerUp == typeCPowerUp::TeleBanana){
-            std::cout << "Tengo una Banana " << std::endl;
+            //std::cout << "Tengo una Banana " << std::endl;
             return true;
         }
-        std::cout << "No es una Banana.. es un melon y no veo a nadie chaoooo " << std::endl;
+        //std::cout << "No es una Banana.. es un melon y no veo a nadie chaoooo " << std::endl;
         return false;
     } 
 };
@@ -183,7 +185,6 @@ struct HaveBanana : public behaviourTree {
 SystemBtPowerUp::SystemBtPowerUp(){
 
     //   CREACION DEL ARBOL DE DECISIONES
-
     selectorBehaviourTree = make_shared<selector>();
 
     shared_ptr<HavePowerUp> c_havePowerUp = make_shared<HavePowerUp>();             // Condicion -->    ¿Tengo un PowerUp?

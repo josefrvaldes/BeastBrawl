@@ -1,7 +1,6 @@
 #pragma once
 
 #include "composite.h"
-
 #include <memory>
 
 using namespace std;

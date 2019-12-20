@@ -34,6 +34,8 @@ void ManTotem::CreateTotem(glm::vec3 _position) {
     }
 }
 
+
+// elimina el totem de irrlich y lo oculta del mapa
 void ManTotem::AppertainCar(DataMap d){
     auto renderFacadeManager = RenderFacadeManager::GetInstance();
     auto renderEngine = renderFacadeManager->GetRenderFacade();
@@ -45,6 +47,8 @@ void ManTotem::AppertainCar(DataMap d){
     }
 }
 
+
+// crea el objeto en irlich y lo pone en el mapa de nuevo
 void ManTotem::ResetTotem(DataMap d){
     auto transfActualCar = any_cast<CTransformable*>(d["TransfCarPos"]);
     glm::vec3 posNewTotem = glm::vec3(0.0f,20.0f,0.0f);
@@ -61,6 +65,7 @@ void ManTotem::ResetTotem(DataMap d){
         renderEngine->FacadeAddObject(totems[0].get());
    // }
 }
+
 
 void ManTotem::SubscribeToEvents() {
     EventManager::GetInstance()->SuscribeMulti(Listener(

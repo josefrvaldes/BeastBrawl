@@ -11,9 +11,7 @@ PhysicsAI::PhysicsAI(){
 
 
 std::stack<int> PhysicsAI::Dijkstra(ManWayPoint* _graph, int start, int end) {
-
-
-    cout << "----------------------------------\n";
+    //cout << "----------------------------------\n";
     //Convertir ManWayPoint en una matriz de adyacencia
     int size = _graph->GetEntities().size();
     float graph[size][size];
@@ -24,6 +22,7 @@ std::stack<int> PhysicsAI::Dijkstra(ManWayPoint* _graph, int start, int end) {
             graph[i][j] = INT_MAX;
         }
     }
+
     //Ponemos los costes pertinentes en la matriz de adyacencia
     //TODO: Cambiar esto para tenerlo guardado en una entidad o algo y no hacerlo cada calculo de Dijkstra
     for(auto node : _graph->GetEntities()){
@@ -39,7 +38,6 @@ std::stack<int> PhysicsAI::Dijkstra(ManWayPoint* _graph, int start, int end) {
     float distanceFromStart[size],pred[size];
     int visited[size],count,minDistanceFromStart,nextClosestNode,i;
 
-
     for(i=0;i<size;i++) {
         distanceFromStart[i] = graph[start][i];  //Metemos las ponderaciones a los nodos desde el que iniciamos(Si no tiene es = INT_MAX)
         pred[i] = start;                
@@ -53,7 +51,6 @@ std::stack<int> PhysicsAI::Dijkstra(ManWayPoint* _graph, int start, int end) {
 
     while(count<size-1) {
         minDistanceFromStart=INT_MAX;
-
         for(i=0;i<size;i++){
             if(distanceFromStart[i] < minDistanceFromStart && !visited[i]) {
                 //Si la distancia al nodo i es menor que la minDistanceFromStart y no esta visitado
@@ -75,7 +72,6 @@ std::stack<int> PhysicsAI::Dijkstra(ManWayPoint* _graph, int start, int end) {
                 }
             }
         }
-
         count++;
     }
 
@@ -89,23 +85,24 @@ std::stack<int> PhysicsAI::Dijkstra(ManWayPoint* _graph, int start, int end) {
         aux = pred[aux];
     }
 
-    cout << "Nuevo Path: ";
+    //cout << "Nuevo Path: ";
     stack<int> pathAux(path);
     while(!pathAux.empty()){
         auto node = pathAux.top();
         pathAux.pop();
 
-        cout << node << " - ";
+        //cout << node << " - ";
     }
 
-    cout << "\n---------------\n";
+    //cout << "\n---------------\n";
 
     return path;
 
-    cout << "\n\n\n";
+    //cout << "\n\n\n";
 }
 
 
+// inicializa las reglas de la logica difusa
 void PhysicsAI::fuzzyRules(CarAI* car){
     auto cCar        = static_cast<CCar*>(car->GetComponent(CompType::CarComp).get());
     float maxSpeed = cCar->maxSpeed;
@@ -114,8 +111,9 @@ void PhysicsAI::fuzzyRules(CarAI* car){
     //float algo = cCar->
     fuzzyRulesVelocity(maxSpeed, minSpeed, accelerationCar);
     fuzzyRulesAngle();
-
 }
+
+
 void PhysicsAI::fuzzyRulesVelocity(float maxSpeed, float minSpeed, float accelerationCar){
 
     shared_ptr<FuzzyVariable> ActualVelocity = flVelocity->CreateFLV("ActualVelocity");
@@ -140,7 +138,7 @@ void PhysicsAI::fuzzyRulesVelocity(float maxSpeed, float minSpeed, float acceler
     // To-Do: revisar el new por que no se tiene que hacer
     flVelocity->AddRule( (make_shared<FzAND>(Velocity_Slow, Angle_Slow)), Accelerate_Max);
     flVelocity->AddRule( (make_shared<FzAND>(Velocity_Slow, Angle_Normal)), Accelerate_Max);
-    flVelocity->AddRule( (make_shared<FzAND>(Velocity_Slow, Angle_High)), Accelerate_None);
+    flVelocity->AddRule( (make_shared<FzAND>(Velocity_Slow, Angle_High)), Accelerate_Max);
     flVelocity->AddRule( (make_shared<FzAND>(Velocity_Normal, Angle_Slow)), Accelerate_Max);
     flVelocity->AddRule( (make_shared<FzAND>(Velocity_Normal, Angle_Normal)), Accelerate_None);
     flVelocity->AddRule( (make_shared<FzAND>(Velocity_Normal, Angle_High)), Accelerate_None);
@@ -195,8 +193,6 @@ float calculateAngle(CWayPoint* wayPointNext, CarAI* car,CCar* cCar){
     // se calcula el vector entre el siguiente punto y y el punto actual del coche
     float xCoche = (posXSiguiente - cTransformable->position.x );
     float zCoche = (posZSiguiente - cTransformable->position.z);
-    //float atanCozee = atan2(zCoche,xCoche)*180/PI;
-    //std::cout << atanCozee << " --- PosX-Y( " << cTransformable->position.x << " , " << cTransformable->position.z << ") -- ( " << posXSiguiente << " , " << posZSiguiente << " )" << std::endl; 
 
     // se calcula el angulo entre los dos vectores
     float numerador = xCoche*vetorWaypointX + zCoche*vetorWaypointZ;
@@ -233,8 +229,6 @@ float calculateAngle(CWayPoint* wayPointNext, CarAI* car,CCar* cCar){
             prueba = angle2;
     }
 
-
-    //std::cout << "Atan2: " << prueba << " ----- Atan: " << valueAtan2  << " Opo: " << oppositeAngleAtan2 << "   Rot: " << cTransformable->rotation.y << endl; // primero la Z, luego la X
     return prueba;
 }
 
@@ -244,23 +238,24 @@ float PhysicsAI::calculateFuzzyVelocity(float speedCar, float angle){
     flVelocity->Fuzzify("Angle", angle);
 
     float defuzzificacion = flVelocity->DeFuzzify("Acceleration"); 
-    //std::cout << "LA DEFUZZIFICACION DA:  " << defuzzificacion << std::endl;
+    
     return defuzzificacion;
 }
+
 
 float PhysicsAI::calculateFuzzyDirection(float distance, float direction){
     flAngle->Fuzzify("Distance", distance); // AQUI ES DONDE SE LLAMA AL CALCULATEDOM()
     flAngle->Fuzzify("Direction", direction);
-
     float defuzzificacion = flAngle->DeFuzzify("Rotation"); 
-    //std::cout << "LA DEFUZZIFICACION DA:  " << defuzzificacion << std::endl;
+    
     return defuzzificacion;
 }
 
+
 void PhysicsAI::InitPhysicsIA(CarAI* car){
     fuzzyRules(car);
-    //fuzzyRulesVelocity(car);
 }
+
 
 void PhysicsAI::Update(ManWayPoint* graph, CarAI* car, float deltaTime){
     //Guardamos en varAIbles los componentes
@@ -272,18 +267,17 @@ void PhysicsAI::Update(ManWayPoint* graph, CarAI* car, float deltaTime){
     float radious = cWayPoint->radious;
     float distance2P = sqrt( pow((cWayPoint->position.x - cTransformable->position.x),2) + pow((cWayPoint->position.z - cTransformable->position.z),2) );
 
-
-    // To-Do: actualizar componentes PowerUps (nitro, robojorobo y escudo)...
+    // Actualizamos el componente Nitro
     auto cNitro = static_cast<CNitro *>(car->GetComponent(CompType::NitroComp).get());
     if(cNitro->activePowerUp==true && duration_cast<milliseconds>(system_clock::now() - cNitro->timeStart).count() > cNitro->durationTime){  // comprueba el tiempo desde que se lanzo
         cNitro->deactivePowerUp();
     }
 
+    // Actualizamos el componente Escudo
     auto cShield = static_cast<CShield *>(car->GetComponent(CompType::ShieldComp).get());
     if(cShield->activePowerUp==true && duration_cast<milliseconds>(system_clock::now() - cShield->timeStart).count() > cShield->durationTime){  // comprueba el tiempo desde que se lanzo
         cShield->deactivePowerUp();
     }
-    
 
     //Vamos a comprobar si esta en el rango del waypoint
     if((cWayPoint->position.z - radious) < cTransformable->position.z && (cWayPoint->position.z + radious) >= cTransformable->position.z 
@@ -295,14 +289,14 @@ void PhysicsAI::Update(ManWayPoint* graph, CarAI* car, float deltaTime){
         auto actualNode = cPath->stackPath.top();
         cPath->stackPath.pop();
 
-        cout << "Llegamos al WayPoint: " << actualNode << endl;
+        //cout << "Llegamos al WayPoint: " << actualNode << endl;
         if(!cPath->stackPath.empty()){
             //Le asignamos el WayPoint siguiente del path (graph->GetEntities()[cPath->stackPath.top()])
             auto cWayPoint = static_cast<CWayPoint*>(graph->GetEntities()[cPath->stackPath.top()]->GetComponent(CompType::WayPointComp).get());
             car->SetWayPoint(cWayPoint);
         }else{
             //Si esta vacio es que ha acabado el path y recalculamos otro
-            //TODO: de momento le recalculamos otro aleatorio
+            //TO-DO: de momento le recalculamos otro aleatorio
             int indx;
             do{
                 indx = rand() % graph->GetEntities().size();
@@ -318,6 +312,7 @@ void PhysicsAI::Update(ManWayPoint* graph, CarAI* car, float deltaTime){
         }           
     }
 
+    // LOGICA DIFUSA:
     angle = calculateAngle(cWayPoint, car, cCar);
     if (angle < 0)
         angleRange = angle*(-1);
@@ -339,7 +334,6 @@ void PhysicsAI::Update(ManWayPoint* graph, CarAI* car, float deltaTime){
     auto cNitro2 = static_cast<CNitro *>(car->GetComponent(CompType::NitroComp).get());
 
     cCar->wheelRotation = fuzzyRotation;
-    //std::cout << "DeFuzzyRot: " << fuzzyRotation << std::endl;
     if(cNitro2->activePowerUp == false){
         cCar->speed += fuzzyAceleration;
         if (cCar->speed > cCar->maxSpeed) {
@@ -367,51 +361,4 @@ void PhysicsAI::Update(ManWayPoint* graph, CarAI* car, float deltaTime){
             cTransformable->rotation.y += 360.0;
     }
     
-
-
-
-    
-    //std::cout << "Car speed" << cCar->speed << std::endl;
-    //Aumentamos la velocidad
-    /**
-    cCar->speed += cCar->acceleration;
-    if(cCar->speed > cCar->maxSpeed){
-        cCar->speed = cCar->maxSpeed;
-    }
-
-        if(cCar->speed>=0){
-            CalculatePositionAI(cCar,cTransformable,deltaTime,angle);            
-        }
-        
-    }*/
-        //Si tiene rotacion, rotamos el coche
-    
 }
-
-
-//Calcula la posicion del coche (duda con las formulas preguntar a Jose)
-//void CalculatePositionAI(CCar* cCar, CTransformable* cTransformable, float deltaTime, float angle){
-//    
-//    //Modificamos la posicion en X y Z en funcion del angulo
-//    cTransformable->position.x += cos(angle) * cCar->speed * deltaTime;
-//    cTransformable->position.z += sin(angle) * cCar->speed * deltaTime;
-//
-//    //Si tiene rotacion, rotamos el coche
-//    if(cCar->wheelRotation != 0){
-//        cTransformable->rotation.y += cCar->wheelRotation * 0.20;
-//    }
-//}
-//
-//
-////Calcula la posicion del coche (duda con las formulas preguntar a Jose)
-//void CalculatePositionReverseAI(CCar* cCar, CTransformable* cTransformable, float deltaTime, float angle){
-//    
-//    //Modificamos la posicion en X y Z en funcion del angulo
-//    cTransformable->position.x += cos(angle) * cCar->speed * deltaTime;
-//    cTransformable->position.z += sin(angle) * cCar->speed * deltaTime;
-//
-//    //Si tiene rotacion, rotamos el coche
-//    if(cCar->wheelRotation != 0){
-//        cTransformable->rotation.y -= cCar->wheelRotation * 0.20;
-//    }
-//}

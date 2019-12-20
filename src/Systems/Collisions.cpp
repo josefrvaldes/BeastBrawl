@@ -13,14 +13,9 @@ Collisions::Collisions(){
 
 }
 
+
+// comprueba la interseccion entre dos entidades
 bool Collisions::Intersects(Entity* entity1,Entity* entity2){
-
-    /*
-    return (a.minX <= b.maxX && a.maxX >= b.minX) &&
-         (a.minY <= b.maxY && a.maxY >= b.minY) &&
-         (a.minZ <= b.maxZ && a.maxZ >= b.minZ);
-
-    */
     auto cTransformableE1 = static_cast<CTransformable*>(entity1->GetComponent(CompType::TransformableComp).get());
     auto cDimensionsE1 = static_cast<CDimensions*>(entity1->GetComponent(CompType::DimensionsComp).get());
 
@@ -54,7 +49,6 @@ bool Collisions::Intersects(Entity* entity1,Entity* entity2){
 
 
 void Collisions::IntersectPlayerPowerUps(Car* carPlayer, ManPowerUp* manPowerUps){
-
     for(shared_ptr<Entity> actualPowerUp : manPowerUps->GetEntities()){
         auto cPowerUp = static_cast<CPowerUp*>(actualPowerUp->GetComponent(CompType::PowerUpComp).get());
         if(cPowerUp->effectActive == true){                                                                 // SI HACE DANYO
@@ -77,9 +71,9 @@ void Collisions::IntersectPlayerPowerUps(Car* carPlayer, ManPowerUp* manPowerUps
         }
     }
 }
-// TODO --> las colisiones con los powerUps estan maaaal
-void Collisions::IntersectsCarsPowerUps(ManCar* manCars, ManPowerUp* manPowerUps){
 
+
+void Collisions::IntersectsCarsPowerUps(ManCar* manCars, ManPowerUp* manPowerUps){
     for(shared_ptr<Entity> actualCar : manCars->GetEntitiesAI()){   
         for(shared_ptr<Entity> actualPowerUp : manPowerUps->GetEntities()){
             auto cPowerUp = static_cast<CPowerUp*>(actualPowerUp->GetComponent(CompType::PowerUpComp).get());
@@ -91,7 +85,7 @@ void Collisions::IntersectsCarsPowerUps(ManCar* manCars, ManPowerUp* manPowerUps
                     dataCollisonCarPowerUp["PowerUp"] = actualPowerUp;              // nos guardamos el puntero para eliminar el powerUp
                     dataCollisonCarPowerUp["carAI"] = actualCar.get();              // nos guardamos el puntero al coche                              
                     eventManager->AddEventMulti(Event{EventType::COLLISION_ENTITY_AI_POWERUP, dataCollisonCarPowerUp}); 
-                    std::cout << "Soy la IA y me han PEGADOOOOO" << std::endl;
+
                     // comprobamos si el coche tenia escudo y el totem.. ya que debe de soltarlo
                     auto cShield = static_cast<CShield*>(actualCar.get()->GetComponent(CompType::ShieldComp).get());
                     if(cShield->activePowerUp==false && static_cast<CTotem*>(actualCar.get()->GetComponent(CompType::TotemComp).get())->active){  // TRUE
@@ -104,8 +98,8 @@ void Collisions::IntersectsCarsPowerUps(ManCar* manCars, ManPowerUp* manPowerUps
             }
         }
     }
-
 }
+
 
 void Collisions::IntersectPlayerTotem(Car* carPlayer, ManTotem* manTotem){
 
@@ -118,8 +112,8 @@ void Collisions::IntersectPlayerTotem(Car* carPlayer, ManTotem* manTotem){
             eventManager->AddEventMulti(Event{EventType::COLLISION_PLAYER_TOTEM, dataCollisonTotem});
         }
     }
-
 }
+
 
 void Collisions::IntersectCarsTotem(ManCar* manCars, ManTotem* manTotem){
 
@@ -135,7 +129,6 @@ void Collisions::IntersectCarsTotem(ManCar* manCars, ManTotem* manTotem){
             }
         }
     }
-
 }
 
 
@@ -166,6 +159,8 @@ void Collisions::IntersectCarsBoxPowerUp(ManCar* manCars, ManBoxPowerUp* manBoxP
         if(cPowerUpCar->typePowerUp == typeCPowerUp::None){                                                                         
             for(shared_ptr<Entity> actualBoxPowerUp: manBoxPowerUp->GetEntities()){                                                 
                 auto cBoxPowerUp = static_cast<CBoxPowerUp*>(actualBoxPowerUp.get()->GetComponent(CompType::BoxPowerUpComp).get());
+
+                // Vemos si efectivamente esta activo o no, para poder cogerlo
                 if(cBoxPowerUp->active == true){                                                                                   
                     if( Intersects(actualCar.get(), actualBoxPowerUp.get()) ){                                                            
                         shared_ptr<EventManager> eventManager = EventManager::GetInstance();

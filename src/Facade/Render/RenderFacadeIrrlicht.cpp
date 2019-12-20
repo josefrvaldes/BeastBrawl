@@ -14,12 +14,8 @@
 #include "../../Components/CDimensions.h"
 #include "../../Components/CTotem.h"
 #include "../../Entities/WayPoint.h"
-#include <math.h>
-
 #include "../../Game.h"
 
-
-//#define PI 3.14159
 
 //PUNTEROS A FUNCIONES
 RenderFacadeIrrlicht::~RenderFacadeIrrlicht() {
@@ -32,7 +28,6 @@ RenderFacadeIrrlicht::RenderFacadeIrrlicht() {
     driver = device->getVideoDriver();
     smgr = device->getSceneManager();
     font = device->getGUIEnvironment()->getBuiltInFont();
-
 }
 
 void RenderFacadeIrrlicht::FacadeSuscribeEvents(){
@@ -80,8 +75,6 @@ void RenderFacadeIrrlicht::FacadeInitHUD(){
     driver->makeColorKeyTexture(powerUps[6], core::position2d<s32>(0,0));
 
     currentPowerUp = 0;
-
-
 }
 
 void RenderFacadeIrrlicht::FacadeUpdatePowerUpHUD(DataMap d){
@@ -136,6 +129,7 @@ const void RenderFacadeIrrlicht::FacadeAddObjects(vector<Entity*> entities) {
         FacadeAddObject(e);
     }
 }
+
 
 //INPUTS : Una entidad GameObject
 //RETURNS: El Id del objeto añadido
@@ -213,8 +207,8 @@ const uint16_t RenderFacadeIrrlicht::FacadeAddObject(Entity* entity) {
 
 	delete[] edges; 
     return cId->id;
-
 }
+
 
 //INPUTS : Una entidad GameObject
 //RETURNS: El Id del objeto añadido
@@ -223,6 +217,7 @@ const uint16_t RenderFacadeIrrlicht::FacadeAddObjectCar(Entity* entity) {
     idCar = FacadeAddObject(entity);
     return idCar;
 }
+
 
 //TODO: Esto proximamente le pasaremos todos los entities y los modificará 1 a 1
 void RenderFacadeIrrlicht::UpdateTransformable(Entity* entity) {
@@ -243,6 +238,7 @@ void RenderFacadeIrrlicht::UpdateTransformable(Entity* entity) {
     node->setScale(core::vector3df(cTransformable->scale.x, cTransformable->scale.y, cTransformable->scale.z));
 }
 
+
 //Reajusta la camara
 void RenderFacadeIrrlicht::UpdateCamera(Entity* cam) {
     //Cogemos los componentes de la camara
@@ -257,6 +253,7 @@ void RenderFacadeIrrlicht::UpdateCamera(Entity* cam) {
     camera1->setPosition(core::vector3df(cTransformable->position.x, cTransformable->position.y, cTransformable->position.z));
 }
 
+
 //Añade la camara, esto se llama una sola vez al crear el juego
 void RenderFacadeIrrlicht::FacadeAddCamera(Entity* camera) {
     camera1 = smgr->addCameraSceneNode();
@@ -267,10 +264,10 @@ void RenderFacadeIrrlicht::FacadeAddCamera(Entity* camera) {
 
     float posX = cCamera->tarX - 40.0 * sin(((cTransformable->rotation.x) * PI) / 180.0);
     float posZ = cCamera->tarZ - 40.0 * cos(((cTransformable->rotation.z) * PI) / 180.0);
-
     camera1->setTarget(core::vector3df(cCamera->tarX, cCamera->tarY, cCamera->tarZ));
     camera1->setPosition(core::vector3df(posX, cTransformable->position.y, posZ));
 }
+
 
 bool RenderFacadeIrrlicht::FacadeRun() {
     return device->run();
@@ -280,10 +277,12 @@ uint32_t RenderFacadeIrrlicht::FacadeGetTime() {
     return device->getTimer()->getTime();
 }
 
+
+// To-Do: introducir multi input
+// Comprobar inputs del teclado
 void RenderFacadeIrrlicht::FacadeCheckInput() {
     shared_ptr<EventManager> eventManager = EventManager::GetInstance();
 
-	
     if (receiver.IsKeyDown(KEY_ESCAPE)) {
         device->closeDevice();
     }
@@ -320,14 +319,11 @@ void RenderFacadeIrrlicht::FacadeCheckInput() {
 		showDebug = !showDebug;
 	}
 
-
     // POWERUPS
     if (receiver.IsKeyDown(KEY_SPACE)) {
 
         eventManager->AddEventMulti(Event{EventType::PRESS_SPACE});
     }
-
-
 
     //Cambiamos a menu
     if(receiver.IsKeyDown(KEY_F2)){
@@ -421,7 +417,6 @@ void RenderFacadeIrrlicht::FacadeDrawPause(){
 void RenderFacadeIrrlicht::FacadeDrawEndRace(){
     driver->beginScene(true, true, video::SColor(255, 113, 113, 133));
     //smgr->drawAll();  // draw the 3d scene
-    cout << "Dibujamos endrace\n";
     driver->draw2DImage(endRaceBG, core::position2d<s32>(0,0),
                 core::rect<s32>(0,0,1280,720), 0,
                 video::SColor(255,255,255,255), true);
@@ -445,6 +440,7 @@ void RenderFacadeIrrlicht::FacadeEndScene() {
 void RenderFacadeIrrlicht::FacadeDeviceDrop() {
     device->drop();
 }
+
 
 //DEBUG dibuja las aristas entre los nodos del grafo
 void RenderFacadeIrrlicht::FacadeDrawGraphEdges(ManWayPoint* manWayPoints){
@@ -481,8 +477,6 @@ void RenderFacadeIrrlicht::FacadeDrawGraphEdges(ManWayPoint* manWayPoints){
 
 			}
         }
-
-
     }
 }
 

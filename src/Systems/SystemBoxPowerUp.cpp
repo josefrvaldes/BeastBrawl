@@ -17,6 +17,7 @@ void SystemBoxPowerUp::update(ManBoxPowerUp* manBoxPowerUp){
 
     for(std::shared_ptr<BoxPowerUp> actualBox : manBoxPowerUp->GetEntities() ){
         auto cBoxPowerUp = static_cast<CBoxPowerUp*>(actualBox.get()->GetComponent(CompType::BoxPowerUpComp).get());
+        // comprobamos si la caja se encuentra cogida, y el tiempo que le falta para el respawn
         if(cBoxPowerUp->active == false){
             if(duration_cast<milliseconds>(now - cBoxPowerUp->timeStart).count() > cBoxPowerUp->respawnBox ){
                 cBoxPowerUp->active = true;
@@ -24,5 +25,4 @@ void SystemBoxPowerUp::update(ManBoxPowerUp* manBoxPowerUp){
             }
         }
     }
-
 }
