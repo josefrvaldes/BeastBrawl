@@ -252,6 +252,7 @@ uint32_t RenderFacadeIrrlicht::FacadeGetTime() {
 }
 
 
+// To-Do: introducir multi input
 // Comprobar inputs del teclado
 void RenderFacadeIrrlicht::FacadeCheckInput() {
     shared_ptr<EventManager> eventManager = EventManager::GetInstance();
@@ -390,7 +391,6 @@ void RenderFacadeIrrlicht::FacadeDrawPause(){
 void RenderFacadeIrrlicht::FacadeDrawEndRace(){
     driver->beginScene(true, true, video::SColor(255, 113, 113, 133));
     //smgr->drawAll();  // draw the 3d scene
-    cout << "Dibujamos endrace\n";
     driver->draw2DImage(endRaceBG, core::position2d<s32>(0,0),
                 core::rect<s32>(0,0,1280,720), 0,
                 video::SColor(255,255,255,255), true);

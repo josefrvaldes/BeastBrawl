@@ -81,7 +81,7 @@ struct HavePowerUp : public behaviourTree {
 //Afirmacion No tenemos power up!
 struct DontHavePoweUp : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
-        std::cout << "No power up baby" << std::endl;
+        //std::cout << "No power up baby" << std::endl;
         return true;
     }
 };
@@ -161,7 +161,7 @@ struct LookEnemy : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
         //return false;
         //std::cout << "miramos a ver si te veo,,,,,,," << std::endl;
-        return blackboard->manCars->anyCarInVisionRange(blackboard->actualCar);
+        return blackboard->manCars->anyCarInVisionRange(blackboard->actualCar, 25);
         // estrategia: que tu vector director y el vector alenemigo tengan una difrencia de maximo 5 grados
         //return true;
     } 

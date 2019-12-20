@@ -22,7 +22,6 @@ using namespace std;
 ManCar::ManCar() {
     SubscribeToEvents();
     CreateMainCar();
-    rangeVision = 20;   // rango de vision de 20 grados 
     cout << "Hemos creado un powerup, ahora tenemos " << entities.size() << " powerups" << endl;
 }
 
@@ -30,7 +29,6 @@ ManCar::ManCar() {
 // TO-DO: este paso de physics es kk, hay que revisarlo de enviarlo como referencia o algo pero me da error
 ManCar::ManCar(Physics *_physics, Camera *_cam) : ManCar() {
     this->physics = _physics;
-    cout << "Tenemos en ManCar un physics con dir de memoria " << physics << endl;
     this->cam = _cam;
 }
 
@@ -287,15 +285,26 @@ void ManCar::CollisionPowerUpAI(DataMap d){
 CTransformable* ManCar::calculateCloserCar(Entity* actualCar){
     // Primero metemos al jugador por lo que no hace falta calcularlo luego
     CTransformable* closestCar = nullptr;
+    bool carPrincipal = false;
     if(actualCar != car.get()){
         closestCar = static_cast<CTransformable*>(car.get()->GetComponent(CompType::TransformableComp).get());
     }else{
         closestCar = static_cast<CTransformable*>(CarAIs[0].get()->GetComponent(CompType::TransformableComp).get());
+        carPrincipal = true;
     }
     auto cTransActualCar = static_cast<CTransformable*>(actualCar->GetComponent(CompType::TransformableComp).get());
     float vectorX = closestCar->position.x - cTransActualCar->position.x;
     float vectorZ = closestCar->position.z - cTransActualCar->position.z;
     float distanceMimum = sqrt((vectorX*vectorX) + (vectorZ*vectorZ));
+
+    // reducimos cierta distancia en caso de que se encuentre en el radio de vision
+    if(carPrincipal == true){
+        if(carInVisionRange(actualCar, CarAIs[0].get(), 66) == true)
+            distanceMimum = distanceMimum/100.0;
+    }else{
+        if(carInVisionRange(actualCar, car.get(), 66) == true)
+            distanceMimum = distanceMimum / 100.0;
+    }
 
     float distanceNext = 0.0;
     float vectorXNext = 0.0;
@@ -307,7 +316,9 @@ CTransformable* ManCar::calculateCloserCar(Entity* actualCar){
             vectorXNext = cTransNextCar->position.x - cTransActualCar->position.x;     
             vectorZNext = cTransNextCar->position.z - cTransActualCar->position.z;
             distanceNext = sqrt((vectorXNext*vectorXNext) + (vectorZNext*vectorZNext));
-            std::cout << "Min: " << distanceMimum << "   Next: " << distanceNext << std::endl;
+            
+            if(carInVisionRange(actualCar, carAI.get(), 66) == true)
+                distanceNext = distanceNext / 100.0;
             if(distanceMimum > distanceNext){
                 distanceMimum = distanceNext;
                 closestCar = cTransNextCar;
@@ -415,13 +426,13 @@ void ManCar::CatchPowerUp(DataMap d) {
         indx = 1;
     else if(indx > 5 && indx <= 20)     // 15%
         indx = 2;
-    else if(indx > 20 && indx <= 45)    // 25%
+    else if(indx > 20 && indx <= 40)    // 20%
         indx = 3;
-    else if(indx > 45 && indx <= 60)    // 15%
+    else if(indx > 40 && indx <= 55)    // 15%
         indx = 4;
-    else if(indx > 60 && indx <= 75)    // 15%
+    else if(indx > 55 && indx <= 70)    // 15%
         indx = 5;
-    else if(indx > 75)                  //  25%
+    else if(indx > 70)                  //  30%
         indx = 6;
 
     //None,               // 0
@@ -435,7 +446,7 @@ void ManCar::CatchPowerUp(DataMap d) {
     auto cPowerUpCar = static_cast<CPowerUp*>(car.get()->GetComponent(CompType::PowerUpComp).get());
     if(cPowerUpCar->typePowerUp == typeCPowerUp::None){
         cPowerUpCar->typePowerUp = (typeCPowerUp)indx;
-        std::cout << "Mi super powerUp es:   " << (int)cPowerUpCar->typePowerUp << std::endl;
+        std::cout << "Mi PowerUp es:   " << (int)cPowerUpCar->typePowerUp << std::endl;
         d["typePowerUp"] = cPowerUpCar->typePowerUp;
 
         //RenderFacadeManager::GetInstance()->GetRenderFacade()->FacadeUpdatePowerUpHUD(d);
@@ -453,19 +464,19 @@ void ManCar::CatchPowerUpAI(DataMap d) {
         indx = 1;
     else if(indx > 5 && indx <= 20)     // 15%
         indx = 2;
-    else if(indx > 20 && indx <= 45)    // 25%
+    else if(indx > 20 && indx <= 40)    // 20%
         indx = 3;
-    else if(indx > 45 && indx <= 60)    // 15%
+    else if(indx > 40 && indx <= 55)    // 15%
         indx = 4;
-    else if(indx > 60 && indx <= 75)    // 15%
+    else if(indx > 55 && indx <= 70)    // 15%
         indx = 5;
-    else if(indx > 75)                  //  25%
+    else if(indx > 70)                  //  30%
         indx = 6;
 
     auto cPowerUpCar = static_cast<CPowerUp*>(any_cast<Entity*>(d["actualCar"])->GetComponent(CompType::PowerUpComp).get());
     if(cPowerUpCar->typePowerUp == typeCPowerUp::None){
         cPowerUpCar->typePowerUp = (typeCPowerUp)indx;
-        std::cout << "Mi super powerUp es:   " << (int)cPowerUpCar->typePowerUp << std::endl;
+        std::cout << "Power Up de la IA:   " << (int)cPowerUpCar->typePowerUp << std::endl;
     }
     //cPowerUp->typePowerUp = dynamic_cast<typeCPowerUp*>(indx);
 }
@@ -473,7 +484,7 @@ void ManCar::CatchPowerUpAI(DataMap d) {
 
 
 // calcula si el otro coche se encuentra en el rango de vision del coche actual
-bool ManCar::carInVisionRange(Entity* actualCar, Entity* otherCar){
+bool ManCar::carInVisionRange(Entity* actualCar, Entity* otherCar, uint32_t rangeVision){
     float seeCar = false;
     // calcular un desplazamiento para ser en tercera persona
     auto cTransformableActual = static_cast<CTransformable*>(actualCar->GetComponent(CompType::TransformableComp).get());
@@ -512,18 +523,18 @@ bool ManCar::carInVisionRange(Entity* actualCar, Entity* otherCar){
 
 
 // comprobamos si tenemos algun coche en el rango de vision
-bool ManCar::anyCarInVisionRange(Entity* actualCar){
+bool ManCar::anyCarInVisionRange(Entity* actualCar, uint32_t rangeVision){
     bool seeCar = false;
     for(shared_ptr<Entity> carAI : CarAIs){
         if(actualCar!=carAI.get()){
-            if(carInVisionRange(actualCar,carAI.get()) == true){
+            if(carInVisionRange(actualCar,carAI.get(), rangeVision) == true){
                 seeCar = true;
             }
         }
     }
     // comprobamos el player
     if(car.get()!=actualCar){
-        if(carInVisionRange(actualCar,car.get()) == true){
+        if(carInVisionRange(actualCar,car.get(), rangeVision) == true){
             seeCar = true;
         }
     }

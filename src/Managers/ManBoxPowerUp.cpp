@@ -14,7 +14,7 @@ void ManBoxPowerUp::EjecutarMeHanCogido(DataMap d) {
     auto actualBox   = any_cast<shared_ptr<Entity>>(d["actualBox"]);
 
     if(cBoxPowerUp->active == true){
-        cout << "Han cogido un powerup, madafaka!! sera la primera" << endl;
+        //cout << "Han cogido un powerup, madafaka!! sera la primera" << endl;
         auto renderFacadeManager = RenderFacadeManager::GetInstance();
         auto renderEngine = renderFacadeManager->GetRenderFacade();
         renderEngine->DeleteEntity(actualBox.get());       // se elmina la caja en irrlich para que no la dibuje, pero en nuestro array sigue estando
