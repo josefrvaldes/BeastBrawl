@@ -6,6 +6,7 @@
 #include "../../Entities/Entity.h"
 #include "../../EventManager/EventManager.h"
 #include "../../Managers/ManWayPoint.h"
+#include "../../Managers/ManCar.h"
 #include "../../Components/CPowerUp.h"
 
 class RenderFacade {
@@ -40,7 +41,7 @@ class RenderFacade {
     virtual void FacadeCheckInputPause() = 0;
     virtual void FacadeCheckInputEndRace() = 0;
     virtual void FacadeUpdatePowerUpHUD(DataMap d) = 0;
-    virtual void FacadeDrawHUD(Entity* car) = 0;
+    virtual void FacadeDrawHUD(Entity* car, ManCar* carsAI) = 0;
     virtual void FacadeSuscribeEvents() = 0;
 
     //DEBUG

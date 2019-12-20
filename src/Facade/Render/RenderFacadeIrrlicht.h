@@ -52,7 +52,7 @@ class RenderFacadeIrrlicht : public RenderFacade {
 		void FacadeCheckInputPause() override;
 		void FacadeCheckInputEndRace() override;
 		void FacadeUpdatePowerUpHUD(DataMap d) override;
-		void FacadeDrawHUD(Entity* car) override;
+		void FacadeDrawHUD(Entity* car, ManCar* carsAI ) override;
 		void FacadeSuscribeEvents() override;
 
 		//DEBUG
@@ -73,6 +73,7 @@ class RenderFacadeIrrlicht : public RenderFacade {
 		video::ITexture* menuBG;
 		video::ITexture* pauseBG;
 		video::ITexture* endRaceBG;
+		video::ITexture* whiteBG;
 		video::ITexture* powerUps[7];
 		gui::IGUIFont* font;
 		bool showDebug = false;

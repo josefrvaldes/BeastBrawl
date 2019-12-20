@@ -310,7 +310,7 @@ void StateInGame::Render() {
     renderEngine->FacadeBeginScene();
     // renderEngine->FacadeDraw();  //Para dibujar primitivas debe ir entre el drawAll y el endScene
     renderEngine->FacadeDrawAll();
-    renderEngine->FacadeDrawHUD(manCars->GetCar().get());
+    renderEngine->FacadeDrawHUD(manCars->GetCar().get(), manCars.get());
     renderEngine->FacadeDrawGraphEdges(manWayPoint.get());
     renderEngine->FacadeDrawBoundingBox(manCars.get()->GetCar().get(), isColliding);
     renderEngine->FacadeDrawBoundingBox(carAI, isColliding);

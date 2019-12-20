@@ -67,6 +67,10 @@ void RenderFacadeIrrlicht::FacadeInitHUD(){
     powerUps[5] = driver->getTexture("media/telebanana.jpg");
     powerUps[6] = driver->getTexture("media/melonmolon.jpg");
 
+    whiteBG = driver->getTexture("media/whiteBG.png");
+    driver->makeColorKeyTexture(whiteBG, core::position2d<s32>(0,0));
+
+
     driver->makeColorKeyTexture(powerUps[0], core::position2d<s32>(0,0));
     driver->makeColorKeyTexture(powerUps[1], core::position2d<s32>(0,0));
     driver->makeColorKeyTexture(powerUps[2], core::position2d<s32>(0,0));
@@ -86,21 +90,43 @@ void RenderFacadeIrrlicht::FacadeUpdatePowerUpHUD(DataMap d){
     currentPowerUp = int(type);    
 }
 
-void RenderFacadeIrrlicht::FacadeDrawHUD(Entity* car){
+void RenderFacadeIrrlicht::FacadeDrawHUD(Entity* car, ManCar* carsAI){
     //Dibujamos el texto del tiempo que llevas el totem
     auto cTotem = static_cast<CTotem*>(car->GetComponent(CompType::TotemComp).get());
+
+    //Dibujamos el cuadrado blanco del hud
+    driver->draw2DImage(whiteBG, core::position2d<s32>(200,50),
+                core::rect<s32>(0,0,100,100), 0,
+                video::SColor(255,255,255,255), false);
 
     //operaciones para dejarle con un solo decimal
     int time = cTotem->accumulatedTime / 100.0;
     float time2 = time/10.0;
-    core::stringw tiempoStringw = core::stringw(time2);
+    core::stringw mainCarText = core::stringw("Main car   ");
+    core::stringw tiempoStringw = mainCarText + core::stringw(time2);
     font->draw(tiempoStringw,
-                    core::rect<s32>(200,100,300,300),
+                    core::rect<s32>(200,55,300,200),
                     video::SColor(255,0,0,0));
     //Dibujamos powerUp
     driver->draw2DImage(powerUps[currentPowerUp], core::position2d<s32>(50,50),
                 core::rect<s32>(0,0,100,100), 0,
                 video::SColor(255,255,255,255), false);
+
+    int i = 0;
+    core::stringw textIA = core::stringw("Car AI ");
+    for(auto carAI : carsAI->GetEntitiesAI()){
+        cTotem = static_cast<CTotem*>(carAI->GetComponent(CompType::TotemComp).get());
+
+        int time = cTotem->accumulatedTime / 100.0;
+        float time2 = time/10.0;
+
+        core::stringw iaText = textIA + core::stringw(i) + core::stringw("  ") + core::stringw(time2);
+        font->draw(iaText,
+                        core::rect<s32>(200,70 + (i*15),300,300),
+                        video::SColor(255,0,0,0));
+
+        i++;
+    }
 
 }
 
