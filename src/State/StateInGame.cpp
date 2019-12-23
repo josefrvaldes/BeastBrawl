@@ -226,11 +226,15 @@ void StateInGame::Update() {
         systemBtPowerUp->update(actualAI.get(), manCars.get(), manPowerUps.get(), manBoxPowerUps.get(), manTotems.get(), manWayPoint.get());
     }
    
+    // ACTUALIZACION DE LOS MANAGERS DE LOS COCHES
     manCars->UpdateCar();
-    manCars->UpdateCarAI();
+    //manCars->UpdateCarAI();
+    for(auto actualAI : manCars->GetEntitiesAI()){
+        manCars->UpdateCarAI(actualAI.get());
+    }
 
+    // ACTUALIZACION DE LAS FISICAS DE LOS COCHES
     physics->update(manCars->GetCar().get(), cam.get());
-
     for(auto actualAI : manCars->GetEntitiesAI()){
         physicsAI->Update(manWayPoint.get(),actualAI.get(), deltaTime);
     }

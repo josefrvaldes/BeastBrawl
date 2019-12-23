@@ -21,18 +21,6 @@ void Physics::update(Car* car, Camera* cam){
         CalculatePositionReverse(cCar, cTransformable, deltaTime);
     CalculatePositionCamera(cTransformable, cTransformableCam, cCamera);
 
-
-    // Actualiza el componente nitro
-    auto cNitro = static_cast<CNitro *>(car->GetComponent(CompType::NitroComp).get());
-    if(cNitro->activePowerUp==true && duration_cast<milliseconds>(system_clock::now() - cNitro->timeStart).count() > cNitro->durationTime){  // comprueba el tiempo desde que se lanzo
-        cNitro->deactivePowerUp();
-    }
-
-    // Actualiza el componente escudo
-    auto cShield = static_cast<CShield *>(car->GetComponent(CompType::ShieldComp).get());
-    if(cShield->activePowerUp==true && duration_cast<milliseconds>(system_clock::now() - cShield->timeStart).count() > cShield->durationTime){  // comprueba el tiempo desde que se lanzo
-        cShield->deactivePowerUp();
-    }
 }
 
 

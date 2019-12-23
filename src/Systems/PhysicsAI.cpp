@@ -163,6 +163,19 @@ void PhysicsAI::fuzzyRulesAngle(){
     shared_ptr<FzSet> Rotation_Left = Rotation->AddLeftShoulderSet("Rotation_Left", -10, -5, 0);
     shared_ptr<FzSet> Rotation_None = Rotation->AddTriangularSet("Rotation_None", -5, 0, 5);
     shared_ptr<FzSet> Rotation_Right = Rotation->AddRightShoulderSet("Rotation_Right", 0, 5, 10);
+
+// TODO
+// SI VA A COLISIONAR ----- HARA LA ROTACION HARD... QUE SERÁ DERRAPAR  
+
+/*
+    shared_ptr<FuzzyVariable> Rotation = flAngle->CreateFLV("Rotation");
+    shared_ptr<FzSet> Rotation_Hard_Left = Rotation->AddLeftShoulderSet("Rotation_Hard_Left", -10, -10, -5);
+    shared_ptr<FzSet> Rotation_Left = Rotation->AddTriangularSet("Rotation_Left", -10, -5, 0);
+    shared_ptr<FzSet> Rotation_None = Rotation->AddTriangularSet("Rotation_None", -5, 0, 5);
+    shared_ptr<FzSet> Rotation_Right = Rotation->AddTriangularSet("Rotation_Right", 0, 5, 10);
+    shared_ptr<FzSet> Rotation_Hard_Right = Rotation->AddRightShoulderSet("Rotation_Hard_Right", 5, 10, 10);
+*/
+
     // To-Do: revisar el new por que no se tiene que hacer
     flAngle->AddRule( (make_shared<FzAND>(Distance_Near, Direction_Left)), Rotation_Left);
     flAngle->AddRule( (make_shared<FzAND>(Distance_Near, Direction_Center)), Rotation_None);
@@ -266,18 +279,6 @@ void PhysicsAI::Update(ManWayPoint* graph, CarAI* car, float deltaTime){
     float angle = 0;
     float radious = cWayPoint->radious;
     float distance2P = sqrt( pow((cWayPoint->position.x - cTransformable->position.x),2) + pow((cWayPoint->position.z - cTransformable->position.z),2) );
-
-    // Actualizamos el componente Nitro
-    auto cNitro = static_cast<CNitro *>(car->GetComponent(CompType::NitroComp).get());
-    if(cNitro->activePowerUp==true && duration_cast<milliseconds>(system_clock::now() - cNitro->timeStart).count() > cNitro->durationTime){  // comprueba el tiempo desde que se lanzo
-        cNitro->deactivePowerUp();
-    }
-
-    // Actualizamos el componente Escudo
-    auto cShield = static_cast<CShield *>(car->GetComponent(CompType::ShieldComp).get());
-    if(cShield->activePowerUp==true && duration_cast<milliseconds>(system_clock::now() - cShield->timeStart).count() > cShield->durationTime){  // comprueba el tiempo desde que se lanzo
-        cShield->deactivePowerUp();
-    }
 
     //Vamos a comprobar si esta en el rango del waypoint
     if((cWayPoint->position.z - radious) < cTransformable->position.z && (cWayPoint->position.z + radious) >= cTransformable->position.z 

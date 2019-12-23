@@ -28,7 +28,7 @@ class ManCar : public Manager {
     void CreateCar();
     void CreateMainCar();
     void UpdateCar();
-    void UpdateCarAI();
+    void UpdateCarAI(CarAI* car);
     shared_ptr<Car>& GetCar() { return car; };
 
     void CreateCarAI();
