@@ -6,6 +6,7 @@
 #include <string>
 #include <stack>
 #include "../Components/CWayPoint.h"
+#include "../Components/CPosDestination.h"
 using namespace std;
 
 class CarAI : public Entity
@@ -18,6 +19,7 @@ public:
     ~CarAI();
 
     void SetWayPoint(CWayPoint* _waypoint);
+    void SetDestination(CPosDestination* posDestination);
     void SetPath(stack<int> path);
 
 };

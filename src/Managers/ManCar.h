@@ -12,6 +12,11 @@
 #include "../Components/CTransformable.h"
 #include "../Components/CSpeed.h"
 
+#include "../Managers/ManWayPoint.h"
+#include "../Entities/WayPoint.h"
+
+#include <stack>
+
 using namespace std;
 class Car;
 class CarAI;
@@ -28,7 +33,7 @@ class ManCar : public Manager {
     void CreateCar();
     void CreateMainCar();
     void UpdateCar();
-    void UpdateCarAI(CarAI* car);
+    void UpdateCarAI(CarAI* car,ManWayPoint* graph);
     shared_ptr<Car>& GetCar() { return car; };
 
     void CreateCarAI();
@@ -37,6 +42,7 @@ class ManCar : public Manager {
     CTransformable* calculateCloserCar(Entity* actualCar);
     bool carInVisionRange(Entity* actualCar, Entity* otherCar, uint32_t rangeVision);
     bool anyCarInVisionRange(Entity* actualCar, uint32_t rangeVision);
+    stack<int> Dijkstra(ManWayPoint* graph, int start, int end);
 
    private:
     Physics *physics;

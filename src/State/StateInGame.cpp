@@ -230,13 +230,13 @@ void StateInGame::Update() {
     manCars->UpdateCar();
     //manCars->UpdateCarAI();
     for(auto actualAI : manCars->GetEntitiesAI()){
-        manCars->UpdateCarAI(actualAI.get());
+        manCars->UpdateCarAI(actualAI.get(),manWayPoint.get());
     }
 
     // ACTUALIZACION DE LAS FISICAS DE LOS COCHES
     physics->update(manCars->GetCar().get(), cam.get());
     for(auto actualAI : manCars->GetEntitiesAI()){
-        physicsAI->Update(manWayPoint.get(),actualAI.get(), deltaTime);
+        physicsAI->Update(actualAI.get(), deltaTime);
     }
 
     sysBoxPowerUp->update(manBoxPowerUps.get());
