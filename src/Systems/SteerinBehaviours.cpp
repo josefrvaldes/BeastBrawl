@@ -33,12 +33,38 @@ void SteeringBehaviours::Update(ManCar* m_manCar){
 
     float angle = CalculateAngle(vectorVelocity, vectorForceSeek, cTransformable->rotation.y);
 
-    UpdateTransformable(cTransformable, angle);
+    UpdateTransformable(cCar, cTransformable, angle);
 }
 
 
-void SteeringBehaviours::UpdateTransformable(CTransformable* m_cTransformableCar, float angle){
+void SteeringBehaviours::UpdateTransformable(CCar* m_cCar, CTransformable* m_cTransformableCar, float angle){
 
+    // To-Do: Modificar estos angulos
+    if(angle>0 && angle>10) 
+        m_cCar->wheelRotation = m_cCar->maxWheelRotation;
+    else if(angle>0 && angle<10)
+        m_cCar->wheelRotation = 0;
+    else if(angle<0 && angle<-10)
+        m_cCar->wheelRotation = -m_cCar->maxWheelRotation;
+    else if(angle<0 && angle>-10)
+        m_cCar->wheelRotation = 0;
+    
+    m_cCar->speed += m_cCar->acceleration;
+    if (m_cCar->speed > m_cCar->maxSpeed/2.0) {
+        m_cCar->speed = m_cCar->maxSpeed/2.0;  
+    }
+
+    // calculamos las posiciones
+    float angleRotation = (m_cTransformableCar->rotation.y * PI) / 180.0;
+    m_cTransformableCar->position.x -= cos(angleRotation) * m_cCar->speed * 0.16;
+    m_cTransformableCar->position.z += sin(angleRotation) * m_cCar->speed * 0.16;
+    if(m_cCar->wheelRotation != 0){
+        m_cTransformableCar->rotation.y += m_cCar->wheelRotation * 0.20;
+        if(m_cTransformableCar->rotation.y>=360.0)
+            m_cTransformableCar->rotation.y -= 360.0;
+        else if(m_cTransformableCar->rotation.y < 0.0)
+            m_cTransformableCar->rotation.y += 360.0;
+    }
 }
 
 
