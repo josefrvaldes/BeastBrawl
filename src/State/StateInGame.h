@@ -31,6 +31,7 @@
 #include "../Systems/Collisions.h"
 #include "../Systems/Physics.h"
 #include "../Systems/PhysicsAI.h"
+#include "../Systems/SteeringBehaviours.h"
 #include "../Systems/SystemBtPowerUp.h"
 #include "../Game.h"
 #include "../Managers/ManCar.h"
@@ -83,6 +84,7 @@ class StateInGame : public State {
     shared_ptr<Entity> totemOnCar;
 
     shared_ptr<PhysicsAI> physicsAI;
+    unique_ptr<SteeringBehaviours> steeringBehaviours;
     shared_ptr<SystemBtPowerUp> systemBtPowerUp;
     shared_ptr<ManTotem> manTotems;
     //int lastFPS = -1;
