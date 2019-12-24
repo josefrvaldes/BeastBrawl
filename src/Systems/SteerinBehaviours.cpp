@@ -30,23 +30,24 @@ void SteeringBehaviours::Update(ManCar* m_manCar){
 
     // Seek
     glm::vec2 vectorForceSeek = Seek(m_manCar->GetEntitiesAI()[0].get(), m_manCar->GetCar().get(), vectorVelocity);
-
+    //std::cout << "Rotation: " << cTransformable->rotation.y << std::endl;
     float angle = CalculateAngle(vectorVelocity, vectorForceSeek, cTransformable->rotation.y);
-
+    //std::cout << "Angulo: " << angle << "   " << cTransformable->rotation.y << std::endl;
     UpdateTransformable(cCar, cTransformable, angle);
 }
 
 
 void SteeringBehaviours::UpdateTransformable(CCar* m_cCar, CTransformable* m_cTransformableCar, float angle){
-
     // To-Do: Modificar estos angulos
-    if(angle>0 && angle>10) 
+    if(angle > m_cCar->maxWheelRotation*0.20) 
         m_cCar->wheelRotation = m_cCar->maxWheelRotation;
-    else if(angle>0 && angle<10)
-        m_cCar->wheelRotation = 0;
-    else if(angle<0 && angle<-10)
+    else if(angle < -m_cCar->maxWheelRotation*0.20)
         m_cCar->wheelRotation = -m_cCar->maxWheelRotation;
-    else if(angle<0 && angle>-10)
+    else if(angle>0.1)
+        m_cCar->wheelRotation = angle/0.40;
+    else if(angle<-0.1)
+        m_cCar->wheelRotation = angle/0.40;
+    else
         m_cCar->wheelRotation = 0;
     
     m_cCar->speed += m_cCar->acceleration;
