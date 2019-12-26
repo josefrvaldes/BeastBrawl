@@ -32,6 +32,7 @@
 #include "../Systems/Physics.h"
 #include "../Systems/PhysicsAI.h"
 #include "../Systems/SystemBtPowerUp.h"
+#include "../Systems/SystemBtMoveTo.h"
 #include "../Game.h"
 #include "../Managers/ManCar.h"
 #include "../Managers/ManPowerUp.h"
@@ -84,6 +85,7 @@ class StateInGame : public State {
 
     shared_ptr<PhysicsAI> physicsAI;
     shared_ptr<SystemBtPowerUp> systemBtPowerUp;
+    shared_ptr<SystemBtMoveTo> systemBtMoveTo;
     shared_ptr<ManTotem> manTotems;
     //int lastFPS = -1;
     //uint32_t then;

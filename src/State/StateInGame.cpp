@@ -41,7 +41,7 @@ StateInGame::StateInGame() {
     //Le asignamos el waypoint inicial, momentaneo a la IA
     manCars->CreateCarAI(glm::vec3(50.0f, 20.0f, 100.0f), cWayPoint);
     stack<int> pathInit;
-    pathInit.push(0);
+    pathInit.push(3);
     pathInit.push(1);
     pathInit.push(2);
     manCars->GetEntitiesAI()[0]->SetPath(pathInit);
@@ -60,7 +60,7 @@ StateInGame::StateInGame() {
 
     auto cWayPointAI2 = static_cast<CWayPoint*>(manWayPoint->GetEntities()[1]->GetComponent(CompType::WayPointComp).get());
    //Le asignamos el waypoint inicial, momentaneo a la IA
-    manCars->CreateCarAI(glm::vec3(40.0f, 20.0f, 20.0f), cWayPointAI2);
+    manCars->CreateCarAI(glm::vec3(70.0f, 20.0f, 20.0f), cWayPointAI2);
     stack<int> pathInit2;
     pathInit2.push(4);
     pathInit2.push(0);
@@ -70,11 +70,11 @@ StateInGame::StateInGame() {
 
     auto cWayPointAI3 = static_cast<CWayPoint*>(manWayPoint->GetEntities()[0]->GetComponent(CompType::WayPointComp).get());
    //Le asignamos el waypoint inicial, momentaneo a la IA
-    manCars->CreateCarAI(glm::vec3(0.0f, 20.0f, 0.0f), cWayPointAI3);
+    manCars->CreateCarAI(glm::vec3(0.0f, 20.0f, -40.0f), cWayPointAI3);
     stack<int> pathInit3;
-    pathInit3.push(1);
-    pathInit3.push(3);
-    pathInit3.push(4);
+    pathInit3.push(5);
+    pathInit3.push(0);
+    pathInit3.push(5);
     manCars->GetEntitiesAI()[2]->SetPath(pathInit3);
 
 
@@ -126,7 +126,7 @@ StateInGame::StateInGame() {
 
     //lastFPS = -1;
     // CREAMOS EL TOTEM
-    manTotems->CreateTotem();
+    manTotems->CreateTotem(glm::vec3(-100.0,20.0,-100.0));
     renderEngine->FacadeAddObject(manTotems->GetEntities()[0].get());
 
 // --------------------------------------------------------------------------------------------------------------------------------------------
@@ -154,6 +154,7 @@ StateInGame::StateInGame() {
 
     // BehaivourTree
     systemBtPowerUp = make_shared<SystemBtPowerUp>();
+    systemBtMoveTo  = make_shared<SystemBtMoveTo>(); 
     
     
 }
@@ -223,6 +224,9 @@ void StateInGame::Update() {
 
     // BEHAIVOUR TREE
     for(auto actualAI : manCars->GetEntitiesAI()){
+        //std::cout << "hola caracolaaaaaaaaaaaaaaaaa2939393399494839839275087346734790393970" << std::endl;
+        systemBtMoveTo->update(actualAI.get(), manCars.get(), manPowerUps.get(), manBoxPowerUps.get(), manTotems.get(), manWayPoint.get());
+
         systemBtPowerUp->update(actualAI.get(), manCars.get(), manPowerUps.get(), manBoxPowerUps.get(), manTotems.get(), manWayPoint.get());
     }
    

@@ -100,13 +100,13 @@ void PhysicsAI::fuzzyRulesAngle(){
 
 
 
-//Nos devuelve el angulo en radianos entre el coche y el waypoint
-float calculateAngle(CWayPoint* wayPointNext, CarAI* car,CCar* cCar){
+//Nos devuelve el angulo en radianos entre el coche y el punto destino del coche
+float calculateAngle(CPosDestination* posDestination, CarAI* car,CCar* cCar){
     auto cTransformable = static_cast<CTransformable*>(car->GetComponent(CompType::TransformableComp).get());
 
     // calcular vector al wayPoint
-    float vetorWaypointX = (wayPointNext->position.x - cTransformable->position.x );
-    float vetorWaypointZ = (wayPointNext->position.z - cTransformable->position.z);
+    float vetorWaypointX = (posDestination->position.x - cTransformable->position.x );
+    float vetorWaypointZ = (posDestination->position.z - cTransformable->position.z);
     
     // se calcula el siguiente punto al que avanzara el coche
     float angleRotation = (cTransformable->rotation.y * PI) / 180.0;
@@ -182,15 +182,17 @@ void PhysicsAI::InitPhysicsIA(CarAI* car){
 void PhysicsAI::Update(CarAI* car, float deltaTime){
     //Guardamos en varAIbles los componentes
 	auto cTransformable = static_cast<CTransformable*>(car->GetComponent(CompType::TransformableComp).get());
-    auto cWayPoint     = static_cast<CWayPoint*>(car->GetComponent(CompType::WayPointComp).get());
+    //auto cWayPoint     = static_cast<CWayPoint*>(car->GetComponent(CompType::WayPointComp).get());
+    auto cPosDestination = static_cast<CPosDestination*>(car->GetComponent(CompType::PosDestination).get());
     auto cCar        = static_cast<CCar*>(car->GetComponent(CompType::CarComp).get());
     float angleRange = 0;
     float angle = 0;
-    float distance2P = sqrt( pow((cWayPoint->position.x - cTransformable->position.x),2) + pow((cWayPoint->position.z - cTransformable->position.z),2) );
+    //float distance2P = sqrt( pow((cWayPoint->position.x - cTransformable->position.x),2) + pow((cWayPoint->position.z - cTransformable->position.z),2) );
+    float distance2P = sqrt( pow((cPosDestination->position.x - cTransformable->position.x),2) + pow((cPosDestination->position.z - cTransformable->position.z),2) );
 
 
     // LOGICA DIFUSA:
-    angle = calculateAngle(cWayPoint, car, cCar);
+    angle = calculateAngle(cPosDestination, car, cCar);
     if (angle < 0)
         angleRange = angle*(-1);
     else

@@ -60,6 +60,8 @@ class ManCar : public Manager {
     void CatchTotemAI(DataMap d);
     void UseTotem(Entity* carWinTotem);
     void ThrowTotem(Entity* carLoseTotem);
+    void ChangePosDestination(DataMap d);
+    void MoveToPowerUp(DataMap d);
     bool useRoboJorobo(Entity* newCarWithTotem);
 
     

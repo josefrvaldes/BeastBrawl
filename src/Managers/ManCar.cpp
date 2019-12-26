@@ -128,8 +128,6 @@ std::stack<int> ManCar::Dijkstra(ManWayPoint* _graph, int start, int end) {
 }
 
 
-
-
 // comprueba si has superado el tiempo necesario para ganar
 void ManCar::UpdateCar(){
     auto cTotem = static_cast<CTotem*>(GetCar()->GetComponent(CompType::TotemComp).get());
@@ -185,45 +183,47 @@ void ManCar::UpdateCarAI(CarAI* carAI,ManWayPoint* graph){
 
     //Guardamos en varAIbles los componentes
 	auto cTransformable = static_cast<CTransformable*>(carAI->GetComponent(CompType::TransformableComp).get());
-    auto cWayPoint     = static_cast<CWayPoint*>(carAI->GetComponent(CompType::WayPointComp).get());
-    float radious = cWayPoint->radious;
+    //auto cWayPoint     = static_cast<CWayPoint*>(carAI->GetComponent(CompType::WayPointComp).get());
+    //float radious = cWayPoint->radious;
+    auto cPosDestination     = static_cast<CPosDestination*>(carAI->GetComponent(CompType::PosDestination).get());
+    float radious = cPosDestination->radious;
+
 
     //Vamos a comprobar si esta en el rango del waypoint
-    if((cWayPoint->position.z - radious) < cTransformable->position.z && (cWayPoint->position.z + radious) >= cTransformable->position.z 
-        && (cWayPoint->position.x - radious) < cTransformable->position.x && (cWayPoint->position.x + radious) >= cTransformable->position.x){
+    if((cPosDestination->position.z - radious) < cTransformable->position.z && (cPosDestination->position.z + radious) >= cTransformable->position.z 
+        && (cPosDestination->position.x - radious) < cTransformable->position.x && (cPosDestination->position.x + radious) >= cTransformable->position.x){
             
         //Tenemos que comprobar si le quedan mas nodos que visitar en el path
         auto cPath = static_cast<CPath*>(carAI->GetComponent(CompType::PathComp).get());
-
-        auto actualNode = cPath->stackPath.top();
-        cPath->stackPath.pop();
-
-        //cout << "Llegamos al WayPoint: " << actualNode << endl;
         if(!cPath->stackPath.empty()){
-            //Le asignamos el WayPoint siguiente del path (graph->GetEntities()[cPath->stackPath.top()])
-            auto cWayPoint = static_cast<CWayPoint*>(graph->GetEntities()[cPath->stackPath.top()]->GetComponent(CompType::WayPointComp).get());
-            carAI->SetWayPoint(cWayPoint);
-        }else{
-            //Si esta vacio es que ha acabado el path y recalculamos otro
-            //TO-DO: de momento le recalculamos otro aleatorio
-            // habra que llamar al arbol de decisiones broooo
-            int indx;
-            do{
-                indx = rand() % graph->GetEntities().size();
+            auto actualNode = cPath->stackPath.top();
+            cPath->stackPath.pop();
+            //cout << "Llegamos al WayPoint: " << actualNode << endl;
+            if(!cPath->stackPath.empty()){
+                //Le asignamos el WayPoint siguiente del path (graph->GetEntities()[cPath->stackPath.top()])
+                auto cWayPoint = static_cast<CWayPoint*>(graph->GetEntities()[cPath->stackPath.top()]->GetComponent(CompType::WayPointComp).get());
+                cPosDestination->position = cWayPoint->position;
 
-            }while(indx==actualNode);
+                carAI->SetDestination(cPosDestination);
+            }else{
+                //Si esta vacio es que ha acabado el path y recalculamos otro
+                //TO-DO: de momento le recalculamos otro aleatorio
+                // habra que llamar al arbol de decisiones broooo
+                int indx;
+                do{
+                    indx = rand() % graph->GetEntities().size();
 
-            //COMPROBAMOS DIJKSTRA
-            auto path = Dijkstra(graph,actualNode,indx);
-            carAI->SetPath(path);
+                }while(indx==actualNode);
 
-            auto cWayPoint = static_cast<CWayPoint*>(graph->GetEntities()[path.top()]->GetComponent(CompType::WayPointComp).get());
-            carAI->SetWayPoint(cWayPoint);
-        }           
+                //COMPROBAMOS DIJKSTRA
+                auto path = Dijkstra(graph,actualNode,indx);
+                carAI->SetPath(path);
+
+                auto cWayPoint = static_cast<CWayPoint*>(graph->GetEntities()[path.top()]->GetComponent(CompType::WayPointComp).get());
+                carAI->SetWayPoint(cWayPoint);
+            }          
+        }
     }
-
-
-
 }
 
 
@@ -351,8 +351,37 @@ void ManCar::SubscribeToEvents() {
         bind(&ManCar::CatchTotemAI, this, placeholders::_1),
         "CatchTotemAI"));
 
+    EventManager::GetInstance()->SuscribeMulti(Listener(
+        EventType::CHANGE_DESTINATION,
+        bind(&ManCar::ChangePosDestination, this, placeholders::_1),
+        "ChangePosDestination"));
+
+    EventManager::GetInstance()->SuscribeMulti(Listener(
+        EventType::MOVE_TO_POWERUP,
+        bind(&ManCar::MoveToPowerUp, this, placeholders::_1),
+        "MoveToPowerUp"));
+
 }
 
+
+void ManCar::ChangePosDestination(DataMap data){
+    auto cPosDestination = static_cast<CPosDestination*>(any_cast<CarAI*>(data["actualCar"])->GetComponent(CompType::PosDestination).get());
+    cPosDestination->position = any_cast<glm::vec3>(data["posDestination"]);
+}
+
+void ManCar::MoveToPowerUp(DataMap data){
+    auto graph = any_cast<ManWayPoint*>(data["manWayPoints"]);
+    auto cPath = static_cast<CPath*>(any_cast<CarAI*>(data["actualCar"])->GetComponent(CompType::PathComp).get());
+    auto cPosDestination = static_cast<CPosDestination*>(any_cast<CarAI*>(data["actualCar"])->GetComponent(CompType::PosDestination).get());
+
+    if(!cPath->stackPath.empty()){
+        //Le asignamos el WayPoint siguiente del path (graph->GetEntities()[cPath->stackPath.top()])
+        auto cWayPoint = static_cast<CWayPoint*>(graph->GetEntities()[cPath->stackPath.top()]->GetComponent(CompType::WayPointComp).get());
+        cPosDestination->position = cWayPoint->position;
+
+        any_cast<CarAI*>(data["actualCar"])->SetDestination(cPosDestination);
+    }
+}
 
 
 void ManCar::CatchTotemAI(DataMap d){
@@ -462,10 +491,10 @@ CTransformable* ManCar::calculateCloserCar(Entity* actualCar){
 
     // reducimos cierta distancia en caso de que se encuentre en el radio de vision
     if(carPrincipal == true){
-        if(carInVisionRange(actualCar, CarAIs[0].get(), 66) == true)
+        if(carInVisionRange(actualCar, CarAIs[0].get(), 15) == true)
             distanceMimum = distanceMimum/100.0;
     }else{
-        if(carInVisionRange(actualCar, car.get(), 66) == true)
+        if(carInVisionRange(actualCar, car.get(), 15) == true)
             distanceMimum = distanceMimum / 100.0;
     }
 
@@ -480,7 +509,7 @@ CTransformable* ManCar::calculateCloserCar(Entity* actualCar){
             vectorZNext = cTransNextCar->position.z - cTransActualCar->position.z;
             distanceNext = sqrt((vectorXNext*vectorXNext) + (vectorZNext*vectorZNext));
             
-            if(carInVisionRange(actualCar, carAI.get(), 66) == true)
+            if(carInVisionRange(actualCar, carAI.get(), 15) == true)
                 distanceNext = distanceNext / 100.0;
             if(distanceMimum > distanceNext){
                 distanceMimum = distanceNext;
