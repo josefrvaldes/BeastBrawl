@@ -46,7 +46,7 @@ CarAI::CarAI(){
 
 
     shared_ptr<CColliding> cColliding = make_shared<CColliding>(false);
-    shared_ptr<CBoundingSphere> cBoundSphere = make_shared<CBoundingSphere>(pos, 20.f);
+    shared_ptr<CBoundingSphere> cBoundSphere = make_shared<CBoundingSphere>(pos);
     AddComponent(cId);
     AddComponent(cType);
     AddComponent(cTransformable);
@@ -84,7 +84,7 @@ CarAI::CarAI(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale,
     shared_ptr<CRoboJorobo> cRoboJorobo = make_shared<CRoboJorobo>();
     shared_ptr<CTotem> cTotem = make_shared<CTotem>();
     shared_ptr<CPath> cPath   = make_shared<CPath>();
-    shared_ptr<CBoundingSphere> cBoundSphere = make_shared<CBoundingSphere>(pos, 30.f);
+    shared_ptr<CBoundingSphere> cBoundSphere = make_shared<CBoundingSphere>(pos);
     shared_ptr<CColliding> cColliding = make_shared<CColliding>(false);
 
     AddComponent(cId);

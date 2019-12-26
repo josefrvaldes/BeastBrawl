@@ -9,6 +9,10 @@ using namespace glm;
 
 class CBoundingSphere : public Component {
    public:
+    CBoundingSphere(const vec3 &_center)
+        : center{_center}, radius{DEFAULT_SPHERE_RADIUS} {
+        m_compType = CompType::CompBoundingSphere;
+    }
     CBoundingSphere(const vec3 &_center, float _radius)
         : center{_center}, radius{_radius} {
         m_compType = CompType::CompBoundingSphere;
@@ -19,5 +23,7 @@ class CBoundingSphere : public Component {
         center = _center;
     }
     vec3 center;
-    const float radius;
+    const float radius{DEFAULT_SPHERE_RADIUS};
+
+    static constexpr float DEFAULT_SPHERE_RADIUS{14.f};
 };

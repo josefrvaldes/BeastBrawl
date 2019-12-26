@@ -43,7 +43,7 @@ Car::Car() {
 
     // physics
     shared_ptr<CColliding> cColliding = make_shared<CColliding>(false);
-    shared_ptr<CBoundingSphere> cBoundSphere = make_shared<CBoundingSphere>(pos, 10.f);
+    shared_ptr<CBoundingSphere> cBoundSphere = make_shared<CBoundingSphere>(pos);
     // end physics
 
     AddComponent(cId);

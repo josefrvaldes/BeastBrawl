@@ -1,11 +1,13 @@
 #pragma once
 
-enum CompType { 
-    LastPositionComp, 
-    SpeedComp, 
-    IdComp, 
-    TypeComp, 
-    TextureComp, 
+#include <stdint.h>
+
+enum CompType {
+    LastPositionComp,
+    SpeedComp,
+    IdComp,
+    TypeComp,
+    TextureComp,
     MeshComp,
     TransformableComp,
     CameraComp,
@@ -28,17 +30,18 @@ enum CompType {
     CollidingComp
 };
 
-class Component
-{
-public:
-    Component() {};
-    ~Component() {};
+class Component {
+   public:
+    Component(){};
+    ~Component(){};
 
     CompType getType() { return m_compType; };
+    static const uint32_t ID_DIFFERENCE{100000};
+    static uint32_t nextId;
+    uint32_t ID{nextId++};
 
-protected:
+   protected:
     CompType m_compType;
 
-private:
-    
+   private:
 };
