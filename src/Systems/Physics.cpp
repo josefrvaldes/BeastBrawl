@@ -27,7 +27,7 @@ void Physics::update(Car *car, Camera *cam) {
         CalculatePosition(cCar, cTransformable, cSpeed, deltaTime);
     else
         CalculatePositionReverse(cCar, cTransformable, deltaTime);
-    //CalculatePositionCamera(cTransformable, cTransformableCam, cCamera);
+    CalculatePositionCamera(cTransformable, cTransformableCam, cCamera);
 }
 
 //Calcula la posicion del coche (duda con las formulas preguntar a Jose)

@@ -2,6 +2,7 @@
 
 #include "CLPhysics.h"
 #include <iostream>
+#include <sstream>
 #include "../Components/CAABoundingBox.h"
 #include "../Components/CBoundingPlane.h"
 #include "../Components/CBoundingSphere.h"
@@ -37,7 +38,7 @@ void CLPhysics::Simulate(float delta) {
 }
 
 void CLPhysics::RestartCollisionTimeIfNeeded(CColliding &collidingCar) {
-    const int RESTART_COLLITION_TIME = 500;
+    const int RESTART_COLLITION_TIME = 200;
     time_point<system_clock> now = system_clock::now();
     int64_t millis = duration_cast<milliseconds>(now - collidingCar.lastTimeCollided).count();
     if (millis > RESTART_COLLITION_TIME)
@@ -70,9 +71,11 @@ void CLPhysics::HandleCollisions() {
                 CColliding *collidingAI = static_cast<CColliding *>(cai->GetComponent(CompType::CollidingComp).get());
                 HandleCollisions(*trc, *spc, *ccarc, *collidingCar, *trcai, *spcai, *ccarcai, *collidingAI);
             } else
-                RestartCollisionTimeIfNeeded(*collidingAI);    
+                RestartCollisionTimeIfNeeded(*collidingAI);
         }
     } else {
+        // string txt = MakeString() << "No hemos entrado en el if porque el car estaba colliding";
+        // Utils::Cout(txt);
         // reseteamos el tiempo de invulnerabilidad si corresponde
         RestartCollisionTimeIfNeeded(*collidingCar);
     }
@@ -116,21 +119,33 @@ void CLPhysics::HandleCollisions(CTransformable &trCar1, CBoundingSphere &spCar1
     if (intersData.intersects) {
         // al chocar ponemos a true la invulnerabilidad después de la colisión
         colliding1.colliding = true;
+        colliding1.lastTimeCollided = system_clock::now();
         colliding2.colliding = true;
+        colliding2.lastTimeCollided = system_clock::now();
 
         float anguloCar1 = trCar1.rotation.y;
         float anguloCar2 = trCar2.rotation.y;
         float anguloEntreEllos = Utils::AngleBetweenTwoAngles(anguloCar1, anguloCar2);
-        cout << "El ángulo entre los dos que acaban de chocar es " << anguloEntreEllos << endl;
 
-        if (anguloEntreEllos > 0 && anguloEntreEllos <= 45) {
+        if (anguloEntreEllos > 0 && anguloEntreEllos <= 65) {
             // intercambiamos velocidades pero el ángulo no se toca
             cout << "Intercambiamos velocidades" << endl;
             float aux = ccarCar1.speed;
             ccarCar1.speed = ccarCar2.speed;
             ccarCar2.speed = aux;
-        } else if (anguloEntreEllos > 45 && anguloEntreEllos <= 135) {
+        } else if (anguloEntreEllos > 65 && anguloEntreEllos <= 115) {
+            // versión intercambio de vectores
             cout << "Rebotamos" << endl;
+            float aux = trCar1.rotation.y;
+            trCar1.rotation.y = trCar2.rotation.y;
+            trCar2.rotation.y = aux;
+
+            aux = ccarCar1.speed;
+            ccarCar1.speed = 5 + ccarCar2.speed / 2;
+            ccarCar2.speed = 5 + aux / 2;
+
+            // versión reflejo
+            /*cout << "Rebotamos" << endl;
             vec3 direccionCar;
             direccionCar.x = cos(anguloCar1 * M_PI / 180.0);
             direccionCar.y = 0;
@@ -154,13 +169,14 @@ void CLPhysics::HandleCollisions(CTransformable &trCar1, CBoundingSphere &spCar1
 
             float aux = ccarCar1.speed;
             ccarCar1.speed = ccarCar2.speed;
-            ccarCar2.speed = aux;
-        } else if (anguloEntreEllos > 135) {
+            ccarCar2.speed = aux;*/
+        } else if (anguloEntreEllos > 115) {
             // intercambiamos velocidades pero el ángulo no se toca
             cout << "Intercambiamos velocidades" << endl;
             float aux = ccarCar1.speed;
-            ccarCar1.speed = -ccarCar2.speed;
-            ccarCar2.speed = -aux;
+
+            ccarCar1.speed = -5 - ccarCar2.speed / 2;
+            ccarCar2.speed = -5 - aux / 2;
         }
     }
 }
