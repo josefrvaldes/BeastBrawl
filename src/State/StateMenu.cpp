@@ -15,8 +15,13 @@ StateMenu::StateMenu(){
 
 }
 
+// Cargamos los bancos de sonido Menu.
 void StateMenu::InitState() {
-
+    soundEngine = SoundFacadeManager::GetInstance()->GetSoundFacade();
+    // TO-DO: Aqui nunca entra en el StateMenu porque soundEngine es 0. El SoundEngine se declara por primera vez en el MainLoop y a este Init se le llama antes.
+    if (soundEngine){
+        soundEngine->SetState(2);
+    }
 }
 
 
