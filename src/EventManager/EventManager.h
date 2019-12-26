@@ -17,6 +17,8 @@ class EventManager {
     void UnSuscribeMulti(EventType, string);
     void AddEventMulti(Event);
     void Update();
+    void ClearEvents();
+    void ClearListeners();
 
    private:
     uint32_t id_single;

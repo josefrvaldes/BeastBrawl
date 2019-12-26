@@ -130,6 +130,14 @@ void EventManager::UnSuscribeMulti(EventType eType, string listenerName) {
     ShowSuscribers();
 }
 
+void EventManager::ClearEvents(){
+    eventList.clear();
+}
+
+void EventManager::ClearListeners(){
+    eventListenerMap.clear();
+}
+
 //DEBUG: Recorre y muestra todos los suscriptores
 //Fuente: https://stackoverflow.com/questions/26281979/c-loop-through-map
 void EventManager::ShowSuscribers() {
@@ -142,3 +150,4 @@ void EventManager::ShowSuscribers() {
         cout << "\n";
     }
 }
+

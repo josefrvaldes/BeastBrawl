@@ -2,14 +2,14 @@
 
 using namespace std;
 
-const shared_ptr<Game> Game::game = make_shared<Game>();
-shared_ptr<Game> Game::GetInstance() {
-    //static EventManager instance;
-    // if(instance==nullptr){
-    //     instance = make_shared<EventManager>();
-    // }
+Game* Game::game = 0;
+Game* Game::GetInstance() {
+    if(game==0){
+        game = new Game();
+    }
     return game;
 }
+
 
 void Game::SetState(State::States stateType) {
     switch (stateType) {
@@ -18,6 +18,7 @@ void Game::SetState(State::States stateType) {
             break;
         case State::MENU:
             currentState = make_shared<StateMenu>();
+            gameStarted = false;
             break;
         case State::CONTROLS:
             //currentState = new StateControls();
@@ -29,34 +30,49 @@ void Game::SetState(State::States stateType) {
             //currentState = new StateMap();
             break;
         case State::INGAME:
-            currentState = make_shared<StateInGame>();
+            if(!gameStarted){
+                currentState = make_shared<StateInGame>();
+                gameState = currentState;
+                gameStarted = true;
+            }else{
+                currentState = gameState;
+            }
+            break;
+        case State::PAUSE:
+            currentState = make_shared<StatePause>();
             break;
         case State::ENDRACE:
-            //currentState = new StateEndRace();
+            currentState = make_shared<StateEndRace>();
             break;
         default:
             cout << "This state doesn't exist" << endl;
     }
+    // Inicializa el estado cada vez que se cambia.
+    currentState->InitState();
 }
 
 void Game::InitGame() {
     // To-Do put window values
-    MainLoop();
+    renderFacadeManager = RenderFacadeManager::GetInstance();
+    renderFacadeManager->InitializeIrrlicht();
+
+    inputFacadeManager = InputFacadeManager::GetInstance();
+    inputFacadeManager->InitializeIrrlicht();
+
+    physicsFacadeManager = PhysicsFacadeManager::GetInstance();
+    physicsFacadeManager->InitializeIrrlicht();
 }
 
 void Game::MainLoop() {
-    shared_ptr<RenderFacadeManager> renderFacadeManager = RenderFacadeManager::GetInstance();
 
     renderFacadeManager->GetRenderFacade()->FacadeSetWindowCaption("Beast Brawl");
 
     //Lo creo aqui porque queria llamar al TerminateSoundEngine despues del bucle.
     SoundFacadeManager* soundFacadeManager = SoundFacadeManager::GetInstance();
-    
+
     //Si se incluye esta funcion en el constructor de SoundFacadeFMOD da violacion de segmento.
     soundFacadeManager->InitializeFacadeFmod();
     soundFacadeManager->GetSoundFacade()->InitSoundEngine();
-
-    currentState->InitState();
 
     while (renderFacadeManager->GetRenderFacade()->FacadeRun()) {
         currentState->Input();
@@ -66,5 +82,4 @@ void Game::MainLoop() {
     }
     soundFacadeManager->GetSoundFacade()->TerminateSoundEngine();
     renderFacadeManager->GetRenderFacade()->FacadeDeviceDrop();
-    //for(;;);  // To-Do: crear bucle del juego
 }

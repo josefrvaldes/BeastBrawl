@@ -1,5 +1,4 @@
-#ifndef __COMPONENT_H__
-#define __COMPONENT_H__
+#pragma once
 
 enum CompType { 
     LastPositionComp, 
@@ -12,7 +11,17 @@ enum CompType {
     CameraComp,
     WheelComp,
     WayPointComp,
-    CarComp
+    CarComp,
+    PowerUpComp,
+    BoxPowerUpComp,
+    ShieldComp,
+    NitroComp,
+    RoboJoroboComp,
+    TotemComp,
+    TargetEntityComp,
+    WayPointEdgesComp,
+    DimensionsComp,
+    PathComp
 };
 
 class Component
@@ -29,5 +38,3 @@ protected:
 private:
     
 };
-
-#endif

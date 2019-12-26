@@ -31,7 +31,7 @@ SoundFacadeFMOD::~SoundFacadeFMOD() {
 }
 
 //Puntero a funcion
-void SoundFacadeFMOD::SonarClaxon(Data d) {
+void SoundFacadeFMOD::SonarClaxon(DataMap d) {
     SonarUnaVez("pedo");
     cout << "Estoy entrando en el evento" << endl;
 }
@@ -180,12 +180,12 @@ void SoundFacadeFMOD::LoadBanksInGame() {
 //Carga eventos de sonido que pueden sonar muchas veces durante la partida
 void SoundFacadeFMOD::LoadEvent(const char* nameEvent) {
     //Si no esta el evento de sonido cargado, lo cargo.
-    FMOD::Studio::EventDescription* description = NULL;
+    //FMOD::Studio::EventDescription* description = NULL;
     if (soundDescriptions.find(nameEvent) == soundDescriptions.end()) {
         soundDescriptions[nameEvent] = nullptr;
 
         //TO-DO: Mejorar esta concatenacion
-        char* charEvent = "event:/";
+        char* charEvent = (char*)"event:/";
         char* event = (char*)malloc(1 + strlen(charEvent) + strlen(nameEvent));
         strcpy(event, charEvent);
         strcat(event, nameEvent);

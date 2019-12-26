@@ -1,8 +1,13 @@
-#ifndef STATEMENU_H
-#define STATEMENU_H
+#pragma once
 
-
-#include "../Game.h"
+#include "../EventManager/EventManager.h"
+#include "../Facade/Input/InputFacadeManager.h"
+#include "../Facade/Physics/PhysicsFacadeManager.h"
+#include "../Facade/Render/RenderFacadeManager.h"
+#include "../Facade/Sound/SoundFacadeManager.h"
+#include "../Facade/Sound/SoundFacade.h"
+//#include "../Game.h"
+#include "../State/State.h"
 
 
 class StateMenu : public State{
@@ -17,8 +22,14 @@ class StateMenu : public State{
 
 
     private:
+        RenderFacadeManager* renderFacadeManager;
+        InputFacadeManager* inputFacadeManager;
+        PhysicsFacadeManager* physicsFacadeManager;
+        RenderFacade* renderEngine;
+        InputFacade* inputEngine;
+        PhysicsFacade* physicsEngine;
+
+
 	
 };
 
-
-#endif  // STATEMENU_H 

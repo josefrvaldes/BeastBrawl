@@ -8,7 +8,6 @@ CWheel::CWheel(){
 }
 
 
-
 CWheel::CWheel(float _offsetX,float _offsetZ) : offsetX(_offsetX), offsetZ(_offsetZ){
     m_compType = CompType::WheelComp;
     

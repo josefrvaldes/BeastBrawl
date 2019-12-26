@@ -9,6 +9,7 @@
 
 #include "../../EventManager/EventManager.h"
 #include "../../EventManager/Event.h"
+#include "../../Aliases.h"
 #include "SoundFacade.h"
 
 using namespace std;
@@ -53,9 +54,9 @@ class SoundFacadeFMOD : public SoundFacade {
 
 
         // eventos del juego
-        void SonarClaxon(Data);
-        void SoniditoTecla(Data);
-        void VozAlElegirPersonaje(Data);
+        void SonarClaxon(DataMap);
+        void SoniditoTecla(DataMap);
+        void VozAlElegirPersonaje(DataMap);
 
 
         // metodos de sonido

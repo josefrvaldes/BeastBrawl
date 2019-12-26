@@ -11,12 +11,13 @@ using namespace std;
 class PhysicsFacadeIrrlicht : public PhysicsFacade {
    public:
     PhysicsFacadeIrrlicht();
+    ~PhysicsFacadeIrrlicht();
     void UpdateCar(Entity*, Entity*) override;
     void UpdateCarAI(Entity*) override;
-    ~PhysicsFacadeIrrlicht();
+    void UpdatePowerUps(Entity*) override;
 
    private:
     void UpdateCam(Entity*);
-    shared_ptr<RenderFacadeIrrlicht> renderEngineIrrlicht;
+    RenderFacadeIrrlicht* renderEngineIrrlicht;
     scene::ISceneManager* smgr;
 };

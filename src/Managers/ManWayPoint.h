@@ -4,6 +4,9 @@
 #include <map>
 #include <vector>
 #include <memory>
+#include <fstream>
+#include <string>
+#include <stdlib.h>
 #include "../../lib/glm/vec3.hpp"
 
 class WayPoint;
@@ -11,17 +14,19 @@ using namespace std;
 
 class ManWayPoint{
 public:
-    ManWayPoint();
+    ManWayPoint(); //Aqui leemos el archivo
     ~ManWayPoint();
 
     void CreateWayPoint(glm::vec3 _position);
-    void CreateWayPoint();
     void CreateWayPoint(glm::vec3 _position, int type, int id);
+    void CreateWayPoint();
     vector<shared_ptr<WayPoint>> GetEntities() const {
         return waypoints;
     };
 
+
 private:
+    void AddEdges();
 	vector<shared_ptr<WayPoint>> waypoints;
     //void SubscribeToEvents();
 };

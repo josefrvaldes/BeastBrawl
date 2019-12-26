@@ -1,16 +1,15 @@
-#ifndef DECORATOR_H
-#define DECORATOR_H
+#pragma once
 
 #include "behaviourTree.h"
 #include <memory>
 
 using namespace std;
 
+struct Blackboard;
+
 class Decorator: public behaviourTree{
-
-
     public:
-        virtual bool run() = 0;
+        virtual bool run(Blackboard* blackboard) = 0;
         void addChild(shared_ptr<behaviourTree> child);
         shared_ptr<behaviourTree> getChild(){ return child; };
 
@@ -18,5 +17,3 @@ class Decorator: public behaviourTree{
         shared_ptr<behaviourTree> child;
 };
 
-
-#endif // DECORATOR_H

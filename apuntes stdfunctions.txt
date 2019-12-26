@@ -1,0 +1,3 @@
+explica "hacks" de cómo evitar las pérdidas de rendimiento de std::function
+https://blog.demofox.org/2015/02/25/avoiding-the-performance-hazzards-of-stdfunction/
+
