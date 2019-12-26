@@ -28,6 +28,7 @@ class StateMenu : public State{
         RenderFacade* renderEngine;
         InputFacade* inputEngine;
         PhysicsFacade* physicsEngine;
+        SoundFacade* soundEngine;
 
 
 	

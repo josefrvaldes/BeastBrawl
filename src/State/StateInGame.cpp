@@ -162,9 +162,12 @@ StateInGame::~StateInGame() {
     // destructor
 }
 
+//Carga los bancos de sonido InGame.
 void StateInGame::InitState() {
     soundEngine = SoundFacadeManager::GetInstance()->GetSoundFacade();
-    soundEngine->SetState(2);
+    if (soundEngine){
+        soundEngine->SetState(4);
+    }
 }
 
 void StateInGame::Input() {

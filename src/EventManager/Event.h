@@ -40,7 +40,7 @@ enum EventType {
     CATCH_AI_BOX_POWERUP,
     DROP_TOTEM,
     THROW_POWERUP_AI,
-    PRESS_1,
+    PRESS_P,
     UPDATE_POWERUP_HUD
 };
 
