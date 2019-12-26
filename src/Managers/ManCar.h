@@ -27,12 +27,16 @@ class ManCar : public Manager {
 
     void CreateCar();
     void CreateMainCar();
-    shared_ptr<Car> &GetCar() { return car; };
+    void UpdateCar();
+    void UpdateCarAI(CarAI* car);
+    shared_ptr<Car>& GetCar() { return car; };
 
     void CreateCarAI();
     void CreateCarAI(glm::vec3 _position, CWayPoint* _waypoint);
     vector<shared_ptr<CarAI>> GetEntitiesAI() const { return CarAIs; };
-    CTransformable *calculateCloserAI();
+    CTransformable* calculateCloserCar(Entity* actualCar);
+    bool carInVisionRange(Entity* actualCar, Entity* otherCar, uint32_t rangeVision);
+    bool anyCarInVisionRange(Entity* actualCar, uint32_t rangeVision);
     void Integrate(float) override;
 
    private:
@@ -49,11 +53,12 @@ class ManCar : public Manager {
     void CollisionPowerUpAI(DataMap d);
     void CatchTotemPlayer(DataMap d);
     void CatchTotemAI(DataMap d);
-    void ThrowTotem(Car* carLoseTotem);
-    void CatchTotem(Car* carWinTotem);
-    bool useRoboJorobo(Car* newCarWithTotem);
+    void UseTotem(Entity* carWinTotem);
+    void ThrowTotem(Entity* carLoseTotem);
+    bool useRoboJorobo(Entity* newCarWithTotem);
 
     void ThrowPowerUp(DataMap d);
+    void ThrowPowerUpAI(DataMap d);
     void CatchPowerUp(DataMap d);
     void CatchPowerUpAI(DataMap d);
     shared_ptr<Car> car;

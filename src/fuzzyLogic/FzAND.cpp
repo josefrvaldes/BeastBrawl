@@ -47,7 +47,6 @@ double FzAND::GetDOM()const{
 	//std::cout << "hola4" << std::endl;
 	// DUDA en el ejemplo se iguala a 0, supomgo que esta mal
 	double minDOM = 1000000;
-	//std::cout << "hola5" << std::endl;
 	for (auto curTerm = arrayFzAND.begin(); curTerm != arrayFzAND.end(); ++curTerm){
 		if( (*curTerm)->GetDOM() < minDOM  )
 			minDOM = (*curTerm)->GetDOM();
@@ -62,7 +61,6 @@ void FzAND::ClearDOM(){
 }
 // method for updating the DOM of a consequent when a rule fires
 void FzAND::ORwithDOM(double val){
-	//std::cout << "hola3" << std::endl;
 	for (auto curTerm = arrayFzAND.begin(); curTerm != arrayFzAND.end(); ++curTerm){
 		(*curTerm)->ORwithDOM(val);
 	}

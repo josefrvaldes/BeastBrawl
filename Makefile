@@ -31,9 +31,12 @@ ALLCPPSOBJ	:= $(patsubst $(SRC_PATH)/%.cpp,$(OBJ_PATH)/%.o,$(ALLCPPS))
 SUBDIRS		:= $(shell find src/ -type d)
 OBJSUBDIRS  := $(patsubst $(SRC_PATH)%,$(OBJ_PATH)%,$(SUBDIRS))
 
+CREATE_SYMLINKS := bash symlinks.sh
+
 
 #Esto crea el ejecutable
 $(NAME_EXE): $(OBJSUBDIRS) $(ALLCPPSOBJ)
+	$(CREATE_SYMLINKS)
 	$(COMPILING_TEXT_OK)
 	$(JUMP_LINE)
 	$(LINKING_TEXT)
@@ -60,6 +63,7 @@ info:
 
 .PHONY: exe
 exe:
+	$(CREATE_SYMLINKS)
 	@sh ./$(NAME_EXE).sh
 
 .PHONY: clean

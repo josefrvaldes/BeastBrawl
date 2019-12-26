@@ -14,6 +14,7 @@
 #include "../Components/CRoboJorobo.h"
 #include "../Components/CNitro.h"
 #include "../Components/CBoundingSphere.h"
+#include "../Components/CColliding.h"
 #include <iostream>
 
 class Position;
@@ -44,6 +45,7 @@ CarAI::CarAI(){
     shared_ptr<CSpeed> cSpeed = make_shared<CSpeed>();
 
 
+    shared_ptr<CColliding> cColliding = make_shared<CColliding>(false);
     shared_ptr<CBoundingSphere> cBoundSphere = make_shared<CBoundingSphere>(pos, 20.f);
     AddComponent(cId);
     AddComponent(cType);
@@ -59,6 +61,7 @@ CarAI::CarAI(){
     AddComponent(cTotem);
     AddComponent(cPath);
     AddComponent(cBoundSphere);
+    AddComponent(cColliding);
     AddComponent(cSpeed);
     cout << "Acabamos de llamar al constructor default de car, su transformable es " << cTransformable << endl;
 }
@@ -82,6 +85,7 @@ CarAI::CarAI(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale,
     shared_ptr<CTotem> cTotem = make_shared<CTotem>();
     shared_ptr<CPath> cPath   = make_shared<CPath>();
     shared_ptr<CBoundingSphere> cBoundSphere = make_shared<CBoundingSphere>(pos, 30.f);
+    shared_ptr<CColliding> cColliding = make_shared<CColliding>(false);
 
     AddComponent(cId);
     AddComponent(cType);
@@ -96,6 +100,7 @@ CarAI::CarAI(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale,
     AddComponent(cTotem);
     AddComponent(cPath);
     AddComponent(cBoundSphere);
+    AddComponent(cColliding);
     cout << "Acabamos de llamar al constructor default de car, su transformable es " << cTransformable << endl;
 
 

@@ -12,13 +12,10 @@
 #include "../../Components/CWayPoint.h"
 #include "../../Components/CWayPointEdges.h"
 #include "../../Components/CDimensions.h"
+#include "../../Components/CTotem.h"
 #include "../../Entities/WayPoint.h"
-#include <math.h>
-
 #include "../../Game.h"
 
-
-#define PI 3.14159
 
 //PUNTEROS A FUNCIONES
 RenderFacadeIrrlicht::~RenderFacadeIrrlicht() {
@@ -30,7 +27,14 @@ RenderFacadeIrrlicht::RenderFacadeIrrlicht() {
     device = createDevice(video::EDT_OPENGL, core::dimension2d<u32>(1280, 720), 16, false, false, false, &receiver);
     driver = device->getVideoDriver();
     smgr = device->getSceneManager();
+    font = device->getGUIEnvironment()->getBuiltInFont();
+}
 
+void RenderFacadeIrrlicht::FacadeSuscribeEvents(){
+    EventManager::GetInstance()->Suscribe(Listener{
+                EventType::UPDATE_POWERUP_HUD,
+                bind(&RenderFacadeIrrlicht::FacadeUpdatePowerUpHUD, this, placeholders::_1),
+                "facadeUpdatePowerUpHUD"});
 }
 
 void RenderFacadeIrrlicht::FacadeInitMenu(){
@@ -43,11 +47,89 @@ void RenderFacadeIrrlicht::FacadeInitPause(){
     driver->makeColorKeyTexture(pauseBG, core::position2d<s32>(0,0));
 }
 
+void RenderFacadeIrrlicht::FacadeInitEndRace(){
+    endRaceBG = driver->getTexture("media/resultsMenu.png");
+    driver->makeColorKeyTexture(endRaceBG, core::position2d<s32>(0,0));
+}
+
+void RenderFacadeIrrlicht::FacadeInitHUD(){
+    //Almacenamos los iconos de powerups
+    powerUps[0] = driver->getTexture("media/nonepowerup.jpg");
+    powerUps[1] = driver->getTexture("media/robojorobo.jpg");
+    powerUps[2] = driver->getTexture("media/nitro.jpg");
+    powerUps[3] = driver->getTexture("media/pudin.jpg");
+    powerUps[4] = driver->getTexture("media/escudomerluzo.jpg");
+    powerUps[5] = driver->getTexture("media/telebanana.jpg");
+    powerUps[6] = driver->getTexture("media/melonmolon.jpg");
+
+    whiteBG = driver->getTexture("media/whiteBG.png");
+    driver->makeColorKeyTexture(whiteBG, core::position2d<s32>(0,0));
+
+
+    driver->makeColorKeyTexture(powerUps[0], core::position2d<s32>(0,0));
+    driver->makeColorKeyTexture(powerUps[1], core::position2d<s32>(0,0));
+    driver->makeColorKeyTexture(powerUps[2], core::position2d<s32>(0,0));
+    driver->makeColorKeyTexture(powerUps[3], core::position2d<s32>(0,0));
+    driver->makeColorKeyTexture(powerUps[4], core::position2d<s32>(0,0));
+    driver->makeColorKeyTexture(powerUps[5], core::position2d<s32>(0,0));
+    driver->makeColorKeyTexture(powerUps[6], core::position2d<s32>(0,0));
+
+    currentPowerUp = 0;
+}
+
+void RenderFacadeIrrlicht::FacadeUpdatePowerUpHUD(DataMap d){
+    typeCPowerUp type = any_cast<typeCPowerUp>(d["typePowerUp"]);
+    cout << "Facada recibe el power up: " << (int)type << endl;
+    currentPowerUp = int(type);    
+}
+
+void RenderFacadeIrrlicht::FacadeDrawHUD(Entity* car, ManCar* carsAI){
+    //Dibujamos el texto del tiempo que llevas el totem
+    auto cTotem = static_cast<CTotem*>(car->GetComponent(CompType::TotemComp).get());
+
+    //Dibujamos el cuadrado blanco del hud
+    driver->draw2DImage(whiteBG, core::position2d<s32>(200,50),
+                core::rect<s32>(0,0,100,100), 0,
+                video::SColor(255,255,255,255), false);
+
+    //operaciones para dejarle con un solo decimal
+    int time = cTotem->accumulatedTime / 100.0;
+    float time2 = time/10.0;
+    core::stringw mainCarText = core::stringw("Main car   ");
+    core::stringw tiempoStringw = mainCarText + core::stringw(time2);
+    font->draw(tiempoStringw,
+                    core::rect<s32>(200,55,300,200),
+                    video::SColor(255,0,0,0));
+    //Dibujamos powerUp
+    driver->draw2DImage(powerUps[currentPowerUp], core::position2d<s32>(50,50),
+                core::rect<s32>(0,0,100,100), 0,
+                video::SColor(255,255,255,255), false);
+
+    int i = 0;
+    core::stringw textIA = core::stringw("Car AI ");
+    for(auto carAI : carsAI->GetEntitiesAI()){
+        cTotem = static_cast<CTotem*>(carAI->GetComponent(CompType::TotemComp).get());
+
+        int time = cTotem->accumulatedTime / 100.0;
+        float time2 = time/10.0;
+
+        core::stringw iaText = textIA + core::stringw(i) + core::stringw("  ") + core::stringw(time2);
+        font->draw(iaText,
+                        core::rect<s32>(200,70 + (i*15),300,300),
+                        video::SColor(255,0,0,0));
+
+        i++;
+    }
+
+}
+
+
 const void RenderFacadeIrrlicht::FacadeAddObjects(vector<Entity*> entities) {
     for (Entity* e : entities) {
         FacadeAddObject(e);
     }
 }
+
 
 //INPUTS : Una entidad GameObject
 //RETURNS: El Id del objeto añadido
@@ -125,8 +207,8 @@ const uint16_t RenderFacadeIrrlicht::FacadeAddObject(Entity* entity) {
 
 	delete[] edges; 
     return cId->id;
-
 }
+
 
 //INPUTS : Una entidad GameObject
 //RETURNS: El Id del objeto añadido
@@ -135,6 +217,7 @@ const uint16_t RenderFacadeIrrlicht::FacadeAddObjectCar(Entity* entity) {
     idCar = FacadeAddObject(entity);
     return idCar;
 }
+
 
 //TODO: Esto proximamente le pasaremos todos los entities y los modificará 1 a 1
 void RenderFacadeIrrlicht::UpdateTransformable(Entity* entity) {
@@ -155,6 +238,7 @@ void RenderFacadeIrrlicht::UpdateTransformable(Entity* entity) {
     node->setScale(core::vector3df(cTransformable->scale.x, cTransformable->scale.y, cTransformable->scale.z));
 }
 
+
 //Reajusta la camara
 void RenderFacadeIrrlicht::UpdateCamera(Entity* cam) {
     //Cogemos los componentes de la camara
@@ -169,6 +253,7 @@ void RenderFacadeIrrlicht::UpdateCamera(Entity* cam) {
     camera1->setPosition(core::vector3df(cTransformable->position.x, cTransformable->position.y, cTransformable->position.z));
 }
 
+
 //Añade la camara, esto se llama una sola vez al crear el juego
 void RenderFacadeIrrlicht::FacadeAddCamera(Entity* camera) {
     camera1 = smgr->addCameraSceneNode();
@@ -179,10 +264,10 @@ void RenderFacadeIrrlicht::FacadeAddCamera(Entity* camera) {
 
     float posX = cCamera->tarX - 40.0 * sin(((cTransformable->rotation.x) * PI) / 180.0);
     float posZ = cCamera->tarZ - 40.0 * cos(((cTransformable->rotation.z) * PI) / 180.0);
-
     camera1->setTarget(core::vector3df(cCamera->tarX, cCamera->tarY, cCamera->tarZ));
     camera1->setPosition(core::vector3df(posX, cTransformable->position.y, posZ));
 }
+
 
 bool RenderFacadeIrrlicht::FacadeRun() {
     return device->run();
@@ -192,10 +277,12 @@ uint32_t RenderFacadeIrrlicht::FacadeGetTime() {
     return device->getTimer()->getTime();
 }
 
+
+// To-Do: introducir multi input
+// Comprobar inputs del teclado
 void RenderFacadeIrrlicht::FacadeCheckInput() {
     shared_ptr<EventManager> eventManager = EventManager::GetInstance();
 
-	
     if (receiver.IsKeyDown(KEY_ESCAPE)) {
         device->closeDevice();
     }
@@ -232,13 +319,11 @@ void RenderFacadeIrrlicht::FacadeCheckInput() {
 		showDebug = !showDebug;
 	}
 
-
     // POWERUPS
     if (receiver.IsKeyDown(KEY_SPACE)) {
+
         eventManager->AddEventMulti(Event{EventType::PRESS_SPACE});
     }
-
-
 
     //Cambiamos a menu
     if(receiver.IsKeyDown(KEY_F2)){
@@ -262,6 +347,20 @@ void RenderFacadeIrrlicht::FacadeCheckInputPause(){
     if(receiver.IsKeyDown(KEY_F3)){
         Game::GetInstance()->SetState(State::INGAME);
     }
+
+    if(receiver.IsKeyDown(KEY_F4)){
+        smgr->clear();
+        EventManager::GetInstance()->ClearListeners();
+        EventManager::GetInstance()->ClearEvents();
+        Game::GetInstance()->SetState(State::MENU);
+    }
+
+    if (receiver.IsKeyDown(KEY_ESCAPE)) {
+        device->closeDevice();
+    }
+}
+
+void RenderFacadeIrrlicht::FacadeCheckInputEndRace(){
 
     if(receiver.IsKeyDown(KEY_F4)){
         smgr->clear();
@@ -315,6 +414,15 @@ void RenderFacadeIrrlicht::FacadeDrawPause(){
     driver->endScene();
 }
 
+void RenderFacadeIrrlicht::FacadeDrawEndRace(){
+    driver->beginScene(true, true, video::SColor(255, 113, 113, 133));
+    //smgr->drawAll();  // draw the 3d scene
+    driver->draw2DImage(endRaceBG, core::position2d<s32>(0,0),
+                core::rect<s32>(0,0,1280,720), 0,
+                video::SColor(255,255,255,255), true);
+    driver->endScene();
+}
+
 
 //Limpia la pantalla
 void RenderFacadeIrrlicht::FacadeBeginScene() {
@@ -332,6 +440,7 @@ void RenderFacadeIrrlicht::FacadeEndScene() {
 void RenderFacadeIrrlicht::FacadeDeviceDrop() {
     device->drop();
 }
+
 
 //DEBUG dibuja las aristas entre los nodos del grafo
 void RenderFacadeIrrlicht::FacadeDrawGraphEdges(ManWayPoint* manWayPoints){
@@ -368,8 +477,6 @@ void RenderFacadeIrrlicht::FacadeDrawGraphEdges(ManWayPoint* manWayPoints){
 
 			}
         }
-
-
     }
 }
 
@@ -389,6 +496,8 @@ void RenderFacadeIrrlicht::FacadeDrawBoundingBox(Entity* entity, bool colliding)
 	core::aabbox3df boundingBox;
 
 	boundingBox = node->getTransformedBoundingBox();
+
+    
 	/*
 		   /3--------/7
 		  / |       / |

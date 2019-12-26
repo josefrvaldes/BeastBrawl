@@ -13,6 +13,7 @@
 #include "../Components/CTransformable.h"
 #include "../Components/CType.h"
 #include "../Components/CSpeed.h"
+#include "../Components/CColliding.h"
 
 class Position;
 
@@ -41,7 +42,8 @@ Car::Car() {
     shared_ptr<CTotem> cTotem = make_shared<CTotem>();
 
     // physics
-    shared_ptr<CBoundingSphere> cBoundSphere = make_shared<CBoundingSphere>(pos, 20.f);
+    shared_ptr<CColliding> cColliding = make_shared<CColliding>(false);
+    shared_ptr<CBoundingSphere> cBoundSphere = make_shared<CBoundingSphere>(pos, 10.f);
     // end physics
 
     AddComponent(cId);
@@ -56,6 +58,7 @@ Car::Car() {
     AddComponent(cRoboJorobo);
     AddComponent(cTotem);
     AddComponent(cBoundSphere);
+    AddComponent(cColliding);
     AddComponent(cSpeed);
     cout << "Acabamos de llamar al constructor default de car, su transformable es " << cTransformable << endl;
 }
@@ -73,6 +76,7 @@ Car::Car(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale,
     shared_ptr<CShield> cShield = make_shared<CShield>();
     shared_ptr<CNitro> cNitro = make_shared<CNitro>();
     shared_ptr<CRoboJorobo> cRoboJorobo = make_shared<CRoboJorobo>();
+    shared_ptr<CColliding> cColliding = make_shared<CColliding>(false);
     shared_ptr<CTotem> cTotem = make_shared<CTotem>();
 
     AddComponent(cId);
@@ -86,6 +90,7 @@ Car::Car(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale,
     AddComponent(cNitro);
     AddComponent(cRoboJorobo);
     AddComponent(cTotem);
+    AddComponent(cColliding);
     cout << "Acabamos de llamar al constructor default de car, su transformable es " << cTransformable << endl;
 }
 

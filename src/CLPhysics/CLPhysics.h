@@ -8,6 +8,8 @@ using namespace std;
 class Manager;
 class CTransformable;
 class CBoundingSphere;
+class CCar;
+class CColliding;
 
 class CLPhysics {
    public:
@@ -25,6 +27,7 @@ class CLPhysics {
 
    protected:
    private:
-    void HandleCollisions(CTransformable &trCar1, CBoundingSphere &spCar1, CTransformable &trCar2, CBoundingSphere &spCar2);
+    void HandleCollisions(CTransformable &trCar1, CBoundingSphere &spCar1, CCar &, CColliding &, CTransformable &trCar2, CBoundingSphere &spCar2, CCar &, CColliding &);
+    void RestartCollisionTimeIfNeeded(CColliding &collidingCar);
     vector<Manager *> managers;
 };

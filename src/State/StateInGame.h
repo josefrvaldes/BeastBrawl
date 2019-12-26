@@ -83,6 +83,7 @@ class StateInGame : public State {
     shared_ptr<SystemBoxPowerUp> sysBoxPowerUp;
     shared_ptr<Collisions> collisions;
     shared_ptr<Totem> totem;
+    shared_ptr<Entity> totemOnCar;
 
     unique_ptr<CLPhysics> clPhysics;
 

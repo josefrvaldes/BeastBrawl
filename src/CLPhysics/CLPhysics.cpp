@@ -5,12 +5,15 @@
 #include "../Components/CAABoundingBox.h"
 #include "../Components/CBoundingPlane.h"
 #include "../Components/CBoundingSphere.h"
+#include "../Components/CCar.h"
+#include "../Components/CColliding.h"
 #include "../Components/CSpeed.h"
 #include "../Components/CTransformable.h"
 #include "../Entities/Car.h"
 #include "../Entities/CarAI.h"
 #include "../Managers/ManCar.h"
 #include "../Managers/Manager.h"
+#include "../Systems/Utils.h"
 
 using namespace std;
 
@@ -33,63 +36,132 @@ void CLPhysics::Simulate(float delta) {
     }
 }
 
+void CLPhysics::RestartCollisionTimeIfNeeded(CColliding &collidingCar) {
+    const int RESTART_COLLITION_TIME = 500;
+    time_point<system_clock> now = system_clock::now();
+    int64_t millis = duration_cast<milliseconds>(now - collidingCar.lastTimeCollided).count();
+    if (millis > RESTART_COLLITION_TIME)
+        collidingCar.colliding = false;
+}
+
 void CLPhysics::HandleCollisions() {
     ManCar *manCar = static_cast<ManCar *>(managers[0]);
     Car *c = manCar->GetCar().get();
-    CBoundingSphere *spc = static_cast<CBoundingSphere *>(c->GetComponent(CompType::CompBoundingSphere).get());
-    CTransformable *trc = static_cast<CTransformable *>(c->GetComponent(CompType::TransformableComp).get());
-    spc->center = trc->position;
+    CColliding *collidingCar = static_cast<CColliding *>(c->GetComponent(CompType::CollidingComp).get());
 
     vector<shared_ptr<CarAI>> entities = manCar->GetEntitiesAI();
     size_t numEntities = entities.size();
-    // mi coche con todos los coches de AI
-    for (size_t i = 0; i < numEntities; i++) {
-        CarAI *cai = manCar->GetEntitiesAI()[i].get();
-        CBoundingSphere *spcai = static_cast<CBoundingSphere *>(cai->GetComponent(CompType::CompBoundingSphere).get());
-        CTransformable *trcai = static_cast<CTransformable *>(cai->GetComponent(CompType::TransformableComp).get());
-        HandleCollisions(*trc, *spc, *trcai, *spcai);
+
+    // solo comprobamos colisiones si el coche no está en el tiempo de invulnerabilidad después de una colisión
+    if (!collidingCar->colliding) {
+        CBoundingSphere *spc = static_cast<CBoundingSphere *>(c->GetComponent(CompType::CompBoundingSphere).get());
+        CTransformable *trc = static_cast<CTransformable *>(c->GetComponent(CompType::TransformableComp).get());
+        CCar *ccarc = static_cast<CCar *>(c->GetComponent(CompType::CarComp).get());
+        spc->center = trc->position;
+
+        // mi coche con todos los coches de AI
+        for (size_t i = 0; i < numEntities; i++) {
+            CarAI *cai = manCar->GetEntitiesAI()[i].get();
+            CColliding *collidingAI = static_cast<CColliding *>(cai->GetComponent(CompType::CollidingComp).get());
+            if (!collidingAI->colliding) {
+                CBoundingSphere *spcai = static_cast<CBoundingSphere *>(cai->GetComponent(CompType::CompBoundingSphere).get());
+                CTransformable *trcai = static_cast<CTransformable *>(cai->GetComponent(CompType::TransformableComp).get());
+                CCar *ccarcai = static_cast<CCar *>(cai->GetComponent(CompType::CarComp).get());
+                CColliding *collidingAI = static_cast<CColliding *>(cai->GetComponent(CompType::CollidingComp).get());
+                HandleCollisions(*trc, *spc, *ccarc, *collidingCar, *trcai, *spcai, *ccarcai, *collidingAI);
+            } else
+                RestartCollisionTimeIfNeeded(*collidingAI);    
+        }
+    } else {
+        // reseteamos el tiempo de invulnerabilidad si corresponde
+        RestartCollisionTimeIfNeeded(*collidingCar);
     }
 
     // las ias entre sí
     for (size_t i = 0; i < numEntities; i++) {
         for (size_t j = i + 1; j < numEntities; j++) {
             CarAI *car1 = manCar->GetEntitiesAI()[i].get();
-            CBoundingSphere *spcar1 = static_cast<CBoundingSphere *>(car1->GetComponent(CompType::CompBoundingSphere).get());
-            CTransformable *trcar1 = static_cast<CTransformable *>(car1->GetComponent(CompType::TransformableComp).get());
+            CColliding *colliding1 = static_cast<CColliding *>(car1->GetComponent(CompType::CollidingComp).get());
 
             CarAI *car2 = manCar->GetEntitiesAI()[j].get();
-            CBoundingSphere *spcar2 = static_cast<CBoundingSphere *>(car2->GetComponent(CompType::CompBoundingSphere).get());
-            CTransformable *trcar2 = static_cast<CTransformable *>(car2->GetComponent(CompType::TransformableComp).get());
-            HandleCollisions(*trcar1, *spcar1, *trcar2, *spcar2);
+            CColliding *colliding2 = static_cast<CColliding *>(car2->GetComponent(CompType::CollidingComp).get());
+
+            // al colisionar hay un pequeño tiempo de respawn en el que no pueden volver a colisionar
+            // en este if solamente entramos si ambas entidades NO están en ese tiempo de respawn
+            if (!colliding1->colliding && !colliding2->colliding) {
+                CBoundingSphere *spcar1 = static_cast<CBoundingSphere *>(car1->GetComponent(CompType::CompBoundingSphere).get());
+                CTransformable *trcar1 = static_cast<CTransformable *>(car1->GetComponent(CompType::TransformableComp).get());
+                CCar *ccarcar1 = static_cast<CCar *>(car1->GetComponent(CompType::CarComp).get());
+
+                CBoundingSphere *spcar2 = static_cast<CBoundingSphere *>(car2->GetComponent(CompType::CompBoundingSphere).get());
+                CTransformable *trcar2 = static_cast<CTransformable *>(car2->GetComponent(CompType::TransformableComp).get());
+                CCar *ccarcar2 = static_cast<CCar *>(car2->GetComponent(CompType::CarComp).get());
+
+                HandleCollisions(*trcar1, *spcar1, *ccarcar1, *colliding1, *trcar2, *spcar2, *ccarcar2, *colliding2);
+            } else {
+                // restauramos la posibilidad de colisionar si corresponde
+                if (colliding1->colliding)
+                    RestartCollisionTimeIfNeeded(*colliding1);
+                if (colliding2->colliding)
+                    RestartCollisionTimeIfNeeded(*colliding2);
+            }
         }
     }
 }
 
-void CLPhysics::HandleCollisions(CTransformable &trCar1, CBoundingSphere &spCar1, CTransformable &trCar2, CBoundingSphere &spCar2) {
+void CLPhysics::HandleCollisions(CTransformable &trCar1, CBoundingSphere &spCar1, CCar &ccarCar1, CColliding &colliding1,
+                                 CTransformable &trCar2, CBoundingSphere &spCar2, CCar &ccarCar2, CColliding &colliding2) {
     spCar2.center = trCar2.position;
     IntersectData intersData = spCar1.IntersectSphere(spCar2);
     if (intersData.intersects) {
-        float anguloCar = trCar1.rotation.y;
-        vec3 direccionCar;
-        direccionCar.x = cos(anguloCar * M_PI / 180.0);
-        direccionCar.y = 0;
-        direccionCar.z = sin(anguloCar * M_PI / 180.0);
-        float anguloCarAI = trCar2.rotation.y;
-        vec3 direccionCarAI;
-        direccionCarAI.x = cos(anguloCarAI * M_PI / 180.0);
-        direccionCarAI.y = 0;
-        direccionCarAI.z = sin(anguloCarAI * M_PI / 180.0);
+        // al chocar ponemos a true la invulnerabilidad después de la colisión
+        colliding1.colliding = true;
+        colliding2.colliding = true;
 
-        vec3 nuevaDirectionCar1 = glm::reflect(direccionCar, direccionCarAI);
-        vec3 nuevaDirectionCar2 = glm::reflect(direccionCarAI, direccionCar);
+        float anguloCar1 = trCar1.rotation.y;
+        float anguloCar2 = trCar2.rotation.y;
+        float anguloEntreEllos = Utils::AngleBetweenTwoAngles(anguloCar1, anguloCar2);
+        cout << "El ángulo entre los dos que acaban de chocar es " << anguloEntreEllos << endl;
 
-        float nuevoAnguloCar1Rad = atan2(nuevaDirectionCar1.x, nuevaDirectionCar1.z);
-        float nuevoAnguloCar1Deg = nuevoAnguloCar1Rad * (180.0 / M_PI);
-        float nuevoAnguloCar2Rad = atan2(nuevaDirectionCar2.x, nuevaDirectionCar2.z);
-        float nuevoAnguloCar2Deg = nuevoAnguloCar2Rad * (180.0 / M_PI);
+        if (anguloEntreEllos > 0 && anguloEntreEllos <= 45) {
+            // intercambiamos velocidades pero el ángulo no se toca
+            cout << "Intercambiamos velocidades" << endl;
+            float aux = ccarCar1.speed;
+            ccarCar1.speed = ccarCar2.speed;
+            ccarCar2.speed = aux;
+        } else if (anguloEntreEllos > 45 && anguloEntreEllos <= 135) {
+            cout << "Rebotamos" << endl;
+            vec3 direccionCar;
+            direccionCar.x = cos(anguloCar1 * M_PI / 180.0);
+            direccionCar.y = 0;
+            direccionCar.z = sin(anguloCar1 * M_PI / 180.0);
 
-        trCar1.rotation.y = nuevoAnguloCar1Deg;
-        trCar2.rotation.y = nuevoAnguloCar2Deg;
+            vec3 direccionCarAI;
+            direccionCarAI.x = cos(anguloCar2 * M_PI / 180.0);
+            direccionCarAI.y = 0;
+            direccionCarAI.z = sin(anguloCar2 * M_PI / 180.0);
+
+            vec3 nuevaDirectionCar1 = glm::reflect(direccionCar, direccionCarAI);
+            vec3 nuevaDirectionCar2 = glm::reflect(direccionCarAI, direccionCar);
+
+            float nuevoAnguloCar1Rad = atan2(nuevaDirectionCar1.x, nuevaDirectionCar1.z);
+            float nuevoAnguloCar1Deg = nuevoAnguloCar1Rad * (180.0 / M_PI);
+            float nuevoAnguloCar2Rad = atan2(nuevaDirectionCar2.x, nuevaDirectionCar2.z);
+            float nuevoAnguloCar2Deg = nuevoAnguloCar2Rad * (180.0 / M_PI);
+
+            trCar1.rotation.y = nuevoAnguloCar1Deg;
+            trCar2.rotation.y = nuevoAnguloCar2Deg;
+
+            float aux = ccarCar1.speed;
+            ccarCar1.speed = ccarCar2.speed;
+            ccarCar2.speed = aux;
+        } else if (anguloEntreEllos > 135) {
+            // intercambiamos velocidades pero el ángulo no se toca
+            cout << "Intercambiamos velocidades" << endl;
+            float aux = ccarCar1.speed;
+            ccarCar1.speed = -ccarCar2.speed;
+            ccarCar2.speed = -aux;
+        }
     }
 }
 

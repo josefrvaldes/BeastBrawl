@@ -42,11 +42,13 @@ void Game::SetState(State::States stateType) {
             currentState = make_shared<StatePause>();
             break;
         case State::ENDRACE:
-            //currentState = new StateEndRace();
+            currentState = make_shared<StateEndRace>();
             break;
         default:
             cout << "This state doesn't exist" << endl;
     }
+    // Inicializa el estado cada vez que se cambia.
+    currentState->InitState();
 }
 
 void Game::InitGame() {
@@ -71,8 +73,6 @@ void Game::MainLoop() {
     //Si se incluye esta funcion en el constructor de SoundFacadeFMOD da violacion de segmento.
     soundFacadeManager->InitializeFacadeFmod();
     soundFacadeManager->GetSoundFacade()->InitSoundEngine();
-
-    currentState->InitState();
 
     while (renderFacadeManager->GetRenderFacade()->FacadeRun()) {
         currentState->Input();

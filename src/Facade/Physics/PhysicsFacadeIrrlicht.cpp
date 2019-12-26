@@ -19,15 +19,13 @@ PhysicsFacadeIrrlicht::PhysicsFacadeIrrlicht() {
 PhysicsFacadeIrrlicht::~PhysicsFacadeIrrlicht() {
 }
 
+
 //TODO: Aqui debera recibir el array de entidades (o acceder mediante singleton)
 void PhysicsFacadeIrrlicht::UpdateCar(Entity* car, Entity* cam){
     
-
-
     //Guardamos en variables los componentes
     auto cTransformable = static_cast<CTransformable*>(car->GetComponent(CompType::TransformableComp).get());
     auto cId = static_cast<CId*>(car->GetComponent(CompType::IdComp).get());
-
 
     //Actualizamos el valor en la estructura de irrlicht
     // Cogemos el nodo de irrlicht con el ID igual al que le hemos pasado
@@ -43,9 +41,9 @@ void PhysicsFacadeIrrlicht::UpdateCar(Entity* car, Entity* cam){
     node->setScale(core::vector3df(cTransformable->scale.x, cTransformable->scale.y, cTransformable->scale.z));
 }
 
+
 void PhysicsFacadeIrrlicht::UpdateCam(Entity* cam){
     //Cogemos los componentes de la camara
-
     auto cTransformable = static_cast<CTransformable*>(cam->GetComponent(CompType::TransformableComp).get());
 
 	//Cogemos la posicion de nuestro coche
@@ -61,7 +59,6 @@ void PhysicsFacadeIrrlicht::UpdateCam(Entity* cam){
 
 //TODO:: Cambiar para que rediba todo el Manager
 void PhysicsFacadeIrrlicht::UpdateCarAI(Entity* car){
-    //auto smgr = renderEngineIrrlicht->GetSceneManager();
 
     //Guardamos en variables los componentes
     auto cTransformable = static_cast<CTransformable*>(car->GetComponent(CompType::TransformableComp).get());
@@ -81,9 +78,9 @@ void PhysicsFacadeIrrlicht::UpdateCarAI(Entity* car){
 	node->setScale(core::vector3df(cTransformable->scale.x, cTransformable->scale.y, cTransformable->scale.z));
 }
 
+
 //TODO:: Cambiar para que rediba todo el Manager
 void PhysicsFacadeIrrlicht::UpdatePowerUps(Entity* powerUp){
-    //auto smgr = renderEngineIrrlicht->GetSceneManager();
 
     //Guardamos en variables los componentes
     auto cTransformable = static_cast<CTransformable*>(powerUp->GetComponent(CompType::TransformableComp).get());
