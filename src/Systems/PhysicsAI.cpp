@@ -280,6 +280,18 @@ void PhysicsAI::Update(ManWayPoint* graph, CarAI* car, float deltaTime){
     float radious = cWayPoint->radious;
     float distance2P = sqrt( pow((cWayPoint->position.x - cTransformable->position.x),2) + pow((cWayPoint->position.z - cTransformable->position.z),2) );
 
+    // Actualizamos el componente Nitro
+    auto cNitro = static_cast<CNitro *>(car->GetComponent(CompType::NitroComp).get());
+    if(cNitro->activePowerUp==true && duration_cast<milliseconds>(system_clock::now() - cNitro->timeStart).count() > cNitro->durationTime){  // comprueba el tiempo desde que se lanzo
+        cNitro->deactivePowerUp();
+    }
+
+    // Actualizamos el componente Escudo
+    auto cShield = static_cast<CShield *>(car->GetComponent(CompType::ShieldComp).get());
+    if(cShield->activePowerUp==true && duration_cast<milliseconds>(system_clock::now() - cShield->timeStart).count() > cShield->durationTime){  // comprueba el tiempo desde que se lanzo
+        cShield->deactivePowerUp();
+    }
+
     //Vamos a comprobar si esta en el rango del waypoint
     if((cWayPoint->position.z - radious) < cTransformable->position.z && (cWayPoint->position.z + radious) >= cTransformable->position.z 
         && (cWayPoint->position.x - radious) < cTransformable->position.x && (cWayPoint->position.x + radious) >= cTransformable->position.x){
