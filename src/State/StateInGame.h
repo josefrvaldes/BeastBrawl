@@ -75,7 +75,7 @@ class StateInGame : public State {
     SoundFacade *soundEngine;
     shared_ptr<Physics> physics;
     //shared_ptr<float> deltaTime;
-    float deltaTime = 0.166666;
+    float deltaTime = 0.0166666;
     shared_ptr<PhysicsPowerUp> phisicsPowerUp;
     shared_ptr<SystemBoxPowerUp> sysBoxPowerUp;
     shared_ptr<Collisions> collisions;

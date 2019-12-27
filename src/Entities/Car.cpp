@@ -23,7 +23,7 @@ Car::Car(){
     glm::vec3 scale = glm::vec3(0.6f, 0.6f, 0.6f);
     string texture = "";
     string mesh    = "kart.obj";
-    float maxSpeed = 20.0, acceleration = .15, friction = 0.1, slowDown = 0.25;
+    float maxSpeed = 200.0, acceleration = 1.5, friction = 1.0, slowDown = 2.5;
     
     shared_ptr<CId> cId   = make_shared<CId>();
     shared_ptr<CType> cType = make_shared<CType>(ModelType::AnimatedMesh);

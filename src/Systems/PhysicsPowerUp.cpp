@@ -42,8 +42,8 @@ void PhysicsPowerUp::updatePudinDeFrambuesa(PowerUp* pu){
        // Movimiento
       auto cTransformable = static_cast<CTransformable*>(pu->GetComponent(CompType::TransformableComp).get());
       float angleRotation = (cTransformable->rotation.y * PI) / 180.0;
-      cTransformable->position.x -= cos(angleRotation) * cPuActual->speed;
-      cTransformable->position.z += sin(angleRotation) * cPuActual->speed;
+      cTransformable->position.x -= cos(angleRotation) * cPuActual->speed * 0.016;
+      cTransformable->position.z += sin(angleRotation) * cPuActual->speed * 0.016;
       cPuActual->speed += cPuActual->deceleration;
       if(cPuActual->speed > 0)
          cPuActual->speed = 0; 
@@ -69,8 +69,8 @@ void PhysicsPowerUp::updateTeleBanana(PowerUp* pu){
    // divisor unitario
    float divisorUnitario = sqrt((vectorX*vectorX) + (vectorZ*vectorZ));
    // Movimiento
-   cTransformable->position.x += (vectorX/divisorUnitario) * cPuActual->speed;
-   cTransformable->position.z += (vectorZ/divisorUnitario) * cPuActual->speed;
+   cTransformable->position.x += (vectorX/divisorUnitario) * cPuActual->speed * 0.016;
+   cTransformable->position.z += (vectorZ/divisorUnitario) * cPuActual->speed * 0.016;
 }
 
 
@@ -89,6 +89,6 @@ void PhysicsPowerUp::updateMelonMolon(PowerUp* pu){
    // Movimiento
    auto cTransformable = static_cast<CTransformable*>(pu->GetComponent(CompType::TransformableComp).get());
    float angleRotation = (cTransformable->rotation.y * PI) / 180.0;
-   cTransformable->position.x -= cos(angleRotation) * cPuActual->speed;
-   cTransformable->position.z += sin(angleRotation) * cPuActual->speed;
+   cTransformable->position.x -= cos(angleRotation) * cPuActual->speed * 0.016;
+   cTransformable->position.z += sin(angleRotation) * cPuActual->speed * 0.016;
 }
