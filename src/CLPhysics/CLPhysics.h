@@ -29,5 +29,6 @@ class CLPhysics {
    private:
     void HandleCollisions(CTransformable &trCar1, CBoundingSphere &spCar1, CCar &, CColliding &, CTransformable &trCar2, CBoundingSphere &spCar2, CCar &, CColliding &);
     void RestartCollisionTimeIfNeeded(CColliding &collidingCar);
+    void PositionSphereIntoTransformable(CTransformable &tr, CBoundingSphere &sp);
     vector<Manager *> managers;
 };

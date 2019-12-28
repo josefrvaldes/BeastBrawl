@@ -1,5 +1,7 @@
 #pragma once
 
+#define _USE_MATH_DEFINES
+
 #include <math.h>
 #include <iostream>
 #include <sstream>
@@ -45,5 +47,13 @@ class Utils {
     static void Cout(string& txt) {
         if (ACTIVATE_COUT)
             cout << txt << endl;
+    }
+
+    static float DegToRad(float deg) {
+        return deg * M_PI / 180.0;
+    }
+
+    static float RadToDeg(float rad) {
+        return rad * (180.0 / M_PI);
     }
 };

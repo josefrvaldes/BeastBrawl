@@ -58,7 +58,9 @@ void CLPhysics::HandleCollisions() {
         CBoundingSphere *spc = static_cast<CBoundingSphere *>(c->GetComponent(CompType::CompBoundingSphere).get());
         CTransformable *trc = static_cast<CTransformable *>(c->GetComponent(CompType::TransformableComp).get());
         CCar *ccarc = static_cast<CCar *>(c->GetComponent(CompType::CarComp).get());
-        spc->center = trc->position;
+
+        //spc->center = trc->position;
+        //PositionSphereIntoTransformable(*trc, *spc);
 
         // mi coche con todos los coches de AI
         for (size_t i = 0; i < numEntities; i++) {
@@ -112,9 +114,19 @@ void CLPhysics::HandleCollisions() {
     }
 }
 
+void CLPhysics::PositionSphereIntoTransformable(CTransformable &tr, CBoundingSphere &sp) {
+    sp.center = tr.position;
+    float x = - cos(Utils::DegToRad(tr.rotation.y)) * sp.radius;
+    float z = sin(Utils::DegToRad(tr.rotation.y)) * sp.radius;
+    sp.center.x += x;
+    sp.center.z += z;
+}
+
 void CLPhysics::HandleCollisions(CTransformable &trCar1, CBoundingSphere &spCar1, CCar &ccarCar1, CColliding &colliding1,
                                  CTransformable &trCar2, CBoundingSphere &spCar2, CCar &ccarCar2, CColliding &colliding2) {
-    spCar2.center = trCar2.position;
+    // posicionamos la esfera en la misma posición que el coche pero teniendo en cuenta el offset
+    PositionSphereIntoTransformable(trCar1, spCar1);
+    PositionSphereIntoTransformable(trCar2, spCar2);
     IntersectData intersData = spCar1.IntersectSphere(spCar2);
     if (intersData.intersects) {
         // al chocar ponemos a true la invulnerabilidad después de la colisión

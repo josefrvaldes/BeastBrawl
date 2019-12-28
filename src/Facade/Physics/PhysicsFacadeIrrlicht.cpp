@@ -1,5 +1,6 @@
 #include "PhysicsFacadeIrrlicht.h"
 
+#include "../../Components/CBoundingSphere.h"
 #include "../../Components/CCamera.h"
 #include "../../Components/CCar.h"
 #include "../../Components/CId.h"
@@ -39,10 +40,9 @@ void PhysicsFacadeIrrlicht::UpdateCar(Entity* car, Entity* cam) {
     node->setScale(core::vector3df(cTransformable->scale.x, cTransformable->scale.y, cTransformable->scale.z));
     bool hasSphere = car->HasComponent(CompType::CompBoundingSphere);
     if (hasSphere) {
+        auto cSphere = static_cast<CBoundingSphere*>(car->GetComponent(CompType::CompBoundingSphere).get());
         scene::ISceneNode* nodeSphere = smgr->getSceneNodeFromId(cId->id + Component::ID_DIFFERENCE);
-        nodeSphere->setPosition(core::vector3df(cTransformable->position.x, cTransformable->position.y, cTransformable->position.z));
-        //nodeSphere->setRotation(core::vector3df(cTransformable->rotation.x, cTransformable->rotation.y, cTransformable->rotation.z));
-        //nodeSphere->setScale(core::vector3df(cTransformable->scale.x, cTransformable->scale.y, cTransformable->scale.z));
+        nodeSphere->setPosition(core::vector3df(cSphere->center.x, cSphere->center.y, cSphere->center.z));
     }
 }
 
@@ -80,8 +80,9 @@ void PhysicsFacadeIrrlicht::UpdateCarAI(Entity* car) {
     node->setScale(core::vector3df(cTransformable->scale.x, cTransformable->scale.y, cTransformable->scale.z));
     bool hasSphere = car->HasComponent(CompType::CompBoundingSphere);
     if (hasSphere) {
+        auto cSphere = static_cast<CBoundingSphere*>(car->GetComponent(CompType::CompBoundingSphere).get());
         scene::ISceneNode* nodeSphere = smgr->getSceneNodeFromId(cId->id + Component::ID_DIFFERENCE);
-        nodeSphere->setPosition(core::vector3df(cTransformable->position.x, cTransformable->position.y, cTransformable->position.z));
+        nodeSphere->setPosition(core::vector3df(cSphere->center.x, cSphere->center.y, cSphere->center.z));
         //nodeSphere->setRotation(core::vector3df(cTransformable->rotation.x, cTransformable->rotation.y, cTransformable->rotation.z));
         //nodeSphere->setScale(core::vector3df(cTransformable->scale.x, cTransformable->scale.y, cTransformable->scale.z));
     }
