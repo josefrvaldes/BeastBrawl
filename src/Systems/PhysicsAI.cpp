@@ -10,97 +10,6 @@ PhysicsAI::PhysicsAI(){
 }
 
 
-std::stack<int> PhysicsAI::Dijkstra(ManWayPoint* _graph, int start, int end) {
-    //cout << "----------------------------------\n";
-    //Convertir ManWayPoint en una matriz de adyacencia
-    int size = _graph->GetEntities().size();
-    float graph[size][size];
-
-    //Rellenamos de 0 el grafo
-    for(int i = 0; i < size; ++i){
-        for(int j = 0; j < size; ++j){
-            graph[i][j] = INT_MAX;
-        }
-    }
-
-    //Ponemos los costes pertinentes en la matriz de adyacencia
-    //TODO: Cambiar esto para tenerlo guardado en una entidad o algo y no hacerlo cada calculo de Dijkstra
-    for(auto node : _graph->GetEntities()){
-        auto cWayPoint = static_cast<CWayPoint*>(node->GetComponent(CompType::WayPointComp).get());
-        auto cWayPointEdges = static_cast<CWayPointEdges*>(node->GetComponent(CompType::WayPointEdgesComp).get());
-
-        for(auto edge : cWayPointEdges->edges){
-            graph[cWayPoint->id][edge.to] = edge.cost;
-        }
-    }
-
-    //Comenzamos Dijkstra
-    float distanceFromStart[size],pred[size];
-    int visited[size],count,minDistanceFromStart,nextClosestNode,i;
-
-    for(i=0;i<size;i++) {
-        distanceFromStart[i] = graph[start][i];  //Metemos las ponderaciones a los nodos desde el que iniciamos(Si no tiene es = INT_MAX)
-        pred[i] = start;                
-        visited[i] = 0;
-    }
-
-    //La distancia a si mismo es siempre 0
-    distanceFromStart[start]=0; 
-    visited[start]=1;
-    count=1;
-
-    while(count<size-1) {
-        minDistanceFromStart=INT_MAX;
-        for(i=0;i<size;i++){
-            if(distanceFromStart[i] < minDistanceFromStart && !visited[i]) {
-                //Si la distancia al nodo i es menor que la minDistanceFromStart y no esta visitado
-                //Recordatorio: Si nuestro nodo start no esta conectado con i entonces distanceFromStart[1] = INT_MAX y no entrará aquí
-                minDistanceFromStart=distanceFromStart[i]; // Distancia al nodo adyacente mas cercano
-                nextClosestNode=i; //Siguiente nodo adyacente mas cercano
-            }
-        }
-
-        visited[nextClosestNode]=1;
-
-        for(i=0;i<size;i++){
-            if(!visited[i]){
-                //Si la distancia entre (start y nodo i) es mayor que (start y su nodo adyacente) + (su nodo adyacente hasta i)
-                //P.E: ¿De 1 -> 3 es mayor que de 1 -> 2 -> 3?
-                if(minDistanceFromStart + graph[nextClosestNode][i] < distanceFromStart[i]) {
-                    distanceFromStart[i]=minDistanceFromStart + graph[nextClosestNode][i];
-                    pred[i]=nextClosestNode; //Nos guardamos en pred[i] el nodo por el que mas rapido se llega a él (nextClosestNode)
-                }
-            }
-        }
-        count++;
-    }
-
-    stack<int> path;
-    int aux = end;
-    path.push(aux); //Para guardarnos el final del path
-    //Recorremos pred recursivamente hasta que pred[aux] sea el nodo start
-    while(aux!=start){
-        if(pred[aux]==start) break; //Para que no nos añada el nodo start
-        path.push(pred[aux]);
-        aux = pred[aux];
-    }
-
-    //cout << "Nuevo Path: ";
-    stack<int> pathAux(path);
-    while(!pathAux.empty()){
-        auto node = pathAux.top();
-        pathAux.pop();
-
-        //cout << node << " - ";
-    }
-
-    //cout << "\n---------------\n";
-
-    return path;
-
-    //cout << "\n\n\n";
-}
-
 
 // inicializa las reglas de la logica difusa
 void PhysicsAI::fuzzyRules(CarAI* car){
@@ -191,13 +100,13 @@ void PhysicsAI::fuzzyRulesAngle(){
 
 
 
-//Nos devuelve el angulo en radianos entre el coche y el waypoint
-float calculateAngle(CWayPoint* wayPointNext, CarAI* car,CCar* cCar){
+//Nos devuelve el angulo en radianos entre el coche y el punto destino del coche
+float calculateAngle(CPosDestination* posDestination, CarAI* car,CCar* cCar){
     auto cTransformable = static_cast<CTransformable*>(car->GetComponent(CompType::TransformableComp).get());
 
     // calcular vector al wayPoint
-    float vetorWaypointX = (wayPointNext->position.x - cTransformable->position.x );
-    float vetorWaypointZ = (wayPointNext->position.z - cTransformable->position.z);
+    float vetorWaypointX = (posDestination->position.x - cTransformable->position.x );
+    float vetorWaypointZ = (posDestination->position.z - cTransformable->position.z);
     
     // se calcula el siguiente punto al que avanzara el coche
     float angleRotation = (cTransformable->rotation.y * PI) / 180.0;
@@ -270,51 +179,20 @@ void PhysicsAI::InitPhysicsIA(CarAI* car){
 }
 
 
-void PhysicsAI::Update(ManWayPoint* graph, CarAI* car, float deltaTime){
+void PhysicsAI::Update(CarAI* car, float deltaTime){
     //Guardamos en varAIbles los componentes
 	auto cTransformable = static_cast<CTransformable*>(car->GetComponent(CompType::TransformableComp).get());
-    auto cWayPoint     = static_cast<CWayPoint*>(car->GetComponent(CompType::WayPointComp).get());
+    //auto cWayPoint     = static_cast<CWayPoint*>(car->GetComponent(CompType::WayPointComp).get());
+    auto cPosDestination = static_cast<CPosDestination*>(car->GetComponent(CompType::PosDestination).get());
     auto cCar        = static_cast<CCar*>(car->GetComponent(CompType::CarComp).get());
     float angleRange = 0;
     float angle = 0;
-    float radious = cWayPoint->radious;
-    float distance2P = sqrt( pow((cWayPoint->position.x - cTransformable->position.x),2) + pow((cWayPoint->position.z - cTransformable->position.z),2) );
+    //float distance2P = sqrt( pow((cWayPoint->position.x - cTransformable->position.x),2) + pow((cWayPoint->position.z - cTransformable->position.z),2) );
+    float distance2P = sqrt( pow((cPosDestination->position.x - cTransformable->position.x),2) + pow((cPosDestination->position.z - cTransformable->position.z),2) );
 
-    //Vamos a comprobar si esta en el rango del waypoint
-    if((cWayPoint->position.z - radious) < cTransformable->position.z && (cWayPoint->position.z + radious) >= cTransformable->position.z 
-        && (cWayPoint->position.x - radious) < cTransformable->position.x && (cWayPoint->position.x + radious) >= cTransformable->position.x){
-            
-        //Tenemos que comprobar si le quedan mas nodos que visitar en el path
-        auto cPath = static_cast<CPath*>(car->GetComponent(CompType::PathComp).get());
-
-        auto actualNode = cPath->stackPath.top();
-        cPath->stackPath.pop();
-
-        //cout << "Llegamos al WayPoint: " << actualNode << endl;
-        if(!cPath->stackPath.empty()){
-            //Le asignamos el WayPoint siguiente del path (graph->GetEntities()[cPath->stackPath.top()])
-            auto cWayPoint = static_cast<CWayPoint*>(graph->GetEntities()[cPath->stackPath.top()]->GetComponent(CompType::WayPointComp).get());
-            car->SetWayPoint(cWayPoint);
-        }else{
-            //Si esta vacio es que ha acabado el path y recalculamos otro
-            //TO-DO: de momento le recalculamos otro aleatorio
-            int indx;
-            do{
-                indx = rand() % graph->GetEntities().size();
-
-            }while(indx==actualNode);
-
-            //COMPROBAMOS DIJKSTRA
-            auto path = Dijkstra(graph,actualNode,indx);
-            car->SetPath(path);
-
-            auto cWayPoint = static_cast<CWayPoint*>(graph->GetEntities()[path.top()]->GetComponent(CompType::WayPointComp).get());
-            car->SetWayPoint(cWayPoint);
-        }           
-    }
 
     // LOGICA DIFUSA:
-    angle = calculateAngle(cWayPoint, car, cCar);
+    angle = calculateAngle(cPosDestination, car, cCar);
     if (angle < 0)
         angleRange = angle*(-1);
     else

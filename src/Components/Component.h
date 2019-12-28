@@ -11,6 +11,7 @@ enum CompType {
     CameraComp,
     WheelComp,
     WayPointComp,
+    PosDestination,
     CarComp,
     PowerUpComp,
     BoxPowerUpComp,
