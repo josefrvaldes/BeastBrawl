@@ -12,6 +12,7 @@
 #include "../Components/CPath.h"
 #include "../Components/CTexture.h"
 #include "../Components/CMesh.h"
+#include "../Components/CNavMesh.h"
 
 typedef std::chrono::high_resolution_clock Clock;
 
@@ -108,8 +109,10 @@ StateInGame::StateInGame() {
     sysBoxPowerUp = make_shared<SystemBoxPowerUp>();
 
     // CREAMOS DE PRUEBA UN NAVMESH
-    manNavMesh->CreateNavMesh(glm::vec3(100.0f,30.0f,100.0f),glm::vec3(0.0f,0.0f,0.0f),100,10,10);
-    manNavMesh->CreateNavMesh(glm::vec3(0.0f,30.0f,100.0f),glm::vec3(0.0f,0.0f,0.0f),10,100,10);
+    vector<int> waypoints1{1,3,5};
+    vector<int> waypoints2{0,2,4,6};
+    manNavMesh->CreateNavMesh(glm::vec3(100.0f,30.0f,100.0f),glm::vec3(0.0f,0.0f,0.0f),100,10,10,waypoints1);
+    manNavMesh->CreateNavMesh(glm::vec3(0.0f,30.0f,100.0f),glm::vec3(0.0f,0.0f,0.0f),10,100,10,waypoints2);
 
     for (auto navmesh : manNavMesh->GetEntities()){
         renderEngine->FacadeAddObject(navmesh.get());

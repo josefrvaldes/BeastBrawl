@@ -1,23 +1,18 @@
 #include "NavMesh.h"
-#include "../Components/CSpeed.h"
 #include "../Components/CId.h"
 #include "../Components/CType.h"
 #include "../Components/CTexture.h"
 #include "../Components/CMesh.h"
-#include "../Components/CPowerUp.h"
 #include "../Components/CTransformable.h"
-#include "../Components/CCar.h"
-#include "../Components/CShield.h"
-#include "../Components/CTotem.h"
-#include "../Components/CRoboJorobo.h"
-#include "../Components/CNitro.h"
+#include "../Components/CNavMesh.h"
+
 #include <iostream>
 
 class Position;
 using namespace std;
 
 
-NavMesh::NavMesh(glm::vec3 pos, glm::vec3 rot, float width, float height, float depth) 
+NavMesh::NavMesh(glm::vec3 pos, glm::vec3 rot, float width, float height, float depth, vector<int> waypoints) 
 {
     string texture = "spheremap.jpg";
     string mesh    = "media/ninja.b3d";
@@ -30,12 +25,14 @@ NavMesh::NavMesh(glm::vec3 pos, glm::vec3 rot, float width, float height, float 
     shared_ptr<CTransformable> cTransformable = make_shared<CTransformable>(pos, rot, scale); 
     shared_ptr<CTexture> cTexture = make_shared<CTexture>(texture);
     shared_ptr<CMesh> cMesh   = make_shared<CMesh>(mesh);
+    shared_ptr<CNavMesh> cNavMesh   = make_shared<CNavMesh>(waypoints);
 
     AddComponent(cId);
     AddComponent(cType);
     AddComponent(cTransformable);
     AddComponent(cTexture);
     AddComponent(cMesh);
+    AddComponent(cNavMesh);
 
 
 }

@@ -17,10 +17,14 @@ class ManNavMesh{
     ManNavMesh();
     ~ManNavMesh(){};
 
-    void CreateNavMesh(glm::vec3 pos, glm::vec3 rot, float width, float height, float depth);
+    void CreateNavMesh(glm::vec3 pos, glm::vec3 rot, float width, float height, float depth, vector<int> waypoints);
     void CreateNavMesh();
 
     vector<shared_ptr<NavMesh>> GetEntities() const {
+        return navMeshes;
+    };
+
+    vector<shared_ptr<NavMesh>> GetEntities()  {
         return navMeshes;
     };
 

@@ -21,7 +21,8 @@ enum CompType {
     TargetEntityComp,
     WayPointEdgesComp,
     DimensionsComp,
-    PathComp
+    PathComp,
+    NavMeshComp
 };
 
 class Component
