@@ -7,9 +7,8 @@ StateEndRace::StateEndRace(){
     // constructor
     std::cout << "Estado EndRace Creado" << std::endl;
     // Inicializamos las facadas
-    renderFacadeManager = RenderFacadeManager::GetInstance();
+    renderEngine = RenderFacadeManager::GetInstance()->GetRenderFacade();
     //renderFacadeManager->InitializeIrrlicht();
-    renderEngine = renderFacadeManager->GetRenderFacade();
 
     renderEngine->FacadeInitEndRace();
 
@@ -17,6 +16,12 @@ StateEndRace::StateEndRace(){
 
 void StateEndRace::InitState() {
 
+    cout << "~~~ ENTRO A ENDRACE" << endl;
+
+    soundEngine = SoundFacadeManager::GetInstance()->GetSoundFacade();
+    if (soundEngine){
+        soundEngine->SetState(5);
+    }
 }
 
 

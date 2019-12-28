@@ -11,6 +11,7 @@ int main() {
         game->InitGame();
         game->SetState(State::States::MENU);
         game->MainLoop();
+        game->TerminateGame();
     } catch (...) {
         cout << "Algo ha fallado" << endl;
     }

@@ -7,9 +7,8 @@ StatePause::StatePause(){
     // constructor
     std::cout << "Estado Pause Creado" << std::endl;
     // Inicializamos las facadas
-    renderFacadeManager = RenderFacadeManager::GetInstance();
+    renderEngine = RenderFacadeManager::GetInstance()->GetRenderFacade();
     //renderFacadeManager->InitializeIrrlicht();
-    renderEngine = renderFacadeManager->GetRenderFacade();
 
     renderEngine->FacadeInitPause();
 
