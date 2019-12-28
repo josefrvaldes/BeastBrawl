@@ -70,16 +70,16 @@ PowerUp::PowerUp(glm::vec3 _position, glm::vec3 _rotation, typeCPowerUp _typePow
     if(_typePowerUp == typeCPowerUp::MelonMolon){           // Melon Molon
         cTexture->texture = "spheremap.jpg";
         cMesh->mesh = "media/ninja.b3d";
-        cPowerUp->speed = 8.0;
+        cPowerUp->speed = 510.0;
     }else if(_typePowerUp == typeCPowerUp::PudinDeFrambuesa){   // Pudin Frambuesa
         cTexture->texture = "water.jpg";
         cMesh->mesh = "media/ninja.b3d";
-        cPowerUp->speed = -8.0;
-        cPowerUp->deceleration = 0.40;
+        cPowerUp->speed = -510.0;
+        cPowerUp->deceleration = 25.0;
     }else{                                                      // Telebanana
         cTexture->texture = "stones.jpg";
         cMesh->mesh = "media/ninja.b3d";
-        cPowerUp->speed = 6;
+        cPowerUp->speed = 375.0;
     }
 }
 

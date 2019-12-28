@@ -117,9 +117,9 @@ void PhysicsAI::fuzzyRules(CarAI* car){
 void PhysicsAI::fuzzyRulesVelocity(float maxSpeed, float minSpeed, float accelerationCar){
 
     shared_ptr<FuzzyVariable> ActualVelocity = flVelocity->CreateFLV("ActualVelocity");
-    shared_ptr<FzSet> Velocity_Slow = ActualVelocity->AddLeftShoulderSet("Velocity_Slow", minSpeed, 0, 5);
-    shared_ptr<FzSet> Velocity_Normal = ActualVelocity->AddTriangularSet("Velocity_Normal", 0, 5, maxSpeed/2);
-    shared_ptr<FzSet> Velocity_High = ActualVelocity->AddRightShoulderSet("Velocity_High", 5, maxSpeed/2, maxSpeed);
+    shared_ptr<FzSet> Velocity_Slow = ActualVelocity->AddLeftShoulderSet("Velocity_Slow", minSpeed, 0, 50);
+    shared_ptr<FzSet> Velocity_Normal = ActualVelocity->AddTriangularSet("Velocity_Normal", 0, 50, maxSpeed/2);
+    shared_ptr<FzSet> Velocity_High = ActualVelocity->AddRightShoulderSet("Velocity_High", 50, maxSpeed/2, maxSpeed);
 
     shared_ptr<FuzzyVariable> Angle = flVelocity->CreateFLV("Angle");
     shared_ptr<FzSet> Angle_Slow = Angle->AddLeftShoulderSet("Angle_Slow", 0, 30, 60);
@@ -322,11 +322,11 @@ void PhysicsAI::Update(ManWayPoint* graph, CarAI* car, float deltaTime){
 
     //cout << "Angulo Positivo: " << angleRange*180/PI << endl;
     if(cCar->speed == 0)
-        cCar->speed = 0.1;
+        cCar->speed = 1.0;
         //std::cout << "VOY A ENTRAR A VELOCITY DIFUSA" <<std::endl;
     float fuzzyAceleration = calculateFuzzyVelocity(cCar->speed, angleRange);
     float fuzzyRotation = 0.0;
-    if(cCar->speed>3 || cCar->speed < -3){
+    if(cCar->speed>30 || cCar->speed < -30){
         fuzzyRotation = calculateFuzzyDirection(distance2P, angle);
     }
 

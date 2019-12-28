@@ -38,6 +38,6 @@ public:
     bool effectActive = false;
     time_point<system_clock> timeStart;
     const int64_t durationTime = 200;       // 0,2 segundos ---> Podra variar dependiendo de cada powerUp
-    float speed = 8.0;
-    float deceleration = -0.40;
+    float speed = 510.0;
+    float deceleration = -25.0;
 };
