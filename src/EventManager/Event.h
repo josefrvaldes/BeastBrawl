@@ -39,9 +39,11 @@ enum EventType {
     CATCH_BOX_POWERUP,
     CATCH_AI_BOX_POWERUP,
     DROP_TOTEM,
+    THROW_POWERUP,
     THROW_POWERUP_AI,
     PRESS_P,
-    UPDATE_POWERUP_HUD
+    UPDATE_POWERUP_HUD,
+    PRESS_0
 };
 
 struct Data {

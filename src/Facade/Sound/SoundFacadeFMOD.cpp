@@ -119,15 +119,21 @@ void SoundFacadeFMOD::SubscribeToGameEvents(const uint8_t numState) {
         case 3:     // Map
             break;
         case 4:     // InGame
-            EventManager::GetInstance()->Suscribe(Listener{
+            EventManager::GetInstance()->SuscribeMulti(Listener{
                 EventType::PRESS_P,
                 bind(&SoundFacadeFMOD::SoundClaxon, this, placeholders::_1),
                 "SoundClaxon"});
 
-            /*EventManager::GetInstance()->SuscribeMulti(Listener(
-                EventType::PRESS_A,
-                bind(&ManCar::TurnLeftCar, this, placeholders::_1),
-                "TurnLeftCar"));*/
+            EventManager::GetInstance()->SuscribeMulti(Listener(
+                EventType::THROW_POWERUP,
+                bind(&SoundFacadeFMOD::ThrowPowerup, this, placeholders::_1),
+                "ThrowPowerup"));
+
+            EventManager::GetInstance()->SuscribeMulti(Listener{
+                EventType::PRESS_0,
+                bind(&SoundFacadeFMOD::StopPrueba, this, placeholders::_1),
+                "StopPrueba"});
+
             break;
 
         case 5:     //EndRace
@@ -247,6 +253,16 @@ void SoundFacadeFMOD::PlayEvent2D(const string nameID) {
     }
 }
 
+/**
+ * Para el evento de sonido.
+ * @param nameID - Identificador del sonido en el mapa de instancias.
+ */
+void SoundFacadeFMOD::StopEvent(const string nameID) {
+    if (eventInstances.find(nameID) != eventInstances.end() && IsPlaying(eventInstances[nameID])) {
+        ERRCHECK(eventInstances[nameID]->stop(FMOD_STUDIO_STOP_IMMEDIATE));
+    }
+}
+
 
 /* Verifica si la instancia de sonido que le enviamos por parametro esta en PLAY o preparandose para el PLAY.
  * @param instance - Instancia del evento a verificar.
@@ -254,10 +270,10 @@ void SoundFacadeFMOD::PlayEvent2D(const string nameID) {
 bool SoundFacadeFMOD::IsPlaying(FMOD::Studio::EventInstance* instance) {
     FMOD_STUDIO_PLAYBACK_STATE eventState;
     ERRCHECK(instance->getPlaybackState(&eventState));
-    if (eventState != FMOD_STUDIO_PLAYBACK_PLAYING || eventState != FMOD_STUDIO_PLAYBACK_STARTING) {
-        return false;
+    if (eventState == FMOD_STUDIO_PLAYBACK_PLAYING || eventState == FMOD_STUDIO_PLAYBACK_STARTING /*|| eventState == FMOD_STUDIO_PLAYBACK_SUSTAINING*/) {
+        return true;
     }
-    return true;
+    return false;
 }
 
 /**
@@ -281,5 +297,26 @@ void SoundFacadeFMOD::SoundClaxon(DataMap d) {
     PlayEvent2D("Coche/claxon");
 }
 
+void SoundFacadeFMOD::ThrowPowerup(DataMap d) {
+    typeCPowerUp typepw = any_cast<typeCPowerUp>(d["typePowerUp"]);
 
+    switch ((int)typepw) {
+        case 1:     // Robojorobo
+            // TO-DO: ¿Cambiar a 3D?
+            PlayEvent2D("PowerUp/robojorobo");
+            break;
+        case 2:     // Nitro
+            break;
+        case 4:     // Escudomerluzo
+            break;
+        default:    // Otro
+            PlayEvent2D("Personajes/powerup");
+            break;
+    }
+}
+
+
+void SoundFacadeFMOD::StopPrueba(DataMap d) {
+    StopEvent("Personajes/powerup");
+}
 

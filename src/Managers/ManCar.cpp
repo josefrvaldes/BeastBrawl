@@ -386,10 +386,17 @@ void ManCar::ThrowPowerUp(DataMap d) {
 
                 break;
         }
+
+        // Sonido de lanzar power-up
+        d["typePowerUp"] = cPowerUpCar->typePowerUp;
+        EventManager::GetInstance()->AddEventMulti(Event{EventType::THROW_POWERUP, d});
+
+        // Ya no tenemos power-up
         cPowerUpCar->typePowerUp = typeCPowerUp::None;
         DataMap d;
         d["typePowerUp"] = cPowerUpCar->typePowerUp;
         EventManager::GetInstance()->AddEventMulti(Event{EventType::UPDATE_POWERUP_HUD, d});
+        
     }
 }
 

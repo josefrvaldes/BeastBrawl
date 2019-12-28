@@ -289,6 +289,9 @@ void RenderFacadeIrrlicht::FacadeCheckInput() {
     if (receiver.IsKeyDown(KEY_KEY_P)) {
         eventManager->AddEventMulti(Event{EventType::PRESS_P});
     }
+    if (receiver.IsKeyDown(KEY_KEY_0)) {
+        eventManager->AddEventMulti(Event{EventType::PRESS_0});
+    }
     if (receiver.IsKeyDown(KEY_KEY_I)) {
         //cout << "Pulsamos I" << endl;
         DataMap data;

@@ -36,6 +36,8 @@ class SoundFacadeFMOD : public SoundFacade {
     private:
         // eventos del juego
         void SoundClaxon(DataMap);
+        void ThrowPowerup(DataMap);
+        void StopPrueba(DataMap);
 
 
         void LoadMasterBank();
@@ -45,6 +47,7 @@ class SoundFacadeFMOD : public SoundFacade {
         void LoadSoundEvent(const string, const bool) override;
         void PlayEvent3D(const string);
         void PlayEvent2D(const string);
+        void StopEvent(const string);
         
         void SubscribeToGameEvents(const uint8_t) override;
 
