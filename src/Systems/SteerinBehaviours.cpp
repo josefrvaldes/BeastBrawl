@@ -38,7 +38,6 @@ void SteeringBehaviours::Update(ManCar* m_manCar){
     glm::vec2 vectorForce = Pursue(m_manCar->GetEntitiesAI()[0].get(), m_manCar->GetCar().get(), vectorVelocity);
 
     float angle = CalculateAngle(vectorVelocity, vectorForce, cTransformable->rotation.y);
-    std::cout << "caca: " << angle << std::endl;
     UpdateTransformable(cCar, cTransformable, angle);
 }
 
@@ -80,8 +79,6 @@ void SteeringBehaviours::UpdateTransformable(CCar* m_cCar, CTransformable* m_cTr
 // se obitene un vector de fuerzas que persigue
 glm::vec2 SteeringBehaviours::Seek(Entity* m_originCar, glm::vec3 m_posTargetCar, glm::vec2 m_velocityVector){
     glm::vec2 vectorForce;
-    vectorForce.x = 0.0;
-    vectorForce.y = 0.0;
     auto cTransformable = static_cast<CTransformable*>(m_originCar->GetComponent(CompType::TransformableComp).get());
     auto cCar = static_cast<CCar*>(m_originCar->GetComponent(CompType::CarComp).get());
 
@@ -89,10 +86,12 @@ glm::vec2 SteeringBehaviours::Seek(Entity* m_originCar, glm::vec3 m_posTargetCar
     float vetorWaypointX = (m_posTargetCar.x - cTransformable->position.x);
     float vetorWaypointZ = (m_posTargetCar.z - cTransformable->position.z);
         //Normalizar
-    float vector = sqrt(vetorWaypointX*vetorWaypointX + vetorWaypointZ*vetorWaypointZ);
-    glm::vec2 desiredVelocity = glm::vec2( vetorWaypointX*(1/vector) , vetorWaypointZ*(1/vector)) * cCar->maxSpeed;
+    //float vectorDistance = sqrt(vetorWaypointX*vetorWaypointX + vetorWaypointZ*vetorWaypointZ);
+    //glm::vec2 desiredVelocity = glm::vec2( vetorWaypointX*(1/vectorDistance) , vetorWaypointZ*(1/vectorDistance)) * cCar->maxSpeed;
 
-    vectorForce = desiredVelocity - m_velocityVector;
+    //vectorForce = desiredVelocity - m_velocityVector;
+    vectorForce.x = vetorWaypointX;
+    vectorForce.y = vetorWaypointZ;
 
     return vectorForce;
 }
@@ -115,10 +114,11 @@ glm::vec2 SteeringBehaviours::Pursue(Entity* m_originCar, Entity* m_targetCar, g
 
     // calcular tiempo que se tarda v = e / t
     float predictionTime = 0.0; // in seconds
-    if(cCar->speed*10 <= distance/3)  // 60 frames -> 1 segundo
-        predictionTime = 3;
-    else
-        predictionTime = distance / (cCar->speed*10);
+    //if(510.0 <= distance/3){  // 60 frames -> 1 segundo,    
+    //    predictionTime = 3;
+    //}else{
+        predictionTime = distance / 510.0;      // 510.0 -> velocidad melon molon
+    //}
     
     // calcular punto al que va a predecir
     float angleRotation = (cTransformableTarget->rotation.y * PI) / 180.0;
