@@ -9,6 +9,7 @@
 #include "../../Components/CTransformable.h"
 #include "../../Components/CType.h"
 #include "../../Components/Component.h"
+#include "../../Constants.h"
 
 PhysicsFacadeIrrlicht::PhysicsFacadeIrrlicht() {
     auto renderFacadeManager = RenderFacadeManager::GetInstance();
@@ -39,7 +40,7 @@ void PhysicsFacadeIrrlicht::UpdateCar(Entity* car, Entity* cam) {
     //Actualiza el escalado del objeto de irrlicht
     node->setScale(core::vector3df(cTransformable->scale.x, cTransformable->scale.y, cTransformable->scale.z));
     bool hasSphere = car->HasComponent(CompType::CompBoundingSphere);
-    if (hasSphere) {
+    if (hasSphere && Constants::DEBUG_SHOW_SPHERES) {
         auto cSphere = static_cast<CBoundingSphere*>(car->GetComponent(CompType::CompBoundingSphere).get());
         scene::ISceneNode* nodeSphere = smgr->getSceneNodeFromId(cId->id + Component::ID_DIFFERENCE);
         nodeSphere->setPosition(core::vector3df(cSphere->center.x, cSphere->center.y, cSphere->center.z));
@@ -79,7 +80,7 @@ void PhysicsFacadeIrrlicht::UpdateCarAI(Entity* car) {
     //Actualiza el escalado del objeto de irrlicht
     node->setScale(core::vector3df(cTransformable->scale.x, cTransformable->scale.y, cTransformable->scale.z));
     bool hasSphere = car->HasComponent(CompType::CompBoundingSphere);
-    if (hasSphere) {
+    if (hasSphere && Constants::DEBUG_SHOW_SPHERES) {
         auto cSphere = static_cast<CBoundingSphere*>(car->GetComponent(CompType::CompBoundingSphere).get());
         scene::ISceneNode* nodeSphere = smgr->getSceneNodeFromId(cId->id + Component::ID_DIFFERENCE);
         nodeSphere->setPosition(core::vector3df(cSphere->center.x, cSphere->center.y, cSphere->center.z));

@@ -16,6 +16,7 @@
 #include "../../Components/Component.h"
 #include "../../Entities/WayPoint.h"
 #include "../../Game.h"
+#include "../../Constants.h"
 
 //PUNTEROS A FUNCIONES
 RenderFacadeIrrlicht::~RenderFacadeIrrlicht() {
@@ -139,7 +140,7 @@ const uint16_t RenderFacadeIrrlicht::FacadeAddObject(Entity* entity) {
     auto cTexture = static_cast<CTexture*>(entity->GetComponent(CompType::TextureComp).get());
     auto cType = static_cast<CType*>(entity->GetComponent(CompType::TypeComp).get());
     auto cMesh = static_cast<CMesh*>(entity->GetComponent(CompType::MeshComp).get());
-    bool hasSphere = entity->HasComponent(CompType::CompBoundingSphere);
+    
 
     //Switch para añadir el tipo de objeto
     scene::ISceneNode* node = nullptr;
@@ -173,8 +174,9 @@ const uint16_t RenderFacadeIrrlicht::FacadeAddObject(Entity* entity) {
         node->setScale(core::vector3df(cTransformable->scale.x, cTransformable->scale.y, cTransformable->scale.z));
         node->setMaterialTexture(0, driver->getTexture(path.c_str()));  //Obligado incluir el c_str() si no irrlicht no carga solo con un string
         node->setMaterialFlag(video::EMF_LIGHTING, false);
-
-        if (hasSphere) {
+        
+        bool hasSphere = entity->HasComponent(CompType::CompBoundingSphere);
+        if (hasSphere && Constants::DEBUG_SHOW_SPHERES) {
             scene::ISceneNode* nodeSphere = smgr->addSphereSceneNode(CBoundingSphere::DEFAULT_SPHERE_RADIUS);
             nodeSphere->setID(cId->id + Component::ID_DIFFERENCE);
             nodeSphere->setPosition(core::vector3df(cTransformable->position.x, cTransformable->position.y, cTransformable->position.z));
@@ -242,7 +244,7 @@ void RenderFacadeIrrlicht::UpdateTransformable(Entity* entity) {
     node->setScale(core::vector3df(cTransformable->scale.x, cTransformable->scale.y, cTransformable->scale.z));
 
     bool hasSphere = entity->HasComponent(CompType::CompBoundingSphere);
-    if (hasSphere) {
+    if (hasSphere && Constants::DEBUG_SHOW_SPHERES) {
         scene::ISceneNode* nodeSphere = smgr->getSceneNodeFromId(cId->id + Component::ID_DIFFERENCE);
         nodeSphere->setPosition(core::vector3df(cTransformable->position.x, cTransformable->position.y, cTransformable->position.z));
         //nodeSphere->setRotation(core::vector3df(cTransformable->rotation.x, cTransformable->rotation.y, cTransformable->rotation.z));

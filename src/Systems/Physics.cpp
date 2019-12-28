@@ -27,7 +27,7 @@ void Physics::update(Car *car, Camera *cam) {
         CalculatePosition(cCar, cTransformable, cSpeed, deltaTime);
     else
         CalculatePositionReverse(cCar, cTransformable, deltaTime);
-    //CalculatePositionCamera(cTransformable, cTransformableCam, cCamera);
+    CalculatePositionCamera(cTransformable, cTransformableCam, cCamera);
 
 
     // Actualiza el componente nitro
@@ -46,7 +46,7 @@ void Physics::update(Car *car, Camera *cam) {
 //Calcula la posicion del coche (duda con las formulas preguntar a Jose)
 void Physics::CalculatePosition(CCar *cCar, CTransformable *cTransformable, CSpeed *cSpeed, float deltaTime) {
     float angleRotation = (cTransformable->rotation.y * PI) / 180.0;
-    float delta = deltaTime;
+    //float delta = deltaTime;
 
     //Modificamos la posicion en X y Z en funcion del angulo
 

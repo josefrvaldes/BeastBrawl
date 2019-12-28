@@ -59,9 +59,6 @@ void CLPhysics::HandleCollisions() {
         CTransformable *trc = static_cast<CTransformable *>(c->GetComponent(CompType::TransformableComp).get());
         CCar *ccarc = static_cast<CCar *>(c->GetComponent(CompType::CarComp).get());
 
-        //spc->center = trc->position;
-        //PositionSphereIntoTransformable(*trc, *spc);
-
         // mi coche con todos los coches de AI
         for (size_t i = 0; i < numEntities; i++) {
             CarAI *cai = manCar->GetEntitiesAI()[i].get();
