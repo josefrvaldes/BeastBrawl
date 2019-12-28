@@ -18,8 +18,10 @@
 #include "../Entities/BoxPowerUp.h"
 #include "../Entities/Totem.h"
 #include "../Entities/WayPoint.h"
+#include "../Entities/NavMesh.h"
 #include "../Managers/ManPowerUp.h"
 #include "../Managers/ManWayPoint.h"
+#include "../Managers/ManNavMesh.h"
 #include "../EventManager/EventManager.h"
 #include "../Facade/Input/InputFacadeManager.h"
 #include "../Facade/Physics/PhysicsFacadeManager.h"
@@ -64,6 +66,7 @@ class StateInGame : public State {
     shared_ptr<ManPowerUp> manPowerUps;
     shared_ptr<ManBoxPowerUp> manBoxPowerUps;
     shared_ptr<ManCar> manCars;
+    shared_ptr<ManNavMesh> manNavMesh;
     shared_ptr<ManWayPoint> manWayPoint;
     RenderFacadeManager* renderFacadeManager;
     InputFacadeManager* inputFacadeManager;

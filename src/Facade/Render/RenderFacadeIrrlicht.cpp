@@ -200,8 +200,8 @@ const uint16_t RenderFacadeIrrlicht::FacadeAddObject(Entity* entity) {
 	//Sacamos sus dimensiones
 	float height = (edges[1].Y - edges[0].Y) * cTransformable->scale.y;
 	float width  = (edges[5].X - edges[1].X) * cTransformable->scale.x;
-	//cout << "Altura-Anchura-Profundidad: " << width << "-" << height << "-"<< depth << endl;
 	float depth  = (edges[2].Z - edges[0].Z) * cTransformable->scale.z;
+	cout << "Altura-Anchura-Profundidad: " << width << "-" << height << "-"<< depth << endl;
 	shared_ptr<CDimensions> cDimensions = make_shared<CDimensions>(width,height,depth);
 	entity->AddComponent(cDimensions); //Le añadimos el componente CDimensions al Entity que sea
 

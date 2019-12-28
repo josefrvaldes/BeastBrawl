@@ -29,6 +29,7 @@ StateInGame::StateInGame() {
     phisicsPowerUp = make_shared<PhysicsPowerUp>();
     manBoxPowerUps = make_shared<ManBoxPowerUp>();
     manTotems = make_shared<ManTotem>();
+    manNavMesh = make_shared<ManNavMesh>();
     ground = make_shared<GameObject>(glm::vec3(10.0f, -0.5f, 150.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.5f, 1.5f, 1.5f), "", "training_ground.obj");
     cam = make_shared<Camera>(glm::vec3(10.0f, 40.0f, 30.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f));
 
@@ -45,6 +46,11 @@ StateInGame::StateInGame() {
     pathInit.push(1);
     pathInit.push(2);
     manCars->GetEntitiesAI()[0]->SetPath(pathInit);
+
+    
+
+
+
 
 
    // auto cActualPowerUp = static_cast<CPowerUp*>(manCars->GetEntitiesAI()[0]->GetComponent(CompType::PowerUpComp).get());
@@ -101,6 +107,13 @@ StateInGame::StateInGame() {
     collisions = make_shared<Collisions>();
     sysBoxPowerUp = make_shared<SystemBoxPowerUp>();
 
+    // CREAMOS DE PRUEBA UN NAVMESH
+    manNavMesh->CreateNavMesh(glm::vec3(100.0f,30.0f,100.0f),glm::vec3(0.0f,0.0f,0.0f),100,10,10);
+    manNavMesh->CreateNavMesh(glm::vec3(0.0f,30.0f,100.0f),glm::vec3(0.0f,0.0f,0.0f),10,100,10);
+
+    for (auto navmesh : manNavMesh->GetEntities()){
+        renderEngine->FacadeAddObject(navmesh.get());
+    }
 
     // Entidades iniciales
     renderEngine->FacadeAddObjectCar(manCars.get()->GetCar().get());  //Anyadimos el coche
