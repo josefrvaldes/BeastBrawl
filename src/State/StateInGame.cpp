@@ -111,8 +111,11 @@ StateInGame::StateInGame() {
     // CREAMOS DE PRUEBA UN NAVMESH
     vector<int> waypoints1{1,3,5};
     vector<int> waypoints2{0,2,4,6};
-    manNavMesh->CreateNavMesh(glm::vec3(100.0f,30.0f,100.0f),glm::vec3(0.0f,0.0f,0.0f),100,10,10,waypoints1);
-    manNavMesh->CreateNavMesh(glm::vec3(0.0f,30.0f,100.0f),glm::vec3(0.0f,0.0f,0.0f),10,100,10,waypoints2);
+    manNavMesh->CreateNavMesh(glm::vec3(0.0f,0.0f,-200.0f),glm::vec3(0.0f,0.0f,0.0f),1000,32,500,waypoints1);
+    manNavMesh->CreateNavMesh(glm::vec3(0.0f,0.0f,500.0f),glm::vec3(0.0f,0.0f,0.0f),1000,32,500,waypoints2);
+    manNavMesh->CreateNavMesh(glm::vec3(-300.0f,0.0f,150.0f),glm::vec3(0.0f,0.0f,0.0f),150,32,200,waypoints1);
+    manNavMesh->CreateNavMesh(glm::vec3(300.0f,0.0f,150.0f),glm::vec3(0.0f,0.0f,0.0f),150,32,200,waypoints2);
+
 
     for (auto navmesh : manNavMesh->GetEntities()){
         renderEngine->FacadeAddObject(navmesh.get());
