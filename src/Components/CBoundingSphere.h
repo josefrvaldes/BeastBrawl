@@ -25,5 +25,5 @@ class CBoundingSphere : public Component {
     vec3 center;
     const float radius{DEFAULT_SPHERE_RADIUS};
 
-    static constexpr float DEFAULT_SPHERE_RADIUS{12.f};
+    static constexpr float DEFAULT_SPHERE_RADIUS{10.f};
 };

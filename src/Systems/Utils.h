@@ -10,7 +10,6 @@
 using namespace glm;
 using namespace std;
 
-
 class MakeString {
    public:
     std::stringstream stream;
@@ -22,7 +21,6 @@ class MakeString {
         return *this;
     }
 };
-
 
 class Utils {
    public:
@@ -44,6 +42,19 @@ class Utils {
         return distance;
     }
 
+    static float GetAngleFromVector(vec3& vecDirection) {
+        float anguloRad = atan2(vecDirection.x, vecDirection.z);
+        return RadToDeg(anguloRad);
+    }
+
+    static vec3 GetVectorFromAngle(float angle) {
+        vec3 vector;
+        vector.x = cos(Utils::DegToRad(angle));
+        vector.y = 0.f;
+        vector.z = sin(Utils::DegToRad(angle));
+        return vector;
+    }
+
     static void Cout(string& txt) {
         if (ACTIVATE_COUT)
             cout << txt << endl;
@@ -54,6 +65,7 @@ class Utils {
     }
 
     static float RadToDeg(float rad) {
-        return rad * (180.0 / M_PI);
+        uint32_t auxDeg = rad * (180.0 / M_PI);
+        return (auxDeg + 360) % 360;
     }
 };
