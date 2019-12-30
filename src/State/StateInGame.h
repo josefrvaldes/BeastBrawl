@@ -32,6 +32,7 @@
 #include "../Systems/Physics.h"
 #include "../Systems/PhysicsAI.h"
 #include "../Systems/SystemBtPowerUp.h"
+#include "../Systems/SystemBtMoveTo.h"
 #include "../Game.h"
 #include "../Managers/ManCar.h"
 #include "../Managers/ManPowerUp.h"
@@ -78,7 +79,7 @@ class StateInGame : public State {
     SoundFacade *soundEngine;
     shared_ptr<Physics> physics;
     //shared_ptr<float> deltaTime;
-    float deltaTime = 0.166666;
+    float deltaTime = 0.0166666;
     shared_ptr<PhysicsPowerUp> phisicsPowerUp;
     shared_ptr<SystemBoxPowerUp> sysBoxPowerUp;
     shared_ptr<Collisions> collisions;
@@ -89,6 +90,7 @@ class StateInGame : public State {
 
     shared_ptr<PhysicsAI> physicsAI;
     shared_ptr<SystemBtPowerUp> systemBtPowerUp;
+    shared_ptr<SystemBtMoveTo> systemBtMoveTo;
     shared_ptr<ManTotem> manTotems;
     //int lastFPS = -1;
     //uint32_t then;

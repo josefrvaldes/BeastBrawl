@@ -296,8 +296,8 @@ void RenderFacadeIrrlicht::FacadeCheckInput() {
     if (receiver.IsKeyDown(KEY_ESCAPE)) {
         device->closeDevice();
     }
-    if (receiver.IsKeyDown(KEY_KEY_1)) {
-        eventManager->AddEventMulti(Event{EventType::PRESS_1});
+    if (receiver.IsKeyDown(KEY_KEY_P)) {
+        eventManager->AddEventMulti(Event{EventType::PRESS_P});
     }
     if (receiver.IsKeyDown(KEY_KEY_I)) {
         //cout << "Pulsamos I" << endl;

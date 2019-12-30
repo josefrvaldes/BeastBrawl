@@ -19,27 +19,31 @@ class SoundFacadeFMOD : public SoundFacade {
         explicit SoundFacadeFMOD() : SoundFacade() {};
         ~SoundFacadeFMOD();
 
+        // Funciones basicas del motor de audio.
         void InitSoundEngine() override;
         void TerminateSoundEngine() override;
-        void LoadMasterBank();
-        void UnloadMasterBank();
+        void UnloadAllBanks();
 
-        void SetState(const uint16_t) override;
+        // Cambio de banco de audio y subscripcion a eventos.
+        void SetState(const uint8_t) override;
         
-        void LoadBanksInGame() override;
-        void LoadEvent(const char*) override;
-        void InsertInstance(const char*, FMOD::Studio::EventInstance*);
-        //bool EventIsPlaying(const char*);
         
-        void UnloadBank(const char*) override;
-
+        
+        bool IsPlaying(FMOD::Studio::EventInstance*);
         void Update() override;
 
         unordered_map<string, FMOD::Studio::EventDescription*> GetDescriptions() { return soundDescriptions;};
         unordered_map<string, FMOD::Studio::EventInstance*> GetInstances() { return eventInstances; }
 
     private:
-        void LoadBanks(const uint16_t) override;
+        void LoadMasterBank();
+        void UnloadMasterBank();
+
+        void LoadSoundFiles(const uint8_t) override;
+        void LoadInGameSounds() override;
+        void LoadSoundEvent(const char*, const bool) override;
+        void SubscribeToGameEvents(const uint8_t) override;
+
         FMOD::System* coreSystem = NULL;
         FMOD::Studio::System* system = NULL;
         FMOD::Studio::Bank* masterBank = NULL;
@@ -48,19 +52,14 @@ class SoundFacadeFMOD : public SoundFacade {
         unordered_map<string, FMOD::Studio::Bank*> banks;
         unordered_map<string, FMOD::Studio::EventDescription*> soundDescriptions;
         unordered_map<string, FMOD::Studio::EventInstance*> eventInstances;
-        shared_ptr<EventManager> eventManager;
 
-        void SubscribeToGameEvents(int state);
+        shared_ptr<EventManager> eventManager;
 
 
         // eventos del juego
-        void SonarClaxon(DataMap);
-        void SoniditoTecla(DataMap);
-        void VozAlElegirPersonaje(DataMap);
-
+        void SoundClaxon(DataMap);
 
         // metodos de sonido
-        void SonarUnaVez(string);
-        void SonarEnBucle(string);
-        void SonarOjete(string);
+        void PlayEvent3D(const string);
+        void PlayEvent2D(const string);
 };

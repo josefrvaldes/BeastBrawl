@@ -12,6 +12,11 @@
 #include "../Components/CSpeed.h"
 #include "Manager.h"
 
+#include "../Managers/ManWayPoint.h"
+#include "../Entities/WayPoint.h"
+
+#include <stack>
+
 using namespace std;
 class Car;
 class CarAI;
@@ -28,7 +33,7 @@ class ManCar : public Manager {
     void CreateCar();
     void CreateMainCar();
     void UpdateCar();
-    void UpdateCarAI();
+    void UpdateCarAI(CarAI* car,ManWayPoint* graph);
     shared_ptr<Car>& GetCar() { return car; };
 
     void CreateCarAI();
@@ -38,6 +43,7 @@ class ManCar : public Manager {
     bool carInVisionRange(Entity* actualCar, Entity* otherCar, uint32_t rangeVision);
     bool anyCarInVisionRange(Entity* actualCar, uint32_t rangeVision);
     void Integrate(float) override;
+    stack<int> Dijkstra(ManWayPoint* graph, int start, int end);
 
    private:
     Physics *physics;
@@ -55,6 +61,8 @@ class ManCar : public Manager {
     void CatchTotemAI(DataMap d);
     void UseTotem(Entity* carWinTotem);
     void ThrowTotem(Entity* carLoseTotem);
+    void ChangePosDestination(DataMap d);
+    void MoveToPowerUp(DataMap d);
     bool useRoboJorobo(Entity* newCarWithTotem);
 
     void ThrowPowerUp(DataMap d);

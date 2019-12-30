@@ -47,7 +47,8 @@ void Game::SetState(State::States stateType) {
         default:
             cout << "This state doesn't exist" << endl;
     }
-    // Inicializa el estado cada vez que se cambia.
+
+    // Inicializa los bancos cada vez que se cambia de estado.
     currentState->InitState();
 }
 
@@ -67,19 +68,23 @@ void Game::MainLoop() {
 
     renderFacadeManager->GetRenderFacade()->FacadeSetWindowCaption("Beast Brawl");
 
-    //Lo creo aqui porque queria llamar al TerminateSoundEngine despues del bucle.
     SoundFacadeManager* soundFacadeManager = SoundFacadeManager::GetInstance();
 
-    //Si se incluye esta funcion en el constructor de SoundFacadeFMOD da violacion de segmento.
+    //Inicializa la fachada de FMOD.
     soundFacadeManager->InitializeFacadeFmod();
     soundFacadeManager->GetSoundFacade()->InitSoundEngine();
 
     while (renderFacadeManager->GetRenderFacade()->FacadeRun()) {
         currentState->Input();
         currentState->Update();
+
+        //Actualiza el motor de audio.
         soundFacadeManager->GetSoundFacade()->Update();
         currentState->Render();
     }
+
+    //Libera los sonidos y bancos.
     soundFacadeManager->GetSoundFacade()->TerminateSoundEngine();
+    
     renderFacadeManager->GetRenderFacade()->FacadeDeviceDrop();
 }
