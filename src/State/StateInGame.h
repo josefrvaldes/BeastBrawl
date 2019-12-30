@@ -31,6 +31,7 @@
 #include "../Systems/Collisions.h"
 #include "../Systems/Physics.h"
 #include "../Systems/PhysicsAI.h"
+#include "../Systems/SteeringBehaviours.h"
 #include "../Systems/SystemBtPowerUp.h"
 #include "../Systems/SystemBtMoveTo.h"
 #include "../Game.h"
@@ -89,6 +90,7 @@ class StateInGame : public State {
     unique_ptr<CLPhysics> clPhysics;
 
     shared_ptr<PhysicsAI> physicsAI;
+    unique_ptr<const SteeringBehaviours> steeringBehaviours;
     shared_ptr<SystemBtPowerUp> systemBtPowerUp;
     shared_ptr<SystemBtMoveTo> systemBtMoveTo;
     shared_ptr<ManTotem> manTotems;

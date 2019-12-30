@@ -102,6 +102,7 @@ StateInGame::StateInGame() {
     physicsAI = make_shared<PhysicsAI>();
     collisions = make_shared<Collisions>();
     sysBoxPowerUp = make_shared<SystemBoxPowerUp>();
+    steeringBehaviours = make_unique<SteeringBehaviours>();
 
 
     // Entidades iniciales
@@ -154,6 +155,7 @@ StateInGame::StateInGame() {
     physicsAI->InitPhysicsIA(manCars->GetEntitiesAI()[0].get());  // To-Do: hacer que se le pasen todos los coches IA
     cout << "después de init physics ai" << endl;
 
+    
     // BehaivourTree
     systemBtPowerUp = make_shared<SystemBtPowerUp>();
     systemBtMoveTo  = make_shared<SystemBtMoveTo>(); 
@@ -249,6 +251,7 @@ void StateInGame::Update() {
     for(auto actualAI : manCars->GetEntitiesAI()){
         physicsAI->Update(actualAI.get(), deltaTime);
     }
+    //steeringBehaviours->Update(manCars.get(), manBoxPowerUps.get());
 
     clPhysics->Update(0.1666f);
     sysBoxPowerUp->update(manBoxPowerUps.get());
