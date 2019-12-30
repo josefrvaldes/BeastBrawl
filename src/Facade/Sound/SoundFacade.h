@@ -15,9 +15,10 @@ class SoundFacade {
         virtual void Update() = 0;
 
     private:
-        virtual void LoadSoundFiles(const uint8_t) = 0;
-        virtual void LoadInGameSounds() = 0;
-        virtual void LoadSoundEvent(const char*, const bool) = 0;
+        virtual void LoadSoundByState(const uint8_t) = 0;
+        virtual void LoadSounds(const string, const bool) = 0;
+        virtual void LoadSoundEvent(const string, const bool) = 0;
+        
         virtual void SubscribeToGameEvents(const uint8_t) = 0;
     
 };

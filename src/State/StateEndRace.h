@@ -22,12 +22,10 @@ class StateEndRace : public State{
 
 
     private:
-        RenderFacadeManager* renderFacadeManager;
-        InputFacadeManager* inputFacadeManager;
-        PhysicsFacadeManager* physicsFacadeManager;
-        RenderFacade* renderEngine;
-        InputFacade* inputEngine;
-        PhysicsFacade* physicsEngine;
+        RenderFacade* renderEngine = { nullptr };
+        SoundFacade* soundEngine = { nullptr };
+        //InputFacade* inputEngine = { nullptr };
+        //PhysicsFacade* physicsEngine = { nullptr };
 
 
 	

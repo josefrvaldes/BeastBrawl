@@ -22,18 +22,16 @@ class Game{
         shared_ptr<State> GetLastState() { return lastState; };
         void InitGame();
         void MainLoop();
+        void TerminateGame();
     
 
     private:
         Game(){};
         static Game* game;
-        //State::States ActualState;
+        
         shared_ptr<State> currentState;
         shared_ptr<State> gameState;
         shared_ptr<State> lastState;
-        RenderFacadeManager* renderFacadeManager;
-        InputFacadeManager* inputFacadeManager;
-        PhysicsFacadeManager* physicsFacadeManager;
 
         bool gameStarted = false;
 };

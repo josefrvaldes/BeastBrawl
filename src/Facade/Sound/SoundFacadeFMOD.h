@@ -27,8 +27,6 @@ class SoundFacadeFMOD : public SoundFacade {
         // Cambio de banco de audio y subscripcion a eventos.
         void SetState(const uint8_t) override;
         
-        
-        
         bool IsPlaying(FMOD::Studio::EventInstance*);
         void Update() override;
 
@@ -36,13 +34,24 @@ class SoundFacadeFMOD : public SoundFacade {
         unordered_map<string, FMOD::Studio::EventInstance*> GetInstances() { return eventInstances; }
 
     private:
+        // eventos del juego
+        void SoundClaxon(DataMap);
+        void ThrowPowerup(DataMap);
+        void StopPrueba(DataMap);
+
+
         void LoadMasterBank();
         void UnloadMasterBank();
-
-        void LoadSoundFiles(const uint8_t) override;
-        void LoadInGameSounds() override;
-        void LoadSoundEvent(const char*, const bool) override;
+        void LoadSoundByState(const uint8_t) override;
+        void LoadSounds(const string, const bool) override;
+        void LoadSoundEvent(const string, const bool) override;
+        void PlayEvent3D(const string);
+        void PlayEvent2D(const string);
+        void StopEvent(const string);
+        
         void SubscribeToGameEvents(const uint8_t) override;
+
+
 
         FMOD::System* coreSystem = NULL;
         FMOD::Studio::System* system = NULL;
@@ -52,14 +61,21 @@ class SoundFacadeFMOD : public SoundFacade {
         unordered_map<string, FMOD::Studio::Bank*> banks;
         unordered_map<string, FMOD::Studio::EventDescription*> soundDescriptions;
         unordered_map<string, FMOD::Studio::EventInstance*> eventInstances;
+        unordered_map<string, vector<string>> events = {
+            {"InGame2D", {
+                            "Coche/claxon",
+                            "Personajes/choque_enemigo", 
+                            "Personajes/choque_powerup",
+                            "Personajes/derrape",
+                            "Personajes/derrota",
+                            "Personajes/powerup",
+                            "Personajes/nitro",
+                            "Personajes/random",
+                            "PowerUp/robojorobo",
+                            "Partida/cuenta_atras"
+                         } 
+            }
+        };
 
         shared_ptr<EventManager> eventManager;
-
-
-        // eventos del juego
-        void SoundClaxon(DataMap);
-
-        // metodos de sonido
-        void PlayEvent3D(const string);
-        void PlayEvent2D(const string);
 };

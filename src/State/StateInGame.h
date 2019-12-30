@@ -70,14 +70,12 @@ class StateInGame : public State {
     shared_ptr<ManBoxPowerUp> manBoxPowerUps;
     shared_ptr<ManCar> manCars;
     shared_ptr<ManWayPoint> manWayPoint;
-    RenderFacadeManager* renderFacadeManager;
-    InputFacadeManager* inputFacadeManager;
-    PhysicsFacadeManager* physicsFacadeManager;
-    RenderFacade* renderEngine;
-    InputFacade* inputEngine;
-    PhysicsFacade* physicsEngine;
-    shared_ptr<SoundFacadeManager> soundFacadeManager;
-    SoundFacade *soundEngine;
+    
+    RenderFacade* renderEngine = { nullptr };
+    InputFacade* inputEngine = { nullptr };
+    PhysicsFacade* physicsEngine = { nullptr };
+    SoundFacade *soundEngine = { nullptr };
+    
     shared_ptr<Physics> physics;
     //shared_ptr<float> deltaTime;
     float deltaTime = 0.0166666;

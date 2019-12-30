@@ -7,9 +7,8 @@ StateMenu::StateMenu(){
     // constructor
     std::cout << "Estado Menu Creado" << std::endl;
     // Inicializamos las facadas
-    renderFacadeManager = RenderFacadeManager::GetInstance();
+    renderEngine = RenderFacadeManager::GetInstance()->GetRenderFacade();
     //renderFacadeManager->InitializeIrrlicht();
-    renderEngine = renderFacadeManager->GetRenderFacade();
 
     renderEngine->FacadeInitMenu();
 
@@ -17,8 +16,9 @@ StateMenu::StateMenu(){
 
 // Cargamos los bancos de sonido Menu.
 void StateMenu::InitState() {
+    
+    cout << "~~~ ENTRO A MENU" << endl;
     soundEngine = SoundFacadeManager::GetInstance()->GetSoundFacade();
-    // TO-DO: Aqui nunca entra en el StateMenu porque soundEngine es 0. El SoundEngine se declara por primera vez en el MainLoop y a este Init se le llama antes.
     if (soundEngine){
         soundEngine->SetState(2);
     }

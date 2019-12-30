@@ -22,13 +22,10 @@ class StateMenu : public State{
 
 
     private:
-        RenderFacadeManager* renderFacadeManager;
-        InputFacadeManager* inputFacadeManager;
-        PhysicsFacadeManager* physicsFacadeManager;
-        RenderFacade* renderEngine;
-        InputFacade* inputEngine;
-        PhysicsFacade* physicsEngine;
-        SoundFacade* soundEngine;
+        RenderFacade* renderEngine = { nullptr };
+        //InputFacade* inputEngine = { nullptr };
+        //PhysicsFacade* physicsEngine = { nullptr };
+        SoundFacade* soundEngine = { nullptr };
 
 
 	

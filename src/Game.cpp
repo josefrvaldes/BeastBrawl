@@ -54,27 +54,23 @@ void Game::SetState(State::States stateType) {
 
 void Game::InitGame() {
     // To-Do put window values
-    renderFacadeManager = RenderFacadeManager::GetInstance();
-    renderFacadeManager->InitializeIrrlicht();
+    RenderFacadeManager::GetInstance()->InitializeIrrlicht();
+    InputFacadeManager::GetInstance()->InitializeIrrlicht();
+    PhysicsFacadeManager::GetInstance()->InitializeIrrlicht();
 
-    inputFacadeManager = InputFacadeManager::GetInstance();
-    inputFacadeManager->InitializeIrrlicht();
-
-    physicsFacadeManager = PhysicsFacadeManager::GetInstance();
-    physicsFacadeManager->InitializeIrrlicht();
+    //Inicializa la fachada de FMOD.
+    SoundFacadeManager::GetInstance()->InitializeFacadeFmod();
+    SoundFacadeManager::GetInstance()->GetSoundFacade()->InitSoundEngine();
 }
 
 void Game::MainLoop() {
 
-    renderFacadeManager->GetRenderFacade()->FacadeSetWindowCaption("Beast Brawl");
-
     SoundFacadeManager* soundFacadeManager = SoundFacadeManager::GetInstance();
 
-    //Inicializa la fachada de FMOD.
-    soundFacadeManager->InitializeFacadeFmod();
-    soundFacadeManager->GetSoundFacade()->InitSoundEngine();
+    RenderFacadeManager* renderFacadeMan = RenderFacadeManager::GetInstance();
+    renderFacadeMan->GetRenderFacade()->FacadeSetWindowCaption("Beast Brawl");
 
-    while (renderFacadeManager->GetRenderFacade()->FacadeRun()) {
+    while (renderFacadeMan->GetRenderFacade()->FacadeRun()) {
         currentState->Input();
         currentState->Update();
 
@@ -82,9 +78,12 @@ void Game::MainLoop() {
         soundFacadeManager->GetSoundFacade()->Update();
         currentState->Render();
     }
+    
+    renderFacadeMan->GetRenderFacade()->FacadeDeviceDrop();
+}
+
+void Game::TerminateGame() {
 
     //Libera los sonidos y bancos.
-    soundFacadeManager->GetSoundFacade()->TerminateSoundEngine();
-    
-    renderFacadeManager->GetRenderFacade()->FacadeDeviceDrop();
+    SoundFacadeManager::GetInstance()->GetSoundFacade()->TerminateSoundEngine();
 }
