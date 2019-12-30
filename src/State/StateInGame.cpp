@@ -167,10 +167,11 @@ void StateInGame::InitState() {
     //Si la direccion de soundEngine!=0 es que viene del PAUSE, por lo que no deberia hacerlo.
     if (!soundEngine) {
         soundEngine = SoundFacadeManager::GetInstance()->GetSoundFacade();
-        cout << "SoundEngine en INGAME es -> " << soundEngine << endl;
+        cout << "~~~ SoundEngine en INGAME es -> " << soundEngine << endl;
         if (soundEngine){
             soundEngine->SetState(4);
             soundEngine->PlayEvent3D("Coche/motor");
+            soundEngine->PlayEvent2D("Ambiente/ambiente");
         }
     } else {
         soundEngine->ResumeAllEvent();

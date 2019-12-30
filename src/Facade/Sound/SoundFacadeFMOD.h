@@ -44,8 +44,11 @@ class SoundFacadeFMOD : public SoundFacade {
     private:
         // eventos del juego
         void SoundClaxon(DataMap);
-        void ThrowPowerup(DataMap);
+        void SoundThrowPowerup(DataMap);
+        void SoundHurt(DataMap);
+        void SoundTotem(DataMap);
         void StopPrueba(DataMap);
+        void StopShield(DataMap);
 
 
         void LoadMasterBank();
@@ -68,24 +71,38 @@ class SoundFacadeFMOD : public SoundFacade {
         unordered_map<string, FMOD::Studio::EventInstance*> eventInstances;
         unordered_map<string, vector<string>> events = {
             { "InGame2D",       {
+                                "Ambiente/ambiente",
                                 "Coche/claxon",
                                 "Personajes/choque_enemigo", 
                                 "Personajes/choque_powerup",
                                 "Personajes/derrape",
-                                "Personajes/derrota",
                                 "Personajes/powerup",
-                                "Personajes/nitro",
                                 "Personajes/random",
                                 "PowerUp/robojorobo",
                                 "Partida/cuenta_atras"
                                 } 
             },
             { "InGame3D",       {
-                                "Coche/motor"
+                                "Coche/motor",
+                                "Partida/coger_totem",
+                                "PowerUp/escudo",
+                                "Coche/choque_enemigo",
+                                "PowerUp/pudin",
+                                "PowerUp/telebanana"
                                 }
             },
-            { "InGameMusic",    {
-                                "Musica/fin_partida"
+            { "EndRace",        {
+                                "Musica/fin_partida",
+                                "Personajes/derrota",
+                                "Personajes/victoria",
+                                "Menu/aceptar"
+                                }
+
+            },
+            { "Menu",           {
+                                "Menu/atras",
+                                "Menu/aceptar",
+                                "Menu/cambio_opcion"
                                 }
 
             }

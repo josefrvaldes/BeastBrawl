@@ -126,19 +126,33 @@ void SoundFacadeFMOD::SubscribeToGameEvents(const uint8_t numState) {
 
             EventManager::GetInstance()->SuscribeMulti(Listener(
                 EventType::THROW_POWERUP,
-                bind(&SoundFacadeFMOD::ThrowPowerup, this, placeholders::_1),
-                "ThrowPowerup"));
+                bind(&SoundFacadeFMOD::SoundThrowPowerup, this, placeholders::_1),
+                "SoundThrowPowerup"));
 
             EventManager::GetInstance()->SuscribeMulti(Listener{
                 EventType::PRESS_0,
                 bind(&SoundFacadeFMOD::StopPrueba, this, placeholders::_1),
                 "StopPrueba"});
 
+            EventManager::GetInstance()->SuscribeMulti(Listener{
+                EventType::HURT,
+                bind(&SoundFacadeFMOD::SoundHurt, this, placeholders::_1),
+                "SoundHurt"});
+
+            EventManager::GetInstance()->SuscribeMulti(Listener{
+                EventType::CATCH_TOTEM,
+                bind(&SoundFacadeFMOD::SoundTotem, this, placeholders::_1),
+                "SoundTotem"});
+
+            EventManager::GetInstance()->SuscribeMulti(Listener{
+                EventType::NO_SHIELD,
+                bind(&SoundFacadeFMOD::StopShield, this, placeholders::_1),
+                "StopShield"});
+
             break;
 
-        case 5:     //EndRace
+        case 5:     // EndRace
             break;
-
         case 7:     // Controls
             break;
 
@@ -169,7 +183,7 @@ void SoundFacadeFMOD::LoadSoundByState(const uint8_t numState) {
             LoadSoundBank("InGame3D", 1);
             break;
         case 5:     //EndRace
-            LoadSoundBank("InGameMusic", 0);    //TO-DO: Cambiar esto de sitio
+            LoadSoundBank("EndRace", 0);
             break;
         case 7:     // Controls
             break;
@@ -337,7 +351,15 @@ void SoundFacadeFMOD::SoundClaxon(DataMap d) {
     PlayEvent2D("Coche/claxon");
 }
 
-void SoundFacadeFMOD::ThrowPowerup(DataMap d) {
+void SoundFacadeFMOD::SoundHurt(DataMap d) {
+    PlayEvent2D("Personajes/choque_powerup");
+}
+
+void SoundFacadeFMOD::SoundTotem(DataMap d) {
+    PlayEvent3D("Partida/coger_totem");
+}
+
+void SoundFacadeFMOD::SoundThrowPowerup(DataMap d) {
     typeCPowerUp typepw = any_cast<typeCPowerUp>(d["typePowerUp"]);
 
     switch ((int)typepw) {
@@ -345,9 +367,8 @@ void SoundFacadeFMOD::ThrowPowerup(DataMap d) {
             // TO-DO: ¿Cambiar a 3D?
             PlayEvent2D("PowerUp/robojorobo");
             break;
-        case 2:     // Nitro
-            break;
         case 4:     // Escudomerluzo
+            PlayEvent3D("PowerUp/escudo");
             break;
         default:    // Otro
             PlayEvent2D("Personajes/powerup");
@@ -358,5 +379,9 @@ void SoundFacadeFMOD::ThrowPowerup(DataMap d) {
 
 void SoundFacadeFMOD::StopPrueba(DataMap d) {
     StopEvent("Personajes/powerup");
+}
+
+void SoundFacadeFMOD::StopShield(DataMap d) {
+    StopEvent("PowerUp/escudo");
 }
 

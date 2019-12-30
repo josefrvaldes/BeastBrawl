@@ -20,7 +20,7 @@ void StateMenu::InitState() {
     cout << "~~~ ENTRO A MENU" << endl;
     if (!soundEngine){
         soundEngine = SoundFacadeManager::GetInstance()->GetSoundFacade();
-        cout << "SoundEngine en MENU es -> " << soundEngine << endl;
+        cout << "~~~ SoundEngine en MENU es -> " << soundEngine << endl;
     }
     soundEngine->SetState(2);
 }
