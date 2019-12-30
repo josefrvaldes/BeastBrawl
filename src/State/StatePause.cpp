@@ -15,7 +15,13 @@ StatePause::StatePause(){
 }
 
 void StatePause::InitState() {
+    cout << "~~~ ENTRO A PAUSE" << endl;
 
+    if (!soundEngine) {
+        soundEngine = SoundFacadeManager::GetInstance()->GetSoundFacade();
+        cout << "~~~ SoundEngine en PAUSE es -> " << soundEngine << endl;
+    }
+    soundEngine->PauseAllEvent();
 }
 
 

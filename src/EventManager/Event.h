@@ -45,7 +45,10 @@ enum EventType {
     CHANGE_DESTINATION,
     PRESS_P,
     UPDATE_POWERUP_HUD,
-    PRESS_0
+    PRESS_0,
+    HURT,
+    CATCH_TOTEM,
+    NO_SHIELD
 };
 
 struct Data {

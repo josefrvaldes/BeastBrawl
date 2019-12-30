@@ -25,6 +25,7 @@ class StatePause : public State{
         RenderFacade* renderEngine = { nullptr };
         //InputFacade* inputEngine = { nullptr };
         //PhysicsFacade* physicsEngine = { nullptr };
+        SoundFacade* soundEngine = { nullptr };
 
 
 	
