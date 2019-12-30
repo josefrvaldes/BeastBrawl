@@ -18,10 +18,12 @@ void StateEndRace::InitState() {
 
     cout << "~~~ ENTRO A ENDRACE" << endl;
 
-    soundEngine = SoundFacadeManager::GetInstance()->GetSoundFacade();
-    if (soundEngine){
-        soundEngine->SetState(5);
+    if (!soundEngine){
+        soundEngine = SoundFacadeManager::GetInstance()->GetSoundFacade();
+        cout << "SoundEngine en ENDRACE es -> " << soundEngine << endl;
     }
+    soundEngine->SetState(5);
+    soundEngine->PlayEvent3D("Musica/fin_partida");
 }
 
 

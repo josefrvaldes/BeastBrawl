@@ -165,9 +165,11 @@ void SoundFacadeFMOD::LoadSoundByState(const uint8_t numState) {
         case 3:
             break;
         case 4: //InGame
-            LoadSounds("InGame2D", 0);
+            LoadSoundBank("InGame2D", 0);
+            LoadSoundBank("InGame3D", 1);
             break;
         case 5:     //EndRace
+            LoadSoundBank("InGameMusic", 0);    //TO-DO: Cambiar esto de sitio
             break;
         case 7:     // Controls
             break;
@@ -183,7 +185,7 @@ void SoundFacadeFMOD::LoadSoundByState(const uint8_t numState) {
  * @param nameBank - Nombre del banco a cargar.
  * @param type - 1 para eventos 3D y 0 para eventos 2D.
  */
-void SoundFacadeFMOD::LoadSounds(const string nameBank, const bool type) {
+void SoundFacadeFMOD::LoadSoundBank(const string nameBank, const bool type) {
     if (banks.find(nameBank) == banks.end()) {
         banks[nameBank] = nullptr;
 
@@ -260,6 +262,44 @@ void SoundFacadeFMOD::PlayEvent2D(const string nameID) {
 void SoundFacadeFMOD::StopEvent(const string nameID) {
     if (eventInstances.find(nameID) != eventInstances.end() && IsPlaying(eventInstances[nameID])) {
         ERRCHECK(eventInstances[nameID]->stop(FMOD_STUDIO_STOP_IMMEDIATE));
+    }
+}
+
+/**
+ * Pone en pause todos los sonidos.
+ */
+void SoundFacadeFMOD::PauseAllEvent() {
+    for (auto event : eventInstances) {
+        PauseEvent(event.first);
+    }
+}
+
+/**
+ * Reanuda en pause todos los sonidos.
+ */
+void SoundFacadeFMOD::ResumeAllEvent() {
+    for (auto event : eventInstances) {
+        ResumeEvent(event.first);
+    }
+}
+
+/**
+ * Pone en pause el sonido.
+ * @param nameID - Identificador del sonido en el mapa de instancias.
+ */
+void SoundFacadeFMOD::PauseEvent(const string nameID) {
+    if (eventInstances.find(nameID) != eventInstances.end() && IsPlaying(eventInstances[nameID])) {
+        ERRCHECK(eventInstances[nameID]->setPaused(true));
+    }
+}
+
+/**
+ * Reanuda el sonido.
+ * @param nameID - Identificador del sonido en el mapa de instancias.
+ */
+void SoundFacadeFMOD::ResumeEvent(const string nameID) {
+    if (eventInstances.find(nameID) != eventInstances.end() && IsPlaying(eventInstances[nameID])) {
+        ERRCHECK(eventInstances[nameID]->setPaused(false));
     }
 }
 

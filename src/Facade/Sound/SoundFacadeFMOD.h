@@ -26,6 +26,14 @@ class SoundFacadeFMOD : public SoundFacade {
 
         // Cambio de banco de audio y subscripcion a eventos.
         void SetState(const uint8_t) override;
+
+        void PlayEvent3D(const string) override;
+        void PlayEvent2D(const string) override;
+        void StopEvent(const string) override;
+        void PauseAllEvent() override;
+        void ResumeAllEvent() override;
+        void PauseEvent(const string);
+        void ResumeEvent(const string);
         
         bool IsPlaying(FMOD::Studio::EventInstance*);
         void Update() override;
@@ -43,11 +51,8 @@ class SoundFacadeFMOD : public SoundFacade {
         void LoadMasterBank();
         void UnloadMasterBank();
         void LoadSoundByState(const uint8_t) override;
-        void LoadSounds(const string, const bool) override;
+        void LoadSoundBank(const string, const bool) override;
         void LoadSoundEvent(const string, const bool) override;
-        void PlayEvent3D(const string);
-        void PlayEvent2D(const string);
-        void StopEvent(const string);
         
         void SubscribeToGameEvents(const uint8_t) override;
 
@@ -62,18 +67,27 @@ class SoundFacadeFMOD : public SoundFacade {
         unordered_map<string, FMOD::Studio::EventDescription*> soundDescriptions;
         unordered_map<string, FMOD::Studio::EventInstance*> eventInstances;
         unordered_map<string, vector<string>> events = {
-            {"InGame2D", {
-                            "Coche/claxon",
-                            "Personajes/choque_enemigo", 
-                            "Personajes/choque_powerup",
-                            "Personajes/derrape",
-                            "Personajes/derrota",
-                            "Personajes/powerup",
-                            "Personajes/nitro",
-                            "Personajes/random",
-                            "PowerUp/robojorobo",
-                            "Partida/cuenta_atras"
-                         } 
+            { "InGame2D",       {
+                                "Coche/claxon",
+                                "Personajes/choque_enemigo", 
+                                "Personajes/choque_powerup",
+                                "Personajes/derrape",
+                                "Personajes/derrota",
+                                "Personajes/powerup",
+                                "Personajes/nitro",
+                                "Personajes/random",
+                                "PowerUp/robojorobo",
+                                "Partida/cuenta_atras"
+                                } 
+            },
+            { "InGame3D",       {
+                                "Coche/motor"
+                                }
+            },
+            { "InGameMusic",    {
+                                "Musica/fin_partida"
+                                }
+
             }
         };
 

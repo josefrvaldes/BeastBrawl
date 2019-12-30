@@ -18,10 +18,11 @@ StateMenu::StateMenu(){
 void StateMenu::InitState() {
     
     cout << "~~~ ENTRO A MENU" << endl;
-    soundEngine = SoundFacadeManager::GetInstance()->GetSoundFacade();
-    if (soundEngine){
-        soundEngine->SetState(2);
+    if (!soundEngine){
+        soundEngine = SoundFacadeManager::GetInstance()->GetSoundFacade();
+        cout << "SoundEngine en MENU es -> " << soundEngine << endl;
     }
+    soundEngine->SetState(2);
 }
 
 
