@@ -23,9 +23,7 @@ class ManTotem{
     void CreateTotem();
     void CreateTotem(glm::vec3 _position);
     //shared_ptr<Totem>& GetTotem() { return totem; };
-    vector<shared_ptr<Totem>> GetEntities() const {
-        return totems;
-    };
+    vector<shared_ptr<Totem>> GetEntities() const { return totems; };
 
    private:
    // shared_ptr<Totem> totem;
