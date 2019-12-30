@@ -237,10 +237,10 @@ void StateInGame::Update() {
 
     // ACTUALIZACION DE LAS FISICAS DE LOS COCHES
     physics->update(manCars->GetCar().get(), cam.get());
-    //for(auto actualAI : manCars->GetEntitiesAI()){
-    //    physicsAI->Update(manWayPoint.get(),actualAI.get(), deltaTime);
-    //}
-    steeringBehaviours->Update(manCars.get(), manBoxPowerUps.get());
+    for(auto actualAI : manCars->GetEntitiesAI()){
+        physicsAI->Update(manWayPoint.get(),actualAI.get(), deltaTime);
+    }
+    //steeringBehaviours->Update(manCars.get(), manBoxPowerUps.get());
 
     sysBoxPowerUp->update(manBoxPowerUps.get());
     phisicsPowerUp->update(manPowerUps->GetEntities());
