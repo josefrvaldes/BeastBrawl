@@ -10,6 +10,7 @@
 #include "../behaviourTree/Blackboard.h"
 //#include "../Components/CPowerUp.h"
 #include "../Components/CTotem.h"
+#include "../Components/CCurrentNavMesh.h"
 
 #include "../Entities/Totem.h"
 #include "../Managers/ManTotem.h"
@@ -114,13 +115,26 @@ struct MoveToTotem_mt : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
         if( blackboard->manTotems->GetEntities().size() > 0){
             //std::cout << "La IA va a por el Totem que esta en el suelo" << std::endl;
-            auto cTransformable = static_cast<CTransformable*>(blackboard->manTotems->GetEntities()[0].get()->GetComponent(CompType::TransformableComp).get());
-            shared_ptr<EventManager> eventManager = EventManager::GetInstance();
-            DataMap dataTotem;                                                                           
-            dataTotem["actualCar"] = blackboard->actualCar;              // nos guardamos el puntero para eliminar el powerUp
-            dataTotem["posDestination"] = cTransformable->position;              // nos guardamos el puntero al coche                              
-            eventManager->AddEventMulti(Event{EventType::CHANGE_DESTINATION, dataTotem}); 
-            return true;
+            auto cCurrentMeshCar = static_cast<CCurrentNavMesh*>(blackboard->actualCar->GetComponent(CompType::CurrentNavMeshComp).get());
+            auto cCurrentMeshTotem = static_cast<CCurrentNavMesh*>(blackboard->manTotems->GetEntities()[0].get()->GetComponent(CompType::CurrentNavMeshComp).get());
+            if(cCurrentMeshCar->currentNavMesh == cCurrentMeshTotem->currentNavMesh){
+                auto cTransformable = static_cast<CTransformable*>(blackboard->manTotems->GetEntities()[0].get()->GetComponent(CompType::TransformableComp).get());
+                shared_ptr<EventManager> eventManager = EventManager::GetInstance();
+                DataMap dataTotem;                                                                           
+                dataTotem["actualCar"] = blackboard->actualCar;              // nos guardamos el puntero para eliminar el powerUp
+                dataTotem["posDestination"] = cTransformable->position;              // nos guardamos el puntero al coche                              
+                eventManager->AddEventMulti(Event{EventType::CHANGE_DESTINATION, dataTotem}); 
+                return true;
+            }else{
+                // Actualmente solo nos movemos entre waypoints hasta coincidir en el mismo navMesh
+                //std::cout << "Vamos a movernos por los powerUps UUUEEEEPAA" << std::endl;
+                shared_ptr<EventManager> eventManager = EventManager::GetInstance();
+                DataMap dataPowerUp;       
+                dataPowerUp["actualCar"] = blackboard->actualCar;     
+                dataPowerUp["manWayPoints"] = blackboard->manWayPoint;                                                                                                      
+                eventManager->AddEventMulti(Event{EventType::MOVE_TO_POWERUP, dataPowerUp}); 
+                return true;
+            }
         }
         return false;
     }
@@ -146,23 +160,31 @@ struct MoveToCarTotem_mt : public behaviourTree {
             auto cTotem = static_cast<CTotem*>(actualAI.get()->GetComponent(CompType::TotemComp).get());
             // TODO actualmente debemsos hacer que si una IA tiene el Totem no se siga a si misma... quedaria parada
             if(cTotem->active == true){
-                //if(blackboard->actualCar != actualAI.get()){
-                    //std::cout << "nos movemos al coche que tiene el totem" << std::endl;
-                    //std::cout << "UUUUUUUUUUUUUUUUUUUEEEEEEEEEEEEEEEEEEEEEEEEEEEEE" << std::endl;
-                    //std::cout << "------------------------------------------------" << std::endl;
-                    //std::cout << "ooooooooooooooooooOOOOOOOOOOOOOOOOOOOOOOOOiiiiiiiiiiiiiiiiiiIIIIIIIIIIIII" << std::endl;
-                    //std::cout << "///////////////////////////////////////////////////" << std::endl;
-                    auto cTransformable = static_cast<CTransformable*>(actualAI.get()->GetComponent(CompType::TransformableComp).get());
+                auto cCurrentMeshCar = static_cast<CCurrentNavMesh*>(blackboard->actualCar->GetComponent(CompType::CurrentNavMeshComp).get());
+                auto cCurrentMeshCarAI = static_cast<CCurrentNavMesh*>(actualAI.get()->GetComponent(CompType::CurrentNavMeshComp).get());
+                if(cCurrentMeshCar->currentNavMesh == cCurrentMeshCarAI->currentNavMesh){
+                    //if(blackboard->actualCar != actualAI.get()){
+                        auto cTransformable = static_cast<CTransformable*>(actualAI.get()->GetComponent(CompType::TransformableComp).get());
+                        shared_ptr<EventManager> eventManager = EventManager::GetInstance();
+                        DataMap dataCarTotem;                                                                           
+                        dataCarTotem["actualCar"] = blackboard->actualCar;             
+                        dataCarTotem["posDestination"] = cTransformable->position;                                        
+                        eventManager->AddEventMulti(Event{EventType::CHANGE_DESTINATION, dataCarTotem}); 
+                        return true;
+                    //}else{
+                    //    std::cout << "somos una IA que tiene el powerUp y obvimanete no nos vamos a perseguir a nosotros mismos" << std::endl;
+                    //    return false;
+                    //}
+                }else{
+                    // Actualmente solo nos movemos entre waypoints hasta coincidir en el mismo navMesh
+                    //std::cout << "Vamos a movernos por los powerUps UUUEEEEPAA" << std::endl;
                     shared_ptr<EventManager> eventManager = EventManager::GetInstance();
-                    DataMap dataCarTotem;                                                                           
-                    dataCarTotem["actualCar"] = blackboard->actualCar;             
-                    dataCarTotem["posDestination"] = cTransformable->position;                                        
-                    eventManager->AddEventMulti(Event{EventType::CHANGE_DESTINATION, dataCarTotem}); 
+                    DataMap dataPowerUp;       
+                    dataPowerUp["actualCar"] = blackboard->actualCar;     
+                    dataPowerUp["manWayPoints"] = blackboard->manWayPoint;                                                                                                      
+                    eventManager->AddEventMulti(Event{EventType::MOVE_TO_POWERUP, dataPowerUp}); 
                     return true;
-                //}else{
-                //    std::cout << "somos una IA que tiene el powerUp y obvimanete no nos vamos a perseguir a nosotros mismos" << std::endl;
-                //    return false;
-                //}
+                }
             }
         }
         return false;     

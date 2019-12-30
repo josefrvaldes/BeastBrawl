@@ -102,6 +102,11 @@ StateInGame::StateInGame() {
     sysBoxPowerUp = make_shared<SystemBoxPowerUp>();
     steeringBehaviours = make_unique<SteeringBehaviours>();
 
+    // CREAMOS EL TOTEM
+    manTotems->CreateTotem(glm::vec3(-100.0,20.0,-100.0));
+    renderEngine->FacadeAddObject(manTotems->GetEntities()[0].get());
+
+
     // CREAMOS DE PRUEBA UN NAVMESH
     vector<int> waypoints1{0,1,2,3,4};
     vector<int> waypoints2{7,8,9,10,11};
@@ -156,6 +161,25 @@ StateInGame::StateInGame() {
     }
 
 
+    auto cTransformableTotem = static_cast<CTransformable*>(manTotems->GetEntities()[0].get()->GetComponent(CompType::TransformableComp).get());     
+    for(auto navmesh : manNavMesh->GetEntities()){
+        auto cDimensions = static_cast<CDimensions*>(navmesh.get()->GetComponent(CompType::DimensionsComp).get());
+        auto cTransformableNav = static_cast<CTransformable*>(navmesh.get()->GetComponent(CompType::TransformableComp).get()); 
+        if( ( (cTransformableTotem->position.x >= (cTransformableNav->position.x-(cDimensions->width/2))) && 
+            (cTransformableTotem->position.x <= (cTransformableNav->position.x+(cDimensions->width/2))) ) &&
+            ( (cTransformableTotem->position.z >= (cTransformableNav->position.z-(cDimensions->depth/2))) && 
+            (cTransformableTotem->position.z <= (cTransformableNav->position.z+(cDimensions->depth/2))) )  ){
+                auto cCurrentNavMesh = static_cast<CCurrentNavMesh*>(manTotems->GetEntities()[0].get()->GetComponent(CompType::CurrentNavMeshComp).get());
+                auto cNavMesh = static_cast<CNavMesh*>(navmesh.get()->GetComponent(CompType::NavMeshComp).get());
+                cCurrentNavMesh->currentNavMesh = cNavMesh->id;
+                //std::cout << " El cochecito lereee pertenece al naveMesh: " << cNavMesh->id << std::endl;
+            }       
+    }
+
+
+
+
+
     // Entidades iniciales
     renderEngine->FacadeAddObjectCar(manCars.get()->GetCar().get());  //Anyadimos el coche
     for (shared_ptr<Entity> carAI : manCars->GetEntitiesAI())         // Anyadimos los coche IA
@@ -179,9 +203,7 @@ StateInGame::StateInGame() {
     renderEngine->FacadeAddCamera(cam.get());
 
     //lastFPS = -1;
-    // CREAMOS EL TOTEM
-    manTotems->CreateTotem(glm::vec3(-100.0,20.0,-100.0));
-    renderEngine->FacadeAddObject(manTotems->GetEntities()[0].get());
+
 
 // --------------------------------------------------------------------------------------------------------------------------------------------
     totemOnCar = make_shared<Entity>();
@@ -282,6 +304,24 @@ void StateInGame::Update() {
                 //std::cout << " El cochecito lereee pertenece al naveMesh: " << cNavMesh->id << std::endl;
             }       
     }
+
+    if(manTotems->GetEntities().size() > 0 ){
+        auto cTransformableTotem = static_cast<CTransformable*>(manTotems->GetEntities()[0].get()->GetComponent(CompType::TransformableComp).get());     
+        for(auto navmesh : manNavMesh->GetEntities()){
+            auto cDimensions = static_cast<CDimensions*>(navmesh.get()->GetComponent(CompType::DimensionsComp).get());
+            auto cTransformableNav = static_cast<CTransformable*>(navmesh.get()->GetComponent(CompType::TransformableComp).get()); 
+            if( ( (cTransformableTotem->position.x >= (cTransformableNav->position.x-(cDimensions->width/2))) && 
+                (cTransformableTotem->position.x <= (cTransformableNav->position.x+(cDimensions->width/2))) ) &&
+                ( (cTransformableTotem->position.z >= (cTransformableNav->position.z-(cDimensions->depth/2))) && 
+                (cTransformableTotem->position.z <= (cTransformableNav->position.z+(cDimensions->depth/2))) )  ){
+                    auto cCurrentNavMesh = static_cast<CCurrentNavMesh*>(manTotems->GetEntities()[0].get()->GetComponent(CompType::CurrentNavMeshComp).get());
+                    auto cNavMesh = static_cast<CNavMesh*>(navmesh.get()->GetComponent(CompType::NavMeshComp).get());
+                    cCurrentNavMesh->currentNavMesh = cNavMesh->id;
+                    //std::cout << " El totem pertenece al naveMesh: " << cNavMesh->id << std::endl;
+                }       
+        }
+    }
+
 
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------
