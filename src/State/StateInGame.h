@@ -33,7 +33,9 @@
 #include "../Systems/Collisions.h"
 #include "../Systems/Physics.h"
 #include "../Systems/PhysicsAI.h"
+#include "../Systems/SteeringBehaviours.h"
 #include "../Systems/SystemBtPowerUp.h"
+#include "../Systems/SystemBtMoveTo.h"
 #include "../Game.h"
 #include "../Managers/ManCar.h"
 #include "../Managers/ManPowerUp.h"
@@ -45,9 +47,12 @@
 #include "../behaviourTree/selector.h"
 #include "../behaviourTree/sequence.h"
 #include "../fuzzyLogic/fuzzyLogic.h"
+#include "btBulletDynamicsCommon.h"
 
 using namespace std;
 using namespace chrono;
+
+class CLPhysics;
 
 class StateInGame : public State {
    public:
@@ -68,14 +73,12 @@ class StateInGame : public State {
     shared_ptr<ManCar> manCars;
     shared_ptr<ManNavMesh> manNavMesh;
     shared_ptr<ManWayPoint> manWayPoint;
-    RenderFacadeManager* renderFacadeManager;
-    InputFacadeManager* inputFacadeManager;
-    PhysicsFacadeManager* physicsFacadeManager;
-    RenderFacade* renderEngine;
-    InputFacade* inputEngine;
-    PhysicsFacade* physicsEngine;
-    shared_ptr<SoundFacadeManager> soundFacadeManager;
-    SoundFacade *soundEngine;
+    
+    RenderFacade* renderEngine = { nullptr };
+    InputFacade* inputEngine = { nullptr };
+    PhysicsFacade* physicsEngine = { nullptr };
+    SoundFacade *soundEngine = { nullptr };
+    
     shared_ptr<Physics> physics;
     //shared_ptr<float> deltaTime;
     float deltaTime = 0.0166666;
@@ -85,8 +88,12 @@ class StateInGame : public State {
     shared_ptr<Totem> totem;
     shared_ptr<Entity> totemOnCar;
 
+    unique_ptr<CLPhysics> clPhysics;
+
     shared_ptr<PhysicsAI> physicsAI;
+    unique_ptr<const SteeringBehaviours> steeringBehaviours;
     shared_ptr<SystemBtPowerUp> systemBtPowerUp;
+    shared_ptr<SystemBtMoveTo> systemBtMoveTo;
     shared_ptr<ManTotem> manTotems;
     //int lastFPS = -1;
     //uint32_t then;

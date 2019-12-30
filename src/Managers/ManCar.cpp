@@ -14,6 +14,7 @@
 #include "../Components/CNitro.h"
 #include "../Facade/Render/RenderFacadeManager.h"
 #include "../Game.h"
+#include "Manager.h"
 
 
 class Position;
@@ -30,6 +31,101 @@ ManCar::ManCar() {
 ManCar::ManCar(Physics *_physics, Camera *_cam) : ManCar() {
     this->physics = _physics;
     this->cam = _cam;
+}
+
+
+
+
+
+std::stack<int> ManCar::Dijkstra(ManWayPoint* _graph, int start, int end) {
+    //cout << "----------------------------------\n";
+    //Convertir ManWayPoint en una matriz de adyacencia
+    int size = _graph->GetEntities().size();
+    float graph[size][size];
+
+    //Rellenamos de 0 el grafo
+    for(int i = 0; i < size; ++i){
+        for(int j = 0; j < size; ++j){
+            graph[i][j] = INT_MAX;
+        }
+    }
+
+    //Ponemos los costes pertinentes en la matriz de adyacencia
+    //TODO: Cambiar esto para tenerlo guardado en una entidad o algo y no hacerlo cada calculo de Dijkstra
+    for(auto node : _graph->GetEntities()){
+        auto cWayPoint = static_cast<CWayPoint*>(node->GetComponent(CompType::WayPointComp).get());
+        auto cWayPointEdges = static_cast<CWayPointEdges*>(node->GetComponent(CompType::WayPointEdgesComp).get());
+
+        for(auto edge : cWayPointEdges->edges){
+            graph[cWayPoint->id][edge.to] = edge.cost;
+        }
+    }
+
+    //Comenzamos Dijkstra
+    float distanceFromStart[size],pred[size];
+    int visited[size],count,minDistanceFromStart,nextClosestNode,i;
+
+    for(i=0;i<size;i++) {
+        distanceFromStart[i] = graph[start][i];  //Metemos las ponderaciones a los nodos desde el que iniciamos(Si no tiene es = INT_MAX)
+        pred[i] = start;                
+        visited[i] = 0;
+    }
+
+    //La distancia a si mismo es siempre 0
+    distanceFromStart[start]=0; 
+    visited[start]=1;
+    count=1;
+
+    while(count<size-1) {
+        minDistanceFromStart=INT_MAX;
+        for(i=0;i<size;i++){
+            if(distanceFromStart[i] < minDistanceFromStart && !visited[i]) {
+                //Si la distancia al nodo i es menor que la minDistanceFromStart y no esta visitado
+                //Recordatorio: Si nuestro nodo start no esta conectado con i entonces distanceFromStart[1] = INT_MAX y no entrará aquí
+                minDistanceFromStart=distanceFromStart[i]; // Distancia al nodo adyacente mas cercano
+                nextClosestNode=i; //Siguiente nodo adyacente mas cercano
+            }
+        }
+
+        visited[nextClosestNode]=1;
+
+        for(i=0;i<size;i++){
+            if(!visited[i]){
+                //Si la distancia entre (start y nodo i) es mayor que (start y su nodo adyacente) + (su nodo adyacente hasta i)
+                //P.E: ¿De 1 -> 3 es mayor que de 1 -> 2 -> 3?
+                if(minDistanceFromStart + graph[nextClosestNode][i] < distanceFromStart[i]) {
+                    distanceFromStart[i]=minDistanceFromStart + graph[nextClosestNode][i];
+                    pred[i]=nextClosestNode; //Nos guardamos en pred[i] el nodo por el que mas rapido se llega a él (nextClosestNode)
+                }
+            }
+        }
+        count++;
+    }
+
+    stack<int> path;
+    int aux = end;
+    path.push(aux); //Para guardarnos el final del path
+    //Recorremos pred recursivamente hasta que pred[aux] sea el nodo start
+    while(aux!=start){
+        if(pred[aux]==start) break; //Para que no nos añada el nodo start
+        path.push(pred[aux]);
+        aux = pred[aux];
+    }
+
+    //cout << "Nuevo Path: ";
+    stack<int> pathAux(path);
+    while(!pathAux.empty()){
+        auto node = pathAux.top();
+        pathAux.pop();
+
+        //cout << node << " - ";
+    }
+
+    //cout << "\n---------------\n";
+
+    return path;
+
+    //cout << "\n\n\n";
 }
 
 
@@ -62,7 +158,7 @@ void ManCar::UpdateCar(){
 }
 
 
-void ManCar::UpdateCarAI(CarAI* carAI){
+void ManCar::UpdateCarAI(CarAI* carAI,ManWayPoint* graph){
     auto cTotem = static_cast<CTotem*>(carAI->GetComponent(CompType::TotemComp).get());
     if(cTotem->active){
         cTotem->accumulatedTime +=  duration_cast<milliseconds>(system_clock::now() - cTotem->timeStart).count();
@@ -86,6 +182,49 @@ void ManCar::UpdateCarAI(CarAI* carAI){
         cShield->deactivePowerUp();
     }
 
+    //Guardamos en varAIbles los componentes
+	auto cTransformable = static_cast<CTransformable*>(carAI->GetComponent(CompType::TransformableComp).get());
+    //auto cWayPoint     = static_cast<CWayPoint*>(carAI->GetComponent(CompType::WayPointComp).get());
+    //float radious = cWayPoint->radious;
+    auto cPosDestination     = static_cast<CPosDestination*>(carAI->GetComponent(CompType::PosDestination).get());
+    float radious = cPosDestination->radious;
+
+
+    //Vamos a comprobar si esta en el rango del waypoint
+    if((cPosDestination->position.z - radious) < cTransformable->position.z && (cPosDestination->position.z + radious) >= cTransformable->position.z 
+        && (cPosDestination->position.x - radious) < cTransformable->position.x && (cPosDestination->position.x + radious) >= cTransformable->position.x){
+            
+        //Tenemos que comprobar si le quedan mas nodos que visitar en el path
+        auto cPath = static_cast<CPath*>(carAI->GetComponent(CompType::PathComp).get());
+        if(!cPath->stackPath.empty()){
+            auto actualNode = cPath->stackPath.top();
+            cPath->stackPath.pop();
+            //cout << "Llegamos al WayPoint: " << actualNode << endl;
+            if(!cPath->stackPath.empty()){
+                //Le asignamos el WayPoint siguiente del path (graph->GetEntities()[cPath->stackPath.top()])
+                auto cWayPoint = static_cast<CWayPoint*>(graph->GetEntities()[cPath->stackPath.top()]->GetComponent(CompType::WayPointComp).get());
+                cPosDestination->position = cWayPoint->position;
+
+                carAI->SetDestination(cPosDestination);
+            }else{
+                //Si esta vacio es que ha acabado el path y recalculamos otro
+                //TO-DO: de momento le recalculamos otro aleatorio
+                // habra que llamar al arbol de decisiones broooo
+                int indx;
+                do{
+                    indx = rand() % graph->GetEntities().size();
+
+                }while(indx==actualNode);
+
+                //COMPROBAMOS DIJKSTRA
+                auto path = Dijkstra(graph,actualNode,indx);
+                carAI->SetPath(path);
+
+                auto cWayPoint = static_cast<CWayPoint*>(graph->GetEntities()[path.top()]->GetComponent(CompType::WayPointComp).get());
+                carAI->SetWayPoint(cWayPoint);
+            }          
+        }
+    }
 }
 
 
@@ -121,31 +260,33 @@ void ManCar::CreateCarAI(){
 
 
 void ManCar::SubscribeToEvents() {
-    // auto accelerateCar = [&](Data d) {
-    //     cout << "Estamos ejecutando lambda " << endl;
-    //     /*Car *c = this->GetCar().get();
-    //     auto components = c->GetComponents();
-    //     CTransformable *trans = static_cast<CTransformable*>(components[CompType::TransformableComp].get()); 
-    //     cout << "El coche está en  " << trans->position.x << "," << trans->position.y << "," << trans->position.z << endl;*/
-    //     //physics->Accelerate(car.get(), cam);
-    // };
+    /**
+     * auto accelerateCar = [&](Data d) {
+     *     cout << "Estamos ejecutando lambda " << endl;
+     *     Car *c = this->GetCar().get();
+     *     auto components = c->GetComponents();
+     *     CTransformable *trans = static_cast<CTransformable*>(components[CompType::TransformableComp].get()); 
+     *     cout << "El coche está en  " << trans->position.x << "," << trans->position.y << "," << trans->position.z << endl;
+     *     //physics->Accelerate(car.get(), cam);
+     * };
+     */
 
     /*int (*accelerate) (Data) = [&](Data d) {
-        physics->Accelerate(car.get(), cam);
-        return 0;
-    };*/
-    //int (*func_pointer) (int) = [](int a) { return a; };
+     *   physics->Accelerate(car.get(), cam);
+     *   return 0;
+     *};
+     *int (*func_pointer) (int) = [](int a) { return a; };
+     */
 
-    //accelerateCar(0);
-    auto lambdaAccelerate = [&](DataMap d){this->AccelerateCar(d);};
-    //
-    //auto lambdaGuardaAccel = [&lambdaAccelerate](DataMap d) {lambdaAccelerate(d);};
-
+    /*accelerateCar(0);
+     * auto lambdaAccelerate = [&](DataMap d){this->AccelerateCar(d);};
+     *
+     *auto lambdaGuardaAccel = [&lambdaAccelerate](DataMap d) {lambdaAccelerate(d);};
+     */
 
     EventManager::GetInstance()->SuscribeMulti(Listener(
         EventType::PRESS_I,
-        lambdaAccelerate,
-        // [&](DataMap d){this->AccelerateCar(d);},
+        bind(&ManCar::AccelerateCar, this, placeholders::_1),
         "AccelerateCar"));
 
     EventManager::GetInstance()->SuscribeMulti(Listener(
@@ -213,20 +354,53 @@ void ManCar::SubscribeToEvents() {
         bind(&ManCar::CatchTotemAI, this, placeholders::_1),
         "CatchTotemAI"));
 
+    EventManager::GetInstance()->SuscribeMulti(Listener(
+        EventType::CHANGE_DESTINATION,
+        bind(&ManCar::ChangePosDestination, this, placeholders::_1),
+        "ChangePosDestination"));
+
+    EventManager::GetInstance()->SuscribeMulti(Listener(
+        EventType::MOVE_TO_POWERUP,
+        bind(&ManCar::MoveToPowerUp, this, placeholders::_1),
+        "MoveToPowerUp"));
+
 }
 
+
+void ManCar::ChangePosDestination(DataMap data){
+    auto cPosDestination = static_cast<CPosDestination*>(any_cast<CarAI*>(data["actualCar"])->GetComponent(CompType::PosDestination).get());
+    cPosDestination->position = any_cast<glm::vec3>(data["posDestination"]);
+}
+
+void ManCar::MoveToPowerUp(DataMap data){
+    auto graph = any_cast<ManWayPoint*>(data["manWayPoints"]);
+    auto cPath = static_cast<CPath*>(any_cast<CarAI*>(data["actualCar"])->GetComponent(CompType::PathComp).get());
+    auto cPosDestination = static_cast<CPosDestination*>(any_cast<CarAI*>(data["actualCar"])->GetComponent(CompType::PosDestination).get());
+
+    if(!cPath->stackPath.empty()){
+        //Le asignamos el WayPoint siguiente del path (graph->GetEntities()[cPath->stackPath.top()])
+        auto cWayPoint = static_cast<CWayPoint*>(graph->GetEntities()[cPath->stackPath.top()]->GetComponent(CompType::WayPointComp).get());
+        cPosDestination->position = cWayPoint->position;
+
+        any_cast<CarAI*>(data["actualCar"])->SetDestination(cPosDestination);
+    }
+}
 
 
 void ManCar::CatchTotemAI(DataMap d){
     auto cTotem = static_cast<CTotem*>(any_cast<Entity*>(d["actualCar"])->GetComponent(CompType::TotemComp).get());
     cTotem->active = true;
     cTotem->timeStart = system_clock::now();
+    // TO-DO: Sonido coger totem
 }
 
 void ManCar::CatchTotemPlayer(DataMap d){
     auto cTotem = static_cast<CTotem*>(car.get()->GetComponent(CompType::TotemComp).get());
     cTotem->active = true;
     cTotem->timeStart = system_clock::now();
+    // Sonido coger totem
+    shared_ptr<EventManager> eventManager = EventManager::GetInstance();
+    eventManager->AddEventMulti(Event{EventType::CATCH_TOTEM});
 }
 
 void ManCar::UseTotem(Entity* carWinTotem){
@@ -281,9 +455,17 @@ void ManCar::CollisionPowerUp(DataMap d){
         // Reducimos la velocidad -- TODO --> no solo reducir la velocidad a 0
         auto cCar = static_cast<CCar*>(car.get()->GetComponent(CompType::CarComp).get());
         cCar->speed = 0.0f;
+        // Sonido choque con powerup
+        shared_ptr<EventManager> eventManager = EventManager::GetInstance();
+        eventManager->AddEventMulti(Event{EventType::HURT});
     }else{
         std::cout << "El escudo me salvo el culito :D" << std::endl;
         cShield->deactivePowerUp(); // desactivamos el escudo
+
+        // Sonido coger totem
+        shared_ptr<EventManager> eventManager = EventManager::GetInstance();
+        eventManager->AddEventMulti(Event{EventType::NO_SHIELD});
+        
     }
 }
 
@@ -324,10 +506,10 @@ CTransformable* ManCar::calculateCloserCar(Entity* actualCar){
 
     // reducimos cierta distancia en caso de que se encuentre en el radio de vision
     if(carPrincipal == true){
-        if(carInVisionRange(actualCar, CarAIs[0].get(), 66) == true)
+        if(carInVisionRange(actualCar, CarAIs[0].get(), 15) == true)
             distanceMimum = distanceMimum/100.0;
     }else{
-        if(carInVisionRange(actualCar, car.get(), 66) == true)
+        if(carInVisionRange(actualCar, car.get(), 15) == true)
             distanceMimum = distanceMimum / 100.0;
     }
 
@@ -342,7 +524,7 @@ CTransformable* ManCar::calculateCloserCar(Entity* actualCar){
             vectorZNext = cTransNextCar->position.z - cTransActualCar->position.z;
             distanceNext = sqrt((vectorXNext*vectorXNext) + (vectorZNext*vectorZNext));
             
-            if(carInVisionRange(actualCar, carAI.get(), 66) == true)
+            if(carInVisionRange(actualCar, carAI.get(), 15) == true)
                 distanceNext = distanceNext / 100.0;
             if(distanceMimum > distanceNext){
                 distanceMimum = distanceNext;
@@ -386,10 +568,17 @@ void ManCar::ThrowPowerUp(DataMap d) {
 
                 break;
         }
+
+        // Sonido de lanzar power-up
+        d["typePowerUp"] = cPowerUpCar->typePowerUp;
+        EventManager::GetInstance()->AddEventMulti(Event{EventType::THROW_POWERUP, d});
+
+        // Ya no tenemos power-up
         cPowerUpCar->typePowerUp = typeCPowerUp::None;
         DataMap d;
         d["typePowerUp"] = cPowerUpCar->typePowerUp;
         EventManager::GetInstance()->AddEventMulti(Event{EventType::UPDATE_POWERUP_HUD, d});
+        
     }
 }
 
@@ -442,6 +631,7 @@ int calculateProbabilityPowerUp(int totalPowerUps, std::vector<int> probabilityP
     }
 }
 */
+
 
 void ManCar::CatchPowerUp(DataMap d) {
     // To-Do: porcentajes temporales
@@ -605,4 +795,8 @@ void ManCar::AccelerateCar(DataMap d) {
     // cout << "Hemos recibido por evento un int=" << mint << " un float=" << mfloat << " y un vector de int con size=" << mvect.size() << endl;
     
     physics->Accelerate(car.get(), cam);
+}
+
+void ManCar::Integrate(float delta) {
+    //physics->update(GetCar().get(), cam.get());
 }

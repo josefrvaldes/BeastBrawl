@@ -10,6 +10,8 @@
 #include "../Components/CWayPointEdges.h"
 #include "../Components/CTotem.h"
 #include "../Components/CPath.h"
+#include "../CLPhysics/CLPhysics.h"
+#include "../Managers/Manager.h"
 #include "../Components/CTexture.h"
 #include "../Components/CMesh.h"
 #include "../Components/CNavMesh.h"
@@ -33,7 +35,7 @@ StateInGame::StateInGame() {
     manTotems = make_shared<ManTotem>();
     manNavMesh = make_shared<ManNavMesh>();
     ground = make_shared<GameObject>(glm::vec3(10.0f, -0.5f, 150.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.5f, 1.5f, 1.5f), "", "training_ground.obj");
-    cam = make_shared<Camera>(glm::vec3(10.0f, 40.0f, 30.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f));
+    cam = make_shared<Camera>(glm::vec3(100.0f, 600.0f, 30.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f));
 
     manWayPoint = make_shared<ManWayPoint>(); //Se crean todos los waypoints y edges
 
@@ -44,7 +46,7 @@ StateInGame::StateInGame() {
     //Le asignamos el waypoint inicial, momentaneo a la IA
     manCars->CreateCarAI(glm::vec3(-200.0f, 20.0f, 700.0f), cWayPoint);
     stack<int> pathInit;
-    pathInit.push(0);
+    pathInit.push(3);
     pathInit.push(1);
     pathInit.push(2);
     manCars->GetEntitiesAI()[0]->SetPath(pathInit);
@@ -80,34 +82,25 @@ StateInGame::StateInGame() {
    //Le asignamos el waypoint inicial, momentaneo a la IA
     manCars->CreateCarAI(glm::vec3(400.0f, 20.0f, -400.0f), cWayPointAI3);
     stack<int> pathInit3;
-    pathInit3.push(1);
-    pathInit3.push(3);
-    pathInit3.push(4);
+    pathInit3.push(5);
+    pathInit3.push(0);
+    pathInit3.push(5);
     manCars->GetEntitiesAI()[2]->SetPath(pathInit3);
 
 
 
     // Inicializamos las facadas
-    renderFacadeManager = RenderFacadeManager::GetInstance();
-    //renderFacadeManager->InitializeIrrlicht();
-
-    inputFacadeManager = InputFacadeManager::GetInstance();
-    //inputFacadeManager->InitializeIrrlicht();
-
-    physicsFacadeManager = PhysicsFacadeManager::GetInstance();
-    //physicsFacadeManager->InitializeIrrlicht();
-
-    //Almacenamos los motores
-    renderEngine = renderFacadeManager->GetRenderFacade();
+    inputEngine = InputFacadeManager::GetInstance()->GetInputFacade();
+    physicsEngine = PhysicsFacadeManager::GetInstance()->GetPhysicsFacade();
+    renderEngine = RenderFacadeManager::GetInstance()->GetRenderFacade();
     renderEngine->FacadeSuscribeEvents();
     renderEngine->FacadeInitHUD();
-    inputEngine = inputFacadeManager->GetInputFacade();
-    physicsEngine = physicsFacadeManager->GetPhysicsFacade();
 
     // Creamos sistemas
     physicsAI = make_shared<PhysicsAI>();
     collisions = make_shared<Collisions>();
     sysBoxPowerUp = make_shared<SystemBoxPowerUp>();
+    steeringBehaviours = make_unique<SteeringBehaviours>();
 
     // CREAMOS DE PRUEBA UN NAVMESH
     vector<int> waypoints1{0,1,2,3,4};
@@ -187,7 +180,7 @@ StateInGame::StateInGame() {
 
     //lastFPS = -1;
     // CREAMOS EL TOTEM
-    manTotems->CreateTotem();
+    manTotems->CreateTotem(glm::vec3(-100.0,20.0,-100.0));
     renderEngine->FacadeAddObject(manTotems->GetEntities()[0].get());
 
 // --------------------------------------------------------------------------------------------------------------------------------------------
@@ -213,10 +206,14 @@ StateInGame::StateInGame() {
     physicsAI->InitPhysicsIA(manCars->GetEntitiesAI()[0].get());  // To-Do: hacer que se le pasen todos los coches IA
     cout << "después de init physics ai" << endl;
 
+    
     // BehaivourTree
     systemBtPowerUp = make_shared<SystemBtPowerUp>();
+    systemBtMoveTo  = make_shared<SystemBtMoveTo>(); 
     
     
+    clPhysics = make_unique<CLPhysics>();
+    clPhysics->AddManager(*manCars.get());
 }
 
 StateInGame::~StateInGame() {
@@ -225,11 +222,24 @@ StateInGame::~StateInGame() {
 
 //Carga los bancos de sonido InGame.
 void StateInGame::InitState() {
-    soundEngine = SoundFacadeManager::GetInstance()->GetSoundFacade();
-    if (soundEngine){
-        soundEngine->SetState(4);
+    
+    cout << "~~~ ENTRO A INGAME" << endl;
+    
+    //Si la direccion de soundEngine!=0 es que viene del PAUSE, por lo que no deberia hacerlo.
+    if (!soundEngine) {
+        soundEngine = SoundFacadeManager::GetInstance()->GetSoundFacade();
+        cout << "~~~ SoundEngine en INGAME es -> " << soundEngine << endl;
+        if (soundEngine){
+            soundEngine->SetState(4);
+            soundEngine->PlayEvent3D("Coche/motor");
+            soundEngine->PlayEvent2D("Ambiente/ambiente");
+        }
+    } else {
+        soundEngine->ResumeAllEvent();
     }
 }
+
+
 
 void StateInGame::Input() {
     renderEngine->FacadeCheckInput();
@@ -322,6 +332,9 @@ void StateInGame::Update() {
 
     // BEHAIVOUR TREE
     for(auto actualAI : manCars->GetEntitiesAI()){
+        //std::cout << "hola caracolaaaaaaaaaaaaaaaaa2939393399494839839275087346734790393970" << std::endl;
+        systemBtMoveTo->update(actualAI.get(), manCars.get(), manPowerUps.get(), manBoxPowerUps.get(), manTotems.get(), manWayPoint.get());
+
         systemBtPowerUp->update(actualAI.get(), manCars.get(), manPowerUps.get(), manBoxPowerUps.get(), manTotems.get(), manWayPoint.get());
     }
    
@@ -329,15 +342,17 @@ void StateInGame::Update() {
     manCars->UpdateCar();
     //manCars->UpdateCarAI();
     for(auto actualAI : manCars->GetEntitiesAI()){
-        manCars->UpdateCarAI(actualAI.get());
+        manCars->UpdateCarAI(actualAI.get(),manWayPoint.get());
     }
 
     // ACTUALIZACION DE LAS FISICAS DE LOS COCHES
     physics->update(manCars->GetCar().get(), cam.get());
     for(auto actualAI : manCars->GetEntitiesAI()){
-        physicsAI->Update(manWayPoint.get(),actualAI.get(), deltaTime);
+        physicsAI->Update(actualAI.get(), deltaTime);
     }
+    //steeringBehaviours->Update(manCars.get(), manBoxPowerUps.get());
 
+    clPhysics->Update(0.1666f);
     sysBoxPowerUp->update(manBoxPowerUps.get());
     phisicsPowerUp->update(manPowerUps->GetEntities());
 

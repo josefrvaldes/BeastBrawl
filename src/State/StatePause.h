@@ -22,12 +22,10 @@ class StatePause : public State{
 
 
     private:
-        RenderFacadeManager* renderFacadeManager;
-        InputFacadeManager* inputFacadeManager;
-        PhysicsFacadeManager* physicsFacadeManager;
-        RenderFacade* renderEngine;
-        InputFacade* inputEngine;
-        PhysicsFacade* physicsEngine;
+        RenderFacade* renderEngine = { nullptr };
+        //InputFacade* inputEngine = { nullptr };
+        //PhysicsFacade* physicsEngine = { nullptr };
+        SoundFacade* soundEngine = { nullptr };
 
 
 	

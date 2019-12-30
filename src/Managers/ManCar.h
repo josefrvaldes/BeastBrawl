@@ -1,16 +1,21 @@
 #pragma once
 
+#include <stdlib.h> /* srand, rand */
 #include <iostream>
 #include <map>
 #include <memory>
 #include <vector>
-#include "Manager.h"
-#include <stdlib.h>     /* srand, rand */
 #include "../../lib/glm/vec3.hpp"
 #include "../Aliases.h"
 #include "../Components/CWayPoint.h"
 #include "../Components/CTransformable.h"
 #include "../Components/CSpeed.h"
+#include "Manager.h"
+
+#include "../Managers/ManWayPoint.h"
+#include "../Entities/WayPoint.h"
+
+#include <stack>
 
 using namespace std;
 class Car;
@@ -28,7 +33,7 @@ class ManCar : public Manager {
     void CreateCar();
     void CreateMainCar();
     void UpdateCar();
-    void UpdateCarAI(CarAI* car);
+    void UpdateCarAI(CarAI* car,ManWayPoint* graph);
     shared_ptr<Car>& GetCar() { return car; };
 
     void CreateCarAI();
@@ -37,12 +42,14 @@ class ManCar : public Manager {
     CTransformable* calculateCloserCar(Entity* actualCar);
     bool carInVisionRange(Entity* actualCar, Entity* otherCar, uint32_t rangeVision);
     bool anyCarInVisionRange(Entity* actualCar, uint32_t rangeVision);
+    void Integrate(float) override;
+    stack<int> Dijkstra(ManWayPoint* graph, int start, int end);
 
    private:
     Physics *physics;
     Camera *cam;
     void AccelerateCar(DataMap d);
-    void SubscribeToEvents();
+    void SubscribeToEvents() override;
     void TurnLeftCar(DataMap d);
     void TurnRightCar(DataMap d);
     void NotAcceleratingOrDecelerating(DataMap d);
@@ -54,9 +61,10 @@ class ManCar : public Manager {
     void CatchTotemAI(DataMap d);
     void UseTotem(Entity* carWinTotem);
     void ThrowTotem(Entity* carLoseTotem);
+    void ChangePosDestination(DataMap d);
+    void MoveToPowerUp(DataMap d);
     bool useRoboJorobo(Entity* newCarWithTotem);
 
-    
     void ThrowPowerUp(DataMap d);
     void ThrowPowerUpAI(DataMap d);
     void CatchPowerUp(DataMap d);

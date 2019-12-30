@@ -9,8 +9,10 @@
 
 #include "../behaviourTree/Blackboard.h"
 //#include "../Components/CPowerUp.h"
-//#include "../Components/CTotem.h"
+#include "../Components/CTotem.h"
 
+#include "../Entities/Totem.h"
+#include "../Managers/ManTotem.h"
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //                           COMPROBAR BEHAVIOR TREE
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -86,6 +88,7 @@ struct HavePowerUp_mt : public behaviourTree {
 struct TotemAlone_mt : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
         if( blackboard->manTotems->GetEntities().size() > 0){
+            //std::cout << "Si esta el totem en el suelo locoooooooooooooooooooooooooooooooooooooooooooooooo" << std::endl;
             return true;
         }
         return false;
@@ -94,6 +97,7 @@ struct TotemAlone_mt : public behaviourTree {
 //CONDICION Tenemos un powerUp de ataque? Melon o Banana
 struct HavePowerUpAttack_mt : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
+        return true;
         auto cPowerUp = static_cast<CPowerUp*>(blackboard->actualCar->GetComponent(CompType::PowerUpComp).get());
         if( cPowerUp->typePowerUp == typeCPowerUp::MelonMolon || 
             cPowerUp->typePowerUp == typeCPowerUp::TeleBanana   ){
@@ -103,27 +107,65 @@ struct HavePowerUpAttack_mt : public behaviourTree {
         return false;
     }
 };
+
 // ----------------------------------------     ACCIONES   -------------------------------------------
 //ACCION movernos al totem
 struct MoveToTotem_mt : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
-        std::cout << "Aqui nos moveriamos hacia el Totem ... tirurirurii" << std::endl;
-        return true;
+        if( blackboard->manTotems->GetEntities().size() > 0){
+            //std::cout << "La IA va a por el Totem que esta en el suelo" << std::endl;
+            auto cTransformable = static_cast<CTransformable*>(blackboard->manTotems->GetEntities()[0].get()->GetComponent(CompType::TransformableComp).get());
+            shared_ptr<EventManager> eventManager = EventManager::GetInstance();
+            DataMap dataTotem;                                                                           
+            dataTotem["actualCar"] = blackboard->actualCar;              // nos guardamos el puntero para eliminar el powerUp
+            dataTotem["posDestination"] = cTransformable->position;              // nos guardamos el puntero al coche                              
+            eventManager->AddEventMulti(Event{EventType::CHANGE_DESTINATION, dataTotem}); 
+            return true;
+        }
+        return false;
     }
 };
 
 //ACCION movernos a un powerUp (seguir en el random que teniamos antes de ir de power up en power up)
+// TODO ... para hacerlo mas autonomo --> nos moveremos aun powerUp aleatorio del mapa.. mas adelante sera al mas cercano/ al que este mirando
 struct MoveToPowerUp_mt : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
-        std::cout << "Aqui nos moveriamos hacia un powerUp ... tirurirurii" << std::endl;
+        //std::cout << "Vamos a movernos por los powerUps UUUEEEEPAA" << std::endl;
+        shared_ptr<EventManager> eventManager = EventManager::GetInstance();
+        DataMap dataPowerUp;       
+        dataPowerUp["actualCar"] = blackboard->actualCar;     
+        dataPowerUp["manWayPoints"] = blackboard->manWayPoint;                                                                                                      
+        eventManager->AddEventMulti(Event{EventType::MOVE_TO_POWERUP, dataPowerUp}); 
         return true;
     }
 };
 //ACCION movernos al jugador con Totem 
 struct MoveToCarTotem_mt : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
-        std::cout << "Aqui nos moveriamos hacia el jugador que tiene el totem" << std::endl;
-        return true;
+        for(auto actualAI : blackboard->manCars->GetEntitiesAI()){
+            auto cTotem = static_cast<CTotem*>(actualAI.get()->GetComponent(CompType::TotemComp).get());
+            // TODO actualmente debemsos hacer que si una IA tiene el Totem no se siga a si misma... quedaria parada
+            if(cTotem->active == true){
+                //if(blackboard->actualCar != actualAI.get()){
+                    //std::cout << "nos movemos al coche que tiene el totem" << std::endl;
+                    //std::cout << "UUUUUUUUUUUUUUUUUUUEEEEEEEEEEEEEEEEEEEEEEEEEEEEE" << std::endl;
+                    //std::cout << "------------------------------------------------" << std::endl;
+                    //std::cout << "ooooooooooooooooooOOOOOOOOOOOOOOOOOOOOOOOOiiiiiiiiiiiiiiiiiiIIIIIIIIIIIII" << std::endl;
+                    //std::cout << "///////////////////////////////////////////////////" << std::endl;
+                    auto cTransformable = static_cast<CTransformable*>(actualAI.get()->GetComponent(CompType::TransformableComp).get());
+                    shared_ptr<EventManager> eventManager = EventManager::GetInstance();
+                    DataMap dataCarTotem;                                                                           
+                    dataCarTotem["actualCar"] = blackboard->actualCar;             
+                    dataCarTotem["posDestination"] = cTransformable->position;                                        
+                    eventManager->AddEventMulti(Event{EventType::CHANGE_DESTINATION, dataCarTotem}); 
+                    return true;
+                //}else{
+                //    std::cout << "somos una IA que tiene el powerUp y obvimanete no nos vamos a perseguir a nosotros mismos" << std::endl;
+                //    return false;
+                //}
+            }
+        }
+        return false;     
     }
 };
 // NOTA: recordar que tenemos el otro Behaviour tree de tirar powerUp y por tanto lo seguiremos
@@ -165,6 +207,8 @@ SystemBtMoveTo::SystemBtMoveTo(){
     selectorBehaviourTree->addChild(sequence1);
     selectorBehaviourTree->addChild(sequence2);
     selectorBehaviourTree->addChild(sequence3);
+    // TODO somos una IA que tiene el powerUp y obvimanete no nos vamos a perseguir a nosotros mismos
+    //selectorBehaviourTree->addChild(a_moveToPowerUp);
 
     sequence1->addChild(c_totemAlone);
     sequence1->addChild(a_moveToTotem);
