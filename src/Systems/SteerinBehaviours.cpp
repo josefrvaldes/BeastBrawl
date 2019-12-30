@@ -1,9 +1,11 @@
 #include "SteeringBehaviours.h"
 
 #include "../Managers/ManCar.h"
+#include "../Managers/ManBoxPowerUp.h"
 #include "../Entities/Car.h"
 #include "../Entities/CarAI.h"
 #include "../Entities/Entity.h"
+#include "../Entities/BoxPowerUp.h"
 #include "../Components/CTransformable.h"
 #include "../Components/CCar.h"
 
@@ -29,7 +31,6 @@ void SteeringBehaviours::Update(ManCar* m_manCar, ManBoxPowerUp* m_manBoxPowerUp
 
 
     
-    
     // Seek
     //auto cTransformableTarget = static_cast<CTransformable*>(m_manCar->GetCar()->GetComponent(CompType::TransformableComp).get());
     //glm::vec3 posTarget = glm::vec3(cTransformableTarget->position.x, cTransformableTarget->position.y, cTransformableTarget->position.z);
@@ -39,10 +40,17 @@ void SteeringBehaviours::Update(ManCar* m_manCar, ManBoxPowerUp* m_manBoxPowerUp
     glm::vec2 vectorForce = PursuePowerUp(m_manCar->GetEntitiesAI()[0].get(), m_manCar->GetCar().get(), vectorVelocity);
 
     // Obstacle avoidance
-    //glm::vec2 vectorForceAvoid = ObstacleAvoidance(m_manCar->GetEntitiesAI()[0].get(), m_manBoxPowerUp, vectorVelocity);
+    auto cTransformable2 = static_cast<CTransformable*>(m_manCar->GetCar().get()->GetComponent(CompType::TransformableComp).get());
+    auto cCar2 = static_cast<CCar*>(m_manCar->GetCar().get()->GetComponent(CompType::CarComp).get());
+    if(cCar2->speed==0) cCar2->speed=0.1;
+    float angleRotation2 = (cTransformable2->rotation.y * PI) / 180.0;
+    float posXSiguiente2 = cTransformable2->position.x - cos(angleRotation2) * cCar2->speed;
+    float posZSiguiente2 = cTransformable2->position.z + sin(angleRotation2) * cCar2->speed;
+    glm::vec2 vectorVelocity2 = glm::vec2(posXSiguiente2 - cTransformable2->position.x , posZSiguiente2 - cTransformable2->position.z );
+    glm::vec2 vectorForceAvoid = ObstacleAvoidance(m_manCar->GetCar().get(), m_manBoxPowerUp, vectorVelocity2);
 
     float angle = CalculateAngle(vectorVelocity, vectorForce, cTransformable->rotation.y);
-    UpdateTransformable(cCar, cTransformable, angle);
+    //UpdateTransformable(cCar, cTransformable, angle);
 }
 
 
@@ -66,8 +74,8 @@ void SteeringBehaviours::UpdateTransformable(CCar* m_cCar, CTransformable* m_cTr
 
     // calculamos las posiciones
     float angleRotation = (m_cTransformableCar->rotation.y * PI) / 180.0;
-    m_cTransformableCar->position.x -= cos(angleRotation) * m_cCar->speed * 0.16;
-    m_cTransformableCar->position.z += sin(angleRotation) * m_cCar->speed * 0.16;
+    m_cTransformableCar->position.x -= cos(angleRotation) * m_cCar->speed * 0.016;
+    m_cTransformableCar->position.z += sin(angleRotation) * m_cCar->speed * 0.016;
     if(m_cCar->wheelRotation != 0){
         m_cTransformableCar->rotation.y += m_cCar->wheelRotation * 0.20;
         if(m_cTransformableCar->rotation.y>=360.0)
@@ -121,13 +129,13 @@ glm::vec2 SteeringBehaviours::Pursue(Entity* m_originCar, Entity* m_targetCar, c
     //if(cCar->speed <= distance/3){  // 60 frames -> 1 segundo,    
     //    predictionTime = 3;
     //}else{
-        predictionTime = distance / cCar->speed*10;      // 510.0 -> velocidad melon molon
+        predictionTime = distance / cCar->speed;      // 510.0 -> velocidad melon molon
     //}
     
     // calcular punto al que va a predecir
     float angleRotation = (cTransformableTarget->rotation.y * PI) / 180.0;
-    posTarget.x = cTransformableTarget->position.x - cos(angleRotation) * cCarTarget->speed*10 * 0.016 * predictionTime*60;
-    posTarget.z = cTransformableTarget->position.z + sin(angleRotation) * cCarTarget->speed*10 * 0.016 * predictionTime*60;
+    posTarget.x = cTransformableTarget->position.x - cos(angleRotation) * cCarTarget->speed * 0.016 * predictionTime*60;
+    posTarget.z = cTransformableTarget->position.z + sin(angleRotation) * cCarTarget->speed * 0.016 * predictionTime*60;
 
     return Seek(m_originCar, posTarget, m_velocityVector);
 }
@@ -158,35 +166,35 @@ glm::vec2 SteeringBehaviours::PursuePowerUp(Entity* m_originCar, Entity* m_targe
     
     // calcular punto al que va a predecir
     float angleRotation = (cTransformableTarget->rotation.y * PI) / 180.0;
-    posTarget.x = cTransformableTarget->position.x - cos(angleRotation) * cCarTarget->speed * 0.16 * predictionTime*60;
-    posTarget.z = cTransformableTarget->position.z + sin(angleRotation) * cCarTarget->speed * 0.16 * predictionTime*60;
+    posTarget.x = cTransformableTarget->position.x - cos(angleRotation) * cCarTarget->speed * 0.016 * predictionTime*60;
+    posTarget.z = cTransformableTarget->position.z + sin(angleRotation) * cCarTarget->speed * 0.016 * predictionTime*60;
     //std::cout << "Actual pos: ( " << cTransformableTarget->position.x << " , " << cTransformableTarget->position.z << " )    Predicted: ( " << posTarget.x << " , " << posTarget.z << " )" << std::endl;
     
     //  tiempo extra para calcular ya que al ser una esfera tarda un tiempo adicional en llegar le PowerUp To-Do: Mejorar el calculo de este tiempo
     glm::vec2 vectorToForce = glm::vec2(posTarget.x - cTransformable->position.x , posTarget.z - cTransformable->position.z );
     glm::vec2 vectorToTarget = glm::vec2(cTransformableTarget->position.x - cTransformable->position.x , cTransformableTarget->position.z - cTransformable->position.z );
     float angle = CalculateAngle(vectorToTarget, vectorToForce, cTransformable->rotation.y);
-    if(angle<0) angle*= (-1);
-    posTarget.x = cTransformableTarget->position.x - cos(angleRotation) * cCarTarget->speed * 0.16 * (predictionTime+ angle*0.020)*60;
-    posTarget.z = cTransformableTarget->position.z + sin(angleRotation) * cCarTarget->speed * 0.16 * (predictionTime+ angle*0.020)*60;
+    //if(angle<0) angle*= (-1);
+    //posTarget.x = cTransformableTarget->position.x - cos(angleRotation) * cCarTarget->speed * 0.016 * (predictionTime+ angle*0.020)*60;
+    //posTarget.z = cTransformableTarget->position.z + sin(angleRotation) * cCarTarget->speed * 0.016 * (predictionTime+ angle*0.020)*60;
     //std::cout << predictionTime << "Argulo: " << angle*0.01 << std::endl;
 
-    //float angle2 = angle + cTransformable->rotation.y;
-    //if(angle2<0)
-    //    angle2 += 360.0;
-    //else if(angle2 >= 360)
-    //    angle2 -= 360.0;
-    //float angleRotation2 = (angle2 * PI) / 180.0;
-    //float posPUx = cTransformable->position.x - cos(angleRotation2) * 510.0 * 0.16 * predictionTime*60;
-    //float posPUz = cTransformable->position.z + sin(angleRotation2) * 510.0 * 0.16 * predictionTime*60;
+    float angle2 = angle + cTransformable->rotation.y;
+    if(angle2<0)
+        angle2 += 360.0;
+    else if(angle2 >= 360)
+        angle2 -= 360.0;
+    float angleRotation2 = (angle2 * PI) / 180.0;
+    float posPUx = cTransformable->position.x - cos(angleRotation2) * 510.0 * 0.016 * predictionTime*60;
+    float posPUz = cTransformable->position.z + sin(angleRotation2) * 510.0 * 0.016 * predictionTime*60;
 
-    //float vetorDistancePUx = (posTarget.x - posPUx);
-    //float vetorDistancePUz = (posTarget.z - posPUx);
-    //float distancePU = sqrt(vetorDistancePUx*vetorDistancePUx + vetorDistancePUz*vetorDistancePUz);
-    //float predictionTimeExtra = distancePU / 510.0;
+    float vetorDistancePUx = (posTarget.x - posPUx);
+    float vetorDistancePUz = (posTarget.z - posPUx);
+    float distancePU = sqrt(vetorDistancePUx*vetorDistancePUx + vetorDistancePUz*vetorDistancePUz);
+    float predictionTimeExtra = distancePU / 510.0;
 
-    //posTarget.x = cTransformableTarget->position.x - cos(angleRotation) * cCarTarget->speed * 0.16 * (predictionTime+predictionTimeExtra)*60;
-    //posTarget.z = cTransformableTarget->position.z + sin(angleRotation) * cCarTarget->speed * 0.16 * (predictionTime+predictionTimeExtra)*60;
+    posTarget.x = cTransformableTarget->position.x - cos(angleRotation) * cCarTarget->speed * 0.016 * (predictionTime+predictionTimeExtra/2.0)*60;
+    posTarget.z = cTransformableTarget->position.z + sin(angleRotation) * cCarTarget->speed * 0.016 * (predictionTime+predictionTimeExtra/2.0)*60;
     //std::cout << distance << std::endl;
 
     return Seek(m_originCar, posTarget, m_velocityVector);
@@ -196,15 +204,73 @@ glm::vec2 SteeringBehaviours::PursuePowerUp(Entity* m_originCar, Entity* m_targe
 
 glm::vec2 SteeringBehaviours::ObstacleAvoidance(Entity* m_Car, ManBoxPowerUp* m_manBoxPowerUp, const glm::vec2& m_velocityVector) const{
     auto cCar = static_cast<CCar*>(m_Car->GetComponent(CompType::CarComp).get());
+    auto cTransformableCar = static_cast<CTransformable*>(m_Car->GetComponent(CompType::TransformableComp).get());
     glm::vec2 vectorForce;
 
     // Normalizar vector velocidad
     float vectorDistance = sqrt(m_velocityVector.x*m_velocityVector.x + m_velocityVector.y*m_velocityVector.y);
-    glm::vec2 vectorVelocityN = glm::vec2( m_velocityVector.x*(1/vectorDistance) , m_velocityVector.y*(1/vectorDistance)) ;
-    vectorVelocityN *= 100.0;
+    glm::vec3 vectorVelocityN = glm::vec3( m_velocityVector.x*(1/vectorDistance) , 0.0 ,m_velocityVector.y*(1/vectorDistance)) ;
+    //vectorVelocityN *= 50.0;
     //std::cout << vectorVelocityN.x << "  " << vectorVelocityN.y << std::endl;
 
     // Calcular colisiones con paredes
+    auto cTransformableBox = static_cast<CTransformable*>(m_manBoxPowerUp->GetEntities()[0]->GetComponent(CompType::TransformableComp).get());
+    glm::vec3 sphereCenter = glm::vec3(cTransformableBox->position.x, 0.0, cTransformableBox->position.z);
+    const float sphereRadius = 5.0;
+    glm::vec3 normalRay = glm::vec3(vectorVelocityN.x, 0.0, vectorVelocityN.y);
+    
+
+    glm::vec3 vecDiferenceM = glm::vec3(cTransformableCar->position.x , 0.0, cTransformableCar->position.z) - sphereCenter;
+    // Producto escalar
+    float b = vecDiferenceM.x * vectorVelocityN.x + 0.0 + vecDiferenceM.z * vectorVelocityN.z;
+    float c = vecDiferenceM.x * vecDiferenceM.x + 0.0 + vecDiferenceM.z * vecDiferenceM.z - sphereRadius * sphereRadius;
+
+    if (c > 0.0f && b > 0.0f) return glm::vec2(0.0,0.0); 
+    float discr = b*b - c; 
+
+    if (discr < 0.0f) return glm::vec2(0.0,0.0); 
+
+    // Ray now found to intersect sphere, compute smallest t value of intersection distancia desde la que intersecta
+    float t = -b - sqrt(discr); 
+
+    // If t is negative, ray started inside sphere so clamp t to zero 
+    if (t < 0.0f) t = 0.0f; 
+    // punto donde corta
+    glm::vec3 q = glm::vec3(cTransformableCar->position.x , 0.0, cTransformableCar->position.z) + t * vectorVelocityN; 
+    std::cout << "Veo obstaculo: " << t << std::endl;
+
+
+    // calcular normal
+    glm::vec3 vecNormal = q - sphereCenter;
+    float distanceVecNormal = sqrt(vecNormal.x*vecNormal.x + 0 + vecNormal.z*vecNormal.z);
+    glm::vec3 vecNormalNormalized = glm::vec3( vecNormal.x*(1/distanceVecNormal) , 0.0 ,vecNormal.z*(1/distanceVecNormal)) ;
+
+    return glm::vec2(1.0,1.0);
+
+// URL: https://gamedev.stackexchange.com/questions/96459/fast-ray-sphere-collision-code
+// Intersects ray r = p + td, |d| = 1, with sphere s and, if intersecting, 
+// returns t value of intersection and intersection point q 
+//    int IntersectRaySphere(Point p, Vector d, Sphere s, float &t, Point &q){
+//    Vector m = p - s.c; 
+//    float b = Dot(m, d); 
+//    float c = Dot(m, m) - s.r * s.r; 
+//
+//    // Exit if r’s origin outside s (c > 0) and r pointing away from s (b > 0) 
+//    if (c > 0.0f && b > 0.0f) return 0; 
+//    float discr = b*b - c; 
+//
+//    // A negative discriminant corresponds to ray missing sphere 
+//    if (discr < 0.0f) return 0; 
+//
+//    // Ray now found to intersect sphere, compute smallest t value of intersection
+//    t = -b - Sqrt(discr); 
+//
+//    // If t is negative, ray started inside sphere so clamp t to zero 
+//    if (t < 0.0f) t = 0.0f; 
+//    q = p + t * d; 
+//
+//    return 1;
+//    }
 
     // Obtener vector de fuerza para irse de la pared
 
