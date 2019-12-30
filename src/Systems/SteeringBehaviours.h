@@ -12,6 +12,7 @@ struct ManCar;
 struct Entity;
 struct CTransformable;
 struct CCar;
+struct ManBoxPowerUp;
 
 class SteeringBehaviours{
 
@@ -20,12 +21,14 @@ public:
     ~SteeringBehaviours(){};
 
 
-    void Update(ManCar* m_manCar);
-    void UpdateTransformable(CCar* m_cCar, CTransformable* m_cTransformableCar, float angle);
+    void Update(ManCar* m_manCar, ManBoxPowerUp* m_manBoxPowerUp) const;
+    void UpdateTransformable(CCar* m_cCar, CTransformable* m_cTransformableCar, float angle) const;
 
-    glm::vec2 Seek(Entity* m_originCar, glm::vec3 m_posTargetCar, glm::vec2 m_velocityVector);
-    glm::vec2 Pursue(Entity* m_originCar, Entity* m_targetCar, glm::vec2 m_velocityVector);
-    float CalculateAngle(glm::vec2 m_originVec, glm::vec2 m_destinyVec, float m_rotationY);
+    glm::vec2 Seek(Entity* m_originCar, const glm::vec3& m_posTargetCar, const glm::vec2& m_velocityVector) const;
+    glm::vec2 Pursue(Entity* m_originCar, Entity* m_targetCar, const glm::vec2& m_velocityVector) const;
+    glm::vec2 ObstacleAvoidance(Entity* m_Car, ManBoxPowerUp* m_manBoxPowerUp, const glm::vec2& m_velocityVector) const;
+
+    float CalculateAngle(const glm::vec2& m_originVec, const glm::vec2& m_destinyVec, float m_rotationY) const;
 
 protected:
 private:

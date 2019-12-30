@@ -84,7 +84,7 @@ class StateInGame : public State {
     shared_ptr<Entity> totemOnCar;
 
     shared_ptr<PhysicsAI> physicsAI;
-    unique_ptr<SteeringBehaviours> steeringBehaviours;
+    unique_ptr<const SteeringBehaviours> steeringBehaviours;
     shared_ptr<SystemBtPowerUp> systemBtPowerUp;
     shared_ptr<ManTotem> manTotems;
     //int lastFPS = -1;
