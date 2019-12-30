@@ -22,7 +22,8 @@ enum CompType {
     WayPointEdgesComp,
     DimensionsComp,
     PathComp,
-    NavMeshComp
+    NavMeshComp,
+    CurrentNavMeshComp
 };
 
 class Component
