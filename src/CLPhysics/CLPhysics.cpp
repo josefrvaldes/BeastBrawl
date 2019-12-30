@@ -139,12 +139,12 @@ void CLPhysics::HandleCollisions(CTransformable &trCar1, CBoundingSphere &spCar1
             float aux = ccarCar1.speed;
             ccarCar1.speed = ccarCar2.speed;
             ccarCar2.speed = aux;
-        } else if (anguloEntreEllos > 45 && anguloEntreEllos <= 135) {
+        } else if (anguloEntreEllos > 45 && anguloEntreEllos <= 115) {
             // versión intercambio de vectores
-            //ExchangeVectors(trCar1, ccarCar2, trCar2, ccarCar2);
+            ExchangeVectors(trCar1, ccarCar2, trCar2, ccarCar2);
 
             // versión suma de vectores + desviación
-            vec3 directionCar1 = Utils::GetVectorFromAngle(anguloCar1);
+            /*vec3 directionCar1 = Utils::GetVectorFromAngle(anguloCar1);
             vec3 directionCar2 = Utils::GetVectorFromAngle(anguloCar2);
             
             vec3 vectorSum = directionCar1 + directionCar2;
@@ -153,20 +153,24 @@ void CLPhysics::HandleCollisions(CTransformable &trCar1, CBoundingSphere &spCar1
             float gradoSalida1 = Utils::GetAngleFromVector(vectorSalida1);
             vec3 vectorSalida2 = normalize(vectorSum + (directionCar1 / 3.f));
             float gradoSalida2 = Utils::GetAngleFromVector(vectorSalida2);
-            // float nuevoAnguloCar1Deg = Utils::GetAngleFromVector(vectorSalida1);
-            // float nuevoAnguloCar2Deg = Utils::GetAngleFromVector(vectorSalida2);
-            trCar1.rotation.x = vectorSalida1.z;
-            trCar1.rotation.z = vectorSalida1.x;
-            trCar2.rotation.x = vectorSalida2.z;
-            trCar2.rotation.z = vectorSalida2.x;
+            float nuevoAnguloCar1Deg = Utils::GetAngleFromVector(vectorSalida1);
+            float nuevoAnguloCar2Deg = Utils::GetAngleFromVector(vectorSalida2);
+            
+            trCar1.rotation.y = nuevoAnguloCar1Deg;
+            trCar2.rotation.y = nuevoAnguloCar2Deg;
+            
+            // trCar1.rotation.x = vectorSalida1.z;
+            // trCar1.rotation.z = vectorSalida1.x;
+            // trCar2.rotation.x = vectorSalida2.z;
+            // trCar2.rotation.z = vectorSalida2.x;
+            
             float aux = ccarCar1.speed;
             ccarCar1.speed = 5.f + ccarCar2.speed / 3.f;
-            ccarCar2.speed = 5.f + aux / 3.f;
-
+            ccarCar2.speed = 5.f + aux / 3.f;*/
 
             // versión reflejo
-            //ReflectCollision(trCar1, ccarCar1, trCar2, ccarCar2);
-        } else if (anguloEntreEllos > 135) {
+            // ReflectCollision(trCar1, ccarCar1, trCar2, ccarCar2);
+        } else if (anguloEntreEllos > 115) {
             // intercambiamos velocidades pero el ángulo no se toca
             cout << "Intercambiamos velocidades" << endl;
             float aux = ccarCar1.speed;
@@ -217,8 +221,8 @@ void CLPhysics::ReflectCollision(CTransformable &trCar1, CCar &cCar1, CTransform
     trCar1.rotation.y = nuevoAnguloCar1Deg;
     trCar2.rotation.y = nuevoAnguloCar2Deg;
 
-    float aux = cCar1.speed;
-    cCar1.speed = cCar2.speed;
+    float aux = 5 + cCar1.speed / 3;
+    cCar1.speed = 5 + cCar2.speed / 3;
     cCar2.speed = aux;
 }
 
