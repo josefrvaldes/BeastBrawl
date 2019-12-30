@@ -1,18 +1,10 @@
 #include "CSpeed.h"
 
-CSpeed::CSpeed()
-{
+CSpeed::CSpeed() : speed{vec3(0.f, 0.f, 0.f)} {
     m_compType = CompType::SpeedComp;
-    x = 0;
-    y = 0;
-    z = 0;
+    // speed = vec3(0.f, 0.f, 0.f);
 }
 
-CSpeed::CSpeed(float vx, float vy, float vz)
-{
+CSpeed::CSpeed(vec3 _speed) : speed{_speed} {
     m_compType = CompType::SpeedComp;
-    x = vx;
-    y = vy;
-    z = vz;
 }
-

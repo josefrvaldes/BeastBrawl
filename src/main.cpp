@@ -2,9 +2,12 @@
 #include <memory>
 #include "Game.h"
 
+#include "CLPhysics/CLPhysics.h"
+
 using namespace std;
 
 int main() {
+    //CLPhysics::RunTests();
     try {
         Game* game = Game::GetInstance();
 

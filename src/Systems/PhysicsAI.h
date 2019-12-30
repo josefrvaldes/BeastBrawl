@@ -43,13 +43,12 @@ public:
     ~PhysicsAI(){};
 
     void InitPhysicsIA(CarAI* car);
-    void Update(ManWayPoint* graph, CarAI* car, float deltaTime);
+    void Update(CarAI* car, float deltaTime);
     void fuzzyRules(CarAI* car);
     void fuzzyRulesVelocity(float maxSpeed, float minSpeed, float accelerationCar);
     void fuzzyRulesAngle();
     float calculateFuzzyVelocity(float speedCar, float angle);
     float calculateFuzzyDirection(float distance, float direction);
-    stack<int> Dijkstra(ManWayPoint* graph, int start, int end);
 
 
 protected:
