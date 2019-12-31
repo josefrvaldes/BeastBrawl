@@ -35,23 +35,21 @@ ManCar::ManCar(Physics *_physics, Camera *_cam) : ManCar() {
 
 
 
+void ManCar::InitMapGraph(ManWayPoint* _graph){
+    graphSize = _graph->GetEntities().size();
+    graph = new float*[graphSize];
 
-
-std::stack<int> ManCar::Dijkstra(ManWayPoint* _graph, int start, int end) {
-    //cout << "----------------------------------\n";
-    //Convertir ManWayPoint en una matriz de adyacencia
-    int size = _graph->GetEntities().size();
-    float graph[size][size];
+    for (int i = 0; i < graphSize; ++i)
+        graph[i] = new float[graphSize];
 
     //Rellenamos de 0 el grafo
-    for(int i = 0; i < size; ++i){
-        for(int j = 0; j < size; ++j){
+    for(int i = 0; i < graphSize; ++i){
+        for(int j = 0; j < graphSize; ++j){
             graph[i][j] = INT_MAX;
         }
     }
 
-    //Ponemos los costes pertinentes en la matriz de adyacencia
-    //TODO: Cambiar esto para tenerlo guardado en una entidad o algo y no hacerlo cada calculo de Dijkstra
+    //Rellenamos el graph con los waypoints
     for(auto node : _graph->GetEntities()){
         auto cWayPoint = static_cast<CWayPoint*>(node->GetComponent(CompType::WayPointComp).get());
         auto cWayPointEdges = static_cast<CWayPointEdges*>(node->GetComponent(CompType::WayPointEdgesComp).get());
@@ -60,12 +58,20 @@ std::stack<int> ManCar::Dijkstra(ManWayPoint* _graph, int start, int end) {
             graph[cWayPoint->id][edge.to] = edge.cost;
         }
     }
+}
+
+std::stack<int> ManCar::Dijkstra(ManWayPoint* _graph, int start, int end) {
+    //Convertir ManWayPoint en una matriz de adyacencia
+
+    if(!graphCreated)
+        InitMapGraph(_graph);
+    
 
     //Comenzamos Dijkstra
-    float distanceFromStart[size],pred[size];
-    int visited[size],count,minDistanceFromStart,nextClosestNode,i;
+    float distanceFromStart[graphSize],pred[graphSize];
+    int visited[graphSize],count,minDistanceFromStart,nextClosestNode,i;
 
-    for(i=0;i<size;i++) {
+    for(i=0;i<graphSize;i++) {
         distanceFromStart[i] = graph[start][i];  //Metemos las ponderaciones a los nodos desde el que iniciamos(Si no tiene es = INT_MAX)
         pred[i] = start;                
         visited[i] = 0;
@@ -76,9 +82,9 @@ std::stack<int> ManCar::Dijkstra(ManWayPoint* _graph, int start, int end) {
     visited[start]=1;
     count=1;
 
-    while(count<size-1) {
+    while(count<graphSize-1) {
         minDistanceFromStart=INT_MAX;
-        for(i=0;i<size;i++){
+        for(i=0;i<graphSize;i++){
             if(distanceFromStart[i] < minDistanceFromStart && !visited[i]) {
                 //Si la distancia al nodo i es menor que la minDistanceFromStart y no esta visitado
                 //Recordatorio: Si nuestro nodo start no esta conectado con i entonces distanceFromStart[1] = INT_MAX y no entrará aquí
@@ -89,7 +95,7 @@ std::stack<int> ManCar::Dijkstra(ManWayPoint* _graph, int start, int end) {
 
         visited[nextClosestNode]=1;
 
-        for(i=0;i<size;i++){
+        for(i=0;i<graphSize;i++){
             if(!visited[i]){
                 //Si la distancia entre (start y nodo i) es mayor que (start y su nodo adyacente) + (su nodo adyacente hasta i)
                 //P.E: ¿De 1 -> 3 es mayor que de 1 -> 2 -> 3?
@@ -112,20 +118,8 @@ std::stack<int> ManCar::Dijkstra(ManWayPoint* _graph, int start, int end) {
         aux = pred[aux];
     }
 
-    //cout << "Nuevo Path: ";
-    stack<int> pathAux(path);
-    while(!pathAux.empty()){
-        auto node = pathAux.top();
-        pathAux.pop();
-
-        //cout << node << " - ";
-    }
-
-    //cout << "\n---------------\n";
-
     return path;
 
-    //cout << "\n\n\n";
 }
 
 
@@ -228,11 +222,7 @@ void ManCar::UpdateCarAI(CarAI* carAI,ManWayPoint* graph){
 }
 
 
-ManCar::~ManCar() {
-    cout << "Llamando al destructor de ManCar" << endl;
-    CarAIs.clear();
-    CarAIs.shrink_to_fit();
-}
+
 
 
 void ManCar::CreateMainCar() {
@@ -799,4 +789,16 @@ void ManCar::AccelerateCar(DataMap d) {
 
 void ManCar::Integrate(float delta) {
     //physics->update(GetCar().get(), cam.get());
+}
+
+
+ManCar::~ManCar() {
+    cout << "Llamando al destructor de ManCar" << endl;
+    CarAIs.clear();
+    CarAIs.shrink_to_fit();
+
+    //Liberamos memoria del grafo
+    for (int i = 0; i < graphSize; ++i)
+        delete [] graph[i];
+    delete [] graph;
 }
