@@ -58,6 +58,8 @@ void ManCar::InitMapGraph(ManWayPoint* _graph){
             graph[cWayPoint->id][edge.to] = edge.cost;
         }
     }
+
+    graphCreated = true;
 }
 
 std::stack<int> ManCar::Dijkstra(ManWayPoint* _graph, int start, int end) {
