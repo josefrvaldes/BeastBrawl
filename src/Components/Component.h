@@ -28,6 +28,7 @@ enum CompType {
     CompBoundingAABox,
     CompBoundingPlane,
     PathComp,
+    CompRay,
     CollidingComp
 };
 

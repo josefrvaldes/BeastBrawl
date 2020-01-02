@@ -8,6 +8,7 @@
 #include "../Components/CBoundingSphere.h"
 #include "../Components/CCar.h"
 #include "../Components/CColliding.h"
+#include "../Components/CRay.h"
 #include "../Components/CSpeed.h"
 #include "../Components/CTransformable.h"
 #include "../Entities/Car.h"
@@ -116,35 +117,120 @@ void CLPhysics::PositionSphereIntoTransformable(CTransformable &tr, CBoundingSph
     sp.center.z += z;
 }
 
+void CLPhysics::SeparateSpheres(CTransformable &trCar1, CBoundingSphere &spCar1, CCar &ccarCar1, CColliding &colliding1,
+                                CTransformable &trCar2, CBoundingSphere &spCar2, CCar &ccarCar2, CColliding &colliding2) {
+    vec3 direction = spCar2.center - spCar1.center;  // te da la dirección al otro bounding en x, y, z, es decir, si tenemos 200, 10, 30, significa que estamos a 200 de distancia en x, a 10 en y y a 30 en z
+    float centerDistance = glm::length(direction);
+    float distanceCollided = abs(spCar1.radius + spCar2.radius - centerDistance);
+
+    // vec3 nuevaDirectionCar1 = glm::reflect(-direction, direction);
+    // vec3 nuevaDirectionCar2 = glm::reflect(direction, -direction);
+
+    vec3 nuevaDirectionCar1 = -normalize(direction);
+    vec3 nuevaDirectionCar2 = normalize(direction);
+
+    trCar1.position.x += nuevaDirectionCar1.x * (distanceCollided / 2);
+    trCar1.position.z += nuevaDirectionCar1.z * (distanceCollided / 2);
+    trCar2.position.x += nuevaDirectionCar2.x * (distanceCollided / 2);
+    trCar2.position.z += nuevaDirectionCar2.z * (distanceCollided / 2);
+}
+
 void CLPhysics::HandleCollisions(CTransformable &trCar1, CBoundingSphere &spCar1, CCar &ccarCar1, CColliding &colliding1,
                                  CTransformable &trCar2, CBoundingSphere &spCar2, CCar &ccarCar2, CColliding &colliding2) {
     // posicionamos la esfera en la misma posición que el coche pero teniendo en cuenta el offset
+
     PositionSphereIntoTransformable(trCar1, spCar1);
     PositionSphereIntoTransformable(trCar2, spCar2);
     IntersectData intersData = spCar1.IntersectSphere(spCar2);
     if (intersData.intersects) {
+        SeparateSpheres(trCar1, spCar1, ccarCar1, colliding1, trCar2, spCar2, ccarCar2, colliding2);
+        PositionSphereIntoTransformable(trCar1, spCar1);
+        PositionSphereIntoTransformable(trCar2, spCar2);
+
         // al chocar ponemos a true la invulnerabilidad después de la colisión
-        colliding1.colliding = true;
-        colliding1.lastTimeCollided = system_clock::now();
-        colliding2.colliding = true;
-        colliding2.lastTimeCollided = system_clock::now();
+        //colliding1.colliding = true;
+        //colliding1.lastTimeCollided = system_clock::now();
+        //colliding2.colliding = true;
+        //colliding2.lastTimeCollided = system_clock::now();
 
         float anguloCar1 = trCar1.rotation.y;
         float anguloCar2 = trCar2.rotation.y;
         float anguloEntreEllos = Utils::AngleBetweenTwoAngles(anguloCar1, anguloCar2);
-
+        cout << "angulo entre ellos=" << anguloEntreEllos << endl;
         if (anguloEntreEllos > 0 && anguloEntreEllos <= 45) {
             // intercambiamos velocidades pero el ángulo no se toca
-            //cout << "Intercambiamos velocidades" << endl;
+            cout << "Intercambiamos velocidades1" << endl;
             float aux = ccarCar1.speed;
             ccarCar1.speed = ccarCar2.speed;
             ccarCar2.speed = aux;
         } else if (anguloEntreEllos > 45 && anguloEntreEllos <= 115) {
-            // versión intercambio de vectores
-            ExchangeVectors(trCar1, ccarCar2, trCar2, ccarCar2);
+            cout << "chocan lateralmente" << endl;
 
-            // versión suma de vectores + desviación
-            /*vec3 directionCar1 = Utils::GetVectorFromAngle(anguloCar1);
+            // versión intercambio de vectores
+            // ExchangeVectors(trCar1, ccarCar2, trCar2, ccarCar2);
+            
+            // cout << "Intercambiamos velocidades2" << endl;
+            // float aux = ccarCar1.speed;
+
+            // ccarCar1.speed = ccarCar2.speed / 3;
+            // ccarCar2.speed = aux / 3;
+
+            // versión reflejo
+            // ReflectCollision(trCar1, ccarCar1, trCar2, ccarCar2);
+        } else if (anguloEntreEllos > 115) {
+            // intercambiamos velocidades pero el ángulo no se toca
+            cout << "Intercambiamos velocidades2" << endl;
+            float aux = ccarCar1.speed;
+
+            ccarCar1.speed = 50.f + ccarCar2.speed / 3;
+            ccarCar2.speed = 50.f + aux / 3;
+        }
+    }
+}
+
+void VersionRayoVectores() {
+    /*vec3 direccionCar1;
+            direccionCar1.x = cos(anguloCar1 * M_PI / 180.0);
+            direccionCar1.y = 0;
+            direccionCar1.z = sin(anguloCar1 * M_PI / 180.0);
+            CRay cray1(spCar1.center, normalize(direccionCar1));
+
+            vec3 direccionCar2;
+            direccionCar2.x = cos(anguloCar2 * M_PI / 180.0);
+            direccionCar2.y = 0;
+            direccionCar2.z = sin(anguloCar2 * M_PI / 180.0);
+            CRay cray2(spCar2.center, normalize(direccionCar2));
+
+            float cRay1IntersectsSP2 = cray1.IntersectSphere(spCar2);
+            if (cRay1IntersectsSP2 > 0) {
+                string msg = MakeString() << "car1 le tira rayo a car2";
+                Utils::Cout(msg);
+
+                // al coche 1 lo hacemos retroceder
+                cout << "car 1 le tira rayo a car2" << endl;
+                ccarCar1.speed = -5 - ccarCar1.speed / 3;
+
+                // al coche 2 lo paramos
+                ccarCar2.speed = 0.f;
+            }
+
+            float cRay2IntersectsSP1 = cray2.IntersectSphere(spCar1);
+            if (cRay2IntersectsSP1 > 0) {
+                string msg = MakeString() << "car2 le tira rayo a car1";
+                Utils::Cout(msg);
+                cout << "car 2 le tira rayo a car1" << endl;
+
+                // al coche 2 lo hacemos retroceder
+                ccarCar2.speed = -5 - ccarCar2.speed / 3;
+
+                // al coche 1 lo paramos
+                ccarCar1.speed = 0.f;
+            }*/
+}
+
+// versión suma de vectores + desviación
+void VersionSumaVectores() {
+    /*vec3 directionCar1 = Utils::GetVectorFromAngle(anguloCar1);
             vec3 directionCar2 = Utils::GetVectorFromAngle(anguloCar2);
             
             vec3 vectorSum = directionCar1 + directionCar2;
@@ -167,18 +253,6 @@ void CLPhysics::HandleCollisions(CTransformable &trCar1, CBoundingSphere &spCar1
             float aux = ccarCar1.speed;
             ccarCar1.speed = 5.f + ccarCar2.speed / 3.f;
             ccarCar2.speed = 5.f + aux / 3.f;*/
-
-            // versión reflejo
-            // ReflectCollision(trCar1, ccarCar1, trCar2, ccarCar2);
-        } else if (anguloEntreEllos > 115) {
-            // intercambiamos velocidades pero el ángulo no se toca
-            //cout << "Intercambiamos velocidades" << endl;
-            float aux = ccarCar1.speed;
-
-            ccarCar1.speed = -5 - ccarCar2.speed / 3;
-            ccarCar2.speed = -5 - aux / 3;
-        }
-    }
 }
 
 /**
