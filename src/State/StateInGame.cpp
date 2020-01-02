@@ -147,8 +147,8 @@ StateInGame::StateInGame() {
 
     
     // BehaivourTree
-    systemBtPowerUp = make_shared<SystemBtPowerUp>();
-    systemBtMoveTo  = make_shared<SystemBtMoveTo>(); 
+    //systemBtPowerUp = make_shared<SystemBtPowerUp>();
+    //systemBtMoveTo  = make_shared<SystemBtMoveTo>(); 
     
     
     clPhysics = make_unique<CLPhysics>();
@@ -235,18 +235,18 @@ void StateInGame::Update() {
     // *deltaTime.get() = (float)(milis) / 100.0;
 
     // BEHAIVOUR TREE
-    for(auto actualAI : manCars->GetEntitiesAI()){
-        //std::cout << "hola caracolaaaaaaaaaaaaaaaaa2939393399494839839275087346734790393970" << std::endl;
-        systemBtMoveTo->update(actualAI.get(), manCars.get(), manPowerUps.get(), manBoxPowerUps.get(), manTotems.get(), manWayPoint.get());
+    //for(auto actualAI : manCars->GetEntitiesAI()){
+    //    //std::cout << "hola caracolaaaaaaaaaaaaaaaaa2939393399494839839275087346734790393970" << std::endl;
+    //    systemBtMoveTo->update(actualAI.get(), manCars.get(), manPowerUps.get(), manBoxPowerUps.get(), manTotems.get(), manWayPoint.get());
 
-        systemBtPowerUp->update(actualAI.get(), manCars.get(), manPowerUps.get(), manBoxPowerUps.get(), manTotems.get(), manWayPoint.get());
-    }
+    //    systemBtPowerUp->update(actualAI.get(), manCars.get(), manPowerUps.get(), manBoxPowerUps.get(), manTotems.get(), manWayPoint.get());
+    //}
    
     // ACTUALIZACION DE LOS MANAGERS DE LOS COCHES
     manCars->UpdateCar();
     //manCars->UpdateCarAI();
     for(auto actualAI : manCars->GetEntitiesAI()){
-        manCars->UpdateCarAI(actualAI.get(),manWayPoint.get());
+        manCars->UpdateCarAI(actualAI.get(), manPowerUps.get(), manBoxPowerUps.get(), manTotems.get(), manWayPoint.get());
     }
 
     // ACTUALIZACION DE LAS FISICAS DE LOS COCHES

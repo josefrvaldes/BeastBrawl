@@ -263,7 +263,7 @@ void RenderFacadeIrrlicht::UpdateCamera(Entity* cam) {
     targetPosition.Y += 17;
     camera1->setTarget(targetPosition);
 
-    camera1->setPosition(core::vector3df(cTransformable->position.x, cTransformable->position.y, cTransformable->position.z));
+    camera1->setPosition(core::vector3df(0, 500, 0));
 }
 
 //Añade la camara, esto se llama una sola vez al crear el juego

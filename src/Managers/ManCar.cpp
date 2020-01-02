@@ -15,6 +15,9 @@
 #include "../Facade/Render/RenderFacadeManager.h"
 #include "../Game.h"
 #include "Manager.h"
+#include "../Managers/ManPowerUp.h"
+#include "../Managers/ManBoxPowerUp.h"
+#include "../Managers/ManTotem.h"
 
 
 class Position;
@@ -23,6 +26,10 @@ using namespace std;
 ManCar::ManCar() {
     SubscribeToEvents();
     CreateMainCar();
+    systemBtPowerUp = make_unique<SystemBtPowerUp>();
+    systemBtMoveTo  = make_unique<SystemBtMoveTo>(); 
+    systemBtLoDMove = make_unique<SystemBtLoDMove>();
+
     cout << "Hemos creado un powerup, ahora tenemos " << entities.size() << " powerups" << endl;
 }
 
@@ -158,7 +165,12 @@ void ManCar::UpdateCar(){
 }
 
 
-void ManCar::UpdateCarAI(CarAI* carAI,ManWayPoint* graph){
+void ManCar::UpdateCarAI(CarAI* carAI, ManPowerUp* m_manPowerUp, ManBoxPowerUp* m_manBoxPowerUp, ManTotem* m_manTotem, ManWayPoint* graph){
+    systemBtMoveTo->update(carAI, this, m_manPowerUp, m_manBoxPowerUp, m_manTotem, graph);
+    systemBtLoDMove->update(carAI, this, m_manPowerUp, m_manBoxPowerUp, m_manTotem, graph);
+
+
+    
     auto cTotem = static_cast<CTotem*>(carAI->GetComponent(CompType::TotemComp).get());
     if(cTotem->active){
         cTotem->accumulatedTime +=  duration_cast<milliseconds>(system_clock::now() - cTotem->timeStart).count();
@@ -225,6 +237,10 @@ void ManCar::UpdateCarAI(CarAI* carAI,ManWayPoint* graph){
             }          
         }
     }
+
+
+
+    systemBtPowerUp->update(carAI, this, m_manPowerUp, m_manBoxPowerUp, m_manTotem, graph);
 }
 
 

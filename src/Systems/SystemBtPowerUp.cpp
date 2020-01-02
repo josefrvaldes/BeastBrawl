@@ -161,7 +161,7 @@ struct LookEnemy : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
         //return false;
         //std::cout << "miramos a ver si te veo,,,,,,," << std::endl;
-        return blackboard->manCars->anyCarInVisionRange(blackboard->actualCar, 60);
+        return blackboard->manCars->anyCarInVisionRange(blackboard->actualCar, 20);
         // estrategia: que tu vector director y el vector alenemigo tengan una difrencia de maximo 5 grados
         //return true;
     } 
