@@ -83,6 +83,7 @@ void SoundFacadeFMOD::UnloadAllBanks() {
         ERRCHECK(instance.second->release());
     }
     eventInstances.clear();
+
     soundDescriptions.clear();
 
     for(auto bank: banks) {
@@ -135,11 +136,6 @@ void SoundFacadeFMOD::SubscribeToGameEvents(const uint8_t numState) {
                 bind(&SoundFacadeFMOD::StopPrueba, this, placeholders::_1),
                 "StopPrueba"});
 
-            /*EventManager::GetInstance()->SuscribeMulti(Listener{
-                EventType::VHURT,
-                bind(&SoundFacadeFMOD::SoundHurtVoice, this, placeholders::_1),
-                "SoundHurtVoice"});*/
-
             EventManager::GetInstance()->SuscribeMulti(Listener{
                 EventType::HURT,
                 bind(&SoundFacadeFMOD::SoundHurt, this, placeholders::_1),
@@ -155,30 +151,25 @@ void SoundFacadeFMOD::SubscribeToGameEvents(const uint8_t numState) {
                 bind(&SoundFacadeFMOD::SoundCrash, this, placeholders::_1),
                 "SoundCrash"});
 
-            /*EventManager::GetInstance()->SuscribeMulti(Listener{
-                EventType::VCRASH,
-                bind(&SoundFacadeFMOD::SoundCrash, this, placeholders::_1),
-                "SoundCrash"});*/
-
-            /*EventManager::GetInstance()->SuscribeMulti(Listener{
+            EventManager::GetInstance()->SuscribeMulti(Listener{
                 EventType::BREAK_BOX,
                 bind(&SoundFacadeFMOD::SoundBreakBox, this, placeholders::_1),
-                "SoundBreakBox"});*/
+                "SoundBreakBox"});
 
-            /*EventManager::GetInstance()->SuscribeMulti(Listener{
+            EventManager::GetInstance()->SuscribeMulti(Listener{
                 EventType::DRIFT,
                 bind(&SoundFacadeFMOD::SoundBreakBox, this, placeholders::_1),
-                "SoundBreakBox"});*/
+                "SoundBreakBox"});
 
-            /*EventManager::GetInstance()->SuscribeMulti(Listener{
+            EventManager::GetInstance()->SuscribeMulti(Listener{
                 EventType::VRANDOM,
                 bind(&SoundFacadeFMOD::SoundRandomSentence, this, placeholders::_1),
-                "SoundRandomSentence"});*/
+                "SoundRandomSentence"});
 
-            /*EventManager::GetInstance()->SuscribeMulti(Listener{
+            EventManager::GetInstance()->SuscribeMulti(Listener{
                 EventType::MENU_OPTION,
                 bind(&SoundFacadeFMOD::SoundMenuOption, this, placeholders::_1),
-                "SoundMenuOption"});*/
+                "SoundMenuOption"});
 
             // --- STOP
 
@@ -187,10 +178,10 @@ void SoundFacadeFMOD::SubscribeToGameEvents(const uint8_t numState) {
                 bind(&SoundFacadeFMOD::StopShield, this, placeholders::_1),
                 "StopShield"});
 
-            /*EventManager::GetInstance()->SuscribeMulti(Listener{
+            EventManager::GetInstance()->SuscribeMulti(Listener{
                 EventType::NO_DRIFT,
                 bind(&SoundFacadeFMOD::StopDrift, this, placeholders::_1),
-                "StopDrift"});*/
+                "StopDrift"});
 
             break;
 
@@ -280,6 +271,33 @@ void SoundFacadeFMOD::LoadSoundEvent(const string nameEvent, const bool type) {
     }
 }
 
+
+/**
+ * Cambia el valor de un parametro del evento pasado por parametro.
+ * @param nameID - Identificador del sonido en el mapa de instancias.
+ * @param nameParameter - ID del parametro que quiero cambiar del evento. 
+ * @param value - Valor al que quiero cambiar el parametro.
+ */
+void SoundFacadeFMOD::SetParameter(const string nameID, const string nameParameter, const float value) {
+    if (eventInstances.find(nameID) != eventInstances.end()) {
+        eventInstances[nameID]->setParameterByName(nameParameter.c_str(), value);
+    }
+}
+
+/**
+ * Se cambia la posicion desde donde se escucha un sonido.
+ * TO-DO: Aqui solo se cambia la posicion, para el efecto Doppler hace falta la velocidad. Creo que hay mas cosas a parte.
+ */
+void SoundFacadeFMOD::SetEventPosition(const string nameID, const glm::vec3 &pos) {
+    if (eventInstances.find(nameID) != eventInstances.end()) {
+        FMOD_3D_ATTRIBUTES atr;
+        atr.position.x = pos.x;
+        atr.position.y = pos.y;
+        atr.position.z = pos.z;
+
+        ERRCHECK(eventInstances[nameID]->set3DAttributes(&atr));
+    }
+}
 
 /**
  * Ejecuta el evento de sonido 3D creando primero una instancia y guardandola.
@@ -385,18 +403,22 @@ void SoundFacadeFMOD::Update() {
 
 
 /*
- *
+ ***************************************************************************
  * EVENTOS
- * 
+ * *************************************************************************
 */
 
 void SoundFacadeFMOD::SoundClaxon(DataMap d) {
     PlayEvent2D("Coche/claxon");
 }
 
+// TO-DO: La voz se reproduce si el coche dañado es el principal
 void SoundFacadeFMOD::SoundHurt(DataMap d) {
-    // TO-DO: Este se reproduce si el coche dañado es el principal
-    PlayEvent2D("Personajes/choque_powerup");
+    //bool mainCharacter = any_cast<bool>(d["mainCharacter"]);
+
+    //if (mainCharacter) {
+        PlayEvent2D("Personajes/choque_powerup");
+    //}
     //PlayEvent3D("Coche/choque_powerup");
 }
 
@@ -404,28 +426,63 @@ void SoundFacadeFMOD::SoundCatchTotem(DataMap d) {
     PlayEvent3D("Partida/coger_totem");
 }
 
+// TO-DO: La voz se reproduce si el coche dañado es el principal
 void SoundFacadeFMOD::SoundCrash(DataMap d) {
-    PlayEvent2D("Personajes/choque_enemigo");
+    //bool mainCharacter = any_cast<bool>(d["mainCharacter"]);
+
+    //if (mainCharacter) {
+        PlayEvent2D("Personajes/choque_enemigo");
+    //}
+    //PlayEvent3D("Coche/choque_enemigo");
 }
 
+void SoundFacadeFMOD::SoundBreakBox(DataMap d) {
+    PlayEvent3D("Partida/coger_caja");
+}
 
+void SoundFacadeFMOD::SoundDrift(DataMap d) {
+    PlayEvent3D("Coche/derrape");
+}
+
+void SoundFacadeFMOD::SoundRandomSentence(DataMap d) {
+    PlayEvent3D("Personajes/random");
+}
+
+void SoundFacadeFMOD::SoundMenuOption(DataMap d) {
+    PlayEvent3D("Menu/cambio_opcion");
+}
+
+// TO-DO: Cambiar de eventos 2D a 3D
 void SoundFacadeFMOD::SoundThrowPowerup(DataMap d) {
     typeCPowerUp typepw = any_cast<typeCPowerUp>(d["typePowerUp"]);
 
     switch (typepw) {
-        case typeCPowerUp::RoboJorobo:     // Robojorobo
-            // TO-DO: ¿Cambiar a 3D?
-            PlayEvent2D("PowerUp/robojorobo");
+        case typeCPowerUp::RoboJorobo:
+            PlayEvent3D("PowerUp/robojorobo");
             break;
-        case typeCPowerUp::EscudoMerluzo:     // Escudomerluzo
+        case typeCPowerUp::EscudoMerluzo:
             PlayEvent3D("PowerUp/escudo");
             break;
-        default:    // Otro
+        case typeCPowerUp::SuperMegaNitro: 
+            // TO-DO: Cambio de parametro del personaje
+            break;
+        case typeCPowerUp::MelonMolon: 
             PlayEvent2D("Personajes/powerup");
+            //PlayEvent2D("PowerUp/melonmolon");
+            break;
+        case typeCPowerUp::TeleBanana: 
+            PlayEvent2D("Personajes/powerup");
+            //PlayEvent2D("PowerUp/telebanana");
+            break;
+        case typeCPowerUp::PudinDeFrambuesa:
+            PlayEvent2D("Personajes/powerup");
+            PlayEvent3D("PowerUp/pudin");
+    cout << "POWERUP: " << (int)typepw << endl;
             break;
     }
 }
 
+// -------------> STOP
 
 void SoundFacadeFMOD::StopPrueba(DataMap d) {
     StopEvent("Personajes/powerup");
@@ -433,5 +490,9 @@ void SoundFacadeFMOD::StopPrueba(DataMap d) {
 
 void SoundFacadeFMOD::StopShield(DataMap d) {
     StopEvent("PowerUp/escudo");
+}
+
+void SoundFacadeFMOD::StopDrift(DataMap d) {
+    StopEvent("Coche/derrape");
 }
 

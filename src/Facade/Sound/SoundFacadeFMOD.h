@@ -26,6 +26,8 @@ class SoundFacadeFMOD : public SoundFacade {
 
         // Cambio de banco de audio y subscripcion a eventos.
         void SetState(const uint8_t) override;
+        void SetEventPosition(const string, const glm::vec3&);
+        void SetParameter(const string, const string, const float) override;
 
         void PlayEvent3D(const string) override;
         void PlayEvent2D(const string) override;
@@ -38,18 +40,16 @@ class SoundFacadeFMOD : public SoundFacade {
         bool IsPlaying(FMOD::Studio::EventInstance*);
         void Update() override;
 
-        unordered_map<string, FMOD::Studio::EventDescription*> GetDescriptions() { return soundDescriptions;};
-        unordered_map<string, FMOD::Studio::EventInstance*> GetInstances() { return eventInstances; }
+        //unordered_map<string, FMOD::Studio::EventDescription*> GetDescriptions() { return soundDescriptions;};
+        //unordered_map<string, FMOD::Studio::EventInstance*> GetInstances() { return eventInstances; }
 
     private:
         // eventos del juego
         void SoundClaxon(DataMap);
         void SoundThrowPowerup(DataMap);
-        void SoundHurtVoice(DataMap);       // TO-DO: ¿Juntar con el de abajo?
-        void SoundHurt(DataMap);            // TO-DO: ¿Juntar con el de arriba?
+        void SoundHurt(DataMap);
         void SoundCatchTotem(DataMap);
-        void SoundCrash(DataMap);           // TO-DO: ¿Juntar con el de abajo?
-        //void SoundCrashVoice(DataMap);      // TO-DO: ¿Juntar con el de arriba?
+        void SoundCrash(DataMap);
         void SoundBreakBox(DataMap);
         void SoundDrift(DataMap);
         void SoundRandomSentence(DataMap);
@@ -79,6 +79,7 @@ class SoundFacadeFMOD : public SoundFacade {
 
         unordered_map<string, FMOD::Studio::Bank*> banks;
         unordered_map<string, FMOD::Studio::EventDescription*> soundDescriptions;
+        // TO-DO: ¿Modificar estaseparaciion?
         unordered_map<string, FMOD::Studio::EventInstance*> eventInstances;
         unordered_map<string, vector<string>> events = {
             { "InGame2D",       {

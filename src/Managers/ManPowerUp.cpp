@@ -25,6 +25,7 @@ ManPowerUp::~ManPowerUp() {
 
 
 void ManPowerUp::CreatePowerUp(DataMap d) {
+
     typeCPowerUp type = any_cast<typeCPowerUp>(d["typePowerUp"]);
     CTransformable *transforSalida = any_cast<CTransformable *>(d["posCocheSalida"]);
     CTransformable *transforPerse = any_cast<CTransformable *>(d["posCochePerseguir"]);

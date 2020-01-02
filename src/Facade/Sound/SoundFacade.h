@@ -11,6 +11,7 @@ class SoundFacade {
         virtual void TerminateSoundEngine() = 0;
 
         virtual void SetState(const uint8_t) = 0;
+        virtual void SetParameter(const string, const string, const float) = 0;
 
         virtual void PlayEvent3D(const string) = 0;
         virtual void PlayEvent2D(const string) = 0;
