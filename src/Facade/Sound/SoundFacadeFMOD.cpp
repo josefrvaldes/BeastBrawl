@@ -129,10 +129,16 @@ void SoundFacadeFMOD::SubscribeToGameEvents(const uint8_t numState) {
                 bind(&SoundFacadeFMOD::SoundThrowPowerup, this, placeholders::_1),
                 "SoundThrowPowerup"));
 
+            // Quitar
             EventManager::GetInstance()->SuscribeMulti(Listener{
                 EventType::PRESS_0,
                 bind(&SoundFacadeFMOD::StopPrueba, this, placeholders::_1),
                 "StopPrueba"});
+
+            /*EventManager::GetInstance()->SuscribeMulti(Listener{
+                EventType::VHURT,
+                bind(&SoundFacadeFMOD::SoundHurtVoice, this, placeholders::_1),
+                "SoundHurtVoice"});*/
 
             EventManager::GetInstance()->SuscribeMulti(Listener{
                 EventType::HURT,
@@ -141,13 +147,50 @@ void SoundFacadeFMOD::SubscribeToGameEvents(const uint8_t numState) {
 
             EventManager::GetInstance()->SuscribeMulti(Listener{
                 EventType::CATCH_TOTEM,
-                bind(&SoundFacadeFMOD::SoundTotem, this, placeholders::_1),
-                "SoundTotem"});
+                bind(&SoundFacadeFMOD::SoundCatchTotem, this, placeholders::_1),
+                "SoundCatchTotem"});
+
+            EventManager::GetInstance()->SuscribeMulti(Listener{
+                EventType::CRASH_ENEMY,
+                bind(&SoundFacadeFMOD::SoundCrash, this, placeholders::_1),
+                "SoundCrash"});
+
+            /*EventManager::GetInstance()->SuscribeMulti(Listener{
+                EventType::VCRASH,
+                bind(&SoundFacadeFMOD::SoundCrash, this, placeholders::_1),
+                "SoundCrash"});*/
+
+            /*EventManager::GetInstance()->SuscribeMulti(Listener{
+                EventType::BREAK_BOX,
+                bind(&SoundFacadeFMOD::SoundBreakBox, this, placeholders::_1),
+                "SoundBreakBox"});*/
+
+            /*EventManager::GetInstance()->SuscribeMulti(Listener{
+                EventType::DRIFT,
+                bind(&SoundFacadeFMOD::SoundBreakBox, this, placeholders::_1),
+                "SoundBreakBox"});*/
+
+            /*EventManager::GetInstance()->SuscribeMulti(Listener{
+                EventType::VRANDOM,
+                bind(&SoundFacadeFMOD::SoundRandomSentence, this, placeholders::_1),
+                "SoundRandomSentence"});*/
+
+            /*EventManager::GetInstance()->SuscribeMulti(Listener{
+                EventType::MENU_OPTION,
+                bind(&SoundFacadeFMOD::SoundMenuOption, this, placeholders::_1),
+                "SoundMenuOption"});*/
+
+            // --- STOP
 
             EventManager::GetInstance()->SuscribeMulti(Listener{
                 EventType::NO_SHIELD,
                 bind(&SoundFacadeFMOD::StopShield, this, placeholders::_1),
                 "StopShield"});
+
+            /*EventManager::GetInstance()->SuscribeMulti(Listener{
+                EventType::NO_DRIFT,
+                bind(&SoundFacadeFMOD::StopDrift, this, placeholders::_1),
+                "StopDrift"});*/
 
             break;
 
@@ -352,22 +395,29 @@ void SoundFacadeFMOD::SoundClaxon(DataMap d) {
 }
 
 void SoundFacadeFMOD::SoundHurt(DataMap d) {
+    // TO-DO: Este se reproduce si el coche dañado es el principal
     PlayEvent2D("Personajes/choque_powerup");
+    //PlayEvent3D("Coche/choque_powerup");
 }
 
-void SoundFacadeFMOD::SoundTotem(DataMap d) {
+void SoundFacadeFMOD::SoundCatchTotem(DataMap d) {
     PlayEvent3D("Partida/coger_totem");
 }
+
+void SoundFacadeFMOD::SoundCrash(DataMap d) {
+    PlayEvent2D("Personajes/choque_enemigo");
+}
+
 
 void SoundFacadeFMOD::SoundThrowPowerup(DataMap d) {
     typeCPowerUp typepw = any_cast<typeCPowerUp>(d["typePowerUp"]);
 
-    switch ((int)typepw) {
-        case 1:     // Robojorobo
+    switch (typepw) {
+        case typeCPowerUp::RoboJorobo:     // Robojorobo
             // TO-DO: ¿Cambiar a 3D?
             PlayEvent2D("PowerUp/robojorobo");
             break;
-        case 4:     // Escudomerluzo
+        case typeCPowerUp::EscudoMerluzo:     // Escudomerluzo
             PlayEvent3D("PowerUp/escudo");
             break;
         default:    // Otro

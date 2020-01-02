@@ -47,8 +47,18 @@ enum EventType {
     UPDATE_POWERUP_HUD,
     PRESS_0,
     HURT,
+    VHURT,
     CATCH_TOTEM,
-    NO_SHIELD
+    NO_SHIELD,
+    CRASH_ENEMY,
+    //VCRASH,
+    BREAK_BOX,
+    DRIFT,
+    NO_DRIFT,
+    VRANDOM,
+    MENU_OPTION,
+    MENU_OK,
+    MENU_BACK
 };
 
 struct Data {
