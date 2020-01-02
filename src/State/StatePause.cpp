@@ -7,16 +7,21 @@ StatePause::StatePause(){
     // constructor
     std::cout << "Estado Pause Creado" << std::endl;
     // Inicializamos las facadas
-    renderFacadeManager = RenderFacadeManager::GetInstance();
+    renderEngine = RenderFacadeManager::GetInstance()->GetRenderFacade();
     //renderFacadeManager->InitializeIrrlicht();
-    renderEngine = renderFacadeManager->GetRenderFacade();
 
     renderEngine->FacadeInitPause();
 
 }
 
 void StatePause::InitState() {
+    cout << "~~~ ENTRO A PAUSE" << endl;
 
+    if (!soundEngine) {
+        soundEngine = SoundFacadeManager::GetInstance()->GetSoundFacade();
+        cout << "~~~ SoundEngine en PAUSE es -> " << soundEngine << endl;
+    }
+    soundEngine->PauseAllEvent();
 }
 
 

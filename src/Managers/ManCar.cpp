@@ -260,26 +260,29 @@ void ManCar::CreateCarAI(){
 
 
 void ManCar::SubscribeToEvents() {
-    // auto accelerateCar = [&](Data d) {
-    //     cout << "Estamos ejecutando lambda " << endl;
-    //     /*Car *c = this->GetCar().get();
-    //     auto components = c->GetComponents();
-    //     CTransformable *trans = static_cast<CTransformable*>(components[CompType::TransformableComp].get()); 
-    //     cout << "El coche está en  " << trans->position.x << "," << trans->position.y << "," << trans->position.z << endl;*/
-    //     //physics->Accelerate(car.get(), cam);
-    // };
+    /**
+     * auto accelerateCar = [&](Data d) {
+     *     cout << "Estamos ejecutando lambda " << endl;
+     *     Car *c = this->GetCar().get();
+     *     auto components = c->GetComponents();
+     *     CTransformable *trans = static_cast<CTransformable*>(components[CompType::TransformableComp].get()); 
+     *     cout << "El coche está en  " << trans->position.x << "," << trans->position.y << "," << trans->position.z << endl;
+     *     //physics->Accelerate(car.get(), cam);
+     * };
+     */
 
     /*int (*accelerate) (Data) = [&](Data d) {
-        physics->Accelerate(car.get(), cam);
-        return 0;
-    };*/
-    //int (*func_pointer) (int) = [](int a) { return a; };
+     *   physics->Accelerate(car.get(), cam);
+     *   return 0;
+     *};
+     *int (*func_pointer) (int) = [](int a) { return a; };
+     */
 
-    //accelerateCar(0);
-    // auto lambdaAccelerate = [&](DataMap d){this->AccelerateCar(d);};
-    //
-    //auto lambdaGuardaAccel = [&lambdaAccelerate](DataMap d) {lambdaAccelerate(d);};
-
+    /*accelerateCar(0);
+     * auto lambdaAccelerate = [&](DataMap d){this->AccelerateCar(d);};
+     *
+     *auto lambdaGuardaAccel = [&lambdaAccelerate](DataMap d) {lambdaAccelerate(d);};
+     */
 
     EventManager::GetInstance()->SuscribeMulti(Listener(
         EventType::PRESS_I,
@@ -388,12 +391,16 @@ void ManCar::CatchTotemAI(DataMap d){
     auto cTotem = static_cast<CTotem*>(any_cast<Entity*>(d["actualCar"])->GetComponent(CompType::TotemComp).get());
     cTotem->active = true;
     cTotem->timeStart = system_clock::now();
+    // TO-DO: Sonido coger totem
 }
 
 void ManCar::CatchTotemPlayer(DataMap d){
     auto cTotem = static_cast<CTotem*>(car.get()->GetComponent(CompType::TotemComp).get());
     cTotem->active = true;
     cTotem->timeStart = system_clock::now();
+    // Sonido coger totem
+    shared_ptr<EventManager> eventManager = EventManager::GetInstance();
+    eventManager->AddEventMulti(Event{EventType::CATCH_TOTEM});
 }
 
 void ManCar::UseTotem(Entity* carWinTotem){
@@ -448,9 +455,17 @@ void ManCar::CollisionPowerUp(DataMap d){
         // Reducimos la velocidad -- TODO --> no solo reducir la velocidad a 0
         auto cCar = static_cast<CCar*>(car.get()->GetComponent(CompType::CarComp).get());
         cCar->speed = 0.0f;
+        // Sonido choque con powerup
+        shared_ptr<EventManager> eventManager = EventManager::GetInstance();
+        eventManager->AddEventMulti(Event{EventType::HURT});
     }else{
         std::cout << "El escudo me salvo el culito :D" << std::endl;
         cShield->deactivePowerUp(); // desactivamos el escudo
+
+        // Sonido coger totem
+        shared_ptr<EventManager> eventManager = EventManager::GetInstance();
+        eventManager->AddEventMulti(Event{EventType::NO_SHIELD});
+        
     }
 }
 
@@ -553,10 +568,17 @@ void ManCar::ThrowPowerUp(DataMap d) {
 
                 break;
         }
+
+        // Sonido de lanzar power-up
+        d["typePowerUp"] = cPowerUpCar->typePowerUp;
+        EventManager::GetInstance()->AddEventMulti(Event{EventType::THROW_POWERUP, d});
+
+        // Ya no tenemos power-up
         cPowerUpCar->typePowerUp = typeCPowerUp::None;
         DataMap d;
         d["typePowerUp"] = cPowerUpCar->typePowerUp;
         EventManager::GetInstance()->AddEventMulti(Event{EventType::UPDATE_POWERUP_HUD, d});
+        
     }
 }
 
@@ -609,6 +631,7 @@ int calculateProbabilityPowerUp(int totalPowerUps, std::vector<int> probabilityP
     }
 }
 */
+
 
 void ManCar::CatchPowerUp(DataMap d) {
     // To-Do: porcentajes temporales

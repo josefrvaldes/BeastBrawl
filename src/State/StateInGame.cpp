@@ -82,21 +82,11 @@ StateInGame::StateInGame() {
 
 
     // Inicializamos las facadas
-    renderFacadeManager = RenderFacadeManager::GetInstance();
-    //renderFacadeManager->InitializeIrrlicht();
-
-    inputFacadeManager = InputFacadeManager::GetInstance();
-    //inputFacadeManager->InitializeIrrlicht();
-
-    physicsFacadeManager = PhysicsFacadeManager::GetInstance();
-    //physicsFacadeManager->InitializeIrrlicht();
-
-    //Almacenamos los motores
-    renderEngine = renderFacadeManager->GetRenderFacade();
+    inputEngine = InputFacadeManager::GetInstance()->GetInputFacade();
+    physicsEngine = PhysicsFacadeManager::GetInstance()->GetPhysicsFacade();
+    renderEngine = RenderFacadeManager::GetInstance()->GetRenderFacade();
     renderEngine->FacadeSuscribeEvents();
     renderEngine->FacadeInitHUD();
-    inputEngine = inputFacadeManager->GetInputFacade();
-    physicsEngine = physicsFacadeManager->GetPhysicsFacade();
 
     // Creamos sistemas
     physicsAI = make_shared<PhysicsAI>();
@@ -171,11 +161,24 @@ StateInGame::~StateInGame() {
 
 //Carga los bancos de sonido InGame.
 void StateInGame::InitState() {
-    soundEngine = SoundFacadeManager::GetInstance()->GetSoundFacade();
-    if (soundEngine){
-        soundEngine->SetState(4);
+    
+    cout << "~~~ ENTRO A INGAME" << endl;
+    
+    //Si la direccion de soundEngine!=0 es que viene del PAUSE, por lo que no deberia hacerlo.
+    if (!soundEngine) {
+        soundEngine = SoundFacadeManager::GetInstance()->GetSoundFacade();
+        cout << "~~~ SoundEngine en INGAME es -> " << soundEngine << endl;
+        if (soundEngine){
+            soundEngine->SetState(4);
+            soundEngine->PlayEvent3D("Coche/motor");
+            soundEngine->PlayEvent2D("Ambiente/ambiente");
+        }
+    } else {
+        soundEngine->ResumeAllEvent();
     }
 }
+
+
 
 void StateInGame::Input() {
     renderEngine->FacadeCheckInput();
