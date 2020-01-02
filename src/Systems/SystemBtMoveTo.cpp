@@ -147,11 +147,11 @@ struct MoveToCarTotem_mt : public behaviourTree {
             // TODO actualmente debemsos hacer que si una IA tiene el Totem no se siga a si misma... quedaria parada
             if(cTotem->active == true){
                 //if(blackboard->actualCar != actualAI.get()){
-                    std::cout << "nos movemos al coche que tiene el totem" << std::endl;
-                    std::cout << "UUUUUUUUUUUUUUUUUUUEEEEEEEEEEEEEEEEEEEEEEEEEEEEE" << std::endl;
-                    std::cout << "------------------------------------------------" << std::endl;
-                    std::cout << "ooooooooooooooooooOOOOOOOOOOOOOOOOOOOOOOOOiiiiiiiiiiiiiiiiiiIIIIIIIIIIIII" << std::endl;
-                    std::cout << "///////////////////////////////////////////////////" << std::endl;
+                    //std::cout << "nos movemos al coche que tiene el totem" << std::endl;
+                    //std::cout << "UUUUUUUUUUUUUUUUUUUEEEEEEEEEEEEEEEEEEEEEEEEEEEEE" << std::endl;
+                    //std::cout << "------------------------------------------------" << std::endl;
+                    //std::cout << "ooooooooooooooooooOOOOOOOOOOOOOOOOOOOOOOOOiiiiiiiiiiiiiiiiiiIIIIIIIIIIIII" << std::endl;
+                    //std::cout << "///////////////////////////////////////////////////" << std::endl;
                     auto cTransformable = static_cast<CTransformable*>(actualAI.get()->GetComponent(CompType::TransformableComp).get());
                     shared_ptr<EventManager> eventManager = EventManager::GetInstance();
                     DataMap dataCarTotem;                                                                           

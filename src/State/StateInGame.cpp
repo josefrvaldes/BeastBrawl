@@ -82,26 +82,17 @@ StateInGame::StateInGame() {
 
 
     // Inicializamos las facadas
-    renderFacadeManager = RenderFacadeManager::GetInstance();
-    //renderFacadeManager->InitializeIrrlicht();
-
-    inputFacadeManager = InputFacadeManager::GetInstance();
-    //inputFacadeManager->InitializeIrrlicht();
-
-    physicsFacadeManager = PhysicsFacadeManager::GetInstance();
-    //physicsFacadeManager->InitializeIrrlicht();
-
-    //Almacenamos los motores
-    renderEngine = renderFacadeManager->GetRenderFacade();
+    inputEngine = InputFacadeManager::GetInstance()->GetInputFacade();
+    physicsEngine = PhysicsFacadeManager::GetInstance()->GetPhysicsFacade();
+    renderEngine = RenderFacadeManager::GetInstance()->GetRenderFacade();
     renderEngine->FacadeSuscribeEvents();
     renderEngine->FacadeInitHUD();
-    inputEngine = inputFacadeManager->GetInputFacade();
-    physicsEngine = physicsFacadeManager->GetPhysicsFacade();
 
     // Creamos sistemas
     physicsAI = make_shared<PhysicsAI>();
     collisions = make_shared<Collisions>();
     sysBoxPowerUp = make_shared<SystemBoxPowerUp>();
+    steeringBehaviours = make_unique<SteeringBehaviours>();
 
 
     // Entidades iniciales
@@ -154,6 +145,7 @@ StateInGame::StateInGame() {
     physicsAI->InitPhysicsIA(manCars->GetEntitiesAI()[0].get());  // To-Do: hacer que se le pasen todos los coches IA
     cout << "después de init physics ai" << endl;
 
+    
     // BehaivourTree
     systemBtPowerUp = make_shared<SystemBtPowerUp>();
     systemBtMoveTo  = make_shared<SystemBtMoveTo>(); 
@@ -169,11 +161,24 @@ StateInGame::~StateInGame() {
 
 //Carga los bancos de sonido InGame.
 void StateInGame::InitState() {
-    soundEngine = SoundFacadeManager::GetInstance()->GetSoundFacade();
-    if (soundEngine){
-        soundEngine->SetState(4);
+    
+    cout << "~~~ ENTRO A INGAME" << endl;
+    
+    //Si la direccion de soundEngine!=0 es que viene del PAUSE, por lo que no deberia hacerlo.
+    if (!soundEngine) {
+        soundEngine = SoundFacadeManager::GetInstance()->GetSoundFacade();
+        cout << "~~~ SoundEngine en INGAME es -> " << soundEngine << endl;
+        if (soundEngine){
+            soundEngine->SetState(4);
+            soundEngine->PlayEvent3D("Coche/motor");
+            soundEngine->PlayEvent2D("Ambiente/ambiente");
+        }
+    } else {
+        soundEngine->ResumeAllEvent();
     }
 }
+
+
 
 void StateInGame::Input() {
     renderEngine->FacadeCheckInput();
@@ -249,6 +254,7 @@ void StateInGame::Update() {
     for(auto actualAI : manCars->GetEntitiesAI()){
         physicsAI->Update(actualAI.get(), deltaTime);
     }
+    //steeringBehaviours->Update(manCars.get(), manBoxPowerUps.get());
 
     clPhysics->Update(0.1666f);
     sysBoxPowerUp->update(manBoxPowerUps.get());
