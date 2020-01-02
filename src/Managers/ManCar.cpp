@@ -624,7 +624,7 @@ void ManCar::ThrowPowerUpAI(DataMap d) {
                 shared_ptr<EventManager> eventManager = EventManager::GetInstance();
                 DataMap data;
                 data["typePowerUp"] = cPowerUpCar->typePowerUp;
-                data["posCocheSalida"] = static_cast<CTransformable*>(any_cast<CarAI*>(d["actualCar"])->GetComponent(CompType::TransformableComp).get());;
+                data["posCocheSalida"] = static_cast<CTransformable*>(any_cast<CarAI*>(d["actualCar"])->GetComponent(CompType::TransformableComp).get());
                 // To-Do: actualmente solo se pasa el coche mas cercano, calcular aparte si se encuentra en pantalla
                 data["posCochePerseguir"] = calculateCloserCar(any_cast<CarAI*>(d["actualCar"]));
                 eventManager->AddEventMulti(Event{EventType::PowerUp_Create, data});

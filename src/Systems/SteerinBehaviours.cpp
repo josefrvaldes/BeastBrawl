@@ -7,13 +7,69 @@
 #include "../Entities/Entity.h"
 #include "../Entities/BoxPowerUp.h"
 #include "../Components/CTransformable.h"
+#include "../Components/CPosDestination.h"
 #include "../Components/CCar.h"
+
 
 #define PI 3.141592
 
 SteeringBehaviours::SteeringBehaviours(){
-
+    SubscribeToEvents();
 }
+
+
+void SteeringBehaviours::SubscribeToEvents(){
+    EventManager::GetInstance()->SuscribeMulti(Listener(
+        EventType::Move_SB_Seek,
+        bind(&SteeringBehaviours::UpdateSeek, this, placeholders::_1),
+        "UpdateSeek"));
+
+    EventManager::GetInstance()->SuscribeMulti(Listener(
+        EventType::Move_SB_PursuePowerUp,
+        bind(&SteeringBehaviours::UpdatePursuePowerUp, this, placeholders::_1),
+        "UpdatePursuePowerUp"));
+}
+
+
+void SteeringBehaviours::UpdateSeek(DataMap d){
+    // se calcula el vector al siguiente punto al que avanzara el coche
+    auto cTransformable = static_cast<CTransformable*>(any_cast<CarAI*>(d["actualCar"])->GetComponent(CompType::TransformableComp).get());
+    auto cCar = static_cast<CCar*>(any_cast<CarAI*>(d["actualCar"])->GetComponent(CompType::CarComp).get());
+    if(cCar->speed==0) cCar->speed=0.1;
+    float angleRotation = (cTransformable->rotation.y * PI) / 180.0;
+    float posXSiguiente = cTransformable->position.x - cos(angleRotation) * cCar->speed;
+    float posZSiguiente = cTransformable->position.z + sin(angleRotation) * cCar->speed;
+    glm::vec2 vectorVelocity = glm::vec2(posXSiguiente - cTransformable->position.x , posZSiguiente - cTransformable->position.z );
+
+    //Seek
+    auto cPosDestination = static_cast<CPosDestination*>(any_cast<CarAI*>(d["actualCar"])->GetComponent(CompType::PosDestination).get());
+    glm::vec3 posTarget = glm::vec3(cPosDestination->position.x, cPosDestination->position.y, cPosDestination->position.z);
+    glm::vec2 vectorForce = Seek(any_cast<CarAI*>(d["actualCar"]), posTarget, vectorVelocity);
+
+    float angle = CalculateAngle(vectorVelocity, vectorForce, cTransformable->rotation.y);
+    UpdateTransformable(cCar, cTransformable, angle);
+}
+
+
+void SteeringBehaviours::UpdatePursuePowerUp(DataMap d){
+    // se calcula el vector al siguiente punto al que avanzara el coche
+    auto cTransformable = static_cast<CTransformable*>(any_cast<CarAI*>(d["actualCar"])->GetComponent(CompType::TransformableComp).get());
+    auto cCar = static_cast<CCar*>(any_cast<CarAI*>(d["actualCar"])->GetComponent(CompType::CarComp).get());
+    if(cCar->speed==0) cCar->speed=0.1;
+    float angleRotation = (cTransformable->rotation.y * PI) / 180.0;
+    float posXSiguiente = cTransformable->position.x - cos(angleRotation) * cCar->speed;
+    float posZSiguiente = cTransformable->position.z + sin(angleRotation) * cCar->speed;
+    glm::vec2 vectorVelocity = glm::vec2(posXSiguiente - cTransformable->position.x , posZSiguiente - cTransformable->position.z );
+
+    // Pursue
+    glm::vec2 vectorForce = PursuePowerUp(any_cast<CarAI*>(d["actualCar"]), any_cast<CarAI*>(d["targetCar"]), vectorVelocity);
+
+    float angle = CalculateAngle(vectorVelocity, vectorForce, cTransformable->rotation.y);
+    UpdateTransformable(cCar, cTransformable, angle);
+}
+
+
+
 
 
 
@@ -28,7 +84,6 @@ void SteeringBehaviours::Update(ManCar* m_manCar, ManBoxPowerUp* m_manBoxPowerUp
     float posXSiguiente = cTransformable->position.x - cos(angleRotation) * cCar->speed;
     float posZSiguiente = cTransformable->position.z + sin(angleRotation) * cCar->speed;
     glm::vec2 vectorVelocity = glm::vec2(posXSiguiente - cTransformable->position.x , posZSiguiente - cTransformable->position.z );
-
 
     
     // Seek

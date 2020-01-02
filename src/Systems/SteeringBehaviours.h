@@ -5,6 +5,12 @@
 #include "../../lib/glm/vec3.hpp"
 #include <memory>
 #include <vector>
+#include <map>
+
+
+#include "../EventManager/Event.h"
+#include "../EventManager/EventManager.h"
+
 
 using namespace std;
 
@@ -20,9 +26,11 @@ public:
     SteeringBehaviours();
     ~SteeringBehaviours(){};
 
-
+    void SubscribeToEvents();
     void Update(ManCar* m_manCar, ManBoxPowerUp* m_manBoxPowerUp) const;
     void UpdateTransformable(CCar* m_cCar, CTransformable* m_cTransformableCar, float angle) const;
+    void UpdateSeek(DataMap d);
+    void UpdatePursuePowerUp(DataMap d);
 
     glm::vec2 Seek(Entity* m_originCar, const glm::vec3& m_posTargetCar, const glm::vec2& m_velocityVector) const;
     glm::vec2 Pursue(Entity* m_originCar, Entity* m_targetCar, const glm::vec2& m_velocityVector) const;

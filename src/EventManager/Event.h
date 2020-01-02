@@ -48,7 +48,9 @@ enum EventType {
     PRESS_0,
     HURT,
     CATCH_TOTEM,
-    NO_SHIELD
+    NO_SHIELD,
+    Move_SB_Seek,
+    Move_SB_PursuePowerUp
 };
 
 struct Data {
