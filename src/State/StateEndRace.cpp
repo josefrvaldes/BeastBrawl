@@ -23,7 +23,7 @@ void StateEndRace::InitState() {
         cout << "~~~ SoundEngine en ENDRACE es -> " << soundEngine << endl;
     }
     soundEngine->SetState(5);
-    soundEngine->PlayEvent3D("Musica/fin_partida");
+    soundEngine->PlayEvent("Musica/fin_partida");
 }
 
 

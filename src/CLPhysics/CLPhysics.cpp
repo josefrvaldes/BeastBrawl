@@ -156,15 +156,15 @@ void CLPhysics::HandleCollisions(CTransformable &trCar1, CBoundingSphere &spCar1
         float anguloCar1 = trCar1.rotation.y;
         float anguloCar2 = trCar2.rotation.y;
         float anguloEntreEllos = Utils::AngleBetweenTwoAngles(anguloCar1, anguloCar2);
-        cout << "angulo entre ellos=" << anguloEntreEllos << endl;
+        //cout << "angulo entre ellos=" << anguloEntreEllos << endl;
         if (anguloEntreEllos > 0 && anguloEntreEllos <= 45) {
             // intercambiamos velocidades pero el ángulo no se toca
-            cout << "Intercambiamos velocidades1" << endl;
+            //cout << "Intercambiamos velocidades1" << endl;
             float aux = ccarCar1.speed;
             ccarCar1.speed = ccarCar2.speed;
             ccarCar2.speed = aux;
         } else if (anguloEntreEllos > 45 && anguloEntreEllos <= 115) {
-            cout << "chocan lateralmente" << endl;
+            //cout << "chocan lateralmente" << endl;
 
             // versión intercambio de vectores
             // ExchangeVectors(trCar1, ccarCar2, trCar2, ccarCar2);
@@ -179,7 +179,7 @@ void CLPhysics::HandleCollisions(CTransformable &trCar1, CBoundingSphere &spCar1
             // ReflectCollision(trCar1, ccarCar1, trCar2, ccarCar2);
         } else if (anguloEntreEllos > 115) {
             // intercambiamos velocidades pero el ángulo no se toca
-            cout << "Intercambiamos velocidades2" << endl;
+            //cout << "Intercambiamos velocidades2" << endl;
             float aux = ccarCar1.speed;
 
             ccarCar1.speed = - 50.f - ccarCar2.speed / 3;
