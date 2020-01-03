@@ -182,6 +182,7 @@ void StateInGame::InitState() {
 
 void StateInGame::Input() {
     renderEngine->FacadeCheckInput();
+    inputEngine->CheckInput();
 }
 
 void StateInGame::Update() {

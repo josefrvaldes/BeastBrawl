@@ -44,7 +44,10 @@ class InputFacadeIrrlicht : public InputFacade{
     public:
         InputFacadeIrrlicht();
         ~InputFacadeIrrlicht();
-        void CheckInputs(Entity&) override;
+        void CheckInput()        override;
+        void CheckInputMenu()    override;
+        void CheckInputPause()   override;
+        void CheckInputEndRace() override;
 
     private:
         MyEventReceiver receiver;

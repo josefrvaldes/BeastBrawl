@@ -17,11 +17,12 @@ endif
 SOURCES  	:= $(wildcard *.cpp)
 OBJ_PATH    := obj
 SRC_PATH	:= src
-LIBS 	    := -L./lib/irrlicht -lIrrlicht -L./lib/fmod -lfmod -lfmodstudio -L./lib/bullet -lBulletSoftBody -lBulletDynamics -lBulletCollision -lLinearMath
+LIBS 	    := -L./lib/irrlicht -lIrrlicht -L./lib/fmod -lfmod -lfmodstudio -L./lib/bullet -lBulletSoftBody -lBulletDynamics -lBulletCollision -lLinearMath -L./lib/sdl -lSDL2 
 INCLUDE     := -I. 
 INCLUDE_IRR := -I /lib/irrlicht/irrlicht.h
 INCLUDE_FMOD := -I ./include/fmod/core -I ./include/fmod/studio
 INCLUDE_BULLET := -I./include/bullet -I./include
+INCLUDE_SDL := -I./include/sdl -I./include
 CC			:= g++
 NAME_EXE	:= Beast_Brawl
 CXXFLAGS 	+= -Wall -Wno-unknown-pragmas -std=c++17 # el no-unknown-pragmas es para que no salga el warning de los pragma region
@@ -49,7 +50,7 @@ $(NAME_EXE): $(OBJSUBDIRS) $(ALLCPPSOBJ)
 $(OBJ_PATH)/%.o: $(SRC_PATH)/%.cpp
 	$(PRUEBA_TEXT)
 	$(COMPILING_TEXT) $<
-	@$(CC) $(CXXFLAGS) -o $@ -c $^ $(INCLUDE) $(INCLUDE_IRR) $(INCLUDE_FMOD) $(INCLUDE_BULLET)
+	@$(CC) $(CXXFLAGS) -o $@ -c $^ $(INCLUDE) $(INCLUDE_IRR) $(INCLUDE_FMOD) $(INCLUDE_BULLET) $(INCLUDE_SDL)
 	
 
 $(OBJSUBDIRS):

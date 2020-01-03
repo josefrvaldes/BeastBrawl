@@ -5,7 +5,7 @@ InputFacadeIrrlicht::InputFacadeIrrlicht(){
 	//RenderFacadeManager::GetInstance().GetRenderFacade()->AddReceiver(receiver);
 }
 
-void InputFacadeIrrlicht::CheckInputs(Entity& go){
+void InputFacadeIrrlicht::CheckInput(){
     //Data d;
 	//d.gameObject = &go;
 
@@ -17,6 +17,18 @@ void InputFacadeIrrlicht::CheckInputs(Entity& go){
     //    eventManager->AddEventMulti(Event {EventType::PRESS_D,d});
 	//}
 
+}
+
+
+void InputFacadeIrrlicht::CheckInputMenu(){
+}
+
+
+void InputFacadeIrrlicht::CheckInputPause(){
+}
+
+
+void InputFacadeIrrlicht::CheckInputEndRace(){
 }
 
 
