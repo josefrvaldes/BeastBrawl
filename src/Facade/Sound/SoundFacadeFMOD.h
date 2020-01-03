@@ -29,8 +29,7 @@ class SoundFacadeFMOD : public SoundFacade {
         void SetEventPosition(const string, const glm::vec3&);
         void SetParameter(const string, const string, const float) override;
 
-        void PlayEvent3D(const string) override;
-        void PlayEvent2D(const string) override;
+        void PlayEvent(const string) override;
         void StopEvent(const string) override;
         void PauseAllEvent() override;
         void ResumeAllEvent() override;
@@ -45,6 +44,7 @@ class SoundFacadeFMOD : public SoundFacade {
 
     private:
         // eventos del juego
+        void StartGame(DataMap);
         void SoundClaxon(DataMap);
         void SoundThrowPowerup(DataMap);
         void SoundHurt(DataMap);
@@ -64,6 +64,7 @@ class SoundFacadeFMOD : public SoundFacade {
 
         void LoadMasterBank();
         void UnloadMasterBank();
+        FMOD::Studio::EventInstance* CreateInstance(const string);
         void LoadSoundByState(const uint8_t) override;
         void LoadSoundBank(const string, const bool) override;
         void LoadSoundEvent(const string, const bool) override;
@@ -77,9 +78,11 @@ class SoundFacadeFMOD : public SoundFacade {
         FMOD::Studio::Bank* masterBank = NULL;
         FMOD::Studio::Bank* stringsBank = NULL;
 
+        float character { 0 } ;
+
         unordered_map<string, FMOD::Studio::Bank*> banks;
         unordered_map<string, FMOD::Studio::EventDescription*> soundDescriptions;
-        // TO-DO: ¿Modificar estaseparaciion?
+        // TO-DO: Separar instancias
         unordered_map<string, FMOD::Studio::EventInstance*> eventInstances;
         unordered_map<string, vector<string>> events = {
             { "InGame2D",       {
@@ -91,7 +94,8 @@ class SoundFacadeFMOD : public SoundFacade {
                                 "Personajes/powerup",           // Metido
                                 "Personajes/random",
                                 "Partida/cuenta_atras",
-                                "Menu/cambio_opcion"        
+                                "Menu/cambio_opcion",
+                                "Musica/in_game_1"              //Metido
                                 } 
             },
             { "InGame3D",       {
@@ -100,10 +104,14 @@ class SoundFacadeFMOD : public SoundFacade {
                                 "Partida/coger_caja",
                                 "Partida/totem",
                                 "PowerUp/escudo",               // "Metido" en 2D
-                                "Coche/choque_enemigo",          
-                                "PowerUp/pudin",         
+                                "PowerUp/escudo_roto",
+                                "Coche/choque",          
+                                "PowerUp/pudin",                // "Metido" en 2D
                                 "PowerUp/robojorobo",           // "Metido" en 2D
-                                "PowerUp/telebanana"
+                                "PowerUp/telebanana",
+                                "PowerUp/telebanana_prov",      // "Metido" como provisional
+                                "PowerUp/melonmolon",           // "Metido" como provisional
+                                "Coche/choque_powerup"          // "Metido" en 2D
                                 }
             },
             { "EndRace",        {
@@ -112,14 +120,16 @@ class SoundFacadeFMOD : public SoundFacade {
                                 "Personajes/victoria",
                                 "Menu/aceptar"
                                 }
-
             },
             { "Menu",           {
                                 "Menu/atras",
                                 "Menu/aceptar",
                                 "Menu/cambio_opcion"
                                 }
-
+            },
+            { "InGameMusic",    {
+                                "Musica/menu"
+                                }
             }
         };
 

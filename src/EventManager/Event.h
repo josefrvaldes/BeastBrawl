@@ -56,7 +56,8 @@ enum EventType {
     VRANDOM,
     MENU_OPTION,
     MENU_OK,
-    MENU_BACK
+    MENU_BACK,
+    START_GAME
 };
 
 struct Data {
@@ -67,6 +68,7 @@ struct Data {
     CTransformable* posCocheSalida;
     CTransformable* posCochePerseguir;
     typeCPowerUp typePowerUp;
+    bool mainCharacter;
 };
 
 struct Event {

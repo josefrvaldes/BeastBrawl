@@ -170,8 +170,8 @@ void StateInGame::InitState() {
         cout << "~~~ SoundEngine en INGAME es -> " << soundEngine << endl;
         if (soundEngine){
             soundEngine->SetState(4);
-            soundEngine->PlayEvent3D("Coche/motor");
-            soundEngine->PlayEvent2D("Ambiente/ambiente");
+            shared_ptr<EventManager> eventManager = EventManager::GetInstance();
+            eventManager->AddEventMulti(Event{EventType::START_GAME});
         }
     } else {
         soundEngine->ResumeAllEvent();

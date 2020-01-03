@@ -13,8 +13,7 @@ class SoundFacade {
         virtual void SetState(const uint8_t) = 0;
         virtual void SetParameter(const string, const string, const float) = 0;
 
-        virtual void PlayEvent3D(const string) = 0;
-        virtual void PlayEvent2D(const string) = 0;
+        virtual void PlayEvent(const string) = 0;
         virtual void StopEvent(const string) = 0;
         virtual void PauseAllEvent() = 0;
         virtual void ResumeAllEvent() = 0;
