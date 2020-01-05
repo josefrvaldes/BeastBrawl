@@ -29,7 +29,8 @@ enum CompType {
     CompBoundingPlane,
     PathComp,
     CompRay,
-    CollidingComp
+    CollidingComp,
+    NamePlateComp
 };
 
 class Component {

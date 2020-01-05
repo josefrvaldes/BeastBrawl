@@ -54,6 +54,8 @@ class RenderFacadeIrrlicht : public RenderFacade {
 		void FacadeUpdatePowerUpHUD(DataMap d) override;
 		void FacadeDrawHUD(Entity* car, ManCar* carsAI ) override;
 		void FacadeSuscribeEvents() override;
+		void FacadeAddPlates(Manager* manNamePlates) override;
+		void FacadeUpdatePlates(Manager* manNamePlates) override;
 
 		//DEBUG
         void FacadeDrawGraphEdges(ManWayPoint* manWayPoints) override;
