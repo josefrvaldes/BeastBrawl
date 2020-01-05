@@ -182,8 +182,8 @@ void CLPhysics::HandleCollisions(CTransformable &trCar1, CBoundingSphere &spCar1
             //cout << "Intercambiamos velocidades2" << endl;
             float aux = ccarCar1.speed;
 
-            ccarCar1.speed = - 50.f - ccarCar2.speed / 3;
-            ccarCar2.speed = - 50.f - aux / 3;
+            ccarCar1.speed = - 50.f - ccarCar2.speed / 6;
+            ccarCar2.speed = - 50.f - aux / 6;
         }
     }
 }
