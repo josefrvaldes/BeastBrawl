@@ -39,17 +39,17 @@ void RenderFacadeIrrlicht::FacadeSuscribeEvents() {
 }
 
 void RenderFacadeIrrlicht::FacadeInitMenu() {
-    menuBG = driver->getTexture("media/mainMenu.png");
+    menuBG = driver->getTexture("media/main_menu.png");
     driver->makeColorKeyTexture(menuBG, core::position2d<s32>(0, 0));
 }
 
 void RenderFacadeIrrlicht::FacadeInitPause() {
-    pauseBG = driver->getTexture("media/pauseMenu.png");
+    pauseBG = driver->getTexture("media/pause_screen.png");
     driver->makeColorKeyTexture(pauseBG, core::position2d<s32>(0, 0));
 }
 
 void RenderFacadeIrrlicht::FacadeInitEndRace() {
-    endRaceBG = driver->getTexture("media/resultsMenu.png");
+    endRaceBG = driver->getTexture("media/finish_screen.png");
     driver->makeColorKeyTexture(endRaceBG, core::position2d<s32>(0, 0));
 }
 
@@ -412,7 +412,7 @@ void RenderFacadeIrrlicht::FacadeDrawMenu() {
     //smgr->drawAll();  // draw the 3d scene
     driver->draw2DImage(menuBG, core::position2d<s32>(0, 0),
                         core::rect<s32>(0, 0, 1280, 720), 0,
-                        video::SColor(255, 255, 255, 255), true);
+                        video::SColor(255, 255, 255, 255), false);
     driver->endScene();
 }
 
@@ -421,7 +421,7 @@ void RenderFacadeIrrlicht::FacadeDrawPause() {
     //smgr->drawAll();  // draw the 3d scene
     driver->draw2DImage(pauseBG, core::position2d<s32>(0, 0),
                         core::rect<s32>(0, 0, 1280, 720), 0,
-                        video::SColor(255, 255, 255, 255), true);
+                        video::SColor(255, 255, 255, 255), false);
     driver->endScene();
 }
 
@@ -430,7 +430,7 @@ void RenderFacadeIrrlicht::FacadeDrawEndRace() {
     //smgr->drawAll();  // draw the 3d scene
     driver->draw2DImage(endRaceBG, core::position2d<s32>(0, 0),
                         core::rect<s32>(0, 0, 1280, 720), 0,
-                        video::SColor(255, 255, 255, 255), true);
+                        video::SColor(255, 255, 255, 255), false);
     driver->endScene();
 }
 
