@@ -95,7 +95,7 @@ struct DontHavePoweUp : public behaviourTree {
 //    TeleBanana,         // 5
 //    MelonMolon          // 6
 
-//Condicion -> El powerUp es Nitro, RoboJorobo, EscudoMerluzo
+//Condicion -> El powerUp es Nitro, PudinDeFrambuesa, EscudoMerluzo
 struct CompPowerUp : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
         auto cPowerUp = static_cast<CPowerUp*>(blackboard->actualCar->GetComponent(CompType::PowerUpComp).get());
@@ -111,7 +111,7 @@ struct CompPowerUp : public behaviourTree {
 };
 
 
-//Condicion -> El powerUp es Nitro, RoboJorobo, EscudoMerluzo
+//Accion -> Lanzamos el powerUp
 // TODO -- lo hace jose
 struct ThrowPowerUp : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
@@ -124,6 +124,7 @@ struct ThrowPowerUp : public behaviourTree {
     }
 };
 
+//Condicion -> El powerUp es RoboJorobo
 struct HaveRoboJorobo : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
         auto cPowerUp = static_cast<CPowerUp*>(blackboard->actualCar->GetComponent(CompType::PowerUpComp).get());
@@ -136,7 +137,7 @@ struct HaveRoboJorobo : public behaviourTree {
     } 
 };
 
-// TODO --> actualmente si tienes tu el totem te lo quitas y te lo vuelve a asiganar
+// TO-DO --> actualmente si tienes tu el totem te lo quitas y te lo vuelve a asiganar
 struct HaveTotemOtherCar : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
         for(auto AIcar : blackboard->manCars->GetEntities()){
@@ -157,11 +158,13 @@ struct HaveTotemOtherCar : public behaviourTree {
     } 
 };
 
+
+// To-Do: Esto era para el melon que ya no se lanza aqui
 struct LookEnemy : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
-        //return false;
+        return false;
         //std::cout << "miramos a ver si te veo,,,,,,," << std::endl;
-        return blackboard->manCars->anyCarInVisionRange(blackboard->actualCar, 20);
+        //return blackboard->manCars->anyCarInVisionRange(blackboard->actualCar, 20);
         // estrategia: que tu vector director y el vector alenemigo tengan una difrencia de maximo 5 grados
         //return true;
     } 

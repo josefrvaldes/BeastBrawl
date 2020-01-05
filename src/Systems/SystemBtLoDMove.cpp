@@ -76,78 +76,29 @@ struct DontHavePoweUp_LoDMove : public behaviourTree {
     }
 };
 // ----------------------------------------   CONDICIONES -------------------------------------------
-//CONDICION Tenemos powerUp?
-struct HavePowerUp_LoDMove : public behaviourTree {
-    virtual bool run(Blackboard* blackboard) override {
-        //return true;
-        auto cPowerUp = static_cast<CPowerUp*>(blackboard->actualCar->GetComponent(CompType::PowerUpComp).get());
-        if(cPowerUp->typePowerUp == typeCPowerUp::None){
-            //std::cout << "No tenemos powerUp" << std::endl;
-            return false;
-        }
-        return true;
-    }
-};
-//CONDICION esa el Totem suelto por el mapa?
-struct TotemAlone_LoDMove : public behaviourTree {
-    virtual bool run(Blackboard* blackboard) override {
-        if( blackboard->manTotems->GetEntities().size() > 0){
-            //std::cout << "Si esta el totem en el suelo locoooooooooooooooooooooooooooooooooooooooooooooooo" << std::endl;
-            return true;
-        }
-        return false;
-    }
-};
-//CONDICION Tenemos un powerUp de ataque? Melon o Banana
-struct HavePowerUpAttack_LoDMove : public behaviourTree {
-    virtual bool run(Blackboard* blackboard) override {
-        return true;
-        auto cPowerUp = static_cast<CPowerUp*>(blackboard->actualCar->GetComponent(CompType::PowerUpComp).get());
-        if( cPowerUp->typePowerUp == typeCPowerUp::MelonMolon || 
-            cPowerUp->typePowerUp == typeCPowerUp::TeleBanana   ){
-            //std::cout << "El powerUp era o Melon o Banana" << std::endl;
-            return true;
-        }
-        return false;
-    }
-};
-
-// ----------------------------------------     ACCIONES   -------------------------------------------
-//ACCION comprobamos si tenemos melon molon
+// CONDICION --> tengo melon molon
 struct HaveMelonMolon_LoDMove : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
         auto cPowerUp = static_cast<CPowerUp*>(blackboard->actualCar->GetComponent(CompType::PowerUpComp).get());
         if( cPowerUp->typePowerUp == typeCPowerUp::MelonMolon){
-            // Steering Behavior de lanzarlarlo
-            blackboard->systemFuzzyLogicAI->Update(blackboard->actualCar, 0.016);
-       
-            
             return true;
         }
         return false;
     } 
 };
 
-
-//ACCION comprobamos si esta fuera del rango de vision para aplicar SB
+//CONDICION --> comprobamos si el cocheIA actual esta fuera del rango de vision del jugador para aplicar SB
 struct OutofVisionRange_LoDMove : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
         if(blackboard->manCars->carInVisionRange(blackboard->manCars->GetCar().get(), blackboard->actualCar, 75) == false){
-            // Aplicar Steering Behavior para el movimiento
-            blackboard->steeringBehaviours->UpdateSeek(blackboard->actualCar);
-            std::cout << "Aplico SB" << std::endl;
             return true;
         }
-        //std::cout << "Lo veo" << std::endl;
-        std::cout << "Aplico FL" << std::endl;
         return false;
     } 
 };
 
-
-//ACCION comprobamos si el coche actual se encuentra cerca de el del jugador
+//CONDICION --> comprobamos si el cocheIA actual se encuentra cerca de el del jugador para aplicar FL
 struct InDistanceRange_LoDMove : public behaviourTree {
-
     virtual bool run(Blackboard* blackboard) override {
         auto cTransformableCar = static_cast<CTransformable*>(blackboard->manCars->GetCar()->GetComponent(CompType::TransformableComp).get());
         auto cTransformableCarAI = static_cast<CTransformable*>(blackboard->actualCar->GetComponent(CompType::TransformableComp).get());
@@ -156,9 +107,6 @@ struct InDistanceRange_LoDMove : public behaviourTree {
         float distanceToCarAI = sqrt(vetorDistanceX*vetorDistanceX + vetorDistanceZ*vetorDistanceZ);
 
         if(distanceToCarAI < 2000.0){ // To-Do: ajustar distancia
-            // Aplicar Logica Difusa para el movimiento
-            blackboard->systemFuzzyLogicAI->Update(blackboard->actualCar, 0.016);
-            
             return true;
         }
         return false;
@@ -166,20 +114,46 @@ struct InDistanceRange_LoDMove : public behaviourTree {
 };
 
 
-//ACCION El coche se encuentra en el rango de vision del jugador pero lejos
-struct InDistanceFar_LoDMove : public behaviourTree {
-    virtual bool run(Blackboard* blackboard) override {
-        // Aplicar Steering Behavior para el movimiento
-        blackboard->steeringBehaviours->UpdateSeek(blackboard->actualCar);
 
+// ----------------------------------------     ACCIONES   -------------------------------------------
+//ACCION --> aplicamos SB pursue y si esta en el angulo lanzamos el melon molon
+struct SBPursue_LoDMove : public behaviourTree {
+    virtual bool run(Blackboard* blackboard) override {
+        float angle = blackboard->steeringBehaviours->UpdatePursuePowerUp(blackboard->actualCar, blackboard->manCars->GetCar().get());  // To-Do: calcular coche a por el que se quiere ir
+        if(angle>=-3 && angle <=3){
+            shared_ptr<EventManager> eventManager = EventManager::GetInstance();
+            DataMap d;
+            d["actualCar"] = blackboard->actualCar;
+            eventManager->AddEventMulti(Event{EventType::THROW_POWERUP_AI, d});
+        }
+        //std::cout << "Aplico SB pursuePU" << std::endl;
         return true;
     } 
 };
 
+
+//ACCION --> aplicamos SB seek
+struct SBSeek_LoDMove : public behaviourTree {
+    virtual bool run(Blackboard* blackboard) override {
+        blackboard->steeringBehaviours->UpdateSeek(blackboard->actualCar);
+        //std::cout << "Aplico SB seek" << std::endl;
+        return true;
+    }
+};
+
+
+//ACCION --> aplicamos logica difusa
+struct ApplyFuzzyLogic_LoDMove : public behaviourTree {
+    virtual bool run(Blackboard* blackboard) override {
+        blackboard->systemFuzzyLogicAI->Update(blackboard->actualCar, 0.016);
+        //std::cout << "Aplico FL" << std::endl;
+        return true;
+    } 
+};
+
+
 // NOTA: recordar que tenemos el otro Behaviour tree de tirar powerUp y por tanto lo seguiremos
 // hasta que lo veamos, una vez visto le lanzaemos el powerUp e iremos a por el Totem u otro PowerUp
-
-
 
 //    None,               // 0
 //    RoboJorobo,         // 1
@@ -188,6 +162,10 @@ struct InDistanceFar_LoDMove : public behaviourTree {
 //    EscudoMerluzo,      // 4
 //    TeleBanana,         // 5
 //    MelonMolon          // 6
+
+
+
+
 SystemBtLoDMove::SystemBtLoDMove(){
     // Sistemas de movimiento
     fuzzyLogic = make_shared<SystemFuzzyLogicAI>();
@@ -198,40 +176,56 @@ SystemBtLoDMove::SystemBtLoDMove(){
     //   Lanzar melon molon = true   -> Aplicar Steering de movimiento y lanzar en caso de que angulo sea 0
     
     //                 SELECTOR
-    //   MelonMolon             Selector(LoD)
-    //      //                      //
-    //      SB                //////////////
-    //                        //          //
-    //                      Fuera        Dentro
-    //                        //            //
-    //                        SB          Selector
-    //                                       //
-    //                                  //////////////
-    //                                  //          //
-    //                                Cerca       Lejos
-    //                                  //          //
-    //                                  LD          SB
+    //      //////////////////////////////////////////////////////////
+    //   sequence1                                               Selector(Vision LoD)
+    //      //                                                       //
+    //    //////////////                                //////////////////////////////
+    //    //          //                                //                          //
+    //  Have MM?     ApplySB_Pursue                   Sequence2                     Selector (Distance - dentro del rango de vision)
+    //                                                //      //                       //
+    //                                  OutOfVisionRange   ApplySB_Seek          ///////////////////////////
+    //                                                                           //                      //
+    //                                                                        Sequence3                 ApplySB_Seek (lejos)
+    //                                                                       //      //                 
+    //                                                                    Cerca?     LogicaDifusa  
 
 
     selectorBehaviourTree = make_shared<selector>();
 
-    shared_ptr<HaveMelonMolon_LoDMove> a_HaveMelonMolon =   make_shared<HaveMelonMolon_LoDMove>();
+    shared_ptr<sequence> sequence1 = make_shared<sequence>();
     shared_ptr<selector> selectorVision = make_shared<selector>();
 
-    shared_ptr<OutofVisionRange_LoDMove>  c_OutofVisionRange =   make_shared<OutofVisionRange_LoDMove>();
+    shared_ptr<HaveMelonMolon_LoDMove> c_HaveMelonMolon =   make_shared<HaveMelonMolon_LoDMove>();
+    shared_ptr<SBPursue_LoDMove> a_SBPursue =   make_shared<SBPursue_LoDMove>();
+
+    shared_ptr<sequence> sequence2 = make_shared<sequence>();
     shared_ptr<selector> selectorDistance = make_shared<selector>();
 
-    shared_ptr<InDistanceRange_LoDMove>  a_InDistanceRange =   make_shared<InDistanceRange_LoDMove>();
-    shared_ptr<InDistanceFar_LoDMove>  a_InDistanceFar =   make_shared<InDistanceFar_LoDMove>();
+    shared_ptr<OutofVisionRange_LoDMove>  c_OutofVisionRange =   make_shared<OutofVisionRange_LoDMove>();
+    shared_ptr<SBSeek_LoDMove>  a_SBSeek =   make_shared<SBSeek_LoDMove>();
 
-    selectorBehaviourTree->addChild(a_HaveMelonMolon);
+    shared_ptr<sequence> sequence3 = make_shared<sequence>();
+
+    shared_ptr<InDistanceRange_LoDMove>  c_InDistanceRange =   make_shared<InDistanceRange_LoDMove>();
+    shared_ptr<ApplyFuzzyLogic_LoDMove>  a_FuzzyLogic =   make_shared<ApplyFuzzyLogic_LoDMove>();
+
+    selectorBehaviourTree->addChild(sequence1);
     selectorBehaviourTree->addChild(selectorVision);
 
-    selectorVision->addChild(c_OutofVisionRange);
+    sequence1->addChild(c_HaveMelonMolon);
+    sequence1->addChild(a_SBPursue);
+
+    selectorVision->addChild(sequence2);
     selectorVision->addChild(selectorDistance);
 
-    selectorDistance->addChild(a_InDistanceRange);
-    selectorDistance->addChild(a_InDistanceFar);
+    sequence2->addChild(c_OutofVisionRange);
+    sequence2->addChild(a_SBSeek);
+
+    selectorDistance->addChild(sequence3);
+    selectorDistance->addChild(a_SBSeek);
+
+    sequence3->addChild(c_InDistanceRange);
+    sequence3->addChild(a_FuzzyLogic);
 
 }
 
