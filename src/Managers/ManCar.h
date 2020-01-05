@@ -11,7 +11,7 @@
 #include "../Managers/ManWayPoint.h"
 #include "../Entities/WayPoint.h"
 
-#include "../Systems/SteeringBehaviours.h"
+//#include "../Systems/SteeringBehaviours.h"
 #include "../Systems/SystemBtPowerUp.h"
 #include "../Systems/SystemBtMoveTo.h"
 #include "../Systems/SystemBtLoDMove.h"
@@ -24,14 +24,15 @@
 #include <stack>
 
 using namespace std;
-class Car;
-class CarAI;
-class Data;
-class Physics;
-class Camera;
-class ManPowerUp;
-class ManBoxPowerUp;
-class ManTotem;
+struct Car;
+struct CarAI;
+struct Data;
+struct Physics;
+struct Camera;
+struct ManPowerUp;
+struct ManBoxPowerUp;
+struct ManTotem;
+struct PhysicsAI;
 
 class ManCar : public Manager {
    public:
@@ -52,7 +53,7 @@ class ManCar : public Manager {
     bool carInVisionRange(Entity* actualCar, Entity* otherCar, uint32_t rangeVision);
     bool anyCarInVisionRange(Entity* actualCar, uint32_t rangeVision);
     void Integrate(float) override;
-    stack<int> Dijkstra(ManWayPoint* graph, int start, int end);
+    
 
    private:
     Physics *physics;
@@ -84,4 +85,5 @@ class ManCar : public Manager {
     unique_ptr<SystemBtPowerUp> systemBtPowerUp;
     unique_ptr<SystemBtMoveTo> systemBtMoveTo;
     unique_ptr<SystemBtLoDMove> systemBtLoDMove;
+    unique_ptr<PhysicsAI> physicsAI;
 };

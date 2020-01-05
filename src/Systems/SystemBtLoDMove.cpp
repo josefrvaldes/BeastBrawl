@@ -13,6 +13,10 @@
 
 #include "../Entities/Totem.h"
 #include "../Managers/ManTotem.h"
+
+#include "../Systems/SystemFuzzyLogicAI.h"
+#include "../Systems/SteeringBehaviours.h"
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //                           COMPROBAR BEHAVIOR TREE
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -115,7 +119,8 @@ struct HaveMelonMolon_LoDMove : public behaviourTree {
         auto cPowerUp = static_cast<CPowerUp*>(blackboard->actualCar->GetComponent(CompType::PowerUpComp).get());
         if( cPowerUp->typePowerUp == typeCPowerUp::MelonMolon){
             // Steering Behavior de lanzarlarlo
-
+            blackboard->systemFuzzyLogicAI->Update(blackboard->actualCar, 0.016);
+       
             
             return true;
         }
@@ -124,13 +129,17 @@ struct HaveMelonMolon_LoDMove : public behaviourTree {
 };
 
 
-//ACCION comprobamos si esta dentro del rango de vision
+//ACCION comprobamos si esta fuera del rango de vision para aplicar SB
 struct OutofVisionRange_LoDMove : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
-        if(blackboard->manCars->carInVisionRange(blackboard->manCars->GetCar().get(), blackboard->actualCar, 66) == false){
+        if(blackboard->manCars->carInVisionRange(blackboard->manCars->GetCar().get(), blackboard->actualCar, 75) == false){
             // Aplicar Steering Behavior para el movimiento
+            blackboard->steeringBehaviours->UpdateSeek(blackboard->actualCar);
+            std::cout << "Aplico SB" << std::endl;
             return true;
         }
+        //std::cout << "Lo veo" << std::endl;
+        std::cout << "Aplico FL" << std::endl;
         return false;
     } 
 };
@@ -146,8 +155,10 @@ struct InDistanceRange_LoDMove : public behaviourTree {
         float vetorDistanceZ = (cTransformableCarAI->position.x - cTransformableCar->position.z);
         float distanceToCarAI = sqrt(vetorDistanceX*vetorDistanceX + vetorDistanceZ*vetorDistanceZ);
 
-        if(distanceToCarAI < 800.0){
+        if(distanceToCarAI < 2000.0){ // To-Do: ajustar distancia
             // Aplicar Logica Difusa para el movimiento
+            blackboard->systemFuzzyLogicAI->Update(blackboard->actualCar, 0.016);
+            
             return true;
         }
         return false;
@@ -155,10 +166,12 @@ struct InDistanceRange_LoDMove : public behaviourTree {
 };
 
 
-//ACCION comprobamos si el coche actual se encuentra cerca de el del jugador
+//ACCION El coche se encuentra en el rango de vision del jugador pero lejos
 struct InDistanceFar_LoDMove : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
         // Aplicar Steering Behavior para el movimiento
+        blackboard->steeringBehaviours->UpdateSeek(blackboard->actualCar);
+
         return true;
     } 
 };
@@ -176,14 +189,18 @@ struct InDistanceFar_LoDMove : public behaviourTree {
 //    TeleBanana,         // 5
 //    MelonMolon          // 6
 SystemBtLoDMove::SystemBtLoDMove(){
-
+    // Sistemas de movimiento
+    fuzzyLogic = make_shared<SystemFuzzyLogicAI>();
+    steeringBehaviours = make_shared<SteeringBehaviours>();
+    entradoFL=false;
     
+    //Construir el Arblol
     //   Lanzar melon molon = true   -> Aplicar Steering de movimiento y lanzar en caso de que angulo sea 0
     
     //                 SELECTOR
     //   MelonMolon             Selector(LoD)
-    //                            //
-    //                        //////////////
+    //      //                      //
+    //      SB                //////////////
     //                        //          //
     //                      Fuera        Dentro
     //                        //            //
@@ -222,6 +239,12 @@ SystemBtLoDMove::SystemBtLoDMove(){
 
 
 void SystemBtLoDMove::update(CarAI* actualCar, ManCar* manCars,ManPowerUp* manPowerUps, ManBoxPowerUp* manBoxPowerUps, ManTotem* manTotems, ManWayPoint* manWayPoint){
-    unique_ptr<Blackboard> blackboard = make_unique<Blackboard>(actualCar, manCars, manPowerUps, manBoxPowerUps, manTotems, manWayPoint);
+    if(entradoFL==false){
+        fuzzyLogic->InitSystemFuzzyLogicAI(actualCar);  // To-Do: arreglar esta llamada para solo hacerla una vez
+        entradoFL=true;
+    }
+
+    unique_ptr<Blackboard> blackboard = make_unique<Blackboard>(actualCar, manCars, manPowerUps, manBoxPowerUps, manTotems, manWayPoint, fuzzyLogic.get(), steeringBehaviours.get());
+
     selectorBehaviourTree->run(blackboard.get());
 }

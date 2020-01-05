@@ -14,27 +14,15 @@
 #define PI 3.141592
 
 SteeringBehaviours::SteeringBehaviours(){
-    SubscribeToEvents();
+    
 }
 
 
-void SteeringBehaviours::SubscribeToEvents(){
-    EventManager::GetInstance()->SuscribeMulti(Listener(
-        EventType::Move_SB_Seek,
-        bind(&SteeringBehaviours::UpdateSeek, this, placeholders::_1),
-        "UpdateSeek"));
 
-    EventManager::GetInstance()->SuscribeMulti(Listener(
-        EventType::Move_SB_PursuePowerUp,
-        bind(&SteeringBehaviours::UpdatePursuePowerUp, this, placeholders::_1),
-        "UpdatePursuePowerUp"));
-}
-
-
-void SteeringBehaviours::UpdateSeek(DataMap d){
+void SteeringBehaviours::UpdateSeek(Entity* m_actualCar){
     // se calcula el vector al siguiente punto al que avanzara el coche
-    auto cTransformable = static_cast<CTransformable*>(any_cast<CarAI*>(d["actualCar"])->GetComponent(CompType::TransformableComp).get());
-    auto cCar = static_cast<CCar*>(any_cast<CarAI*>(d["actualCar"])->GetComponent(CompType::CarComp).get());
+    auto cTransformable = static_cast<CTransformable*>(m_actualCar->GetComponent(CompType::TransformableComp).get());
+    auto cCar = static_cast<CCar*>(m_actualCar->GetComponent(CompType::CarComp).get());
     if(cCar->speed==0) cCar->speed=0.1;
     float angleRotation = (cTransformable->rotation.y * PI) / 180.0;
     float posXSiguiente = cTransformable->position.x - cos(angleRotation) * cCar->speed;
@@ -42,19 +30,19 @@ void SteeringBehaviours::UpdateSeek(DataMap d){
     glm::vec2 vectorVelocity = glm::vec2(posXSiguiente - cTransformable->position.x , posZSiguiente - cTransformable->position.z );
 
     //Seek
-    auto cPosDestination = static_cast<CPosDestination*>(any_cast<CarAI*>(d["actualCar"])->GetComponent(CompType::PosDestination).get());
+    auto cPosDestination = static_cast<CPosDestination*>(m_actualCar->GetComponent(CompType::PosDestination).get());
     glm::vec3 posTarget = glm::vec3(cPosDestination->position.x, cPosDestination->position.y, cPosDestination->position.z);
-    glm::vec2 vectorForce = Seek(any_cast<CarAI*>(d["actualCar"]), posTarget, vectorVelocity);
+    glm::vec2 vectorForce = Seek(m_actualCar, posTarget, vectorVelocity);
 
     float angle = CalculateAngle(vectorVelocity, vectorForce, cTransformable->rotation.y);
     UpdateTransformable(cCar, cTransformable, angle);
 }
 
 
-void SteeringBehaviours::UpdatePursuePowerUp(DataMap d){
+void SteeringBehaviours::UpdatePursuePowerUp(Entity* m_actualCar, Entity* m_targetCar){
     // se calcula el vector al siguiente punto al que avanzara el coche
-    auto cTransformable = static_cast<CTransformable*>(any_cast<CarAI*>(d["actualCar"])->GetComponent(CompType::TransformableComp).get());
-    auto cCar = static_cast<CCar*>(any_cast<CarAI*>(d["actualCar"])->GetComponent(CompType::CarComp).get());
+    auto cTransformable = static_cast<CTransformable*>(m_actualCar->GetComponent(CompType::TransformableComp).get());
+    auto cCar = static_cast<CCar*>(m_actualCar->GetComponent(CompType::CarComp).get());
     if(cCar->speed==0) cCar->speed=0.1;
     float angleRotation = (cTransformable->rotation.y * PI) / 180.0;
     float posXSiguiente = cTransformable->position.x - cos(angleRotation) * cCar->speed;
@@ -62,7 +50,7 @@ void SteeringBehaviours::UpdatePursuePowerUp(DataMap d){
     glm::vec2 vectorVelocity = glm::vec2(posXSiguiente - cTransformable->position.x , posZSiguiente - cTransformable->position.z );
 
     // Pursue
-    glm::vec2 vectorForce = PursuePowerUp(any_cast<CarAI*>(d["actualCar"]), any_cast<CarAI*>(d["targetCar"]), vectorVelocity);
+    glm::vec2 vectorForce = PursuePowerUp(m_actualCar, m_targetCar, vectorVelocity);
 
     float angle = CalculateAngle(vectorVelocity, vectorForce, cTransformable->rotation.y);
     UpdateTransformable(cCar, cTransformable, angle);
@@ -128,8 +116,8 @@ void SteeringBehaviours::UpdateTransformable(CCar* m_cCar, CTransformable* m_cTr
         m_cCar->wheelRotation = 0;
     
     m_cCar->speed += m_cCar->acceleration;
-    if (m_cCar->speed > m_cCar->maxSpeed/2.0) {
-        m_cCar->speed = m_cCar->maxSpeed/2.0;  
+    if (m_cCar->speed > m_cCar->maxSpeed*0.8) {
+        m_cCar->speed = m_cCar->maxSpeed*0.8;  
     }
 
     // calculamos las posiciones

@@ -1,5 +1,7 @@
 #pragma once
 
+
+
 #include <iostream>
 #include <memory>
 
@@ -12,18 +14,23 @@ struct ManPowerUp;
 struct ManBoxPowerUp;
 struct ManTotem;
 struct ManWayPoint;
+struct SystemFuzzyLogicAI;
+struct SteeringBehaviours;
 
 class SystemBtLoDMove {
    public:
-    SystemBtLoDMove();
-    ~SystemBtLoDMove(){};
+      SystemBtLoDMove();
+      ~SystemBtLoDMove(){};
 
-    void init();
-    void update(CarAI* actualCar, ManCar* manCars, ManPowerUp* manPowerUps, ManBoxPowerUp* manBoxPowerUps, ManTotem* manTotems, ManWayPoint* manWayPoint);
+      void init();
+      void update(CarAI* actualCar, ManCar* manCars, ManPowerUp* manPowerUps, ManBoxPowerUp* manBoxPowerUps, ManTotem* manTotems, ManWayPoint* manWayPoint);
 
 
-   protected:
    private:
-   shared_ptr<selector> selectorBehaviourTree;
+      shared_ptr<selector> selectorBehaviourTree;
+      shared_ptr<SystemFuzzyLogicAI> fuzzyLogic;
+      shared_ptr<SteeringBehaviours> steeringBehaviours;
+
+      bool entradoFL = false;
 
 };
