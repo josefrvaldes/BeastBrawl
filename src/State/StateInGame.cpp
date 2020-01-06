@@ -283,7 +283,6 @@ void StateInGame::Render() {
     renderEngine->FacadeDrawGraphEdges(manWayPoint.get());
     renderEngine->FacadeDrawBoundingBox(manCars.get()->GetCar().get(), isColliding);
     
-    
     for(auto actualAI : manCars->GetEntitiesAI()){
        renderEngine->FacadeDrawBoundingBox(actualAI.get(), false); 
     }

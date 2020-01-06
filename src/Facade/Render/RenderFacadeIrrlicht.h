@@ -1,24 +1,23 @@
 #pragma once
 
-#include "RenderFacade.h"
 #include "../../../lib/irrlicht/irrlicht.h"
-#include "../../EventManager/EventManager.h"
 #include "../../EventManager/Event.h"
+#include "../../EventManager/EventManager.h"
 #include "../Input/InputFacadeIrrlicht.h"
 #include "../Input/InputFacadeManager.h"
+#include "RenderFacade.h"
 
 //#include "../../State/State.h"
 
+#include <codecvt>
 #include <iostream>
+#include <locale>
+#include <memory>
 #include <string>
 #include <unordered_map>
-#include <memory>
-#include <locale>
-#include <codecvt>
 
 using namespace std;
 using namespace irr;
-
 
 class RenderFacadeIrrlicht : public RenderFacade {
     public:
@@ -57,30 +56,29 @@ class RenderFacadeIrrlicht : public RenderFacade {
 		void FacadeAddPlates(Manager* manNamePlates) override;
 		void FacadeUpdatePlates(Manager* manNamePlates) override;
 
-		//DEBUG
-        void FacadeDrawGraphEdges(ManWayPoint* manWayPoints) override;
-		void FacadeDrawBoundingBox(Entity* entity, bool colliding) override;
+    //DEBUG
+    void Draw3DLine(vec3 &pos1, vec3 &pos2, uint16_t r, uint16_t g, uint16_t b) override;
+    void Draw3DLine(vec3 &pos1, vec3 &pos2) override;
+    void FacadeDrawGraphEdges(ManWayPoint* manWayPoints) override;
+    void FacadeDrawBoundingBox(Entity* entity, bool colliding) override;
 
+    scene::ISceneManager* GetSceneManager() { return smgr; };
+    scene::ICameraSceneNode* GetCamera1() { return camera1; };
 
-		scene::ISceneManager* GetSceneManager() {return smgr;};
-		scene::ICameraSceneNode* GetCamera1() {return camera1;};
+   private:
+    IrrlichtDevice* device;
+    video::IVideoDriver* driver;
+    scene::ISceneManager* smgr;
+    scene::ICameraSceneNode* camera1;
+    MyEventReceiver receiver;
+    video::ITexture* menuBG;
+    video::ITexture* pauseBG;
+    video::ITexture* endRaceBG;
+    video::ITexture* whiteBG;
+    video::ITexture* powerUps[7];
+    gui::IGUIFont* font;
+    bool showDebug = false;
+    int currentPowerUp = 0;
 
-
-    private:
-        IrrlichtDevice* device;
-        video::IVideoDriver* driver;
-        scene::ISceneManager* smgr;
-		scene::ICameraSceneNode* camera1;
-		MyEventReceiver receiver;
-		video::ITexture* menuBG;
-		video::ITexture* pauseBG;
-		video::ITexture* endRaceBG;
-		video::ITexture* whiteBG;
-		video::ITexture* powerUps[7];
-		gui::IGUIFont* font;
-		bool showDebug = false;
-		int currentPowerUp = 0;
-
-        //unordered_map<uint16_t,scene::ISceneNode*> sceneObjects; // CId - ISceneNode*
+    //unordered_map<uint16_t,scene::ISceneNode*> sceneObjects; // CId - ISceneNode*
 };
-
