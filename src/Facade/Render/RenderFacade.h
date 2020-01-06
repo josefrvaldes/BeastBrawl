@@ -8,6 +8,7 @@
 #include "../../Managers/ManWayPoint.h"
 #include "../../Managers/ManCar.h"
 #include "../../Components/CPowerUp.h"
+#include "../../Managers/Manager.h"
 
 class RenderFacade {
    public:
@@ -43,6 +44,8 @@ class RenderFacade {
     virtual void FacadeUpdatePowerUpHUD(DataMap d) = 0;
     virtual void FacadeDrawHUD(Entity* car, ManCar* carsAI) = 0;
     virtual void FacadeSuscribeEvents() = 0;
+    virtual void FacadeAddPlates(Manager* manNamePlates) = 0;
+    virtual void FacadeUpdatePlates(Manager* manNamePlates) = 0;
 
     //DEBUG
     virtual void FacadeDrawGraphEdges(ManWayPoint* manWayPoints) = 0;
@@ -50,4 +53,5 @@ class RenderFacade {
 
    protected:
     uint16_t idCar = 0;
+    int numEnemyCars = 0;
 };

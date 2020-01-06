@@ -13,6 +13,7 @@
 #include "../../Components/CType.h"
 #include "../../Components/CWayPoint.h"
 #include "../../Components/CWayPointEdges.h"
+#include "../../Components/CNamePlate.h"
 #include "../../Components/Component.h"
 #include "../../Entities/WayPoint.h"
 #include "../../Game.h"
@@ -39,17 +40,17 @@ void RenderFacadeIrrlicht::FacadeSuscribeEvents() {
 }
 
 void RenderFacadeIrrlicht::FacadeInitMenu() {
-    menuBG = driver->getTexture("media/mainMenu.png");
+    menuBG = driver->getTexture("media/main_menu.png");
     driver->makeColorKeyTexture(menuBG, core::position2d<s32>(0, 0));
 }
 
 void RenderFacadeIrrlicht::FacadeInitPause() {
-    pauseBG = driver->getTexture("media/pauseMenu.png");
+    pauseBG = driver->getTexture("media/pause_screen.png");
     driver->makeColorKeyTexture(pauseBG, core::position2d<s32>(0, 0));
 }
 
 void RenderFacadeIrrlicht::FacadeInitEndRace() {
-    endRaceBG = driver->getTexture("media/resultsMenu.png");
+    endRaceBG = driver->getTexture("media/finish_screen.png");
     driver->makeColorKeyTexture(endRaceBG, core::position2d<s32>(0, 0));
 }
 
@@ -122,6 +123,30 @@ void RenderFacadeIrrlicht::FacadeDrawHUD(Entity* car, ManCar* carsAI) {
     }
 }
 
+//Crea las plates de los nombres de los coches
+void RenderFacadeIrrlicht::FacadeAddPlates(Manager* manNamePlates){
+    for(auto plate : manNamePlates->GetEntities()){
+        auto cId = static_cast<CId*>(plate->GetComponent(CompType::IdComp).get());
+        
+        core::stringw string = core::stringw("Car AI ") + core::stringw(numEnemyCars++);
+        auto node = smgr->addTextSceneNode(font,string.c_str(),video::SColor(255,0,0,0),0,core::vector3df(200,30,200),-1);
+        node->setID(cId->id);
+    }
+}
+
+
+//Actualiza las posiciones de las plates
+void RenderFacadeIrrlicht::FacadeUpdatePlates(Manager* manNamePlates){
+    for(auto plate : manNamePlates->GetEntities()){
+        auto cNamePlate = static_cast<CNamePlate*>(plate->GetComponent(CompType::NamePlateComp).get());
+        auto cId = static_cast<CId*>(plate->GetComponent(CompType::IdComp).get());
+
+        auto node = smgr->getSceneNodeFromId(cId->id);
+        auto carAI = smgr->getSceneNodeFromId(cNamePlate->idCarAsociated);
+
+        node->setPosition(core::vector3df(carAI->getPosition().X,carAI->getPosition().Y+20,carAI->getPosition().Z));
+    }
+}
 const void RenderFacadeIrrlicht::FacadeAddObjects(vector<Entity*> entities) {
     for (Entity* e : entities) {
         FacadeAddObject(e);
@@ -163,7 +188,10 @@ const uint16_t RenderFacadeIrrlicht::FacadeAddObject(Entity* entity) {
         case ModelType::StaticMesh:
             node = smgr->addMeshSceneNode(smgr->getMesh(meshPath.c_str()));
             break;
+
     }
+
+    
 
     // y ahora a ese node, le ponemos sus parámetros
     std::string path = "media/" + cTexture->texture;
@@ -186,6 +214,8 @@ const uint16_t RenderFacadeIrrlicht::FacadeAddObject(Entity* entity) {
             nodeSphere->setMaterialFlag(video::EMF_LIGHTING, false);
         }
     }
+
+
 
     //Cogemos sus edges
     core::vector3df* edges = new core::vector3df[8];
@@ -412,7 +442,7 @@ void RenderFacadeIrrlicht::FacadeDrawMenu() {
     //smgr->drawAll();  // draw the 3d scene
     driver->draw2DImage(menuBG, core::position2d<s32>(0, 0),
                         core::rect<s32>(0, 0, 1280, 720), 0,
-                        video::SColor(255, 255, 255, 255), true);
+                        video::SColor(255, 255, 255, 255), false);
     driver->endScene();
 }
 
@@ -421,7 +451,7 @@ void RenderFacadeIrrlicht::FacadeDrawPause() {
     //smgr->drawAll();  // draw the 3d scene
     driver->draw2DImage(pauseBG, core::position2d<s32>(0, 0),
                         core::rect<s32>(0, 0, 1280, 720), 0,
-                        video::SColor(255, 255, 255, 255), true);
+                        video::SColor(255, 255, 255, 255), false);
     driver->endScene();
 }
 
@@ -430,7 +460,7 @@ void RenderFacadeIrrlicht::FacadeDrawEndRace() {
     //smgr->drawAll();  // draw the 3d scene
     driver->draw2DImage(endRaceBG, core::position2d<s32>(0, 0),
                         core::rect<s32>(0, 0, 1280, 720), 0,
-                        video::SColor(255, 255, 255, 255), true);
+                        video::SColor(255, 255, 255, 255), false);
     driver->endScene();
 }
 

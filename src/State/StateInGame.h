@@ -35,6 +35,7 @@
 #include "../Managers/ManPowerUp.h"
 #include "../Managers/ManBoxPowerUp.h"
 #include "../Managers/ManWayPoint.h"
+#include "../Managers/ManNamePlate.h"
 #include "../Managers/ManTotem.h"
 
 #include "btBulletDynamicsCommon.h"
@@ -62,6 +63,7 @@ class StateInGame : public State {
     shared_ptr<ManBoxPowerUp> manBoxPowerUps;
     shared_ptr<ManCar> manCars;
     shared_ptr<ManWayPoint> manWayPoint;
+    shared_ptr<ManNamePlate> manNamePlates;
     
     RenderFacade* renderEngine = { nullptr };
     InputFacade* inputEngine = { nullptr };

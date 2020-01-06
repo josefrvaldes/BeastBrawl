@@ -250,7 +250,9 @@ void ManCar::CatchTotemAI(DataMap d){
     auto cTotem = static_cast<CTotem*>(any_cast<Entity*>(d["actualCar"])->GetComponent(CompType::TotemComp).get());
     cTotem->active = true;
     cTotem->timeStart = system_clock::now();
-    // TO-DO: Sonido coger totem
+    // Sonido coger totem
+    shared_ptr<EventManager> eventManager = EventManager::GetInstance();
+    eventManager->AddEventMulti(Event{EventType::CATCH_TOTEM});
 }
 
 void ManCar::CatchTotemPlayer(DataMap d){
@@ -315,8 +317,10 @@ void ManCar::CollisionPowerUp(DataMap d){
         auto cCar = static_cast<CCar*>(car.get()->GetComponent(CompType::CarComp).get());
         cCar->speed = 0.0f;
         // Sonido choque con powerup
+        DataMap data;
         shared_ptr<EventManager> eventManager = EventManager::GetInstance();
-        eventManager->AddEventMulti(Event{EventType::HURT});
+        data["mainCharacter"] = true;
+        eventManager->AddEventMulti(Event{EventType::HURT, data});
     }else{
         std::cout << "El escudo me salvo el culito :D" << std::endl;
         cShield->deactivePowerUp(); // desactivamos el escudo
@@ -340,9 +344,18 @@ void ManCar::CollisionPowerUpAI(DataMap d){
         // Reducimos la velocidad -- TODO --> no solo reducir la velocidad a 0
         auto cCar = static_cast<CCar*>(any_cast<Entity*>(d["carAI"])->GetComponent(CompType::CarComp).get());
         cCar->speed = 0.0f;  // To-Do: no funciona en la IA por que la logica difusa no la hace acelerar
+        // Sonido choque con powerup
+        DataMap data;
+        shared_ptr<EventManager> eventManager = EventManager::GetInstance();
+        data["mainCharacter"] = false;
+        eventManager->AddEventMulti(Event{EventType::HURT, data});
     }else{
         std::cout << "El escudo me salvo el culito :D" << std::endl;
         cShield->deactivePowerUp(); // desactivamos el escudo
+
+        // Sonido coger totem
+        shared_ptr<EventManager> eventManager = EventManager::GetInstance();
+        eventManager->AddEventMulti(Event{EventType::NO_SHIELD});
     }
 }
 
