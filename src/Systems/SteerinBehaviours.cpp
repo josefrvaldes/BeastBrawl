@@ -65,6 +65,26 @@ float SteeringBehaviours::UpdatePursuePowerUp(Entity* m_actualCar, Entity* m_tar
 
 
 
+void SteeringBehaviours::UpdateArrive(Entity* m_actualCar){
+    // se calcula el vector al siguiente punto al que avanzara el coche
+    auto cTransformable = static_cast<CTransformable*>(m_actualCar->GetComponent(CompType::TransformableComp).get());
+    auto cNitro = static_cast<CNitro *>(m_actualCar->GetComponent(CompType::NitroComp).get());
+    auto cCar = static_cast<CCar*>(m_actualCar->GetComponent(CompType::CarComp).get());
+    if(cCar->speed==0) cCar->speed=0.1;
+    float angleRotation = (cTransformable->rotation.y * PI) / 180.0;
+    float posXSiguiente = cTransformable->position.x - cos(angleRotation) * cCar->speed;
+    float posZSiguiente = cTransformable->position.z + sin(angleRotation) * cCar->speed;
+    glm::vec2 vectorVelocity = glm::vec2(posXSiguiente - cTransformable->position.x , posZSiguiente - cTransformable->position.z );
+
+    //Seek
+    auto cPosDestination = static_cast<CPosDestination*>(m_actualCar->GetComponent(CompType::PosDestination).get());
+    glm::vec3 posTarget = glm::vec3(cPosDestination->position.x, cPosDestination->position.y, cPosDestination->position.z);
+    glm::vec2 vectorForce = Arrive(m_actualCar, posTarget, vectorVelocity);
+
+    float angle = CalculateAngle(vectorVelocity, vectorForce, cTransformable->rotation.y);
+    UpdateTransformable(cCar, cTransformable, cNitro, angle);
+}
+
 
 
 
@@ -126,10 +146,10 @@ void SteeringBehaviours::UpdateTransformable(CCar* m_cCar, CTransformable* m_cTr
 
     if(m_cNitro->activePowerUp == false){
         m_cCar->speed += m_cCar->acceleration;
-        if (m_cCar->speed > m_cCar->maxSpeed*0.8) {
+        if (m_cCar->speed > m_cCar->maxSpeed*0.85) {
             m_cCar->speed -= m_cCar->acceleration*4.0;
-            if(m_cCar->speed < m_cCar->maxSpeed*0.8)
-                m_cCar->speed = m_cCar->maxSpeed*0.8;
+            if(m_cCar->speed < m_cCar->maxSpeed*0.85)
+                m_cCar->speed = m_cCar->maxSpeed*0.85;
         }
     }else{
         m_cCar->speed += m_cNitro->nitroAcceleration;
@@ -170,6 +190,30 @@ glm::vec2 SteeringBehaviours::Seek(Entity* m_originCar, const glm::vec3& m_posTa
     //vectorForce = desiredVelocity - m_velocityVector;
     vectorForce.x = vetorToTargetX;
     vectorForce.y = vetorToTargetZ;
+
+    return vectorForce;
+}
+
+
+
+glm::vec2 SteeringBehaviours::Arrive(Entity* m_originCar, const glm::vec3& m_posTargetCar, const glm::vec2& m_velocityVector) const{
+    glm::vec2 vectorForce;
+    auto cTransformable = static_cast<CTransformable*>(m_originCar->GetComponent(CompType::TransformableComp).get());
+    auto cCar = static_cast<CCar*>(m_originCar->GetComponent(CompType::CarComp).get());
+
+    // Velocidad deseada
+    float vetorToTargetX = (m_posTargetCar.x - cTransformable->position.x);
+    float vetorToTargetZ = (m_posTargetCar.z - cTransformable->position.z);
+
+    vectorForce.x = vetorToTargetX;
+    vectorForce.y = vetorToTargetZ;
+
+    // Calcular distancia
+    float distance = sqrt(vetorToTargetX*vetorToTargetX + vetorToTargetZ*vetorToTargetZ);
+    float slowRadius = 100.0;
+    if(distance < slowRadius){
+        cCar->speed = cCar->maxSpeed * distance / slowRadius + 60;
+    }
 
     return vectorForce;
 }

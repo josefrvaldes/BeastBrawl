@@ -119,7 +119,7 @@ struct InDistanceRange_LoDMove : public behaviourTree {
 //ACCION --> aplicamos SB pursue y si esta en el angulo lanzamos el melon molon
 struct SBPursue_LoDMove : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
-        float angle = blackboard->steeringBehaviours->UpdatePursuePowerUp(blackboard->actualCar, blackboard->manCars->GetCar().get());  // To-Do: calcular coche a por el que se quiere ir
+        float angle = blackboard->steeringBehaviours->UpdatePursuePowerUp(blackboard->actualCar, blackboard->manCars->GetDesirableTarget(blackboard->actualCar));  // To-Do: calcular coche a por el que se quiere ir
         if(angle>=-3 && angle <=3){
             shared_ptr<EventManager> eventManager = EventManager::GetInstance();
             DataMap d;
@@ -135,7 +135,7 @@ struct SBPursue_LoDMove : public behaviourTree {
 //ACCION --> aplicamos SB seek
 struct SBSeek_LoDMove : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
-        blackboard->steeringBehaviours->UpdateSeek(blackboard->actualCar);
+        blackboard->steeringBehaviours->UpdateArrive(blackboard->actualCar);
         //std::cout << "Aplico SB seek" << std::endl;
         return true;
     }
