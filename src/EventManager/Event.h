@@ -48,7 +48,16 @@ enum EventType {
     PRESS_0,
     HURT,
     CATCH_TOTEM,
-    NO_SHIELD
+    NO_SHIELD,
+    CRASH_ENEMY,
+    BREAK_BOX,
+    DRIFT,
+    NO_DRIFT,
+    VRANDOM,
+    MENU_OPTION,
+    MENU_OK,
+    MENU_BACK,
+    START_GAME
 };
 
 struct Data {
@@ -59,6 +68,7 @@ struct Data {
     CTransformable* posCocheSalida;
     CTransformable* posCochePerseguir;
     typeCPowerUp typePowerUp;
+    bool mainCharacter;
 };
 
 struct Event {

@@ -5,12 +5,15 @@
 #include "../../lib/glm/vec3.hpp"
 #include <memory>
 #include <vector>
+#include <map>
+
 
 using namespace std;
 
 struct ManCar;
 struct Entity;
 struct CTransformable;
+struct CNitro;
 struct CCar;
 struct ManBoxPowerUp;
 
@@ -20,9 +23,10 @@ public:
     SteeringBehaviours();
     ~SteeringBehaviours(){};
 
-
     void Update(ManCar* m_manCar, ManBoxPowerUp* m_manBoxPowerUp) const;
-    void UpdateTransformable(CCar* m_cCar, CTransformable* m_cTransformableCar, float angle) const;
+    void UpdateTransformable(CCar* m_cCar, CTransformable* m_cTransformableCar, CNitro* m_cNitro, float angle) const;
+    void UpdateSeek(Entity* m_actualCar);
+    float UpdatePursuePowerUp(Entity* m_actualCar, Entity* m_targetCar);
 
     glm::vec2 Seek(Entity* m_originCar, const glm::vec3& m_posTargetCar, const glm::vec2& m_velocityVector) const;
     glm::vec2 Pursue(Entity* m_originCar, Entity* m_targetCar, const glm::vec2& m_velocityVector) const;
