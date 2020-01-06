@@ -88,10 +88,8 @@ StateInGame::StateInGame() {
     renderEngine->FacadeAddPlates(manNamePlates.get());
 
     // Creamos sistemas
-    physicsAI = make_shared<PhysicsAI>();
     collisions = make_shared<Collisions>();
     sysBoxPowerUp = make_shared<SystemBoxPowerUp>();
-    steeringBehaviours = make_unique<SteeringBehaviours>();
 
 
     // Entidades iniciales
@@ -138,16 +136,6 @@ StateInGame::StateInGame() {
 // ------------------------------------------------------------------------------------------------------------------------------------------------
     //then = renderEngine->FacadeGetTime();
     //then = system_clock::now();
-
-    //inicializamos las reglas del cocheIA de velocidad/aceleracion
-    //FuzzyLogic flVelocity;
-    physicsAI->InitPhysicsIA(manCars->GetEntitiesAI()[0].get());  // To-Do: hacer que se le pasen todos los coches IA
-    cout << "después de init physics ai" << endl;
-
-    
-    // BehaivourTree
-    systemBtPowerUp = make_shared<SystemBtPowerUp>();
-    systemBtMoveTo  = make_shared<SystemBtMoveTo>(); 
     
     
     clPhysics = make_unique<CLPhysics>();
@@ -236,27 +224,18 @@ void StateInGame::Update() {
     // sin media
     // *deltaTime.get() = (float)(milis) / 100.0;
 
-    // BEHAIVOUR TREE
-    for(auto actualAI : manCars->GetEntitiesAI()){
-        //std::cout << "hola caracolaaaaaaaaaaaaaaaaa2939393399494839839275087346734790393970" << std::endl;
-        systemBtMoveTo->update(actualAI.get(), manCars.get(), manPowerUps.get(), manBoxPowerUps.get(), manTotems.get(), manWayPoint.get());
 
-        systemBtPowerUp->update(actualAI.get(), manCars.get(), manPowerUps.get(), manBoxPowerUps.get(), manTotems.get(), manWayPoint.get());
-    }
-   
+
     // ACTUALIZACION DE LOS MANAGERS DE LOS COCHES
     manCars->UpdateCar();
     //manCars->UpdateCarAI();
     for(auto actualAI : manCars->GetEntitiesAI()){
-        manCars->UpdateCarAI(actualAI.get(),manWayPoint.get());
+        manCars->UpdateCarAI(actualAI.get(), manPowerUps.get(), manBoxPowerUps.get(), manTotems.get(), manWayPoint.get());
     }
 
     // ACTUALIZACION DE LAS FISICAS DE LOS COCHES
     physics->update(manCars->GetCar().get(), cam.get());
-    for(auto actualAI : manCars->GetEntitiesAI()){
-        physicsAI->Update(actualAI.get(), deltaTime);
-    }
-    //steeringBehaviours->Update(manCars.get(), manBoxPowerUps.get());
+
 
     clPhysics->Update(0.1666f);
     sysBoxPowerUp->update(manBoxPowerUps.get());
