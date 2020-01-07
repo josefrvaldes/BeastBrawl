@@ -31,6 +31,7 @@ StateInGame::StateInGame() {
     manPowerUps = make_shared<ManPowerUp>();
     phisicsPowerUp = make_shared<PhysicsPowerUp>();
     manBoxPowerUps = make_shared<ManBoxPowerUp>();
+    manBoundingWall = make_shared<ManBoundingWall>();
     manTotems = make_shared<ManTotem>();
     ground = make_shared<GameObject>(glm::vec3(10.0f, -0.5f, 150.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.5f, 1.5f, 1.5f), "", "training_ground.obj");
     cam = make_shared<Camera>(glm::vec3(100.0f, 600.0f, 30.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f));
@@ -290,6 +291,10 @@ void StateInGame::Render() {
 
     for(auto actualPowerUp : manPowerUps->GetEntities())
         renderEngine->FacadeDrawBoundingBox(actualPowerUp.get(), false);
+
+    for(auto wall : manBoundingWall->GetEntities()) {
+        renderEngine->FacadeDrawBoundingPlane(wall.get());
+    }
 
     renderEngine->FacadeEndScene();
 }

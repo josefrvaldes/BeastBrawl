@@ -19,5 +19,12 @@ BoundingWall::BoundingWall() {
     AddComponent(cPlane);
 }
 
+BoundingWall::BoundingWall(const vec3 &a_, const vec3 &b_, const vec3 &c_, const vec3 &d_) {
+    shared_ptr<CId> cId = make_shared<CId>();
+    shared_ptr<CBoundingPlane> cPlane = make_shared<CBoundingPlane>(a_, b_, c_, d_);
+    AddComponent(cId);
+    AddComponent(cPlane);
+}
+
 BoundingWall::~BoundingWall() {
 }

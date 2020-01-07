@@ -6,9 +6,11 @@
 #include "Entity.h"
 
 using namespace std;
+using namespace glm;
 
 class BoundingWall : public Entity {
    public:
     BoundingWall();
+    BoundingWall(const vec3 &a_, const vec3 &b_, const vec3 &c_, const vec3 &d_);
     ~BoundingWall();
 };

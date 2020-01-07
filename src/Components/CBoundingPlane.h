@@ -11,7 +11,7 @@ class CBoundingSphere;
 
 class CBoundingPlane : public Component {
    public:
-    CBoundingPlane(const vec3 &a_, vec3 &b_, vec3 &c_, vec3 &d_)
+    CBoundingPlane(const vec3 &a_, const vec3 &b_, const vec3 &c_, const vec3 &d_)
         : /*normal{_normal}, distance{_distance}*/
           a{a_},
           b{b_},
@@ -26,10 +26,10 @@ class CBoundingPlane : public Component {
 
     IntersectData IntersectPlane(const CBoundingPlane &other) const;
 
-    const vec3 a;
-    const vec3 b;
-    const vec3 c;
-    const vec3 d;
+    vec3 a;
+    vec3 b;
+    vec3 c;
+    vec3 d;
 
     const vec3 normal;
     //const float distance;
