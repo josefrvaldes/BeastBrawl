@@ -37,7 +37,12 @@
 #include "../Managers/ManWayPoint.h"
 #include "../Managers/ManNamePlate.h"
 #include "../Managers/ManTotem.h"
-
+#include "../Managers/ManBoundingWall.h"
+#include "../behaviourTree/behaviourTree.h"
+#include "../behaviourTree/decorator.h"
+#include "../behaviourTree/selector.h"
+#include "../behaviourTree/sequence.h"
+#include "../fuzzyLogic/fuzzyLogic.h"
 #include "btBulletDynamicsCommon.h"
 
 using namespace std;
@@ -64,6 +69,7 @@ class StateInGame : public State {
     shared_ptr<ManCar> manCars;
     shared_ptr<ManWayPoint> manWayPoint;
     shared_ptr<ManNamePlate> manNamePlates;
+    shared_ptr<ManBoundingWall> manBoundingWall;
     
     RenderFacade* renderEngine = { nullptr };
     InputFacade* inputEngine = { nullptr };

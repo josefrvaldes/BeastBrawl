@@ -352,7 +352,7 @@ void CLPhysics::RunTests() {
     cout << "AABB1 intersects AABB5: " << aabb1IDinters5.intersects << ", Distance: " << aabb1IDinters5.GetDistance() << endl
          << endl;
 
-    CBoundingPlane plane1(vec3(0.f, 1.f, 0.f), 0.f);
+    /*CBoundingPlane plane1(vec3(0.f, 1.f, 0.f), 0.f);
 
     IntersectData pl1sp1 = plane1.IntersectSphere(sp1);
     IntersectData pl1sp2 = plane1.IntersectSphere(sp2);
@@ -375,5 +375,5 @@ void CLPhysics::RunTests() {
     cout << "plane1 intersects sphere2: " << pl1sp2.intersects << ", Distance: " << pl1sp2.GetDistance() << endl;
     cout << "plane1 intersects sphere3: " << pl1sp3.intersects << ", Distance: " << pl1sp3.GetDistance() << endl;
     cout << "plane1 intersects sphere4: " << pl1sp4.intersects << ", Distance: " << pl1sp4.GetDistance() << endl
-         << endl;
+         << endl;*/
 }
