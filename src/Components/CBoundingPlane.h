@@ -11,26 +11,19 @@ class CBoundingSphere;
 
 class CBoundingPlane : public Component {
    public:
-    CBoundingPlane(const vec3 &a_, vec3 &b_, vec3 &c_, vec3 &d_)
-        : /*normal{_normal}, distance{_distance}*/
-          a{a_},
-          b{b_},
-          c{c_},
-          d{d_},
-          normal{normalize(cross(b - a, c - a))} {  // para el cálculo de la normal: https://stackoverflow.com/a/1966605/4657738
-        m_compType = CompType::CompBoundingPlane;
-    }
+    CBoundingPlane(const vec3 &a_, const vec3 &b_, const vec3 &c_, const vec3 &d_);
 
-    //CBoundingPlane Normalize() const;
+    // void Normalize();
     IntersectData IntersectSphere(const CBoundingSphere &other) const;
 
     IntersectData IntersectPlane(const CBoundingPlane &other) const;
 
-    const vec3 a;
-    const vec3 b;
-    const vec3 c;
-    const vec3 d;
+    vec3 a;
+    vec3 b;
+    vec3 c;
+    vec3 d;
 
     const vec3 normal;
-    //const float distance;
+    const vec3 normalizedNormal;
+    const float distance;
 };

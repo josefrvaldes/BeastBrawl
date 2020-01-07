@@ -44,6 +44,7 @@ void PhysicsFacadeIrrlicht::UpdateCar(Entity* car, Entity* cam) {
         auto cSphere = static_cast<CBoundingSphere*>(car->GetComponent(CompType::CompBoundingSphere).get());
         scene::ISceneNode* nodeSphere = smgr->getSceneNodeFromId(cId->id + Component::ID_DIFFERENCE);
         nodeSphere->setPosition(core::vector3df(cSphere->center.x, cSphere->center.y, cSphere->center.z));
+        nodeSphere->setVisible(RenderFacadeIrrlicht::showDebug);
     }
 }
 
@@ -84,6 +85,7 @@ void PhysicsFacadeIrrlicht::UpdateCarAI(Entity* car) {
         auto cSphere = static_cast<CBoundingSphere*>(car->GetComponent(CompType::CompBoundingSphere).get());
         scene::ISceneNode* nodeSphere = smgr->getSceneNodeFromId(cId->id + Component::ID_DIFFERENCE);
         nodeSphere->setPosition(core::vector3df(cSphere->center.x, cSphere->center.y, cSphere->center.z));
+        nodeSphere->setVisible(RenderFacadeIrrlicht::showDebug);
         //nodeSphere->setRotation(core::vector3df(cTransformable->rotation.x, cTransformable->rotation.y, cTransformable->rotation.z));
         //nodeSphere->setScale(core::vector3df(cTransformable->scale.x, cTransformable->scale.y, cTransformable->scale.z));
     }

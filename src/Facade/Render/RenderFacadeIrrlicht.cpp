@@ -8,13 +8,13 @@
 #include "../../Components/CDimensions.h"
 #include "../../Components/CId.h"
 #include "../../Components/CMesh.h"
+#include "../../Components/CNamePlate.h"
 #include "../../Components/CTexture.h"
 #include "../../Components/CTotem.h"
 #include "../../Components/CTransformable.h"
 #include "../../Components/CType.h"
 #include "../../Components/CWayPoint.h"
 #include "../../Components/CWayPointEdges.h"
-#include "../../Components/CNamePlate.h"
 #include "../../Components/Component.h"
 #include "../../Constants.h"
 #include "../../Entities/WayPoint.h"
@@ -22,6 +22,8 @@
 
 using namespace irr;
 using namespace video;
+
+bool RenderFacadeIrrlicht::showDebug = false;
 
 //PUNTEROS A FUNCIONES
 RenderFacadeIrrlicht::~RenderFacadeIrrlicht() {
@@ -128,27 +130,26 @@ void RenderFacadeIrrlicht::FacadeDrawHUD(Entity* car, ManCar* carsAI) {
 }
 
 //Crea las plates de los nombres de los coches
-void RenderFacadeIrrlicht::FacadeAddPlates(Manager* manNamePlates){
-    for(auto plate : manNamePlates->GetEntities()){
+void RenderFacadeIrrlicht::FacadeAddPlates(Manager* manNamePlates) {
+    for (auto plate : manNamePlates->GetEntities()) {
         auto cId = static_cast<CId*>(plate->GetComponent(CompType::IdComp).get());
-        
+
         core::stringw string = core::stringw("Car AI ") + core::stringw(numEnemyCars++);
-        auto node = smgr->addTextSceneNode(font,string.c_str(),video::SColor(255,0,0,0),0,core::vector3df(200,30,200),-1);
+        auto node = smgr->addTextSceneNode(font, string.c_str(), video::SColor(255, 0, 0, 0), 0, core::vector3df(200, 30, 200), -1);
         node->setID(cId->id);
     }
 }
 
-
 //Actualiza las posiciones de las plates
-void RenderFacadeIrrlicht::FacadeUpdatePlates(Manager* manNamePlates){
-    for(auto plate : manNamePlates->GetEntities()){
+void RenderFacadeIrrlicht::FacadeUpdatePlates(Manager* manNamePlates) {
+    for (auto plate : manNamePlates->GetEntities()) {
         auto cNamePlate = static_cast<CNamePlate*>(plate->GetComponent(CompType::NamePlateComp).get());
         auto cId = static_cast<CId*>(plate->GetComponent(CompType::IdComp).get());
 
         auto node = smgr->getSceneNodeFromId(cId->id);
         auto carAI = smgr->getSceneNodeFromId(cNamePlate->idCarAsociated);
 
-        node->setPosition(core::vector3df(carAI->getPosition().X,carAI->getPosition().Y+20,carAI->getPosition().Z));
+        node->setPosition(core::vector3df(carAI->getPosition().X, carAI->getPosition().Y + 20, carAI->getPosition().Z));
     }
 }
 const void RenderFacadeIrrlicht::FacadeAddObjects(vector<Entity*> entities) {
@@ -191,10 +192,7 @@ const uint16_t RenderFacadeIrrlicht::FacadeAddObject(Entity* entity) {
         case ModelType::StaticMesh:
             node = smgr->addMeshSceneNode(smgr->getMesh(meshPath.c_str()));
             break;
-
     }
-
-    
 
     // y ahora a ese node, le ponemos sus parámetros
     std::string path = "media/" + cTexture->texture;
@@ -211,27 +209,12 @@ const uint16_t RenderFacadeIrrlicht::FacadeAddObject(Entity* entity) {
             scene::ISceneNode* nodeSphere = smgr->addSphereSceneNode(CBoundingSphere::DEFAULT_SPHERE_RADIUS);
             nodeSphere->setID(cId->id + Component::ID_DIFFERENCE);
             nodeSphere->setPosition(core::vector3df(cTransformable->position.x, cTransformable->position.y, cTransformable->position.z));
-            //nodeSphere->setRotation(core::vector3df(cTransformable->rotation.x, cTransformable->rotation.y, cTransformable->rotation.z));
             nodeSphere->setScale(core::vector3df(1.f, 1.f, 1.f));
             nodeSphere->setMaterialTexture(0, driver->getTexture(path.c_str()));  //Obligado incluir el c_str() si no irrlicht no carga solo con un string
             nodeSphere->setMaterialFlag(video::EMF_LIGHTING, false);
-
-            vec3& pos = cTransformable->position;
-            cout << "La pos de la primera esfera es " << pos.x << "," << pos.y << "," << pos.z << endl;
-            /*vec3 a(pos.x, pos.y + 20.f, pos.z);
-            vec3 auxPos(-20.f, 20.f, -300.f);
-            vec3 b(pos.x + 20.f, pos.y + 20.f, pos.z);
-            vec3 c(pos.x + 20.f, pos.y, pos.z);
-            vec3 d(pos.x, pos.y, pos.z);
-            CBoundingPlane plane(a, b, c, d);
-            Draw3DLine(a, b);
-            Draw3DLine(b, c);
-            Draw3DLine(c, d);
-            Draw3DLine(d, a);*/
+            nodeSphere->setVisible(showDebug);
         }
     }
-
-
 
     //Cogemos sus edges
     core::vector3df* edges = new core::vector3df[8];
@@ -293,6 +276,7 @@ void RenderFacadeIrrlicht::UpdateTransformable(Entity* entity) {
     if (hasSphere && Constants::DEBUG_SHOW_SPHERES) {
         scene::ISceneNode* nodeSphere = smgr->getSceneNodeFromId(cId->id + Component::ID_DIFFERENCE);
         nodeSphere->setPosition(core::vector3df(cTransformable->position.x, cTransformable->position.y, cTransformable->position.z));
+        nodeSphere->setVisible(showDebug);
         //nodeSphere->setRotation(core::vector3df(cTransformable->rotation.x, cTransformable->rotation.y, cTransformable->rotation.z));
         //nodeSphere->setScale(core::vector3df(cTransformable->scale.x, cTransformable->scale.y, cTransformable->scale.z));
     }
@@ -374,8 +358,10 @@ void RenderFacadeIrrlicht::FacadeCheckInput() {
     } else {
         eventManager->AddEventMulti(Event{EventType::NO_A_D_PRESS});
     }
-    if (receiver.IsKeyDown(KEY_F3)) {
-        showDebug = !showDebug;
+    if (receiver.IsKeyDown(KEY_F3) && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay) {
+        timeStart = system_clock::now();
+        showDebug = !showDebug; 
+
     }
 
     // POWERUPS
@@ -384,7 +370,8 @@ void RenderFacadeIrrlicht::FacadeCheckInput() {
     }
 
     //Cambiamos a menu
-    if (receiver.IsKeyDown(KEY_F2)) {
+    if (receiver.IsKeyDown(KEY_F2) && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay) {
+        timeStart = system_clock::now();
         Game::GetInstance()->SetState(State::PAUSE);
     }
 }
@@ -392,6 +379,7 @@ void RenderFacadeIrrlicht::FacadeCheckInput() {
 void RenderFacadeIrrlicht::FacadeCheckInputMenu() {
     //Cambiamos a ingame
     if (receiver.IsKeyDown(KEY_F1)) {
+        numEnemyCars = 0;
         Game::GetInstance()->SetState(State::INGAME);
     }
 
@@ -402,11 +390,14 @@ void RenderFacadeIrrlicht::FacadeCheckInputMenu() {
 
 void RenderFacadeIrrlicht::FacadeCheckInputPause() {
     //Cambiamos a ingame
-    if (receiver.IsKeyDown(KEY_F3)) {
+    if (receiver.IsKeyDown(KEY_F3) && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay) {
+        timeStart = system_clock::now();
         Game::GetInstance()->SetState(State::INGAME);
     }
 
-    if (receiver.IsKeyDown(KEY_F4)) {
+    if (receiver.IsKeyDown(KEY_F4) && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay) {
+        timeStart = system_clock::now();
+
         smgr->clear();
         EventManager::GetInstance()->ClearListeners();
         EventManager::GetInstance()->ClearEvents();
@@ -419,7 +410,7 @@ void RenderFacadeIrrlicht::FacadeCheckInputPause() {
 }
 
 void RenderFacadeIrrlicht::FacadeCheckInputEndRace() {
-    if (receiver.IsKeyDown(KEY_F4)) {
+    if (receiver.IsKeyDown(KEY_F4) && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay) {
         smgr->clear();
         EventManager::GetInstance()->ClearListeners();
         EventManager::GetInstance()->ClearEvents();
@@ -523,11 +514,11 @@ void RenderFacadeIrrlicht::FacadeDrawGraphEdges(ManWayPoint* manWayPoints) {
     }
 }
 
-void RenderFacadeIrrlicht::Draw3DLine(vec3& pos1, vec3& pos2) {
+void RenderFacadeIrrlicht::Draw3DLine(vec3& pos1, vec3& pos2) const {
     Draw3DLine(pos1, pos2, 255, 0, 0);
 }
 
-void RenderFacadeIrrlicht::Draw3DLine(vec3& pos1, vec3& pos2, uint16_t r, uint16_t g, uint16_t b) {
+void RenderFacadeIrrlicht::Draw3DLine(vec3& pos1, vec3& pos2, uint16_t r, uint16_t g, uint16_t b) const {
     video::SMaterial m;
     m.Lighting = false;
     driver->setMaterial(m);
@@ -543,8 +534,24 @@ void RenderFacadeIrrlicht::DeleteEntity(Entity* entity) {
     node->remove();
 }
 
+void RenderFacadeIrrlicht::FacadeDrawBoundingPlane(Entity* entity) const {
+    if (!showDebug) return;  //Si no esta activado debug retornamos
+
+    CBoundingPlane *plane = static_cast<CBoundingPlane*>(entity->GetComponent(CompType::CompBoundingPlane).get());
+    
+    vec3 &a = plane->a;
+    vec3 &b = plane->b;
+    vec3 &c = plane->c;
+    vec3 &d = plane->d;
+    
+    Draw3DLine(a, b);
+    Draw3DLine(b, c);
+    Draw3DLine(c, d);
+    Draw3DLine(d, a);
+}
+
 void RenderFacadeIrrlicht::FacadeDrawBoundingBox(Entity* entity, bool colliding) {
-    vec3 pos(-20.f, 20.f, -300.f);
+    /*vec3 pos(-20.f, 20.f, -300.f);
     vec3 a(pos.x, pos.y + 20.f, pos.z);
     vec3 b(pos.x + 20.f, pos.y + 20.f, pos.z);
     vec3 c(pos.x + 20.f, pos.y, pos.z);
@@ -553,7 +560,7 @@ void RenderFacadeIrrlicht::FacadeDrawBoundingBox(Entity* entity, bool colliding)
     Draw3DLine(a, b);
     Draw3DLine(b, c);
     Draw3DLine(c, d);
-    Draw3DLine(d, a);
+    Draw3DLine(d, a);*/
 
     if (!showDebug) return;  //Si no esta activado debug retornamos
 
