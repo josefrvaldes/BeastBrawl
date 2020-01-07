@@ -132,11 +132,11 @@ struct SBPursue_LoDMove : public behaviourTree {
 };
 
 
-//ACCION --> aplicamos SB seek
-struct SBSeek_LoDMove : public behaviourTree {
+//ACCION --> aplicamos SB Arrive (Seek)
+struct SBArrive_LoDMove : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
         blackboard->steeringBehaviours->UpdateArrive(blackboard->actualCar);
-        //std::cout << "Aplico SB seek" << std::endl;
+        //std::cout << "Aplico SB Arrive" << std::endl;
         return true;
     }
 };
@@ -202,7 +202,7 @@ SystemBtLoDMove::SystemBtLoDMove(){
     shared_ptr<selector> selectorDistance = make_shared<selector>();
 
     shared_ptr<OutofVisionRange_LoDMove>  c_OutofVisionRange =   make_shared<OutofVisionRange_LoDMove>();
-    shared_ptr<SBSeek_LoDMove>  a_SBSeek =   make_shared<SBSeek_LoDMove>();
+    shared_ptr<SBArrive_LoDMove>  a_SBArrive =   make_shared<SBArrive_LoDMove>();
 
     shared_ptr<sequence> sequence3 = make_shared<sequence>();
 
@@ -219,10 +219,10 @@ SystemBtLoDMove::SystemBtLoDMove(){
     selectorVision->addChild(selectorDistance);
 
     sequence2->addChild(c_OutofVisionRange);
-    sequence2->addChild(a_SBSeek);
+    sequence2->addChild(a_SBArrive);
 
     selectorDistance->addChild(sequence3);
-    selectorDistance->addChild(a_SBSeek);
+    selectorDistance->addChild(a_SBArrive);
 
     sequence3->addChild(c_InDistanceRange);
     sequence3->addChild(a_FuzzyLogic);

@@ -23,11 +23,11 @@ public:
     SteeringBehaviours();
     ~SteeringBehaviours(){};
 
-    void Update(ManCar* m_manCar, ManBoxPowerUp* m_manBoxPowerUp) const;
-    void UpdateTransformable(CCar* m_cCar, CTransformable* m_cTransformableCar, CNitro* m_cNitro, float angle) const;
+    
     void UpdateSeek(Entity* m_actualCar);
-    float UpdatePursuePowerUp(Entity* m_actualCar, Entity* m_targetCar);
     void UpdateArrive(Entity* m_actualCar);
+    float UpdatePursuePowerUp(Entity* m_actualCar, Entity* m_targetCar);
+    bool UpdateObstacleAvoidance(Entity* m_Car, ManBoxPowerUp* m_manBoxPowerUp) const;
 
     glm::vec2 Seek(Entity* m_originCar, const glm::vec3& m_posTargetCar, const glm::vec2& m_velocityVector) const;
     glm::vec2 Arrive(Entity* m_originCar, const glm::vec3& m_posTargetCar, const glm::vec2& m_velocityVector) const;
@@ -35,6 +35,7 @@ public:
     glm::vec2 PursuePowerUp(Entity* m_originCar, Entity* m_targetCar, const glm::vec2& m_velocityVector) const;
     glm::vec2 ObstacleAvoidance(Entity* m_Car, ManBoxPowerUp* m_manBoxPowerUp, const glm::vec2& m_velocityVector) const;
 
+    void UpdateTransformable(CCar* m_cCar, CTransformable* m_cTransformableCar, CNitro* m_cNitro, float angle) const;
     float CalculateAngle(const glm::vec2& m_originVec, const glm::vec2& m_destinyVec, float m_rotationY) const;
     bool CollisionRaySphere(Entity* m_Car, Entity* m_object, const glm::vec2& m_velocityVector, float& distance, glm::vec2& vectorForceAvoid) const;
 

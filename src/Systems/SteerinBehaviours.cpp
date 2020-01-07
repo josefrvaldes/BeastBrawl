@@ -42,6 +42,28 @@ void SteeringBehaviours::UpdateSeek(Entity* m_actualCar){
 
 
 
+void SteeringBehaviours::UpdateArrive(Entity* m_actualCar){
+    // se calcula el vector al siguiente punto al que avanzara el coche
+    auto cTransformable = static_cast<CTransformable*>(m_actualCar->GetComponent(CompType::TransformableComp).get());
+    auto cNitro = static_cast<CNitro *>(m_actualCar->GetComponent(CompType::NitroComp).get());
+    auto cCar = static_cast<CCar*>(m_actualCar->GetComponent(CompType::CarComp).get());
+    if(cCar->speed==0) cCar->speed=0.1;
+    float angleRotation = (cTransformable->rotation.y * PI) / 180.0;
+    float posXSiguiente = cTransformable->position.x - cos(angleRotation) * cCar->speed;
+    float posZSiguiente = cTransformable->position.z + sin(angleRotation) * cCar->speed;
+    glm::vec2 vectorVelocity = glm::vec2(posXSiguiente - cTransformable->position.x , posZSiguiente - cTransformable->position.z );
+
+    //Seek
+    auto cPosDestination = static_cast<CPosDestination*>(m_actualCar->GetComponent(CompType::PosDestination).get());
+    glm::vec3 posTarget = glm::vec3(cPosDestination->position.x, cPosDestination->position.y, cPosDestination->position.z);
+    glm::vec2 vectorForce = Arrive(m_actualCar, posTarget, vectorVelocity);
+
+    float angle = CalculateAngle(vectorVelocity, vectorForce, cTransformable->rotation.y);
+    UpdateTransformable(cCar, cTransformable, cNitro, angle);
+}
+
+
+
 // devuelve el angulo que le falta para girar para llegar al punto optimo
 float SteeringBehaviours::UpdatePursuePowerUp(Entity* m_actualCar, Entity* m_targetCar){
     // se calcula el vector al siguiente punto al que avanzara el coche
@@ -65,50 +87,17 @@ float SteeringBehaviours::UpdatePursuePowerUp(Entity* m_actualCar, Entity* m_tar
 
 
 
-void SteeringBehaviours::UpdateArrive(Entity* m_actualCar){
+
+bool SteeringBehaviours::UpdateObstacleAvoidance(Entity* m_Car, ManBoxPowerUp* m_manBoxPowerUp) const{
     // se calcula el vector al siguiente punto al que avanzara el coche
-    auto cTransformable = static_cast<CTransformable*>(m_actualCar->GetComponent(CompType::TransformableComp).get());
-    auto cNitro = static_cast<CNitro *>(m_actualCar->GetComponent(CompType::NitroComp).get());
-    auto cCar = static_cast<CCar*>(m_actualCar->GetComponent(CompType::CarComp).get());
+    auto cTransformable = static_cast<CTransformable*>(m_Car->GetComponent(CompType::TransformableComp).get());
+    auto cCar = static_cast<CCar*>(m_Car->GetComponent(CompType::CarComp).get());
+    auto cNitro = static_cast<CNitro *>(m_Car->GetComponent(CompType::NitroComp).get());
     if(cCar->speed==0) cCar->speed=0.1;
     float angleRotation = (cTransformable->rotation.y * PI) / 180.0;
     float posXSiguiente = cTransformable->position.x - cos(angleRotation) * cCar->speed;
     float posZSiguiente = cTransformable->position.z + sin(angleRotation) * cCar->speed;
     glm::vec2 vectorVelocity = glm::vec2(posXSiguiente - cTransformable->position.x , posZSiguiente - cTransformable->position.z );
-
-    //Seek
-    auto cPosDestination = static_cast<CPosDestination*>(m_actualCar->GetComponent(CompType::PosDestination).get());
-    glm::vec3 posTarget = glm::vec3(cPosDestination->position.x, cPosDestination->position.y, cPosDestination->position.z);
-    glm::vec2 vectorForce = Arrive(m_actualCar, posTarget, vectorVelocity);
-
-    float angle = CalculateAngle(vectorVelocity, vectorForce, cTransformable->rotation.y);
-    UpdateTransformable(cCar, cTransformable, cNitro, angle);
-}
-
-
-
-
-
-void SteeringBehaviours::Update(ManCar* m_manCar, ManBoxPowerUp* m_manBoxPowerUp) const{
-
-    // se calcula el vector al siguiente punto al que avanzara el coche
-    auto cTransformable = static_cast<CTransformable*>(m_manCar->GetEntitiesAI()[0]->GetComponent(CompType::TransformableComp).get());
-    auto cCar = static_cast<CCar*>(m_manCar->GetEntitiesAI()[0]->GetComponent(CompType::CarComp).get());
-    auto cNitro = static_cast<CNitro *>(m_manCar->GetEntitiesAI()[0]->GetComponent(CompType::NitroComp).get());
-    if(cCar->speed==0) cCar->speed=0.1;
-    float angleRotation = (cTransformable->rotation.y * PI) / 180.0;
-    float posXSiguiente = cTransformable->position.x - cos(angleRotation) * cCar->speed;
-    float posZSiguiente = cTransformable->position.z + sin(angleRotation) * cCar->speed;
-    glm::vec2 vectorVelocity = glm::vec2(posXSiguiente - cTransformable->position.x , posZSiguiente - cTransformable->position.z );
-
-    
-    // Seek
-    auto cTransformableTarget = static_cast<CTransformable*>(m_manCar->GetCar()->GetComponent(CompType::TransformableComp).get());
-    glm::vec3 posTarget = glm::vec3(cTransformableTarget->position.x, cTransformableTarget->position.y, cTransformableTarget->position.z);
-    glm::vec2 vectorForce = Seek(m_manCar->GetEntitiesAI()[0].get(), posTarget, vectorVelocity);
-
-    // Pursue
-    //glm::vec2 vectorForce = PursuePowerUp(m_manCar->GetEntitiesAI()[0].get(), m_manCar->GetCar().get(), vectorVelocity);
 
     // Obstacle avoidance
     //auto cTransformable2 = static_cast<CTransformable*>(m_manCar->GetCar().get()->GetComponent(CompType::TransformableComp).get());
@@ -118,15 +107,15 @@ void SteeringBehaviours::Update(ManCar* m_manCar, ManBoxPowerUp* m_manBoxPowerUp
     //float posXSiguiente2 = cTransformable2->position.x - cos(angleRotation2) * cCar2->speed;
     //float posZSiguiente2 = cTransformable2->position.z + sin(angleRotation2) * cCar2->speed;
     //glm::vec2 vectorVelocity2 = glm::vec2(posXSiguiente2 - cTransformable2->position.x , posZSiguiente2 - cTransformable2->position.z );
-    glm::vec2 vectorForceAvoid = ObstacleAvoidance(m_manCar->GetEntitiesAI()[0].get(), m_manBoxPowerUp, vectorVelocity);
+    glm::vec2 vectorForceAvoid = ObstacleAvoidance(m_Car, m_manBoxPowerUp, vectorVelocity);
 
     if(vectorForceAvoid.x != 0.0 || vectorForceAvoid.y != 0.0 ){
         std::cout << "Se viene choque" << std::endl;
-        vectorForce = vectorForceAvoid;
+        float angle = CalculateAngle(vectorVelocity, vectorForceAvoid, cTransformable->rotation.y);
+        UpdateTransformable(cCar, cTransformable, cNitro, angle);
+        return true;
     }
-
-    float angle = CalculateAngle(vectorVelocity, vectorForce, cTransformable->rotation.y);
-    UpdateTransformable(cCar, cTransformable, cNitro, angle);
+    return false;
 }
 
 
