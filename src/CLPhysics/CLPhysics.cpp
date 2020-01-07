@@ -11,10 +11,12 @@
 #include "../Components/CRay.h"
 #include "../Components/CSpeed.h"
 #include "../Components/CTransformable.h"
+#include "../Entities/BoundingWall.h"
 #include "../Entities/Car.h"
 #include "../Entities/CarAI.h"
 #include "../EventManager/Event.h"
 #include "../EventManager/EventManager.h"
+#include "../Managers/ManBoundingWall.h"
 #include "../Managers/ManCar.h"
 #include "../Managers/Manager.h"
 #include "../Systems/Utils.h"
@@ -31,6 +33,46 @@ void CLPhysics::AddManager(Manager &m) {
 void CLPhysics::Update(float delta) {
     Simulate(delta);
     HandleCollisions();
+    HandleCollisionsWithPlanes();
+}
+
+void CLPhysics::HandleCollisionsWithPlanes() {
+    ManCar *manCar = static_cast<ManCar *>(managers[0]);
+    ManBoundingWall *manWalls = static_cast<ManBoundingWall *>(managers[1]);
+
+    Car *c = manCar->GetCar().get();
+
+    vector<shared_ptr<CarAI>> carAIs = manCar->GetEntitiesAI();
+    size_t numCarAIs = carAIs.size();
+
+    vector<shared_ptr<Entity>> walls = manWalls->GetEntities();
+    size_t numWalls = walls.size();
+
+    CBoundingSphere *spc = static_cast<CBoundingSphere *>(c->GetComponent(CompType::CompBoundingSphere).get());
+    CTransformable *trc = static_cast<CTransformable *>(c->GetComponent(CompType::TransformableComp).get());
+    CCar *ccarc = static_cast<CCar *>(c->GetComponent(CompType::CarComp).get());
+
+    // mi coche con todos los walls
+    for (size_t currentWall = 0; currentWall < numWalls; currentWall++) {
+        BoundingWall *wall = static_cast<BoundingWall *>(walls[currentWall].get());
+        CBoundingPlane *plane = static_cast<CBoundingPlane *>(wall->GetComponent(CompType::CompBoundingPlane).get());
+        HandleCollisions(*trc, *spc, *ccarc, true, *plane);
+    }
+
+    // las ias con los walls
+    for (size_t currentAI = 0; currentAI < numCarAIs; currentAI++) {
+        for (size_t currentWall = 0; currentWall < numWalls; currentWall++) {
+            CarAI *car = manCar->GetEntitiesAI()[currentAI].get();
+            BoundingWall *wall = static_cast<BoundingWall *>(walls[currentWall].get());
+
+            CBoundingSphere *spcar1 = static_cast<CBoundingSphere *>(car->GetComponent(CompType::CompBoundingSphere).get());
+            CTransformable *trcar1 = static_cast<CTransformable *>(car->GetComponent(CompType::TransformableComp).get());
+            CCar *ccarcar1 = static_cast<CCar *>(car->GetComponent(CompType::CarComp).get());
+
+            CBoundingPlane *plane = static_cast<CBoundingPlane *>(wall->GetComponent(CompType::CompBoundingPlane).get());
+            // HandleCollisions(*trcar1, *spcar1, *ccarcar1, false, *plane);
+        }
+    }
 }
 
 void CLPhysics::Simulate(float delta) {
@@ -42,6 +84,7 @@ void CLPhysics::Simulate(float delta) {
 
 void CLPhysics::HandleCollisions() {
     ManCar *manCar = static_cast<ManCar *>(managers[0]);
+
     Car *c = manCar->GetCar().get();
 
     vector<shared_ptr<CarAI>> entities = manCar->GetEntitiesAI();
@@ -104,6 +147,30 @@ void CLPhysics::SeparateSpheres(CTransformable &trCar1, CBoundingSphere &spCar1,
     trCar2.position.z += nuevaDirectionCar2.z * (distanceCollided / 2);
 }
 
+void CLPhysics::HandleCollisions(CTransformable &trCar, CBoundingSphere &spCar, CCar &ccarCar, bool mainCar, CBoundingPlane &plane) {
+    PositionSphereIntoTransformable(trCar, spCar);
+    IntersectData intersData = plane.IntersectSphere(spCar);
+    if (intersData.intersects) {
+        // SonarChoque(mainCar);
+        SeparateSphereFromPlane(intersData, trCar, spCar, ccarCar, plane);
+    }
+}
+
+void CLPhysics::SeparateSphereFromPlane(IntersectData &intersData, CTransformable &trCar1, CBoundingSphere &spCar1, CCar &ccarCar1, CBoundingPlane &plane) const {
+    vec3 direction = spCar1.center - plane.normal;  // te da la dirección al otro bounding en x, y, z, es decir, si tenemos 200, 10, 30, significa que estamos a 200 de distancia en x, a 10 en y y a 30 en z
+    vec3 nuevaDirectionCar1 = -normalize(direction);
+    float correctedDistance = intersData.GetDistance();
+    trCar1.position.x += nuevaDirectionCar1.x * correctedDistance;
+    trCar1.position.z += nuevaDirectionCar1.z * correctedDistance;
+}
+
+void CLPhysics::SonarChoque(bool mainCar) {
+    DataMap map;
+    map["mainCharacter"] = mainCar;
+    Event e(EventType::CRASH_ENEMY, map);
+    EventManager::GetInstance()->AddEventMulti(e);
+}
+
 /**
  * Recibe los componentes de los dos coches con los que se comprobará colisión
  * El bool mainCar define si los componentes del coche1 son los del coche principal o no
@@ -115,10 +182,7 @@ void CLPhysics::HandleCollisions(CTransformable &trCar1, CBoundingSphere &spCar1
     PositionSphereIntoTransformable(trCar2, spCar2);
     IntersectData intersData = spCar1.IntersectSphere(spCar2);
     if (intersData.intersects) {
-        DataMap map;
-        map["mainCharacter"] = mainCar;
-        Event e(EventType::CRASH_ENEMY, map);
-        EventManager::GetInstance()->AddEventMulti(e);
+        SonarChoque(mainCar);
 
         SeparateSpheres(trCar1, spCar1, ccarCar1, trCar2, spCar2, ccarCar2);
         PositionSphereIntoTransformable(trCar1, spCar1);

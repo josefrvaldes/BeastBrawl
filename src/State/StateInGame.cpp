@@ -139,8 +139,10 @@ StateInGame::StateInGame() {
     //then = system_clock::now();
     
     
+    // NO ALTERAR EL ORDEN DEL ADD, QUE USO EL ORDEN PARA DISTINGUIR ENTRE MANAGERS!!!
     clPhysics = make_unique<CLPhysics>();
     clPhysics->AddManager(*manCars.get());
+    clPhysics->AddManager(*manBoundingWall.get());
 
     
 
