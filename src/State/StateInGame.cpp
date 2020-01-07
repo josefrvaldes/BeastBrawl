@@ -131,7 +131,7 @@ StateInGame::StateInGame() {
     totemOnCar->AddComponent(cIdTotemOnCar);
     totemOnCar->AddComponent(cTypeTotemOnCar);
     totemOnCar->AddComponent(cTransformableTotemOnCar);
-    totemOnCar->AddComponent(make_shared<CTexture>("particlegreen.jpg"));
+    totemOnCar->AddComponent(make_shared<CTexture>("totem.jpg"));
     totemOnCar->AddComponent(make_shared<CMesh>("media/ninja.b3d"));
     renderEngine->FacadeAddObject(totemOnCar.get());
 // ------------------------------------------------------------------------------------------------------------------------------------------------

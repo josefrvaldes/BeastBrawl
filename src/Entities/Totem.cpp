@@ -15,7 +15,7 @@ Totem::Totem()
     glm::vec3 rot   = glm::vec3(0.0f, 90.0f, 0.0f);
     glm::vec3 scale = glm::vec3(0.6f, 0.6f, 0.6f);
 
-    string texture = "particlegreen.jpg";
+    string texture = "totem.jpg";
     string mesh    = "media/ninja.b3d";
     
     shared_ptr<CId> cId   = make_shared<CId>();
