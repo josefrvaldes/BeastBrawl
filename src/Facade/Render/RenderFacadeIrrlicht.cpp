@@ -374,8 +374,10 @@ void RenderFacadeIrrlicht::FacadeCheckInput() {
     } else {
         eventManager->AddEventMulti(Event{EventType::NO_A_D_PRESS});
     }
-    if (receiver.IsKeyDown(KEY_F3)) {
-        showDebug = !showDebug;
+    if (receiver.IsKeyDown(KEY_F3) && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay) {
+        timeStart = system_clock::now();
+        showDebug = !showDebug; 
+
     }
 
     // POWERUPS
@@ -384,7 +386,8 @@ void RenderFacadeIrrlicht::FacadeCheckInput() {
     }
 
     //Cambiamos a menu
-    if (receiver.IsKeyDown(KEY_F2)) {
+    if (receiver.IsKeyDown(KEY_F2) && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay) {
+        timeStart = system_clock::now();
         Game::GetInstance()->SetState(State::PAUSE);
     }
 }
@@ -402,11 +405,14 @@ void RenderFacadeIrrlicht::FacadeCheckInputMenu() {
 
 void RenderFacadeIrrlicht::FacadeCheckInputPause() {
     //Cambiamos a ingame
-    if (receiver.IsKeyDown(KEY_F3)) {
+    if (receiver.IsKeyDown(KEY_F3) && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay) {
+        timeStart = system_clock::now();
         Game::GetInstance()->SetState(State::INGAME);
     }
 
-    if (receiver.IsKeyDown(KEY_F4)) {
+    if (receiver.IsKeyDown(KEY_F4) && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay) {
+        timeStart = system_clock::now();
+
         smgr->clear();
         EventManager::GetInstance()->ClearListeners();
         EventManager::GetInstance()->ClearEvents();
@@ -419,7 +425,7 @@ void RenderFacadeIrrlicht::FacadeCheckInputPause() {
 }
 
 void RenderFacadeIrrlicht::FacadeCheckInputEndRace() {
-    if (receiver.IsKeyDown(KEY_F4)) {
+    if (receiver.IsKeyDown(KEY_F4) && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay) {
         smgr->clear();
         EventManager::GetInstance()->ClearListeners();
         EventManager::GetInstance()->ClearEvents();
