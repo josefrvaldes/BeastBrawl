@@ -9,7 +9,6 @@ class Manager;
 class CTransformable;
 class CBoundingSphere;
 class CCar;
-class CColliding;
 
 class CLPhysics {
    public:
@@ -27,11 +26,10 @@ class CLPhysics {
 
    protected:
    private:
-    void HandleCollisions(CTransformable &trCar1, CBoundingSphere &spCar1, CCar &, CColliding &, CTransformable &trCar2, CBoundingSphere &spCar2, CCar &, CColliding &);
-    void RestartCollisionTimeIfNeeded(CColliding &collidingCar);
+    void HandleCollisions(CTransformable &trCar1, CBoundingSphere &spCar1, CCar &ccar1, bool mainCar, CTransformable &trCar2, CBoundingSphere &spCar2, CCar &ccar2);
     void PositionSphereIntoTransformable(CTransformable &tr, CBoundingSphere &sp);
-    void SeparateSpheres(CTransformable &trCar1, CBoundingSphere &spCar1, CCar &ccarCar1, CColliding &colliding1,
-                                 CTransformable &trCar2, CBoundingSphere &spCar2, CCar &ccarCar2, CColliding &colliding2);
+    void SeparateSpheres(CTransformable &trCar1, CBoundingSphere &spCar1, CCar &ccarCar1,
+                                 CTransformable &trCar2, CBoundingSphere &spCar2, CCar &ccarCar2);
     void ReflectCollision(CTransformable &trCar1, CCar &cCar1, CTransformable &trCar2, CCar &cCar2);
     void ExchangeVectors(CTransformable &trCar1, CCar &cCar1, CTransformable &trCar2, CCar &cCar2);
     vector<Manager *> managers;
