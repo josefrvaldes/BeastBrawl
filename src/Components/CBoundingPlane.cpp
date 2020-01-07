@@ -26,7 +26,7 @@ CBoundingPlane::CBoundingPlane(const vec3 &a_, const vec3 &b_, const vec3 &c_, c
 
 IntersectData CBoundingPlane::IntersectSphere(const CBoundingSphere &other) const {
     float distanceFromSpCenter = fabs(dot(normalizedNormal, other.center) - distance);
-    cout << "Distance from sphere center " << distanceFromSpCenter << endl;
+    // cout << "Distance from sphere center " << distanceFromSpCenter << endl;
     float distanceFromSphere = distanceFromSpCenter - other.radius;
     bool intersectsInfinitePlane = distanceFromSphere < 0;
     return IntersectData(intersectsInfinitePlane, normalizedNormal * distanceFromSphere);

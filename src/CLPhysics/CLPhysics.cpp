@@ -70,7 +70,7 @@ void CLPhysics::HandleCollisionsWithPlanes() {
             CCar *ccarcar1 = static_cast<CCar *>(car->GetComponent(CompType::CarComp).get());
 
             CBoundingPlane *plane = static_cast<CBoundingPlane *>(wall->GetComponent(CompType::CompBoundingPlane).get());
-            // HandleCollisions(*trcar1, *spcar1, *ccarcar1, false, *plane);
+            HandleCollisions(*trcar1, *spcar1, *ccarcar1, false, *plane);
         }
     }
 }
@@ -159,7 +159,7 @@ void CLPhysics::HandleCollisions(CTransformable &trCar, CBoundingSphere &spCar, 
 void CLPhysics::SeparateSphereFromPlane(IntersectData &intersData, CTransformable &trCar1, CBoundingSphere &spCar1, CCar &ccarCar1, CBoundingPlane &plane) const {
     vec3 direction = spCar1.center - plane.normal;  // te da la dirección al otro bounding en x, y, z, es decir, si tenemos 200, 10, 30, significa que estamos a 200 de distancia en x, a 10 en y y a 30 en z
     vec3 nuevaDirectionCar1 = -normalize(direction);
-    float correctedDistance = intersData.GetDistance() * 2;
+    float correctedDistance = intersData.GetDistance();
     trCar1.position.x += nuevaDirectionCar1.x * correctedDistance;
     trCar1.position.z += nuevaDirectionCar1.z * correctedDistance;
 }
