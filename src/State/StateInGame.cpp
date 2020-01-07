@@ -40,9 +40,9 @@ StateInGame::StateInGame() {
     auto cWayPoint = static_cast<CWayPoint*>(manWayPoint->GetEntities()[2]->GetComponent(CompType::WayPointComp).get());
 
 
-    manCars = make_shared<ManCar>(physics.get(), cam.get());
+     manCars = make_shared<ManCar>(physics.get(), cam.get());
     //Le asignamos el waypoint inicial, momentaneo a la IA
-    manCars->CreateCarAI(glm::vec3(50.0f, 20.0f, 100.0f), cWayPoint);
+    manCars->CreateCarAI(glm::vec3(-200.0f, 20.0f, 700.0f), cWayPoint);
     stack<int> pathInit;
     pathInit.push(3);
     pathInit.push(1);
@@ -53,7 +53,7 @@ StateInGame::StateInGame() {
 
     auto cWayPointAI2 = static_cast<CWayPoint*>(manWayPoint->GetEntities()[1]->GetComponent(CompType::WayPointComp).get());
    //Le asignamos el waypoint inicial, momentaneo a la IA
-    manCars->CreateCarAI(glm::vec3(70.0f, 20.0f, 20.0f), cWayPointAI2);
+    manCars->CreateCarAI(glm::vec3(400.0f, 20.0f, 20.0f), cWayPointAI2);
     stack<int> pathInit2;
     pathInit2.push(4);
     pathInit2.push(0);
@@ -63,7 +63,7 @@ StateInGame::StateInGame() {
 
     auto cWayPointAI3 = static_cast<CWayPoint*>(manWayPoint->GetEntities()[0]->GetComponent(CompType::WayPointComp).get());
    //Le asignamos el waypoint inicial, momentaneo a la IA
-    manCars->CreateCarAI(glm::vec3(0.0f, 20.0f, -40.0f), cWayPointAI3);
+    manCars->CreateCarAI(glm::vec3(400.0f, 20.0f, -400.0f), cWayPointAI3);
     stack<int> pathInit3;
     pathInit3.push(5);
     pathInit3.push(0);

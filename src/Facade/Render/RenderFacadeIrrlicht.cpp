@@ -395,6 +395,7 @@ void RenderFacadeIrrlicht::FacadeCheckInput() {
 void RenderFacadeIrrlicht::FacadeCheckInputMenu() {
     //Cambiamos a ingame
     if (receiver.IsKeyDown(KEY_F1)) {
+        numEnemyCars = 0;
         Game::GetInstance()->SetState(State::INGAME);
     }
 
