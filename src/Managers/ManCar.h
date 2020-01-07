@@ -9,6 +9,7 @@
 #include "Manager.h"
 
 #include "../Managers/ManWayPoint.h"
+#include "../Entities/Entity.h"
 #include "../Entities/WayPoint.h"
 
 //#include "../Systems/SteeringBehaviours.h"
@@ -53,6 +54,7 @@ class ManCar : public Manager {
     bool carInVisionRange(Entity* actualCar, Entity* otherCar, uint32_t rangeVision);
     bool anyCarInVisionRange(Entity* actualCar, uint32_t rangeVision);
     void Integrate(float) override;
+    Entity* GetDesirableTarget(Entity* actualCar);
     
 
    private:

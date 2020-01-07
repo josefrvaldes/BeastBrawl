@@ -378,10 +378,10 @@ CTransformable* ManCar::calculateCloserCar(Entity* actualCar){
 
     // reducimos cierta distancia en caso de que se encuentre en el radio de vision
     if(carPrincipal == true){
-        if(carInVisionRange(actualCar, CarAIs[0].get(), 15) == true)
+        if(carInVisionRange(actualCar, CarAIs[0].get(), 60) == true)
             distanceMimum = distanceMimum/100.0;
     }else{
-        if(carInVisionRange(actualCar, car.get(), 15) == true)
+        if(carInVisionRange(actualCar, car.get(), 60) == true)
             distanceMimum = distanceMimum / 100.0;
     }
 
@@ -396,7 +396,7 @@ CTransformable* ManCar::calculateCloserCar(Entity* actualCar){
             vectorZNext = cTransNextCar->position.z - cTransActualCar->position.z;
             distanceNext = sqrt((vectorXNext*vectorXNext) + (vectorZNext*vectorZNext));
             
-            if(carInVisionRange(actualCar, carAI.get(), 15) == true)
+            if(carInVisionRange(actualCar, carAI.get(), 60) == true)
                 distanceNext = distanceNext / 100.0;
             if(distanceMimum > distanceNext){
                 distanceMimum = distanceNext;
@@ -557,7 +557,7 @@ void ManCar::CatchPowerUpAI(DataMap d) {
         indx = 5;
     else if(indx > 70)                  //  30%
         indx = 6;
-
+    //indx = 5;
     auto cPowerUpCar = static_cast<CPowerUp*>(any_cast<Entity*>(d["actualCar"])->GetComponent(CompType::PowerUpComp).get());
     if(cPowerUpCar->typePowerUp == typeCPowerUp::None){
         cPowerUpCar->typePowerUp = (typeCPowerUp)indx;
@@ -669,4 +669,73 @@ void ManCar::AccelerateCar(DataMap d) {
 
 void ManCar::Integrate(float delta) {
     //physics->update(GetCar().get(), cam.get());
+}
+
+
+
+
+// devuelve la entidad a por la que quiere ir el coche
+Entity* ManCar::GetDesirableTarget(Entity* actualCar){
+    
+    // va a tratar de disparar al que lleve el totem
+    for(auto carAI : GetEntitiesAI()){
+        auto cTotemCarAI = static_cast<CTotem*>(carAI->GetComponent(CompType::TotemComp).get());
+        if(cTotemCarAI->active == true && actualCar!=carAI.get())
+            return carAI.get();
+    }   
+    auto cTotemCar = static_cast<CTotem*>(GetCar()->GetComponent(CompType::TotemComp).get());
+    if(cTotemCar->active == true && actualCar != GetCar().get())
+        return GetCar().get();
+    
+
+    // en caso de no llevarlo va a disparar al que mas tiempo tenga
+    
+
+    // en caso de no llevarlo va a disparar al que tenga en rango de vision
+    CTransformable* closestCar = nullptr;
+    Entity* closestCarEntity = nullptr;
+    bool carPrincipal = false;
+    if(actualCar != car.get()){
+        closestCar = static_cast<CTransformable*>(car.get()->GetComponent(CompType::TransformableComp).get());
+        closestCarEntity = car.get();
+    }else{
+        closestCar = static_cast<CTransformable*>(CarAIs[0].get()->GetComponent(CompType::TransformableComp).get());
+        closestCarEntity = CarAIs[0].get();
+        carPrincipal = true;
+    }
+    auto cTransActualCar = static_cast<CTransformable*>(actualCar->GetComponent(CompType::TransformableComp).get());
+    float vectorX = closestCar->position.x - cTransActualCar->position.x;
+    float vectorZ = closestCar->position.z - cTransActualCar->position.z;
+    float distanceMimum = sqrt((vectorX*vectorX) + (vectorZ*vectorZ));
+
+    // reducimos cierta distancia en caso de que se encuentre en el radio de vision
+    if(carPrincipal == true){
+        if(carInVisionRange(actualCar, CarAIs[0].get(), 60) == true)
+            distanceMimum = distanceMimum/100.0;
+    }else{
+        if(carInVisionRange(actualCar, car.get(), 60) == true)
+            distanceMimum = distanceMimum / 100.0;
+    }
+
+    float distanceNext = 0.0;
+    float vectorXNext = 0.0;
+    float vectorZNext = 0.0;
+    // Para CarAI
+    for(shared_ptr<Entity> carAI : CarAIs){
+        if(actualCar != carAI.get()){
+            auto cTransNextCar = static_cast<CTransformable*>(carAI.get()->GetComponent(CompType::TransformableComp).get()); 
+            vectorXNext = cTransNextCar->position.x - cTransActualCar->position.x;     
+            vectorZNext = cTransNextCar->position.z - cTransActualCar->position.z;
+            distanceNext = sqrt((vectorXNext*vectorXNext) + (vectorZNext*vectorZNext));
+            
+            if(carInVisionRange(actualCar, carAI.get(), 60) == true)
+                distanceNext = distanceNext / 100.0;
+            if(distanceMimum > distanceNext){
+                distanceMimum = distanceNext;
+                closestCar = cTransNextCar;
+                closestCarEntity = carAI.get();
+            }
+        }
+    }
+    return closestCarEntity;
 }
