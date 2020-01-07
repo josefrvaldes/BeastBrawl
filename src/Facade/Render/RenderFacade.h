@@ -3,12 +3,16 @@
 #include <cstdint>
 #include <iostream>
 #include <string>
+#include <chrono>
 #include "../../Entities/Entity.h"
 #include "../../EventManager/EventManager.h"
 #include "../../Managers/ManWayPoint.h"
 #include "../../Managers/ManCar.h"
 #include "../../Components/CPowerUp.h"
 #include "../../Managers/Manager.h"
+
+using namespace chrono;
+
 
 class RenderFacade {
    public:
@@ -57,4 +61,7 @@ class RenderFacade {
    protected:
     uint16_t idCar = 0;
     int numEnemyCars = 0;
+
+    time_point<system_clock> timeStart;
+    const int64_t inputDelay = 500;       // 0.5 segundos
 };
