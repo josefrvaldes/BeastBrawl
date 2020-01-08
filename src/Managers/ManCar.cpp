@@ -83,11 +83,11 @@ void ManCar::UpdateCar(){
 }
 
 
-void ManCar::UpdateCarAI(CarAI* carAI, ManPowerUp* m_manPowerUp, ManBoxPowerUp* m_manBoxPowerUp, ManTotem* m_manTotem, ManWayPoint* graph){
+void ManCar::UpdateCarAI(CarAI* carAI, ManPowerUp* m_manPowerUp, ManBoxPowerUp* m_manBoxPowerUp, ManTotem* m_manTotem, ManWayPoint* graph, Manager* manNavMesh){
     systemBtMoveTo->update(carAI, this, m_manPowerUp, m_manBoxPowerUp, m_manTotem, graph);
     systemBtLoDMove->update(carAI, this, m_manPowerUp, m_manBoxPowerUp, m_manTotem, graph);
 
-    physicsAI->Update(carAI, graph);
+    physicsAI->Update(carAI, graph, manNavMesh);
 
     systemBtPowerUp->update(carAI, this, m_manPowerUp, m_manBoxPowerUp, m_manTotem, graph);
 }
@@ -231,6 +231,7 @@ void ManCar::SubscribeToEvents() {
 void ManCar::ChangePosDestination(DataMap data){
     auto cPosDestination = static_cast<CPosDestination*>(any_cast<CarAI*>(data["actualCar"])->GetComponent(CompType::PosDestination).get());
     cPosDestination->position = any_cast<glm::vec3>(data["posDestination"]);
+    // TODO limpiar path si tiene nodos
 }
 
 void ManCar::MoveToPowerUp(DataMap data){

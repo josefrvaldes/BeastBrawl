@@ -12,7 +12,7 @@ ManNavMesh::ManNavMesh() {
 
 void ManNavMesh::CreateNavMesh(glm::vec3 pos, glm::vec3 rot, float width, float height, float depth, vector<int> waypoints){
     shared_ptr<NavMesh> p = make_shared<NavMesh>(pos,rot,width,height,depth,waypoints);
-    navMeshes.push_back(p);
+    entities.push_back(p);
 }
 
 

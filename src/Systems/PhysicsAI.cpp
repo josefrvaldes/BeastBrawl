@@ -12,6 +12,9 @@
 #include "../Components/CNitro.h"
 #include "../Components/CPath.h"
 #include "../Components/CWayPointEdges.h"
+#include "../Components/CTargetNavMesh.h"
+#include "../Components/CCurrentNavMesh.h"
+#include "../Components/CNavMesh.h"
 
 #include "../Facade/Render/RenderFacadeManager.h"
 #include "../Game.h"
@@ -29,10 +32,10 @@ PhysicsAI::PhysicsAI(){
 
 
 
-void PhysicsAI::Update(CarAI* carAI, ManWayPoint* graph){
+void PhysicsAI::Update(CarAI* carAI, ManWayPoint* graph, Manager* manNavMesh){
     UpdateCarPowerUps(carAI);
 
-    UpdateDikkstra(carAI, graph);    
+    UpdateDijkstra(carAI, graph, manNavMesh);    
 }
 
 
@@ -63,22 +66,55 @@ void PhysicsAI::UpdateCarPowerUps(CarAI* carAI){
 
 
 
-void PhysicsAI::UpdateDikkstra(CarAI* carAI, ManWayPoint* graph){
+void PhysicsAI::UpdateDijkstra(CarAI* carAI, ManWayPoint* graph, Manager* manNavMesh){
     //Guardamos en varAIbles los componentes
 	auto cTransformable = static_cast<CTransformable*>(carAI->GetComponent(CompType::TransformableComp).get());
     //auto cWayPoint     = static_cast<CWayPoint*>(carAI->GetComponent(CompType::WayPointComp).get());
     //float radious = cWayPoint->radious;
     auto cPosDestination     = static_cast<CPosDestination*>(carAI->GetComponent(CompType::PosDestination).get());
+    auto cCurrentNavMesh     = static_cast<CCurrentNavMesh*>(carAI->GetComponent(CompType::CurrentNavMeshComp).get());
     float radious = cPosDestination->radious;
 
     //Vamos a comprobar si esta en el rango del waypoint
     if((cPosDestination->position.z - radious) < cTransformable->position.z && (cPosDestination->position.z + radious) >= cTransformable->position.z 
         && (cPosDestination->position.x - radious) < cTransformable->position.x && (cPosDestination->position.x + radious) >= cTransformable->position.x){
-            
         //Tenemos que comprobar si le quedan mas nodos que visitar en el path
         auto cPath = static_cast<CPath*>(carAI->GetComponent(CompType::PathComp).get());
+       
         if(!cPath->stackPath.empty()){
-            auto actualNode = cPath->stackPath.top();
+
+            auto cTargetNavMesh = static_cast<CTargetNavMesh*>(carAI->GetComponent(CompType::TargetNavMeshComp).get());
+            auto actualNode = cPath->stackPath.top(); //Id del waypoint en el que estamos
+            auto navMeshDestination = manNavMesh->GetEntities()[cTargetNavMesh->targetNavMesh]; //NavMesh al que estamos yendo
+
+            //Recorremos todos los navmeshes
+            for(auto navMesh : manNavMesh->GetEntities()){
+                auto cNavMesh = static_cast<CNavMesh*>(navMesh->GetComponent(CompType::NavMeshComp).get());
+
+                //Recorremos todos los waypoints de cada navmesh
+                for(auto waypointId : cNavMesh->waypoints){
+                    // Si el nodo actual es igual al waypoint del navmesh y mi current navmesh es diferente del navmesh con el que compruebo
+                    //Entonces es que hemos cambiado de navmesh
+                    if(actualNode == waypointId && cCurrentNavMesh->currentNavMesh != cNavMesh->id){
+                        cCurrentNavMesh->currentNavMesh = cNavMesh->id;
+                        cout << "Ahora estamos en el navmesh numero: " << cCurrentNavMesh->currentNavMesh << endl;
+                    }
+                }
+            }
+            // TODO: Cada vez que un totem se caiga o se deje en el suelo, debemos indicarle su nuevo NavMesh
+
+            // Comprobamos si ha llegado a algun waypoint del TargetNavMesh
+            auto cNavMesh = static_cast<CNavMesh*>(navMeshDestination->GetComponent(CompType::NavMeshComp).get());
+            for(auto waypointId : cNavMesh->waypoints){
+                if(waypointId==actualNode){
+                    cout << "Ha llegado al navmesh destino\n";
+                    //TODO: Limpiar path;
+                    while(!cPath->stackPath.empty()){
+                        cPath->stackPath.pop();
+                    }
+                }
+            }
+
             cPath->stackPath.pop();
             //cout << "Llegamos al WayPoint: " << actualNode << endl;
             if(!cPath->stackPath.empty()){
@@ -87,7 +123,7 @@ void PhysicsAI::UpdateDikkstra(CarAI* carAI, ManWayPoint* graph){
                 cPosDestination->position = cWayPoint->position;
 
                 carAI->SetDestination(cPosDestination);
-            }else{
+            }/*else{
                 //Si esta vacio es que ha acabado el path y recalculamos otro
                 //TO-DO: de momento le recalculamos otro aleatorio
                 // habra que llamar al arbol de decisiones broooo
@@ -103,7 +139,8 @@ void PhysicsAI::UpdateDikkstra(CarAI* carAI, ManWayPoint* graph){
 
                 auto cWayPoint = static_cast<CWayPoint*>(graph->GetEntities()[path.top()]->GetComponent(CompType::WayPointComp).get());
                 carAI->SetWayPoint(cWayPoint);
-            }          
+            }  */        
+            // TODO: No dejar la posiicon destino vacia, asignarle la misma o algo
         }
     }
 }

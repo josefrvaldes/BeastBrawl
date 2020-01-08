@@ -33,6 +33,7 @@ struct Camera;
 struct ManPowerUp;
 struct ManBoxPowerUp;
 struct ManTotem;
+struct Manager;
 struct PhysicsAI;
 
 class ManCar : public Manager {
@@ -44,7 +45,7 @@ class ManCar : public Manager {
     void CreateCar();
     void CreateMainCar();
     void UpdateCar();
-    void UpdateCarAI(CarAI* carAI, ManPowerUp* m_manPowerUp, ManBoxPowerUp* m_manBoxPowerUp, ManTotem* m_manTotem, ManWayPoint* graph);
+    void UpdateCarAI(CarAI* carAI, ManPowerUp* m_manPowerUp, ManBoxPowerUp* m_manBoxPowerUp, ManTotem* m_manTotem, ManWayPoint* graph, Manager* manNavMesh);
     shared_ptr<Car>& GetCar() { return car; };
 
     void CreateCarAI();

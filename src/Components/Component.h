@@ -31,6 +31,7 @@ enum CompType {
     PathComp,
     NavMeshComp,
     CurrentNavMeshComp,
+    TargetNavMeshComp,
     CompRay,
     NamePlateComp
 };

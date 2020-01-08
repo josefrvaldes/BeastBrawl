@@ -12,7 +12,7 @@ class NavMesh;
 
 using namespace std;
 
-class ManNavMesh{
+class ManNavMesh : public Manager{
    public:
     ManNavMesh();
     ~ManNavMesh(){};
@@ -20,16 +20,16 @@ class ManNavMesh{
     void CreateNavMesh(glm::vec3 pos, glm::vec3 rot, float width, float height, float depth, vector<int> waypoints);
     void CreateNavMesh();
 
-    vector<shared_ptr<NavMesh>> GetEntities() const {
-        return navMeshes;
-    };
+    // vector<shared_ptr<NavMesh>> GetEntities() const {
+    //     return navMeshes;
+    // };
 
-    vector<shared_ptr<NavMesh>> GetEntities()  {
-        return navMeshes;
-    };
+    // vector<shared_ptr<NavMesh>> GetEntities()  {
+    //     return navMeshes;
+    // };
 
 
    private:
-    vector<shared_ptr<NavMesh>> navMeshes;
+    //vector<shared_ptr<NavMesh>> navMeshes;
 
 };

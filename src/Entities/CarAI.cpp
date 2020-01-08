@@ -16,6 +16,8 @@
 #include "../Components/CBoundingSphere.h"
 #include "../Components/CColliding.h"
 #include "../Components/CCurrentNavMesh.h"
+#include "../Components/CTargetNavMesh.h"
+
 #include <iostream>
 
 class Position;
@@ -48,6 +50,7 @@ CarAI::CarAI(){
     shared_ptr<CPath> cPath   = make_shared<CPath>();
     shared_ptr<CSpeed> cSpeed = make_shared<CSpeed>();
     shared_ptr<CCurrentNavMesh> cCurrentNavMesh = make_shared<CCurrentNavMesh>(0);  //  ponemos 0 por defecto ya que haremos el calculo al empezar la partida
+    shared_ptr<CTargetNavMesh> cTargetNavMesh = make_shared<CTargetNavMesh>(0);  //  ponemos 0 por defecto ya que haremos el calculo al empezar la partida
 
 
     shared_ptr<CColliding> cColliding = make_shared<CColliding>(false);
@@ -69,10 +72,12 @@ CarAI::CarAI(){
     AddComponent(cRoboJorobo);
     AddComponent(cTotem);
     AddComponent(cPath);
-    AddComponent(cCurrentNavMesh);
     AddComponent(cBoundSphere);
     AddComponent(cColliding);
     AddComponent(cSpeed);
+
+    AddComponent(cCurrentNavMesh);
+    AddComponent(cTargetNavMesh);
     cout << "Acabamos de llamar al constructor default de car, su transformable es " << cTransformable << endl;
 }
 

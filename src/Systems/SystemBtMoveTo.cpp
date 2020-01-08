@@ -11,6 +11,8 @@
 //#include "../Components/CPowerUp.h"
 #include "../Components/CTotem.h"
 #include "../Components/CCurrentNavMesh.h"
+#include "../Components/CTargetNavMesh.h"
+
 
 #include "../Entities/Totem.h"
 #include "../Managers/ManTotem.h"
@@ -126,6 +128,8 @@ struct MoveToTotem_mt : public behaviourTree {
                 eventManager->AddEventMulti(Event{EventType::CHANGE_DESTINATION, dataTotem}); 
                 return true;
             }else{
+                auto cTargetMeshCar = static_cast<CTargetNavMesh*>(blackboard->actualCar->GetComponent(CompType::TargetNavMeshComp).get());
+                cTargetMeshCar->targetNavMesh = cCurrentMeshTotem->currentNavMesh;
                 // Actualmente solo nos movemos entre waypoints hasta coincidir en el mismo navMesh
                 //std::cout << "Vamos a movernos por los powerUps UUUEEEEPAA" << std::endl;
                 shared_ptr<EventManager> eventManager = EventManager::GetInstance();
