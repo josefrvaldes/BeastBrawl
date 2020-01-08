@@ -1,10 +1,6 @@
 #pragma once
 
-#include <stdlib.h> /* srand, rand */
-#include <iostream>
-#include <map>
-#include <memory>
-#include <vector>
+
 #include "../../lib/glm/vec3.hpp"
 #include "../Aliases.h"
 #include "../Components/CWayPoint.h"
@@ -13,16 +9,31 @@
 #include "Manager.h"
 
 #include "../Managers/ManWayPoint.h"
+#include "../Entities/Entity.h"
 #include "../Entities/WayPoint.h"
 
+//#include "../Systems/SteeringBehaviours.h"
+#include "../Systems/SystemBtPowerUp.h"
+#include "../Systems/SystemBtMoveTo.h"
+#include "../Systems/SystemBtLoDMove.h"
+
+#include <stdlib.h> /* srand, rand */
+#include <iostream>
+#include <map>
+#include <memory>
+#include <vector>
 #include <stack>
 
 using namespace std;
-class Car;
-class CarAI;
-class Data;
-class Physics;
-class Camera;
+struct Car;
+struct CarAI;
+struct Data;
+struct Physics;
+struct Camera;
+struct ManPowerUp;
+struct ManBoxPowerUp;
+struct ManTotem;
+struct PhysicsAI;
 
 class ManCar : public Manager {
    public:
@@ -33,7 +44,7 @@ class ManCar : public Manager {
     void CreateCar();
     void CreateMainCar();
     void UpdateCar();
-    void UpdateCarAI(CarAI* car,ManWayPoint* graph);
+    void UpdateCarAI(CarAI* carAI, ManPowerUp* m_manPowerUp, ManBoxPowerUp* m_manBoxPowerUp, ManTotem* m_manTotem, ManWayPoint* graph);
     shared_ptr<Car>& GetCar() { return car; };
 
     void CreateCarAI();
@@ -43,7 +54,8 @@ class ManCar : public Manager {
     bool carInVisionRange(Entity* actualCar, Entity* otherCar, uint32_t rangeVision);
     bool anyCarInVisionRange(Entity* actualCar, uint32_t rangeVision);
     void Integrate(float) override;
-    stack<int> Dijkstra(ManWayPoint* graph, int start, int end);
+    Entity* GetDesirableTarget(Entity* actualCar);
+    
 
    private:
     Physics *physics;
@@ -75,4 +87,9 @@ class ManCar : public Manager {
     bool graphCreated = false;
     shared_ptr<Car> car;
     vector<shared_ptr<CarAI>> CarAIs;
+
+    unique_ptr<SystemBtPowerUp> systemBtPowerUp;
+    unique_ptr<SystemBtMoveTo> systemBtMoveTo;
+    unique_ptr<SystemBtLoDMove> systemBtLoDMove;
+    unique_ptr<PhysicsAI> physicsAI;
 };

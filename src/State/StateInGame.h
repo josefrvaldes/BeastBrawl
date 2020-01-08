@@ -32,16 +32,14 @@
 #include "../Systems/SystemBoxPowerUp.h"
 #include "../Systems/Collisions.h"
 #include "../Systems/Physics.h"
-#include "../Systems/PhysicsAI.h"
-#include "../Systems/SteeringBehaviours.h"
-#include "../Systems/SystemBtPowerUp.h"
-#include "../Systems/SystemBtMoveTo.h"
 #include "../Game.h"
 #include "../Managers/ManCar.h"
 #include "../Managers/ManPowerUp.h"
 #include "../Managers/ManBoxPowerUp.h"
 #include "../Managers/ManWayPoint.h"
+#include "../Managers/ManNamePlate.h"
 #include "../Managers/ManTotem.h"
+#include "../Managers/ManBoundingWall.h"
 #include "../behaviourTree/behaviourTree.h"
 #include "../behaviourTree/decorator.h"
 #include "../behaviourTree/selector.h"
@@ -73,6 +71,8 @@ class StateInGame : public State {
     shared_ptr<ManCar> manCars;
     shared_ptr<ManNavMesh> manNavMesh;
     shared_ptr<ManWayPoint> manWayPoint;
+    shared_ptr<ManNamePlate> manNamePlates;
+    shared_ptr<ManBoundingWall> manBoundingWall;
     
     RenderFacade* renderEngine = { nullptr };
     InputFacade* inputEngine = { nullptr };
@@ -90,10 +90,6 @@ class StateInGame : public State {
 
     unique_ptr<CLPhysics> clPhysics;
 
-    shared_ptr<PhysicsAI> physicsAI;
-    unique_ptr<const SteeringBehaviours> steeringBehaviours;
-    shared_ptr<SystemBtPowerUp> systemBtPowerUp;
-    shared_ptr<SystemBtMoveTo> systemBtMoveTo;
     shared_ptr<ManTotem> manTotems;
     //int lastFPS = -1;
     //uint32_t then;

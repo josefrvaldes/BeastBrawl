@@ -23,6 +23,7 @@ void StateMenu::InitState() {
         cout << "~~~ SoundEngine en MENU es -> " << soundEngine << endl;
     }
     soundEngine->SetState(2);
+    soundEngine->PlayEvent("Musica/menu");
 }
 
 

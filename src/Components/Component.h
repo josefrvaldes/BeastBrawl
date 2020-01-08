@@ -30,7 +30,9 @@ enum CompType {
     CollidingComp,
     PathComp,
     NavMeshComp,
-    CurrentNavMeshComp
+    CurrentNavMeshComp,
+    CompRay,
+    NamePlateComp
 };
 
 class Component {

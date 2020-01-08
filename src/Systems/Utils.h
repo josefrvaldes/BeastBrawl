@@ -38,7 +38,7 @@ class Utils {
         float phi = static_cast<int>(fabs(beta - alpha)) % 360;  // This is either the distance or 360 - distance
         int distance = phi > 180 ? 360 - phi : phi;
         string txt = MakeString() << "El angulo1 es " << alpha << " y el angulo2 es " << beta << " y la distancia entre ambos ángulos es " << distance;
-        Cout(txt);
+        //Cout(txt);
         return distance;
     }
 
