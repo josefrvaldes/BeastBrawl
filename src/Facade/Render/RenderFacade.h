@@ -52,10 +52,11 @@ class RenderFacade {
     virtual void FacadeUpdatePlates(Manager* manNamePlates) = 0;
 
     //DEBUG
-    virtual void Draw3DLine(vec3 &pos1, vec3 &pos2, uint16_t r, uint16_t g, uint16_t b) = 0;
-    virtual void Draw3DLine(vec3 &pos1, vec3 &pos2) = 0;
+    virtual void Draw3DLine(vec3 &pos1, vec3 &pos2, uint16_t r, uint16_t g, uint16_t b) const = 0;
+    virtual void Draw3DLine(vec3 &pos1, vec3 &pos2) const = 0;
     virtual void FacadeDrawGraphEdges(ManWayPoint* manWayPoints) = 0;
     virtual void FacadeDrawBoundingBox(Entity* entity, bool colliding) = 0;
+    virtual void FacadeDrawBoundingPlane(Entity* entity) const = 0;
 
    protected:
     uint16_t idCar = 0;
