@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include <string.h>
 #include <iostream>
 
@@ -14,7 +15,8 @@ using namespace std;
 
 void ERRCHECK_fn(FMOD_RESULT result, const char* file, int line) {
     if (result != FMOD_OK) {
-        std::cerr << file << "(Linea: " << line << "): Se ha producido un error de FMOD " << result << " - " << FMOD_ErrorString(result) << std::endl;
+        cerr << file << " (Linea: " << line << "): FMOD HA CASCAO"
+             << " -> " << FMOD_ErrorString(result) << " Codigo de error: " << result << endl;
         exit(-1);
     }
 }
@@ -30,191 +32,478 @@ SoundFacadeFMOD::~SoundFacadeFMOD() {
     delete stringsBank;
 }
 
-//Puntero a funcion
-void SoundFacadeFMOD::SonarClaxon(DataMap d) {
-    SonarUnaVez("pedo");
-    cout << "Estoy entrando en el evento" << endl;
-}
-/*void SoundFacadeFMOD::SonidoPedo(Data d) {
-    SonarUnaVez("pedo");
-}
-void SoundFacadeFMOD::SonidoClaxon(Data d) {
-    SonarUnaVez("claxon");
-}
-void SoundFacadeFMOD::SonidoPedo(Data d) {
-    SonarUnaVez("pedo");
-}*/
-
-//Puntero a funcion
-void SoundFacadeFMOD::SonarUnaVez(string s) {
-    cout << "Se ha lanzado el evento PruebaSonido" << endl;
-
-    auto description = GetDescriptions();
-    auto instances = GetInstances();
-
-    if (description.find("choque_enemigo") != description.end() /*&& instances.find("choque_enemigo") == instances.end()*/) {
-        FMOD::Studio::EventInstance* instance = nullptr;
-        ERRCHECK(description["choque_enemigo"]->createInstance(&instance));
-        ERRCHECK(instance->start());
-        //ERRCHECK( instance->release() );
-        InsertInstance("choque_enemigo", instance);
-    }
-    //else if (instances.find("choque_enemigo") != instances.end()) {
-    //
-    //}
-}
-
+/*
+ * Inicializa FMOD Studio, inicializando tambien FMOD Core.
+ */
 void SoundFacadeFMOD::InitSoundEngine() {
     ERRCHECK(FMOD::Studio::System::create(&system));
-
     ERRCHECK(system->getCoreSystem(&coreSystem));
     ERRCHECK(coreSystem->setSoftwareFormat(0, FMOD_SPEAKERMODE_5POINT1, 0));
-
-    //Inicializa FMOD Studio, inicializando tambien FMOD Core.
     ERRCHECK(system->initialize(512, FMOD_STUDIO_INIT_NORMAL, FMOD_INIT_NORMAL, 0));
 
     LoadMasterBank();
+    std::cout << "***** Sound engine ON" << endl;
 }
 
-void SoundFacadeFMOD::SubscribeToGameEvents(int state) {
-    switch (state) {
-        case 1:  // menu
-            // sonidito cambiar opcion al pulsar tecla
-
-            // musiquita de fondo
-
-            break;
-
-        case 2:  // InGame
-            // claxon
-            EventManager::GetInstance()->Suscribe(Listener{
-                EventType::PRESS_1,
-                bind(&SoundFacadeFMOD::SonarClaxon, this, placeholders::_1),
-                "pruebaSonido"});
-
-            /*EventManager::GetInstance()->SuscribeMulti(Listener(
-                EventType::PRESS_A,
-                bind(&ManCar::TurnLeftCar, this, placeholders::_1),
-                "TurnLeftCar"));*/
-
-            // motor
-
-            // musicaGanar
-
-            // musicaPerder
-            break;
-
-        case 3:  // ventana elegir personaje
-            // cada vez que selecciono un personaje, dice una frase ->
-            // frasecita de personaje al ser elegido
-
-            // musiquita de fondo
-
-            break;
-
-        default:
-            break;
-    }
-}
-
+/*
+ * Libera los audios y bancos de sonido.
+ */
 void SoundFacadeFMOD::TerminateSoundEngine() {
-    soundDescriptions.clear();
-
-    //Recorre el mapa de bancos liberandolos.
-    unordered_map<string, FMOD::Studio::Bank*>::iterator it = banks.begin();
-    while (it != banks.end()) {
-        it->second->unload();
-        it++;
-    }
-    banks.clear();
-
+    UnloadAllBanks();
     UnloadMasterBank();
 
     ERRCHECK(system->release());
+    std::cout << "***** Sound engine K.O." << endl;
 }
 
-//TO-DO: Quitar el dichoso Common_MediaPath.
+/*
+ * Carga el banco Master y el MasterStrings.
+ */
 void SoundFacadeFMOD::LoadMasterBank() {
     ERRCHECK(system->loadBankFile("./media/fmod/Master.bank", FMOD_STUDIO_LOAD_BANK_NORMAL, &masterBank));
     ERRCHECK(system->loadBankFile("./media/fmod/Master.strings.bank", FMOD_STUDIO_LOAD_BANK_NORMAL, &stringsBank));
 }
 
+/*
+ * Libera el banco Master y MasterStrings.
+*/
 void SoundFacadeFMOD::UnloadMasterBank() {
     ERRCHECK(stringsBank->unload());
     ERRCHECK(masterBank->unload());
+    std::cout << "***** Master bank a la shit" << endl;
 }
 
-void SoundFacadeFMOD::SetState(const uint16_t numState) {
-    // TODO: Liberar bancos de estados anteriores¿?
-    LoadBanks(numState);
+/*
+ * Libera los sonidos que se han cargado en memoria y los bancos.
+ */
+void SoundFacadeFMOD::UnloadAllBanks() {
+    for (auto instance : eventInstances) {
+        ERRCHECK(instance.second->release());
+    }
+    eventInstances.clear();
+
+    soundDescriptions.clear();
+
+    for (auto bank : banks) {
+        ERRCHECK(bank.second->unload());
+    }
+    banks.clear();
+    std::cout << "***** Bancos y sonidos liberados" << endl;
+}
+
+/**
+ * Crea la instancia de sonido
+ */
+FMOD::Studio::EventInstance* SoundFacadeFMOD::CreateInstance(const string nameEvent) {
+    FMOD::Studio::EventInstance* instance = nullptr;
+    ERRCHECK(soundDescriptions[nameEvent]->createInstance(&instance));
+    return instance;
+}
+
+/*
+ * Libera los bancos que habian cargados anteriormente, si habian.
+ * Carga los nuevos bancos y se suscribe a los nuevos eventos.
+ * @param numState - Estado en el que nos encontramos.
+ */
+void SoundFacadeFMOD::SetState(const uint8_t numState) {
+    UnloadAllBanks();
+    LoadSoundByState(numState);
     SubscribeToGameEvents(numState);
+    std::cout << "***** Bancos cargados" << endl;
 }
 
-void SoundFacadeFMOD::LoadBanks(const uint16_t numBank) {
-    //TO-DO: Esto se puede optimizar
-    switch (numBank) {
+/* 
+ * Se suscribe a los eventos segun el estado en el que se encuentra el juego.
+ * @param numState - Estado en el que nos encontramos.
+ */
+void SoundFacadeFMOD::SubscribeToGameEvents(const uint8_t numState) {
+    switch (numState) {
+        case 1:  // Intro
+            break;
+        case 2:  // Menu
+            break;
+        case 3:  // Map
+            break;
+        case 4:  // InGame
+            EventManager::GetInstance()->SuscribeMulti(Listener{
+                EventType::START_GAME,
+                bind(&SoundFacadeFMOD::StartGame, this, placeholders::_1),
+                "StartGame"});
+
+            EventManager::GetInstance()->SuscribeMulti(Listener{
+                EventType::PRESS_P,
+                bind(&SoundFacadeFMOD::SoundClaxon, this, placeholders::_1),
+                "SoundClaxon"});
+
+            EventManager::GetInstance()->SuscribeMulti(Listener(
+                EventType::THROW_POWERUP,
+                bind(&SoundFacadeFMOD::SoundThrowPowerup, this, placeholders::_1),
+                "SoundThrowPowerup"));
+
+            // Quitar
+            EventManager::GetInstance()->SuscribeMulti(Listener{
+                EventType::PRESS_0,
+                bind(&SoundFacadeFMOD::StopPrueba, this, placeholders::_1),
+                "StopPrueba"});
+
+            EventManager::GetInstance()->SuscribeMulti(Listener{
+                EventType::HURT,
+                bind(&SoundFacadeFMOD::SoundHurt, this, placeholders::_1),
+                "SoundHurt"});
+
+            EventManager::GetInstance()->SuscribeMulti(Listener{
+                EventType::CATCH_TOTEM,
+                bind(&SoundFacadeFMOD::SoundCatchTotem, this, placeholders::_1),
+                "SoundCatchTotem"});
+
+            EventManager::GetInstance()->SuscribeMulti(Listener{
+                EventType::CRASH_ENEMY,
+                bind(&SoundFacadeFMOD::SoundCrash, this, placeholders::_1),
+                "SoundCrash"});
+
+            EventManager::GetInstance()->SuscribeMulti(Listener{
+                EventType::BREAK_BOX,
+                bind(&SoundFacadeFMOD::SoundBreakBox, this, placeholders::_1),
+                "SoundBreakBox"});
+
+            EventManager::GetInstance()->SuscribeMulti(Listener{
+                EventType::DRIFT,
+                bind(&SoundFacadeFMOD::SoundBreakBox, this, placeholders::_1),
+                "SoundBreakBox"});
+
+            EventManager::GetInstance()->SuscribeMulti(Listener{
+                EventType::VRANDOM,
+                bind(&SoundFacadeFMOD::SoundRandomSentence, this, placeholders::_1),
+                "SoundRandomSentence"});
+
+            EventManager::GetInstance()->SuscribeMulti(Listener{
+                EventType::MENU_OPTION,
+                bind(&SoundFacadeFMOD::SoundMenuOption, this, placeholders::_1),
+                "SoundMenuOption"});
+
+            // --- STOP
+
+            EventManager::GetInstance()->SuscribeMulti(Listener{
+                EventType::NO_SHIELD,
+                bind(&SoundFacadeFMOD::StopShield, this, placeholders::_1),
+                "StopShield"});
+
+            EventManager::GetInstance()->SuscribeMulti(Listener{
+                EventType::NO_DRIFT,
+                bind(&SoundFacadeFMOD::StopDrift, this, placeholders::_1),
+                "StopDrift"});
+
+            break;
+
+        case 5:  // EndRace
+            break;
+        case 7:  // Controls
+            break;
+
+        case 8:  // Creadits
+            break;
+
+        default:
+            break;
+    }
+}
+
+/**
+ * Segun el estado en el que nos encontramos llama a una funcion u otra para cargar bancos.
+ * @param numState - Estado en el que nos encontramos.
+ */
+void SoundFacadeFMOD::LoadSoundByState(const uint8_t numState) {
+    switch (numState) {
         case 0:
-            //LoadBankMenu();
             break;
         case 1:
-            //Load...
             break;
-        case 2:
-            LoadBanksInGame();
+        case 2:  // menu
+            LoadSoundBank("InGameMusic", 0);
+            break;
+        case 3:
+            break;
+        case 4:  //InGame
+            LoadSoundBank("InGame2D", 0);
+            LoadSoundBank("InGame3D", 1);
+            srand(time(NULL));
+            character = rand() % 4;
+            cout << "++++ Personaje en sonido: " << character << endl;
+            SetParameter("Personajes/powerup", "Personaje", character);
+            SetParameter("Personajes/choque_powerup", "Personaje", character);
+            SetParameter("Personajes/choque_enemigo", "Personaje", character);
+            SetParameter("Personajes/random", "Personaje", character);
+            SetParameter("Personajes/derrape", "Personaje", character);
+            SetParameter("Coche/claxon", "Personaje", character);
+            SetParameter("Coche/motor", "Personaje", character);
+            break;
+        case 5:  //EndRace
+            LoadSoundBank("EndRace", 0);
+            break;
+        case 7:  // Controls
+            break;
+        case 8:  // Creadits
             break;
         default:
-            cout << "Este banco no existe: " << numBank << endl;
+            std::cout << "***** Este estado no existe: " << numState << endl;
     }
 }
 
-void SoundFacadeFMOD::LoadBanksInGame() {
-    if (banks.find("InGame") == banks.end()) {
-        banks["InGame"] = nullptr;
-        ERRCHECK(system->loadBankFile("./media/fmod/InGame.bank", FMOD_STUDIO_LOAD_BANK_NORMAL, &banks["InGame"]));
+/*
+ * Carga el banco y sus respectivos eventos.
+ * @param nameBank - Nombre del banco a cargar.
+ * @param type - 1 para eventos 3D y 0 para eventos 2D.
+ */
+void SoundFacadeFMOD::LoadSoundBank(const string nameBank, const bool type) {
+    if (banks.find(nameBank) == banks.end()) {
+        banks[nameBank] = nullptr;
+
+        string bank = "./media/fmod/" + nameBank + ".bank";
+        ERRCHECK(system->loadBankFile(bank.c_str(), FMOD_STUDIO_LOAD_BANK_NORMAL, &banks[nameBank]));
     }
-    cout << "***** Voy a intentar cargar los eventos" << endl;
-    LoadEvent("choque_enemigo");
-    LoadEvent("lanzo_powerup");
+
+    for (auto event : events[nameBank]) {
+        LoadSoundEvent(event.c_str(), type);
+    }
 }
 
-//Carga eventos de sonido que pueden sonar muchas veces durante la partida
-void SoundFacadeFMOD::LoadEvent(const char* nameEvent) {
-    //Si no esta el evento de sonido cargado, lo cargo.
-    //FMOD::Studio::EventDescription* description = NULL;
+/* Carga los eventos de sonido. Los 3D sin instancias y los 2D con instancia.
+ * @param nameEvent - Identificacion del evento en FMOD Studio.
+ * @param type - 3D es 1 y 2D es 0
+ */
+void SoundFacadeFMOD::LoadSoundEvent(const string nameEvent, const bool type) {
+    // Si no esta el evento de sonido cargado, lo cargo.
     if (soundDescriptions.find(nameEvent) == soundDescriptions.end()) {
         soundDescriptions[nameEvent] = nullptr;
 
-        //TO-DO: Mejorar esta concatenacion
-        char* charEvent = (char*)"event:/";
-        char* event = (char*)malloc(1 + strlen(charEvent) + strlen(nameEvent));
-        strcpy(event, charEvent);
-        strcat(event, nameEvent);
+        string event = "event:/" + nameEvent;
+        ERRCHECK(system->getEvent(event.c_str(), &soundDescriptions[nameEvent]));
 
-        //Cargo el evento
-        ERRCHECK(system->getEvent(event, &soundDescriptions[nameEvent]));
-
-        //Se guarda los datos en memoria para que no se vuelvan a cargar cada vez.
-        ERRCHECK(soundDescriptions[nameEvent]->loadSampleData());
-    }
-}
-
-void SoundFacadeFMOD::InsertInstance(const char* nameEvent, FMOD::Studio::EventInstance* instance) {
-    eventInstances[nameEvent] = instance;
-}
-
-void SoundFacadeFMOD::UnloadBank(const char*) {
-}
-
-void SoundFacadeFMOD::Update() {
-    FMOD_STUDIO_PLAYBACK_STATE eventState;
-    for (auto event : eventInstances) {
-        ERRCHECK(event.second->getPlaybackState(&eventState));
-        if (eventState != FMOD_STUDIO_PLAYBACK_PLAYING || eventState != FMOD_STUDIO_PLAYBACK_STARTING) {
-            //event.second->release();
-            //delete event.second;
-            //eventInstances.erase(event.first);
+        if (type) {
+            // Se guarda los datos en memoria para que no se vuelvan a cargar cada vez que creo una instancia.
+            ERRCHECK(soundDescriptions[nameEvent]->loadSampleData());
+        } else {
+            eventInstances[nameEvent] = CreateInstance(nameEvent);
         }
     }
+}
 
+/**
+ * Cambia el valor de un parametro del evento pasado por parametro.
+ * @param nameID - Identificador del sonido en el mapa de instancias.
+ * @param nameParameter - ID del parametro que quiero cambiar del evento. 
+ * @param value - Valor al que quiero cambiar el parametro.
+ */
+void SoundFacadeFMOD::SetParameter(const string nameID, const string nameParameter, const float value) {
+    if (eventInstances.find(nameID) != eventInstances.end()) {
+        eventInstances[nameID]->setParameterByName(nameParameter.c_str(), value);
+    }
+}
+
+/**
+ * Se cambia la posicion desde donde se escucha un sonido.
+ * TO-DO: Aqui solo se cambia la posicion, para el efecto Doppler hace falta la velocidad. Creo que hay mas cosas a parte.
+ */
+void SoundFacadeFMOD::SetEventPosition(const string nameID, const glm::vec3& pos) {
+    if (eventInstances.find(nameID) != eventInstances.end()) {
+        FMOD_3D_ATTRIBUTES atr;
+        atr.position.x = pos.x;
+        atr.position.y = pos.y;
+        atr.position.z = pos.z;
+
+        ERRCHECK(eventInstances[nameID]->set3DAttributes(&atr));
+    }
+}
+
+/**
+ * Ejecuta el evento de sonido.
+ * TO-DO: Actualmente no se puede crear una instancia del mismo evento porque el ID es el mismo.
+ * @param nameID - Identificador del sonido en el mapa de instancias.
+ */
+void SoundFacadeFMOD::PlayEvent(const string nameID) {
+    //std::cout << "***** Se ha lanzado el  sonido: " << nameID << endl;
+    ERRCHECK(eventInstances[nameID]->start());
+}
+
+/**
+ * Para el evento de sonido.
+ * @param nameID - Identificador del sonido en el mapa de instancias.
+ */
+void SoundFacadeFMOD::StopEvent(const string nameID) {
+    if (eventInstances.find(nameID) != eventInstances.end() && IsPlaying(eventInstances[nameID])) {
+        ERRCHECK(eventInstances[nameID]->stop(FMOD_STUDIO_STOP_IMMEDIATE));
+    }
+}
+
+/**
+ * Pone en pause todos los sonidos.
+ */
+void SoundFacadeFMOD::PauseAllEvent() {
+    for (auto event : eventInstances) {
+        PauseEvent(event.first);
+    }
+}
+
+/**
+ * Reanuda en pause todos los sonidos.
+ */
+void SoundFacadeFMOD::ResumeAllEvent() {
+    for (auto event : eventInstances) {
+        ResumeEvent(event.first);
+    }
+}
+
+/**
+ * Pone en pause el sonido.
+ * @param nameID - Identificador del sonido en el mapa de instancias.
+ */
+void SoundFacadeFMOD::PauseEvent(const string nameID) {
+    if (eventInstances.find(nameID) != eventInstances.end() && IsPlaying(eventInstances[nameID])) {
+        ERRCHECK(eventInstances[nameID]->setPaused(true));
+    }
+}
+
+/**
+ * Reanuda el sonido.
+ * @param nameID - Identificador del sonido en el mapa de instancias.
+ */
+void SoundFacadeFMOD::ResumeEvent(const string nameID) {
+    if (eventInstances.find(nameID) != eventInstances.end() && IsPlaying(eventInstances[nameID])) {
+        ERRCHECK(eventInstances[nameID]->setPaused(false));
+    }
+}
+
+/* Verifica si la instancia de sonido que le enviamos por parametro esta en PLAY o preparandose para el PLAY.
+ * @param instance - Instancia del evento a verificar.
+ */
+bool SoundFacadeFMOD::IsPlaying(FMOD::Studio::EventInstance* instance) {
+    FMOD_STUDIO_PLAYBACK_STATE eventState;
+    ERRCHECK(instance->getPlaybackState(&eventState));
+    if (eventState == FMOD_STUDIO_PLAYBACK_PLAYING || eventState == FMOD_STUDIO_PLAYBACK_STARTING /*|| eventState == FMOD_STUDIO_PLAYBACK_SUSTAINING*/) {
+        return true;
+    }
+    return false;
+}
+
+/**
+ * Actualiza la fachada de sonido. 
+ */
+void SoundFacadeFMOD::Update() {
     ERRCHECK(system->update());
+}
+
+/*
+ ***************************************************************************
+ * EVENTOS
+ * *************************************************************************
+*/
+
+void SoundFacadeFMOD::StartGame(DataMap d) {
+    eventInstances["Coche/motor"] = CreateInstance("Coche/motor");
+    PlayEvent("Coche/motor");
+    PlayEvent("Ambiente/ambiente");
+    PlayEvent("Musica/in_game_1");
+}
+
+void SoundFacadeFMOD::SoundClaxon(DataMap d) {
+    PlayEvent("Coche/claxon");
+}
+
+void SoundFacadeFMOD::SoundHurt(DataMap d) {
+    bool mainCharacter = any_cast<bool>(d["mainCharacter"]);
+
+    if (mainCharacter) {
+        PlayEvent("Personajes/choque_powerup");
+    }
+    eventInstances["Coche/choque_powerup"] = CreateInstance("Coche/choque_powerup");
+    PlayEvent("Coche/choque_powerup");
+}
+
+void SoundFacadeFMOD::SoundCatchTotem(DataMap d) {
+    eventInstances["Partida/coger_totem"] = CreateInstance("Partida/coger_totem");
+    PlayEvent("Partida/coger_totem");
+}
+
+// TO-DO: La voz se reproduce si el coche dañado es el principal
+void SoundFacadeFMOD::SoundCrash(DataMap d) {
+    bool mainCharacter = any_cast<bool>(d["mainCharacter"]);
+
+    int max = 100;
+    int min = 0;
+    int randNum = rand() % (max - min + 1) + min;
+    if (mainCharacter && randNum <= 33) {
+        PlayEvent("Personajes/choque_enemigo");
+    }
+    eventInstances["Coche/choque"] = CreateInstance("Coche/choque");
+    if (!IsPlaying(eventInstances["Coche/choque"]))
+        PlayEvent("Coche/choque");
+}
+
+void SoundFacadeFMOD::SoundBreakBox(DataMap d) {
+    eventInstances["Partida/coger_caja"] = CreateInstance("Partida/coger_caja");
+    PlayEvent("Partida/coger_caja");
+}
+
+void SoundFacadeFMOD::SoundDrift(DataMap d) {
+    eventInstances["Coche/derrape"] = CreateInstance("Coche/derrape");
+    PlayEvent("Coche/derrape");
+}
+
+void SoundFacadeFMOD::SoundRandomSentence(DataMap d) {
+    PlayEvent("Personajes/random");
+}
+
+void SoundFacadeFMOD::SoundMenuOption(DataMap d) {
+    PlayEvent("Menu/cambio_opcion");
+}
+
+// TO-DO: Cambiar de eventos 2D a 3D
+void SoundFacadeFMOD::SoundThrowPowerup(DataMap d) {
+    typeCPowerUp typepw = any_cast<typeCPowerUp>(d["typePowerUp"]);
+
+    switch (typepw) {
+        case typeCPowerUp::RoboJorobo:
+            eventInstances["PowerUp/robojorobo"] = CreateInstance("PowerUp/robojorobo");
+            PlayEvent("PowerUp/robojorobo");
+            break;
+        case typeCPowerUp::EscudoMerluzo:
+            eventInstances["PowerUp/escudo"] = CreateInstance("PowerUp/escudo");
+            PlayEvent("PowerUp/escudo");
+            break;
+        case typeCPowerUp::SuperMegaNitro:
+            // TO-DO: Cambio de parametro del personaje
+            break;
+        case typeCPowerUp::MelonMolon:
+            PlayEvent("Personajes/powerup");
+            eventInstances["PowerUp/melonmolon"] = CreateInstance("PowerUp/melonmolon");
+            PlayEvent("PowerUp/melonmolon");
+            break;
+        case typeCPowerUp::TeleBanana:
+            PlayEvent("Personajes/powerup");
+            eventInstances["PowerUp/telebanana_prov"] = CreateInstance("PowerUp/telebanana_prov");
+            PlayEvent("PowerUp/telebanana_prov");
+            break;
+        case typeCPowerUp::PudinDeFrambuesa:
+            PlayEvent("Personajes/powerup");
+            eventInstances["PowerUp/pudin"] = CreateInstance("PowerUp/pudin");
+            PlayEvent("PowerUp/pudin");
+            std::cout << "POWERUP: " << (int)typepw << endl;
+            break;
+    }
+}
+
+// -------------> STOP
+
+void SoundFacadeFMOD::StopPrueba(DataMap d) {
+    StopEvent("Personajes/powerup");
+}
+
+void SoundFacadeFMOD::StopShield(DataMap d) {
+    StopEvent("PowerUp/escudo");
+    eventInstances["PowerUp/escudo_roto"] = CreateInstance("PowerUp/escudo_roto");
+    PlayEvent("PowerUp/escudo_roto");
+}
+
+void SoundFacadeFMOD::StopDrift(DataMap d) {
+    StopEvent("Coche/derrape");
 }

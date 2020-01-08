@@ -42,44 +42,48 @@ void Game::SetState(State::States stateType) {
             currentState = make_shared<StatePause>();
             break;
         case State::ENDRACE:
-            //currentState = new StateEndRace();
+            currentState = make_shared<StateEndRace>();
             break;
         default:
             cout << "This state doesn't exist" << endl;
     }
+
+    // Inicializa los bancos cada vez que se cambia de estado.
+    currentState->InitState();
 }
 
 void Game::InitGame() {
     // To-Do put window values
-    renderFacadeManager = RenderFacadeManager::GetInstance();
-    renderFacadeManager->InitializeIrrlicht();
+    RenderFacadeManager::GetInstance()->InitializeIrrlicht();
+    InputFacadeManager::GetInstance()->InitializeIrrlicht();
+    PhysicsFacadeManager::GetInstance()->InitializeIrrlicht();
 
-    inputFacadeManager = InputFacadeManager::GetInstance();
-    inputFacadeManager->InitializeIrrlicht();
-
-    physicsFacadeManager = PhysicsFacadeManager::GetInstance();
-    physicsFacadeManager->InitializeIrrlicht();
+    //Inicializa la fachada de FMOD.
+    SoundFacadeManager::GetInstance()->InitializeFacadeFmod();
+    SoundFacadeManager::GetInstance()->GetSoundFacade()->InitSoundEngine();
 }
 
 void Game::MainLoop() {
 
-    renderFacadeManager->GetRenderFacade()->FacadeSetWindowCaption("Beast Brawl");
-
-    //Lo creo aqui porque queria llamar al TerminateSoundEngine despues del bucle.
     SoundFacadeManager* soundFacadeManager = SoundFacadeManager::GetInstance();
 
-    //Si se incluye esta funcion en el constructor de SoundFacadeFMOD da violacion de segmento.
-    soundFacadeManager->InitializeFacadeFmod();
-    soundFacadeManager->GetSoundFacade()->InitSoundEngine();
+    RenderFacadeManager* renderFacadeMan = RenderFacadeManager::GetInstance();
+    renderFacadeMan->GetRenderFacade()->FacadeSetWindowCaption("Beast Brawl");
 
-    currentState->InitState();
-
-    while (renderFacadeManager->GetRenderFacade()->FacadeRun()) {
+    while (renderFacadeMan->GetRenderFacade()->FacadeRun()) {
         currentState->Input();
         currentState->Update();
+
+        //Actualiza el motor de audio.
         soundFacadeManager->GetSoundFacade()->Update();
         currentState->Render();
     }
-    soundFacadeManager->GetSoundFacade()->TerminateSoundEngine();
-    renderFacadeManager->GetRenderFacade()->FacadeDeviceDrop();
+    
+    renderFacadeMan->GetRenderFacade()->FacadeDeviceDrop();
+}
+
+void Game::TerminateGame() {
+
+    //Libera los sonidos y bancos.
+    SoundFacadeManager::GetInstance()->GetSoundFacade()->TerminateSoundEngine();
 }

@@ -19,48 +19,119 @@ class SoundFacadeFMOD : public SoundFacade {
         explicit SoundFacadeFMOD() : SoundFacade() {};
         ~SoundFacadeFMOD();
 
+        // Funciones basicas del motor de audio.
         void InitSoundEngine() override;
         void TerminateSoundEngine() override;
-        void LoadMasterBank();
-        void UnloadMasterBank();
+        void UnloadAllBanks();
 
-        void SetState(const uint16_t) override;
-        
-        void LoadBanksInGame() override;
-        void LoadEvent(const char*) override;
-        void InsertInstance(const char*, FMOD::Studio::EventInstance*);
-        //bool EventIsPlaying(const char*);
-        
-        void UnloadBank(const char*) override;
+        // Cambio de banco de audio y subscripcion a eventos.
+        void SetState(const uint8_t) override;
+        void SetEventPosition(const string, const glm::vec3&);
+        void SetParameter(const string, const string, const float) override;
 
+        void PlayEvent(const string) override;
+        void StopEvent(const string) override;
+        void PauseAllEvent() override;
+        void ResumeAllEvent() override;
+        void PauseEvent(const string);
+        void ResumeEvent(const string);
+        
+        bool IsPlaying(FMOD::Studio::EventInstance*);
         void Update() override;
 
-        unordered_map<string, FMOD::Studio::EventDescription*> GetDescriptions() { return soundDescriptions;};
-        unordered_map<string, FMOD::Studio::EventInstance*> GetInstances() { return eventInstances; }
+        //unordered_map<string, FMOD::Studio::EventDescription*> GetDescriptions() { return soundDescriptions;};
+        //unordered_map<string, FMOD::Studio::EventInstance*> GetInstances() { return eventInstances; }
 
     private:
-        void LoadBanks(const uint16_t) override;
+        // eventos del juego
+        void StartGame(DataMap);
+        void SoundClaxon(DataMap);
+        void SoundThrowPowerup(DataMap);
+        void SoundHurt(DataMap);
+        void SoundCatchTotem(DataMap);
+        void SoundCrash(DataMap);
+        void SoundBreakBox(DataMap);
+        void SoundDrift(DataMap);
+        void SoundRandomSentence(DataMap);
+        
+        void SoundMenuOption(DataMap);
+
+        void StopPrueba(DataMap);           // TO-DO: Quitar
+        void StopShield(DataMap);           // TO-DO: Crear uno para todos los power-up
+        void StopDrift(DataMap);
+
+
+
+        void LoadMasterBank();
+        void UnloadMasterBank();
+        FMOD::Studio::EventInstance* CreateInstance(const string);
+        void LoadSoundByState(const uint8_t) override;
+        void LoadSoundBank(const string, const bool) override;
+        void LoadSoundEvent(const string, const bool) override;
+        
+        void SubscribeToGameEvents(const uint8_t) override;
+
+
+
         FMOD::System* coreSystem = NULL;
         FMOD::Studio::System* system = NULL;
         FMOD::Studio::Bank* masterBank = NULL;
         FMOD::Studio::Bank* stringsBank = NULL;
 
+        float character { 0 } ;
+
         unordered_map<string, FMOD::Studio::Bank*> banks;
         unordered_map<string, FMOD::Studio::EventDescription*> soundDescriptions;
+        // TO-DO: Separar instancias
         unordered_map<string, FMOD::Studio::EventInstance*> eventInstances;
+        unordered_map<string, vector<string>> events = {
+            { "InGame2D",       {
+                                "Ambiente/ambiente",            // Metido
+                                "Coche/claxon",                 // Metido
+                                "Personajes/choque_enemigo",    
+                                "Personajes/choque_powerup",    // Metido
+                                "Personajes/derrape", 
+                                "Personajes/powerup",           // Metido
+                                "Personajes/random",
+                                "Partida/cuenta_atras",
+                                "Menu/cambio_opcion",
+                                "Musica/in_game_1"              //Metido
+                                } 
+            },
+            { "InGame3D",       {
+                                "Coche/motor",                  // "Metido" en 2D
+                                "Partida/coger_totem",          // "Metido" en 2D
+                                "Partida/coger_caja",
+                                "Partida/totem",
+                                "PowerUp/escudo",               // "Metido" en 2D
+                                "PowerUp/escudo_roto",
+                                "Coche/choque",          
+                                "PowerUp/pudin",                // "Metido" en 2D
+                                "PowerUp/robojorobo",           // "Metido" en 2D
+                                "PowerUp/telebanana",
+                                "PowerUp/telebanana_prov",      // "Metido" como provisional
+                                "PowerUp/melonmolon",           // "Metido" como provisional
+                                "Coche/choque_powerup"          // "Metido" en 2D
+                                }
+            },
+            { "EndRace",        {
+                                "Musica/fin_partida",           // Metido
+                                "Personajes/derrota",
+                                "Personajes/victoria",
+                                "Menu/aceptar"
+                                }
+            },
+            { "Menu",           {
+                                "Menu/atras",
+                                "Menu/aceptar",
+                                "Menu/cambio_opcion"
+                                }
+            },
+            { "InGameMusic",    {
+                                "Musica/menu"
+                                }
+            }
+        };
+
         shared_ptr<EventManager> eventManager;
-
-        void SubscribeToGameEvents(int state);
-
-
-        // eventos del juego
-        void SonarClaxon(DataMap);
-        void SoniditoTecla(DataMap);
-        void VozAlElegirPersonaje(DataMap);
-
-
-        // metodos de sonido
-        void SonarUnaVez(string);
-        void SonarEnBucle(string);
-        void SonarOjete(string);
 };

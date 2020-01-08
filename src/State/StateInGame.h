@@ -30,22 +30,25 @@
 #include "../Systems/SystemBoxPowerUp.h"
 #include "../Systems/Collisions.h"
 #include "../Systems/Physics.h"
-#include "../Systems/PhysicsAI.h"
-#include "../Systems/SystemBtPowerUp.h"
 #include "../Game.h"
 #include "../Managers/ManCar.h"
 #include "../Managers/ManPowerUp.h"
 #include "../Managers/ManBoxPowerUp.h"
 #include "../Managers/ManWayPoint.h"
+#include "../Managers/ManNamePlate.h"
 #include "../Managers/ManTotem.h"
+#include "../Managers/ManBoundingWall.h"
 #include "../behaviourTree/behaviourTree.h"
 #include "../behaviourTree/decorator.h"
 #include "../behaviourTree/selector.h"
 #include "../behaviourTree/sequence.h"
 #include "../fuzzyLogic/fuzzyLogic.h"
+#include "btBulletDynamicsCommon.h"
 
 using namespace std;
 using namespace chrono;
+
+class CLPhysics;
 
 class StateInGame : public State {
    public:
@@ -65,24 +68,25 @@ class StateInGame : public State {
     shared_ptr<ManBoxPowerUp> manBoxPowerUps;
     shared_ptr<ManCar> manCars;
     shared_ptr<ManWayPoint> manWayPoint;
-    RenderFacadeManager* renderFacadeManager;
-    InputFacadeManager* inputFacadeManager;
-    PhysicsFacadeManager* physicsFacadeManager;
-    RenderFacade* renderEngine;
-    InputFacade* inputEngine;
-    PhysicsFacade* physicsEngine;
-    shared_ptr<SoundFacadeManager> soundFacadeManager;
-    SoundFacade *soundEngine;
+    shared_ptr<ManNamePlate> manNamePlates;
+    shared_ptr<ManBoundingWall> manBoundingWall;
+    
+    RenderFacade* renderEngine = { nullptr };
+    InputFacade* inputEngine = { nullptr };
+    PhysicsFacade* physicsEngine = { nullptr };
+    SoundFacade *soundEngine = { nullptr };
+    
     shared_ptr<Physics> physics;
     //shared_ptr<float> deltaTime;
-    float deltaTime = 0.166666;
+    float deltaTime = 0.0166666;
     shared_ptr<PhysicsPowerUp> phisicsPowerUp;
     shared_ptr<SystemBoxPowerUp> sysBoxPowerUp;
     shared_ptr<Collisions> collisions;
     shared_ptr<Totem> totem;
+    shared_ptr<Entity> totemOnCar;
 
-    shared_ptr<PhysicsAI> physicsAI;
-    shared_ptr<SystemBtPowerUp> systemBtPowerUp;
+    unique_ptr<CLPhysics> clPhysics;
+
     shared_ptr<ManTotem> manTotems;
     //int lastFPS = -1;
     //uint32_t then;

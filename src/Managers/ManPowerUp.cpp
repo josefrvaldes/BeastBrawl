@@ -16,13 +16,16 @@ ManPowerUp::ManPowerUp() {
     cout << "Hemos creado el manager de powerup, ahora tenemos " << endl;
 }
 
+
 ManPowerUp::~ManPowerUp() {
     cout << "Llamando al destructor de ManPowerUps" << endl;
     PowerUps.clear();
     PowerUps.shrink_to_fit();
 }
 
+
 void ManPowerUp::CreatePowerUp(DataMap d) {
+
     typeCPowerUp type = any_cast<typeCPowerUp>(d["typePowerUp"]);
     CTransformable *transforSalida = any_cast<CTransformable *>(d["posCocheSalida"]);
     CTransformable *transforPerse = any_cast<CTransformable *>(d["posCochePerseguir"]);
@@ -35,9 +38,10 @@ void ManPowerUp::CreatePowerUp(DataMap d) {
 
     //Cuando creamos el powerUp, ponemos su tiempo inicial de inactivadad --> para no danyarnos a nostros mismos
     static_cast<CPowerUp*>(powerUp.get()->GetComponent(CompType::PowerUpComp).get())->timeStart = system_clock::now();
-
 }
-// TODO ELIMINARLO TODO AL MISMO TIEMPO ANTES DE RENDERIZAR CONNNNYO
+
+
+// TO-DO ELIMINARLO TODO AL MISMO TIEMPO ANTES DE RENDERIZAR 
 void ManPowerUp::DeletePowerUp(DataMap d){
     auto renderFacadeManager = RenderFacadeManager::GetInstance();
     auto renderEngine = renderFacadeManager->GetRenderFacade();
@@ -50,7 +54,7 @@ void ManPowerUp::DeletePowerUp(DataMap d){
 }
 
 
-// TODO : tener una variable de control para eliminar todas las cosas de los arrays a la vez CUIDADO CON ESOOOO
+// TO-DO : tener una variable de control para eliminar todas las cosas de los arrays a la vez CUIDADO CON ESOOOO
 void ManPowerUp::SubscribeToEvents() {
     // lo ejecuta el coche al tirar power up
     EventManager::GetInstance()->SuscribeMulti(Listener(

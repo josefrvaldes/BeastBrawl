@@ -26,7 +26,6 @@ public:
 
 
 private:
-    void AddEdges();
 	vector<shared_ptr<WayPoint>> waypoints;
     //void SubscribeToEvents();
 };

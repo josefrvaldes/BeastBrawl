@@ -8,91 +8,18 @@
 
 #include "../Components/CTransformable.h"
 #include "../Components/CWayPointEdges.h"
+#include "../Components/CNamePlate.h"
 #include "../Components/CTotem.h"
 #include "../Components/CPath.h"
+#include "../CLPhysics/CLPhysics.h"
+#include "../Managers/Manager.h"
+#include "../Components/CTexture.h"
+#include "../Components/CMesh.h"
 
 typedef std::chrono::high_resolution_clock Clock;
 
 using namespace std;
 using namespace chrono;
-
-#pragma region BT
-/*
-////////////////////////////////////////////////////////////////////////////////////////////////////
-//                           COMPROBAR BEHAVIOR TREE
-////////////////////////////////////////////////////////////////////////////////////////////////////
-bool door = false;  // imaginemos que door=false es = puerta cerrada "door is open?"
-bool key = false;   // tenemos una llave
-// ACCION DE ABRIR LA PUERTA
-struct openDoor : public behaviourTree {
-    virtual bool run() override {
-        door = true;
-        cout << "Abrimos la puerta" << endl;
-        return true;
-    }
-};
-//ACCION COGER LA LLAVE
-struct getKey : public behaviourTree {
-    virtual bool run() override {
-        key = true;
-        cout << "Cogemos la llave" << endl;
-        return true;
-    }
-};
-//CONDICION PUERTA ABIERTA?
-struct haveDoorOpen : public behaviourTree {
-    virtual bool run() override {
-        cout << "Comprobamos si la puerta esta abierta: " << boolalpha << door << endl;
-        return door;
-    }
-};
-//CONDICION TENEMOS LLAVE?
-struct haveKey : public behaviourTree {
-    virtual bool run() override {
-        cout << "Comprobamos si tenemos la llave: " << boolalpha << key << endl;
-        return key;
-    }
-};
-///// DECORATORS //////
-struct Minimum : public Decorator {  // Tiene que intentar coger la llave 3 veces para que la pueda coger
-    uint32_t totalTries = 3;
-    uint32_t numTries = 0;
-    virtual bool run() override {
-        if (numTries >= totalTries)
-            return getChild()->run();
-        numTries++;
-        cout << "Fallamos al coger la llave, intento: " << numTries << endl;
-        return false;
-    }
-};
-struct Limit : public Decorator {  // Decorator Limit
-    uint32_t totalLimit = 3;
-    uint32_t numLimit = 0;
-    virtual bool run() override {
-        if (numLimit >= totalLimit)
-            return false;
-        numLimit++;
-        return getChild()->run();
-    }
-};
-struct UntilFail : public Decorator {  // Decorator UntilFail
-    virtual bool run() override {
-        while (true) {
-            bool result = getChild()->run();
-            if (!result) {
-                break;
-            }
-        }
-        return true;
-    }
-};
-struct Inverter : public Decorator {  // Decorator Inverter
-    virtual bool run() override {
-        return !(getChild()->run());
-    }
-};
-*/
-#pragma endregion
 
 
 StateInGame::StateInGame() {
@@ -104,71 +31,69 @@ StateInGame::StateInGame() {
     manPowerUps = make_shared<ManPowerUp>();
     phisicsPowerUp = make_shared<PhysicsPowerUp>();
     manBoxPowerUps = make_shared<ManBoxPowerUp>();
+    manBoundingWall = make_shared<ManBoundingWall>();
     manTotems = make_shared<ManTotem>();
     ground = make_shared<GameObject>(glm::vec3(10.0f, -0.5f, 150.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.5f, 1.5f, 1.5f), "", "training_ground.obj");
-    cam = make_shared<Camera>(glm::vec3(10.0f, 40.0f, 30.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f));
+    cam = make_shared<Camera>(glm::vec3(100.0f, 600.0f, 30.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f));
 
     manWayPoint = make_shared<ManWayPoint>(); //Se crean todos los waypoints y edges
 
     auto cWayPoint = static_cast<CWayPoint*>(manWayPoint->GetEntities()[2]->GetComponent(CompType::WayPointComp).get());
 
 
-    manCars = make_shared<ManCar>(physics.get(), cam.get());
+     manCars = make_shared<ManCar>(physics.get(), cam.get());
     //Le asignamos el waypoint inicial, momentaneo a la IA
-    manCars->CreateCarAI(glm::vec3(0.0f, 20.0f, 0.0f), cWayPoint);
+    manCars->CreateCarAI(glm::vec3(-200.0f, 20.0f, 700.0f), cWayPoint);
     stack<int> pathInit;
-    pathInit.push(0);
+    pathInit.push(3);
     pathInit.push(1);
     pathInit.push(2);
     manCars->GetEntitiesAI()[0]->SetPath(pathInit);
 
-    auto cPath = static_cast<CPath*>(manCars->GetEntitiesAI()[0]->GetComponent(CompType::PathComp).get());
 
-    // while(!cPath->stackPath.empty()){
-    //     auto node = cPath->stackPath.top();
-    //     cPath->stackPath.pop();
-    //     cout << node << " - ";
-    // }
+
     auto cWayPointAI2 = static_cast<CWayPoint*>(manWayPoint->GetEntities()[1]->GetComponent(CompType::WayPointComp).get());
    //Le asignamos el waypoint inicial, momentaneo a la IA
-    manCars->CreateCarAI(glm::vec3(0.0f, 20.0f, 0.0f), cWayPointAI2);
+    manCars->CreateCarAI(glm::vec3(400.0f, 20.0f, 20.0f), cWayPointAI2);
     stack<int> pathInit2;
     pathInit2.push(4);
     pathInit2.push(0);
     pathInit2.push(2);
     manCars->GetEntitiesAI()[1]->SetPath(pathInit2);
 
+
     auto cWayPointAI3 = static_cast<CWayPoint*>(manWayPoint->GetEntities()[0]->GetComponent(CompType::WayPointComp).get());
    //Le asignamos el waypoint inicial, momentaneo a la IA
-    manCars->CreateCarAI(glm::vec3(0.0f, 20.0f, 0.0f), cWayPointAI3);
+    manCars->CreateCarAI(glm::vec3(400.0f, 20.0f, -400.0f), cWayPointAI3);
     stack<int> pathInit3;
-    pathInit3.push(1);
-    pathInit3.push(3);
-    pathInit3.push(4);
+    pathInit3.push(5);
+    pathInit3.push(0);
+    pathInit3.push(5);
     manCars->GetEntitiesAI()[2]->SetPath(pathInit3);
 
+
+    cout << "NAME PLATES-------------------------\n";
+    manNamePlates = make_shared<ManNamePlate>(manCars.get());
+
+    
+
+
     // Inicializamos las facadas
-    renderFacadeManager = RenderFacadeManager::GetInstance();
-    //renderFacadeManager->InitializeIrrlicht();
+    inputEngine = InputFacadeManager::GetInstance()->GetInputFacade();
+    physicsEngine = PhysicsFacadeManager::GetInstance()->GetPhysicsFacade();
+    renderEngine = RenderFacadeManager::GetInstance()->GetRenderFacade();
+    renderEngine->FacadeSuscribeEvents();
+    renderEngine->FacadeInitHUD();
 
-    inputFacadeManager = InputFacadeManager::GetInstance();
-    //inputFacadeManager->InitializeIrrlicht();
+    // Añadimos los Name Plates a irrlicht
+    renderEngine->FacadeAddPlates(manNamePlates.get());
 
-    physicsFacadeManager = PhysicsFacadeManager::GetInstance();
-    //physicsFacadeManager->InitializeIrrlicht();
-
-    //Almacenamos los motores
-    renderEngine = renderFacadeManager->GetRenderFacade();
-    inputEngine = inputFacadeManager->GetInputFacade();
-    physicsEngine = physicsFacadeManager->GetPhysicsFacade();
-
-    physicsAI = make_shared<PhysicsAI>();
+    // Creamos sistemas
     collisions = make_shared<Collisions>();
-
     sysBoxPowerUp = make_shared<SystemBoxPowerUp>();
 
-    // manPowerUps->CreatePowerUp(glm::vec3(cWayPoint->position));
 
+    // Entidades iniciales
     renderEngine->FacadeAddObjectCar(manCars.get()->GetCar().get());  //Anyadimos el coche
     for (shared_ptr<Entity> carAI : manCars->GetEntitiesAI())         // Anyadimos los coche IA
         renderEngine->FacadeAddObject(carAI.get());
@@ -178,48 +103,75 @@ StateInGame::StateInGame() {
         auto components = way->GetComponents();
         auto mapWaypoint = components.find(CompType::WayPointComp);
         auto cWayPoint = static_cast<CWayPoint*>(mapWaypoint->second.get());
-
         // solo debemos crear las Box si el type del waypoint es "1"
         if(cWayPoint->type == 1){
             manBoxPowerUps->CreateBoxPowerUp(glm::vec3(cWayPoint->position));
         }
     }
-    //cout << "el tamanyo normal es: " << manWayPoint.size() << endl;
+
     //Añadimos todos los power ups
     for (shared_ptr<Entity> bpu : manBoxPowerUps->GetEntities())
         renderEngine->FacadeAddObject(bpu.get());
-
+        
     renderEngine->FacadeAddCamera(cam.get());
 
     //lastFPS = -1;
     // CREAMOS EL TOTEM
-    //manTotems->CreateTotem(glm::vec3(0.0f,20.0f,0.0f));
-    manTotems->CreateTotem();
+    manTotems->CreateTotem(glm::vec3(-100.0,20.0,-100.0));
     renderEngine->FacadeAddObject(manTotems->GetEntities()[0].get());
 
+// --------------------------------------------------------------------------------------------------------------------------------------------
+    totemOnCar = make_shared<Entity>();
+    glm::vec3 postoTemOnCar   = glm::vec3(40.0f, -100.0f, 30.0f);
+    glm::vec3 rotTotemOnCar   = glm::vec3(0.0f, 90.0f, 0.0f);
+    glm::vec3 scaleTotemOnCar = glm::vec3(0.5f, 0.5f, 0.5f);
+    shared_ptr<CId> cIdTotemOnCar   = make_shared<CId>();
+    shared_ptr<CType> cTypeTotemOnCar = make_shared<CType>(ModelType::Cube);
+    shared_ptr<CTransformable> cTransformableTotemOnCar = make_shared<CTransformable>(postoTemOnCar, rotTotemOnCar, scaleTotemOnCar); 
+    totemOnCar->AddComponent(cIdTotemOnCar);
+    totemOnCar->AddComponent(cTypeTotemOnCar);
+    totemOnCar->AddComponent(cTransformableTotemOnCar);
+    totemOnCar->AddComponent(make_shared<CTexture>("totem.jpg"));
+    totemOnCar->AddComponent(make_shared<CMesh>("media/ninja.b3d"));
+    renderEngine->FacadeAddObject(totemOnCar.get());
+// ------------------------------------------------------------------------------------------------------------------------------------------------
     //then = renderEngine->FacadeGetTime();
     //then = system_clock::now();
+    
+    
+    // NO ALTERAR EL ORDEN DEL ADD, QUE USO EL ORDEN PARA DISTINGUIR ENTRE MANAGERS!!!
+    clPhysics = make_unique<CLPhysics>();
+    clPhysics->AddManager(*manCars.get());
+    clPhysics->AddManager(*manBoundingWall.get());
 
-    //inicializamos las reglas del cocheIA de velocidad/aceleracion
-    //FuzzyLogic flVelocity;
-    physicsAI->InitPhysicsIA(manCars->GetEntitiesAI()[0].get());  // To-Do: hacer que se le pasen todos los coches IA
-    cout << "después de init physics ai" << endl;
+    
 
-    systemBtPowerUp = make_shared<SystemBtPowerUp>();
-    systemBtPowerUp->update();
-    systemBtPowerUp->update();
-    systemBtPowerUp->update();
-    systemBtPowerUp->update();
 }
 
 StateInGame::~StateInGame() {
     // destructor
 }
 
+//Carga los bancos de sonido InGame.
 void StateInGame::InitState() {
-    soundEngine = SoundFacadeManager::GetInstance()->GetSoundFacade();
-    soundEngine->SetState(2);
+    
+    cout << "~~~ ENTRO A INGAME" << endl;
+    
+    //Si la direccion de soundEngine!=0 es que viene del PAUSE, por lo que no deberia hacerlo.
+    if (!soundEngine) {
+        soundEngine = SoundFacadeManager::GetInstance()->GetSoundFacade();
+        cout << "~~~ SoundEngine en INGAME es -> " << soundEngine << endl;
+        if (soundEngine){
+            soundEngine->SetState(4);
+            shared_ptr<EventManager> eventManager = EventManager::GetInstance();
+            eventManager->AddEventMulti(Event{EventType::START_GAME});
+        }
+    } else {
+        soundEngine->ResumeAllEvent();
+    }
 }
+
+
 
 void StateInGame::Input() {
     renderEngine->FacadeCheckInput();
@@ -227,6 +179,41 @@ void StateInGame::Input() {
 
 void StateInGame::Update() {
     eventManager->Update();
+
+
+// --------------------------------------------------------------------------------------------------------------------------------------------------------
+    bool todosFalse = true;
+    auto cTransformTotem = static_cast<CTransformable*>(totemOnCar.get()->GetComponent(CompType::TransformableComp).get());
+    cTransformTotem->rotation.y += 0.1;
+    for (shared_ptr<Entity> carAI : manCars->GetEntitiesAI()){  // actualizamos los coche IA
+        // comprobamos el componente totem y si lo tienen se lo ponemos justo encima para que se sepa quien lo lleva
+        auto cTotem = static_cast<CTotem*>(carAI.get()->GetComponent(CompType::TotemComp).get());
+        if(cTotem->active){ 
+            todosFalse = false;
+            auto cTransformCar = static_cast<CTransformable*>(carAI.get()->GetComponent(CompType::TransformableComp).get()); 
+            cTransformTotem->position.x = cTransformCar->position.x;
+            cTransformTotem->position.z = cTransformCar->position.z;
+            cTransformTotem->position.y = 32.0f;
+            // supuestamente esta el drawAll que te lo hace no?????????????????
+            // si esta cambiando pero no se esta redibujando
+        }
+
+    }
+    if(todosFalse){
+        auto cTotem = static_cast<CTotem*>(manCars.get()->GetCar().get()->GetComponent(CompType::TotemComp).get());
+        if(cTotem->active){  
+            todosFalse = false; 
+            auto cTransformCar = static_cast<CTransformable*>(manCars.get()->GetCar().get()->GetComponent(CompType::TransformableComp).get()); 
+            cTransformTotem->position.x = cTransformCar->position.x;
+            cTransformTotem->position.z = cTransformCar->position.z;
+            cTransformTotem->position.y = 32.0f;
+        }
+    }
+    if(todosFalse)
+        cTransformTotem->position.y = -100.0f;
+
+    renderEngine->UpdateTransformable(totemOnCar.get());
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------
 
     // actualizamos el deltatime
     //time_point<system_clock> now = system_clock::now();
@@ -240,32 +227,22 @@ void StateInGame::Update() {
     // sin media
     // *deltaTime.get() = (float)(milis) / 100.0;
 
-   
 
-    physics->update(manCars->GetCar().get(), cam.get());
 
-    
+    // ACTUALIZACION DE LOS MANAGERS DE LOS COCHES
+    manCars->UpdateCar();
+    //manCars->UpdateCarAI();
     for(auto actualAI : manCars->GetEntitiesAI()){
-        physicsAI->Update(manWayPoint.get(),actualAI.get(), deltaTime);
+        manCars->UpdateCarAI(actualAI.get(), manPowerUps.get(), manBoxPowerUps.get(), manTotems.get(), manWayPoint.get());
     }
 
+    // ACTUALIZACION DE LAS FISICAS DE LOS COCHES
+    physics->update(manCars->GetCar().get(), cam.get());
+
+
+    clPhysics->Update(0.1666f);
     sysBoxPowerUp->update(manBoxPowerUps.get());
     phisicsPowerUp->update(manPowerUps->GetEntities());
-
-    // COMPORBACION A PELO COLISIONES ENTRE COCHES-POWERUPS
-    // para hacerlo sencillo - la colision siemre sera entre el coche del jugador y el powerUp 1
-
-    renderEngine->UpdateCamera(cam.get());
-    physicsEngine->UpdateCar(manCars.get()->GetCar().get(), cam.get());
-    for (shared_ptr<Entity> carAI : manCars->GetEntitiesAI())  // actualizamos los coche IA
-        physicsEngine->UpdateCarAI(carAI.get());
-
-    for (shared_ptr<Entity> actualPowerUp : manPowerUps->GetEntities())  // actualizamos los powerUp en irrlich
-        physicsEngine->UpdatePowerUps(actualPowerUp.get());
-
-    //physicsEngine->UpdateCar(car.get(), cam.get());
-
-
 
 
     // COLISIONES entre BoxPowerUp y player
@@ -280,6 +257,20 @@ void StateInGame::Update() {
     collisions->IntersectPlayerTotem(manCars.get()->GetCar().get(), manTotems.get());
     // COLISIONES  entre la IA y el Totem
     collisions->IntersectCarsTotem(manCars.get(), manTotems.get());
+
+
+    // Actualizaciones en Irrlich
+    renderEngine->UpdateCamera(cam.get());
+    physicsEngine->UpdateCar(manCars.get()->GetCar().get(), cam.get());
+    for (shared_ptr<Entity> carAI : manCars->GetEntitiesAI())  // actualizamos los coche IA
+        physicsEngine->UpdateCarAI(carAI.get());
+
+    for (shared_ptr<Entity> actualPowerUp : manPowerUps->GetEntities())  // actualizamos los powerUp en irrlich
+        physicsEngine->UpdatePowerUps(actualPowerUp.get());
+
+
+    renderEngine->FacadeUpdatePlates(manNamePlates.get());
+    
 }
 
 
@@ -289,64 +280,23 @@ void StateInGame::Render() {
     bool isColliding = collisions->Intersects(manCars.get()->GetCar().get(), carAI);
 
     renderEngine->FacadeBeginScene();
-
     // renderEngine->FacadeDraw();  //Para dibujar primitivas debe ir entre el drawAll y el endScene
     renderEngine->FacadeDrawAll();
+    renderEngine->FacadeDrawHUD(manCars->GetCar().get(), manCars.get());
     renderEngine->FacadeDrawGraphEdges(manWayPoint.get());
     renderEngine->FacadeDrawBoundingBox(manCars.get()->GetCar().get(), isColliding);
+    
+    for(auto actualAI : manCars->GetEntitiesAI()){
+       renderEngine->FacadeDrawBoundingBox(actualAI.get(), false); 
+    }
     renderEngine->FacadeDrawBoundingBox(carAI, isColliding);
 
     for(auto actualPowerUp : manPowerUps->GetEntities())
         renderEngine->FacadeDrawBoundingBox(actualPowerUp.get(), false);
 
+    for(auto wall : manBoundingWall->GetEntities()) {
+        renderEngine->FacadeDrawBoundingPlane(wall.get());
+    }
+
     renderEngine->FacadeEndScene();
-    int fps = renderEngine->FacadeGetFPS();
 }
-
-/*
-
-
-#pragma region BT
-
-    // --------------------------- BEHAVIOR TREE ----------------------------------
-
-    //BehaviorTree BASICO
-    //                                  SELECTOR1
-                                            //
-            ///////////////////////////////////////////////////////////////////////////////////
-            //                                      //                                       //
-    // La pueta esta abierta?                     SEQUENCE                               DECORATOR (minimum) (3 intentos)
-                                        ///////////////////////////////                      //
-                                        //                          //                       //
-    //                              // tengo llave?             //abrir puerta        // coger llave
-
-    shared_ptr<selector> selector1 = make_shared<selector>();
-    shared_ptr<sequence> sequence1 = make_shared<sequence>();
-
-    shared_ptr<haveDoorOpen> puertaAbiertaSiNo = make_shared<haveDoorOpen>();
-    shared_ptr<haveKey> tengoLlaveSiNo = make_shared<haveKey>();
-    shared_ptr<openDoor> abrirPuerta = make_shared<openDoor>();
-    shared_ptr<getKey> cogerLlave = make_shared<getKey>();
-
-    shared_ptr<Minimum> tryCatchKey3 = make_shared<Minimum>();
-
-    selector1->addChild(puertaAbiertaSiNo);
-    selector1->addChild(sequence1);
-    selector1->addChild(tryCatchKey3);
-
-    sequence1->addChild(tengoLlaveSiNo);
-    sequence1->addChild(abrirPuerta);
-
-    tryCatchKey3->addChild(cogerLlave);
-
-    cout << "--------------------" << endl;
-    while (door == false) {
-        selector1->run();
-    }  // If the operation starting from the root fails, keep trying until it succeeds.
-    cout << "--------------------" << endl;
-    //
-
-#pragma endregion
-
-
-*/

@@ -10,14 +10,21 @@ class SoundFacade {
         virtual void InitSoundEngine() = 0;
         virtual void TerminateSoundEngine() = 0;
 
-        virtual void SetState(const uint16_t) = 0;
-        virtual void LoadBanksInGame() = 0;
-        virtual void LoadEvent(const char*) = 0;
-        virtual void UnloadBank(const char*) = 0;
+        virtual void SetState(const uint8_t) = 0;
+        virtual void SetParameter(const string, const string, const float) = 0;
+
+        virtual void PlayEvent(const string) = 0;
+        virtual void StopEvent(const string) = 0;
+        virtual void PauseAllEvent() = 0;
+        virtual void ResumeAllEvent() = 0;
 
         virtual void Update() = 0;
 
     private:
-        virtual void LoadBanks(const uint16_t) = 0;
+        virtual void LoadSoundByState(const uint8_t) = 0;
+        virtual void LoadSoundBank(const string, const bool) = 0;
+        virtual void LoadSoundEvent(const string, const bool) = 0;
+        
+        virtual void SubscribeToGameEvents(const uint8_t) = 0;
     
 };

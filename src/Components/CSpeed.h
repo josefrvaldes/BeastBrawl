@@ -1,25 +1,23 @@
 #pragma once
 
-#include "Component.h"
-#include <string>
 #include <iostream>
+#include <string>
+#include "../../lib/glm/vec3.hpp"
+#include "Component.h"
 
 using namespace std;
+using namespace glm;
 
-class CSpeed : public Component
-{
-public:
+class CSpeed : public Component {
+   public:
     CSpeed();
-    CSpeed(float vx, float vy, float vz);
+    CSpeed(vec3 _speed);
     ~CSpeed(){};
 
-    friend ostream &operator<<(ostream &out, CSpeed &c)
-    {
-        out << "(" << c.x << "," << c.y << "," << c.z << ")";
+    friend ostream &operator<<(ostream &out, CSpeed &c) {
+        out << "(" << c.speed.x << "," << c.speed.y << "," << c.speed.z << ")";
         return out;
     }
 
-    float x;
-    float y;
-    float z;
+    vec3 speed;
 };
