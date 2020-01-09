@@ -4,11 +4,15 @@
 #include "../Entities/CarAI.h"
 #include "../Entities/WayPoint.h"
 
+#include "../EventManager/Event.h"
+#include "../EventManager/EventManager.h"
+
 #include "../Components/CPath.h"
 #include "../Components/CWayPointEdges.h"
 #include "../Components/CTargetNavMesh.h"
 #include "../Components/CCurrentNavMesh.h"
 #include "../Components/CNavMesh.h"
+#include "../Components/CPosDestination.h"
 
 #include "../Facade/Render/RenderFacadeManager.h"
 #include "../Game.h"
@@ -21,7 +25,44 @@
 
 
 SystemPathPlanning::SystemPathPlanning(){
+    SubscribeToEvents();
+}
 
+void SystemPathPlanning::SubscribeToEvents() {
+
+    EventManager::GetInstance()->SuscribeMulti(Listener(
+        EventType::MOVE_TO_POWERUP,
+        bind(&SystemPathPlanning::MoveToPowerUp, this, placeholders::_1),
+        "MoveToPowerUp"));
+
+    EventManager::GetInstance()->SuscribeMulti(Listener(
+        EventType::CHANGE_DESTINATION,
+        bind(&SystemPathPlanning::ChangePosDestination, this, placeholders::_1),
+        "ChangePosDestination"));
+
+}
+
+
+void SystemPathPlanning::ChangePosDestination(DataMap data){
+    auto cPosDestination = static_cast<CPosDestination*>(any_cast<CarAI*>(data["actualCar"])->GetComponent(CompType::PosDestination).get());
+    cPosDestination->position = any_cast<glm::vec3>(data["posDestination"]);
+    // TODO limpiar path si tiene nodos
+}
+
+
+
+void SystemPathPlanning::MoveToPowerUp(DataMap data){
+    auto graph = any_cast<ManWayPoint*>(data["manWayPoints"]);
+    auto cPath = static_cast<CPath*>(any_cast<CarAI*>(data["actualCar"])->GetComponent(CompType::PathComp).get());
+    auto cPosDestination = static_cast<CPosDestination*>(any_cast<CarAI*>(data["actualCar"])->GetComponent(CompType::PosDestination).get());
+
+    if(!cPath->stackPath.empty()){
+        //Le asignamos el WayPoint siguiente del path (graph->GetEntities()[cPath->stackPath.top()])
+        auto cWayPoint = static_cast<CWayPoint*>(graph->GetEntities()[cPath->stackPath.top()]->GetComponent(CompType::WayPointComp).get());
+        cPosDestination->position = cWayPoint->position;
+
+        any_cast<CarAI*>(data["actualCar"])->SetDestination(cPosDestination);
+    }
 }
 
 

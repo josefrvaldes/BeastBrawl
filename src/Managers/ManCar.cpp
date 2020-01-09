@@ -219,38 +219,6 @@ void ManCar::SubscribeToEvents() {
         EventType::COLLISION_AI_TOTEM,
         bind(&ManCar::CatchTotemAI, this, placeholders::_1),
         "CatchTotemAI"));
-
-    EventManager::GetInstance()->SuscribeMulti(Listener(
-        EventType::CHANGE_DESTINATION,
-        bind(&ManCar::ChangePosDestination, this, placeholders::_1),
-        "ChangePosDestination"));
-
-    EventManager::GetInstance()->SuscribeMulti(Listener(
-        EventType::MOVE_TO_POWERUP,
-        bind(&ManCar::MoveToPowerUp, this, placeholders::_1),
-        "MoveToPowerUp"));
-
-}
-
-
-void ManCar::ChangePosDestination(DataMap data){
-    auto cPosDestination = static_cast<CPosDestination*>(any_cast<CarAI*>(data["actualCar"])->GetComponent(CompType::PosDestination).get());
-    cPosDestination->position = any_cast<glm::vec3>(data["posDestination"]);
-    // TODO limpiar path si tiene nodos
-}
-
-void ManCar::MoveToPowerUp(DataMap data){
-    auto graph = any_cast<ManWayPoint*>(data["manWayPoints"]);
-    auto cPath = static_cast<CPath*>(any_cast<CarAI*>(data["actualCar"])->GetComponent(CompType::PathComp).get());
-    auto cPosDestination = static_cast<CPosDestination*>(any_cast<CarAI*>(data["actualCar"])->GetComponent(CompType::PosDestination).get());
-
-    if(!cPath->stackPath.empty()){
-        //Le asignamos el WayPoint siguiente del path (graph->GetEntities()[cPath->stackPath.top()])
-        auto cWayPoint = static_cast<CWayPoint*>(graph->GetEntities()[cPath->stackPath.top()]->GetComponent(CompType::WayPointComp).get());
-        cPosDestination->position = cWayPoint->position;
-
-        any_cast<CarAI*>(data["actualCar"])->SetDestination(cPosDestination);
-    }
 }
 
 
