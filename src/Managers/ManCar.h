@@ -16,6 +16,7 @@
 #include "../Systems/SystemBtPowerUp.h"
 #include "../Systems/SystemBtMoveTo.h"
 #include "../Systems/SystemBtLoDMove.h"
+#include "../Systems/SystemPathPlanning.h"
 
 #include <stdlib.h> /* srand, rand */
 #include <iostream>
@@ -93,4 +94,5 @@ class ManCar : public Manager {
     unique_ptr<SystemBtMoveTo> systemBtMoveTo;
     unique_ptr<SystemBtLoDMove> systemBtLoDMove;
     unique_ptr<PhysicsAI> physicsAI;
+    unique_ptr<SystemPathPlanning> systemPathPlanning;
 };

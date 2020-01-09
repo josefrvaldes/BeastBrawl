@@ -15,21 +15,13 @@ using namespace std;
 
 struct CarAI;
 struct ManWayPoint;
-struct Manager;
 
 class PhysicsAI {
 public:
     PhysicsAI();
     ~PhysicsAI(){};
 
-    void Update(CarAI* carAI, ManWayPoint* graph, Manager* manNavMesh);
+    void Update(CarAI* carAI, ManWayPoint* graph);
     void UpdateCarPowerUps(CarAI* carAI);
-    void UpdateDijkstra(CarAI* carAI, ManWayPoint* graph, Manager* manNavMesh);
-    stack<int> Dijkstra(ManWayPoint* graph, int start, int end);
-
-
-
-protected:
-private:
 
 };
