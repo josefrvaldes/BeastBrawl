@@ -182,7 +182,7 @@ void CLPhysics::HandleCollisions(CTransformable &trCar1, CBoundingSphere &spCar1
     PositionSphereIntoTransformable(trCar2, spCar2);
     IntersectData intersData = spCar1.IntersectSphere(spCar2);
     if (intersData.intersects) {
-        SonarChoque(mainCar);
+        //SonarChoque(mainCar);
 
         SeparateSpheres(trCar1, spCar1, ccarCar1, trCar2, spCar2, ccarCar2);
         PositionSphereIntoTransformable(trCar1, spCar1);
@@ -411,4 +411,16 @@ void CLPhysics::RunTests() {
     cout << "plane1 intersects sphere3: " << pl1sp3.intersects << ", Distance: " << pl1sp3.GetDistance() << endl;
     cout << "plane1 intersects sphere4: " << pl1sp4.intersects << ", Distance: " << pl1sp4.GetDistance() << endl
          << endl;*/
+}
+
+
+
+
+
+
+IntersectData CLPhysics::HandleCollisionsRayWithSpheres(CTransformable &trCar1, CTransformable &trCar2, CBoundingSphere &spCar2, const glm::vec3 &normalRay){
+    PositionSphereIntoTransformable(trCar2, spCar2);
+    IntersectData intersData = spCar2.IntersectRay(trCar1, normalRay);
+
+    return intersData;   
 }

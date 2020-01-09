@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <vector>
+#include "../../lib/glm/vec3.hpp"
 
 using namespace std;
 
@@ -11,6 +12,7 @@ class CBoundingSphere;
 class CBoundingPlane;
 class IntersectData;
 class CCar;
+
 
 class CLPhysics {
    public:
@@ -22,6 +24,8 @@ class CLPhysics {
     void Update(float delta);
     void HandleCollisions();
     void HandleCollisionsWithPlanes();
+
+    IntersectData HandleCollisionsRayWithSpheres(CTransformable &trCar1, CTransformable &trCar2, CBoundingSphere &spCar2, const glm::vec3 &normalRay);
 
     // void Integrate(Entity &e, float delta);
 

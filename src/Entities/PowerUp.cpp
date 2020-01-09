@@ -8,6 +8,7 @@
 #include "../Components/CCar.h"
 #include "../Components/CPowerUp.h"
 #include "../Components/CTargetEntity.h"
+#include "../Components/CBoundingSphere.h"
 #include <iostream>
 
 class Position;
@@ -54,7 +55,7 @@ PowerUp::PowerUp()
 
 
 PowerUp::PowerUp(glm::vec3 _position, glm::vec3 _rotation, typeCPowerUp _typePowerUp, CTransformable* cTransformableTarget) : PowerUp(){
-
+    
     CTransformable *cTransformable = (CTransformable *)m_components[CompType::TransformableComp].get();
     cTransformable->position = _position;
     cTransformable->rotation = _rotation;
@@ -76,6 +77,8 @@ PowerUp::PowerUp(glm::vec3 _position, glm::vec3 _rotation, typeCPowerUp _typePow
         cMesh->mesh = "media/ninja.b3d";
         cPowerUp->speed = -510.0;
         cPowerUp->deceleration = 25.0;
+        shared_ptr<CBoundingSphere> cBoundSphere = make_shared<CBoundingSphere>(_position);
+        AddComponent(cBoundSphere);
     }else{                                                      // Telebanana
         cTexture->texture = "stones.jpg";
         cMesh->mesh = "media/ninja.b3d";

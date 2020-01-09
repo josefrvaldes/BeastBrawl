@@ -119,6 +119,9 @@ struct InDistanceRange_LoDMove : public behaviourTree {
 //ACCION --> aplicamos SB pursue y si esta en el angulo lanzamos el melon molon
 struct SBPursue_LoDMove : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
+        //return blackboard->steeringBehaviours->UpdateObstacleAvoidance(blackboard->actualCar, blackboard->manPowerUps);
+        //std::cout << gola << std::endl;
+        //return true;
         float angle = blackboard->steeringBehaviours->UpdatePursuePowerUp(blackboard->actualCar, blackboard->manCars->GetDesirableTarget(blackboard->actualCar));  // To-Do: calcular coche a por el que se quiere ir
         if(angle>=-3 && angle <=3){
             shared_ptr<EventManager> eventManager = EventManager::GetInstance();
@@ -148,6 +151,13 @@ struct ApplyFuzzyLogic_LoDMove : public behaviourTree {
         blackboard->systemFuzzyLogicAI->Update(blackboard->actualCar, 0.016);
         //std::cout << "Aplico FL" << std::endl;
         return true;
+    } 
+};
+
+
+struct Pruebas_LoDMove : public behaviourTree {
+    virtual bool run(Blackboard* blackboard) override {
+        return blackboard->steeringBehaviours->UpdateObstacleAvoidance(blackboard->actualCar, blackboard->manPowerUps);
     } 
 };
 
@@ -192,6 +202,7 @@ SystemBtLoDMove::SystemBtLoDMove(){
 
     selectorBehaviourTree = make_shared<selector>();
 
+    shared_ptr<Pruebas_LoDMove> a_pruebas = make_shared<Pruebas_LoDMove>();
     shared_ptr<sequence> sequence1 = make_shared<sequence>();
     shared_ptr<selector> selectorVision = make_shared<selector>();
 
@@ -209,6 +220,7 @@ SystemBtLoDMove::SystemBtLoDMove(){
     shared_ptr<InDistanceRange_LoDMove>  c_InDistanceRange =   make_shared<InDistanceRange_LoDMove>();
     shared_ptr<ApplyFuzzyLogic_LoDMove>  a_FuzzyLogic =   make_shared<ApplyFuzzyLogic_LoDMove>();
 
+    selectorBehaviourTree->addChild(a_pruebas);
     selectorBehaviourTree->addChild(sequence1);
     selectorBehaviourTree->addChild(selectorVision);
 
