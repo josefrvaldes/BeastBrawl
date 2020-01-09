@@ -49,6 +49,7 @@ void SoundFacadeFMOD::InitSoundEngine() {
  * Libera los audios y bancos de sonido.
  */
 void SoundFacadeFMOD::TerminateSoundEngine() {
+    std::cout << "----- Voy a mandar a Sound engine a la shit" << endl;
     UnloadAllBanks();
     UnloadMasterBank();
 
@@ -106,10 +107,8 @@ FMOD::Studio::EventInstance* SoundFacadeFMOD::CreateInstance(const string nameEv
  * @param numState - Estado en el que nos encontramos.
  */
 void SoundFacadeFMOD::SetState(const uint8_t numState) {
-    UnloadAllBanks();
     LoadSoundByState(numState);
     SubscribeToGameEvents(numState);
-    std::cout << "***** Bancos cargados" << endl;
 }
 
 /* 
@@ -219,25 +218,18 @@ void SoundFacadeFMOD::LoadSoundByState(const uint8_t numState) {
         case 1:
             break;
         case 2:  // menu
-            LoadSoundBank("InGameMusic", 0);
+            UnloadAllBanks();
+            LoadSoundBank("Menu", 0);
             break;
         case 3:
             break;
         case 4:  //InGame
+            StopEvent("Musica/menu");
             LoadSoundBank("InGame2D", 0);
             LoadSoundBank("InGame3D", 1);
-            srand(time(NULL));
-            character = rand() % 4;
-            cout << "++++ Personaje en sonido: " << character << endl;
-            SetParameter("Personajes/powerup", "Personaje", character);
-            SetParameter("Personajes/choque_powerup", "Personaje", character);
-            SetParameter("Personajes/choque_enemigo", "Personaje", character);
-            SetParameter("Personajes/random", "Personaje", character);
-            SetParameter("Personajes/derrape", "Personaje", character);
-            SetParameter("Coche/claxon", "Personaje", character);
-            SetParameter("Coche/motor", "Personaje", character);
             break;
         case 5:  //EndRace
+            StopAllEvents();
             LoadSoundBank("EndRace", 0);
             break;
         case 7:  // Controls
@@ -260,6 +252,7 @@ void SoundFacadeFMOD::LoadSoundBank(const string nameBank, const bool type) {
 
         string bank = "./media/fmod/" + nameBank + ".bank";
         ERRCHECK(system->loadBankFile(bank.c_str(), FMOD_STUDIO_LOAD_BANK_NORMAL, &banks[nameBank]));
+        cout << "***** Carcado el banco: " << nameBank << endl;
     }
 
     for (auto event : events[nameBank]) {
@@ -326,11 +319,21 @@ void SoundFacadeFMOD::PlayEvent(const string nameID) {
 }
 
 /**
+ * Para todos los sonidos.
+ * @param nameID - Identificador del sonido en el mapa de instancias.
+ */
+void SoundFacadeFMOD::StopAllEvents() {
+    for ( auto instance : eventInstances) {
+        ERRCHECK(instance.second->stop(FMOD_STUDIO_STOP_IMMEDIATE));
+    }
+}
+
+/**
  * Para el evento de sonido.
  * @param nameID - Identificador del sonido en el mapa de instancias.
  */
 void SoundFacadeFMOD::StopEvent(const string nameID) {
-    if (eventInstances.find(nameID) != eventInstances.end() && IsPlaying(eventInstances[nameID])) {
+    if (eventInstances.find(nameID) != eventInstances.end() /*&& IsPlaying(eventInstances[nameID])*/) {
         ERRCHECK(eventInstances[nameID]->stop(FMOD_STUDIO_STOP_IMMEDIATE));
     }
 }
@@ -403,6 +406,12 @@ void SoundFacadeFMOD::StartGame(DataMap d) {
     PlayEvent("Coche/motor");
     PlayEvent("Ambiente/ambiente");
     PlayEvent("Musica/in_game_1");
+    srand(time(NULL));
+    character = rand() % 4;
+    cout << "++++ Personaje en sonido: " << character << endl;
+    SetParameter("Personajes/voces", "Personaje", character);
+    SetParameter("Coche/claxon", "Personaje", character);
+    SetParameter("Coche/motor", "Personaje", character);
 }
 
 void SoundFacadeFMOD::SoundClaxon(DataMap d) {
@@ -413,7 +422,8 @@ void SoundFacadeFMOD::SoundHurt(DataMap d) {
     bool mainCharacter = any_cast<bool>(d["mainCharacter"]);
 
     if (mainCharacter) {
-        PlayEvent("Personajes/choque_powerup");
+        SetParameter("Personajes/voces", "Tipo", TipoVoz::ChoquePowerup);
+        PlayEvent("Personajes/voces");
     }
     eventInstances["Coche/choque_powerup"] = CreateInstance("Coche/choque_powerup");
     PlayEvent("Coche/choque_powerup");
@@ -432,7 +442,8 @@ void SoundFacadeFMOD::SoundCrash(DataMap d) {
     int min = 0;
     int randNum = rand() % (max - min + 1) + min;
     if (mainCharacter && randNum <= 33) {
-        PlayEvent("Personajes/choque_enemigo");
+        SetParameter("Personajes/voces", "Tipo", TipoVoz::ChoqueEnemigo);
+        PlayEvent("Personajes/voces");
     }
     eventInstances["Coche/choque"] = CreateInstance("Coche/choque");
     if (!IsPlaying(eventInstances["Coche/choque"]))
@@ -446,11 +457,13 @@ void SoundFacadeFMOD::SoundBreakBox(DataMap d) {
 
 void SoundFacadeFMOD::SoundDrift(DataMap d) {
     eventInstances["Coche/derrape"] = CreateInstance("Coche/derrape");
+    //SetParameter("Personajes/voces", "Tipo", TipoVoz::Derrape);
     PlayEvent("Coche/derrape");
 }
 
 void SoundFacadeFMOD::SoundRandomSentence(DataMap d) {
-    PlayEvent("Personajes/random");
+    SetParameter("Personajes/voces", "Tipo", TipoVoz::Random);
+    PlayEvent("Personajes/voces");
 }
 
 void SoundFacadeFMOD::SoundMenuOption(DataMap d) {
@@ -474,28 +487,33 @@ void SoundFacadeFMOD::SoundThrowPowerup(DataMap d) {
             // TO-DO: Cambio de parametro del personaje
             break;
         case typeCPowerUp::MelonMolon:
-            PlayEvent("Personajes/powerup");
+            SetParameter("Personajes/voces", "Tipo", TipoVoz::Powerup);
+            PlayEvent("Personajes/voces");
             eventInstances["PowerUp/melonmolon"] = CreateInstance("PowerUp/melonmolon");
             PlayEvent("PowerUp/melonmolon");
             break;
         case typeCPowerUp::TeleBanana:
-            PlayEvent("Personajes/powerup");
+            SetParameter("Personajes/voces", "Tipo", TipoVoz::Powerup);
+            PlayEvent("Personajes/voces");
             eventInstances["PowerUp/telebanana_prov"] = CreateInstance("PowerUp/telebanana_prov");
             PlayEvent("PowerUp/telebanana_prov");
             break;
         case typeCPowerUp::PudinDeFrambuesa:
-            PlayEvent("Personajes/powerup");
+            SetParameter("Personajes/voces", "Tipo", TipoVoz::Powerup);
+            PlayEvent("Personajes/voces");
             eventInstances["PowerUp/pudin"] = CreateInstance("PowerUp/pudin");
             PlayEvent("PowerUp/pudin");
             std::cout << "POWERUP: " << (int)typepw << endl;
             break;
+        default:
+            cout << "***** El powerup " << (int)typepw << " no tiene sonido" << endl;
     }
 }
 
 // -------------> STOP
 
 void SoundFacadeFMOD::StopPrueba(DataMap d) {
-    StopEvent("Personajes/powerup");
+    StopEvent("Personajes/voces");
 }
 
 void SoundFacadeFMOD::StopShield(DataMap d) {
