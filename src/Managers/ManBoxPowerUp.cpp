@@ -20,6 +20,12 @@ void ManBoxPowerUp::EjecutarMeHanCogido(DataMap d) {
         renderEngine->DeleteEntity(actualBox.get());       // se elmina la caja en irrlich para que no la dibuje, pero en nuestro array sigue estando
         cBoxPowerUp->active = false;
         cBoxPowerUp->timeStart = system_clock::now();
+
+        DataMap data;
+        auto cTranformableBox = static_cast<CTransformable*>(actualBox.get()->GetComponent(CompType::TransformableComp).get());
+        shared_ptr<EventManager> eventManager = EventManager::GetInstance();
+        data["posBox"] = cTranformableBox->position;
+        eventManager->AddEventMulti(Event{EventType::BREAK_BOX, data});
     }
 }
 
