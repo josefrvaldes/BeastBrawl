@@ -51,7 +51,7 @@ bool Collisions::Intersects(Entity* entity1,Entity* entity2){
 void Collisions::IntersectPlayerPowerUps(Car* carPlayer, ManPowerUp* manPowerUps){
     for(shared_ptr<Entity> actualPowerUp : manPowerUps->GetEntities()){
         auto cPowerUp = static_cast<CPowerUp*>(actualPowerUp->GetComponent(CompType::PowerUpComp).get());
-        if(cPowerUp->effectActive == true){                                                                 // SI HACE DANYO
+        //if(cPowerUp->effectActive == true){                                                                 // SI HACE DANYO
             if(Intersects(carPlayer, actualPowerUp.get())){   //TRUE
                 // debemos eliminar el powerUp y hacer danyo al jugador
                 shared_ptr<EventManager> eventManager = EventManager::GetInstance();
@@ -68,7 +68,7 @@ void Collisions::IntersectPlayerPowerUps(Car* carPlayer, ManPowerUp* manPowerUps
                     eventManager->AddEventMulti(Event{EventType::DROP_TOTEM, dataTransfCar});  
                 }
             }
-        }
+        //}
     }
 }
 
@@ -77,7 +77,7 @@ void Collisions::IntersectsCarsPowerUps(ManCar* manCars, ManPowerUp* manPowerUps
     for(shared_ptr<Entity> actualCar : manCars->GetEntitiesAI()){   
         for(shared_ptr<Entity> actualPowerUp : manPowerUps->GetEntities()){
             auto cPowerUp = static_cast<CPowerUp*>(actualPowerUp->GetComponent(CompType::PowerUpComp).get());
-            if(cPowerUp->effectActive == true){                                                                 // SI HACE DANYO
+            //if(cPowerUp->effectActive == true){                                                                 // SI HACE DANYO
                 if(Intersects(actualCar.get(), actualPowerUp.get())){   //TRUE
                     // debemos eliminar el powerUp y hacer danyo al jugador
                     shared_ptr<EventManager> eventManager = EventManager::GetInstance();
@@ -95,7 +95,7 @@ void Collisions::IntersectsCarsPowerUps(ManCar* manCars, ManPowerUp* manPowerUps
                         eventManager->AddEventMulti(Event{EventType::DROP_TOTEM, dataTransfCar});  
                     } 
                 }
-            }
+            //}
         }
     }
 }

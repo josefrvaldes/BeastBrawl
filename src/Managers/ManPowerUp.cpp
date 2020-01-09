@@ -5,6 +5,7 @@
 #include "../EventManager/EventManager.h"
 #include "../Aliases.h"
 #include "../Facade/Render/RenderFacadeManager.h"
+#include "../Components/CDimensions.h"
 
 class Position;
 using namespace std;
@@ -24,12 +25,32 @@ ManPowerUp::~ManPowerUp() {
 }
 
 
+// Lugar en el que se crean los power ups
+
 void ManPowerUp::CreatePowerUp(DataMap d) {
 
     typeCPowerUp type = any_cast<typeCPowerUp>(d["typePowerUp"]);
+
     CTransformable *transforSalida = any_cast<CTransformable *>(d["posCocheSalida"]);
     CTransformable *transforPerse = any_cast<CTransformable *>(d["posCochePerseguir"]);
-    shared_ptr<PowerUp> powerUp = make_shared<PowerUp>(transforSalida->position, transforSalida->rotation, type, transforPerse);
+    CDimensions *dimensionsCarSalida = any_cast<CDimensions *>(d["dimensionCocheSalida"]);
+    // calculamos la posicion en la que debe salir el powerUp:
+    int medidaPowerUp = 10;
+    float posX = 0, posZ = 0;
+
+   float angleRotation = (transforSalida->rotation.y * 3.141592) / 180.0;
+   if(type == typeCPowerUp::PudinDeFrambuesa){
+        posX = transforSalida->position.x - cos(angleRotation) * (-1*((dimensionsCarSalida->width/2)+medidaPowerUp));
+        posZ = transforSalida->position.z + sin(angleRotation) * (-1*((dimensionsCarSalida->depth/2)+medidaPowerUp));
+   }else{
+        posX = transforSalida->position.x - cos(angleRotation) * ((dimensionsCarSalida->width/2)+medidaPowerUp);
+        posZ = transforSalida->position.z + sin(angleRotation) * ((dimensionsCarSalida->depth/2)+medidaPowerUp);    
+   }
+
+    vec3 positionPowerUp = vec3(posX,transforSalida->position.y,posZ);
+
+    shared_ptr<PowerUp> powerUp = make_shared<PowerUp>(positionPowerUp, transforSalida->rotation, type, transforPerse);
+    std::cout << "Las dimensiones del coche son x:" << dimensionsCarSalida->width << " y:" << dimensionsCarSalida->height << " z:" << dimensionsCarSalida->depth << std::endl;
     PowerUps.push_back(powerUp);
 
     auto renderFacadeManager = RenderFacadeManager::GetInstance();
