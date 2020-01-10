@@ -56,7 +56,7 @@ StateInGame::StateInGame() {
     
 
 
-
+/*
 
 
 
@@ -78,7 +78,7 @@ StateInGame::StateInGame() {
     pathInit3.push(0);
     pathInit3.push(5);
     manCars->GetEntitiesAI()[2]->SetPath(pathInit3);
-
+*/
 
     cout << "NAME PLATES-------------------------\n";
     manNamePlates = make_shared<ManNamePlate>(manCars.get());

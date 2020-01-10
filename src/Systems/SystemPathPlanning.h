@@ -35,5 +35,6 @@ public:
     void SubscribeToEvents();
     void CalculatePathToNavMesh(DataMap d);
     void ChangePosDestination(DataMap d);
+    void MoveRandomPowerUp(DataMap d);
 
 };
