@@ -18,6 +18,7 @@ using namespace std;
 
 struct CarAI;
 struct ManWayPoint;
+struct ManNavMesh;
 struct Manager;
 struct Data;
 
@@ -26,13 +27,13 @@ public:
     SystemPathPlanning();
     ~SystemPathPlanning(){};
 
-    void Update(CarAI* carAI, ManWayPoint* graph, Manager* manNavMesh);
-    void UpdateDijkstra(CarAI* carAI, ManWayPoint* graph, Manager* manNavMesh);
+    void Update(CarAI* carAI, ManWayPoint* graph, ManNavMesh* manNavMesh);
+    void UpdateDijkstra(CarAI* carAI, ManWayPoint* graph, ManNavMesh* manNavMesh);
     stack<int> Dijkstra(ManWayPoint* graph, int start, int end);
 
    private:
     void SubscribeToEvents();
-    void MoveToPowerUp(DataMap d);
+    void CalculatePathToNavMesh(DataMap d);
     void ChangePosDestination(DataMap d);
 
 };

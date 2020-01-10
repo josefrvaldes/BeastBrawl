@@ -227,6 +227,9 @@ StateInGame::StateInGame() {
     clPhysics->AddManager(*manCars.get());
     clPhysics->AddManager(*manBoundingWall.get());
 
+
+    sysPathPlanning = make_unique<SystemPathPlanning>();
+
     
 
 }
@@ -264,6 +267,7 @@ void StateInGame::Update() {
     eventManager->Update();
 
 
+    //El navmesh de las IAs ya las actualizamos cuando llegan a cada waypoint
 
     // A pelo y en todas las iteraciones asiganmos el navmesh en el que estamos!
     // vamos a asignar el navmesh al que pertenecemos
@@ -283,6 +287,8 @@ void StateInGame::Update() {
                 }       
         }
     }
+
+    //Actualizamos el navmesh del coche principal
     auto cTransformableCar = static_cast<CTransformable*>(manCars.get()->GetCar().get()->GetComponent(CompType::TransformableComp).get());     
     for(auto navmesh : manNavMesh->GetEntities()){
         auto cDimensions = static_cast<CDimensions*>(navmesh.get()->GetComponent(CompType::DimensionsComp).get());
@@ -298,6 +304,7 @@ void StateInGame::Update() {
             }       
     }
 
+    //Actualizamos el navmesh del totem
     if(manTotems->GetEntities().size() > 0 ){
         auto cTransformableTotem = static_cast<CTransformable*>(manTotems->GetEntities()[0].get()->GetComponent(CompType::TransformableComp).get());     
         for(auto navmesh : manNavMesh->GetEntities()){

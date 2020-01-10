@@ -32,6 +32,7 @@
 #include "../Systems/SystemBoxPowerUp.h"
 #include "../Systems/Collisions.h"
 #include "../Systems/Physics.h"
+#include "../Systems/SystemPathPlanning.h"
 #include "../Game.h"
 #include "../Managers/ManCar.h"
 #include "../Managers/ManPowerUp.h"
@@ -89,6 +90,7 @@ class StateInGame : public State {
     shared_ptr<Entity> totemOnCar;
 
     unique_ptr<CLPhysics> clPhysics;
+    unique_ptr<SystemPathPlanning> sysPathPlanning;
 
     shared_ptr<ManTotem> manTotems;
     //int lastFPS = -1;

@@ -57,7 +57,8 @@ enum EventType {
     MENU_OPTION,
     MENU_OK,
     MENU_BACK,
-    START_GAME
+    START_GAME,
+    CALCULATE_PATH_TO_NAVMESH
 };
 
 struct Data {
