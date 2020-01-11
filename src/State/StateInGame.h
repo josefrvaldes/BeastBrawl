@@ -61,7 +61,6 @@ class StateInGame : public State {
     States GetState() { return State::States::INGAME; };
 
    private:
-    shared_ptr<EventManager> eventManager;
     shared_ptr<GameObject> ground;
     shared_ptr<Camera> cam;
     shared_ptr<ManPowerUp> manPowerUps;
@@ -93,4 +92,17 @@ class StateInGame : public State {
     time_point<system_clock> then;
    // vector<float> deltas;
     //float CalculateDelta(float);
+
+
+    void InitializeCLPhysics(ManCar &manCars, ManBoundingWall &ManBoundingWall);
+    void InitializeManagers(Physics *physics, Camera *cam);
+    void InitializeSystems(ManCar &manCars, ManBoundingWall &manBoundingWall);
+    void InitializeFacades();
+    void AddElementsToRender();
+
+    void CAMBIARInicializarCarAIS(ManCar &, ManWayPoint &);
+    void CAMBIARInicializarTotem(ManCar &, ManWayPoint &);
+    void CAMBIARCosasDeTotem(ManTotem &);
+    void CAMBIARCosasDeTotemUpdate();
+    void CAMBIARCosasDeBoxPU(ManWayPoint &, ManBoxPowerUp &);
 };
