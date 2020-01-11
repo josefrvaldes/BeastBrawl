@@ -1,15 +1,21 @@
 #include "Game.h"
+#include "Facade/Input/InputFacadeManager.h"
+#include "Facade/Physics/PhysicsFacadeManager.h"
+#include "Facade/Render/RenderFacadeManager.h"
+#include "State/StateEndRace.h"
+#include "State/StateInGameSingle.h"
+#include "State/StateMenu.h"
+#include "State/StatePause.h"
 
 using namespace std;
 
 Game* Game::game = 0;
 Game* Game::GetInstance() {
-    if(game==0){
+    if (game == 0) {
         game = new Game();
     }
     return game;
 }
-
 
 void Game::SetState(State::States stateType) {
     switch (stateType) {
@@ -29,12 +35,12 @@ void Game::SetState(State::States stateType) {
         case State::MAP:
             //currentState = new StateMap();
             break;
-        case State::INGAME:
-            if(!gameStarted){
-                currentState = make_shared<StateInGame>();
+        case State::INGAME_SINGLE:
+            if (!gameStarted) {
+                currentState = make_shared<StateInGameSingle>();
                 gameState = currentState;
                 gameStarted = true;
-            }else{
+            } else {
                 currentState = gameState;
             }
             break;
@@ -64,7 +70,6 @@ void Game::InitGame() {
 }
 
 void Game::MainLoop() {
-
     SoundFacadeManager* soundFacadeManager = SoundFacadeManager::GetInstance();
 
     RenderFacadeManager* renderFacadeMan = RenderFacadeManager::GetInstance();
@@ -78,12 +83,11 @@ void Game::MainLoop() {
         soundFacadeManager->GetSoundFacade()->Update();
         currentState->Render();
     }
-    
+
     renderFacadeMan->GetRenderFacade()->FacadeDeviceDrop();
 }
 
 void Game::TerminateGame() {
-
     //Libera los sonidos y bancos.
     SoundFacadeManager::GetInstance()->GetSoundFacade()->TerminateSoundEngine();
 }
