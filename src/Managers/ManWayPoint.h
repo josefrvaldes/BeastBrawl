@@ -7,7 +7,7 @@
 #include <fstream>
 #include <string>
 #include <stdlib.h>
-#include "../../lib/glm/vec3.hpp"
+#include "../../include/glm/vec3.hpp"
 
 class WayPoint;
 using namespace std;

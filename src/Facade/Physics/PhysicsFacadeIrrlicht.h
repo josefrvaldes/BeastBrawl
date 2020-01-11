@@ -2,7 +2,7 @@
 
 #include <iostream>
 #include <memory>
-#include "../../../lib/irrlicht/irrlicht.h"
+#include "../../../include/irrlicht/irrlicht.h"
 #include "../Render/RenderFacadeIrrlicht.h"
 #include "../Render/RenderFacadeManager.h"
 #include "PhysicsFacade.h"

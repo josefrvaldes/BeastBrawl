@@ -9,7 +9,7 @@
 #include <memory>
 #include <string>
 
-#include "../../lib/glm/vec3.hpp"
+#include "../../include/glm/vec3.hpp"
 #include "../Entities/Camera.h"
 #include "../Entities/Car.h"
 #include "../Entities/CarAI.h"
@@ -43,7 +43,7 @@
 #include "../behaviourTree/selector.h"
 #include "../behaviourTree/sequence.h"
 #include "../fuzzyLogic/fuzzyLogic.h"
-#include "btBulletDynamicsCommon.h"
+//#include "btBulletDynamicsCommon.h"
 
 using namespace std;
 using namespace chrono;
