@@ -36,6 +36,8 @@ RenderFacadeIrrlicht::RenderFacadeIrrlicht() {
     driver = device->getVideoDriver();
     smgr = device->getSceneManager();
     font = device->getGUIEnvironment()->getBuiltInFont();
+    FacadeSuscribeEvents();
+    FacadeInitHUD();
 }
 
 void RenderFacadeIrrlicht::FacadeSuscribeEvents() {
