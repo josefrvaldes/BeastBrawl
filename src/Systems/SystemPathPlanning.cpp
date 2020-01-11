@@ -52,7 +52,7 @@ void SystemPathPlanning::SubscribeToEvents() {
 
 
 void SystemPathPlanning::MoveRandomPowerUp(DataMap data){
-    std::cout << " -entramoooos o que beibeeeeeeee ???????????????????????\n";
+    //std::cout << " -entramoooos o que beibeeeeeeee ???????????????????????\n";
     ManNavMesh* manNavMesh = any_cast<ManNavMesh*>(data["manNavMesh"]);
     auto cCurrentNavMesh = static_cast<CCurrentNavMesh*>(any_cast<CarAI*>(data["actualCar"])->GetComponent(CompType::CurrentNavMeshComp).get());
     auto cPath = static_cast<CPath*>(any_cast<CarAI*>(data["actualCar"])->GetComponent(CompType::PathComp).get());
@@ -62,7 +62,7 @@ void SystemPathPlanning::MoveRandomPowerUp(DataMap data){
     //Buscamos el waypoint mas cercano del navmesh en el que estamos
     auto navMesh = manNavMesh->GetEntities()[cCurrentNavMesh->currentNavMesh]; //NavMesh en el que esta el coche
     auto cNavMesh = static_cast<CNavMesh*>(navMesh->GetComponent(CompType::NavMeshComp).get());
-    std::cout << " -Que diceees tio!!!!!!!!!!!\n";
+    //std::cout << " -Que diceees tio!!!!!!!!!!!\n";
     //Recorremos todos los waypoints del navmesh en el que estamos
     int closestWayPoint = -1;  //ID del waypoint mas cercano
     int minDistance = 999999;
@@ -83,7 +83,7 @@ void SystemPathPlanning::MoveRandomPowerUp(DataMap data){
         }
         
     }
-    std::cout << " -Todo bien Papi???????????'\n";
+    //std::cout << " -Todo bien Papi???????????'\n";
     // Finalmente cogemos un camino de un nodo a otro cualquiera del mapa
     if(cPath->stackPath.empty()){
         //Si esta vacio es que ha acabado el path y recalculamos otro
@@ -99,7 +99,7 @@ void SystemPathPlanning::MoveRandomPowerUp(DataMap data){
         auto cWayPoint = static_cast<CWayPoint*>(graph->GetEntities()[path.top()]->GetComponent(CompType::WayPointComp).get());
         any_cast<CarAI*>(data["actualCar"])->SetWayPoint(cWayPoint);
     }       
-    std::cout << " -Eso parece querido mike'\n"; 
+    //std::cout << " -Eso parece querido mike'\n"; 
     // TODO: No dejar la posiicon destino vacia, asignarle la misma o algo
     // Asi con todo, siempre que se suelte algo comprobar que efectivamente esta dentro de un NavMesh
 }
@@ -118,7 +118,7 @@ void SystemPathPlanning::ChangePosDestination(DataMap data){
 
 void SystemPathPlanning::CalculatePathToNavMesh(DataMap data){
 
-    cout << "ENTRA A PATH TO NAVMESH\n";
+    //cout << "ENTRA A PATH TO NAVMESH\n";
 
     ManNavMesh* manNavMesh = any_cast<ManNavMesh*>(data["manNavMesh"]);
     ManWayPoint* graph = any_cast<ManWayPoint*>(data["manWayPoints"]);

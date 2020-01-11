@@ -4,6 +4,9 @@
 #include "../EventManager/EventManager.h"
 #include "../Facade/Render/RenderFacadeManager.h"
 #include "../Components/CTransformable.h"
+#include "../Components/CDimensions.h"
+#include "../Components/CCurrentNavMesh.h"
+#include "../Components/CNavMesh.h"
 
 class Position;
 using namespace std;
@@ -15,22 +18,41 @@ ManTotem::ManTotem() {
 
 ManTotem::~ManTotem() {
     cout << "Llamando al destructor de ManTotem" << endl;
-    totems.clear();
-    totems.shrink_to_fit();
+    entities.clear();
+    entities.shrink_to_fit();
+}
+
+void ManTotem::Update(ManNavMesh* manNavMesh){
+    if(GetEntities().size() > 0 ){
+        auto cTransformableTotem = static_cast<CTransformable*>(GetEntities()[0].get()->GetComponent(CompType::TransformableComp).get());     
+        for(auto navmesh : manNavMesh->GetEntities()){
+            auto cDimensions = static_cast<CDimensions*>(navmesh.get()->GetComponent(CompType::DimensionsComp).get());
+            auto cTransformableNav = static_cast<CTransformable*>(navmesh.get()->GetComponent(CompType::TransformableComp).get()); 
+            if( ( (cTransformableTotem->position.x >= (cTransformableNav->position.x-(cDimensions->width/2))) && 
+                (cTransformableTotem->position.x <= (cTransformableNav->position.x+(cDimensions->width/2))) ) &&
+                ( (cTransformableTotem->position.z >= (cTransformableNav->position.z-(cDimensions->depth/2))) && 
+                (cTransformableTotem->position.z <= (cTransformableNav->position.z+(cDimensions->depth/2))) )  ){
+                    auto cCurrentNavMesh = static_cast<CCurrentNavMesh*>(GetEntities()[0].get()->GetComponent(CompType::CurrentNavMeshComp).get());
+                    auto cNavMesh = static_cast<CNavMesh*>(navmesh.get()->GetComponent(CompType::NavMeshComp).get());
+                    cCurrentNavMesh->currentNavMesh = cNavMesh->id;
+                    //std::cout << " El totem pertenece al naveMesh: " << cNavMesh->id << std::endl;
+                }       
+        }
+    }
 }
 
 
 void ManTotem::CreateTotem() {
-    if(totems.size() == 0){
+    if(entities.size() == 0){
         shared_ptr<Totem> totem = make_shared<Totem>();
-        totems.push_back(totem);
+        entities.push_back(totem);
     }
 }
 
 void ManTotem::CreateTotem(glm::vec3 _position) {
-    if(totems.size() == 0){
+    if(entities.size() == 0){
         shared_ptr<Totem> totem = make_shared<Totem>(_position);
-        totems.push_back(totem);
+        entities.push_back(totem); 
     }
 }
 
@@ -39,10 +61,10 @@ void ManTotem::CreateTotem(glm::vec3 _position) {
 void ManTotem::AppertainCar(DataMap d){
     auto renderFacadeManager = RenderFacadeManager::GetInstance();
     auto renderEngine = renderFacadeManager->GetRenderFacade();
-    for(long unsigned int i=0; i< totems.size(); ++i){
-        if(totems[i] == any_cast<shared_ptr<Entity>>(d["Totem"])){
-            renderEngine->DeleteEntity(totems[i].get());
-            totems.erase(totems.begin()+i);
+    for(long unsigned int i=0; i< entities.size(); ++i){
+        if(entities[i] == any_cast<shared_ptr<Entity>>(d["Totem"])){
+            renderEngine->DeleteEntity(entities[i].get());
+            entities.erase(entities.begin()+i);
         }
     }
 }
@@ -62,7 +84,7 @@ void ManTotem::ResetTotem(DataMap d){
     auto renderFacadeManager = RenderFacadeManager::GetInstance();
     auto renderEngine = renderFacadeManager->GetRenderFacade();
     //for(long unsigned int i=0; i< totems.size(); ++i){
-        renderEngine->FacadeAddObject(totems[0].get());
+        renderEngine->FacadeAddObject(entities[0].get());
    // }
 }
 

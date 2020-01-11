@@ -145,7 +145,6 @@ struct MoveToTotem_mt : public behaviourTree {
                     dataPowerUp["actualCar"] = blackboard->actualCar;     
                     dataPowerUp["manWayPoints"] = blackboard->manWayPoint;
                     dataPowerUp["manNavMesh"] = blackboard->manNavMesh;                                                                                                     
-                    auto cNavMesh = static_cast<CNavMesh*>(blackboard->manNavMesh->GetEntities()[0]->GetComponent(CompType::NavMeshComp).get());
                     eventManager->AddEventMulti(Event{EventType::CALCULATE_PATH_TO_NAVMESH, dataPowerUp}); 
                 }
                 
@@ -206,8 +205,7 @@ struct MoveToCarTotem_mt : public behaviourTree {
                         DataMap dataPowerUp;       
                         dataPowerUp["actualCar"] = blackboard->actualCar;     
                         dataPowerUp["manWayPoints"] = blackboard->manWayPoint;
-                        dataPowerUp["manNavMesh"] = blackboard->manNavMesh;                                                                                                     
-                        auto cNavMesh = static_cast<CNavMesh*>(blackboard->manNavMesh->GetEntities()[0]->GetComponent(CompType::NavMeshComp).get());
+                        dataPowerUp["manNavMesh"] = blackboard->manNavMesh;                                                                      
                         eventManager->AddEventMulti(Event{EventType::CALCULATE_PATH_TO_NAVMESH, dataPowerUp}); 
                     }
 

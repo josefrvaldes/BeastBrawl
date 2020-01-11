@@ -288,6 +288,7 @@ void StateInGame::Update() {
         }
     }
 
+
     //Actualizamos el navmesh del coche principal
     auto cTransformableCar = static_cast<CTransformable*>(manCars.get()->GetCar().get()->GetComponent(CompType::TransformableComp).get());     
     for(auto navmesh : manNavMesh->GetEntities()){
@@ -304,23 +305,12 @@ void StateInGame::Update() {
             }       
     }
 
+
+
     //Actualizamos el navmesh del totem
-    if(manTotems->GetEntities().size() > 0 ){
-        auto cTransformableTotem = static_cast<CTransformable*>(manTotems->GetEntities()[0].get()->GetComponent(CompType::TransformableComp).get());     
-        for(auto navmesh : manNavMesh->GetEntities()){
-            auto cDimensions = static_cast<CDimensions*>(navmesh.get()->GetComponent(CompType::DimensionsComp).get());
-            auto cTransformableNav = static_cast<CTransformable*>(navmesh.get()->GetComponent(CompType::TransformableComp).get()); 
-            if( ( (cTransformableTotem->position.x >= (cTransformableNav->position.x-(cDimensions->width/2))) && 
-                (cTransformableTotem->position.x <= (cTransformableNav->position.x+(cDimensions->width/2))) ) &&
-                ( (cTransformableTotem->position.z >= (cTransformableNav->position.z-(cDimensions->depth/2))) && 
-                (cTransformableTotem->position.z <= (cTransformableNav->position.z+(cDimensions->depth/2))) )  ){
-                    auto cCurrentNavMesh = static_cast<CCurrentNavMesh*>(manTotems->GetEntities()[0].get()->GetComponent(CompType::CurrentNavMeshComp).get());
-                    auto cNavMesh = static_cast<CNavMesh*>(navmesh.get()->GetComponent(CompType::NavMeshComp).get());
-                    cCurrentNavMesh->currentNavMesh = cNavMesh->id;
-                    //std::cout << " El totem pertenece al naveMesh: " << cNavMesh->id << std::endl;
-                }       
-        }
-    }
+    //manTotems->Update(manNavMesh.get());
+    manNavMesh->UpdateNavMeshTotem(manTotems.get());
+    
 
 
 
