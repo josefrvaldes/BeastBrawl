@@ -1,3 +1,5 @@
+#define _USE_MATH_DEFINES
+
 #include "RenderFacadeIrrlicht.h"
 
 #include <math.h>
@@ -18,6 +20,7 @@
 #include "../../Components/Component.h"
 #include "../../Constants.h"
 #include "../../Entities/WayPoint.h"
+#include "../../Entities/CarAI.h"
 #include "../../Game.h"
 
 using namespace irr;
@@ -194,6 +197,9 @@ const uint16_t RenderFacadeIrrlicht::FacadeAddObject(Entity* entity) {
         case ModelType::StaticMesh:
             node = smgr->addMeshSceneNode(smgr->getMesh(meshPath.c_str()));
             break;
+
+        case ModelType::Text:
+            break;
     }
 
     // y ahora a ese node, le ponemos sus parámetros
@@ -306,8 +312,8 @@ void RenderFacadeIrrlicht::FacadeAddCamera(Entity* camera) {
     auto cTransformable = static_cast<CTransformable*>(camera->GetComponent(CompType::TransformableComp).get());
     auto cCamera = static_cast<CCamera*>(camera->GetComponent(CompType::CameraComp).get());
 
-    float posX = cCamera->tarX - 40.0 * sin(((cTransformable->rotation.x) * PI) / 180.0);
-    float posZ = cCamera->tarZ - 40.0 * cos(((cTransformable->rotation.z) * PI) / 180.0);
+    float posX = cCamera->tarX - 40.0 * sin(((cTransformable->rotation.x) * M_PI) / 180.0);
+    float posZ = cCamera->tarZ - 40.0 * cos(((cTransformable->rotation.z) * M_PI) / 180.0);
     camera1->setTarget(core::vector3df(cCamera->tarX, cCamera->tarY, cCamera->tarZ));
     camera1->setPosition(core::vector3df(posX, cTransformable->position.y, posZ));
 }
@@ -382,7 +388,7 @@ void RenderFacadeIrrlicht::FacadeCheckInputMenu() {
     //Cambiamos a ingame
     if (receiver.IsKeyDown(KEY_F1)) {
         numEnemyCars = 0;
-        Game::GetInstance()->SetState(State::INGAME);
+        Game::GetInstance()->SetState(State::INGAME_SINGLE);
     }
 
     if (receiver.IsKeyDown(KEY_ESCAPE)) {
@@ -394,7 +400,7 @@ void RenderFacadeIrrlicht::FacadeCheckInputPause() {
     //Cambiamos a ingame
     if (receiver.IsKeyDown(KEY_F3) && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay) {
         timeStart = system_clock::now();
-        Game::GetInstance()->SetState(State::INGAME);
+        Game::GetInstance()->SetState(State::INGAME_SINGLE);
     }
 
     if (receiver.IsKeyDown(KEY_F4) && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay) {
