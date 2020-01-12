@@ -22,23 +22,8 @@ ManTotem::~ManTotem() {
     entities.shrink_to_fit();
 }
 
-void ManTotem::Update(ManNavMesh* manNavMesh){
-    if(GetEntities().size() > 0 ){
-        auto cTransformableTotem = static_cast<CTransformable*>(GetEntities()[0].get()->GetComponent(CompType::TransformableComp).get());     
-        for(auto navmesh : manNavMesh->GetEntities()){
-            auto cDimensions = static_cast<CDimensions*>(navmesh.get()->GetComponent(CompType::DimensionsComp).get());
-            auto cTransformableNav = static_cast<CTransformable*>(navmesh.get()->GetComponent(CompType::TransformableComp).get()); 
-            if( ( (cTransformableTotem->position.x >= (cTransformableNav->position.x-(cDimensions->width/2))) && 
-                (cTransformableTotem->position.x <= (cTransformableNav->position.x+(cDimensions->width/2))) ) &&
-                ( (cTransformableTotem->position.z >= (cTransformableNav->position.z-(cDimensions->depth/2))) && 
-                (cTransformableTotem->position.z <= (cTransformableNav->position.z+(cDimensions->depth/2))) )  ){
-                    auto cCurrentNavMesh = static_cast<CCurrentNavMesh*>(GetEntities()[0].get()->GetComponent(CompType::CurrentNavMeshComp).get());
-                    auto cNavMesh = static_cast<CNavMesh*>(navmesh.get()->GetComponent(CompType::NavMeshComp).get());
-                    cCurrentNavMesh->currentNavMesh = cNavMesh->id;
-                    //std::cout << " El totem pertenece al naveMesh: " << cNavMesh->id << std::endl;
-                }       
-        }
-    }
+void ManTotem::Update(){
+
 }
 
 
@@ -72,6 +57,7 @@ void ManTotem::AppertainCar(DataMap d){
 
 // crea el objeto en irlich y lo pone en el mapa de nuevo
 void ManTotem::ResetTotem(DataMap d){
+    //std::cout << "reseteamos posicion del totem" << std::endl;
     auto transfActualCar = any_cast<CTransformable*>(d["TransfCarPos"]);
     glm::vec3 posNewTotem = glm::vec3(0.0f,20.0f,0.0f);
     float angleRotation = (transfActualCar->rotation.y * 3.141592) / 180.0;
@@ -79,6 +65,14 @@ void ManTotem::ResetTotem(DataMap d){
     posNewTotem.z = transfActualCar->position.z + sin(angleRotation)*(-25);
 
     CreateTotem(posNewTotem);
+
+    //std::cout << "vamos a pasar el totem desde eventos" << std::endl;
+    // Vamos a actualizar el NavMesh en el que se va a soltar el Totem
+    DataMap data;
+    shared_ptr<EventManager> eventManager = EventManager::GetInstance();
+    data["totem"] = GetEntities()[0].get();                                                        // pasamos un puntero al totem
+    eventManager->AddEventMulti(Event{EventType::ACTUALIZE_NAVMESH_TOTEM, data});
+    //std::cout << "volvemos de lanzar el evento beibeee" << std::endl;
 
     // Debemos de crearlo tambien en iirlicht
     auto renderFacadeManager = RenderFacadeManager::GetInstance();

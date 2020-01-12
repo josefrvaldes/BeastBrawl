@@ -74,7 +74,8 @@ class StateInGame : public State {
     shared_ptr<ManWayPoint> manWayPoint;
     shared_ptr<ManNamePlate> manNamePlates;
     shared_ptr<ManBoundingWall> manBoundingWall;
-    
+
+
     RenderFacade* renderEngine = { nullptr };
     InputFacade* inputEngine = { nullptr };
     PhysicsFacade* physicsEngine = { nullptr };

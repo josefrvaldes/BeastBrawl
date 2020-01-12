@@ -264,7 +264,11 @@ void StateInGame::Input() {
 }
 
 void StateInGame::Update() {
+
+    //std::cout << "entramos" << std::endl;
+
     eventManager->Update();
+
 
 
     //El navmesh de las IAs ya las actualizamos cuando llegan a cada waypoint
@@ -309,7 +313,7 @@ void StateInGame::Update() {
 
     //Actualizamos el navmesh del totem
     //manTotems->Update(manNavMesh.get());
-    manNavMesh->UpdateNavMeshTotem(manTotems.get());
+    manNavMesh->UpdateNavMeshTotem();
     
 
 
@@ -403,6 +407,12 @@ void StateInGame::Update() {
 
 
     renderEngine->FacadeUpdatePlates(manNamePlates.get());
+
+
+
+    //std::cout << "salimos" << std::endl;
+
+
     
 }
 

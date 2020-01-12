@@ -8,10 +8,17 @@
 #include "ManCar.h"
 #include "../../lib/glm/vec3.hpp"
 #include "../Facade/Render/RenderFacadeManager.h"
+#include "../EventManager/Event.h"
+#include "../EventManager/EventManager.h"
+
 
 class NavMesh;
 
+
 using namespace std;
+struct Car;
+struct CarAI;
+struct Data;
 
 class ManNavMesh : public Manager{
    public:
@@ -21,7 +28,7 @@ class ManNavMesh : public Manager{
     void CreateNavMesh(glm::vec3 pos, glm::vec3 rot, float width, float height, float depth, vector<int> waypoints);
     void CreateNavMesh();
 
-    void UpdateNavMeshTotem(Manager* manTotem);
+    void UpdateNavMeshTotem();
     //void UpdateNavMeshCarsAI(ManCar* manCars);
 
     // vector<shared_ptr<NavMesh>> GetEntities() const {
@@ -35,5 +42,8 @@ class ManNavMesh : public Manager{
 
    private:
     //vector<shared_ptr<NavMesh>> navMeshes;
-
+    void SubscribeToEvents() override;
+    void ActualizeNavMeshTotem(DataMap d);
+    void ActualizeNavMeshCarAI(DataMap d);
+    //void ActualizeNavMeshCarPlayer(Car* carPlayer);
 };

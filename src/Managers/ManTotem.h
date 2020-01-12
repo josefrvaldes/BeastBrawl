@@ -23,7 +23,7 @@ class ManTotem : public Manager{
 
     void CreateTotem();
     void CreateTotem(glm::vec3 _position);
-    void Update(ManNavMesh* manNavMesh);
+    void Update();
     shared_ptr<Totem>& GetTotem() { return totem; };
     //vector<shared_ptr<Totem>> GetEntities() const { return totems; };
 
