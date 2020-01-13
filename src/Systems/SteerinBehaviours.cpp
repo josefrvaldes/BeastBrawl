@@ -3,18 +3,22 @@
 #include "../Managers/ManCar.h"
 #include "../Managers/ManBoxPowerUp.h"
 #include "../Managers/ManPowerUp.h"
+#include "../Managers/ManBoundingWall.h"
 #include "../Entities/Car.h"
 #include "../Entities/CarAI.h"
 #include "../Entities/Entity.h"
 #include "../Entities/BoxPowerUp.h"
 #include "../Entities/PowerUp.h"
+#include "../Entities/BoundingWall.h"
 #include "../Components/CTransformable.h"
 #include "../Components/CNitro.h"
 #include "../Components/CPosDestination.h"
 #include "../Components/CCar.h"
 #include "../Components/CBoundingSphere.h"
 #include "../Components/CPowerUp.h"
-
+#include "../Components/CDimensions.h"
+#include "../Components/CBoundingPlane.h"
+#include "../Components/CBoundingRay.h"
 
 
 
@@ -105,14 +109,6 @@ bool SteeringBehaviours::UpdateObstacleAvoidance(Entity* m_Car, ManPowerUp* m_ma
     float posZSiguiente = cTransformable->position.z + sin(angleRotation) * cCar->speed;
     glm::vec2 vectorVelocity = glm::vec2(posXSiguiente - cTransformable->position.x , posZSiguiente - cTransformable->position.z );
 
-    // Obstacle avoidance
-    //auto cTransformable2 = static_cast<CTransformable*>(m_manCar->GetCar().get()->GetComponent(CompType::TransformableComp).get());
-    //auto cCar2 = static_cast<CCar*>(m_manCar->GetCar().get()->GetComponent(CompType::CarComp).get());
-    //if(cCar2->speed==0) cCar2->speed=0.1;
-    //float angleRotation2 = (cTransformable2->rotation.y * PI) / 180.0;
-    //float posXSiguiente2 = cTransformable2->position.x - cos(angleRotation2) * cCar2->speed;
-    //float posZSiguiente2 = cTransformable2->position.z + sin(angleRotation2) * cCar2->speed;
-    //glm::vec2 vectorVelocity2 = glm::vec2(posXSiguiente2 - cTransformable2->position.x , posZSiguiente2 - cTransformable2->position.z );
     glm::vec2 vectorForceAvoid = ObstacleAvoidance(m_Car, m_manPowerUps, vectorVelocity);
 
     if(vectorForceAvoid.x != 0.0 || vectorForceAvoid.y != 0.0 ){
@@ -122,6 +118,32 @@ bool SteeringBehaviours::UpdateObstacleAvoidance(Entity* m_Car, ManPowerUp* m_ma
         return true;
     }
     return false;
+}
+
+
+bool SteeringBehaviours::UpdateWallAvoidance(Entity* m_Car,  ManBoundingWall* m_manBoundingWall) const{
+    // se calcula el vector al siguiente punto al que avanzara el coche
+    auto cTransformable = static_cast<CTransformable*>(m_Car->GetComponent(CompType::TransformableComp).get());
+    auto cCar = static_cast<CCar*>(m_Car->GetComponent(CompType::CarComp).get());
+    auto cNitro = static_cast<CNitro *>(m_Car->GetComponent(CompType::NitroComp).get());
+    if(cCar->speed==0) cCar->speed=0.1;
+    float angleRotation = (cTransformable->rotation.y * PI) / 180.0;
+    float posXSiguiente = cTransformable->position.x - cos(angleRotation) * cCar->speed;
+    float posZSiguiente = cTransformable->position.z + sin(angleRotation) * cCar->speed;
+    glm::vec2 vectorVelocity = glm::vec2(posXSiguiente - cTransformable->position.x , posZSiguiente - cTransformable->position.z );
+
+    glm::vec2 vectorForceAvoid = WallAvoidance(m_Car, m_manBoundingWall, vectorVelocity);
+
+    if(vectorForceAvoid.x != 0.0 || vectorForceAvoid.y != 0.0 ){
+        std::cout << "Se viene choque" << std::endl;
+        float angle = CalculateAngle(vectorVelocity, vectorForceAvoid, cTransformable->rotation.y);
+        UpdateTransformable(cCar, cTransformable, cNitro, angle);
+        return true;
+    }else{
+        std::cout << "No choque" << std::endl;
+    }
+    return false;
+
 }
 
 
@@ -346,15 +368,223 @@ bool SteeringBehaviours::CollisionRaySphere(Entity* m_Car, Entity* m_object, con
     //vectorVelocityN *= 50.0;
 
     IntersectData intersData = clPhysics->HandleCollisionsRayWithSpheres(*cTransformableCar, *cTransformableObject, *cSphereObject, vectorVelocityN);
-
+    if(intersData.intersects == false) return false;
     distance = intersData.distance;
-
     vectorForceAvoid = Seek(m_Car, intersData.direction, m_velocityVector); // aunque ponga direction es el target
 
     return true;
 }
 
 
+
+glm::vec2 SteeringBehaviours::WallAvoidance(Entity* m_Car, ManBoundingWall* m_manBoundingWall, const glm::vec2& m_velocityVector) const{
+    auto cCar = static_cast<CCar*>(m_Car->GetComponent(CompType::CarComp).get());
+    auto cRay = static_cast<CBoundingRay*>(m_Car->GetComponent(CompType::CompBoundingRay).get());
+    glm::vec2 vectorForce = glm::vec2(0.0, 0.0);
+    glm::vec3 target = glm::vec3(0.0, 0.0, 0.0);
+    float distance = 999999999;
+    float finalDistance = 99999998;
+    glm::vec2 vectorForceAvoid;
+    Entity* actualObstacle = nullptr;
+
+    for(std::shared_ptr<Entity> obstacle : m_manBoundingWall->GetEntities()){
+        if(CollisionRayPlane(m_Car, obstacle.get(), m_velocityVector, distance, vectorForceAvoid, target)==true){
+            if(distance < finalDistance && distance < cCar->speed*0.4+cRay->baseDistance && distance > 0){
+                //std::cout << "Collisiona" << std::endl;
+                finalDistance = distance;
+                vectorForce = vectorForceAvoid;
+                actualObstacle = obstacle.get();
+            }
+        }
+    }
+
+    // evitar quedar atrapado en la esquina
+    if(actualObstacle == nullptr){                      // no colisiona contra nada
+        if(cRay->previousPlane == nullptr){
+            cRay->iteratorSamePlane = 0;
+        }else if(cRay->iteratorSamePlane < cRay->maxIteratorSamePlane){
+            cRay->iteratorSamePlane++;
+            vectorForce = Seek(m_Car, cRay->target, m_velocityVector);
+        }else{
+            cRay->iteratorSamePlane = 0;
+            cRay->previousPlane = nullptr;
+        }
+    }else{                                              // colisiona contra un muro
+        auto planeObstacle = static_cast<CBoundingPlane*>(actualObstacle->GetComponent(CompType::CompBoundingPlane).get());
+        if(cRay->previousPlane == nullptr){
+            cRay->previousPlane = planeObstacle;
+            cRay->iteratorSamePlane = 0;
+            cRay->target = target;
+        }else{                                          // hay un muro anterior
+            if(planeObstacle != cRay->previousPlane){
+                if(cRay->iteratorSamePlane < cRay->maxIteratorSamePlane){
+                    cRay->iteratorSamePlane++;
+                    vectorForce = Seek(m_Car, cRay->target, m_velocityVector);
+                }else{
+                    cRay->iteratorSamePlane = 0;
+                    cRay->previousPlane = planeObstacle;
+                    cRay->target = target;
+                }
+            }else{
+                cRay->target = target;
+                cRay->iteratorSamePlane = 0;
+            }
+        }
+    }
+
+
+
+    return vectorForce;
+}
+
+bool SteeringBehaviours::CollisionRayPlane(Entity* m_Car, Entity* m_object, const glm::vec2& m_velocityVector, float& distance, glm::vec2& vectorForceAvoid, glm::vec3& target) const{
+    //auto cCar = static_cast<CCar*>(m_Car->GetComponent(CompType::CarComp).get());
+    auto cTransformableCar = static_cast<CTransformable*>(m_Car->GetComponent(CompType::TransformableComp).get());
+    auto cTransformableObject = static_cast<CTransformable*>(m_object->GetComponent(CompType::TransformableComp).get());
+    auto cBoundPlaneObject = static_cast<CBoundingPlane*>(m_object->GetComponent(CompType::CompBoundingPlane).get());
+
+    // Normalizar vector velocidad del coche
+    float vectorDistance = sqrt(m_velocityVector.x*m_velocityVector.x + m_velocityVector.y*m_velocityVector.y);
+    glm::vec3 vectorVelocityN = glm::vec3( m_velocityVector.x*(1/vectorDistance) , 0.0 ,m_velocityVector.y*(1/vectorDistance)) ;
+
+    IntersectData intersData = clPhysics->HandleCollisionsRayWithPlane(*cTransformableCar, vectorVelocityN, *cBoundPlaneObject);
+    if(intersData.intersects == false) return false;
+    distance = intersData.distance;
+    target = intersData.direction;
+    vectorForceAvoid = Seek(m_Car, intersData.direction, m_velocityVector); // aunque ponga direction es el target
+
+    return true;
+}
+/*
+// http://www.opengl-tutorial.org/miscellaneous/clicking-on-objects/picking-with-custom-ray-obb-function/
+    glm::vec3 ray_origin(cTransformableCar->position.x, cTransformableCar->position.y, cTransformableCar->position.z);
+    glm::vec3 ray_direction = vectorVelocityN;
+    float intersection_distance = -1; // Output of TestRayOBBIntersection()
+	glm::vec3 aabb_min(-1, -1, -1);
+	glm::vec3 aabb_max( 1, 1, 1);
+
+    glm::quat orientations = glm::quat(glm::vec3(cTransformableObject->rotation.x, cTransformableObject->rotation.y, cTransformableObject->rotation.z));
+
+    glm::mat4 RotationMatrix = glm::toMat4(orientations);
+	glm::mat4 TranslationMatrix = glm::translate(glm::mat4(), glm::vec3(cTransformableObject->position.x, cTransformableObject->position.y, cTransformableObject->position.z));
+	glm::mat4 ModelMatrix = TranslationMatrix * RotationMatrix;
+
+    if ( TestRayOBBIntersection( ray_origin, ray_direction, aabb_min, aabb_max, ModelMatrix, intersection_distance) ){
+        std::cout << "HAY COLISION: " << intersection_distance << std::endl;
+		//std::ostringstream oss;
+		//oss << "mesh " << i;
+		//message = oss.str();
+		//break;
+	}else{
+        std::cout << "No HAY: " << std::endl;
+    }
+bool  SteeringBehaviours::TestRayOBBIntersection(glm::vec3 ray_origin, glm::vec3 ray_direction, glm::vec3 aabb_min, glm::vec3 aabb_max, glm::mat4 ModelMatrix, float& intersection_distance) const{
+	// Intersection method from Real-Time Rendering and Essential Mathematics for Games
+	
+	float tMin = 0.0f;
+	float tMax = 100000.0f;
+
+	glm::vec3 OBBposition_worldspace(ModelMatrix[3].x, ModelMatrix[3].y, ModelMatrix[3].z);
+
+	glm::vec3 delta = OBBposition_worldspace - ray_origin;
+
+	// Test intersection with the 2 planes perpendicular to the OBB's X axis
+	{
+		glm::vec3 xaxis(ModelMatrix[0].x, ModelMatrix[0].y, ModelMatrix[0].z);
+		float e = glm::dot(xaxis, delta);
+		float f = glm::dot(ray_direction, xaxis);
+
+		if ( fabs(f) > 0.001f ){ // Standard case
+
+			float t1 = (e+aabb_min.x)/f; // Intersection with the "left" plane
+			float t2 = (e+aabb_max.x)/f; // Intersection with the "right" plane
+			// t1 and t2 now contain distances betwen ray origin and ray-plane intersections
+
+			// We want t1 to represent the nearest intersection, 
+			// so if it's not the case, invert t1 and t2
+			if (t1>t2){
+				float w=t1;t1=t2;t2=w; // swap t1 and t2
+			}
+
+			// tMax is the nearest "far" intersection (amongst the X,Y and Z planes pairs)
+			if ( t2 < tMax )
+				tMax = t2;
+			// tMin is the farthest "near" intersection (amongst the X,Y and Z planes pairs)
+			if ( t1 > tMin )
+				tMin = t1;
+
+			// And here's the trick :
+			// If "far" is closer than "near", then there is NO intersection.
+			// See the images in the tutorials for the visual explanation.
+			if (tMax < tMin )
+				return false;
+
+		}else{ // Rare case : the ray is almost parallel to the planes, so they don't have any "intersection"
+			if(-e+aabb_min.x > 0.0f || -e+aabb_max.x < 0.0f)
+				return false;
+		}
+	}
+
+
+	// Test intersection with the 2 planes perpendicular to the OBB's Y axis
+	// Exactly the same thing than above.
+	{
+		glm::vec3 yaxis(ModelMatrix[1].x, ModelMatrix[1].y, ModelMatrix[1].z);
+		float e = glm::dot(yaxis, delta);
+		float f = glm::dot(ray_direction, yaxis);
+
+		if ( fabs(f) > 0.001f ){
+
+			float t1 = (e+aabb_min.y)/f;
+			float t2 = (e+aabb_max.y)/f;
+
+			if (t1>t2){float w=t1;t1=t2;t2=w;}
+
+			if ( t2 < tMax )
+				tMax = t2;
+			if ( t1 > tMin )
+				tMin = t1;
+			if (tMin > tMax)
+				return false;
+
+		}else{
+			if(-e+aabb_min.y > 0.0f || -e+aabb_max.y < 0.0f)
+				return false;
+		}
+	}
+
+
+	// Test intersection with the 2 planes perpendicular to the OBB's Z axis
+	// Exactly the same thing than above.
+	{
+		glm::vec3 zaxis(ModelMatrix[2].x, ModelMatrix[2].y, ModelMatrix[2].z);
+		float e = glm::dot(zaxis, delta);
+		float f = glm::dot(ray_direction, zaxis);
+
+		if ( fabs(f) > 0.001f ){
+
+			float t1 = (e+aabb_min.z)/f;
+			float t2 = (e+aabb_max.z)/f;
+
+			if (t1>t2){float w=t1;t1=t2;t2=w;}
+
+			if ( t2 < tMax )
+				tMax = t2;
+			if ( t1 > tMin )
+				tMin = t1;
+			if (tMin > tMax)
+				return false;
+
+		}else{
+			if(-e+aabb_min.z > 0.0f || -e+aabb_max.z < 0.0f)
+				return false;
+		}
+	}
+
+	intersection_distance = tMin;
+	return true;
+}
+*/
 
 
 // devuelve un angulo entre -180 y 180

@@ -233,7 +233,7 @@ void StateInGame::Update() {
     manCars->UpdateCar();
     //manCars->UpdateCarAI();
     for(auto actualAI : manCars->GetEntitiesAI()){
-        manCars->UpdateCarAI(actualAI.get(), manPowerUps.get(), manBoxPowerUps.get(), manTotems.get(), manWayPoint.get());
+        manCars->UpdateCarAI(actualAI.get(), manPowerUps.get(), manBoxPowerUps.get(), manTotems.get(), manWayPoint.get(), manBoundingWall.get());
     }
 
     // ACTUALIZACION DE LAS FISICAS DE LOS COCHES

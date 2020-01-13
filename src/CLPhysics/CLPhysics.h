@@ -26,7 +26,7 @@ class CLPhysics {
     void HandleCollisionsWithPlanes();
 
     IntersectData HandleCollisionsRayWithSpheres(CTransformable &trCar1, CTransformable &trCar2, CBoundingSphere &spCar2, const glm::vec3 &normalRay);
-
+    IntersectData HandleCollisionsRayWithPlane(CTransformable &trRayOrigin,  glm::vec3 &rayNormalNormalized, CBoundingPlane &planeObject);
     // void Integrate(Entity &e, float delta);
 
     static void RunTests();

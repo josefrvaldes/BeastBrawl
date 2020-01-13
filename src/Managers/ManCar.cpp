@@ -22,6 +22,7 @@
 #include "../Managers/ManPowerUp.h"
 #include "../Managers/ManBoxPowerUp.h"
 #include "../Managers/ManTotem.h"
+#include "../Managers/ManBoundingWall.h"
 
 
 class Position;
@@ -77,9 +78,9 @@ void ManCar::UpdateCar(){
 }
 
 
-void ManCar::UpdateCarAI(CarAI* carAI, ManPowerUp* m_manPowerUp, ManBoxPowerUp* m_manBoxPowerUp, ManTotem* m_manTotem, ManWayPoint* graph){
+void ManCar::UpdateCarAI(CarAI* carAI, ManPowerUp* m_manPowerUp, ManBoxPowerUp* m_manBoxPowerUp, ManTotem* m_manTotem, ManWayPoint* graph, ManBoundingWall* m_manBoundingWall){
     systemBtMoveTo->update(carAI, this, m_manPowerUp, m_manBoxPowerUp, m_manTotem, graph);
-    systemBtLoDMove->update(carAI, this, m_manPowerUp, m_manBoxPowerUp, m_manTotem, graph);
+    systemBtLoDMove->update(carAI, this, m_manPowerUp, m_manBoxPowerUp, m_manTotem, graph, m_manBoundingWall);
 
     physicsAI->Update(carAI, graph);
 

@@ -157,6 +157,8 @@ struct ApplyFuzzyLogic_LoDMove : public behaviourTree {
 
 struct Pruebas_LoDMove : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
+        return blackboard->steeringBehaviours->UpdateWallAvoidance(blackboard->actualCar, blackboard->manBoundingWall);
+        return true;
         return blackboard->steeringBehaviours->UpdateObstacleAvoidance(blackboard->actualCar, blackboard->manPowerUps);
     } 
 };
@@ -244,13 +246,13 @@ SystemBtLoDMove::SystemBtLoDMove(){
 
 
 
-void SystemBtLoDMove::update(CarAI* actualCar, ManCar* manCars,ManPowerUp* manPowerUps, ManBoxPowerUp* manBoxPowerUps, ManTotem* manTotems, ManWayPoint* manWayPoint){
+void SystemBtLoDMove::update(CarAI* actualCar, ManCar* manCars,ManPowerUp* manPowerUps, ManBoxPowerUp* manBoxPowerUps, ManTotem* manTotems, ManWayPoint* manWayPoint, ManBoundingWall* m_manBoundingWall){
     if(entradoFL==false){
         fuzzyLogic->InitSystemFuzzyLogicAI(actualCar);  // To-Do: arreglar esta llamada para solo hacerla una vez
         entradoFL=true;
     }
 
-    unique_ptr<Blackboard> blackboard = make_unique<Blackboard>(actualCar, manCars, manPowerUps, manBoxPowerUps, manTotems, manWayPoint, fuzzyLogic.get(), steeringBehaviours.get());
+    unique_ptr<Blackboard> blackboard = make_unique<Blackboard>(actualCar, manCars, manPowerUps, manBoxPowerUps, manTotems, manWayPoint, m_manBoundingWall, fuzzyLogic.get(), steeringBehaviours.get());
 
     selectorBehaviourTree->run(blackboard.get());
 }

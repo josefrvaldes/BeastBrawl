@@ -424,3 +424,10 @@ IntersectData CLPhysics::HandleCollisionsRayWithSpheres(CTransformable &trCar1, 
 
     return intersData;   
 }
+
+IntersectData CLPhysics::HandleCollisionsRayWithPlane(CTransformable &trRayOrigin,  glm::vec3 &rayNormalNormalized, CBoundingPlane &planeObject){
+    glm::vec3 positionRayOrigin(trRayOrigin.position.x, trRayOrigin.position.y, trRayOrigin.position.z);
+    IntersectData intersData = planeObject.IntersectRay(positionRayOrigin, rayNormalNormalized);
+
+    return intersData;
+}
