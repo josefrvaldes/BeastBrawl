@@ -62,7 +62,7 @@ void ManTotem::ResetTotem(DataMap d){
     auto renderFacadeManager = RenderFacadeManager::GetInstance();
     auto renderEngine = renderFacadeManager->GetRenderFacade();
     //for(long unsigned int i=0; i< totems.size(); ++i){
-        renderEngine->FacadeAddObject(totems[0].get());
+        renderEngine->FacadeAddObjectTotem(totems[0].get());
    // }
 }
 
