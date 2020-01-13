@@ -20,6 +20,7 @@ class RenderFacade {
     virtual ~RenderFacade() = default;
     virtual const uint16_t FacadeAddObject(Entity*) = 0;
     virtual const uint16_t FacadeAddObjectCar(Entity*) = 0;
+    virtual const uint16_t FacadeAddObjectTotem(Entity* entity) = 0;
     virtual const void FacadeAddObjects(vector<Entity*>) = 0;
     virtual void FacadeAddCamera(Entity*) = 0;
     virtual void UpdateTransformable(Entity*) = 0;
@@ -60,8 +61,10 @@ class RenderFacade {
 
    protected:
     uint16_t idCar = 0;
+    uint16_t idTotem = 0;
     int numEnemyCars = 0;
 
     time_point<system_clock> timeStart;
     const int64_t inputDelay = 500;       // 0.5 segundos
+    const int64_t inputDelayCamera = 250;       // 0.5 segundos
 };
