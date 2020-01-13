@@ -170,6 +170,10 @@ void SystemPathPlanning::CalculatePathToNavMesh(DataMap data){
 
     auto cWayPoint = static_cast<CWayPoint*>(graph->GetEntities()[path.top()]->GetComponent(CompType::WayPointComp).get());
     carAI->SetWayPoint(cWayPoint);
+
+    auto cPosDestination = static_cast<CPosDestination*>(carAI->GetComponent(CompType::PosDestination).get());
+    cPosDestination->position = cWayPoint->position;
+    carAI->SetDestination(cPosDestination);
 }
 
 
