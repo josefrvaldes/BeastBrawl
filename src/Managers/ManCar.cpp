@@ -115,7 +115,7 @@ void ManCar::CreateCar() {
 void ManCar::CreateCarAI(glm::vec3 _position,  CWayPoint* _waypoint){
 	shared_ptr<CarAI> p = make_shared<CarAI>(_position);
     CarAIs.push_back(p);
-    p->SetWayPoint(_waypoint); // tiene que tener un waypoint inicial To-Do: cambiar esto
+    p->SetWayPoint(_waypoint); // TODO: tiene que tener un waypoint inicial To-Do: cambiar esto
 }
 
 

@@ -52,6 +52,7 @@ void ManNavMesh::ActualizeNavMeshTotem(DataMap d){
             }       
     }
     if(!todoCorrecto){
+        // hay que comprobar tambien si donde lo queremos crear esta dentro de un objeto (colisionando con un objeto)
         std::cout << "ALGOOOOOOOOOOOOO VAAAAAAAAAAAAAAAAAAAAAAAA MAAAAAAAAAAAAAAAAAAAAAAAAAAAAL" << std::endl;
         std::cout << "El totem no esta en ningun navMesh" << std::endl;
 
@@ -74,6 +75,19 @@ void ManNavMesh::ActualizeNavMeshCarAI(DataMap d){
     }
 }
 
-void ManNavMesh::UpdateNavMeshTotem(){
-
+void ManNavMesh::UpdateNavMeshPlayer(Entity* carPlayer){
+    auto cTransformableCar = static_cast<CTransformable*>(carPlayer->GetComponent(CompType::TransformableComp).get());     
+    for(auto navmesh : GetEntities()){
+        auto cDimensions = static_cast<CDimensions*>(navmesh.get()->GetComponent(CompType::DimensionsComp).get());
+        auto cTransformableNav = static_cast<CTransformable*>(navmesh.get()->GetComponent(CompType::TransformableComp).get()); 
+        if( ( (cTransformableCar->position.x >= (cTransformableNav->position.x-(cDimensions->width/2))) && 
+            (cTransformableCar->position.x <= (cTransformableNav->position.x+(cDimensions->width/2))) ) &&
+            ( (cTransformableCar->position.z >= (cTransformableNav->position.z-(cDimensions->depth/2))) && 
+            (cTransformableCar->position.z <= (cTransformableNav->position.z+(cDimensions->depth/2))) )  ){
+                auto cCurrentNavMesh = static_cast<CCurrentNavMesh*>(carPlayer->GetComponent(CompType::CurrentNavMeshComp).get());
+                auto cNavMesh = static_cast<CNavMesh*>(navmesh.get()->GetComponent(CompType::NavMeshComp).get());
+                cCurrentNavMesh->currentNavMesh = cNavMesh->id;
+                //std::cout << " El cochecito lereee pertenece al naveMesh: " << cNavMesh->id << std::endl;
+            }       
+    }
 }

@@ -101,7 +101,6 @@ struct TotemAlone_mt : public behaviourTree {
 //CONDICION Tenemos un powerUp de ataque? Melon o Banana
 struct HavePowerUpAttack_mt : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
-        return true;
         auto cPowerUp = static_cast<CPowerUp*>(blackboard->actualCar->GetComponent(CompType::PowerUpComp).get());
         if( cPowerUp->typePowerUp == typeCPowerUp::MelonMolon || 
             cPowerUp->typePowerUp == typeCPowerUp::TeleBanana   ){
@@ -117,21 +116,21 @@ struct HavePowerUpAttack_mt : public behaviourTree {
 struct MoveToTotem_mt : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
         if( blackboard->manTotems->GetEntities().size() > 0){
-            //std::cout << "La IA va a por el Totem que esta en el suelo" << std::endl;
             auto cCurrendNavMeshCar = static_cast<CCurrentNavMesh*>(blackboard->actualCar->GetComponent(CompType::CurrentNavMeshComp).get());
             auto cCurrentNavMeshTotem = static_cast<CCurrentNavMesh*>(blackboard->manTotems->GetEntities()[0].get()->GetComponent(CompType::CurrentNavMeshComp).get());
-            
+            //std::cout << "comprobamos si estamos en el mismo mesh que el totem " << std::endl;
             //Si el coche esta en el mismo navmesh que el totem
             if(cCurrendNavMeshCar->currentNavMesh == cCurrentNavMeshTotem->currentNavMesh){
+                //std::cout << "lo estamos" << std::endl;
                 auto cTransformable = static_cast<CTransformable*>(blackboard->manTotems->GetEntities()[0].get()->GetComponent(CompType::TransformableComp).get());
                 shared_ptr<EventManager> eventManager = EventManager::GetInstance();
                 DataMap dataTotem;                                                                           
-                dataTotem["actualCar"] = blackboard->actualCar;              // nos guardamos el puntero para eliminar el powerUp
-                dataTotem["posDestination"] = cTransformable->position;              // nos guardamos el puntero al coche                              
+                dataTotem["actualCar"] = blackboard->actualCar;              
+                dataTotem["posDestination"] = cTransformable->position;                                        
                 eventManager->AddEventMulti(Event{EventType::CHANGE_DESTINATION, dataTotem}); 
                 return true;
             }else{
-                //cout << "----- EL TOTEM ESTA EN OTRO NAVMESH-----\n";
+                //cout << "no lo estamos\n";
                 auto cTargetNavMeshCar = static_cast<CTargetNavMesh*>(blackboard->actualCar->GetComponent(CompType::TargetNavMeshComp).get());
 
                 //Si el TargetNavMesh no esta donde esta el totem, calculamos dijkstra
@@ -159,7 +158,7 @@ struct MoveToTotem_mt : public behaviourTree {
 // TODO ... para hacerlo mas autonomo --> nos moveremos aun powerUp aleatorio del mapa.. mas adelante sera al mas cercano/ al que este mirando
 struct MoveToPowerUp_mt : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
-        //std::cout << "Vamos a movernos por los powerUps UUUEEEEPAA" << std::endl;
+        std::cout << "Vamos a movernos por los powerUps UUUEEEEPAA" << std::endl;
         shared_ptr<EventManager> eventManager = EventManager::GetInstance();
         DataMap dataPowerUp;       
         dataPowerUp["actualCar"] = blackboard->actualCar;     
@@ -172,18 +171,19 @@ struct MoveToPowerUp_mt : public behaviourTree {
 //ACCION movernos al jugador con Totem 
 struct MoveToCarTotem_mt : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
+        auto actualCar = blackboard->actualCar;
         for(auto actualAI : blackboard->manCars->GetEntitiesAI()){
             auto cTotem = static_cast<CTotem*>(actualAI.get()->GetComponent(CompType::TotemComp).get());
             // TODO actualmente debemsos hacer que si una IA tiene el Totem no se siga a si misma... quedaria parada
             if(cTotem->active == true){
-                auto cCurrendNavMeshCar = static_cast<CCurrentNavMesh*>(blackboard->actualCar->GetComponent(CompType::CurrentNavMeshComp).get());
+                auto cCurrendNavMeshCar = static_cast<CCurrentNavMesh*>(actualCar->GetComponent(CompType::CurrentNavMeshComp).get());
                 auto cCurrendNavMeshCarAI = static_cast<CCurrentNavMesh*>(actualAI.get()->GetComponent(CompType::CurrentNavMeshComp).get());
                 if(cCurrendNavMeshCar->currentNavMesh == cCurrendNavMeshCarAI->currentNavMesh){
-                    //if(blackboard->actualCar != actualAI.get()){
+                    //if(actualCar != actualAI.get()){
                         auto cTransformable = static_cast<CTransformable*>(actualAI.get()->GetComponent(CompType::TransformableComp).get());
                         shared_ptr<EventManager> eventManager = EventManager::GetInstance();
                         DataMap dataCarTotem;                                                                           
-                        dataCarTotem["actualCar"] = blackboard->actualCar;             
+                        dataCarTotem["actualCar"] = actualCar;             
                         dataCarTotem["posDestination"] = cTransformable->position;                                        
                         eventManager->AddEventMulti(Event{EventType::CHANGE_DESTINATION, dataCarTotem}); 
                         return true;
@@ -192,8 +192,8 @@ struct MoveToCarTotem_mt : public behaviourTree {
                     //    return false;
                     //}
                 }else{
-                    //cout << "----- EL TOTEM ESTA EN OTRO NAVMESH-----\n";
-                    auto cTargetNavMeshCar = static_cast<CTargetNavMesh*>(blackboard->actualCar->GetComponent(CompType::TargetNavMeshComp).get());
+                    //cout << "----- EL COCHE CON TOTEM ESTA EN OTRO NAVMESH-----\n";
+                    auto cTargetNavMeshCar = static_cast<CTargetNavMesh*>(actualCar->GetComponent(CompType::TargetNavMeshComp).get());
 
                     //Si el TargetNavMesh no esta donde esta el totem, calculamos dijkstra
                     if(cTargetNavMeshCar->targetNavMesh != cCurrendNavMeshCarAI->currentNavMesh){
@@ -203,7 +203,7 @@ struct MoveToCarTotem_mt : public behaviourTree {
                         //std::cout << "Vamos a movernos por los powerUps UUUEEEEPAA" << std::endl;
                         shared_ptr<EventManager> eventManager = EventManager::GetInstance();
                         DataMap dataPowerUp;       
-                        dataPowerUp["actualCar"] = blackboard->actualCar;     
+                        dataPowerUp["actualCar"] = actualCar;     
                         dataPowerUp["manWayPoints"] = blackboard->manWayPoint;
                         dataPowerUp["manNavMesh"] = blackboard->manNavMesh;                                                                      
                         eventManager->AddEventMulti(Event{EventType::CALCULATE_PATH_TO_NAVMESH, dataPowerUp}); 
