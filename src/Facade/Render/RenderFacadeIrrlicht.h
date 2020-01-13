@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../../lib/irrlicht/irrlicht.h"
+#include "../../../include/irrlicht/irrlicht.h"
 #include "../../EventManager/Event.h"
 #include "../../EventManager/EventManager.h"
 #include "../Input/InputFacadeIrrlicht.h"

@@ -1,6 +1,6 @@
 #pragma once
-#include "../../lib/glm/geometric.hpp"
-#include "../../lib/glm/vec3.hpp"
+#include "../../include/glm/geometric.hpp"
+#include "../../include/glm/vec3.hpp"
 
 using namespace glm;
 

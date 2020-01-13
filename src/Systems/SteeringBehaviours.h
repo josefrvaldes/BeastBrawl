@@ -1,8 +1,8 @@
 #pragma once
 
 #include <math.h>
-#include "../../lib/glm/vec2.hpp"
-#include "../../lib/glm/vec3.hpp"
+#include "../../include/glm/vec2.hpp"
+#include "../../include/glm/vec3.hpp"
 #include <memory>
 #include <vector>
 #include <map>
