@@ -26,7 +26,7 @@ IntersectData CBoundingSphere::IntersectRay(const CTransformable &transCarRay, c
     vec3 vecDiferenceM = vec3(transCarRay.position.x , transCarRay.position.y, transCarRay.position.z) - center;
     // Producto escalar
     float b = vecDiferenceM.x * normalRay.x + 0.0 + vecDiferenceM.z * normalRay.z;
-    float c = vecDiferenceM.x * vecDiferenceM.x + 0.0 + vecDiferenceM.z * vecDiferenceM.z - 30 * 30;
+    float c = vecDiferenceM.x * vecDiferenceM.x + 0.0 + vecDiferenceM.z * vecDiferenceM.z - (radius+radius+radius) * (radius+radius+radius);
 
     if (c > 0.0f && b > 0.0f) return IntersectData(false, vec3(0,0,0), -1); 
     float discr = b*b - c; 

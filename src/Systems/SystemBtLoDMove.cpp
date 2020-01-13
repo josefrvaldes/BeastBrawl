@@ -157,9 +157,13 @@ struct ApplyFuzzyLogic_LoDMove : public behaviourTree {
 
 struct Pruebas_LoDMove : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
-        return blackboard->steeringBehaviours->UpdateWallAvoidance(blackboard->actualCar, blackboard->manBoundingWall);
-        return true;
-        return blackboard->steeringBehaviours->UpdateObstacleAvoidance(blackboard->actualCar, blackboard->manPowerUps);
+        bool collisionWall = blackboard->steeringBehaviours->UpdateWallAvoidance(blackboard->actualCar, blackboard->manBoundingWall);
+        
+        if(collisionWall == false){
+            return blackboard->steeringBehaviours->UpdateObstacleAvoidance(blackboard->actualCar, blackboard->manCars);
+        }else{
+            return true;
+        }
     } 
 };
 

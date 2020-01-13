@@ -33,6 +33,7 @@ IntersectData CBoundingPlane::IntersectSphere(const CBoundingSphere &other) cons
 }
 
 
+
 IntersectData CBoundingPlane::IntersectRay(const vec3 &posRayOrigin, const vec3 &rayNormalNormalized) const{
     float denom = dot(normalizedNormal, rayNormalNormalized);
     //std::cout << "Resultado: " << denom << std::endl;
@@ -51,7 +52,6 @@ IntersectData CBoundingPlane::IntersectRay(const vec3 &posRayOrigin, const vec3 
                 if(puntoEnPlano.x < b.x || puntoEnPlano.x > d.x)
                     return IntersectData(false, vec3(0,0,0));
             }
-
             if(d.z < b.z){
                 if(puntoEnPlano.z < d.z || puntoEnPlano.z > b.z)
                     return IntersectData(false, vec3(0,0,0));
@@ -59,7 +59,6 @@ IntersectData CBoundingPlane::IntersectRay(const vec3 &posRayOrigin, const vec3 
                 if(puntoEnPlano.z < b.z || puntoEnPlano.z > d.z)
                     return IntersectData(false, vec3(0,0,0));
             }
-
             if(d.y < b.y){
                 if(puntoEnPlano.y < d.y || puntoEnPlano.y > b.y)
                     return IntersectData(false, vec3(0,0,0));
@@ -72,14 +71,11 @@ IntersectData CBoundingPlane::IntersectRay(const vec3 &posRayOrigin, const vec3 
             float distance = sqrt(vectorDistance.x*vectorDistance.x + vectorDistance.y*vectorDistance.y + vectorDistance.z*vectorDistance.z);
 
             float avoidDistance = 100.0;
-            glm::vec3 target(puntoEnPlano + normalizedNormal * avoidDistance);          // target para evitar el muro
+            glm::vec3 target(puntoEnPlano + normalizedNormal * avoidDistance);        // target para evitar el muro
             
-            return IntersectData(true, target, distance);  // devolvemos en un vec3 el punto en el que colisiona
+            return IntersectData(true, target, distance);                            // devolvemos en un vec3 el punto en el que colisiona
         }
     } 
     //std::cout << "No colisiona" << std::endl;
     return IntersectData(false, vec3(0,0,0)); 
-
-
-
 }

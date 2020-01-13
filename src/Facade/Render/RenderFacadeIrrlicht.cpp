@@ -206,7 +206,6 @@ const uint16_t RenderFacadeIrrlicht::FacadeAddObject(Entity* entity) {
         node->setMaterialFlag(video::EMF_LIGHTING, false);
 
         bool hasSphere = entity->HasComponent(CompType::CompBoundingSphere);
-        bool isPowerUp = entity->HasComponent(CompType::PowerUpComp);
         if (hasSphere && Constants::DEBUG_SHOW_SPHERES) {
             scene::ISceneNode* nodeSphere = smgr->addSphereSceneNode(CBoundingSphere::DEFAULT_SPHERE_RADIUS);
             nodeSphere->setID(cId->id + Component::ID_DIFFERENCE);
@@ -215,8 +214,6 @@ const uint16_t RenderFacadeIrrlicht::FacadeAddObject(Entity* entity) {
             nodeSphere->setMaterialTexture(0, driver->getTexture(path.c_str()));  //Obligado incluir el c_str() si no irrlicht no carga solo con un string
             nodeSphere->setMaterialFlag(video::EMF_LIGHTING, false);
             nodeSphere->setVisible(showDebug);
-            if(isPowerUp)
-                nodeSphere->setVisible(false);
         }
     }
 
