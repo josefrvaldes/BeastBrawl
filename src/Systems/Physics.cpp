@@ -35,7 +35,6 @@ void Physics::update(Car *car, Camera *cam) {
 void Physics::CalculatePosition(CCar *cCar, CTransformable *cTransformable, CSpeed *cSpeed, float deltaTime) {
     float angleRotation = (cTransformable->rotation.y * PI) / 180.0;
     //float delta = deltaTime;
-
     //Modificamos la posicion en X y Z en funcion del angulo
 
     cSpeed->speed.x = cos(angleRotation);  // * cCar->speed;
