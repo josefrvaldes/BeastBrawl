@@ -22,6 +22,7 @@ ifdef WINDOWS
 	CC			:= g++
 else
 	LIBS 	    := -L./lib/linux/irrlicht -lIrrlicht -L./lib/linux/fmod -lfmod -lfmodstudio -L./lib/linux/sdl -lSDL2
+	LIBS		+= -Wl,-rpath=lib/linux/irrlicht -Wl,-rpath=lib/linux/fmod  -Wl,-rpath=lib/linux/sdl
 	INCLUDE     := -I. 
 	INCLUDE_IRR := -I /include/irrlicht/irrlicht.h
 	INCLUDE_SDL := -I /include/sdl/sdl.h
