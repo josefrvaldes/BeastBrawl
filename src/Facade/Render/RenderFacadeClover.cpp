@@ -54,7 +54,7 @@ void RenderFacadeClover::FacadeInitPause() {
 }
 
 void RenderFacadeClover::FacadeInitEndRace() {
-
+   
 }
 
 void RenderFacadeClover::FacadeInitHUD() {
@@ -78,7 +78,6 @@ void RenderFacadeClover::FacadeAddPlates(Manager* manNamePlates) {
 void RenderFacadeClover::FacadeUpdatePlates(Manager* manNamePlates) {
 
 }
-
 const void RenderFacadeClover::FacadeAddObjects(vector<Entity*> entities) {
 
 }
@@ -94,6 +93,10 @@ const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
 //RETURNS: El Id del objeto añadido
 //TODO: Llevar cuidado con las rutas de las texturas si luego se mueven las carpetas
 const uint16_t RenderFacadeClover::FacadeAddObjectCar(Entity* entity) {
+
+}
+
+const uint16_t RenderFacadeClover::FacadeAddObjectTotem(Entity* entity) {
 
 }
 
