@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Component.h"
-#include "../../lib/glm/vec3.hpp"
+#include "../../include/glm/vec3.hpp"
 #include <string>
 #include <iostream>
 
