@@ -21,9 +21,10 @@ ifdef WINDOWS
 	#INCLUDE_BULLET := -I./include/bullet -I./include
 	CC			:= g++
 else
-	LIBS 	    := -L./lib/linux/irrlicht -lIrrlicht -L./lib/linux/fmod -lfmod -lfmodstudio
+	LIBS 	    := -L./lib/linux/irrlicht -lIrrlicht -L./lib/linux/fmod -lfmod -lfmodstudio -L./lib/linux/sdl -lSDL2
 	INCLUDE     := -I. 
 	INCLUDE_IRR := -I /include/irrlicht/irrlicht.h
+	INCLUDE_SDL := -I /include/sdl/sdl.h
 	INCLUDE_FMOD := -I ./include/fmod/core -I ./include/fmod/studio
 	#INCLUDE_BULLET := -I./include/bullet -I./include
 	CREATE_SYMLINKS := bash symlinks.sh
@@ -59,7 +60,7 @@ $(NAME_EXE): $(OBJSUBDIRS) $(ALLCPPSOBJ)
 $(OBJ_PATH)/%.o: $(SRC_PATH)/%.cpp
 	$(PRUEBA_TEXT)
 	$(COMPILING_TEXT) $<
-	@$(CC) $(CXXFLAGS) -o $@ -c $^ $(INCLUDE) $(INCLUDE_IRR) $(INCLUDE_FMOD) $(INCLUDE_BULLET)
+	@$(CC) $(CXXFLAGS) -o $@ -c $^ $(INCLUDE) $(INCLUDE_IRR) $(INCLUDE_FMOD) $(INCLUDE_SDL)
 	
 
 $(OBJSUBDIRS):

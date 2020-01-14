@@ -22,9 +22,9 @@
 #include "../../Entities/WayPoint.h"
 #include "../../Entities/CarAI.h"
 #include "../../Game.h"
-
+ 
 bool RenderFacadeClover::showDebug = false;
-
+ 
 
 RenderFacadeClover::~RenderFacadeClover() {
 }
