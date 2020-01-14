@@ -40,6 +40,8 @@ RenderFacadeClover::RenderFacadeClover() {
 
 
 
+// CAMBIOS
+
 
 void RenderFacadeClover::FacadeSuscribeEvents() {
 
