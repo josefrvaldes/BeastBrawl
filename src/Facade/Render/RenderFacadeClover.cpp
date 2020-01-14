@@ -31,31 +31,41 @@ RenderFacadeClover::~RenderFacadeClover() {
 
 RenderFacadeClover::RenderFacadeClover() {
 
-    cout << ">>>> RENDER FACADE CLOVER CONSTRUCTOR" << endl;
-    SDL_Window *window;                    // Declare a pointer
+
+    SDL_Window *window;                    
 
     SDL_Init(SDL_INIT_VIDEO);              // Initialize SDL2
 
+    // TO-DO: Cambiar a la version de OpenGL que usemos
+    //SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
+    //SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+
     // Create an application window with the following settings:
     window = SDL_CreateWindow( 
-        "An SDL2 window",                  // window title
+        "Beast Brawl",                     // Window title
         SDL_WINDOWPOS_UNDEFINED,           // initial x position
         SDL_WINDOWPOS_UNDEFINED,           // initial y position
-        640,                               // width, in pixels
-        480,                               // height, in pixels
+        1280,                              // width, in pixels
+        720,                               // height, in pixels
         SDL_WINDOW_OPENGL                  // flags - see below
     );
         
-    // Check that the window was successfully created
-    if (window == NULL) {
-        // In the case that the window could not be made...
-        printf("Could not create window: %s\n", SDL_GetError());
+
+    if (!window) {
+        printf("No se ha podido crear la ventana: %s\n", SDL_GetError());
         //return 1;
     }
 
-    // The window is open: could enter program loop here (see SDL_PollEvent())
-   
+    //SDL_GLContext sdlContext = SDL_GL_CreateContext(window);    // Contexto de la ventana
+    glViewport(0, 0, 1280, 720);
+    
+    cout << ">>>> Ventana SDL abierta" << endl;
+    
     SDL_Delay(3000);  // Pause execution for 3000 milliseconds, for example
+    /*SDL_Event e;
+    while ( SDL_PollEvent(&e) != 0 && e.type == SDL_QUIT) {
+
+    }*/
 
     // Close and destroy the window
     SDL_DestroyWindow(window);

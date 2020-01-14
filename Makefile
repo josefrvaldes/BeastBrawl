@@ -22,12 +22,13 @@ ifdef WINDOWS
 	CC			:= g++
 else
 	#LIBS		:= -L/usr/lib32 -lX11
-	LIBS 	    += -L./lib/linux/irrlicht -lIrrlicht -L./lib/linux/fmod -lfmod -lfmodstudio -L./lib/linux/sdl -lSDL2 
+	LIBS 	    += -L./lib/linux/irrlicht -lIrrlicht -L./lib/linux/fmod -lfmod -lfmodstudio -L./lib/linux/sdl -lSDL2 -L./lib/linux/glew -lGLEW -lGL
 	LIBS		+= -Wl,-rpath=lib/linux/irrlicht -Wl,-rpath=lib/linux/fmod  -Wl,-rpath=lib/linux/sdl
 	INCLUDE     := -I. 
 	INCLUDE_IRR := -I /include/irrlicht/irrlicht.h
 	INCLUDE_SDL := -I /include/sdl/sdl.h
 	INCLUDE_FMOD := -I ./include/fmod/core -I ./include/fmod/studio
+	INCLUDE_GLEW := -I /include/glew/glew.h
 	#INCLUDE_BULLET := -I./include/bullet -I./include
 	CREATE_SYMLINKS := bash symlinks.sh
 	CC			:= g++
@@ -62,7 +63,7 @@ $(NAME_EXE): $(OBJSUBDIRS) $(ALLCPPSOBJ)
 $(OBJ_PATH)/%.o: $(SRC_PATH)/%.cpp
 	$(PRUEBA_TEXT)
 	$(COMPILING_TEXT) $<
-	@$(CC) $(CXXFLAGS) -o $@ -c $^ $(INCLUDE) $(INCLUDE_IRR) $(INCLUDE_FMOD) $(INCLUDE_SDL)
+	@$(CC) $(CXXFLAGS) -o $@ -c $^ $(INCLUDE) $(INCLUDE_IRR) $(INCLUDE_FMOD) $(INCLUDE_SDL) $(INCLUDE_GLEW)
 	
 
 $(OBJSUBDIRS):
