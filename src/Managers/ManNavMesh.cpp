@@ -54,7 +54,7 @@ void ManNavMesh::ActualizeNavMeshTotem(DataMap d){
     if(!todoCorrecto){
         // hay que comprobar tambien si donde lo queremos crear esta dentro de un objeto (colisionando con un objeto)
         std::cout << "ALGOOOOOOOOOOOOO VAAAAAAAAAAAAAAAAAAAAAAAA MAAAAAAAAAAAAAAAAAAAAAAAAAAAAL" << std::endl;
-        std::cout << "El totem no esta en ningun navMesh" << std::endl;
+        std::cout << "El totem no esta en ningun navMesh, y como por defecto se pone el -1... PETA" << std::endl;
 
     }
 }

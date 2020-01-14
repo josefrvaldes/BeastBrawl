@@ -53,11 +53,12 @@ void SystemPathPlanning::SubscribeToEvents() {
 
 void SystemPathPlanning::MoveRandomPowerUp(DataMap data){
     //std::cout << " -entramoooos o que beibeeeeeeee ???????????????????????\n";
+    auto carAI = any_cast<CarAI*>(data["actualCar"]);
     ManNavMesh* manNavMesh = any_cast<ManNavMesh*>(data["manNavMesh"]);
-    auto cCurrentNavMesh = static_cast<CCurrentNavMesh*>(any_cast<CarAI*>(data["actualCar"])->GetComponent(CompType::CurrentNavMeshComp).get());
-    auto cPath = static_cast<CPath*>(any_cast<CarAI*>(data["actualCar"])->GetComponent(CompType::PathComp).get());
+    auto cCurrentNavMesh = static_cast<CCurrentNavMesh*>(carAI->GetComponent(CompType::CurrentNavMeshComp).get());
+    auto cPath = static_cast<CPath*>(carAI->GetComponent(CompType::PathComp).get());
     ManWayPoint* graph = any_cast<ManWayPoint*>(data["manWayPoints"]);
-    //auto cTransformableCar = static_cast<CTransformable*>(any_cast<CarAI*>(data["actualCar"])->GetComponent(CompType::TransformableComp).get());
+    //auto cTransformableCar = static_cast<CTransformable*>(carAI->GetComponent(CompType::TransformableComp).get());
 
     //Buscamos el waypoint mas cercano del navmesh en el que estamos
     auto navMesh = manNavMesh->GetEntities()[cCurrentNavMesh->currentNavMesh]; //NavMesh en el que esta el coche
@@ -77,6 +78,7 @@ void SystemPathPlanning::MoveRandomPowerUp(DataMap data){
     if(cPath->stackPath.empty()){
         //Si esta vacio es que ha acabado el path y recalculamos otro
         int wayPointDestination = -1;
+        //cogemos un wayPoint random
         do{
             auto waypoint = graph->GetEntities()[rand() % graph->GetEntities().size()]; //Cogemos el waypoint del manager de waypoints
             auto cWaypoint = static_cast<CWayPoint*>(waypoint->GetComponent(CompType::WayPointComp).get());
@@ -85,14 +87,37 @@ void SystemPathPlanning::MoveRandomPowerUp(DataMap data){
                 //std::cout << "El indice nuevo es:  " << wayPointDestination << std::endl;
             }  
         }while(wayPointDestination == -1);
+        // y ponemos como Target el Mesh al que pertenece
+        for(auto navMesh : manNavMesh->GetEntities()){
+            auto cNavMesh = static_cast<CNavMesh*>(navMesh->GetComponent(CompType::NavMeshComp).get());
+            for(auto waypointId : cNavMesh->waypoints){
+                if(waypointId == wayPointDestination){
+                    auto cTargetNavMesh = static_cast<CTargetNavMesh*>(carAI->GetComponent(CompType::TargetNavMeshComp).get());
+                    cTargetNavMesh->targetNavMesh = cNavMesh->id;
+                }
+            }
+        }
 
         //std::cout << "salimos " << std::endl;
 
         //COMPROBAMOS DIJKSTRA
         auto path = Dijkstra(graph,wayPointReference,wayPointDestination);
-        any_cast<CarAI*>(data["actualCar"])->SetPath(path);
+        carAI->SetPath(path);
+        
+        auto path2 = path;
+        while(!path2.empty()){
+            std::cout << "nodo del path x= " << path2.top() << std::endl;
+            path2.pop();
+        }
+
         auto cWayPoint = static_cast<CWayPoint*>(graph->GetEntities()[path.top()]->GetComponent(CompType::WayPointComp).get());
-        any_cast<CarAI*>(data["actualCar"])->SetWayPoint(cWayPoint);
+        carAI->SetWayPoint(cWayPoint);
+
+        auto cPosDestination = static_cast<CPosDestination*>(carAI->GetComponent(CompType::PosDestination).get());
+        cPosDestination->position = cWayPoint->position;
+        carAI->SetDestination(cPosDestination);
+
+
     }       
     //std::cout << " -Eso parece querido mike'\n"; 
     // TODO: No dejar la posiicon destino vacia, asignarle la misma o algo
@@ -107,6 +132,7 @@ void SystemPathPlanning::ChangePosDestination(DataMap data){
     auto carAI = any_cast<CarAI*>(data["actualCar"]); 
     auto cPosDestination = static_cast<CPosDestination*>(carAI->GetComponent(CompType::PosDestination).get());
     cPosDestination->position = any_cast<glm::vec3>(data["posDestination"]);
+    cPosDestination->radious = 1.0f;
     carAI->SetDestination(cPosDestination);
 
     // ya que ponemos posicion fija, limpiamos el path
@@ -233,7 +259,7 @@ void SystemPathPlanning::UpdateDijkstra(CarAI* carAI, ManWayPoint* graph, ManNav
         if(!cPath->stackPath.empty() && cTargetNavMesh->targetNavMesh >= 0){
 
             auto actualNode = cPath->stackPath.top(); //Id del waypoint en el que estamos
-            std::cout << "El nodo actual es el: ' " << actualNode << " ' " << std::endl;
+            std::cout << "ACABO DE LLEGAR AL NODO!!!!!!!!!!!!!!!!!!!!!!!!!!!!: ' " << actualNode << " ' " << std::endl;
             //Recorremos todos los navmeshes
             bool changeNavMesh = false;
             for(auto navMesh : manNavMesh->GetEntities()){

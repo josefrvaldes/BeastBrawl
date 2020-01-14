@@ -128,6 +128,7 @@ void CarAI::SetDestination(CPosDestination* posDestination){
     auto cPosDestination = static_cast<CPosDestination*>(m_components[CompType::PosDestination].get());
     cPosDestination->position = posDestination->position;
     cPosDestination->id = posDestination->id;
+    cPosDestination->radious = 10.0f;
 }
 
 void CarAI::SetPath(stack<int> path){
