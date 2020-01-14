@@ -52,7 +52,10 @@ public:
     float CalculateAngle(const glm::vec2& m_originVec, const glm::vec2& m_destinyVec, float m_rotationY) const;
     bool CollisionRaySphere(Entity* m_Car, Entity* m_object, const glm::vec2& m_velocityVector, float& distance, glm::vec2& vectorForceAvoid) const;
     bool CollisionRayPlane(Entity* m_Car, Entity* m_object, const glm::vec2& m_velocityVector, float& distance, glm::vec2& vectorForceAvoid, glm::vec3& target) const;
- 
+
+    bool CollisionFaceToFace(Entity* m_Car, Entity *m_object) const;
+    void AvoidVibration(Entity* m_Car, Entity *actualObstacle, const glm::vec2& m_velocityVector, glm::vec2& vectorForce) const;
+    void AvoidTrapCorner(Entity* m_Car, Entity *actualObstacle, const glm::vec2& m_velocityVector, const glm::vec3& target, glm::vec2& vectorForce) const;
 
 protected:
 private:

@@ -155,7 +155,7 @@ struct ApplyFuzzyLogic_LoDMove : public behaviourTree {
 };
 
 
-struct Pruebas_LoDMove : public behaviourTree {
+struct CollisionAvoidance_LoDMove : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
         bool collisionWall = blackboard->steeringBehaviours->UpdateWallAvoidance(blackboard->actualCar, blackboard->manBoundingWall);
         
@@ -192,23 +192,23 @@ SystemBtLoDMove::SystemBtLoDMove(){
     //   Lanzar melon molon = true   -> Aplicar Steering de movimiento y lanzar en caso de que angulo sea 0
     
     //                 SELECTOR
-    //      //////////////////////////////////////////////////////////
-    //   sequence1                                               Selector(Vision LoD)
-    //      //                                                       //
-    //    //////////////                                //////////////////////////////
-    //    //          //                                //                          //
-    //  Have MM?     ApplySB_Pursue                   Sequence2                     Selector (Distance - dentro del rango de vision)
-    //                                                //      //                       //
-    //                                  OutOfVisionRange   ApplySB_Seek          ///////////////////////////
-    //                                                                           //                      //
-    //                                                                        Sequence3                 ApplySB_Seek (lejos)
-    //                                                                       //      //                 
-    //                                                                    Cerca?     LogicaDifusa  
+    //    ////////////////////////////////////////////////////////////////////////////
+    // CollAvoidance        sequence1                                               Selector(Vision LoD)
+    //   (action)              //                                                       //
+    //                    //////////////                                //////////////////////////////
+    //                    //          //                                //                          //
+    //                  Have MM?     ApplySB_Pursue                   Sequence2                     Selector (Distance - dentro del rango de vision)
+    //                                                                //      //                       //
+    //                                                  OutOfVisionRange   ApplySB_Seek          ///////////////////////////
+    //                                                                                           //                      //
+    //                                                                                        Sequence3                 ApplySB_Seek (lejos)
+    //                                                                                       //      //                 
+    //                                                                                    Cerca?     LogicaDifusa  
 
 
     selectorBehaviourTree = make_shared<selector>();
 
-    shared_ptr<Pruebas_LoDMove> a_pruebas = make_shared<Pruebas_LoDMove>();
+    shared_ptr<CollisionAvoidance_LoDMove> a_CollisionAvoidance = make_shared<CollisionAvoidance_LoDMove>();
     shared_ptr<sequence> sequence1 = make_shared<sequence>();
     shared_ptr<selector> selectorVision = make_shared<selector>();
 
@@ -226,7 +226,7 @@ SystemBtLoDMove::SystemBtLoDMove(){
     shared_ptr<InDistanceRange_LoDMove>  c_InDistanceRange =   make_shared<InDistanceRange_LoDMove>();
     shared_ptr<ApplyFuzzyLogic_LoDMove>  a_FuzzyLogic =   make_shared<ApplyFuzzyLogic_LoDMove>();
 
-    selectorBehaviourTree->addChild(a_pruebas);
+    selectorBehaviourTree->addChild(a_CollisionAvoidance);
     selectorBehaviourTree->addChild(sequence1);
     selectorBehaviourTree->addChild(selectorVision);
 

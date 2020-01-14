@@ -24,16 +24,16 @@ BoundingWall::BoundingWall(const vec3 &pos) : BoundingWall(pos, true, true) {
 
 BoundingWall::BoundingWall(const vec3 &pos, bool orientation1, bool orientation2) {
     shared_ptr<CId> cId = make_shared<CId>();
-    vec3 a(pos.x, pos.y + 100.f, pos.z);
+    vec3 a(pos.x, pos.y + 20.f, pos.z);
     vec3 b;
     vec3 c;
     vec3 d(pos.x, pos.y, pos.z);
     if (orientation1) {
-        b = vec3(pos.x + 1300.f, pos.y + 100.f, pos.z);
-        c = vec3(pos.x + 1300.f, pos.y, pos.z);
+        b = vec3(pos.x + 20.f, pos.y + 20.f, pos.z);
+        c = vec3(pos.x + 20.f, pos.y, pos.z);
     } else {
-        b = vec3(pos.x, pos.y + 100.f, pos.z + 1300.f);
-        c = vec3(pos.x, pos.y, pos.z + 1300.f);
+        b = vec3(pos.x, pos.y + 20.f, pos.z + 20.f);
+        c = vec3(pos.x, pos.y, pos.z + 20.f);
     }
     shared_ptr<CBoundingPlane> cPlane;
     if (orientation2)
