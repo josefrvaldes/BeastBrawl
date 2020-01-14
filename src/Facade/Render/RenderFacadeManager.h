@@ -3,6 +3,7 @@
 #include <iostream>
 #include "RenderFacade.h"
 #include "RenderFacadeIrrlicht.h"
+#include "RenderFacadeClover.h"
 
 #include <memory>
 
@@ -18,7 +19,7 @@ public:
     }
 
     void InitializeClover() {
-        // TODO: crear motor de clover
+        facade = new RenderFacadeClover();
     }
 
     RenderFacade* GetRenderFacade() { return facade; };
