@@ -434,10 +434,15 @@ void RenderFacadeIrrlicht::FacadeCheckInputMenu() {
         auto cId = make_shared<CId>();
         cId->ResetNumIds();
         Game::GetInstance()->SetState(State::INGAME_SINGLE);
-    }
-
-    if (receiver.IsKeyDown(KEY_ESCAPE)) {
+    } else if (receiver.IsKeyDown(KEY_ESCAPE)) {
         device->closeDevice();
+    } else if (receiver.IsKeyDown(KEY_KEY_M)) {
+        numEnemyCars = 0;
+
+        //Manera un poco cutre de resetear el CId al empezar el juego
+        auto cId = make_shared<CId>();
+        cId->ResetNumIds();
+        Game::GetInstance()->SetState(State::INGAME_MULTI);
     }
 }
 

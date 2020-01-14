@@ -4,6 +4,7 @@
 #include "Facade/Render/RenderFacadeManager.h"
 #include "State/StateEndRace.h"
 #include "State/StateInGameSingle.h"
+#include "State/StateInGameMulti.h"
 #include "State/StateMenu.h"
 #include "State/StatePause.h"
 
@@ -38,6 +39,15 @@ void Game::SetState(State::States stateType) {
         case State::INGAME_SINGLE:
             if (!gameStarted) {
                 currentState = make_shared<StateInGameSingle>();
+                gameState = currentState;
+                gameStarted = true;
+            } else {
+                currentState = gameState;
+            }
+            break;
+        case State::INGAME_MULTI:
+            if (!gameStarted) {
+                currentState = make_shared<StateInGameMulti>();
                 gameState = currentState;
                 gameStarted = true;
             } else {
