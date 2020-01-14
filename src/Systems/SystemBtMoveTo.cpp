@@ -111,6 +111,18 @@ struct HavePowerUpAttack_mt : public behaviourTree {
     }
 };
 
+struct HaveTotem_mt : public behaviourTree {
+    virtual bool run(Blackboard* blackboard) override {
+        auto actualCar = blackboard->actualCar;
+        auto cTotem = static_cast<CTotem*>(actualCar->GetComponent(CompType::TotemComp).get());
+        if(cTotem->active == true){
+                // nosotros tenemos el totem
+            return true;
+        }
+        return false;
+    }
+};
+
 // ----------------------------------------     ACCIONES   -------------------------------------------
 //ACCION movernos al totem
 struct MoveToTotem_mt : public behaviourTree {
@@ -121,7 +133,7 @@ struct MoveToTotem_mt : public behaviourTree {
             //std::cout << "comprobamos si estamos en el mismo mesh que el totem " << std::endl;
             //Si el coche esta en el mismo navmesh que el totem
             if(cCurrendNavMeshCar->currentNavMesh == cCurrentNavMeshTotem->currentNavMesh){
-                //std::cout << "lo estamos" << std::endl;
+                //std::cout << "estamos en el mismo NavMesh que el totem y vamos a por ellllllllllllll" << std::endl;
                 auto cTransformable = static_cast<CTransformable*>(blackboard->manTotems->GetEntities()[0].get()->GetComponent(CompType::TransformableComp).get());
                 shared_ptr<EventManager> eventManager = EventManager::GetInstance();
                 DataMap dataTotem;                                                                           
@@ -153,12 +165,25 @@ struct MoveToTotem_mt : public behaviourTree {
         return false;
     }
 };
-
+//ACCION huir ya que tenemos el totem (seguir en el random que teniamos antes de ir de power up en power up, de momento)
+// TODO: como no esta implementado actualmente nos movemos entre los powerUps para no quedarnos parados
+struct EscapeWithTotem_mt : public behaviourTree {
+    virtual bool run(Blackboard* blackboard) override {
+        //std::cout << "Vamos a movernos por los powerUps UUUEEEEPAA" << std::endl;
+        shared_ptr<EventManager> eventManager = EventManager::GetInstance();
+        DataMap dataPowerUp;       
+        dataPowerUp["actualCar"] = blackboard->actualCar;     
+        dataPowerUp["manWayPoints"] = blackboard->manWayPoint;  
+        dataPowerUp["manNavMesh"] = blackboard->manNavMesh;                                                                                                      
+        eventManager->AddEventMulti(Event{EventType::MOVE_TO_POWERUP, dataPowerUp}); 
+        return true;
+    }
+};
 //ACCION movernos a un powerUp (seguir en el random que teniamos antes de ir de power up en power up)
-// TODO ... para hacerlo mas autonomo --> nos moveremos aun powerUp aleatorio del mapa.. mas adelante sera al mas cercano/ al que este mirando
+// TODO: ... para hacerlo mas autonomo --> nos moveremos aun powerUp aleatorio del mapa.. mas adelante sera al mas cercano/ al que este mirando
 struct MoveToPowerUp_mt : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
-        std::cout << "Vamos a movernos por los powerUps UUUEEEEPAA" << std::endl;
+        //std::cout << "Vamos a movernos por los powerUps UUUEEEEPAA" << std::endl;
         shared_ptr<EventManager> eventManager = EventManager::GetInstance();
         DataMap dataPowerUp;       
         dataPowerUp["actualCar"] = blackboard->actualCar;     
@@ -239,12 +264,16 @@ SystemBtMoveTo::SystemBtMoveTo(){
         shared_ptr<TotemAlone_mt> c_totemAlone =   make_shared<TotemAlone_mt>();
         shared_ptr<MoveToTotem_mt> a_moveToTotem = make_shared<MoveToTotem_mt>();
 
-    shared_ptr<sequence> sequence2 =    make_shared<sequence>();
+    shared_ptr<sequence> sequence2 = make_shared<sequence>();
+        shared_ptr<HaveTotem_mt> c_haveTotem =   make_shared<HaveTotem_mt>();
+        shared_ptr<EscapeWithTotem_mt> a_escapeWithTotem = make_shared<EscapeWithTotem_mt>();
+
+    shared_ptr<sequence> sequence3 =    make_shared<sequence>();
         shared_ptr<Inverter_mt> m_inverter1 =  make_shared<Inverter_mt>();
             shared_ptr<HavePowerUp_mt> c_havePowerUp = make_shared<HavePowerUp_mt>(); 
         shared_ptr<MoveToPowerUp_mt> a_moveToPowerUp = make_shared<MoveToPowerUp_mt>(); 
 
-    shared_ptr<sequence> sequence3  = make_shared<sequence>();
+    shared_ptr<sequence> sequence4  = make_shared<sequence>();
         shared_ptr<HavePowerUpAttack_mt> c_havePowerUpAttack = make_shared<HavePowerUpAttack_mt>();
         shared_ptr<MoveToCarTotem_mt> a_moveToCarTotem =       make_shared<MoveToCarTotem_mt>();
 
@@ -252,21 +281,29 @@ SystemBtMoveTo::SystemBtMoveTo(){
     std::cout << "------------------------ Behaviour Move To --------------------------------" << std::endl;
     // ASIGNACION DEL ARBOL DE DECISIONES
 
+    // el totem esta en el suelo?
     selectorBehaviourTree->addChild(sequence1);
+    // tengo yo el totem?
     selectorBehaviourTree->addChild(sequence2);
+    // vamos a coger PowerUps si no tenemos
     selectorBehaviourTree->addChild(sequence3);
+    // si el powerUp es de ataque voy a por el que tiene el totem
+    selectorBehaviourTree->addChild(sequence4);
     // TODO somos una IA que tiene el powerUp y obvimanete no nos vamos a perseguir a nosotros mismos
     //selectorBehaviourTree->addChild(a_moveToPowerUp);
 
     sequence1->addChild(c_totemAlone);
     sequence1->addChild(a_moveToTotem);
 
-    sequence2->addChild(m_inverter1);
-        m_inverter1->addChild(c_havePowerUp);
-    sequence2->addChild(a_moveToPowerUp);
+    sequence2->addChild(c_haveTotem);
+    sequence2->addChild(a_escapeWithTotem);
 
-    sequence3->addChild(c_havePowerUpAttack);
-    sequence3->addChild(a_moveToCarTotem);
+    sequence3->addChild(m_inverter1);
+        m_inverter1->addChild(c_havePowerUp);
+    sequence3->addChild(a_moveToPowerUp);
+
+    sequence4->addChild(c_havePowerUpAttack);
+    sequence4->addChild(a_moveToCarTotem);
     
 }
 
