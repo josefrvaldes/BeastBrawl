@@ -111,7 +111,7 @@ void StateInGame::AddElementsToRender() {
 
     renderEngine->FacadeAddCamera(cam.get());
 
-    renderEngine->FacadeAddObject(manTotems->GetEntities()[0].get());
+    renderEngine->FacadeAddObjectTotem(manTotems->GetEntities()[0].get());
     // este último probablemente haya que cambiarlo ¿?
     renderEngine->FacadeAddObject(totemOnCar.get());
 }
