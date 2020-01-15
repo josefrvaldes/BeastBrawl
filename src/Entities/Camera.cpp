@@ -65,8 +65,12 @@ void Camera::TotemCamera(DataMap d){
     cout << "CAMARA TOTEM\n";
     auto cCamera = static_cast<CCamera*>(GetComponent(CompType::CameraComp).get());
 
-    //Si esta invertida la desinvertimos y viceversa
-    cCamera->camType = CamType::TOTEM;
+    if(cCamera->camType == CamType::TOTEM){
+        cCamera->camType = CamType::NORMAL;
+    }else{
+        cCamera->camType = CamType::TOTEM;
+
+    }
 }
 
 

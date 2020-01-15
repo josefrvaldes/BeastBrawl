@@ -298,7 +298,7 @@ void RenderFacadeIrrlicht::UpdateTransformable(Entity* entity) {
 }
 
 //Reajusta la camara
-void RenderFacadeIrrlicht::UpdateCamera(Entity* cam) {
+void RenderFacadeIrrlicht::UpdateCamera(Entity* cam, ManCar* manCars) {
     //Cogemos los componentes de la camara
     auto cTransformable = static_cast<CTransformable*>(cam->GetComponent(CompType::TransformableComp).get());
     auto cCamera = static_cast<CCamera*>(cam->GetComponent(CompType::CameraComp).get());
@@ -345,8 +345,56 @@ void RenderFacadeIrrlicht::UpdateCamera(Entity* cam) {
         camera1->setTarget(targetPosition);
         camera1->setFOV(angleRotation);
         camera1->setPosition(core::vector3df(cTransformable->position.x, cTransformable->position.y, cTransformable->position.z));
-    }else{
+    }else if (cCamera->camType == CamType::TOTEM){
 
+        auto car = manCars->GetCar();
+        auto cTotemCar = static_cast<CTotem*>(car->GetComponent(CompType::TotemComp).get());
+        auto cTransformableCar = static_cast<CTransformable*>(car->GetComponent(CompType::TransformableComp).get());
+
+        //Si somos nosotros quien tenemos el totem ponemos camara normal
+        if(cTotemCar->active){
+            cCamera->camType = CamType::NORMAL;
+            return;
+
+        }
+
+        auto idCarAIWithTotem = -1;
+        //Buscamos el ID del coche que tiene el totem (en caso de tenerlo)
+        for(auto carAI : manCars->GetEntitiesAI()){
+            auto cTotem = static_cast<CTotem*>(carAI->GetComponent(CompType::TotemComp).get());
+            if(cTotem->active){
+                auto cId = static_cast<CId*>(carAI->GetComponent(CompType::IdComp).get());
+                idCarAIWithTotem = cId->id;
+            }
+        }
+
+        //Nadie tiene el totem
+        if(idCarAIWithTotem==-1){
+            //Posicion del totem en el suelo
+            targetPosition = smgr->getSceneNodeFromId(idTotem)->getPosition();
+
+        }else{
+            //Posicion del coche que lleva el totem
+            targetPosition = smgr->getSceneNodeFromId(idCarAIWithTotem)->getPosition();
+
+        }
+
+        // float vetorWaypointX = (cTransformableOther->position.x - posXActualCar);
+        // float vetorWaypointZ = (cTransformableOther->position.z - posZActualCar);
+
+        // // calculate position rotated of otherCar atan2
+        // float valueAtan2 = atan2(vetorWaypointZ,vetorWaypointX)*180/PI;
+        float vectorX = (targetPosition.X - cTransformableCar->position.x);
+        float vectorZ = (targetPosition.Z - cTransformableCar->position.z);
+
+        float valueAtan2 = atan2(vectorZ,vectorX);
+
+        cout << "Valor del atan: " << valueAtan2 << endl;
+        float angleRotation = (90 * PI) / 180.0;
+
+        camera1->setTarget(targetPosition);
+        camera1->setFOV(angleRotation);
+        camera1->setPosition(core::vector3df(cTransformable->position.x, cTransformable->position.y, cTransformable->position.z));
     }
     
     
@@ -420,10 +468,11 @@ void RenderFacadeIrrlicht::FacadeCheckInput() {
         timeStart = system_clock::now();
         eventManager->AddEventMulti(Event{EventType::INVERT_CAMERA});
 
-    }// else if(receiver.IsKeyDown(KEY_KEY_E) && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay) {
-    //     timeStart = system_clock::now();
-    //     eventManager->AddEventMulti(Event{EventType::TOTEM_CAMERA});
-    // } 
+    } else if(receiver.IsKeyDown(KEY_KEY_E) && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelayCamera) {
+        timeStart = system_clock::now();
+        eventManager->AddEventMulti(Event{EventType::TOTEM_CAMERA});
+    } 
+
     // POWERUPS
     if (receiver.IsKeyDown(KEY_SPACE)) {
         eventManager->AddEventMulti(Event{EventType::PRESS_SPACE});
