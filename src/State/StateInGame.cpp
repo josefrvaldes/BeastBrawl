@@ -233,7 +233,7 @@ void StateInGame::Update() {
     collisions->IntersectPlayerTotem(manCars.get()->GetCar().get(), manTotems.get());
 
     // Actualizaciones en Irrlich
-    renderEngine->UpdateCamera(cam.get());
+    renderEngine->UpdateCamera(cam.get(), manCars.get());
     physicsEngine->UpdateCar(manCars.get()->GetCar().get(), cam.get());
 
     for (shared_ptr<Entity> actualPowerUp : manPowerUps->GetEntities())  // actualizamos los powerUp en irrlich

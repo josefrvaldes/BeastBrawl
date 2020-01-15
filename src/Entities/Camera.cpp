@@ -45,6 +45,11 @@ void Camera::SuscribeEvents(){
         EventType::TOTEM_CAMERA,
         bind(&Camera::TotemCamera, this, placeholders::_1),
         "TotemCamera"));
+
+    EventManager::GetInstance()->SuscribeMulti(Listener(
+        EventType::NORMAL_CAMERA,
+        bind(&Camera::NormalCamera, this, placeholders::_1),
+        "NormalCamera"));
 }
 
 
@@ -61,12 +66,21 @@ void Camera::InvertCamera(DataMap d){
     }
 }
 
-void Camera::TotemCamera(DataMap d){ 
-    cout << "CAMARA TOTEM\n";
+void Camera::TotemCamera(DataMap d){      
     auto cCamera = static_cast<CCamera*>(GetComponent(CompType::CameraComp).get());
 
-    //Si esta invertida la desinvertimos y viceversa
-    cCamera->camType = CamType::TOTEM;
+    if(cCamera->camType == CamType::TOTEM){
+        cCamera->camType = CamType::NORMAL;
+    }else{
+        cCamera->camType = CamType::TOTEM;
+
+    }
 }
 
+void Camera::NormalCamera(DataMap d){
+    auto cCamera = static_cast<CCamera*>(GetComponent(CompType::CameraComp).get());
+
+    cCamera->camType = CamType::NORMAL;
+
+}
 
