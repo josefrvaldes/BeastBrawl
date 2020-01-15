@@ -4,6 +4,9 @@
 
 StateInGameSingle::StateInGameSingle() : StateInGame() {
     InitVirtualMethods();
+    //std::cout << "ENTRAMOS AL MANAGER DE NAVMESH LOCOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO" << std::endl;
+    CAMBIARCosasNavMesh(*manCars.get(), *manNavMesh.get());
+    //std::cout << "despues de la llamada LOOOOOOOOOOOCOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO" << std::endl;
 }
 
 StateInGameSingle::~StateInGameSingle() {
@@ -11,16 +14,15 @@ StateInGameSingle::~StateInGameSingle() {
 
 void StateInGameSingle::InitState() {
     StateInGame::InitState();
-    CAMBIARCosasNavMesh();
 }
 
 
 
-void StateInGameSingle::CAMBIARCosasNavMesh(){
+void StateInGameSingle::CAMBIARCosasNavMesh(ManCar &manCars, ManNavMesh &manNavMesh){
     // vamos a asignar el navmesh al que pertenecemos
-    for(shared_ptr<Entity> carAI : manCars->GetEntitiesAI()){
+    for(shared_ptr<Entity> carAI : manCars.GetEntitiesAI()){
         auto cTransformableCar = static_cast<CTransformable*>(carAI.get()->GetComponent(CompType::TransformableComp).get());     
-        for(auto navmesh : manNavMesh->GetEntities()){
+        for(auto navmesh : manNavMesh.GetEntities()){
             auto cDimensions = static_cast<CDimensions*>(navmesh.get()->GetComponent(CompType::DimensionsComp).get());
             auto cTransformableNav = static_cast<CTransformable*>(navmesh.get()->GetComponent(CompType::TransformableComp).get()); 
             if( ( (cTransformableCar->position.x >= (cTransformableNav->position.x-(cDimensions->width/2))) && 

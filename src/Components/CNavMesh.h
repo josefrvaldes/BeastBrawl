@@ -11,8 +11,10 @@ class CNavMesh : public Component
 {
 public:
     CNavMesh(vector<int> _waypoints);
+    CNavMesh();
     ~CNavMesh(){};
 
+    void ResetNumIds(){numIdsNavMesh = 0;}
 
     uint16_t id; //Id del navmesh
     vector<int> waypoints; // Waypoints que tiene el navmesh

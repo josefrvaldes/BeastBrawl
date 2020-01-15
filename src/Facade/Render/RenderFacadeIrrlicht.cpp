@@ -498,6 +498,8 @@ void RenderFacadeIrrlicht::FacadeCheckInputMenu() {
         //Manera un poco cutre de resetear el CId al empezar el juego
         auto cId = make_shared<CId>();
         cId->ResetNumIds();
+        auto cNavMesh = make_shared<CNavMesh>();
+        cNavMesh->ResetNumIds();
         Game::GetInstance()->SetState(State::INGAME_SINGLE);
     } else if (receiver.IsKeyDown(KEY_ESCAPE)) {
         device->closeDevice();
@@ -507,6 +509,8 @@ void RenderFacadeIrrlicht::FacadeCheckInputMenu() {
         //Manera un poco cutre de resetear el CId al empezar el juego
         auto cId = make_shared<CId>();
         cId->ResetNumIds();
+        auto cNavMesh = make_shared<CNavMesh>();
+        cNavMesh->ResetNumIds();
         Game::GetInstance()->SetState(State::INGAME_MULTI);
     }
 }

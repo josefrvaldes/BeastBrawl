@@ -164,7 +164,7 @@ void SystemPathPlanning::CalculatePathToNavMesh(DataMap data){
     }
 
     //Buscamos el waypoint mas cercano del navmesh en el que estamos
-    auto navMesh = manNavMesh->GetEntities()[cCurrentNavMesh->currentNavMesh]; //NavMesh en el que esta el coche
+    auto navMesh = manNavMesh->GetEntities()[0]; //NavMesh en el que esta el coche
     auto cNavMesh = static_cast<CNavMesh*>(navMesh->GetComponent(CompType::NavMeshComp).get());
 
 /*
