@@ -6,7 +6,7 @@
 #include <vector>
 #include "Manager.h"
 #include "ManCar.h"
-#include "../../lib/glm/vec3.hpp"
+#include "../../include/glm/vec3.hpp"
 #include "../Facade/Render/RenderFacadeManager.h"
 #include "../EventManager/Event.h"
 #include "../EventManager/EventManager.h"

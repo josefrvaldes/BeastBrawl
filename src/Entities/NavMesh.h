@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Entity.h"
-#include "../../lib/glm/vec3.hpp"
+#include "../../include/glm/vec3.hpp"
 #include <iostream>
 #include <string>
 #include <vector>
