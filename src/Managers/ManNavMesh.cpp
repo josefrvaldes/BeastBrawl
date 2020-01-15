@@ -23,11 +23,11 @@ void ManNavMesh::CreateNavMesh(glm::vec3 pos, glm::vec3 rot, float width, float 
 
 void ManNavMesh::SubscribeToEvents() {
 
-    EventManager::GetInstance()->SuscribeMulti(Listener(
+    EventManager::GetInstance().SuscribeMulti(Listener(
         EventType::ACTUALIZE_NAVMESH_TOTEM,
         bind(&ManNavMesh::ActualizeNavMeshTotem, this, placeholders::_1),
         "ActualizeNavMeshTotem"));
-    EventManager::GetInstance()->SuscribeMulti(Listener(
+    EventManager::GetInstance().SuscribeMulti(Listener(
         EventType::ACTUALIZE_NAVMESH_CARAI,
         bind(&ManNavMesh::ActualizeNavMeshCarAI, this, placeholders::_1),
         "ActualizeNavMeshCarAI"));

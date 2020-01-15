@@ -124,70 +124,70 @@ void SoundFacadeFMOD::SubscribeToGameEvents(const uint8_t numState) {
         case 3:  // Map
             break;
         case 4:  // InGame
-            EventManager::GetInstance()->SuscribeMulti(Listener{
+            EventManager::GetInstance().SuscribeMulti(Listener{
                 EventType::START_GAME,
                 bind(&SoundFacadeFMOD::StartGame, this, placeholders::_1),
                 "StartGame"});
 
-            EventManager::GetInstance()->SuscribeMulti(Listener{
+            EventManager::GetInstance().SuscribeMulti(Listener{
                 EventType::PRESS_P,
                 bind(&SoundFacadeFMOD::SoundClaxon, this, placeholders::_1),
                 "SoundClaxon"});
 
-            EventManager::GetInstance()->SuscribeMulti(Listener(
+            EventManager::GetInstance().SuscribeMulti(Listener(
                 EventType::THROW_POWERUP,
                 bind(&SoundFacadeFMOD::SoundThrowPowerup, this, placeholders::_1),
                 "SoundThrowPowerup"));
 
             // Quitar
-            EventManager::GetInstance()->SuscribeMulti(Listener{
+            EventManager::GetInstance().SuscribeMulti(Listener{
                 EventType::PRESS_0,
                 bind(&SoundFacadeFMOD::StopPrueba, this, placeholders::_1),
                 "StopPrueba"});
 
-            EventManager::GetInstance()->SuscribeMulti(Listener{
+            EventManager::GetInstance().SuscribeMulti(Listener{
                 EventType::HURT,
                 bind(&SoundFacadeFMOD::SoundHurt, this, placeholders::_1),
                 "SoundHurt"});
 
-            EventManager::GetInstance()->SuscribeMulti(Listener{
+            EventManager::GetInstance().SuscribeMulti(Listener{
                 EventType::CATCH_TOTEM,
                 bind(&SoundFacadeFMOD::SoundCatchTotem, this, placeholders::_1),
                 "SoundCatchTotem"});
 
-            EventManager::GetInstance()->SuscribeMulti(Listener{
+            EventManager::GetInstance().SuscribeMulti(Listener{
                 EventType::CRASH_ENEMY,
                 bind(&SoundFacadeFMOD::SoundCrash, this, placeholders::_1),
                 "SoundCrash"});
 
-            EventManager::GetInstance()->SuscribeMulti(Listener{
+            EventManager::GetInstance().SuscribeMulti(Listener{
                 EventType::BREAK_BOX,
                 bind(&SoundFacadeFMOD::SoundBreakBox, this, placeholders::_1),
                 "SoundBreakBox"});
 
-            EventManager::GetInstance()->SuscribeMulti(Listener{
+            EventManager::GetInstance().SuscribeMulti(Listener{
                 EventType::DRIFT,
                 bind(&SoundFacadeFMOD::SoundBreakBox, this, placeholders::_1),
                 "SoundBreakBox"});
 
-            EventManager::GetInstance()->SuscribeMulti(Listener{
+            EventManager::GetInstance().SuscribeMulti(Listener{
                 EventType::VRANDOM,
                 bind(&SoundFacadeFMOD::SoundRandomSentence, this, placeholders::_1),
                 "SoundRandomSentence"});
 
-            EventManager::GetInstance()->SuscribeMulti(Listener{
+            EventManager::GetInstance().SuscribeMulti(Listener{
                 EventType::MENU_OPTION,
                 bind(&SoundFacadeFMOD::SoundMenuOption, this, placeholders::_1),
                 "SoundMenuOption"});
 
             // --- STOP
 
-            EventManager::GetInstance()->SuscribeMulti(Listener{
+            EventManager::GetInstance().SuscribeMulti(Listener{
                 EventType::NO_SHIELD,
                 bind(&SoundFacadeFMOD::StopShield, this, placeholders::_1),
                 "StopShield"});
 
-            EventManager::GetInstance()->SuscribeMulti(Listener{
+            EventManager::GetInstance().SuscribeMulti(Listener{
                 EventType::NO_DRIFT,
                 bind(&SoundFacadeFMOD::StopDrift, this, placeholders::_1),
                 "StopDrift"});

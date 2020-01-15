@@ -36,12 +36,12 @@ Camera::~Camera()
 }
 
 void Camera::SuscribeEvents(){
-    EventManager::GetInstance()->SuscribeMulti(Listener(
+    EventManager::GetInstance().SuscribeMulti(Listener(
         EventType::INVERT_CAMERA,
         bind(&Camera::InvertCamera, this, placeholders::_1),
         "InvertCamera"));
 
-    EventManager::GetInstance()->SuscribeMulti(Listener(
+    EventManager::GetInstance().SuscribeMulti(Listener(
         EventType::TOTEM_CAMERA,
         bind(&Camera::TotemCamera, this, placeholders::_1),
         "TotemCamera"));

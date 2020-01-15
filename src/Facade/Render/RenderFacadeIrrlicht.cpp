@@ -45,7 +45,7 @@ RenderFacadeIrrlicht::RenderFacadeIrrlicht() {
 }
 
 void RenderFacadeIrrlicht::FacadeSuscribeEvents() {
-    EventManager::GetInstance()->Suscribe(Listener{
+    EventManager::GetInstance().Suscribe(Listener{
         EventType::UPDATE_POWERUP_HUD,
         bind(&RenderFacadeIrrlicht::FacadeUpdatePowerUpHUD, this, placeholders::_1),
         "facadeUpdatePowerUpHUD"});
@@ -380,32 +380,32 @@ uint32_t RenderFacadeIrrlicht::FacadeGetTime() {
 // To-Do: introducir multi input
 // Comprobar inputs del teclado
 void RenderFacadeIrrlicht::FacadeCheckInput() {
-    shared_ptr<EventManager> eventManager = EventManager::GetInstance();
+    EventManager &eventManager = EventManager::GetInstance();
 
     if (receiver.IsKeyDown(KEY_ESCAPE)) {
         device->closeDevice();
     }
     if (receiver.IsKeyDown(KEY_KEY_P)) {
-        eventManager->AddEventMulti(Event{EventType::PRESS_P});
+        eventManager.AddEventMulti(Event{EventType::PRESS_P});
     }
     if (receiver.IsKeyDown(KEY_KEY_0)) {
-        eventManager->AddEventMulti(Event{EventType::PRESS_0});
+        eventManager.AddEventMulti(Event{EventType::PRESS_0});
     }
     if (receiver.IsKeyDown(KEY_KEY_I)) {
         DataMap data;
-        eventManager->AddEventMulti(Event{EventType::PRESS_I, data});
+        eventManager.AddEventMulti(Event{EventType::PRESS_I, data});
     } else if (receiver.IsKeyDown(KEY_KEY_O)) {
-        eventManager->AddEventMulti(Event{EventType::PRESS_O});
+        eventManager.AddEventMulti(Event{EventType::PRESS_O});
     } else {
-        eventManager->AddEventMulti(Event{EventType::NO_I_O_PRESS});
+        eventManager.AddEventMulti(Event{EventType::NO_I_O_PRESS});
     }
 
     if (receiver.IsKeyDown(KEY_KEY_D)) {
-        eventManager->AddEventMulti(Event{EventType::PRESS_D});
+        eventManager.AddEventMulti(Event{EventType::PRESS_D});
     } else if (receiver.IsKeyDown(KEY_KEY_A)) {
-        eventManager->AddEventMulti(Event{EventType::PRESS_A});
+        eventManager.AddEventMulti(Event{EventType::PRESS_A});
     } else {
-        eventManager->AddEventMulti(Event{EventType::NO_A_D_PRESS});
+        eventManager.AddEventMulti(Event{EventType::NO_A_D_PRESS});
     }
 
     // MODO DEBUG
@@ -418,7 +418,7 @@ void RenderFacadeIrrlicht::FacadeCheckInput() {
     // CAMARA
     if (receiver.IsKeyDown(KEY_KEY_Q) && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelayCamera) {
         timeStart = system_clock::now();
-        eventManager->AddEventMulti(Event{EventType::INVERT_CAMERA});
+        eventManager.AddEventMulti(Event{EventType::INVERT_CAMERA});
 
     }// else if(receiver.IsKeyDown(KEY_KEY_E) && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay) {
     //     timeStart = system_clock::now();
@@ -426,7 +426,7 @@ void RenderFacadeIrrlicht::FacadeCheckInput() {
     // } 
     // POWERUPS
     if (receiver.IsKeyDown(KEY_SPACE)) {
-        eventManager->AddEventMulti(Event{EventType::PRESS_SPACE});
+        eventManager.AddEventMulti(Event{EventType::PRESS_SPACE});
     }
 
     //Cambiamos a menu
@@ -468,8 +468,8 @@ void RenderFacadeIrrlicht::FacadeCheckInputPause() {
         timeStart = system_clock::now();
 
         smgr->clear();
-        EventManager::GetInstance()->ClearListeners();
-        EventManager::GetInstance()->ClearEvents();
+        EventManager::GetInstance().ClearListeners();
+        EventManager::GetInstance().ClearEvents();
         Game::GetInstance()->SetState(State::MENU);
     }
 
@@ -481,8 +481,8 @@ void RenderFacadeIrrlicht::FacadeCheckInputPause() {
 void RenderFacadeIrrlicht::FacadeCheckInputEndRace() {
     if (receiver.IsKeyDown(KEY_F4) && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay) {
         smgr->clear();
-        EventManager::GetInstance()->ClearListeners();
-        EventManager::GetInstance()->ClearEvents();
+        EventManager::GetInstance().ClearListeners();
+        EventManager::GetInstance().ClearEvents();
         Game::GetInstance()->SetState(State::MENU);
     }
 

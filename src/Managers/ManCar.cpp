@@ -154,72 +154,72 @@ void ManCar::SubscribeToEvents() {
      *auto lambdaGuardaAccel = [&lambdaAccelerate](DataMap d) {lambdaAccelerate(d);};
      */
 
-    EventManager::GetInstance()->SuscribeMulti(Listener(
+    EventManager::GetInstance().SuscribeMulti(Listener(
         EventType::PRESS_I,
         bind(&ManCar::AccelerateCar, this, placeholders::_1),
         "AccelerateCar"));
 
-    EventManager::GetInstance()->SuscribeMulti(Listener(
+    EventManager::GetInstance().SuscribeMulti(Listener(
         EventType::PRESS_O,
         bind(&ManCar::Decelerate, this, placeholders::_1),
         "Decelerate"));
 
-    EventManager::GetInstance()->SuscribeMulti(Listener(
+    EventManager::GetInstance().SuscribeMulti(Listener(
         EventType::PRESS_A,
         bind(&ManCar::TurnLeftCar, this, placeholders::_1),
         "TurnLeftCar"));
 
-    EventManager::GetInstance()->SuscribeMulti(Listener(
+    EventManager::GetInstance().SuscribeMulti(Listener(
         EventType::PRESS_D,
         bind(&ManCar::TurnRightCar, this, placeholders::_1),
         "TurnRightCar"));
 
-    EventManager::GetInstance()->SuscribeMulti(Listener(
+    EventManager::GetInstance().SuscribeMulti(Listener(
         EventType::NO_I_O_PRESS,
         bind(&ManCar::NotAcceleratingOrDecelerating, this, placeholders::_1),
         "NotAcceleratingOrDecelerating"));
 
-    EventManager::GetInstance()->SuscribeMulti(Listener(
+    EventManager::GetInstance().SuscribeMulti(Listener(
         EventType::NO_A_D_PRESS,
         bind(&ManCar::NotTurning, this, placeholders::_1),
         "NotTurning"));
 
-    EventManager::GetInstance()->SuscribeMulti(Listener(
+    EventManager::GetInstance().SuscribeMulti(Listener(
         EventType::CATCH_BOX_POWERUP,
         bind(&ManCar::CatchPowerUp, this, placeholders::_1),
         "CatchPowerUp"));
 
-    EventManager::GetInstance()->SuscribeMulti(Listener(
+    EventManager::GetInstance().SuscribeMulti(Listener(
         EventType::CATCH_AI_BOX_POWERUP,
         bind(&ManCar::CatchPowerUpAI, this, placeholders::_1),
         "CatchPowerUpAI"));
     
-    EventManager::GetInstance()->SuscribeMulti(Listener(
+    EventManager::GetInstance().SuscribeMulti(Listener(
         EventType::PRESS_SPACE,
         bind(&ManCar::ThrowPowerUp, this, placeholders::_1),
         "ThrowPowerUp"));
     
-    EventManager::GetInstance()->SuscribeMulti(Listener(
+    EventManager::GetInstance().SuscribeMulti(Listener(
         EventType::THROW_POWERUP_AI,
         bind(&ManCar::ThrowPowerUpAI, this, placeholders::_1),
         "ThrowPowerUpAI"));
 
-    EventManager::GetInstance()->SuscribeMulti(Listener(
+    EventManager::GetInstance().SuscribeMulti(Listener(
         EventType::COLLISION_ENTITY_POWERUP,
         bind(&ManCar::CollisionPowerUp, this, placeholders::_1),
         "CollisionPowerUp"));
     
-    EventManager::GetInstance()->SuscribeMulti(Listener(
+    EventManager::GetInstance().SuscribeMulti(Listener(
         EventType::COLLISION_ENTITY_AI_POWERUP,
         bind(&ManCar::CollisionPowerUpAI, this, placeholders::_1),
         "CollisionPowerUpAI"));
 
-    EventManager::GetInstance()->SuscribeMulti(Listener(
+    EventManager::GetInstance().SuscribeMulti(Listener(
         EventType::COLLISION_PLAYER_TOTEM,
         bind(&ManCar::CatchTotemPlayer, this, placeholders::_1),
         "CatchTotemPlayer"));
 
-    EventManager::GetInstance()->SuscribeMulti(Listener(
+    EventManager::GetInstance().SuscribeMulti(Listener(
         EventType::COLLISION_AI_TOTEM,
         bind(&ManCar::CatchTotemAI, this, placeholders::_1),
         "CatchTotemAI"));
@@ -231,8 +231,7 @@ void ManCar::CatchTotemAI(DataMap d){
     cTotem->active = true;
     cTotem->timeStart = system_clock::now();
     // Sonido coger totem
-    shared_ptr<EventManager> eventManager = EventManager::GetInstance();
-    eventManager->AddEventMulti(Event{EventType::CATCH_TOTEM});
+    EventManager::GetInstance().AddEventMulti(Event{EventType::CATCH_TOTEM});
 }
 
 void ManCar::CatchTotemPlayer(DataMap d){
@@ -240,8 +239,7 @@ void ManCar::CatchTotemPlayer(DataMap d){
     cTotem->active = true;
     cTotem->timeStart = system_clock::now();
     // Sonido coger totem
-    shared_ptr<EventManager> eventManager = EventManager::GetInstance();
-    eventManager->AddEventMulti(Event{EventType::CATCH_TOTEM});
+    EventManager::GetInstance().AddEventMulti(Event{EventType::CATCH_TOTEM});
 }
 
 void ManCar::UseTotem(Entity* carWinTotem){
@@ -298,16 +296,14 @@ void ManCar::CollisionPowerUp(DataMap d){
         cCar->speed = 0.0f;
         // Sonido choque con powerup
         DataMap data;
-        shared_ptr<EventManager> eventManager = EventManager::GetInstance();
         data["mainCharacter"] = true;
-        eventManager->AddEventMulti(Event{EventType::HURT, data});
+        EventManager::GetInstance().AddEventMulti(Event{EventType::HURT, data});
     }else{
         std::cout << "El escudo me salvo el culito :D" << std::endl;
         cShield->deactivePowerUp(); // desactivamos el escudo
 
         // Sonido coger totem
-        shared_ptr<EventManager> eventManager = EventManager::GetInstance();
-        eventManager->AddEventMulti(Event{EventType::NO_SHIELD});
+        EventManager::GetInstance().AddEventMulti(Event{EventType::NO_SHIELD});
         
     }
 }
@@ -326,16 +322,14 @@ void ManCar::CollisionPowerUpAI(DataMap d){
         cCar->speed = 0.0f;  // To-Do: no funciona en la IA por que la logica difusa no la hace acelerar
         // Sonido choque con powerup
         DataMap data;
-        shared_ptr<EventManager> eventManager = EventManager::GetInstance();
         data["mainCharacter"] = false;
-        eventManager->AddEventMulti(Event{EventType::HURT, data});
+        EventManager::GetInstance().AddEventMulti(Event{EventType::HURT, data});
     }else{
         std::cout << "El escudo me salvo el culito :D" << std::endl;
         cShield->deactivePowerUp(); // desactivamos el escudo
 
         // Sonido coger totem
-        shared_ptr<EventManager> eventManager = EventManager::GetInstance();
-        eventManager->AddEventMulti(Event{EventType::NO_SHIELD});
+        EventManager::GetInstance().AddEventMulti(Event{EventType::NO_SHIELD});
     }
 }
 
@@ -410,25 +404,24 @@ void ManCar::ThrowPowerUp(DataMap d) {
                 cNitro->activatePowerUp();
                 break;
             default:  // en caso del melon molon o la telebanana
-                shared_ptr<EventManager> eventManager = EventManager::GetInstance();
                 DataMap data;
                 data["typePowerUp"] = cPowerUpCar->typePowerUp;
                 data["posCocheSalida"] = static_cast<CTransformable*>(car.get()->GetComponent(CompType::TransformableComp).get());;
                 data["posCochePerseguir"] = calculateCloserCar(car.get());
-                eventManager->AddEventMulti(Event{EventType::PowerUp_Create, data});
+                EventManager::GetInstance().AddEventMulti(Event{EventType::PowerUp_Create, data});
 
                 break;
         }
 
         // Sonido de lanzar power-up
         d["typePowerUp"] = cPowerUpCar->typePowerUp;
-        EventManager::GetInstance()->AddEventMulti(Event{EventType::THROW_POWERUP, d});
+        EventManager::GetInstance().AddEventMulti(Event{EventType::THROW_POWERUP, d});
 
         // Ya no tenemos power-up
         cPowerUpCar->typePowerUp = typeCPowerUp::None;
         DataMap d;
         d["typePowerUp"] = cPowerUpCar->typePowerUp;
-        EventManager::GetInstance()->AddEventMulti(Event{EventType::UPDATE_POWERUP_HUD, d});
+        EventManager::GetInstance().AddEventMulti(Event{EventType::UPDATE_POWERUP_HUD, d});
         
     }
 }
@@ -456,12 +449,12 @@ void ManCar::ThrowPowerUpAI(DataMap d) {
                 cNitro->activatePowerUp();
                 break;
             default:     // en caso del melon molon o la telebanana
-                shared_ptr<EventManager> eventManager = EventManager::GetInstance();
+                EventManager &eventManager = EventManager::GetInstance();
                 DataMap data;
                 data["typePowerUp"] = cPowerUpCar->typePowerUp;
                 data["posCocheSalida"] = static_cast<CTransformable*>(any_cast<CarAI*>(d["actualCar"])->GetComponent(CompType::TransformableComp).get());
                 data["posCochePerseguir"] = calculateCloserCar(any_cast<CarAI*>(d["actualCar"]));
-                eventManager->AddEventMulti(Event{EventType::PowerUp_Create, data});
+                eventManager.AddEventMulti(Event{EventType::PowerUp_Create, data});
 
                 break;
         }
@@ -515,7 +508,7 @@ void ManCar::CatchPowerUp(DataMap d) {
         d["typePowerUp"] = cPowerUpCar->typePowerUp;
 
         //RenderFacadeManager::GetInstance()->GetRenderFacade()->FacadeUpdatePowerUpHUD(d);
-        EventManager::GetInstance()->AddEventMulti(Event{EventType::UPDATE_POWERUP_HUD, d});
+        EventManager::GetInstance().AddEventMulti(Event{EventType::UPDATE_POWERUP_HUD, d});
     }
     //cPowerUp->typePowerUp = dynamic_cast<typeCPowerUp*>(indx);
 }

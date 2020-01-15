@@ -87,9 +87,8 @@ void ManTotem::ResetTotem(DataMap d){
     //std::cout << "vamos a pasar el totem desde eventos" << std::endl;
     // Vamos a actualizar el NavMesh en el que se va a soltar el Totem
     DataMap data;
-    shared_ptr<EventManager> eventManager = EventManager::GetInstance();
     data["totem"] = GetEntities()[0].get();                                                        // pasamos un puntero al totem
-    eventManager->AddEventMulti(Event{EventType::ACTUALIZE_NAVMESH_TOTEM, data});
+    EventManager::GetInstance().AddEventMulti(Event{EventType::ACTUALIZE_NAVMESH_TOTEM, data});
     //std::cout << "volvemos de lanzar el evento beibeee" << std::endl;
 
     // Debemos de crearlo tambien en iirlicht
@@ -102,15 +101,15 @@ void ManTotem::ResetTotem(DataMap d){
 
 
 void ManTotem::SubscribeToEvents() {
-    EventManager::GetInstance()->SuscribeMulti(Listener(
+    EventManager::GetInstance().SuscribeMulti(Listener(
         EventType::COLLISION_PLAYER_TOTEM,
         bind(&ManTotem::AppertainCar, this, placeholders::_1),
         "AppertainCar"));
-    EventManager::GetInstance()->SuscribeMulti(Listener(
+    EventManager::GetInstance().SuscribeMulti(Listener(
         EventType::COLLISION_AI_TOTEM,
         bind(&ManTotem::AppertainCar, this, placeholders::_1),
         "AppertainCar"));
-    EventManager::GetInstance()->SuscribeMulti(Listener(
+    EventManager::GetInstance().SuscribeMulti(Listener(
         EventType::DROP_TOTEM,
         bind(&ManTotem::ResetTotem, this, placeholders::_1),
         "ResetTotem"));
