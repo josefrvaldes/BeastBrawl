@@ -15,6 +15,7 @@
 #include "../Components/CRoboJorobo.h"
 #include "../Components/CNitro.h"
 #include "../Components/CPath.h"
+#include "../Components/CCar.h"
 
 #include "../Facade/Render/RenderFacadeManager.h"
 #include "../Game.h"
@@ -22,6 +23,7 @@
 #include "../Managers/ManPowerUp.h"
 #include "../Managers/ManBoxPowerUp.h"
 #include "../Managers/ManTotem.h"
+#include "../Managers/ManBoundingWall.h"
 
 
 class Position;
@@ -85,12 +87,12 @@ void ManCar::UpdateCar(){
 // TODO: RECORDARRR!!!!!!!!!!!!!!!!!  TANTO EL "BtMoveTo" como el "systemPathPlanning" se deben hacer en la misma ITERACION!!!!
 // Es importante esto porque el BtMoveTo es el que calcula la posicion a la que ir y el systemBtLoDMove es el que utiliza esta posicion para
 // moverse a un sitio, si en algun momento intentamos ir a una posicion que no existe PETAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-void ManCar::UpdateCarAI(CarAI* carAI, ManPowerUp* m_manPowerUp, ManBoxPowerUp* m_manBoxPowerUp, ManTotem* m_manTotem, ManWayPoint* graph, ManNavMesh* manNavMesh){
+void ManCar::UpdateCarAI(CarAI* carAI, ManPowerUp* m_manPowerUp, ManBoxPowerUp* m_manBoxPowerUp, ManTotem* m_manTotem, ManWayPoint* graph, ManNavMesh* manNavMesh, ManBoundingWall* m_manBoundingWall){
     systemBtMoveTo->update(carAI, this, m_manPowerUp, m_manBoxPowerUp, m_manTotem, graph, manNavMesh);
 
     systemPathPlanning->Update(carAI, graph, manNavMesh);
 
-    systemBtLoDMove->update(carAI, this, m_manPowerUp, m_manBoxPowerUp, m_manTotem, graph,manNavMesh);
+    systemBtLoDMove->update(carAI, this, m_manPowerUp, m_manBoxPowerUp, m_manTotem, graph,manNavMesh, m_manBoundingWall);
 
     physicsAI->Update(carAI, graph);
 
@@ -533,7 +535,7 @@ void ManCar::CatchPowerUpAI(DataMap d) {
         indx = 5;
     else if(indx > 70)                  //  30%
         indx = 6;
-    //indx = 5;
+    //indx = 1;
     auto cPowerUpCar = static_cast<CPowerUp*>(any_cast<Entity*>(d["actualCar"])->GetComponent(CompType::PowerUpComp).get());
     if(cPowerUpCar->typePowerUp == typeCPowerUp::None){
         cPowerUpCar->typePowerUp = (typeCPowerUp)indx;

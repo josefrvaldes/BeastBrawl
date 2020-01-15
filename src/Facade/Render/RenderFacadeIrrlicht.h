@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../../lib/irrlicht/irrlicht.h"
+#include "../../../include/irrlicht/irrlicht.h"
 #include "../../EventManager/Event.h"
 #include "../../EventManager/EventManager.h"
 #include "../Input/InputFacadeIrrlicht.h"
@@ -27,6 +27,7 @@ class RenderFacadeIrrlicht : public RenderFacade {
     ~RenderFacadeIrrlicht() override;
     const uint16_t FacadeAddObject(Entity*) override;
     const uint16_t FacadeAddObjectCar(Entity*) override;
+    const uint16_t FacadeAddObjectTotem(Entity* entity) override;
     const void FacadeAddObjects(vector<Entity*>) override;
     void FacadeAddCamera(Entity*) override;
     void UpdateTransformable(Entity*) override;

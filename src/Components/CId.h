@@ -18,6 +18,8 @@ public:
         return out;
     }
 
+    void ResetNumIds(){numIds = 0;}
+
     uint16_t id;
 
 private:

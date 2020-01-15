@@ -35,7 +35,6 @@ void Physics::update(Car *car, Camera *cam) {
 void Physics::CalculatePosition(CCar *cCar, CTransformable *cTransformable, CSpeed *cSpeed, float deltaTime) {
     float angleRotation = (cTransformable->rotation.y * PI) / 180.0;
     //float delta = deltaTime;
-
     //Modificamos la posicion en X y Z en funcion del angulo
 
     cSpeed->speed.x = cos(angleRotation);  // * cCar->speed;
@@ -152,7 +151,7 @@ void Physics::TurnLeft(Car *car, Camera *cam) {
     //Componentes del coche
     auto cCar = static_cast<CCar *>(car->GetComponent(CompType::CarComp).get());
 
-    if (cCar->speed >= 30) {
+    if (cCar->speed >= cCar->maxSpeed*0.15) {
         if (cCar->wheelRotation > -cCar->maxWheelRotation) {
             //Aumentamos la rotacion hacia la izquierda
             cCar->wheelRotation -= cCar->incrementWheelRotation;
@@ -161,7 +160,7 @@ void Physics::TurnLeft(Car *car, Camera *cam) {
         if (cCamera->rotExtraY > -(cCar->maxWheelRotation + cCamera->rotExtraCamera)) {
             cCamera->rotExtraY -= cCar->incrementWheelRotation;
         }
-    } else if (cCar->speed <= -30) {
+    } else if (cCar->speed <= -cCar->maxSpeed*0.15) {
         if (cCar->wheelRotation > -cCar->maxWheelRotation) {
             //Aumentamos la rotacion hacia la izquierda
             cCar->wheelRotation -= cCar->incrementWheelRotation;
@@ -196,7 +195,7 @@ void Physics::TurnRight(Car *car, Camera *cam) {
     //Componentes del coche
     auto cCar = static_cast<CCar *>(car->GetComponent(CompType::CarComp).get());
 
-    if (cCar->speed >= 30) {
+    if (cCar->speed >= cCar->maxSpeed*0.15) {
         if (cCar->wheelRotation < cCar->maxWheelRotation) {
             //Aumentamos la rotacion hacia la derecha
             cCar->wheelRotation += cCar->incrementWheelRotation;
@@ -205,7 +204,7 @@ void Physics::TurnRight(Car *car, Camera *cam) {
         if (cCamera->rotExtraY < (cCar->maxWheelRotation + cCamera->rotExtraCamera)) {
             cCamera->rotExtraY += cCar->incrementWheelRotation;
         }
-    } else if (cCar->speed <= -30) {
+    } else if (cCar->speed <= -cCar->maxSpeed*0.15) {
         if (cCar->wheelRotation < cCar->maxWheelRotation) {
             //Aumentamos la rotacion hacia la derecha
             cCar->wheelRotation += cCar->incrementWheelRotation;

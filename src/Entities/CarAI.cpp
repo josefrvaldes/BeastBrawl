@@ -17,7 +17,7 @@
 #include "../Components/CColliding.h"
 #include "../Components/CCurrentNavMesh.h"
 #include "../Components/CTargetNavMesh.h"
-
+#include "../Components/CBoundingRay.h"
 #include <iostream>
 
 class Position;
@@ -55,6 +55,7 @@ CarAI::CarAI(){
 
     shared_ptr<CColliding> cColliding = make_shared<CColliding>(false);
     shared_ptr<CBoundingSphere> cBoundSphere = make_shared<CBoundingSphere>(pos);
+    shared_ptr<CBoundingRay> cBoundRay = make_shared<CBoundingRay>();
     AddComponent(cId);
     AddComponent(cType);
     AddComponent(cTransformable);
@@ -73,6 +74,7 @@ CarAI::CarAI(){
     AddComponent(cTotem);
     AddComponent(cPath);
     AddComponent(cBoundSphere);
+    AddComponent(cBoundRay);
     AddComponent(cColliding);
     AddComponent(cSpeed);
 

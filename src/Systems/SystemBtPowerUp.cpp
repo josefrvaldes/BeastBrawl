@@ -143,7 +143,7 @@ struct HaveTotemOtherCar : public behaviourTree {
         for(auto AIcar : blackboard->manCars->GetEntitiesAI()){
             auto cTotem = static_cast<CTotem*>(AIcar.get()->GetComponent(CompType::TotemComp).get()); 
             // Si algun coche tenia el totem .... lo pierde
-            if(cTotem->active == true && AIcar.get()!=blackboard->actualCar){
+            if(cTotem->active == true){
                 return true;           
             }                                                    // para salirnos y no hacer mas calculos
         }

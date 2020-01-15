@@ -4,18 +4,18 @@
 #include <cstdint>
 #include <iostream>
 #include <list>
+#include <memory>
 #include <queue>
 #include <stack>
-#include <memory>
 #include <string>
 
-#include "../../lib/glm/vec3.hpp"
+#include "../../include/glm/vec3.hpp"
+#include "../Entities/BoxPowerUp.h"
 #include "../Entities/Camera.h"
 #include "../Entities/Car.h"
 #include "../Entities/CarAI.h"
 #include "../Entities/GameObject.h"
 #include "../Entities/PowerUp.h"
-#include "../Entities/BoxPowerUp.h"
 #include "../Entities/Totem.h"
 #include "../Entities/WayPoint.h"
 #include "../Entities/NavMesh.h"
@@ -28,25 +28,25 @@
 #include "../Facade/Render/RenderFacadeManager.h"
 #include "../Facade/Sound/SoundFacade.h"
 #include "../Facade/Sound/SoundFacadeManager.h"
-#include "../Systems/PhysicsPowerUp.h"
-#include "../Systems/SystemBoxPowerUp.h"
-#include "../Systems/Collisions.h"
-#include "../Systems/Physics.h"
 #include "../Systems/SystemPathPlanning.h"
 #include "../Game.h"
-#include "../Managers/ManCar.h"
-#include "../Managers/ManPowerUp.h"
-#include "../Managers/ManBoxPowerUp.h"
-#include "../Managers/ManWayPoint.h"
-#include "../Managers/ManNamePlate.h"
-#include "../Managers/ManTotem.h"
 #include "../Managers/ManBoundingWall.h"
+#include "../Managers/ManBoxPowerUp.h"
+#include "../Managers/ManCar.h"
+#include "../Managers/ManNamePlate.h"
+#include "../Managers/ManPowerUp.h"
+#include "../Managers/ManTotem.h"
+#include "../Managers/ManWayPoint.h"
+#include "../Systems/Collisions.h"
+#include "../Systems/Physics.h"
+#include "../Systems/PhysicsPowerUp.h"
+#include "../Systems/SystemBoxPowerUp.h"
 #include "../behaviourTree/behaviourTree.h"
 #include "../behaviourTree/decorator.h"
 #include "../behaviourTree/selector.h"
 #include "../behaviourTree/sequence.h"
 #include "../fuzzyLogic/fuzzyLogic.h"
-#include "btBulletDynamicsCommon.h"
+//#include "btBulletDynamicsCommon.h"
 
 using namespace std;
 using namespace chrono;
@@ -57,14 +57,14 @@ class StateInGame : public State {
    public:
     StateInGame();
     ~StateInGame();
+    void InitVirtualMethods();
     void InitState() override;
     void Input() override;
     void Update() override;
     void Render() override;
-    States GetState() { return State::States::INGAME; };
+    States GetState() { return State::States::INGAME_SINGLE; };
 
-   private:
-    shared_ptr<EventManager> eventManager;
+   protected:
     shared_ptr<GameObject> ground;
     shared_ptr<Camera> cam;
     shared_ptr<ManPowerUp> manPowerUps;
@@ -75,12 +75,11 @@ class StateInGame : public State {
     shared_ptr<ManNamePlate> manNamePlates;
     shared_ptr<ManBoundingWall> manBoundingWall;
 
+    RenderFacade *renderEngine = {nullptr};
+    InputFacade *inputEngine = {nullptr};
+    PhysicsFacade *physicsEngine = {nullptr};
+    SoundFacade *soundEngine = {nullptr};
 
-    RenderFacade* renderEngine = { nullptr };
-    InputFacade* inputEngine = { nullptr };
-    PhysicsFacade* physicsEngine = { nullptr };
-    SoundFacade *soundEngine = { nullptr };
-    
     shared_ptr<Physics> physics;
     //shared_ptr<float> deltaTime;
     float deltaTime = 0.0166666;
@@ -97,6 +96,16 @@ class StateInGame : public State {
     //int lastFPS = -1;
     //uint32_t then;
     time_point<system_clock> then;
-   // vector<float> deltas;
+    // vector<float> deltas;
     //float CalculateDelta(float);
+
+    virtual void InitializeCLPhysics(ManCar &manCars, ManBoundingWall &ManBoundingWall);
+    virtual void InitializeManagers(Physics *physics, Camera *cam);
+    virtual void InitializeSystems(ManCar &manCars, ManBoundingWall &manBoundingWall);
+    virtual void InitializeFacades();
+    virtual void AddElementsToRender();
+    virtual void CAMBIARCosasDeTotemUpdate(){};
+
+    void CAMBIARCosasDeTotem(ManTotem &);
+    void CAMBIARCosasDeBoxPU(ManWayPoint &, ManBoxPowerUp &);
 };

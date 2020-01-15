@@ -27,6 +27,7 @@ enum CompType {
     CompBoundingSphere,
     CompBoundingAABox,
     CompBoundingPlane,
+    CompBoundingRay,
     CollidingComp,
     PathComp,
     NavMeshComp,

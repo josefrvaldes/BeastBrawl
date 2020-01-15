@@ -1,6 +1,7 @@
 #include "Car.h"
 #include <iostream>
 #include "../Components/CBoundingSphere.h"
+#include "../Components/CBoundingRay.h"
 #include "../Components/CCar.h"
 #include "../Components/CId.h"
 #include "../Components/CMesh.h"
@@ -49,6 +50,7 @@ Car::Car() {
     // physics
     shared_ptr<CColliding> cColliding = make_shared<CColliding>(false);
     shared_ptr<CBoundingSphere> cBoundSphere = make_shared<CBoundingSphere>(pos);
+    shared_ptr<CBoundingRay> cBoundRay = make_shared<CBoundingRay>();
     // end physics
 
     AddComponent(cId);
@@ -63,6 +65,7 @@ Car::Car() {
     AddComponent(cRoboJorobo);
     AddComponent(cTotem);
     AddComponent(cBoundSphere);
+    AddComponent(cBoundRay);
     AddComponent(cColliding);
     AddComponent(cSpeed);
     AddComponent(cCurrentNavMesh);

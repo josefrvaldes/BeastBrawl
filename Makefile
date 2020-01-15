@@ -13,6 +13,22 @@ else
 	CXXFLAGS += -O3
 endif
 
+ifdef WINDOWS
+	LIBS 	    := -L./lib/windows/irrlicht -lIrrlicht -L./lib/windows/fmod -lfmod -lfmodstudio
+	INCLUDE     := -I. 
+	INCLUDE_IRR := -I /include/irrlicht/irrlicht.h
+	INCLUDE_FMOD := -I ./include/fmod/core -I ./include/fmod/studio
+	#INCLUDE_BULLET := -I./include/bullet -I./include
+	CC			:= g++
+else
+	LIBS 	    := -L./lib/linux/irrlicht -lIrrlicht -L./lib/linux/fmod -lfmod -lfmodstudio
+	INCLUDE     := -I. 
+	INCLUDE_IRR := -I /include/irrlicht/irrlicht.h
+	INCLUDE_FMOD := -I ./include/fmod/core -I ./include/fmod/studio
+	#INCLUDE_BULLET := -I./include/bullet -I./include
+	CREATE_SYMLINKS := bash symlinks.sh
+	CC			:= g++
+endif
 
 ifdef WINDOWS
 
@@ -37,7 +53,6 @@ ALLCPPSOBJ	:= $(patsubst $(SRC_PATH)/%.cpp,$(OBJ_PATH)/%.o,$(ALLCPPS))
 SUBDIRS		:= $(shell find src/ -type d)
 OBJSUBDIRS  := $(patsubst $(SRC_PATH)%,$(OBJ_PATH)%,$(SUBDIRS))
 
-CREATE_SYMLINKS := bash symlinks.sh
 
 
 #Esto crea el ejecutable
@@ -55,7 +70,7 @@ $(NAME_EXE): $(OBJSUBDIRS) $(ALLCPPSOBJ)
 $(OBJ_PATH)/%.o: $(SRC_PATH)/%.cpp
 	$(PRUEBA_TEXT)
 	$(COMPILING_TEXT) $<
-	@$(CC) $(CXXFLAGS) -o $@ -c $^ $(INCLUDE) $(INCLUDE_IRR) $(INCLUDE_FMOD) $(INCLUDE_BULLET)
+	@$(CC) $(CXXFLAGS) -o $@ -c $^ $(INCLUDE) $(INCLUDE_IRR) $(INCLUDE_FMOD)
 	
 
 $(OBJSUBDIRS):
