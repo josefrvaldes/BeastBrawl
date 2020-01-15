@@ -21,7 +21,7 @@ void StateInGameSingle::Update() {
     StateInGame::Update();
 
     for (auto actualAI : manCars->GetEntitiesAI()) {
-        manCars->UpdateCarAI(actualAI.get(), manPowerUps.get(), manBoxPowerUps.get(), manTotems.get(), manWayPoint.get());
+        manCars->UpdateCarAI(actualAI.get(), manPowerUps.get(), manBoxPowerUps.get(), manTotems.get(), manWayPoint.get(), manBoundingWall.get());
         physicsEngine->UpdateCarAI(actualAI.get());
     }
     CAMBIARCosasDeTotemUpdate();

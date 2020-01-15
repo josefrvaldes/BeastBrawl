@@ -14,6 +14,7 @@ struct ManPowerUp;
 struct ManBoxPowerUp;
 struct ManTotem;
 struct ManWayPoint;
+struct ManBoundingWall;
 struct SystemFuzzyLogicAI;
 struct SteeringBehaviours;
 
@@ -23,7 +24,7 @@ class SystemBtLoDMove {
       ~SystemBtLoDMove(){};
 
       void init();
-      void update(CarAI* actualCar, ManCar* manCars, ManPowerUp* manPowerUps, ManBoxPowerUp* manBoxPowerUps, ManTotem* manTotems, ManWayPoint* manWayPoint);
+      void update(CarAI* actualCar, ManCar* manCars, ManPowerUp* manPowerUps, ManBoxPowerUp* manBoxPowerUps, ManTotem* manTotems, ManWayPoint* manWayPoint, ManBoundingWall* m_manBoundingWall);
 
 
    private:

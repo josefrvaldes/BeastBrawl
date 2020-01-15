@@ -54,7 +54,7 @@ PowerUp::PowerUp()
 
 
 PowerUp::PowerUp(glm::vec3 _position, glm::vec3 _rotation, typeCPowerUp _typePowerUp, CTransformable* cTransformableTarget) : PowerUp(){
-
+    
     CTransformable *cTransformable = (CTransformable *)m_components[CompType::TransformableComp].get();
     cTransformable->position = _position;
     cTransformable->rotation = _rotation;
