@@ -68,4 +68,6 @@ class RenderFacade {
     time_point<system_clock> timeStart;
     const int64_t inputDelay = 500;       // 0.5 segundos
     const int64_t inputDelayCamera = 250;       // 0.5 segundos
+    bool invertedCam = false;
+    bool totemCamActive = false;
 };

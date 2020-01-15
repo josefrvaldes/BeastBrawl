@@ -45,6 +45,11 @@ void Camera::SuscribeEvents(){
         EventType::TOTEM_CAMERA,
         bind(&Camera::TotemCamera, this, placeholders::_1),
         "TotemCamera"));
+
+    EventManager::GetInstance()->SuscribeMulti(Listener(
+        EventType::NORMAL_CAMERA,
+        bind(&Camera::NormalCamera, this, placeholders::_1),
+        "NormalCamera"));
 }
 
 
@@ -62,7 +67,6 @@ void Camera::InvertCamera(DataMap d){
 }
 
 void Camera::TotemCamera(DataMap d){      
-    cout << "CAMARA TOTEM\n";
     auto cCamera = static_cast<CCamera*>(GetComponent(CompType::CameraComp).get());
 
     if(cCamera->camType == CamType::TOTEM){
@@ -73,4 +77,10 @@ void Camera::TotemCamera(DataMap d){
     }
 }
 
+void Camera::NormalCamera(DataMap d){
+    auto cCamera = static_cast<CCamera*>(GetComponent(CompType::CameraComp).get());
+
+    cCamera->camType = CamType::NORMAL;
+
+}
 

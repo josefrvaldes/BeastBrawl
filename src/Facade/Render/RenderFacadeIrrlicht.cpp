@@ -391,9 +391,9 @@ void RenderFacadeIrrlicht::UpdateCamera(Entity* cam, ManCar* manCars) {
         camera1->setTarget(targetPosition);
         camera1->setFOV(angleRotation);
         camera1->setPosition(core::vector3df(
-            cTransformableCar->position.x + 40 * cos(valueAtan2), 
+            cTransformableCar->position.x + 32.5 * cos(valueAtan2), 
             cTransformable->position.y, 
-            cTransformableCar->position.z + 30 * sin(valueAtan2)));
+            cTransformableCar->position.z + 35 * sin(valueAtan2)));
     }
     
     
@@ -463,14 +463,20 @@ void RenderFacadeIrrlicht::FacadeCheckInput() {
     }
 
     // CAMARA
-    if (receiver.IsKeyDown(KEY_KEY_Q) && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelayCamera) {
+    if (receiver.IsKeyDown(KEY_KEY_Q) && !invertedCam && !totemCamActive) {
         timeStart = system_clock::now();
         eventManager->AddEventMulti(Event{EventType::INVERT_CAMERA});
+        invertedCam = true;
 
     } else if(receiver.IsKeyDown(KEY_KEY_E) && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelayCamera) {
         timeStart = system_clock::now();
         eventManager->AddEventMulti(Event{EventType::TOTEM_CAMERA});
-    } 
+        totemCamActive = !totemCamActive;
+    } else if (!receiver.IsKeyDown(KEY_KEY_Q) && !totemCamActive){
+        invertedCam = false;
+        eventManager->AddEventMulti(Event{EventType::NORMAL_CAMERA});
+
+    }
 
     // POWERUPS
     if (receiver.IsKeyDown(KEY_SPACE)) {
