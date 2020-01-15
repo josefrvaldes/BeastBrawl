@@ -449,31 +449,28 @@ bool SteeringBehaviours::CollisionRayPlane(Entity* m_Car, Entity* m_object, cons
 void SteeringBehaviours::AvoidTrapCorner(Entity* m_Car, Entity *actualObstacle, const glm::vec2& m_velocityVector, const glm::vec3& target, glm::vec2& vectorForce) const{
     auto cRay = static_cast<CBoundingRay*>(m_Car->GetComponent(CompType::CompBoundingRay).get());
     // evitar quedar atrapado en la esquina
-    if(actualObstacle == nullptr){                      // no colisiona contra nada
+    if(actualObstacle == nullptr){                     // no colisiona contra nada
         if(cRay->previousPlane != nullptr && cRay->iteratorSamePlane < cRay->maxItSamePlane){
             cRay->iteratorSamePlane++;
             vectorForce = Seek(m_Car, cRay->target, m_velocityVector);
-            //std::cout << "Aumenta iterador" << std::endl;
+            
         }else if(cRay->iteratorSamePlane >= cRay->maxItSamePlane){
             cRay->iteratorSamePlane = 0;
-            cRay->previousPlane = nullptr;
-            
+            cRay->previousPlane = nullptr; 
         }
-    }else{                                              // colisiona contra un muro
+    }else{                                          // colisiona contra un muro
         auto planeObstacle = static_cast<CBoundingPlane*>(actualObstacle->GetComponent(CompType::CompBoundingPlane).get());                           
         if(planeObstacle != cRay->previousPlane){
             if(cRay->previousPlane != nullptr && cRay->iteratorSamePlane < cRay->maxItSamePlane){
                 cRay->iteratorSamePlane++;
                 vectorForce = Seek(m_Car, cRay->target, m_velocityVector);
-            }else if(cRay->iteratorSamePlane >= cRay->maxItSamePlane){
+            }else if(cRay->iteratorSamePlane >= cRay->maxItSamePlane || cRay->previousPlane == nullptr){
                 cRay->iteratorSamePlane = 0;
                 cRay->previousPlane = planeObstacle;
                 cRay->target = target;
-                //std::cout << "Cambia de plano" << std::endl;
             }
-        }else{
+        }else if(cRay->iteratorSamePlane == 0){
             cRay->target = target;
-            cRay->iteratorSamePlane = 0;
         }
     }
 }
@@ -497,14 +494,13 @@ void SteeringBehaviours::AvoidVibration(Entity* m_Car, Entity *actualObstacle, c
             if(cRay->previousSphere != nullptr && cRay->iteratorSameSphere < cRay->maxItSameSphere){
                 cRay->iteratorSameSphere++;
                 vectorForce = cRay->vectorForce;
-            }else if(cRay->iteratorSameSphere >= 10){
+            }else if(cRay->iteratorSameSphere >= 10 || cRay->previousSphere == nullptr){
                 cRay->iteratorSameSphere = 0;
                 cRay->previousSphere = sphereObstacle;
                 cRay->vectorForce = vectorForce;
             }
-        }else{
+        }else if(cRay->iteratorSamePlane == 0){
             cRay->vectorForce = vectorForce;
-            cRay->iteratorSameSphere = 0;
         }
     }
 }
