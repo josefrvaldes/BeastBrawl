@@ -11,9 +11,6 @@
 #include <string>
 #include <unordered_map>
 
-// SDL2
-#include "../../../include/sdl/SDL.h"
-#include "../../../include/glew/glew.h"
    
 
 using namespace std;
