@@ -1,7 +1,7 @@
 #pragma once
 
 
-#include "../../lib/glm/vec3.hpp"
+#include "../../include/glm/vec3.hpp"
 #include "../Aliases.h"
 #include "../Components/CWayPoint.h"
 #include "../Components/CTransformable.h"

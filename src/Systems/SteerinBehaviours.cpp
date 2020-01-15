@@ -351,7 +351,7 @@ glm::vec2 SteeringBehaviours::ObstacleAvoidance(Entity* m_Car, ManCar* m_manCar,
     for(std::shared_ptr<Entity> obstacle : m_manCar->GetEntitiesAI()){
         //auto cPowerUp = static_cast<CPowerUp*>(obstacle->GetComponent(CompType::PowerUpComp).get());
         if(obstacle.get()!=m_Car && CollisionRaySphere(m_Car, obstacle.get(), m_velocityVector, distance, vectorForceAvoid)==true){
-            if(distance < finalDistance && distance < cCar->speed*0.4+cRay->baseDistance && distance > 0){
+            if(distance < finalDistance && distance < cCar->speed*0.4+cRay->baseDistanceSphere && distance > 0){
                 finalDistance = distance;
                 vectorForce = vectorForceAvoid;
                 actualObstacle= obstacle.get();
@@ -360,7 +360,7 @@ glm::vec2 SteeringBehaviours::ObstacleAvoidance(Entity* m_Car, ManCar* m_manCar,
     }
     // se comprueba con el jugador tambien
     if(CollisionRaySphere(m_Car, m_manCar->GetCar().get(), m_velocityVector, distance, vectorForceAvoid)==true){
-        if(distance < finalDistance && distance < cCar->speed*0.4+cRay->baseDistance && distance > 0){
+        if(distance < finalDistance && distance < cCar->speed*0.4+cRay->baseDistanceSphere && distance > 0){
             finalDistance = distance;
             vectorForce = vectorForceAvoid;
             actualObstacle = m_manCar->GetCar().get();
@@ -387,7 +387,7 @@ glm::vec2 SteeringBehaviours::WallAvoidance(Entity* m_Car, ManBoundingWall* m_ma
 
     for(std::shared_ptr<Entity> obstacle : m_manBoundingWall->GetEntities()){
         if(CollisionRayPlane(m_Car, obstacle.get(), m_velocityVector, distance, vectorForceAvoid, target)==true){
-            if(distance < finalDistance && distance < cCar->speed*0.4+cRay->baseDistance && distance > 0){
+            if(distance < finalDistance && distance < cCar->speed*0.4+cRay->baseDistancePlane && distance > 0){
                 //std::cout << "Collisiona" << std::endl;
                 finalDistance = distance;
                 vectorForce = vectorForceAvoid;
@@ -453,9 +453,11 @@ void SteeringBehaviours::AvoidTrapCorner(Entity* m_Car, Entity *actualObstacle, 
         if(cRay->previousPlane != nullptr && cRay->iteratorSamePlane < cRay->maxItSamePlane){
             cRay->iteratorSamePlane++;
             vectorForce = Seek(m_Car, cRay->target, m_velocityVector);
+            //std::cout << "Aumenta iterador" << std::endl;
         }else if(cRay->iteratorSamePlane >= cRay->maxItSamePlane){
             cRay->iteratorSamePlane = 0;
             cRay->previousPlane = nullptr;
+            
         }
     }else{                                              // colisiona contra un muro
         auto planeObstacle = static_cast<CBoundingPlane*>(actualObstacle->GetComponent(CompType::CompBoundingPlane).get());                           
@@ -467,6 +469,7 @@ void SteeringBehaviours::AvoidTrapCorner(Entity* m_Car, Entity *actualObstacle, 
                 cRay->iteratorSamePlane = 0;
                 cRay->previousPlane = planeObstacle;
                 cRay->target = target;
+                //std::cout << "Cambia de plano" << std::endl;
             }
         }else{
             cRay->target = target;
@@ -535,7 +538,7 @@ bool SteeringBehaviours::CollisionFaceToFace(Entity* m_Car, Entity *m_object) co
 
     if(angle<0) angle*=(-1);
 
-    if(angle > 140.0)
+    if(angle > 120.0)
         return true;
     else
         return false;

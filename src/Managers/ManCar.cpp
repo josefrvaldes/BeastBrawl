@@ -15,6 +15,7 @@
 #include "../Components/CRoboJorobo.h"
 #include "../Components/CNitro.h"
 #include "../Components/CPath.h"
+#include "../Components/CCar.h"
 
 #include "../Facade/Render/RenderFacadeManager.h"
 #include "../Game.h"

@@ -1,3 +1,5 @@
+#define _USE_MATH_DEFINES
+
 #include "RenderFacadeIrrlicht.h"
 
 #include <math.h>
@@ -19,6 +21,7 @@
 #include "../../Components/Component.h"
 #include "../../Constants.h"
 #include "../../Entities/WayPoint.h"
+#include "../../Entities/CarAI.h"
 #include "../../Game.h"
 
 using namespace irr;
@@ -37,6 +40,8 @@ RenderFacadeIrrlicht::RenderFacadeIrrlicht() {
     driver = device->getVideoDriver();
     smgr = device->getSceneManager();
     font = device->getGUIEnvironment()->getBuiltInFont();
+    FacadeSuscribeEvents();
+    FacadeInitHUD();
 }
 
 void RenderFacadeIrrlicht::FacadeSuscribeEvents() {
@@ -193,6 +198,9 @@ const uint16_t RenderFacadeIrrlicht::FacadeAddObject(Entity* entity) {
         case ModelType::StaticMesh:
             node = smgr->addMeshSceneNode(smgr->getMesh(meshPath.c_str()));
             break;
+
+        case ModelType::Text:
+            break;
     }
 
     // y ahora a ese node, le ponemos sus parámetros
@@ -255,6 +263,12 @@ const uint16_t RenderFacadeIrrlicht::FacadeAddObjectCar(Entity* entity) {
     return idCar;
 }
 
+const uint16_t RenderFacadeIrrlicht::FacadeAddObjectTotem(Entity* entity) {
+    idTotem = FacadeAddObject(entity);
+    cout << "El nuevo ID de totem es: " << idTotem << "\n";
+    return idTotem;
+}
+
 //TODO: Esto proximamente le pasaremos todos los entities y los modificará 1 a 1
 void RenderFacadeIrrlicht::UpdateTransformable(Entity* entity) {
     //Cogemos los componentes de ID y CTransformable
@@ -287,14 +301,56 @@ void RenderFacadeIrrlicht::UpdateTransformable(Entity* entity) {
 void RenderFacadeIrrlicht::UpdateCamera(Entity* cam) {
     //Cogemos los componentes de la camara
     auto cTransformable = static_cast<CTransformable*>(cam->GetComponent(CompType::TransformableComp).get());
+    auto cCamera = static_cast<CCamera*>(cam->GetComponent(CompType::CameraComp).get());
 
     //Cogemos la posicion de nuestro coche
-    //TODO: cambiar ese 0 por el Id del CarManager
     core::vector3df targetPosition = smgr->getSceneNodeFromId(idCar)->getPosition();
-    targetPosition.Y += 17;
-    camera1->setTarget(targetPosition);
+    //core::vector3df targetRotation = smgr->getSceneNodeFromId(idCar)->getRotation();
 
-    camera1->setPosition(core::vector3df(cTransformable->position.x, cTransformable->position.y, cTransformable->position.z));
+    // Voy a calcular el punto inverso del coche, suponiendo que la camara es el centro de la circunferencia
+    // Quizas luego no queremos esta manera de hacer camara trasera y me voy a cagar en vuestros putos muertos sinceramente
+
+    targetPosition.Y += 17;
+
+    if(cCamera->camType == CamType::INVERTED){
+        targetPosition.Y += 0;
+
+        float distX = abs(cTransformable->position.x - targetPosition.X);
+        float distZ = abs(cTransformable->position.z - targetPosition.Z);
+
+        if(cTransformable->position.x - targetPosition.X < 0){
+            targetPosition.X = targetPosition.X - (2*distX);
+
+        }else{
+            targetPosition.X = targetPosition.X + (2*distX);
+
+        }
+
+        if(cTransformable->position.z - targetPosition.Z < 0){
+            targetPosition.Z = targetPosition.Z - (2*distZ);
+
+        }else{
+            targetPosition.Z = targetPosition.Z + (2*distZ);
+
+        }
+        float angleRotation = (60 * PI) / 180.0;
+
+        camera1->setTarget(targetPosition);
+        camera1->setFOV(angleRotation);
+        camera1->setPosition(core::vector3df(cTransformable->position.x, cTransformable->position.y-5, cTransformable->position.z));
+
+    }else if(cCamera->camType == CamType::NORMAL){
+        float angleRotation = (70 * PI) / 180.0;
+
+        camera1->setTarget(targetPosition);
+        camera1->setFOV(angleRotation);
+        camera1->setPosition(core::vector3df(cTransformable->position.x, cTransformable->position.y, cTransformable->position.z));
+    }else{
+
+    }
+    
+    
+
 }
 
 //Añade la camara, esto se llama una sola vez al crear el juego
@@ -305,10 +361,12 @@ void RenderFacadeIrrlicht::FacadeAddCamera(Entity* camera) {
     auto cTransformable = static_cast<CTransformable*>(camera->GetComponent(CompType::TransformableComp).get());
     auto cCamera = static_cast<CCamera*>(camera->GetComponent(CompType::CameraComp).get());
 
-    float posX = cCamera->tarX - 40.0 * sin(((cTransformable->rotation.x) * PI) / 180.0);
-    float posZ = cCamera->tarZ - 40.0 * cos(((cTransformable->rotation.z) * PI) / 180.0);
+    float posX = cCamera->tarX - 40.0 * sin(((cTransformable->rotation.x) * M_PI) / 180.0);
+    float posZ = cCamera->tarZ - 40.0 * cos(((cTransformable->rotation.z) * M_PI) / 180.0);
     camera1->setTarget(core::vector3df(cCamera->tarX, cCamera->tarY, cCamera->tarZ));
     camera1->setPosition(core::vector3df(posX, cTransformable->position.y, posZ));
+    //camera1->setFOV(40);
+    
 }
 
 bool RenderFacadeIrrlicht::FacadeRun() {
@@ -334,17 +392,7 @@ void RenderFacadeIrrlicht::FacadeCheckInput() {
         eventManager->AddEventMulti(Event{EventType::PRESS_0});
     }
     if (receiver.IsKeyDown(KEY_KEY_I)) {
-        //cout << "Pulsamos I" << endl;
         DataMap data;
-        // data["int"] = 123;
-        // data["float"] = 2.4f;
-        // vector<int> vec;
-        // vec.push_back(1);
-        // vec.push_back(2);
-        // vec.push_back(3);
-        // data["vector"] = vec;
-        // cout << "Creamos el data" << endl;
-        // cout << "Se pulsa I y enviamos el data" << endl;
         eventManager->AddEventMulti(Event{EventType::PRESS_I, data});
     } else if (receiver.IsKeyDown(KEY_KEY_O)) {
         eventManager->AddEventMulti(Event{EventType::PRESS_O});
@@ -359,12 +407,23 @@ void RenderFacadeIrrlicht::FacadeCheckInput() {
     } else {
         eventManager->AddEventMulti(Event{EventType::NO_A_D_PRESS});
     }
+
+    // MODO DEBUG
     if (receiver.IsKeyDown(KEY_F3) && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay) {
         timeStart = system_clock::now();
         showDebug = !showDebug; 
 
     }
 
+    // CAMARA
+    if (receiver.IsKeyDown(KEY_KEY_Q) && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelayCamera) {
+        timeStart = system_clock::now();
+        eventManager->AddEventMulti(Event{EventType::INVERT_CAMERA});
+
+    }// else if(receiver.IsKeyDown(KEY_KEY_E) && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay) {
+    //     timeStart = system_clock::now();
+    //     eventManager->AddEventMulti(Event{EventType::TOTEM_CAMERA});
+    // } 
     // POWERUPS
     if (receiver.IsKeyDown(KEY_SPACE)) {
         eventManager->AddEventMulti(Event{EventType::PRESS_SPACE});
@@ -381,7 +440,11 @@ void RenderFacadeIrrlicht::FacadeCheckInputMenu() {
     //Cambiamos a ingame
     if (receiver.IsKeyDown(KEY_F1)) {
         numEnemyCars = 0;
-        Game::GetInstance()->SetState(State::INGAME);
+
+        //Manera un poco cutre de resetear el CId al empezar el juego
+        auto cId = make_shared<CId>();
+        cId->ResetNumIds();
+        Game::GetInstance()->SetState(State::INGAME_SINGLE);
     }
 
     if (receiver.IsKeyDown(KEY_ESCAPE)) {
@@ -393,7 +456,7 @@ void RenderFacadeIrrlicht::FacadeCheckInputPause() {
     //Cambiamos a ingame
     if (receiver.IsKeyDown(KEY_F3) && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay) {
         timeStart = system_clock::now();
-        Game::GetInstance()->SetState(State::INGAME);
+        Game::GetInstance()->SetState(State::INGAME_SINGLE);
     }
 
     if (receiver.IsKeyDown(KEY_F4) && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay) {

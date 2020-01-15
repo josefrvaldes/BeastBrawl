@@ -5,7 +5,7 @@
 #include <memory>
 #include <vector>
 //#include "Manager.h"
-#include "../../lib/glm/vec3.hpp"
+#include "../../include/glm/vec3.hpp"
 #include "../Facade/Render/RenderFacadeManager.h"
 
 #include "../Components/CBoxPowerUp.h"

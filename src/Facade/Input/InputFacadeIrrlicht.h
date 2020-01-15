@@ -4,7 +4,7 @@
 #include <memory>
 #include "InputFacade.h"
 //#include "../Render/RenderFacadeManager.h"
-#include "../../../lib/irrlicht/irrlicht.h"
+#include "../../../include/irrlicht/irrlicht.h"
 
 using namespace std;
 using namespace irr;
