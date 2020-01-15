@@ -30,16 +30,6 @@ else
 	CC			:= g++
 endif
 
-ifdef WINDOWS
-
-else
-	LIBS 	    := -L./lib/irrlicht -lIrrlicht -L./lib/fmod -lfmod -lfmodstudio -L./lib/bullet -lBulletSoftBody -lBulletDynamics -lBulletCollision -lLinearMath
-	INCLUDE     := -I. 
-	INCLUDE_IRR := -I /lib/irrlicht/irrlicht.h
-	INCLUDE_FMOD := -I ./include/fmod/core -I ./include/fmod/studio
-	INCLUDE_BULLET := -I./include/bullet -I./include
-	CC			:= g++
-endif
 
 SOURCES  	:= $(wildcard *.cpp)
 OBJ_PATH    := obj
