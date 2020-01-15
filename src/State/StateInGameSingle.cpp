@@ -152,4 +152,5 @@ void StateInGameSingle::CAMBIARInicializarCarAIS(ManCar &manCars, ManWayPoint &m
     pathInit3.push(0);
     pathInit3.push(5);
     manCars.GetEntitiesAI()[2]->SetPath(pathInit3);
+
 }
