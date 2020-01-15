@@ -23,12 +23,5 @@ public:
 
     void Update(CarAI* carAI, ManWayPoint* graph);
     void UpdateCarPowerUps(CarAI* carAI);
-    void UpdateDikkstra(CarAI* carAI, ManWayPoint* graph);
-    stack<int> Dijkstra(ManWayPoint* graph, int start, int end);
-
-
-
-protected:
-private:
 
 };

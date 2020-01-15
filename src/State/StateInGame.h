@@ -18,12 +18,17 @@
 #include "../Entities/PowerUp.h"
 #include "../Entities/Totem.h"
 #include "../Entities/WayPoint.h"
+#include "../Entities/NavMesh.h"
+#include "../Managers/ManPowerUp.h"
+#include "../Managers/ManWayPoint.h"
+#include "../Managers/ManNavMesh.h"
 #include "../EventManager/EventManager.h"
 #include "../Facade/Input/InputFacadeManager.h"
 #include "../Facade/Physics/PhysicsFacadeManager.h"
 #include "../Facade/Render/RenderFacadeManager.h"
 #include "../Facade/Sound/SoundFacade.h"
 #include "../Facade/Sound/SoundFacadeManager.h"
+#include "../Systems/SystemPathPlanning.h"
 #include "../Game.h"
 #include "../Managers/ManBoundingWall.h"
 #include "../Managers/ManBoxPowerUp.h"
@@ -41,6 +46,8 @@
 #include "../behaviourTree/selector.h"
 #include "../behaviourTree/sequence.h"
 #include "../fuzzyLogic/fuzzyLogic.h"
+#include "../Components/CNavMesh.h"
+#include "../Components/CCurrentNavMesh.h"
 //#include "btBulletDynamicsCommon.h"
 
 using namespace std;
@@ -59,12 +66,14 @@ class StateInGame : public State {
     void Render() override;
     States GetState() { return State::States::INGAME_SINGLE; };
 
+    shared_ptr<ManCar> manCars;
+
    protected:
     shared_ptr<GameObject> ground;
     shared_ptr<Camera> cam;
     shared_ptr<ManPowerUp> manPowerUps;
     shared_ptr<ManBoxPowerUp> manBoxPowerUps;
-    shared_ptr<ManCar> manCars;
+    shared_ptr<ManNavMesh> manNavMesh;
     shared_ptr<ManWayPoint> manWayPoint;
     shared_ptr<ManNamePlate> manNamePlates;
     shared_ptr<ManBoundingWall> manBoundingWall;
@@ -84,6 +93,7 @@ class StateInGame : public State {
     shared_ptr<Entity> totemOnCar;
 
     unique_ptr<CLPhysics> clPhysics;
+    unique_ptr<SystemPathPlanning> sysPathPlanning;
 
     shared_ptr<ManTotem> manTotems;
     //int lastFPS = -1;
@@ -101,4 +111,5 @@ class StateInGame : public State {
 
     void CAMBIARCosasDeTotem(ManTotem &);
     void CAMBIARCosasDeBoxPU(ManWayPoint &, ManBoxPowerUp &);
+    void CAMBIARCosasNavMesh(ManNavMesh &);
 };

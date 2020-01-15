@@ -30,6 +30,7 @@ else
 	CC			:= g++
 endif
 
+
 SOURCES  	:= $(wildcard *.cpp)
 OBJ_PATH    := obj
 SRC_PATH	:= src

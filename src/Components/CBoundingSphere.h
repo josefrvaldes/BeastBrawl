@@ -7,6 +7,8 @@
 
 using namespace glm;
 
+struct CTransformable;
+
 class CBoundingSphere : public Component {
    public:
     CBoundingSphere(const vec3 &_center)
@@ -19,6 +21,7 @@ class CBoundingSphere : public Component {
     }
 
     IntersectData IntersectSphere(const CBoundingSphere &other) const;
+    IntersectData IntersectRay(const CTransformable &transCarRay, const vec3 &normalRay) const;
     void SetCenter(vec3 _center) {
         center = _center;
     }

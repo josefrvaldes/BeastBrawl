@@ -143,7 +143,7 @@ struct HaveTotemOtherCar : public behaviourTree {
         for(auto AIcar : blackboard->manCars->GetEntitiesAI()){
             auto cTotem = static_cast<CTotem*>(AIcar.get()->GetComponent(CompType::TotemComp).get()); 
             // Si algun coche tenia el totem .... lo pierde
-            if(cTotem->active == true && AIcar.get()!=blackboard->actualCar){
+            if(cTotem->active == true){
                 return true;           
             }                                                    // para salirnos y no hacer mas calculos
         }
@@ -254,7 +254,7 @@ SystemBtPowerUp::SystemBtPowerUp(){
 
 
 
-void SystemBtPowerUp::update(CarAI* actualCar, ManCar* manCars,ManPowerUp* manPowerUps, ManBoxPowerUp* manBoxPowerUps, ManTotem* manTotems, ManWayPoint* manWayPoint){
-    unique_ptr<Blackboard> blackboard = make_unique<Blackboard>(actualCar, manCars, manPowerUps, manBoxPowerUps, manTotems, manWayPoint);
+void SystemBtPowerUp::update(CarAI* actualCar, ManCar* manCars,ManPowerUp* manPowerUps, ManBoxPowerUp* manBoxPowerUps, ManTotem* manTotems, ManWayPoint* manWayPoint, ManNavMesh* manNavMesh){
+    unique_ptr<Blackboard> blackboard = make_unique<Blackboard>(actualCar, manCars, manPowerUps, manBoxPowerUps, manTotems, manWayPoint, manNavMesh);
     selectorBehaviourTree->run(blackboard.get());
 }

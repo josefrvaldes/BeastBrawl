@@ -13,11 +13,13 @@
 #include "../Managers/ManPowerUp.h"
 #include "../Managers/ManBoxPowerUp.h"
 #include "../Managers/ManTotem.h"
+#include "../Managers/ManNavMesh.h"
 
 #include "../Entities/Entity.h"
 #include <math.h>
 #include <memory>
 #include <vector>
+
 
 using namespace std;
 #define PI 3.141592
@@ -28,8 +30,8 @@ public:
     Collisions();
     ~Collisions(){};
     bool Intersects(Entity* ent1,Entity* ent2);
-    void IntersectsCarsPowerUps(ManCar* manCars, ManPowerUp* manPowerUps);
-    void IntersectPlayerPowerUps(Car* carPlayer, ManPowerUp* manPowerUps);
+    void IntersectsCarsPowerUps(ManCar* manCars, ManPowerUp* manPowerUps, ManNavMesh* manNavMesh);
+    void IntersectPlayerPowerUps(Car* carPlayer, ManPowerUp* manPowerUps, ManNavMesh* manNavMesh);
     void IntersectPlayerTotem(Car* carPlayer, ManTotem* manTotem);
     void IntersectCarsTotem(ManCar* manCars, ManTotem* manTotem);
     void IntersectPlayerBoxPowerUp(Car* carPlayer, ManBoxPowerUp* manBoxPowerUp);
