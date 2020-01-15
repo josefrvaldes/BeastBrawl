@@ -31,7 +31,7 @@ class RenderFacadeIrrlicht : public RenderFacade {
     const void FacadeAddObjects(vector<Entity*>) override;
     void FacadeAddCamera(Entity*) override;
     void UpdateTransformable(Entity*) override;
-    void UpdateCamera(Entity*) override;
+    void UpdateCamera(Entity*, ManCar* manCars) override;
     bool FacadeRun() override;
     uint32_t FacadeGetTime() override;
     void FacadeCheckInput() override;

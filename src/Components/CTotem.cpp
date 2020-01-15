@@ -6,4 +6,4 @@ CTotem::CTotem() : durationTime{1}{
 
 CTotem::~CTotem(){
     
-}
+} 
