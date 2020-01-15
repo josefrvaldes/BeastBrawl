@@ -61,7 +61,7 @@ void Camera::InvertCamera(DataMap d){
     }
 }
 
-void Camera::TotemCamera(DataMap d){ 
+void Camera::TotemCamera(DataMap d){      
     cout << "CAMARA TOTEM\n";
     auto cCamera = static_cast<CCamera*>(GetComponent(CompType::CameraComp).get());
 

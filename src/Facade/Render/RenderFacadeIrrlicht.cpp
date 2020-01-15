@@ -379,22 +379,21 @@ void RenderFacadeIrrlicht::UpdateCamera(Entity* cam, ManCar* manCars) {
 
         }
 
-        // float vetorWaypointX = (cTransformableOther->position.x - posXActualCar);
-        // float vetorWaypointZ = (cTransformableOther->position.z - posZActualCar);
-
-        // // calculate position rotated of otherCar atan2
-        // float valueAtan2 = atan2(vetorWaypointZ,vetorWaypointX)*180/PI;
-        float vectorX = (targetPosition.X - cTransformableCar->position.x);
-        float vectorZ = (targetPosition.Z - cTransformableCar->position.z);
+        //Calculamos el angulo hasta el totem
+        float vectorX = (cTransformableCar->position.x - targetPosition.X );
+        float vectorZ = (cTransformableCar->position.z - targetPosition.Z );
 
         float valueAtan2 = atan2(vectorZ,vectorX);
 
-        cout << "Valor del atan: " << valueAtan2 << endl;
         float angleRotation = (90 * PI) / 180.0;
 
+        
         camera1->setTarget(targetPosition);
         camera1->setFOV(angleRotation);
-        camera1->setPosition(core::vector3df(cTransformable->position.x, cTransformable->position.y, cTransformable->position.z));
+        camera1->setPosition(core::vector3df(
+            cTransformableCar->position.x + 40 * cos(valueAtan2), 
+            cTransformable->position.y, 
+            cTransformableCar->position.z + 30 * sin(valueAtan2)));
     }
     
     
