@@ -24,6 +24,7 @@
 #include "../Managers/ManBoxPowerUp.h"
 #include "../Managers/ManTotem.h"
 #include "../Managers/ManBoundingWall.h"
+#include "../Managers/ManNavMesh.h"
 
 
 class Position;
@@ -35,6 +36,7 @@ ManCar::ManCar() {
     systemBtPowerUp = make_unique<SystemBtPowerUp>();
     systemBtMoveTo  = make_unique<SystemBtMoveTo>(); 
     systemBtLoDMove = make_unique<SystemBtLoDMove>();
+    systemPathPlanning = make_unique<SystemPathPlanning>();
     physicsAI = make_unique<PhysicsAI>();
 
     cout << "Hemos creado un powerup, ahora tenemos " << entities.size() << " powerups" << endl;

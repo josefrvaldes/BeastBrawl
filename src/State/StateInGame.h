@@ -46,6 +46,8 @@
 #include "../behaviourTree/selector.h"
 #include "../behaviourTree/sequence.h"
 #include "../fuzzyLogic/fuzzyLogic.h"
+#include "../Components/CNavMesh.h"
+#include "../Components/CCurrentNavMesh.h"
 //#include "btBulletDynamicsCommon.h"
 
 using namespace std;
@@ -64,12 +66,13 @@ class StateInGame : public State {
     void Render() override;
     States GetState() { return State::States::INGAME_SINGLE; };
 
+    shared_ptr<ManCar> manCars;
+
    protected:
     shared_ptr<GameObject> ground;
     shared_ptr<Camera> cam;
     shared_ptr<ManPowerUp> manPowerUps;
     shared_ptr<ManBoxPowerUp> manBoxPowerUps;
-    shared_ptr<ManCar> manCars;
     shared_ptr<ManNavMesh> manNavMesh;
     shared_ptr<ManWayPoint> manWayPoint;
     shared_ptr<ManNamePlate> manNamePlates;
@@ -108,4 +111,5 @@ class StateInGame : public State {
 
     void CAMBIARCosasDeTotem(ManTotem &);
     void CAMBIARCosasDeBoxPU(ManWayPoint &, ManBoxPowerUp &);
+    void CAMBIARCosasNavMesh(ManNavMesh &);
 };

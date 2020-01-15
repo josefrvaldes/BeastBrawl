@@ -11,9 +11,10 @@
 #include "../Components/CNamePlate.h"
 #include "../Components/CPath.h"
 #include "../Components/CTexture.h"
-#include "../Components/CMesh.h"
-#include "../Components/CNavMesh.h"
-#include "../Components/CCurrentNavMesh.h"
+#include "../Components/CTotem.h"
+#include "../Components/CTransformable.h"
+#include "../Components/CWayPointEdges.h"
+#include "../Managers/Manager.h"
 
 typedef std::chrono::high_resolution_clock Clock;
 
@@ -51,10 +52,56 @@ void StateInGame::InitVirtualMethods() {
 
     CAMBIARCosasDeTotem(*manTotems.get());
     CAMBIARCosasDeBoxPU(*manWayPoint.get(), *manBoxPowerUps.get());
+    CAMBIARCosasNavMesh(*manNavMesh.get());
 
     // esta llamada lo ideal es que sea la última porque hace uso de todo
     // lo anterior y debe de estar todo inicializado
     AddElementsToRender();
+}
+
+void StateInGame::CAMBIARCosasNavMesh(ManNavMesh &manNavMesh){
+    // CREAMOS DE PRUEBA UN NAVMESH
+    vector<int> waypoints0{0,1,2,3,4,12};
+    vector<int> waypoints1{7,8,9,10,11,13};
+    vector<int> waypoints2{3,5,7};  // el 5 debe ser referencia
+    vector<int> waypoints3{4,6,8};  // el 6 debe ser referencia
+    manNavMesh.CreateNavMesh(glm::vec3(0.0f,0.0f,-200.0f),glm::vec3(0.0f,0.0f,0.0f),1000,32,500,waypoints0);  //0
+    manNavMesh.CreateNavMesh(glm::vec3(0.0f,0.0f,500.0f),glm::vec3(0.0f,0.0f,0.0f),1000,32,500,waypoints1);   //1
+    manNavMesh.CreateNavMesh(glm::vec3(-300.0f,0.0f,150.0f),glm::vec3(0.0f,0.0f,0.0f),150,32,200,waypoints2); //2
+    manNavMesh.CreateNavMesh(glm::vec3(300.0f,0.0f,150.0f),glm::vec3(0.0f,0.0f,0.0f),150,32,200,waypoints3);  //3
+
+
+    auto cTransformableCar = static_cast<CTransformable*>(manCars.get()->GetCar().get()->GetComponent(CompType::TransformableComp).get());     
+    for(auto navmesh : manNavMesh.GetEntities()){
+        auto cDimensions = static_cast<CDimensions*>(navmesh.get()->GetComponent(CompType::DimensionsComp).get());
+        auto cTransformableNav = static_cast<CTransformable*>(navmesh.get()->GetComponent(CompType::TransformableComp).get()); 
+        if( ( (cTransformableCar->position.x >= (cTransformableNav->position.x-(cDimensions->width/2))) && 
+            (cTransformableCar->position.x <= (cTransformableNav->position.x+(cDimensions->width/2))) ) &&
+            ( (cTransformableCar->position.z >= (cTransformableNav->position.z-(cDimensions->depth/2))) && 
+            (cTransformableCar->position.z <= (cTransformableNav->position.z+(cDimensions->depth/2))) )  ){
+                auto cCurrentNavMesh = static_cast<CCurrentNavMesh*>(manCars.get()->GetCar().get()->GetComponent(CompType::CurrentNavMeshComp).get());
+                auto cNavMesh = static_cast<CNavMesh*>(navmesh.get()->GetComponent(CompType::NavMeshComp).get());
+                cCurrentNavMesh->currentNavMesh = cNavMesh->id;
+                //std::cout << " El cochecito lereee pertenece al naveMesh: " << cNavMesh->id << std::endl;
+            }       
+    }
+
+
+    auto cTransformableTotem = static_cast<CTransformable*>(manTotems->GetEntities()[0].get()->GetComponent(CompType::TransformableComp).get());     
+    for(auto navmesh : manNavMesh.GetEntities()){
+        auto cDimensions = static_cast<CDimensions*>(navmesh.get()->GetComponent(CompType::DimensionsComp).get());
+        auto cTransformableNav = static_cast<CTransformable*>(navmesh.get()->GetComponent(CompType::TransformableComp).get()); 
+        if( ( (cTransformableTotem->position.x >= (cTransformableNav->position.x-(cDimensions->width/2))) && 
+            (cTransformableTotem->position.x <= (cTransformableNav->position.x+(cDimensions->width/2))) ) &&
+            ( (cTransformableTotem->position.z >= (cTransformableNav->position.z-(cDimensions->depth/2))) && 
+            (cTransformableTotem->position.z <= (cTransformableNav->position.z+(cDimensions->depth/2))) )  ){
+                auto cCurrentNavMesh = static_cast<CCurrentNavMesh*>(manTotems->GetEntities()[0].get()->GetComponent(CompType::CurrentNavMeshComp).get());
+                auto cNavMesh = static_cast<CNavMesh*>(navmesh.get()->GetComponent(CompType::NavMeshComp).get());
+                cCurrentNavMesh->currentNavMesh = cNavMesh->id;
+                //std::cout << " El cochecito lereee pertenece al naveMesh: " << cNavMesh->id << std::endl;
+            }       
+    }
+
 }
 
 void StateInGame::CAMBIARCosasDeBoxPU(ManWayPoint &manWayPoint, ManBoxPowerUp &manBoxPowerUps) {
@@ -138,8 +185,8 @@ void StateInGame::InitializeManagers(Physics *physics, Camera *cam) {
     manBoxPowerUps = make_shared<ManBoxPowerUp>();
     manBoundingWall = make_shared<ManBoundingWall>();
     manTotems = make_shared<ManTotem>();
-    manNamePlates = make_shared<ManNamePlate>(manCars.get());
     manNavMesh = make_shared<ManNavMesh>();
+    manNamePlates = make_shared<ManNamePlate>(manCars.get());
 }
 
 //Carga los bancos de sonido InGame.
@@ -166,6 +213,7 @@ void StateInGame::Input() {
 void StateInGame::Update() {
     EventManager::GetInstance()->Update();
 
+    //ACTUALIZAMOS MANAGER NAVMESH CAR PLAYER
     manNavMesh->UpdateNavMeshPlayer(manCars.get()->GetCar().get());
     // ACTUALIZACION DE LOS MANAGERS DE LOS COCHES
     manCars->UpdateCar();
