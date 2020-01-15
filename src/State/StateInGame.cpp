@@ -44,7 +44,7 @@ StateInGame::StateInGame() {
     auto cWayPoint = static_cast<CWayPoint*>(manWayPoint->GetEntities()[2]->GetComponent(CompType::WayPointComp).get());
 
 
-     manCars = make_shared<ManCar>(physics.get(), cam.get());
+    manCars = make_shared<ManCar>(physics.get(), cam.get());
     //Le asignamos el waypoint inicial, momentaneo a la IA
     manCars->CreateCarAI(glm::vec3(-200.0f, 20.0f, 700.0f), cWayPoint);
     //stack<int> pathInit;
@@ -52,37 +52,17 @@ StateInGame::StateInGame() {
     //pathInit.push(1);
     //pathInit.push(2);
     //manCars->GetEntitiesAI()[0]->SetPath(pathInit);
-
-    
-
-
-/*
     auto cWayPointAI2 = static_cast<CWayPoint*>(manWayPoint->GetEntities()[1]->GetComponent(CompType::WayPointComp).get());
-   //Le asignamos el waypoint inicial, momentaneo a la IA
     manCars->CreateCarAI(glm::vec3(400.0f, 20.0f, 20.0f), cWayPointAI2);
-    stack<int> pathInit2;
-    pathInit2.push(4);
-    pathInit2.push(0);
-    pathInit2.push(2);
-    manCars->GetEntitiesAI()[1]->SetPath(pathInit2);
-
 
     auto cWayPointAI3 = static_cast<CWayPoint*>(manWayPoint->GetEntities()[0]->GetComponent(CompType::WayPointComp).get());
-   //Le asignamos el waypoint inicial, momentaneo a la IA
     manCars->CreateCarAI(glm::vec3(400.0f, 20.0f, -400.0f), cWayPointAI3);
-    stack<int> pathInit3;
-    pathInit3.push(5);
-    pathInit3.push(0);
-    pathInit3.push(5);
-    manCars->GetEntitiesAI()[2]->SetPath(pathInit3);
-*/
 
-    cout << "NAME PLATES-------------------------\n";
+
+    //cout << "NAME PLATES-------------------------\n";
     manNamePlates = make_shared<ManNamePlate>(manCars.get());
 
     
-
-
     // Inicializamos las facadas
     inputEngine = InputFacadeManager::GetInstance()->GetInputFacade();
     physicsEngine = PhysicsFacadeManager::GetInstance()->GetPhysicsFacade();
@@ -112,9 +92,11 @@ StateInGame::StateInGame() {
     manNavMesh->CreateNavMesh(glm::vec3(-300.0f,0.0f,150.0f),glm::vec3(0.0f,0.0f,0.0f),150,32,200,waypoints2); //2
     manNavMesh->CreateNavMesh(glm::vec3(300.0f,0.0f,150.0f),glm::vec3(0.0f,0.0f,0.0f),150,32,200,waypoints3);  //3
 
+/*
     for (auto navmesh : manNavMesh->GetEntities()){
         renderEngine->FacadeAddObject(navmesh.get());
     }
+*/
 /*
     // dimensiones de los navMesh:
         navMesh0 --> en X(-500,500)
@@ -348,9 +330,9 @@ void StateInGame::Update() {
     // COLISIONES entre BoxPowerUp y IA                                                            
     collisions->IntersectCarsBoxPowerUp(manCars.get(), manBoxPowerUps.get());
     // COLISIONES entre powerUp y player
-    collisions->IntersectPlayerPowerUps(manCars.get()->GetCar().get(), manPowerUps.get());
+    collisions->IntersectPlayerPowerUps(manCars.get()->GetCar().get(), manPowerUps.get(), manNavMesh.get());
     // COLISIONES entre powerUp y IA
-    collisions->IntersectsCarsPowerUps(manCars.get(), manPowerUps.get());
+    collisions->IntersectsCarsPowerUps(manCars.get(), manPowerUps.get(), manNavMesh.get());
     // COLISIONES entre el Player y el Totem
     collisions->IntersectPlayerTotem(manCars.get()->GetCar().get(), manTotems.get());
     // COLISIONES  entre la IA y el Totem

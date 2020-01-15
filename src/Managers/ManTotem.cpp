@@ -58,11 +58,29 @@ void ManTotem::AppertainCar(DataMap d){
 // crea el objeto en irlich y lo pone en el mapa de nuevo
 void ManTotem::ResetTotem(DataMap d){
     //std::cout << "reseteamos posicion del totem" << std::endl;
-    auto transfActualCar = any_cast<CTransformable*>(d["TransfCarPos"]);
+
+    // calculamos la posicion donde queremos dejar el totem
+    auto transfActualCar = any_cast<CTransformable*>(d["TransfCarPos"]); 
     glm::vec3 posNewTotem = glm::vec3(0.0f,20.0f,0.0f);
     float angleRotation = (transfActualCar->rotation.y * 3.141592) / 180.0;
     posNewTotem.x = transfActualCar->position.x - cos(angleRotation)*(-25);
     posNewTotem.z = transfActualCar->position.z + sin(angleRotation)*(-25);
+
+    // recorremos los navMesh para saber si es una posicion correcta
+    ManNavMesh* manNavMesh = any_cast<ManNavMesh*>(d["manNavMesh"]);
+    //std::cout << "cogemos correctamente el mesh del nav conoooooooooooooooo" << std::endl;  
+    auto cCurrentNavMesh = static_cast<CCurrentNavMesh*>(any_cast<Entity*>(d["car"])->GetComponent(CompType::CurrentNavMeshComp).get()); 
+    auto navMesh = manNavMesh->GetEntities()[cCurrentNavMesh->currentNavMesh]; //NavMesh en el que esta el coche
+    auto cDimensions = static_cast<CDimensions*>(navMesh.get()->GetComponent(CompType::DimensionsComp).get());
+    auto cTransformableNav = static_cast<CTransformable*>(navMesh.get()->GetComponent(CompType::TransformableComp).get()); 
+    if( !(( (transfActualCar->position.x >= (cTransformableNav->position.x-(cDimensions->width/2))) && 
+        (transfActualCar->position.x <= (cTransformableNav->position.x+(cDimensions->width/2))) ) &&
+        ( (transfActualCar->position.z >= (cTransformableNav->position.z-(cDimensions->depth/2))) && 
+        (transfActualCar->position.z <= (cTransformableNav->position.z+(cDimensions->depth/2))) ))  ){
+            std::cout << "El totem se sale, Redimensionamos al centro del NavMesh" << std::endl;
+            posNewTotem.x = cTransformableNav->position.x;
+            posNewTotem.z = cTransformableNav->position.z; 
+    }      
 
     CreateTotem(posNewTotem);
 

@@ -503,7 +503,7 @@ void ManCar::CatchPowerUp(DataMap d) {
     //EscudoMerluzo,      // 4
     //TeleBanana,         // 5
     //MelonMolon          // 6
-    indx = 5;
+    //indx = 5;
     auto cPowerUpCar = static_cast<CPowerUp*>(car.get()->GetComponent(CompType::PowerUpComp).get());
     if(cPowerUpCar->typePowerUp == typeCPowerUp::None){
         cPowerUpCar->typePowerUp = (typeCPowerUp)indx;

@@ -103,10 +103,10 @@ void SystemPathPlanning::MoveRandomPowerUp(DataMap data){
         //COMPROBAMOS DIJKSTRA
         auto path = Dijkstra(graph,wayPointReference,wayPointDestination);
         carAI->SetPath(path);
-        
+
         auto path2 = path;
         while(!path2.empty()){
-            std::cout << "nodo del path x= " << path2.top() << std::endl;
+            //std::cout << "nodo del path x= " << path2.top() << std::endl;
             path2.pop();
         }
 
@@ -218,7 +218,7 @@ void SystemPathPlanning::CalculatePathToNavMesh(DataMap data){
 
     auto path2 = path;
     while(!path2.empty()){
-        std::cout << "nodo del path x= " << path2.top() << std::endl;
+        //std::cout << "nodo del path x= " << path2.top() << std::endl;
         path2.pop();
     }
 
@@ -259,7 +259,7 @@ void SystemPathPlanning::UpdateDijkstra(CarAI* carAI, ManWayPoint* graph, ManNav
         if(!cPath->stackPath.empty() && cTargetNavMesh->targetNavMesh >= 0){
 
             auto actualNode = cPath->stackPath.top(); //Id del waypoint en el que estamos
-            std::cout << "ACABO DE LLEGAR AL NODO!!!!!!!!!!!!!!!!!!!!!!!!!!!!: ' " << actualNode << " ' " << std::endl;
+            //std::cout << "ACABO DE LLEGAR AL NODO!!!!!!!!!!!!!!!!!!!!!!!!!!!!: ' " << actualNode << " ' " << std::endl;
             //Recorremos todos los navmeshes
             bool changeNavMesh = false;
             for(auto navMesh : manNavMesh->GetEntities()){
@@ -272,7 +272,7 @@ void SystemPathPlanning::UpdateDijkstra(CarAI* carAI, ManWayPoint* graph, ManNav
                         if(actualNode == waypointId && cCurrentNavMesh->currentNavMesh != cNavMesh->id && !changeNavMesh){
                             cCurrentNavMesh->currentNavMesh = cNavMesh->id;
                             //cTargetNavMesh->targetNavMesh = cNavMesh->id;
-                            cout << "PathPlanning: CAMBIAMOS DE NAVMESH Ahora estamos en el navmesh numero: " << cCurrentNavMesh->currentNavMesh << endl;
+                            //cout << "PathPlanning: CAMBIAMOS DE NAVMESH Ahora estamos en el navmesh numero: " << cCurrentNavMesh->currentNavMesh << endl;
                             changeNavMesh = true;
                         }
                     }
