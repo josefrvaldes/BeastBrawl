@@ -48,7 +48,7 @@ bool Collisions::Intersects(Entity* entity1,Entity* entity2){
 }
 
 
-void Collisions::IntersectPlayerPowerUps(Car* carPlayer, ManPowerUp* manPowerUps){
+void Collisions::IntersectPlayerPowerUps(Car* carPlayer, ManPowerUp* manPowerUps, ManNavMesh* manNavMesh){
     for(shared_ptr<Entity> actualPowerUp : manPowerUps->GetEntities()){
         auto cPowerUp = static_cast<CPowerUp*>(actualPowerUp->GetComponent(CompType::PowerUpComp).get());
         if(cPowerUp->effectActive == true){                                                                 // SI HACE DANYO
@@ -63,8 +63,11 @@ void Collisions::IntersectPlayerPowerUps(Car* carPlayer, ManPowerUp* manPowerUps
                 auto cShield = static_cast<CShield*>(carPlayer->GetComponent(CompType::ShieldComp).get());
                 if(cShield->activePowerUp==false && static_cast<CTotem*>(carPlayer->GetComponent(CompType::TotemComp).get())->active){  // TRUE
                     auto dataTransformableCar = static_cast<CTransformable*>(carPlayer->GetComponent(CompType::TransformableComp).get());
-                    DataMap dataTransfCar;                                                                    
+                    DataMap dataTransfCar;     
+                    Entity* carEntity = carPlayer;                                                               
                     dataTransfCar["TransfCarPos"] = dataTransformableCar;  
+                    dataTransfCar["car"] = carEntity; 
+                    dataTransfCar["manNavMesh"] = manNavMesh;
                     eventManager->AddEventMulti(Event{EventType::DROP_TOTEM, dataTransfCar});  
                 }
             }
@@ -72,8 +75,7 @@ void Collisions::IntersectPlayerPowerUps(Car* carPlayer, ManPowerUp* manPowerUps
     }
 }
 
-
-void Collisions::IntersectsCarsPowerUps(ManCar* manCars, ManPowerUp* manPowerUps){
+void Collisions::IntersectsCarsPowerUps(ManCar* manCars, ManPowerUp* manPowerUps, ManNavMesh* manNavMesh){
     for(shared_ptr<Entity> actualCar : manCars->GetEntitiesAI()){   
         for(shared_ptr<Entity> actualPowerUp : manPowerUps->GetEntities()){
             auto cPowerUp = static_cast<CPowerUp*>(actualPowerUp->GetComponent(CompType::PowerUpComp).get());
@@ -92,6 +94,8 @@ void Collisions::IntersectsCarsPowerUps(ManCar* manCars, ManPowerUp* manPowerUps
                         auto dataTransformableCar = static_cast<CTransformable*>(actualCar.get()->GetComponent(CompType::TransformableComp).get());
                         DataMap dataTransfCar;                                                                    
                         dataTransfCar["TransfCarPos"] = dataTransformableCar;  
+                        dataTransfCar["car"] = actualCar.get(); 
+                        dataTransfCar["manNavMesh"] = manNavMesh;
                         eventManager->AddEventMulti(Event{EventType::DROP_TOTEM, dataTransfCar});  
                     } 
                 }

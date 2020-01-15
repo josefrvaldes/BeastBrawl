@@ -250,13 +250,13 @@ SystemBtLoDMove::SystemBtLoDMove(){
 
 
 
-void SystemBtLoDMove::update(CarAI* actualCar, ManCar* manCars,ManPowerUp* manPowerUps, ManBoxPowerUp* manBoxPowerUps, ManTotem* manTotems, ManWayPoint* manWayPoint, ManBoundingWall* m_manBoundingWall){
+void SystemBtLoDMove::update(CarAI* actualCar, ManCar* manCars,ManPowerUp* manPowerUps, ManBoxPowerUp* manBoxPowerUps, ManTotem* manTotems, ManWayPoint* manWayPoint, ManNavMesh* manNavMesh, ManBoundingWall* m_manBoundingWall){
     if(entradoFL==false){
         fuzzyLogic->InitSystemFuzzyLogicAI(actualCar);  // To-Do: arreglar esta llamada para solo hacerla una vez
         entradoFL=true;
     }
 
-    unique_ptr<Blackboard> blackboard = make_unique<Blackboard>(actualCar, manCars, manPowerUps, manBoxPowerUps, manTotems, manWayPoint, m_manBoundingWall, fuzzyLogic.get(), steeringBehaviours.get());
+    unique_ptr<Blackboard> blackboard = make_unique<Blackboard>(actualCar, manCars, manPowerUps, manBoxPowerUps, manTotems, manWayPoint, fuzzyLogic.get(), steeringBehaviours.get(),manNavMesh, m_manBoundingWall);
 
     selectorBehaviourTree->run(blackboard.get());
 }

@@ -16,6 +16,7 @@
 #include "../Systems/SystemBtPowerUp.h"
 #include "../Systems/SystemBtMoveTo.h"
 #include "../Systems/SystemBtLoDMove.h"
+#include "../Systems/SystemPathPlanning.h"
 
 #include <stdlib.h> /* srand, rand */
 #include <iostream>
@@ -33,6 +34,7 @@ struct Camera;
 struct ManPowerUp;
 struct ManBoxPowerUp;
 struct ManTotem;
+struct ManNavMesh;
 struct ManBoundingWall;
 struct PhysicsAI;
 
@@ -45,7 +47,7 @@ class ManCar : public Manager {
     void CreateCar();
     void CreateMainCar();
     void UpdateCar();
-    void UpdateCarAI(CarAI* carAI, ManPowerUp* m_manPowerUp, ManBoxPowerUp* m_manBoxPowerUp, ManTotem* m_manTotem, ManWayPoint* graph, ManBoundingWall* m_manBoundingWall);
+    void UpdateCarAI(CarAI* carAI, ManPowerUp* m_manPowerUp, ManBoxPowerUp* m_manBoxPowerUp, ManTotem* m_manTotem, ManWayPoint* graph, ManNavMesh* manNavMesh, ManBoundingWall* m_manBoundingWall);
     shared_ptr<Car>& GetCar() { return car; };
 
     void CreateCarAI();
@@ -74,14 +76,18 @@ class ManCar : public Manager {
     void CatchTotemAI(DataMap d);
     void UseTotem(Entity* carWinTotem);
     void ThrowTotem(Entity* carLoseTotem);
-    void ChangePosDestination(DataMap d);
-    void MoveToPowerUp(DataMap d);
+    //void ChangePosDestination(DataMap d);
+    //void MoveToPowerUp(DataMap d);
     bool useRoboJorobo(Entity* newCarWithTotem);
 
     void ThrowPowerUp(DataMap d);
     void ThrowPowerUpAI(DataMap d);
     void CatchPowerUp(DataMap d);
     void CatchPowerUpAI(DataMap d);
+    void InitMapGraph(ManWayPoint* _graph);
+    float** graph;
+    int graphSize = 0;
+    bool graphCreated = false;
     shared_ptr<Car> car;
     vector<shared_ptr<CarAI>> CarAIs;
 
@@ -89,4 +95,5 @@ class ManCar : public Manager {
     unique_ptr<SystemBtMoveTo> systemBtMoveTo;
     unique_ptr<SystemBtLoDMove> systemBtLoDMove;
     unique_ptr<PhysicsAI> physicsAI;
+    unique_ptr<SystemPathPlanning> systemPathPlanning;
 };

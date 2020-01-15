@@ -24,6 +24,7 @@
 #include "../Managers/ManBoxPowerUp.h"
 #include "../Managers/ManTotem.h"
 #include "../Managers/ManBoundingWall.h"
+#include "../Managers/ManNavMesh.h"
 
 
 class Position;
@@ -35,17 +36,24 @@ ManCar::ManCar() {
     systemBtPowerUp = make_unique<SystemBtPowerUp>();
     systemBtMoveTo  = make_unique<SystemBtMoveTo>(); 
     systemBtLoDMove = make_unique<SystemBtLoDMove>();
+    systemPathPlanning = make_unique<SystemPathPlanning>();
     physicsAI = make_unique<PhysicsAI>();
 
     cout << "Hemos creado un powerup, ahora tenemos " << entities.size() << " powerups" << endl;
 }
 
+ManCar::~ManCar() {
+    cout << "Llamando al destructor de ManCar" << endl;
+    CarAIs.clear();
+    CarAIs.shrink_to_fit();
+}
 
 // TO-DO: este paso de physics es kk, hay que revisarlo de enviarlo como referencia o algo pero me da error
 ManCar::ManCar(Physics *_physics, Camera *_cam) : ManCar() {
     this->physics = _physics;
     this->cam = _cam;
 }
+
 
 
 
@@ -78,22 +86,23 @@ void ManCar::UpdateCar(){
 
 }
 
+// TODO: RECORDARRR!!!!!!!!!!!!!!!!!  TANTO EL "BtMoveTo" como el "systemPathPlanning" se deben hacer en la misma ITERACION!!!!
+// Es importante esto porque el BtMoveTo es el que calcula la posicion a la que ir y el systemBtLoDMove es el que utiliza esta posicion para
+// moverse a un sitio, si en algun momento intentamos ir a una posicion que no existe PETAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+void ManCar::UpdateCarAI(CarAI* carAI, ManPowerUp* m_manPowerUp, ManBoxPowerUp* m_manBoxPowerUp, ManTotem* m_manTotem, ManWayPoint* graph, ManNavMesh* manNavMesh, ManBoundingWall* m_manBoundingWall){
+    systemBtMoveTo->update(carAI, this, m_manPowerUp, m_manBoxPowerUp, m_manTotem, graph, manNavMesh);
 
-void ManCar::UpdateCarAI(CarAI* carAI, ManPowerUp* m_manPowerUp, ManBoxPowerUp* m_manBoxPowerUp, ManTotem* m_manTotem, ManWayPoint* graph, ManBoundingWall* m_manBoundingWall){
-    systemBtMoveTo->update(carAI, this, m_manPowerUp, m_manBoxPowerUp, m_manTotem, graph);
-    systemBtLoDMove->update(carAI, this, m_manPowerUp, m_manBoxPowerUp, m_manTotem, graph, m_manBoundingWall);
+    systemPathPlanning->Update(carAI, graph, manNavMesh);
+
+    systemBtLoDMove->update(carAI, this, m_manPowerUp, m_manBoxPowerUp, m_manTotem, graph,manNavMesh, m_manBoundingWall);
 
     physicsAI->Update(carAI, graph);
 
-    systemBtPowerUp->update(carAI, this, m_manPowerUp, m_manBoxPowerUp, m_manTotem, graph);
+    systemBtPowerUp->update(carAI, this, m_manPowerUp, m_manBoxPowerUp, m_manTotem, graph, manNavMesh);
 }
 
 
-ManCar::~ManCar() {
-    cout << "Llamando al destructor de ManCar" << endl;
-    CarAIs.clear();
-    CarAIs.shrink_to_fit();
-}
+
 
 
 void ManCar::CreateMainCar() {
@@ -110,7 +119,7 @@ void ManCar::CreateCar() {
 void ManCar::CreateCarAI(glm::vec3 _position,  CWayPoint* _waypoint){
 	shared_ptr<CarAI> p = make_shared<CarAI>(_position);
     CarAIs.push_back(p);
-    p->SetWayPoint(_waypoint); // tiene que tener un waypoint inicial To-Do: cambiar esto
+    p->SetWayPoint(_waypoint); // TODO: tiene que tener un waypoint inicial To-Do: cambiar esto
 }
 
 
@@ -214,37 +223,6 @@ void ManCar::SubscribeToEvents() {
         EventType::COLLISION_AI_TOTEM,
         bind(&ManCar::CatchTotemAI, this, placeholders::_1),
         "CatchTotemAI"));
-
-    EventManager::GetInstance()->SuscribeMulti(Listener(
-        EventType::CHANGE_DESTINATION,
-        bind(&ManCar::ChangePosDestination, this, placeholders::_1),
-        "ChangePosDestination"));
-
-    EventManager::GetInstance()->SuscribeMulti(Listener(
-        EventType::MOVE_TO_POWERUP,
-        bind(&ManCar::MoveToPowerUp, this, placeholders::_1),
-        "MoveToPowerUp"));
-
-}
-
-
-void ManCar::ChangePosDestination(DataMap data){
-    auto cPosDestination = static_cast<CPosDestination*>(any_cast<CarAI*>(data["actualCar"])->GetComponent(CompType::PosDestination).get());
-    cPosDestination->position = any_cast<glm::vec3>(data["posDestination"]);
-}
-
-void ManCar::MoveToPowerUp(DataMap data){
-    auto graph = any_cast<ManWayPoint*>(data["manWayPoints"]);
-    auto cPath = static_cast<CPath*>(any_cast<CarAI*>(data["actualCar"])->GetComponent(CompType::PathComp).get());
-    auto cPosDestination = static_cast<CPosDestination*>(any_cast<CarAI*>(data["actualCar"])->GetComponent(CompType::PosDestination).get());
-
-    if(!cPath->stackPath.empty()){
-        //Le asignamos el WayPoint siguiente del path (graph->GetEntities()[cPath->stackPath.top()])
-        auto cWayPoint = static_cast<CWayPoint*>(graph->GetEntities()[cPath->stackPath.top()]->GetComponent(CompType::WayPointComp).get());
-        cPosDestination->position = cWayPoint->position;
-
-        any_cast<CarAI*>(data["actualCar"])->SetDestination(cPosDestination);
-    }
 }
 
 
