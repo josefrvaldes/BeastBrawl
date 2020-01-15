@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../lib/glm/vec3.hpp"
+#include "../../include/glm/vec3.hpp"
 #include "../Components/CTransformable.h"
 
 #include "Component.h"

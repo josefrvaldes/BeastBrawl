@@ -1,11 +1,13 @@
 #pragma once
 
-#include "../../lib/glm/geometric.hpp"
-#include "../../lib/glm/vec3.hpp"
+#include "../../include/glm/geometric.hpp"
+#include "../../include/glm/vec3.hpp"
 #include "../CLPhysics/IntersectData.h"
 #include "Component.h"
 
 using namespace glm;
+
+struct CTransformable;
 
 class CBoundingSphere : public Component {
    public:
@@ -19,6 +21,7 @@ class CBoundingSphere : public Component {
     }
 
     IntersectData IntersectSphere(const CBoundingSphere &other) const;
+    IntersectData IntersectRay(const CTransformable &transCarRay, const vec3 &normalRay) const;
     void SetCenter(vec3 _center) {
         center = _center;
     }

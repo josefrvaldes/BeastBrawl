@@ -2,7 +2,7 @@
 
 #include <iostream>
 #include <string>
-#include "../../lib/glm/vec3.hpp"
+#include "../../include/glm/vec3.hpp"
 #include "Component.h"
 
 using namespace std;

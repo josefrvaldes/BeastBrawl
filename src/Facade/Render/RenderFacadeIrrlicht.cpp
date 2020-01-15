@@ -6,6 +6,7 @@
 #include "../../Aliases.h"
 #include "../../Components/CBoundingPlane.h"
 #include "../../Components/CBoundingSphere.h"
+#include "../../Components/CPowerUp.h"
 #include "../../Components/CCamera.h"
 #include "../../Components/CDimensions.h"
 #include "../../Components/CId.h"
@@ -332,14 +333,23 @@ void RenderFacadeIrrlicht::UpdateCamera(Entity* cam) {
             targetPosition.Z = targetPosition.Z + (2*distZ);
 
         }
-    }else if(cCamera->camType == CamType::NORMAL){
+        float angleRotation = (60 * PI) / 180.0;
 
+        camera1->setTarget(targetPosition);
+        camera1->setFOV(angleRotation);
+        camera1->setPosition(core::vector3df(cTransformable->position.x, cTransformable->position.y-5, cTransformable->position.z));
+
+    }else if(cCamera->camType == CamType::NORMAL){
+        float angleRotation = (70 * PI) / 180.0;
+
+        camera1->setTarget(targetPosition);
+        camera1->setFOV(angleRotation);
+        camera1->setPosition(core::vector3df(cTransformable->position.x, cTransformable->position.y, cTransformable->position.z));
     }else{
 
     }
     
-    camera1->setTarget(targetPosition);
-    camera1->setPosition(core::vector3df(cTransformable->position.x, cTransformable->position.y, cTransformable->position.z));
+    
 
 }
 
@@ -355,6 +365,7 @@ void RenderFacadeIrrlicht::FacadeAddCamera(Entity* camera) {
     float posZ = cCamera->tarZ - 40.0 * cos(((cTransformable->rotation.z) * M_PI) / 180.0);
     camera1->setTarget(core::vector3df(cCamera->tarX, cCamera->tarY, cCamera->tarZ));
     camera1->setPosition(core::vector3df(posX, cTransformable->position.y, posZ));
+    //camera1->setFOV(40);
     
 }
 

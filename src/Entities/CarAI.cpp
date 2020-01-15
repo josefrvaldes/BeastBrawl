@@ -15,6 +15,7 @@
 #include "../Components/CNitro.h"
 #include "../Components/CBoundingSphere.h"
 #include "../Components/CColliding.h"
+#include "../Components/CBoundingRay.h"
 #include <iostream>
 
 class Position;
@@ -46,10 +47,12 @@ CarAI::CarAI(){
     shared_ptr<CTotem> cTotem = make_shared<CTotem>();
     shared_ptr<CPath> cPath   = make_shared<CPath>();
     shared_ptr<CSpeed> cSpeed = make_shared<CSpeed>();
+    
 
 
     shared_ptr<CColliding> cColliding = make_shared<CColliding>(false);
     shared_ptr<CBoundingSphere> cBoundSphere = make_shared<CBoundingSphere>(pos);
+    shared_ptr<CBoundingRay> cBoundRay = make_shared<CBoundingRay>();
     AddComponent(cId);
     AddComponent(cType);
     AddComponent(cTransformable);
@@ -68,6 +71,7 @@ CarAI::CarAI(){
     AddComponent(cTotem);
     AddComponent(cPath);
     AddComponent(cBoundSphere);
+    AddComponent(cBoundRay);
     AddComponent(cColliding);
     AddComponent(cSpeed);
     cout << "Acabamos de llamar al constructor default de car, su transformable es " << cTransformable << endl;

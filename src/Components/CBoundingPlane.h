@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../../lib/glm/geometric.hpp"
-#include "../../lib/glm/vec3.hpp"
+#include "../../include/glm/geometric.hpp"
+#include "../../include/glm/vec3.hpp"
 #include "../CLPhysics/IntersectData.h"
 #include "Component.h"
 
@@ -17,6 +17,8 @@ class CBoundingPlane : public Component {
     IntersectData IntersectSphere(const CBoundingSphere &other) const;
 
     IntersectData IntersectPlane(const CBoundingPlane &other) const;
+
+    IntersectData IntersectRay(const glm::vec3 &posRayOrigin, const glm::vec3 &rayNormalNormalized) const;
 
     vec3 a;
     vec3 b;

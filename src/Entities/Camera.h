@@ -1,9 +1,9 @@
 #pragma once
 
 #include "Entity.h"
-#include "../../lib/glm/vec3.hpp"
 #include "../EventManager/EventManager.h"
 #include "../EventManager/Event.h"
+#include "../../include/glm/vec3.hpp"
 #include <iostream>
 
 using namespace std;
