@@ -1,14 +1,19 @@
 #include "EventManager.h"
 #include <iostream>
 
-const shared_ptr<EventManager> EventManager::instance = make_shared<EventManager>();
-shared_ptr<EventManager> EventManager::GetInstance() {
-    //static EventManager instance;
-    // if(instance==nullptr){
-    //     instance = make_shared<EventManager>();
-    // }
+// const shared_ptr<EventManager> EventManager::instance = make_shared<EventManager>();
+// shared_ptr<EventManager> EventManager::IGetInstance() {
+//     //static EventManager instance;
+//     // if(instance==nullptr){
+//     //     instance = make_shared<EventManager>();
+//     // }
+//     return instance;
+// }
+
+EventManager& EventManager::GetInstance() {
+    static EventManager instance;
     return instance;
-}
+}   
 
 //Realiza y vacia todos los eventos que estaban añadidos
 //O(n)
@@ -130,11 +135,11 @@ void EventManager::UnSuscribeMulti(EventType eType, string listenerName) {
     ShowSuscribers();
 }
 
-void EventManager::ClearEvents(){
+void EventManager::ClearEvents() {
     eventList.clear();
 }
 
-void EventManager::ClearListeners(){
+void EventManager::ClearListeners() {
     eventListenerMap.clear();
 }
 
@@ -150,4 +155,3 @@ void EventManager::ShowSuscribers() {
         cout << "\n";
     }
 }
-

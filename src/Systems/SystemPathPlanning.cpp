@@ -33,17 +33,17 @@ SystemPathPlanning::SystemPathPlanning(){
 
 void SystemPathPlanning::SubscribeToEvents() {
 
-    EventManager::GetInstance()->SuscribeMulti(Listener(
+    EventManager::GetInstance().SuscribeMulti(Listener(
         EventType::CALCULATE_PATH_TO_NAVMESH,
         bind(&SystemPathPlanning::CalculatePathToNavMesh, this, placeholders::_1),
         "CalculatePathToNavMesh"));
 
-    EventManager::GetInstance()->SuscribeMulti(Listener(
+    EventManager::GetInstance().SuscribeMulti(Listener(
         EventType::CHANGE_DESTINATION,
         bind(&SystemPathPlanning::ChangePosDestination, this, placeholders::_1),
         "ChangePosDestination"));
 
-    EventManager::GetInstance()->SuscribeMulti(Listener(
+    EventManager::GetInstance().SuscribeMulti(Listener(
         EventType::MOVE_TO_POWERUP,
         bind(&SystemPathPlanning::MoveRandomPowerUp, this, placeholders::_1),
         "MoveRandomPowerUp"));

@@ -199,7 +199,7 @@ void StateInGame::InitState() {
         cout << "~~~ SoundEngine en INGAME es -> " << soundEngine << endl;
         if (soundEngine) {
             soundEngine->SetState(4);
-            EventManager::GetInstance()->AddEventMulti(Event{EventType::START_GAME});
+            EventManager::GetInstance().AddEventMulti(Event{EventType::START_GAME});
         }
     } else {
         soundEngine->ResumeAllEvent();
@@ -211,7 +211,8 @@ void StateInGame::Input() {
 }
 
 void StateInGame::Update() {
-    EventManager::GetInstance()->Update();
+    EventManager &em = EventManager::GetInstance();
+    em.Update();
 
     //ACTUALIZAMOS MANAGER NAVMESH CAR PLAYER
     manNavMesh->UpdateNavMeshPlayer(manCars.get()->GetCar().get());
