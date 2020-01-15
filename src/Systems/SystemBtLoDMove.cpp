@@ -119,6 +119,9 @@ struct InDistanceRange_LoDMove : public behaviourTree {
 //ACCION --> aplicamos SB pursue y si esta en el angulo lanzamos el melon molon
 struct SBPursue_LoDMove : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
+        //return blackboard->steeringBehaviours->UpdateObstacleAvoidance(blackboard->actualCar, blackboard->manPowerUps);
+        //std::cout << gola << std::endl;
+        //return true;
         float angle = blackboard->steeringBehaviours->UpdatePursuePowerUp(blackboard->actualCar, blackboard->manCars->GetDesirableTarget(blackboard->actualCar));  // To-Do: calcular coche a por el que se quiere ir
         if(angle>=-3 && angle <=3){
             shared_ptr<EventManager> eventManager = EventManager::GetInstance();
@@ -152,6 +155,19 @@ struct ApplyFuzzyLogic_LoDMove : public behaviourTree {
 };
 
 
+struct CollisionAvoidance_LoDMove : public behaviourTree {
+    virtual bool run(Blackboard* blackboard) override {
+        bool collisionWall = blackboard->steeringBehaviours->UpdateWallAvoidance(blackboard->actualCar, blackboard->manBoundingWall);
+        
+        if(collisionWall == false){
+            return blackboard->steeringBehaviours->UpdateObstacleAvoidance(blackboard->actualCar, blackboard->manCars);
+        }else{
+            return true;
+        }
+    } 
+};
+
+
 // NOTA: recordar que tenemos el otro Behaviour tree de tirar powerUp y por tanto lo seguiremos
 // hasta que lo veamos, una vez visto le lanzaemos el powerUp e iremos a por el Totem u otro PowerUp
 
@@ -176,22 +192,23 @@ SystemBtLoDMove::SystemBtLoDMove(){
     //   Lanzar melon molon = true   -> Aplicar Steering de movimiento y lanzar en caso de que angulo sea 0
     
     //                 SELECTOR
-    //      //////////////////////////////////////////////////////////
-    //   sequence1                                               Selector(Vision LoD)
-    //      //                                                       //
-    //    //////////////                                //////////////////////////////
-    //    //          //                                //                          //
-    //  Have MM?     ApplySB_Pursue                   Sequence2                     Selector (Distance - dentro del rango de vision)
-    //                                                //      //                       //
-    //                                  OutOfVisionRange   ApplySB_Seek          ///////////////////////////
-    //                                                                           //                      //
-    //                                                                        Sequence3                 ApplySB_Seek (lejos)
-    //                                                                       //      //                 
-    //                                                                    Cerca?     LogicaDifusa  
+    //    ////////////////////////////////////////////////////////////////////////////
+    // CollAvoidance        sequence1                                               Selector(Vision LoD)
+    //   (action)              //                                                       //
+    //                    //////////////                                //////////////////////////////
+    //                    //          //                                //                          //
+    //                  Have MM?     ApplySB_Pursue                   Sequence2                     Selector (Distance - dentro del rango de vision)
+    //                                                                //      //                       //
+    //                                                  OutOfVisionRange   ApplySB_Seek          ///////////////////////////
+    //                                                                                           //                      //
+    //                                                                                        Sequence3                 ApplySB_Seek (lejos)
+    //                                                                                       //      //                 
+    //                                                                                    Cerca?     LogicaDifusa  
 
 
     selectorBehaviourTree = make_shared<selector>();
 
+    shared_ptr<CollisionAvoidance_LoDMove> a_CollisionAvoidance = make_shared<CollisionAvoidance_LoDMove>();
     shared_ptr<sequence> sequence1 = make_shared<sequence>();
     shared_ptr<selector> selectorVision = make_shared<selector>();
 
@@ -209,6 +226,7 @@ SystemBtLoDMove::SystemBtLoDMove(){
     shared_ptr<InDistanceRange_LoDMove>  c_InDistanceRange =   make_shared<InDistanceRange_LoDMove>();
     shared_ptr<ApplyFuzzyLogic_LoDMove>  a_FuzzyLogic =   make_shared<ApplyFuzzyLogic_LoDMove>();
 
+    selectorBehaviourTree->addChild(a_CollisionAvoidance);
     selectorBehaviourTree->addChild(sequence1);
     selectorBehaviourTree->addChild(selectorVision);
 
@@ -232,13 +250,13 @@ SystemBtLoDMove::SystemBtLoDMove(){
 
 
 
-void SystemBtLoDMove::update(CarAI* actualCar, ManCar* manCars,ManPowerUp* manPowerUps, ManBoxPowerUp* manBoxPowerUps, ManTotem* manTotems, ManWayPoint* manWayPoint){
+void SystemBtLoDMove::update(CarAI* actualCar, ManCar* manCars,ManPowerUp* manPowerUps, ManBoxPowerUp* manBoxPowerUps, ManTotem* manTotems, ManWayPoint* manWayPoint, ManBoundingWall* m_manBoundingWall){
     if(entradoFL==false){
         fuzzyLogic->InitSystemFuzzyLogicAI(actualCar);  // To-Do: arreglar esta llamada para solo hacerla una vez
         entradoFL=true;
     }
 
-    unique_ptr<Blackboard> blackboard = make_unique<Blackboard>(actualCar, manCars, manPowerUps, manBoxPowerUps, manTotems, manWayPoint, fuzzyLogic.get(), steeringBehaviours.get());
+    unique_ptr<Blackboard> blackboard = make_unique<Blackboard>(actualCar, manCars, manPowerUps, manBoxPowerUps, manTotems, manWayPoint, m_manBoundingWall, fuzzyLogic.get(), steeringBehaviours.get());
 
     selectorBehaviourTree->run(blackboard.get());
 }

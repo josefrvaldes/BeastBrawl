@@ -24,6 +24,8 @@ BoxPowerUp::BoxPowerUp(){
     shared_ptr<CTexture> cTexture = make_shared<CTexture>(texture);
     shared_ptr<CMesh> cMesh   = make_shared<CMesh>(mesh);
     shared_ptr<CBoxPowerUp> cBoxPowerUp   = make_shared<CBoxPowerUp>();
+    
+
     AddComponent(cId);
     AddComponent(cType);
     AddComponent(cTransformable);
@@ -31,6 +33,8 @@ BoxPowerUp::BoxPowerUp(){
     AddComponent(cMesh);
     AddComponent(cBoxPowerUp);
     //AddComponent(cCar);
+
+
 
     //cout << "Acabamos de llamar al constructor default de powerup, su transformable es " << cTransformable << endl;
 
@@ -42,6 +46,8 @@ BoxPowerUp::BoxPowerUp(glm::vec3 _position)
     cTransformable->position.x = _position.x;
     cTransformable->position.y = _position.y;
     cTransformable->position.z = _position.z;
+
+    
 
     //typePowerUp = _typePowerUp;
 

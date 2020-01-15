@@ -18,6 +18,8 @@ class CBoundingPlane : public Component {
 
     IntersectData IntersectPlane(const CBoundingPlane &other) const;
 
+    IntersectData IntersectRay(const glm::vec3 &posRayOrigin, const glm::vec3 &rayNormalNormalized) const;
+
     vec3 a;
     vec3 b;
     vec3 c;

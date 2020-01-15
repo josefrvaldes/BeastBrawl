@@ -6,6 +6,7 @@
 #include "../../Aliases.h"
 #include "../../Components/CBoundingPlane.h"
 #include "../../Components/CBoundingSphere.h"
+#include "../../Components/CPowerUp.h"
 #include "../../Components/CCamera.h"
 #include "../../Components/CDimensions.h"
 #include "../../Components/CId.h"
