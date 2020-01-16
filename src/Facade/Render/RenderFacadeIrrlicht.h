@@ -65,10 +65,15 @@ class RenderFacadeIrrlicht : public RenderFacade {
     void FacadeDrawGraphEdges(ManWayPoint* manWayPoints) override;
     void FacadeDrawBoundingBox(Entity* entity, bool colliding) override;
     void FacadeDrawBoundingPlane(Entity* entity) const override;
+    void FacadeDrawAIDebug(ManCar* manCars, ManNavMesh* manNavMesh, ManWayPoint* manWayPoint) override;
+    void FacadeDrawAIDebugPath(CarAI* carAI, ManWayPoint* manWayPoint) override;
+
+
 
     scene::ISceneManager* GetSceneManager() { return smgr; };
     scene::ICameraSceneNode* GetCamera1() { return camera1; };
     static bool showDebug;
+    static bool showAIDebug;
 
    private:
     IrrlichtDevice* device;

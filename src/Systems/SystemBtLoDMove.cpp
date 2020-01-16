@@ -10,6 +10,7 @@
 #include "../behaviourTree/Blackboard.h"
 //#include "../Components/CPowerUp.h"
 #include "../Components/CTotem.h"
+#include "../Components/CMovementType.h"
 
 #include "../Entities/Totem.h"
 #include "../Managers/ManTotem.h"
@@ -129,6 +130,9 @@ struct SBPursue_LoDMove : public behaviourTree {
             EventManager::GetInstance().AddEventMulti(Event{EventType::THROW_POWERUP_AI, d});
         }
         //std::cout << "Aplico SB pursuePU" << std::endl;
+
+        auto cMovementType = static_cast<CMovementType*>(blackboard->actualCar->GetComponent(CompType::MovementComp).get());
+        cMovementType->movementType = "Steering Behaviour prediccion";
         return true;
     } 
 };
@@ -139,6 +143,8 @@ struct SBArrive_LoDMove : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
         blackboard->steeringBehaviours->UpdateArrive(blackboard->actualCar);
         //std::cout << "Aplico SB Arrive" << std::endl;
+        auto cMovementType = static_cast<CMovementType*>(blackboard->actualCar->GetComponent(CompType::MovementComp).get());
+        cMovementType->movementType = "Steering Behaviour moverse";
         return true;
     }
 };
@@ -148,7 +154,9 @@ struct SBArrive_LoDMove : public behaviourTree {
 struct ApplyFuzzyLogic_LoDMove : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
         blackboard->systemFuzzyLogicAI->Update(blackboard->actualCar, 0.016);
-        //std::cout << "Aplico FL" << std::endl;
+        auto cMovementType = static_cast<CMovementType*>(blackboard->actualCar->GetComponent(CompType::MovementComp).get());
+        cMovementType->movementType = "Logica difusa";
+        //std::cout << "Aplico FL" << std::endl;    
         return true;
     } 
 };
@@ -157,10 +165,18 @@ struct ApplyFuzzyLogic_LoDMove : public behaviourTree {
 struct CollisionAvoidance_LoDMove : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
         bool collisionWall = blackboard->steeringBehaviours->UpdateWallAvoidance(blackboard->actualCar, blackboard->manBoundingWall);
-        
+
         if(collisionWall == false){
-            return blackboard->steeringBehaviours->UpdateObstacleAvoidance(blackboard->actualCar, blackboard->manCars);
+            bool result = blackboard->steeringBehaviours->UpdateObstacleAvoidance(blackboard->actualCar, blackboard->manCars);
+
+            if(result){
+                auto cMovementType = static_cast<CMovementType*>(blackboard->actualCar->GetComponent(CompType::MovementComp).get());
+                cMovementType->movementType = "Evasion de jugador";
+            }
+            return result;
         }else{
+            auto cMovementType = static_cast<CMovementType*>(blackboard->actualCar->GetComponent(CompType::MovementComp).get());
+            cMovementType->movementType = "Evasion de muro";
             return true;
         }
     } 
