@@ -28,6 +28,7 @@ using namespace irr;
 using namespace video;
 
 bool RenderFacadeIrrlicht::showDebug = false;
+bool RenderFacadeIrrlicht::showAIDebug = false;
 
 //PUNTEROS A FUNCIONES
 RenderFacadeIrrlicht::~RenderFacadeIrrlicht() {
@@ -143,6 +144,9 @@ void RenderFacadeIrrlicht::FacadeAddPlates(Manager* manNamePlates) {
         core::stringw string = core::stringw("Car AI ") + core::stringw(numEnemyCars++);
         auto node = smgr->addTextSceneNode(font, string.c_str(), video::SColor(255, 0, 0, 0), 0, core::vector3df(200, 30, 200), -1);
         node->setID(cId->id);
+
+        cout << "Añadimos placa con ID: " << cId->id << endl;
+
     }
 }
 
@@ -156,6 +160,8 @@ void RenderFacadeIrrlicht::FacadeUpdatePlates(Manager* manNamePlates) {
         auto carAI = smgr->getSceneNodeFromId(cNamePlate->idCarAsociated);
 
         node->setPosition(core::vector3df(carAI->getPosition().X, carAI->getPosition().Y + 20, carAI->getPosition().Z));
+
+        cout << "Updateamos placa con ID: " << cId->id << endl;
     }
 }
 const void RenderFacadeIrrlicht::FacadeAddObjects(vector<Entity*> entities) {
@@ -456,10 +462,29 @@ void RenderFacadeIrrlicht::FacadeCheckInput() {
     }
 
     // MODO DEBUG
-    if (receiver.IsKeyDown(KEY_F3) && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay) {
+    if (receiver.IsKeyDown(KEY_F3) && !receiver.IsKeyDown(KEY_LSHIFT) && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay) {
         timeStart = system_clock::now();
         showDebug = !showDebug; 
 
+    }else if(receiver.IsKeyDown(KEY_F3) && receiver.IsKeyDown(KEY_LSHIFT) && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay){
+        timeStart = system_clock::now();
+        showAIDebug = !showAIDebug; 
+    }
+
+    //TODO: Alargar esto para cuando tengamos mas coches para debugear
+    // Seleccion de coche para debugear
+    if(receiver.IsKeyDown(KEY_KEY_1) && receiver.IsKeyDown(KEY_LSHIFT) && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay){
+        timeStart = system_clock::now();
+        idCarAIToDebug = 0;
+    }else if(receiver.IsKeyDown(KEY_KEY_2) && receiver.IsKeyDown(KEY_LSHIFT) && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay){
+        timeStart = system_clock::now();
+        idCarAIToDebug = 1;
+    }else if(receiver.IsKeyDown(KEY_KEY_3) && receiver.IsKeyDown(KEY_LSHIFT) && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay){
+        timeStart = system_clock::now();
+        idCarAIToDebug = 2;
+    }else if(receiver.IsKeyDown(KEY_KEY_4) && receiver.IsKeyDown(KEY_LSHIFT) && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay){
+        timeStart = system_clock::now();
+        idCarAIToDebug = 3;
     }
 
     // CAMARA
@@ -494,7 +519,7 @@ void RenderFacadeIrrlicht::FacadeCheckInputMenu() {
     //Cambiamos a ingame
     if (receiver.IsKeyDown(KEY_F1)) {
         numEnemyCars = 0;
-
+        currentPowerUp = 0;
         //Manera un poco cutre de resetear el CId al empezar el juego
         auto cId = make_shared<CId>();
         cId->ResetNumIds();
@@ -505,6 +530,7 @@ void RenderFacadeIrrlicht::FacadeCheckInputMenu() {
         device->closeDevice();
     } else if (receiver.IsKeyDown(KEY_KEY_M)) {
         numEnemyCars = 0;
+        currentPowerUp = 0;
 
         //Manera un poco cutre de resetear el CId al empezar el juego
         auto cId = make_shared<CId>();
@@ -640,6 +666,78 @@ void RenderFacadeIrrlicht::FacadeDrawGraphEdges(ManWayPoint* manWayPoints) {
         }
     }
 }
+
+void RenderFacadeIrrlicht::FacadeDrawAIDebug(ManCar* manCars, ManNavMesh* manNavMesh){
+    if(!showAIDebug) return;
+
+
+    /*
+		   /7--------/6
+		  / |       / |
+		 /  |      /  |
+		4---------5   |
+		|  /3- - -|- -2
+		| /       |  /
+		|/        | /
+		0---------1/
+
+        width  = Z
+        depth  = X
+        height = Y
+
+	*/
+
+    glm::vec3 point0;
+    glm::vec3 point1;
+    glm::vec3 point2;
+    glm::vec3 point3;
+    glm::vec3 point4;
+    glm::vec3 point5;
+    glm::vec3 point6;
+    glm::vec3 point7;
+    //Dibujamos el cuadrado que engloba a cada NavMesh
+
+    for(auto navMesh : manNavMesh->GetEntities()){
+        auto cTransformable = static_cast<CTransformable*>(navMesh->GetComponent(CompType::TransformableComp).get());
+        auto cDimensions    = static_cast<CDimensions*>(navMesh->GetComponent(CompType::DimensionsComp).get());
+
+        point0 = glm::vec3(cTransformable->position.x - (cDimensions->width/2),
+                            cTransformable->position.y+20,
+                            cTransformable->position.z - (cDimensions->depth/2));
+
+        point1 = glm::vec3(cTransformable->position.x - (cDimensions->width/2),
+                            cTransformable->position.y+20,
+                            cTransformable->position.z + (cDimensions->depth/2));
+
+        point2 = glm::vec3(cTransformable->position.x + (cDimensions->width/2),
+                            cTransformable->position.y+20,
+                            cTransformable->position.z + (cDimensions->depth/2));
+                            
+        point3 = glm::vec3(cTransformable->position.x + (cDimensions->width/2),
+                            cTransformable->position.y+20,
+                            cTransformable->position.z - (cDimensions->depth/2));
+
+        point4 = glm::vec3(point0.x,point0.y + cDimensions->height, point0.z);
+        point5 = glm::vec3(point1.x,point1.y + cDimensions->height, point1.z);
+        point6 = glm::vec3(point2.x,point2.y + cDimensions->height, point2.z);
+        point7 = glm::vec3(point3.x,point3.y + cDimensions->height, point3.z);
+
+        Draw3DLine(point0,point1);
+        Draw3DLine(point1,point2);
+        Draw3DLine(point2,point3);
+        Draw3DLine(point3,point0);
+        Draw3DLine(point4,point0);
+        Draw3DLine(point4,point5);
+        Draw3DLine(point4,point7);
+        Draw3DLine(point5,point1);
+        Draw3DLine(point5,point6);
+        Draw3DLine(point6,point2);
+        Draw3DLine(point6,point7);
+        Draw3DLine(point7,point3);
+
+    }
+}
+
 
 void RenderFacadeIrrlicht::Draw3DLine(vec3& pos1, vec3& pos2) const {
     Draw3DLine(pos1, pos2, 255, 0, 0);

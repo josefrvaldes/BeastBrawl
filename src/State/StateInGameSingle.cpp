@@ -60,14 +60,14 @@ void StateInGameSingle::Update() {
 }
 
 void StateInGameSingle::Render() {
-    auto carAI = manCars->GetEntitiesAI()[0].get();
-    bool isColliding = collisions->Intersects(manCars.get()->GetCar().get(), carAI);
-    renderEngine->FacadeDrawBoundingBox(manCars.get()->GetCar().get(), isColliding);
+    // auto carAI = manCars->GetEntitiesAI()[0].get();
+    // bool isColliding = collisions->Intersects(manCars.get()->GetCar().get(), carAI);
+    // renderEngine->FacadeDrawBoundingBox(manCars.get()->GetCar().get(), isColliding);
 
-    for (auto actualAI : manCars->GetEntitiesAI()) {
-        renderEngine->FacadeDrawBoundingBox(actualAI.get(), false);
-    }
-    renderEngine->FacadeDrawBoundingBox(carAI, isColliding);
+    // for (auto actualAI : manCars->GetEntitiesAI()) {
+    //     renderEngine->FacadeDrawBoundingBox(actualAI.get(), false);
+    // }
+    // renderEngine->FacadeDrawBoundingBox(carAI, isColliding);
     StateInGame::Render();
 }
 
@@ -154,5 +154,9 @@ void StateInGameSingle::CAMBIARInicializarCarAIS(ManCar &manCars, ManWayPoint &m
     pathInit3.push(0);
     pathInit3.push(5);
     manCars.GetEntitiesAI()[2]->SetPath(pathInit3);
+
+
+    manNamePlates = make_shared<ManNamePlate>(&manCars);
+
 
 }
