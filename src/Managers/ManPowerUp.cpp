@@ -32,8 +32,13 @@ void ManPowerUp::CreatePowerUp(DataMap d) {
     typeCPowerUp type = any_cast<typeCPowerUp>(d["typePowerUp"]);
 
     CTransformable *transforSalida = any_cast<CTransformable *>(d["posCocheSalida"]);
-    CTransformable *transforPerse = any_cast<CTransformable *>(d["posCochePerseguir"]);
     CDimensions *dimensionsCarSalida = any_cast<CDimensions *>(d["dimensionCocheSalida"]);
+    CTransformable *transforPerse;
+    if(d.count("posCochePerseguir") > 0){
+        transforPerse = any_cast<CTransformable *>(d["posCochePerseguir"]);
+    }else
+        transforPerse = nullptr;
+
     // calculamos la posicion en la que debe salir el powerUp:
     int medidaPowerUp = 10;
     float posX = 0, posZ = 0;
@@ -50,7 +55,7 @@ void ManPowerUp::CreatePowerUp(DataMap d) {
     vec3 positionPowerUp = vec3(posX,transforSalida->position.y,posZ);
 
     shared_ptr<PowerUp> powerUp = make_shared<PowerUp>(positionPowerUp, transforSalida->rotation, type, transforPerse);
-    std::cout << "Las dimensiones del coche son x:" << dimensionsCarSalida->width << " y:" << dimensionsCarSalida->height << " z:" << dimensionsCarSalida->depth << std::endl;
+    //std::cout << "Las dimensiones del coche son x:" << dimensionsCarSalida->width << " y:" << dimensionsCarSalida->height << " z:" << dimensionsCarSalida->depth << std::endl;
     PowerUps.push_back(powerUp);
 
     auto renderFacadeManager = RenderFacadeManager::GetInstance();

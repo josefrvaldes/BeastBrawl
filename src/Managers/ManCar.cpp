@@ -339,44 +339,39 @@ void ManCar::CollisionPowerUpAI(DataMap d){
 }
 
 
-// se calcula el coche mas cerano
+// se calcula el coche mas cercano en el rango de vision, en caso de no haber se devuelve un nullptr
 CTransformable* ManCar::calculateCloserCar(Entity* actualCar){
     // Primero metemos al jugador por lo que no hace falta calcularlo luego
     CTransformable* closestCar = nullptr;
-    bool carPrincipal = false;
-    if(actualCar != car.get()){
-        closestCar = static_cast<CTransformable*>(car.get()->GetComponent(CompType::TransformableComp).get());
-    }else{
-        closestCar = static_cast<CTransformable*>(CarAIs[0].get()->GetComponent(CompType::TransformableComp).get());
-        carPrincipal = true;
-    }
     auto cTransActualCar = static_cast<CTransformable*>(actualCar->GetComponent(CompType::TransformableComp).get());
-    float vectorX = closestCar->position.x - cTransActualCar->position.x;
-    float vectorZ = closestCar->position.z - cTransActualCar->position.z;
-    float distanceMimum = sqrt((vectorX*vectorX) + (vectorZ*vectorZ));
+    float distanceMimum = 9999999999;
+    float distanceNext;
+    float vectorXNext;
+    float vectorZNext;
 
-    // reducimos cierta distancia en caso de que se encuentre en el radio de vision
-    if(carPrincipal == true){
-        if(carInVisionRange(actualCar, CarAIs[0].get(), 60) == true)
-            distanceMimum = distanceMimum/100.0;
-    }else{
-        if(carInVisionRange(actualCar, car.get(), 60) == true)
-            distanceMimum = distanceMimum / 100.0;
-    }
-
-    float distanceNext = 0.0;
-    float vectorXNext = 0.0;
-    float vectorZNext = 0.0;
     // Para CarAI
     for(shared_ptr<Entity> carAI : CarAIs){
         if(actualCar != carAI.get()){
-            auto cTransNextCar = static_cast<CTransformable*>(carAI.get()->GetComponent(CompType::TransformableComp).get()); 
+            if(carInVisionRange(actualCar, carAI.get(), 60) == true){
+                auto cTransNextCar = static_cast<CTransformable*>(carAI.get()->GetComponent(CompType::TransformableComp).get()); 
+                vectorXNext = cTransNextCar->position.x - cTransActualCar->position.x;     
+                vectorZNext = cTransNextCar->position.z - cTransActualCar->position.z;
+                distanceNext = sqrt((vectorXNext*vectorXNext) + (vectorZNext*vectorZNext));
+                
+                if(distanceMimum > distanceNext){
+                    distanceMimum = distanceNext;
+                    closestCar = cTransNextCar;
+                }
+            }
+        }
+    }
+    // Para El coche principal
+    if(actualCar != car.get()){
+        if(carInVisionRange(actualCar, car.get(), 60) == true){
+            auto cTransNextCar = static_cast<CTransformable*>(car.get()->GetComponent(CompType::TransformableComp).get()); 
             vectorXNext = cTransNextCar->position.x - cTransActualCar->position.x;     
             vectorZNext = cTransNextCar->position.z - cTransActualCar->position.z;
             distanceNext = sqrt((vectorXNext*vectorXNext) + (vectorZNext*vectorZNext));
-            
-            if(carInVisionRange(actualCar, carAI.get(), 60) == true)
-                distanceNext = distanceNext / 100.0;
             if(distanceMimum > distanceNext){
                 distanceMimum = distanceNext;
                 closestCar = cTransNextCar;
@@ -395,24 +390,32 @@ void ManCar::ThrowPowerUp(DataMap d) {
     auto cNitro = static_cast<CNitro*>(car.get()->GetComponent(CompType::NitroComp).get());
     bool robado = false;  
     if(cPowerUpCar->typePowerUp != typeCPowerUp::None){
-
+        DataMap data;
+        CTransformable* objectiveCar;
         switch (cPowerUpCar->typePowerUp){
-            case typeCPowerUp::RoboJorobo:
+            case (typeCPowerUp::RoboJorobo):
                 robado = useRoboJorobo(car.get());
                 if (!robado)
                     std::cout << "La has cagado, el Totem no lo tenia nadie..." << std::endl; 
                 break;
-            case typeCPowerUp::EscudoMerluzo:
+            case (typeCPowerUp::EscudoMerluzo):
                 cShield->activatePowerUp();
                 break;
-            case typeCPowerUp::SuperMegaNitro:
+            case (typeCPowerUp::SuperMegaNitro):
                 cNitro->activatePowerUp();
                 break;
-            default:  // en caso del melon molon o la telebanana
-                DataMap data;
+            case (typeCPowerUp::TeleBanana):
+                objectiveCar = calculateCloserCar(car.get());
+                if(objectiveCar != nullptr)
+                    data["posCochePerseguir"] = objectiveCar;
                 data["typePowerUp"] = cPowerUpCar->typePowerUp;
-                data["posCocheSalida"] = static_cast<CTransformable*>(car.get()->GetComponent(CompType::TransformableComp).get());;
-                data["posCochePerseguir"] = calculateCloserCar(car.get());
+                data["posCocheSalida"] = static_cast<CTransformable*>(car.get()->GetComponent(CompType::TransformableComp).get());
+                data["dimensionCocheSalida"] =  static_cast<CDimensions*>(car.get()->GetComponent(CompType::DimensionsComp).get());
+                EventManager::GetInstance().AddEventMulti(Event{EventType::PowerUp_Create, data});
+                break;
+            default:  // en caso del melon molon o pudding de frambuesa
+                data["typePowerUp"] = cPowerUpCar->typePowerUp;
+                data["posCocheSalida"] = static_cast<CTransformable*>(car.get()->GetComponent(CompType::TransformableComp).get());
                 data["dimensionCocheSalida"] =  static_cast<CDimensions*>(car.get()->GetComponent(CompType::DimensionsComp).get());
                 EventManager::GetInstance().AddEventMulti(Event{EventType::PowerUp_Create, data});
 
@@ -442,23 +445,32 @@ void ManCar::ThrowPowerUpAI(DataMap d) {
     bool robado = false; 
     
     if(cPowerUpCar->typePowerUp != typeCPowerUp::None){
+        DataMap data;
+        CTransformable* objectiveCar;
         switch (cPowerUpCar->typePowerUp){
-            case typeCPowerUp::RoboJorobo:
+            case (typeCPowerUp::RoboJorobo):
                 robado = useRoboJorobo(any_cast<CarAI*>(d["actualCar"]));
                 if (!robado)
                     std::cout << "La has cagado, el Totem no lo tenia nadie..." << std::endl; 
                 break;
-            case typeCPowerUp::EscudoMerluzo:
+            case (typeCPowerUp::EscudoMerluzo):
                 cShield->activatePowerUp();
                 break;
-            case typeCPowerUp::SuperMegaNitro:
+            case (typeCPowerUp::SuperMegaNitro):
                 cNitro->activatePowerUp();
                 break;
-            default:     // en caso del melon molon o la telebanana
-                DataMap data;
+            case (typeCPowerUp::TeleBanana):
+                objectiveCar = calculateCloserCar(any_cast<CarAI*>(d["actualCar"]));
+                if(objectiveCar != nullptr)
+                    data["posCochePerseguir"] = objectiveCar;
                 data["typePowerUp"] = cPowerUpCar->typePowerUp;
                 data["posCocheSalida"] = static_cast<CTransformable*>(any_cast<CarAI*>(d["actualCar"])->GetComponent(CompType::TransformableComp).get());
-                data["posCochePerseguir"] = calculateCloserCar(any_cast<CarAI*>(d["actualCar"]));
+                data["dimensionCocheSalida"] =  static_cast<CDimensions*>(any_cast<CarAI*>(d["actualCar"])->GetComponent(CompType::DimensionsComp).get());
+                EventManager::GetInstance().AddEventMulti(Event{EventType::PowerUp_Create, data});
+                break;
+            default:     // en caso del melon molon o el pudding
+                data["typePowerUp"] = cPowerUpCar->typePowerUp;
+                data["posCocheSalida"] = static_cast<CTransformable*>(any_cast<CarAI*>(d["actualCar"])->GetComponent(CompType::TransformableComp).get());
                 data["dimensionCocheSalida"] =  static_cast<CDimensions*>(any_cast<CarAI*>(d["actualCar"])->GetComponent(CompType::DimensionsComp).get());
                 EventManager::GetInstance().AddEventMulti(Event{EventType::PowerUp_Create, data});
 
