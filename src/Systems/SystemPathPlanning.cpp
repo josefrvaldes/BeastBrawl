@@ -164,7 +164,7 @@ void SystemPathPlanning::CalculatePathToNavMesh(DataMap data){
     }
 
     //Buscamos el waypoint mas cercano del navmesh en el que estamos
-    auto navMesh = manNavMesh->GetEntities()[0]; //NavMesh en el que esta el coche
+    auto navMesh = manNavMesh->GetEntities()[cCurrentNavMesh->currentNavMesh]; //NavMesh en el que esta el coche
     auto cNavMesh = static_cast<CNavMesh*>(navMesh->GetComponent(CompType::NavMeshComp).get());
 
 /*
@@ -218,7 +218,7 @@ void SystemPathPlanning::CalculatePathToNavMesh(DataMap data){
 
     auto path2 = path;
     while(!path2.empty()){
-        //std::cout << "nodo del path x= " << path2.top() << std::endl;
+        std::cout << "nodo del path x= " << path2.top() << std::endl;
         path2.pop();
     }
 

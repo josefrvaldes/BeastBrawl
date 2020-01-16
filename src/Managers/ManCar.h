@@ -51,6 +51,7 @@ class ManCar : public Manager {
     shared_ptr<Car>& GetCar() { return car; };
 
     void CreateCarAI();
+    void CreateCarAI(glm::vec3 _position);
     void CreateCarAI(glm::vec3 _position, CWayPoint* _waypoint);
     vector<shared_ptr<CarAI>> GetEntitiesAI() const { return CarAIs; };
     CTransformable* calculateCloserCar(Entity* actualCar);

@@ -128,7 +128,8 @@ void StateInGameSingle::CAMBIARCosasDeTotemUpdate() {
 }
 
 void StateInGameSingle::CAMBIARInicializarCarAIS(ManCar &manCars, ManWayPoint &manWayPoint) {
-    auto cWayPoint = static_cast<CWayPoint *>(manWayPoint.GetEntities()[2]->GetComponent(CompType::WayPointComp).get());
+/*    
+    auto cWayPoint = static_cast<CWayPoint *>(manWayPoint.GetEntities()[0]->GetComponent(CompType::WayPointComp).get());
     //Le asignamos el waypoint inicial, momentaneo a la IA
     manCars.CreateCarAI(glm::vec3(-200.0f, 20.0f, 700.0f), cWayPoint);
     stack<int> pathInit;
@@ -154,5 +155,8 @@ void StateInGameSingle::CAMBIARInicializarCarAIS(ManCar &manCars, ManWayPoint &m
     pathInit3.push(0);
     pathInit3.push(5);
     manCars.GetEntitiesAI()[2]->SetPath(pathInit3);
-
+*/
+    manCars.CreateCarAI(glm::vec3(-200.0f, 20.0f, 700.0f));
+    manCars.CreateCarAI(glm::vec3(400.0f, 20.0f, 20.0f));
+    manCars.CreateCarAI(glm::vec3(400.0f, 20.0f, -400.0f));
 }
