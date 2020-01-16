@@ -37,6 +37,7 @@ void PhysicsPowerUp::updatePudinDeFrambuesa(PowerUp* pu){
 void PhysicsPowerUp::updateTeleBanana(PowerUp* pu){
    time_point<system_clock> now = system_clock::now();
    auto cPuActual = static_cast<CPowerUp*>(pu->GetComponent(CompType::PowerUpComp).get());
+   auto cTransformable = static_cast<CTransformable*>(pu->GetComponent(CompType::TransformableComp).get());
 
    if(cPuActual->calculate == false){
       if(duration_cast<milliseconds>(now - cPuActual->timeStart).count() > cPuActual->durationTime ){
@@ -44,22 +45,25 @@ void PhysicsPowerUp::updateTeleBanana(PowerUp* pu){
             cPuActual->calculate = true;
       }
       // Movimiento
-      auto cTransformable = static_cast<CTransformable*>(pu->GetComponent(CompType::TransformableComp).get());
       float angleRotation = (cTransformable->rotation.y * PI) / 180.0;
       cTransformable->position.x -= cos(angleRotation) * cPuActual->speed * 0.016;
       cTransformable->position.z += sin(angleRotation) * cPuActual->speed * 0.016;
 
-   }else{
+   }else if(static_cast<CTargetEntity*>(pu->GetComponent(CompType::TargetEntityComp).get())->cTransTarget != nullptr){
       // Vector
       auto cTargetCar = static_cast<CTargetEntity*>(pu->GetComponent(CompType::TargetEntityComp).get());
-      auto cTransformable = static_cast<CTransformable*>(pu->GetComponent(CompType::TransformableComp).get());
       float vectorX = cTargetCar->cTransTarget->position.x - cTransformable->position.x;
       float vectorZ = cTargetCar->cTransTarget->position.z - cTransformable->position.z;
       // divisor unitario
       float divisorUnitario = sqrt((vectorX*vectorX) + (vectorZ*vectorZ));
-      // Movimiento
+      // Movimiento perseguir
       cTransformable->position.x += (vectorX/divisorUnitario) * cPuActual->speed * 0.016;
       cTransformable->position.z += (vectorZ/divisorUnitario) * cPuActual->speed * 0.016;
+   }else{
+      // Movimiento como melon molon
+      float angleRotation = (cTransformable->rotation.y * PI) / 180.0;
+      cTransformable->position.x -= cos(angleRotation) * cPuActual->speed * 0.016;
+      cTransformable->position.z += sin(angleRotation) * cPuActual->speed * 0.016;
    }
 }
 
