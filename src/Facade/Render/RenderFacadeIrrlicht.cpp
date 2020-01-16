@@ -12,7 +12,9 @@
 #include "../../Components/CId.h"
 #include "../../Components/CMesh.h"
 #include "../../Components/CNamePlate.h"
+#include "../../Components/CPath.h"
 #include "../../Components/CTexture.h"
+#include "../../Components/CTargetNavMesh.h"
 #include "../../Components/CTotem.h"
 #include "../../Components/CTransformable.h"
 #include "../../Components/CType.h"
@@ -482,9 +484,9 @@ void RenderFacadeIrrlicht::FacadeCheckInput() {
     }else if(receiver.IsKeyDown(KEY_KEY_3) && receiver.IsKeyDown(KEY_LSHIFT) && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay){
         timeStart = system_clock::now();
         idCarAIToDebug = 2;
-    }else if(receiver.IsKeyDown(KEY_KEY_4) && receiver.IsKeyDown(KEY_LSHIFT) && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay){
+    }else if(receiver.IsKeyDown(KEY_KEY_0) && receiver.IsKeyDown(KEY_LSHIFT) && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay){
         timeStart = system_clock::now();
-        idCarAIToDebug = 3;
+        idCarAIToDebug = -1;
     }
 
     // CAMARA
@@ -667,7 +669,7 @@ void RenderFacadeIrrlicht::FacadeDrawGraphEdges(ManWayPoint* manWayPoints) {
     }
 }
 
-void RenderFacadeIrrlicht::FacadeDrawAIDebug(ManCar* manCars, ManNavMesh* manNavMesh){
+void RenderFacadeIrrlicht::FacadeDrawAIDebug(ManCar* manCars, ManNavMesh* manNavMesh, ManWayPoint* manWayPoint){
     if(!showAIDebug) return;
 
 
@@ -722,21 +724,131 @@ void RenderFacadeIrrlicht::FacadeDrawAIDebug(ManCar* manCars, ManNavMesh* manNav
         point6 = glm::vec3(point2.x,point2.y + cDimensions->height, point2.z);
         point7 = glm::vec3(point3.x,point3.y + cDimensions->height, point3.z);
 
-        Draw3DLine(point0,point1);
-        Draw3DLine(point1,point2);
-        Draw3DLine(point2,point3);
-        Draw3DLine(point3,point0);
-        Draw3DLine(point4,point0);
-        Draw3DLine(point4,point5);
-        Draw3DLine(point4,point7);
-        Draw3DLine(point5,point1);
-        Draw3DLine(point5,point6);
-        Draw3DLine(point6,point2);
-        Draw3DLine(point6,point7);
-        Draw3DLine(point7,point3);
+        Draw3DLine(point0,point1,0,0,0);
+        Draw3DLine(point1,point2,0,0,0);
+        Draw3DLine(point2,point3,0,0,0);
+        Draw3DLine(point3,point0,0,0,0);
+        Draw3DLine(point4,point0,0,0,0);
+        Draw3DLine(point4,point5,0,0,0);
+        Draw3DLine(point4,point7,0,0,0);
+        Draw3DLine(point5,point1,0,0,0);
+        Draw3DLine(point5,point6,0,0,0);
+        Draw3DLine(point6,point2,0,0,0);
+        Draw3DLine(point6,point7,0,0,0);
+        Draw3DLine(point7,point3,0,0,0);
 
     }
+
+
+    //Ahora vamos a hacer el debug desde nuestra posicion al CPosDestination
+    if(idCarAIToDebug==-1){
+        //Significa que lo hacemos para todos los coches
+        for(auto carAI : manCars->GetEntitiesAI()){
+            auto cPosDestination = static_cast<CPosDestination*>(carAI->GetComponent(CompType::PosDestination).get());
+            auto cTransformableCar = static_cast<CTransformable*>(carAI->GetComponent(CompType::TransformableComp).get());
+
+            Draw3DLine(cPosDestination->position,cTransformableCar->position);
+
+
+
+            Draw3DLine(cPosDestination->position,cTransformableCar->position);
+            //Ahora vamos a dibujar su CPath
+            FacadeDrawAIDebugPath(carAI.get(),manNavMesh,manWayPoint);
+
+            //Ahora por ultimo en la esquina superior derecha escribimos strings con datos
+        }
+    }else{
+        //Si tenemos seleccionado un coche en concreto dibujamos solo el suyo
+        auto carAI = manCars->GetEntitiesAI()[idCarAIToDebug]; //Cogemos el coche que vamos a debugear
+        auto cPosDestination = static_cast<CPosDestination*>(carAI->GetComponent(CompType::PosDestination).get());
+        auto cTransformableCar = static_cast<CTransformable*>(carAI->GetComponent(CompType::TransformableComp).get());
+        auto cDimensions = static_cast<CDimensions*>(carAI->GetComponent(CompType::DimensionsComp).get());
+        auto cCurrentNavMesh = static_cast<CCurrentNavMesh*>(carAI->GetComponent(CompType::CurrentNavMeshComp).get());
+        auto cTargetNavMesh = static_cast<CTargetNavMesh*>(carAI->GetComponent(CompType::TargetNavMeshComp).get());
+
+        Draw3DLine(cPosDestination->position,cTransformableCar->position);
+        //Ahora vamos a dibujar su CPath
+        FacadeDrawAIDebugPath(carAI.get(),manNavMesh,manWayPoint);
+
+        //Ahora por ultimo en la esquina superior derecha escribimos strings con datos
+        auto cCar = static_cast<CCar*>(carAI->GetComponent(CompType::CarComp).get());        
+        core::stringw transfomableText = core::stringw("Post - Rot - Scale: (") + 
+                             core::stringw(cTransformableCar->position.x) + core::stringw(" | ") +
+                             core::stringw(cTransformableCar->position.y) + core::stringw(" | ") +
+                             core::stringw(cTransformableCar->position.z) + core::stringw(")\n(") +
+                             core::stringw(cTransformableCar->rotation.x) + core::stringw(" | ") +
+                             core::stringw(cTransformableCar->rotation.y) + core::stringw(" | ") +
+                             core::stringw(cTransformableCar->rotation.z) + core::stringw(")\n(") +
+                             core::stringw(cTransformableCar->scale.x) + core::stringw(" | ") +
+                             core::stringw(cTransformableCar->scale.y) + core::stringw(" | ") +
+                             core::stringw(cTransformableCar->scale.z) + core::stringw(")\n") ;
+
+        core::stringw dimensionsText = transfomableText + core::stringw("Dimensions: ") + core::stringw(cDimensions->width) + core::stringw(" | ")+ 
+                                                          core::stringw(cDimensions->height) + core::stringw(" | ") + 
+                                                          core::stringw(cDimensions->depth) + core::stringw("\n");
+
+        core::stringw carText = dimensionsText + core::stringw("Speed: ") + core::stringw(cCar->speed) +core::stringw("\n");
+        core::stringw posDestinationText = carText + core::stringw("Destination: ") + core::stringw(cPosDestination->position.x) +core::stringw(" | ") +
+                                                    core::stringw(cPosDestination->position.y) +core::stringw(" | ") + 
+                                                    core::stringw(cPosDestination->position.z) +core::stringw(" \n ");
+
+        auto cPath = static_cast<CPath*>(carAI->GetComponent(CompType::PathComp).get());
+        auto cPathAux = stack<int>(cPath->stackPath);
+
+        core::stringw pathText = posDestinationText + core::stringw("Path: ");
+        while(!cPathAux.empty()){
+            auto idWaypoint = cPathAux.top();
+            pathText += core::stringw(idWaypoint) + core::stringw(" - ");
+            cPathAux.pop();
+        }
+        pathText += core::stringw("\n");
+
+        core::stringw navMeshText = pathText + core::stringw("Current NavMesh: ") + core::stringw(cCurrentNavMesh->currentNavMesh) + core::stringw("\n")+
+                                               core::stringw("Target NavMesh: ")  + core::stringw(cTargetNavMesh->targetNavMesh) + core::stringw("\n");
+        font->draw(navMeshText,
+               core::rect<s32>(900, 55, 500, 500),
+               video::SColor(255, 0, 0, 0));
+        
+        
+        
+    }
+    
+
+    
+
 }
+
+void RenderFacadeIrrlicht::FacadeDrawAIDebugPath(CarAI* carAI, ManNavMesh* manNavMesh, ManWayPoint* manWayPoint){
+    auto cPath = static_cast<CPath*>(carAI->GetComponent(CompType::PathComp).get());
+
+    auto cPathAux = stack<int>(cPath->stackPath);
+
+    auto lastWaypoint = -1;
+    if(!cPathAux.empty()){
+        //Hago esto para dibujar la primera linea desde CPosDestination hsata el primer nodo
+        auto cPosDestination = static_cast<CPosDestination*>(carAI->GetComponent(CompType::PosDestination).get());
+
+        auto idWaypoint = cPathAux.top();
+        auto node = manWayPoint->GetEntities()[idWaypoint];
+        auto cWayPoint = static_cast<CWayPoint*>(node->GetComponent(CompType::WayPointComp).get());
+        Draw3DLine(cPosDestination->position,cWayPoint->position);
+        cPathAux.pop();
+
+        //Ahora dibujamos el resto de path si queda
+        while(!cPathAux.empty()){
+            lastWaypoint = cWayPoint->id; //Me tengo que ir guardando el nodo anterior para dibujar desde ese al proximo
+            auto lastNode = manWayPoint->GetEntities()[lastWaypoint];
+            auto idWaypoint = cPathAux.top();
+            auto node = manWayPoint->GetEntities()[idWaypoint];
+
+            auto cWayPointLast = static_cast<CWayPoint*>(lastNode->GetComponent(CompType::WayPointComp).get());
+            auto cWayPoint = static_cast<CWayPoint*>(node->GetComponent(CompType::WayPointComp).get());
+            Draw3DLine(cWayPointLast->position,cWayPoint->position);
+            cPathAux.pop();
+        }
+    }
+}
+
 
 
 void RenderFacadeIrrlicht::Draw3DLine(vec3& pos1, vec3& pos2) const {

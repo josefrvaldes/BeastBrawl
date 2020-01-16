@@ -65,7 +65,9 @@ class RenderFacadeIrrlicht : public RenderFacade {
     void FacadeDrawGraphEdges(ManWayPoint* manWayPoints) override;
     void FacadeDrawBoundingBox(Entity* entity, bool colliding) override;
     void FacadeDrawBoundingPlane(Entity* entity) const override;
-    void FacadeDrawAIDebug(ManCar* manCars, ManNavMesh* manNavMesh) override;
+    void FacadeDrawAIDebug(ManCar* manCars, ManNavMesh* manNavMesh, ManWayPoint* manWayPoint) override;
+    void FacadeDrawAIDebugPath(CarAI* carAI, ManNavMesh* manNavMesh, ManWayPoint* manWayPoint) override;
+
 
 
     scene::ISceneManager* GetSceneManager() { return smgr; };

@@ -257,7 +257,7 @@ void StateInGame::Render() {
         renderEngine->FacadeDrawBoundingPlane(wall.get());
     }
 
-    renderEngine->FacadeDrawAIDebug(manCars.get(),manNavMesh.get());
+    renderEngine->FacadeDrawAIDebug(manCars.get(),manNavMesh.get(), manWayPoint.get());
     
     renderEngine->FacadeEndScene();
-}
+} 
