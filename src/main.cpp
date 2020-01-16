@@ -3,12 +3,9 @@
 // #include "../include/boost/asio/io_service.hpp"
 #include "Game.h"
 
-#include "CLPhysics/CLPhysics.h"
-
 using namespace std;
 
 int main() {
-    //CLPhysics::RunTests();
     try {
         Game* game = Game::GetInstance();
 

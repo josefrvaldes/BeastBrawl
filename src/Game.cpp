@@ -19,6 +19,9 @@ Game* Game::GetInstance() {
 }
 
 void Game::SetState(State::States stateType) {
+
+    cout << "GAME inicia estado nuevo" << endl;
+
     switch (stateType) {
         case State::INTRO:
             //currentState = new StateIntro();
@@ -69,7 +72,7 @@ void Game::SetState(State::States stateType) {
 }
 
 void Game::InitGame() {
-    // To-Do put window values
+    
     RenderFacadeManager::GetInstance()->InitializeIrrlicht();
     InputFacadeManager::GetInstance()->InitializeIrrlicht();
     PhysicsFacadeManager::GetInstance()->InitializeIrrlicht();
@@ -77,6 +80,9 @@ void Game::InitGame() {
     //Inicializa la fachada de FMOD.
     SoundFacadeManager::GetInstance()->InitializeFacadeFmod();
     SoundFacadeManager::GetInstance()->GetSoundFacade()->InitSoundEngine();
+
+    cout << "Game Init" << endl;
+    cout << "**********************************************" << endl;
 }
 
 void Game::MainLoop() {
@@ -95,9 +101,13 @@ void Game::MainLoop() {
     }
 
     renderFacadeMan->GetRenderFacade()->FacadeDeviceDrop();
+
+    cout << "Game Main Loop" << endl;
 }
 
 void Game::TerminateGame() {
     //Libera los sonidos y bancos.
     SoundFacadeManager::GetInstance()->GetSoundFacade()->TerminateSoundEngine();
+    cout << "**********************************************" << endl;
+    cout << "Game Terminate" << endl;
 }
