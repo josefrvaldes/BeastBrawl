@@ -5,7 +5,7 @@
 #include <math.h>
 #include <iostream>
 #include <sstream>
-#include "lib/glm/vec3.hpp"
+#include "include/glm/vec3.hpp"
 
 using namespace glm;
 using namespace std;
@@ -24,7 +24,7 @@ class MakeString {
 
 class Utils {
    public:
-    const static bool ACTIVATE_COUT{true};
+    const static bool ACTIVATE_COUT{false};
     static float Vec3MaxValue(const vec3& vec) {
         float maxDistance = vec.x;  // max distancia en alguno de los ejes
         if (vec.y > maxDistance)

@@ -15,7 +15,7 @@
             "environment": [
                 {
                     "name": "LD_LIBRARY_PATH",
-                    "value": "./lib/irrlicht:./lib/fmod"
+                    "value": "./lib/linux/irrlicht:./lib/linux/fmod"
                 }
             ],
             "externalConsole": false,

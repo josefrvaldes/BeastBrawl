@@ -1,5 +1,5 @@
 #include "./ManBoxPowerUp.h"
-//#include <functional>
+//#include <functional> 
 #include <iostream>
 #include "../Entities/BoxPowerUp.h"
 #include "../EventManager/Event.h"
@@ -23,9 +23,8 @@ void ManBoxPowerUp::EjecutarMeHanCogido(DataMap d) {
 
         DataMap data;
         auto cTranformableBox = static_cast<CTransformable*>(actualBox.get()->GetComponent(CompType::TransformableComp).get());
-        shared_ptr<EventManager> eventManager = EventManager::GetInstance();
         data["posBox"] = cTranformableBox->position;
-        eventManager->AddEventMulti(Event{EventType::BREAK_BOX, data});
+        EventManager::GetInstance().AddEventMulti(Event{EventType::BREAK_BOX, data});
     }
 }
 
@@ -56,12 +55,12 @@ void ManBoxPowerUp::CreateBoxPowerUp() {
 
 
 void ManBoxPowerUp::SubscribeToEvents() {
-    EventManager::GetInstance()->SuscribeMulti(Listener(
+    EventManager::GetInstance().SuscribeMulti(Listener(
         EventType::CATCH_BOX_POWERUP,
         bind(&ManBoxPowerUp::EjecutarMeHanCogido, this, placeholders::_1),
         "EjecutarMeHanCogido"));
     
-    EventManager::GetInstance()->SuscribeMulti(Listener(
+    EventManager::GetInstance().SuscribeMulti(Listener(
         EventType::CATCH_AI_BOX_POWERUP,
         bind(&ManBoxPowerUp::EjecutarMeHanCogido, this, placeholders::_1),
         "EjecutarMeHanCogido"));

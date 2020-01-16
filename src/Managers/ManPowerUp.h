@@ -7,7 +7,7 @@
 #include "Manager.h"
 #include "../Aliases.h"
 //#include "Manager.h"
-#include "../../lib/glm/vec3.hpp"
+#include "../../include/glm/vec3.hpp"
 
 class PowerUp;
 class Data;

@@ -26,9 +26,61 @@ Camera::Camera(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale)
     AddComponent(cId);
     AddComponent(cTransformable);
     AddComponent(cCamera);
+
+    SuscribeEvents();
 }
 
 Camera::~Camera()
 {
     
 }
+
+void Camera::SuscribeEvents(){
+    EventManager::GetInstance().SuscribeMulti(Listener(
+        EventType::INVERT_CAMERA,
+        bind(&Camera::InvertCamera, this, placeholders::_1),
+        "InvertCamera"));
+
+    EventManager::GetInstance().SuscribeMulti(Listener(
+        EventType::TOTEM_CAMERA,
+        bind(&Camera::TotemCamera, this, placeholders::_1),
+        "TotemCamera"));
+
+    EventManager::GetInstance().SuscribeMulti(Listener(
+        EventType::NORMAL_CAMERA,
+        bind(&Camera::NormalCamera, this, placeholders::_1),
+        "NormalCamera"));
+}
+
+
+void Camera::InvertCamera(DataMap d){ 
+    auto cCamera = static_cast<CCamera*>(GetComponent(CompType::CameraComp).get());
+
+    //Si esta invertida la desinvertimos y viceversa
+
+    if(cCamera->camType == CamType::INVERTED){
+        cCamera->camType = CamType::NORMAL;
+    }else{
+        cCamera->camType = CamType::INVERTED;
+
+    }
+}
+
+void Camera::TotemCamera(DataMap d){      
+    auto cCamera = static_cast<CCamera*>(GetComponent(CompType::CameraComp).get());
+
+    if(cCamera->camType == CamType::TOTEM){
+        cCamera->camType = CamType::NORMAL;
+    }else{
+        cCamera->camType = CamType::TOTEM;
+
+    }
+}
+
+void Camera::NormalCamera(DataMap d){
+    auto cCamera = static_cast<CCamera*>(GetComponent(CompType::CameraComp).get());
+
+    cCamera->camType = CamType::NORMAL;
+
+}
+

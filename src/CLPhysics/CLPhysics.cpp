@@ -168,7 +168,7 @@ void CLPhysics::SonarChoque(bool mainCar) {
     DataMap map;
     map["mainCharacter"] = mainCar;
     Event e(EventType::CRASH_ENEMY, map);
-    EventManager::GetInstance()->AddEventMulti(e);
+    EventManager::GetInstance().AddEventMulti(e);
 }
 
 /**
@@ -198,7 +198,7 @@ void CLPhysics::HandleCollisions(CTransformable &trCar1, CBoundingSphere &spCar1
             float aux = ccarCar1.speed;
             ccarCar1.speed = ccarCar2.speed;
             ccarCar2.speed = aux;
-        } else if (anguloEntreEllos > 45 && anguloEntreEllos <= 115) {
+        // } else if (anguloEntreEllos > 45 && anguloEntreEllos <= 115) {
             //cout << "chocan lateralmente" << endl;
 
             // versión intercambio de vectores
@@ -411,4 +411,23 @@ void CLPhysics::RunTests() {
     cout << "plane1 intersects sphere3: " << pl1sp3.intersects << ", Distance: " << pl1sp3.GetDistance() << endl;
     cout << "plane1 intersects sphere4: " << pl1sp4.intersects << ", Distance: " << pl1sp4.GetDistance() << endl
          << endl;*/
+}
+
+
+
+
+
+
+IntersectData CLPhysics::HandleCollisionsRayWithSpheres(CTransformable &trCar1, CTransformable &trCar2, CBoundingSphere &spCar2, const glm::vec3 &normalRay){
+    PositionSphereIntoTransformable(trCar2, spCar2);
+    IntersectData intersData = spCar2.IntersectRay(trCar1, normalRay);
+
+    return intersData;   
+}
+
+IntersectData CLPhysics::HandleCollisionsRayWithPlane(CTransformable &trRayOrigin,  glm::vec3 &rayNormalNormalized, CBoundingPlane &planeObject){
+    glm::vec3 positionRayOrigin(trRayOrigin.position.x, trRayOrigin.position.y, trRayOrigin.position.z);
+    IntersectData intersData = planeObject.IntersectRay(positionRayOrigin, rayNormalNormalized);
+
+    return intersData;
 }
