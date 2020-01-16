@@ -413,6 +413,7 @@ void ManCar::ThrowPowerUp(DataMap d) {
                 data["typePowerUp"] = cPowerUpCar->typePowerUp;
                 data["posCocheSalida"] = static_cast<CTransformable*>(car.get()->GetComponent(CompType::TransformableComp).get());;
                 data["posCochePerseguir"] = calculateCloserCar(car.get());
+                data["dimensionCocheSalida"] =  static_cast<CDimensions*>(car.get()->GetComponent(CompType::DimensionsComp).get());
                 EventManager::GetInstance().AddEventMulti(Event{EventType::PowerUp_Create, data});
 
                 break;
@@ -454,12 +455,12 @@ void ManCar::ThrowPowerUpAI(DataMap d) {
                 cNitro->activatePowerUp();
                 break;
             default:     // en caso del melon molon o la telebanana
-                EventManager &eventManager = EventManager::GetInstance();
                 DataMap data;
                 data["typePowerUp"] = cPowerUpCar->typePowerUp;
                 data["posCocheSalida"] = static_cast<CTransformable*>(any_cast<CarAI*>(d["actualCar"])->GetComponent(CompType::TransformableComp).get());
                 data["posCochePerseguir"] = calculateCloserCar(any_cast<CarAI*>(d["actualCar"]));
-                eventManager.AddEventMulti(Event{EventType::PowerUp_Create, data});
+                data["dimensionCocheSalida"] =  static_cast<CDimensions*>(any_cast<CarAI*>(d["actualCar"])->GetComponent(CompType::DimensionsComp).get());
+                EventManager::GetInstance().AddEventMulti(Event{EventType::PowerUp_Create, data});
 
                 break;
         }
@@ -497,6 +498,8 @@ void ManCar::CatchPowerUp(DataMap d) {
         indx = 5;
     else if(indx > 70)                  //  30%
         indx = 6;
+
+    //indx = 6;
 
     //None,               // 0
     //RoboJorobo,         // 1
