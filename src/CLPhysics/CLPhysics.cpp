@@ -168,7 +168,7 @@ void CLPhysics::SonarChoque(bool mainCar) {
     DataMap map;
     map["mainCharacter"] = mainCar;
     Event e(EventType::CRASH_ENEMY, map);
-    EventManager::GetInstance()->AddEventMulti(e);
+    EventManager::GetInstance().AddEventMulti(e);
 }
 
 /**
@@ -198,7 +198,7 @@ void CLPhysics::HandleCollisions(CTransformable &trCar1, CBoundingSphere &spCar1
             float aux = ccarCar1.speed;
             ccarCar1.speed = ccarCar2.speed;
             ccarCar2.speed = aux;
-        } else if (anguloEntreEllos > 45 && anguloEntreEllos <= 115) {
+        // } else if (anguloEntreEllos > 45 && anguloEntreEllos <= 115) {
             //cout << "chocan lateralmente" << endl;
 
             // versión intercambio de vectores

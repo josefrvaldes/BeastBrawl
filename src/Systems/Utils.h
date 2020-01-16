@@ -24,7 +24,7 @@ class MakeString {
 
 class Utils {
    public:
-    const static bool ACTIVATE_COUT{true};
+    const static bool ACTIVATE_COUT{false};
     static float Vec3MaxValue(const vec3& vec) {
         float maxDistance = vec.x;  // max distancia en alguno de los ejes
         if (vec.y > maxDistance)

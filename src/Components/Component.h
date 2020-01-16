@@ -28,9 +28,12 @@ enum CompType {
     CompBoundingAABox,
     CompBoundingPlane,
     CompBoundingRay,
-    PathComp,
-    CompRay,
     CollidingComp,
+    PathComp,
+    NavMeshComp,
+    CurrentNavMeshComp,
+    TargetNavMeshComp,
+    CompRay,
     NamePlateComp
 };
 

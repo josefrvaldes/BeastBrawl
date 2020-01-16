@@ -15,6 +15,10 @@
 #include "../Components/CType.h"
 #include "../Components/CSpeed.h"
 #include "../Components/CColliding.h"
+#include "../Components/CRoboJorobo.h"
+#include "../Components/CNitro.h"
+#include "../Components/CCurrentNavMesh.h"
+#include <iostream>
 
 class Position;
 
@@ -41,6 +45,7 @@ Car::Car() {
     shared_ptr<CNitro> cNitro = make_shared<CNitro>();
     shared_ptr<CRoboJorobo> cRoboJorobo = make_shared<CRoboJorobo>();
     shared_ptr<CTotem> cTotem = make_shared<CTotem>();
+    shared_ptr<CCurrentNavMesh> cCurrentNavMesh = make_shared<CCurrentNavMesh>(0);  //  ponemos 0 por defecto ya que haremos el calculo al empezar la partida
 
     // physics
     shared_ptr<CColliding> cColliding = make_shared<CColliding>(false);
@@ -63,6 +68,7 @@ Car::Car() {
     AddComponent(cBoundRay);
     AddComponent(cColliding);
     AddComponent(cSpeed);
+    AddComponent(cCurrentNavMesh);
     cout << "Acabamos de llamar al constructor default de car, su transformable es " << cTransformable << endl;
 }
 

@@ -4,6 +4,9 @@
 
 StateInGameSingle::StateInGameSingle() : StateInGame() {
     InitVirtualMethods();
+    //std::cout << "ENTRAMOS AL MANAGER DE NAVMESH LOCOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO" << std::endl;
+    CAMBIARCosasNavMesh(*manCars.get(), *manNavMesh.get());
+    //std::cout << "despues de la llamada LOOOOOOOOOOOCOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO" << std::endl;
 }
 
 StateInGameSingle::~StateInGameSingle() {
@@ -11,6 +14,28 @@ StateInGameSingle::~StateInGameSingle() {
 
 void StateInGameSingle::InitState() {
     StateInGame::InitState();
+}
+
+
+
+void StateInGameSingle::CAMBIARCosasNavMesh(ManCar &manCars, ManNavMesh &manNavMesh){
+    // vamos a asignar el navmesh al que pertenecemos
+    for(shared_ptr<Entity> carAI : manCars.GetEntitiesAI()){
+        auto cTransformableCar = static_cast<CTransformable*>(carAI.get()->GetComponent(CompType::TransformableComp).get());     
+        for(auto navmesh : manNavMesh.GetEntities()){
+            auto cDimensions = static_cast<CDimensions*>(navmesh.get()->GetComponent(CompType::DimensionsComp).get());
+            auto cTransformableNav = static_cast<CTransformable*>(navmesh.get()->GetComponent(CompType::TransformableComp).get()); 
+            if( ( (cTransformableCar->position.x >= (cTransformableNav->position.x-(cDimensions->width/2))) && 
+                (cTransformableCar->position.x <= (cTransformableNav->position.x+(cDimensions->width/2))) ) &&
+               ( (cTransformableCar->position.z >= (cTransformableNav->position.z-(cDimensions->depth/2))) && 
+                (cTransformableCar->position.z <= (cTransformableNav->position.z+(cDimensions->depth/2))) )  ){
+                    auto cCurrentNavMesh = static_cast<CCurrentNavMesh*>(carAI.get()->GetComponent(CompType::CurrentNavMeshComp).get());
+                    auto cNavMesh = static_cast<CNavMesh*>(navmesh.get()->GetComponent(CompType::NavMeshComp).get());
+                    cCurrentNavMesh->currentNavMesh = cNavMesh->id;
+                    //std::cout << " El cochecito lereee pertenece al naveMesh: " << cNavMesh->id << std::endl;
+                }       
+        }
+    }   
 }
 
 void StateInGameSingle::Input() {
@@ -21,13 +46,13 @@ void StateInGameSingle::Update() {
     StateInGame::Update();
 
     for (auto actualAI : manCars->GetEntitiesAI()) {
-        manCars->UpdateCarAI(actualAI.get(), manPowerUps.get(), manBoxPowerUps.get(), manTotems.get(), manWayPoint.get(), manBoundingWall.get());
+        manCars->UpdateCarAI(actualAI.get(), manPowerUps.get(), manBoxPowerUps.get(), manTotems.get(), manWayPoint.get(), manNavMesh.get(), manBoundingWall.get());
         physicsEngine->UpdateCarAI(actualAI.get());
     }
     CAMBIARCosasDeTotemUpdate();
 
     // COLISIONES entre powerUp y IA
-    collisions->IntersectsCarsPowerUps(manCars.get(), manPowerUps.get());
+    collisions->IntersectsCarsPowerUps(manCars.get(), manPowerUps.get(), manNavMesh.get());
     // COLISIONES entre BoxPowerUp y IA
     collisions->IntersectCarsBoxPowerUp(manCars.get(), manBoxPowerUps.get());
     // COLISIONES  entre la IA y el Totem
@@ -103,7 +128,8 @@ void StateInGameSingle::CAMBIARCosasDeTotemUpdate() {
 }
 
 void StateInGameSingle::CAMBIARInicializarCarAIS(ManCar &manCars, ManWayPoint &manWayPoint) {
-    auto cWayPoint = static_cast<CWayPoint *>(manWayPoint.GetEntities()[2]->GetComponent(CompType::WayPointComp).get());
+/*    
+    auto cWayPoint = static_cast<CWayPoint *>(manWayPoint.GetEntities()[0]->GetComponent(CompType::WayPointComp).get());
     //Le asignamos el waypoint inicial, momentaneo a la IA
     manCars.CreateCarAI(glm::vec3(-200.0f, 20.0f, 700.0f), cWayPoint);
     stack<int> pathInit;
@@ -129,4 +155,8 @@ void StateInGameSingle::CAMBIARInicializarCarAIS(ManCar &manCars, ManWayPoint &m
     pathInit3.push(0);
     pathInit3.push(5);
     manCars.GetEntitiesAI()[2]->SetPath(pathInit3);
+*/
+    manCars.CreateCarAI(glm::vec3(-200.0f, 20.0f, 700.0f));
+    manCars.CreateCarAI(glm::vec3(400.0f, 20.0f, 20.0f));
+    manCars.CreateCarAI(glm::vec3(400.0f, 20.0f, -400.0f));
 }

@@ -116,10 +116,9 @@ struct CompPowerUp : public behaviourTree {
 struct ThrowPowerUp : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
         //std::cout << "Lanzaaas el powerUp beibeee" << std::endl;
-        shared_ptr<EventManager> eventManager = EventManager::GetInstance();
         DataMap d;
         d["actualCar"] = blackboard->actualCar;
-        eventManager->AddEventMulti(Event{EventType::THROW_POWERUP_AI, d});
+        EventManager::GetInstance().AddEventMulti(Event{EventType::THROW_POWERUP_AI, d});
         return true;
     }
 };
@@ -254,7 +253,7 @@ SystemBtPowerUp::SystemBtPowerUp(){
 
 
 
-void SystemBtPowerUp::update(CarAI* actualCar, ManCar* manCars,ManPowerUp* manPowerUps, ManBoxPowerUp* manBoxPowerUps, ManTotem* manTotems, ManWayPoint* manWayPoint){
-    unique_ptr<Blackboard> blackboard = make_unique<Blackboard>(actualCar, manCars, manPowerUps, manBoxPowerUps, manTotems, manWayPoint);
+void SystemBtPowerUp::update(CarAI* actualCar, ManCar* manCars,ManPowerUp* manPowerUps, ManBoxPowerUp* manBoxPowerUps, ManTotem* manTotems, ManWayPoint* manWayPoint, ManNavMesh* manNavMesh){
+    unique_ptr<Blackboard> blackboard = make_unique<Blackboard>(actualCar, manCars, manPowerUps, manBoxPowerUps, manTotems, manWayPoint, manNavMesh);
     selectorBehaviourTree->run(blackboard.get());
 }

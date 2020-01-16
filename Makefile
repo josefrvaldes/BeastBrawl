@@ -17,6 +17,7 @@ ifdef WINDOWS
 	LIBS 	    := -L./lib/windows/irrlicht -lIrrlicht -L./lib/windows/fmod -lfmod -lfmodstudio
 	INCLUDE     := -I. 
 	INCLUDE_IRR := -I /include/irrlicht/irrlicht.h
+	#INCLUDE_BOOST := -I /include/boost/irrlicht.h
 	INCLUDE_FMOD := -I ./include/fmod/core -I ./include/fmod/studio
 	#INCLUDE_BULLET := -I./include/bullet -I./include
 	CC			:= g++
@@ -34,12 +35,13 @@ else
 	CC			:= g++
 endif
 
+
 SOURCES  	:= $(wildcard *.cpp)
 OBJ_PATH    := obj
 SRC_PATH	:= src
 
 NAME_EXE	:= Beast_Brawl
-CXXFLAGS 	+= -Wall -Wno-unknown-pragmas -std=c++17 # el no-unknown-pragmas es para que no salga el warning de los pragma region
+CXXFLAGS 	+= -Wall -Wno-unknown-pragmas -std=c++17 -pthread # el no-unknown-pragmas es para que no salga el warning de los pragma region
 
 ALLCPPS		:= $(shell find src/ -type f -iname *.cpp)
 ALLCPPSOBJ	:= $(patsubst $(SRC_PATH)/%.cpp,$(OBJ_PATH)/%.o,$(ALLCPPS))
