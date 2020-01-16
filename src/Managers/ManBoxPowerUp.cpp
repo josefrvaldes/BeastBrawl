@@ -64,6 +64,11 @@ void ManBoxPowerUp::SubscribeToEvents() {
         EventType::CATCH_AI_BOX_POWERUP,
         bind(&ManBoxPowerUp::EjecutarMeHanCogido, this, placeholders::_1),
         "EjecutarMeHanCogido"));
+
+    EventManager::GetInstance().SuscribeMulti(Listener(
+        EventType::CATCH_BOX_WITH_POWERUP,
+        bind(&ManBoxPowerUp::EjecutarMeHanCogido, this, placeholders::_1),
+        "EjecutarMeHanCogido"));
 }
 
 

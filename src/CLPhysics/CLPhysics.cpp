@@ -10,7 +10,9 @@
 #include "../Components/CColliding.h"
 #include "../Components/CRay.h"
 #include "../Components/CSpeed.h"
+#include "../Components/CNitro.h"
 #include "../Components/CTransformable.h"
+#include "../Components/CTotem.h"
 #include "../Entities/BoundingWall.h"
 #include "../Entities/Car.h"
 #include "../Entities/CarAI.h"
@@ -86,6 +88,7 @@ void CLPhysics::HandleCollisions() {
     ManCar *manCar = static_cast<ManCar *>(managers[0]);
 
     Car *c = manCar->GetCar().get();
+    Entity* carPlayer = manCar->GetCar().get();
 
     vector<shared_ptr<CarAI>> entities = manCar->GetEntitiesAI();
     size_t numEntities = entities.size();
@@ -100,7 +103,10 @@ void CLPhysics::HandleCollisions() {
         CBoundingSphere *spcai = static_cast<CBoundingSphere *>(cai->GetComponent(CompType::CompBoundingSphere).get());
         CTransformable *trcai = static_cast<CTransformable *>(cai->GetComponent(CompType::TransformableComp).get());
         CCar *ccarcai = static_cast<CCar *>(cai->GetComponent(CompType::CarComp).get());
-        HandleCollisions(*trc, *spc, *ccarc, true, *trcai, *spcai, *ccarcai);
+        bool intersect = HandleCollisions(*trc, *spc, *ccarc, true, *trcai, *spcai, *ccarcai);
+        if(intersect){
+            checkCollisionNitro(carPlayer, cai);
+        }
     }
 
     // las ias entre sí
@@ -116,7 +122,39 @@ void CLPhysics::HandleCollisions() {
             CTransformable *trcar2 = static_cast<CTransformable *>(car2->GetComponent(CompType::TransformableComp).get());
             CCar *ccarcar2 = static_cast<CCar *>(car2->GetComponent(CompType::CarComp).get());
 
-            HandleCollisions(*trcar1, *spcar1, *ccarcar1, false, *trcar2, *spcar2, *ccarcar2);
+            bool intersect = HandleCollisions(*trcar1, *spcar1, *ccarcar1, false, *trcar2, *spcar2, *ccarcar2);
+            if(intersect){
+                checkCollisionNitro(car1, car2);
+            }
+        }
+    }
+}
+
+void CLPhysics::checkCollisionNitro(Entity* car1, Entity* car2){
+    //vamos a comprobar si una de las dos llevaba el nitro y en cuyo caso si la otra el totem para quitarselo
+    auto cNitroCar1 = static_cast<CNitro *>(car1->GetComponent(CompType::NitroComp).get());
+    if(cNitroCar1->activePowerUp){
+        // si el primero tiene super nitro vemos si elsegundo tiene el totem
+        auto cTotemCar2 = static_cast<CTotem *>(car2->GetComponent(CompType::TotemComp).get());
+        if(cTotemCar2->active){
+            // si que lo tiene... lanzamos evento para intercambiarlo
+            DataMap data;   
+            data["carWithTotem"] = car2;     
+            data["carWithoutTotem"] = car1;                                                                                                    
+            EventManager::GetInstance().AddEventMulti(Event{EventType::CHANGE_TOTEM_CAR, data}); 
+        }
+    
+    }else{
+        auto cNitroCar2 = static_cast<CNitro *>(car2->GetComponent(CompType::NitroComp).get());
+        if(cNitroCar2->activePowerUp){
+            auto cTotemCar1 = static_cast<CTotem *>(car1->GetComponent(CompType::TotemComp).get());
+            if(cTotemCar1->active){
+                // si que lo tiene... lanzamos evento para intercambiarlo
+                DataMap data;       
+                data["carWithTotem"] = car1;     
+                data["carWithoutTotem"] = car2;                                                                                                    
+                EventManager::GetInstance().AddEventMulti(Event{EventType::CHANGE_TOTEM_CAR, data}); 
+            }
         }
     }
 }
@@ -175,7 +213,7 @@ void CLPhysics::SonarChoque(bool mainCar) {
  * Recibe los componentes de los dos coches con los que se comprobará colisión
  * El bool mainCar define si los componentes del coche1 son los del coche principal o no
  */
-void CLPhysics::HandleCollisions(CTransformable &trCar1, CBoundingSphere &spCar1, CCar &ccarCar1, bool mainCar, CTransformable &trCar2, CBoundingSphere &spCar2, CCar &ccarCar2) {
+bool CLPhysics::HandleCollisions(CTransformable &trCar1, CBoundingSphere &spCar1, CCar &ccarCar1, bool mainCar, CTransformable &trCar2, CBoundingSphere &spCar2, CCar &ccarCar2) {
     // posicionamos la esfera en la misma posición que el coche pero teniendo en cuenta el offset
 
     PositionSphereIntoTransformable(trCar1, spCar1);
@@ -220,7 +258,10 @@ void CLPhysics::HandleCollisions(CTransformable &trCar1, CBoundingSphere &spCar1
             ccarCar1.speed = -50.f - ccarCar2.speed / 6;
             ccarCar2.speed = -50.f - aux / 6;
         }
+
+        return true;    // los coches han colisionado
     }
+    return false;  // los coches no han colisionado
 }
 
 void VersionRayoVectores() {
