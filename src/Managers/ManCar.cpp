@@ -455,13 +455,12 @@ void ManCar::ThrowPowerUpAI(DataMap d) {
                 cNitro->activatePowerUp();
                 break;
             default:     // en caso del melon molon o la telebanana
-                EventManager &eventManager = EventManager::GetInstance();
                 DataMap data;
                 data["typePowerUp"] = cPowerUpCar->typePowerUp;
                 data["posCocheSalida"] = static_cast<CTransformable*>(any_cast<CarAI*>(d["actualCar"])->GetComponent(CompType::TransformableComp).get());
                 data["posCochePerseguir"] = calculateCloserCar(any_cast<CarAI*>(d["actualCar"]));
                 data["dimensionCocheSalida"] =  static_cast<CDimensions*>(any_cast<CarAI*>(d["actualCar"])->GetComponent(CompType::DimensionsComp).get());
-                eventManager.AddEventMulti(Event{EventType::PowerUp_Create, data});
+                EventManager::GetInstance().AddEventMulti(Event{EventType::PowerUp_Create, data});
 
                 break;
         }
