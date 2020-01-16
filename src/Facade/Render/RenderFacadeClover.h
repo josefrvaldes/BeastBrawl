@@ -25,7 +25,7 @@ class RenderFacadeClover : public RenderFacade {
       const void FacadeAddObjects(vector<Entity*>) override;
       void FacadeAddCamera(Entity*) override;
       void UpdateTransformable(Entity*) override;
-      void UpdateCamera(Entity*) override;
+      void UpdateCamera(Entity*, ManCar* manCars) override;
       bool FacadeRun() override;
       uint32_t FacadeGetTime() override;
       void FacadeCheckInput() override;
@@ -59,10 +59,13 @@ class RenderFacadeClover : public RenderFacade {
       void FacadeDrawGraphEdges(ManWayPoint* manWayPoints) override;
       void FacadeDrawBoundingBox(Entity* entity, bool colliding) override;
       void FacadeDrawBoundingPlane(Entity* entity) const override;
+      void FacadeDrawAIDebug(ManCar* manCars, ManNavMesh* manNavMesh) override;
+
 
       //scene::ISceneManager* GetSceneManager() { return smgr; };
       //scene::ICameraSceneNode* GetCamera1() { return camera1; };
       static bool showDebug;
+      static bool showAIDebug;
 
    private:
 };
