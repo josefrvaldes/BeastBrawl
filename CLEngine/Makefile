@@ -16,10 +16,8 @@ ifdef WINDOWS
 	INCLUDE     := -I. 
 	CC			:= g++
 else
-	LIBS 	    += -L./lib/linux/sdl -lSDL2 -L./lib/linux/glew -lGLEW -lGL
-	LIBS		+= -Wl,-rpath=lib/linux/sdl -Wl,-rpath=lib/linux/glew
-	INCLUDE     := -I. 
-	INCLUDE_SDL := -I /include/sdl/sdl.h
+	LIBS 	    += -L./lib/linux/glfw -lglfw3 -lGL -lX11 -lpthread -lXrandr -lXi -ldl
+	INCLUDE     := -I.
 	INCLUDE_GLEW := -I /include/glew/glew.h
 	CC			:= g++
 endif
@@ -52,7 +50,7 @@ $(NAME_EXE): $(OBJSUBDIRS) $(ALLCPPSOBJ)
 $(OBJ_PATH)/%.o: $(SRC_PATH)/%.cpp
 	$(PRUEBA_TEXT)
 	$(COMPILING_TEXT) $<
-	@$(CC) $(CXXFLAGS) -o $@ -c $^ $(INCLUDE) $(INCLUDE_IRR) $(INCLUDE_FMOD) $(INCLUDE_SDL) $(INCLUDE_GLEW)
+	@$(CC) $(CXXFLAGS) -o $@ -c $^ $(INCLUDE) $(INCLUDE_GLEW)
 	
 
 $(OBJSUBDIRS):
