@@ -65,10 +65,10 @@ void StateInGame::CAMBIARCosasNavMesh(ManNavMesh &manNavMesh){
     vector<int> waypoints1{7,8,9,10,11,13};
     vector<int> waypoints2{3,5,7};  // el 5 debe ser referencia
     vector<int> waypoints3{4,6,8};  // el 6 debe ser referencia
-    manNavMesh.CreateNavMesh(glm::vec3(0.0f,0.0f,-200.0f),glm::vec3(0.0f,0.0f,0.0f),1000,32,500,waypoints0);  //0
-    manNavMesh.CreateNavMesh(glm::vec3(0.0f,0.0f,500.0f),glm::vec3(0.0f,0.0f,0.0f),1000,32,500,waypoints1);   //1
-    manNavMesh.CreateNavMesh(glm::vec3(-300.0f,0.0f,150.0f),glm::vec3(0.0f,0.0f,0.0f),150,32,200,waypoints2); //2
-    manNavMesh.CreateNavMesh(glm::vec3(300.0f,0.0f,150.0f),glm::vec3(0.0f,0.0f,0.0f),150,32,200,waypoints3);  //3
+    manNavMesh.CreateNavMesh(glm::vec3(0.0f,0.0f,-200.0f),glm::vec3(0.0f,0.0f,0.0f),1000,50,500,waypoints0);  //0
+    manNavMesh.CreateNavMesh(glm::vec3(0.0f,0.0f,500.0f),glm::vec3(0.0f,0.0f,0.0f),1000,50,500,waypoints1);   //1
+    manNavMesh.CreateNavMesh(glm::vec3(-300.0f,0.0f,150.0f),glm::vec3(0.0f,0.0f,0.0f),150,50,200,waypoints2); //2
+    manNavMesh.CreateNavMesh(glm::vec3(300.0f,0.0f,150.0f),glm::vec3(0.0f,0.0f,0.0f),150,50,200,waypoints3);  //3
 
 
     auto cTransformableCar = static_cast<CTransformable*>(manCars.get()->GetCar().get()->GetComponent(CompType::TransformableComp).get());     
@@ -186,7 +186,6 @@ void StateInGame::InitializeManagers(Physics *physics, Camera *cam) {
     manBoundingWall = make_shared<ManBoundingWall>();
     manTotems = make_shared<ManTotem>();
     manNavMesh = make_shared<ManNavMesh>();
-    manNamePlates = make_shared<ManNamePlate>(manCars.get());
 }
 
 //Carga los bancos de sonido InGame.
@@ -259,5 +258,7 @@ void StateInGame::Render() {
         renderEngine->FacadeDrawBoundingPlane(wall.get());
     }
 
+    renderEngine->FacadeDrawAIDebug(manCars.get(),manNavMesh.get());
+    
     renderEngine->FacadeEndScene();
 }

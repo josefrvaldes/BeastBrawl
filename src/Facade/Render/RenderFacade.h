@@ -7,6 +7,7 @@
 #include "../../Entities/Entity.h"
 #include "../../EventManager/EventManager.h"
 #include "../../Managers/ManWayPoint.h"
+#include "../../Managers/ManNavMesh.h"
 #include "../../Managers/ManCar.h"
 #include "../../Components/CPowerUp.h"
 #include "../../Managers/Manager.h"
@@ -58,6 +59,7 @@ class RenderFacade {
     virtual void FacadeDrawGraphEdges(ManWayPoint* manWayPoints) = 0;
     virtual void FacadeDrawBoundingBox(Entity* entity, bool colliding) = 0;
     virtual void FacadeDrawBoundingPlane(Entity* entity) const = 0;
+    virtual void FacadeDrawAIDebug(ManCar* manCars, ManNavMesh* manNavMesh) = 0;
 
    protected:
     uint16_t idCar = 0;
@@ -70,4 +72,5 @@ class RenderFacade {
     const int64_t inputDelayCamera = 250;       // 0.5 segundos
     bool invertedCam = false;
     bool totemCamActive = false;
+    int idCarAIToDebug = 0;
 };
