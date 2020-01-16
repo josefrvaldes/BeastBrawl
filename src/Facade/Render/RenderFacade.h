@@ -60,7 +60,7 @@ class RenderFacade {
     virtual void FacadeDrawBoundingBox(Entity* entity, bool colliding) = 0;
     virtual void FacadeDrawBoundingPlane(Entity* entity) const = 0;
     virtual void FacadeDrawAIDebug(ManCar* manCars, ManNavMesh* manNavMesh, ManWayPoint* manWayPoint) = 0;
-    virtual void FacadeDrawAIDebugPath(CarAI* carAI, ManNavMesh* manNavMesh, ManWayPoint* manWayPoint) = 0;
+    virtual void FacadeDrawAIDebugPath(CarAI* carAI, ManWayPoint* manWayPoint) = 0;
 
    protected:
     uint16_t idCar = 0;

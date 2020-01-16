@@ -493,6 +493,7 @@ void ManCar::CatchPowerUp(DataMap d) {
     else if(indx > 70)                  //  30%
         indx = 6;
 
+    //indx = 5;
     //None,               // 0
     //RoboJorobo,         // 1
     //SuperMegaNitro,     // 2
@@ -530,7 +531,7 @@ void ManCar::CatchPowerUpAI(DataMap d) {
         indx = 5;
     else if(indx > 70)                  //  30%
         indx = 6;
-    //indx = 1;
+    //indx = 5;
     auto cPowerUpCar = static_cast<CPowerUp*>(any_cast<Entity*>(d["actualCar"])->GetComponent(CompType::PowerUpComp).get());
     if(cPowerUpCar->typePowerUp == typeCPowerUp::None){
         cPowerUpCar->typePowerUp = (typeCPowerUp)indx;
