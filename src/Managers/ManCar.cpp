@@ -228,6 +228,23 @@ void ManCar::SubscribeToEvents() {
         EventType::COLLISION_AI_TOTEM,
         bind(&ManCar::CatchTotemAI, this, placeholders::_1),
         "CatchTotemAI"));
+
+    EventManager::GetInstance().SuscribeMulti(Listener(
+        EventType::CHANGE_TOTEM_CAR,
+        bind(&ManCar::ChangeTotemCar, this, placeholders::_1),
+        "ChangeTotemCar"));
+}
+
+void ManCar::ChangeTotemCar(DataMap d){
+    auto carWithTotem = any_cast<Entity*>(d["carWithTotem"]);
+    auto carWithoutTotem = any_cast<Entity*>(d["carWithoutTotem"]);
+    ThrowTotem(carWithTotem);
+    // activamos el totem al coche que ahora lo tiene
+    auto cTotemWithout = static_cast<CTotem*>(carWithoutTotem->GetComponent(CompType::TotemComp).get());
+    cTotemWithout->active = true;
+    cTotemWithout->timeStart = system_clock::now();
+    // Sonido coger totem
+    EventManager::GetInstance().AddEventMulti(Event{EventType::CATCH_TOTEM});
 }
 
 
@@ -511,8 +528,7 @@ void ManCar::CatchPowerUp(DataMap d) {
     else if(indx > 70)                  //  30%
         indx = 6;
 
-    //indx = 6;
-
+    //indx = 5;
     //None,               // 0
     //RoboJorobo,         // 1
     //SuperMegaNitro,     // 2
@@ -550,7 +566,7 @@ void ManCar::CatchPowerUpAI(DataMap d) {
         indx = 5;
     else if(indx > 70)                  //  30%
         indx = 6;
-    //indx = 1;
+    //indx = 5;
     auto cPowerUpCar = static_cast<CPowerUp*>(any_cast<Entity*>(d["actualCar"])->GetComponent(CompType::PowerUpComp).get());
     if(cPowerUpCar->typePowerUp == typeCPowerUp::None){
         cPowerUpCar->typePowerUp = (typeCPowerUp)indx;
