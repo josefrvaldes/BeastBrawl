@@ -16,7 +16,8 @@ ifdef WINDOWS
 	INCLUDE     := -I. 
 	CC			:= g++
 else
-	LIBS 	    += -L./lib/linux/glfw -lglfw3 -lGL -lX11 -lpthread -lXrandr -lXi -ldl
+	LIBS 	    += -L./lib/linux/glfw -lglfw3 -lGL -lX11 -lpthread -lXrandr -lXi -ldl -L./lib/linux/glew -lGLEW
+	LIBS		+= -Wl,-rpath=lib/linux/glfw -Wl,-rpath=lib/linux/glew
 	INCLUDE     := -I.
 	INCLUDE_GLEW := -I /include/glew/glew.h
 	CC			:= g++
