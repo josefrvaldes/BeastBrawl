@@ -1,5 +1,5 @@
 #include <iostream>
-#include "./include/glew/glew.h"
+#include "../include/glew/glew.h"
 #include <GLFW/glfw3.h>
 
 using namespace std;
@@ -13,7 +13,7 @@ void checkInput (GLFWwindow *window) {
 int main() {
 
     glfwInit();
-    cout << "GLFW ON" << endl;
+    cout << ">>>>> GLFW ON" << endl;
 
     // TO-DO: Establecer version. ¿Es necesario?
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
@@ -28,8 +28,11 @@ int main() {
         return -1;
     }
 
+    cout << "    > Ventana creada" << endl;
+
     glfwMakeContextCurrent(window);
     glViewport(0, 0, 1280, 720);
+    cout << "    > Viewport establecido" << endl;
 
     while (!glfwWindowShouldClose(window)) {
 
@@ -46,7 +49,7 @@ int main() {
     }
 
     glfwTerminate();
-    cout << "GLFW OFF" << endl;
+    cout << ">>>>> GLFW OFF" << endl;
 
     return 0;
     
