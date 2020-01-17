@@ -92,7 +92,7 @@ class ManCar : public Manager {
     bool graphCreated = false;
     shared_ptr<Car> car;
     vector<shared_ptr<CarAI>> CarAIs;
-
+ 
     unique_ptr<SystemBtPowerUp> systemBtPowerUp;
     unique_ptr<SystemBtMoveTo> systemBtMoveTo;
     unique_ptr<SystemBtLoDMove> systemBtLoDMove;
