@@ -1,6 +1,6 @@
 #include <iostream>
 #include "../include/glew/glew.h"
-#include <GLFW/glfw3.h>
+#include "../include/glfw/glfw3.h"
 
 using namespace std;
 

@@ -20,6 +20,7 @@ else
 	LIBS		+= -Wl,-rpath=lib/linux/glfw -Wl,-rpath=lib/linux/glew
 	INCLUDE     := -I.
 	INCLUDE_GLEW := -I./include/glew
+	INCLUDE_GLEW := -I./include/glfw
 	CC			:= g++
 endif
 
