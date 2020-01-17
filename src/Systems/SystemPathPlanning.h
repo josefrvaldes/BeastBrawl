@@ -25,7 +25,7 @@ struct Data;
 class SystemPathPlanning {
 public:
     SystemPathPlanning();
-    ~SystemPathPlanning(){};
+    ~SystemPathPlanning();
 
     void Update(CarAI* carAI, ManWayPoint* graph, ManNavMesh* manNavMesh);
     void UpdateDijkstra(CarAI* carAI, ManWayPoint* graph, ManNavMesh* manNavMesh);
@@ -36,5 +36,9 @@ public:
     void CalculatePathToNavMesh(DataMap d);
     void ChangePosDestination(DataMap d);
     void MoveRandomPowerUp(DataMap d);
+    void InitMapGraph(ManWayPoint* _graph);
+    float** graph;
+    int graphSize = 0;
+    bool graphCreated = false;
 
 };
