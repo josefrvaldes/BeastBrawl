@@ -7,6 +7,7 @@
 using namespace std;
 
 class Manager;
+class Entity;
 class CTransformable;
 class CBoundingSphere;
 class CBoundingPlane;
@@ -33,7 +34,7 @@ class CLPhysics {
 
    protected:
    private:
-    void HandleCollisions(CTransformable &trCar1, CBoundingSphere &spCar1, CCar &ccar1, bool mainCar, CTransformable &trCar2, CBoundingSphere &spCar2, CCar &ccar2);
+    bool HandleCollisions(CTransformable &trCar1, CBoundingSphere &spCar1, CCar &ccar1, bool mainCar, CTransformable &trCar2, CBoundingSphere &spCar2, CCar &ccar2);
     void HandleCollisions(CTransformable &trCar1, CBoundingSphere &spCar1, CCar &ccar1, bool mainCar, CBoundingPlane &plane);
     void PositionSphereIntoTransformable(CTransformable &tr, CBoundingSphere &sp);
     void SeparateSpheres(CTransformable &trCar1, CBoundingSphere &spCar1, CCar &ccarCar1,
@@ -42,5 +43,6 @@ class CLPhysics {
     void ReflectCollision(CTransformable &trCar1, CCar &cCar1, CTransformable &trCar2, CCar &cCar2);
     void ExchangeVectors(CTransformable &trCar1, CCar &cCar1, CTransformable &trCar2, CCar &cCar2);
     void SonarChoque(bool mainCar);
+    void checkCollisionNitro(Entity* car1, Entity* car2);
     vector<Manager *> managers;
 };
