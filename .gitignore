@@ -6,6 +6,7 @@ obj/
 .vscode/
 
 Beast_Brawl
+CLEngine
 
 vgcore.1848
 
@@ -13,23 +14,16 @@ vgcore.1848
 .lib/fmod/libfmod.so.11
 .lib/fmod/libfmodL.so
 .lib/fmod/libfmodL.so.11
+lib/fmod/libfmod.so
+lib/fmod/libfmod.so.11
+lib/fmod/libfmodL.so
+lib/fmod/libfmodL.so.11
 
 .lib/fmod/libfmodstudio.so
 .lib/fmod/libfmodstudio.so.11
 .lib/fmod/libfmodstudioL.so
 .lib/fmod/libfmodstudioL.so.11
-lib/fmod/libfmod.so
-
-lib/fmod/libfmod.so.11
-
-lib/fmod/libfmodL.so
-
 lib/fmod/libfmodstudio.so
-
 lib/fmod/libfmodstudio.so.11
-
-lib/fmod/libfmodL.so.11
-
 lib/fmod/libfmodstudioL.so.11
-
 lib/fmod/libfmodstudioL.so
