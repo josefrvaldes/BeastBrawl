@@ -424,7 +424,7 @@ bool RenderFacadeIrrlicht::FacadeRun() {
     return device->run();
 }
 
-uint32_t RenderFacadeIrrlicht::FacadeGetTime() {
+uint32_t RenderFacadeIrrlicht::FacadeGetTime() const{
     return device->getTimer()->getTime();
 }
 
@@ -572,11 +572,11 @@ void RenderFacadeIrrlicht::FacadeCheckInputEndRace() {
     }
 }
 
-int RenderFacadeIrrlicht::FacadeGetFPS() {
+int RenderFacadeIrrlicht::FacadeGetFPS() const{
     return driver->getFPS();
 }
 
-void RenderFacadeIrrlicht::FacadeSetWindowCaption(std::string title) {
+void RenderFacadeIrrlicht::FacadeSetWindowCaption(std::string title) const{
     //Como transformar de string a wstring (irrlicht)
     std::wstring text_aux;
     for (unsigned int i = 0; i < title.length(); ++i)
@@ -588,7 +588,7 @@ void RenderFacadeIrrlicht::FacadeSetWindowCaption(std::string title) {
 }
 
 //Toda la rutina de limpiar y dibujar de irrlicht
-void RenderFacadeIrrlicht::FacadeDraw() {
+void RenderFacadeIrrlicht::FacadeDraw() const{
     driver->beginScene(true, true, video::SColor(255, 113, 113, 133));
     smgr->drawAll();  // draw the 3d scene
     driver->endScene();
@@ -622,15 +622,15 @@ void RenderFacadeIrrlicht::FacadeDrawEndRace() {
 }
 
 //Limpia la pantalla
-void RenderFacadeIrrlicht::FacadeBeginScene() {
+void RenderFacadeIrrlicht::FacadeBeginScene() const{
     driver->beginScene(true, true, video::SColor(255, 113, 113, 133));
 }
 
-void RenderFacadeIrrlicht::FacadeDrawAll() {
+void RenderFacadeIrrlicht::FacadeDrawAll() const{
     smgr->drawAll();  // draw the 3d scene
 }
 
-void RenderFacadeIrrlicht::FacadeEndScene() {
+void RenderFacadeIrrlicht::FacadeEndScene() const{
     driver->endScene();
 }
 
@@ -639,7 +639,7 @@ void RenderFacadeIrrlicht::FacadeDeviceDrop() {
 }
 
 //DEBUG dibuja las aristas entre los nodos del grafo
-void RenderFacadeIrrlicht::FacadeDrawGraphEdges(ManWayPoint* manWayPoints) {
+void RenderFacadeIrrlicht::FacadeDrawGraphEdges(ManWayPoint* manWayPoints) const{
     if (!showDebug) return;  //Si no esta activado debug retornamos
 
     //Recorremos todos los WayPoints del manager
@@ -680,7 +680,7 @@ void RenderFacadeIrrlicht::FacadeDrawGraphEdges(ManWayPoint* manWayPoints) {
     }
 }
 
-void RenderFacadeIrrlicht::FacadeDrawAIDebug(ManCar* manCars, ManNavMesh* manNavMesh, ManWayPoint* manWayPoint){
+void RenderFacadeIrrlicht::FacadeDrawAIDebug(ManCar* manCars, ManNavMesh* manNavMesh, ManWayPoint* manWayPoint) const{
     if(!showAIDebug) return;
 
 
@@ -830,7 +830,7 @@ void RenderFacadeIrrlicht::FacadeDrawAIDebug(ManCar* manCars, ManNavMesh* manNav
 
 }
 
-void RenderFacadeIrrlicht::FacadeDrawAIDebugPath(CarAI* carAI, ManWayPoint* manWayPoint){
+void RenderFacadeIrrlicht::FacadeDrawAIDebugPath(CarAI* carAI, ManWayPoint* manWayPoint) const{
     auto cPath = static_cast<CPath*>(carAI->GetComponent(CompType::PathComp).get());
 
     auto cPathAux = stack<int>(cPath->stackPath);
@@ -899,7 +899,7 @@ void RenderFacadeIrrlicht::FacadeDrawBoundingPlane(Entity* entity) const {
     Draw3DLine(d, a);
 }
 
-void RenderFacadeIrrlicht::FacadeDrawBoundingBox(Entity* entity, bool colliding) {
+void RenderFacadeIrrlicht::FacadeDrawBoundingBox(Entity* entity, bool colliding) const{
     /*vec3 pos(-20.f, 20.f, -300.f);
     vec3 a(pos.x, pos.y + 20.f, pos.z);
     vec3 b(pos.x + 20.f, pos.y + 20.f, pos.z);

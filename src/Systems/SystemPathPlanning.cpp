@@ -233,11 +233,11 @@ void SystemPathPlanning::CalculatePathToNavMesh(DataMap data){
 
 
 
-void SystemPathPlanning::Update(CarAI* carAI, ManWayPoint* graph, ManNavMesh* manNavMesh){
+void SystemPathPlanning::Update(CarAI* carAI, ManWayPoint* graph, ManNavMesh* manNavMesh) const{
     UpdateDijkstra(carAI, graph, manNavMesh);    
 }
 
-void SystemPathPlanning::UpdateDijkstra(CarAI* carAI, ManWayPoint* graph, ManNavMesh* manNavMesh){
+void SystemPathPlanning::UpdateDijkstra(CarAI* carAI, ManWayPoint* graph, ManNavMesh* manNavMesh) const{
     //Guardamos en varAIbles los componentes
 	auto cTransformable = static_cast<CTransformable*>(carAI->GetComponent(CompType::TransformableComp).get());
     //auto cWayPoint     = static_cast<CWayPoint*>(carAI->GetComponent(CompType::WayPointComp).get());
@@ -338,7 +338,7 @@ void SystemPathPlanning::InitMapGraph(ManWayPoint* _graph){
     graphCreated = true;
 }
 
-std::stack<int> SystemPathPlanning::Dijkstra(ManWayPoint* _graph, int start, int end) {
+std::stack<int> SystemPathPlanning::Dijkstra(ManWayPoint* _graph, const uint16_t start, const uint16_t end) {
     //cout << "----------------------------------\n";
     //Convertir ManWayPoint en una matriz de adyacencia
     if(!graphCreated)

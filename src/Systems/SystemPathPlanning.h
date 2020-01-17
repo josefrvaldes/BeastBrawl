@@ -27,9 +27,9 @@ public:
     SystemPathPlanning();
     ~SystemPathPlanning();
 
-    void Update(CarAI* carAI, ManWayPoint* graph, ManNavMesh* manNavMesh);
-    void UpdateDijkstra(CarAI* carAI, ManWayPoint* graph, ManNavMesh* manNavMesh);
-    stack<int> Dijkstra(ManWayPoint* graph, int start, int end);
+    void Update(CarAI* carAI, ManWayPoint* graph, ManNavMesh* manNavMesh) const;
+    void UpdateDijkstra(CarAI* carAI, ManWayPoint* graph, ManNavMesh* manNavMesh) const;
+    stack<int> Dijkstra(ManWayPoint* graph, const uint16_t start, const uint16_t end);
 
    private:
     void SubscribeToEvents();
