@@ -647,6 +647,22 @@ void RenderFacadeIrrlicht::FacadeDrawGraphEdges(ManWayPoint* manWayPoints) {
         auto cWayPoint = static_cast<CWayPoint*>(way->GetComponent(CompType::WayPointComp).get());
         auto cWayPointEdge = static_cast<CWayPointEdges*>(way->GetComponent(CompType::WayPointEdgesComp).get());
 
+        //Vamos a dibujar varias lineas para formar un "circulo"
+        auto centre = cWayPoint->position;
+        //La primera posicion es para el primer cuadrante angle 0
+        auto radious = cWayPoint->radious;
+        glm::vec3 lastPoint = glm::vec3(centre.x + radious,centre.y, centre.z);
+        float angle = 0;
+        float angleIncrement = 18; //Si quieres aumentar la precision debes bajar el numero y que siga siendo multiplo de 360
+
+        while(angle<=360){
+            angle += angleIncrement;
+            float radians = (angle*PI) / 180.0;
+            auto newPoint = glm::vec3(centre.x + (cos(radians) * radious), centre.y, centre.z + (sin(radians) * radious));
+
+            Draw3DLine(lastPoint,newPoint);
+            lastPoint = newPoint;
+        }
         //Recorremos el componente CWayPointEdges->edges para ir arista a arista
         for (Edge e : cWayPointEdge->edges) {
             //Cogemos la posicion de la arista que apunta e->to
