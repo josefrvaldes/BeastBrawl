@@ -19,7 +19,7 @@ else
 	LIBS 	    += -L./lib/linux/glfw -lglfw3 -lGL -lX11 -lpthread -lXrandr -lXi -ldl -L./lib/linux/glew -lGLEW
 	LIBS		+= -Wl,-rpath=lib/linux/glfw -Wl,-rpath=lib/linux/glew
 	INCLUDE     := -I.
-	INCLUDE_GLEW := -I /include/glew/glew.h
+	INCLUDE_GLEW := -I./include/glew
 	CC			:= g++
 endif
 

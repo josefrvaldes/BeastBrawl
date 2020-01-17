@@ -28,6 +28,7 @@ void CLEngine::CreateGlfwWindow (const unsigned int w, const unsigned int h, con
     window = glfwCreateWindow( w, h, title.c_str(), NULL, NULL );
     if (!window) {
         cout << "    > La ventana no se ha podido crear" << endl;
+        glfwTerminate();
         exit(EXIT_FAILURE);
     }
     cout << "    > Ventana creada" << endl;
