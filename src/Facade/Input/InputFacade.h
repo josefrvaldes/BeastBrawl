@@ -11,7 +11,10 @@
 class InputFacade {
     public:
         virtual ~InputFacade() = default;
-        virtual void CheckInputs(Entity&) = 0;
+        virtual void CheckInput()        = 0;
+        virtual void CheckInputMenu()    = 0;
+        virtual void CheckInputPause()   = 0;
+        virtual void CheckInputEndRace() = 0;
 
     protected:
 };

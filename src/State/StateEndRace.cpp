@@ -34,8 +34,11 @@ void StateEndRace::Render(){
 
 void StateEndRace::Input(){
     renderEngine->FacadeCheckInputEndRace();
+    InputFacadeManager::GetInstance()->GetInputFacade()->CheckInputEndRace();
 }
 
 
 void StateEndRace::Update(){
+    EventManager::GetInstance().Update();
+
 }

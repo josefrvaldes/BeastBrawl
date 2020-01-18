@@ -1,6 +1,7 @@
 #include "SystemPathPlanning.h"
 
 #include "../Entities/Car.h"
+#include "../Entities/CarHuman.h"
 #include "../Entities/CarAI.h"
 #include "../Entities/WayPoint.h"
 
@@ -218,7 +219,7 @@ void SystemPathPlanning::CalculatePathToNavMesh(DataMap data){
 
     auto path2 = path;
     while(!path2.empty()){
-        //std::cout << "nodo del path x= " << path2.top() << std::endl;
+        std::cout << "nodo del path x= " << path2.top() << std::endl;
         path2.pop();
     }
 
@@ -233,11 +234,11 @@ void SystemPathPlanning::CalculatePathToNavMesh(DataMap data){
 
 
 
-void SystemPathPlanning::Update(CarAI* carAI, ManWayPoint* graph, ManNavMesh* manNavMesh){
+void SystemPathPlanning::Update(CarAI* carAI, ManWayPoint* graph, ManNavMesh* manNavMesh) const{
     UpdateDijkstra(carAI, graph, manNavMesh);    
 }
 
-void SystemPathPlanning::UpdateDijkstra(CarAI* carAI, ManWayPoint* graph, ManNavMesh* manNavMesh){
+void SystemPathPlanning::UpdateDijkstra(CarAI* carAI, ManWayPoint* graph, ManNavMesh* manNavMesh) const{
     //Guardamos en varAIbles los componentes
 	auto cTransformable = static_cast<CTransformable*>(carAI->GetComponent(CompType::TransformableComp).get());
     //auto cWayPoint     = static_cast<CWayPoint*>(carAI->GetComponent(CompType::WayPointComp).get());
@@ -309,19 +310,41 @@ void SystemPathPlanning::UpdateDijkstra(CarAI* carAI, ManWayPoint* graph, ManNav
 }
 
 
+void SystemPathPlanning::InitMapGraph(ManWayPoint* _graph){
+    graphSize = _graph->GetEntities().size();
+    graph = new float*[graphSize];
 
-std::stack<int> SystemPathPlanning::Dijkstra(ManWayPoint* _graph, int start, int end) {
-    //cout << "----------------------------------\n";
-    //Convertir ManWayPoint en una matriz de adyacencia
-    int size = _graph->GetEntities().size();
-    float graph[size][size];
+    for(uint16_t i = 0; i <graphSize; ++i){
+        graph[i] = new float[graphSize];
+    }
 
     //Rellenamos de 0 el grafo
-    for(int i = 0; i < size; ++i){
-        for(int j = 0; j < size; ++j){
+    for(uint16_t i = 0; i<graphSize; ++i){
+        for(uint16_t j = 0; j<graphSize; ++j){
             graph[i][j] = INT_MAX;
         }
     }
+
+    //Rellenamos el graph con los waypoints
+    for(auto node : _graph->GetEntities()){
+        auto cWayPoint = static_cast<CWayPoint*>(node->GetComponent(CompType::WayPointComp).get());
+        auto cWayPointEdges = static_cast<CWayPointEdges*>(node->GetComponent(CompType::WayPointEdgesComp).get());
+
+        for(auto edge : cWayPointEdges->edges){
+            graph[cWayPoint->id][edge.to] = edge.cost;
+        }
+
+    }
+
+    graphCreated = true;
+}
+
+std::stack<int> SystemPathPlanning::Dijkstra(ManWayPoint* _graph, const uint16_t start, const uint16_t end) {
+    //cout << "----------------------------------\n";
+    //Convertir ManWayPoint en una matriz de adyacencia
+    if(!graphCreated)
+        InitMapGraph(_graph);
+    
 
     //Ponemos los costes pertinentes en la matriz de adyacencia
     //TODO: Cambiar esto para tenerlo guardado en una entidad o algo y no hacerlo cada calculo de Dijkstra
@@ -335,10 +358,10 @@ std::stack<int> SystemPathPlanning::Dijkstra(ManWayPoint* _graph, int start, int
     }
 
     //Comenzamos Dijkstra
-    float distanceFromStart[size],pred[size];
-    int visited[size],count,minDistanceFromStart,nextClosestNode = -1,i;
+    float distanceFromStart[graphSize],pred[graphSize];
+    int visited[graphSize],count,minDistanceFromStart,nextClosestNode = -1,i;
 
-    for(i=0;i<size;i++) {
+    for(i=0;i<graphSize;i++) {
         distanceFromStart[i] = graph[start][i];  //Metemos las ponderaciones a los nodos desde el que iniciamos(Si no tiene es = INT_MAX)
         pred[i] = start;                
         visited[i] = 0;
@@ -349,9 +372,9 @@ std::stack<int> SystemPathPlanning::Dijkstra(ManWayPoint* _graph, int start, int
     visited[start]=1;
     count=1;
 
-    while(count<size-1) {
+    while(count<graphSize-1) {
         minDistanceFromStart=INT_MAX;
-        for(i=0;i<size;i++){
+        for(i=0;i<graphSize;i++){
             if(distanceFromStart[i] < minDistanceFromStart && !visited[i]) {
                 //Si la distancia al nodo i es menor que la minDistanceFromStart y no esta visitado
                 //Recordatorio: Si nuestro nodo start no esta conectado con i entonces distanceFromStart[1] = INT_MAX y no entrará aquí
@@ -362,7 +385,7 @@ std::stack<int> SystemPathPlanning::Dijkstra(ManWayPoint* _graph, int start, int
 
         visited[nextClosestNode]=1;
 
-        for(i=0;i<size;i++){
+        for(i=0;i<graphSize;i++){
             if(!visited[i]){
                 //Si la distancia entre (start y nodo i) es mayor que (start y su nodo adyacente) + (su nodo adyacente hasta i)
                 //P.E: ¿De 1 -> 3 es mayor que de 1 -> 2 -> 3?
@@ -388,4 +411,11 @@ std::stack<int> SystemPathPlanning::Dijkstra(ManWayPoint* _graph, int start, int
 
     return path;
 
+}
+
+SystemPathPlanning::~SystemPathPlanning(){
+    for(int i = 0; i<graphSize; ++i){
+        delete[] graph[i];
+    }
+    delete[] graph;
 }

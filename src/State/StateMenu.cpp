@@ -4,12 +4,10 @@
 using namespace std;
 
 StateMenu::StateMenu(){
-    // constructor
-    std::cout << "Estado Menu Creado" << std::endl;
-    // Inicializamos las facadas
-    renderEngine = RenderFacadeManager::GetInstance()->GetRenderFacade();
-    //renderFacadeManager->InitializeIrrlicht();
 
+    std::cout << "> MENU constructor" << std::endl;
+
+    renderEngine = RenderFacadeManager::GetInstance()->GetRenderFacade();
     renderEngine->FacadeInitMenu();
 
 }
@@ -24,6 +22,8 @@ void StateMenu::InitState() {
     }
     soundEngine->SetState(2);
     soundEngine->PlayEvent("Musica/menu");
+
+    //cout << "> MENU iniciado" << endl;
 }
 
 
@@ -38,4 +38,5 @@ void StateMenu::Input(){
 
 
 void StateMenu::Update(){
+    EventManager::GetInstance().Update();
 }

@@ -22,10 +22,13 @@ ifdef WINDOWS
 	#INCLUDE_BULLET := -I./include/bullet -I./include
 	CC			:= g++
 else
-	LIBS 	    := -L./lib/linux/irrlicht -lIrrlicht -L./lib/linux/fmod -lfmod -lfmodstudio
+	#LIBS		:= -L/usr/lib32 -lX11
+	LIBS 	    += -L./lib/linux/irrlicht -lIrrlicht -L./lib/linux/fmod -lfmod -lfmodstudio -L./lib/linux/glew -lGLEW -lGL
+	LIBS		+= -Wl,-rpath=lib/linux/irrlicht -Wl,-rpath=lib/linux/fmod
 	INCLUDE     := -I. 
 	INCLUDE_IRR := -I /include/irrlicht/irrlicht.h
 	INCLUDE_FMOD := -I ./include/fmod/core -I ./include/fmod/studio
+	INCLUDE_GLEW := -I /include/glew/glew.h
 	#INCLUDE_BULLET := -I./include/bullet -I./include
 	CREATE_SYMLINKS := bash symlinks.sh
 	CC			:= g++
@@ -52,7 +55,7 @@ $(NAME_EXE): $(OBJSUBDIRS) $(ALLCPPSOBJ)
 	$(COMPILING_TEXT_OK)
 	$(JUMP_LINE)
 	$(LINKING_TEXT)
-	$(CC) -o $(NAME_EXE) $(patsubst $(SRC_PATH)%,$(OBJ_PATH)%,$(ALLCPPSOBJ)) $(INCLUDE) $(LIBS) 
+	$(CC) -o $(NAME_EXE) $(patsubst $(SRC_PATH)%,$(OBJ_PATH)%,$(ALLCPPSOBJ)) $(INCLUDE) $(LIBS) $(CXXFLAGS)
 	$(LINKING_TEXT_OK)
 	$(JUMP_LINE)
 
@@ -61,7 +64,7 @@ $(NAME_EXE): $(OBJSUBDIRS) $(ALLCPPSOBJ)
 $(OBJ_PATH)/%.o: $(SRC_PATH)/%.cpp
 	$(PRUEBA_TEXT)
 	$(COMPILING_TEXT) $<
-	@$(CC) $(CXXFLAGS) -o $@ -c $^ $(INCLUDE) $(INCLUDE_IRR) $(INCLUDE_FMOD)
+	@$(CC) $(CXXFLAGS) -o $@ -c $^ $(INCLUDE) $(INCLUDE_IRR) $(INCLUDE_FMOD) $(INCLUDE_GLEW)
 	
 
 $(OBJSUBDIRS):

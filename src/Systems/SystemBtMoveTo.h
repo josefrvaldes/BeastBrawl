@@ -7,6 +7,7 @@ using namespace std;
 
 struct selector;
 struct CarAI;
+struct Entity;
 struct ManCar;
 struct ManPowerUp;
 struct ManBoxPowerUp;

@@ -20,7 +20,7 @@ class StateInGameSingle : public StateInGame {
     void AddElementsToRender() override;
 
     void CAMBIARInicializarCarAIS(ManCar &, ManWayPoint &);
-    void CAMBIARCosasNavMesh();
+    void CAMBIARCosasNavMesh(ManCar &, ManNavMesh &);
     void CAMBIARCosasDeTotemUpdate() override;
 
 };

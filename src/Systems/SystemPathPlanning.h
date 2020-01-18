@@ -25,16 +25,20 @@ struct Data;
 class SystemPathPlanning {
 public:
     SystemPathPlanning();
-    ~SystemPathPlanning(){};
+    ~SystemPathPlanning();
 
-    void Update(CarAI* carAI, ManWayPoint* graph, ManNavMesh* manNavMesh);
-    void UpdateDijkstra(CarAI* carAI, ManWayPoint* graph, ManNavMesh* manNavMesh);
-    stack<int> Dijkstra(ManWayPoint* graph, int start, int end);
+    void Update(CarAI* carAI, ManWayPoint* graph, ManNavMesh* manNavMesh) const;
+    void UpdateDijkstra(CarAI* carAI, ManWayPoint* graph, ManNavMesh* manNavMesh) const;
+    stack<int> Dijkstra(ManWayPoint* graph, const uint16_t start, const uint16_t end);
 
    private:
     void SubscribeToEvents();
     void CalculatePathToNavMesh(DataMap d);
     void ChangePosDestination(DataMap d);
     void MoveRandomPowerUp(DataMap d);
+    void InitMapGraph(ManWayPoint* _graph);
+    float** graph;
+    int graphSize = 0;
+    bool graphCreated = false;
 
 };
