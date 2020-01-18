@@ -690,9 +690,11 @@ Entity* ManCar::GetDesirableTarget(Entity* actualCar){
     
     // va a tratar de disparar al que lleve el totem
     for(auto carAI : GetEntities()){
-        auto cTotemCarAI = static_cast<CTotem*>(carAI->GetComponent(CompType::TotemComp).get());
-        if(cTotemCarAI->active == true && actualCar!=carAI.get())
-            return carAI.get();
+        if(static_cast<Car*>(carAI.get())->GetTypeCar() == TypeCar::CarAI){
+            auto cTotemCarAI = static_cast<CTotem*>(carAI->GetComponent(CompType::TotemComp).get());
+            if(cTotemCarAI->active == true && actualCar!=carAI.get())
+                return carAI.get();
+        }
     }   
     auto cTotemCar = static_cast<CTotem*>(GetCar()->GetComponent(CompType::TotemComp).get());
     if(cTotemCar->active == true && actualCar != GetCar().get())
