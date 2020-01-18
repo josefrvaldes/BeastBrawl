@@ -27,6 +27,7 @@
 
 using namespace std;
 struct Car;
+struct CarHuman;
 struct CarAI;
 struct Data;
 struct Physics;
@@ -44,16 +45,15 @@ class ManCar : public Manager {
     ManCar(Physics *, Camera *);
     ~ManCar();
 
-    void CreateCar();
     void CreateMainCar();
+    void CreateHumanCar();
     void UpdateCar();
     void UpdateCarAI(CarAI* carAI, ManPowerUp* m_manPowerUp, ManBoxPowerUp* m_manBoxPowerUp, ManTotem* m_manTotem, ManWayPoint* graph, ManNavMesh* manNavMesh, ManBoundingWall* m_manBoundingWall);
-    shared_ptr<Car>& GetCar() { return car; };
+    shared_ptr<CarHuman>& GetCar() { return car; };
 
     void CreateCarAI();
     void CreateCarAI(glm::vec3 _position);
     void CreateCarAI(glm::vec3 _position, CWayPoint* _waypoint);
-    vector<shared_ptr<CarAI>> GetEntitiesAI() const { return CarAIs; };
     CTransformable* calculateCloserCar(Entity* actualCar);
     bool carInVisionRange(Entity* actualCar, Entity* otherCar, uint32_t rangeVision);
     bool anyCarInVisionRange(Entity* actualCar, uint32_t rangeVision);
@@ -90,8 +90,7 @@ class ManCar : public Manager {
     float** graph;
     int graphSize = 0;
     bool graphCreated = false;
-    shared_ptr<Car> car;
-    vector<shared_ptr<CarAI>> CarAIs;
+    shared_ptr<CarHuman> car;
  
     unique_ptr<SystemBtPowerUp> systemBtPowerUp;
     unique_ptr<SystemBtMoveTo> systemBtMoveTo;

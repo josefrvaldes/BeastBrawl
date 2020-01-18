@@ -16,6 +16,7 @@
 #include "../Entities/BoundingWall.h"
 #include "../Entities/Car.h"
 #include "../Entities/CarAI.h"
+#include "../Entities/CarHuman.h"
 #include "../EventManager/Event.h"
 #include "../EventManager/EventManager.h"
 #include "../Managers/ManBoundingWall.h"
@@ -44,7 +45,7 @@ void CLPhysics::HandleCollisionsWithPlanes() {
 
     Car *c = manCar->GetCar().get();
 
-    vector<shared_ptr<CarAI>> carAIs = manCar->GetEntitiesAI();
+    vector<shared_ptr<Entity>> carAIs = manCar->GetEntities();
     size_t numCarAIs = carAIs.size();
 
     vector<shared_ptr<Entity>> walls = manWalls->GetEntities();
@@ -63,16 +64,18 @@ void CLPhysics::HandleCollisionsWithPlanes() {
 
     // las ias con los walls
     for (size_t currentAI = 0; currentAI < numCarAIs; currentAI++) {
-        for (size_t currentWall = 0; currentWall < numWalls; currentWall++) {
-            CarAI *car = manCar->GetEntitiesAI()[currentAI].get();
-            BoundingWall *wall = static_cast<BoundingWall *>(walls[currentWall].get());
+        if (static_cast<Car*>(manCar->GetEntities()[currentAI].get())->GetTypeCar() == TypeCar::CarAI){
+            for (size_t currentWall = 0; currentWall < numWalls; currentWall++) {
+                Entity *car = manCar->GetEntities()[currentAI].get();
+                BoundingWall *wall = static_cast<BoundingWall *>(walls[currentWall].get());
 
-            CBoundingSphere *spcar1 = static_cast<CBoundingSphere *>(car->GetComponent(CompType::CompBoundingSphere).get());
-            CTransformable *trcar1 = static_cast<CTransformable *>(car->GetComponent(CompType::TransformableComp).get());
-            CCar *ccarcar1 = static_cast<CCar *>(car->GetComponent(CompType::CarComp).get());
+                CBoundingSphere *spcar1 = static_cast<CBoundingSphere *>(car->GetComponent(CompType::CompBoundingSphere).get());
+                CTransformable *trcar1 = static_cast<CTransformable *>(car->GetComponent(CompType::TransformableComp).get());
+                CCar *ccarcar1 = static_cast<CCar *>(car->GetComponent(CompType::CarComp).get());
 
-            CBoundingPlane *plane = static_cast<CBoundingPlane *>(wall->GetComponent(CompType::CompBoundingPlane).get());
-            HandleCollisions(*trcar1, *spcar1, *ccarcar1, false, *plane);
+                CBoundingPlane *plane = static_cast<CBoundingPlane *>(wall->GetComponent(CompType::CompBoundingPlane).get());
+                HandleCollisions(*trcar1, *spcar1, *ccarcar1, false, *plane);
+            }
         }
     }
 }
@@ -90,7 +93,7 @@ void CLPhysics::HandleCollisions() {
     Car *c = manCar->GetCar().get();
     Entity* carPlayer = manCar->GetCar().get();
 
-    vector<shared_ptr<CarAI>> entities = manCar->GetEntitiesAI();
+    vector<shared_ptr<Entity>> entities = manCar->GetEntities();
     size_t numEntities = entities.size();
 
     CBoundingSphere *spc = static_cast<CBoundingSphere *>(c->GetComponent(CompType::CompBoundingSphere).get());
@@ -99,32 +102,36 @@ void CLPhysics::HandleCollisions() {
 
     // mi coche con todos los coches de AI
     for (size_t i = 0; i < numEntities; i++) {
-        CarAI *cai = manCar->GetEntitiesAI()[i].get();
-        CBoundingSphere *spcai = static_cast<CBoundingSphere *>(cai->GetComponent(CompType::CompBoundingSphere).get());
-        CTransformable *trcai = static_cast<CTransformable *>(cai->GetComponent(CompType::TransformableComp).get());
-        CCar *ccarcai = static_cast<CCar *>(cai->GetComponent(CompType::CarComp).get());
-        bool intersect = HandleCollisions(*trc, *spc, *ccarc, true, *trcai, *spcai, *ccarcai);
-        if(intersect){
-            checkCollisionNitro(carPlayer, cai);
+        Entity *cai = manCar->GetEntities()[i].get();
+        if (static_cast<Car*>(cai)->GetTypeCar() == TypeCar::CarAI){
+            CBoundingSphere *spcai = static_cast<CBoundingSphere *>(cai->GetComponent(CompType::CompBoundingSphere).get());
+            CTransformable *trcai = static_cast<CTransformable *>(cai->GetComponent(CompType::TransformableComp).get());
+            CCar *ccarcai = static_cast<CCar *>(cai->GetComponent(CompType::CarComp).get());
+            bool intersect = HandleCollisions(*trc, *spc, *ccarc, true, *trcai, *spcai, *ccarcai);
+            if(intersect){
+                checkCollisionNitro(carPlayer, cai);
+            }
         }
     }
 
     // las ias entre sí
     for (size_t i = 0; i < numEntities; i++) {
         for (size_t j = i + 1; j < numEntities; j++) {
-            CarAI *car1 = manCar->GetEntitiesAI()[i].get();
-            CarAI *car2 = manCar->GetEntitiesAI()[j].get();
-            CBoundingSphere *spcar1 = static_cast<CBoundingSphere *>(car1->GetComponent(CompType::CompBoundingSphere).get());
-            CTransformable *trcar1 = static_cast<CTransformable *>(car1->GetComponent(CompType::TransformableComp).get());
-            CCar *ccarcar1 = static_cast<CCar *>(car1->GetComponent(CompType::CarComp).get());
+            Entity *car1 = manCar->GetEntities()[i].get();
+            Entity *car2 = manCar->GetEntities()[j].get();
+            if (static_cast<Car*>(car1)->GetTypeCar() == TypeCar::CarAI && static_cast<Car*>(car2)->GetTypeCar() == TypeCar::CarAI){
+                CBoundingSphere *spcar1 = static_cast<CBoundingSphere *>(car1->GetComponent(CompType::CompBoundingSphere).get());
+                CTransformable *trcar1 = static_cast<CTransformable *>(car1->GetComponent(CompType::TransformableComp).get());
+                CCar *ccarcar1 = static_cast<CCar *>(car1->GetComponent(CompType::CarComp).get());
 
-            CBoundingSphere *spcar2 = static_cast<CBoundingSphere *>(car2->GetComponent(CompType::CompBoundingSphere).get());
-            CTransformable *trcar2 = static_cast<CTransformable *>(car2->GetComponent(CompType::TransformableComp).get());
-            CCar *ccarcar2 = static_cast<CCar *>(car2->GetComponent(CompType::CarComp).get());
+                CBoundingSphere *spcar2 = static_cast<CBoundingSphere *>(car2->GetComponent(CompType::CompBoundingSphere).get());
+                CTransformable *trcar2 = static_cast<CTransformable *>(car2->GetComponent(CompType::TransformableComp).get());
+                CCar *ccarcar2 = static_cast<CCar *>(car2->GetComponent(CompType::CarComp).get());
 
-            bool intersect = HandleCollisions(*trcar1, *spcar1, *ccarcar1, false, *trcar2, *spcar2, *ccarcar2);
-            if(intersect){
-                checkCollisionNitro(car1, car2);
+                bool intersect = HandleCollisions(*trcar1, *spcar1, *ccarcar1, false, *trcar2, *spcar2, *ccarcar2);
+                if(intersect){
+                    checkCollisionNitro(car1, car2);
+                }
             }
         }
     }

@@ -2,6 +2,7 @@
 #include "../Entities/PowerUp.h"
 #include "../Entities/BoxPowerUp.h"
 #include "../Entities/Car.h"
+#include "../Entities/CarHuman.h"
 #include "../Entities/CarAI.h"
 #include "../Entities/Totem.h"
 #include "../Components/CTotem.h"
@@ -69,7 +70,7 @@ void Collisions::IntersectPlayerPowerUps(Car* carPlayer, ManPowerUp* manPowerUps
 }
 
 void Collisions::IntersectsCarsPowerUps(ManCar* manCars, ManPowerUp* manPowerUps, ManNavMesh* manNavMesh){
-    for(shared_ptr<Entity> actualCar : manCars->GetEntitiesAI()){   
+    for(auto actualCar : manCars->GetEntities()){   
         for(shared_ptr<Entity> actualPowerUp : manPowerUps->GetEntities()){                                                               // SI HACE DANYO
             if(Intersects(actualCar.get(), actualPowerUp.get())){   //TRUE
                 // debemos eliminar el powerUp y hacer danyo al jugador
@@ -108,7 +109,7 @@ void Collisions::IntersectPlayerTotem(Car* carPlayer, ManTotem* manTotem){
 
 void Collisions::IntersectCarsTotem(ManCar* manCars, ManTotem* manTotem){
 
-    for(shared_ptr<Entity> actualCar : manCars->GetEntitiesAI()){   
+    for(auto actualCar : manCars->GetEntities()){   
         for(shared_ptr<Entity> actualTotem : manTotem->GetEntities()){                                                       // SI HACE DANYO
             if(Intersects(actualCar.get(), actualTotem.get())){   //TRUE
                 // debemos coger el TOTEM
@@ -152,7 +153,7 @@ void Collisions::IntersectPlayerBoxPowerUp(Car* carPlayer, ManBoxPowerUp* manBox
 
 
 void Collisions::IntersectCarsBoxPowerUp(ManCar* manCars, ManBoxPowerUp* manBoxPowerUp){
-    for(shared_ptr<Entity> actualCar : manCars->GetEntitiesAI()){   
+    for(auto actualCar : manCars->GetEntities()){   
         auto cPowerUpCar = static_cast<CPowerUp*>(actualCar.get()->GetComponent(CompType::PowerUpComp).get());                                                                                              
         for(shared_ptr<Entity> actualBoxPowerUp: manBoxPowerUp->GetEntities()){                                                 
             auto cBoxPowerUp = static_cast<CBoxPowerUp*>(actualBoxPowerUp.get()->GetComponent(CompType::BoxPowerUpComp).get());

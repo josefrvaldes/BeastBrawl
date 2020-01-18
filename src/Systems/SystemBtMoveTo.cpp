@@ -193,7 +193,7 @@ struct MoveToPowerUp_mt : public behaviourTree {
 struct MoveToCarTotem_mt : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
         auto actualCar = blackboard->actualCar;
-        for(auto actualAI : blackboard->manCars->GetEntitiesAI()){
+        for(auto actualAI : blackboard->manCars->GetEntities()){
             auto cTotem = static_cast<CTotem*>(actualAI.get()->GetComponent(CompType::TotemComp).get());
             // TODO actualmente debemsos hacer que si una IA tiene el Totem no se siga a si misma... quedaria parada
             if(cTotem->active == true){

@@ -20,7 +20,7 @@ void StateInGameSingle::InitState() {
 
 void StateInGameSingle::CAMBIARCosasNavMesh(ManCar &manCars, ManNavMesh &manNavMesh){
     // vamos a asignar el navmesh al que pertenecemos
-    for(shared_ptr<Entity> carAI : manCars.GetEntitiesAI()){
+    for(auto carAI : manCars.GetEntities()){
         auto cTransformableCar = static_cast<CTransformable*>(carAI.get()->GetComponent(CompType::TransformableComp).get());     
         for(auto navmesh : manNavMesh.GetEntities()){
             auto cDimensions = static_cast<CDimensions*>(navmesh.get()->GetComponent(CompType::DimensionsComp).get());
@@ -44,10 +44,11 @@ void StateInGameSingle::Input() {
 
 void StateInGameSingle::Update() {
     StateInGame::Update();
-
-    for (auto actualAI : manCars->GetEntitiesAI()) {
-        manCars->UpdateCarAI(actualAI.get(), manPowerUps.get(), manBoxPowerUps.get(), manTotems.get(), manWayPoint.get(), manNavMesh.get(), manBoundingWall.get());
-        physicsEngine->UpdateCarAI(actualAI.get());
+    for (auto actualAI : manCars->GetEntities()) { // CUIDADO!!! -> el static cast que solo se use en el single player, si no peta
+        if (static_cast<Car*>(actualAI.get())->GetTypeCar() == TypeCar::CarAI){
+            manCars->UpdateCarAI(static_cast<CarAI*>(actualAI.get()), manPowerUps.get(), manBoxPowerUps.get(), manTotems.get(), manWayPoint.get(), manNavMesh.get(), manBoundingWall.get());
+            physicsEngine->UpdateCarAI(actualAI.get());
+        }
     }
     CAMBIARCosasDeTotemUpdate();
 
@@ -60,11 +61,11 @@ void StateInGameSingle::Update() {
 }
 
 void StateInGameSingle::Render() {
-    auto carAI = manCars->GetEntitiesAI()[0].get();
+    auto carAI = manCars->GetEntities()[0].get();
     bool isColliding = collisions->Intersects(manCars.get()->GetCar().get(), carAI);
     renderEngine->FacadeDrawBoundingBox(manCars.get()->GetCar().get(), isColliding);
 
-    for (auto actualAI : manCars->GetEntitiesAI()) {
+    for (auto actualAI : manCars->GetEntities()) {
         renderEngine->FacadeDrawBoundingBox(actualAI.get(), false);
     }
     renderEngine->FacadeDrawBoundingBox(carAI, isColliding);
@@ -90,7 +91,7 @@ void StateInGameSingle::InitializeFacades() {
 
 void StateInGameSingle::AddElementsToRender() {
     StateInGame::AddElementsToRender();
-    for (shared_ptr<Entity> carAI : manCars->GetEntitiesAI())  // Anyadimos los coche IA
+    for (auto carAI : manCars->GetEntities())  // Anyadimos los coche IA
         renderEngine->FacadeAddObject(carAI.get());
 }
 
@@ -98,7 +99,7 @@ void StateInGameSingle::CAMBIARCosasDeTotemUpdate() {
     bool todosFalse = true;
     auto cTransformTotem = static_cast<CTransformable *>(totemOnCar.get()->GetComponent(CompType::TransformableComp).get());
     cTransformTotem->rotation.y += 0.1;
-    for (shared_ptr<Entity> carAI : manCars->GetEntitiesAI()) {  // actualizamos los coche IA
+    for (auto carAI : manCars->GetEntities()) {  // actualizamos los coche IA
         // comprobamos el componente totem y si lo tienen se lo ponemos justo encima para que se sepa quien lo lleva
         auto cTotem = static_cast<CTotem *>(carAI.get()->GetComponent(CompType::TotemComp).get());
         if (cTotem->active) {

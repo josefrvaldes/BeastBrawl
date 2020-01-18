@@ -124,7 +124,7 @@ void RenderFacadeIrrlicht::FacadeDrawHUD(Entity* car, ManCar* carsAI) {
 
     int i = 0;
     core::stringw textIA = core::stringw("Car AI ");
-    for (auto carAI : carsAI->GetEntitiesAI()) {
+    for (auto carAI : carsAI->GetEntities()) {
         cTotem = static_cast<CTotem*>(carAI->GetComponent(CompType::TotemComp).get());
 
         int time = cTotem->accumulatedTime / 100.0;
@@ -364,7 +364,7 @@ void RenderFacadeIrrlicht::UpdateCamera(Entity* cam, ManCar* manCars) {
 
         auto idCarAIWithTotem = -1;
         //Buscamos el ID del coche que tiene el totem (en caso de tenerlo)
-        for(auto carAI : manCars->GetEntitiesAI()){
+        for(auto carAI : manCars->GetEntities()){
             auto cTotem = static_cast<CTotem*>(carAI->GetComponent(CompType::TotemComp).get());
             if(cTotem->active){
                 auto cId = static_cast<CId*>(carAI->GetComponent(CompType::IdComp).get());
@@ -754,7 +754,7 @@ void RenderFacadeIrrlicht::FacadeDrawAIDebug(ManCar* manCars, ManNavMesh* manNav
     //Ahora vamos a hacer el debug desde nuestra posicion al CPosDestination
     if(idCarAIToDebug==-1){
         //Significa que lo hacemos para todos los coches
-        for(auto carAI : manCars->GetEntitiesAI()){
+        for(auto carAI : manCars->GetEntities()){
             auto cPosDestination = static_cast<CPosDestination*>(carAI->GetComponent(CompType::PosDestination).get());
             auto cTransformableCar = static_cast<CTransformable*>(carAI->GetComponent(CompType::TransformableComp).get());
 
@@ -766,7 +766,7 @@ void RenderFacadeIrrlicht::FacadeDrawAIDebug(ManCar* manCars, ManNavMesh* manNav
         }
     }else{
         //Si tenemos seleccionado un coche en concreto dibujamos solo el suyo
-        auto carAI = manCars->GetEntitiesAI()[idCarAIToDebug]; //Cogemos el coche que vamos a debugear
+        auto carAI = manCars->GetEntities()[idCarAIToDebug]; //Cogemos el coche que vamos a debugear
         auto cPosDestination = static_cast<CPosDestination*>(carAI->GetComponent(CompType::PosDestination).get());
         auto cTransformableCar = static_cast<CTransformable*>(carAI->GetComponent(CompType::TransformableComp).get());
         auto cDimensions = static_cast<CDimensions*>(carAI->GetComponent(CompType::DimensionsComp).get());
@@ -830,7 +830,7 @@ void RenderFacadeIrrlicht::FacadeDrawAIDebug(ManCar* manCars, ManNavMesh* manNav
 
 }
 
-void RenderFacadeIrrlicht::FacadeDrawAIDebugPath(CarAI* carAI, ManWayPoint* manWayPoint) const{
+void RenderFacadeIrrlicht::FacadeDrawAIDebugPath(Entity* carAI, ManWayPoint* manWayPoint) const{
     auto cPath = static_cast<CPath*>(carAI->GetComponent(CompType::PathComp).get());
 
     auto cPathAux = stack<int>(cPath->stackPath);
