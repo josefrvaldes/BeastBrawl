@@ -140,11 +140,13 @@ struct HaveRoboJorobo : public behaviourTree {
 struct HaveTotemOtherCar : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
         for(auto AIcar : blackboard->manCars->GetEntities()){
-            auto cTotem = static_cast<CTotem*>(AIcar.get()->GetComponent(CompType::TotemComp).get()); 
-            // Si algun coche tenia el totem .... lo pierde
-            if(cTotem->active == true){
-                return true;           
-            }                                                    // para salirnos y no hacer mas calculos
+            if (static_cast<Car*>(AIcar.get())->GetTypeCar() == TypeCar::CarAI){
+                auto cTotem = static_cast<CTotem*>(AIcar.get()->GetComponent(CompType::TotemComp).get()); 
+                // Si algun coche tenia el totem .... lo pierde
+                if(cTotem->active == true){
+                    return true;           
+                } 
+            }                                                   // para salirnos y no hacer mas calculos
         }
         auto cTotem = static_cast<CTotem*>(blackboard->manCars->GetCar().get()->GetComponent(CompType::TotemComp).get()); 
         if(cTotem->active == true){

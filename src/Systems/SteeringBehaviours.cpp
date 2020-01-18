@@ -350,12 +350,14 @@ glm::vec2 SteeringBehaviours::ObstacleAvoidance(Entity* m_Car, ManCar* m_manCar,
     Entity* actualObstacle = nullptr;
 
     for(auto obstacle : m_manCar->GetEntities()){
-        //auto cPowerUp = static_cast<CPowerUp*>(obstacle->GetComponent(CompType::PowerUpComp).get());
-        if(obstacle.get()!=m_Car && CollisionRaySphere(m_Car, obstacle.get(), m_velocityVector, distance, vectorForceAvoid)==true){
-            if(distance < finalDistance && distance < cCar->speed*0.4+cRay->baseDistanceSphere && distance > 0){
-                finalDistance = distance;
-                vectorForce = vectorForceAvoid;
-                actualObstacle= obstacle.get();
+        if (static_cast<Car*>(obstacle.get())->GetTypeCar() == TypeCar::CarAI){
+            //auto cPowerUp = static_cast<CPowerUp*>(obstacle->GetComponent(CompType::PowerUpComp).get());
+            if(obstacle.get()!=m_Car && CollisionRaySphere(m_Car, obstacle.get(), m_velocityVector, distance, vectorForceAvoid)==true){
+                if(distance < finalDistance && distance < cCar->speed*0.4+cRay->baseDistanceSphere && distance > 0){
+                    finalDistance = distance;
+                    vectorForce = vectorForceAvoid;
+                    actualObstacle= obstacle.get();
+                }
             }
         }
     }

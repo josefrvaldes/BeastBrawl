@@ -21,19 +21,21 @@ void StateInGameSingle::InitState() {
 void StateInGameSingle::CAMBIARCosasNavMesh(ManCar &manCars, ManNavMesh &manNavMesh){
     // vamos a asignar el navmesh al que pertenecemos
     for(auto carAI : manCars.GetEntities()){
-        auto cTransformableCar = static_cast<CTransformable*>(carAI.get()->GetComponent(CompType::TransformableComp).get());     
-        for(auto navmesh : manNavMesh.GetEntities()){
-            auto cDimensions = static_cast<CDimensions*>(navmesh.get()->GetComponent(CompType::DimensionsComp).get());
-            auto cTransformableNav = static_cast<CTransformable*>(navmesh.get()->GetComponent(CompType::TransformableComp).get()); 
-            if( ( (cTransformableCar->position.x >= (cTransformableNav->position.x-(cDimensions->width/2))) && 
-                (cTransformableCar->position.x <= (cTransformableNav->position.x+(cDimensions->width/2))) ) &&
-               ( (cTransformableCar->position.z >= (cTransformableNav->position.z-(cDimensions->depth/2))) && 
-                (cTransformableCar->position.z <= (cTransformableNav->position.z+(cDimensions->depth/2))) )  ){
-                    auto cCurrentNavMesh = static_cast<CCurrentNavMesh*>(carAI.get()->GetComponent(CompType::CurrentNavMeshComp).get());
-                    auto cNavMesh = static_cast<CNavMesh*>(navmesh.get()->GetComponent(CompType::NavMeshComp).get());
-                    cCurrentNavMesh->currentNavMesh = cNavMesh->id;
-                    //std::cout << " El cochecito lereee pertenece al naveMesh: " << cNavMesh->id << std::endl;
-                }       
+        if(static_cast<Car*>(carAI.get())->GetTypeCar() == TypeCar::CarAI){
+            auto cTransformableCar = static_cast<CTransformable*>(carAI.get()->GetComponent(CompType::TransformableComp).get());     
+            for(auto navmesh : manNavMesh.GetEntities()){
+                auto cDimensions = static_cast<CDimensions*>(navmesh.get()->GetComponent(CompType::DimensionsComp).get());
+                auto cTransformableNav = static_cast<CTransformable*>(navmesh.get()->GetComponent(CompType::TransformableComp).get()); 
+                if( ( (cTransformableCar->position.x >= (cTransformableNav->position.x-(cDimensions->width/2))) && 
+                    (cTransformableCar->position.x <= (cTransformableNav->position.x+(cDimensions->width/2))) ) &&
+                ( (cTransformableCar->position.z >= (cTransformableNav->position.z-(cDimensions->depth/2))) && 
+                    (cTransformableCar->position.z <= (cTransformableNav->position.z+(cDimensions->depth/2))) )  ){
+                        auto cCurrentNavMesh = static_cast<CCurrentNavMesh*>(carAI.get()->GetComponent(CompType::CurrentNavMeshComp).get());
+                        auto cNavMesh = static_cast<CNavMesh*>(navmesh.get()->GetComponent(CompType::NavMeshComp).get());
+                        cCurrentNavMesh->currentNavMesh = cNavMesh->id;
+                        //std::cout << " El cochecito lereee pertenece al naveMesh: " << cNavMesh->id << std::endl;
+                    }       
+            }
         }
     }   
 }
@@ -61,14 +63,16 @@ void StateInGameSingle::Update() {
 }
 
 void StateInGameSingle::Render() {
-    auto carAI = manCars->GetEntities()[0].get();
-    bool isColliding = collisions->Intersects(manCars.get()->GetCar().get(), carAI);
+    auto carPrincial = manCars->GetCar().get();
+    bool isColliding = collisions->Intersects(manCars.get()->GetCar().get(), carPrincial);
     renderEngine->FacadeDrawBoundingBox(manCars.get()->GetCar().get(), isColliding);
 
     for (auto actualAI : manCars->GetEntities()) {
-        renderEngine->FacadeDrawBoundingBox(actualAI.get(), false);
+        if (static_cast<Car*>(actualAI.get())->GetTypeCar() == TypeCar::CarAI){
+            renderEngine->FacadeDrawBoundingBox(actualAI.get(), false);
+        }
     }
-    renderEngine->FacadeDrawBoundingBox(carAI, isColliding);
+    renderEngine->FacadeDrawBoundingBox(carPrincial, isColliding);
     StateInGame::Render();
 }
 
@@ -92,7 +96,9 @@ void StateInGameSingle::InitializeFacades() {
 void StateInGameSingle::AddElementsToRender() {
     StateInGame::AddElementsToRender();
     for (auto carAI : manCars->GetEntities())  // Anyadimos los coche IA
-        renderEngine->FacadeAddObject(carAI.get());
+        if (static_cast<Car*>(carAI.get())->GetTypeCar() == TypeCar::CarAI){
+            renderEngine->FacadeAddObject(carAI.get());
+        }
 }
 
 void StateInGameSingle::CAMBIARCosasDeTotemUpdate() {
@@ -100,17 +106,19 @@ void StateInGameSingle::CAMBIARCosasDeTotemUpdate() {
     auto cTransformTotem = static_cast<CTransformable *>(totemOnCar.get()->GetComponent(CompType::TransformableComp).get());
     cTransformTotem->rotation.y += 0.1;
     for (auto carAI : manCars->GetEntities()) {  // actualizamos los coche IA
-        // comprobamos el componente totem y si lo tienen se lo ponemos justo encima para que se sepa quien lo lleva
-        auto cTotem = static_cast<CTotem *>(carAI.get()->GetComponent(CompType::TotemComp).get());
-        if (cTotem->active) {
-            todosFalse = false;
-            auto cTransformCar = static_cast<CTransformable *>(carAI.get()->GetComponent(CompType::TransformableComp).get());
-            cTransformTotem->position.x = cTransformCar->position.x;
-            cTransformTotem->position.z = cTransformCar->position.z;
-            cTransformTotem->position.y = 32.0f;
-            // supuestamente esta el drawAll que te lo hace no?????????????????
-            // si esta cambiando pero no se esta redibujando
-            break; // cuando encontramos a alguien que ya lleva el totem, nos salimos del for, no seguimos comprobando a los demás
+        if (static_cast<Car*>(carAI.get())->GetTypeCar() == TypeCar::CarAI){
+            // comprobamos el componente totem y si lo tienen se lo ponemos justo encima para que se sepa quien lo lleva
+            auto cTotem = static_cast<CTotem *>(carAI.get()->GetComponent(CompType::TotemComp).get());
+            if (cTotem->active) {
+                todosFalse = false;
+                auto cTransformCar = static_cast<CTransformable *>(carAI.get()->GetComponent(CompType::TransformableComp).get());
+                cTransformTotem->position.x = cTransformCar->position.x;
+                cTransformTotem->position.z = cTransformCar->position.z;
+                cTransformTotem->position.y = 32.0f;
+                // supuestamente esta el drawAll que te lo hace no?????????????????
+                // si esta cambiando pero no se esta redibujando
+                break; // cuando encontramos a alguien que ya lleva el totem, nos salimos del for, no seguimos comprobando a los demás
+            }
         }
     }
     if (todosFalse) {

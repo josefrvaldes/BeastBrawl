@@ -284,14 +284,16 @@ void ManCar::ThrowTotem(Entity* carLoseTotem){
 bool ManCar::useRoboJorobo(Entity* newCarWithTotem){
     // recorremos las IA
     for(shared_ptr<Entity> carAI : entities){
-        auto cTotem = static_cast<CTotem*>(carAI.get()->GetComponent(CompType::TotemComp).get()); 
-        // Si algun coche tenia el totem .... lo pierde, comprobamos que no sea el mmismo coche con las ID
-        if(cTotem->active == true && newCarWithTotem!=carAI.get()){
-            ThrowTotem(carAI.get());
-            //al perderlo se lo asignamos al que ha usado el robo jorobo
-            UseTotem(newCarWithTotem);
+        if (static_cast<Car*>(carAI.get())->GetTypeCar() == TypeCar::CarAI){
+            auto cTotem = static_cast<CTotem*>(carAI.get()->GetComponent(CompType::TotemComp).get()); 
+            // Si algun coche tenia el totem .... lo pierde, comprobamos que no sea el mmismo coche con las ID
+            if(cTotem->active == true && newCarWithTotem!=carAI.get()){
+                ThrowTotem(carAI.get());
+                //al perderlo se lo asignamos al que ha usado el robo jorobo
+                UseTotem(newCarWithTotem);
 
-            return true;                                                               // para salirnos y no hacer mas calculos
+                return true;                                                               // para salirnos y no hacer mas calculos
+            }
         }
     }
     // comprobamos el player
@@ -370,7 +372,7 @@ CTransformable* ManCar::calculateCloserCar(Entity* actualCar){
 
     // Para CarAI
     for(shared_ptr<Entity> carAI : entities){
-        if(actualCar != carAI.get()){
+        if(static_cast<Car*>(carAI.get())->GetTypeCar() == TypeCar::CarAI && actualCar != carAI.get()){
             if(carInVisionRange(actualCar, carAI.get(), 60) == true){
                 auto cTransNextCar = static_cast<CTransformable*>(carAI.get()->GetComponent(CompType::TransformableComp).get()); 
                 vectorXNext = cTransNextCar->position.x - cTransActualCar->position.x;     
@@ -622,7 +624,7 @@ bool ManCar::carInVisionRange(Entity* actualCar, Entity* otherCar, uint32_t rang
 bool ManCar::anyCarInVisionRange(Entity* actualCar, uint32_t rangeVision){
     bool seeCar = false;
     for(shared_ptr<Entity> carAI : entities){
-        if(actualCar!=carAI.get()){
+        if(static_cast<Car*>(carAI.get())->GetTypeCar() == TypeCar::CarAI && actualCar != carAI.get()){
             if(carInVisionRange(actualCar,carAI.get(), rangeVision) == true){
                 seeCar = true;
             }
@@ -712,9 +714,13 @@ Entity* ManCar::GetDesirableTarget(Entity* actualCar){
         closestCar = static_cast<CTransformable*>(car.get()->GetComponent(CompType::TransformableComp).get());
         closestCarEntity = car.get();
     }else{
-        closestCar = static_cast<CTransformable*>(entities[0].get()->GetComponent(CompType::TransformableComp).get());
-        closestCarEntity = entities[0].get();
-        carPrincipal = true;
+        for(shared_ptr<Entity> carAI : entities){
+            if(static_cast<Car*>(carAI.get())->GetTypeCar() == TypeCar::CarAI && actualCar != carAI.get()){
+                closestCar = static_cast<CTransformable*>(carAI.get()->GetComponent(CompType::TransformableComp).get());
+                closestCarEntity = carAI.get();
+                carPrincipal = true;
+            }
+        }
     }
     auto cTransActualCar = static_cast<CTransformable*>(actualCar->GetComponent(CompType::TransformableComp).get());
     float vectorX = closestCar->position.x - cTransActualCar->position.x;
@@ -723,10 +729,10 @@ Entity* ManCar::GetDesirableTarget(Entity* actualCar){
 
     // reducimos cierta distancia en caso de que se encuentre en el radio de vision
     if(carPrincipal == true){
-        if(carInVisionRange(actualCar, entities[0].get(), 60) == true)
+        if(carInVisionRange(actualCar, closestCarEntity, 60) == true)
             distanceMimum = distanceMimum/100.0;
     }else{
-        if(carInVisionRange(actualCar, car.get(), 60) == true)
+        if(carInVisionRange(actualCar, closestCarEntity, 60) == true)
             distanceMimum = distanceMimum / 100.0;
     }
 
@@ -735,7 +741,7 @@ Entity* ManCar::GetDesirableTarget(Entity* actualCar){
     float vectorZNext = 0.0;
     // Para CarAI
     for(shared_ptr<Entity> carAI : entities){
-        if(actualCar != carAI.get()){
+        if(static_cast<Car*>(carAI.get())->GetTypeCar() == TypeCar::CarAI && actualCar != carAI.get()){
             auto cTransNextCar = static_cast<CTransformable*>(carAI.get()->GetComponent(CompType::TransformableComp).get()); 
             vectorXNext = cTransNextCar->position.x - cTransActualCar->position.x;     
             vectorZNext = cTransNextCar->position.z - cTransActualCar->position.z;
