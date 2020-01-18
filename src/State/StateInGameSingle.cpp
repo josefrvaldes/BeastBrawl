@@ -63,16 +63,14 @@ void StateInGameSingle::Update() {
 }
 
 void StateInGameSingle::Render() {
-    auto carPrincial = manCars->GetCar().get();
-    bool isColliding = collisions->Intersects(manCars.get()->GetCar().get(), carPrincial);
-    renderEngine->FacadeDrawBoundingBox(manCars.get()->GetCar().get(), isColliding);
+    //auto carPrincial = manCars->GetCar().get();
+    //bool isColliding = collisions->Intersects(manCars.get()->GetCar().get(), carPrincial);
+    //renderEngine->FacadeDrawBoundingBox(manCars.get()->GetCar().get(), isColliding);
 
-    for (auto actualAI : manCars->GetEntities()) {
-        if (static_cast<Car*>(actualAI.get())->GetTypeCar() == TypeCar::CarAI){
-            renderEngine->FacadeDrawBoundingBox(actualAI.get(), false);
-        }
+    for (auto cars : manCars->GetEntities()) {
+        renderEngine->FacadeDrawBoundingBox(cars.get(), false);
     }
-    renderEngine->FacadeDrawBoundingBox(carPrincial, isColliding);
+    //renderEngine->FacadeDrawBoundingBox(carPrincial, isColliding);
     StateInGame::Render();
 }
 
@@ -95,10 +93,7 @@ void StateInGameSingle::InitializeFacades() {
 
 void StateInGameSingle::AddElementsToRender() {
     StateInGame::AddElementsToRender();
-    for (auto carAI : manCars->GetEntities())  // Anyadimos los coche IA
-        if (static_cast<Car*>(carAI.get())->GetTypeCar() == TypeCar::CarAI){
-            renderEngine->FacadeAddObject(carAI.get());
-        }
+    
 }
 
 void StateInGameSingle::CAMBIARCosasDeTotemUpdate() {
@@ -106,31 +101,21 @@ void StateInGameSingle::CAMBIARCosasDeTotemUpdate() {
     auto cTransformTotem = static_cast<CTransformable *>(totemOnCar.get()->GetComponent(CompType::TransformableComp).get());
     cTransformTotem->rotation.y += 0.1;
     for (auto carAI : manCars->GetEntities()) {  // actualizamos los coche IA
-        if (static_cast<Car*>(carAI.get())->GetTypeCar() == TypeCar::CarAI){
-            // comprobamos el componente totem y si lo tienen se lo ponemos justo encima para que se sepa quien lo lleva
-            auto cTotem = static_cast<CTotem *>(carAI.get()->GetComponent(CompType::TotemComp).get());
-            if (cTotem->active) {
-                todosFalse = false;
-                auto cTransformCar = static_cast<CTransformable *>(carAI.get()->GetComponent(CompType::TransformableComp).get());
-                cTransformTotem->position.x = cTransformCar->position.x;
-                cTransformTotem->position.z = cTransformCar->position.z;
-                cTransformTotem->position.y = 32.0f;
-                // supuestamente esta el drawAll que te lo hace no?????????????????
-                // si esta cambiando pero no se esta redibujando
-                break; // cuando encontramos a alguien que ya lleva el totem, nos salimos del for, no seguimos comprobando a los demás
-            }
-        }
-    }
-    if (todosFalse) {
-        auto cTotem = static_cast<CTotem *>(manCars.get()->GetCar().get()->GetComponent(CompType::TotemComp).get());
+        // comprobamos el componente totem y si lo tienen se lo ponemos justo encima para que se sepa quien lo lleva
+        auto cTotem = static_cast<CTotem *>(carAI.get()->GetComponent(CompType::TotemComp).get());
         if (cTotem->active) {
-            auto cTransformCar = static_cast<CTransformable *>(manCars.get()->GetCar().get()->GetComponent(CompType::TransformableComp).get());
+            todosFalse = false;
+            auto cTransformCar = static_cast<CTransformable *>(carAI.get()->GetComponent(CompType::TransformableComp).get());
             cTransformTotem->position.x = cTransformCar->position.x;
             cTransformTotem->position.z = cTransformCar->position.z;
             cTransformTotem->position.y = 32.0f;
-        } else {
-            cTransformTotem->position.y = -100.0f;
+            // supuestamente esta el drawAll que te lo hace no?????????????????
+            // si esta cambiando pero no se esta redibujando
+            break; // cuando encontramos a alguien que ya lleva el totem, nos salimos del for, no seguimos comprobando a los demás
         }
+    }
+    if(todosFalse){
+        cTransformTotem->position.y = -100.0f;
     }
 
     renderEngine->UpdateTransformable(totemOnCar.get());
@@ -167,5 +152,6 @@ void StateInGameSingle::CAMBIARInicializarCarAIS(ManCar &manCars, ManWayPoint &m
 */
     manCars.CreateCarAI(glm::vec3(-200.0f, 20.0f, 700.0f));
     manCars.CreateCarAI(glm::vec3(400.0f, 20.0f, 20.0f));
+    manCars.CreateHumanCar(glm::vec3(20.0, 20.0, 20.0));
     manCars.CreateCarAI(glm::vec3(400.0f, 20.0f, -400.0f));
 }

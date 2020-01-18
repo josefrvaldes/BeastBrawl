@@ -122,10 +122,10 @@ void RenderFacadeIrrlicht::FacadeDrawHUD(Entity* car, ManCar* carsAI) {
                         video::SColor(255, 255, 255, 255), false);
 
     int i = 0;
-    core::stringw textIA = core::stringw("Car AI ");
-    for (auto carAI : carsAI->GetEntities()) {
-        if(static_cast<Car*>(carAI.get())->GetTypeCar() == TypeCar::CarAI){
-            cTotem = static_cast<CTotem*>(carAI->GetComponent(CompType::TotemComp).get());
+    core::stringw textIA = core::stringw("Car ");
+    for (auto cars : carsAI->GetEntities()) {
+        if(carsAI->GetCar().get() != cars.get()){
+            cTotem = static_cast<CTotem*>(cars->GetComponent(CompType::TotemComp).get());
 
             int time = cTotem->accumulatedTime / 100.0;
             float time2 = time / 10.0;
@@ -365,11 +365,11 @@ void RenderFacadeIrrlicht::UpdateCamera(Entity* cam, ManCar* manCars) {
 
         auto idCarAIWithTotem = -1;
         //Buscamos el ID del coche que tiene el totem (en caso de tenerlo)
-        for(auto carAI : manCars->GetEntities()){
-            if(static_cast<Car*>(carAI.get())->GetTypeCar() == TypeCar::CarAI){
-                auto cTotem = static_cast<CTotem*>(carAI->GetComponent(CompType::TotemComp).get());
+        for(auto cars : manCars->GetEntities()){
+            if(manCars->GetCar().get() != cars.get()){
+                auto cTotem = static_cast<CTotem*>(cars->GetComponent(CompType::TotemComp).get());
                 if(cTotem->active){
-                    auto cId = static_cast<CId*>(carAI->GetComponent(CompType::IdComp).get());
+                    auto cId = static_cast<CId*>(cars->GetComponent(CompType::IdComp).get());
                     idCarAIWithTotem = cId->id;
                 }
             }
