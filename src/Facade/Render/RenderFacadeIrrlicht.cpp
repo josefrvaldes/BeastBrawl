@@ -442,9 +442,11 @@ void RenderFacadeIrrlicht::FacadeCheckInput() {
     if (receiver.IsKeyDown(KEY_KEY_P)) {
         eventManager.AddEventMulti(Event{EventType::PRESS_P});
     }
-    if (receiver.IsKeyDown(KEY_KEY_0)) {
-        eventManager.AddEventMulti(Event{EventType::PRESS_0});
-    }
+    // if (receiver.IsKeyDown(KEY_KEY_0)) {
+    //     eventManager.AddEventMulti(Event{EventType::PRESS_0});
+    // }
+    
+    //  delante y detrás
     if (receiver.IsKeyDown(KEY_KEY_I)) {
         DataMap data;
         eventManager.AddEventMulti(Event{EventType::PRESS_I, data});
@@ -454,6 +456,7 @@ void RenderFacadeIrrlicht::FacadeCheckInput() {
         eventManager.AddEventMulti(Event{EventType::NO_I_O_PRESS});
     }
 
+    // izq y dch
     if (receiver.IsKeyDown(KEY_KEY_D)) {
         eventManager.AddEventMulti(Event{EventType::PRESS_D});
     } else if (receiver.IsKeyDown(KEY_KEY_A)) {
