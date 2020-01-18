@@ -108,7 +108,7 @@ void ManCar::UpdateCarAI(CarAI* carAI, ManPowerUp* m_manPowerUp, ManBoxPowerUp* 
 
 void ManCar::CreateMainCar() {
     car = make_shared<CarHuman>();
-    //entities.push_back(car);
+    entities.push_back(car);
 }
 
 
