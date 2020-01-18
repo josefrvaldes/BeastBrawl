@@ -27,6 +27,8 @@ void Game::SetState(State::States stateType) {
             //currentState = new StateIntro();
             break;
         case State::MENU:
+            //Al volver al menu todo el mundo se desuscribe o sea que volvemos a añadir las suscripciones
+            SuscribeEvents();
             currentState = make_shared<StateMenu>();
             gameStarted = false;
             break;
@@ -81,8 +83,39 @@ void Game::InitGame() {
     SoundFacadeManager::GetInstance()->InitializeFacadeFmod();
     SoundFacadeManager::GetInstance()->GetSoundFacade()->InitSoundEngine();
 
+    SuscribeEvents();
+
     cout << "Game Init" << endl;
     cout << "**********************************************" << endl;
+}
+
+void Game::SuscribeEvents(){
+    cout << "Suscripciones\n";
+    EventManager::GetInstance().SuscribeMulti(Listener(
+        EventType::STATE_MENU,
+        bind(&Game::SetStateMenu, this, placeholders::_1),
+        "StateMenu"));
+
+    EventManager::GetInstance().SuscribeMulti(Listener(
+        EventType::STATE_PAUSE,
+        bind(&Game::SetStatePause, this, placeholders::_1),
+        "StatePause"));
+
+    EventManager::GetInstance().SuscribeMulti(Listener(
+        EventType::STATE_INGAMESINGLE,
+        bind(&Game::SetStateInGameSingle, this, placeholders::_1),
+        "StateInGameSingle"));
+
+    EventManager::GetInstance().SuscribeMulti(Listener(
+        EventType::STATE_INGAMEMULTI,
+        bind(&Game::SetStateInGameMulti, this, placeholders::_1),
+        "StateInGameMulti"));
+
+    EventManager::GetInstance().SuscribeMulti(Listener(
+        EventType::STATE_ENDRACE,
+        bind(&Game::SetStateEndRace, this, placeholders::_1),
+        "StateEndRace"));
+
 }
 
 void Game::MainLoop() {
@@ -110,4 +143,29 @@ void Game::TerminateGame() {
     SoundFacadeManager::GetInstance()->GetSoundFacade()->TerminateSoundEngine();
     cout << "**********************************************" << endl;
     cout << "Game Terminate" << endl;
+}
+
+
+//Funciones del EventManager
+
+void Game::SetStateMenu(DataMap d){
+    cout << "LLEGA\n";
+    SetState(State::MENU);
+}
+
+void Game::SetStatePause(DataMap d){
+    SetState(State::PAUSE);
+}
+
+void Game::SetStateInGameSingle(DataMap d){
+    SetState(State::INGAME_SINGLE);
+}
+
+void Game::SetStateInGameMulti(DataMap d){
+    SetState(State::INGAME_MULTI);
+}
+
+
+void Game::SetStateEndRace(DataMap d){
+    SetState(State::ENDRACE);
 }

@@ -121,6 +121,7 @@ void StateInGame::InitializeFacades() {
     inputEngine = InputFacadeManager::GetInstance()->GetInputFacade();
     physicsEngine = PhysicsFacadeManager::GetInstance()->GetPhysicsFacade();
     renderEngine = RenderFacadeManager::GetInstance()->GetRenderFacade();
+    renderEngine->FacadeSuscribeEvents();
 }
 
 void StateInGame::CAMBIARCosasDeTotem(ManTotem &manTotems) {

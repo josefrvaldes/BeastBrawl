@@ -39,4 +39,6 @@ void StateEndRace::Input(){
 
 
 void StateEndRace::Update(){
+    EventManager::GetInstance().Update();
+
 }

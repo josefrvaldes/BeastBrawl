@@ -44,7 +44,6 @@ RenderFacadeIrrlicht::RenderFacadeIrrlicht() {
     driver = device->getVideoDriver();
     smgr = device->getSceneManager();
     font = device->getGUIEnvironment()->getBuiltInFont();
-    FacadeSuscribeEvents();
     FacadeInitHUD();
 }
 
@@ -509,7 +508,8 @@ void RenderFacadeIrrlicht::FacadeCheckInput() {
     //Cambiamos a menu
     if (receiver.IsKeyDown(KEY_F2) && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay) {
         timeStart = system_clock::now();
-        Game::GetInstance()->SetState(State::PAUSE);
+        eventManager.AddEventMulti(Event{EventType::STATE_PAUSE});
+        //Game::GetInstance()->SetState(State::PAUSE);
     }
 }
 
@@ -523,7 +523,9 @@ void RenderFacadeIrrlicht::FacadeCheckInputMenu() {
         cId->ResetNumIds();
         auto cNavMesh = make_shared<CNavMesh>();
         cNavMesh->ResetNumIds();
-        Game::GetInstance()->SetState(State::INGAME_SINGLE);
+        //Game::GetInstance()->SetState(State::INGAME_SINGLE);
+        EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_INGAMESINGLE});
+
     } else if (receiver.IsKeyDown(KEY_ESCAPE)) {
         device->closeDevice();
     } else if (receiver.IsKeyDown(KEY_KEY_M)) {
@@ -534,7 +536,9 @@ void RenderFacadeIrrlicht::FacadeCheckInputMenu() {
         cId->ResetNumIds();
         auto cNavMesh = make_shared<CNavMesh>();
         cNavMesh->ResetNumIds();
-        Game::GetInstance()->SetState(State::INGAME_MULTI);
+        //Game::GetInstance()->SetState(State::INGAME_MULTI);
+        EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_INGAMEMULTI});
+
     }
 }
 
@@ -543,6 +547,8 @@ void RenderFacadeIrrlicht::FacadeCheckInputPause() {
     if (receiver.IsKeyDown(KEY_F3) && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay) {
         timeStart = system_clock::now();
         Game::GetInstance()->SetState(State::INGAME_SINGLE);
+        //EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_INGAMESINGLE});
+
     }
 
     if (receiver.IsKeyDown(KEY_F4) && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay) {
@@ -552,6 +558,8 @@ void RenderFacadeIrrlicht::FacadeCheckInputPause() {
         EventManager::GetInstance().ClearListeners();
         EventManager::GetInstance().ClearEvents();
         Game::GetInstance()->SetState(State::MENU);
+        //EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_MENU});
+
     }
 
     if (receiver.IsKeyDown(KEY_ESCAPE)) {
@@ -564,7 +572,9 @@ void RenderFacadeIrrlicht::FacadeCheckInputEndRace() {
         smgr->clear();
         EventManager::GetInstance().ClearListeners();
         EventManager::GetInstance().ClearEvents();
-        Game::GetInstance()->SetState(State::MENU);
+        //Game::GetInstance()->SetState(State::MENU);
+        EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_MENU});
+
     }
 
     if (receiver.IsKeyDown(KEY_ESCAPE)) {
