@@ -11,7 +11,17 @@ using namespace std;
 
 
 ManNavMesh::ManNavMesh() {
-    //CreatePowerUp(glm::vec3(30.0, 30.0, 30.0));
+    // CREAMOS DE PRUEBA UN NAVMESH
+    vector<int> waypoints0{0,1,2,3,4,12};
+    vector<int> waypoints1{7,8,9,10,11,13};
+    vector<int> waypoints2{3,5,7};  // el 5 debe ser referencia
+    vector<int> waypoints3{4,6,8};  // el 6 debe ser referencia
+    CreateNavMesh(glm::vec3(0.0f,0.0f,-200.0f),glm::vec3(0.0f,0.0f,0.0f),1000,32,500,waypoints0);  //0
+    CreateNavMesh(glm::vec3(0.0f,0.0f,500.0f),glm::vec3(0.0f,0.0f,0.0f),1000,32,500,waypoints1);   //1
+    CreateNavMesh(glm::vec3(-300.0f,0.0f,150.0f),glm::vec3(0.0f,0.0f,0.0f),150,32,200,waypoints2); //2
+    CreateNavMesh(glm::vec3(300.0f,0.0f,150.0f),glm::vec3(0.0f,0.0f,0.0f),150,32,200,waypoints3);  //3
+
+    //nos suscribimos
     SubscribeToEvents();
 }
 

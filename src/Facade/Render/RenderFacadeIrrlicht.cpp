@@ -654,7 +654,7 @@ void RenderFacadeIrrlicht::FacadeDrawGraphEdges(ManWayPoint* manWayPoints) const
     if (!showDebug) return;  //Si no esta activado debug retornamos
 
     //Recorremos todos los WayPoints del manager
-    for (shared_ptr<WayPoint> way : manWayPoints->GetEntities()) {
+    for (auto way : manWayPoints->GetEntities()) {
         auto cWayPoint = static_cast<CWayPoint*>(way->GetComponent(CompType::WayPointComp).get());
         auto cWayPointEdge = static_cast<CWayPointEdges*>(way->GetComponent(CompType::WayPointEdgesComp).get());
 

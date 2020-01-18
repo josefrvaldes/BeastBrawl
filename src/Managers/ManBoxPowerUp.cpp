@@ -31,26 +31,26 @@ void ManBoxPowerUp::EjecutarMeHanCogido(DataMap d) {
 
 ManBoxPowerUp::ManBoxPowerUp() {
     SubscribeToEvents();
-    cout << "Hemos creado el manager de powerup, ahora tenemos " << BoxPowerUps.size() << " powerups" << endl;
+    cout << "Hemos creado el manager de powerup, ahora tenemos " << entities.size() << " powerups" << endl;
 }
 
 
 ManBoxPowerUp::~ManBoxPowerUp() {
     cout << "Llamando al destructor de ManBoxPowerUps" << endl;
-    BoxPowerUps.clear();
-    BoxPowerUps.shrink_to_fit();
+    entities.clear();
+    entities.shrink_to_fit();
 }
 
 
 void ManBoxPowerUp::CreateBoxPowerUp(glm::vec3 _position){
 	shared_ptr<BoxPowerUp> p = make_shared<BoxPowerUp>(_position);
-    BoxPowerUps.push_back(p);
+    entities.push_back(p);
 }
 
 
 void ManBoxPowerUp::CreateBoxPowerUp() {
     shared_ptr<BoxPowerUp> p = make_shared<BoxPowerUp>();
-    BoxPowerUps.push_back(p);
+    entities.push_back(p);
 }
 
 
@@ -73,7 +73,7 @@ void ManBoxPowerUp::SubscribeToEvents() {
 
 
 // se crea la caja de irrlich eliminada anteriormente
-void ManBoxPowerUp::resetBox(BoxPowerUp* resetBox){
+void ManBoxPowerUp::resetBox(Entity* resetBox){
     auto renderFacadeManager = RenderFacadeManager::GetInstance();
     auto renderEngine = renderFacadeManager->GetRenderFacade();
     renderEngine->FacadeAddObject(resetBox);

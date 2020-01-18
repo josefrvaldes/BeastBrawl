@@ -7,34 +7,28 @@ PhysicsPowerUp::PhysicsPowerUp(){
 }
 
     //void init();
-void PhysicsPowerUp::update(vector<shared_ptr<PowerUp>> _PowerUps){
-
-    for (shared_ptr<PowerUp> pu : _PowerUps){
-        //std::cout << "QUE PASAAAAAA!!!!" << std::endl;
-
-        typeCPowerUp actualPowerUp = static_cast<CPowerUp*>(pu.get()->GetComponent(CompType::PowerUpComp).get())->typePowerUp;
-        switch ( actualPowerUp ){
-           case typeCPowerUp::PudinDeFrambuesa: updatePudinDeFrambuesa(pu.get());
-              break;
-           case typeCPowerUp::TeleBanana:       updateTeleBanana(pu.get());
-              break;
-           case typeCPowerUp::MelonMolon:       updateMelonMolon(pu.get());
-              break;
-           default:
-              break;
-        }
-    }
-
+void PhysicsPowerUp::update(Entity* actualPowerUp){
+   typeCPowerUp actualTypePowerUp = static_cast<CPowerUp*>(actualPowerUp->GetComponent(CompType::PowerUpComp).get())->typePowerUp;
+   switch ( actualTypePowerUp ){
+      case typeCPowerUp::PudinDeFrambuesa: updatePudinDeFrambuesa(actualPowerUp);
+         break;
+      case typeCPowerUp::TeleBanana:       updateTeleBanana(actualPowerUp);
+         break;
+      case typeCPowerUp::MelonMolon:       updateMelonMolon(actualPowerUp);
+         break;
+      default:
+         break;
+   }
 }
 
 
 // TO-DO: pequenya animacion del puding para cuando lo lancemos estando quietos, que no nos afecte
-void PhysicsPowerUp::updatePudinDeFrambuesa(PowerUp* pu){
+void PhysicsPowerUp::updatePudinDeFrambuesa(Entity* pu){
    // lo dejamos para cuando tengamos que animarlo
 }
 
 
-void PhysicsPowerUp::updateTeleBanana(PowerUp* pu){
+void PhysicsPowerUp::updateTeleBanana(Entity* pu){
    time_point<system_clock> now = system_clock::now();
    auto cPuActual = static_cast<CPowerUp*>(pu->GetComponent(CompType::PowerUpComp).get());
    auto cTransformable = static_cast<CTransformable*>(pu->GetComponent(CompType::TransformableComp).get());
@@ -70,7 +64,7 @@ void PhysicsPowerUp::updateTeleBanana(PowerUp* pu){
 
 
 
-void PhysicsPowerUp::updateMelonMolon(PowerUp* pu){
+void PhysicsPowerUp::updateMelonMolon(Entity* pu){
    auto cPuActual = static_cast<CPowerUp*>(pu->GetComponent(CompType::PowerUpComp).get());
    //cPuActual->effectActive = true;
    // Movimiento
