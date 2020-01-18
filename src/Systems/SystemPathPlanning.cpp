@@ -1,6 +1,7 @@
 #include "SystemPathPlanning.h"
 
 #include "../Entities/Car.h"
+#include "../Entities/CarHuman.h"
 #include "../Entities/CarAI.h"
 #include "../Entities/WayPoint.h"
 

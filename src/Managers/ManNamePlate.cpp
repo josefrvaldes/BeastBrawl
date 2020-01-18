@@ -5,11 +5,13 @@
 #include "../Entities/CarAI.h"
 
 ManNamePlate::ManNamePlate(ManCar* cars){
-    for(auto car : cars->GetEntitiesAI()){
-        //cout <<"Entraaaaaa\n";
-        auto cIdCar = static_cast<CId*>(car->GetComponent(CompType::IdComp).get());
-        auto namePlate = make_shared<NamePlate>(cIdCar->id);
-        entities.push_back(namePlate);
+    for(auto car : cars->GetEntities()){
+        if(static_cast<Car*>(car.get())->GetTypeCar() == TypeCar::CarAI){
+            //cout <<"Entraaaaaa\n";
+            auto cIdCar = static_cast<CId*>(car->GetComponent(CompType::IdComp).get());
+            auto namePlate = make_shared<NamePlate>(cIdCar->id);
+            entities.push_back(namePlate);
+        }
     }
 }
 

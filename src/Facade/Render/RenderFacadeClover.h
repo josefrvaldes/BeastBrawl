@@ -60,7 +60,7 @@ class RenderFacadeClover : public RenderFacade {
       void FacadeDrawBoundingBox(Entity* entity, bool colliding) const override;
       void FacadeDrawBoundingPlane(Entity* entity) const override;
       void FacadeDrawAIDebug(ManCar* manCars, ManNavMesh* manNavMesh, ManWayPoint* manWayPoint) const override;
-      void FacadeDrawAIDebugPath(CarAI* carAI, ManWayPoint* manWayPoint) const override;
+      void FacadeDrawAIDebugPath(Entity* carAI, ManWayPoint* manWayPoint) const override;
 
       //scene::ISceneManager* GetSceneManager() { return smgr; };
       //scene::ICameraSceneNode* GetCamera1() { return camera1; };

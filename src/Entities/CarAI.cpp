@@ -1,4 +1,5 @@
 #include "CarAI.h"
+
 #include "../Components/CSpeed.h"
 #include "../Components/CId.h"
 #include "../Components/CType.h"
@@ -7,7 +8,6 @@
 #include "../Components/CPowerUp.h"
 #include "../Components/CTransformable.h"
 #include "../Components/CCar.h"
-#include "../Components/CWayPoint.h"
 #include "../Components/CPath.h"
 #include "../Components/CShield.h"
 #include "../Components/CTotem.h"
@@ -19,12 +19,15 @@
 #include "../Components/CTargetNavMesh.h"
 #include "../Components/CBoundingRay.h"
 #include "../Components/CMovementType.h"
-#include <iostream>
+
+
 
 class Position;
 using namespace std;
 
 CarAI::CarAI(){
+    typeCar = TypeCar::CarAI;
+    
     // default values
     glm::vec3 pos   = glm::vec3(10.0f, 20.0f, 30.0f);
     glm::vec3 rot   = glm::vec3(0.0f, 90.0f, 0.0f);

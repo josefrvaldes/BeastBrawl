@@ -123,18 +123,20 @@ void RenderFacadeIrrlicht::FacadeDrawHUD(Entity* car, ManCar* carsAI) {
 
     int i = 0;
     core::stringw textIA = core::stringw("Car AI ");
-    for (auto carAI : carsAI->GetEntitiesAI()) {
-        cTotem = static_cast<CTotem*>(carAI->GetComponent(CompType::TotemComp).get());
+    for (auto carAI : carsAI->GetEntities()) {
+        if(static_cast<Car*>(carAI.get())->GetTypeCar() == TypeCar::CarAI){
+            cTotem = static_cast<CTotem*>(carAI->GetComponent(CompType::TotemComp).get());
 
-        int time = cTotem->accumulatedTime / 100.0;
-        float time2 = time / 10.0;
+            int time = cTotem->accumulatedTime / 100.0;
+            float time2 = time / 10.0;
 
-        core::stringw iaText = textIA + core::stringw(i) + core::stringw("  ") + core::stringw(time2);
-        font->draw(iaText,
-                   core::rect<s32>(200, 70 + (i * 15), 300, 300),
-                   video::SColor(255, 0, 0, 0));
+            core::stringw iaText = textIA + core::stringw(i) + core::stringw("  ") + core::stringw(time2);
+            font->draw(iaText,
+                    core::rect<s32>(200, 70 + (i * 15), 300, 300),
+                    video::SColor(255, 0, 0, 0));
 
-        i++;
+            i++;
+        }
     }
 }
 
@@ -363,11 +365,13 @@ void RenderFacadeIrrlicht::UpdateCamera(Entity* cam, ManCar* manCars) {
 
         auto idCarAIWithTotem = -1;
         //Buscamos el ID del coche que tiene el totem (en caso de tenerlo)
-        for(auto carAI : manCars->GetEntitiesAI()){
-            auto cTotem = static_cast<CTotem*>(carAI->GetComponent(CompType::TotemComp).get());
-            if(cTotem->active){
-                auto cId = static_cast<CId*>(carAI->GetComponent(CompType::IdComp).get());
-                idCarAIWithTotem = cId->id;
+        for(auto carAI : manCars->GetEntities()){
+            if(static_cast<Car*>(carAI.get())->GetTypeCar() == TypeCar::CarAI){
+                auto cTotem = static_cast<CTotem*>(carAI->GetComponent(CompType::TotemComp).get());
+                if(cTotem->active){
+                    auto cId = static_cast<CId*>(carAI->GetComponent(CompType::IdComp).get());
+                    idCarAIWithTotem = cId->id;
+                }
             }
         }
 
@@ -765,83 +769,82 @@ void RenderFacadeIrrlicht::FacadeDrawAIDebug(ManCar* manCars, ManNavMesh* manNav
     //Ahora vamos a hacer el debug desde nuestra posicion al CPosDestination
     if(idCarAIToDebug==-1){
         //Significa que lo hacemos para todos los coches
-        for(auto carAI : manCars->GetEntitiesAI()){
+        for(auto carAI : manCars->GetEntities()){
+            if (static_cast<Car*>(carAI.get())->GetTypeCar() == TypeCar::CarAI){
+                auto cPosDestination = static_cast<CPosDestination*>(carAI->GetComponent(CompType::PosDestination).get());
+                auto cTransformableCar = static_cast<CTransformable*>(carAI->GetComponent(CompType::TransformableComp).get());
+
+                Draw3DLine(cPosDestination->position,cTransformableCar->position);
+                //Ahora vamos a dibujar su CPath
+                FacadeDrawAIDebugPath(carAI.get(),manWayPoint);
+
+                //Ahora por ultimo en la esquina superior derecha escribimos strings con datos
+            }
+        }
+    }else{
+        //Si tenemos seleccionado un coche en concreto dibujamos solo el suyo
+        auto carAI = manCars->GetEntities()[idCarAIToDebug+1]; //Cogemos el coche que vamos a debugear
+        if (static_cast<Car*>(carAI.get())->GetTypeCar() == TypeCar::CarAI){
             auto cPosDestination = static_cast<CPosDestination*>(carAI->GetComponent(CompType::PosDestination).get());
             auto cTransformableCar = static_cast<CTransformable*>(carAI->GetComponent(CompType::TransformableComp).get());
+            auto cDimensions = static_cast<CDimensions*>(carAI->GetComponent(CompType::DimensionsComp).get());
+            auto cCurrentNavMesh = static_cast<CCurrentNavMesh*>(carAI->GetComponent(CompType::CurrentNavMeshComp).get());
+            auto cTargetNavMesh = static_cast<CTargetNavMesh*>(carAI->GetComponent(CompType::TargetNavMeshComp).get());
 
             Draw3DLine(cPosDestination->position,cTransformableCar->position);
             //Ahora vamos a dibujar su CPath
             FacadeDrawAIDebugPath(carAI.get(),manWayPoint);
 
             //Ahora por ultimo en la esquina superior derecha escribimos strings con datos
+            auto cCar = static_cast<CCar*>(carAI->GetComponent(CompType::CarComp).get());        
+            core::stringw transfomableText = core::stringw("Post - Rot - Scale: (") + 
+                                core::stringw(cTransformableCar->position.x) + core::stringw(" | ") +
+                                core::stringw(cTransformableCar->position.y) + core::stringw(" | ") +
+                                core::stringw(cTransformableCar->position.z) + core::stringw(")\n(") +
+                                core::stringw(cTransformableCar->rotation.x) + core::stringw(" | ") +
+                                core::stringw(cTransformableCar->rotation.y) + core::stringw(" | ") +
+                                core::stringw(cTransformableCar->rotation.z) + core::stringw(")\n(") +
+                                core::stringw(cTransformableCar->scale.x)    + core::stringw(" | ") +
+                                core::stringw(cTransformableCar->scale.y)    + core::stringw(" | ") +
+                                core::stringw(cTransformableCar->scale.z)    + core::stringw(")\n") ;
+
+            core::stringw dimensionsText = transfomableText + core::stringw("Dimensions: ") + core::stringw(cDimensions->width) + core::stringw(" | ")+ 
+                                                            core::stringw(cDimensions->height) + core::stringw(" | ") + 
+                                                            core::stringw(cDimensions->depth) + core::stringw("\n");
+
+            core::stringw carText = dimensionsText + core::stringw("Speed: ") + core::stringw(cCar->speed) +core::stringw("\n");
+            core::stringw posDestinationText = carText + core::stringw("Destination: ") + core::stringw(cPosDestination->position.x) +core::stringw(" | ") +
+                                                        core::stringw(cPosDestination->position.y) +core::stringw(" | ") + 
+                                                        core::stringw(cPosDestination->position.z) +core::stringw(" \n ");
+
+            auto cPath = static_cast<CPath*>(carAI->GetComponent(CompType::PathComp).get());
+            auto cPathAux = stack<int>(cPath->stackPath);
+
+            core::stringw pathText = posDestinationText + core::stringw("Path: ");
+            while(!cPathAux.empty()){
+                auto idWaypoint = cPathAux.top();
+                pathText += core::stringw(idWaypoint) + core::stringw(" - ");
+                cPathAux.pop();
+            }
+            pathText += core::stringw("\n");
+
+            core::stringw navMeshText = pathText + core::stringw("Current NavMesh: ") + core::stringw(cCurrentNavMesh->currentNavMesh) + core::stringw("\n")+
+                                                core::stringw("Target NavMesh: ")  + core::stringw(cTargetNavMesh->targetNavMesh) + core::stringw("\n");
+            
+            auto cMovementType = static_cast<CMovementType*>(carAI->GetComponent(CompType::MovementComp).get());
+
+            core::stringw movementTypeText = navMeshText + core::stringw("Tipo de IA: ") + core::stringw(cMovementType->movementType.c_str()) + core::stringw("\n");
+
+            font->draw(movementTypeText,
+                core::rect<s32>(900, 55, 500, 500),
+                video::SColor(255, 0, 0, 0));
         }
-    }else{
-        //Si tenemos seleccionado un coche en concreto dibujamos solo el suyo
-        auto carAI = manCars->GetEntitiesAI()[idCarAIToDebug]; //Cogemos el coche que vamos a debugear
-        auto cPosDestination = static_cast<CPosDestination*>(carAI->GetComponent(CompType::PosDestination).get());
-        auto cTransformableCar = static_cast<CTransformable*>(carAI->GetComponent(CompType::TransformableComp).get());
-        auto cDimensions = static_cast<CDimensions*>(carAI->GetComponent(CompType::DimensionsComp).get());
-        auto cCurrentNavMesh = static_cast<CCurrentNavMesh*>(carAI->GetComponent(CompType::CurrentNavMeshComp).get());
-        auto cTargetNavMesh = static_cast<CTargetNavMesh*>(carAI->GetComponent(CompType::TargetNavMeshComp).get());
-
-        Draw3DLine(cPosDestination->position,cTransformableCar->position);
-        //Ahora vamos a dibujar su CPath
-        FacadeDrawAIDebugPath(carAI.get(),manWayPoint);
-
-        //Ahora por ultimo en la esquina superior derecha escribimos strings con datos
-        auto cCar = static_cast<CCar*>(carAI->GetComponent(CompType::CarComp).get());        
-        core::stringw transfomableText = core::stringw("Post - Rot - Scale: (") + 
-                             core::stringw(cTransformableCar->position.x) + core::stringw(" | ") +
-                             core::stringw(cTransformableCar->position.y) + core::stringw(" | ") +
-                             core::stringw(cTransformableCar->position.z) + core::stringw(")\n(") +
-                             core::stringw(cTransformableCar->rotation.x) + core::stringw(" | ") +
-                             core::stringw(cTransformableCar->rotation.y) + core::stringw(" | ") +
-                             core::stringw(cTransformableCar->rotation.z) + core::stringw(")\n(") +
-                             core::stringw(cTransformableCar->scale.x)    + core::stringw(" | ") +
-                             core::stringw(cTransformableCar->scale.y)    + core::stringw(" | ") +
-                             core::stringw(cTransformableCar->scale.z)    + core::stringw(")\n") ;
-
-        core::stringw dimensionsText = transfomableText + core::stringw("Dimensions: ") + core::stringw(cDimensions->width) + core::stringw(" | ")+ 
-                                                          core::stringw(cDimensions->height) + core::stringw(" | ") + 
-                                                          core::stringw(cDimensions->depth) + core::stringw("\n");
-
-        core::stringw carText = dimensionsText + core::stringw("Speed: ") + core::stringw(cCar->speed) +core::stringw("\n");
-        core::stringw posDestinationText = carText + core::stringw("Destination: ") + core::stringw(cPosDestination->position.x) +core::stringw(" | ") +
-                                                     core::stringw(cPosDestination->position.y) +core::stringw(" | ") + 
-                                                     core::stringw(cPosDestination->position.z) +core::stringw(" \n ");
-
-        auto cPath = static_cast<CPath*>(carAI->GetComponent(CompType::PathComp).get());
-        auto cPathAux = stack<int>(cPath->stackPath);
-
-        core::stringw pathText = posDestinationText + core::stringw("Path: ");
-        while(!cPathAux.empty()){
-            auto idWaypoint = cPathAux.top();
-            pathText += core::stringw(idWaypoint) + core::stringw(" - ");
-            cPathAux.pop();
-        }
-        pathText += core::stringw("\n");
-
-        core::stringw navMeshText = pathText + core::stringw("Current NavMesh: ") + core::stringw(cCurrentNavMesh->currentNavMesh) + core::stringw("\n")+
-                                               core::stringw("Target NavMesh: ")  + core::stringw(cTargetNavMesh->targetNavMesh) + core::stringw("\n");
-        
-        auto cMovementType = static_cast<CMovementType*>(carAI->GetComponent(CompType::MovementComp).get());
-
-        core::stringw movementTypeText = navMeshText + core::stringw("Tipo de IA: ") + core::stringw(cMovementType->movementType.c_str()) + core::stringw("\n");
-
-        font->draw(movementTypeText,
-               core::rect<s32>(900, 55, 500, 500),
-               video::SColor(255, 0, 0, 0));
-        
-        
         
     }
-    
-
-    
 
 }
 
-void RenderFacadeIrrlicht::FacadeDrawAIDebugPath(CarAI* carAI, ManWayPoint* manWayPoint) const{
+void RenderFacadeIrrlicht::FacadeDrawAIDebugPath(Entity* carAI, ManWayPoint* manWayPoint) const{
     auto cPath = static_cast<CPath*>(carAI->GetComponent(CompType::PathComp).get());
 
     auto cPathAux = stack<int>(cPath->stackPath);

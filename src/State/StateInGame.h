@@ -13,6 +13,7 @@
 #include "../Entities/BoxPowerUp.h"
 #include "../Entities/Camera.h"
 #include "../Entities/Car.h"
+#include "../Entities/CarHuman.h"
 #include "../Entities/CarAI.h"
 #include "../Entities/GameObject.h"
 #include "../Entities/PowerUp.h"
