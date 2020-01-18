@@ -21,22 +21,40 @@ void UDPServer::StartReceiving() {
 }
 
 void UDPServer::HandleReceive(udp::endpoint& remoteClient, const boost::system::error_code& errorCode, std::size_t bytesTransferred) {
-    cout << "Hemos recibido una petición del endpoint " << remoteClient.address() << ":" << remoteClient.port() << endl;
+    // cout << "Hemos recibido una petición del endpoint " << remoteClient.address() << ":" << remoteClient.port() << endl;
     if (!errorCode) {
         SaveClientIfNotExists(remoteClient);
-        boost::shared_ptr<string> message(new string(GetTime()));
-        socket.async_send_to(
-            boost::asio::buffer(*message),
-            remoteClient,
-            boost::bind(
-                &UDPServer::HandleSend,
-                this,
-                message,
-                boost::asio::placeholders::error,
-                boost::asio::placeholders::bytes_transferred));
-        // StartReceiving();  // probablemente esto debería estar fuera del if!!
+        int8_t callType = recvBuff[0];
+        switch (callType) {
+            case -1: {  //Input
+                int8_t inputType = recvBuff[1];
+                HandleReceiveInput(inputType, remoteClient);
+            } break;
+
+            default:
+                HandleReceiveDateTimeRequest(remoteClient);
+                break;
+        }
     }
-    StartReceiving();
+    StartReceiving();  // antes estaba dentro del if, pero entonces si hay un error ya se rompe tó ¿?
+}
+
+void UDPServer::HandleReceiveDateTimeRequest(udp::endpoint& remoteClient) {
+    boost::shared_ptr<string> message(new string(GetTime()));
+    socket.async_send_to(
+        boost::asio::buffer(*message),
+        remoteClient,
+        boost::bind(
+            &UDPServer::HandleSend,
+            this,
+            message,
+            boost::asio::placeholders::error,
+            boost::asio::placeholders::bytes_transferred));
+}
+
+void UDPServer::HandleReceiveInput(int8_t inputType, udp::endpoint& remoteClient) {
+    cout << "El usuario " << remoteClient.address() << ":" << remoteClient.port()
+         << " nos ha enviado un input " << signed(inputType) << endl;
 }
 
 void UDPServer::SaveClientIfNotExists(udp::endpoint& newClient) {
@@ -54,11 +72,11 @@ void UDPServer::SaveClientIfNotExists(udp::endpoint& newClient) {
     cout << "Hemos guardado un cliente nuevo y ahora tenemos " << clients.size() << " clientes" << endl;
 }
 
-void UDPServer::HandleSend(boost::shared_ptr<std::string> message,
+void UDPServer::HandleSend(boost::shared_ptr<string> message,
                            const boost::system::error_code& errorCode,
-                           std::size_t bytes_transferred) {
+                           size_t bytes_transferred) {
     if (!errorCode)
-        cout << "Ya se ha enviado el mensaje " << *message.get() << ", madafaka" << endl;
+        cout << "Ya se ha enviado el mensaje " << *message << ", madafaka" << endl;
     else
         cout << "Hubo un error enviando el mensaje, madafaka" << endl;
 }

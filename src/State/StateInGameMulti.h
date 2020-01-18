@@ -2,6 +2,8 @@
 
 #include "StateInGame.h"
 
+class SystemOnline;
+
 class StateInGameMulti : public StateInGame {
    public:
     StateInGameMulti();
@@ -21,4 +23,5 @@ class StateInGameMulti : public StateInGame {
 
     void CAMBIARCosasDeTotemUpdate() override;
 
+    unique_ptr<SystemOnline> sysOnline;
 };

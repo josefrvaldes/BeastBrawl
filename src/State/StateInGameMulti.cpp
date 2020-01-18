@@ -1,6 +1,7 @@
 #include "StateInGameMulti.h"
 
 #include "../Components/CTotem.h"
+#include "../Systems/SystemOnline.h"
 
 StateInGameMulti::StateInGameMulti() : StateInGame() {
     InitVirtualMethods();
@@ -38,6 +39,7 @@ void StateInGameMulti::InitializeManagers(Physics *physics, Camera *cam) {
 
 void StateInGameMulti::InitializeSystems(ManCar &manCars, ManBoundingWall &manBoundingWall) {
     StateInGame::InitializeSystems(manCars, manBoundingWall);
+    sysOnline = make_unique<SystemOnline>(manCars);
 }
 
 void StateInGameMulti::InitializeFacades() {
@@ -52,8 +54,8 @@ void StateInGameMulti::CAMBIARCosasDeTotemUpdate() {
     bool todosFalse = true;
     auto cTransformTotem = static_cast<CTransformable *>(totemOnCar.get()->GetComponent(CompType::TransformableComp).get());
     cTransformTotem->rotation.y += 0.1;
-    for (shared_ptr<Entity> currentCar : manCars->GetEntities()) {  // actualizamos los coche IA
-        if(static_cast<Car*>(currentCar.get())->GetTypeCar() == TypeCar::CarAI){
+    for (std::shared_ptr<Entity> currentCar : manCars->GetEntities()) {  // actualizamos los coche IA
+        if (static_cast<Car *>(currentCar.get())->GetTypeCar() == TypeCar::CarAI) {
             // comprobamos el componente totem y si lo tienen se lo ponemos justo encima para que se sepa quien lo lleva
             auto cTotem = static_cast<CTotem *>(currentCar.get()->GetComponent(CompType::TotemComp).get());
             if (cTotem->active) {
@@ -64,7 +66,7 @@ void StateInGameMulti::CAMBIARCosasDeTotemUpdate() {
                 cTransformTotem->position.y = 32.0f;
                 // supuestamente esta el drawAll que te lo hace no?????????????????
                 // si esta cambiando pero no se esta redibujando
-                break; // cuando encontramos a alguien que ya lleva el totem, nos salimos del for, no seguimos comprobando a los demás
+                break;  // cuando encontramos a alguien que ya lleva el totem, nos salimos del for, no seguimos comprobando a los demás
             }
         }
     }

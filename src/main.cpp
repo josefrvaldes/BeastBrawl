@@ -10,11 +10,7 @@
 using namespace std;
 
 int main() {
-    //CLPhysics::RunTests();
-    asio::io_context context;
-    UDPClient client(context, "localhost", "1234");
-    thread butler1([&]() { context.run(); });
-    thread butler2([&]() { context.run(); });
+    UDPClient client("localhost", "1234");
     client.Send();
     client.Send();
     client.Send();

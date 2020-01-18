@@ -1,14 +1,16 @@
 #include "UDPClient.h"
-#include <boost/asio/placeholders.hpp>
 #include <boost/asio.hpp>
+#include <boost/asio/placeholders.hpp>
 #include <boost/bind.hpp>
+#include <deque>
 
 using boost::asio::ip::udp;
-// using namespace boost;
+using namespace boost;
 using namespace std::chrono;
+using namespace std;
 
-UDPClient::UDPClient(asio::io_context& context_, string host_, string port_)
-    : context{context_}, serverEndpoint{*udp::resolver(context).resolve(udp::v4(), host_, port_).begin()}, socket(context) {
+UDPClient::UDPClient(string host_, string port_)
+    : context{}, serverEndpoint{*udp::resolver(context).resolve(udp::v4(), host_, port_).begin()}, socket(context), butler{[&]() { context.run(); }} {
     cout << "Server endpoint is " << serverEndpoint.address() << ":" << serverEndpoint.port() << endl;
     socket.open(udp::v4());
     // udp::endpoint localEndpoint = socket.local_endpoint();
@@ -39,7 +41,7 @@ void UDPClient::HandleReceive(const boost::system::error_code& errorCode, std::s
 }
 
 void UDPClient::Send() {
-    cout << "Vamos a enviar datos" << endl;
+    // cout << "Vamos a enviar datos" << endl;
     boost::shared_ptr<string> message(new string(GetTime()));
     socket.async_send_to(
         boost::asio::buffer(*message),
@@ -53,7 +55,9 @@ void UDPClient::Send() {
 }
 
 void UDPClient::SendInput(InputType input) {
-    boost::array<char, 1> sendBuffer = {{input}};
+    // 0 es la llamada de tipo "Input"
+    // el segundo dato es hacia dónde se mueve el jugador
+    boost::array<int8_t, 2> sendBuffer = {-1, input};
     socket.async_send_to(
         boost::asio::buffer(sendBuffer),
         serverEndpoint,

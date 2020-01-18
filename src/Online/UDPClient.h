@@ -4,15 +4,15 @@
 #include <boost/asio.hpp>
 #include <chrono>
 #include <iostream>
+#include <thread>
 
 using boost::asio::ip::udp;
-using namespace boost;
 using namespace std;
 using namespace std::chrono;
 
 class UDPClient {
    public:
-    UDPClient(asio::io_context &, string host, string port_);
+    UDPClient(string host, string port_);
 
     enum InputType {
         UP,
@@ -43,8 +43,9 @@ class UDPClient {
         return salida;
     }
 
-    asio::io_context &context;
+    boost::asio::io_context context;
     udp::endpoint serverEndpoint;
     udp::socket socket;
     boost::array<char, 128> recvBuff;
+    std::thread butler;
 };
