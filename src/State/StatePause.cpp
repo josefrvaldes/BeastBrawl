@@ -37,4 +37,6 @@ void StatePause::Input(){
 
 
 void StatePause::Update(){
+    //EventManager::GetInstance().Update();
+
 }

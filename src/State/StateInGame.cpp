@@ -60,6 +60,7 @@ void StateInGame::InitVirtualMethods() {
 }
 
 void StateInGame::CAMBIARCosasNavMesh(ManNavMesh &manNavMesh){
+/* 
     // CREAMOS DE PRUEBA UN NAVMESH
     vector<int> waypoints0{0,1,2,3,4,12};
     vector<int> waypoints1{7,8,9,10,11,13};
@@ -69,7 +70,7 @@ void StateInGame::CAMBIARCosasNavMesh(ManNavMesh &manNavMesh){
     manNavMesh.CreateNavMesh(glm::vec3(0.0f,0.0f,500.0f),glm::vec3(0.0f,0.0f,0.0f),1000,32,500,waypoints1);   //1
     manNavMesh.CreateNavMesh(glm::vec3(-300.0f,0.0f,150.0f),glm::vec3(0.0f,0.0f,0.0f),150,32,200,waypoints2); //2
     manNavMesh.CreateNavMesh(glm::vec3(300.0f,0.0f,150.0f),glm::vec3(0.0f,0.0f,0.0f),150,32,200,waypoints3);  //3
-
+*/
 
     auto cTransformableCar = static_cast<CTransformable*>(manCars.get()->GetCar().get()->GetComponent(CompType::TransformableComp).get());     
     for(auto navmesh : manNavMesh.GetEntities()){
@@ -105,7 +106,7 @@ void StateInGame::CAMBIARCosasNavMesh(ManNavMesh &manNavMesh){
 }
 
 void StateInGame::CAMBIARCosasDeBoxPU(ManWayPoint &manWayPoint, ManBoxPowerUp &manBoxPowerUps) {
-    for (shared_ptr<WayPoint> way : manWayPoint.GetEntities()) {
+    for (auto way : manWayPoint.GetEntities()) {
         auto components = way->GetComponents();
         auto mapWaypoint = components.find(CompType::WayPointComp);
         auto cWayPoint = static_cast<CWayPoint *>(mapWaypoint->second.get());
@@ -121,6 +122,7 @@ void StateInGame::InitializeFacades() {
     inputEngine = InputFacadeManager::GetInstance()->GetInputFacade();
     physicsEngine = PhysicsFacadeManager::GetInstance()->GetPhysicsFacade();
     renderEngine = RenderFacadeManager::GetInstance()->GetRenderFacade();
+    renderEngine->FacadeSuscribeEvents();
 }
 
 void StateInGame::CAMBIARCosasDeTotem(ManTotem &manTotems) {
@@ -225,7 +227,9 @@ void StateInGame::Update() {
 
     clPhysics->Update(0.1666f);
     sysBoxPowerUp->update(manBoxPowerUps.get());
-    phisicsPowerUp->update(manPowerUps->GetEntities());
+    for(shared_ptr<Entity> actualPowerUp : manPowerUps->GetEntities()){  // actualizamos las fisicas de los powerUps
+        phisicsPowerUp->update(actualPowerUp.get());
+    }
 
     // COLISIONES entre BoxPowerUp y player
     collisions->IntersectPlayerBoxPowerUp(manCars.get()->GetCar().get(), manBoxPowerUps.get());
