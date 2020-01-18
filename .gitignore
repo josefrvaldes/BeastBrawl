@@ -27,3 +27,5 @@ lib/fmod/libfmodstudio.so
 lib/fmod/libfmodstudio.so.11
 lib/fmod/libfmodstudioL.so.11
 lib/fmod/libfmodstudioL.so
+
+UDPServer/Server

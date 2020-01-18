@@ -14,30 +14,44 @@ UDPServer::UDPServer(boost::asio::io_context& context_, uint16_t port_)
 void UDPServer::StartReceiving() {
     socket.async_receive_from(
         asio::buffer(recvBuff),
-        remoteEndpoint,
-        boost::bind(
-            &UDPServer::HandleReceive,
-            this,
-            boost::asio::placeholders::error,
-            boost::asio::placeholders::bytes_transferred));
+        receiverEndpoint,
+        [&](const boost::system::error_code& error, std::size_t bytesTransferred) {
+            HandleReceive(receiverEndpoint, error, bytesTransferred);
+        });
 }
 
-void UDPServer::HandleReceive(const boost::system::error_code& errorCode, std::size_t bytesTransferred) {
-    cout << "Hemos recibido algo madafaka" << endl;
-    cout << "El endpoint del que hemos recibido es " << remoteEndpoint.address() << ":" << remoteEndpoint.port() << endl;
+void UDPServer::HandleReceive(udp::endpoint& remoteClient, const boost::system::error_code& errorCode, std::size_t bytesTransferred) {
+    cout << "Hemos recibido una petición del endpoint " << remoteClient.address() << ":" << remoteClient.port() << endl;
     if (!errorCode) {
+        SaveClientIfNotExists(remoteClient);
         boost::shared_ptr<string> message(new string(GetTime()));
         socket.async_send_to(
             boost::asio::buffer(*message),
-            remoteEndpoint,
+            remoteClient,
             boost::bind(
                 &UDPServer::HandleSend,
                 this,
                 message,
                 boost::asio::placeholders::error,
                 boost::asio::placeholders::bytes_transferred));
-        StartReceiving();
+        // StartReceiving();  // probablemente esto debería estar fuera del if!!
     }
+    StartReceiving();
+}
+
+void UDPServer::SaveClientIfNotExists(udp::endpoint& newClient) {
+    string newAddress = newClient.address().to_string();
+    uint16_t newPort = newClient.port();
+    for (udp::endpoint& currentClient : clients) {
+        // si el cliente ya lo tenemos guardado, nos salimos
+        string currentAddress = currentClient.address().to_string();
+        uint16_t currentPort = currentClient.port();
+
+        if (newAddress == currentAddress && newPort == currentPort)
+            return;
+    }
+    clients.push_back(newClient);
+    cout << "Hemos guardado un cliente nuevo y ahora tenemos " << clients.size() << " clientes" << endl;
 }
 
 void UDPServer::HandleSend(boost::shared_ptr<std::string> message,
