@@ -555,8 +555,8 @@ void RenderFacadeIrrlicht::FacadeCheckInputPause() {
         timeStart = system_clock::now();
 
         smgr->clear();
-        EventManager::GetInstance().ClearListeners();
-        EventManager::GetInstance().ClearEvents();
+        //EventManager::GetInstance().ClearListeners();
+        //EventManager::GetInstance().ClearEvents();
         Game::GetInstance()->SetState(State::MENU);
         //EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_MENU});
 
@@ -570,9 +570,10 @@ void RenderFacadeIrrlicht::FacadeCheckInputPause() {
 void RenderFacadeIrrlicht::FacadeCheckInputEndRace() {
     if (receiver.IsKeyDown(KEY_F4) && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay) {
         smgr->clear();
-        EventManager::GetInstance().ClearListeners();
-        EventManager::GetInstance().ClearEvents();
+        //EventManager::GetInstance().ClearListeners();
+        //EventManager::GetInstance().ClearEvents();
         //Game::GetInstance()->SetState(State::MENU);
+        cout << "ENTRAAAAAA ENDRACE\n";
         EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_MENU});
 
     }

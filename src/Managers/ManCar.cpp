@@ -68,7 +68,8 @@ void ManCar::UpdateCar(){
 
     if(cTotem->accumulatedTime/1000.0 > cTotem->durationTime/1000.0){
         cout << "Has ganado\n";
-        Game::GetInstance()->SetState(State::ENDRACE);
+        //Game::GetInstance()->SetState(State::ENDRACE);
+        EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_ENDRACE});
     }
 
     // Actualiza el componente nitro
