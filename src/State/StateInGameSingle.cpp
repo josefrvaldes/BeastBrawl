@@ -152,6 +152,6 @@ void StateInGameSingle::CAMBIARInicializarCarAIS(ManCar &manCars, ManWayPoint &m
 */
     manCars.CreateCarAI(glm::vec3(-200.0f, 20.0f, 700.0f));
     manCars.CreateCarAI(glm::vec3(400.0f, 20.0f, 20.0f));
-    manCars.CreateHumanCar(glm::vec3(20.0, 20.0, 20.0));
+    //manCars.CreateHumanCar(glm::vec3(20.0, 20.0, 20.0));
     manCars.CreateCarAI(glm::vec3(400.0f, 20.0f, -400.0f));
 }
