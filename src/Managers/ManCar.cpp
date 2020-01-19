@@ -113,8 +113,8 @@ void ManCar::CreateMainCar() {
 }
 
 
-void ManCar::CreateHumanCar() {
-    shared_ptr<CarHuman> p = make_shared<CarHuman>();
+void ManCar::CreateHumanCar(glm::vec3 _position) {
+    shared_ptr<CarHuman> p = make_shared<CarHuman>(_position);
     entities.push_back(p);
 }
 
@@ -283,27 +283,17 @@ void ManCar::ThrowTotem(Entity* carLoseTotem){
 
 
 bool ManCar::useRoboJorobo(Entity* newCarWithTotem){
-    // recorremos las IA
-    for(shared_ptr<Entity> carAI : entities){
-        if (static_cast<Car*>(carAI.get())->GetTypeCar() == TypeCar::CarAI){
-            auto cTotem = static_cast<CTotem*>(carAI.get()->GetComponent(CompType::TotemComp).get()); 
-            // Si algun coche tenia el totem .... lo pierde, comprobamos que no sea el mmismo coche con las ID
-            if(cTotem->active == true && newCarWithTotem!=carAI.get()){
-                ThrowTotem(carAI.get());
-                //al perderlo se lo asignamos al que ha usado el robo jorobo
-                UseTotem(newCarWithTotem);
+    // recorremos los coches
+    for(shared_ptr<Entity> cars : entities){
+        auto cTotem = static_cast<CTotem*>(cars.get()->GetComponent(CompType::TotemComp).get()); 
+        // Si algun coche tenia el totem .... lo pierde, comprobamos que no sea el mmismo coche con las ID
+        if(cTotem->active == true && newCarWithTotem!=cars.get()){
+            ThrowTotem(cars.get());
+            //al perderlo se lo asignamos al que ha usado el robo jorobo
+            UseTotem(newCarWithTotem);
 
-                return true;                                                               // para salirnos y no hacer mas calculos
-            }
+            return true;                                                               // para salirnos y no hacer mas calculos
         }
-    }
-    // comprobamos el player
-    auto cTotem = static_cast<CTotem*>(car.get()->GetComponent(CompType::TotemComp).get()); 
-    if(cTotem->active == true && car.get()!=newCarWithTotem){
-        ThrowTotem(car.get());
-        //al perderlo se lo asignamos al que ha usado el robo jorobo
-        UseTotem(newCarWithTotem);
-        return true;                                                               // para salirnos y no hacer mas calculos
     }
     return false;
 }
@@ -371,34 +361,20 @@ CTransformable* ManCar::calculateCloserCar(Entity* actualCar){
     float vectorXNext;
     float vectorZNext;
 
-    // Para CarAI
-    for(shared_ptr<Entity> carAI : entities){
-        if(static_cast<Car*>(carAI.get())->GetTypeCar() == TypeCar::CarAI && actualCar != carAI.get()){
-            if(carInVisionRange(actualCar, carAI.get(), 60) == true){
-                auto cTransNextCar = static_cast<CTransformable*>(carAI.get()->GetComponent(CompType::TransformableComp).get()); 
-                vectorXNext = cTransNextCar->position.x - cTransActualCar->position.x;     
-                vectorZNext = cTransNextCar->position.z - cTransActualCar->position.z;
-                distanceNext = sqrt((vectorXNext*vectorXNext) + (vectorZNext*vectorZNext));
-                
-                if(distanceMimum > distanceNext){
-                    distanceMimum = distanceNext;
-                    closestCar = cTransNextCar;
-                }
-            }
-        }
-    }
-    // Para El coche principal
-    if(actualCar != car.get()){
-        if(carInVisionRange(actualCar, car.get(), 60) == true){
-            auto cTransNextCar = static_cast<CTransformable*>(car.get()->GetComponent(CompType::TransformableComp).get()); 
+    // Para todos los coches
+    for(shared_ptr<Entity> cars : entities){
+        if(actualCar != cars.get() && carInVisionRange(actualCar, cars.get(), 60) == true){
+            auto cTransNextCar = static_cast<CTransformable*>(cars.get()->GetComponent(CompType::TransformableComp).get()); 
             vectorXNext = cTransNextCar->position.x - cTransActualCar->position.x;     
             vectorZNext = cTransNextCar->position.z - cTransActualCar->position.z;
             distanceNext = sqrt((vectorXNext*vectorXNext) + (vectorZNext*vectorZNext));
+            
             if(distanceMimum > distanceNext){
                 distanceMimum = distanceNext;
                 closestCar = cTransNextCar;
             }
         }
+        
     }
     return closestCar;
 }
@@ -624,16 +600,8 @@ bool ManCar::carInVisionRange(Entity* actualCar, Entity* otherCar, uint32_t rang
 // comprobamos si tenemos algun coche en el rango de vision
 bool ManCar::anyCarInVisionRange(Entity* actualCar, uint32_t rangeVision){
     bool seeCar = false;
-    for(shared_ptr<Entity> carAI : entities){
-        if(static_cast<Car*>(carAI.get())->GetTypeCar() == TypeCar::CarAI && actualCar != carAI.get()){
-            if(carInVisionRange(actualCar,carAI.get(), rangeVision) == true){
-                seeCar = true;
-            }
-        }
-    }
-    // comprobamos el player
-    if(car.get()!=actualCar){
-        if(carInVisionRange(actualCar,car.get(), rangeVision) == true){
+    for(shared_ptr<Entity> cars : entities){
+        if(actualCar != cars.get() && carInVisionRange(actualCar,cars.get(), rangeVision) == true){
             seeCar = true;
         }
     }
@@ -693,17 +661,12 @@ Entity* ManCar::GetDesirableTarget(Entity* actualCar){
     
     // va a tratar de disparar al que lleve el totem
     for(auto carAI : GetEntities()){
-        if(static_cast<Car*>(carAI.get())->GetTypeCar() == TypeCar::CarAI){
+        if(carAI.get() != actualCar){
             auto cTotemCarAI = static_cast<CTotem*>(carAI->GetComponent(CompType::TotemComp).get());
             if(cTotemCarAI->active == true && actualCar!=carAI.get())
                 return carAI.get();
         }
-    }   
-    auto cTotemCar = static_cast<CTotem*>(GetCar()->GetComponent(CompType::TotemComp).get());
-    if(cTotemCar->active == true && actualCar != GetCar().get())
-        return GetCar().get();
-    
-
+    } 
     // en caso de no llevarlo va a disparar al que mas tiempo tenga
     
 
@@ -716,7 +679,7 @@ Entity* ManCar::GetDesirableTarget(Entity* actualCar){
         closestCarEntity = car.get();
     }else{
         for(shared_ptr<Entity> carAI : entities){
-            if(static_cast<Car*>(carAI.get())->GetTypeCar() == TypeCar::CarAI && actualCar != carAI.get()){
+            if(actualCar != carAI.get()){
                 closestCar = static_cast<CTransformable*>(carAI.get()->GetComponent(CompType::TransformableComp).get());
                 closestCarEntity = carAI.get();
                 carPrincipal = true;
@@ -742,7 +705,7 @@ Entity* ManCar::GetDesirableTarget(Entity* actualCar){
     float vectorZNext = 0.0;
     // Para CarAI
     for(shared_ptr<Entity> carAI : entities){
-        if(static_cast<Car*>(carAI.get())->GetTypeCar() == TypeCar::CarAI && actualCar != carAI.get()){
+        if(actualCar != carAI.get()){
             auto cTransNextCar = static_cast<CTransformable*>(carAI.get()->GetComponent(CompType::TransformableComp).get()); 
             vectorXNext = cTransNextCar->position.x - cTransActualCar->position.x;     
             vectorZNext = cTransNextCar->position.z - cTransActualCar->position.z;
