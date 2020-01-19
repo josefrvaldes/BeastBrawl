@@ -43,7 +43,7 @@ class ManNavMesh : public Manager{
    private:
     //vector<shared_ptr<NavMesh>> navMeshes;
     void SubscribeToEvents() override;
-    void ActualizeNavMeshTotem(DataMap d);
-    void ActualizeNavMeshCarAI(DataMap d);
+    void ActualizeNavMeshTotem(DataMap* d);
+    void ActualizeNavMeshCarAI(DataMap* d);
     //void ActualizeNavMeshCarPlayer(Car* carPlayer);
 };

@@ -26,11 +26,11 @@ class Game{
 
 
         //EventManager
-        void SetStateMenu(DataMap d);
-        void SetStatePause(DataMap d);
-        void SetStateInGameSingle(DataMap d);
-        void SetStateInGameMulti(DataMap d);
-        void SetStateEndRace(DataMap d);
+        void SetStateMenu(DataMap* d);
+        void SetStatePause(DataMap* d);
+        void SetStateInGameSingle(DataMap* d);
+        void SetStateInGameMulti(DataMap* d);
+        void SetStateEndRace(DataMap* d);
         
     
 

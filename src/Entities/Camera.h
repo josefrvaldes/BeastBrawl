@@ -18,9 +18,9 @@ public:
 
     void SuscribeEvents();
 
-    void InvertCamera(DataMap d);
-    void TotemCamera(DataMap d);
-    void NormalCamera(DataMap d);
+    void InvertCamera(DataMap* d);
+    void TotemCamera(DataMap* d);
+    void NormalCamera(DataMap* d);
 };
 
 

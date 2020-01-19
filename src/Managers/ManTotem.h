@@ -30,7 +30,7 @@ class ManTotem : public Manager{
    private:
     //shared_ptr<Totem> totem;
     //vector<shared_ptr<Totem>> totems;
-    void AppertainCar(DataMap d);
-    void ResetTotem(DataMap d);
+    void AppertainCar(DataMap* d);
+    void ResetTotem(DataMap* d);
     void SubscribeToEvents();
 };
