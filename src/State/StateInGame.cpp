@@ -150,6 +150,11 @@ void StateInGame::AddElementsToRender() {
 
     // Entidades iniciales
     renderEngine->FacadeAddObjectCar(manCars.get()->GetCar().get());  //Anyadimos el coche
+    for (auto cars : manCars->GetEntities()){  // Anyadimos los coches
+        if(manCars.get()->GetCar().get() != cars.get())
+            renderEngine->FacadeAddObject(cars.get());
+    }
+
 
     renderEngine->FacadeAddObject(ground.get());  //Anyadimos el suelo
 
