@@ -350,23 +350,13 @@ glm::vec2 SteeringBehaviours::ObstacleAvoidance(Entity* m_Car, ManCar* m_manCar,
     Entity* actualObstacle = nullptr;
 
     for(auto obstacle : m_manCar->GetEntities()){
-        if (static_cast<Car*>(obstacle.get())->GetTypeCar() == TypeCar::CarAI){
-            //auto cPowerUp = static_cast<CPowerUp*>(obstacle->GetComponent(CompType::PowerUpComp).get());
-            if(obstacle.get()!=m_Car && CollisionRaySphere(m_Car, obstacle.get(), m_velocityVector, distance, vectorForceAvoid)==true){
-                if(distance < finalDistance && distance < cCar->speed*0.4+cRay->baseDistanceSphere && distance > 0){
-                    finalDistance = distance;
-                    vectorForce = vectorForceAvoid;
-                    actualObstacle= obstacle.get();
-                }
+        //auto cPowerUp = static_cast<CPowerUp*>(obstacle->GetComponent(CompType::PowerUpComp).get());
+        if(obstacle.get()!=m_Car && CollisionRaySphere(m_Car, obstacle.get(), m_velocityVector, distance, vectorForceAvoid)==true){
+            if(distance < finalDistance && distance < cCar->speed*0.4+cRay->baseDistanceSphere && distance > 0){
+                finalDistance = distance;
+                vectorForce = vectorForceAvoid;
+                actualObstacle= obstacle.get();
             }
-        }
-    }
-    // se comprueba con el jugador tambien
-    if(CollisionRaySphere(m_Car, m_manCar->GetCar().get(), m_velocityVector, distance, vectorForceAvoid)==true){
-        if(distance < finalDistance && distance < cCar->speed*0.4+cRay->baseDistanceSphere && distance > 0){
-            finalDistance = distance;
-            vectorForce = vectorForceAvoid;
-            actualObstacle = m_manCar->GetCar().get();
         }
     }
 
