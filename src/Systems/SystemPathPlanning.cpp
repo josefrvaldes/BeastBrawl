@@ -54,11 +54,11 @@ void SystemPathPlanning::SubscribeToEvents() {
 
 void SystemPathPlanning::MoveRandomPowerUp(DataMap* data){
     //std::cout << " -entramoooos o que beibeeeeeeee ???????????????????????\n";
-    auto carAI = any_cast<CarAI*>(data->at("actualCar"));
-    ManNavMesh* manNavMesh = any_cast<ManNavMesh*>(data->at("manNavMesh"));
+    auto carAI = any_cast<CarAI*>((*data)["actualCar"]);
+    ManNavMesh* manNavMesh = any_cast<ManNavMesh*>((*data)["manNavMesh"]);
     auto cCurrentNavMesh = static_cast<CCurrentNavMesh*>(carAI->GetComponent(CompType::CurrentNavMeshComp).get());
     auto cPath = static_cast<CPath*>(carAI->GetComponent(CompType::PathComp).get());
-    ManWayPoint* graph = any_cast<ManWayPoint*>(data->at("manWayPoints"));
+    ManWayPoint* graph = any_cast<ManWayPoint*>((*data)["manWayPoints"]);
     //auto cTransformableCar = static_cast<CTransformable*>(carAI->GetComponent(CompType::TransformableComp).get());
 
     //Buscamos el waypoint mas cercano del navmesh en el que estamos
@@ -132,7 +132,7 @@ void SystemPathPlanning::MoveRandomPowerUp(DataMap* data){
 void SystemPathPlanning::ChangePosDestination(DataMap* data){
     auto carAI = any_cast<CarAI*>((*data)["actualCar"]); 
     auto cPosDestination = static_cast<CPosDestination*>(carAI->GetComponent(CompType::PosDestination).get());
-    cPosDestination->position = any_cast<glm::vec3>(data->at("posDestination"));
+    cPosDestination->position = any_cast<glm::vec3>((*data)["posDestination"]);
     cPosDestination->radious = 1.0f;
     carAI->SetDestination(cPosDestination);
 
@@ -150,9 +150,9 @@ void SystemPathPlanning::CalculatePathToNavMesh(DataMap* data){
 
     //cout << "ENTRA A PATH TO NAVMESH\n";
 
-    ManNavMesh* manNavMesh = any_cast<ManNavMesh*>(data->at("manNavMesh"));
-    ManWayPoint* graph = any_cast<ManWayPoint*>(data->at("manWayPoints"));
-    auto carAI = any_cast<CarAI*>(data->at("actualCar"));
+    ManNavMesh* manNavMesh = any_cast<ManNavMesh*>((*data)["manNavMesh"]);
+    ManWayPoint* graph = any_cast<ManWayPoint*>((*data)["manWayPoints"]);
+    auto carAI = any_cast<CarAI*>((*data)["actualCar"]);
     auto cPath = static_cast<CPath*>(carAI->GetComponent(CompType::PathComp).get());
     //auto cTransformableCar = static_cast<CTransformable*>(carAI->GetComponent(CompType::TransformableComp).get());
     auto cTargetNavMesh = static_cast<CTargetNavMesh*>(carAI->GetComponent(CompType::TargetNavMeshComp).get());

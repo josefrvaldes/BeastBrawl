@@ -94,7 +94,7 @@ void RenderFacadeIrrlicht::FacadeInitHUD() {
 }
 
 void RenderFacadeIrrlicht::FacadeUpdatePowerUpHUD(DataMap* d) {
-    typeCPowerUp type = any_cast<typeCPowerUp>(d->at("typePowerUp"));
+    typeCPowerUp type = any_cast<typeCPowerUp>((*d)["typePowerUp"]);
     cout << "Facada recibe el power up: " << (int)type << endl;
     currentPowerUp = int(type);
 }

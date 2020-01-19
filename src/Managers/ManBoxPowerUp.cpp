@@ -10,8 +10,8 @@ using namespace std;
 
 // se ejecuta en caso de que alguno de los coches coja la caja
 void ManBoxPowerUp::EjecutarMeHanCogido(DataMap* d) {
-    auto cBoxPowerUp = any_cast<CBoxPowerUp*>(d->at("BoxPowerUpComp"));
-    auto actualBox   = any_cast<shared_ptr<Entity>>(d->at("actualBox"));
+    auto cBoxPowerUp = any_cast<CBoxPowerUp*>((*d)["BoxPowerUpComp"]);
+    auto actualBox   = any_cast<shared_ptr<Entity>>((*d)["actualBox"]);
 
     if(cBoxPowerUp->active == true){
         //cout << "Han cogido un powerup, madafaka!! sera la primera" << endl;

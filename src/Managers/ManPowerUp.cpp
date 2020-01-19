@@ -27,13 +27,13 @@ ManPowerUp::~ManPowerUp() {
 
 void ManPowerUp::CreatePowerUp(DataMap* d) {
 
-    typeCPowerUp type = any_cast<typeCPowerUp>(d->at("typePowerUp"));
+    typeCPowerUp type = any_cast<typeCPowerUp>((*d)["typePowerUp"]);
 
-    CTransformable *transforSalida = any_cast<CTransformable *>(d->at("posCocheSalida"));
-    CDimensions *dimensionsCarSalida = any_cast<CDimensions *>(d->at("dimensionCocheSalida"));
+    CTransformable *transforSalida = any_cast<CTransformable *>((*d)["posCocheSalida"]);
+    CDimensions *dimensionsCarSalida = any_cast<CDimensions *>((*d)["dimensionCocheSalida"]);
     CTransformable *transforPerse;
     if(d->count("posCochePerseguir") > 0){
-        transforPerse = any_cast<CTransformable *>(d->at("posCochePerseguir"));
+        transforPerse = any_cast<CTransformable *>((*d)["posCochePerseguir"]);
     }else
         transforPerse = nullptr;
 
@@ -70,7 +70,7 @@ void ManPowerUp::DeletePowerUp(DataMap* d){
     auto renderFacadeManager = RenderFacadeManager::GetInstance();
     auto renderEngine = renderFacadeManager->GetRenderFacade();
     for(long unsigned int i=0; i< entities.size(); ++i){
-        if(entities[i] == any_cast<shared_ptr<Entity>>(d->at("PowerUp"))){
+        if(entities[i] == any_cast<shared_ptr<Entity>>((*d)["PowerUp"])){
             renderEngine->DeleteEntity(entities[i].get());
             entities.erase(entities.begin()+i);
         }

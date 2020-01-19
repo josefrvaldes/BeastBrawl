@@ -419,7 +419,7 @@ void SoundFacadeFMOD::SoundClaxon(DataMap* d) {
 }
 
 void SoundFacadeFMOD::SoundHurt(DataMap* d) {
-    auto mainCharacter = any_cast<bool>(d->at("mainCharacter"));
+    auto mainCharacter = any_cast<bool>((*d)["mainCharacter"]);
 
     if (mainCharacter) {
         SetParameter("Personajes/voces", "Tipo", TipoVoz::ChoquePowerup);
@@ -436,7 +436,7 @@ void SoundFacadeFMOD::SoundCatchTotem(DataMap* d) {
 
 // TO-DO: La voz se reproduce si el coche dañado es el principal
 void SoundFacadeFMOD::SoundCrash(DataMap* d) {
-    bool mainCharacter = any_cast<bool>(d->at("mainCharacter"));
+    bool mainCharacter = any_cast<bool>((*d)["mainCharacter"]);
 
     int max = 100;
     int min = 0;
@@ -472,7 +472,7 @@ void SoundFacadeFMOD::SoundMenuOption(DataMap* d) {
 
 // TO-DO: Cambiar de eventos 2D a 3D
 void SoundFacadeFMOD::SoundThrowPowerup(DataMap* d) {
-    typeCPowerUp typepw = any_cast<typeCPowerUp>(d->at("typePowerUp"));
+    typeCPowerUp typepw = any_cast<typeCPowerUp>((*d)["typePowerUp"]);
 
     switch (typepw) {
         case typeCPowerUp::RoboJorobo:
