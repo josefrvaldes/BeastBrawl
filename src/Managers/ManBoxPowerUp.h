@@ -32,5 +32,5 @@ class ManBoxPowerUp : public Manager{
    private:
     //vector<shared_ptr<BoxPowerUp>> BoxPowerUps;
     void SubscribeToEvents() override;
-    void EjecutarMeHanCogido(DataMap d);
+    void EjecutarMeHanCogido(DataMap* d);
 };

@@ -401,7 +401,7 @@ void SoundFacadeFMOD::Update() {
  * *************************************************************************
 */
 
-void SoundFacadeFMOD::StartGame(DataMap d) {
+void SoundFacadeFMOD::StartGame(DataMap* d) {
     eventInstances["Coche/motor"] = CreateInstance("Coche/motor");
     PlayEvent("Coche/motor");
     PlayEvent("Ambiente/ambiente");
@@ -414,12 +414,12 @@ void SoundFacadeFMOD::StartGame(DataMap d) {
     SetParameter("Coche/motor", "Personaje", character);
 }
 
-void SoundFacadeFMOD::SoundClaxon(DataMap d) {
+void SoundFacadeFMOD::SoundClaxon(DataMap* d) {
     PlayEvent("Coche/claxon");
 }
 
-void SoundFacadeFMOD::SoundHurt(DataMap d) {
-    bool mainCharacter = any_cast<bool>(d["mainCharacter"]);
+void SoundFacadeFMOD::SoundHurt(DataMap* d) {
+    auto mainCharacter = any_cast<bool>(d->at("mainCharacter"));
 
     if (mainCharacter) {
         SetParameter("Personajes/voces", "Tipo", TipoVoz::ChoquePowerup);
@@ -429,14 +429,14 @@ void SoundFacadeFMOD::SoundHurt(DataMap d) {
     PlayEvent("Coche/choque_powerup");
 }
 
-void SoundFacadeFMOD::SoundCatchTotem(DataMap d) {
+void SoundFacadeFMOD::SoundCatchTotem(DataMap* d) {
     eventInstances["Partida/coger_totem"] = CreateInstance("Partida/coger_totem");
     PlayEvent("Partida/coger_totem");
 }
 
 // TO-DO: La voz se reproduce si el coche dañado es el principal
-void SoundFacadeFMOD::SoundCrash(DataMap d) {
-    bool mainCharacter = any_cast<bool>(d["mainCharacter"]);
+void SoundFacadeFMOD::SoundCrash(DataMap* d) {
+    bool mainCharacter = any_cast<bool>(d->at("mainCharacter"));
 
     int max = 100;
     int min = 0;
@@ -450,29 +450,29 @@ void SoundFacadeFMOD::SoundCrash(DataMap d) {
         PlayEvent("Coche/choque");
 }
 
-void SoundFacadeFMOD::SoundBreakBox(DataMap d) {
+void SoundFacadeFMOD::SoundBreakBox(DataMap* d) {
     eventInstances["Partida/coger_caja"] = CreateInstance("Partida/coger_caja");
     PlayEvent("Partida/coger_caja");
 }
 
-void SoundFacadeFMOD::SoundDrift(DataMap d) {
+void SoundFacadeFMOD::SoundDrift(DataMap* d) {
     eventInstances["Coche/derrape"] = CreateInstance("Coche/derrape");
     //SetParameter("Personajes/voces", "Tipo", TipoVoz::Derrape);
     PlayEvent("Coche/derrape");
 }
 
-void SoundFacadeFMOD::SoundRandomSentence(DataMap d) {
+void SoundFacadeFMOD::SoundRandomSentence(DataMap* d) {
     SetParameter("Personajes/voces", "Tipo", TipoVoz::Random);
     PlayEvent("Personajes/voces");
 }
 
-void SoundFacadeFMOD::SoundMenuOption(DataMap d) {
+void SoundFacadeFMOD::SoundMenuOption(DataMap* d) {
     PlayEvent("Menu/cambio_opcion");
 }
 
 // TO-DO: Cambiar de eventos 2D a 3D
-void SoundFacadeFMOD::SoundThrowPowerup(DataMap d) {
-    typeCPowerUp typepw = any_cast<typeCPowerUp>(d["typePowerUp"]);
+void SoundFacadeFMOD::SoundThrowPowerup(DataMap* d) {
+    typeCPowerUp typepw = any_cast<typeCPowerUp>(d->at("typePowerUp"));
 
     switch (typepw) {
         case typeCPowerUp::RoboJorobo:
@@ -512,16 +512,16 @@ void SoundFacadeFMOD::SoundThrowPowerup(DataMap d) {
 
 // -------------> STOP
 
-void SoundFacadeFMOD::StopPrueba(DataMap d) {
+void SoundFacadeFMOD::StopPrueba(DataMap* d) {
     StopEvent("Personajes/voces");
 }
 
-void SoundFacadeFMOD::StopShield(DataMap d) {
+void SoundFacadeFMOD::StopShield(DataMap* d) {
     StopEvent("PowerUp/escudo");
     eventInstances["PowerUp/escudo_roto"] = CreateInstance("PowerUp/escudo_roto");
     PlayEvent("PowerUp/escudo_roto");
 }
 
-void SoundFacadeFMOD::StopDrift(DataMap d) {
+void SoundFacadeFMOD::StopDrift(DataMap* d) {
     StopEvent("Coche/derrape");
 }

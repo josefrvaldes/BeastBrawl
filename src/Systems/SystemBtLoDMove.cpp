@@ -127,7 +127,7 @@ struct SBPursue_LoDMove : public behaviourTree {
         if(angle>=-3 && angle <=3){
             DataMap d;
             d["actualCar"] = blackboard->actualCar;
-            EventManager::GetInstance().AddEventMulti(Event{EventType::THROW_POWERUP_AI, d});
+            EventManager::GetInstance().AddEventMulti(Event{EventType::THROW_POWERUP_AI, &d});
         }
         //std::cout << "Aplico SB pursuePU" << std::endl;
 

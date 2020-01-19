@@ -6,6 +6,7 @@
 #include <map>
 #include <string>
 #include <vector>
+#include <memory>
 #include "TransientFunction.h"
 #include "Lambda.h"
 #include "../Aliases.h"
@@ -86,10 +87,10 @@ struct Data {
 
 struct Event {
     EventType type;
-    DataMap data;
+    shared_ptr<DataMap> data;
     Event(EventType _type) : type{_type} {
     }
-    Event(EventType _type, DataMap _data) : type{_type}, data{_data} {
+    Event(EventType _type, shared_ptr<DataMap> _data) : type{_type}, data{_data} {
     }
 };
 
@@ -105,7 +106,7 @@ struct Listener {
     // Lambda<void(int)> callback;
 
 
-    function<void(DataMap)> callback;
+    function<void(DataMap*)> callback;
     string name;  // Nombre del listener
 
     // con transient
@@ -114,7 +115,7 @@ struct Listener {
     // }
 
     // con std::function
-    Listener(EventType _type, function<void(DataMap)> _callback, string _name)
+    Listener(EventType _type, function<void(DataMap*)> _callback, string _name)
         : type(_type), callback(_callback), name(_name) {
     }
 

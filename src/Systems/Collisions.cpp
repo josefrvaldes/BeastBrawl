@@ -53,7 +53,7 @@ void Collisions::IntersectPlayerPowerUps(Car* carPlayer, ManPowerUp* manPowerUps
             // debemos eliminar el powerUp y hacer danyo al jugador
             DataMap dataCollisonCarPowerUp;                                                                           
             dataCollisonCarPowerUp["PowerUp"] = actualPowerUp;              // nos guardamos el puntero para eliminar el powerUp                           
-            EventManager::GetInstance().AddEventMulti(Event{EventType::COLLISION_ENTITY_POWERUP, dataCollisonCarPowerUp}); 
+            EventManager::GetInstance().AddEventMulti(Event{EventType::COLLISION_ENTITY_POWERUP, &dataCollisonCarPowerUp}); 
             // comprobamos si el coche tenia escudo y el totem.. ya que debe de soltarlo
             auto cShield = static_cast<CShield*>(carPlayer->GetComponent(CompType::ShieldComp).get());
             if(cShield->activePowerUp==false && static_cast<CTotem*>(carPlayer->GetComponent(CompType::TotemComp).get())->active){  // TRUE
@@ -63,7 +63,7 @@ void Collisions::IntersectPlayerPowerUps(Car* carPlayer, ManPowerUp* manPowerUps
                 dataTransfCar["TransfCarPos"] = dataTransformableCar;  
                 dataTransfCar["car"] = carEntity; 
                 dataTransfCar["manNavMesh"] = manNavMesh;
-                EventManager::GetInstance().AddEventMulti(Event{EventType::DROP_TOTEM, dataTransfCar});  
+                EventManager::GetInstance().AddEventMulti(Event{EventType::DROP_TOTEM, &dataTransfCar});  
             }
         }
     }
@@ -78,7 +78,7 @@ void Collisions::IntersectsCarsPowerUps(ManCar* manCars, ManPowerUp* manPowerUps
                     DataMap dataCollisonCarPowerUp;                                                                           
                     dataCollisonCarPowerUp["PowerUp"] = actualPowerUp;              // nos guardamos el puntero para eliminar el powerUp
                     dataCollisonCarPowerUp["carAI"] = actualCar.get();              // nos guardamos el puntero al coche                              
-                    EventManager::GetInstance().AddEventMulti(Event{EventType::COLLISION_ENTITY_AI_POWERUP, dataCollisonCarPowerUp}); 
+                    EventManager::GetInstance().AddEventMulti(Event{EventType::COLLISION_ENTITY_AI_POWERUP, &dataCollisonCarPowerUp}); 
                     // comprobamos si el coche tenia escudo y el totem.. ya que debe de soltarlo
                     auto cShield = static_cast<CShield*>(actualCar.get()->GetComponent(CompType::ShieldComp).get());
                     if(cShield->activePowerUp==false && static_cast<CTotem*>(actualCar.get()->GetComponent(CompType::TotemComp).get())->active){  // TRUE
@@ -87,7 +87,7 @@ void Collisions::IntersectsCarsPowerUps(ManCar* manCars, ManPowerUp* manPowerUps
                         dataTransfCar["TransfCarPos"] = dataTransformableCar;  
                         dataTransfCar["car"] = actualCar.get(); 
                         dataTransfCar["manNavMesh"] = manNavMesh;
-                        EventManager::GetInstance().AddEventMulti(Event{EventType::DROP_TOTEM, dataTransfCar});  
+                        EventManager::GetInstance().AddEventMulti(Event{EventType::DROP_TOTEM, &dataTransfCar});  
                     } 
                 }
             }
@@ -103,7 +103,7 @@ void Collisions::IntersectPlayerTotem(Car* carPlayer, ManTotem* manTotem){
             // debemos coger el TOTEM
             DataMap dataCollisonTotem;                                                                           
             dataCollisonTotem["Totem"] = actualTotem;              // nos guardamos el puntero para eliminar el powerUp                                             
-            EventManager::GetInstance().AddEventMulti(Event{EventType::COLLISION_PLAYER_TOTEM, dataCollisonTotem});
+            EventManager::GetInstance().AddEventMulti(Event{EventType::COLLISION_PLAYER_TOTEM, &dataCollisonTotem});
         }
     }
 }
@@ -119,7 +119,7 @@ void Collisions::IntersectCarsTotem(ManCar* manCars, ManTotem* manTotem){
                     DataMap dataCollisonTotem;                                                                           
                     dataCollisonTotem["Totem"] = actualTotem;              // nos guardamos el puntero para eliminar el powerUp  
                     dataCollisonTotem["actualCar"] = actualCar.get();                                           
-                    EventManager::GetInstance().AddEventMulti(Event{EventType::COLLISION_AI_TOTEM, dataCollisonTotem});
+                    EventManager::GetInstance().AddEventMulti(Event{EventType::COLLISION_AI_TOTEM, &dataCollisonTotem});
                 }
             }
         }
@@ -140,7 +140,7 @@ void Collisions::IntersectPlayerBoxPowerUp(Car* carPlayer, ManBoxPowerUp* manBox
                     dataCollisonCarBoxPowerUp["BoxPowerUpComp"] = cBoxPowerUp;                                                  // necesitamos el componente
                     dataCollisonCarBoxPowerUp["actualBox"] = actualBoxPowerUp; 
                     // Lanzaremos este evento cuando colisionemos con una caja y no tengamos ya PowerUp       
-                    EventManager::GetInstance().AddEventMulti(Event{EventType::CATCH_BOX_POWERUP, dataCollisonCarBoxPowerUp});                      // llamamos al evento --- COMO ODIO QUE SE LLAME ADD Y NO TARGET
+                    EventManager::GetInstance().AddEventMulti(Event{EventType::CATCH_BOX_POWERUP, &dataCollisonCarBoxPowerUp});                      // llamamos al evento --- COMO ODIO QUE SE LLAME ADD Y NO TARGET
                 }
             }else{
                 if( Intersects(carPlayer, actualBoxPowerUp.get()) ){                                                            
@@ -148,7 +148,7 @@ void Collisions::IntersectPlayerBoxPowerUp(Car* carPlayer, ManBoxPowerUp* manBox
                     dataCollisonCarBoxPowerUp["BoxPowerUpComp"] = cBoxPowerUp;                                                 
                     dataCollisonCarBoxPowerUp["actualBox"] = actualBoxPowerUp; 
                     // Lanzaremos este evento cuando colisionemos con una caja y tengamos ya PowerUp                                        
-                    EventManager::GetInstance().AddEventMulti(Event{EventType::CATCH_BOX_WITH_POWERUP, dataCollisonCarBoxPowerUp});                     
+                    EventManager::GetInstance().AddEventMulti(Event{EventType::CATCH_BOX_WITH_POWERUP, &dataCollisonCarBoxPowerUp});                     
                 }    
             }
         }
@@ -171,7 +171,7 @@ void Collisions::IntersectCarsBoxPowerUp(ManCar* manCars, ManBoxPowerUp* manBoxP
                             dataCollisonCarBoxPowerUp["actualBox"] = actualBoxPowerUp;
                             dataCollisonCarBoxPowerUp["actualCar"] = actualCar.get();   
                             // Lanzaremos este evento cuando colisionemos con una caja y no tengamos ya PowerUp                                             
-                            EventManager::GetInstance().AddEventMulti(Event{EventType::CATCH_AI_BOX_POWERUP, dataCollisonCarBoxPowerUp});                     
+                            EventManager::GetInstance().AddEventMulti(Event{EventType::CATCH_AI_BOX_POWERUP, &dataCollisonCarBoxPowerUp});                     
                         }
                     }else{
                         if( Intersects(actualCar.get(), actualBoxPowerUp.get()) ){                                                            
@@ -179,7 +179,7 @@ void Collisions::IntersectCarsBoxPowerUp(ManCar* manCars, ManBoxPowerUp* manBoxP
                             dataCollisonCarBoxPowerUp["BoxPowerUpComp"] = cBoxPowerUp;                                                 
                             dataCollisonCarBoxPowerUp["actualBox"] = actualBoxPowerUp; 
                             // Lanzaremos este evento cuando colisionemos con una caja y tengamos ya PowerUp                                          
-                            EventManager::GetInstance().AddEventMulti(Event{EventType::CATCH_BOX_WITH_POWERUP, dataCollisonCarBoxPowerUp});                     
+                            EventManager::GetInstance().AddEventMulti(Event{EventType::CATCH_BOX_WITH_POWERUP, &dataCollisonCarBoxPowerUp});                     
                         }          
                     }
                 }

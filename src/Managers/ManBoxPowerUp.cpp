@@ -9,9 +9,9 @@ class Position;
 using namespace std;
 
 // se ejecuta en caso de que alguno de los coches coja la caja
-void ManBoxPowerUp::EjecutarMeHanCogido(DataMap d) {
-    auto cBoxPowerUp = any_cast<CBoxPowerUp*>(d["BoxPowerUpComp"]);
-    auto actualBox   = any_cast<shared_ptr<Entity>>(d["actualBox"]);
+void ManBoxPowerUp::EjecutarMeHanCogido(DataMap* d) {
+    auto cBoxPowerUp = any_cast<CBoxPowerUp*>(d->at("BoxPowerUpComp"));
+    auto actualBox   = any_cast<shared_ptr<Entity>>(d->at("actualBox"));
 
     if(cBoxPowerUp->active == true){
         //cout << "Han cogido un powerup, madafaka!! sera la primera" << endl;
@@ -24,7 +24,7 @@ void ManBoxPowerUp::EjecutarMeHanCogido(DataMap d) {
         DataMap data;
         auto cTranformableBox = static_cast<CTransformable*>(actualBox.get()->GetComponent(CompType::TransformableComp).get());
         data["posBox"] = cTranformableBox->position;
-        EventManager::GetInstance().AddEventMulti(Event{EventType::BREAK_BOX, data});
+        EventManager::GetInstance().AddEventMulti(Event{EventType::BREAK_BOX, &data});
     }
 }
 

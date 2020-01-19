@@ -118,7 +118,7 @@ struct ThrowPowerUp : public behaviourTree {
         //std::cout << "Lanzaaas el powerUp beibeee" << std::endl;
         DataMap d;
         d["actualCar"] = blackboard->actualCar;
-        EventManager::GetInstance().AddEventMulti(Event{EventType::THROW_POWERUP_AI, d});
+        EventManager::GetInstance().AddEventMulti(Event{EventType::THROW_POWERUP_AI, &d});
         return true;
     }
 };
