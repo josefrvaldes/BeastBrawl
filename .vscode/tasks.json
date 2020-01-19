@@ -1,0 +1,36 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build",
+            "type": "shell",
+            "command": "make"
+        },
+        {
+            "label": "makeAll",
+            "type": "shell",
+            "command": "LD_LIBRARY_PATH=./lib/irrlicht:./lib/fmod && export LD_LIBRARY_PATH && make clean && make && ${workspaceFolder}/Beast_Brawl",
+            "problemMatcher": []
+        },
+        {
+            "label": "makeExe",
+            "type": "shell",
+            "command": "LD_LIBRARY_PATH=./lib/irrlicht:./lib/fmod && export LD_LIBRARY_PATH && make && ${workspaceFolder}/Beast_Brawl",
+            "problemMatcher": []
+        },
+        {
+            "label": "valgrind",
+            "type": "shell",
+            "command": "LD_LIBRARY_PATH=./lib/irrlicht:./lib/fmod && export LD_LIBRARY_PATH && valgrind ${workspaceFolder}/Beast_Brawl",
+            "problemMatcher": []
+        },
+        {
+            "label": "makeAllDebug",
+            "type": "shell",
+            "command": "make clean && make DEBUG=1",
+            "problemMatcher": []
+        }
+    ]
+}

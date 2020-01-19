@@ -1,22 +1,116 @@
-#ifndef STATEINGAME_H
-#define STATEINGAME_H
+#pragma once
 
+#include <chrono>
+#include <cstdint>
+#include <iostream>
+#include <list>
+#include <memory>
+#include <queue>
+#include <stack>
+#include <string>
 
+#include "../../include/glm/vec3.hpp"
+#include "../Entities/BoxPowerUp.h"
+#include "../Entities/Camera.h"
+#include "../Entities/Car.h"
+#include "../Entities/CarHuman.h"
+#include "../Entities/CarAI.h"
+#include "../Entities/GameObject.h"
+#include "../Entities/PowerUp.h"
+#include "../Entities/Totem.h"
+#include "../Entities/WayPoint.h"
+#include "../Entities/NavMesh.h"
+#include "../Managers/ManPowerUp.h"
+#include "../Managers/ManWayPoint.h"
+#include "../Managers/ManNavMesh.h"
+#include "../EventManager/EventManager.h"
+#include "../Facade/Input/InputFacadeManager.h"
+#include "../Facade/Physics/PhysicsFacadeManager.h"
+#include "../Facade/Render/RenderFacadeManager.h"
+#include "../Facade/Sound/SoundFacade.h"
+#include "../Facade/Sound/SoundFacadeManager.h"
+#include "../Systems/SystemPathPlanning.h"
 #include "../Game.h"
+#include "../Managers/ManBoundingWall.h"
+#include "../Managers/ManBoxPowerUp.h"
+#include "../Managers/ManCar.h"
+#include "../Managers/ManNamePlate.h"
+#include "../Managers/ManPowerUp.h"
+#include "../Managers/ManTotem.h"
+#include "../Managers/ManWayPoint.h"
+#include "../Systems/Collisions.h"
+#include "../Systems/Physics.h"
+#include "../Systems/PhysicsPowerUp.h"
+#include "../Systems/SystemBoxPowerUp.h"
+#include "../behaviourTree/behaviourTree.h"
+#include "../behaviourTree/decorator.h"
+#include "../behaviourTree/selector.h"
+#include "../behaviourTree/sequence.h"
+#include "../fuzzyLogic/fuzzyLogic.h"
+#include "../Components/CNavMesh.h"
+#include "../Components/CCurrentNavMesh.h"
+//#include "btBulletDynamicsCommon.h"
 
+using namespace std;
+using namespace chrono;
 
-class StateInGame : public State{
-    public:
-        StateInGame();
-        virtual ~StateInGame();
-        void Update();
-        void Render();
-        virtual States GetState() { return State::States::INGAME; };
+class CLPhysics;
 
+class StateInGame : public State {
+   public:
+    StateInGame();
+    ~StateInGame();
+    void InitVirtualMethods();
+    void InitState() override;
+    void Input() override;
+    void Update() override;
+    void Render() override;
+    States GetState() { return State::States::INGAME_SINGLE; };
 
-    private:
-	
+    shared_ptr<ManCar> manCars;
+
+   protected:
+    shared_ptr<GameObject> ground;
+    shared_ptr<Camera> cam;
+    shared_ptr<ManPowerUp> manPowerUps;
+    shared_ptr<ManBoxPowerUp> manBoxPowerUps;
+    shared_ptr<ManNavMesh> manNavMesh;
+    shared_ptr<ManWayPoint> manWayPoint;
+    shared_ptr<ManNamePlate> manNamePlates;
+    shared_ptr<ManBoundingWall> manBoundingWall;
+
+    RenderFacade *renderEngine = {nullptr};
+    InputFacade *inputEngine = {nullptr};
+    PhysicsFacade *physicsEngine = {nullptr};
+    SoundFacade *soundEngine = {nullptr};
+
+    shared_ptr<Physics> physics;
+    //shared_ptr<float> deltaTime;
+    float deltaTime = 0.0166666;
+    shared_ptr<PhysicsPowerUp> phisicsPowerUp;
+    shared_ptr<SystemBoxPowerUp> sysBoxPowerUp;
+    shared_ptr<Collisions> collisions;
+    shared_ptr<Totem> totem;
+    shared_ptr<Entity> totemOnCar;
+
+    unique_ptr<CLPhysics> clPhysics;
+    unique_ptr<SystemPathPlanning> sysPathPlanning;
+
+    shared_ptr<ManTotem> manTotems;
+    //int lastFPS = -1;
+    //uint32_t then;
+    time_point<system_clock> then;
+    // vector<float> deltas;
+    //float CalculateDelta(float);
+
+    virtual void InitializeCLPhysics(ManCar &manCars, ManBoundingWall &ManBoundingWall);
+    virtual void InitializeManagers(Physics *physics, Camera *cam);
+    virtual void InitializeSystems(ManCar &manCars, ManBoundingWall &manBoundingWall);
+    virtual void InitializeFacades();
+    virtual void AddElementsToRender();
+    virtual void CAMBIARCosasDeTotemUpdate(){};
+
+    void CAMBIARCosasDeTotem(ManTotem &);
+    void CAMBIARCosasDeBoxPU(ManWayPoint &, ManBoxPowerUp &);
+    void CAMBIARCosasNavMesh(ManNavMesh &);
 };
-
-
-#endif  // STATEINGAME_H 

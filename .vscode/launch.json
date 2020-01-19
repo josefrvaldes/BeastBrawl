@@ -8,11 +8,16 @@
             "name": "(gdb) Iniciar",
             "type": "cppdbg",
             "request": "launch",
-            "program": "Escriba el nombre del programa; por ejemplo, ${workspaceFolder}/a.out.",
+            "program": "${workspaceFolder}/Beast_Brawl",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
-            "environment": [],
+            "environment": [
+                {
+                    "name": "LD_LIBRARY_PATH",
+                    "value": "./lib/linux/irrlicht:./lib/linux/fmod"
+                }
+            ],
             "externalConsole": false,
             "MIMode": "gdb",
             "setupCommands": [
@@ -23,7 +28,5 @@
                 }
             ]
         }
-        
-        
     ]
 }

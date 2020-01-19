@@ -1,22 +1,33 @@
-#ifndef STATEMENU_H
-#define STATEMENU_H
+#pragma once
 
-
-#include "../Game.h"
+#include "../EventManager/EventManager.h"
+#include "../Facade/Input/InputFacadeManager.h"
+#include "../Facade/Physics/PhysicsFacadeManager.h"
+#include "../Facade/Render/RenderFacadeManager.h"
+#include "../Facade/Sound/SoundFacadeManager.h"
+#include "../Facade/Sound/SoundFacade.h"
+//#include "../Game.h"
+#include "../State/State.h"
 
 
 class StateMenu : public State{
     public:
         StateMenu();
-        virtual ~StateMenu();
-        void Update();
-        void Render();
-        virtual States GetState() { return State::States::MENU; };
+        ~StateMenu() = default;
+        void Input() override;
+        void InitState() override;
+        void Update() override;
+        void Render() override;
+        States GetState() { return State::States::MENU; };
 
 
     private:
+        RenderFacade* renderEngine = { nullptr };
+        //InputFacade* inputEngine = { nullptr };
+        //PhysicsFacade* physicsEngine = { nullptr };
+        SoundFacade* soundEngine = { nullptr };
+
+
 	
 };
 
-
-#endif  // STATEMENU_H 
