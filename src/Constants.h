@@ -8,4 +8,11 @@ class Constants {
     static const bool DEBUG_SHOW_SPHERES{true};
     // static const string SERVER_HOST{"localhost"};
     // static const string SERVER_PORT{"1234"};
+
+    enum InputTypes { FORWARD,
+                      BACK,
+                      LEFT,
+                      RIGHT,
+                      LAUNCH_PU,
+                      CLAXON };
 };

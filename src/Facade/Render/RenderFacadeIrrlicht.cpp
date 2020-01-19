@@ -433,14 +433,15 @@ uint32_t RenderFacadeIrrlicht::FacadeGetTime() const{
 
 // To-Do: introducir multi input
 // Comprobar inputs del teclado
-void RenderFacadeIrrlicht::FacadeCheckInput() {
+ vector<Constants::InputTypes> RenderFacadeIrrlicht::FacadeCheckInput() {
     EventManager &eventManager = EventManager::GetInstance();
-
+    vector<Constants::InputTypes> inputs;
     if (receiver.IsKeyDown(KEY_ESCAPE)) {
         device->closeDevice();
     }
     if (receiver.IsKeyDown(KEY_KEY_P)) {
         eventManager.AddEventMulti(Event{EventType::PRESS_P});
+        inputs.push_back(Constants::InputTypes::CLAXON);
     }
     // if (receiver.IsKeyDown(KEY_KEY_0)) {
     //     eventManager.AddEventMulti(Event{EventType::PRESS_0});
@@ -450,8 +451,10 @@ void RenderFacadeIrrlicht::FacadeCheckInput() {
     if (receiver.IsKeyDown(KEY_KEY_I)) {
         DataMap data;
         eventManager.AddEventMulti(Event{EventType::PRESS_I, data});
+        inputs.push_back(Constants::InputTypes::FORWARD);
     } else if (receiver.IsKeyDown(KEY_KEY_O)) {
         eventManager.AddEventMulti(Event{EventType::PRESS_O});
+        inputs.push_back(Constants::InputTypes::BACK);
     } else {
         eventManager.AddEventMulti(Event{EventType::NO_I_O_PRESS});
     }
@@ -459,8 +462,10 @@ void RenderFacadeIrrlicht::FacadeCheckInput() {
     // izq y dch
     if (receiver.IsKeyDown(KEY_KEY_D)) {
         eventManager.AddEventMulti(Event{EventType::PRESS_D});
+        inputs.push_back(Constants::InputTypes::RIGHT);
     } else if (receiver.IsKeyDown(KEY_KEY_A)) {
         eventManager.AddEventMulti(Event{EventType::PRESS_A});
+        inputs.push_back(Constants::InputTypes::LEFT);
     } else {
         eventManager.AddEventMulti(Event{EventType::NO_A_D_PRESS});
     }
@@ -510,6 +515,7 @@ void RenderFacadeIrrlicht::FacadeCheckInput() {
     // POWERUPS
     if (receiver.IsKeyDown(KEY_SPACE)) {
         eventManager.AddEventMulti(Event{EventType::PRESS_SPACE});
+        inputs.push_back(Constants::InputTypes::LEFT);
     }
 
     //Cambiamos a menu
@@ -518,6 +524,7 @@ void RenderFacadeIrrlicht::FacadeCheckInput() {
         eventManager.AddEventMulti(Event{EventType::STATE_PAUSE});
         //Game::GetInstance()->SetState(State::PAUSE);
     }
+    return inputs;
 }
 
 void RenderFacadeIrrlicht::FacadeCheckInputMenu() {

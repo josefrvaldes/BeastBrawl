@@ -27,8 +27,7 @@ void UDPServer::HandleReceive(udp::endpoint& remoteClient, const boost::system::
         int8_t callType = recvBuff[0];
         switch (callType) {
             case -1: {  //Input
-                int8_t inputType = recvBuff[1];
-                HandleReceiveInput(inputType, remoteClient);
+                HandleReceiveInput(remoteClient);
             } break;
 
             default:
@@ -39,22 +38,39 @@ void UDPServer::HandleReceive(udp::endpoint& remoteClient, const boost::system::
     StartReceiving();  // antes estaba dentro del if, pero entonces si hay un error ya se rompe tó ¿?
 }
 
-void UDPServer::HandleReceiveDateTimeRequest(udp::endpoint& remoteClient) {
+void UDPServer::HandleReceiveDateTimeRequest(const udp::endpoint& remoteClient) {
     boost::shared_ptr<string> message(new string(GetTime()));
     socket.async_send_to(
         boost::asio::buffer(*message),
         remoteClient,
         boost::bind(
-            &UDPServer::HandleSend,
+            &UDPServer::HandleSentDateTimeRequest,
             this,
             message,
             boost::asio::placeholders::error,
             boost::asio::placeholders::bytes_transferred));
 }
 
-void UDPServer::HandleReceiveInput(int8_t inputType, udp::endpoint& remoteClient) {
+void UDPServer::HandleReceiveInput(const udp::endpoint& remoteClient) {
+    const int8_t inputType = recvBuff[1];
     cout << "El usuario " << remoteClient.address() << ":" << remoteClient.port()
          << " nos ha enviado un input " << signed(inputType) << endl;
+    ResendInputToOthers(inputType, remoteClient);
+}
+
+void UDPServer::ResendInputToOthers(const int8_t inputType, const udp::endpoint& originalClient) {
+    string originalAddress = originalClient.address().to_string();
+    uint16_t originalPort = originalClient.port();
+    for (udp::endpoint& currentClient : clients) {
+        string currentAddress = currentClient.address().to_string();
+        uint16_t currentPort = currentClient.port();
+
+        // si el cliente NO es el jugador original que mandó este input, le reenviamos el input al resto
+        if (originalAddress != currentAddress && originalPort != currentPort) {
+            
+        }
+    }
+    cout << "Hemos guardado un cliente nuevo y ahora tenemos " << clients.size() << " clientes" << endl;
 }
 
 void UDPServer::SaveClientIfNotExists(udp::endpoint& newClient) {
@@ -72,9 +88,15 @@ void UDPServer::SaveClientIfNotExists(udp::endpoint& newClient) {
     cout << "Hemos guardado un cliente nuevo y ahora tenemos " << clients.size() << " clientes" << endl;
 }
 
-void UDPServer::HandleSend(boost::shared_ptr<string> message,
-                           const boost::system::error_code& errorCode,
-                           size_t bytes_transferred) {
+void UDPServer::HandleSentDateTimeRequest(const boost::shared_ptr<string> message,
+                                          const boost::system::error_code& errorCode,
+                                          size_t bytesTransferred) {
+    HandleSentDefaultMessage(message, errorCode, bytesTransferred);
+}
+
+void UDPServer::HandleSentDefaultMessage(const boost::shared_ptr<string> message,
+                                         const boost::system::error_code& errorCode,
+                                         size_t bytesTransferred) {
     if (!errorCode)
         cout << "Ya se ha enviado el mensaje " << *message << ", madafaka" << endl;
     else

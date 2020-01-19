@@ -28,7 +28,7 @@ class RenderFacadeClover : public RenderFacade {
       void UpdateCamera(Entity*, ManCar* manCars) override;
       bool FacadeRun() override;
       uint32_t FacadeGetTime() const override;
-      void FacadeCheckInput() override;
+      vector<Constants::InputTypes>  FacadeCheckInput() override;
       int FacadeGetFPS() const override;
       void FacadeSetWindowCaption(std::string) const override;
       void FacadeBeginScene() const override;

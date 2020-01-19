@@ -10,6 +10,7 @@
 #include "../../Managers/ManCar.h"
 #include "../../Components/CPowerUp.h"
 #include "../../Managers/Manager.h"
+#include "../../Constants.h"
 
 using namespace chrono;
 
@@ -27,7 +28,7 @@ class RenderFacade {
     virtual void UpdateCamera(Entity*, ManCar* manCars) = 0;
     virtual bool FacadeRun() = 0;
     virtual uint32_t FacadeGetTime() const = 0;
-    virtual void FacadeCheckInput()  = 0;
+    virtual vector<Constants::InputTypes> FacadeCheckInput()  = 0;
     virtual int FacadeGetFPS() const = 0;
     virtual void FacadeSetWindowCaption(std::string) const = 0;
     virtual void FacadeBeginScene() const = 0;

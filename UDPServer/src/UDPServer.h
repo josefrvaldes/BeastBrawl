@@ -15,14 +15,21 @@ class UDPServer {
     UDPServer(asio::io_context& context_, uint16_t port_);
 
    private:
-    void SaveClientIfNotExists(udp::endpoint& endpoint);
     void StartReceiving();
+
+    void SaveClientIfNotExists(udp::endpoint& endpoint);
+
     void HandleReceive(udp::endpoint& remoteEndpoint, const boost::system::error_code& error, size_t bytesTransferred);
-    void HandleReceiveInput(int8_t inputType, udp::endpoint& remoteClient);
-    void HandleReceiveDateTimeRequest(udp::endpoint& remoteClient);
-    void HandleSend(boost::shared_ptr<string> message,
-                    const boost::system::error_code& errorCode,
-                    std::size_t bytes_transferred);
+    void HandleReceiveInput(const udp::endpoint& remoteClient);
+    void HandleReceiveDateTimeRequest(const udp::endpoint& remoteClient);
+    void HandleSentDateTimeRequest(const boost::shared_ptr<string> message,
+                                   const boost::system::error_code& errorCode,
+                                   std::size_t bytes_transferred);
+    void HandleSentDefaultMessage(const boost::shared_ptr<string> message,
+                                  const boost::system::error_code& errorCode,
+                                  std::size_t bytes_transferred);
+    void ResendInputToOthers(const int8_t inputType, const udp::endpoint& remoteClient);
+
     string GetTime() {
         auto time_point = system_clock::now();
         time_t now_c = system_clock::to_time_t(time_point);
