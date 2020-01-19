@@ -432,7 +432,7 @@ void ManCar::ThrowPowerUp(DataMap* d) {
 
         cPowerUpCar->typePowerUp = typeCPowerUp::None;
         (*dataSound)["typePowerUp"] = cPowerUpCar->typePowerUp;
-        EventManager::GetInstance().AddEventMulti(Event{EventType::UPDATE_POWERUP_HUD, dataSound});
+        EventManager::GetInstance().AddEventMulti(Event{EventType::UPDATE_POWERUP_HUD, dataSound}); 
         
     }
 }
