@@ -116,9 +116,9 @@ struct CompPowerUp : public behaviourTree {
 struct ThrowPowerUp : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
         //std::cout << "Lanzaaas el powerUp beibeee" << std::endl;
-        DataMap d;
-        d["actualCar"] = blackboard->actualCar;
-        EventManager::GetInstance().AddEventMulti(Event{EventType::THROW_POWERUP_AI, &d});
+        shared_ptr<DataMap> data = make_shared<DataMap>();
+        (*data)["actualCar"] = blackboard->actualCar;
+        EventManager::GetInstance().AddEventMulti(Event{EventType::THROW_POWERUP_AI, data});
         return true;
     }
 };

@@ -448,8 +448,7 @@ void RenderFacadeIrrlicht::FacadeCheckInput() {
     
     //  delante y detrás
     if (receiver.IsKeyDown(KEY_KEY_I)) {
-        DataMap data;
-        eventManager.AddEventMulti(Event{EventType::PRESS_I, &data});
+        eventManager.AddEventMulti(Event{EventType::PRESS_I});
     } else if (receiver.IsKeyDown(KEY_KEY_O)) {
         eventManager.AddEventMulti(Event{EventType::PRESS_O});
     } else {

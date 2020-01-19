@@ -86,9 +86,10 @@ void ManTotem::ResetTotem(DataMap* d){
 
     //std::cout << "vamos a pasar el totem desde eventos" << std::endl;
     // Vamos a actualizar el NavMesh en el que se va a soltar el Totem
-    DataMap data;
-    data["totem"] = GetEntities()[0].get();                                                        // pasamos un puntero al totem
-    EventManager::GetInstance().AddEventMulti(Event{EventType::ACTUALIZE_NAVMESH_TOTEM, &data});
+    shared_ptr<DataMap> data = make_shared<DataMap>();
+
+    (*data)["totem"] = GetEntities()[0].get();                                                        // pasamos un puntero al totem
+    EventManager::GetInstance().AddEventMulti(Event{EventType::ACTUALIZE_NAVMESH_TOTEM, data});
     //std::cout << "volvemos de lanzar el evento beibeee" << std::endl;
 
     // Debemos de crearlo tambien en iirlicht

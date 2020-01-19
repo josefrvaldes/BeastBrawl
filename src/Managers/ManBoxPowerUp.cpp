@@ -21,10 +21,10 @@ void ManBoxPowerUp::EjecutarMeHanCogido(DataMap* d) {
         cBoxPowerUp->active = false;
         cBoxPowerUp->timeStart = system_clock::now();
 
-        DataMap data;
+        shared_ptr<DataMap> data = make_shared<DataMap>();
         auto cTranformableBox = static_cast<CTransformable*>(actualBox.get()->GetComponent(CompType::TransformableComp).get());
-        data["posBox"] = cTranformableBox->position;
-        EventManager::GetInstance().AddEventMulti(Event{EventType::BREAK_BOX, &data});
+        (*data)["posBox"] = cTranformableBox->position;
+        EventManager::GetInstance().AddEventMulti(Event{EventType::BREAK_BOX, data});
     }
 }
 

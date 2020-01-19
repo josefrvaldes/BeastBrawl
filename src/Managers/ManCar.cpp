@@ -322,9 +322,9 @@ void ManCar::CollisionPowerUp(DataMap* d){
         auto cCar = static_cast<CCar*>(car.get()->GetComponent(CompType::CarComp).get());
         cCar->speed = 0.0f;
         // Sonido choque con powerup
-        DataMap data;
-        data["mainCharacter"] = true;
-        EventManager::GetInstance().AddEventMulti(Event{EventType::HURT, &data});
+        shared_ptr<DataMap> data = make_shared<DataMap>();
+        (*data)["mainCharacter"] = true;
+        EventManager::GetInstance().AddEventMulti(Event{EventType::HURT, data});
     }else{
         std::cout << "El escudo me salvo el culito :D" << std::endl;
         cShield->deactivePowerUp(); // desactivamos el escudo
@@ -348,9 +348,9 @@ void ManCar::CollisionPowerUpAI(DataMap* d){
         auto cCar = static_cast<CCar*>(any_cast<Entity*>(d->at("carAI"))->GetComponent(CompType::CarComp).get());
         cCar->speed = 0.0f;  // To-Do: no funciona en la IA por que la logica difusa no la hace acelerar
         // Sonido choque con powerup
-        DataMap data;
-        data["mainCharacter"] = false;
-        EventManager::GetInstance().AddEventMulti(Event{EventType::HURT, &data});
+        shared_ptr<DataMap> data = make_shared<DataMap>();
+        (*data)["mainCharacter"] = false;
+        EventManager::GetInstance().AddEventMulti(Event{EventType::HURT, data});
     }else{
         std::cout << "El escudo me salvo el culito :D" << std::endl;
         cShield->deactivePowerUp(); // desactivamos el escudo
@@ -412,7 +412,7 @@ void ManCar::ThrowPowerUp(DataMap* d) {
     auto cNitro = static_cast<CNitro*>(car.get()->GetComponent(CompType::NitroComp).get());
     bool robado = false;  
     if(cPowerUpCar->typePowerUp != typeCPowerUp::None){
-        DataMap data;
+        shared_ptr<DataMap> data = make_shared<DataMap>();
         CTransformable* objectiveCar;
         switch (cPowerUpCar->typePowerUp){
             case (typeCPowerUp::RoboJorobo):
@@ -429,30 +429,30 @@ void ManCar::ThrowPowerUp(DataMap* d) {
             case (typeCPowerUp::TeleBanana):
                 objectiveCar = calculateCloserCar(car.get());
                 if(objectiveCar != nullptr)
-                    data["posCochePerseguir"] = objectiveCar;
-                data["typePowerUp"] = cPowerUpCar->typePowerUp;
-                data["posCocheSalida"] = static_cast<CTransformable*>(car.get()->GetComponent(CompType::TransformableComp).get());
-                data["dimensionCocheSalida"] =  static_cast<CDimensions*>(car.get()->GetComponent(CompType::DimensionsComp).get());
-                EventManager::GetInstance().AddEventMulti(Event{EventType::PowerUp_Create, &data});
+                    (*data)["posCochePerseguir"] = objectiveCar;
+                (*data)["typePowerUp"] = cPowerUpCar->typePowerUp;
+                (*data)["posCocheSalida"] = static_cast<CTransformable*>(car.get()->GetComponent(CompType::TransformableComp).get());
+                (*data)["dimensionCocheSalida"] =  static_cast<CDimensions*>(car.get()->GetComponent(CompType::DimensionsComp).get());
+                EventManager::GetInstance().AddEventMulti(Event{EventType::PowerUp_Create, data});
                 break;
             default:  // en caso del melon molon o pudding de frambuesa
-                data["typePowerUp"] = cPowerUpCar->typePowerUp;
-                data["posCocheSalida"] = static_cast<CTransformable*>(car.get()->GetComponent(CompType::TransformableComp).get());
-                data["dimensionCocheSalida"] =  static_cast<CDimensions*>(car.get()->GetComponent(CompType::DimensionsComp).get());
-                EventManager::GetInstance().AddEventMulti(Event{EventType::PowerUp_Create, &data});
+                (*data)["typePowerUp"] = cPowerUpCar->typePowerUp;
+                (*data)["posCocheSalida"] = static_cast<CTransformable*>(car.get()->GetComponent(CompType::TransformableComp).get());
+                (*data)["dimensionCocheSalida"] =  static_cast<CDimensions*>(car.get()->GetComponent(CompType::DimensionsComp).get());
+                EventManager::GetInstance().AddEventMulti(Event{EventType::PowerUp_Create, data});
 
                 break;
         }
 
         // Sonido de lanzar power-up
-        data["typePowerUp"] = cPowerUpCar->typePowerUp;
+        (*data)["typePowerUp"] = cPowerUpCar->typePowerUp;
         //d->insert("typePowerUp",cPowerUpCar->typePowerUp);
-        EventManager::GetInstance().AddEventMulti(Event{EventType::THROW_POWERUP, &data});
+        EventManager::GetInstance().AddEventMulti(Event{EventType::THROW_POWERUP, data});
 
         // Ya no tenemos power-up
         cPowerUpCar->typePowerUp = typeCPowerUp::None;
-        data["typePowerUp"] = cPowerUpCar->typePowerUp;
-        EventManager::GetInstance().AddEventMulti(Event{EventType::UPDATE_POWERUP_HUD, &data});
+        (*data)["typePowerUp"] = cPowerUpCar->typePowerUp;
+        EventManager::GetInstance().AddEventMulti(Event{EventType::UPDATE_POWERUP_HUD, data});
         
     }
 }
@@ -467,7 +467,8 @@ void ManCar::ThrowPowerUpAI(DataMap* d) {
     bool robado = false; 
     
     if(cPowerUpCar->typePowerUp != typeCPowerUp::None){
-        DataMap data;
+        shared_ptr<DataMap> data = make_shared<DataMap>();
+
         CTransformable* objectiveCar;
         switch (cPowerUpCar->typePowerUp){
             case (typeCPowerUp::RoboJorobo):
@@ -484,17 +485,17 @@ void ManCar::ThrowPowerUpAI(DataMap* d) {
             case (typeCPowerUp::TeleBanana):
                 objectiveCar = calculateCloserCar(any_cast<CarAI*>(d->at("actualCar")));
                 if(objectiveCar != nullptr)
-                    data["posCochePerseguir"] = objectiveCar;
-                data["typePowerUp"] = cPowerUpCar->typePowerUp;
-                data["posCocheSalida"] = static_cast<CTransformable*>(any_cast<CarAI*>(d->at("actualCar"))->GetComponent(CompType::TransformableComp).get());
-                data["dimensionCocheSalida"] =  static_cast<CDimensions*>(any_cast<CarAI*>(d->at("actualCar"))->GetComponent(CompType::DimensionsComp).get());
-                EventManager::GetInstance().AddEventMulti(Event{EventType::PowerUp_Create, &data});
+                    (*data)["posCochePerseguir"] = objectiveCar;
+                (*data)["typePowerUp"] = cPowerUpCar->typePowerUp;
+                (*data)["posCocheSalida"] = static_cast<CTransformable*>(any_cast<CarAI*>(d->at("actualCar"))->GetComponent(CompType::TransformableComp).get());
+                (*data)["dimensionCocheSalida"] =  static_cast<CDimensions*>(any_cast<CarAI*>(d->at("actualCar"))->GetComponent(CompType::DimensionsComp).get());
+                EventManager::GetInstance().AddEventMulti(Event{EventType::PowerUp_Create, data});
                 break;
             default:     // en caso del melon molon o el pudding
-                data["typePowerUp"] = cPowerUpCar->typePowerUp;
-                data["posCocheSalida"] = static_cast<CTransformable*>(any_cast<CarAI*>(d->at("actualCar"))->GetComponent(CompType::TransformableComp).get());
-                data["dimensionCocheSalida"] =  static_cast<CDimensions*>(any_cast<CarAI*>(d->at("actualCar"))->GetComponent(CompType::DimensionsComp).get());
-                EventManager::GetInstance().AddEventMulti(Event{EventType::PowerUp_Create, &data});
+                (*data)["typePowerUp"] = cPowerUpCar->typePowerUp;
+                (*data)["posCocheSalida"] = static_cast<CTransformable*>(any_cast<CarAI*>(d->at("actualCar"))->GetComponent(CompType::TransformableComp).get());
+                (*data)["dimensionCocheSalida"] =  static_cast<CDimensions*>(any_cast<CarAI*>(d->at("actualCar"))->GetComponent(CompType::DimensionsComp).get());
+                EventManager::GetInstance().AddEventMulti(Event{EventType::PowerUp_Create, data});
 
                 break;
         }
@@ -545,10 +546,11 @@ void ManCar::CatchPowerUp(DataMap* d) {
     auto cPowerUpCar = static_cast<CPowerUp*>(car.get()->GetComponent(CompType::PowerUpComp).get());
     if(cPowerUpCar->typePowerUp == typeCPowerUp::None){
         cPowerUpCar->typePowerUp = (typeCPowerUp)indx;
-        DataMap d;
-        d["typePowerUp"] = cPowerUpCar->typePowerUp;
+        shared_ptr<DataMap> data = make_shared<DataMap>();
 
-        EventManager::GetInstance().AddEventMulti(Event{EventType::UPDATE_POWERUP_HUD, &d});
+        (*data)["typePowerUp"] = cPowerUpCar->typePowerUp;
+
+        EventManager::GetInstance().AddEventMulti(Event{EventType::UPDATE_POWERUP_HUD, data});
     }
 }
 
