@@ -53,7 +53,7 @@ class RenderFacadeIrrlicht : public RenderFacade {
     void FacadeCheckInputMenu() override;
     void FacadeCheckInputPause() override;
     void FacadeCheckInputEndRace() override;
-    void FacadeUpdatePowerUpHUD(DataMap d) override;
+    void FacadeUpdatePowerUpHUD(DataMap* d) override;
     void FacadeDrawHUD(Entity* car, ManCar* carsAI) override;
     void FacadeSuscribeEvents() override;
     void FacadeAddPlates(Manager* manNamePlates) override;

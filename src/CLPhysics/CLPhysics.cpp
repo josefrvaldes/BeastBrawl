@@ -2,6 +2,7 @@
 
 #include "CLPhysics.h"
 #include <iostream>
+#include <memory>
 #include <sstream>
 #include "../Components/CAABoundingBox.h"
 #include "../Components/CBoundingPlane.h"
@@ -107,9 +108,9 @@ void CLPhysics::checkCollisionNitro(Entity* car1, Entity* car2){
         auto cTotemCar2 = static_cast<CTotem *>(car2->GetComponent(CompType::TotemComp).get());
         if(cTotemCar2->active){
             // si que lo tiene... lanzamos evento para intercambiarlo
-            DataMap data;   
-            data["carWithTotem"] = car2;     
-            data["carWithoutTotem"] = car1;                                                                                                    
+            shared_ptr<DataMap> data = make_shared<DataMap>();   
+            (*data)["carWithTotem"] = car2;     
+            (*data)["carWithoutTotem"] = car1;                                                                                                    
             EventManager::GetInstance().AddEventMulti(Event{EventType::CHANGE_TOTEM_CAR, data}); 
         }
     
@@ -119,9 +120,10 @@ void CLPhysics::checkCollisionNitro(Entity* car1, Entity* car2){
             auto cTotemCar1 = static_cast<CTotem *>(car1->GetComponent(CompType::TotemComp).get());
             if(cTotemCar1->active){
                 // si que lo tiene... lanzamos evento para intercambiarlo
-                DataMap data;       
-                data["carWithTotem"] = car1;     
-                data["carWithoutTotem"] = car2;                                                                                                    
+                shared_ptr<DataMap> data = make_shared<DataMap>();   
+                      
+                (*data)["carWithTotem"] = car1;     
+                (*data)["carWithoutTotem"] = car2;                                                                                                    
                 EventManager::GetInstance().AddEventMulti(Event{EventType::CHANGE_TOTEM_CAR, data}); 
             }
         }
@@ -172,8 +174,8 @@ void CLPhysics::SeparateSphereFromPlane(IntersectData &intersData, CTransformabl
 }
 
 void CLPhysics::SonarChoque(bool mainCar) {
-    DataMap map;
-    map["mainCharacter"] = mainCar;
+    shared_ptr<DataMap> map = make_shared<DataMap>();
+    (*map)["mainCharacter"] = mainCar;
     Event e(EventType::CRASH_ENEMY, map);
     EventManager::GetInstance().AddEventMulti(e);
 }

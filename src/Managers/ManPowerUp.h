@@ -27,6 +27,6 @@ class ManPowerUp : public Manager{
    private:
 	//vector<shared_ptr<PowerUp>> PowerUps;
     void SubscribeToEvents();
-    void CreatePowerUp(DataMap d);
-    void DeletePowerUp(DataMap d);
+    void CreatePowerUp(DataMap* d);
+    void DeletePowerUp(DataMap* d);
 };

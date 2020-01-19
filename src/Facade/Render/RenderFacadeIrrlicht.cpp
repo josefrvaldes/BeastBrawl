@@ -93,8 +93,8 @@ void RenderFacadeIrrlicht::FacadeInitHUD() {
     currentPowerUp = 0;
 }
 
-void RenderFacadeIrrlicht::FacadeUpdatePowerUpHUD(DataMap d) {
-    typeCPowerUp type = any_cast<typeCPowerUp>(d["typePowerUp"]);
+void RenderFacadeIrrlicht::FacadeUpdatePowerUpHUD(DataMap* d) {
+    typeCPowerUp type = any_cast<typeCPowerUp>((*d)["typePowerUp"]);
     cout << "Facada recibe el power up: " << (int)type << endl;
     currentPowerUp = int(type);
 }
@@ -449,8 +449,7 @@ uint32_t RenderFacadeIrrlicht::FacadeGetTime() const{
     
     //  delante y detrás
     if (receiver.IsKeyDown(KEY_KEY_I)) {
-        DataMap data;
-        eventManager.AddEventMulti(Event{EventType::PRESS_I, data});
+        eventManager.AddEventMulti(Event{EventType::PRESS_I});
         inputs.push_back(Constants::InputTypes::FORWARD);
     } else if (receiver.IsKeyDown(KEY_KEY_O)) {
         eventManager.AddEventMulti(Event{EventType::PRESS_O});

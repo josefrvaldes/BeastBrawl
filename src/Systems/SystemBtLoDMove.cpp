@@ -125,9 +125,10 @@ struct SBPursue_LoDMove : public behaviourTree {
         //return true;
         float angle = blackboard->steeringBehaviours->UpdatePursuePowerUp(blackboard->actualCar, blackboard->manCars->GetDesirableTarget(blackboard->actualCar));  // To-Do: calcular coche a por el que se quiere ir
         if(angle>=-3 && angle <=3){
-            DataMap d;
-            d["actualCar"] = blackboard->actualCar;
-            EventManager::GetInstance().AddEventMulti(Event{EventType::THROW_POWERUP_AI, d});
+            shared_ptr<DataMap> data = make_shared<DataMap>();
+
+            (*data)["actualCar"] = blackboard->actualCar;
+            EventManager::GetInstance().AddEventMulti(Event{EventType::THROW_POWERUP_AI, data});
         }
         //std::cout << "Aplico SB pursuePU" << std::endl;
 

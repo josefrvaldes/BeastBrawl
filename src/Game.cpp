@@ -150,24 +150,24 @@ void Game::TerminateGame() {
 
 //Funciones del EventManager
 
-void Game::SetStateMenu(DataMap d){
+void Game::SetStateMenu(DataMap* d){
     cout << "LLEGA\n";
     SetState(State::MENU);
 }
 
-void Game::SetStatePause(DataMap d){
+void Game::SetStatePause(DataMap* d){
     SetState(State::PAUSE);
 }
 
-void Game::SetStateInGameSingle(DataMap d){
+void Game::SetStateInGameSingle(DataMap* d){
     SetState(State::INGAME_SINGLE);
 }
 
-void Game::SetStateInGameMulti(DataMap d){
+void Game::SetStateInGameMulti(DataMap* d){
     SetState(State::INGAME_MULTI);
 }
 
 
-void Game::SetStateEndRace(DataMap d){
+void Game::SetStateEndRace(DataMap* d){
     SetState(State::ENDRACE);
 }
