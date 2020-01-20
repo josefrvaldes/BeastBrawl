@@ -49,6 +49,7 @@ class ManCar : public Manager {
     void CreateHumanCar(glm::vec3 _position);
     void UpdateCar();
     void UpdateCarAI(CarAI* carAI, ManPowerUp* m_manPowerUp, ManBoxPowerUp* m_manBoxPowerUp, ManTotem* m_manTotem, ManWayPoint* graph, ManNavMesh* manNavMesh, ManBoundingWall* m_manBoundingWall);
+    void UpdateCarHuman(Entity* CarHuman);
     shared_ptr<CarHuman>& GetCar() { return car; };
 
     void CreateCarAI();

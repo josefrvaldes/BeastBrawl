@@ -1,5 +1,6 @@
 #include "PhysicsAI.h"
 
+#include "../Entities/Entity.h"
 #include "../Entities/Car.h"
 #include "../Entities/CarHuman.h"
 #include "../Entities/CarAI.h"
@@ -35,7 +36,7 @@ void PhysicsAI::Update(CarAI* carAI, ManWayPoint* graph){
 }
 
 
-void PhysicsAI::UpdateCarPowerUps(CarAI* carAI){
+void PhysicsAI::UpdateCarPowerUps(Entity* carAI){
     auto cTotem = static_cast<CTotem*>(carAI->GetComponent(CompType::TotemComp).get());
     if(cTotem->active){
         cTotem->accumulatedTime +=  duration_cast<milliseconds>(system_clock::now() - cTotem->timeStart).count();

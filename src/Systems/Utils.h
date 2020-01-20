@@ -10,6 +10,7 @@
 
 using namespace glm;
 using namespace std;
+using namespace std::chrono;
 
 class MakeString {
    public:

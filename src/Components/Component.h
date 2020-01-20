@@ -35,7 +35,8 @@ enum CompType {
     TargetNavMeshComp,
     CompRay,
     NamePlateComp,
-    MovementComp
+    MovementComp,
+    OnlineComp
 };
 
 class Component {

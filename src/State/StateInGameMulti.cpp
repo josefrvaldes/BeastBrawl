@@ -24,6 +24,23 @@ void StateInGameMulti::Update() {
     StateInGame::Update();
 
     CAMBIARCosasDeTotemUpdate();
+
+    for (auto actualCar : manCars->GetEntities()) {
+        if (actualCar.get() != manCars->GetCar().get()){
+            // funcion para recibir los inputs del servidor, otra para enviar los nuestros, crear componente de input
+            physics->UpdateHuman(static_cast<Car*>(actualCar.get()));
+            manCars->UpdateCarHuman(actualCar.get());
+            physicsEngine->UpdateCarAI(actualCar.get());
+        }
+    }
+
+
+    // COLISIONES entre powerUp y cocheHuman
+    collisions->IntersectsCarsPowerUps(manCars.get(), manPowerUps.get(), manNavMesh.get());
+    // COLISIONES entre BoxPowerUp y cocheHuman
+    collisions->IntersectCarsBoxPowerUp(manCars.get(), manBoxPowerUps.get());
+    // COLISIONES  entre la cocheHuman y el Totem
+    collisions->IntersectCarsTotem(manCars.get(), manTotems.get());
 }
 
 void StateInGameMulti::Render() {

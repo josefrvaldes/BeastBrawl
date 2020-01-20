@@ -105,6 +105,10 @@ void ManCar::UpdateCarAI(CarAI* carAI, ManPowerUp* m_manPowerUp, ManBoxPowerUp* 
 
 
 
+void ManCar::UpdateCarHuman(Entity* CarHuman){
+    physicsAI->UpdateCarPowerUps(CarHuman);
+}
+
 
 
 void ManCar::CreateMainCar() {
@@ -440,10 +444,10 @@ void ManCar::ThrowPowerUp(DataMap* d) {
 
 
 void ManCar::ThrowPowerUpAI(DataMap* d) {
-    auto cPowerUpCar = static_cast<CPowerUp*>(any_cast<CarAI*>((*d)["actualCar"])->GetComponent(CompType::PowerUpComp).get());
+    auto cPowerUpCar = static_cast<CPowerUp*>(any_cast<Car*>((*d)["actualCar"])->GetComponent(CompType::PowerUpComp).get());
     //auto cRoboJorobo = static_cast<CRoboJorobo*>(any_cast<CarAI*>(d["actualCar"])->GetComponent(CompType::RoboJoroboComp).get());
-    auto cShield = static_cast<CShield*>(any_cast<CarAI*>((*d)["actualCar"])->GetComponent(CompType::ShieldComp).get());
-    auto cNitro = static_cast<CNitro*>(any_cast<CarAI*>((*d)["actualCar"])->GetComponent(CompType::NitroComp).get());
+    auto cShield = static_cast<CShield*>(any_cast<Car*>((*d)["actualCar"])->GetComponent(CompType::ShieldComp).get());
+    auto cNitro = static_cast<CNitro*>(any_cast<Car*>((*d)["actualCar"])->GetComponent(CompType::NitroComp).get());
     bool robado = false; 
     
     if(cPowerUpCar->typePowerUp != typeCPowerUp::None){
@@ -453,7 +457,7 @@ void ManCar::ThrowPowerUpAI(DataMap* d) {
         CTransformable* objectiveCar;
         switch (cPowerUpCar->typePowerUp){
             case (typeCPowerUp::RoboJorobo):
-                robado = useRoboJorobo(any_cast<CarAI*>((*d)["actualCar"]));
+                robado = useRoboJorobo(any_cast<Car*>((*d)["actualCar"]));
                 if (!robado)
                     std::cout << "La has cagado, el Totem no lo tenia nadie..." << std::endl; 
                 break;
@@ -464,18 +468,18 @@ void ManCar::ThrowPowerUpAI(DataMap* d) {
                 cNitro->activatePowerUp();
                 break;
             case (typeCPowerUp::TeleBanana):
-                objectiveCar = calculateCloserCar(any_cast<CarAI*>((*d)["actualCar"]));
+                objectiveCar = calculateCloserCar(any_cast<Car*>((*d)["actualCar"]));
                 if(objectiveCar != nullptr)
                     (*data)["posCochePerseguir"] = objectiveCar;
                 (*data)["typePowerUp"] = cPowerUpCar->typePowerUp;
-                (*data)["posCocheSalida"] = static_cast<CTransformable*>(any_cast<CarAI*>((*d)["actualCar"])->GetComponent(CompType::TransformableComp).get());
-                (*data)["dimensionCocheSalida"] =  static_cast<CDimensions*>(any_cast<CarAI*>((*d)["actualCar"])->GetComponent(CompType::DimensionsComp).get());
+                (*data)["posCocheSalida"] = static_cast<CTransformable*>(any_cast<Car*>((*d)["actualCar"])->GetComponent(CompType::TransformableComp).get());
+                (*data)["dimensionCocheSalida"] =  static_cast<CDimensions*>(any_cast<Car*>((*d)["actualCar"])->GetComponent(CompType::DimensionsComp).get());
                 EventManager::GetInstance().AddEventMulti(Event{EventType::PowerUp_Create, data});
                 break;
             default:     // en caso del melon molon o el pudding
                 (*data)["typePowerUp"] = cPowerUpCar->typePowerUp;
-                (*data)["posCocheSalida"] = static_cast<CTransformable*>(any_cast<CarAI*>((*d)["actualCar"])->GetComponent(CompType::TransformableComp).get());
-                (*data)["dimensionCocheSalida"] =  static_cast<CDimensions*>(any_cast<CarAI*>((*d)["actualCar"])->GetComponent(CompType::DimensionsComp).get());
+                (*data)["posCocheSalida"] = static_cast<CTransformable*>(any_cast<Car*>((*d)["actualCar"])->GetComponent(CompType::TransformableComp).get());
+                (*data)["dimensionCocheSalida"] =  static_cast<CDimensions*>(any_cast<Car*>((*d)["actualCar"])->GetComponent(CompType::DimensionsComp).get());
                 EventManager::GetInstance().AddEventMulti(Event{EventType::PowerUp_Create, data});
 
                 break;
@@ -483,6 +487,7 @@ void ManCar::ThrowPowerUpAI(DataMap* d) {
         cPowerUpCar->typePowerUp = typeCPowerUp::None;
     }
 }
+
 
 /*
 int calculateProbabilityPowerUp(int totalPowerUps, std::vector<int> probabilityPU){
