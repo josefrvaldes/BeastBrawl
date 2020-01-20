@@ -20,7 +20,7 @@ else
 	LIBS		+= -Wl,-rpath=lib/linux/glfw -Wl,-rpath=lib/linux/glew
 	INCLUDE     := -I.
 	INCLUDE_GLEW := -I./include/glew
-	INCLUDE_GLEW := -I./include/glfw
+	INCLUDE_GLFW := -I./include/glfw
 	CC			:= g++
 endif
 
@@ -52,7 +52,7 @@ $(NAME_EXE): $(OBJSUBDIRS) $(ALLCPPSOBJ)
 $(OBJ_PATH)/%.o: $(SRC_PATH)/%.cpp
 	$(PRUEBA_TEXT)
 	$(COMPILING_TEXT) $<
-	@$(CC) $(CXXFLAGS) -o $@ -c $^ $(INCLUDE) $(INCLUDE_GLEW)
+	@$(CC) $(CXXFLAGS) -o $@ -c $^ $(INCLUDE) $(INCLUDE_GLEW) $(INCLUDE_GLFW)
 	
 
 $(OBJSUBDIRS):
