@@ -518,7 +518,7 @@ uint32_t RenderFacadeIrrlicht::FacadeGetTime() const{
     // POWERUPS
     if (receiver.IsKeyDown(KEY_SPACE)) {
         eventManager.AddEventMulti(Event{EventType::PRESS_SPACE});
-        inputs.push_back(Constants::InputTypes::LEFT);
+        inputs.push_back(Constants::InputTypes::LAUNCH_PU);
     }
 
     //Cambiamos a menu

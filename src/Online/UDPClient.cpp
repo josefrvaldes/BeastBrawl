@@ -56,16 +56,18 @@ void UDPClient::SendDateTime() {
 
 void UDPClient::SendInput(Constants::InputTypes newInput) {
     // boost::array<uint16_t, 2> aux{Constants::PetitionTypes::SEND_INPUT, newInput};
-    // boost::array<uint16_t,1> sendInput {newInput};
+    
+    boost::array<uint16_t,1> sendCallType {Constants::PetitionTypes::SEND_INPUT};
+    boost::array<uint16_t,1> sendInput {newInput};
     // sendBuff.push_back(boost::asio::buffer(callType));
     // sendBuff.push_back(boost::asio::buffer(sendInput));
     // Constants::PetitionTypes callType = Constants::PetitionTypes::SEND_INPUT;
-    // std::shared_ptr<Constants::InputTypes> auxInput = make_shared<Constants::InputTypes>(newInput);
+    std::shared_ptr<Constants::InputTypes> auxInput = make_shared<Constants::InputTypes>(newInput);
     
-    Constants::PetitionTypes callType = Constants::PetitionTypes::SEND_INPUT;
     sendBuff.clear();
-    sendBuff.push_back(boost::asio::buffer(&callType, sizeof(callType)));
-    sendBuff.push_back(boost::asio::buffer(&newInput, sizeof(newInput)));
+    sendBuff.push_back(boost::asio::buffer(sendCallType));
+    sendBuff.push_back(boost::asio::buffer(sendInput));
+    
     // boost::array<Constants::InputTypes, 1> input = {newInput};
     // boost::array<mutable_buffer, 2> outputBuffer = {
     //     // boost::asio::buffer(petitionType),
@@ -76,22 +78,20 @@ void UDPClient::SendInput(Constants::InputTypes newInput) {
         // boost::asio::buffer(outputBuffer),
         boost::asio::buffer(sendBuff),
         serverEndpoint,
-        // boost::bind(
-        //     &UDPClient::HandleSentInput,
-        //     this,
-        //     newInput,
-        //     boost::asio::placeholders::error,
-        //     boost::asio::placeholders::bytes_transferred)
-        [&](const boost::system::error_code& errorCode,
-            std::size_t bytes_transferred) {
-            HandleSentInput(Constants::InputTypes::BACK, errorCode, bytes_transferred);
-        });
-}
+        boost::bind(
+            &UDPClient::HandleSentInput,
+            this,
+            auxInput,
+            boost::asio::placeholders::error,
+            boost::asio::placeholders::bytes_transferred));
+ }
 
-void UDPClient::HandleSentInput(Constants::InputTypes input, const boost::system::error_code& errorCode,
+void UDPClient::HandleSentInput(std::shared_ptr<Constants::InputTypes> input, const boost::system::error_code& errorCode,
                                 std::size_t bytes_transferred) {
     if (!errorCode) {
-        cout << Utils::GetTime() << " - Ya se ha enviado el mensaje con input, " << input << " madafaka" << endl;
+        Constants::InputTypes *ptrInput = input.get();
+        Constants::InputTypes valueInput = *ptrInput;
+        cout << Utils::GetTime() << " - Ya se ha enviado el mensaje con input, " << valueInput << " madafaka" << endl;
     } else {
         cout << "Hubo un error enviando el mensaje, madafaka" << endl;
         // ResendInput();

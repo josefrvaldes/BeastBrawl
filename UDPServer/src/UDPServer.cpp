@@ -16,9 +16,15 @@ void UDPServer::StartReceiving() {
     socket.async_receive_from(
         asio::buffer(recvBuff),
         receiverEndpoint,
-        [&](const boost::system::error_code& error, std::size_t bytesTransferred) {
-            HandleReceive(receiverEndpoint, error, bytesTransferred);
-        });
+        boost::bind(
+            &UDPServer::HandleReceive,
+            this,
+            receiverEndpoint,
+            boost::asio::placeholders::error,
+            boost::asio::placeholders::bytes_transferred));
+        // [&](const boost::system::error_code& error, std::size_t bytesTransferred) {
+        //     HandleReceive(receiverEndpoint, error, bytesTransferred);
+        // });
 }
 
 void UDPServer::HandleReceive(udp::endpoint& remoteClient, const boost::system::error_code& errorCode, std::size_t bytesTransferred) {
@@ -28,8 +34,10 @@ void UDPServer::HandleReceive(udp::endpoint& remoteClient, const boost::system::
         // uint16_t callType = recvBuff[0];
         // boost::array<uint16_t,1> callType = recvBuff[0];
         boost::asio::mutable_buffer buff1 = recvBuff[0];
-        uint16_t* ptrCallType = static_cast<uint16_t*>(buff1.data());
-        uint16_t callType = *ptrCallType;
+        boost::array<uint16_t, 1> *arrCallType = static_cast<boost::array<uint16_t, 1>*>(buff1.data());
+        Constants::PetitionTypes callType = static_cast<Constants::PetitionTypes>((*arrCallType)[0]);
+        // uint16_t* ptrCallType = static_cast<uint16_t*>(buff1.data());
+        // uint16_t callType = *ptrCallType;
         // uint16_t callType = *static_cast<uint16_t*>(recvBuff[0].data());
 
         // boost::array<Constants::PetitionTypes, 1> petitionTypes = *static_cast<boost::array<Constants::PetitionTypes, 1>*>(recvBuff[0].data());
@@ -41,7 +49,7 @@ void UDPServer::HandleReceive(udp::endpoint& remoteClient, const boost::system::
         // Constants::PetitionTypes petitionType = recvBuff[0];
         switch (callType) {
             case Constants::PetitionTypes::SEND_INPUTS:  //Input
-            case Constants::PetitionTypes::SEND_INPUT:  //Input
+            case Constants::PetitionTypes::SEND_INPUT:   //Input
                 HandleReceiveInput(remoteClient);
                 break;
 
@@ -84,7 +92,7 @@ void UDPServer::ResendInputToOthers(const int8_t inputType, const udp::endpoint&
         // si el cliente NO es el jugador original que mandó este input, le reenviamos el input al resto
         if (originalAddress != currentAddress && originalPort != currentPort) {
         }
-    }    
+    }
 }
 
 void UDPServer::SaveClientIfNotExists(udp::endpoint& newClient) {

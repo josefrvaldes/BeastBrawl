@@ -24,7 +24,7 @@ class UDPClient {
     void StartReceiving();
     void HandleReceived(const boost::system::error_code& error, size_t bytesTransferred);
 
-    void HandleSentInput(Constants::InputTypes input, const boost::system::error_code& errorCode,
+    void HandleSentInput(std::shared_ptr<Constants::InputTypes> input, const boost::system::error_code& errorCode,
                          std::size_t bytes_transferred);
     void HandleSentInputs(const vector<Constants::InputTypes>& inputs, const boost::system::error_code& errorCode,
                           std::size_t bytes_transferred);
