@@ -6,8 +6,6 @@
 class Constants {
    public:
     static const bool DEBUG_SHOW_SPHERES{true};
-    // static const string SERVER_HOST{"localhost"};
-    // static const string SERVER_PORT{"1234"};
 
     enum InputTypes { FORWARD,
                       BACK,
@@ -15,4 +13,8 @@ class Constants {
                       RIGHT,
                       LAUNCH_PU,
                       CLAXON };
+
+    enum PetitionTypes { SEND_INPUT,
+                         SEND_INPUTS,
+                         SEND_SYNC };
 };

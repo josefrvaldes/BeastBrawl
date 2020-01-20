@@ -10,13 +10,6 @@
 using namespace std;
 
 int main() {
-    UDPClient client("localhost", "1234");
-    client.Send();
-    client.Send();
-    client.Send();
-    client.Send();
-
-
     try {
         Game* game = Game::GetInstance();
 

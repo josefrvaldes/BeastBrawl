@@ -1,6 +1,7 @@
 #include "UDPServer.h"
 #include <boost/asio/placeholders.hpp>
 #include <boost/bind.hpp>
+#include "../src/Constants.h"
 
 using boost::asio::ip::udp;
 // using namespace boost;
@@ -24,11 +25,25 @@ void UDPServer::HandleReceive(udp::endpoint& remoteClient, const boost::system::
     // cout << "Hemos recibido una petición del endpoint " << remoteClient.address() << ":" << remoteClient.port() << endl;
     if (!errorCode) {
         SaveClientIfNotExists(remoteClient);
-        int8_t callType = recvBuff[0];
+        // uint16_t callType = recvBuff[0];
+        // boost::array<uint16_t,1> callType = recvBuff[0];
+        boost::asio::mutable_buffer buff1 = recvBuff[0];
+        uint16_t* ptrCallType = static_cast<uint16_t*>(buff1.data());
+        uint16_t callType = *ptrCallType;
+        // uint16_t callType = *static_cast<uint16_t*>(recvBuff[0].data());
+
+        // boost::array<Constants::PetitionTypes, 1> petitionTypes = *static_cast<boost::array<Constants::PetitionTypes, 1>*>(recvBuff[0].data());
+
+        // boost::array<Constants::PetitionTypes, 1> petitionTypes = recvBuff[0].data();
+        // boost::int8_t ojete = *static_cast<boost::int8_t *>(recvBuff[0].data());
+        // Constants::PetitionTypes petitionType = ojete;
+        // Constants::PetitionTypes petitionType = recvBuff[0].data();
+        // Constants::PetitionTypes petitionType = recvBuff[0];
         switch (callType) {
-            case -1: {  //Input
+            case Constants::PetitionTypes::SEND_INPUTS:  //Input
+            case Constants::PetitionTypes::SEND_INPUT:  //Input
                 HandleReceiveInput(remoteClient);
-            } break;
+                break;
 
             default:
                 HandleReceiveDateTimeRequest(remoteClient);
@@ -52,9 +67,10 @@ void UDPServer::HandleReceiveDateTimeRequest(const udp::endpoint& remoteClient) 
 }
 
 void UDPServer::HandleReceiveInput(const udp::endpoint& remoteClient) {
-    const int8_t inputType = recvBuff[1];
+    const Constants::InputTypes inputType = *static_cast<Constants::InputTypes*>(recvBuff[1].data());
+    // const Constants::InputTypes inputType = static_cast<Constants::InputTypes>(recvBuff[1]);
     cout << "El usuario " << remoteClient.address() << ":" << remoteClient.port()
-         << " nos ha enviado un input " << signed(inputType) << endl;
+         << " nos ha enviado un input " << (inputType) << endl;
     ResendInputToOthers(inputType, remoteClient);
 }
 
@@ -67,10 +83,8 @@ void UDPServer::ResendInputToOthers(const int8_t inputType, const udp::endpoint&
 
         // si el cliente NO es el jugador original que mandó este input, le reenviamos el input al resto
         if (originalAddress != currentAddress && originalPort != currentPort) {
-            
         }
-    }
-    cout << "Hemos guardado un cliente nuevo y ahora tenemos " << clients.size() << " clientes" << endl;
+    }    
 }
 
 void UDPServer::SaveClientIfNotExists(udp::endpoint& newClient) {

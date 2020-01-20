@@ -16,6 +16,7 @@ void StateInGameMulti::InitState() {
 
 void StateInGameMulti::Input() {
     vector<Constants::InputTypes> inputs = renderEngine->FacadeCheckInput();
+    sysOnline->SendInputs(inputs);
     inputEngine->CheckInput();
 }
 

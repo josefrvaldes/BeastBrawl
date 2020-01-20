@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include "../Aliases.h"
+#include "../Constants.h"
 #include "../Online/UDPClient.h"
 using namespace std;
 
@@ -13,14 +14,9 @@ class SystemOnline {
     ~SystemOnline(){};
 
     void Update();
+    void SendInputs(vector<Constants::InputTypes> &d);
 
    private:
-    void SubscribeToEvents();
-    void PressUp(DataMap d);
-    void PressDown(DataMap d);
-    void PressLeft(DataMap d);
-    void PressRight(DataMap d);
-
     ManCar &manCar;
     unique_ptr<UDPClient> udpClient;
 };

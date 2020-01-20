@@ -6,6 +6,7 @@
 #include <iostream>
 #include <sstream>
 #include "include/glm/vec3.hpp"
+#include <chrono>
 
 using namespace glm;
 using namespace std;
@@ -53,6 +54,14 @@ class Utils {
         vector.y = 0.f;
         vector.z = sin(Utils::DegToRad(angle));
         return vector;
+    }
+
+    static string GetTime() {
+        auto time_point = system_clock::now();
+        time_t now_c = system_clock::to_time_t(time_point);
+        string salida = ctime(&now_c);
+        salida = salida.substr(0, salida.size() - 1);
+        return salida;
     }
 
     static void Cout(string& txt) {

@@ -41,5 +41,9 @@ class UDPServer {
     udp::socket socket;
     udp::endpoint receiverEndpoint;
     std::vector<udp::endpoint> clients;
-    boost::array<uint8_t, 2> recvBuff;
+    // boost::array<boost::asio::mutable_buffer, 2> recvBuff;
+    // boost::array<boost::asio::mutable_buffer, 2> recvBuff;
+    vector<boost::asio::const_buffer> sendBuff;
+    vector<boost::asio::mutable_buffer> recvBuff;
+    // boost::array<uint16_t, 2> recvBuff;
 };

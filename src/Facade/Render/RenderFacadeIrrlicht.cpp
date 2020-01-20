@@ -436,6 +436,10 @@ uint32_t RenderFacadeIrrlicht::FacadeGetTime() const{
  vector<Constants::InputTypes> RenderFacadeIrrlicht::FacadeCheckInput() {
     EventManager &eventManager = EventManager::GetInstance();
     vector<Constants::InputTypes> inputs;
+    inputs.reserve(4); // para evitar el funcionamiento de cómo se redimensiona
+                       // por defecto un vector, como sabemos que como máximo 
+                       // va a haber un máximo de 4 inputs en el vector, 
+                       // le reservamos directamente ya el espacio
     if (receiver.IsKeyDown(KEY_ESCAPE)) {
         device->closeDevice();
     }
