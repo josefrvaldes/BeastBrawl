@@ -25,7 +25,7 @@ else
 endif
 
 SOURCES  	:= $(wildcard *.cpp)
-OBJ_PATH    := obj
+OBJ_PATH    := ../obj/CLEngine
 SRC_PATH	:= src
 
 NAME_EXE	:= CLEngine
@@ -72,6 +72,7 @@ exe:
 clean:
 	@rm -Rf $(OBJ_PATH)/ && rm -f $(NAME_EXE)
 	$(ALL_CLEANED_TEXT)
+
 
 .PHONY: all
 all:
