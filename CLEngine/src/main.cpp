@@ -71,6 +71,7 @@ int main() {
     // Main loop
     while (!glfwWindowShouldClose(window))
     {
+        checkInput(window);
         // Poll and handle events (inputs, window resize, etc.)
         // You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to tell if dear imgui wants to use your inputs.
         // - When io.WantCaptureMouse is true, do not dispatch mouse input data to your main application.
@@ -113,6 +114,8 @@ int main() {
 
         glfwSwapBuffers(window);
     }
+
+
     //cout << glGetString(GL_VERSION) << "\n";
 
     // Cleanup
@@ -122,6 +125,7 @@ int main() {
 
     glfwDestroyWindow(window);
     glfwTerminate();
+    cout << ">>>>> GLFW OFF" << endl;
 
     return 0;
     
