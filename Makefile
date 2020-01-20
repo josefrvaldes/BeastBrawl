@@ -81,6 +81,10 @@ info:
 	$(info $(ALLCPPS))
 	$(info $(ALLCPPSOBJ))
 
+.PHONY: exe_gl
+exe_gl:
+	@CLEngine/CLEngine
+
 .PHONY: exe
 exe:
 	$(CREATE_SYMLINKS)
