@@ -9,12 +9,21 @@ Beast Brawl es el nombre del juego que está siendo desarrollado por Clover Game
 
 ## Compilación
 
-Para compilar nuestro proyecto debes situarte en el directorio raíz (NO en el subdirectorio `src`). Ahí habrá un archivo Makefile para compilar en terminal.
+Para compilar nuestro proyecto debes situarte en el directorio raíz (NO en el subdirectorio `src`). Ahí habrá un archivo Makefile para compilar en terminal. Según qué comandos utilices, se trabajará con el proyecto del juego, el motor gráfico o los dos.
 
+### Juego
 * `make` para compilar el código y crear el archivo ejecutable.
 * `make clean`para borrar los archivos compilados y el ejecutable.
 * `make exe` para ejecutar.
-* `make all` para realizar `make clean`, `make` y `make exe` uno seguido del otro.
+
+### Motor gráfico
+* `make gl` para compilar el código y crear el archivo ejecutable.
+* `make clean_gl` para borrar los archivos compilados y el ejecutable.
+* `make exe_gl`para ejecutar.
+
+### Juego y motor gráfico
+* `make all` borra todos los archivos compilados,borra los ejecutables y compila todo; pero solo ejecuta el juego.
+
 
 ## Controles de juego
 Actualmente los contoles de nuestro juego funcionan mediante teclado.
@@ -22,7 +31,8 @@ Actualmente los contoles de nuestro juego funcionan mediante teclado.
  * `O` para descelerar.
  * `A` y `D` para moverse a izquierda y derecha.
  * `SPACE` para lanzar power-up.
- * `E` para cambiar a la cámara trasera.
+ * Mantener presionada `Q` para cambiar a la cámara trasera.
+ * `E` para cambiar a la cámara totem.
  * `F1` para comenzar partida desde el menú.
  * `F2` para poner el juego en pausa a mitad de partida.
  * `F3` para reanudar partida en pausa.
@@ -30,4 +40,7 @@ Actualmente los contoles de nuestro juego funcionan mediante teclado.
  * `ESC` para salir.
  
  ## Controles de debug
- * ...
+ * `F3` muestra el grafo y las colisiones.
+ * `LShift + F3` activa el debug de navmeshes, posición destino, el path de dijkstra e información sobre la IA seleccionada (por defecto está seleccionada la IA 1).
+     * `LShift + 1/2/3` cambia la selección de la IA.
+     * `LShift + 0` muestra información de todas las IA.

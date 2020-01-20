@@ -20,12 +20,12 @@ else
 	LIBS		+= -Wl,-rpath=lib/linux/glfw -Wl,-rpath=lib/linux/glew
 	INCLUDE     := -I.
 	INCLUDE_GLEW := -I./include/glew
-	INCLUDE_GLEW := -I./include/glfw
+	INCLUDE_GLFW := -I./include/glfw
 	CC			:= g++
 endif
 
 SOURCES  	:= $(wildcard *.cpp)
-OBJ_PATH    := obj
+OBJ_PATH    := ../obj/CLEngine
 SRC_PATH	:= src
 
 NAME_EXE	:= CLEngine
@@ -52,7 +52,7 @@ $(NAME_EXE): $(OBJSUBDIRS) $(ALLCPPSOBJ)
 $(OBJ_PATH)/%.o: $(SRC_PATH)/%.cpp
 	$(PRUEBA_TEXT)
 	$(COMPILING_TEXT) $<
-	@$(CC) $(CXXFLAGS) -o $@ -c $^ $(INCLUDE) $(INCLUDE_GLEW)
+	@$(CC) $(CXXFLAGS) -o $@ -c $^ $(INCLUDE) $(INCLUDE_GLEW) $(INCLUDE_GLFW)
 	
 
 $(OBJSUBDIRS):
@@ -72,6 +72,7 @@ exe:
 clean:
 	@rm -Rf $(OBJ_PATH)/ && rm -f $(NAME_EXE)
 	$(ALL_CLEANED_TEXT)
+
 
 .PHONY: all
 all:
