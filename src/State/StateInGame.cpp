@@ -126,8 +126,6 @@ void StateInGame::InitializeFacades() {
 }
 
 void StateInGame::CAMBIARCosasDeTotem(ManTotem &manTotems) {
-    // CREAMOS EL TOTEM
-    manTotems.CreateTotem(glm::vec3(-100.0, 20.0, -100.0));
     // --------------------------------------------------------------------------------------------------------------------------------------------
     totemOnCar = make_shared<Entity>();
     glm::vec3 postoTemOnCar = glm::vec3(40.0f, -100.0f, 30.0f);

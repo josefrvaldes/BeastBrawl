@@ -7,11 +7,22 @@
 #include "../Components/CDimensions.h"
 #include "../Components/CCurrentNavMesh.h"
 #include "../Components/CNavMesh.h"
+#include "../../include/include_json/include_json.hpp"
 
 class Position;
 using namespace std;
-
+using json = nlohmann::json;
 ManTotem::ManTotem() {
+    // CREAMOS EL TOTEM
+    ifstream i("data.json");
+    json j = json::parse(i);
+
+    double totemPosX = j["TOTEM"]["x"].get<double>();
+    double totemPosY = j["TOTEM"]["y"].get<double>();
+    double totemPosZ = j["TOTEM"]["z"].get<double>();
+    std::cout << " LA POS X DEL TOTEM ES LA: " << totemPosX << std::endl;
+    //CreateTotem(glm::vec3(-100.0, 20.0, -100.0));
+    CreateTotem(glm::vec3(totemPosX, totemPosZ-30, totemPosY));
     SubscribeToEvents();
    // CreateTotem();
 }
