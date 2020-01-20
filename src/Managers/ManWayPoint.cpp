@@ -14,11 +14,32 @@ ManWayPoint::ManWayPoint(){
     float cost = 0;
     int id=0, type=0,to=0,from=0;
 
-
-    ifstream i("WayPoints.json");
+    ifstream i("data.json");
     json j = json::parse(i);
 
-    int waypointsCount = j["WayPoints"].size();
+    int waypointsCount = j["WAYPOINTS"].size();
+    std::cout << "EL NUMERO DE WAYPOINTS EN EL JSON ES: " << waypointsCount << std::endl;
+    //Leemos el array de waypoints
+    for(int i = 0; i< waypointsCount; ++i){
+        string idWayPoint = to_string(i);  //El primer elemento es "0" como string
+        auto capaActual = j["WAYPOINTS"][idWayPoint];
+        id   = capaActual["id"].get<int>();
+        x    = capaActual["x"].get<float>();
+        z    = capaActual["y"].get<float>();    // INTERCAMBIAMOS REALMENTE LA "Y" POR LA "Z"
+        y    = capaActual["z"].get<float>();
+        type = capaActual["type"].get<int>();
+
+        cout << id << "/" << x << "/" << y << "/" << z << "/" << type << "/" << endl;
+        glm::vec3 position = glm::vec3(x,y,z);
+        CreateWayPoint(position,type,id);
+    }
+
+
+
+    ifstream i2("WayPoints.json");
+    json j2 = json::parse(i2);
+/*
+    waypointsCount = j["WayPoints"].size();
 
     //Leemos el array de waypoints
     for(int i = 0; i< waypointsCount; ++i){
@@ -33,12 +54,12 @@ ManWayPoint::ManWayPoint(){
         glm::vec3 position = glm::vec3(x,y,z);
         CreateWayPoint(position,type,id);
     }
-
-    int edgesCount = j["Edges"].size();
+*/
+    int edgesCount = j2["Edges"].size();
 
     //Leemos el array de edges
     for(int i = 0; i< edgesCount; ++i){
-        auto capaActual = j["Edges"][i];
+        auto capaActual = j2["Edges"][i];
         from  = capaActual["FROM"].get<int>();
         to    = capaActual["TO"].get<int>();
 
