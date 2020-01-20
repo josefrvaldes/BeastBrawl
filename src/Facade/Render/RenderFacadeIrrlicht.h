@@ -53,7 +53,7 @@ class RenderFacadeIrrlicht : public RenderFacade {
     void FacadeCheckInputMenu() override;
     void FacadeCheckInputPause() override;
     void FacadeCheckInputEndRace() override;
-    void FacadeUpdatePowerUpHUD(DataMap d) override;
+    void FacadeUpdatePowerUpHUD(DataMap* d) override;
     void FacadeDrawHUD(Entity* car, ManCar* carsAI) override;
     void FacadeSuscribeEvents() override;
     void FacadeAddPlates(Manager* manNamePlates) override;
@@ -66,7 +66,7 @@ class RenderFacadeIrrlicht : public RenderFacade {
     void FacadeDrawBoundingBox(Entity* entity, bool colliding) const override;
     void FacadeDrawBoundingPlane(Entity* entity) const override;
     void FacadeDrawAIDebug(ManCar* manCars, ManNavMesh* manNavMesh, ManWayPoint* manWayPoint) const override;
-    void FacadeDrawAIDebugPath(CarAI* carAI, ManWayPoint* manWayPoint) const override;
+    void FacadeDrawAIDebugPath(Entity* carAI, ManWayPoint* manWayPoint) const override;
 
 
 

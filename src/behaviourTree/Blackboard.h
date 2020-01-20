@@ -3,6 +3,7 @@
 #include <iostream>
 #include <memory>
 #include "../Entities/Car.h"
+#include "../Entities/CarHuman.h"
 #include "../Entities/CarAI.h"
 #include "../Managers/ManCar.h"
 #include "../Managers/ManPowerUp.h"

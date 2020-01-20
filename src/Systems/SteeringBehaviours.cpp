@@ -5,6 +5,7 @@
 #include "../Managers/ManPowerUp.h"
 #include "../Managers/ManBoundingWall.h"
 #include "../Entities/Car.h"
+#include "../Entities/CarHuman.h"
 #include "../Entities/CarAI.h"
 #include "../Entities/Entity.h"
 #include "../Entities/BoxPowerUp.h"
@@ -348,7 +349,7 @@ glm::vec2 SteeringBehaviours::ObstacleAvoidance(Entity* m_Car, ManCar* m_manCar,
     glm::vec2 vectorForceAvoid;
     Entity* actualObstacle = nullptr;
 
-    for(std::shared_ptr<Entity> obstacle : m_manCar->GetEntitiesAI()){
+    for(auto obstacle : m_manCar->GetEntities()){
         //auto cPowerUp = static_cast<CPowerUp*>(obstacle->GetComponent(CompType::PowerUpComp).get());
         if(obstacle.get()!=m_Car && CollisionRaySphere(m_Car, obstacle.get(), m_velocityVector, distance, vectorForceAvoid)==true){
             if(distance < finalDistance && distance < cCar->speed*0.4+cRay->baseDistanceSphere && distance > 0){
@@ -356,14 +357,6 @@ glm::vec2 SteeringBehaviours::ObstacleAvoidance(Entity* m_Car, ManCar* m_manCar,
                 vectorForce = vectorForceAvoid;
                 actualObstacle= obstacle.get();
             }
-        }
-    }
-    // se comprueba con el jugador tambien
-    if(CollisionRaySphere(m_Car, m_manCar->GetCar().get(), m_velocityVector, distance, vectorForceAvoid)==true){
-        if(distance < finalDistance && distance < cCar->speed*0.4+cRay->baseDistanceSphere && distance > 0){
-            finalDistance = distance;
-            vectorForce = vectorForceAvoid;
-            actualObstacle = m_manCar->GetCar().get();
         }
     }
 

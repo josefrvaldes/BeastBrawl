@@ -1,6 +1,7 @@
 #include "PhysicsAI.h"
 
 #include "../Entities/Car.h"
+#include "../Entities/CarHuman.h"
 #include "../Entities/CarAI.h"
 #include "../Entities/WayPoint.h"
 
@@ -43,7 +44,9 @@ void PhysicsAI::UpdateCarPowerUps(CarAI* carAI){
 
     if(cTotem->accumulatedTime/1000.0 > cTotem->durationTime/1000.0){
         cout << "Has ganado\n";
-        Game::GetInstance()->SetState(State::ENDRACE);
+        //Game::GetInstance()->SetState(State::ENDRACE);
+        EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_ENDRACE});
+
     }
 
     // Actualiza el componente nitro

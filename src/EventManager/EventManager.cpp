@@ -19,25 +19,6 @@ EventManager& EventManager::GetInstance() {
 //O(n)
 //Acceso: O(1)
 void EventManager::Update() {
-    /** Version con cola 
-    while(!eventQueue.empty()){
-        Event e = eventQueue.front(); //Cojemos el primero en la lista
-        eventQueue.pop(); // Lo sacamos de la lista
-
-        cout << "Procesando evento con prioridad: " << e.type << endl;
-
-        //Tratamos el evento
-        auto mapByType = eventListenerMap.find(e.type);
-
-        if(mapByType!=eventListenerMap.end()){
-            auto eventVector = mapByType->second;   // El vector de listeners del mapa segun el EventType
-
-            for(Listener listener : eventVector){
-                listener.function(e.data);
-            }
-        }
-   }
-*/
 
     while (!eventList.empty()) {
         Event e = eventList.front();  //Cojemos el primero en la lista
@@ -52,7 +33,7 @@ void EventManager::Update() {
             auto eventVector = mapByType->second;  // El vector de listeners del mapa segun el EventType
 
             for (Listener listener : eventVector) {
-                listener.callback(e.data);
+                listener.callback(e.data.get());
             }
         }
     }

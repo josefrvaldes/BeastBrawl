@@ -67,15 +67,7 @@ void StateInGameMulti::CAMBIARCosasDeTotemUpdate() {
         }
     }
     if (todosFalse) {
-        auto cTotem = static_cast<CTotem *>(manCars.get()->GetCar().get()->GetComponent(CompType::TotemComp).get());
-        if (cTotem->active) {
-            auto cTransformCar = static_cast<CTransformable *>(manCars.get()->GetCar().get()->GetComponent(CompType::TransformableComp).get());
-            cTransformTotem->position.x = cTransformCar->position.x;
-            cTransformTotem->position.z = cTransformCar->position.z;
-            cTransformTotem->position.y = 32.0f;
-        } else {
-            cTransformTotem->position.y = -100.0f;
-        }
+        cTransformTotem->position.y = -100.0f;
     }
 
     renderEngine->UpdateTransformable(totemOnCar.get());

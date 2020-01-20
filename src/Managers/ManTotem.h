@@ -24,13 +24,13 @@ class ManTotem : public Manager{
     void CreateTotem();
     void CreateTotem(glm::vec3 _position);
     void Update();
-    shared_ptr<Totem>& GetTotem() { return totem; };
+    //shared_ptr<Totem>& GetTotem() { return totem; };
     //vector<shared_ptr<Totem>> GetEntities() const { return totems; };
 
    private:
-    shared_ptr<Totem> totem;
+    //shared_ptr<Totem> totem;
     //vector<shared_ptr<Totem>> totems;
-    void AppertainCar(DataMap d);
-    void ResetTotem(DataMap d);
+    void AppertainCar(DataMap* d);
+    void ResetTotem(DataMap* d);
     void SubscribeToEvents();
 };

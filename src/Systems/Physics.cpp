@@ -12,6 +12,7 @@
 #include "../Components/Component.h"
 #include "../Entities/Camera.h"
 #include "../Entities/Car.h"
+#include "../Entities/CarHuman.h"
 
 Physics::Physics(float _deltaTime) : deltaTime(_deltaTime) {
 }

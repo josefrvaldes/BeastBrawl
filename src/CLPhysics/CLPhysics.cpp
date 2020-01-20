@@ -2,6 +2,7 @@
 
 #include "CLPhysics.h"
 #include <iostream>
+#include <memory>
 #include <sstream>
 #include "../Components/CAABoundingBox.h"
 #include "../Components/CBoundingPlane.h"
@@ -16,6 +17,7 @@
 #include "../Entities/BoundingWall.h"
 #include "../Entities/Car.h"
 #include "../Entities/CarAI.h"
+#include "../Entities/CarHuman.h"
 #include "../EventManager/Event.h"
 #include "../EventManager/EventManager.h"
 #include "../Managers/ManBoundingWall.h"
@@ -42,29 +44,16 @@ void CLPhysics::HandleCollisionsWithPlanes() {
     ManCar *manCar = static_cast<ManCar *>(managers[0]);
     ManBoundingWall *manWalls = static_cast<ManBoundingWall *>(managers[1]);
 
-    Car *c = manCar->GetCar().get();
-
-    vector<shared_ptr<CarAI>> carAIs = manCar->GetEntitiesAI();
-    size_t numCarAIs = carAIs.size();
+    vector<shared_ptr<Entity>> carAIs = manCar->GetEntities();
+    size_t numCar = carAIs.size();
 
     vector<shared_ptr<Entity>> walls = manWalls->GetEntities();
     size_t numWalls = walls.size();
 
-    CBoundingSphere *spc = static_cast<CBoundingSphere *>(c->GetComponent(CompType::CompBoundingSphere).get());
-    CTransformable *trc = static_cast<CTransformable *>(c->GetComponent(CompType::TransformableComp).get());
-    CCar *ccarc = static_cast<CCar *>(c->GetComponent(CompType::CarComp).get());
-
-    // mi coche con todos los walls
-    for (size_t currentWall = 0; currentWall < numWalls; currentWall++) {
-        BoundingWall *wall = static_cast<BoundingWall *>(walls[currentWall].get());
-        CBoundingPlane *plane = static_cast<CBoundingPlane *>(wall->GetComponent(CompType::CompBoundingPlane).get());
-        HandleCollisions(*trc, *spc, *ccarc, true, *plane);
-    }
-
-    // las ias con los walls
-    for (size_t currentAI = 0; currentAI < numCarAIs; currentAI++) {
+    // los coches con los walls
+    for (size_t currentAI = 0; currentAI < numCar; currentAI++) {
         for (size_t currentWall = 0; currentWall < numWalls; currentWall++) {
-            CarAI *car = manCar->GetEntitiesAI()[currentAI].get();
+            Entity *car = manCar->GetEntities()[currentAI].get();
             BoundingWall *wall = static_cast<BoundingWall *>(walls[currentWall].get());
 
             CBoundingSphere *spcar1 = static_cast<CBoundingSphere *>(car->GetComponent(CompType::CompBoundingSphere).get());
@@ -87,33 +76,14 @@ void CLPhysics::Simulate(float delta) {
 void CLPhysics::HandleCollisions() {
     ManCar *manCar = static_cast<ManCar *>(managers[0]);
 
-    Car *c = manCar->GetCar().get();
-    Entity* carPlayer = manCar->GetCar().get();
-
-    vector<shared_ptr<CarAI>> entities = manCar->GetEntitiesAI();
+    vector<shared_ptr<Entity>> entities = manCar->GetEntities();
     size_t numEntities = entities.size();
 
-    CBoundingSphere *spc = static_cast<CBoundingSphere *>(c->GetComponent(CompType::CompBoundingSphere).get());
-    CTransformable *trc = static_cast<CTransformable *>(c->GetComponent(CompType::TransformableComp).get());
-    CCar *ccarc = static_cast<CCar *>(c->GetComponent(CompType::CarComp).get());
-
-    // mi coche con todos los coches de AI
-    for (size_t i = 0; i < numEntities; i++) {
-        CarAI *cai = manCar->GetEntitiesAI()[i].get();
-        CBoundingSphere *spcai = static_cast<CBoundingSphere *>(cai->GetComponent(CompType::CompBoundingSphere).get());
-        CTransformable *trcai = static_cast<CTransformable *>(cai->GetComponent(CompType::TransformableComp).get());
-        CCar *ccarcai = static_cast<CCar *>(cai->GetComponent(CompType::CarComp).get());
-        bool intersect = HandleCollisions(*trc, *spc, *ccarc, true, *trcai, *spcai, *ccarcai);
-        if(intersect){
-            checkCollisionNitro(carPlayer, cai);
-        }
-    }
-
-    // las ias entre sí
+    // los coches entre si
     for (size_t i = 0; i < numEntities; i++) {
         for (size_t j = i + 1; j < numEntities; j++) {
-            CarAI *car1 = manCar->GetEntitiesAI()[i].get();
-            CarAI *car2 = manCar->GetEntitiesAI()[j].get();
+            Entity *car1 = manCar->GetEntities()[i].get();
+            Entity *car2 = manCar->GetEntities()[j].get();
             CBoundingSphere *spcar1 = static_cast<CBoundingSphere *>(car1->GetComponent(CompType::CompBoundingSphere).get());
             CTransformable *trcar1 = static_cast<CTransformable *>(car1->GetComponent(CompType::TransformableComp).get());
             CCar *ccarcar1 = static_cast<CCar *>(car1->GetComponent(CompType::CarComp).get());
@@ -138,9 +108,9 @@ void CLPhysics::checkCollisionNitro(Entity* car1, Entity* car2){
         auto cTotemCar2 = static_cast<CTotem *>(car2->GetComponent(CompType::TotemComp).get());
         if(cTotemCar2->active){
             // si que lo tiene... lanzamos evento para intercambiarlo
-            DataMap data;   
-            data["carWithTotem"] = car2;     
-            data["carWithoutTotem"] = car1;                                                                                                    
+            shared_ptr<DataMap> data = make_shared<DataMap>();   
+            (*data)["carWithTotem"] = car2;     
+            (*data)["carWithoutTotem"] = car1;                                                                                                    
             EventManager::GetInstance().AddEventMulti(Event{EventType::CHANGE_TOTEM_CAR, data}); 
         }
     
@@ -150,9 +120,10 @@ void CLPhysics::checkCollisionNitro(Entity* car1, Entity* car2){
             auto cTotemCar1 = static_cast<CTotem *>(car1->GetComponent(CompType::TotemComp).get());
             if(cTotemCar1->active){
                 // si que lo tiene... lanzamos evento para intercambiarlo
-                DataMap data;       
-                data["carWithTotem"] = car1;     
-                data["carWithoutTotem"] = car2;                                                                                                    
+                shared_ptr<DataMap> data = make_shared<DataMap>();   
+                      
+                (*data)["carWithTotem"] = car1;     
+                (*data)["carWithoutTotem"] = car2;                                                                                                    
                 EventManager::GetInstance().AddEventMulti(Event{EventType::CHANGE_TOTEM_CAR, data}); 
             }
         }
@@ -203,8 +174,8 @@ void CLPhysics::SeparateSphereFromPlane(IntersectData &intersData, CTransformabl
 }
 
 void CLPhysics::SonarChoque(bool mainCar) {
-    DataMap map;
-    map["mainCharacter"] = mainCar;
+    shared_ptr<DataMap> map = make_shared<DataMap>();
+    (*map)["mainCharacter"] = mainCar;
     Event e(EventType::CRASH_ENEMY, map);
     EventManager::GetInstance().AddEventMulti(e);
 }

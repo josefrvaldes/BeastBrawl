@@ -13,29 +13,27 @@ using namespace std;
 
 ManPowerUp::ManPowerUp() {
     SubscribeToEvents();
-    //CreatePowerUp(glm::vec3(30.0, 30.0, 30.0));
-    cout << "Hemos creado el manager de powerup, ahora tenemos " << endl;
 }
 
 
 ManPowerUp::~ManPowerUp() {
     cout << "Llamando al destructor de ManPowerUps" << endl;
-    PowerUps.clear();
-    PowerUps.shrink_to_fit();
+    entities.clear();
+    entities.shrink_to_fit();
 }
 
 
 // Lugar en el que se crean los power ups
 
-void ManPowerUp::CreatePowerUp(DataMap d) {
+void ManPowerUp::CreatePowerUp(DataMap* d) {
 
-    typeCPowerUp type = any_cast<typeCPowerUp>(d["typePowerUp"]);
+    typeCPowerUp type = any_cast<typeCPowerUp>((*d)["typePowerUp"]);
 
-    CTransformable *transforSalida = any_cast<CTransformable *>(d["posCocheSalida"]);
-    CDimensions *dimensionsCarSalida = any_cast<CDimensions *>(d["dimensionCocheSalida"]);
+    CTransformable *transforSalida = any_cast<CTransformable *>((*d)["posCocheSalida"]);
+    CDimensions *dimensionsCarSalida = any_cast<CDimensions *>((*d)["dimensionCocheSalida"]);
     CTransformable *transforPerse;
-    if(d.count("posCochePerseguir") > 0){
-        transforPerse = any_cast<CTransformable *>(d["posCochePerseguir"]);
+    if(d->count("posCochePerseguir") > 0){
+        transforPerse = any_cast<CTransformable *>((*d)["posCochePerseguir"]);
     }else
         transforPerse = nullptr;
 
@@ -56,7 +54,7 @@ void ManPowerUp::CreatePowerUp(DataMap d) {
 
     shared_ptr<PowerUp> powerUp = make_shared<PowerUp>(positionPowerUp, transforSalida->rotation, type, transforPerse);
     //std::cout << "Las dimensiones del coche son x:" << dimensionsCarSalida->width << " y:" << dimensionsCarSalida->height << " z:" << dimensionsCarSalida->depth << std::endl;
-    PowerUps.push_back(powerUp);
+    entities.push_back(powerUp);
 
     auto renderFacadeManager = RenderFacadeManager::GetInstance();
     auto renderEngine = renderFacadeManager->GetRenderFacade();
@@ -68,13 +66,13 @@ void ManPowerUp::CreatePowerUp(DataMap d) {
 
 
 // TO-DO ELIMINARLO TODO AL MISMO TIEMPO ANTES DE RENDERIZAR 
-void ManPowerUp::DeletePowerUp(DataMap d){
+void ManPowerUp::DeletePowerUp(DataMap* d){
     auto renderFacadeManager = RenderFacadeManager::GetInstance();
     auto renderEngine = renderFacadeManager->GetRenderFacade();
-    for(long unsigned int i=0; i< PowerUps.size(); ++i){
-        if(PowerUps[i] == any_cast<shared_ptr<Entity>>(d["PowerUp"])){
-            renderEngine->DeleteEntity(PowerUps[i].get());
-            PowerUps.erase(PowerUps.begin()+i);
+    for(long unsigned int i=0; i< entities.size(); ++i){
+        if(entities[i] == any_cast<shared_ptr<Entity>>((*d)["PowerUp"])){
+            renderEngine->DeleteEntity(entities[i].get());
+            entities.erase(entities.begin()+i);
         }
     }
 }

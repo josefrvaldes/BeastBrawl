@@ -53,7 +53,7 @@ void Camera::SuscribeEvents(){
 }
 
 
-void Camera::InvertCamera(DataMap d){ 
+void Camera::InvertCamera(DataMap* d){ 
     auto cCamera = static_cast<CCamera*>(GetComponent(CompType::CameraComp).get());
 
     //Si esta invertida la desinvertimos y viceversa
@@ -66,7 +66,7 @@ void Camera::InvertCamera(DataMap d){
     }
 }
 
-void Camera::TotemCamera(DataMap d){      
+void Camera::TotemCamera(DataMap* d){      
     auto cCamera = static_cast<CCamera*>(GetComponent(CompType::CameraComp).get());
 
     if(cCamera->camType == CamType::TOTEM){
@@ -77,7 +77,7 @@ void Camera::TotemCamera(DataMap d){
     }
 }
 
-void Camera::NormalCamera(DataMap d){
+void Camera::NormalCamera(DataMap* d){
     auto cCamera = static_cast<CCamera*>(GetComponent(CompType::CameraComp).get());
 
     cCamera->camType = CamType::NORMAL;
