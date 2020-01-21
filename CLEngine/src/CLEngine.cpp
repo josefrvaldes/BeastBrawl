@@ -3,16 +3,31 @@
 using namespace std;
 using namespace CLE;
 
+/**
+ * Constructor que iniciara todas las configuraciones iniciales de OpenGL y la ventana.
+ * @param w - Anchura en pixeles de la ventana.
+ * @param h - Altura en pixeles de la ventana.
+ * @param title - Titulo de la ventana.
+ */
 CLEngine::CLEngine (const unsigned int w, const unsigned int h, const string& title) {
     CreateGlfwWindow(w, h, title);
 }
 
+/**
+ * Destruye la ventana de GLFW y libera la informacion.
+ */
 CLEngine::~CLEngine() {
     glfwDestroyWindow(window);
     glfwTerminate();
     cout << ">>>>> GLFW OFF" << endl;
 }
 
+/**
+ * Inicia, crea y configura  la ventana OpenGL con GLFW.
+ * @param w - Anchura en pixeles de la ventana.
+ * @param h - Altura en pixeles de la ventana.
+ * @param title - Titulo de la ventana.
+ */
 void CLEngine::CreateGlfwWindow (const unsigned int w, const unsigned int h, const string& title) {
     if (!glfwInit()) {
         cout << "- No se ha podido crear inicializar GLFW" << endl;
@@ -40,4 +55,26 @@ void CLEngine::CreateGlfwWindow (const unsigned int w, const unsigned int h, con
 
     width = w;
     height = h;
+}
+
+/**
+ * Actualizacion de CLEngine.
+ */
+bool CLEngine::Run() {
+
+    // Checkea eventos.
+    glfwPollEvents();
+
+    // Actualiza los valores de anchura y altura de la ventana por si se ha redimensionado y asi cambiar el viewport.
+    glfwGetFramebufferSize(window, &width, &height);
+    glViewport(0, 0, width, height);
+
+    // Render
+    glClearColor(0.3f, 0.2f, 0.4f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    // Cambia de buffer.
+    glfwSwapBuffers(window);
+
+    return true;
 }

@@ -16,14 +16,16 @@ namespace CLE {
             CLEngine(const unsigned int, const unsigned int, const string&);
             ~CLEngine();
 
-
+            GLFWwindow* GetWindow() const { return window; }
+            bool Loop();
+            bool Run();
             
         private:
 
             void CreateGlfwWindow(const unsigned int, const unsigned int, const string&);
 
-            unsigned int width;
-            unsigned int height;
+            int width;
+            int height;
             GLFWwindow *window = nullptr;
     };
 }

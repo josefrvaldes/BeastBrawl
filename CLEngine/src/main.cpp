@@ -1,12 +1,18 @@
 #include <iostream>
+
 #include "../include/glew/glew.h"
 #include "../include/glfw/glfw3.h"
-#include "ImGUI/imgui.h"
+#include "CLEngine.h"
+/*#include "ImGUI/imgui.h"
 #include "ImGUI/imgui_impl_opengl3.h"
-#include "ImGUI/imgui_impl_glfw.h"
+#include "ImGUI/imgui_impl_glfw.h"*/
 
 using namespace std;
 
+/**
+ * Mira si se ha pulsado ESC para cerrar la ventana.
+ * @param window - Ventana sobre la que mira los eventos. 
+ */
 void checkInput (GLFWwindow *window) {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
         glfwSetWindowShouldClose(window, true);
@@ -15,59 +21,29 @@ void checkInput (GLFWwindow *window) {
 
 int main() {
 
-    glfwInit();
-    cout << ">>>>> GLFW ON" << endl;
+    CLE::CLEngine *device = new CLE::CLEngine(1280, 720, "Beast Brawl");
 
-    // TO-DO: Establecer version. ¿Es necesario?
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-    GLFWwindow *window = glfwCreateWindow( 1280, 720, "Beast Brawl", NULL, NULL );
-
-    if (!window) {
-        cout << "No se ha podido crear la ventana" << endl;
-        glfwTerminate();
-        return -1;
-    }
-
-    cout << "    > Ventana creada" << endl;
-
-
-    glfwMakeContextCurrent(window);
-    glViewport(0, 0, 1280, 720);
-     // Setup Dear ImGui context
-
-    IMGUI_CHECKVERSION();
+    /*IMGUI_CHECKVERSION();
     ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    ImGuiIO& io = ImGui::GetIO(); (void)io;*/
 
 
     // Setup Dear ImGui style
-    ImGui::StyleColorsDark();
+    //ImGui::StyleColorsDark();
     //ImGui::StyleColorsClassic();
 
     // Setup Platform/Renderer bindings
-    ImGui_ImplGlfw_InitForOpenGL(window, true);
-    ImGui_ImplOpenGL3_Init("#version 130");
-    glewInit();
-    cout << "    > Viewport establecido" << endl;
+    /*ImGui_ImplGlfw_InitForOpenGL(window, true);
+    ImGui_ImplOpenGL3_Init("#version 130");*/
+    //glewInit();
 
-    // while (!glfwWindowShouldClose(window)) {
+    while (!glfwWindowShouldClose(device->GetWindow())) {
 
-    //     // Input.
-    //     checkInput(window);
+        checkInput(device->GetWindow());
+        device->Run();
+    }
 
-    //     // Render.
-    //     glClearColor(0.3f, 0.2f, 0.4f, 1.0f);
-    //     glClear(GL_COLOR_BUFFER_BIT);
-
-    //     // Cambia de buffer y checkea eventos.
-    //     glfwSwapBuffers(window);
-    //     glfwPollEvents();
-    // }
-
-    ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+    /*ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
     // Main loop
     while (!glfwWindowShouldClose(window))
     {
@@ -113,20 +89,17 @@ int main() {
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
         glfwSwapBuffers(window);
-    }
+    }*/
 
 
     //cout << glGetString(GL_VERSION) << "\n";
 
     // Cleanup
-    ImGui_ImplOpenGL3_Shutdown();
+    /*ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
-    ImGui::DestroyContext();
+    ImGui::DestroyContext();*/
 
-    glfwDestroyWindow(window);
-    glfwTerminate();
-    cout << ">>>>> GLFW OFF" << endl;
+    delete device;
 
     return 0;
-    
 }
