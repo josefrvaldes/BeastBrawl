@@ -44,7 +44,7 @@ class UDPClient {
     udp::endpoint serverEndpoint;
     udp::socket socket;
     // boost::array<char, 128> recvBuff;
-    vector<boost::asio::const_buffer> sendBuff;
+    boost::array<string, 1> sendBuff;
     vector<boost::asio::mutable_buffer> recvBuff;
     std::thread butler;
 };

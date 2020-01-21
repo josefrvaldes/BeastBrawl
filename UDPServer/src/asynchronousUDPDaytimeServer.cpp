@@ -15,6 +15,8 @@ int main(int argc, char* argv[]) {
     try {
         asio::io_context context;
         UDPServer server(context, PORT);
+        boost::asio::executor_work_guard<boost::asio::io_context::executor_type> work_guard(context.get_executor());
+        server.StartReceiving();
         context.run();
     } catch (std::exception& e) {
         cout << "Hubo una excepción " << e.what() << endl;

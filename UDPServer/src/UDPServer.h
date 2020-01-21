@@ -2,6 +2,7 @@
 
 #include <boost/array.hpp>
 #include <boost/asio.hpp>
+#include <boost/enable_shared_from_this.hpp>
 #include <chrono>
 #include <iostream>
 
@@ -10,16 +11,17 @@ using namespace boost;
 using namespace std;
 using namespace std::chrono;
 
-class UDPServer {
+class UDPServer : public boost::enable_shared_from_this<UDPServer> {
    public:
     UDPServer(asio::io_context& context_, uint16_t port_);
+    void StartReceiving();
 
    private:
-    void StartReceiving();
 
     void SaveClientIfNotExists(udp::endpoint& endpoint);
 
-    void HandleReceive(udp::endpoint& remoteEndpoint, const boost::system::error_code& error, size_t bytesTransferred);
+    void HandleReceive(std::shared_ptr<boost::array<char, 1024>> recevBuff, std::shared_ptr<udp::endpoint> remoteEndpoint, const boost::system::error_code& error, size_t bytesTransferred);
+    void HandleReceive(const boost::system::error_code& error, size_t bytesTransferred);
     void HandleReceiveInput(const udp::endpoint& remoteClient);
     void HandleReceiveDateTimeRequest(const udp::endpoint& remoteClient);
     void HandleSentDateTimeRequest(const boost::shared_ptr<string> message,
@@ -41,9 +43,6 @@ class UDPServer {
     udp::socket socket;
     udp::endpoint receiverEndpoint;
     std::vector<udp::endpoint> clients;
-    // boost::array<boost::asio::mutable_buffer, 2> recvBuff;
-    // boost::array<boost::asio::mutable_buffer, 2> recvBuff;
-    vector<boost::asio::const_buffer> sendBuff;
-    vector<boost::asio::mutable_buffer> recvBuff;
-    // boost::array<uint16_t, 2> recvBuff;
+    boost::array<char, 1024> recvBuff;
+    asio::streambuf inPacket;
 };

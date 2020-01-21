@@ -9,52 +9,62 @@ using namespace std::chrono;
 
 UDPServer::UDPServer(boost::asio::io_context& context_, uint16_t port_)
     : socket(context_, udp::endpoint(udp::v4(), port_)) {
-    StartReceiving();
+    // StartReceiving();
 }
 
 void UDPServer::StartReceiving() {
+    std::shared_ptr<boost::array<char, 1024>> recevBuff = make_shared<boost::array<char, 1024>>();
+    std::shared_ptr<udp::endpoint> receiverEndpoint = make_shared<udp::endpoint>();
     socket.async_receive_from(
-        asio::buffer(recvBuff),
-        receiverEndpoint,
+        asio::buffer(*recevBuff),
+        *receiverEndpoint,
         boost::bind(
             &UDPServer::HandleReceive,
             this,
+            recevBuff, 
             receiverEndpoint,
             boost::asio::placeholders::error,
             boost::asio::placeholders::bytes_transferred));
-        // [&](const boost::system::error_code& error, std::size_t bytesTransferred) {
-        //     HandleReceive(receiverEndpoint, error, bytesTransferred);
-        // });
 }
 
-void UDPServer::HandleReceive(udp::endpoint& remoteClient, const boost::system::error_code& errorCode, std::size_t bytesTransferred) {
+void UDPServer::HandleReceive(std::shared_ptr<boost::array<char, 1024>> recevBuff, std::shared_ptr<udp::endpoint> remoteClient, const boost::system::error_code& errorCode, std::size_t bytesTransferred) {
     // cout << "Hemos recibido una petición del endpoint " << remoteClient.address() << ":" << remoteClient.port() << endl;
     if (!errorCode) {
-        SaveClientIfNotExists(remoteClient);
-        // uint16_t callType = recvBuff[0];
-        // boost::array<uint16_t,1> callType = recvBuff[0];
-        boost::asio::mutable_buffer buff1 = recvBuff[0];
-        boost::array<uint16_t, 1> *arrCallType = static_cast<boost::array<uint16_t, 1>*>(buff1.data());
-        Constants::PetitionTypes callType = static_cast<Constants::PetitionTypes>((*arrCallType)[0]);
-        // uint16_t* ptrCallType = static_cast<uint16_t*>(buff1.data());
-        // uint16_t callType = *ptrCallType;
-        // uint16_t callType = *static_cast<uint16_t*>(recvBuff[0].data());
+        SaveClientIfNotExists(*remoteClient.get());
+        string s;
+        std::copy(recevBuff->begin(), recevBuff->begin() + bytesTransferred, std::back_inserter(s));
 
-        // boost::array<Constants::PetitionTypes, 1> petitionTypes = *static_cast<boost::array<Constants::PetitionTypes, 1>*>(recvBuff[0].data());
-
-        // boost::array<Constants::PetitionTypes, 1> petitionTypes = recvBuff[0].data();
-        // boost::int8_t ojete = *static_cast<boost::int8_t *>(recvBuff[0].data());
-        // Constants::PetitionTypes petitionType = ojete;
-        // Constants::PetitionTypes petitionType = recvBuff[0].data();
-        // Constants::PetitionTypes petitionType = recvBuff[0];
+        Constants::PetitionTypes callType = Constants::PetitionTypes::SEND_INPUT;
         switch (callType) {
             case Constants::PetitionTypes::SEND_INPUTS:  //Input
             case Constants::PetitionTypes::SEND_INPUT:   //Input
-                HandleReceiveInput(remoteClient);
+                HandleReceiveInput(*remoteClient.get());
                 break;
 
             default:
-                HandleReceiveDateTimeRequest(remoteClient);
+                HandleReceiveDateTimeRequest(*remoteClient.get());
+                break;
+        }
+    }
+    StartReceiving();  // antes estaba dentro del if, pero entonces si hay un error ya se rompe tó ¿?
+}
+
+void UDPServer::HandleReceive(const boost::system::error_code& errorCode, std::size_t bytesTransferred) {
+    // cout << "Hemos recibido una petición del endpoint " << remoteClient.address() << ":" << remoteClient.port() << endl;
+    if (!errorCode) {
+        SaveClientIfNotExists(receiverEndpoint);
+
+        string s;
+        std::copy(recvBuff.begin(), recvBuff.begin() + bytesTransferred, std::back_inserter(s));
+        Constants::PetitionTypes callType = Constants::PetitionTypes::SEND_INPUT;
+        switch (callType) {
+            case Constants::PetitionTypes::SEND_INPUTS:  //Input
+            case Constants::PetitionTypes::SEND_INPUT:   //Input
+                HandleReceiveInput(receiverEndpoint);
+                break;
+
+            default:
+                HandleReceiveDateTimeRequest(receiverEndpoint);
                 break;
         }
     }
@@ -75,11 +85,11 @@ void UDPServer::HandleReceiveDateTimeRequest(const udp::endpoint& remoteClient) 
 }
 
 void UDPServer::HandleReceiveInput(const udp::endpoint& remoteClient) {
-    const Constants::InputTypes inputType = *static_cast<Constants::InputTypes*>(recvBuff[1].data());
+    // const Constants::InputTypes inputType = *static_cast<Constants::InputTypes*>(recvBuff[1].data());
     // const Constants::InputTypes inputType = static_cast<Constants::InputTypes>(recvBuff[1]);
-    cout << "El usuario " << remoteClient.address() << ":" << remoteClient.port()
-         << " nos ha enviado un input " << (inputType) << endl;
-    ResendInputToOthers(inputType, remoteClient);
+    // cout << "El usuario " << remoteClient.address() << ":" << remoteClient.port()
+    //      << " nos ha enviado un input " << (inputType) << endl;
+    // ResendInputToOthers(inputType, remoteClient);
 }
 
 void UDPServer::ResendInputToOthers(const int8_t inputType, const udp::endpoint& originalClient) {
