@@ -2,8 +2,8 @@
 #include <boost/asio/placeholders.hpp>
 #include <boost/bind.hpp>
 #include <deque>
-#include "../../include/include_json/include_json.hpp"
 #include "../Systems/Utils.h"
+#include "../../include/include_json/include_json.hpp"
 
 using json = nlohmann::json;
 
@@ -62,6 +62,8 @@ void UDPClient::SendInput(Constants::InputTypes newInput) {
     
     json j;
     j["petitionType"] = Constants::PetitionTypes::SEND_INPUT;
+    j["id"] = Constants::PetitionTypes::SEND_INPUT;
+
     j["input"] = newInput;
     string s = j.dump();
     sendBuff[0] = s;

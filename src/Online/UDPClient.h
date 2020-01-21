@@ -13,6 +13,25 @@ using namespace std;
 using namespace std::chrono;
 
 class UDPClient {
+
+    // --- TCP --- (sala de espera)
+    // .- enviamos al servidor un mensaje de que queremos conectar
+    // .- esperamos hasta recibir respuesta de que empieza la partida.
+    //      Este mensaje traerá información de el estado inicial de la partida
+    //      con el numero de spawn del todos los coches, de esta forma ya sabemos
+    //      dónde debemos posicionar todos los coches de inicio            
+    
+    // --- UDP --- (juego)
+    // .- cambiamos de estado a StateInGameMulti
+    // .- inicializamos la partida con la info que nos ha llegado del server
+    // .- en versión futura se puede recibir una hora de inicio y 
+    //       ese es el momento en el que empieza
+    // .- Empieza la partida, y le enviaremos paquetes de input al servidor y 
+    //      él se encargará de registrar nuestro endpoint udp
+
+
+
+
    public:
     UDPClient(string host, string port_);
 
