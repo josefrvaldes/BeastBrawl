@@ -19,18 +19,63 @@ CBoundingPlane::CBoundingPlane(const vec3 &a_, const vec3 &b_, const vec3 &c_, c
       d{d_},
       normal{(cross(b - a, c - a))},             // calculamos su normal sin normalizar // para el cálculo de la normal: https://stackoverflow.com/a/1966605/4657738
       normalizedNormal{normalize(normal)},       // calculamos su normal normalizada
-      distance{(dot(normalizedNormal, a_))}  // calculamos la distancia del plano a su normal normalizada, la necesitamos
+      distance{(dot(normalizedNormal, a_))},
+      equationPlane{equationPlane3Points(a,b,c)}  // calculamos la distancia del plano a su normal normalizada, la necesitamos
 {
     m_compType = CompType::CompBoundingPlane;
 }
 
-IntersectData CBoundingPlane::IntersectSphere(const CBoundingSphere &other) const {
+IntersectData CBoundingPlane::IntersectSphere(const CBoundingSphere &other){
     float distanceFromSpCenter = fabs(dot(normalizedNormal, other.center) - distance);
     // cout << "Distance from sphere center " << distanceFromSpCenter << endl;
     float distanceFromSphere = distanceFromSpCenter - other.radius;
     bool intersectsInfinitePlane = distanceFromSphere < 0;
+    if(intersectsInfinitePlane){
+        vec3 centerOnPlane = IntersectPoint(*(&other.center));
+    }
     return IntersectData(intersectsInfinitePlane, normalizedNormal * distanceFromSphere);
 }
+
+vec3 CBoundingPlane::IntersectPoint(const vec3 &point){
+    // calculamos el punto virtual que contendria el centro de la esfera en el plano
+    float valorPuntoFinal = (equationPlane.x*point.x)+(equationPlane.y*point.y)+(equationPlane.z*point.z)+equationPlane.w; // -1 -9 + 8 + 1 = -1
+    float valorPlanoFinal = (equationPlane.x*equationPlane.x)+(equationPlane.y*equationPlane.y)+(equationPlane.z*equationPlane.z); // 4 +1 + 9 = 14
+    float interseccion = (-1*(valorPuntoFinal))/valorPlanoFinal; // el valor final de A` es (1/14)
+    float puntoXFinal = point.x + (interseccion*equationPlane.x);
+    float puntoYFinal = point.y + (interseccion*equationPlane.y);
+    float puntoZFinal = point.z + (interseccion*equationPlane.z);
+    std::cout << "LA SOLUCUON ES:        " << puntoXFinal << " , " << puntoYFinal << " , " << puntoZFinal << std::endl;
+    std::cout << "Y EL CENTRO ES:        " << point.x << " , " << point.y << " , " << point.z << std::endl;
+
+    return vec3(0.0,0.0,0.0);
+}
+
+
+vec4 CBoundingPlane::equationPlane3Points(const vec3 &a, const vec3 &b, const vec3 &c) const{
+
+    double mat00 = -1*a.x; // realmente es X - A.X
+    double mat01 = -1*a.y; // realmente es Y - A.Y
+    double mat02 = -1*a.z; // realmente es Z - A.Z
+
+    double mat10 = b.x - a.x; 
+    double mat11 = b.y - a.y; 
+    double mat12 = b.z - a.z; 
+
+    double mat20 = c.x - a.x; 
+    double mat21 = c.y - a.y; 
+    double mat22 = c.z - a.z; 
+
+    double planeX = (mat11*mat22) - (mat12*mat21);
+    double planeY = (mat20*mat12) - (mat10*mat22);
+    double planeZ = (mat10*mat21) - (mat11*mat20);
+    double planeD = ((mat00*mat11*mat22)+(mat01*mat20*mat12)+(mat02*mat10*mat21)) 
+                    - ((mat02*mat11*mat20)+(mat01*mat10*mat22)+(mat00*mat21*mat12));
+
+    std::cout << "LA ECUACION GENERAL DEL PLANTO ES: " << planeX << "x " << planeY << "y " << planeZ << "z " << planeD << std::endl;
+
+    return vec4(planeX,planeY,planeZ,planeD);
+}
+
 
 
 
