@@ -19,6 +19,8 @@ namespace CLE {
             GLFWwindow* GetWindow() const { return window; }
             bool Loop();
             bool Run();
+            void Draw();
+            void UpdateViewport();
             
         private:
 

@@ -72,19 +72,33 @@ void CLEngine::CreateGlfwWindow (const unsigned int w, const unsigned int h, con
  */
 bool CLEngine::Run() {
 
-    // Checkea eventos cada vez que se renderiza. Es un hilo.
-    glfwPollEvents();
+    return glfwWindowShouldClose(window);
 
-    // Actualiza los valores de anchura y altura de la ventana por si se ha redimensionado y asi cambiar el viewport.
-    glfwGetFramebufferSize(window, &width, &height);
-    glViewport(0, 0, width, height);
+    // // Checkea eventos cada vez que se renderiza. Es un hilo.
 
+    
+
+    // // Render
+    // glClearColor(0.3f, 0.2f, 0.4f, 1.0f);
+    // glClear(GL_COLOR_BUFFER_BIT);
+
+    // // Cambia de buffer.
+    // glfwSwapBuffers(window);
+
+    //return true;
+}
+
+void CLEngine::Draw(){
     // Render
     glClearColor(0.3f, 0.2f, 0.4f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
     // Cambia de buffer.
     glfwSwapBuffers(window);
+}
 
-    return true;
+void CLEngine::UpdateViewport(){
+    // // Actualiza los valores de anchura y altura de la ventana por si se ha redimensionado y asi cambiar el viewport.
+    glfwGetFramebufferSize(window, &width, &height);
+    glViewport(0, 0, width, height);
 }

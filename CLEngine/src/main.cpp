@@ -9,6 +9,21 @@
 
 using namespace std;
 
+const char *vertexShaderSource = "#version 460 core\n"
+    "layout (location = 0) in vec3 aPos;\n"
+    "void main()\n"
+    "{\n"
+    "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
+    "}\0";
+
+const char *fragmentShaderSource = "#version 460 core\n"
+    "out vec4 FragColor;\n"
+    "void main()\n"
+    "{\n"
+        "FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
+    "}\n";
+
+
 /**
  * Mira si se ha pulsado ESC para cerrar la ventana.
  * @param window - Ventana sobre la que mira los eventos. 
@@ -22,7 +37,6 @@ void checkInput (GLFWwindow *window) {
 int main() {
 
     CLE::CLEngine *device = new CLE::CLEngine(1280, 720, "Beast Brawl");
-
     /*IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO(); (void)io;*/
@@ -34,13 +48,136 @@ int main() {
 
     // Setup Platform/Renderer bindings
     /*ImGui_ImplGlfw_InitForOpenGL(window, true);
-    ImGui_ImplOpenGL3_Init("#version 130");*/
+    ImGui_ImplOpenGL3_Init("#version 460");*/
     //glewInit();
 
-    while (!glfwWindowShouldClose(device->GetWindow())) {
+    float vertices[] = {
+        0.5f,  0.5f, 0.0f,  // top right
+        0.5f, -0.5f, 0.0f,  // bottom right
+        -0.5f, -0.5f, 0.0f,  // bottom left
+        -0.5f,  0.5f, 0.0f   // top left 
+    };
+    unsigned int indices[] = {  // note that we start from 0!
+        0, 1, 3,   // first triangle
+        1, 2, 3    // second triangle
+    }; 
+
+
+    glewInit(); //Necesitamos el inicializar GLEW para que funcionen todas estas funciones
+    
+
+
+    //----- Creamos el vertex shader ------
+    unsigned int vertexShader;
+    vertexShader = glCreateShader(GL_VERTEX_SHADER); //Creamos el shader y nos guardamos su ID
+    glShaderSource(vertexShader, 1, &vertexShaderSource, NULL); //De momento en el tutorial lo pone como un string el codigo entero
+    glCompileShader(vertexShader);
+
+    //Comprobamos si ha compilado correctamente
+    int  success;
+    char infoLog[512];
+    glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
+    if(!success)
+    {
+        glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
+        std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
+    }
+
+    //----- Creamos el fragment shader ------
+    //Codigo similar al de crear el vertex shader
+    unsigned int fragmentShader;
+    fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
+    glCompileShader(fragmentShader);
+
+    glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
+    if (!success)
+    {
+        glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
+        std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
+    }
+
+    //Una vez ambos shaders estan inicializados tenemos que linkarlos para que el output de uno vaya al otro
+    int shaderProgram = glCreateProgram(); //Como siempre nos devuelve un identificador
+
+    //Bueno aqui es obvio, los enlaza ambos al shaderProgram
+    glAttachShader(shaderProgram, vertexShader);
+    glAttachShader(shaderProgram, fragmentShader);
+    glLinkProgram(shaderProgram);
+
+    glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
+    if(!success) {
+        glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
+        cout << "Ha petado el linkado de shaders :(\n";
+    }
+
+    //Ahora usamos el shaderProgram, un nombre bastante representativo
+    //glUseProgram(shaderProgram);
+
+    //Tecnicamente una vez linkados se pueden borrar los shaders
+    glDeleteShader(vertexShader);
+    glDeleteShader(fragmentShader);  
+
+    //Todo preparado, ahora comienza la magia
+    // 1. bind Vertex Array Object
+    //Todo esto esta muy bien pero lo mejor es tener un array para todos los VBO que queramos dibujar
+    unsigned int VBO,VAO;
+    glGenVertexArrays(1, &VAO); 
+    glGenBuffers(1, &VBO);  //Crea un buffer para VBO(Vertex buffer object) con id unico 
+    glBindVertexArray(VAO);
+
+    // 2. copy our vertices array in a buffer for OpenGL to use
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);  //Fijamos el tipo de buffer (ARRAY_BUFFER)
+   
+    //GL_STATIC_DRAW: the data will most likely not change at all or very rarely.
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+    //Segunda parte del tutorial para dibujar un cuadrado
+    unsigned int EBO;
+    glGenBuffers(1,&EBO);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW); 
+
+    /** glVertexAttribPointer
+     * 1º Valor: Como pusimos layout = 0 pues ahora mandamos un 0
+     * 2º Valor: Numero de vertices que enviamos 3 = vec3
+     * 3º Valor: Si normalizamos o no los datos
+     * 4º Valor: El tamaño de cada bloque, al ser 3 floats cada vertice entonces 3*sizeof(float)
+     * 5º Valor: Movidas raras, ni te rayes 
+     */
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);  
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
+
+    
+
+    
+
+    while (!device->Run()) {
+        //glfwPollEvents();
 
         checkInput(device->GetWindow());
-        device->Run();
+
+        //Apartir de aqui hacemos cosas, de momento en el main para testear
+
+        device->UpdateViewport(); //Por si reescalamos la ventana
+
+        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        glUseProgram(shaderProgram);
+        glBindVertexArray(VAO);
+        glDrawElements(GL_TRIANGLES, 6,GL_UNSIGNED_INT, 0);
+        glBindVertexArray(0);
+
+        glfwSwapBuffers(device->GetWindow());
+        glfwPollEvents();
+
+        //device->Draw(); // Borrado e intercambio de buffers
+        //device->Run();
     }
 
     /*ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
