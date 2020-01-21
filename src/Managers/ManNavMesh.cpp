@@ -72,23 +72,6 @@ ManNavMesh::ManNavMesh() {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     // CREAMOS DE PRUEBA UN NAVMESH
     vector<int> waypoints0{0,1,2,3,4,12};
     vector<int> waypoints1{7,8,9,10,11,13};

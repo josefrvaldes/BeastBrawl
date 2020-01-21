@@ -25,8 +25,8 @@ ManWayPoint::ManWayPoint(){
         auto capaActual = j["WAYPOINTS"][idWayPoint];
         id   = capaActual["id"].get<int>();
         x    = capaActual["x"].get<float>();
-        z    = capaActual["y"].get<float>();    // INTERCAMBIAMOS REALMENTE LA "Y" POR LA "Z"
-        y    = capaActual["z"].get<float>();
+        y    = capaActual["y"].get<float>();    // INTERCAMBIAMOS REALMENTE LA "Y" POR LA "Z"
+        z    = capaActual["z"].get<float>();
         type = capaActual["type"].get<int>();
 
         cout << id << "/" << x << "/" << y << "/" << z << "/" << type << "/" << endl;
