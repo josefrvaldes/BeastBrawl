@@ -22,7 +22,9 @@ class CBoundingPlane : public Component {
     IntersectData IntersectRay(const glm::vec3 &posRayOrigin, const glm::vec3 &rayNormalNormalized) const;
 
     // calculo de la proyeccion de un punto sobre el plano
-    vec3 IntersectPoint(const vec3 &point);
+    vec3 IntersectPoint(const vec3 &point) const;
+    // Teniendo un punto en el plano, comprobamos si se encuentra entre sus 4 vertices
+    bool membershipPoint(const vec3 &point) const;
 
     vec3 a;
     vec3 b;
