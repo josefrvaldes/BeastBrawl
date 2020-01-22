@@ -45,21 +45,21 @@ class SoundFacadeFMOD : public SoundFacade {
 
     private:
         // eventos del juego
-        void StartGame(DataMap);
-        void SoundClaxon(DataMap);
-        void SoundThrowPowerup(DataMap);
-        void SoundHurt(DataMap);
-        void SoundCatchTotem(DataMap);
-        void SoundCrash(DataMap);
-        void SoundBreakBox(DataMap);
-        void SoundDrift(DataMap);
-        void SoundRandomSentence(DataMap);
+        void StartGame(DataMap*);
+        void SoundClaxon(DataMap*);
+        void SoundThrowPowerup(DataMap*);
+        void SoundHurt(DataMap*);
+        void SoundCatchTotem(DataMap*);
+        void SoundCrash(DataMap*);
+        void SoundBreakBox(DataMap*);
+        void SoundDrift(DataMap*);
+        void SoundRandomSentence(DataMap*);
         
-        void SoundMenuOption(DataMap);
+        void SoundMenuOption(DataMap*);
 
-        void StopPrueba(DataMap);           // TO-DO: Quitar
-        void StopShield(DataMap);           // TO-DO: Crear uno para todos los power-up
-        void StopDrift(DataMap);
+        void StopPrueba(DataMap*);           // TO-DO: Quitar
+        void StopShield(DataMap*);           // TO-DO: Crear uno para todos los power-up
+        void StopDrift(DataMap*);
 
 
 

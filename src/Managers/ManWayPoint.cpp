@@ -1,7 +1,7 @@
 #include "../Entities/WayPoint.h"
 #include "./ManWayPoint.h"
 #include "../Components/CWayPoint.h"
-#include "../../lib/include_json/include_json.hpp"
+#include "../../include/include_json/include_json.hpp"
 
 #include <cmath>
 
@@ -43,10 +43,10 @@ ManWayPoint::ManWayPoint(){
         to    = capaActual["TO"].get<int>();
 
         //TODO: Calcular el coste
-        auto componentsFrom = waypoints[from]->GetComponents();
+        auto componentsFrom = entities[from]->GetComponents();
 	    auto cTransformableFrom = static_cast<CWayPoint*>(componentsFrom[CompType::WayPointComp].get());
 
-        auto componentsTo = waypoints[to]->GetComponents();
+        auto componentsTo = entities[to]->GetComponents();
 	    auto cTransformableTo = static_cast<CWayPoint*>(componentsTo[CompType::WayPointComp].get());
 
         float x = cTransformableFrom->position.x - cTransformableTo->position.x;
@@ -56,8 +56,8 @@ ManWayPoint::ManWayPoint(){
         cost = std::sqrt(x*x + y*y + z*z);
 
         //Añadimos tanto a uno como a otro porque es un grafo no dirigido
-        waypoints[from]->AddEdge(to,cost); 
-        waypoints[to]->AddEdge(from,cost);
+        static_cast<WayPoint*>(entities[from].get())->AddEdge(to,cost); 
+        static_cast<WayPoint*>(entities[to].get())->AddEdge(from,cost);
 
     }
 
@@ -67,20 +67,20 @@ ManWayPoint::ManWayPoint(){
 
 void ManWayPoint::CreateWayPoint(glm::vec3 _position) {
 	shared_ptr<WayPoint> p = make_shared<WayPoint>(_position);
-    waypoints.push_back(p);
+    entities.push_back(p);
 }
 
 void ManWayPoint::CreateWayPoint(glm::vec3 _position,int type, int id) {
 	shared_ptr<WayPoint> p = make_shared<WayPoint>(_position,type,id);
-    waypoints.push_back(p);
+    entities.push_back(p);
 }
 
 void ManWayPoint::CreateWayPoint() {
 	shared_ptr<WayPoint> p = make_shared<WayPoint>();
-    waypoints.push_back(p);
+    entities.push_back(p);
 }
 
 ManWayPoint::~ManWayPoint(){
-    waypoints.clear();
-    waypoints.shrink_to_fit();
+    entities.clear();
+    entities.shrink_to_fit();
 }

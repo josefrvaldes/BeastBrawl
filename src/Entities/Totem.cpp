@@ -4,6 +4,7 @@
 #include "../Components/CTexture.h"
 #include "../Components/CMesh.h"
 #include "../Components/CTransformable.h"
+#include "../Components/CCurrentNavMesh.h"
 #include <iostream>
 
 using namespace std;
@@ -23,11 +24,13 @@ Totem::Totem()
     shared_ptr<CTransformable> cTransformable = make_shared<CTransformable>(pos, rot, scale); 
     shared_ptr<CTexture> cTexture = make_shared<CTexture>(texture);
     shared_ptr<CMesh> cMesh   = make_shared<CMesh>(mesh);
+    shared_ptr<CCurrentNavMesh> cCurrentNavMesh   = make_shared<CCurrentNavMesh>(-1);
     AddComponent(cId);
     AddComponent(cType);
     AddComponent(cTransformable);
     AddComponent(cTexture);
     AddComponent(cMesh);
+    AddComponent(cCurrentNavMesh);
 }
 
 Totem::Totem(glm::vec3 _position) : Totem(){
@@ -53,6 +56,12 @@ Totem::Totem(glm::vec3 _position, glm::vec3 _rotation, string _texture, string _
 
     CMesh *cMesh = (CMesh *)m_components[CompType::MeshComp].get();
     cMesh->mesh = _mesh;
+
+}
+
+
+//Mi idea es que aqui vayamos comprobando si el totem ha cambiado de navmesh
+void Totem::Update(Manager* manNavMesh){
 
 }
 

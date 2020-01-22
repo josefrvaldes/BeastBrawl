@@ -10,6 +10,7 @@
 #include "../behaviourTree/Blackboard.h"
 //#include "../Components/CPowerUp.h"
 #include "../Components/CTotem.h"
+#include "../Components/CMovementType.h"
 
 #include "../Entities/Totem.h"
 #include "../Managers/ManTotem.h"
@@ -119,14 +120,20 @@ struct InDistanceRange_LoDMove : public behaviourTree {
 //ACCION --> aplicamos SB pursue y si esta en el angulo lanzamos el melon molon
 struct SBPursue_LoDMove : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
+        //return blackboard->steeringBehaviours->UpdateObstacleAvoidance(blackboard->actualCar, blackboard->manPowerUps);
+        //std::cout << gola << std::endl;
+        //return true;
         float angle = blackboard->steeringBehaviours->UpdatePursuePowerUp(blackboard->actualCar, blackboard->manCars->GetDesirableTarget(blackboard->actualCar));  // To-Do: calcular coche a por el que se quiere ir
         if(angle>=-3 && angle <=3){
-            shared_ptr<EventManager> eventManager = EventManager::GetInstance();
-            DataMap d;
-            d["actualCar"] = blackboard->actualCar;
-            eventManager->AddEventMulti(Event{EventType::THROW_POWERUP_AI, d});
+            shared_ptr<DataMap> data = make_shared<DataMap>();
+
+            (*data)["actualCar"] = blackboard->actualCar;
+            EventManager::GetInstance().AddEventMulti(Event{EventType::THROW_POWERUP_AI, data});
         }
         //std::cout << "Aplico SB pursuePU" << std::endl;
+
+        auto cMovementType = static_cast<CMovementType*>(blackboard->actualCar->GetComponent(CompType::MovementComp).get());
+        cMovementType->movementType = "Steering Behaviour prediccion";
         return true;
     } 
 };
@@ -137,6 +144,8 @@ struct SBArrive_LoDMove : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
         blackboard->steeringBehaviours->UpdateArrive(blackboard->actualCar);
         //std::cout << "Aplico SB Arrive" << std::endl;
+        auto cMovementType = static_cast<CMovementType*>(blackboard->actualCar->GetComponent(CompType::MovementComp).get());
+        cMovementType->movementType = "Steering Behaviour moverse";
         return true;
     }
 };
@@ -146,8 +155,31 @@ struct SBArrive_LoDMove : public behaviourTree {
 struct ApplyFuzzyLogic_LoDMove : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
         blackboard->systemFuzzyLogicAI->Update(blackboard->actualCar, 0.016);
-        //std::cout << "Aplico FL" << std::endl;
+        auto cMovementType = static_cast<CMovementType*>(blackboard->actualCar->GetComponent(CompType::MovementComp).get());
+        cMovementType->movementType = "Logica difusa";
+        //std::cout << "Aplico FL" << std::endl;    
         return true;
+    } 
+};
+
+
+struct CollisionAvoidance_LoDMove : public behaviourTree {
+    virtual bool run(Blackboard* blackboard) override {
+        bool collisionWall = blackboard->steeringBehaviours->UpdateWallAvoidance(blackboard->actualCar, blackboard->manBoundingWall);
+
+        if(collisionWall == false){
+            bool result = blackboard->steeringBehaviours->UpdateObstacleAvoidance(blackboard->actualCar, blackboard->manCars);
+
+            if(result){
+                auto cMovementType = static_cast<CMovementType*>(blackboard->actualCar->GetComponent(CompType::MovementComp).get());
+                cMovementType->movementType = "Evasion de jugador";
+            }
+            return result;
+        }else{
+            auto cMovementType = static_cast<CMovementType*>(blackboard->actualCar->GetComponent(CompType::MovementComp).get());
+            cMovementType->movementType = "Evasion de muro";
+            return true;
+        }
     } 
 };
 
@@ -176,22 +208,23 @@ SystemBtLoDMove::SystemBtLoDMove(){
     //   Lanzar melon molon = true   -> Aplicar Steering de movimiento y lanzar en caso de que angulo sea 0
     
     //                 SELECTOR
-    //      //////////////////////////////////////////////////////////
-    //   sequence1                                               Selector(Vision LoD)
-    //      //                                                       //
-    //    //////////////                                //////////////////////////////
-    //    //          //                                //                          //
-    //  Have MM?     ApplySB_Pursue                   Sequence2                     Selector (Distance - dentro del rango de vision)
-    //                                                //      //                       //
-    //                                  OutOfVisionRange   ApplySB_Seek          ///////////////////////////
-    //                                                                           //                      //
-    //                                                                        Sequence3                 ApplySB_Seek (lejos)
-    //                                                                       //      //                 
-    //                                                                    Cerca?     LogicaDifusa  
+    //    ////////////////////////////////////////////////////////////////////////////
+    // CollAvoidance        sequence1                                               Selector(Vision LoD)
+    //   (action)              //                                                       //
+    //                    //////////////                                //////////////////////////////
+    //                    //          //                                //                          //
+    //                  Have MM?     ApplySB_Pursue                   Sequence2                     Selector (Distance - dentro del rango de vision)
+    //                                                                //      //                       //
+    //                                                  OutOfVisionRange   ApplySB_Seek          ///////////////////////////
+    //                                                                                           //                      //
+    //                                                                                        Sequence3                 ApplySB_Seek (lejos)
+    //                                                                                       //      //                 
+    //                                                                                    Cerca?     LogicaDifusa  
 
 
     selectorBehaviourTree = make_shared<selector>();
 
+    shared_ptr<CollisionAvoidance_LoDMove> a_CollisionAvoidance = make_shared<CollisionAvoidance_LoDMove>();
     shared_ptr<sequence> sequence1 = make_shared<sequence>();
     shared_ptr<selector> selectorVision = make_shared<selector>();
 
@@ -209,6 +242,7 @@ SystemBtLoDMove::SystemBtLoDMove(){
     shared_ptr<InDistanceRange_LoDMove>  c_InDistanceRange =   make_shared<InDistanceRange_LoDMove>();
     shared_ptr<ApplyFuzzyLogic_LoDMove>  a_FuzzyLogic =   make_shared<ApplyFuzzyLogic_LoDMove>();
 
+    selectorBehaviourTree->addChild(a_CollisionAvoidance);
     selectorBehaviourTree->addChild(sequence1);
     selectorBehaviourTree->addChild(selectorVision);
 
@@ -232,13 +266,13 @@ SystemBtLoDMove::SystemBtLoDMove(){
 
 
 
-void SystemBtLoDMove::update(CarAI* actualCar, ManCar* manCars,ManPowerUp* manPowerUps, ManBoxPowerUp* manBoxPowerUps, ManTotem* manTotems, ManWayPoint* manWayPoint){
+void SystemBtLoDMove::update(CarAI* actualCar, ManCar* manCars,ManPowerUp* manPowerUps, ManBoxPowerUp* manBoxPowerUps, ManTotem* manTotems, ManWayPoint* manWayPoint, ManNavMesh* manNavMesh, ManBoundingWall* m_manBoundingWall){
     if(entradoFL==false){
         fuzzyLogic->InitSystemFuzzyLogicAI(actualCar);  // To-Do: arreglar esta llamada para solo hacerla una vez
         entradoFL=true;
     }
 
-    unique_ptr<Blackboard> blackboard = make_unique<Blackboard>(actualCar, manCars, manPowerUps, manBoxPowerUps, manTotems, manWayPoint, fuzzyLogic.get(), steeringBehaviours.get());
+    unique_ptr<Blackboard> blackboard = make_unique<Blackboard>(actualCar, manCars, manPowerUps, manBoxPowerUps, manTotems, manWayPoint, fuzzyLogic.get(), steeringBehaviours.get(),manNavMesh, m_manBoundingWall);
 
     selectorBehaviourTree->run(blackboard.get());
 }

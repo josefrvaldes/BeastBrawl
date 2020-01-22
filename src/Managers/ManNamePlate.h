@@ -5,7 +5,7 @@
 #include <memory>
 #include <string>
 #include <stdlib.h>
-#include "../../lib/glm/vec3.hpp"
+#include "../../include/glm/vec3.hpp"
 #include "Manager.h"
 #include "ManCar.h"
 

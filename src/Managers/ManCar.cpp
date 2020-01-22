@@ -3,6 +3,7 @@
 #include <iostream>
 #include "../Entities/Camera.h"
 #include "../Entities/Car.h"
+#include "../Entities/CarHuman.h"
 #include "../Entities/CarAI.h"
 #include "../EventManager/Event.h"
 #include "../EventManager/EventManager.h"
@@ -15,6 +16,7 @@
 #include "../Components/CRoboJorobo.h"
 #include "../Components/CNitro.h"
 #include "../Components/CPath.h"
+#include "../Components/CCar.h"
 
 #include "../Facade/Render/RenderFacadeManager.h"
 #include "../Game.h"
@@ -22,6 +24,8 @@
 #include "../Managers/ManPowerUp.h"
 #include "../Managers/ManBoxPowerUp.h"
 #include "../Managers/ManTotem.h"
+#include "../Managers/ManBoundingWall.h"
+#include "../Managers/ManNavMesh.h"
 
 
 class Position;
@@ -33,17 +37,24 @@ ManCar::ManCar() {
     systemBtPowerUp = make_unique<SystemBtPowerUp>();
     systemBtMoveTo  = make_unique<SystemBtMoveTo>(); 
     systemBtLoDMove = make_unique<SystemBtLoDMove>();
+    systemPathPlanning = make_unique<SystemPathPlanning>();
     physicsAI = make_unique<PhysicsAI>();
 
     cout << "Hemos creado un powerup, ahora tenemos " << entities.size() << " powerups" << endl;
 }
 
+ManCar::~ManCar() {
+    cout << "Llamando al destructor de ManCar" << endl;
+    entities.clear();
+    entities.shrink_to_fit();
+}
 
 // TO-DO: este paso de physics es kk, hay que revisarlo de enviarlo como referencia o algo pero me da error
 ManCar::ManCar(Physics *_physics, Camera *_cam) : ManCar() {
     this->physics = _physics;
     this->cam = _cam;
 }
+
 
 
 
@@ -58,7 +69,8 @@ void ManCar::UpdateCar(){
 
     if(cTotem->accumulatedTime/1000.0 > cTotem->durationTime/1000.0){
         cout << "Has ganado\n";
-        Game::GetInstance()->SetState(State::ENDRACE);
+        //Game::GetInstance()->SetState(State::ENDRACE);
+        EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_ENDRACE});
     }
 
     // Actualiza el componente nitro
@@ -76,45 +88,52 @@ void ManCar::UpdateCar(){
 
 }
 
+// TODO: RECORDARRR!!!!!!!!!!!!!!!!!  TANTO EL "BtMoveTo" como el "systemPathPlanning" se deben hacer en la misma ITERACION!!!!
+// Es importante esto porque el BtMoveTo es el que calcula la posicion a la que ir y el systemBtLoDMove es el que utiliza esta posicion para
+// moverse a un sitio, si en algun momento intentamos ir a una posicion que no existe PETAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+void ManCar::UpdateCarAI(CarAI* carAI, ManPowerUp* m_manPowerUp, ManBoxPowerUp* m_manBoxPowerUp, ManTotem* m_manTotem, ManWayPoint* graph, ManNavMesh* manNavMesh, ManBoundingWall* m_manBoundingWall){
+    systemBtMoveTo->update(carAI, this, m_manPowerUp, m_manBoxPowerUp, m_manTotem, graph, manNavMesh);
 
-void ManCar::UpdateCarAI(CarAI* carAI, ManPowerUp* m_manPowerUp, ManBoxPowerUp* m_manBoxPowerUp, ManTotem* m_manTotem, ManWayPoint* graph){
-    systemBtMoveTo->update(carAI, this, m_manPowerUp, m_manBoxPowerUp, m_manTotem, graph);
-    systemBtLoDMove->update(carAI, this, m_manPowerUp, m_manBoxPowerUp, m_manTotem, graph);
+    systemPathPlanning->Update(carAI, graph, manNavMesh);
+
+    systemBtLoDMove->update(carAI, this, m_manPowerUp, m_manBoxPowerUp, m_manTotem, graph,manNavMesh, m_manBoundingWall);
 
     physicsAI->Update(carAI, graph);
 
-    systemBtPowerUp->update(carAI, this, m_manPowerUp, m_manBoxPowerUp, m_manTotem, graph);
+    systemBtPowerUp->update(carAI, this, m_manPowerUp, m_manBoxPowerUp, m_manTotem, graph, manNavMesh);
 }
 
 
-ManCar::~ManCar() {
-    cout << "Llamando al destructor de ManCar" << endl;
-    CarAIs.clear();
-    CarAIs.shrink_to_fit();
-}
+
 
 
 void ManCar::CreateMainCar() {
-    car = make_shared<Car>();
+    car = make_shared<CarHuman>();
+    entities.push_back(car);
 }
 
 
-void ManCar::CreateCar() {
-    shared_ptr<Car> p = make_shared<Car>();
+void ManCar::CreateHumanCar(glm::vec3 _position) {
+    shared_ptr<CarHuman> p = make_shared<CarHuman>(_position);
+    entities.push_back(p);
+}
+
+void ManCar::CreateCarAI(glm::vec3 _position){
+	shared_ptr<CarAI> p = make_shared<CarAI>(_position);
     entities.push_back(p);
 }
 
 
 void ManCar::CreateCarAI(glm::vec3 _position,  CWayPoint* _waypoint){
 	shared_ptr<CarAI> p = make_shared<CarAI>(_position);
-    CarAIs.push_back(p);
-    p->SetWayPoint(_waypoint); // tiene que tener un waypoint inicial To-Do: cambiar esto
+    entities.push_back(p);
+    p->SetWayPoint(_waypoint); 
 }
 
 
 void ManCar::CreateCarAI(){
 	shared_ptr<CarAI> p = make_shared<CarAI>();
-    CarAIs.push_back(p);
+    entities.push_back(p);
 }
 
 
@@ -143,125 +162,109 @@ void ManCar::SubscribeToEvents() {
      *auto lambdaGuardaAccel = [&lambdaAccelerate](DataMap d) {lambdaAccelerate(d);};
      */
 
-    EventManager::GetInstance()->SuscribeMulti(Listener(
+    EventManager::GetInstance().SuscribeMulti(Listener(
         EventType::PRESS_I,
         bind(&ManCar::AccelerateCar, this, placeholders::_1),
         "AccelerateCar"));
 
-    EventManager::GetInstance()->SuscribeMulti(Listener(
+    EventManager::GetInstance().SuscribeMulti(Listener(
         EventType::PRESS_O,
         bind(&ManCar::Decelerate, this, placeholders::_1),
         "Decelerate"));
 
-    EventManager::GetInstance()->SuscribeMulti(Listener(
+    EventManager::GetInstance().SuscribeMulti(Listener(
         EventType::PRESS_A,
         bind(&ManCar::TurnLeftCar, this, placeholders::_1),
         "TurnLeftCar"));
 
-    EventManager::GetInstance()->SuscribeMulti(Listener(
+    EventManager::GetInstance().SuscribeMulti(Listener(
         EventType::PRESS_D,
         bind(&ManCar::TurnRightCar, this, placeholders::_1),
         "TurnRightCar"));
 
-    EventManager::GetInstance()->SuscribeMulti(Listener(
+    EventManager::GetInstance().SuscribeMulti(Listener(
         EventType::NO_I_O_PRESS,
         bind(&ManCar::NotAcceleratingOrDecelerating, this, placeholders::_1),
         "NotAcceleratingOrDecelerating"));
 
-    EventManager::GetInstance()->SuscribeMulti(Listener(
+    EventManager::GetInstance().SuscribeMulti(Listener(
         EventType::NO_A_D_PRESS,
         bind(&ManCar::NotTurning, this, placeholders::_1),
         "NotTurning"));
 
-    EventManager::GetInstance()->SuscribeMulti(Listener(
+    EventManager::GetInstance().SuscribeMulti(Listener(
         EventType::CATCH_BOX_POWERUP,
         bind(&ManCar::CatchPowerUp, this, placeholders::_1),
         "CatchPowerUp"));
 
-    EventManager::GetInstance()->SuscribeMulti(Listener(
+    EventManager::GetInstance().SuscribeMulti(Listener(
         EventType::CATCH_AI_BOX_POWERUP,
         bind(&ManCar::CatchPowerUpAI, this, placeholders::_1),
         "CatchPowerUpAI"));
     
-    EventManager::GetInstance()->SuscribeMulti(Listener(
+    EventManager::GetInstance().SuscribeMulti(Listener(
         EventType::PRESS_SPACE,
         bind(&ManCar::ThrowPowerUp, this, placeholders::_1),
         "ThrowPowerUp"));
     
-    EventManager::GetInstance()->SuscribeMulti(Listener(
+    EventManager::GetInstance().SuscribeMulti(Listener(
         EventType::THROW_POWERUP_AI,
         bind(&ManCar::ThrowPowerUpAI, this, placeholders::_1),
         "ThrowPowerUpAI"));
 
-    EventManager::GetInstance()->SuscribeMulti(Listener(
+    EventManager::GetInstance().SuscribeMulti(Listener(
         EventType::COLLISION_ENTITY_POWERUP,
         bind(&ManCar::CollisionPowerUp, this, placeholders::_1),
         "CollisionPowerUp"));
     
-    EventManager::GetInstance()->SuscribeMulti(Listener(
+    EventManager::GetInstance().SuscribeMulti(Listener(
         EventType::COLLISION_ENTITY_AI_POWERUP,
         bind(&ManCar::CollisionPowerUpAI, this, placeholders::_1),
         "CollisionPowerUpAI"));
 
-    EventManager::GetInstance()->SuscribeMulti(Listener(
+    EventManager::GetInstance().SuscribeMulti(Listener(
         EventType::COLLISION_PLAYER_TOTEM,
         bind(&ManCar::CatchTotemPlayer, this, placeholders::_1),
         "CatchTotemPlayer"));
 
-    EventManager::GetInstance()->SuscribeMulti(Listener(
+    EventManager::GetInstance().SuscribeMulti(Listener(
         EventType::COLLISION_AI_TOTEM,
         bind(&ManCar::CatchTotemAI, this, placeholders::_1),
         "CatchTotemAI"));
 
-    EventManager::GetInstance()->SuscribeMulti(Listener(
-        EventType::CHANGE_DESTINATION,
-        bind(&ManCar::ChangePosDestination, this, placeholders::_1),
-        "ChangePosDestination"));
+    EventManager::GetInstance().SuscribeMulti(Listener(
+        EventType::CHANGE_TOTEM_CAR,
+        bind(&ManCar::ChangeTotemCar, this, placeholders::_1),
+        "ChangeTotemCar"));
+}
 
-    EventManager::GetInstance()->SuscribeMulti(Listener(
-        EventType::MOVE_TO_POWERUP,
-        bind(&ManCar::MoveToPowerUp, this, placeholders::_1),
-        "MoveToPowerUp"));
-
+void ManCar::ChangeTotemCar(DataMap* d){
+    auto carWithTotem = any_cast<Entity*>((*d)["carWithTotem"]);
+    auto carWithoutTotem = any_cast<Entity*>((*d)["carWithoutTotem"]);
+    ThrowTotem(carWithTotem);
+    // activamos el totem al coche que ahora lo tiene
+    auto cTotemWithout = static_cast<CTotem*>(carWithoutTotem->GetComponent(CompType::TotemComp).get());
+    cTotemWithout->active = true;
+    cTotemWithout->timeStart = system_clock::now();
+    // Sonido coger totem
+    EventManager::GetInstance().AddEventMulti(Event{EventType::CATCH_TOTEM});
 }
 
 
-void ManCar::ChangePosDestination(DataMap data){
-    auto cPosDestination = static_cast<CPosDestination*>(any_cast<CarAI*>(data["actualCar"])->GetComponent(CompType::PosDestination).get());
-    cPosDestination->position = any_cast<glm::vec3>(data["posDestination"]);
-}
-
-void ManCar::MoveToPowerUp(DataMap data){
-    auto graph = any_cast<ManWayPoint*>(data["manWayPoints"]);
-    auto cPath = static_cast<CPath*>(any_cast<CarAI*>(data["actualCar"])->GetComponent(CompType::PathComp).get());
-    auto cPosDestination = static_cast<CPosDestination*>(any_cast<CarAI*>(data["actualCar"])->GetComponent(CompType::PosDestination).get());
-
-    if(!cPath->stackPath.empty()){
-        //Le asignamos el WayPoint siguiente del path (graph->GetEntities()[cPath->stackPath.top()])
-        auto cWayPoint = static_cast<CWayPoint*>(graph->GetEntities()[cPath->stackPath.top()]->GetComponent(CompType::WayPointComp).get());
-        cPosDestination->position = cWayPoint->position;
-
-        any_cast<CarAI*>(data["actualCar"])->SetDestination(cPosDestination);
-    }
-}
-
-
-void ManCar::CatchTotemAI(DataMap d){
-    auto cTotem = static_cast<CTotem*>(any_cast<Entity*>(d["actualCar"])->GetComponent(CompType::TotemComp).get());
+void ManCar::CatchTotemAI(DataMap* d){
+    auto cTotem = static_cast<CTotem*>(any_cast<Entity*>((*d)["actualCar"])->GetComponent(CompType::TotemComp).get());
     cTotem->active = true;
     cTotem->timeStart = system_clock::now();
     // Sonido coger totem
-    shared_ptr<EventManager> eventManager = EventManager::GetInstance();
-    eventManager->AddEventMulti(Event{EventType::CATCH_TOTEM});
+    EventManager::GetInstance().AddEventMulti(Event{EventType::CATCH_TOTEM});
 }
 
-void ManCar::CatchTotemPlayer(DataMap d){
+void ManCar::CatchTotemPlayer(DataMap* d){
     auto cTotem = static_cast<CTotem*>(car.get()->GetComponent(CompType::TotemComp).get());
     cTotem->active = true;
     cTotem->timeStart = system_clock::now();
     // Sonido coger totem
-    shared_ptr<EventManager> eventManager = EventManager::GetInstance();
-    eventManager->AddEventMulti(Event{EventType::CATCH_TOTEM});
+    EventManager::GetInstance().AddEventMulti(Event{EventType::CATCH_TOTEM});
 }
 
 void ManCar::UseTotem(Entity* carWinTotem){
@@ -280,32 +283,24 @@ void ManCar::ThrowTotem(Entity* carLoseTotem){
 
 
 bool ManCar::useRoboJorobo(Entity* newCarWithTotem){
-    // recorremos las IA
-    for(shared_ptr<Entity> carAI : CarAIs){
-        auto cTotem = static_cast<CTotem*>(carAI.get()->GetComponent(CompType::TotemComp).get()); 
+    // recorremos los coches
+    for(shared_ptr<Entity> cars : entities){
+        auto cTotem = static_cast<CTotem*>(cars.get()->GetComponent(CompType::TotemComp).get()); 
         // Si algun coche tenia el totem .... lo pierde, comprobamos que no sea el mmismo coche con las ID
-        if(cTotem->active == true && newCarWithTotem!=carAI.get()){
-            ThrowTotem(carAI.get());
+        if(cTotem->active == true && newCarWithTotem!=cars.get()){
+            ThrowTotem(cars.get());
             //al perderlo se lo asignamos al que ha usado el robo jorobo
             UseTotem(newCarWithTotem);
 
             return true;                                                               // para salirnos y no hacer mas calculos
         }
     }
-    // comprobamos el player
-    auto cTotem = static_cast<CTotem*>(car.get()->GetComponent(CompType::TotemComp).get()); 
-    if(cTotem->active == true && car.get()!=newCarWithTotem){
-        ThrowTotem(car.get());
-        //al perderlo se lo asignamos al que ha usado el robo jorobo
-        UseTotem(newCarWithTotem);
-        return true;                                                               // para salirnos y no hacer mas calculos
-    }
     return false;
 }
 
 
 
-void ManCar::CollisionPowerUp(DataMap d){
+void ManCar::CollisionPowerUp(DataMap* d){
     // debemos desactivar el powerUp y para el contador de tiempo del totem
     auto cShield = static_cast<CShield*>(car.get()->GetComponent(CompType::ShieldComp).get());
     if(cShield->activePowerUp == false){            // comprobamos si tiene el escudo
@@ -317,171 +312,171 @@ void ManCar::CollisionPowerUp(DataMap d){
         auto cCar = static_cast<CCar*>(car.get()->GetComponent(CompType::CarComp).get());
         cCar->speed = 0.0f;
         // Sonido choque con powerup
-        DataMap data;
-        shared_ptr<EventManager> eventManager = EventManager::GetInstance();
-        data["mainCharacter"] = true;
-        eventManager->AddEventMulti(Event{EventType::HURT, data});
+        shared_ptr<DataMap> data = make_shared<DataMap>();
+        (*data)["mainCharacter"] = true;
+        EventManager::GetInstance().AddEventMulti(Event{EventType::HURT, data});
     }else{
         std::cout << "El escudo me salvo el culito :D" << std::endl;
         cShield->deactivePowerUp(); // desactivamos el escudo
 
         // Sonido coger totem
-        shared_ptr<EventManager> eventManager = EventManager::GetInstance();
-        eventManager->AddEventMulti(Event{EventType::NO_SHIELD});
+        EventManager::GetInstance().AddEventMulti(Event{EventType::NO_SHIELD});
         
     }
 }
 
 
-void ManCar::CollisionPowerUpAI(DataMap d){
+void ManCar::CollisionPowerUpAI(DataMap* d){
     // debemos desactivar el powerUp y para el contador de tiempo del totem
-    auto cShield = static_cast<CShield*>(any_cast<Entity*>(d["carAI"])->GetComponent(CompType::ShieldComp).get());
+    auto cShield = static_cast<CShield*>(any_cast<Entity*>((*d)["carAI"])->GetComponent(CompType::ShieldComp).get());
     if(cShield->activePowerUp == false){            // comprobamos si tiene el escudo
-        auto cTotem = static_cast<CTotem*>(any_cast<Entity*>(d["carAI"])->GetComponent(CompType::TotemComp).get());
+        auto cTotem = static_cast<CTotem*>(any_cast<Entity*>((*d)["carAI"])->GetComponent(CompType::TotemComp).get());
         if(cTotem->active == true){
-            ThrowTotem(any_cast<Entity*>(d["carAI"]));
+            ThrowTotem(any_cast<Entity*>((*d)["carAI"]));
         }
         // Reducimos la velocidad -- TODO --> no solo reducir la velocidad a 0
-        auto cCar = static_cast<CCar*>(any_cast<Entity*>(d["carAI"])->GetComponent(CompType::CarComp).get());
+        auto cCar = static_cast<CCar*>(any_cast<Entity*>((*d)["carAI"])->GetComponent(CompType::CarComp).get());
         cCar->speed = 0.0f;  // To-Do: no funciona en la IA por que la logica difusa no la hace acelerar
         // Sonido choque con powerup
-        DataMap data;
-        shared_ptr<EventManager> eventManager = EventManager::GetInstance();
-        data["mainCharacter"] = false;
-        eventManager->AddEventMulti(Event{EventType::HURT, data});
+        shared_ptr<DataMap> data = make_shared<DataMap>();
+        (*data)["mainCharacter"] = false;
+        EventManager::GetInstance().AddEventMulti(Event{EventType::HURT, data});
     }else{
         std::cout << "El escudo me salvo el culito :D" << std::endl;
         cShield->deactivePowerUp(); // desactivamos el escudo
 
         // Sonido coger totem
-        shared_ptr<EventManager> eventManager = EventManager::GetInstance();
-        eventManager->AddEventMulti(Event{EventType::NO_SHIELD});
+        EventManager::GetInstance().AddEventMulti(Event{EventType::NO_SHIELD});
     }
 }
 
 
-// se calcula el coche mas cerano
+// se calcula el coche mas cercano en el rango de vision, en caso de no haber se devuelve un nullptr
 CTransformable* ManCar::calculateCloserCar(Entity* actualCar){
     // Primero metemos al jugador por lo que no hace falta calcularlo luego
     CTransformable* closestCar = nullptr;
-    bool carPrincipal = false;
-    if(actualCar != car.get()){
-        closestCar = static_cast<CTransformable*>(car.get()->GetComponent(CompType::TransformableComp).get());
-    }else{
-        closestCar = static_cast<CTransformable*>(CarAIs[0].get()->GetComponent(CompType::TransformableComp).get());
-        carPrincipal = true;
-    }
     auto cTransActualCar = static_cast<CTransformable*>(actualCar->GetComponent(CompType::TransformableComp).get());
-    float vectorX = closestCar->position.x - cTransActualCar->position.x;
-    float vectorZ = closestCar->position.z - cTransActualCar->position.z;
-    float distanceMimum = sqrt((vectorX*vectorX) + (vectorZ*vectorZ));
+    float distanceMimum = 9999999999;
+    float distanceNext;
+    float vectorXNext;
+    float vectorZNext;
 
-    // reducimos cierta distancia en caso de que se encuentre en el radio de vision
-    if(carPrincipal == true){
-        if(carInVisionRange(actualCar, CarAIs[0].get(), 60) == true)
-            distanceMimum = distanceMimum/100.0;
-    }else{
-        if(carInVisionRange(actualCar, car.get(), 60) == true)
-            distanceMimum = distanceMimum / 100.0;
-    }
-
-    float distanceNext = 0.0;
-    float vectorXNext = 0.0;
-    float vectorZNext = 0.0;
-    // Para CarAI
-    for(shared_ptr<Entity> carAI : CarAIs){
-        if(actualCar != carAI.get()){
-            auto cTransNextCar = static_cast<CTransformable*>(carAI.get()->GetComponent(CompType::TransformableComp).get()); 
+    // Para todos los coches
+    for(shared_ptr<Entity> cars : entities){
+        if(actualCar != cars.get() && carInVisionRange(actualCar, cars.get(), 60) == true){
+            auto cTransNextCar = static_cast<CTransformable*>(cars.get()->GetComponent(CompType::TransformableComp).get()); 
             vectorXNext = cTransNextCar->position.x - cTransActualCar->position.x;     
             vectorZNext = cTransNextCar->position.z - cTransActualCar->position.z;
             distanceNext = sqrt((vectorXNext*vectorXNext) + (vectorZNext*vectorZNext));
             
-            if(carInVisionRange(actualCar, carAI.get(), 60) == true)
-                distanceNext = distanceNext / 100.0;
             if(distanceMimum > distanceNext){
                 distanceMimum = distanceNext;
                 closestCar = cTransNextCar;
             }
         }
+        
     }
     return closestCar;
 }
 
 
 
-void ManCar::ThrowPowerUp(DataMap d) {
+void ManCar::ThrowPowerUp(DataMap* d) {
     auto cPowerUpCar = static_cast<CPowerUp*>(car.get()->GetComponent(CompType::PowerUpComp).get());
     //auto cRoboJorobo = static_cast<CRoboJorobo*>(car->GetComponent(CompType::RoboJoroboComp).get());
     auto cShield = static_cast<CShield*>(car.get()->GetComponent(CompType::ShieldComp).get());
     auto cNitro = static_cast<CNitro*>(car.get()->GetComponent(CompType::NitroComp).get());
     bool robado = false;  
     if(cPowerUpCar->typePowerUp != typeCPowerUp::None){
-
+        shared_ptr<DataMap> dataTeleBanana = make_shared<DataMap>();
+        shared_ptr<DataMap> dataDefault = make_shared<DataMap>();
+        CTransformable* objectiveCar;
         switch (cPowerUpCar->typePowerUp){
-            case typeCPowerUp::RoboJorobo:
+            case (typeCPowerUp::RoboJorobo):
                 robado = useRoboJorobo(car.get());
                 if (!robado)
                     std::cout << "La has cagado, el Totem no lo tenia nadie..." << std::endl; 
                 break;
-            case typeCPowerUp::EscudoMerluzo:
+            case (typeCPowerUp::EscudoMerluzo):
                 cShield->activatePowerUp();
                 break;
-            case typeCPowerUp::SuperMegaNitro:
+            case (typeCPowerUp::SuperMegaNitro):
                 cNitro->activatePowerUp();
                 break;
-            default:  // en caso del melon molon o la telebanana
-                shared_ptr<EventManager> eventManager = EventManager::GetInstance();
-                DataMap data;
-                data["typePowerUp"] = cPowerUpCar->typePowerUp;
-                data["posCocheSalida"] = static_cast<CTransformable*>(car.get()->GetComponent(CompType::TransformableComp).get());;
-                data["posCochePerseguir"] = calculateCloserCar(car.get());
-                eventManager->AddEventMulti(Event{EventType::PowerUp_Create, data});
+            case (typeCPowerUp::TeleBanana):
+                objectiveCar = calculateCloserCar(car.get());
+                if(objectiveCar != nullptr)
+                    (*dataTeleBanana)["posCochePerseguir"] = objectiveCar;
+                (*dataTeleBanana)["typePowerUp"] = cPowerUpCar->typePowerUp;
+                (*dataTeleBanana)["posCocheSalida"] = static_cast<CTransformable*>(car.get()->GetComponent(CompType::TransformableComp).get());
+                (*dataTeleBanana)["dimensionCocheSalida"] =  static_cast<CDimensions*>(car.get()->GetComponent(CompType::DimensionsComp).get());
+                EventManager::GetInstance().AddEventMulti(Event{EventType::PowerUp_Create, dataTeleBanana});
+                break;
+            default:  // en caso del melon molon o pudding de frambuesa
+                (*dataDefault)["typePowerUp"] = cPowerUpCar->typePowerUp;
+                (*dataDefault)["posCocheSalida"] = static_cast<CTransformable*>(car.get()->GetComponent(CompType::TransformableComp).get());
+                (*dataDefault)["dimensionCocheSalida"] =  static_cast<CDimensions*>(car.get()->GetComponent(CompType::DimensionsComp).get());
+                EventManager::GetInstance().AddEventMulti(Event{EventType::PowerUp_Create, dataDefault});
 
                 break;
         }
 
         // Sonido de lanzar power-up
-        d["typePowerUp"] = cPowerUpCar->typePowerUp;
-        EventManager::GetInstance()->AddEventMulti(Event{EventType::THROW_POWERUP, d});
+        shared_ptr<DataMap> dataHUD = make_shared<DataMap>();
+        (*dataHUD)["typePowerUp"] = cPowerUpCar->typePowerUp;
+        //d->insert("typePowerUp",cPowerUpCar->typePowerUp);
+        EventManager::GetInstance().AddEventMulti(Event{EventType::THROW_POWERUP, dataHUD});
 
         // Ya no tenemos power-up
+        shared_ptr<DataMap> dataSound = make_shared<DataMap>();
+
         cPowerUpCar->typePowerUp = typeCPowerUp::None;
-        DataMap d;
-        d["typePowerUp"] = cPowerUpCar->typePowerUp;
-        EventManager::GetInstance()->AddEventMulti(Event{EventType::UPDATE_POWERUP_HUD, d});
+        (*dataSound)["typePowerUp"] = cPowerUpCar->typePowerUp;
+        EventManager::GetInstance().AddEventMulti(Event{EventType::UPDATE_POWERUP_HUD, dataSound}); 
         
     }
 }
 
 
 
-void ManCar::ThrowPowerUpAI(DataMap d) {
-    auto cPowerUpCar = static_cast<CPowerUp*>(any_cast<CarAI*>(d["actualCar"])->GetComponent(CompType::PowerUpComp).get());
+void ManCar::ThrowPowerUpAI(DataMap* d) {
+    auto cPowerUpCar = static_cast<CPowerUp*>(any_cast<CarAI*>((*d)["actualCar"])->GetComponent(CompType::PowerUpComp).get());
     //auto cRoboJorobo = static_cast<CRoboJorobo*>(any_cast<CarAI*>(d["actualCar"])->GetComponent(CompType::RoboJoroboComp).get());
-    auto cShield = static_cast<CShield*>(any_cast<CarAI*>(d["actualCar"])->GetComponent(CompType::ShieldComp).get());
-    auto cNitro = static_cast<CNitro*>(any_cast<CarAI*>(d["actualCar"])->GetComponent(CompType::NitroComp).get());
+    auto cShield = static_cast<CShield*>(any_cast<CarAI*>((*d)["actualCar"])->GetComponent(CompType::ShieldComp).get());
+    auto cNitro = static_cast<CNitro*>(any_cast<CarAI*>((*d)["actualCar"])->GetComponent(CompType::NitroComp).get());
     bool robado = false; 
     
     if(cPowerUpCar->typePowerUp != typeCPowerUp::None){
+        shared_ptr<DataMap> data = make_shared<DataMap>();
+
+
+        CTransformable* objectiveCar;
         switch (cPowerUpCar->typePowerUp){
-            case typeCPowerUp::RoboJorobo:
-                robado = useRoboJorobo(any_cast<CarAI*>(d["actualCar"]));
+            case (typeCPowerUp::RoboJorobo):
+                robado = useRoboJorobo(any_cast<CarAI*>((*d)["actualCar"]));
                 if (!robado)
                     std::cout << "La has cagado, el Totem no lo tenia nadie..." << std::endl; 
                 break;
-            case typeCPowerUp::EscudoMerluzo:
+            case (typeCPowerUp::EscudoMerluzo):
                 cShield->activatePowerUp();
                 break;
-            case typeCPowerUp::SuperMegaNitro:
+            case (typeCPowerUp::SuperMegaNitro):
                 cNitro->activatePowerUp();
                 break;
-            default:     // en caso del melon molon o la telebanana
-                shared_ptr<EventManager> eventManager = EventManager::GetInstance();
-                DataMap data;
-                data["typePowerUp"] = cPowerUpCar->typePowerUp;
-                data["posCocheSalida"] = static_cast<CTransformable*>(any_cast<CarAI*>(d["actualCar"])->GetComponent(CompType::TransformableComp).get());
-                data["posCochePerseguir"] = calculateCloserCar(any_cast<CarAI*>(d["actualCar"]));
-                eventManager->AddEventMulti(Event{EventType::PowerUp_Create, data});
+            case (typeCPowerUp::TeleBanana):
+                objectiveCar = calculateCloserCar(any_cast<CarAI*>((*d)["actualCar"]));
+                if(objectiveCar != nullptr)
+                    (*data)["posCochePerseguir"] = objectiveCar;
+                (*data)["typePowerUp"] = cPowerUpCar->typePowerUp;
+                (*data)["posCocheSalida"] = static_cast<CTransformable*>(any_cast<CarAI*>((*d)["actualCar"])->GetComponent(CompType::TransformableComp).get());
+                (*data)["dimensionCocheSalida"] =  static_cast<CDimensions*>(any_cast<CarAI*>((*d)["actualCar"])->GetComponent(CompType::DimensionsComp).get());
+                EventManager::GetInstance().AddEventMulti(Event{EventType::PowerUp_Create, data});
+                break;
+            default:     // en caso del melon molon o el pudding
+                (*data)["typePowerUp"] = cPowerUpCar->typePowerUp;
+                (*data)["posCocheSalida"] = static_cast<CTransformable*>(any_cast<CarAI*>((*d)["actualCar"])->GetComponent(CompType::TransformableComp).get());
+                (*data)["dimensionCocheSalida"] =  static_cast<CDimensions*>(any_cast<CarAI*>((*d)["actualCar"])->GetComponent(CompType::DimensionsComp).get());
+                EventManager::GetInstance().AddEventMulti(Event{EventType::PowerUp_Create, data});
 
                 break;
         }
@@ -503,7 +498,7 @@ int calculateProbabilityPowerUp(int totalPowerUps, std::vector<int> probabilityP
 */
 
 
-void ManCar::CatchPowerUp(DataMap d) {
+void ManCar::CatchPowerUp(DataMap* d) {
     // To-Do: porcentajes temporales
     srand(time(NULL));
     int indx = rand() % 100+1;
@@ -520,6 +515,7 @@ void ManCar::CatchPowerUp(DataMap d) {
     else if(indx > 70)                  //  30%
         indx = 6;
 
+    //indx = 5;
     //None,               // 0
     //RoboJorobo,         // 1
     //SuperMegaNitro,     // 2
@@ -531,17 +527,16 @@ void ManCar::CatchPowerUp(DataMap d) {
     auto cPowerUpCar = static_cast<CPowerUp*>(car.get()->GetComponent(CompType::PowerUpComp).get());
     if(cPowerUpCar->typePowerUp == typeCPowerUp::None){
         cPowerUpCar->typePowerUp = (typeCPowerUp)indx;
-        std::cout << "Mi PowerUp es:   " << (int)cPowerUpCar->typePowerUp << std::endl;
-        d["typePowerUp"] = cPowerUpCar->typePowerUp;
+        shared_ptr<DataMap> data = make_shared<DataMap>();
 
-        //RenderFacadeManager::GetInstance()->GetRenderFacade()->FacadeUpdatePowerUpHUD(d);
-        EventManager::GetInstance()->AddEventMulti(Event{EventType::UPDATE_POWERUP_HUD, d});
+        (*data)["typePowerUp"] = cPowerUpCar->typePowerUp;
+
+        EventManager::GetInstance().AddEventMulti(Event{EventType::UPDATE_POWERUP_HUD, data});
     }
-    //cPowerUp->typePowerUp = dynamic_cast<typeCPowerUp*>(indx);
 }
 
 
-void ManCar::CatchPowerUpAI(DataMap d) {
+void ManCar::CatchPowerUpAI(DataMap* d) {
     // To-Do: porcentajes temporales
     srand(time(NULL));
     int indx = rand() % 100+1;
@@ -558,7 +553,7 @@ void ManCar::CatchPowerUpAI(DataMap d) {
     else if(indx > 70)                  //  30%
         indx = 6;
     //indx = 5;
-    auto cPowerUpCar = static_cast<CPowerUp*>(any_cast<Entity*>(d["actualCar"])->GetComponent(CompType::PowerUpComp).get());
+    auto cPowerUpCar = static_cast<CPowerUp*>(any_cast<Entity*>((*d)["actualCar"])->GetComponent(CompType::PowerUpComp).get());
     if(cPowerUpCar->typePowerUp == typeCPowerUp::None){
         cPowerUpCar->typePowerUp = (typeCPowerUp)indx;
         std::cout << "Power Up de la IA:   " << (int)cPowerUpCar->typePowerUp << std::endl;
@@ -610,16 +605,8 @@ bool ManCar::carInVisionRange(Entity* actualCar, Entity* otherCar, uint32_t rang
 // comprobamos si tenemos algun coche en el rango de vision
 bool ManCar::anyCarInVisionRange(Entity* actualCar, uint32_t rangeVision){
     bool seeCar = false;
-    for(shared_ptr<Entity> carAI : CarAIs){
-        if(actualCar!=carAI.get()){
-            if(carInVisionRange(actualCar,carAI.get(), rangeVision) == true){
-                seeCar = true;
-            }
-        }
-    }
-    // comprobamos el player
-    if(car.get()!=actualCar){
-        if(carInVisionRange(actualCar,car.get(), rangeVision) == true){
+    for(shared_ptr<Entity> cars : entities){
+        if(actualCar != cars.get() && carInVisionRange(actualCar,cars.get(), rangeVision) == true){
             seeCar = true;
         }
     }
@@ -630,32 +617,32 @@ bool ManCar::anyCarInVisionRange(Entity* actualCar, uint32_t rangeVision){
 
 
 
-void ManCar::TurnLeftCar(DataMap d) {
+void ManCar::TurnLeftCar(DataMap* d) {
     // cout << "Han llamado izquierda" << endl;
     physics->TurnLeft(car.get(), cam);
 }
 
-void ManCar::NotTurning(DataMap d) {
+void ManCar::NotTurning(DataMap* d) {
     // cout << "Han llamado not turning" << endl;
     physics->NotTurning(car.get(), cam);
 }
 
-void ManCar::Decelerate(DataMap d) {
+void ManCar::Decelerate(DataMap* d) {
     // cout << "Han llamado decel" << endl;
     physics->Decelerate(car.get(), cam);
 }
 
-void ManCar::NotAcceleratingOrDecelerating(DataMap d) {
+void ManCar::NotAcceleratingOrDecelerating(DataMap* d) {
     // cout << "Han llamado notaccel" << endl;
     physics->NotAcceleratingOrDecelerating(car.get(), cam);
 }
 
-void ManCar::TurnRightCar(DataMap d) {
+void ManCar::TurnRightCar(DataMap* d) {
     // cout << "Han llamado derecha" << endl;
     physics->TurnRight(car.get(), cam);
 }
 
-void ManCar::AccelerateCar(DataMap d) {
+void ManCar::AccelerateCar(DataMap* d) {
     // cout << "Estamos en AccelerateCar" << endl;
     // int mint = any_cast<int>(d["int"]);
     // cout << "Hemos obtenido el int" << mint << endl;
@@ -678,16 +665,13 @@ void ManCar::Integrate(float delta) {
 Entity* ManCar::GetDesirableTarget(Entity* actualCar){
     
     // va a tratar de disparar al que lleve el totem
-    for(auto carAI : GetEntitiesAI()){
-        auto cTotemCarAI = static_cast<CTotem*>(carAI->GetComponent(CompType::TotemComp).get());
-        if(cTotemCarAI->active == true && actualCar!=carAI.get())
-            return carAI.get();
-    }   
-    auto cTotemCar = static_cast<CTotem*>(GetCar()->GetComponent(CompType::TotemComp).get());
-    if(cTotemCar->active == true && actualCar != GetCar().get())
-        return GetCar().get();
-    
-
+    for(auto carAI : GetEntities()){
+        if(carAI.get() != actualCar){
+            auto cTotemCarAI = static_cast<CTotem*>(carAI->GetComponent(CompType::TotemComp).get());
+            if(cTotemCarAI->active == true && actualCar!=carAI.get())
+                return carAI.get();
+        }
+    } 
     // en caso de no llevarlo va a disparar al que mas tiempo tenga
     
 
@@ -699,9 +683,13 @@ Entity* ManCar::GetDesirableTarget(Entity* actualCar){
         closestCar = static_cast<CTransformable*>(car.get()->GetComponent(CompType::TransformableComp).get());
         closestCarEntity = car.get();
     }else{
-        closestCar = static_cast<CTransformable*>(CarAIs[0].get()->GetComponent(CompType::TransformableComp).get());
-        closestCarEntity = CarAIs[0].get();
-        carPrincipal = true;
+        for(shared_ptr<Entity> carAI : entities){
+            if(actualCar != carAI.get()){
+                closestCar = static_cast<CTransformable*>(carAI.get()->GetComponent(CompType::TransformableComp).get());
+                closestCarEntity = carAI.get();
+                carPrincipal = true;
+            }
+        }
     }
     auto cTransActualCar = static_cast<CTransformable*>(actualCar->GetComponent(CompType::TransformableComp).get());
     float vectorX = closestCar->position.x - cTransActualCar->position.x;
@@ -710,10 +698,10 @@ Entity* ManCar::GetDesirableTarget(Entity* actualCar){
 
     // reducimos cierta distancia en caso de que se encuentre en el radio de vision
     if(carPrincipal == true){
-        if(carInVisionRange(actualCar, CarAIs[0].get(), 60) == true)
+        if(carInVisionRange(actualCar, closestCarEntity, 60) == true)
             distanceMimum = distanceMimum/100.0;
     }else{
-        if(carInVisionRange(actualCar, car.get(), 60) == true)
+        if(carInVisionRange(actualCar, closestCarEntity, 60) == true)
             distanceMimum = distanceMimum / 100.0;
     }
 
@@ -721,7 +709,7 @@ Entity* ManCar::GetDesirableTarget(Entity* actualCar){
     float vectorXNext = 0.0;
     float vectorZNext = 0.0;
     // Para CarAI
-    for(shared_ptr<Entity> carAI : CarAIs){
+    for(shared_ptr<Entity> carAI : entities){
         if(actualCar != carAI.get()){
             auto cTransNextCar = static_cast<CTransformable*>(carAI.get()->GetComponent(CompType::TransformableComp).get()); 
             vectorXNext = cTransNextCar->position.x - cTransActualCar->position.x;     

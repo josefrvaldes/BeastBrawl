@@ -1,18 +1,20 @@
 #pragma once
 
-#include "Entity.h"
-#include "../../lib/glm/vec3.hpp"
-#include <iostream>
+
+#include "Car.h"
 #include <string>
 #include <stack>
-#include "../Components/CWayPoint.h"
+#include <iostream>
+#include "../../include/glm/vec3.hpp"
 #include "../Components/CPosDestination.h"
-using namespace std;
+#include "../Components/CWayPoint.h"
 
-class CarAI : public Entity
-{
+struct CWayPoint;
+struct CPosDestination;
 
-public:
+class CarAI : public Car{
+
+   public:
     CarAI();
     CarAI(glm::vec3 pos);
     CarAI(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale, string texture, string mesh, float maxSpeed, float acceleration, float carFriction, float carSlowDown);

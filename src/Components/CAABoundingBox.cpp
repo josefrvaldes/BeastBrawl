@@ -9,4 +9,4 @@ IntersectData CAABoundingBox::IntersectCAABoundingBox(CAABoundingBox &other) con
     float maxDistance = Utils::Vec3MaxValue(distances);
     bool intersects = maxDistance < 0;
     return IntersectData(intersects, distances);
-}
+}    

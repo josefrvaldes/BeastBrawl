@@ -12,6 +12,8 @@
 #include "../Components/CWayPointEdges.h"
 #include "../Components/CPath.h"
 
+#include "../Entities/Car.h"
+#include "../Entities/CarHuman.h"
 #include "../Entities/CarAI.h"
 #include "../Entities/Entity.h"
 

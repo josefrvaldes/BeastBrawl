@@ -4,7 +4,7 @@
 #include <memory>
 #include "InputFacade.h"
 //#include "../Render/RenderFacadeManager.h"
-#include "../../../lib/irrlicht/irrlicht.h"
+#include "../../../include/irrlicht/irrlicht.h"
 
 using namespace std;
 using namespace irr;
@@ -44,7 +44,10 @@ class InputFacadeIrrlicht : public InputFacade{
     public:
         InputFacadeIrrlicht();
         ~InputFacadeIrrlicht();
-        void CheckInputs(Entity&) override;
+        void CheckInput()        override;
+        void CheckInputMenu()    override;
+        void CheckInputPause()   override;
+        void CheckInputEndRace() override;
 
     private:
         MyEventReceiver receiver;

@@ -32,8 +32,11 @@ void StatePause::Render(){
 
 void StatePause::Input(){
     renderEngine->FacadeCheckInputPause();
+    InputFacadeManager::GetInstance()->GetInputFacade()->CheckInputPause();
 }
 
 
 void StatePause::Update(){
+    //EventManager::GetInstance().Update();
+
 }

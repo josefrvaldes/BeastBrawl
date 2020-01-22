@@ -54,7 +54,7 @@ PowerUp::PowerUp()
 
 
 PowerUp::PowerUp(glm::vec3 _position, glm::vec3 _rotation, typeCPowerUp _typePowerUp, CTransformable* cTransformableTarget) : PowerUp(){
-
+    
     CTransformable *cTransformable = (CTransformable *)m_components[CompType::TransformableComp].get();
     cTransformable->position = _position;
     cTransformable->rotation = _rotation;
@@ -75,7 +75,6 @@ PowerUp::PowerUp(glm::vec3 _position, glm::vec3 _rotation, typeCPowerUp _typePow
         cTexture->texture = "water.jpg";
         cMesh->mesh = "media/ninja.b3d";
         cPowerUp->speed = -510.0;
-        cPowerUp->deceleration = 25.0;
     }else{                                                      // Telebanana
         cTexture->texture = "stones.jpg";
         cMesh->mesh = "media/ninja.b3d";
