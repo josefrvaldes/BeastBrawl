@@ -4,28 +4,25 @@
 #include "../include/glfw/glfw3.h"
 #include "CLEngine.h"
 #include <math.h>
-/*#include "ImGUI/imgui.h"
+#include "ImGUI/imgui.h"
 #include "ImGUI/imgui_impl_opengl3.h"
-#include "ImGUI/imgui_impl_glfw.h"*/
+#include "ImGUI/imgui_impl_glfw.h"
 
 using namespace std;
 
 const char *vertexShaderSource = "#version 460 core\n"
     "layout (location = 0) in vec3 aPos;\n"
-    "layout (location = 1) in vec3 aColor;\n"
-    "out vec3 ourColor;\n"
     "void main()\n"
     "{\n"
     "   gl_Position = vec4(aPos, 1.0);\n"
-    "   ourColor = aColor;\n"
     "}\0";
 
 const char *fragmentShaderSource = "#version 460 core\n"
     "out vec4 FragColor;\n"
-    "in vec3 ourColor;\n"
+    "uniform vec4 ourColor;\n"
     "void main()\n"
     "{\n"
-        "FragColor = vec4(ourColor,1.0);\n"
+        "FragColor = ourColor;\n"
     "}\n\0";
 
 
@@ -42,30 +39,24 @@ void checkInput (GLFWwindow *window) {
 int main() {
 
     CLE::CLEngine *device = new CLE::CLEngine(1280, 720, "Beast Brawl");
-    /*IMGUI_CHECKVERSION();
+    IMGUI_CHECKVERSION();
     ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO(); (void)io;*/
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
 
 
     // Setup Dear ImGui style
-    //ImGui::StyleColorsDark();
-    //ImGui::StyleColorsClassic();
+    ImGui::StyleColorsDark();
 
     // Setup Platform/Renderer bindings
-    /*ImGui_ImplGlfw_InitForOpenGL(window, true);
-    ImGui_ImplOpenGL3_Init("#version 460");*/
-    //glewInit();
+    ImGui_ImplGlfw_InitForOpenGL(device->GetWindow(), true);
+    ImGui_ImplOpenGL3_Init("#version 460");
+    glewInit();
 
     float vertices[] = {
-        // positions         // colors
-        0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,   // bottom right
-        -0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,   // bottom left
-        0.0f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f    // top 
-    };  
-
-
-    glewInit(); //Necesitamos el inicializar GLEW para que funcionen todas estas funciones
-    
+        -0.5f, -0.5f, 0.0f,
+        0.5f, -0.5f, 0.0f,
+        0.0f,  0.5f, 0.0f
+    };      
 
 
     //----- Creamos el vertex shader ------
@@ -153,11 +144,8 @@ int main() {
      */
 
     //Por cada layaout del vertex shader los diferenciamos por el primer parametro
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3* sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);  
-
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3*sizeof(float)));
-    glEnableVertexAttribArray(1);  
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
@@ -165,7 +153,8 @@ int main() {
     
 
     
-
+    ImVec4 triangleColor;
+    bool show_demo_window = true;
     while (!device->Run()) {
         //glfwPollEvents();
 
@@ -175,81 +164,47 @@ int main() {
 
         device->UpdateViewport(); //Por si reescalamos la ventana
 
+
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+
+        // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
+        ImGui::ShowDemoWindow(&show_demo_window);
+
+
+        // Start the Dear ImGui frame
+        //ImGui_ImplOpenGL3_NewFrame();
+        // ImGui_ImplGlfw_NewFrame();
+        // ImGui::NewFrame();
+
+        ImGui::Begin("Modificador de shader!");                          // Create a window called "Hello, world!" and append into it.
+        ImGui::ColorEdit3("clear color", (float*)&triangleColor); // Edit 3 floats representing a color
+        ImGui::End();
+
         glUseProgram(shaderProgram);
-        // float timeValue = glfwGetTime();
-        // float greenValue = (sin(timeValue) / 2.0f) + 0.5f;
-        // int vertexColorLocation = glGetUniformLocation(shaderProgram,"ourColor");
-        // glUniform4f(vertexColorLocation, 0.0f, greenValue,0.0f,1.0f);
+        int vertexColorLocation = glGetUniformLocation(shaderProgram,"ourColor");
+        glUniform4f(vertexColorLocation, triangleColor.x, triangleColor.y,triangleColor.z,triangleColor.w);
 
         glBindVertexArray(VAO);
         glDrawArrays(GL_TRIANGLES, 0, 3);
         glBindVertexArray(0);
 
-        glfwSwapBuffers(device->GetWindow());
-        glfwPollEvents();
-
-        //device->Draw(); // Borrado e intercambio de buffers
-        //device->Run();
-    }
-
-    /*ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
-    // Main loop
-    while (!glfwWindowShouldClose(window))
-    {
-        checkInput(window);
-        // Poll and handle events (inputs, window resize, etc.)
-        // You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to tell if dear imgui wants to use your inputs.
-        // - When io.WantCaptureMouse is true, do not dispatch mouse input data to your main application.
-        // - When io.WantCaptureKeyboard is true, do not dispatch keyboard input data to your main application.
-        // Generally you may always pass all inputs to dear imgui, and hide them from your application based on those two flags.
-        glfwPollEvents();
-        // Start the Dear ImGui frame
-        ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplGlfw_NewFrame();
-        ImGui::NewFrame();
-        
-        static float f = 0.0f;
-        static int counter = 0;
-
-        ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
-
-        ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
-
-        ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-        ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
-
-        if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
-            counter++;
-        ImGui::SameLine();
-        ImGui::Text("counter = %d", counter);
-
-        ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-        ImGui::End();
-        
-
-
-        // Rendering
         ImGui::Render();
-        int display_w, display_h;
-        glfwGetFramebufferSize(window, &display_w, &display_h);
-        glViewport(0, 0, display_w, display_h);
-        glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
-        glClear(GL_COLOR_BUFFER_BIT);
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
-        glfwSwapBuffers(window);
-    }*/
+        glfwPollEvents();
+        glfwSwapBuffers(device->GetWindow());
 
-
-    //cout << glGetString(GL_VERSION) << "\n";
+    }
 
     // Cleanup
-    /*ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
-    ImGui::DestroyContext();*/
+    ImGui::DestroyContext();
 
     delete device;
 
