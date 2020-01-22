@@ -238,8 +238,6 @@ void ManCar::NewInputsReceived(DataMap* d) {
     auto id = any_cast<uint32_t>((*d)["id"]);
     auto inputs = any_cast<vector<Constants::InputTypes>>((*d)["inputs"]);
     for (shared_ptr<Entity> car : entities) {
-        CId* currentId = static_cast<CId*>(car->GetComponent(CompType::IdComp).get());
-
         if (car->HasComponent(CompType::OnlineComp)) {
             COnline* compOnline = static_cast<COnline*>(car->GetComponent(CompType::OnlineComp).get());
             uint16_t currentIDOnline = compOnline->idClient;
