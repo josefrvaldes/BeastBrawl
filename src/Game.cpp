@@ -7,6 +7,7 @@
 #include "State/StateInGameMulti.h"
 #include "State/StateMenu.h"
 #include "State/StatePause.h"
+#include "State/StateLobbyMulti.h"
 
 using namespace std;
 
@@ -67,6 +68,9 @@ void Game::SetState(State::States stateType) {
         case State::ENDRACE:
             currentState = make_shared<StateEndRace>();
             break;
+        case State::LOBBY_MULTI:
+            currentState = make_shared<StateLobbyMulti>();
+            break;
         default:
             cout << "This state doesn't exist" << endl;
     }
@@ -117,6 +121,11 @@ void Game::SuscribeEvents(){
         EventType::STATE_ENDRACE,
         bind(&Game::SetStateEndRace, this, placeholders::_1),
         "StateEndRace"));
+
+    EventManager::GetInstance().SuscribeMulti(Listener(
+        EventType::STATE_LOBBYMULTI,
+        bind(&Game::SetStateLobbyMulti, this, placeholders::_1),
+        "SetStateLobbyMulti"));
 
 }
 
@@ -170,4 +179,8 @@ void Game::SetStateInGameMulti(DataMap* d){
 
 void Game::SetStateEndRace(DataMap* d){
     SetState(State::ENDRACE);
+}
+
+void Game::SetStateLobbyMulti(DataMap* d){
+    SetState(State::LOBBY_MULTI);
 }

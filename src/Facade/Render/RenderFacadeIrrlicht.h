@@ -46,13 +46,16 @@ class RenderFacadeIrrlicht : public RenderFacade {
     void FacadeDrawMenu() override;
     void FacadeDrawPause() override;
     void FacadeDrawEndRace() override;
+    void FacadeDrawLobbyMulti() override;
     void FacadeInitMenu() override;
     void FacadeInitPause() override;
     void FacadeInitEndRace() override;
+    void FacadeInitLobbyMulti() override;
     void FacadeInitHUD() override;
     void FacadeCheckInputMenu() override;
     void FacadeCheckInputPause() override;
     void FacadeCheckInputEndRace() override;
+    void FacadeCheckInputLobbyMulti() override;
     void FacadeUpdatePowerUpHUD(DataMap* d) override;
     void FacadeDrawHUD(Entity* car, ManCar* carsAI) override;
     void FacadeSuscribeEvents() override;
@@ -84,6 +87,7 @@ class RenderFacadeIrrlicht : public RenderFacade {
     video::ITexture* menuBG;
     video::ITexture* pauseBG;
     video::ITexture* endRaceBG;
+    video::ITexture* lobbyMultBG;
     video::ITexture* whiteBG;
     video::ITexture* powerUps[7];
     gui::IGUIFont* font;

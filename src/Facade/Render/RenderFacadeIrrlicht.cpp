@@ -69,6 +69,11 @@ void RenderFacadeIrrlicht::FacadeInitEndRace() {
     driver->makeColorKeyTexture(endRaceBG, core::position2d<s32>(0, 0));
 }
 
+void RenderFacadeIrrlicht::FacadeInitLobbyMulti() {
+    lobbyMultBG = driver->getTexture("media/LobbyMulti.png");
+    driver->makeColorKeyTexture(lobbyMultBG, core::position2d<s32>(0, 0));
+}
+
 void RenderFacadeIrrlicht::FacadeInitHUD() {
     //Almacenamos los iconos de powerups
     powerUps[0] = driver->getTexture("media/nonepowerup.jpg");
@@ -546,16 +551,8 @@ void RenderFacadeIrrlicht::FacadeCheckInputMenu() {
     } else if (receiver.IsKeyDown(KEY_ESCAPE)) {
         device->closeDevice();
     } else if (receiver.IsKeyDown(KEY_KEY_M)) {
-        numEnemyCars = 0;
-
-        //Manera un poco cutre de resetear el CId al empezar el juego
-        auto cId = make_shared<CId>();
-        cId->ResetNumIds();
-        auto cNavMesh = make_shared<CNavMesh>();
-        cNavMesh->ResetNumIds();
-        //Game::GetInstance()->SetState(State::INGAME_MULTI);
-        EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_INGAMEMULTI});
-
+        smgr->clear();
+        EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_LOBBYMULTI});
     }
 }
 
@@ -599,6 +596,26 @@ void RenderFacadeIrrlicht::FacadeCheckInputEndRace() {
         device->closeDevice();
     }
 }
+
+
+void RenderFacadeIrrlicht::FacadeCheckInputLobbyMulti() {
+    //Cambiamos a ingame
+    if (receiver.IsKeyDown(KEY_F1)) {
+        numEnemyCars = 0;
+
+        //Manera un poco cutre de resetear el CId al empezar el juego
+        auto cId = make_shared<CId>();
+        cId->ResetNumIds();
+        auto cNavMesh = make_shared<CNavMesh>();
+        cNavMesh->ResetNumIds();
+        //Game::GetInstance()->SetState(State::INGAME_MULTI);
+        EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_INGAMEMULTI});
+
+    } else if (receiver.IsKeyDown(KEY_ESCAPE)) {
+        device->closeDevice();
+    }
+}
+
 
 int RenderFacadeIrrlicht::FacadeGetFPS() const{
     return driver->getFPS();
@@ -644,6 +661,15 @@ void RenderFacadeIrrlicht::FacadeDrawEndRace() {
     driver->beginScene(true, true, video::SColor(255, 113, 113, 133));
     //smgr->drawAll();  // draw the 3d scene
     driver->draw2DImage(endRaceBG, core::position2d<s32>(0, 0),
+                        core::rect<s32>(0, 0, 1280, 720), 0,
+                        video::SColor(255, 255, 255, 255), false);
+    driver->endScene();
+}
+
+void RenderFacadeIrrlicht::FacadeDrawLobbyMulti() {
+    driver->beginScene(true, true, video::SColor(255, 113, 113, 133));
+    //smgr->drawAll();  // draw the 3d scene
+    driver->draw2DImage(lobbyMultBG, core::position2d<s32>(0, 0),
                         core::rect<s32>(0, 0, 1280, 720), 0,
                         video::SColor(255, 255, 255, 255), false);
     driver->endScene();
