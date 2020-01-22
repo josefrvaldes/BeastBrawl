@@ -13,5 +13,5 @@ SystemOnline::SystemOnline(ManCar &manCar_) : manCar{manCar_}, udpClient{make_un
 void SystemOnline::SendInputs(vector<Constants::InputTypes> &inputs) {
     //udpClient->SendInputs(inputs);
     if (inputs.size() > 0)
-        udpClient->SendInput(inputs[0]);
+        udpClient->SendInputs(inputs);
 }

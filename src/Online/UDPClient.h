@@ -7,10 +7,14 @@
 #include <iostream>
 #include <thread>
 #include "../Constants.h"
+#include "../../include/include_json/include_json.hpp"
 
 using boost::asio::ip::udp;
 using namespace std;
 using namespace std::chrono;
+using json = nlohmann::json;
+
+
 
 class UDPClient {
     // --- TCP --- (sala de espera)
@@ -37,11 +41,11 @@ class UDPClient {
 
    private:
     void StartReceiving();
-    void HandleReceived(const boost::system::error_code& error, size_t bytesTransferred);
-
+    void HandleReceived(std::shared_ptr<boost::array<char, 1024>> recvBuff, const boost::system::error_code& error, size_t bytesTransferred);
+    void HandleReceivedInput(const json, const uint32_t id) const;
     void HandleSentInput(std::shared_ptr<Constants::InputTypes> input, const boost::system::error_code& errorCode,
                          std::size_t bytes_transferred);
-    void HandleSentInputs(const vector<Constants::InputTypes>& inputs, const boost::system::error_code& errorCode,
+    void HandleSentInputs(const boost::system::error_code& errorCode,
                           std::size_t bytes_transferred);
     void HandleSentDateTime(const boost::shared_ptr<std::string> message,
                             const boost::system::error_code& errorCode,
@@ -50,8 +54,5 @@ class UDPClient {
     boost::asio::io_context context;
     udp::endpoint serverEndpoint;
     udp::socket socket;
-    // boost::array<char, 128> recvBuff;
-    boost::array<string, 1> sendBuff;
-    vector<boost::asio::mutable_buffer> recvBuff;
     std::thread butler;
 };

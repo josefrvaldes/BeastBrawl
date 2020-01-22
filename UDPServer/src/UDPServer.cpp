@@ -31,23 +31,25 @@ void UDPServer::StartReceiving() {
 void UDPServer::HandleReceive(std::shared_ptr<boost::array<char, 1024>> recevBuff, std::shared_ptr<udp::endpoint> remoteClient, const boost::system::error_code& errorCode, std::size_t bytesTransferred) {
     // cout << "Hemos recibido una petición del endpoint " << remoteClient.address() << ":" << remoteClient.port() << endl;
     if (!errorCode) {
-        string s;
-        std::copy(recevBuff->begin(), recevBuff->begin() + bytesTransferred, std::back_inserter(s));
-        json j = json::parse(s);
-        uint16_t auxCallType = j["petitionType"];
-        const uint32_t id = j["id"];
+        string receivedString;
+        std::copy(recevBuff->begin(), recevBuff->begin() + bytesTransferred, std::back_inserter(receivedString));
+        json receivedJSON = json::parse(receivedString);
+        uint16_t auxCallType = receivedJSON["petitionType"];
+        const uint32_t id = receivedJSON["id"];
 
         SavePlayerIfNotExists(id, *remoteClient.get());
 
         Constants::PetitionTypes callType = static_cast<Constants::PetitionTypes>(auxCallType);
         switch (callType) {
-            case Constants::PetitionTypes::SEND_INPUTS:  //Input
             case Constants::PetitionTypes::SEND_INPUT: {
-                const uint16_t auxInput = j["input"];
+                const uint16_t auxInput = receivedJSON["input"];
                 Constants::InputTypes input = static_cast<Constants::InputTypes>(auxInput);
                 HandleReceivedInput(input, *remoteClient.get());
             } break;
 
+            case Constants::PetitionTypes::SEND_INPUTS: {
+                HandleReceivedInputs(receivedString, *remoteClient.get());
+            } break;
             case Constants::PetitionTypes::SEND_SYNC:  //Input
                 break;
 
@@ -55,8 +57,50 @@ void UDPServer::HandleReceive(std::shared_ptr<boost::array<char, 1024>> recevBuf
                 HandleReceiveDateTimeRequest(*remoteClient.get());
                 break;
         }
+    } else {
+        cout << "¡¡HUBO UN ERROR AL RECIBIR DATOS EN EL SERVER!! errorcode:" << errorCode << endl;
     }
     StartReceiving();  // antes estaba dentro del if, pero entonces si hay un error ya se rompe tó ¿?
+}
+
+void UDPServer::HandleReceivedInputs(const string& stringToBeReSent, const udp::endpoint& originalClient) {
+    ResendInputsToOthers(stringToBeReSent, originalClient);
+}
+
+void UDPServer::ResendInputsToOthers(const string& stringToBeReSent, const udp::endpoint& originalClient) {
+    string originalAddress = originalClient.address().to_string();
+    uint16_t originalPort = originalClient.port();
+    for (Player& currentPlayer : players) {
+        string currentAddress = currentPlayer.endpoint.address().to_string();
+        uint16_t currentPort = currentPlayer.endpoint.port();
+        // uint32_t currentID = currentPlayer.id;
+
+        // si el cliente NO es el jugador original que mandó este input, le reenviamos el input al resto
+        // TODO: falta comparar aquí con id
+        if (originalAddress != currentAddress || originalPort != currentPort) {
+            SendInputs(stringToBeReSent, currentPlayer);
+        }
+    }
+}
+
+void UDPServer::SendInputs(const string s, const Player& player) {
+    std::shared_ptr<string> message = make_shared<string>(s);
+    socket.async_send_to(
+        boost::asio::buffer(*message),
+        player.endpoint,
+        boost::bind(
+            &UDPServer::HandleSentInputs,
+            this,
+            message,
+            asio::placeholders::error,
+            asio::placeholders::bytes_transferred));
+}
+
+void UDPServer::HandleSentInputs(const std::shared_ptr<string> json, const boost::system::error_code& errorCode, std::size_t bytesTransferred) const {
+    if (errorCode) {
+        cout << "Hubo un error enviando inputs. errorcode: " << errorCode << endl;
+        // Resend();
+    }
 }
 
 void UDPServer::HandleReceiveDateTimeRequest(const udp::endpoint& remoteClient) {
@@ -68,8 +112,8 @@ void UDPServer::HandleReceiveDateTimeRequest(const udp::endpoint& remoteClient) 
             &UDPServer::HandleSentDateTimeRequest,
             this,
             message,
-            boost::asio::placeholders::error,
-            boost::asio::placeholders::bytes_transferred));
+            asio::placeholders::error,
+            asio::placeholders::bytes_transferred));
 }
 
 void UDPServer::HandleReceivedInput(const Constants::InputTypes input, const udp::endpoint& remoteClient) {
