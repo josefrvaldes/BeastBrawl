@@ -2,8 +2,8 @@
 #include <boost/asio/placeholders.hpp>
 #include <boost/bind.hpp>
 #include <deque>
-#include "../Systems/Utils.h"
 #include "../../include/include_json/include_json.hpp"
+#include "../Systems/Utils.h"
 
 using json = nlohmann::json;
 
@@ -59,24 +59,25 @@ void UDPClient::SendDateTime() {
 
 void UDPClient::SendInput(Constants::InputTypes newInput) {
     std::shared_ptr<Constants::InputTypes> auxInput = make_shared<Constants::InputTypes>(newInput);
-    
+
+    const uint32_t FAKE_ID = 1234;
+
     json j;
     j["petitionType"] = Constants::PetitionTypes::SEND_INPUT;
-    j["id"] = Constants::PetitionTypes::SEND_INPUT;
-
+    j["id"] = FAKE_ID;
     j["input"] = newInput;
+
     string s = j.dump();
     sendBuff[0] = s;
     socket.async_send_to(
-        // boost::asio::buffer(outputBuffer),
-        boost::asio::buffer(s),
+        asio::buffer(s),
         serverEndpoint,
         boost::bind(
             &UDPClient::HandleSentInput,
             this,
             auxInput,
-            boost::asio::placeholders::error,
-            boost::asio::placeholders::bytes_transferred));
+            asio::placeholders::error,
+            asio::placeholders::bytes_transferred));
 }
 
 void UDPClient::HandleSentInput(std::shared_ptr<Constants::InputTypes> input, const boost::system::error_code& errorCode,

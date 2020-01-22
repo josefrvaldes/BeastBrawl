@@ -51,13 +51,13 @@ class UDPClient {
                             const boost::system::error_code& errorCode,
                             std::size_t bytes_transferred);
 
-    string GetTime() {
-        auto time_point = system_clock::now();
-        time_t now_c = system_clock::to_time_t(time_point);
-        string salida = ctime(&now_c);
-        salida = salida.substr(0, salida.size() - 1);
-        return salida;
-    }
+    // string GetTime() {
+    //     auto time_point = system_clock::now();
+    //     time_t now_c = system_clock::to_time_t(time_point);
+    //     string salida = ctime(&now_c);
+    //     salida = salida.substr(0, salida.size() - 1);
+    //     return salida;
+    // }
 
     boost::asio::io_context context;
     udp::endpoint serverEndpoint;
