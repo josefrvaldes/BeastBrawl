@@ -18,6 +18,10 @@ ManNavMesh::ManNavMesh() {
     double vertex2X=0, vertex2Y=0,vertex2Z=0; 
     double vertex3X=0, vertex3Y=0,vertex3Z=0; 
     double vertex4X=0, vertex4Y=0,vertex4Z=0; 
+    double vertex5X=0, vertex5Y=0,vertex5Z=0;   // utilizamos double porque tiene mas precison que float (64b vs 32b)
+    double vertex6X=0, vertex6Y=0,vertex6Z=0; 
+    double vertex7X=0, vertex7Y=0,vertex7Z=0; 
+    double vertex8X=0, vertex8Y=0,vertex8Z=0;
     vector<int> waypointsId;
 
 
@@ -49,10 +53,29 @@ ManNavMesh::ManNavMesh() {
             vertex4Y   = vertex4["y"].get<double>();
             vertex4Z   = vertex4["z"].get<double>();
 
+        auto vertex5    = navMeshActual["vertex5"];
+            vertex5X   = vertex5["x"].get<double>();
+            vertex5Y   = vertex5["y"].get<double>();
+            vertex5Z   = vertex5["z"].get<double>();
+        auto vertex6    = navMeshActual["vertex6"];
+            vertex6X   = vertex6["x"].get<double>();
+            vertex6Y   = vertex6["y"].get<double>();
+            vertex6Z   = vertex6["z"].get<double>();
+        auto vertex7    = navMeshActual["vertex7"];
+            vertex7X   = vertex7["x"].get<double>();
+            vertex7Y   = vertex7["y"].get<double>();
+            vertex7Z   = vertex7["z"].get<double>();
+        auto vertex8    = navMeshActual["vertex8"];
+            vertex8X   = vertex8["x"].get<double>();
+            vertex8Y   = vertex8["y"].get<double>();
+            vertex8Z   = vertex8["z"].get<double>();
+
         // una vez tenemos los 4 vertices, tenemos que sacar el centro y sus dimensiones (offset)
-        double centroNavMeshX = (vertex1X+vertex2X+vertex3X+vertex4X)/4;
-        double centroNavMeshY = (vertex1Y+vertex2Y+vertex3Y+vertex4Y)/4;
-        double centroNavMeshZ = (vertex1Z+vertex2Z+vertex3Z+vertex4Z)/4;
+        double centroNavMeshX = (vertex1X+vertex2X+vertex3X+vertex4X + vertex5X+vertex6X+vertex7X+vertex8X)/8;
+        // Actualmente como no hay altura no la utilizamos.. por defecto en la 20
+        double centroNavMeshY = 20.0f;
+        //double centroNavMeshY = (vertex1Y+vertex2Y+vertex3Y+vertex4Y + vertex5Y+vertex6Y+vertex7Y+vertex8Y)/8;
+        double centroNavMeshZ = (vertex1Z+vertex2Z+vertex3Z+vertex4Z + vertex5Z+vertex6Z+vertex7Z+vertex8Z)/8;
         vec3 centroNavMesh = vec3(centroNavMeshX,centroNavMeshY,centroNavMeshZ); 
         double dimensionX = (abs(centroNavMeshX - vertex1X))*2;    
         double dimensionY = (abs(centroNavMeshY - vertex1Y))*2; 
@@ -66,21 +89,22 @@ ManNavMesh::ManNavMesh() {
             //std::cout << "meteneos waypoint con ID: " << wayPointIdActual << std::endl;
         }
         // POSICION , ROTACION, OFFSETX, OFFSETY, OFFSETZ, VECTOR WAYPOINTS
-        //CreateNavMesh(centroNavMesh,glm::vec3(0.0f,0.0f,0.0f),dimensionX,dimensionY,dimensionZ,waypointsId); 
+        //std::cout <<" VOY A CREAR UN Navmesh LOCOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO" << std::endl;
+        CreateNavMesh(centroNavMesh,glm::vec3(0.0f,0.0f,0.0f),dimensionX,dimensionY,dimensionZ,waypointsId); 
     }
 
 
 
 
     // CREAMOS DE PRUEBA UN NAVMESH
-    vector<int> waypoints0{0,1,2,3,4,12};
-    vector<int> waypoints1{7,8,9,10,11,13};
-    vector<int> waypoints2{3,5,7};  // el 5 debe ser referencia
-    vector<int> waypoints3{4,6,8};  // el 6 debe ser referencia
-    CreateNavMesh(glm::vec3(0.0f,0.0f,-200.0f),glm::vec3(0.0f,0.0f,0.0f),1000,32,500,waypoints0);  //0
-    CreateNavMesh(glm::vec3(0.0f,0.0f,500.0f),glm::vec3(0.0f,0.0f,0.0f),1000,32,500,waypoints1);   //1
-    CreateNavMesh(glm::vec3(-300.0f,0.0f,150.0f),glm::vec3(0.0f,0.0f,0.0f),150,32,200,waypoints2); //2
-    CreateNavMesh(glm::vec3(300.0f,0.0f,150.0f),glm::vec3(0.0f,0.0f,0.0f),150,32,200,waypoints3);  //3
+    //vector<int> waypoints0{0,1,2,3,4,12};
+    //vector<int> waypoints1{7,8,9,10,11,13};
+    //vector<int> waypoints2{3,5,7};  // el 5 debe ser referencia
+    //vector<int> waypoints3{4,6,8};  // el 6 debe ser referencia
+    //CreateNavMesh(glm::vec3(0.0f,0.0f,-200.0f),glm::vec3(0.0f,0.0f,0.0f),1000,32,500,waypoints0);  //0
+    //CreateNavMesh(glm::vec3(0.0f,0.0f,500.0f),glm::vec3(0.0f,0.0f,0.0f),1000,32,500,waypoints1);   //1
+    //CreateNavMesh(glm::vec3(-300.0f,0.0f,150.0f),glm::vec3(0.0f,0.0f,0.0f),150,32,200,waypoints2); //2
+    //CreateNavMesh(glm::vec3(300.0f,0.0f,150.0f),glm::vec3(0.0f,0.0f,0.0f),150,32,200,waypoints3);  //3
 
     //nos suscribimos
     SubscribeToEvents();
@@ -89,6 +113,9 @@ ManNavMesh::ManNavMesh() {
 void ManNavMesh::CreateNavMesh(glm::vec3 pos, glm::vec3 rot, float width, float height, float depth, vector<int> waypoints){
     shared_ptr<NavMesh> p = make_shared<NavMesh>(pos,rot,width,height,depth,waypoints);
     entities.push_back(p);
+
+    auto cNavMesh = static_cast<CNavMesh*>(p.get()->GetComponent(CompType::NavMeshComp).get());
+    std::cout << "EL ID DEL NAVMESH EN EL QUE ESTAMOS ES: " << cNavMesh->id << std::endl;
 }
 
 

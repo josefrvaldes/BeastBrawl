@@ -30,6 +30,7 @@ CBoundingPlane::CBoundingPlane(const vec3 &a_, const vec3 &b_, const vec3 &c_, c
     equationPlane = equationPlane3Points(a,b,c); 
 }
 
+// TODO: Actualmente todos los planos se tratan como finitos en los que respecta a las colisiones con las esferas
 IntersectData CBoundingPlane::IntersectSphere(const CBoundingSphere &other){
     float distanceFromSpCenter = fabs(dot(normalizedNormal, other.center) - distance);
     // cout << "Distance from sphere center " << distanceFromSpCenter << endl;
@@ -38,12 +39,6 @@ IntersectData CBoundingPlane::IntersectSphere(const CBoundingSphere &other){
     if(intersectsInfinitePlane){
         vec3 centerOnPlane = IntersectPoint(*(&other.center));
         if( !membershipPoint(*(&centerOnPlane)) ){
-            // No estamos dentro del plano finito por lo que devolvemos false
-            //std::cout << "DIIIIIIIIIIOOOOOOOOOOOOOOOSSSSS DIOOOOOOOOOOOOOSSSSSSSSSSSSSS DIOSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS" << std::endl;
-            //std::cout << "DIIIIIIIIIIOOOOOOOOOOOOOOOSSSSS DIOOOOOOOOOOOOOSSSSSSSSSSSSSS DIOSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS" << std::endl;
-            //std::cout << "DIIIIIIIIIIOOOOOOOOOOOOOOOSSSSS DIOOOOOOOOOOOOOSSSSSSSSSSSSSS DIOSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS" << std::endl;
-            //std::cout << "DIIIIIIIIIIOOOOOOOOOOOOOOOSSSSS DIOOOOOOOOOOOOOSSSSSSSSSSSSSS DIOSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS" << std::endl;
-            //std::cout << "DIIIIIIIIIIOOOOOOOOOOOOOOOSSSSS DIOOOOOOOOOOOOOSSSSSSSSSSSSSS DIOSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS" << std::endl;
             return IntersectData(false, normalizedNormal * distanceFromSphere);
         }
     }

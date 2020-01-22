@@ -83,7 +83,7 @@ void StateInGame::CAMBIARCosasNavMesh(ManNavMesh &manNavMesh){
                 auto cCurrentNavMesh = static_cast<CCurrentNavMesh*>(manCars.get()->GetCar().get()->GetComponent(CompType::CurrentNavMeshComp).get());
                 auto cNavMesh = static_cast<CNavMesh*>(navmesh.get()->GetComponent(CompType::NavMeshComp).get());
                 cCurrentNavMesh->currentNavMesh = cNavMesh->id;
-                //std::cout << " El cochecito lereee pertenece al naveMesh: " << cNavMesh->id << std::endl;
+                //std::cout << "11111111111111111111 El cochecito lereee pertenece al naveMesh: " << cNavMesh->id << std::endl;
             }       
     }
 
@@ -99,7 +99,7 @@ void StateInGame::CAMBIARCosasNavMesh(ManNavMesh &manNavMesh){
                 auto cCurrentNavMesh = static_cast<CCurrentNavMesh*>(manTotems->GetEntities()[0].get()->GetComponent(CompType::CurrentNavMeshComp).get());
                 auto cNavMesh = static_cast<CNavMesh*>(navmesh.get()->GetComponent(CompType::NavMeshComp).get());
                 cCurrentNavMesh->currentNavMesh = cNavMesh->id;
-                //std::cout << " El cochecito lereee pertenece al naveMesh: " << cNavMesh->id << std::endl;
+                //std::cout << "222222222222222222222222222 El totem pertenece al naveMesh: " << cNavMesh->id << std::endl;
             }       
     }
 

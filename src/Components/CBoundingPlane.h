@@ -38,7 +38,7 @@ class CBoundingPlane : public Component {
     const float distance;
 
     private:
-    // calculo de l ecuacion general de un plano mediante 3 puntos
+    // calculo de la ecuacion general de un plano mediante 3 puntos
     vec4 equationPlane3Points(const vec3 &a, const vec3 &b, const vec3 &c) const;
 
 };

@@ -33,7 +33,7 @@ void StateInGameSingle::CAMBIARCosasNavMesh(ManCar &manCars, ManNavMesh &manNavM
                         auto cCurrentNavMesh = static_cast<CCurrentNavMesh*>(carAI.get()->GetComponent(CompType::CurrentNavMeshComp).get());
                         auto cNavMesh = static_cast<CNavMesh*>(navmesh.get()->GetComponent(CompType::NavMeshComp).get());
                         cCurrentNavMesh->currentNavMesh = cNavMesh->id;
-                        //std::cout << " El cochecito lereee pertenece al naveMesh: " << cNavMesh->id << std::endl;
+                        //std::cout << " EL NAVMESH DE LAS IA ES::::234563345677: " << cNavMesh->id << std::endl;
                     }       
             }
         }
@@ -151,7 +151,7 @@ void StateInGameSingle::CAMBIARInicializarCarAIS(ManCar &manCars, ManWayPoint &m
     manCars.GetEntitiesAI()[2]->SetPath(pathInit3);
 */
     manCars.CreateCarAI(glm::vec3(-200.0f, 20.0f, 700.0f));
-    manCars.CreateCarAI(glm::vec3(400.0f, 20.0f, 20.0f));
+    manCars.CreateCarAI(glm::vec3(400.0f, 20.0f, -50.0f));
     //manCars.CreateHumanCar(glm::vec3(20.0, 20.0, 20.0));
     manCars.CreateCarAI(glm::vec3(400.0f, 20.0f, -400.0f));
 }
