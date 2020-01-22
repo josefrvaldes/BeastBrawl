@@ -68,10 +68,18 @@ ManBoundingWall::ManBoundingWall() {
     entities.push_back(p3);
     entities.push_back(p4);
 */
-    CreateBoundingWall(vec3(-500.f, 20.f, 200.f),vec3(550.f, 20.f, -460.f),vec3(550.f, 120.f, -460.f),vec3(-500.f, 120.f, 200.f));
-    //CreateBoundingWall(vec3(-500.f, 120.f, 760.f),vec3(550.f, 120.f, 760.f),vec3(550.f, 20.f, 760.f),vec3(-500.f, 20.f, 760.f));
+    CreateBoundingWall(vec3(-500.f, 20.f, -460.f),vec3(550.f, 20.f, -460.f),vec3(550.f, 120.f, -460.f),vec3(-500.f, 120.f, -460.f));
+    CreateBoundingWall(vec3(-500.f, 120.f, 760.f),vec3(550.f, 120.f, 760.f),vec3(550.f, 20.f, 760.f),vec3(-500.f, 20.f, 760.f));
     CreateBoundingWall(vec3(-470.f, 120.f, -480.f),vec3(-470.f, 120.f, 820.f),vec3(-470.f, 20.f, 820.f),vec3(-470.f, 20.f, -480.f));
     CreateBoundingWall(vec3(480.f, 20.f, -480.f),vec3(480.f, 20.f, 820.f),vec3(480.f, 120.f, 820.f),vec3(480.f, 120.f, -480.f));
+
+
+    // con 4 planos creamos un mini Cubo para cmporbar colisiones
+    CreateBoundingWall(vec3(50.f, 120.f, 50.f),vec3(150.f, 120.f, 50.f),vec3(150.f, 20.f, 50.f),vec3(50.f, 20.f, 50.f));
+    CreateBoundingWall(vec3(50.f, 20.f, 150.f),vec3(150.f, 20.f, 150.f),vec3(150.f, 120.f, 150.f),vec3(50.f, 120.f, 150.f));
+    CreateBoundingWall(vec3(50.f, 20.f, 50.f),vec3(50.f, 20.f, 150.f),vec3(50.f, 120.f, 150.f),vec3(50.f, 120.f, 50.f));
+    CreateBoundingWall(vec3(150.f, 120.f, 50.f),vec3(150.f, 120.f, 150.f),vec3(150.f, 20.f, 150.f),vec3(150.f, 20.f, 50.f));
+
     cout << "Hemos creado un bounding wall, ahora tenemos " << entities.size() << " bounding walls" << endl;
 }
 
