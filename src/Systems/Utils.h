@@ -3,10 +3,11 @@
 #define _USE_MATH_DEFINES
 
 #include <math.h>
+#include <time.h>
+#include <chrono>
 #include <iostream>
 #include <sstream>
 #include "../../include/glm/vec3.hpp"
-#include <chrono>
 
 using namespace glm;
 using namespace std;
@@ -77,5 +78,22 @@ class Utils {
     static float RadToDeg(float rad) {
         uint32_t auxDeg = rad * (180.0 / M_PI);
         return (auxDeg + 360) % 360;
+    }
+
+    /**
+     * Valdés: lo hice pero ni lo he probado porque en seguida me tuve
+     * que poner con otra cosa. 
+     * Quien lo leas: si lo pruebas y lo confirmas o lo arreglas o lo que sea,
+     *      borra este comentario. Si haces uno mejor, borra todo el método.
+     */
+    static tm* GetUTCTime() {
+        time_t rawtime;
+        struct tm* ptm;
+
+        time(&rawtime);
+
+        ptm = gmtime(&rawtime);
+
+        return ptm;
     }
 };

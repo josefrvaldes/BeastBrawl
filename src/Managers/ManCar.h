@@ -78,6 +78,7 @@ class ManCar : public Manager {
     void CatchTotemAI(DataMap* d);
     void UseTotem(Entity* carWinTotem);
     void ChangeTotemCar(DataMap* d);
+    void NewInputsReceived(DataMap* d);
     //void ChangePosDestination(DataMap* d);
     //void MoveToPowerUp(DataMap* d);
     void ThrowTotem(Entity* carLoseTotem);

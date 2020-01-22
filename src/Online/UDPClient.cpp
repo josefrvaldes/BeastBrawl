@@ -1,12 +1,12 @@
 #include "UDPClient.h"
+#include <src/EventManager/Event.h>
+#include <src/EventManager/EventManager.h>
+#include <src/Systems/Utils.h>
 #include <boost/asio/placeholders.hpp>
 #include <boost/bind.hpp>
 #include <deque>
-#include "../Systems/Utils.h"
-
 
 using boost::asio::ip::udp;
-using namespace boost;
 using namespace boost::asio;
 using namespace std::chrono;
 using namespace std;
@@ -32,7 +32,7 @@ void UDPClient::StartReceiving() {
     cout << "Esperamos recibir datos" << endl;
     std::shared_ptr<boost::array<char, 1024>> recvBuff = make_shared<boost::array<char, 1024>>();
     socket.async_receive_from(
-        asio::buffer(*recvBuff),
+        boost::asio::buffer(*recvBuff),
         serverEndpoint,
         boost::bind(
             &UDPClient::HandleReceived,
@@ -73,11 +73,15 @@ void UDPClient::HandleReceived(std::shared_ptr<boost::array<char, 1024>> recvBuf
 
 void UDPClient::HandleReceivedInput(const json revcdJSON, const uint32_t id) const {
     vector<Constants::InputTypes> inputs = revcdJSON["inputs"];
-    cout << "Hemos recibido los inputs ";
-    for (size_t i = 0; i < inputs.size(); i++) {
-        cout << inputs[i] << " ";
-    }
-    cout << endl;
+    std::shared_ptr<DataMap> data = make_shared<DataMap>();
+    (*data)["id"] = id;
+    (*data)["inputs"] = inputs;
+    EventManager::GetInstance().AddEventMulti(Event{EventType::NEW_INPUTS_RECEIVED, data});
+    // cout << "Hemos recibido los inputs ";
+    // for (size_t i = 0; i < inputs.size(); i++) {
+    //     cout << inputs[i] << " ";
+    // }
+    // cout << endl;
 }
 
 void UDPClient::SendDateTime() {
@@ -106,14 +110,14 @@ void UDPClient::SendInput(Constants::InputTypes newInput) {
 
     string s = j.dump();
     socket.async_send_to(
-        asio::buffer(s),
+        boost::asio::buffer(s),
         serverEndpoint,
         boost::bind(
             &UDPClient::HandleSentInput,
             this,
             auxInput,
-            asio::placeholders::error,
-            asio::placeholders::bytes_transferred));
+            boost::asio::placeholders::error,
+            boost::asio::placeholders::bytes_transferred));
 }
 
 void UDPClient::HandleSentInput(std::shared_ptr<Constants::InputTypes> input, const boost::system::error_code& errorCode,
@@ -125,23 +129,21 @@ void UDPClient::HandleSentInput(std::shared_ptr<Constants::InputTypes> input, co
     }
 }
 
-void UDPClient::SendInputs(vector<Constants::InputTypes>& inputs) {
-    const uint32_t FAKE_ID = 1234;
-
+void UDPClient::SendInputs(vector<Constants::InputTypes>& inputs, uint32_t id) {
     json j;
     j["petitionType"] = Constants::PetitionTypes::SEND_INPUTS;
-    j["id"] = FAKE_ID;
+    j["id"] = id;
     j["inputs"] = inputs;
     string jsonToBeSent = j.dump();
     std::shared_ptr<vector<Constants::InputTypes>> auxInputs = std::make_shared<vector<Constants::InputTypes>>(inputs);
     socket.async_send_to(
-        asio::buffer(jsonToBeSent),
+        boost::asio::buffer(jsonToBeSent),
         serverEndpoint,
         boost::bind(
             &UDPClient::HandleSentInputs,
             this,
-            asio::placeholders::error,
-            asio::placeholders::bytes_transferred));
+            boost::asio::placeholders::error,
+            boost::asio::placeholders::bytes_transferred));
 }
 
 void UDPClient::HandleSentInputs(const boost::system::error_code& errorCode,

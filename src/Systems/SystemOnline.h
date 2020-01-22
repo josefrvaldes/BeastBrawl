@@ -15,6 +15,7 @@ class SystemOnline {
 
     void Update();
     void SendInputs(vector<Constants::InputTypes> &d);
+    uint16_t idOnlineMainCar;
 
    private:
     ManCar &manCar;

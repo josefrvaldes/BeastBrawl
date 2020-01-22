@@ -14,7 +14,7 @@ public:
     COnline();
     ~COnline();
 
-    uint8_t idClient = -1;
+    uint16_t idClient = -1;
     vector<Constants::InputTypes> inputs;
     time_t lastInputUpdate;
     time_t lastWorldUpdate;

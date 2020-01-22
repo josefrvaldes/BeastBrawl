@@ -6,15 +6,13 @@
 #include <chrono>
 #include <iostream>
 #include <thread>
-#include "../Constants.h"
 #include "../../include/include_json/include_json.hpp"
+#include "../Constants.h"
 
 using boost::asio::ip::udp;
 using namespace std;
 using namespace std::chrono;
 using json = nlohmann::json;
-
-
 
 class UDPClient {
     // --- TCP --- (sala de espera)
@@ -36,8 +34,9 @@ class UDPClient {
     UDPClient(string host, string port_);
 
     void SendInput(Constants::InputTypes input);
-    void SendInputs(vector<Constants::InputTypes>& inputs);
+    void SendInputs(vector<Constants::InputTypes>& inputs, uint32_t id);
     void SendDateTime();
+    uint32_t idMainCar;
 
    private:
     void StartReceiving();

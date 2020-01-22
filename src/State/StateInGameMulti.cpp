@@ -1,10 +1,22 @@
 #include "StateInGameMulti.h"
 
 #include "../Components/CTotem.h"
+#include "../Components/COnline.h"
 #include "../Systems/SystemOnline.h"
 
 StateInGameMulti::StateInGameMulti() : StateInGame() {
     InitVirtualMethods();
+    vec3 pos = vec3(120.0f, 20.0f, -300.0f);
+    manCars->CreateHumanCar(pos);
+    shared_ptr<Entity> car1 = manCars->GetEntities()[0];
+    COnline* cOnline1 = static_cast<COnline*>(car1->GetComponent(CompType::OnlineComp).get());
+    cOnline1->idClient = 1;
+    
+    shared_ptr<Entity> car2 = manCars->GetEntities()[1];
+    COnline* cOnline2 = static_cast<COnline*>(car2->GetComponent(CompType::OnlineComp).get());
+    cOnline2->idClient = 2;
+    
+    renderEngine->FacadeAddObject(car2.get());
 }
 
 StateInGameMulti::~StateInGameMulti() {
@@ -26,14 +38,13 @@ void StateInGameMulti::Update() {
     CAMBIARCosasDeTotemUpdate();
 
     for (auto actualCar : manCars->GetEntities()) {
-        if (actualCar.get() != manCars->GetCar().get()){
+        if (actualCar.get() != manCars->GetCar().get()) {
             // funcion para recibir los inputs del servidor, otra para enviar los nuestros, crear componente de input
-            physics->UpdateHuman(static_cast<Car*>(actualCar.get()));
+            physics->UpdateHuman(static_cast<Car *>(actualCar.get()));
             manCars->UpdateCarHuman(actualCar.get());
             physicsEngine->UpdateCarAI(actualCar.get());
         }
     }
-
 
     // COLISIONES entre powerUp y cocheHuman
     collisions->IntersectsCarsPowerUps(manCars.get(), manPowerUps.get(), manNavMesh.get());
@@ -84,7 +95,7 @@ void StateInGameMulti::CAMBIARCosasDeTotemUpdate() {
             cTransformTotem->position.y = 32.0f;
             // supuestamente esta el drawAll que te lo hace no?????????????????
             // si esta cambiando pero no se esta redibujando
-            break; // cuando encontramos a alguien que ya lleva el totem, nos salimos del for, no seguimos comprobando a los demás
+            break;  // cuando encontramos a alguien que ya lleva el totem, nos salimos del for, no seguimos comprobando a los demás
         }
     }
     if (todosFalse) {
