@@ -6,13 +6,12 @@
 #include <chrono>
 #include <iostream>
 #include "../src/Constants.h"
+#include "Player.h"
 
 using boost::asio::ip::udp;
 using namespace boost;
 using namespace std;
 using namespace std::chrono;
-
-class Player;
 
 class UDPServer : public boost::enable_shared_from_this<UDPServer> {
    public:
@@ -63,14 +62,6 @@ class UDPServer : public boost::enable_shared_from_this<UDPServer> {
     // --- UDP --- (juego)
     // todos los clientes empiezan la partida, y en el primera paquete
     // udp, se actualizará el endpoint udp que corresponda a cada cliente
-
-    string GetTime() {
-        auto time_point = system_clock::now();
-        time_t now_c = system_clock::to_time_t(time_point);
-        string salida = ctime(&now_c);
-        salida = salida.substr(0, salida.size() - 1);
-        return salida;
-    }
 
     udp::socket socket;
     udp::endpoint receiverEndpoint;

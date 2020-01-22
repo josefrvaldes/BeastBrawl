@@ -5,7 +5,7 @@
 #include <math.h>
 #include <iostream>
 #include <sstream>
-#include "include/glm/vec3.hpp"
+#include "../../include/glm/vec3.hpp"
 #include <chrono>
 
 using namespace glm;

@@ -2,7 +2,7 @@
 #include <boost/asio/placeholders.hpp>
 #include <boost/bind.hpp>
 #include "../../include/include_json/include_json.hpp"
-#include "Player.h"
+#include "../../src/Systems/Utils.h"
 
 using json = nlohmann::json;
 using boost::asio::ip::udp;
@@ -60,7 +60,7 @@ void UDPServer::HandleReceive(std::shared_ptr<boost::array<char, 1024>> recevBuf
 }
 
 void UDPServer::HandleReceiveDateTimeRequest(const udp::endpoint& remoteClient) {
-    boost::shared_ptr<string> message(new string(GetTime()));
+    boost::shared_ptr<string> message(new string(Utils::GetTime()));
     socket.async_send_to(
         boost::asio::buffer(*message),
         remoteClient,
@@ -112,9 +112,9 @@ void UDPServer::SendInput(const Constants::InputTypes input, const Player& p) {
 
 void UDPServer::HandleSentInput(const string& json, const boost::system::error_code& errorCode, std::size_t bytesTransferred) const {
     if (!errorCode) {
-        cout << "Se ha enviado el input" << endl;
+        cout << "Se ha enviado el input reenviado" << endl;
     } else {
-        cout << "No se ha enviado el input" << endl;
+        cout << "No se ha enviado el input reenviado" << endl;
     }
 }
 

@@ -45,7 +45,7 @@ void UDPClient::StartReceiving() {
 
 void UDPClient::SendDateTime() {
     // cout << "Vamos a enviar datos" << endl;
-    boost::shared_ptr<string> message(new string(GetTime()));
+    boost::shared_ptr<string> message(new string(Utils::GetTime()));
     socket.async_send_to(
         boost::asio::buffer(*message),
         serverEndpoint,
