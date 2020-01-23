@@ -342,7 +342,7 @@ void RenderFacadeIrrlicht::UpdateCamera(Entity* cam, ManCar* manCars) {
 
         camera1->setTarget(targetPosition);
         camera1->setFOV(angleRotation);
-        camera1->setPosition(core::vector3df(cTransformable->position.x, cTransformable->position.y+700, cTransformable->position.z));
+        camera1->setPosition(core::vector3df(cTransformable->position.x, cTransformable->position.y-5, cTransformable->position.z));
 
     }else if(cCamera->camType == CamType::NORMAL){
         float angleRotation = (70 * PI) / 180.0;
