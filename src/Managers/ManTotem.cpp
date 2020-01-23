@@ -72,7 +72,7 @@ void ManTotem::ResetTotem(DataMap* d){
 
     // calculamos la posicion donde queremos dejar el totem
     auto transfActualCar = any_cast<CTransformable*>((*d)["TransfCarPos"]); 
-    glm::vec3 posNewTotem = glm::vec3(0.0f,20.0f,0.0f);
+    glm::vec3 posNewTotem = glm::vec3(0.0f,10.0f,0.0f);
     float angleRotation = (transfActualCar->rotation.y * 3.141592) / 180.0;
     posNewTotem.x = transfActualCar->position.x - cos(angleRotation)*(-25);
     posNewTotem.z = transfActualCar->position.z + sin(angleRotation)*(-25);

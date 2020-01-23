@@ -62,10 +62,11 @@ ManWayPoint::ManWayPoint(){
         static_cast<WayPoint*>(entities[to].get())->AddEdge(from,cost);
 
     }
+
 /*
     ifstream i("WayPoints.json");
     json j = json::parse(i);
-    waypointsCount = j["WayPoints"].size();
+    int waypointsCount = j["WayPoints"].size();
 
     //Leemos el array de waypoints
     for(int i = 0; i< waypointsCount; ++i){
@@ -83,7 +84,7 @@ ManWayPoint::ManWayPoint(){
     int edgesCount = j["Edges"].size();
     //Lemos el array de edges
     for(int i = 0; i< edgesCount; ++i){
-        auto capaActual = j2["Edges"][i];
+        auto capaActual = j["Edges"][i];
         from  = capaActual["FROM"].get<int>();
         to    = capaActual["TO"].get<int>();
         //TODO: Calcular el coste
