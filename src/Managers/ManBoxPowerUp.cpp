@@ -4,32 +4,36 @@
 #include "../Entities/BoxPowerUp.h"
 #include "../EventManager/Event.h"
 #include "../EventManager/EventManager.h"
+#include "../../include/include_json/include_json.hpp"
 
 class Position;
+using json = nlohmann::json;
 using namespace std;
 
-// se ejecuta en caso de que alguno de los coches coja la caja
-void ManBoxPowerUp::EjecutarMeHanCogido(DataMap* d) {
-    auto cBoxPowerUp = any_cast<CBoxPowerUp*>((*d)["BoxPowerUpComp"]);
-    auto actualBox   = any_cast<shared_ptr<Entity>>((*d)["actualBox"]);
-
-    if(cBoxPowerUp->active == true){
-        //cout << "Han cogido un powerup, madafaka!! sera la primera" << endl;
-        auto renderFacadeManager = RenderFacadeManager::GetInstance();
-        auto renderEngine = renderFacadeManager->GetRenderFacade();
-        renderEngine->DeleteEntity(actualBox.get());       // se elmina la caja en irrlich para que no la dibuje, pero en nuestro array sigue estando
-        cBoxPowerUp->active = false;
-        cBoxPowerUp->timeStart = system_clock::now();
-
-        shared_ptr<DataMap> data = make_shared<DataMap>();
-        auto cTranformableBox = static_cast<CTransformable*>(actualBox.get()->GetComponent(CompType::TransformableComp).get());
-        (*data)["posBox"] = cTranformableBox->position;
-        EventManager::GetInstance().AddEventMulti(Event{EventType::BREAK_BOX, data});
-    }
-}
 
 
 ManBoxPowerUp::ManBoxPowerUp() {
+    //Leemos y añadimos los WayPoints
+    float x=0,y=0,z=0; //Vec3
+
+    ifstream i("data.json");
+    json j = json::parse(i);
+
+    int waypointsCount = j["WAYPOINTS"].size();
+    //std::cout << "EL NUMERO DE WAYPOINTS EN EL JSON ES: " << waypointsCount << std::endl;
+    //Leemos el array de waypoints
+    for(int i = 0; i< waypointsCount; ++i){
+        string idWayPoint = to_string(i);  //El primer elemento es "0" como string
+        auto capaActual = j["WAYPOINTS"][idWayPoint];
+        if( capaActual["type"].get<int>() == 1){
+            x    = capaActual["x"].get<float>();
+            y    = capaActual["y"].get<float>();    // INTERCAMBIAMOS REALMENTE LA "Y" POR LA "Z"
+            z    = capaActual["z"].get<float>();
+            glm::vec3 position = glm::vec3(x,y,z);
+            CreateBoxPowerUp(position);
+        }
+    }
+
     SubscribeToEvents();
     cout << "Hemos creado el manager de powerup, ahora tenemos " << entities.size() << " powerups" << endl;
 }
@@ -51,6 +55,26 @@ void ManBoxPowerUp::CreateBoxPowerUp(glm::vec3 _position){
 void ManBoxPowerUp::CreateBoxPowerUp() {
     shared_ptr<BoxPowerUp> p = make_shared<BoxPowerUp>();
     entities.push_back(p);
+}
+
+// se ejecuta en caso de que alguno de los coches coja la caja
+void ManBoxPowerUp::EjecutarMeHanCogido(DataMap* d) {
+    auto cBoxPowerUp = any_cast<CBoxPowerUp*>((*d)["BoxPowerUpComp"]);
+    auto actualBox   = any_cast<shared_ptr<Entity>>((*d)["actualBox"]);
+
+    if(cBoxPowerUp->active == true){
+        //cout << "Han cogido un powerup, madafaka!! sera la primera" << endl;
+        auto renderFacadeManager = RenderFacadeManager::GetInstance();
+        auto renderEngine = renderFacadeManager->GetRenderFacade();
+        renderEngine->DeleteEntity(actualBox.get());       // se elmina la caja en irrlich para que no la dibuje, pero en nuestro array sigue estando
+        cBoxPowerUp->active = false;
+        cBoxPowerUp->timeStart = system_clock::now();
+
+        shared_ptr<DataMap> data = make_shared<DataMap>();
+        auto cTranformableBox = static_cast<CTransformable*>(actualBox.get()->GetComponent(CompType::TransformableComp).get());
+        (*data)["posBox"] = cTranformableBox->position;
+        EventManager::GetInstance().AddEventMulti(Event{EventType::BREAK_BOX, data});
+    }
 }
 
 

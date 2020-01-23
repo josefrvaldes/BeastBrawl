@@ -3,6 +3,7 @@
 #include "../Aliases.h"
 #include "../Entities/NavMesh.h"
 #include "../Entities/Totem.h"
+#include "../Managers/ManTotem.h"
 #include "../Components/CDimensions.h"
 #include "../Components/CCurrentNavMesh.h"
 #include "../Components/CNavMesh.h"
@@ -12,7 +13,7 @@
 using namespace std;
 using json = nlohmann::json;
 
-ManNavMesh::ManNavMesh() {
+ManNavMesh::ManNavMesh(Entity *carPlayer, ManTotem *manTotems) {
     //Leemos y añadimos los NavMesh
     double vertex1X=0, /*vertex1Y=0,*/vertex1Z=0;   // utilizamos double porque tiene mas precison que float (64b vs 32b)
     double vertex2X=0, /*vertex2Y=0,*/vertex2Z=0; 
@@ -97,8 +98,6 @@ ManNavMesh::ManNavMesh() {
         //std::cout <<" VOY A CREAR UN Navmesh LOCOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO" << std::endl;
         CreateNavMesh(centroNavMesh,glm::vec3(0.0f,0.0f,0.0f),dimensionX,10,dimensionZ,waypointsId); 
     }
-
-
     // CREAMOS DE PRUEBA UN NAVMESH
     //vector<int> waypoints1{7,8,9,10,11,13};
     //vector<int> waypoints0{0,1,2,3,4,12};
@@ -111,6 +110,10 @@ ManNavMesh::ManNavMesh() {
 
     //nos suscribimos
     SubscribeToEvents();
+
+    // Para no duplicar codigo, pasamos el coche de tipo CarHuman a Entity
+    UpdateNavMeshPlayer(carPlayer);
+    InitNavMeshTotem(manTotems);
 }
 
 void ManNavMesh::CreateNavMesh(glm::vec3 pos, glm::vec3 rot, float width, float height, float depth, vector<int> waypoints){
@@ -159,6 +162,24 @@ void ManNavMesh::ActualizeNavMeshTotem(DataMap* d){
 
     }
 }
+
+void ManNavMesh::InitNavMeshTotem(ManTotem *manTotems){
+    auto cTransformableTotem = static_cast<CTransformable*>(manTotems->GetEntities()[0].get()->GetComponent(CompType::TransformableComp).get());     
+    for(auto navmesh : GetEntities()){
+        auto cDimensions = static_cast<CDimensions*>(navmesh.get()->GetComponent(CompType::DimensionsComp).get());
+        auto cTransformableNav = static_cast<CTransformable*>(navmesh.get()->GetComponent(CompType::TransformableComp).get()); 
+        if( ( (cTransformableTotem->position.x >= (cTransformableNav->position.x-(cDimensions->width/2))) && 
+            (cTransformableTotem->position.x <= (cTransformableNav->position.x+(cDimensions->width/2))) ) &&
+            ( (cTransformableTotem->position.z >= (cTransformableNav->position.z-(cDimensions->depth/2))) && 
+            (cTransformableTotem->position.z <= (cTransformableNav->position.z+(cDimensions->depth/2))) )  ){
+                auto cCurrentNavMesh = static_cast<CCurrentNavMesh*>(manTotems->GetEntities()[0].get()->GetComponent(CompType::CurrentNavMeshComp).get());
+                auto cNavMesh = static_cast<CNavMesh*>(navmesh.get()->GetComponent(CompType::NavMeshComp).get());
+                cCurrentNavMesh->currentNavMesh = cNavMesh->id;
+                //std::cout << "222222222222222222222222222 El totem pertenece al naveMesh: " << cNavMesh->id << std::endl;
+            }       
+    }
+}
+
 void ManNavMesh::ActualizeNavMeshCarAI(DataMap* d){
     auto cTransformableCar = static_cast<CTransformable*>(any_cast<Entity*>((*d)["carAI"])->GetComponent(CompType::TransformableComp).get());     
     for(auto navmesh : GetEntities()){
