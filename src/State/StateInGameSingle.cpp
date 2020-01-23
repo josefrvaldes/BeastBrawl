@@ -33,7 +33,7 @@ void StateInGameSingle::CAMBIARCosasNavMesh(ManCar &manCars, ManNavMesh &manNavM
                         auto cCurrentNavMesh = static_cast<CCurrentNavMesh*>(carAI.get()->GetComponent(CompType::CurrentNavMeshComp).get());
                         auto cNavMesh = static_cast<CNavMesh*>(navmesh.get()->GetComponent(CompType::NavMeshComp).get());
                         cCurrentNavMesh->currentNavMesh = cNavMesh->id;
-                        //std::cout << " El cochecito lereee pertenece al naveMesh: " << cNavMesh->id << std::endl;
+                        //std::cout << " EL NAVMESH DE LAS IA ES::::234563345677: " << cNavMesh->id << std::endl;
                     }       
             }
         }
@@ -108,7 +108,7 @@ void StateInGameSingle::CAMBIARCosasDeTotemUpdate() {
             auto cTransformCar = static_cast<CTransformable *>(carAI.get()->GetComponent(CompType::TransformableComp).get());
             cTransformTotem->position.x = cTransformCar->position.x;
             cTransformTotem->position.z = cTransformCar->position.z;
-            cTransformTotem->position.y = 32.0f;
+            cTransformTotem->position.y = 22.0f;
             // supuestamente esta el drawAll que te lo hace no?????????????????
             // si esta cambiando pero no se esta redibujando
             break; // cuando encontramos a alguien que ya lleva el totem, nos salimos del for, no seguimos comprobando a los demás
@@ -150,8 +150,8 @@ void StateInGameSingle::CAMBIARInicializarCarAIS(ManCar &manCars, ManWayPoint &m
     pathInit3.push(5);
     manCars.GetEntitiesAI()[2]->SetPath(pathInit3);
 */
-    manCars.CreateCarAI(glm::vec3(-200.0f, 20.0f, 700.0f));
-    manCars.CreateCarAI(glm::vec3(400.0f, 20.0f, 20.0f));
-    //manCars.CreateHumanCar(glm::vec3(20.0, 20.0, 20.0));
-    manCars.CreateCarAI(glm::vec3(400.0f, 20.0f, -400.0f));
+    manCars.CreateCarAI(glm::vec3(-200.0f, 10.0f, 700.0f));
+    manCars.CreateCarAI(glm::vec3(400.0f, 10.0f, -50.0f));
+    //manCars.CreateHumanCar(glm::vec3(20.0, 10.0, 20.0));
+    manCars.CreateCarAI(glm::vec3(400.0f, 10.0f, -400.0f));
 }

@@ -27,7 +27,7 @@ StateInGame::StateInGame() {
     physics = make_unique<Physics>(deltaTime);
 
     cam = make_shared<Camera>(glm::vec3(100.0f, 600.0f, 30.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f));
-    ground = make_shared<GameObject>(glm::vec3(10.0f, -0.5f, 150.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.5f, 1.5f, 1.5f), "", "training_ground.obj");
+    ground = make_shared<GameObject>(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), "", "training_ground.obj");
 }
 
 StateInGame::~StateInGame() {
@@ -83,7 +83,7 @@ void StateInGame::CAMBIARCosasNavMesh(ManNavMesh &manNavMesh){
                 auto cCurrentNavMesh = static_cast<CCurrentNavMesh*>(manCars.get()->GetCar().get()->GetComponent(CompType::CurrentNavMeshComp).get());
                 auto cNavMesh = static_cast<CNavMesh*>(navmesh.get()->GetComponent(CompType::NavMeshComp).get());
                 cCurrentNavMesh->currentNavMesh = cNavMesh->id;
-                //std::cout << " El cochecito lereee pertenece al naveMesh: " << cNavMesh->id << std::endl;
+                //std::cout << "11111111111111111111 El cochecito lereee pertenece al naveMesh: " << cNavMesh->id << std::endl;
             }       
     }
 
@@ -99,7 +99,7 @@ void StateInGame::CAMBIARCosasNavMesh(ManNavMesh &manNavMesh){
                 auto cCurrentNavMesh = static_cast<CCurrentNavMesh*>(manTotems->GetEntities()[0].get()->GetComponent(CompType::CurrentNavMeshComp).get());
                 auto cNavMesh = static_cast<CNavMesh*>(navmesh.get()->GetComponent(CompType::NavMeshComp).get());
                 cCurrentNavMesh->currentNavMesh = cNavMesh->id;
-                //std::cout << " El cochecito lereee pertenece al naveMesh: " << cNavMesh->id << std::endl;
+                //std::cout << "222222222222222222222222222 El totem pertenece al naveMesh: " << cNavMesh->id << std::endl;
             }       
     }
 
@@ -126,8 +126,6 @@ void StateInGame::InitializeFacades() {
 }
 
 void StateInGame::CAMBIARCosasDeTotem(ManTotem &manTotems) {
-    // CREAMOS EL TOTEM
-    manTotems.CreateTotem(glm::vec3(-100.0, 20.0, -100.0));
     // --------------------------------------------------------------------------------------------------------------------------------------------
     totemOnCar = make_shared<Entity>();
     glm::vec3 postoTemOnCar = glm::vec3(40.0f, -100.0f, 30.0f);
