@@ -23,6 +23,7 @@ class TCPConnection : public boost::enable_shared_from_this<TCPConnection> {
    private:
     TCPConnection(asio::io_context& io_context);
     void HandleWrite(const boost::system::error_code& error, size_t bytes_transferred);
+    void HandleRead(std::shared_ptr<string> recevBuff, const boost::system::error_code& error, size_t bytes_transferred);
     string GetTime() {
         auto time_point = system_clock::now();
         time_t now_c = system_clock::to_time_t(time_point);

@@ -12,6 +12,7 @@ StateLobbyMulti::StateLobbyMulti() /*: tcpClient{make_shared<TCPClient>(SERVER_H
 
     renderEngine = RenderFacadeManager::GetInstance()->GetRenderFacade();
     renderEngine->FacadeInitLobbyMulti();
+    
 
 }
 
@@ -44,7 +45,7 @@ void StateLobbyMulti::Input(){
 
 void StateLobbyMulti::Update(){
     EventManager::GetInstance().Update();
-
+    //std::cout << "hola" << std::endl;
     SendData();
 }
 

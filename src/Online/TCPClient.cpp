@@ -24,7 +24,6 @@ TCPClient::TCPClient(string host_, string port_)
           cout << "///////////////////////// SALIMOS DEL CONTEXT!!! ///////////////////////////////" << endl;
       }} {
 
-    
     StartConnect(endpoints.begin());
 }
 
@@ -37,6 +36,9 @@ void TCPClient::StartConnect(tcp::resolver::results_type::iterator endpoint_iter
                 this, 
                 boost::asio::placeholders::error, 
                 endpoint_iter));
+    }else{
+        //std::cout << "Se cierra el socket" << std::endl;
+        //socket.close();
     }
 }
 
@@ -104,7 +106,7 @@ void TCPClient::HandleSentDateTime(const boost::shared_ptr<std::string> message,
                                    const boost::system::error_code& errorCode,
                                    std::size_t bytes_transferred) {
     if (!errorCode) {
-        cout << "Ya se ha enviado el mensaje, " << *message.get() << " madafaka" << endl;
+        cout << "Ya se ha enviado el mensaje, " << *message.get() << endl;
     } else {
         cout << "Hubo un error enviando el mensaje " << errorCode.message() << endl;
     }
