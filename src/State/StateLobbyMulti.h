@@ -14,7 +14,7 @@ struct TCPClient;
 class StateLobbyMulti : public State{
    public:
     StateLobbyMulti();
-    ~StateLobbyMulti() = default;
+    ~StateLobbyMulti(){};
     void Input() override;
     void InitState() override;
     void Update() override;

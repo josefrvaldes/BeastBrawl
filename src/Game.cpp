@@ -55,7 +55,8 @@ void Game::SetState(State::States stateType) {
             break;
         case State::INGAME_MULTI:
             if (!gameStarted) {
-                currentState = make_shared<StateInGameMulti>();
+                shared_ptr<State> hola = make_shared<StateInGameMulti>();
+                currentState = hola;
                 gameState = currentState;
                 gameStarted = true;
             } else {

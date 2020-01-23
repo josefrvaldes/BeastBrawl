@@ -30,6 +30,7 @@ class TCPClient {
 
    public:
     TCPClient(string host, string port_);
+    ~TCPClient();
     void SendDateTime();
     
    private:
@@ -41,15 +42,16 @@ class TCPClient {
     void HandleSentDateTime(const boost::shared_ptr<std::string> message,
                             const boost::system::error_code& errorCode,
                             std::size_t bytes_transferred);
-
+    void Stop();
 
     boost::asio::io_context context;
+    
     tcp::resolver::results_type endpoints;
-    tcp::endpoint serverEndpoint;
-
+    bool stopped;
     tcp::socket socket;
     // boost::array<char, 128> recvBuff;
-    boost::array<string, 1> sendBuff;
+    std::string sendBuff;
     vector<boost::asio::mutable_buffer> recvBuff;
     std::thread butler;
+    
 };

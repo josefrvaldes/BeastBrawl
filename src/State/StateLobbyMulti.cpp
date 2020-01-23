@@ -6,14 +6,14 @@
 
 using namespace std;
 
-StateLobbyMulti::StateLobbyMulti() /*: tcpClient{make_shared<TCPClient>(SERVER_HOST, SERVER_PORT)}*/{
+StateLobbyMulti::StateLobbyMulti() : tcpClient{make_shared<TCPClient>(SERVER_HOST, SERVER_PORT_TCP)}{
 
     std::cout << "> LobbyMenu constructor" << std::endl;
 
     renderEngine = RenderFacadeManager::GetInstance()->GetRenderFacade();
     renderEngine->FacadeInitLobbyMulti();
     
-
+    tcpClient->SendDateTime();
 }
 
 
