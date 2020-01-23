@@ -24,7 +24,6 @@ ManBoundingWall::ManBoundingWall() {
     json j = json::parse(i);
 
     int navMeshCount = j["BOUNDING PLANES"].size();
-
     std::cout << "EL NUMERO DE Bounding Planes EN EL JSON ES: " << navMeshCount << std::endl;
     //Leemos el array de NavMesh
     for(int i = 0; i< navMeshCount; ++i){
@@ -52,35 +51,22 @@ ManBoundingWall::ManBoundingWall() {
             vertex4Z   = vertex4["z"].get<double>();
                 vec3 v_vertex4 = vec3(vertex4X,vertex4Y,vertex4Z);
 
-
-        //shared_ptr<BoundingWall> p1 = make_shared<BoundingWall>(v_vertex1,v_vertex2,v_vertex3,v_vertex4); 
-        //entities.push_back(p1);
-        // POSICION , ROTACION, OFFSETX, OFFSETY, OFFSETZ, VECTOR WAYPOINTS
-        //CreateNavMesh(centroNavMesh,glm::vec3(0.0f,0.0f,0.0f),dimensionX,dimensionY,dimensionZ,waypointsId); 
+        CreateBoundingWall(v_vertex1,v_vertex2,v_vertex4,v_vertex3);
     }
-/*
-    shared_ptr<BoundingWall> p1 = make_shared<BoundingWall>(vec3(-500.f, 20.f, -460.f),vec3(550.f, 20.f, -460.f),vec3(550.f, 120.f, -460.f),vec3(-500.f, 120.f, -460.f));
-    shared_ptr<BoundingWall> p2 = make_shared<BoundingWall>(vec3(-500.f, 120.f, 760.f),vec3(550.f, 120.f, 760.f),vec3(550.f, 20.f, 760.f),vec3(-500.f, 20.f, 760.f)); // orientation
-    shared_ptr<BoundingWall> p3 = make_shared<BoundingWall>(vec3(-470.f, 120.f, -480.f),vec3(-470.f, 120.f, 820.f),vec3(-470.f, 20.f, 820.f),vec3(-470.f, 20.f, -480.f));
-    shared_ptr<BoundingWall> p4 = make_shared<BoundingWall>(vec3(480.f, 20.f, -480.f),vec3(480.f, 20.f, 820.f),vec3(480.f, 120.f, 820.f),vec3(480.f, 120.f, -480.f));
-    entities.push_back(p1);
-    entities.push_back(p2);
-    entities.push_back(p3);
-    entities.push_back(p4);
-*/
-    CreateBoundingWall(vec3(-500.f, 20.f, -460.f),vec3(550.f, 20.f, -460.f),vec3(550.f, 120.f, -460.f),vec3(-500.f, 120.f, -460.f));
-    CreateBoundingWall(vec3(-500.f, 120.f, 760.f),vec3(550.f, 120.f, 760.f),vec3(550.f, 20.f, 760.f),vec3(-500.f, 20.f, 760.f));
-    CreateBoundingWall(vec3(-470.f, 120.f, -480.f),vec3(-470.f, 120.f, 820.f),vec3(-470.f, 20.f, 820.f),vec3(-470.f, 20.f, -480.f));
-    CreateBoundingWall(vec3(480.f, 20.f, -480.f),vec3(480.f, 20.f, 820.f),vec3(480.f, 120.f, 820.f),vec3(480.f, 120.f, -480.f));
+
+    //CreateBoundingWall(vec3(-500.f, 20.f, -460.f),vec3(550.f, 20.f, -460.f),vec3(550.f, 120.f, -460.f),vec3(-500.f, 120.f, -460.f));
+    //CreateBoundingWall(vec3(-500.f, 120.f, 760.f),vec3(550.f, 120.f, 760.f),vec3(550.f, 20.f, 760.f),vec3(-500.f, 20.f, 760.f));
+    //CreateBoundingWall(vec3(-470.f, 120.f, -480.f),vec3(-470.f, 120.f, 820.f),vec3(-470.f, 20.f, 820.f),vec3(-470.f, 20.f, -480.f));
+    //CreateBoundingWall(vec3(480.f, 20.f, -480.f),vec3(480.f, 20.f, 820.f),vec3(480.f, 120.f, 820.f),vec3(480.f, 120.f, -480.f));
 
 
     // con 4 planos creamos un mini Cubo para cmporbar colisiones
-    CreateBoundingWall(vec3(50.f, 120.f, 50.f),vec3(150.f, 120.f, 50.f),vec3(150.f, 20.f, 50.f),vec3(50.f, 20.f, 50.f));
-    CreateBoundingWall(vec3(50.f, 20.f, 150.f),vec3(150.f, 20.f, 150.f),vec3(150.f, 120.f, 150.f),vec3(50.f, 120.f, 150.f));
-    CreateBoundingWall(vec3(50.f, 20.f, 50.f),vec3(50.f, 20.f, 150.f),vec3(50.f, 120.f, 150.f),vec3(50.f, 120.f, 50.f));
-    CreateBoundingWall(vec3(150.f, 120.f, 50.f),vec3(150.f, 120.f, 150.f),vec3(150.f, 20.f, 150.f),vec3(150.f, 20.f, 50.f));
+    CreateBoundingWall(vec3(50.f, 40.f, 50.f),vec3(150.f, 40.f, 50.f),vec3(150.f, 10.f, 50.f),vec3(50.f, 10.f, 50.f));
+    CreateBoundingWall(vec3(50.f, 10.f, 150.f),vec3(150.f, 10.f, 150.f),vec3(150.f, 40.f, 150.f),vec3(50.f, 40.f, 150.f));
+    CreateBoundingWall(vec3(50.f, 10.f, 50.f),vec3(50.f, 10.f, 150.f),vec3(50.f, 40.f, 150.f),vec3(50.f, 40.f, 50.f));
+    CreateBoundingWall(vec3(150.f, 40.f, 50.f),vec3(150.f, 40.f, 150.f),vec3(150.f, 10.f, 150.f),vec3(150.f, 10.f, 50.f));
 
-    cout << "Hemos creado un bounding wall, ahora tenemos " << entities.size() << " bounding walls" << endl;
+    //cout << "Hemos creado un bounding wall, ahora tenemos " << entities.size() << " bounding walls" << endl;
 }
 
 

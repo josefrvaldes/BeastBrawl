@@ -48,12 +48,12 @@ IntersectData CBoundingPlane::IntersectSphere(const CBoundingSphere &other){
 
 vec3 CBoundingPlane::IntersectPoint(const vec3 &point) const{
     // calculamos el punto virtual que contendria el centro de la esfera en el plano
-    float valorPuntoFinal = (equationPlane.x*point.x)+(equationPlane.y*point.y)+(equationPlane.z*point.z)+equationPlane.w; // -1 -9 + 8 + 1 = -1
-    float valorPlanoFinal = (equationPlane.x*equationPlane.x)+(equationPlane.y*equationPlane.y)+(equationPlane.z*equationPlane.z); // 4 +1 + 9 = 14
-    float interseccion = (-1*(valorPuntoFinal))/valorPlanoFinal; // el valor final de A` es (1/14)
-    float puntoXFinal = point.x + (interseccion*equationPlane.x);
-    float puntoYFinal = point.y + (interseccion*equationPlane.y);
-    float puntoZFinal = point.z + (interseccion*equationPlane.z);
+    double valorPuntoFinal = (equationPlane.x*point.x)+(equationPlane.y*point.y)+(equationPlane.z*point.z)+equationPlane.w; // -1 -9 + 8 + 1 = -1
+    double valorPlanoFinal = (equationPlane.x*equationPlane.x)+(equationPlane.y*equationPlane.y)+(equationPlane.z*equationPlane.z); // 4 +1 + 9 = 14
+    double interseccion = (-1*(valorPuntoFinal))/valorPlanoFinal; // el valor final de A` es (1/14)
+    double puntoXFinal = point.x + (interseccion*equationPlane.x);
+    double puntoYFinal = point.y + (interseccion*equationPlane.y);
+    double puntoZFinal = point.z + (interseccion*equationPlane.z);
     //std::cout << "LA SOLUCUON ES:        " << puntoXFinal << " , " << puntoYFinal << " , " << puntoZFinal << std::endl;
     //std::cout << "Y EL CENTRO ES:        " << point.x << " , " << point.y << " , " << point.z << std::endl;
 
@@ -64,7 +64,7 @@ bool CBoundingPlane::membershipPoint(const vec3 &point) const{
     // comprobamos posicion correcta de la X
     if(a.x < c.x){
         if(point.x < a.x || point.x > c.x){ // significa que estamos fuera del rango de la X
-            if(a.x == c.x){
+            if( round(a.x) == round(c.x) ){
                 if( round(point.x) != round(a.x) )
                     return false;
             }else
@@ -72,7 +72,7 @@ bool CBoundingPlane::membershipPoint(const vec3 &point) const{
         }
     }else{
         if(point.x > a.x || point.x < c.x){ // significa que estamos fuera del rango de la X
-            if(a.x == c.x){
+            if( round(a.x) == round(c.x) ){
                 //cout.precision(dbl::max_digits10);
                 if( round(point.x) != round(a.x) ){
                     return false;
@@ -84,7 +84,7 @@ bool CBoundingPlane::membershipPoint(const vec3 &point) const{
     // comprobamos la posicion correcta de la Y
     if(a.y < c.y){
         if(point.y < a.y || point.y > c.y){ // significa que estamos fuera del rango de Y
-            if(a.y == c.y){
+            if( round(a.y) == round(c.y) ){
                 if( round(point.y) != round(a.y) )
                     return false;
             }else
@@ -92,7 +92,7 @@ bool CBoundingPlane::membershipPoint(const vec3 &point) const{
         }
     }else{
         if(point.y > a.y || point.y < c.y) {// significa que estamos fuera del rango de Y
-            if(a.y == c.y){
+            if( round(a.y) == round(c.y) ){
                 if( round(point.y) != round(a.y) )
                     return false;
             }else
@@ -102,7 +102,9 @@ bool CBoundingPlane::membershipPoint(const vec3 &point) const{
     // comprobamos la posicion correcta de Z
     if(a.z < c.z){
         if(point.z < a.z || point.z > c.z){
-            if(a.z == c.z){
+            //cout.precision(dbl::max_digits10);
+            //std::cout << "Point.z: " << point.z << " a.z: " << a.z << " c.z: " << c.z << std::endl;
+            if( round(a.z) == round(c.z) ){
                 if( round(point.z) != round(a.z) )
                     return false;
             }else
@@ -110,7 +112,7 @@ bool CBoundingPlane::membershipPoint(const vec3 &point) const{
         }
     }else{
         if(point.z > a.z || point.z < c.z){
-            if(a.z == c.z){
+            if( round(a.z) == round(c.z) ){
                 if( round(point.z) != round(a.z) ){
                     //cout.precision(dbl::max_digits10);
                     return false;
@@ -125,22 +127,22 @@ bool CBoundingPlane::membershipPoint(const vec3 &point) const{
 
 vec4 CBoundingPlane::equationPlane3Points(const vec3 &a, const vec3 &b, const vec3 &c) const{
 
-    float mat00 = -1*a.x; // realmente es X - A.X
-    float mat01 = -1*a.y; // realmente es Y - A.Y
-    float mat02 = -1*a.z; // realmente es Z - A.Z
+    double mat00 = -1*a.x; // realmente es X - A.X
+    double mat01 = -1*a.y; // realmente es Y - A.Y
+    double mat02 = -1*a.z; // realmente es Z - A.Z
 
-    float mat10 = b.x - a.x; 
-    float mat11 = b.y - a.y; 
-    float mat12 = b.z - a.z; 
+    double mat10 = b.x - a.x; 
+    double mat11 = b.y - a.y; 
+    double mat12 = b.z - a.z; 
 
-    float mat20 = c.x - a.x; 
-    float mat21 = c.y - a.y; 
-    float mat22 = c.z - a.z; 
+    double mat20 = c.x - a.x; 
+    double mat21 = c.y - a.y; 
+    double mat22 = c.z - a.z; 
 
-    float planeX = (mat11*mat22) - (mat12*mat21);
-    float planeY = (mat20*mat12) - (mat10*mat22);
-    float planeZ = (mat10*mat21) - (mat11*mat20);
-    float planeD = ((mat00*mat11*mat22)+(mat01*mat20*mat12)+(mat02*mat10*mat21)) 
+    double planeX = (mat11*mat22) - (mat12*mat21);
+    double planeY = (mat20*mat12) - (mat10*mat22);
+    double planeZ = (mat10*mat21) - (mat11*mat20);
+    double planeD = ((mat00*mat11*mat22)+(mat01*mat20*mat12)+(mat02*mat10*mat21)) 
                     - ((mat02*mat11*mat20)+(mat01*mat10*mat22)+(mat00*mat21*mat12));
 
     std::cout << "LA ECUACION GENERAL DEL PLANTO ES: " << planeX << "x " << planeY << "y " << planeZ << "z " << planeD << std::endl;
