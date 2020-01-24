@@ -7,6 +7,7 @@ class SystemOnline;
 class StateInGameMulti : public StateInGame {
    public:
     StateInGameMulti();
+    StateInGameMulti(string data);
     ~StateInGameMulti();
     void InitState() override;
     void Input() override;

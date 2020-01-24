@@ -3,6 +3,8 @@
 
 #include "../Constants.h"
 #include "../Online/TCPClient.h"
+#include "../EventManager/Event.h"
+#include "../EventManager/EventManager.h"
 
 using namespace std;
 
@@ -13,7 +15,11 @@ StateLobbyMulti::StateLobbyMulti() : tcpClient{make_shared<TCPClient>(SERVER_HOS
     renderEngine = RenderFacadeManager::GetInstance()->GetRenderFacade();
     renderEngine->FacadeInitLobbyMulti();
     
-    tcpClient->SendDateTime();
+    SubscribeToEvents();
+
+    tcpClient->SendConnectionRequest();
+    //tcpClient->SendDateTime();
+    
 }
 
 
@@ -53,4 +59,20 @@ void StateLobbyMulti::Update(){
 
 void StateLobbyMulti::SendData(){
     //tcpClient->SendDateTime();
+}
+
+
+void StateLobbyMulti::SubscribeToEvents(){
+    EventManager::GetInstance().SuscribeMulti(Listener(
+        EventType::NEW_TCP_START_MULTI,
+        bind(&StateLobbyMulti::StartGameMulti, this, placeholders::_1),
+        "StartGameMulti"));
+
+}
+
+
+
+void StateLobbyMulti::StartGameMulti(DataMap* d){
+    auto dataServer = any_cast<string>((*d)["dataServer"]);
+    renderEngine->ThrowEventChangeToMulti(dataServer);
 }

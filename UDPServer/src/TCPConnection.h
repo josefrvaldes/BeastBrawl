@@ -17,13 +17,15 @@ class TCPConnection : public boost::enable_shared_from_this<TCPConnection> {
     typedef boost::shared_ptr<TCPConnection> pointer;
     static pointer Create(boost::asio::io_context& io_context){ return pointer(new TCPConnection(io_context)); }
     tcp::socket& socket(){ return socket_;}
-    void start();
+    void Start();
+    void SendStartMessage(string datos);
 
 
    private:
     TCPConnection(asio::io_context& io_context);
+    void HandleRead(std::shared_ptr<boost::array<char, 1024>> recevBuff, const boost::system::error_code& error, size_t bytes_transferred);
     void HandleWrite(const boost::system::error_code& error, size_t bytes_transferred);
-    void HandleRead(std::shared_ptr<string> recevBuff, const boost::system::error_code& error, size_t bytes_transferred);
+
     string GetTime() {
         auto time_point = system_clock::now();
         time_t now_c = system_clock::to_time_t(time_point);
@@ -34,5 +36,7 @@ class TCPConnection : public boost::enable_shared_from_this<TCPConnection> {
 
     tcp::socket socket_;
     std::string message_;
+
+    //uint16_t sendBuff;
 
 };

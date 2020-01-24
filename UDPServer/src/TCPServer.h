@@ -6,6 +6,7 @@
 #include <chrono>
 #include <iostream>
 #include "TCPConnection.h"
+#include "Player.h"
 
 using boost::asio::ip::tcp;
 using namespace boost;
@@ -21,7 +22,12 @@ class TCPServer{
    private:
     
     void HandleAccept(TCPConnection::pointer new_connection, const boost::system::error_code& error);
+    bool PlayerExists(TCPConnection::pointer new_connection);
+    void SendStartGame();
 
     boost::asio::io_context& context;
     tcp::acceptor acceptor_;
+
+    vector<TCPConnection::pointer> connections;
+    std::vector<Player> players;
 };

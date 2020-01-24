@@ -55,6 +55,7 @@ class RenderFacadeClover : public RenderFacade {
       void FacadeSuscribeEvents() override;
       void FacadeAddPlates(Manager* manNamePlates) override;
       void FacadeUpdatePlates(Manager* manNamePlates) override;
+      void ThrowEventChangeToMulti(string dataServer) override;
 
       //DEBUG
       void Draw3DLine(vec3& pos1, vec3& pos2, uint16_t r, uint16_t g, uint16_t b) const override;

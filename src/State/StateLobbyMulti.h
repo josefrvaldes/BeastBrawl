@@ -23,8 +23,11 @@ class StateLobbyMulti : public State{
 
     void SendData();
    private:
+    void SubscribeToEvents();
+    void StartGameMulti(DataMap* d);
     RenderFacade* renderEngine = { nullptr };
     SoundFacade* soundEngine = { nullptr };
+
 
     shared_ptr<TCPClient> tcpClient;	
 };

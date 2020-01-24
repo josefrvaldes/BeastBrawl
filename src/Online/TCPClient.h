@@ -31,17 +31,14 @@ class TCPClient {
    public:
     TCPClient(string host, string port_);
     ~TCPClient();
-    void SendDateTime();
+    void SendConnectionRequest();
     
    private:
     void StartConnect(tcp::resolver::results_type::iterator endpoint_iter);
     void HandleConnect(const boost::system::error_code& error, tcp::resolver::results_type::iterator endpoint_iter);
     void StartReceiving();
-    void HandleReceived(const boost::system::error_code& error, size_t bytesTransferred);
-
-    void HandleSentDateTime(const boost::shared_ptr<std::string> message,
-                            const boost::system::error_code& errorCode,
-                            std::size_t bytes_transferred);
+    void HandleReceived(std::shared_ptr<boost::array<char, 1024>> recevBuff, const boost::system::error_code& error, size_t bytesTransferred);
+    void HandleSentConnectionRequest(const boost::system::error_code& errorCode, std::size_t bytes_transferred);
     void Stop();
 
     boost::asio::io_context context;
@@ -51,7 +48,8 @@ class TCPClient {
     tcp::socket socket;
     // boost::array<char, 128> recvBuff;
     std::string sendBuff;
-    vector<boost::asio::mutable_buffer> recvBuff;
+    //vector<boost::asio::mutable_buffer> recvBuff;
     std::thread butler;
+    //boost::array<boost::asio::const_buffer,1> sendBuff2;
     
 };
