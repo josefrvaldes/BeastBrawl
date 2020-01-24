@@ -50,7 +50,8 @@ void EventManager::Update() {
     // }
     tbb::concurrent_vector<Event>::iterator it;
     for (it = eventList.begin(); it != eventList.end(); ++it) {
-        auto mapByType = eventListenerMap.find(it->type);
+        EventType type = it->type;
+        auto mapByType = eventListenerMap.find(type);
         if (mapByType != eventListenerMap.end()) {
             auto eventVector = mapByType->second;  // El vector de listeners del mapa segun el EventType
             for (Listener listener : eventVector) {

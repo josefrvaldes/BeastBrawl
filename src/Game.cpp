@@ -31,8 +31,8 @@ void Game::SetState(State::States stateType) {
             //Al volver al menu todo el mundo se desuscribe o sea que volvemos a añadir las suscripciones
             EventManager::GetInstance().ClearEvents();
             EventManager::GetInstance().ClearListeners();
-            SuscribeEvents();
             currentState = make_shared<StateMenu>();
+            SuscribeEvents();
             gameStarted = false;
             break;
         case State::CONTROLS:

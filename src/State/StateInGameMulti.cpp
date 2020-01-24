@@ -33,39 +33,39 @@ StateInGameMulti::StateInGameMulti(string data) : StateInGame() {
 
     auto cTransformable = static_cast<CTransformable *>(manCars->GetCar()->GetComponent(CompType::TransformableComp).get());
     if (idPlayer == 1) {
-        cTransformable->position = vec3(120.0f, 20.0f, -300.0f);
+        cTransformable->position = vec3(120.0f, 10.0f, -300.0f);
     } else if (idPlayer == 2) {
-        cTransformable->position = vec3(20.0f, 20.0f, -300.0f);
+        cTransformable->position = vec3(20.0f, 10.0f, -300.0f);
     } else if (idPlayer == 3) {
-        cTransformable->position = vec3(40.0f, 20.0f, -150.0f);
+        cTransformable->position = vec3(40.0f, 10.0f, -150.0f);
     } else if (idPlayer == 4) {
-        cTransformable->position = vec3(-50.0f, 20.0f, -50.0f);
+        cTransformable->position = vec3(-50.0f, 10.0f, -50.0f);
     }
 
     for (auto idEnemy : arrayIdEnemies) {
         if (idEnemy == 1) {
-            vec3 pos = vec3(120.0f, 20.0f, -300.0f);
+            vec3 pos = vec3(120.0f, 10.0f, -300.0f);
             manCars->CreateHumanCar(pos);
             shared_ptr<Entity> car = manCars->GetEntities()[manCars->GetEntities().size() - 1];
             COnline *cOnline = static_cast<COnline *>(car->GetComponent(CompType::OnlineComp).get());
             cOnline->idClient = 1;
             renderEngine->FacadeAddObject(car.get());
         } else if (idEnemy == 2) {
-            vec3 pos = vec3(20.0f, 20.0f, -300.0f);
+            vec3 pos = vec3(20.0f, 10.0f, -300.0f);
             manCars->CreateHumanCar(pos);
             shared_ptr<Entity> car = manCars->GetEntities()[manCars->GetEntities().size() - 1];
             COnline *cOnline = static_cast<COnline *>(car->GetComponent(CompType::OnlineComp).get());
             cOnline->idClient = 2;
             renderEngine->FacadeAddObject(car.get());
         } else if (idEnemy == 3) {
-            vec3 pos = vec3(40.0f, 20.0f, -150.0f);
+            vec3 pos = vec3(40.0f, 10.0f, -150.0f);
             manCars->CreateHumanCar(pos);
             shared_ptr<Entity> car = manCars->GetEntities()[manCars->GetEntities().size() - 1];
             COnline *cOnline = static_cast<COnline *>(car->GetComponent(CompType::OnlineComp).get());
             cOnline->idClient = 3;
             renderEngine->FacadeAddObject(car.get());
         } else if (idEnemy == 4) {
-            vec3 pos = vec3(-50.0f, 20.0f, -50.0f);
+            vec3 pos = vec3(-50.0f, 10.0f, -50.0f);
             manCars->CreateHumanCar(pos);
             shared_ptr<Entity> car = manCars->GetEntities()[manCars->GetEntities().size() - 1];
             COnline *cOnline = static_cast<COnline *>(car->GetComponent(CompType::OnlineComp).get());
