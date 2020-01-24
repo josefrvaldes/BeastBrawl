@@ -1,23 +1,26 @@
 #include "StateInGameMulti.h"
 
-#include "../Components/CTotem.h"
 #include "../Components/COnline.h"
+#include "../Components/CTotem.h"
 #include "../Systems/SystemOnline.h"
 
 StateInGameMulti::StateInGameMulti() : StateInGame() {
     InitVirtualMethods();
     vec3 pos = vec3(120.0f, 20.0f, -300.0f);
     manCars->CreateHumanCar(pos);
-    
+
     shared_ptr<Entity> car1 = manCars->GetEntities()[0];
-    COnline* cOnline1 = static_cast<COnline*>(car1->GetComponent(CompType::OnlineComp).get());
+    COnline *cOnline1 = static_cast<COnline *>(car1->GetComponent(CompType::OnlineComp).get());
     cOnline1->idClient = 1;
-    
+
     shared_ptr<Entity> car2 = manCars->GetEntities()[1];
-    COnline* cOnline2 = static_cast<COnline*>(car2->GetComponent(CompType::OnlineComp).get());
+    COnline *cOnline2 = static_cast<COnline *>(car2->GetComponent(CompType::OnlineComp).get());
     cOnline2->idClient = 2;
-    
+
     renderEngine->FacadeAddObject(car2.get());
+
+    vector<Constants::InputTypes> inputs;  // = renderEngine->FacadeCheckInput();
+    sysOnline->SendInputs(inputs);
 }
 
 StateInGameMulti::StateInGameMulti(string data) : StateInGame() {
@@ -28,49 +31,50 @@ StateInGameMulti::StateInGameMulti(string data) : StateInGame() {
     uint32_t idPlayer = receivedJSON["idPlayer"];
     vector<uint32_t> arrayIdEnemies = receivedJSON["idEnemies"];
 
-    auto cTransformable = static_cast<CTransformable*>(manCars->GetCar()->GetComponent(CompType::TransformableComp).get());
-    if(idPlayer == 1){
+    auto cTransformable = static_cast<CTransformable *>(manCars->GetCar()->GetComponent(CompType::TransformableComp).get());
+    if (idPlayer == 1) {
         cTransformable->position = vec3(120.0f, 20.0f, -300.0f);
-    }else if(idPlayer == 2){
+    } else if (idPlayer == 2) {
         cTransformable->position = vec3(20.0f, 20.0f, -300.0f);
-    }else if(idPlayer == 3){
+    } else if (idPlayer == 3) {
         cTransformable->position = vec3(40.0f, 20.0f, -150.0f);
-    }else if(idPlayer == 4){
+    } else if (idPlayer == 4) {
         cTransformable->position = vec3(-50.0f, 20.0f, -50.0f);
     }
 
-    for(auto idEnemy : arrayIdEnemies){
-        if(idEnemy==1){
+    for (auto idEnemy : arrayIdEnemies) {
+        if (idEnemy == 1) {
             vec3 pos = vec3(120.0f, 20.0f, -300.0f);
             manCars->CreateHumanCar(pos);
-            shared_ptr<Entity> car = manCars->GetEntities()[manCars->GetEntities().size()-1];
-            COnline* cOnline = static_cast<COnline*>(car->GetComponent(CompType::OnlineComp).get());
+            shared_ptr<Entity> car = manCars->GetEntities()[manCars->GetEntities().size() - 1];
+            COnline *cOnline = static_cast<COnline *>(car->GetComponent(CompType::OnlineComp).get());
             cOnline->idClient = 1;
             renderEngine->FacadeAddObject(car.get());
-        }else if(idEnemy == 2){
+        } else if (idEnemy == 2) {
             vec3 pos = vec3(20.0f, 20.0f, -300.0f);
             manCars->CreateHumanCar(pos);
-            shared_ptr<Entity> car = manCars->GetEntities()[manCars->GetEntities().size()-1];
-            COnline* cOnline = static_cast<COnline*>(car->GetComponent(CompType::OnlineComp).get());
+            shared_ptr<Entity> car = manCars->GetEntities()[manCars->GetEntities().size() - 1];
+            COnline *cOnline = static_cast<COnline *>(car->GetComponent(CompType::OnlineComp).get());
             cOnline->idClient = 2;
             renderEngine->FacadeAddObject(car.get());
-        }else if(idEnemy == 3){
+        } else if (idEnemy == 3) {
             vec3 pos = vec3(40.0f, 20.0f, -150.0f);
             manCars->CreateHumanCar(pos);
-            shared_ptr<Entity> car = manCars->GetEntities()[manCars->GetEntities().size()-1];
-            COnline* cOnline = static_cast<COnline*>(car->GetComponent(CompType::OnlineComp).get());
+            shared_ptr<Entity> car = manCars->GetEntities()[manCars->GetEntities().size() - 1];
+            COnline *cOnline = static_cast<COnline *>(car->GetComponent(CompType::OnlineComp).get());
             cOnline->idClient = 3;
             renderEngine->FacadeAddObject(car.get());
-        }else if(idEnemy == 4){
+        } else if (idEnemy == 4) {
             vec3 pos = vec3(-50.0f, 20.0f, -50.0f);
             manCars->CreateHumanCar(pos);
-            shared_ptr<Entity> car = manCars->GetEntities()[manCars->GetEntities().size()-1];
-            COnline* cOnline = static_cast<COnline*>(car->GetComponent(CompType::OnlineComp).get());
+            shared_ptr<Entity> car = manCars->GetEntities()[manCars->GetEntities().size() - 1];
+            COnline *cOnline = static_cast<COnline *>(car->GetComponent(CompType::OnlineComp).get());
             cOnline->idClient = 4;
             renderEngine->FacadeAddObject(car.get());
         }
     }
-    
+    vector<Constants::InputTypes> inputs;  // = renderEngine->FacadeCheckInput();
+    sysOnline->SendInputs(inputs);
 }
 
 StateInGameMulti::~StateInGameMulti() {
