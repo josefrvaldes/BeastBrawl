@@ -3,6 +3,8 @@ COMPILING_TEXT_OK  := @echo -e "\033[0m \033[0;32m [All compiled succesfully]\03
 LINKING_TEXT       := @echo -e "\033[0m \033[0;33m Linking...\033[0m"
 LINKING_TEXT_OK    := @echo -e "\033[0m \033[0;32m [Linked succesfully]\033[0m"
 ALL_CLEANED_TEXT   := @echo -e "\033[0m \033[0;32m [Cleaned succesfully]\033[0m"
+CLENGINE_CLEANED_TEXT   := @echo -e "\033[0m \033[0;32m [CLEngine cleaned succesfully]\033[0m"
+SRC_CLEANED_TEXT   := @echo -e "\033[0m \033[0;32m [SRC cleaned succesfully]\033[0m"
 #EXECUTING_TEXT     := @echo -e "\033[0m \033[5;32m Executing...\033[0m"
 JUMP_LINE		   := @echo
 
@@ -36,7 +38,7 @@ endif
 
 
 SOURCES  	:= $(wildcard *.cpp)
-OBJ_PATH    := obj
+OBJ_PATH    := obj/src
 SRC_PATH	:= src
 
 NAME_EXE	:= Beast_Brawl
@@ -72,22 +74,38 @@ $(OBJ_PATH)/%.o: $(SRC_PATH)/%.cpp
 $(OBJSUBDIRS):
 	@mkdir -p $(OBJSUBDIRS)
 
+.PHONY: gl
+gl:
+	$(MAKE) -C CLEngine/
 
 info:
 	$(info $(SUBDIRS))
 	$(info $(ALLCPPS))
 	$(info $(ALLCPPSOBJ))
 
+.PHONY: exe_gl
+exe_gl:
+	@CLEngine/CLEngine
+
 .PHONY: exe
 exe:
 	$(CREATE_SYMLINKS)
 	@sh ./$(NAME_EXE).sh
 
+.PHONY: clean_all
+clean_all:
+	@make clean_gl ; make clean
+
+.PHONY: clean_gl
+clean_gl:
+	@rm -Rf obj/CLEngine || rm -f $(NAME_EXE)
+	$(CLENGINE_CLEANED_TEXT)
+
 .PHONY: clean
 clean:
-	@rm -Rf $(OBJ_PATH)/ && rm -f $(NAME_EXE)
-	$(ALL_CLEANED_TEXT)
+	@rm -Rf obj/src || rm -f $(NAME_EXE)
+	$(SRC_CLEANED_TEXT)
 
 .PHONY: all
 all:
-	@make clean ; make ; make exe
+	@make clean_all ; make ; make gl ; make exe

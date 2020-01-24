@@ -7,11 +7,22 @@
 #include "../Components/CDimensions.h"
 #include "../Components/CCurrentNavMesh.h"
 #include "../Components/CNavMesh.h"
+#include "../../include/include_json/include_json.hpp"
 
 class Position;
 using namespace std;
-
+using json = nlohmann::json;
 ManTotem::ManTotem() {
+    // CREAMOS EL TOTEM
+    ifstream i("data.json");
+    json j = json::parse(i);
+
+    double totemPosX = j["TOTEM"]["x"].get<double>();
+    double totemPosY = j["TOTEM"]["y"].get<double>();
+    double totemPosZ = j["TOTEM"]["z"].get<double>();
+    std::cout << " LA POS X DEL TOTEM ES LA: " << totemPosX << std::endl;
+    //CreateTotem(glm::vec3(-100.0, 20.0, -100.0));
+    CreateTotem(glm::vec3(totemPosX, totemPosY-15, totemPosZ));
     SubscribeToEvents();
    // CreateTotem();
 }
@@ -61,7 +72,7 @@ void ManTotem::ResetTotem(DataMap* d){
 
     // calculamos la posicion donde queremos dejar el totem
     auto transfActualCar = any_cast<CTransformable*>((*d)["TransfCarPos"]); 
-    glm::vec3 posNewTotem = glm::vec3(0.0f,20.0f,0.0f);
+    glm::vec3 posNewTotem = glm::vec3(0.0f,10.0f,0.0f);
     float angleRotation = (transfActualCar->rotation.y * 3.141592) / 180.0;
     posNewTotem.x = transfActualCar->position.x - cos(angleRotation)*(-25);
     posNewTotem.z = transfActualCar->position.z + sin(angleRotation)*(-25);

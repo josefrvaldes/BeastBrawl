@@ -29,7 +29,6 @@ NavMesh::NavMesh(glm::vec3 pos, glm::vec3 rot, float width, float height, float 
     shared_ptr<CNavMesh> cNavMesh   = make_shared<CNavMesh>(waypoints);
     shared_ptr<CDimensions> cDimensions   = make_shared<CDimensions>(width,height,depth);
 
-
     AddComponent(cId);
     AddComponent(cType);
     AddComponent(cTransformable);
