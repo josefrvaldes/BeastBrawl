@@ -40,7 +40,9 @@ OBJ_PATH    := obj
 SRC_PATH	:= src
 
 NAME_EXE	:= Beast_Brawl
-CXXFLAGS 	+= -Wall -Wno-unknown-pragmas -std=c++17 -pthread # el no-unknown-pragmas es para que no salga el warning de los pragma region
+CXXFLAGS 	+= -Wall -Wno-unknown-pragmas -std=c++17 -pthread -ltbb # el no-unknown-pragmas es para que no salga el warning de los pragma region
+																	# -pthread es para la librería asio
+																	# -ltbb es para la librería tbb
 
 ALLCPPS		:= $(shell find src/ -type f -iname *.cpp)
 ALLCPPSOBJ	:= $(patsubst $(SRC_PATH)/%.cpp,$(OBJ_PATH)/%.o,$(ALLCPPS))

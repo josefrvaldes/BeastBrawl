@@ -73,6 +73,7 @@ void StateLobbyMulti::SubscribeToEvents(){
 
 
 void StateLobbyMulti::StartGameMulti(DataMap* d){
+    cout << "Hemos llegado a StateLobbyMulti::StartGameMulti" << endl;
     auto dataServer = any_cast<string>((*d)["dataServer"]);
     renderEngine->ThrowEventChangeToMulti(dataServer);
 }
