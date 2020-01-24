@@ -25,6 +25,15 @@ void PhysicsPowerUp::update(Entity* actualPowerUp){
 // TO-DO: pequenya animacion del puding para cuando lo lancemos estando quietos, que no nos afecte
 void PhysicsPowerUp::updatePudinDeFrambuesa(Entity* pu){
    // lo dejamos para cuando tengamos que animarlo
+      auto cPuActual = static_cast<CPowerUp*>(pu->GetComponent(CompType::PowerUpComp).get());
+       // Movimiento
+      auto cTransformable = static_cast<CTransformable*>(pu->GetComponent(CompType::TransformableComp).get());
+      float angleRotation = (cTransformable->rotation.y * PI) / 180.0;
+      cTransformable->position.x -= cos(angleRotation) * cPuActual->speed * 0.016;
+      cTransformable->position.z += sin(angleRotation) * cPuActual->speed * 0.016;
+      cPuActual->speed -= cPuActual->deceleration;
+      if(cPuActual->speed > 0)
+         cPuActual->speed = 0; 
 }
 
 
