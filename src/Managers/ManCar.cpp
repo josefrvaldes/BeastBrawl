@@ -515,7 +515,7 @@ void ManCar::CatchPowerUp(DataMap* d) {
     else if(indx > 70)                  //  30%
         indx = 6;
 
-    //indx = 5;
+    //indx = 3;
     //None,               // 0
     //RoboJorobo,         // 1
     //SuperMegaNitro,     // 2

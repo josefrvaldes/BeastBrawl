@@ -13,7 +13,7 @@
 
 
 class NavMesh;
-
+struct ManTotem;
 
 using namespace std;
 struct Car;
@@ -22,7 +22,7 @@ struct Data;
 
 class ManNavMesh : public Manager{
    public:
-    ManNavMesh();
+    ManNavMesh(Entity *carPlayer, ManTotem *manTotems);
     ~ManNavMesh(){};
 
     void CreateNavMesh(glm::vec3 pos, glm::vec3 rot, float width, float height, float depth, vector<int> waypoints);
@@ -44,6 +44,7 @@ class ManNavMesh : public Manager{
     //vector<shared_ptr<NavMesh>> navMeshes;
     void SubscribeToEvents() override;
     void ActualizeNavMeshTotem(DataMap* d);
+    void InitNavMeshTotem(ManTotem *manTotems);
     void ActualizeNavMeshCarAI(DataMap* d);
     //void ActualizeNavMeshCarPlayer(Car* carPlayer);
 };
