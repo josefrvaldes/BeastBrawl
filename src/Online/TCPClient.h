@@ -35,7 +35,9 @@ class TCPClient {
     
    private:
     void StartConnect(tcp::resolver::results_type::iterator endpoint_iter);
+    void StartConnect(tcp::endpoint serverEndpoint);
     void HandleConnect(const boost::system::error_code& error, tcp::resolver::results_type::iterator endpoint_iter);
+    void HandleConnect(const boost::system::error_code& error);
     void StartReceiving();
     void HandleReceived(std::shared_ptr<boost::array<char, 1024>> recevBuff, const boost::system::error_code& error, size_t bytesTransferred);
     void HandleSentConnectionRequest(const boost::system::error_code& errorCode, std::size_t bytes_transferred);
@@ -43,7 +45,8 @@ class TCPClient {
 
     boost::asio::io_context context;
     
-    tcp::resolver::results_type endpoints;
+    // tcp::resolver::results_type endpoints;
+    tcp::endpoint serverEndpoint;
     bool stopped;
     tcp::socket socket;
     // boost::array<char, 128> recvBuff;
