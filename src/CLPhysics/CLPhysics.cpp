@@ -158,7 +158,7 @@ void CLPhysics::SeparateSpheres(CTransformable &trCar1, CBoundingSphere &spCar1,
 
 void CLPhysics::HandleCollisions(CTransformable &trCar, CBoundingSphere &spCar, CCar &ccarCar, bool mainCar, CBoundingPlane &plane) {
     PositionSphereIntoTransformable(trCar, spCar);
-    IntersectData intersData = plane.IntersectSphere(spCar);
+    IntersectData intersData = plane.IntersectSphere(spCar, trCar, ccarCar);
     if (intersData.intersects) {
         // SonarChoque(mainCar);
         SeparateSphereFromPlane(intersData, trCar, spCar, ccarCar, plane);

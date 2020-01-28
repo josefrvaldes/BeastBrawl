@@ -61,6 +61,13 @@ ManCar::ManCar(Physics *_physics, Camera *_cam) : ManCar() {
 
 // comprueba si has superado el tiempo necesario para ganar
 void ManCar::UpdateCar(){
+    
+    // Actualiza el componente previousPos
+    auto cCar = static_cast<CCar*>(GetCar()->GetComponent(CompType::CarComp).get());
+    auto cTransformable = static_cast<CTransformable*>(GetCar()->GetComponent(CompType::TransformableComp).get());
+    cCar->previousPos = cTransformable->position;
+    
+
     auto cTotem = static_cast<CTotem*>(GetCar()->GetComponent(CompType::TotemComp).get());
     if(cTotem->active){
         cTotem->accumulatedTime +=  duration_cast<milliseconds>(system_clock::now() - cTotem->timeStart).count();
@@ -92,8 +99,11 @@ void ManCar::UpdateCar(){
 // Es importante esto porque el BtMoveTo es el que calcula la posicion a la que ir y el systemBtLoDMove es el que utiliza esta posicion para
 // moverse a un sitio, si en algun momento intentamos ir a una posicion que no existe PETAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 void ManCar::UpdateCarAI(CarAI* carAI, ManPowerUp* m_manPowerUp, ManBoxPowerUp* m_manBoxPowerUp, ManTotem* m_manTotem, ManWayPoint* graph, ManNavMesh* manNavMesh, ManBoundingWall* m_manBoundingWall){
+    
+    
+    // actualizacion sistemas y fisicas
     systemBtMoveTo->update(carAI, this, m_manPowerUp, m_manBoxPowerUp, m_manTotem, graph, manNavMesh);
-
+    
     systemPathPlanning->Update(carAI, graph, manNavMesh);
 
     systemBtLoDMove->update(carAI, this, m_manPowerUp, m_manBoxPowerUp, m_manTotem, graph,manNavMesh, m_manBoundingWall);
