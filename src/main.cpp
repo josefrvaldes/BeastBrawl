@@ -1,4 +1,3 @@
-#include <boost/asio.hpp>
 #include <iostream>
 #include <memory>
 #include <thread>
@@ -11,14 +10,14 @@ using namespace std;
 
 int main() {
     //CLPhysics::RunTests();
-    asio::io_context context;
+    /*asio::io_context context;
     UDPClient client(context, "localhost", "1234");
     thread butler1([&]() { context.run(); });
     thread butler2([&]() { context.run(); });
     client.Send();
     client.Send();
     client.Send();
-    client.Send();
+    client.Send();*/
 
 
     try {
