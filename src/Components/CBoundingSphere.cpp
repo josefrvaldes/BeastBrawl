@@ -1,6 +1,24 @@
 #include "CBoundingSphere.h"
-
 #include "../Components/CTransformable.h"
+
+#include <math.h>
+
+CBoundingSphere::CBoundingSphere(const vec3 &_center)
+    : center{_center}, radius{DEFAULT_SPHERE_RADIUS} {
+    m_compType = CompType::CompBoundingSphere;
+    //equationSphere = equationSphereCenterRadius(_center, DEFAULT_SPHERE_RADIUS);
+}
+CBoundingSphere::CBoundingSphere(const vec3 &_center, float _radius)
+    : center{_center}, radius{_radius} {
+    m_compType = CompType::CompBoundingSphere;
+    //equationSphere = equationSphereCenterRadius(_center, _radius);
+}
+
+/*
+vec4 CBoundingSphere::equationSphereCenterRadius(const vec3 &center, const float &radius) const{
+    return vec4( (-1*pow(center.x,2)) , (-1*pow(center.y,2)) , (-1*pow(center.z,2)) , pow(radius,2) );
+}
+*/
 
 // https://www.youtube.com/watch?v=1l-k8c7NpQM&list=PLEETnX-uPtBXm1KEr_2zQ6K_0hoGH6JJ0&index=3
 IntersectData CBoundingSphere::IntersectSphere(const CBoundingSphere &other) const {

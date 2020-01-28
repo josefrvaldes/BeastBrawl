@@ -33,6 +33,7 @@ class CBoundingPlane : public Component {
     vec4 equationPlane; // ecuacion general del plano
     //ejemplo: 2x -y + 3z + 4 = 0
 
+
     const vec3 normal;
     const vec3 normalizedNormal;
     const float distance;
@@ -40,5 +41,6 @@ class CBoundingPlane : public Component {
     private:
     // calculo de la ecuacion general de un plano mediante 3 puntos
     vec4 equationPlane3Points(const vec3 &a, const vec3 &b, const vec3 &c) const;
+    void intersectLineSphere(const vec3 &vecLine,const vec3 &point, const float &radius, vec3 *retrunM, vec3 *returnN)const;
 
 };
