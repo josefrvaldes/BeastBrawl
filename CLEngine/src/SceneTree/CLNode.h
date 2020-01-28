@@ -41,8 +41,8 @@ class CLNode{
         void Scale(const glm::vec3 scaleVec);
 
     private:
-        CLEntity* entity;
-        CLNode* father;
+        CLEntity* entity {nullptr};
+        CLNode* father {nullptr};
         vector<CLNode*> childs;
 
         glm::vec3 translation;

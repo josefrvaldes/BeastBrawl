@@ -4,9 +4,11 @@
 namespace CLE{
 
 class CLEntity{
+    public:
+        CLEntity(unsigned int idEntity) : id(idEntity){}
+        ~CLEntity(){};
 
-    CLEntity(unsigned int idEntity) : id(idEntity){}
-    ~CLEntity();
+        unsigned int GetID() { return id; }
 
     private:
 
