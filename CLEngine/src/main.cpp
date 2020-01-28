@@ -46,6 +46,23 @@ int main() {
     unique_ptr<CLEntity> entity2 = make_unique<CLEntity>(2);
     unique_ptr<CLEntity> entity3 = make_unique<CLEntity>(3);
     unique_ptr<CLEntity> entity4 = make_unique<CLEntity>(4);
+    unique_ptr<CLEntity> entity5 = make_unique<CLEntity>(5);
+    unique_ptr<CLNode> node1 = make_unique<CLNode>(entity1.get());
+    unique_ptr<CLNode> node2 = make_unique<CLNode>(entity2.get());
+    unique_ptr<CLNode> node3 = make_unique<CLNode>(entity3.get());
+    unique_ptr<CLNode> node4 = make_unique<CLNode>(entity4.get());
+    unique_ptr<CLNode> node5 = make_unique<CLNode>(entity5.get());
+
+    node1->AddChild(node2.get());
+    node1->AddChild(node3.get());
+    node2->AddChild(node4.get());
+    node4->AddChild(node5.get());
+
+    node1->DrawTree(node1.get());
+
+    node1->SearchChild(node2.get());
+    node1->SearchChild(node5.get());
+
 
     CLEngine *device = new CLEngine(1280, 720, "Beast Brawl");
     IMGUI_CHECKVERSION();

@@ -21,12 +21,26 @@ bool CLNode::AddChild(CLNode* child){
 
 bool CLNode::RemoveChild(CLNode* child){
 
-    return true;
+    for(unsigned int i = 0; i<childs.size(); ++i){
+        if(child == childs[i]){
+            childs.erase(childs.begin()+i);
+            return true;
+        }
+    }
+    return false;
 }
 
-CLNode* CLNode::SearchChild(unsigned int id){
+bool CLNode::HasChild(CLNode* child){
 
+    for(auto node : childs){
+        if(node == child){
+            return true;
+        }
+    }
+
+    return false;
 }
+
 
 void CLNode::Translate(const glm::vec3 translationVec){
 
@@ -40,3 +54,19 @@ void CLNode::Scale(const glm::vec3 scaleVec){
 
 }
 
+void CLNode::DrawTree(CLNode* root){
+
+    if(root->GetChilds().size()>0){
+        //Tiene hijos
+        cout << "Nodo " << root->GetEntity()->GetID() << " con hijos: ";
+        for(auto nodo : root->GetChilds()){
+            cout << nodo->GetEntity()->GetID() << " ";
+        }
+        cout << "\n";
+        for(auto nodo : root->GetChilds()){
+            DrawTree(nodo);
+        }
+    }
+
+    return;
+}

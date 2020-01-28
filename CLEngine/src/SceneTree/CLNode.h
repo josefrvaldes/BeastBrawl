@@ -2,6 +2,7 @@
 
 #include "CLEntity.h"
 #include <vector>
+#include <iostream>
 #include "../../../include/glm/glm.hpp"
 
 using namespace std;
@@ -13,7 +14,7 @@ class CLNode{
     public:
         CLNode();
         CLNode(CLEntity* entity);
-        ~CLNode();
+        ~CLNode(){};
 
         //Getters
         CLEntity* GetEntity() const           { return entity; }
@@ -35,10 +36,12 @@ class CLNode{
         //Methods
         bool AddChild(CLNode* child);
         bool RemoveChild(CLNode* child);
-        CLNode* SearchChild(unsigned int id);
+        bool HasChild(CLNode* child);
         void Translate(const glm::vec3 translationVec);
         void Rotate(const glm::vec3 rotationVec);
         void Scale(const glm::vec3 scaleVec);
+
+        void DrawTree(CLNode* root);
 
     private:
         CLEntity* entity {nullptr};
