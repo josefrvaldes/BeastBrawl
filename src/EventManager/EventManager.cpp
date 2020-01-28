@@ -1,5 +1,6 @@
 #include "EventManager.h"
 #include <iostream>
+#include <thread>
 
 // const shared_ptr<EventManager> EventManager::instance = make_shared<EventManager>();
 // shared_ptr<EventManager> EventManager::IGetInstance() {
@@ -19,74 +20,56 @@ EventManager& EventManager::GetInstance() {
 //O(n)
 //Acceso: O(1)
 void EventManager::Update() {
-    // Versión inicial con listas y prioridades
-    // while (!eventList.empty()) {
-    //     Event e = eventList.front();  //Cojemos el primero en la lista
-    //     eventList.pop_front();        // Lo sacamos de la lista
+    std::thread::id idEsteHilo = std::this_thread::get_id();
+    while (idOcupado != idHiloCero && idOcupado != idEsteHilo);
+    idOcupado = std::this_thread::get_id();
+    while (!eventList.empty()) {
+        Event e = eventList.front();  //Cojemos el primero en la lista
+        eventList.pop_front();        // Lo sacamos de la lista
 
-    //     //std::cout << "Procesando evento con prioridad: " << e.type << std::endl;
+        //std::cout << "Procesando evento con prioridad: " << e.type << std::endl;
 
-    //     //Tratamos el evento
-    //     auto mapByType = eventListenerMap.find(e.type);
+        //Tratamos el evento
+        auto mapByType = eventListenerMap.find(e.type);
 
-    //     if (mapByType != eventListenerMap.end()) {
-    //         auto eventVector = mapByType->second;  // El vector de listeners del mapa segun el EventType
-
-    //         for (Listener listener : eventVector) {
-    //             listener.callback(e.data.get());
-    //         }
-    //     }
-    // }
-    if (eventList.size() > 0)
-        cout << "Estamos en el update y tenemos " << eventList.size() << " eventos" << endl;
-    // for (Event e : eventList) {
-    //     auto mapByType = eventListenerMap.find(e.type);
-    //     if (mapByType != eventListenerMap.end()) {
-    //         auto eventVector = mapByType->second;  // El vector de listeners del mapa segun el EventType
-    //         for (Listener listener : eventVector) {
-    //             listener.callback(e.data.get());
-    //         }
-    //     }
-    // }
-    tbb::concurrent_vector<Event>::iterator it;
-    for (it = eventList.begin(); it != eventList.end(); ++it) {
-        EventType type = it->type;
-        auto mapByType = eventListenerMap.find(type);
         if (mapByType != eventListenerMap.end()) {
             auto eventVector = mapByType->second;  // El vector de listeners del mapa segun el EventType
+
             for (Listener listener : eventVector) {
-                listener.callback(it->data.get());
+                listener.callback(e.data.get());
             }
         }
     }
-
-    eventList.clear();
+    idOcupado = idHiloCero;
 }
 
 //Añade un evento a la cola de eventos
 // O(n) -> Recorremos la lista iterativamente hasta encontrar el valor directamente superior
 void EventManager::AddEventMulti(Event e) {
+    std::thread::id idEsteHilo = std::this_thread::get_id();
+    while (idOcupado != idHiloCero && idOcupado != idEsteHilo);
+    idOcupado = std::this_thread::get_id();
+
     //FIXME: Descomentar esto para que funcione con cola
     //eventQueue.push(e);
 
-    // Versión inicial con listas y prioridades
-    // std::list<Event>::iterator it;
-    // //Si es el primer evento lo añadimos al comienzo
-    // if (eventList.size() == 0) {
-    //     eventList.push_front(e);
-    // } else {
-    //     //TODO: Implementar un algoritmo de busqueda e insercion mas optimo
-    //     //Movemos el iterator hasta posicionarlo antes del siguiente valor mas grande
-    //     for (it = eventList.begin(); it != eventList.end(); ++it) {
-    //         if (e.type <= it->type) {
-    //             break;
-    //         }
-    //     }
-    //     eventList.insert(it, e);
-    // }
+    std::list<Event>::iterator it;
 
-    eventList.push_back(e);
-    cout << "Hemos añadido un evento y ahora tenemos " << eventList.size() << " eventos" << endl;
+    //Si es el primer evento lo añadimos al comienzo
+    if (eventList.size() == 0) {
+        eventList.push_front(e);
+    } else {
+        //TODO: Implementar un algoritmo de busqueda e insercion mas optimo
+        //Movemos el iterator hasta posicionarlo antes del siguiente valor mas grande
+        for (it = eventList.begin(); it != eventList.end(); ++it) {
+            if (e.type <= it->type) {
+                break;
+            }
+        }
+
+        eventList.insert(it, e);
+    }
+    idOcupado = idHiloCero;
 }
 
 // Añade un listener al mapa

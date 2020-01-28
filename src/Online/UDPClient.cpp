@@ -28,6 +28,12 @@ UDPClient::UDPClient(string host_, string port_)
     StartReceiving();
 }
 
+UDPClient::~UDPClient() {
+    context.stop();
+    socket.close();
+    butler.join();
+}
+
 void UDPClient::StartReceiving() {
     cout << "Esperamos recibir datos" << endl;
     std::shared_ptr<boost::array<char, 1024>> recvBuff = make_shared<boost::array<char, 1024>>();

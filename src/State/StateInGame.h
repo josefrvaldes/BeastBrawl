@@ -94,7 +94,7 @@ class StateInGame : public State {
     shared_ptr<Entity> totemOnCar;
 
     unique_ptr<CLPhysics> clPhysics;
-    unique_ptr<SystemPathPlanning> sysPathPlanning;
+    // unique_ptr<SystemPathPlanning> sysPathPlanning;
 
     shared_ptr<ManTotem> manTotems;
     //int lastFPS = -1;
