@@ -32,6 +32,7 @@ class UDPClient {
 
    public:
     UDPClient(string host, string port_);
+    ~UDPClient();
 
     void SendInput(Constants::InputTypes input);
     void SendInputs(vector<Constants::InputTypes>& inputs, uint32_t id);
