@@ -31,37 +31,68 @@ CBoundingPlane::CBoundingPlane(const vec3 &a_, const vec3 &b_, const vec3 &c_, c
 }
 
 // TODO: Actualmente todos los planos se tratan como finitos en los que respecta a las colisiones con las esferas
-IntersectData CBoundingPlane::IntersectSphere(const CBoundingSphere &other){
+IntersectData CBoundingPlane::IntersectSphere(const CBoundingSphere &other, const CTransformable &trCar, const CCar &ccarCar){
     float distanceFromSpCenter = fabs(dot(normalizedNormal, other.center) - distance);
     // cout << "Distance from sphere center " << distanceFromSpCenter << endl;
     float distanceFromSphere = distanceFromSpCenter - other.radius;
     bool intersectsInfinitePlane = distanceFromSphere < 0;
     if(intersectsInfinitePlane){
-        vec3 pointM = vec3(0.0,0.0,0.0);
-        vec3 pointN = vec3(0.0,0.0,0.0);
-        intersectLineSphere(vec3(a.x-b.x, a.y-b.y, a.z-b.z), other.center, other.radius, &pointM, &pointN );  // comprobamos en un eje del plano AB
-        pointM = IntersectPoint(*(&pointM));
-        pointN = IntersectPoint(*(&pointN));
-        //cout << " AQUI YA FALLAN DOS BEIBE " << endl;
-        if( !membershipPoint(*(&pointM)) && !membershipPoint(*(&pointN)) ){
-            intersectLineSphere(vec3(a.x-d.x, a.y-d.y, a.z-d.z), other.center, other.radius, &pointM, &pointN ); // comprobamos el otro eje del plano AD
+
+        vec3 vecDirCar = vec3(trCar.position.x-ccarCar.previousPos.x, trCar.position.y-ccarCar.previousPos.y, trCar.position.z-ccarCar.previousPos.z);
+        double angle = Angle2Vectors(vecDirCar,normal);
+        //cout << " DEBERIA DE SER '122' YYYYY EEEEES:  " << angle << endl;
+        if(angle > 90 && trCar.position != ccarCar.previousPos){
+            vec3 pointM = vec3(0.0,0.0,0.0);
+            vec3 pointN = vec3(0.0,0.0,0.0);
+            intersectLineSphere(vec3(a.x-b.x, a.y-b.y, a.z-b.z), other.center, other.radius, &pointM, &pointN );  // comprobamos en un eje del plano AB
             pointM = IntersectPoint(*(&pointM));
             pointN = IntersectPoint(*(&pointN));
+            //cout << " AQUI YA FALLAN DOS BEIBE " << endl;
             if( !membershipPoint(*(&pointM)) && !membershipPoint(*(&pointN)) ){
-                //cout << "LAS 4 ESTAN FUERA" << endl;
+                intersectLineSphere(vec3(a.x-d.x, a.y-d.y, a.z-d.z), other.center, other.radius, &pointM, &pointN ); // comprobamos el otro eje del plano AD
+                pointM = IntersectPoint(*(&pointM));
+                pointN = IntersectPoint(*(&pointN));
+                if( !membershipPoint(*(&pointM)) && !membershipPoint(*(&pointN)) ){
+                    //cout << "LAS 4 ESTAN FUERA" << endl;
+                    return IntersectData(false, normalizedNormal * distanceFromSphere);
+                }
+            }
+            /*
+            vec3 centerOnPlane = IntersectPoint(*(&other.center));
+            if( !membershipPoint(*(&centerOnPlane)) ){
                 return IntersectData(false, normalizedNormal * distanceFromSphere);
             }
+            */
+
+        }else{
+            return IntersectData(false, normalizedNormal * distanceFromSphere);     
         }
-        /*
-        vec3 centerOnPlane = IntersectPoint(*(&other.center));
-        if( !membershipPoint(*(&centerOnPlane)) ){
-            return IntersectData(false, normalizedNormal * distanceFromSphere);
-        }
-        */
+
     }
     //std::cout << "estamos dentro del plano beibe, todo normal " << std::endl;
     return IntersectData(intersectsInfinitePlane, normalizedNormal * distanceFromSphere);
 }
+
+
+double CBoundingPlane::Angle2Vectors(const vec3 &a, const vec3 &b) const{
+
+    vec3 aN = glm::normalize(a);
+    vec3 bN = glm::normalize(b);
+
+    double dot = glm::dot(aN,bN);
+    // Force the dot product of the two input vectors to
+    // fall within the domain for inverse cosine, which
+    // is -1 <= x <= 1. This will prevent runtime
+    // "domain error" math exceptions.
+    dot = ( dot < -1.0 ? -1.0 : ( dot > 1.0 ? 1.0 : dot ) );
+
+    double angleRad = acos( dot );
+    // grados = radianes*(180/PI_)
+    return angleRad*(180/M_PI);
+    
+}
+
+
 
 void CBoundingPlane::intersectLineSphere(const vec3 &vecLine,const vec3 &point, const float &radius, vec3 *returnM, vec3 *returnN) const{
     // datos:
