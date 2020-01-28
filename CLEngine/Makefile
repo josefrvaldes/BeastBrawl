@@ -67,7 +67,7 @@ info:
 
 .PHONY: exe
 exe:
-	./$(NAME_EXE).sh
+	./$(NAME_EXE)
 
 .PHONY: clean
 clean:
