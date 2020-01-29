@@ -1,15 +1,19 @@
 #include <iostream>
+#include <memory>
+
+#include "CLEngine.h"
+#include "SceneTree/CLLight.h"
+#include "SceneTree/CLNode.h"
 
 #include "../include/glew/glew.h"
 #include "../include/glfw/glfw3.h"
-#include "CLEngine.h"
 #include <math.h>
 #include "ImGUI/imgui.h"
 #include "ImGUI/imgui_impl_opengl3.h"
 #include "ImGUI/imgui_impl_glfw.h"
 
 using namespace std;
-
+using namespace CLE;
 const char *vertexShaderSource = "#version 460 core\n"
     "layout (location = 0) in vec3 aPos;\n"
     "void main()\n"
@@ -38,7 +42,33 @@ void checkInput (GLFWwindow *window) {
 
 int main() {
 
-    CLE::CLEngine *device = new CLE::CLEngine(1280, 720, "Beast Brawl");
+    //----------------------------------
+    unique_ptr<CLEntity> entity1 = make_unique<CLLight>(1);
+    unique_ptr<CLEntity> entity2 = make_unique<CLLight>(2);
+    unique_ptr<CLEntity> entity3 = make_unique<CLLight>(3);
+    unique_ptr<CLEntity> entity4 = make_unique<CLLight>(4);
+    unique_ptr<CLEntity> entity5 = make_unique<CLLight>(5);
+    unique_ptr<CLNode> node1 = make_unique<CLNode>(entity1.get());
+    unique_ptr<CLNode> node2 = make_unique<CLNode>(entity2.get());
+    unique_ptr<CLNode> node3 = make_unique<CLNode>(entity3.get());
+    unique_ptr<CLNode> node4 = make_unique<CLNode>(entity4.get());
+    unique_ptr<CLNode> node5 = make_unique<CLNode>(entity5.get());
+
+    node1->AddChild(node2.get());
+    node1->AddChild(node3.get());
+    node2->AddChild(node4.get());
+    node4->AddChild(node5.get());
+
+    node1->DrawTree(node1.get());
+
+    auto nodeAux = node1->GetNodeByID(5);
+
+    if(nodeAux!=nullptr){
+        cout << "Devuelto nodo con ID: " << nodeAux->GetEntity()->GetID() << " \n";
+    }
+
+
+    CLEngine *device = new CLEngine(1280, 720, "Beast Brawl");
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO(); (void)io;
