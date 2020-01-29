@@ -162,6 +162,9 @@ void CLPhysics::HandleCollisions(CTransformable &trCar, CBoundingSphere &spCar, 
     if (intersData.intersects) {
         // SonarChoque(mainCar);
         SeparateSphereFromPlane(intersData, trCar, spCar, ccarCar, plane);
+
+        //TODO: PROVISIONAL ... PONER LA VELOCIDAD DEL COCHE A 0
+        //ccarCar.speed = ccarCar.speed/1.01;
     }
 }
 
