@@ -56,21 +56,10 @@ IntersectData CBoundingPlane::IntersectSphere(const CBoundingSphere &other, cons
                 pointM = IntersectPoint(*(&pointM));
                 pointN = IntersectPoint(*(&pointN));
                 if( !membershipPoint(*(&pointM)) && !membershipPoint(*(&pointN)) ){
-                    cout << "LAS 4 ESTAN FUERA" << endl;
+                    //cout << "LAS 4 ESTAN FUERA" << endl;
                     return IntersectData(false, normalizedNormal * distanceFromSphere);
-                }else{
-                    //cout << "************************************************ ************************************************************" << endl;
-                    //cout << " FALLA2, LOS PUNTOS SON: " << endl;
-                    //cout << "(" << pointM.x << " , " << pointM.y << " , " << pointM.z << ")  y  "; 
-                    //cout << "(" << pointN.x << " , " << pointN.y << " , " << pointN.z << ")" << endl;
                 }
-            }else{
-                //cout << "************************************************ ************************************************************" << endl;
-                //cout << " FALLA, LOS PUNTOS SON: " << endl;
-                //cout << "(" << pointM.x << " , " << pointM.y << " , " << pointM.z << ")  y  "; 
-                //cout << "(" << pointN.x << " , " << pointN.y << " , " << pointN.z << ")" << endl;
             }
-            
             /*
             vec3 centerOnPlane = IntersectPoint(*(&other.center));
             if( !membershipPoint(*(&centerOnPlane)) ){
