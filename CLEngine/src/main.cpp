@@ -1,7 +1,8 @@
 #include <iostream>
 #include <memory>
+
 #include "CLEngine.h"
-#include "SceneTree/CLEntity.h"
+#include "SceneTree/CLLight.h"
 #include "SceneTree/CLNode.h"
 
 #include "../include/glew/glew.h"
@@ -42,11 +43,11 @@ void checkInput (GLFWwindow *window) {
 int main() {
 
     //----------------------------------
-    unique_ptr<CLEntity> entity1 = make_unique<CLEntity>(1);
-    unique_ptr<CLEntity> entity2 = make_unique<CLEntity>(2);
-    unique_ptr<CLEntity> entity3 = make_unique<CLEntity>(3);
-    unique_ptr<CLEntity> entity4 = make_unique<CLEntity>(4);
-    unique_ptr<CLEntity> entity5 = make_unique<CLEntity>(5);
+    unique_ptr<CLLight> entity1 = make_unique<CLLight>(1);
+    unique_ptr<CLLight> entity2 = make_unique<CLLight>(2);
+    unique_ptr<CLLight> entity3 = make_unique<CLLight>(3);
+    unique_ptr<CLLight> entity4 = make_unique<CLLight>(4);
+    unique_ptr<CLLight> entity5 = make_unique<CLLight>(5);
     unique_ptr<CLNode> node1 = make_unique<CLNode>(entity1.get());
     unique_ptr<CLNode> node2 = make_unique<CLNode>(entity2.get());
     unique_ptr<CLNode> node3 = make_unique<CLNode>(entity3.get());

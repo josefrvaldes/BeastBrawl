@@ -1,18 +1,20 @@
 #pragma once
 
-#include <stdint.h>
-namespace CLE{
+namespace CLE {
 
-class CLEntity{
-    public:
-        CLEntity(unsigned int idEntity) : id(idEntity){}
-        ~CLEntity(){};
+    class CLEntity {
+        public:
+            CLEntity(){};
+            CLEntity(unsigned int idEntity) : id(idEntity) {}
+            ~CLEntity(){};
 
-        unsigned int GetID() { return id; }
+            unsigned int GetID() { return id; }
 
-    private:
+            virtual void Draw () = 0;
 
-        unsigned int id;
-};
+        protected:
 
+            unsigned int id;
+
+    };
 }
