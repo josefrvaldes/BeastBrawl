@@ -10,15 +10,13 @@ namespace CLE {
             CLCamera(unsigned int idEntity) : CLEntity(idEntity) {};
             ~CLCamera() {};
 
-            void SetCameraConfig(float n, float f) {
-                near = n; far = f;
-            };
+            void SetCameraConfig(float n, float f);
 
-            void SetPerspective(bool b)     { perspective = b;      };
+            void SetPerspective(bool b)     { perspective = b; };
 
-            bool IsPerspective() const      { return perspective;   };
+            bool IsPerspective()            const { return perspective; };
 
-            void Draw();
+            void Draw(glm::mat4&);
 
         protected:
 

@@ -2,6 +2,4 @@
 
 using namespace CLE;
 
-void CLLight::Draw() {
-    
-}
+void CLLight::Draw(glm::mat4&) {}

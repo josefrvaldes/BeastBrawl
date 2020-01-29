@@ -2,6 +2,6 @@
 
 using namespace CLE;
 
-void CLMesh::Draw() {
-    
+void CLMesh::Draw(glm::mat4&) {
+    //Dibujar malla
 }

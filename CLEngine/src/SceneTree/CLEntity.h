@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../../../include/glm/glm.hpp"
+
 namespace CLE {
 
     class CLEntity {
@@ -10,7 +12,7 @@ namespace CLE {
 
             unsigned int GetID() { return id; }
 
-            virtual void Draw () = 0;
+            virtual void Draw (glm::mat4&) = 0;
 
         protected:
 

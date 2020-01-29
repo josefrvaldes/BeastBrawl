@@ -14,7 +14,7 @@ namespace CLE {
 
             //GetMesh
 
-            void Draw();
+            void Draw(glm::mat4&);
 
         protected:
 
