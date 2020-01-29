@@ -14,14 +14,14 @@
 
 using namespace std;
 using namespace CLE;
-const char *vertexShaderSource = "#version 460 core\n"
+const char *vertexShaderSource = "#version 450 core\n"
     "layout (location = 0) in vec3 aPos;\n"
     "void main()\n"
     "{\n"
     "   gl_Position = vec4(aPos, 1.0);\n"
     "}\0";
 
-const char *fragmentShaderSource = "#version 460 core\n"
+const char *fragmentShaderSource = "#version 450 core\n"
     "out vec4 FragColor;\n"
     "uniform vec4 ourColor;\n"
     "void main()\n"
@@ -79,7 +79,7 @@ int main() {
 
     // Setup Platform/Renderer bindings
     ImGui_ImplGlfw_InitForOpenGL(device->GetWindow(), true);
-    ImGui_ImplOpenGL3_Init("#version 460");
+    ImGui_ImplOpenGL3_Init("#version 450");
     glewInit();
 
     float vertices[] = {
