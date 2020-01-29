@@ -28,15 +28,17 @@ class CLNode{
 
         //Setters
         bool SetEntity(CLEntity* e)                    { entity = e; return true; }
-        void SetTranslation(glm::vec3 trans)           { translation = trans; }
-        void SetRotation(glm::vec3 rot)                { rotation = rot; }
-        void SetScalation(glm::vec3 scale)             { scalation = scale; }
-        void SetTransformationMat(glm::mat4 transfMat) { transformationMat = transfMat; }
+        bool SetFather(CLNode* f)                    { father = f; return true; }
+        void SetTranslation(glm::vec3& trans)           { translation = trans; }
+        void SetRotation(glm::vec3& rot)                { rotation = rot; }
+        void SetScalation(glm::vec3& scale)             { scalation = scale; }
+        void SetTransformationMat(glm::mat4& transfMat) { transformationMat = transfMat; }
 
         //Methods
         bool AddChild(CLNode* child);
         bool RemoveChild(CLNode* child);
         bool HasChild(CLNode* child);
+        CLNode* GetNodeByID(unsigned int id);
         void Translate(const glm::vec3 translationVec);
         void Rotate(const glm::vec3 rotationVec);
         void Scale(const glm::vec3 scaleVec);
@@ -52,6 +54,9 @@ class CLNode{
         glm::vec3 rotation;
         glm::vec3 scalation;
         glm::mat4 transformationMat;
+
+        //Methods
+        CLNode* GetNodeByIDAux(unsigned int id, CLNode* node, CLNode* root);
 
 };
 

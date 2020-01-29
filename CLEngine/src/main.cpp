@@ -60,8 +60,11 @@ int main() {
 
     node1->DrawTree(node1.get());
 
-    node1->SearchChild(node2.get());
-    node1->SearchChild(node5.get());
+    auto nodeAux = node1->GetNodeByID(5);
+
+    if(nodeAux!=nullptr){
+        cout << "Devuelto nodo con ID: " << nodeAux->GetEntity()->GetID() << " \n";
+    }
 
 
     CLEngine *device = new CLEngine(1280, 720, "Beast Brawl");

@@ -14,6 +14,7 @@ bool CLNode::AddChild(CLNode* child){
     //Tipica comprobacion de Programacion 2 pero bueno por si acaso
     if(child!=nullptr){
         childs.push_back(child);
+        child->SetFather(this);
         return true;
     }
     return false;
@@ -69,4 +70,32 @@ void CLNode::DrawTree(CLNode* root){
     }
 
     return;
+}
+
+//Devuelve el nodo por la id que le mandes
+//Lo hace a partir del padre que lo llame, lo suyo es llamarlo siempre con el nodo principal
+CLNode* CLNode::GetNodeByID(unsigned int id){
+    CLNode* node = nullptr;
+    node = GetNodeByIDAux(id, node, this);
+    return node;
+}
+
+CLNode* CLNode::GetNodeByIDAux(unsigned int id, CLNode* node, CLNode* root){
+
+    if(node!=nullptr) return node; //Caso base, ha encontrado ya al nodo que busca
+    if(root->GetChilds().size()>0){
+        //Tiene hijos
+        for(auto nodo : root->GetChilds()){
+            if(nodo->GetEntity()->GetID() == id){
+                node = nodo;
+                return node;
+            }else{
+                node = GetNodeByIDAux(id, node, nodo);
+
+            }
+        }
+
+    }
+
+    return node;
 }
