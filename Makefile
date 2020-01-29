@@ -34,7 +34,7 @@ else
 	INCLUDE_ASSIMP 	:= -I./include/assimp
 	#INCLUDE_BULLET := -I./include/bullet -I./include
 	CREATE_SYMLINKS := bash symlinks.sh
-	CC			:= g++
+	CC			:= ccache g++
 endif
 
 
@@ -67,7 +67,7 @@ $(NAME_EXE): $(OBJSUBDIRS) $(ALLCPPSOBJ)
 $(OBJ_PATH)/%.o: $(SRC_PATH)/%.cpp
 	$(PRUEBA_TEXT)
 	$(COMPILING_TEXT) $<
-	@ccache $(CC) $(CXXFLAGS) -o $@ -c $^ $(INCLUDE) $(INCLUDE_IRR) $(INCLUDE_FMOD) $(INCLUDE_GLEW) $(INCLUDE_ASSIMP)
+	@$(CC) $(CXXFLAGS) -o $@ -c $^ $(INCLUDE) $(INCLUDE_IRR) $(INCLUDE_FMOD) $(INCLUDE_GLEW) $(INCLUDE_ASSIMP)
 	
 
 $(OBJSUBDIRS):
