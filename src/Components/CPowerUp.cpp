@@ -18,5 +18,4 @@ CPowerUp::CPowerUp(glm::vec3 _pos, int type, int id)
 }*/
 
 CPowerUp::~CPowerUp(){
-    
 }

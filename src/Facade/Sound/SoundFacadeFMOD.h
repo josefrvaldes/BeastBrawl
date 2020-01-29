@@ -30,6 +30,7 @@ class SoundFacadeFMOD : public SoundFacade {
         void SetParameter(const string, const string, const float) override;
 
         void PlayEvent(const string) override;
+        void StopAllEvents() override;
         void StopEvent(const string) override;
         void PauseAllEvent() override;
         void ResumeAllEvent() override;
@@ -44,21 +45,21 @@ class SoundFacadeFMOD : public SoundFacade {
 
     private:
         // eventos del juego
-        void StartGame(DataMap);
-        void SoundClaxon(DataMap);
-        void SoundThrowPowerup(DataMap);
-        void SoundHurt(DataMap);
-        void SoundCatchTotem(DataMap);
-        void SoundCrash(DataMap);
-        void SoundBreakBox(DataMap);
-        void SoundDrift(DataMap);
-        void SoundRandomSentence(DataMap);
+        void StartGame(DataMap*);
+        void SoundClaxon(DataMap*);
+        void SoundThrowPowerup(DataMap*);
+        void SoundHurt(DataMap*);
+        void SoundCatchTotem(DataMap*);
+        void SoundCrash(DataMap*);
+        void SoundBreakBox(DataMap*);
+        void SoundDrift(DataMap*);
+        void SoundRandomSentence(DataMap*);
         
-        void SoundMenuOption(DataMap);
+        void SoundMenuOption(DataMap*);
 
-        void StopPrueba(DataMap);           // TO-DO: Quitar
-        void StopShield(DataMap);           // TO-DO: Crear uno para todos los power-up
-        void StopDrift(DataMap);
+        void StopPrueba(DataMap*);           // TO-DO: Quitar
+        void StopShield(DataMap*);           // TO-DO: Crear uno para todos los power-up
+        void StopDrift(DataMap*);
 
 
 
@@ -84,28 +85,24 @@ class SoundFacadeFMOD : public SoundFacade {
         unordered_map<string, FMOD::Studio::EventDescription*> soundDescriptions;
         // TO-DO: Separar instancias
         unordered_map<string, FMOD::Studio::EventInstance*> eventInstances;
+        
         unordered_map<string, vector<string>> events = {
             { "InGame2D",       {
                                 "Ambiente/ambiente",            // Metido
                                 "Coche/claxon",                 // Metido
-                                "Personajes/choque_enemigo",    
-                                "Personajes/choque_powerup",    // Metido
-                                "Personajes/derrape", 
-                                "Personajes/powerup",           // Metido
-                                "Personajes/random",
+                                "Personajes/voces",
                                 "Partida/cuenta_atras",
-                                "Menu/cambio_opcion",
                                 "Musica/in_game_1"              //Metido
                                 } 
             },
             { "InGame3D",       {
                                 "Coche/motor",                  // "Metido" en 2D
                                 "Partida/coger_totem",          // "Metido" en 2D
-                                "Partida/coger_caja",
+                                "Partida/coger_caja",           // "Metido" en 2D
                                 "Partida/totem",
                                 "PowerUp/escudo",               // "Metido" en 2D
-                                "PowerUp/escudo_roto",
-                                "Coche/choque",          
+                                "PowerUp/escudo_roto",          // "Metido" en 2D
+                                "Coche/choque",                 // "Metido" en 2D
                                 "PowerUp/pudin",                // "Metido" en 2D
                                 "PowerUp/robojorobo",           // "Metido" en 2D
                                 "PowerUp/telebanana",
@@ -117,21 +114,18 @@ class SoundFacadeFMOD : public SoundFacade {
             { "EndRace",        {
                                 "Musica/fin_partida",           // Metido
                                 "Personajes/derrota",
-                                "Personajes/victoria",
-                                "Menu/aceptar"
+                                "Personajes/victoria"
                                 }
             },
             { "Menu",           {
                                 "Menu/atras",
                                 "Menu/aceptar",
-                                "Menu/cambio_opcion"
-                                }
-            },
-            { "InGameMusic",    {
+                                "Menu/cambio_opcion",           // "Metido" como provisional
                                 "Musica/menu"
                                 }
             }
         };
+        enum TipoVoz { ChoqueEnemigo, ChoquePowerup, Derrape, Powerup, Random };
 
         shared_ptr<EventManager> eventManager;
 };

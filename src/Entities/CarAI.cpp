@@ -1,4 +1,5 @@
 #include "CarAI.h"
+
 #include "../Components/CSpeed.h"
 #include "../Components/CId.h"
 #include "../Components/CType.h"
@@ -7,7 +8,6 @@
 #include "../Components/CPowerUp.h"
 #include "../Components/CTransformable.h"
 #include "../Components/CCar.h"
-#include "../Components/CWayPoint.h"
 #include "../Components/CPath.h"
 #include "../Components/CShield.h"
 #include "../Components/CTotem.h"
@@ -15,12 +15,19 @@
 #include "../Components/CNitro.h"
 #include "../Components/CBoundingSphere.h"
 #include "../Components/CColliding.h"
-#include <iostream>
+#include "../Components/CCurrentNavMesh.h"
+#include "../Components/CTargetNavMesh.h"
+#include "../Components/CBoundingRay.h"
+#include "../Components/CMovementType.h"
+
+
 
 class Position;
 using namespace std;
 
 CarAI::CarAI(){
+    typeCar = TypeCar::CarAI;
+    
     // default values
     glm::vec3 pos   = glm::vec3(10.0f, 20.0f, 30.0f);
     glm::vec3 rot   = glm::vec3(0.0f, 90.0f, 0.0f);
@@ -46,10 +53,14 @@ CarAI::CarAI(){
     shared_ptr<CTotem> cTotem = make_shared<CTotem>();
     shared_ptr<CPath> cPath   = make_shared<CPath>();
     shared_ptr<CSpeed> cSpeed = make_shared<CSpeed>();
+    shared_ptr<CCurrentNavMesh> cCurrentNavMesh = make_shared<CCurrentNavMesh>(-1);  //  ponemos -1 por defecto ya que haremos el calculo al empezar la partida
+    shared_ptr<CTargetNavMesh> cTargetNavMesh = make_shared<CTargetNavMesh>(-1);  //  ponemos -1 por defecto ya que haremos el calculo al empezar la partida
 
 
     shared_ptr<CColliding> cColliding = make_shared<CColliding>(false);
     shared_ptr<CBoundingSphere> cBoundSphere = make_shared<CBoundingSphere>(pos);
+    shared_ptr<CBoundingRay> cBoundRay = make_shared<CBoundingRay>();
+    shared_ptr<CMovementType> cMovementType = make_shared<CMovementType>("Empty");
     AddComponent(cId);
     AddComponent(cType);
     AddComponent(cTransformable);
@@ -60,6 +71,7 @@ CarAI::CarAI(){
     // TODO quitar el compoentne cWayPoint del coche ya que al coche solo le hace falta su siguiente destino.
     AddComponent(cWayPoint);
     AddComponent(cPosDestination);
+    AddComponent(cMovementType);
 
     AddComponent(cPowerUp);
     AddComponent(cShield);
@@ -68,8 +80,12 @@ CarAI::CarAI(){
     AddComponent(cTotem);
     AddComponent(cPath);
     AddComponent(cBoundSphere);
+    AddComponent(cBoundRay);
     AddComponent(cColliding);
     AddComponent(cSpeed);
+
+    AddComponent(cCurrentNavMesh);
+    AddComponent(cTargetNavMesh);
     cout << "Acabamos de llamar al constructor default de car, su transformable es " << cTransformable << endl;
 }
 
@@ -97,10 +113,9 @@ CarAI::CarAI(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale,string texture, strin
 
 
 CarAI::CarAI(glm::vec3 _position) 
-    : CarAI(){
-
-    auto mapTransform = m_components.find(CompType::TransformableComp);
-	auto cTransformable = static_cast<CTransformable*>(mapTransform->second.get());
+    : CarAI()
+{
+    CTransformable *cTransformable = (CTransformable *)m_components[CompType::TransformableComp].get();
     cTransformable->position = _position;
 }
 
@@ -110,7 +125,7 @@ CarAI::~CarAI(){
     
 }
 
-// TODO quitarlo ya que nuestro destino no es un wayPoint sino una posicion destino
+// TODO: quitarlo ya que nuestro destino no es un wayPoint sino una posicion destino
 void CarAI::SetWayPoint(CWayPoint* _waypoint){
     auto cWayPoint = static_cast<CWayPoint*>(m_components[CompType::WayPointComp].get());
     cWayPoint->position = _waypoint->position;
@@ -121,6 +136,7 @@ void CarAI::SetDestination(CPosDestination* posDestination){
     auto cPosDestination = static_cast<CPosDestination*>(m_components[CompType::PosDestination].get());
     cPosDestination->position = posDestination->position;
     cPosDestination->id = posDestination->id;
+    cPosDestination->radious = 10.0f;
 }
 
 void CarAI::SetPath(stack<int> path){

@@ -17,6 +17,8 @@ class Manager {
     vector<shared_ptr<Entity>> GetEntities() const {
         return entities;
     };
+
+    
     virtual void Integrate(float) {};
 
    protected:

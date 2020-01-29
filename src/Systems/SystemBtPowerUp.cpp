@@ -116,10 +116,9 @@ struct CompPowerUp : public behaviourTree {
 struct ThrowPowerUp : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
         //std::cout << "Lanzaaas el powerUp beibeee" << std::endl;
-        shared_ptr<EventManager> eventManager = EventManager::GetInstance();
-        DataMap d;
-        d["actualCar"] = blackboard->actualCar;
-        eventManager->AddEventMulti(Event{EventType::THROW_POWERUP_AI, d});
+        shared_ptr<DataMap> data = make_shared<DataMap>();
+        (*data)["actualCar"] = blackboard->actualCar;
+        EventManager::GetInstance().AddEventMulti(Event{EventType::THROW_POWERUP_AI, data});
         return true;
     }
 };
@@ -140,18 +139,13 @@ struct HaveRoboJorobo : public behaviourTree {
 // TO-DO --> actualmente si tienes tu el totem te lo quitas y te lo vuelve a asiganar
 struct HaveTotemOtherCar : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
-        for(auto AIcar : blackboard->manCars->GetEntitiesAI()){
-            auto cTotem = static_cast<CTotem*>(AIcar.get()->GetComponent(CompType::TotemComp).get()); 
+        for(auto cars : blackboard->manCars->GetEntities()){
+            auto cTotem = static_cast<CTotem*>(cars.get()->GetComponent(CompType::TotemComp).get()); 
             // Si algun coche tenia el totem .... lo pierde
-            if(cTotem->active == true && AIcar.get()!=blackboard->actualCar){
+            if(cTotem->active == true){
                 return true;           
-            }                                                    // para salirnos y no hacer mas calculos
-        }
-        auto cTotem = static_cast<CTotem*>(blackboard->manCars->GetCar().get()->GetComponent(CompType::TotemComp).get()); 
-        if(cTotem->active == true){
-        //std::cout << "y el player tiene el totem" << std::endl;   
-            return true;
-        }
+            }                                
+        }       // para salirnos y no hacer mas calculos
         //std::cout << "Nadie tiene el totem" << std::endl;     
         return false;
     } 
@@ -254,7 +248,7 @@ SystemBtPowerUp::SystemBtPowerUp(){
 
 
 
-void SystemBtPowerUp::update(CarAI* actualCar, ManCar* manCars,ManPowerUp* manPowerUps, ManBoxPowerUp* manBoxPowerUps, ManTotem* manTotems, ManWayPoint* manWayPoint){
-    unique_ptr<Blackboard> blackboard = make_unique<Blackboard>(actualCar, manCars, manPowerUps, manBoxPowerUps, manTotems, manWayPoint);
+void SystemBtPowerUp::update(CarAI* actualCar, ManCar* manCars,ManPowerUp* manPowerUps, ManBoxPowerUp* manBoxPowerUps, ManTotem* manTotems, ManWayPoint* manWayPoint, ManNavMesh* manNavMesh){
+    unique_ptr<Blackboard> blackboard = make_unique<Blackboard>(actualCar, manCars, manPowerUps, manBoxPowerUps, manTotems, manWayPoint, manNavMesh);
     selectorBehaviourTree->run(blackboard.get());
 }

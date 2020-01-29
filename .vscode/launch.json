@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "(gdb) Iniciar",
+            "name": "Beast Brawl",
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/Beast_Brawl",
@@ -15,7 +15,32 @@
             "environment": [
                 {
                     "name": "LD_LIBRARY_PATH",
-                    "value": "./lib/irrlicht:./lib/fmod"
+                    "value": "./lib/linux/irrlicht:./lib/linux/fmod"
+                }
+            ],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Habilitar la impresión con sangría para gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        },
+
+        {
+            "name": "CLEngine",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/CLEngine/CLEngine",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [
+                {
+                    "name": "LD_LIBRARY_PATH",
+                    "value": "./lib/linux/irrlicht:./lib/linux/fmod"
                 }
             ],
             "externalConsole": false,

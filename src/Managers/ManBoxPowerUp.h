@@ -4,8 +4,8 @@
 #include <map>
 #include <memory>
 #include <vector>
-//#include "Manager.h"
-#include "../../lib/glm/vec3.hpp"
+#include "Manager.h"
+#include "../../include/glm/vec3.hpp"
 #include "../Facade/Render/RenderFacadeManager.h"
 
 #include "../Components/CBoxPowerUp.h"
@@ -16,21 +16,21 @@ class Data;
 
 using namespace std;
 
-class ManBoxPowerUp {
+class ManBoxPowerUp : public Manager{
    public:
     ManBoxPowerUp();
     ~ManBoxPowerUp();
 
     void CreateBoxPowerUp(glm::vec3 _position);
     void CreateBoxPowerUp();
-    vector<shared_ptr<BoxPowerUp>> GetEntities() const {
-        return BoxPowerUps;
-    };
+    //vector<shared_ptr<BoxPowerUp>> GetEntities() const {
+    //    return BoxPowerUps;
+    //};
 
-    void resetBox(BoxPowerUp* resetBox);
+    void resetBox(Entity* resetBox);
 
    private:
-    vector<shared_ptr<BoxPowerUp>> BoxPowerUps;
-    void SubscribeToEvents();
-    void EjecutarMeHanCogido(DataMap d);
+    //vector<shared_ptr<BoxPowerUp>> BoxPowerUps;
+    void SubscribeToEvents() override;
+    void EjecutarMeHanCogido(DataMap* d);
 };

@@ -1,38 +1,24 @@
 #include "EventManager.h"
 #include <iostream>
 
-const shared_ptr<EventManager> EventManager::instance = make_shared<EventManager>();
-shared_ptr<EventManager> EventManager::GetInstance() {
-    //static EventManager instance;
-    // if(instance==nullptr){
-    //     instance = make_shared<EventManager>();
-    // }
+// const shared_ptr<EventManager> EventManager::instance = make_shared<EventManager>();
+// shared_ptr<EventManager> EventManager::IGetInstance() {
+//     //static EventManager instance;
+//     // if(instance==nullptr){
+//     //     instance = make_shared<EventManager>();
+//     // }
+//     return instance;
+// }
+
+EventManager& EventManager::GetInstance() {
+    static EventManager instance;
     return instance;
-}
+}   
 
 //Realiza y vacia todos los eventos que estaban añadidos
 //O(n)
 //Acceso: O(1)
 void EventManager::Update() {
-    /** Version con cola 
-    while(!eventQueue.empty()){
-        Event e = eventQueue.front(); //Cojemos el primero en la lista
-        eventQueue.pop(); // Lo sacamos de la lista
-
-        cout << "Procesando evento con prioridad: " << e.type << endl;
-
-        //Tratamos el evento
-        auto mapByType = eventListenerMap.find(e.type);
-
-        if(mapByType!=eventListenerMap.end()){
-            auto eventVector = mapByType->second;   // El vector de listeners del mapa segun el EventType
-
-            for(Listener listener : eventVector){
-                listener.function(e.data);
-            }
-        }
-   }
-*/
 
     while (!eventList.empty()) {
         Event e = eventList.front();  //Cojemos el primero en la lista
@@ -47,7 +33,7 @@ void EventManager::Update() {
             auto eventVector = mapByType->second;  // El vector de listeners del mapa segun el EventType
 
             for (Listener listener : eventVector) {
-                listener.callback(e.data);
+                listener.callback(e.data.get());
             }
         }
     }
@@ -130,11 +116,11 @@ void EventManager::UnSuscribeMulti(EventType eType, string listenerName) {
     ShowSuscribers();
 }
 
-void EventManager::ClearEvents(){
+void EventManager::ClearEvents() {
     eventList.clear();
 }
 
-void EventManager::ClearListeners(){
+void EventManager::ClearListeners() {
     eventListenerMap.clear();
 }
 
@@ -150,4 +136,3 @@ void EventManager::ShowSuscribers() {
         cout << "\n";
     }
 }
-

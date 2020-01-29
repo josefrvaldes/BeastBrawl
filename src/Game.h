@@ -23,11 +23,21 @@ class Game{
         void InitGame();
         void MainLoop();
         void TerminateGame();
+
+
+        //EventManager
+        void SetStateMenu(DataMap* d);
+        void SetStatePause(DataMap* d);
+        void SetStateInGameSingle(DataMap* d);
+        void SetStateInGameMulti(DataMap* d);
+        void SetStateEndRace(DataMap* d);
+        
     
 
     private:
         Game(){};
         static Game* game;
+        void SuscribeEvents();
         
         shared_ptr<State> currentState;
         shared_ptr<State> gameState;
