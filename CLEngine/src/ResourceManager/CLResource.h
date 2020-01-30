@@ -10,14 +10,15 @@ namespace CLE {
             virtual ~CLResource() = 0;
 
             virtual void Draw() = 0;
+            virtual bool LoadFile(std::string) = 0;
 
-            void SetName(std::string &n)  { name = n; }
+            void SetName(std::string n)  { name = n; }
 
             const std::string GetName()       const   { return name; }
 
-        protected:
+        private:
 
-            std::string name = nullptr;
+            std::string name { nullptr };
     };
 
 }
