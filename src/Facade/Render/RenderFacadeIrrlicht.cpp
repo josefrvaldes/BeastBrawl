@@ -48,7 +48,7 @@ RenderFacadeIrrlicht::RenderFacadeIrrlicht() {
 }
 
 void RenderFacadeIrrlicht::FacadeSuscribeEvents() {
-    EventManager::GetInstance().Suscribe(Listener{
+    EventManager::GetInstance().Subscribe(Listener{
         EventType::UPDATE_POWERUP_HUD,
         bind(&RenderFacadeIrrlicht::FacadeUpdatePowerUpHUD, this, placeholders::_1),
         "facadeUpdatePowerUpHUD"});

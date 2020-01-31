@@ -14,7 +14,7 @@ else
 endif
 
 INCLUDE     := -I. 
-CC			:= g++
+CC			:= ccache g++
 
 
 SOURCES  	:= $(wildcard *.cpp)
@@ -22,8 +22,8 @@ OBJ_PATH    := obj
 SRC_PATH	:= src
 
 NAME_EXE	:= Server
-CXXFLAGS 	+= -Wall -Wno-unknown-pragmas -std=c++17 -pthread # el no-unknown-pragmas es para que no salga el warning de los pragma region
-
+CXXFLAGS 	+= -Wall -Wno-unknown-pragmas -std=c++17 -pthread -fuse-ld=gold # el no-unknown-pragmas es para que no salga el warning de los pragma region
+																			# el -fuse-ld=gold es para el ccache
 ALLCPPS		:= $(shell find src/ -type f -iname *.cpp)
 ALLCPPSOBJ	:= $(patsubst $(SRC_PATH)/%.cpp,$(OBJ_PATH)/%.o,$(ALLCPPS))
 SUBDIRS		:= $(shell find src/ -type d)

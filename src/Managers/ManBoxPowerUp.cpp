@@ -79,17 +79,17 @@ void ManBoxPowerUp::EjecutarMeHanCogido(DataMap* d) {
 
 
 void ManBoxPowerUp::SubscribeToEvents() {
-    EventManager::GetInstance().SuscribeMulti(Listener(
+    EventManager::GetInstance().SubscribeMulti(Listener(
         EventType::CATCH_BOX_POWERUP,
         bind(&ManBoxPowerUp::EjecutarMeHanCogido, this, placeholders::_1),
         "EjecutarMeHanCogido"));
     
-    EventManager::GetInstance().SuscribeMulti(Listener(
+    EventManager::GetInstance().SubscribeMulti(Listener(
         EventType::CATCH_AI_BOX_POWERUP,
         bind(&ManBoxPowerUp::EjecutarMeHanCogido, this, placeholders::_1),
         "EjecutarMeHanCogido"));
 
-    EventManager::GetInstance().SuscribeMulti(Listener(
+    EventManager::GetInstance().SubscribeMulti(Listener(
         EventType::CATCH_BOX_WITH_POWERUP,
         bind(&ManBoxPowerUp::EjecutarMeHanCogido, this, placeholders::_1),
         "EjecutarMeHanCogido"));

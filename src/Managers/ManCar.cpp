@@ -152,82 +152,82 @@ void ManCar::SubscribeToEvents() {
      *auto lambdaGuardaAccel = [&lambdaAccelerate](DataMap d) {lambdaAccelerate(d);};
      */
 
-    EventManager::GetInstance().SuscribeMulti(Listener(
+    EventManager::GetInstance().SubscribeMulti(Listener(
         EventType::PRESS_I,
         bind(&ManCar::AccelerateCar, this, placeholders::_1),
         "AccelerateCar"));
 
-    EventManager::GetInstance().SuscribeMulti(Listener(
+    EventManager::GetInstance().SubscribeMulti(Listener(
         EventType::PRESS_O,
         bind(&ManCar::Decelerate, this, placeholders::_1),
         "Decelerate"));
 
-    EventManager::GetInstance().SuscribeMulti(Listener(
+    EventManager::GetInstance().SubscribeMulti(Listener(
         EventType::PRESS_A,
         bind(&ManCar::TurnLeftCar, this, placeholders::_1),
         "TurnLeftCar"));
 
-    EventManager::GetInstance().SuscribeMulti(Listener(
+    EventManager::GetInstance().SubscribeMulti(Listener(
         EventType::PRESS_D,
         bind(&ManCar::TurnRightCar, this, placeholders::_1),
         "TurnRightCar"));
 
-    EventManager::GetInstance().SuscribeMulti(Listener(
+    EventManager::GetInstance().SubscribeMulti(Listener(
         EventType::NO_I_O_PRESS,
         bind(&ManCar::NotAcceleratingOrDecelerating, this, placeholders::_1),
         "NotAcceleratingOrDecelerating"));
 
-    EventManager::GetInstance().SuscribeMulti(Listener(
+    EventManager::GetInstance().SubscribeMulti(Listener(
         EventType::NO_A_D_PRESS,
         bind(&ManCar::NotTurning, this, placeholders::_1),
         "NotTurning"));
 
-    EventManager::GetInstance().SuscribeMulti(Listener(
+    EventManager::GetInstance().SubscribeMulti(Listener(
         EventType::CATCH_BOX_POWERUP,
         bind(&ManCar::CatchPowerUp, this, placeholders::_1),
         "CatchPowerUp"));
 
-    EventManager::GetInstance().SuscribeMulti(Listener(
+    EventManager::GetInstance().SubscribeMulti(Listener(
         EventType::CATCH_AI_BOX_POWERUP,
         bind(&ManCar::CatchPowerUpAI, this, placeholders::_1),
         "CatchPowerUpAI"));
 
-    EventManager::GetInstance().SuscribeMulti(Listener(
+    EventManager::GetInstance().SubscribeMulti(Listener(
         EventType::PRESS_SPACE,
         bind(&ManCar::ThrowPowerUp, this, placeholders::_1),
         "ThrowPowerUp"));
 
-    EventManager::GetInstance().SuscribeMulti(Listener(
+    EventManager::GetInstance().SubscribeMulti(Listener(
         EventType::THROW_POWERUP_AI,
         bind(&ManCar::ThrowPowerUpAI, this, placeholders::_1),
         "ThrowPowerUpAI"));
 
-    EventManager::GetInstance().SuscribeMulti(Listener(
+    EventManager::GetInstance().SubscribeMulti(Listener(
         EventType::COLLISION_ENTITY_POWERUP,
         bind(&ManCar::CollisionPowerUp, this, placeholders::_1),
         "CollisionPowerUp"));
 
-    EventManager::GetInstance().SuscribeMulti(Listener(
+    EventManager::GetInstance().SubscribeMulti(Listener(
         EventType::COLLISION_ENTITY_AI_POWERUP,
         bind(&ManCar::CollisionPowerUpAI, this, placeholders::_1),
         "CollisionPowerUpAI"));
 
-    EventManager::GetInstance().SuscribeMulti(Listener(
+    EventManager::GetInstance().SubscribeMulti(Listener(
         EventType::COLLISION_PLAYER_TOTEM,
         bind(&ManCar::CatchTotemPlayer, this, placeholders::_1),
         "CatchTotemPlayer"));
 
-    EventManager::GetInstance().SuscribeMulti(Listener(
+    EventManager::GetInstance().SubscribeMulti(Listener(
         EventType::COLLISION_AI_TOTEM,
         bind(&ManCar::CatchTotemAI, this, placeholders::_1),
         "CatchTotemAI"));
 
-    EventManager::GetInstance().SuscribeMulti(Listener(
+    EventManager::GetInstance().SubscribeMulti(Listener(
         EventType::CHANGE_TOTEM_CAR,
         bind(&ManCar::ChangeTotemCar, this, placeholders::_1),
         "ChangeTotemCar"));
 
-    EventManager::GetInstance().SuscribeMulti(Listener(
+    EventManager::GetInstance().SubscribeMulti(Listener(
         EventType::NEW_INPUTS_RECEIVED,
         bind(&ManCar::NewInputsReceived, this, placeholders::_1),
         "NewInputsReceived"));

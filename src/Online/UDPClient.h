@@ -55,4 +55,5 @@ class UDPClient {
     udp::endpoint serverEndpoint;
     udp::socket socket;
     std::thread butler;
+    // boost::asio::io_context::strand strand;
 };

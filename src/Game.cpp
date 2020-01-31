@@ -98,32 +98,32 @@ void Game::InitGame() {
 
 void Game::SuscribeEvents(){
     cout << "Suscripciones\n";
-    EventManager::GetInstance().SuscribeMulti(Listener(
+    EventManager::GetInstance().SubscribeMulti(Listener(
         EventType::STATE_MENU,
         bind(&Game::SetStateMenu, this, placeholders::_1),
         "StateMenu"));
 
-    EventManager::GetInstance().SuscribeMulti(Listener(
+    EventManager::GetInstance().SubscribeMulti(Listener(
         EventType::STATE_PAUSE,
         bind(&Game::SetStatePause, this, placeholders::_1),
         "StatePause"));
 
-    EventManager::GetInstance().SuscribeMulti(Listener(
+    EventManager::GetInstance().SubscribeMulti(Listener(
         EventType::STATE_INGAMESINGLE,
         bind(&Game::SetStateInGameSingle, this, placeholders::_1),
         "StateInGameSingle"));
 
-    EventManager::GetInstance().SuscribeMulti(Listener(
+    EventManager::GetInstance().SubscribeMulti(Listener(
         EventType::STATE_INGAMEMULTI,
         bind(&Game::SetStateInGameMulti, this, placeholders::_1),
         "StateInGameMulti"));
 
-    EventManager::GetInstance().SuscribeMulti(Listener(
+    EventManager::GetInstance().SubscribeMulti(Listener(
         EventType::STATE_ENDRACE,
         bind(&Game::SetStateEndRace, this, placeholders::_1),
         "StateEndRace"));
 
-    EventManager::GetInstance().SuscribeMulti(Listener(
+    EventManager::GetInstance().SubscribeMulti(Listener(
         EventType::STATE_LOBBYMULTI,
         bind(&Game::SetStateLobbyMulti, this, placeholders::_1),
         "SetStateLobbyMulti"));

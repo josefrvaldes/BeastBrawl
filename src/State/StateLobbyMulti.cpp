@@ -53,7 +53,7 @@ void StateLobbyMulti::SendData() {
 }
 
 void StateLobbyMulti::SubscribeToEvents() {
-    EventManager::GetInstance().SuscribeMulti(Listener(
+    EventManager::GetInstance().SubscribeMulti(Listener(
         EventType::NEW_TCP_START_MULTI,
         bind(&StateLobbyMulti::StartGameMulti, this, placeholders::_1),
         "StartGameMulti"));

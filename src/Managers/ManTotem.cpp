@@ -113,15 +113,15 @@ void ManTotem::ResetTotem(DataMap* d){
 
 
 void ManTotem::SubscribeToEvents() {
-    EventManager::GetInstance().SuscribeMulti(Listener(
+    EventManager::GetInstance().SubscribeMulti(Listener(
         EventType::COLLISION_PLAYER_TOTEM,
         bind(&ManTotem::AppertainCar, this, placeholders::_1),
         "AppertainCar"));
-    EventManager::GetInstance().SuscribeMulti(Listener(
+    EventManager::GetInstance().SubscribeMulti(Listener(
         EventType::COLLISION_AI_TOTEM,
         bind(&ManTotem::AppertainCar, this, placeholders::_1),
         "AppertainCar"));
-    EventManager::GetInstance().SuscribeMulti(Listener(
+    EventManager::GetInstance().SubscribeMulti(Listener(
         EventType::DROP_TOTEM,
         bind(&ManTotem::ResetTotem, this, placeholders::_1),
         "ResetTotem"));

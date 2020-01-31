@@ -25,6 +25,8 @@ UDPClient::UDPClient(string host_, string port_)
     // udp::endpoint localEndpoint = socket.local_endpoint();
     // cout << "Local endpoint is " << socket.local_endpoint().address() << ":" << socket.local_endpoint().port() << endl;
 
+    // EventManager::GetInstance().AddStrand(strand);
+
     StartReceiving();
 }
 
@@ -35,7 +37,7 @@ UDPClient::~UDPClient() {
 }
 
 void UDPClient::StartReceiving() {
-    cout << "Esperamos recibir datos" << endl;
+    // cout << "Esperamos recibir datos" << endl;
     std::shared_ptr<boost::array<char, 1024>> recvBuff = make_shared<boost::array<char, 1024>>();
     socket.async_receive_from(
         boost::asio::buffer(*recvBuff),
@@ -77,8 +79,9 @@ void UDPClient::HandleReceived(std::shared_ptr<boost::array<char, 1024>> recvBuf
     StartReceiving();
 }
 
-void UDPClient::HandleReceivedInput(const json revcdJSON, const uint32_t id) const {
-    vector<Constants::InputTypes> inputs = revcdJSON["inputs"];
+void UDPClient::HandleReceivedInput(const json recvdJSON, const uint32_t id) const {
+    cout << "Hemos recibido los inputs " << recvdJSON.dump() << endl;
+    vector<Constants::InputTypes> inputs = recvdJSON["inputs"];
     std::shared_ptr<DataMap> data = make_shared<DataMap>();
     (*data)["id"] = id;
     (*data)["inputs"] = inputs;
