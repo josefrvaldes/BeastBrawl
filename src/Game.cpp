@@ -188,6 +188,8 @@ void Game::SetStateInGameMulti(DataMap* d){
     } else {
         currentState = gameState;
     }
+
+    currentState->InitState();
 }
 
 
