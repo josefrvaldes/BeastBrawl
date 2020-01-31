@@ -62,7 +62,7 @@ class StateInGame : public State {
     ~StateInGame();
     void InitVirtualMethods();
     void InitState() override;
-    void Input() override;
+    virtual void Input() = 0;
     void Update() override;
     void Render() override;
     States GetState() { return State::States::INGAME_SINGLE; };

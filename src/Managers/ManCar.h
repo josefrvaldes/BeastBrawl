@@ -13,9 +13,6 @@
 #include "../Entities/WayPoint.h"
 
 //#include "../Systems/SteeringBehaviours.h"
-#include "../Systems/SystemBtPowerUp.h"
-#include "../Systems/SystemBtMoveTo.h"
-#include "../Systems/SystemBtLoDMove.h"
 #include "../Systems/SystemPathPlanning.h"
 
 #include <stdlib.h> /* srand, rand */
@@ -38,6 +35,10 @@ struct ManTotem;
 struct ManNavMesh;
 struct ManBoundingWall;
 struct PhysicsAI;
+struct SystemBtPowerUp;
+struct SystemBtMoveTo;
+struct SystemBtLoDMove;
+
 
 class ManCar : public Manager {
    public:
@@ -48,7 +49,8 @@ class ManCar : public Manager {
     void CreateMainCar();
     void CreateHumanCar(glm::vec3 _position);
     void UpdateCar();
-    void UpdateCarAI(CarAI* carAI, ManPowerUp* m_manPowerUp, ManBoxPowerUp* m_manBoxPowerUp, ManTotem* m_manTotem, ManWayPoint* graph, ManNavMesh* manNavMesh, ManBoundingWall* m_manBoundingWall);
+    void UpdateCarAI(CarAI* carAI, ManPowerUp* m_manPowerUp, ManBoxPowerUp* m_manBoxPowerUp, ManTotem* m_manTotem, ManWayPoint* graph, ManNavMesh* manNavMesh, 
+                    ManBoundingWall* m_manBoundingWall, SystemBtPowerUp* systemBtPowerUp, SystemBtMoveTo* systemBtMoveTo, SystemBtLoDMove* systemBtLoDMove);
     void UpdateCarHuman(Entity* CarHuman);
     shared_ptr<CarHuman>& GetCar() { return car; };
 
@@ -93,10 +95,6 @@ class ManCar : public Manager {
     int graphSize = 0;
     bool graphCreated = false;
     shared_ptr<CarHuman> car;
- 
-    unique_ptr<SystemBtPowerUp> systemBtPowerUp;
-    unique_ptr<SystemBtMoveTo> systemBtMoveTo;
-    unique_ptr<SystemBtLoDMove> systemBtLoDMove;
     unique_ptr<PhysicsAI> physicsAI;
     unique_ptr<SystemPathPlanning> systemPathPlanning;
 };

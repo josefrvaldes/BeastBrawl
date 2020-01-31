@@ -28,15 +28,17 @@
 #include "../Managers/ManTotem.h"
 #include "Manager.h"
 
+#include "../Systems/SystemBtPowerUp.h"
+#include "../Systems/SystemBtMoveTo.h"
+#include "../Systems/SystemBtLoDMove.h"
+
 class Position;
 using namespace std;
 
 ManCar::ManCar() {
     SubscribeToEvents();
     CreateMainCar();
-    systemBtPowerUp = make_unique<SystemBtPowerUp>();
-    systemBtMoveTo = make_unique<SystemBtMoveTo>();
-    systemBtLoDMove = make_unique<SystemBtLoDMove>();
+    
     systemPathPlanning = make_unique<SystemPathPlanning>();
     physicsAI = make_unique<PhysicsAI>();
 
@@ -85,7 +87,8 @@ void ManCar::UpdateCar() {
 // TODO: RECORDARRR!!!!!!!!!!!!!!!!!  TANTO EL "BtMoveTo" como el "systemPathPlanning" se deben hacer en la misma ITERACION!!!!
 // Es importante esto porque el BtMoveTo es el que calcula la posicion a la que ir y el systemBtLoDMove es el que utiliza esta posicion para
 // moverse a un sitio, si en algun momento intentamos ir a una posicion que no existe PETAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-void ManCar::UpdateCarAI(CarAI* carAI, ManPowerUp* m_manPowerUp, ManBoxPowerUp* m_manBoxPowerUp, ManTotem* m_manTotem, ManWayPoint* graph, ManNavMesh* manNavMesh, ManBoundingWall* m_manBoundingWall) {
+void ManCar::UpdateCarAI(CarAI* carAI, ManPowerUp* m_manPowerUp, ManBoxPowerUp* m_manBoxPowerUp, ManTotem* m_manTotem, ManWayPoint* graph, ManNavMesh* manNavMesh, 
+                        ManBoundingWall* m_manBoundingWall, SystemBtPowerUp* systemBtPowerUp, SystemBtMoveTo* systemBtMoveTo, SystemBtLoDMove* systemBtLoDMove) {
     systemBtMoveTo->update(carAI, this, m_manPowerUp, m_manBoxPowerUp, m_manTotem, graph, manNavMesh);
 
     systemPathPlanning->Update(carAI, graph, manNavMesh);
@@ -235,14 +238,14 @@ void ManCar::SubscribeToEvents() {
 
 void ManCar::NewInputsReceived(DataMap* d) {
     // cout << "Se ha lanzado el evento NewInputsReceived" << endl;
-    auto id = any_cast<uint32_t>((*d)["id"]);
+    auto idRecieved = any_cast<uint32_t>((*d)["id"]);
     auto inputs = any_cast<vector<Constants::InputTypes>>((*d)["inputs"]);
     for (shared_ptr<Entity> car : entities) {
         if (car->HasComponent(CompType::OnlineComp)) {
             COnline* compOnline = static_cast<COnline*>(car->GetComponent(CompType::OnlineComp).get());
             uint16_t currentIDOnline = compOnline->idClient;
             // cout << "El idOnline es " << currentIDOnline << endl;
-            if (currentIDOnline == 2) {  // TODO: cambiar!! solo de prueba!!
+            if (currentIDOnline == idRecieved) {
                 // cout << "Hemos encontrado un coche con el id " << id << " y vamos a actualizarle la pos" << endl;
                 compOnline->inputs = inputs;
                 break;

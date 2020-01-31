@@ -34,7 +34,8 @@ class RenderFacadeIrrlicht : public RenderFacade {
     void UpdateCamera(Entity*, ManCar* manCars) override;
     bool FacadeRun() override;
     uint32_t FacadeGetTime() const override;
-    vector<Constants::InputTypes> FacadeCheckInput() override;
+    vector<Constants::InputTypes> FacadeCheckInputMulti() override;
+    void FacadeCheckInputSingle() override;
     int FacadeGetFPS() const override;
     void FacadeSetWindowCaption(std::string) const override;
     void FacadeBeginScene() const override;
