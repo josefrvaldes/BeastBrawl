@@ -6,4 +6,4 @@ bool CLResourceShader::LoadFile(std::string file) {
     return true;
 }
 
-void CLResourceShader::Draw() {}
+void CLResourceShader::Draw(glm::mat4& m) {}

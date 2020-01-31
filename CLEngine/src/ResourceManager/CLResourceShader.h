@@ -1,7 +1,6 @@
 #pragma once
 
 #include "CLResource.h"
-#include "../../include/glew/glew.h"
 
 namespace CLE {
     
@@ -10,16 +9,16 @@ namespace CLE {
             CLResourceShader() {}
             ~CLResourceShader();
 
-            void Draw();
+            void Draw(glm::mat4&);
             bool LoadFile(std::string);
 
-            void SetShaderName(GLenum &e)   { shaderName = e; }
+            void SetShaderName(std::string &e)   { shaderName = e; }
 
-            GLenum GetShaderName()          const { return shaderName; }
+            std::string GetShaderName()          const { return shaderName; }
 
         private:
 
-            GLenum shaderName;
+            std::string shaderName;
     
     };
 

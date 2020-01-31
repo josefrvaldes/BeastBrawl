@@ -8,7 +8,7 @@ namespace CLE {
             CLResourceMesh(){}
             ~CLResourceMesh();
 
-            void Draw();
+            void Draw(glm::mat4&);
             bool LoadFile(std::string);
 
             // Como no se para que son las variables, no se si hacen falta todos estos SET y GET

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include "../../../include/glm/glm.hpp"
 
 namespace CLE {
 
@@ -9,7 +10,7 @@ namespace CLE {
             CLResource() {};
             virtual ~CLResource() = 0;
 
-            virtual void Draw() = 0;
+            virtual void Draw(glm::mat4&) = 0;
             virtual bool LoadFile(std::string) = 0;
 
             void SetName(std::string n)  { name = n; }

@@ -2,6 +2,8 @@
 
 using namespace CLE;
 
-void CLMesh::Draw(glm::mat4&) {
-    //Dibujar malla
+void CLMesh::Draw(glm::mat4& m) {
+    if (mesh) {
+        mesh->Draw(m);
+    }
 }
