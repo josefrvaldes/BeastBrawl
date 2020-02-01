@@ -90,10 +90,6 @@ class ManCar : public Manager {
     void ThrowPowerUpAI(DataMap* d);
     void CatchPowerUp(DataMap* d);
     void CatchPowerUpAI(DataMap* d);
-    void InitMapGraph(ManWayPoint* _graph);
-    float** graph;
-    int graphSize = 0;
-    bool graphCreated = false;
     shared_ptr<CarHuman> car;
     unique_ptr<PhysicsAI> physicsAI;
 };
