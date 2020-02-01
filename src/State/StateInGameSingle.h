@@ -13,9 +13,9 @@ class StateInGameSingle : public StateInGame {
     States GetState() { return State::States::INGAME_SINGLE; };
 
    private:
-    void InitializeCLPhysics(ManCar &manCars, ManBoundingWall &ManBoundingWall) override;
+    void InitializeCLPhysics(ManCar &manCars, ManBoundingWall &ManBoundingWall, ManBoundingOBB &manBoundingOBB) override;
     void InitializeManagers(Physics *physics, Camera *cam) override;
-    void InitializeSystems(ManCar &manCars, ManBoundingWall &manBoundingWall) override;
+    void InitializeSystems(ManCar &manCars, ManBoundingWall &manBoundingWall, ManBoundingOBB &manBoundingOBB) override;
     void InitializeFacades() override;
     void AddElementsToRender() override;
 

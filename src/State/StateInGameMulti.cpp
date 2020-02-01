@@ -28,16 +28,16 @@ void StateInGameMulti::Render() {
     StateInGame::Render();
 }
 
-void StateInGameMulti::InitializeCLPhysics(ManCar &manCars, ManBoundingWall &manBoundingWall) {
-    StateInGame::InitializeCLPhysics(manCars, manBoundingWall);
+void StateInGameMulti::InitializeCLPhysics(ManCar &manCars, ManBoundingWall &manBoundingWall, ManBoundingOBB &manBoundingOBB) {
+    StateInGame::InitializeCLPhysics(manCars, manBoundingWall, manBoundingOBB);
 }
 
 void StateInGameMulti::InitializeManagers(Physics *physics, Camera *cam) {
     StateInGame::InitializeManagers(physics, cam);
 }
 
-void StateInGameMulti::InitializeSystems(ManCar &manCars, ManBoundingWall &manBoundingWall) {
-    StateInGame::InitializeSystems(manCars, manBoundingWall);
+void StateInGameMulti::InitializeSystems(ManCar &manCars, ManBoundingWall &manBoundingWall, ManBoundingOBB &manBoundingOBB) {
+    StateInGame::InitializeSystems(manCars, manBoundingWall, manBoundingOBB);
 }
 
 void StateInGameMulti::InitializeFacades() {

@@ -82,8 +82,8 @@ void StateInGameSingle::Render() {
     StateInGame::Render();
 }
 
-void StateInGameSingle::InitializeCLPhysics(ManCar &manCars, ManBoundingWall &manBoundingWall) {
-    StateInGame::InitializeCLPhysics(manCars, manBoundingWall);
+void StateInGameSingle::InitializeCLPhysics(ManCar &manCars, ManBoundingWall &manBoundingWall, ManBoundingOBB &manBoundingOBB) {
+    StateInGame::InitializeCLPhysics(manCars, manBoundingWall, manBoundingOBB);
 }
 
 void StateInGameSingle::InitializeManagers(Physics *physics, Camera *cam) {
@@ -91,8 +91,8 @@ void StateInGameSingle::InitializeManagers(Physics *physics, Camera *cam) {
     CAMBIARInicializarCarAIS(*manCars.get(), *manWayPoint.get());
 }
 
-void StateInGameSingle::InitializeSystems(ManCar &manCars, ManBoundingWall &manBoundingWall) {
-    StateInGame::InitializeSystems(manCars, manBoundingWall);
+void StateInGameSingle::InitializeSystems(ManCar &manCars, ManBoundingWall &manBoundingWall, ManBoundingOBB &manBoundingOBB) {
+    StateInGame::InitializeSystems(manCars, manBoundingWall, manBoundingOBB);
 }
 
 void StateInGameSingle::InitializeFacades() {

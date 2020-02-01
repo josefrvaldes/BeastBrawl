@@ -6,6 +6,7 @@
 #include "../../Aliases.h"
 #include "../../Components/CBoundingPlane.h"
 #include "../../Components/CBoundingSphere.h"
+#include "../../Components/CBoundingOBB.h"
 #include "../../Components/CPowerUp.h"
 #include "../../Components/CCamera.h"
 #include "../../Components/CDimensions.h"
@@ -913,6 +914,26 @@ void RenderFacadeIrrlicht::FacadeDrawBoundingPlane(Entity* entity) const {
     Draw3DLine(b, c);
     Draw3DLine(c, d);
     Draw3DLine(d, a);
+}
+
+
+void RenderFacadeIrrlicht::FacadeDrawBoundingOBB(Entity* entity) const {
+    if (!showDebug) return;  //Si no esta activado debug retornamos
+
+    CBoundingOBB *obb = static_cast<CBoundingOBB*>(entity->GetComponent(CompType::CompBoundingOBB).get());
+    
+    for(auto obbActual : obb->planes){
+        vec3 &a = obbActual.get()->a;
+        vec3 &b = obbActual.get()->b;
+        vec3 &c = obbActual.get()->c;
+        vec3 &d = obbActual.get()->d;
+
+        Draw3DLine(a, b, 0, 0, 200);
+        Draw3DLine(b, c, 0, 0, 200);
+        Draw3DLine(c, d, 0, 0, 200);
+        Draw3DLine(d, a, 0, 0, 200);
+    }
+
 }
 
 void RenderFacadeIrrlicht::FacadeDrawBoundingBox(Entity* entity, bool colliding) const{

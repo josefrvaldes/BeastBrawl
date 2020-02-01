@@ -11,6 +11,7 @@ class Entity;
 class CTransformable;
 class CBoundingSphere;
 class CBoundingPlane;
+class CBoundingOBB;
 class IntersectData;
 class CCar;
 
@@ -25,6 +26,7 @@ class CLPhysics {
     void Update(float delta);
     void HandleCollisions();
     void HandleCollisionsWithPlanes();
+    void HandleCollisionsWithOBB();
 
     IntersectData HandleCollisionsRayWithSpheres(CTransformable &trCar1, CTransformable &trCar2, CBoundingSphere &spCar2, const glm::vec3 &normalRay);
     IntersectData HandleCollisionsRayWithPlane(CTransformable &trRayOrigin,  glm::vec3 &rayNormalNormalized, CBoundingPlane &planeObject);
@@ -36,6 +38,7 @@ class CLPhysics {
    private:
     bool HandleCollisions(CTransformable &trCar1, CBoundingSphere &spCar1, CCar &ccar1, bool mainCar, CTransformable &trCar2, CBoundingSphere &spCar2, CCar &ccar2);
     void HandleCollisions(CTransformable &trCar1, CBoundingSphere &spCar1, CCar &ccar1, bool mainCar, CBoundingPlane &plane);
+    void HandleCollisions(CTransformable &trCar, CBoundingSphere &spCar, CCar &ccarCar, bool mainCar, CBoundingOBB &obb);
     void PositionSphereIntoTransformable(CTransformable &tr, CBoundingSphere &sp);
     void SeparateSpheres(CTransformable &trCar1, CBoundingSphere &spCar1, CCar &ccarCar1,
                                  CTransformable &trCar2, CBoundingSphere &spCar2, CCar &ccarCar2);
