@@ -1,8 +1,12 @@
 #include "StateInGameMulti.h"
 
+#include <chrono>
 #include "../Components/COnline.h"
 #include "../Components/CTotem.h"
 #include "../Systems/SystemOnline.h"
+
+using namespace std;
+using namespace std::chrono;
 
 StateInGameMulti::StateInGameMulti() : StateInGame() {
     InitVirtualMethods();
@@ -20,7 +24,7 @@ StateInGameMulti::StateInGameMulti() : StateInGame() {
     renderEngine->FacadeAddObject(car2.get());
 
     vector<Constants::InputTypes> inputs;
-    sysOnline->SendInputs(inputs); // enviamos un vector vacío la primera vez para que el servidor sepa que estamos vivos
+    sysOnline->SendInputs(inputs);  // enviamos un vector vacío la primera vez para que el servidor sepa que estamos vivos
 }
 
 StateInGameMulti::StateInGameMulti(string data) : StateInGame() {
@@ -53,7 +57,7 @@ StateInGameMulti::StateInGameMulti(string data) : StateInGame() {
         renderEngine->FacadeAddObject(car.get());
     }
     vector<Constants::InputTypes> inputs;
-    sysOnline->SendInputs(inputs); // enviamos un vector vacío la primera vez para que el servidor sepa que estamos vivos
+    sysOnline->SendInputs(inputs);  // enviamos un vector vacío la primera vez para que el servidor sepa que estamos vivos
 }
 
 StateInGameMulti::~StateInGameMulti() {
@@ -65,7 +69,13 @@ void StateInGameMulti::InitState() {
 
 void StateInGameMulti::Input() {
     vector<Constants::InputTypes> inputs = renderEngine->FacadeCheckInputMulti();
-    sysOnline->SendInputs(inputs);
+
+    time_point<system_clock> now = system_clock::now();
+    auto millisSinceLastInputSent = duration_cast<milliseconds>(now - lastTimeSentInputs).count();
+    if (millisSinceLastInputSent > 66) {  // 100 = 10fps; 66 = 15fps
+        lastTimeSentInputs = now;
+        sysOnline->SendInputs(inputs);
+    }
 }
 
 void StateInGameMulti::Update() {

@@ -1,6 +1,9 @@
 #pragma once
 
 #include "StateInGame.h"
+#include <chrono>
+
+using namespace std::chrono;
 
 class SystemOnline;
 
@@ -25,4 +28,6 @@ class StateInGameMulti : public StateInGame {
     void CAMBIARCosasDeTotemUpdate() override;
 
     unique_ptr<SystemOnline> sysOnline;
+
+    time_point<system_clock> lastTimeSentInputs;
 };
