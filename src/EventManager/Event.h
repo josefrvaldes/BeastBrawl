@@ -77,6 +77,27 @@ enum EventType {
     NEW_INPUTS_RECEIVED
 };
 
+// enum DataType{
+//     TYPE_POWER_UP,
+//     CAR_WITH_TOTEM,
+//     CAR_WITHOUT_TOTEM,
+//     MAIN_CAR,
+//     CAR_AI,
+//     BOX_POSITION,
+//     ACTUAL_CAR,
+//     TOTEM,
+//     CAR_FOLLOW_POSITION,
+//     CAR_EXIT_POSITION,
+//     CAR_EXIT_DIMENSION,
+//     BOX_POWER_UP_COMPONENT,
+//     ACTUAL_BOX,
+//     POWER_UP,
+//     CAR_TRANSFORMABLE,
+//     MAN_NAVMESH,
+//     MAN_WAYPOINTS,
+//     POS_DESTINATION
+// };
+
 struct Data {
     uint16_t id;
     Entity* gameObject;

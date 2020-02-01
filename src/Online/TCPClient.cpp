@@ -119,7 +119,7 @@ void TCPClient::HandleReceived(std::shared_ptr<boost::array<char, 1024>> recevBu
         std::copy(recevBuff->begin(), recevBuff->begin() + bytesTransferred, std::back_inserter(receivedString));
 
         std::shared_ptr<DataMap> data = make_shared<DataMap>();
-        (*data)["dataServer"] = receivedString;
+        (*data)[DataType::DATA_SERVER] = receivedString;
         EventManager::GetInstance().AddEventMulti(Event{EventType::NEW_TCP_START_MULTI, data});
 
         json receivedJSON = json::parse(receivedString);

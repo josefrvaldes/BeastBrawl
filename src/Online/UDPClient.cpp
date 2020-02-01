@@ -83,8 +83,8 @@ void UDPClient::HandleReceivedInput(const json recvdJSON, const uint32_t id) con
     cout << "Hemos recibido los inputs " << recvdJSON.dump() << endl;
     vector<Constants::InputTypes> inputs = recvdJSON["inputs"];
     std::shared_ptr<DataMap> data = make_shared<DataMap>();
-    (*data)["id"] = id;
-    (*data)["inputs"] = inputs;
+    (*data)[DataType::ID] = id;
+    (*data)[DataType::INPUTS] = inputs;
     EventManager::GetInstance().AddEventMulti(Event{EventType::NEW_INPUTS_RECEIVED, data});
     // cout << "Hemos recibido los inputs ";
     // for (size_t i = 0; i < inputs.size(); i++) {

@@ -109,8 +109,8 @@ void CLPhysics::checkCollisionNitro(Entity* car1, Entity* car2){
         if(cTotemCar2->active){
             // si que lo tiene... lanzamos evento para intercambiarlo
             shared_ptr<DataMap> data = make_shared<DataMap>();   
-            (*data)["carWithTotem"] = car2;     
-            (*data)["carWithoutTotem"] = car1;                                                                                                    
+            (*data)[CAR_WITH_TOTEM] = car2;     
+            (*data)[CAR_WITHOUT_TOTEM] = car1;                                                                                                    
             EventManager::GetInstance().AddEventMulti(Event{EventType::CHANGE_TOTEM_CAR, data}); 
         }
     
@@ -122,8 +122,8 @@ void CLPhysics::checkCollisionNitro(Entity* car1, Entity* car2){
                 // si que lo tiene... lanzamos evento para intercambiarlo
                 shared_ptr<DataMap> data = make_shared<DataMap>();   
                       
-                (*data)["carWithTotem"] = car1;     
-                (*data)["carWithoutTotem"] = car2;                                                                                                    
+                (*data)[CAR_WITH_TOTEM] = car1;     
+                (*data)[CAR_WITHOUT_TOTEM] = car2;                                                                                                    
                 EventManager::GetInstance().AddEventMulti(Event{EventType::CHANGE_TOTEM_CAR, data}); 
             }
         }
@@ -175,7 +175,7 @@ void CLPhysics::SeparateSphereFromPlane(IntersectData &intersData, CTransformabl
 
 void CLPhysics::SonarChoque(bool mainCar) {
     shared_ptr<DataMap> map = make_shared<DataMap>();
-    (*map)["mainCharacter"] = mainCar;
+    (*map)[MAIN_CAR] = mainCar;
     Event e(EventType::CRASH_ENEMY, map);
     EventManager::GetInstance().AddEventMulti(e);
 }

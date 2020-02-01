@@ -178,7 +178,7 @@ void Game::SetStateInGameSingle(DataMap* d) {
 
 void Game::SetStateInGameMulti(DataMap* d) {
     //SetState(State::INGAME_MULTI);
-    auto dataServer = any_cast<string>((*d)["dataServer"]);
+    auto dataServer = any_cast<string>((*d)[DataType::DATA_SERVER]);
     if (!gameStarted) {
         shared_ptr<State> newState;
         if (dataServer == "")
