@@ -137,8 +137,8 @@ struct MoveToTotem_mt : public behaviourTree {
                 auto cTransformable = static_cast<CTransformable*>(blackboard->manTotems->GetEntities()[0].get()->GetComponent(CompType::TransformableComp).get());
                 //DataMap* dataTotem = new DataMap();
                 shared_ptr<DataMap> dataTotem = make_shared<DataMap>();                                                                
-                (*dataTotem)["actualCar"] = blackboard->actualCar;              
-                (*dataTotem)["posDestination"] = cTransformable->position;                                        
+                (*dataTotem)[ACTUAL_CAR] = blackboard->actualCar;              
+                (*dataTotem)[POS_DESTINATION] = cTransformable->position;                                        
                 EventManager::GetInstance().AddEventMulti(Event{EventType::CHANGE_DESTINATION, dataTotem}); 
                 return true;
             }else{
@@ -152,9 +152,9 @@ struct MoveToTotem_mt : public behaviourTree {
                     // Actualmente solo nos movemos entre waypoints hasta coincidir en el mismo navMesh
                     //std::cout << "Vamos a movernos por los powerUps UUUEEEEPAA" << std::endl;
                     shared_ptr<DataMap> dataPowerUp = make_shared<DataMap>();      
-                    (*dataPowerUp)["actualCar"] = blackboard->actualCar;     
-                    (*dataPowerUp)["manWayPoints"] = blackboard->manWayPoint;
-                    (*dataPowerUp)["manNavMesh"] = blackboard->manNavMesh;                                                                                                     
+                    (*dataPowerUp)[ACTUAL_CAR] = blackboard->actualCar;     
+                    (*dataPowerUp)[MAN_WAYPOINTS] = blackboard->manWayPoint;
+                    (*dataPowerUp)[MAN_NAVMESH] = blackboard->manNavMesh;                                                                                                     
                     EventManager::GetInstance().AddEventMulti(Event{EventType::CALCULATE_PATH_TO_NAVMESH, dataPowerUp}); 
                 }
                 
@@ -170,9 +170,9 @@ struct EscapeWithTotem_mt : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
         //std::cout << "Vamos a movernos por los powerUps UUUEEEEPAA" << std::endl;    
         shared_ptr<DataMap> dataPowerUp = make_shared<DataMap>();
-        (*dataPowerUp)["actualCar"] = blackboard->actualCar;     
-        (*dataPowerUp)["manWayPoints"] = blackboard->manWayPoint;  
-        (*dataPowerUp)["manNavMesh"] = blackboard->manNavMesh;                                                                                                      
+        (*dataPowerUp)[ACTUAL_CAR] = blackboard->actualCar;     
+        (*dataPowerUp)[MAN_WAYPOINTS] = blackboard->manWayPoint;  
+        (*dataPowerUp)[MAN_NAVMESH] = blackboard->manNavMesh;                                                                                                      
         EventManager::GetInstance().AddEventMulti(Event{EventType::MOVE_TO_POWERUP, dataPowerUp}); 
         return true;
     }
@@ -183,9 +183,9 @@ struct MoveToPowerUp_mt : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
         //std::cout << "Vamos a movernos por los powerUps UUUEEEEPAA" << std::endl;
         shared_ptr<DataMap> dataPowerUp = make_shared<DataMap>();      
-        (*dataPowerUp)["actualCar"] = blackboard->actualCar;     
-        (*dataPowerUp)["manWayPoints"] = blackboard->manWayPoint;  
-        (*dataPowerUp)["manNavMesh"] = blackboard->manNavMesh;                                                                                                      
+        (*dataPowerUp)[ACTUAL_CAR] = blackboard->actualCar;     
+        (*dataPowerUp)[MAN_WAYPOINTS] = blackboard->manWayPoint;  
+        (*dataPowerUp)[MAN_NAVMESH] = blackboard->manNavMesh;                                                                                                      
         EventManager::GetInstance().AddEventMulti(Event{EventType::MOVE_TO_POWERUP, dataPowerUp}); 
         return true;
     }
@@ -205,8 +205,8 @@ struct MoveToCarTotem_mt : public behaviourTree {
                         //if(actualCar != actualAI.get()){
                             auto cTransformable = static_cast<CTransformable*>(actualAI.get()->GetComponent(CompType::TransformableComp).get());
                             shared_ptr<DataMap> dataCarTotem = make_shared<DataMap>();                                                                    
-                            (*dataCarTotem)["actualCar"] = actualCar;             
-                            (*dataCarTotem)["posDestination"] = cTransformable->position;                                        
+                            (*dataCarTotem)[ACTUAL_CAR] = actualCar;             
+                            (*dataCarTotem)[POS_DESTINATION] = cTransformable->position;                                        
                             EventManager::GetInstance().AddEventMulti(Event{EventType::CHANGE_DESTINATION, dataCarTotem}); 
                             return true;
                         //}else{
@@ -224,9 +224,9 @@ struct MoveToCarTotem_mt : public behaviourTree {
                             // Actualmente solo nos movemos entre waypoints hasta coincidir en el mismo navMesh
                             //std::cout << "Vamos a movernos por los powerUps UUUEEEEPAA" << std::endl; 
                             shared_ptr<DataMap> dataPowerUp = make_shared<DataMap>();    
-                            (*dataPowerUp)["actualCar"] = actualCar;     
-                            (*dataPowerUp)["manWayPoints"] = blackboard->manWayPoint;
-                            (*dataPowerUp)["manNavMesh"] = blackboard->manNavMesh;                                                                      
+                            (*dataPowerUp)[ACTUAL_CAR] = actualCar;     
+                            (*dataPowerUp)[MAN_WAYPOINTS] = blackboard->manWayPoint;
+                            (*dataPowerUp)[MAN_NAVMESH] = blackboard->manNavMesh;                                                                      
                             EventManager::GetInstance().AddEventMulti(Event{EventType::CALCULATE_PATH_TO_NAVMESH, dataPowerUp}); 
                         }
 

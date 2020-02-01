@@ -58,10 +58,10 @@ void Camera::InvertCamera(DataMap* d){
 
     //Si esta invertida la desinvertimos y viceversa
 
-    if(cCamera->camType == CamType::INVERTED){
-        cCamera->camType = CamType::NORMAL;
+    if(cCamera->camType == CamType::INVERTED_CAM){
+        cCamera->camType = CamType::NORMAL_CAM;
     }else{
-        cCamera->camType = CamType::INVERTED;
+        cCamera->camType = CamType::INVERTED_CAM;
 
     }
 }
@@ -69,10 +69,10 @@ void Camera::InvertCamera(DataMap* d){
 void Camera::TotemCamera(DataMap* d){      
     auto cCamera = static_cast<CCamera*>(GetComponent(CompType::CameraComp).get());
 
-    if(cCamera->camType == CamType::TOTEM){
-        cCamera->camType = CamType::NORMAL;
+    if(cCamera->camType == CamType::TOTEM_CAM){
+        cCamera->camType = CamType::NORMAL_CAM;
     }else{
-        cCamera->camType = CamType::TOTEM;
+        cCamera->camType = CamType::TOTEM_CAM;
 
     }
 }
@@ -80,7 +80,7 @@ void Camera::TotemCamera(DataMap* d){
 void Camera::NormalCamera(DataMap* d){
     auto cCamera = static_cast<CCamera*>(GetComponent(CompType::CameraComp).get());
 
-    cCamera->camType = CamType::NORMAL;
+    cCamera->camType = CamType::NORMAL_CAM;
 
 }
 
