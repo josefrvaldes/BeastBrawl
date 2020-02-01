@@ -31,6 +31,7 @@ void Game::SetState(State::States stateType) {
             EventManager::GetInstance().ClearEvents();
             EventManager::GetInstance().ClearListeners();
             currentState = make_shared<StateMenu>();
+            gameState.reset();
             SuscribeEvents();
             gameStarted = false;
             break;
@@ -74,7 +75,17 @@ void Game::SetState(State::States stateType) {
             currentState = make_shared<StatePause>();
             break;
         case State::ENDRACE:
+            EventManager::GetInstance().ClearEvents();
+            EventManager::GetInstance().ClearListeners();
             currentState = make_shared<StateEndRace>();
+            if (gameMarkedToDelete) {
+                gameState.reset();
+                gameMarkedToDelete = false;
+            } else
+                gameMarkedToDelete = true;
+
+            SuscribeEvents();
+            gameStarted = false;
             break;
         case State::LOBBY_MULTI:
             currentState = make_shared<StateLobbyMulti>();

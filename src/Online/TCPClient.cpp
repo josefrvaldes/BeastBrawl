@@ -119,12 +119,15 @@ void TCPClient::HandleReceived(std::shared_ptr<boost::array<char, 1024>> recevBu
         std::copy(recevBuff->begin(), recevBuff->begin() + bytesTransferred, std::back_inserter(receivedString));
 
         std::shared_ptr<DataMap> data = make_shared<DataMap>();
+        // TODO: aquí en vez de enviarle al setState el string debería tratarse el 
+        //      string y enviarse los dos datos por separado, de forma que al state
+        //      nos aseguremos de que le llegan datos buenos, que no le ha llegado "asdfafa"
         (*data)[DataType::DATA_SERVER] = receivedString;
         EventManager::GetInstance().AddEventMulti(Event{EventType::NEW_TCP_START_MULTI, data});
 
-        json receivedJSON = json::parse(receivedString);
-        uint32_t idPlayer = receivedJSON["idPlayer"];
-        vector<uint32_t> arrayIdEnemies = receivedJSON["idEnemies"];
+        // json receivedJSON = json::parse(receivedString);
+        // uint32_t idPlayer = receivedJSON["idPlayer"];
+        // vector<uint32_t> arrayIdEnemies = receivedJSON["idEnemies"];
         std::cout << "El cliente TCP recibe: " << receivedString << std::endl;
     } else if (errorCode) {
         cout << "Hubo un error con código " << errorCode << endl;
