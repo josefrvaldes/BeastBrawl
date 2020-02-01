@@ -10,12 +10,12 @@ class ManCar;
 
 class SystemOnline {
    public:
-    SystemOnline(ManCar &manCar_);
+    SystemOnline(ManCar &manCar_, uint32_t idOnlineMainCar_);
     ~SystemOnline(){};
 
     void Update();
     void SendInputs(vector<Constants::InputTypes> &d);
-    uint16_t idOnlineMainCar;
+    uint32_t idOnlineMainCar;
 
    private:
     ManCar &manCar;

@@ -57,17 +57,18 @@ void Game::SetState(State::States stateType) {
             }
             break;
         case State::INGAME_MULTI:
-            if (!gameStarted) {
-                shared_ptr<State> newState = make_shared<StateInGameMulti>();
-                cout << "Hemos creado el nuevo StateInGameMulti" << endl;
-                currentState = newState;
-                cout << "Hemos chafado el currentState con StateInGameMulti" << endl;
-                gameState = currentState;
-                cout << "Hemos chafado el gameState con StateInGameMulti" << endl;
-                gameStarted = true;
-            } else {
-                currentState = gameState;
-            }
+            // ATENCIÓN: este estado se inicializa en un método abajo aparte
+            // if (!gameStarted) {
+            //     shared_ptr<State> newState = make_shared<StateInGameMulti>();
+            //     cout << "Hemos creado el nuevo StateInGameMulti" << endl;
+            //     currentState = newState;
+            //     cout << "Hemos chafado el currentState con StateInGameMulti" << endl;
+            //     gameState = currentState;
+            //     cout << "Hemos chafado el gameState con StateInGameMulti" << endl;
+            //     gameStarted = true;
+            // } else {
+            //     currentState = gameState;
+            // }
             break;
         case State::PAUSE:
             currentState = make_shared<StatePause>();
