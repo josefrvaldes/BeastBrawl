@@ -50,7 +50,7 @@ class ManCar : public Manager {
     void CreateHumanCar(glm::vec3 _position);
     void UpdateCar();
     void UpdateCarAI(CarAI* carAI, ManPowerUp* m_manPowerUp, ManBoxPowerUp* m_manBoxPowerUp, ManTotem* m_manTotem, ManWayPoint* graph, ManNavMesh* manNavMesh, 
-                    ManBoundingWall* m_manBoundingWall, SystemBtPowerUp* systemBtPowerUp, SystemBtMoveTo* systemBtMoveTo, SystemBtLoDMove* systemBtLoDMove);
+                    ManBoundingWall* m_manBoundingWall, SystemBtPowerUp* systemBtPowerUp, SystemBtMoveTo* systemBtMoveTo, SystemBtLoDMove* systemBtLoDMove, SystemPathPlanning *systemPathPlanning);
     void UpdateCarHuman(Entity* CarHuman);
     shared_ptr<CarHuman>& GetCar() { return car; };
 
@@ -96,5 +96,4 @@ class ManCar : public Manager {
     bool graphCreated = false;
     shared_ptr<CarHuman> car;
     unique_ptr<PhysicsAI> physicsAI;
-    unique_ptr<SystemPathPlanning> systemPathPlanning;
 };

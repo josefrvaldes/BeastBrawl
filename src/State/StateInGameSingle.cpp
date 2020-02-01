@@ -6,8 +6,10 @@ StateInGameSingle::StateInGameSingle() : StateInGame() {
     systemBtPowerUp = make_unique<SystemBtPowerUp>();
     systemBtMoveTo = make_unique<SystemBtMoveTo>();
     systemBtLoDMove = make_unique<SystemBtLoDMove>();
+    systemPathPlanning = make_unique<SystemPathPlanning>();
 
     InitVirtualMethods();
+
     //std::cout << "ENTRAMOS AL MANAGER DE NAVMESH LOCOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO" << std::endl;
     CAMBIARCosasNavMesh(*manCars.get(), *manNavMesh.get());
     //std::cout << "despues de la llamada LOOOOOOOOOOOCOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO" << std::endl;
@@ -52,7 +54,18 @@ void StateInGameSingle::Update() {
     StateInGame::Update();
     for (auto actualAI : manCars->GetEntities()) { // CUIDADO!!! -> el static cast que solo se use en el single player, si no peta
         if (static_cast<Car*>(actualAI.get())->GetTypeCar() == TypeCar::CarAI){
-            manCars->UpdateCarAI(static_cast<CarAI*>(actualAI.get()), manPowerUps.get(), manBoxPowerUps.get(), manTotems.get(), manWayPoint.get(), manNavMesh.get(), manBoundingWall.get(), systemBtPowerUp.get(), systemBtMoveTo.get(), systemBtLoDMove.get());
+            manCars->UpdateCarAI(
+                static_cast<CarAI*>(actualAI.get()), 
+                manPowerUps.get(), 
+                manBoxPowerUps.get(), 
+                manTotems.get(), 
+                manWayPoint.get(), 
+                manNavMesh.get(), 
+                manBoundingWall.get(), 
+                systemBtPowerUp.get(), 
+                systemBtMoveTo.get(), 
+                systemBtLoDMove.get(),
+                systemPathPlanning.get());
             physicsEngine->UpdateCarAI(actualAI.get());
         }
     }

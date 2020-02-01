@@ -1,6 +1,7 @@
 #include "./ManBoxPowerUp.h"
 //#include <functional> 
 #include <iostream>
+#include <sstream>
 #include "../Entities/BoxPowerUp.h"
 #include "../EventManager/Event.h"
 #include "../EventManager/EventManager.h"
@@ -16,8 +17,12 @@ ManBoxPowerUp::ManBoxPowerUp() {
     //Leemos y añadimos los WayPoints
     float x=0,y=0,z=0; //Vec3
 
-    ifstream i("data.json");
-    json j = json::parse(i);
+    std::ifstream i("data.json");
+    std::stringstream buffer;
+    buffer << i.rdbuf();
+    string jsonString = buffer.str();
+    json j = json::parse(jsonString);
+    i.close();
 
     int waypointsCount = j["WAYPOINTS"].size();
     //std::cout << "EL NUMERO DE WAYPOINTS EN EL JSON ES: " << waypointsCount << std::endl;

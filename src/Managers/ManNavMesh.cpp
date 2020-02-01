@@ -89,7 +89,7 @@ ManNavMesh::ManNavMesh(Entity *carPlayer, ManTotem *manTotems) {
         // cogemos el array de wayPoints
         auto wayPointsIdCount = navMeshActual["waypoints"].size();
         std::cout << "EL Navmesh " << idNavMesh << " tiene: " << wayPointsIdCount << " waypoints" << std::endl;
-        for(int k=0; k<wayPointsIdCount; k++){
+        for(size_t k=0; k<wayPointsIdCount; k++){
             int wayPointIdActual = navMeshActual["waypoints"][k].get<int>();
             waypointsId.push_back(wayPointIdActual);
             std::cout << "meteneos waypoint con ID: " << wayPointIdActual << std::endl;

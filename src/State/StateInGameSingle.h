@@ -30,5 +30,6 @@ class StateInGameSingle : public StateInGame {
     unique_ptr<SystemBtPowerUp> systemBtPowerUp;
     unique_ptr<SystemBtMoveTo> systemBtMoveTo;
     unique_ptr<SystemBtLoDMove> systemBtLoDMove;
+    shared_ptr<SystemPathPlanning> systemPathPlanning;
 
 };
