@@ -593,11 +593,14 @@ int RenderFacadeIrrlicht::FacadeGetFPS() const{
     return driver->getFPS();
 }
 
-void RenderFacadeIrrlicht::FacadeSetWindowCaption(std::string title) const{
+void RenderFacadeIrrlicht::FacadeSetWindowCaption(std::string title, int fps) const{
+    
+    std::string name = title + " - FPS: " + std::to_string(fps);
+    
     //Como transformar de string a wstring (irrlicht)
     std::wstring text_aux;
-    for (unsigned int i = 0; i < title.length(); ++i)
-        text_aux += wchar_t(title[i]);
+    for (unsigned int i = 0; i < name.length(); ++i)
+        text_aux += wchar_t(name[i]);
 
     const wchar_t* txt = text_aux.c_str();
 
