@@ -82,10 +82,10 @@ void CLPhysics::HandleCollisionsWithPlanes() {
     ManCar *manCar = static_cast<ManCar *>(managers[0]);
     ManBoundingWall *manWalls = static_cast<ManBoundingWall *>(managers[1]);
 
-    vector<shared_ptr<Entity>> carAIs = manCar->GetEntities();
+    auto carAIs = manCar->GetEntities();
     size_t numCar = carAIs.size();
 
-    vector<shared_ptr<Entity>> walls = manWalls->GetEntities();
+    auto walls = manWalls->GetEntities();
     size_t numWalls = walls.size();
 
     // los coches con los walls
@@ -114,7 +114,7 @@ void CLPhysics::Simulate(float delta) {
 void CLPhysics::HandleCollisions() {
     ManCar *manCar = static_cast<ManCar *>(managers[0]);
 
-    vector<shared_ptr<Entity>> entities = manCar->GetEntities();
+    auto entities = manCar->GetEntities();
     size_t numEntities = entities.size();
 
     // los coches entre si
@@ -147,8 +147,8 @@ void CLPhysics::checkCollisionNitro(Entity* car1, Entity* car2){
         if(cTotemCar2->active){
             // si que lo tiene... lanzamos evento para intercambiarlo
             shared_ptr<DataMap> data = make_shared<DataMap>();   
-            (*data)["carWithTotem"] = car2;     
-            (*data)["carWithoutTotem"] = car1;                                                                                                    
+            (*data)[CAR_WITH_TOTEM] = car2;     
+            (*data)[CAR_WITHOUT_TOTEM] = car1;                                                                                                    
             EventManager::GetInstance().AddEventMulti(Event{EventType::CHANGE_TOTEM_CAR, data}); 
         }
     
@@ -160,8 +160,8 @@ void CLPhysics::checkCollisionNitro(Entity* car1, Entity* car2){
                 // si que lo tiene... lanzamos evento para intercambiarlo
                 shared_ptr<DataMap> data = make_shared<DataMap>();   
                       
-                (*data)["carWithTotem"] = car1;     
-                (*data)["carWithoutTotem"] = car2;                                                                                                    
+                (*data)[CAR_WITH_TOTEM] = car1;     
+                (*data)[CAR_WITHOUT_TOTEM] = car2;                                                                                                    
                 EventManager::GetInstance().AddEventMulti(Event{EventType::CHANGE_TOTEM_CAR, data}); 
             }
         }
@@ -233,7 +233,7 @@ void CLPhysics::SeparateSphereFromPlane(IntersectData &intersData, CTransformabl
 
 void CLPhysics::SonarChoque(bool mainCar) {
     shared_ptr<DataMap> map = make_shared<DataMap>();
-    (*map)["mainCharacter"] = mainCar;
+    (*map)[MAIN_CAR] = mainCar;
     Event e(EventType::CRASH_ENEMY, map);
     EventManager::GetInstance().AddEventMulti(e);
 }

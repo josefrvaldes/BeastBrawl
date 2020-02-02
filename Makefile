@@ -25,15 +25,16 @@ ifdef WINDOWS
 	CC			:= g++
 else
 	#LIBS		:= -L/usr/lib32 -lX11
-	LIBS 	    += -L./lib/linux/irrlicht -lIrrlicht -L./lib/linux/fmod -lfmod -lfmodstudio -L./lib/linux/glew -lGLEW -lGL
-	LIBS		+= -Wl,-rpath=lib/linux/irrlicht -Wl,-rpath=lib/linux/fmod
+	LIBS 	    += -L./lib/linux/irrlicht -lIrrlicht -L./lib/linux/fmod -lfmod -lfmodstudio -L./lib/linux/glew -lGLEW -lGL -L./lib/linux/assimp -lassimp
+	LIBS		+= -Wl,-rpath=lib/linux/irrlicht -Wl,-rpath=lib/linux/fmod -Wl,-rpath=lib/linux/assimp
 	INCLUDE     := -I. 
 	INCLUDE_IRR := -I /include/irrlicht/irrlicht.h
 	INCLUDE_FMOD := -I ./include/fmod/core -I ./include/fmod/studio
 	INCLUDE_GLEW := -I /include/glew/glew.h
+	INCLUDE_ASSIMP 	:= -I./include/assimp
 	#INCLUDE_BULLET := -I./include/bullet -I./include
 	CREATE_SYMLINKS := bash symlinks.sh
-	CC			:= g++
+	CC			:= ccache g++
 endif
 
 
@@ -42,7 +43,7 @@ OBJ_PATH    := obj/src
 SRC_PATH	:= src
 
 NAME_EXE	:= Beast_Brawl
-CXXFLAGS 	+= -Wall -Wno-unknown-pragmas -std=c++17 -pthread # el no-unknown-pragmas es para que no salga el warning de los pragma region
+CXXFLAGS 	+= -Wall -Wno-unknown-pragmas -std=c++17 -fuse-ld=gold -pthread # el no-unknown-pragmas es para que no salga el warning de los pragma region
 
 ALLCPPS		:= $(shell find src/ -type f -iname *.cpp)
 ALLCPPSOBJ	:= $(patsubst $(SRC_PATH)/%.cpp,$(OBJ_PATH)/%.o,$(ALLCPPS))
@@ -66,7 +67,7 @@ $(NAME_EXE): $(OBJSUBDIRS) $(ALLCPPSOBJ)
 $(OBJ_PATH)/%.o: $(SRC_PATH)/%.cpp
 	$(PRUEBA_TEXT)
 	$(COMPILING_TEXT) $<
-	@$(CC) $(CXXFLAGS) -o $@ -c $^ $(INCLUDE) $(INCLUDE_IRR) $(INCLUDE_FMOD) $(INCLUDE_GLEW)
+	@$(CC) $(CXXFLAGS) -o $@ -c $^ $(INCLUDE) $(INCLUDE_IRR) $(INCLUDE_FMOD) $(INCLUDE_GLEW) $(INCLUDE_ASSIMP)
 	
 
 $(OBJSUBDIRS):

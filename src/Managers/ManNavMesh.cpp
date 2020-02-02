@@ -140,7 +140,7 @@ void ManNavMesh::SubscribeToEvents() {
 void ManNavMesh::ActualizeNavMeshTotem(DataMap* d){
     //std::cout << "Actualizamos NavMesh del Totem" << std::endl;
     bool todoCorrecto = false;
-    auto cTransformableTotem = static_cast<CTransformable*>(any_cast<Entity*>((*d)["totem"])->GetComponent(CompType::TransformableComp).get());     
+    auto cTransformableTotem = static_cast<CTransformable*>(any_cast<Entity*>((*d)[TOTEM])->GetComponent(CompType::TransformableComp).get());     
     for(auto navmesh : GetEntities()){
         auto cDimensions = static_cast<CDimensions*>(navmesh.get()->GetComponent(CompType::DimensionsComp).get());
         auto cTransformableNav = static_cast<CTransformable*>(navmesh.get()->GetComponent(CompType::TransformableComp).get()); 
@@ -148,7 +148,7 @@ void ManNavMesh::ActualizeNavMeshTotem(DataMap* d){
             (cTransformableTotem->position.x <= (cTransformableNav->position.x+(cDimensions->width/2))) ) &&
             ( (cTransformableTotem->position.z >= (cTransformableNav->position.z-(cDimensions->depth/2))) && 
             (cTransformableTotem->position.z <= (cTransformableNav->position.z+(cDimensions->depth/2))) )  ){
-                auto cCurrentNavMesh = static_cast<CCurrentNavMesh*>(any_cast<Entity*>((*d)["totem"])->GetComponent(CompType::CurrentNavMeshComp).get());
+                auto cCurrentNavMesh = static_cast<CCurrentNavMesh*>(any_cast<Entity*>((*d)[TOTEM])->GetComponent(CompType::CurrentNavMeshComp).get());
                 auto cNavMesh = static_cast<CNavMesh*>(navmesh.get()->GetComponent(CompType::NavMeshComp).get());
                 cCurrentNavMesh->currentNavMesh = cNavMesh->id;
                 //std::cout << " El totem pertenece al naveMesh: " << cNavMesh->id << std::endl;
@@ -181,7 +181,7 @@ void ManNavMesh::InitNavMeshTotem(ManTotem *manTotems){
 }
 
 void ManNavMesh::ActualizeNavMeshCarAI(DataMap* d){
-    auto cTransformableCar = static_cast<CTransformable*>(any_cast<Entity*>((*d)["carAI"])->GetComponent(CompType::TransformableComp).get());     
+    auto cTransformableCar = static_cast<CTransformable*>(any_cast<Entity*>((*d)[CAR_AI])->GetComponent(CompType::TransformableComp).get());     
     for(auto navmesh : GetEntities()){
         auto cDimensions = static_cast<CDimensions*>(navmesh.get()->GetComponent(CompType::DimensionsComp).get());
         auto cTransformableNav = static_cast<CTransformable*>(navmesh.get()->GetComponent(CompType::TransformableComp).get()); 
@@ -189,7 +189,7 @@ void ManNavMesh::ActualizeNavMeshCarAI(DataMap* d){
             (cTransformableCar->position.x <= (cTransformableNav->position.x+(cDimensions->width/2))) ) &&
             ( (cTransformableCar->position.z >= (cTransformableNav->position.z-(cDimensions->depth/2))) && 
             (cTransformableCar->position.z <= (cTransformableNav->position.z+(cDimensions->depth/2))) )  ){
-                auto cCurrentNavMesh = static_cast<CCurrentNavMesh*>(any_cast<Entity*>((*d)["carAI"])->GetComponent(CompType::CurrentNavMeshComp).get());
+                auto cCurrentNavMesh = static_cast<CCurrentNavMesh*>(any_cast<Entity*>((*d)[CAR_AI])->GetComponent(CompType::CurrentNavMeshComp).get());
                 auto cNavMesh = static_cast<CNavMesh*>(navmesh.get()->GetComponent(CompType::NavMeshComp).get());
                 cCurrentNavMesh->currentNavMesh = cNavMesh->id;
                 //std::cout << " El cochecito lereee pertenece al naveMesh: " << cNavMesh->id << std::endl;
