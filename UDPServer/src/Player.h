@@ -10,10 +10,10 @@ struct Player {
    public:
     Player() = default;
     ~Player() = default;
-    uint32_t id{nextId++};
+    uint16_t id{nextId++};
     udp::endpoint endpoint;
     tcp::endpoint endpointTCP;
 
    private:
-    static uint32_t nextId;
+    static uint16_t nextId;
 };

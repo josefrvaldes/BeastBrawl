@@ -96,7 +96,7 @@ void TCPClient::StartReceiving() {
     //std::shared_ptr<string> recevBuff = make_shared<string>();
     cout << "Estamos en StartReceiving" << endl;
 
-    std::shared_ptr<boost::array<char, 1024>> recevBuff = make_shared<boost::array<char, 1024>>();
+    std::shared_ptr<boost::array<char, Constants::ONLINE_BUFFER_SIZE>> recevBuff = make_shared<boost::array<char, Constants::ONLINE_BUFFER_SIZE>>();
     socket.async_receive(
         asio::buffer(*recevBuff),
         boost::bind(
@@ -107,7 +107,7 @@ void TCPClient::StartReceiving() {
             boost::asio::placeholders::bytes_transferred));
 }
 
-void TCPClient::HandleReceived(std::shared_ptr<boost::array<char, 1024>> recevBuff, const boost::system::error_code& errorCode, std::size_t bytesTransferred) {
+void TCPClient::HandleReceived(std::shared_ptr<boost::array<char, Constants::ONLINE_BUFFER_SIZE>> recevBuff, const boost::system::error_code& errorCode, std::size_t bytesTransferred) {
     cout << "Estamos en HandleReceived" << endl;
     if (stopped) {
         cout << "Hemos intentado recibir pero el cliente tcp estaba parado" << endl;
@@ -142,21 +142,19 @@ void TCPClient::SendConnectionRequest() {
         cout << "Hemos intentado SendConnectionRequest pero el cliente tcp estaba parado" << endl;
         return;
     }
+    unsigned char request[Constants::ONLINE_BUFFER_SIZE];
+    // char *buff = request;
+    size_t currentSize = 0;
+    uint8_t numero = Constants::CONNECTION_REQUEST;
+    Utils::Serialize(request, numero, currentSize);
 
-    //json j;
-    //j["petitionType"] = Constants::PetitionTypes::SEND_INPUTS;
-    //j["id"] = id;
-    //j["inputs"] = inputs;
-    //string jsonToBeSent = j.dump();
-    // cout << "Vamos a enviar datos" << endl;
-    uint16_t numero = 1;
-    //sendBuff2[0] = boost::asio::buffer(&numero, sizeof(numero));
-    json j;
-    j["requestConnection"] = numero;
+    // json j;
+    // j["requestConnection"] = numero;
 
-    string s = j.dump();
+    // string s = j.dump();
     socket.async_send(
-        boost::asio::buffer(s, s.size()),
+        // boost::asio::buffer(s, s.size()),
+        boost::asio::buffer(request, currentSize),
         boost::bind(
             &TCPClient::HandleSentConnectionRequest,
             this,

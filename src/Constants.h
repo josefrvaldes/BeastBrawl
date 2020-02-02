@@ -7,6 +7,7 @@
 class Constants {
    public:
     static const bool DEBUG_SHOW_SPHERES{true};
+    static const size_t ONLINE_BUFFER_SIZE{512};
 
     enum InputTypes { FORWARD,
                       BACK,
@@ -15,7 +16,8 @@ class Constants {
                       LAUNCH_PU,
                       CLAXON };
 
-    enum PetitionTypes { SEND_INPUT,
+    enum PetitionTypes { CONNECTION_REQUEST,
+                         SEND_INPUT,
                          SEND_INPUTS,
                          SEND_SYNC };
 };
