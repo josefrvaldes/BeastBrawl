@@ -17,6 +17,7 @@ using namespace glm;
 using namespace std;
 
 class CBoundingSphere;
+class IntersectData;
 struct CCar;
 struct CTransformable;
 struct CBoundingPlane;

@@ -70,7 +70,7 @@ void CLPhysics::HandleCollisionsWithOBB(){
 
             //CBoundingPlane *plane = static_cast<CBoundingPlane *>(wall->GetComponent(CompType::CompBoundingPlane).get());
             CBoundingOBB *cOBBactual = static_cast<CBoundingOBB *>(obbActual->GetComponent(CompType::CompBoundingOBB).get());
-            //HandleCollisions(*trcar1, *spcar1, *ccarcar1, false, *cOBBactual);
+            HandleCollisions(*trcar1, *spcar1, *ccarcar1, false, *cOBBactual);
         }
     }
     
@@ -218,8 +218,6 @@ void CLPhysics::HandleCollisions(CTransformable &trCar, CBoundingSphere &spCar, 
         // SonarChoque(mainCar);
         //SeparateSphereFromPlane(intersData, trCar, spCar, ccarCar, obb);
 
-        //TODO: PROVISIONAL ... PONER LA VELOCIDAD DEL COCHE A 0
-        //ccarCar.speed = ccarCar.speed/1.01;
     }
 }
 
