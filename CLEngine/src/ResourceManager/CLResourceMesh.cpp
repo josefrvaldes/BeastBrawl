@@ -6,6 +6,6 @@ bool CLResourceMesh::LoadFile(std::string file) {
     return true;
 }
 
-void Draw() {
+void CLResourceMesh::Draw(glm::mat4&) {
 
 }

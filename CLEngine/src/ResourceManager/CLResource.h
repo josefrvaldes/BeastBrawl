@@ -2,13 +2,15 @@
 
 #include <string>
 #include "../../../include/glm/glm.hpp"
+#include "../../include/glew/glew.h"
+
 
 namespace CLE {
 
     class CLResource {
         public:
             CLResource() {};
-            virtual ~CLResource() = 0;
+            ~CLResource() {};
 
             virtual void Draw(glm::mat4&) = 0;
             virtual bool LoadFile(std::string) = 0;

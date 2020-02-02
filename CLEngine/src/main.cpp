@@ -4,6 +4,8 @@
 #include "CLEngine.h"
 #include "SceneTree/CLLight.h"
 #include "SceneTree/CLNode.h"
+#include "ResourceManager/CLResourceManager.h"
+#include "ResourceManager/CLResourceShader.h"
 
 #include "../include/glew/glew.h"
 #include "../include/glfw/glfw3.h"
@@ -70,6 +72,13 @@ int main() {
     smgr->DeleteNode(node4->GetEntity()->GetID());
 
     smgr->DrawTree(smgr.get());
+
+    //PETA AQUIIIIIIIIIIIIIIIIIIIIIIIII
+    shared_ptr<CLResourceShader> resourceShader = make_shared<CLResourceShader>();
+
+    //-------------------Resource manager-------------------
+    unique_ptr<CLResourceManager> resourceManager = make_unique<CLResourceManager>();
+    resourceManager->GetResourceShader("Shaders/vertex.glsl", GL_VERTEX_SHADER);
 
     CLEngine *device = new CLEngine(1280, 720, "Beast Brawl");
     IMGUI_CHECKVERSION();

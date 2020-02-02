@@ -5,11 +5,11 @@
 namespace CLE {
     class CLResourceMesh : public CLResource {
         public:
-            CLResourceMesh(){}
-            ~CLResourceMesh();
+            CLResourceMesh(){};
+            ~CLResourceMesh(){};
 
-            void Draw(glm::mat4&);
-            bool LoadFile(std::string);
+            void Draw(glm::mat4&) override;
+            bool LoadFile(std::string) override;
 
             // Como no se para que son las variables, no se si hacen falta todos estos SET y GET
             void SetVertex(float* v)            { vertex = v; }

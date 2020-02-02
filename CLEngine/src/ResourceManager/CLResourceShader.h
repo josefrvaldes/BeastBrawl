@@ -6,19 +6,20 @@ namespace CLE {
     
     class CLResourceShader : public CLResource {
         public:
-            CLResourceShader() {}
-            ~CLResourceShader();
+            CLResourceShader() {};
+            ~CLResourceShader() {};
 
-            void Draw(glm::mat4&);
-            bool LoadFile(std::string);
+            void Draw(glm::mat4&) override;
+            bool LoadFile(std::string) override;
 
-            void SetShaderName(std::string &e)   { shaderName = e; }
+            void SetShaderType(GLenum type)   { shaderType = type; }
 
-            std::string GetShaderName()          const { return shaderName; }
+            GLenum GetShaderType()          const { return shaderType; }
+            GLuint GetShaderID()            const { return shaderID;   }
 
         private:
-
-            std::string shaderName;
+            GLuint shaderID;
+            GLenum shaderType;
     
     };
 
