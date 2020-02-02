@@ -44,10 +44,10 @@ void CLPhysics::HandleCollisionsWithPlanes() {
     ManCar *manCar = static_cast<ManCar *>(managers[0]);
     ManBoundingWall *manWalls = static_cast<ManBoundingWall *>(managers[1]);
 
-    vector<shared_ptr<Entity>> carAIs = manCar->GetEntities();
+    auto carAIs = manCar->GetEntities();
     size_t numCar = carAIs.size();
 
-    vector<shared_ptr<Entity>> walls = manWalls->GetEntities();
+    auto walls = manWalls->GetEntities();
     size_t numWalls = walls.size();
 
     // los coches con los walls
@@ -76,7 +76,7 @@ void CLPhysics::Simulate(float delta) {
 void CLPhysics::HandleCollisions() {
     ManCar *manCar = static_cast<ManCar *>(managers[0]);
 
-    vector<shared_ptr<Entity>> entities = manCar->GetEntities();
+    auto entities = manCar->GetEntities();
     size_t numEntities = entities.size();
 
     // los coches entre si
