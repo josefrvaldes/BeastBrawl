@@ -34,6 +34,18 @@ bool CLNode::RemoveChild(CLNode* child){
     return false;
 }
 
+void CLNode::DeleteNode(unsigned int id){
+    CLNode* node = nullptr;
+    node = GetNodeByIDAux(id, node, this);
+    auto father = node->GetFather();
+    father->RemoveChild(node);
+}
+
+void CLNode::DeleteNode(CLNode* node){
+    auto father = node->GetFather();
+    father->RemoveChild(node);
+}
+
 bool CLNode::HasChild(CLNode* child){
 
     for(auto node : childs){

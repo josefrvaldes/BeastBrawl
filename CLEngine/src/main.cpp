@@ -48,25 +48,28 @@ int main() {
     unique_ptr<CLEntity> entity3 = make_unique<CLLight>(3);
     unique_ptr<CLEntity> entity4 = make_unique<CLLight>(4);
     unique_ptr<CLEntity> entity5 = make_unique<CLLight>(5);
-    unique_ptr<CLNode> node1 = make_unique<CLNode>(entity1.get());
+    unique_ptr<CLNode> smgr = make_unique<CLNode>(entity1.get());
     unique_ptr<CLNode> node2 = make_unique<CLNode>(entity2.get());
     unique_ptr<CLNode> node3 = make_unique<CLNode>(entity3.get());
     unique_ptr<CLNode> node4 = make_unique<CLNode>(entity4.get());
     unique_ptr<CLNode> node5 = make_unique<CLNode>(entity5.get());
 
-    node1->AddChild(node2.get());
-    node1->AddChild(node3.get());
+    smgr->AddChild(node2.get());
+    smgr->AddChild(node3.get());
     node2->AddChild(node4.get());
     node4->AddChild(node5.get());
 
-    node1->DrawTree(node1.get());
+    smgr->DrawTree(smgr.get());
 
-    auto nodeAux = node1->GetNodeByID(5);
+    auto nodeAux = smgr->GetNodeByID(5);
 
     if(nodeAux!=nullptr){
         cout << "Devuelto nodo con ID: " << nodeAux->GetEntity()->GetID() << " \n";
     }
 
+    smgr->DeleteNode(node4->GetEntity()->GetID());
+
+    smgr->DrawTree(smgr.get());
 
     CLEngine *device = new CLEngine(1280, 720, "Beast Brawl");
     IMGUI_CHECKVERSION();
