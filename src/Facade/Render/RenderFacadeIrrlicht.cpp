@@ -94,7 +94,7 @@ void RenderFacadeIrrlicht::FacadeInitHUD() {
 }
 
 void RenderFacadeIrrlicht::FacadeUpdatePowerUpHUD(DataMap* d) {
-    typeCPowerUp type = any_cast<typeCPowerUp>((*d)["typePowerUp"]);
+    typeCPowerUp type = any_cast<typeCPowerUp>((*d)[TYPE_POWER_UP]);
     cout << "Facada recibe el power up: " << (int)type << endl;
     currentPowerUp = int(type);
 }
@@ -317,7 +317,7 @@ void RenderFacadeIrrlicht::UpdateCamera(Entity* cam, ManCar* manCars) {
 
     targetPosition.Y += 17;
 
-    if(cCamera->camType == CamType::INVERTED){
+    if(cCamera->camType == CamType::INVERTED_CAM){
         targetPosition.Y += 0;
 
         float distX = abs(cTransformable->position.x - targetPosition.X);
@@ -344,13 +344,13 @@ void RenderFacadeIrrlicht::UpdateCamera(Entity* cam, ManCar* manCars) {
         camera1->setFOV(angleRotation);
         camera1->setPosition(core::vector3df(cTransformable->position.x, cTransformable->position.y-5, cTransformable->position.z));
 
-    }else if(cCamera->camType == CamType::NORMAL){
+    }else if(cCamera->camType == CamType::NORMAL_CAM){
         float angleRotation = (70 * PI) / 180.0;
 
         camera1->setTarget(targetPosition);
         camera1->setFOV(angleRotation);
         camera1->setPosition(core::vector3df(cTransformable->position.x, cTransformable->position.y, cTransformable->position.z));
-    }else if (cCamera->camType == CamType::TOTEM){
+    }else if (cCamera->camType == CamType::TOTEM_CAM){
 
         auto car = manCars->GetCar();
         auto cTotemCar = static_cast<CTotem*>(car->GetComponent(CompType::TotemComp).get());
@@ -358,7 +358,7 @@ void RenderFacadeIrrlicht::UpdateCamera(Entity* cam, ManCar* manCars) {
 
         //Si somos nosotros quien tenemos el totem ponemos camara normal
         if(cTotemCar->active){
-            cCamera->camType = CamType::NORMAL;
+            cCamera->camType = CamType::NORMAL_CAM;
             return;
 
         }
@@ -593,11 +593,14 @@ int RenderFacadeIrrlicht::FacadeGetFPS() const{
     return driver->getFPS();
 }
 
-void RenderFacadeIrrlicht::FacadeSetWindowCaption(std::string title) const{
+void RenderFacadeIrrlicht::FacadeSetWindowCaption(std::string title, int fps) const{
+    
+    std::string name = title + " - FPS: " + std::to_string(fps);
+    
     //Como transformar de string a wstring (irrlicht)
     std::wstring text_aux;
-    for (unsigned int i = 0; i < title.length(); ++i)
-        text_aux += wchar_t(title[i]);
+    for (unsigned int i = 0; i < name.length(); ++i)
+        text_aux += wchar_t(name[i]);
 
     const wchar_t* txt = text_aux.c_str();
 

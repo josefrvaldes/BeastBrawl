@@ -99,7 +99,7 @@ void StateInGame::AddElementsToRender() {
     renderEngine->FacadeAddObject(ground.get());  //Anyadimos el suelo
 
     //Añadimos todos los power ups
-    for (shared_ptr<Entity> bpu : manBoxPowerUps->GetEntities())
+    for (auto bpu : manBoxPowerUps->GetEntities())
         renderEngine->FacadeAddObject(bpu.get());
 
     renderEngine->FacadeAddCamera(cam.get());
@@ -172,7 +172,7 @@ void StateInGame::Update() {
 
     clPhysics->Update(0.1666f);
     sysBoxPowerUp->update(manBoxPowerUps.get());
-    for(shared_ptr<Entity> actualPowerUp : manPowerUps->GetEntities()){  // actualizamos las fisicas de los powerUps
+    for(auto actualPowerUp : manPowerUps->GetEntities()){  // actualizamos las fisicas de los powerUps
         phisicsPowerUp->update(actualPowerUp.get());
     }
 
@@ -187,7 +187,7 @@ void StateInGame::Update() {
     renderEngine->UpdateCamera(cam.get(), manCars.get());
     physicsEngine->UpdateCar(manCars.get()->GetCar().get(), cam.get());
 
-    for (shared_ptr<Entity> actualPowerUp : manPowerUps->GetEntities())  // actualizamos los powerUp en irrlich
+    for (auto actualPowerUp : manPowerUps->GetEntities())  // actualizamos los powerUp en irrlich
         physicsEngine->UpdatePowerUps(actualPowerUp.get());
 
     renderEngine->FacadeUpdatePlates(manNamePlates.get());

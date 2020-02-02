@@ -378,7 +378,7 @@ glm::vec2 SteeringBehaviours::WallAvoidance(Entity* m_Car, ManBoundingWall* m_ma
     glm::vec2 vectorForceAvoid;
     Entity* actualObstacle = nullptr;
 
-    for(std::shared_ptr<Entity> obstacle : m_manBoundingWall->GetEntities()){
+    for(auto obstacle : m_manBoundingWall->GetEntities()){
         if(CollisionRayPlane(m_Car, obstacle.get(), m_velocityVector, distance, vectorForceAvoid, target)==true){
             if(distance < finalDistance && distance < cCar->speed*0.4+cRay->baseDistancePlane && distance > 0){
                 //std::cout << "Collisiona" << std::endl;
