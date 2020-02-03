@@ -11,7 +11,7 @@ class NavMesh : public Entity
 {
 
 public:
-    NavMesh(glm::vec3 pos, glm::vec3 rot, float width, float height, float depth, vector<int> waypoints);
+    NavMesh(glm::vec3 pos, glm::vec3 rot, float width, float height, float depth, const vector<int>& waypoints);
     ~NavMesh();
 
 };

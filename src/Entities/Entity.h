@@ -15,7 +15,7 @@ public:
 
     unordered_map<CompType, shared_ptr<Component>> GetComponents() { return m_components; };
     shared_ptr<Component> GetComponent(CompType type);
-    void AddComponent(shared_ptr<Component> c);
+    void AddComponent(const shared_ptr<Component>& c);
 
     bool HasComponent(CompType type);
 
