@@ -124,7 +124,8 @@ void Game::MainLoop() {
     SoundFacadeManager* soundFacadeManager = SoundFacadeManager::GetInstance();
 
     RenderFacadeManager* renderFacadeMan = RenderFacadeManager::GetInstance();
-    renderFacadeMan->GetRenderFacade()->FacadeSetWindowCaption("Beast Brawl");
+
+    int lastFPS = -1;
 
     while (renderFacadeMan->GetRenderFacade()->FacadeRun()) {
         currentState->Input();
@@ -133,6 +134,12 @@ void Game::MainLoop() {
         //Actualiza el motor de audio.
         soundFacadeManager->GetSoundFacade()->Update();
         currentState->Render();
+
+        int fps = renderFacadeMan->GetRenderFacade()->FacadeGetFPS();
+        if(lastFPS != fps) {
+            renderFacadeMan->GetRenderFacade()->FacadeSetWindowCaption("Beast Brawl", fps);
+            lastFPS = fps;
+        }
     }
 
     renderFacadeMan->GetRenderFacade()->FacadeDeviceDrop();

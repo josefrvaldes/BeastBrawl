@@ -30,7 +30,7 @@ class RenderFacadeClover : public RenderFacade {
       uint32_t FacadeGetTime() const override;
       void FacadeCheckInput() override;
       int FacadeGetFPS() const override;
-      void FacadeSetWindowCaption(std::string) const override;
+      void FacadeSetWindowCaption(std::string, int) const override;
       void FacadeBeginScene() const override;
       void FacadeDrawAll() const override;
       void FacadeEndScene() const override;

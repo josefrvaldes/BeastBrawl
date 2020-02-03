@@ -29,7 +29,7 @@ class RenderFacade {
     virtual uint32_t FacadeGetTime() const = 0;
     virtual void FacadeCheckInput()  = 0;
     virtual int FacadeGetFPS() const = 0;
-    virtual void FacadeSetWindowCaption(std::string) const = 0;
+    virtual void FacadeSetWindowCaption(std::string, int) const = 0;
     virtual void FacadeBeginScene() const = 0;
     virtual void FacadeDrawAll() const = 0;
     virtual void FacadeEndScene() const = 0;
