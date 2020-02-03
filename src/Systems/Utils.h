@@ -108,7 +108,7 @@ class Utils {
         memcpy(buff + currentSize, &item, itemSize);
         currentSize += itemSize;
         for (size_t i = 0; i < currentSize; i++) {
-            cout << "item " << i << " = " << unsigned(buff[i]) << endl;
+            // cout << "item " << i << " = " << unsigned(buff[i]) << endl;
         }
     }
 
@@ -147,12 +147,12 @@ class Utils {
         memcpy(auxBuff + currentSize, &item, itemSize);
         currentSize += itemSize;
         for (size_t i = 0; i < currentSize; i++) {
-            cout << "item " << i << " = " << unsigned(buff[i]) << endl;
+            // cout << "item " << i << " = " << unsigned(buff[i]) << endl;
         }
     }
 
     template <typename T>
-    static void SerializeVector(std::shared_ptr<unsigned char[]> buff, vector<T>& vector, size_t& currentSize) {
+    static void SerializeVector(std::shared_ptr<unsigned char[]> buff, vector<T> vector, size_t& currentSize) {
         for (T elem : vector)
             Utils::Serialize(buff, elem, currentSize);
     }
@@ -192,11 +192,13 @@ class Utils {
             T elem;
             size_t itemSize = sizeof(elem);
             Utils::Deserialize(elem, itemSize, buff, currentIndex);
-            vector[i] = elem;
+            // vector[i] = elem;
+            vector.push_back(elem);
         }
     }
 
     static void RunSerializationTest1() {
+        // enviar
         unsigned char buff[512];
         size_t currentBuffSize = 0;
         uint16_t numShort = 1578;
@@ -208,11 +210,12 @@ class Utils {
         Utils::Serialize(buff, numLong, currentBuffSize);
         Utils::Serialize(buff, numFloat, currentBuffSize);
 
+        // recibir
         size_t currentIndex = 0;
         uint16_t unserializedNumShort;
         uint32_t unserializedNumInt;
         uint64_t unserializedNumLong;
-        float unserializedNumFloat = 26.15;
+        float unserializedNumFloat;
         Utils::Deserialize(unserializedNumShort, buff, currentIndex);
         Utils::Deserialize(unserializedNumInt, buff, currentIndex);
         Utils::Deserialize(unserializedNumLong, buff, currentIndex);
@@ -230,6 +233,7 @@ class Utils {
         size_t currentBuffSize = 0;
         uint16_t idPlayer = 31263;
         vector<uint16_t> idEnemies;
+        // idEnemies.reserve(4);
         idEnemies.push_back(12345);
         idEnemies.push_back(54321);
         idEnemies.push_back(12321);
@@ -250,12 +254,12 @@ class Utils {
         size_t currentIndex = 0;
         uint16_t deserializedIdPlayer;
         uint16_t deserializedNumEnemies;
-        vector<uint16_t> deserializedIdEnemies;  
+        vector<uint16_t> deserializedIdEnemies;
         Utils::Deserialize(deserializedIdPlayer, buff, currentIndex);
         Utils::Deserialize(deserializedNumEnemies, buff, currentIndex);
-        deserializedIdEnemies.resize(deserializedNumEnemies);
-        Utils::DeserializeVector(deserializedIdEnemies, buff, currentIndex);
-        
+        // deserializedIdEnemies.resize(deserializedNumEnemies);
+        Utils::DeserializeVector(deserializedIdEnemies, deserializedNumEnemies, buff, currentIndex);
+
         cout << "El id player deserializado es " << deserializedIdPlayer << endl;
         for (uint16_t i = 0; i < deserializedNumEnemies; i++)
             cout << "El id enemy deserializado es " << deserializedIdEnemies[i] << endl;

@@ -5,15 +5,15 @@ using namespace std;
 
 int main() {
 
-    // Utils::RunSerializationTest2();
+    Utils::RunSerializationTest2();
 
     // try {
-    Game* game = Game::GetInstance();
+    // Game* game = Game::GetInstance();
 
-    game->InitGame();
-    game->SetState(State::States::MENU);
-    game->MainLoop();
-    game->TerminateGame();
+    // game->InitGame();
+    // game->SetState(State::States::MENU);
+    // game->MainLoop();
+    // game->TerminateGame();
     // } catch (exception &e) {
     //     cout << "Algo ha fallado " << e.what() << endl;
     // }
