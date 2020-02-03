@@ -22,7 +22,7 @@ else
 	INCLUDE_GLEW 	:= -I./include/glew
 	INCLUDE_GLFW 	:= -I./include/glfw
 	INCLUDE_ASSIMP 	:= -I./include/assimp
-	CC			:= ccache g++
+	CC			:= g++
 endif
 
 SOURCES  	:= $(wildcard *.cpp)
@@ -30,7 +30,7 @@ OBJ_PATH    := ../obj/CLEngine
 SRC_PATH	:= src
 
 NAME_EXE	:= CLEngine
-CXXFLAGS 	+= -Wall -Wno-unknown-pragmas -std=c++17 -fuse-ld=gold # el no-unknown-pragmas es para que no salga el warning de los pragma region
+CXXFLAGS 	+= -Wall -Wno-unknown-pragmas -std=c++17  # el no-unknown-pragmas es para que no salga el warning de los pragma region
 
 ALLCPPS		:= $(shell find src/ -type f -iname *.cpp)
 ALLCPPSOBJ	:= $(patsubst $(SRC_PATH)/%.cpp,$(OBJ_PATH)/%.o,$(ALLCPPS))

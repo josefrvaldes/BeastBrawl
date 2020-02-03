@@ -34,7 +34,7 @@ else
 	INCLUDE_ASSIMP 	:= -I./include/assimp
 	#INCLUDE_BULLET := -I./include/bullet -I./include
 	CREATE_SYMLINKS := bash symlinks.sh
-	CC			:= ccache g++
+	CC			:= g++
 endif
 
 
@@ -43,7 +43,7 @@ OBJ_PATH    := obj/src
 SRC_PATH	:= src
 
 NAME_EXE	:= Beast_Brawl
-CXXFLAGS 	+= -Wall -Wno-unknown-pragmas -std=c++17 -fuse-ld=gold -pthread # el no-unknown-pragmas es para que no salga el warning de los pragma region
+CXXFLAGS 	+= -Wall -Wno-unknown-pragmas -std=c++17 # el no-unknown-pragmas es para que no salga el warning de los pragma region
 
 ALLCPPS		:= $(shell find src/ -type f -iname *.cpp)
 ALLCPPSOBJ	:= $(patsubst $(SRC_PATH)/%.cpp,$(OBJ_PATH)/%.o,$(ALLCPPS))

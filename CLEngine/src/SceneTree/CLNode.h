@@ -39,8 +39,10 @@ class CLNode{
         bool RemoveChild(CLNode* child);
         bool HasChild(CLNode* child);
         CLNode* GetNodeByID(unsigned int id);
+        void DeleteNode(unsigned int id);
+        void DeleteNode(CLNode* node);
         void Translate(const glm::vec3 translationVec);
-        void Rotate(const glm::vec3 rotationVec);
+        void Rotate(const glm::vec3 rotationVec, const float g);
         void Scale(const glm::vec3 scaleVec);
 
         void DrawTree(CLNode* root);

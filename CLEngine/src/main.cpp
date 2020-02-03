@@ -4,6 +4,10 @@
 #include "CLEngine.h"
 #include "SceneTree/CLLight.h"
 #include "SceneTree/CLNode.h"
+#include "ResourceManager/CLResourceManager.h"
+#include "ResourceManager/CLResourceShader.h"
+#include "ResourceManager/CLResourceMesh.h"
+#include "ResourceManager/CLResource.h"
 
 #include "../include/glew/glew.h"
 #include "../include/glfw/glfw3.h"
@@ -14,14 +18,8 @@
 
 using namespace std;
 using namespace CLE;
-const char *vertexShaderSource = "#version 460 core\n"
-    "layout (location = 0) in vec3 aPos;\n"
-    "void main()\n"
-    "{\n"
-    "   gl_Position = vec4(aPos, 1.0);\n"
-    "}\0";
 
-const char *fragmentShaderSource = "#version 460 core\n"
+const char *fragmentShaderSource = "#version 450 core\n"
     "out vec4 FragColor;\n"
     "uniform vec4 ourColor;\n"
     "void main()\n"
@@ -41,33 +39,6 @@ void checkInput (GLFWwindow *window) {
 }
 
 int main() {
-
-    //----------------------------------
-    unique_ptr<CLEntity> entity1 = make_unique<CLLight>(1);
-    unique_ptr<CLEntity> entity2 = make_unique<CLLight>(2);
-    unique_ptr<CLEntity> entity3 = make_unique<CLLight>(3);
-    unique_ptr<CLEntity> entity4 = make_unique<CLLight>(4);
-    unique_ptr<CLEntity> entity5 = make_unique<CLLight>(5);
-    unique_ptr<CLNode> node1 = make_unique<CLNode>(entity1.get());
-    unique_ptr<CLNode> node2 = make_unique<CLNode>(entity2.get());
-    unique_ptr<CLNode> node3 = make_unique<CLNode>(entity3.get());
-    unique_ptr<CLNode> node4 = make_unique<CLNode>(entity4.get());
-    unique_ptr<CLNode> node5 = make_unique<CLNode>(entity5.get());
-
-    node1->AddChild(node2.get());
-    node1->AddChild(node3.get());
-    node2->AddChild(node4.get());
-    node4->AddChild(node5.get());
-
-    node1->DrawTree(node1.get());
-
-    auto nodeAux = node1->GetNodeByID(5);
-
-    if(nodeAux!=nullptr){
-        cout << "Devuelto nodo con ID: " << nodeAux->GetEntity()->GetID() << " \n";
-    }
-
-
     CLEngine *device = new CLEngine(1280, 720, "Beast Brawl");
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -79,8 +50,7 @@ int main() {
 
     // Setup Platform/Renderer bindings
     ImGui_ImplGlfw_InitForOpenGL(device->GetWindow(), true);
-    ImGui_ImplOpenGL3_Init("#version 460");
-    glewInit();
+    ImGui_ImplOpenGL3_Init("#version 450");
 
     float vertices[] = {
         -0.5f, -0.5f, 0.0f,
@@ -88,57 +58,62 @@ int main() {
         0.0f,  0.5f, 0.0f
     };      
 
+    //----------------------------------
+    unique_ptr<CLEntity> entity1 = make_unique<CLLight>(1);
+    unique_ptr<CLEntity> entity2 = make_unique<CLLight>(2);
+    unique_ptr<CLEntity> entity3 = make_unique<CLLight>(3);
+    unique_ptr<CLEntity> entity4 = make_unique<CLLight>(4);
+    unique_ptr<CLEntity> entity5 = make_unique<CLLight>(5);
+    unique_ptr<CLNode> smgr = make_unique<CLNode>(entity1.get());
+    unique_ptr<CLNode> node2 = make_unique<CLNode>(entity2.get());
+    unique_ptr<CLNode> node3 = make_unique<CLNode>(entity3.get());
+    unique_ptr<CLNode> node4 = make_unique<CLNode>(entity4.get());
+    unique_ptr<CLNode> node5 = make_unique<CLNode>(entity5.get());
 
-    //----- Creamos el vertex shader ------
-    unsigned int vertexShader;
-    vertexShader = glCreateShader(GL_VERTEX_SHADER); //Creamos el shader y nos guardamos su ID
-    glShaderSource(vertexShader, 1, &vertexShaderSource, NULL); //De momento en el tutorial lo pone como un string el codigo entero
-    glCompileShader(vertexShader);
+    smgr->AddChild(node2.get());
+    smgr->AddChild(node3.get());
+    node2->AddChild(node4.get());
+    node4->AddChild(node5.get());
 
-    //Comprobamos si ha compilado correctamente
-    int  success;
-    char infoLog[512];
-    glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
-    if(!success)
-    {
-        glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
-        std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
+    smgr->DrawTree(smgr.get());
+
+    auto nodeAux = smgr->GetNodeByID(5);
+
+    if(nodeAux!=nullptr){
+        cout << "Devuelto nodo con ID: " << nodeAux->GetEntity()->GetID() << " \n";
     }
 
-    //----- Creamos el fragment shader ------
-    //Codigo similar al de crear el vertex shader
-    unsigned int fragmentShader;
-    fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
-    glCompileShader(fragmentShader);
+    smgr->DeleteNode(node4->GetEntity()->GetID());
 
-    glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
-    if (!success)
-    {
-        glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
-        std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
-    }
+    smgr->DrawTree(smgr.get());
+
+
+    //-------------------Resource manager-------------------
+    unique_ptr<CLResourceManager> resourceManager = make_unique<CLResourceManager>();
+    auto resourceVertex = resourceManager->GetResourceShader("CLEngine/src/Shaders/vertex.glsl", GL_VERTEX_SHADER);
+    auto resourceFragment = resourceManager->GetResourceShader("CLEngine/src/Shaders/fragment.glsl", GL_FRAGMENT_SHADER);
+
+    
 
     //Una vez ambos shaders estan inicializados tenemos que linkarlos para que el output de uno vaya al otro
     int shaderProgram = glCreateProgram(); //Como siempre nos devuelve un identificador
 
     //Bueno aqui es obvio, los enlaza ambos al shaderProgram
-    glAttachShader(shaderProgram, vertexShader);
-    glAttachShader(shaderProgram, fragmentShader);
+    glAttachShader(shaderProgram, resourceVertex->GetShaderID());
+    glAttachShader(shaderProgram, resourceFragment->GetShaderID());
     glLinkProgram(shaderProgram);
 
+    int  success;
+    char infoLog[512];
     glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
     if(!success) {
         glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
         cout << "Ha petado el linkado de shaders :(\n";
     }
 
-    //Ahora usamos el shaderProgram, un nombre bastante representativo
-    //glUseProgram(shaderProgram);
-
     //Tecnicamente una vez linkados se pueden borrar los shaders
-    glDeleteShader(vertexShader);
-    glDeleteShader(fragmentShader);  
+    glDeleteShader(resourceVertex->GetShaderID());
+    glDeleteShader(resourceFragment->GetShaderID());  
 
     //Todo preparado, ahora comienza la magia
     // 1. bind Vertex Array Object
