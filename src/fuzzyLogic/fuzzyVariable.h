@@ -44,9 +44,9 @@ public:
     //added the m_dMinRange and m_dMaxRange are adjusted accordingly. All of the
     //methods return a proxy class representing the newly created instance. This
     //proxy set can be used as an operand when creating the rule base.
-    shared_ptr<FzSet> AddLeftShoulderSet(string name, double minBound, double peak, double maxBound);
-    shared_ptr<FzSet> AddRightShoulderSet(string name, double minBound, double peak, double maxBound);
-    shared_ptr<FzSet> AddTriangularSet(string name, double minBound, double peak, double maxBound);
+    shared_ptr<FzSet> AddLeftShoulderSet(const string& name, double minBound, double peak, double maxBound);
+    shared_ptr<FzSet> AddRightShoulderSet(const string& name, double minBound, double peak, double maxBound);
+    shared_ptr<FzSet> AddTriangularSet(const string& name, double minBound, double peak, double maxBound);
     //void AddSingletonSet(std::string name, double minBound, double peak, double maxBound);
 
     //fuzzify a value by calculating its DOM in each of this variable's subsets

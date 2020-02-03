@@ -7,11 +7,8 @@
 #include <string>
 #include <vector>
 #include <memory>
-#include "TransientFunction.h"
 #include "Lambda.h"
 #include "../Aliases.h"
-// #include <any>
-// #include <string>
 #include "../Entities/Entity.h"
 #include "../Components/CTransformable.h"
 #include "../Components/CPowerUp.h"
