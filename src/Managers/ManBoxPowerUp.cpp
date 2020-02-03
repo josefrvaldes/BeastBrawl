@@ -2,8 +2,6 @@
 //#include <functional> 
 #include <iostream>
 #include "../Entities/BoxPowerUp.h"
-#include "../EventManager/Event.h"
-#include "../EventManager/EventManager.h"
 #include "../../include/include_json/include_json.hpp"
 
 class Position;

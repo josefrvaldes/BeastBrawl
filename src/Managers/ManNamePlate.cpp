@@ -6,7 +6,7 @@
 #include "../Entities/CarHuman.h"
 
 ManNamePlate::ManNamePlate(ManCar* cars){
-    for(auto car : cars->GetEntities()){
+    for(const auto& car : cars->GetEntities()){
         //cout <<"Entraaaaaa\n";
         if(car.get() != cars->GetCar().get()){
             std::cout << "sdfasdfsa" << std::endl;

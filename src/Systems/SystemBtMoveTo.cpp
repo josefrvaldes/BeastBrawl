@@ -2,21 +2,16 @@
 
 
 #include "../behaviourTree/behaviourTree.h"
-#include "../behaviourTree/composite.h"
 #include "../behaviourTree/selector.h"
 #include "../behaviourTree/sequence.h"
 #include "../behaviourTree/decorator.h"
 
 #include "../behaviourTree/Blackboard.h"
-//#include "../Components/CPowerUp.h"
 #include "../Components/CTotem.h"
 #include "../Components/CCurrentNavMesh.h"
 #include "../Components/CTargetNavMesh.h"
-#include "../Components/CNavMesh.h"
 
 
-#include "../Entities/Totem.h"
-#include "../Managers/ManTotem.h"
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //                           COMPROBAR BEHAVIOR TREE
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -194,16 +189,16 @@ struct MoveToPowerUp_mt : public behaviourTree {
 struct MoveToCarTotem_mt : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
         auto actualCar = blackboard->actualCar;
-        for(auto actualAI : blackboard->manCars->GetEntities()){
+        for(const auto& actualAI : blackboard->manCars->GetEntities()){
             if (static_cast<Car*>(actualAI.get())->GetTypeCar() == TypeCar::CarAI){
-                auto cTotem = static_cast<CTotem*>(actualAI.get()->GetComponent(CompType::TotemComp).get());
+                auto cTotem = static_cast<CTotem*>(actualAI->GetComponent(CompType::TotemComp).get());
                 // TO-DO actualmente debemsos hacer que si una IA tiene el Totem no se siga a si misma... quedaria parada
                 if(cTotem->active == true){
                     auto cCurrendNavMeshCar = static_cast<CCurrentNavMesh*>(actualCar->GetComponent(CompType::CurrentNavMeshComp).get());
-                    auto cCurrendNavMeshCarAI = static_cast<CCurrentNavMesh*>(actualAI.get()->GetComponent(CompType::CurrentNavMeshComp).get());
+                    auto cCurrendNavMeshCarAI = static_cast<CCurrentNavMesh*>(actualAI->GetComponent(CompType::CurrentNavMeshComp).get());
                     if(cCurrendNavMeshCar->currentNavMesh == cCurrendNavMeshCarAI->currentNavMesh){
                         //if(actualCar != actualAI.get()){
-                            auto cTransformable = static_cast<CTransformable*>(actualAI.get()->GetComponent(CompType::TransformableComp).get());
+                            auto cTransformable = static_cast<CTransformable*>(actualAI->GetComponent(CompType::TransformableComp).get());
                             shared_ptr<DataMap> dataCarTotem = make_shared<DataMap>();                                                                    
                             (*dataCarTotem)[ACTUAL_CAR] = actualCar;             
                             (*dataCarTotem)[POS_DESTINATION] = cTransformable->position;                                        

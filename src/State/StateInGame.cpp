@@ -1,22 +1,10 @@
 #include "StateInGame.h"
-#include <limits.h>
-#include <stdio.h>
-#include <algorithm>
 #include <chrono>
 #include <iostream>
-#include <numeric>
 
 #include "../CLPhysics/CLPhysics.h"
 #include "../Components/CMesh.h"
-#include "../Components/CNamePlate.h"
-#include "../Components/CPath.h"
 #include "../Components/CTexture.h"
-#include "../Components/CTotem.h"
-#include "../Components/CTransformable.h"
-#include "../Components/CWayPointEdges.h"
-#include "../Managers/Manager.h"
-
-typedef std::chrono::high_resolution_clock Clock;
 
 using namespace std;
 using namespace chrono;

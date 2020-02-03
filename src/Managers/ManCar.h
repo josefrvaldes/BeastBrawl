@@ -12,13 +12,12 @@
 #include "../Entities/Entity.h"
 #include "../Entities/WayPoint.h"
 
-//#include "../Systems/SteeringBehaviours.h"
 #include "../Systems/SystemBtPowerUp.h"
 #include "../Systems/SystemBtMoveTo.h"
 #include "../Systems/SystemBtLoDMove.h"
 #include "../Systems/SystemPathPlanning.h"
 
-#include <stdlib.h> /* srand, rand */
+#include <cstdlib> /* srand, rand */
 #include <iostream>
 #include <map>
 #include <memory>

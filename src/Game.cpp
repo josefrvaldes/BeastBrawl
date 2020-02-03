@@ -1,12 +1,11 @@
 #include "Game.h"
-#include "Facade/Input/InputFacadeManager.h"
 #include "Facade/Physics/PhysicsFacadeManager.h"
-#include "Facade/Render/RenderFacadeManager.h"
 #include "State/StateEndRace.h"
 #include "State/StateInGameSingle.h"
 #include "State/StateInGameMulti.h"
 #include "State/StateMenu.h"
 #include "State/StatePause.h"
+
 
 using namespace std;
 

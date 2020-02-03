@@ -22,10 +22,16 @@
 #include "../../Components/CWayPointEdges.h"
 #include "../../Components/CMovementType.h"
 #include "../../Components/Component.h"
+#include "../../Components/CNavMesh.h"
+#include "../../Components/CCurrentNavMesh.h"
+#include "../../Components/CCar.h"
 #include "../../Constants.h"
 #include "../../Entities/WayPoint.h"
 #include "../../Entities/CarAI.h"
+#include "../../Entities/CarHuman.h"
 #include "../../Game.h"
+#include <src/Systems/Physics.h>
+#include <src/Managers/ManNavMesh.h>
 
 using namespace irr;
 using namespace video;

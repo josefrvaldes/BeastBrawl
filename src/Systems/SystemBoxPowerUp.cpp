@@ -1,7 +1,5 @@
 #include "SystemBoxPowerUp.h"
 
-#include "../Components/CBoxPowerUp.h"
-
     
 SystemBoxPowerUp::SystemBoxPowerUp(){
 

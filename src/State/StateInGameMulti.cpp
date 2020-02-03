@@ -1,5 +1,4 @@
 #include "StateInGameMulti.h"
-
 #include "../Components/CTotem.h"
 
 StateInGameMulti::StateInGameMulti() : StateInGame() {
