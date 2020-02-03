@@ -53,11 +53,11 @@ ALLCPPSOBJ	:= $(patsubst $(SRC_PATH)/%.cpp,$(OBJ_PATH)/%.o,$(ALLCPPS))
 SUBDIRS		:= $(shell find src/ -type d)
 OBJSUBDIRS  := $(patsubst $(SRC_PATH)%,$(OBJ_PATH)%,$(SUBDIRS))
 
-ifdef NCACHE
-	CC := g++
-else
+ifdef CACHE
 	CC := ccache g++
 	CXXFLAGS += -fuse-ld=gold
+else
+	CC := g++
 endif
 
 
