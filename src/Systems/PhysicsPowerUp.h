@@ -24,9 +24,9 @@
 #include "../fuzzyLogic/fuzzyLogic.h"
 
 #include <vector>
-#include <stdlib.h>     /* srand, rand */
+#include <cstdlib>     /* srand, rand */
 
-#include <math.h>
+#include <cmath>
 #include <memory>
 using namespace std;
 #define PI 3.141592

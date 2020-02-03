@@ -1,5 +1,4 @@
 #include "PhysicsPowerUp.h"
-#include "../Components/CPowerUp.h"
 
 
 PhysicsPowerUp::PhysicsPowerUp(){

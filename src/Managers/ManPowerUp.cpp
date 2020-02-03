@@ -3,7 +3,6 @@
 #include "../Entities/PowerUp.h"
 #include "../EventManager/Event.h"
 #include "../EventManager/EventManager.h"
-#include "../Aliases.h"
 #include "../Facade/Render/RenderFacadeManager.h"
 #include "../Components/CDimensions.h"
 
@@ -27,13 +26,13 @@ ManPowerUp::~ManPowerUp() {
 
 void ManPowerUp::CreatePowerUp(DataMap* d) {
 
-    typeCPowerUp type = any_cast<typeCPowerUp>((*d)["typePowerUp"]);
+    typeCPowerUp type = any_cast<typeCPowerUp>((*d)[TYPE_POWER_UP]);
 
-    CTransformable *transforSalida = any_cast<CTransformable *>((*d)["posCocheSalida"]);
-    CDimensions *dimensionsCarSalida = any_cast<CDimensions *>((*d)["dimensionCocheSalida"]);
+    CTransformable *transforSalida = any_cast<CTransformable *>((*d)[CAR_EXIT_POSITION]);
+    CDimensions *dimensionsCarSalida = any_cast<CDimensions *>((*d)[CAR_EXIT_DIMENSION]);
     CTransformable *transforPerse;
-    if(d->count("posCochePerseguir") > 0){
-        transforPerse = any_cast<CTransformable *>((*d)["posCochePerseguir"]);
+    if(d->count(CAR_FOLLOW_POSITION) > 0){
+        transforPerse = any_cast<CTransformable *>((*d)[CAR_FOLLOW_POSITION]);
     }else
         transforPerse = nullptr;
 
@@ -61,7 +60,7 @@ void ManPowerUp::CreatePowerUp(DataMap* d) {
     renderEngine->FacadeAddObject(powerUp.get());
 
     //Cuando creamos el powerUp, ponemos su tiempo inicial de inactivadad --> para no danyarnos a nostros mismos
-    static_cast<CPowerUp*>(powerUp.get()->GetComponent(CompType::PowerUpComp).get())->timeStart = system_clock::now();
+    static_cast<CPowerUp*>(powerUp->GetComponent(CompType::PowerUpComp).get())->timeStart = system_clock::now();
 }
 
 
@@ -70,7 +69,7 @@ void ManPowerUp::DeletePowerUp(DataMap* d){
     auto renderFacadeManager = RenderFacadeManager::GetInstance();
     auto renderEngine = renderFacadeManager->GetRenderFacade();
     for(long unsigned int i=0; i< entities.size(); ++i){
-        if(entities[i] == any_cast<shared_ptr<Entity>>((*d)["PowerUp"])){
+        if(entities[i] == any_cast<shared_ptr<Entity>>((*d)[POWER_UP])){
             renderEngine->DeleteEntity(entities[i].get());
             entities.erase(entities.begin()+i);
         }

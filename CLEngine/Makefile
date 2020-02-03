@@ -16,11 +16,12 @@ ifdef WINDOWS
 	INCLUDE     := -I. 
 	CC			:= g++
 else
-	LIBS 	    += -L./lib/linux/glfw -lglfw3 -lGL -lX11 -lpthread -lXrandr -lXi -ldl -L./lib/linux/glew -lGLEW
-	LIBS		+= -Wl,-rpath=lib/linux/glfw -Wl,-rpath=lib/linux/glew
-	INCLUDE     := -I.
-	INCLUDE_GLEW := -I./include/glew
-	INCLUDE_GLFW := -I./include/glfw
+	LIBS 	    	+= -L./lib/linux/glfw -lglfw3 -lGL -lX11 -lpthread -lXrandr -lXi -ldl -L./lib/linux/glew -lGLEW -L./lib/linux/assimp -lassimp
+	LIBS			+= -Wl,-rpath=lib/linux/glfw -Wl,-rpath=lib/linux/glew -Wl,-rpath=lib/linux/assimp
+	INCLUDE     	:= -I.
+	INCLUDE_GLEW 	:= -I./include/glew
+	INCLUDE_GLFW 	:= -I./include/glfw
+	INCLUDE_ASSIMP 	:= -I./include/assimp
 	CC			:= g++
 endif
 
@@ -29,13 +30,19 @@ OBJ_PATH    := ../obj/CLEngine
 SRC_PATH	:= src
 
 NAME_EXE	:= CLEngine
-CXXFLAGS 	+= -Wall -Wno-unknown-pragmas -std=c++17 # el no-unknown-pragmas es para que no salga el warning de los pragma region
+CXXFLAGS 	+= -Wall -Wno-unknown-pragmas -std=c++17  # el no-unknown-pragmas es para que no salga el warning de los pragma region
 
 ALLCPPS		:= $(shell find src/ -type f -iname *.cpp)
 ALLCPPSOBJ	:= $(patsubst $(SRC_PATH)/%.cpp,$(OBJ_PATH)/%.o,$(ALLCPPS))
 SUBDIRS		:= $(shell find src/ -type d)
 OBJSUBDIRS  := $(patsubst $(SRC_PATH)%,$(OBJ_PATH)%,$(SUBDIRS))
 
+ifdef CACHE
+	CC := ccache g++
+	CXXFLAGS += -fuse-ld=gold
+else
+	CC := g++
+endif
 
 
 #Esto crea el ejecutable
@@ -52,7 +59,7 @@ $(NAME_EXE): $(OBJSUBDIRS) $(ALLCPPSOBJ)
 $(OBJ_PATH)/%.o: $(SRC_PATH)/%.cpp
 	$(PRUEBA_TEXT)
 	$(COMPILING_TEXT) $<
-	@$(CC) $(CXXFLAGS) -o $@ -c $^ $(INCLUDE) $(INCLUDE_GLEW) $(INCLUDE_GLFW)
+	$(CC) $(CXXFLAGS) -o $@ -c $^ $(INCLUDE) 
 	
 
 $(OBJSUBDIRS):

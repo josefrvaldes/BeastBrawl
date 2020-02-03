@@ -2,8 +2,6 @@
 //#include <functional> 
 #include <iostream>
 #include "../Entities/BoxPowerUp.h"
-#include "../EventManager/Event.h"
-#include "../EventManager/EventManager.h"
 #include "../../include/include_json/include_json.hpp"
 
 class Position;
@@ -59,8 +57,8 @@ void ManBoxPowerUp::CreateBoxPowerUp() {
 
 // se ejecuta en caso de que alguno de los coches coja la caja
 void ManBoxPowerUp::EjecutarMeHanCogido(DataMap* d) {
-    auto cBoxPowerUp = any_cast<CBoxPowerUp*>((*d)["BoxPowerUpComp"]);
-    auto actualBox   = any_cast<shared_ptr<Entity>>((*d)["actualBox"]);
+    auto cBoxPowerUp = any_cast<CBoxPowerUp*>((*d)[BOX_POWER_UP_COMPONENT]);
+    auto actualBox   = any_cast<shared_ptr<Entity>>((*d)[ACTUAL_BOX]);
 
     if(cBoxPowerUp->active == true){
         //cout << "Han cogido un powerup, madafaka!! sera la primera" << endl;
@@ -72,7 +70,7 @@ void ManBoxPowerUp::EjecutarMeHanCogido(DataMap* d) {
 
         shared_ptr<DataMap> data = make_shared<DataMap>();
         auto cTranformableBox = static_cast<CTransformable*>(actualBox.get()->GetComponent(CompType::TransformableComp).get());
-        (*data)["posBox"] = cTranformableBox->position;
+        (*data)[BOX_POSITION] = cTranformableBox->position;
         EventManager::GetInstance().AddEventMulti(Event{EventType::BREAK_BOX, data});
     }
 }

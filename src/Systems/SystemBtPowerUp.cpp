@@ -2,13 +2,11 @@
 
 
 #include "../behaviourTree/behaviourTree.h"
-#include "../behaviourTree/composite.h"
 #include "../behaviourTree/selector.h"
 #include "../behaviourTree/sequence.h"
 #include "../behaviourTree/decorator.h"
 
 #include "../behaviourTree/Blackboard.h"
-#include "../Components/CPowerUp.h"
 #include "../Components/CTotem.h"
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -117,7 +115,7 @@ struct ThrowPowerUp : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
         //std::cout << "Lanzaaas el powerUp beibeee" << std::endl;
         shared_ptr<DataMap> data = make_shared<DataMap>();
-        (*data)["actualCar"] = blackboard->actualCar;
+        (*data)[ACTUAL_CAR] = blackboard->actualCar;
         EventManager::GetInstance().AddEventMulti(Event{EventType::THROW_POWERUP_AI, data});
         return true;
     }

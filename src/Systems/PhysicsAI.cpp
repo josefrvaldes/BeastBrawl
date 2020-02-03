@@ -1,26 +1,11 @@
 #include "PhysicsAI.h"
 
-#include "../Entities/Car.h"
-#include "../Entities/CarHuman.h"
 #include "../Entities/CarAI.h"
-#include "../Entities/WayPoint.h"
-
-
-#include "../Components/CPowerUp.h"
 #include "../Components/CShield.h"
 #include "../Components/CTotem.h"
-#include "../Components/CRoboJorobo.h"
 #include "../Components/CNitro.h"
-#include "../Components/CPath.h"
-#include "../Components/CWayPointEdges.h"
 
 #include "../Facade/Render/RenderFacadeManager.h"
-#include "../Game.h"
-#include "../Managers/Manager.h"
-#include "../Managers/ManPowerUp.h"
-#include "../Managers/ManBoxPowerUp.h"
-#include "../Managers/ManTotem.h"
-#include "../Managers/ManWayPoint.h"
 
 
 

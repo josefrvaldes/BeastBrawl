@@ -1,5 +1,4 @@
 #include "ManBoundingWall.h"
-#include <functional>
 #include <iostream>
 #include "../Entities/BoundingWall.h"
 #include "../../include/include_json/include_json.hpp"

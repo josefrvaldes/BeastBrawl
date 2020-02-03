@@ -7,17 +7,9 @@
 #include "../Entities/Car.h"
 #include "../Entities/CarHuman.h"
 #include "../Entities/CarAI.h"
-#include "../Entities/Entity.h"
-#include "../Entities/BoxPowerUp.h"
-#include "../Entities/PowerUp.h"
-#include "../Entities/BoundingWall.h"
-#include "../Components/CTransformable.h"
 #include "../Components/CNitro.h"
-#include "../Components/CPosDestination.h"
 #include "../Components/CCar.h"
 #include "../Components/CBoundingSphere.h"
-#include "../Components/CPowerUp.h"
-#include "../Components/CDimensions.h"
 #include "../Components/CBoundingPlane.h"
 #include "../Components/CBoundingRay.h"
 
@@ -344,12 +336,12 @@ glm::vec2 SteeringBehaviours::ObstacleAvoidance(Entity* m_Car, ManCar* m_manCar,
     auto cCar = static_cast<CCar*>(m_Car->GetComponent(CompType::CarComp).get());
     auto cRay = static_cast<CBoundingRay*>(m_Car->GetComponent(CompType::CompBoundingRay).get());
     glm::vec2 vectorForce = glm::vec2(0.0, 0.0);
-    float distance = 999999999;
-    float finalDistance = 99999999;
+    float distance = 999999999.0;
+    float finalDistance = 99999999.0;
     glm::vec2 vectorForceAvoid;
     Entity* actualObstacle = nullptr;
 
-    for(auto obstacle : m_manCar->GetEntities()){
+    for(const auto& obstacle : m_manCar->GetEntities()){
         //auto cPowerUp = static_cast<CPowerUp*>(obstacle->GetComponent(CompType::PowerUpComp).get());
         if(obstacle.get()!=m_Car && CollisionRaySphere(m_Car, obstacle.get(), m_velocityVector, distance, vectorForceAvoid)==true){
             if(distance < finalDistance && distance < cCar->speed*0.4+cRay->baseDistanceSphere && distance > 0){
@@ -373,12 +365,12 @@ glm::vec2 SteeringBehaviours::WallAvoidance(Entity* m_Car, ManBoundingWall* m_ma
     auto cRay = static_cast<CBoundingRay*>(m_Car->GetComponent(CompType::CompBoundingRay).get());
     glm::vec2 vectorForce = glm::vec2(0.0, 0.0);
     glm::vec3 target = glm::vec3(0.0, 0.0, 0.0);
-    float distance = 999999999;
-    float finalDistance = 99999998;
+    float distance = 999999999.0;
+    float finalDistance = 99999998.0;
     glm::vec2 vectorForceAvoid;
     Entity* actualObstacle = nullptr;
 
-    for(std::shared_ptr<Entity> obstacle : m_manBoundingWall->GetEntities()){
+    for(const auto& obstacle : m_manBoundingWall->GetEntities()){
         if(CollisionRayPlane(m_Car, obstacle.get(), m_velocityVector, distance, vectorForceAvoid, target)==true){
             if(distance < finalDistance && distance < cCar->speed*0.4+cRay->baseDistancePlane && distance > 0){
                 //std::cout << "Collisiona" << std::endl;

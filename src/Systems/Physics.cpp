@@ -1,18 +1,10 @@
 #include "Physics.h"
-#include <chrono>
 #include "../Components/CCamera.h"
 #include "../Components/CCar.h"
-#include "../Components/CId.h"
 #include "../Components/CNitro.h"
-#include "../Components/CRoboJorobo.h"
-#include "../Components/CShield.h"
 #include "../Components/CSpeed.h"
-#include "../Components/CTransformable.h"
-#include "../Components/CType.h"
-#include "../Components/Component.h"
 #include "../Entities/Camera.h"
 #include "../Entities/Car.h"
-#include "../Entities/CarHuman.h"
 
 Physics::Physics(float _deltaTime) : deltaTime(_deltaTime) {
 }
