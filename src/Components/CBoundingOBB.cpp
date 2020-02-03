@@ -22,10 +22,10 @@ using namespace std;
 CBoundingOBB::CBoundingOBB(const vector<vec3> &vertices, const vec3 &centerMass){
     m_compType = CompType::CompBoundingOBB;
     center = centerMass;
-    std::cout << "EL CENTRO DE MASAS (EN X) DEL BOUNDING OBB ES: " << center.x << endl;
+    //std::cout << "EL CENTRO DE MASAS (EN X) DEL BOUNDING OBB ES: " << center.x << endl;
     // vamos a crear los planos que serviran para crear el CBoundingOBB
     for(long unsigned int i=0; i<vertices.size(); i=i+4){
-        std::cout << " La x del vertice es: " << vertices[i].x << endl;
+        //std::cout << " La x del vertice es: " << vertices[i].x << endl;
         planes.push_back( make_shared<CBoundingPlane>(vertices[i], vertices[i+1], vertices[i+2], vertices[i+3]) );
     }
     cout << " ---------------------------------------   FIN   ------------------------------------------------------" << endl;
@@ -36,7 +36,7 @@ CBoundingOBB::CBoundingOBB(const vector<vec3> &vertices, const vec3 &centerMass)
 IntersectData CBoundingOBB::IntersectSphere(const CBoundingSphere &other, const CTransformable &trCar, const CCar &ccarCar){
     vector<IntersectData> intersectsPlane;  // nos guardamos los datos d ela colision
     intersectsPlane.shrink_to_fit();
-    for(int i=0; i<planes.size(); i++){
+    for(long unsigned int i=0; i<planes.size(); i++){
         IntersectData intersData = planes[i].get()->IntersectSphere(other, trCar, ccarCar);
         if (intersData.intersects) {
             intersectsPlane.push_back(IntersectData(true, i, intersData.direction));
@@ -47,7 +47,7 @@ IntersectData CBoundingOBB::IntersectSphere(const CBoundingSphere &other, const 
     }
     else if(intersectsPlane.size() > 1){
         //std::cout << "DE UN OBB COLISIONAMOS CON MAS DE 1 PLANO BEIBEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE" << std::endl;
-        for(int i=0; i<intersectsPlane.size(); i++){
+        for(long unsigned int i=0; i<intersectsPlane.size(); i++){
             vec3 vecDir = vec3(center.x-other.center.x, center.y-other.center.y, center.z-other.center.z);
             IntersectData intersDataSphereRay = planes[intersectsPlane[i].posEntity]->IntersectRay(other.center ,normalize(vecDir));
             // De normal el rayo lanzado solo debe de colisionar con 1 plano, sera por el que realmente entra.
