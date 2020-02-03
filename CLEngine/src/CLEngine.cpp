@@ -20,6 +20,8 @@ static void error(int error, const char* description) {
  */
 CLEngine::CLEngine (const unsigned int w, const unsigned int h, const string& title) {
     CreateGlfwWindow(w, h, title);
+    glewInit();
+
 }
 
 /**

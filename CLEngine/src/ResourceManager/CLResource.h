@@ -1,10 +1,11 @@
 #pragma once
 
 #include <string>
+#include <iostream>
 #include "../../../include/glm/glm.hpp"
 #include "../../include/glew/glew.h"
 
-
+using namespace std;
 namespace CLE {
 
     class CLResource {
@@ -13,15 +14,15 @@ namespace CLE {
             ~CLResource() {};
 
             virtual void Draw(glm::mat4&) = 0;
-            virtual bool LoadFile(std::string) = 0;
+            virtual bool LoadFile(string) = 0;
 
-            void SetName(std::string n)  { name = n; }
+            void SetName(string n)  { name = n; }
 
-            const std::string GetName()       const   { return name; }
+            const string GetName()       const   { return name; }
 
         private:
 
-            std::string name;
+            string name;
     };
 
 }
