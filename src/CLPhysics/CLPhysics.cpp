@@ -206,6 +206,10 @@ void CLPhysics::HandleCollisions(CTransformable &trCar, CBoundingSphere &spCar, 
 
         //TODO: PROVISIONAL ... PONER LA VELOCIDAD DEL COCHE A 0
         //ccarCar.speed = ccarCar.speed/1.01;
+    }else{
+        if( intersData.posEntity == -1 ){ // SIGNIFICA QUE COLISIONAMOS CON MAS DE UN PALNO... ESFERA VIRTUAL
+            cout << "NUNCA DEBERIA DE PASAR ESTO LOCOCOOOCCOOCCOCO" << endl;
+        }
     }
 }
 
@@ -216,7 +220,7 @@ void CLPhysics::HandleCollisions(CTransformable &trCar, CBoundingSphere &spCar, 
     IntersectData intersData = obb.IntersectSphere(spCar, trCar, ccarCar);
     if (intersData.intersects) {
         // SonarChoque(mainCar);
-        //SeparateSphereFromPlane(intersData, trCar, spCar, ccarCar, obb);
+        SeparateSphereFromPlane(intersData, trCar, spCar, ccarCar, *obb.planes[intersData.posEntity] );
 
     }
 }

@@ -27,6 +27,8 @@ ManBoundingOBB::ManBoundingOBB() {
     //CreateBoundingOBB(vec3(150.f, 40.f, 50.f),vec3(150.f, 40.f, 150.f),vec3(150.f, 10.f, 150.f),vec3(150.f, 10.f, 50.f));
     //CreateBoundingOBB(vec3(30.f, 40.f, 50.f),vec3(40.f, 40.f, 40.f),vec3(40.f, 10.f, 40.f),vec3(30.f, 10.f, 50.f));
 
+    //TODO: esta bien hacer ese new?????????
+
     auto verticesOBB = new vector<vec3>;
     verticesOBB->push_back(vec3(40.f, 40.f, 40.f));
     verticesOBB->push_back(vec3(140.f, 40.f, 40.f));
@@ -53,7 +55,9 @@ ManBoundingOBB::ManBoundingOBB() {
     verticesOBB->push_back(vec3(40.f, 10.f, 40.f));
     verticesOBB->push_back(vec3(30.f, 10.f, 50.f));
 
-    CreateBoundingOBB(*verticesOBB);
+    vec3 centerMass = vec3( (40+140+40+140+30+30+150+150+30+40)/10, (40+10+10+40+10+40+40+10+40+10)/10, (40+40+160+160+50+150+50+150+50+40)/10);
+
+    CreateBoundingOBB(*verticesOBB, *(&centerMass) );
 
 
 
@@ -63,8 +67,8 @@ ManBoundingOBB::ManBoundingOBB() {
 }
 
 
-void ManBoundingOBB::CreateBoundingOBB(const vector<vec3> &vertices){
-    shared_ptr<BoundingOBB> p = make_shared<BoundingOBB>(vertices);
+void ManBoundingOBB::CreateBoundingOBB(const vector<vec3> &vertices, const vec3 &centerMas){
+    shared_ptr<BoundingOBB> p = make_shared<BoundingOBB>(vertices, centerMas);
     entities.push_back(p);
 }
 
