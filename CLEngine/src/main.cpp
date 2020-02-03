@@ -6,6 +6,8 @@
 #include "SceneTree/CLNode.h"
 #include "ResourceManager/CLResourceManager.h"
 #include "ResourceManager/CLResourceShader.h"
+#include "ResourceManager/CLResourceMesh.h"
+#include "ResourceManager/CLResource.h"
 
 #include "../include/glew/glew.h"
 #include "../include/glfw/glfw3.h"
@@ -73,8 +75,6 @@ int main() {
 
     smgr->DrawTree(smgr.get());
 
-    //PETA AQUIIIIIIIIIIIIIIIIIIIIIIIII
-    shared_ptr<CLResourceShader> resourceShader = make_shared<CLResourceShader>();
 
     //-------------------Resource manager-------------------
     unique_ptr<CLResourceManager> resourceManager = make_unique<CLResourceManager>();

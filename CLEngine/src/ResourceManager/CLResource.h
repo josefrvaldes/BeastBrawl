@@ -21,7 +21,7 @@ namespace CLE {
 
         private:
 
-            std::string name { nullptr };
+            std::string name;
     };
 
 }
