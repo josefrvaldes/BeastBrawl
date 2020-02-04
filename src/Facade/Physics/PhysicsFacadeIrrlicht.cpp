@@ -1,14 +1,7 @@
 #include "PhysicsFacadeIrrlicht.h"
 
 #include "../../Components/CBoundingSphere.h"
-#include "../../Components/CCamera.h"
-#include "../../Components/CCar.h"
 #include "../../Components/CId.h"
-#include "../../Components/CMesh.h"
-#include "../../Components/CTexture.h"
-#include "../../Components/CTransformable.h"
-#include "../../Components/CType.h"
-#include "../../Components/Component.h"
 #include "../../Constants.h"
 
 PhysicsFacadeIrrlicht::PhysicsFacadeIrrlicht() {

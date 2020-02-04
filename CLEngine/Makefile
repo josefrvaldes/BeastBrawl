@@ -37,6 +37,12 @@ ALLCPPSOBJ	:= $(patsubst $(SRC_PATH)/%.cpp,$(OBJ_PATH)/%.o,$(ALLCPPS))
 SUBDIRS		:= $(shell find src/ -type d)
 OBJSUBDIRS  := $(patsubst $(SRC_PATH)%,$(OBJ_PATH)%,$(SUBDIRS))
 
+ifdef CACHE
+	CC := ccache g++
+	CXXFLAGS += -fuse-ld=gold
+else
+	CC := g++
+endif
 
 
 #Esto crea el ejecutable
@@ -53,7 +59,7 @@ $(NAME_EXE): $(OBJSUBDIRS) $(ALLCPPSOBJ)
 $(OBJ_PATH)/%.o: $(SRC_PATH)/%.cpp
 	$(PRUEBA_TEXT)
 	$(COMPILING_TEXT) $<
-	@$(CC) $(CXXFLAGS) -o $@ -c $^ $(INCLUDE) 
+	$(CC) $(CXXFLAGS) -o $@ -c $^ $(INCLUDE) 
 	
 
 $(OBJSUBDIRS):

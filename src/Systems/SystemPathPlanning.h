@@ -1,17 +1,7 @@
 #pragma once
 
 
-#include <vector>
 #include <stack>
-#include <iostream>
-#include <stdio.h>
-#include <limits.h>
-#include <algorithm>
-#include <stdlib.h>     /* srand, rand */
-
-#include <math.h>
-#include <memory>
-
 #include "../Aliases.h"
 
 using namespace std;

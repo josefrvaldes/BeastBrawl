@@ -11,6 +11,6 @@ class GameObject : public Entity
 
 public:
     GameObject();
-    GameObject(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale, string texture, string mesh);
+    GameObject(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale, const string& texture, const string& mesh);
     ~GameObject();
 };

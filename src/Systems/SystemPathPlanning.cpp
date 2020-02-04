@@ -1,9 +1,7 @@
 #include "SystemPathPlanning.h"
 
-#include "../Entities/Car.h"
 #include "../Entities/CarHuman.h"
 #include "../Entities/CarAI.h"
-#include "../Entities/WayPoint.h"
 
 #include "../EventManager/Event.h"
 #include "../EventManager/EventManager.h"
@@ -13,18 +11,18 @@
 #include "../Components/CTargetNavMesh.h"
 #include "../Components/CCurrentNavMesh.h"
 #include "../Components/CNavMesh.h"
-#include "../Components/CPosDestination.h"
+#include "../Managers/ManNavMesh.h"
+
 
 #include "../Facade/Render/RenderFacadeManager.h"
 #include "../Game.h"
-#include "../Managers/Manager.h"
-#include "../Managers/ManPowerUp.h"
-#include "../Managers/ManBoxPowerUp.h"
-#include "../Managers/ManTotem.h"
-#include "../Managers/ManWayPoint.h"
-#include "../Managers/ManNavMesh.h"
 
-#include <math.h>
+#include <stack>
+#include <iostream>
+#include <climits>
+#include <algorithm>
+#include <cstdlib>     /* srand, rand */
+
 
 
 

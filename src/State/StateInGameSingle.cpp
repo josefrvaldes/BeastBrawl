@@ -80,7 +80,7 @@ void StateInGameSingle::InitializeCLPhysics(ManCar &manCars, ManBoundingWall &ma
 
 void StateInGameSingle::InitializeManagers(Physics *physics, Camera *cam) {
     StateInGame::InitializeManagers(physics, cam);
-    CAMBIARInicializarCarAIS(*manCars.get(), *manWayPoint.get());
+    CAMBIARInicializarCarAIS(*manCars, *manWayPoint);
 }
 
 void StateInGameSingle::InitializeSystems(ManCar &manCars, ManBoundingWall &manBoundingWall) {
@@ -98,9 +98,9 @@ void StateInGameSingle::AddElementsToRender() {
 
 void StateInGameSingle::CAMBIARCosasDeTotemUpdate() {
     bool todosFalse = true;
-    auto cTransformTotem = static_cast<CTransformable *>(totemOnCar.get()->GetComponent(CompType::TransformableComp).get());
+    auto cTransformTotem = static_cast<CTransformable *>(totemOnCar->GetComponent(CompType::TransformableComp).get());
     cTransformTotem->rotation.y += 0.1;
-    for (auto carAI : manCars->GetEntities()) {  // actualizamos los coche IA
+    for (const auto& carAI : manCars->GetEntities()) {  // actualizamos los coche IA
         // comprobamos el componente totem y si lo tienen se lo ponemos justo encima para que se sepa quien lo lleva
         auto cTotem = static_cast<CTotem *>(carAI.get()->GetComponent(CompType::TotemComp).get());
         if (cTotem->active) {

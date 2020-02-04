@@ -1,6 +1,6 @@
 #pragma once
 
-#include <math.h>
+#include <cmath>
 #include "../../include/glm/vec2.hpp"
 #include "../../include/glm/vec3.hpp"
 #include <memory>
@@ -16,10 +16,10 @@
 using namespace std;
 
 struct ManCar;
-struct Entity;
-struct CTransformable;
+class Entity;
+class CTransformable;
 struct CNitro;
-struct CCar;
+class CCar;
 struct ManPowerUp;
 struct ManBoundingWall;
 

@@ -1,12 +1,8 @@
-#define _USE_MATH_DEFINES
-
 #include "RenderFacadeIrrlicht.h"
 
-#include <math.h>
-#include "../../Aliases.h"
+#include <cmath>
 #include "../../Components/CBoundingPlane.h"
 #include "../../Components/CBoundingSphere.h"
-#include "../../Components/CPowerUp.h"
 #include "../../Components/CCamera.h"
 #include "../../Components/CDimensions.h"
 #include "../../Components/CId.h"
@@ -16,16 +12,18 @@
 #include "../../Components/CTexture.h"
 #include "../../Components/CTargetNavMesh.h"
 #include "../../Components/CTotem.h"
-#include "../../Components/CTransformable.h"
 #include "../../Components/CType.h"
-#include "../../Components/CWayPoint.h"
 #include "../../Components/CWayPointEdges.h"
 #include "../../Components/CMovementType.h"
-#include "../../Components/Component.h"
+#include "../../Components/CNavMesh.h"
+#include "../../Components/CCurrentNavMesh.h"
+#include "../../Components/CCar.h"
 #include "../../Constants.h"
-#include "../../Entities/WayPoint.h"
 #include "../../Entities/CarAI.h"
+#include "../../Entities/CarHuman.h"
 #include "../../Game.h"
+#include <src/Systems/Physics.h>
+#include <src/Managers/ManNavMesh.h>
 
 using namespace irr;
 using namespace video;
@@ -123,7 +121,7 @@ void RenderFacadeIrrlicht::FacadeDrawHUD(Entity* car, ManCar* carsAI) {
 
     int i = 0;
     core::stringw textIA = core::stringw("Car ");
-    for (auto cars : carsAI->GetEntities()) {
+    for (const auto& cars : carsAI->GetEntities()) {
         if(carsAI->GetCar().get() != cars.get()){
             cTotem = static_cast<CTotem*>(cars->GetComponent(CompType::TotemComp).get());
 
@@ -142,7 +140,7 @@ void RenderFacadeIrrlicht::FacadeDrawHUD(Entity* car, ManCar* carsAI) {
 
 //Crea las plates de los nombres de los coches
 void RenderFacadeIrrlicht::FacadeAddPlates(Manager* manNamePlates) {
-    for (auto plate : manNamePlates->GetEntities()) {
+    for (const auto& plate : manNamePlates->GetEntities()) {
         auto cId = static_cast<CId*>(plate->GetComponent(CompType::IdComp).get());
 
         core::stringw string = core::stringw("Car AI ") + core::stringw(numEnemyCars++);
@@ -153,7 +151,7 @@ void RenderFacadeIrrlicht::FacadeAddPlates(Manager* manNamePlates) {
 
 //Actualiza las posiciones de las plates
 void RenderFacadeIrrlicht::FacadeUpdatePlates(Manager* manNamePlates) {
-    for (auto plate : manNamePlates->GetEntities()) {
+    for (const auto& plate : manNamePlates->GetEntities()) {
         auto cNamePlate = static_cast<CNamePlate*>(plate->GetComponent(CompType::NamePlateComp).get());
         auto cId = static_cast<CId*>(plate->GetComponent(CompType::IdComp).get());
 
@@ -365,7 +363,7 @@ void RenderFacadeIrrlicht::UpdateCamera(Entity* cam, ManCar* manCars) {
 
         auto idCarAIWithTotem = -1;
         //Buscamos el ID del coche que tiene el totem (en caso de tenerlo)
-        for(auto cars : manCars->GetEntities()){
+        for(const auto& cars : manCars->GetEntities()){
             if(manCars->GetCar().get() != cars.get()){
                 auto cTotem = static_cast<CTotem*>(cars->GetComponent(CompType::TotemComp).get());
                 if(cTotem->active){
@@ -663,7 +661,7 @@ void RenderFacadeIrrlicht::FacadeDrawGraphEdges(ManWayPoint* manWayPoints) const
     if (!showDebug) return;  //Si no esta activado debug retornamos
 
     //Recorremos todos los WayPoints del manager
-    for (auto way : manWayPoints->GetEntities()) {
+    for (const auto& way : manWayPoints->GetEntities()) {
         auto cWayPoint = static_cast<CWayPoint*>(way->GetComponent(CompType::WayPointComp).get());
         auto cWayPointEdge = static_cast<CWayPointEdges*>(way->GetComponent(CompType::WayPointEdgesComp).get());
 
@@ -730,7 +728,7 @@ void RenderFacadeIrrlicht::FacadeDrawAIDebug(ManCar* manCars, ManNavMesh* manNav
     glm::vec3 point7;
     //Dibujamos el cuadrado que engloba a cada NavMesh
 
-    for(auto navMesh : manNavMesh->GetEntities()){
+    for(const auto& navMesh : manNavMesh->GetEntities()){
         auto cTransformable = static_cast<CTransformable*>(navMesh->GetComponent(CompType::TransformableComp).get());
         auto cDimensions    = static_cast<CDimensions*>(navMesh->GetComponent(CompType::DimensionsComp).get());
 
@@ -774,7 +772,7 @@ void RenderFacadeIrrlicht::FacadeDrawAIDebug(ManCar* manCars, ManNavMesh* manNav
     //Ahora vamos a hacer el debug desde nuestra posicion al CPosDestination
     if(idCarAIToDebug==-1){
         //Significa que lo hacemos para todos los coches
-        for(auto carAI : manCars->GetEntities()){
+        for(const auto& carAI : manCars->GetEntities()){
             if (static_cast<Car*>(carAI.get())->GetTypeCar() == TypeCar::CarAI){
                 auto cPosDestination = static_cast<CPosDestination*>(carAI->GetComponent(CompType::PosDestination).get());
                 auto cTransformableCar = static_cast<CTransformable*>(carAI->GetComponent(CompType::TransformableComp).get());

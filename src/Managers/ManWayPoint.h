@@ -6,7 +6,7 @@
 #include <memory>
 #include <fstream>
 #include <string>
-#include <stdlib.h>
+#include <cstdlib>
 #include "../../include/glm/vec3.hpp"
 #include "Manager.h"
 

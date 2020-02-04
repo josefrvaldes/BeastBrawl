@@ -1,7 +1,6 @@
 #include    "fuzzySet_Triangle.h"
 //#include "membershipFunctions.h"
 
-#include <iostream>
 
 
 double calculateMembership(double currentValue, double minValue, double maxValue){

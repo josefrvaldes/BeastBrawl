@@ -1,8 +1,6 @@
 #include "Camera.h"
 #include "../Components/CId.h"
-#include "../Components/CTransformable.h"
 #include "../Components/CCamera.h"
-#include "iostream"
 
 class Position;
 using namespace std;

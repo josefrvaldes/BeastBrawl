@@ -1,5 +1,4 @@
 #include "fuzzyRules.h"
-#include <iostream>
 
 void FuzzyRule::Calculate(){
     //std::cout << "hola" << std::endl;

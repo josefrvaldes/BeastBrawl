@@ -1,5 +1,4 @@
 #include "BoundingWall.h"
-#include <iostream>
 #include "../Components/CBoundingPlane.h"
 #include "../Components/CId.h"
 

@@ -2,7 +2,6 @@
 #include "../Components/CId.h"
 #include "../Components/CNamePlate.h"
 #include "../Components/CType.h"
-#include "iostream"
 
 class Position;
 using namespace std;

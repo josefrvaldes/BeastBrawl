@@ -32,7 +32,7 @@ void EventManager::Update() {
         if (mapByType != eventListenerMap.end()) {
             auto eventVector = mapByType->second;  // El vector de listeners del mapa segun el EventType
 
-            for (Listener listener : eventVector) {
+            for (const Listener& listener : eventVector) {
                 listener.callback(e.data.get());
             }
         }
@@ -41,14 +41,14 @@ void EventManager::Update() {
 
 //Añade un evento a la cola de eventos
 // O(n) -> Recorremos la lista iterativamente hasta encontrar el valor directamente superior
-void EventManager::AddEventMulti(Event e) {
+void EventManager::AddEventMulti(const Event& e) {
     //FIXME: Descomentar esto para que funcione con cola
     //eventQueue.push(e);
 
     std::list<Event>::iterator it;
 
     //Si es el primer evento lo añadimos al comienzo
-    if (eventList.size() == 0) {
+    if (eventList.empty()) {
         eventList.push_front(e);
     } else {
         //TODO: Implementar un algoritmo de busqueda e insercion mas optimo
@@ -64,7 +64,7 @@ void EventManager::AddEventMulti(Event e) {
 }
 
 // Añade un listener al mapa
-void EventManager::SuscribeMulti(const Listener listener) {
+void EventManager::SuscribeMulti(const Listener& listener) {
     //Vamos a ver si tiene ya alguno de este tipo
     auto iterator = eventListenerMap.find(listener.type);
 
@@ -79,7 +79,7 @@ void EventManager::SuscribeMulti(const Listener listener) {
 }
 
 // Añade un listener al mapa
-void EventManager::Suscribe(const Listener listener) {
+void EventManager::Suscribe(const Listener& listener) {
     //Vamos a ver si tiene ya alguno de este tipo
     auto iterator = eventListenerMap.find(listener.type);
 
@@ -94,7 +94,7 @@ void EventManager::Suscribe(const Listener listener) {
 }
 
 //TODO: Esto hay que mejorarlo muchisimo pero no controlo aun demasiado tema de punteros e iterators
-void EventManager::UnSuscribeMulti(EventType eType, string listenerName) {
+void EventManager::UnSuscribeMulti(EventType eType, const string& listenerName) {
     ShowSuscribers();
     auto mapByType = eventListenerMap.find(eType);
 

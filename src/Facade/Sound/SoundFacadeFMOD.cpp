@@ -1,9 +1,8 @@
-#include <stdlib.h>
-#include <string.h>
+#include <cstdlib>
+#include <string>
 #include <iostream>
 
 #include "SoundFacadeFMOD.h"
-#include "SoundFacadeManager.h"
 
 using namespace std;
 
@@ -95,7 +94,7 @@ void SoundFacadeFMOD::UnloadAllBanks() {
 /**
  * Crea la instancia de sonido
  */
-FMOD::Studio::EventInstance* SoundFacadeFMOD::CreateInstance(const string nameEvent) {
+FMOD::Studio::EventInstance* SoundFacadeFMOD::CreateInstance(const string& nameEvent) {
     FMOD::Studio::EventInstance* instance = nullptr;
     ERRCHECK(soundDescriptions[nameEvent]->createInstance(&instance));
     return instance;
@@ -255,7 +254,7 @@ void SoundFacadeFMOD::LoadSoundBank(const string nameBank, const bool type) {
         cout << "***** Carcado el banco: " << nameBank << endl;
     }
 
-    for (auto event : events[nameBank]) {
+    for (const auto& event : events[nameBank]) {
         LoadSoundEvent(event.c_str(), type);
     }
 }
@@ -297,7 +296,7 @@ void SoundFacadeFMOD::SetParameter(const string nameID, const string nameParamet
  * Se cambia la posicion desde donde se escucha un sonido.
  * TO-DO: Aqui solo se cambia la posicion, para el efecto Doppler hace falta la velocidad. Creo que hay mas cosas a parte.
  */
-void SoundFacadeFMOD::SetEventPosition(const string nameID, const glm::vec3& pos) {
+void SoundFacadeFMOD::SetEventPosition(const string& nameID, const glm::vec3& pos) {
     if (eventInstances.find(nameID) != eventInstances.end()) {
         FMOD_3D_ATTRIBUTES atr;
         atr.position.x = pos.x;
@@ -342,7 +341,7 @@ void SoundFacadeFMOD::StopEvent(const string nameID) {
  * Pone en pause todos los sonidos.
  */
 void SoundFacadeFMOD::PauseAllEvent() {
-    for (auto event : eventInstances) {
+    for (const auto& event : eventInstances) {
         PauseEvent(event.first);
     }
 }
@@ -351,7 +350,7 @@ void SoundFacadeFMOD::PauseAllEvent() {
  * Reanuda en pause todos los sonidos.
  */
 void SoundFacadeFMOD::ResumeAllEvent() {
-    for (auto event : eventInstances) {
+    for (const auto& event : eventInstances) {
         ResumeEvent(event.first);
     }
 }
@@ -360,7 +359,7 @@ void SoundFacadeFMOD::ResumeAllEvent() {
  * Pone en pause el sonido.
  * @param nameID - Identificador del sonido en el mapa de instancias.
  */
-void SoundFacadeFMOD::PauseEvent(const string nameID) {
+void SoundFacadeFMOD::PauseEvent(const string& nameID) {
     if (eventInstances.find(nameID) != eventInstances.end() && IsPlaying(eventInstances[nameID])) {
         ERRCHECK(eventInstances[nameID]->setPaused(true));
     }
@@ -370,7 +369,7 @@ void SoundFacadeFMOD::PauseEvent(const string nameID) {
  * Reanuda el sonido.
  * @param nameID - Identificador del sonido en el mapa de instancias.
  */
-void SoundFacadeFMOD::ResumeEvent(const string nameID) {
+void SoundFacadeFMOD::ResumeEvent(const string& nameID) {
     if (eventInstances.find(nameID) != eventInstances.end() && IsPlaying(eventInstances[nameID])) {
         ERRCHECK(eventInstances[nameID]->setPaused(false));
     }
