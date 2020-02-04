@@ -10,8 +10,12 @@ class IntersectData {
         : intersects{_intersects}, direction{direction_} {};
     IntersectData(bool _intersects, vec3 targetPosition_, float _distance)
         : intersects{_intersects}, direction{targetPosition_}, distance{_distance} {};
+
+    // con la especificacion de elemento de un conjunto (como OBB que contiene varios planos)
     IntersectData(bool _intersects, int posEntity_, vec3 direction_)
         : intersects{_intersects}, direction{direction_}, posEntity{posEntity_} {};
+    IntersectData(bool _intersects, int posEntity_, vec3 targetPosition_, float _distance)
+        : intersects{_intersects}, direction{targetPosition_}, distance{_distance}, posEntity{posEntity_} {};
 
     float GetDistance() {
         return glm::length(direction);

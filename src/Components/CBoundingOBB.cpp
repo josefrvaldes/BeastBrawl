@@ -62,5 +62,13 @@ IntersectData CBoundingOBB::IntersectSphere(const CBoundingSphere &other, const 
 }
 
 IntersectData CBoundingOBB::IntersectRay(const vec3 &posRayOrigin, const vec3 &rayNormalNormalized) const{
-    return IntersectData(false,vec3(0.0,0.0,0.0));
+    //return IntersectData(false,vec3(0.0,0.0,0.0));
+    for(long unsigned int i=0; i<planes.size(); i++){
+        IntersectData intersData = planes[i].get()->IntersectRay(posRayOrigin, rayNormalNormalized);
+        if (intersData.intersects) {
+            return IntersectData(true, i, intersData.direction, intersData.distance);
+        }
+    }
+    // si no intersecta con ninguno no hago nada
+    return IntersectData(false, vec3(0.0,0.0,0.0));
 }

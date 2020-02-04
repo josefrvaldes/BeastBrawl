@@ -14,10 +14,10 @@ class EventManager {
     ~EventManager(){};
 
     static EventManager& GetInstance();
-    void SuscribeMulti(Listener);
-    void Suscribe(Listener);
-    void UnSuscribeMulti(EventType, string);
-    void AddEventMulti(Event);
+    void SuscribeMulti(const Listener&);
+    void Suscribe(const Listener&);
+    void UnSuscribeMulti(EventType, const string&);
+    void AddEventMulti(const Event&);
     void Update();
     void ClearEvents();
     void ClearListeners();

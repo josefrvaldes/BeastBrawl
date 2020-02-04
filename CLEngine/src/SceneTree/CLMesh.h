@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CLEntity.h"
+#include "../ResourceManager/CLResourceMesh.h"
 
 namespace CLE {
 
@@ -10,15 +11,15 @@ namespace CLE {
             CLMesh(unsigned int idEntity) : CLEntity(idEntity) {};
             ~CLMesh() {};
 
-            //SetMesh
+            void SetMesh(CLResourceMesh* m)         { mesh = m; }
 
-            //GetMesh
+            CLResource* GetMesh() const             { return mesh; }
 
             void Draw(glm::mat4&);
 
         protected:
 
-            //Resource* mesh
+            CLResource* mesh;
 
     };
 }

@@ -7,21 +7,21 @@ void FuzzyVariable::AdjustRangeToFit(double min, double max){
 	m_dMaxRange = max;
 }
 
-shared_ptr<FzSet> FuzzyVariable::AddLeftShoulderSet(std::string name, double minBound, double peak, double maxBound){
+shared_ptr<FzSet> FuzzyVariable::AddLeftShoulderSet(const std::string& name, double minBound, double peak, double maxBound){
     AdjustRangeToFit(minBound, maxBound);
     double min = peak - minBound;
     double max = maxBound - peak;
     m_MemberSets[name] = make_shared<FuzzySet_LeftShoulder>(peak, min, max);
     return (make_shared<FzSet>( (m_MemberSets[name]) ));
 }
-shared_ptr<FzSet> FuzzyVariable::AddRightShoulderSet(std::string name, double minBound, double peak, double maxBound){
+shared_ptr<FzSet> FuzzyVariable::AddRightShoulderSet(const std::string& name, double minBound, double peak, double maxBound){
     AdjustRangeToFit(minBound, maxBound);
     double min = peak - minBound;
     double max = maxBound - peak;
     m_MemberSets[name] = make_shared<FuzzySet_RightShoulder>(peak, min, max);
     return (make_shared<FzSet>( (m_MemberSets[name]) ));
 }
-shared_ptr<FzSet> FuzzyVariable::AddTriangularSet(std::string name, double minBound, double peak, double maxBound){
+shared_ptr<FzSet> FuzzyVariable::AddTriangularSet(const std::string& name, double minBound, double peak, double maxBound){
     AdjustRangeToFit(minBound, maxBound);
     double min = peak - minBound;
     double max = maxBound - peak;

@@ -1,5 +1,7 @@
 #include "CLNode.h" 
 
+#include "../../../include/glm/gtc/matrix_transform.hpp"
+
 using namespace CLE;
 
 CLNode::CLNode(){
@@ -32,6 +34,18 @@ bool CLNode::RemoveChild(CLNode* child){
     return false;
 }
 
+void CLNode::DeleteNode(unsigned int id){
+    CLNode* node = nullptr;
+    node = GetNodeByIDAux(id, node, this);
+    auto father = node->GetFather();
+    father->RemoveChild(node);
+}
+
+void CLNode::DeleteNode(CLNode* node){
+    auto father = node->GetFather();
+    father->RemoveChild(node);
+}
+
 bool CLNode::HasChild(CLNode* child){
 
     for(auto node : childs){
@@ -45,15 +59,15 @@ bool CLNode::HasChild(CLNode* child){
 
 
 void CLNode::Translate(const glm::vec3 translationVec){
-
+    transformationMat = glm::translate(transformationMat, translationVec);
 }
 
-void CLNode::Rotate(const glm::vec3 rotationVec){
-
+void CLNode::Rotate(const glm::vec3 rotationVec, const float g){
+    transformationMat = glm::rotate(transformationMat, (g*glm::pi<float>())/180.0f, rotationVec);
 }
 
 void CLNode::Scale(const glm::vec3 scaleVec){
-
+    transformationMat = glm::scale(transformationMat, scaleVec);
 }
 
 void CLNode::DrawTree(CLNode* root){

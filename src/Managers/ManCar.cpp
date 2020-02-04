@@ -2,25 +2,16 @@
 #include <functional>
 #include <iostream>
 #include "../Entities/Camera.h"
-#include "../Entities/Car.h"
 #include "../Entities/CarHuman.h"
 #include "../Entities/CarAI.h"
-#include "../EventManager/Event.h"
-#include "../EventManager/EventManager.h"
 #include "../Systems/Physics.h"
 #include "../Systems/PhysicsAI.h"
-
-#include "../Components/CPowerUp.h"
 #include "../Components/CShield.h"
 #include "../Components/CTotem.h"
-#include "../Components/CRoboJorobo.h"
 #include "../Components/CNitro.h"
-#include "../Components/CPath.h"
 #include "../Components/CCar.h"
-
-#include "../Facade/Render/RenderFacadeManager.h"
+#include "../Components/CDimensions.h"
 #include "../Game.h"
-#include "Manager.h"
 #include "../Managers/ManPowerUp.h"
 #include "../Managers/ManBoxPowerUp.h"
 #include "../Managers/ManTotem.h"
@@ -270,7 +261,7 @@ void ManCar::CatchTotemAI(DataMap* d){
 }
 
 void ManCar::CatchTotemPlayer(DataMap* d){
-    auto cTotem = static_cast<CTotem*>(car.get()->GetComponent(CompType::TotemComp).get());
+    auto cTotem = static_cast<CTotem*>(car->GetComponent(CompType::TotemComp).get());
     cTotem->active = true;
     cTotem->timeStart = system_clock::now();
     // Sonido coger totem
@@ -294,8 +285,8 @@ void ManCar::ThrowTotem(Entity* carLoseTotem){
 
 bool ManCar::useRoboJorobo(Entity* newCarWithTotem){
     // recorremos los coches
-    for(shared_ptr<Entity> cars : entities){
-        auto cTotem = static_cast<CTotem*>(cars.get()->GetComponent(CompType::TotemComp).get()); 
+    for(const shared_ptr<Entity>& cars : entities){
+        auto cTotem = static_cast<CTotem*>(cars->GetComponent(CompType::TotemComp).get());
         // Si algun coche tenia el totem .... lo pierde, comprobamos que no sea el mmismo coche con las ID
         if(cTotem->active == true && newCarWithTotem!=cars.get()){
             ThrowTotem(cars.get());
@@ -366,13 +357,13 @@ CTransformable* ManCar::calculateCloserCar(Entity* actualCar){
     // Primero metemos al jugador por lo que no hace falta calcularlo luego
     CTransformable* closestCar = nullptr;
     auto cTransActualCar = static_cast<CTransformable*>(actualCar->GetComponent(CompType::TransformableComp).get());
-    float distanceMimum = 9999999999;
+    float distanceMimum = 9999999999.0;
     float distanceNext;
     float vectorXNext;
     float vectorZNext;
 
     // Para todos los coches
-    for(shared_ptr<Entity> cars : entities){
+    for(const shared_ptr<Entity>& cars : entities){
         if(actualCar != cars.get() && carInVisionRange(actualCar, cars.get(), 60) == true){
             auto cTransNextCar = static_cast<CTransformable*>(cars.get()->GetComponent(CompType::TransformableComp).get()); 
             vectorXNext = cTransNextCar->position.x - cTransActualCar->position.x;     
@@ -392,10 +383,10 @@ CTransformable* ManCar::calculateCloserCar(Entity* actualCar){
 
 
 void ManCar::ThrowPowerUp(DataMap* d) {
-    auto cPowerUpCar = static_cast<CPowerUp*>(car.get()->GetComponent(CompType::PowerUpComp).get());
+    auto cPowerUpCar = static_cast<CPowerUp*>(car->GetComponent(CompType::PowerUpComp).get());
     //auto cRoboJorobo = static_cast<CRoboJorobo*>(car->GetComponent(CompType::RoboJoroboComp).get());
-    auto cShield = static_cast<CShield*>(car.get()->GetComponent(CompType::ShieldComp).get());
-    auto cNitro = static_cast<CNitro*>(car.get()->GetComponent(CompType::NitroComp).get());
+    auto cShield = static_cast<CShield*>(car->GetComponent(CompType::ShieldComp).get());
+    auto cNitro = static_cast<CNitro*>(car->GetComponent(CompType::NitroComp).get());
     bool robado = false;  
     if(cPowerUpCar->typePowerUp != typeCPowerUp::None){
         shared_ptr<DataMap> dataTeleBanana = make_shared<DataMap>();
@@ -675,7 +666,7 @@ void ManCar::Integrate(float delta) {
 Entity* ManCar::GetDesirableTarget(Entity* actualCar){
     
     // va a tratar de disparar al que lleve el totem
-    for(auto carAI : GetEntities()){
+    for(const auto& carAI : GetEntities()){
         if(carAI.get() != actualCar){
             auto cTotemCarAI = static_cast<CTotem*>(carAI->GetComponent(CompType::TotemComp).get());
             if(cTotemCarAI->active == true && actualCar!=carAI.get())
@@ -690,12 +681,12 @@ Entity* ManCar::GetDesirableTarget(Entity* actualCar){
     Entity* closestCarEntity = nullptr;
     bool carPrincipal = false;
     if(actualCar != car.get()){
-        closestCar = static_cast<CTransformable*>(car.get()->GetComponent(CompType::TransformableComp).get());
+        closestCar = static_cast<CTransformable*>(car->GetComponent(CompType::TransformableComp).get());
         closestCarEntity = car.get();
     }else{
-        for(shared_ptr<Entity> carAI : entities){
+        for(const shared_ptr<Entity>& carAI : entities){
             if(actualCar != carAI.get()){
-                closestCar = static_cast<CTransformable*>(carAI.get()->GetComponent(CompType::TransformableComp).get());
+                closestCar = static_cast<CTransformable*>(carAI->GetComponent(CompType::TransformableComp).get());
                 closestCarEntity = carAI.get();
                 carPrincipal = true;
             }

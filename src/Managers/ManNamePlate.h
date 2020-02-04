@@ -4,7 +4,7 @@
 #include <map>
 #include <memory>
 #include <string>
-#include <stdlib.h>
+#include <cstdlib>
 #include "../../include/glm/vec3.hpp"
 #include "Manager.h"
 #include "ManCar.h"

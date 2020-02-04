@@ -26,7 +26,7 @@ class SoundFacadeFMOD : public SoundFacade {
 
         // Cambio de banco de audio y subscripcion a eventos.
         void SetState(const uint8_t) override;
-        void SetEventPosition(const string, const glm::vec3&);
+        void SetEventPosition(const string&, const glm::vec3&);
         void SetParameter(const string, const string, const float) override;
 
         void PlayEvent(const string) override;
@@ -34,8 +34,8 @@ class SoundFacadeFMOD : public SoundFacade {
         void StopEvent(const string) override;
         void PauseAllEvent() override;
         void ResumeAllEvent() override;
-        void PauseEvent(const string);
-        void ResumeEvent(const string);
+        void PauseEvent(const string&);
+        void ResumeEvent(const string&);
         
         bool IsPlaying(FMOD::Studio::EventInstance*);
         void Update() override;
@@ -65,7 +65,7 @@ class SoundFacadeFMOD : public SoundFacade {
 
         void LoadMasterBank();
         void UnloadMasterBank();
-        FMOD::Studio::EventInstance* CreateInstance(const string);
+        FMOD::Studio::EventInstance* CreateInstance(const string&);
         void LoadSoundByState(const uint8_t) override;
         void LoadSoundBank(const string, const bool) override;
         void LoadSoundEvent(const string, const bool) override;

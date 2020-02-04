@@ -1,24 +1,9 @@
 #include <iostream>
-#include <memory>
 #include <thread>
-// #include "../include/boost/asio/io_service.hpp"
 #include "Game.h"
 
-#include "Online/UDPClient.h"
-
-using namespace std;
 
 int main() {
-    //CLPhysics::RunTests();
-    /*asio::io_context context;
-    UDPClient client(context, "localhost", "1234");
-    thread butler1([&]() { context.run(); });
-    thread butler2([&]() { context.run(); });
-    client.Send();
-    client.Send();
-    client.Send();
-    client.Send();*/
-
 
     try {
         Game* game = Game::GetInstance();

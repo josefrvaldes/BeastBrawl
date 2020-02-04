@@ -1,7 +1,7 @@
 #include "FzAND.h"
 
 #include <vector>
-#include <iostream>
+
 
 FzAND::	~FzAND(){
 	
