@@ -75,17 +75,12 @@ int main() {
     node2->AddChild(node4.get());
     node4->AddChild(node5.get());
 
-    smgr->DrawTree(smgr.get());
+    //smgr->DrawTree(smgr.get());
 
-    auto nodeAux = smgr->GetNodeByID(5);
+    node5->SetScalation(glm::vec3(1.5f,1.0f,1.0f));
+    node5->SetRotation(glm::vec3(20.0f,30.0f,0.0f));
 
-    if(nodeAux!=nullptr){
-        cout << "Devuelto nodo con ID: " << nodeAux->GetEntity()->GetID() << " \n";
-    }
-
-    smgr->DeleteNode(node4->GetEntity()->GetID());
-
-    smgr->DrawTree(smgr.get());
+    smgr->DFSTree(glm::mat4(1.0));
 
 
     //-------------------Resource manager-------------------
