@@ -12,7 +12,7 @@ CLResourceMesh* CLResourceManager::GetResourceMesh(const std::string file) {
     shared_ptr<CLResourceMesh> resource = nullptr;
     bool search = true;
     for (unsigned int i=0; i<meshes.size() && search; ++ i) {
-        if (file == meshes[i]->GetName()) {
+        if (!file.compare(meshes[i]->GetName())) {
             resource = meshes[i];
             search = false;
         }
@@ -32,13 +32,13 @@ CLResourceShader* CLResourceManager::GetResourceShader(const std::string file, G
     shared_ptr<CLResourceShader> resource = NULL;
     bool search = true;
     for (unsigned int i=0; i<shaders.size() && search; ++ i) {
-        if (file == shaders[i]->GetName()) {
+        if (!file.compare(shaders[i]->GetName())) {
             resource = shaders[i];
             search = false;
         }
     }
     if (!resource) {
-        cout << "entra\n";
+        cout << "Creo un shader" << endl;
         resource = make_shared<CLResourceShader>();
         resource->SetName(file);
         resource->SetShaderType(type);
