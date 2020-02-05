@@ -1,9 +1,9 @@
 #include "TCPServer.h"
+#include <src/Systems/Utils.h>
 #include <boost/asio/placeholders.hpp>
 #include <boost/bind.hpp>
 #include "../../include/include_json/include_json.hpp"
 #include "../src/Constants.h"
-#include <src/Systems/Utils.h>
 
 using json = nlohmann::json;
 using boost::asio::ip::tcp;
@@ -70,7 +70,7 @@ void TCPServer::SendStartGame() {
         vector<uint16_t> idsEnemies;
         for (auto currentPlayerSub : connections) {
             if (currentPlayer == currentPlayerSub) {
-                idPlayer = players[posVector].id + 1; 
+                idPlayer = players[posVector].id + 1;
             } else {
                 idsEnemies.push_back(players[posVector].id + 1);
             }
@@ -78,12 +78,13 @@ void TCPServer::SendStartGame() {
         }
 
         // std::shared_ptr<boost::array<unsigned char, Constants::ONLINE_BUFFER_SIZE>> buff = make_shared<boost::array<unsigned char, Constants::ONLINE_BUFFER_SIZE>>();
-        std::shared_ptr<unsigned char[]> buff = make_shared<unsigned char[Constants::ONLINE_BUFFER_SIZE]>();
+        std::shared_ptr<unsigned char[]> buff(new unsigned char[Constants::ONLINE_BUFFER_SIZE]);
         size_t currentBuffSize = 0;
         uint8_t enemiesSize = idsEnemies.size();
-        Utils::Serialize(buff, idPlayer, currentBuffSize);
-        Utils::Serialize(buff, enemiesSize, currentBuffSize);
-        Utils::Serialize(buff, idsEnemies, currentBuffSize);
+
+        Utils::SerializeSh(buff, &idPlayer, currentBuffSize);
+        Utils::SerializeSh(buff, &enemiesSize, currentBuffSize);
+        Utils::SerializeVectorSh(buff, idsEnemies, currentBuffSize);
 
         j["idPlayer"] = idPlayer;
         j["idEnemies"] = idsEnemies;

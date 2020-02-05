@@ -103,9 +103,9 @@ class Utils {
     }
 
     template <typename T>
-    static void Serialize(unsigned char* buff, T& item, size_t& currentSize) {
-        size_t itemSize = sizeof(item);
-        memcpy(buff + currentSize, &item, itemSize);
+    static void Serialize(unsigned char* buff, T* item, size_t& currentSize) {
+        size_t itemSize = sizeof(*item);
+        memcpy(&buff[currentSize], item, itemSize);
         currentSize += itemSize;
         for (size_t i = 0; i < currentSize; i++) {
             // cout << "item " << i << " = " << unsigned(buff[i]) << endl;
@@ -119,9 +119,18 @@ class Utils {
     // }
 
     template <typename T>
-    static void Deserialize(T& item, unsigned char* buff, size_t& currentIndex) {
-        size_t itemSize = sizeof(item);
-        memcpy(&item, buff + currentIndex, itemSize);
+    static void Deserialize(T* item, unsigned char* buff, size_t& currentIndex) {
+        size_t itemSize = sizeof(*item);
+        Deserialize(item, itemSize, buff, currentIndex);
+        // for(size_t i = 0; i < currentSize; i++) {
+        //     cout << "item " << i << " = " << unsigned(buff[i]) << endl;
+        // }
+    }
+
+    template <typename T>
+    static void Deserialize(T* item, size_t itemSize, unsigned char* buff, size_t& currentIndex) {
+        // size_t itemSize = sizeof(*item);
+        memcpy(item, &buff[currentIndex], itemSize);
         currentIndex += itemSize;
         // for(size_t i = 0; i < currentSize; i++) {
         //     cout << "item " << i << " = " << unsigned(buff[i]) << endl;
@@ -129,69 +138,79 @@ class Utils {
     }
 
     template <typename T>
-    static void Serialize(std::shared_ptr<unsigned char[]> buff, T& item, size_t& currentSize) {
-        size_t itemSize = sizeof(item);
-        // unsigned char* auxBuff = buff.get();
-        // memcpy(auxBuff + currentSize, &item, itemSize);
-        // currentSize += itemSize;
-        // for (size_t i = 0; i < currentSize; i++) {
-        //     cout << "item " << i << " = " << unsigned(buff[i]) << endl;
-        // }
-        Utils::Serialize(buff, item, itemSize, currentSize);
-    }
-
-    template <typename T>
-    static void Serialize(std::shared_ptr<unsigned char[]> buff, T& item, size_t itemSize, size_t& currentSize) {
-        // size_t itemSize = sizeof(item);
-        unsigned char* auxBuff = buff.get();
-        memcpy(auxBuff + currentSize, &item, itemSize);
-        currentSize += itemSize;
-        for (size_t i = 0; i < currentSize; i++) {
-            // cout << "item " << i << " = " << unsigned(buff[i]) << endl;
-        }
-    }
-
-    template <typename T>
-    static void SerializeVector(std::shared_ptr<unsigned char[]> buff, vector<T> vector, size_t& currentSize) {
-        for (T elem : vector)
-            Utils::Serialize(buff, elem, currentSize);
-    }
-
-    template <typename T>
     static void SerializeVector(unsigned char* buff, vector<T>& vector, size_t& currentSize) {
         for (T elem : vector)
-            Utils::Serialize(buff, elem, currentSize);
-    }
-
-    // template <typename T>
-    // static void TestTemplate(std::shared_ptr<unsigned char[]> buff, T otro) {
-    // }
-
-    template <typename T>
-    static void Deserialize(T& item, std::shared_ptr<unsigned char[]> buff, size_t& currentIndex) {
-        size_t itemSize = sizeof(item);
-        Utils::Deserialize(item, itemSize, buff, currentIndex);
+            Utils::Serialize(buff, &elem, currentSize);
     }
 
     template <typename T>
-    static void Deserialize(T& item, size_t itemSize, std::shared_ptr<unsigned char[]> buff, size_t& currentIndex) {
-        unsigned char* auxBuff = buff.get();
-        memcpy(&item, auxBuff + currentIndex, itemSize);
-        currentIndex += itemSize;
-    }
-
-    template <typename T>
-    static void DeserializeVector(vector<T>& vector, std::shared_ptr<unsigned char[]> buff, size_t& currentIndex) {
+    static void DeserializeVector(vector<T>& vector, unsigned char* buff, size_t& currentIndex) {
         size_t numElements = vector.size();
         DeserializeVector(vector, numElements, buff, currentIndex);
     }
 
     template <typename T>
-    static void DeserializeVector(vector<T>& vector, size_t numElements, std::shared_ptr<unsigned char[]> buff, size_t& currentIndex) {
+    static void DeserializeVector(vector<T>& vector, size_t numElements, unsigned char* buff, size_t& currentIndex) {
         for (size_t i = 0; i < numElements; i++) {
             T elem;
             size_t itemSize = sizeof(elem);
-            Utils::Deserialize(elem, itemSize, buff, currentIndex);
+            Utils::Deserialize(&elem, itemSize, buff, currentIndex);
+            // vector[i] = elem;
+            vector.push_back(elem);
+        }
+    }
+
+
+
+
+    template <typename T>
+    static void SerializeSh(std::shared_ptr<unsigned char[]> buff, T* item, size_t& currentSize) {
+        size_t itemSize = sizeof(*item);
+        Utils::SerializeSh(buff, item, itemSize, currentSize);
+    }
+
+    template <typename T>
+    static void SerializeSh(std::shared_ptr<unsigned char[]> buff, T* item, size_t itemSize, size_t& currentSize) {
+        // size_t itemSize = sizeof(item);
+        unsigned char* auxBuff = buff.get();
+        memcpy(&auxBuff[currentSize], item, itemSize);
+        currentSize += itemSize;
+        // for (size_t i = 0; i < currentSize; i++) {
+        //     cout << "item " << i << " = " << unsigned(buff[i]) << endl;
+        // }
+    }
+
+    template <typename T>
+    static void DeserializeSh(T* item, std::shared_ptr<unsigned char[]> buff, size_t& currentIndex) {
+        size_t itemSize = sizeof(*item);
+        Utils::DeserializeSh(item, itemSize, buff, currentIndex);
+    }
+
+    template <typename T>
+    static void DeserializeSh(T* item, size_t itemSize, std::shared_ptr<unsigned char[]> buff, size_t& currentIndex) {
+        unsigned char* auxBuff = buff.get();
+        memcpy(item, &auxBuff[currentIndex], itemSize);
+        currentIndex += itemSize;
+    }
+
+    template <typename T>
+    static void SerializeVectorSh(std::shared_ptr<unsigned char[]> buff, vector<T> vector, size_t& currentSize) {
+        for (T elem : vector)
+            Utils::SerializeSh(buff, &elem, currentSize);
+    }
+
+    template <typename T>
+    static void DeserializeVectorSh(vector<T>& vector, std::shared_ptr<unsigned char[]> buff, size_t& currentIndex) {
+        size_t numElements = vector.size();
+        DeserializeVector(vector, numElements, buff, currentIndex);
+    }
+
+    template <typename T>
+    static void DeserializeVectorSh(vector<T>& vector, size_t numElements, std::shared_ptr<unsigned char[]> buff, size_t& currentIndex) {
+        for (size_t i = 0; i < numElements; i++) {
+            T elem;
+            size_t itemSize = sizeof(elem);
+            Utils::DeserializeSh(&elem, itemSize, buff, currentIndex);
             // vector[i] = elem;
             vector.push_back(elem);
         }
@@ -205,10 +224,10 @@ class Utils {
         uint32_t numInt = 1578578310;
         uint64_t numLong = 56781578578310;
         float numFloat = 26.15;
-        Utils::Serialize(buff, numShort, currentBuffSize);
-        Utils::Serialize(buff, numInt, currentBuffSize);
-        Utils::Serialize(buff, numLong, currentBuffSize);
-        Utils::Serialize(buff, numFloat, currentBuffSize);
+        Utils::Serialize(buff, &numShort, currentBuffSize);
+        Utils::Serialize(buff, &numInt, currentBuffSize);
+        Utils::Serialize(buff, &numLong, currentBuffSize);
+        Utils::Serialize(buff, &numFloat, currentBuffSize);
 
         // recibir
         size_t currentIndex = 0;
@@ -216,10 +235,10 @@ class Utils {
         uint32_t unserializedNumInt;
         uint64_t unserializedNumLong;
         float unserializedNumFloat;
-        Utils::Deserialize(unserializedNumShort, buff, currentIndex);
-        Utils::Deserialize(unserializedNumInt, buff, currentIndex);
-        Utils::Deserialize(unserializedNumLong, buff, currentIndex);
-        Utils::Deserialize(unserializedNumFloat, buff, currentIndex);
+        Utils::Deserialize(&unserializedNumShort, buff, currentIndex);
+        Utils::Deserialize(&unserializedNumInt, buff, currentIndex);
+        Utils::Deserialize(&unserializedNumLong, buff, currentIndex);
+        Utils::Deserialize(&unserializedNumFloat, buff, currentIndex);
 
         cout << "El num deserializado es " << unserializedNumShort << endl;
         cout << "El num deserializado es " << unserializedNumInt << endl;
@@ -228,7 +247,8 @@ class Utils {
     }
 
     static void RunSerializationTest2() {
-        std::shared_ptr<unsigned char[]> buff = make_shared<unsigned char[Constants::ONLINE_BUFFER_SIZE]>();
+        std::shared_ptr<unsigned char[]> buff ( new unsigned char[Constants::ONLINE_BUFFER_SIZE] );
+        // unsigned char buff[512];
 
         size_t currentBuffSize = 0;
         uint16_t idPlayer = 31263;
@@ -247,18 +267,18 @@ class Utils {
         uint16_t numEnemies = idEnemies.size();
         // uint16_t vectorSize = numEnemies * sizeof(uint16_t);
 
-        Utils::Serialize(buff, idPlayer, currentBuffSize);
-        Utils::Serialize(buff, numEnemies, currentBuffSize);
-        Utils::SerializeVector(buff, idEnemies, currentBuffSize);
+        Utils::Serialize(buff.get(), &idPlayer, currentBuffSize);
+        Utils::Serialize(buff.get(), &numEnemies, currentBuffSize);
+        Utils::SerializeVector(buff.get(), idEnemies, currentBuffSize);
 
         size_t currentIndex = 0;
         uint16_t deserializedIdPlayer;
         uint16_t deserializedNumEnemies;
         vector<uint16_t> deserializedIdEnemies;
-        Utils::Deserialize(deserializedIdPlayer, buff, currentIndex);
-        Utils::Deserialize(deserializedNumEnemies, buff, currentIndex);
+        Utils::Deserialize(&deserializedIdPlayer, buff.get(), currentIndex);
+        Utils::Deserialize(&deserializedNumEnemies, buff.get(), currentIndex);
         // deserializedIdEnemies.resize(deserializedNumEnemies);
-        Utils::DeserializeVector(deserializedIdEnemies, deserializedNumEnemies, buff, currentIndex);
+        Utils::DeserializeVector(deserializedIdEnemies, deserializedNumEnemies, buff.get(), currentIndex);
 
         cout << "El id player deserializado es " << deserializedIdPlayer << endl;
         for (uint16_t i = 0; i < deserializedNumEnemies; i++)

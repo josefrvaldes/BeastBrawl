@@ -146,7 +146,7 @@ void TCPClient::SendConnectionRequest() {
     // char *buff = request;
     size_t currentSize = 0;
     uint8_t numero = Constants::CONNECTION_REQUEST;
-    Utils::Serialize(request, numero, currentSize);
+    // Utils::Serialize(request, numero, currentSize);
 
     // json j;
     // j["requestConnection"] = numero;

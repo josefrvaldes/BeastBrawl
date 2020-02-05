@@ -10,7 +10,7 @@ JUMP_LINE		   := @echo
 
 
 ifdef DEBUG
-	CXXFLAGS += -g
+	CXXFLAGS := -g
 else
 	CXXFLAGS += -O3
 endif

@@ -6,8 +6,8 @@
 
 class Constants {
    public:
-    static const bool DEBUG_SHOW_SPHERES{true};
-    static const size_t ONLINE_BUFFER_SIZE{512};
+    inline static const bool DEBUG_SHOW_SPHERES{true};
+    inline static const size_t ONLINE_BUFFER_SIZE{512};
 
     enum InputTypes { FORWARD,
                       BACK,
