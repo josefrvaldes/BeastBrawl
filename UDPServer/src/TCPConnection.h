@@ -19,6 +19,7 @@ class TCPConnection : public boost::enable_shared_from_this<TCPConnection> {
     tcp::socket& socket(){ return socket_;}
     void Start();
     void SendStartMessage(string datos);
+    void SendStartMessage(unsigned char *buff, size_t buffSize);
 
 
    private:

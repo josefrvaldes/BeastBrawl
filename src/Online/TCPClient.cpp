@@ -96,18 +96,20 @@ void TCPClient::StartReceiving() {
     //std::shared_ptr<string> recevBuff = make_shared<string>();
     cout << "Estamos en StartReceiving" << endl;
 
-    std::shared_ptr<boost::array<char, Constants::ONLINE_BUFFER_SIZE>> recevBuff = make_shared<boost::array<char, Constants::ONLINE_BUFFER_SIZE>>();
+    // std::shared_ptr<boost::array<char, Constants::ONLINE_BUFFER_SIZE>> recevBuff = make_shared<boost::array<char, Constants::ONLINE_BUFFER_SIZE>>();
+    // unsigned char *buff[Constants::ONLINE_BUFFER_SIZE];
+    std::shared_ptr<unsigned char[]> buff ( new unsigned char[Constants::ONLINE_BUFFER_SIZE] );
     socket.async_receive(
-        asio::buffer(*recevBuff),
+        asio::buffer(buff.get(), Constants::ONLINE_BUFFER_SIZE),
         boost::bind(
             &TCPClient::HandleReceived,
             this,
-            recevBuff,
+            buff,
             boost::asio::placeholders::error,
             boost::asio::placeholders::bytes_transferred));
 }
 
-void TCPClient::HandleReceived(std::shared_ptr<boost::array<char, Constants::ONLINE_BUFFER_SIZE>> recevBuff, const boost::system::error_code& errorCode, std::size_t bytesTransferred) {
+void TCPClient::HandleReceived(std::shared_ptr<unsigned char[]> recevBuff, const boost::system::error_code& errorCode, std::size_t bytesTransferred) {
     cout << "Estamos en HandleReceived" << endl;
     if (stopped) {
         cout << "Hemos intentado recibir pero el cliente tcp estaba parado" << endl;
@@ -115,14 +117,21 @@ void TCPClient::HandleReceived(std::shared_ptr<boost::array<char, Constants::ONL
     }
 
     if (!errorCode && bytesTransferred > 0) {
-        string receivedString;
-        std::copy(recevBuff->begin(), recevBuff->begin() + bytesTransferred, std::back_inserter(receivedString));
+        uint16_t idPlayer;
+        uint8_t enemiesSize;
+        vector<uint16_t> idEnemies;
+        size_t currentIndex = 0;
 
-        std::shared_ptr<DataMap> data = make_shared<DataMap>();
+        Utils::Deserialize(&idPlayer, recevBuff.get(), currentIndex);
+        Utils::Deserialize(&enemiesSize, recevBuff.get(), currentIndex);
+        Utils::DeserializeVector(idEnemies, enemiesSize, recevBuff.get(), currentIndex);
+        
         // TODO: aquí en vez de enviarle al setState el string debería tratarse el 
         //      string y enviarse los dos datos por separado, de forma que al state
         //      nos aseguremos de que le llegan datos buenos, que no le ha llegado "asdfafa"
-        (*data)[DataType::DATA_SERVER] = receivedString;
+        string receivedString = "";
+        std::shared_ptr<DataMap> data = make_shared<DataMap>();
+        (*data)[DataType::DATA_SERVER] = "receivedString";
         EventManager::GetInstance().AddEventMulti(Event{EventType::NEW_TCP_START_MULTI, data});
 
         // json receivedJSON = json::parse(receivedString);

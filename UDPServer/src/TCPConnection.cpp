@@ -66,9 +66,19 @@ void TCPConnection::HandleRead(std::shared_ptr<boost::array<char, 1024>> recevBu
 
 
 
-void TCPConnection::SendStartMessage(string datos){
+// void TCPConnection::SendStartMessage(string datos){
+//     socket_.async_send(
+//         boost::asio::buffer(datos, datos.size()),
+//         boost::bind(
+//             &TCPConnection::HandleWrite,
+//             this,
+//             boost::asio::placeholders::error,
+//             boost::asio::placeholders::bytes_transferred));
+// }
+
+void TCPConnection::SendStartMessage(unsigned char *buff, size_t buffSize){
     socket_.async_send(
-        boost::asio::buffer(datos, datos.size()),
+        boost::asio::buffer(buff, buffSize),
         boost::bind(
             &TCPConnection::HandleWrite,
             this,

@@ -1,9 +1,10 @@
 #include "TCPServer.h"
-#include <src/Systems/Utils.h>
+
 #include <boost/asio/placeholders.hpp>
 #include <boost/bind.hpp>
 #include "../../include/include_json/include_json.hpp"
 #include "../src/Constants.h"
+#include "../src/Systems/Utils.h"
 
 using json = nlohmann::json;
 using boost::asio::ip::tcp;
@@ -82,14 +83,14 @@ void TCPServer::SendStartGame() {
         size_t currentBuffSize = 0;
         uint8_t enemiesSize = idsEnemies.size();
 
-        Utils::SerializeSh(buff, &idPlayer, currentBuffSize);
-        Utils::SerializeSh(buff, &enemiesSize, currentBuffSize);
-        Utils::SerializeVectorSh(buff, idsEnemies, currentBuffSize);
+        Utils::Serialize(buff.get(), &idPlayer, currentBuffSize);
+        Utils::Serialize(buff.get(), &enemiesSize, currentBuffSize);
+        Utils::SerializeVector(buff.get(), idsEnemies, currentBuffSize);
 
-        j["idPlayer"] = idPlayer;
-        j["idEnemies"] = idsEnemies;
-        string datos = j.dump();
+        // j["idPlayer"] = idPlayer;
+        // j["idEnemies"] = idsEnemies;
+        // string datos = j.dump();
 
-        currentPlayer->SendStartMessage(datos);
+        currentPlayer->SendStartMessage(buff.get(), currentBuffSize);
     }
 }

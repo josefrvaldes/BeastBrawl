@@ -1,3 +1,3 @@
 #include "Player.h"
 
-uint32_t Player::nextId = 0;
+uint16_t Player::nextId = 0;

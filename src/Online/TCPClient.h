@@ -39,7 +39,7 @@ class TCPClient {
     void HandleConnect(const boost::system::error_code& error, tcp::resolver::results_type::iterator endpoint_iter);
     void HandleConnect(const boost::system::error_code& error);
     void StartReceiving();
-    void HandleReceived(std::shared_ptr<boost::array<char, Constants::ONLINE_BUFFER_SIZE>> recevBuff, const boost::system::error_code& error, size_t bytesTransferred);
+    void HandleReceived(std::shared_ptr<unsigned char[]> recevBuff, const boost::system::error_code& error, size_t bytesTransferred);
     void HandleSentConnectionRequest(const boost::system::error_code& errorCode, std::size_t bytes_transferred);
     void Stop();
 

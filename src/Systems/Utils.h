@@ -3,12 +3,12 @@
 #define _USE_MATH_DEFINES
 
 #include <math.h>
-#include <src/Constants.h>
+#include "../Constants.h"
 #include <stdio.h>
 #include <time.h>
 #include <chrono>
 #include <cstring>
-#include <include/glm/vec3.hpp>
+#include "../../include/glm/vec3.hpp"
 #include <iostream>
 #include <memory>
 #include <sstream>
@@ -163,58 +163,54 @@ class Utils {
 
 
 
-    template <typename T>
-    static void SerializeSh(std::shared_ptr<unsigned char[]> buff, T* item, size_t& currentSize) {
-        size_t itemSize = sizeof(*item);
-        Utils::SerializeSh(buff, item, itemSize, currentSize);
-    }
+    // template <typename T>
+    // static void SerializeSh(std::shared_ptr<unsigned char[]> buff, T* item, size_t& currentSize) {
+    //     size_t itemSize = sizeof(*item);
+    //     Utils::SerializeSh(buff, item, itemSize, currentSize);
+    // }
 
-    template <typename T>
-    static void SerializeSh(std::shared_ptr<unsigned char[]> buff, T* item, size_t itemSize, size_t& currentSize) {
-        // size_t itemSize = sizeof(item);
-        unsigned char* auxBuff = buff.get();
-        memcpy(&auxBuff[currentSize], item, itemSize);
-        currentSize += itemSize;
-        // for (size_t i = 0; i < currentSize; i++) {
-        //     cout << "item " << i << " = " << unsigned(buff[i]) << endl;
-        // }
-    }
+    // template <typename T>
+    // static void SerializeSh(std::shared_ptr<unsigned char[]> buff, T* item, size_t itemSize, size_t& currentSize) {
+    //     unsigned char* auxBuff = buff.get();
+    //     memcpy(&auxBuff[currentSize], item, itemSize);
+    //     currentSize += itemSize;
+    // }
 
-    template <typename T>
-    static void DeserializeSh(T* item, std::shared_ptr<unsigned char[]> buff, size_t& currentIndex) {
-        size_t itemSize = sizeof(*item);
-        Utils::DeserializeSh(item, itemSize, buff, currentIndex);
-    }
+    // template <typename T>
+    // static void DeserializeSh(T* item, std::shared_ptr<unsigned char[]> buff, size_t& currentIndex) {
+    //     size_t itemSize = sizeof(*item);
+    //     Utils::DeserializeSh(item, itemSize, buff, currentIndex);
+    // }
 
-    template <typename T>
-    static void DeserializeSh(T* item, size_t itemSize, std::shared_ptr<unsigned char[]> buff, size_t& currentIndex) {
-        unsigned char* auxBuff = buff.get();
-        memcpy(item, &auxBuff[currentIndex], itemSize);
-        currentIndex += itemSize;
-    }
+    // template <typename T>
+    // static void DeserializeSh(T* item, size_t itemSize, std::shared_ptr<unsigned char[]> buff, size_t& currentIndex) {
+    //     unsigned char* auxBuff = buff.get();
+    //     memcpy(item, &auxBuff[currentIndex], itemSize);
+    //     currentIndex += itemSize;
+    // }
 
-    template <typename T>
-    static void SerializeVectorSh(std::shared_ptr<unsigned char[]> buff, vector<T> vector, size_t& currentSize) {
-        for (T elem : vector)
-            Utils::SerializeSh(buff, &elem, currentSize);
-    }
+    // template <typename T>
+    // static void SerializeVectorSh(std::shared_ptr<unsigned char[]> buff, vector<T> vector, size_t& currentSize) {
+    //     for (T elem : vector)
+    //         Utils::SerializeSh(buff, &elem, currentSize);
+    // }
 
-    template <typename T>
-    static void DeserializeVectorSh(vector<T>& vector, std::shared_ptr<unsigned char[]> buff, size_t& currentIndex) {
-        size_t numElements = vector.size();
-        DeserializeVector(vector, numElements, buff, currentIndex);
-    }
+    // template <typename T>
+    // static void DeserializeVectorSh(vector<T>& vector, std::shared_ptr<unsigned char[]> buff, size_t& currentIndex) {
+    //     size_t numElements = vector.size();
+    //     DeserializeVectorSh(vector, numElements, buff, currentIndex);
+    // }
 
-    template <typename T>
-    static void DeserializeVectorSh(vector<T>& vector, size_t numElements, std::shared_ptr<unsigned char[]> buff, size_t& currentIndex) {
-        for (size_t i = 0; i < numElements; i++) {
-            T elem;
-            size_t itemSize = sizeof(elem);
-            Utils::DeserializeSh(&elem, itemSize, buff, currentIndex);
-            // vector[i] = elem;
-            vector.push_back(elem);
-        }
-    }
+    // template <typename T>
+    // static void DeserializeVectorSh(vector<T>& vector, size_t numElements, std::shared_ptr<unsigned char[]> buff, size_t& currentIndex) {
+    //     for (size_t i = 0; i < numElements; i++) {
+    //         T elem;
+    //         size_t itemSize = sizeof(elem);
+    //         Utils::DeserializeSh(&elem, itemSize, buff, currentIndex);
+    //         // vector[i] = elem;
+    //         vector.push_back(elem);
+    //     }
+    // }
 
     static void RunSerializationTest1() {
         // enviar
