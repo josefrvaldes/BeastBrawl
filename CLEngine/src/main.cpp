@@ -40,7 +40,7 @@ void checkInput (GLFWwindow *window) {
 
 int main() {
     CLEngine *device = new CLEngine(1280, 720, "Beast Brawl");
-    IMGUI_CHECKVERSION();
+    /*IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO(); (void)io;
 
@@ -50,12 +50,13 @@ int main() {
 
     // Setup Platform/Renderer bindings
     ImGui_ImplGlfw_InitForOpenGL(device->GetWindow(), true);
-    ImGui_ImplOpenGL3_Init("#version 450");
+    ImGui_ImplOpenGL3_Init("#version 450");*/
 
     float vertices[] = {
-        -0.5f, -0.5f, 0.0f,
-        0.5f, -0.5f, 0.0f,
-        0.0f,  0.5f, 0.0f
+        // positions            // colors
+        -0.5f, -0.5f, 0.0f,     1.0f, 0.0f, 0.0f,
+         0.5f, -0.5f, 0.0f,     0.0f, 1.0f, 0.0f,
+         0.0f,  0.5f, 0.0f,     0.0f, 0.0f, 1.0f
     };      
 
     //----------------------------------
@@ -144,8 +145,10 @@ int main() {
      */
 
     //Por cada layaout del vertex shader los diferenciamos por el primer parametro
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3* sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6* sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);  
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6* sizeof(float), (void*)(3* sizeof(float)));
+    glEnableVertexAttribArray(1);  
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
@@ -153,7 +156,7 @@ int main() {
     
 
     
-    ImVec4 triangleColor;
+    //ImVec4 triangleColor;
     bool show_demo_window = true;
     while (!device->Run()) {
         //glfwPollEvents();
@@ -165,15 +168,15 @@ int main() {
         device->UpdateViewport(); //Por si reescalamos la ventana
 
 
-        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+        glClearColor(1.0f, 0.5f, 0.5f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        ImGui_ImplOpenGL3_NewFrame();
+        /*ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
         // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
-        ImGui::ShowDemoWindow(&show_demo_window);
+        ImGui::ShowDemoWindow(&show_demo_window);*/
 
 
         // Start the Dear ImGui frame
@@ -181,20 +184,26 @@ int main() {
         // ImGui_ImplGlfw_NewFrame();
         // ImGui::NewFrame();
 
-        ImGui::Begin("Modificador de shader!");                          // Create a window called "Hello, world!" and append into it.
-        ImGui::ColorEdit3("clear color", (float*)&triangleColor); // Edit 3 floats representing a color
-        ImGui::End();
+        //ImGui::Begin("Modificador de shader!");                          // Create a window called "Hello, world!" and append into it.
+        //ImGui::ColorEdit3("clear color", (float*)&triangleColor); // Edit 3 floats representing a color
+        //ImGui::End();
 
         glUseProgram(shaderProgram);
-        int vertexColorLocation = glGetUniformLocation(shaderProgram,"ourColor");
-        glUniform4f(vertexColorLocation, triangleColor.x, triangleColor.y,triangleColor.z,triangleColor.w);
+        //int vertexColorLocation = glGetUniformLocation(shaderProgram,"ourColor");
+        //glUniform4f(vertexColorLocation, triangleColor.x, triangleColor.y,triangleColor.z,triangleColor.w);
+
+            //float timeValue = glfwGetTime();
+            //float greenValue = (sin(timeValue) / 2.0f) + 0.5f;
+            //int vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor");
+        //glUseProgram(shaderProgram);
+            //glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);
 
         glBindVertexArray(VAO);
         glDrawArrays(GL_TRIANGLES, 0, 3);
         glBindVertexArray(0);
 
-        ImGui::Render();
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+        //ImGui::Render();
+        //ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
         glfwPollEvents();
         glfwSwapBuffers(device->GetWindow());
@@ -202,9 +211,9 @@ int main() {
     }
 
     // Cleanup
-    ImGui_ImplOpenGL3_Shutdown();
+    /*ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
-    ImGui::DestroyContext();
+    ImGui::DestroyContext();*/
 
     delete device;
 
