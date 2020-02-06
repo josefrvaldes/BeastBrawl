@@ -19,6 +19,7 @@
 #include "../Components/CRoboJorobo.h"
 #include "../Components/CNitro.h"
 #include "../Components/CCurrentNavMesh.h"
+#include "../Components/CExternalForce.h"
 
 class Position;
 
@@ -53,7 +54,7 @@ CarHuman::CarHuman() {
     shared_ptr<CColliding> cColliding = make_shared<CColliding>(false);
     shared_ptr<CBoundingSphere> cBoundSphere = make_shared<CBoundingSphere>(pos);
     shared_ptr<CBoundingRay> cBoundRay = make_shared<CBoundingRay>();
-    // end physics
+    shared_ptr<CExternalForce> cExternalForce = make_shared<CExternalForce>();
 
     AddComponent(cId);
     AddComponent(cType);
@@ -71,6 +72,7 @@ CarHuman::CarHuman() {
     AddComponent(cColliding);
     AddComponent(cSpeed);
     AddComponent(cCurrentNavMesh);
+    AddComponent(cExternalForce);
     cout << "Acabamos de llamar al constructor default de car, su transformable es " << cTransformable << endl;
 }
 

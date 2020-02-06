@@ -21,14 +21,14 @@ class IntersectData;
 struct CCar;
 struct CTransformable;
 struct CBoundingPlane;
+struct CBoundingCilindre;
 
 class CBoundingChassis : public Component {
    public:
     CBoundingChassis(const vec3 &spCenterBehind, const float &spRadiusBehind, const vec3 &spCenterFront, const float &spRadiusFront, 
                         const vector<vec3> &plRight, const vector<vec3> &plLeft);
 
-    shared_ptr<CBoundingSphere> sphereBehind;
-    shared_ptr<CBoundingSphere> sphereFront;
-    shared_ptr<CBoundingPlane> planeRight;
-    shared_ptr<CBoundingPlane> planeLeft;
+    unique_ptr<CBoundingSphere> sphereBehind;
+    unique_ptr<CBoundingSphere> sphereFront;
+    unique_ptr<CBoundingCilindre> cilindre;
 };

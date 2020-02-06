@@ -3,7 +3,7 @@
 
 #include "../EventManager/Event.h"
 #include "../EventManager/EventManager.h"
-
+#include "include/glm/vec3.hpp"
 
 #include <math.h>
 #include <memory>
@@ -15,6 +15,7 @@ class Car;
 class Camera;
 class CCar;
 class CTransformable;
+class CExternalForce;
 class CCamera;
 class CSpeed;
 
@@ -32,8 +33,10 @@ class Physics {
 
    protected:
    private:
-    void CalculatePosition(CCar *cCar, CTransformable *cTransformable, CSpeed *cSpeed, float deltaTime);
-    void CalculatePositionReverse(CCar *cCar, CTransformable *cTransformable, float deltaTime);
+    void CalculatePosition(CCar *cCar, CTransformable *cTransformable, CSpeed *cSpeed, CExternalForce *cExternalForce, float deltaTime);
+    void CalculatePositionReverse(CCar *cCar, CTransformable *cTransformable, CExternalForce *cExternalForce, float deltaTime);
     void CalculatePositionCamera(CTransformable *cTransformableCar, CTransformable *cTransformableCamera, CCamera *cCamera);
+    glm::vec3 CalculateVecDirCar(CTransformable *cTransformable) const;
+    void FrictionExternalForce(CCar *cCar, CExternalForce *externalForce) const;
     float deltaTime;
 };

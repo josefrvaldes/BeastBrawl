@@ -9,6 +9,7 @@
 #include "../Components/CNitro.h"
 #include "../Components/CTransformable.h"
 #include "../Components/CTotem.h"
+#include "../Components/CExternalForce.h"
 #include "../Components/CBoundingOBB.h"
 #include "../Entities/BoundingWall.h"
 #include "../Entities/BoundingOBB.h"
@@ -54,23 +55,20 @@ void CLPhysics::HandleCollisionsWithOBB(){
 
     // los coches con los OBB
     for (size_t currentAI = 0; currentAI < numCar; currentAI++) {
+        Entity *car = manCar->GetEntities()[currentAI].get();
+        CBoundingSphere *spcar1 = static_cast<CBoundingSphere *>(car->GetComponent(CompType::CompBoundingSphere).get());
+        CTransformable *trcar1 = static_cast<CTransformable *>(car->GetComponent(CompType::TransformableComp).get());
+        CCar *ccarcar1 = static_cast<CCar *>(car->GetComponent(CompType::CarComp).get());
+        CExternalForce *cExternalForce = static_cast<CExternalForce *>(car->GetComponent(CompType::CompExternalForce).get());
         for (size_t currentOBB = 0; currentOBB < numOBBs; currentOBB++) {
-            Entity *car = manCar->GetEntities()[currentAI].get();
             //BoundingWall *wall = static_cast<BoundingWall *>(obbs[currentOBB].get());
             BoundingOBB *obbActual = static_cast<BoundingOBB *>(obbs[currentOBB].get());
 
-            CBoundingSphere *spcar1 = static_cast<CBoundingSphere *>(car->GetComponent(CompType::CompBoundingSphere).get());
-            CTransformable *trcar1 = static_cast<CTransformable *>(car->GetComponent(CompType::TransformableComp).get());
-            CCar *ccarcar1 = static_cast<CCar *>(car->GetComponent(CompType::CarComp).get());
-
             //CBoundingPlane *plane = static_cast<CBoundingPlane *>(wall->GetComponent(CompType::CompBoundingPlane).get());
             CBoundingOBB *cOBBactual = static_cast<CBoundingOBB *>(obbActual->GetComponent(CompType::CompBoundingOBB).get());
-            HandleCollisions(*trcar1, *spcar1, *ccarcar1, false, *cOBBactual);
+            HandleCollisions(*trcar1, *spcar1, *ccarcar1, false, *cOBBactual, *cExternalForce);
         }
     }
-    
-
-
 }
 
 void CLPhysics::HandleCollisionsWithPlanes() {
@@ -199,6 +197,8 @@ void CLPhysics::HandleCollisions(CTransformable &trCar, CBoundingSphere &spCar, 
         // SonarChoque(mainCar);
         SeparateSphereFromPlane(intersData, trCar, spCar, ccarCar, plane);
 
+        //ReflectSpherePlane(trCar, ccarCar, plane);
+
         //TODO: PROVISIONAL ... PONER LA VELOCIDAD DEL COCHE A 0
         //ccarCar.speed = ccarCar.speed/1.01;
     }else{
@@ -210,12 +210,35 @@ void CLPhysics::HandleCollisions(CTransformable &trCar, CBoundingSphere &spCar, 
 
 
 // HandleCollisions entre ESFERA de un COCHE y un OBB 
-void CLPhysics::HandleCollisions(CTransformable &trCar, CBoundingSphere &spCar, CCar &ccarCar, bool mainCar, CBoundingOBB &obb) {
+void CLPhysics::HandleCollisions(CTransformable &trCar, CBoundingSphere &spCar, CCar &ccarCar, bool mainCar, CBoundingOBB &obb, CExternalForce &externalForce) {
     PositionSphereIntoTransformable(trCar, spCar);
     IntersectData intersData = obb.IntersectSphere(spCar, trCar, ccarCar);
     if (intersData.intersects) {
         // SonarChoque(mainCar);
         SeparateSphereFromPlane(intersData, trCar, spCar, ccarCar, *obb.planes[intersData.posEntity] );
+
+        // dependiendo de como colisionemos con el plano sera un tipo de colision u otro.
+        // dependera del angulo de colsion y la velocidad de colision
+        /*
+        vec3 vecDirCar = vec3(trCar.position.x-ccarCar.previousPos.x, trCar.position.y-ccarCar.previousPos.y, trCar.position.z-ccarCar.previousPos.z);
+        double angle2V = Angle2Vectors( vecDirCar, obb.planes[intersData.posEntity]->normal);
+        if(angle2V > 110.0){ // no debemos reflejar del todo
+
+        }else{  // debemos reflejar
+            //ReflectSpherePlane(trCar, ccarCar, *obb.planes[intersData.posEntity]);
+            //cout << " ENTRAMOS AQUI " << endl;
+            vec3 direccionCar;
+            direccionCar.x = cos(trCar.rotation.y * M_PI / 180.0);
+            direccionCar.y = 0;
+            direccionCar.z = sin(trCar.rotation.y * M_PI / 180.0);
+
+            externalForce.force = 5 + ccarCar.speed / 2;
+            //externalForce.force = ccarCar.speed;
+            //ccarCar.speed = 0.0;
+            externalForce.dirExternalForce = glm::reflect(direccionCar, obb.planes[intersData.posEntity]->normal);
+        }
+        */
+        ReflectSpherePlane(trCar, ccarCar, *obb.planes[intersData.posEntity]);
 
     }
 }
@@ -404,6 +427,41 @@ void CLPhysics::ReflectCollision(CTransformable &trCar1, CCar &cCar1, CTransform
     cCar2.speed = aux;
 }
 
+
+
+/**
+ * Esta versión hace que los coches que han colisionado se reflejen entre sí
+ */
+void CLPhysics::ReflectSpherePlane(CTransformable &trCar1, CCar &cCar1, CBoundingPlane &plane) {
+    //cout << " 1 1 1 1" << endl ;
+    /*
+    float anguloCar1 = trCar1.rotation.y;
+    vec3 direccionCar;
+    direccionCar.x = cos(anguloCar1 * M_PI / 180.0);
+    direccionCar.y = 0;
+    direccionCar.z = sin(anguloCar1 * M_PI / 180.0);
+
+    // pondremos la normal del plano
+    vec3 nuevaDirectionCar1 = glm::reflect(direccionCar, plane.normal);
+
+    float nuevoAnguloCar1Rad = atan2(nuevaDirectionCar1.x, nuevaDirectionCar1.z);
+    float nuevoAnguloCar1Deg = nuevoAnguloCar1Rad * (180.0 / M_PI);
+
+    trCar1.rotation.y = nuevoAnguloCar1Deg;
+
+    cCar1.speed = 5 + cCar1.speed / 3;
+*/
+    
+   if(cCar1.speed > 50.0){
+        cCar1.speed = -50.f - cCar1.speed / 6;
+   }else{
+       cCar1.speed = 25.0;
+   }
+}
+
+
+
+
 void CLPhysics::RunTests() {
     CBoundingSphere sp1(vec3(0.f, 0.f, 0.f), 1.f);
     CBoundingSphere sp2(vec3(0.f, 3.f, 0.f), 1.f);
@@ -499,4 +557,21 @@ IntersectData CLPhysics::HandleCollisionsRayWithPlane(CTransformable &trRayOrigi
     IntersectData intersData = planeObject.IntersectRay(positionRayOrigin, rayNormalNormalized);
 
     return intersData;
+}
+
+
+double CLPhysics::Angle2Vectors(const vec3 &a, const vec3 &b) const{
+    vec3 aN = glm::normalize(a);
+    vec3 bN = glm::normalize(b);
+
+    double dot = glm::dot(aN,bN);
+    // Force the dot product of the two input vectors to
+    // fall within the domain for inverse cosine, which
+    // is -1 <= x <= 1. This will prevent runtime
+    // "domain error" math exceptions.
+    dot = ( dot < -1.0 ? -1.0 : ( dot > 1.0 ? 1.0 : dot ) );
+
+    double angleRad = acos( dot );
+    // grados = radianes*(180/PI_)
+    return angleRad*(180/M_PI);  
 }

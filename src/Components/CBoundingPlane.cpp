@@ -79,7 +79,6 @@ IntersectData CBoundingPlane::IntersectSphere(const CBoundingSphere &other, cons
 
 
 double CBoundingPlane::Angle2Vectors(const vec3 &a, const vec3 &b) const{
-
     vec3 aN = glm::normalize(a);
     vec3 bN = glm::normalize(b);
 
@@ -92,8 +91,7 @@ double CBoundingPlane::Angle2Vectors(const vec3 &a, const vec3 &b) const{
 
     double angleRad = acos( dot );
     // grados = radianes*(180/PI_)
-    return angleRad*(180/M_PI);
-    
+    return angleRad*(180/M_PI);  
 }
 
 
