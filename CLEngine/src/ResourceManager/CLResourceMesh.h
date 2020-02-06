@@ -1,13 +1,82 @@
 #pragma once
 
 #include "CLResource.h"
-#include "../SceneTree/CLMesh.h"
 
 #include "../../include/assimp/Importer.hpp"
 #include "../../include/assimp/scene.h"
 #include "../../include/assimp/postprocess.h"
 #include <vector>
+#include <stddef.h>     /* offsetof */
 
+struct Vertex {
+    // position
+    glm::vec3 position;
+    // normal
+    glm::vec3 normal;
+    // texCoords
+    glm::vec2 texCoords;
+    // tangent
+    glm::vec3 tangent;
+    // bitangent
+    glm::vec3 bitangent;
+};
+
+struct Texture {
+    unsigned int id;
+    string type;
+    string path;
+};
+
+class Mesh{
+    
+
+    public:
+    Mesh(vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture> textures){
+        this->vertices = vertices;
+        this->indices  = indices;
+        this->textures = textures;
+
+        glGenVertexArrays(1, &VAO);
+        glGenBuffers(1, &VBO);
+        glGenBuffers(1, &EBO);
+    
+        glBindVertexArray(VAO);
+        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+
+        //Como en el struct Vertex esta todo seguido podemos pasarselo entero al glBufferData
+        glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), &vertices[0], GL_STATIC_DRAW);  
+
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int),&indices[0], GL_STATIC_DRAW);
+
+        // vertex positions
+        glEnableVertexAttribArray(0);	
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
+        // vertex normals
+        glEnableVertexAttribArray(1);	
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, normal));
+        // vertex texture coords
+        glEnableVertexAttribArray(2);	
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, texCoords));
+
+        glBindVertexArray(0);
+    }
+
+    ~Mesh(){};
+
+    void Draw(){
+        glBindVertexArray(VAO);
+        glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+        glBindVertexArray(0);
+    }
+
+    /*  Mesh Data  */
+    vector<Vertex> vertices;
+    vector<unsigned int> indices;
+    vector<Texture> textures;
+    unsigned int VAO, VBO, EBO;
+
+};
 
 namespace CLE {
     class CLResourceMesh : public CLResource {
@@ -15,12 +84,14 @@ namespace CLE {
             CLResourceMesh(){};
             ~CLResourceMesh(){};
 
-            void Draw(glm::mat4&) override;
+            void Draw(glm::mat4) override;
             bool LoadFile(std::string) override;
 
         private:
             void processNode(aiNode *node, const aiScene *scene);
-            CLMesh processMesh(aiMesh *mesh, const aiScene *scene)
+            Mesh processMesh(aiMesh *mesh, const aiScene *scene);
+
+            vector<Mesh> vecMesh;
 
             
     };

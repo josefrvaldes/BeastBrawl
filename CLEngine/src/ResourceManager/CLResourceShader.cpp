@@ -37,4 +37,4 @@ bool CLResourceShader::LoadFile(string file) {
     return true;
 }
 
-void CLResourceShader::Draw(glm::mat4& m) {}
+void CLResourceShader::Draw(glm::mat4 m) {}

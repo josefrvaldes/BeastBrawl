@@ -194,6 +194,7 @@ int main() {
         glDrawArrays(GL_TRIANGLES, 0, 3);
         glBindVertexArray(0);
 
+        resourceMesh->Draw(glm::mat4(1.0));
         // ImGui::Render();
         // ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
