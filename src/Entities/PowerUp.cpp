@@ -74,9 +74,11 @@ PowerUp::PowerUp(glm::vec3 _position, glm::vec3 _rotation, typeCPowerUp _typePow
         cMesh->mesh = "media/ninja.b3d";
         cPowerUp->speed = -510.0;
     }else{                                                      // Telebanana
-        cTexture->texture = "stones.jpg";
-        cMesh->mesh = "media/ninja.b3d";
+        cTexture->texture = "";
+        cMesh->mesh = "telebanana.obj";
         cPowerUp->speed = 375.0;
+        cTransformable->scale = glm::vec3(2,2,2);
+
     }
 }
 
