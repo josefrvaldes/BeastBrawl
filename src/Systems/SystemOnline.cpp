@@ -9,7 +9,7 @@
 
 using namespace boost::asio;
 
-SystemOnline::SystemOnline(ManCar &manCar_, uint32_t idOnlineMainCar_) : idOnlineMainCar{idOnlineMainCar_}, manCar{manCar_}, udpClient{make_unique<UDPClient>(SERVER_HOST, SERVER_PORT_UDP)} {
+SystemOnline::SystemOnline(ManCar &manCar_, uint16_t idOnlineMainCar_) : idOnlineMainCar{idOnlineMainCar_}, manCar{manCar_}, udpClient{make_unique<UDPClient>(SERVER_HOST, SERVER_PORT_UDP)} {
     shared_ptr<CarHuman> car = manCar.GetCar();
 }
 

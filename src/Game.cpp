@@ -190,13 +190,11 @@ void Game::SetStateInGameSingle(DataMap* d) {
 
 void Game::SetStateInGameMulti(DataMap* d) {
     //SetState(State::INGAME_MULTI);
-    auto dataServer = any_cast<string>((*d)[DataType::DATA_SERVER]);
+    uint16_t IdOnline = any_cast<uint16_t>((*d)[DataType::ID_ONLINE]);
+    vector<uint16_t> vectorIdOnline = any_cast<vector<uint16_t>>((*d)[DataType::VECTOR_ID_ONLINE]);
     if (!gameStarted) {
         shared_ptr<State> newState;
-        if (dataServer == "")
-            newState = make_shared<StateInGameMulti>();
-        else
-            newState = make_shared<StateInGameMulti>(dataServer);
+        newState = make_shared<StateInGameMulti>(IdOnline, vectorIdOnline);
         currentState = newState;
         gameState = currentState;
         gameStarted = true;

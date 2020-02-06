@@ -29,7 +29,9 @@ enum DataType{
     POS_DESTINATION,
     DATA_SERVER,
     ID,
-    INPUTS
+    INPUTS,
+    ID_ONLINE,
+    VECTOR_ID_ONLINE
 };
 
 using EM = EventManager;

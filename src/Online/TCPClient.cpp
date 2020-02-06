@@ -6,6 +6,8 @@
 #include "../EventManager/Event.h"
 #include "../EventManager/EventManager.h"
 #include "../Systems/Utils.h"
+//#include "../Systems/Serialization.h"
+
 
 using json = nlohmann::json;
 
@@ -129,15 +131,16 @@ void TCPClient::HandleReceived(std::shared_ptr<unsigned char[]> recevBuff, const
         // TODO: aquí en vez de enviarle al setState el string debería tratarse el 
         //      string y enviarse los dos datos por separado, de forma que al state
         //      nos aseguremos de que le llegan datos buenos, que no le ha llegado "asdfafa"
-        string receivedString = "";
+        //string receivedString = "";
         std::shared_ptr<DataMap> data = make_shared<DataMap>();
-        (*data)[DataType::DATA_SERVER] = "receivedString";
+        (*data)[DataType::ID_ONLINE] = idPlayer;
+        (*data)[DataType::VECTOR_ID_ONLINE] = idEnemies;
         EventManager::GetInstance().AddEventMulti(Event{EventType::NEW_TCP_START_MULTI, data});
 
         // json receivedJSON = json::parse(receivedString);
         // uint32_t idPlayer = receivedJSON["idPlayer"];
         // vector<uint32_t> arrayIdEnemies = receivedJSON["idEnemies"];
-        std::cout << "El cliente TCP recibe: " << receivedString << std::endl;
+        std::cout << "El cliente TCP recibe cosas" << std::endl;
     } else if (errorCode) {
         cout << "Hubo un error con código " << errorCode << endl;
     } else {
@@ -151,11 +154,13 @@ void TCPClient::SendConnectionRequest() {
         cout << "Hemos intentado SendConnectionRequest pero el cliente tcp estaba parado" << endl;
         return;
     }
+
     unsigned char request[Constants::ONLINE_BUFFER_SIZE];
     // char *buff = request;
-    size_t currentSize = 0;
     uint8_t numero = Constants::CONNECTION_REQUEST;
     // Utils::Serialize(request, numero, currentSize);
+    size_t currentBuffSize = 0;
+    Utils::Serialize(request, &numero, currentBuffSize);
 
     // json j;
     // j["requestConnection"] = numero;
@@ -163,7 +168,7 @@ void TCPClient::SendConnectionRequest() {
     // string s = j.dump();
     socket.async_send(
         // boost::asio::buffer(s, s.size()),
-        boost::asio::buffer(request, currentSize),
+        boost::asio::buffer(request, currentBuffSize),
         boost::bind(
             &TCPClient::HandleSentConnectionRequest,
             this,

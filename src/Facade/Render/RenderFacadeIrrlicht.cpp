@@ -683,15 +683,13 @@ void RenderFacadeIrrlicht::FacadeCheckInputEndRace() {
 
 void RenderFacadeIrrlicht::FacadeCheckInputLobbyMulti() {
     //Cambiamos a ingame
-    if (receiver.IsKeyDown(KEY_F1)) {
-        ThrowEventChangeToMulti("");      // Cambiamos de estado al STATE_INGAMEMULTI
-    } else if (receiver.IsKeyDown(KEY_ESCAPE)) {
+    if (receiver.IsKeyDown(KEY_ESCAPE)) {
         device->closeDevice();
     }
 }
 
 
-void RenderFacadeIrrlicht::ThrowEventChangeToMulti(string dataServer){
+void RenderFacadeIrrlicht::ThrowEventChangeToMulti(uint16_t IdOnline, const vector<uint16_t> IdPlayersOnline){
     numEnemyCars = 0;
     //Manera un poco cutre de resetear el CId al empezar el juego
     auto cId = make_shared<CId>();
@@ -700,7 +698,9 @@ void RenderFacadeIrrlicht::ThrowEventChangeToMulti(string dataServer){
     cNavMesh->ResetNumIds();
     //Game::GetInstance()->SetState(State::INGAME_MULTI);
     shared_ptr<DataMap> data = make_shared<DataMap>();
-    (*data)[DataType::DATA_SERVER] = dataServer;
+    //(*data)[DataType::DATA_SERVER] = dataServer;
+    (*data)[DataType::ID_ONLINE] = IdOnline;
+    (*data)[DataType::VECTOR_ID_ONLINE] = IdPlayersOnline;
     EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_INGAMEMULTI, data});
 }
 

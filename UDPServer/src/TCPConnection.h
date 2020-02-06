@@ -24,7 +24,7 @@ class TCPConnection : public boost::enable_shared_from_this<TCPConnection> {
 
    private:
     TCPConnection(asio::io_context& io_context);
-    void HandleRead(std::shared_ptr<boost::array<char, 1024>> recevBuff, const boost::system::error_code& error, size_t bytes_transferred);
+    void HandleRead(std::shared_ptr<unsigned char[]> recevBuff, const boost::system::error_code& error, size_t bytes_transferred);
     void HandleWrite(const boost::system::error_code& error, size_t bytes_transferred);
 
     string GetTime() {

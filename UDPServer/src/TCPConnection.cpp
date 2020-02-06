@@ -3,6 +3,8 @@
 #include <boost/bind.hpp>
 #include "../../include/include_json/include_json.hpp"
 #include "../src/Constants.h"
+#include "../src/Systems/Utils.h"
+
 
 using json = nlohmann::json;
 using boost::asio::ip::tcp;
@@ -26,9 +28,10 @@ void TCPConnection::Start(){
 
     //std::shared_ptr<boost::array<boost::asio::mutable_buffer,1>> recevBuff = make_shared<boost::array<boost::asio::mutable_buffer,1>>();
     //std::shared_ptr<string> buffer = make_shared<string>();
-    std::shared_ptr<boost::array<char, 1024>> recevBuff = make_shared<boost::array<char, 1024>>();
+    //std::shared_ptr<boost::array<char, 512>> recevBuff = make_shared<boost::array<char, 512>>();
+    std::shared_ptr<unsigned char[]> recevBuff(new unsigned char[Constants::ONLINE_BUFFER_SIZE]);
     socket_.async_receive(
-        asio::buffer(*recevBuff),
+        asio::buffer(recevBuff.get(), Constants::ONLINE_BUFFER_SIZE),
         boost::bind(&TCPConnection::HandleRead,
             shared_from_this(),
             recevBuff,
@@ -46,14 +49,22 @@ void TCPConnection::Start(){
 
 
 
-void TCPConnection::HandleRead(std::shared_ptr<boost::array<char, 1024>> recevBuff, const boost::system::error_code& error, size_t bytes_transferred){
+void TCPConnection::HandleRead(std::shared_ptr<unsigned char[]> recevBuff, const boost::system::error_code& error, size_t bytes_transferred){
     //std::cout << "Hola "<< std::endl;
     if(!error && bytes_transferred!=0){
-        string receivedString;
-        std::copy(recevBuff->begin(), recevBuff->begin() + bytes_transferred, std::back_inserter(receivedString));
-        json receivedJSON = json::parse(receivedString);
-        uint16_t auxCallType = receivedJSON["requestConnection"];
-        std::cout << "El servidorTCP lee: "  << auxCallType << std::endl;
+        uint16_t idPlayer;
+        uint8_t numero;
+        vector<uint16_t> idEnemies;
+        size_t currentIndex = 0;
+
+        Utils::Deserialize(&numero, recevBuff.get(), currentIndex);
+
+        
+        //string receivedString;
+        //std::copy(recevBuff->begin(), recevBuff->begin() + bytes_transferred, std::back_inserter(receivedString));
+        //json receivedJSON = json::parse(receivedString);
+        //uint16_t auxCallType = receivedJSON["requestConnection"];
+        //std::cout << "El servidorTCP lee: "  << auxCallType << std::endl;
         //int ptrCallType = static_cast<int>(*buff1.data());
         //std::cout << "Numero: "<< *buff1.data() << std::endl;
     }else if(error){

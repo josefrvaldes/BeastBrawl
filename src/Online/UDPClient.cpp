@@ -2,6 +2,7 @@
 #include <src/EventManager/Event.h>
 #include <src/EventManager/EventManager.h>
 #include <src/Systems/Utils.h>
+//#include "src/Systems/Serialization.h"
 #include <boost/asio/placeholders.hpp>
 #include <boost/bind.hpp>
 #include <deque>
@@ -140,6 +141,7 @@ void UDPClient::HandleSentInput(std::shared_ptr<Constants::InputTypes> input, co
 
 void UDPClient::SendInputs(vector<Constants::InputTypes>& inputs, uint32_t id) {
     json j;
+    
     j["petitionType"] = Constants::PetitionTypes::SEND_INPUTS;
     j["id"] = id;
     j["inputs"] = inputs;

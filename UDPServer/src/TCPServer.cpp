@@ -3,8 +3,10 @@
 #include <boost/asio/placeholders.hpp>
 #include <boost/bind.hpp>
 #include "../../include/include_json/include_json.hpp"
-#include "../src/Constants.h"
+#include "../../src/Constants.h"
 #include "../src/Systems/Utils.h"
+//#include "../../src/Systems/Serialization.h"
+
 
 using json = nlohmann::json;
 using boost::asio::ip::tcp;
@@ -82,7 +84,7 @@ void TCPServer::SendStartGame() {
         std::shared_ptr<unsigned char[]> buff(new unsigned char[Constants::ONLINE_BUFFER_SIZE]);
         size_t currentBuffSize = 0;
         uint8_t enemiesSize = idsEnemies.size();
-
+    
         Utils::Serialize(buff.get(), &idPlayer, currentBuffSize);
         Utils::Serialize(buff.get(), &enemiesSize, currentBuffSize);
         Utils::SerializeVector(buff.get(), idsEnemies, currentBuffSize);

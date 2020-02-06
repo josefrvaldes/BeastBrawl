@@ -27,15 +27,15 @@ StateInGameMulti::StateInGameMulti() : StateInGame() {
     sysOnline->SendInputs(inputs);  // enviamos un vector vacío la primera vez para que el servidor sepa que estamos vivos
 }
 
-StateInGameMulti::StateInGameMulti(string data) : StateInGame() {
+StateInGameMulti::StateInGameMulti(uint16_t IdOnline, const vector<uint16_t> IdPlayersOnline) : StateInGame() {
     InitVirtualMethods();
     // a este le llegan los coches
-    std::cout << "POR FIIIIIIIIIIIIIIIIIIIIIIIN: " << data << std::endl;
-    json receivedJSON = json::parse(data);
-    uint32_t idPlayer = receivedJSON["idPlayer"];
-    vector<uint32_t> arrayIdEnemies = receivedJSON["idEnemies"];
+    std::cout << "POR FIIIIIIIIIIIIIIIIIIIIIIIN: " << std::endl;
+    //json receivedJSON = json::parse(data);
+    //uint32_t idPlayer = receivedJSON["idPlayer"];
+    vector<uint16_t> arrayIdEnemies = IdPlayersOnline;
 
-    sysOnline = make_unique<SystemOnline>(*manCars, idPlayer);
+    sysOnline = make_unique<SystemOnline>(*manCars, IdOnline);
 
     vec3 posIniciales[] = {
         vec3(120.0f, 10.0f, -300.0f),
@@ -44,11 +44,11 @@ StateInGameMulti::StateInGameMulti(string data) : StateInGame() {
         vec3(-50.0f, 10.0f, -50.0f)};
 
     auto cTransformable = static_cast<CTransformable *>(manCars->GetCar()->GetComponent(CompType::TransformableComp).get());
-    cTransformable->position = posIniciales[idPlayer - 1];
+    cTransformable->position = posIniciales[IdOnline - 1];
     COnline *cOnline = static_cast<COnline *>(manCars->GetCar()->GetComponent(CompType::OnlineComp).get());
-    cOnline->idClient = idPlayer;
+    cOnline->idClient = IdOnline;
 
-    for (auto idEnemy : arrayIdEnemies) {
+    for (auto idEnemy : IdPlayersOnline) {
         vec3 pos = posIniciales[idEnemy - 1];
         manCars->CreateHumanCar(pos);
         shared_ptr<Entity> car = manCars->GetEntities()[manCars->GetEntities().size() - 1];
