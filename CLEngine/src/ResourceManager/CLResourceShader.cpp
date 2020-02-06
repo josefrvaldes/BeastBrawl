@@ -15,12 +15,13 @@ bool CLResourceShader::LoadFile(string file) {
         code = ss.str();
         stream.close();
     }else{
-        cout << "Couldn't load " << file << endl;
+        cout << "Pues no se han podido leer los archivos " << file << endl;
         return false;
     }
 
     char const* codeptr = code.c_str();
 
+    // Vamos a intentar compilar los dichosos shaders
     glShaderSource(shaderID, 1, &codeptr, NULL); //(ID,1,puntero al array de char de codigo, NULL)
     glCompileShader(shaderID);
 

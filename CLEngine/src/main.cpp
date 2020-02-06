@@ -19,14 +19,6 @@
 using namespace std;
 using namespace CLE;
 
-const char *fragmentShaderSource = "#version 450 core\n"
-    "out vec4 FragColor;\n"
-    "uniform vec4 ourColor;\n"
-    "void main()\n"
-    "{\n"
-        "FragColor = ourColor;\n"
-    "}\n\0";
-
 
 /**
  * Mira si se ha pulsado ESC para cerrar la ventana.
@@ -38,9 +30,8 @@ void checkInput (GLFWwindow *window) {
     }
 }
 
-int main() {
-    CLEngine *device = new CLEngine(1280, 720, "Beast Brawl");
-    /*IMGUI_CHECKVERSION();
+void initialiceImGUI() {
+    IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO(); (void)io;
 
@@ -50,7 +41,20 @@ int main() {
 
     // Setup Platform/Renderer bindings
     ImGui_ImplGlfw_InitForOpenGL(device->GetWindow(), true);
-    ImGui_ImplOpenGL3_Init("#version 450");*/
+    ImGui_ImplOpenGL3_Init("#version 450");
+}
+
+void terminateInGUI() {
+    // Cleanup
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
+}
+
+int main() {
+    CLEngine *device = new CLEngine(1280, 720, "Beast Brawl");
+
+    //initialiceImGUI();
 
     float vertices[] = {
         // positions            // colors
@@ -59,37 +63,38 @@ int main() {
          0.0f,  0.5f, 0.0f,     0.0f, 0.0f, 1.0f
     };      
 
-    //----------------------------------
-    unique_ptr<CLEntity> entity1 = make_unique<CLLight>(1);
-    unique_ptr<CLEntity> entity2 = make_unique<CLLight>(2);
-    unique_ptr<CLEntity> entity3 = make_unique<CLLight>(3);
-    unique_ptr<CLEntity> entity4 = make_unique<CLLight>(4);
-    unique_ptr<CLEntity> entity5 = make_unique<CLLight>(5);
-    unique_ptr<CLNode> smgr = make_unique<CLNode>(entity1.get());
-    unique_ptr<CLNode> node2 = make_unique<CLNode>(entity2.get());
-    unique_ptr<CLNode> node3 = make_unique<CLNode>(entity3.get());
-    unique_ptr<CLNode> node4 = make_unique<CLNode>(entity4.get());
-    unique_ptr<CLNode> node5 = make_unique<CLNode>(entity5.get());
 
-    smgr->AddChild(node2.get());
-    smgr->AddChild(node3.get());
-    node2->AddChild(node4.get());
-    node4->AddChild(node5.get());
+    //--------------------Scene Tree-----------------------
+        unique_ptr<CLEntity> entity1 = make_unique<CLLight>(1);
+        unique_ptr<CLEntity> entity2 = make_unique<CLLight>(2);
+        unique_ptr<CLEntity> entity3 = make_unique<CLLight>(3);
+        unique_ptr<CLEntity> entity4 = make_unique<CLLight>(4);
+        unique_ptr<CLEntity> entity5 = make_unique<CLLight>(5);
+        unique_ptr<CLNode> smgr = make_unique<CLNode>(entity1.get());
+        unique_ptr<CLNode> node2 = make_unique<CLNode>(entity2.get());
+        unique_ptr<CLNode> node3 = make_unique<CLNode>(entity3.get());
+        unique_ptr<CLNode> node4 = make_unique<CLNode>(entity4.get());
+        unique_ptr<CLNode> node5 = make_unique<CLNode>(entity5.get());
 
-    //smgr->DrawTree(smgr.get());
+        smgr->AddChild(node2.get());
+        smgr->AddChild(node3.get());
+        node2->AddChild(node4.get());
+        node4->AddChild(node5.get());
 
-    node5->SetScalation(glm::vec3(1.5f,1.0f,1.0f));
-    node5->SetRotation(glm::vec3(20.0f,30.0f,0.0f));
+        //smgr->DrawTree(smgr.get());
 
-    smgr->DFSTree(glm::mat4(1.0));
+        node5->SetScalation(glm::vec3(1.5f,1.0f,1.0f));
+        node5->SetRotation(glm::vec3(20.0f,30.0f,0.0f));
+
+        smgr->DFSTree(glm::mat4(1.0));
 
 
     //-------------------Resource manager-------------------
-    unique_ptr<CLResourceManager> resourceManager = make_unique<CLResourceManager>();
-    auto resourceVertex = resourceManager->GetResourceShader("CLEngine/src/Shaders/vertex.glsl", GL_VERTEX_SHADER);
-    auto resourceFragment = resourceManager->GetResourceShader("CLEngine/src/Shaders/fragment.glsl", GL_FRAGMENT_SHADER);
+        unique_ptr<CLResourceManager> resourceManager = make_unique<CLResourceManager>();
+        auto resourceVertex = resourceManager->GetResourceShader("CLEngine/src/Shaders/vertex.glsl", GL_VERTEX_SHADER);
+        auto resourceFragment = resourceManager->GetResourceShader("CLEngine/src/Shaders/fragment.glsl", GL_FRAGMENT_SHADER);
 
-    
+        
 
     //Una vez ambos shaders estan inicializados tenemos que linkarlos para que el output de uno vaya al otro
     int shaderProgram = glCreateProgram(); //Como siempre nos devuelve un identificador
@@ -111,6 +116,9 @@ int main() {
     glDeleteShader(resourceVertex->GetShaderID());
     glDeleteShader(resourceFragment->GetShaderID());  
 
+
+
+    // ------------------------MAGIA--------------------------------
     //Todo preparado, ahora comienza la magia
     // 1. bind Vertex Array Object
     //Todo esto esta muy bien pero lo mejor es tener un array para todos los VBO que queramos dibujar
@@ -138,12 +146,11 @@ int main() {
 
     /** glVertexAttribPointer
      * 1º Valor: Como pusimos layout = 0 pues ahora mandamos un 0
-     * 2º Valor: Numero de vertices que enviamos 3 = vec3
+     * 2º Valor: Numero de datos por bloque que enviamos 3 = vec3
      * 3º Valor: Si normalizamos o no los datos
      * 4º Valor: El tamaño de cada bloque, al ser 3 floats cada vertice entonces 3*sizeof(float)
-     * 5º Valor: offset
+     * 5º Valor: offset por el que se empieza a leer
      */
-
     //Por cada layaout del vertex shader los diferenciamos por el primer parametro
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6* sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);  
@@ -159,7 +166,6 @@ int main() {
     //ImVec4 triangleColor;
     bool show_demo_window = true;
     while (!device->Run()) {
-        //glfwPollEvents();
 
         checkInput(device->GetWindow());
 
@@ -210,10 +216,7 @@ int main() {
 
     }
 
-    // Cleanup
-    /*ImGui_ImplOpenGL3_Shutdown();
-    ImGui_ImplGlfw_Shutdown();
-    ImGui::DestroyContext();*/
+    //terminateInGUI();
 
     delete device;
 
