@@ -87,6 +87,7 @@ int main() {
     unique_ptr<CLResourceManager> resourceManager = make_unique<CLResourceManager>();
     auto resourceVertex = resourceManager->GetResourceShader("CLEngine/src/Shaders/vertex.glsl", GL_VERTEX_SHADER);
     auto resourceFragment = resourceManager->GetResourceShader("CLEngine/src/Shaders/fragment.glsl", GL_FRAGMENT_SHADER);
+    auto resourceMesh = resourceManager->GetResourceMesh("media/scene.fbx");
 
     
 
@@ -168,12 +169,12 @@ int main() {
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplGlfw_NewFrame();
-        ImGui::NewFrame();
+        // ImGui_ImplOpenGL3_NewFrame();
+        // ImGui_ImplGlfw_NewFrame();
+        // ImGui::NewFrame();
 
         // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
-        ImGui::ShowDemoWindow(&show_demo_window);
+        // ImGui::ShowDemoWindow(&show_demo_window);
 
 
         // Start the Dear ImGui frame
@@ -181,9 +182,9 @@ int main() {
         // ImGui_ImplGlfw_NewFrame();
         // ImGui::NewFrame();
 
-        ImGui::Begin("Modificador de shader!");                          // Create a window called "Hello, world!" and append into it.
-        ImGui::ColorEdit3("clear color", (float*)&triangleColor); // Edit 3 floats representing a color
-        ImGui::End();
+        // ImGui::Begin("Modificador de shader!");                          // Create a window called "Hello, world!" and append into it.
+        // ImGui::ColorEdit3("clear color", (float*)&triangleColor); // Edit 3 floats representing a color
+        // ImGui::End();
 
         glUseProgram(shaderProgram);
         int vertexColorLocation = glGetUniformLocation(shaderProgram,"ourColor");
@@ -193,8 +194,8 @@ int main() {
         glDrawArrays(GL_TRIANGLES, 0, 3);
         glBindVertexArray(0);
 
-        ImGui::Render();
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+        // ImGui::Render();
+        // ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
         glfwPollEvents();
         glfwSwapBuffers(device->GetWindow());

@@ -111,7 +111,7 @@ void CLNode::DFSTree(glm::mat4 mA) {
     if (changed) {
         transformationMat = mA*CalculateTransformationMatrix();
         changed = false;
-        cout << "Soy el nodo " << entity->GetID() << " - " << glm::to_string(transformationMat) << endl;
+        //cout << "Soy el nodo " << entity->GetID() << " - " << glm::to_string(transformationMat) << endl;
     }
 
     if(entity) {
