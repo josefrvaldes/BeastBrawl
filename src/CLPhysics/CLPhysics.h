@@ -51,5 +51,6 @@ class CLPhysics {
     void checkCollisionNitro(Entity* car1, Entity* car2);
     double Angle2Vectors(const glm::vec3 &a, const glm::vec3 &b) const;
     glm::vec3 CalculateProyectPointRecta(const glm::vec3 &extrem1, const glm::vec3 &extrem2, const glm::vec3 &point_) const;
+    glm::vec3 CalculateVecDirCar(CTransformable &cTransformable) const;
     vector<Manager *> managers;
 };

@@ -53,12 +53,6 @@ ManCar::ManCar(Physics *_physics, Camera *_cam) : ManCar() {
 // comprueba si has superado el tiempo necesario para ganar
 void ManCar::UpdateCar(){
     
-    // Actualiza el componente previousPos
-    auto cCar = static_cast<CCar*>(GetCar()->GetComponent(CompType::CarComp).get());
-    auto cTransformable = static_cast<CTransformable*>(GetCar()->GetComponent(CompType::TransformableComp).get());
-    cCar->previousPos = cTransformable->position;
-    
-
     auto cTotem = static_cast<CTotem*>(GetCar()->GetComponent(CompType::TotemComp).get());
     if(cTotem->active){
         cTotem->accumulatedTime +=  duration_cast<milliseconds>(system_clock::now() - cTotem->timeStart).count();

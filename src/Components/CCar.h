@@ -31,7 +31,6 @@ public:
     float maxWheelRotation = 10;
     float friction;
     float slowDown;
-    glm::vec3 previousPos;
 
 
 };

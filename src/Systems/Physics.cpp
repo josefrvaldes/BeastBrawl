@@ -34,7 +34,7 @@ void Physics::CalculatePosition(CCar *cCar, CTransformable *cTransformable, CSpe
     //Modificamos la posicion en X y Z en funcion del angulo
     // debemos de tener encuenta la fuerza externa, asi como la direccion final que tomaremos (el angulo final)
 
-/*
+    /*
     if(cExternalForce->force >0){
         cout << "SIIIIIIIIIIII fuerza externa" <<endl;
         vec3 vecDir = CalculateVecDirCar(cTransformable);
@@ -50,14 +50,13 @@ void Physics::CalculatePosition(CCar *cCar, CTransformable *cTransformable, CSpe
         //cCar->speed = cExternalForce->force;
 
     }else{
-*/
+    */
+
     cSpeed->speed.x = cos(angleRotation);  // * cCar->speed;
     cSpeed->speed.z = sin(angleRotation);  // * cCar->speed;
     cSpeed->speed.y = 0.f;                 // TODO, esto lo cacharreará el CLPhysics
     cTransformable->position.x -= cSpeed->speed.x * cCar->speed * deltaTime;
     cTransformable->position.z += cSpeed->speed.z * cCar->speed * deltaTime;
-
-    //}
 
     
 

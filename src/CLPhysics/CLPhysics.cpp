@@ -24,6 +24,8 @@
 #include "../Managers/Manager.h"
 #include "../Systems/Utils.h"
 
+#include <cmath>
+
 using namespace std;
 
 CLPhysics::CLPhysics() {
@@ -197,14 +199,25 @@ void CLPhysics::HandleCollisions(CTransformable &trCar, CBoundingSphere &spCar, 
         // SonarChoque(mainCar);
         SeparateSphereFromPlane(intersData, trCar, spCar, ccarCar, plane);
 
+
+
+
+        vec3 vecDirCar = CalculateVecDirCar(trCar);
+        double angle2V = Angle2Vectors( vecDirCar, plane.normalizedNormal);
+        cout << angle2V << endl;
+        if(angle2V > 130.0){ // no debemos reflejar del todo
+            if(ccarCar.speed >= ccarCar.maxSpeed*0.3){
+            ccarCar.speed = ccarCar.maxSpeed*0.3;
+            }
+        }else{
+            if(ccarCar.speed >= ccarCar.maxSpeed*0.8){
+            ccarCar.speed = ccarCar.maxSpeed*0.8;
+            }     
+        }
         //ReflectSpherePlane(trCar, ccarCar, plane);
 
         //TODO: PROVISIONAL ... PONER LA VELOCIDAD DEL COCHE A 0
         //ccarCar.speed = ccarCar.speed/1.01;
-    }else{
-        if( intersData.posEntity == -1 ){ // SIGNIFICA QUE COLISIONAMOS CON MAS DE UN PALNO... ESFERA VIRTUAL
-            cout << "NUNCA DEBERIA DE PASAR ESTO LOCOCOOOCCOOCCOCO ... de momento jeje" << endl;
-        }
     }
 }
 
@@ -219,11 +232,20 @@ void CLPhysics::HandleCollisions(CTransformable &trCar, CBoundingSphere &spCar, 
 
         // dependiendo de como colisionemos con el plano sera un tipo de colision u otro.
         // dependera del angulo de colsion y la velocidad de colision
-        /*
-        vec3 vecDirCar = vec3(trCar.position.x-ccarCar.previousPos.x, trCar.position.y-ccarCar.previousPos.y, trCar.position.z-ccarCar.previousPos.z);
-        double angle2V = Angle2Vectors( vecDirCar, obb.planes[intersData.posEntity]->normal);
-        if(angle2V > 110.0){ // no debemos reflejar del todo
-
+        
+        vec3 vecDirCar = CalculateVecDirCar(trCar);
+        double angle2V = Angle2Vectors( vecDirCar, obb.planes[intersData.posEntity]->normalizedNormal);
+        cout << angle2V << endl;
+        if(angle2V > 130.0){ // no debemos reflejar del todo
+            if(ccarCar.speed >= ccarCar.maxSpeed*0.3){
+            ccarCar.speed = ccarCar.maxSpeed*0.3;
+            }
+        }else{
+            if(ccarCar.speed >= ccarCar.maxSpeed*0.8){
+            ccarCar.speed = ccarCar.maxSpeed*0.8;
+            }     
+        }
+/*
         }else{  // debemos reflejar
             //ReflectSpherePlane(trCar, ccarCar, *obb.planes[intersData.posEntity]);
             //cout << " ENTRAMOS AQUI " << endl;
@@ -238,11 +260,21 @@ void CLPhysics::HandleCollisions(CTransformable &trCar, CBoundingSphere &spCar, 
             externalForce.dirExternalForce = glm::reflect(direccionCar, obb.planes[intersData.posEntity]->normal);
         }
         */
-        ReflectSpherePlane(trCar, ccarCar, *obb.planes[intersData.posEntity]);
+        //ReflectSpherePlane(trCar, ccarCar, *obb.planes[intersData.posEntity]);
+
 
     }
 }
 
+vec3 CLPhysics::CalculateVecDirCar(CTransformable &cTransformable) const{
+
+   float angleRotation = (cTransformable.rotation.y * M_PI) / 180.0;
+   float nextPosX    = cTransformable.position.x - cos(angleRotation) * 1;
+   float nexPosZ     = cTransformable.position.z + sin(angleRotation) * 1;
+
+   return vec3(nextPosX-cTransformable.position.x, 0, nexPosZ-cTransformable.position.z);
+
+}
 
 
 void CLPhysics::SeparateSphereFromPlane(IntersectData &intersData, CTransformable &trCar1, CBoundingSphere &spCar1, CCar &ccarCar1, CBoundingPlane &plane) const {

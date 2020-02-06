@@ -50,4 +50,5 @@ class CBoundingPlane : public Component {
     // calculo de la ecuacion general de un plano mediante 3 puntos
     vec4 equationPlane3Points(const vec3 &a, const vec3 &b, const vec3 &c) const;
     double Angle2Vectors(const vec3 &a, const vec3 &b) const;
+    glm::vec3 CalculateVecDirCar(const CTransformable &cTransformable) const;
 };
