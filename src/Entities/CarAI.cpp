@@ -19,6 +19,7 @@
 #include "../Components/CTargetNavMesh.h"
 #include "../Components/CBoundingRay.h"
 #include "../Components/CMovementType.h"
+#include "../Components/CExternalForce.h"
 
 
 
@@ -61,6 +62,9 @@ CarAI::CarAI(){
     shared_ptr<CBoundingSphere> cBoundSphere = make_shared<CBoundingSphere>(pos);
     shared_ptr<CBoundingRay> cBoundRay = make_shared<CBoundingRay>();
     shared_ptr<CMovementType> cMovementType = make_shared<CMovementType>("Empty");
+
+    shared_ptr<CExternalForce> cExternalForce = make_shared<CExternalForce>();
+
     AddComponent(cId);
     AddComponent(cType);
     AddComponent(cTransformable);
@@ -86,6 +90,8 @@ CarAI::CarAI(){
 
     AddComponent(cCurrentNavMesh);
     AddComponent(cTargetNavMesh);
+
+    AddComponent(cExternalForce);
     cout << "Acabamos de llamar al constructor default de car, su transformable es " << cTransformable << endl;
 }
 

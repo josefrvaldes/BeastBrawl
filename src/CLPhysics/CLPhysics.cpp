@@ -1,7 +1,6 @@
 
 #include "CLPhysics.h"
 #include <iostream>
-#include <memory>
 #include "../Components/CAABoundingBox.h"
 #include "../Components/CBoundingPlane.h"
 #include "../Components/CBoundingSphere.h"
@@ -114,18 +113,19 @@ void CLPhysics::HandleCollisions() {
 
     // los coches entre si
     for (size_t i = 0; i < numEntities; i++) {
+        Entity *car1 = manCar->GetEntities()[i].get();
+        CBoundingSphere *spcar1 = static_cast<CBoundingSphere *>(car1->GetComponent(CompType::CompBoundingSphere).get());
+        CTransformable *trcar1 = static_cast<CTransformable *>(car1->GetComponent(CompType::TransformableComp).get());
+        CCar *ccarcar1 = static_cast<CCar *>(car1->GetComponent(CompType::CarComp).get());
+        CExternalForce *cExternalForce1 = static_cast<CExternalForce *>(car1->GetComponent(CompType::CompExternalForce).get());
         for (size_t j = i + 1; j < numEntities; j++) {
-            Entity *car1 = manCar->GetEntities()[i].get();
-            Entity *car2 = manCar->GetEntities()[j].get();
-            CBoundingSphere *spcar1 = static_cast<CBoundingSphere *>(car1->GetComponent(CompType::CompBoundingSphere).get());
-            CTransformable *trcar1 = static_cast<CTransformable *>(car1->GetComponent(CompType::TransformableComp).get());
-            CCar *ccarcar1 = static_cast<CCar *>(car1->GetComponent(CompType::CarComp).get());
 
+            Entity *car2 = manCar->GetEntities()[j].get();
             CBoundingSphere *spcar2 = static_cast<CBoundingSphere *>(car2->GetComponent(CompType::CompBoundingSphere).get());
             CTransformable *trcar2 = static_cast<CTransformable *>(car2->GetComponent(CompType::TransformableComp).get());
             CCar *ccarcar2 = static_cast<CCar *>(car2->GetComponent(CompType::CarComp).get());
-
-            bool intersect = HandleCollisions(*trcar1, *spcar1, *ccarcar1, false, *trcar2, *spcar2, *ccarcar2);
+            CExternalForce *cExternalForce2 = static_cast<CExternalForce *>(car2->GetComponent(CompType::CompExternalForce).get());
+            bool intersect = HandleCollisions(*trcar1, *spcar1, *ccarcar1, false, *trcar2, *spcar2, *ccarcar2, *cExternalForce1, *cExternalForce2);
             if(intersect){
                 checkCollisionNitro(car1, car2);
             }
@@ -296,7 +296,7 @@ void CLPhysics::SonarChoque(bool mainCar) {
  * Recibe los componentes de los dos coches con los que se comprobará colisión
  * El bool mainCar define si los componentes del coche1 son los del coche principal o no
  */
-bool CLPhysics::HandleCollisions(CTransformable &trCar1, CBoundingSphere &spCar1, CCar &ccarCar1, bool mainCar, CTransformable &trCar2, CBoundingSphere &spCar2, CCar &ccarCar2) {
+bool CLPhysics::HandleCollisions(CTransformable &trCar1, CBoundingSphere &spCar1, CCar &ccarCar1, bool mainCar, CTransformable &trCar2, CBoundingSphere &spCar2, CCar &ccarCar2, CExternalForce &cExtForc1, CExternalForce &cExtForc2) {
     // posicionamos la esfera en la misma posición que el coche pero teniendo en cuenta el offset
 
     PositionSphereIntoTransformable(trCar1, spCar1);
@@ -309,16 +309,38 @@ bool CLPhysics::HandleCollisions(CTransformable &trCar1, CBoundingSphere &spCar1
         PositionSphereIntoTransformable(trCar1, spCar1);
         PositionSphereIntoTransformable(trCar2, spCar2);
 
-        float anguloCar1 = trCar1.rotation.y;
-        float anguloCar2 = trCar2.rotation.y;
-        float anguloEntreEllos = Utils::AngleBetweenTwoAngles(anguloCar1, anguloCar2);
+
+
+        // LO QUE HACEMOS ES PASAR NUESTRO VECTOR DE FUERZA AL COCHE CONTRARIO
+        vec3 vecDirCar1 = CalculateVecDirCar(trCar1);
+        vec3 vecDirCar2 = CalculateVecDirCar(trCar2);
+        if( ccarCar2.speed > ccarCar2.maxSpeed*0.1){
+            cExtForc1.dirExternalForce = vecDirCar2;
+            cExtForc1.force = ccarCar2.speed; 
+        }
+        if(ccarCar1.speed > ccarCar1.maxSpeed*0.1){
+            cExtForc2.dirExternalForce = vecDirCar1;
+            cExtForc2.force = ccarCar1.speed;
+        }
+
+        // ADEMAS DEBEMOS REDUCIRLES LAS VELOCIDADES POR CHOCAR
+        if(ccarCar1.speed >= ccarCar1.maxSpeed*0.5){
+            ccarCar1.speed = ccarCar1.maxSpeed*0.5;
+        }
+        if(ccarCar2.speed >= ccarCar2.maxSpeed*0.5){
+            ccarCar2.speed = ccarCar2.maxSpeed*0.5;
+        }
+
+        //float anguloCar1 = trCar1.rotation.y;
+        //float anguloCar2 = trCar2.rotation.y;
+        //float anguloEntreEllos = Utils::AngleBetweenTwoAngles(anguloCar1, anguloCar2);
         //cout << "angulo entre ellos=" << anguloEntreEllos << endl;
-        if (anguloEntreEllos > 0 && anguloEntreEllos <= 45) {
-            // intercambiamos velocidades pero el ángulo no se toca
-            //cout << "Intercambiamos velocidades1" << endl;
-            float aux = ccarCar1.speed;
-            ccarCar1.speed = ccarCar2.speed;
-            ccarCar2.speed = aux;
+        //if (anguloEntreEllos > 0 && anguloEntreEllos <= 45) {
+        //    // intercambiamos velocidades pero el ángulo no se toca
+        //    //cout << "Intercambiamos velocidades1" << endl;
+        //    float aux = ccarCar1.speed;
+        //    ccarCar1.speed = ccarCar2.speed;
+        //    ccarCar2.speed = aux;
         // } else if (anguloEntreEllos > 45 && anguloEntreEllos <= 115) {
             //cout << "chocan lateralmente" << endl;
 
@@ -333,14 +355,16 @@ bool CLPhysics::HandleCollisions(CTransformable &trCar1, CBoundingSphere &spCar1
 
             // versión reflejo
             // ReflectCollision(trCar1, ccarCar1, trCar2, ccarCar2);
-        } else if (anguloEntreEllos > 115) {
-            // intercambiamos velocidades pero el ángulo no se toca
-            //cout << "Intercambiamos velocidades2" << endl;
-            float aux = ccarCar1.speed;
+        //} else if (anguloEntreEllos > 115) {
+        //    // intercambiamos velocidades pero el ángulo no se toca
+        //    //cout << "Intercambiamos velocidades2" << endl;
+        //    float aux = ccarCar1.speed;
+//
+        //    ccarCar1.speed = -50.f - ccarCar2.speed / 6;
+        //    ccarCar2.speed = -50.f - aux / 6;
+        //}
 
-            ccarCar1.speed = -50.f - ccarCar2.speed / 6;
-            ccarCar2.speed = -50.f - aux / 6;
-        }
+        
 
         return true;    // los coches han colisionado
     }

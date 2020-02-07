@@ -8,6 +8,11 @@
 #include "../Entities/Car.h"
 #include "../Systems/Utils.h"
 
+#include <cmath>
+
+#include <iostream>
+#include <math.h>
+
 Physics::Physics(float _deltaTime) : deltaTime(_deltaTime) {
 }
 
@@ -30,28 +35,14 @@ void Physics::update(Car *car, Camera *cam) {
 //Calcula la posicion del coche (duda con las formulas preguntar a Jose)
 void Physics::CalculatePosition(CCar *cCar, CTransformable *cTransformable, CSpeed *cSpeed, CExternalForce *cExternalForce, float deltaTime) {
     float angleRotation = (cTransformable->rotation.y * PI) / 180.0;
-    //float delta = deltaTime;
-    //Modificamos la posicion en X y Z en funcion del angulo
+
     // debemos de tener encuenta la fuerza externa, asi como la direccion final que tomaremos (el angulo final)
+    if(cExternalForce->force > 0){
+        // Este paso es una tonteria porque ya lo devolvemos normalizado
+        cExternalForce->dirExternalForce = normalize(cExternalForce->dirExternalForce);
+    }
 
-    /*
-    if(cExternalForce->force >0){
-        cout << "SIIIIIIIIIIII fuerza externa" <<endl;
-        vec3 vecDir = CalculateVecDirCar(cTransformable);
-        //vec3 
-        //float anguloEntreEllos = Utils::AngleBetweenTwoAngles(angleRotation, anguloCar2);
-
-        cTransformable->position.x = cExternalForce->dirExternalForce.x * cExternalForce->force * deltaTime;
-        cTransformable->position.z = cExternalForce->dirExternalForce.z * cExternalForce->force * deltaTime;
-
-        // aplicamos a la fuerza externa una friccion con el suelo
-        FrictionExternalForce(cCar, cExternalForce);
-
-        //cCar->speed = cExternalForce->force;
-
-    }else{
-    */
-
+    // Movimiento del coche
     cSpeed->speed.x = cos(angleRotation);  // * cCar->speed;
     cSpeed->speed.z = sin(angleRotation);  // * cCar->speed;
     cSpeed->speed.y = 0.f;                 // TODO, esto lo cacharreará el CLPhysics
@@ -60,7 +51,7 @@ void Physics::CalculatePosition(CCar *cCar, CTransformable *cTransformable, CSpe
 
     
 
-    //Si tiene rotacion, rotamos el coche
+    // Rotacion del coche
     // if (cCar->wheelRotation != 0) {
     cTransformable->rotation.y += cCar->wheelRotation * 0.20;
     if (cTransformable->rotation.y >= 360.0)
