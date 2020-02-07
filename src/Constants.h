@@ -14,7 +14,8 @@ class Constants {
                       LEFT,
                       RIGHT,
                       LAUNCH_PU,
-                      CLAXON };
+                      CLAXON,
+                      DRIFT };
 
     enum PetitionTypes { CONNECTION_REQUEST,
                          SEND_INPUT,

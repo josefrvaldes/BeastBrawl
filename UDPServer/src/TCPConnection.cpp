@@ -52,9 +52,9 @@ void TCPConnection::Start(){
 void TCPConnection::HandleRead(std::shared_ptr<unsigned char[]> recevBuff, const boost::system::error_code& error, size_t bytes_transferred){
     //std::cout << "Hola "<< std::endl;
     if(!error && bytes_transferred!=0){
-        uint16_t idPlayer;
+        //uint16_t idPlayer;
         uint8_t numero;
-        vector<uint16_t> idEnemies;
+        //vector<uint16_t> idEnemies;
         size_t currentIndex = 0;
 
         Utils::Deserialize(&numero, recevBuff.get(), currentIndex);

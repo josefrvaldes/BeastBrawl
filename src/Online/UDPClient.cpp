@@ -39,9 +39,9 @@ UDPClient::~UDPClient() {
 
 void UDPClient::StartReceiving() {
     // cout << "Esperamos recibir datos" << endl;
-    std::shared_ptr<boost::array<char, 1024>> recvBuff = make_shared<boost::array<char, 1024>>();
+    std::shared_ptr<unsigned char[]> recvBuff ( new unsigned char[Constants::ONLINE_BUFFER_SIZE] );
     socket.async_receive_from(
-        boost::asio::buffer(*recvBuff),
+        boost::asio::buffer(recvBuff.get(), Constants::ONLINE_BUFFER_SIZE),
         serverEndpoint,
         boost::bind(
             &UDPClient::HandleReceived,
@@ -51,17 +51,26 @@ void UDPClient::StartReceiving() {
             boost::asio::placeholders::bytes_transferred));
 }
 
-void UDPClient::HandleReceived(std::shared_ptr<boost::array<char, 1024>> recvBuff, const boost::system::error_code& errorCode, std::size_t bytesTransferred) {
+void UDPClient::HandleReceived(std::shared_ptr<unsigned char[]> recevBuff, const boost::system::error_code& errorCode, std::size_t bytesTransferred) {
     if (!errorCode) {
-        string receivedString;
-        std::copy(recvBuff->begin(), recvBuff->begin() + bytesTransferred, std::back_inserter(receivedString));
-        json receivedJSON = json::parse(receivedString);
-        uint16_t auxCallType = receivedJSON["petitionType"];
-        const uint32_t id = receivedJSON["id"];
-        Constants::PetitionTypes callType = static_cast<Constants::PetitionTypes>(auxCallType);
+        //string receivedString;
+        //std::copy(recvBuff->begin(), recvBuff->begin() + bytesTransferred, std::back_inserter(receivedString));
+        //json receivedJSON = json::parse(receivedString);
+        //uint16_t auxCallType = receivedJSON["petitionType"];
+        //const uint32_t id = receivedJSON["id"];
+        size_t currentIndex = 0;
+        uint8_t petitionType;
+        Utils::Deserialize(&petitionType, recevBuff.get(), currentIndex);
+        
+
+        Constants::PetitionTypes callType = static_cast<Constants::PetitionTypes>(petitionType);
         switch (callType) {
             case Constants::PetitionTypes::SEND_INPUTS: {
-                HandleReceivedInput(receivedJSON, id);
+                uint16_t idRival;
+                Utils::Deserialize(&idRival, recevBuff.get(), currentIndex);
+                const vector<Constants::InputTypes> inputs = Utils::DeserializeInputs(recevBuff.get(), currentIndex);
+
+                HandleReceivedInputs(inputs, idRival);
             } break;
 
             case Constants::PetitionTypes::SEND_INPUT:
@@ -80,11 +89,11 @@ void UDPClient::HandleReceived(std::shared_ptr<boost::array<char, 1024>> recvBuf
     StartReceiving();
 }
 
-void UDPClient::HandleReceivedInput(const json recvdJSON, const uint32_t id) const {
-    cout << "Hemos recibido los inputs " << recvdJSON.dump() << endl;
-    vector<Constants::InputTypes> inputs = recvdJSON["inputs"];
+void UDPClient::HandleReceivedInputs(const vector<Constants::InputTypes> inputs, const uint16_t idRival) const {
+    //cout << "Hemos recibido los inputs " << recvdJSON.dump() << endl;
+    //vector<Constants::InputTypes> inputs = recvdJSON["inputs"];
     std::shared_ptr<DataMap> data = make_shared<DataMap>();
-    (*data)[DataType::ID] = id;
+    (*data)[DataType::ID] = idRival;
     (*data)[DataType::INPUTS] = inputs;
     EventManager::GetInstance().AddEventMulti(Event{EventType::NEW_INPUTS_RECEIVED, data});
     // cout << "Hemos recibido los inputs ";
@@ -108,47 +117,26 @@ void UDPClient::SendDateTime() {
             boost::asio::placeholders::bytes_transferred));
 }
 
-void UDPClient::SendInput(Constants::InputTypes newInput) {
-    std::shared_ptr<Constants::InputTypes> auxInput = make_shared<Constants::InputTypes>(newInput);
 
-    const uint32_t FAKE_ID = 1234;
-
-    json j;
-    j["petitionType"] = Constants::PetitionTypes::SEND_INPUT;
-    j["id"] = FAKE_ID;
-    j["input"] = newInput;
-
-    string s = j.dump();
-    socket.async_send_to(
-        boost::asio::buffer(s),
-        serverEndpoint,
-        boost::bind(
-            &UDPClient::HandleSentInput,
-            this,
-            auxInput,
-            boost::asio::placeholders::error,
-            boost::asio::placeholders::bytes_transferred));
-}
-
-void UDPClient::HandleSentInput(std::shared_ptr<Constants::InputTypes> input, const boost::system::error_code& errorCode,
-                                std::size_t bytes_transferred) {
-    if (errorCode) {
-        Constants::InputTypes* ptrInput = input.get();
-        Constants::InputTypes valueInput = *ptrInput;
-        cout << Utils::GetTime() << " - Hubo un error enviando el mensaje de input " << valueInput << endl;
-    }
-}
-
-void UDPClient::SendInputs(vector<Constants::InputTypes>& inputs, uint32_t id) {
-    json j;
+void UDPClient::SendInputs(vector<Constants::InputTypes>& inputs, uint16_t id) {
+    //json j;
     
-    j["petitionType"] = Constants::PetitionTypes::SEND_INPUTS;
-    j["id"] = id;
-    j["inputs"] = inputs;
-    string jsonToBeSent = j.dump();
-    std::shared_ptr<vector<Constants::InputTypes>> auxInputs = std::make_shared<vector<Constants::InputTypes>>(inputs);
+    //j["petitionType"] = Constants::PetitionTypes::SEND_INPUTS;
+    //j["id"] = id;
+    //j["inputs"] = inputs;
+    //string jsonToBeSent = j.dump();
+
+    
+    unsigned char requestBuff[Constants::ONLINE_BUFFER_SIZE];
+    size_t currentBuffSize = 0;
+    uint8_t numero = Constants::PetitionTypes::SEND_INPUTS;
+    Utils::Serialize(requestBuff, &numero, currentBuffSize);
+    Utils::Serialize(requestBuff, &id, currentBuffSize);
+    Utils::SerializeInputs(requestBuff, inputs, currentBuffSize);
+
+
     socket.async_send_to(
-        boost::asio::buffer(jsonToBeSent),
+        boost::asio::buffer(requestBuff, currentBuffSize),
         serverEndpoint,
         boost::bind(
             &UDPClient::HandleSentInputs,

@@ -42,7 +42,7 @@ void TCPServer::HandleAccept(TCPConnection::pointer new_connection, const boost:
             players.push_back(p);
         }
         std::cout << "Num conexiones: " << connections.size() << std::endl;
-        if (connections.size() == MIN_NUM_PLAYERS) {
+        if (connections.size() >= MIN_NUM_PLAYERS) {
             cout << "Ya hemos llegado al núm de conexiones para enviar partida, vamos a visar a los clientes" << endl;
             SendStartGame();
             // justo despues vaciar el tcp para otra conexion

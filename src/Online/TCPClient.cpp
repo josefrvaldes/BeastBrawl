@@ -128,18 +128,11 @@ void TCPClient::HandleReceived(std::shared_ptr<unsigned char[]> recevBuff, const
         Utils::Deserialize(&enemiesSize, recevBuff.get(), currentIndex);
         Utils::DeserializeVector(idEnemies, enemiesSize, recevBuff.get(), currentIndex);
         
-        // TODO: aquí en vez de enviarle al setState el string debería tratarse el 
-        //      string y enviarse los dos datos por separado, de forma que al state
-        //      nos aseguremos de que le llegan datos buenos, que no le ha llegado "asdfafa"
-        //string receivedString = "";
         std::shared_ptr<DataMap> data = make_shared<DataMap>();
         (*data)[DataType::ID_ONLINE] = idPlayer;
         (*data)[DataType::VECTOR_ID_ONLINE] = idEnemies;
         EventManager::GetInstance().AddEventMulti(Event{EventType::NEW_TCP_START_MULTI, data});
 
-        // json receivedJSON = json::parse(receivedString);
-        // uint32_t idPlayer = receivedJSON["idPlayer"];
-        // vector<uint32_t> arrayIdEnemies = receivedJSON["idEnemies"];
         std::cout << "El cliente TCP recibe cosas" << std::endl;
     } else if (errorCode) {
         cout << "Hubo un error con código " << errorCode << endl;
@@ -156,18 +149,11 @@ void TCPClient::SendConnectionRequest() {
     }
 
     unsigned char request[Constants::ONLINE_BUFFER_SIZE];
-    // char *buff = request;
     uint8_t numero = Constants::CONNECTION_REQUEST;
-    // Utils::Serialize(request, numero, currentSize);
     size_t currentBuffSize = 0;
     Utils::Serialize(request, &numero, currentBuffSize);
 
-    // json j;
-    // j["requestConnection"] = numero;
-
-    // string s = j.dump();
     socket.async_send(
-        // boost::asio::buffer(s, s.size()),
         boost::asio::buffer(request, currentBuffSize),
         boost::bind(
             &TCPClient::HandleSentConnectionRequest,

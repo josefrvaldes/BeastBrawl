@@ -19,12 +19,11 @@ class UDPServer : public boost::enable_shared_from_this<UDPServer> {
     void StartReceiving();
 
    private:
-    void SavePlayerIfNotExists(const uint32_t id, udp::endpoint& endpoint);
+    void SavePlayerIfNotExists(const uint16_t id, udp::endpoint& endpoint);
 
-    void HandleReceive(std::shared_ptr<boost::array<char, 1024>> recevBuff, std::shared_ptr<udp::endpoint> remoteEndpoint, const boost::system::error_code& error, size_t bytesTransferred);
+    void HandleReceive(std::shared_ptr<unsigned char[]> recevBuff, std::shared_ptr<udp::endpoint> remoteEndpoint, const boost::system::error_code& error, size_t bytesTransferred);
     // void HandleReceive(const boost::system::error_code& error, size_t bytesTransferred);
-    void HandleReceivedInput(const Constants::InputTypes input, const udp::endpoint& remoteClient);
-    void HandleReceivedInputs(const string &stringToBeReSent, const udp::endpoint& remoteClient);
+    void HandleReceivedInputs(const unsigned char resendInputs[], const size_t currentBufferSize, const udp::endpoint& remoteClient);
     void HandleReceiveDateTimeRequest(const udp::endpoint& remoteClient);
     void HandleSentDateTimeRequest(const boost::shared_ptr<string> message,
                                    const boost::system::error_code& errorCode,
@@ -32,13 +31,10 @@ class UDPServer : public boost::enable_shared_from_this<UDPServer> {
     void HandleSentDefaultMessage(const boost::shared_ptr<string> message,
                                   const boost::system::error_code& errorCode,
                                   std::size_t bytes_transferred);
-    void ResendInputToOthers(const Constants::InputTypes input, const udp::endpoint& remoteClient);
-    void ResendInputsToOthers(const string& json, const udp::endpoint& remoteClient);
-    void SendInput(const Constants::InputTypes input, const Player& player);
-    void SendInputs(const string s, const Player& player);
+    void ResendInputsToOthers(const unsigned char resendInputs[], const size_t currentBufferSize, const udp::endpoint& remoteClient);
+    void SendInputs(const unsigned char resendInputs[], const size_t currentBufferSize, const Player& player);
     void SendInputs(const vector<Constants::InputTypes> inputs, const Player& player);
-    void HandleSentInput(const string& json, const boost::system::error_code& errorCode, std::size_t bytesTransferred) const;
-    void HandleSentInputs(std::shared_ptr<string> json, const boost::system::error_code& errorCode, std::size_t bytesTransferred) const;
+    void HandleSentInputs(const boost::system::error_code& errorCode, std::size_t bytesTransferred) const;
 
     void ReceiveNewCar();
 

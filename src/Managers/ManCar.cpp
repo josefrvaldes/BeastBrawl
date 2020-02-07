@@ -238,7 +238,7 @@ void ManCar::SubscribeToEvents() {
 
 void ManCar::NewInputsReceived(DataMap* d) {
     // cout << "Se ha lanzado el evento NewInputsReceived" << endl;
-    auto idRecieved = any_cast<uint32_t>((*d)[DataType::ID]);
+    auto idRecieved = any_cast<uint16_t>((*d)[DataType::ID]);
     auto inputs = any_cast<vector<Constants::InputTypes>>((*d)[DataType::INPUTS]);
     for (shared_ptr<Entity> car : entities) {
         if (car->HasComponent(CompType::OnlineComp)) {

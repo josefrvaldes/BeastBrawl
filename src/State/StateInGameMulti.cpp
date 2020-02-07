@@ -30,9 +30,7 @@ StateInGameMulti::StateInGameMulti() : StateInGame() {
 StateInGameMulti::StateInGameMulti(uint16_t IdOnline, const vector<uint16_t> IdPlayersOnline) : StateInGame() {
     InitVirtualMethods();
     // a este le llegan los coches
-    std::cout << "POR FIIIIIIIIIIIIIIIIIIIIIIIN: " << std::endl;
-    //json receivedJSON = json::parse(data);
-    //uint32_t idPlayer = receivedJSON["idPlayer"];
+    //std::cout << "POR FIIIIIIIIIIIIIIIIIIIIIIIN: " << std::endl;
     vector<uint16_t> arrayIdEnemies = IdPlayersOnline;
 
     sysOnline = make_unique<SystemOnline>(*manCars, IdOnline);

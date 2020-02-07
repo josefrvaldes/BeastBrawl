@@ -160,6 +160,73 @@ class Utils {
         }
     }
 
+    
+
+    static void SerializeInputs(unsigned char* buff, vector<Constants::InputTypes>& inputs, size_t& currentSize) {
+        unsigned char byteInputs{0};
+        for(const auto& input : inputs){
+            switch (input){
+                case Constants::InputTypes::FORWARD : 
+                    byteInputs |= 1UL << 0;
+                    break;
+                case Constants::InputTypes::BACK : 
+                    byteInputs |= 1UL << 1;
+                    break;
+                case Constants::InputTypes::LEFT : 
+                    byteInputs |= 1UL << 2;
+                    break;
+                case Constants::InputTypes::RIGHT : 
+                    byteInputs |= 1UL << 3;
+                    break;
+                case Constants::InputTypes::LAUNCH_PU : 
+                    byteInputs |= 1UL << 4;
+                    break;
+                case Constants::InputTypes::CLAXON : 
+                    byteInputs |= 1UL << 5;
+                    break;
+                case Constants::InputTypes::DRIFT : 
+                    byteInputs |= 1UL << 6;
+                    break;
+                default:
+                    break;
+            }
+        }
+        Serialize(buff, &byteInputs, currentSize);
+    }
+
+    static vector<Constants::InputTypes> DeserializeInputs(unsigned char* buff, size_t& currentIndex) {
+        vector<Constants::InputTypes> inputsVector;
+        unsigned char input;
+        size_t itemSize = sizeof(input);
+
+        Deserialize(&input, itemSize, buff, currentIndex);
+
+        if((input >> 0) & 1U){
+            inputsVector.push_back(Constants::InputTypes::FORWARD);
+        }
+        if((input >> 1) & 1U){
+            inputsVector.push_back(Constants::InputTypes::BACK);
+        }
+        if((input >> 2) & 1U){
+            inputsVector.push_back(Constants::InputTypes::LEFT);
+        }
+        if((input >> 3) & 1U){
+            inputsVector.push_back(Constants::InputTypes::RIGHT);
+        }
+        if((input >> 4) & 1U){
+            inputsVector.push_back(Constants::InputTypes::LAUNCH_PU);
+        }
+        if((input >> 5) & 1U){
+            inputsVector.push_back(Constants::InputTypes::CLAXON);
+        }
+        if((input >> 6) & 1U){
+            inputsVector.push_back(Constants::InputTypes::DRIFT);
+        }
+
+        return inputsVector;
+    }
+
+
 
 
 
@@ -211,7 +278,7 @@ class Utils {
     //         vector.push_back(elem);
     //     }
     // }
-
+    /*
     static void RunSerializationTest1() {
         // enviar
         unsigned char buff[512];
@@ -281,4 +348,44 @@ class Utils {
             cout << "El id enemy deserializado es " << deserializedIdEnemies[i] << endl;
         cout << "C'est fini" << endl;
     }
+    */
+   
 };
+
+/*unsigned char InputForward(unsigned char byteIn){
+    return byteIn |= 1UL << 0;
+}
+unsigned char InputBack(unsigned char byteIn){
+    return byteIn |= 1UL << 0;
+}
+unsigned char InputLeft(unsigned char byteIn){
+    return byteIn |= 1UL << 0;
+}
+unsigned char InputRight(unsigned char byteIn){
+    return byteIn |= 1UL << 0;
+}
+unsigned char InputLaunchPU(unsigned char byteIn){
+    return byteIn |= 1UL << 0;
+}
+unsigned char InputClaxon(unsigned char byteIn){
+    return byteIn |= 1UL << 0;
+}
+unsigned char InputDrift(unsigned char byteIn){
+    return byteIn |= 1UL << 0;
+}
+
+struct TInput2Func {
+    Constants::InputTypes inputType;
+    unsigned char (*pfunc)(unsigned char byteIn);
+};
+
+TInput2Func mapping[] = { 
+    {Constants::InputTypes::FORWARD ,  Utils::InputForward },
+    {Constants::InputTypes::BACK    ,  InputBack },
+    {Constants::InputTypes::LEFT    ,  InputLeft },
+    {Constants::InputTypes::RIGHT   ,  InputRight },
+    {Constants::InputTypes::LAUNCH_PU ,  InputLaunchPU },
+    {Constants::InputTypes::CLAXON  ,  InputClaxon },
+    {Constants::InputTypes::DRIFT   ,  InputDrift }
+};
+*/
