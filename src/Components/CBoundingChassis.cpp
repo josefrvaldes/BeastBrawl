@@ -15,11 +15,9 @@ using namespace glm;
 using namespace std;
 
 // RECORDAR: LOS RADIOS DE LAS ESFERAS IGUALES
-CBoundingChassis::CBoundingChassis(const vec3 &spCenterBehind, const float &spRadiusBehind, const vec3 &spCenterFront, const float &spRadiusFront, 
-                        const vector<vec3> &plRight, const vector<vec3> &plLeft){
-
-    m_compType      =   CompType::CompBoundingOBB;
-    sphereBehind    =   make_unique<CBoundingSphere>(spCenterBehind, spRadiusBehind);
-    sphereFront     =   make_unique<CBoundingSphere>(spCenterFront, spRadiusFront);
-    cilindre        =   make_unique<CBoundingCilindre>(spCenterBehind, spCenterFront, spRadiusFront);
+CBoundingChassis::CBoundingChassis(const vec3 &spCenterBehind, const float &spRadiusBehind, const vec3 &spCenterFront, const float &spRadiusFront){
+    m_compType      =   CompType::CompBoundingChassis;
+    sphereBehind    =   make_shared<CBoundingSphere>(spCenterBehind, spRadiusBehind);
+    sphereFront     =   make_shared<CBoundingSphere>(spCenterFront, spRadiusFront);
+    cilindre        =   make_shared<CBoundingCilindre>(spCenterBehind, spCenterFront, spRadiusFront);
 }

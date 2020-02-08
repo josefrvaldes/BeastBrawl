@@ -1,6 +1,7 @@
 #include "PhysicsFacadeIrrlicht.h"
 
 #include "../../Components/CBoundingSphere.h"
+#include "../../Components/CBoundingChassis.h"
 #include "../../Components/CId.h"
 #include "../../Constants.h"
 
@@ -39,6 +40,23 @@ void PhysicsFacadeIrrlicht::UpdateCar(Entity* car, Entity* cam) {
         nodeSphere->setPosition(core::vector3df(cSphere->center.x, cSphere->center.y, cSphere->center.z));
         nodeSphere->setVisible(RenderFacadeIrrlicht::showDebug);
     }
+
+    /*
+    // vamos a ver si tiene CBoundingChassis
+    bool hasChassis = car->HasComponent(CompType::CompBoundingChassis);
+    if (hasChassis && Constants::DEBUG_SHOW_CHASSIS) {
+        auto cChassis = static_cast<CBoundingChassis *>(car->GetComponent(CompType::CompBoundingChassis).get());
+        auto cSphere1 = cChassis->sphereBehind;
+        scene::ISceneNode* nodeSphere1 = smgr->getSceneNodeFromId(cId->id + Component::ID_DIFFERENCE);
+        nodeSphere1->setPosition(core::vector3df(cSphere1->center.x, cSphere1->center.y, cSphere1->center.z));
+        nodeSphere1->setVisible(RenderFacadeIrrlicht::showDebug);
+        auto cSphere2 = cChassis->sphereFront;
+        scene::ISceneNode* nodeSphere2 = smgr->getSceneNodeFromId(cId->id + Component::ID_DIFFERENCE);
+        nodeSphere2->setPosition(core::vector3df(cSphere2->center.x, cSphere2->center.y, cSphere2->center.z));
+        nodeSphere2->setVisible(RenderFacadeIrrlicht::showDebug);
+
+    }
+    */
 }
 
 void PhysicsFacadeIrrlicht::UpdateCam(Entity* cam) {

@@ -5,6 +5,8 @@
 #include "../CLPhysics/CLPhysics.h"
 #include "../Components/CMesh.h"
 #include "../Components/CTexture.h"
+#include "../Components/CBoundingCilindre.h"
+#include "../Components/CBoundingSphere.h"
 
 using namespace std;
 using namespace chrono;
@@ -181,6 +183,25 @@ void StateInGame::Update() {
         physicsEngine->UpdatePowerUps(actualPowerUp.get());
 
     renderEngine->FacadeUpdatePlates(manNamePlates.get());
+
+
+    /*
+    // VAMOS A HACER UN TEST A VER SI FUNCIONA TODA ESTA MIERDA
+    unique_ptr<CBoundingCilindre> cilindraco = make_unique<CBoundingCilindre>(vec3(4,0,4), vec3(4,0,0), 5.0);
+    unique_ptr<CBoundingSphere> esferaca = make_unique<CBoundingSphere>(vec3(10,0,1), 2.0);
+
+    IntersectData intersData  = cilindraco->IntersectSphere(*esferaca.get());
+    if(intersData.intersects){
+        cout << "DEBERIA DE DAR TRUE Y...... LO DA" << endl;
+    }
+    unique_ptr<CBoundingSphere> esferaca2 = make_unique<CBoundingSphere>(vec3(10,0,1), 0.5);
+    IntersectData intersData2  = cilindraco->IntersectSphere(*esferaca2.get());
+    if(!intersData2.intersects){
+        cout << "DEBERIA DE DAR FALSE Y...... LO DA" << endl;
+    }
+    */
+
+
 }
 
 void StateInGame::Render() {

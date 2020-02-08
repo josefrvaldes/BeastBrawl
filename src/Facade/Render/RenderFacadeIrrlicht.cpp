@@ -19,6 +19,7 @@
 #include "../../Components/CMovementType.h"
 #include "../../Components/CNavMesh.h"
 #include "../../Components/CCurrentNavMesh.h"
+#include "../../Components/CBoundingChassis.h"
 #include "../../Components/CCar.h"
 #include "../../Constants.h"
 #include "../../Entities/CarAI.h"
@@ -218,9 +219,11 @@ const uint16_t RenderFacadeIrrlicht::FacadeAddObject(Entity* entity) {
         node->setMaterialTexture(0, driver->getTexture(path.c_str()));  //Obligado incluir el c_str() si no irrlicht no carga solo con un string
         node->setMaterialFlag(video::EMF_LIGHTING, false);
 
+        
         bool hasSphere = entity->HasComponent(CompType::CompBoundingSphere);
         if (hasSphere && Constants::DEBUG_SHOW_SPHERES) {
-            scene::ISceneNode* nodeSphere = smgr->addSphereSceneNode(CBoundingSphere::DEFAULT_SPHERE_RADIUS);
+            cout << "POS X: " << cTransformable->position.x << " POS Y: " << cTransformable->position.y << "POS Z:" << cTransformable->position.z << endl;
+            scene::ISceneNode* nodeSphere = smgr->addSphereSceneNode(10.0);
             nodeSphere->setID(cId->id + Component::ID_DIFFERENCE);
             nodeSphere->setPosition(core::vector3df(cTransformable->position.x, cTransformable->position.y, cTransformable->position.z));
             nodeSphere->setScale(core::vector3df(1.f, 1.f, 1.f));
@@ -228,6 +231,38 @@ const uint16_t RenderFacadeIrrlicht::FacadeAddObject(Entity* entity) {
             nodeSphere->setMaterialFlag(video::EMF_LIGHTING, false);
             nodeSphere->setVisible(showDebug);
         }
+        
+
+       /*
+        bool hasChassis = entity->HasComponent(CompType::CompBoundingChassis);
+        if (hasChassis && Constants::DEBUG_SHOW_CHASSIS) {
+            cout << "entramos aqui???" << endl;
+            auto cChassis = static_cast<CBoundingChassis *>(entity->GetComponent(CompType::CompBoundingChassis).get());
+            // primera esfera
+            auto radiousSph1 = cChassis->sphereBehind->radius;
+            auto centerSph1 = cChassis->sphereBehind->center;
+            cout << "POS X: " << centerSph1.x << " POS Y: " << centerSph1.y << "POS Z:" << centerSph1.z << endl;
+            scene::ISceneNode* nodeSphere1 = smgr->addSphereSceneNode(10.0);
+            nodeSphere1->setID(cId->id + Component::ID_DIFFERENCE);
+            nodeSphere1->setPosition(core::vector3df(centerSph1.x, centerSph1.y, centerSph1.z));
+            nodeSphere1->setScale(core::vector3df(1.f, 1.f, 1.f));
+            nodeSphere1->setMaterialTexture(0, driver->getTexture(path.c_str()));  //Obligado incluir el c_str() si no irrlicht no carga solo con un string
+            nodeSphere1->setMaterialFlag(video::EMF_LIGHTING, false);
+            nodeSphere1->setVisible(showDebug);
+            // segunda esfera
+            auto radiousSph2 = cChassis->sphereFront->radius;
+            auto centerSph2 = cChassis->sphereFront->center;
+            cout << "POS X: " << centerSph2.x << " POS Y: " << centerSph2.y << "POS Z:" << centerSph2.z << endl;
+            scene::ISceneNode* nodeSphere2 = smgr->addSphereSceneNode(10.0);
+            nodeSphere2->setID(cId->id + Component::ID_DIFFERENCE);
+            nodeSphere2->setPosition(core::vector3df(centerSph2.x, centerSph2.y, centerSph2.z));
+            nodeSphere2->setScale(core::vector3df(1.f, 1.f, 1.f));
+            nodeSphere2->setMaterialTexture(0, driver->getTexture(path.c_str()));  //Obligado incluir el c_str() si no irrlicht no carga solo con un string
+            nodeSphere2->setMaterialFlag(video::EMF_LIGHTING, false);
+            nodeSphere2->setVisible(showDebug);
+        }
+        */
+
     }
 
     //Cogemos sus edges
@@ -292,6 +327,7 @@ void RenderFacadeIrrlicht::UpdateTransformable(Entity* entity) {
     //Actualiza el escalado del objeto de irrlicht
     node->setScale(core::vector3df(cTransformable->scale.x, cTransformable->scale.y, cTransformable->scale.z));
 
+    
     bool hasSphere = entity->HasComponent(CompType::CompBoundingSphere);
     if (hasSphere && Constants::DEBUG_SHOW_SPHERES) {
         scene::ISceneNode* nodeSphere = smgr->getSceneNodeFromId(cId->id + Component::ID_DIFFERENCE);
@@ -300,6 +336,24 @@ void RenderFacadeIrrlicht::UpdateTransformable(Entity* entity) {
         //nodeSphere->setRotation(core::vector3df(cTransformable->rotation.x, cTransformable->rotation.y, cTransformable->rotation.z));
         //nodeSphere->setScale(core::vector3df(cTransformable->scale.x, cTransformable->scale.y, cTransformable->scale.z));
     }
+    
+    /*
+   
+    bool hasChassis = entity->HasComponent(CompType::CompBoundingChassis);
+    if (hasChassis && Constants::DEBUG_SHOW_CHASSIS) {
+        auto cChassis = static_cast<CBoundingChassis *>(entity->GetComponent(CompType::CompBoundingChassis).get());
+        auto centerSph1 = cChassis->sphereBehind->center;
+        scene::ISceneNode* nodeSphere1 = smgr->getSceneNodeFromId(cId->id + Component::ID_DIFFERENCE);
+        nodeSphere1->setPosition(core::vector3df(centerSph1.x, centerSph1.y, centerSph1.z));
+        nodeSphere1->setVisible(showDebug);
+        auto centerSph2 = cChassis->sphereFront->center;
+        scene::ISceneNode* nodeSphere2 = smgr->getSceneNodeFromId(cId->id + Component::ID_DIFFERENCE);
+        nodeSphere2->setPosition(core::vector3df(centerSph2.x, centerSph2.y, centerSph2.z));
+        nodeSphere2->setVisible(showDebug);
+    }
+    */
+    
+
 }
 
 //Reajusta la camara
