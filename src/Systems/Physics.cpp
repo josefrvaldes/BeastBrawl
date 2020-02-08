@@ -316,7 +316,7 @@ void Physics::UpdateHuman(Car *car) {
             shared_ptr<DataMap> data = make_shared<DataMap>();
 
             (*data)[DataType::ACTUAL_CAR] = car;
-            EventManager::GetInstance().AddEventMulti(Event{EventType::THROW_POWERUP_AI, data});
+            EventManager::GetInstance().AddEventMulti(Event{EventType::THROW_POWERUP_HUMAN, data});
         }
     }
     if(accDec == false)

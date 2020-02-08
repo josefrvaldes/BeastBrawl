@@ -86,7 +86,9 @@ class ManCar : public Manager {
     void ThrowTotem(Entity* carLoseTotem);
     bool useRoboJorobo(Entity* newCarWithTotem);
 
-    void ThrowPowerUp(DataMap* d);
+    void ThrowPowerUp(Car* car);
+    void ThrowPowerUpCar(DataMap* d);
+    void ThrowPowerUpHuman(DataMap* d);
     void ThrowPowerUpAI(DataMap* d);
     void CatchPowerUp(DataMap* d);
     void CatchPowerUpAI(DataMap* d);
