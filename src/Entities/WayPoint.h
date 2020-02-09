@@ -5,7 +5,7 @@
 #include <map>
 #include <memory>
 
-#include "../../include/glm/vec3.hpp"
+#include <glm/vec3.hpp>
 
 using namespace std;
 

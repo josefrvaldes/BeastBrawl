@@ -1,6 +1,12 @@
 #include <iostream>
 #include <memory>
+#include <math.h>
 
+//INCLUDE
+#include <glew/glew.h>
+#include <glfw/glfw3.h>
+
+//SRC
 #include "CLEngine.h"
 #include "SceneTree/CLLight.h"
 #include "SceneTree/CLNode.h"
@@ -9,9 +15,6 @@
 #include "ResourceManager/CLResourceMesh.h"
 #include "ResourceManager/CLResource.h"
 
-#include "../include/glew/glew.h"
-#include "../include/glfw/glfw3.h"
-#include <math.h>
 #include "ImGUI/imgui.h"
 #include "ImGUI/imgui_impl_opengl3.h"
 #include "ImGUI/imgui_impl_glfw.h"

@@ -1,10 +1,10 @@
 #pragma once
 
-#include "../../../include/irrlicht/irrlicht.h"
-#include "../../EventManager/Event.h"
-#include "../../EventManager/EventManager.h"
-#include "../Input/InputFacadeIrrlicht.h"
-#include "../Input/InputFacadeManager.h"
+#include <irrlicht/irrlicht.h>
+#include <EventManager/Event.h>
+#include <EventManager/EventManager.h>
+#include <Facade/Input/InputFacadeIrrlicht.h>
+#include <Facade/Input/InputFacadeManager.h>
 #include "RenderFacade.h"
 
 //#include "../../State/State.h"

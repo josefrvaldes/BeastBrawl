@@ -1,9 +1,10 @@
 #include "ManTotem.h"
-#include "../Entities/Totem.h"
-#include "../Facade/Render/RenderFacadeManager.h"
-#include "../Components/CDimensions.h"
-#include "../Components/CCurrentNavMesh.h"
-#include "../../include/include_json/include_json.hpp"
+
+#include <Entities/Totem.h>
+#include <Facade/Render/RenderFacadeManager.h>
+#include <Components/CDimensions.h>
+#include <Components/CCurrentNavMesh.h>
+#include <include_json/include_json.hpp>
 
 class Position;
 using namespace std;

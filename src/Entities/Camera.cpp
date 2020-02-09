@@ -1,6 +1,6 @@
 #include "Camera.h"
-#include "../Components/CId.h"
-#include "../Components/CCamera.h"
+#include <Components/CId.h>
+#include <Components/CCamera.h>
 
 class Position;
 using namespace std;

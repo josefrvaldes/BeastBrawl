@@ -1,8 +1,9 @@
-#include "./ManBoxPowerUp.h"
+#include "ManBoxPowerUp.h"
+
 //#include <functional> 
 #include <iostream>
-#include "../Entities/BoxPowerUp.h"
-#include "../../include/include_json/include_json.hpp"
+#include <Entities/BoxPowerUp.h>
+#include <include_json/include_json.hpp>
 
 class Position;
 using json = nlohmann::json;

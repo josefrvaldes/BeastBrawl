@@ -1,22 +1,23 @@
 #include "ManCar.h"
+#include "ManPowerUp.h"
+#include "ManBoxPowerUp.h"
+#include "ManTotem.h"
+#include "ManBoundingWall.h"
+#include "ManNavMesh.h"
+
 #include <functional>
 #include <iostream>
-#include "../Entities/Camera.h"
-#include "../Entities/CarHuman.h"
-#include "../Entities/CarAI.h"
-#include "../Systems/Physics.h"
-#include "../Systems/PhysicsAI.h"
-#include "../Components/CShield.h"
-#include "../Components/CTotem.h"
-#include "../Components/CNitro.h"
-#include "../Components/CCar.h"
-#include "../Components/CDimensions.h"
-#include "../Game.h"
-#include "../Managers/ManPowerUp.h"
-#include "../Managers/ManBoxPowerUp.h"
-#include "../Managers/ManTotem.h"
-#include "../Managers/ManBoundingWall.h"
-#include "../Managers/ManNavMesh.h"
+#include <Entities/Camera.h>
+#include <Entities/CarHuman.h>
+#include <Entities/CarAI.h>
+#include <Systems/Physics.h>
+#include <Systems/PhysicsAI.h>
+#include <Components/CShield.h>
+#include <Components/CTotem.h>
+#include <Components/CNitro.h>
+#include <Components/CCar.h>
+#include <Components/CDimensions.h>
+#include <Game.h>
 
 
 class Position;

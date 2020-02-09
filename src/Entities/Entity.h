@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Components/Component.h"
+#include <Components/Component.h>
 #include <iostream>
 #include <unordered_map>
 #include <memory>

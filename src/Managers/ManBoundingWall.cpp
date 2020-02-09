@@ -1,7 +1,8 @@
 #include "ManBoundingWall.h"
+
 #include <iostream>
-#include "../Entities/BoundingWall.h"
-#include "../../include/include_json/include_json.hpp"
+#include <Entities/BoundingWall.h>
+#include <include_json/include_json.hpp>
 #include <fstream>
 
 using namespace std;

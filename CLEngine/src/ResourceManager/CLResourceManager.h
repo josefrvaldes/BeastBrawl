@@ -5,7 +5,7 @@
 #include <memory>
 #include <iostream>
 
-#include "../../include/glew/glew.h"
+#include <glew/glew.h>
 
 #include "CLResourceMesh.h"
 #include "CLResourceShader.h"

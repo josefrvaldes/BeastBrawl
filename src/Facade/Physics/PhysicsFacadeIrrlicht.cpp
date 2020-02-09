@@ -1,8 +1,8 @@
 #include "PhysicsFacadeIrrlicht.h"
 
-#include "../../Components/CBoundingSphere.h"
-#include "../../Components/CId.h"
-#include "../../Constants.h"
+#include <Components/CBoundingSphere.h>
+#include <Components/CId.h>
+#include <Constants.h>
 
 PhysicsFacadeIrrlicht::PhysicsFacadeIrrlicht() {
     auto renderFacadeManager = RenderFacadeManager::GetInstance();

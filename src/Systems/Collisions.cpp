@@ -1,9 +1,9 @@
 #include "Collisions.h"
-#include "../Entities/Car.h"
-#include "../Entities/CarHuman.h"
-#include "../Entities/CarAI.h"
-#include "../Components/CTotem.h"
-#include "../Components/CShield.h"
+#include <Entities/Car.h>
+#include <Entities/CarHuman.h>
+#include <Entities/CarAI.h>
+#include <Components/CTotem.h>
+#include <Components/CShield.h>
 
 Collisions::Collisions(){
 

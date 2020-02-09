@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../../include/glm/glm.hpp"
+#include <glm/glm.hpp>
 
 namespace CLE {
 

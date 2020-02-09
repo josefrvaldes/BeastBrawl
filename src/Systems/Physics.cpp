@@ -1,10 +1,10 @@
 #include "Physics.h"
-#include "../Components/CCamera.h"
-#include "../Components/CCar.h"
-#include "../Components/CNitro.h"
-#include "../Components/CSpeed.h"
-#include "../Entities/Camera.h"
-#include "../Entities/Car.h"
+#include <Components/CCamera.h>
+#include <Components/CCar.h>
+#include <Components/CNitro.h>
+#include <Components/CSpeed.h>
+#include <Entities/Camera.h>
+#include <Entities/Car.h>
 
 Physics::Physics(float _deltaTime) : deltaTime(_deltaTime) {
 }

@@ -8,10 +8,10 @@
 #include <vector>
 #include <memory>
 #include "Lambda.h"
-#include "../Aliases.h"
-#include "../Entities/Entity.h"
-#include "../Components/CTransformable.h"
-#include "../Components/CPowerUp.h"
+#include <Aliases.h>
+#include <Entities/Entity.h>
+#include <Components/CTransformable.h>
+#include <Components/CPowerUp.h>
 
 using namespace std;
 

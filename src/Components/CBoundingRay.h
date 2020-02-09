@@ -1,11 +1,12 @@
 #pragma once
 
-#include "../../include/glm/vec2.hpp"
-#include "../../include/glm/vec3.hpp"
 #include "Component.h"
-#include "../Components/CBoundingPlane.h"
-#include "../Components/CBoundingSphere.h"
+#include "Components/CBoundingPlane.h"
+#include "Components/CBoundingSphere.h"
+
 #include <iostream>
+#include <glm/vec2.hpp>
+#include <glm/vec3.hpp>
 
 class CBoundingRay : public Component {
    public:

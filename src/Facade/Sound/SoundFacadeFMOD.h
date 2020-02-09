@@ -1,16 +1,17 @@
 #pragma once
 
+#include "SoundFacade.h"
+
 #include <iostream>
 #include <unordered_map>
 
-#include <fmod_studio.hpp>
-#include <fmod.hpp>
-#include <fmod_errors.h>
+#include <fmod/studio/fmod_studio.hpp>
+#include <fmod/core/fmod.hpp>
+#include <fmod/core/fmod_errors.h>
 
-#include "../../EventManager/EventManager.h"
-#include "../../EventManager/Event.h"
-#include "../../Aliases.h"
-#include "SoundFacade.h"
+#include <EventManager/EventManager.h>
+#include <EventManager/Event.h>
+#include <Aliases.h>
 
 using namespace std;
 

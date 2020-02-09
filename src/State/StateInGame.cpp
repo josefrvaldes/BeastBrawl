@@ -2,9 +2,9 @@
 #include <chrono>
 #include <iostream>
 
-#include "../CLPhysics/CLPhysics.h"
-#include "../Components/CMesh.h"
-#include "../Components/CTexture.h"
+#include <CLPhysics/CLPhysics.h>
+#include <Components/CMesh.h>
+#include <Components/CTexture.h>
 
 using namespace std;
 using namespace chrono;

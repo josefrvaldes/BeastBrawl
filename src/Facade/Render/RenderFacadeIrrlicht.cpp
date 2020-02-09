@@ -1,29 +1,30 @@
 #include "RenderFacadeIrrlicht.h"
 
 #include <cmath>
-#include "../../Components/CBoundingPlane.h"
-#include "../../Components/CBoundingSphere.h"
-#include "../../Components/CCamera.h"
-#include "../../Components/CDimensions.h"
-#include "../../Components/CId.h"
-#include "../../Components/CMesh.h"
-#include "../../Components/CNamePlate.h"
-#include "../../Components/CPath.h"
-#include "../../Components/CTexture.h"
-#include "../../Components/CTargetNavMesh.h"
-#include "../../Components/CTotem.h"
-#include "../../Components/CType.h"
-#include "../../Components/CWayPointEdges.h"
-#include "../../Components/CMovementType.h"
-#include "../../Components/CNavMesh.h"
-#include "../../Components/CCurrentNavMesh.h"
-#include "../../Components/CCar.h"
-#include "../../Constants.h"
-#include "../../Entities/CarAI.h"
-#include "../../Entities/CarHuman.h"
-#include "../../Game.h"
-#include <src/Systems/Physics.h>
-#include <src/Managers/ManNavMesh.h>
+
+#include <Components/CBoundingPlane.h>
+#include <Components/CBoundingSphere.h>
+#include <Components/CCamera.h>
+#include <Components/CDimensions.h>
+#include <Components/CId.h>
+#include <Components/CMesh.h>
+#include <Components/CNamePlate.h>
+#include <Components/CPath.h>
+#include <Components/CTexture.h>
+#include <Components/CTargetNavMesh.h>
+#include <Components/CTotem.h>
+#include <Components/CType.h>
+#include <Components/CWayPointEdges.h>
+#include <Components/CMovementType.h>
+#include <Components/CNavMesh.h>
+#include <Components/CCurrentNavMesh.h>
+#include <Components/CCar.h>
+#include <Entities/CarAI.h>
+#include <Entities/CarHuman.h>
+#include <Systems/Physics.h>
+#include <Managers/ManNavMesh.h>
+#include <Constants.h>
+#include <Game.h>
 
 using namespace irr;
 using namespace video;

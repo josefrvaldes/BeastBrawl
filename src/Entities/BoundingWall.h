@@ -1,9 +1,10 @@
 #pragma once
 
+#include "Entity.h"
+
 #include <iostream>
 #include <map>
-#include "../../include/glm/vec3.hpp"
-#include "Entity.h"
+#include <glm/vec3.hpp>
 
 using namespace std;
 using namespace glm;

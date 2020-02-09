@@ -1,10 +1,11 @@
-#include "./ManPowerUp.h"
+#include "ManPowerUp.h"
+
 #include <iostream>
-#include "../Entities/PowerUp.h"
-#include "../EventManager/Event.h"
-#include "../EventManager/EventManager.h"
-#include "../Facade/Render/RenderFacadeManager.h"
-#include "../Components/CDimensions.h"
+#include <Entities/PowerUp.h>
+#include <EventManager/Event.h>
+#include <EventManager/EventManager.h>
+#include <Facade/Render/RenderFacadeManager.h>
+#include <Components/CDimensions.h>
 
 class Position;
 using namespace std;

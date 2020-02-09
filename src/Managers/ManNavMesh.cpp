@@ -1,11 +1,12 @@
-#include "./ManNavMesh.h"
+#include "ManNavMesh.h"
+#include "ManTotem.h"
+
 #include <iostream>
-#include "../Entities/NavMesh.h"
-#include "../Managers/ManTotem.h"
-#include "../Components/CDimensions.h"
-#include "../Components/CCurrentNavMesh.h"
-#include "../Components/CNavMesh.h"
-#include "../../include/include_json/include_json.hpp"
+#include <Entities/NavMesh.h>
+#include <Components/CDimensions.h>
+#include <Components/CCurrentNavMesh.h>
+#include <Components/CNavMesh.h>
+#include <include_json/include_json.hpp>
 #include <cmath> 
 
 using namespace std;
