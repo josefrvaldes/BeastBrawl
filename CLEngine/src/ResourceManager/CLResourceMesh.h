@@ -2,9 +2,9 @@
 
 #include "CLResource.h"
 
-#include "../../include/assimp/Importer.hpp"
-#include "../../include/assimp/scene.h"
-#include "../../include/assimp/postprocess.h"
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
 #include <vector>
 #include <stddef.h>     /* offsetof */
 

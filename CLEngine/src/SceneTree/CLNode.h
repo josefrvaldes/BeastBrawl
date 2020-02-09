@@ -1,9 +1,10 @@
 #pragma once
 
-#include "CLEntity.h"
 #include <vector>
 #include <iostream>
-#include "../../../include/glm/glm.hpp"
+#include <glm/glm.hpp>
+
+#include "CLEntity.h"
 
 using namespace std;
 //using namespace CLE;
