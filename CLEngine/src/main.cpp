@@ -9,8 +9,8 @@
 #include "ResourceManager/CLResourceMesh.h"
 #include "ResourceManager/CLResource.h"
 
-#include "../include/glew/glew.h"
-#include "../include/glfw/glfw3.h"
+#include <glew/glew.h>
+#include <glfw/glfw3.h>
 #include <math.h>
 #include "ImGUI/imgui.h"
 #include "ImGUI/imgui_impl_opengl3.h"
@@ -30,7 +30,7 @@ void checkInput (GLFWwindow *window) {
     }
 }
 
-void initialiceImGUI() {
+void initialiceImGUI(CLEngine *device) {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO(); (void)io;
@@ -54,7 +54,7 @@ void terminateInGUI() {
 int main() {
     CLEngine *device = new CLEngine(1280, 720, "Beast Brawl");
 
-    //initialiceImGUI();
+    //initialiceImGUI(device);
 
     float vertices[] = {
         // positions            // colors
