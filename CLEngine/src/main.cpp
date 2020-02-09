@@ -9,6 +9,10 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 //SRC
 #include "CLEngine.h"
 #include "SceneTree/CLLight.h"
@@ -94,8 +98,10 @@ int main() {
     unique_ptr<CLResourceManager> resourceManager = make_unique<CLResourceManager>();
     auto resourceVertex = resourceManager->GetResourceShader("CLEngine/src/Shaders/vertex.glsl", GL_VERTEX_SHADER);
     auto resourceFragment = resourceManager->GetResourceShader("CLEngine/src/Shaders/fragment.glsl", GL_FRAGMENT_SHADER);
-    auto resourceMesh = resourceManager->GetResourceMesh("media/kart.obj");
+    //auto resourceMesh = resourceManager->GetResourceMesh("media/kart.obj");
 
+
+    
     
 
     //Una vez ambos shaders estan inicializados tenemos que linkarlos para que el output de uno vaya al otro
@@ -211,14 +217,20 @@ int main() {
 
         device->UpdateViewport(); //Por si reescalamos la ventana
 
-
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
 
         glUseProgram(shaderProgram);
-        // int vertexColorLocation = glGetUniformLocation(shaderProgram,"ourColor");
-        // glUniform4f(vertexColorLocation, triangleColor.x, triangleColor.y,triangleColor.z,triangleColor.w);
+
+        glm::mat4 trans = glm::mat4(1.0f);
+        trans = glm::translate(trans, glm::vec3(0.5f, -0.5f, 0.0f));
+        trans = glm::rotate(trans, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
+        trans = glm::scale(trans, glm::vec3(0.5, 0.5, 0.5));  
+
+
+        unsigned int transformLoc = glGetUniformLocation(shaderProgram, "transform");
+        glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans)); //Pasar los datos a la matriz del vertex
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texture1);
@@ -227,8 +239,19 @@ int main() {
 
         glBindVertexArray(VAO);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-        glBindVertexArray(0);
+        //glBindVertexArray(0);
 
+        trans = glm::mat4(1.0f);
+        trans = glm::translate(trans, glm::vec3(-0.5f, -0.5f, 0.0f));
+        trans = glm::rotate(trans, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
+        trans = glm::scale(trans, glm::vec3(0.2, 0.2, 0.2));  
+
+
+        transformLoc = glGetUniformLocation(shaderProgram, "transform");
+        glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans)); //Pasar los datos a la matriz del vertex
+
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        glBindVertexArray(0);
         //resourceMesh->Draw(glm::mat4(1.0));
 
         glfwPollEvents();
