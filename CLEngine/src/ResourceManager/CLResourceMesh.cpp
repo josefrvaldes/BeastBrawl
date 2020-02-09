@@ -4,7 +4,7 @@ using namespace CLE;
 
 bool CLResourceMesh::LoadFile(std::string file) {
     Assimp::Importer importer;
-    const aiScene *scene = importer.ReadFile(file, aiProcess_Triangulate | aiProcess_FlipUVs);
+    const aiScene *scene = importer.ReadFile(file, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_GenNormals | aiProcess_CalcTangentSpace );
 
     if(!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) 
     {
@@ -14,7 +14,7 @@ bool CLResourceMesh::LoadFile(std::string file) {
     cout << "Creo que he creado una malla\n";
     processNode(scene->mRootNode, scene);
     return true;
-}
+}  
 
 void CLResourceMesh::processNode(aiNode *node, const aiScene *scene){
     // process all the node's meshes (if any)
@@ -51,27 +51,28 @@ Mesh CLResourceMesh::processMesh(aiMesh *mesh, const aiScene *scene)
         vecAux.z = mesh->mNormals[i].z;
         vertex.normal = vecAux;
         // texture coordinates
-        if(mesh->mTextureCoords[0]) // does the mesh contain texture coordinates?
-        {
-            glm::vec2 vec;
-            // a vertex can contain up to 8 different texture coordinates. We thus make the assumption that we won't 
-            // use models where a vertex can have multiple texture coordinates so we always take the first set (0).
-            vec.x = mesh->mTextureCoords[0][i].x; 
-            vec.y = mesh->mTextureCoords[0][i].y;
-            vertex.texCoords = vec;
-        }
-        else
-            vertex.texCoords = glm::vec2(0.0f, 0.0f);
-        // tangent
-        // vecAux.x = mesh->mTangents[i].x;
-        // vecAux.y = mesh->mTangents[i].y;
-        // vecAux.z = mesh->mTangents[i].z;
-        // vertex.tangent = vecAux;
-        // bitangent
-        // vecAux.x = mesh->mBitangents[i].x;
-        // vecAux.y = mesh->mBitangents[i].y;
-        // vecAux.z = mesh->mBitangents[i].z;
-        // vertex.bitangent = vecAux;
+        // if(mesh->mTextureCoords[0]) // does the mesh contain texture coordinates?
+        // {
+        //     glm::vec2 vec;
+        //     // a vertex can contain up to 8 different texture coordinates. We thus make the assumption that we won't 
+        //     // use models where a vertex can have multiple texture coordinates so we always take the first set (0).
+        //     vec.x = mesh->mTextureCoords[0][i].x; 
+        //     vec.y = mesh->mTextureCoords[0][i].y;
+        //     vertex.texCoords = vec;
+        // }
+        // else
+        //     vertex.texCoords = glm::vec2(0.0f, 0.0f);
+
+        //tangent
+        vecAux.x = mesh->mTangents[i].x;
+        vecAux.y = mesh->mTangents[i].y;
+        vecAux.z = mesh->mTangents[i].z;
+        vertex.tangent = vecAux;
+        //bitangent
+        vecAux.x = mesh->mBitangents[i].x;
+        vecAux.y = mesh->mBitangents[i].y;
+        vecAux.z = mesh->mBitangents[i].z;
+        vertex.bitangent = vecAux;
         vertices.push_back(vertex);
     }
     // process indices
@@ -86,7 +87,7 @@ Mesh CLResourceMesh::processMesh(aiMesh *mesh, const aiScene *scene)
     if(mesh->mMaterialIndex >= 0)
     {
         //...
-    }
+    }   
 
     return Mesh(vertices, indices, textures);
 }  

@@ -16,16 +16,11 @@
 #include "ImGUI/imgui_impl_opengl3.h"
 #include "ImGUI/imgui_impl_glfw.h"
 
+#define STB_IMAGE_IMPLEMENTATION
+#include "../include/stb_image.h"
+
 using namespace std;
 using namespace CLE;
-
-const char *fragmentShaderSource = "#version 450 core\n"
-    "out vec4 FragColor;\n"
-    "uniform vec4 ourColor;\n"
-    "void main()\n"
-    "{\n"
-        "FragColor = ourColor;\n"
-    "}\n\0";
 
 
 /**
@@ -52,11 +47,19 @@ int main() {
     ImGui_ImplGlfw_InitForOpenGL(device->GetWindow(), true);
     ImGui_ImplOpenGL3_Init("#version 450");
 
+    
     float vertices[] = {
-        -0.5f, -0.5f, 0.0f,
-        0.5f, -0.5f, 0.0f,
-        0.0f,  0.5f, 0.0f
-    };      
+        // positions          // colors           // texture coords
+        0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f,   // top right
+        0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,   // bottom right
+        -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f,   // bottom left
+        -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f    // top left 
+    };
+
+    unsigned int indices[] = {  
+        0, 1, 3, // first triangle
+        1, 2, 3  // second triangle
+    };
 
     //----------------------------------
     unique_ptr<CLEntity> entity1 = make_unique<CLLight>(1);
@@ -82,12 +85,12 @@ int main() {
 
     smgr->DFSTree(glm::mat4(1.0));
 
-
+    
     //-------------------Resource manager-------------------
     unique_ptr<CLResourceManager> resourceManager = make_unique<CLResourceManager>();
     auto resourceVertex = resourceManager->GetResourceShader("CLEngine/src/Shaders/vertex.glsl", GL_VERTEX_SHADER);
     auto resourceFragment = resourceManager->GetResourceShader("CLEngine/src/Shaders/fragment.glsl", GL_FRAGMENT_SHADER);
-    auto resourceMesh = resourceManager->GetResourceMesh("media/scene.fbx");
+    auto resourceMesh = resourceManager->GetResourceMesh("media/kart.obj");
 
     
 
@@ -99,6 +102,7 @@ int main() {
     glAttachShader(shaderProgram, resourceFragment->GetShaderID());
     glLinkProgram(shaderProgram);
 
+    
     int  success;
     char infoLog[512];
     glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
@@ -111,12 +115,14 @@ int main() {
     glDeleteShader(resourceVertex->GetShaderID());
     glDeleteShader(resourceFragment->GetShaderID());  
 
+
     //Todo preparado, ahora comienza la magia
     // 1. bind Vertex Array Object
     //Todo esto esta muy bien pero lo mejor es tener un array para todos los VBO que queramos dibujar
-    unsigned int VBO,VAO;
+    unsigned int VBO,VAO,EBO;
     glGenVertexArrays(1, &VAO); 
     glGenBuffers(1, &VBO);  //Crea un buffer para VBO(Vertex buffer object) con id unico 
+    glGenBuffers(1, &EBO);
     glBindVertexArray(VAO);
 
     // 2. copy our vertices array in a buffer for OpenGL to use
@@ -125,16 +131,8 @@ int main() {
     //GL_STATIC_DRAW: the data will most likely not change at all or very rarely.
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-    /**
-     * Segunda parte del tutorial para dibujar un cuadrado
-     *unsigned int EBO, EBO2;
-     *glGenBuffers(1,&EBO);
-     *glGenBuffers(1,&EBO2
-     *glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-     *glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, *STATIC_DRAW); 
-     *glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO2);
-     *glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices2), indices2, *STATIC_DRAW); 
-    */
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
     /** glVertexAttribPointer
      * 1º Valor: Como pusimos layout = 0 pues ahora mandamos un 0
@@ -144,18 +142,62 @@ int main() {
      * 5º Valor: offset
      */
 
-    //Por cada layaout del vertex shader los diferenciamos por el primer parametro
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3* sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);  
+    // position attribute
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+    // color attribute
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
+    // texture coord attribute
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+    glEnableVertexAttribArray(2);
+
+
+    //TEXTURES
+    int width, height, nrChannels; // width, height, numero de colores
+    unsigned char *data = stbi_load("CLEngine/container.jpg", &width, &height, &nrChannels, 0); 
+
+    unsigned int texture1, texture2;
+    glGenTextures(1, &texture1);  //Como todos los ejemplos generamos un ID
+    glBindTexture(GL_TEXTURE_2D, texture1);  //Seleccionamos el ID a modificar
+
+    // set the texture wrapping/filtering options (on the currently bound texture object)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+    // 1) Tipo | 2) Mipmap levels | 3) Tipo de color | 4) Anchura | 5) Altura | 6) Siempre 0 | 7) y 8) Valores de la imagen cargada
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+    glGenerateMipmap(GL_TEXTURE_2D);
+
+    stbi_image_free(data);
+
+    data = stbi_load("CLEngine/awesomeface.png", &width, &height, &nrChannels, 0); 
+    glGenTextures(1, &texture2);  //Como todos los ejemplos generamos un ID
+    glBindTexture(GL_TEXTURE_2D, texture2);  //Seleccionamos el ID a modificar
+
+    // set the texture wrapping/filtering options (on the currently bound texture object)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    // 1) Tipo | 2) Mipmap levels | 3) Tipo de color | 4) Anchura | 5) Altura | 6) Siempre 0 | 7) y 8) Valores de la imagen cargada
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+    glGenerateMipmap(GL_TEXTURE_2D);
+
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 
     
+    glUseProgram(shaderProgram);
+    glUniform1i(glGetUniformLocation(shaderProgram,"texture1"),0);
+    glUniform1i(glGetUniformLocation(shaderProgram,"texture2"),1);
 
     
     ImVec4 triangleColor;
-    bool show_demo_window = true;
     while (!device->Run()) {
         //glfwPollEvents();
 
@@ -169,34 +211,21 @@ int main() {
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        // ImGui_ImplOpenGL3_NewFrame();
-        // ImGui_ImplGlfw_NewFrame();
-        // ImGui::NewFrame();
-
-        // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
-        // ImGui::ShowDemoWindow(&show_demo_window);
-
-
-        // Start the Dear ImGui frame
-        //ImGui_ImplOpenGL3_NewFrame();
-        // ImGui_ImplGlfw_NewFrame();
-        // ImGui::NewFrame();
-
-        // ImGui::Begin("Modificador de shader!");                          // Create a window called "Hello, world!" and append into it.
-        // ImGui::ColorEdit3("clear color", (float*)&triangleColor); // Edit 3 floats representing a color
-        // ImGui::End();
 
         glUseProgram(shaderProgram);
-        int vertexColorLocation = glGetUniformLocation(shaderProgram,"ourColor");
-        glUniform4f(vertexColorLocation, triangleColor.x, triangleColor.y,triangleColor.z,triangleColor.w);
+        // int vertexColorLocation = glGetUniformLocation(shaderProgram,"ourColor");
+        // glUniform4f(vertexColorLocation, triangleColor.x, triangleColor.y,triangleColor.z,triangleColor.w);
+
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, texture1);
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, texture2);
 
         glBindVertexArray(VAO);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);
 
-        resourceMesh->Draw(glm::mat4(1.0));
-        // ImGui::Render();
-        // ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+        //resourceMesh->Draw(glm::mat4(1.0));
 
         glfwPollEvents();
         glfwSwapBuffers(device->GetWindow());
