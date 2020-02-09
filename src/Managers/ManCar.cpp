@@ -239,6 +239,11 @@ void ManCar::SubscribeToEvents() {
         EventType::NEW_INPUTS_RECEIVED,
         bind(&ManCar::NewInputsReceived, this, placeholders::_1),
         "NewInputsReceived"));
+    
+    EventManager::GetInstance().SubscribeMulti(Listener(
+        EventType::NEW_SYNC_RECEIVED_CAR,
+        bind(&ManCar::NewSyncReceived, this, placeholders::_1),
+        "NewSyncReceived"));
 }
 
 void ManCar::NewInputsReceived(DataMap* d) {
@@ -253,6 +258,30 @@ void ManCar::NewInputsReceived(DataMap* d) {
             if (currentIDOnline == idRecieved) {
                 // cout << "Hemos encontrado un coche con el id " << id << " y vamos a actualizarle la pos" << endl;
                 compOnline->inputs = inputs;
+                break;
+            }
+        }
+    }
+}
+
+void ManCar::NewSyncReceived(DataMap* d) {
+    // cout << "Se ha lanzado el evento NewInputsReceived" << endl;
+    auto idRecieved = any_cast<uint16_t>((*d)[DataType::ID_ONLINE]);
+    for (auto car : GetEntities()) {
+        if (car->HasComponent(CompType::OnlineComp)) {
+            COnline* compOnline = static_cast<COnline*>(car->GetComponent(CompType::OnlineComp).get());
+            uint16_t currentIDOnline = compOnline->idClient;
+            // cout << "El idOnline es " << currentIDOnline << endl;
+            if (currentIDOnline == idRecieved) {
+                auto cTran = static_cast<CTransformable*>(car->GetComponent(CompType::TransformableComp).get());
+                auto cPowerUp = static_cast<CPowerUp*>(car->GetComponent(CompType::PowerUpComp).get());
+                auto cTotem = static_cast<CTotem*>(car->GetComponent(CompType::TotemComp).get());
+                cTran->position = any_cast<glm::vec3>((*d)[DataType::VEC3_POS]);
+                cTran->rotation = any_cast<glm::vec3>((*d)[DataType::VEC3_ROT]);
+                cPowerUp->typePowerUp = any_cast<typeCPowerUp>((*d)[DataType::TYPE_POWER_UP]);
+                cTotem->active = any_cast<bool>((*d)[DataType::CAR_WITH_TOTEM]);
+                cTotem->accumulatedTime = any_cast<int64_t>((*d)[DataType::TIME_TOTEM]);
+
                 break;
             }
         }

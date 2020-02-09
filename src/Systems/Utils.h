@@ -13,6 +13,7 @@
 #include <memory>
 #include <sstream>
 #include <vector>
+#include "../Components/CPowerUp.h"
 
 using namespace glm;
 using namespace std;
@@ -111,6 +112,98 @@ class Utils {
             // cout << "item " << i << " = " << unsigned(buff[i]) << endl;
         }
     }
+
+    static void SerializeVec3(unsigned char* buff, const glm::vec3 &item, size_t& currentSize) {
+        Serialize(buff, &item.x, currentSize);
+        Serialize(buff, &item.y, currentSize);
+        Serialize(buff, &item.z, currentSize);
+    }
+
+    static glm::vec3 DeserializeVec3(unsigned char* buff, size_t& currentIndex){
+        float vec3X, vec3Y, vec3Z;
+        size_t itemSize = sizeof(vec3X);
+        Deserialize(&vec3X, itemSize, buff, currentIndex);
+        Deserialize(&vec3Y, itemSize, buff, currentIndex);
+        Deserialize(&vec3Z, itemSize, buff, currentIndex);
+
+        return glm::vec3(vec3X, vec3Y, vec3Z);
+    }
+
+
+    // se almacena el tipo de powerUp en los primeros 3 bits, y luego si tiene totem el mismo, y si existe en el mapa
+    static void SerializePowerUpTotem(unsigned char* buff, const typeCPowerUp &typePU, bool haveTotem, bool totemInMap, size_t& currentSize) {
+        unsigned char byte{0};
+
+        switch (typePU){
+        case typeCPowerUp::RoboJorobo :
+            byte |= 1UL << 0;   // 001
+            break;
+        case typeCPowerUp::SuperMegaNitro :
+            byte |= 1UL << 1;   // 010
+            break;
+        case typeCPowerUp::PudinDeFrambuesa :
+            byte |= 1UL << 0;
+            byte |= 1UL << 1;   // 011
+            break;
+        case typeCPowerUp::EscudoMerluzo :
+            byte |= 1UL << 2;   // 100
+            break;
+        case typeCPowerUp::TeleBanana :
+            byte |= 1UL << 0;
+            byte |= 1UL << 2;   // 101
+            break;
+        case typeCPowerUp::MelonMolon :
+            byte |= 1UL << 1;
+            byte |= 1UL << 2;   // 110
+            break;
+        default:
+            // si no tiene PU se mantiene a 000
+            break;
+        }
+
+        if(haveTotem)
+            byte |= 1UL << 3;
+        if(totemInMap)
+            byte |= 1UL << 4;
+        
+        Serialize(buff, &byte, currentSize);
+    }
+
+    static void DeserializePowerUpTotem(unsigned char* buff, typeCPowerUp &typePU, bool &haveTotem, bool &totemInMap, size_t& currentIndex) {
+        unsigned char byte;
+        size_t itemSize = sizeof(byte);
+
+        Deserialize(&byte, itemSize, buff, currentIndex);
+
+        if( !((byte >> 2) & 1U) && !((byte >> 1) & 1U) && ((byte >> 0) & 1U) ){         // 001
+            typePU = typeCPowerUp::RoboJorobo;
+        }else if( !((byte >> 2) & 1U) && ((byte >> 1) & 1U) && !((byte >> 0) & 1U) ){   // 010
+            typePU = typeCPowerUp::SuperMegaNitro;
+        }else if( !((byte >> 2) & 1U) && ((byte >> 1) & 1U) && ((byte >> 0) & 1U) ){    // 011
+            typePU = typeCPowerUp::PudinDeFrambuesa;
+        }else if( ((byte >> 2) & 1U) && !((byte >> 1) & 1U) && !((byte >> 0) & 1U) ){   // 100
+            typePU = typeCPowerUp::EscudoMerluzo;
+        }else if( ((byte >> 2) & 1U) && !((byte >> 1) & 1U) && ((byte >> 0) & 1U) ){    // 101
+            typePU = typeCPowerUp::TeleBanana;
+        }else if( ((byte >> 2) & 1U) && ((byte >> 1) & 1U) && !((byte >> 0) & 1U) ){    // 110
+            typePU = typeCPowerUp::MelonMolon;
+        }else{
+            typePU = typeCPowerUp::None;
+        }
+
+
+        if((byte >> 3) & 1U)
+            haveTotem = true;
+        else
+            haveTotem = false;
+        
+        if((byte >> 4) & 1U)
+            totemInMap = true;
+        else
+            totemInMap = false;
+    }
+
+    
 
     // template <typename T>
     // static void SerializeVector(unsigned char* buff, vector<T> &vector, size_t& currentSize) {

@@ -30,4 +30,5 @@ class StateInGameMulti : public StateInGame {
     unique_ptr<SystemOnline> sysOnline;
 
     time_point<system_clock> lastTimeSentInputs;
+    time_point<system_clock> lastTimeSentSync;
 };

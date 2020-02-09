@@ -43,8 +43,8 @@ void UDPServer::HandleReceive(std::shared_ptr<unsigned char[]> recevBuff, std::s
         size_t currentIndex = 0;
         Utils::Deserialize(&petitionType, recevBuff.get(), currentIndex);
         Utils::Deserialize(&idPlayer, recevBuff.get(), currentIndex);
-        unsigned char resendInputs[Constants::ONLINE_BUFFER_SIZE];
-        memcpy(&resendInputs[0], &recevBuff.get()[0], bytesTransferred);
+        unsigned char buffRecieved[Constants::ONLINE_BUFFER_SIZE];
+        memcpy(&buffRecieved[0], &recevBuff.get()[0], bytesTransferred);
 
         //cout << " -- " << endl;
         //for (size_t i = 0; i < bytesTransferred; i++) {
@@ -63,9 +63,10 @@ void UDPServer::HandleReceive(std::shared_ptr<unsigned char[]> recevBuff, std::s
             } break;
 
             case Constants::PetitionTypes::SEND_INPUTS: {
-                HandleReceivedInputs(resendInputs, bytesTransferred, *remoteClient.get());
+                HandleReceivedInputs(buffRecieved, bytesTransferred, *remoteClient.get());
             } break;
-            case Constants::PetitionTypes::SEND_SYNC:  //Input
+            case Constants::PetitionTypes::SEND_SYNC:  //Sync
+                HandleReceivedSync(buffRecieved, bytesTransferred, *remoteClient.get());
                 break;
 
             default:
@@ -78,11 +79,17 @@ void UDPServer::HandleReceive(std::shared_ptr<unsigned char[]> recevBuff, std::s
     StartReceiving();  // antes estaba dentro del if, pero entonces si hay un error ya se rompe tó ¿?
 }
 
+
 void UDPServer::HandleReceivedInputs(const unsigned char resendInputs[], const size_t currentBufferSize, const udp::endpoint& originalClient) {
-    ResendInputsToOthers(resendInputs, currentBufferSize, originalClient);
+    ResendBytesToOthers(resendInputs, currentBufferSize, originalClient);
 }
 
-void UDPServer::ResendInputsToOthers(const unsigned char resendInputs[], const size_t currentBufferSize, const udp::endpoint& originalClient) {
+void UDPServer::HandleReceivedSync(const unsigned char resendSync[], const size_t currentBufferSize, const udp::endpoint& originalClient) {
+    ResendBytesToOthers(resendSync, currentBufferSize, originalClient);
+}
+
+
+void UDPServer::ResendBytesToOthers(const unsigned char resendBytes[], const size_t currentBufferSize, const udp::endpoint& originalClient) {
     string originalAddress = originalClient.address().to_string();
     uint16_t originalPort = originalClient.port();
     for (Player& currentPlayer : players) {
@@ -90,32 +97,33 @@ void UDPServer::ResendInputsToOthers(const unsigned char resendInputs[], const s
         uint16_t currentPort = currentPlayer.endpoint.port();
         // uint32_t currentID = currentPlayer.id;
 
-        // si el cliente NO es el jugador original que mandó este input, le reenviamos el input al resto
+        // si el cliente NO es el jugador original que mandó este mensaje, le reenviamos el mensaje al resto
         // TODO: falta comparar aquí con id
         if (originalAddress != currentAddress || originalPort != currentPort) {
-            SendInputs(resendInputs, currentBufferSize, currentPlayer);
+            SendBytes(resendBytes, currentBufferSize, currentPlayer);
         }
     }
 }
 
-void UDPServer::SendInputs(const unsigned char resendInputs[], const size_t currentBufferSize, const Player& player) {
+void UDPServer::SendBytes(const unsigned char resendBytes[], const size_t currentBufferSize, const Player& player) {
     //std::shared_ptr<string> message = make_shared<string>(s);
     socket.async_send_to(
-        boost::asio::buffer(resendInputs, currentBufferSize),
+        boost::asio::buffer(resendBytes, currentBufferSize),
         player.endpoint,
         boost::bind(
-            &UDPServer::HandleSentInputs,
+            &UDPServer::HandleSentBytes,
             this,
             asio::placeholders::error,
             asio::placeholders::bytes_transferred));
 }
 
-void UDPServer::HandleSentInputs(const boost::system::error_code& errorCode, std::size_t bytesTransferred) const {
+void UDPServer::HandleSentBytes(const boost::system::error_code& errorCode, std::size_t bytesTransferred) const {
     if (errorCode) {
-        cout << "Hubo un error enviando inputs. errorcode: " << errorCode << endl;
+        cout << "Hubo un error enviando Bytes. errorcode: " << errorCode << endl;
         // Resend();
     }
 }
+
 
 void UDPServer::HandleReceiveDateTimeRequest(const udp::endpoint& remoteClient) {
     boost::shared_ptr<string> message(new string(Utils::GetTime()));

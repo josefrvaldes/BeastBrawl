@@ -74,6 +74,13 @@ void StateInGameMulti::Input() {
         lastTimeSentInputs = now;
         sysOnline->SendInputs(inputs);
     }
+
+
+    auto millisSinceLastSyncSent = duration_cast<milliseconds>(now - lastTimeSentSync).count();
+    if (millisSinceLastSyncSent > 2000) {  // 1000ms = 1s = 60fps; 2s = 120frames
+        lastTimeSentSync = now;       
+        sysOnline->SendSync(manCars.get(), manTotems.get());
+    }
 }
 
 void StateInGameMulti::Update() {

@@ -31,7 +31,10 @@ enum DataType{
     ID,
     INPUTS,
     ID_ONLINE,
-    VECTOR_ID_ONLINE
+    VECTOR_ID_ONLINE,
+    VEC3_POS,
+    VEC3_ROT,
+    TIME_TOTEM
 };
 
 using EM = EventManager;
