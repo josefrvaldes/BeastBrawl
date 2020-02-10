@@ -35,10 +35,20 @@ using namespace CLE;
  * Mira si se ha pulsado ESC para cerrar la ventana.
  * @param window - Ventana sobre la que mira los eventos. 
  */
-void checkInput (GLFWwindow *window) {
+void checkInput (GLFWwindow *window, glm::vec3& cameraPos, glm::vec3& cameraFront, glm::vec3& cameraUp) {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
         glfwSetWindowShouldClose(window, true);
     }
+
+    const float cameraSpeed = 0.05f; // adjust accordingly
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+        cameraPos += cameraSpeed * cameraFront;
+    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+        cameraPos -= cameraSpeed * cameraFront;
+    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+        cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+        cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
 }
 
 int main() {
@@ -253,30 +263,46 @@ int main() {
     //COORDINATE SYSTEM
     glm::ortho(0.0f, 800.0f, 0.0f, 600.0f, 0.1f, 100.0f); // left | right | bottom | top | near | far (near far = distancia)
 
-    //Model matrix
-    glm::mat4 model = glm::mat4(1.0f);
-    model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f)); //Un girito de prueba
+    // //Model matrix
+    // glm::mat4 model = glm::mat4(1.0f);
+    // model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f)); //Un girito de prueba
 
-    //View matrix
-    glm::mat4 view = glm::mat4(1.0f);
-    // note that we're translating the scene in the reverse direction of where we want to move
-    view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f)); 
+    // //View matrix
+    // glm::mat4 view = glm::mat4(1.0f);
+    // // note that we're translating the scene in the reverse direction of where we want to move
+    // view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f)); 
 
-    //Projection matrix
-    glm::mat4 projection = glm::perspective(glm::radians(45.0f), 1280.0f/720.0f, 0.1f, 100.0f);
+    // //Projection matrix
+    // glm::mat4 projection = glm::perspective(glm::radians(45.0f), 1280.0f/720.0f, 0.1f, 100.0f);
 
-    //Asignamos los valores al vertex shader
-    glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "model"), 1, GL_FALSE, glm::value_ptr(model));
-    glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "view"), 1, GL_FALSE, glm::value_ptr(view));
-    glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+    // //Asignamos los valores al vertex shader
+    // glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "model"), 1, GL_FALSE, glm::value_ptr(model));
+    // glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "view"), 1, GL_FALSE, glm::value_ptr(view));
+    // glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 
+    // //CAMERA
+    // glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f); 
+    // glm::vec3 cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
+    // glm::vec3 cameraDirection = glm::normalize(cameraPos - cameraTarget); //Direccion hacia donde apunta la camara
+
+    // glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f); 
+    // glm::vec3 cameraRight = glm::normalize(glm::cross(up, cameraDirection));
+
+    // glm::vec3 cameraUp = glm::cross(cameraDirection, cameraRight);
+    // //Y todo esto que hemos hecho aqui es equivalente a hacer:
+    // glm::mat4 view;
+    // view = glm::lookAt(glm::vec3(0.0f, 0.0f, 3.0f), 
+    //         glm::vec3(0.0f, 0.0f, 0.0f), 
+    //         glm::vec3(0.0f, 1.0f, 0.0f));
+
+    glm::vec3 cameraPos   = glm::vec3(0.0f, 0.0f,  3.0f);
+    glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+    glm::vec3 cameraUp    = glm::vec3(0.0f, 1.0f,  0.0f);
     
-    
-    ImVec4 triangleColor;
     while (!device->Run()) {
         //glfwPollEvents();
 
-        checkInput(device->GetWindow());
+        checkInput(device->GetWindow(), cameraPos, cameraFront, cameraUp);
 
         //Apartir de aqui hacemos cosas, de momento en el main para testear
 
@@ -288,16 +314,6 @@ int main() {
 
         glUseProgram(shaderProgram);
 
-        // glm::mat4 trans = glm::mat4(1.0f);
-        // trans = glm::translate(trans, glm::vec3(0.5f, -0.5f, 0.0f));
-        // trans = glm::rotate(trans, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
-        // trans = glm::scale(trans, glm::vec3(0.5, 0.5, 0.5));  
-
-
-        // model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
-        // glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "model"), 1, GL_FALSE, glm::value_ptr(model));
-
-        // glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "transform"), 1, GL_FALSE, glm::value_ptr(trans)); //Pasar los datos a la matriz del vertex
 
 
         glActiveTexture(GL_TEXTURE0);
@@ -307,10 +323,11 @@ int main() {
 
 
         // create transformations
-        glm::mat4 view          = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
         glm::mat4 projection    = glm::mat4(1.0f);
         projection = glm::perspective(glm::radians(45.0f), 1280.0f / 720.0f, 0.1f, 100.0f);
-        view       = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+ 
+        glm::mat4 view;
+        view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
         // pass transformation matrices to the shader
         glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
         glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "view"), 1, GL_FALSE, glm::value_ptr(view));
