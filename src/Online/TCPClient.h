@@ -29,7 +29,7 @@ class TCPClient {
     //      él se encargará de registrar nuestro endpoint udp
 
    public:
-    TCPClient(string host, string port_);
+    TCPClient(string host, uint16_t port_);
     ~TCPClient();
     void SendConnectionRequest();
     

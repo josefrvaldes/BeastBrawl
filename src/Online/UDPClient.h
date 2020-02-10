@@ -32,7 +32,7 @@ class UDPClient {
     //      él se encargará de registrar nuestro endpoint udp
 
    public:
-    UDPClient(string host, string port_);
+    UDPClient(string host, uint16_t port_);
     ~UDPClient();
 
     void SendInputs(vector<Constants::InputTypes>& inputs, uint16_t id);

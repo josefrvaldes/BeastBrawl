@@ -17,10 +17,10 @@ using namespace boost::asio;
 using namespace std::chrono;
 using namespace std;
 
-TCPClient::TCPClient(string host_, string port_)
+TCPClient::TCPClient(string host_, uint16_t port_)
     : context{},
       //   endpoints{tcp::resolver(context).resolve(host_, port_)},
-      serverEndpoint{*tcp::resolver(context).resolve(tcp::v4(), host_, port_).begin()},
+      serverEndpoint{*tcp::resolver(context).resolve(tcp::v4(), host_, to_string(port_)).begin()},
       stopped{false},
       socket(context),
       butler{[&]() {

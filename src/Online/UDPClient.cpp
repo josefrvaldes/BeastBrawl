@@ -12,9 +12,9 @@ using namespace boost::asio;
 using namespace std::chrono;
 using namespace std;
 
-UDPClient::UDPClient(string host_, string port_)
+UDPClient::UDPClient(string host_, uint16_t port_)
     : context{},
-      serverEndpoint{*udp::resolver(context).resolve(udp::v4(), host_, port_).begin()},
+      serverEndpoint{*udp::resolver(context).resolve(udp::v4(), host_, to_string(port_)).begin()},
       socket(context),
       butler{[&]() {
           boost::asio::executor_work_guard<boost::asio::io_context::executor_type> work_guard(context.get_executor());
