@@ -26,5 +26,6 @@ class CBoundingCilindre : public Component {
 
    private:
     vec3 CalculateProyectPointOnRecta(const vec3 &point_) const;
+    double EuclideanDis(const vec3 &p1, const vec3 &p2) const;
 
 };

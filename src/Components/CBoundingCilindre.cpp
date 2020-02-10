@@ -44,7 +44,23 @@ IntersectData CBoundingCilindre::IntersectSphere(const CBoundingSphere &other) c
 
     float distance = centerDistance - radiusDistance; 
     bool intersects = distance < 0;
+
+    // FINALMENTE DEBEMOS COMPROBAR SI ESTAMOS DENTRO DEL RADIO DE LOS DOS EXTREMOS
+    if(intersects){
+       if(EuclideanDis(extreme1,extreme2) > EuclideanDis(extreme1, virtualSphereCenter) && 
+            EuclideanDis(extreme1,extreme2) > EuclideanDis(extreme2, virtualSphereCenter)){
+                intersects = true;
+        }else{
+            intersects = false;
+        }
+    }
+
+
     return IntersectData(intersects, distance * direction);
+}
+
+double CBoundingCilindre::EuclideanDis(const vec3 &p1, const vec3 &p2) const{
+    return sqrt(pow((p1.x-p2.x),2)+pow((p1.y-p2.y),2)+pow((p1.z-p2.z),2));
 }
 
 

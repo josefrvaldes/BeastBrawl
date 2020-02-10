@@ -60,8 +60,8 @@ CarHuman::CarHuman() {
     //CBoundingChassis(const vec3 &spCenterBehind, const float &spRadiusBehind, const vec3 &spCenterFront, const float &spRadiusFront);
     //     glm::vec3 pos = glm::vec3(-20.0f, 10.0f, -300.0f);
     glm::vec3 pSphBehind = pos;
-    glm::vec3 pSphFront = glm::vec3(-20.0f, 10.0f,-280.0f );
-    shared_ptr<CBoundingChassis> cBoundingChassis = make_shared<CBoundingChassis>(pSphBehind, 5.0, pSphFront, 5.0);
+    glm::vec3 pSphFront = pos;
+    shared_ptr<CBoundingChassis> cBoundingChassis = make_shared<CBoundingChassis>(pSphBehind, 8.0, pSphFront, 8.0);
 
     AddComponent(cId);
     AddComponent(cType);

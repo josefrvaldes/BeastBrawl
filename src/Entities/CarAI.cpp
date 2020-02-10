@@ -20,7 +20,7 @@
 #include "../Components/CBoundingRay.h"
 #include "../Components/CMovementType.h"
 #include "../Components/CExternalForce.h"
-
+#include "../Components/CBoundingChassis.h"
 
 
 class Position;
@@ -65,6 +65,10 @@ CarAI::CarAI(){
 
     shared_ptr<CExternalForce> cExternalForce = make_shared<CExternalForce>();
 
+    glm::vec3 pSphBehind = pos;
+    glm::vec3 pSphFront = pos;
+    shared_ptr<CBoundingChassis> cBoundingChassis = make_shared<CBoundingChassis>(pSphBehind, 8.0, pSphFront, 8.0);
+
     AddComponent(cId);
     AddComponent(cType);
     AddComponent(cTransformable);
@@ -92,6 +96,8 @@ CarAI::CarAI(){
     AddComponent(cTargetNavMesh);
 
     AddComponent(cExternalForce);
+
+    AddComponent(cBoundingChassis);
     cout << "Acabamos de llamar al constructor default de car, su transformable es " << cTransformable << endl;
 }
 

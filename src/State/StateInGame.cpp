@@ -199,9 +199,18 @@ void StateInGame::Update() {
     if(!intersData2.intersects){
         cout << "DEBERIA DE DAR FALSE Y...... LO DA" << endl;
     }
+    //la prueba de fuego
+    unique_ptr<CBoundingSphere> esferaca3 = make_unique<CBoundingSphere>(vec3(10,0,8), 2.0);
+    IntersectData intersData3  = cilindraco->IntersectSphere(*esferaca3.get());
+    if(!intersData3.intersects){
+        cout << "DEBERIA DE DAR FALSE Y...... LO DA 2" << endl;
+    }
+    unique_ptr<CBoundingSphere> esferaca4 = make_unique<CBoundingSphere>(vec3(10,0,-2), 2.0);
+    IntersectData intersData4  = cilindraco->IntersectSphere(*esferaca4.get());
+    if(!intersData4.intersects){
+        cout << "DEBERIA DE DAR FALSE Y...... LO DA 3" << endl;
+    }
     */
-
-
 }
 
 void StateInGame::Render() {
