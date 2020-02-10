@@ -1,8 +1,8 @@
 #include "CLNode.h" 
 
-#include "../../../include/glm/gtc/matrix_transform.hpp"
-#include "../../../include/glm/ext.hpp"
-#include "../../../include/glm/gtx/string_cast.hpp"
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/string_cast.hpp>
+#include <glm/ext.hpp>
 
 using namespace CLE;
 

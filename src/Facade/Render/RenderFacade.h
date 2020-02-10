@@ -4,12 +4,12 @@
 #include <iostream>
 #include <string>
 #include <chrono>
-#include "../../Entities/Entity.h"
-#include "../../EventManager/EventManager.h"
-#include "../../Managers/ManWayPoint.h"
-#include "../../Managers/ManCar.h"
-#include "../../Components/CPowerUp.h"
-#include "../../Managers/Manager.h"
+#include <Entities/Entity.h>
+#include <EventManager/EventManager.h>
+#include <Managers/ManWayPoint.h>
+#include <Managers/ManCar.h>
+#include <Components/CPowerUp.h>
+#include <Managers/Manager.h>
 
 using namespace chrono;
 

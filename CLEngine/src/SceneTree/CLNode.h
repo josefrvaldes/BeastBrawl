@@ -3,7 +3,7 @@
 #include "CLEntity.h"
 #include <vector>
 #include <iostream>
-#include "../../../include/glm/glm.hpp"
+#include <glm/glm.hpp>
 
 using namespace std;
 //using namespace CLE;

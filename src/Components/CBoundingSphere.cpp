@@ -1,6 +1,5 @@
 #include "CBoundingSphere.h"
-
-#include "../Components/CTransformable.h"
+#include "CTransformable.h"
 
 // https://www.youtube.com/watch?v=1l-k8c7NpQM&list=PLEETnX-uPtBXm1KEr_2zQ6K_0hoGH6JJ0&index=3
 IntersectData CBoundingSphere::IntersectSphere(const CBoundingSphere &other) const {

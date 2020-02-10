@@ -1,9 +1,10 @@
 #pragma once
 
+#include "InputFacade.h"
+
 #include <iostream>
 #include <memory>
-#include "InputFacade.h"
-#include "../../../include/irrlicht/irrlicht.h"
+#include <irrlicht/irrlicht.h>
 
 using namespace std;
 using namespace irr;

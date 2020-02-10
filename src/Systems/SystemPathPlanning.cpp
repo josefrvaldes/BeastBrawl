@@ -1,21 +1,21 @@
 #include "SystemPathPlanning.h"
 
-#include "../Entities/CarHuman.h"
-#include "../Entities/CarAI.h"
+#include <Entities/CarHuman.h>
+#include <Entities/CarAI.h>
 
-#include "../EventManager/Event.h"
-#include "../EventManager/EventManager.h"
+#include <EventManager/Event.h>
+#include <EventManager/EventManager.h>
 
-#include "../Components/CPath.h"
-#include "../Components/CWayPointEdges.h"
-#include "../Components/CTargetNavMesh.h"
-#include "../Components/CCurrentNavMesh.h"
-#include "../Components/CNavMesh.h"
-#include "../Managers/ManNavMesh.h"
+#include <Components/CPath.h>
+#include <Components/CWayPointEdges.h>
+#include <Components/CTargetNavMesh.h>
+#include <Components/CCurrentNavMesh.h>
+#include <Components/CNavMesh.h>
+#include <Managers/ManNavMesh.h>
 
 
-#include "../Facade/Render/RenderFacadeManager.h"
-#include "../Game.h"
+#include <Facade/Render/RenderFacadeManager.h>
+#include <Game.h>
 
 #include <stack>
 #include <iostream>

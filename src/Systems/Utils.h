@@ -3,7 +3,7 @@
 #include <math.h>
 #include <iostream>
 #include <sstream>
-#include "include/glm/vec3.hpp"
+#include <glm/vec3.hpp>
 
 using namespace glm;
 using namespace std;

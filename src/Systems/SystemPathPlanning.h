@@ -2,7 +2,7 @@
 
 
 #include <stack>
-#include "../Aliases.h"
+#include <Aliases.h>
 
 using namespace std;
 

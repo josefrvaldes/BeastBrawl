@@ -1,11 +1,11 @@
 #include "PowerUp.h"
-#include "../Components/CId.h"
-#include "../Components/CType.h"
-#include "../Components/CTexture.h"
-#include "../Components/CMesh.h"
-#include "../Components/CTransformable.h"
-#include "../Components/CPowerUp.h"
-#include "../Components/CTargetEntity.h"
+#include <Components/CId.h>
+#include <Components/CType.h>
+#include <Components/CTexture.h>
+#include <Components/CMesh.h>
+#include <Components/CTransformable.h>
+#include <Components/CPowerUp.h>
+#include <Components/CTargetEntity.h>
 #include <iostream>
 
 class Position;

@@ -1,6 +1,6 @@
 #include "StateInGameSingle.h"
 
-#include "../Components/CTotem.h"
+#include <Components/CTotem.h>
 
 StateInGameSingle::StateInGameSingle() : StateInGame() {
     InitVirtualMethods();

@@ -1,10 +1,12 @@
 #include "BoxPowerUp.h"
-#include "../Components/CId.h"
-#include "../Components/CType.h"
-#include "../Components/CTexture.h"
-#include "../Components/CMesh.h"
-#include "../Components/CTransformable.h"
-#include "../Components/CBoxPowerUp.h"
+
+#include <Components/CId.h>
+#include <Components/CType.h>
+#include <Components/CTexture.h>
+#include <Components/CMesh.h>
+#include <Components/CTransformable.h>
+#include <Components/CBoxPowerUp.h>
+
 #include <iostream>
 
 class Position;

@@ -1,21 +1,20 @@
 #pragma once
 
+#include "ManWayPoint.h"
 
-#include "../../include/glm/vec3.hpp"
-#include "../Aliases.h"
-#include "../Components/CWayPoint.h"
-#include "../Components/CTransformable.h"
-#include "../Components/CSpeed.h"
-#include "Manager.h"
+#include <glm/vec3.hpp>
+#include <Aliases.h>
+#include <Components/CWayPoint.h>
+#include <Components/CTransformable.h>
+#include <Components/CSpeed.h>
 
-#include "../Managers/ManWayPoint.h"
-#include "../Entities/Entity.h"
-#include "../Entities/WayPoint.h"
+#include <Entities/Entity.h>
+#include <Entities/WayPoint.h>
 
-#include "../Systems/SystemBtPowerUp.h"
-#include "../Systems/SystemBtMoveTo.h"
-#include "../Systems/SystemBtLoDMove.h"
-#include "../Systems/SystemPathPlanning.h"
+#include <Systems/SystemBtPowerUp.h>
+#include <Systems/SystemBtMoveTo.h>
+#include <Systems/SystemBtLoDMove.h>
+#include <Systems/SystemPathPlanning.h>
 
 #include <cstdlib> /* srand, rand */
 #include <iostream>

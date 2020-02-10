@@ -1,6 +1,12 @@
 #include <iostream>
 #include <memory>
+#include <math.h>
 
+//INCLUDE
+#include <glew/glew.h>
+#include <glfw/glfw3.h>
+
+//SRC
 #include "CLEngine.h"
 #include "SceneTree/CLLight.h"
 #include "SceneTree/CLNode.h"

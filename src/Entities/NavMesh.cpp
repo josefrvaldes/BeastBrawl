@@ -1,11 +1,11 @@
 #include "NavMesh.h"
-#include "../Components/CId.h"
-#include "../Components/CType.h"
-#include "../Components/CTexture.h"
-#include "../Components/CMesh.h"
-#include "../Components/CTransformable.h"
-#include "../Components/CNavMesh.h"
-#include "../Components/CDimensions.h"
+#include <Components/CId.h>
+#include <Components/CType.h>
+#include <Components/CTexture.h>
+#include <Components/CMesh.h>
+#include <Components/CTransformable.h>
+#include <Components/CNavMesh.h>
+#include <Components/CDimensions.h>
 
 #include <iostream>
 

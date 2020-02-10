@@ -2,8 +2,8 @@
 
 #include <string>
 #include <iostream>
-#include "../../../include/glm/glm.hpp"
-#include "../../include/glew/glew.h"
+#include <glm/glm.hpp>
+#include <glew/glew.h>
 
 using namespace std;
 namespace CLE {

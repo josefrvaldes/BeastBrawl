@@ -1,7 +1,7 @@
 #pragma once
 
 #include "State/State.h"
-#include <src/Aliases.h>
+#include <Aliases.h>
 
 #include <iostream>
 #include <memory>

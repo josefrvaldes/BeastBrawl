@@ -1,15 +1,16 @@
 #pragma once
 
+#include "Manager.h"
+
 #include <iostream>
 #include <map>
 #include <memory>
 #include <vector>
-#include "Manager.h"
-#include "../../include/glm/vec3.hpp"
-#include "../Facade/Render/RenderFacadeManager.h"
+#include <glm/vec3.hpp>
+#include <Facade/Render/RenderFacadeManager.h>
 
-#include "../Components/CBoxPowerUp.h"
-#include "../Components/CId.h"
+#include <Components/CBoxPowerUp.h>
+#include <Components/CId.h>
 
 class BoxPowerUp;
 class Data;

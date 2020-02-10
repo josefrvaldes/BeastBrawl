@@ -1,5 +1,7 @@
 #pragma once
 
+#include "SoundFacade.h"
+
 #include <iostream>
 #include <unordered_map>
 
@@ -7,10 +9,9 @@
 #include <fmod.hpp>
 #include <fmod_errors.h>
 
-#include "../../EventManager/EventManager.h"
-#include "../../EventManager/Event.h"
-#include "../../Aliases.h"
-#include "SoundFacade.h"
+#include <EventManager/EventManager.h>
+#include <EventManager/Event.h>
+#include <Aliases.h>
 
 using namespace std;
 

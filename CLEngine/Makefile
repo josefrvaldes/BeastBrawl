@@ -13,17 +13,14 @@ else
 endif
 
 ifdef WINDOWS
-	INCLUDE     := -I. 
-	CC			:= g++
+	INCLUDE     	:= -I.
+	CC				:= g++
 else
 	LIBS 	    	+= -L./lib/linux/glfw -lglfw3 -lGL -lX11 -lpthread -lXrandr -lXi -ldl -Wl,-rpath=lib/linux/glfw
 	LIBS 	    	+= -L./lib/linux/glew -lGLEW -Wl,-rpath=lib/linux/glew
 	LIBS 	    	+= -L./lib/linux/assimp -lassimp -Wl,-rpath=lib/linux/assimp
-	INCLUDE     	:= -I./include
-	#INCLUDE_GLEW 	:= -I./include/glew
-	#INCLUDE_GLFW 	:= -I./include/glfw
-	#INCLUDE_ASSIMP 	:= -I./include/assimp
-	CC			:= g++
+	INCLUDE     	:= -I./include -I../include
+	CC				:= g++
 endif
 
 SOURCES  	:= $(wildcard *.cpp)

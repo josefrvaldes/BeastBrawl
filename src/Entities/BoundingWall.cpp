@@ -1,6 +1,6 @@
 #include "BoundingWall.h"
-#include "../Components/CBoundingPlane.h"
-#include "../Components/CId.h"
+#include <Components/CBoundingPlane.h>
+#include <Components/CId.h>
 
 class Position;
 using namespace std;
