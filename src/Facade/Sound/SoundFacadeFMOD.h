@@ -5,9 +5,9 @@
 #include <iostream>
 #include <unordered_map>
 
-#include <fmod/studio/fmod_studio.hpp>
-#include <fmod/core/fmod.hpp>
-#include <fmod/core/fmod_errors.h>
+#include <fmod_studio.hpp>
+#include <fmod.hpp>
+#include <fmod_errors.h>
 
 #include <EventManager/EventManager.h>
 #include <EventManager/Event.h>

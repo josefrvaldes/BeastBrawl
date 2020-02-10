@@ -25,7 +25,7 @@ else
 	LIBS 	    += -L./lib/linux/irrlicht -lIrrlicht -Wl,-rpath=lib/linux/irrlicht
 	LIBS 	    += -L./lib/linux/fmod -lfmod -lfmodstudio -Wl,-rpath=lib/linux/fmod
 	LIBS 	    += -L./lib/linux/glew -lGLEW -lGL -Wl,-rpath=lib/linux/glew
-	INCLUDE     := -I./include -I./src
+	INCLUDE     := -I./include -I./src -I./include/fmod/core -I./include/fmod/studio
 	CREATE_SYMLINKS := bash symlinks.sh
 	CC			:= g++
 endif
