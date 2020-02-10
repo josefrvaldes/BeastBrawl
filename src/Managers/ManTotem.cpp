@@ -125,4 +125,21 @@ void ManTotem::SubscribeToEvents() {
         EventType::DROP_TOTEM,
         bind(&ManTotem::ResetTotem, this, placeholders::_1),
         "ResetTotem"));
+    
+    EventManager::GetInstance().SubscribeMulti(Listener(
+        EventType::NEW_SYNC_RECEIVED_TOTEM,
+        bind(&ManTotem::SyncTotem, this, placeholders::_1),
+        "SyncTotem"));
+}
+
+
+void ManTotem::SyncTotem(DataMap* d){
+    if(any_cast<bool>((*d)[CAR_WITHOUT_TOTEM])){
+        // Esto puede generar un problema al estar las posiciones modificandose respecto a la del otro
+        // auto cTransTotem = static_cast<CTransformable*>(GetEntities()[0]->GetComponent(CompType::TransformableComp).get());
+        // cTransTotem->position = any_cast<glm::vec3>((*d)[VEC3_POS]);
+    }else{
+        // aqui no deberia haber totem, comprobar si hay totem y eliminarlo en caso de que exista
+    }
+
 }

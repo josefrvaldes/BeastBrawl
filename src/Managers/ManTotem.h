@@ -32,5 +32,6 @@ class ManTotem : public Manager{
     //vector<shared_ptr<Totem>> totems;
     void AppertainCar(DataMap* d);
     void ResetTotem(DataMap* d);
+    void SyncTotem(DataMap* d);
     void SubscribeToEvents();
 };

@@ -10,8 +10,8 @@ using namespace boost;
 using namespace std;
 using namespace std::chrono;
 
-#define PORT_UDP 1234
-#define PORT_TCP 1235
+#define PORT_UDP 443
+#define PORT_TCP 80
 
 int main(int argc, char* argv[]) {
     try {

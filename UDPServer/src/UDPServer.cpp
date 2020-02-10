@@ -63,9 +63,11 @@ void UDPServer::HandleReceive(std::shared_ptr<unsigned char[]> recevBuff, std::s
             } break;
 
             case Constants::PetitionTypes::SEND_INPUTS: {
+                std::cout << "Recibidos inputs: " << bytesTransferred << std::endl;
                 HandleReceivedInputs(buffRecieved, bytesTransferred, *remoteClient.get());
             } break;
             case Constants::PetitionTypes::SEND_SYNC:  //Sync
+                std::cout << "Recibida sincronizacion: " << bytesTransferred << std::endl;
                 HandleReceivedSync(buffRecieved, bytesTransferred, *remoteClient.get());
                 break;
 
@@ -121,6 +123,8 @@ void UDPServer::HandleSentBytes(const boost::system::error_code& errorCode, std:
     if (errorCode) {
         cout << "Hubo un error enviando Bytes. errorcode: " << errorCode << endl;
         // Resend();
+    }else{
+        std::cout << "Se han enviado: " << bytesTransferred << std::endl;
     }
 }
 

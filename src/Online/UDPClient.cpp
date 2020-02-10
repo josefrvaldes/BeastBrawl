@@ -69,7 +69,8 @@ void UDPClient::HandleReceived(std::shared_ptr<unsigned char[]> recevBuff, const
                 uint16_t idRival;
                 Utils::Deserialize(&idRival, recevBuff.get(), currentIndex);
                 const vector<Constants::InputTypes> inputs = Utils::DeserializeInputs(recevBuff.get(), currentIndex);
-
+                
+                std::cout << "Recibido inputs: " << bytesTransferred << " bytes" << std::endl; 
                 HandleReceivedInputs(inputs, idRival);
             } break;
 
@@ -135,8 +136,11 @@ void UDPClient::HandleReceivedSync(unsigned char* recevBuff, size_t bytesTransfe
 
     if(totemInGround){
         posTotem = Utils::DeserializeVec3(recevBuff, currentIndex);
-        // To-Do: realizar llamadas al event Manager de manTotem
     }
+    std::shared_ptr<DataMap> data2 = make_shared<DataMap>();
+    (*data2)[DataType::CAR_WITHOUT_TOTEM] = totemInGround;
+    (*data2)[DataType::VEC3_POS] = posTotem;
+    EventManager::GetInstance().AddEventMulti(Event{EventType::NEW_SYNC_RECEIVED_TOTEM, data2});
     //std::cout << "RECIBIDO -------------------------------" << std::endl; 
     //std::cout << "Id: " << idCarOnline << std::endl; 
     //std::cout << "Pos coche: " << posCar.x << " , " << posCar.z << std::endl; 
@@ -145,6 +149,7 @@ void UDPClient::HandleReceivedSync(unsigned char* recevBuff, size_t bytesTransfe
     //std::cout << "Totem en suelo: " << totemInGround << std::endl; 
     //std::cout << "Pos totem: " << posTotem.x << " , " << posTotem.z << std::endl;
     //std::cout << "----------------------------------------" << std::endl;
+    std::cout << "Recibido sincronizacion: " << bytesTransferred << " bytes" << std::endl; 
 }
 
 
@@ -187,6 +192,8 @@ void UDPClient::HandleSentInputs(const boost::system::error_code& errorCode, std
     if (errorCode) {
         cout << "Hubo un error enviando los inputs, madafaka" << endl;
         // ResendInput();
+    }else{
+        std::cout << "Enviados Inputs: " << bytes_transferred << " bytes" << std::endl; 
     }
 }
 
@@ -219,6 +226,8 @@ void UDPClient::SendSync(uint16_t idOnline, const glm::vec3 &posCar, const glm::
 void UDPClient::HandleSentSync(const boost::system::error_code& errorCode, std::size_t bytes_transferred) {
     if (errorCode) {
         cout << "Hubo un error enviando la sincronizacion" << endl;
+    }else{
+        std::cout << "Enviado sincronizacion: " << bytes_transferred << " bytes" << std::endl; 
     }
 }
 

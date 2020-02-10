@@ -70,14 +70,14 @@ void StateInGameMulti::Input() {
 
     time_point<system_clock> now = system_clock::now();
     auto millisSinceLastInputSent = duration_cast<milliseconds>(now - lastTimeSentInputs).count();
-    if (millisSinceLastInputSent > 66) {  // 100 = 10fps; 66 = 15fps
+    if (millisSinceLastInputSent > 66) {  // 100 = 10fps; 66 = 15fps   1000 = 60fps
         lastTimeSentInputs = now;
         sysOnline->SendInputs(inputs);
     }
 
 
     auto millisSinceLastSyncSent = duration_cast<milliseconds>(now - lastTimeSentSync).count();
-    if (millisSinceLastSyncSent > 2000) {  // 1000ms = 1s = 60fps; 2s = 120frames
+    if (millisSinceLastSyncSent > 500) {  // 1000ms = 1s = 60fps; 2s = 120frames
         lastTimeSentSync = now;       
         sysOnline->SendSync(manCars.get(), manTotems.get());
     }
@@ -86,7 +86,7 @@ void StateInGameMulti::Input() {
 void StateInGameMulti::Update() {
     StateInGame::Update();
 
-    CAMBIARCosasDeTotemUpdate();
+    
 
     for (auto actualCar : manCars->GetEntities()) {
         if (actualCar.get() != manCars->GetCar().get()) {
@@ -97,6 +97,7 @@ void StateInGameMulti::Update() {
         }
     }
 
+    CAMBIARCosasDeTotemUpdate();
     // COLISIONES entre powerUp y cocheHuman
     collisions->IntersectsCarsPowerUps(manCars.get(), manPowerUps.get(), manNavMesh.get());
     // COLISIONES entre BoxPowerUp y cocheHuman
