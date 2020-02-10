@@ -8,6 +8,10 @@ CLResourceManager::CLResourceManager() {
     //shaders = new std::vector<CLResourceShader*>();
 }
 
+CLResourceManager::~CLResourceManager() {
+    
+}
+
 CLResourceMesh* CLResourceManager::GetResourceMesh(const std::string file) {
     shared_ptr<CLResourceMesh> resource = nullptr;
     bool search = true;

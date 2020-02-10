@@ -89,10 +89,13 @@ int main() {
 
         //smgr->DrawTree(smgr.get());
 
+        node2->SetTranslation(glm::vec3(0.5f, 0.0f, 0.0f));
+        node4->SetScalation(glm::vec3(1.0f,1.0f, 1.5f));
         node5->SetScalation(glm::vec3(1.5f,1.0f,1.0f));
         node5->SetRotation(glm::vec3(20.0f,30.0f,0.0f));
+        node3->SetRotation(glm::vec3(0.0f, 0.0f, 90.0f));
 
-        smgr->DFSTree(glm::mat4(1.0));
+        smgr->DFSTree(glm::mat4(1.0f));
 
 
     //-------------------Resource manager-------------------
