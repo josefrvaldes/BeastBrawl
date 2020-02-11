@@ -41,11 +41,11 @@ IntersectData CBoundingPlane::IntersectSphere(const CBoundingSphere &other, cons
         //cout << "------------------------------------------------------------------------------------------" << endl;
         //vec3 vecDirCar = vec3(trCar.position.x-ccarCar.previousPos.x, trCar.position.y-ccarCar.previousPos.y, trCar.position.z-ccarCar.previousPos.z);
         
-        vec3 vecDirCar = CalculateVecDirCar(trCar);
-
-        double angle = Angle2Vectors(vecDirCar,normal);
-        //cout << " DEBERIA DE SER '122' YYYYY EEEEES:  " << angle << endl;
-        if(angle > 90 /*&& trCar.position != ccarCar.previousPos*/){
+        //vec3 vecDirCar = CalculateVecDirCar(trCar);
+//
+        //double angle = Angle2Vectors(vecDirCar,normal);
+        ////cout << " DEBERIA DE SER '122' YYYYY EEEEES:  " << angle << endl;
+        //if(angle > 90 /*&& trCar.position != ccarCar.previousPos*/){
             
             vec3 pointM = vec3(0.0,0.0,0.0);
             vec3 pointN = vec3(0.0,0.0,0.0);
@@ -70,9 +70,9 @@ IntersectData CBoundingPlane::IntersectSphere(const CBoundingSphere &other, cons
             }
             */
 
-        }else{
-            return IntersectData(false, normalizedNormal * distanceFromSphere);     
-        }
+        //}else{
+        //    return IntersectData(false, normalizedNormal * distanceFromSphere);     
+        //}
 
     }
     //std::cout << "estamos dentro del plano beibe, todo normal " << std::endl;

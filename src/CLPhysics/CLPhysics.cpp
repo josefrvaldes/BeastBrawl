@@ -199,8 +199,8 @@ void CLPhysics::PositionSphereIntoTransformable(CTransformable &tr, CBoundingSph
 
 void CLPhysics::PositionSphBehindIntoTransf(CTransformable &tr, CBoundingSphere &sp) const{
     sp.center = tr.position;
-    float x = -cos(Utils::DegToRad(tr.rotation.y)) * (sp.radius-1);
-    float z = sin(Utils::DegToRad(tr.rotation.y)) * (sp.radius-1);
+    float x = -cos(Utils::DegToRad(tr.rotation.y)) * (sp.radius-10);
+    float z = sin(Utils::DegToRad(tr.rotation.y)) * (sp.radius-10);
     sp.center.x += x;
     sp.center.z += z;
     // Necesitamos tambien actualizar el CILINDRO
