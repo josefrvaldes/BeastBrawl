@@ -11,6 +11,7 @@ class Entity;
 class CTransformable;
 class CBoundingSphere;
 class CBoundingPlane;
+class CBoundingChassis;
 class CBoundingOBB;
 class CExternalForce;
 class IntersectData;
@@ -38,17 +39,20 @@ class CLPhysics {
    protected:
    private:
     bool HandleCollisions(CTransformable &trCar1, CBoundingSphere &spCar1, CCar &ccar1, bool mainCar, CTransformable &trCar2, CBoundingSphere &spCar2, CCar &ccar2, CExternalForce &cExtForc1, CExternalForce &cExtForc2);
+    void HandleCollisions(CTransformable &trCar1, CBoundingSphere &spCar1, CCar &ccar1, bool mainCar, CBoundingPlane &plane);
     bool CollisionsBehindBehind(CTransformable &trCar1, CBoundingSphere &spCar1, CCar &ccar1, bool mainCar, CTransformable &trCar2, CBoundingSphere &spCar2, CCar &ccar2, CExternalForce &cExtForc1, CExternalForce &cExtForc2);
     bool CollisionsBehindFront(CTransformable &trCar1, CBoundingSphere &spCar1, CCar &ccar1, bool mainCar, CTransformable &trCar2, CBoundingSphere &spCar2, CCar &ccar2, CExternalForce &cExtForc1, CExternalForce &cExtForc2);
     bool CollisionsFrontBehind(CTransformable &trCar1, CBoundingSphere &spCar1, CCar &ccar1, bool mainCar, CTransformable &trCar2, CBoundingSphere &spCar2, CCar &ccar2, CExternalForce &cExtForc1, CExternalForce &cExtForc2);
     bool CollisionsFrontFront(CTransformable &trCar1, CBoundingSphere &spCar1, CCar &ccar1, bool mainCar, CTransformable &trCar2, CBoundingSphere &spCar2, CCar &ccar2, CExternalForce &cExtForc1, CExternalForce &cExtForc2);
-
-    void HandleCollisions(CTransformable &trCar1, CBoundingSphere &spCar1, CCar &ccar1, bool mainCar, CBoundingPlane &plane);
+    bool CollisionsSphereSphere(CTransformable &trCar1, CBoundingChassis &chaCar1, CCar &ccar1, bool mainCar, CTransformable &trCar2, CBoundingChassis &chaCar2, CCar &ccar2, CExternalForce &cExtForc1, CExternalForce &cExtForc2);
+    bool CollisionsCilindreSphere(CTransformable &trCar1, CCar &ccar1, CBoundingChassis &cChaCar1, CTransformable &trCar2, CCar &ccar2, CBoundingChassis &cChaCar2);
     void HandleCollisions(CTransformable &trCar, CBoundingSphere &spCar, CCar &ccarCar, bool mainCar, CBoundingOBB &obb, CExternalForce &cExternalForce);
     void PositionSphereIntoTransformable(CTransformable &tr, CBoundingSphere &sp);
     void PositionSphBehindIntoTransf(CTransformable &tr, CBoundingSphere &sp) const;
     void PositionSphFrontIntoTransf(CTransformable &tr, CBoundingSphere &sp) const;
-    void SeparateSpheres(CTransformable &trCar1, CBoundingSphere &spCar1, CCar &ccarCar1, CTransformable &trCar2, CBoundingSphere &spCar2, CCar &ccarCar2);
+    void PositionCilindreIntoSpheres(CBoundingChassis &chassis) const;
+    void SeparateSpheres(CTransformable &trCar1, CBoundingSphere &spCar1, CCar &ccarCar1, CTransformable &trCar2, CBoundingSphere &spCar2, CCar &ccarCar2) const;
+    void SeparateCilindreSphere(CTransformable &trCar1, glm::vec3 &cenCar1, const float &radCar1, CCar &ccarCar1, CTransformable &trCar2, glm::vec3 &cenCar2, const float &radCar2, CCar &ccarCar2) const;
     void SeparateSphereFromPlane(IntersectData &intersData, CTransformable &trCar1, CBoundingSphere &spCar1, CCar &ccarCar1, CBoundingPlane &plane) const;
     void ReflectCollision(CTransformable &trCar1, CCar &cCar1, CTransformable &trCar2, CCar &cCar2);
     void ReflectSpherePlane(CTransformable &trCar, CCar &cCar1, CBoundingPlane &plane);
