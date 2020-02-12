@@ -7,14 +7,11 @@
 #include <string>
 #include <vector>
 #include <memory>
-#include "TransientFunction.h"
 #include "Lambda.h"
-#include "../Aliases.h"
-// #include <any>
-// #include <string>
-#include "../Entities/Entity.h"
-#include "../Components/CTransformable.h"
-#include "../Components/CPowerUp.h"
+#include <Aliases.h>
+#include <Entities/Entity.h>
+#include <Components/CTransformable.h>
+#include <Components/CPowerUp.h>
 
 using namespace std;
 
@@ -49,6 +46,7 @@ enum EventType {
     DROP_TOTEM,
     THROW_POWERUP,
     THROW_POWERUP_AI,
+    THROW_POWERUP_HUMAN,
     MOVE_TO_POWERUP,
     CHANGE_DESTINATION,
     PRESS_P,
@@ -71,7 +69,12 @@ enum EventType {
     STATE_ENDRACE,
     STATE_INGAMESINGLE,
     STATE_INGAMEMULTI,
-    CALCULATE_PATH_TO_NAVMESH
+    STATE_LOBBYMULTI,
+    CALCULATE_PATH_TO_NAVMESH,
+    NEW_TCP_START_MULTI,
+    NEW_INPUTS_RECEIVED,
+    NEW_SYNC_RECEIVED_CAR,
+    NEW_SYNC_RECEIVED_TOTEM
 };
 
 // enum DataType{

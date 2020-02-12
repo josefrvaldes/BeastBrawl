@@ -1,9 +1,10 @@
 #pragma once
 
-#include "CLEntity.h"
 #include <vector>
 #include <iostream>
-#include "../../../include/glm/glm.hpp"
+#include <glm/glm.hpp>
+
+#include "CLEntity.h"
 
 using namespace std;
 //using namespace CLE;
@@ -29,10 +30,10 @@ class CLNode{
         //Setters
         bool SetEntity(CLEntity* e)                    { entity = e; return true; }
         bool SetFather(CLNode* f)                    { father = f; return true; }
-        void SetTranslation(glm::vec3& trans)           { translation = trans; }
-        void SetRotation(glm::vec3& rot)                { rotation = rot; }
-        void SetScalation(glm::vec3& scale)             { scalation = scale; }
-        void SetTransformationMat(glm::mat4& transfMat) { transformationMat = transfMat; }
+        void SetTranslation(glm::vec3 trans)           { translation = trans; changed = true; }
+        void SetRotation(glm::vec3 rot)                { rotation = rot; changed = true; }
+        void SetScalation(glm::vec3 scale)             { scalation = scale; changed = true; }
+        void SetTransformationMat(glm::mat4 transfMat) { transformationMat = transfMat; }
 
         //Methods
         bool AddChild(CLNode* child);
@@ -41,13 +42,18 @@ class CLNode{
         CLNode* GetNodeByID(unsigned int id);
         void DeleteNode(unsigned int id);
         void DeleteNode(CLNode* node);
-        void Translate(const glm::vec3 translationVec);
-        void Rotate(const glm::vec3 rotationVec, const float g);
-        void Scale(const glm::vec3 scaleVec);
+        glm::mat4 Translate();
+        glm::mat4 Rotate();
+        glm::mat4 Scale();
+        glm::mat4 CalculateTransformationMatrix();
 
         void DrawTree(CLNode* root);
+        void DFSTree(glm::mat4);
 
     private:
+
+        bool changed { true };
+
         CLEntity* entity {nullptr};
         CLNode* father {nullptr};
         vector<CLNode*> childs;

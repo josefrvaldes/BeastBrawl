@@ -1,7 +1,7 @@
 #pragma once
 
 #include "State/State.h"
-#include <src/Aliases.h>
+#include <Aliases.h>
 
 #include <iostream>
 #include <memory>
@@ -28,6 +28,9 @@ class Game{
         void SetStateInGameSingle(DataMap* d);
         void SetStateInGameMulti(DataMap* d);
         void SetStateEndRace(DataMap* d);
+        void SetStateLobbyMulti(DataMap* d);
+        
+    
 
 
 
@@ -41,5 +44,6 @@ class Game{
         shared_ptr<State> lastState;
 
         bool gameStarted = false;
+        bool gameMarkedToDelete {false};
 };
 

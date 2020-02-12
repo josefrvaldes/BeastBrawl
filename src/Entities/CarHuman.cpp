@@ -1,24 +1,25 @@
 #include "CarHuman.h"
 
 #include <iostream>
-#include "../Components/CBoundingSphere.h"
-#include "../Components/CBoundingRay.h"
-#include "../Components/CCar.h"
-#include "../Components/CId.h"
-#include "../Components/CMesh.h"
-#include "../Components/CNitro.h"
-#include "../Components/CPowerUp.h"
-#include "../Components/CRoboJorobo.h"
-#include "../Components/CShield.h"
-#include "../Components/CTexture.h"
-#include "../Components/CTotem.h"
-#include "../Components/CTransformable.h"
-#include "../Components/CType.h"
-#include "../Components/CSpeed.h"
-#include "../Components/CColliding.h"
-#include "../Components/CRoboJorobo.h"
-#include "../Components/CNitro.h"
-#include "../Components/CCurrentNavMesh.h"
+#include <Components/CBoundingSphere.h>
+#include <Components/CBoundingRay.h>
+#include <Components/CCar.h>
+#include <Components/CId.h>
+#include <Components/CMesh.h>
+#include <Components/CNitro.h>
+#include <Components/CPowerUp.h>
+#include <Components/CRoboJorobo.h>
+#include <Components/CShield.h>
+#include <Components/CTexture.h>
+#include <Components/CTotem.h>
+#include <Components/CTransformable.h>
+#include <Components/CType.h>
+#include <Components/CSpeed.h>
+#include <Components/CColliding.h>
+#include <Components/CRoboJorobo.h>
+#include <Components/CNitro.h>
+#include <Components/CCurrentNavMesh.h>
+#include "../Components/COnline.h"
 
 class Position;
 
@@ -48,6 +49,8 @@ CarHuman::CarHuman() {
     shared_ptr<CRoboJorobo> cRoboJorobo = make_shared<CRoboJorobo>();
     shared_ptr<CTotem> cTotem = make_shared<CTotem>();
     shared_ptr<CCurrentNavMesh> cCurrentNavMesh = make_shared<CCurrentNavMesh>(0);  //  ponemos 0 por defecto ya que haremos el calculo al empezar la partida
+    shared_ptr<COnline> cOnline = make_shared<COnline>();  //  ponemos 0 por defecto ya que haremos el calculo al empezar la partida
+
 
     // physics
     shared_ptr<CColliding> cColliding = make_shared<CColliding>(false);
@@ -71,6 +74,7 @@ CarHuman::CarHuman() {
     AddComponent(cColliding);
     AddComponent(cSpeed);
     AddComponent(cCurrentNavMesh);
+    AddComponent(cOnline);
     cout << "Acabamos de llamar al constructor default de car, su transformable es " << cTransformable << endl;
 }
 

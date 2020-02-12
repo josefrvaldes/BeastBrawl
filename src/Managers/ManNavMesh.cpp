@@ -1,11 +1,12 @@
-#include "./ManNavMesh.h"
+#include "ManNavMesh.h"
+#include "ManTotem.h"
+
 #include <iostream>
-#include "../Entities/NavMesh.h"
-#include "../Managers/ManTotem.h"
-#include "../Components/CDimensions.h"
-#include "../Components/CCurrentNavMesh.h"
-#include "../Components/CNavMesh.h"
-#include "../../include/include_json/include_json.hpp"
+#include <Entities/NavMesh.h>
+#include <Components/CDimensions.h>
+#include <Components/CCurrentNavMesh.h>
+#include <Components/CNavMesh.h>
+#include <include_json/include_json.hpp>
 #include <cmath> 
 
 using namespace std;
@@ -87,7 +88,7 @@ ManNavMesh::ManNavMesh(Entity *carPlayer, ManTotem *manTotems) {
         // cogemos el array de wayPoints
         auto wayPointsIdCount = navMeshActual["waypoints"].size();
         std::cout << "EL Navmesh " << idNavMesh << " tiene: " << wayPointsIdCount << " waypoints" << std::endl;
-        for(int k=0; k<wayPointsIdCount; k++){
+        for(size_t k=0; k<wayPointsIdCount; k++){
             int wayPointIdActual = navMeshActual["waypoints"][k].get<int>();
             waypointsId.push_back(wayPointIdActual);
             std::cout << "meteneos waypoint con ID: " << wayPointIdActual << std::endl;
@@ -125,11 +126,11 @@ void ManNavMesh::CreateNavMesh(glm::vec3 pos, glm::vec3 rot, float width, float 
 
 void ManNavMesh::SubscribeToEvents() {
 
-    EventManager::GetInstance().SuscribeMulti(Listener(
+    EventManager::GetInstance().SubscribeMulti(Listener(
         EventType::ACTUALIZE_NAVMESH_TOTEM,
         bind(&ManNavMesh::ActualizeNavMeshTotem, this, placeholders::_1),
         "ActualizeNavMeshTotem"));
-    EventManager::GetInstance().SuscribeMulti(Listener(
+    EventManager::GetInstance().SubscribeMulti(Listener(
         EventType::ACTUALIZE_NAVMESH_CARAI,
         bind(&ManNavMesh::ActualizeNavMeshCarAI, this, placeholders::_1),
         "ActualizeNavMeshCarAI"));

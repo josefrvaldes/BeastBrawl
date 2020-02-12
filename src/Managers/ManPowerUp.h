@@ -1,13 +1,13 @@
 #pragma once
 
+#include "Manager.h"
+
 #include <iostream>
 #include <map>
 #include <memory>
 #include <vector>
-#include "Manager.h"
-#include "../Aliases.h"
-#include "Manager.h"
-#include "../../include/glm/vec3.hpp"
+#include <Aliases.h>
+#include <glm/vec3.hpp>
 
 class PowerUp;
 class Data;

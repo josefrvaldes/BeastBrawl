@@ -1,7 +1,7 @@
 #pragma once
 
 #include <memory>
-#include "../fuzzyLogic/fuzzyLogic.h"
+#include <fuzzyLogic/fuzzyLogic.h>
 
 class CarAI;
 class FuzzyLogic;

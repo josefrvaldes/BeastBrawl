@@ -1,9 +1,9 @@
 #pragma once
 
-#include "../../include/glm/vec3.hpp"
-#include "../Components/CTransformable.h"
-
 #include "Component.h"
+#include "CTransformable.h"
+
+#include <glm/vec3.hpp>
 #include <string>
 #include <iostream>
 

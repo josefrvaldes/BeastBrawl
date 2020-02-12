@@ -1,11 +1,11 @@
 #include "NavMesh.h"
-#include "../Components/CId.h"
-#include "../Components/CType.h"
-#include "../Components/CTexture.h"
-#include "../Components/CMesh.h"
-#include "../Components/CTransformable.h"
-#include "../Components/CNavMesh.h"
-#include "../Components/CDimensions.h"
+#include <Components/CId.h>
+#include <Components/CType.h>
+#include <Components/CTexture.h>
+#include <Components/CMesh.h>
+#include <Components/CTransformable.h>
+#include <Components/CNavMesh.h>
+#include <Components/CDimensions.h>
 
 #include <iostream>
 
@@ -13,7 +13,7 @@ class Position;
 using namespace std;
 
 
-NavMesh::NavMesh(glm::vec3 pos, glm::vec3 rot, float width, float height, float depth, vector<int> waypoints) 
+NavMesh::NavMesh(glm::vec3 pos, glm::vec3 rot, float width, float height, float depth, const vector<int>& waypoints)
 {
     string texture = "spheremap.jpg";
     string mesh    = "media/ninja.b3d";

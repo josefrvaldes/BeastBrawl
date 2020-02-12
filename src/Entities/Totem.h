@@ -1,9 +1,9 @@
 #pragma once
 
 #include "Entity.h"
-#include "../../include/glm/vec3.hpp"
-#include "../Components/CPowerUp.h"
-#include "../Managers/Manager.h"
+#include <glm/vec3.hpp>
+#include <Components/CPowerUp.h>
+#include <Managers/Manager.h>
 #include <iostream>
 #include <map>
 

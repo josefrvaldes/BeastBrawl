@@ -7,7 +7,7 @@ JUMP_LINE		   := @echo
 
 
 ifdef DEBUG
-	CXXFLAGS += -g
+	CXXFLAGS := -g
 else
 	CXXFLAGS += -O3
 endif
@@ -16,12 +16,10 @@ ifdef WINDOWS
 	INCLUDE     := -I. 
 	CC			:= g++
 else
-	LIBS 	    	+= -L./lib/linux/glfw -lglfw3 -lGL -lX11 -lpthread -lXrandr -lXi -ldl -L./lib/linux/glew -lGLEW -L./lib/linux/assimp -lassimp
-	LIBS			+= -Wl,-rpath=lib/linux/glfw -Wl,-rpath=lib/linux/glew -Wl,-rpath=lib/linux/assimp
-	INCLUDE     	:= -I.
-	INCLUDE_GLEW 	:= -I./include/glew
-	INCLUDE_GLFW 	:= -I./include/glfw
-	INCLUDE_ASSIMP 	:= -I./include/assimp
+	LIBS 	    	+= -L./lib/linux/glfw -lglfw3 -lGL -lX11 -lpthread -lXrandr -lXi -ldl -Wl,-rpath=lib/linux/glfw
+	LIBS 	    	+= -L./lib/linux/glew -lGLEW -Wl,-rpath=lib/linux/glew
+	LIBS 	    	+= -L./lib/linux/assimp -lassimp -Wl,-rpath=lib/linux/assimp
+	INCLUDE     	:= -I./include -I../include
 	CC			:= g++
 endif
 
@@ -30,7 +28,7 @@ OBJ_PATH    := ../obj/CLEngine
 SRC_PATH	:= src
 
 NAME_EXE	:= CLEngine
-CXXFLAGS 	+= -Wall -Wno-unknown-pragmas -std=c++17  # el no-unknown-pragmas es para que no salga el warning de los pragma region
+CXXFLAGS 	+= -Wall -Wno-unknown-pragmas  -std=c++17  # el no-unknown-pragmas es para que no salga el warning de los pragma region
 
 ALLCPPS		:= $(shell find src/ -type f -iname *.cpp)
 ALLCPPSOBJ	:= $(patsubst $(SRC_PATH)/%.cpp,$(OBJ_PATH)/%.o,$(ALLCPPS))
@@ -59,7 +57,7 @@ $(NAME_EXE): $(OBJSUBDIRS) $(ALLCPPSOBJ)
 $(OBJ_PATH)/%.o: $(SRC_PATH)/%.cpp
 	$(PRUEBA_TEXT)
 	$(COMPILING_TEXT) $<
-	$(CC) $(CXXFLAGS) -o $@ -c $^ $(INCLUDE) 
+	@$(CC) $(CXXFLAGS) -o $@ -c $^ $(INCLUDE)
 	
 
 $(OBJSUBDIRS):

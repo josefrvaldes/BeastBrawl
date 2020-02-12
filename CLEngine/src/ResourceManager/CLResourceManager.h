@@ -5,7 +5,7 @@
 #include <memory>
 #include <iostream>
 
-#include "../../include/glew/glew.h"
+#include <glew/glew.h>
 
 #include "CLResourceMesh.h"
 #include "CLResourceShader.h"
@@ -16,7 +16,7 @@ namespace CLE {
     class CLResourceManager {
         public:
             CLResourceManager();
-            ~CLResourceManager(){};
+            ~CLResourceManager();
 
             CLResourceMesh* GetResourceMesh(const std::string);
             CLResourceShader* GetResourceShader(const std::string, GLenum type);

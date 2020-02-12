@@ -1,21 +1,21 @@
 #pragma once
 
-#include "../Components/CType.h"
-#include "../Components/CId.h"
-#include "../Components/CTransformable.h"
-#include "../Components/CCamera.h"
-#include "../Components/Component.h"
-#include "../Components/CCar.h"
-#include "../Components/CDimensions.h"
-#include "../Components/CPowerUp.h"
+#include <Components/CType.h>
+#include <Components/CId.h>
+#include <Components/CTransformable.h>
+#include <Components/CCamera.h>
+#include <Components/Component.h>
+#include <Components/CCar.h>
+#include <Components/CDimensions.h>
+#include <Components/CPowerUp.h>
 
-#include "../Managers/ManCar.h"
-#include "../Managers/ManPowerUp.h"
-#include "../Managers/ManBoxPowerUp.h"
-#include "../Managers/ManTotem.h"
-#include "../Managers/ManNavMesh.h"
+#include <Managers/ManCar.h>
+#include <Managers/ManPowerUp.h>
+#include <Managers/ManBoxPowerUp.h>
+#include <Managers/ManTotem.h>
+#include <Managers/ManNavMesh.h>
 
-#include "../Entities/Entity.h"
+#include <Entities/Entity.h>
 #include <math.h>
 #include <memory>
 #include <vector>

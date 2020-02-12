@@ -1,15 +1,15 @@
 #include "SystemBtMoveTo.h"
 
 
-#include "../behaviourTree/behaviourTree.h"
-#include "../behaviourTree/selector.h"
-#include "../behaviourTree/sequence.h"
-#include "../behaviourTree/decorator.h"
+#include <behaviourTree/behaviourTree.h>
+#include <behaviourTree/selector.h>
+#include <behaviourTree/sequence.h>
+#include <behaviourTree/decorator.h>
 
-#include "../behaviourTree/Blackboard.h"
-#include "../Components/CTotem.h"
-#include "../Components/CCurrentNavMesh.h"
-#include "../Components/CTargetNavMesh.h"
+#include <behaviourTree/Blackboard.h>
+#include <Components/CTotem.h>
+#include <Components/CCurrentNavMesh.h>
+#include <Components/CTargetNavMesh.h>
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

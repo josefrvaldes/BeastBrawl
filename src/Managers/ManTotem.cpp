@@ -1,9 +1,10 @@
 #include "ManTotem.h"
-#include "../Entities/Totem.h"
-#include "../Facade/Render/RenderFacadeManager.h"
-#include "../Components/CDimensions.h"
-#include "../Components/CCurrentNavMesh.h"
-#include "../../include/include_json/include_json.hpp"
+
+#include <Entities/Totem.h>
+#include <Facade/Render/RenderFacadeManager.h>
+#include <Components/CDimensions.h>
+#include <Components/CCurrentNavMesh.h>
+#include <include_json/include_json.hpp>
 
 class Position;
 using namespace std;
@@ -109,16 +110,33 @@ void ManTotem::ResetTotem(DataMap* d){
 
 
 void ManTotem::SubscribeToEvents() {
-    EventManager::GetInstance().SuscribeMulti(Listener(
+    EventManager::GetInstance().SubscribeMulti(Listener(
         EventType::COLLISION_PLAYER_TOTEM,
         bind(&ManTotem::AppertainCar, this, placeholders::_1),
         "AppertainCar"));
-    EventManager::GetInstance().SuscribeMulti(Listener(
+    EventManager::GetInstance().SubscribeMulti(Listener(
         EventType::COLLISION_AI_TOTEM,
         bind(&ManTotem::AppertainCar, this, placeholders::_1),
         "AppertainCar"));
-    EventManager::GetInstance().SuscribeMulti(Listener(
+    EventManager::GetInstance().SubscribeMulti(Listener(
         EventType::DROP_TOTEM,
         bind(&ManTotem::ResetTotem, this, placeholders::_1),
         "ResetTotem"));
+    
+    EventManager::GetInstance().SubscribeMulti(Listener(
+        EventType::NEW_SYNC_RECEIVED_TOTEM,
+        bind(&ManTotem::SyncTotem, this, placeholders::_1),
+        "SyncTotem"));
+}
+
+
+void ManTotem::SyncTotem(DataMap* d){
+    if(any_cast<bool>((*d)[CAR_WITHOUT_TOTEM])){
+        // Esto puede generar un problema al estar las posiciones modificandose respecto a la del otro
+        // auto cTransTotem = static_cast<CTransformable*>(GetEntities()[0]->GetComponent(CompType::TransformableComp).get());
+        // cTransTotem->position = any_cast<glm::vec3>((*d)[VEC3_POS]);
+    }else{
+        // aqui no deberia haber totem, comprobar si hay totem y eliminarlo en caso de que exista
+    }
+
 }

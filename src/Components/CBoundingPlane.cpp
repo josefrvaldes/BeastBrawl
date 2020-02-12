@@ -1,8 +1,9 @@
 #include "CBoundingPlane.h"
-#include <math.h>
-#include <iostream>
 #include "CBoundingSphere.h"
-#include <math.h>
+
+#include <cmath>
+#include <iostream>
+
 
 #include <limits>
 typedef std::numeric_limits< double > dbl;

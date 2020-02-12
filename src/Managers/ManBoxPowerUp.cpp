@@ -1,8 +1,10 @@
-#include "./ManBoxPowerUp.h"
+#include "ManBoxPowerUp.h"
+
 //#include <functional> 
-#include <iostream>
-#include "../Entities/BoxPowerUp.h"
-#include "../../include/include_json/include_json.hpp"
+#include <cstring>
+#include <sstream>
+#include <Entities/BoxPowerUp.h>
+#include <include_json/include_json.hpp>
 
 class Position;
 using json = nlohmann::json;
@@ -14,8 +16,12 @@ ManBoxPowerUp::ManBoxPowerUp() {
     //Leemos y añadimos los WayPoints
     float x=0,y=0,z=0; //Vec3
 
-    ifstream i("data.json");
-    json j = json::parse(i);
+    std::ifstream i("data.json");
+    std::stringstream buffer;
+    buffer << i.rdbuf();
+    string jsonString = buffer.str();
+    json j = json::parse(jsonString);
+    i.close();
 
     int waypointsCount = j["WAYPOINTS"].size();
     //std::cout << "EL NUMERO DE WAYPOINTS EN EL JSON ES: " << waypointsCount << std::endl;
@@ -77,17 +83,17 @@ void ManBoxPowerUp::EjecutarMeHanCogido(DataMap* d) {
 
 
 void ManBoxPowerUp::SubscribeToEvents() {
-    EventManager::GetInstance().SuscribeMulti(Listener(
+    EventManager::GetInstance().SubscribeMulti(Listener(
         EventType::CATCH_BOX_POWERUP,
         bind(&ManBoxPowerUp::EjecutarMeHanCogido, this, placeholders::_1),
         "EjecutarMeHanCogido"));
     
-    EventManager::GetInstance().SuscribeMulti(Listener(
+    EventManager::GetInstance().SubscribeMulti(Listener(
         EventType::CATCH_AI_BOX_POWERUP,
         bind(&ManBoxPowerUp::EjecutarMeHanCogido, this, placeholders::_1),
         "EjecutarMeHanCogido"));
 
-    EventManager::GetInstance().SuscribeMulti(Listener(
+    EventManager::GetInstance().SubscribeMulti(Listener(
         EventType::CATCH_BOX_WITH_POWERUP,
         bind(&ManBoxPowerUp::EjecutarMeHanCogido, this, placeholders::_1),
         "EjecutarMeHanCogido"));

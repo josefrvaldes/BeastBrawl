@@ -1,10 +1,11 @@
-#include "./ManPowerUp.h"
+#include "ManPowerUp.h"
+
 #include <iostream>
-#include "../Entities/PowerUp.h"
-#include "../EventManager/Event.h"
-#include "../EventManager/EventManager.h"
-#include "../Facade/Render/RenderFacadeManager.h"
-#include "../Components/CDimensions.h"
+#include <Entities/PowerUp.h>
+#include <EventManager/Event.h>
+#include <EventManager/EventManager.h>
+#include <Facade/Render/RenderFacadeManager.h>
+#include <Components/CDimensions.h>
 
 class Position;
 using namespace std;
@@ -80,17 +81,17 @@ void ManPowerUp::DeletePowerUp(DataMap* d){
 // TO-DO : tener una variable de control para eliminar todas las cosas de los arrays a la vez CUIDADO CON ESOOOO
 void ManPowerUp::SubscribeToEvents() {
     // lo ejecuta el coche al tirar power up
-    EventManager::GetInstance().SuscribeMulti(Listener(
+    EventManager::GetInstance().SubscribeMulti(Listener(
         EventType::PowerUp_Create,
         bind(&ManPowerUp::CreatePowerUp, this, placeholders::_1),
         "CreatePowerUp"));
 
-    EventManager::GetInstance().SuscribeMulti(Listener(
+    EventManager::GetInstance().SubscribeMulti(Listener(
         EventType::COLLISION_ENTITY_POWERUP,
         bind(&ManPowerUp::DeletePowerUp, this, placeholders::_1),
         "DeletePowerUp"));
     
-    EventManager::GetInstance().SuscribeMulti(Listener(
+    EventManager::GetInstance().SubscribeMulti(Listener(
         EventType::COLLISION_ENTITY_AI_POWERUP,
         bind(&ManPowerUp::DeletePowerUp, this, placeholders::_1),
         "DeletePowerUp"));
