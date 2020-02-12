@@ -12,7 +12,7 @@ using json = nlohmann::json;
 using boost::asio::ip::tcp;
 using namespace std::chrono;
 
-#define MIN_NUM_PLAYERS 2
+#define MIN_NUM_PLAYERS 4
 
 TCPServer::TCPServer(boost::asio::io_context& context_, uint16_t port_)
     : context(context_), acceptor_(context_, tcp::endpoint(tcp::v4(), port_)) {

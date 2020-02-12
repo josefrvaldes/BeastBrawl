@@ -72,7 +72,7 @@ void StateInGameMulti::Input() {
 
 
     auto millisSinceLastSyncSent = duration_cast<milliseconds>(now - lastTimeSentSync).count();
-    if (millisSinceLastSyncSent > 500) {  // 1000ms = 1s = 60fps; 2s = 120frames
+    if (millisSinceLastSyncSent > 250) {  // 1000ms = 1s = 60fps; 2s = 120frames
         lastTimeSentSync = now;       
         sysOnline->SendSync(manCars.get(), manTotems.get());
     }

@@ -281,7 +281,7 @@ void ManCar::NewSyncReceived(DataMap* d) {
                 cTran->position = any_cast<glm::vec3>((*d)[DataType::VEC3_POS]);
                 cTran->rotation = any_cast<glm::vec3>((*d)[DataType::VEC3_ROT]);
                 cPowerUp->typePowerUp = any_cast<typeCPowerUp>((*d)[DataType::TYPE_POWER_UP]);
-                cTotem->active = any_cast<bool>((*d)[DataType::CAR_WITH_TOTEM]);
+                // cTotem->active = any_cast<bool>((*d)[DataType::CAR_WITH_TOTEM]);
                 cTotem->accumulatedTime = any_cast<int64_t>((*d)[DataType::TIME_TOTEM]);
 
                 break;
