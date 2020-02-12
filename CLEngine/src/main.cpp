@@ -53,7 +53,8 @@ void checkInput (GLFWwindow *window, glm::vec3& cameraPos, glm::vec3& cameraFron
         cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
 }
 
-void initialiceImGUI(CLEngine *device) {
+int main() {
+    CLEngine *device = new CLEngine(1280, 720, "Beast Brawl");
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO(); (void)io;
@@ -65,7 +66,6 @@ void initialiceImGUI(CLEngine *device) {
     // Setup Platform/Renderer bindings
     ImGui_ImplGlfw_InitForOpenGL(device->GetWindow(), true);
     ImGui_ImplOpenGL3_Init("#version 450");
-}
 
     // configure global opengl state
     // -----------------------------
