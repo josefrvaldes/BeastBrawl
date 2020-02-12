@@ -1,5 +1,7 @@
 #include "EventManager.h"
 #include <iostream>
+#include <mutex>
+#include <thread>
 
 // const shared_ptr<EventManager> EventManager::instance = make_shared<EventManager>();
 // shared_ptr<EventManager> EventManager::IGetInstance() {
@@ -13,26 +15,28 @@
 EventManager& EventManager::GetInstance() {
     static EventManager instance;
     return instance;
-}   
+}
 
 //Realiza y vacia todos los eventos que estaban añadidos
 //O(n)
 //Acceso: O(1)
 void EventManager::Update() {
+    // std::lock_guard<std::mutex> lock(mutex_events);
 
-    while (!eventList.empty()) {
-        Event e = eventList.front();  //Cojemos el primero en la lista
-        eventList.pop_front();        // Lo sacamos de la lista
+    while (!events.empty()) {
+        mutex_events.lock();
+        Event e = events.front();  //Cojemos el primero en la lista
+        events.pop_front();        // Lo sacamos de la lista
+        mutex_events.unlock();
 
         //std::cout << "Procesando evento con prioridad: " << e.type << std::endl;
 
         //Tratamos el evento
-        auto mapByType = eventListenerMap.find(e.type);
-
-        if (mapByType != eventListenerMap.end()) {
+        auto mapByType = listeners.find(e.type);
+        if (mapByType != listeners.end()) {
             auto eventVector = mapByType->second;  // El vector de listeners del mapa segun el EventType
 
-            for (Listener listener : eventVector) {
+            for (const Listener& listener : eventVector) {
                 listener.callback(e.data.get());
             }
         }
@@ -41,37 +45,36 @@ void EventManager::Update() {
 
 //Añade un evento a la cola de eventos
 // O(n) -> Recorremos la lista iterativamente hasta encontrar el valor directamente superior
-void EventManager::AddEventMulti(Event e) {
+void EventManager::AddEventMulti(const Event& e) {
+    std::lock_guard<std::mutex> lock(mutex_events);
     //FIXME: Descomentar esto para que funcione con cola
     //eventQueue.push(e);
 
-    std::list<Event>::iterator it;
-
     //Si es el primer evento lo añadimos al comienzo
-    if (eventList.size() == 0) {
-        eventList.push_front(e);
+    if (events.empty()) {
+        events.push_front(e);
     } else {
         //TODO: Implementar un algoritmo de busqueda e insercion mas optimo
         //Movemos el iterator hasta posicionarlo antes del siguiente valor mas grande
-        for (it = eventList.begin(); it != eventList.end(); ++it) {
+        std::list<Event>::iterator it;
+        for (it = events.begin(); it != events.end(); ++it) {
             if (e.type <= it->type) {
                 break;
             }
         }
-
-        eventList.insert(it, e);
+        events.insert(it, e);
     }
 }
 
 // Añade un listener al mapa
-void EventManager::SuscribeMulti(const Listener listener) {
+void EventManager::SubscribeMulti(const Listener& listener) {
     //Vamos a ver si tiene ya alguno de este tipo
-    auto iterator = eventListenerMap.find(listener.type);
+    auto iterator = listeners.find(listener.type);
 
     //Si entra es que no habia uno ya creado de ese tipo
-    if (iterator == eventListenerMap.end()) {
+    if (iterator == listeners.end()) {
         ListenerVector listenerVector;
-        iterator = eventListenerMap.insert(std::pair<EventType, ListenerVector>(listener.type, listenerVector)).first;
+        iterator = listeners.insert(std::pair<EventType, ListenerVector>(listener.type, listenerVector)).first;
     }
 
     iterator->second.push_back(listener);
@@ -79,26 +82,16 @@ void EventManager::SuscribeMulti(const Listener listener) {
 }
 
 // Añade un listener al mapa
-void EventManager::Suscribe(const Listener listener) {
-    //Vamos a ver si tiene ya alguno de este tipo
-    auto iterator = eventListenerMap.find(listener.type);
-
-    //Si entra es que no habia uno ya creado de ese tipo
-    if (iterator == eventListenerMap.end()) {
-        ListenerVector listenerVector;
-        iterator = eventListenerMap.insert(std::pair<EventType, ListenerVector>(listener.type, listenerVector)).first;
-    }
-
-    iterator->second.push_back(listener);
-    cout << "Añadido el Listener: " << listener.name << "\n";
+void EventManager::Subscribe(const Listener& listener) {
+    SubscribeMulti(listener);
 }
 
 //TODO: Esto hay que mejorarlo muchisimo pero no controlo aun demasiado tema de punteros e iterators
-void EventManager::UnSuscribeMulti(EventType eType, string listenerName) {
+void EventManager::UnSubscribeMulti(EventType eType, const string& listenerName) {
     ShowSuscribers();
-    auto mapByType = eventListenerMap.find(eType);
+    auto mapByType = listeners.find(eType);
 
-    if (mapByType != eventListenerMap.end()) {
+    if (mapByType != listeners.end()) {
         auto listenerVector = mapByType->second;  // El vector de listeners del mapa segun el EventType
 
         for (uint32_t i = 0; i < listenerVector.size(); ++i) {
@@ -110,24 +103,24 @@ void EventManager::UnSuscribeMulti(EventType eType, string listenerName) {
         }
 
         //TODO: Esto es mucho gasto el borrar todo el vector de listeners y volver a introducirlo
-        eventListenerMap.erase(mapByType);
-        eventListenerMap.insert(pair<EventType, ListenerVector>(eType, listenerVector)).first;
+        listeners.erase(mapByType);
+        listeners.insert(pair<EventType, ListenerVector>(eType, listenerVector)).first;
     }
     ShowSuscribers();
 }
 
 void EventManager::ClearEvents() {
-    eventList.clear();
+    events.clear();
 }
 
 void EventManager::ClearListeners() {
-    eventListenerMap.clear();
+    listeners.clear();
 }
 
 //DEBUG: Recorre y muestra todos los suscriptores
 //Fuente: https://stackoverflow.com/questions/26281979/c-loop-through-map
 void EventManager::ShowSuscribers() {
-    for (auto const& mapByType : eventListenerMap) {
+    for (auto const& mapByType : listeners) {
         std::cout << "Tipo de evento: " << mapByType.first << "\n";
 
         for (auto const& listener : mapByType.second) {

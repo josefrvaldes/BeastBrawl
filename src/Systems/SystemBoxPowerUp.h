@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../Managers/ManBoxPowerUp.h"
-#include "../Entities/BoxPowerUp.h"
+#include <Managers/ManBoxPowerUp.h>
+#include <Entities/BoxPowerUp.h>
 
 using namespace std;
 

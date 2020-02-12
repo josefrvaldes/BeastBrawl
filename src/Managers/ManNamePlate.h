@@ -1,13 +1,13 @@
 #pragma once
 
+#include "ManCar.h"
+
 #include <iostream>
 #include <map>
 #include <memory>
 #include <string>
-#include <stdlib.h>
-#include "../../include/glm/vec3.hpp"
-#include "Manager.h"
-#include "ManCar.h"
+#include <cstdlib>
+#include <glm/vec3.hpp>
 
 using namespace std;
 

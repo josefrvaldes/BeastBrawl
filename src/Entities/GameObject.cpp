@@ -1,12 +1,11 @@
 #include "GameObject.h"
-#include "../Components/CSpeed.h"
-#include "../Components/CId.h"
-#include "../Components/CType.h"
-#include "../Components/CTexture.h"
-#include "../Components/CMesh.h"
-#include "../Components/CTransformable.h"
-#include "../Components/CCar.h"
-#include "iostream"
+
+#include <Components/CId.h>
+#include <Components/CType.h>
+#include <Components/CTexture.h>
+#include <Components/CMesh.h>
+#include <Components/CTransformable.h>
+#include <iostream>
 
 class Position;
 using namespace std;
@@ -26,7 +25,7 @@ GameObject::GameObject()
 }
 
 
-GameObject::GameObject(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale, string texture, string mesh)
+GameObject::GameObject(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale, const string& texture, const string& mesh)
 {
     shared_ptr<Component> cId   = make_shared<CId>();
     shared_ptr<Component> cType = make_shared<CType>(ModelType::AnimatedMesh);

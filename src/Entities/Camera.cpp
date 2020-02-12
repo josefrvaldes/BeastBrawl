@@ -1,8 +1,6 @@
 #include "Camera.h"
-#include "../Components/CId.h"
-#include "../Components/CTransformable.h"
-#include "../Components/CCamera.h"
-#include "iostream"
+#include <Components/CId.h>
+#include <Components/CCamera.h>
 
 class Position;
 using namespace std;
@@ -36,17 +34,17 @@ Camera::~Camera()
 }
 
 void Camera::SuscribeEvents(){
-    EventManager::GetInstance().SuscribeMulti(Listener(
+    EventManager::GetInstance().SubscribeMulti(Listener(
         EventType::INVERT_CAMERA,
         bind(&Camera::InvertCamera, this, placeholders::_1),
         "InvertCamera"));
 
-    EventManager::GetInstance().SuscribeMulti(Listener(
+    EventManager::GetInstance().SubscribeMulti(Listener(
         EventType::TOTEM_CAMERA,
         bind(&Camera::TotemCamera, this, placeholders::_1),
         "TotemCamera"));
 
-    EventManager::GetInstance().SuscribeMulti(Listener(
+    EventManager::GetInstance().SubscribeMulti(Listener(
         EventType::NORMAL_CAMERA,
         bind(&Camera::NormalCamera, this, placeholders::_1),
         "NormalCamera"));
@@ -58,10 +56,10 @@ void Camera::InvertCamera(DataMap* d){
 
     //Si esta invertida la desinvertimos y viceversa
 
-    if(cCamera->camType == CamType::INVERTED){
-        cCamera->camType = CamType::NORMAL;
+    if(cCamera->camType == CamType::INVERTED_CAM){
+        cCamera->camType = CamType::NORMAL_CAM;
     }else{
-        cCamera->camType = CamType::INVERTED;
+        cCamera->camType = CamType::INVERTED_CAM;
 
     }
 }
@@ -69,10 +67,10 @@ void Camera::InvertCamera(DataMap* d){
 void Camera::TotemCamera(DataMap* d){      
     auto cCamera = static_cast<CCamera*>(GetComponent(CompType::CameraComp).get());
 
-    if(cCamera->camType == CamType::TOTEM){
-        cCamera->camType = CamType::NORMAL;
+    if(cCamera->camType == CamType::TOTEM_CAM){
+        cCamera->camType = CamType::NORMAL_CAM;
     }else{
-        cCamera->camType = CamType::TOTEM;
+        cCamera->camType = CamType::TOTEM_CAM;
 
     }
 }
@@ -80,7 +78,7 @@ void Camera::TotemCamera(DataMap* d){
 void Camera::NormalCamera(DataMap* d){
     auto cCamera = static_cast<CCamera*>(GetComponent(CompType::CameraComp).get());
 
-    cCamera->camType = CamType::NORMAL;
+    cCamera->camType = CamType::NORMAL_CAM;
 
 }
 

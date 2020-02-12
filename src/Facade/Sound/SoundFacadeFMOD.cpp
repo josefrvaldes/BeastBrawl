@@ -1,9 +1,8 @@
-#include <stdlib.h>
-#include <string.h>
+#include <cstdlib>
+#include <string>
 #include <iostream>
 
 #include "SoundFacadeFMOD.h"
-#include "SoundFacadeManager.h"
 
 using namespace std;
 
@@ -95,7 +94,7 @@ void SoundFacadeFMOD::UnloadAllBanks() {
 /**
  * Crea la instancia de sonido
  */
-FMOD::Studio::EventInstance* SoundFacadeFMOD::CreateInstance(const string nameEvent) {
+FMOD::Studio::EventInstance* SoundFacadeFMOD::CreateInstance(const string& nameEvent) {
     FMOD::Studio::EventInstance* instance = nullptr;
     ERRCHECK(soundDescriptions[nameEvent]->createInstance(&instance));
     return instance;
@@ -124,70 +123,70 @@ void SoundFacadeFMOD::SubscribeToGameEvents(const uint8_t numState) {
         case 3:  // Map
             break;
         case 4:  // InGame
-            EventManager::GetInstance().SuscribeMulti(Listener{
+            EventManager::GetInstance().SubscribeMulti(Listener{
                 EventType::START_GAME,
                 bind(&SoundFacadeFMOD::StartGame, this, placeholders::_1),
                 "StartGame"});
 
-            EventManager::GetInstance().SuscribeMulti(Listener{
+            EventManager::GetInstance().SubscribeMulti(Listener{
                 EventType::PRESS_P,
                 bind(&SoundFacadeFMOD::SoundClaxon, this, placeholders::_1),
                 "SoundClaxon"});
 
-            EventManager::GetInstance().SuscribeMulti(Listener(
+            EventManager::GetInstance().SubscribeMulti(Listener(
                 EventType::THROW_POWERUP,
                 bind(&SoundFacadeFMOD::SoundThrowPowerup, this, placeholders::_1),
                 "SoundThrowPowerup"));
 
             // Quitar
-            EventManager::GetInstance().SuscribeMulti(Listener{
+            EventManager::GetInstance().SubscribeMulti(Listener{
                 EventType::PRESS_0,
                 bind(&SoundFacadeFMOD::StopPrueba, this, placeholders::_1),
                 "StopPrueba"});
 
-            EventManager::GetInstance().SuscribeMulti(Listener{
+            EventManager::GetInstance().SubscribeMulti(Listener{
                 EventType::HURT,
                 bind(&SoundFacadeFMOD::SoundHurt, this, placeholders::_1),
                 "SoundHurt"});
 
-            EventManager::GetInstance().SuscribeMulti(Listener{
+            EventManager::GetInstance().SubscribeMulti(Listener{
                 EventType::CATCH_TOTEM,
                 bind(&SoundFacadeFMOD::SoundCatchTotem, this, placeholders::_1),
                 "SoundCatchTotem"});
 
-            EventManager::GetInstance().SuscribeMulti(Listener{
+            EventManager::GetInstance().SubscribeMulti(Listener{
                 EventType::CRASH_ENEMY,
                 bind(&SoundFacadeFMOD::SoundCrash, this, placeholders::_1),
                 "SoundCrash"});
 
-            EventManager::GetInstance().SuscribeMulti(Listener{
+            EventManager::GetInstance().SubscribeMulti(Listener{
                 EventType::BREAK_BOX,
                 bind(&SoundFacadeFMOD::SoundBreakBox, this, placeholders::_1),
                 "SoundBreakBox"});
 
-            EventManager::GetInstance().SuscribeMulti(Listener{
+            EventManager::GetInstance().SubscribeMulti(Listener{
                 EventType::DRIFT,
                 bind(&SoundFacadeFMOD::SoundBreakBox, this, placeholders::_1),
                 "SoundBreakBox"});
 
-            EventManager::GetInstance().SuscribeMulti(Listener{
+            EventManager::GetInstance().SubscribeMulti(Listener{
                 EventType::VRANDOM,
                 bind(&SoundFacadeFMOD::SoundRandomSentence, this, placeholders::_1),
                 "SoundRandomSentence"});
 
-            EventManager::GetInstance().SuscribeMulti(Listener{
+            EventManager::GetInstance().SubscribeMulti(Listener{
                 EventType::MENU_OPTION,
                 bind(&SoundFacadeFMOD::SoundMenuOption, this, placeholders::_1),
                 "SoundMenuOption"});
 
             // --- STOP
 
-            EventManager::GetInstance().SuscribeMulti(Listener{
+            EventManager::GetInstance().SubscribeMulti(Listener{
                 EventType::NO_SHIELD,
                 bind(&SoundFacadeFMOD::StopShield, this, placeholders::_1),
                 "StopShield"});
 
-            EventManager::GetInstance().SuscribeMulti(Listener{
+            EventManager::GetInstance().SubscribeMulti(Listener{
                 EventType::NO_DRIFT,
                 bind(&SoundFacadeFMOD::StopDrift, this, placeholders::_1),
                 "StopDrift"});
@@ -255,7 +254,7 @@ void SoundFacadeFMOD::LoadSoundBank(const string nameBank, const bool type) {
         cout << "***** Carcado el banco: " << nameBank << endl;
     }
 
-    for (auto event : events[nameBank]) {
+    for (const auto& event : events[nameBank]) {
         LoadSoundEvent(event.c_str(), type);
     }
 }
@@ -297,7 +296,7 @@ void SoundFacadeFMOD::SetParameter(const string nameID, const string nameParamet
  * Se cambia la posicion desde donde se escucha un sonido.
  * TO-DO: Aqui solo se cambia la posicion, para el efecto Doppler hace falta la velocidad. Creo que hay mas cosas a parte.
  */
-void SoundFacadeFMOD::SetEventPosition(const string nameID, const glm::vec3& pos) {
+void SoundFacadeFMOD::SetEventPosition(const string& nameID, const glm::vec3& pos) {
     if (eventInstances.find(nameID) != eventInstances.end()) {
         FMOD_3D_ATTRIBUTES atr;
         atr.position.x = pos.x;
@@ -342,7 +341,7 @@ void SoundFacadeFMOD::StopEvent(const string nameID) {
  * Pone en pause todos los sonidos.
  */
 void SoundFacadeFMOD::PauseAllEvent() {
-    for (auto event : eventInstances) {
+    for (const auto& event : eventInstances) {
         PauseEvent(event.first);
     }
 }
@@ -351,7 +350,7 @@ void SoundFacadeFMOD::PauseAllEvent() {
  * Reanuda en pause todos los sonidos.
  */
 void SoundFacadeFMOD::ResumeAllEvent() {
-    for (auto event : eventInstances) {
+    for (const auto& event : eventInstances) {
         ResumeEvent(event.first);
     }
 }
@@ -360,7 +359,7 @@ void SoundFacadeFMOD::ResumeAllEvent() {
  * Pone en pause el sonido.
  * @param nameID - Identificador del sonido en el mapa de instancias.
  */
-void SoundFacadeFMOD::PauseEvent(const string nameID) {
+void SoundFacadeFMOD::PauseEvent(const string& nameID) {
     if (eventInstances.find(nameID) != eventInstances.end() && IsPlaying(eventInstances[nameID])) {
         ERRCHECK(eventInstances[nameID]->setPaused(true));
     }
@@ -370,7 +369,7 @@ void SoundFacadeFMOD::PauseEvent(const string nameID) {
  * Reanuda el sonido.
  * @param nameID - Identificador del sonido en el mapa de instancias.
  */
-void SoundFacadeFMOD::ResumeEvent(const string nameID) {
+void SoundFacadeFMOD::ResumeEvent(const string& nameID) {
     if (eventInstances.find(nameID) != eventInstances.end() && IsPlaying(eventInstances[nameID])) {
         ERRCHECK(eventInstances[nameID]->setPaused(false));
     }
@@ -419,7 +418,7 @@ void SoundFacadeFMOD::SoundClaxon(DataMap* d) {
 }
 
 void SoundFacadeFMOD::SoundHurt(DataMap* d) {
-    auto mainCharacter = any_cast<bool>((*d)["mainCharacter"]);
+    auto mainCharacter = any_cast<bool>((*d)[MAIN_CAR]);
 
     if (mainCharacter) {
         SetParameter("Personajes/voces", "Tipo", TipoVoz::ChoquePowerup);
@@ -436,7 +435,7 @@ void SoundFacadeFMOD::SoundCatchTotem(DataMap* d) {
 
 // TO-DO: La voz se reproduce si el coche dañado es el principal
 void SoundFacadeFMOD::SoundCrash(DataMap* d) {
-    bool mainCharacter = any_cast<bool>((*d)["mainCharacter"]);
+    bool mainCharacter = any_cast<bool>((*d)[MAIN_CAR]);
 
     int max = 100;
     int min = 0;
@@ -472,7 +471,7 @@ void SoundFacadeFMOD::SoundMenuOption(DataMap* d) {
 
 // TO-DO: Cambiar de eventos 2D a 3D
 void SoundFacadeFMOD::SoundThrowPowerup(DataMap* d) {
-    typeCPowerUp typepw = any_cast<typeCPowerUp>((*d)["typePowerUp"]);
+    typeCPowerUp typepw = any_cast<typeCPowerUp>((*d)[TYPE_POWER_UP]);
 
     switch (typepw) {
         case typeCPowerUp::RoboJorobo:

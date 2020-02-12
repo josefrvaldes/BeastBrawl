@@ -2,49 +2,60 @@
 
 #include <boost/array.hpp>
 #include <boost/asio.hpp>
+#include <boost/asio/buffer.hpp>
 #include <chrono>
 #include <iostream>
+#include <thread>
+#include "../Constants.h"
+#include "../../include/glm/vec3.hpp"
+#include "../Components/CPowerUp.h"
 
 using boost::asio::ip::udp;
-using namespace boost;
 using namespace std;
 using namespace std::chrono;
 
-class UDPClient {
-   public:
-    UDPClient(asio::io_context &, string host, string port_);
 
-    enum InputType {
-        UP,
-        DOWN,
-        LEFT,
-        RIGHT,
-        UP_LEFT,
-        UP_RIGHT,
-        DOWN_LEFT,
-        DOWN_RIGHT
-    };
-    void SendInput(InputType input);
-    void Send();
+class UDPClient {
+    // --- TCP --- (sala de espera)
+    // .- enviamos al servidor un mensaje de que queremos conectar
+    // .- esperamos hasta recibir respuesta de que empieza la partida.
+    //      Este mensaje traerá información de el estado inicial de la partida
+    //      con el numero de spawn del todos los coches, de esta forma ya sabemos
+    //      dónde debemos posicionar todos los coches de inicio
+
+    // --- UDP --- (juego)
+    // .- cambiamos de estado a StateInGameMulti
+    // .- inicializamos la partida con la info que nos ha llegado del server
+    // .- en versión futura se puede recibir una hora de inicio y
+    //       ese es el momento en el que empieza
+    // .- Empieza la partida, y le enviaremos paquetes de input al servidor y
+    //      él se encargará de registrar nuestro endpoint udp
+
+   public:
+    UDPClient(string host, uint16_t port_);
+    ~UDPClient();
+
+    void SendInputs(vector<Constants::InputTypes>& inputs, uint16_t id);
+    void SendSync(uint16_t idOnline, const glm::vec3 &posCar, const glm::vec3 &rotCar, typeCPowerUp tipoPU, bool haveTotem, int64_t totemTime,  
+                    bool totemInGround, const glm::vec3 &posTotem);
+    void SendDateTime();
+    uint32_t idMainCar;
 
    private:
     void StartReceiving();
-    void HandleReceive(const boost::system::error_code& error, size_t bytesTransferred);
-    void HandleSendInput(InputType input, const boost::system::error_code& errorCode,
-                         std::size_t bytes_transferred);
-    void HandleSend(boost::shared_ptr<std::string> message,
-                    const boost::system::error_code& errorCode,
-                    std::size_t bytes_transferred);
-    string GetTime() {
-        auto time_point = system_clock::now();
-        time_t now_c = system_clock::to_time_t(time_point);
-        string salida = ctime(&now_c);
-        salida = salida.substr(0, salida.size() - 1);
-        return salida;
-    }
+    void HandleReceived(std::shared_ptr<unsigned char[]> recevBuff, const boost::system::error_code& error, size_t bytesTransferred);
+    void HandleReceivedInputs(const vector<Constants::InputTypes> inputs, const uint16_t idRival) const;
+    void HandleReceivedSync(unsigned char* recevBuff, size_t bytesTransferred) const;
+    void HandleSentInputs(const boost::system::error_code& errorCode, std::size_t bytes_transferred);
+    void HandleSentSync(const boost::system::error_code& errorCode, std::size_t bytes_transferred);
 
-    asio::io_context &context;
+    void HandleSentDateTime(const boost::shared_ptr<std::string> message,
+                            const boost::system::error_code& errorCode,
+                            std::size_t bytes_transferred);
+
+    boost::asio::io_context context;
     udp::endpoint serverEndpoint;
     udp::socket socket;
-    boost::array<char, 128> recvBuff;
+    std::thread butler;
+    // boost::asio::io_context::strand strand;
 };

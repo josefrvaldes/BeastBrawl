@@ -1,14 +1,15 @@
 #pragma once
 
+#include "Manager.h"
+
 #include <iostream>
 #include <map>
 #include <vector>
 #include <memory>
 #include <fstream>
 #include <string>
-#include <stdlib.h>
-#include "../../include/glm/vec3.hpp"
-#include "Manager.h"
+#include <cstdlib>
+#include <glm/vec3.hpp>
 
 class WayPoint;
 using namespace std;

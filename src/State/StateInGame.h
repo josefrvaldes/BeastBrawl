@@ -9,47 +9,47 @@
 #include <stack>
 #include <string>
 
-#include "../../include/glm/vec3.hpp"
-#include "../Entities/BoxPowerUp.h"
-#include "../Entities/Camera.h"
-#include "../Entities/Car.h"
-#include "../Entities/CarHuman.h"
-#include "../Entities/CarAI.h"
-#include "../Entities/GameObject.h"
-#include "../Entities/PowerUp.h"
-#include "../Entities/Totem.h"
-#include "../Entities/WayPoint.h"
-#include "../Entities/NavMesh.h"
-#include "../Managers/ManPowerUp.h"
-#include "../Managers/ManWayPoint.h"
-#include "../Managers/ManNavMesh.h"
-#include "../EventManager/EventManager.h"
-#include "../Facade/Input/InputFacadeManager.h"
-#include "../Facade/Physics/PhysicsFacadeManager.h"
-#include "../Facade/Render/RenderFacadeManager.h"
-#include "../Facade/Sound/SoundFacade.h"
-#include "../Facade/Sound/SoundFacadeManager.h"
-#include "../Systems/SystemPathPlanning.h"
-#include "../Game.h"
-#include "../Managers/ManBoundingWall.h"
-#include "../Managers/ManBoxPowerUp.h"
-#include "../Managers/ManCar.h"
-#include "../Managers/ManNamePlate.h"
-#include "../Managers/ManPowerUp.h"
-#include "../Managers/ManTotem.h"
-#include "../Managers/ManWayPoint.h"
-#include "../Systems/Collisions.h"
-#include "../Systems/Physics.h"
-#include "../Systems/PhysicsPowerUp.h"
-#include "../Systems/SystemBoxPowerUp.h"
-#include "../behaviourTree/behaviourTree.h"
-#include "../behaviourTree/decorator.h"
-#include "../behaviourTree/selector.h"
-#include "../behaviourTree/sequence.h"
-#include "../fuzzyLogic/fuzzyLogic.h"
-#include "../Components/CNavMesh.h"
-#include "../Components/CCurrentNavMesh.h"
-//#include "btBulletDynamicsCommon.h"
+#include <glm/vec3.hpp>
+#include <Entities/BoxPowerUp.h>
+#include <Entities/Camera.h>
+#include <Entities/Car.h>
+#include <Entities/CarHuman.h>
+#include <Entities/CarAI.h>
+#include <Entities/GameObject.h>
+#include <Entities/PowerUp.h>
+#include <Entities/Totem.h>
+#include <Entities/WayPoint.h>
+#include <Entities/NavMesh.h>
+#include <Managers/ManPowerUp.h>
+#include <Managers/ManWayPoint.h>
+#include <Managers/ManNavMesh.h>
+#include <EventManager/EventManager.h>
+#include <Facade/Input/InputFacadeManager.h>
+#include <Facade/Physics/PhysicsFacadeManager.h>
+#include <Facade/Render/RenderFacadeManager.h>
+#include <Facade/Sound/SoundFacade.h>
+#include <Facade/Sound/SoundFacadeManager.h>
+#include <Systems/SystemPathPlanning.h>
+#include <Game.h>
+#include <Managers/ManBoundingWall.h>
+#include <Managers/ManBoxPowerUp.h>
+#include <Managers/ManCar.h>
+#include <Managers/ManNamePlate.h>
+#include <Managers/ManPowerUp.h>
+#include <Managers/ManTotem.h>
+#include <Managers/ManWayPoint.h>
+#include <Systems/Collisions.h>
+#include <Systems/Physics.h>
+#include <Systems/PhysicsPowerUp.h>
+#include <Systems/SystemBoxPowerUp.h>
+#include <behaviourTree/behaviourTree.h>
+#include <behaviourTree/decorator.h>
+#include <behaviourTree/selector.h>
+#include <behaviourTree/sequence.h>
+#include <fuzzyLogic/fuzzyLogic.h>
+#include <Components/CNavMesh.h>
+#include <Components/CCurrentNavMesh.h>
+
 
 using namespace std;
 using namespace chrono;
@@ -62,7 +62,7 @@ class StateInGame : public State {
     ~StateInGame();
     void InitVirtualMethods();
     void InitState() override;
-    void Input() override;
+    virtual void Input() = 0;
     void Update() override;
     void Render() override;
     States GetState() { return State::States::INGAME_SINGLE; };
@@ -94,7 +94,7 @@ class StateInGame : public State {
     shared_ptr<Entity> totemOnCar;
 
     unique_ptr<CLPhysics> clPhysics;
-    unique_ptr<SystemPathPlanning> sysPathPlanning;
+    // unique_ptr<SystemPathPlanning> sysPathPlanning;
 
     shared_ptr<ManTotem> manTotems;
     //int lastFPS = -1;

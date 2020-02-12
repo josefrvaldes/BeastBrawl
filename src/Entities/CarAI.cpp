@@ -1,24 +1,24 @@
 #include "CarAI.h"
 
-#include "../Components/CSpeed.h"
-#include "../Components/CId.h"
-#include "../Components/CType.h"
-#include "../Components/CTexture.h"
-#include "../Components/CMesh.h"
-#include "../Components/CPowerUp.h"
-#include "../Components/CTransformable.h"
-#include "../Components/CCar.h"
-#include "../Components/CPath.h"
-#include "../Components/CShield.h"
-#include "../Components/CTotem.h"
-#include "../Components/CRoboJorobo.h"
-#include "../Components/CNitro.h"
-#include "../Components/CBoundingSphere.h"
-#include "../Components/CColliding.h"
-#include "../Components/CCurrentNavMesh.h"
-#include "../Components/CTargetNavMesh.h"
-#include "../Components/CBoundingRay.h"
-#include "../Components/CMovementType.h"
+#include <Components/CSpeed.h>
+#include <Components/CId.h>
+#include <Components/CType.h>
+#include <Components/CTexture.h>
+#include <Components/CMesh.h>
+#include <Components/CPowerUp.h>
+#include <Components/CTransformable.h>
+#include <Components/CCar.h>
+#include <Components/CPath.h>
+#include <Components/CShield.h>
+#include <Components/CTotem.h>
+#include <Components/CRoboJorobo.h>
+#include <Components/CNitro.h>
+#include <Components/CBoundingSphere.h>
+#include <Components/CColliding.h>
+#include <Components/CCurrentNavMesh.h>
+#include <Components/CTargetNavMesh.h>
+#include <Components/CBoundingRay.h>
+#include <Components/CMovementType.h>
 
 
 

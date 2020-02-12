@@ -2,18 +2,19 @@
 
 #include <iostream>
 #include <memory>
-#include "../Entities/Car.h"
-#include "../Entities/CarHuman.h"
-#include "../Entities/CarAI.h"
-#include "../Managers/ManCar.h"
-#include "../Managers/ManPowerUp.h"
-#include "../Managers/ManBoxPowerUp.h"
-#include "../Managers/ManTotem.h"
-#include "../Managers/ManWayPoint.h"
-#include "../Managers/ManBoundingWall.h"
-#include "../Managers/ManNavMesh.h"
-#include "../Systems/SystemFuzzyLogicAI.h"
-#include "../Systems/SteeringBehaviours.h"
+
+#include <Entities/Car.h>
+#include <Entities/CarHuman.h>
+#include <Entities/CarAI.h>
+#include <Managers/ManCar.h>
+#include <Managers/ManPowerUp.h>
+#include <Managers/ManBoxPowerUp.h>
+#include <Managers/ManTotem.h>
+#include <Managers/ManWayPoint.h>
+#include <Managers/ManBoundingWall.h>
+#include <Managers/ManNavMesh.h>
+#include <Systems/SystemFuzzyLogicAI.h>
+#include <Systems/SteeringBehaviours.h>
 
 class Blackboard{
     

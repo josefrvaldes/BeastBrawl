@@ -1,9 +1,15 @@
 #include "StateInGameSingle.h"
 
-#include "../Components/CTotem.h"
+#include <Components/CTotem.h>
 
 StateInGameSingle::StateInGameSingle() : StateInGame() {
+    systemBtPowerUp = make_unique<SystemBtPowerUp>();
+    systemBtMoveTo = make_unique<SystemBtMoveTo>();
+    systemBtLoDMove = make_unique<SystemBtLoDMove>();
+    systemPathPlanning = make_unique<SystemPathPlanning>();
+
     InitVirtualMethods();
+
     //std::cout << "ENTRAMOS AL MANAGER DE NAVMESH LOCOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO" << std::endl;
     CAMBIARCosasNavMesh(*manCars.get(), *manNavMesh.get());
     //std::cout << "despues de la llamada LOOOOOOOOOOOCOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO" << std::endl;
@@ -41,14 +47,25 @@ void StateInGameSingle::CAMBIARCosasNavMesh(ManCar &manCars, ManNavMesh &manNavM
 }
 
 void StateInGameSingle::Input() {
-    StateInGame::Input();
+    renderEngine->FacadeCheckInputSingle();
 }
 
 void StateInGameSingle::Update() {
     StateInGame::Update();
     for (auto actualAI : manCars->GetEntities()) { // CUIDADO!!! -> el static cast que solo se use en el single player, si no peta
         if (static_cast<Car*>(actualAI.get())->GetTypeCar() == TypeCar::CarAI){
-            manCars->UpdateCarAI(static_cast<CarAI*>(actualAI.get()), manPowerUps.get(), manBoxPowerUps.get(), manTotems.get(), manWayPoint.get(), manNavMesh.get(), manBoundingWall.get());
+            manCars->UpdateCarAI(
+                static_cast<CarAI*>(actualAI.get()), 
+                manPowerUps.get(), 
+                manBoxPowerUps.get(), 
+                manTotems.get(), 
+                manWayPoint.get(), 
+                manNavMesh.get(), 
+                manBoundingWall.get(), 
+                systemBtPowerUp.get(), 
+                systemBtMoveTo.get(), 
+                systemBtLoDMove.get(),
+                systemPathPlanning.get());
             physicsEngine->UpdateCarAI(actualAI.get());
         }
     }
@@ -80,7 +97,7 @@ void StateInGameSingle::InitializeCLPhysics(ManCar &manCars, ManBoundingWall &ma
 
 void StateInGameSingle::InitializeManagers(Physics *physics, Camera *cam) {
     StateInGame::InitializeManagers(physics, cam);
-    CAMBIARInicializarCarAIS(*manCars.get(), *manWayPoint.get());
+    CAMBIARInicializarCarAIS(*manCars, *manWayPoint);
 }
 
 void StateInGameSingle::InitializeSystems(ManCar &manCars, ManBoundingWall &manBoundingWall) {
@@ -98,9 +115,9 @@ void StateInGameSingle::AddElementsToRender() {
 
 void StateInGameSingle::CAMBIARCosasDeTotemUpdate() {
     bool todosFalse = true;
-    auto cTransformTotem = static_cast<CTransformable *>(totemOnCar.get()->GetComponent(CompType::TransformableComp).get());
+    auto cTransformTotem = static_cast<CTransformable *>(totemOnCar->GetComponent(CompType::TransformableComp).get());
     cTransformTotem->rotation.y += 0.1;
-    for (auto carAI : manCars->GetEntities()) {  // actualizamos los coche IA
+    for (const auto& carAI : manCars->GetEntities()) {  // actualizamos los coche IA
         // comprobamos el componente totem y si lo tienen se lo ponemos justo encima para que se sepa quien lo lleva
         auto cTotem = static_cast<CTotem *>(carAI.get()->GetComponent(CompType::TotemComp).get());
         if (cTotem->active) {

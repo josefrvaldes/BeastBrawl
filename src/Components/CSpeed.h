@@ -1,9 +1,10 @@
 #pragma once
 
+#include "Component.h"
+
 #include <iostream>
 #include <string>
-#include "../../include/glm/vec3.hpp"
-#include "Component.h"
+#include <glm/vec3.hpp>
 
 using namespace std;
 using namespace glm;
