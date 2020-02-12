@@ -1,8 +1,8 @@
 #include "CLNode.h" 
 
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/string_cast.hpp>
 #include <glm/ext.hpp>
+#include <glm/gtx/string_cast.hpp>
 
 using namespace CLE;
 
@@ -115,7 +115,7 @@ void CLNode::DFSTree(glm::mat4 mA) {
     if (changed) {
         transformationMat = mA*CalculateTransformationMatrix();
         changed = false;
-        cout << "Soy el nodo " << entity->GetID() << " - " << glm::to_string(transformationMat) << endl;
+        //cout << "Soy el nodo " << entity->GetID() << " - " << glm::to_string(transformationMat) << endl;
     }
 
     if(entity) {
