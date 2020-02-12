@@ -17,6 +17,7 @@
 
 #define PI 3.141592
 
+// TODO: YA esta en el stareInGame hay que quitarlo el "clPhysics = make_unique<CLPhysics>();"
 SteeringBehaviours::SteeringBehaviours(){
     clPhysics = make_unique<CLPhysics>();
 }

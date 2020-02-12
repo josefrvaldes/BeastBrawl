@@ -66,7 +66,6 @@ void StateInGameSingle::Update() {
                 systemBtMoveTo.get(), 
                 systemBtLoDMove.get(),
                 systemPathPlanning.get());
-            physicsEngine->UpdateCarAI(actualAI.get());
         }
     }
     CAMBIARCosasDeTotemUpdate();
@@ -77,6 +76,15 @@ void StateInGameSingle::Update() {
     collisions->IntersectCarsBoxPowerUp(manCars.get(), manBoxPowerUps.get());
     // COLISIONES  entre la IA y el Totem
     collisions->IntersectCarsTotem(manCars.get(), manTotems.get());
+
+    // Actualizamos posicion en Irrlicht
+    for (auto actualAI : manCars->GetEntities()) { // CUIDADO!!! -> el static cast que solo se use en el single player, si no peta
+        if (static_cast<Car*>(actualAI.get())->GetTypeCar() == TypeCar::CarAI){
+            physicsEngine->UpdateCarAI(actualAI.get());
+        }
+    }
+
+
 }
 
 void StateInGameSingle::Render() {
@@ -91,8 +99,8 @@ void StateInGameSingle::Render() {
     StateInGame::Render();
 }
 
-void StateInGameSingle::InitializeCLPhysics(ManCar &manCars, ManBoundingWall &manBoundingWall) {
-    StateInGame::InitializeCLPhysics(manCars, manBoundingWall);
+void StateInGameSingle::InitializeCLPhysics(ManCar &manCars, ManBoundingWall &manBoundingWall, ManBoundingOBB &manBoundingOBB) {
+    StateInGame::InitializeCLPhysics(manCars, manBoundingWall, manBoundingOBB);
 }
 
 void StateInGameSingle::InitializeManagers(Physics *physics, Camera *cam) {
@@ -100,8 +108,8 @@ void StateInGameSingle::InitializeManagers(Physics *physics, Camera *cam) {
     CAMBIARInicializarCarAIS(*manCars, *manWayPoint);
 }
 
-void StateInGameSingle::InitializeSystems(ManCar &manCars, ManBoundingWall &manBoundingWall) {
-    StateInGame::InitializeSystems(manCars, manBoundingWall);
+void StateInGameSingle::InitializeSystems(ManCar &manCars, ManBoundingWall &manBoundingWall, ManBoundingOBB &manBoundingOBB) {
+    StateInGame::InitializeSystems(manCars, manBoundingWall, manBoundingOBB);
 }
 
 void StateInGameSingle::InitializeFacades() {
@@ -170,5 +178,5 @@ void StateInGameSingle::CAMBIARInicializarCarAIS(ManCar &manCars, ManWayPoint &m
     manCars.CreateCarAI(glm::vec3(-200.0f, 10.0f, 700.0f));
     manCars.CreateCarAI(glm::vec3(400.0f, 10.0f, -50.0f));
     //manCars.CreateHumanCar(glm::vec3(20.0, 10.0, 20.0));
-    manCars.CreateCarAI(glm::vec3(400.0f, 10.0f, -400.0f));
+    //manCars.CreateCarAI(glm::vec3(300.0f, 10.0f, -300.0f));
 }
