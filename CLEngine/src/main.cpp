@@ -351,7 +351,9 @@ int main() {
 
         glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "model"), 1, GL_FALSE, glm::value_ptr(model));
 
-        resourceMesh->Draw(glm::mat4(1.0));
+        //resourceMesh->Draw(glm::mat4(1.0));
+        smgr->DFSTree(glm::mat4(1.0));
+
 
         glfwPollEvents();
         glfwSwapBuffers(device->GetWindow());
