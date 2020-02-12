@@ -301,6 +301,7 @@ int main() {
     glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
     glm::vec3 cameraUp    = glm::vec3(0.0f, 1.0f,  0.0f);
     
+    float index = 0.01;
     while (!device->Run()) {
         //glfwPollEvents();
 
@@ -347,8 +348,9 @@ int main() {
         // }
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::scale(model, glm::vec3(0.5f,0.5f,0.5f));
-        model = glm::rotate(model, glm::radians(0.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-        model = glm::rotate(model, glm::radians(-45.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+        model = glm::rotate(model, glm::radians(index), glm::vec3(1.0f, 0.0f, 0.0f));
+        model = glm::rotate(model, glm::radians(index), glm::vec3(0.0f, 1.0f, 0.0f));
+        model = glm::rotate(model, glm::radians(index), glm::vec3(0.0f, 0.0f, 1.0f));
 
         glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "model"), 1, GL_FALSE, glm::value_ptr(model));
 
@@ -356,7 +358,7 @@ int main() {
 
         glfwPollEvents();
         glfwSwapBuffers(device->GetWindow());
-
+        index += 0.1;
     }
 
     // Cleanup
