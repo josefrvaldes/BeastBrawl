@@ -31,7 +31,7 @@ CBoundingPlane::CBoundingPlane(const vec3 &a_, const vec3 &b_, const vec3 &c_, c
     equationPlane = equationPlane3Points(a_,b_,c_); 
 }
 
-// TODO: Actualmente todos los planos se tratan como finitos en los que respecta a las colisiones con las esferas
+// TODO: Se va a tener en cuenta el angulo que formen????
 IntersectData CBoundingPlane::IntersectSphere(const CBoundingSphere &other, const CTransformable &trCar, const CCar &ccarCar){
     float distanceFromSpCenter = fabs(dot(normalizedNormal, other.center) - distance);
     // cout << "Distance from sphere center " << distanceFromSpCenter << endl;
