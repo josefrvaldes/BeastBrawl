@@ -117,6 +117,7 @@ struct ThrowPowerUp : public behaviourTree {
         shared_ptr<DataMap> data = make_shared<DataMap>();
         (*data)[ACTUAL_CAR] = blackboard->actualCar;
         EventManager::GetInstance().AddEventMulti(Event{EventType::THROW_POWERUP_AI, data});
+
         return true;
     }
 };

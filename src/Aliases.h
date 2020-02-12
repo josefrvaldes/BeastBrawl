@@ -26,7 +26,15 @@ enum DataType{
     CAR_TRANSFORMABLE,
     MAN_NAVMESH,
     MAN_WAYPOINTS,
-    POS_DESTINATION
+    POS_DESTINATION,
+    DATA_SERVER,
+    ID,
+    INPUTS,
+    ID_ONLINE,
+    VECTOR_ID_ONLINE,
+    VEC3_POS,
+    VEC3_ROT,
+    TIME_TOTEM
 };
 
 using EM = EventManager;

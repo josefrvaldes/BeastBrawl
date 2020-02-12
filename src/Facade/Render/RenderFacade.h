@@ -10,6 +10,7 @@
 #include <Managers/ManCar.h>
 #include <Components/CPowerUp.h>
 #include <Managers/Manager.h>
+#include "../../Constants.h"
 
 using namespace chrono;
 
@@ -27,7 +28,8 @@ class RenderFacade {
     virtual void UpdateCamera(Entity*, ManCar* manCars) = 0;
     virtual bool FacadeRun() = 0;
     virtual uint32_t FacadeGetTime() const = 0;
-    virtual void FacadeCheckInput()  = 0;
+    virtual vector<Constants::InputTypes> FacadeCheckInputMulti() = 0;
+    virtual void FacadeCheckInputSingle() = 0;
     virtual int FacadeGetFPS() const = 0;
     virtual void FacadeSetWindowCaption(std::string, int) const = 0;
     virtual void FacadeBeginScene() const = 0;
@@ -39,18 +41,22 @@ class RenderFacade {
     virtual void FacadeDrawMenu() = 0;
     virtual void FacadeDrawPause() = 0;
     virtual void FacadeDrawEndRace() = 0;
+    virtual void FacadeDrawLobbyMulti() = 0;
     virtual void FacadeInitMenu() = 0;
     virtual void FacadeInitPause() = 0;
     virtual void FacadeInitEndRace() = 0;
+    virtual void FacadeInitLobbyMulti() = 0;
     virtual void FacadeInitHUD() = 0;
     virtual void FacadeCheckInputMenu() = 0;
     virtual void FacadeCheckInputPause() = 0;
     virtual void FacadeCheckInputEndRace() = 0;
+    virtual void FacadeCheckInputLobbyMulti() = 0;
     virtual void FacadeUpdatePowerUpHUD(DataMap* d) = 0;
     virtual void FacadeDrawHUD(Entity* car, ManCar* carsAI) = 0;
     virtual void FacadeSuscribeEvents() = 0;
     virtual void FacadeAddPlates(Manager* manNamePlates) = 0;
     virtual void FacadeUpdatePlates(Manager* manNamePlates) = 0;
+    virtual void ThrowEventChangeToMulti(uint16_t IdOnline, const vector<uint16_t> IdPlayersOnline) = 0;
 
     //DEBUG
     virtual void Draw3DLine(vec3 &pos1, vec3 &pos2, uint16_t r, uint16_t g, uint16_t b) const = 0;

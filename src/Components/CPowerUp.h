@@ -2,7 +2,7 @@
 
 #include "Component.h"
 
-#include <glm/vec3.hpp>
+#include "../include/glm/vec3.hpp"
 #include <string>
 #include <iostream>
 #include <chrono>

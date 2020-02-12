@@ -62,7 +62,7 @@ class StateInGame : public State {
     ~StateInGame();
     void InitVirtualMethods();
     void InitState() override;
-    void Input() override;
+    virtual void Input() = 0;
     void Update() override;
     void Render() override;
     States GetState() { return State::States::INGAME_SINGLE; };
@@ -94,7 +94,7 @@ class StateInGame : public State {
     shared_ptr<Entity> totemOnCar;
 
     unique_ptr<CLPhysics> clPhysics;
-    unique_ptr<SystemPathPlanning> sysPathPlanning;
+    // unique_ptr<SystemPathPlanning> sysPathPlanning;
 
     shared_ptr<ManTotem> manTotems;
     //int lastFPS = -1;
