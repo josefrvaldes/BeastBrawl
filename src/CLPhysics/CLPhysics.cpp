@@ -73,8 +73,8 @@ void CLPhysics::HandleCollisionsWithOBB(){
     // los coches con los OBB
     for (size_t currentAI = 0; currentAI < numCar; currentAI++) {
         Entity *car = manCar->GetEntities()[currentAI].get();
-        //CBoundingSphere *spcar1 = static_cast<CBoundingSphere *>(car->GetComponent(CompType::CompBoundingSphere).get());
-        CBoundingChassis *chaCar = static_cast<CBoundingChassis *>(car->GetComponent(CompType::CompBoundingChassis).get());
+        CBoundingSphere *spcar = static_cast<CBoundingSphere *>(car->GetComponent(CompType::CompBoundingSphere).get());
+        //CBoundingChassis *chaCar = static_cast<CBoundingChassis *>(car->GetComponent(CompType::CompBoundingChassis).get());
         CTransformable *trcar = static_cast<CTransformable *>(car->GetComponent(CompType::TransformableComp).get());
         CCar *ccarcar = static_cast<CCar *>(car->GetComponent(CompType::CarComp).get());
         //CExternalForce *cExternalForce = static_cast<CExternalForce *>(car->GetComponent(CompType::CompExternalForce).get());
@@ -83,8 +83,11 @@ void CLPhysics::HandleCollisionsWithOBB(){
             BoundingOBB *obbActual = static_cast<BoundingOBB *>(obbs[currentOBB].get());
             //CBoundingPlane *plane = static_cast<CBoundingPlane *>(wall->GetComponent(CompType::CompBoundingPlane).get());
             CBoundingOBB *cOBBactual = static_cast<CBoundingOBB *>(obbActual->GetComponent(CompType::CompBoundingOBB).get());
-            //HandleCollisions(*trcar1, *spcar1, *ccarcar1, false, *cOBBactual);
-            CollisionsSphereOBB(*trcar, *chaCar, *ccarcar, false, *cOBBactual);
+            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            PositionSphereIntoTransformable(*trcar, *spcar);
+            HandleCollisions(*trcar, *spcar, *ccarcar, false, *cOBBactual);
+            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            //CollisionsSphereOBB(*trcar, *chaCar, *ccarcar, false, *cOBBactual);
         }
     }
 }
