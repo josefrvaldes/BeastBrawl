@@ -16,7 +16,7 @@ namespace CLE {
     class CLResourceManager {
         public:
             CLResourceManager();
-            ~CLResourceManager(){};
+            ~CLResourceManager();
 
             CLResourceMesh* GetResourceMesh(const std::string);
             CLResourceShader* GetResourceShader(const std::string, GLenum type);

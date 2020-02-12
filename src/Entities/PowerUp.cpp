@@ -69,13 +69,10 @@ PowerUp::PowerUp(glm::vec3 _position, glm::vec3 _rotation, typeCPowerUp _typePow
         cTexture->texture = "";
         cMesh->mesh = "melon.obj";
         cPowerUp->speed = 510.0;
-        cTransformable->scale = glm::vec3(10,10,10);
     }else if(_typePowerUp == typeCPowerUp::PudinDeFrambuesa){   // Pudin Frambuesa
         cTexture->texture = "";
         cMesh->mesh = "pudin.obj";
         cPowerUp->speed = -510.0;
-        cTransformable->scale = glm::vec3(10,10,10);
-
     }else{                                                      // Telebanana
         cTexture->texture = "";
         cMesh->mesh = "telebanana.obj";
