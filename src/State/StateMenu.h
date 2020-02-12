@@ -1,13 +1,13 @@
 #pragma once
 
-#include "../EventManager/EventManager.h"
-#include "../Facade/Input/InputFacadeManager.h"
-#include "../Facade/Physics/PhysicsFacadeManager.h"
-#include "../Facade/Render/RenderFacadeManager.h"
-#include "../Facade/Sound/SoundFacadeManager.h"
-#include "../Facade/Sound/SoundFacade.h"
-//#include "../Game.h"
-#include "../State/State.h"
+#include "State.h"
+
+#include <EventManager/EventManager.h>
+#include <Facade/Input/InputFacadeManager.h>
+#include <Facade/Physics/PhysicsFacadeManager.h>
+#include <Facade/Render/RenderFacadeManager.h>
+#include <Facade/Sound/SoundFacadeManager.h>
+
 
 
 class StateMenu : public State{

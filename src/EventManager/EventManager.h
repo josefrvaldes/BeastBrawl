@@ -16,10 +16,10 @@ class EventManager {
     ~EventManager(){};
 
     static EventManager& GetInstance();
-    void SubscribeMulti(Listener);
-    void Subscribe(Listener);
-    void UnSubscribeMulti(EventType, string);
-    void AddEventMulti(Event);
+    void SubscribeMulti(const Listener&);
+    void Subscribe(const Listener&);
+    void UnSubscribeMulti(EventType, const string&);
+    void AddEventMulti(const Event&);
     void Update();
     void ClearEvents();
     void ClearListeners();

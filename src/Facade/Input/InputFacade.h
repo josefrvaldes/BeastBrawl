@@ -3,9 +3,9 @@
 #include <iostream>
 #include <cstdint>
 #include <string>
-#include "../../EventManager/EventManager.h"
-#include "../../EventManager/Event.h"
-#include "../../Entities/Entity.h"
+#include <EventManager/EventManager.h>
+#include <EventManager/Event.h>
+#include <Entities/Entity.h>
 
 
 class InputFacade {

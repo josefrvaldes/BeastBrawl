@@ -1,10 +1,10 @@
 #pragma once
 
-#include "../../../include/irrlicht/irrlicht.h"
-#include "../../EventManager/Event.h"
-#include "../../EventManager/EventManager.h"
-#include "../Input/InputFacadeIrrlicht.h"
-#include "../Input/InputFacadeManager.h"
+#include <irrlicht/irrlicht.h>
+#include <EventManager/Event.h>
+#include <EventManager/EventManager.h>
+#include <Facade/Input/InputFacadeIrrlicht.h>
+#include <Facade/Input/InputFacadeManager.h>
 #include "RenderFacade.h"
 
 //#include "../../State/State.h"
@@ -37,7 +37,7 @@ class RenderFacadeIrrlicht : public RenderFacade {
     vector<Constants::InputTypes> FacadeCheckInputMulti() override;
     void FacadeCheckInputSingle() override;
     int FacadeGetFPS() const override;
-    void FacadeSetWindowCaption(std::string) const override;
+    void FacadeSetWindowCaption(std::string, int) const override;
     void FacadeBeginScene() const override;
     void FacadeDrawAll() const override;
     void FacadeEndScene() const override;

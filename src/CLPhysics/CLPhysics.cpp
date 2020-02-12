@@ -1,29 +1,25 @@
-#define _USE_MATH_DEFINES
 
 #include "CLPhysics.h"
 #include <iostream>
 #include <memory>
-#include <sstream>
-#include "../Components/CAABoundingBox.h"
-#include "../Components/CBoundingPlane.h"
-#include "../Components/CBoundingSphere.h"
-#include "../Components/CCar.h"
-#include "../Components/CColliding.h"
-#include "../Components/CRay.h"
-#include "../Components/CSpeed.h"
-#include "../Components/CNitro.h"
-#include "../Components/CTransformable.h"
-#include "../Components/CTotem.h"
-#include "../Entities/BoundingWall.h"
-#include "../Entities/Car.h"
-#include "../Entities/CarAI.h"
-#include "../Entities/CarHuman.h"
-#include "../EventManager/Event.h"
-#include "../EventManager/EventManager.h"
-#include "../Managers/ManBoundingWall.h"
-#include "../Managers/ManCar.h"
-#include "../Managers/Manager.h"
-#include "../Systems/Utils.h"
+
+#include <Components/CAABoundingBox.h>
+#include <Components/CBoundingPlane.h>
+#include <Components/CBoundingSphere.h>
+#include <Components/CCar.h>
+#include <Components/CNitro.h>
+#include <Components/CTransformable.h>
+#include <Components/CTotem.h>
+#include <Entities/BoundingWall.h>
+#include <Entities/Car.h>
+#include <Entities/CarAI.h>
+#include <Entities/CarHuman.h>
+#include <EventManager/Event.h>
+#include <EventManager/EventManager.h>
+#include <Managers/ManBoundingWall.h>
+#include <Managers/ManCar.h>
+#include <Managers/Manager.h>
+#include <Systems/Utils.h>
 
 using namespace std;
 
@@ -44,10 +40,10 @@ void CLPhysics::HandleCollisionsWithPlanes() {
     ManCar *manCar = static_cast<ManCar *>(managers[0]);
     ManBoundingWall *manWalls = static_cast<ManBoundingWall *>(managers[1]);
 
-    vector<shared_ptr<Entity>> carAIs = manCar->GetEntities();
+    const auto& carAIs = manCar->GetEntities();
     size_t numCar = carAIs.size();
 
-    vector<shared_ptr<Entity>> walls = manWalls->GetEntities();
+    auto walls = manWalls->GetEntities();
     size_t numWalls = walls.size();
 
     // los coches con los walls
@@ -76,7 +72,7 @@ void CLPhysics::Simulate(float delta) {
 void CLPhysics::HandleCollisions() {
     ManCar *manCar = static_cast<ManCar *>(managers[0]);
 
-    vector<shared_ptr<Entity>> entities = manCar->GetEntities();
+    const auto& entities = manCar->GetEntities();
     size_t numEntities = entities.size();
 
     // los coches entre si

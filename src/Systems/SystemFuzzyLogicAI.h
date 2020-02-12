@@ -1,42 +1,12 @@
 #pragma once
 
-#include "../Components/CType.h"
-#include "../Components/CId.h"
-#include "../Components/CTransformable.h"
-#include "../Components/CCamera.h"
-#include "../Components/Component.h"
-#include "../Components/CCar.h"
-#include "../Components/CWayPoint.h"
-#include "../Components/CNitro.h"
-#include "../Components/CShield.h"
-#include "../Components/CWayPointEdges.h"
-#include "../Components/CPath.h"
-
-#include "../Entities/Car.h"
-#include "../Entities/CarHuman.h"
-#include "../Entities/CarAI.h"
-#include "../Entities/Entity.h"
-
-#include "../Managers/ManWayPoint.h"
-#include "../Entities/WayPoint.h"
-
-#include "../EventManager/EventManager.h"
-#include "../EventManager/Event.h"
-
-#include "../fuzzyLogic/fuzzyLogic.h"
-
-#include <vector>
-#include <stack>
-#include <iostream>
-#include <stdio.h>
-#include <limits.h>
-#include <algorithm>
-#include <stdlib.h>     /* srand, rand */
-
-#include <math.h>
 #include <memory>
+#include <fuzzyLogic/fuzzyLogic.h>
+
+class CarAI;
+class FuzzyLogic;
+
 using namespace std;
-#define PI 3.141592
 
 class SystemFuzzyLogicAI {
 public:

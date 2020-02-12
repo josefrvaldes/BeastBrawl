@@ -4,12 +4,12 @@
 #include <iostream>
 #include <string>
 #include <chrono>
-#include "../../Entities/Entity.h"
-#include "../../EventManager/EventManager.h"
-#include "../../Managers/ManWayPoint.h"
-#include "../../Managers/ManCar.h"
-#include "../../Components/CPowerUp.h"
-#include "../../Managers/Manager.h"
+#include <Entities/Entity.h>
+#include <EventManager/EventManager.h>
+#include <Managers/ManWayPoint.h>
+#include <Managers/ManCar.h>
+#include <Components/CPowerUp.h>
+#include <Managers/Manager.h>
 #include "../../Constants.h"
 
 using namespace chrono;
@@ -31,7 +31,7 @@ class RenderFacade {
     virtual vector<Constants::InputTypes> FacadeCheckInputMulti() = 0;
     virtual void FacadeCheckInputSingle() = 0;
     virtual int FacadeGetFPS() const = 0;
-    virtual void FacadeSetWindowCaption(std::string) const = 0;
+    virtual void FacadeSetWindowCaption(std::string, int) const = 0;
     virtual void FacadeBeginScene() const = 0;
     virtual void FacadeDrawAll() const = 0;
     virtual void FacadeEndScene() const = 0;

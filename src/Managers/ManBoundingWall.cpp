@@ -1,10 +1,11 @@
 #include "ManBoundingWall.h"
-#include <fstream>
-#include <sstream>
-#include <functional>
+
 #include <iostream>
-#include "../../include/include_json/include_json.hpp"
-#include "../Entities/BoundingWall.h"
+#include <Entities/BoundingWall.h>
+#include <include_json/include_json.hpp>
+#include <fstream>
+#include <cstring>
+#include <sstream>
 
 using namespace std;
 using json = nlohmann::json;

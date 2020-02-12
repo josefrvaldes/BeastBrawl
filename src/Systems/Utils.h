@@ -1,19 +1,13 @@
 #pragma once
 
-#define _USE_MATH_DEFINES
-
 #include <math.h>
-#include "../Constants.h"
-#include <stdio.h>
-#include <time.h>
-#include <chrono>
 #include <cstring>
-#include "../../include/glm/vec3.hpp"
 #include <iostream>
-#include <memory>
 #include <sstream>
 #include <vector>
+#include "../../include/glm/vec3.hpp"
 #include "../Components/CPowerUp.h"
+#include "../Constants.h"
 
 using namespace glm;
 using namespace std;

@@ -1,12 +1,13 @@
-#include "./ManNamePlate.h"
-#include "../Entities/NamePlate.h"
-#include "../Components/CNamePlate.h"
-#include "../Components/CId.h"
-#include "../Entities/CarAI.h"
-#include "../Entities/CarHuman.h"
+#include "ManNamePlate.h"
+
+#include <Components/CNamePlate.h>
+#include <Components/CId.h>
+#include <Entities/NamePlate.h>
+#include <Entities/CarAI.h>
+#include <Entities/CarHuman.h>
 
 ManNamePlate::ManNamePlate(ManCar* cars){
-    for(auto car : cars->GetEntities()){
+    for(const auto& car : cars->GetEntities()){
         //cout <<"Entraaaaaa\n";
         if(car.get() != cars->GetCar().get()){
             std::cout << "sdfasdfsa" << std::endl;

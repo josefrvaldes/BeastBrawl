@@ -14,7 +14,7 @@ namespace CLE {
 
             void SetPerspective(bool b)     { perspective = b; };
 
-            bool IsPerspective()            const { return perspective; };
+            bool IsPerspective() const      { return perspective; };
 
             void Draw(glm::mat4&);
 

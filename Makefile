@@ -16,25 +16,18 @@ else
 endif
 
 ifdef WINDOWS
-	LIBS 	    := -L./lib/windows/irrlicht -lIrrlicht -L./lib/windows/fmod -lfmod -lfmodstudio
-	INCLUDE     := -I. 
-	INCLUDE_IRR := -I /include/irrlicht/irrlicht.h
-	#INCLUDE_BOOST := -I /include/boost/irrlicht.h
-	INCLUDE_FMOD := -I ./include/fmod/core -I ./include/fmod/studio
-	#INCLUDE_BULLET := -I./include/bullet -I./include
+	LIBS 	    := -L./lib/windows/irrlicht -lIrrlicht 
+	LIBS		+= -L./lib/windows/fmod -lfmod -lfmodstudio
+	INCLUDE     := -I./include -I./src
 	CC			:= g++
 else
 	#LIBS		:= -L/usr/lib32 -lX11
-	LIBS 	    += -L./lib/linux/irrlicht -lIrrlicht -L./lib/linux/fmod -lfmod -lfmodstudio -L./lib/linux/glew -lGLEW -lGL -L./lib/linux/assimp -lassimp
-	LIBS		+= -Wl,-rpath=lib/linux/irrlicht -Wl,-rpath=lib/linux/fmod -Wl,-rpath=lib/linux/assimp
-	INCLUDE     := -I. 
-	INCLUDE_IRR := -I /include/irrlicht/irrlicht.h
-	INCLUDE_FMOD := -I ./include/fmod/core -I ./include/fmod/studio
-	INCLUDE_GLEW := -I /include/glew/glew.h
-	INCLUDE_ASSIMP 	:= -I./include/assimp
-	#INCLUDE_BULLET := -I./include/bullet -I./include
+	LIBS 	    += -L./lib/linux/irrlicht -lIrrlicht -Wl,-rpath=lib/linux/irrlicht
+	LIBS 	    += -L./lib/linux/fmod -lfmod -lfmodstudio -Wl,-rpath=lib/linux/fmod
+	LIBS 	    += -L./lib/linux/glew -lGLEW -lGL -Wl,-rpath=lib/linux/glew
+	INCLUDE     := -I./include -I./src -I./include/fmod/core -I./include/fmod/studio
 	CREATE_SYMLINKS := bash symlinks.sh
-	CC			:= ccache g++
+	CC			:= g++
 endif
 
 
@@ -43,16 +36,22 @@ OBJ_PATH    := obj/src
 SRC_PATH	:= src
 
 NAME_EXE	:= Beast_Brawl
-CXXFLAGS 	+= -Wall -Wno-unknown-pragmas -std=c++17 -fuse-ld=gold -pthread # el no-unknown-pragmas es para que no salga el warning de los pragma region
+CXXFLAGS 	+= -Wall -Wno-unknown-pragmas -std=c++17 -pthread # el no-unknown-pragmas es para que no salga el warning de los pragma region
 																					# -pthread es para la librería asio
 																					# -ltbb es para la librería tbb
-																					# -fuse-ld=gold es para ccache
+																					# -fuse-ld=gold es para ccache # el no-unknown-pragmas es para que no salga el warning de los pragma region
 
 ALLCPPS		:= $(shell find src/ -type f -iname *.cpp)
 ALLCPPSOBJ	:= $(patsubst $(SRC_PATH)/%.cpp,$(OBJ_PATH)/%.o,$(ALLCPPS))
 SUBDIRS		:= $(shell find src/ -type d)
 OBJSUBDIRS  := $(patsubst $(SRC_PATH)%,$(OBJ_PATH)%,$(SUBDIRS))
 
+ifdef CACHE
+	CC := ccache g++
+	CXXFLAGS += -fuse-ld=gold
+else
+	CC := g++
+endif
 
 
 #Esto crea el ejecutable
@@ -70,7 +69,7 @@ $(NAME_EXE): $(OBJSUBDIRS) $(ALLCPPSOBJ)
 $(OBJ_PATH)/%.o: $(SRC_PATH)/%.cpp
 	$(PRUEBA_TEXT)
 	$(COMPILING_TEXT) $<
-	@$(CC) $(CXXFLAGS) -o $@ -c $^ $(INCLUDE) $(INCLUDE_IRR) $(INCLUDE_FMOD) $(INCLUDE_GLEW) $(INCLUDE_ASSIMP)
+	@$(CC) $(CXXFLAGS) -o $@ -c $^ $(INCLUDE)
 	
 
 $(OBJSUBDIRS):
@@ -87,7 +86,7 @@ info:
 
 .PHONY: exe_gl
 exe_gl:
-	@CLEngine/CLEngine
+	@sh ./CLEngine.sh
 
 .PHONY: exe
 exe:

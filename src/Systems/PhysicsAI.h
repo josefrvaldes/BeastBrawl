@@ -4,12 +4,12 @@
 #include <vector>
 #include <stack>
 #include <iostream>
-#include <stdio.h>
-#include <limits.h>
+#include <cstdio>
+#include <climits>
 #include <algorithm>
-#include <stdlib.h>     /* srand, rand */
+#include <cstdlib>     /* srand, rand */
 
-#include <math.h>
+#include <cmath>
 #include <memory>
 using namespace std;
 

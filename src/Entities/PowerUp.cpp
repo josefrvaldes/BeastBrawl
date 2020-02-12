@@ -1,13 +1,11 @@
 #include "PowerUp.h"
-#include "../Components/CSpeed.h"
-#include "../Components/CId.h"
-#include "../Components/CType.h"
-#include "../Components/CTexture.h"
-#include "../Components/CMesh.h"
-#include "../Components/CTransformable.h"
-#include "../Components/CCar.h"
-#include "../Components/CPowerUp.h"
-#include "../Components/CTargetEntity.h"
+#include <Components/CId.h>
+#include <Components/CType.h>
+#include <Components/CTexture.h>
+#include <Components/CMesh.h>
+#include <Components/CTransformable.h>
+#include <Components/CPowerUp.h>
+#include <Components/CTargetEntity.h>
 #include <iostream>
 
 class Position;
@@ -22,7 +20,7 @@ PowerUp::PowerUp()
     //float maxSpeed = 20.0, acceleration = .15, friction = 0.1, slowDown = 0.25;
     
     shared_ptr<CId> cId   = make_shared<CId>();
-    shared_ptr<CType> cType = make_shared<CType>(ModelType::Sphere);
+    shared_ptr<CType> cType = make_shared<CType>(ModelType::AnimatedMesh);
     shared_ptr<CTransformable> cTransformable = make_shared<CTransformable>(glm::vec3(0.0f,0.0f,0.0f), glm::vec3(0.0f,0.0f,0.0f), glm::vec3(1.0f,1.0f,1.0f)); 
     shared_ptr<CTexture> cTexture = make_shared<CTexture>(texture);
     shared_ptr<CMesh> cMesh   = make_shared<CMesh>(mesh);
@@ -68,17 +66,20 @@ PowerUp::PowerUp(glm::vec3 _position, glm::vec3 _rotation, typeCPowerUp _typePow
     CTexture *cTexture = (CTexture *)m_components[CompType::TextureComp].get();
     CMesh *cMesh = (CMesh *)m_components[CompType::MeshComp].get();
     if(_typePowerUp == typeCPowerUp::MelonMolon){           // Melon Molon
-        cTexture->texture = "spheremap.jpg";
-        cMesh->mesh = "media/ninja.b3d";
+        cTexture->texture = "";
+        cMesh->mesh = "melon.obj";
         cPowerUp->speed = 510.0;
+        cTransformable->scale = glm::vec3(4,4,4);
     }else if(_typePowerUp == typeCPowerUp::PudinDeFrambuesa){   // Pudin Frambuesa
-        cTexture->texture = "water.jpg";
-        cMesh->mesh = "media/ninja.b3d";
+        cTexture->texture = "";
+        cMesh->mesh = "pudin.obj";
         cPowerUp->speed = -510.0;
+        cTransformable->scale = glm::vec3(4,4,4);
     }else{                                                      // Telebanana
-        cTexture->texture = "stones.jpg";
-        cMesh->mesh = "media/ninja.b3d";
+        cTexture->texture = "";
+        cMesh->mesh = "telebanana.obj";
         cPowerUp->speed = 375.0;
+        cTransformable->scale = glm::vec3(2,2,2);
     }
 }
 

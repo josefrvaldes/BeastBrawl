@@ -36,7 +36,7 @@ void EventManager::Update() {
         if (mapByType != listeners.end()) {
             auto eventVector = mapByType->second;  // El vector de listeners del mapa segun el EventType
 
-            for (Listener listener : eventVector) {
+            for (const Listener& listener : eventVector) {
                 listener.callback(e.data.get());
             }
         }
@@ -45,14 +45,13 @@ void EventManager::Update() {
 
 //Añade un evento a la cola de eventos
 // O(n) -> Recorremos la lista iterativamente hasta encontrar el valor directamente superior
-void EventManager::AddEventMulti(Event e) {
+void EventManager::AddEventMulti(const Event& e) {
     std::lock_guard<std::mutex> lock(mutex_events);
-
     //FIXME: Descomentar esto para que funcione con cola
     //eventQueue.push(e);
 
     //Si es el primer evento lo añadimos al comienzo
-    if (events.size() == 0) {
+    if (events.empty()) {
         events.push_front(e);
     } else {
         //TODO: Implementar un algoritmo de busqueda e insercion mas optimo
@@ -68,9 +67,7 @@ void EventManager::AddEventMulti(Event e) {
 }
 
 // Añade un listener al mapa
-void EventManager::SubscribeMulti(const Listener listener) {
-    // std::lock_guard<std::mutex> lock(mutex_vector);
-
+void EventManager::SubscribeMulti(const Listener& listener) {
     //Vamos a ver si tiene ya alguno de este tipo
     auto iterator = listeners.find(listener.type);
 
@@ -85,12 +82,12 @@ void EventManager::SubscribeMulti(const Listener listener) {
 }
 
 // Añade un listener al mapa
-void EventManager::Subscribe(const Listener listener) {
+void EventManager::Subscribe(const Listener& listener) {
     SubscribeMulti(listener);
 }
 
 //TODO: Esto hay que mejorarlo muchisimo pero no controlo aun demasiado tema de punteros e iterators
-void EventManager::UnSubscribeMulti(EventType eType, string listenerName) {
+void EventManager::UnSubscribeMulti(EventType eType, const string& listenerName) {
     ShowSuscribers();
     auto mapByType = listeners.find(eType);
 

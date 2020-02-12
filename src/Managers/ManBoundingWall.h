@@ -1,7 +1,8 @@
 #pragma once
 
 #include "Manager.h"
-#include "../../include/glm/vec3.hpp"
+
+#include <glm/vec3.hpp>
 
 using namespace std;
 

@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../../EventManager/EventManager.h"
-#include "../../EventManager/Event.h"
-#include "../../Entities/Entity.h"
+#include <EventManager/EventManager.h>
+#include <EventManager/Event.h>
+#include <Entities/Entity.h>
 
 class PhysicsFacade{
     public:

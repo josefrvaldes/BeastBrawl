@@ -1,14 +1,9 @@
 #include "Collisions.h"
-#include "../Entities/PowerUp.h"
-#include "../Entities/BoxPowerUp.h"
-#include "../Entities/Car.h"
-#include "../Entities/CarHuman.h"
-#include "../Entities/CarAI.h"
-#include "../Entities/Totem.h"
-#include "../Components/CTotem.h"
-#include "../Components/CShield.h"
-#include "../EventManager/EventManager.h"
-#include "../EventManager/Event.h"
+#include <Entities/Car.h>
+#include <Entities/CarHuman.h>
+#include <Entities/CarAI.h>
+#include <Components/CTotem.h>
+#include <Components/CShield.h>
 
 Collisions::Collisions(){
 
@@ -48,7 +43,7 @@ bool Collisions::Intersects(Entity* entity1,Entity* entity2){
 
 
 void Collisions::IntersectPlayerPowerUps(Car* carPlayer, ManPowerUp* manPowerUps, ManNavMesh* manNavMesh){
-    for(shared_ptr<Entity> actualPowerUp : manPowerUps->GetEntities()){                                                            // SI HACE DANYO
+    for(auto actualPowerUp : manPowerUps->GetEntities()){                                                            // SI HACE DANYO
         if(Intersects(carPlayer, actualPowerUp.get())){   //TRUE
             // debemos eliminar el powerUp y hacer danyo al jugador
             shared_ptr<DataMap> dataCollisonCarPowerUp = make_shared<DataMap>();                                                                       
@@ -71,9 +66,9 @@ void Collisions::IntersectPlayerPowerUps(Car* carPlayer, ManPowerUp* manPowerUps
 }
 
 void Collisions::IntersectsCarsPowerUps(ManCar* manCars, ManPowerUp* manPowerUps, ManNavMesh* manNavMesh){
-    for(auto actualCar : manCars->GetEntities()){
+    for(const auto& actualCar : manCars->GetEntities()){
         if(actualCar.get() != manCars->GetCar().get()){
-            for(shared_ptr<Entity> actualPowerUp : manPowerUps->GetEntities()){                                                               // SI HACE DANYO
+            for(auto actualPowerUp : manPowerUps->GetEntities()){                                                               // SI HACE DANYO
                 if(Intersects(actualCar.get(), actualPowerUp.get())){   //TRUE
                     // debemos eliminar el powerUp y hacer danyo al jugador
                     shared_ptr<DataMap> dataCollisonCarPowerUp = make_shared<DataMap>();                                                                       
@@ -100,7 +95,7 @@ void Collisions::IntersectsCarsPowerUps(ManCar* manCars, ManPowerUp* manPowerUps
 
 void Collisions::IntersectPlayerTotem(Car* carPlayer, ManTotem* manTotem){
 
-    for(shared_ptr<Entity> actualTotem : manTotem->GetEntities()){                                                       // SI HACE DANYO
+    for(auto actualTotem : manTotem->GetEntities()){                                                       // SI HACE DANYO
         if(Intersects(carPlayer, actualTotem.get())){   //TRUE
             // debemos coger el TOTEM
             shared_ptr<DataMap> dataCollisionTotem = make_shared<DataMap>();                                                                         
@@ -113,7 +108,7 @@ void Collisions::IntersectPlayerTotem(Car* carPlayer, ManTotem* manTotem){
 
 void Collisions::IntersectCarsTotem(ManCar* manCars, ManTotem* manTotem){
 
-    for(auto actualCar : manCars->GetEntities()){   
+    for(const auto& actualCar : manCars->GetEntities()){
         if(actualCar.get() != manCars->GetCar().get()){
             for(shared_ptr<Entity> actualTotem : manTotem->GetEntities()){                                                       // SI HACE DANYO
                 if(Intersects(actualCar.get(), actualTotem.get())){   //TRUE
@@ -134,8 +129,8 @@ void Collisions::IntersectCarsTotem(ManCar* manCars, ManTotem* manTotem){
 
 void Collisions::IntersectPlayerBoxPowerUp(Car* carPlayer, ManBoxPowerUp* manBoxPowerUp){
     auto cPowerUpCar = static_cast<CPowerUp*>(carPlayer->GetComponent(CompType::PowerUpComp).get());                            // debemos acceder al componente PowerUpComp                                                                    // solo si no tenemos powerUp podemos coger uno
-    for(shared_ptr<Entity> actualBoxPowerUp: manBoxPowerUp->GetEntities()){                                                 // recorremos los powerUps
-        auto cBoxPowerUp = static_cast<CBoxPowerUp*>(actualBoxPowerUp.get()->GetComponent(CompType::BoxPowerUpComp).get()); // debemos acceder al componente BoxPowerUp
+    for(auto actualBoxPowerUp: manBoxPowerUp->GetEntities()){                                                 // recorremos los powerUps
+        auto cBoxPowerUp = static_cast<CBoxPowerUp*>(actualBoxPowerUp->GetComponent(CompType::BoxPowerUpComp).get()); // debemos acceder al componente BoxPowerUp
         if(cBoxPowerUp->active == true){ 
             if(cPowerUpCar->typePowerUp == typeCPowerUp::None){                                                                                   // Vemos si efectivamente esta activo o no, para poder cogerlo
                 if( Intersects(carPlayer, actualBoxPowerUp.get()) ){                                                            // Finalmente comprobamos las colisiones entre el coche y el powerUp
@@ -161,11 +156,11 @@ void Collisions::IntersectPlayerBoxPowerUp(Car* carPlayer, ManBoxPowerUp* manBox
 
 
 void Collisions::IntersectCarsBoxPowerUp(ManCar* manCars, ManBoxPowerUp* manBoxPowerUp){
-    for(auto actualCar : manCars->GetEntities()){   
+    for(const auto& actualCar : manCars->GetEntities()){
         if(actualCar.get() != manCars->GetCar().get()){
             auto cPowerUpCar = static_cast<CPowerUp*>(actualCar.get()->GetComponent(CompType::PowerUpComp).get());                                                                                              
-            for(shared_ptr<Entity> actualBoxPowerUp: manBoxPowerUp->GetEntities()){                                                 
-                auto cBoxPowerUp = static_cast<CBoxPowerUp*>(actualBoxPowerUp.get()->GetComponent(CompType::BoxPowerUpComp).get());
+            for(auto actualBoxPowerUp: manBoxPowerUp->GetEntities()){                                                 
+                auto cBoxPowerUp = static_cast<CBoxPowerUp*>(actualBoxPowerUp->GetComponent(CompType::BoxPowerUpComp).get());
                 // Vemos si efectivamente esta activo o no, para poder cogerlo
                 if(cBoxPowerUp->active == true){
                     if(cPowerUpCar->typePowerUp == typeCPowerUp::None){                                                                                   

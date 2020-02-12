@@ -1,6 +1,5 @@
 #include    "fuzzySet_RightShoulder.h"
 
-#include <iostream>
 double FuzzySet_RightShoulder::CalculateDOM(double val)const{
     //check for case where the offset may be zero
     if ( (m_dLeftOffset == 0) && (m_dPeakPoint == val) ){

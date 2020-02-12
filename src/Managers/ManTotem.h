@@ -1,13 +1,13 @@
 #pragma once
 
+#include "ManNavMesh.h"
+
 #include <iostream>
 #include <map>
 #include <memory>
 #include <vector>
-#include "Manager.h"
-#include "ManNavMesh.h"
-#include "../../include/glm/vec3.hpp"
-#include "../Aliases.h"
+#include <glm/vec3.hpp>
+#include <Aliases.h>
 
 
 using namespace std;

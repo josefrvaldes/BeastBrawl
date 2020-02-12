@@ -1,15 +1,13 @@
 #include "SystemBtPowerUp.h"
 
 
-#include "../behaviourTree/behaviourTree.h"
-#include "../behaviourTree/composite.h"
-#include "../behaviourTree/selector.h"
-#include "../behaviourTree/sequence.h"
-#include "../behaviourTree/decorator.h"
+#include <behaviourTree/behaviourTree.h>
+#include <behaviourTree/selector.h>
+#include <behaviourTree/sequence.h>
+#include <behaviourTree/decorator.h>
 
-#include "../behaviourTree/Blackboard.h"
-#include "../Components/CPowerUp.h"
-#include "../Components/CTotem.h"
+#include <behaviourTree/Blackboard.h>
+#include <Components/CTotem.h>
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //                           COMPROBAR BEHAVIOR TREE

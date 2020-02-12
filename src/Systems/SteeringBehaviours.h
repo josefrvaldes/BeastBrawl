@@ -1,12 +1,12 @@
 #pragma once
 
-#include <math.h>
-#include "../../include/glm/vec2.hpp"
-#include "../../include/glm/vec3.hpp"
+#include <cmath>
+#include <glm/vec2.hpp>
+#include <glm/vec3.hpp>
 #include <memory>
 #include <vector>
 #include <map>
-#include "../CLPhysics/CLPhysics.h"
+#include <CLPhysics/CLPhysics.h>
 
 //#include "../../lib/glm/mat4x4.hpp"
 //#include "../../lib/glm/gtc/matrix_transform.hpp"
@@ -16,10 +16,10 @@
 using namespace std;
 
 struct ManCar;
-struct Entity;
-struct CTransformable;
+class Entity;
+class CTransformable;
 struct CNitro;
-struct CCar;
+class CCar;
 struct ManPowerUp;
 struct ManBoundingWall;
 

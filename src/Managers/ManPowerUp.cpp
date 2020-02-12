@@ -1,11 +1,11 @@
-#include "./ManPowerUp.h"
+#include "ManPowerUp.h"
+
 #include <iostream>
-#include "../Entities/PowerUp.h"
-#include "../EventManager/Event.h"
-#include "../EventManager/EventManager.h"
-#include "../Aliases.h"
-#include "../Facade/Render/RenderFacadeManager.h"
-#include "../Components/CDimensions.h"
+#include <Entities/PowerUp.h>
+#include <EventManager/Event.h>
+#include <EventManager/EventManager.h>
+#include <Facade/Render/RenderFacadeManager.h>
+#include <Components/CDimensions.h>
 
 class Position;
 using namespace std;
@@ -61,7 +61,7 @@ void ManPowerUp::CreatePowerUp(DataMap* d) {
     renderEngine->FacadeAddObject(powerUp.get());
 
     //Cuando creamos el powerUp, ponemos su tiempo inicial de inactivadad --> para no danyarnos a nostros mismos
-    static_cast<CPowerUp*>(powerUp.get()->GetComponent(CompType::PowerUpComp).get())->timeStart = system_clock::now();
+    static_cast<CPowerUp*>(powerUp->GetComponent(CompType::PowerUpComp).get())->timeStart = system_clock::now();
 }
 
 

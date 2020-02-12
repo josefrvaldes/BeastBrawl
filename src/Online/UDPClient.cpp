@@ -1,8 +1,8 @@
 #include "UDPClient.h"
-#include <src/EventManager/Event.h>
-#include <src/EventManager/EventManager.h>
-#include <src/Systems/Utils.h>
-//#include "src/Systems/Serialization.h"
+#include "../src/EventManager/Event.h"
+#include "../src/EventManager/EventManager.h"
+// #include <src/EventManager/EventManager.h>
+#include "../src/Systems/Utils.h"
 #include <boost/asio/placeholders.hpp>
 #include <boost/bind.hpp>
 #include <deque>
@@ -70,7 +70,7 @@ void UDPClient::HandleReceived(std::shared_ptr<unsigned char[]> recevBuff, const
                 Utils::Deserialize(&idRival, recevBuff.get(), currentIndex);
                 const vector<Constants::InputTypes> inputs = Utils::DeserializeInputs(recevBuff.get(), currentIndex);
                 
-                std::cout << "Recibido inputs: " << bytesTransferred << " bytes" << std::endl; 
+                // std::cout << "Recibido inputs: " << bytesTransferred << " bytes" << std::endl; 
                 HandleReceivedInputs(inputs, idRival);
             } break;
 
@@ -149,7 +149,7 @@ void UDPClient::HandleReceivedSync(unsigned char* recevBuff, size_t bytesTransfe
     //std::cout << "Totem en suelo: " << totemInGround << std::endl; 
     //std::cout << "Pos totem: " << posTotem.x << " , " << posTotem.z << std::endl;
     //std::cout << "----------------------------------------" << std::endl;
-    std::cout << "Recibido sincronizacion: " << bytesTransferred << " bytes" << std::endl; 
+    // std::cout << "Recibido sincronizacion: " << bytesTransferred << " bytes" << std::endl; 
 }
 
 
@@ -193,7 +193,7 @@ void UDPClient::HandleSentInputs(const boost::system::error_code& errorCode, std
         cout << "Hubo un error enviando los inputs, madafaka" << endl;
         // ResendInput();
     }else{
-        std::cout << "Enviados Inputs: " << bytes_transferred << " bytes" << std::endl; 
+        // std::cout << "Enviados Inputs: " << bytes_transferred << " bytes" << std::endl; 
     }
 }
 

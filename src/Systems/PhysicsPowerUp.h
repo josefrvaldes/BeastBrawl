@@ -1,32 +1,32 @@
 #pragma once
 
-#include "../Components/CType.h"
-#include "../Components/CId.h"
-#include "../Components/CTransformable.h"
-#include "../Components/CTargetEntity.h"
-#include "../Components/CCamera.h"
-#include "../Components/Component.h"
-#include "../Components/CCar.h"
-#include "../Components/CWayPoint.h"
+#include <Components/CType.h>
+#include <Components/CId.h>
+#include <Components/CTransformable.h>
+#include <Components/CTargetEntity.h>
+#include <Components/CCamera.h>
+#include <Components/Component.h>
+#include <Components/CCar.h>
+#include <Components/CWayPoint.h>
 
-#include "../Entities/PowerUp.h"
-#include "../Entities/Entity.h"
+#include <Entities/PowerUp.h>
+#include <Entities/Entity.h>
 
 
 // solo lo necesitaran algunos como la banana
-#include "../Managers/ManWayPoint.h"
-#include "../Entities/WayPoint.h"
+#include <Managers/ManWayPoint.h>
+#include <Entities/WayPoint.h>
 
-#include "../EventManager/EventManager.h"
-#include "../EventManager/Event.h"
+#include <EventManager/EventManager.h>
+#include <EventManager/Event.h>
 
 // solo algunos como la banana
-#include "../fuzzyLogic/fuzzyLogic.h"
+#include <fuzzyLogic/fuzzyLogic.h>
 
 #include <vector>
-#include <stdlib.h>     /* srand, rand */
+#include <cstdlib>     /* srand, rand */
 
-#include <math.h>
+#include <cmath>
 #include <memory>
 using namespace std;
 #define PI 3.141592

@@ -1,5 +1,18 @@
 #include "SystemFuzzyLogicAI.h"
 
+#include <Components/CTransformable.h>
+#include <Components/Component.h>
+#include <Components/CCar.h>
+#include <Components/CWayPoint.h>
+#include <Components/CNitro.h>
+#include <Entities/CarAI.h>
+
+
+
+#include <cmath>
+#include <memory>
+#define PI 3.141592
+
 
 void CalculatePositionAI(CCar* cCar, CTransformable* cTransformable, float deltaTime, float angle);
 void CalculatePositionReverseAI(CCar* cCar, CTransformable* cTransformable, float deltaTime, float angle);

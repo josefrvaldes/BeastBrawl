@@ -1,8 +1,8 @@
 #pragma once
 
 #include "RenderFacade.h"
-#include "../../EventManager/Event.h"
-#include "../../EventManager/EventManager.h"
+#include <EventManager/Event.h>
+#include <EventManager/EventManager.h>
 
 #include <codecvt>
 #include <iostream>
@@ -31,7 +31,7 @@ class RenderFacadeClover : public RenderFacade {
       vector<Constants::InputTypes> FacadeCheckInputMulti() override;
       void FacadeCheckInputSingle() override;
       int FacadeGetFPS() const override;
-      void FacadeSetWindowCaption(std::string) const override;
+      void FacadeSetWindowCaption(std::string, int) const override;
       void FacadeBeginScene() const override;
       void FacadeDrawAll() const override;
       void FacadeEndScene() const override;

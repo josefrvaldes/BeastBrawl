@@ -1,8 +1,8 @@
 #pragma once
 
 
-#include "../EventManager/Event.h"
-#include "../EventManager/EventManager.h"
+#include <EventManager/Event.h>
+#include <EventManager/EventManager.h>
 
 
 #include <math.h>

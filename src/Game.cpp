@@ -1,13 +1,12 @@
 #include "Game.h"
-#include "Facade/Input/InputFacadeManager.h"
 #include "Facade/Physics/PhysicsFacadeManager.h"
-#include "Facade/Render/RenderFacadeManager.h"
 #include "State/StateEndRace.h"
 #include "State/StateInGameMulti.h"
 #include "State/StateInGameSingle.h"
 #include "State/StateLobbyMulti.h"
 #include "State/StateMenu.h"
 #include "State/StatePause.h"
+
 
 using namespace std;
 
@@ -150,7 +149,8 @@ void Game::MainLoop() {
     SoundFacadeManager* soundFacadeManager = SoundFacadeManager::GetInstance();
 
     RenderFacadeManager* renderFacadeMan = RenderFacadeManager::GetInstance();
-    renderFacadeMan->GetRenderFacade()->FacadeSetWindowCaption("Beast Brawl");
+
+    int lastFPS = -1;
 
     while (renderFacadeMan->GetRenderFacade()->FacadeRun()) {
         currentState->Input();
@@ -159,6 +159,12 @@ void Game::MainLoop() {
         //Actualiza el motor de audio.
         soundFacadeManager->GetSoundFacade()->Update();
         currentState->Render();
+
+        int fps = renderFacadeMan->GetRenderFacade()->FacadeGetFPS();
+        if(lastFPS != fps) {
+            renderFacadeMan->GetRenderFacade()->FacadeSetWindowCaption("Beast Brawl", fps);
+            lastFPS = fps;
+        }
     }
 
     renderFacadeMan->GetRenderFacade()->FacadeDeviceDrop();

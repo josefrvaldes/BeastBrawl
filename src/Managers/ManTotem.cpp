@@ -1,13 +1,10 @@
 #include "ManTotem.h"
-#include "../Entities/Totem.h"
-#include "../EventManager/Event.h"
-#include "../EventManager/EventManager.h"
-#include "../Facade/Render/RenderFacadeManager.h"
-#include "../Components/CTransformable.h"
-#include "../Components/CDimensions.h"
-#include "../Components/CCurrentNavMesh.h"
-#include "../Components/CNavMesh.h"
-#include "../../include/include_json/include_json.hpp"
+
+#include <Entities/Totem.h>
+#include <Facade/Render/RenderFacadeManager.h>
+#include <Components/CDimensions.h>
+#include <Components/CCurrentNavMesh.h>
+#include <include_json/include_json.hpp>
 
 class Position;
 using namespace std;
@@ -82,8 +79,8 @@ void ManTotem::ResetTotem(DataMap* d){
     //std::cout << "cogemos correctamente el mesh del nav conoooooooooooooooo" << std::endl;  
     auto cCurrentNavMesh = static_cast<CCurrentNavMesh*>(any_cast<Entity*>((*d)[ACTUAL_CAR])->GetComponent(CompType::CurrentNavMeshComp).get()); 
     auto navMesh = manNavMesh->GetEntities()[cCurrentNavMesh->currentNavMesh]; //NavMesh en el que esta el coche
-    auto cDimensions = static_cast<CDimensions*>(navMesh.get()->GetComponent(CompType::DimensionsComp).get());
-    auto cTransformableNav = static_cast<CTransformable*>(navMesh.get()->GetComponent(CompType::TransformableComp).get()); 
+    auto cDimensions = static_cast<CDimensions*>(navMesh->GetComponent(CompType::DimensionsComp).get());
+    auto cTransformableNav = static_cast<CTransformable*>(navMesh->GetComponent(CompType::TransformableComp).get());
     if( !(( (transfActualCar->position.x >= (cTransformableNav->position.x-(cDimensions->width/2))) && 
         (transfActualCar->position.x <= (cTransformableNav->position.x+(cDimensions->width/2))) ) &&
         ( (transfActualCar->position.z >= (cTransformableNav->position.z-(cDimensions->depth/2))) && 

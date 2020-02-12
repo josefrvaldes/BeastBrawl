@@ -1,9 +1,10 @@
 #pragma once
 
+#include "Component.h"
+
 #include <chrono>
 #include <iostream>
 #include <string>
-#include "Component.h"
 
 typedef std::chrono::high_resolution_clock Clock;
 

@@ -1,13 +1,12 @@
-#include "./ManNavMesh.h"
+#include "ManNavMesh.h"
+#include "ManTotem.h"
+
 #include <iostream>
-#include "../Aliases.h"
-#include "../Entities/NavMesh.h"
-#include "../Entities/Totem.h"
-#include "../Managers/ManTotem.h"
-#include "../Components/CDimensions.h"
-#include "../Components/CCurrentNavMesh.h"
-#include "../Components/CNavMesh.h"
-#include "../../include/include_json/include_json.hpp"
+#include <Entities/NavMesh.h>
+#include <Components/CDimensions.h>
+#include <Components/CCurrentNavMesh.h>
+#include <Components/CNavMesh.h>
+#include <include_json/include_json.hpp>
 #include <cmath> 
 
 using namespace std;
@@ -141,7 +140,7 @@ void ManNavMesh::ActualizeNavMeshTotem(DataMap* d){
     //std::cout << "Actualizamos NavMesh del Totem" << std::endl;
     bool todoCorrecto = false;
     auto cTransformableTotem = static_cast<CTransformable*>(any_cast<Entity*>((*d)[TOTEM])->GetComponent(CompType::TransformableComp).get());     
-    for(auto navmesh : GetEntities()){
+    for(const auto& navmesh : GetEntities()){
         auto cDimensions = static_cast<CDimensions*>(navmesh.get()->GetComponent(CompType::DimensionsComp).get());
         auto cTransformableNav = static_cast<CTransformable*>(navmesh.get()->GetComponent(CompType::TransformableComp).get()); 
         if( ( (cTransformableTotem->position.x >= (cTransformableNav->position.x-(cDimensions->width/2))) && 
@@ -165,7 +164,7 @@ void ManNavMesh::ActualizeNavMeshTotem(DataMap* d){
 
 void ManNavMesh::InitNavMeshTotem(ManTotem *manTotems){
     auto cTransformableTotem = static_cast<CTransformable*>(manTotems->GetEntities()[0].get()->GetComponent(CompType::TransformableComp).get());     
-    for(auto navmesh : GetEntities()){
+    for(const auto& navmesh : GetEntities()){
         auto cDimensions = static_cast<CDimensions*>(navmesh.get()->GetComponent(CompType::DimensionsComp).get());
         auto cTransformableNav = static_cast<CTransformable*>(navmesh.get()->GetComponent(CompType::TransformableComp).get()); 
         if( ( (cTransformableTotem->position.x >= (cTransformableNav->position.x-(cDimensions->width/2))) && 
@@ -182,7 +181,7 @@ void ManNavMesh::InitNavMeshTotem(ManTotem *manTotems){
 
 void ManNavMesh::ActualizeNavMeshCarAI(DataMap* d){
     auto cTransformableCar = static_cast<CTransformable*>(any_cast<Entity*>((*d)[CAR_AI])->GetComponent(CompType::TransformableComp).get());     
-    for(auto navmesh : GetEntities()){
+    for(const auto& navmesh : GetEntities()){
         auto cDimensions = static_cast<CDimensions*>(navmesh.get()->GetComponent(CompType::DimensionsComp).get());
         auto cTransformableNav = static_cast<CTransformable*>(navmesh.get()->GetComponent(CompType::TransformableComp).get()); 
         if( ( (cTransformableCar->position.x >= (cTransformableNav->position.x-(cDimensions->width/2))) && 
@@ -199,7 +198,7 @@ void ManNavMesh::ActualizeNavMeshCarAI(DataMap* d){
 
 void ManNavMesh::UpdateNavMeshPlayer(Entity* carPlayer){
     auto cTransformableCar = static_cast<CTransformable*>(carPlayer->GetComponent(CompType::TransformableComp).get());     
-    for(auto navmesh : GetEntities()){
+    for(const auto& navmesh : GetEntities()){
         auto cDimensions = static_cast<CDimensions*>(navmesh.get()->GetComponent(CompType::DimensionsComp).get());
         auto cTransformableNav = static_cast<CTransformable*>(navmesh.get()->GetComponent(CompType::TransformableComp).get()); 
         if( ( (cTransformableCar->position.x >= (cTransformableNav->position.x-(cDimensions->width/2))) && 

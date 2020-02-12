@@ -1,11 +1,12 @@
 #pragma once
 
+#include "PhysicsFacade.h"
+
 #include <iostream>
 #include <memory>
-#include "../../../include/irrlicht/irrlicht.h"
-#include "../Render/RenderFacadeIrrlicht.h"
-#include "../Render/RenderFacadeManager.h"
-#include "PhysicsFacade.h"
+#include <irrlicht/irrlicht.h>
+#include <Facade/Render/RenderFacadeIrrlicht.h>
+#include <Facade/Render/RenderFacadeManager.h>
 
 using namespace std;
 class PhysicsFacadeIrrlicht : public PhysicsFacade {

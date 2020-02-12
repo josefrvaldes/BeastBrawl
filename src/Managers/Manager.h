@@ -14,7 +14,7 @@ class Manager {
     Manager();
     ~Manager(); 
 
-    vector<shared_ptr<Entity>> GetEntities() const {
+    const vector<shared_ptr<Entity>>& GetEntities() const {
         return entities;
     };
 
