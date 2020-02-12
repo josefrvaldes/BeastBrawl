@@ -1,6 +1,6 @@
 #include "Camera.h"
-#include "../Components/CId.h"
-#include "../Components/CCamera.h"
+#include <Components/CId.h>
+#include <Components/CCamera.h>
 
 class Position;
 using namespace std;
@@ -34,17 +34,17 @@ Camera::~Camera()
 }
 
 void Camera::SuscribeEvents(){
-    EventManager::GetInstance().SuscribeMulti(Listener(
+    EventManager::GetInstance().SubscribeMulti(Listener(
         EventType::INVERT_CAMERA,
         bind(&Camera::InvertCamera, this, placeholders::_1),
         "InvertCamera"));
 
-    EventManager::GetInstance().SuscribeMulti(Listener(
+    EventManager::GetInstance().SubscribeMulti(Listener(
         EventType::TOTEM_CAMERA,
         bind(&Camera::TotemCamera, this, placeholders::_1),
         "TotemCamera"));
 
-    EventManager::GetInstance().SuscribeMulti(Listener(
+    EventManager::GetInstance().SubscribeMulti(Listener(
         EventType::NORMAL_CAMERA,
         bind(&Camera::NormalCamera, this, placeholders::_1),
         "NormalCamera"));

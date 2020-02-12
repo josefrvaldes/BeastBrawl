@@ -1,7 +1,8 @@
-#include "../Entities/WayPoint.h"
-#include "./ManWayPoint.h"
-#include "../Components/CWayPoint.h"
-#include "../../include/include_json/include_json.hpp"
+#include "ManWayPoint.h"
+
+#include <Entities/WayPoint.h>
+#include <Components/CWayPoint.h>
+#include <include_json/include_json.hpp>
 
 #include <cmath>
 

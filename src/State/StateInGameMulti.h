@@ -1,10 +1,16 @@
 #pragma once
 
 #include "StateInGame.h"
+#include <chrono>
+
+using namespace std::chrono;
+
+class SystemOnline;
 
 class StateInGameMulti : public StateInGame {
    public:
     StateInGameMulti();
+    StateInGameMulti(uint16_t IdOnline, const vector<uint16_t> IdPlayersOnline);
     ~StateInGameMulti();
     void InitState() override;
     void Input() override;
@@ -21,4 +27,8 @@ class StateInGameMulti : public StateInGame {
 
     void CAMBIARCosasDeTotemUpdate() override;
 
+    unique_ptr<SystemOnline> sysOnline;
+
+    time_point<system_clock> lastTimeSentInputs;
+    time_point<system_clock> lastTimeSentSync;
 };

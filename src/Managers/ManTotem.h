@@ -1,13 +1,13 @@
 #pragma once
 
+#include "ManNavMesh.h"
+
 #include <iostream>
 #include <map>
 #include <memory>
 #include <vector>
-#include "Manager.h"
-#include "ManNavMesh.h"
-#include "../../include/glm/vec3.hpp"
-#include "../Aliases.h"
+#include <glm/vec3.hpp>
+#include <Aliases.h>
 
 
 using namespace std;
@@ -32,5 +32,6 @@ class ManTotem : public Manager{
     //vector<shared_ptr<Totem>> totems;
     void AppertainCar(DataMap* d);
     void ResetTotem(DataMap* d);
+    void SyncTotem(DataMap* d);
     void SubscribeToEvents();
 };

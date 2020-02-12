@@ -2,7 +2,7 @@
 
 #include <memory>
 #include <vector>
-#include "../../include/glm/vec3.hpp"
+#include <glm/vec3.hpp>
 
 using namespace std;
 

@@ -1,8 +1,8 @@
 #include "CBoundingPlane.h"
-#include <iostream>
 #include "CBoundingSphere.h"
-#include <math.h>
 #include <cmath>
+#include <iostream>
+#include <math.h>
 
 
 #include <limits>

@@ -2,6 +2,10 @@
 
 #include "StateInGame.h"
 
+#include "../Systems/SystemBtPowerUp.h"
+#include "../Systems/SystemBtMoveTo.h"
+#include "../Systems/SystemBtLoDMove.h"
+
 class StateInGameSingle : public StateInGame {
    public:
     StateInGameSingle();
@@ -22,5 +26,10 @@ class StateInGameSingle : public StateInGame {
     void CAMBIARInicializarCarAIS(ManCar &, ManWayPoint &);
     void CAMBIARCosasNavMesh(ManCar &, ManNavMesh &);
     void CAMBIARCosasDeTotemUpdate() override;
+
+    unique_ptr<SystemBtPowerUp> systemBtPowerUp;
+    unique_ptr<SystemBtMoveTo> systemBtMoveTo;
+    unique_ptr<SystemBtLoDMove> systemBtLoDMove;
+    shared_ptr<SystemPathPlanning> systemPathPlanning;
 
 };

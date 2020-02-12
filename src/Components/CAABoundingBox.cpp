@@ -1,5 +1,6 @@
 #include "CAABoundingBox.h"
-#include "../Systems/Utils.h"
+
+#include <Systems/Utils.h>
 
 // https://www.youtube.com/watch?v=Iu6nAXFm2Wo&list=PLEETnX-uPtBXm1KEr_2zQ6K_0hoGH6JJ0&index=4
 IntersectData CAABoundingBox::IntersectCAABoundingBox(CAABoundingBox &other) const {

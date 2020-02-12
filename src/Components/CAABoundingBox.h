@@ -1,9 +1,11 @@
 #pragma once
 
-#include "../CLPhysics/IntersectData.h"
 #include "Component.h"
-#include "include/glm/common.hpp"
-#include "include/glm/vec3.hpp"
+
+#include <glm/common.hpp>
+#include <glm/vec3.hpp>
+
+#include <CLPhysics/IntersectData.h>
 
 using namespace glm;
 

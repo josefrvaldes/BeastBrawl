@@ -1,17 +1,17 @@
 #include "SteeringBehaviours.h"
 
-#include "../Managers/ManCar.h"
-#include "../Managers/ManBoxPowerUp.h"
-#include "../Managers/ManPowerUp.h"
-#include "../Managers/ManBoundingWall.h"
-#include "../Entities/Car.h"
-#include "../Entities/CarHuman.h"
-#include "../Entities/CarAI.h"
-#include "../Components/CNitro.h"
-#include "../Components/CCar.h"
-#include "../Components/CBoundingSphere.h"
-#include "../Components/CBoundingPlane.h"
-#include "../Components/CBoundingRay.h"
+#include <Managers/ManCar.h>
+#include <Managers/ManBoxPowerUp.h>
+#include <Managers/ManPowerUp.h>
+#include <Managers/ManBoundingWall.h>
+#include <Entities/Car.h>
+#include <Entities/CarHuman.h>
+#include <Entities/CarAI.h>
+#include <Components/CNitro.h>
+#include <Components/CCar.h>
+#include <Components/CBoundingSphere.h>
+#include <Components/CBoundingPlane.h>
+#include <Components/CBoundingRay.h>
 
 
 

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Manager.h"
+
 #include <iostream>
 #include <map>
 #include <vector>
@@ -7,8 +9,7 @@
 #include <fstream>
 #include <string>
 #include <cstdlib>
-#include "../../include/glm/vec3.hpp"
-#include "Manager.h"
+#include <glm/vec3.hpp>
 
 class WayPoint;
 using namespace std;

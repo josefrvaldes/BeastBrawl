@@ -1,14 +1,15 @@
 #include "CBoundingSphere.h"
-#include "../Components/CTransformable.h"
+#include "CTransformable.h"
+
 
 #include <math.h>
 
 CBoundingSphere::CBoundingSphere(const vec3 &_center)
-    : center{_center}, radius{DEFAULT_SPHERE_RADIUS} {
     m_compType = CompType::CompBoundingSphere;
+    : center{_center}, radius{DEFAULT_SPHERE_RADIUS} {
     //equationSphere = equationSphereCenterRadius(_center, DEFAULT_SPHERE_RADIUS);
-}
 CBoundingSphere::CBoundingSphere(const vec3 &_center, float _radius)
+}
     : center{_center}, radius{_radius} {
     m_compType = CompType::CompBoundingSphere;
     //equationSphere = equationSphereCenterRadius(_center, _radius);

@@ -1,11 +1,11 @@
 #include "SystemFuzzyLogicAI.h"
 
-#include "../Components/CTransformable.h"
-#include "../Components/Component.h"
-#include "../Components/CCar.h"
-#include "../Components/CWayPoint.h"
-#include "../Components/CNitro.h"
-#include "../Entities/CarAI.h"
+#include <Components/CTransformable.h>
+#include <Components/Component.h>
+#include <Components/CCar.h>
+#include <Components/CWayPoint.h>
+#include <Components/CNitro.h>
+#include <Entities/CarAI.h>
 
 
 

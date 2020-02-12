@@ -1,10 +1,10 @@
 #pragma once
 
-#include "../../../include/irrlicht/irrlicht.h"
-#include "../../EventManager/Event.h"
-#include "../../EventManager/EventManager.h"
-#include "../Input/InputFacadeIrrlicht.h"
-#include "../Input/InputFacadeManager.h"
+#include <irrlicht/irrlicht.h>
+#include <EventManager/Event.h>
+#include <EventManager/EventManager.h>
+#include <Facade/Input/InputFacadeIrrlicht.h>
+#include <Facade/Input/InputFacadeManager.h>
 #include "RenderFacade.h"
 
 //#include "../../State/State.h"
@@ -34,7 +34,8 @@ class RenderFacadeIrrlicht : public RenderFacade {
     void UpdateCamera(Entity*, ManCar* manCars) override;
     bool FacadeRun() override;
     uint32_t FacadeGetTime() const override;
-    void FacadeCheckInput() override;
+    vector<Constants::InputTypes> FacadeCheckInputMulti() override;
+    void FacadeCheckInputSingle() override;
     int FacadeGetFPS() const override;
     void FacadeSetWindowCaption(std::string, int) const override;
     void FacadeBeginScene() const override;
@@ -46,18 +47,22 @@ class RenderFacadeIrrlicht : public RenderFacade {
     void FacadeDrawMenu() override;
     void FacadeDrawPause() override;
     void FacadeDrawEndRace() override;
+    void FacadeDrawLobbyMulti() override;
     void FacadeInitMenu() override;
     void FacadeInitPause() override;
     void FacadeInitEndRace() override;
+    void FacadeInitLobbyMulti() override;
     void FacadeInitHUD() override;
     void FacadeCheckInputMenu() override;
     void FacadeCheckInputPause() override;
     void FacadeCheckInputEndRace() override;
+    void FacadeCheckInputLobbyMulti() override;
     void FacadeUpdatePowerUpHUD(DataMap* d) override;
     void FacadeDrawHUD(Entity* car, ManCar* carsAI) override;
     void FacadeSuscribeEvents() override;
     void FacadeAddPlates(Manager* manNamePlates) override;
     void FacadeUpdatePlates(Manager* manNamePlates) override;
+    void ThrowEventChangeToMulti(uint16_t IdOnline, const vector<uint16_t> IdPlayersOnline) override;
 
     //DEBUG
     void Draw3DLine(vec3& pos1, vec3& pos2, uint16_t r, uint16_t g, uint16_t b) const override;
@@ -85,6 +90,7 @@ class RenderFacadeIrrlicht : public RenderFacade {
     video::ITexture* menuBG;
     video::ITexture* pauseBG;
     video::ITexture* endRaceBG;
+    video::ITexture* lobbyMultBG;
     video::ITexture* whiteBG;
     video::ITexture* powerUps[7];
     gui::IGUIFont* font;

@@ -3,8 +3,8 @@
 #include <iostream>
 #include <memory>
 
-#include "../include/glew/glew.h"
-#include "../include/glfw/glfw3.h"
+#include <glew/glew.h>
+#include <glfw/glfw3.h>
 
 using namespace std;
 

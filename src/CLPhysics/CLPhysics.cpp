@@ -1,29 +1,31 @@
 
 #include "CLPhysics.h"
 #include <iostream>
-#include "../Components/CAABoundingBox.h"
-#include "../Components/CBoundingPlane.h"
-#include "../Components/CBoundingSphere.h"
-#include "../Components/CCar.h"
-#include "../Components/CNitro.h"
-#include "../Components/CTransformable.h"
-#include "../Components/CTotem.h"
+#include <memory>
 #include "../Components/CExternalForce.h"
 #include "../Components/CBoundingChassis.h"
 #include "../Components/CBoundingCilindre.h"
 #include "../Components/CBoundingOBB.h"
-#include "../Entities/BoundingWall.h"
 #include "../Entities/BoundingOBB.h"
-#include "../Entities/Car.h"
-#include "../Entities/CarAI.h"
-#include "../Entities/CarHuman.h"
-#include "../EventManager/Event.h"
-#include "../EventManager/EventManager.h"
-#include "../Managers/ManBoundingWall.h"
 #include "../Managers/ManBoundingOBB.h"
-#include "../Managers/ManCar.h"
-#include "../Managers/Manager.h"
-#include "../Systems/Utils.h"
+
+#include <Components/CAABoundingBox.h>
+#include <Components/CBoundingPlane.h>
+#include <Components/CBoundingSphere.h>
+#include <Components/CCar.h>
+#include <Components/CNitro.h>
+#include <Components/CTransformable.h>
+#include <Components/CTotem.h>
+#include <Entities/BoundingWall.h>
+#include <Entities/Car.h>
+#include <Entities/CarAI.h>
+#include <Entities/CarHuman.h>
+#include <EventManager/Event.h>
+#include <EventManager/EventManager.h>
+#include <Managers/ManBoundingWall.h>
+#include <Managers/ManCar.h>
+#include <Managers/Manager.h>
+#include <Systems/Utils.h>
 
 #include <cmath>
 

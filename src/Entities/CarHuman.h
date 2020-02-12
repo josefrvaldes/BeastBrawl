@@ -1,9 +1,9 @@
 #pragma once
 
-
 #include "Car.h"
+
 #include <string>
-#include "../../include/glm/vec3.hpp"
+#include <glm/vec3.hpp>
 
 class CarHuman : public Car {
    public:

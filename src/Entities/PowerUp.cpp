@@ -1,11 +1,11 @@
 #include "PowerUp.h"
-#include "../Components/CId.h"
-#include "../Components/CType.h"
-#include "../Components/CTexture.h"
-#include "../Components/CMesh.h"
-#include "../Components/CTransformable.h"
-#include "../Components/CPowerUp.h"
-#include "../Components/CTargetEntity.h"
+#include <Components/CId.h>
+#include <Components/CType.h>
+#include <Components/CTexture.h>
+#include <Components/CMesh.h>
+#include <Components/CTransformable.h>
+#include <Components/CPowerUp.h>
+#include <Components/CTargetEntity.h>
 #include <iostream>
 
 class Position;
@@ -69,19 +69,17 @@ PowerUp::PowerUp(glm::vec3 _position, glm::vec3 _rotation, typeCPowerUp _typePow
         cTexture->texture = "";
         cMesh->mesh = "melon.obj";
         cPowerUp->speed = 510.0;
-        cTransformable->scale = glm::vec3(10,10,10);
+        cTransformable->scale = glm::vec3(4,4,4);
     }else if(_typePowerUp == typeCPowerUp::PudinDeFrambuesa){   // Pudin Frambuesa
         cTexture->texture = "";
         cMesh->mesh = "pudin.obj";
         cPowerUp->speed = -510.0;
-        cTransformable->scale = glm::vec3(10,10,10);
-
+        cTransformable->scale = glm::vec3(4,4,4);
     }else{                                                      // Telebanana
         cTexture->texture = "";
         cMesh->mesh = "telebanana.obj";
         cPowerUp->speed = 375.0;
         cTransformable->scale = glm::vec3(2,2,2);
-
     }
 }
 

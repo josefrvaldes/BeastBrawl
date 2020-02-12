@@ -1,14 +1,14 @@
 #include "SystemBtLoDMove.h"
 
 
-#include "../behaviourTree/behaviourTree.h"
-#include "../behaviourTree/selector.h"
-#include "../behaviourTree/sequence.h"
-#include "../behaviourTree/decorator.h"
+#include <behaviourTree/behaviourTree.h>
+#include <behaviourTree/selector.h>
+#include <behaviourTree/sequence.h>
+#include <behaviourTree/decorator.h>
 
-#include "../behaviourTree/Blackboard.h"
+#include <behaviourTree/Blackboard.h>
 
-#include "../Components/CMovementType.h"
+#include <Components/CMovementType.h>
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //                           COMPROBAR BEHAVIOR TREE

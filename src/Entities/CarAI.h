@@ -5,9 +5,9 @@
 #include <string>
 #include <stack>
 #include <iostream>
-#include "../../include/glm/vec3.hpp"
-#include "../Components/CPosDestination.h"
-#include "../Components/CWayPoint.h"
+#include <glm/vec3.hpp>
+#include <Components/CPosDestination.h>
+#include <Components/CWayPoint.h>
 
 struct CWayPoint;
 struct CPosDestination;

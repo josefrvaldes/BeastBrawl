@@ -1,8 +1,8 @@
 #pragma once
 
 
-#include "../EventManager/Event.h"
-#include "../EventManager/EventManager.h"
+#include <EventManager/Event.h>
+#include <EventManager/EventManager.h>
 #include "include/glm/vec3.hpp"
 #include "include/glm/geometric.hpp"
 
@@ -20,6 +20,7 @@ class CTransformable;
 class CExternalForce;
 class CCamera;
 class CSpeed;
+class CNitro;
 
 class Physics {
    public:
@@ -32,6 +33,14 @@ class Physics {
     void NotAcceleratingOrDecelerating(Car *, Camera *);
     void Decelerate(Car *, Camera *);
     void NotTurning(Car *, Camera *);
+
+    void UpdateHuman(Car* car);
+    void AccelerateHuman(CCar &cCar, CNitro &cNitro) const;
+    void TurnLeftHuman(CCar &cCar) const;
+    void TurnRightHuman(CCar &cCar) const;
+    void NotAcceleratingOrDeceleratingHuman(CCar &cCar, CNitro &cNitro) const;
+    void DecelerateHuman(CCar &cCar, CNitro &cNitro) const;
+    void NotTurningHuman(CCar &cCar) const;
 
    protected:
    private:

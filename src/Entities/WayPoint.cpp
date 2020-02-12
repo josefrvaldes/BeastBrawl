@@ -1,7 +1,7 @@
 #include "WayPoint.h"
-#include "../Components/CId.h"
-#include "../Components/CWayPoint.h"
-#include "../Components/CWayPointEdges.h"
+#include <Components/CId.h>
+#include <Components/CWayPoint.h>
+#include <Components/CWayPointEdges.h>
 #include <iostream>
 
 

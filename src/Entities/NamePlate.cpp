@@ -1,7 +1,7 @@
 #include "NamePlate.h"
-#include "../Components/CId.h"
-#include "../Components/CNamePlate.h"
-#include "../Components/CType.h"
+#include <Components/CId.h>
+#include <Components/CNamePlate.h>
+#include <Components/CType.h>
 
 class Position;
 using namespace std;
