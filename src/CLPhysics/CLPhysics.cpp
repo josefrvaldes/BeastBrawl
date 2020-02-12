@@ -57,6 +57,19 @@ void CLPhysics::Update(float delta) {
     HandleCollisions();             // COLISIONES ENTRE COCHES --> HECHO
     HandleCollisionsWithPlanes();   // COLISIONES COCHES PLANOS --> NO HECHO
     HandleCollisionsWithOBB();      // COLISIONES COCHES OBB --> NO HECHO
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    for (size_t i = 0; i < numEntities; i++) {
+        Entity *car = manCar->GetEntities()[i].get();
+        CTransformable *trcar = static_cast<CTransformable *>(car->GetComponent(CompType::TransformableComp).get());
+        CBoundingChassis *cBoundingChassis = static_cast<CBoundingChassis *>(car->GetComponent(CompType::CompBoundingChassis).get());
+        PositionSphBehindIntoTransf(*trcar, *cBoundingChassis->sphereBehind);
+        PositionSphFrontIntoTransf(*trcar, *cBoundingChassis->sphereFront);
+        PositionCilindreIntoSpheres(*cBoundingChassis);
+    }
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 }
 
 void CLPhysics::HandleCollisionsWithOBB(){
@@ -206,8 +219,8 @@ void CLPhysics::PositionSphereIntoTransformable(CTransformable &tr, CBoundingSph
 
 void CLPhysics::PositionSphBehindIntoTransf(CTransformable &tr, CBoundingSphere &sp) const{
     sp.center = tr.position;
-    float x = -cos(Utils::DegToRad(tr.rotation.y)) * (sp.radius-1);
-    float z = sin(Utils::DegToRad(tr.rotation.y)) * (sp.radius-1);
+    float x = -cos(Utils::DegToRad(tr.rotation.y)) * (sp.radius);
+    float z = sin(Utils::DegToRad(tr.rotation.y)) * (sp.radius);
     sp.center.x += x;
     sp.center.z += z;
     // Necesitamos tambien actualizar el CILINDRO

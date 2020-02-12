@@ -105,7 +105,8 @@ void PhysicsFacadeIrrlicht::UpdateCarAI(Entity* car) {
         //nodeSphere->setScale(core::vector3df(cTransformable->scale.x, cTransformable->scale.y, cTransformable->scale.z));
     }
     */
-
+   
+    /*
     // vamos a ver si tiene CBoundingChassis
     bool hasChassis = car->HasComponent(CompType::CompBoundingChassis);
     if (hasChassis && Constants::DEBUG_SHOW_CHASSIS) {
@@ -120,6 +121,8 @@ void PhysicsFacadeIrrlicht::UpdateCarAI(Entity* car) {
         nodeSphere2->setVisible(RenderFacadeIrrlicht::showDebug);
 
     }
+    */
+    
 
 
 }

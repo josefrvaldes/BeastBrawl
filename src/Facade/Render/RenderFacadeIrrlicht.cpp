@@ -225,7 +225,7 @@ const uint16_t RenderFacadeIrrlicht::FacadeAddObject(Entity* entity) {
         node->setMaterialTexture(0, driver->getTexture(path.c_str()));  //Obligado incluir el c_str() si no irrlicht no carga solo con un string
         node->setMaterialFlag(video::EMF_LIGHTING, false);
 
-        
+        /*
         bool hasSphere = entity->HasComponent(CompType::CompBoundingSphere);
         if (hasSphere && Constants::DEBUG_SHOW_SPHERES) {
             cout << "POS X: " << cTransformable->position.x << " POS Y: " << cTransformable->position.y << "POS Z:" << cTransformable->position.z << endl;
@@ -237,6 +237,7 @@ const uint16_t RenderFacadeIrrlicht::FacadeAddObject(Entity* entity) {
             nodeSphere->setMaterialFlag(video::EMF_LIGHTING, false);
             nodeSphere->setVisible(showDebug);
         }
+        */
         
 
        
@@ -254,7 +255,7 @@ const uint16_t RenderFacadeIrrlicht::FacadeAddObject(Entity* entity) {
             nodeSphere1->setScale(core::vector3df(1.f, 1.f, 1.f));
             nodeSphere1->setMaterialTexture(0, driver->getTexture(path.c_str()));  //Obligado incluir el c_str() si no irrlicht no carga solo con un string
             nodeSphere1->setMaterialFlag(video::EMF_LIGHTING, false);
-            nodeSphere1->setVisible(showDebug);
+            nodeSphere1->setVisible(false);
             // segunda esfera
             auto radiousSph2 = cChassis->sphereFront->radius;
             auto centerSph2 = cChassis->sphereFront->center;
@@ -265,7 +266,7 @@ const uint16_t RenderFacadeIrrlicht::FacadeAddObject(Entity* entity) {
             nodeSphere2->setScale(core::vector3df(1.f, 1.f, 1.f));
             nodeSphere2->setMaterialTexture(0, driver->getTexture(path.c_str()));  //Obligado incluir el c_str() si no irrlicht no carga solo con un string
             nodeSphere2->setMaterialFlag(video::EMF_LIGHTING, false);
-            nodeSphere2->setVisible(showDebug);
+            nodeSphere2->setVisible(false);
         }
         
 
@@ -333,7 +334,7 @@ void RenderFacadeIrrlicht::UpdateTransformable(Entity* entity) {
     //Actualiza el escalado del objeto de irrlicht
     node->setScale(core::vector3df(cTransformable->scale.x, cTransformable->scale.y, cTransformable->scale.z));
 
-    
+    /*
     bool hasSphere = entity->HasComponent(CompType::CompBoundingSphere);
     if (hasSphere && Constants::DEBUG_SHOW_SPHERES) {
         scene::ISceneNode* nodeSphere = smgr->getSceneNodeFromId(cId->id + Component::ID_DIFFERENCE);
@@ -342,6 +343,7 @@ void RenderFacadeIrrlicht::UpdateTransformable(Entity* entity) {
         //nodeSphere->setRotation(core::vector3df(cTransformable->rotation.x, cTransformable->rotation.y, cTransformable->rotation.z));
         //nodeSphere->setScale(core::vector3df(cTransformable->scale.x, cTransformable->scale.y, cTransformable->scale.z));
     }
+    */
     
     
    
@@ -355,7 +357,7 @@ void RenderFacadeIrrlicht::UpdateTransformable(Entity* entity) {
         auto centerSph2 = cChassis->sphereFront->center;
         scene::ISceneNode* nodeSphere2 = smgr->getSceneNodeFromId(cId->id + Component::ID_DIFFERENCE + 2);
         nodeSphere2->setPosition(core::vector3df(centerSph2.x, centerSph2.y, centerSph2.z));
-        nodeSphere2->setVisible(showDebug);
+        nodeSphere2->setVisible(false);
     }
     
     

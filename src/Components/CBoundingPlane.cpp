@@ -1,5 +1,6 @@
 #include "CBoundingPlane.h"
 #include "CBoundingSphere.h"
+#include "CTransformable.h"
 #include <cmath>
 #include <iostream>
 #include <math.h>

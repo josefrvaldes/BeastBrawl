@@ -316,7 +316,8 @@ void Physics::UpdateHuman(Car *car) {
     auto cSpeed = static_cast<CSpeed *>(car->GetComponent(CompType::SpeedComp).get());
     auto cNitro = static_cast<CNitro *>(car->GetComponent(CompType::NitroComp).get());
     auto cOnline = static_cast<COnline *>(car->GetComponent(CompType::OnlineComp).get());
-    
+    auto cExternalForce = static_cast<CExternalForce *>(car->GetComponent(CompType::CompExternalForce).get());
+
     bool accDec = false;
     bool turning = false;
     // actualizar inputs
@@ -350,9 +351,9 @@ void Physics::UpdateHuman(Car *car) {
 
     // actualizar posiciones
     if (cCar->speed >= 0)
-        CalculatePosition(cCar, cTransformable, cSpeed, deltaTime);
+        CalculatePosition(cCar, cTransformable, cSpeed, cExternalForce, deltaTime);
     else
-        CalculatePositionReverse(cCar, cTransformable, deltaTime);
+        CalculatePositionReverse(cCar, cTransformable, cExternalForce, deltaTime);
 }
 
 

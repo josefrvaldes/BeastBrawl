@@ -3,8 +3,8 @@
 
 #include <EventManager/Event.h>
 #include <EventManager/EventManager.h>
-#include "include/glm/vec3.hpp"
-#include "include/glm/geometric.hpp"
+#include <glm/vec3.hpp>
+#include <glm/geometric.hpp>
 
 #include <math.h>
 #include <memory>

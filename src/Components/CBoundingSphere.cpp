@@ -5,15 +5,17 @@
 #include <math.h>
 
 CBoundingSphere::CBoundingSphere(const vec3 &_center)
-    m_compType = CompType::CompBoundingSphere;
     : center{_center}, radius{DEFAULT_SPHERE_RADIUS} {
+    m_compType = CompType::CompBoundingSphere;
     //equationSphere = equationSphereCenterRadius(_center, DEFAULT_SPHERE_RADIUS);
+    }
 CBoundingSphere::CBoundingSphere(const vec3 &_center, float _radius)
-}
     : center{_center}, radius{_radius} {
     m_compType = CompType::CompBoundingSphere;
     //equationSphere = equationSphereCenterRadius(_center, _radius);
 }
+
+
 
 /*
 vec4 CBoundingSphere::equationSphereCenterRadius(const vec3 &center, const float &radius) const{
