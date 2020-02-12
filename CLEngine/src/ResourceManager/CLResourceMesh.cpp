@@ -34,7 +34,7 @@ Mesh CLResourceMesh::processMesh(aiMesh *mesh, const aiScene *scene)
 {
     vector<Vertex> vertices;
     vector<unsigned int> indices;
-    vector<Texture> textures;
+    vector<Texture> textures; 
 
     for(unsigned int i = 0; i < mesh->mNumVertices; i++)
     {
@@ -93,13 +93,11 @@ Mesh CLResourceMesh::processMesh(aiMesh *mesh, const aiScene *scene)
 }  
 
 void CLResourceMesh::Draw(glm::mat4) {
-    // draw mesh
-    //Momentaneo????
-    // glBindVertexArray(VAO);
-    // glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
-    // glBindVertexArray(0);
 
     for(auto mesh : vecMesh){
-        mesh.Draw();
+        glBindVertexArray(mesh.VAO);
+        glDrawElements(GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT, 0);
+        glBindVertexArray(0);
+        //mesh.Draw();
     }
 }

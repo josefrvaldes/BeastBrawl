@@ -17,6 +17,7 @@
 #include "CLEngine.h"
 #include "SceneTree/CLLight.h"
 #include "SceneTree/CLNode.h"
+#include "SceneTree/CLMesh.h"
 #include "ResourceManager/CLResourceManager.h"
 #include "ResourceManager/CLResourceShader.h"
 #include "ResourceManager/CLResourceMesh.h"
@@ -128,7 +129,7 @@ int main() {
     };
     //----------------------------------
     unique_ptr<CLEntity> entity1 = make_unique<CLLight>(1);
-    unique_ptr<CLEntity> entity2 = make_unique<CLLight>(2);
+    unique_ptr<CLEntity> entity2 = make_unique<CLMesh>(2);
     unique_ptr<CLEntity> entity3 = make_unique<CLLight>(3);
     unique_ptr<CLEntity> entity4 = make_unique<CLLight>(4);
     unique_ptr<CLEntity> entity5 = make_unique<CLLight>(5);
@@ -148,15 +149,16 @@ int main() {
     node5->SetScalation(glm::vec3(1.5f,1.0f,1.0f));
     node5->SetRotation(glm::vec3(20.0f,30.0f,0.0f));
 
-    smgr->DFSTree(glm::mat4(1.0));
+    //smgr->DFSTree(glm::mat4(1.0));
 
     
     //-------------------Resource manager-------------------
     unique_ptr<CLResourceManager> resourceManager = make_unique<CLResourceManager>();
     auto resourceVertex = resourceManager->GetResourceShader("CLEngine/src/Shaders/vertex.glsl", GL_VERTEX_SHADER);
     auto resourceFragment = resourceManager->GetResourceShader("CLEngine/src/Shaders/fragment.glsl", GL_FRAGMENT_SHADER);
-    //auto resourceMesh = resourceManager->GetResourceMesh("media/kart.obj");
+    auto resourceMesh = resourceManager->GetResourceMesh("media/kart.obj");
 
+    static_cast<CLMesh*>(entity2.get())->SetMesh(resourceMesh);
 
     
     
@@ -344,7 +346,7 @@ int main() {
             glDrawArrays(GL_TRIANGLES, 0, 36);
         }
 
-        //resourceMesh->Draw(glm::mat4(1.0));
+        resourceMesh->Draw(glm::mat4(1.0));
 
         glfwPollEvents();
         glfwSwapBuffers(device->GetWindow());

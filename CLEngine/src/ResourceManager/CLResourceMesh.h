@@ -69,12 +69,6 @@ class Mesh{
 
     ~Mesh(){};
 
-    void Draw(){
-        glBindVertexArray(VAO);
-        glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
-        glBindVertexArray(0);
-    }
-
     /*  Mesh Data  */
     vector<Vertex> vertices;
     vector<unsigned int> indices;
@@ -91,6 +85,7 @@ namespace CLE {
 
             void Draw(glm::mat4) override;
             bool LoadFile(std::string) override;
+            vector<Mesh> GetMesh() { return vecMesh; }
 
         private:
             void processNode(aiNode *node, const aiScene *scene);
