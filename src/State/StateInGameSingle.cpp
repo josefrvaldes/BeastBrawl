@@ -26,10 +26,10 @@ void StateInGameSingle::InitState() {
 
 void StateInGameSingle::CAMBIARCosasNavMesh(ManCar &manCars, ManNavMesh &manNavMesh){
     // vamos a asignar el navmesh al que pertenecemos
-    for(auto carAI : manCars.GetEntities()){
+    for(auto& carAI : manCars.GetEntities()){
         if(static_cast<Car*>(carAI.get())->GetTypeCar() == TypeCar::CarAI){
             auto cTransformableCar = static_cast<CTransformable*>(carAI.get()->GetComponent(CompType::TransformableComp).get());     
-            for(auto navmesh : manNavMesh.GetEntities()){
+            for(auto& navmesh : manNavMesh.GetEntities()){
                 auto cDimensions = static_cast<CDimensions*>(navmesh.get()->GetComponent(CompType::DimensionsComp).get());
                 auto cTransformableNav = static_cast<CTransformable*>(navmesh.get()->GetComponent(CompType::TransformableComp).get()); 
                 if( ( (cTransformableCar->position.x >= (cTransformableNav->position.x-(cDimensions->width/2))) && 

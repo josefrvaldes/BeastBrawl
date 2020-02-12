@@ -1106,7 +1106,7 @@ void RenderFacadeIrrlicht::FacadeDrawBoundingOBB(Entity* entity) const {
 
     CBoundingOBB *obb = static_cast<CBoundingOBB*>(entity->GetComponent(CompType::CompBoundingOBB).get());
     
-    for(auto obbActual : obb->planes){
+    for(auto& obbActual : obb->planes){
         vec3 &a = obbActual.get()->a;
         vec3 &b = obbActual.get()->b;
         vec3 &c = obbActual.get()->c;
