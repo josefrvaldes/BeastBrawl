@@ -53,12 +53,10 @@ void checkInput (GLFWwindow *window, glm::vec3& cameraPos, glm::vec3& cameraFron
         cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
 }
 
-int main() {
-    CLEngine *device = new CLEngine(1280, 720, "Beast Brawl");
+void initImGUI(CLEngine *device) {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO(); (void)io;
-
 
     // Setup Dear ImGui style
     ImGui::StyleColorsDark();
@@ -66,9 +64,19 @@ int main() {
     // Setup Platform/Renderer bindings
     ImGui_ImplGlfw_InitForOpenGL(device->GetWindow(), true);
     ImGui_ImplOpenGL3_Init("#version 450");
+}
 
-    // configure global opengl state
-    // -----------------------------
+void terminateInGUI() {
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
+}
+
+int main() {
+    CLEngine *device = new CLEngine(1280, 720, "Beast Brawl");
+    initImGUI(device);
+
+    // configure global opengl state. Z depth active.
     glEnable(GL_DEPTH_TEST);
 
     
@@ -116,7 +124,7 @@ int main() {
         -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
     };
 
-    glm::vec3 cubePositions[] = {
+    /*glm::vec3 cubePositions[] = {
         glm::vec3( 0.0f,  0.0f,  0.0f), 
         glm::vec3( 2.0f,  5.0f, -15.0f), 
         glm::vec3(-1.5f, -2.2f, -2.5f),  
@@ -127,27 +135,8 @@ int main() {
         glm::vec3( 1.5f,  2.0f, -2.5f), 
         glm::vec3( 1.5f,  0.2f, -1.5f), 
         glm::vec3(-1.3f,  1.0f, -1.5f)  
-    };
-    //----------------------------------
-    unique_ptr<CLEntity> entity1 = make_unique<CLLight>(1);
-    unique_ptr<CLEntity> entity2 = make_unique<CLMesh>(2);
-    unique_ptr<CLEntity> entity3 = make_unique<CLLight>(3);
-    unique_ptr<CLEntity> entity4 = make_unique<CLLight>(4);
-    unique_ptr<CLEntity> entity5 = make_unique<CLLight>(5);
-    unique_ptr<CLNode> smgr = make_unique<CLNode>(entity1.get());
-    unique_ptr<CLNode> node2 = make_unique<CLNode>(entity2.get());
-    unique_ptr<CLNode> node3 = make_unique<CLNode>(entity3.get());
-    unique_ptr<CLNode> node4 = make_unique<CLNode>(entity4.get());
-    unique_ptr<CLNode> node5 = make_unique<CLNode>(entity5.get());
+    };*/
 
-        smgr->AddChild(node2.get());
-        smgr->AddChild(node3.get());
-        node2->AddChild(node4.get());
-        node4->AddChild(node5.get());
-
-        //smgr->DrawTree(smgr.get());
-
-    //smgr->DFSTree(glm::mat4(1.0));
 
     
     //-------------------Resource manager-------------------
@@ -156,11 +145,7 @@ int main() {
     auto resourceFragment = resourceManager->GetResourceShader("CLEngine/src/Shaders/fragment.glsl", GL_FRAGMENT_SHADER);
     auto resourceMesh = resourceManager->GetResourceMesh("media/kart.obj");
 
-    static_cast<CLMesh*>(entity2.get())->SetMesh(resourceMesh);
-
-    
-    
-
+    //----------------------------------------------------------------------------------------------------------------SHADER
     //Una vez ambos shaders estan inicializados tenemos que linkarlos para que el output de uno vaya al otro
     int shaderProgram = glCreateProgram(); //Como siempre nos devuelve un identificador
 
@@ -182,6 +167,43 @@ int main() {
     glDeleteShader(resourceVertex->GetShaderID());
     glDeleteShader(resourceFragment->GetShaderID());  
 
+    
+    //------------------------------------------------------------------------- ARBOLITO
+    unique_ptr<CLEntity> entity1 = make_unique<CLLight>(1);
+    unique_ptr<CLEntity> entity2 = make_unique<CLMesh>(2);
+    unique_ptr<CLEntity> entity3 = make_unique<CLLight>(3);
+    unique_ptr<CLEntity> entity4 = make_unique<CLMesh>(4);
+    unique_ptr<CLEntity> entity5 = make_unique<CLLight>(5);
+    
+    //Nodo raiz
+    unique_ptr<CLNode> smgr = make_unique<CLNode>(entity1.get());
+    smgr->SetModelMatrixID(glGetUniformLocation(shaderProgram, "model"));
+    cout << "MODEL MATRIX ID:: " << smgr->GetModelMatrixID() << endl;
+
+    unique_ptr<CLNode> node2 = make_unique<CLNode>(entity2.get());
+    unique_ptr<CLNode> node3 = make_unique<CLNode>(entity3.get());
+    unique_ptr<CLNode> node4 = make_unique<CLNode>(entity4.get());
+    unique_ptr<CLNode> node5 = make_unique<CLNode>(entity5.get());
+
+        smgr->AddChild(node2.get());
+        smgr->AddChild(node3.get());
+        node2->AddChild(node4.get());
+        node4->AddChild(node5.get());
+
+        smgr->DrawTree(smgr.get());
+
+    //smgr->DFSTree(glm::mat4(1.0));
+
+    static_cast<CLMesh*>(entity2.get())->SetMesh(resourceMesh);
+    static_cast<CLMesh*>(entity4.get())->SetMesh(resourceMesh);
+
+    smgr.get()->SetTranslation(glm::vec3(-20.0f, 0.0f, -30.0f));
+    node2.get()->SetScalation(glm::vec3(0.25f, 0.25f, 0.25f));
+    node4.get()->SetTranslation(glm::vec3(0.0f, 30.0f, 0.0f));
+    node4.get()->SetRotation(glm::vec3(90.0f, 0.0f, 0.0f));
+
+    
+    
 
     //Todo preparado, ahora comienza la magia
     // 1. bind Vertex Array Object
@@ -261,7 +283,7 @@ int main() {
     glUniform1i(glGetUniformLocation(shaderProgram,"texture2"),1);
 
     //COORDINATE SYSTEM
-    glm::ortho(0.0f, 800.0f, 0.0f, 600.0f, 0.1f, 100.0f); // left | right | bottom | top | near | far (near far = distancia)
+    glm::ortho(0.0f, 800.0f, 0.0f, 600.0f, 0.1f, 1000.0f); // left | right | bottom | top | near | far (near far = distancia)
 
     // //Model matrix
     // glm::mat4 model = glm::mat4(1.0f);
@@ -328,6 +350,7 @@ int main() {
  
         glm::mat4 view;
         view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+
         // pass transformation matrices to the shader
         glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
         glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "view"), 1, GL_FALSE, glm::value_ptr(view));
@@ -343,15 +366,7 @@ int main() {
 
         //     glDrawArrays(GL_TRIANGLES, 0, 36);
         // }
-        glm::mat4 model = glm::mat4(1.0f);
-        model = glm::scale(model, glm::vec3(0.5f,0.5f,0.5f));
-        model = glm::rotate(model, glm::radians(index), glm::vec3(1.0f, 0.0f, 0.0f));
-        model = glm::rotate(model, glm::radians(index), glm::vec3(0.0f, 1.0f, 0.0f));
-        model = glm::rotate(model, glm::radians(index), glm::vec3(0.0f, 0.0f, 1.0f));
 
-        glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "model"), 1, GL_FALSE, glm::value_ptr(model));
-
-        //resourceMesh->Draw(glm::mat4(1.0));
         smgr->DFSTree(glm::mat4(1.0));
 
 
@@ -360,7 +375,7 @@ int main() {
         index += 0.1;
     }
 
-    //terminateInGUI();
+    terminateInGUI();
 
     delete device;
 

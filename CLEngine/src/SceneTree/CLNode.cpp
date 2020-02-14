@@ -6,6 +6,8 @@
 
 using namespace CLE;
 
+GLuint CLNode::modelMatrixID;
+
 CLNode::CLNode(){
 
 }
@@ -87,8 +89,6 @@ glm::mat4 CLNode::CalculateTransformationMatrix() {
 }
 
 void CLNode::DrawTree(CLNode* root){
-
-
     if(root->GetChilds().size()>0){
         //Tiene hijos
         cout << "Nodo " << root->GetEntity()->GetID() << " con hijos: ";
@@ -119,14 +119,14 @@ void CLNode::DFSTree(glm::mat4 mA) {
     }
 
     if(entity) {
+        // La matriz model se pasa aqui wey
+        glUniformMatrix4fv(modelMatrixID, 1, GL_FALSE, glm::value_ptr(transformationMat));
         entity->Draw(transformationMat);
     }
 
     for (auto node : childs) {
         node->DFSTree(transformationMat);
     }
-
-    return;
 }
 
 //Devuelve el nodo por la id que le mandes

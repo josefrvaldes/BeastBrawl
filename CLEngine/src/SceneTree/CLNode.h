@@ -3,6 +3,7 @@
 #include <vector>
 #include <iostream>
 #include <glm/glm.hpp>
+#include <glew/glew.h>
 
 #include "CLEntity.h"
 
@@ -26,14 +27,16 @@ class CLNode{
         glm::vec3 GetRotation()    const       { return rotation; }
         glm::vec3 GetScalation()   const       { return scalation; }
         glm::mat4 GetTransformationMat() const { return transformationMat; }
+        static GLuint GetModelMatrixID()       { return modelMatrixID;}
 
         //Setters
-        bool SetEntity(CLEntity* e)                    { entity = e; return true; }
-        bool SetFather(CLNode* f)                    { father = f; return true; }
-        void SetTranslation(glm::vec3 trans)           { translation = trans; changed = true; }
-        void SetRotation(glm::vec3 rot)                { rotation = rot; changed = true; }
-        void SetScalation(glm::vec3 scale)             { scalation = scale; changed = true; }
-        void SetTransformationMat(glm::mat4 transfMat) { transformationMat = transfMat; }
+        bool SetEntity(CLEntity* e)                     { entity = e; return true; }
+        bool SetFather(CLNode* f)                       { father = f; return true; }
+        void SetTranslation(glm::vec3 trans)            { translation = trans; changed = true; }
+        void SetRotation(glm::vec3 rot)                 { rotation = rot; changed = true; }
+        void SetScalation(glm::vec3 scale)              { scalation = scale; changed = true; }
+        void SetTransformationMat(glm::mat4 transfMat)  { transformationMat = transfMat; }
+        static void SetModelMatrixID(GLuint id)         { modelMatrixID = id; }
 
         //Methods
         bool AddChild(CLNode* child);
@@ -65,6 +68,9 @@ class CLNode{
 
         //Methods
         CLNode* GetNodeByIDAux(unsigned int id, CLNode* node, CLNode* root);
+
+        // Identificadores de las variables que cambia para pasarle info al shader.
+        static GLuint modelMatrixID;
 
 };
 
