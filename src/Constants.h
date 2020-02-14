@@ -8,6 +8,7 @@
 
 class Constants {
    public:
+    inline static const bool DEBUG_SHOW_CHASSIS{true};
     inline static const bool DEBUG_SHOW_SPHERES{true};
     inline static const size_t ONLINE_BUFFER_SIZE{512};
 

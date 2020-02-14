@@ -156,7 +156,7 @@ Mesh CLResourceMesh::processMesh(aiMesh *mesh, const aiScene *scene)
 
 void CLResourceMesh::Draw(glm::mat4) {
 
-    for(auto mesh : vecMesh){
+    for(auto& mesh : vecMesh){
         glBindVertexArray(mesh.VAO);
         glDrawElements(GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);

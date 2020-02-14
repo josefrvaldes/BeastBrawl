@@ -29,10 +29,10 @@ ManBoundingWall::ManBoundingWall() {
     json j = json::parse(jsonString);
     i.close();
 
-    int navMeshCount = j["BOUNDING PLANES"].size();
+    long unsigned int navMeshCount = j["BOUNDING PLANES"].size();
     std::cout << "EL NUMERO DE Bounding Planes EN EL JSON ES: " << navMeshCount << std::endl;
     //Leemos el array de NavMesh
-    for (int i = 0; i < navMeshCount; ++i) {
+    for(long unsigned int i = 0; i< navMeshCount; ++i){
         string idNavMesh = to_string(i);  //El primer elemento es "NAVMESH 1"
         auto boundingPlaneActual = j["BOUNDING PLANES"][idNavMesh];
         // cogemos los 4 vertices
@@ -65,11 +65,26 @@ ManBoundingWall::ManBoundingWall() {
     //CreateBoundingWall(vec3(-470.f, 120.f, -480.f),vec3(-470.f, 120.f, 820.f),vec3(-470.f, 20.f, 820.f),vec3(-470.f, 20.f, -480.f));
     //CreateBoundingWall(vec3(480.f, 20.f, -480.f),vec3(480.f, 20.f, 820.f),vec3(480.f, 120.f, 820.f),vec3(480.f, 120.f, -480.f));
 
+
+    // 4 Planos normales
+    //CreateBoundingWall(vec3(50.f, 40.f, 50.f),vec3(150.f, 40.f, 50.f),vec3(150.f, 10.f, 50.f),vec3(50.f, 10.f, 50.f));
+    //CreateBoundingWall(vec3(50.f, 10.f, 150.f),vec3 (150.f, 10.f, 150.f),vec3(150.f, 40.f, 150.f),vec3(50.f, 40.f, 150.f));
+    //CreateBoundingWall(vec3(50.f, 10.f, 50.f),vec3(50.f, 10.f, 150.f),vec3(50.f, 40.f, 150.f),vec3(50.f, 40.f, 50.f));
+    //CreateBoundingWall(vec3(150.f, 40.f, 50.f),vec3(150.f, 40.f, 150.f),vec3(150.f, 10.f, 150.f),vec3(150.f, 10.f, 50.f));
+
+
+
     // con 4 planos creamos un mini Cubo para cmporbar colisiones
-    CreateBoundingWall(vec3(50.f, 40.f, 50.f), vec3(150.f, 40.f, 50.f), vec3(150.f, 10.f, 50.f), vec3(50.f, 10.f, 50.f));
-    CreateBoundingWall(vec3(50.f, 10.f, 150.f), vec3(150.f, 10.f, 150.f), vec3(150.f, 40.f, 150.f), vec3(50.f, 40.f, 150.f));
-    CreateBoundingWall(vec3(50.f, 10.f, 50.f), vec3(50.f, 10.f, 150.f), vec3(50.f, 40.f, 150.f), vec3(50.f, 40.f, 50.f));
-    CreateBoundingWall(vec3(150.f, 40.f, 50.f), vec3(150.f, 40.f, 150.f), vec3(150.f, 10.f, 150.f), vec3(150.f, 10.f, 50.f));
+    //CreateBoundingWall(vec3(40.f, 40.f, 40.f),vec3(140.f, 40.f, 40.f),vec3(140.f, 10.f, 40.f),vec3(40.f, 10.f, 40.f));
+    //CreateBoundingWall(vec3(40.f, 10.f, 160.f),vec3 (140.f, 10.f, 160.f),vec3(140.f, 40.f, 160.f),vec3(40.f, 40.f, 160.f));
+    //CreateBoundingWall(vec3(30.f, 10.f, 50.f),vec3(30.f, 10.f, 150.f),vec3(30.f, 40.f, 150.f),vec3(30.f, 40.f, 50.f));
+    //CreateBoundingWall(vec3(150.f, 40.f, 50.f),vec3(150.f, 40.f, 150.f),vec3(150.f, 10.f, 150.f),vec3(150.f, 10.f, 50.f));
+//
+    //CreateBoundingWall(vec3(30.f, 40.f, 50.f),vec3(40.f, 40.f, 40.f),vec3(40.f, 10.f, 40.f),vec3(30.f, 10.f, 50.f));
+
+
+    // Por consistencia para crear un plano
+
 
     //cout << "Hemos creado un bounding wall, ahora tenemos " << entities.size() << " bounding walls" << endl;
 }
