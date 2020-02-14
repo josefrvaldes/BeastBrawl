@@ -1,19 +1,19 @@
 #include <iostream>
-#include <thread>
 #include "Game.h"
 
+using namespace std;
 
 int main() {
 
     try {
-        Game* game = Game::GetInstance();
+    Game* game = Game::GetInstance();
 
-        game->InitGame();
-        game->SetState(State::States::MENU);
-        game->MainLoop();
-        game->TerminateGame();
-    } catch (...) {
-        cout << "Algo ha fallado" << endl;
+    game->InitGame();
+    game->SetState(State::States::MENU);
+    game->MainLoop();
+    game->TerminateGame();
+    } catch (exception &e) {
+        cout << "Algo ha fallado " << e.what() << endl;
     }
 
     return 0;

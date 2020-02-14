@@ -49,6 +49,7 @@
 #include <fuzzyLogic/fuzzyLogic.h>
 #include <Components/CNavMesh.h>
 #include <Components/CCurrentNavMesh.h>
+#include "../Managers/ManBoundingOBB.h"
 
 
 using namespace std;
@@ -62,7 +63,7 @@ class StateInGame : public State {
     ~StateInGame();
     void InitVirtualMethods();
     void InitState() override;
-    void Input() override;
+    virtual void Input() = 0;
     void Update() override;
     void Render() override;
     States GetState() { return State::States::INGAME_SINGLE; };
@@ -78,6 +79,7 @@ class StateInGame : public State {
     shared_ptr<ManWayPoint> manWayPoint;
     shared_ptr<ManNamePlate> manNamePlates;
     shared_ptr<ManBoundingWall> manBoundingWall;
+    shared_ptr<ManBoundingOBB> manBoundingOBB;
 
     RenderFacade *renderEngine = {nullptr};
     InputFacade *inputEngine = {nullptr};
@@ -94,7 +96,7 @@ class StateInGame : public State {
     shared_ptr<Entity> totemOnCar;
 
     unique_ptr<CLPhysics> clPhysics;
-    unique_ptr<SystemPathPlanning> sysPathPlanning;
+    // unique_ptr<SystemPathPlanning> sysPathPlanning;
 
     shared_ptr<ManTotem> manTotems;
     //int lastFPS = -1;
@@ -103,9 +105,9 @@ class StateInGame : public State {
     // vector<float> deltas;
     //float CalculateDelta(float);
 
-    virtual void InitializeCLPhysics(ManCar &manCars, ManBoundingWall &ManBoundingWall);
+    virtual void InitializeCLPhysics(ManCar &manCars, ManBoundingWall &ManBoundingWall, ManBoundingOBB &manBoundingOBB);
     virtual void InitializeManagers(Physics *physics, Camera *cam);
-    virtual void InitializeSystems(ManCar &manCars, ManBoundingWall &manBoundingWall);
+    virtual void InitializeSystems(ManCar &manCars, ManBoundingWall &manBoundingWall, ManBoundingOBB &manBoundingOBB);
     virtual void InitializeFacades();
     virtual void AddElementsToRender();
     virtual void CAMBIARCosasDeTotemUpdate(){};

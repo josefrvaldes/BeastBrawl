@@ -14,6 +14,7 @@
 using namespace std;
 
 struct CarAI;
+struct Entity;
 struct ManWayPoint;
 
 class PhysicsAI {
@@ -22,6 +23,6 @@ public:
     ~PhysicsAI(){};
 
     void Update(CarAI* carAI, ManWayPoint* graph);
-    void UpdateCarPowerUps(CarAI* carAI);
+    void UpdateCarPowerUps(Entity* carAI);
 
 };

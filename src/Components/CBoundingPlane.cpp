@@ -1,8 +1,9 @@
 #include "CBoundingPlane.h"
 #include "CBoundingSphere.h"
-
+#include "CTransformable.h"
 #include <cmath>
 #include <iostream>
+#include <math.h>
 
 
 #include <limits>
@@ -28,23 +29,104 @@ CBoundingPlane::CBoundingPlane(const vec3 &a_, const vec3 &b_, const vec3 &c_, c
       distance{(dot(normalizedNormal, a_))}      // calculamos la distancia del plano a su normal normalizada, la necesitamos 
 {
     m_compType = CompType::CompBoundingPlane;
-    equationPlane = equationPlane3Points(a,b,c); 
+    equationPlane = equationPlane3Points(a_,b_,c_); 
 }
 
-// TODO: Actualmente todos los planos se tratan como finitos en los que respecta a las colisiones con las esferas
-IntersectData CBoundingPlane::IntersectSphere(const CBoundingSphere &other){
+// TODO: Se va a tener en cuenta el angulo que formen????
+IntersectData CBoundingPlane::IntersectSphere(const CBoundingSphere &other, const CTransformable &trCar, const CCar &ccarCar){
     float distanceFromSpCenter = fabs(dot(normalizedNormal, other.center) - distance);
     // cout << "Distance from sphere center " << distanceFromSpCenter << endl;
     float distanceFromSphere = distanceFromSpCenter - other.radius;
     bool intersectsInfinitePlane = distanceFromSphere < 0;
     if(intersectsInfinitePlane){
-        vec3 centerOnPlane = IntersectPoint(*(&other.center));
-        if( !membershipPoint(*(&centerOnPlane)) ){
-            return IntersectData(false, normalizedNormal * distanceFromSphere);
-        }
+        //cout << "------------------------------------------------------------------------------------------" << endl;
+        //vec3 vecDirCar = vec3(trCar.position.x-ccarCar.previousPos.x, trCar.position.y-ccarCar.previousPos.y, trCar.position.z-ccarCar.previousPos.z);
+        
+        //vec3 vecDirCar = CalculateVecDirCar(trCar);
+//
+        //double angle = Angle2Vectors(vecDirCar,normal);
+        ////cout << " DEBERIA DE SER '122' YYYYY EEEEES:  " << angle << endl;
+        //if(angle > 90 /*&& trCar.position != ccarCar.previousPos*/){
+            
+            vec3 pointM = vec3(0.0,0.0,0.0);
+            vec3 pointN = vec3(0.0,0.0,0.0);
+            intersectLineSphere(normalize(vec3(a.x-b.x, a.y-b.y, a.z-b.z)), other.center, other.radius, &pointM, &pointN );  // comprobamos en un eje del plano AB
+            pointM = IntersectPoint(*(&pointM));
+            pointN = IntersectPoint(*(&pointN));
+            //cout << " AQUI YA FALLAN DOS BEIBE " << endl;
+            if( !membershipPoint(*(&pointM)) && !membershipPoint(*(&pointN)) ){
+                //cout << " AQUI YA FALLAN DOS BEIBE " << endl;
+                intersectLineSphere(normalize(vec3(a.x-d.x, a.y-d.y, a.z-d.z)), other.center, other.radius, &pointM, &pointN ); // comprobamos el otro eje del plano AD
+                pointM = IntersectPoint(*(&pointM));
+                pointN = IntersectPoint(*(&pointN));
+                if( !membershipPoint(*(&pointM)) && !membershipPoint(*(&pointN)) ){
+                    //cout << "LAS 4 ESTAN FUERA" << endl;
+                    return IntersectData(false, normalizedNormal * distanceFromSphere);
+                }
+            }
+            /*
+            vec3 centerOnPlane = IntersectPoint(*(&other.center));
+            if( !membershipPoint(*(&centerOnPlane)) ){
+                return IntersectData(false, normalizedNormal * distanceFromSphere);
+            }
+            */
+
+        //}else{
+        //    return IntersectData(false, normalizedNormal * distanceFromSphere);     
+        //}
+
     }
     //std::cout << "estamos dentro del plano beibe, todo normal " << std::endl;
     return IntersectData(intersectsInfinitePlane, normalizedNormal * distanceFromSphere);
+}
+
+
+double CBoundingPlane::Angle2Vectors(const vec3 &a, const vec3 &b) const{
+    vec3 aN = glm::normalize(a);
+    vec3 bN = glm::normalize(b);
+
+    double dot = glm::dot(aN,bN);
+    // Force the dot product of the two input vectors to
+    // fall within the domain for inverse cosine, which
+    // is -1 <= x <= 1. This will prevent runtime
+    // "domain error" math exceptions.
+    dot = ( dot < -1.0 ? -1.0 : ( dot > 1.0 ? 1.0 : dot ) );
+
+    double angleRad = acos( dot );
+    // grados = radianes*(180/PI_)
+    return angleRad*(180/M_PI);  
+}
+
+
+
+void CBoundingPlane::intersectLineSphere(const vec3 &vecLine,const vec3 &point, const float &radius, vec3 *returnM, vec3 *returnN) const{
+    // datos:
+    //cout << " recta landa X: " << vecLine.x << " recta landa Y: " << vecLine.y << " recta landa Z: " << vecLine.z << endl;
+    //cout << " punto X: " << point.x << " punto Y: " << point.y << " punto Z: " << point.z << endl;
+    //cout << "El radio es: " << radius << endl;
+    //cout << " ---------------------------------------------------------------------------------------------------------------------------- " << endl;
+
+
+
+    // el punto de l RECTA sera el centro de la esfera
+    // el vector (landa) dee la recta sera el vecLine 
+    // como el punto de la recta sera el centro se sustituyen todos los valores que no son landa
+    float landa1 =  0.0;
+    float landa2 =  0.0; 
+
+    landa1 =  sqrt( pow(radius,2) / (pow(vecLine.x,2)+pow(vecLine.y,2)+pow(vecLine.z,2)) );  // raiz(3²) = 3 por eso ponemos el radio directamente
+    landa2 =  -1*landa1;
+
+
+    // sustituimos en la ecuacion de la recta1:
+    returnM->x = point.x + (vecLine.x * landa1);
+    returnM->y = point.y + (vecLine.y * landa1);
+    returnM->z = point.z + (vecLine.z * landa1);
+    // sustituimos en la ecuacion de la recta2:
+    returnN->x = point.x + (vecLine.x * landa2);
+    returnN->y = point.y + (vecLine.y * landa2);
+    returnN->z = point.z + (vecLine.z * landa2);
+
 }
 
 vec3 CBoundingPlane::IntersectPoint(const vec3 &point) const{
@@ -63,17 +145,23 @@ vec3 CBoundingPlane::IntersectPoint(const vec3 &point) const{
 
 bool CBoundingPlane::membershipPoint(const vec3 &point) const{
     // comprobamos posicion correcta de la X
+        cout.precision(dbl::max_digits10);
+       //cout << "EL PUNTO ES X: " << point.x << " LA A.X: " << a.x << " LA C.X: " << c.x << endl;
+       //cout << "EL PUNTO ES Y: " << point.y << " LA A.y: " << a.y << " LA C.y: " << c.y << endl;
+       //cout << "EL PUNTO ES Z: " << point.z << " LA A.z: " << a.z << " LA C.z: " << c.z << endl;
     if(a.x < c.x){
         if(point.x < a.x || point.x > c.x){ // significa que estamos fuera del rango de la X
-            if( round(a.x) == round(c.x) ){
-                if( round(point.x) != round(a.x) )
+            if( (int)a.x == (int)c.x ){
+                //cout << " Mi punto esta en: " << point.x << " y deberia estar en: " << a.x << endl;
+                if( round(point.x) != round(a.x) ){
                     return false;
+                }
             }else
                 return false; 
         }
     }else{
         if(point.x > a.x || point.x < c.x){ // significa que estamos fuera del rango de la X
-            if( round(a.x) == round(c.x) ){
+            if( (int)(a.x) == (int)(c.x) ){
                 //cout.precision(dbl::max_digits10);
                 if( round(point.x) != round(a.x) ){
                     return false;
@@ -85,17 +173,19 @@ bool CBoundingPlane::membershipPoint(const vec3 &point) const{
     // comprobamos la posicion correcta de la Y
     if(a.y < c.y){
         if(point.y < a.y || point.y > c.y){ // significa que estamos fuera del rango de Y
-            if( round(a.y) == round(c.y) ){
-                if( round(point.y) != round(a.y) )
+            if( (int)(a.y) == (int)(c.y) ){
+                if(round(point.y) != round(a.y)){
                     return false;
+                }
             }else
                 return false; 
         }
     }else{
         if(point.y > a.y || point.y < c.y) {// significa que estamos fuera del rango de Y
-            if( round(a.y) == round(c.y) ){
-                if( round(point.y) != round(a.y) )
+            if( (int)(a.y) == (int)(c.y) ){
+                if( round(point.y) != round(a.y)){
                     return false;
+                }
             }else
                 return false; 
         }      
@@ -105,16 +195,17 @@ bool CBoundingPlane::membershipPoint(const vec3 &point) const{
         if(point.z < a.z || point.z > c.z){
             //cout.precision(dbl::max_digits10);
             //std::cout << "Point.z: " << point.z << " a.z: " << a.z << " c.z: " << c.z << std::endl;
-            if( round(a.z) == round(c.z) ){
-                if( round(point.z) != round(a.z) )
+            if( (int)(a.z) == (int)(c.z) ){
+                if( round(point.z) != round(a.z)){
                     return false;
+                }
             }else
                 return false; 
         }
     }else{
         if(point.z > a.z || point.z < c.z){
-            if( round(a.z) == round(c.z) ){
-                if( round(point.z) != round(a.z) ){
+            if( (int)(a.z) == (int)(c.z) ){
+                if( round(point.z) != round(a.z)){
                     //cout.precision(dbl::max_digits10);
                     return false;
                 }
@@ -198,4 +289,14 @@ IntersectData CBoundingPlane::IntersectRay(const vec3 &posRayOrigin, const vec3 
     } 
     //std::cout << "No colisiona" << std::endl;
     return IntersectData(false, vec3(0,0,0)); 
+}
+
+vec3 CBoundingPlane::CalculateVecDirCar(const CTransformable &cTransformable) const{
+
+   float angleRotation = (cTransformable.rotation.y * M_PI) / 180.0;
+   float nextPosX    = cTransformable.position.x - cos(angleRotation) * 1;
+   float nexPosZ     = cTransformable.position.z + sin(angleRotation) * 1;
+
+   return vec3(nextPosX-cTransformable.position.x, 0, nexPosZ-cTransformable.position.z);
+
 }

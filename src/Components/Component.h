@@ -26,7 +26,11 @@ enum CompType {
     DimensionsComp,
     CompBoundingSphere,
     CompBoundingAABox,
+    CompExternalForce,
     CompBoundingPlane,
+    CompBoundingClindre,
+    CompBoundingOBB,
+    CompBoundingChassis,
     CompBoundingRay,
     CollidingComp,
     PathComp,
@@ -35,7 +39,8 @@ enum CompType {
     TargetNavMeshComp,
     CompRay,
     NamePlateComp,
-    MovementComp
+    MovementComp,
+    OnlineComp
 };
 
 class Component {
@@ -46,7 +51,7 @@ class Component {
     CompType getType() { return m_compType; };
     static const uint32_t ID_DIFFERENCE{100000};
     static uint32_t nextId;
-    uint32_t ID{nextId++};
+    uint32_t CompID{nextId++};
 
    protected:
     CompType m_compType;

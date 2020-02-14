@@ -2,6 +2,12 @@
 #include "CLPhysics.h"
 #include <iostream>
 #include <memory>
+#include "../Components/CExternalForce.h"
+#include "../Components/CBoundingChassis.h"
+#include "../Components/CBoundingCilindre.h"
+#include "../Components/CBoundingOBB.h"
+#include "../Entities/BoundingOBB.h"
+#include "../Managers/ManBoundingOBB.h"
 
 #include <Components/CAABoundingBox.h>
 #include <Components/CBoundingPlane.h>
@@ -21,6 +27,8 @@
 #include <Managers/Manager.h>
 #include <Systems/Utils.h>
 
+#include <cmath>
+
 using namespace std;
 
 CLPhysics::CLPhysics() {
@@ -32,8 +40,71 @@ void CLPhysics::AddManager(Manager &m) {
 
 void CLPhysics::Update(float delta) {
     Simulate(delta);
-    HandleCollisions();
-    HandleCollisionsWithPlanes();
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ManCar *manCar = static_cast<ManCar *>(managers[0]);
+    const auto& entities = manCar->GetEntities();
+    size_t numEntities = entities.size();
+    for (size_t i = 0; i < numEntities; i++) {
+        Entity *car = manCar->GetEntities()[i].get();
+        CTransformable *trcar = static_cast<CTransformable *>(car->GetComponent(CompType::TransformableComp).get());
+        CBoundingChassis *cBoundingChassis = static_cast<CBoundingChassis *>(car->GetComponent(CompType::CompBoundingChassis).get());
+        PositionSphBehindIntoTransf(*trcar, *cBoundingChassis->sphereBehind);
+        PositionSphFrontIntoTransf(*trcar, *cBoundingChassis->sphereFront);
+        PositionCilindreIntoSpheres(*cBoundingChassis);
+    }
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    HandleCollisions();             // COLISIONES ENTRE COCHES --> HECHO
+    HandleCollisionsWithPlanes();   // COLISIONES COCHES PLANOS --> NO HECHO
+    HandleCollisionsWithOBB();      // COLISIONES COCHES OBB --> NO HECHO
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    for (size_t i = 0; i < numEntities; i++) {
+        Entity *car = manCar->GetEntities()[i].get();
+        CTransformable *trcar = static_cast<CTransformable *>(car->GetComponent(CompType::TransformableComp).get());
+        CBoundingChassis *cBoundingChassis = static_cast<CBoundingChassis *>(car->GetComponent(CompType::CompBoundingChassis).get());
+        PositionSphBehindIntoTransf(*trcar, *cBoundingChassis->sphereBehind);
+        PositionSphFrontIntoTransf(*trcar, *cBoundingChassis->sphereFront);
+        PositionCilindreIntoSpheres(*cBoundingChassis);
+    }
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+}
+
+void CLPhysics::HandleCollisionsWithOBB(){
+    
+    ManCar *manCar = static_cast<ManCar *>(managers[0]);
+    ManBoundingOBB *manOBBs = static_cast<ManBoundingOBB *>(managers[2]);
+
+    vector<shared_ptr<Entity>> carAIs = manCar->GetEntities();
+    size_t numCar = carAIs.size();
+
+    vector<shared_ptr<Entity>> obbs = manOBBs->GetEntities();
+    size_t numOBBs = obbs.size();
+
+    //Entity* hola;
+
+    // los coches con los OBB
+    for (size_t currentAI = 0; currentAI < numCar; currentAI++) {
+        Entity *car = manCar->GetEntities()[currentAI].get();
+        CBoundingSphere *spcar = static_cast<CBoundingSphere *>(car->GetComponent(CompType::CompBoundingSphere).get());
+        //CBoundingChassis *chaCar = static_cast<CBoundingChassis *>(car->GetComponent(CompType::CompBoundingChassis).get());
+        CTransformable *trcar = static_cast<CTransformable *>(car->GetComponent(CompType::TransformableComp).get());
+        CCar *ccarcar = static_cast<CCar *>(car->GetComponent(CompType::CarComp).get());
+        //CExternalForce *cExternalForce = static_cast<CExternalForce *>(car->GetComponent(CompType::CompExternalForce).get());
+        for (size_t currentOBB = 0; currentOBB < numOBBs; currentOBB++) {
+            //BoundingWall *wall = static_cast<BoundingWall *>(obbs[currentOBB].get());
+            BoundingOBB *obbActual = static_cast<BoundingOBB *>(obbs[currentOBB].get());
+            //CBoundingPlane *plane = static_cast<CBoundingPlane *>(wall->GetComponent(CompType::CompBoundingPlane).get());
+            CBoundingOBB *cOBBactual = static_cast<CBoundingOBB *>(obbActual->GetComponent(CompType::CompBoundingOBB).get());
+            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            PositionSphereIntoTransformable(*trcar, *spcar);
+            HandleCollisions(*trcar, *spcar, *ccarcar, false, *cOBBactual);
+            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            //CollisionsSphereOBB(*trcar, *chaCar, *ccarcar, false, *cOBBactual);
+        }
+    }
 }
 
 void CLPhysics::HandleCollisionsWithPlanes() {
@@ -48,16 +119,17 @@ void CLPhysics::HandleCollisionsWithPlanes() {
 
     // los coches con los walls
     for (size_t currentAI = 0; currentAI < numCar; currentAI++) {
+        Entity *car = manCar->GetEntities()[currentAI].get();
+        //CBoundingSphere *spcar = static_cast<CBoundingSphere *>(car->GetComponent(CompType::CompBoundingSphere).get());
+        CBoundingChassis *chaCar = static_cast<CBoundingChassis *>(car->GetComponent(CompType::CompBoundingChassis).get());
+        CTransformable *trcar = static_cast<CTransformable *>(car->GetComponent(CompType::TransformableComp).get());
+        CCar *ccarcar = static_cast<CCar *>(car->GetComponent(CompType::CarComp).get());
         for (size_t currentWall = 0; currentWall < numWalls; currentWall++) {
-            Entity *car = manCar->GetEntities()[currentAI].get();
             BoundingWall *wall = static_cast<BoundingWall *>(walls[currentWall].get());
-
-            CBoundingSphere *spcar1 = static_cast<CBoundingSphere *>(car->GetComponent(CompType::CompBoundingSphere).get());
-            CTransformable *trcar1 = static_cast<CTransformable *>(car->GetComponent(CompType::TransformableComp).get());
-            CCar *ccarcar1 = static_cast<CCar *>(car->GetComponent(CompType::CarComp).get());
-
             CBoundingPlane *plane = static_cast<CBoundingPlane *>(wall->GetComponent(CompType::CompBoundingPlane).get());
-            HandleCollisions(*trcar1, *spcar1, *ccarcar1, false, *plane);
+
+            //HandleCollisions(*trcar, *spcar, *ccarcar, false, *plane);
+            CollisionsSpherePlane(*trcar, *chaCar, *ccarcar, false, *plane);
         }
     }
 }
@@ -77,18 +149,28 @@ void CLPhysics::HandleCollisions() {
 
     // los coches entre si
     for (size_t i = 0; i < numEntities; i++) {
+        Entity *car1 = manCar->GetEntities()[i].get();
+        CBoundingChassis *chacar1 = static_cast<CBoundingChassis *>(car1->GetComponent(CompType::CompBoundingChassis).get());
+        CTransformable *trcar1 = static_cast<CTransformable *>(car1->GetComponent(CompType::TransformableComp).get());
+        CCar *ccarcar1 = static_cast<CCar *>(car1->GetComponent(CompType::CarComp).get());
+        CExternalForce *cExternalForce1 = static_cast<CExternalForce *>(car1->GetComponent(CompType::CompExternalForce).get());
         for (size_t j = i + 1; j < numEntities; j++) {
-            Entity *car1 = manCar->GetEntities()[i].get();
-            Entity *car2 = manCar->GetEntities()[j].get();
-            CBoundingSphere *spcar1 = static_cast<CBoundingSphere *>(car1->GetComponent(CompType::CompBoundingSphere).get());
-            CTransformable *trcar1 = static_cast<CTransformable *>(car1->GetComponent(CompType::TransformableComp).get());
-            CCar *ccarcar1 = static_cast<CCar *>(car1->GetComponent(CompType::CarComp).get());
 
-            CBoundingSphere *spcar2 = static_cast<CBoundingSphere *>(car2->GetComponent(CompType::CompBoundingSphere).get());
+            Entity *car2 = manCar->GetEntities()[j].get();
+            CBoundingChassis *chacar2 = static_cast<CBoundingChassis *>(car2->GetComponent(CompType::CompBoundingChassis).get());
             CTransformable *trcar2 = static_cast<CTransformable *>(car2->GetComponent(CompType::TransformableComp).get());
             CCar *ccarcar2 = static_cast<CCar *>(car2->GetComponent(CompType::CarComp).get());
+            CExternalForce *cExternalForce2 = static_cast<CExternalForce *>(car2->GetComponent(CompType::CompExternalForce).get());
 
-            bool intersect = HandleCollisions(*trcar1, *spcar1, *ccarcar1, false, *trcar2, *spcar2, *ccarcar2);
+
+            // En nuestra forma de CAPSULA tenemos 1 cilindro y 2 esferas, primero comprobamos las colisiones con el cilindro y luego con las esferas
+            // CILINDRO
+            bool intersect = false;
+            intersect = CollisionsCilindreSphere(*trcar1, *ccarcar1, *chacar1, *trcar2, *ccarcar1, *chacar2);
+            if(!intersect){
+                // ESFERAS
+                intersect  = CollisionsSphereSphere(*trcar1, *chacar1, *ccarcar1, false, *trcar2, *chacar2, *ccarcar2, *cExternalForce1, *cExternalForce2);
+            }
             if(intersect){
                 checkCollisionNitro(car1, car2);
             }
@@ -128,14 +210,86 @@ void CLPhysics::checkCollisionNitro(Entity* car1, Entity* car2){
 
 void CLPhysics::PositionSphereIntoTransformable(CTransformable &tr, CBoundingSphere &sp) {
     sp.center = tr.position;
-    float x = -cos(Utils::DegToRad(tr.rotation.y)) * sp.radius;
-    float z = sin(Utils::DegToRad(tr.rotation.y)) * sp.radius;
+    float x = -cos(Utils::DegToRad(tr.rotation.y)) * (sp.radius);
+    float z = sin(Utils::DegToRad(tr.rotation.y)) * (sp.radius);
     sp.center.x += x;
     sp.center.z += z;
 }
 
+
+void CLPhysics::PositionSphBehindIntoTransf(CTransformable &tr, CBoundingSphere &sp) const{
+    sp.center = tr.position;
+    float x = -cos(Utils::DegToRad(tr.rotation.y)) * (sp.radius);
+    float z = sin(Utils::DegToRad(tr.rotation.y)) * (sp.radius);
+    sp.center.x += x;
+    sp.center.z += z;
+    // Necesitamos tambien actualizar el CILINDRO
+}
+
+void CLPhysics::PositionSphFrontIntoTransf(CTransformable &tr, CBoundingSphere &sp) const{
+    sp.center = tr.position;
+    float x = -cos(Utils::DegToRad(tr.rotation.y)) * (sp.radius+10);
+    float z = sin(Utils::DegToRad(tr.rotation.y)) * (sp.radius+10);
+    sp.center.x += x;
+    sp.center.z += z;
+    // Necesitamos tambien actualizar el cilindro
+}
+
+void CLPhysics::PositionCilindreIntoSpheres(CBoundingChassis &chassis) const{
+    chassis.cilindre->extreme1 = chassis.sphereBehind->center;
+    chassis.cilindre->extreme2 = chassis.sphereFront->center;
+}
+
+
+bool CLPhysics::CollisionsCilindreSphere(CTransformable &trCar1, CCar &ccar1, CBoundingChassis &cChaCar1, CTransformable &trCar2, CCar &ccar2, CBoundingChassis &cChaCar2){
+    //cout << "entramos"<< endl;
+    IntersectData inters1 = cChaCar1.cilindre->IntersectSphere(*(cChaCar2.sphereBehind.get()));
+    if(inters1.intersects){
+        // CORREGIMOS LA POSICION
+        SeparateCilindreSphere(trCar1, inters1.virtualCenter, inters1.virtualRadius, ccar1, trCar2, cChaCar2.sphereBehind->center, cChaCar2.sphereBehind->radius, ccar2);
+        return true;
+    }
+    IntersectData inters2 = cChaCar1.cilindre->IntersectSphere(*(cChaCar2.sphereFront.get()));
+    if(inters2.intersects){
+        // CORREGIMOS LA POSICION
+        SeparateCilindreSphere(trCar1, inters2.virtualCenter, inters2.virtualRadius, ccar1, trCar2, cChaCar2.sphereFront->center, cChaCar2.sphereFront->radius, ccar2);
+        return true;
+    }
+    IntersectData inters3 = cChaCar2.cilindre->IntersectSphere(*(cChaCar1.sphereBehind.get()));
+    if(inters3.intersects){
+        // CORREGIMOS LA POSICION
+        SeparateCilindreSphere(trCar2, inters3.virtualCenter, inters3.virtualRadius, ccar2, trCar1, cChaCar1.sphereBehind->center, cChaCar1.sphereBehind->radius, ccar1);
+        return true;
+    }
+    IntersectData inters4 = cChaCar2.cilindre->IntersectSphere(*(cChaCar1.sphereFront.get()));
+    if(inters4.intersects){
+        // CORREGIMOS LA POSICION
+        SeparateCilindreSphere(trCar2, inters4.virtualCenter, inters4.virtualRadius, ccar2, trCar1, cChaCar1.sphereFront->center, cChaCar1.sphereFront->radius, ccar1);
+        return true;
+    }
+    return false;
+
+}
+
+
+void CLPhysics::CollisionsSpherePlane(CTransformable &trCar, CBoundingChassis &chaCar, CCar &ccar, bool mainCar, CBoundingPlane &plane){
+    
+    CBoundingSphere *spBehindCar = chaCar.sphereBehind.get();
+    bool intersect = false;
+    //PositionSphBehindIntoTransf(trCar, *spBehindCar);
+    intersect = HandleCollisions(trCar, *spBehindCar, ccar, false, plane);
+    if(!intersect){
+        CBoundingSphere *spFrontCar = chaCar.sphereFront.get();
+        //PositionSphFrontIntoTransf(trCar, *spFrontCar);
+        HandleCollisions(trCar, *spFrontCar, ccar, false, plane);
+    }
+}
+
+
+
+// TODO: Relamente no deberia de ser /2 debera de depender de la fuerza con la que colisionan.... sino puede llegar a temblar, o desplazar
 void CLPhysics::SeparateSpheres(CTransformable &trCar1, CBoundingSphere &spCar1, CCar &ccarCar1,
-                                CTransformable &trCar2, CBoundingSphere &spCar2, CCar &ccarCar2) {
+                                CTransformable &trCar2, CBoundingSphere &spCar2, CCar &ccarCar2) const{
     vec3 direction = spCar2.center - spCar1.center;  // te da la dirección al otro bounding en x, y, z, es decir, si tenemos 200, 10, 30, significa que estamos a 200 de distancia en x, a 10 en y y a 30 en z
     float centerDistance = glm::length(direction);
     float distanceCollided = abs(spCar1.radius + spCar2.radius - centerDistance);
@@ -152,16 +306,111 @@ void CLPhysics::SeparateSpheres(CTransformable &trCar1, CBoundingSphere &spCar1,
     trCar2.position.z += nuevaDirectionCar2.z * (distanceCollided / 2);
 }
 
-void CLPhysics::HandleCollisions(CTransformable &trCar, CBoundingSphere &spCar, CCar &ccarCar, bool mainCar, CBoundingPlane &plane) {
-    PositionSphereIntoTransformable(trCar, spCar);
-    IntersectData intersData = plane.IntersectSphere(spCar);
+void CLPhysics::SeparateCilindreSphere(CTransformable &trCar1, glm::vec3 &cenCar1, const float &radCar1, CCar &ccarCar1, CTransformable &trCar2, glm::vec3 &cenCar2, const float &radCar2, CCar &ccarCar2) const{
+    vec3 direction = cenCar2 - cenCar1;  // te da la dirección al otro bounding en x, y, z, es decir, si tenemos 200, 10, 30, significa que estamos a 200 de distancia en x, a 10 en y y a 30 en z
+    float centerDistance = glm::length(direction);
+    float distanceCollided = abs(radCar1 + radCar2 - centerDistance);
+
+    // vec3 nuevaDirectionCar1 = glm::reflect(-direction, direction);
+    // vec3 nuevaDirectionCar2 = glm::reflect(direction, -direction);
+
+    vec3 nuevaDirectionCar1 = -normalize(direction);
+    vec3 nuevaDirectionCar2 = normalize(direction);
+
+    trCar1.position.x += nuevaDirectionCar1.x * (distanceCollided / 2);
+    trCar1.position.z += nuevaDirectionCar1.z * (distanceCollided / 2);
+    trCar2.position.x += nuevaDirectionCar2.x * (distanceCollided / 2);
+    trCar2.position.z += nuevaDirectionCar2.z * (distanceCollided / 2);
+}
+
+
+// HandleCollisions entre ESFERA de un COCHE y un PLANO 
+bool CLPhysics::HandleCollisions(CTransformable &trCar, CBoundingSphere &spCar, CCar &ccarCar, bool mainCar, CBoundingPlane &plane) {
+    //PositionSphereIntoTransformable(trCar, spCar);
+    IntersectData intersData = plane.IntersectSphere(spCar, trCar, ccarCar);
     if (intersData.intersects) {
         // SonarChoque(mainCar);
         SeparateSphereFromPlane(intersData, trCar, spCar, ccarCar, plane);
+
+
+        vec3 vecDirCar = CalculateVecDirCar(trCar);
+        double angle2V = Angle2Vectors( vecDirCar, plane.normalizedNormal);
+        //cout << angle2V << endl;
+        if(angle2V > 130.0){ // no debemos reflejar del todo
+            if(ccarCar.speed >= ccarCar.maxSpeed*0.3){
+            ccarCar.speed = ccarCar.maxSpeed*0.3;
+            }
+        }else{
+            if(ccarCar.speed >= ccarCar.maxSpeed*0.8){
+            ccarCar.speed = ccarCar.maxSpeed*0.8;
+            }     
+        }
+        //ReflectSpherePlane(trCar, ccarCar, plane);
+
+        //TODO: PROVISIONAL ... PONER LA VELOCIDAD DEL COCHE A 0
+        //ccarCar.speed = ccarCar.speed/1.01;
+        return true;
+    }
+    return false;
+}
+
+
+// HandleCollisions entre ESFERA de un COCHE y un OBB 
+bool CLPhysics::HandleCollisions(CTransformable &trCar, CBoundingSphere &spCar, CCar &ccarCar, bool mainCar, CBoundingOBB &obb) {
+    //PositionSphereIntoTransformable(trCar, spCar);
+    IntersectData intersData = obb.IntersectSphere(spCar, trCar, ccarCar);
+    if (intersData.intersects) {
+        // SonarChoque(mainCar);
+        SeparateSphereFromPlane(intersData, trCar, spCar, ccarCar, *obb.planes[intersData.posEntity] );
+
+        // dependiendo de como colisionemos con el plano sera un tipo de colision u otro.
+        // dependera del angulo de colsion y la velocidad de colision
+        
+        vec3 vecDirCar = CalculateVecDirCar(trCar);
+        double angle2V = Angle2Vectors( vecDirCar, obb.planes[intersData.posEntity]->normalizedNormal);
+        //cout << angle2V << endl;
+        if(angle2V > 130.0){ // no debemos reflejar del todo
+            if(ccarCar.speed >= ccarCar.maxSpeed*0.3){
+            ccarCar.speed = ccarCar.maxSpeed*0.3;
+            }
+        }else{
+            if(ccarCar.speed >= ccarCar.maxSpeed*0.8){
+            ccarCar.speed = ccarCar.maxSpeed*0.8;
+            }     
+        }
+        return true;
+    }
+    return false;
+}
+
+
+// TODO: no hay colisiones entre CILINDRO-PLANO
+void CLPhysics::CollisionsSphereOBB(CTransformable &trCar, CBoundingChassis &chaCar, CCar &ccar, bool mainCar, CBoundingOBB &obb){
+    
+    CBoundingSphere *spBehindCar = chaCar.sphereBehind.get();
+    bool intersect = false;
+    //PositionSphBehindIntoTransf(trCar, *spBehindCar);
+    intersect = HandleCollisions(trCar, *spBehindCar, ccar, false, obb);
+    if(!intersect){
+        CBoundingSphere *spFrontCar = chaCar.sphereFront.get();
+        //PositionSphFrontIntoTransf(trCar, *spFrontCar);
+        HandleCollisions(trCar, *spFrontCar, ccar, false, obb);
     }
 }
 
+vec3 CLPhysics::CalculateVecDirCar(CTransformable &cTransformable) const{
+
+   float angleRotation = (cTransformable.rotation.y * M_PI) / 180.0;
+   float nextPosX    = cTransformable.position.x - cos(angleRotation) * 1;
+   float nexPosZ     = cTransformable.position.z + sin(angleRotation) * 1;
+
+   return vec3(nextPosX-cTransformable.position.x, 0, nexPosZ-cTransformable.position.z);
+
+}
+
+
 void CLPhysics::SeparateSphereFromPlane(IntersectData &intersData, CTransformable &trCar1, CBoundingSphere &spCar1, CCar &ccarCar1, CBoundingPlane &plane) const {
+    //cout << "NO SEPARO" << endl;
     vec3 direction = spCar1.center - plane.normal;  // te da la dirección al otro bounding en x, y, z, es decir, si tenemos 200, 10, 30, significa que estamos a 200 de distancia en x, a 10 en y y a 30 en z
     vec3 nuevaDirectionCar1 = -normalize(direction);
     float correctedDistance = intersData.GetDistance();
@@ -180,7 +429,7 @@ void CLPhysics::SonarChoque(bool mainCar) {
  * Recibe los componentes de los dos coches con los que se comprobará colisión
  * El bool mainCar define si los componentes del coche1 son los del coche principal o no
  */
-bool CLPhysics::HandleCollisions(CTransformable &trCar1, CBoundingSphere &spCar1, CCar &ccarCar1, bool mainCar, CTransformable &trCar2, CBoundingSphere &spCar2, CCar &ccarCar2) {
+bool CLPhysics::HandleCollisions(CTransformable &trCar1, CBoundingSphere &spCar1, CCar &ccarCar1, bool mainCar, CTransformable &trCar2, CBoundingSphere &spCar2, CCar &ccarCar2, CExternalForce &cExtForc1, CExternalForce &cExtForc2) {
     // posicionamos la esfera en la misma posición que el coche pero teniendo en cuenta el offset
 
     PositionSphereIntoTransformable(trCar1, spCar1);
@@ -193,16 +442,22 @@ bool CLPhysics::HandleCollisions(CTransformable &trCar1, CBoundingSphere &spCar1
         PositionSphereIntoTransformable(trCar1, spCar1);
         PositionSphereIntoTransformable(trCar2, spCar2);
 
-        float anguloCar1 = trCar1.rotation.y;
-        float anguloCar2 = trCar2.rotation.y;
-        float anguloEntreEllos = Utils::AngleBetweenTwoAngles(anguloCar1, anguloCar2);
+        // LO QUE HACEMOS ES PASAR NUESTRO VECTOR DE FUERZA AL COCHE CONTRARIO
+        ReciveExternalForce(trCar1, ccarCar1, cExtForc1, trCar2, ccarCar2, cExtForc2);
+
+        // ADEMAS DEBEMOS REDUCIRLES LAS VELOCIDADES POR CHOCAR
+        impactCarCar(ccarCar1, ccarCar2);
+
+        //float anguloCar1 = trCar1.rotation.y;
+        //float anguloCar2 = trCar2.rotation.y;
+        //float anguloEntreEllos = Utils::AngleBetweenTwoAngles(anguloCar1, anguloCar2);
         //cout << "angulo entre ellos=" << anguloEntreEllos << endl;
-        if (anguloEntreEllos > 0 && anguloEntreEllos <= 45) {
-            // intercambiamos velocidades pero el ángulo no se toca
-            //cout << "Intercambiamos velocidades1" << endl;
-            float aux = ccarCar1.speed;
-            ccarCar1.speed = ccarCar2.speed;
-            ccarCar2.speed = aux;
+        //if (anguloEntreEllos > 0 && anguloEntreEllos <= 45) {
+        //    // intercambiamos velocidades pero el ángulo no se toca
+        //    //cout << "Intercambiamos velocidades1" << endl;
+        //    float aux = ccarCar1.speed;
+        //    ccarCar1.speed = ccarCar2.speed;
+        //    ccarCar2.speed = aux;
         // } else if (anguloEntreEllos > 45 && anguloEntreEllos <= 115) {
             //cout << "chocan lateralmente" << endl;
 
@@ -217,19 +472,148 @@ bool CLPhysics::HandleCollisions(CTransformable &trCar1, CBoundingSphere &spCar1
 
             // versión reflejo
             // ReflectCollision(trCar1, ccarCar1, trCar2, ccarCar2);
-        } else if (anguloEntreEllos > 115) {
-            // intercambiamos velocidades pero el ángulo no se toca
-            //cout << "Intercambiamos velocidades2" << endl;
-            float aux = ccarCar1.speed;
+        //} else if (anguloEntreEllos > 115) {
+        //    // intercambiamos velocidades pero el ángulo no se toca
+        //    //cout << "Intercambiamos velocidades2" << endl;
+        //    float aux = ccarCar1.speed;
+//
+        //    ccarCar1.speed = -50.f - ccarCar2.speed / 6;
+        //    ccarCar2.speed = -50.f - aux / 6;
+        //}
 
-            ccarCar1.speed = -50.f - ccarCar2.speed / 6;
-            ccarCar2.speed = -50.f - aux / 6;
-        }
+        
 
-        return true;    // los coches han colisionado
+        return true;    // los coches han colisionado -- lo utilizamos para robar el totem si llevamos el nitro
     }
     return false;  // los coches no han colisionado
 }
+
+bool CLPhysics::CollisionsSphereSphere(CTransformable &trCar1, CBoundingChassis &chaCar1, CCar &ccar1, bool mainCar, CTransformable &trCar2, CBoundingChassis &chaCar2, CCar &ccar2, CExternalForce &cExtForc1, CExternalForce &cExtForc2){
+
+    CBoundingSphere *spBehindCar1 = chaCar1.sphereBehind.get();
+    CBoundingSphere *spFrontCar1 = chaCar1.sphereFront.get();
+
+    CBoundingSphere *spBehindCar2 = chaCar2.sphereBehind.get();
+    CBoundingSphere *spFrontCar2 = chaCar2.sphereFront.get();
+
+    bool intersect = false;
+    intersect = CollisionsFrontFront(trCar1, *spFrontCar1, ccar1, mainCar, trCar2, *spFrontCar2, ccar2, cExtForc1, cExtForc2);
+    if(!intersect){
+        intersect = CollisionsFrontBehind(trCar1, *spFrontCar1, ccar1, mainCar, trCar2, *spBehindCar2, ccar2, cExtForc1, cExtForc2);
+        if(!intersect){
+            intersect = CollisionsBehindFront(trCar1, *spBehindCar1, ccar1, mainCar, trCar2, *spFrontCar2, ccar2, cExtForc1, cExtForc2);
+            if(!intersect){
+                intersect = CollisionsBehindBehind(trCar1, *spBehindCar1, ccar1, mainCar, trCar2, *spBehindCar2, ccar2, cExtForc1, cExtForc2);
+            }
+        }
+    }
+    return intersect;
+}
+
+bool CLPhysics::CollisionsBehindBehind(CTransformable &trCar1, CBoundingSphere &spCar1, CCar &ccarCar1, bool mainCar, CTransformable &trCar2, CBoundingSphere &spCar2, CCar &ccarCar2, CExternalForce &cExtForc1, CExternalForce &cExtForc2){
+    //PositionSphBehindIntoTransf(trCar1, spCar1);
+    //PositionSphBehindIntoTransf(trCar2, spCar2);
+    IntersectData intersData = spCar1.IntersectSphere(spCar2);
+    if (intersData.intersects) {
+        //SonarChoque(mainCar);
+
+        SeparateSpheres(trCar1, spCar1, ccarCar1, trCar2, spCar2, ccarCar2);
+        //PositionSphBehindIntoTransf(trCar1, spCar1);
+        //PositionSphBehindIntoTransf(trCar2, spCar2);
+
+        ReciveExternalForce(trCar1, ccarCar1, cExtForc1, trCar2, ccarCar2, cExtForc2);
+        impactCarCar(ccarCar1, ccarCar2);
+
+        return true;
+    }
+    return false; 
+}
+
+bool CLPhysics::CollisionsBehindFront(CTransformable &trCar1, CBoundingSphere &spCar1, CCar &ccarCar1, bool mainCar, CTransformable &trCar2, CBoundingSphere &spCar2, CCar &ccarCar2, CExternalForce &cExtForc1, CExternalForce &cExtForc2){
+    // posicionamos la esfera en la misma posición que el coche pero teniendo en cuenta el offset
+
+    //PositionSphBehindIntoTransf(trCar1, spCar1);
+    //PositionSphFrontIntoTransf(trCar2, spCar2);
+    IntersectData intersData = spCar1.IntersectSphere(spCar2);
+    if (intersData.intersects) {
+        //SonarChoque(mainCar);
+
+        SeparateSpheres(trCar1, spCar1, ccarCar1, trCar2, spCar2, ccarCar2);
+        //PositionSphBehindIntoTransf(trCar1, spCar1);
+        //PositionSphFrontIntoTransf(trCar2, spCar2);
+
+        ReciveExternalForce(trCar1, ccarCar1, cExtForc1, trCar2, ccarCar2, cExtForc2);
+        impactCarCar(ccarCar1, ccarCar2);
+
+        return true;    // los coches han colisionado -- lo utilizamos para robar el totem si llevamos el nitro
+    }
+    return false;  // los coches no han colisionado  
+}
+
+bool CLPhysics::CollisionsFrontBehind(CTransformable &trCar1, CBoundingSphere &spCar1, CCar &ccarCar1, bool mainCar, CTransformable &trCar2, CBoundingSphere &spCar2, CCar &ccarCar2, CExternalForce &cExtForc1, CExternalForce &cExtForc2){
+    // posicionamos la esfera en la misma posición que el coche pero teniendo en cuenta el offset
+
+    //PositionSphFrontIntoTransf(trCar1, spCar1);
+    //PositionSphBehindIntoTransf(trCar2, spCar2);
+    IntersectData intersData = spCar1.IntersectSphere(spCar2);
+    if (intersData.intersects) {
+        //SonarChoque(mainCar);
+
+        SeparateSpheres(trCar1, spCar1, ccarCar1, trCar2, spCar2, ccarCar2);
+        //PositionSphFrontIntoTransf(trCar1, spCar1);
+        //PositionSphBehindIntoTransf(trCar2, spCar2);
+
+        ReciveExternalForce(trCar1, ccarCar1, cExtForc1, trCar2, ccarCar2, cExtForc2);
+        impactCarCar(ccarCar1, ccarCar2);
+
+        return true;    // los coches han colisionado -- lo utilizamos para robar el totem si llevamos el nitro
+    }
+    return false;  // los coches no han colisionado  
+}
+
+bool CLPhysics::CollisionsFrontFront(CTransformable &trCar1, CBoundingSphere &spCar1, CCar &ccarCar1, bool mainCar, CTransformable &trCar2, CBoundingSphere &spCar2, CCar &ccarCar2, CExternalForce &cExtForc1, CExternalForce &cExtForc2){
+    // posicionamos la esfera en la misma posición que el coche pero teniendo en cuenta el offset
+
+    //PositionSphFrontIntoTransf(trCar1, spCar1);
+    //PositionSphFrontIntoTransf(trCar2, spCar2);
+    IntersectData intersData = spCar1.IntersectSphere(spCar2);
+    if (intersData.intersects) {
+        //SonarChoque(mainCar);
+
+        SeparateSpheres(trCar1, spCar1, ccarCar1, trCar2, spCar2, ccarCar2);
+        //PositionSphFrontIntoTransf(trCar1, spCar1);
+        //PositionSphFrontIntoTransf(trCar2, spCar2);
+
+        ReciveExternalForce(trCar1, ccarCar1, cExtForc1, trCar2, ccarCar2, cExtForc2);
+        impactCarCar(ccarCar1, ccarCar2);
+
+        return true;    // los coches han colisionado -- lo utilizamos para robar el totem si llevamos el nitro
+    }
+    return false;  // los coches no han colisionado  
+}
+
+void CLPhysics::impactCarCar(CCar &ccar1, CCar &ccar2) const{
+    if(ccar1.speed >= ccar1.maxSpeed*0.5){
+        ccar1.speed = ccar1.maxSpeed*0.5;
+    }
+    if(ccar2.speed >= ccar2.maxSpeed*0.5){
+        ccar2.speed = ccar2.maxSpeed*0.5;
+    }
+}
+
+void CLPhysics::ReciveExternalForce(CTransformable &trCar1,  CCar &ccar1, CExternalForce &cExtForc1, CTransformable &trCar2,  CCar &ccar2, CExternalForce &cExtForc2){
+    vec3 vecDirCar1 = CalculateVecDirCar(trCar1);
+    vec3 vecDirCar2 = CalculateVecDirCar(trCar2);
+    if( ccar2.speed > ccar2.maxSpeed*0.1){
+        cExtForc1.dirExternalForce = vecDirCar2;
+        cExtForc1.force = ccar2.speed; 
+    }
+    if(ccar1.speed > ccar1.maxSpeed*0.1){
+        cExtForc2.dirExternalForce = vecDirCar1;
+        cExtForc2.force = ccar1.speed;
+    }
+}
+
 
 void VersionRayoVectores() {
     /*vec3 direccionCar1;
@@ -343,6 +727,41 @@ void CLPhysics::ReflectCollision(CTransformable &trCar1, CCar &cCar1, CTransform
     cCar2.speed = aux;
 }
 
+
+
+/**
+ * Esta versión hace que los coches que han colisionado se reflejen entre sí
+ */
+void CLPhysics::ReflectSpherePlane(CTransformable &trCar1, CCar &cCar1, CBoundingPlane &plane) {
+    //cout << " 1 1 1 1" << endl ;
+    /*
+    float anguloCar1 = trCar1.rotation.y;
+    vec3 direccionCar;
+    direccionCar.x = cos(anguloCar1 * M_PI / 180.0);
+    direccionCar.y = 0;
+    direccionCar.z = sin(anguloCar1 * M_PI / 180.0);
+
+    // pondremos la normal del plano
+    vec3 nuevaDirectionCar1 = glm::reflect(direccionCar, plane.normal);
+
+    float nuevoAnguloCar1Rad = atan2(nuevaDirectionCar1.x, nuevaDirectionCar1.z);
+    float nuevoAnguloCar1Deg = nuevoAnguloCar1Rad * (180.0 / M_PI);
+
+    trCar1.rotation.y = nuevoAnguloCar1Deg;
+
+    cCar1.speed = 5 + cCar1.speed / 3;
+*/
+    
+   if(cCar1.speed > 50.0){
+        cCar1.speed = -50.f - cCar1.speed / 6;
+   }else{
+       cCar1.speed = 25.0;
+   }
+}
+
+
+
+
 void CLPhysics::RunTests() {
     CBoundingSphere sp1(vec3(0.f, 0.f, 0.f), 1.f);
     CBoundingSphere sp2(vec3(0.f, 3.f, 0.f), 1.f);
@@ -438,4 +857,21 @@ IntersectData CLPhysics::HandleCollisionsRayWithPlane(CTransformable &trRayOrigi
     IntersectData intersData = planeObject.IntersectRay(positionRayOrigin, rayNormalNormalized);
 
     return intersData;
+}
+
+
+double CLPhysics::Angle2Vectors(const vec3 &a, const vec3 &b) const{
+    vec3 aN = glm::normalize(a);
+    vec3 bN = glm::normalize(b);
+
+    double dot = glm::dot(aN,bN);
+    // Force the dot product of the two input vectors to
+    // fall within the domain for inverse cosine, which
+    // is -1 <= x <= 1. This will prevent runtime
+    // "domain error" math exceptions.
+    dot = ( dot < -1.0 ? -1.0 : ( dot > 1.0 ? 1.0 : dot ) );
+
+    double angleRad = acos( dot );
+    // grados = radianes*(180/PI_)
+    return angleRad*(180/M_PI);  
 }

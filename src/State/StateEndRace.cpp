@@ -34,7 +34,7 @@ void StateEndRace::Render(){
 
 void StateEndRace::Input(){
     renderEngine->FacadeCheckInputEndRace();
-    InputFacadeManager::GetInstance()->GetInputFacade()->CheckInputEndRace();
+    // InputFacadeManager::GetInstance()->GetInputFacade()->CheckInputEndRace();
 }
 
 
