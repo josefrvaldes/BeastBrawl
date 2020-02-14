@@ -5,7 +5,7 @@ Beast Brawl es el nombre del juego que está siendo desarrollado por Clover Game
 * Judith Mula
 * Carlos de la Fuente
 * Rubén Rubio
-* Jesús Más
+* Jesús Mas
 
 ## Compilación
 
