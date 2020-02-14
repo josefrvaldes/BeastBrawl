@@ -141,31 +141,11 @@ int main() {
     
     //-------------------Resource manager-------------------
     unique_ptr<CLResourceManager> resourceManager = make_unique<CLResourceManager>();
-    auto resourceVertex = resourceManager->GetResourceShader("CLEngine/src/Shaders/vertex.glsl", GL_VERTEX_SHADER);
-    auto resourceFragment = resourceManager->GetResourceShader("CLEngine/src/Shaders/fragment.glsl", GL_FRAGMENT_SHADER);
+    auto resourceShader = resourceManager->GetResourceShader("CLEngine/src/Shaders/vertex.glsl", "CLEngine/src/Shaders/fragment.glsl");
     auto resourceMesh = resourceManager->GetResourceMesh("media/kart.obj");
 
     //----------------------------------------------------------------------------------------------------------------SHADER
-    //Una vez ambos shaders estan inicializados tenemos que linkarlos para que el output de uno vaya al otro
-    int shaderProgram = glCreateProgram(); //Como siempre nos devuelve un identificador
-
-    //Bueno aqui es obvio, los enlaza ambos al shaderProgram
-    glAttachShader(shaderProgram, resourceVertex->GetShaderID());
-    glAttachShader(shaderProgram, resourceFragment->GetShaderID());
-    glLinkProgram(shaderProgram);
-
     
-    int  success;
-    char infoLog[512];
-    glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
-    if(!success) {
-        glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
-        cout << "Ha petado el linkado de shaders :(\n";
-    }
-
-    //Tecnicamente una vez linkados se pueden borrar los shaders
-    glDeleteShader(resourceVertex->GetShaderID());
-    glDeleteShader(resourceFragment->GetShaderID());  
 
     
     //------------------------------------------------------------------------- ARBOLITO
@@ -177,7 +157,7 @@ int main() {
     
     //Nodo raiz
     unique_ptr<CLNode> smgr = make_unique<CLNode>(entity1.get());
-    smgr->SetModelMatrixID(glGetUniformLocation(shaderProgram, "model"));
+    smgr->SetModelMatrixID(glGetUniformLocation(resourceShader->GetProgramID(), "model"));
     cout << "MODEL MATRIX ID:: " << smgr->GetModelMatrixID() << endl;
 
     unique_ptr<CLNode> node2 = make_unique<CLNode>(entity2.get());
@@ -278,9 +258,9 @@ int main() {
     glBindVertexArray(0);
 
     
-    glUseProgram(shaderProgram);
-    glUniform1i(glGetUniformLocation(shaderProgram,"texture1"),0);
-    glUniform1i(glGetUniformLocation(shaderProgram,"texture2"),1);
+    glUseProgram(resourceShader->GetProgramID());
+    glUniform1i(glGetUniformLocation(resourceShader->GetProgramID(),"texture1"),0);
+    glUniform1i(glGetUniformLocation(resourceShader->GetProgramID(),"texture2"),1);
 
     //COORDINATE SYSTEM
     glm::ortho(0.0f, 800.0f, 0.0f, 600.0f, 0.1f, 1000.0f); // left | right | bottom | top | near | far (near far = distancia)
@@ -298,9 +278,9 @@ int main() {
     // glm::mat4 projection = glm::perspective(glm::radians(45.0f), 1280.0f/720.0f, 0.1f, 100.0f);
 
     // //Asignamos los valores al vertex shader
-    // glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "model"), 1, GL_FALSE, glm::value_ptr(model));
-    // glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "view"), 1, GL_FALSE, glm::value_ptr(view));
-    // glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+    // glUniformMatrix4fv(glGetUniformLocation(resourceShader->GetProgramID(), "model"), 1, GL_FALSE, glm::value_ptr(model));
+    // glUniformMatrix4fv(glGetUniformLocation(resourceShader->GetProgramID(), "view"), 1, GL_FALSE, glm::value_ptr(view));
+    // glUniformMatrix4fv(glGetUniformLocation(resourceShader->GetProgramID(), "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 
     // //CAMERA
     // glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f); 
@@ -334,7 +314,7 @@ int main() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
-        glUseProgram(shaderProgram);
+        glUseProgram(resourceShader->GetProgramID());
 
 
 
@@ -352,8 +332,8 @@ int main() {
         view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 
         // pass transformation matrices to the shader
-        glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
-        glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "view"), 1, GL_FALSE, glm::value_ptr(view));
+        glUniformMatrix4fv(glGetUniformLocation(resourceShader->GetProgramID(), "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+        glUniformMatrix4fv(glGetUniformLocation(resourceShader->GetProgramID(), "view"), 1, GL_FALSE, glm::value_ptr(view));
 
         glBindVertexArray(VAO);
         // for(unsigned int i = 0; i < 10; i++){
@@ -362,7 +342,7 @@ int main() {
         //     model = glm::translate(model, cubePositions[i]);
         //     float angle = 20.0f * i; 
         //     model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
-        //     glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "model"), 1, GL_FALSE, glm::value_ptr(model));
+        //     glUniformMatrix4fv(glGetUniformLocation(resourceShader->GetProgramID(), "model"), 1, GL_FALSE, glm::value_ptr(model));
 
         //     glDrawArrays(GL_TRIANGLES, 0, 36);
         // }
