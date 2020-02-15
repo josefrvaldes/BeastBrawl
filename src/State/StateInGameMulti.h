@@ -24,8 +24,7 @@ class StateInGameMulti : public StateInGame {
     void InitializeSystems(ManCar &manCars, ManBoundingWall &manBoundingWall, ManBoundingOBB &manBoundingOBB) override;
     void InitializeFacades() override;
     void AddElementsToRender() override;
-
-    void CAMBIARCosasDeTotemUpdate() override;
+    
 
     unique_ptr<SystemOnline> sysOnline;
 

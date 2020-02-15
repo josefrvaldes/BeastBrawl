@@ -24,8 +24,6 @@ class StateInGameSingle : public StateInGame {
     void AddElementsToRender() override;
 
     void CAMBIARInicializarCarAIS(ManCar &, ManWayPoint &);
-    void CAMBIARCosasNavMesh(ManCar &, ManNavMesh &);
-    void CAMBIARCosasDeTotemUpdate() override;
 
     unique_ptr<SystemBtPowerUp> systemBtPowerUp;
     unique_ptr<SystemBtMoveTo> systemBtMoveTo;

@@ -22,7 +22,7 @@ struct Data;
 
 class ManNavMesh : public Manager{
    public:
-    ManNavMesh(Entity *carPlayer, ManTotem *manTotems);
+    ManNavMesh(ManCar *manCars, ManTotem *manTotems);
     ~ManNavMesh(){};
 
     void CreateNavMesh(glm::vec3 pos, glm::vec3 rot, float width, float height, float depth, vector<int> waypoints);
