@@ -146,7 +146,7 @@ void StateInGame::Update() {
     em.Update();
 
     //ACTUALIZAMOS MANAGER NAVMESH CAR PLAYER
-    manNavMesh->UpdateNavMeshPlayer(manCars.get()->GetCar().get());
+    manNavMesh->UpdateNavMeshHuman(manCars.get()->GetCar().get());
     // ACTUALIZACION DE LOS MANAGERS DE LOS COCHES
     manCars->UpdateCar();
 

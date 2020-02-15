@@ -85,6 +85,7 @@ void StateInGameMulti::Update() {
 
     for (auto actualCar : manCars->GetEntities()) {
         if (actualCar.get() != manCars->GetCar().get()) {
+            manNavMesh->UpdateNavMeshHuman(actualCar.get());  // actualizamos el navemesh en el que se encuentra al human
             // funcion para recibir los inputs del servidor, otra para enviar los nuestros, crear componente de input
             physics->UpdateHuman(static_cast<Car *>(actualCar.get()));
             manCars->UpdateCarHuman(actualCar.get());
@@ -99,6 +100,12 @@ void StateInGameMulti::Update() {
     collisions->IntersectCarsBoxPowerUp(manCars.get(), manBoxPowerUps.get());
     // COLISIONES  entre la cocheHuman y el Totem
     collisions->IntersectCarsTotem(manCars.get(), manTotems.get());
+    //if(manTotems->GetEntities().size() != 0){
+    //    auto cTransformable = static_cast<CTransformable *>(manTotems->GetEntities()[0]->GetComponent(CompType::TransformableComp).get());
+    //    std::cout << "X: " << cTransformable->position.x << "  -  Y: " << cTransformable->position.z << "\n";
+    //}else{
+    //    std::cout << "No existe totem\n";
+    //}
 }
 
 void StateInGameMulti::Render() {

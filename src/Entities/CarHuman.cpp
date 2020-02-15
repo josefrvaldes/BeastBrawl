@@ -48,7 +48,7 @@ CarHuman::CarHuman() {
     shared_ptr<CNitro> cNitro = make_shared<CNitro>();
     shared_ptr<CRoboJorobo> cRoboJorobo = make_shared<CRoboJorobo>();
     shared_ptr<CTotem> cTotem = make_shared<CTotem>();
-    shared_ptr<CCurrentNavMesh> cCurrentNavMesh = make_shared<CCurrentNavMesh>(0);  //  ponemos 0 por defecto ya que haremos el calculo al empezar la partida
+    shared_ptr<CCurrentNavMesh> cCurrentNavMesh = make_shared<CCurrentNavMesh>(-1);  //  ponemos 0 por defecto ya que haremos el calculo al empezar la partida
     shared_ptr<COnline> cOnline = make_shared<COnline>();  //  ponemos 0 por defecto ya que haremos el calculo al empezar la partida
 
 

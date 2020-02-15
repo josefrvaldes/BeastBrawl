@@ -111,7 +111,7 @@ ManNavMesh::ManNavMesh(Entity *carPlayer, ManTotem *manTotems) {
     SubscribeToEvents();
 
     // Para no duplicar codigo, pasamos el coche de tipo CarHuman a Entity
-    UpdateNavMeshPlayer(carPlayer);
+    UpdateNavMeshHuman(carPlayer);
     InitNavMeshTotem(manTotems);
 }
 
@@ -196,7 +196,7 @@ void ManNavMesh::ActualizeNavMeshCarAI(DataMap* d){
     }
 }
 
-void ManNavMesh::UpdateNavMeshPlayer(Entity* carPlayer){
+void ManNavMesh::UpdateNavMeshHuman(Entity* carPlayer){
     auto cTransformableCar = static_cast<CTransformable*>(carPlayer->GetComponent(CompType::TransformableComp).get());     
     for(const auto& navmesh : GetEntities()){
         auto cDimensions = static_cast<CDimensions*>(navmesh.get()->GetComponent(CompType::DimensionsComp).get());

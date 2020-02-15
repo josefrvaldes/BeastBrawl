@@ -1,8 +1,12 @@
 #pragma once
 
-#define SERVER_HOST "54.38.189.168"
-#define SERVER_PORT_UDP 80
-#define SERVER_PORT_TCP 80
+//#define SERVER_HOST "54.38.189.168"
+//#define SERVER_PORT_UDP 80
+//#define SERVER_PORT_TCP 80
+
+#define SERVER_HOST "localhost"
+#define SERVER_PORT_UDP 1234
+#define SERVER_PORT_TCP 1235
 
 #define SERVER_HOST_OVH "54.38.189.168"
 

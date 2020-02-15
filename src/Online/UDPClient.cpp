@@ -227,7 +227,7 @@ void UDPClient::HandleSentSync(const boost::system::error_code& errorCode, std::
     if (errorCode) {
         cout << "Hubo un error enviando la sincronizacion" << endl;
     }else{
-        std::cout << "Enviado sincronizacion: " << bytes_transferred << " bytes" << std::endl; 
+        //std::cout << "Enviado sincronizacion: " << bytes_transferred << " bytes" << std::endl; 
     }
 }
 
