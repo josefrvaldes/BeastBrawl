@@ -54,7 +54,7 @@ void CLNode::DeleteNode(CLNode* node){
 
 bool CLNode::HasChild(CLNode* child){
 
-    for(auto node : childs){
+    for(auto& node : childs){
         if(node == child){
             return true;
         }
@@ -92,11 +92,11 @@ void CLNode::DrawTree(CLNode* root){
     if(root->GetChilds().size()>0){
         //Tiene hijos
         cout << "Nodo " << root->GetEntity()->GetID() << " con hijos: ";
-        for(auto nodo : root->GetChilds()){
+        for(auto& nodo : root->GetChilds()){
             cout << nodo->GetEntity()->GetID() << " ";
         }
         cout << "\n";
-        for(auto nodo : root->GetChilds()){
+        for(auto& nodo : root->GetChilds()){
             DrawTree(nodo);
         }
     }
@@ -142,7 +142,7 @@ CLNode* CLNode::GetNodeByIDAux(unsigned int id, CLNode* node, CLNode* root){
     if(node!=nullptr) return node; //Caso base, ha encontrado ya al nodo que busca
     if(root->GetChilds().size()>0){
         //Tiene hijos
-        for(auto nodo : root->GetChilds()){
+        for(auto& nodo : root->GetChilds()){
             if(nodo->GetEntity()->GetID() == id){
                 node = nodo;
                 return node;

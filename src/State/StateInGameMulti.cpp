@@ -72,7 +72,7 @@ void StateInGameMulti::Input() {
 
 
     auto millisSinceLastSyncSent = duration_cast<milliseconds>(now - lastTimeSentSync).count();
-    if (millisSinceLastSyncSent > 500) {  // 1000ms = 1s = 60fps; 2s = 120frames
+    if (millisSinceLastSyncSent > 250) {  // 1000ms = 1s = 60fps; 2s = 120frames
         lastTimeSentSync = now;       
         sysOnline->SendSync(manCars.get(), manTotems.get());
     }
@@ -113,16 +113,16 @@ void StateInGameMulti::Render() {
     StateInGame::Render();
 }
 
-void StateInGameMulti::InitializeCLPhysics(ManCar &manCars, ManBoundingWall &manBoundingWall) {
-    StateInGame::InitializeCLPhysics(manCars, manBoundingWall);
+void StateInGameMulti::InitializeCLPhysics(ManCar &manCars, ManBoundingWall &manBoundingWall, ManBoundingOBB &manBoundingOBB) {
+    StateInGame::InitializeCLPhysics(manCars, manBoundingWall, manBoundingOBB);
 }
 
 void StateInGameMulti::InitializeManagers(Physics *physics, Camera *cam) {
     StateInGame::InitializeManagers(physics, cam);
 }
 
-void StateInGameMulti::InitializeSystems(ManCar &manCars, ManBoundingWall &manBoundingWall) {
-    StateInGame::InitializeSystems(manCars, manBoundingWall);
+void StateInGameMulti::InitializeSystems(ManCar &manCars, ManBoundingWall &manBoundingWall, ManBoundingOBB &manBoundingOBB) {
+    StateInGame::InitializeSystems(manCars, manBoundingWall, manBoundingOBB);
 }
 
 void StateInGameMulti::InitializeFacades() {

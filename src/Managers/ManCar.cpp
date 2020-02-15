@@ -91,8 +91,10 @@ void ManCar::UpdateCar() {
 // moverse a un sitio, si en algun momento intentamos ir a una posicion que no existe PETAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 void ManCar::UpdateCarAI(CarAI* carAI, ManPowerUp* m_manPowerUp, ManBoxPowerUp* m_manBoxPowerUp, ManTotem* m_manTotem, ManWayPoint* graph, ManNavMesh* manNavMesh, 
                         ManBoundingWall* m_manBoundingWall, SystemBtPowerUp* systemBtPowerUp, SystemBtMoveTo* systemBtMoveTo, SystemBtLoDMove* systemBtLoDMove, SystemPathPlanning *systemPathPlanning) {
+    
+    
     systemBtMoveTo->update(carAI, this, m_manPowerUp, m_manBoxPowerUp, m_manTotem, graph, manNavMesh);
-
+    
     systemPathPlanning->Update(carAI, graph, manNavMesh);
 
     systemBtLoDMove->update(carAI, this, m_manPowerUp, m_manBoxPowerUp, m_manTotem, graph, manNavMesh, m_manBoundingWall);
@@ -100,6 +102,8 @@ void ManCar::UpdateCarAI(CarAI* carAI, ManPowerUp* m_manPowerUp, ManBoxPowerUp* 
     physicsAI->Update(carAI, graph);
 
     systemBtPowerUp->update(carAI, this, m_manPowerUp, m_manBoxPowerUp, m_manTotem, graph, manNavMesh);
+    
+
 }
 
 void ManCar::UpdateCarHuman(Entity* CarHuman) {
@@ -281,7 +285,7 @@ void ManCar::NewSyncReceived(DataMap* d) {
                 cTran->position = any_cast<glm::vec3>((*d)[DataType::VEC3_POS]);
                 cTran->rotation = any_cast<glm::vec3>((*d)[DataType::VEC3_ROT]);
                 cPowerUp->typePowerUp = any_cast<typeCPowerUp>((*d)[DataType::TYPE_POWER_UP]);
-                //cTotem->active = any_cast<bool>((*d)[DataType::CAR_WITH_TOTEM]);
+                // cTotem->active = any_cast<bool>((*d)[DataType::CAR_WITH_TOTEM]);
                 cTotem->accumulatedTime = any_cast<int64_t>((*d)[DataType::TIME_TOTEM]);
 
                 break;
