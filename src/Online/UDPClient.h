@@ -6,14 +6,13 @@
 #include <chrono>
 #include <iostream>
 #include <thread>
-#include "../Constants.h"
 #include "../../include/glm/vec3.hpp"
 #include "../Components/CPowerUp.h"
+#include "../Constants.h"
 
 using boost::asio::ip::udp;
 using namespace std;
 using namespace std::chrono;
-
 
 class UDPClient {
     // --- TCP --- (sala de espera)
@@ -36,8 +35,8 @@ class UDPClient {
     ~UDPClient();
 
     void SendInputs(vector<Constants::InputTypes>& inputs, uint16_t id);
-    void SendSync(uint16_t idOnline, const glm::vec3 &posCar, const glm::vec3 &rotCar, typeCPowerUp tipoPU, bool haveTotem, int64_t totemTime,  
-                    bool totemInGround, const glm::vec3 &posTotem);
+    void SendSync(uint16_t idOnline, const glm::vec3& posCar, const glm::vec3& rotCar, typeCPowerUp tipoPU, bool haveTotem, int64_t totemTime,
+                  bool totemInGround, const glm::vec3& posTotem);
     void SendDateTime();
     uint32_t idMainCar;
 
@@ -45,7 +44,7 @@ class UDPClient {
     void StartReceiving();
     void HandleReceived(std::shared_ptr<unsigned char[]> recevBuff, const boost::system::error_code& error, size_t bytesTransferred);
     void HandleReceivedInputs(const vector<Constants::InputTypes> inputs, const uint16_t idRival) const;
-    void HandleReceivedSync(unsigned char* recevBuff, size_t bytesTransferred) const;
+    void HandleReceivedSync(unsigned char* recevBuff, size_t bytesTransferred);
     void HandleSentInputs(const boost::system::error_code& errorCode, std::size_t bytes_transferred);
     void HandleSentSync(const boost::system::error_code& errorCode, std::size_t bytes_transferred);
 
@@ -58,4 +57,9 @@ class UDPClient {
     udp::socket socket;
     std::thread butler;
     // boost::asio::io_context::strand strand;
+    uint16_t lastInputIDReceived{0};
+    uint16_t lastSyncIDReceived{0};
+
+    inline static uint16_t currentInputID {0};
+    inline static uint16_t currentSyncID {0};
 };

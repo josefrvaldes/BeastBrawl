@@ -25,13 +25,6 @@ class UDPServer : public boost::enable_shared_from_this<UDPServer> {
     // void HandleReceive(const boost::system::error_code& error, size_t bytesTransferred);
     void HandleReceivedInputs(const unsigned char resendInputs[], const size_t currentBufferSize, const udp::endpoint& remoteClient);
     void HandleReceivedSync(const unsigned char resendSync[], const size_t currentBufferSize, const udp::endpoint& remoteClient);
-    void HandleReceiveDateTimeRequest(const udp::endpoint& remoteClient);
-    void HandleSentDateTimeRequest(const boost::shared_ptr<string> message,
-                                   const boost::system::error_code& errorCode,
-                                   std::size_t bytes_transferred);
-    void HandleSentDefaultMessage(const boost::shared_ptr<string> message,
-                                  const boost::system::error_code& errorCode,
-                                  std::size_t bytes_transferred);
     void ResendBytesToOthers(const unsigned char resendBytes[], const size_t currentBufferSize, const udp::endpoint& remoteClient);
     void SendBytes(const unsigned char resendBytes[], const size_t currentBufferSize, const Player& player);
     //void SendInputs(const vector<Constants::InputTypes> inputs, const Player& player);
@@ -40,6 +33,7 @@ class UDPServer : public boost::enable_shared_from_this<UDPServer> {
     void ReceiveNewCar();
 
     void RequestId();
+    Player* GetPlayerById(uint16_t id);
 
     // --- TCP --- (sala de espera)
     // el cliente por tcp le dice al server que se quiere conectar
@@ -66,8 +60,5 @@ class UDPServer : public boost::enable_shared_from_this<UDPServer> {
     // udp, se actualizará el endpoint udp que corresponda a cada cliente
 
     udp::socket socket;
-    udp::endpoint receiverEndpoint;
     std::vector<Player> players;
-    boost::array<char, 512> recvBuff;
-    asio::streambuf inPacket;
 };

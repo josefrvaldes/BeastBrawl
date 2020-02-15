@@ -25,7 +25,6 @@ class Constants {
                       DRIFT };
 
     enum PetitionTypes { CONNECTION_REQUEST,
-                         SEND_INPUT,
                          SEND_INPUTS,
                          SEND_SYNC };
 };

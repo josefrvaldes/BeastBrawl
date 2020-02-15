@@ -2,10 +2,10 @@
 #include "../src/EventManager/Event.h"
 #include "../src/EventManager/EventManager.h"
 // #include <src/EventManager/EventManager.h>
-#include "../src/Systems/Utils.h"
 #include <boost/asio/placeholders.hpp>
 #include <boost/bind.hpp>
 #include <deque>
+#include "../src/Systems/Utils.h"
 
 using boost::asio::ip::udp;
 using namespace boost::asio;
@@ -39,7 +39,7 @@ UDPClient::~UDPClient() {
 
 void UDPClient::StartReceiving() {
     // cout << "Esperamos recibir datos" << endl;
-    std::shared_ptr<unsigned char[]> recvBuff ( new unsigned char[Constants::ONLINE_BUFFER_SIZE] );
+    std::shared_ptr<unsigned char[]> recvBuff(new unsigned char[Constants::ONLINE_BUFFER_SIZE]);
     socket.async_receive_from(
         boost::asio::buffer(recvBuff.get(), Constants::ONLINE_BUFFER_SIZE),
         serverEndpoint,
@@ -61,21 +61,22 @@ void UDPClient::HandleReceived(std::shared_ptr<unsigned char[]> recevBuff, const
         size_t currentIndex = 0;
         uint8_t petitionType;
         Utils::Deserialize(&petitionType, recevBuff.get(), currentIndex);
-        
 
         Constants::PetitionTypes callType = static_cast<Constants::PetitionTypes>(petitionType);
         switch (callType) {
             case Constants::PetitionTypes::SEND_INPUTS: {
+                uint16_t idInputCall;
                 uint16_t idRival;
+                Utils::Deserialize(&idInputCall, recevBuff.get(), currentIndex);
                 Utils::Deserialize(&idRival, recevBuff.get(), currentIndex);
                 const vector<Constants::InputTypes> inputs = Utils::DeserializeInputs(recevBuff.get(), currentIndex);
-                
-                // std::cout << "Recibido inputs: " << bytesTransferred << " bytes" << std::endl; 
-                HandleReceivedInputs(inputs, idRival);
-            } break;
 
-            case Constants::PetitionTypes::SEND_INPUT:
-                break;
+                if (idInputCall > lastInputIDReceived) {
+                    lastInputIDReceived = idInputCall;
+                    // std::cout << "Recibido inputs: " << bytesTransferred << " bytes" << std::endl;
+                    HandleReceivedInputs(inputs, idRival);
+                }
+            } break;
 
             case Constants::PetitionTypes::SEND_SYNC:
                 HandleReceivedSync(recevBuff.get(), bytesTransferred);
@@ -105,11 +106,11 @@ void UDPClient::HandleReceivedInputs(const vector<Constants::InputTypes> inputs,
     // cout << endl;
 }
 
-
-void UDPClient::HandleReceivedSync(unsigned char* recevBuff, size_t bytesTransferred) const{
+void UDPClient::HandleReceivedSync(unsigned char* recevBuff, size_t bytesTransferred) {
     size_t currentIndex = 0;
     uint8_t petitionType;
     uint16_t idCarOnline;
+    uint16_t idCall;
     typeCPowerUp typePU;
     int64_t totemTime;
     glm::vec3 posTotem(0.0, 0.0, 0.0);
@@ -117,41 +118,45 @@ void UDPClient::HandleReceivedSync(unsigned char* recevBuff, size_t bytesTransfe
     bool totemInGround;
 
     Utils::Deserialize(&petitionType, recevBuff, currentIndex);
-    Utils::Deserialize(&idCarOnline, recevBuff, currentIndex);
-    glm::vec3 posCar = Utils::DeserializeVec3(recevBuff, currentIndex);
-    glm::vec3 rotCar = Utils::DeserializeVec3(recevBuff, currentIndex);
+    Utils::Deserialize(&idCall, recevBuff, currentIndex);
+    if (idCall > lastSyncIDReceived) {
+        lastSyncIDReceived = idCall;
 
-    Utils::DeserializePowerUpTotem(recevBuff, typePU, haveTotem, totemInGround, currentIndex);
+        Utils::Deserialize(&idCarOnline, recevBuff, currentIndex);
+        glm::vec3 posCar = Utils::DeserializeVec3(recevBuff, currentIndex);
+        glm::vec3 rotCar = Utils::DeserializeVec3(recevBuff, currentIndex);
 
-    Utils::Deserialize(&totemTime, recevBuff, currentIndex);
-    // realizar llamadas al event Manager de manCar
-    std::shared_ptr<DataMap> data = make_shared<DataMap>();
-    (*data)[DataType::ID_ONLINE] = idCarOnline;
-    (*data)[DataType::VEC3_POS] = posCar;
-    (*data)[DataType::VEC3_ROT] = rotCar;
-    (*data)[DataType::TYPE_POWER_UP] = typePU;
-    (*data)[DataType::CAR_WITH_TOTEM] = haveTotem;
-    (*data)[DataType::TIME_TOTEM] = totemTime;
-    EventManager::GetInstance().AddEventMulti(Event{EventType::NEW_SYNC_RECEIVED_CAR, data});
+        Utils::DeserializePowerUpTotem(recevBuff, typePU, haveTotem, totemInGround, currentIndex);
 
-    if(totemInGround){
-        posTotem = Utils::DeserializeVec3(recevBuff, currentIndex);
+        Utils::Deserialize(&totemTime, recevBuff, currentIndex);
+        // realizar llamadas al event Manager de manCar
+        std::shared_ptr<DataMap> data = make_shared<DataMap>();
+        (*data)[DataType::ID_ONLINE] = idCarOnline;
+        (*data)[DataType::VEC3_POS] = posCar;
+        (*data)[DataType::VEC3_ROT] = rotCar;
+        (*data)[DataType::TYPE_POWER_UP] = typePU;
+        (*data)[DataType::CAR_WITH_TOTEM] = haveTotem;
+        (*data)[DataType::TIME_TOTEM] = totemTime;
+        EventManager::GetInstance().AddEventMulti(Event{EventType::NEW_SYNC_RECEIVED_CAR, data});
+
+        if (totemInGround) {
+            posTotem = Utils::DeserializeVec3(recevBuff, currentIndex);
+        }
+        std::shared_ptr<DataMap> data2 = make_shared<DataMap>();
+        (*data2)[DataType::CAR_WITHOUT_TOTEM] = totemInGround;
+        (*data2)[DataType::VEC3_POS] = posTotem;
+        EventManager::GetInstance().AddEventMulti(Event{EventType::NEW_SYNC_RECEIVED_TOTEM, data2});
+        //std::cout << "RECIBIDO -------------------------------" << std::endl;
+        //std::cout << "Id: " << idCarOnline << std::endl;
+        //std::cout << "Pos coche: " << posCar.x << " , " << posCar.z << std::endl;
+        //std::cout << "Tengo totem: " << haveTotem << std::endl;
+        //std::cout << "Tiempo Totem: " << totemTime << std::endl;
+        //std::cout << "Totem en suelo: " << totemInGround << std::endl;
+        //std::cout << "Pos totem: " << posTotem.x << " , " << posTotem.z << std::endl;
+        //std::cout << "----------------------------------------" << std::endl;
+        // std::cout << "Recibido sincronizacion: " << bytesTransferred << " bytes" << std::endl;
     }
-    std::shared_ptr<DataMap> data2 = make_shared<DataMap>();
-    (*data2)[DataType::CAR_WITHOUT_TOTEM] = totemInGround;
-    (*data2)[DataType::VEC3_POS] = posTotem;
-    EventManager::GetInstance().AddEventMulti(Event{EventType::NEW_SYNC_RECEIVED_TOTEM, data2});
-    //std::cout << "RECIBIDO -------------------------------" << std::endl; 
-    //std::cout << "Id: " << idCarOnline << std::endl; 
-    //std::cout << "Pos coche: " << posCar.x << " , " << posCar.z << std::endl; 
-    //std::cout << "Tengo totem: " << haveTotem << std::endl; 
-    //std::cout << "Tiempo Totem: " << totemTime << std::endl; 
-    //std::cout << "Totem en suelo: " << totemInGround << std::endl; 
-    //std::cout << "Pos totem: " << posTotem.x << " , " << posTotem.z << std::endl;
-    //std::cout << "----------------------------------------" << std::endl;
-    // std::cout << "Recibido sincronizacion: " << bytesTransferred << " bytes" << std::endl; 
 }
-
 
 void UDPClient::SendDateTime() {
     // cout << "Vamos a enviar datos" << endl;
@@ -167,16 +172,15 @@ void UDPClient::SendDateTime() {
             boost::asio::placeholders::bytes_transferred));
 }
 
-
-void UDPClient::SendInputs(vector<Constants::InputTypes>& inputs, uint16_t id) {
-    
+void UDPClient::SendInputs(vector<Constants::InputTypes>& inputs, uint16_t idPlayer) {
     unsigned char requestBuff[Constants::ONLINE_BUFFER_SIZE];
     size_t currentBuffSize = 0;
-    uint8_t numero = Constants::PetitionTypes::SEND_INPUTS;
-    Utils::Serialize(requestBuff, &numero, currentBuffSize);
-    Utils::Serialize(requestBuff, &id, currentBuffSize);
+    uint8_t callType = Constants::PetitionTypes::SEND_INPUTS;
+    uint16_t idCall = currentInputID++;
+    Utils::Serialize(requestBuff, &callType, currentBuffSize);
+    Utils::Serialize(requestBuff, &idCall, currentBuffSize);
+    Utils::Serialize(requestBuff, &idPlayer, currentBuffSize);
     Utils::SerializeInputs(requestBuff, inputs, currentBuffSize);
-
 
     socket.async_send_to(
         boost::asio::buffer(requestBuff, currentBuffSize),
@@ -192,25 +196,27 @@ void UDPClient::HandleSentInputs(const boost::system::error_code& errorCode, std
     if (errorCode) {
         cout << "Hubo un error enviando los inputs, madafaka" << endl;
         // ResendInput();
-    }else{
-        // std::cout << "Enviados Inputs: " << bytes_transferred << " bytes" << std::endl; 
+    } else {
+        // std::cout << "Enviados Inputs: " << bytes_transferred << " bytes" << std::endl;
     }
 }
 
-
-void UDPClient::SendSync(uint16_t idOnline, const glm::vec3 &posCar, const glm::vec3 &rotCar, typeCPowerUp tipoPU, bool haveTotem, 
-                            int64_t totemTime, bool totemInGround, const glm::vec3 &posTotem){
+void UDPClient::SendSync(uint16_t idOnline, const glm::vec3& posCar, const glm::vec3& rotCar, typeCPowerUp tipoPU, bool haveTotem,
+                         int64_t totemTime, bool totemInGround, const glm::vec3& posTotem) {
     unsigned char requestBuff[Constants::ONLINE_BUFFER_SIZE];
     size_t currentBuffSize = 0;
-    uint8_t numero = Constants::PetitionTypes::SEND_SYNC;
-    Utils::Serialize(requestBuff, &numero, currentBuffSize);
+    uint8_t callType = Constants::PetitionTypes::SEND_SYNC;
+    uint16_t idCall = currentSyncID++;
+
+    Utils::Serialize(requestBuff, &callType, currentBuffSize);
+    Utils::Serialize(requestBuff, &idCall, currentBuffSize);
     Utils::Serialize(requestBuff, &idOnline, currentBuffSize);
     Utils::SerializeVec3(requestBuff, posCar, currentBuffSize);
     Utils::SerializeVec3(requestBuff, rotCar, currentBuffSize);
 
     Utils::SerializePowerUpTotem(requestBuff, tipoPU, haveTotem, totemInGround, currentBuffSize);
     Utils::Serialize(requestBuff, &totemTime, currentBuffSize);
-    if(totemInGround)
+    if (totemInGround)
         Utils::SerializeVec3(requestBuff, posTotem, currentBuffSize);  // la pos del totem no se envia siempre
 
     socket.async_send_to(
@@ -226,13 +232,10 @@ void UDPClient::SendSync(uint16_t idOnline, const glm::vec3 &posCar, const glm::
 void UDPClient::HandleSentSync(const boost::system::error_code& errorCode, std::size_t bytes_transferred) {
     if (errorCode) {
         cout << "Hubo un error enviando la sincronizacion" << endl;
-    }else{
-        //std::cout << "Enviado sincronizacion: " << bytes_transferred << " bytes" << std::endl; 
+    } else {
+        //std::cout << "Enviado sincronizacion: " << bytes_transferred << " bytes" << std::endl;
     }
 }
-
-
-
 
 void UDPClient::HandleSentDateTime(const boost::shared_ptr<std::string> message,
                                    const boost::system::error_code& errorCode,

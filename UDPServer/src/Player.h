@@ -13,7 +13,10 @@ struct Player {
     uint16_t id{nextId++};
     udp::endpoint endpoint;
     tcp::endpoint endpointTCP;
+    uint16_t lastInputIDReceived{0};
+    uint16_t lastSyncIDReceived{0};
 
    private:
     static uint16_t nextId;
+
 };
