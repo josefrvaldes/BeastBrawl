@@ -58,6 +58,7 @@ namespace CLE {
             Mesh processMesh(aiMesh *mesh, const aiScene *scene);
 
             vector<Mesh> vecMesh;
+            const aiScene *scene;
 
             
     };

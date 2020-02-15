@@ -80,65 +80,6 @@ int main() {
     glEnable(GL_DEPTH_TEST);
 
     
-    float vertices[] = {
-        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-        0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-        0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-        0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-        0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-        0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-        0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-
-        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-        -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
-        0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-        0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-        0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-        0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-        0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-        0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-        0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
-        0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-        0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-
-        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-        0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-        0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-        0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
-    };
-
-    /*glm::vec3 cubePositions[] = {
-        glm::vec3( 0.0f,  0.0f,  0.0f), 
-        glm::vec3( 2.0f,  5.0f, -15.0f), 
-        glm::vec3(-1.5f, -2.2f, -2.5f),  
-        glm::vec3(-3.8f, -2.0f, -12.3f),  
-        glm::vec3( 2.4f, -0.4f, -3.5f),  
-        glm::vec3(-1.7f,  3.0f, -7.5f),  
-        glm::vec3( 1.3f, -2.0f, -2.5f),  
-        glm::vec3( 1.5f,  2.0f, -2.5f), 
-        glm::vec3( 1.5f,  0.2f, -1.5f), 
-        glm::vec3(-1.3f,  1.0f, -1.5f)  
-    };*/
-
-
-    
     //-------------------Resource manager-------------------
     unique_ptr<CLResourceManager> resourceManager = make_unique<CLResourceManager>();
     auto resourceShader = resourceManager->GetResourceShader("CLEngine/src/Shaders/vertex.glsl", "CLEngine/src/Shaders/fragment.glsl");
@@ -178,6 +119,7 @@ int main() {
     static_cast<CLMesh*>(entity4.get())->SetMesh(resourceMesh);
 
     smgr.get()->SetTranslation(glm::vec3(-20.0f, 0.0f, -30.0f));
+    node3.get()->SetTranslation(glm::vec3(-50.0f, 0.0f, -50.0f));
     node2.get()->SetScalation(glm::vec3(0.25f, 0.25f, 0.25f));
     node4.get()->SetTranslation(glm::vec3(0.0f, 30.0f, 0.0f));
     node4.get()->SetRotation(glm::vec3(90.0f, 0.0f, 0.0f));
@@ -188,16 +130,16 @@ int main() {
     //Todo preparado, ahora comienza la magia
     // 1. bind Vertex Array Object
     //Todo esto esta muy bien pero lo mejor es tener un array para todos los VBO que queramos dibujar
-    unsigned int VBO,VAO;
-    glGenVertexArrays(1, &VAO); 
-    glGenBuffers(1, &VBO);  //Crea un buffer para VBO(Vertex buffer object) con id unico 
-    glBindVertexArray(VAO);
+    // unsigned int VBO,VAO;
+    // glGenVertexArrays(1, &VAO); 
+    // glGenBuffers(1, &VBO);  //Crea un buffer para VBO(Vertex buffer object) con id unico 
+    // glBindVertexArray(VAO);
 
-    // 2. copy our vertices array in a buffer for OpenGL to use
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);  //Fijamos el tipo de buffer (ARRAY_BUFFER)
+    // // 2. copy our vertices array in a buffer for OpenGL to use
+    // glBindBuffer(GL_ARRAY_BUFFER, VBO);  //Fijamos el tipo de buffer (ARRAY_BUFFER)
    
-    //GL_STATIC_DRAW: the data will most likely not change at all or very rarely.
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    // //GL_STATIC_DRAW: the data will most likely not change at all or very rarely.
+    // glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
     // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     // glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
@@ -218,7 +160,7 @@ int main() {
     glEnableVertexAttribArray(1);
     
 
-
+    /**
     //TEXTURES
     int width, height, nrChannels; // width, height, numero de colores
     unsigned char *data = stbi_load("CLEngine/container.jpg", &width, &height, &nrChannels, 0); 
@@ -261,46 +203,30 @@ int main() {
     glUseProgram(resourceShader->GetProgramID());
     glUniform1i(glGetUniformLocation(resourceShader->GetProgramID(),"texture1"),0);
     glUniform1i(glGetUniformLocation(resourceShader->GetProgramID(),"texture2"),1);
-
-    //COORDINATE SYSTEM
-    glm::ortho(0.0f, 800.0f, 0.0f, 600.0f, 0.1f, 1000.0f); // left | right | bottom | top | near | far (near far = distancia)
-
-    // //Model matrix
-    // glm::mat4 model = glm::mat4(1.0f);
-    // model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f)); //Un girito de prueba
-
-    // //View matrix
-    // glm::mat4 view = glm::mat4(1.0f);
-    // // note that we're translating the scene in the reverse direction of where we want to move
-    // view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f)); 
-
-    // //Projection matrix
-    // glm::mat4 projection = glm::perspective(glm::radians(45.0f), 1280.0f/720.0f, 0.1f, 100.0f);
-
-    // //Asignamos los valores al vertex shader
-    // glUniformMatrix4fv(glGetUniformLocation(resourceShader->GetProgramID(), "model"), 1, GL_FALSE, glm::value_ptr(model));
-    // glUniformMatrix4fv(glGetUniformLocation(resourceShader->GetProgramID(), "view"), 1, GL_FALSE, glm::value_ptr(view));
-    // glUniformMatrix4fv(glGetUniformLocation(resourceShader->GetProgramID(), "projection"), 1, GL_FALSE, glm::value_ptr(projection));
-
-    // //CAMERA
-    // glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f); 
-    // glm::vec3 cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
-    // glm::vec3 cameraDirection = glm::normalize(cameraPos - cameraTarget); //Direccion hacia donde apunta la camara
-
-    // glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f); 
-    // glm::vec3 cameraRight = glm::normalize(glm::cross(up, cameraDirection));
-
-    // glm::vec3 cameraUp = glm::cross(cameraDirection, cameraRight);
-    // //Y todo esto que hemos hecho aqui es equivalente a hacer:
-    // glm::mat4 view;
-    // view = glm::lookAt(glm::vec3(0.0f, 0.0f, 3.0f), 
-    //         glm::vec3(0.0f, 0.0f, 0.0f), 
-    //         glm::vec3(0.0f, 1.0f, 0.0f));
-
+    *
+    */
+    
     glm::vec3 cameraPos   = glm::vec3(0.0f, 7.0f,  60.0f);
     glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
     glm::vec3 cameraUp    = glm::vec3(0.0f, 1.0f,  0.0f);
-    
+
+    //LUCES Y COLORES
+    unsigned int lightVAO,VBO;
+    glGenVertexArrays(1, &lightVAO);
+    glBindVertexArray(lightVAO);
+    glGenBuffers(1,&VBO);
+    // we only need to bind to the VBO, the container's VBO's data already contains the data.
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    // set the vertex attributes (only position data for our lamp)
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+    glm::vec3 color(1.0f, 0.0f, 0.0f);
+    glm::vec3 light(1.0f, 1.0f, 1.0f);
+    glm::vec3 lightPos(node3->GetTranslation());
+    float auxColor[3] = {color.x,color.y,color.z};
+    float auxLight[3] = {light.x,light.y,light.z};
+    float auxLightPos[3] = {lightPos.x,lightPos.y,lightPos.z};
+
     float index = 0.01;
     while (!device->Run()) {
 
@@ -313,15 +239,29 @@ int main() {
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+        // Start the Dear ImGui frame
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+        ImGui::Begin("Modifica ilumnacion"); 
+        ImGui::SliderFloat3("Color",auxColor,0,1);
+        ImGui::SliderFloat3("Light",auxLight,0,1);
+        ImGui::SliderFloat3("LightPos",auxLightPos,-100,100);
+        ImGui::End(); 
+
+        glm::vec3 color(auxColor[0], auxColor[1], auxColor[2]);
+        glm::vec3 light(auxLight[0], auxLight[1], auxLight[2]);
+        glm::vec3 lightPos(auxLightPos[0], auxLightPos[1], auxLightPos[2]);
 
         glUseProgram(resourceShader->GetProgramID());
-
-
-
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, texture1);
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, texture2);
+        //Luces y colores
+        glUniform3fv(glGetUniformLocation(resourceShader->GetProgramID(), "objectColor"),1,glm::value_ptr(color));
+        glUniform3fv(glGetUniformLocation(resourceShader->GetProgramID(), "lightColor"),1,glm::value_ptr(light));
+        glUniform3fv(glGetUniformLocation(resourceShader->GetProgramID(), "lightPos"),1,glm::value_ptr(lightPos));
+        // glActiveTexture(GL_TEXTURE0);
+        // glBindTexture(GL_TEXTURE_2D, texture1);
+        // glActiveTexture(GL_TEXTURE1);
+        // glBindTexture(GL_TEXTURE_2D, texture2);
 
 
         // create transformations
@@ -335,24 +275,18 @@ int main() {
         glUniformMatrix4fv(glGetUniformLocation(resourceShader->GetProgramID(), "projection"), 1, GL_FALSE, glm::value_ptr(projection));
         glUniformMatrix4fv(glGetUniformLocation(resourceShader->GetProgramID(), "view"), 1, GL_FALSE, glm::value_ptr(view));
 
-        glBindVertexArray(VAO);
-        // for(unsigned int i = 0; i < 10; i++){
-        
-        //     glm::mat4 model = glm::mat4(1.0f);
-        //     model = glm::translate(model, cubePositions[i]);
-        //     float angle = 20.0f * i; 
-        //     model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
-        //     glUniformMatrix4fv(glGetUniformLocation(resourceShader->GetProgramID(), "model"), 1, GL_FALSE, glm::value_ptr(model));
-
-        //     glDrawArrays(GL_TRIANGLES, 0, 36);
-        // }
-
+        smgr->SetTranslation(glm::vec3(index,0.1f,0.1f));
         smgr->DFSTree(glm::mat4(1.0));
 
 
+
+        // Render dear imgui into screen
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
         glfwPollEvents();
         glfwSwapBuffers(device->GetWindow());
-        index += 0.1;
+        index += 0.2;
     }
 
     terminateInGUI();
