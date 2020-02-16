@@ -275,7 +275,8 @@ int main() {
         glUniformMatrix4fv(glGetUniformLocation(resourceShader->GetProgramID(), "projection"), 1, GL_FALSE, glm::value_ptr(projection));
         glUniformMatrix4fv(glGetUniformLocation(resourceShader->GetProgramID(), "view"), 1, GL_FALSE, glm::value_ptr(view));
 
-        smgr->SetTranslation(glm::vec3(index,0.1f,0.1f));
+        //node2->SetTranslation(glm::vec3(index,0.1f,0.1f));
+        node2->SetRotation(glm::vec3(index,0.0f,0.0f));
         smgr->DFSTree(glm::mat4(1.0));
 
 

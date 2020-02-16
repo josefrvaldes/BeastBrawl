@@ -32,10 +32,11 @@ class CLNode{
         //Setters
         bool SetEntity(CLEntity* e)                     { entity = e; return true; }
         bool SetFather(CLNode* f)                       { father = f; return true; }
-        void SetTranslation(glm::vec3 trans)            { translation = trans; changed = true; }
-        void SetRotation(glm::vec3 rot)                 { rotation = rot; changed = true; }
-        void SetScalation(glm::vec3 scale)              { scalation = scale; changed = true; }
+        void SetTranslation(glm::vec3); 
+        void SetRotation(glm::vec3);
+        void SetScalation(glm::vec3);
         void SetTransformationMat(glm::mat4 transfMat)  { transformationMat = transfMat; }
+        void ActivateFlag();
         static void SetModelMatrixID(GLuint id)         { modelMatrixID = id; }
 
         //Methods

@@ -65,6 +65,28 @@ bool CLNode::HasChild(CLNode* child){
     return false;
 }
 
+void CLNode::SetTranslation(glm::vec3 t) {
+    translation = t; 
+    ActivateFlag();
+}
+
+void CLNode::SetRotation(glm::vec3 r) {
+    rotation = r; 
+    ActivateFlag();
+}
+
+void CLNode::SetScalation(glm::vec3 s) {
+    scalation = s; 
+    ActivateFlag();
+}
+
+void CLNode::ActivateFlag() {
+    changed = true;
+    for (auto node : childs) {
+        node->ActivateFlag();
+    }
+    return;
+}
 
 glm::mat4 CLNode::Translate(){
     glm::mat4 aux = glm::mat4(1.0f);
@@ -115,7 +137,6 @@ void CLNode::DFSTree(glm::mat4 mA) {
     if (changed) {
         transformationMat = mA*CalculateTransformationMatrix();
         changed = false;
-        //cout << "Soy el nodo " << entity->GetID() << " - " << glm::to_string(transformationMat) << endl;
     }
 
     if(entity) {
