@@ -32,6 +32,7 @@
 #include <Systems/SystemPathPlanning.h>
 #include <Game.h>
 #include <Managers/ManBoundingWall.h>
+#include <Managers/ManBoundingGround.h>
 #include <Managers/ManBoxPowerUp.h>
 #include <Managers/ManCar.h>
 #include <Managers/ManNamePlate.h>
@@ -80,6 +81,7 @@ class StateInGame : public State {
     shared_ptr<ManNamePlate> manNamePlates;
     shared_ptr<ManBoundingWall> manBoundingWall;
     shared_ptr<ManBoundingOBB> manBoundingOBB;
+    shared_ptr<ManBoundingGround> manBoundingGround;
 
     RenderFacade *renderEngine = {nullptr};
     InputFacade *inputEngine = {nullptr};
@@ -105,9 +107,9 @@ class StateInGame : public State {
     // vector<float> deltas;
     //float CalculateDelta(float);
 
-    virtual void InitializeCLPhysics(ManCar &manCars, ManBoundingWall &ManBoundingWall, ManBoundingOBB &manBoundingOBB);
+    virtual void InitializeCLPhysics(ManCar &manCars, ManBoundingWall &ManBoundingWall, ManBoundingOBB &manBoundingOBB, ManBoundingGround &manBoundingGround);
     virtual void InitializeManagers(Physics *physics, Camera *cam);
-    virtual void InitializeSystems(ManCar &manCars, ManBoundingWall &manBoundingWall, ManBoundingOBB &manBoundingOBB);
+    virtual void InitializeSystems(ManCar &manCars, ManBoundingWall &manBoundingWall, ManBoundingOBB &manBoundingOBB, ManBoundingGround &manBoundingGround);
     virtual void InitializeFacades();
     virtual void AddElementsToRender();
     virtual void CAMBIARCosasDeTotemUpdate(){};

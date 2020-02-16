@@ -145,7 +145,7 @@ vec3 CBoundingPlane::IntersectPoint(const vec3 &point) const{
 
 bool CBoundingPlane::membershipPoint(const vec3 &point) const{
     // comprobamos posicion correcta de la X
-        cout.precision(dbl::max_digits10);
+       // cout.precision(dbl::max_digits10);
        //cout << "EL PUNTO ES X: " << point.x << " LA A.X: " << a.x << " LA C.X: " << c.x << endl;
        //cout << "EL PUNTO ES Y: " << point.y << " LA A.y: " << a.y << " LA C.y: " << c.y << endl;
        //cout << "EL PUNTO ES Z: " << point.z << " LA A.z: " << a.z << " LA C.z: " << c.z << endl;

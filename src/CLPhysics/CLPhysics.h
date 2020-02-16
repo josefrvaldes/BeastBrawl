@@ -26,9 +26,9 @@ class CLPhysics {
     void AddManager(Manager &e);
     void Simulate(float delta);
     void Update(float delta);
-    void HandleCollisions();
-    void HandleCollisionsWithPlanes();
-    void HandleCollisionsWithOBB();
+    void RepositionBounding();
+    void CentralSystemCollisions();
+    void CentralSystemGravity();
 
     IntersectData HandleCollisionsRayWithSpheres(CTransformable &trCar1, CTransformable &trCar2, CBoundingSphere &spCar2, const glm::vec3 &normalRay);
     IntersectData HandleCollisionsRayWithPlane(CTransformable &trRayOrigin,  glm::vec3 &rayNormalNormalized, CBoundingPlane &planeObject);
@@ -38,6 +38,15 @@ class CLPhysics {
 
    protected:
    private:
+    // gravity
+    void HandleCollisionsWithGround();
+    void CollisionsChassisGround(CTransformable &trCar, CBoundingChassis &chaCar, CCar &ccar, bool mainCar, CBoundingPlane &plane);
+    void CollisionsSphereGround(CTransformable &trCar, CBoundingSphere &spCar, CCar &ccar, CBoundingPlane &plane); 
+    void SeparateSphereGround(IntersectData &intersData, CTransformable &trCar, CBoundingSphere &spCar, CCar &ccar, CBoundingPlane &plane) const;
+    // collisions
+    void HandleCollisions();
+    void HandleCollisionsWithPlanes();
+    void HandleCollisionsWithOBB();
     bool HandleCollisions(CTransformable &trCar1, CBoundingSphere &spCar1, CCar &ccar1, bool mainCar, CTransformable &trCar2, CBoundingSphere &spCar2, CCar &ccar2, CExternalForce &cExtForc1, CExternalForce &cExtForc2);
     bool HandleCollisions(CTransformable &trCar1, CBoundingSphere &spCar1, CCar &ccar1, bool mainCar, CBoundingPlane &plane);
     bool HandleCollisions(CTransformable &trCar, CBoundingSphere &spCar, CCar &ccarCar, bool mainCar, CBoundingOBB &obb);

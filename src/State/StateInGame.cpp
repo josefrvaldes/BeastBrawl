@@ -37,7 +37,7 @@ StateInGame::~StateInGame() {
  */
 void StateInGame::InitVirtualMethods() {
     InitializeManagers(physics.get(), cam.get());
-    InitializeSystems(*manCars.get(), *manBoundingWall.get(), *manBoundingOBB.get());
+    InitializeSystems(*manCars.get(), *manBoundingWall.get(), *manBoundingOBB.get(), *manBoundingGround.get());
     InitializeFacades();
 
     CAMBIARCosasDeTotem(*manTotems.get());
@@ -99,16 +99,17 @@ void StateInGame::AddElementsToRender() {
     renderEngine->FacadeAddObject(totemOnCar.get());
 }
 
-void StateInGame::InitializeCLPhysics(ManCar &manCars, ManBoundingWall &manBoundingWall, ManBoundingOBB &manBoundingOBB) {
+void StateInGame::InitializeCLPhysics(ManCar &manCars, ManBoundingWall &manBoundingWall, ManBoundingOBB &manBoundingOBB, ManBoundingGround &manBoundingGround) {
     // NO ALTERAR EL ORDEN DEL ADD, QUE USO EL ORDEN PARA DISTINGUIR ENTRE MANAGERS!!!
     clPhysics = make_unique<CLPhysics>();
     clPhysics->AddManager(manCars);
     clPhysics->AddManager(manBoundingWall);
     clPhysics->AddManager(manBoundingOBB);
+    clPhysics->AddManager(manBoundingGround);
 }
 
-void StateInGame::InitializeSystems(ManCar &manCars, ManBoundingWall &manBoundingWall, ManBoundingOBB &manBoundingOBB) {
-    InitializeCLPhysics(manCars, manBoundingWall, manBoundingOBB);
+void StateInGame::InitializeSystems(ManCar &manCars, ManBoundingWall &manBoundingWall, ManBoundingOBB &manBoundingOBB, ManBoundingGround &manBoundingGround) {
+    InitializeCLPhysics(manCars, manBoundingWall, manBoundingOBB, manBoundingGround);
     // incializa el system physics PU, no hace falta más código para esto
     phisicsPowerUp = make_shared<PhysicsPowerUp>();  // Creamos sistemas
     collisions = make_shared<Collisions>();
@@ -123,6 +124,7 @@ void StateInGame::InitializeManagers(Physics *physics, Camera *cam) {
     manBoxPowerUps = make_shared<ManBoxPowerUp>();
     manBoundingWall = make_shared<ManBoundingWall>();
     manBoundingOBB = make_shared<ManBoundingOBB>();
+    manBoundingGround = make_shared<ManBoundingGround>();
     manTotems = make_shared<ManTotem>();
     manNavMesh = make_shared<ManNavMesh>(manCars.get()->GetCar().get(), manTotems.get());
     manNamePlates = make_shared<ManNamePlate>(manCars.get());
@@ -216,18 +218,19 @@ void StateInGame::Render() {
     renderEngine->FacadeDrawGraphEdges(manWayPoint.get());
     // renderEngine->FacadeDrawBoundingBox(manCars.get()->GetCar().get(), isColliding);
 
-    for (auto actualPowerUp : manPowerUps->GetEntities())
+    for (auto& actualPowerUp : manPowerUps->GetEntities()){
         renderEngine->FacadeDrawBoundingBox(actualPowerUp.get(), false);
-
-    for (auto wall : manBoundingWall->GetEntities()) {
+    }
+    for (auto& wall : manBoundingWall->GetEntities()) {
         renderEngine->FacadeDrawBoundingPlane(wall.get());
     }
-
-    for (auto obb : manBoundingOBB->GetEntities()) {
+    for (auto& ground : manBoundingGround->GetEntities()) {
+        renderEngine->FacadeDrawBoundingGround(ground.get());
+    }
+    for (auto& obb : manBoundingOBB->GetEntities()) {
         renderEngine->FacadeDrawBoundingOBB(obb.get());
     }
 
     renderEngine->FacadeDrawAIDebug(manCars.get(),manNavMesh.get(), manWayPoint.get());
-    
     renderEngine->FacadeEndScene();
 } 

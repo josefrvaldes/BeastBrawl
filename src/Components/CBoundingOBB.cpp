@@ -46,10 +46,23 @@ IntersectData CBoundingOBB::IntersectSphere(const CBoundingSphere &other, const 
         return intersectsPlane[0];
     }
     else if(intersectsPlane.size() > 1){
-        //std::cout << "DE UN OBB COLISIONAMOS CON MAS DE 1 PLANO BEIBEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE" << std::endl;
+        //return intersectsPlane[0];
+        /*
         for(long unsigned int i=0; i<intersectsPlane.size(); i++){
             vec3 vecDir = vec3(center.x-other.center.x, center.y-other.center.y, center.z-other.center.z);
             IntersectData intersDataSphereRay = planes[intersectsPlane[i].posEntity]->IntersectRay(other.center ,normalize(vecDir));
+            // De normal el rayo lanzado solo debe de colisionar con 1 plano, sera por el que realmente entra.
+            // de momento lo que haremos es colisionar con ese plano a ver que pasa
+            if(intersDataSphereRay.intersects){
+                cout << "colisionamos con : " << i << endl;
+            }
+        }
+        */
+
+        //std::cout << "DE UN OBB COLISIONAMOS CON MAS DE 1 PLANO BEIBEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE" << std::endl;
+        for(long unsigned int i=0; i<intersectsPlane.size(); i++){
+            vec3 vecDir = vec3(center.x-other.center.x, center.y-other.center.y, center.z-other.center.z);
+            IntersectData intersDataSphereRay = planes[intersectsPlane[i].posEntity]->IntersectRay(other.center , normalize(vecDir));
             // De normal el rayo lanzado solo debe de colisionar con 1 plano, sera por el que realmente entra.
             // de momento lo que haremos es colisionar con ese plano a ver que pasa
             if(intersDataSphereRay.intersects){

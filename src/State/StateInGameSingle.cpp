@@ -99,8 +99,8 @@ void StateInGameSingle::Render() {
     StateInGame::Render();
 }
 
-void StateInGameSingle::InitializeCLPhysics(ManCar &manCars, ManBoundingWall &manBoundingWall, ManBoundingOBB &manBoundingOBB) {
-    StateInGame::InitializeCLPhysics(manCars, manBoundingWall, manBoundingOBB);
+void StateInGameSingle::InitializeCLPhysics(ManCar &manCars, ManBoundingWall &manBoundingWall, ManBoundingOBB &manBoundingOBB, ManBoundingGround &manBoundingGround) {
+    StateInGame::InitializeCLPhysics(manCars, manBoundingWall, manBoundingOBB, manBoundingGround);
 }
 
 void StateInGameSingle::InitializeManagers(Physics *physics, Camera *cam) {
@@ -108,8 +108,8 @@ void StateInGameSingle::InitializeManagers(Physics *physics, Camera *cam) {
     CAMBIARInicializarCarAIS(*manCars, *manWayPoint);
 }
 
-void StateInGameSingle::InitializeSystems(ManCar &manCars, ManBoundingWall &manBoundingWall, ManBoundingOBB &manBoundingOBB) {
-    StateInGame::InitializeSystems(manCars, manBoundingWall, manBoundingOBB);
+void StateInGameSingle::InitializeSystems(ManCar &manCars, ManBoundingWall &manBoundingWall, ManBoundingOBB &manBoundingOBB, ManBoundingGround &manBoundingGround) {
+    StateInGame::InitializeSystems(manCars, manBoundingWall, manBoundingOBB, manBoundingGround);
 }
 
 void StateInGameSingle::InitializeFacades() {
@@ -175,8 +175,8 @@ void StateInGameSingle::CAMBIARInicializarCarAIS(ManCar &manCars, ManWayPoint &m
     pathInit3.push(5);
     manCars.GetEntitiesAI()[2]->SetPath(pathInit3);
 */
-    manCars.CreateCarAI(glm::vec3(-200.0f, 10.0f, 700.0f));
-    manCars.CreateCarAI(glm::vec3(400.0f, 10.0f, -50.0f));
+    //manCars.CreateCarAI(glm::vec3(-200.0f, 10.0f, 700.0f));
+    //manCars.CreateCarAI(glm::vec3(400.0f, 10.0f, -50.0f));
     //manCars.CreateHumanCar(glm::vec3(20.0, 10.0, 20.0));
-    //manCars.CreateCarAI(glm::vec3(300.0f, 10.0f, -300.0f));
+    manCars.CreateCarAI(glm::vec3(300.0f, 10.0f, -300.0f));
 }

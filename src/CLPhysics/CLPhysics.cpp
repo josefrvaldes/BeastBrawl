@@ -23,6 +23,7 @@
 #include <EventManager/Event.h>
 #include <EventManager/EventManager.h>
 #include <Managers/ManBoundingWall.h>
+#include <Managers/ManBoundingGround.h>
 #include <Managers/ManCar.h>
 #include <Managers/Manager.h>
 #include <Systems/Utils.h>
@@ -40,7 +41,139 @@ void CLPhysics::AddManager(Manager &m) {
 
 void CLPhysics::Update(float delta) {
     Simulate(delta);
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    // Aplicamos las fisicas de gravedad
+    RepositionBounding();
+    CentralSystemGravity();
+    // Aplicamos las fisicas de colision
+    RepositionBounding();
+    CentralSystemCollisions();
+
+}
+
+
+
+void CLPhysics::CentralSystemGravity(){
+    HandleCollisionsWithGround();
+}
+
+void CLPhysics::HandleCollisionsWithGround() {
+    ManCar *manCar = static_cast<ManCar *>(managers[0]);
+    ManBoundingGround *manGrounds = static_cast<ManBoundingGround *>(managers[3]);
+
+    const auto& cars = manCar->GetEntities();
+    size_t numCar = cars.size();
+
+    auto grounds = manGrounds->GetEntities();
+    size_t numGrounds = grounds.size();
+    //cout << "tenemos 1 no? = " << numGrounds << endl;
+
+    // los coches con los grounds
+    for (size_t currentCar = 0; currentCar < numCar; currentCar++) {
+        Entity *car = manCar->GetEntities()[currentCar].get();
+        //CBoundingSphere *spcar = static_cast<CBoundingSphere *>(car->GetComponent(CompType::CompBoundingSphere).get());
+        CBoundingChassis *chaCar = static_cast<CBoundingChassis *>(car->GetComponent(CompType::CompBoundingChassis).get());
+        CTransformable *trcar = static_cast<CTransformable *>(car->GetComponent(CompType::TransformableComp).get());
+        CCar *ccarcar = static_cast<CCar *>(car->GetComponent(CompType::CarComp).get());
+        for (size_t currentGround = 0; currentGround < numGrounds; currentGround++) {
+            BoundingWall *ground = static_cast<BoundingWall *>(grounds[currentGround].get());
+            CBoundingPlane *plane = static_cast<CBoundingPlane *>(ground->GetComponent(CompType::CompBoundingPlane).get());
+
+            //HandleCollisions(*trcar, *spcar, *ccarcar, false, *plane);
+            
+            CollisionsChassisGround(*trcar, *chaCar, *ccarcar, false, *plane);
+            //cout << "todo aparentemente normal" << endl;
+        }
+    }
+}
+
+
+void CLPhysics::CollisionsChassisGround(CTransformable &trCar, CBoundingChassis &chaCar, CCar &ccar, bool mainCar, CBoundingPlane &plane){
+
+    CBoundingSphere *spBehindCar = chaCar.sphereBehind.get();
+    CollisionsSphereGround(trCar, *spBehindCar, ccar, plane);
+
+    CBoundingSphere *spFrontCar = chaCar.sphereFront.get();
+    CollisionsSphereGround(trCar, *spFrontCar, ccar, plane);
+
+}
+
+void CLPhysics::CollisionsSphereGround(CTransformable &trCar, CBoundingSphere &spCar, CCar &ccar, CBoundingPlane &plane){
+    IntersectData intersData = plane.IntersectSphere(spCar, trCar, ccar);
+    if (intersData.intersects) {
+        SeparateSphereGround(intersData, trCar, spCar, ccar, plane);
+    }
+}
+
+void CLPhysics::SeparateSphereGround(IntersectData &intersData, CTransformable &trCar1, CBoundingSphere &spCar1, CCar &ccarCar1, CBoundingPlane &plane) const {
+    //cout << "NO SEPARO" << endl;
+    vec3 direction = spCar1.center - plane.normal;  // te da la dirección al otro bounding en x, y, z, es decir, si tenemos 200, 10, 30, significa que estamos a 200 de distancia en x, a 10 en y y a 30 en z
+    vec3 nuevaDirectionCar1 = -normalize(direction);
+    float correctedDistance = intersData.GetDistance();
+    //trCar1.position.x += nuevaDirectionCar1.x * correctedDistance;
+    //trCar1.position.z += nuevaDirectionCar1.z * correctedDistance;
+    trCar1.position.y += nuevaDirectionCar1.y * correctedDistance;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+void CLPhysics::CentralSystemCollisions(){
+    HandleCollisions();             // COLISIONES ENTRE COCHES --> HECHO
+    HandleCollisionsWithPlanes();   // COLISIONES COCHES PLANOS --> NO HECHO
+    HandleCollisionsWithOBB();      // COLISIONES COCHES OBB --> NO HECHO
+}
+
+void CLPhysics::RepositionBounding(){
     ManCar *manCar = static_cast<ManCar *>(managers[0]);
     const auto& entities = manCar->GetEntities();
     size_t numEntities = entities.size();
@@ -52,25 +185,8 @@ void CLPhysics::Update(float delta) {
         PositionSphFrontIntoTransf(*trcar, *cBoundingChassis->sphereFront);
         PositionCilindreIntoSpheres(*cBoundingChassis);
     }
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    HandleCollisions();             // COLISIONES ENTRE COCHES --> HECHO
-    HandleCollisionsWithPlanes();   // COLISIONES COCHES PLANOS --> NO HECHO
-    HandleCollisionsWithOBB();      // COLISIONES COCHES OBB --> NO HECHO
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    for (size_t i = 0; i < numEntities; i++) {
-        Entity *car = manCar->GetEntities()[i].get();
-        CTransformable *trcar = static_cast<CTransformable *>(car->GetComponent(CompType::TransformableComp).get());
-        CBoundingChassis *cBoundingChassis = static_cast<CBoundingChassis *>(car->GetComponent(CompType::CompBoundingChassis).get());
-        PositionSphBehindIntoTransf(*trcar, *cBoundingChassis->sphereBehind);
-        PositionSphFrontIntoTransf(*trcar, *cBoundingChassis->sphereFront);
-        PositionCilindreIntoSpheres(*cBoundingChassis);
-    }
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
 }
+
 
 void CLPhysics::HandleCollisionsWithOBB(){
     
@@ -366,6 +482,7 @@ bool CLPhysics::HandleCollisions(CTransformable &trCar, CBoundingSphere &spCar, 
         // dependiendo de como colisionemos con el plano sera un tipo de colision u otro.
         // dependera del angulo de colsion y la velocidad de colision
         
+        /*
         vec3 vecDirCar = CalculateVecDirCar(trCar);
         double angle2V = Angle2Vectors( vecDirCar, obb.planes[intersData.posEntity]->normalizedNormal);
         //cout << angle2V << endl;
@@ -378,6 +495,7 @@ bool CLPhysics::HandleCollisions(CTransformable &trCar, CBoundingSphere &spCar, 
             ccarCar.speed = ccarCar.maxSpeed*0.8;
             }     
         }
+        */
         return true;
     }
     return false;
@@ -413,7 +531,7 @@ void CLPhysics::SeparateSphereFromPlane(IntersectData &intersData, CTransformabl
     //cout << "NO SEPARO" << endl;
     vec3 direction = spCar1.center - plane.normal;  // te da la dirección al otro bounding en x, y, z, es decir, si tenemos 200, 10, 30, significa que estamos a 200 de distancia en x, a 10 en y y a 30 en z
     vec3 nuevaDirectionCar1 = -normalize(direction);
-    float correctedDistance = intersData.GetDistance();
+    float correctedDistance = intersData.GetDistance() + 0.1;
     trCar1.position.x += nuevaDirectionCar1.x * correctedDistance;
     trCar1.position.z += nuevaDirectionCar1.z * correctedDistance;
 }
