@@ -16,12 +16,13 @@ uniform vec3 viewPos;
 
 uniform float specularStrength;
 uniform int shininess;
+uniform float attenuationValue;
 
 void main()
 {
     //FragColor = mix(texture(texture1, TexCoord), texture(texture2, TexCoord), 0.5);
     // ambient
-    float ambientStrength = 0.4;
+    float ambientStrength = 0.2;
     vec3 ambient = ambientStrength * lightColor;
 
     // diffuse
@@ -34,9 +35,15 @@ void main()
     // specular
     vec3 viewDir = normalize(viewPos - FragPos); //Vector entre nosotros y el punto del objeto
     vec3 reflectDir = reflect(-lightDir, norm);  //Angulo reflectado
-    float spec = pow(max(dot(viewDir, reflectDir), 0.0), shininess); //Formula de la luz especular
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32); //Formula de la luz especular
     vec3 specular = specularStrength * spec * lightColor;  //Multiplicamos todo 
 
-    vec3 result = (ambient + diffuse + specular) * objectColor;
+    //attenuation
+    //float attenuation = 1.0 / (1.0 + light.attenuation * pow(distanceToLight, 2));
+
+    float distanceToLight = length(lightPos - FragPos);
+    float attenuation = 1.0 / (1.0 + attenuationValue * pow(distanceToLight,2)) ;
+
+    vec3 result = (ambient+attenuation*(diffuse + specular)) * objectColor;
     FragColor = vec4(result, 1.0);
 }

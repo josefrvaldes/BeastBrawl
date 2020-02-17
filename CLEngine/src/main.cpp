@@ -219,7 +219,7 @@ int main() {
     float auxLightPos[3] = {lightPos.x,lightPos.y,lightPos.z};
     float auxCameraPos[3] = {cameraPos.x, cameraPos.y, cameraPos.z};
     float specularStrength = 0.5;
-    int shinnines = 32;
+    float attenuationValue = 0.1;
 
     float index = 0.01;
     while (!device->Run()) {
@@ -243,7 +243,7 @@ int main() {
         ImGui::SliderFloat3("LightPos",auxLightPos,-100,100);
         ImGui::SliderFloat3("CameraPos",auxCameraPos,-50,50);
         ImGui::SliderFloat("specularStrength",&specularStrength,0,1);
-        ImGui::SliderInt("Shinnines",&shinnines,0,256);
+        ImGui::SliderFloat("attenuationValue",&attenuationValue,0,0.1f);
         ImGui::End(); 
 
         glm::vec3 color(auxColor[0], auxColor[1], auxColor[2]);
@@ -258,7 +258,7 @@ int main() {
         glUniform3fv(glGetUniformLocation(resourceShader->GetProgramID(), "lightPos"),1,glm::value_ptr(lightPos));
         glUniform3fv(glGetUniformLocation(resourceShader->GetProgramID(), "viewPos"),1,glm::value_ptr(cameraPos));
         glUniform1f(glGetUniformLocation(resourceShader->GetProgramID(), "specularStrength"),specularStrength);
-        glUniform1i(glGetUniformLocation(resourceShader->GetProgramID(), "specularStrength"),shinnines);
+        glUniform1f(glGetUniformLocation(resourceShader->GetProgramID(), "attenuationValue"),attenuationValue);
         // glActiveTexture(GL_TEXTURE0);
         // glBindTexture(GL_TEXTURE_2D, texture1);
         // glActiveTexture(GL_TEXTURE1);
