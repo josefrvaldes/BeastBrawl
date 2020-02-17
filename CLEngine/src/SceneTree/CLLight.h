@@ -8,7 +8,7 @@ namespace CLE {
         public:
         
             CLLight() {};
-            CLLight(unsigned int idEntity): CLEntity(idEntity) {};
+            CLLight(unsigned int idEntity);
             ~CLLight() {};
 
             void SetIntensity(glm::vec3 &i)     { intensity = i; };
@@ -22,7 +22,7 @@ namespace CLE {
 
         protected:
 
-            bool on;
+            bool on { true };
             glm::vec3 intensity;
 
     };

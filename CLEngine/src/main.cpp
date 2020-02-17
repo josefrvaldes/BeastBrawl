@@ -112,8 +112,8 @@ int main() {
 
         smgr->AddChild(node2.get());
         smgr->AddChild(node3.get());
+        smgr->AddChild(node5.get());
         node2->AddChild(node4.get());
-        node4->AddChild(node5.get());
 
         smgr->DrawTree(smgr.get());
 
@@ -210,26 +210,26 @@ int main() {
     *
     */
     
-    //glm::vec3 cameraPos   = glm::vec3(0.0f, 7.0f,  60.0f);
+    glm::vec3 cameraPos   = node3.get()->GetTranslation();
     glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
     glm::vec3 cameraUp    = glm::vec3(0.0f, 1.0f,  0.0f);
 
     //LUCES Y COLORES
     glm::vec3 color(1.0f, 0.0f, 0.0f);
-    glm::vec3 light(1.0f, 1.0f, 1.0f);
-    glm::vec3 lightPos(node3->GetTranslation());
+    glm::vec3 light = static_cast<CLLight*>(node5.get()->GetEntity())->GetIntensity();
+    glm::vec3 lightPos = node5->GetTranslation();
     float auxColor[3] = {color.x,color.y,color.z};
     float auxLight[3] = {light.x,light.y,light.z};
     float auxLightPos[3] = {lightPos.x,lightPos.y,lightPos.z};
-    float auxCameraPos[3] = {node3.get()->GetTranslation().x, node3.get()->GetTranslation().y, node3.get()->GetTranslation().z};
-    cout << "Posicion de la camara: " << node3.get()->GetTranslation().x << " - " << node3.get()->GetTranslation().y << " - " << node3.get()->GetTranslation().z << endl;
+    float auxCameraPos[3] = {cameraPos.x, cameraPos.y, cameraPos.z};
+    //cout << "Posicion de la camara: " << node3.get()->GetTranslation().x << " - " << node3.get()->GetTranslation().y << " - " << node3.get()->GetTranslation().z << endl;
     float specularStrength = 0.5;
     float attenuationValue = 0.1;
 
     float index = 0.01;
     while (!device->Run()) {
 
-        checkInput(device->GetWindow(), node3.get()->GetTranslation(), cameraFront, cameraUp);
+        checkInput(device->GetWindow(), cameraPos, cameraFront, cameraUp);
 
         //Apartir de aqui hacemos cosas, de momento en el main para testear
 
@@ -247,6 +247,7 @@ int main() {
         ImGui::SliderFloat3("Light",auxLight,0,1);
         ImGui::SliderFloat3("LightPos",auxLightPos,-100,100);
         ImGui::SliderFloat3("CameraPos",auxCameraPos,-50,50);
+        //node3.get()->SetTranslation(glm::vec3(auxCameraPos[0], auxCameraPos[1], auxCameraPos[2]));
         ImGui::SliderFloat("specularStrength",&specularStrength,0,1);
         ImGui::SliderFloat("attenuationValue",&attenuationValue,0,0.1f);
         ImGui::End(); 
@@ -275,7 +276,7 @@ int main() {
        
         glm::mat4 view;
         // Vector posicion de la camara, vector de posicion destino y vector ascendente en el espacio mundial. 
-        view = glm::lookAt(node3.get()->GetTranslation(), node3.get()->GetTranslation() + cameraFront, cameraUp);
+        view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 
         // pass transformation matrices to the shader
         glUniformMatrix4fv(glGetUniformLocation(resourceShader->GetProgramID(), "projection"), 1, GL_FALSE, glm::value_ptr(projection));
