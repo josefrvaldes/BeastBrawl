@@ -5,17 +5,18 @@
 // INCLUDES
 #include <glew/glew.h>
 #include <glfw/glfw3.h>
-
-#define STB_IMAGE_IMPLEMENTATION
-#include <stb_image.h>
-
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb_image.h>
+
+
 //SRC
 #include "CLEngine.h"
 #include "SceneTree/CLLight.h"
+#include "SceneTree/CLCamera.h"
 #include "SceneTree/CLNode.h"
 #include "SceneTree/CLMesh.h"
 #include "ResourceManager/CLResourceManager.h"
@@ -23,7 +24,6 @@
 #include "ResourceManager/CLResourceMesh.h"
 #include "ResourceManager/CLResource.h"
 
-#include <math.h>
 #include "ImGUI/imgui.h"
 #include "ImGUI/imgui_impl_opengl3.h"
 #include "ImGUI/imgui_impl_glfw.h"
@@ -37,7 +37,7 @@ using namespace CLE;
  * Mira si se ha pulsado ESC para cerrar la ventana.
  * @param window - Ventana sobre la que mira los eventos. 
  */
-void checkInput (GLFWwindow *window, glm::vec3& cameraPos, glm::vec3& cameraFront, glm::vec3& cameraUp) {
+void checkInput (GLFWwindow *window, glm::vec3 cameraPos, glm::vec3& cameraFront, glm::vec3& cameraUp) {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
         glfwSetWindowShouldClose(window, true);
     }
@@ -92,19 +92,23 @@ int main() {
     //------------------------------------------------------------------------- ARBOLITO
     unique_ptr<CLEntity> entity1 = make_unique<CLLight>(1);
     unique_ptr<CLEntity> entity2 = make_unique<CLMesh>(2);
-    unique_ptr<CLEntity> entity3 = make_unique<CLLight>(3);
+    unique_ptr<CLEntity> entity3 = make_unique<CLCamera>(3);
     unique_ptr<CLEntity> entity4 = make_unique<CLMesh>(4);
     unique_ptr<CLEntity> entity5 = make_unique<CLLight>(5);
     
     //Nodo raiz
     unique_ptr<CLNode> smgr = make_unique<CLNode>(entity1.get());
-    smgr->SetModelMatrixID(glGetUniformLocation(resourceShader->GetProgramID(), "model"));
+    smgr->SetShaderProgramID(resourceShader->GetProgramID());
     cout << "MODEL MATRIX ID:: " << smgr->GetModelMatrixID() << endl;
 
     unique_ptr<CLNode> node2 = make_unique<CLNode>(entity2.get());
+    node2->SetShaderProgramID(resourceShader->GetProgramID());
     unique_ptr<CLNode> node3 = make_unique<CLNode>(entity3.get());
+    node3->SetShaderProgramID(resourceShader->GetProgramID());
     unique_ptr<CLNode> node4 = make_unique<CLNode>(entity4.get());
+    node4->SetShaderProgramID(resourceShader->GetProgramID());
     unique_ptr<CLNode> node5 = make_unique<CLNode>(entity5.get());
+    node5->SetShaderProgramID(resourceShader->GetProgramID());
 
         smgr->AddChild(node2.get());
         smgr->AddChild(node3.get());
@@ -118,8 +122,8 @@ int main() {
     static_cast<CLMesh*>(entity2.get())->SetMesh(resourceMesh);
     static_cast<CLMesh*>(entity4.get())->SetMesh(resourceMesh);
 
-    smgr.get()->SetTranslation(glm::vec3(-20.0f, 0.0f, -30.0f));
-    node3.get()->SetTranslation(glm::vec3(-50.0f, 0.0f, -50.0f));
+    //smgr.get()->SetTranslation(glm::vec3(-20.0f, 0.0f, -30.0f));
+    node3.get()->SetTranslation(glm::vec3(0.0f, 7.0f, 60.0f));
     node2.get()->SetScalation(glm::vec3(0.25f, 0.25f, 0.25f));
     node4.get()->SetTranslation(glm::vec3(0.0f, 30.0f, 0.0f));
     node4.get()->SetRotation(glm::vec3(90.0f, 0.0f, 0.0f));
@@ -206,7 +210,7 @@ int main() {
     *
     */
     
-    glm::vec3 cameraPos   = glm::vec3(0.0f, 7.0f,  60.0f);
+    //glm::vec3 cameraPos   = glm::vec3(0.0f, 7.0f,  60.0f);
     glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
     glm::vec3 cameraUp    = glm::vec3(0.0f, 1.0f,  0.0f);
 
@@ -217,14 +221,15 @@ int main() {
     float auxColor[3] = {color.x,color.y,color.z};
     float auxLight[3] = {light.x,light.y,light.z};
     float auxLightPos[3] = {lightPos.x,lightPos.y,lightPos.z};
-    float auxCameraPos[3] = {cameraPos.x, cameraPos.y, cameraPos.z};
+    float auxCameraPos[3] = {node3.get()->GetTranslation().x, node3.get()->GetTranslation().y, node3.get()->GetTranslation().z};
+    cout << "Posicion de la camara: " << node3.get()->GetTranslation().x << " - " << node3.get()->GetTranslation().y << " - " << node3.get()->GetTranslation().z << endl;
     float specularStrength = 0.5;
     int shinnines = 32;
 
     float index = 0.01;
     while (!device->Run()) {
 
-        checkInput(device->GetWindow(), cameraPos, cameraFront, cameraUp);
+        checkInput(device->GetWindow(), node3.get()->GetTranslation(), cameraFront, cameraUp);
 
         //Apartir de aqui hacemos cosas, de momento en el main para testear
 
@@ -258,7 +263,7 @@ int main() {
         glUniform3fv(glGetUniformLocation(resourceShader->GetProgramID(), "lightPos"),1,glm::value_ptr(lightPos));
         glUniform3fv(glGetUniformLocation(resourceShader->GetProgramID(), "viewPos"),1,glm::value_ptr(cameraPos));
         glUniform1f(glGetUniformLocation(resourceShader->GetProgramID(), "specularStrength"),specularStrength);
-        glUniform1i(glGetUniformLocation(resourceShader->GetProgramID(), "specularStrength"),shinnines);
+        glUniform1i(glGetUniformLocation(resourceShader->GetProgramID(), "shininess"),shinnines);
         // glActiveTexture(GL_TEXTURE0);
         // glBindTexture(GL_TEXTURE_2D, texture1);
         // glActiveTexture(GL_TEXTURE1);
@@ -266,18 +271,19 @@ int main() {
 
 
         // create transformations
-        glm::mat4 projection    = glm::mat4(1.0f);
-        projection = glm::perspective(glm::radians(45.0f), 1280.0f / 720.0f, 0.1f, 100.0f);
- 
+        glm::mat4 projection    = static_cast<CLCamera*>(node3.get()->GetEntity())->CalculateProjectionMatrix();
+       
         glm::mat4 view;
-        view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+        // Vector posicion de la camara, vector de posicion destino y vector ascendente en el espacio mundial. 
+        view = glm::lookAt(node3.get()->GetTranslation(), node3.get()->GetTranslation() + cameraFront, cameraUp);
 
         // pass transformation matrices to the shader
         glUniformMatrix4fv(glGetUniformLocation(resourceShader->GetProgramID(), "projection"), 1, GL_FALSE, glm::value_ptr(projection));
         glUniformMatrix4fv(glGetUniformLocation(resourceShader->GetProgramID(), "view"), 1, GL_FALSE, glm::value_ptr(view));
 
         //node2->SetTranslation(glm::vec3(index,0.1f,0.1f));
-        //node2->SetRotation(glm::vec3(index,0.0f,0.0f));
+        //smgr->SetRotation(glm::vec3(0.0f,0.0f,index));
+        node2->SetRotation(glm::vec3(index,0.0f,0.0f));
         smgr->DFSTree(glm::mat4(1.0));
 
 

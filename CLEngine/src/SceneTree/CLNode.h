@@ -27,7 +27,7 @@ class CLNode{
         glm::vec3 GetRotation()    const       { return rotation; }
         glm::vec3 GetScalation()   const       { return scalation; }
         glm::mat4 GetTransformationMat() const { return transformationMat; }
-        static GLuint GetModelMatrixID()       { return modelMatrixID;}
+        GLuint GetModelMatrixID()       { return shaderProgramID;}
 
         //Setters
         bool SetEntity(CLEntity* e)                     { entity = e; return true; }
@@ -36,8 +36,7 @@ class CLNode{
         void SetRotation(glm::vec3);
         void SetScalation(glm::vec3);
         void SetTransformationMat(glm::mat4 transfMat)  { transformationMat = transfMat; }
-        void ActivateFlag();
-        static void SetModelMatrixID(GLuint id)         { modelMatrixID = id; }
+        void SetShaderProgramID(GLuint id)         { shaderProgramID = id; }
 
         //Methods
         bool AddChild(CLNode* child);
@@ -46,15 +45,20 @@ class CLNode{
         CLNode* GetNodeByID(unsigned int id);
         void DeleteNode(unsigned int id);
         void DeleteNode(CLNode* node);
-        glm::mat4 Translate();
-        glm::mat4 Rotate();
-        glm::mat4 Scale();
+        glm::mat4 TranslateMatrix();
+        glm::mat4 RotateMatrix();
+        glm::mat4 ScaleMatrix();
+        void Translate(glm::vec3);
+        void Rotate(glm::vec3);
+        void Scale(glm::vec3);
         glm::mat4 CalculateTransformationMatrix();
 
         void DrawTree(CLNode* root);
         void DFSTree(glm::mat4);
 
     private:
+
+        void ActivateFlag();
 
         bool changed { true };
 
@@ -71,7 +75,7 @@ class CLNode{
         CLNode* GetNodeByIDAux(unsigned int id, CLNode* node, CLNode* root);
 
         // Identificadores de las variables que cambia para pasarle info al shader.
-        static GLuint modelMatrixID;
+        GLuint shaderProgramID;
 
 };
 

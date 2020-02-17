@@ -6,8 +6,6 @@
 
 using namespace CLE;
 
-GLuint CLNode::modelMatrixID;
-
 CLNode::CLNode(){
 
 }
@@ -88,12 +86,12 @@ void CLNode::ActivateFlag() {
     return;
 }
 
-glm::mat4 CLNode::Translate(){
+glm::mat4 CLNode::TranslateMatrix(){
     glm::mat4 aux = glm::mat4(1.0f);
     return glm::translate(aux, translation);
 }
 
-glm::mat4 CLNode::Rotate(){
+glm::mat4 CLNode::RotateMatrix(){
     glm::mat4 aux = glm::mat4(1.0f);
     aux = glm::rotate(aux, glm::radians(rotation.x) , glm::vec3(1,0,0));
     aux = glm::rotate(aux, glm::radians(rotation.y) , glm::vec3(0,1,0));
@@ -101,13 +99,25 @@ glm::mat4 CLNode::Rotate(){
     return aux;
 }
 
-glm::mat4 CLNode::Scale(){
+glm::mat4 CLNode::ScaleMatrix(){
     glm::mat4 aux = glm::mat4(1.0f);
     return glm::scale(aux, scalation);
 }
 
 glm::mat4 CLNode::CalculateTransformationMatrix() {
-    return Translate()*Rotate()*Scale();
+    return TranslateMatrix()*RotateMatrix()*ScaleMatrix();
+}
+
+void CLNode::Translate(glm::vec3 t) {
+    translation = t;
+}
+
+void CLNode::Rotate(glm::vec3 r) {
+    rotation = r;
+}
+
+void CLNode::Scale(glm::vec3 s) {
+    scalation = s;
 }
 
 void CLNode::DrawTree(CLNode* root){
@@ -141,7 +151,7 @@ void CLNode::DFSTree(glm::mat4 mA) {
 
     if(entity) {
         // La matriz model se pasa aqui wey
-        glUniformMatrix4fv(modelMatrixID, 1, GL_FALSE, glm::value_ptr(transformationMat));
+        glUniformMatrix4fv(glGetUniformLocation(shaderProgramID, "model"), 1, GL_FALSE, glm::value_ptr(transformationMat));
         entity->Draw(transformationMat);
     }
 
