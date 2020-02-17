@@ -26,8 +26,14 @@ CBoundingCilindre::CBoundingCilindre(const vec3 &extreme1_, const vec3 &extreme2
       radius{radius_}
 {
     m_compType = CompType::CompBoundingClindre;
+    CalculateCenterMass(extreme1_,extreme2_);
 }
 
+void CBoundingCilindre::CalculateCenterMass(const vec3 &ext1,const vec3 &ext2){
+    centerMass = vec3( ((ext1.x+ext2.x)/2) , ((ext1.y+ext2.y)/2) , ((ext1.z+ext2.z)/2) );
+    //cout << "el centro de massas en x es :" << centerMass.x << " el ext1 x: " << ext1.x << " y el ext2 x:" << ext2.x <<  "\n";
+
+}
 
 IntersectData CBoundingCilindre::IntersectSphere(const CBoundingSphere &other) const{
     // trataremos al cilindro como una recta que contiene infinitas esferas en todo su tramo

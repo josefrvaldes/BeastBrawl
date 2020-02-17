@@ -40,9 +40,12 @@ class CLPhysics {
    private:
     // gravity
     void HandleCollisionsWithGround();
+    void ConstGravity();
     void CollisionsChassisGround(CTransformable &trCar, CBoundingChassis &chaCar, CCar &ccar, bool mainCar, CBoundingPlane &plane);
     void CollisionsSphereGround(CTransformable &trCar, CBoundingSphere &spCar, CCar &ccar, CBoundingPlane &plane); 
     void SeparateSphereGround(IntersectData &intersData, CTransformable &trCar, CBoundingSphere &spCar, CCar &ccar, CBoundingPlane &plane) const;
+    void RePositionCarY(CTransformable &trCar, CBoundingSphere &sp1Car, CBoundingSphere &sp2Car) const;
+    void LimitRotationCarY() const;
     // collisions
     void HandleCollisions();
     void HandleCollisionsWithPlanes();
@@ -76,4 +79,5 @@ class CLPhysics {
     glm::vec3 CalculateProyectPointRecta(const glm::vec3 &extrem1, const glm::vec3 &extrem2, const glm::vec3 &point_) const;
     glm::vec3 CalculateVecDirCar(CTransformable &cTransformable) const;
     vector<Manager *> managers;
+    const float gravity = -2.0f;
 };

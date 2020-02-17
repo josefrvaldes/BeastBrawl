@@ -20,12 +20,14 @@ class CBoundingCilindre : public Component {
 
     vec3 extreme1;
     vec3 extreme2;
+    vec3 centerMass;
     const float radius{DEFAULT_SPHERE_RADIUS};
     static constexpr float DEFAULT_SPHERE_RADIUS{10.f};
 
 
    private:
     vec3 CalculateProyectPointOnRecta(const vec3 &point_) const;
+    void CalculateCenterMass(const vec3 &ext1, const vec3&ext2);
     double EuclideanDis(const vec3 &p1, const vec3 &p2) const;
 
 };

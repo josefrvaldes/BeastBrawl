@@ -46,15 +46,57 @@ void CLPhysics::Update(float delta) {
     RepositionBounding();
     CentralSystemGravity();
     // Aplicamos las fisicas de colision
-    RepositionBounding();
-    CentralSystemCollisions();
+    //RepositionBounding();
+    //CentralSystemCollisions();
 
 }
 
 
 
 void CLPhysics::CentralSystemGravity(){
+    ConstGravity();
+    //RepositionBounding();
     HandleCollisionsWithGround();
+    LimitRotationCarY();
+}
+
+void CLPhysics::ConstGravity(){
+    ManCar *manCar = static_cast<ManCar *>(managers[0]);
+    const auto& cars = manCar->GetEntities();
+    size_t numCar = cars.size();
+    for (size_t currentCar = 0; currentCar < numCar; currentCar++) {
+        Entity *car = manCar->GetEntities()[currentCar].get();
+        CBoundingChassis *chaCar = static_cast<CBoundingChassis *>(car->GetComponent(CompType::CompBoundingChassis).get());
+        CTransformable *trcar = static_cast<CTransformable *>(car->GetComponent(CompType::TransformableComp).get());
+        chaCar->sphereBehind->center.y += gravity;
+        chaCar->sphereFront->center.y += gravity;
+        RePositionCarY(*trcar, *chaCar->sphereBehind, *chaCar->sphereFront);
+    }
+}
+
+void CLPhysics::LimitRotationCarY() const{
+    ManCar *manCar = static_cast<ManCar *>(managers[0]);
+    const auto& cars = manCar->GetEntities();
+    size_t numCar = cars.size();
+    for (size_t currentCar = 0; currentCar < numCar; currentCar++) {
+        Entity *car = manCar->GetEntities()[currentCar].get();
+        CBoundingChassis *chaCar = static_cast<CBoundingChassis *>(car->GetComponent(CompType::CompBoundingChassis).get());
+        CTransformable *trcar = static_cast<CTransformable *>(car->GetComponent(CompType::TransformableComp).get());
+        vec3 vecDirCar = vec3((chaCar->sphereFront->center.x-chaCar->sphereBehind->center.x),(chaCar->sphereFront->center.y-chaCar->sphereBehind->center.y),(chaCar->sphereFront->center.z-chaCar->sphereBehind->center.z));
+        vec3 vecDirEjeY = vec3((chaCar->sphereFront->center.x-chaCar->sphereBehind->center.x),0,(chaCar->sphereFront->center.z-chaCar->sphereBehind->center.z));
+        double anguloo = Angle2Vectors(vecDirCar, vecDirEjeY);
+        int anguloEntero = int(anguloo);
+        if(chaCar->sphereFront->center.y < chaCar->sphereBehind->center.y)
+            anguloEntero = -1*anguloEntero;
+
+        if(anguloEntero < -30){
+            chaCar->sphereFront->center.y -= gravity; 
+        }
+        if(anguloEntero > 30){
+            chaCar->sphereFront->center.y -= gravity; 
+        }
+        RePositionCarY(*trcar, *chaCar->sphereBehind, *chaCar->sphereFront);
+    }
 }
 
 void CLPhysics::HandleCollisionsWithGround() {
@@ -78,9 +120,26 @@ void CLPhysics::HandleCollisionsWithGround() {
         for (size_t currentGround = 0; currentGround < numGrounds; currentGround++) {
             BoundingWall *ground = static_cast<BoundingWall *>(grounds[currentGround].get());
             CBoundingPlane *plane = static_cast<CBoundingPlane *>(ground->GetComponent(CompType::CompBoundingPlane).get());
-
-            //HandleCollisions(*trcar, *spcar, *ccarcar, false, *plane);
             
+            vec3 vecDirCar = vec3((chaCar->sphereFront->center.x-chaCar->sphereBehind->center.x),(chaCar->sphereFront->center.y-chaCar->sphereBehind->center.y),(chaCar->sphereFront->center.z-chaCar->sphereBehind->center.z));
+            vec3 vecDirEjeY = vec3((chaCar->sphereFront->center.x-chaCar->sphereBehind->center.x),0,(chaCar->sphereFront->center.z-chaCar->sphereBehind->center.z));
+            
+            double anguloo = Angle2Vectors(vecDirCar, vecDirEjeY);
+            int anguloEntero = int(anguloo);
+            if(chaCar->sphereFront->center.y < chaCar->sphereBehind->center.y)
+                anguloEntero = -1*anguloEntero;
+            cout << "el angulo es: " << anguloEntero << endl;
+            // una vez tenemos el angulo, lo quue tenemos que hacer es aplicar una rotacion a los coches
+
+            //float angleRotation = (trcar->rotation.y * M_PI) / 180.0;
+            //int anguloPrueba = 30;
+            //float anguloPruX = anguloPrueba * cos(angleRotation);
+            //float anguloPruZ = anguloPrueba * -sin(angleRotation);
+//
+            //trcar->rotation.x = anguloPruX;
+            //trcar->rotation.z = anguloPruZ;
+            
+
             CollisionsChassisGround(*trcar, *chaCar, *ccarcar, false, *plane);
             //cout << "todo aparentemente normal" << endl;
         }
@@ -89,13 +148,18 @@ void CLPhysics::HandleCollisionsWithGround() {
 
 
 void CLPhysics::CollisionsChassisGround(CTransformable &trCar, CBoundingChassis &chaCar, CCar &ccar, bool mainCar, CBoundingPlane &plane){
-
+    // comprobamos la colision con las dos esferas
     CBoundingSphere *spBehindCar = chaCar.sphereBehind.get();
     CollisionsSphereGround(trCar, *spBehindCar, ccar, plane);
-
     CBoundingSphere *spFrontCar = chaCar.sphereFront.get();
     CollisionsSphereGround(trCar, *spFrontCar, ccar, plane);
+    // posicionamos el coche correctamente en Y
+    RePositionCarY(trCar, *spBehindCar, *spFrontCar);
 
+}
+
+void CLPhysics::RePositionCarY(CTransformable &trCar, CBoundingSphere &sp1Car, CBoundingSphere &sp2Car) const{
+    trCar.position.y = (sp1Car.center.y + sp2Car.center.y) / 2;
 }
 
 void CLPhysics::CollisionsSphereGround(CTransformable &trCar, CBoundingSphere &spCar, CCar &ccar, CBoundingPlane &plane){
@@ -110,9 +174,8 @@ void CLPhysics::SeparateSphereGround(IntersectData &intersData, CTransformable &
     vec3 direction = spCar1.center - plane.normal;  // te da la dirección al otro bounding en x, y, z, es decir, si tenemos 200, 10, 30, significa que estamos a 200 de distancia en x, a 10 en y y a 30 en z
     vec3 nuevaDirectionCar1 = -normalize(direction);
     float correctedDistance = intersData.GetDistance();
-    //trCar1.position.x += nuevaDirectionCar1.x * correctedDistance;
-    //trCar1.position.z += nuevaDirectionCar1.z * correctedDistance;
-    trCar1.position.y += nuevaDirectionCar1.y * correctedDistance;
+    //trCar1.position.y += nuevaDirectionCar1.y * correctedDistance;
+    spCar1.center.y += nuevaDirectionCar1.y * correctedDistance;
 }
 
 
@@ -325,7 +388,8 @@ void CLPhysics::checkCollisionNitro(Entity* car1, Entity* car2){
 }
 
 void CLPhysics::PositionSphereIntoTransformable(CTransformable &tr, CBoundingSphere &sp) {
-    sp.center = tr.position;
+    sp.center.x = tr.position.x;
+    sp.center.z = tr.position.z;
     float x = -cos(Utils::DegToRad(tr.rotation.y)) * (sp.radius);
     float z = sin(Utils::DegToRad(tr.rotation.y)) * (sp.radius);
     sp.center.x += x;
@@ -334,7 +398,8 @@ void CLPhysics::PositionSphereIntoTransformable(CTransformable &tr, CBoundingSph
 
 
 void CLPhysics::PositionSphBehindIntoTransf(CTransformable &tr, CBoundingSphere &sp) const{
-    sp.center = tr.position;
+    sp.center.x = tr.position.x;
+    sp.center.z = tr.position.z;
     float x = -cos(Utils::DegToRad(tr.rotation.y)) * (sp.radius);
     float z = sin(Utils::DegToRad(tr.rotation.y)) * (sp.radius);
     sp.center.x += x;
@@ -343,7 +408,8 @@ void CLPhysics::PositionSphBehindIntoTransf(CTransformable &tr, CBoundingSphere 
 }
 
 void CLPhysics::PositionSphFrontIntoTransf(CTransformable &tr, CBoundingSphere &sp) const{
-    sp.center = tr.position;
+    sp.center.x = tr.position.x;
+    sp.center.z = tr.position.z;
     float x = -cos(Utils::DegToRad(tr.rotation.y)) * (sp.radius+10);
     float z = sin(Utils::DegToRad(tr.rotation.y)) * (sp.radius+10);
     sp.center.x += x;
