@@ -211,21 +211,15 @@ int main() {
     glm::vec3 cameraUp    = glm::vec3(0.0f, 1.0f,  0.0f);
 
     //LUCES Y COLORES
-    unsigned int lightVAO,VBO;
-    glGenVertexArrays(1, &lightVAO);
-    glBindVertexArray(lightVAO);
-    glGenBuffers(1,&VBO);
-    // we only need to bind to the VBO, the container's VBO's data already contains the data.
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    // set the vertex attributes (only position data for our lamp)
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
     glm::vec3 color(1.0f, 0.0f, 0.0f);
     glm::vec3 light(1.0f, 1.0f, 1.0f);
     glm::vec3 lightPos(node3->GetTranslation());
     float auxColor[3] = {color.x,color.y,color.z};
     float auxLight[3] = {light.x,light.y,light.z};
     float auxLightPos[3] = {lightPos.x,lightPos.y,lightPos.z};
+    float auxCameraPos[3] = {cameraPos.x, cameraPos.y, cameraPos.z};
+    float specularStrength = 0.5;
+    int shinnines = 32;
 
     float index = 0.01;
     while (!device->Run()) {
@@ -247,17 +241,24 @@ int main() {
         ImGui::SliderFloat3("Color",auxColor,0,1);
         ImGui::SliderFloat3("Light",auxLight,0,1);
         ImGui::SliderFloat3("LightPos",auxLightPos,-100,100);
+        ImGui::SliderFloat3("CameraPos",auxCameraPos,-50,50);
+        ImGui::SliderFloat("specularStrength",&specularStrength,0,1);
+        ImGui::SliderInt("Shinnines",&shinnines,0,256);
         ImGui::End(); 
 
         glm::vec3 color(auxColor[0], auxColor[1], auxColor[2]);
         glm::vec3 light(auxLight[0], auxLight[1], auxLight[2]);
         glm::vec3 lightPos(auxLightPos[0], auxLightPos[1], auxLightPos[2]);
+        glm::vec3 cameraPos(auxCameraPos[0], auxCameraPos[1], auxCameraPos[2]);
 
         glUseProgram(resourceShader->GetProgramID());
         //Luces y colores
         glUniform3fv(glGetUniformLocation(resourceShader->GetProgramID(), "objectColor"),1,glm::value_ptr(color));
         glUniform3fv(glGetUniformLocation(resourceShader->GetProgramID(), "lightColor"),1,glm::value_ptr(light));
         glUniform3fv(glGetUniformLocation(resourceShader->GetProgramID(), "lightPos"),1,glm::value_ptr(lightPos));
+        glUniform3fv(glGetUniformLocation(resourceShader->GetProgramID(), "viewPos"),1,glm::value_ptr(cameraPos));
+        glUniform1f(glGetUniformLocation(resourceShader->GetProgramID(), "specularStrength"),specularStrength);
+        glUniform1i(glGetUniformLocation(resourceShader->GetProgramID(), "specularStrength"),shinnines);
         // glActiveTexture(GL_TEXTURE0);
         // glBindTexture(GL_TEXTURE_2D, texture1);
         // glActiveTexture(GL_TEXTURE1);
@@ -276,7 +277,7 @@ int main() {
         glUniformMatrix4fv(glGetUniformLocation(resourceShader->GetProgramID(), "view"), 1, GL_FALSE, glm::value_ptr(view));
 
         //node2->SetTranslation(glm::vec3(index,0.1f,0.1f));
-        node2->SetRotation(glm::vec3(index,0.0f,0.0f));
+        //node2->SetRotation(glm::vec3(index,0.0f,0.0f));
         smgr->DFSTree(glm::mat4(1.0));
 
 
