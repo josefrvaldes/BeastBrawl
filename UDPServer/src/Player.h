@@ -15,6 +15,7 @@ struct Player {
     tcp::endpoint endpointTCP;
     uint16_t lastInputIDReceived{0};
     uint16_t lastSyncIDReceived{0};
+    bool hasTotem {false};
 
    private:
     static uint16_t nextId;

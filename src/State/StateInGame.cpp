@@ -168,7 +168,7 @@ void StateInGame::Update() {
     // COLISIONES entre powerUp y player
     collisions->IntersectPlayerPowerUps(manCars.get()->GetCar().get(), manPowerUps.get(), manNavMesh.get());
     // COLISIONES entre el Player y el Totem
-    collisions->IntersectPlayerTotem(manCars.get()->GetCar().get(), manTotems.get());
+    collisions->IntersectCarsTotem(manCars.get()/*->GetCar().get()*/, manTotems.get());
 
     // Actualizaciones en Irrlich
     renderEngine->UpdateCamera(cam.get(), manCars.get());

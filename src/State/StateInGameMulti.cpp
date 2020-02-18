@@ -105,7 +105,7 @@ void StateInGameMulti::Update() {
     // COLISIONES entre BoxPowerUp y cocheHuman
     collisions->IntersectCarsBoxPowerUp(manCars.get(), manBoxPowerUps.get());
     // COLISIONES  entre la cocheHuman y el Totem
-    collisions->IntersectCarsTotem(manCars.get(), manTotems.get());
+    // collisions->IntersectCarsTotem(manCars.get(), manTotems.get());
     //if(manTotems->GetEntities().size() != 0){
     //    auto cTransformable = static_cast<CTransformable *>(manTotems->GetEntities()[0]->GetComponent(CompType::TransformableComp).get());
     //    std::cout << "X: " << cTransformable->position.x << "  -  Y: " << cTransformable->position.z << "\n";

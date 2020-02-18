@@ -226,14 +226,14 @@ void ManCar::SubscribeToEvents() {
         bind(&ManCar::CollisionPowerUpAI, this, placeholders::_1),
         "CollisionPowerUpAI"));
 
-    EventManager::GetInstance().SubscribeMulti(Listener(
-        EventType::COLLISION_PLAYER_TOTEM,
-        bind(&ManCar::CatchTotemPlayer, this, placeholders::_1),
-        "CatchTotemPlayer"));
+    // EventManager::GetInstance().SubscribeMulti(Listener(
+    //     EventType::COLLISION_CAR_TOTEM,
+    //     bind(&ManCar::CatchTotemPlayer, this, placeholders::_1),
+    //     "CatchTotemPlayer"));
 
     EventManager::GetInstance().SubscribeMulti(Listener(
-        EventType::COLLISION_AI_TOTEM,
-        bind(&ManCar::CatchTotemAI, this, placeholders::_1),
+        EventType::COLLISION_CAR_TOTEM,
+        bind(&ManCar::CatchTotemCar, this, placeholders::_1),
         "CatchTotemAI"));
 
     EventManager::GetInstance().SubscribeMulti(Listener(
@@ -307,7 +307,7 @@ void ManCar::ChangeTotemCar(DataMap* d) {
 }
 
 
-void ManCar::CatchTotemAI(DataMap* d){
+void ManCar::CatchTotemCar(DataMap* d){
     auto cTotem = static_cast<CTotem*>(any_cast<Entity*>((*d)[ACTUAL_CAR])->GetComponent(CompType::TotemComp).get());
     cTotem->active = true;
     cTotem->timeStart = system_clock::now();
