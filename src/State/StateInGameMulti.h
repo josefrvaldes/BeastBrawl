@@ -1,7 +1,7 @@
 #pragma once
 
-#include "StateInGame.h"
 #include <chrono>
+#include "StateInGame.h"
 
 using namespace std::chrono;
 
@@ -24,10 +24,10 @@ class StateInGameMulti : public StateInGame {
     void InitializeSystems(ManCar &manCars, ManBoundingWall &manBoundingWall, ManBoundingOBB &manBoundingOBB) override;
     void InitializeFacades() override;
     void AddElementsToRender() override;
-    
 
     unique_ptr<SystemOnline> sysOnline;
 
     time_point<system_clock> lastTimeSentInputs;
     time_point<system_clock> lastTimeSentSync;
+    vector<Constants::InputTypes> previousInputs;
 };

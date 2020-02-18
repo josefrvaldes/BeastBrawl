@@ -249,7 +249,7 @@ class Utils {
 
     
 
-    static void SerializeInputs(unsigned char* buff, vector<Constants::InputTypes>& inputs, size_t& currentSize) {
+    static void SerializeInputs(unsigned char* buff, const vector<Constants::InputTypes>& inputs, size_t& currentSize) {
         unsigned char byteInputs{0};
         for(const auto& input : inputs){
             switch (input){

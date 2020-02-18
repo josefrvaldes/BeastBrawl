@@ -34,7 +34,7 @@ class UDPClient {
     UDPClient(string host, uint16_t port_);
     ~UDPClient();
 
-    void SendInputs(vector<Constants::InputTypes>& inputs, uint16_t id);
+    void SendInputs(const vector<Constants::InputTypes>& inputs, uint16_t id);
     void SendSync(uint16_t idOnline, const glm::vec3& posCar, const glm::vec3& rotCar, typeCPowerUp tipoPU, bool haveTotem, int64_t totemTime,
                   bool totemInGround, const glm::vec3& posTotem);
     void SendDateTime();

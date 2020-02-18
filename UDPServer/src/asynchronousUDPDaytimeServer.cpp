@@ -11,9 +11,6 @@ using namespace boost;
 using namespace std;
 using namespace std::chrono;
 
-// #define PORT_UDP 443
-// #define PORT_TCP 80
-
 int main(int argc, char* argv[]) {
     try {
         asio::io_context context;

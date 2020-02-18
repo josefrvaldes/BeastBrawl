@@ -1,7 +1,7 @@
 #include "StateInGameMulti.h"
 #include <Components/CTotem.h>
-#include "../Systems/SystemOnline.h"
 #include "../Components/COnline.h"
+#include "../Systems/SystemOnline.h"
 
 StateInGameMulti::StateInGameMulti() : StateInGame() {
     InitVirtualMethods();
@@ -65,7 +65,12 @@ void StateInGameMulti::InitState() {
 }
 
 void StateInGameMulti::Input() {
-    vector<Constants::InputTypes> inputs = renderEngine->FacadeCheckInputMulti();
+    const vector<Constants::InputTypes> &inputs = renderEngine->FacadeCheckInputMulti();
+    if (previousInputs != inputs) {
+        cout << "Enviamos los inputs porque han cambiado con respecto a la iteración anterior" << endl;
+        sysOnline->SendInputs(inputs);
+        previousInputs = inputs;
+    }
 
     time_point<system_clock> now = system_clock::now();
     auto millisSinceLastInputSent = duration_cast<milliseconds>(now - lastTimeSentInputs).count();
@@ -74,18 +79,15 @@ void StateInGameMulti::Input() {
         sysOnline->SendInputs(inputs);
     }
 
-
     auto millisSinceLastSyncSent = duration_cast<milliseconds>(now - lastTimeSentSync).count();
     if (millisSinceLastSyncSent > 250) {  // 1000ms = 1s = 60fps; 2s = 120frames
-        lastTimeSentSync = now;       
+        lastTimeSentSync = now;
         sysOnline->SendSync(manCars.get(), manTotems.get());
     }
 }
 
 void StateInGameMulti::Update() {
     StateInGame::Update();
-
-    
 
     for (auto actualCar : manCars->GetEntities()) {
         if (actualCar.get() != manCars->GetCar().get()) {

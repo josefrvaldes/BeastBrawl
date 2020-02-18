@@ -22,7 +22,7 @@ SystemOnline::SystemOnline(ManCar &manCar_, uint16_t idOnlineMainCar_) : idOnlin
     shared_ptr<CarHuman> car = manCar.GetCar();
 }
 
-void SystemOnline::SendInputs(vector<Constants::InputTypes> &inputs) {
+void SystemOnline::SendInputs(const vector<Constants::InputTypes> &inputs) {
     udpClient->SendInputs(inputs, idOnlineMainCar);
 }
 
