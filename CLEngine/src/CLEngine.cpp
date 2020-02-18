@@ -21,6 +21,7 @@ static void error(int error, const char* description) {
 CLEngine::CLEngine (const unsigned int w, const unsigned int h, const string& title) {
     CreateGlfwWindow(w, h, title);
     glewInit();
+    ImGuiInit();
 
 }
 
@@ -28,6 +29,7 @@ CLEngine::CLEngine (const unsigned int w, const unsigned int h, const string& ti
  * Destruye la ventana de GLFW y libera la informacion.
  */
 CLEngine::~CLEngine() {
+    TerminateImGui();
     glfwDestroyWindow(window);
     glfwTerminate();
     cout << ">>>>> GLFW OFF" << endl;
@@ -67,34 +69,49 @@ void CLEngine::CreateGlfwWindow (const unsigned int w, const unsigned int h, con
 
     // Por defecto esta a 0, pero parece que eso despercicia ciclos de CPU y GPU. Se recomienda ponerlo a 1.
     glfwSwapInterval(1);
+    // configure global opengl state. Z depth active.
+    glEnable(GL_DEPTH_TEST);
+}
+
+void CLEngine::ImGuiInit(){
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
+
+    // Setup Dear ImGui style
+    ImGui::StyleColorsDark();
+
+    // Setup Platform/Renderer bindings
+    ImGui_ImplGlfw_InitForOpenGL(window, true);
+    ImGui_ImplOpenGL3_Init("#version 450");
+}
+
+void CLEngine::TerminateImGui(){
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
 }
 
 /**
  * Actualizacion de CLEngine.
  */
 bool CLEngine::Run() {
-
     return glfwWindowShouldClose(window);
-
-    // // Checkea eventos cada vez que se renderiza. Es un hilo.
-
-    
-
-    // // Render
-    // glClearColor(0.3f, 0.2f, 0.4f, 1.0f);
-    // glClear(GL_COLOR_BUFFER_BIT);
-
-    // // Cambia de buffer.
-    // glfwSwapBuffers(window);
-
-    //return true;
 }
 
-void CLEngine::Draw(){
+void CLEngine::BeginScene(){
     // Render
     glClearColor(0.3f, 0.2f, 0.4f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    
+}
+
+void CLEngine::EndScene(){
+    // Render dear imgui into screen
+    ImGui::Render();
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+    
     // Cambia de buffer.
     glfwSwapBuffers(window);
 }

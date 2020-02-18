@@ -24,10 +24,11 @@
 #include "ResourceManager/CLResourceMesh.h"
 #include "ResourceManager/CLResource.h"
 
+
+
 #include "ImGUI/imgui.h"
 #include "ImGUI/imgui_impl_opengl3.h"
 #include "ImGUI/imgui_impl_glfw.h"
-
 
 using namespace std;
 using namespace CLE;
@@ -53,31 +54,11 @@ void checkInput (GLFWwindow *window, glm::vec3 cameraPos, glm::vec3& cameraFront
         cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
 }
 
-void initImGUI(CLEngine *device) {
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO(); (void)io;
-
-    // Setup Dear ImGui style
-    ImGui::StyleColorsDark();
-
-    // Setup Platform/Renderer bindings
-    ImGui_ImplGlfw_InitForOpenGL(device->GetWindow(), true);
-    ImGui_ImplOpenGL3_Init("#version 450");
-}
-
-void terminateInGUI() {
-    ImGui_ImplOpenGL3_Shutdown();
-    ImGui_ImplGlfw_Shutdown();
-    ImGui::DestroyContext();
-}
 
 int main() {
     CLEngine *device = new CLEngine(1280, 720, "Beast Brawl");
-    initImGUI(device);
 
-    // configure global opengl state. Z depth active.
-    glEnable(GL_DEPTH_TEST);
+    
 
     
     //-------------------Resource manager-------------------
@@ -130,7 +111,7 @@ int main() {
 
     
     
-
+    #pragma region Movidas
     //Todo preparado, ahora comienza la magia
     // 1. bind Vertex Array Object
     //Todo esto esta muy bien pero lo mejor es tener un array para todos los VBO que queramos dibujar
@@ -156,12 +137,12 @@ int main() {
      * 5º Valor: offset por el que se empieza a leer
      */
 
-    // position attribute
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-    // texture coord attribute
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
+    // // position attribute
+    // glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+    // glEnableVertexAttribArray(0);
+    // // texture coord attribute
+    // glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+    // glEnableVertexAttribArray(1);
     
 
     /**
@@ -209,6 +190,8 @@ int main() {
     glUniform1i(glGetUniformLocation(resourceShader->GetProgramID(),"texture2"),1);
     *
     */
+    #pragma endregion
+    
     
     glm::vec3 cameraPos   = node3.get()->GetTranslation();
     glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
@@ -235,8 +218,7 @@ int main() {
 
         device->UpdateViewport(); //Por si reescalamos la ventana
 
-        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        device->BeginScene();
 
         // Start the Dear ImGui frame
         ImGui_ImplOpenGL3_NewFrame();
@@ -289,16 +271,13 @@ int main() {
 
 
 
-        // Render dear imgui into screen
-        ImGui::Render();
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+        
 
         glfwPollEvents();
-        glfwSwapBuffers(device->GetWindow());
+        device->EndScene();
         index += 0.2;
     }
 
-    terminateInGUI();
 
     delete device;
 

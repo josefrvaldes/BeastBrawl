@@ -4,6 +4,7 @@
 #include <memory>
 #include "PhysicsFacade.h"
 #include "PhysicsFacadeIrrlicht.h"
+#include "PhysicsFacadeClover.h"
 
 using namespace std;
 class PhysicsFacadeManager{
@@ -17,6 +18,7 @@ public:
 
     void InitializeClover() {
         // TODO: crear motor de clover
+        facade = new PhysicsFacadeClover();
     }
 
     PhysicsFacade* GetPhysicsFacade() { return facade; };
