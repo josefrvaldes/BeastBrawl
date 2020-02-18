@@ -144,10 +144,15 @@ void CLPhysics::HandleCollisionsWithGround() {
             float angleRotation = (trcar->rotation.y * M_PI) / 180.0;
             //mat.setRotationDegrees(irr::core::vector3df(X, carIrrlicht->getRotation().Y, Z));
             //carIrrlicht->setRotation(mat.getRotationDegrees());
-            trcar->rotation.x = -1*(((X * M_PI) / 180.0) * cos(angleRotation))*10;
+            vec3 vecDirCar = vec3((chaCar->sphereFront->center.x-chaCar->sphereBehind->center.x),(chaCar->sphereFront->center.y-chaCar->sphereBehind->center.y),(chaCar->sphereFront->center.z-chaCar->sphereBehind->center.z));
+            vec3 vecDirEjeY = vec3((chaCar->sphereFront->center.x-chaCar->sphereBehind->center.x),0,(chaCar->sphereFront->center.z-chaCar->sphereBehind->center.z));
+            double angulooY = Angle2Vectors(vecDirCar, vecDirEjeY);
+            auto holita = ((X * M_PI) / 180.0);
+            cout << " holitaa : " << X << endl;
+            trcar->rotation.x = angulooY * -cos(angleRotation);
             cout << " aplicamos una rotacion en X de: " << trcar->rotation.x << endl;
-            trcar->rotation.z = ((Z * M_PI) / 180.0) * sin(angleRotation)*10;
-            cout << " aplicamos una rotacion en Z de: " << trcar->rotation.z << endl;
+            //trcar->rotation.z = ((Z * M_PI) / 180.0) * sin(angleRotation)*10;
+            //cout << " aplicamos una rotacion en Z de: " << trcar->rotation.z << endl;
             //vec3 vecDirCar = vec3((chaCar->sphereFront->center.x-chaCar->sphereBehind->center.x),(chaCar->sphereFront->center.y-chaCar->sphereBehind->center.y),(chaCar->sphereFront->center.z-chaCar->sphereBehind->center.z));
             //vec3 vecDirEjeY = vec3((chaCar->sphereFront->center.x-chaCar->sphereBehind->center.x),0,(chaCar->sphereFront->center.z-chaCar->sphereBehind->center.z));
             //vec3 vecDirEjeX = vec3(0,(chaCar->sphereFront->center.y-chaCar->sphereBehind->center.y),(chaCar->sphereFront->center.z-chaCar->sphereBehind->center.z));
