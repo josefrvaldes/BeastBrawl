@@ -3,7 +3,7 @@
 #include <vector>
 #include <iostream>
 #include <glm/glm.hpp>
-#include <glew/glew.h>
+#include "../../include/glew/glew.h"
 
 #include "CLEntity.h"
 

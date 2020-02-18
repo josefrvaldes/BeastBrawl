@@ -1,7 +1,7 @@
 #pragma once
 
 #include <glm/glm.hpp>
-#include <glew/glew.h>
+#include "../../include/glew/glew.h"
 
 namespace CLE {
 
