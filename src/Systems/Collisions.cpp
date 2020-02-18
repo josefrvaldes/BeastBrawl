@@ -111,23 +111,21 @@ void Collisions::IntersectPlayerTotem(Car* carPlayer, ManTotem* manTotem){
 
 
 void Collisions::IntersectCarsTotem(ManCar* manCars, ManTotem* manTotem){
-    // const auto mainCar = manCars->GetCar().get();
     for(const auto& currentCar : manCars->GetEntities()){
-        // if(currentCar.get() != mainCar){
-            for(shared_ptr<Entity> currentTotem : manTotem->GetEntities()){ // SI HACE DANYO
-                if(Intersects(currentCar.get(), currentTotem.get())){   //TRUE
-                    // debemos coger el TOTEM
-                    shared_ptr<DataMap> dataCollisionTotem = make_shared<DataMap>();                                                                         
+        for(shared_ptr<Entity> currentTotem : manTotem->GetEntities()){ // SI HACE DANYO
+            if(Intersects(currentCar.get(), currentTotem.get())){   //TRUE
+                // debemos coger el TOTEM
+                shared_ptr<DataMap> dataCollisionTotem = make_shared<DataMap>();                                                                         
 
-                    (*dataCollisionTotem)[TOTEM] = currentTotem;              // nos guardamos el puntero para eliminar el powerUp  
-                    (*dataCollisionTotem)[ACTUAL_CAR] = currentCar.get();                                           
-                    EventManager::GetInstance().AddEventMulti(Event{EventType::COLLISION_CAR_TOTEM, dataCollisionTotem});
-                    return;
-                }
+                (*dataCollisionTotem)[TOTEM] = currentTotem;              // nos guardamos el puntero para eliminar el powerUp  
+                (*dataCollisionTotem)[ACTUAL_CAR] = currentCar.get();                                           
+                EventManager::GetInstance().AddEventMulti(Event{EventType::COLLISION_CAR_TOTEM, dataCollisionTotem});
+                return; // con este return nos aseguramos de que solo 1 car pueda coger el totem a la vez, aunque colisionen varios
             }
-        // }
+        }
     }
 }
+
 
 
 

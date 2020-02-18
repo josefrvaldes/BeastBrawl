@@ -36,8 +36,10 @@ void SystemOnline::SendSync(ManCar* manCars, ManTotem* manTotem){
 
     for(const auto& car : manCar.GetEntities()){
         auto cTotemCar = static_cast<CTotem *>(car->GetComponent(CompType::TotemComp).get());
-        if(cTotemCar->active == true)
+        if(cTotemCar->active == true) {
             totemInGround = false;
+            break;
+        }
     }
 
     if(manTotem->GetEntities().size() != 0){

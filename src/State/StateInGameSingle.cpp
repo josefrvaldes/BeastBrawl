@@ -46,7 +46,7 @@ void StateInGameSingle::Update() {
                 systemPathPlanning.get());
         }
     }
-    CAMBIARCosasDeTotemUpdate();
+    CAMBIARPositionTotemAboveCar();
 
     // COLISIONES entre powerUp y IA
     collisions->IntersectsCarsPowerUps(manCars.get(), manPowerUps.get(), manNavMesh.get());

@@ -254,7 +254,7 @@ void StateInGame::CAMBIARCosasNavMesh(ManCar &manCars, ManNavMesh &manNavMesh){
 }
 
 
-void StateInGame::CAMBIARCosasDeTotemUpdate() {
+void StateInGame::CAMBIARPositionTotemAboveCar() {
     bool todosFalse = true;
     auto cTransformTotem = static_cast<CTransformable *>(totemOnCar->GetComponent(CompType::TransformableComp).get());
     cTransformTotem->rotation.y += 0.1;
@@ -267,8 +267,6 @@ void StateInGame::CAMBIARCosasDeTotemUpdate() {
             cTransformTotem->position.x = cTransformCar->position.x;
             cTransformTotem->position.z = cTransformCar->position.z;
             cTransformTotem->position.y = 22.0f;
-            // supuestamente esta el drawAll que te lo hace no?????????????????
-            // si esta cambiando pero no se esta redibujando
             break; // cuando encontramos a alguien que ya lleva el totem, nos salimos del for, no seguimos comprobando a los demás
         }
     }

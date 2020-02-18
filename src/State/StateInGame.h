@@ -113,6 +113,6 @@ class StateInGame : public State {
 
     void CAMBIARCosasDeTotem(ManTotem &);
     void CAMBIARCosasNavMesh(ManCar &, ManNavMesh &);
-    void CAMBIARCosasDeTotemUpdate();
+    void CAMBIARPositionTotemAboveCar();
 
 };

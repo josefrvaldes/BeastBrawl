@@ -9,7 +9,6 @@ class SystemOnline;
 
 class StateInGameMulti : public StateInGame {
    public:
-    StateInGameMulti();
     StateInGameMulti(uint16_t IdOnline, const vector<uint16_t> IdPlayersOnline);
     ~StateInGameMulti();
     void InitState() override;
