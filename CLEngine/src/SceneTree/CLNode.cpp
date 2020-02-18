@@ -7,15 +7,14 @@
 using namespace CLE;
 
 CLNode::CLNode(){
-
-}
-
-CLNode::CLNode(CLEntity* entity){
-    this->entity = entity;
     translation = glm::vec3(0.0f, 0.0f, 0.0f);
     rotation = glm::vec3(0.0f, 0.0f, 0.0f);
     scalation = glm::vec3(1.0f, 1.0f, 1.0f);
     transformationMat = glm::mat4(1.0f);
+}
+
+CLNode::CLNode(CLEntity* entity) : CLNode() {
+    this->entity = entity;
 }
 
 
