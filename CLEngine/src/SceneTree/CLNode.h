@@ -3,6 +3,7 @@
 #include <vector>
 #include <iostream>
 #include <glm/glm.hpp>
+#include "../../include/glew/glew.h"
 
 #include "CLEntity.h"
 
@@ -26,14 +27,16 @@ class CLNode{
         glm::vec3 GetRotation()    const       { return rotation; }
         glm::vec3 GetScalation()   const       { return scalation; }
         glm::mat4 GetTransformationMat() const { return transformationMat; }
+        GLuint GetModelMatrixID()       { return shaderProgramID;}
 
         //Setters
-        bool SetEntity(CLEntity* e)                    { entity = e; return true; }
-        bool SetFather(CLNode* f)                    { father = f; return true; }
-        void SetTranslation(glm::vec3 trans)           { translation = trans; changed = true; }
-        void SetRotation(glm::vec3 rot)                { rotation = rot; changed = true; }
-        void SetScalation(glm::vec3 scale)             { scalation = scale; changed = true; }
-        void SetTransformationMat(glm::mat4 transfMat) { transformationMat = transfMat; }
+        bool SetEntity(CLEntity* e)                     { entity = e; return true; }
+        bool SetFather(CLNode* f)                       { father = f; return true; }
+        void SetTranslation(glm::vec3); 
+        void SetRotation(glm::vec3);
+        void SetScalation(glm::vec3);
+        void SetTransformationMat(glm::mat4 transfMat)  { transformationMat = transfMat; }
+        void SetShaderProgramID(GLuint id)         { shaderProgramID = id; }
 
         //Methods
         bool AddChild(CLNode* child);
@@ -42,15 +45,20 @@ class CLNode{
         CLNode* GetNodeByID(unsigned int id);
         void DeleteNode(unsigned int id);
         void DeleteNode(CLNode* node);
-        glm::mat4 Translate();
-        glm::mat4 Rotate();
-        glm::mat4 Scale();
+        glm::mat4 TranslateMatrix();
+        glm::mat4 RotateMatrix();
+        glm::mat4 ScaleMatrix();
+        void Translate(glm::vec3);
+        void Rotate(glm::vec3);
+        void Scale(glm::vec3);
         glm::mat4 CalculateTransformationMatrix();
 
         void DrawTree(CLNode* root);
         void DFSTree(glm::mat4);
 
     private:
+
+        void ActivateFlag();
 
         bool changed { true };
 
@@ -65,6 +73,9 @@ class CLNode{
 
         //Methods
         CLNode* GetNodeByIDAux(unsigned int id, CLNode* node, CLNode* root);
+
+        // Identificadores de las variables que cambia para pasarle info al shader.
+        GLuint shaderProgramID;
 
 };
 

@@ -19,7 +19,7 @@ public:
     }
 
     void InitializeClover() {
-        //facade = new RenderFacadeClover();
+        facade = new RenderFacadeClover();
     }
 
     RenderFacade* GetRenderFacade() { return facade; };

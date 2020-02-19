@@ -7,7 +7,7 @@ JUMP_LINE		   := @echo
 
 
 ifdef DEBUG
-	CXXFLAGS := -g
+	CXXFLAGS += -g
 else
 	CXXFLAGS += -O3
 endif
@@ -48,7 +48,7 @@ $(NAME_EXE): $(OBJSUBDIRS) $(ALLCPPSOBJ)
 	$(COMPILING_TEXT_OK)
 	$(JUMP_LINE)
 	$(LINKING_TEXT)
-	$(CC) -o $(NAME_EXE) $(patsubst $(SRC_PATH)%,$(OBJ_PATH)%,$(ALLCPPSOBJ)) $(INCLUDE) $(LIBS) 
+	$(CC) -o $(NAME_EXE) $(ALLCPPSOBJ) $(INCLUDE) $(LIBS) 
 	$(LINKING_TEXT_OK)
 	$(JUMP_LINE)
 

@@ -10,7 +10,7 @@ InputFacadeClover::InputFacadeClover(){
 }
 
 void InputFacadeClover::CheckInput(){
-
+    device->InputClose();
 }
 
 

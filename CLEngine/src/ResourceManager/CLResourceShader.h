@@ -13,15 +13,20 @@ namespace CLE {
 
             void Draw(glm::mat4) override;
             bool LoadFile(string) override;
+            bool LoadFile(string,string);
 
-            void SetShaderType(GLenum type)   { shaderType = type; }
 
-            GLenum GetShaderType()          const { return shaderType; }
-            GLuint GetShaderID()            const { return shaderID;   }
+            GLuint GetVertexID()            const { return vertexID;   }
+            GLuint GetFragmentID()            const { return fragmentID;   }
+            int GetProgramID()            const { return programID;   }
 
         private:
-            GLuint shaderID;
-            GLenum shaderType;
+            bool LoadShader(string, GLenum);
+            bool LinkShaders();
+            GLuint vertexID;
+            GLuint fragmentID;
+            int programID;
+            //GLenum shaderType;
     
     };
 
