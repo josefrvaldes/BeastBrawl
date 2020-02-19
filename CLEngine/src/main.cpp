@@ -30,6 +30,11 @@
 #include "ImGUI/imgui_impl_opengl3.h"
 #include "ImGUI/imgui_impl_glfw.h"
 
+
+#include <stdio.h>      /* printf, scanf, puts, NULL */
+#include <stdlib.h>     /* srand, rand */
+#include <time.h>       /* time */
+
 using namespace std;
 using namespace CLE;
 
@@ -62,7 +67,7 @@ int main() {
 
     
     //-------------------Resource manager-------------------
-    unique_ptr<CLResourceManager> resourceManager = make_unique<CLResourceManager>();
+    shared_ptr<CLResourceManager> resourceManager = make_shared<CLResourceManager>();
     auto resourceShader = resourceManager->GetResourceShader("CLEngine/src/Shaders/vertex.glsl", "CLEngine/src/Shaders/fragment.glsl");
     auto resourceMesh = resourceManager->GetResourceMesh("media/sharky_lowpoly.fbx");
 
@@ -71,24 +76,24 @@ int main() {
 
     
     //------------------------------------------------------------------------- ARBOLITO
-    unique_ptr<CLEntity> entity1 = make_unique<CLLight>(1);
-    unique_ptr<CLEntity> entity2 = make_unique<CLMesh>(2);
-    unique_ptr<CLEntity> entity3 = make_unique<CLCamera>(3);
-    unique_ptr<CLEntity> entity4 = make_unique<CLMesh>(4);
-    unique_ptr<CLEntity> entity5 = make_unique<CLLight>(5);
+    shared_ptr<CLEntity> entity1 = make_shared<CLLight>(1);
+    shared_ptr<CLEntity> entity2 = make_shared<CLMesh>(2);
+    shared_ptr<CLEntity> entity3 = make_shared<CLCamera>(3);
+    shared_ptr<CLEntity> entity4 = make_shared<CLMesh>(4);
+    shared_ptr<CLEntity> entity5 = make_shared<CLLight>(5);
     
     //Nodo raiz
-    unique_ptr<CLNode> smgr = make_unique<CLNode>(entity1.get());
+    shared_ptr<CLNode> smgr = make_shared<CLNode>(entity1.get());
     smgr->SetShaderProgramID(resourceShader->GetProgramID());
     cout << "MODEL MATRIX ID:: " << smgr->GetModelMatrixID() << endl;
 
-    unique_ptr<CLNode> node2 = make_unique<CLNode>(entity2.get());
+    shared_ptr<CLNode> node2 = make_shared<CLNode>(entity2.get());
     node2->SetShaderProgramID(resourceShader->GetProgramID());
-    unique_ptr<CLNode> node3 = make_unique<CLNode>(entity3.get());
+    shared_ptr<CLNode> node3 = make_shared<CLNode>(entity3.get());
     node3->SetShaderProgramID(resourceShader->GetProgramID());
-    unique_ptr<CLNode> node4 = make_unique<CLNode>(entity4.get());
+    shared_ptr<CLNode> node4 = make_shared<CLNode>(entity4.get());
     node4->SetShaderProgramID(resourceShader->GetProgramID());
-    unique_ptr<CLNode> node5 = make_unique<CLNode>(entity5.get());
+    shared_ptr<CLNode> node5 = make_shared<CLNode>(entity5.get());
     node5->SetShaderProgramID(resourceShader->GetProgramID());
 
         smgr->AddChild(node2.get());
@@ -96,9 +101,29 @@ int main() {
         smgr->AddChild(node5.get());
         node2->AddChild(node4.get());
 
-        smgr->DrawTree(smgr.get());
 
     //smgr->DFSTree(glm::mat4(1.0));
+    vector<shared_ptr<CLEntity>> mallas;
+    vector<shared_ptr<CLNode>> nodes;
+
+    int max = 200;
+    int min = -200;
+    int j = 0;
+    for(int i = 6; i<200; i++){
+        mallas.push_back(make_shared<CLMesh>(i));
+        nodes.push_back(make_shared<CLNode>(mallas[j].get()));
+        nodes[j]->SetShaderProgramID(resourceShader->GetProgramID());
+        smgr->AddChild(nodes[j].get());
+
+        int randNumX = rand()%(max-min + 1) + min;
+        int randNumY = rand()%(max-min + 1) + min;
+        int randNumZ = rand()%(max-min + 1) + min;
+        static_cast<CLMesh*>(mallas[j].get())->SetMesh(resourceMesh);
+        nodes[j].get()->SetTranslation(glm::vec3(randNumX,randNumY,randNumZ));
+        j++;
+    }
+
+        smgr->DrawTree(smgr.get());
 
     static_cast<CLMesh*>(entity2.get())->SetMesh(resourceMesh);
     static_cast<CLMesh*>(entity4.get())->SetMesh(resourceMesh);
@@ -211,6 +236,10 @@ int main() {
     float attenuationValue = 0.0;
 
     float index = 0.01;
+
+    double previousTime = glfwGetTime();
+    int frameCount = 0;
+
     while (!device->Run()) {
 
         checkInput(device->GetWindow(), cameraPos, cameraFront, cameraUp);
@@ -229,7 +258,7 @@ int main() {
         ImGui::SliderFloat3("Color",auxColor,0,1);
         ImGui::SliderFloat3("Light",auxLight,0,1);
         ImGui::SliderFloat3("LightPos",auxLightPos,-100,100);
-        ImGui::SliderFloat3("CameraPos",auxCameraPos,-50,150);
+        ImGui::SliderFloat3("CameraPos",auxCameraPos,-50,400);
         //node3.get()->SetTranslation(glm::vec3(auxCameraPos[0], auxCameraPos[1], auxCameraPos[2]));
         ImGui::SliderFloat("specularStrength",&specularStrength,0,1);
         ImGui::SliderFloat("attenuationValue",&attenuationValue,0,0.1f);
@@ -266,11 +295,24 @@ int main() {
         glUniformMatrix4fv(glGetUniformLocation(resourceShader->GetProgramID(), "view"), 1, GL_FALSE, glm::value_ptr(view));
 
         //node2->SetTranslation(glm::vec3(index,0.1f,0.1f));
-        //smgr->SetRotation(glm::vec3(0.0f,0.0f,index));
+        smgr->SetRotation(glm::vec3(0.0f,0.0f,index));
         //node2->SetRotation(glm::vec3(index,0.0f,0.0f));
         smgr->DFSTree(glm::mat4(1.0));
 
 
+
+        // Measure speed
+        double currentTime = glfwGetTime();
+        frameCount++;
+        // If a second has passed.
+        if ( currentTime - previousTime >= 1.0 )
+        {
+            // Display the frame count here any way you want.
+            cout << frameCount << endl;
+
+            frameCount = 0;
+            previousTime = currentTime;
+        }
 
         
 
