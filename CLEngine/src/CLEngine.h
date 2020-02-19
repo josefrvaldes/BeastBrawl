@@ -31,6 +31,8 @@ class CLEngine {
         void BeginScene();
         void EndScene();
         void UpdateViewport();
+        double GetTime();
+        bool InputClose();
 
         // 
 

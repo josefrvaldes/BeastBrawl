@@ -48,6 +48,7 @@ void StateInGameSingle::CAMBIARCosasNavMesh(ManCar &manCars, ManNavMesh &manNavM
 
 void StateInGameSingle::Input() {
     renderEngine->FacadeCheckInputSingle();
+    inputEngine->CheckInput();
 }
 
 void StateInGameSingle::Update() {

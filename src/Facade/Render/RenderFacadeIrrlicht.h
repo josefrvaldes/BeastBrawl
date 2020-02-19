@@ -94,7 +94,6 @@ class RenderFacadeIrrlicht : public RenderFacade {
     video::ITexture* whiteBG;
     video::ITexture* powerUps[7];
     gui::IGUIFont* font;
-    int currentPowerUp = 0;
 
     //unordered_map<uint16_t,scene::ISceneNode*> sceneObjects; // CId - ISceneNode*
 };

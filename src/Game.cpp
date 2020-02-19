@@ -98,9 +98,9 @@ void Game::SetState(State::States stateType) {
 }
 
 void Game::InitGame() {
-    RenderFacadeManager::GetInstance()->InitializeIrrlicht();
-    InputFacadeManager::GetInstance()->InitializeIrrlicht();
-    PhysicsFacadeManager::GetInstance()->InitializeIrrlicht();
+    InputFacadeManager::GetInstance()->InitializeClover();
+    RenderFacadeManager::GetInstance()->InitializeClover();
+    PhysicsFacadeManager::GetInstance()->InitializeClover();
 
     //Inicializa la fachada de FMOD.
     SoundFacadeManager::GetInstance()->InitializeFacadeFmod();

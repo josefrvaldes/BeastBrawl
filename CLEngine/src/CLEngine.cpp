@@ -105,8 +105,15 @@ void CLEngine::EndScene(){
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
     
     glfwSwapBuffers(window);
+
 }
 
+/**
+ * Devuelve el tiempo de glfw
+ */
+double CLEngine::GetTime(){
+    return glfwGetTime();
+}
 /**
  * Mira si se han actualizado los valores de anchura y altura de la ventana y actualiza el viewport.
  */
@@ -115,7 +122,12 @@ void CLEngine::UpdateViewport(){
     glViewport(0, 0, width, height);
 }
 
-
+//Borrar esto 
+bool CLEngine::InputClose(){
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+        glfwSetWindowShouldClose(window, true);
+    }
+}
 
 
 

@@ -1,7 +1,34 @@
 #include "RenderFacadeClover.h"
 
-#include <Constants.h>
 
+#include <cmath>
+#include "../../Components/CBoundingChassis.h"
+#include "../../Components/CBoundingOBB.h"
+#include "../../Components/CPowerUp.h"
+
+#include <Components/CBoundingPlane.h>
+#include <Components/CBoundingSphere.h>
+#include <Components/CCamera.h>
+#include <Components/CDimensions.h>
+#include <Components/CId.h>
+#include <Components/CMesh.h>
+#include <Components/CNamePlate.h>
+#include <Components/CPath.h>
+#include <Components/CTexture.h>
+#include <Components/CTargetNavMesh.h>
+#include <Components/CTotem.h>
+#include <Components/CType.h>
+#include <Components/CWayPointEdges.h>
+#include <Components/CMovementType.h>
+#include <Components/CNavMesh.h>
+#include <Components/CCurrentNavMesh.h>
+#include <Components/CCar.h>
+#include <Entities/CarAI.h>
+#include <Entities/CarHuman.h>
+#include <Systems/Physics.h>
+#include <Managers/ManNavMesh.h>
+#include <Constants.h>
+#include <Game.h>
 
 bool RenderFacadeClover::showDebug = false;
 
@@ -11,6 +38,10 @@ RenderFacadeClover::~RenderFacadeClover() {
 RenderFacadeClover::RenderFacadeClover() {
     string title = "BeastBrawl";
     device = new CLEngine(1280, 720, title);
+    
+    auto input = InputFacadeManager::GetInstance()->GetInputFacade();
+    auto inputClover = static_cast<InputFacadeClover*>(input);
+    inputClover->SetWindowContext(device);
 }
 
 void RenderFacadeClover::FacadeSuscribeEvents() {
@@ -47,24 +78,42 @@ void RenderFacadeClover::FacadeAddPlates(Manager* manNamePlates) {
 void RenderFacadeClover::FacadeUpdatePlates(Manager* manNamePlates) {
 }
 const void RenderFacadeClover::FacadeAddObjects(vector<Entity*> entities) {
+    for (Entity* e : entities) {
+        FacadeAddObject(e);
+    }
 }
 
 //INPUTS : Una entidad GameObject
 //RETURNS: El Id del objeto añadido
-//TODO: Llevar cuidado con las rutas de las texturas si luego se mueven las carpetas
 const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
-    return 1;
+    auto cTransformable = static_cast<CTransformable*>(entity->GetComponent(CompType::TransformableComp).get());
+    auto cId = static_cast<CId*>(entity->GetComponent(CompType::IdComp).get());
+    auto cTexture = static_cast<CTexture*>(entity->GetComponent(CompType::TextureComp).get());
+    auto cType = static_cast<CType*>(entity->GetComponent(CompType::TypeComp).get());
+    auto cMesh = static_cast<CMesh*>(entity->GetComponent(CompType::MeshComp).get());
+
+    //Esto luego deberia calcular con opengl las dimensiones
+    //Sacamos sus dimensiones
+    float height = 10.0;
+    float width = 10.0;
+    float depth = 10.0;
+    shared_ptr<CDimensions> cDimensions = make_shared<CDimensions>(width, height, depth);
+    entity->AddComponent(cDimensions);  //Le añadimos el componente CDimensions al Entity que sea
+
+    return cId->id;
 }
 
 //INPUTS : Una entidad GameObject
 //RETURNS: El Id del objeto añadido
-//TODO: Llevar cuidado con las rutas de las texturas si luego se mueven las carpetas
 const uint16_t RenderFacadeClover::FacadeAddObjectCar(Entity* entity) {
-    return 1;
+    idCar = FacadeAddObject(entity);
+    return idCar;
 }
 
 const uint16_t RenderFacadeClover::FacadeAddObjectTotem(Entity* entity) {
-    return 1;
+    idTotem = FacadeAddObject(entity);
+    cout << "El nuevo ID de totem es: " << idTotem << "\n";
+    return idTotem;
 }
 
 //TODO: Esto proximamente le pasaremos todos los entities y los modificará 1 a 1
@@ -86,8 +135,9 @@ bool RenderFacadeClover::FacadeRun() {
     return true;
 }
 
+// Devuelve el tiempo en uint32_t aunque glfw nos lo puede dar en double
 uint32_t RenderFacadeClover::FacadeGetTime() const{
-    return 1;
+    return device->GetTime();
 }
 
 
@@ -149,12 +199,14 @@ void RenderFacadeClover::FacadeDrawLobbyMulti() {
 
 //Limpia la pantalla
 void RenderFacadeClover::FacadeBeginScene() const{
+    device->BeginScene();
 }
 
 void RenderFacadeClover::FacadeDrawAll() const{
 }
 
 void RenderFacadeClover::FacadeEndScene() const{
+    device->EndScene();
 }
 
 void RenderFacadeClover::FacadeDeviceDrop() {

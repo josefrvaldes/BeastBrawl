@@ -33,11 +33,11 @@ Mesh::Mesh(vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture
     //glEnableVertexAttribArray(2);	
     //glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, texCoords));
     // vertex tangent
-    glEnableVertexAttribArray(2);
-    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, tangent));
-    // vertex bitangent
-    glEnableVertexAttribArray(3);
-    glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, bitangent));
+    // glEnableVertexAttribArray(2);
+    // glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, tangent));
+    // // vertex bitangent
+    // glEnableVertexAttribArray(3);
+    // glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, bitangent));
 
     glBindVertexArray(0);
 }
@@ -126,15 +126,18 @@ Mesh CLResourceMesh::processMesh(aiMesh *mesh, const aiScene *scene)
         //     vertex.texCoords = glm::vec2(0.0f, 0.0f);
 
         //tangent
-        vecAux.x = mesh->mTangents[i].x;
-        vecAux.y = mesh->mTangents[i].y;
-        vecAux.z = mesh->mTangents[i].z;
-        vertex.tangent = vecAux;
-        //bitangent
-        vecAux.x = mesh->mBitangents[i].x;
-        vecAux.y = mesh->mBitangents[i].y;
-        vecAux.z = mesh->mBitangents[i].z;
-        vertex.bitangent = vecAux;
+        if(mesh->HasTangentsAndBitangents()){
+            vecAux.x = mesh->mTangents[i].x;
+            vecAux.y = mesh->mTangents[i].y;
+            vecAux.z = mesh->mTangents[i].z;
+            vertex.tangent = vecAux;
+            //bitangent
+            vecAux.x = mesh->mBitangents[i].x;
+            vecAux.y = mesh->mBitangents[i].y;
+            vecAux.z = mesh->mBitangents[i].z;
+            vertex.bitangent = vecAux;
+        }
+        
         vertices.push_back(vertex);
     }
     // process indices

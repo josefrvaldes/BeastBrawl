@@ -64,7 +64,7 @@ int main() {
     //-------------------Resource manager-------------------
     unique_ptr<CLResourceManager> resourceManager = make_unique<CLResourceManager>();
     auto resourceShader = resourceManager->GetResourceShader("CLEngine/src/Shaders/vertex.glsl", "CLEngine/src/Shaders/fragment.glsl");
-    auto resourceMesh = resourceManager->GetResourceMesh("media/kart.obj");
+    auto resourceMesh = resourceManager->GetResourceMesh("media/sharky_lowpoly.fbx");
 
     //----------------------------------------------------------------------------------------------------------------SHADER
     
@@ -105,9 +105,10 @@ int main() {
 
     //smgr.get()->SetTranslation(glm::vec3(-20.0f, 0.0f, -30.0f));
     node3.get()->SetTranslation(glm::vec3(0.0f, 7.0f, 60.0f));
-    node2.get()->SetScalation(glm::vec3(0.25f, 0.25f, 0.25f));
+    node2.get()->SetScalation(glm::vec3(2.0f, 2.0f, 2.0f));
+    node2.get()->SetRotation(glm::vec3(90.0f,0.0f,180.0f));
     node4.get()->SetTranslation(glm::vec3(0.0f, 30.0f, 0.0f));
-    node4.get()->SetRotation(glm::vec3(90.0f, 0.0f, 0.0f));
+    //node4.get()->SetRotation(glm::vec3(0.0f, 0.0f, 90.0f));
 
     
     
@@ -207,7 +208,7 @@ int main() {
     float auxCameraPos[3] = {cameraPos.x, cameraPos.y, cameraPos.z};
     //cout << "Posicion de la camara: " << node3.get()->GetTranslation().x << " - " << node3.get()->GetTranslation().y << " - " << node3.get()->GetTranslation().z << endl;
     float specularStrength = 0.5;
-    float attenuationValue = 0.1;
+    float attenuationValue = 0.0;
 
     float index = 0.01;
     while (!device->Run()) {
@@ -228,7 +229,7 @@ int main() {
         ImGui::SliderFloat3("Color",auxColor,0,1);
         ImGui::SliderFloat3("Light",auxLight,0,1);
         ImGui::SliderFloat3("LightPos",auxLightPos,-100,100);
-        ImGui::SliderFloat3("CameraPos",auxCameraPos,-50,50);
+        ImGui::SliderFloat3("CameraPos",auxCameraPos,-50,150);
         //node3.get()->SetTranslation(glm::vec3(auxCameraPos[0], auxCameraPos[1], auxCameraPos[2]));
         ImGui::SliderFloat("specularStrength",&specularStrength,0,1);
         ImGui::SliderFloat("attenuationValue",&attenuationValue,0,0.1f);
@@ -266,7 +267,7 @@ int main() {
 
         //node2->SetTranslation(glm::vec3(index,0.1f,0.1f));
         //smgr->SetRotation(glm::vec3(0.0f,0.0f,index));
-        node2->SetRotation(glm::vec3(index,0.0f,0.0f));
+        //node2->SetRotation(glm::vec3(index,0.0f,0.0f));
         smgr->DFSTree(glm::mat4(1.0));
 
 
