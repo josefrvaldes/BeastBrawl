@@ -12,7 +12,10 @@
 #include "ImGUI/imgui_impl_opengl3.h"
 #include "ImGUI/imgui_impl_glfw.h"
 
+
+//Motor grafico
 #include "SceneTree/CLNode.h"
+#include "SceneTree/CLEntity.h"
 #include "ResourceManager/CLResourceManager.h"
 
 using namespace std;
@@ -30,18 +33,19 @@ class CLEngine {
         bool Run();
         void BeginScene();
         void EndScene();
+        void RenderImgui();
         void UpdateViewport();
         double GetTime();
         bool InputClose();
 
-        // 
 
-        //
+        CLNode* GetSceneManager();
+        CLResourceManager* GetResourceManager();
+
         
     private:
 
         void CreateGlfwWindow(const unsigned int, const unsigned int, const string&);
-        void InitScene();
 
         void ImGuiInit();
         void TerminateImGui();
@@ -50,7 +54,8 @@ class CLEngine {
         int height;
         GLFWwindow *window { nullptr };
 
-        std::unique_ptr<CLNode> scene;
-        std::unique_ptr<CLResourceManager> resourceManager;
+
+        std::unique_ptr<CLNode> smgr {nullptr};
+        std::unique_ptr<CLResourceManager> resourceManager {nullptr};
 };
 }

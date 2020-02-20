@@ -36,12 +36,22 @@ RenderFacadeClover::~RenderFacadeClover() {
 }
 
 RenderFacadeClover::RenderFacadeClover() {
+    cout << "************************************\n";
+    cout << "Se inicia el motor grafico de Clover\n";
+    cout << "************************************\n";
+
     string title = "BeastBrawl";
     device = new CLEngine(1280, 720, title);
     
     auto input = InputFacadeManager::GetInstance()->GetInputFacade();
     auto inputClover = static_cast<InputFacadeClover*>(input);
     inputClover->SetWindowContext(device);
+
+    //Inicializamos el arbol de la escena
+    smgr = device->GetSceneManager();
+    resourceManager = device->GetResourceManager();
+
+
 }
 
 void RenderFacadeClover::FacadeSuscribeEvents() {

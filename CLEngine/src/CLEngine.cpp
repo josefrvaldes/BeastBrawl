@@ -22,7 +22,6 @@ CLEngine::CLEngine (const unsigned int w, const unsigned int h, const string& ti
     CreateGlfwWindow(w, h, title);
     glewInit();
     ImGuiInit();
-    InitScene();
 }
 
 /**
@@ -74,12 +73,21 @@ void CLEngine::CreateGlfwWindow (const unsigned int w, const unsigned int h, con
     glEnable(GL_DEPTH_TEST);
 }
 
-/**
- * Crea una instancia del resourceManaeger y el nodo raiz y lo almacena. 
- */
-void CLEngine::InitScene() {
-    scene = make_unique<CLNode>();
-    resourceManager = make_unique<CLResourceManager>();
+
+CLNode* CLEngine::GetSceneManager(){
+    if(!smgr){
+        smgr = make_unique<CLNode>();
+    }
+
+    return smgr.get();
+}
+
+CLResourceManager* CLEngine::GetResourceManager(){
+    if(!resourceManager){
+        resourceManager = make_unique<CLResourceManager>();
+    }
+
+    return resourceManager.get();
 }
 
 /**
@@ -101,11 +109,15 @@ void CLEngine::BeginScene(){
  * Renderiza las cosas de ImGui y cambia el buffer de la ventana. 
  */
 void CLEngine::EndScene(){
-    ImGui::Render();
-    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+    
     
     glfwSwapBuffers(window);
 
+}
+
+void CLEngine::RenderImgui(){
+    ImGui::Render();
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
 /**

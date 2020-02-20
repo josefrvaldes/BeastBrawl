@@ -122,9 +122,16 @@ void CLNode::Scale(glm::vec3 s) {
 void CLNode::DrawTree(CLNode* root){
     if(root->GetChilds().size()>0){
         //Tiene hijos
-        cout << "Nodo " << root->GetEntity()->GetID() << " con hijos: ";
+        if( root->GetEntity() && !root->GetEntity()->GetID())
+            cout << root->GetEntity()->GetID() << " con hijos: ";
+        else
+            cout << "Este es un nodo sin entity con hijos: ";
+
         for(auto& nodo : root->GetChilds()){
-            cout << nodo->GetEntity()->GetID() << " ";
+            if(nodo->GetEntity() && nodo->GetEntity()->GetID())
+                cout << nodo->GetEntity()->GetID() << " ";
+            else
+                cout << "(Este es un nodo sin entity)\n";
         }
         cout << "\n";
         for(auto& nodo : root->GetChilds()){
@@ -173,7 +180,7 @@ CLNode* CLNode::GetNodeByIDAux(unsigned int id, CLNode* node, CLNode* root){
     if(root->GetChilds().size()>0){
         //Tiene hijos
         for(auto& nodo : root->GetChilds()){
-            if(nodo->GetEntity()->GetID() == id){
+            if(entity && nodo->GetEntity()->GetID() == id){
                 node = nodo;
                 return node;
             }else{

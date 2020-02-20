@@ -98,7 +98,7 @@ CarAI::CarAI(){
     AddComponent(cExternalForce);
 
     AddComponent(cBoundingChassis);
-    cout << "Acabamos de llamar al constructor default de car, su transformable es " << cTransformable << endl;
+    //cout << "Acabamos de llamar al constructor default de car, su transformable es " << cTransformable << endl;
 }
 
 CarAI::CarAI(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale,string texture, string mesh, float maxSpeed, float acceleration , float carFriction, float carSlowDown)

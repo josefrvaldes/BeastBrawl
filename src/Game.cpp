@@ -46,11 +46,11 @@ void Game::SetState(State::States stateType) {
         case State::INGAME_SINGLE:
             if (!gameStarted) {
                 shared_ptr<State> newState = make_shared<StateInGameSingle>();
-                cout << "Hemos creado el nuevo statInGameSingle" << endl;
+                //cout << "Hemos creado el nuevo statInGameSingle" << endl;
                 currentState = newState;
-                cout << "Hemos chafado el currentState con statInGameSingle" << endl;
+                //cout << "Hemos chafado el currentState con statInGameSingle" << endl;
                 gameState = currentState;
-                cout << "Hemos chafado el gameState con statInGameSingle" << endl;
+                //cout << "Hemos chafado el gameState con statInGameSingle" << endl;
                 gameStarted = true;
             } else {
                 currentState = gameState;
@@ -98,9 +98,9 @@ void Game::SetState(State::States stateType) {
 }
 
 void Game::InitGame() {
-    InputFacadeManager::GetInstance()->InitializeIrrlicht();
-    RenderFacadeManager::GetInstance()->InitializeIrrlicht();
-    PhysicsFacadeManager::GetInstance()->InitializeIrrlicht();
+    InputFacadeManager::GetInstance()->InitializeClover();
+    RenderFacadeManager::GetInstance()->InitializeClover();
+    PhysicsFacadeManager::GetInstance()->InitializeClover();
 
     //Inicializa la fachada de FMOD.
     SoundFacadeManager::GetInstance()->InitializeFacadeFmod();
@@ -108,12 +108,12 @@ void Game::InitGame() {
 
     SuscribeEvents();
 
-    cout << "Game Init" << endl;
-    cout << "**********************************************" << endl;
+    //cout << "Game Init" << endl;
+    //cout << "**********************************************" << endl;
 }
 
 void Game::SuscribeEvents() {
-    cout << "Suscripciones\n";
+    //cout << "Suscripciones\n";
     EventManager::GetInstance().SubscribeMulti(Listener(
         EventType::STATE_MENU,
         bind(&Game::SetStateMenu, this, placeholders::_1),

@@ -78,4 +78,6 @@ class RenderFacadeClover : public RenderFacade {
    private:
 
       CLEngine* device;
+      CLNode* smgr;
+      CLResourceManager* resourceManager;
 };

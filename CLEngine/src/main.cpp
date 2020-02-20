@@ -83,9 +83,11 @@ int main() {
     shared_ptr<CLEntity> entity5 = make_shared<CLLight>(5);
     
     //Nodo raiz
-    shared_ptr<CLNode> smgr = make_shared<CLNode>(entity1.get());
+    //shared_ptr<CLNode> smgr = make_shared<CLNode>(entity1.get());
+    CLNode* smgr = device->GetSceneManager();
+    CLNode* smgr2 = device->GetSceneManager();
+    CLNode* smgr3 = device->GetSceneManager(); 
     smgr->SetShaderProgramID(resourceShader->GetProgramID());
-    cout << "MODEL MATRIX ID:: " << smgr->GetModelMatrixID() << endl;
 
     shared_ptr<CLNode> node2 = make_shared<CLNode>(entity2.get());
     node2->SetShaderProgramID(resourceShader->GetProgramID());
@@ -102,6 +104,7 @@ int main() {
         node2->AddChild(node4.get());
 
 
+    auto prueba = smgr->GetNodeByID(3);
     //smgr->DFSTree(glm::mat4(1.0));
     vector<shared_ptr<CLEntity>> mallas;
     vector<shared_ptr<CLNode>> nodes;
@@ -123,7 +126,9 @@ int main() {
         j++;
     }
 
-        smgr->DrawTree(smgr.get());
+        smgr->DrawTree(smgr);
+
+    cout << "LLEGA\n";
 
     static_cast<CLMesh*>(entity2.get())->SetMesh(resourceMesh);
     static_cast<CLMesh*>(entity4.get())->SetMesh(resourceMesh);
@@ -317,6 +322,7 @@ int main() {
         
 
         glfwPollEvents();
+        device->RenderImgui();
         device->EndScene();
         index += 0.2;
     }
