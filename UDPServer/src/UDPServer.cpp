@@ -55,7 +55,7 @@ void UDPServer::HandleReceive(std::shared_ptr<unsigned char[]> recevBuff, std::s
                 case Constants::PetitionTypes::SEND_INPUTS: {
                     //std::cout << "Recibidos inputs: " << bytesTransferred << std::endl;
                     if (p.lastInputIDReceived < idCall) {
-                        cout << "Se ha recibido y reenviado un paquete de input del player " << idPlayer << endl;
+                        // cout << "Se ha recibido y reenviado un paquete de input del player " << idPlayer << endl;
                         p.lastInputIDReceived = idCall;
                         HandleReceivedInputs(buffRecieved, bytesTransferred, *remoteClient.get());
                     } else {
@@ -65,7 +65,7 @@ void UDPServer::HandleReceive(std::shared_ptr<unsigned char[]> recevBuff, std::s
                 case Constants::PetitionTypes::SEND_SYNC: {
                     //std::cout << "Recibida sincronizacion: " << bytesTransferred << std::endl;
                     if (p.lastSyncIDReceived < idCall) {
-                        cout << "Se ha recibido y reenviado un paquete de sync del player " << idPlayer << endl;
+                        // cout << "Se ha recibido y reenviado un paquete de sync del player " << idPlayer << endl;
                         p.lastSyncIDReceived = idCall;
                         HandleReceivedSync(buffRecieved, bytesTransferred, *remoteClient.get());
                     } else {
