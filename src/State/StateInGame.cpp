@@ -6,6 +6,7 @@
 #include <Components/CMesh.h>
 #include <Components/CTexture.h>
 #include "../Components/CBoundingSphere.h"
+#include "../Components/CShader.h"
 #include "../Components/CBoundingCilindre.h"
 
 using namespace std;
@@ -71,6 +72,7 @@ void StateInGame::CAMBIARCosasDeTotem(ManTotem &manTotems) {
     totemOnCar->AddComponent(cTransformableTotemOnCar);
     totemOnCar->AddComponent(make_shared<CTexture>("totem.jpg"));
     totemOnCar->AddComponent(make_shared<CMesh>("media/ninja.b3d"));
+    totemOnCar->AddComponent(make_shared<CShader>("CLEngine/src/Shaders/vertex.glsl","CLEngine/src/Shaders/fragment.glsl"));
     // ------------------------------------------------------------------------------------------------------------------------------------------------
 }
 

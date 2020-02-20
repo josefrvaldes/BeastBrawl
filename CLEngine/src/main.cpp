@@ -87,7 +87,7 @@ int main() {
     CLNode* smgr = device->GetSceneManager();
     CLNode* smgr2 = device->GetSceneManager();
     CLNode* smgr3 = device->GetSceneManager(); 
-    smgr->SetShaderProgramID(resourceShader->GetProgramID());
+    //smgr->SetShaderProgramID(resourceShader->GetProgramID());
 
     shared_ptr<CLNode> node2 = make_shared<CLNode>(entity2.get());
     node2->SetShaderProgramID(resourceShader->GetProgramID());

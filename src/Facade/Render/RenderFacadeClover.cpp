@@ -18,6 +18,7 @@
 #include <Components/CTargetNavMesh.h>
 #include <Components/CTotem.h>
 #include <Components/CType.h>
+#include <Components/CShader.h>
 #include <Components/CWayPointEdges.h>
 #include <Components/CMovementType.h>
 #include <Components/CNavMesh.h>
@@ -30,6 +31,9 @@
 #include <Constants.h>
 #include <Game.h>
 
+
+
+
 bool RenderFacadeClover::showDebug = false;
 
 RenderFacadeClover::~RenderFacadeClover() {
@@ -37,7 +41,9 @@ RenderFacadeClover::~RenderFacadeClover() {
 
 RenderFacadeClover::RenderFacadeClover() {
     cout << "************************************\n";
+    cout << "(づ｡◕‿‿◕｡)づ   \n";
     cout << "Se inicia el motor grafico de Clover\n";
+    cout << "(づ｡◕‿‿◕｡)づ   \n";
     cout << "************************************\n";
 
     string title = "BeastBrawl";
@@ -101,7 +107,43 @@ const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
     auto cTexture = static_cast<CTexture*>(entity->GetComponent(CompType::TextureComp).get());
     auto cType = static_cast<CType*>(entity->GetComponent(CompType::TypeComp).get());
     auto cMesh = static_cast<CMesh*>(entity->GetComponent(CompType::MeshComp).get());
+    auto cShader = static_cast<CShader*>(entity->GetComponent(CompType::ShaderComp).get());
 
+    //Leemos el shader
+    
+    shared_ptr<CLEntity> clEntity;
+
+    // añadimos el node al sceneManager dependiendo del tipo de node que sea
+    switch (cType->type) {
+        case ModelType::Sphere:
+            clEntity = make_shared<CLMesh>(cId->id);
+            break;
+
+        case ModelType::Cube:
+            clEntity = make_shared<CLMesh>(cId->id);
+            break;
+
+        case ModelType::AnimatedMesh:
+            clEntity = make_shared<CLMesh>(cId->id);
+            break;
+
+        case ModelType::StaticMesh:
+            clEntity = make_shared<CLMesh>(cId->id);
+            break;
+
+        case ModelType::Text:
+            break;
+    }
+
+    shared_ptr<CLNode> node = make_shared<CLNode>(clEntity.get());
+    smgr->AddChild(node.get());
+
+    if(entity->HasComponent(CompType::ShaderComp)){
+        auto shader = resourceManager->GetResourceShader(cShader->vertexShader,cShader->fragmentShader);
+        node->SetShaderProgramID(shader->GetProgramID());
+    }
+
+    auto prueba = smgr->GetNodeByID((unsigned int)cId->id);
     //Esto luego deberia calcular con opengl las dimensiones
     //Sacamos sus dimensiones
     float height = 10.0;

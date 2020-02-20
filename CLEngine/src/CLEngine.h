@@ -16,6 +16,9 @@
 //Motor grafico
 #include "SceneTree/CLNode.h"
 #include "SceneTree/CLEntity.h"
+#include "SceneTree/CLMesh.h"
+#include "SceneTree/CLLight.h"
+#include "SceneTree/CLCamera.h"
 #include "ResourceManager/CLResourceManager.h"
 
 using namespace std;

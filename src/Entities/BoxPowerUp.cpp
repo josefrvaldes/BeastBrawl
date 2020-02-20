@@ -6,6 +6,7 @@
 #include <Components/CMesh.h>
 #include <Components/CTransformable.h>
 #include <Components/CBoxPowerUp.h>
+#include <Components/CShader.h>
 
 #include <iostream>
 
@@ -16,6 +17,8 @@ BoxPowerUp::BoxPowerUp(){
     // default values
     string texture = "t351sml.jpg";
     string mesh    = "media/ninja.b3d";
+    string vertexShader = "CLEngine/src/Shaders/vertex.glsl";
+    string fragmentShader = "CLEngine/src/Shaders/fragment.glsl";
     //float maxSpeed = 20.0, acceleration = .15, friction = 0.1, slowDown = 0.25;
     
     shared_ptr<CId> cId   = make_shared<CId>();
@@ -24,7 +27,7 @@ BoxPowerUp::BoxPowerUp(){
     shared_ptr<CTexture> cTexture = make_shared<CTexture>(texture);
     shared_ptr<CMesh> cMesh   = make_shared<CMesh>(mesh);
     shared_ptr<CBoxPowerUp> cBoxPowerUp   = make_shared<CBoxPowerUp>();
-    
+    shared_ptr<CShader> cShader = make_shared<CShader>(vertexShader,fragmentShader);
 
     AddComponent(cId);
     AddComponent(cType);
@@ -32,6 +35,7 @@ BoxPowerUp::BoxPowerUp(){
     AddComponent(cTexture);
     AddComponent(cMesh);
     AddComponent(cBoxPowerUp);
+    AddComponent(cShader);
     //AddComponent(cCar);
 
 

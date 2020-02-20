@@ -22,6 +22,7 @@
 #include "../Components/COnline.h"
 #include "../Components/CExternalForce.h"
 #include "../Components/CBoundingChassis.h"
+#include "../Components/CShader.h"
 
 class Position;
 
@@ -36,6 +37,8 @@ CarHuman::CarHuman() {
     glm::vec3 scale = glm::vec3(0.6f, 0.6f, 0.6f);
     string texture = "";
     string mesh    = "kart.obj";
+    string vertexShader = "CLEngine/src/Shaders/vertex.glsl";
+    string fragmentShader = "CLEngine/src/Shaders/fragment.glsl";
     float maxSpeed = 200.0, acceleration = 1.5, friction = 1.0, slowDown = 2.5;
     
     shared_ptr<CId> cId   = make_shared<CId>();
@@ -52,6 +55,7 @@ CarHuman::CarHuman() {
     shared_ptr<CTotem> cTotem = make_shared<CTotem>();
     shared_ptr<CCurrentNavMesh> cCurrentNavMesh = make_shared<CCurrentNavMesh>(0);  //  ponemos 0 por defecto ya que haremos el calculo al empezar la partida
     shared_ptr<COnline> cOnline = make_shared<COnline>();  //  ponemos 0 por defecto ya que haremos el calculo al empezar la partida
+    shared_ptr<CShader> cShader = make_shared<CShader>(vertexShader,fragmentShader);  
 
 
     // physics
@@ -85,12 +89,13 @@ CarHuman::CarHuman() {
     AddComponent(cOnline);
     AddComponent(cExternalForce);
     AddComponent(cBoundingChassis);
+    AddComponent(cShader);
     //cout << "Acabamos de llamar al constructor default de car, su transformable es " << cTransformable << endl;
 }
 
 CarHuman::CarHuman(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale,
          string texture, string mesh,
-         float maxSpeed, float acceleration, float carFriction, float carSlowDown) {
+         float maxSpeed, float acceleration, float carFriction, float carSlowDown,string vertexShader, string fragmentShader) {
     typeCar = TypeCar::CarHuman;
     
     shared_ptr<CId> cId = make_shared<CId>();
@@ -105,6 +110,7 @@ CarHuman::CarHuman(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale,
     shared_ptr<CRoboJorobo> cRoboJorobo = make_shared<CRoboJorobo>();
     shared_ptr<CColliding> cColliding = make_shared<CColliding>(false);
     shared_ptr<CTotem> cTotem = make_shared<CTotem>();
+    shared_ptr<CShader> cShader = make_shared<CShader>(vertexShader,fragmentShader);
 
     AddComponent(cId);
     AddComponent(cType);
@@ -118,6 +124,7 @@ CarHuman::CarHuman(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale,
     AddComponent(cRoboJorobo);
     AddComponent(cTotem);
     AddComponent(cColliding);
+    AddComponent(cShader);
     //cout << "Acabamos de llamar al constructor default de car, su transformable es " << cTransformable << endl;
 }
 

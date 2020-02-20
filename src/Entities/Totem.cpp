@@ -5,6 +5,7 @@
 #include <Components/CMesh.h>
 #include <Components/CTransformable.h>
 #include <Components/CCurrentNavMesh.h>
+#include <Components/CShader.h>
 #include <iostream>
 
 using namespace std;
@@ -18,6 +19,9 @@ Totem::Totem()
 
     string texture = "totem.jpg";
     string mesh    = "media/ninja.b3d";
+
+    string vertexShader = "CLEngine/src/Shaders/vertex.glsl";
+    string fragmentShader = "CLEngine/src/Shaders/fragment.glsl";
     
     shared_ptr<CId> cId   = make_shared<CId>();
     shared_ptr<CType> cType = make_shared<CType>(ModelType::Cube);
@@ -25,12 +29,15 @@ Totem::Totem()
     shared_ptr<CTexture> cTexture = make_shared<CTexture>(texture);
     shared_ptr<CMesh> cMesh   = make_shared<CMesh>(mesh);
     shared_ptr<CCurrentNavMesh> cCurrentNavMesh   = make_shared<CCurrentNavMesh>(-1);
+    shared_ptr<CShader> cShader = make_shared<CShader>(vertexShader,fragmentShader);
+
     AddComponent(cId);
     AddComponent(cType);
     AddComponent(cTransformable);
     AddComponent(cTexture);
     AddComponent(cMesh);
     AddComponent(cCurrentNavMesh);
+    AddComponent(cShader);
 }
 
 Totem::Totem(glm::vec3 _position) : Totem(){

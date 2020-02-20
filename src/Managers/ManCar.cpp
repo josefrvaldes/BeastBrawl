@@ -569,7 +569,7 @@ void ManCar::CatchPowerUpAI(DataMap* d) {
     auto cPowerUpCar = static_cast<CPowerUp*>(any_cast<Entity*>((*d)[ACTUAL_CAR])->GetComponent(CompType::PowerUpComp).get());
     if(cPowerUpCar->typePowerUp == typeCPowerUp::None){
         cPowerUpCar->typePowerUp = (typeCPowerUp)indx;
-        std::cout << "Power Up de la IA:   " << (int)cPowerUpCar->typePowerUp << std::endl;
+        //std::cout << "Power Up de la IA:   " << (int)cPowerUpCar->typePowerUp << std::endl;
     }
     //cPowerUp->typePowerUp = dynamic_cast<typeCPowerUp*>(indx);
 }

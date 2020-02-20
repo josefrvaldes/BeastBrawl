@@ -175,12 +175,12 @@ CLNode* CLNode::GetNodeByID(unsigned int id){
 }
 
 CLNode* CLNode::GetNodeByIDAux(unsigned int id, CLNode* node, CLNode* root){
-
+ 
     if(node!=nullptr) return node; //Caso base, ha encontrado ya al nodo que busca
     if(root->GetChilds().size()>0){
         //Tiene hijos
         for(auto& nodo : root->GetChilds()){
-            if(entity && nodo->GetEntity()->GetID() == id){
+            if(nodo->GetEntity() && nodo->GetEntity()->GetID() == id){
                 node = nodo;
                 return node;
             }else{

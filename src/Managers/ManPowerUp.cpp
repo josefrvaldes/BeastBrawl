@@ -52,7 +52,7 @@ void ManPowerUp::CreatePowerUp(DataMap* d) {
 
     vec3 positionPowerUp = vec3(posX,transforSalida->position.y,posZ);
 
-    shared_ptr<PowerUp> powerUp = make_shared<PowerUp>(positionPowerUp, transforSalida->rotation, type, transforPerse);
+    shared_ptr<PowerUp> powerUp = make_shared<PowerUp>(positionPowerUp, transforSalida->rotation, type, transforPerse, "CLEngine/src/Shaders/vertex.glsl", "CLEngine/src/Shaders/fragment.glsl");
     //std::cout << "Las dimensiones del coche son x:" << dimensionsCarSalida->width << " y:" << dimensionsCarSalida->height << " z:" << dimensionsCarSalida->depth << std::endl;
     entities.push_back(powerUp);
 

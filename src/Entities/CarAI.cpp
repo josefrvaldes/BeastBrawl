@@ -21,6 +21,7 @@
 #include <Components/CMovementType.h>
 #include "../Components/CExternalForce.h"
 #include "../Components/CBoundingChassis.h"
+#include "../Components/CShader.h"
 
 
 class Position;
@@ -35,6 +36,8 @@ CarAI::CarAI(){
     glm::vec3 scale = glm::vec3(0.6f, 0.6f, 0.6f);
     string texture = "";
     string mesh    = "kart_ia.obj";
+    string vertexShader = "CLEngine/src/Shaders/vertex.glsl";
+    string fragmentShader = "CLEngine/src/Shaders/fragment.glsl";
     float maxSpeed = 200.0, acceleration = 1.5, friction = 1.0, slowDown = 2.5;
     
     shared_ptr<CId> cId   = make_shared<CId>();
@@ -69,6 +72,8 @@ CarAI::CarAI(){
     glm::vec3 pSphFront = pos;
     shared_ptr<CBoundingChassis> cBoundingChassis = make_shared<CBoundingChassis>(pSphBehind, 8.0, pSphFront, 8.0);
 
+    shared_ptr<CShader> cShader = make_shared<CShader>(vertexShader,fragmentShader);
+
     AddComponent(cId);
     AddComponent(cType);
     AddComponent(cTransformable);
@@ -98,10 +103,12 @@ CarAI::CarAI(){
     AddComponent(cExternalForce);
 
     AddComponent(cBoundingChassis);
+
+    AddComponent(cShader);
     //cout << "Acabamos de llamar al constructor default de car, su transformable es " << cTransformable << endl;
 }
 
-CarAI::CarAI(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale,string texture, string mesh, float maxSpeed, float acceleration , float carFriction, float carSlowDown)
+CarAI::CarAI(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale,string texture, string mesh, float maxSpeed, float acceleration , float carFriction, float carSlowDown, std::string vertexShader, std::string fragmentShader)
     : CarAI(){
 
     CTransformable *cTransformable = (CTransformable *)m_components[CompType::TransformableComp].get();
@@ -120,6 +127,10 @@ CarAI::CarAI(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale,string texture, strin
     cCar->acceleration = acceleration;
     cCar->friction = carFriction;
     cCar->slowDown = carSlowDown;
+
+    shared_ptr<CShader> cShader = make_shared<CShader>(vertexShader,fragmentShader);
+    AddComponent(cShader);
+
 }
 
 
