@@ -154,7 +154,7 @@ int main() {
     unique_ptr<CLResourceManager> resourceManager = make_unique<CLResourceManager>();
     auto resourceVertex = resourceManager->GetResourceShader("CLEngine/src/Shaders/vertex.glsl", GL_VERTEX_SHADER);
     auto resourceFragment = resourceManager->GetResourceShader("CLEngine/src/Shaders/fragment.glsl", GL_FRAGMENT_SHADER);
-    auto resourceMesh = resourceManager->GetResourceMesh("media/kart.obj");
+    auto resourceMesh = resourceManager->GetResourceMesh("media/sharky_lowpoly.fbx");
 
     static_cast<CLMesh*>(entity2.get())->SetMesh(resourceMesh);
 

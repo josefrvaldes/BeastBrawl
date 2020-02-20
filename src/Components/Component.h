@@ -27,6 +27,7 @@ enum CompType {
     CompBoundingSphere,
     CompBoundingAABox,
     CompExternalForce,
+    CompGravity,
     CompBoundingPlane,
     CompBoundingClindre,
     CompBoundingOBB,

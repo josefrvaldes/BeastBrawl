@@ -23,25 +23,25 @@ ManBoundingOBB::ManBoundingOBB() {
     auto verticesOBB = new vector<vec3>;
     verticesOBB->push_back(vec3(50.f, 40.f, 50.f));
     verticesOBB->push_back(vec3(150.f, 40.f, 50.f));
-    verticesOBB->push_back(vec3(150.f, 10.f, 50.f));
-    verticesOBB->push_back(vec3(50.f, 10.f, 50.f));
+    verticesOBB->push_back(vec3(150.f, -300.f, 50.f));
+    verticesOBB->push_back(vec3(50.f, -300.f, 50.f));
 
-    verticesOBB->push_back(vec3(50.f, 10.f, 150.f));
-    verticesOBB->push_back(vec3 (150.f, 10.f, 150.f));
+    verticesOBB->push_back(vec3(50.f, -300.f, 150.f));
+    verticesOBB->push_back(vec3 (150.f, -300.f, 150.f));
     verticesOBB->push_back(vec3(150.f, 40.f, 150.f));
     verticesOBB->push_back(vec3(50.f, 40.f, 150.f));
 
-    verticesOBB->push_back(vec3(50.f, 10.f, 50.f));
-    verticesOBB->push_back(vec3(50.f, 10.f, 150.f));
+    verticesOBB->push_back(vec3(50.f, -300.f, 50.f));
+    verticesOBB->push_back(vec3(50.f, -300.f, 150.f));
     verticesOBB->push_back(vec3(50.f, 40.f, 150.f));
     verticesOBB->push_back(vec3(50.f, 40.f, 50.f));
 
     verticesOBB->push_back(vec3(150.f, 40.f, 50.f));
     verticesOBB->push_back(vec3(150.f, 40.f, 150.f));
-    verticesOBB->push_back(vec3(150.f, 10.f, 150.f));
-    verticesOBB->push_back(vec3(150.f, 10.f, 50.f));
+    verticesOBB->push_back(vec3(150.f, -300.f, 150.f));
+    verticesOBB->push_back(vec3(150.f, -300.f, 50.f));
 
-    vec3 centerMass = vec3( (50+150+50+150+50+50+150+150)/8, (40+10+10+40+10+40+10+40)/8, (50+50+150+150+50+150+50+150)/8);
+    vec3 centerMass = vec3( (50+150+50+150+50+50+150+150)/8, (40-300-300+40-300+40-300+40)/8, (50+50+150+150+50+150+50+150)/8);
 
     // con 4 planos creamos un mini Cubo para cmporbar colisiones
     //CreateBoundingOBB(vec3(40.f, 40.f, 40.f),vec3(140.f, 40.f, 40.f),vec3(140.f, 10.f, 40.f),vec3(40.f, 10.f, 40.f));

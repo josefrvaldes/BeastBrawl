@@ -41,10 +41,12 @@ class CLPhysics {
     // gravity
     void HandleCollisionsWithGround();
     void ConstGravity();
-    void CollisionsChassisGround(CTransformable &trCar, CBoundingChassis &chaCar, CCar &ccar, bool mainCar, CBoundingPlane &plane);
-    void CollisionsSphereGround(CTransformable &trCar, CBoundingSphere &spCar, CCar &ccar, CBoundingPlane &plane); 
+    void aplicateGravity();
+    bool CollisionsChassisGround(CTransformable &trCar, CBoundingChassis &chaCar, CCar &ccar, bool mainCar, CBoundingPlane &plane);
+    bool CollisionsSphereGround(CTransformable &trCar, CBoundingSphere &spCar, CCar &ccar, CBoundingPlane &plane); 
     void SeparateSphereGround(IntersectData &intersData, CTransformable &trCar, CBoundingSphere &spCar, CCar &ccar, CBoundingPlane &plane) const;
     void RePositionCarY(CTransformable &trCar, CBoundingSphere &sp1Car, CBoundingSphere &sp2Car) const;
+    void RotateCarXZ(CTransformable &trCar, CBoundingChassis &chaCar, CBoundingPlane *pl1Car, CBoundingPlane *pl2Car) const;
     void LimitRotationCarY() const;
     // collisions
     void HandleCollisions();

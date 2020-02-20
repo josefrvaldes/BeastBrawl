@@ -81,6 +81,26 @@ IntersectData CBoundingPlane::IntersectSphere(const CBoundingSphere &other, cons
 }
 
 
+IntersectData CBoundingPlane::IntersectSphereCenter(const CBoundingSphere &other, const CTransformable &trCar, const CCar &ccarCar){
+    float distanceFromSpCenter = fabs(dot(normalizedNormal, other.center) - distance);
+    // cout << "Distance from sphere center " << distanceFromSpCenter << endl;
+    float distanceFromSphere = distanceFromSpCenter - other.radius;
+    bool intersectsInfinitePlane = distanceFromSphere < 0;
+    if(intersectsInfinitePlane){
+        //vec3 centerOnPlane = IntersectPoint(*(&other.center));
+        IntersectData pointCollision = IntersectRay(other.center, vec3(0,-1,0));
+        if( !pointCollision.intersects ){
+            return IntersectData(false, normalizedNormal * distanceFromSphere);
+        }else{
+            cout << "el punto exacto de colision con el plano ha sido el: ";
+            cout << "( " << pointCollision.direction.x <<  " , " << pointCollision.direction.y << " , " << pointCollision.direction.z << " )" << endl;
+        }
+    }
+    //std::cout << "estamos dentro del plano beibe, todo normal " << std::endl;
+    return IntersectData(intersectsInfinitePlane, normalizedNormal * distanceFromSphere);
+}
+
+
 double CBoundingPlane::Angle2Vectors(const vec3 &a, const vec3 &b) const{
     vec3 aN = glm::normalize(a);
     vec3 bN = glm::normalize(b);

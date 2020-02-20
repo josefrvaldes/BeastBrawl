@@ -21,6 +21,7 @@
 #include <Components/CMovementType.h>
 #include "../Components/CExternalForce.h"
 #include "../Components/CBoundingChassis.h"
+#include "../Components/CGravity.h"
 
 
 class Position;
@@ -69,6 +70,8 @@ CarAI::CarAI(){
     glm::vec3 pSphFront = pos;
     shared_ptr<CBoundingChassis> cBoundingChassis = make_shared<CBoundingChassis>(pSphBehind, 8.0, pSphFront, 8.0);
 
+    shared_ptr<CGravity> cGravity = make_shared<CGravity>();
+
     AddComponent(cId);
     AddComponent(cType);
     AddComponent(cTransformable);
@@ -98,6 +101,8 @@ CarAI::CarAI(){
     AddComponent(cExternalForce);
 
     AddComponent(cBoundingChassis);
+
+    AddComponent(cGravity);
     cout << "Acabamos de llamar al constructor default de car, su transformable es " << cTransformable << endl;
 }
 
