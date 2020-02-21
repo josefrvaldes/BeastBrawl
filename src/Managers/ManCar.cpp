@@ -192,6 +192,16 @@ void ManCar::SubscribeToEvents() {
         "NotTurning"));
 
     EventManager::GetInstance().SubscribeMulti(Listener(
+        EventType::PRESS_SKID,
+        bind(&ManCar::SkidCar, this, placeholders::_1),
+        "SkidCar"));
+
+    EventManager::GetInstance().SubscribeMulti(Listener(
+        EventType::NOT_SKID_PRESS,
+        bind(&ManCar::NotSkid, this, placeholders::_1),
+        "NotSkid"));
+
+    EventManager::GetInstance().SubscribeMulti(Listener(
         EventType::CATCH_BOX_POWERUP,
         bind(&ManCar::CatchPowerUp, this, placeholders::_1),
         "CatchPowerUp"));
@@ -646,6 +656,14 @@ void ManCar::NotAcceleratingOrDecelerating(DataMap* d) {
 void ManCar::TurnRightCar(DataMap* d) {
     // cout << "Han llamado derecha" << endl;
     physics->TurnRight(car.get(), cam);
+}
+
+void ManCar::SkidCar(DataMap* d) {
+    physics->Skid(car.get(), cam);
+}
+
+void ManCar::NotSkid(DataMap* d) {
+    physics->NotSkidding(car.get(), cam);
 }
 
 void ManCar::AccelerateCar(DataMap* d) {

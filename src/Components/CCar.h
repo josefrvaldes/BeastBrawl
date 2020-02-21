@@ -5,9 +5,14 @@
 #include <string>
 #include <iostream>
 #include "../../include/glm/vec3.hpp"
+#include <chrono>
+
 
 using namespace std;
 using namespace glm;
+using namespace chrono;
+
+enum class SkidState{DISABLED, SKID_START, SKID_LEFT, SKID_RIGHT};
 
 class CCar : public Component
 {
@@ -32,6 +37,15 @@ public:
     float maxWheelRotation = 10;
     float friction;
     float slowDown;
+
+
+    // Derrape
+    time_point<system_clock> skidStart;
+    const int64_t skidActivationTime = 700;       // 0.7 segundos
+    const int64_t skidAnimationTime = 1000;       // 1 segundo
+    SkidState skidState;
+    bool skidHold;
+    float skidRotation = 0.0;
 
 
 };

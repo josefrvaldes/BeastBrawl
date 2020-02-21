@@ -508,6 +508,12 @@ void RenderFacadeIrrlicht::FacadeCheckInputSingle() {
     // if (receiver.IsKeyDown(KEY_KEY_0)) {
     //     eventManager.AddEventMulti(Event{EventType::PRESS_0});
     // }
+
+    if (receiver.IsKeyDown(KEY_KEY_U)) {
+        eventManager.AddEventMulti(Event{EventType::PRESS_SKID});
+    } else {
+        eventManager.AddEventMulti(Event{EventType::NOT_SKID_PRESS});
+    }
     
     //  delante y detrás
     if (receiver.IsKeyDown(KEY_KEY_I)) {
