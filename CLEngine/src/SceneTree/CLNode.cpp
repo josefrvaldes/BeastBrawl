@@ -13,25 +13,61 @@ CLNode::CLNode(){
     transformationMat = glm::mat4(1.0f);
 }
 
-CLNode::CLNode(CLEntity* entity) : CLNode() {
+CLNode::CLNode(shared_ptr<CLEntity> entity) : CLNode() {
     this->entity = entity;
 }
 
 
-bool CLNode::AddChild(CLNode* child){
-    //Tipica comprobacion de Programacion 2 pero bueno por si acaso
-    if(child!=nullptr){
-        childs.push_back(child);
-        child->SetFather(this);
-        return true;
-    }
-    return false;
+// bool CLNode::AddChild(CLNode* child){
+//     //Tipica comprobacion de Programacion 2 pero bueno por si acaso
+//     if(child!=nullptr){
+//         childs.push_back(child);
+//         child->SetFather(this);
+//         return true;
+//     }
+//     return false;
+// }
+
+CLNode* CLNode::AddMesh(unsigned int id){
+
+    shared_ptr<CLEntity> e = make_shared<CLMesh>(id);
+    shared_ptr<CLNode> node = make_shared<CLNode>(e);
+    childs.push_back(node);
+    node->SetFather(this);
+
+    return node.get();
+    
 }
+
+CLNode* CLNode::AddLight(unsigned int id){
+
+    shared_ptr<CLEntity> e = make_shared<CLLight>(id);
+    shared_ptr<CLNode> node = make_shared<CLNode>(e);
+    childs.push_back(node);
+    node->SetFather(this);
+    lights.push_back(node.get());
+
+    return node.get();
+    
+}
+
+CLNode* CLNode::AddCamera(unsigned int id){
+
+    shared_ptr<CLEntity> e = make_shared<CLCamera>(id);
+    shared_ptr<CLNode> node = make_shared<CLNode>(e);
+    childs.push_back(node);
+    node->SetFather(this);
+    cameras.push_back(node.get());
+
+    return node.get();
+    
+}
+
 
 bool CLNode::RemoveChild(CLNode* child){
 
     for(unsigned int i = 0; i<childs.size(); ++i){
-        if(child == childs[i]){
+        if(child == childs[i].get()){
             childs.erase(childs.begin()+i);
             return true;
         }
@@ -54,7 +90,7 @@ void CLNode::DeleteNode(CLNode* node){
 bool CLNode::HasChild(CLNode* child){
 
     for(auto& node : childs){
-        if(node == child){
+        if(node.get() == child){
             return true;
         }
     }
@@ -135,7 +171,7 @@ void CLNode::DrawTree(CLNode* root){
         }
         cout << "\n";
         for(auto& nodo : root->GetChilds()){
-            DrawTree(nodo);
+            DrawTree(nodo.get());
         }
     }
 
@@ -166,6 +202,28 @@ void CLNode::DFSTree(glm::mat4 mA) {
     }
 }
 
+
+/**
+ * Calcula la matriz view y projection
+ * TODO: Aun no se sabe seguro si se debe hacer asi
+ * 
+ */
+void CLNode::CalculateViewProjMatrix(){
+    for(auto camera : cameras){
+        auto entityCamera = static_cast<CLCamera*>(camera->GetEntity());
+        if(entityCamera->IsActive()){
+            projection    = entityCamera->CalculateProjectionMatrix();
+            glUniformMatrix4fv(glGetUniformLocation(camera->GetShaderProgramID(), "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+
+            // Vector posicion de la camara, vector de posicion destino y vector ascendente en el espacio mundial. 
+            auto a = camera->GetTranslation();
+            view = glm::lookAt(camera->GetTranslation(), camera->GetTranslation() + entityCamera->GetCameraFront(), entityCamera->GetCameraUp());
+            glUniformMatrix4fv(glGetUniformLocation(camera->GetShaderProgramID(), "view"), 1, GL_FALSE, glm::value_ptr(view));
+
+        }
+    }
+}
+
 //Devuelve el nodo por la id que le mandes
 //Lo hace a partir del padre que lo llame, lo suyo es llamarlo siempre con el nodo principal
 CLNode* CLNode::GetNodeByID(unsigned int id){
@@ -181,10 +239,10 @@ CLNode* CLNode::GetNodeByIDAux(unsigned int id, CLNode* node, CLNode* root){
         //Tiene hijos
         for(auto& nodo : root->GetChilds()){
             if(nodo->GetEntity() && nodo->GetEntity()->GetID() == id){
-                node = nodo;
+                node = nodo.get();
                 return node;
             }else{
-                node = GetNodeByIDAux(id, node, nodo);
+                node = GetNodeByIDAux(id, node, nodo.get());
 
             }
         }

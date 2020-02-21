@@ -105,6 +105,12 @@ void CLEngine::BeginScene(){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
+
+void CLEngine::DrawTree(){
+    smgr->CalculateViewProjMatrix();
+    smgr->DFSTree(glm::mat4(1.0f));
+}
+
 /**
  * Renderiza las cosas de ImGui y cambia el buffer de la ventana. 
  */

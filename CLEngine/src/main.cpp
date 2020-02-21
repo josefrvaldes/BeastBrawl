@@ -76,69 +76,64 @@ int main() {
 
     
     //------------------------------------------------------------------------- ARBOLITO
-    shared_ptr<CLEntity> entity1 = make_shared<CLLight>(1);
-    shared_ptr<CLEntity> entity2 = make_shared<CLMesh>(2);
-    shared_ptr<CLEntity> entity3 = make_shared<CLCamera>(3);
-    shared_ptr<CLEntity> entity4 = make_shared<CLMesh>(4);
-    shared_ptr<CLEntity> entity5 = make_shared<CLLight>(5);
-    
+
     //Nodo raiz
     //shared_ptr<CLNode> smgr = make_shared<CLNode>(entity1.get());
     CLNode* smgr = device->GetSceneManager();
-    CLNode* smgr2 = device->GetSceneManager();
-    CLNode* smgr3 = device->GetSceneManager(); 
-    //smgr->SetShaderProgramID(resourceShader->GetProgramID());
-
-    shared_ptr<CLNode> node2 = make_shared<CLNode>(entity2.get());
-    node2->SetShaderProgramID(resourceShader->GetProgramID());
-    shared_ptr<CLNode> node3 = make_shared<CLNode>(entity3.get());
-    node3->SetShaderProgramID(resourceShader->GetProgramID());
-    shared_ptr<CLNode> node4 = make_shared<CLNode>(entity4.get());
-    node4->SetShaderProgramID(resourceShader->GetProgramID());
-    shared_ptr<CLNode> node5 = make_shared<CLNode>(entity5.get());
-    node5->SetShaderProgramID(resourceShader->GetProgramID());
-
-        smgr->AddChild(node2.get());
-        smgr->AddChild(node3.get());
-        smgr->AddChild(node5.get());
-        node2->AddChild(node4.get());
 
 
-    auto prueba = smgr->GetNodeByID(3);
+    // shared_ptr<CLNode> node2 = make_shared<CLNode>(entity2.get());
+    // node2->SetShaderProgramID(resourceShader->GetProgramID());
+    // shared_ptr<CLNode> node3 = make_shared<CLNode>(entity3.get());
+    // node3->SetShaderProgramID(resourceShader->GetProgramID());
+    // shared_ptr<CLNode> node4 = make_shared<CLNode>(entity4.get());
+    // node4->SetShaderProgramID(resourceShader->GetProgramID());
+    // shared_ptr<CLNode> node5 = make_shared<CLNode>(entity5.get());
+    // node5->SetShaderProgramID(resourceShader->GetProgramID());
+
+        auto node2 = smgr->AddLight(1);
+        node2->SetShaderProgramID(resourceShader->GetProgramID());
+
+        auto node3 = smgr->AddMesh(2);
+        node3->SetShaderProgramID(resourceShader->GetProgramID());
+
+        auto node4 = smgr->AddCamera(3);
+        node4->SetShaderProgramID(resourceShader->GetProgramID());
+
+        auto node5 = node2->AddMesh(4);
+        node5->SetShaderProgramID(resourceShader->GetProgramID());
+
+
     //smgr->DFSTree(glm::mat4(1.0));
     vector<shared_ptr<CLEntity>> mallas;
-    vector<shared_ptr<CLNode>> nodes;
+    vector<CLNode*> nodes;
 
     int max = 200;
     int min = -200;
     int j = 0;
     for(int i = 6; i<200; i++){
-        mallas.push_back(make_shared<CLMesh>(i));
-        nodes.push_back(make_shared<CLNode>(mallas[j].get()));
+        nodes.push_back(smgr->AddMesh(i));
         nodes[j]->SetShaderProgramID(resourceShader->GetProgramID());
-        smgr->AddChild(nodes[j].get());
 
         int randNumX = rand()%(max-min + 1) + min;
         int randNumY = rand()%(max-min + 1) + min;
         int randNumZ = rand()%(max-min + 1) + min;
-        static_cast<CLMesh*>(mallas[j].get())->SetMesh(resourceMesh);
-        nodes[j].get()->SetTranslation(glm::vec3(randNumX,randNumY,randNumZ));
+        static_cast<CLMesh*>(nodes[j]->GetEntity())->SetMesh(resourceMesh);
+        nodes[j]->SetTranslation(glm::vec3(randNumX,randNumY,randNumZ));
         j++;
     }
 
-        smgr->DrawTree(smgr);
+         smgr->DrawTree(smgr);
 
-    cout << "LLEGA\n";
+    // cout << "LLEGA\n";
 
-    static_cast<CLMesh*>(entity2.get())->SetMesh(resourceMesh);
-    static_cast<CLMesh*>(entity4.get())->SetMesh(resourceMesh);
+    static_cast<CLMesh*>(node3->GetEntity())->SetMesh(resourceMesh);
+    static_cast<CLMesh*>(node5->GetEntity())->SetMesh(resourceMesh);
 
-    //smgr.get()->SetTranslation(glm::vec3(-20.0f, 0.0f, -30.0f));
-    node3.get()->SetTranslation(glm::vec3(0.0f, 7.0f, 60.0f));
-    node2.get()->SetScalation(glm::vec3(2.0f, 2.0f, 2.0f));
-    node2.get()->SetRotation(glm::vec3(90.0f,0.0f,180.0f));
-    node4.get()->SetTranslation(glm::vec3(0.0f, 30.0f, 0.0f));
-    //node4.get()->SetRotation(glm::vec3(0.0f, 0.0f, 90.0f));
+    node4->SetTranslation(glm::vec3(0.0f, 7.0f, 60.0f));
+    node3->SetScalation(glm::vec3(2.0f, 2.0f, 2.0f));
+    node3->SetRotation(glm::vec3(90.0f,0.0f,180.0f));
+    node5->SetTranslation(glm::vec3(0.0f, 30.0f, 0.0f));
 
     
     
@@ -224,13 +219,13 @@ int main() {
     #pragma endregion
     
     
-    glm::vec3 cameraPos   = node3.get()->GetTranslation();
+    glm::vec3 cameraPos   = node4->GetTranslation();
     glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
     glm::vec3 cameraUp    = glm::vec3(0.0f, 1.0f,  0.0f);
 
     //LUCES Y COLORES
     glm::vec3 color(1.0f, 0.0f, 0.0f);
-    glm::vec3 light = static_cast<CLLight*>(node5.get()->GetEntity())->GetIntensity();
+    glm::vec3 light = static_cast<CLLight*>(node5->GetEntity())->GetIntensity();
     glm::vec3 lightPos = node5->GetTranslation();
     float auxColor[3] = {color.x,color.y,color.z};
     float auxLight[3] = {light.x,light.y,light.z};
@@ -282,28 +277,23 @@ int main() {
         glUniform3fv(glGetUniformLocation(resourceShader->GetProgramID(), "viewPos"),1,glm::value_ptr(cameraPos));
         glUniform1f(glGetUniformLocation(resourceShader->GetProgramID(), "specularStrength"),specularStrength);
         glUniform1f(glGetUniformLocation(resourceShader->GetProgramID(), "attenuationValue"),attenuationValue);
-        // glActiveTexture(GL_TEXTURE0);
-        // glBindTexture(GL_TEXTURE_2D, texture1);
-        // glActiveTexture(GL_TEXTURE1);
-        // glBindTexture(GL_TEXTURE_2D, texture2);
 
-
-        // create transformations
-        glm::mat4 projection    = static_cast<CLCamera*>(node3.get()->GetEntity())->CalculateProjectionMatrix();
+        node4->SetTranslation(cameraPos);
+        // //create transformations
+        // glm::mat4 projection    = static_cast<CLCamera*>(node4->GetEntity())->CalculateProjectionMatrix();
        
-        glm::mat4 view;
-        // Vector posicion de la camara, vector de posicion destino y vector ascendente en el espacio mundial. 
-        view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+        // glm::mat4 view;
+        // // Vector posicion de la camara, vector de posicion destino y vector ascendente en el espacio mundial. 
+        // view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 
-        // pass transformation matrices to the shader
-        glUniformMatrix4fv(glGetUniformLocation(resourceShader->GetProgramID(), "projection"), 1, GL_FALSE, glm::value_ptr(projection));
-        glUniformMatrix4fv(glGetUniformLocation(resourceShader->GetProgramID(), "view"), 1, GL_FALSE, glm::value_ptr(view));
+        // // pass transformation matrices to the shader
+        // glUniformMatrix4fv(glGetUniformLocation(resourceShader->GetProgramID(), "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+        // glUniformMatrix4fv(glGetUniformLocation(resourceShader->GetProgramID(), "view"), 1, GL_FALSE, glm::value_ptr(view));
 
         //node2->SetTranslation(glm::vec3(index,0.1f,0.1f));
         smgr->SetRotation(glm::vec3(0.0f,0.0f,index));
         //node2->SetRotation(glm::vec3(index,0.0f,0.0f));
-        smgr->DFSTree(glm::mat4(1.0));
-
+        //smgr->DFSTree(glm::mat4(1.0));
 
 
         // Measure speed
@@ -320,6 +310,7 @@ int main() {
         }
 
         
+        device->DrawTree();
 
         glfwPollEvents();
         device->RenderImgui();
