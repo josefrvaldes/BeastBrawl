@@ -27,6 +27,7 @@
 #include <Managers/ManBoundingWall.h>
 #include <Managers/ManBoundingGround.h>
 #include <Managers/ManCar.h>
+#include <Managers/ManPowerUp.h>
 #include <Managers/Manager.h>
 #include <Systems/Utils.h>
 #include "../Facade/Render/RenderFacadeIrrlicht.h"
@@ -300,6 +301,16 @@ void CLPhysics::RepositionBounding(){
         PositionSphFrontIntoTransf(*trcar, *cBoundingChassis->sphereFront);
         PositionCilindreIntoSpheres(*cBoundingChassis);
     }
+    ManPowerUp *manPowerUp = static_cast<ManPowerUp *>(managers[4]);
+    const auto& entitiesPU = manPowerUp->GetEntities();
+    size_t numEntitiesPU = entitiesPU.size();
+    for (size_t i = 0; i < numEntitiesPU; i++) {
+        Entity *powerUp = manPowerUp->GetEntities()[i].get();
+        CTransformable *trPU = static_cast<CTransformable *>(powerUp->GetComponent(CompType::TransformableComp).get());
+        CBoundingSphere *cBoundingSphere = static_cast<CBoundingSphere *>(powerUp->GetComponent(CompType::CompBoundingSphere).get());
+        //PositionSphereIntoTransformable(*trPU, *cBoundingSphere);
+        cBoundingSphere->center = trPU->position; 
+    }
 }
 
 
@@ -439,7 +450,7 @@ void CLPhysics::checkCollisionNitro(Entity* car1, Entity* car2){
     }
 }
 
-void CLPhysics::PositionSphereIntoTransformable(CTransformable &tr, CBoundingSphere &sp) {
+void CLPhysics::PositionSphereIntoTransformable(CTransformable &tr, CBoundingSphere &sp) const{
     sp.center = tr.position;
     float x = -cos(Utils::DegToRad(tr.rotation.y)) * (sp.radius);
     float z = sin(Utils::DegToRad(tr.rotation.y)) * (sp.radius);

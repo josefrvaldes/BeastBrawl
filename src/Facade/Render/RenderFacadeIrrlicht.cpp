@@ -225,22 +225,10 @@ const uint16_t RenderFacadeIrrlicht::FacadeAddObject(Entity* entity) {
         node->setMaterialTexture(0, driver->getTexture(path.c_str()));  //Obligado incluir el c_str() si no irrlicht no carga solo con un string
         node->setMaterialFlag(video::EMF_LIGHTING, false);
 
-        /*
-        bool hasSphere = entity->HasComponent(CompType::CompBoundingSphere);
-        if (hasSphere && Constants::DEBUG_SHOW_SPHERES) {
-            cout << "POS X: " << cTransformable->position.x << " POS Y: " << cTransformable->position.y << "POS Z:" << cTransformable->position.z << endl;
-            scene::ISceneNode* nodeSphere = smgr->addSphereSceneNode(10.0);
-            nodeSphere->setID(cId->id + Component::ID_DIFFERENCE);
-            nodeSphere->setPosition(core::vector3df(cTransformable->position.x, cTransformable->position.y, cTransformable->position.z));
-            nodeSphere->setScale(core::vector3df(1.f, 1.f, 1.f));
-            nodeSphere->setMaterialTexture(0, driver->getTexture(path.c_str()));  //Obligado incluir el c_str() si no irrlicht no carga solo con un string
-            nodeSphere->setMaterialFlag(video::EMF_LIGHTING, false);
-            nodeSphere->setVisible(showDebug);
-        }
-        */
         
 
-       
+        
+        
         bool hasChassis = entity->HasComponent(CompType::CompBoundingChassis);
         if (hasChassis && Constants::DEBUG_SHOW_CHASSIS) {
             cout << "entramos aqui???" << endl;
@@ -250,7 +238,7 @@ const uint16_t RenderFacadeIrrlicht::FacadeAddObject(Entity* entity) {
             auto centerSph1 = cChassis->sphereBehind->center;
             cout << "POS X: " << centerSph1.x << " POS Y: " << centerSph1.y << "POS Z:" << centerSph1.z << endl;
             scene::ISceneNode* nodeSphere1 = smgr->addSphereSceneNode(radiousSph1);
-            nodeSphere1->setID(cId->id + Component::ID_DIFFERENCE + 1);
+            nodeSphere1->setID(cId->id + Component::ID_DIFFERENCE + Component::ID_DIFFERENCE);
             nodeSphere1->setPosition(core::vector3df(centerSph1.x, centerSph1.y, centerSph1.z));
             nodeSphere1->setScale(core::vector3df(1.f, 1.f, 1.f));
             nodeSphere1->setMaterialTexture(0, driver->getTexture(path.c_str()));  //Obligado incluir el c_str() si no irrlicht no carga solo con un string
@@ -261,12 +249,26 @@ const uint16_t RenderFacadeIrrlicht::FacadeAddObject(Entity* entity) {
             auto centerSph2 = cChassis->sphereFront->center;
             cout << "POS X: " << centerSph2.x << " POS Y: " << centerSph2.y << "POS Z:" << centerSph2.z << endl;
             scene::ISceneNode* nodeSphere2 = smgr->addSphereSceneNode(radiousSph2);
-            nodeSphere2->setID(cId->id + Component::ID_DIFFERENCE + 2);
+            nodeSphere2->setID(cId->id + Component::ID_DIFFERENCE + Component::ID_DIFFERENCE + Component::ID_DIFFERENCE);
             nodeSphere2->setPosition(core::vector3df(centerSph2.x, centerSph2.y, centerSph2.z));
             nodeSphere2->setScale(core::vector3df(1.f, 1.f, 1.f));
             nodeSphere2->setMaterialTexture(0, driver->getTexture(path.c_str()));  //Obligado incluir el c_str() si no irrlicht no carga solo con un string
             nodeSphere2->setMaterialFlag(video::EMF_LIGHTING, false);
             nodeSphere2->setVisible(false);
+        }else{
+            bool hasSphere = entity->HasComponent(CompType::CompBoundingSphere);
+            if (hasSphere && Constants::DEBUG_SHOW_SPHERES) {
+                auto cBoundingSphere = static_cast<CBoundingSphere *>(entity->GetComponent(CompType::CompBoundingSphere).get());
+                //cout << "POS X: " << cTransformable->position.x << " POS Y: " << cTransformable->position.y << "POS Z:" << cTransformable->position.z << endl;
+                cout << "lo creamos aqui con el radio de: " << cBoundingSphere->radius << endl;
+                scene::ISceneNode* nodeSphere = smgr->addSphereSceneNode(cBoundingSphere->radius);
+                nodeSphere->setID(cId->id + Component::ID_DIFFERENCE);
+                nodeSphere->setPosition(core::vector3df(cBoundingSphere->center.x, cBoundingSphere->center.y, cBoundingSphere->center.z));
+                nodeSphere->setScale(core::vector3df(1.f, 1.f, 1.f));
+                nodeSphere->setMaterialTexture(0, driver->getTexture(path.c_str()));  //Obligado incluir el c_str() si no irrlicht no carga solo con un string
+                nodeSphere->setMaterialFlag(video::EMF_LIGHTING, false);
+                nodeSphere->setVisible(false);
+            }
         }
         
 
@@ -334,19 +336,8 @@ void RenderFacadeIrrlicht::UpdateTransformable(Entity* entity) {
     //Actualiza el escalado del objeto de irrlicht
     node->setScale(core::vector3df(cTransformable->scale.x, cTransformable->scale.y, cTransformable->scale.z));
 
+    
     /*
-    bool hasSphere = entity->HasComponent(CompType::CompBoundingSphere);
-    if (hasSphere && Constants::DEBUG_SHOW_SPHERES) {
-        scene::ISceneNode* nodeSphere = smgr->getSceneNodeFromId(cId->id + Component::ID_DIFFERENCE);
-        nodeSphere->setPosition(core::vector3df(cTransformable->position.x, cTransformable->position.y, cTransformable->position.z));
-        nodeSphere->setVisible(showDebug);
-        //nodeSphere->setRotation(core::vector3df(cTransformable->rotation.x, cTransformable->rotation.y, cTransformable->rotation.z));
-        //nodeSphere->setScale(core::vector3df(cTransformable->scale.x, cTransformable->scale.y, cTransformable->scale.z));
-    }
-    */
-    
-    
-   
     bool hasChassis = entity->HasComponent(CompType::CompBoundingChassis);
     if (hasChassis && Constants::DEBUG_SHOW_CHASSIS) {
         auto cChassis = static_cast<CBoundingChassis *>(entity->GetComponent(CompType::CompBoundingChassis).get());
@@ -358,8 +349,17 @@ void RenderFacadeIrrlicht::UpdateTransformable(Entity* entity) {
         scene::ISceneNode* nodeSphere2 = smgr->getSceneNodeFromId(cId->id + Component::ID_DIFFERENCE + 2);
         nodeSphere2->setPosition(core::vector3df(centerSph2.x, centerSph2.y, centerSph2.z));
         nodeSphere2->setVisible(false);
+    }else{
+        bool hasSphere = entity->HasComponent(CompType::CompBoundingSphere);
+        if (hasSphere && Constants::DEBUG_SHOW_SPHERES) {
+            scene::ISceneNode* nodeSphere = smgr->getSceneNodeFromId(cId->id + Component::ID_DIFFERENCE);
+            nodeSphere->setPosition(core::vector3df(cTransformable->position.x, cTransformable->position.y, cTransformable->position.z));
+            nodeSphere->setVisible(showDebug);
+            //nodeSphere->setRotation(core::vector3df(cTransformable->rotation.x, cTransformable->rotation.y, cTransformable->rotation.z));
+            //nodeSphere->setScale(core::vector3df(cTransformable->scale.x, cTransformable->scale.y, cTransformable->scale.z));
+        }
     }
-    
+    */
     
 
 }

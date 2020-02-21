@@ -49,11 +49,11 @@ void PhysicsFacadeIrrlicht::UpdateCar(Entity* car, Entity* cam) {
     if (hasChassis && Constants::DEBUG_SHOW_CHASSIS) {
         auto cChassis = static_cast<CBoundingChassis *>(car->GetComponent(CompType::CompBoundingChassis).get());
         auto cSphere1 = cChassis->sphereBehind;
-        scene::ISceneNode* nodeSphere1 = smgr->getSceneNodeFromId(cId->id + Component::ID_DIFFERENCE + 1);
+        scene::ISceneNode* nodeSphere1 = smgr->getSceneNodeFromId(cId->id + Component::ID_DIFFERENCE + Component::ID_DIFFERENCE);
         nodeSphere1->setPosition(core::vector3df(cSphere1->center.x, cSphere1->center.y, cSphere1->center.z));
         nodeSphere1->setVisible(RenderFacadeIrrlicht::showDebug);
         auto cSphere2 = cChassis->sphereFront;
-        scene::ISceneNode* nodeSphere2 = smgr->getSceneNodeFromId(cId->id + Component::ID_DIFFERENCE + 2);
+        scene::ISceneNode* nodeSphere2 = smgr->getSceneNodeFromId(cId->id + Component::ID_DIFFERENCE + Component::ID_DIFFERENCE + Component::ID_DIFFERENCE);
         nodeSphere2->setPosition(core::vector3df(cSphere2->center.x, cSphere2->center.y, cSphere2->center.z));
         nodeSphere2->setVisible(RenderFacadeIrrlicht::showDebug);
 
@@ -112,11 +112,11 @@ void PhysicsFacadeIrrlicht::UpdateCarAI(Entity* car) {
     if (hasChassis && Constants::DEBUG_SHOW_CHASSIS) {
         auto cChassis = static_cast<CBoundingChassis *>(car->GetComponent(CompType::CompBoundingChassis).get());
         auto cSphere1 = cChassis->sphereBehind;
-        scene::ISceneNode* nodeSphere1 = smgr->getSceneNodeFromId(cId->id + Component::ID_DIFFERENCE + 1);
+        scene::ISceneNode* nodeSphere1 = smgr->getSceneNodeFromId(cId->id + Component::ID_DIFFERENCE + Component::ID_DIFFERENCE);
         nodeSphere1->setPosition(core::vector3df(cSphere1->center.x, cSphere1->center.y, cSphere1->center.z));
         nodeSphere1->setVisible(RenderFacadeIrrlicht::showDebug);
         auto cSphere2 = cChassis->sphereFront;
-        scene::ISceneNode* nodeSphere2 = smgr->getSceneNodeFromId(cId->id + Component::ID_DIFFERENCE + 2);
+        scene::ISceneNode* nodeSphere2 = smgr->getSceneNodeFromId(cId->id + Component::ID_DIFFERENCE + Component::ID_DIFFERENCE + Component::ID_DIFFERENCE);
         nodeSphere2->setPosition(core::vector3df(cSphere2->center.x, cSphere2->center.y, cSphere2->center.z));
         nodeSphere2->setVisible(RenderFacadeIrrlicht::showDebug);
 
@@ -145,4 +145,17 @@ void PhysicsFacadeIrrlicht::UpdatePowerUps(Entity* powerUp) {
 
     //Actualiza el escalado del objeto de irrlicht
     node->setScale(core::vector3df(cTransformable->scale.x, cTransformable->scale.y, cTransformable->scale.z));
+
+    // vemos si tiene esfera, y en cuyo caso la dibujamos
+    bool hasSphere = powerUp->HasComponent(CompType::CompBoundingSphere);
+    if (hasSphere && Constants::DEBUG_SHOW_SPHERES) {
+        //cout << "efectivamente tiene esfera y dibujamos loco " << endl;
+        auto cSphere = static_cast<CBoundingSphere*>(powerUp->GetComponent(CompType::CompBoundingSphere).get());
+        scene::ISceneNode* nodeSphere = smgr->getSceneNodeFromId(cId->id + Component::ID_DIFFERENCE);
+        nodeSphere->setPosition(core::vector3df(cSphere->center.x, cSphere->center.y, cSphere->center.z));
+        nodeSphere->setVisible(RenderFacadeIrrlicht::showDebug);
+    }
+    
+
+
 }

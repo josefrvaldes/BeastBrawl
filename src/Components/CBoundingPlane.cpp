@@ -91,9 +91,6 @@ IntersectData CBoundingPlane::IntersectSphereCenter(const CBoundingSphere &other
         IntersectData pointCollision = IntersectRay(other.center, vec3(0,-1,0));
         if( !pointCollision.intersects ){
             return IntersectData(false, normalizedNormal * distanceFromSphere);
-        }else{
-            cout << "el punto exacto de colision con el plano ha sido el: ";
-            cout << "( " << pointCollision.direction.x <<  " , " << pointCollision.direction.y << " , " << pointCollision.direction.z << " )" << endl;
         }
     }
     //std::cout << "estamos dentro del plano beibe, todo normal " << std::endl;

@@ -4,6 +4,7 @@
 #include <Components/CTexture.h>
 #include <Components/CMesh.h>
 #include <Components/CTransformable.h>
+#include <Components/CBoundingSphere.h>
 #include <Components/CPowerUp.h>
 #include <Components/CTargetEntity.h>
 #include <iostream>
@@ -26,6 +27,7 @@ PowerUp::PowerUp()
     shared_ptr<CMesh> cMesh   = make_shared<CMesh>(mesh);
     shared_ptr<CPowerUp> cPowerUp = make_shared<CPowerUp>(typePowerUp);
     shared_ptr<CTargetEntity> cTargetEntity = make_shared<CTargetEntity>();
+    shared_ptr<CBoundingSphere> cBoundingSphere = make_shared<CBoundingSphere>(vec3(0.0,0.0,0.0), 4.5);
     AddComponent(cId);
     AddComponent(cType);
     AddComponent(cTransformable);
@@ -33,8 +35,8 @@ PowerUp::PowerUp()
     AddComponent(cMesh);
     AddComponent(cPowerUp);
     AddComponent(cTargetEntity);
+    AddComponent(cBoundingSphere);
 }
-
 
 /*PowerUp::PowerUp(glm::vec3 _position) 
     : PowerUp()
@@ -56,6 +58,9 @@ PowerUp::PowerUp(glm::vec3 _position, glm::vec3 _rotation, typeCPowerUp _typePow
     CTransformable *cTransformable = (CTransformable *)m_components[CompType::TransformableComp].get();
     cTransformable->position = _position;
     cTransformable->rotation = _rotation;
+
+    CBoundingSphere *cBoundingSphere = (CBoundingSphere *)m_components[CompType::CompBoundingSphere].get();
+    cBoundingSphere->center = _position;
 
     CPowerUp *cPowerUp = (CPowerUp *)m_components[CompType::PowerUpComp].get();
     cPowerUp->typePowerUp = _typePowerUp;

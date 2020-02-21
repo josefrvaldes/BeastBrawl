@@ -107,9 +107,9 @@ class StateInGame : public State {
     // vector<float> deltas;
     //float CalculateDelta(float);
 
-    virtual void InitializeCLPhysics(ManCar &manCars, ManBoundingWall &ManBoundingWall, ManBoundingOBB &manBoundingOBB, ManBoundingGround &manBoundingGround);
-    virtual void InitializeManagers(Physics *physics, Camera *cam);
-    virtual void InitializeSystems(ManCar &manCars, ManBoundingWall &manBoundingWall, ManBoundingOBB &manBoundingOBB, ManBoundingGround &manBoundingGround);
+    virtual void InitializeCLPhysics(ManCar&, ManBoundingWall&, ManBoundingOBB&, ManBoundingGround&, ManPowerUp&);
+    virtual void InitializeManagers(Physics *, Camera *);
+    virtual void InitializeSystems(ManCar&, ManBoundingWall&, ManBoundingOBB&, ManBoundingGround&, ManPowerUp&);
     virtual void InitializeFacades();
     virtual void AddElementsToRender();
     virtual void CAMBIARCosasDeTotemUpdate(){};

@@ -6,6 +6,7 @@
 #include <EventManager/EventManager.h>
 #include <Facade/Render/RenderFacadeManager.h>
 #include <Components/CDimensions.h>
+#include "../Components/CBoundingSphere.h"
 
 class Position;
 using namespace std;
@@ -59,6 +60,12 @@ void ManPowerUp::CreatePowerUp(DataMap* d) {
     auto renderFacadeManager = RenderFacadeManager::GetInstance();
     auto renderEngine = renderFacadeManager->GetRenderFacade();
     renderEngine->FacadeAddObject(powerUp.get());
+
+    // COMO NO TENIAMOS EL CDIMENSIONS NO PODIAMOS SABER EL RADIO DE LA ESFERAAAAAAA
+    //auto cBouSp = static_cast<CBoundingSphere*>(powerUp->GetComponent(CompType::CompBoundingSphere).get());
+    //auto cDimens = static_cast<CDimensions*>(powerUp->GetComponent(CompType::DimensionsComp).get());
+    //cBouSp->radius = ((cDimens->depth/2.0)+(cDimens->width/2.0))/2.0;
+    //cout << " EL RADIOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO ES: " << cBouSp->radius << endl;
 
     //Cuando creamos el powerUp, ponemos su tiempo inicial de inactivadad --> para no danyarnos a nostros mismos
     static_cast<CPowerUp*>(powerUp->GetComponent(CompType::PowerUpComp).get())->timeStart = system_clock::now();

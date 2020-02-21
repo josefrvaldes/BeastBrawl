@@ -37,7 +37,7 @@ StateInGame::~StateInGame() {
  */
 void StateInGame::InitVirtualMethods() {
     InitializeManagers(physics.get(), cam.get());
-    InitializeSystems(*manCars.get(), *manBoundingWall.get(), *manBoundingOBB.get(), *manBoundingGround.get());
+    InitializeSystems(*manCars.get(), *manBoundingWall.get(), *manBoundingOBB.get(), *manBoundingGround.get(), *manPowerUps.get());
     InitializeFacades();
 
     CAMBIARCosasDeTotem(*manTotems.get());
@@ -99,17 +99,18 @@ void StateInGame::AddElementsToRender() {
     renderEngine->FacadeAddObject(totemOnCar.get());
 }
 
-void StateInGame::InitializeCLPhysics(ManCar &manCars, ManBoundingWall &manBoundingWall, ManBoundingOBB &manBoundingOBB, ManBoundingGround &manBoundingGround) {
+void StateInGame::InitializeCLPhysics(ManCar &manCars, ManBoundingWall &manWall, ManBoundingOBB &manOBB, ManBoundingGround &manGround, ManPowerUp &manPowerUp) {
     // NO ALTERAR EL ORDEN DEL ADD, QUE USO EL ORDEN PARA DISTINGUIR ENTRE MANAGERS!!!
     clPhysics = make_unique<CLPhysics>();
     clPhysics->AddManager(manCars);
-    clPhysics->AddManager(manBoundingWall);
-    clPhysics->AddManager(manBoundingOBB);
-    clPhysics->AddManager(manBoundingGround);
+    clPhysics->AddManager(manWall);
+    clPhysics->AddManager(manOBB);
+    clPhysics->AddManager(manGround);
+    clPhysics->AddManager(manPowerUp);
 }
 
-void StateInGame::InitializeSystems(ManCar &manCars, ManBoundingWall &manBoundingWall, ManBoundingOBB &manBoundingOBB, ManBoundingGround &manBoundingGround) {
-    InitializeCLPhysics(manCars, manBoundingWall, manBoundingOBB, manBoundingGround);
+void StateInGame::InitializeSystems(ManCar &manCars, ManBoundingWall &manWall, ManBoundingOBB &manOBB, ManBoundingGround &manGround, ManPowerUp &manPowerUp) {
+    InitializeCLPhysics(manCars, manWall, manOBB, manGround, manPowerUp);
     // incializa el system physics PU, no hace falta más código para esto
     phisicsPowerUp = make_shared<PhysicsPowerUp>();  // Creamos sistemas
     collisions = make_shared<Collisions>();
