@@ -18,7 +18,7 @@ Totem::Totem()
     glm::vec3 scale = glm::vec3(0.6f, 0.6f, 0.6f);
 
     string texture = "totem.jpg";
-    string mesh    = "media/ninja.b3d";
+    string mesh    = "kart_ia.obj";
 
     string vertexShader = "CLEngine/src/Shaders/vertex.glsl";
     string fragmentShader = "CLEngine/src/Shaders/fragment.glsl";

@@ -16,7 +16,7 @@ PowerUp::PowerUp()
 {
     // default values
     string texture = "spheremap.jpg";
-    string mesh    = "media/ninja.b3d";
+    string mesh    = "kart_ia.obj";
     typeCPowerUp typePowerUp = typeCPowerUp::None;
 
     string vertexShader = "CLEngine/src/Shaders/vertex.glsl";

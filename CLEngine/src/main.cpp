@@ -43,21 +43,21 @@ using namespace CLE;
  * Mira si se ha pulsado ESC para cerrar la ventana.
  * @param window - Ventana sobre la que mira los eventos. 
  */
-void checkInput (GLFWwindow *window, glm::vec3 cameraPos, glm::vec3& cameraFront, glm::vec3& cameraUp) {
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
-        glfwSetWindowShouldClose(window, true);
-    }
+// void checkInput (GLFWwindow *window, glm::vec3 cameraPos, glm::vec3& cameraFront, glm::vec3& cameraUp) {
+//     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+//         glfwSetWindowShouldClose(window, true);
+//     }
 
-    const float cameraSpeed = 0.15f; // adjust accordingly
-    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        cameraPos += cameraSpeed * cameraFront;
-    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        cameraPos -= cameraSpeed * cameraFront;
-    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-        cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
-    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-        cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
-}
+//     const float cameraSpeed = 0.15f; // adjust accordingly
+//     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+//         cameraPos += cameraSpeed * cameraFront;
+//     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+//         cameraPos -= cameraSpeed * cameraFront;
+//     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+//         cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+//     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+//         cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+// }
 
 
 int main() {
@@ -125,7 +125,6 @@ int main() {
 
          smgr->DrawTree(smgr);
 
-    // cout << "LLEGA\n";
 
     static_cast<CLMesh*>(node3->GetEntity())->SetMesh(resourceMesh);
     static_cast<CLMesh*>(node5->GetEntity())->SetMesh(resourceMesh);
@@ -219,9 +218,7 @@ int main() {
     #pragma endregion
     
     
-    glm::vec3 cameraPos   = node4->GetTranslation();
-    glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
-    glm::vec3 cameraUp    = glm::vec3(0.0f, 1.0f,  0.0f);
+
 
     //LUCES Y COLORES
     glm::vec3 color(1.0f, 0.0f, 0.0f);
@@ -230,7 +227,7 @@ int main() {
     float auxColor[3] = {color.x,color.y,color.z};
     float auxLight[3] = {light.x,light.y,light.z};
     float auxLightPos[3] = {lightPos.x,lightPos.y,lightPos.z};
-    float auxCameraPos[3] = {cameraPos.x, cameraPos.y, cameraPos.z};
+    float auxCameraPos[3] = {node4->GetTranslation().x, node4->GetTranslation().y, node4->GetTranslation().z};
     //cout << "Posicion de la camara: " << node3.get()->GetTranslation().x << " - " << node3.get()->GetTranslation().y << " - " << node3.get()->GetTranslation().z << endl;
     float specularStrength = 0.5;
     float attenuationValue = 0.0;
@@ -242,7 +239,7 @@ int main() {
 
     while (!device->Run()) {
 
-        checkInput(device->GetWindow(), cameraPos, cameraFront, cameraUp);
+        //checkInput(device->GetWindow(), cameraPos, cameraFront, cameraUp);
 
         //Apartir de aqui hacemos cosas, de momento en el main para testear
 
@@ -268,32 +265,20 @@ int main() {
         glm::vec3 light(auxLight[0], auxLight[1], auxLight[2]);
         glm::vec3 lightPos(auxLightPos[0], auxLightPos[1], auxLightPos[2]);
         glm::vec3 cameraPos(auxCameraPos[0], auxCameraPos[1], auxCameraPos[2]);
+        node4->SetTranslation(cameraPos);
 
         glUseProgram(resourceShader->GetProgramID());
         //Luces y colores
         glUniform3fv(glGetUniformLocation(resourceShader->GetProgramID(), "objectColor"),1,glm::value_ptr(color));
         glUniform3fv(glGetUniformLocation(resourceShader->GetProgramID(), "lightColor"),1,glm::value_ptr(light));
         glUniform3fv(glGetUniformLocation(resourceShader->GetProgramID(), "lightPos"),1,glm::value_ptr(lightPos));
-        glUniform3fv(glGetUniformLocation(resourceShader->GetProgramID(), "viewPos"),1,glm::value_ptr(cameraPos));
+        glUniform3fv(glGetUniformLocation(resourceShader->GetProgramID(), "viewPos"),1,glm::value_ptr(node4->GetTranslation()));
         glUniform1f(glGetUniformLocation(resourceShader->GetProgramID(), "specularStrength"),specularStrength);
         glUniform1f(glGetUniformLocation(resourceShader->GetProgramID(), "attenuationValue"),attenuationValue);
 
-        node4->SetTranslation(cameraPos);
-        // //create transformations
-        // glm::mat4 projection    = static_cast<CLCamera*>(node4->GetEntity())->CalculateProjectionMatrix();
-       
-        // glm::mat4 view;
-        // // Vector posicion de la camara, vector de posicion destino y vector ascendente en el espacio mundial. 
-        // view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
-
-        // // pass transformation matrices to the shader
-        // glUniformMatrix4fv(glGetUniformLocation(resourceShader->GetProgramID(), "projection"), 1, GL_FALSE, glm::value_ptr(projection));
-        // glUniformMatrix4fv(glGetUniformLocation(resourceShader->GetProgramID(), "view"), 1, GL_FALSE, glm::value_ptr(view));
-
-        //node2->SetTranslation(glm::vec3(index,0.1f,0.1f));
+        
         smgr->SetRotation(glm::vec3(0.0f,0.0f,index));
-        //node2->SetRotation(glm::vec3(index,0.0f,0.0f));
-        //smgr->DFSTree(glm::mat4(1.0));
+
 
 
         // Measure speed
@@ -311,8 +296,8 @@ int main() {
 
         
         device->DrawTree();
-
-        glfwPollEvents();
+        device->InputClose();
+        device->PollEvents();
         device->RenderImgui();
         device->EndScene();
         index += 0.2;

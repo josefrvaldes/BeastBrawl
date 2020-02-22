@@ -109,34 +109,39 @@ const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
     auto cMesh = static_cast<CMesh*>(entity->GetComponent(CompType::MeshComp).get());
     auto cShader = static_cast<CShader*>(entity->GetComponent(CompType::ShaderComp).get());
 
-    //Leemos el shader
+    std::string meshPath = "media/" + cMesh->mesh;
+    auto mesh = resourceManager->GetResourceMesh(meshPath);
     
-    shared_ptr<CLEntity> clEntity;
-
+    CLNode* node = nullptr;
     // añadimos el node al sceneManager dependiendo del tipo de node que sea
     switch (cType->type) {
         case ModelType::Sphere:
-            clEntity = make_shared<CLMesh>(cId->id);
+            node = smgr->AddMesh(cId->id);
+            static_cast<CLMesh*>(node->GetEntity())->SetMesh(mesh);
+
             break;
 
         case ModelType::Cube:
-            clEntity = make_shared<CLMesh>(cId->id);
+            node = smgr->AddMesh(cId->id);
+            static_cast<CLMesh*>(node->GetEntity())->SetMesh(mesh);
+
             break;
 
         case ModelType::AnimatedMesh:
-            clEntity = make_shared<CLMesh>(cId->id);
+            node = smgr->AddMesh(cId->id);
+            static_cast<CLMesh*>(node->GetEntity())->SetMesh(mesh);
+
             break;
 
         case ModelType::StaticMesh:
-            clEntity = make_shared<CLMesh>(cId->id);
+            node = smgr->AddMesh(cId->id);
             break;
 
         case ModelType::Text:
+            node = smgr->AddMesh(cId->id);
             break;
     }
 
-    shared_ptr<CLNode> node = make_shared<CLNode>(clEntity.get());
-    smgr->AddChild(node.get());
 
     if(entity->HasComponent(CompType::ShaderComp)){
         auto shader = resourceManager->GetResourceShader(cShader->vertexShader,cShader->fragmentShader);
@@ -175,11 +180,124 @@ void RenderFacadeClover::UpdateTransformable(Entity* entity) {
 
 //Reajusta la camara
 void RenderFacadeClover::UpdateCamera(Entity* cam, ManCar* manCars) {
+    /*
+    //Cogemos los componentes de la camara
+    auto cTransformable = static_cast<CTransformable*>(cam->GetComponent(CompType::TransformableComp).get());
+    auto cCamera = static_cast<CCamera*>(cam->GetComponent(CompType::CameraComp).get());
 
+    //Cogemos la posicion de nuestro coche
+    glm::vec3 targetPosition = smgr->GetNodeByID(idCar)->GetTranslation();
+    //core::vector3df targetRotation = smgr->getSceneNodeFromId(idCar)->getRotation();
+
+    // Voy a calcular el punto inverso del coche, suponiendo que la camara es el centro de la circunferencia
+    // Quizas luego no queremos esta manera de hacer camara trasera y me voy a cagar en vuestros putos muertos sinceramente
+    auto cameraEntity = static_cast<CLCamera*>(camera1->GetEntity());
+
+    targetPosition.y += 17;
+
+    if(cCamera->camType == CamType::INVERTED_CAM){
+        targetPosition.y += 0;
+
+        float distX = abs(cTransformable->position.x - targetPosition.x);
+        float distZ = abs(cTransformable->position.z - targetPosition.z);
+
+        if(cTransformable->position.x - targetPosition.x < 0){
+            targetPosition.x = targetPosition.y - (2*distX);
+
+        }else{
+            targetPosition.x = targetPosition.x + (2*distX);
+
+        }
+
+        if(cTransformable->position.z - targetPosition.z < 0){
+            targetPosition.z = targetPosition.z - (2*distZ);
+
+        }else{
+            targetPosition.z = targetPosition.z + (2*distZ);
+
+        }
+        float angleRotation = (60 * PI) / 180.0;
+
+        cameraEntity->SetCameraTarget(targetPosition);
+        //camera1->setFOV(angleRotation);
+        camera1->SetTranslation(glm::vec3(cTransformable->position.x, cTransformable->position.y-5, cTransformable->position.z));
+
+    }else if(cCamera->camType == CamType::NORMAL_CAM){
+        float angleRotation = (70 * PI) / 180.0;
+
+        cameraEntity->SetCameraTarget(targetPosition);
+        //camera1->setFOV(angleRotation);
+        camera1->SetTranslation(glm::vec3(cTransformable->position.x, cTransformable->position.y, cTransformable->position.z));
+    }else if (cCamera->camType == CamType::TOTEM_CAM){
+
+        auto car = manCars->GetCar();
+        auto cTotemCar = static_cast<CTotem*>(car->GetComponent(CompType::TotemComp).get());
+        auto cTransformableCar = static_cast<CTransformable*>(car->GetComponent(CompType::TransformableComp).get());
+
+        //Si somos nosotros quien tenemos el totem ponemos camara normal
+        if(cTotemCar->active){
+            cCamera->camType = CamType::NORMAL_CAM;
+            return;
+
+        }
+
+        auto idCarAIWithTotem = -1;
+        //Buscamos el ID del coche que tiene el totem (en caso de tenerlo)
+        for(const auto& cars : manCars->GetEntities()){
+            if(manCars->GetCar().get() != cars.get()){
+                auto cTotem = static_cast<CTotem*>(cars->GetComponent(CompType::TotemComp).get());
+                if(cTotem->active){
+                    auto cId = static_cast<CId*>(cars->GetComponent(CompType::IdComp).get());
+                    idCarAIWithTotem = cId->id;
+                }
+            }
+        }
+
+        //Nadie tiene el totem
+        if(idCarAIWithTotem==-1){
+            //Posicion del totem en el suelo
+            targetPosition = smgr->GetNodeByID(idTotem)->GetTranslation();
+
+        }else{
+            //Posicion del coche que lleva el totem
+            targetPosition = smgr->GetNodeByID(idCarAIWithTotem)->GetTranslation();
+
+        }
+
+        //Calculamos el angulo hasta el totem
+        float vectorX = (cTransformableCar->position.x - targetPosition.x );
+        float vectorZ = (cTransformableCar->position.z - targetPosition.z );
+
+        float valueAtan2 = atan2(vectorZ,vectorX);
+
+        float angleRotation = (90 * PI) / 180.0;
+
+        
+        cameraEntity->SetCameraTarget(targetPosition);
+        //camera1->setFOV(angleRotation);
+        camera1->SetTranslation(glm::vec3(
+            cTransformableCar->position.x + 32.5 * cos(valueAtan2), 
+            cTransformable->position.y, 
+            cTransformableCar->position.z + 35 * sin(valueAtan2)));
+    }
+
+    */
 }
 
 //Añade la camara, esto se llama una sola vez al crear el juego
 void RenderFacadeClover::FacadeAddCamera(Entity* camera) {
+    auto cId = static_cast<CId*>(camera->GetComponent(CompType::IdComp).get());
+
+    auto camera1 = smgr->AddCamera(cId->id);
+    auto cameraEntity = static_cast<CLCamera*>(camera1->GetEntity());
+
+    auto cTransformable = static_cast<CTransformable*>(camera->GetComponent(CompType::TransformableComp).get());
+    auto cCamera = static_cast<CCamera*>(camera->GetComponent(CompType::CameraComp).get());
+
+    float posX = cCamera->tarX - 40.0 * sin(((cTransformable->rotation.x) * M_PI) / 180.0);
+    float posZ = cCamera->tarZ - 40.0 * cos(((cTransformable->rotation.z) * M_PI) / 180.0);
+    cameraEntity->SetCameraTarget(glm::vec3(cCamera->tarX, cCamera->tarY, cCamera->tarZ));
+    camera1->SetTranslation(glm::vec3(posX, cTransformable->position.y, posZ));
     
 }
 
@@ -258,6 +376,8 @@ void RenderFacadeClover::FacadeDrawAll() const{
 }
 
 void RenderFacadeClover::FacadeEndScene() const{
+    device->DrawTree();
+    device->PollEvents();
     device->EndScene();
 }
 

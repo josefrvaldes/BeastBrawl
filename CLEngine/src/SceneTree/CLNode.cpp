@@ -216,8 +216,7 @@ void CLNode::CalculateViewProjMatrix(){
             glUniformMatrix4fv(glGetUniformLocation(camera->GetShaderProgramID(), "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 
             // Vector posicion de la camara, vector de posicion destino y vector ascendente en el espacio mundial. 
-            auto a = camera->GetTranslation();
-            view = glm::lookAt(camera->GetTranslation(), camera->GetTranslation() + entityCamera->GetCameraFront(), entityCamera->GetCameraUp());
+            view = glm::lookAt(camera->GetTranslation(), /*camera->GetTranslation() + */entityCamera->GetCameraTarget(), entityCamera->GetCameraUp());
             glUniformMatrix4fv(glGetUniformLocation(camera->GetShaderProgramID(), "view"), 1, GL_FALSE, glm::value_ptr(view));
 
         }

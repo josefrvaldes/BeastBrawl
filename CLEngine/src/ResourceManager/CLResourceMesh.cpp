@@ -63,7 +63,7 @@ bool CLResourceMesh::LoadFile(std::string file) {
         cout << "ERROR::ASSIMP::" << importer.GetErrorString() << endl;
         return false;
     }
-    cout << "Creo que he creado una malla\n";
+    cout << "Leida la malla: " << file << endl;
     processNode(scene->mRootNode, scene);
     return true;
 }  

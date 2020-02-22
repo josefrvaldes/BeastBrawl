@@ -40,7 +40,8 @@ class CLEngine {
         void RenderImgui();
         void UpdateViewport();
         double GetTime();
-        bool InputClose();
+        void InputClose();
+        void PollEvents();
 
 
         CLNode* GetSceneManager();

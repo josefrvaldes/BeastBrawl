@@ -17,7 +17,7 @@ StateInGame::StateInGame() {
     // porque tiene que estar inicializado antes de llamar a InitializeManagers
     physics = make_unique<Physics>(deltaTime);
 
-    cam = make_shared<Camera>(glm::vec3(100.0f, 600.0f, 30.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f));
+    cam = make_shared<Camera>(glm::vec3(100.0f, 0.0f, 30.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f));
     ground = make_shared<GameObject>(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), "", "training_ground.obj");
 }
 
@@ -71,7 +71,7 @@ void StateInGame::CAMBIARCosasDeTotem(ManTotem &manTotems) {
     totemOnCar->AddComponent(cTypeTotemOnCar);
     totemOnCar->AddComponent(cTransformableTotemOnCar);
     totemOnCar->AddComponent(make_shared<CTexture>("totem.jpg"));
-    totemOnCar->AddComponent(make_shared<CMesh>("media/ninja.b3d"));
+    totemOnCar->AddComponent(make_shared<CMesh>("kart_ia.obj"));
     totemOnCar->AddComponent(make_shared<CShader>("CLEngine/src/Shaders/vertex.glsl","CLEngine/src/Shaders/fragment.glsl"));
     // ------------------------------------------------------------------------------------------------------------------------------------------------
 }

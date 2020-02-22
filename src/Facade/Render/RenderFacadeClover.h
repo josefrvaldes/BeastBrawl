@@ -80,4 +80,5 @@ class RenderFacadeClover : public RenderFacade {
       CLEngine* device;
       CLNode* smgr;
       CLResourceManager* resourceManager;
+      CLNode* camera1;
 };

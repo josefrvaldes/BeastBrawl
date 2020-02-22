@@ -97,6 +97,10 @@ bool CLEngine::Run() {
     return glfwWindowShouldClose(window);
 }
 
+void CLEngine::PollEvents(){
+    glfwPollEvents();
+}
+
 /**
  * Limpia la pantalla pintandola de un color.
  */
@@ -141,7 +145,7 @@ void CLEngine::UpdateViewport(){
 }
 
 //Borrar esto 
-bool CLEngine::InputClose(){
+void CLEngine::InputClose(){
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
         glfwSetWindowShouldClose(window, true);
     }
