@@ -11,6 +11,8 @@
 
 #define SERVER_HOST_OVH "54.38.189.168"
 
+#define MIN_NUM_PLAYERS 4
+
 class Constants {
    public:
     inline static const bool DEBUG_SHOW_CHASSIS{true};

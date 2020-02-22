@@ -2,6 +2,7 @@
 
 #include <boost/array.hpp>
 #include <boost/asio.hpp>
+#include <unordered_map>
 #include <boost/asio/buffer.hpp>
 #include <chrono>
 #include <iostream>
@@ -57,8 +58,12 @@ class UDPClient {
     udp::socket socket;
     std::thread butler;
     // boost::asio::io_context::strand strand;
-    uint16_t lastInputIDReceived{0};
-    uint16_t lastSyncIDReceived{0};
+
+    unordered_map<uint16_t, uint16_t> lastInputReceived;
+    unordered_map<uint16_t, uint16_t> lastSyncReceived;
+
+    // uint16_t lastInputIDReceived{0};
+    // uint16_t lastSyncIDReceived{0};
 
     inline static uint16_t currentInputID {0};
     inline static uint16_t currentSyncID {0};

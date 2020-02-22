@@ -39,7 +39,7 @@ void UDPServer::HandleReceive(std::shared_ptr<unsigned char[]> recevBuff, std::s
         Utils::Deserialize(&petitionType, recevBuff.get(), currentIndex);
         Utils::Deserialize(&idCall, recevBuff.get(), currentIndex);
         Utils::Deserialize(&idPlayer, recevBuff.get(), currentIndex);
-
+        cout << Utils::getISOCurrentTimestampMillis() << " Hemos recibido en el server la llamada " << idCall << " de tipo " << unsigned(petitionType) << " del user " << idPlayer << endl;
         // TODO: esto creo que podría evitarse
         unsigned char buffRecieved[Constants::ONLINE_BUFFER_SIZE];
         memcpy(&buffRecieved[0], &recevBuff.get()[0], bytesTransferred);
@@ -55,21 +55,21 @@ void UDPServer::HandleReceive(std::shared_ptr<unsigned char[]> recevBuff, std::s
                 case Constants::PetitionTypes::SEND_INPUTS: {
                     //std::cout << "Recibidos inputs: " << bytesTransferred << std::endl;
                     if (p.lastInputIDReceived < idCall) {
-                        // cout << "Se ha recibido y reenviado un paquete de input del player " << idPlayer << endl;
+                        cout << Utils::getISOCurrentTimestampMillis() << "Se ha recibido y reenviado un paquete de input del player " << idPlayer << endl;
                         p.lastInputIDReceived = idCall;
-                        HandleReceivedInputs(buffRecieved, bytesTransferred, *remoteClient.get());
+                        HandleReceivedInputs(idPlayer, buffRecieved, bytesTransferred, *remoteClient.get());
                     } else {
-                        cout << "Se ha ignorado un paquete de input porque era antiguo" << endl;
+                        cout << Utils::getISOCurrentTimestampMillis() << "Se ha ignorado un paquete de input porque era antiguo" << endl;
                     }
                 } break;
                 case Constants::PetitionTypes::SEND_SYNC: {
                     //std::cout << "Recibida sincronizacion: " << bytesTransferred << std::endl;
                     if (p.lastSyncIDReceived < idCall) {
-                        // cout << "Se ha recibido y reenviado un paquete de sync del player " << idPlayer << endl;
+                        cout << Utils::getISOCurrentTimestampMillis() << "Se ha recibido y reenviado un paquete de sync del player " << idPlayer << endl;
                         p.lastSyncIDReceived = idCall;
-                        HandleReceivedSync(buffRecieved, bytesTransferred, *remoteClient.get());
+                        HandleReceivedSync(idPlayer, buffRecieved, bytesTransferred, *remoteClient.get());
                     } else {
-                        cout << "Se ha ignorado un paquete de sync porque era antiguo" << endl;
+                        cout << Utils::getISOCurrentTimestampMillis() << "Se ha ignorado un paquete de sync porque era antiguo" << endl;
                     }
                 } break;
 
@@ -87,25 +87,57 @@ void UDPServer::HandleReceive(std::shared_ptr<unsigned char[]> recevBuff, std::s
     StartReceiving();  // antes estaba dentro del if, pero entonces si hay un error ya se rompe tó ¿?
 }
 
-void UDPServer::HandleReceivedInputs(const unsigned char resendInputs[], const size_t currentBufferSize, const udp::endpoint& originalClient) {
-    ResendBytesToOthers(resendInputs, currentBufferSize, originalClient);
+void UDPServer::HandleReceivedInputs(const uint16_t id, const unsigned char resendInputs[], const size_t currentBufferSize, const udp::endpoint& originalClient) {
+    ResendBytesToOthers(id, resendInputs, currentBufferSize, originalClient);
 }
 
-void UDPServer::HandleReceivedSync(const unsigned char resendSync[], const size_t currentBufferSize, const udp::endpoint& originalClient) {
-    ResendBytesToOthers(resendSync, currentBufferSize, originalClient);
+void UDPServer::HandleReceivedSync(const uint16_t id, unsigned char recevBuff[], const size_t currentBufferSize, const udp::endpoint& originalClient) {
+    size_t currentIndex = 0;
+    uint8_t petitionType;
+    uint16_t idCarOnline;
+    uint16_t idCall;
+    typeCPowerUp typePU;
+    int64_t totemTime;
+    glm::vec3 posTotem(0.0, 0.0, 0.0);
+    bool haveTotem;
+    bool totemInGround;
+
+    Utils::Deserialize(&petitionType, recevBuff, currentIndex);
+    Utils::Deserialize(&idCall, recevBuff, currentIndex);
+
+    Utils::Deserialize(&idCarOnline, recevBuff, currentIndex);
+    glm::vec3 posCar = Utils::DeserializeVec3(recevBuff, currentIndex);
+    glm::vec3 rotCar = Utils::DeserializeVec3(recevBuff, currentIndex);
+
+    Utils::DeserializePowerUpTotem(recevBuff, typePU, haveTotem, totemInGround, currentIndex);
+
+    Utils::Deserialize(&totemTime, recevBuff, currentIndex);
+    // realizar llamadas al event Manager de manCar
+
+    if (totemInGround) {
+        posTotem = Utils::DeserializeVec3(recevBuff, currentIndex);
+    }
+    cout << Utils::getISOCurrentTimestampMillis() << "he recibido el sync " << idCall << " de [" << idCarOnline << "," << id << "] y está en la pos("
+         << posCar.x << "," << posCar.y << "," << posCar.z << ") - rot("
+         << rotCar.x << "," << rotCar.y << "," << rotCar.z << ")." << endl
+         << "Lleva el PU " << (int)typePU << " y lleva el totem(" << haveTotem << ")." << endl
+         << "El totem está en el suelo(" << totemInGround << ") y su pos es (" << posTotem.x << "," << posTotem.y << "," << posTotem.z << ") "
+         << endl;
+
+    ResendBytesToOthers(id, recevBuff, currentBufferSize, originalClient);
 }
 
-void UDPServer::ResendBytesToOthers(const unsigned char resendBytes[], const size_t currentBufferSize, const udp::endpoint& originalClient) {
+void UDPServer::ResendBytesToOthers(const uint16_t id, const unsigned char resendBytes[], const size_t currentBufferSize, const udp::endpoint& originalClient) {
     string originalAddress = originalClient.address().to_string();
     uint16_t originalPort = originalClient.port();
-    for (Player& currentPlayer : players) {
-        string currentAddress = currentPlayer.endpoint.address().to_string();
-        uint16_t currentPort = currentPlayer.endpoint.port();
-        // uint32_t currentID = currentPlayer.id;
+    // cout << "Vamos a reenviar bytes del cliente [" << id << "] y que tiene la dirección " << originalAddress << ":" << originalPort << " a los demás" << endl;
 
-        // si el cliente NO es el jugador original que mandó este mensaje, le reenviamos el mensaje al resto
-        // TODO: falta comparar aquí con id
-        if (originalAddress != currentAddress || originalPort != currentPort) {
+    for (Player& currentPlayer : players) {
+        if (currentPlayer.id != id) {
+            const auto& currentEndpoint = currentPlayer.endpoint;
+            const auto& currentAddress = currentEndpoint.address().to_string();
+            const auto& currentPort = currentEndpoint.port();
+            // cout << "Vamos a reenviar bytes del cliente [" << id << "] a [" << currentPlayer.id << "] " << currentAddress << ":" << currentPort << " a los demás" << endl;
             SendBytes(resendBytes, currentBufferSize, currentPlayer);
         }
     }
@@ -127,8 +159,6 @@ void UDPServer::HandleSentBytes(const boost::system::error_code& errorCode, std:
     if (errorCode) {
         cout << "Hubo un error enviando Bytes. errorcode: " << errorCode << endl;
         // Resend();
-    } else {
-        //std::cout << "Se han enviado: " << bytesTransferred << std::endl;
     }
 }
 
@@ -137,17 +167,16 @@ void UDPServer::SavePlayerIfNotExists(const uint16_t id, udp::endpoint& newClien
     uint16_t newPort = newClient.port();
     for (Player& currentPlayer : players) {
         // si el cliente ya lo tenemos guardado, nos salimos
-        string currentAddress = currentPlayer.endpoint.address().to_string();
-        uint16_t currentPort = currentPlayer.endpoint.port();
-        // TODO: Falta comprobar por id
-        if (newAddress == currentAddress && newPort == currentPort)
+        // string currentAddress = currentPlayer.endpoint.address().to_string();
+        // uint16_t currentPort = currentPlayer.endpoint.port();
+        if (currentPlayer.id == id)
             return;
     }
     Player p;
     p.id = id;
     p.endpoint = newClient;
     players.push_back(p);
-    cout << "Hemos guardado un cliente nuevo y ahora tenemos " << players.size() << " clientes" << endl;
+    cout << "Hemos guardado al cliente con id " << id << " y que tiene la dirección " << newAddress << ":" << newPort << " y ahora tenemos " << players.size() << " clientes" << endl;
 }
 
 Player* UDPServer::GetPlayerById(uint16_t idPlayer) {

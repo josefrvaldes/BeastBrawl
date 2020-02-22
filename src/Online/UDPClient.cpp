@@ -60,21 +60,22 @@ void UDPClient::HandleReceived(std::shared_ptr<unsigned char[]> recevBuff, const
         //const uint32_t id = receivedJSON["id"];
         size_t currentIndex = 0;
         uint8_t petitionType;
+        uint16_t idPlayer;
+        uint16_t idCall;
         Utils::Deserialize(&petitionType, recevBuff.get(), currentIndex);
+        Utils::Deserialize(&idCall, recevBuff.get(), currentIndex);
+        Utils::Deserialize(&idPlayer, recevBuff.get(), currentIndex);
+        // cout << Utils::getISOCurrentTimestampMillis() << " Hemos recibido la llamada " << idCall << " de tipo " << unsigned(petitionType) << " del user " << idPlayer << endl;
 
         Constants::PetitionTypes callType = static_cast<Constants::PetitionTypes>(petitionType);
         switch (callType) {
             case Constants::PetitionTypes::SEND_INPUTS: {
-                uint16_t idInputCall;
-                uint16_t idRival;
-                Utils::Deserialize(&idInputCall, recevBuff.get(), currentIndex);
-                Utils::Deserialize(&idRival, recevBuff.get(), currentIndex);
                 const vector<Constants::InputTypes> inputs = Utils::DeserializeInputs(recevBuff.get(), currentIndex);
 
-                if (idInputCall > lastInputIDReceived) {
-                    lastInputIDReceived = idInputCall;
+                if (idCall > lastSyncReceived[idPlayer]) {
+                    lastSyncReceived[idPlayer] = idCall;
                     // std::cout << "Recibido inputs: " << bytesTransferred << " bytes" << std::endl;
-                    HandleReceivedInputs(inputs, idRival);
+                    HandleReceivedInputs(inputs, idPlayer);
                 }
             } break;
 
@@ -105,7 +106,6 @@ void UDPClient::HandleReceivedInputs(const vector<Constants::InputTypes> inputs,
     // }
     // cout << endl;
 }
-
 
 // buffer circular
 // void UDPClient::HandleReceivedSync(nuevoPaquete) {
@@ -147,8 +147,10 @@ void UDPClient::HandleReceivedSync(unsigned char* recevBuff, size_t bytesTransfe
 
     Utils::Deserialize(&petitionType, recevBuff, currentIndex);
     Utils::Deserialize(&idCall, recevBuff, currentIndex);
-    if (idCall > lastSyncIDReceived) {
-        lastSyncIDReceived = idCall;
+    Utils::Deserialize(&idCarOnline, recevBuff, currentIndex);
+
+    if (idCall > lastSyncReceived[idCarOnline]) {
+        lastSyncReceived[idCarOnline] = idCall;
 
         Utils::Deserialize(&idCarOnline, recevBuff, currentIndex);
         glm::vec3 posCar = Utils::DeserializeVec3(recevBuff, currentIndex);
@@ -183,12 +185,19 @@ void UDPClient::HandleReceivedSync(unsigned char* recevBuff, size_t bytesTransfe
         //std::cout << "Pos totem: " << posTotem.x << " , " << posTotem.z << std::endl;
         //std::cout << "----------------------------------------" << std::endl;
         // std::cout << "Recibido sincronizacion: " << bytesTransferred << " bytes" << std::endl;
+
+        cout << Utils::getISOCurrentTimestampMillis() << "he recibido el sync " << idCall << " de [" << idCarOnline << "] y está en la pos("
+             << posCar.x << "," << posCar.y << "," << posCar.z << ") - rot("
+             << rotCar.x << "," << rotCar.y << "," << rotCar.z << ")." << endl
+             << "Lleva el PU " << (int)typePU << " y lleva el totem(" << haveTotem << ")." << endl
+             << "El totem está en el suelo(" << totemInGround << ") y su pos es (" << posTotem.x << "," << posTotem.y << "," << posTotem.z << ") "
+             << endl;
     }
 }
 
 void UDPClient::SendDateTime() {
     // cout << "Vamos a enviar datos" << endl;
-    boost::shared_ptr<string> message(new string(Utils::GetTime()));
+    boost::shared_ptr<string> message(new string(Utils::GetFullDateTime()));
     socket.async_send_to(
         boost::asio::buffer(*message),
         serverEndpoint,
@@ -246,7 +255,12 @@ void UDPClient::SendSync(uint16_t idOnline, const glm::vec3& posCar, const glm::
     Utils::Serialize(requestBuff, &totemTime, currentBuffSize);
     if (totemInGround)
         Utils::SerializeVec3(requestBuff, posTotem, currentBuffSize);  // la pos del totem no se envia siempre
-
+    cout << Utils::getISOCurrentTimestampMillis() << "soy el [" << idOnline << "] estoy enviando el sync " << idCall << " y estoy en la pos("
+         << posCar.x << "," << posCar.y << "," << posCar.z << ") - rot("
+         << rotCar.x << "," << rotCar.y << "," << rotCar.z << ")." << endl
+         << "Llevo el PU " << (int)tipoPU << " y llevo el totem(" << haveTotem << ")." << endl
+         << "El totem está en el suelo(" << totemInGround << ") y su pos es (" << posTotem.x << "," << posTotem.y << "," << posTotem.z << ") "
+         << endl;
     socket.async_send_to(
         boost::asio::buffer(requestBuff, currentBuffSize),
         serverEndpoint,
