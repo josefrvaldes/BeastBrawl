@@ -518,15 +518,15 @@ void ManCar::CatchPowerUp(DataMap* d) {
     int indx = rand() % 100 + 1;
     if (indx <= 5)  // 5%
         indx = 1;
-    else if (indx > 5 && indx <= 20)  // 15%
+    else if (indx > 5 && indx <= 25)  // 15%
         indx = 2;
-    else if (indx > 20 && indx <= 40)  // 20%
+    else if (indx > 25 && indx <= 50)  // 20%
         indx = 3;
-    else if (indx > 40 && indx <= 55)  // 15%
+    else if (indx > 50 && indx <= 65)  // 15%
         indx = 4;
-    else if (indx > 55 && indx <= 70)  // 15%
+    else if (indx > 65 && indx <= 80)  // 15%
         indx = 5;
-    else if (indx > 70)  //  30%
+    else if (indx > 80)  //  30%
         indx = 6;
 
     //indx = 3;
