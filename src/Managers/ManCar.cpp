@@ -480,22 +480,22 @@ void ManCar::ThrowPowerUp(Car* car) {
 
                 break;
         }
-        cPowerUpCar->typePowerUp = typeCPowerUp::None;
 
         if(car == GetCar().get()){
             // Sonido de lanzar power-up
-            shared_ptr<DataMap> dataHUD = make_shared<DataMap>();
-            (*dataHUD)[TYPE_POWER_UP] = cPowerUpCar->typePowerUp;
+            shared_ptr<DataMap> dataSound = make_shared<DataMap>();
+            (*dataSound)[TYPE_POWER_UP] = cPowerUpCar->typePowerUp;
             //d->insert(TYPE_POWER_UP,cPowerUpCar->typePowerUp);
-            EventManager::GetInstance().AddEventMulti(Event{EventType::THROW_POWERUP, dataHUD});
+            EventManager::GetInstance().AddEventMulti(Event{EventType::THROW_POWERUP, dataSound});
 
             // Ya no tenemos power-up
-            shared_ptr<DataMap> dataSound = make_shared<DataMap>();
+            shared_ptr<DataMap> dataHUD = make_shared<DataMap>();
 
             cPowerUpCar->typePowerUp = typeCPowerUp::None;
-            (*dataSound)[TYPE_POWER_UP] = cPowerUpCar->typePowerUp;
-            EventManager::GetInstance().AddEventMulti(Event{UPDATE_POWERUP_HUD, dataSound}); 
+            (*dataHUD)[TYPE_POWER_UP] = cPowerUpCar->typePowerUp;
+            EventManager::GetInstance().AddEventMulti(Event{UPDATE_POWERUP_HUD, dataHUD}); 
         }
+        cPowerUpCar->typePowerUp = typeCPowerUp::None;
     }
 }
 
