@@ -12,7 +12,7 @@ using namespace std;
 using namespace glm;
 using namespace chrono;
 
-enum class SkidState{DISABLED, SKID_START, SKID_LEFT, SKID_RIGHT};
+enum class SkidState{DISABLED, SKID_START, SKID_LEFT, SKID_RIGHT, SKID_RECOVER_RIGHT, SKID_RECOVER_LEFT};
 
 class CCar : public Component
 {
@@ -44,8 +44,11 @@ public:
     const int64_t skidActivationTime = 700;       // 0.7 segundos
     const int64_t skidAnimationTime = 1000;       // 1 segundo
     SkidState skidState;
-    bool skidHold;
-    float skidRotation = 0.0;
+    float skidRotation = 0.0;                     
+
+    float maxSkidDeg = 50.0;   // maximo giro en el derrape
+    float skidAcc    = 3.0;
+
 
 
 };
