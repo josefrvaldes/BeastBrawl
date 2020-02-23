@@ -4,6 +4,7 @@
 #include <iostream>
 #include <memory>
 #include <glm/glm.hpp>
+#include <glm/gtx/string_cast.hpp>
 #include "../../include/glew/glew.h"
 
 #include "CLEntity.h"
@@ -74,10 +75,10 @@ class CLNode{
         CLNode* father {nullptr};
         vector<shared_ptr<CLNode>> childs;
 
-        glm::vec3 translation;
-        glm::vec3 rotation;
-        glm::vec3 scalation;
-        glm::mat4 transformationMat;
+        glm::vec3 translation = glm::vec3(0.0f);
+        glm::vec3 rotation = glm::vec3(0.0f);
+        glm::vec3 scalation = glm::vec3(1.0f);
+        glm::mat4 transformationMat = glm::mat4(1.0f);
 
         glm::mat4 projection;
         glm::mat4 view;

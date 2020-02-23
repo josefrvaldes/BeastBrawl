@@ -94,13 +94,16 @@ int main() {
         auto node2 = smgr->AddLight(1);
         node2->SetShaderProgramID(resourceShader->GetProgramID());
 
+
         auto node3 = smgr->AddMesh(2);
         node3->SetShaderProgramID(resourceShader->GetProgramID());
 
         auto node4 = smgr->AddCamera(3);
         node4->SetShaderProgramID(resourceShader->GetProgramID());
+        node4->SetTranslation(glm::vec3(0.0f,100.0f,0.0f));
+        static_cast<CLCamera*>(node4->GetEntity())->SetCameraTarget(glm::vec3(0.0f,0.0f,0.0f));
 
-        auto node5 = node2->AddMesh(4);
+        auto node5 = node3->AddMesh(4);
         node5->SetShaderProgramID(resourceShader->GetProgramID());
 
 
@@ -111,19 +114,19 @@ int main() {
     int max = 200;
     int min = -200;
     int j = 0;
-    for(int i = 6; i<200; i++){
-        nodes.push_back(smgr->AddMesh(i));
-        nodes[j]->SetShaderProgramID(resourceShader->GetProgramID());
+    // for(int i = 6; i<200; i++){
+    //     nodes.push_back(smgr->AddMesh(i));
+    //     nodes[j]->SetShaderProgramID(resourceShader->GetProgramID());
 
-        int randNumX = rand()%(max-min + 1) + min;
-        int randNumY = rand()%(max-min + 1) + min;
-        int randNumZ = rand()%(max-min + 1) + min;
-        static_cast<CLMesh*>(nodes[j]->GetEntity())->SetMesh(resourceMesh);
-        nodes[j]->SetTranslation(glm::vec3(randNumX,randNumY,randNumZ));
-        j++;
-    }
+    //     int randNumX = rand()%(max-min + 1) + min;
+    //     int randNumY = rand()%(max-min + 1) + min;
+    //     int randNumZ = rand()%(max-min + 1) + min;
+    //     static_cast<CLMesh*>(nodes[j]->GetEntity())->SetMesh(resourceMesh);
+    //     nodes[j]->SetTranslation(glm::vec3(randNumX,randNumY,randNumZ));
+    //     j++;
+    // }
 
-         smgr->DrawTree(smgr);
+    //      smgr->DrawTree(smgr);
 
 
     static_cast<CLMesh*>(node3->GetEntity())->SetMesh(resourceMesh);
@@ -256,7 +259,6 @@ int main() {
         ImGui::SliderFloat3("Light",auxLight,0,1);
         ImGui::SliderFloat3("LightPos",auxLightPos,-100,100);
         ImGui::SliderFloat3("CameraPos",auxCameraPos,-50,400);
-        //node3.get()->SetTranslation(glm::vec3(auxCameraPos[0], auxCameraPos[1], auxCameraPos[2]));
         ImGui::SliderFloat("specularStrength",&specularStrength,0,1);
         ImGui::SliderFloat("attenuationValue",&attenuationValue,0,0.1f);
         ImGui::End(); 
@@ -267,7 +269,6 @@ int main() {
         glm::vec3 cameraPos(auxCameraPos[0], auxCameraPos[1], auxCameraPos[2]);
         node4->SetTranslation(cameraPos);
 
-        glUseProgram(resourceShader->GetProgramID());
         //Luces y colores
         glUniform3fv(glGetUniformLocation(resourceShader->GetProgramID(), "objectColor"),1,glm::value_ptr(color));
         glUniform3fv(glGetUniformLocation(resourceShader->GetProgramID(), "lightColor"),1,glm::value_ptr(light));
@@ -277,7 +278,7 @@ int main() {
         glUniform1f(glGetUniformLocation(resourceShader->GetProgramID(), "attenuationValue"),attenuationValue);
 
         
-        smgr->SetRotation(glm::vec3(0.0f,0.0f,index));
+        node3->SetRotation(glm::vec3(0.0f,0.0f,index));
 
 
 

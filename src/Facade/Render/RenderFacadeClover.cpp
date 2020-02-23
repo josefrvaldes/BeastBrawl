@@ -143,12 +143,14 @@ const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
     }
 
 
-    if(entity->HasComponent(CompType::ShaderComp)){
-        auto shader = resourceManager->GetResourceShader(cShader->vertexShader,cShader->fragmentShader);
-        node->SetShaderProgramID(shader->GetProgramID());
-    }
+    
+    auto shader = resourceManager->GetResourceShader(cShader->vertexShader,cShader->fragmentShader);
+    node->SetShaderProgramID(shader->GetProgramID());
 
-    auto prueba = smgr->GetNodeByID((unsigned int)cId->id);
+    //Seteamos valores
+    node->SetTranslation(cTransformable->position);
+    node->SetRotation(cTransformable->rotation);
+    node->SetScalation(cTransformable->scale);
     //Esto luego deberia calcular con opengl las dimensiones
     //Sacamos sus dimensiones
     float height = 10.0;
@@ -169,7 +171,6 @@ const uint16_t RenderFacadeClover::FacadeAddObjectCar(Entity* entity) {
 
 const uint16_t RenderFacadeClover::FacadeAddObjectTotem(Entity* entity) {
     idTotem = FacadeAddObject(entity);
-    cout << "El nuevo ID de totem es: " << idTotem << "\n";
     return idTotem;
 }
 
@@ -287,8 +288,14 @@ void RenderFacadeClover::UpdateCamera(Entity* cam, ManCar* manCars) {
 //Añade la camara, esto se llama una sola vez al crear el juego
 void RenderFacadeClover::FacadeAddCamera(Entity* camera) {
     auto cId = static_cast<CId*>(camera->GetComponent(CompType::IdComp).get());
+    auto cShader = static_cast<CShader*>(camera->GetComponent(CompType::ShaderComp).get());
 
     auto camera1 = smgr->AddCamera(cId->id);
+
+    //leemos y asignamos el shader
+    auto shader = resourceManager->GetResourceShader(cShader->vertexShader,cShader->fragmentShader);
+    camera1->SetShaderProgramID(shader->GetProgramID());
+
     auto cameraEntity = static_cast<CLCamera*>(camera1->GetEntity());
 
     auto cTransformable = static_cast<CTransformable*>(camera->GetComponent(CompType::TransformableComp).get());
@@ -296,8 +303,15 @@ void RenderFacadeClover::FacadeAddCamera(Entity* camera) {
 
     float posX = cCamera->tarX - 40.0 * sin(((cTransformable->rotation.x) * M_PI) / 180.0);
     float posZ = cCamera->tarZ - 40.0 * cos(((cTransformable->rotation.z) * M_PI) / 180.0);
-    cameraEntity->SetCameraTarget(glm::vec3(cCamera->tarX, cCamera->tarY, cCamera->tarZ));
-    camera1->SetTranslation(glm::vec3(posX, cTransformable->position.y, posZ));
+    // cameraEntity->SetCameraTarget(glm::vec3(cCamera->tarX, cCamera->tarY, cCamera->tarZ));
+    // camera1->SetTranslation(glm::vec3(posX, cTransformable->position.y, posZ));
+    // camera1->SetRotation(cTransformable->rotation);
+    // camera1->SetScalation(cTransformable->scale);
+
+    cameraEntity->SetCameraTarget(glm::vec3(0.0f, 0.0f, 0.0f));
+    camera1->SetTranslation(glm::vec3(300.0f,300.0f,-800.0f));
+    camera1->SetRotation(glm::vec3(0.0f,0.0f,0.0f));
+    camera1->SetScalation(glm::vec3(1.0f,1.0f,1.0f));
     
 }
 
@@ -373,10 +387,10 @@ void RenderFacadeClover::FacadeBeginScene() const{
 }
 
 void RenderFacadeClover::FacadeDrawAll() const{
+    device->DrawTree();
 }
 
 void RenderFacadeClover::FacadeEndScene() const{
-    device->DrawTree();
     device->PollEvents();
     device->EndScene();
 }

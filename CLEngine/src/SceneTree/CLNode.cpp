@@ -123,7 +123,8 @@ void CLNode::ActivateFlag() {
 
 glm::mat4 CLNode::TranslateMatrix(){
     glm::mat4 aux = glm::mat4(1.0f);
-    return glm::translate(aux, translation);
+    aux = glm::translate(aux, translation);
+    return aux;
 }
 
 glm::mat4 CLNode::RotateMatrix(){
@@ -136,7 +137,8 @@ glm::mat4 CLNode::RotateMatrix(){
 
 glm::mat4 CLNode::ScaleMatrix(){
     glm::mat4 aux = glm::mat4(1.0f);
-    return glm::scale(aux, scalation);
+    aux = glm::scale(aux, scalation);
+    return aux;
 }
 
 glm::mat4 CLNode::CalculateTransformationMatrix() {
@@ -155,28 +157,7 @@ void CLNode::Scale(glm::vec3 s) {
     scalation = s;
 }
 
-void CLNode::DrawTree(CLNode* root){
-    if(root->GetChilds().size()>0){
-        //Tiene hijos
-        if( root->GetEntity() && !root->GetEntity()->GetID())
-            cout << root->GetEntity()->GetID() << " con hijos: ";
-        else
-            cout << "Este es un nodo sin entity con hijos: ";
 
-        for(auto& nodo : root->GetChilds()){
-            if(nodo->GetEntity() && nodo->GetEntity()->GetID())
-                cout << nodo->GetEntity()->GetID() << " ";
-            else
-                cout << "(Este es un nodo sin entity)\n";
-        }
-        cout << "\n";
-        for(auto& nodo : root->GetChilds()){
-            DrawTree(nodo.get());
-        }
-    }
-
-    return;
-}
 
 void CLNode::DFSTree(glm::mat4 mA) {
 
@@ -191,8 +172,9 @@ void CLNode::DFSTree(glm::mat4 mA) {
         changed = false;
     }
 
-    if(entity) {
+    if(entity) { 
         // La matriz model se pasa aqui wey
+        glUseProgram(shaderProgramID);
         glUniformMatrix4fv(glGetUniformLocation(shaderProgramID, "model"), 1, GL_FALSE, glm::value_ptr(transformationMat));
         entity->Draw(transformationMat);
     }
@@ -212,11 +194,13 @@ void CLNode::CalculateViewProjMatrix(){
     for(auto camera : cameras){
         auto entityCamera = static_cast<CLCamera*>(camera->GetEntity());
         if(entityCamera->IsActive()){
+            glUseProgram(camera->GetShaderProgramID());
+
             projection    = entityCamera->CalculateProjectionMatrix();
             glUniformMatrix4fv(glGetUniformLocation(camera->GetShaderProgramID(), "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 
             // Vector posicion de la camara, vector de posicion destino y vector ascendente en el espacio mundial. 
-            view = glm::lookAt(camera->GetTranslation(), /*camera->GetTranslation() + */entityCamera->GetCameraTarget(), entityCamera->GetCameraUp());
+            view = glm::lookAt(camera->GetTranslation(), -entityCamera->GetCameraTarget(), entityCamera->GetCameraUp());
             glUniformMatrix4fv(glGetUniformLocation(camera->GetShaderProgramID(), "view"), 1, GL_FALSE, glm::value_ptr(view));
 
         }
@@ -249,4 +233,31 @@ CLNode* CLNode::GetNodeByIDAux(unsigned int id, CLNode* node, CLNode* root){
     }
 
     return node;
+}
+
+
+/**
+ * Metodo de debug para imprimir los nodos del arbol
+ */
+void CLNode::DrawTree(CLNode* root){
+    if(root->GetChilds().size()>0){
+        //Tiene hijos
+        if( root->GetEntity() && !root->GetEntity()->GetID())
+            cout << root->GetEntity()->GetID() << " con hijos: ";
+        else
+            cout << "Este es un nodo sin entity con hijos: ";
+
+        for(auto& nodo : root->GetChilds()){
+            if(nodo->GetEntity() && nodo->GetEntity()->GetID())
+                cout << nodo->GetEntity()->GetID() << " ";
+            else
+                cout << "(Este es un nodo sin entity)\n";
+        }
+        cout << "\n";
+        for(auto& nodo : root->GetChilds()){
+            DrawTree(nodo.get());
+        }
+    }
+
+    return;
 }
