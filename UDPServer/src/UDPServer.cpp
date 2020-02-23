@@ -32,13 +32,10 @@ void UDPServer::StartReceiving() {
 void UDPServer::HandleReceive(std::shared_ptr<unsigned char[]> recevBuff, std::shared_ptr<udp::endpoint> remoteClient, const boost::system::error_code& errorCode, std::size_t bytesTransferred) {
     // cout << "Hemos recibido una petición del endpoint " << remoteClient.address() << ":" << remoteClient.port() << endl;
     if (!errorCode) {
-        uint8_t petitionType;
-        uint16_t idPlayer;
-        int64_t time;
         size_t currentIndex = 0;
-        Utils::Deserialize(&petitionType, recevBuff.get(), currentIndex);
-        Utils::Deserialize(&time, recevBuff.get(), currentIndex);
-        Utils::Deserialize(&idPlayer, recevBuff.get(), currentIndex);
+        uint8_t petitionType = Utils::Deserialize<uint8_t>(recevBuff.get(), currentIndex);
+        int64_t time = Utils::Deserialize<int64_t>(recevBuff.get(), currentIndex);
+        uint16_t idPlayer = Utils::Deserialize<uint16_t>(recevBuff.get(), currentIndex);
         cout << Utils::getISOCurrentTimestampMillis() << " Hemos recibido en el server la llamada " << time << " de tipo " << unsigned(petitionType) << " del user " << idPlayer << endl;
         // TODO: esto creo que podría evitarse
         unsigned char buffRecieved[Constants::ONLINE_BUFFER_SIZE];
@@ -93,26 +90,20 @@ void UDPServer::HandleReceivedInputs(const uint16_t id, const unsigned char rese
 
 void UDPServer::HandleReceivedSync(const uint16_t id, unsigned char recevBuff[], const size_t currentBufferSize, const udp::endpoint& originalClient) {
     size_t currentIndex = 0;
-    uint8_t petitionType;
-    uint16_t idCarOnline;
-    int64_t time;
     typeCPowerUp typePU;
-    int64_t totemTime;
-    glm::vec3 posTotem(0.0, 0.0, 0.0);
-    bool haveTotem;
-    bool totemInGround;
 
-    Utils::Deserialize(&petitionType, recevBuff, currentIndex);
-    Utils::Deserialize(&time, recevBuff, currentIndex);
-
-    Utils::Deserialize(&idCarOnline, recevBuff, currentIndex);
+    Utils::Deserialize<uint8_t>(recevBuff, currentIndex);  // petitionType
+    int64_t time = Utils::Deserialize<int64_t>(recevBuff, currentIndex);
+    uint16_t idCarOnline = Utils::Deserialize<uint16_t>(recevBuff, currentIndex);
     glm::vec3 posCar = Utils::DeserializeVec3(recevBuff, currentIndex);
     glm::vec3 rotCar = Utils::DeserializeVec3(recevBuff, currentIndex);
 
+    glm::vec3 posTotem(0.0, 0.0, 0.0);
+    bool haveTotem;
+    bool totemInGround;
     Utils::DeserializePowerUpTotem(recevBuff, typePU, haveTotem, totemInGround, currentIndex);
 
-    Utils::Deserialize(&totemTime, recevBuff, currentIndex);
-    // realizar llamadas al event Manager de manCar
+    /*int64_t totemTime = */ Utils::Deserialize<int64_t>(recevBuff, currentIndex);  // totemTime
 
     if (totemInGround) {
         posTotem = Utils::DeserializeVec3(recevBuff, currentIndex);
@@ -134,9 +125,9 @@ void UDPServer::ResendBytesToOthers(const uint16_t id, const unsigned char resen
 
     for (Player& currentPlayer : players) {
         if (currentPlayer.id != id) {
-            const auto& currentEndpoint = currentPlayer.endpoint;
-            const auto& currentAddress = currentEndpoint.address().to_string();
-            const auto& currentPort = currentEndpoint.port();
+            // const auto& currentEndpoint = currentPlayer.endpoint;
+            // const auto& currentAddress = currentEndpoint.address().to_string();
+            // const auto& currentPort = currentEndpoint.port();
             // cout << "Vamos a reenviar bytes del cliente [" << id << "] a [" << currentPlayer.id << "] " << currentAddress << ":" << currentPort << " a los demás" << endl;
             SendBytes(resendBytes, currentBufferSize, currentPlayer);
         }

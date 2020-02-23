@@ -232,9 +232,13 @@ class Utils {
     // }
 
     template <typename T>
-    static void Deserialize(T* item, unsigned char* buff, size_t& currentIndex) {
-        size_t itemSize = sizeof(*item);
-        Deserialize(item, itemSize, buff, currentIndex);
+    static T Deserialize(unsigned char* buff, size_t& currentIndex) {
+        T item;
+        size_t itemSize = sizeof(item);
+        
+        memcpy(&item, &buff[currentIndex], itemSize);
+        currentIndex += itemSize;
+        return item;
         // for(size_t i = 0; i < currentSize; i++) {
         //     cout << "item " << i << " = " << unsigned(buff[i]) << endl;
         // }
@@ -263,7 +267,8 @@ class Utils {
     }
 
     template <typename T>
-    static void DeserializeVector(vector<T>& vector, size_t numElements, unsigned char* buff, size_t& currentIndex) {
+    static vector<T> DeserializeVector(size_t numElements, unsigned char* buff, size_t& currentIndex) {
+        vector<T> vector;
         for (size_t i = 0; i < numElements; i++) {
             T elem;
             size_t itemSize = sizeof(elem);
@@ -271,6 +276,7 @@ class Utils {
             // vector[i] = elem;
             vector.push_back(elem);
         }
+        return vector;
     }
 
     static void SerializeInputs(unsigned char* buff, const vector<Constants::InputTypes>& inputs, size_t& currentSize) {

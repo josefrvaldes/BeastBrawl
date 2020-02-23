@@ -119,14 +119,11 @@ void TCPClient::HandleReceived(std::shared_ptr<unsigned char[]> recevBuff, const
     }
 
     if (!errorCode && bytesTransferred > 0) {
-        uint16_t idPlayer;
-        uint8_t enemiesSize;
-        vector<uint16_t> idEnemies;
         size_t currentIndex = 0;
 
-        Utils::Deserialize(&idPlayer, recevBuff.get(), currentIndex);
-        Utils::Deserialize(&enemiesSize, recevBuff.get(), currentIndex);
-        Utils::DeserializeVector(idEnemies, enemiesSize, recevBuff.get(), currentIndex);
+        uint16_t idPlayer = Utils::Deserialize<uint16_t>(recevBuff.get(), currentIndex);
+        uint8_t enemiesSize = Utils::Deserialize<uint8_t>(recevBuff.get(), currentIndex);
+        vector<uint16_t> idEnemies = Utils::DeserializeVector<uint16_t>(enemiesSize, recevBuff.get(), currentIndex);
         
         std::shared_ptr<DataMap> data = make_shared<DataMap>();
         (*data)[DataType::ID_ONLINE] = idPlayer;

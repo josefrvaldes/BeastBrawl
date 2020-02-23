@@ -54,12 +54,9 @@ void UDPClient::StartReceiving() {
 void UDPClient::HandleReceived(std::shared_ptr<unsigned char[]> recevBuff, const boost::system::error_code& errorCode, std::size_t bytesTransferred) {
     if (!errorCode) {
         size_t currentIndex = 0;
-        uint8_t petitionType;
-        int64_t time;
-        uint16_t idPlayer;
-        Utils::Deserialize(&petitionType, recevBuff.get(), currentIndex);
-        Utils::Deserialize(&time, recevBuff.get(), currentIndex);
-        Utils::Deserialize(&idPlayer, recevBuff.get(), currentIndex);
+        uint8_t petitionType = Utils::Deserialize<uint8_t>(recevBuff.get(), currentIndex);
+        int64_t time = Utils::Deserialize<int64_t>(recevBuff.get(), currentIndex);
+        uint16_t idPlayer = Utils::Deserialize<uint16_t>(recevBuff.get(), currentIndex);
 
         Constants::PetitionTypes callType = static_cast<Constants::PetitionTypes>(petitionType);
         switch (callType) {
@@ -131,25 +128,22 @@ void UDPClient::HandleReceivedInputs(const vector<Constants::InputTypes> inputs,
 
 void UDPClient::HandleReceivedSync(unsigned char* recevBuff, size_t bytesTransferred) {
     size_t currentIndex = 0;
-    uint8_t petitionType;
-    int64_t time;
-    uint16_t idCarOnline;
-    typeCPowerUp typePU;
-    int64_t totemTime;
-    glm::vec3 posTotem(0.0, 0.0, 0.0);
-    bool haveTotem;
-    bool totemInGround;
 
-    Utils::Deserialize(&petitionType, recevBuff, currentIndex);
-    Utils::Deserialize(&time, recevBuff, currentIndex);
-    Utils::Deserialize(&idCarOnline, recevBuff, currentIndex);
+    Utils::Deserialize<uint8_t>(recevBuff, currentIndex); // petition time
+    int64_t time = Utils::Deserialize<int64_t>(recevBuff, currentIndex); 
+    uint16_t idCarOnline = Utils::Deserialize<uint16_t>(recevBuff, currentIndex);
 
     glm::vec3 posCar = Utils::DeserializeVec3(recevBuff, currentIndex);
     glm::vec3 rotCar = Utils::DeserializeVec3(recevBuff, currentIndex);
 
+
+    typeCPowerUp typePU;
+    bool haveTotem;
+    bool totemInGround;
     Utils::DeserializePowerUpTotem(recevBuff, typePU, haveTotem, totemInGround, currentIndex);
 
-    Utils::Deserialize(&totemTime, recevBuff, currentIndex);
+    int64_t totemTime = Utils::Deserialize<int64_t>(recevBuff, currentIndex);
+    
     // realizar llamadas al event Manager de manCar
     std::shared_ptr<DataMap> data = make_shared<DataMap>();
     (*data)[DataType::ID_ONLINE] = idCarOnline;
@@ -160,6 +154,7 @@ void UDPClient::HandleReceivedSync(unsigned char* recevBuff, size_t bytesTransfe
     (*data)[DataType::TIME_TOTEM] = totemTime;
     EventManager::GetInstance().AddEventMulti(Event{EventType::NEW_SYNC_RECEIVED_CAR, data});
 
+    glm::vec3 posTotem(0.0, 0.0, 0.0);
     if (totemInGround) {
         posTotem = Utils::DeserializeVec3(recevBuff, currentIndex);
     }
