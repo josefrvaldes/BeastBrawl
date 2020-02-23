@@ -77,15 +77,15 @@ class Utils {
     }
 
     static string getISOCurrentTimestampMillis() {
-        return getISOCurrentTimestamp<chrono::milliseconds>();
+        return getISOCurrentTimestamp<std::chrono::milliseconds>();
     }
 
     static string getISOCurrentTimestampMicros() {
-        return getISOCurrentTimestamp<chrono::microseconds>();
+        return getISOCurrentTimestamp<std::chrono::microseconds>();
     }
 
     static string getISOCurrentTimestampSeconds() {
-        return getISOCurrentTimestamp<chrono::seconds>();
+        return getISOCurrentTimestamp<std::chrono::seconds>();
     }
 
     static int64_t getMicrosSinceEpoch() {

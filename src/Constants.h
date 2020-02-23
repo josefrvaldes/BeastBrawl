@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstddef>
+
 //#define SERVER_HOST "54.38.189.168"
 //#define SERVER_PORT_UDP 80
 //#define SERVER_PORT_TCP 80

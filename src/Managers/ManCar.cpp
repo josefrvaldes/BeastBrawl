@@ -5,6 +5,7 @@
 #include "ManPowerUp.h"
 #include "ManTotem.h"
 
+#include <Components/CBufferOnline.h>
 #include <Components/CCar.h>
 #include <Components/CDimensions.h>
 #include <Components/CNitro.h>
@@ -254,13 +255,20 @@ void ManCar::NewInputsReceived(DataMap* d) {
     // cout << Utils::getISOCurrentTimestampMillis() << " Hemos recibido un input del id " << idRecieved << endl;
     auto inputs = any_cast<vector<Constants::InputTypes>>((*d)[DataType::INPUTS]);
     for (shared_ptr<Entity> car : entities) {
-        if (car->HasComponent(CompType::OnlineComp)) {
+        if (car->HasComponent(CompType::OnlineComp) && car->HasComponent(CompType::BufferOnline)) {
             COnline* compOnline = static_cast<COnline*>(car->GetComponent(CompType::OnlineComp).get());
             uint16_t currentIDOnline = compOnline->idClient;
             // cout << "El idOnline es " << currentIDOnline << endl;
             if (currentIDOnline == idRecieved) {
                 // cout << "Hemos encontrado un coche con el id " << id << " y vamos a actualizarle la pos" << endl;
                 compOnline->inputs = inputs;
+                // physics->UpdateHuman(static_cast<Car*>(car.get()));
+                
+                // CBufferOnline* buffer = static_cast<CBufferOnline*>(car->GetComponent(CompType::BufferOnline).get());
+                // CTransformable* cTransformable = static_cast<CTransformable*>(car->GetComponent(CompType::TransformableComp).get());
+
+                // BuffElement elem(inputs, cTransformable->position, cTransformable->rotation);
+                // buffer->elems.push_back(elem);
                 break;
             }
         }

@@ -17,6 +17,7 @@ enum CompType {
     CarComp,
     PowerUpComp,
     BoxPowerUpComp,
+    BufferOnline,
     ShieldComp,
     NitroComp,
     RoboJoroboComp,

@@ -59,12 +59,7 @@ class UDPClient {
     std::thread butler;
     // boost::asio::io_context::strand strand;
 
-    unordered_map<uint16_t, uint16_t> lastInputReceived;
-    unordered_map<uint16_t, uint16_t> lastSyncReceived;
+    unordered_map<uint16_t, int64_t> lastTimeInputReceived;
+    unordered_map<uint16_t, int64_t> lastTimeSyncReceived;
 
-    // uint16_t lastInputIDReceived{0};
-    // uint16_t lastSyncIDReceived{0};
-
-    inline static uint16_t currentInputID {0};
-    inline static uint16_t currentSyncID {0};
 };

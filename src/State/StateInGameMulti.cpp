@@ -1,4 +1,5 @@
 #include "StateInGameMulti.h"
+#include <Components/CBufferOnline.h>
 #include <Components/CTotem.h>
 #include "../Components/COnline.h"
 #include "../Systems/SystemOnline.h"
@@ -39,6 +40,17 @@ StateInGameMulti::StateInGameMulti(uint16_t IdOnline, const vector<uint16_t> IdP
 
     CAMBIARCosasNavMesh(*manCars.get(), *manNavMesh.get());
     // while(true){sleep(500);}; // esto solo sirve para depurar
+
+
+    for (const auto &car : manCars->GetEntities()) {
+        const auto cTransformable = static_cast<CTransformable *>(manCars->GetCar()->GetComponent(CompType::TransformableComp).get());
+
+        shared_ptr<CBufferOnline> buffer = make_shared<CBufferOnline>();        
+        BuffElement elem(inputs, cTransformable->position, cTransformable->rotation);
+        buffer->elems.push_back(elem);
+
+        car->AddComponent(buffer);
+    }
 }
 
 StateInGameMulti::~StateInGameMulti() {
