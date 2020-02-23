@@ -13,7 +13,7 @@ else
 	CXXFLAGS += -O3
 endif
 
-INCLUDE     := -I. 
+INCLUDE     := -I. -I../include
 CC			:= ccache g++
 
 

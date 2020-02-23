@@ -128,8 +128,8 @@ void UDPServer::HandleReceivedSync(const uint16_t id, unsigned char recevBuff[],
 }
 
 void UDPServer::ResendBytesToOthers(const uint16_t id, const unsigned char resendBytes[], const size_t currentBufferSize, const udp::endpoint& originalClient) {
-    string originalAddress = originalClient.address().to_string();
-    uint16_t originalPort = originalClient.port();
+    // string originalAddress = originalClient.address().to_string();
+    // uint16_t originalPort = originalClient.port();
     // cout << "Vamos a reenviar bytes del cliente [" << id << "] y que tiene la dirección " << originalAddress << ":" << originalPort << " a los demás" << endl;
 
     for (Player& currentPlayer : players) {
