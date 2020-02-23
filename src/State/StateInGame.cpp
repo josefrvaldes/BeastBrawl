@@ -8,6 +8,7 @@
 #include "../Components/CBoundingSphere.h"
 #include "../Components/CBoundingCilindre.h"
 #include "../Components/CTotem.h"
+#include "../Constants.h"
 
 using namespace std;
 using namespace chrono;
@@ -15,7 +16,10 @@ using namespace chrono;
 StateInGame::StateInGame() {
     // aunque physics es un sistema, no se llama desde InitializeSystems
     // porque tiene que estar inicializado antes de llamar a InitializeManagers
-    physics = make_unique<Physics>(deltaTime);
+    cout << "------------------------------------------------------------------" << endl;
+    cout << "delta vale" << Constants::DELTA_TIME << endl;
+    cout << "------------------------------------------------------------------" << endl;
+    physics = make_unique<Physics>(Constants::DELTA_TIME);
 
     cam = make_shared<Camera>(glm::vec3(100.0f, 600.0f, 30.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f));
     ground = make_shared<GameObject>(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), "", "training_ground.obj");

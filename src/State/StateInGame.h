@@ -50,6 +50,7 @@
 #include <Components/CNavMesh.h>
 #include <Components/CCurrentNavMesh.h>
 #include "../Managers/ManBoundingOBB.h"
+#include "../Constants.h"
 
 
 using namespace std;
@@ -88,7 +89,7 @@ class StateInGame : public State {
 
     shared_ptr<Physics> physics;
     //shared_ptr<float> deltaTime;
-    float deltaTime = 0.0166666;
+    
     shared_ptr<PhysicsPowerUp> phisicsPowerUp;
     shared_ptr<SystemBoxPowerUp> sysBoxPowerUp;
     shared_ptr<Collisions> collisions;

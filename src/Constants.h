@@ -12,12 +12,14 @@
 #define SERVER_HOST_OVH "54.38.189.168"
 
 #define MIN_NUM_PLAYERS 4
+#define FRAME_RATE 30
 
 class Constants {
    public:
     inline static const bool DEBUG_SHOW_CHASSIS{true};
     inline static const bool DEBUG_SHOW_SPHERES{true};
     inline static const size_t ONLINE_BUFFER_SIZE{512};
+    inline static const float DELTA_TIME{1.0 / FRAME_RATE};
 
     enum InputTypes { FORWARD,
                       BACK,
