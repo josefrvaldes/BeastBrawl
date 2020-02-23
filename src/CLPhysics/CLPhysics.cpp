@@ -68,15 +68,19 @@ void CLPhysics::CentralSystemGravity(){
 
 void CLPhysics::ConstGravity(){
     ManCar *manCar = static_cast<ManCar *>(managers[0]);
-    const auto& cars = manCar->GetEntities();
-    size_t numCar = cars.size();
-    for (size_t currentCar = 0; currentCar < numCar; currentCar++) {
-        Entity *car = manCar->GetEntities()[currentCar].get();
+    for(auto car : manCar->GetEntities()){
         CBoundingChassis *chaCar = static_cast<CBoundingChassis *>(car->GetComponent(CompType::CompBoundingChassis).get());
         CTransformable *trcar = static_cast<CTransformable *>(car->GetComponent(CompType::TransformableComp).get());
         chaCar->sphereBehind->center.y += gravity;
         chaCar->sphereFront->center.y += gravity;
         RePositionCarY(*trcar, *chaCar->sphereBehind, *chaCar->sphereFront);
+    }
+    ManPowerUp *manPowerUp = static_cast<ManPowerUp *>(managers[4]);
+    for(auto powerUp : manPowerUp->GetEntities()){
+        CBoundingSphere *spEntity = static_cast<CBoundingSphere *>(powerUp->GetComponent(CompType::CompBoundingSphere).get());
+        CTransformable *trEntity = static_cast<CTransformable *>(powerUp->GetComponent(CompType::TransformableComp).get());
+        spEntity->center.y += gravity;
+        RePositionEntityY(*trEntity, *spEntity);
     }
 }
 
@@ -98,30 +102,6 @@ void CLPhysics::aplicateGravity(){
     }
 }
 
-void CLPhysics::LimitRotationCarY() const{
-    ManCar *manCar = static_cast<ManCar *>(managers[0]);
-    const auto& cars = manCar->GetEntities();
-    size_t numCar = cars.size();
-    for (size_t currentCar = 0; currentCar < numCar; currentCar++) {
-        Entity *car = manCar->GetEntities()[currentCar].get();
-        CBoundingChassis *chaCar = static_cast<CBoundingChassis *>(car->GetComponent(CompType::CompBoundingChassis).get());
-        CTransformable *trcar = static_cast<CTransformable *>(car->GetComponent(CompType::TransformableComp).get());
-        vec3 vecDirCar = vec3((chaCar->sphereFront->center.x-chaCar->sphereBehind->center.x),(chaCar->sphereFront->center.y-chaCar->sphereBehind->center.y),(chaCar->sphereFront->center.z-chaCar->sphereBehind->center.z));
-        vec3 vecDirEjeY = vec3((chaCar->sphereFront->center.x-chaCar->sphereBehind->center.x),0,(chaCar->sphereFront->center.z-chaCar->sphereBehind->center.z));
-        double anguloo = Angle2Vectors(vecDirCar, vecDirEjeY);
-        int anguloEntero = int(anguloo);
-        if(chaCar->sphereFront->center.y < chaCar->sphereBehind->center.y)
-            anguloEntero = -1*anguloEntero;
-        // TODO: Solo el Front no lo podemos limitar, deben ser lso dos porque puedo ir marcha atras
-        if(anguloEntero < -30){
-            chaCar->sphereFront->center.y -= gravity; 
-        }
-        if(anguloEntero > 30){
-            chaCar->sphereFront->center.y -= gravity; 
-        }
-        RePositionCarY(*trcar, *chaCar->sphereBehind, *chaCar->sphereFront);
-    }
-}
 
 void CLPhysics::HandleCollisionsWithGround() {
     ManCar *manCar = static_cast<ManCar *>(managers[0]);
@@ -146,7 +126,6 @@ void CLPhysics::HandleCollisionsWithGround() {
         CBoundingSphere *spFrontCar = chaCar->sphereFront.get();
         CTransformable *trcar = static_cast<CTransformable *>(car->GetComponent(CompType::TransformableComp).get());
         //CId *carId = static_cast<CId *>(car->GetComponent(CompType::IdComp).get());
-        CCar *ccarcar = static_cast<CCar *>(car->GetComponent(CompType::CarComp).get());
 
 
         bool interBeh = false;
@@ -154,7 +133,7 @@ void CLPhysics::HandleCollisionsWithGround() {
             BoundingWall *ground = static_cast<BoundingWall *>(grounds[currentGround].get());
             CBoundingPlane *plane = static_cast<CBoundingPlane *>(ground->GetComponent(CompType::CompBoundingPlane).get());
             //sameGround = CollisionsChassisGround(*trcar, *chaCar, *ccarcar, false, *plane);
-            interBeh = CollisionsSphereGround(*trcar, *spBehindCar, *ccarcar, *plane);
+            interBeh = CollisionsSphereGround(*trcar, *spBehindCar, *plane);
             if(interBeh){
                 planeSphereBehind = plane;
                 //cout << " EL BEHIND COLISIONA CON EL PLANO: " << currentGround << endl;
@@ -164,7 +143,7 @@ void CLPhysics::HandleCollisionsWithGround() {
         for (size_t currentGround = 0; currentGround < numGrounds && !interFro; currentGround++) {
             BoundingWall *ground = static_cast<BoundingWall *>(grounds[currentGround].get());
             CBoundingPlane *plane = static_cast<CBoundingPlane *>(ground->GetComponent(CompType::CompBoundingPlane).get());
-            interFro = CollisionsSphereGround(*trcar, *spFrontCar, *ccarcar, *plane);
+            interFro = CollisionsSphereGround(*trcar, *spFrontCar, *plane);
             if(interFro){ 
                 planeSphereFront = plane;
                 //cout << " EL FRONT COLISIONA CON EL PLANO: " << currentGround << endl;
@@ -172,10 +151,52 @@ void CLPhysics::HandleCollisionsWithGround() {
         }
         //cout << "pase" << endl;
         RePositionCarY(*trcar, *spBehindCar, *spFrontCar);
-        //PREGUNTAR VALDES
-        if(planeSphereFront || planeSphereBehind){
+        if(planeSphereFront && planeSphereBehind){
             RotateCarXZ(*trcar, *chaCar, planeSphereBehind, planeSphereFront);
         }
+    }
+
+
+    ManCar *manPowerUp = static_cast<ManCar *>(managers[4]);
+    // los coches con los grounds
+    for (auto currentPU : manPowerUp->GetEntities()) {
+        CBoundingSphere *cSphere = static_cast<CBoundingSphere *>(currentPU->GetComponent(CompType::CompBoundingSphere).get());
+        CTransformable *trEntity = static_cast<CTransformable *>(currentPU->GetComponent(CompType::TransformableComp).get());
+ 
+        for (size_t currentGround = 0; currentGround < numGrounds; currentGround++) {
+            BoundingWall *ground = static_cast<BoundingWall *>(grounds[currentGround].get());
+            CBoundingPlane *plane = static_cast<CBoundingPlane *>(ground->GetComponent(CompType::CompBoundingPlane).get());
+            CollisionsSphereGround(*trEntity, *cSphere, *plane);
+            RePositionEntityY(*trEntity, *cSphere);
+        }
+    }
+
+}
+
+
+
+void CLPhysics::LimitRotationCarY() const{
+    ManCar *manCar = static_cast<ManCar *>(managers[0]);
+    const auto& cars = manCar->GetEntities();
+    size_t numCar = cars.size();
+    for (size_t currentCar = 0; currentCar < numCar; currentCar++) {
+        Entity *car = manCar->GetEntities()[currentCar].get();
+        CBoundingChassis *chaCar = static_cast<CBoundingChassis *>(car->GetComponent(CompType::CompBoundingChassis).get());
+        CTransformable *trcar = static_cast<CTransformable *>(car->GetComponent(CompType::TransformableComp).get());
+        vec3 vecDirCar = vec3((chaCar->sphereFront->center.x-chaCar->sphereBehind->center.x),(chaCar->sphereFront->center.y-chaCar->sphereBehind->center.y),(chaCar->sphereFront->center.z-chaCar->sphereBehind->center.z));
+        vec3 vecDirEjeY = vec3((chaCar->sphereFront->center.x-chaCar->sphereBehind->center.x),0,(chaCar->sphereFront->center.z-chaCar->sphereBehind->center.z));
+        double anguloo = Angle2Vectors(vecDirCar, vecDirEjeY);
+        int anguloEntero = int(anguloo);
+        if(chaCar->sphereFront->center.y < chaCar->sphereBehind->center.y)
+            anguloEntero = -1*anguloEntero;
+        // TODO: Solo el Front no lo podemos limitar, deben ser lso dos porque puedo ir marcha atras
+        if(anguloEntero < -30){
+            chaCar->sphereFront->center.y -= gravity; 
+        }
+        if(anguloEntero > 30){
+            chaCar->sphereFront->center.y -= gravity; 
+        }
+        RePositionCarY(*trcar, *chaCar->sphereBehind, *chaCar->sphereFront);
     }
 }
 
@@ -252,9 +273,9 @@ void CLPhysics::RotateCarXZ(CTransformable &trcar, CBoundingChassis &chaCar, CBo
 bool CLPhysics::CollisionsChassisGround(CTransformable &trCar, CBoundingChassis &chaCar, CCar &ccar, bool mainCar, CBoundingPlane &plane){
     // comprobamos la colision con las dos esferas
     CBoundingSphere *spBehindCar = chaCar.sphereBehind.get();
-    bool interBeh = CollisionsSphereGround(trCar, *spBehindCar, ccar, plane);
+    bool interBeh = CollisionsSphereGround(trCar, *spBehindCar, plane);
     CBoundingSphere *spFrontCar = chaCar.sphereFront.get();
-    bool interFro = CollisionsSphereGround(trCar, *spFrontCar, ccar, plane);
+    bool interFro = CollisionsSphereGround(trCar, *spFrontCar, plane);
     // posicionamos el coche correctamente en Y
     RePositionCarY(trCar, *spBehindCar, *spFrontCar);
 
@@ -266,16 +287,20 @@ void CLPhysics::RePositionCarY(CTransformable &trCar, CBoundingSphere &sp1Car, C
     trCar.position.y = (sp1Car.center.y + sp2Car.center.y) / 2;
 }
 
-bool CLPhysics::CollisionsSphereGround(CTransformable &trCar, CBoundingSphere &spCar, CCar &ccar, CBoundingPlane &plane){
-    IntersectData intersData = plane.IntersectSphereCenter(spCar, trCar, ccar);
+void CLPhysics::RePositionEntityY(CTransformable &trEntity, CBoundingSphere &sphere) const{
+    trEntity.position.y = sphere.center.y;
+}
+
+bool CLPhysics::CollisionsSphereGround(CTransformable &trCar, CBoundingSphere &spCar, CBoundingPlane &plane){
+    IntersectData intersData = plane.IntersectSphereCenter(spCar, trCar);
     if (intersData.intersects) {
-        SeparateSphereGround(intersData, trCar, spCar, ccar, plane);
+        SeparateSphereGround(intersData, trCar, spCar, plane);
         return true;
     }
     return false;
 }
 
-void CLPhysics::SeparateSphereGround(IntersectData &intersData, CTransformable &trCar1, CBoundingSphere &spCar1, CCar &ccarCar1, CBoundingPlane &plane) const {
+void CLPhysics::SeparateSphereGround(IntersectData &intersData, CTransformable &trCar1, CBoundingSphere &spCar1, CBoundingPlane &plane) const {
     //cout << "NO SEPARO" << endl;
     vec3 direction = spCar1.center - plane.normal;  // te da la dirección al otro bounding en x, y, z, es decir, si tenemos 200, 10, 30, significa que estamos a 200 de distancia en x, a 10 en y y a 30 en z
     vec3 nuevaDirectionCar1 = -normalize(direction);

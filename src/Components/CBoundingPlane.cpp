@@ -81,7 +81,7 @@ IntersectData CBoundingPlane::IntersectSphere(const CBoundingSphere &other, cons
 }
 
 
-IntersectData CBoundingPlane::IntersectSphereCenter(const CBoundingSphere &other, const CTransformable &trCar, const CCar &ccarCar){
+IntersectData CBoundingPlane::IntersectSphereCenter(const CBoundingSphere &other, const CTransformable &trCar){
     float distanceFromSpCenter = fabs(dot(normalizedNormal, other.center) - distance);
     // cout << "Distance from sphere center " << distanceFromSpCenter << endl;
     float distanceFromSphere = distanceFromSpCenter - other.radius;

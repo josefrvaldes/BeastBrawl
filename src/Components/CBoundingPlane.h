@@ -19,7 +19,7 @@ class CBoundingPlane : public Component {
 
     // void Normalize();
     IntersectData IntersectSphere(const CBoundingSphere &other, const CTransformable &trCar, const CCar &ccarCar);
-    IntersectData IntersectSphereCenter(const CBoundingSphere &other, const CTransformable &trCar, const CCar &ccarCar); 
+    IntersectData IntersectSphereCenter(const CBoundingSphere &other, const CTransformable &trCar); 
 
     IntersectData IntersectPlane(const CBoundingPlane &other) const;
 
