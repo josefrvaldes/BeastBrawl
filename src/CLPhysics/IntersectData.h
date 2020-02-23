@@ -24,7 +24,8 @@ class IntersectData {
     float GetDistance() {
         return glm::length(direction);
     }
-    const bool intersects;
+    //const bool intersects;
+    bool intersects;
     vec3 direction;
     float distance = 9999999;
     int posEntity; // cuando pasamos un OBB, por ejemplo, y colisionamos con uno de sus planos, para saber con que plano colisionamos

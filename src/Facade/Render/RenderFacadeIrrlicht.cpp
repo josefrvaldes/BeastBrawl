@@ -1078,8 +1078,14 @@ void RenderFacadeIrrlicht::Draw3DLine(vec3& pos1, vec3& pos2, uint16_t r, uint16
     driver->draw3DLine(initial, final, video::SColor(255, r, g, b));
 }
 
+// TODO: El id del compoennte sphere debe crearse en el porpio compoentne y no en el render Fachade o Physics fachade
 void RenderFacadeIrrlicht::DeleteEntity(Entity* entity) {
     auto cId = static_cast<CId*>(entity->GetComponent(CompType::IdComp).get());
+    // si tenemos el compoennte Sphere hay que eliminar... su Bounding
+    if (entity->HasComponent(CompType::CompBoundingSphere)){
+        scene::ISceneNode* nodeSphere = smgr->getSceneNodeFromId(cId->id + Component::ID_DIFFERENCE);
+        nodeSphere->remove();
+    }
     scene::ISceneNode* node = smgr->getSceneNodeFromId(cId->id);
     node->remove();
 }

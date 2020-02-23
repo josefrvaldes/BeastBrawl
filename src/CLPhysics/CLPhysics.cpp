@@ -17,6 +17,7 @@
 #include <Components/CNitro.h>
 #include <Components/CTransformable.h>
 #include <Components/CTotem.h>
+#include "../Components/CShield.h"
 #include "../Components/CGravity.h"
 #include <Entities/BoundingWall.h>
 #include <Entities/Car.h>
@@ -28,6 +29,7 @@
 #include <Managers/ManBoundingGround.h>
 #include <Managers/ManCar.h>
 #include <Managers/ManPowerUp.h>
+#include <Managers/ManBoxPowerUp.h>
 #include <Managers/Manager.h>
 #include <Systems/Utils.h>
 #include "../Facade/Render/RenderFacadeIrrlicht.h"
@@ -1122,3 +1124,116 @@ double CLPhysics::Angle2Vectors(const vec3 &a, const vec3 &b) const{
     // grados = radianes*(180/PI_)
     return angleRad*(180/M_PI);  
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+void CLPhysics::IntersectCarsTotem(ManCar* manCars, ManTotem* manTotem){
+
+    for(const auto& currentCar : manCars->GetEntities()){
+        for(shared_ptr<Entity> currentTotem : manTotem->GetEntities()){                                                       // SI HACE DANYO
+            if(Intersects(currentCar.get(), currentTotem.get())){   //TRUE
+                // debemos coger el TOTEM
+                shared_ptr<DataMap> dataCollisionTotem = make_shared<DataMap>();                                                                         
+                (*dataCollisionTotem)[TOTEM] = currentTotem;              // nos guardamos el puntero para eliminar el powerUp  
+                (*dataCollisionTotem)[ACTUAL_CAR] = currentCar.get();                                           
+                EventManager::GetInstance().AddEventMulti(Event{EventType::COLLISION_AI_TOTEM, dataCollisionTotem});
+            }
+        }
+    }
+}
+void CLPhysics::IntersectCarsBoxPowerUp(ManCar* manCars, ManBoxPowerUp* manBoxPowerUp){
+    // IntersectData inters1 = cChaCar1.cilindre->IntersectSphere(*(cChaCar2.sphereBehind.get()));
+    for(const auto& currentCar : manCars->GetEntities()){
+        auto cPowerUpCar = static_cast<CPowerUp*>(currentCar.get()->GetComponent(CompType::PowerUpComp).get()); 
+        auto cChassisCar = static_cast<CBoundingChassis *>(currentCar.get()->GetComponent(CompType::CompBoundingChassis).get());                                                                                             
+        for(auto currentBoxPowerUp: manBoxPowerUp->GetEntities()){                                                 
+            auto cBoxPowerUp = static_cast<CBoxPowerUp*>(currentBoxPowerUp->GetComponent(CompType::BoxPowerUpComp).get());
+            // Vemos si efectivamente esta activo o no, para poder cogerlo
+            if(cBoxPowerUp->active == true){
+                if(cPowerUpCar->typePowerUp == typeCPowerUp::None){
+
+
+                    //IntersectData inters1 = cChassisCar->cilindre->IntersectSphere(*(cChaCar2.sphereBehind.get()));
+                    if( Intersects(currentCar.get(), currentBoxPowerUp.get()) ){                                                            
+                        shared_ptr<DataMap> dataCollisonCarBoxPowerUp = make_shared<DataMap>();                                                                          // Mejor definirlo en el .h
+                        (*dataCollisonCarBoxPowerUp)[BOX_POWER_UP_COMPONENT] = cBoxPowerUp;                                                 
+                        (*dataCollisonCarBoxPowerUp)[ACTUAL_BOX] = currentBoxPowerUp;
+                        (*dataCollisonCarBoxPowerUp)[ACTUAL_CAR] = currentCar.get();   
+                        // Lanzaremos este evento cuando colisionemos con una caja y no tengamos ya PowerUp                                             
+                        EventManager::GetInstance().AddEventMulti(Event{EventType::CATCH_AI_BOX_POWERUP, dataCollisonCarBoxPowerUp});                     
+                    }
+                }else{
+                    if( Intersects(currentCar.get(), currentBoxPowerUp.get()) ){                                                            
+                        shared_ptr<DataMap> dataCollisonCarBoxPowerUp = make_shared<DataMap>();                                                                          // Mejor definirlo en el .h                                                                        
+                        (*dataCollisonCarBoxPowerUp)[BOX_POWER_UP_COMPONENT] = cBoxPowerUp;                                                 
+                        (*dataCollisonCarBoxPowerUp)[ACTUAL_BOX] = currentBoxPowerUp; 
+                        // Lanzaremos este evento cuando colisionemos con una caja y tengamos ya PowerUp                                          
+                        EventManager::GetInstance().AddEventMulti(Event{EventType::CATCH_BOX_WITH_POWERUP, dataCollisonCarBoxPowerUp});                     
+                    }          
+                }
+            }
+        }
+    }
+}
+void CLPhysics::IntersectsCarsPowerUps(ManCar* manCars, ManPowerUp* manPowerUps, ManNavMesh* manNavMesh){
+    for(const auto& currentCar : manCars->GetEntities()){
+        auto cChassisCar = static_cast<CBoundingChassis *>(currentCar.get()->GetComponent(CompType::CompBoundingChassis).get());       
+        for(auto currentPU : manPowerUps->GetEntities()){      
+            auto cSpherePU = static_cast<CBoundingSphere *>(currentPU.get()->GetComponent(CompType::CompBoundingSphere).get());    
+            auto intersect = cChassisCar->cilindre->IntersectSphere(cSpherePU);
+            if(!intersect.intersects)
+                intersect = cChassisCar->sphereBehind->IntersectSphere(cSpherePU);
+            if(!intersect.intersects)
+                intersect = cChassisCar->sphereFront->IntersectSphere(cSpherePU);
+                
+            if(intersect.intersects){   //TRUE
+                // debemos eliminar el powerUp y hacer danyo al jugador
+                shared_ptr<DataMap> dataCollisonCarPowerUp = make_shared<DataMap>();                                                                       
+                (*dataCollisonCarPowerUp)[POWER_UP] = currentPU;              // nos guardamos el puntero para eliminar el powerUp
+                (*dataCollisonCarPowerUp)[CAR_AI] = currentCar.get();              // nos guardamos el puntero al coche                              
+                EventManager::GetInstance().AddEventMulti(Event{EventType::COLLISION_ENTITY_AI_POWERUP, dataCollisonCarPowerUp}); 
+                // comprobamos si el coche tenia escudo y el totem.. ya que debe de soltarlo
+                auto cShield = static_cast<CShield*>(currentCar.get()->GetComponent(CompType::ShieldComp).get());
+                if(cShield->activePowerUp==false && static_cast<CTotem*>(currentCar.get()->GetComponent(CompType::TotemComp).get())->active){  // TRUE
+                    auto dataTransformableCar = static_cast<CTransformable*>(currentCar.get()->GetComponent(CompType::TransformableComp).get());
+                    shared_ptr<DataMap> dataTransfCar = make_shared<DataMap>();                                                                    
+                    (*dataTransfCar)[CAR_TRANSFORMABLE] = dataTransformableCar;  
+                    (*dataTransfCar)[ACTUAL_CAR] = currentCar.get(); 
+                    (*dataTransfCar)[MAN_NAVMESH] = manNavMesh;
+                    EventManager::GetInstance().AddEventMulti(Event{EventType::DROP_TOTEM, dataTransfCar});  
+                } 
+            }
+        }
+    }
+}
+*/
+
+
+
+
+
+
+
+
+
+

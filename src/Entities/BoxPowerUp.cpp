@@ -6,6 +6,7 @@
 #include <Components/CMesh.h>
 #include <Components/CTransformable.h>
 #include <Components/CBoxPowerUp.h>
+#include "../Components/CRemovableObject.h"
 
 #include <iostream>
 
@@ -24,6 +25,7 @@ BoxPowerUp::BoxPowerUp(){
     shared_ptr<CTexture> cTexture = make_shared<CTexture>(texture);
     shared_ptr<CMesh> cMesh   = make_shared<CMesh>(mesh);
     shared_ptr<CBoxPowerUp> cBoxPowerUp   = make_shared<CBoxPowerUp>();
+    shared_ptr<CRemovableObject> cRemovableObject = make_shared<CRemovableObject>();
     
 
     AddComponent(cId);
@@ -32,6 +34,7 @@ BoxPowerUp::BoxPowerUp(){
     AddComponent(cTexture);
     AddComponent(cMesh);
     AddComponent(cBoxPowerUp);
+    AddComponent(cRemovableObject); // componente para eliminar la entidad al final y no en medio de la ejecucion
     //AddComponent(cCar);
 
 

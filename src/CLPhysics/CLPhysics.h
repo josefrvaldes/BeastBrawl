@@ -38,6 +38,10 @@ class CLPhysics {
 
    protected:
    private:
+    //void IntersectsCarsPowerUps(ManCar* manCars, ManPowerUp* manPowerUps, ManNavMesh* manNavMesh);
+    //void IntersectCarsTotem(ManCar* manCars, ManTotem* manTotem);
+    //void IntersectCarsBoxPowerUp(ManCar* manCars, ManBoxPowerUp* manBoxPowerUp);
+
     // gravity
     void HandleCollisionsWithGround();
     void ConstGravity();

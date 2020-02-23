@@ -7,6 +7,7 @@
 #include <Components/CBoundingSphere.h>
 #include <Components/CPowerUp.h>
 #include <Components/CTargetEntity.h>
+#include "../Components/CRemovableObject.h"
 #include <iostream>
 
 class Position;
@@ -28,6 +29,7 @@ PowerUp::PowerUp()
     shared_ptr<CPowerUp> cPowerUp = make_shared<CPowerUp>(typePowerUp);
     shared_ptr<CTargetEntity> cTargetEntity = make_shared<CTargetEntity>();
     shared_ptr<CBoundingSphere> cBoundingSphere = make_shared<CBoundingSphere>(vec3(0.0,0.0,0.0), 4.5);
+    shared_ptr<CRemovableObject> cRemovableObject = make_shared<CRemovableObject>();
     AddComponent(cId);
     AddComponent(cType);
     AddComponent(cTransformable);
@@ -35,7 +37,8 @@ PowerUp::PowerUp()
     AddComponent(cMesh);
     AddComponent(cPowerUp);
     AddComponent(cTargetEntity);
-    AddComponent(cBoundingSphere);
+    AddComponent(cBoundingSphere);  // Bounding con el que realmente colisionamos
+    AddComponent(cRemovableObject); // componente para eliminar la entidad al final y no a medias de la ejecucion
 }
 
 /*PowerUp::PowerUp(glm::vec3 _position) 
