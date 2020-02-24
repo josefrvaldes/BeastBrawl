@@ -230,7 +230,7 @@ int main() {
     double previousTime = glfwGetTime();
     int frameCount = 0;
 
-    while (!device->Run()) {
+    while (device->Run()) {
 
         //checkInput(device->GetWindow(), cameraPos, cameraFront, cameraUp);
 
