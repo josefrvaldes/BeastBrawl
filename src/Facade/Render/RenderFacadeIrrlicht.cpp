@@ -51,7 +51,7 @@ RenderFacadeIrrlicht::RenderFacadeIrrlicht() {
     FacadeInitHUD();
 
 
-    core::array<SJoystickInfo> joystickInfo;
+    //core::array<SJoystickInfo> joystickInfo;
     if(device->activateJoysticks(joystickInfo))
     {
         std::cout << "Joystick support is enabled and " << joystickInfo.size() << " joystick(s) are present." << std::endl;
@@ -64,7 +64,7 @@ RenderFacadeIrrlicht::RenderFacadeIrrlicht() {
             std::cout << "\tButtons: " << joystickInfo[joystick].Buttons << std::endl;
 
             std::cout << "\tHat is: ";
-
+            
             switch(joystickInfo[joystick].PovHat)
             {
             case SJoystickInfo::POV_HAT_PRESENT:
@@ -538,6 +538,8 @@ uint32_t RenderFacadeIrrlicht::FacadeGetTime() const{
 void RenderFacadeIrrlicht::FacadeCheckInputSingle() {
     EventManager &eventManager = EventManager::GetInstance();
 
+    // device->activateJoysticks(joystickInfo);
+
     if (receiver.IsKeyDown(KEY_ESCAPE)) {
         device->closeDevice();
     }
@@ -555,9 +557,9 @@ void RenderFacadeIrrlicht::FacadeCheckInputSingle() {
     }
     
     //  delante y detrás
-    if (receiver.IsKeyDown(KEY_KEY_I) || receiver.GetJoyStickState().Axis[SEvent::SJoystickEvent::AXIS_V]>-15000) {
+    if (receiver.IsKeyDown(KEY_KEY_I) || (joystickInfo.size()>0 && receiver.GetJoyStickState().Axis[SEvent::SJoystickEvent::AXIS_V]>-15000)) {
         eventManager.AddEventMulti(Event{EventType::PRESS_I});
-    } else if (receiver.IsKeyDown(KEY_KEY_O) || receiver.GetJoyStickState().Axis[SEvent::SJoystickEvent::AXIS_Z]>-15000) {
+    } else if (receiver.IsKeyDown(KEY_KEY_O) || (joystickInfo.size()>0 && receiver.GetJoyStickState().Axis[SEvent::SJoystickEvent::AXIS_Z]>1500)) {
         eventManager.AddEventMulti(Event{EventType::PRESS_O});
     } else {
         eventManager.AddEventMulti(Event{EventType::NO_I_O_PRESS});
@@ -652,10 +654,10 @@ void RenderFacadeIrrlicht::FacadeCheckInputSingle() {
     // }
     
     //  delante y detrás
-    if (receiver.IsKeyDown(KEY_KEY_I) || receiver.GetJoyStickState().Axis[SEvent::SJoystickEvent::AXIS_V]>-15000) {
+    if (receiver.IsKeyDown(KEY_KEY_I) || (joystickInfo.size()>0 && receiver.GetJoyStickState().Axis[SEvent::SJoystickEvent::AXIS_V]>-15000)) {
         eventManager.AddEventMulti(Event{EventType::PRESS_I});
         inputs.push_back(Constants::InputTypes::FORWARD);
-    } else if (receiver.IsKeyDown(KEY_KEY_O) || receiver.GetJoyStickState().Axis[SEvent::SJoystickEvent::AXIS_Z]>-15000) {
+    } else if (receiver.IsKeyDown(KEY_KEY_O) || (joystickInfo.size()>0 && receiver.GetJoyStickState().Axis[SEvent::SJoystickEvent::AXIS_Z]>-15000)) {
         eventManager.AddEventMulti(Event{EventType::PRESS_O});
         inputs.push_back(Constants::InputTypes::BACK);
     } else {
