@@ -27,7 +27,7 @@ class SoundFacadeFMOD : public SoundFacade {
 
         // Cambio de banco de audio y subscripcion a eventos.
         void SetState(const uint8_t) override;
-        void SetEventPosition(const string&, const glm::vec3&);
+        void SetEventPosition3DD(const string&, const glm::vec3&);
         void SetParameter(const string, const string, const float) override;
 
         void PlayEvent(const string) override;
@@ -38,7 +38,7 @@ class SoundFacadeFMOD : public SoundFacade {
         void PauseEvent(const string&);
         void ResumeEvent(const string&);
         
-        bool IsPlaying(FMOD::Studio::EventInstance*);
+        bool IsPlaying(FMOD::Studio::EventInstance&);
         void Update() override;
 
         //unordered_map<string, FMOD::Studio::EventDescription*> GetDescriptions() { return soundDescriptions;};
@@ -84,8 +84,10 @@ class SoundFacadeFMOD : public SoundFacade {
 
         unordered_map<string, FMOD::Studio::Bank*> banks;
         unordered_map<string, FMOD::Studio::EventDescription*> soundDescriptions;
-        // TO-DO: Separar instancias
-        unordered_map<string, FMOD::Studio::EventInstance*> eventInstances;
+        
+        unordered_map<string, FMOD::Studio::EventInstance*> eventInstances2D;
+        unordered_map<string, FMOD::Studio::EventInstance*> eventInstances3DE;
+        unordered_map<string, FMOD::Studio::EventInstance*> eventInstances3DD;
         
         unordered_map<string, vector<string>> events = {
             { "InGame2D",       {
@@ -96,21 +98,26 @@ class SoundFacadeFMOD : public SoundFacade {
                                 "Musica/in_game_1"              //Metido
                                 } 
             },
-            { "InGame3D",       {
+            { "InGame3DD",       {
                                 "Coche/motor",                  // "Metido" en 2D
+                                "Coche/choque_powerup",          // "Metido" en 2D
+                                "Coche/choque",                 // "Metido" en 2D
                                 "Partida/coger_totem",          // "Metido" en 2D
-                                "Partida/coger_caja",           // "Metido" en 2D
                                 "Partida/totem",
                                 "PowerUp/escudo",               // "Metido" en 2D
                                 "PowerUp/escudo_roto",          // "Metido" en 2D
-                                "Coche/choque",                 // "Metido" en 2D
+                                "PowerUp/melonmolon",           // "Metido" como provisional
                                 "PowerUp/pudin",                // "Metido" en 2D
                                 "PowerUp/robojorobo",           // "Metido" en 2D
                                 "PowerUp/telebanana",
-                                "PowerUp/telebanana_prov",      // "Metido" como provisional
-                                "PowerUp/melonmolon",           // "Metido" como provisional
-                                "Coche/choque_powerup"          // "Metido" en 2D
+                                "PowerUp/telebanana_prov"      // "Metido" como provisional
                                 }
+            },
+            { "InGame3DE",
+                                {
+                                "Partida/coger_caja"           // "Metido" en 2D
+                                }
+
             },
             { "EndRace",        {
                                 "Musica/fin_partida",           // Metido
