@@ -18,15 +18,13 @@ CLNode::CLNode(shared_ptr<CLEntity> entity) : CLNode() {
 }
 
 
-// bool CLNode::AddChild(CLNode* child){
-//     //Tipica comprobacion de Programacion 2 pero bueno por si acaso
-//     if(child!=nullptr){
-//         childs.push_back(child);
-//         child->SetFather(this);
-//         return true;
-//     }
-//     return false;
-// }
+CLNode* CLNode::AddGroup(unsigned int id){
+    shared_ptr<CLNode> node = make_shared<CLNode>();
+    childs.push_back(node);
+    node->SetFather(this);
+
+    return node.get();
+}
 
 CLNode* CLNode::AddMesh(unsigned int id){
 

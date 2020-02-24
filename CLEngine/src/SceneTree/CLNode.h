@@ -44,7 +44,7 @@ class CLNode{
         void SetShaderProgramID(GLuint id)         { shaderProgramID = id; }
 
         //Methods
-        //bool AddChild(CLNode* child);
+        CLNode* AddGroup(unsigned int id);
         CLNode* AddMesh(unsigned int id);
         CLNode* AddLight(unsigned int id);
         CLNode* AddCamera(unsigned int id);
