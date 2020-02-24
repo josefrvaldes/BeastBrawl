@@ -106,16 +106,16 @@ void StateInGameMulti::Render() {
     StateInGame::Render();
 }
 
-void StateInGameMulti::InitializeCLPhysics(ManCar &manCars, ManBoundingWall &manWall, ManBoundingOBB &manOBB, ManBoundingGround &manGround, ManPowerUp &manPowerUp) {
-    StateInGame::InitializeCLPhysics(manCars, manWall, manOBB, manGround, manPowerUp);
+void StateInGameMulti::InitializeCLPhysics(ManCar &manCars, ManBoundingWall &manWall, ManBoundingOBB &manOBB, ManBoundingGround &manGround, ManPowerUp &manPowerUp, ManNavMesh &manNavMesh, ManBoxPowerUp &manBoxPowerUp) {
+    StateInGame::InitializeCLPhysics(manCars, manWall, manOBB, manGround, manPowerUp, manNavMesh, manBoxPowerUp);
 }
 
 void StateInGameMulti::InitializeManagers(Physics *physics, Camera *cam) {
     StateInGame::InitializeManagers(physics, cam);
 }
 
-void StateInGameMulti::InitializeSystems(ManCar &manCars, ManBoundingWall &manWall, ManBoundingOBB &manOBB, ManBoundingGround &manGround, ManPowerUp &manPowerUp) {
-    StateInGame::InitializeSystems(manCars, manWall, manOBB, manGround, manPowerUp);
+void StateInGameMulti::InitializeSystems(ManCar &manCars, ManBoundingWall &manWall, ManBoundingOBB &manOBB, ManBoundingGround &manGround, ManPowerUp &manPowerUp, ManNavMesh &manNavMesh, ManBoxPowerUp &manBoxPowerUp) {
+    StateInGame::InitializeSystems(manCars, manWall, manOBB, manGround, manPowerUp, manNavMesh, manBoxPowerUp);
 }
 
 void StateInGameMulti::InitializeFacades() {

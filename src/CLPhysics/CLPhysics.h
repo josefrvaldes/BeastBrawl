@@ -14,6 +14,10 @@ class CBoundingPlane;
 class CBoundingChassis;
 class CBoundingOBB;
 class CExternalForce;
+class ManCar;
+class ManPowerUp;
+class ManNavMesh;
+class ManBoxPowerUp;
 class IntersectData;
 class CCar;
 
@@ -38,9 +42,9 @@ class CLPhysics {
 
    protected:
    private:
-    //void IntersectsCarsPowerUps(ManCar* manCars, ManPowerUp* manPowerUps, ManNavMesh* manNavMesh);
+    void IntersectsCarsPowerUps(ManCar &, ManPowerUp &, ManNavMesh &);
     //void IntersectCarsTotem(ManCar* manCars, ManTotem* manTotem);
-    //void IntersectCarsBoxPowerUp(ManCar* manCars, ManBoxPowerUp* manBoxPowerUp);
+    void IntersectCarsBoxPowerUp(ManCar &, ManBoxPowerUp &);
 
     // gravity
     void HandleCollisionsWithGround();

@@ -37,7 +37,7 @@ StateInGame::~StateInGame() {
  */
 void StateInGame::InitVirtualMethods() {
     InitializeManagers(physics.get(), cam.get());
-    InitializeSystems(*manCars.get(), *manBoundingWall.get(), *manBoundingOBB.get(), *manBoundingGround.get(), *manPowerUps.get());
+    InitializeSystems(*manCars.get(), *manBoundingWall.get(), *manBoundingOBB.get(), *manBoundingGround.get(), *manPowerUps.get(), *manNavMesh.get(), *manBoxPowerUps.get());
     InitializeFacades();
 
     CAMBIARCosasDeTotem(*manTotems.get());
@@ -99,7 +99,7 @@ void StateInGame::AddElementsToRender() {
     renderEngine->FacadeAddObject(totemOnCar.get());
 }
 
-void StateInGame::InitializeCLPhysics(ManCar &manCars, ManBoundingWall &manWall, ManBoundingOBB &manOBB, ManBoundingGround &manGround, ManPowerUp &manPowerUp) {
+void StateInGame::InitializeCLPhysics(ManCar &manCars, ManBoundingWall &manWall, ManBoundingOBB &manOBB, ManBoundingGround &manGround, ManPowerUp &manPowerUp, ManNavMesh &manNavMesh, ManBoxPowerUp &manBoxPowerUp) {
     // NO ALTERAR EL ORDEN DEL ADD, QUE USO EL ORDEN PARA DISTINGUIR ENTRE MANAGERS!!!
     clPhysics = make_unique<CLPhysics>();
     clPhysics->AddManager(manCars);
@@ -107,10 +107,12 @@ void StateInGame::InitializeCLPhysics(ManCar &manCars, ManBoundingWall &manWall,
     clPhysics->AddManager(manOBB);
     clPhysics->AddManager(manGround);
     clPhysics->AddManager(manPowerUp);
+    clPhysics->AddManager(manNavMesh);
+    clPhysics->AddManager(manBoxPowerUp);
 }
 
-void StateInGame::InitializeSystems(ManCar &manCars, ManBoundingWall &manWall, ManBoundingOBB &manOBB, ManBoundingGround &manGround, ManPowerUp &manPowerUp) {
-    InitializeCLPhysics(manCars, manWall, manOBB, manGround, manPowerUp);
+void StateInGame::InitializeSystems(ManCar &manCars, ManBoundingWall &manWall, ManBoundingOBB &manOBB, ManBoundingGround &manGround, ManPowerUp &manPowerUp, ManNavMesh &manNavMesh, ManBoxPowerUp &manBoxPowerUp) {
+    InitializeCLPhysics(manCars, manWall, manOBB, manGround, manPowerUp, manNavMesh, manBoxPowerUp);
     // incializa el system physics PU, no hace falta más código para esto
     phisicsPowerUp = make_shared<PhysicsPowerUp>();  // Creamos sistemas
     collisions = make_shared<Collisions>();
@@ -167,9 +169,9 @@ void StateInGame::Update() {
     }
 
     // COLISIONES entre BoxPowerUp y player
-    collisions->IntersectPlayerBoxPowerUp(manCars.get()->GetCar().get(), manBoxPowerUps.get());
+    //collisions->IntersectPlayerBoxPowerUp(manCars.get()->GetCar().get(), manBoxPowerUps.get());
     // COLISIONES entre powerUp y player
-    collisions->IntersectPlayerPowerUps(manCars.get()->GetCar().get(), manPowerUps.get(), manNavMesh.get());
+    //collisions->IntersectPlayerPowerUps(manCars.get()->GetCar().get(), manPowerUps.get(), manNavMesh.get());
     // COLISIONES entre el Player y el Totem
     collisions->IntersectPlayerTotem(manCars.get()->GetCar().get(), manTotems.get());
 

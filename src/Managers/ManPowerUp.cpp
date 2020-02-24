@@ -39,7 +39,7 @@ void ManPowerUp::CreatePowerUp(DataMap* d) {
         transforPerse = nullptr;
 
     // calculamos la posicion en la que debe salir el powerUp:
-    int medidaPowerUp = 10;
+    int medidaPowerUp = 25;
     float posX = 0, posZ = 0;
 
    float angleRotation = (transforSalida->rotation.y * 3.141592) / 180.0;

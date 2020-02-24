@@ -242,5 +242,9 @@ void RenderFacadeClover::FacadeDrawBoundingOBB(Entity* entity) const {
 
 }
 
+void RenderFacadeClover::FacadeDrawBoundingGround(Entity* entity) const {
+
+}
+
 void RenderFacadeClover::FacadeDrawBoundingBox(Entity* entity, bool colliding) const{
 }
