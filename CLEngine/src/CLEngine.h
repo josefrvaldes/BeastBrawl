@@ -35,7 +35,7 @@ class CLEngine {
         bool Loop();
         bool Run();
         void BeginScene();
-        void DrawTree();
+        void DrawObjects();
         void EndScene();
         void RenderImgui();
         void UpdateViewport();

@@ -110,7 +110,7 @@ void CLEngine::BeginScene(){
 }
 
 
-void CLEngine::DrawTree(){
+void CLEngine::DrawObjects(){
     smgr->CalculateViewProjMatrix();
     smgr->DFSTree(glm::mat4(1.0f));
 }

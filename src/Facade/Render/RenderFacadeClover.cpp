@@ -53,6 +53,10 @@ RenderFacadeClover::RenderFacadeClover() {
     auto inputClover = static_cast<InputFacadeClover*>(input);
     inputClover->SetWindowContext(device);
 
+    // auto physics = PhysicsFacadeManager::GetInstance()->GetPhysicsFacade();
+    // auto physicsClover = static_cast<PhysicsFacadeClover*>(physics);
+    // physicsClover->SetWindowContext(device);
+
     //Inicializamos el arbol de la escena
     smgr = device->GetSceneManager();
     resourceManager = device->GetResourceManager();
@@ -387,7 +391,7 @@ void RenderFacadeClover::FacadeBeginScene() const{
 }
 
 void RenderFacadeClover::FacadeDrawAll() const{
-    device->DrawTree();
+    device->DrawObjects();
 }
 
 void RenderFacadeClover::FacadeEndScene() const{

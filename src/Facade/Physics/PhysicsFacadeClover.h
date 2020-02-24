@@ -2,9 +2,13 @@
 
 #include "PhysicsFacade.h"
 
+#include "../../../CLEngine/src/CLEngine.h"
+
+
 #include <iostream>
 #include <memory>
 
+using namespace CLE;
 using namespace std;
 class PhysicsFacadeClover : public PhysicsFacade {
    public:
@@ -13,7 +17,10 @@ class PhysicsFacadeClover : public PhysicsFacade {
     void UpdateCar(Entity*, Entity*) override;
     void UpdateCarAI(Entity*) override;
     void UpdatePowerUps(Entity*) override;
+    void SetWindowContext(CLEngine* d) { device = d;};
 
    private:
     void UpdateCam(Entity*);
+    CLEngine* device;
+    CLNode* smgr;
 };

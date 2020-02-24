@@ -257,6 +257,7 @@ int main() {
         glm::vec3 cameraPos(auxCameraPos[0], auxCameraPos[1], auxCameraPos[2]);
         camera->SetTranslation(cameraPos);
 
+
         //Luces y colores
         glUniform3fv(glGetUniformLocation(resourceShader->GetProgramID(), "objectColor"),1,glm::value_ptr(color));
         glUniform3fv(glGetUniformLocation(resourceShader->GetProgramID(), "lightColor"),1,glm::value_ptr(light));
@@ -292,7 +293,7 @@ int main() {
         }
 
         
-        device->DrawTree();
+        device->DrawObjects();
         device->InputClose();
         device->PollEvents();
         device->RenderImgui();

@@ -16,7 +16,7 @@ using namespace std;
 BoxPowerUp::BoxPowerUp(){
     // default values
     string texture = "t351sml.jpg";
-    string mesh    = "kart_ia.obj";
+    string mesh    = "TEST_BOX.fbx";
     string vertexShader = "CLEngine/src/Shaders/vertex.glsl";
     string fragmentShader = "CLEngine/src/Shaders/fragment.glsl";
     //float maxSpeed = 20.0, acceleration = .15, friction = 0.1, slowDown = 0.25;
