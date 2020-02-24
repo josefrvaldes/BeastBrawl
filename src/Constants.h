@@ -14,7 +14,7 @@
 #define SERVER_HOST_OVH "54.38.189.168"
 
 #define MIN_NUM_PLAYERS 4
-#define FRAME_RATE 30
+#define FRAME_RATE 60
 
 class Constants {
    public:
