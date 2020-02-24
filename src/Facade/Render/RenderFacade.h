@@ -74,6 +74,8 @@ class RenderFacade {
     uint16_t idTotem = 0;
     uint16_t idCarWithTotem = 0;
     int numEnemyCars = 0;
+    int currentPowerUp = 0;
+
 
     time_point<system_clock> timeStart;
     const int64_t inputDelay = 500;       // 0.5 segundos

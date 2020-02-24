@@ -75,12 +75,28 @@ void SoundFacadeFMOD::UnloadMasterBank() {
 
 /*
  * Libera los sonidos que se han cargado en memoria y los bancos.
+ * TO-DO: Sacar una funcion para hacer lo mismo. UnloadBank.
  */
 void SoundFacadeFMOD::UnloadAllBanks() {
-    for (auto instance : eventInstances) {
+    /*for (auto instance : eventInstances2D) {
         ERRCHECK(instance.second->release());
     }
-    eventInstances.clear();
+    eventInstances.clear();*/
+
+    for ( auto it = eventInstances2D.begin(); it != eventInstances2D.end(); it++){
+        ERRCHECK(it->second->release());
+    }
+    eventInstances2D.clear();
+
+    for ( auto it = eventInstances3DE.begin(); it != eventInstances3DE.end(); it++){
+        ERRCHECK(it->second->release());
+    }
+    eventInstances3DE.clear();
+    
+    for ( auto it = eventInstances3DD.begin(); it != eventInstances3DD.end(); it++){
+        ERRCHECK(it->second->release());
+    }
+    eventInstances3DD.clear();
 
     soundDescriptions.clear();
 
@@ -96,7 +112,10 @@ void SoundFacadeFMOD::UnloadAllBanks() {
  */
 FMOD::Studio::EventInstance* SoundFacadeFMOD::CreateInstance(const string& nameEvent) {
     FMOD::Studio::EventInstance* instance = nullptr;
-    ERRCHECK(soundDescriptions[nameEvent]->createInstance(&instance));
+    auto description = soundDescriptions.find(nameEvent);
+    if (description != soundDescriptions.end()) {
+        ERRCHECK(description->second->createInstance(&instance));
+    }
     return instance;
 }
 
@@ -225,7 +244,8 @@ void SoundFacadeFMOD::LoadSoundByState(const uint8_t numState) {
         case 4:  //InGame
             StopEvent("Musica/menu");
             LoadSoundBank("InGame2D", 0);
-            LoadSoundBank("InGame3D", 1);
+            LoadSoundBank("InGame3DE", 1);
+            LoadSoundBank("InGame3DD", 1);
             break;
         case 5:  //EndRace
             StopAllEvents();
@@ -275,7 +295,7 @@ void SoundFacadeFMOD::LoadSoundEvent(const string nameEvent, const bool type) {
             // Se guarda los datos en memoria para que no se vuelvan a cargar cada vez que creo una instancia.
             ERRCHECK(soundDescriptions[nameEvent]->loadSampleData());
         } else {
-            eventInstances[nameEvent] = CreateInstance(nameEvent);
+            eventInstances2D[nameEvent] = CreateInstance(nameEvent);
         }
     }
 }
@@ -287,8 +307,14 @@ void SoundFacadeFMOD::LoadSoundEvent(const string nameEvent, const bool type) {
  * @param value - Valor al que quiero cambiar el parametro.
  */
 void SoundFacadeFMOD::SetParameter(const string nameID, const string nameParameter, const float value) {
-    if (eventInstances.find(nameID) != eventInstances.end()) {
-        eventInstances[nameID]->setParameterByName(nameParameter.c_str(), value);
+    auto instance = eventInstances2D.find(nameID);
+    if (instance != eventInstances2D.end()) {
+        instance->second->setParameterByName(nameParameter.c_str(), value);
+    } else {
+        instance = eventInstances3DD.find(nameID);
+        if (instance != eventInstances3DD.end()) {
+            instance->second->setParameterByName(nameParameter.c_str(), value);
+        }
     }
 }
 
@@ -296,14 +322,15 @@ void SoundFacadeFMOD::SetParameter(const string nameID, const string nameParamet
  * Se cambia la posicion desde donde se escucha un sonido.
  * TO-DO: Aqui solo se cambia la posicion, para el efecto Doppler hace falta la velocidad. Creo que hay mas cosas a parte.
  */
-void SoundFacadeFMOD::SetEventPosition(const string& nameID, const glm::vec3& pos) {
-    if (eventInstances.find(nameID) != eventInstances.end()) {
+void SoundFacadeFMOD::SetEventPosition3DD(const string& nameID, const glm::vec3& pos) {
+    auto instance = eventInstances3DD.find(nameID);
+    if (instance != eventInstances3DD.end()) {
         FMOD_3D_ATTRIBUTES atr;
         atr.position.x = pos.x;
         atr.position.y = pos.y;
         atr.position.z = pos.z;
 
-        ERRCHECK(eventInstances[nameID]->set3DAttributes(&atr));
+        ERRCHECK(instance->second->set3DAttributes(&atr));
     }
 }
 
@@ -313,8 +340,21 @@ void SoundFacadeFMOD::SetEventPosition(const string& nameID, const glm::vec3& po
  * @param nameID - Identificador del sonido en el mapa de instancias.
  */
 void SoundFacadeFMOD::PlayEvent(const string nameID) {
-    //std::cout << "***** Se ha lanzado el  sonido: " << nameID << endl;
-    ERRCHECK(eventInstances[nameID]->start());
+    std::cout << "***** Se ha lanzado el  sonido: " << nameID << endl;
+    auto instance = eventInstances2D.find(nameID);
+    if (instance != eventInstances2D.end()) {
+        ERRCHECK(instance->second->start());
+    } else{
+        instance = eventInstances3DE.find(nameID);
+        if(instance != eventInstances3DE.end()) {
+            ERRCHECK(instance->second->start());
+        } else {
+            instance = eventInstances3DD.find(nameID);
+            if (instance != eventInstances3DD.end()) {
+                ERRCHECK(instance->second->start());
+            }
+        }
+    }
 }
 
 /**
@@ -322,8 +362,17 @@ void SoundFacadeFMOD::PlayEvent(const string nameID) {
  * @param nameID - Identificador del sonido en el mapa de instancias.
  */
 void SoundFacadeFMOD::StopAllEvents() {
-    for ( auto instance : eventInstances) {
+    /*for ( auto instance : eventInstances) {
         ERRCHECK(instance.second->stop(FMOD_STUDIO_STOP_IMMEDIATE));
+    }*/
+    for ( auto it = eventInstances2D.begin(); it != eventInstances2D.end(); it++){
+        ERRCHECK(it->second->stop(FMOD_STUDIO_STOP_IMMEDIATE));
+    }
+    for ( auto it = eventInstances3DE.begin(); it != eventInstances3DE.end(); it++){
+        ERRCHECK(it->second->stop(FMOD_STUDIO_STOP_IMMEDIATE));
+    }
+    for ( auto it = eventInstances3DD.begin(); it != eventInstances3DD.end(); it++){
+        ERRCHECK(it->second->stop(FMOD_STUDIO_STOP_IMMEDIATE));
     }
 }
 
@@ -332,17 +381,38 @@ void SoundFacadeFMOD::StopAllEvents() {
  * @param nameID - Identificador del sonido en el mapa de instancias.
  */
 void SoundFacadeFMOD::StopEvent(const string nameID) {
-    if (eventInstances.find(nameID) != eventInstances.end() /*&& IsPlaying(eventInstances[nameID])*/) {
-        ERRCHECK(eventInstances[nameID]->stop(FMOD_STUDIO_STOP_IMMEDIATE));
+    auto instance = eventInstances2D.find(nameID);
+    if (instance != eventInstances2D.end()) {
+        ERRCHECK(instance->second->stop(FMOD_STUDIO_STOP_IMMEDIATE));
+    } else {
+        instance = eventInstances3DE.find(nameID);
+        if (instance != eventInstances3DE.end()) {
+        ERRCHECK(instance->second->stop(FMOD_STUDIO_STOP_IMMEDIATE));
+        } else {
+            instance = eventInstances3DD.find(nameID);
+            if (instance != eventInstances3DD.end()) {
+                ERRCHECK(instance->second->stop(FMOD_STUDIO_STOP_IMMEDIATE));
+            }
+        }
     }
+    
 }
 
 /**
  * Pone en pause todos los sonidos.
  */
 void SoundFacadeFMOD::PauseAllEvent() {
-    for (const auto& event : eventInstances) {
+    /*for (const auto& event : eventInstances) {
         PauseEvent(event.first);
+    }*/
+    for ( auto it = eventInstances2D.begin(); it != eventInstances2D.end(); it++){
+        PauseEvent(it->first);
+    }
+    for ( auto it = eventInstances3DE.begin(); it != eventInstances3DE.end(); it++){
+        PauseEvent(it->first);
+    }
+    for ( auto it = eventInstances3DD.begin(); it != eventInstances3DD.end(); it++){
+        PauseEvent(it->first);
     }
 }
 
@@ -350,8 +420,17 @@ void SoundFacadeFMOD::PauseAllEvent() {
  * Reanuda en pause todos los sonidos.
  */
 void SoundFacadeFMOD::ResumeAllEvent() {
-    for (const auto& event : eventInstances) {
+    /*for (const auto& event : eventInstances) {
         ResumeEvent(event.first);
+    }*/
+    for ( auto it = eventInstances2D.begin(); it != eventInstances2D.end(); it++){
+        ResumeEvent(it->first);
+    }
+    for ( auto it = eventInstances3DE.begin(); it != eventInstances3DE.end(); it++){
+        ResumeEvent(it->first);
+    }
+    for ( auto it = eventInstances3DD.begin(); it != eventInstances3DD.end(); it++){
+        ResumeEvent(it->first);
     }
 }
 
@@ -360,8 +439,22 @@ void SoundFacadeFMOD::ResumeAllEvent() {
  * @param nameID - Identificador del sonido en el mapa de instancias.
  */
 void SoundFacadeFMOD::PauseEvent(const string& nameID) {
-    if (eventInstances.find(nameID) != eventInstances.end() && IsPlaying(eventInstances[nameID])) {
+    /*if (eventInstances.find(nameID) != eventInstances.end() && IsPlaying(eventInstances[nameID])) {
         ERRCHECK(eventInstances[nameID]->setPaused(true));
+    }*/
+    auto instance = eventInstances2D.find(nameID);
+    if (instance != eventInstances2D.end()) {
+        ERRCHECK(instance->second->setPaused(true));
+    } else {
+        instance = eventInstances3DE.find(nameID);
+        if (instance != eventInstances3DE.end()) {
+            ERRCHECK(instance->second->setPaused(true));
+        } else {
+            instance = eventInstances3DD.find(nameID);
+            if (instance != eventInstances3DD.end()) {
+                ERRCHECK(instance->second->setPaused(true));
+            }
+        }
     }
 }
 
@@ -370,17 +463,31 @@ void SoundFacadeFMOD::PauseEvent(const string& nameID) {
  * @param nameID - Identificador del sonido en el mapa de instancias.
  */
 void SoundFacadeFMOD::ResumeEvent(const string& nameID) {
-    if (eventInstances.find(nameID) != eventInstances.end() && IsPlaying(eventInstances[nameID])) {
+    /*if (eventInstances.find(nameID) != eventInstances.end() && IsPlaying(eventInstances[nameID])) {
         ERRCHECK(eventInstances[nameID]->setPaused(false));
+    }*/
+    auto instance = eventInstances2D.find(nameID);
+    if (instance != eventInstances2D.end()) {
+        ERRCHECK(instance->second->setPaused(false));
+    } else {
+        instance = eventInstances3DE.find(nameID);
+        if (instance != eventInstances3DE.end()) {
+            ERRCHECK(instance->second->setPaused(false));
+        } else {
+            instance = eventInstances3DD.find(nameID);
+            if (instance != eventInstances3DD.end()) {
+                ERRCHECK(instance->second->setPaused(false));
+            }
+        }
     }
 }
 
 /* Verifica si la instancia de sonido que le enviamos por parametro esta en PLAY o preparandose para el PLAY.
  * @param instance - Instancia del evento a verificar.
  */
-bool SoundFacadeFMOD::IsPlaying(FMOD::Studio::EventInstance* instance) {
+bool SoundFacadeFMOD::IsPlaying(FMOD::Studio::EventInstance& instance) {
     FMOD_STUDIO_PLAYBACK_STATE eventState;
-    ERRCHECK(instance->getPlaybackState(&eventState));
+    ERRCHECK(instance.getPlaybackState(&eventState));
     if (eventState == FMOD_STUDIO_PLAYBACK_PLAYING || eventState == FMOD_STUDIO_PLAYBACK_STARTING /*|| eventState == FMOD_STUDIO_PLAYBACK_SUSTAINING*/) {
         return true;
     }
@@ -401,12 +508,15 @@ void SoundFacadeFMOD::Update() {
 */
 
 void SoundFacadeFMOD::StartGame(DataMap* d) {
-    eventInstances["Coche/motor"] = CreateInstance("Coche/motor");
+    auto instance = CreateInstance("Coche/motor");
+    if(instance) {
+        eventInstances3DD["Coche/motor"] = instance;
+    }
     PlayEvent("Coche/motor");
     PlayEvent("Ambiente/ambiente");
     PlayEvent("Musica/in_game_1");
     srand(time(NULL));
-    character = rand() % 4;
+    character = rand() % 5;
     cout << "++++ Personaje en sonido: " << character << endl;
     SetParameter("Personajes/voces", "Personaje", character);
     SetParameter("Coche/claxon", "Personaje", character);
@@ -424,12 +534,12 @@ void SoundFacadeFMOD::SoundHurt(DataMap* d) {
         SetParameter("Personajes/voces", "Tipo", TipoVoz::ChoquePowerup);
         PlayEvent("Personajes/voces");
     }
-    eventInstances["Coche/choque_powerup"] = CreateInstance("Coche/choque_powerup");
+    eventInstances3DD["Coche/choque_powerup"] = CreateInstance("Coche/choque_powerup");
     PlayEvent("Coche/choque_powerup");
 }
 
 void SoundFacadeFMOD::SoundCatchTotem(DataMap* d) {
-    eventInstances["Partida/coger_totem"] = CreateInstance("Partida/coger_totem");
+    eventInstances3DD["Partida/coger_totem"] = CreateInstance("Partida/coger_totem");
     PlayEvent("Partida/coger_totem");
 }
 
@@ -444,18 +554,21 @@ void SoundFacadeFMOD::SoundCrash(DataMap* d) {
         SetParameter("Personajes/voces", "Tipo", TipoVoz::ChoqueEnemigo);
         PlayEvent("Personajes/voces");
     }
-    eventInstances["Coche/choque"] = CreateInstance("Coche/choque");
-    if (!IsPlaying(eventInstances["Coche/choque"]))
+    eventInstances3DD["Coche/choque"] = CreateInstance("Coche/choque");
+    if (!IsPlaying(*eventInstances3DD.find("Coche/choque")->second)) {
         PlayEvent("Coche/choque");
+    }
 }
 
 void SoundFacadeFMOD::SoundBreakBox(DataMap* d) {
-    eventInstances["Partida/coger_caja"] = CreateInstance("Partida/coger_caja");
-    PlayEvent("Partida/coger_caja");
+    eventInstances3DD["Partida/coger_caja"] = CreateInstance("Partida/coger_caja");   
+    if (!IsPlaying(*eventInstances3DD.find("Partida/coger_caja")->second)) {
+        PlayEvent("Partida/coger_caja");
+    }
 }
 
 void SoundFacadeFMOD::SoundDrift(DataMap* d) {
-    eventInstances["Coche/derrape"] = CreateInstance("Coche/derrape");
+    eventInstances3DD["Coche/derrape"] = CreateInstance("Coche/derrape");
     //SetParameter("Personajes/voces", "Tipo", TipoVoz::Derrape);
     PlayEvent("Coche/derrape");
 }
@@ -472,14 +585,13 @@ void SoundFacadeFMOD::SoundMenuOption(DataMap* d) {
 // TO-DO: Cambiar de eventos 2D a 3D
 void SoundFacadeFMOD::SoundThrowPowerup(DataMap* d) {
     typeCPowerUp typepw = any_cast<typeCPowerUp>((*d)[TYPE_POWER_UP]);
-
     switch (typepw) {
         case typeCPowerUp::RoboJorobo:
-            eventInstances["PowerUp/robojorobo"] = CreateInstance("PowerUp/robojorobo");
+            eventInstances3DD["PowerUp/robojorobo"] = CreateInstance("PowerUp/robojorobo");
             PlayEvent("PowerUp/robojorobo");
             break;
         case typeCPowerUp::EscudoMerluzo:
-            eventInstances["PowerUp/escudo"] = CreateInstance("PowerUp/escudo");
+            eventInstances3DD["PowerUp/escudo"] = CreateInstance("PowerUp/escudo");
             PlayEvent("PowerUp/escudo");
             break;
         case typeCPowerUp::SuperMegaNitro:
@@ -488,19 +600,19 @@ void SoundFacadeFMOD::SoundThrowPowerup(DataMap* d) {
         case typeCPowerUp::MelonMolon:
             SetParameter("Personajes/voces", "Tipo", TipoVoz::Powerup);
             PlayEvent("Personajes/voces");
-            eventInstances["PowerUp/melonmolon"] = CreateInstance("PowerUp/melonmolon");
+            eventInstances3DD["PowerUp/melonmolon"] = CreateInstance("PowerUp/melonmolon");
             PlayEvent("PowerUp/melonmolon");
             break;
         case typeCPowerUp::TeleBanana:
             SetParameter("Personajes/voces", "Tipo", TipoVoz::Powerup);
             PlayEvent("Personajes/voces");
-            eventInstances["PowerUp/telebanana_prov"] = CreateInstance("PowerUp/telebanana_prov");
+            eventInstances3DD["PowerUp/telebanana_prov"] = CreateInstance("PowerUp/telebanana_prov");
             PlayEvent("PowerUp/telebanana_prov");
             break;
         case typeCPowerUp::PudinDeFrambuesa:
             SetParameter("Personajes/voces", "Tipo", TipoVoz::Powerup);
             PlayEvent("Personajes/voces");
-            eventInstances["PowerUp/pudin"] = CreateInstance("PowerUp/pudin");
+            eventInstances3DD["PowerUp/pudin"] = CreateInstance("PowerUp/pudin");
             PlayEvent("PowerUp/pudin");
             std::cout << "POWERUP: " << (int)typepw << endl;
             break;
@@ -517,7 +629,7 @@ void SoundFacadeFMOD::StopPrueba(DataMap* d) {
 
 void SoundFacadeFMOD::StopShield(DataMap* d) {
     StopEvent("PowerUp/escudo");
-    eventInstances["PowerUp/escudo_roto"] = CreateInstance("PowerUp/escudo_roto");
+    eventInstances3DD["PowerUp/escudo_roto"] = CreateInstance("PowerUp/escudo_roto");
     PlayEvent("PowerUp/escudo_roto");
 }
 

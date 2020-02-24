@@ -162,7 +162,7 @@ void StateInGame::Update() {
 
     clPhysics->Update(0.1666f);
     sysBoxPowerUp->update(manBoxPowerUps.get());
-    for(auto actualPowerUp : manPowerUps->GetEntities()){  // actualizamos las fisicas de los powerUps
+    for(auto& actualPowerUp : manPowerUps->GetEntities()){  // actualizamos las fisicas de los powerUps
         phisicsPowerUp->update(actualPowerUp.get());
     }
 

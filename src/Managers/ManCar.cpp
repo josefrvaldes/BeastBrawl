@@ -92,7 +92,7 @@ void ManCar::UpdateCar() {
 void ManCar::UpdateCarAI(CarAI* carAI, ManPowerUp* m_manPowerUp, ManBoxPowerUp* m_manBoxPowerUp, ManTotem* m_manTotem, ManWayPoint* graph, ManNavMesh* manNavMesh, 
                         ManBoundingWall* m_manBoundingWall, SystemBtPowerUp* systemBtPowerUp, SystemBtMoveTo* systemBtMoveTo, SystemBtLoDMove* systemBtLoDMove, SystemPathPlanning *systemPathPlanning) {
     
-    /*
+    
     systemBtMoveTo->update(carAI, this, m_manPowerUp, m_manBoxPowerUp, m_manTotem, graph, manNavMesh);
     
     systemPathPlanning->Update(carAI, graph, manNavMesh);
@@ -102,7 +102,7 @@ void ManCar::UpdateCarAI(CarAI* carAI, ManPowerUp* m_manPowerUp, ManBoxPowerUp* 
     physicsAI->Update(carAI, graph);
 
     systemBtPowerUp->update(carAI, this, m_manPowerUp, m_manBoxPowerUp, m_manTotem, graph, manNavMesh);
-    */
+    
 
 }
 
@@ -480,22 +480,22 @@ void ManCar::ThrowPowerUp(Car* car) {
 
                 break;
         }
-        cPowerUpCar->typePowerUp = typeCPowerUp::None;
 
         if(car == GetCar().get()){
             // Sonido de lanzar power-up
-            shared_ptr<DataMap> dataHUD = make_shared<DataMap>();
-            (*dataHUD)[TYPE_POWER_UP] = cPowerUpCar->typePowerUp;
+            shared_ptr<DataMap> dataSound = make_shared<DataMap>();
+            (*dataSound)[TYPE_POWER_UP] = cPowerUpCar->typePowerUp;
             //d->insert(TYPE_POWER_UP,cPowerUpCar->typePowerUp);
-            EventManager::GetInstance().AddEventMulti(Event{EventType::THROW_POWERUP, dataHUD});
+            EventManager::GetInstance().AddEventMulti(Event{EventType::THROW_POWERUP, dataSound});
 
             // Ya no tenemos power-up
-            shared_ptr<DataMap> dataSound = make_shared<DataMap>();
+            shared_ptr<DataMap> dataHUD = make_shared<DataMap>();
 
             cPowerUpCar->typePowerUp = typeCPowerUp::None;
-            (*dataSound)[TYPE_POWER_UP] = cPowerUpCar->typePowerUp;
-            EventManager::GetInstance().AddEventMulti(Event{UPDATE_POWERUP_HUD, dataSound}); 
+            (*dataHUD)[TYPE_POWER_UP] = cPowerUpCar->typePowerUp;
+            EventManager::GetInstance().AddEventMulti(Event{UPDATE_POWERUP_HUD, dataHUD}); 
         }
+        cPowerUpCar->typePowerUp = typeCPowerUp::None;
     }
 }
 
@@ -518,15 +518,15 @@ void ManCar::CatchPowerUp(DataMap* d) {
     int indx = rand() % 100 + 1;
     if (indx <= 5)  // 5%
         indx = 1;
-    else if (indx > 5 && indx <= 20)  // 15%
+    else if (indx > 5 && indx <= 25)  // 15%
         indx = 2;
-    else if (indx > 20 && indx <= 40)  // 20%
+    else if (indx > 25 && indx <= 50)  // 20%
         indx = 3;
-    else if (indx > 40 && indx <= 55)  // 15%
+    else if (indx > 50 && indx <= 65)  // 15%
         indx = 4;
-    else if (indx > 55 && indx <= 70)  // 15%
+    else if (indx > 65 && indx <= 80)  // 15%
         indx = 5;
-    else if (indx > 70)  //  30%
+    else if (indx > 80)  //  30%
         indx = 6;
 
     //indx = 3;

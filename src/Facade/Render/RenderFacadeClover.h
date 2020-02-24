@@ -3,6 +3,9 @@
 #include "RenderFacade.h"
 #include <EventManager/Event.h>
 #include <EventManager/EventManager.h>
+#include "../Input/InputFacadeManager.h"
+#include "../Input/InputFacadeClover.h"
+#include "../../../CLEngine/src/CLEngine.h"
 
 #include <codecvt>
 #include <iostream>
@@ -11,10 +14,9 @@
 #include <string>
 #include <unordered_map>
 
-   
 
 using namespace std;
-
+using namespace CLE;
 class RenderFacadeClover : public RenderFacade {
    public:
       RenderFacadeClover();
@@ -75,4 +77,6 @@ class RenderFacadeClover : public RenderFacade {
 
 
    private:
+
+      CLEngine* device;
 };

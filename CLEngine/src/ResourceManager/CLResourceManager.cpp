@@ -32,11 +32,11 @@ CLResourceMesh* CLResourceManager::GetResourceMesh(const std::string file) {
     return resource.get();
 }
 
-CLResourceShader* CLResourceManager::GetResourceShader(const std::string file, GLenum type) {
+CLResourceShader* CLResourceManager::GetResourceShader(const std::string file1, const std::string file2) {
     shared_ptr<CLResourceShader> resource = NULL;
     bool search = true;
     for (unsigned int i=0; i<shaders.size() && search; ++ i) {
-        if (!file.compare(shaders[i]->GetName())) {
+        if (!file1.compare(shaders[i]->GetName())) {
             resource = shaders[i];
             search = false;
         }
@@ -44,9 +44,9 @@ CLResourceShader* CLResourceManager::GetResourceShader(const std::string file, G
     if (!resource) {
         cout << "Creo un shader" << endl;
         resource = make_shared<CLResourceShader>();
-        resource->SetName(file);
-        resource->SetShaderType(type);
-        if (resource->LoadFile(file)) {
+        resource->SetName(file1);
+        //resource->SetShaderType(type);
+        if (resource->LoadFile(file1,file2)) {
             shaders.push_back(resource);
         }
     }

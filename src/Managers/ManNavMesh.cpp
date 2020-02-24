@@ -136,6 +136,7 @@ void ManNavMesh::SubscribeToEvents() {
         "ActualizeNavMeshCarAI"));
 }
 
+//TODO: CARLOS controlar "violacion de segmento (core)" soltar/crear totem en navmeshe -1. Ha petado cuando le he dado a una IA pasando al lado de las paredes del centro
 void ManNavMesh::ActualizeNavMeshTotem(DataMap* d){
     //std::cout << "Actualizamos NavMesh del Totem" << std::endl;
     bool todoCorrecto = false;
