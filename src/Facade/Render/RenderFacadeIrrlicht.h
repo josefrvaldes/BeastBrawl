@@ -95,5 +95,7 @@ class RenderFacadeIrrlicht : public RenderFacade {
     video::ITexture* powerUps[7];
     gui::IGUIFont* font;
 
+    enum InputXBox{BUTTON_A, BUTTON_B, BUTTON_X, BUTTON_Y, BUTTON_LB, BUTTON_RB, BUTTON_BACK, BUTTON_START, BUTTON_XBOX, BUTTON_STICK_L, BUTTON_STICK_R};
+
     //unordered_map<uint16_t,scene::ISceneNode*> sceneObjects; // CId - ISceneNode*
 };
