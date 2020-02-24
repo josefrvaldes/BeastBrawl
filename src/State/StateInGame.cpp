@@ -37,7 +37,7 @@ StateInGame::~StateInGame() {
  */
 void StateInGame::InitVirtualMethods() {
     InitializeManagers(physics.get(), cam.get());
-    InitializeSystems(*manCars.get(), *manBoundingWall.get(), *manBoundingOBB.get(), *manBoundingGround.get(), *manPowerUps.get(), *manNavMesh.get(), *manBoxPowerUps.get());
+    InitializeSystems(*manCars.get(), *manBoundingWall.get(), *manBoundingOBB.get(), *manBoundingGround.get(), *manPowerUps.get(), *manNavMesh.get(), *manBoxPowerUps.get(), *manTotems.get());
     InitializeFacades();
 
     CAMBIARCosasDeTotem(*manTotems.get());
@@ -99,7 +99,7 @@ void StateInGame::AddElementsToRender() {
     renderEngine->FacadeAddObject(totemOnCar.get());
 }
 
-void StateInGame::InitializeCLPhysics(ManCar &manCars, ManBoundingWall &manWall, ManBoundingOBB &manOBB, ManBoundingGround &manGround, ManPowerUp &manPowerUp, ManNavMesh &manNavMesh, ManBoxPowerUp &manBoxPowerUp) {
+void StateInGame::InitializeCLPhysics(ManCar &manCars, ManBoundingWall &manWall, ManBoundingOBB &manOBB, ManBoundingGround &manGround, ManPowerUp &manPowerUp, ManNavMesh &manNavMesh, ManBoxPowerUp &manBoxPowerUp, ManTotem &manTotem) {
     // NO ALTERAR EL ORDEN DEL ADD, QUE USO EL ORDEN PARA DISTINGUIR ENTRE MANAGERS!!!
     clPhysics = make_unique<CLPhysics>();
     clPhysics->AddManager(manCars);
@@ -109,10 +109,11 @@ void StateInGame::InitializeCLPhysics(ManCar &manCars, ManBoundingWall &manWall,
     clPhysics->AddManager(manPowerUp);
     clPhysics->AddManager(manNavMesh);
     clPhysics->AddManager(manBoxPowerUp);
+    clPhysics->AddManager(manTotem);
 }
 
-void StateInGame::InitializeSystems(ManCar &manCars, ManBoundingWall &manWall, ManBoundingOBB &manOBB, ManBoundingGround &manGround, ManPowerUp &manPowerUp, ManNavMesh &manNavMesh, ManBoxPowerUp &manBoxPowerUp) {
-    InitializeCLPhysics(manCars, manWall, manOBB, manGround, manPowerUp, manNavMesh, manBoxPowerUp);
+void StateInGame::InitializeSystems(ManCar &manCars, ManBoundingWall &manWall, ManBoundingOBB &manOBB, ManBoundingGround &manGround, ManPowerUp &manPowerUp, ManNavMesh &manNavMesh, ManBoxPowerUp &manBoxPowerUp, ManTotem &manTotem) {
+    InitializeCLPhysics(manCars, manWall, manOBB, manGround, manPowerUp, manNavMesh, manBoxPowerUp, manTotem);
     // incializa el system physics PU, no hace falta más código para esto
     phisicsPowerUp = make_shared<PhysicsPowerUp>();  // Creamos sistemas
     collisions = make_shared<Collisions>();
@@ -173,7 +174,7 @@ void StateInGame::Update() {
     // COLISIONES entre powerUp y player
     //collisions->IntersectPlayerPowerUps(manCars.get()->GetCar().get(), manPowerUps.get(), manNavMesh.get());
     // COLISIONES entre el Player y el Totem
-    collisions->IntersectPlayerTotem(manCars.get()->GetCar().get(), manTotems.get());
+    //collisions->IntersectPlayerTotem(manCars.get()->GetCar().get(), manTotems.get());
 
     // Actualizaciones en Irrlich
     renderEngine->UpdateCamera(cam.get(), manCars.get());

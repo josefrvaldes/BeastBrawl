@@ -17,6 +17,7 @@ class CExternalForce;
 class ManCar;
 class ManPowerUp;
 class ManNavMesh;
+class ManTotem;
 class ManBoxPowerUp;
 class IntersectData;
 class CCar;
@@ -43,9 +44,8 @@ class CLPhysics {
    protected:
    private:
     void IntersectsCarsPowerUps(ManCar &, ManPowerUp &, ManNavMesh &);
-    //void IntersectCarsTotem(ManCar* manCars, ManTotem* manTotem);
+    void IntersectCarsTotem(ManCar &, ManTotem &);
     void IntersectCarsBoxPowerUp(ManCar &, ManBoxPowerUp &);
-
     // gravity
     void HandleCollisionsWithGround();
     void ConstGravity();

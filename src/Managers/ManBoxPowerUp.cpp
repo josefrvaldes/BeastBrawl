@@ -38,7 +38,7 @@ ManBoxPowerUp::ManBoxPowerUp() {
         }
     }
 
-    CreateBoxPowerUp(vec3(-450.f, -600.f, 700.f));
+    //CreateBoxPowerUp(vec3(-450.f, -600.f, 700.f));
     
 
     SubscribeToEvents();

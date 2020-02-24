@@ -336,6 +336,15 @@ void RenderFacadeIrrlicht::UpdateTransformable(Entity* entity) {
     //Actualiza el escalado del objeto de irrlicht
     node->setScale(core::vector3df(cTransformable->scale.x, cTransformable->scale.y, cTransformable->scale.z));
 
+    //if(!showDebug) return;
+    //cout << "entramos?????????" << endl;
+    //bool hasSphere = entity->HasComponent(CompType::CompBoundingSphere);
+    //if (hasSphere && Constants::DEBUG_SHOW_SPHERES) {
+    //    scene::ISceneNode* nodeSphere = smgr->getSceneNodeFromId(cId->id + Component::ID_DIFFERENCE);
+    //    nodeSphere->setVisible(true);
+    //    //nodeSphere->setRotation(core::vector3df(cTransformable->rotation.x, cTransformable->rotation.y, cTransformable->rotation.z));
+    //    //nodeSphere->setScale(core::vector3df(cTransformable->scale.x, cTransformable->scale.y, cTransformable->scale.z));
+    //}
     
     /*
     bool hasChassis = entity->HasComponent(CompType::CompBoundingChassis);
@@ -411,7 +420,7 @@ void RenderFacadeIrrlicht::UpdateCamera(Entity* cam, ManCar* manCars) {
 
         camera1->setTarget(targetPosition);
         camera1->setFOV(angleRotation);
-        camera1->setPosition(core::vector3df(cTransformable->position.x, cTransformable->position.y+100, cTransformable->position.z));
+        camera1->setPosition(core::vector3df(cTransformable->position.x, cTransformable->position.y, cTransformable->position.z));
     }else if (cCamera->camType == CamType::TOTEM_CAM){
 
         auto car = manCars->GetCar();

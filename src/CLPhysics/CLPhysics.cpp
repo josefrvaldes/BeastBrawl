@@ -30,6 +30,7 @@
 #include <Managers/ManCar.h>
 #include <Managers/ManNavMesh.h>
 #include <Managers/ManPowerUp.h>
+#include <Managers/ManTotem.h>
 #include <Managers/ManBoxPowerUp.h>
 #include <Managers/Manager.h>
 #include <Systems/Utils.h>
@@ -53,6 +54,7 @@ void CLPhysics::AddManager(Manager &m) {
 * [3] manGround
 * [4] manPowerUps
 * [5] manNavMesh
+* [6] manTotem
 */
 void CLPhysics::Update(float delta) {
     Simulate(delta);
@@ -60,16 +62,17 @@ void CLPhysics::Update(float delta) {
     ManPowerUp *manPowerUp = static_cast<ManPowerUp *>(managers[4]);
     ManNavMesh *manNavMesh = static_cast<ManNavMesh *>(managers[5]);
     ManBoxPowerUp *manBoxPowerUp = static_cast<ManBoxPowerUp *>(managers[6]);
+    ManTotem *manTotem = static_cast<ManTotem *>(managers[7]);
     // Aplicamos las fisicas de gravedad
     RepositionBounding();
     CentralSystemGravity();
     // Aplicamos las fisicas de colision
     RepositionBounding();
     CentralSystemCollisions();
-    // Comprobamos colisiones entre CPCHES-PU
+    // Aplicamos colisiones entre elementos
     IntersectsCarsPowerUps(*manCar, *manPowerUp, *manNavMesh);
-    // Comprobamos colisiones entre COCHES-BOXPU
     IntersectCarsBoxPowerUp(*manCar, *manBoxPowerUp);
+    IntersectCarsTotem(*manCar, *manTotem);
 }
 
 
@@ -1186,12 +1189,18 @@ double CLPhysics::Angle2Vectors(const vec3 &a, const vec3 &b) const{
 
 
 
-/*
-void CLPhysics::IntersectCarsTotem(ManCar* manCars, ManTotem* manTotem){
 
-    for(const auto& currentCar : manCars->GetEntities()){
-        for(shared_ptr<Entity> currentTotem : manTotem->GetEntities()){                                                       // SI HACE DANYO
-            if(Intersects(currentCar.get(), currentTotem.get())){   //TRUE
+void CLPhysics::IntersectCarsTotem(ManCar &manCars, ManTotem &manTotem){
+    for(const auto& currentCar : manCars.GetEntities()){
+        auto cChassisCar = static_cast<CBoundingChassis *>(currentCar.get()->GetComponent(CompType::CompBoundingChassis).get());  
+        for(shared_ptr<Entity> currentTotem : manTotem.GetEntities()){  
+            CBoundingSphere *cSphereTotem = static_cast<CBoundingSphere *>(currentTotem->GetComponent(CompType::CompBoundingSphere).get());
+            auto intersect = cChassisCar->cilindre->IntersectSphere(*cSphereTotem);
+            if(!intersect.intersects)
+                intersect = cChassisCar->sphereBehind->IntersectSphere(*cSphereTotem);
+            if(!intersect.intersects)
+                intersect = cChassisCar->sphereFront->IntersectSphere(*cSphereTotem);
+            if(intersect.intersects){   //TRUE
                 // debemos coger el TOTEM
                 shared_ptr<DataMap> dataCollisionTotem = make_shared<DataMap>();                                                                         
                 (*dataCollisionTotem)[TOTEM] = currentTotem;              // nos guardamos el puntero para eliminar el powerUp  
@@ -1201,7 +1210,7 @@ void CLPhysics::IntersectCarsTotem(ManCar* manCars, ManTotem* manTotem){
         }
     }
 }
-*/
+
 void CLPhysics::IntersectCarsBoxPowerUp(ManCar &manCars, ManBoxPowerUp &manBoxPowerUp){
     // IntersectData inters1 = cChaCar1.cilindre->IntersectSphere(*(cChaCar2.sphereBehind.get()));
     for(const auto& currentCar : manCars.GetEntities()){
