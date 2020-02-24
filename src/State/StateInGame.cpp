@@ -163,12 +163,13 @@ void StateInGame::Update() {
     // ACTUALIZACION DE LAS FISICAS DE LOS COCHES
     physics->update(manCars->GetCar().get(), cam.get());
 
-    clPhysics->Update(0.1666f);
     sysBoxPowerUp->update(manBoxPowerUps.get());
     for(auto& actualPowerUp : manPowerUps->GetEntities()){  // actualizamos las fisicas de los powerUps
         phisicsPowerUp->update(actualPowerUp.get());
     }
 
+
+    clPhysics->Update(0.1666f);
     // COLISIONES entre BoxPowerUp y player
     //collisions->IntersectPlayerBoxPowerUp(manCars.get()->GetCar().get(), manBoxPowerUps.get());
     // COLISIONES entre powerUp y player
