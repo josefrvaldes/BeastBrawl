@@ -39,6 +39,9 @@ bool RenderFacadeClover::showDebug = false;
 RenderFacadeClover::~RenderFacadeClover() {
 }
 
+/**
+ * Inicializamos la fachada de clover e inicializamos el motor creando la ventana.
+ */
 RenderFacadeClover::RenderFacadeClover() {
     cout << "************************************\n";
     cout << "(づ｡◕‿‿◕｡)づ   \n";
@@ -97,6 +100,7 @@ void RenderFacadeClover::FacadeAddPlates(Manager* manNamePlates) {
 //Actualiza las posiciones de las plates
 void RenderFacadeClover::FacadeUpdatePlates(Manager* manNamePlates) {
 }
+
 const void RenderFacadeClover::FacadeAddObjects(vector<Entity*> entities) {
     for (Entity* e : entities) {
         FacadeAddObject(e);
@@ -320,7 +324,7 @@ void RenderFacadeClover::FacadeAddCamera(Entity* camera) {
 }
 
 bool RenderFacadeClover::FacadeRun() {
-    return true;
+    return device->Run();
 }
 
 // Devuelve el tiempo en uint32_t aunque glfw nos lo puede dar en double
@@ -332,7 +336,6 @@ uint32_t RenderFacadeClover::FacadeGetTime() const{
 // To-Do: introducir multi input
 // Comprobar inputs del teclado
 void RenderFacadeClover::FacadeCheckInputSingle() {
-        
  }
 
 

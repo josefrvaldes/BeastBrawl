@@ -94,7 +94,7 @@ CLResourceManager* CLEngine::GetResourceManager(){
  * Actualizacion de CLEngine.
  */
 bool CLEngine::Run() {
-    return glfwWindowShouldClose(window);
+    return !(glfwWindowShouldClose(window));
 }
 
 void CLEngine::PollEvents(){
