@@ -12,7 +12,7 @@ using namespace std;
 using namespace glm;
 using namespace chrono;
 
-enum class SkidState{DISABLED, SKID_START, SKID_LEFT, SKID_RIGHT, SKID_RECOVER_RIGHT, SKID_RECOVER_LEFT};
+enum class SkidState{DISABLED, SKID_START, SKID_TO_LEFT, SKID_TO_RIGHT, SKID_LEFT, SKID_RIGHT, SKID_RECOVER_RIGHT, SKID_RECOVER_LEFT};
 
 class CCar : public Component
 {
@@ -34,20 +34,23 @@ public:
     float wheelRotation = 0.0;
     float incrementWheelRotation = 0.5;  // velocidad por iteracion que se gira la rueda
     float decrementWheelRotation = 0.7;  // velocidad por iteracion que se recupera la rueda
-    float maxWheelRotation = 10;
+    float maxWheelRotation = 5;
     float friction;
     float slowDown;
 
 
     // Derrape
     time_point<system_clock> skidStart;
-    const int64_t skidActivationTime = 700;       // 0.7 segundos
-    const int64_t skidAnimationTime = 1000;       // 1 segundo
+    const int64_t skidActivationTime = 700;       // 0.7 segundos para activar el derrape
+    const int64_t skidAnimationTime = 1000;       // 1 segundo de animacion
     SkidState skidState;
     float skidRotation = 0.0;                     
 
-    float maxSkidDeg = 50.0;   // maximo giro en el derrape
-    float skidAcc    = 3.0;
+
+    float skidAcc = 3.0;        // To-Do: multiplicar por el deltaTime los periodos para ajustarlos al framerate
+    float skidDeg;              // giro en el derrape
+    float skidDegL = -40.0;  
+    float skidDegR = 40.0;   
 
 
 
