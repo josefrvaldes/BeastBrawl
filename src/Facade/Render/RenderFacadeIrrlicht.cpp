@@ -102,7 +102,7 @@ void RenderFacadeIrrlicht::FacadeInitHUD() {
 
 void RenderFacadeIrrlicht::FacadeUpdatePowerUpHUD(DataMap* d) {
     typeCPowerUp type = any_cast<typeCPowerUp>((*d)[TYPE_POWER_UP]);
-    cout << "Facada recibe el power up: " << (int)type << endl;
+    //cout << "Facada recibe el power up: " << (int)type << endl;
     currentPowerUp = int(type);
 }
 
@@ -228,7 +228,7 @@ const uint16_t RenderFacadeIrrlicht::FacadeAddObject(Entity* entity) {
         
 
         
-        
+        /*
         bool hasChassis = entity->HasComponent(CompType::CompBoundingChassis);
         if (hasChassis && Constants::DEBUG_SHOW_CHASSIS) {
             cout << "entramos aqui???" << endl;
@@ -270,7 +270,7 @@ const uint16_t RenderFacadeIrrlicht::FacadeAddObject(Entity* entity) {
                 nodeSphere->setVisible(false);
             }
         }
-        
+        */
 
     }
 
@@ -1091,10 +1091,10 @@ void RenderFacadeIrrlicht::Draw3DLine(vec3& pos1, vec3& pos2, uint16_t r, uint16
 void RenderFacadeIrrlicht::DeleteEntity(Entity* entity) {
     auto cId = static_cast<CId*>(entity->GetComponent(CompType::IdComp).get());
     // si tenemos el compoennte Sphere hay que eliminar... su Bounding
-    if (entity->HasComponent(CompType::CompBoundingSphere)){
-        scene::ISceneNode* nodeSphere = smgr->getSceneNodeFromId(cId->id + Component::ID_DIFFERENCE);
-        nodeSphere->remove();
-    }
+    //if (entity->HasComponent(CompType::CompBoundingSphere)){
+    //    scene::ISceneNode* nodeSphere = smgr->getSceneNodeFromId(cId->id + Component::ID_DIFFERENCE);
+    //    nodeSphere->remove();
+    //}
     scene::ISceneNode* node = smgr->getSceneNodeFromId(cId->id);
     node->remove();
 }

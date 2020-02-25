@@ -43,7 +43,7 @@ void PhysicsFacadeIrrlicht::UpdateCar(Entity* car, Entity* cam) {
         nodeSphere->setVisible(RenderFacadeIrrlicht::showDebug);
     }
     */
-    
+    /*
     // vamos a ver si tiene CBoundingChassis
     bool hasChassis = car->HasComponent(CompType::CompBoundingChassis);
     if (hasChassis && Constants::DEBUG_SHOW_CHASSIS) {
@@ -58,7 +58,7 @@ void PhysicsFacadeIrrlicht::UpdateCar(Entity* car, Entity* cam) {
         nodeSphere2->setVisible(RenderFacadeIrrlicht::showDebug);
 
     }
-    
+    */
 }
 
 void PhysicsFacadeIrrlicht::UpdateCam(Entity* cam) {
@@ -106,7 +106,7 @@ void PhysicsFacadeIrrlicht::UpdateCarAI(Entity* car) {
     }
     */
    
-    
+    /*
     // vamos a ver si tiene CBoundingChassis
     bool hasChassis = car->HasComponent(CompType::CompBoundingChassis);
     if (hasChassis && Constants::DEBUG_SHOW_CHASSIS) {
@@ -121,7 +121,7 @@ void PhysicsFacadeIrrlicht::UpdateCarAI(Entity* car) {
         nodeSphere2->setVisible(RenderFacadeIrrlicht::showDebug);
 
     }
-    
+    */
     
 
 
@@ -146,6 +146,7 @@ void PhysicsFacadeIrrlicht::UpdatePowerUps(Entity* powerUp) {
     //Actualiza el escalado del objeto de irrlicht
     node->setScale(core::vector3df(cTransformable->scale.x, cTransformable->scale.y, cTransformable->scale.z));
 
+    /*
     // vemos si tiene esfera, y en cuyo caso la dibujamos
     bool hasSphere = powerUp->HasComponent(CompType::CompBoundingSphere);
     if (hasSphere && Constants::DEBUG_SHOW_SPHERES) {
@@ -155,6 +156,7 @@ void PhysicsFacadeIrrlicht::UpdatePowerUps(Entity* powerUp) {
         nodeSphere->setPosition(core::vector3df(cSphere->center.x, cSphere->center.y, cSphere->center.z));
         nodeSphere->setVisible(RenderFacadeIrrlicht::showDebug);
     }
+    */
     
 
 
