@@ -429,22 +429,22 @@ CTransformable* ManCar::calculateCloserCar(Entity* actualCar) {
 }
 
 void ManCar::ThrowPowerUpCar(DataMap* d) {
-    ThrowPowerUp(car.get());
+    ThrowPowerUp( static_cast<Car *>(car.get()) );
 }
 
 void ManCar::ThrowPowerUpAI(DataMap* d) {
-    ThrowPowerUp(any_cast<CarAI*>((*d)[ACTUAL_CAR]));
+    ThrowPowerUp(any_cast<CarAI *>((*d)[ACTUAL_CAR]));
 }
 
 void ManCar::ThrowPowerUpHuman(DataMap* d) {
-    ThrowPowerUp(any_cast<Car*>((*d)[ACTUAL_CAR]));
+    ThrowPowerUp(any_cast<Car *>((*d)[ACTUAL_CAR]));
 }
 
-void ManCar::ThrowPowerUp(Car* car) {
-    auto cPowerUpCar = static_cast<CPowerUp*>(car->GetComponent(CompType::PowerUpComp).get());
+void ManCar::ThrowPowerUp(Car* car_) {
+    auto cPowerUpCar = static_cast<CPowerUp*>(car_->GetComponent(CompType::PowerUpComp).get());
     //auto cRoboJorobo = static_cast<CRoboJorobo*>(any_cast<CarAI*>(d[ACTUAL_CAR])->GetComponent(CompType::RoboJoroboComp).get());
-    auto cShield = static_cast<CShield*>(car->GetComponent(CompType::ShieldComp).get());
-    auto cNitro = static_cast<CNitro*>(car->GetComponent(CompType::NitroComp).get());
+    auto cShield = static_cast<CShield*>(car_->GetComponent(CompType::ShieldComp).get());
+    auto cNitro = static_cast<CNitro*>(car_->GetComponent(CompType::NitroComp).get());
     bool robado = false; 
     
     if(cPowerUpCar->typePowerUp != typeCPowerUp::None){
@@ -453,7 +453,7 @@ void ManCar::ThrowPowerUp(Car* car) {
         CTransformable* objectiveCar;
         switch (cPowerUpCar->typePowerUp) {
             case (typeCPowerUp::RoboJorobo):
-                robado = useRoboJorobo(car);
+                robado = useRoboJorobo(car_);
                 if (!robado)
                     std::cout << "La has cagado, el Totem no lo tenia nadie..." << std::endl;
                 break;
@@ -464,24 +464,24 @@ void ManCar::ThrowPowerUp(Car* car) {
                 cNitro->activatePowerUp();
                 break;
             case (typeCPowerUp::TeleBanana):
-                objectiveCar = calculateCloserCar(car);
+                objectiveCar = calculateCloserCar(car_);
                 if(objectiveCar != nullptr)
                     (*data)[CAR_FOLLOW_POSITION] = objectiveCar;
                 (*data)[TYPE_POWER_UP] = cPowerUpCar->typePowerUp;
-                (*data)[CAR_EXIT_POSITION] = static_cast<CTransformable*>(car->GetComponent(CompType::TransformableComp).get());
-                (*data)[CAR_EXIT_DIMENSION] =  static_cast<CDimensions*>(car->GetComponent(CompType::DimensionsComp).get());
+                (*data)[CAR_EXIT_POSITION] = static_cast<CTransformable*>(car_->GetComponent(CompType::TransformableComp).get());
+                (*data)[CAR_EXIT_DIMENSION] =  static_cast<CDimensions*>(car_->GetComponent(CompType::DimensionsComp).get());
                 EventManager::GetInstance().AddEventMulti(Event{EventType::PowerUp_Create, data});
                 break;
             default:     // en caso del melon molon o el pudding
                 (*data)[TYPE_POWER_UP] = cPowerUpCar->typePowerUp;
-                (*data)[CAR_EXIT_POSITION] = static_cast<CTransformable*>(car->GetComponent(CompType::TransformableComp).get());
-                (*data)[CAR_EXIT_DIMENSION] =  static_cast<CDimensions*>(car->GetComponent(CompType::DimensionsComp).get());
+                (*data)[CAR_EXIT_POSITION] = static_cast<CTransformable*>(car_->GetComponent(CompType::TransformableComp).get());
+                (*data)[CAR_EXIT_DIMENSION] =  static_cast<CDimensions*>(car_->GetComponent(CompType::DimensionsComp).get());
                 EventManager::GetInstance().AddEventMulti(Event{EventType::PowerUp_Create, data});
 
                 break;
         }
 
-        if(car == GetCar().get()){
+        if(car_ == GetCar().get()){
             // Sonido de lanzar power-up
             shared_ptr<DataMap> dataSound = make_shared<DataMap>();
             (*dataSound)[TYPE_POWER_UP] = cPowerUpCar->typePowerUp;
@@ -513,6 +513,7 @@ int calculateProbabilityPowerUp(int totalPowerUps, std::vector<int> probabilityP
 */
 
 void ManCar::CatchPowerUp(DataMap* d) {
+    // NO ENTRA AQUI YAAAA
     // To-Do: porcentajes temporales
     srand(time(NULL));
     int indx = rand() % 100 + 1;
@@ -537,7 +538,7 @@ void ManCar::CatchPowerUp(DataMap* d) {
     //EscudoMerluzo,      // 4
     //TeleBanana,         // 5
     //MelonMolon          // 6
-    //indx = 5;
+    //indx = 6;
     auto cPowerUpCar = static_cast<CPowerUp*>(car.get()->GetComponent(CompType::PowerUpComp).get());
     if (cPowerUpCar->typePowerUp == typeCPowerUp::None) {
         cPowerUpCar->typePowerUp = (typeCPowerUp)indx;
@@ -565,11 +566,18 @@ void ManCar::CatchPowerUpAI(DataMap* d) {
         indx = 5;
     else if (indx > 70)  //  30%
         indx = 6;
+
+
     //indx = 5;
     auto cPowerUpCar = static_cast<CPowerUp*>(any_cast<Entity*>((*d)[ACTUAL_CAR])->GetComponent(CompType::PowerUpComp).get());
     if(cPowerUpCar->typePowerUp == typeCPowerUp::None){
         cPowerUpCar->typePowerUp = (typeCPowerUp)indx;
-        std::cout << "Power Up de la IA:   " << (int)cPowerUpCar->typePowerUp << std::endl;
+        std::cout << "Power Up del coche es:   " << (int)cPowerUpCar->typePowerUp << std::endl;
+        if(this->GetCar().get() == any_cast<Entity*>((*d)[ACTUAL_CAR])){
+            shared_ptr<DataMap> data = make_shared<DataMap>();
+            (*data)[TYPE_POWER_UP] = cPowerUpCar->typePowerUp;
+            EventManager::GetInstance().AddEventMulti(Event{EventType::UPDATE_POWERUP_HUD, data});
+        }
     }
     //cPowerUp->typePowerUp = dynamic_cast<typeCPowerUp*>(indx);
 }

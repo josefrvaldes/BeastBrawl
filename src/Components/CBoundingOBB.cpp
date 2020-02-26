@@ -19,16 +19,20 @@ using namespace std;
 //     return CBoundingPlane(normal / magnitude, distance / magnitude);
 // }
 
-CBoundingOBB::CBoundingOBB(const vector<vec3> &vertices, const vec3 &centerMass){
+CBoundingOBB::CBoundingOBB(const vector<glm::vec3> &vertices, const vector<glm::vec3> &centersMass_){
     m_compType = CompType::CompBoundingOBB;
-    center = centerMass;
+    //center = centerMass;
     //std::cout << "EL CENTRO DE MASAS (EN X) DEL BOUNDING OBB ES: " << center.x << endl;
     // vamos a crear los planos que serviran para crear el CBoundingOBB
     for(long unsigned int i=0; i<vertices.size(); i=i+4){
         //std::cout << " La x del vertice es: " << vertices[i].x << endl;
         planes.push_back( make_shared<CBoundingPlane>(vertices[i], vertices[i+1], vertices[i+2], vertices[i+3]) );
     }
-    cout << " ---------------------------------------   FIN   ------------------------------------------------------" << endl;
+    for(long unsigned int i=0; i<centersMass_.size(); i++){
+        //std::cout << " La x del vertice es: " << vertices[i].x << endl;
+        centersMass.push_back(centersMass_[i]);
+    }
+    //cout << " ---------------------------------------   FIN   ------------------------------------------------------" << endl;
 }
 
 // TODO: Actualmente todos los planos se tratan como finitos en los que respecta a las colisiones con las esferas
@@ -43,25 +47,42 @@ IntersectData CBoundingOBB::IntersectSphere(const CBoundingSphere &other, const 
         }
     }
     if(intersectsPlane.size() == 1 ){
+        //cout << "hay interseccion con 1 plano..." << endl;
         return intersectsPlane[0];
     }
     else if(intersectsPlane.size() > 1){
+        //cout <<"HAY INTERSECCION CON 2, EN ESPECIFICO CON EL: ";
+        //return intersectsPlane[0];
+
+        // necesitamos decidir cual es centro de masas que mas nos conviene, respecto a nuestra posicion
+        auto centerNear = centersMass[0];
+        float distanceNear = EuclideanDis(other.center, centersMass[0]);
+        for(long unsigned int i=1; i<centersMass.size(); i++){
+            // nos quedamos con aquel que tenga la distancia mas corta
+            if(distanceNear > EuclideanDis(other.center, centersMass[i])){
+                centerNear = centersMass[i];
+                distanceNear = EuclideanDis(other.center, centersMass[i]);
+            }
+        }
+        //cout << "la DISTANCIA EEEEES: " << distanceNear << endl;
+        //cout << "el centro con el que colisionamos se encuentra en: ( " << centerNear.x << " , " << centerNear.y << " , " << centerNear.z << " )" << endl;
         //std::cout << "DE UN OBB COLISIONAMOS CON MAS DE 1 PLANO BEIBEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE" << std::endl;
         for(long unsigned int i=0; i<intersectsPlane.size(); i++){
-            vec3 vecDir = vec3(center.x-other.center.x, center.y-other.center.y, center.z-other.center.z);
-            IntersectData intersDataSphereRay = planes[intersectsPlane[i].posEntity]->IntersectRay(other.center ,normalize(vecDir));
+            glm::vec3 vecDir = glm::vec3(centerNear.x-other.center.x, centerNear.y-other.center.y, centerNear.z-other.center.z);
+            IntersectData intersDataSphereRay = planes[intersectsPlane[i].posEntity]->IntersectRay(other.center , normalize(vecDir));
             // De normal el rayo lanzado solo debe de colisionar con 1 plano, sera por el que realmente entra.
             // de momento lo que haremos es colisionar con ese plano a ver que pasa
             if(intersDataSphereRay.intersects){
+                //cout << i << endl;
                 return intersectsPlane[i];
             }
         }
         // hay que crear una esfera virtual de centro, centro del OBB y de radio = |dis(centro, puntoCol)|
     }
-    return IntersectData(false, -1 ,vec3(0.0,0.0,0.0));
+    return IntersectData(false, -1 ,glm::vec3(0.0,0.0,0.0));
 }
 
-IntersectData CBoundingOBB::IntersectRay(const vec3 &posRayOrigin, const vec3 &rayNormalNormalized) const{
+IntersectData CBoundingOBB::IntersectRay(const glm::vec3 &posRayOrigin, const glm::vec3 &rayNormalNormalized) const{
     //return IntersectData(false,vec3(0.0,0.0,0.0));
     for(long unsigned int i=0; i<planes.size(); i++){
         IntersectData intersData = planes[i].get()->IntersectRay(posRayOrigin, rayNormalNormalized);
@@ -70,5 +91,9 @@ IntersectData CBoundingOBB::IntersectRay(const vec3 &posRayOrigin, const vec3 &r
         }
     }
     // si no intersecta con ninguno no hago nada
-    return IntersectData(false, vec3(0.0,0.0,0.0));
+    return IntersectData(false, glm::vec3(0.0,0.0,0.0));
+}
+
+double CBoundingOBB::EuclideanDis(const glm::vec3 &p1, const glm::vec3 &p2) const{
+    return sqrt(pow((p1.x-p2.x),2)+pow((p1.y-p2.y),2)+pow((p1.z-p2.z),2));
 }

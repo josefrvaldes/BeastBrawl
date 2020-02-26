@@ -17,9 +17,9 @@ ManTotem::ManTotem() {
     double totemPosX = j["TOTEM"]["x"].get<double>();
     double totemPosY = j["TOTEM"]["y"].get<double>();
     double totemPosZ = j["TOTEM"]["z"].get<double>();
-    std::cout << " LA POS X DEL TOTEM ES LA: " << totemPosX << std::endl;
+    //std::cout << " LA POS X DEL TOTEM ES LA: " << totemPosX << std::endl;
     //CreateTotem(glm::vec3(-100.0, 20.0, -100.0));
-    CreateTotem(glm::vec3(totemPosX, totemPosY-15, totemPosZ));
+    CreateTotem(vec3(totemPosX, totemPosY-15, totemPosZ));
     SubscribeToEvents();
    // CreateTotem();
 }

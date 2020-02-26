@@ -19,6 +19,7 @@ class CBoundingPlane : public Component {
 
     // void Normalize();
     IntersectData IntersectSphere(const CBoundingSphere &other, const CTransformable &trCar, const CCar &ccarCar);
+    IntersectData IntersectSphereCenter(const CBoundingSphere &other, const CTransformable &trCar); 
 
     IntersectData IntersectPlane(const CBoundingPlane &other) const;
 
@@ -31,16 +32,16 @@ class CBoundingPlane : public Component {
     // Teniendo un punto en el plano, comprobamos si se encuentra entre sus 4 vertices
     bool membershipPoint(const vec3 &point) const;
 
-    vec3 a;
-    vec3 b;
-    vec3 c;
-    vec3 d;
+    glm::vec3 a;
+    glm::vec3 b;
+    glm::vec3 c;
+    glm::vec3 d;
 
 
     vec4 equationPlane; // ecuacion general del plano
     //ejemplo: 2x -y + 3z + 4 = 0
-    const vec3 normal;
-    const vec3 normalizedNormal;
+    const glm::vec3 normal;
+    const glm::vec3 normalizedNormal;
     const float distance;
 
     private:

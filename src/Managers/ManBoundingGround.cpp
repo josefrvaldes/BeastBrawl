@@ -1,4 +1,4 @@
-#include "ManBoundingWall.h"
+#include "ManBoundingGround.h"
 
 #include <iostream>
 #include <Entities/BoundingWall.h>
@@ -9,14 +9,9 @@
 
 using namespace std;
 using json = nlohmann::json;
-ManBoundingWall::ManBoundingWall() {
+ManBoundingGround::ManBoundingGround() {
     SubscribeToEvents();
-    // el primer bool marca la orientación: si es true está orientado en el eje X, si es false, está orientado en el eje Z
-    // el segundo bool marca el sentido del vector normal
-    //shared_ptr<BoundingWall> p1 = make_shared<BoundingWall>(vec3(-500.f, 20.f, -460.f), true, false);
-    //shared_ptr<BoundingWall> p2 = make_shared<BoundingWall>(vec3(-500.f, 20.f, 760.f), true, true); // orientation
-    //shared_ptr<BoundingWall> p3 = make_shared<BoundingWall>(vec3(-470.f, 20.f, -480.f), false, true);
-    //shared_ptr<BoundingWall> p4 = make_shared<BoundingWall>(vec3(480.f, 20.f, -480.f), false, false);
+    /*
     double vertex1X = 0, vertex1Y = 0, vertex1Z = 0;  // utilizamos double porque tiene mas precison que float (64b vs 32b)
     double vertex2X = 0, vertex2Y = 0, vertex2Z = 0;
     double vertex3X = 0, vertex3Y = 0, vertex3Z = 0;
@@ -59,6 +54,9 @@ ManBoundingWall::ManBoundingWall() {
 
         CreateBoundingWall(v_vertex1, v_vertex2, v_vertex4, v_vertex3);
     }
+    */
+
+
 
     //CreateBoundingWall(vec3(-500.f, 20.f, -460.f),vec3(550.f, 20.f, -460.f),vec3(550.f, 120.f, -460.f),vec3(-500.f, 120.f, -460.f));
     //CreateBoundingWall(vec3(-500.f, 120.f, 760.f),vec3(550.f, 120.f, 760.f),vec3(550.f, 20.f, 760.f),vec3(-500.f, 20.f, 760.f));
@@ -67,10 +65,10 @@ ManBoundingWall::ManBoundingWall() {
 
 
     // 4 Planos normales
-    //CreateBoundingWall(vec3(50.f, -40.f, 50.f),vec3(150.f, -40.f, 50.f),vec3(150.f, -300.f, 50.f),vec3(50.f, -300.f, 50.f));
-    //CreateBoundingWall(vec3(50.f, -300.f, 150.f),vec3 (150.f, -300.f, 150.f),vec3(150.f, -40.f, 150.f),vec3(50.f, -40.f, 150.f));
-    //CreateBoundingWall(vec3(50.f, -300.f, 50.f),vec3(50.f, -300.f, 150.f),vec3(50.f, -40.f, 150.f),vec3(50.f, -40.f, 50.f));
-    //CreateBoundingWall(vec3(150.f, -40.f, 50.f),vec3(150.f, -40.f, 150.f),vec3(150.f, -300.f, 150.f),vec3(150.f, -300.f, 50.f));
+    //CreateBoundingWall(vec3(50.f, 40.f, 50.f),vec3(150.f, 40.f, 50.f),vec3(150.f, 10.f, 50.f),vec3(50.f, 10.f, 50.f));
+    //CreateBoundingWall(vec3(50.f, 10.f, 150.f),vec3 (150.f, 10.f, 150.f),vec3(150.f, 40.f, 150.f),vec3(50.f, 40.f, 150.f));
+    //CreateBoundingWall(vec3(50.f, 10.f, 50.f),vec3(50.f, 10.f, 150.f),vec3(50.f, 40.f, 150.f),vec3(50.f, 40.f, 50.f));
+    //CreateBoundingWall(vec3(150.f, 40.f, 50.f),vec3(150.f, 40.f, 150.f),vec3(150.f, 10.f, 150.f),vec3(150.f, 10.f, 50.f));
 
 
 
@@ -82,29 +80,31 @@ ManBoundingWall::ManBoundingWall() {
 //
     //CreateBoundingWall(vec3(30.f, 40.f, 50.f),vec3(40.f, 40.f, 40.f),vec3(40.f, 10.f, 40.f),vec3(30.f, 10.f, 50.f));
 
+    // TODO: Para ahorrar calculos ordenar elementos colisionables de arriba a bajo por la Y
+    CreateBoundingGround(vec3(-300.f, 50.f, 1000.f),vec3(300.f, 50.f, 1000.f),vec3(300.f, 50.f, 150.f),vec3(-300.f, 50.f, 150.f));
+    CreateBoundingGround(vec3(-100.f, 50.f, 150.f),vec3(100.f, 50.f, 150.f),vec3(100.f, 10.f, 50.f),vec3(-100.f, 10.f, 50.f));
+    CreateBoundingGround(vec3(-500.f, 10.f, 760.f),vec3(550.f, 10.f, 760.f),vec3(550.f, 10.f, -460.f),vec3(-500.f, 10.f, -460.f));
+    //CreateBoundingGround(vec3(-500.f, -600.f, -100.f),vec3(550.f, -600.f, -100.f),vec3(550.f, -600.f, -460.f),vec3(-500.f, -600.f, -460.f));
 
-    // Por consistencia para crear un plano
+
+    //CreateBoundingGround(vec3(-400.f, 6.f, 760.f),vec3(0.f, 6.f, 760.f),vec3(0.f, 6.f, 0.f),vec3(-400.f, 6.f, 0.f));
 
 
-    //cout << "Hemos creado un bounding wall, ahora tenemos " << entities.size() << " bounding walls" << endl;
 }
 
-void ManBoundingWall::CreateBoundingWall(glm::vec3 a, glm::vec3 b, glm::vec3 c, glm::vec3 d) {
+void ManBoundingGround::CreateBoundingGround(glm::vec3 a, glm::vec3 b, glm::vec3 c, glm::vec3 d) {
     shared_ptr<BoundingWall> p = make_shared<BoundingWall>(a, b, c, d);
     entities.push_back(p);
 }
 
-ManBoundingWall::~ManBoundingWall() {
-    cout << "Llamando al destructor de ManBoundingWall" << endl;
+ManBoundingGround::~ManBoundingGround() {
+    cout << "Llamando al destructor de ManBoundingGround" << endl;
 }
 
-void ManBoundingWall::SubscribeToEvents() {
-    // EventManager::GetInstance()->SuscribeMulti(Listener(
-    //     EventType::PRESS_I,
-    //     bind(&ManCar::AccelerateCar, this, placeholders::_1),
-    //     "AccelerateCar"));
+void ManBoundingGround::SubscribeToEvents() {
+
 }
 
-void ManBoundingWall::Integrate(float delta) {
+void ManBoundingGround::Integrate(float delta) {
     //physics->update(GetCar().get(), cam.get());
 }
