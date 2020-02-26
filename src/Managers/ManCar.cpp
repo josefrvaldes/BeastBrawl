@@ -92,7 +92,7 @@ void ManCar::UpdateCar() {
 void ManCar::UpdateCarAI(CarAI* carAI, ManPowerUp* m_manPowerUp, ManBoxPowerUp* m_manBoxPowerUp, ManTotem* m_manTotem, ManWayPoint* graph, ManNavMesh* manNavMesh, 
                         ManBoundingWall* m_manBoundingWall, SystemBtPowerUp* systemBtPowerUp, SystemBtMoveTo* systemBtMoveTo, SystemBtLoDMove* systemBtLoDMove, SystemPathPlanning *systemPathPlanning) {
     
-    /*
+    
     systemBtMoveTo->update(carAI, this, m_manPowerUp, m_manBoxPowerUp, m_manTotem, graph, manNavMesh);
     
     systemPathPlanning->Update(carAI, graph, manNavMesh);
@@ -102,7 +102,7 @@ void ManCar::UpdateCarAI(CarAI* carAI, ManPowerUp* m_manPowerUp, ManBoxPowerUp* 
     physicsAI->Update(carAI, graph);
 
     systemBtPowerUp->update(carAI, this, m_manPowerUp, m_manBoxPowerUp, m_manTotem, graph, manNavMesh);
-    */
+    
 
 }
 
@@ -513,6 +513,7 @@ int calculateProbabilityPowerUp(int totalPowerUps, std::vector<int> probabilityP
 */
 
 void ManCar::CatchPowerUp(DataMap* d) {
+    // NO ENTRA AQUI YAAAA
     // To-Do: porcentajes temporales
     srand(time(NULL));
     int indx = rand() % 100 + 1;
@@ -566,18 +567,17 @@ void ManCar::CatchPowerUpAI(DataMap* d) {
     else if (indx > 70)  //  30%
         indx = 6;
 
-    indx = 3;
-    cout << "ENTRAMOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOS AQUI SIEMPREEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE" << endl;
-    auto cPowerUpCar = static_cast<CPowerUp*>(any_cast<Entity*>((*d)[ACTUAL_CAR])->GetComponent(CompType::PowerUpComp).get());
-    if(cPowerUpCar->typePowerUp == typeCPowerUp::None){
-        cPowerUpCar->typePowerUp = (typeCPowerUp)indx;
-        std::cout << "Power Up del coche es:   " << (int)cPowerUpCar->typePowerUp << std::endl;
-        if(this->GetCar().get() == any_cast<Entity*>((*d)[ACTUAL_CAR])){
-            shared_ptr<DataMap> data = make_shared<DataMap>();
-            (*data)[TYPE_POWER_UP] = cPowerUpCar->typePowerUp;
-            EventManager::GetInstance().AddEventMulti(Event{EventType::UPDATE_POWERUP_HUD, data});
-        }
-    }
+    //indx = 6;
+    //auto cPowerUpCar = static_cast<CPowerUp*>(any_cast<Entity*>((*d)[ACTUAL_CAR])->GetComponent(CompType::PowerUpComp).get());
+    //if(cPowerUpCar->typePowerUp == typeCPowerUp::None){
+    //    cPowerUpCar->typePowerUp = (typeCPowerUp)indx;
+    //    std::cout << "Power Up del coche es:   " << (int)cPowerUpCar->typePowerUp << std::endl;
+    //    if(this->GetCar().get() == any_cast<Entity*>((*d)[ACTUAL_CAR])){
+    //        shared_ptr<DataMap> data = make_shared<DataMap>();
+    //        (*data)[TYPE_POWER_UP] = cPowerUpCar->typePowerUp;
+    //        EventManager::GetInstance().AddEventMulti(Event{EventType::UPDATE_POWERUP_HUD, data});
+    //    }
+    //}
     //cPowerUp->typePowerUp = dynamic_cast<typeCPowerUp*>(indx);
 }
 

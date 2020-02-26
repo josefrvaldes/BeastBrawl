@@ -19,7 +19,7 @@ ManTotem::ManTotem() {
     double totemPosZ = j["TOTEM"]["z"].get<double>();
     //std::cout << " LA POS X DEL TOTEM ES LA: " << totemPosX << std::endl;
     //CreateTotem(glm::vec3(-100.0, 20.0, -100.0));
-    CreateTotem(vec3(totemPosX, totemPosY, totemPosZ));
+    CreateTotem(vec3(totemPosX, totemPosY-15, totemPosZ));
     SubscribeToEvents();
    // CreateTotem();
 }

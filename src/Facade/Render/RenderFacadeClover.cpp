@@ -248,3 +248,7 @@ void RenderFacadeClover::FacadeDrawBoundingGround(Entity* entity) const {
 
 void RenderFacadeClover::FacadeDrawBoundingBox(Entity* entity, bool colliding) const{
 }
+
+void RenderFacadeClover::FacadeAddSphereOnObject(Entity* entity){
+    
+}

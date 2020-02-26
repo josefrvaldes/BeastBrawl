@@ -228,7 +228,7 @@ const uint16_t RenderFacadeIrrlicht::FacadeAddObject(Entity* entity) {
         
 
         
-        /*
+        
         bool hasChassis = entity->HasComponent(CompType::CompBoundingChassis);
         if (hasChassis && Constants::DEBUG_SHOW_CHASSIS) {
             cout << "entramos aqui???" << endl;
@@ -255,7 +255,8 @@ const uint16_t RenderFacadeIrrlicht::FacadeAddObject(Entity* entity) {
             nodeSphere2->setMaterialTexture(0, driver->getTexture(path.c_str()));  //Obligado incluir el c_str() si no irrlicht no carga solo con un string
             nodeSphere2->setMaterialFlag(video::EMF_LIGHTING, false);
             nodeSphere2->setVisible(false);
-        }else{
+        }
+        /*else{
             bool hasSphere = entity->HasComponent(CompType::CompBoundingSphere);
             if (hasSphere && Constants::DEBUG_SHOW_SPHERES) {
                 auto cBoundingSphere = static_cast<CBoundingSphere *>(entity->GetComponent(CompType::CompBoundingSphere).get());
@@ -267,10 +268,10 @@ const uint16_t RenderFacadeIrrlicht::FacadeAddObject(Entity* entity) {
                 nodeSphere->setScale(core::vector3df(1.f, 1.f, 1.f));
                 nodeSphere->setMaterialTexture(0, driver->getTexture(path.c_str()));  //Obligado incluir el c_str() si no irrlicht no carga solo con un string
                 nodeSphere->setMaterialFlag(video::EMF_LIGHTING, false);
-                nodeSphere->setVisible(false);
+                nodeSphere->setVisible(true);
             }
-        }
-        */
+        }*/
+        
 
     }
 
@@ -303,6 +304,35 @@ const uint16_t RenderFacadeIrrlicht::FacadeAddObject(Entity* entity) {
     delete[] edges;
     return cId->id;
 }
+
+
+
+
+
+
+//INPUTS : Una entidad GameObject
+//TODO: Llevar cuidado con las rutas de las texturas si luego se mueven las carpetas
+void RenderFacadeIrrlicht::FacadeAddSphereOnObject(Entity* entity) {
+    //Fuente: https://stackoverflow.com/questions/11855018/c-inheritance-downcasting
+    //Como convertir un Component en cualquier tipo de sus subclases para poder usar los metodos propios
+    auto cId = static_cast<CId*>(entity->GetComponent(CompType::IdComp).get());
+    std::string path = "media/";
+
+    bool hasSphere = entity->HasComponent(CompType::CompBoundingSphere);
+    if (hasSphere && Constants::DEBUG_SHOW_SPHERES) {
+        auto cBoundingSphere = static_cast<CBoundingSphere *>(entity->GetComponent(CompType::CompBoundingSphere).get());
+        //cout << "POS X: " << cTransformable->position.x << " POS Y: " << cTransformable->position.y << "POS Z:" << cTransformable->position.z << endl;
+        cout << "lo creamos aqui con el radio de: " << cBoundingSphere->radius << endl;
+        scene::ISceneNode* nodeSphere = smgr->addSphereSceneNode(cBoundingSphere->radius);
+        nodeSphere->setID(cId->id + Component::ID_DIFFERENCE);
+        nodeSphere->setPosition(core::vector3df(cBoundingSphere->center.x, cBoundingSphere->center.y, cBoundingSphere->center.z));
+        nodeSphere->setScale(core::vector3df(1.f, 1.f, 1.f));
+        nodeSphere->setMaterialTexture(0, driver->getTexture(path.c_str()));  //Obligado incluir el c_str() si no irrlicht no carga solo con un string
+        nodeSphere->setMaterialFlag(video::EMF_LIGHTING, false);
+        nodeSphere->setVisible(true);
+    }
+}
+
 
 //INPUTS : Una entidad GameObject
 //RETURNS: El Id del objeto añadido

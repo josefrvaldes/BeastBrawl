@@ -38,14 +38,14 @@ class CLPhysics {
     IntersectData HandleCollisionsRayWithSpheres(CTransformable &trCar1, CTransformable &trCar2, CBoundingSphere &spCar2, const glm::vec3 &normalRay);
     IntersectData HandleCollisionsRayWithPlane(CTransformable &trRayOrigin,  glm::vec3 &rayNormalNormalized, CBoundingPlane &planeObject);
     // void Integrate(Entity &e, float delta);
+    void IntersectsCarsPowerUps(ManCar &, ManPowerUp &, ManNavMesh &);
+    void IntersectCarsTotem(ManCar &, ManTotem &);
+    void IntersectCarsBoxPowerUp(ManCar &, ManBoxPowerUp &);
 
     static void RunTests();
 
    protected:
    private:
-    void IntersectsCarsPowerUps(ManCar &, ManPowerUp &, ManNavMesh &);
-    void IntersectCarsTotem(ManCar &, ManTotem &);
-    void IntersectCarsBoxPowerUp(ManCar &, ManBoxPowerUp &);
     // gravity
     void HandleCollisionsWithGround();
     void ConstGravity();
@@ -91,5 +91,6 @@ class CLPhysics {
     glm::vec3 CalculateProyectPointRecta(const glm::vec3 &extrem1, const glm::vec3 &extrem2, const glm::vec3 &point_) const;
     glm::vec3 CalculateVecDirCar(CTransformable &cTransformable) const;
     vector<Manager *> managers;
-    const float gravity = -2.0f;
+    const float gravityCar = -2.0f;
+    const float gravityPU = -0.5f;
 };

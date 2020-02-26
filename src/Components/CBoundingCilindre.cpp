@@ -65,7 +65,7 @@ IntersectData CBoundingCilindre::IntersectSphere(const CBoundingSphere &other) c
     return IntersectData(intersects, distance * direction, virtualSphereCenter, virtualSphereRadius);
 }
 
-double CBoundingCilindre::EuclideanDis(const vec3 &p1, const vec3 &p2) const{
+double CBoundingCilindre::EuclideanDis(const glm::vec3 &p1, const glm::vec3 &p2) const{
     return sqrt(pow((p1.x-p2.x),2)+pow((p1.y-p2.y),2)+pow((p1.z-p2.z),2));
 }
 

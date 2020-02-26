@@ -46,14 +46,14 @@ void ManPowerUp::CreatePowerUp(DataMap* d) {
 
    float angleRotation = (transforSalida->rotation.y * 3.141592) / 180.0;
    if(type == typeCPowerUp::PudinDeFrambuesa){
-        posX = transforSalida->position.x - cos(angleRotation);
-        posZ = transforSalida->position.z + sin(angleRotation);
+        posX = transforSalida->position.x - cos(angleRotation)* (-1*((dimensionsCarSalida->width/2)+medidaPowerUp));
+        posZ = transforSalida->position.z + sin(angleRotation)* (-1*((dimensionsCarSalida->depth/2)+medidaPowerUp));
    }else{
-        posX = transforSalida->position.x - cos(angleRotation) * ((dimensionsCarSalida->width/2));
-        posZ = transforSalida->position.z + sin(angleRotation) * ((dimensionsCarSalida->depth/2));    
+        posX = transforSalida->position.x - cos(angleRotation) * ((dimensionsCarSalida->width/2)+medidaPowerUp);
+        posZ = transforSalida->position.z + sin(angleRotation) * ((dimensionsCarSalida->depth/2)+medidaPowerUp);    
    }
 
-    vec3 positionPowerUp = vec3(posX,transforSalida->position.y,posZ);
+    vec3 positionPowerUp = vec3(posX,transforSalida->position.y+10,posZ);
 
     shared_ptr<PowerUp> powerUp = make_shared<PowerUp>(positionPowerUp, transforSalida->rotation, type, transforPerse);
     auto cTypePU = static_cast<CType*>(powerUp->GetComponent(CompType::TypeComp).get())->type;
@@ -72,11 +72,14 @@ void ManPowerUp::CreatePowerUp(DataMap* d) {
         shared_ptr<CBoundingSphere> cBoundingSphere = make_shared<CBoundingSphere>(positionPowerUp, radioSphere);
         powerUp->AddComponent(cBoundingSphere);
 
+        //renderEngine->FacadeAddSphereOnObject(powerUp.get());
+
         //Cuando creamos el powerUp, ponemos su tiempo inicial de inactivadad --> para no danyarnos a nostros mismos
         static_cast<CPowerUp*>(powerUp->GetComponent(CompType::PowerUpComp).get())->timeStart = system_clock::now();
     }else{
         cout << "el type powerUp es: " << int(cTypePU) << endl;
         cout << "ESTO NO DEBERIA DE PASAR NUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUNCA JODER" << endl;
+        cout << "SIIIIIIIIIIII TE PASA ESTOOOOOOOOOOOOOOOOOOOOOO HABLAAAAAAAAAAAAAAAR CON CARLOOOOOOOOOOOOOOOOOOOOOSSSSSSS" << endl;
     }
 }
 

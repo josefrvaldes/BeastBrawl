@@ -81,8 +81,8 @@ ManBoundingGround::ManBoundingGround() {
     //CreateBoundingWall(vec3(30.f, 40.f, 50.f),vec3(40.f, 40.f, 40.f),vec3(40.f, 10.f, 40.f),vec3(30.f, 10.f, 50.f));
 
     // TODO: Para ahorrar calculos ordenar elementos colisionables de arriba a bajo por la Y
-    CreateBoundingGround(vec3(-100.f, 200.f, 1000.f),vec3(100.f, 200.f, 1000.f),vec3(100.f, 200.f, 760.f),vec3(-100.f, 200.f, 760.f));
-    CreateBoundingGround(vec3(-100.f, 200.f, 760.f),vec3(100.f, 200.f, 760.f),vec3(100.f, 10.f, -100.f),vec3(-100.f, 10.f, -100.f));
+    CreateBoundingGround(vec3(-300.f, 50.f, 1000.f),vec3(300.f, 50.f, 1000.f),vec3(300.f, 50.f, 150.f),vec3(-300.f, 50.f, 150.f));
+    CreateBoundingGround(vec3(-100.f, 50.f, 150.f),vec3(100.f, 50.f, 150.f),vec3(100.f, 10.f, 50.f),vec3(-100.f, 10.f, 50.f));
     CreateBoundingGround(vec3(-500.f, 10.f, 760.f),vec3(550.f, 10.f, 760.f),vec3(550.f, 10.f, -460.f),vec3(-500.f, 10.f, -460.f));
     //CreateBoundingGround(vec3(-500.f, -600.f, -100.f),vec3(550.f, -600.f, -100.f),vec3(550.f, -600.f, -460.f),vec3(-500.f, -600.f, -460.f));
 
