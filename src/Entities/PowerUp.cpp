@@ -73,17 +73,17 @@ PowerUp::PowerUp(glm::vec3 _position, glm::vec3 _rotation, typeCPowerUp _typePow
         cTexture->texture = "";
         cMesh->mesh = "melon.obj";
         cPowerUp->speed = 510.0;
-        cTransformable->scale = glm::vec3(4,4,4);
+        // cTransformable->scale = glm::vec3(4,4,4);
     }else if(_typePowerUp == typeCPowerUp::PudinDeFrambuesa){   // Pudin Frambuesa
         cTexture->texture = "";
         cMesh->mesh = "pudin.obj";
         cPowerUp->speed = -510.0;
-        cTransformable->scale = glm::vec3(4,4,4);
+        // cTransformable->scale = glm::vec3(4,4,4);
     }else{                                                      // Telebanana
         cTexture->texture = "";
         cMesh->mesh = "telebanana.obj";
         cPowerUp->speed = 375.0;
-        cTransformable->scale = glm::vec3(2,2,2);
+        // cTransformable->scale = glm::vec3(2,2,2);
     }
 
     shared_ptr<CShader> cShader = make_shared<CShader>(vertexShader,fragmentShader);

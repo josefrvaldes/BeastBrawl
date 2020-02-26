@@ -56,7 +56,7 @@ class RenderFacadeClover : public RenderFacade {
       void FacadeCheckInputEndRace() override;
       void FacadeCheckInputLobbyMulti() override;
       void FacadeUpdatePowerUpHUD(DataMap* d) override;
-      void FacadeDrawHUD(Entity* car, ManCar* carsAI) override;
+      void FacadeDrawHUD(Entity* car, ManCar* manCars) override;
       void FacadeSuscribeEvents() override;
       void FacadeAddPlates(Manager* manNamePlates) override;
       void FacadeUpdatePlates(Manager* manNamePlates) override;

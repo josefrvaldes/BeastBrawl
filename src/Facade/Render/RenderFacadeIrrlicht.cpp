@@ -1,6 +1,7 @@
 #include "RenderFacadeIrrlicht.h"
 
 #include <cmath>
+#include <algorithm>    // std::sort
 #include "../../Components/CBoundingChassis.h"
 #include "../../Components/CBoundingOBB.h"
 #include "../../Components/CPowerUp.h"
@@ -106,9 +107,56 @@ void RenderFacadeIrrlicht::FacadeUpdatePowerUpHUD(DataMap* d) {
     currentPowerUp = int(type);
 }
 
-void RenderFacadeIrrlicht::FacadeDrawHUD(Entity* car, ManCar* carsAI) {
-    //Dibujamos el texto del tiempo que llevas el totem
+void RenderFacadeIrrlicht::FacadeDrawHUD(Entity* car, ManCar* manCars) {
+
+    //Voy a actualizar aqui las posiciones donde van porque es el unico sitio donde tengo ambos tipos de coches
+
+    //struct auxiliar para guardarme tiempo y numero de coche
+    struct ranking_t{
+        uint16_t carNumber;
+        float    time;
+        inline bool operator() (const ranking_t& struct1, const ranking_t& struct2)
+        {
+            return (struct1.time > struct2.time);
+        }
+    };
+
     auto cTotem = static_cast<CTotem*>(car->GetComponent(CompType::TotemComp).get());
+    vector<ranking_t> ranking;
+
+    //Si existen coches de IA
+    if(manCars->GetEntities().size()>0){
+        //Primero vamos a meter al coche principal
+        ranking_t rank;
+        int i = 0;
+        for(auto& carAux : manCars->GetEntities()){
+            cTotem = static_cast<CTotem*>(carAux->GetComponent(CompType::TotemComp).get());
+            rank.carNumber = i++;
+            rank.time = cTotem->accumulatedTime;
+            ranking.push_back(rank);
+        }
+
+        std::sort (ranking.begin(), ranking.end(), ranking_t());
+    }
+
+    //Ya tenemos ordenados las posiciones, ahora vamos a actualizar sus valores en el CTotem
+    int j = 1;
+    for(auto aux : ranking){
+        uint16_t numCar = aux.carNumber;
+        cTotem = static_cast<CTotem*>(manCars->GetEntities()[numCar]->GetComponent(CompType::TotemComp).get());
+        cTotem->positionRanking = j++;
+
+    }
+
+    //Por si quieres imprimir las posiciones de los coches
+    // int k = 1;
+    // for(auto auxCar : manCars->GetEntities()){
+    //     cTotem = static_cast<CTotem*>(auxCar->GetComponent(CompType::TotemComp).get());
+    //     cout << "El coche numero " << k++ << " va en la posicion: " << cTotem->positionRanking << endl;
+    // }
+
+    //Dibujamos el texto del tiempo que llevas el totem
+    cTotem = static_cast<CTotem*>(car->GetComponent(CompType::TotemComp).get());
 
     //Dibujamos el cuadrado blanco del hud
     driver->draw2DImage(whiteBG, core::position2d<s32>(200, 50),
@@ -130,8 +178,8 @@ void RenderFacadeIrrlicht::FacadeDrawHUD(Entity* car, ManCar* carsAI) {
 
     int i = 0;
     core::stringw textIA = core::stringw("Car ");
-    for (const auto& cars : carsAI->GetEntities()) {
-        if(carsAI->GetCar().get() != cars.get()){
+    for (const auto& cars : manCars->GetEntities()) {
+        if(manCars->GetCar().get() != cars.get()){
             cTotem = static_cast<CTotem*>(cars->GetComponent(CompType::TotemComp).get());
 
             int time = cTotem->accumulatedTime / 100.0;
