@@ -40,7 +40,7 @@ RenderFacadeClover::~RenderFacadeClover() {
 }
 
 /**
- * Inicializamos la fachada de clover e inicializamos el motor creando la ventana.
+ * Inicializamos la fachada de clover e inicializamos el motor creando la ventana y pasandosela a las otras fachadas
  */
 RenderFacadeClover::RenderFacadeClover() {
     cout << "************************************\n";
@@ -67,48 +67,84 @@ RenderFacadeClover::RenderFacadeClover() {
 
 }
 
+/**
+ * Suscripcion de eventos
+ */
 void RenderFacadeClover::FacadeSuscribeEvents() {
     
 }
 
+/**
+ * Inicializa las cosas para el menu
+ */
 void RenderFacadeClover::FacadeInitMenu() {
     
 }
 
+/**
+ * Inicializa las cosas para el pause
+ */
 void RenderFacadeClover::FacadeInitPause() {
 }
 
+/**
+ * Inicializa las cosas para EndRace
+ */
 void RenderFacadeClover::FacadeInitEndRace() {
 }
 
+/**
+ * Inicializa las cosas de LobbyMulti
+ */
 void RenderFacadeClover::FacadeInitLobbyMulti() {
 }
 
+/**
+ * Inicializa las cosas del HUD
+ */
 void RenderFacadeClover::FacadeInitHUD() {
 }
 
+/**
+ * Actualiza en el hud el icono de powerup
+ * @param {CTypePowerUp}
+ */
 void RenderFacadeClover::FacadeUpdatePowerUpHUD(DataMap* d) {
 }
 
+/**
+ * Repintamos el HUD, como el ranking por ejemplo
+ * @param {coche principal, manager de coches}
+ */
 void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars) {
 }
 
-//Crea las plates de los nombres de los coches
+/**
+ * Se llama una vez para añadir las NamePlates
+ * @param {manager de nameplates}
+ */
 void RenderFacadeClover::FacadeAddPlates(Manager* manNamePlates) {
 }
 
-//Actualiza las posiciones de las plates
+/**
+ * Actualiza las posiciones de las nameplates
+ */
 void RenderFacadeClover::FacadeUpdatePlates(Manager* manNamePlates) {
 }
 
+/**
+ * Metodo para añadir muchas entidades de golpe
+ */
 const void RenderFacadeClover::FacadeAddObjects(vector<Entity*> entities) {
     for (Entity* e : entities) {
         FacadeAddObject(e);
     }
 }
 
-//INPUTS : Una entidad GameObject
-//RETURNS: El Id del objeto añadido
+/**
+ * Añadimos el objeto al arbol de la escena
+ * @return {id del objeto que pasas}
+ */
 const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
     auto cTransformable = static_cast<CTransformable*>(entity->GetComponent(CompType::TransformableComp).get());
     auto cId = static_cast<CId*>(entity->GetComponent(CompType::IdComp).get());
@@ -170,13 +206,17 @@ const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
     return cId->id;
 }
 
-//INPUTS : Una entidad GameObject
-//RETURNS: El Id del objeto añadido
+/**
+ * Añade el coche principal
+ */
 const uint16_t RenderFacadeClover::FacadeAddObjectCar(Entity* entity) {
     idCar = FacadeAddObject(entity);
     return idCar;
 }
 
+/**
+ * Añade el totem
+ */
 const uint16_t RenderFacadeClover::FacadeAddObjectTotem(Entity* entity) {
     idTotem = FacadeAddObject(entity);
     return idTotem;
@@ -187,7 +227,10 @@ void RenderFacadeClover::UpdateTransformable(Entity* entity) {
 
 }
 
-//Reajusta la camara
+/**
+ * Actualiza la camara
+ * @param { camara , todos los coches para saber quien tiene el totem a seguir}
+ */
 void RenderFacadeClover::UpdateCamera(Entity* cam, ManCar* manCars) {
     /*
     //Cogemos los componentes de la camara
@@ -293,7 +336,9 @@ void RenderFacadeClover::UpdateCamera(Entity* cam, ManCar* manCars) {
     */
 }
 
-//Añade la camara, esto se llama una sola vez al crear el juego
+/**
+ * Se llama una vez para crear la camara
+ */
 void RenderFacadeClover::FacadeAddCamera(Entity* camera) {
     auto cId = static_cast<CId*>(camera->GetComponent(CompType::IdComp).get());
     auto cShader = static_cast<CShader*>(camera->GetComponent(CompType::ShaderComp).get());
@@ -323,11 +368,16 @@ void RenderFacadeClover::FacadeAddCamera(Entity* camera) {
     
 }
 
+/**
+ * @return {si el juego sigue abierto o no}
+ */
 bool RenderFacadeClover::FacadeRun() {
     return device->Run();
 }
 
-// Devuelve el tiempo en uint32_t aunque glfw nos lo puede dar en double
+/**
+ * @return {tiempo de glfw}
+ */
 uint32_t RenderFacadeClover::FacadeGetTime() const{
     return device->GetTime();
 }
@@ -364,39 +414,66 @@ void RenderFacadeClover::FacadeCheckInputLobbyMulti() {
 void RenderFacadeClover::ThrowEventChangeToMulti(uint16_t IdOnline, const vector<uint16_t> IdPlayersOnline){
 }
 
-
+/**
+ * Devuelve los fps a los que vamos
+ */
 int RenderFacadeClover::FacadeGetFPS() const{
     return 1;
 }
 
+/**
+ * Pone el titulo de la ventana
+ */
 void RenderFacadeClover::FacadeSetWindowCaption(std::string title, int fps) const{
 }
 
-//Toda la rutina de limpiar y dibujar de irrlicht
+/**
+ * Ni idea de que hace esto, creo que ni se usa
+ */
 void RenderFacadeClover::FacadeDraw() const{
 }
 
+/**
+ * Dibuja las cosas del menu
+ */
 void RenderFacadeClover::FacadeDrawMenu() {
 }
 
+/**
+ * Dibuja las cosas del pause
+ */
 void RenderFacadeClover::FacadeDrawPause() {
 }
 
+/**
+ * Dibuja las cosas del EndRace
+ */
 void RenderFacadeClover::FacadeDrawEndRace() {
 }
 
+/**
+ * Dibuja las cosas del LobbyMulti
+ */
 void RenderFacadeClover::FacadeDrawLobbyMulti() {
 }
 
-//Limpia la pantalla
+/**
+ * Limpia la pantalla y vacia los buffers de pantalla
+ */
 void RenderFacadeClover::FacadeBeginScene() const{
     device->BeginScene();
 }
 
+/**
+ * Dibuja los objetos del arbol
+ */
 void RenderFacadeClover::FacadeDrawAll() const{
     device->DrawObjects();
 }
 
+/**
+ * Acaba la escena, intercambiando buffers y liberando los eventos de glfw de teclado
+ */
 void RenderFacadeClover::FacadeEndScene() const{
     device->PollEvents();
     device->EndScene();
