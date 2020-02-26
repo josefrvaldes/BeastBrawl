@@ -38,7 +38,7 @@ class CLPhysics {
     IntersectData HandleCollisionsRayWithSpheres(CTransformable &trCar1, CTransformable &trCar2, CBoundingSphere &spCar2, const glm::vec3 &normalRay);
     IntersectData HandleCollisionsRayWithPlane(CTransformable &trRayOrigin,  glm::vec3 &rayNormalNormalized, CBoundingPlane &planeObject);
     // void Integrate(Entity &e, float delta);
-    void IntersectsCarsPowerUps(ManCar &, ManPowerUp &, ManNavMesh &);
+    void IntersectsCarsPowerUps(ManCar &, ManPowerUp &, ManNavMesh *);
     void IntersectCarsTotem(ManCar &, ManTotem &);
     void IntersectCarsBoxPowerUp(ManCar &, ManBoxPowerUp &);
 

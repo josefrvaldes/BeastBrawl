@@ -1239,7 +1239,7 @@ void CLPhysics::IntersectCarsBoxPowerUp(ManCar &manCars, ManBoxPowerUp &manBoxPo
     }
 }
 
-void CLPhysics::IntersectsCarsPowerUps(ManCar &manCars, ManPowerUp &manPowerUps, ManNavMesh &manNavMesh){
+void CLPhysics::IntersectsCarsPowerUps(ManCar &manCars, ManPowerUp &manPowerUps, ManNavMesh *manNavMesh){
     for(const auto& currentCar : manCars.GetEntities()){
         auto cChassisCar = static_cast<CBoundingChassis *>(currentCar.get()->GetComponent(CompType::CompBoundingChassis).get());       
         for(auto currentPU : manPowerUps.GetEntities()){      

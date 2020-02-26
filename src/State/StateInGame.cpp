@@ -170,7 +170,7 @@ void StateInGame::Update() {
 
 
     clPhysics->Update(0.1666f);
-    clPhysics->IntersectsCarsPowerUps( *manCars.get(), *manPowerUps.get(), *manNavMesh.get());
+    clPhysics->IntersectsCarsPowerUps( *manCars.get(), *manPowerUps.get(), manNavMesh.get());
     clPhysics->IntersectCarsBoxPowerUp(*manCars.get(), *manBoxPowerUps.get());
     clPhysics->IntersectCarsTotem(*manCars.get(), *manTotems.get());
     // COLISIONES entre BoxPowerUp y player

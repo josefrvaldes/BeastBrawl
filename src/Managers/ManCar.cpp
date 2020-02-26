@@ -433,7 +433,7 @@ void ManCar::ThrowPowerUpCar(DataMap* d) {
 }
 
 void ManCar::ThrowPowerUpAI(DataMap* d) {
-    ThrowPowerUp(any_cast<Car *>((*d)[ACTUAL_CAR]));
+    ThrowPowerUp(any_cast<CarAI *>((*d)[ACTUAL_CAR]));
 }
 
 void ManCar::ThrowPowerUpHuman(DataMap* d) {
@@ -567,17 +567,18 @@ void ManCar::CatchPowerUpAI(DataMap* d) {
     else if (indx > 70)  //  30%
         indx = 6;
 
-    //indx = 6;
-    //auto cPowerUpCar = static_cast<CPowerUp*>(any_cast<Entity*>((*d)[ACTUAL_CAR])->GetComponent(CompType::PowerUpComp).get());
-    //if(cPowerUpCar->typePowerUp == typeCPowerUp::None){
-    //    cPowerUpCar->typePowerUp = (typeCPowerUp)indx;
-    //    std::cout << "Power Up del coche es:   " << (int)cPowerUpCar->typePowerUp << std::endl;
-    //    if(this->GetCar().get() == any_cast<Entity*>((*d)[ACTUAL_CAR])){
-    //        shared_ptr<DataMap> data = make_shared<DataMap>();
-    //        (*data)[TYPE_POWER_UP] = cPowerUpCar->typePowerUp;
-    //        EventManager::GetInstance().AddEventMulti(Event{EventType::UPDATE_POWERUP_HUD, data});
-    //    }
-    //}
+
+    //indx = 5;
+    auto cPowerUpCar = static_cast<CPowerUp*>(any_cast<Entity*>((*d)[ACTUAL_CAR])->GetComponent(CompType::PowerUpComp).get());
+    if(cPowerUpCar->typePowerUp == typeCPowerUp::None){
+        cPowerUpCar->typePowerUp = (typeCPowerUp)indx;
+        std::cout << "Power Up del coche es:   " << (int)cPowerUpCar->typePowerUp << std::endl;
+        if(this->GetCar().get() == any_cast<Entity*>((*d)[ACTUAL_CAR])){
+            shared_ptr<DataMap> data = make_shared<DataMap>();
+            (*data)[TYPE_POWER_UP] = cPowerUpCar->typePowerUp;
+            EventManager::GetInstance().AddEventMulti(Event{EventType::UPDATE_POWERUP_HUD, data});
+        }
+    }
     //cPowerUp->typePowerUp = dynamic_cast<typeCPowerUp*>(indx);
 }
 
