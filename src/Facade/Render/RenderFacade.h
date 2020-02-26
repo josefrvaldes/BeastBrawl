@@ -52,7 +52,7 @@ class RenderFacade {
     virtual void FacadeCheckInputEndRace() = 0;
     virtual void FacadeCheckInputLobbyMulti() = 0;
     virtual void FacadeUpdatePowerUpHUD(DataMap* d) = 0;
-    virtual void FacadeDrawHUD(Entity* car, ManCar* carsAI) = 0;
+    virtual void FacadeDrawHUD(Entity* car, ManCar* manCars) = 0;
     virtual void FacadeSuscribeEvents() = 0;
     virtual void FacadeAddPlates(Manager* manNamePlates) = 0;
     virtual void FacadeUpdatePlates(Manager* manNamePlates) = 0;
