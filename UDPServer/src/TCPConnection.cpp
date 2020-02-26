@@ -4,6 +4,7 @@
 #include "../../include/include_json/include_json.hpp"
 #include "../src/Constants.h"
 #include "../src/Systems/Utils.h"
+#include "../../src/Systems/Serialization.h"
 
 
 using json = nlohmann::json;
@@ -52,7 +53,7 @@ void TCPConnection::Start(){
 void TCPConnection::HandleRead(std::shared_ptr<unsigned char[]> recevBuff, const boost::system::error_code& error, size_t bytes_transferred){
     if(!error && bytes_transferred!=0){
         size_t currentIndex = 0;
-        Utils::Deserialize<uint8_t>(recevBuff.get(), currentIndex); // numero
+        Serialization::Deserialize<uint8_t>(recevBuff.get(), currentIndex); // numero
     }else if(error){
         std::cout << "Error al leer: " << error.message() << std::endl;
     }
