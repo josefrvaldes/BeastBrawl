@@ -244,8 +244,8 @@ void SoundFacadeFMOD::LoadSoundByState(const uint8_t numState) {
         case 4:  //InGame
             StopEvent("Musica/menu");
             LoadSoundBank("InGame2D", 0);
-            LoadSoundBank("InGame3DE", 1);
-            LoadSoundBank("InGame3DD", 1);
+            //LoadSoundBank("InGame3DE", 1);
+            //LoadSoundBank("InGame3DD", 1);
             break;
         case 5:  //EndRace
             StopAllEvents();
@@ -512,40 +512,40 @@ void SoundFacadeFMOD::StartGame(DataMap* d) {
     if(instance) {
         eventInstances3DD["Coche/motor"] = instance;
     }
-    PlayEvent("Coche/motor");
+    //PlayEvent("Coche/motor");
     PlayEvent("Ambiente/ambiente");
     PlayEvent("Musica/in_game_1");
     srand(time(NULL));
     character = rand() % 5;
     cout << "++++ Personaje en sonido: " << character << endl;
-    SetParameter("Personajes/voces", "Personaje", character);
-    SetParameter("Coche/claxon", "Personaje", character);
-    SetParameter("Coche/motor", "Personaje", character);
+    //SetParameter("Personajes/voces", "Personaje", character);
+    //SetParameter("Coche/claxon", "Personaje", character);
+    //SetParameter("Coche/motor", "Personaje", character);
 }
 
 void SoundFacadeFMOD::SoundClaxon(DataMap* d) {
-    PlayEvent("Coche/claxon");
+    //PlayEvent("Coche/claxon");
 }
 
 void SoundFacadeFMOD::SoundHurt(DataMap* d) {
-    auto mainCharacter = any_cast<bool>((*d)[MAIN_CAR]);
+    /*auto mainCharacter = any_cast<bool>((*d)[MAIN_CAR]);
 
     if (mainCharacter) {
         SetParameter("Personajes/voces", "Tipo", TipoVoz::ChoquePowerup);
         PlayEvent("Personajes/voces");
     }
     eventInstances3DD["Coche/choque_powerup"] = CreateInstance("Coche/choque_powerup");
-    PlayEvent("Coche/choque_powerup");
+    PlayEvent("Coche/choque_powerup");*/
 }
 
 void SoundFacadeFMOD::SoundCatchTotem(DataMap* d) {
-    eventInstances3DD["Partida/coger_totem"] = CreateInstance("Partida/coger_totem");
-    PlayEvent("Partida/coger_totem");
+    /*eventInstances3DD["Partida/coger_totem"] = CreateInstance("Partida/coger_totem");
+    PlayEvent("Partida/coger_totem");*/
 }
 
 // TO-DO: La voz se reproduce si el coche dañado es el principal
 void SoundFacadeFMOD::SoundCrash(DataMap* d) {
-    bool mainCharacter = any_cast<bool>((*d)[MAIN_CAR]);
+    /*bool mainCharacter = any_cast<bool>((*d)[MAIN_CAR]);
 
     int max = 100;
     int min = 0;
@@ -557,34 +557,34 @@ void SoundFacadeFMOD::SoundCrash(DataMap* d) {
     eventInstances3DD["Coche/choque"] = CreateInstance("Coche/choque");
     if (!IsPlaying(*eventInstances3DD.find("Coche/choque")->second)) {
         PlayEvent("Coche/choque");
-    }
+    }*/
 }
 
 void SoundFacadeFMOD::SoundBreakBox(DataMap* d) {
-    eventInstances3DD["Partida/coger_caja"] = CreateInstance("Partida/coger_caja");   
+    /*eventInstances3DD["Partida/coger_caja"] = CreateInstance("Partida/coger_caja");   
     if (!IsPlaying(*eventInstances3DD.find("Partida/coger_caja")->second)) {
         PlayEvent("Partida/coger_caja");
-    }
+    }*/
 }
 
 void SoundFacadeFMOD::SoundDrift(DataMap* d) {
-    eventInstances3DD["Coche/derrape"] = CreateInstance("Coche/derrape");
+    /*eventInstances3DD["Coche/derrape"] = CreateInstance("Coche/derrape");
     //SetParameter("Personajes/voces", "Tipo", TipoVoz::Derrape);
-    PlayEvent("Coche/derrape");
+    PlayEvent("Coche/derrape");*/
 }
 
 void SoundFacadeFMOD::SoundRandomSentence(DataMap* d) {
-    SetParameter("Personajes/voces", "Tipo", TipoVoz::Random);
-    PlayEvent("Personajes/voces");
+    /*SetParameter("Personajes/voces", "Tipo", TipoVoz::Random);
+    PlayEvent("Personajes/voces");*/
 }
 
 void SoundFacadeFMOD::SoundMenuOption(DataMap* d) {
-    PlayEvent("Menu/cambio_opcion");
+    //PlayEvent("Menu/cambio_opcion");
 }
 
 // TO-DO: Cambiar de eventos 2D a 3D
 void SoundFacadeFMOD::SoundThrowPowerup(DataMap* d) {
-    typeCPowerUp typepw = any_cast<typeCPowerUp>((*d)[TYPE_POWER_UP]);
+    /*typeCPowerUp typepw = any_cast<typeCPowerUp>((*d)[TYPE_POWER_UP]);
     switch (typepw) {
         case typeCPowerUp::RoboJorobo:
             eventInstances3DD["PowerUp/robojorobo"] = CreateInstance("PowerUp/robojorobo");
@@ -618,21 +618,21 @@ void SoundFacadeFMOD::SoundThrowPowerup(DataMap* d) {
             break;
         default:
             cout << "***** El powerup " << (int)typepw << " no tiene sonido" << endl;
-    }
+    }*/
 }
 
 // -------------> STOP
 
 void SoundFacadeFMOD::StopPrueba(DataMap* d) {
-    StopEvent("Personajes/voces");
+    //StopEvent("Personajes/voces");
 }
 
 void SoundFacadeFMOD::StopShield(DataMap* d) {
-    StopEvent("PowerUp/escudo");
+    /*StopEvent("PowerUp/escudo");
     eventInstances3DD["PowerUp/escudo_roto"] = CreateInstance("PowerUp/escudo_roto");
-    PlayEvent("PowerUp/escudo_roto");
+    PlayEvent("PowerUp/escudo_roto");*/
 }
 
 void SoundFacadeFMOD::StopDrift(DataMap* d) {
-    StopEvent("Coche/derrape");
+    //StopEvent("Coche/derrape");
 }

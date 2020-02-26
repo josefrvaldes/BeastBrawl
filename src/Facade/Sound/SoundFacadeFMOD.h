@@ -1,6 +1,7 @@
 #pragma once
 
 #include "SoundFacade.h"
+//#include <SoundEngine/SoundEngine.h>
 
 #include <iostream>
 #include <unordered_map>
@@ -40,9 +41,6 @@ class SoundFacadeFMOD : public SoundFacade {
         
         bool IsPlaying(FMOD::Studio::EventInstance&);
         void Update() override;
-
-        //unordered_map<string, FMOD::Studio::EventDescription*> GetDescriptions() { return soundDescriptions;};
-        //unordered_map<string, FMOD::Studio::EventInstance*> GetInstances() { return eventInstances; }
 
     private:
         // eventos del juego
