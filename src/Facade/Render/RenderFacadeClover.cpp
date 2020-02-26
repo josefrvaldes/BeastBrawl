@@ -67,7 +67,7 @@ void RenderFacadeClover::FacadeInitHUD() {
 void RenderFacadeClover::FacadeUpdatePowerUpHUD(DataMap* d) {
 }
 
-void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* carsAI) {
+void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars) {
 }
 
 //Crea las plates de los nombres de los coches
