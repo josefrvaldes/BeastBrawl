@@ -223,10 +223,10 @@ void ManCar::SubscribeToEvents() {
         bind(&ManCar::CollisionPowerUpAI, this, placeholders::_1),
         "CollisionPowerUpAI"));
 
-    // EventManager::GetInstance().SubscribeMulti(Listener(
-    //     EventType::COLLISION_CAR_TOTEM,
-    //     bind(&ManCar::CatchTotemPlayer, this, placeholders::_1),
-    //     "CatchTotemPlayer"));
+     //EventManager::GetInstance().SubscribeMulti(Listener(
+     //    EventType::COLLISION_CAR_TOTEM,
+     //    bind(&ManCar::CatchTotemPlayer, this, placeholders::_1),
+     //    "CatchTotemPlayer"));
 
     EventManager::GetInstance().SubscribeMulti(Listener(
         EventType::COLLISION_PLAYER_TOTEM,
