@@ -22,12 +22,32 @@ namespace CLSE {
             void InitSoundEngine();
             void TerminateSoundEngine();
             void UnloadAllBanks();
+            bool LoadSoundBank(const string&);
+            void LoadSoundEvent(const string&, const bool);
+            void PlayEvent(const string&);
+            void StopAllEvents();
+            void StopEvent(const string&);
+            void PauseAllEvents();
+            void ResumeAllEvents();
+            void PauseEvent(const string&);
+            void ResumeEvent(const string&);
+
+            bool IsPlaying(FMOD::Studio::EventInstance*) const;
+            bool IsPlaying2D(const string&) const;
+            bool IsPlayingEstatic3D(const string&) const;
+            bool IsPlayingDinamic3D(const string&) const;
+
+            void UpdateEngine();
+
+            void SetParameter(const string&, const string&, const float);
+            void SetEventPositionDinamic3D(const string&, const glm::vec3&);
+            void SetEventPositionEstatic3D(const string&, const glm::vec3&);
 
             void CreateSoundNode2D(const string&);
             void CreateSoundNodeEstatic3D(uint16_t, glm::vec3&, string&);
             void CreateSoundNodeDinamic3D(uint16_t, glm::vec3&, string&);
 
-            void UpdateDevice();
+
 
         private:
             void LoadMasterBank();

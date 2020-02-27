@@ -14,6 +14,7 @@ namespace CLSE {
             ~SoundNode() {};
 
             void SetInstance(FMOD::Studio::EventInstance& i)            { instance = &i; };
+            void SetPosition(glm::vec3 p)                               { pos = p; };
 
             uint16_t GetIdEntity() const                                { return idEntity; };
             glm::vec3 GetPosition() const                               { return pos; };

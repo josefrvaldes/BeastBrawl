@@ -104,7 +104,7 @@ void Game::InitGame() {
 
     //Inicializa la fachada de FMOD.
     SoundFacadeManager::GetInstance()->InitializeFacadeFmod();
-    SoundFacadeManager::GetInstance()->GetSoundFacade()->InitSoundEngine();
+    SoundFacadeManager::GetInstance()->GetSoundFacade()->Initialize();
 
     SuscribeEvents();
 
@@ -174,7 +174,7 @@ void Game::MainLoop() {
 
 void Game::TerminateGame() {
     //Libera los sonidos y bancos.
-    SoundFacadeManager::GetInstance()->GetSoundFacade()->TerminateSoundEngine();
+    SoundFacadeManager::GetInstance()->GetSoundFacade()->Terminate();
     cout << "**********************************************" << endl;
     cout << "Game Terminate" << endl;
 }
