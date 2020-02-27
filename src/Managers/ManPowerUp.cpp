@@ -30,7 +30,7 @@ ManPowerUp::~ManPowerUp() {
 void ManPowerUp::CreatePowerUp(DataMap* d) {
 
     typeCPowerUp type = any_cast<typeCPowerUp>((*d)[TYPE_POWER_UP]);
-    //cout << "el tipo de powerUp que recibimos es el: " << int(type) << endl;
+    cout << "el tipo de powerUp que recibimos es el: " << int(type) << endl;
 
     CTransformable *transforSalida = any_cast<CTransformable *>((*d)[CAR_EXIT_POSITION]);
     CDimensions *dimensionsCarSalida = any_cast<CDimensions *>((*d)[CAR_EXIT_DIMENSION]);

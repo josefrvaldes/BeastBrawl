@@ -5,11 +5,12 @@
 #include <Components/CDimensions.h>
 #include <Components/CCurrentNavMesh.h>
 #include <include_json/include_json.hpp>
+#include "ManNavMesh.h"
 
 class Position;
 using namespace std;
 using json = nlohmann::json;
-ManTotem::ManTotem() {
+ManTotem::ManTotem(ManNavMesh *manNavMesh_) : manNavMesh{manNavMesh_} {
     // CREAMOS EL TOTEM
     ifstream i("data.json");
     json j = json::parse(i);
@@ -17,11 +18,28 @@ ManTotem::ManTotem() {
     double totemPosX = j["TOTEM"]["x"].get<double>();
     double totemPosY = j["TOTEM"]["y"].get<double>();
     double totemPosZ = j["TOTEM"]["z"].get<double>();
+    vec3 posNewTotem = glm::vec3(totemPosX, totemPosY-15, totemPosZ);
     //std::cout << " LA POS X DEL TOTEM ES LA: " << totemPosX << std::endl;
     //CreateTotem(glm::vec3(-100.0, 20.0, -100.0));
-    CreateTotem(vec3(totemPosX, totemPosY-15, totemPosZ));
-    SubscribeToEvents();
+    //CreateTotem(vec3(totemPosX, totemPosY-15, totemPosZ));
    // CreateTotem();
+
+    auto currentNavMesh = manNavMesh->CalculateNavMesh(posNewTotem);
+    if( currentNavMesh == -1 ){     // significa que la posicion es invalida
+        // de momento lo reseteamos en el unico punto de Spawn
+        // TODO:: RESETEARLO EN ALGUN PUNTO DE SPAWN DEL MAPA, EN ALGUN PUNTO DE SPAWN PREDETERMINADO PARA ESO
+        cout << "me devuelve -1 455555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555" << endl;
+        ifstream i("data.json");
+        json j = json::parse(i);
+        posNewTotem = glm::vec3(j["TOTEM"]["x"].get<double>(),j["TOTEM"]["y"].get<double>()-15,j["TOTEM"]["z"].get<double>());
+        currentNavMesh = manNavMesh->CalculateNavMesh(posNewTotem);
+    }
+    CreateTotem(posNewTotem);
+    auto cCurrentNavMesh = static_cast<CCurrentNavMesh*>(entities[0]->GetComponent(CompType::CurrentNavMeshComp).get());
+    cCurrentNavMesh->currentNavMesh = currentNavMesh;
+
+    SubscribeToEvents();
+
 }
 
 ManTotem::~ManTotem() {
@@ -73,31 +91,49 @@ void ManTotem::ResetTotem(DataMap* d){
     float angleRotation = (transfActualCar->rotation.y * 3.141592) / 180.0;
     posNewTotem.x = transfActualCar->position.x - cos(angleRotation)*(-25);
     posNewTotem.z = transfActualCar->position.z + sin(angleRotation)*(-25);
+    posNewTotem.y = transfActualCar->position.y;
 
-    // recorremos los navMesh para saber si es una posicion correcta
-    ManNavMesh* manNavMesh = any_cast<ManNavMesh*>((*d)[MAN_NAVMESH]);
-    //std::cout << "cogemos correctamente el mesh del nav conoooooooooooooooo" << std::endl;  
-    auto cCurrentNavMesh = static_cast<CCurrentNavMesh*>(any_cast<Entity*>((*d)[ACTUAL_CAR])->GetComponent(CompType::CurrentNavMeshComp).get()); 
-    auto navMesh = manNavMesh->GetEntities()[cCurrentNavMesh->currentNavMesh]; //NavMesh en el que esta el coche
-    auto cDimensions = static_cast<CDimensions*>(navMesh->GetComponent(CompType::DimensionsComp).get());
-    auto cTransformableNav = static_cast<CTransformable*>(navMesh->GetComponent(CompType::TransformableComp).get());
-    if( !(( (transfActualCar->position.x >= (cTransformableNav->position.x-(cDimensions->width/2))) && 
-        (transfActualCar->position.x <= (cTransformableNav->position.x+(cDimensions->width/2))) ) &&
-        ( (transfActualCar->position.z >= (cTransformableNav->position.z-(cDimensions->depth/2))) && 
-        (transfActualCar->position.z <= (cTransformableNav->position.z+(cDimensions->depth/2))) ))  ){
-            std::cout << "El totem se sale, Redimensionamos al centro del NavMesh" << std::endl;
-            posNewTotem.x = cTransformableNav->position.x;
-            posNewTotem.z = cTransformableNav->position.z; 
-    }      
 
+
+    // recorremos todos los NavMesh para saber si el totem ha caido en un sitio correcto
+    //ManNavMesh manNavMesh;
+    auto currentNavMesh = manNavMesh->CalculateNavMesh(posNewTotem);
+    if( currentNavMesh == -1 ){     // significa que la posicion es invalida
+        // de momento lo reseteamos en el unico punto de Spawn
+        // TODO:: RESETEARLO EN ALGUN PUNTO DE SPAWN DEL MAPA, EN ALGUN PUNTO DE SPAWN PREDETERMINADO PARA ESO
+        ifstream i("data.json");
+        json j = json::parse(i);
+        posNewTotem = glm::vec3(j["TOTEM"]["x"].get<double>(),j["TOTEM"]["y"].get<double>()-15,j["TOTEM"]["z"].get<double>());
+        currentNavMesh = manNavMesh->CalculateNavMesh(posNewTotem);
+    }
     CreateTotem(posNewTotem);
+    auto cCurrentNavMesh = static_cast<CCurrentNavMesh*>(entities[0]->GetComponent(CompType::CurrentNavMeshComp).get());
+    cCurrentNavMesh->currentNavMesh = currentNavMesh;
 
-    //std::cout << "vamos a pasar el totem desde eventos" << std::endl;
-    // Vamos a actualizar el NavMesh en el que se va a soltar el Totem
-    shared_ptr<DataMap> data = make_shared<DataMap>();
-
-    (*data)[TOTEM] = GetEntities()[0].get();                                                        // pasamos un puntero al totem
-    EventManager::GetInstance().AddEventMulti(Event{EventType::ACTUALIZE_NAVMESH_TOTEM, data});
+    //// recorremos los navMesh para saber si es una posicion correcta
+    //ManNavMesh* manNavMesh = any_cast<ManNavMesh*>((*d)[MAN_NAVMESH]);
+    ////std::cout << "cogemos correctamente el mesh del nav conoooooooooooooooo" << std::endl;  
+    //auto cCurrentNavMesh = static_cast<CCurrentNavMesh*>(any_cast<Entity*>((*d)[ACTUAL_CAR])->GetComponent(CompType::CurrentNavMeshComp).get()); 
+    //auto navMesh = manNavMesh->GetEntities()[cCurrentNavMesh->currentNavMesh]; //NavMesh en el que esta el coche
+    //auto cDimensions = static_cast<CDimensions*>(navMesh->GetComponent(CompType::DimensionsComp).get());
+    //auto cTransformableNav = static_cast<CTransformable*>(navMesh->GetComponent(CompType::TransformableComp).get());
+    //if( !(( (transfActualCar->position.x >= (cTransformableNav->position.x-(cDimensions->width/2))) && 
+    //    (transfActualCar->position.x <= (cTransformableNav->position.x+(cDimensions->width/2))) ) &&
+    //    ( (transfActualCar->position.z >= (cTransformableNav->position.z-(cDimensions->depth/2))) && 
+    //    (transfActualCar->position.z <= (cTransformableNav->position.z+(cDimensions->depth/2))) ))  ){
+    //        std::cout << "El totem se sale, Redimensionamos al centro del NavMesh" << std::endl;
+    //        posNewTotem.x = cTransformableNav->position.x;
+    //        posNewTotem.z = cTransformableNav->position.z; 
+    //}      
+//
+    //CreateTotem(posNewTotem);
+//
+    ////std::cout << "vamos a pasar el totem desde eventos" << std::endl;
+    //// Vamos a actualizar el NavMesh en el que se va a soltar el Totem
+    //shared_ptr<DataMap> data = make_shared<DataMap>();
+//
+    //(*data)[TOTEM] = GetEntities()[0].get();                                                        // pasamos un puntero al totem
+    //EventManager::GetInstance().AddEventMulti(Event{EventType::ACTUALIZE_NAVMESH_TOTEM, data});
     //std::cout << "volvemos de lanzar el evento beibeee" << std::endl;
 
     // Debemos de crearlo tambien en iirlicht

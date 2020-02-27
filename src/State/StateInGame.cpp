@@ -129,8 +129,8 @@ void StateInGame::InitializeManagers(Physics *physics, Camera *cam) {
     manBoundingWall = make_shared<ManBoundingWall>();
     manBoundingOBB = make_shared<ManBoundingOBB>();
     manBoundingGround = make_shared<ManBoundingGround>();
-    manTotems = make_shared<ManTotem>();
-    manNavMesh = make_shared<ManNavMesh>(manCars.get()->GetCar().get(), manTotems.get());
+    manNavMesh = make_shared<ManNavMesh>(manCars.get()->GetCar().get());
+    manTotems = make_shared<ManTotem>(manNavMesh.get());
     manNamePlates = make_shared<ManNamePlate>(manCars.get());
 }
 

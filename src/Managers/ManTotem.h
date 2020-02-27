@@ -8,17 +8,19 @@
 #include <vector>
 #include <glm/vec3.hpp>
 #include <Aliases.h>
-
+//#include "ManNavMesh.h"
 
 using namespace std;
 #define PI 3.141592
 
 class Totem;
 class Data;
+class ManNavMesh;
 
 class ManTotem : public Manager{
    public:
-    ManTotem();
+    //using ManNavMesh::CalculateNavMesh;
+    ManTotem(ManNavMesh *);
     ~ManTotem();
 
     void CreateTotem();
@@ -34,4 +36,6 @@ class ManTotem : public Manager{
     void ResetTotem(DataMap* d);
     void SyncTotem(DataMap* d);
     void SubscribeToEvents();
+
+    ManNavMesh* manNavMesh;
 };

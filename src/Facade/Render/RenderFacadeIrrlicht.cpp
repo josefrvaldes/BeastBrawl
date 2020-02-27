@@ -1004,19 +1004,19 @@ void RenderFacadeIrrlicht::FacadeDrawAIDebug(ManCar* manCars, ManNavMesh* manNav
         auto cDimensions    = static_cast<CDimensions*>(navMesh->GetComponent(CompType::DimensionsComp).get());
 
         point0 = glm::vec3(cTransformable->position.x - (cDimensions->width/2),
-                            cTransformable->position.y+20,
+                            cTransformable->position.y - (cDimensions->height/2),
                             cTransformable->position.z - (cDimensions->depth/2));
 
         point1 = glm::vec3(cTransformable->position.x - (cDimensions->width/2),
-                            cTransformable->position.y+20,
+                            cTransformable->position.y - (cDimensions->height/2),
                             cTransformable->position.z + (cDimensions->depth/2));
 
         point2 = glm::vec3(cTransformable->position.x + (cDimensions->width/2),
-                            cTransformable->position.y+20,
+                            cTransformable->position.y - (cDimensions->height/2),
                             cTransformable->position.z + (cDimensions->depth/2));
                             
         point3 = glm::vec3(cTransformable->position.x + (cDimensions->width/2),
-                            cTransformable->position.y+20,
+                            cTransformable->position.y - (cDimensions->height/2),
                             cTransformable->position.z - (cDimensions->depth/2));
 
         point4 = glm::vec3(point0.x,point0.y + cDimensions->height, point0.z);

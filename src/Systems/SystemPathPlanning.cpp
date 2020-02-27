@@ -351,7 +351,11 @@ std::stack<int> SystemPathPlanning::Dijkstra(ManWayPoint* _graph, const uint16_t
         auto cWayPointEdges = static_cast<CWayPointEdges*>(node->GetComponent(CompType::WayPointEdgesComp).get());
 
         for(auto& edge : cWayPointEdges->edges){
-            graph[cWayPoint->id][edge.to] = edge.cost;
+            if(cWayPoint->type == 2){   // si el tipo es 2 significa que el nodo es nodo de referencia... no es lo mas conveniente ir ahi
+                graph[cWayPoint->id][edge.to] = edge.cost*2.0;
+            }else{
+                graph[cWayPoint->id][edge.to] = edge.cost;
+            }
         }
     }
 
