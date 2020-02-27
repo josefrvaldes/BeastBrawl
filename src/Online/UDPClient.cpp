@@ -6,6 +6,7 @@
 #include <boost/bind.hpp>
 #include <deque>
 #include "../src/Systems/Utils.h"
+#include "../src/Systems/Serialization.h"
 
 using boost::asio::ip::udp;
 using namespace boost::asio;
@@ -54,15 +55,15 @@ void UDPClient::StartReceiving() {
 void UDPClient::HandleReceived(std::shared_ptr<unsigned char[]> recevBuff, const boost::system::error_code& errorCode, std::size_t bytesTransferred) {
     if (!errorCode) {
         size_t currentIndex = 0;
-        uint8_t petitionType = Utils::Deserialize<uint8_t>(recevBuff.get(), currentIndex);
-        int64_t time = Utils::Deserialize<int64_t>(recevBuff.get(), currentIndex);
-        uint16_t idPlayer = Utils::Deserialize<uint16_t>(recevBuff.get(), currentIndex);
+        uint8_t petitionType = Serialization::Deserialize<uint8_t>(recevBuff.get(), currentIndex);
+        int64_t time = Serialization::Deserialize<int64_t>(recevBuff.get(), currentIndex);
+        uint16_t idPlayer = Serialization::Deserialize<uint16_t>(recevBuff.get(), currentIndex);
 
         Constants::PetitionTypes callType = static_cast<Constants::PetitionTypes>(petitionType);
         switch (callType) {
             case Constants::PetitionTypes::SEND_INPUTS: {
                 if (time > lastTimeInputReceived[idPlayer]) {
-                    const vector<Constants::InputTypes> inputs = Utils::DeserializeInputs(recevBuff.get(), currentIndex);
+                    const vector<Constants::InputTypes> inputs = Serialization::DeserializeInputs(recevBuff.get(), currentIndex);
                     lastTimeInputReceived[idPlayer] = time;
                     HandleReceivedInputs(inputs, idPlayer);
                 }
@@ -129,20 +130,20 @@ void UDPClient::HandleReceivedInputs(const vector<Constants::InputTypes> inputs,
 void UDPClient::HandleReceivedSync(unsigned char* recevBuff, size_t bytesTransferred) {
     size_t currentIndex = 0;
 
-    Utils::Deserialize<uint8_t>(recevBuff, currentIndex); // petition time
-    int64_t time = Utils::Deserialize<int64_t>(recevBuff, currentIndex); 
-    uint16_t idCarOnline = Utils::Deserialize<uint16_t>(recevBuff, currentIndex);
+    Serialization::Deserialize<uint8_t>(recevBuff, currentIndex); // petition time
+    int64_t time = Serialization::Deserialize<int64_t>(recevBuff, currentIndex); 
+    uint16_t idCarOnline = Serialization::Deserialize<uint16_t>(recevBuff, currentIndex);
 
-    glm::vec3 posCar = Utils::DeserializeVec3(recevBuff, currentIndex);
-    glm::vec3 rotCar = Utils::DeserializeVec3(recevBuff, currentIndex);
+    glm::vec3 posCar = Serialization::DeserializeVec3(recevBuff, currentIndex);
+    glm::vec3 rotCar = Serialization::DeserializeVec3(recevBuff, currentIndex);
 
 
     typeCPowerUp typePU;
     bool haveTotem;
     bool totemInGround;
-    Utils::DeserializePowerUpTotem(recevBuff, typePU, haveTotem, totemInGround, currentIndex);
+    Serialization::DeserializePowerUpTotem(recevBuff, typePU, haveTotem, totemInGround, currentIndex);
 
-    int64_t totemTime = Utils::Deserialize<int64_t>(recevBuff, currentIndex);
+    int64_t totemTime = Serialization::Deserialize<int64_t>(recevBuff, currentIndex);
     
     // realizar llamadas al event Manager de manCar
     std::shared_ptr<DataMap> data = make_shared<DataMap>();
@@ -156,7 +157,7 @@ void UDPClient::HandleReceivedSync(unsigned char* recevBuff, size_t bytesTransfe
 
     glm::vec3 posTotem(0.0, 0.0, 0.0);
     if (totemInGround) {
-        posTotem = Utils::DeserializeVec3(recevBuff, currentIndex);
+        posTotem = Serialization::DeserializeVec3(recevBuff, currentIndex);
     }
     std::shared_ptr<DataMap> data2 = make_shared<DataMap>();
     (*data2)[DataType::CAR_WITHOUT_TOTEM] = totemInGround;
@@ -199,10 +200,10 @@ void UDPClient::SendInputs(const vector<Constants::InputTypes>& inputs, uint16_t
     size_t currentBuffSize = 0;
     uint8_t callType = Constants::PetitionTypes::SEND_INPUTS;
     int64_t time = Utils::getMillisSinceEpoch();
-    Utils::Serialize(requestBuff, &callType, currentBuffSize);
-    Utils::Serialize(requestBuff, &time, currentBuffSize);
-    Utils::Serialize(requestBuff, &idPlayer, currentBuffSize);
-    Utils::SerializeInputs(requestBuff, inputs, currentBuffSize);
+    Serialization::Serialize(requestBuff, &callType, currentBuffSize);
+    Serialization::Serialize(requestBuff, &time, currentBuffSize);
+    Serialization::Serialize(requestBuff, &idPlayer, currentBuffSize);
+    Serialization::SerializeInputs(requestBuff, inputs, currentBuffSize);
 
     socket.async_send_to(
         boost::asio::buffer(requestBuff, currentBuffSize),
@@ -228,16 +229,16 @@ void UDPClient::SendSync(uint16_t idOnline, const glm::vec3& posCar, const glm::
     uint8_t callType = Constants::PetitionTypes::SEND_SYNC;
     int64_t time = Utils::getMillisSinceEpoch();
 
-    Utils::Serialize(requestBuff, &callType, currentBuffSize);
-    Utils::Serialize(requestBuff, &time, currentBuffSize);
-    Utils::Serialize(requestBuff, &idOnline, currentBuffSize);
-    Utils::SerializeVec3(requestBuff, posCar, currentBuffSize);
-    Utils::SerializeVec3(requestBuff, rotCar, currentBuffSize);
+    Serialization::Serialize(requestBuff, &callType, currentBuffSize);
+    Serialization::Serialize(requestBuff, &time, currentBuffSize);
+    Serialization::Serialize(requestBuff, &idOnline, currentBuffSize);
+    Serialization::SerializeVec3(requestBuff, posCar, currentBuffSize);
+    Serialization::SerializeVec3(requestBuff, rotCar, currentBuffSize);
 
-    Utils::SerializePowerUpTotem(requestBuff, tipoPU, haveTotem, totemInGround, currentBuffSize);
-    Utils::Serialize(requestBuff, &totemTime, currentBuffSize);
+    Serialization::SerializePowerUpTotem(requestBuff, tipoPU, haveTotem, totemInGround, currentBuffSize);
+    Serialization::Serialize(requestBuff, &totemTime, currentBuffSize);
     if (totemInGround)
-        Utils::SerializeVec3(requestBuff, posTotem, currentBuffSize);  // la pos del totem no se envia siempre
+        Serialization::SerializeVec3(requestBuff, posTotem, currentBuffSize);  // la pos del totem no se envia siempre
     cout << Utils::getISOCurrentTimestampMillis() << "soy el [" << idOnline << "] estoy enviando el sync " << time << " y estoy en la pos("
          << posCar.x << "," << posCar.y << "," << posCar.z << ") - rot("
          << rotCar.x << "," << rotCar.y << "," << rotCar.z << ")." << endl

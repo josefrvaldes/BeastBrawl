@@ -4,6 +4,7 @@
 #include "../../include/include_json/include_json.hpp"
 #include "../../src/Constants.h"
 #include "../../src/Systems/Utils.h"
+#include "../../src/Systems/Serialization.h"
 
 using json = nlohmann::json;
 using boost::asio::ip::udp;
@@ -33,9 +34,9 @@ void UDPServer::HandleReceive(std::shared_ptr<unsigned char[]> recevBuff, std::s
     // cout << "Hemos recibido una petición del endpoint " << remoteClient.address() << ":" << remoteClient.port() << endl;
     if (!errorCode) {
         size_t currentIndex = 0;
-        uint8_t petitionType = Utils::Deserialize<uint8_t>(recevBuff.get(), currentIndex);
-        int64_t time = Utils::Deserialize<int64_t>(recevBuff.get(), currentIndex);
-        uint16_t idPlayer = Utils::Deserialize<uint16_t>(recevBuff.get(), currentIndex);
+        uint8_t petitionType = Serialization::Deserialize<uint8_t>(recevBuff.get(), currentIndex);
+        int64_t time = Serialization::Deserialize<int64_t>(recevBuff.get(), currentIndex);
+        uint16_t idPlayer = Serialization::Deserialize<uint16_t>(recevBuff.get(), currentIndex);
         cout << Utils::getISOCurrentTimestampMillis() << " Hemos recibido en el server la llamada " << time << " de tipo " << unsigned(petitionType) << " del user " << idPlayer << endl;
         // TODO: esto creo que podría evitarse
         unsigned char buffRecieved[Constants::ONLINE_BUFFER_SIZE];
@@ -92,21 +93,21 @@ void UDPServer::HandleReceivedSync(const uint16_t id, unsigned char recevBuff[],
     size_t currentIndex = 0;
     typeCPowerUp typePU;
 
-    Utils::Deserialize<uint8_t>(recevBuff, currentIndex);  // petitionType
-    int64_t time = Utils::Deserialize<int64_t>(recevBuff, currentIndex);
-    uint16_t idCarOnline = Utils::Deserialize<uint16_t>(recevBuff, currentIndex);
-    glm::vec3 posCar = Utils::DeserializeVec3(recevBuff, currentIndex);
-    glm::vec3 rotCar = Utils::DeserializeVec3(recevBuff, currentIndex);
+    Serialization::Deserialize<uint8_t>(recevBuff, currentIndex);  // petitionType
+    int64_t time = Serialization::Deserialize<int64_t>(recevBuff, currentIndex);
+    uint16_t idCarOnline = Serialization::Deserialize<uint16_t>(recevBuff, currentIndex);
+    glm::vec3 posCar = Serialization::DeserializeVec3(recevBuff, currentIndex);
+    glm::vec3 rotCar = Serialization::DeserializeVec3(recevBuff, currentIndex);
 
     glm::vec3 posTotem(0.0, 0.0, 0.0);
     bool haveTotem;
     bool totemInGround;
-    Utils::DeserializePowerUpTotem(recevBuff, typePU, haveTotem, totemInGround, currentIndex);
+    Serialization::DeserializePowerUpTotem(recevBuff, typePU, haveTotem, totemInGround, currentIndex);
 
-    /*int64_t totemTime = */ Utils::Deserialize<int64_t>(recevBuff, currentIndex);  // totemTime
+    /*int64_t totemTime = */ Serialization::Deserialize<int64_t>(recevBuff, currentIndex);  // totemTime
 
     if (totemInGround) {
-        posTotem = Utils::DeserializeVec3(recevBuff, currentIndex);
+        posTotem = Serialization::DeserializeVec3(recevBuff, currentIndex);
     }
     cout << Utils::getISOCurrentTimestampMillis() << "he recibido el sync " << time << " de [" << idCarOnline << "," << id << "] y está en la pos("
          << posCar.x << "," << posCar.y << "," << posCar.z << ") - rot("
