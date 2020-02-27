@@ -22,7 +22,7 @@ ManBoundingWall::ManBoundingWall() {
     double vertex3X = 0, vertex3Y = 0, vertex3Z = 0;
     double vertex4X = 0, vertex4Y = 0, vertex4Z = 0;
 
-    std::ifstream i("data.json");
+    std::ifstream i("mayan_map.json");
     std::stringstream buffer;
     buffer << i.rdbuf();
     string jsonString = buffer.str();
