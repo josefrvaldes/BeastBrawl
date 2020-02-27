@@ -213,17 +213,22 @@ void CLPhysics::LimitRotationCarY() const{
 void CLPhysics::RotateCarXZ(CTransformable &trcar, CBoundingChassis &chaCar, CBoundingPlane *pl1Car, CBoundingPlane *pl2Car) const{
     if(pl1Car == pl2Car){
         auto normalPlane = pl1Car->normalizedNormal;
+        cout << "LA NORMAL DEL PLANO ES: (" << normalPlane.x << " , " << normalPlane.y << " , " << normalPlane.z << " )" << endl;
         auto angleRotate = Angle2Vectors(normalPlane, vec3(0,1,0));
         auto dirRotateY = (trcar.rotation.y * M_PI) / 180.0;
+
+
+        auto rotacionX = sin(dirRotateY) * (normalPlane.x*100);
         //cout << " el angulo que forman es: " << angleRotate << endl;
-        trcar.rotation.x = angleRotate * -cos(dirRotateY);
+        //trcar.rotation.x = -angleRotate * cos(dirRotateY);
+        trcar.rotation.x = rotacionX;
     }else{
         auto vecDirCar = vec3((chaCar.sphereFront->center.x-chaCar.sphereBehind->center.x),(chaCar.sphereFront->center.y-chaCar.sphereBehind->center.y),(chaCar.sphereFront->center.z-chaCar.sphereBehind->center.z));
         auto vecDirEjeY = vec3((chaCar.sphereFront->center.x-chaCar.sphereBehind->center.x),0,(chaCar.sphereFront->center.z-chaCar.sphereBehind->center.z));
         auto angleRotate = Angle2Vectors(vecDirCar, vecDirEjeY);
         auto dirRotateY = (trcar.rotation.y * M_PI) / 180.0;
         //cout << " el angulo que forman es: " << angleRotate << endl;
-        trcar.rotation.x = angleRotate * -cos(dirRotateY);
+        trcar.rotation.x = -angleRotate * cos(dirRotateY);
     }
          // calculamos el algulo de rotacion del coche chavañ
          //auto rfm = RenderFacadeManager::GetInstance()->GetRenderFacade();

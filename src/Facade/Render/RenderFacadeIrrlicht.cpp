@@ -270,7 +270,7 @@ const uint16_t RenderFacadeIrrlicht::FacadeAddObject(Entity* entity) {
         node->setPosition(core::vector3df(cTransformable->position.x, cTransformable->position.y, cTransformable->position.z));
         node->setRotation(core::vector3df(cTransformable->rotation.x, cTransformable->rotation.y, cTransformable->rotation.z));
         node->setScale(core::vector3df(cTransformable->scale.x, cTransformable->scale.y, cTransformable->scale.z));
-        node->setMaterialTexture(0, driver->getTexture(path.c_str()));  //Obligado incluir el c_str() si no irrlicht no carga solo con un string
+        //node->setMaterialTexture(0, driver->getTexture(path.c_str()));  //Obligado incluir el c_str() si no irrlicht no carga solo con un string
         node->setMaterialFlag(video::EMF_LIGHTING, false);
 
         
@@ -289,7 +289,7 @@ const uint16_t RenderFacadeIrrlicht::FacadeAddObject(Entity* entity) {
             nodeSphere1->setID(cId->id + Component::ID_DIFFERENCE);
             nodeSphere1->setPosition(core::vector3df(centerSph1.x, centerSph1.y, centerSph1.z));
             nodeSphere1->setScale(core::vector3df(1.f, 1.f, 1.f));
-            nodeSphere1->setMaterialTexture(0, driver->getTexture(path.c_str()));  //Obligado incluir el c_str() si no irrlicht no carga solo con un string
+            //nodeSphere1->setMaterialTexture(0, driver->getTexture(path.c_str()));  //Obligado incluir el c_str() si no irrlicht no carga solo con un string
             nodeSphere1->setMaterialFlag(video::EMF_LIGHTING, false);
             nodeSphere1->setVisible(false);
             // segunda esfera
