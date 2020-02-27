@@ -3,7 +3,7 @@
 #include <string>
 #include <iostream>
 #include <glm/glm.hpp>
-#include <glew/glew.h>
+#include "../../include/glew/glew.h"
 
 using namespace std;
 namespace CLE {

@@ -81,6 +81,23 @@ IntersectData CBoundingPlane::IntersectSphere(const CBoundingSphere &other, cons
 }
 
 
+IntersectData CBoundingPlane::IntersectSphereCenter(const CBoundingSphere &other, const CTransformable &trCar){
+    float distanceFromSpCenter = fabs(dot(normalizedNormal, other.center) - distance);
+    // cout << "Distance from sphere center " << distanceFromSpCenter << endl;
+    float distanceFromSphere = distanceFromSpCenter - other.radius;
+    bool intersectsInfinitePlane = distanceFromSphere < 0;
+    if(intersectsInfinitePlane){
+        //vec3 centerOnPlane = IntersectPoint(*(&other.center));
+        IntersectData pointCollision = IntersectRay(other.center, vec3(0,-1,0));
+        if( !pointCollision.intersects ){
+            return IntersectData(false, normalizedNormal * distanceFromSphere);
+        }
+    }
+    //std::cout << "estamos dentro del plano beibe, todo normal " << std::endl;
+    return IntersectData(intersectsInfinitePlane, normalizedNormal * distanceFromSphere);
+}
+
+
 double CBoundingPlane::Angle2Vectors(const vec3 &a, const vec3 &b) const{
     vec3 aN = glm::normalize(a);
     vec3 bN = glm::normalize(b);
@@ -145,7 +162,7 @@ vec3 CBoundingPlane::IntersectPoint(const vec3 &point) const{
 
 bool CBoundingPlane::membershipPoint(const vec3 &point) const{
     // comprobamos posicion correcta de la X
-        cout.precision(dbl::max_digits10);
+       // cout.precision(dbl::max_digits10);
        //cout << "EL PUNTO ES X: " << point.x << " LA A.X: " << a.x << " LA C.X: " << c.x << endl;
        //cout << "EL PUNTO ES Y: " << point.y << " LA A.y: " << a.y << " LA C.y: " << c.y << endl;
        //cout << "EL PUNTO ES Z: " << point.z << " LA A.z: " << a.z << " LA C.z: " << c.z << endl;

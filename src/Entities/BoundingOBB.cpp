@@ -13,10 +13,10 @@ using namespace std;
 //}
 
 
-BoundingOBB::BoundingOBB(const vector<vec3> &vertices, const vec3 &centerMass) {
+BoundingOBB::BoundingOBB(const vector<glm::vec3> &vertices, const vector<glm::vec3> &centersMass) {
     shared_ptr<CId> cId = make_shared<CId>();
     //shared_ptr<CBoundingPlane> cPlane = make_shared<CBoundingPlane>(a_, b_, c_, d_);
-    shared_ptr<CBoundingOBB> cBox = make_shared<CBoundingOBB>(vertices, centerMass);
+    shared_ptr<CBoundingOBB> cBox = make_shared<CBoundingOBB>(vertices, centersMass);
     AddComponent(cId);
     AddComponent(cBox);
 }

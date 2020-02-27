@@ -21,13 +21,15 @@ static void error(int error, const char* description) {
 CLEngine::CLEngine (const unsigned int w, const unsigned int h, const string& title) {
     CreateGlfwWindow(w, h, title);
     glewInit();
-
+    ImGuiInit();
+    InitScene();
 }
 
 /**
  * Destruye la ventana de GLFW y libera la informacion.
  */
 CLEngine::~CLEngine() {
+    TerminateImGui();
     glfwDestroyWindow(window);
     glfwTerminate();
     cout << ">>>>> GLFW OFF" << endl;
@@ -44,7 +46,7 @@ void CLEngine::CreateGlfwWindow (const unsigned int w, const unsigned int h, con
     glfwSetErrorCallback(error);
 
     if (!glfwInit()) {
-        cout << "- No se ha podido crear inicializar GLFW" << endl;
+        cout << "- No se ha podido inicializar GLFW" << endl;
         exit(EXIT_FAILURE);
     }
     cout << ">>>>> GLFW ON" << endl;
@@ -67,40 +69,88 @@ void CLEngine::CreateGlfwWindow (const unsigned int w, const unsigned int h, con
 
     // Por defecto esta a 0, pero parece que eso despercicia ciclos de CPU y GPU. Se recomienda ponerlo a 1.
     glfwSwapInterval(1);
+
+    // Activa el buffer de profundidad o ZBuffer, para que se diferencie que pixel se debe pintar.
+    glEnable(GL_DEPTH_TEST);
+}
+
+/**
+ * Crea una instancia del resourceManaeger y el nodo raiz y lo almacena. 
+ */
+void CLEngine::InitScene() {
+    scene = make_unique<CLNode>();
+    resourceManager = make_unique<CLResourceManager>();
 }
 
 /**
  * Actualizacion de CLEngine.
  */
 bool CLEngine::Run() {
-
     return glfwWindowShouldClose(window);
-
-    // // Checkea eventos cada vez que se renderiza. Es un hilo.
-
-    
-
-    // // Render
-    // glClearColor(0.3f, 0.2f, 0.4f, 1.0f);
-    // glClear(GL_COLOR_BUFFER_BIT);
-
-    // // Cambia de buffer.
-    // glfwSwapBuffers(window);
-
-    //return true;
 }
 
-void CLEngine::Draw(){
-    // Render
+/**
+ * Limpia la pantalla pintandola de un color.
+ */
+void CLEngine::BeginScene(){
     glClearColor(0.3f, 0.2f, 0.4f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
-
-    // Cambia de buffer.
-    glfwSwapBuffers(window);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
+/**
+ * Renderiza las cosas de ImGui y cambia el buffer de la ventana. 
+ */
+void CLEngine::EndScene(){
+    ImGui::Render();
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+    
+    glfwSwapBuffers(window);
+
+}
+
+/**
+ * Devuelve el tiempo de glfw
+ */
+double CLEngine::GetTime(){
+    return glfwGetTime();
+}
+/**
+ * Mira si se han actualizado los valores de anchura y altura de la ventana y actualiza el viewport.
+ */
 void CLEngine::UpdateViewport(){
-    // // Actualiza los valores de anchura y altura de la ventana por si se ha redimensionado y asi cambiar el viewport.
     glfwGetFramebufferSize(window, &width, &height);
     glViewport(0, 0, width, height);
 }
+
+//Borrar esto 
+bool CLEngine::InputClose(){
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+        glfwSetWindowShouldClose(window, true);
+    }
+}
+
+
+
+// -----------------------------------------------------------
+//  IMGUI
+// -----------------------------------------------------------
+
+void CLEngine::ImGuiInit(){
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
+
+    // Setup Dear ImGui style
+    ImGui::StyleColorsDark();
+
+    // Setup Platform/Renderer bindings
+    ImGui_ImplGlfw_InitForOpenGL(window, true);
+    ImGui_ImplOpenGL3_Init("#version 450");
+}
+
+void CLEngine::TerminateImGui(){
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
+}
+

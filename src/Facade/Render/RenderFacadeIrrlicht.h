@@ -26,6 +26,7 @@ class RenderFacadeIrrlicht : public RenderFacade {
     RenderFacadeIrrlicht();
     ~RenderFacadeIrrlicht() override;
     const uint16_t FacadeAddObject(Entity*) override;
+    void FacadeAddSphereOnObject(Entity* entity) override;
     const uint16_t FacadeAddObjectCar(Entity*) override;
     const uint16_t FacadeAddObjectTotem(Entity* entity) override;
     const void FacadeAddObjects(vector<Entity*>) override;
@@ -58,7 +59,7 @@ class RenderFacadeIrrlicht : public RenderFacade {
     void FacadeCheckInputEndRace() override;
     void FacadeCheckInputLobbyMulti() override;
     void FacadeUpdatePowerUpHUD(DataMap* d) override;
-    void FacadeDrawHUD(Entity* car, ManCar* carsAI) override;
+    void FacadeDrawHUD(Entity* car, ManCar* manCars) override;
     void FacadeSuscribeEvents() override;
     void FacadeAddPlates(Manager* manNamePlates) override;
     void FacadeUpdatePlates(Manager* manNamePlates) override;
@@ -70,6 +71,7 @@ class RenderFacadeIrrlicht : public RenderFacade {
     void FacadeDrawGraphEdges(ManWayPoint* manWayPoints) const override;
     void FacadeDrawBoundingBox(Entity* entity, bool colliding) const override;
     void FacadeDrawBoundingPlane(Entity* entity) const override;
+    void FacadeDrawBoundingGround(Entity* entity) const override;
     void FacadeDrawBoundingOBB(Entity* entity) const override;
     void FacadeDrawAIDebug(ManCar* manCars, ManNavMesh* manNavMesh, ManWayPoint* manWayPoint) const override;
     void FacadeDrawAIDebugPath(Entity* carAI, ManWayPoint* manWayPoint) const override;
@@ -94,7 +96,6 @@ class RenderFacadeIrrlicht : public RenderFacade {
     video::ITexture* whiteBG;
     video::ITexture* powerUps[7];
     gui::IGUIFont* font;
-    int currentPowerUp = 0;
 
     //unordered_map<uint16_t,scene::ISceneNode*> sceneObjects; // CId - ISceneNode*
 };

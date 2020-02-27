@@ -2,7 +2,6 @@
 
 #include "../../include/glm/geometric.hpp"
 #include "../../include/glm/vec3.hpp"
-#include "../../include/glm/vec4.hpp"
 #include "../CLPhysics/IntersectData.h"
 
 #include "../Components/CTransformable.h"
@@ -24,7 +23,7 @@ struct CBoundingPlane;
 
 class CBoundingOBB : public Component {
    public:
-    CBoundingOBB(const vector<vec3> &, const vec3 &);
+    CBoundingOBB(const vector<glm::vec3> &, const vector<glm::vec3> &);
 
     // void Normalize();
     IntersectData IntersectSphere(const CBoundingSphere &sphere, const CTransformable &trCar, const CCar &ccarCar);
@@ -34,8 +33,9 @@ class CBoundingOBB : public Component {
     IntersectData IntersectRay(const glm::vec3 &posRayOrigin, const glm::vec3 &rayNormalNormalized) const;
 
     vector<shared_ptr<CBoundingPlane>> planes;
-    vec3 center;
+    vector<glm::vec3> centersMass;
     // Recordatorio, un plano tiene 4 vec3 (sus 4 vertices), su normal, su ecuacion general, y una distancia.
 
     private:
+    double EuclideanDis(const glm::vec3 &p1, const glm::vec3 &p2) const;
 };

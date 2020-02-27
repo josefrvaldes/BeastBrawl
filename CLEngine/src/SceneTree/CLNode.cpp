@@ -7,15 +7,14 @@
 using namespace CLE;
 
 CLNode::CLNode(){
-
-}
-
-CLNode::CLNode(CLEntity* entity){
-    this->entity = entity;
     translation = glm::vec3(0.0f, 0.0f, 0.0f);
     rotation = glm::vec3(0.0f, 0.0f, 0.0f);
     scalation = glm::vec3(1.0f, 1.0f, 1.0f);
     transformationMat = glm::mat4(1.0f);
+}
+
+CLNode::CLNode(CLEntity* entity) : CLNode() {
+    this->entity = entity;
 }
 
 
@@ -63,13 +62,35 @@ bool CLNode::HasChild(CLNode* child){
     return false;
 }
 
+void CLNode::SetTranslation(glm::vec3 t) {
+    translation = t; 
+    ActivateFlag();
+}
 
-glm::mat4 CLNode::Translate(){
+void CLNode::SetRotation(glm::vec3 r) {
+    rotation = r; 
+    ActivateFlag();
+}
+
+void CLNode::SetScalation(glm::vec3 s) {
+    scalation = s; 
+    ActivateFlag();
+}
+
+void CLNode::ActivateFlag() {
+    changed = true;
+    for (auto node : childs) {
+        node->ActivateFlag();
+    }
+    return;
+}
+
+glm::mat4 CLNode::TranslateMatrix(){
     glm::mat4 aux = glm::mat4(1.0f);
     return glm::translate(aux, translation);
 }
 
-glm::mat4 CLNode::Rotate(){
+glm::mat4 CLNode::RotateMatrix(){
     glm::mat4 aux = glm::mat4(1.0f);
     aux = glm::rotate(aux, glm::radians(rotation.x) , glm::vec3(1,0,0));
     aux = glm::rotate(aux, glm::radians(rotation.y) , glm::vec3(0,1,0));
@@ -77,18 +98,28 @@ glm::mat4 CLNode::Rotate(){
     return aux;
 }
 
-glm::mat4 CLNode::Scale(){
+glm::mat4 CLNode::ScaleMatrix(){
     glm::mat4 aux = glm::mat4(1.0f);
     return glm::scale(aux, scalation);
 }
 
 glm::mat4 CLNode::CalculateTransformationMatrix() {
-    return Translate()*Rotate()*Scale();
+    return TranslateMatrix()*RotateMatrix()*ScaleMatrix();
+}
+
+void CLNode::Translate(glm::vec3 t) {
+    translation = t;
+}
+
+void CLNode::Rotate(glm::vec3 r) {
+    rotation = r;
+}
+
+void CLNode::Scale(glm::vec3 s) {
+    scalation = s;
 }
 
 void CLNode::DrawTree(CLNode* root){
-
-
     if(root->GetChilds().size()>0){
         //Tiene hijos
         cout << "Nodo " << root->GetEntity()->GetID() << " con hijos: ";
@@ -115,18 +146,17 @@ void CLNode::DFSTree(glm::mat4 mA) {
     if (changed) {
         transformationMat = mA*CalculateTransformationMatrix();
         changed = false;
-        //cout << "Soy el nodo " << entity->GetID() << " - " << glm::to_string(transformationMat) << endl;
     }
 
     if(entity) {
+        // La matriz model se pasa aqui wey
+        glUniformMatrix4fv(glGetUniformLocation(shaderProgramID, "model"), 1, GL_FALSE, glm::value_ptr(transformationMat));
         entity->Draw(transformationMat);
     }
 
     for (auto node : childs) {
         node->DFSTree(transformationMat);
     }
-
-    return;
 }
 
 //Devuelve el nodo por la id que le mandes

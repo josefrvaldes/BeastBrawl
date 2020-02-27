@@ -1,11 +1,63 @@
 #include "CLResourceMesh.h"
 
+// MESH -----------------------------------------------------------------------------
+
+Mesh::Mesh(vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture> textures) {
+    this->vertices = vertices;
+    this->indices  = indices;
+    this->textures = textures;
+
+    glGenVertexArrays(1, &VAO);
+    glGenBuffers(1, &VBO);
+    glGenBuffers(1, &EBO);
+
+    // Seleccion del Vertex Array porque vamos a trabajar con el VBO (el VBO esta en el VAO).
+    glBindVertexArray(VAO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+
+    //Como en el struct Vertex esta todo seguido podemos pasarselo entero al glBufferData
+    // Leemos la informacion de los triangulos.
+    glBufferData(GL_ARRAY_BUFFER, this->vertices.size() * sizeof(Vertex), &this->vertices[0], GL_STATIC_DRAW);  
+
+    // Leemos la informacion de los indices.
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, this->indices.size() * sizeof(unsigned int),&this->indices[0], GL_STATIC_DRAW);
+
+    // vertex positions
+    glEnableVertexAttribArray(0);	
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
+    // vertex normals
+    glEnableVertexAttribArray(1);	
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, normal));
+    // vertex texture coords
+    //glEnableVertexAttribArray(2);	
+    //glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, texCoords));
+    // vertex tangent
+    // glEnableVertexAttribArray(2);
+    // glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, tangent));
+    // // vertex bitangent
+    // glEnableVertexAttribArray(3);
+    // glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, bitangent));
+
+    glBindVertexArray(0);
+}
+
+
+// CLRESOURCEMESH -------------------------------------------------------------------
+
 using namespace CLE;
 
+/**
+ * 
+ * @param file - Ruta del archivo a leer.
+ */
 bool CLResourceMesh::LoadFile(std::string file) {
     Assimp::Importer importer;
-    const aiScene *scene = importer.ReadFile(file, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_GenNormals | aiProcess_CalcTangentSpace );
 
+    // Importamos el fichero.
+    scene = importer.ReadFile(file, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_GenNormals | aiProcess_CalcTangentSpace );
+
+    // Error de carga
     if(!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) 
     {
         cout << "ERROR::ASSIMP::" << importer.GetErrorString() << endl;
@@ -16,6 +68,11 @@ bool CLResourceMesh::LoadFile(std::string file) {
     return true;
 }  
 
+/**
+ * Recorremos los nodos para recuperar todos la informacion de la malla.
+ * @param node - 
+ * @param scene - 
+ */
 void CLResourceMesh::processNode(aiNode *node, const aiScene *scene){
     // process all the node's meshes (if any)
     for(unsigned int i = 0; i < node->mNumMeshes; i++)
@@ -30,6 +87,11 @@ void CLResourceMesh::processNode(aiNode *node, const aiScene *scene){
     }
 }
 
+/**
+ * Almacenamos los valores que recoge assimp de cada submalla.
+ * @param mesh -
+ * @param scene -
+ */
 Mesh CLResourceMesh::processMesh(aiMesh *mesh, const aiScene *scene)
 {
     vector<Vertex> vertices;
@@ -64,15 +126,18 @@ Mesh CLResourceMesh::processMesh(aiMesh *mesh, const aiScene *scene)
         //     vertex.texCoords = glm::vec2(0.0f, 0.0f);
 
         //tangent
-        vecAux.x = mesh->mTangents[i].x;
-        vecAux.y = mesh->mTangents[i].y;
-        vecAux.z = mesh->mTangents[i].z;
-        vertex.tangent = vecAux;
-        //bitangent
-        vecAux.x = mesh->mBitangents[i].x;
-        vecAux.y = mesh->mBitangents[i].y;
-        vecAux.z = mesh->mBitangents[i].z;
-        vertex.bitangent = vecAux;
+        if(mesh->HasTangentsAndBitangents()){
+            vecAux.x = mesh->mTangents[i].x;
+            vecAux.y = mesh->mTangents[i].y;
+            vecAux.z = mesh->mTangents[i].z;
+            vertex.tangent = vecAux;
+            //bitangent
+            vecAux.x = mesh->mBitangents[i].x;
+            vecAux.y = mesh->mBitangents[i].y;
+            vecAux.z = mesh->mBitangents[i].z;
+            vertex.bitangent = vecAux;
+        }
+        
         vertices.push_back(vertex);
     }
     // process indices

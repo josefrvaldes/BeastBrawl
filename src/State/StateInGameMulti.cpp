@@ -97,9 +97,11 @@ void StateInGameMulti::Update() {
 
     CAMBIARPositionTotemAboveCar();
     // COLISIONES entre powerUp y cocheHuman
-    collisions->IntersectsCarsPowerUps(manCars.get(), manPowerUps.get(), manNavMesh.get());
+    //collisions->IntersectsCarsPowerUps(manCars.get(), manPowerUps.get(), manNavMesh.get());
     // COLISIONES entre BoxPowerUp y cocheHuman
-    collisions->IntersectCarsBoxPowerUp(manCars.get(), manBoxPowerUps.get());
+    //collisions->IntersectCarsBoxPowerUp(manCars.get(), manBoxPowerUps.get());
+    // COLISIONES  entre la cocheHuman y el Totem
+    //collisions->IntersectCarsTotem(manCars.get(), manTotems.get());
 }
 
 void StateInGameMulti::Render() {
@@ -107,16 +109,16 @@ void StateInGameMulti::Render() {
     StateInGame::Render();
 }
 
-void StateInGameMulti::InitializeCLPhysics(ManCar &manCars, ManBoundingWall &manBoundingWall, ManBoundingOBB &manBoundingOBB) {
-    StateInGame::InitializeCLPhysics(manCars, manBoundingWall, manBoundingOBB);
+void StateInGameMulti::InitializeCLPhysics(ManCar &manCars, ManBoundingWall &manWall, ManBoundingOBB &manOBB, ManBoundingGround &manGround, ManPowerUp &manPowerUp, ManNavMesh &manNavMesh, ManBoxPowerUp &manBoxPowerUp, ManTotem &manTotem) {
+    StateInGame::InitializeCLPhysics(manCars, manWall, manOBB, manGround, manPowerUp, manNavMesh, manBoxPowerUp, manTotem);
 }
 
 void StateInGameMulti::InitializeManagers(Physics *physics, Camera *cam) {
     StateInGame::InitializeManagers(physics, cam);
 }
 
-void StateInGameMulti::InitializeSystems(ManCar &manCars, ManBoundingWall &manBoundingWall, ManBoundingOBB &manBoundingOBB) {
-    StateInGame::InitializeSystems(manCars, manBoundingWall, manBoundingOBB);
+void StateInGameMulti::InitializeSystems(ManCar &manCars, ManBoundingWall &manWall, ManBoundingOBB &manOBB, ManBoundingGround &manGround, ManPowerUp &manPowerUp, ManNavMesh &manNavMesh, ManBoxPowerUp &manBoxPowerUp, ManTotem &manTotem) {
+    StateInGame::InitializeSystems(manCars, manWall, manOBB, manGround, manPowerUp, manNavMesh, manBoxPowerUp, manTotem);
 }
 
 void StateInGameMulti::InitializeFacades() {

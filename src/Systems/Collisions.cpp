@@ -104,7 +104,7 @@ void Collisions::IntersectPlayerTotem(Car* carPlayer, ManTotem* manTotem){
             // debemos coger el TOTEM
             shared_ptr<DataMap> dataCollisionTotem = make_shared<DataMap>();                                                                         
             (*dataCollisionTotem)[TOTEM] = currentTotem;              // nos guardamos el puntero para eliminar el powerUp                                             
-            EventManager::GetInstance().AddEventMulti(Event{EventType::COLLISION_CAR_TOTEM, dataCollisionTotem});
+            EventManager::GetInstance().AddEventMulti(Event{EventType::COLLISION_PLAYER_TOTEM, dataCollisionTotem});
         }
     }
 }
@@ -119,7 +119,7 @@ void Collisions::IntersectCarsTotem(ManCar* manCars, ManTotem* manTotem){
 
                 (*dataCollisionTotem)[TOTEM] = currentTotem;              // nos guardamos el puntero para eliminar el powerUp  
                 (*dataCollisionTotem)[ACTUAL_CAR] = currentCar.get();                                           
-                EventManager::GetInstance().AddEventMulti(Event{EventType::COLLISION_CAR_TOTEM, dataCollisionTotem});
+                EventManager::GetInstance().AddEventMulti(Event{EventType::COLLISION_PLAYER_TOTEM, dataCollisionTotem});
                 return; // con este return nos aseguramos de que solo 1 car pueda coger el totem a la vez, aunque colisionen varios
             }
         }

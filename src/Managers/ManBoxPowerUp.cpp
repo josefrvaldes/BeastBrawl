@@ -38,6 +38,9 @@ ManBoxPowerUp::ManBoxPowerUp() {
         }
     }
 
+    //CreateBoxPowerUp(vec3(-450.f, -600.f, 700.f));
+    
+
     SubscribeToEvents();
     cout << "Hemos creado el manager de powerup, ahora tenemos " << entities.size() << " powerups" << endl;
 }
