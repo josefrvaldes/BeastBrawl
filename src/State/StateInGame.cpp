@@ -209,6 +209,12 @@ void StateInGame::Update() {
 }
 
 void StateInGame::Render() {
+
+    soundEngine->UpdateCars(manCars->GetEntities());
+    soundEngine->UpdatePowerUps(manPowerUps->GetEntities());
+    //soundEngine->UpdateTotem(manTotems->GetEntities());       //Perdera el sonido si se elimina el Totem del mapa
+    soundEngine->UpdateListener(manCars->GetCar());
+
     renderEngine->FacadeBeginScene();
     // renderEngine->FacadeDraw();  //Para dibujar primitivas debe ir entre el drawAll y el endScene
     renderEngine->FacadeDrawAll();

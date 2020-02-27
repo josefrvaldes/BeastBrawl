@@ -4,6 +4,7 @@
 #include "../Components/COnline.h"
 
 StateInGameMulti::StateInGameMulti() : StateInGame() {
+    InitState();
     InitVirtualMethods();
     vec3 pos = vec3(120.0f, 20.0f, -300.0f);
     manCars->CreateHumanCar(pos);

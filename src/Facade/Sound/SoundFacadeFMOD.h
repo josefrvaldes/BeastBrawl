@@ -3,12 +3,8 @@
 #include "SoundFacade.h"
 #include <SoundEngine/SoundEngine.h>
 
-#include <iostream>
 #include <unordered_map>
-
-#include <fmod_studio.hpp>
-#include <fmod.hpp>
-#include <fmod_errors.h>
+#include <iostream>
 
 #include <EventManager/EventManager.h>
 #include <EventManager/Event.h>
@@ -33,16 +29,20 @@ class SoundFacadeFMOD : public SoundFacade {
         void PauseEvent(const string&);
         void ResumeEvent(const string&);
 
-        void Update()                   override;
+        void UpdateCars(const vector<shared_ptr<Entity>>&)              override;
+        void UpdatePowerUps(const vector<shared_ptr<Entity>>&)          override;
+        void UpdateTotem(const vector<shared_ptr<Entity>>&)             override;
+        void UpdateListener(const shared_ptr<CarHuman>&)                override;
+        void Update()                                                   override;
 
 
         void SetEventPositionEstatic3D(const string&, const glm::vec3&);
         void SetEventPositionDinamic3D(const string&, const glm::vec3&);
         void SetParameter(const string&, const string&, const float) override;
 
-        void CreateSound2D(const string&);
-        void CreateSoundEstatic3D(uint16_t, glm::vec3&, string&);
-        void CreateSoundDinamic3D(uint16_t, glm::vec3&, string&);
+        void CreateSound2D(const string&) override;
+        void CreateSoundEstatic3D(uint16_t, glm::vec3&, string&) override;
+        void CreateSoundDinamic3D(uint16_t, glm::vec3&, string&) override;
 
     private:
 
@@ -100,11 +100,11 @@ class SoundFacadeFMOD : public SoundFacade {
             },
             { "InGame3DE",
                             {
-                                //"PowerUp/escudo_roto",
-                                //"Partida/coger_totem",
-                                //"Coche/choque_powerup",
-                                //"Coche/choque",
-                                //"PowerUp/pudin",
+                                "PowerUp/escudo_roto",
+                                "Partida/coger_totem",
+                                "Coche/choque_powerup",
+                                "Coche/choque",
+                                "PowerUp/pudin",
                                 "Partida/coger_caja"
                                 }
 

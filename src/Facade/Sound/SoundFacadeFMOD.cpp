@@ -7,20 +7,6 @@
 using namespace std;
 
 /*
- * FMOD ERRORS
- */
-
-#define ERRCHECK(_result) ERRCHECK_fn(_result, __FILE__, __LINE__)
-
-void ERRCHECK_fn(FMOD_RESULT result, const char* file, int line) {
-    if (result != FMOD_OK) {
-        cerr << file << " (Linea: " << line << "): FMOD HA CASCAO"
-             << " -> " << FMOD_ErrorString(result) << " Codigo de error: " << result << endl;
-        exit(-1);
-    }
-}
-
-/*
  * SOUND FACADE FMOD
  */
 
@@ -32,12 +18,19 @@ void SoundFacadeFMOD::Initialize() {
     soundEngine = new CLSE::SoundEngine();
 }
 
-/*
+/**
  * Libera los audios y bancos de sonido.
  */
 void SoundFacadeFMOD::Terminate() {
     soundEngine->TerminateSoundEngine();
 }
+
+
+/*
+ ************************************************
+ * NODOS
+ ************************************************
+ */
 
 /**
  * Crea la instancia de sonido 2D
@@ -161,7 +154,7 @@ void SoundFacadeFMOD::SubscribeToGameEvents(const uint8_t numState) {
         case 7:  // Controls
             break;
 
-        case 8:  // Creadits
+        case 8:  // Credits
             break;
 
         default:
@@ -204,7 +197,7 @@ void SoundFacadeFMOD::LoadSoundByState(const uint8_t numState) {
     }
 }
 
-/*
+/**
  * Carga el banco y sus respectivos eventos.
  * @param nameBank - Nombre del banco a cargar.
  * @param type - 1 para eventos 3D y 0 para eventos 2D.
@@ -221,7 +214,8 @@ void SoundFacadeFMOD::LoadSoundBank(const string& nameBank, const bool type) {
 
 }
 
-/* Carga los eventos de sonido. Los 3D sin instancias y los 2D con instancia.
+/**
+ * Carga los eventos de sonido. Los 3D sin instancias y los 2D con instancia.
  * @param nameEvent - Identificacion del evento en FMOD Studio.
  * @param type - 3D es 1 y 2D es 0
  */
@@ -244,7 +238,7 @@ void SoundFacadeFMOD::SetParameter(const string& nameID, const string& nameParam
  * TO-DO: Aqui solo se cambia la posicion, para el efecto Doppler hace falta la velocidad. Creo que hay mas cosas a parte.
  */
 void SoundFacadeFMOD::SetEventPositionEstatic3D(const string& nameID, const glm::vec3& pos) {
-    soundEngine->SetEventPositionDinamic3D(nameID, pos);
+    soundEngine->Set3DAttributes(nameID, pos);
 }
 
 /**
@@ -252,7 +246,7 @@ void SoundFacadeFMOD::SetEventPositionEstatic3D(const string& nameID, const glm:
  * TO-DO: Aqui solo se cambia la posicion, para el efecto Doppler hace falta la velocidad. Creo que hay mas cosas a parte.
  */
 void SoundFacadeFMOD::SetEventPositionDinamic3D(const string& nameID, const glm::vec3& pos) {
-    soundEngine->SetEventPositionDinamic3D(nameID, pos);
+    soundEngine->Set3DAttributes(nameID, pos);
 }
 
 /**
@@ -310,6 +304,34 @@ void SoundFacadeFMOD::ResumeEvent(const string& nameID) {
     soundEngine->ResumeEvent(nameID);
 }
 
+
+/**
+ *
+ */
+void SoundFacadeFMOD::UpdateCars(const vector<shared_ptr<Entity> > &) {
+
+}
+
+/**
+ *
+ */
+ void SoundFacadeFMOD::UpdatePowerUps(const vector<shared_ptr<Entity> > &) {
+
+ }
+
+ /**
+  *
+  */
+ void SoundFacadeFMOD::UpdateTotem(const vector<shared_ptr<Entity> > &) {
+
+ }
+
+ /**
+  *
+  */
+ void SoundFacadeFMOD::UpdateListener(const shared_ptr<CarHuman> &) {
+    //cout << "############# UPDATE LISTENER" << endl;
+ }
 
 /**
  * Actualiza la fachada de sonido. 
@@ -383,10 +405,13 @@ void SoundFacadeFMOD::SoundCrash(DataMap* d) {
 }
 
 void SoundFacadeFMOD::SoundBreakBox(DataMap* d) {
-    auto pos = glm::vec3(0.0f,0.0f,0.0f);
+    auto idEntity = any_cast<uint16_t>((*d)[ID]);
+    string mapID = "Partida/coger_caja" + to_string(idEntity);
+    /*auto pos = glm::vec3(0.0f,0.0f,0.0f);
     string name = "Partida/coger_caja";
-    CreateSoundEstatic3D(0, pos, name);
-    PlayEvent("Partida/coger_caja0");
+    CreateSoundEstatic3D(0, pos, name);*/
+
+    PlayEvent(mapID);
 }
 
 void SoundFacadeFMOD::SoundDrift(DataMap* d) {

@@ -8,6 +8,7 @@ StateInGameSingle::StateInGameSingle() : StateInGame() {
     systemBtLoDMove = make_unique<SystemBtLoDMove>();
     systemPathPlanning = make_unique<SystemPathPlanning>();
 
+    InitState();
     InitVirtualMethods();
 
     //std::cout << "ENTRAMOS AL MANAGER DE NAVMESH LOCOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO" << std::endl;

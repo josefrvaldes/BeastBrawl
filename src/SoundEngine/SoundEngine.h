@@ -40,8 +40,10 @@ namespace CLSE {
             void UpdateEngine();
 
             void SetParameter(const string&, const string&, const float);
-            void SetEventPositionDinamic3D(const string&, const glm::vec3&);
-            void SetEventPositionEstatic3D(const string&, const glm::vec3&);
+            void SetListenerPosition(const glm::vec3&);
+            void Set3DAttributes(const string&, const glm::vec3&);
+            void SetEventPositionDinamic3D(FMOD::Studio::EventInstance*, const glm::vec3&);
+            void SetEventPositionEstatic3D(FMOD::Studio::EventInstance*, const glm::vec3&);
 
             void CreateSoundNode2D(const string&);
             void CreateSoundNodeEstatic3D(uint16_t, glm::vec3&, string&);

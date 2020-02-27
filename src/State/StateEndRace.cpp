@@ -5,12 +5,14 @@ using namespace std;
 
 StateEndRace::StateEndRace(){
     // constructor
-    std::cout << "Estado EndRace Creado" << std::endl;
+    std::cout << ">>>>> Estado EndRace Creado" << std::endl;
     // Inicializamos las facadas
     renderEngine = RenderFacadeManager::GetInstance()->GetRenderFacade();
     //renderFacadeManager->InitializeIrrlicht();
 
     renderEngine->FacadeInitEndRace();
+    cout << "QUIERO HACER INIT STATE DE END GAME" << endl;
+    InitState();
 
 }
 
