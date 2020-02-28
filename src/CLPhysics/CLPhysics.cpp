@@ -211,76 +211,57 @@ void CLPhysics::LimitRotationCarY() const{
 
 // TODO: Actualmente solo esta con X por el puto irrlicht
 void CLPhysics::RotateCarXZ(CTransformable &trcar, CBoundingChassis &chaCar, CBoundingPlane *pl1Car, CBoundingPlane *pl2Car) const{
+    // TENEMOS QUE HACER ROTACIONES CON PLANOS ORIENTADOS, O EN EL EJE X O EN EL EJE Z
     if(pl1Car == pl2Car){
         auto normalPlane = pl1Car->normalizedNormal;
-        cout << "LA NORMAL DEL PLANO ES: (" << normalPlane.x << " , " << normalPlane.y << " , " << normalPlane.z << " )" << endl;
         auto angleRotate = Angle2Vectors(normalPlane, vec3(0,1,0));
         auto dirRotateY = (trcar.rotation.y * M_PI) / 180.0;
+        //cout << "LA NORMAL DEL PLANO ES: (" << normalPlane.x << " , " << normalPlane.y << " , " << normalPlane.z << " )" << endl;
+        auto total = abs(normalPlane.x*100) + abs(normalPlane.z*100);
+        if(total == 0.0) total = 1.0;
 
+        auto newR_X = sin(dirRotateY) * (normalPlane.x*100);
+        auto resultante_X = newR_X*100/(total);
+        auto rotationX_exeX = angleRotate*(resultante_X/100);
+        //cout << "LA RESULTANTE X ES:  " << rotationX_exeX << endl;
+        auto newR_Z = cos(dirRotateY) * (normalPlane.z*100);
+        auto resultante_Z = newR_Z*100/total;
+        auto rotationX_exeZ = angleRotate*(resultante_Z/100);
+        //cout << "LA RESULTANTE Z ES:  " << rotationX_exeZ << endl;
+        trcar.rotation.x = rotationX_exeX + rotationX_exeZ;
+        cout << " LA ROTACION APLICADA EN X ES:    " << trcar.rotation.x << endl;
+        //auto rotationX_exeZ = cos(dirRotateY) * (normalPlane.z*100);
 
-        auto rotacionX = sin(dirRotateY) * (normalPlane.x*100);
-        //cout << " el angulo que forman es: " << angleRotate << endl;
-        //trcar.rotation.x = -angleRotate * cos(dirRotateY);
-        trcar.rotation.x = rotacionX;
-    }else{
         auto vecDirCar = vec3((chaCar.sphereFront->center.x-chaCar.sphereBehind->center.x),(chaCar.sphereFront->center.y-chaCar.sphereBehind->center.y),(chaCar.sphereFront->center.z-chaCar.sphereBehind->center.z));
         auto vecDirEjeY = vec3((chaCar.sphereFront->center.x-chaCar.sphereBehind->center.x),0,(chaCar.sphereFront->center.z-chaCar.sphereBehind->center.z));
-        auto angleRotate = Angle2Vectors(vecDirCar, vecDirEjeY);
-        auto dirRotateY = (trcar.rotation.y * M_PI) / 180.0;
+        angleRotate = Angle2Vectors(vecDirCar, vecDirEjeY);
+        cout << " EL ANGULO QUE FORMAN LAS 2 ESFERAS ES::::::::::::  " << angleRotate << endl;
+
+
+
+    }else{
+        //auto normalPlane1 = pl1Car->normalizedNormal;
+        //auto angleRotatePlane1 = Angle2Vectors(normalPlane1, vec3(0,1,0));
+        //// y hacemos lo mismo respecto al otro plano
+        //auto normalPlane2 = pl2Car->normalizedNormal;
+        //auto angleRotatePlane2 = Angle2Vectors(normalPlane2, vec3(0,1,0));
+//
+        //auto vecDirCar = vec3((chaCar.sphereFront->center.x-chaCar.sphereBehind->center.x),(chaCar.sphereFront->center.y-chaCar.sphereBehind->center.y),(chaCar.sphereFront->center.z-chaCar.sphereBehind->center.z));
+        //auto vecDirEjeY = vec3((chaCar.sphereFront->center.x-chaCar.sphereBehind->center.x),0,(chaCar.sphereFront->center.z-chaCar.sphereBehind->center.z));
+        //auto angleRotate = Angle2Vectors(vecDirCar, vecDirEjeY);
+        //// aplicamos rotacion al plano2, de momento
+        //auto dirRotateY = (trcar.rotation.y * M_PI) / 180.0;
+        //// el "cuanto" aplicamos lo sacamos: 
+        //auto rotationX_exeX = (sin(dirRotateY) * (normalPlane1.x*100)) * ( (angleRotate*100) / angleRotatePlane2);
+        //auto rotationX_exeZ = (cos(dirRotateY) * (normalPlane1.z*100)) * ( (angleRotate*100) / angleRotatePlane2);
+        //auto rotationFinalX = rotationX_exeX + rotationX_exeZ;
+        //trcar.rotation.x = rotationFinalX;
+
+
         //cout << " el angulo que forman es: " << angleRotate << endl;
-        trcar.rotation.x = -angleRotate * cos(dirRotateY);
+        //trcar.rotation.x = angleRotate * cos(dirRotateY);
+
     }
-         // calculamos el algulo de rotacion del coche chavañ
-         //auto rfm = RenderFacadeManager::GetInstance()->GetRenderFacade();
-         //auto rfmi = static_cast<RenderFacadeIrrlicht *>(rfm);
-         //auto carIrrlicht = rfmi->GetSceneManager()->getSceneNodeFromId(carId->id);
-         //BoundingWall *groundEsp = static_cast<BoundingWall *>(grounds[1].get());
-         //CBoundingPlane *planeCuesta = static_cast<CBoundingPlane *>(groundEsp->GetComponent(CompType::CompBoundingPlane).get());
-         //vec3 Nx = vec3(planeCuesta->normalizedNormal.x, planeCuesta->normalizedNormal.y, 0);
-         //vec3 Nz = vec3(0, planeCuesta->normalizedNormal.y, planeCuesta->normalizedNormal.z);
-         ////cout << " la Normal al plano es: ( " << Nx.x << " , " << Nx.y << " , " << Nz.z << " )" << endl;
-         //float X = acos(dot(Nx , vec3(0,1,0)) /Nx.length())*180/irr::core::PI;
-         //float Z = acos(dot(Nz , vec3(0,1,0)) /Nz.length())*180/irr::core::PI;
-         //float angleRotation = (trcar->rotation.y * M_PI) / 180.0;
-         ////mat.setRotationDegrees(irr::core::vector3df(X, carIrrlicht->getRotation().Y, Z));
-         ////carIrrlicht->setRotation(mat.getRotationDegrees());
-         //vec3 vecDirCar = vec3((chaCar->sphereFront->center.x-chaCar->sphereBehind->center.x),(chaCar->sphereFront->center.y-chaCar->sphereBehind->center.y),(chaCar->sphereFront->center.z-chaCar->sphereBehind->center.z));
-         //vec3 vecDirEjeY = vec3((chaCar->sphereFront->center.x-chaCar->sphereBehind->center.x),0,(chaCar->sphereFront->center.z-chaCar->sphereBehind->center.z));
-         //double angulooY = Angle2Vectors(vecDirCar, vecDirEjeY);
-         //auto holita = ((X * M_PI) / 180.0);
-         //cout << " holitaa : " << X << endl;
-         //trcar->rotation.x = angulooY * -cos(angleRotation);
-         //cout << " aplicamos una rotacion en X de: " << trcar->rotation.x << endl;
-         //trcar->rotation.z = ((Z * M_PI) / 180.0) * sin(angleRotation)*10;
-         //cout << " aplicamos una rotacion en Z de: " << trcar->rotation.z << endl;
-         //vec3 vecDirCar = vec3((chaCar->sphereFront->center.x-chaCar->sphereBehind->center.x),(chaCar->sphereFront->center.y-chaCar->sphereBehind->center.y),(chaCar->sphereFront->center.z-chaCar->sphereBehind->center.z));
-         //vec3 vecDirEjeY = vec3((chaCar->sphereFront->center.x-chaCar->sphereBehind->center.x),0,(chaCar->sphereFront->center.z-chaCar->sphereBehind->center.z));
-         //vec3 vecDirEjeX = vec3(0,(chaCar->sphereFront->center.y-chaCar->sphereBehind->center.y),(chaCar->sphereFront->center.z-chaCar->sphereBehind->center.z));
-         //vec3 vecDirEjeZ = vec3((chaCar->sphereFront->center.x-chaCar->sphereBehind->center.x),(chaCar->sphereFront->center.y-chaCar->sphereBehind->center.y),0);
-         //double angulooY = Angle2Vectors(vecDirCar, vecDirEjeY);
-         //int anguloEnteroY = int(angulooY);
-         //if(chaCar->sphereFront->center.y < chaCar->sphereBehind->center.y)
-         //    anguloEnteroY = -1*anguloEnteroY;
-         //cout << "el angulo Y es: " << anguloEnteroY << endl;
-         //double angulooX = Angle2Vectors(vecDirCar, vecDirEjeX);
-         //int anguloEnteroX = int(angulooX);
-         ////if(chaCar->sphereFront->center.x < chaCar->sphereBehind->center.x)
-         ////    anguloEnteroX = -1*anguloEnteroX;
-         //cout << "el angulo X es: " << anguloEnteroX << endl;
-         //double angulooZ = Angle2Vectors(vecDirCar, vecDirEjeZ);
-         //int anguloEnteroZ = int(angulooZ);
-         //if(chaCar->sphereFront->center.z < chaCar->sphereBehind->center.z)
-         //    anguloEnteroZ = -1*anguloEnteroZ;
-         //// una vez tenemos el angulo, lo quue tenemos que hacer es aplicar una rotacion a los coches
-         //auto exesAbs = carIrrlicht->getAbsoluteTransformation().getRotationDegrees();
-         //float angleRotationAbs = (exesAbs.Y * M_PI) / 180.0;
-         //float angleRotation = (trcar->rotation.y * M_PI) / 180.0;
-         ////int anguloPrueba = 30;
-         //float anguloPruX = anguloEnteroX + (anguloEnteroY * cos(angleRotationAbs));
-         //float anguloPruZ = anguloEnteroZ + (anguloEnteroY * sin(angleRotationAbs));
-         //trcar->rotation.x = anguloPruX;
-         //trcar->rotation.z = anguloPruZ;
-        // RotateCarGround()
 }
 
 /*
