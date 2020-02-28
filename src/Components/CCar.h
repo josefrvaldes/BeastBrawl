@@ -34,7 +34,7 @@ public:
     float wheelRotation = 0.0;
     float incrementWheelRotation = 0.5;  // velocidad por iteracion que se gira la rueda
     float decrementWheelRotation = 0.7;  // velocidad por iteracion que se recupera la rueda
-    float maxWheelRotation = 5.0;
+    float maxWheelRotation = 6.3;
     float friction;
     float slowDown;
 
@@ -48,6 +48,7 @@ public:
 
 
     float skidAcc = 1.0;        // To-Do: multiplicar por el deltaTime los periodos para ajustarlos al framerate
+    float skidRecoverAcc = 2.0;
     float skidDeg;              // giro en el derrape
     float skidDegL = -35.0;  
     float skidDegR = 35.0;   

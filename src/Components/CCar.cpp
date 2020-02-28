@@ -6,3 +6,4 @@ CCar::CCar(float _maxSpeed, float _acceleration, float _carFriction, float _carS
     m_compType = CompType::CarComp;
     skidStart = system_clock::now();
 }
+ 

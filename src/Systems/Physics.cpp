@@ -62,10 +62,13 @@ void Physics::CalculatePosition(CCar *cCar, CTransformable *cTransformable, CSpe
 
     // Rotacion del coche
     // if (cCar->wheelRotation != 0) {
-    if(cCar->skidRotation != 0)
-        cTransformable->rotation.y += cCar->wheelRotation * 0.05 + 0.022 * cCar->skidRotation;
-    else
+    if(cCar->skidRotation != 0){
+        std::cout << "Incremento: " << cCar->wheelRotation * 0.05 + 0.04 * cCar->skidRotation << "\n";
+        cTransformable->rotation.y += cCar->wheelRotation * 0.05 + 0.03 * cCar->skidRotation;
+    }else{
+        std::cout << "Incremento: " << cCar->wheelRotation * 0.20 << "\n";
         cTransformable->rotation.y += cCar->wheelRotation * 0.20;
+    }
 
 
     if (cTransformable->rotation.y >= 360.0)
@@ -348,6 +351,7 @@ void Physics::NotTurning(Car *car, Camera *cam) {
 // Metodo para cuando pulsamos el derrape
 void Physics::Skid(Car *car, Camera *){
     auto cCar = static_cast<CCar *>(car->GetComponent(CompType::CarComp).get());
+    auto cTrans = static_cast<CTransformable *>(car->GetComponent(CompType::TransformableComp).get());
 
     if(cCar->skidState == SkidState::DISABLED ){ // Reiniciamos el reloj y comenzamos, en caso de pulsar una de las dos direcciones dentro de un tiempo comenzara el giro del derrape
         cCar->skidStart = system_clock::now();
@@ -385,28 +389,13 @@ void Physics::Skid(Car *car, Camera *){
             cCar->skidState = SkidState::SKID_RECOVER_RIGHT;
     }
 
-    if( cCar->skidState == SkidState::SKID_RECOVER_LEFT){
-        auto cTrans = static_cast<CTransformable *>(car->GetComponent(CompType::TransformableComp).get());
-        cCar->skidRotation += cCar->skidAcc;
-        cTrans->rotation.y += cCar->skidAcc;
-        if(cCar->skidRotation >= 0){
-            cCar->skidState = SkidState::SKID_START;
-        }
-        if(cTrans->rotation.y >= 360) cTrans->rotation.y -= 360.0;
-    }else if(cCar->skidState == SkidState::SKID_RECOVER_RIGHT){
-        auto cTrans = static_cast<CTransformable *>(car->GetComponent(CompType::TransformableComp).get());
-        cCar->skidRotation -= cCar->skidAcc;
-        cTrans->rotation.y -= cCar->skidAcc;
-        if(cCar->skidRotation <= 0){
-            cCar->skidState = SkidState::SKID_START;
-        }
-        if(cTrans->rotation.y < 0) cTrans->rotation.y += 360.0;
-    }
+    RecoverSkid(*cCar, *cTrans);
 }
 
 
 void Physics::NotSkidding(Car *car, Camera *){
     auto cCar = static_cast<CCar *>(car->GetComponent(CompType::CarComp).get());
+    auto cTrans = static_cast<CTransformable *>(car->GetComponent(CompType::TransformableComp).get());
 
     // En caso de dejar de pulsar el derrape va a tener un periodo de recuperacion del derrape
     if( cCar->skidState == SkidState::SKID_LEFT || cCar->skidState == SkidState::SKID_TO_LEFT)
@@ -414,31 +403,38 @@ void Physics::NotSkidding(Car *car, Camera *){
     else if( cCar->skidState == SkidState::SKID_RIGHT || cCar->skidState == SkidState::SKID_TO_RIGHT)
         cCar->skidState = SkidState::SKID_RECOVER_RIGHT;
 
-
-    if( cCar->skidState == SkidState::SKID_RECOVER_LEFT){
-        auto cTrans = static_cast<CTransformable *>(car->GetComponent(CompType::TransformableComp).get());
-        cCar->skidRotation += cCar->skidAcc;
-        cTrans->rotation.y += cCar->skidAcc;
-        if(cCar->skidRotation >= 0){
-            cCar->skidState = SkidState::DISABLED;
-        }
-        if(cTrans->rotation.y >= 360) cTrans->rotation.y -= 360.0;
-    }else if(cCar->skidState == SkidState::SKID_RECOVER_RIGHT){
-        auto cTrans = static_cast<CTransformable *>(car->GetComponent(CompType::TransformableComp).get());
-        cCar->skidRotation -= cCar->skidAcc;
-        cTrans->rotation.y -= cCar->skidAcc;
-        if(cCar->skidRotation <= 0){
-            cCar->skidState = SkidState::DISABLED;
-        }
-        if(cTrans->rotation.y < 0) cTrans->rotation.y += 360.0;
-    }
+    RecoverSkid(*cCar, *cTrans);
+    
     if(cCar->skidState == SkidState::SKID_START && duration_cast<milliseconds>(system_clock::now()-cCar->skidStart).count() > cCar->skidAnimationTime){
         cCar->skidState = SkidState::DISABLED;
         cCar->skidRotation = 0;
     }
-
 }
 
+
+void Physics::RecoverSkid(CCar &cCar, CTransformable &cTrans) const{
+    if( cCar.skidState == SkidState::SKID_RECOVER_LEFT){
+        cCar.skidRotation += cCar.skidRecoverAcc; 
+        cTrans.rotation.y += cCar.skidRecoverAcc;
+        if(cCar.skidRotation >= 0){
+            cTrans.rotation.y -= cCar.skidRotation;
+            cCar.skidRotation = 0;
+            cCar.skidState = SkidState::SKID_START;
+        }
+        if(cTrans.rotation.y >= 360) 
+            cTrans.rotation.y -= 360.0;
+    }else if(cCar.skidState == SkidState::SKID_RECOVER_RIGHT){
+        cCar.skidRotation -= cCar.skidRecoverAcc;
+        cTrans.rotation.y -= cCar.skidRecoverAcc;
+        if(cCar.skidRotation <= 0){
+            cTrans.rotation.y += cCar.skidRotation;
+            cCar.skidRotation = 0;
+            cCar.skidState = SkidState::SKID_START;
+        }
+        if(cTrans.rotation.y < 0) 
+            cTrans.rotation.y += 360.0;
+    }
+}
 
 
 
