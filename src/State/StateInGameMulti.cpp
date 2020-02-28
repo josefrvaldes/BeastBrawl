@@ -88,7 +88,7 @@ void StateInGameMulti::Update() {
             // funcion para recibir los inputs del servidor, otra para enviar los nuestros, crear componente de input
             physics->UpdateHuman(static_cast<Car *>(actualCar.get()));
             manCars->UpdateCarHuman(actualCar.get());
-            physicsEngine->UpdateCarAI(actualCar.get());
+            physicsEngine->UpdateTransformable(actualCar.get());
         }
     }
 
@@ -148,5 +148,6 @@ void StateInGameMulti::CAMBIARCosasDeTotemUpdate() {
         cTransformTotem->position.y = -100.0f;
     }
 
-    renderEngine->UpdateTransformable(totemOnCar.get());
+    //Semanticamente esta mal este metodo pero hace lo mismo que el update transformable del render
+    physicsEngine->UpdateTransformable(totemOnCar.get());
 }

@@ -25,15 +25,15 @@ class CLNode{
         ~CLNode(){};
 
         //Getters
-        CLEntity* GetEntity() const           { return entity.get(); }
-        CLNode*   GetFather() const           { return father; }
+        CLEntity* GetEntity() const                      { return entity.get(); }
+        CLNode*   GetFather() const                      { return father; }
         vector<shared_ptr<CLNode>>   GetChilds() const   { return childs; }
-
         glm::vec3 GetTranslation() const       { return translation; }
         glm::vec3 GetRotation()    const       { return rotation; }
         glm::vec3 GetScalation()   const       { return scalation; }
         glm::mat4 GetTransformationMat() const { return transformationMat; }
         GLuint GetShaderProgramID() const      { return shaderProgramID;}
+        CLCamera* GetActiveCamera();
 
         //Setters
         bool SetFather(CLNode* f)                       { father = f; return true; }
@@ -65,11 +65,14 @@ class CLNode{
         void DrawTree(CLNode* root);
         void DFSTree(glm::mat4);
 
+        void SetVisible(bool v) {visible = v;};
+
     private:
 
         void ActivateFlag();
 
         bool changed { true };
+        bool visible { true };
 
         shared_ptr<CLEntity> entity {nullptr};
         CLNode* father {nullptr};

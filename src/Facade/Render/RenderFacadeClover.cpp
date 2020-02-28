@@ -2,6 +2,8 @@
 
 
 #include <cmath>
+#include <algorithm>    // std::sort
+
 #include "../../Components/CBoundingChassis.h"
 #include "../../Components/CBoundingOBB.h"
 #include "../../Components/CPowerUp.h"
@@ -34,7 +36,6 @@
 
 
 
-bool RenderFacadeClover::showDebug = false;
 
 RenderFacadeClover::~RenderFacadeClover() {
 }
@@ -52,9 +53,9 @@ RenderFacadeClover::RenderFacadeClover() {
     string title = "BeastBrawl";
     device = new CLEngine(1280, 720, title);
     
-    auto input = InputFacadeManager::GetInstance()->GetInputFacade();
-    auto inputClover = static_cast<InputFacadeClover*>(input);
-    inputClover->SetWindowContext(device);
+    // auto input = InputFacadeManager::GetInstance()->GetInputFacade();
+    // auto inputClover = static_cast<InputFacadeClover*>(input);
+    // inputClover->SetWindowContext(device);
 
     // auto physics = PhysicsFacadeManager::GetInstance()->GetPhysicsFacade();
     // auto physicsClover = static_cast<PhysicsFacadeClover*>(physics);
@@ -117,6 +118,52 @@ void RenderFacadeClover::FacadeUpdatePowerUpHUD(DataMap* d) {
  * @param {coche principal, manager de coches}
  */
 void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars) {
+    //Voy a actualizar aqui las posiciones donde van porque es el unico sitio donde tengo ambos tipos de coches
+
+    //struct auxiliar para guardarme tiempo y numero de coche
+    struct ranking_t{
+        uint16_t carNumber;
+        float    time;
+        inline bool operator() (const ranking_t& struct1, const ranking_t& struct2)
+        {
+            return (struct1.time > struct2.time);
+        }
+    };
+
+    auto cTotem = static_cast<CTotem*>(car->GetComponent(CompType::TotemComp).get());
+    vector<ranking_t> ranking;
+
+    //Si existen coches de IA
+    if(manCars->GetEntities().size()>0){
+        //Primero vamos a meter al coche principal
+        ranking_t rank;
+        int i = 0;
+        for(auto& carAux : manCars->GetEntities()){
+            cTotem = static_cast<CTotem*>(carAux->GetComponent(CompType::TotemComp).get());
+            rank.carNumber = i++;
+            rank.time = cTotem->accumulatedTime;
+            ranking.push_back(rank);
+        }
+
+        std::sort (ranking.begin(), ranking.end(), ranking_t());
+    }
+
+    //Ya tenemos ordenados las posiciones, ahora vamos a actualizar sus valores en el CTotem
+    int j = 1;
+    for(auto aux : ranking){
+        uint16_t numCar = aux.carNumber;
+        cTotem = static_cast<CTotem*>(manCars->GetEntities()[numCar]->GetComponent(CompType::TotemComp).get());
+        cTotem->positionRanking = j++;
+
+    }
+
+    //Por si quieres imprimir las posiciones de los coches
+    // int k = 1;
+    // for(auto auxCar : manCars->GetEntities()){
+    //     cTotem = static_cast<CTotem*>(auxCar->GetComponent(CompType::TotemComp).get());
+    //     cout << "El coche numero " << k++ << " va en la posicion: " << cTotem->positionRanking << endl;
+    // }
+
 }
 
 /**
@@ -222,10 +269,6 @@ const uint16_t RenderFacadeClover::FacadeAddObjectTotem(Entity* entity) {
     return idTotem;
 }
 
-//TODO: Esto proximamente le pasaremos todos los entities y los modificará 1 a 1
-void RenderFacadeClover::UpdateTransformable(Entity* entity) {
-
-}
 
 /**
  * Actualiza la camara

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "PhysicsFacade.h"
+#include "../Render/RenderFacadeManager.h"
 
 #include "../../../CLEngine/src/CLEngine.h"
 
@@ -15,7 +16,7 @@ class PhysicsFacadeClover : public PhysicsFacade {
     PhysicsFacadeClover();
     ~PhysicsFacadeClover();
     void UpdateCar(Entity*, Entity*) override;
-    void UpdateCarAI(Entity*) override;
+    void UpdateTransformable(Entity*) override;
     void UpdatePowerUps(Entity*) override;
     void SetWindowContext(CLEngine* d) { device = d;};
 

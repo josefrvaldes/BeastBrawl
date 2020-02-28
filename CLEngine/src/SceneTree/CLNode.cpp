@@ -170,7 +170,7 @@ void CLNode::DFSTree(glm::mat4 mA) {
         changed = false;
     }
 
-    if(entity) { 
+    if(entity && visible) { 
         // La matriz model se pasa aqui wey
         glUseProgram(shaderProgramID);
         glUniformMatrix4fv(glGetUniformLocation(shaderProgramID, "model"), 1, GL_FALSE, glm::value_ptr(transformationMat));
@@ -232,6 +232,16 @@ CLNode* CLNode::GetNodeByIDAux(unsigned int id, CLNode* node, CLNode* root){
 
     return node;
 }
+
+CLCamera* CLNode::GetActiveCamera(){
+    for(auto camera : cameras){
+        auto entityCamera = static_cast<CLCamera*>(camera->GetEntity());
+        if(entityCamera->IsActive()){
+            return entityCamera;
+        }
+    }
+}
+
 
 
 /**

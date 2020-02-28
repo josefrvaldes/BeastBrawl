@@ -76,7 +76,7 @@ void PhysicsFacadeIrrlicht::UpdateCam(Entity* cam) {
 }
 
 //TODO:: Cambiar para que rediba todo el Manager
-void PhysicsFacadeIrrlicht::UpdateCarAI(Entity* car) {
+void PhysicsFacadeIrrlicht::UpdateTransformable(Entity* car) {
     //Guardamos en variables los componentes
     auto cTransformable = static_cast<CTransformable*>(car->GetComponent(CompType::TransformableComp).get());
     auto cId = static_cast<CId*>(car->GetComponent(CompType::IdComp).get());

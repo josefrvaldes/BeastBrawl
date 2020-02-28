@@ -41,7 +41,10 @@ class CLEngine {
         void UpdateViewport();
         double GetTime();
         void InputClose();
+        void CloseWindow();
         void PollEvents();
+        bool IsKeyPressed();
+        bool IsKeyReleased();
 
 
         CLNode* GetSceneManager();
@@ -59,7 +62,7 @@ class CLEngine {
         int height;
         GLFWwindow *window { nullptr };
 
-
+        
         std::unique_ptr<CLNode> smgr {nullptr};
         std::unique_ptr<CLResourceManager> resourceManager {nullptr};
 };
