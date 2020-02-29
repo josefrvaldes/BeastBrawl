@@ -30,8 +30,8 @@ Mesh::Mesh(vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture
     glEnableVertexAttribArray(1);	
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, normal));
     // vertex texture coords
-    //glEnableVertexAttribArray(2);	
-    //glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, texCoords));
+    glEnableVertexAttribArray(2);	
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, texCoords));
     // vertex tangent
     // glEnableVertexAttribArray(2);
     // glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, tangent));
@@ -55,7 +55,8 @@ bool CLResourceMesh::LoadFile(std::string file) {
     Assimp::Importer importer;
 
     // Importamos el fichero.
-    scene = importer.ReadFile(file, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_GenNormals | aiProcess_CalcTangentSpace );
+    scene = importer.ReadFile(file, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_GenNormals | aiProcess_CalcTangentSpace 
+                                | aiProcess_OptimizeMeshes);
 
     // Error de carga
     if(!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) 
@@ -137,6 +138,16 @@ Mesh CLResourceMesh::processMesh(aiMesh *mesh, const aiScene *scene)
             vecAux.z = mesh->mBitangents[i].z;
             vertex.bitangent = vecAux;
         }
+
+        //Texture coords
+        if(mesh->mTextureCoords[0]){
+            glm::vec2 vec;
+            vec.x = mesh->mTextureCoords[0][i].x; 
+            vec.y = mesh->mTextureCoords[0][i].y;
+            vertex.texCoords = vec;
+        }else{
+            vertex.texCoords = glm::vec2(0.0f, 0.0f);
+        }
         
         vertices.push_back(vertex);
     }
@@ -153,6 +164,8 @@ Mesh CLResourceMesh::processMesh(aiMesh *mesh, const aiScene *scene)
     {
         //...
     }   
+
+    
 
     return Mesh(vertices, indices, textures);
 }  

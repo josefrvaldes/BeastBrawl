@@ -14,7 +14,7 @@ struct Vertex {
     // normal
     glm::vec3 normal;
     // texCoords
-    //glm::vec2 texCoords;
+    glm::vec2 texCoords;
     // tangent
     glm::vec3 tangent;
     // bitangent
@@ -56,6 +56,7 @@ namespace CLE {
         private:
             void processNode(aiNode *node, const aiScene *scene);
             Mesh processMesh(aiMesh *mesh, const aiScene *scene);
+            vector<Texture> loadMaterialTextures(aiMaterial *mat, aiTextureType type, string typeName);
 
             vector<Mesh> vecMesh;
             const aiScene *scene;

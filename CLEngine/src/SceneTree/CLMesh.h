@@ -2,6 +2,7 @@
 
 #include "CLEntity.h"
 #include "../ResourceManager/CLResourceMesh.h"
+#include "../ResourceManager/CLResourceTexture.h"
 
 
 namespace CLE {
@@ -21,7 +22,8 @@ namespace CLE {
 
 
         private:
-            CLResource* mesh;
+            CLResourceMesh* mesh;
+            CLResourceTexture* texture;
 
             
     };

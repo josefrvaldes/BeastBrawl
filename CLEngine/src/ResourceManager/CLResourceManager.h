@@ -9,6 +9,7 @@
 
 #include "CLResourceMesh.h"
 #include "CLResourceShader.h"
+#include "CLResourceTexture.h"
 
 using namespace std;
 namespace CLE {
@@ -19,11 +20,13 @@ namespace CLE {
             ~CLResourceManager();
 
             CLResourceMesh* GetResourceMesh(const std::string);
+            CLResourceTexture* GetResourceTexture(const std::string);
             CLResourceShader* GetResourceShader(const std::string, const std::string);
 
         private:
 
             vector<shared_ptr<CLResourceMesh>> meshes;
+            vector<shared_ptr<CLResourceTexture>> textures;
             vector<shared_ptr<CLResourceShader>> shaders;
 
     };

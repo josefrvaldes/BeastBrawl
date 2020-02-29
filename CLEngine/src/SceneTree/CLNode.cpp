@@ -173,7 +173,9 @@ void CLNode::DFSTree(glm::mat4 mA) {
     if(entity && visible) { 
         // La matriz model se pasa aqui wey
         glUseProgram(shaderProgramID);
+        glm::mat4 MVP = projection * view * transformationMat;
         glUniformMatrix4fv(glGetUniformLocation(shaderProgramID, "model"), 1, GL_FALSE, glm::value_ptr(transformationMat));
+        glUniformMatrix4fv(glGetUniformLocation(shaderProgramID, "MVP"), 1, GL_FALSE, glm::value_ptr(MVP));
         entity->Draw(transformationMat);
     }
 
@@ -195,11 +197,14 @@ void CLNode::CalculateViewProjMatrix(){
             glUseProgram(camera->GetShaderProgramID());
 
             projection    = entityCamera->CalculateProjectionMatrix();
-            glUniformMatrix4fv(glGetUniformLocation(camera->GetShaderProgramID(), "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+            //glUniformMatrix4fv(glGetUniformLocation(camera->GetShaderProgramID(), "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 
             // Vector posicion de la camara, vector de posicion destino y vector ascendente en el espacio mundial. 
             view = glm::lookAt(camera->GetTranslation(), -entityCamera->GetCameraTarget(), entityCamera->GetCameraUp());
-            glUniformMatrix4fv(glGetUniformLocation(camera->GetShaderProgramID(), "view"), 1, GL_FALSE, glm::value_ptr(view));
+
+            glUniform3fv(glGetUniformLocation(camera->GetShaderProgramID(), "viewPos"),1,glm::value_ptr(camera->GetTranslation()));
+
+            //glUniformMatrix4fv(glGetUniformLocation(camera->GetShaderProgramID(), "view"), 1, GL_FALSE, glm::value_ptr(view));
 
         }
     }

@@ -83,8 +83,8 @@ class CLNode{
         glm::vec3 scalation = glm::vec3(1.0f);
         glm::mat4 transformationMat = glm::mat4(1.0f);
 
-        glm::mat4 projection;
-        glm::mat4 view;
+        inline static glm::mat4 projection;
+        inline static glm::mat4 view;
 
         //Methods
         CLNode* GetNodeByIDAux(unsigned int id, CLNode* node, CLNode* root);

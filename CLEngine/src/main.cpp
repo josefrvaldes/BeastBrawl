@@ -69,8 +69,8 @@ int main() {
     //-------------------Resource manager-------------------
     shared_ptr<CLResourceManager> resourceManager = make_shared<CLResourceManager>();
     auto resourceShader = resourceManager->GetResourceShader("CLEngine/src/Shaders/vertex.glsl", "CLEngine/src/Shaders/fragment.glsl");
+    auto resourceMeshCar = resourceManager->GetResourceMesh("media/kart_ia.obj");
     auto resourceMesh = resourceManager->GetResourceMesh("media/sharky_lowpoly.fbx");
-    auto resourceMeshBox = resourceManager->GetResourceMesh("media/TEST_BOX.fbx");
 
     //----------------------------------------------------------------------------------------------------------------SHADER
     
@@ -93,11 +93,11 @@ int main() {
 
         auto camera = smgr->AddCamera(3);
         camera->SetShaderProgramID(resourceShader->GetProgramID());
-        camera->SetTranslation(glm::vec3(0.0f,2.0f,2.0f));
         static_cast<CLCamera*>(camera->GetEntity())->SetCameraTarget(glm::vec3(0.0f,0.0f,0.0f));
 
         auto mesh2 = mesh1->AddMesh(4);
         mesh2->SetShaderProgramID(resourceShader->GetProgramID());
+
 
 
     //smgr->DFSTree(glm::mat4(1.0));
@@ -107,7 +107,7 @@ int main() {
     int max = 200;
     int min = -200;
     int j = 0;
-    for(int i = 6; i<200; i++){
+    for(int i = 6; i<0; i++){
         nodes.push_back(meshes->AddMesh(i));
         nodes[j]->SetShaderProgramID(resourceShader->GetProgramID());
 
@@ -122,11 +122,11 @@ int main() {
     //      smgr->DrawTree(smgr);
 
 
-    static_cast<CLMesh*>(mesh1->GetEntity())->SetMesh(resourceMeshBox);
+    static_cast<CLMesh*>(mesh1->GetEntity())->SetMesh(resourceMeshCar);
     static_cast<CLMesh*>(mesh2->GetEntity())->SetMesh(resourceMesh);
 
     camera->SetTranslation(glm::vec3(0.0f, 7.0f, 60.0f));
-    mesh1->SetScalation(glm::vec3(2.0f, 2.0f, 2.0f));
+    mesh1->SetScalation(glm::vec3(0.5f, 0.5f, 0.5f));
     mesh1->SetRotation(glm::vec3(90.0f,0.0f,180.0f));
     mesh2->SetTranslation(glm::vec3(0.0f, 30.0f, 0.0f));
 
@@ -261,7 +261,7 @@ int main() {
         //Luces y colores
         glUniform3fv(glGetUniformLocation(resourceShader->GetProgramID(), "objectColor"),1,glm::value_ptr(color));
         glUniform3fv(glGetUniformLocation(resourceShader->GetProgramID(), "lightColor"),1,glm::value_ptr(light));
-        glUniform3fv(glGetUniformLocation(resourceShader->GetProgramID(), "viewPos"),1,glm::value_ptr(camera->GetTranslation()));
+        //glUniform3fv(glGetUniformLocation(resourceShader->GetProgramID(), "viewPos"),1,glm::value_ptr(camera->GetTranslation()));
 
         glUniform3f(glGetUniformLocation(resourceShader->GetProgramID(), "material.ambient"), 1.0,0.5,0.23);
         glUniform3f(glGetUniformLocation(resourceShader->GetProgramID(), "material.diffuse"), 1.0,0.5,0.23);
