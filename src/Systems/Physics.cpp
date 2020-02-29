@@ -63,10 +63,10 @@ void Physics::CalculatePosition(CCar *cCar, CTransformable *cTransformable, CSpe
     // Rotacion del coche
     // if (cCar->wheelRotation != 0) {
     if(cCar->skidRotation != 0){
-        std::cout << "Incremento: " << cCar->wheelRotation * 0.05 + 0.04 * cCar->skidRotation << "\n";
+        std::cout << "Incremento con skid: " << cCar->wheelRotation * 0.05 + 0.04 * cCar->skidRotation << "\n";
         cTransformable->rotation.y += cCar->wheelRotation * 0.05 + 0.03 * cCar->skidRotation;
     }else{
-        std::cout << "Incremento: " << cCar->wheelRotation * 0.20 << "\n";
+        std::cout << "Incremento no  skid: " << cCar->wheelRotation * 0.20 << "\n";
         cTransformable->rotation.y += cCar->wheelRotation * 0.20;
     }
 
@@ -197,7 +197,7 @@ void Physics::TurnLeft(Car *car, Camera *cam) {
         }
 
         if (cCamera->rotExtraY > -(cCar->maxWheelRotation + cCamera->rotExtraCamera)) {
-            cCamera->rotExtraY -= cCar->incrementWheelRotation;
+            cCamera->rotExtraY -= cCamera->incrementrotExtraY;
         }
     } else if (cCar->speed <= -cCar->maxSpeed*0.15) {
         if (cCar->wheelRotation > -cCar->maxWheelRotation) {
@@ -205,7 +205,7 @@ void Physics::TurnLeft(Car *car, Camera *cam) {
             cCar->wheelRotation -= cCar->incrementWheelRotation;
         }
         if (cCamera->rotExtraY > -(cCar->maxWheelRotation + cCamera->rotExtraCamera)) {
-            cCamera->rotExtraY -= cCar->incrementWheelRotation;
+            cCamera->rotExtraY -= cCamera->incrementrotExtraY;
         }
     } else {  // la rueda vuelve a su sitio original al no dejarte rotar
         if (cCar->wheelRotation >= cCar->decrementWheelRotation) {
@@ -217,9 +217,9 @@ void Physics::TurnLeft(Car *car, Camera *cam) {
         }
 
         if (cCamera->rotExtraY >= cCar->decrementWheelRotation) {
-            cCamera->rotExtraY -= cCar->decrementWheelRotation;
+            cCamera->rotExtraY -= cCamera->decrementrotExtraY;
         } else if (cCamera->rotExtraY <= -cCar->decrementWheelRotation) {
-            cCamera->rotExtraY += cCar->decrementWheelRotation;
+            cCamera->rotExtraY += cCamera->decrementrotExtraY;
         } else {
             cCamera->rotExtraY = 0;
         }
@@ -257,7 +257,7 @@ void Physics::TurnRight(Car *car, Camera *cam) {
         }
 
         if (cCamera->rotExtraY < (cCar->maxWheelRotation + cCamera->rotExtraCamera)) {
-            cCamera->rotExtraY += cCar->incrementWheelRotation;
+            cCamera->rotExtraY += cCamera->incrementrotExtraY;
         }
     } else if (cCar->speed <= -cCar->maxSpeed*0.15) {
         if (cCar->wheelRotation < cCar->maxWheelRotation) {
@@ -265,7 +265,7 @@ void Physics::TurnRight(Car *car, Camera *cam) {
             cCar->wheelRotation += cCar->incrementWheelRotation;
         }
         if (cCamera->rotExtraY < (cCar->maxWheelRotation + cCamera->rotExtraCamera)) {
-            cCamera->rotExtraY += cCar->incrementWheelRotation;
+            cCamera->rotExtraY += cCamera->incrementrotExtraY;
         }
     } else {  // la rueda vuelve a su sitio original al no dejarte rotar
         if (cCar->wheelRotation >= cCar->decrementWheelRotation) {
@@ -277,9 +277,9 @@ void Physics::TurnRight(Car *car, Camera *cam) {
         }
 
         if (cCamera->rotExtraY >= cCar->decrementWheelRotation) {
-            cCamera->rotExtraY -= cCar->decrementWheelRotation;
+            cCamera->rotExtraY -= cCamera->decrementrotExtraY;
         } else if (cCamera->rotExtraY <= -cCar->decrementWheelRotation) {
-            cCamera->rotExtraY += cCar->decrementWheelRotation;
+            cCamera->rotExtraY += cCamera->decrementrotExtraY;
         } else {
             cCamera->rotExtraY = 0;
         }
@@ -337,9 +337,9 @@ void Physics::NotTurning(Car *car, Camera *cam) {
     }
 
     if (cCamera->rotExtraY >= cCar->decrementWheelRotation) {
-        cCamera->rotExtraY -= cCar->decrementWheelRotation;
+        cCamera->rotExtraY -= cCamera->decrementrotExtraY;
     } else if (cCamera->rotExtraY <= -cCar->decrementWheelRotation) {
-        cCamera->rotExtraY += cCar->decrementWheelRotation;
+        cCamera->rotExtraY += cCamera->decrementrotExtraY;
     } else {
         cCamera->rotExtraY = 0;
     }
@@ -419,7 +419,8 @@ void Physics::RecoverSkid(CCar &cCar, CTransformable &cTrans) const{
         if(cCar.skidRotation >= 0){
             cTrans.rotation.y -= cCar.skidRotation;
             cCar.skidRotation = 0;
-            cCar.skidState = SkidState::SKID_START;
+            if(duration_cast<milliseconds>(system_clock::now()-cCar.skidStart).count() > cCar.skidActivationTime)
+                cCar.skidState = SkidState::SKID_START;
         }
         if(cTrans.rotation.y >= 360) 
             cTrans.rotation.y -= 360.0;
@@ -427,9 +428,10 @@ void Physics::RecoverSkid(CCar &cCar, CTransformable &cTrans) const{
         cCar.skidRotation -= cCar.skidRecoverAcc;
         cTrans.rotation.y -= cCar.skidRecoverAcc;
         if(cCar.skidRotation <= 0){
-            cTrans.rotation.y += cCar.skidRotation;
+            cTrans.rotation.y -= cCar.skidRotation;
             cCar.skidRotation = 0;
-            cCar.skidState = SkidState::SKID_START;
+            if(duration_cast<milliseconds>(system_clock::now()-cCar.skidStart).count() > cCar.skidActivationTime)
+                cCar.skidState = SkidState::SKID_START;
         }
         if(cTrans.rotation.y < 0) 
             cTrans.rotation.y += 360.0;
