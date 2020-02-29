@@ -122,14 +122,14 @@ void StateInGame::InitializeSystems(ManCar &manCars, ManBoundingWall &manWall, M
 
 void StateInGame::InitializeManagers(Physics *physics, Camera *cam) {
     // inicializa el man PU, no hace falta más código para esto
-    manCars = make_shared<ManCar>(physics, cam);
+    manNavMesh = make_shared<ManNavMesh>();
+    manCars = make_shared<ManCar>(physics, cam, manNavMesh.get());
     manWayPoint = make_shared<ManWayPoint>();  //Se crean todos los waypoints y edges
     manPowerUps = make_shared<ManPowerUp>();
     manBoxPowerUps = make_shared<ManBoxPowerUp>();
     manBoundingWall = make_shared<ManBoundingWall>();
     manBoundingOBB = make_shared<ManBoundingOBB>();
     manBoundingGround = make_shared<ManBoundingGround>();
-    manNavMesh = make_shared<ManNavMesh>(manCars.get()->GetCar().get());
     manTotems = make_shared<ManTotem>(manNavMesh.get());
     manNamePlates = make_shared<ManNamePlate>(manCars.get());
 }
@@ -155,8 +155,6 @@ void StateInGame::Update() {
     EventManager &em = EventManager::GetInstance();
     em.Update();
 
-    //ACTUALIZAMOS MANAGER NAVMESH CAR PLAYER
-    manNavMesh->UpdateNavMeshPlayer(manCars.get()->GetCar().get());
     // ACTUALIZACION DE LOS MANAGERS DE LOS COCHES
     manCars->UpdateCar();
 

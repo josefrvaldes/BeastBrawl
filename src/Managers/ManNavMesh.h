@@ -24,13 +24,13 @@ struct CTransformable;
 class ManNavMesh : public Manager{
    public:
     //ManNavMesh(){};
-    ManNavMesh(Entity *carPlayer);
+    ManNavMesh();
     ~ManNavMesh(){};
 
     void CreateNavMesh(glm::vec3 pos, glm::vec3 rot, float width, float height, float depth, vector<int> waypoints);
     void CreateNavMesh();
 
-    void UpdateNavMeshPlayer(Entity* carPlayer);
+    void UpdateNavMeshEntity(Entity* entity_);
 
     //static ManNavMesh& getInstance() {
     //    static ManNavMesh instance;

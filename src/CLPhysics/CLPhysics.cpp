@@ -210,57 +210,45 @@ void CLPhysics::LimitRotationCarY() const{
 }
 
 // TODO: Actualmente solo esta con X por el puto irrlicht
+// TODO: Los calculos de aqui deben depender del delta
+
 void CLPhysics::RotateCarXZ(CTransformable &trcar, CBoundingChassis &chaCar, CBoundingPlane *pl1Car, CBoundingPlane *pl2Car) const{
-    // TENEMOS QUE HACER ROTACIONES CON PLANOS ORIENTADOS, O EN EL EJE X O EN EL EJE Z
-    if(pl1Car == pl2Car){
-        auto normalPlane = pl1Car->normalizedNormal;
-        auto angleRotate = Angle2Vectors(normalPlane, vec3(0,1,0));
-        auto dirRotateY = (trcar.rotation.y * M_PI) / 180.0;
-        //cout << "LA NORMAL DEL PLANO ES: (" << normalPlane.x << " , " << normalPlane.y << " , " << normalPlane.z << " )" << endl;
-        auto total = abs(normalPlane.x*100) + abs(normalPlane.z*100);
-        if(total == 0.0) total = 1.0;
-
-        auto newR_X = sin(dirRotateY) * (normalPlane.x*100);
-        auto resultante_X = newR_X*100/(total);
-        auto rotationX_exeX = angleRotate*(resultante_X/100);
-        //cout << "LA RESULTANTE X ES:  " << rotationX_exeX << endl;
-        auto newR_Z = cos(dirRotateY) * (normalPlane.z*100);
-        auto resultante_Z = newR_Z*100/total;
-        auto rotationX_exeZ = angleRotate*(resultante_Z/100);
-        //cout << "LA RESULTANTE Z ES:  " << rotationX_exeZ << endl;
-        trcar.rotation.x = rotationX_exeX + rotationX_exeZ;
-        cout << " LA ROTACION APLICADA EN X ES:    " << trcar.rotation.x << endl;
-        //auto rotationX_exeZ = cos(dirRotateY) * (normalPlane.z*100);
-
-        auto vecDirCar = vec3((chaCar.sphereFront->center.x-chaCar.sphereBehind->center.x),(chaCar.sphereFront->center.y-chaCar.sphereBehind->center.y),(chaCar.sphereFront->center.z-chaCar.sphereBehind->center.z));
-        auto vecDirEjeY = vec3((chaCar.sphereFront->center.x-chaCar.sphereBehind->center.x),0,(chaCar.sphereFront->center.z-chaCar.sphereBehind->center.z));
-        angleRotate = Angle2Vectors(vecDirCar, vecDirEjeY);
-        cout << " EL ANGULO QUE FORMAN LAS 2 ESFERAS ES::::::::::::  " << angleRotate << endl;
-
-    }else{
+    //TENEMOS QUE HACER ROTACIONES CON PLANOS ORIENTADOS, O EN EL EJE X O EN EL EJE Z
+    auto normalPlane = pl1Car->normalizedNormal;
+    if(pl1Car != pl2Car){
         auto normalPlane1 = pl1Car->normalizedNormal;
-        // y hacemos lo mismo respecto al otro plano
         auto normalPlane2 = pl2Car->normalizedNormal;
-        auto normalPlane = glm::vec3( (normalPlane1.x+normalPlane2.x) , (normalPlane1.y+normalPlane2.y) , (normalPlane1.z+normalPlane2.z) );
-        auto angleRotate = Angle2Vectors(normalPlane, vec3(0,1,0));
-
-        auto dirRotateY = (trcar.rotation.y * M_PI) / 180.0;
-        //cout << "LA NORMAL DEL PLANO ES: (" << normalPlane.x << " , " << normalPlane.y << " , " << normalPlane.z << " )" << endl;
-        auto total = abs(normalPlane.x*100) + abs(normalPlane.z*100);
-        if(total == 0.0) total = 1.0;
-
-        auto newR_X = sin(dirRotateY) * (normalPlane.x*100);
-        auto resultante_X = newR_X*100/(total);
-        auto rotationX_exeX = angleRotate*(resultante_X/100);
-        //cout << "LA RESULTANTE X ES:  " << rotationX_exeX << endl;
-        auto newR_Z = cos(dirRotateY) * (normalPlane.z*100);
-        auto resultante_Z = newR_Z*100/total;
-        auto rotationX_exeZ = angleRotate*(resultante_Z/100);
-        //cout << "LA RESULTANTE Z ES:  " << rotationX_exeZ << endl;
-        trcar.rotation.x = rotationX_exeX + rotationX_exeZ;
-        cout << " LA ROTACION APLICADA EN X ES:    " << trcar.rotation.x << endl;
+        normalPlane = glm::vec3( (normalPlane1.x+normalPlane2.x) , (normalPlane1.y+normalPlane2.y) , (normalPlane1.z+normalPlane2.z) );
     }
+    // rotacion en X
+    auto angleRotate = Angle2Vectors(normalPlane, vec3(0,1,0));
+    auto dirRotateY = (trcar.rotation.y * M_PI) / 180.0;
+    //cout << "LA NORMAL DEL PLANO ES: (" << normalPlane.x << " , " << normalPlane.y << " , " << normalPlane.z << " )" << endl;
+    auto total = abs(normalPlane.x*100) + abs(normalPlane.z*100);
+    if(total == 0.0) total = 1.0;
+    auto newR_X = sin(dirRotateY) * (normalPlane.x*100);
+    auto resultante_X = newR_X*100/(total);
+    auto rotationX_exeX = angleRotate*(resultante_X/100);
+    //cout << "LA RESULTANTE X ES:  " << rotationX_exeX << endl;
+    auto newR_Z = cos(dirRotateY) * (normalPlane.z*100);
+    auto resultante_Z = newR_Z*100/total;
+    auto rotationX_exeZ = angleRotate*(resultante_Z/100);
+    //cout << "LA RESULTANTE Z ES:  " << rotationX_exeZ << endl;
+    auto rotationFinal = rotationX_exeX + rotationX_exeZ;
+    if(abs(trcar.rotation.x - rotationFinal) > 3 ){  // deberia de multiplicarse por el delta
+        if( trcar.rotation.x < rotationFinal)
+            trcar.rotation.x += 3.0;
+        else
+            trcar.rotation.x -= 3.0;
+    }else{
+        trcar.rotation.x = rotationFinal;
+    }
+    //cout << "LA ROTACION APLICADA EN X ES: " << rotationFinal << endl;
+
 }
+
+
+
 
 /*
 bool CLPhysics::CollisionsChassisGround(CTransformable &trCar, CBoundingChassis &chaCar, CCar &ccar, bool mainCar, CBoundingPlane &plane){

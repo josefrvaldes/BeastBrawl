@@ -11,6 +11,10 @@ using namespace std;
 using json = nlohmann::json;
 ManBoundingGround::ManBoundingGround() {
     SubscribeToEvents();
+
+
+    //CreateBoundingGround(vec3(-100.f, 100.f, 50.f),vec3(-100.f, 100.f, 100.f),vec3(100.f, 10.f, 100.f),vec3(100.f, 10.f, 50.f));
+
     
     double vertex1X = 0, vertex1Y = 0, vertex1Z = 0;  // utilizamos double porque tiene mas precison que float (64b vs 32b)
     double vertex2X = 0, vertex2Y = 0, vertex2Z = 0;

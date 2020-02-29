@@ -92,5 +92,5 @@ class CLPhysics {
     glm::vec3 CalculateVecDirCar(CTransformable &cTransformable) const;
     vector<Manager *> managers;
     const float gravityCar = -2.0f;
-    const float gravityPU = -0.5f;
+    const float gravityPU = -1.0f;
 };

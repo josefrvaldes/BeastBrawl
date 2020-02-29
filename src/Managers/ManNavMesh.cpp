@@ -12,7 +12,7 @@
 using namespace std;
 using json = nlohmann::json;
 
-ManNavMesh::ManNavMesh(Entity *carPlayer) {
+ManNavMesh::ManNavMesh() {
     //Leemos y añadimos los NavMesh
     double vertex1X=0, vertex1Y=0,vertex1Z=0;   // utilizamos double porque tiene mas precison que float (64b vs 32b)
     double vertex2X=0, vertex2Y=0,vertex2Z=0; 
@@ -111,7 +111,7 @@ ManNavMesh::ManNavMesh(Entity *carPlayer) {
     SubscribeToEvents();
 
     // Para no duplicar codigo, pasamos el coche de tipo CarHuman a Entity
-    UpdateNavMeshPlayer(carPlayer);
+    //UpdateNavMeshPlayer(carPlayer);
     //InitNavMeshTotem(manTotems);
 }
 
@@ -187,15 +187,15 @@ void ManNavMesh::ActualizeNavMeshCarAI(DataMap* d){
         cout << " LA IA NO PERTENECEMOS A NINGUN NAVMEEEESHHH HDIIIIIOOOOSOSSOSOOSOSOS  ---> en ese caso nos quedamos con el que teniamos" << endl;
 }
 
-void ManNavMesh::UpdateNavMeshPlayer(Entity* carPlayer){
-    auto cTransformableCar = static_cast<CTransformable*>(carPlayer->GetComponent(CompType::TransformableComp).get());     
+void ManNavMesh::UpdateNavMeshEntity(Entity* entity_){
+    auto cTransformableCar = static_cast<CTransformable*>(entity_->GetComponent(CompType::TransformableComp).get());     
 
     auto newNavMesh = CalculateNavMesh(*cTransformableCar);
     if(newNavMesh != -1){
-        auto cCurrentNavMesh = static_cast<CCurrentNavMesh*>(carPlayer->GetComponent(CompType::CurrentNavMeshComp).get());
+        auto cCurrentNavMesh = static_cast<CCurrentNavMesh*>(entity_->GetComponent(CompType::CurrentNavMeshComp).get());
         cCurrentNavMesh->currentNavMesh = newNavMesh;
     }else
-        cout << " NO PERTENECEMOS A NINGUN NAVMEEEESHHH HDIIIIIOOOOSOSSOSOOSOSOS  ---> en ese caso nos quedamos con el que teniamos" << endl;
+        cout << " NO PERTENECEMOS A NINGUN NAVMEEEESHHH " << endl;
 }
 
 

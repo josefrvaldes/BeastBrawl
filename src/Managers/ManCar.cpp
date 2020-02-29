@@ -54,13 +54,18 @@ ManCar::~ManCar() {
 }
 
 // TO-DO: este paso de physics es kk, hay que revisarlo de enviarlo como referencia o algo pero me da error
-ManCar::ManCar(Physics* _physics, Camera* _cam) : ManCar() {
+ManCar::ManCar(Physics* _physics, Camera* _cam, ManNavMesh* manNM_) : ManCar() {
     this->physics = _physics;
     this->cam = _cam;
+    this->manNavMesh = manNM_;
 }
 
 // comprueba si has superado el tiempo necesario para ganar
 void ManCar::UpdateCar() {
+
+
+    manNavMesh->UpdateNavMeshEntity(GetCar().get());
+
     auto cTotem = static_cast<CTotem*>(GetCar()->GetComponent(CompType::TotemComp).get());
     if (cTotem->active) {
         cTotem->accumulatedTime += duration_cast<milliseconds>(system_clock::now() - cTotem->timeStart).count();
@@ -92,7 +97,7 @@ void ManCar::UpdateCar() {
 void ManCar::UpdateCarAI(CarAI* carAI, ManPowerUp* m_manPowerUp, ManBoxPowerUp* m_manBoxPowerUp, ManTotem* m_manTotem, ManWayPoint* graph, ManNavMesh* manNavMesh, 
                         ManBoundingWall* m_manBoundingWall, SystemBtPowerUp* systemBtPowerUp, SystemBtMoveTo* systemBtMoveTo, SystemBtLoDMove* systemBtLoDMove, SystemPathPlanning *systemPathPlanning) {
     
-    
+    //manNavMesh->UpdateNavMeshEntity(carAI);
     //systemBtMoveTo->update(carAI, this, m_manPowerUp, m_manBoxPowerUp, m_manTotem, graph, manNavMesh);
     //
     //systemPathPlanning->Update(carAI, graph, manNavMesh);
@@ -568,7 +573,7 @@ void ManCar::CatchPowerUpAI(DataMap* d) {
         indx = 6;
 
 
-    //indx = 5;
+    indx = 5;
     auto cPowerUpCar = static_cast<CPowerUp*>(any_cast<Entity*>((*d)[ACTUAL_CAR])->GetComponent(CompType::PowerUpComp).get());
     if(cPowerUpCar->typePowerUp == typeCPowerUp::None){
         cPowerUpCar->typePowerUp = (typeCPowerUp)indx;

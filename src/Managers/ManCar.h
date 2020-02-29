@@ -41,7 +41,7 @@ struct SystemBtLoDMove;
 class ManCar : public Manager {
    public:
     ManCar();
-    ManCar(Physics *, Camera *);
+    ManCar(Physics *, Camera *, ManNavMesh *);
     ~ManCar();
 
     void CreateMainCar();
@@ -93,4 +93,5 @@ class ManCar : public Manager {
     void CatchPowerUpAI(DataMap* d);
     shared_ptr<CarHuman> car;
     unique_ptr<PhysicsAI> physicsAI;
+    ManNavMesh* manNavMesh; // puntero al manager de NavMesh para actuaizarlo
 };
