@@ -261,6 +261,9 @@ const uint16_t RenderFacadeIrrlicht::FacadeAddObject(Entity* entity) {
 
         case ModelType::Text:
             break;
+
+        case ModelType::Light:
+            break;
     }
 
     // y ahora a ese node, le ponemos sus parámetros

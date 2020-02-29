@@ -43,8 +43,6 @@ class CLEngine {
         void InputClose();
         void CloseWindow();
         void PollEvents();
-        bool IsKeyPressed();
-        bool IsKeyReleased();
 
 
         CLNode* GetSceneManager();

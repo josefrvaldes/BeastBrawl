@@ -144,14 +144,6 @@ void CLEngine::UpdateViewport(){
     glViewport(0, 0, width, height);
 }
 
-bool CLEngine::IsKeyPressed(){
-    
-}
-
-bool CLEngine::IsKeyReleased(){
-
-}
-
 //Borrar esto 
 void CLEngine::InputClose(){
     if (glfwGetKey(window, GLFW_KEY_ESCAPE)) {

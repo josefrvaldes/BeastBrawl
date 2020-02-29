@@ -240,6 +240,7 @@ CLCamera* CLNode::GetActiveCamera(){
             return entityCamera;
         }
     }
+    return nullptr;
 }
 
 
