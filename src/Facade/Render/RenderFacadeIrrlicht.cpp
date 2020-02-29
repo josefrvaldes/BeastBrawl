@@ -279,7 +279,7 @@ const uint16_t RenderFacadeIrrlicht::FacadeAddObject(Entity* entity) {
         
         bool hasChassis = entity->HasComponent(CompType::CompBoundingChassis);
         if (hasChassis && Constants::DEBUG_SHOW_CHASSIS) {
-            cout << "entramos aqui???" << endl;
+            // cout << "entramos aqui???" << endl;
             auto cChassis = static_cast<CBoundingChassis *>(entity->GetComponent(CompType::CompBoundingChassis).get());
             // primera esfera
             auto radiousSph1 = cChassis->sphereBehind->radius;

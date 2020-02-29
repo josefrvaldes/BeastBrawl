@@ -1181,6 +1181,7 @@ double CLPhysics::Angle2Vectors(const vec3 &a, const vec3 &b) const{
 
 
 void CLPhysics::IntersectCarsTotem(ManCar &manCars, ManTotem &manTotem){
+    //cout << "ENTRAMOS" << endl;
     for(const auto& currentCar : manCars.GetEntities()){
         auto cChassisCar = static_cast<CBoundingChassis *>(currentCar.get()->GetComponent(CompType::CompBoundingChassis).get());  
         for(shared_ptr<Entity> currentTotem : manTotem.GetEntities()){  
@@ -1192,10 +1193,11 @@ void CLPhysics::IntersectCarsTotem(ManCar &manCars, ManTotem &manTotem){
                 intersect = cChassisCar->sphereFront->IntersectSphere(*cSphereTotem);
             if(intersect.intersects){   //TRUE
                 // debemos coger el TOTEM
+                //cout << "colisionamos con el totem " << endl;
                 shared_ptr<DataMap> dataCollisionTotem = make_shared<DataMap>();                                                                         
                 (*dataCollisionTotem)[TOTEM] = currentTotem;              // nos guardamos el puntero para eliminar el powerUp  
                 (*dataCollisionTotem)[ACTUAL_CAR] = currentCar.get();                                           
-                EventManager::GetInstance().AddEventMulti(Event{EventType::COLLISION_AI_TOTEM, dataCollisionTotem});
+                EventManager::GetInstance().AddEventMulti(Event{EventType::COLLISION_PLAYER_TOTEM, dataCollisionTotem});
             }
         }
     }

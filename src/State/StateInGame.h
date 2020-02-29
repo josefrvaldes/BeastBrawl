@@ -51,6 +51,7 @@
 #include <Components/CNavMesh.h>
 #include <Components/CCurrentNavMesh.h>
 #include "../Managers/ManBoundingOBB.h"
+#include "../Constants.h"
 
 
 using namespace std;
@@ -90,7 +91,7 @@ class StateInGame : public State {
 
     shared_ptr<Physics> physics;
     //shared_ptr<float> deltaTime;
-    float deltaTime = 0.0166666;
+    
     shared_ptr<PhysicsPowerUp> phisicsPowerUp;
     shared_ptr<SystemBoxPowerUp> sysBoxPowerUp;
     shared_ptr<Collisions> collisions;
@@ -112,9 +113,9 @@ class StateInGame : public State {
     virtual void InitializeSystems(ManCar&, ManBoundingWall&, ManBoundingOBB&, ManBoundingGround&, ManPowerUp&, ManNavMesh&, ManBoxPowerUp&, ManTotem &);
     virtual void InitializeFacades();
     virtual void AddElementsToRender();
-    virtual void CAMBIARCosasDeTotemUpdate(){};
 
     void CAMBIARCosasDeTotem(ManTotem &);
-    void CAMBIARCosasDeBoxPU(ManWayPoint &, ManBoxPowerUp &);
-    void CAMBIARCosasNavMesh(ManNavMesh &);
+    void CAMBIARCosasNavMesh(ManCar &, ManNavMesh &);
+    void CAMBIARPositionTotemAboveCar();
+
 };

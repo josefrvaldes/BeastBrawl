@@ -50,7 +50,7 @@ CarHuman::CarHuman() {
     shared_ptr<CNitro> cNitro = make_shared<CNitro>();
     shared_ptr<CRoboJorobo> cRoboJorobo = make_shared<CRoboJorobo>();
     shared_ptr<CTotem> cTotem = make_shared<CTotem>();
-    shared_ptr<CCurrentNavMesh> cCurrentNavMesh = make_shared<CCurrentNavMesh>(0);  //  ponemos 0 por defecto ya que haremos el calculo al empezar la partida
+    shared_ptr<CCurrentNavMesh> cCurrentNavMesh = make_shared<CCurrentNavMesh>(-1);  //  ponemos 0 por defecto ya que haremos el calculo al empezar la partida
     shared_ptr<COnline> cOnline = make_shared<COnline>();  //  ponemos 0 por defecto ya que haremos el calculo al empezar la partida
 
 
@@ -89,7 +89,6 @@ CarHuman::CarHuman() {
     AddComponent(cExternalForce);
     AddComponent(cBoundingChassis);
     AddComponent(cGravity);
-    cout << "Acabamos de llamar al constructor default de car, su transformable es " << cTransformable << endl;
 }
 
 CarHuman::CarHuman(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale,
@@ -122,7 +121,7 @@ CarHuman::CarHuman(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale,
     AddComponent(cRoboJorobo);
     AddComponent(cTotem);
     AddComponent(cColliding);
-    cout << "Acabamos de llamar al constructor default de car, su transformable es " << cTransformable << endl;
+    // cout << "Acabamos de llamar al constructor default de car, su transformable es " << cTransformable << endl;
 }
 
 CarHuman::CarHuman(glm::vec3 _position)

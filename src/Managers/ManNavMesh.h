@@ -22,13 +22,13 @@ struct Data;
 
 class ManNavMesh : public Manager{
    public:
-    ManNavMesh(Entity *carPlayer, ManTotem *manTotems);
+    ManNavMesh(ManCar *manCars, ManTotem *manTotems);
     ~ManNavMesh(){};
 
     void CreateNavMesh(glm::vec3 pos, glm::vec3 rot, float width, float height, float depth, vector<int> waypoints);
     void CreateNavMesh();
 
-    void UpdateNavMeshPlayer(Entity* carPlayer);
+    void UpdateNavMeshHuman(Entity* carPlayer);
     //void UpdateNavMeshCarsAI(ManCar* manCars);
 
     // vector<shared_ptr<NavMesh>> GetEntities() const {

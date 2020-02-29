@@ -5,14 +5,14 @@
 #include "../../include/include_json/include_json.hpp"
 #include "../../src/Constants.h"
 #include "../src/Systems/Utils.h"
-//#include "../../src/Systems/Serialization.h"
+#include "../../src/Systems/Serialization.h"
 
 
 using json = nlohmann::json;
 using boost::asio::ip::tcp;
 using namespace std::chrono;
 
-#define MIN_NUM_PLAYERS 4
+
 
 TCPServer::TCPServer(boost::asio::io_context& context_, uint16_t port_)
     : context(context_), acceptor_(context_, tcp::endpoint(tcp::v4(), port_)) {
@@ -85,9 +85,9 @@ void TCPServer::SendStartGame() {
         size_t currentBuffSize = 0;
         uint8_t enemiesSize = idsEnemies.size();
     
-        Utils::Serialize(buff.get(), &idPlayer, currentBuffSize);
-        Utils::Serialize(buff.get(), &enemiesSize, currentBuffSize);
-        Utils::SerializeVector(buff.get(), idsEnemies, currentBuffSize);
+        Serialization::Serialize(buff.get(), &idPlayer, currentBuffSize);
+        Serialization::Serialize(buff.get(), &enemiesSize, currentBuffSize);
+        Serialization::SerializeVector(buff.get(), idsEnemies, currentBuffSize);
 
         // j["idPlayer"] = idPlayer;
         // j["idEnemies"] = idsEnemies;

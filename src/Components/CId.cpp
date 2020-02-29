@@ -6,7 +6,7 @@ CId::CId() {
     m_compType = CompType::IdComp;
     id = numIds;
 
-    cout << "Creado componente con ID: " << numIds << endl;
+    // cout << "Creado componente con ID: " << numIds << endl;
     numIds++;
 }
 

@@ -16,7 +16,7 @@ class SystemOnline {
     ~SystemOnline(){};
 
     void Update();
-    void SendInputs(vector<Constants::InputTypes> &d);
+    void SendInputs(const vector<Constants::InputTypes> &d);
     void SendSync(ManCar* manCars, ManTotem* manTotem);
     uint16_t idOnlineMainCar;
 

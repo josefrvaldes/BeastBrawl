@@ -1,3 +1,4 @@
+#include <Systems/Utils.h>
 #include <iostream>
 #include "Game.h"
 
@@ -9,7 +10,7 @@ int main() {
     Game* game = Game::GetInstance();
 
     game->InitGame();
-    game->SetState(State::States::INGAME_SINGLE);
+    game->SetState(State::States::MENU);
     game->MainLoop();
     game->TerminateGame();
     //} catch (exception &e) {
