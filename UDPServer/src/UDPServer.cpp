@@ -37,7 +37,7 @@ void UDPServer::HandleReceive(std::shared_ptr<unsigned char[]> recevBuff, std::s
         uint8_t petitionType = Serialization::Deserialize<uint8_t>(recevBuff.get(), currentIndex);
         int64_t time = Serialization::Deserialize<int64_t>(recevBuff.get(), currentIndex);
         uint16_t idPlayer = Serialization::Deserialize<uint16_t>(recevBuff.get(), currentIndex);
-        cout << Utils::getISOCurrentTimestampMillis() << " Hemos recibido en el server la llamada " << time << " de tipo " << unsigned(petitionType) << " del user " << idPlayer << endl;
+        //cout << Utils::getISOCurrentTimestampMillis() << " Hemos recibido en el server la llamada " << time << " de tipo " << unsigned(petitionType) << " del user " << idPlayer << endl;
         // TODO: esto creo que podría evitarse
         unsigned char buffRecieved[Constants::ONLINE_BUFFER_SIZE];
         memcpy(&buffRecieved[0], &recevBuff.get()[0], bytesTransferred);
@@ -53,24 +53,32 @@ void UDPServer::HandleReceive(std::shared_ptr<unsigned char[]> recevBuff, std::s
                 case Constants::PetitionTypes::SEND_INPUTS: {
                     //std::cout << "Recibidos inputs: " << bytesTransferred << std::endl;
                     if (p.lastInputTimeReceived < time) {
-                        cout << Utils::getISOCurrentTimestampMillis() << "Se ha recibido y reenviado un paquete de input del player " << idPlayer << endl;
+                        //cout << Utils::getISOCurrentTimestampMillis() << "Se ha recibido y reenviado un paquete de input del player " << idPlayer << endl;
                         p.lastInputTimeReceived = time;
                         HandleReceivedInputs(idPlayer, buffRecieved, bytesTransferred, *remoteClient.get());
                     } else {
-                        cout << Utils::getISOCurrentTimestampMillis() << "Se ha ignorado un paquete de input porque era antiguo" << endl;
+                        //cout << Utils::getISOCurrentTimestampMillis() << "Se ha ignorado un paquete de input porque era antiguo" << endl;
                     }
                 } break;
                 case Constants::PetitionTypes::SEND_SYNC: {
                     //std::cout << "Recibida sincronizacion: " << bytesTransferred << std::endl;
                     if (p.lastSyncTimeReceived < time) {
-                        cout << Utils::getISOCurrentTimestampMillis() << "Se ha recibido y reenviado un paquete de sync del player " << idPlayer << endl;
+                        //cout << Utils::getISOCurrentTimestampMillis() << "Se ha recibido y reenviado un paquete de sync del player " << idPlayer << endl;
                         p.lastSyncTimeReceived = time;
                         HandleReceivedSync(idPlayer, buffRecieved, bytesTransferred, *remoteClient.get());
                     } else {
-                        cout << Utils::getISOCurrentTimestampMillis() << "Se ha ignorado un paquete de sync porque era antiguo" << endl;
+                        //cout << Utils::getISOCurrentTimestampMillis() << "Se ha ignorado un paquete de sync porque era antiguo" << endl;
                     }
                 } break;
-
+                case Constants::PetitionTypes::CATCH_PU: {
+                    if (p.lastCatchPUTimeReceived < time) {
+                        cout << Utils::getISOCurrentTimestampMillis() << "Se ha recibido y reenviado un paquete de CatchPU del player " << idPlayer << endl;
+                        p.lastCatchPUTimeReceived = time;
+                        HandleReceivedCatchPU(idPlayer, buffRecieved, bytesTransferred, *remoteClient.get());
+                    } else {
+                        cout << Utils::getISOCurrentTimestampMillis() << "Se ha ignorado un paquete de CatchPU porque era antiguo" << endl;
+                    }
+                } break;
                 default:
                     cout << "Petición incorrecta" << endl;
                     break;
@@ -87,6 +95,10 @@ void UDPServer::HandleReceive(std::shared_ptr<unsigned char[]> recevBuff, std::s
 
 void UDPServer::HandleReceivedInputs(const uint16_t id, const unsigned char resendInputs[], const size_t currentBufferSize, const udp::endpoint& originalClient) {
     ResendBytesToOthers(id, resendInputs, currentBufferSize, originalClient);
+}
+
+void UDPServer::HandleReceivedCatchPU(const uint16_t id, unsigned char resendPU[], const size_t currentBufferSize, const udp::endpoint& originalClient) {
+    ResendBytesToOthers(id, resendPU, currentBufferSize, originalClient);
 }
 
 void UDPServer::HandleReceivedSync(const uint16_t id, unsigned char recevBuff[], const size_t currentBufferSize, const udp::endpoint& originalClient) {
@@ -109,12 +121,12 @@ void UDPServer::HandleReceivedSync(const uint16_t id, unsigned char recevBuff[],
     if (totemInGround) {
         posTotem = Serialization::DeserializeVec3(recevBuff, currentIndex);
     }
-    cout << Utils::getISOCurrentTimestampMillis() << "he recibido el sync " << time << " de [" << idCarOnline << "," << id << "] y está en la pos("
+    /*cout << Utils::getISOCurrentTimestampMillis() << "he recibido el sync " << time << " de [" << idCarOnline << "," << id << "] y está en la pos("
          << posCar.x << "," << posCar.y << "," << posCar.z << ") - rot("
          << rotCar.x << "," << rotCar.y << "," << rotCar.z << ")." << endl
          << "Lleva el PU " << (int)typePU << " y lleva el totem(" << haveTotem << ")." << endl
          << "El totem está en el suelo(" << totemInGround << ") y su pos es (" << posTotem.x << "," << posTotem.y << "," << posTotem.z << ") "
-         << endl;
+         << endl;*/
 
     ResendBytesToOthers(id, recevBuff, currentBufferSize, originalClient);
 }

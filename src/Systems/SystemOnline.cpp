@@ -58,3 +58,9 @@ void SystemOnline::SendSync(ManCar *manCars, ManTotem *manTotem) {
     //std::cout << "---------------------------------------" << std::endl;
     udpClient->SendSync(idOnlineMainCar, cTransCar->position, cTransCar->rotation, cPowerUp->typePowerUp, cTotem->active, cTotem->accumulatedTime, totemInGround, posTotem);
 }
+
+
+
+void SystemOnline::SendCatchPU(CPowerUp& cPowerUp){
+    udpClient->SendCatchPU(idOnlineMainCar, cPowerUp.typePowerUp);
+}

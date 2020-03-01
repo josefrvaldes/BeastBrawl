@@ -12,6 +12,7 @@ StateInGameMulti::StateInGameMulti(uint16_t IdOnline, const vector<uint16_t> IdP
     vector<uint16_t> arrayIdEnemies = IdPlayersOnline;
 
     sysOnline = make_unique<SystemOnline>(*manCars, IdOnline);
+    manCars->setSystemOnline(sysOnline.get());
 
     vec3 posIniciales[] = {
         vec3(120.0f, 10.0f, -300.0f),
@@ -63,7 +64,7 @@ void StateInGameMulti::InitState() {
 void StateInGameMulti::Input() {
     const vector<Constants::InputTypes> &inputs = renderEngine->FacadeCheckInputMulti();
     if (previousInputs != inputs) {
-        cout << Utils::getISOCurrentTimestampMillis() << " [" << sysOnline->idOnlineMainCar << "] Enviamos los inputs porque han cambiado con respecto a la iteración anterior" << endl;
+        //cout << Utils::getISOCurrentTimestampMillis() << " [" << sysOnline->idOnlineMainCar << "] Enviamos los inputs porque han cambiado con respecto a la iteración anterior" << endl;
         sysOnline->SendInputs(inputs);
         previousInputs = inputs;
     }

@@ -8,7 +8,8 @@
 using namespace std;
 
 class ManCar;
-struct ManTotem;
+class CPowerUp;
+class ManTotem;
 
 class SystemOnline {
    public:
@@ -18,6 +19,7 @@ class SystemOnline {
     void Update();
     void SendInputs(const vector<Constants::InputTypes> &d);
     void SendSync(ManCar* manCars, ManTotem* manTotem);
+    void SendCatchPU(CPowerUp& cPowerUp);
     uint16_t idOnlineMainCar;
 
    private:

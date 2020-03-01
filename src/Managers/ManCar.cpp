@@ -247,6 +247,11 @@ void ManCar::SubscribeToEvents() {
         EventType::NEW_SYNC_RECEIVED_CAR,
         bind(&ManCar::NewSyncReceived, this, placeholders::_1),
         "NewSyncReceived"));
+    
+    EventManager::GetInstance().SubscribeMulti(Listener(
+        EventType::NEW_SYNC_RECEIVED_CATCH_PU,
+        bind(&ManCar::NewCatchPUReceived, this, placeholders::_1),
+        "NewCatchPUReceived"));
 }
 
 void ManCar::NewInputsReceived(DataMap* d) {
@@ -299,6 +304,22 @@ void ManCar::NewSyncReceived(DataMap* d) {
         }
     }
 }
+
+
+void ManCar::NewCatchPUReceived(DataMap* d) {
+    auto idRecieved = any_cast<uint16_t>((*d)[DataType::ID_ONLINE]);
+    for (auto car : GetEntities()) {
+        if (car->HasComponent(CompType::OnlineComp)) {
+            COnline* compOnline = static_cast<COnline*>(car->GetComponent(CompType::OnlineComp).get());
+            if (compOnline->idClient == idRecieved) {
+                auto cPowerUp = static_cast<CPowerUp*>(car->GetComponent(CompType::PowerUpComp).get());
+                cPowerUp->typePowerUp = any_cast<typeCPowerUp>((*d)[DataType::TYPE_POWER_UP]);
+                break;
+            }
+        }
+    }
+}
+
 
 void ManCar::ChangeTotemCar(DataMap* d) {
     auto carWithTotem = any_cast<Entity*>((*d)[CAR_WITH_TOTEM]);
@@ -547,11 +568,14 @@ void ManCar::CatchPowerUp(DataMap* d) {
     auto cPowerUpCar = static_cast<CPowerUp*>(car.get()->GetComponent(CompType::PowerUpComp).get());
     if (cPowerUpCar->typePowerUp == typeCPowerUp::None) {
         cPowerUpCar->typePowerUp = (typeCPowerUp)indx;
+
         shared_ptr<DataMap> data = make_shared<DataMap>();
-
         (*data)[TYPE_POWER_UP] = cPowerUpCar->typePowerUp;
-
         EventManager::GetInstance().AddEventMulti(Event{EventType::UPDATE_POWERUP_HUD, data});
+
+        if(systemOnline != nullptr){
+            systemOnline->SendCatchPU(*cPowerUpCar);
+        }
     }
 }
 
@@ -582,6 +606,11 @@ void ManCar::CatchPowerUpAI(DataMap* d) {
             shared_ptr<DataMap> data = make_shared<DataMap>();
             (*data)[TYPE_POWER_UP] = cPowerUpCar->typePowerUp;
             EventManager::GetInstance().AddEventMulti(Event{EventType::UPDATE_POWERUP_HUD, data});
+
+            if(systemOnline != nullptr){
+                cout << "Se envia el PU mensaje 2" << "\n";
+                systemOnline->SendCatchPU(*cPowerUpCar);
+            }
         }
     }
     //cPowerUp->typePowerUp = dynamic_cast<typeCPowerUp*>(indx);
