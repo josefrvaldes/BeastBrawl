@@ -20,6 +20,7 @@ struct Car;
 struct CarAI;
 struct Data;
 struct CTransformable;
+struct ManCar;
 
 class ManNavMesh : public Manager{
    public:
@@ -30,8 +31,8 @@ class ManNavMesh : public Manager{
     void CreateNavMesh(glm::vec3 pos, glm::vec3 rot, float width, float height, float depth, vector<int> waypoints);
     void CreateNavMesh();
 
-    void UpdateNavMeshEntity(Entity* entity_);
-
+    void Update(ManCar &);
+    void UpdateNavMeshEntity(Entity* entity_) const;
     //static ManNavMesh& getInstance() {
     //    static ManNavMesh instance;
     //    return instance;

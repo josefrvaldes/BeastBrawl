@@ -41,7 +41,7 @@ struct SystemBtLoDMove;
 class ManCar : public Manager {
    public:
     ManCar();
-    ManCar(Physics *, Camera *, ManNavMesh *);
+    ManCar(Physics *, Camera *);
     ~ManCar();
 
     void CreateMainCar();
@@ -58,6 +58,7 @@ class ManCar : public Manager {
     CTransformable* calculateCloserCar(Entity* actualCar);
     bool carInVisionRange(Entity* actualCar, Entity* otherCar, uint32_t rangeVision);
     bool anyCarInVisionRange(Entity* actualCar, uint32_t rangeVision);
+    bool CarTotemInVisionRange(Entity *currentCar, Entity* desCar, uint32_t rangeVision);
     void Integrate(float) override;
     Entity* GetDesirableTarget(Entity* actualCar);
     
@@ -93,5 +94,4 @@ class ManCar : public Manager {
     void CatchPowerUpAI(DataMap* d);
     shared_ptr<CarHuman> car;
     unique_ptr<PhysicsAI> physicsAI;
-    ManNavMesh* manNavMesh; // puntero al manager de NavMesh para actuaizarlo
 };

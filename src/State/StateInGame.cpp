@@ -17,7 +17,7 @@ StateInGame::StateInGame() {
     physics = make_unique<Physics>(deltaTime);
 
     cam = make_shared<Camera>(glm::vec3(100.0f, 600.0f, 30.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f));
-    ground = make_shared<GameObject>(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), "", "mayan_map.obj");
+    ground = make_shared<GameObject>(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), "", "training_ground.obj");
 }
 
 StateInGame::~StateInGame() {
@@ -122,14 +122,14 @@ void StateInGame::InitializeSystems(ManCar &manCars, ManBoundingWall &manWall, M
 
 void StateInGame::InitializeManagers(Physics *physics, Camera *cam) {
     // inicializa el man PU, no hace falta más código para esto
-    manNavMesh = make_shared<ManNavMesh>();
-    manCars = make_shared<ManCar>(physics, cam, manNavMesh.get());
+    manCars = make_shared<ManCar>(physics, cam);
     manWayPoint = make_shared<ManWayPoint>();  //Se crean todos los waypoints y edges
     manPowerUps = make_shared<ManPowerUp>();
     manBoxPowerUps = make_shared<ManBoxPowerUp>();
     manBoundingWall = make_shared<ManBoundingWall>();
     manBoundingOBB = make_shared<ManBoundingOBB>();
     manBoundingGround = make_shared<ManBoundingGround>();
+    manNavMesh = make_shared<ManNavMesh>();
     manTotems = make_shared<ManTotem>(manNavMesh.get());
     manNamePlates = make_shared<ManNamePlate>(manCars.get());
 }
@@ -154,6 +154,10 @@ void StateInGame::InitState() {
 void StateInGame::Update() {
     EventManager &em = EventManager::GetInstance();
     em.Update();
+
+
+    manNavMesh->Update(*(manCars.get()));
+
 
     // ACTUALIZACION DE LOS MANAGERS DE LOS COCHES
     manCars->UpdateCar();
@@ -187,33 +191,6 @@ void StateInGame::Update() {
 
     renderEngine->FacadeUpdatePlates(manNamePlates.get());
 
-
-    /*
-    // VAMOS A HACER UN TEST A VER SI FUNCIONA TODA ESTA MIERDA
-    unique_ptr<CBoundingCilindre> cilindraco = make_unique<CBoundingCilindre>(vec3(4,0,4), vec3(4,0,0), 5.0);
-    unique_ptr<CBoundingSphere> esferaca = make_unique<CBoundingSphere>(vec3(10,0,1), 2.0);
-
-    IntersectData intersData  = cilindraco->IntersectSphere(*esferaca.get());
-    if(intersData.intersects){
-        cout << "DEBERIA DE DAR TRUE Y...... LO DA" << endl;
-    }
-    unique_ptr<CBoundingSphere> esferaca2 = make_unique<CBoundingSphere>(vec3(10,0,1), 0.5);
-    IntersectData intersData2  = cilindraco->IntersectSphere(*esferaca2.get());
-    if(!intersData2.intersects){
-        cout << "DEBERIA DE DAR FALSE Y...... LO DA" << endl;
-    }
-    //la prueba de fuego
-    unique_ptr<CBoundingSphere> esferaca3 = make_unique<CBoundingSphere>(vec3(10,0,8), 2.0);
-    IntersectData intersData3  = cilindraco->IntersectSphere(*esferaca3.get());
-    if(!intersData3.intersects){
-        cout << "DEBERIA DE DAR FALSE Y...... LO DA 2" << endl;
-    }
-    unique_ptr<CBoundingSphere> esferaca4 = make_unique<CBoundingSphere>(vec3(10,0,-2), 2.0);
-    IntersectData intersData4  = cilindraco->IntersectSphere(*esferaca4.get());
-    if(!intersData4.intersects){
-        cout << "DEBERIA DE DAR FALSE Y...... LO DA 3" << endl;
-    }
-    */
 }
 
 void StateInGame::Render() {

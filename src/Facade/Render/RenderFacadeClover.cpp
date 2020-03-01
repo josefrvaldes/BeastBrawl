@@ -15,7 +15,6 @@
 #include <Components/CNamePlate.h>
 #include <Components/CPath.h>
 #include <Components/CTexture.h>
-#include <Components/CTargetNavMesh.h>
 #include <Components/CTotem.h>
 #include <Components/CType.h>
 #include <Components/CWayPointEdges.h>

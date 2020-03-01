@@ -15,7 +15,6 @@
 #include <Components/CNamePlate.h>
 #include <Components/CPath.h>
 #include <Components/CTexture.h>
-#include <Components/CTargetNavMesh.h>
 #include <Components/CTotem.h>
 #include <Components/CType.h>
 #include <Components/CWayPointEdges.h>
@@ -1063,7 +1062,7 @@ void RenderFacadeIrrlicht::FacadeDrawAIDebug(ManCar* manCars, ManNavMesh* manNav
             auto cTransformableCar = static_cast<CTransformable*>(carAI->GetComponent(CompType::TransformableComp).get());
             auto cDimensions = static_cast<CDimensions*>(carAI->GetComponent(CompType::DimensionsComp).get());
             auto cCurrentNavMesh = static_cast<CCurrentNavMesh*>(carAI->GetComponent(CompType::CurrentNavMeshComp).get());
-            auto cTargetNavMesh = static_cast<CTargetNavMesh*>(carAI->GetComponent(CompType::TargetNavMeshComp).get());
+            //auto cTargetNavMesh = static_cast<CTargetNavMesh*>(carAI->GetComponent(CompType::TargetNavMeshComp).get());
 
             Draw3DLine(cPosDestination->position,cTransformableCar->position);
             //Ahora vamos a dibujar su CPath
@@ -1102,8 +1101,8 @@ void RenderFacadeIrrlicht::FacadeDrawAIDebug(ManCar* manCars, ManNavMesh* manNav
             }
             pathText += core::stringw("\n");
 
-            core::stringw navMeshText = pathText + core::stringw("Current NavMesh: ") + core::stringw(cCurrentNavMesh->currentNavMesh) + core::stringw("\n")+
-                                                core::stringw("Target NavMesh: ")  + core::stringw(cTargetNavMesh->targetNavMesh) + core::stringw("\n");
+            core::stringw navMeshText = pathText + core::stringw("Current NavMesh: ") + core::stringw(cCurrentNavMesh->currentNavMesh) + core::stringw("\n")+core::stringw("\n");
+                                                //core::stringw("Target NavMesh: ")  + core::stringw(cTargetNavMesh->targetNavMesh) + 
             
             auto cMovementType = static_cast<CMovementType*>(carAI->GetComponent(CompType::MovementComp).get());
 

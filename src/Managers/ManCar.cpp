@@ -54,17 +54,13 @@ ManCar::~ManCar() {
 }
 
 // TO-DO: este paso de physics es kk, hay que revisarlo de enviarlo como referencia o algo pero me da error
-ManCar::ManCar(Physics* _physics, Camera* _cam, ManNavMesh* manNM_) : ManCar() {
+ManCar::ManCar(Physics* _physics, Camera* _cam) : ManCar() {
     this->physics = _physics;
     this->cam = _cam;
-    this->manNavMesh = manNM_;
 }
 
 // comprueba si has superado el tiempo necesario para ganar
 void ManCar::UpdateCar() {
-
-
-    manNavMesh->UpdateNavMeshEntity(GetCar().get());
 
     auto cTotem = static_cast<CTotem*>(GetCar()->GetComponent(CompType::TotemComp).get());
     if (cTotem->active) {
@@ -98,15 +94,15 @@ void ManCar::UpdateCarAI(CarAI* carAI, ManPowerUp* m_manPowerUp, ManBoxPowerUp* 
                         ManBoundingWall* m_manBoundingWall, SystemBtPowerUp* systemBtPowerUp, SystemBtMoveTo* systemBtMoveTo, SystemBtLoDMove* systemBtLoDMove, SystemPathPlanning *systemPathPlanning) {
     
     //manNavMesh->UpdateNavMeshEntity(carAI);
-    //systemBtMoveTo->update(carAI, this, m_manPowerUp, m_manBoxPowerUp, m_manTotem, graph, manNavMesh);
-    //
-    //systemPathPlanning->Update(carAI, graph, manNavMesh);
-//
-    //systemBtLoDMove->update(carAI, this, m_manPowerUp, m_manBoxPowerUp, m_manTotem, graph, manNavMesh, m_manBoundingWall);
-//
-    //physicsAI->Update(carAI, graph);
-//
-    //systemBtPowerUp->update(carAI, this, m_manPowerUp, m_manBoxPowerUp, m_manTotem, graph, manNavMesh);
+    systemBtMoveTo->update(carAI, this, m_manPowerUp, m_manBoxPowerUp, m_manTotem, graph, manNavMesh);
+    
+    systemPathPlanning->Update(carAI, graph, manNavMesh);
+
+    systemBtLoDMove->update(carAI, this, m_manPowerUp, m_manBoxPowerUp, m_manTotem, graph, manNavMesh, m_manBoundingWall);
+
+    physicsAI->Update(carAI, graph);
+
+    systemBtPowerUp->update(carAI, this, m_manPowerUp, m_manBoxPowerUp, m_manTotem, graph, manNavMesh);
     
 
 }
@@ -634,6 +630,13 @@ bool ManCar::anyCarInVisionRange(Entity* actualCar, uint32_t rangeVision) {
         }
     }
     return seeCar;
+}
+
+// comprobamos si el coche indicado en nuestro rango de vision // el rango de vision sera 60
+bool ManCar::CarTotemInVisionRange(Entity* actualCar, Entity* desCar, uint32_t rangeVision) {
+    if (carInVisionRange(actualCar, desCar, rangeVision) == true)
+        return true;
+    return false;
 }
 
 void ManCar::TurnLeftCar(DataMap* d) {
