@@ -28,7 +28,7 @@ namespace CLE {
             glm::vec3 GetCameraTarget()      { return cameraTarget; };
             glm::vec3 GetCameraUp()         { return cameraUp; };
 
-            void Draw(glm::mat4&);
+            void Draw(GLuint shaderID);
             glm::mat4 CalculateProjectionMatrix();
 
         private:

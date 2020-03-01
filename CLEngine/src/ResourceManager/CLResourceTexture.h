@@ -11,7 +11,7 @@ namespace CLE {
             CLResourceTexture() {};
             ~CLResourceTexture() {};
 
-            void Draw(glm::mat4) override;
+            void Draw(GLuint shaderID) override;
             bool LoadFile(string) override;
 
 

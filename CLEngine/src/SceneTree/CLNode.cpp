@@ -176,7 +176,8 @@ void CLNode::DFSTree(glm::mat4 mA) {
         glm::mat4 MVP = projection * view * transformationMat;
         glUniformMatrix4fv(glGetUniformLocation(shaderProgramID, "model"), 1, GL_FALSE, glm::value_ptr(transformationMat));
         glUniformMatrix4fv(glGetUniformLocation(shaderProgramID, "MVP"), 1, GL_FALSE, glm::value_ptr(MVP));
-        entity->Draw(transformationMat);
+        //entity->Draw(transformationMat);
+        entity->Draw(shaderProgramID);
     }
 
     for (auto node : childs) {

@@ -9,8 +9,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#define STB_IMAGE_IMPLEMENTATION
-#include <stb_image.h>
+// #define STB_IMAGE_IMPLEMENTATION
+// #include <stb_image.h>
 
 
 //SRC
@@ -39,25 +39,6 @@ using namespace std;
 using namespace CLE;
 
 
-/**
- * Mira si se ha pulsado ESC para cerrar la ventana.
- * @param window - Ventana sobre la que mira los eventos. 
- */
-// void checkInput (GLFWwindow *window, glm::vec3 cameraPos, glm::vec3& cameraFront, glm::vec3& cameraUp) {
-//     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
-//         glfwSetWindowShouldClose(window, true);
-//     }
-
-//     const float cameraSpeed = 0.15f; // adjust accordingly
-//     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-//         cameraPos += cameraSpeed * cameraFront;
-//     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-//         cameraPos -= cameraSpeed * cameraFront;
-//     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-//         cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
-//     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-//         cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
-// }
 
 
 int main() {
@@ -74,7 +55,7 @@ int main() {
 
     //----------------------------------------------------------------------------------------------------------------SHADER
     
-
+ 
     
     //------------------------------------------------------------------------- ARBOLITO
 
@@ -95,8 +76,8 @@ int main() {
         camera->SetShaderProgramID(resourceShader->GetProgramID());
         static_cast<CLCamera*>(camera->GetEntity())->SetCameraTarget(glm::vec3(0.0f,0.0f,0.0f));
 
-        auto mesh2 = mesh1->AddMesh(4);
-        mesh2->SetShaderProgramID(resourceShader->GetProgramID());
+        // auto mesh2 = mesh1->AddMesh(4);
+        // mesh2->SetShaderProgramID(resourceShader->GetProgramID());
 
 
 
@@ -123,48 +104,16 @@ int main() {
 
 
     static_cast<CLMesh*>(mesh1->GetEntity())->SetMesh(resourceMeshCar);
-    static_cast<CLMesh*>(mesh2->GetEntity())->SetMesh(resourceMesh);
+    //static_cast<CLMesh*>(mesh2->GetEntity())->SetMesh(resourceMesh);
 
     camera->SetTranslation(glm::vec3(0.0f, 7.0f, 60.0f));
     mesh1->SetScalation(glm::vec3(0.5f, 0.5f, 0.5f));
     mesh1->SetRotation(glm::vec3(90.0f,0.0f,180.0f));
-    mesh2->SetTranslation(glm::vec3(0.0f, 30.0f, 0.0f));
+    //mesh2->SetTranslation(glm::vec3(0.0f, 30.0f, 0.0f));
 
     
     
     #pragma region Movidas
-    //Todo preparado, ahora comienza la magia
-    // 1. bind Vertex Array Object
-    //Todo esto esta muy bien pero lo mejor es tener un array para todos los VBO que queramos dibujar
-    // unsigned int VBO,VAO;
-    // glGenVertexArrays(1, &VAO); 
-    // glGenBuffers(1, &VBO);  //Crea un buffer para VBO(Vertex buffer object) con id unico 
-    // glBindVertexArray(VAO);
-
-    // // 2. copy our vertices array in a buffer for OpenGL to use
-    // glBindBuffer(GL_ARRAY_BUFFER, VBO);  //Fijamos el tipo de buffer (ARRAY_BUFFER)
-   
-    // //GL_STATIC_DRAW: the data will most likely not change at all or very rarely.
-    // glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-    // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    // glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-    /** glVertexAttribPointer
-     * 1º Valor: Como pusimos layout = 0 pues ahora mandamos un 0
-     * 2º Valor: Numero de datos por bloque que enviamos 3 = vec3
-     * 3º Valor: Si normalizamos o no los datos
-     * 4º Valor: El tamaño de cada bloque, al ser 3 floats cada vertice entonces 3*sizeof(float)
-     * 5º Valor: offset por el que se empieza a leer
-     */
-
-    // // position attribute
-    // glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-    // glEnableVertexAttribArray(0);
-    // // texture coord attribute
-    // glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-    // glEnableVertexAttribArray(1);
-    
 
     /**
     //TEXTURES
@@ -218,8 +167,8 @@ int main() {
 
     //LUCES Y COLORES
     glm::vec3 color(1.0f, 0.0f, 0.0f);
-    glm::vec3 light = static_cast<CLLight*>(mesh2->GetEntity())->GetIntensity();
-    glm::vec3 lightPos = mesh2->GetTranslation();
+    glm::vec3 light = static_cast<CLLight*>(light1->GetEntity())->GetIntensity();
+    glm::vec3 lightPos = light1->GetTranslation();
     float auxColor[3] = {color.x,color.y,color.z};
     float auxLight[3] = {1.0f,1.0f,1.0f};
     float auxLightPos[3] = {lightPos.x,lightPos.y,lightPos.z};

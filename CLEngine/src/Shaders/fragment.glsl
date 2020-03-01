@@ -2,23 +2,23 @@
 
 out vec4 FragColor;
 
-in vec2 TexCoord;
-in vec3 Normal;
-in vec3 FragPos;
+in vec2 TexCoords; //Coordenadas de textura
+in vec3 Normal;    //La normal ya reajustada con escalado
+in vec3 FragPos;   //Posicion
 
 uniform sampler2D texture1;
 uniform sampler2D texture2;
 
-uniform vec3 objectColor;
-uniform vec3 lightColor;
-uniform vec3 lightPos;
-uniform vec3 viewPos;
+uniform vec3 objectColor; //Color del objeto
+uniform vec3 lightColor;  //Color de la luz
+uniform vec3 lightPos;    //Posición de la luz
+uniform vec3 viewPos;     //Posición de la camara
 
-uniform float attenuationValue;
+uniform float attenuationValue; //Atenuación
 
 struct Material {
     vec3 ambient;
-    vec3 diffuse;
+    sampler2D diffuse;
     vec3 specular;
     float shininess;
 }; 
@@ -45,7 +45,7 @@ void main()
     vec3 norm = normalize(Normal);
     vec3 lightDir = normalize(light.position - FragPos);
     float diff = max(dot(norm,lightDir), 0.0);
-    vec3 diffuse = light.diffuse * (diff * material.diffuse);
+    vec3 diffuse = light.diffuse * diff * vec3(texture(material.diffuse,TexCoords));
 
     // specular
     vec3 viewDir = normalize(viewPos - FragPos); //Vector entre nosotros y el punto del objeto

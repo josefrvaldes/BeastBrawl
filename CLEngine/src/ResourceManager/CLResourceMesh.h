@@ -8,6 +8,8 @@
 #include <vector>
 #include <stddef.h>     /* offsetof */
 
+
+
 struct Vertex {
     // position
     glm::vec3 position;
@@ -25,6 +27,13 @@ struct Texture {
     unsigned int id;
     string type;
     string path;
+};
+
+struct Material {
+    glm::vec3 ambient;
+    glm::vec3 diffuse;
+    glm::vec3 specular;
+    float shininess;
 };
 
 class Mesh{
@@ -49,7 +58,7 @@ namespace CLE {
             CLResourceMesh(){};
             ~CLResourceMesh(){};
 
-            void Draw(glm::mat4) override;
+            void Draw(GLuint shaderID) override;
             bool LoadFile(std::string) override;
             vector<Mesh> GetMesh() { return vecMesh; }
 
@@ -57,8 +66,13 @@ namespace CLE {
             void processNode(aiNode *node, const aiScene *scene);
             Mesh processMesh(aiMesh *mesh, const aiScene *scene);
             vector<Texture> loadMaterialTextures(aiMaterial *mat, aiTextureType type, string typeName);
+            unsigned int TextureFromFile(const char *path, const string &directory, bool gamma = false);
+            Material loadMaterial(aiMaterial* mat); 
 
             vector<Mesh> vecMesh;
+            vector<Texture> textures_loaded;	// stores all the textures loaded so far, optimization to make sure textures aren't loaded more than once.
+            string directory;
+            bool gammaCorrection;
             const aiScene *scene;
 
             

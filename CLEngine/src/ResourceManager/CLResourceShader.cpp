@@ -85,4 +85,4 @@ bool CLResourceShader::LinkShaders(){
     return true;
 }
 
-void CLResourceShader::Draw(glm::mat4 m) {}
+void CLResourceShader::Draw(GLuint shaderID) {}

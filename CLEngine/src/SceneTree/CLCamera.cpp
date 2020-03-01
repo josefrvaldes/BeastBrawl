@@ -37,6 +37,6 @@ glm::mat4 CLCamera::CalculateProjectionMatrix() {
 }
 
 
-void CLCamera::Draw(glm::mat4&) {
+void CLCamera::Draw(GLuint shaderID) {
 
 }

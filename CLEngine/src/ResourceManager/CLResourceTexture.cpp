@@ -6,6 +6,6 @@ bool CLResourceTexture::LoadFile(string file){
     return true;
 }
 
-void CLResourceTexture::Draw(glm::mat4 mat){
+void CLResourceTexture::Draw(GLuint shaderID){
 
 }

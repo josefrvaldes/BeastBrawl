@@ -18,7 +18,7 @@ namespace CLE {
             //GETTERS
             CLResource* GetMesh() const             { return mesh; }
 
-            void Draw(glm::mat4&);
+            void Draw(GLuint shaderID);
 
 
         private:

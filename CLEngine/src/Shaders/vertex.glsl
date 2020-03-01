@@ -2,9 +2,9 @@
 
 layout (location = 0) in vec3 aPos;
 layout (location = 1) in vec3 aNormal;
-layout (location = 2) in vec3 aTexCoord;
+layout (location = 2) in vec2 aTexCoord;
 
-out vec2 TexCoord;
+out vec2 TexCoords;
 out vec3 Normal;
 out vec3 FragPos;
 
@@ -25,5 +25,5 @@ void main()
     //Source: http://www.lighthouse3d.com/tutorials/glsl-12-tutorial/the-normal-matrix/
     //TODO: Cambiar este calculo a la CPU ya que inversas por cada vertice es muy costoso
     Normal = mat3(transpose(inverse(model))) * aNormal; 
-    TexCoord = vec2(aTexCoord.x, 1.0 - aTexCoord.y);
+    TexCoords = aTexCoord;
 }
