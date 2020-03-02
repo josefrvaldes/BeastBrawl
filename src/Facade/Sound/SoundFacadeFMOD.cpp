@@ -329,8 +329,13 @@ void SoundFacadeFMOD::UpdateCars(const vector<shared_ptr<Entity> > &) {
  /**
   *
   */
- void SoundFacadeFMOD::UpdateListener(const shared_ptr<CarHuman> &) {
+ void SoundFacadeFMOD::UpdateListener(const shared_ptr<CarHuman> &mainCar) {
     //cout << "############# UPDATE LISTENER" << endl;
+    auto pos = static_cast<CTransformable*>(mainCar->GetComponent(CompType::TransformableComp).get());
+    //cout << "LA POSICION DEL PUTO COCHE ES: " << pos->position.x << " " << pos->position.y << " " << pos->position.z << endl;
+    if(pos) {
+        soundEngine->SetListenerPosition(pos->position);
+    }
  }
 
 /**
@@ -347,18 +352,18 @@ void SoundFacadeFMOD::Update() {
 */
 
 void SoundFacadeFMOD::StartGame(DataMap* d) {
-    auto pos = glm::vec3(0.0f,0.0f,0.0f);
+    /*auto pos = glm::vec3(0.0f,0.0f,0.0f);
     string name = "Coche/motor";
     CreateSoundDinamic3D(0, pos, name);
-    PlayEvent("Coche/motor0");
+    PlayEvent("Coche/motor0");*/
     PlayEvent("Ambiente/ambiente");
-    PlayEvent("Musica/in_game_1");
+    //PlayEvent("Musica/in_game_1");
     srand(time(nullptr));
     character = rand() % 5;
     cout << "++++ Personaje en sonido: " << character << endl;
     SetParameter("Personajes/voces", "Personaje", character);
     SetParameter("Coche/claxon", "Personaje", character);
-    SetParameter("Coche/motor", "Personaje", character);
+    //SetParameter("Coche/motor", "Personaje", character);
 }
 
 void SoundFacadeFMOD::SoundClaxon(DataMap* d) {

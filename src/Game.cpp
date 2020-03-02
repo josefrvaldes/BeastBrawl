@@ -54,6 +54,7 @@ void Game::SetState(State::States stateType) {
                 gameStarted = true;
             } else {
                 currentState = gameState;
+                currentState->InitState();
             }
             break;
         case State::INGAME_MULTI:
