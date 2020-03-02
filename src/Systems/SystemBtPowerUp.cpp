@@ -155,9 +155,11 @@ struct LookEnemy : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
         for(auto& currentCar : blackboard->manCars->GetEntities()){
             auto cTotem = static_cast<CTotem*>(currentCar.get()->GetComponent(CompType::TotemComp).get()); 
-            if(cTotem->active == true && currentCar.get() != (blackboard->actualCar) )
-                return blackboard->manCars->CarTotemInVisionRange(blackboard->actualCar, currentCar.get(), 20);                                    
+            if(cTotem->active == true && currentCar.get() != (blackboard->actualCar) ){
+                return blackboard->manCars->CarTotemInVisionRange(blackboard->actualCar, currentCar.get(), 20); 
+            }                                   
         } 
+        return false;
     } 
 };
 
