@@ -88,7 +88,7 @@ void StateInGame::AddElementsToRender() {
     }
 
 
-    //renderEngine->FacadeAddObject(ground.get());  //Anyadimos el suelo
+    renderEngine->FacadeAddObject(ground.get());  //Anyadimos el suelo
 
     //Añadimos todos los power ups
     for (auto bpu : manBoxPowerUps->GetEntities())
