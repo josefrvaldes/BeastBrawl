@@ -9,8 +9,8 @@ in vec3 FragPos;   //Posicion
 uniform sampler2D texture1;
 uniform sampler2D texture2;
 
-uniform vec3 objectColor; //Color del objeto
-uniform vec3 lightColor;  //Color de la luz
+//uniform vec3 objectColor; //Color del objeto
+//uniform vec3 lightColor;  //Color de la luz
 uniform vec3 lightPos;    //Posición de la luz
 uniform vec3 viewPos;     //Posición de la camara
 
@@ -19,6 +19,7 @@ uniform float attenuationValue; //Atenuación
 struct Material {
     vec3 ambient;
     sampler2D diffuse;
+    vec3 diffuse2;
     vec3 specular;
     float shininess;
 }; 
@@ -35,17 +36,23 @@ struct Light {
 uniform Material material;
 uniform Light light; 
 
+
+uniform sampler2D texture_diffuse1;
+
+
 void main()
 {
     //FragColor = mix(texture(texture1, TexCoord), texture(texture2, TexCoord), 0.5);
     // ambient
+
+
     vec3 ambient = light.ambient * material.ambient;
 
     // diffuse
     vec3 norm = normalize(Normal);
     vec3 lightDir = normalize(light.position - FragPos);
     float diff = max(dot(norm,lightDir), 0.0);
-    vec3 diffuse = light.diffuse * diff * vec3(texture(material.diffuse,TexCoords));
+    vec3 diffuse = light.diffuse * (diff * material.diffuse2);
 
     // specular
     vec3 viewDir = normalize(viewPos - FragPos); //Vector entre nosotros y el punto del objeto
@@ -58,6 +65,8 @@ void main()
 
     // vec3 result = (ambient+attenuation*(diffuse + specular)) * objectColor;
 
-    vec3 result = (ambient + diffuse + specular) * objectColor;
+    vec3 result = (ambient + diffuse + specular);
     FragColor = vec4(result, 1.0);
+
+    FragColor = texture(texture_diffuse1, TexCoords);
 }

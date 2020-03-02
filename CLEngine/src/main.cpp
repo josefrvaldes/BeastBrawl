@@ -50,7 +50,7 @@ int main() {
     //-------------------Resource manager-------------------
     shared_ptr<CLResourceManager> resourceManager = make_shared<CLResourceManager>();
     auto resourceShader = resourceManager->GetResourceShader("CLEngine/src/Shaders/vertex.glsl", "CLEngine/src/Shaders/fragment.glsl");
-    auto resourceMeshCar = resourceManager->GetResourceMesh("media/kart_ia.obj");
+    auto resourceMeshCar = resourceManager->GetResourceMesh("media/TEST_BOX.fbx");
     auto resourceMesh = resourceManager->GetResourceMesh("media/sharky_lowpoly.fbx");
 
     //----------------------------------------------------------------------------------------------------------------SHADER
@@ -107,7 +107,7 @@ int main() {
     //static_cast<CLMesh*>(mesh2->GetEntity())->SetMesh(resourceMesh);
 
     camera->SetTranslation(glm::vec3(0.0f, 7.0f, 60.0f));
-    mesh1->SetScalation(glm::vec3(0.5f, 0.5f, 0.5f));
+    mesh1->SetScalation(glm::vec3(2.0f, 2.0f, 2.0f));
     mesh1->SetRotation(glm::vec3(90.0f,0.0f,180.0f));
     //mesh2->SetTranslation(glm::vec3(0.0f, 30.0f, 0.0f));
 
@@ -208,14 +208,14 @@ int main() {
 
 
         //Luces y colores
-        glUniform3fv(glGetUniformLocation(resourceShader->GetProgramID(), "objectColor"),1,glm::value_ptr(color));
-        glUniform3fv(glGetUniformLocation(resourceShader->GetProgramID(), "lightColor"),1,glm::value_ptr(light));
+        //glUniform3fv(glGetUniformLocation(resourceShader->GetProgramID(), "objectColor"),1,glm::value_ptr(color));
+        //glUniform3fv(glGetUniformLocation(resourceShader->GetProgramID(), "lightColor"),1,glm::value_ptr(light));
         //glUniform3fv(glGetUniformLocation(resourceShader->GetProgramID(), "viewPos"),1,glm::value_ptr(camera->GetTranslation()));
 
-        glUniform3f(glGetUniformLocation(resourceShader->GetProgramID(), "material.ambient"), 1.0,0.5,0.23);
-        glUniform3f(glGetUniformLocation(resourceShader->GetProgramID(), "material.diffuse"), 1.0,0.5,0.23);
-        glUniform3f(glGetUniformLocation(resourceShader->GetProgramID(), "material.specular"), 0.5,0.5,0.5);
-        glUniform1i(glGetUniformLocation(resourceShader->GetProgramID(), "material.shininess"), 512);
+        glUniform3f(glGetUniformLocation(resourceShader->GetProgramID(), "material.ambient"), 0.0215,0.175,0.0215);
+        glUniform3f(glGetUniformLocation(resourceShader->GetProgramID(), "material.diffuse2"), 0.075,0.614,0.075);
+        glUniform3f(glGetUniformLocation(resourceShader->GetProgramID(), "material.specular"), 0.633,0.727,0.633);
+        glUniform1i(glGetUniformLocation(resourceShader->GetProgramID(), "material.shininess"), 76.8);
 
         glUniform3fv(glGetUniformLocation(resourceShader->GetProgramID(), "light.position"),1,glm::value_ptr(lightPos));
         glUniform3f(glGetUniformLocation(resourceShader->GetProgramID(),  "light.ambient"), 0.2,0.2,0.2);

@@ -117,17 +117,17 @@ Mesh CLResourceMesh::processMesh(aiMesh *mesh, const aiScene *scene)
         vecAux.z = mesh->mNormals[i].z;
         vertex.normal = vecAux;
         // texture coordinates
-        // if(mesh->mTextureCoords[0]) // does the mesh contain texture coordinates?
-        // {
-        //     glm::vec2 vec;
-        //     // a vertex can contain up to 8 different texture coordinates. We thus make the assumption that we won't 
-        //     // use models where a vertex can have multiple texture coordinates so we always take the first set (0).
-        //     vec.x = mesh->mTextureCoords[0][i].x; 
-        //     vec.y = mesh->mTextureCoords[0][i].y;
-        //     vertex.texCoords = vec;
-        // }
-        // else
-        //     vertex.texCoords = glm::vec2(0.0f, 0.0f);
+        if(mesh->mTextureCoords[0]) // does the mesh contain texture coordinates?
+        {
+            glm::vec2 vec;
+            // a vertex can contain up to 8 different texture coordinates. We thus make the assumption that we won't 
+            // use models where a vertex can have multiple texture coordinates so we always take the first set (0).
+            vec.x = mesh->mTextureCoords[0][i].x; 
+            vec.y = mesh->mTextureCoords[0][i].y;
+            vertex.texCoords = vec;
+        }
+        else
+            vertex.texCoords = glm::vec2(0.0f, 0.0f);
 
         //tangent
         if(mesh->HasTangentsAndBitangents()){
@@ -164,7 +164,7 @@ Mesh CLResourceMesh::processMesh(aiMesh *mesh, const aiScene *scene)
     }
     // process material
     if(mesh->mMaterialIndex >= 0)
-    {
+    { 
         // process materials
         aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];    
         Material m = loadMaterial(material);
@@ -176,17 +176,17 @@ Mesh CLResourceMesh::processMesh(aiMesh *mesh, const aiScene *scene)
         // normal: texture_normalN
 
         // 1. diffuse maps
-        // vector<Texture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
-        // textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
-        // // 2. specular maps
-        // vector<Texture> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
-        // textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
-        // 3. normal maps
-        // std::vector<Texture> normalMaps = loadMaterialTextures(material, aiTextureType_HEIGHT, "texture_normal");
-        // textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
-        // // 4. height maps
-        // std::vector<Texture> heightMaps = loadMaterialTextures(material, aiTextureType_AMBIENT, "texture_height");
-        // textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
+        vector<Texture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
+        textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
+        // 2. specular maps
+        vector<Texture> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
+        textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
+        //3. normal maps
+        std::vector<Texture> normalMaps = loadMaterialTextures(material, aiTextureType_HEIGHT, "texture_normal");
+        textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
+        // 4. height maps
+        std::vector<Texture> heightMaps = loadMaterialTextures(material, aiTextureType_AMBIENT, "texture_height");
+        textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
     }   
 
     
@@ -218,6 +218,8 @@ Material CLResourceMesh::loadMaterial(aiMaterial* mat) {
 
     return material;
 }
+
+
 vector<Texture> CLResourceMesh::loadMaterialTextures(aiMaterial *mat, aiTextureType type, string typeName)
 {
     vector<Texture> textures;
@@ -253,7 +255,7 @@ vector<Texture> CLResourceMesh::loadMaterialTextures(aiMaterial *mat, aiTextureT
 unsigned int CLResourceMesh::TextureFromFile(const char *path, const string &directory, bool gamma)
 {
     string filename = string(path);
-    filename = directory + '/' + filename;
+    filename = "media/" + filename;
 
     unsigned int textureID;
     glGenTextures(1, &textureID);
@@ -296,9 +298,40 @@ unsigned int CLResourceMesh::TextureFromFile(const char *path, const string &dir
 void CLResourceMesh::Draw(GLuint shaderID) {
 
     for(auto& mesh : vecMesh){
+
+        // bind appropriate textures
+        unsigned int diffuseNr  = 1;
+        unsigned int specularNr = 1;
+        unsigned int normalNr   = 1;
+        unsigned int heightNr   = 1;
+        for(unsigned int i = 0; i < mesh.textures.size(); i++)
+        {
+            glActiveTexture(GL_TEXTURE0 + i); // active proper texture unit before binding
+            // retrieve texture number (the N in diffuse_textureN)
+            string number;
+            string name = mesh.textures[i].type;
+            if(name == "texture_diffuse")
+                number = std::to_string(diffuseNr++);
+            else if(name == "texture_specular")
+                number = std::to_string(specularNr++); // transfer unsigned int to stream
+            else if(name == "texture_normal")
+                number = std::to_string(normalNr++); // transfer unsigned int to stream
+             else if(name == "texture_height")
+                number = std::to_string(heightNr++); // transfer unsigned int to stream
+
+            // now set the sampler to the correct texture unit
+            glUniform1i(glGetUniformLocation(shaderID, (name + number).c_str()), i);
+            // and finally bind the texture
+            glBindTexture(GL_TEXTURE_2D, mesh.textures[i].id);
+        }
+
+
+
         glBindVertexArray(mesh.VAO);
         glDrawElements(GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);
-        //mesh.Draw();
+
+        // always good practice to set everything back to defaults once configured.
+        glActiveTexture(GL_TEXTURE0);
     }
 }
