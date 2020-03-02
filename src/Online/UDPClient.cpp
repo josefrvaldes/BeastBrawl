@@ -82,6 +82,9 @@ void UDPClient::HandleReceived(std::shared_ptr<unsigned char[]> recevBuff, const
                     HandleReceivedCatchPU(recevBuff.get(), bytesTransferred);
                 }
                 break;
+            case Constants::PetitionTypes::SEND_DISCONNECTION:
+                HandleReceivedDisconnection(recevBuff.get(), bytesTransferred);
+                break;
 
             default:
                 cout << "Tipo de petición no contemplada" << endl;
@@ -190,21 +193,32 @@ void UDPClient::HandleReceivedSync(unsigned char* recevBuff, size_t bytesTransfe
 
 
 
+// recibes el tipo de power up que ha cogido otro jugador
 void UDPClient::HandleReceivedCatchPU(unsigned char* recevBuff, size_t bytesTransferred) {
     size_t currentIndex = 0;
-
     Serialization::Deserialize<uint8_t>(recevBuff, currentIndex); // petition tipe
     int64_t time = Serialization::Deserialize<int64_t>(recevBuff, currentIndex); 
     uint16_t idCarOnline = Serialization::Deserialize<uint16_t>(recevBuff, currentIndex);
     typeCPowerUp typePU = Serialization::DeserializePowerUpOnly(recevBuff, currentIndex);
-
-    cout << "Soy el cliente y recibo PU: " << int(typePU) << endl;
 
     std::shared_ptr<DataMap> data = make_shared<DataMap>();
     (*data)[DataType::ID_ONLINE] = idCarOnline;
     (*data)[DataType::TYPE_POWER_UP] = typePU;
     EventManager::GetInstance().AddEventMulti(Event{EventType::NEW_SYNC_RECEIVED_CATCH_PU, data});
 }
+
+
+// recibes la desconexion de otro jugador
+void UDPClient::HandleReceivedDisconnection(unsigned char* recevBuff, size_t bytesTransferred) {
+    size_t currentIndex = 0;
+    Serialization::Deserialize<uint8_t>(recevBuff, currentIndex); // petition tipe
+    uint16_t idCarOnline = Serialization::Deserialize<uint16_t>(recevBuff, currentIndex);
+
+    /*std::shared_ptr<DataMap> data = make_shared<DataMap>();
+    (*data)[DataType::ID_ONLINE] = idCarOnline;
+    EventManager::GetInstance().AddEventMulti(Event{EventType::DISCONNECTED_PLAYER, data});*/
+}
+
 
 void UDPClient::SendDateTime() {
     // cout << "Vamos a enviar datos" << endl;

@@ -34,5 +34,6 @@ class Constants {
     enum PetitionTypes { CONNECTION_REQUEST,
                          SEND_INPUTS,
                          SEND_SYNC,
-                         CATCH_PU };
+                         CATCH_PU,
+                         SEND_DISCONNECTION };
 };

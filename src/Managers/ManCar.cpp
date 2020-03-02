@@ -252,7 +252,17 @@ void ManCar::SubscribeToEvents() {
         EventType::NEW_SYNC_RECEIVED_CATCH_PU,
         bind(&ManCar::NewCatchPUReceived, this, placeholders::_1),
         "NewCatchPUReceived"));
+    
+    /*EventManager::GetInstance().SubscribeMulti(Listener(
+        EventType::DISCONNECTED_PLAYER,
+        bind(&ManCar::DeletePlayer, this, placeholders::_1),
+        "DeletePlayer"));*/
 }
+
+
+///////////////////////////////////////////////////////////////////////7
+//                    EVENTOS DEL ONLINE
+///////////////////////////////////////////////////////////////////////
 
 void ManCar::NewInputsReceived(DataMap* d) {
     // cout << "Se ha lanzado el evento NewInputsReceived" << endl;
@@ -319,6 +329,43 @@ void ManCar::NewCatchPUReceived(DataMap* d) {
         }
     }
 }
+
+
+/*void ManCar::DeletePlayer(DataMap* d){
+    auto idRecieved = any_cast<uint16_t>((*d)[DataType::ID_ONLINE]);
+    for (auto& car : GetEntities()) {
+        if (car->HasComponent(CompType::OnlineComp)) {
+            COnline* compOnline = static_cast<COnline*>(car->GetComponent(CompType::OnlineComp).get());
+            if (compOnline->idClient == idRecieved) {
+                auto cTotem = static_cast<CTotem*>(car->GetComponent(CompType::TotemComp).get());
+                if(cTotem->active){     // comprobamos si tiene totem para quitarselo
+                    ThrowTotem(car.get());
+                    // auto dataTransformableCar = static_cast<CTransformable*>(car.get()->GetComponent(CompType::TransformableComp).get());
+                    // shared_ptr<DataMap> dataTransfCar = make_shared<DataMap>();                                                        
+                    // (*dataTransfCar)[CAR_TRANSFORMABLE] = dataTransformableCar;  
+                    // (*dataTransfCar)[ACTUAL_CAR] = car; 
+                    // (*dataTransfCar)[MAN_NAVMESH] = manNavMesh;
+                    // EventManager::GetInstance().AddEventMulti(Event{EventType::DROP_TOTEM, dataTransfCar}); 
+                    auto renderFacadeManager = RenderFacadeManager::GetInstance();
+                    auto renderEngine = renderFacadeManager->GetRenderFacade();
+                    for(auto i=0; i< entities.size(); ++i){
+                        if(entities[i] == car){
+                            renderEngine->DeleteEntity(entities[i].get());
+                            entities.erase(entities.begin()+i);
+                            break;
+                        }
+                    }
+                }
+                break;
+            }
+        }
+    }
+}*/
+
+//////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
+
+
 
 
 void ManCar::ChangeTotemCar(DataMap* d) {

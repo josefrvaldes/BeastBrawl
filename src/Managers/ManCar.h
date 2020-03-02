@@ -83,6 +83,7 @@ class ManCar : public Manager {
     void NewInputsReceived(DataMap* d);
     void NewSyncReceived(DataMap* d);
     void NewCatchPUReceived(DataMap* d);
+    void DeletePlayer(DataMap* d);
     //void ChangePosDestination(DataMap* d);
     //void MoveToPowerUp(DataMap* d);
     void ThrowTotem(Entity* carLoseTotem);

@@ -48,6 +48,8 @@ class UDPClient {
     void HandleReceivedInputs(const vector<Constants::InputTypes> inputs, const uint16_t idRival) const;
     void HandleReceivedSync(unsigned char* recevBuff, size_t bytesTransferred);
     void HandleReceivedCatchPU(unsigned char* recevBuff, size_t bytesTransferred);
+    void HandleReceivedDisconnection(unsigned char* recevBuff, size_t bytesTransferred);
+
     void HandleSentInputs(const boost::system::error_code& errorCode, std::size_t bytes_transferred);
     void HandleSentSync(const boost::system::error_code& errorCode, std::size_t bytes_transferred);
     void HandleSentPU(const boost::system::error_code& errorCode, std::size_t bytes_transferred);

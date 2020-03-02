@@ -30,6 +30,7 @@ class UDPServer : public boost::enable_shared_from_this<UDPServer> {
     void SendBytes(const unsigned char resendBytes[], const size_t currentBufferSize, const Player& player);
     //void SendInputs(const vector<Constants::InputTypes> inputs, const Player& player);
     void HandleSentBytes(const boost::system::error_code& errorCode, std::size_t bytesTransferred) const;
+    void DetectUsersDisconnected();
 
     void ReceiveNewCar();
 

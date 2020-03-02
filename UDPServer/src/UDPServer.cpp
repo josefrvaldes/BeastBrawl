@@ -83,6 +83,9 @@ void UDPServer::HandleReceive(std::shared_ptr<unsigned char[]> recevBuff, std::s
                     cout << "Petición incorrecta" << endl;
                     break;
             }
+
+            // metodo para detectar si algún paquete no ha llegado desde hace tiempo
+            //DetectUsersDisconnected();
         } else {
             cout << idPlayer << " - No se ha encontrado el player que corresponde con esta llamada. CATÁSTROFE" << endl;
         }
@@ -191,4 +194,40 @@ Player* UDPServer::GetPlayerById(uint16_t idPlayer) {
     if (it != players.end())
         return it.base();
     return nullptr;
+}
+
+
+
+
+// se comprueba que el ultimo input mandado no supere el tiempo de desconexion
+void UDPServer::DetectUsersDisconnected(){
+    uint16_t id = -1;
+    for(Player& actualPlayer : players){
+        //cout << actualPlayer.lastSyncTimeReceived - Utils::getMillisSinceEpoch() << "\n";
+        if(Utils::getMillisSinceEpoch() - actualPlayer.lastInputTimeReceived > 10000 ){
+            cout << "Se ha desconectado el jugador: " << actualPlayer.id << "\n";
+            id = actualPlayer.id;
+            actualPlayer.lastInputTimeReceived = Utils::getMillisSinceEpoch();
+            break;
+        }
+    }
+
+    if(id >= 0){
+        unsigned char sendBuff[Constants::ONLINE_BUFFER_SIZE];
+        size_t currentBuffSize = 0;
+        uint8_t callType = Constants::PetitionTypes::SEND_DISCONNECTION;
+        int64_t time = Utils::getMillisSinceEpoch();
+
+        Serialization::Serialize(sendBuff, &callType, currentBuffSize);
+        Serialization::Serialize(sendBuff, &id, currentBuffSize);
+
+        for (Player& currentPlayer : players) {
+            if (currentPlayer.id != id)
+                SendBytes(sendBuff, currentBuffSize, currentPlayer);
+        }
+
+        // To-Do: eliminarlo del array de players
+        // To-Do: respuesta en el cliente
+    }
+
 }
