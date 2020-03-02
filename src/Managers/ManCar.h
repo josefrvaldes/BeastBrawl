@@ -46,7 +46,7 @@ class ManCar : public Manager {
 
     void CreateMainCar();
     void CreateHumanCar(glm::vec3 _position);
-    void UpdateCar();
+    void UpdateCar(ManTotem &);
     void UpdateCarAI(CarAI* carAI, ManPowerUp* m_manPowerUp, ManBoxPowerUp* m_manBoxPowerUp, ManTotem* m_manTotem, ManWayPoint* graph, ManNavMesh* manNavMesh, 
                     ManBoundingWall* m_manBoundingWall, SystemBtPowerUp* systemBtPowerUp, SystemBtMoveTo* systemBtMoveTo, SystemBtLoDMove* systemBtLoDMove, SystemPathPlanning *systemPathPlanning);
     void UpdateCarHuman(Entity* CarHuman);

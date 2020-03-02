@@ -10,9 +10,8 @@ StateInGameSingle::StateInGameSingle() : StateInGame() {
 
     InitVirtualMethods();
 
-    //std::cout << "ENTRAMOS AL MANAGER DE NAVMESH LOCOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO" << std::endl;
-    CAMBIARCosasNavMesh(*manCars.get(), *manNavMesh.get());
-    //std::cout << "despues de la llamada LOOOOOOOOOOOCOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO" << std::endl;
+    //CAMBIARCosasNavMesh(*manCars.get(), *manNavMesh.get());
+
 }
 
 StateInGameSingle::~StateInGameSingle() {
@@ -23,7 +22,7 @@ void StateInGameSingle::InitState() {
 }
 
 
-
+/*
 void StateInGameSingle::CAMBIARCosasNavMesh(ManCar &manCars, ManNavMesh &manNavMesh){
     // vamos a asignar el navmesh al que pertenecemos
     for(auto& carAI : manCars.GetEntities()){
@@ -45,6 +44,7 @@ void StateInGameSingle::CAMBIARCosasNavMesh(ManCar &manCars, ManNavMesh &manNavM
         }
     }   
 }
+*/
 
 void StateInGameSingle::Input() {
     renderEngine->FacadeCheckInputSingle();
@@ -69,7 +69,7 @@ void StateInGameSingle::Update() {
                 systemPathPlanning.get());
         }
     }
-    CAMBIARCosasDeTotemUpdate();
+    //CAMBIARCosasDeTotemUpdate();
 
     // COLISIONES entre powerUp y IA
     //collisions->IntersectsCarsPowerUps(manCars.get(), manPowerUps.get(), manNavMesh.get());
@@ -122,6 +122,7 @@ void StateInGameSingle::AddElementsToRender() {
     
 }
 
+/*
 void StateInGameSingle::CAMBIARCosasDeTotemUpdate() {
     bool todosFalse = true;
     auto cTransformTotem = static_cast<CTransformable *>(totemOnCar->GetComponent(CompType::TransformableComp).get());
@@ -146,6 +147,7 @@ void StateInGameSingle::CAMBIARCosasDeTotemUpdate() {
 
     renderEngine->UpdateTransformable(totemOnCar.get());
 }
+*/
 
 void StateInGameSingle::CAMBIARInicializarCarAIS(ManCar &manCars, ManWayPoint &manWayPoint) {
 /*    
@@ -179,5 +181,5 @@ void StateInGameSingle::CAMBIARInicializarCarAIS(ManCar &manCars, ManWayPoint &m
     //manCars.CreateCarAI(glm::vec3(-200.0f, 10.0f, 700.0f));
     //manCars.CreateCarAI(glm::vec3(400.0f, 10.0f, -50.0f));
     //manCars.CreateHumanCar(glm::vec3(20.0, 10.0, 20.0));
-    manCars.CreateCarAI(glm::vec3(300.0f, 50.0f, -300.0f));
+    manCars.CreateCarAI(glm::vec3(300.0f, 20.0f, -300.0f));
 }

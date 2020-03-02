@@ -40,7 +40,7 @@ void StateInGame::InitVirtualMethods() {
     InitializeSystems(*manCars.get(), *manBoundingWall.get(), *manBoundingOBB.get(), *manBoundingGround.get(), *manPowerUps.get(), *manNavMesh.get(), *manBoxPowerUps.get(), *manTotems.get());
     InitializeFacades();
 
-    CAMBIARCosasDeTotem(*manTotems.get());
+    //CAMBIARCosasDeTotem(*manTotems.get());
     //CAMBIARCosasDeBoxPU(*manWayPoint.get(), *manBoxPowerUps.get());
     //CAMBIARCosasNavMesh(*manNavMesh.get());
 
@@ -57,6 +57,7 @@ void StateInGame::InitializeFacades() {
     renderEngine->FacadeSuscribeEvents();
 }
 
+/*
 void StateInGame::CAMBIARCosasDeTotem(ManTotem &manTotems) {
     // --------------------------------------------------------------------------------------------------------------------------------------------
     totemOnCar = make_shared<Entity>();
@@ -73,7 +74,7 @@ void StateInGame::CAMBIARCosasDeTotem(ManTotem &manTotems) {
     totemOnCar->AddComponent(make_shared<CMesh>("media/ninja.b3d"));
     // ------------------------------------------------------------------------------------------------------------------------------------------------
 }
-
+*/
 void StateInGame::AddElementsToRender() {
     // Añadimos cosas a la fachada de render
     renderEngine->FacadeAddPlates(manNamePlates.get());
@@ -96,7 +97,7 @@ void StateInGame::AddElementsToRender() {
 
     renderEngine->FacadeAddObjectTotem(manTotems->GetEntities()[0].get());
     // este último probablemente haya que cambiarlo ¿?
-    renderEngine->FacadeAddObject(totemOnCar.get());
+    //renderEngine->FacadeAddObject(totemOnCar.get());
 }
 
 void StateInGame::InitializeCLPhysics(ManCar &manCars, ManBoundingWall &manWall, ManBoundingOBB &manOBB, ManBoundingGround &manGround, ManPowerUp &manPowerUp, ManNavMesh &manNavMesh, ManBoxPowerUp &manBoxPowerUp, ManTotem &manTotem) {
@@ -160,7 +161,7 @@ void StateInGame::Update() {
 
 
     // ACTUALIZACION DE LOS MANAGERS DE LOS COCHES
-    manCars->UpdateCar();
+    manCars->UpdateCar(*(manTotems.get()));
 
     // ACTUALIZACION DE LAS FISICAS DE LOS COCHES
     physics->update(manCars->GetCar().get(), cam.get());
@@ -190,6 +191,7 @@ void StateInGame::Update() {
         physicsEngine->UpdatePowerUps(actualPowerUp.get());
 
     renderEngine->FacadeUpdatePlates(manNamePlates.get());
+    renderEngine->UpdateTransformable(manTotems->GetEntities()[0].get());
 
 }
 

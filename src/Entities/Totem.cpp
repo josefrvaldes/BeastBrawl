@@ -1,10 +1,11 @@
 #include "Totem.h"
-#include <Components/CId.h>
-#include <Components/CType.h>
-#include <Components/CTexture.h>
-#include <Components/CMesh.h>
-#include <Components/CTransformable.h>
-#include <Components/CCurrentNavMesh.h>
+#include "../Components/CId.h"
+#include "../Components/CType.h"
+#include "../Components/CTexture.h"
+#include "../Components/CMesh.h"
+#include "../Components/CTransformable.h"
+#include "../Components/CCurrentNavMesh.h"
+#include "../Components/CTotem.h"
 #include "../Components/CBoundingSphere.h"
 #include <iostream>
 
@@ -27,6 +28,7 @@ Totem::Totem()
     shared_ptr<CMesh> cMesh   = make_shared<CMesh>(mesh);
     shared_ptr<CCurrentNavMesh> cCurrentNavMesh   = make_shared<CCurrentNavMesh>(-1);
     shared_ptr<CBoundingSphere> cBoundingSphere = make_shared<CBoundingSphere>(vec3(0.0,0.0,0.0), 4.5);
+    shared_ptr<CTotem> cTotem = make_shared<CTotem>();
     AddComponent(cId);
     AddComponent(cType);
     AddComponent(cTransformable);
@@ -34,6 +36,7 @@ Totem::Totem()
     AddComponent(cMesh);
     AddComponent(cCurrentNavMesh);
     AddComponent(cBoundingSphere);
+    AddComponent(cTotem);
 }
 
 Totem::Totem(glm::vec3 position_) : Totem(){

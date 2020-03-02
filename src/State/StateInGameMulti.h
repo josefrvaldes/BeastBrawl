@@ -25,7 +25,7 @@ class StateInGameMulti : public StateInGame {
     void InitializeFacades() override;
     void AddElementsToRender() override;
 
-    void CAMBIARCosasDeTotemUpdate() override;
+    //void CAMBIARCosasDeTotemUpdate() override;
 
     unique_ptr<SystemOnline> sysOnline;
 

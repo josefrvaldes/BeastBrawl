@@ -78,7 +78,7 @@ void CLPhysics::CentralSystemGravity(){
 
 void CLPhysics::ConstGravity(){
     ManCar *manCar = static_cast<ManCar *>(managers[0]);
-    for(auto car : manCar->GetEntities()){
+    for(const auto& car : manCar->GetEntities()){
         CBoundingChassis *chaCar = static_cast<CBoundingChassis *>(car->GetComponent(CompType::CompBoundingChassis).get());
         CTransformable *trcar = static_cast<CTransformable *>(car->GetComponent(CompType::TransformableComp).get());
         chaCar->sphereBehind->center.y += gravityCar;
@@ -86,12 +86,18 @@ void CLPhysics::ConstGravity(){
         RePositionCarY(*trcar, *chaCar->sphereBehind, *chaCar->sphereFront);
     }
     ManPowerUp *manPowerUp = static_cast<ManPowerUp *>(managers[4]);
-    for(auto powerUp : manPowerUp->GetEntities()){
+    for(const auto& powerUp : manPowerUp->GetEntities()){
         CBoundingSphere *spEntity = static_cast<CBoundingSphere *>(powerUp->GetComponent(CompType::CompBoundingSphere).get());
         CTransformable *trEntity = static_cast<CTransformable *>(powerUp->GetComponent(CompType::TransformableComp).get());
         spEntity->center.y += gravityPU;
         RePositionEntityY(*trEntity, *spEntity);
     }
+    ManTotem *manTotem = static_cast<ManTotem *>(managers[7]);
+    const auto& totem = manTotem->GetEntities()[0];
+    CBoundingSphere *spTotem = static_cast<CBoundingSphere *>(totem->GetComponent(CompType::CompBoundingSphere).get());
+    CTransformable *trTotem = static_cast<CTransformable *>(totem->GetComponent(CompType::TransformableComp).get());
+    spTotem->center.y += gravityPU;
+    RePositionEntityY(*trTotem, *spTotem);
 }
 
 void CLPhysics::aplicateGravity(){
@@ -178,6 +184,18 @@ void CLPhysics::HandleCollisionsWithGround() {
             CollisionsSphereGround(*trEntity, *cSphere, *plane);
             RePositionEntityY(*trEntity, *cSphere);
         }
+    }
+
+    // TOTEM
+    ManTotem *manTotem = static_cast<ManTotem *>(managers[7]);
+    const auto& totem = manTotem->GetEntities()[0];
+    CBoundingSphere *spTotem = static_cast<CBoundingSphere *>(totem->GetComponent(CompType::CompBoundingSphere).get());
+    CTransformable *trTotem = static_cast<CTransformable *>(totem->GetComponent(CompType::TransformableComp).get());
+    for (size_t currentGround = 0; currentGround < numGrounds; currentGround++) {
+        BoundingWall *ground = static_cast<BoundingWall *>(grounds[currentGround].get());
+        CBoundingPlane *plane = static_cast<CBoundingPlane *>(ground->GetComponent(CompType::CompBoundingPlane).get());
+        CollisionsSphereGround(*trTotem, *spTotem, *plane);
+        RePositionEntityY(*trTotem, *spTotem);
     }
 
 }
@@ -311,6 +329,7 @@ void CLPhysics::RepositionBounding(){
         PositionSphereIntoTransformable(*trcar, *cBoundingSphere);
         PositionCilindreIntoSpheres(*cBoundingChassis);
     }
+    // POWER UPS
     ManPowerUp *manPowerUp = static_cast<ManPowerUp *>(managers[4]);
     for (auto currentPU : manPowerUp->GetEntities()) {
         CTransformable *trPU = static_cast<CTransformable *>(currentPU->GetComponent(CompType::TransformableComp).get());
@@ -318,6 +337,12 @@ void CLPhysics::RepositionBounding(){
         //PositionSphereIntoTransformable(*trPU, *cBoundingSphere);
         cBoundingSphere->center = trPU->position; 
     }
+    // TOTEM
+    ManTotem *manTotem = static_cast<ManTotem *>(managers[7]);
+    const auto& totem = manTotem->GetEntities()[0];
+    CBoundingSphere *spTotem = static_cast<CBoundingSphere *>(totem->GetComponent(CompType::CompBoundingSphere).get());
+    CTransformable *trTotem = static_cast<CTransformable *>(totem->GetComponent(CompType::TransformableComp).get());
+    spTotem->center = trTotem->position; 
 }
 
 
@@ -1134,29 +1159,13 @@ double CLPhysics::Angle2Vectors(const vec3 &a, const vec3 &b) const{
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 void CLPhysics::IntersectCarsTotem(ManCar &manCars, ManTotem &manTotem){
     for(const auto& currentCar : manCars.GetEntities()){
         auto cChassisCar = static_cast<CBoundingChassis *>(currentCar.get()->GetComponent(CompType::CompBoundingChassis).get());  
-        for(shared_ptr<Entity> currentTotem : manTotem.GetEntities()){  
-            CBoundingSphere *cSphereTotem = static_cast<CBoundingSphere *>(currentTotem->GetComponent(CompType::CompBoundingSphere).get());
+
+        auto cTotem = static_cast<CTotem *>(manTotem.GetEntities()[0]->GetComponent(CompType::TotemComp).get()); 
+        if(cTotem->active){  
+            CBoundingSphere *cSphereTotem = static_cast<CBoundingSphere *>(manTotem.GetEntities()[0]->GetComponent(CompType::CompBoundingSphere).get());
             auto intersect = cChassisCar->cilindre->IntersectSphere(*cSphereTotem);
             if(!intersect.intersects)
                 intersect = cChassisCar->sphereBehind->IntersectSphere(*cSphereTotem);
@@ -1165,7 +1174,7 @@ void CLPhysics::IntersectCarsTotem(ManCar &manCars, ManTotem &manTotem){
             if(intersect.intersects){   //TRUE
                 // debemos coger el TOTEM
                 shared_ptr<DataMap> dataCollisionTotem = make_shared<DataMap>();                                                                         
-                (*dataCollisionTotem)[TOTEM] = currentTotem;              // nos guardamos el puntero para eliminar el powerUp  
+                (*dataCollisionTotem)[TOTEM] = manTotem.GetEntities()[0];              // nos guardamos el puntero para eliminar el powerUp  
                 (*dataCollisionTotem)[ACTUAL_CAR] = currentCar.get();                                           
                 EventManager::GetInstance().AddEventMulti(Event{EventType::COLLISION_AI_TOTEM, dataCollisionTotem});
             }
@@ -1178,7 +1187,7 @@ void CLPhysics::IntersectCarsBoxPowerUp(ManCar &manCars, ManBoxPowerUp &manBoxPo
     for(const auto& currentCar : manCars.GetEntities()){
         auto cPowerUpCar = static_cast<CPowerUp*>(currentCar.get()->GetComponent(CompType::PowerUpComp).get()); 
         auto cChassisCar = static_cast<CBoundingChassis *>(currentCar.get()->GetComponent(CompType::CompBoundingChassis).get());                                                                                             
-        for(auto currentBoxPowerUp: manBoxPowerUp.GetEntities()){                                                 
+        for(const auto& currentBoxPowerUp: manBoxPowerUp.GetEntities()){                                                 
             auto cBoxPowerUp = static_cast<CBoxPowerUp*>(currentBoxPowerUp->GetComponent(CompType::BoxPowerUpComp).get());
             CBoundingSphere *cSpherePU = static_cast<CBoundingSphere *>(currentBoxPowerUp->GetComponent(CompType::CompBoundingSphere).get());   
             // Vemos si efectivamente esta activo o no, para poder cogerlo
@@ -1214,7 +1223,7 @@ void CLPhysics::IntersectCarsBoxPowerUp(ManCar &manCars, ManBoxPowerUp &manBoxPo
 void CLPhysics::IntersectsCarsPowerUps(ManCar &manCars, ManPowerUp &manPowerUps, ManNavMesh *manNavMesh){
     for(const auto& currentCar : manCars.GetEntities()){
         auto cChassisCar = static_cast<CBoundingChassis *>(currentCar.get()->GetComponent(CompType::CompBoundingChassis).get());       
-        for(auto currentPU : manPowerUps.GetEntities()){      
+        for(const auto& currentPU : manPowerUps.GetEntities()){      
             CBoundingSphere *cSpherePU = static_cast<CBoundingSphere *>(currentPU.get()->GetComponent(CompType::CompBoundingSphere).get());    
             auto intersect = cChassisCar->cilindre->IntersectSphere(*cSpherePU);
             if(!intersect.intersects)

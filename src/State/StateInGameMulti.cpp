@@ -92,7 +92,7 @@ void StateInGameMulti::Update() {
         }
     }
 
-    CAMBIARCosasDeTotemUpdate();
+    //CAMBIARCosasDeTotemUpdate();
     // COLISIONES entre powerUp y cocheHuman
     //collisions->IntersectsCarsPowerUps(manCars.get(), manPowerUps.get(), manNavMesh.get());
     // COLISIONES entre BoxPowerUp y cocheHuman
@@ -126,6 +126,7 @@ void StateInGameMulti::AddElementsToRender() {
     StateInGame::AddElementsToRender();
 }
 
+/*
 void StateInGameMulti::CAMBIARCosasDeTotemUpdate() {
     bool todosFalse = true;
     auto cTransformTotem = static_cast<CTransformable *>(totemOnCar.get()->GetComponent(CompType::TransformableComp).get());
@@ -150,3 +151,4 @@ void StateInGameMulti::CAMBIARCosasDeTotemUpdate() {
 
     renderEngine->UpdateTransformable(totemOnCar.get());
 }
+*/

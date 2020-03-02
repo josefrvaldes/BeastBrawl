@@ -12,8 +12,9 @@
 class Position;
 using namespace std;
 
-
+// TODO: No es un to-do, pero quiero indicar que los powerUps tienen una reserva de 50
 ManPowerUp::ManPowerUp() {
+    entities.reserve(50);
     SubscribeToEvents();
 }
 
@@ -88,6 +89,7 @@ void ManPowerUp::CreatePowerUp(DataMap* d) {
 void ManPowerUp::DeletePowerUp(DataMap* d){
     auto renderFacadeManager = RenderFacadeManager::GetInstance();
     auto renderEngine = renderFacadeManager->GetRenderFacade();
+    
     for(long unsigned int i=0; i< entities.size(); ++i){
         if(entities[i] == any_cast<shared_ptr<Entity>>((*d)[POWER_UP])){
             renderEngine->DeleteEntity(entities[i].get());

@@ -16,6 +16,7 @@
 #include <Components/CBoundingSphere.h>
 #include <Components/CColliding.h>
 #include <Components/CCurrentNavMesh.h>
+#include "../Components/CTargetNavMesh.h"
 #include <Components/CBoundingRay.h>
 #include <Components/CMovementType.h>
 #include "../Components/CExternalForce.h"
@@ -55,7 +56,7 @@ CarAI::CarAI(){
     shared_ptr<CPath> cPath   = make_shared<CPath>();
     shared_ptr<CSpeed> cSpeed = make_shared<CSpeed>();
     shared_ptr<CCurrentNavMesh> cCurrentNavMesh = make_shared<CCurrentNavMesh>(-1);  //  ponemos -1 por defecto ya que haremos el calculo al empezar la partida
-    //shared_ptr<CTargetNavMesh> cTargetNavMesh = make_shared<CTargetNavMesh>(-1);  //  ponemos -1 por defecto ya que haremos el calculo al empezar la partida
+    shared_ptr<CTargetNavMesh> cTargetNavMesh = make_shared<CTargetNavMesh>(-1);  //  ponemos -1 por defecto ya que haremos el calculo al empezar la partida
 
 
     shared_ptr<CColliding> cColliding = make_shared<CColliding>(false);
@@ -95,7 +96,7 @@ CarAI::CarAI(){
     AddComponent(cSpeed);
 
     AddComponent(cCurrentNavMesh);
-    //AddComponent(cTargetNavMesh);
+    AddComponent(cTargetNavMesh);
 
     AddComponent(cExternalForce);
 
