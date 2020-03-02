@@ -556,25 +556,55 @@ void ManCar::CatchPowerUp(DataMap* d) {
 }
 
 void ManCar::CatchPowerUpAI(DataMap* d) {
-    // To-Do: porcentajes temporales
+
+    int maxRobojorobo = 50;
+    int maxNitro = maxRobojorobo + 200;
+    int maxPudin = maxNitro + 250;
+    int maxEscudo = maxPudin + 150;
+    int maxTelebanana = maxEscudo + 150;
+    int maxMelon = maxTelebanana + 200;
+
+    auto actualCar = any_cast<Entity*>((*d)[ACTUAL_CAR]);
+    auto cTotem = static_cast<CTotem*>(actualCar->GetComponent(CompType::TotemComp).get());
+    //cout << "------------- POSICION: " << cTotem->positionRanking << endl;
+
+    if (cTotem) {
+        auto cPositionRanking = cTotem->positionRanking;
+        if (cPositionRanking == 1 || cPositionRanking == 2) {
+            //cout << "------------- SOY EL 1/2" << endl;
+            maxRobojorobo -= 50;
+            maxNitro -= 75;
+            maxPudin += 100;
+            maxEscudo -= 50;
+            maxTelebanana -= 50;
+            maxMelon += 125;
+        } else if (cPositionRanking == 5 || cPositionRanking == 6){
+            //cout << "------------- SOY EL 5/6" << endl;
+            maxRobojorobo += 25;
+            maxPudin -= 125;
+            maxTelebanana += 100;
+        }
+    }
+
+    // To-Do: Porcentajes base
     srand(time(NULL));
-    int indx = rand() % 100 + 1;
-    if (indx <= 5)  // 5%
+    int indx = rand() % 1000 + 1;   //No sale cero
+    if (indx <= maxRobojorobo)  // 5% Robojorobo
         indx = 1;
-    else if (indx > 5 && indx <= 20)  // 15%
+    else if (indx > maxRobojorobo && indx <= maxNitro)  // 20% Supermeganitro
         indx = 2;
-    else if (indx > 20 && indx <= 40)  // 20%
+    else if (indx > maxNitro && indx <= maxPudin)  // 25% Pudin
         indx = 3;
-    else if (indx > 40 && indx <= 55)  // 15%
+    else if (indx > maxPudin && indx <= maxEscudo)  // 15% Escudo
         indx = 4;
-    else if (indx > 55 && indx <= 70)  // 15%
+    else if (indx > maxEscudo && indx <= maxTelebanana)  // 15% Telebanana
         indx = 5;
-    else if (indx > 70)  //  30%
+    else if (indx > maxTelebanana)  //  20% MelonMolon
         indx = 6;
 
 
     //indx = 5;
-    auto cPowerUpCar = static_cast<CPowerUp*>(any_cast<Entity*>((*d)[ACTUAL_CAR])->GetComponent(CompType::PowerUpComp).get());
+    auto cPowerUpCar = static_cast<CPowerUp*>(actualCar->GetComponent(CompType::PowerUpComp).get());
     if (cPowerUpCar->typePowerUp == typeCPowerUp::None) {
         cPowerUpCar->typePowerUp = (typeCPowerUp)indx;
         std::cout << "Power Up del coche es:   " << (int)cPowerUpCar->typePowerUp << std::endl;

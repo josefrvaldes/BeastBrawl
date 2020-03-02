@@ -189,7 +189,7 @@ void RenderFacadeIrrlicht::FacadeDrawHUD(Entity* car, ManCar* manCars) {
             //Si tiene el totem voy a dibujarlo rojo por ejemplo
             color.setRed(255);
         }
-        core::stringw iaText = textIA + core::stringw(i) + core::stringw("  ") + core::stringw(time2);
+        core::stringw iaText = core::stringw(cTotem->positionRanking) + core::stringw("  ") + textIA + core::stringw(i) + core::stringw("  ") + core::stringw(time2);
         font->draw(iaText,
                 core::rect<s32>(200, 70 + ((cTotem->positionRanking-1) * 15), 300, 300),
                 color);
