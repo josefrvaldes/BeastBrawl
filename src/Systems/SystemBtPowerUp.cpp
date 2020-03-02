@@ -239,6 +239,7 @@ SystemBtPowerUp::SystemBtPowerUp(){
     //selector2->addChild(sequence4);
 
     sequence3->addChild(c_lookEnemy);            // no implementado
+    sequence3->addChild(c_haveBanana);
     sequence3->addChild(a_throwPowerUp);
 
     //sequence4->addChild(c_haveBanana);
