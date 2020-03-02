@@ -4,6 +4,7 @@
 #include "../../include/include_json/include_json.hpp"
 #include "../src/Constants.h"
 #include "../src/Systems/Utils.h"
+#include "../../src/Systems/Serialization.h"
 
 
 using json = nlohmann::json;
@@ -50,23 +51,9 @@ void TCPConnection::Start(){
 
 
 void TCPConnection::HandleRead(std::shared_ptr<unsigned char[]> recevBuff, const boost::system::error_code& error, size_t bytes_transferred){
-    //std::cout << "Hola "<< std::endl;
     if(!error && bytes_transferred!=0){
-        //uint16_t idPlayer;
-        uint8_t numero;
-        //vector<uint16_t> idEnemies;
         size_t currentIndex = 0;
-
-        Utils::Deserialize(&numero, recevBuff.get(), currentIndex);
-
-        
-        //string receivedString;
-        //std::copy(recevBuff->begin(), recevBuff->begin() + bytes_transferred, std::back_inserter(receivedString));
-        //json receivedJSON = json::parse(receivedString);
-        //uint16_t auxCallType = receivedJSON["requestConnection"];
-        //std::cout << "El servidorTCP lee: "  << auxCallType << std::endl;
-        //int ptrCallType = static_cast<int>(*buff1.data());
-        //std::cout << "Numero: "<< *buff1.data() << std::endl;
+        Serialization::Deserialize<uint8_t>(recevBuff.get(), currentIndex); // numero
     }else if(error){
         std::cout << "Error al leer: " << error.message() << std::endl;
     }

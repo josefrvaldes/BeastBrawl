@@ -145,4 +145,19 @@ void PhysicsFacadeIrrlicht::UpdatePowerUps(Entity* powerUp) {
 
     //Actualiza el escalado del objeto de irrlicht
     node->setScale(core::vector3df(cTransformable->scale.x, cTransformable->scale.y, cTransformable->scale.z));
+
+    
+    // vemos si tiene esfera, y en cuyo caso la dibujamos
+    //bool hasSphere = powerUp->HasComponent(CompType::CompBoundingSphere);
+    //if (hasSphere && Constants::DEBUG_SHOW_SPHERES) {
+    //    //cout << "efectivamente tiene esfera y dibujamos loco " << endl;
+    //    auto cSphere = static_cast<CBoundingSphere*>(powerUp->GetComponent(CompType::CompBoundingSphere).get());
+    //    scene::ISceneNode* nodeSphere = smgr->getSceneNodeFromId(cId->id + Component::ID_DIFFERENCE);
+    //    nodeSphere->setPosition(core::vector3df(cSphere->center.x, cSphere->center.y, cSphere->center.z));
+    //    nodeSphere->setVisible(RenderFacadeIrrlicht::showDebug);
+    //}
+    
+    
+
+
 }

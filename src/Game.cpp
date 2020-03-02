@@ -193,6 +193,11 @@ void Game::SetStatePause(DataMap* d) {
 }
 
 void Game::SetStateInGameSingle(DataMap* d) {
+    shared_ptr<DataMap> data = make_shared<DataMap>();
+
+    (*data)[TYPE_POWER_UP] = typeCPowerUp::None;
+
+    EventManager::GetInstance().AddEventMulti(Event{EventType::UPDATE_POWERUP_HUD, data});
     SetState(State::INGAME_SINGLE);
 }
 

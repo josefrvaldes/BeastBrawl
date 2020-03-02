@@ -75,7 +75,7 @@ class ManCar : public Manager {
     void CollisionPowerUp(DataMap* d);
     void CollisionPowerUpAI(DataMap* d);
     void CatchTotemPlayer(DataMap* d);
-    void CatchTotemAI(DataMap* d);
+    void CatchTotemCar(DataMap* d);
     void UseTotem(Entity* carWinTotem);
     void ChangeTotemCar(DataMap* d);
     void NewInputsReceived(DataMap* d);

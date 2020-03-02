@@ -67,10 +67,10 @@ ManBoundingWall::ManBoundingWall() {
 
 
     // 4 Planos normales
-    //CreateBoundingWall(vec3(50.f, 40.f, 50.f),vec3(150.f, 40.f, 50.f),vec3(150.f, 10.f, 50.f),vec3(50.f, 10.f, 50.f));
-    //CreateBoundingWall(vec3(50.f, 10.f, 150.f),vec3 (150.f, 10.f, 150.f),vec3(150.f, 40.f, 150.f),vec3(50.f, 40.f, 150.f));
-    //CreateBoundingWall(vec3(50.f, 10.f, 50.f),vec3(50.f, 10.f, 150.f),vec3(50.f, 40.f, 150.f),vec3(50.f, 40.f, 50.f));
-    //CreateBoundingWall(vec3(150.f, 40.f, 50.f),vec3(150.f, 40.f, 150.f),vec3(150.f, 10.f, 150.f),vec3(150.f, 10.f, 50.f));
+    //CreateBoundingWall(vec3(50.f, -40.f, 50.f),vec3(150.f, -40.f, 50.f),vec3(150.f, -300.f, 50.f),vec3(50.f, -300.f, 50.f));
+    //CreateBoundingWall(vec3(50.f, -300.f, 150.f),vec3 (150.f, -300.f, 150.f),vec3(150.f, -40.f, 150.f),vec3(50.f, -40.f, 150.f));
+    //CreateBoundingWall(vec3(50.f, -300.f, 50.f),vec3(50.f, -300.f, 150.f),vec3(50.f, -40.f, 150.f),vec3(50.f, -40.f, 50.f));
+    //CreateBoundingWall(vec3(150.f, -40.f, 50.f),vec3(150.f, -40.f, 150.f),vec3(150.f, -300.f, 150.f),vec3(150.f, -300.f, 50.f));
 
 
 

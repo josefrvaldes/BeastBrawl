@@ -6,7 +6,7 @@
 #include "../EventManager/Event.h"
 #include "../EventManager/EventManager.h"
 #include "../Systems/Utils.h"
-//#include "../Systems/Serialization.h"
+#include "../Systems/Serialization.h"
 
 
 using json = nlohmann::json;
@@ -119,14 +119,11 @@ void TCPClient::HandleReceived(std::shared_ptr<unsigned char[]> recevBuff, const
     }
 
     if (!errorCode && bytesTransferred > 0) {
-        uint16_t idPlayer;
-        uint8_t enemiesSize;
-        vector<uint16_t> idEnemies;
         size_t currentIndex = 0;
 
-        Utils::Deserialize(&idPlayer, recevBuff.get(), currentIndex);
-        Utils::Deserialize(&enemiesSize, recevBuff.get(), currentIndex);
-        Utils::DeserializeVector(idEnemies, enemiesSize, recevBuff.get(), currentIndex);
+        uint16_t idPlayer = Serialization::Deserialize<uint16_t>(recevBuff.get(), currentIndex);
+        uint8_t enemiesSize = Serialization::Deserialize<uint8_t>(recevBuff.get(), currentIndex);
+        vector<uint16_t> idEnemies = Serialization::DeserializeVector<uint16_t>(enemiesSize, recevBuff.get(), currentIndex);
         
         std::shared_ptr<DataMap> data = make_shared<DataMap>();
         (*data)[DataType::ID_ONLINE] = idPlayer;
@@ -151,7 +148,7 @@ void TCPClient::SendConnectionRequest() {
     unsigned char request[Constants::ONLINE_BUFFER_SIZE];
     uint8_t numero = Constants::CONNECTION_REQUEST;
     size_t currentBuffSize = 0;
-    Utils::Serialize(request, &numero, currentBuffSize);
+    Serialization::Serialize(request, &numero, currentBuffSize);
 
     socket.async_send(
         boost::asio::buffer(request, currentBuffSize),

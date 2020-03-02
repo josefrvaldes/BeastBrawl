@@ -22,6 +22,7 @@ class RenderFacadeClover : public RenderFacade {
       RenderFacadeClover();
       ~RenderFacadeClover() override;
       const uint16_t FacadeAddObject(Entity*) override;
+      void FacadeAddSphereOnObject(Entity* entity) override;
       const uint16_t FacadeAddObjectCar(Entity*) override;
       const uint16_t FacadeAddObjectTotem(Entity* entity) override;
       const void FacadeAddObjects(vector<Entity*>) override;
@@ -66,6 +67,7 @@ class RenderFacadeClover : public RenderFacade {
       void FacadeDrawGraphEdges(ManWayPoint* manWayPoints) const override;
       void FacadeDrawBoundingBox(Entity* entity, bool colliding) const override;
       void FacadeDrawBoundingPlane(Entity* entity) const override;
+      void FacadeDrawBoundingGround(Entity* entity) const override;
       void FacadeDrawBoundingOBB(Entity* entity) const override;
       void FacadeDrawAIDebug(ManCar* manCars, ManNavMesh* manNavMesh, ManWayPoint* manWayPoint) const override;
       void FacadeDrawAIDebugPath(Entity* carAI, ManWayPoint* manWayPoint) const override;

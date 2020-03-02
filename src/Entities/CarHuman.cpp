@@ -6,7 +6,6 @@
 #include <Components/CCar.h>
 #include <Components/CId.h>
 #include <Components/CMesh.h>
-#include <Components/CNitro.h>
 #include <Components/CPowerUp.h>
 #include <Components/CRoboJorobo.h>
 #include <Components/CShield.h>
@@ -22,6 +21,7 @@
 #include "../Components/COnline.h"
 #include "../Components/CExternalForce.h"
 #include "../Components/CBoundingChassis.h"
+#include "../Components/CGravity.h"
 
 class Position;
 
@@ -31,7 +31,7 @@ CarHuman::CarHuman() {
     typeCar = TypeCar::CarHuman;
 
     // default values
-    glm::vec3 pos = glm::vec3(-20.0f, 10.0f, -300.0f);
+    glm::vec3 pos = glm::vec3(-20.0f, 50.0f, -300.0f);
     glm::vec3 rot = glm::vec3(0.0f, 90.0f, 0.0f);
     glm::vec3 scale = glm::vec3(0.6f, 0.6f, 0.6f);
     string texture = "";
@@ -50,7 +50,7 @@ CarHuman::CarHuman() {
     shared_ptr<CNitro> cNitro = make_shared<CNitro>();
     shared_ptr<CRoboJorobo> cRoboJorobo = make_shared<CRoboJorobo>();
     shared_ptr<CTotem> cTotem = make_shared<CTotem>();
-    shared_ptr<CCurrentNavMesh> cCurrentNavMesh = make_shared<CCurrentNavMesh>(0);  //  ponemos 0 por defecto ya que haremos el calculo al empezar la partida
+    shared_ptr<CCurrentNavMesh> cCurrentNavMesh = make_shared<CCurrentNavMesh>(-1);  //  ponemos 0 por defecto ya que haremos el calculo al empezar la partida
     shared_ptr<COnline> cOnline = make_shared<COnline>();  //  ponemos 0 por defecto ya que haremos el calculo al empezar la partida
 
 
@@ -62,9 +62,12 @@ CarHuman::CarHuman() {
 
     //CBoundingChassis(const vec3 &spCenterBehind, const float &spRadiusBehind, const vec3 &spCenterFront, const float &spRadiusFront);
     //     glm::vec3 pos = glm::vec3(-20.0f, 10.0f, -300.0f);
+    // TODO: jesuuuuuuus pasame los bounding desde phyton mamoooon JESUS
     glm::vec3 pSphBehind = pos;
     glm::vec3 pSphFront = pos;
-    shared_ptr<CBoundingChassis> cBoundingChassis = make_shared<CBoundingChassis>(pSphBehind, 8.0, pSphFront, 8.0);
+    shared_ptr<CBoundingChassis> cBoundingChassis = make_shared<CBoundingChassis>(pSphBehind, 7.5, pSphFront, 7.5);
+
+    shared_ptr<CGravity> cGravity = make_shared<CGravity>();
 
     AddComponent(cId);
     AddComponent(cType);
@@ -85,7 +88,7 @@ CarHuman::CarHuman() {
     AddComponent(cOnline);
     AddComponent(cExternalForce);
     AddComponent(cBoundingChassis);
-    cout << "Acabamos de llamar al constructor default de car, su transformable es " << cTransformable << endl;
+    AddComponent(cGravity);
 }
 
 CarHuman::CarHuman(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale,
@@ -118,7 +121,7 @@ CarHuman::CarHuman(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale,
     AddComponent(cRoboJorobo);
     AddComponent(cTotem);
     AddComponent(cColliding);
-    cout << "Acabamos de llamar al constructor default de car, su transformable es " << cTransformable << endl;
+    // cout << "Acabamos de llamar al constructor default de car, su transformable es " << cTransformable << endl;
 }
 
 CarHuman::CarHuman(glm::vec3 _position)
