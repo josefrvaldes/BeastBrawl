@@ -86,18 +86,10 @@ RenderFacadeIrrlicht::RenderFacadeIrrlicht() {
     {
         std::cout << "Joystick support is not enabled." << std::endl;
     }
-    inputsPressed = { {InputXBox::BUTTON_A, false},
-                      {InputXBox::BUTTON_B, false},
-                      {InputXBox::BUTTON_X, false},
-                      {InputXBox::BUTTON_Y, false},
-                      {InputXBox::BUTTON_LB, false},
-                      {InputXBox::BUTTON_RB, false},
-                      {InputXBox::BUTTON_BACK, false},
-                      {InputXBox::BUTTON_START, false},
-                      {InputXBox::BUTTON_XBOX, false},
-                      {InputXBox::BUTTON_STICK_L, false},
-                      {InputXBox::BUTTON_STICK_R, false}
-                    };
+    
+    for(int i = 0; i != InputXBox::END; ++i){
+        inputsPressed.emplace(static_cast<InputXBox>(i), false);
+    }
 }
 
 void RenderFacadeIrrlicht::FacadeSuscribeEvents() {

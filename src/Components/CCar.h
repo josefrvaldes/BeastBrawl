@@ -5,6 +5,7 @@
 #include <string>
 #include <iostream>
 #include "../../include/glm/vec3.hpp"
+#include "../Constants.h"
 #include <chrono>
 
 
@@ -47,8 +48,8 @@ public:
     float skidRotation = 0.0;                     
 
 
-    float skidAcc = 1.0;        // To-Do: multiplicar por el deltaTime los periodos para ajustarlos al framerate
-    float skidRecoverAcc = 2.0;
+    float skidAcc = 60 * (1.0/UPDATE_FRAME_RATE);        // To-Do: multiplicar por el deltaTime los periodos para ajustarlos al framerate
+    float skidRecoverAcc = 120 * (1.0/UPDATE_FRAME_RATE);
     float skidDeg;              // giro en el derrape
     float skidDegL = -35.0;  
     float skidDegR = 35.0;   

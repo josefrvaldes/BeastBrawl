@@ -6,6 +6,9 @@
 
 #define SERVER_HOST_OVH "54.38.189.168"
 
+#define UPDATE_FRAME_RATE 60.0
+
+
 class Constants {
    public:
     inline static const bool DEBUG_SHOW_CHASSIS{true};

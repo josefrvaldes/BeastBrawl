@@ -9,6 +9,7 @@
 #include "../Components/COnline.h"
 #include "../Components/CExternalForce.h"
 #include "../Systems/Utils.h"
+#include "../../include/glm/glm.hpp"
 
 #include <cmath>
 
@@ -45,23 +46,18 @@ void Physics::CalculatePosition(CCar *cCar, CTransformable *cTransformable, CSpe
         cExternalForce->dirExternalForce = normalize(cExternalForce->dirExternalForce);
     }
 
-
     float angleRotation = cTransformable->rotation.y - cCar->skidRotation;
-    if(angleRotation < 0) angleRotation += 360.0;
-    if(angleRotation >= 360) angleRotation -= 360.0;
-    float angleRotationFinal = (angleRotation * PI) / 180.0;
+    angleRotation = Utils::GetAdjustedDegrees(angleRotation);
 
     // Movimiento del coche
-    cSpeed->speed.x = cos(angleRotationFinal);  // * cCar->speed;
-    cSpeed->speed.z = sin(angleRotationFinal);  // * cCar->speed;
+    cSpeed->speed.x = cos(glm::radians(angleRotation));  // * cCar->speed;
+    cSpeed->speed.z = sin(glm::radians(angleRotation));  // * cCar->speed;
     cSpeed->speed.y = 0.f;                 // TODO, esto lo cacharreará el CLPhysics
     cTransformable->position.x -= cSpeed->speed.x * cCar->speed * deltaTime;
     cTransformable->position.z += cSpeed->speed.z * cCar->speed * deltaTime;
 
     
-
     // Rotacion del coche
-    // if (cCar->wheelRotation != 0) {
     if(cCar->skidRotation != 0){
         //std::cout << "Incremento con skid: " << cCar->wheelRotation * 0.05 + 0.04 * cCar->skidRotation << "\n";
         cTransformable->rotation.y += cCar->wheelRotation * 0.05 + 0.03 * cCar->skidRotation;
@@ -70,13 +66,7 @@ void Physics::CalculatePosition(CCar *cCar, CTransformable *cTransformable, CSpe
         cTransformable->rotation.y += cCar->wheelRotation * 0.20;
     }
 
-
-    if (cTransformable->rotation.y >= 360.0)
-        cTransformable->rotation.y -= 360.0;
-    else if (cTransformable->rotation.y < 0.0)
-        cTransformable->rotation.y += 360.0;
-
-    // }
+    cTransformable->rotation.y = Utils::GetAdjustedDegrees(cTransformable->rotation.y);
 }
 
 vec3 Physics::CalculateVecDirCar(CTransformable *cTransformable) const{
@@ -101,10 +91,7 @@ void Physics::CalculatePositionReverse(CCar *cCar, CTransformable *cTransformabl
     //Si tiene rotacion, rotamos el coche
     if (cCar->wheelRotation != 0) {
         cTransformable->rotation.y -= cCar->wheelRotation * 0.20;
-        if (cTransformable->rotation.y >= 360.0)
-            cTransformable->rotation.y -= 360.0;
-        else if (cTransformable->rotation.y < 0.0)
-            cTransformable->rotation.y += 360.0;
+        cTransformable->rotation.y = Utils::GetAdjustedDegrees(cTransformable->rotation.y);
     }
 }
 
@@ -113,10 +100,8 @@ void Physics::CalculatePositionReverse(CCar *cCar, CTransformable *cTransformabl
 void Physics::CalculatePositionCamera(CCar *cCar, CTransformable *cTransformableCar, CTransformable *cTransformableCamera, CCamera *cCamera) {
     // comento la primera linea porque la pos de la cámara en altura (por ahora) es siempre la misma
     float rotationFinal = cTransformableCar->rotation.y - cCar->skidRotation - cCamera->rotExtraY;
-    if (rotationFinal >= 360.0)
-        rotationFinal -= 360.0;
-    else if (rotationFinal < 0.0)
-        rotationFinal += 360.0;
+    rotationFinal = Utils::GetAdjustedDegrees(rotationFinal);
+
     cTransformableCamera->position.y = cTransformableCar->position.y + 20;
     cTransformableCamera->position.x = (cTransformableCar->position.x + 40 * cos(((rotationFinal) * PI) / 180.0));
     cTransformableCamera->position.z = (cTransformableCar->position.z - 40 * sin(((rotationFinal) * PI) / 180.0));
@@ -144,25 +129,6 @@ void Physics::Accelerate(Car *car, Camera *cam) {
             cCar->speed = cNitro->nitroMaxSpeed;
         }
     }
-
-    // versión nueva
-    /*auto cCar = static_cast<CCar *>(car->GetComponent(CompType::CarComp).get());
-    auto cSpeed = static_cast<CSpeed *>(car->GetComponent(CompType::SpeedComp).get());
-    auto cNitro = static_cast<CNitro *>(car->GetComponent(CompType::NitroComp).get());
-    //Aumentamos la velocidad
-    if (cNitro->activePowerUp == false) {
-        cSpeed->speed += cCar->acceleration;
-        if (cSpeed->speed > cCar->maxSpeed) {
-            cSpeed->speed -= cCar->acceleration * 4.0;
-            if (cSpeed->speed < cCar->maxSpeed)
-                cSpeed->speed = cCar->maxSpeed;
-        }
-    } else {
-        cSpeed->speed += cNitro->nitroAcceleration;
-        if (cSpeed->speed > cNitro->nitroMaxSpeed) {
-            cSpeed->speed = cNitro->nitroMaxSpeed;
-        }
-    }*/
 }
 
 //Entra cuando se presiona la O
@@ -422,8 +388,7 @@ void Physics::RecoverSkid(CCar &cCar, CTransformable &cTrans) const{
             if(duration_cast<milliseconds>(system_clock::now()-cCar.skidStart).count() > cCar.skidActivationTime)
                 cCar.skidState = SkidState::SKID_START;
         }
-        if(cTrans.rotation.y >= 360) 
-            cTrans.rotation.y -= 360.0;
+        cTrans.rotation.y = Utils::GetAdjustedDegrees(cTrans.rotation.y);
     }else if(cCar.skidState == SkidState::SKID_RECOVER_RIGHT){
         cCar.skidRotation -= cCar.skidRecoverAcc;
         cTrans.rotation.y -= cCar.skidRecoverAcc;
@@ -433,8 +398,7 @@ void Physics::RecoverSkid(CCar &cCar, CTransformable &cTrans) const{
             if(duration_cast<milliseconds>(system_clock::now()-cCar.skidStart).count() > cCar.skidActivationTime)
                 cCar.skidState = SkidState::SKID_START;
         }
-        if(cTrans.rotation.y < 0) 
-            cTrans.rotation.y += 360.0;
+        cTrans.rotation.y = Utils::GetAdjustedDegrees(cTrans.rotation.y);
     }
 }
 
