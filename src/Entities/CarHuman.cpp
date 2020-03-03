@@ -36,7 +36,10 @@ CarHuman::CarHuman() {
     glm::vec3 rot = glm::vec3(0.0f, 90.0f, 0.0f);
     glm::vec3 scale = glm::vec3(0.6f, 0.6f, 0.6f);
     string texture = "";
-    string mesh    = "kart_physics.fbx";
+
+    //string mesh    = "kart_physics.fbx";
+    string mesh    = "kart.obj";
+
     string vertexShader = "CLEngine/src/Shaders/vertex.glsl";
     string fragmentShader = "CLEngine/src/Shaders/fragment.glsl";
     float maxSpeed = 200.0, acceleration = 1.5, friction = 1.0, slowDown = 2.5;
