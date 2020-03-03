@@ -63,10 +63,10 @@ void Physics::CalculatePosition(CCar *cCar, CTransformable *cTransformable, CSpe
     // Rotacion del coche
     // if (cCar->wheelRotation != 0) {
     if(cCar->skidRotation != 0){
-        std::cout << "Incremento con skid: " << cCar->wheelRotation * 0.05 + 0.04 * cCar->skidRotation << "\n";
+        //std::cout << "Incremento con skid: " << cCar->wheelRotation * 0.05 + 0.04 * cCar->skidRotation << "\n";
         cTransformable->rotation.y += cCar->wheelRotation * 0.05 + 0.03 * cCar->skidRotation;
     }else{
-        std::cout << "Incremento no  skid: " << cCar->wheelRotation * 0.20 << "\n";
+        //std::cout << "Incremento no  skid: " << cCar->wheelRotation * 0.20 << "\n";
         cTransformable->rotation.y += cCar->wheelRotation * 0.20;
     }
 
