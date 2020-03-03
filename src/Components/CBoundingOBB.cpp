@@ -37,11 +37,11 @@ CBoundingOBB::CBoundingOBB(const vector<glm::vec3> &vertices, const vector<glm::
 
 // TODO: Actualmente todos los planos se tratan como finitos en los que respecta a las colisiones con las esferas
 // TODO: el "vector<IntersectData>" va a producir alguna perdida o que ??????????? linea 36
-IntersectData CBoundingOBB::IntersectSphere(const CBoundingSphere &other, const CTransformable &trCar, const CCar &ccarCar){
+IntersectData CBoundingOBB::IntersectSphere(const CBoundingSphere &other){
     vector<IntersectData> intersectsPlane;  // nos guardamos los datos d ela colision
     intersectsPlane.shrink_to_fit();
     for(long unsigned int i=0; i<planes.size(); i++){
-        IntersectData intersData = planes[i].get()->IntersectSphere(other, trCar, ccarCar);
+        IntersectData intersData = planes[i].get()->IntersectSphere(other);
         if (intersData.intersects) {
             intersectsPlane.push_back(IntersectData(true, i, intersData.direction));
         }

@@ -291,7 +291,7 @@ void CLPhysics::RePositionEntityY(CTransformable &trEntity, CBoundingSphere &sph
 }
 
 bool CLPhysics::CollisionsSphereGround(CTransformable &trCar, CBoundingSphere &spCar, CBoundingPlane &plane){
-    IntersectData intersData = plane.IntersectSphereCenter(spCar, trCar);
+    IntersectData intersData = plane.IntersectSphereCenter(spCar);
     if (intersData.intersects) {
         SeparateSphereGround(intersData, trCar, spCar, plane);
         return true;
@@ -603,10 +603,10 @@ void CLPhysics::SeparateCilindreSphere(CTransformable &trCar1, glm::vec3 &cenCar
 // HandleCollisions entre ESFERA de un COCHE y un PLANO 
 bool CLPhysics::HandleCollisions(CTransformable &trCar, CBoundingSphere &spCar, CCar &ccarCar, bool mainCar, CBoundingPlane &plane) {
     //PositionSphereIntoTransformable(trCar, spCar);
-    IntersectData intersData = plane.IntersectSphere(spCar, trCar, ccarCar);
+    IntersectData intersData = plane.IntersectSphere(spCar);
     if (intersData.intersects) {
         // SonarChoque(mainCar);
-        SeparateSphereFromPlane(intersData, trCar, spCar, ccarCar, plane);
+        SeparateSphereFromPlane(intersData, trCar, spCar, plane);
 
 
         vec3 vecDirCar = CalculateVecDirCar(trCar);
@@ -634,11 +634,11 @@ bool CLPhysics::HandleCollisions(CTransformable &trCar, CBoundingSphere &spCar, 
 // HandleCollisions entre ESFERA de un COCHE y un OBB 
 bool CLPhysics::HandleCollisions(CTransformable &trCar, CBoundingSphere &spCar, CCar &ccarCar, bool mainCar, CBoundingOBB &obb) {
     //PositionSphereIntoTransformable(trCar, spCar);
-    IntersectData intersData = obb.IntersectSphere(spCar, trCar, ccarCar);
+    IntersectData intersData = obb.IntersectSphere(spCar);
     if (intersData.intersects) {
         //cout << " hay interseccion con OBB" << endl;
         // SonarChoque(mainCar);
-        SeparateSphereFromPlane(intersData, trCar, spCar, ccarCar, *obb.planes[intersData.posEntity] );
+        SeparateSphereFromPlane(intersData, trCar, spCar, *obb.planes[intersData.posEntity] );
 
         // dependiendo de como colisionemos con el plano sera un tipo de colision u otro.
         // dependera del angulo de colsion y la velocidad de colision
@@ -688,7 +688,7 @@ vec3 CLPhysics::CalculateVecDirCar(CTransformable &cTransformable) const{
 }
 
 
-void CLPhysics::SeparateSphereFromPlane(IntersectData &intersData, CTransformable &trCar1, CBoundingSphere &spCar1, CCar &ccarCar1, CBoundingPlane &plane) const {
+void CLPhysics::SeparateSphereFromPlane(IntersectData &intersData, CTransformable &trCar1, CBoundingSphere &spCar1, CBoundingPlane &plane) const {
     //cout << "NO SEPARO" << endl;
     vec3 direction = spCar1.center - plane.normal;  // te da la dirección al otro bounding en x, y, z, es decir, si tenemos 200, 10, 30, significa que estamos a 200 de distancia en x, a 10 en y y a 30 en z
     vec3 nuevaDirectionCar1 = -normalize(direction);
@@ -1160,10 +1160,12 @@ double CLPhysics::Angle2Vectors(const vec3 &a, const vec3 &b) const{
 
 
 void CLPhysics::IntersectCarsTotem(ManCar &manCars, ManTotem &manTotem){
-    for(const auto& currentCar : manCars.GetEntities()){
+    bool collision = false;
+    for(long unsigned int i=0; i<manCars.GetEntities().size() && !collision; i++){
+        const auto& currentCar = manCars.GetEntities()[i];
         auto cChassisCar = static_cast<CBoundingChassis *>(currentCar.get()->GetComponent(CompType::CompBoundingChassis).get());  
-
         auto cTotem = static_cast<CTotem *>(manTotem.GetEntities()[0]->GetComponent(CompType::TotemComp).get()); 
+
         if(cTotem->active){  
             CBoundingSphere *cSphereTotem = static_cast<CBoundingSphere *>(manTotem.GetEntities()[0]->GetComponent(CompType::CompBoundingSphere).get());
             auto intersect = cChassisCar->cilindre->IntersectSphere(*cSphereTotem);
@@ -1172,6 +1174,7 @@ void CLPhysics::IntersectCarsTotem(ManCar &manCars, ManTotem &manTotem){
             if(!intersect.intersects)
                 intersect = cChassisCar->sphereFront->IntersectSphere(*cSphereTotem);
             if(intersect.intersects){   //TRUE
+                collision = true;
                 // debemos coger el TOTEM
                 shared_ptr<DataMap> dataCollisionTotem = make_shared<DataMap>();                                                                         
                 (*dataCollisionTotem)[TOTEM] = manTotem.GetEntities()[0];              // nos guardamos el puntero para eliminar el powerUp  
@@ -1183,13 +1186,17 @@ void CLPhysics::IntersectCarsTotem(ManCar &manCars, ManTotem &manTotem){
 }
 
 void CLPhysics::IntersectCarsBoxPowerUp(ManCar &manCars, ManBoxPowerUp &manBoxPowerUp){
-    // IntersectData inters1 = cChaCar1.cilindre->IntersectSphere(*(cChaCar2.sphereBehind.get()));
-    for(const auto& currentCar : manCars.GetEntities()){
-        auto cPowerUpCar = static_cast<CPowerUp*>(currentCar.get()->GetComponent(CompType::PowerUpComp).get()); 
-        auto cChassisCar = static_cast<CBoundingChassis *>(currentCar.get()->GetComponent(CompType::CompBoundingChassis).get());                                                                                             
-        for(const auto& currentBoxPowerUp: manBoxPowerUp.GetEntities()){                                                 
-            auto cBoxPowerUp = static_cast<CBoxPowerUp*>(currentBoxPowerUp->GetComponent(CompType::BoxPowerUpComp).get());
-            CBoundingSphere *cSpherePU = static_cast<CBoundingSphere *>(currentBoxPowerUp->GetComponent(CompType::CompBoundingSphere).get());   
+    // IntersectData inters1 = cChaCar1.cilindre->IntersectSphere(*(cChaCar2.sphereBehind.get()));                                                                                          
+    for(const auto& currentBoxPowerUp: manBoxPowerUp.GetEntities()){                                                 
+        auto cBoxPowerUp = static_cast<CBoxPowerUp*>(currentBoxPowerUp->GetComponent(CompType::BoxPowerUpComp).get());
+        CBoundingSphere *cSpherePU = static_cast<CBoundingSphere *>(currentBoxPowerUp->GetComponent(CompType::CompBoundingSphere).get()); 
+
+        bool collision = false;
+        for(long unsigned int i=0; i<manCars.GetEntities().size() && !collision; i++){
+            const auto& currentCar = manCars.GetEntities()[i];
+            auto cPowerUpCar = static_cast<CPowerUp*>(currentCar.get()->GetComponent(CompType::PowerUpComp).get()); 
+            auto cChassisCar = static_cast<CBoundingChassis *>(currentCar.get()->GetComponent(CompType::CompBoundingChassis).get());   
+
             // Vemos si efectivamente esta activo o no, para poder cogerlo
             if(cBoxPowerUp->active == true){
                 // primero vemos si colisionan
@@ -1198,8 +1205,8 @@ void CLPhysics::IntersectCarsBoxPowerUp(ManCar &manCars, ManBoxPowerUp &manBoxPo
                     intersect = cChassisCar->sphereBehind->IntersectSphere(*cSpherePU);
                 if(!intersect.intersects)
                     intersect = cChassisCar->sphereFront->IntersectSphere(*cSpherePU);
-
                 if(intersect.intersects){   //TRUE
+                    collision = true;
                     if(cPowerUpCar->typePowerUp == typeCPowerUp::None){
                         shared_ptr<DataMap> dataCollisonCarBoxPowerUp = make_shared<DataMap>();                                                                          // Mejor definirlo en el .h
                         (*dataCollisonCarBoxPowerUp)[BOX_POWER_UP_COMPONENT] = cBoxPowerUp;                                                 
@@ -1221,21 +1228,26 @@ void CLPhysics::IntersectCarsBoxPowerUp(ManCar &manCars, ManBoxPowerUp &manBoxPo
 }
 
 void CLPhysics::IntersectsCarsPowerUps(ManCar &manCars, ManPowerUp &manPowerUps, ManNavMesh *manNavMesh){
-    for(const auto& currentCar : manCars.GetEntities()){
-        auto cChassisCar = static_cast<CBoundingChassis *>(currentCar.get()->GetComponent(CompType::CompBoundingChassis).get());       
-        for(const auto& currentPU : manPowerUps.GetEntities()){      
-            CBoundingSphere *cSpherePU = static_cast<CBoundingSphere *>(currentPU.get()->GetComponent(CompType::CompBoundingSphere).get());    
+      
+    for(const auto& currentPU : manPowerUps.GetEntities()){      
+        CBoundingSphere *cSpherePU = static_cast<CBoundingSphere *>(currentPU.get()->GetComponent(CompType::CompBoundingSphere).get());  
+
+        bool collision = false;
+        for(long unsigned int i=0; i< manCars.GetEntities().size() && !collision; i++){
+            const auto& currentCar = manCars.GetEntities()[i];
+            auto cChassisCar = static_cast<CBoundingChassis *>(currentCar.get()->GetComponent(CompType::CompBoundingChassis).get()); 
+
             auto intersect = cChassisCar->cilindre->IntersectSphere(*cSpherePU);
             if(!intersect.intersects)
                 intersect = cChassisCar->sphereBehind->IntersectSphere(*cSpherePU);
             if(!intersect.intersects)
                 intersect = cChassisCar->sphereFront->IntersectSphere(*cSpherePU);
-                
             if(intersect.intersects){   //TRUE
+                collision = true;
                 cout << "intersecciooooooooon con PowerUp" << endl; 
                 // debemos eliminar el powerUp y hacer danyo al jugador
                 shared_ptr<DataMap> dataCollisonCarPowerUp = make_shared<DataMap>();                                                                       
-                (*dataCollisonCarPowerUp)[POWER_UP] = currentPU;              // nos guardamos el puntero para eliminar el powerUp
+                (*dataCollisonCarPowerUp)[POWER_UP] = currentPU.get();              // nos guardamos el puntero para eliminar el powerUp
                 (*dataCollisonCarPowerUp)[CAR_AI] = currentCar.get();              // nos guardamos el puntero al coche                              
                 EventManager::GetInstance().AddEventMulti(Event{EventType::COLLISION_ENTITY_AI_POWERUP, dataCollisonCarPowerUp}); 
                 // comprobamos si el coche tenia escudo y el totem.. ya que debe de soltarlo
@@ -1253,6 +1265,45 @@ void CLPhysics::IntersectsCarsPowerUps(ManCar &manCars, ManPowerUp &manPowerUps,
     }
 }
 
+
+void CLPhysics::IntersectPowerUpWalls(ManPowerUp &manPowerUp, ManBoundingWall &manWalls, ManBoundingOBB &manOBB){
+
+
+    for(const auto& currentPU : manPowerUp.GetEntities()){                                                 
+        CBoundingSphere *cSpherePU = static_cast<CBoundingSphere *>(currentPU->GetComponent(CompType::CompBoundingSphere).get());  
+
+        bool collision = false;
+        // COMPROBAMOS LOS PLANOS NORMALES
+        for(long unsigned int i=0; i < manWalls.GetEntities().size() && !collision; i++){
+            const auto& currentWall = manWalls.GetEntities()[i];
+            CBoundingPlane *plane = static_cast<CBoundingPlane *>(currentWall->GetComponent(CompType::CompBoundingPlane).get());
+
+            IntersectData intersect = plane->IntersectSphere(*cSpherePU);
+            if(intersect.intersects){
+                collision = true;
+                // el powerUp ha tocado una pared debemos eliminarlo
+                shared_ptr<DataMap> dataCollisonPowerUp = make_shared<DataMap>();                                                                       
+                (*dataCollisonPowerUp)[POWER_UP] = currentPU.get();              // nos guardamos el puntero para eliminar el powerUp                            
+                EventManager::GetInstance().AddEventMulti(Event{EventType::DELETE_POWERUP, dataCollisonPowerUp}); 
+            }
+
+        } 
+        // COMPROBAMOS LOS OBB
+        for(long unsigned int i=0; i < manOBB.GetEntities().size() && !collision; i++){
+            const auto& currentOBB = manOBB.GetEntities()[i];
+            CBoundingOBB *cOBBactual = static_cast<CBoundingOBB *>(currentOBB->GetComponent(CompType::CompBoundingOBB).get());
+
+            IntersectData intersect = cOBBactual->IntersectSphere(*cSpherePU);
+            if(intersect.intersects){
+                collision = true;
+                // el powerUp ha tocado un OBB debemos eliminarlo
+                shared_ptr<DataMap> dataCollisonPowerUp = make_shared<DataMap>();                                                                       
+                (*dataCollisonPowerUp)[POWER_UP] = currentPU.get();              // nos guardamos el puntero para eliminar el powerUp                            
+                EventManager::GetInstance().AddEventMulti(Event{EventType::DELETE_POWERUP, dataCollisonPowerUp}); 
+            }
+        } 
+    }
+}
 
 
 

@@ -19,6 +19,8 @@ class ManPowerUp;
 class ManNavMesh;
 class ManTotem;
 class ManBoxPowerUp;
+class ManBoundingOBB;
+class ManBoundingWall;
 class IntersectData;
 class CCar;
 
@@ -41,6 +43,7 @@ class CLPhysics {
     void IntersectsCarsPowerUps(ManCar &, ManPowerUp &, ManNavMesh *);
     void IntersectCarsTotem(ManCar &, ManTotem &);
     void IntersectCarsBoxPowerUp(ManCar &, ManBoxPowerUp &);
+    void IntersectPowerUpWalls(ManPowerUp &, ManBoundingWall &, ManBoundingOBB &);
 
     static void RunTests();
 
@@ -79,7 +82,7 @@ class CLPhysics {
     void PositionCilindreIntoSpheres(CBoundingChassis &chassis) const;
     void SeparateSpheres(CTransformable &trCar1, CBoundingSphere &spCar1, CCar &ccarCar1, CTransformable &trCar2, CBoundingSphere &spCar2, CCar &ccarCar2) const;
     void SeparateCilindreSphere(CTransformable &trCar1, glm::vec3 &cenCar1, const float &radCar1, CCar &ccarCar1, CTransformable &trCar2, glm::vec3 &cenCar2, const float &radCar2, CCar &ccarCar2) const;
-    void SeparateSphereFromPlane(IntersectData &intersData, CTransformable &trCar1, CBoundingSphere &spCar1, CCar &ccarCar1, CBoundingPlane &plane) const;
+    void SeparateSphereFromPlane(IntersectData &intersData, CTransformable &trCar1, CBoundingSphere &spCar1, CBoundingPlane &plane) const;
     void ReflectCollision(CTransformable &trCar1, CCar &cCar1, CTransformable &trCar2, CCar &cCar2);
     void ReflectSpherePlane(CTransformable &trCar, CCar &cCar1, CBoundingPlane &plane);
     void ExchangeVectors(CTransformable &trCar1, CCar &cCar1, CTransformable &trCar2, CCar &cCar2);

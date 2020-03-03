@@ -91,7 +91,7 @@ void ManPowerUp::DeletePowerUp(DataMap* d){
     auto renderEngine = renderFacadeManager->GetRenderFacade();
     
     for(long unsigned int i=0; i< entities.size(); ++i){
-        if(entities[i] == any_cast<shared_ptr<Entity>>((*d)[POWER_UP])){
+        if(entities[i].get() == any_cast<Entity*>((*d)[POWER_UP])){
             renderEngine->DeleteEntity(entities[i].get());
             entities.erase(entities.begin()+i);
         }
@@ -114,6 +114,11 @@ void ManPowerUp::SubscribeToEvents() {
     
     EventManager::GetInstance().SubscribeMulti(Listener(
         EventType::COLLISION_ENTITY_AI_POWERUP,
+        bind(&ManPowerUp::DeletePowerUp, this, placeholders::_1),
+        "DeletePowerUp"));
+
+    EventManager::GetInstance().SubscribeMulti(Listener(
+        EventType::DELETE_POWERUP,
         bind(&ManPowerUp::DeletePowerUp, this, placeholders::_1),
         "DeletePowerUp"));
 }

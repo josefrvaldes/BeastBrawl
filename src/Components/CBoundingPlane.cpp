@@ -33,7 +33,7 @@ CBoundingPlane::CBoundingPlane(const vec3 &a_, const vec3 &b_, const vec3 &c_, c
 }
 
 // TODO: Se va a tener en cuenta el angulo que formen????
-IntersectData CBoundingPlane::IntersectSphere(const CBoundingSphere &other, const CTransformable &trCar, const CCar &ccarCar){
+IntersectData CBoundingPlane::IntersectSphere(const CBoundingSphere &other){
     float distanceFromSpCenter = fabs(dot(normalizedNormal, other.center) - distance);
     // cout << "Distance from sphere center " << distanceFromSpCenter << endl;
     float distanceFromSphere = distanceFromSpCenter - other.radius;
@@ -81,7 +81,7 @@ IntersectData CBoundingPlane::IntersectSphere(const CBoundingSphere &other, cons
 }
 
 
-IntersectData CBoundingPlane::IntersectSphereCenter(const CBoundingSphere &other, const CTransformable &trCar){
+IntersectData CBoundingPlane::IntersectSphereCenter(const CBoundingSphere &other){
     float distanceFromSpCenter = fabs(dot(normalizedNormal, other.center) - distance);
     // cout << "Distance from sphere center " << distanceFromSpCenter << endl;
     float distanceFromSphere = distanceFromSpCenter - other.radius;
