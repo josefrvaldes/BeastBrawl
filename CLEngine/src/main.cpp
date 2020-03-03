@@ -223,8 +223,8 @@ int main() {
         glUniform3f(glGetUniformLocation(resourceShader->GetProgramID(),  "light.specular"), 1.0,1.0,1.0);
 
         
-        meshes->SetRotation(glm::vec3(0.0f,0.0f,index));
-        mesh1->SetRotation(glm::vec3(index,0.0f,index));
+        //meshes->SetRotation(glm::vec3(0.0f,0.0f,index));
+        //mesh1->SetRotation(glm::vec3(index,0.0f,index));
 
 
 

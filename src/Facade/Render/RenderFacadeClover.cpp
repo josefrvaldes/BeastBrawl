@@ -242,7 +242,7 @@ const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
     node->SetShaderProgramID(shader->GetProgramID());
 
     //Seteamos valores
-    node->SetTranslation(cTransformable->position);
+    node->SetTranslation(glm::vec3(cTransformable->position.x,cTransformable->position.y,-cTransformable->position.z));
     node->SetRotation(cTransformable->rotation);
     node->SetScalation(cTransformable->scale);
     //TODO: Esto luego deberia calcular con opengl las dimensiones 
@@ -312,18 +312,23 @@ void RenderFacadeClover::UpdateCamera(Entity* cam, ManCar* manCars) {
             targetPosition.z = targetPosition.z + (2*distZ);
 
         }
-        float angleRotation = (60 * M_PI) / 180.0;
+        //float angleRotation = (60 * M_PI) / 180.0;
 
-        cameraEntity->SetCameraTarget(targetPosition);
-        //camera1->setFOV(angleRotation);
-        camera1->SetTranslation(glm::vec3(cTransformable->position.x, cTransformable->position.y-5, cTransformable->position.z));
+        cameraEntity->SetCameraTarget(glm::vec3(targetPosition.x,targetPosition.y,targetPosition.z));
+        cameraEntity->SetFOV(60);
+        camera1->SetTranslation(glm::vec3(-cTransformable->position.x, cTransformable->position.y-5, -cTransformable->position.z));
+        camera1->SetRotation(glm::vec3(-cTransformable->rotation.x,cTransformable->rotation.y,-cTransformable->rotation.z));
+
 
     }else if(cCamera->camType == CamType::NORMAL_CAM){
-        float angleRotation = (70 * M_PI) / 180.0;
+        //float angleRotation = (70 * M_PI) / 180.0;
 
-        cameraEntity->SetCameraTarget(targetPosition);
-        //camera1->setFOV(angleRotation);
-        camera1->SetTranslation(glm::vec3(cTransformable->position.x, cTransformable->position.y, cTransformable->position.z));
+        cameraEntity->SetCameraTarget(glm::vec3(-targetPosition.x,targetPosition.y,-targetPosition.z));
+        
+        cameraEntity->SetFOV(70);
+        camera1->SetTranslation(glm::vec3(-cTransformable->position.x, cTransformable->position.y, -cTransformable->position.z));
+        camera1->SetRotation(glm::vec3(-cTransformable->rotation.x,cTransformable->rotation.y,-cTransformable->rotation.z));
+
     }else if (cCamera->camType == CamType::TOTEM_CAM){
 
         auto car = manCars->GetCar();
@@ -366,15 +371,19 @@ void RenderFacadeClover::UpdateCamera(Entity* cam, ManCar* manCars) {
 
         float valueAtan2 = atan2(vectorZ,vectorX);
 
-        float angleRotation = (90 * M_PI) / 180.0; 
+        //float angleRotation = (90 * M_PI) / 180.0; 
 
         
-        cameraEntity->SetCameraTarget(targetPosition);
-        //camera1->setFOV(angleRotation);
+        cameraEntity->SetCameraTarget(glm::vec3(-targetPosition.x,targetPosition.y,-targetPosition.z));
+        
+        cameraEntity->SetFOV(90);
         camera1->SetTranslation(glm::vec3(
-            cTransformableCar->position.x + 32.5 * cos(valueAtan2), 
+            -cTransformableCar->position.x + 32.5 * cos(valueAtan2), 
             cTransformable->position.y, 
-            cTransformableCar->position.z + 35 * sin(valueAtan2)));
+            -cTransformableCar->position.z + 35 * sin(valueAtan2)));
+
+        camera1->SetRotation(glm::vec3(-cTransformable->rotation.x,cTransformable->rotation.y,-cTransformable->rotation.z));
+        
     }
 
     */
@@ -401,12 +410,12 @@ void RenderFacadeClover::FacadeAddCamera(Entity* camera) {
     // float posX = cCamera->tarX - 40.0 * sin(((cTransformable->rotation.x) * M_PI) / 180.0);
     // float posZ = cCamera->tarZ - 40.0 * cos(((cTransformable->rotation.z) * M_PI) / 180.0);
     // cameraEntity->SetCameraTarget(glm::vec3(cCamera->tarX, cCamera->tarY, cCamera->tarZ));
-    // camera1->SetTranslation(glm::vec3(posX, cTransformable->position.y, posZ));
-    // camera1->SetRotation(cTransformable->rotation);
+    // camera1->SetTranslation(glm::vec3(-posX, cTransformable->position.y, -posZ));
+    // camera1->SetRotation(glm::vec3(-cTransformable->rotation.x,cTransformable->rotation.y,-cTransformable->rotation.z));
     // camera1->SetScalation(cTransformable->scale);
 
     cameraEntity->SetCameraTarget(glm::vec3(0.0f, 0.0f, 0.0f));
-    camera1->SetTranslation(glm::vec3(300.0f,300.0f,-800.0f));
+    camera1->SetTranslation(glm::vec3(300.0f,300.0f,0.0f));
     camera1->SetRotation(glm::vec3(0.0f,0.0f,0.0f));
     camera1->SetScalation(glm::vec3(1.0f,1.0f,1.0f));
     
