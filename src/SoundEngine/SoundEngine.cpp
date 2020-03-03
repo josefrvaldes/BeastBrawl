@@ -48,7 +48,7 @@ void SoundEngine::InitSoundEngine() {
     ERRFMODCHECK(FMOD::Studio::System::create(&system));
     ERRFMODCHECK(system->getCoreSystem(&coreSystem));
     ERRFMODCHECK(coreSystem->setSoftwareFormat(0, FMOD_SPEAKERMODE_5POINT1, 0));
-    ERRFMODCHECK(system->initialize(1024, FMOD_STUDIO_INIT_NORMAL, FMOD_INIT_NORMAL, nullptr));
+    ERRFMODCHECK(system->initialize(512, FMOD_STUDIO_INIT_NORMAL, FMOD_INIT_NORMAL, nullptr));
 }
 
 /**
@@ -383,10 +383,10 @@ void SoundEngine::SetListenerPosition(const glm::vec3 &pos) {
 
     FMOD_3D_ATTRIBUTES atr;
     atr.position = vec;
-    atr.up = {1.0, 0.0, 0.0};
-    atr.forward = {0.0, 1.0, 0.0};
-    atr.velocity; // Para el senior efecto Doppler
-
+    atr.forward = {1.0, 0.0, 0.0};
+    atr.up = {0.0, 1.0, 0.0};
+    atr.velocity = {0.0, 0.0, 0.0}; // Para el senior efecto Doppler
+    //cout << "La posicion del coche es: " << pos.x << " - " << pos.y << " - " << pos.z << endl;
     ERRFMODCHECK(system->setListenerAttributes(0, &atr));
 }
 
