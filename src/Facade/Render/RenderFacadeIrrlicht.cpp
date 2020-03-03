@@ -103,7 +103,7 @@ void RenderFacadeIrrlicht::FacadeInitHUD() {
 
 void RenderFacadeIrrlicht::FacadeUpdatePowerUpHUD(DataMap* d) {
     typeCPowerUp type = any_cast<typeCPowerUp>((*d)[TYPE_POWER_UP]);
-    cout << "Facada recibe el power up: " << (int)type << endl;
+    //cout << "Facada recibe el power up: " << (int)type << endl;
     currentPowerUp = int(type);
 }
 
@@ -164,13 +164,13 @@ void RenderFacadeIrrlicht::FacadeDrawHUD(Entity* car, ManCar* manCars) {
                         video::SColor(255, 255, 255, 255), false);
 
     //operaciones para dejarle con un solo decimal
-    int time = cTotem->accumulatedTime / 100.0;
-    float time2 = time / 10.0;
-    core::stringw mainCarText = core::stringw("Main car   ");
-    core::stringw tiempoStringw = mainCarText + core::stringw(time2);
-    font->draw(tiempoStringw,
-               core::rect<s32>(200, 55, 300, 200),
-               video::SColor(255, 0, 0, 0));
+    // int time = cTotem->accumulatedTime / 100.0;
+    // float time2 = time / 10.0;
+    // core::stringw mainCarText = core::stringw("Main car   ");
+    // core::stringw tiempoStringw = mainCarText + core::stringw(time2);
+    // font->draw(tiempoStringw,
+    //            core::rect<s32>(200, 55, 300, 200),
+    //            video::SColor(255, 0, 0, 0));
     //Dibujamos powerUp
     driver->draw2DImage(powerUps[currentPowerUp], core::position2d<s32>(50, 50),
                         core::rect<s32>(0, 0, 100, 100), 0,
@@ -179,19 +179,23 @@ void RenderFacadeIrrlicht::FacadeDrawHUD(Entity* car, ManCar* manCars) {
     int i = 0;
     core::stringw textIA = core::stringw("Car ");
     for (const auto& cars : manCars->GetEntities()) {
-        if(manCars->GetCar().get() != cars.get()){
-            cTotem = static_cast<CTotem*>(cars->GetComponent(CompType::TotemComp).get());
+        
+        cTotem = static_cast<CTotem*>(cars->GetComponent(CompType::TotemComp).get());
 
-            int time = cTotem->accumulatedTime / 100.0;
-            float time2 = time / 10.0;
-
-            core::stringw iaText = textIA + core::stringw(i) + core::stringw("  ") + core::stringw(time2);
-            font->draw(iaText,
-                    core::rect<s32>(200, 70 + (i * 15), 300, 300),
-                    video::SColor(255, 0, 0, 0));
-
-            i++;
+        int time = cTotem->accumulatedTime / 100.0;
+        float time2 = time / 10.0;
+        video::SColor color(255,0,0,0);
+        if(cTotem->active){
+            //Si tiene el totem voy a dibujarlo rojo por ejemplo
+            color.setRed(255);
         }
+        core::stringw iaText = core::stringw(cTotem->positionRanking) + core::stringw("  ") + textIA + core::stringw(i) + core::stringw("  ") + core::stringw(time2);
+        font->draw(iaText,
+                core::rect<s32>(200, 70 + ((cTotem->positionRanking-1) * 15), 300, 300),
+                color);
+
+        i++;
+        
     }
 }
 
@@ -276,25 +280,13 @@ const uint16_t RenderFacadeIrrlicht::FacadeAddObject(Entity* entity) {
         node->setMaterialTexture(0, driver->getTexture(path.c_str()));  //Obligado incluir el c_str() si no irrlicht no carga solo con un string
         node->setMaterialFlag(video::EMF_LIGHTING, false);
 
-        /*
-        bool hasSphere = entity->HasComponent(CompType::CompBoundingSphere);
-        if (hasSphere && Constants::DEBUG_SHOW_SPHERES) {
-            cout << "POS X: " << cTransformable->position.x << " POS Y: " << cTransformable->position.y << "POS Z:" << cTransformable->position.z << endl;
-            scene::ISceneNode* nodeSphere = smgr->addSphereSceneNode(10.0);
-            nodeSphere->setID(cId->id + Component::ID_DIFFERENCE);
-            nodeSphere->setPosition(core::vector3df(cTransformable->position.x, cTransformable->position.y, cTransformable->position.z));
-            nodeSphere->setScale(core::vector3df(1.f, 1.f, 1.f));
-            nodeSphere->setMaterialTexture(0, driver->getTexture(path.c_str()));  //Obligado incluir el c_str() si no irrlicht no carga solo con un string
-            nodeSphere->setMaterialFlag(video::EMF_LIGHTING, false);
-            nodeSphere->setVisible(showDebug);
-        }
-        */
         
 
-       
+        
+        
         bool hasChassis = entity->HasComponent(CompType::CompBoundingChassis);
         if (hasChassis && Constants::DEBUG_SHOW_CHASSIS) {
-            cout << "entramos aqui???" << endl;
+            // cout << "entramos aqui???" << endl;
             auto cChassis = static_cast<CBoundingChassis *>(entity->GetComponent(CompType::CompBoundingChassis).get());
             // primera esfera
             auto radiousSph1 = cChassis->sphereBehind->radius;
@@ -319,6 +311,21 @@ const uint16_t RenderFacadeIrrlicht::FacadeAddObject(Entity* entity) {
             nodeSphere2->setMaterialFlag(video::EMF_LIGHTING, false);
             nodeSphere2->setVisible(false);
         }
+        /*else{
+            bool hasSphere = entity->HasComponent(CompType::CompBoundingSphere);
+            if (hasSphere && Constants::DEBUG_SHOW_SPHERES) {
+                auto cBoundingSphere = static_cast<CBoundingSphere *>(entity->GetComponent(CompType::CompBoundingSphere).get());
+                //cout << "POS X: " << cTransformable->position.x << " POS Y: " << cTransformable->position.y << "POS Z:" << cTransformable->position.z << endl;
+                cout << "lo creamos aqui con el radio de: " << cBoundingSphere->radius << endl;
+                scene::ISceneNode* nodeSphere = smgr->addSphereSceneNode(cBoundingSphere->radius);
+                nodeSphere->setID(cId->id + Component::ID_DIFFERENCE);
+                nodeSphere->setPosition(core::vector3df(cBoundingSphere->center.x, cBoundingSphere->center.y, cBoundingSphere->center.z));
+                nodeSphere->setScale(core::vector3df(1.f, 1.f, 1.f));
+                nodeSphere->setMaterialTexture(0, driver->getTexture(path.c_str()));  //Obligado incluir el c_str() si no irrlicht no carga solo con un string
+                nodeSphere->setMaterialFlag(video::EMF_LIGHTING, false);
+                nodeSphere->setVisible(true);
+            }
+        }*/
         
 
     }
@@ -352,6 +359,35 @@ const uint16_t RenderFacadeIrrlicht::FacadeAddObject(Entity* entity) {
     delete[] edges;
     return cId->id;
 }
+
+
+
+
+
+
+//INPUTS : Una entidad GameObject
+//TODO: Llevar cuidado con las rutas de las texturas si luego se mueven las carpetas
+void RenderFacadeIrrlicht::FacadeAddSphereOnObject(Entity* entity) {
+    //Fuente: https://stackoverflow.com/questions/11855018/c-inheritance-downcasting
+    //Como convertir un Component en cualquier tipo de sus subclases para poder usar los metodos propios
+    auto cId = static_cast<CId*>(entity->GetComponent(CompType::IdComp).get());
+    std::string path = "media/";
+
+    bool hasSphere = entity->HasComponent(CompType::CompBoundingSphere);
+    if (hasSphere && Constants::DEBUG_SHOW_SPHERES) {
+        auto cBoundingSphere = static_cast<CBoundingSphere *>(entity->GetComponent(CompType::CompBoundingSphere).get());
+        //cout << "POS X: " << cTransformable->position.x << " POS Y: " << cTransformable->position.y << "POS Z:" << cTransformable->position.z << endl;
+        cout << "lo creamos aqui con el radio de: " << cBoundingSphere->radius << endl;
+        scene::ISceneNode* nodeSphere = smgr->addSphereSceneNode(cBoundingSphere->radius);
+        nodeSphere->setID(cId->id + Component::ID_DIFFERENCE);
+        nodeSphere->setPosition(core::vector3df(cBoundingSphere->center.x, cBoundingSphere->center.y, cBoundingSphere->center.z));
+        nodeSphere->setScale(core::vector3df(1.f, 1.f, 1.f));
+        nodeSphere->setMaterialTexture(0, driver->getTexture(path.c_str()));  //Obligado incluir el c_str() si no irrlicht no carga solo con un string
+        nodeSphere->setMaterialFlag(video::EMF_LIGHTING, false);
+        nodeSphere->setVisible(true);
+    }
+}
+
 
 //INPUTS : Una entidad GameObject
 //RETURNS: El Id del objeto añadido
@@ -1083,8 +1119,14 @@ void RenderFacadeIrrlicht::Draw3DLine(vec3& pos1, vec3& pos2, uint16_t r, uint16
     driver->draw3DLine(initial, final, video::SColor(255, r, g, b));
 }
 
+// TODO: El id del compoennte sphere debe crearse en el porpio compoentne y no en el render Fachade o Physics fachade
 void RenderFacadeIrrlicht::DeleteEntity(Entity* entity) {
     auto cId = static_cast<CId*>(entity->GetComponent(CompType::IdComp).get());
+    // si tenemos el compoennte Sphere hay que eliminar... su Bounding
+    //if (entity->HasComponent(CompType::CompBoundingSphere)){
+    //    scene::ISceneNode* nodeSphere = smgr->getSceneNodeFromId(cId->id + Component::ID_DIFFERENCE);
+    //    nodeSphere->remove();
+    //}
     scene::ISceneNode* node = smgr->getSceneNodeFromId(cId->id);
     node->remove();
 }
@@ -1103,6 +1145,22 @@ void RenderFacadeIrrlicht::FacadeDrawBoundingPlane(Entity* entity) const {
     Draw3DLine(b, c);
     Draw3DLine(c, d);
     Draw3DLine(d, a);
+}
+
+void RenderFacadeIrrlicht::FacadeDrawBoundingGround(Entity* entity) const {
+    if (!showDebug) return;  //Si no esta activado debug retornamos
+
+    CBoundingPlane *plane = static_cast<CBoundingPlane*>(entity->GetComponent(CompType::CompBoundingPlane).get());
+    
+    vec3 &a = plane->a;
+    vec3 &b = plane->b;
+    vec3 &c = plane->c;
+    vec3 &d = plane->d;
+    
+    Draw3DLine(a, b, 0, 0, 0);
+    Draw3DLine(b, c, 0, 0, 0);
+    Draw3DLine(c, d, 0, 0, 0);
+    Draw3DLine(d, a, 0, 0, 0);
 }
 
 

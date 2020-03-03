@@ -32,6 +32,7 @@
 #include <Systems/SystemPathPlanning.h>
 #include <Game.h>
 #include <Managers/ManBoundingWall.h>
+#include <Managers/ManBoundingGround.h>
 #include <Managers/ManBoxPowerUp.h>
 #include <Managers/ManCar.h>
 #include <Managers/ManNamePlate.h>
@@ -50,6 +51,7 @@
 #include <Components/CNavMesh.h>
 #include <Components/CCurrentNavMesh.h>
 #include "../Managers/ManBoundingOBB.h"
+#include "../Constants.h"
 
 
 using namespace std;
@@ -80,6 +82,7 @@ class StateInGame : public State {
     shared_ptr<ManNamePlate> manNamePlates;
     shared_ptr<ManBoundingWall> manBoundingWall;
     shared_ptr<ManBoundingOBB> manBoundingOBB;
+    shared_ptr<ManBoundingGround> manBoundingGround;
 
     RenderFacade *renderEngine = {nullptr};
     InputFacade *inputEngine = {nullptr};
@@ -88,7 +91,7 @@ class StateInGame : public State {
 
     shared_ptr<Physics> physics;
     //shared_ptr<float> deltaTime;
-    float deltaTime = 0.0166666;
+    
     shared_ptr<PhysicsPowerUp> phisicsPowerUp;
     shared_ptr<SystemBoxPowerUp> sysBoxPowerUp;
     shared_ptr<Collisions> collisions;
@@ -105,14 +108,14 @@ class StateInGame : public State {
     // vector<float> deltas;
     //float CalculateDelta(float);
 
-    virtual void InitializeCLPhysics(ManCar &manCars, ManBoundingWall &ManBoundingWall, ManBoundingOBB &manBoundingOBB);
-    virtual void InitializeManagers(Physics *physics, Camera *cam);
-    virtual void InitializeSystems(ManCar &manCars, ManBoundingWall &manBoundingWall, ManBoundingOBB &manBoundingOBB);
+    virtual void InitializeCLPhysics(ManCar&, ManBoundingWall&, ManBoundingOBB&, ManBoundingGround&, ManPowerUp&, ManNavMesh&, ManBoxPowerUp&, ManTotem &);
+    virtual void InitializeManagers(Physics *, Camera *);
+    virtual void InitializeSystems(ManCar&, ManBoundingWall&, ManBoundingOBB&, ManBoundingGround&, ManPowerUp&, ManNavMesh&, ManBoxPowerUp&, ManTotem &);
     virtual void InitializeFacades();
     virtual void AddElementsToRender();
-    virtual void CAMBIARCosasDeTotemUpdate(){};
 
     void CAMBIARCosasDeTotem(ManTotem &);
-    void CAMBIARCosasDeBoxPU(ManWayPoint &, ManBoxPowerUp &);
-    void CAMBIARCosasNavMesh(ManNavMesh &);
+    void CAMBIARCosasNavMesh(ManCar &, ManNavMesh &);
+    void CAMBIARPositionTotemAboveCar();
+
 };

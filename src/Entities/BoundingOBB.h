@@ -11,6 +11,6 @@ using namespace glm;
 
 class BoundingOBB : public Entity {
    public:
-    BoundingOBB(const vector<vec3> &, const vec3 &);
+    BoundingOBB(const vector<glm::vec3> &, const vector<glm::vec3> &);
     ~BoundingOBB();
 };

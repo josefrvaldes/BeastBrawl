@@ -98,9 +98,9 @@ void Game::SetState(State::States stateType) {
 }
 
 void Game::InitGame() {
-    RenderFacadeManager::GetInstance()->InitializeClover();
-    InputFacadeManager::GetInstance()->InitializeClover();
-    PhysicsFacadeManager::GetInstance()->InitializeClover();
+    RenderFacadeManager::GetInstance()->InitializeIrrlicht();
+    InputFacadeManager::GetInstance()->InitializeIrrlicht();
+    PhysicsFacadeManager::GetInstance()->InitializeIrrlicht();
 
     //Inicializa la fachada de FMOD.
     SoundFacadeManager::GetInstance()->InitializeFacadeFmod();
@@ -191,6 +191,11 @@ void Game::SetStatePause(DataMap* d) {
 }
 
 void Game::SetStateInGameSingle(DataMap* d) {
+    shared_ptr<DataMap> data = make_shared<DataMap>();
+
+    (*data)[TYPE_POWER_UP] = typeCPowerUp::None;
+
+    EventManager::GetInstance().AddEventMulti(Event{EventType::UPDATE_POWERUP_HUD, data});
     SetState(State::INGAME_SINGLE);
 }
 

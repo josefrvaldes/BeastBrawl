@@ -146,7 +146,7 @@ struct SBArrive_LoDMove : public behaviourTree {
 //ACCION --> aplicamos logica difusa
 struct ApplyFuzzyLogic_LoDMove : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
-        blackboard->systemFuzzyLogicAI->Update(blackboard->actualCar, 0.016);
+        blackboard->systemFuzzyLogicAI->Update(blackboard->actualCar, Constants::DELTA_TIME);
         auto cMovementType = static_cast<CMovementType*>(blackboard->actualCar->GetComponent(CompType::MovementComp).get());
         cMovementType->movementType = "Logica difusa";
         //std::cout << "Aplico FL" << std::endl;    

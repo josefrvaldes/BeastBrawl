@@ -20,6 +20,7 @@ class RenderFacade {
     //RenderFacade() = default;
     virtual ~RenderFacade() = default;
     virtual const uint16_t FacadeAddObject(Entity*) = 0;
+    virtual void FacadeAddSphereOnObject(Entity* entity) = 0;
     virtual const uint16_t FacadeAddObjectCar(Entity*) = 0;
     virtual const uint16_t FacadeAddObjectTotem(Entity* entity) = 0;
     virtual const void FacadeAddObjects(vector<Entity*>) = 0;
@@ -63,6 +64,7 @@ class RenderFacade {
     virtual void FacadeDrawGraphEdges(ManWayPoint* manWayPoints) const = 0;
     virtual void FacadeDrawBoundingBox(Entity* entity, bool colliding) const = 0;
     virtual void FacadeDrawBoundingPlane(Entity* entity) const = 0;
+    virtual void FacadeDrawBoundingGround(Entity* entity) const = 0;
     virtual void FacadeDrawBoundingOBB(Entity* entity) const = 0;
     virtual void FacadeDrawAIDebug(ManCar* manCars, ManNavMesh* manNavMesh, ManWayPoint* manWayPoint) const = 0;
     virtual void FacadeDrawAIDebugPath(Entity* carAI, ManWayPoint* manWayPoint) const = 0;

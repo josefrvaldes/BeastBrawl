@@ -61,7 +61,8 @@ void StateLobbyMulti::SubscribeToEvents() {
 
 void StateLobbyMulti::StartGameMulti(DataMap* d) {
     cout << "Hemos llegado a StateLobbyMulti::StartGameMulti" << endl;
-    uint16_t IdOnline = any_cast<uint16_t>((*d)[DataType::ID_ONLINE]);
+    uint16_t idOnline = any_cast<uint16_t>((*d)[DataType::ID_ONLINE]);
+    cout << "Yo soy el coche con idOnline " << idOnline  << endl;
     vector<uint16_t> vectorIdOnline = any_cast<vector<uint16_t>>((*d)[DataType::VECTOR_ID_ONLINE]);
-    renderEngine->ThrowEventChangeToMulti(IdOnline, vectorIdOnline);
+    renderEngine->ThrowEventChangeToMulti(idOnline, vectorIdOnline);
 }

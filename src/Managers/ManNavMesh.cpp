@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <Entities/NavMesh.h>
+#include <Entities/Car.h>
 #include <Components/CDimensions.h>
 #include <Components/CCurrentNavMesh.h>
 #include <Components/CNavMesh.h>
@@ -12,7 +13,7 @@
 using namespace std;
 using json = nlohmann::json;
 
-ManNavMesh::ManNavMesh(Entity *carPlayer, ManTotem *manTotems) {
+ManNavMesh::ManNavMesh(ManCar *manCars, ManTotem *manTotems) {
     //Leemos y añadimos los NavMesh
     double vertex1X=0, /*vertex1Y=0,*/vertex1Z=0;   // utilizamos double porque tiene mas precison que float (64b vs 32b)
     double vertex2X=0, /*vertex2Y=0,*/vertex2Z=0; 
@@ -111,7 +112,11 @@ ManNavMesh::ManNavMesh(Entity *carPlayer, ManTotem *manTotems) {
     SubscribeToEvents();
 
     // Para no duplicar codigo, pasamos el coche de tipo CarHuman a Entity
-    UpdateNavMeshPlayer(carPlayer);
+    for(auto& actualCar: manCars->GetEntities()){
+        if (static_cast<Car*>(actualCar.get())->GetTypeCar() != TypeCar::CarAI)
+            UpdateNavMeshHuman(actualCar.get());
+    }
+
     InitNavMeshTotem(manTotems);
 }
 
@@ -197,7 +202,7 @@ void ManNavMesh::ActualizeNavMeshCarAI(DataMap* d){
     }
 }
 
-void ManNavMesh::UpdateNavMeshPlayer(Entity* carPlayer){
+void ManNavMesh::UpdateNavMeshHuman(Entity* carPlayer){
     auto cTransformableCar = static_cast<CTransformable*>(carPlayer->GetComponent(CompType::TransformableComp).get());     
     for(const auto& navmesh : GetEntities()){
         auto cDimensions = static_cast<CDimensions*>(navmesh.get()->GetComponent(CompType::DimensionsComp).get());
