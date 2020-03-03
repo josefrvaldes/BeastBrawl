@@ -51,7 +51,8 @@ int main() {
     shared_ptr<CLResourceManager> resourceManager = make_shared<CLResourceManager>();
     auto resourceShader = resourceManager->GetResourceShader("CLEngine/src/Shaders/vertex.glsl", "CLEngine/src/Shaders/fragment.glsl");
     auto resourceMeshCar = resourceManager->GetResourceMesh("media/TEST_BOX.fbx");
-    auto resourceMesh = resourceManager->GetResourceMesh("media/sharky_lowpoly.fbx");
+    auto resourceMeshTotem = resourceManager->GetResourceMesh("media/totem_tex.fbx");
+    auto resourceMesh = resourceManager->GetResourceMesh("media/kart_physics.fbx");
 
     //----------------------------------------------------------------------------------------------------------------SHADER
     
@@ -74,12 +75,14 @@ int main() {
 
         auto camera = smgr->AddCamera(3);
         camera->SetShaderProgramID(resourceShader->GetProgramID());
-        static_cast<CLCamera*>(camera->GetEntity())->SetCameraTarget(glm::vec3(0.0f,0.0f,0.0f));
 
-        // auto mesh2 = mesh1->AddMesh(4);
-        // mesh2->SetShaderProgramID(resourceShader->GetProgramID());
+        auto mesh2 = mesh1->AddMesh(4);
+        mesh2->SetShaderProgramID(resourceShader->GetProgramID());
+
+        
 
 
+        static_cast<CLCamera*>(camera->GetEntity())->SetCameraTarget(mesh2->GetTranslation());
 
     //smgr->DFSTree(glm::mat4(1.0));
     vector<shared_ptr<CLEntity>> mallas;
@@ -88,14 +91,14 @@ int main() {
     int max = 200;
     int min = -200;
     int j = 0;
-    for(int i = 6; i<0; i++){
+    for(int i = 6; i<50; i++){
         nodes.push_back(meshes->AddMesh(i));
         nodes[j]->SetShaderProgramID(resourceShader->GetProgramID());
 
         int randNumX = rand()%(max-min + 1) + min;
         int randNumY = rand()%(max-min + 1) + min;
         int randNumZ = rand()%(max-min + 1) + min;
-        static_cast<CLMesh*>(nodes[j]->GetEntity())->SetMesh(resourceMesh);
+        static_cast<CLMesh*>(nodes[j]->GetEntity())->SetMesh(resourceMeshTotem);
         nodes[j]->SetTranslation(glm::vec3(randNumX,randNumY,randNumZ));
         j++;
     }
@@ -104,12 +107,14 @@ int main() {
 
 
     static_cast<CLMesh*>(mesh1->GetEntity())->SetMesh(resourceMeshCar);
-    //static_cast<CLMesh*>(mesh2->GetEntity())->SetMesh(resourceMesh);
+    static_cast<CLMesh*>(mesh2->GetEntity())->SetMesh(resourceMesh);
 
     camera->SetTranslation(glm::vec3(0.0f, 7.0f, 60.0f));
     mesh1->SetScalation(glm::vec3(2.0f, 2.0f, 2.0f));
     mesh1->SetRotation(glm::vec3(90.0f,0.0f,180.0f));
-    //mesh2->SetTranslation(glm::vec3(0.0f, 30.0f, 0.0f));
+    mesh2->SetScalation(glm::vec3(0.2f, 0.2f, 0.2f));
+    mesh2->SetRotation(glm::vec3(0.0f, 180.0f, 0.0f));
+    mesh2->SetTranslation(glm::vec3(10.0f,0.0f,0.0f));
 
     
     
@@ -225,6 +230,7 @@ int main() {
         
         //meshes->SetRotation(glm::vec3(0.0f,0.0f,index));
         //mesh1->SetRotation(glm::vec3(index,0.0f,index));
+        static_cast<CLCamera*>(camera->GetEntity())->SetCameraTarget(mesh2->GetTranslation());
 
 
 

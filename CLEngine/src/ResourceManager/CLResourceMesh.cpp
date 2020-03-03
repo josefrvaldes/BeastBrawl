@@ -255,7 +255,21 @@ vector<Texture> CLResourceMesh::loadMaterialTextures(aiMaterial *mat, aiTextureT
 unsigned int CLResourceMesh::TextureFromFile(const char *path, const string &directory, bool gamma)
 {
     string filename = string(path);
+
+    //Eliminamos las rutas por si en windows hemos modelado dentro de una carpeta
+    std::string delimiter = "\\";
+
+    size_t pos = 0;
+    std::string token;
+    while ((pos = filename.find(delimiter)) != std::string::npos) {
+        token = filename.substr(0, pos);
+        std::cout << token << std::endl;
+        filename.erase(0, pos + delimiter.length());
+    }
+
     filename = "media/" + filename;
+
+    
 
     unsigned int textureID;
     glGenTextures(1, &textureID);
