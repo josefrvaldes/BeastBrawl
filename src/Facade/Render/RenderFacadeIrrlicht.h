@@ -3,11 +3,9 @@
 #include <irrlicht/irrlicht.h>
 #include <EventManager/Event.h>
 #include <EventManager/EventManager.h>
-#include <Facade/Input/InputFacadeIrrlicht.h>
-#include <Facade/Input/InputFacadeManager.h>
 #include "RenderFacade.h"
+#include "../Input/InputFacadeIrrlicht.h"
 
-//#include "../../State/State.h"
 
 #include <codecvt>
 #include <iostream>
@@ -20,17 +18,16 @@
 
 using namespace std;
 using namespace irr;
-
 class RenderFacadeIrrlicht : public RenderFacade {
    public:
     RenderFacadeIrrlicht();
     ~RenderFacadeIrrlicht() override;
     const uint16_t FacadeAddObject(Entity*) override;
+    void FacadeAddSphereOnObject(Entity* entity) override;
     const uint16_t FacadeAddObjectCar(Entity*) override;
     const uint16_t FacadeAddObjectTotem(Entity* entity) override;
     const void FacadeAddObjects(vector<Entity*>) override;
     void FacadeAddCamera(Entity*) override;
-    void UpdateTransformable(Entity*) override;
     void UpdateCamera(Entity*, ManCar* manCars) override;
     bool FacadeRun() override;
     uint32_t FacadeGetTime() const override;
@@ -58,7 +55,7 @@ class RenderFacadeIrrlicht : public RenderFacade {
     void FacadeCheckInputEndRace() override;
     void FacadeCheckInputLobbyMulti() override;
     void FacadeUpdatePowerUpHUD(DataMap* d) override;
-    void FacadeDrawHUD(Entity* car, ManCar* carsAI) override;
+    void FacadeDrawHUD(Entity* car, ManCar* manCars) override;
     void FacadeSuscribeEvents() override;
     void FacadeAddPlates(Manager* manNamePlates) override;
     void FacadeUpdatePlates(Manager* manNamePlates) override;
@@ -70,16 +67,24 @@ class RenderFacadeIrrlicht : public RenderFacade {
     void FacadeDrawGraphEdges(ManWayPoint* manWayPoints) const override;
     void FacadeDrawBoundingBox(Entity* entity, bool colliding) const override;
     void FacadeDrawBoundingPlane(Entity* entity) const override;
+    void FacadeDrawBoundingGround(Entity* entity) const override;
     void FacadeDrawBoundingOBB(Entity* entity) const override;
     void FacadeDrawAIDebug(ManCar* manCars, ManNavMesh* manNavMesh, ManWayPoint* manWayPoint) const override;
     void FacadeDrawAIDebugPath(Entity* carAI, ManWayPoint* manWayPoint) const override;
 
+    void SetShowDebug(bool b) override { showDebug = b;};
+    void SetShowDebugAI(bool b) override { showAIDebug = b;};
+    void SetIDCarAIToDebug(int id) override {idCarAIToDebug = id;};
+
+    bool GetShowDebug() override { return showDebug;};
+    bool GetShowDebugAI() override { return showAIDebug;};
+    int  GetIDCarAIToDebug() override { return idCarAIToDebug;};
 
 
     scene::ISceneManager* GetSceneManager() { return smgr; };
     scene::ICameraSceneNode* GetCamera1() { return camera1; };
-    static bool showDebug;
-    static bool showAIDebug;
+    inline static bool showDebug = false;
+    inline static bool showAIDebug = false;
 
    private:
     IrrlichtDevice* device;

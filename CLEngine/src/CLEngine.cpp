@@ -22,7 +22,6 @@ CLEngine::CLEngine (const unsigned int w, const unsigned int h, const string& ti
     CreateGlfwWindow(w, h, title);
     glewInit();
     ImGuiInit();
-    InitScene();
 }
 
 /**
@@ -74,19 +73,32 @@ void CLEngine::CreateGlfwWindow (const unsigned int w, const unsigned int h, con
     glEnable(GL_DEPTH_TEST);
 }
 
-/**
- * Crea una instancia del resourceManaeger y el nodo raiz y lo almacena. 
- */
-void CLEngine::InitScene() {
-    scene = make_unique<CLNode>();
-    resourceManager = make_unique<CLResourceManager>();
+
+CLNode* CLEngine::GetSceneManager(){
+    if(!smgr){
+        smgr = make_unique<CLNode>();
+    }
+
+    return smgr.get();
+}
+
+CLResourceManager* CLEngine::GetResourceManager(){
+    if(!resourceManager){
+        resourceManager = make_unique<CLResourceManager>();
+    }
+
+    return resourceManager.get();
 }
 
 /**
  * Actualizacion de CLEngine.
  */
 bool CLEngine::Run() {
-    return glfwWindowShouldClose(window);
+    return !(glfwWindowShouldClose(window));
+}
+
+void CLEngine::PollEvents(){
+    glfwPollEvents();
 }
 
 /**
@@ -97,15 +109,25 @@ void CLEngine::BeginScene(){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
+
+void CLEngine::DrawObjects(){
+    smgr->CalculateViewProjMatrix();
+    smgr->DFSTree(glm::mat4(1.0f));
+}
+
 /**
  * Renderiza las cosas de ImGui y cambia el buffer de la ventana. 
  */
 void CLEngine::EndScene(){
-    ImGui::Render();
-    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+    
     
     glfwSwapBuffers(window);
 
+}
+
+void CLEngine::RenderImgui(){
+    ImGui::Render();
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
 /**
@@ -123,10 +145,16 @@ void CLEngine::UpdateViewport(){
 }
 
 //Borrar esto 
-bool CLEngine::InputClose(){
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+void CLEngine::InputClose(){
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE)) {
         glfwSetWindowShouldClose(window, true);
     }
+    
+}
+
+void CLEngine::CloseWindow(){
+    glfwSetWindowShouldClose(window, true);
+
 }
 
 

@@ -6,12 +6,16 @@
 #include <EventManager/EventManager.h>
 #include <Facade/Render/RenderFacadeManager.h>
 #include <Components/CDimensions.h>
+#include "../Components/CBoundingSphere.h"
+#include "../Components/CType.h"
+#include "../Components/CRemovableObject.h"
 
 class Position;
 using namespace std;
 
-
+// TODO: No es un to-do, pero quiero indicar que los powerUps tienen una reserva de 50
 ManPowerUp::ManPowerUp() {
+    entities.reserve(50);
     SubscribeToEvents();
 }
 
@@ -28,6 +32,7 @@ ManPowerUp::~ManPowerUp() {
 void ManPowerUp::CreatePowerUp(DataMap* d) {
 
     typeCPowerUp type = any_cast<typeCPowerUp>((*d)[TYPE_POWER_UP]);
+    cout << "el tipo de powerUp que recibimos es el: " << int(type) << endl;
 
     CTransformable *transforSalida = any_cast<CTransformable *>((*d)[CAR_EXIT_POSITION]);
     CDimensions *dimensionsCarSalida = any_cast<CDimensions *>((*d)[CAR_EXIT_DIMENSION]);
@@ -38,41 +43,70 @@ void ManPowerUp::CreatePowerUp(DataMap* d) {
         transforPerse = nullptr;
 
     // calculamos la posicion en la que debe salir el powerUp:
-    int medidaPowerUp = 10;
+    int medidaPowerUp = 25;
     float posX = 0, posZ = 0;
 
    float angleRotation = (transforSalida->rotation.y * 3.141592) / 180.0;
    if(type == typeCPowerUp::PudinDeFrambuesa){
-        posX = transforSalida->position.x - cos(angleRotation) * (-1*((dimensionsCarSalida->width/2)+medidaPowerUp));
-        posZ = transforSalida->position.z + sin(angleRotation) * (-1*((dimensionsCarSalida->depth/2)+medidaPowerUp));
+        posX = transforSalida->position.x - cos(angleRotation)* (-1*((dimensionsCarSalida->width/2)+medidaPowerUp));
+        posZ = transforSalida->position.z + sin(angleRotation)* (-1*((dimensionsCarSalida->depth/2)+medidaPowerUp));
    }else{
         posX = transforSalida->position.x - cos(angleRotation) * ((dimensionsCarSalida->width/2)+medidaPowerUp);
         posZ = transforSalida->position.z + sin(angleRotation) * ((dimensionsCarSalida->depth/2)+medidaPowerUp);    
    }
 
-    vec3 positionPowerUp = vec3(posX,transforSalida->position.y,posZ);
+    vec3 positionPowerUp = vec3(posX,transforSalida->position.y+10,posZ);
 
-    shared_ptr<PowerUp> powerUp = make_shared<PowerUp>(positionPowerUp, transforSalida->rotation, type, transforPerse);
-    //std::cout << "Las dimensiones del coche son x:" << dimensionsCarSalida->width << " y:" << dimensionsCarSalida->height << " z:" << dimensionsCarSalida->depth << std::endl;
-    entities.push_back(powerUp);
+    shared_ptr<PowerUp> powerUp = make_shared<PowerUp>(positionPowerUp, transforSalida->rotation, type, transforPerse,"CLEngine/src/Shaders/vertex.glsl","CLEngine/src/Shaders/fragment.glsl");
+    auto cTypePU = static_cast<CType*>(powerUp->GetComponent(CompType::TypeComp).get())->type;
+    if( int(cTypePU) >= 0 && int(cTypePU) < 50 ){
+        //std::cout << "Las dimensiones del coche son x:" << dimensionsCarSalida->width << " y:" << dimensionsCarSalida->height << " z:" << dimensionsCarSalida->depth << std::endl;
+        
+        entities.push_back(powerUp);
 
-    auto renderFacadeManager = RenderFacadeManager::GetInstance();
-    auto renderEngine = renderFacadeManager->GetRenderFacade();
-    renderEngine->FacadeAddObject(powerUp.get());
+        auto renderFacadeManager = RenderFacadeManager::GetInstance();
+        auto renderEngine = renderFacadeManager->GetRenderFacade();
+        renderEngine->FacadeAddObject(powerUp.get());
 
-    //Cuando creamos el powerUp, ponemos su tiempo inicial de inactivadad --> para no danyarnos a nostros mismos
-    static_cast<CPowerUp*>(powerUp->GetComponent(CompType::PowerUpComp).get())->timeStart = system_clock::now();
+
+        auto cDimensions = static_cast<CDimensions*>(powerUp->GetComponent(CompType::DimensionsComp).get());
+        auto radioSphere = ((cDimensions->width/2)+(cDimensions->depth/2))/2;
+        shared_ptr<CBoundingSphere> cBoundingSphere = make_shared<CBoundingSphere>(positionPowerUp, radioSphere);
+        powerUp->AddComponent(cBoundingSphere);
+
+        //renderEngine->FacadeAddSphereOnObject(powerUp.get());
+
+        //Cuando creamos el powerUp, ponemos su tiempo inicial de inactivadad --> para no danyarnos a nostros mismos
+        static_cast<CPowerUp*>(powerUp->GetComponent(CompType::PowerUpComp).get())->timeStart = system_clock::now();
+    }else{
+        cout << "el type powerUp es: " << int(cTypePU) << endl;
+        cout << "ESTO NO DEBERIA DE PASAR NUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUNCA JODER" << endl;
+        cout << "SIIIIIIIIIIII TE PASA ESTOOOOOOOOOOOOOOOOOOOOOO HABLAAAAAAAAAAAAAAAR CON CARLOOOOOOOOOOOOOOOOOOOOOSSSSSSS" << endl;
+    }
 }
 
 
 // TO-DO ELIMINARLO TODO AL MISMO TIEMPO ANTES DE RENDERIZAR 
-void ManPowerUp::DeletePowerUp(DataMap* d){
+//void ManPowerUp::DeletePowerUp(DataMap* d){
+//    auto renderFacadeManager = RenderFacadeManager::GetInstance();
+//    auto renderEngine = renderFacadeManager->GetRenderFacade();
+//    
+//    for(long unsigned int i=0; i< entities.size(); ++i){
+//        if(entities[i].get() == any_cast<Entity*>((*d)[POWER_UP])){
+//            renderEngine->DeleteEntity(entities[i].get());
+//            entities.erase(entities.begin()+i);
+//        }
+//    }
+//}
+
+void ManPowerUp::Update(){
     auto renderFacadeManager = RenderFacadeManager::GetInstance();
     auto renderEngine = renderFacadeManager->GetRenderFacade();
     for(long unsigned int i=0; i< entities.size(); ++i){
-        if(entities[i] == any_cast<shared_ptr<Entity>>((*d)[POWER_UP])){
+        auto cRemovableObj = static_cast<CRemovableObject*>(entities[i].get()->GetComponent(CompType::RemovableObjectComp).get());
+        if(cRemovableObj->destroy){
             renderEngine->DeleteEntity(entities[i].get());
-            entities.erase(entities.begin()+i);
+            entities.erase(entities.begin()+i);   
         }
     }
 }
@@ -86,14 +120,19 @@ void ManPowerUp::SubscribeToEvents() {
         bind(&ManPowerUp::CreatePowerUp, this, placeholders::_1),
         "CreatePowerUp"));
 
-    EventManager::GetInstance().SubscribeMulti(Listener(
-        EventType::COLLISION_ENTITY_POWERUP,
-        bind(&ManPowerUp::DeletePowerUp, this, placeholders::_1),
-        "DeletePowerUp"));
-    
-    EventManager::GetInstance().SubscribeMulti(Listener(
-        EventType::COLLISION_ENTITY_AI_POWERUP,
-        bind(&ManPowerUp::DeletePowerUp, this, placeholders::_1),
-        "DeletePowerUp"));
+    //EventManager::GetInstance().SubscribeMulti(Listener(
+    //    EventType::COLLISION_ENTITY_POWERUP,
+    //    bind(&ManPowerUp::DeletePowerUp, this, placeholders::_1),
+    //    "DeletePowerUp"));
+    //
+    //EventManager::GetInstance().SubscribeMulti(Listener(
+    //    EventType::COLLISION_ENTITY_AI_POWERUP,
+    //    bind(&ManPowerUp::DeletePowerUp, this, placeholders::_1),
+    //    "DeletePowerUp"));
+//
+    //EventManager::GetInstance().SubscribeMulti(Listener(
+    //    EventType::DELETE_POWERUP,
+    //    bind(&ManPowerUp::DeletePowerUp, this, placeholders::_1),
+    //    "DeletePowerUp"));
 }
 

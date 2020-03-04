@@ -14,9 +14,11 @@ enum CompType {
     WheelComp,
     WayPointComp,
     PosDestination,
+    RemovableObjectComp,
     CarComp,
     PowerUpComp,
     BoxPowerUpComp,
+    BufferOnline,
     ShieldComp,
     NitroComp,
     RoboJoroboComp,
@@ -27,6 +29,7 @@ enum CompType {
     CompBoundingSphere,
     CompBoundingAABox,
     CompExternalForce,
+    CompGravity,
     CompBoundingPlane,
     CompBoundingClindre,
     CompBoundingOBB,
@@ -40,7 +43,8 @@ enum CompType {
     CompRay,
     NamePlateComp,
     MovementComp,
-    OnlineComp
+    OnlineComp,
+    ShaderComp
 };
 
 class Component {

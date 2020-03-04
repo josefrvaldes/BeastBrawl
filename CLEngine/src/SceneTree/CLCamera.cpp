@@ -9,7 +9,7 @@ CLCamera::CLCamera(unsigned int idEntity) : CLEntity(idEntity) {
     bottom = 720.0f;
     near= 0.1f;
     far = 5000.0f;
-    fov = 45.0f;
+    fov = 70.0f;
 }
 
 /**
@@ -37,6 +37,6 @@ glm::mat4 CLCamera::CalculateProjectionMatrix() {
 }
 
 
-void CLCamera::Draw(glm::mat4&) {
+void CLCamera::Draw(GLuint shaderID) {
 
 }

@@ -4,9 +4,13 @@
 #include <Components/CTexture.h>
 #include <Components/CMesh.h>
 #include <Components/CTransformable.h>
+#include <Components/CBoundingSphere.h>
 #include <Components/CPowerUp.h>
 #include <Components/CTargetEntity.h>
+#include <Components/CShader.h>
+#include "../Components/CRemovableObject.h"
 #include <iostream>
+#include "../Constants.h"
 
 class Position;
 using namespace std;
@@ -14,9 +18,20 @@ using namespace std;
 PowerUp::PowerUp()
 {
     // default values
+
+    string mesh;
+    if(Constants::RENDER_ENGINE == Constants::RenderEngine::CLOVER){
+        mesh    = "kart_physics.fbx";
+        
+    }else if(Constants::RENDER_ENGINE == Constants::RenderEngine::IRRLICHT){
+        mesh    =   "kart_ia.obj";
+    } 
     string texture = "spheremap.jpg";
-    string mesh    = "media/ninja.b3d";
+    //string mesh    = "kart_ia.obj";
     typeCPowerUp typePowerUp = typeCPowerUp::None;
+
+    string vertexShader = "CLEngine/src/Shaders/vertex.glsl";
+    string fragmentShader = "CLEngine/src/Shaders/fragment.glsl";
     //float maxSpeed = 20.0, acceleration = .15, friction = 0.1, slowDown = 0.25;
     
     shared_ptr<CId> cId   = make_shared<CId>();
@@ -26,6 +41,8 @@ PowerUp::PowerUp()
     shared_ptr<CMesh> cMesh   = make_shared<CMesh>(mesh);
     shared_ptr<CPowerUp> cPowerUp = make_shared<CPowerUp>(typePowerUp);
     shared_ptr<CTargetEntity> cTargetEntity = make_shared<CTargetEntity>();
+    //shared_ptr<CBoundingSphere> cBoundingSphere = make_shared<CBoundingSphere>(vec3(0.0,0.0,0.0), 4.5);
+    shared_ptr<CRemovableObject> cRemovableObject = make_shared<CRemovableObject>();
     AddComponent(cId);
     AddComponent(cType);
     AddComponent(cTransformable);
@@ -33,8 +50,9 @@ PowerUp::PowerUp()
     AddComponent(cMesh);
     AddComponent(cPowerUp);
     AddComponent(cTargetEntity);
+    //AddComponent(cBoundingSphere);  // Bounding con el que realmente colisionamos
+    AddComponent(cRemovableObject); // componente para eliminar la entidad al final y no a medias de la ejecucion
 }
-
 
 /*PowerUp::PowerUp(glm::vec3 _position) 
     : PowerUp()
@@ -51,14 +69,21 @@ PowerUp::PowerUp()
 
 
 
-PowerUp::PowerUp(glm::vec3 _position, glm::vec3 _rotation, typeCPowerUp _typePowerUp, CTransformable* cTransformableTarget) : PowerUp(){
+PowerUp::PowerUp(glm::vec3 _position, glm::vec3 _rotation, typeCPowerUp _typePowerUp, CTransformable* cTransformableTarget, std::string vertexShader, std::string fragmentShader) : PowerUp(){
     
     CTransformable *cTransformable = (CTransformable *)m_components[CompType::TransformableComp].get();
     cTransformable->position = _position;
     cTransformable->rotation = _rotation;
 
+    //CBoundingSphere *cBoundingSphere = (CBoundingSphere *)m_components[CompType::CompBoundingSphere].get();
+    //cBoundingSphere->center = _position;
+
+    //cout << "el tipo de powerUp recibido es?¿?¿?¿?¿?¿¿?¿?¿?¿: " << int(_typePowerUp) << endl;
+
     CPowerUp *cPowerUp = (CPowerUp *)m_components[CompType::PowerUpComp].get();
     cPowerUp->typePowerUp = _typePowerUp;
+
+    //cout << "y lo que metemos dentro en este caso eeees: " << int(cPowerUp->typePowerUp) << endl;
 
     auto *cTarget = (CTargetEntity *)m_components[CompType::TargetEntityComp].get();
     cTarget->cTransTarget = cTransformableTarget;
@@ -69,18 +94,23 @@ PowerUp::PowerUp(glm::vec3 _position, glm::vec3 _rotation, typeCPowerUp _typePow
         cTexture->texture = "";
         cMesh->mesh = "melon.obj";
         cPowerUp->speed = 510.0;
-        cTransformable->scale = glm::vec3(4,4,4);
+        // cTransformable->scale = glm::vec3(4,4,4);
     }else if(_typePowerUp == typeCPowerUp::PudinDeFrambuesa){   // Pudin Frambuesa
         cTexture->texture = "";
         cMesh->mesh = "pudin.obj";
         cPowerUp->speed = -510.0;
-        cTransformable->scale = glm::vec3(4,4,4);
+        // cTransformable->scale = glm::vec3(4,4,4);
     }else{                                                      // Telebanana
         cTexture->texture = "";
         cMesh->mesh = "telebanana.obj";
         cPowerUp->speed = 375.0;
-        cTransformable->scale = glm::vec3(2,2,2);
+        // cTransformable->scale = glm::vec3(2,2,2);
     }
+
+    shared_ptr<CShader> cShader = make_shared<CShader>(vertexShader,fragmentShader);
+
+    AddComponent(cShader);
+
 }
 
 

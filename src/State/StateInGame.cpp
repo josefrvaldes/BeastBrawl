@@ -6,7 +6,10 @@
 #include <Components/CMesh.h>
 #include <Components/CTexture.h>
 #include "../Components/CBoundingSphere.h"
+#include "../Components/CShader.h"
 #include "../Components/CBoundingCilindre.h"
+#include "../Components/CTotem.h"
+#include "../Constants.h"
 
 using namespace std;
 using namespace chrono;
@@ -14,9 +17,12 @@ using namespace chrono;
 StateInGame::StateInGame() {
     // aunque physics es un sistema, no se llama desde InitializeSystems
     // porque tiene que estar inicializado antes de llamar a InitializeManagers
-    physics = make_unique<Physics>(deltaTime);
+    cout << "------------------------------------------------------------------" << endl;
+    cout << "delta vale" << Constants::DELTA_TIME << endl;
+    cout << "------------------------------------------------------------------" << endl;
+    physics = make_unique<Physics>(Constants::DELTA_TIME);
 
-    cam = make_shared<Camera>(glm::vec3(100.0f, 600.0f, 30.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f));
+    cam = make_shared<Camera>(glm::vec3(100.0f, 0.0f, 30.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f));
     ground = make_shared<GameObject>(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), "", "training_ground.obj");
 }
 
@@ -37,10 +43,10 @@ StateInGame::~StateInGame() {
  */
 void StateInGame::InitVirtualMethods() {
     InitializeManagers(physics.get(), cam.get());
-    InitializeSystems(*manCars.get(), *manBoundingWall.get(), *manBoundingOBB.get());
+    InitializeSystems(*manCars.get(), *manBoundingWall.get(), *manBoundingOBB.get(), *manBoundingGround.get(), *manPowerUps.get(), *manNavMesh.get(), *manBoxPowerUps.get(), *manTotems.get());
     InitializeFacades();
 
-    CAMBIARCosasDeTotem(*manTotems.get());
+    //CAMBIARCosasDeTotem(*manTotems.get());
     //CAMBIARCosasDeBoxPU(*manWayPoint.get(), *manBoxPowerUps.get());
     //CAMBIARCosasNavMesh(*manNavMesh.get());
 
@@ -57,6 +63,7 @@ void StateInGame::InitializeFacades() {
     renderEngine->FacadeSuscribeEvents();
 }
 
+/*
 void StateInGame::CAMBIARCosasDeTotem(ManTotem &manTotems) {
     // --------------------------------------------------------------------------------------------------------------------------------------------
     totemOnCar = make_shared<Entity>();
@@ -70,10 +77,11 @@ void StateInGame::CAMBIARCosasDeTotem(ManTotem &manTotems) {
     totemOnCar->AddComponent(cTypeTotemOnCar);
     totemOnCar->AddComponent(cTransformableTotemOnCar);
     totemOnCar->AddComponent(make_shared<CTexture>("totem.jpg"));
-    totemOnCar->AddComponent(make_shared<CMesh>("media/ninja.b3d"));
+    totemOnCar->AddComponent(make_shared<CMesh>("kart_ia.obj"));
+    totemOnCar->AddComponent(make_shared<CShader>("CLEngine/src/Shaders/vertex.glsl","CLEngine/src/Shaders/fragment.glsl"));
     // ------------------------------------------------------------------------------------------------------------------------------------------------
 }
-
+*/
 void StateInGame::AddElementsToRender() {
     // Añadimos cosas a la fachada de render
     renderEngine->FacadeAddPlates(manNamePlates.get());
@@ -96,19 +104,24 @@ void StateInGame::AddElementsToRender() {
 
     renderEngine->FacadeAddObjectTotem(manTotems->GetEntities()[0].get());
     // este último probablemente haya que cambiarlo ¿?
-    renderEngine->FacadeAddObject(totemOnCar.get());
+    //renderEngine->FacadeAddObject(totemOnCar.get());
 }
 
-void StateInGame::InitializeCLPhysics(ManCar &manCars, ManBoundingWall &manBoundingWall, ManBoundingOBB &manBoundingOBB) {
+void StateInGame::InitializeCLPhysics(ManCar &manCars, ManBoundingWall &manWall, ManBoundingOBB &manOBB, ManBoundingGround &manGround, ManPowerUp &manPowerUp, ManNavMesh &manNavMesh, ManBoxPowerUp &manBoxPowerUp, ManTotem &manTotem) {
     // NO ALTERAR EL ORDEN DEL ADD, QUE USO EL ORDEN PARA DISTINGUIR ENTRE MANAGERS!!!
     clPhysics = make_unique<CLPhysics>();
     clPhysics->AddManager(manCars);
-    clPhysics->AddManager(manBoundingWall);
-    clPhysics->AddManager(manBoundingOBB);
+    clPhysics->AddManager(manWall);
+    clPhysics->AddManager(manOBB);
+    clPhysics->AddManager(manGround);
+    clPhysics->AddManager(manPowerUp);
+    clPhysics->AddManager(manNavMesh);
+    clPhysics->AddManager(manBoxPowerUp);
+    clPhysics->AddManager(manTotem);
 }
 
-void StateInGame::InitializeSystems(ManCar &manCars, ManBoundingWall &manBoundingWall, ManBoundingOBB &manBoundingOBB) {
-    InitializeCLPhysics(manCars, manBoundingWall, manBoundingOBB);
+void StateInGame::InitializeSystems(ManCar &manCars, ManBoundingWall &manWall, ManBoundingOBB &manOBB, ManBoundingGround &manGround, ManPowerUp &manPowerUp, ManNavMesh &manNavMesh, ManBoxPowerUp &manBoxPowerUp, ManTotem &manTotem) {
+    InitializeCLPhysics(manCars, manWall, manOBB, manGround, manPowerUp, manNavMesh, manBoxPowerUp, manTotem);
     // incializa el system physics PU, no hace falta más código para esto
     phisicsPowerUp = make_shared<PhysicsPowerUp>();  // Creamos sistemas
     collisions = make_shared<Collisions>();
@@ -123,8 +136,9 @@ void StateInGame::InitializeManagers(Physics *physics, Camera *cam) {
     manBoxPowerUps = make_shared<ManBoxPowerUp>();
     manBoundingWall = make_shared<ManBoundingWall>();
     manBoundingOBB = make_shared<ManBoundingOBB>();
-    manTotems = make_shared<ManTotem>();
-    manNavMesh = make_shared<ManNavMesh>(manCars.get()->GetCar().get(), manTotems.get());
+    manBoundingGround = make_shared<ManBoundingGround>();
+    manNavMesh = make_shared<ManNavMesh>();
+    manTotems = make_shared<ManTotem>(manNavMesh.get());
     manNamePlates = make_shared<ManNamePlate>(manCars.get());
 }
 
@@ -135,7 +149,7 @@ void StateInGame::InitState() {
     //Si la direccion de soundEngine!=0 es que viene del PAUSE, por lo que no deberia hacerlo.
     if (!soundEngine) {
         soundEngine = SoundFacadeManager::GetInstance()->GetSoundFacade();
-        cout << "~~~ SoundEngine en INGAME es -> " << soundEngine << endl;
+        //cout << "~~~ SoundEngine en INGAME es -> " << soundEngine << endl;
         if (soundEngine) {
             soundEngine->SetState(4);
             EventManager::GetInstance().AddEventMulti(Event{EventType::START_GAME});
@@ -149,26 +163,32 @@ void StateInGame::Update() {
     EventManager &em = EventManager::GetInstance();
     em.Update();
 
-    //ACTUALIZAMOS MANAGER NAVMESH CAR PLAYER
-    manNavMesh->UpdateNavMeshPlayer(manCars.get()->GetCar().get());
-    // ACTUALIZACION DE LOS MANAGERS DE LOS COCHES
-    manCars->UpdateCar();
 
+    manNavMesh->Update(*(manCars.get()));
+
+
+    // ACTUALIZACION DE LOS MANAGERS DE LOS COCHES
+    manCars->UpdateCar(*(manTotems.get()));
     // ACTUALIZACION DE LAS FISICAS DE LOS COCHES
     physics->update(manCars->GetCar().get(), cam.get());
 
-    clPhysics->Update(0.1666f);
     sysBoxPowerUp->update(manBoxPowerUps.get());
     for(auto& actualPowerUp : manPowerUps->GetEntities()){  // actualizamos las fisicas de los powerUps
         phisicsPowerUp->update(actualPowerUp.get());
     }
 
+
+    clPhysics->Update(0.1666f);
+    clPhysics->IntersectsCarsPowerUps( *manCars.get(), *manPowerUps.get(), manNavMesh.get());
+    clPhysics->IntersectCarsBoxPowerUp(*manCars.get(), *manBoxPowerUps.get());
+    clPhysics->IntersectCarsTotem(*manCars.get(), *manTotems.get());
+    clPhysics->IntersectPowerUpWalls(*manPowerUps.get(), *manBoundingWall.get(), *manBoundingOBB.get());
     // COLISIONES entre BoxPowerUp y player
-    collisions->IntersectPlayerBoxPowerUp(manCars.get()->GetCar().get(), manBoxPowerUps.get());
+    //collisions->IntersectPlayerBoxPowerUp(manCars.get()->GetCar().get(), manBoxPowerUps.get());
     // COLISIONES entre powerUp y player
-    collisions->IntersectPlayerPowerUps(manCars.get()->GetCar().get(), manPowerUps.get(), manNavMesh.get());
+    //collisions->IntersectPlayerPowerUps(manCars.get()->GetCar().get(), manPowerUps.get(), manNavMesh.get());
     // COLISIONES entre el Player y el Totem
-    collisions->IntersectPlayerTotem(manCars.get()->GetCar().get(), manTotems.get());
+    //collisions->IntersectPlayerTotem(manCars.get()->GetCar().get(), manTotems.get());
 
     // Actualizaciones en Irrlich
     renderEngine->UpdateCamera(cam.get(), manCars.get());
@@ -178,34 +198,11 @@ void StateInGame::Update() {
         physicsEngine->UpdatePowerUps(actualPowerUp.get());
 
     renderEngine->FacadeUpdatePlates(manNamePlates.get());
+    physicsEngine->UpdateTransformable(manTotems->GetEntities()[0].get());
 
+    // al final de la ejecucion eliminamos todos los powerUps que se deben eliminar
+    manPowerUps->Update();
 
-    /*
-    // VAMOS A HACER UN TEST A VER SI FUNCIONA TODA ESTA MIERDA
-    unique_ptr<CBoundingCilindre> cilindraco = make_unique<CBoundingCilindre>(vec3(4,0,4), vec3(4,0,0), 5.0);
-    unique_ptr<CBoundingSphere> esferaca = make_unique<CBoundingSphere>(vec3(10,0,1), 2.0);
-
-    IntersectData intersData  = cilindraco->IntersectSphere(*esferaca.get());
-    if(intersData.intersects){
-        cout << "DEBERIA DE DAR TRUE Y...... LO DA" << endl;
-    }
-    unique_ptr<CBoundingSphere> esferaca2 = make_unique<CBoundingSphere>(vec3(10,0,1), 0.5);
-    IntersectData intersData2  = cilindraco->IntersectSphere(*esferaca2.get());
-    if(!intersData2.intersects){
-        cout << "DEBERIA DE DAR FALSE Y...... LO DA" << endl;
-    }
-    //la prueba de fuego
-    unique_ptr<CBoundingSphere> esferaca3 = make_unique<CBoundingSphere>(vec3(10,0,8), 2.0);
-    IntersectData intersData3  = cilindraco->IntersectSphere(*esferaca3.get());
-    if(!intersData3.intersects){
-        cout << "DEBERIA DE DAR FALSE Y...... LO DA 2" << endl;
-    }
-    unique_ptr<CBoundingSphere> esferaca4 = make_unique<CBoundingSphere>(vec3(10,0,-2), 2.0);
-    IntersectData intersData4  = cilindraco->IntersectSphere(*esferaca4.get());
-    if(!intersData4.intersects){
-        cout << "DEBERIA DE DAR FALSE Y...... LO DA 3" << endl;
-    }
-    */
 }
 
 void StateInGame::Render() {
@@ -216,18 +213,19 @@ void StateInGame::Render() {
     renderEngine->FacadeDrawGraphEdges(manWayPoint.get());
     // renderEngine->FacadeDrawBoundingBox(manCars.get()->GetCar().get(), isColliding);
 
-    for (auto actualPowerUp : manPowerUps->GetEntities())
+    for (auto& actualPowerUp : manPowerUps->GetEntities()){
         renderEngine->FacadeDrawBoundingBox(actualPowerUp.get(), false);
-
-    for (auto wall : manBoundingWall->GetEntities()) {
+    }
+    for (auto& wall : manBoundingWall->GetEntities()) {
         renderEngine->FacadeDrawBoundingPlane(wall.get());
     }
-
-    for (auto obb : manBoundingOBB->GetEntities()) {
+    for (auto& ground : manBoundingGround->GetEntities()) {
+        renderEngine->FacadeDrawBoundingGround(ground.get());
+    }
+    for (auto& obb : manBoundingOBB->GetEntities()) {
         renderEngine->FacadeDrawBoundingOBB(obb.get());
     }
 
     renderEngine->FacadeDrawAIDebug(manCars.get(),manNavMesh.get(), manWayPoint.get());
-    
     renderEngine->FacadeEndScene();
-} 
+}

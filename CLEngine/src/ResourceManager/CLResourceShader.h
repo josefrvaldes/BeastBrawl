@@ -11,7 +11,7 @@ namespace CLE {
             CLResourceShader() {};
             ~CLResourceShader() {};
 
-            void Draw(glm::mat4) override;
+            void Draw(GLuint shaderID) override;
             bool LoadFile(string) override;
             bool LoadFile(string,string);
 

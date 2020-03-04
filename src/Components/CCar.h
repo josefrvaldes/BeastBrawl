@@ -49,8 +49,8 @@ public:
     float skidRotation = 0.0;                     
 
 
-    float skidAcc = 60 * (1.0/UPDATE_FRAME_RATE);        // To-Do: multiplicar por el deltaTime los periodos para ajustarlos al framerate
-    float skidRecoverAcc = 120 * (1.0/UPDATE_FRAME_RATE);
+    float skidAcc = 60 * Constants::DELTA_TIME;        // To-Do: multiplicar por el deltaTime los periodos para ajustarlos al framerate
+    float skidRecoverAcc = 120 * Constants::DELTA_TIME;
     float skidDeg;              // giro en el derrape
     float skidDegL = -35.0;  
     float skidDegR = 35.0;   

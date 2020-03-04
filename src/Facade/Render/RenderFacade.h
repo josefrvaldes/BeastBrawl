@@ -20,11 +20,11 @@ class RenderFacade {
     //RenderFacade() = default;
     virtual ~RenderFacade() = default;
     virtual const uint16_t FacadeAddObject(Entity*) = 0;
+    virtual void FacadeAddSphereOnObject(Entity* entity) = 0;
     virtual const uint16_t FacadeAddObjectCar(Entity*) = 0;
     virtual const uint16_t FacadeAddObjectTotem(Entity* entity) = 0;
     virtual const void FacadeAddObjects(vector<Entity*>) = 0;
     virtual void FacadeAddCamera(Entity*) = 0;
-    virtual void UpdateTransformable(Entity*) = 0;
     virtual void UpdateCamera(Entity*, ManCar* manCars) = 0;
     virtual bool FacadeRun() = 0;
     virtual uint32_t FacadeGetTime() const = 0;
@@ -52,7 +52,7 @@ class RenderFacade {
     virtual void FacadeCheckInputEndRace() = 0;
     virtual void FacadeCheckInputLobbyMulti() = 0;
     virtual void FacadeUpdatePowerUpHUD(DataMap* d) = 0;
-    virtual void FacadeDrawHUD(Entity* car, ManCar* carsAI) = 0;
+    virtual void FacadeDrawHUD(Entity* car, ManCar* manCars) = 0;
     virtual void FacadeSuscribeEvents() = 0;
     virtual void FacadeAddPlates(Manager* manNamePlates) = 0;
     virtual void FacadeUpdatePlates(Manager* manNamePlates) = 0;
@@ -64,9 +64,18 @@ class RenderFacade {
     virtual void FacadeDrawGraphEdges(ManWayPoint* manWayPoints) const = 0;
     virtual void FacadeDrawBoundingBox(Entity* entity, bool colliding) const = 0;
     virtual void FacadeDrawBoundingPlane(Entity* entity) const = 0;
+    virtual void FacadeDrawBoundingGround(Entity* entity) const = 0;
     virtual void FacadeDrawBoundingOBB(Entity* entity) const = 0;
     virtual void FacadeDrawAIDebug(ManCar* manCars, ManNavMesh* manNavMesh, ManWayPoint* manWayPoint) const = 0;
     virtual void FacadeDrawAIDebugPath(Entity* carAI, ManWayPoint* manWayPoint) const = 0;
+
+    virtual void SetShowDebug(bool) = 0;
+    virtual void SetShowDebugAI(bool) = 0;
+    virtual void SetIDCarAIToDebug(int) = 0;
+
+    virtual bool GetShowDebug() = 0;
+    virtual bool GetShowDebugAI() = 0;
+    virtual int  GetIDCarAIToDebug() = 0;
 
    protected:
     uint16_t idCar = 0;

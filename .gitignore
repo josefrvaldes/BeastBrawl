@@ -5,6 +5,10 @@ obj/
 .vscode/settings.json
 .vscode/
 
+.idea/
+cmake-build-debug/
+CMakeLists.txt
+
 Beast_Brawl
 CLEngine/CLEngine
 

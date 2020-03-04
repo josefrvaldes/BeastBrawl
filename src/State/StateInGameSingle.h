@@ -17,15 +17,15 @@ class StateInGameSingle : public StateInGame {
     States GetState() { return State::States::INGAME_SINGLE; };
 
    private:
-    void InitializeCLPhysics(ManCar &manCars, ManBoundingWall &ManBoundingWall, ManBoundingOBB &manBoundingOBB) override;
+    void InitializeCLPhysics(ManCar &manCars, ManBoundingWall &, ManBoundingOBB &, ManBoundingGround &, ManPowerUp &, ManNavMesh&, ManBoxPowerUp&, ManTotem &) override;
     void InitializeManagers(Physics *physics, Camera *cam) override;
-    void InitializeSystems(ManCar &manCars, ManBoundingWall &manBoundingWall, ManBoundingOBB &manBoundingOBB) override;
+    void InitializeSystems(ManCar &manCars, ManBoundingWall &, ManBoundingOBB &, ManBoundingGround &, ManPowerUp &, ManNavMesh&, ManBoxPowerUp&, ManTotem &) override;
     void InitializeFacades() override;
     void AddElementsToRender() override;
 
     void CAMBIARInicializarCarAIS(ManCar &, ManWayPoint &);
-    void CAMBIARCosasNavMesh(ManCar &, ManNavMesh &);
-    void CAMBIARCosasDeTotemUpdate() override;
+    //void CAMBIARCosasNavMesh(ManCar &, ManNavMesh &);
+    //void CAMBIARCosasDeTotemUpdate() override;
 
     unique_ptr<SystemBtPowerUp> systemBtPowerUp;
     unique_ptr<SystemBtMoveTo> systemBtMoveTo;
