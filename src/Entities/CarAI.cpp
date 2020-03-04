@@ -42,7 +42,7 @@ CarAI::CarAI(){
     shared_ptr<CTransformable> cTransformable = make_shared<CTransformable>(pos, rot, scale); 
     shared_ptr<CTexture> cTexture = make_shared<CTexture>(texture);
     shared_ptr<CMesh> cMesh   = make_shared<CMesh>(mesh);
-    shared_ptr<CCar> cCar = make_shared<CCar>(maxSpeed, acceleration, friction, slowDown);
+    shared_ptr<CCar> cCar = make_shared<CCar>(maxSpeed, acceleration, friction, slowDown, 10.0);
 
     shared_ptr<CWayPoint> cWayPoint = make_shared<CWayPoint>();
     shared_ptr<CPosDestination> cPosDestination = make_shared<CPosDestination>();
