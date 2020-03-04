@@ -199,8 +199,7 @@ void SystemPathPlanning::UpdateDijkstra(CarAI* carAI, ManWayPoint* graph, ManNav
         auto cPath = static_cast<CPath*>(carAI->GetComponent(CompType::PathComp).get());
 
         if(!cPath->stackPath.empty()){
-            auto actualNode = cPath->stackPath.top(); //Id del waypoint en el que estamos
-
+            //auto actualNode = cPath->stackPath.top(); //Id del waypoint en el que estamos
             cPath->stackPath.pop();
             if(!cPath->stackPath.empty()){
                 auto cWayPoint = static_cast<CWayPoint*>(graph->GetEntities()[cPath->stackPath.top()]->GetComponent(CompType::WayPointComp).get());
