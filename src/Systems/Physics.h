@@ -33,6 +33,8 @@ class Physics {
     void NotAcceleratingOrDecelerating(Car *, Camera *);
     void Decelerate(Car *, Camera *);
     void NotTurning(Car *, Camera *);
+    void Skid(Car *, Camera *);
+    void NotSkidding(Car *, Camera *);
 
     void UpdateHuman(Car* car);
     void AccelerateHuman(CCar &cCar, CNitro &cNitro) const;
@@ -46,8 +48,11 @@ class Physics {
    private:
     void CalculatePosition(CCar *cCar, CTransformable *cTransformable, CSpeed *cSpeed, CExternalForce *cExternalForce, float deltaTime);
     void CalculatePositionReverse(CCar *cCar, CTransformable *cTransformable, CExternalForce *cExternalForce, float deltaTime);
-    void CalculatePositionCamera(CTransformable *cTransformableCar, CTransformable *cTransformableCamera, CCamera *cCamera);
+    void CalculatePositionCamera(CCar *cCar, CTransformable *cTransformableCar, CTransformable *cTransformableCamera, CCamera *cCamera);
     glm::vec3 CalculateVecDirCar(CTransformable *cTransformable) const;
     void FrictionExternalForce(CCar *cCar, CExternalForce *externalForce) const;
+
+    void RecoverSkid(CCar &cCar, CTransformable &cTrans) const;
+
     float deltaTime;
 };

@@ -47,6 +47,47 @@ RenderFacadeIrrlicht::RenderFacadeIrrlicht() {
     smgr = device->getSceneManager();
     font = device->getGUIEnvironment()->getBuiltInFont();
     FacadeInitHUD();
+
+
+    //core::array<SJoystickInfo> joystickInfo;
+    if(device->activateJoysticks(joystickInfo))
+    {
+        std::cout << "Joystick support is enabled and " << joystickInfo.size() << " joystick(s) are present." << std::endl;
+
+        for(u32 joystick = 0; joystick < joystickInfo.size(); ++joystick)
+        {
+            std::cout << "Joystick " << joystick << ":" << std::endl;
+            std::cout << "\tName: '" << joystickInfo[joystick].Name.c_str() << "'" << std::endl;
+            std::cout << "\tAxes: " << joystickInfo[joystick].Axes << std::endl;
+            std::cout << "\tButtons: " << joystickInfo[joystick].Buttons << std::endl;
+
+            std::cout << "\tHat is: ";
+            
+            switch(joystickInfo[joystick].PovHat)
+            {
+            case SJoystickInfo::POV_HAT_PRESENT:
+                std::cout << "present" << std::endl;
+                break;
+
+            case SJoystickInfo::POV_HAT_ABSENT:
+                std::cout << "absent" << std::endl;
+                break;
+
+            case SJoystickInfo::POV_HAT_UNKNOWN:
+            default:
+                std::cout << "unknown" << std::endl;
+                break;
+            }
+        }
+    }
+    else
+    {
+        std::cout << "Joystick support is not enabled." << std::endl;
+    }
+    
+    for(int i = 0; i != InputXBox::END; ++i){
+        inputsPressed.emplace(static_cast<InputXBox>(i), false);
+    }
 }
 
 void RenderFacadeIrrlicht::FacadeSuscribeEvents() {
@@ -534,34 +575,66 @@ uint32_t RenderFacadeIrrlicht::FacadeGetTime() const{
 }
 
 
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////                        INPUTS                   ////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// mira si el input se encuentra pulsado
+bool RenderFacadeIrrlicht::IsInputPressed(InputXBox input){
+    auto mapByType = inputsPressed.find(input);
+    if (mapByType != inputsPressed.end()) {
+        return mapByType->second;
+    }else{
+        cout << "no encuentra el boton" << "\n";
+    }
+    return true; // en caso de que no exista
+}
+void RenderFacadeIrrlicht::SetValueInput(InputXBox input, bool valuePressed){
+    auto mapByType = inputsPressed.find(input);
+    if (mapByType != inputsPressed.end()) {
+        mapByType->second = valuePressed;
+    }
+}
+
 // To-Do: introducir multi input
 // Comprobar inputs del teclado
 void RenderFacadeIrrlicht::FacadeCheckInputSingle() {
     EventManager &eventManager = EventManager::GetInstance();
 
-    if (receiver.IsKeyDown(KEY_ESCAPE)) {
+    // device->activateJoysticks(joystickInfo);
+
+    if (receiver.IsKeyDown(KEY_DELETE)) {
         device->closeDevice();
     }
-    if (receiver.IsKeyDown(KEY_KEY_P)) {
+    if (receiver.IsKeyDown(KEY_KEY_P) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_STICK_R)) {
         eventManager.AddEventMulti(Event{EventType::PRESS_P});
     }
-    // if (receiver.IsKeyDown(KEY_KEY_0)) {
+    // if (receiver.IsKeyDown(KEY_DELETE)) {
     //     eventManager.AddEventMulti(Event{EventType::PRESS_0});
     // }
+
+    if (receiver.IsKeyDown(KEY_KEY_U) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_X)) {
+        eventManager.AddEventMulti(Event{EventType::PRESS_SKID});
+    } else {
+        eventManager.AddEventMulti(Event{EventType::NOT_SKID_PRESS});
+    }
     
     //  delante y detrás
-    if (receiver.IsKeyDown(KEY_KEY_I)) {
+    if (receiver.IsKeyDown(KEY_KEY_W) || (joystickInfo.size()>0 && receiver.GetJoyStickState().Axis[SEvent::SJoystickEvent::AXIS_V]>-15000)) {
         eventManager.AddEventMulti(Event{EventType::PRESS_I});
-    } else if (receiver.IsKeyDown(KEY_KEY_O)) {
+    } else if (receiver.IsKeyDown(KEY_KEY_S) || (joystickInfo.size()>0 && receiver.GetJoyStickState().Axis[SEvent::SJoystickEvent::AXIS_Z]>1500)) {
         eventManager.AddEventMulti(Event{EventType::PRESS_O});
     } else {
         eventManager.AddEventMulti(Event{EventType::NO_I_O_PRESS});
     }
 
     // izq y dch
-    if (receiver.IsKeyDown(KEY_KEY_D)) {
+    if (receiver.IsKeyDown(KEY_KEY_D) || receiver.GetJoyStickState().Axis[SEvent::SJoystickEvent::AXIS_X]>15000) {
         eventManager.AddEventMulti(Event{EventType::PRESS_D});
-    } else if (receiver.IsKeyDown(KEY_KEY_A)) {
+    } else if (receiver.IsKeyDown(KEY_KEY_A) || receiver.GetJoyStickState().Axis[SEvent::SJoystickEvent::AXIS_X]<-15000) {
         eventManager.AddEventMulti(Event{EventType::PRESS_A});
     } else {
         eventManager.AddEventMulti(Event{EventType::NO_A_D_PRESS});
@@ -594,29 +667,33 @@ void RenderFacadeIrrlicht::FacadeCheckInputSingle() {
     }
 
     // CAMARA
-    if (receiver.IsKeyDown(KEY_KEY_Q) && !invertedCam && !totemCamActive) {
+    if ((receiver.IsKeyDown(KEY_KEY_I) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_LB)) && !IsInputPressed(InputXBox::BUTTON_LB) && !totemCamActive) {
+        SetValueInput(InputXBox::BUTTON_LB, true);
         timeStart = system_clock::now();
         eventManager.AddEventMulti(Event{EventType::INVERT_CAMERA});
-        invertedCam = true;
-
-    } else if(receiver.IsKeyDown(KEY_KEY_E) && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelayCamera) {
+    } else if((receiver.IsKeyDown(KEY_KEY_O) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_RB))  && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelayCamera) {
         timeStart = system_clock::now();
         eventManager.AddEventMulti(Event{EventType::TOTEM_CAMERA});
         totemCamActive = !totemCamActive;
-    } else if (!receiver.IsKeyDown(KEY_KEY_Q) && !totemCamActive){
-        invertedCam = false;
+    } else if (!(receiver.IsKeyDown(KEY_KEY_I) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_LB)) && !totemCamActive){
+        SetValueInput(InputXBox::BUTTON_LB, false);
         eventManager.AddEventMulti(Event{EventType::NORMAL_CAMERA});
     }
 
     // POWERUPS
-    if (receiver.IsKeyDown(KEY_SPACE))
+    if ((receiver.IsKeyDown(KEY_SPACE) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_A)) && !IsInputPressed(InputXBox::BUTTON_A)){
         eventManager.AddEventMulti(Event{EventType::PRESS_SPACE});
+    }else if(!(receiver.IsKeyDown(KEY_SPACE) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_A))){
+        SetValueInput(InputXBox::BUTTON_A, false);
+    }
 
     //Cambiamos a menu
-    if (receiver.IsKeyDown(KEY_F2) && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay) {
-        timeStart = system_clock::now();
+    if ((receiver.IsKeyDown(KEY_ESCAPE) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_START)) && !IsInputPressed(InputXBox::BUTTON_START)) {
+        SetValueInput(InputXBox::BUTTON_START, true);
         eventManager.AddEventMulti(Event{EventType::STATE_PAUSE});
         //Game::GetInstance()->SetState(State::PAUSE);
+    }else if(!(receiver.IsKeyDown(KEY_ESCAPE) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_START))){
+        SetValueInput(BUTTON_START, false);
     }
  }
 
@@ -628,22 +705,22 @@ void RenderFacadeIrrlicht::FacadeCheckInputSingle() {
                        // por defecto un vector, como sabemos que como máximo 
                        // va a haber un máximo de 4 inputs en el vector, 
                        // le reservamos directamente ya el espacio
-    if (receiver.IsKeyDown(KEY_ESCAPE)) {
+    if (receiver.IsKeyDown(KEY_DELETE)) {
         device->closeDevice();
     }
-    if (receiver.IsKeyDown(KEY_KEY_P)) {
+    if (receiver.IsKeyDown(KEY_KEY_P) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_STICK_R)) {
         eventManager.AddEventMulti(Event{EventType::PRESS_P});
         inputs.push_back(Constants::InputTypes::CLAXON);
     }
-    // if (receiver.IsKeyDown(KEY_KEY_0)) {
+    // if (receiver.IsKeyDown(KEY_DELETE)) {
     //     eventManager.AddEventMulti(Event{EventType::PRESS_0});
     // }
     
     //  delante y detrás
-    if (receiver.IsKeyDown(KEY_KEY_I)) {
+    if (receiver.IsKeyDown(KEY_KEY_W) || (joystickInfo.size()>0 && receiver.GetJoyStickState().Axis[SEvent::SJoystickEvent::AXIS_V]>-15000)) {
         eventManager.AddEventMulti(Event{EventType::PRESS_I});
         inputs.push_back(Constants::InputTypes::FORWARD);
-    } else if (receiver.IsKeyDown(KEY_KEY_O)) {
+    } else if (receiver.IsKeyDown(KEY_KEY_S) || (joystickInfo.size()>0 && receiver.GetJoyStickState().Axis[SEvent::SJoystickEvent::AXIS_Z]>-15000)) {
         eventManager.AddEventMulti(Event{EventType::PRESS_O});
         inputs.push_back(Constants::InputTypes::BACK);
     } else {
@@ -651,10 +728,10 @@ void RenderFacadeIrrlicht::FacadeCheckInputSingle() {
     }
 
     // izq y dch
-    if (receiver.IsKeyDown(KEY_KEY_D)) {
+    if (receiver.IsKeyDown(KEY_KEY_D) || receiver.GetJoyStickState().Axis[SEvent::SJoystickEvent::AXIS_X]>15000) {
         eventManager.AddEventMulti(Event{EventType::PRESS_D});
         inputs.push_back(Constants::InputTypes::RIGHT);
-    } else if (receiver.IsKeyDown(KEY_KEY_A)) {
+    } else if (receiver.IsKeyDown(KEY_KEY_A) || receiver.GetJoyStickState().Axis[SEvent::SJoystickEvent::AXIS_X]<-15000) {
         eventManager.AddEventMulti(Event{EventType::PRESS_A});
         inputs.push_back(Constants::InputTypes::LEFT);
     } else {
@@ -682,31 +759,31 @@ void RenderFacadeIrrlicht::FacadeCheckInputSingle() {
     }else if(receiver.IsKeyDown(KEY_KEY_3) && receiver.IsKeyDown(KEY_LSHIFT) && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay){
         timeStart = system_clock::now();
         idCarAIToDebug = 2;
-    }else if(receiver.IsKeyDown(KEY_KEY_0) && receiver.IsKeyDown(KEY_LSHIFT) && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay){
+    }else if(receiver.IsKeyDown(KEY_BACK) && receiver.IsKeyDown(KEY_LSHIFT) && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay){
         timeStart = system_clock::now();
         idCarAIToDebug = -1;
     }
 
     // CAMARA
-    if (receiver.IsKeyDown(KEY_KEY_Q) && !invertedCam && !totemCamActive) {
+    if ((receiver.IsKeyDown(KEY_KEY_I) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_LB)) && !IsInputPressed(InputXBox::BUTTON_LB) && !totemCamActive) {
+        SetValueInput(InputXBox::BUTTON_LB, true);
         timeStart = system_clock::now();
         eventManager.AddEventMulti(Event{EventType::INVERT_CAMERA});
-        invertedCam = true;
-
-    } else if(receiver.IsKeyDown(KEY_KEY_E) && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelayCamera) {
+    } else if((receiver.IsKeyDown(KEY_KEY_O) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_RB))  && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelayCamera) {
         timeStart = system_clock::now();
         eventManager.AddEventMulti(Event{EventType::TOTEM_CAMERA});
         totemCamActive = !totemCamActive;
-    } else if (!receiver.IsKeyDown(KEY_KEY_Q) && !totemCamActive){
-        invertedCam = false;
+    } else if (!(receiver.IsKeyDown(KEY_KEY_I) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_LB)) && !totemCamActive){
+        SetValueInput(InputXBox::BUTTON_LB, false);
         eventManager.AddEventMulti(Event{EventType::NORMAL_CAMERA});
-
     }
 
     // POWERUPS
-    if (receiver.IsKeyDown(KEY_SPACE)) {
+    if ((receiver.IsKeyDown(KEY_SPACE) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_A)) && !IsInputPressed(InputXBox::BUTTON_A)){
         eventManager.AddEventMulti(Event{EventType::PRESS_SPACE});
         inputs.push_back(Constants::InputTypes::LAUNCH_PU);
+    }else if(!(receiver.IsKeyDown(KEY_SPACE) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_A))){
+        SetValueInput(InputXBox::BUTTON_A, false);
     }
 
     //No debe tener menu pausa
@@ -717,7 +794,8 @@ void RenderFacadeIrrlicht::FacadeCheckInputSingle() {
 
 void RenderFacadeIrrlicht::FacadeCheckInputMenu() {
     //Cambiamos a ingame
-    if (receiver.IsKeyDown(KEY_F1)) {
+    if ((receiver.IsKeyDown(KEY_SPACE) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_A)) && !IsInputPressed(InputXBox::BUTTON_A)){
+        SetValueInput(InputXBox::BUTTON_A, true);
         numEnemyCars = 0;
 
         //Manera un poco cutre de resetear el CId al empezar el juego
@@ -727,52 +805,62 @@ void RenderFacadeIrrlicht::FacadeCheckInputMenu() {
         cNavMesh->ResetNumIds();
         //Game::GetInstance()->SetState(State::INGAME_SINGLE);
         EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_INGAMESINGLE});
-
-    } else if (receiver.IsKeyDown(KEY_ESCAPE)) {
+    } else if ((receiver.IsKeyDown(KEY_DELETE) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_BACK)) && !IsInputPressed(InputXBox::BUTTON_BACK)) {
+        SetValueInput(InputXBox::BUTTON_BACK, true);
         device->closeDevice();
-    } else if (receiver.IsKeyDown(KEY_KEY_M)) {
+    } else if ((receiver.IsKeyDown(KEY_KEY_M) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_Y)) && !IsInputPressed(InputXBox::BUTTON_Y)) {
         smgr->clear();
         EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_LOBBYMULTI});
     }
+
+    if(!(receiver.IsKeyDown(KEY_SPACE) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_A)))
+        SetValueInput(InputXBox::BUTTON_A, false);
+    if(!(receiver.IsKeyDown(KEY_ESCAPE) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_BACK)))
+        SetValueInput(InputXBox::BUTTON_BACK, false);
+    if(!(receiver.IsKeyDown(KEY_KEY_M) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_Y)))
+        SetValueInput(InputXBox::BUTTON_Y, false);
 }
 
 void RenderFacadeIrrlicht::FacadeCheckInputPause() {
     //Cambiamos a ingame
-    if (receiver.IsKeyDown(KEY_F3) && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay) {
-        timeStart = system_clock::now();
+    if ((receiver.IsKeyDown(KEY_ESCAPE) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_START)) && !IsInputPressed(InputXBox::BUTTON_START)) {
+        SetValueInput(InputXBox::BUTTON_START, true);
         Game::GetInstance()->SetState(State::INGAME_SINGLE);
-        //EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_INGAMESINGLE});
-
+    }else if(!(receiver.IsKeyDown(KEY_ESCAPE) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_START))){
+        SetValueInput(InputXBox::BUTTON_START, false);
     }
 
-    if (receiver.IsKeyDown(KEY_F4) && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay) {
-        timeStart = system_clock::now();
+    if ((receiver.IsKeyDown(KEY_KEY_N) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_B)) && !IsInputPressed(InputXBox::BUTTON_B)) {
+        SetValueInput(InputXBox::BUTTON_B, true);
 
         smgr->clear();
         //EventManager::GetInstance().ClearListeners();
         //EventManager::GetInstance().ClearEvents();
         Game::GetInstance()->SetState(State::MENU);
         //EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_MENU});
-
+    }else if(!(receiver.IsKeyDown(KEY_KEY_N) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_B))){
+        SetValueInput(InputXBox::BUTTON_B, false);
     }
 
-    if (receiver.IsKeyDown(KEY_ESCAPE)) {
+    if (receiver.IsKeyDown(KEY_DELETE)) {
         device->closeDevice();
     }
 }
 
 void RenderFacadeIrrlicht::FacadeCheckInputEndRace() {
-    if (receiver.IsKeyDown(KEY_F4) && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay) {
+    if ((receiver.IsKeyDown(KEY_SPACE) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_A)) && !IsInputPressed(InputXBox::BUTTON_A)) {
+        SetValueInput(InputXBox::BUTTON_A, true);
         smgr->clear();
         //EventManager::GetInstance().ClearListeners();
         //EventManager::GetInstance().ClearEvents();
         //Game::GetInstance()->SetState(State::MENU);
         cout << "ENTRAAAAAA ENDRACE\n";
         EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_MENU});
-
+    }else if(!(receiver.IsKeyDown(KEY_SPACE) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_A))){
+        SetValueInput(InputXBox::BUTTON_A, false);
     }
 
-    if (receiver.IsKeyDown(KEY_ESCAPE)) {
+    if (receiver.IsKeyDown(KEY_DELETE)) {
         device->closeDevice();
     }
 }
@@ -780,7 +868,7 @@ void RenderFacadeIrrlicht::FacadeCheckInputEndRace() {
 
 void RenderFacadeIrrlicht::FacadeCheckInputLobbyMulti() {
     //Cambiamos a ingame
-    if (receiver.IsKeyDown(KEY_ESCAPE)) {
+    if (receiver.IsKeyDown(KEY_DELETE)) {
         device->closeDevice();
     }
 }

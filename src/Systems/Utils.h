@@ -110,6 +110,19 @@ class Utils {
         return (auxDeg + 360) % 360;
     }
 
+
+    // se usa para que los grados se encuentren entre 0 y 360
+    template <typename T>
+    static T GetAdjustedDegrees(T number){
+        while(number < 0.0){
+            number += 360.0;
+        }
+        while(number >= 360.0){
+            number -= 360.0;
+        }
+        return number;
+    }
+
     /**
      * Valdés: lo hice pero ni lo he probado porque en seguida me tuve
      * que poner con otra cosa. 

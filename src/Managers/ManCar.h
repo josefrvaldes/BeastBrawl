@@ -75,6 +75,8 @@ class ManCar : public Manager {
     void NotAcceleratingOrDecelerating(DataMap* d);
     void Decelerate(DataMap* d);
     void NotTurning(DataMap* d);
+    void SkidCar(DataMap* d);
+    void NotSkid(DataMap* d);
     void CollisionPowerUp(DataMap* d);
     void CollisionPowerUpAI(DataMap* d);
     void CatchTotemPlayer(DataMap* d);
