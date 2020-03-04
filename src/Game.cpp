@@ -6,6 +6,7 @@
 #include "State/StateLobbyMulti.h"
 #include "State/StateMenu.h"
 #include "State/StatePause.h"
+#include <Constants.h>
 
 
 using namespace std;
@@ -98,9 +99,16 @@ void Game::SetState(State::States stateType) {
 }
 
 void Game::InitGame() {
-    RenderFacadeManager::GetInstance()->InitializeIrrlicht();
-    InputFacadeManager::GetInstance()->InitializeIrrlicht();
-    PhysicsFacadeManager::GetInstance()->InitializeIrrlicht();
+    if(Constants::RENDER_ENGINE == Constants::RenderEngine::CLOVER){
+        RenderFacadeManager::GetInstance()->InitializeClover();
+        InputFacadeManager::GetInstance()->InitializeClover();
+        PhysicsFacadeManager::GetInstance()->InitializeClover();
+    }else if(Constants::RENDER_ENGINE == Constants::RenderEngine::IRRLICHT){
+        RenderFacadeManager::GetInstance()->InitializeIrrlicht();
+        InputFacadeManager::GetInstance()->InitializeIrrlicht();
+        PhysicsFacadeManager::GetInstance()->InitializeIrrlicht();
+    } 
+    
 
     //Inicializa la fachada de FMOD.
     SoundFacadeManager::GetInstance()->InitializeFacadeFmod();

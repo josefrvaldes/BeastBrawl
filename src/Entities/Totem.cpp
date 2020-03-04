@@ -8,6 +8,7 @@
 #include "../Components/CBoundingSphere.h"
 #include <Components/CShader.h>
 #include <iostream>
+#include "../Constants.h"
 
 using namespace std;
 
@@ -18,9 +19,18 @@ Totem::Totem()
     glm::vec3 rot   = glm::vec3(0.0f, 90.0f, 0.0f);
     glm::vec3 scale = glm::vec3(0.6f, 0.6f, 0.6f);
 
+    string mesh;
+    if(Constants::RENDER_ENGINE == Constants::RenderEngine::CLOVER){
+        //mesh    = "totem_tex.fbx";
+        mesh  = "TEST_BOX.fbx";
+        
+    }else if(Constants::RENDER_ENGINE == Constants::RenderEngine::IRRLICHT){
+        mesh    =   "kart_ia.obj";
+    }
+
     string texture = "totem.jpg";
     //string mesh = "totem_tex.fbx";
-    string mesh    = "kart_ia.obj";
+    //string mesh    = "kart_ia.obj";
 
     string vertexShader = "CLEngine/src/Shaders/vertex.glsl";
     string fragmentShader = "CLEngine/src/Shaders/fragment.glsl";

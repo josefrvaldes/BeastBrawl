@@ -10,6 +10,7 @@
 #include <Components/CShader.h>
 #include "../Components/CRemovableObject.h"
 #include <iostream>
+#include "../Constants.h"
 
 class Position;
 using namespace std;
@@ -17,8 +18,16 @@ using namespace std;
 PowerUp::PowerUp()
 {
     // default values
+
+    string mesh;
+    if(Constants::RENDER_ENGINE == Constants::RenderEngine::CLOVER){
+        mesh    = "kart_physics.fbx";
+        
+    }else if(Constants::RENDER_ENGINE == Constants::RenderEngine::IRRLICHT){
+        mesh    =   "kart_ia.obj";
+    } 
     string texture = "spheremap.jpg";
-    string mesh    = "kart_ia.obj";
+    //string mesh    = "kart_ia.obj";
     typeCPowerUp typePowerUp = typeCPowerUp::None;
 
     string vertexShader = "CLEngine/src/Shaders/vertex.glsl";

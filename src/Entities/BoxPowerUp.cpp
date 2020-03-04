@@ -9,6 +9,7 @@
 #include "../Components/CBoundingSphere.h"
 #include "../Components/CRemovableObject.h"
 #include <Components/CShader.h>
+#include <Constants.h>
 
 #include <iostream>
 
@@ -18,7 +19,13 @@ using namespace std;
 BoxPowerUp::BoxPowerUp(){
     // default values
     string texture = "t351sml.jpg";
-    string mesh    = "TEST_BOX.fbx";
+    string mesh;
+    if(Constants::RENDER_ENGINE == Constants::RenderEngine::CLOVER){
+        mesh    = "TEST_BOX.fbx";
+        
+    }else if(Constants::RENDER_ENGINE == Constants::RenderEngine::IRRLICHT){
+        mesh    =   "TEST_BOX.fbx";
+    }
     string vertexShader = "CLEngine/src/Shaders/vertex.glsl";
     string fragmentShader = "CLEngine/src/Shaders/fragment.glsl";
     //float maxSpeed = 20.0, acceleration = .15, friction = 0.1, slowDown = 0.25;

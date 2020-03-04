@@ -23,6 +23,7 @@
 #include "../Components/CBoundingChassis.h"
 #include "../Components/CGravity.h"
 #include "../Components/CShader.h"
+#include "../Constants.h"
 
 class Position;
 
@@ -37,8 +38,16 @@ CarHuman::CarHuman() {
     glm::vec3 scale = glm::vec3(0.6f, 0.6f, 0.6f);
     string texture = "";
 
+    string mesh;
+    if(Constants::RENDER_ENGINE == Constants::RenderEngine::CLOVER){
+        mesh    = "kart_ia.obj";
+        
+    }else if(Constants::RENDER_ENGINE == Constants::RenderEngine::IRRLICHT){
+        mesh    =   "kart.obj";
+    }
+
     //string mesh    = "kart_physics.fbx";
-    string mesh    = "kart.obj";
+    // string mesh    = "kart.obj";
 
     string vertexShader = "CLEngine/src/Shaders/vertex.glsl";
     string fragmentShader = "CLEngine/src/Shaders/fragment.glsl";
