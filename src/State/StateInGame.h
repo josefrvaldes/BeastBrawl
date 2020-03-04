@@ -96,7 +96,7 @@ class StateInGame : public State {
     shared_ptr<SystemBoxPowerUp> sysBoxPowerUp;
     shared_ptr<Collisions> collisions;
     shared_ptr<Totem> totem;
-    shared_ptr<Entity> totemOnCar;
+    //shared_ptr<Entity> totemOnCar;
 
     unique_ptr<CLPhysics> clPhysics;
     // unique_ptr<SystemPathPlanning> sysPathPlanning;
@@ -113,9 +113,10 @@ class StateInGame : public State {
     virtual void InitializeSystems(ManCar&, ManBoundingWall&, ManBoundingOBB&, ManBoundingGround&, ManPowerUp&, ManNavMesh&, ManBoxPowerUp&, ManTotem &);
     virtual void InitializeFacades();
     virtual void AddElementsToRender();
+    //virtual void CAMBIARCosasDeTotemUpdate(){};
 
-    void CAMBIARCosasDeTotem(ManTotem &);
-    void CAMBIARCosasNavMesh(ManCar &, ManNavMesh &);
-    void CAMBIARPositionTotemAboveCar();
+    //void CAMBIARCosasDeTotem(ManTotem &);
+    //void CAMBIARCosasNavMesh(ManCar &, ManNavMesh &);
+    //void CAMBIARPositionTotemAboveCar();
 
 };

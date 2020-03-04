@@ -23,6 +23,7 @@ class ManPowerUp : public Manager{
     //vector<shared_ptr<PowerUp>> GetEntities() const {
     //    return PowerUps;
     //};
+    void Update();
 
    private:
 	//vector<shared_ptr<PowerUp>> PowerUps;

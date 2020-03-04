@@ -29,6 +29,7 @@ enum DataType{
     POS_DESTINATION,
     DATA_SERVER,
     ID,
+    ID_DESTINATION,
     INPUTS,
     ID_ONLINE,
     VECTOR_ID_ONLINE,

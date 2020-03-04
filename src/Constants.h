@@ -38,7 +38,7 @@ class Constants {
       enum RenderEngine { IRRLICHT,
                           CLOVER};
 
-      inline static const RenderEngine RENDER_ENGINE = RenderEngine::CLOVER;
+      inline static const RenderEngine RENDER_ENGINE = RenderEngine::IRRLICHT;
 
 
 };

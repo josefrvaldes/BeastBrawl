@@ -16,7 +16,7 @@
 #include <Components/CBoundingSphere.h>
 #include <Components/CColliding.h>
 #include <Components/CCurrentNavMesh.h>
-#include <Components/CTargetNavMesh.h>
+#include "../Components/CTargetNavMesh.h"
 #include <Components/CBoundingRay.h>
 #include <Components/CMovementType.h>
 #include "../Components/CExternalForce.h"

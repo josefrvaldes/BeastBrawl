@@ -14,5 +14,8 @@ public:
     NavMesh(glm::vec3 pos, glm::vec3 rot, float width, float height, float depth, const vector<int>& waypoints);
     ~NavMesh();
 
+    void AddNavMeshBro(Entity *n_){ navMeshBro.push_back(n_); }
+
+    vector<Entity *> navMeshBro;
 };
 
