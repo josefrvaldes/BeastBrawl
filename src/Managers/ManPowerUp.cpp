@@ -8,6 +8,7 @@
 #include <Components/CDimensions.h>
 #include "../Components/CBoundingSphere.h"
 #include "../Components/CType.h"
+#include "../Components/CRemovableObject.h"
 
 class Position;
 using namespace std;
@@ -86,14 +87,26 @@ void ManPowerUp::CreatePowerUp(DataMap* d) {
 
 
 // TO-DO ELIMINARLO TODO AL MISMO TIEMPO ANTES DE RENDERIZAR 
-void ManPowerUp::DeletePowerUp(DataMap* d){
+//void ManPowerUp::DeletePowerUp(DataMap* d){
+//    auto renderFacadeManager = RenderFacadeManager::GetInstance();
+//    auto renderEngine = renderFacadeManager->GetRenderFacade();
+//    
+//    for(long unsigned int i=0; i< entities.size(); ++i){
+//        if(entities[i].get() == any_cast<Entity*>((*d)[POWER_UP])){
+//            renderEngine->DeleteEntity(entities[i].get());
+//            entities.erase(entities.begin()+i);
+//        }
+//    }
+//}
+
+void ManPowerUp::Update(){
     auto renderFacadeManager = RenderFacadeManager::GetInstance();
     auto renderEngine = renderFacadeManager->GetRenderFacade();
-    
     for(long unsigned int i=0; i< entities.size(); ++i){
-        if(entities[i].get() == any_cast<Entity*>((*d)[POWER_UP])){
+        auto cRemovableObj = static_cast<CRemovableObject*>(entities[i].get()->GetComponent(CompType::RemovableObjectComp).get());
+        if(cRemovableObj->destroy){
             renderEngine->DeleteEntity(entities[i].get());
-            entities.erase(entities.begin()+i);
+            entities.erase(entities.begin()+i);   
         }
     }
 }
@@ -107,19 +120,19 @@ void ManPowerUp::SubscribeToEvents() {
         bind(&ManPowerUp::CreatePowerUp, this, placeholders::_1),
         "CreatePowerUp"));
 
-    EventManager::GetInstance().SubscribeMulti(Listener(
-        EventType::COLLISION_ENTITY_POWERUP,
-        bind(&ManPowerUp::DeletePowerUp, this, placeholders::_1),
-        "DeletePowerUp"));
-    
-    EventManager::GetInstance().SubscribeMulti(Listener(
-        EventType::COLLISION_ENTITY_AI_POWERUP,
-        bind(&ManPowerUp::DeletePowerUp, this, placeholders::_1),
-        "DeletePowerUp"));
-
-    EventManager::GetInstance().SubscribeMulti(Listener(
-        EventType::DELETE_POWERUP,
-        bind(&ManPowerUp::DeletePowerUp, this, placeholders::_1),
-        "DeletePowerUp"));
+    //EventManager::GetInstance().SubscribeMulti(Listener(
+    //    EventType::COLLISION_ENTITY_POWERUP,
+    //    bind(&ManPowerUp::DeletePowerUp, this, placeholders::_1),
+    //    "DeletePowerUp"));
+    //
+    //EventManager::GetInstance().SubscribeMulti(Listener(
+    //    EventType::COLLISION_ENTITY_AI_POWERUP,
+    //    bind(&ManPowerUp::DeletePowerUp, this, placeholders::_1),
+    //    "DeletePowerUp"));
+//
+    //EventManager::GetInstance().SubscribeMulti(Listener(
+    //    EventType::DELETE_POWERUP,
+    //    bind(&ManPowerUp::DeletePowerUp, this, placeholders::_1),
+    //    "DeletePowerUp"));
 }
 

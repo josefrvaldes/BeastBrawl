@@ -1,5 +1,5 @@
 #include "CRemovableObject.h"
 
 CRemovableObject::CRemovableObject() : destroy{false} {
-    CompType::RemovableObjectComp;
+    m_compType = CompType::RemovableObjectComp;
 }

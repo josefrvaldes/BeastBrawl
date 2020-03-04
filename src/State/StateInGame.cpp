@@ -162,7 +162,6 @@ void StateInGame::Update() {
 
     // ACTUALIZACION DE LOS MANAGERS DE LOS COCHES
     manCars->UpdateCar(*(manTotems.get()));
-
     // ACTUALIZACION DE LAS FISICAS DE LOS COCHES
     physics->update(manCars->GetCar().get(), cam.get());
 
@@ -193,6 +192,9 @@ void StateInGame::Update() {
 
     renderEngine->FacadeUpdatePlates(manNamePlates.get());
     renderEngine->UpdateTransformable(manTotems->GetEntities()[0].get());
+
+    // al final de la ejecucion eliminamos todos los powerUps que se deben eliminar
+    manPowerUps->Update();
 
 }
 

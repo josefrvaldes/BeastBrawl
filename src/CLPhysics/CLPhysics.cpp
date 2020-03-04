@@ -17,6 +17,7 @@
 #include <Components/CNitro.h>
 #include <Components/CTransformable.h>
 #include <Components/CTotem.h>
+#include "../Components/CRemovableObject.h"
 #include "../Components/CShield.h"
 #include "../Components/CGravity.h"
 #include <Entities/BoundingWall.h>
@@ -1247,9 +1248,13 @@ void CLPhysics::IntersectsCarsPowerUps(ManCar &manCars, ManPowerUp &manPowerUps,
                 cout << "intersecciooooooooon con PowerUp" << endl; 
                 // debemos eliminar el powerUp y hacer danyo al jugador
                 shared_ptr<DataMap> dataCollisonCarPowerUp = make_shared<DataMap>();                                                                       
-                (*dataCollisonCarPowerUp)[POWER_UP] = currentPU.get();              // nos guardamos el puntero para eliminar el powerUp
+                //(*dataCollisonCarPowerUp)[POWER_UP] = currentPU.get();              // nos guardamos el puntero para eliminar el powerUp
                 (*dataCollisonCarPowerUp)[CAR_AI] = currentCar.get();              // nos guardamos el puntero al coche                              
                 EventManager::GetInstance().AddEventMulti(Event{EventType::COLLISION_ENTITY_AI_POWERUP, dataCollisonCarPowerUp}); 
+                // ponemos a true el componente DeleteEntity, para eliminarlo con seguridad beibeee
+                auto cRemovableObj = static_cast<CRemovableObject*>(currentPU.get()->GetComponent(CompType::RemovableObjectComp).get());
+                cRemovableObj->destroy = true;
+
                 // comprobamos si el coche tenia escudo y el totem.. ya que debe de soltarlo
                 auto cShield = static_cast<CShield*>(currentCar.get()->GetComponent(CompType::ShieldComp).get());
                 if(cShield->activePowerUp==false && static_cast<CTotem*>(currentCar.get()->GetComponent(CompType::TotemComp).get())->active){  // TRUE
@@ -1282,9 +1287,11 @@ void CLPhysics::IntersectPowerUpWalls(ManPowerUp &manPowerUp, ManBoundingWall &m
             if(intersect.intersects){
                 collision = true;
                 // el powerUp ha tocado una pared debemos eliminarlo
-                shared_ptr<DataMap> dataCollisonPowerUp = make_shared<DataMap>();                                                                       
-                (*dataCollisonPowerUp)[POWER_UP] = currentPU.get();              // nos guardamos el puntero para eliminar el powerUp                            
-                EventManager::GetInstance().AddEventMulti(Event{EventType::DELETE_POWERUP, dataCollisonPowerUp}); 
+                //shared_ptr<DataMap> dataCollisonPowerUp = make_shared<DataMap>();                                                                       
+                //(*dataCollisonPowerUp)[POWER_UP] = currentPU.get();              // nos guardamos el puntero para eliminar el powerUp                            
+                //EventManager::GetInstance().AddEventMulti(Event{EventType::DELETE_POWERUP, dataCollisonPowerUp}); 
+                auto cRemovableObj = static_cast<CRemovableObject*>(currentPU.get()->GetComponent(CompType::RemovableObjectComp).get());
+                cRemovableObj->destroy = true;
             }
 
         } 
@@ -1297,9 +1304,11 @@ void CLPhysics::IntersectPowerUpWalls(ManPowerUp &manPowerUp, ManBoundingWall &m
             if(intersect.intersects){
                 collision = true;
                 // el powerUp ha tocado un OBB debemos eliminarlo
-                shared_ptr<DataMap> dataCollisonPowerUp = make_shared<DataMap>();                                                                       
-                (*dataCollisonPowerUp)[POWER_UP] = currentPU.get();              // nos guardamos el puntero para eliminar el powerUp                            
-                EventManager::GetInstance().AddEventMulti(Event{EventType::DELETE_POWERUP, dataCollisonPowerUp}); 
+                //shared_ptr<DataMap> dataCollisonPowerUp = make_shared<DataMap>();                                                                       
+                //(*dataCollisonPowerUp)[POWER_UP] = currentPU.get();              // nos guardamos el puntero para eliminar el powerUp                            
+                //EventManager::GetInstance().AddEventMulti(Event{EventType::DELETE_POWERUP, dataCollisonPowerUp}); 
+                auto cRemovableObj = static_cast<CRemovableObject*>(currentPU.get()->GetComponent(CompType::RemovableObjectComp).get());
+                cRemovableObj->destroy = true;
             }
         } 
     }
