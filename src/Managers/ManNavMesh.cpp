@@ -154,7 +154,7 @@ void ManNavMesh::CreateNavMesh(glm::vec3 pos, glm::vec3 rot, float width, float 
     shared_ptr<NavMesh> p = make_shared<NavMesh>(pos,rot,width,height,depth,waypoints);
     entities.push_back(p);
 
-    auto cNavMesh = static_cast<CNavMesh*>(p.get()->GetComponent(CompType::NavMeshComp).get());
+    //auto cNavMesh = static_cast<CNavMesh*>(p.get()->GetComponent(CompType::NavMeshComp).get());
     //std::cout << "EL ID DEL NAVMESH EN EL QUE ESTAMOS ES: " << cNavMesh->id << std::endl;
 }
 

@@ -198,7 +198,7 @@ void StateInGame::Update() {
         physicsEngine->UpdatePowerUps(actualPowerUp.get());
 
     renderEngine->FacadeUpdatePlates(manNamePlates.get());
-    renderEngine->UpdateTransformable(manTotems->GetEntities()[0].get());
+    physicsEngine->UpdateTransformable(manTotems->GetEntities()[0].get());
 
     // al final de la ejecucion eliminamos todos los powerUps que se deben eliminar
     manPowerUps->Update();
