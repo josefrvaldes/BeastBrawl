@@ -31,7 +31,7 @@ ManNavMesh::ManNavMesh(ManCar *manCars, ManTotem *manTotems) {
 
     long unsigned int navMeshCount = j["NAVMESHES"].size();
 
-    std::cout << "EL NUMERO DE NAVMESH EN EL JSON ES: " << navMeshCount << std::endl;
+    //std::cout << "EL NUMERO DE NAVMESH EN EL JSON ES: " << navMeshCount << std::endl;
     //Leemos el array de NavMesh
     for(long unsigned int i = 0; i< navMeshCount; ++i){
 
@@ -88,11 +88,11 @@ ManNavMesh::ManNavMesh(ManCar *manCars, ManTotem *manTotems) {
         double dimensionZ = (abs(centroNavMeshZ - vertex1Z))*2; 
         // cogemos el array de wayPoints
         auto wayPointsIdCount = navMeshActual["waypoints"].size();
-        std::cout << "EL Navmesh " << idNavMesh << " tiene: " << wayPointsIdCount << " waypoints" << std::endl;
+        //std::cout << "EL Navmesh " << idNavMesh << " tiene: " << wayPointsIdCount << " waypoints" << std::endl;
         for(long unsigned int k=0; k<wayPointsIdCount; k++){
             int wayPointIdActual = navMeshActual["waypoints"][k].get<int>();
             waypointsId.push_back(wayPointIdActual);
-            std::cout << "meteneos waypoint con ID: " << wayPointIdActual << std::endl;
+            //std::cout << "meteneos waypoint con ID: " << wayPointIdActual << std::endl;
         }
         // POSICION , ROTACION, OFFSETX, OFFSETY, OFFSETZ, VECTOR WAYPOINTS
         //std::cout <<" VOY A CREAR UN Navmesh LOCOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO" << std::endl;
@@ -125,7 +125,7 @@ void ManNavMesh::CreateNavMesh(glm::vec3 pos, glm::vec3 rot, float width, float 
     entities.push_back(p);
 
     auto cNavMesh = static_cast<CNavMesh*>(p.get()->GetComponent(CompType::NavMeshComp).get());
-    std::cout << "EL ID DEL NAVMESH EN EL QUE ESTAMOS ES: " << cNavMesh->id << std::endl;
+    //std::cout << "EL ID DEL NAVMESH EN EL QUE ESTAMOS ES: " << cNavMesh->id << std::endl;
 }
 
 

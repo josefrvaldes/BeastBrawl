@@ -6,6 +6,7 @@
 #include <Components/CMesh.h>
 #include <Components/CTexture.h>
 #include "../Components/CBoundingSphere.h"
+#include "../Components/CShader.h"
 #include "../Components/CBoundingCilindre.h"
 #include "../Components/CTotem.h"
 #include "../Constants.h"
@@ -21,7 +22,7 @@ StateInGame::StateInGame() {
     cout << "------------------------------------------------------------------" << endl;
     physics = make_unique<Physics>(Constants::DELTA_TIME);
 
-    cam = make_shared<Camera>(glm::vec3(100.0f, 600.0f, 30.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f));
+    cam = make_shared<Camera>(glm::vec3(100.0f, 0.0f, 30.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f));
     ground = make_shared<GameObject>(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), "", "training_ground.obj");
 }
 
@@ -74,7 +75,8 @@ void StateInGame::CAMBIARCosasDeTotem(ManTotem &manTotems) {
     totemOnCar->AddComponent(cTypeTotemOnCar);
     totemOnCar->AddComponent(cTransformableTotemOnCar);
     totemOnCar->AddComponent(make_shared<CTexture>("totem.jpg"));
-    totemOnCar->AddComponent(make_shared<CMesh>("media/ninja.b3d"));
+    totemOnCar->AddComponent(make_shared<CMesh>("kart_ia.obj"));
+    totemOnCar->AddComponent(make_shared<CShader>("CLEngine/src/Shaders/vertex.glsl","CLEngine/src/Shaders/fragment.glsl"));
     // ------------------------------------------------------------------------------------------------------------------------------------------------
 }
 
@@ -145,7 +147,7 @@ void StateInGame::InitState() {
     //Si la direccion de soundEngine!=0 es que viene del PAUSE, por lo que no deberia hacerlo.
     if (!soundEngine) {
         soundEngine = SoundFacadeManager::GetInstance()->GetSoundFacade();
-        cout << "~~~ SoundEngine en INGAME es -> " << soundEngine << endl;
+        //cout << "~~~ SoundEngine en INGAME es -> " << soundEngine << endl;
         if (soundEngine) {
             soundEngine->SetState(4);
             EventManager::GetInstance().AddEventMulti(Event{EventType::START_GAME});
@@ -289,5 +291,6 @@ void StateInGame::CAMBIARPositionTotemAboveCar() {
         cTransformTotem->position.y = -100.0f;
     }
 
-    renderEngine->UpdateTransformable(totemOnCar.get());
+    physicsEngine->UpdateTransformable(totemOnCar.get());
+    //renderEngine->UpdateTransformable(totemOnCar.get());
 }

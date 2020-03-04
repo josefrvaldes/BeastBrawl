@@ -13,7 +13,7 @@ namespace CLE {
             CLResource() {};
             ~CLResource() {};
 
-            virtual void Draw(glm::mat4) = 0;
+            virtual void Draw(GLuint shaderID) = 0;
             virtual bool LoadFile(string) = 0;
 
             void SetName(string n)  { name = n; }

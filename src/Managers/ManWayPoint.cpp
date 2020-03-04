@@ -30,7 +30,7 @@ ManWayPoint::ManWayPoint(){
         z    = capaActual["z"].get<float>();
         type = capaActual["type"].get<int>();
 
-        cout << id << "/" << x << "/" << y << "/" << z << "/" << type << "/" << endl;
+        //cout << id << "/" << x << "/" << y << "/" << z << "/" << type << "/" << endl;
         glm::vec3 position = glm::vec3(x,y,z);
         CreateWayPoint(position,type,id);
     }

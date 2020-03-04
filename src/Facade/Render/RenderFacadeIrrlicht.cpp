@@ -2,7 +2,7 @@
 
 #include <cmath>
 #include <algorithm>    // std::sort
-#include "../../Components/CBoundingChassis.h"
+#include "../../Components/CBoundingChassis.h" 
 #include "../../Components/CBoundingOBB.h"
 #include "../../Components/CPowerUp.h"
 
@@ -33,8 +33,8 @@
 using namespace irr;
 using namespace video;
 
-bool RenderFacadeIrrlicht::showDebug = false;
-bool RenderFacadeIrrlicht::showAIDebug = false;
+// bool RenderFacadeIrrlicht::showDebug = false;
+// bool RenderFacadeIrrlicht::showAIDebug = false;
 
 //PUNTEROS A FUNCIONES
 RenderFacadeIrrlicht::~RenderFacadeIrrlicht() {
@@ -265,6 +265,9 @@ const uint16_t RenderFacadeIrrlicht::FacadeAddObject(Entity* entity) {
 
         case ModelType::Text:
             break;
+
+        case ModelType::Light:
+            break;
     }
 
     // y ahora a ese node, le ponemos sus parámetros
@@ -400,60 +403,7 @@ const uint16_t RenderFacadeIrrlicht::FacadeAddObjectTotem(Entity* entity) {
     return idTotem;
 }
 
-//TODO: Esto proximamente le pasaremos todos los entities y los modificará 1 a 1
-void RenderFacadeIrrlicht::UpdateTransformable(Entity* entity) {
-    //Cogemos los componentes de ID y CTransformable
-    auto cTransformable = static_cast<CTransformable*>(entity->GetComponent(CompType::TransformableComp).get());
-    auto cId = static_cast<CId*>(entity->GetComponent(CompType::IdComp).get());
 
-    // Cogemos el nodo de irrlicht con el ID igual al que le hemos pasado
-    scene::ISceneNode* node = smgr->getSceneNodeFromId(cId->id);
-
-    //Actualiza la posicion del objeto de irrlicht
-    node->setPosition(core::vector3df(cTransformable->position.x, cTransformable->position.y, cTransformable->position.z));
-
-    //Actualiza la rotacion del objeto de irrlicht
-    node->setRotation(core::vector3df(cTransformable->rotation.x, cTransformable->rotation.y, cTransformable->rotation.z));
-
-    //Actualiza el escalado del objeto de irrlicht
-    node->setScale(core::vector3df(cTransformable->scale.x, cTransformable->scale.y, cTransformable->scale.z));
-
-    //if(!showDebug) return;
-    //cout << "entramos?????????" << endl;
-    //bool hasSphere = entity->HasComponent(CompType::CompBoundingSphere);
-    //if (hasSphere && Constants::DEBUG_SHOW_SPHERES) {
-    //    scene::ISceneNode* nodeSphere = smgr->getSceneNodeFromId(cId->id + Component::ID_DIFFERENCE);
-    //    nodeSphere->setVisible(true);
-    //    //nodeSphere->setRotation(core::vector3df(cTransformable->rotation.x, cTransformable->rotation.y, cTransformable->rotation.z));
-    //    //nodeSphere->setScale(core::vector3df(cTransformable->scale.x, cTransformable->scale.y, cTransformable->scale.z));
-    //}
-    
-    /*
-    bool hasChassis = entity->HasComponent(CompType::CompBoundingChassis);
-    if (hasChassis && Constants::DEBUG_SHOW_CHASSIS) {
-        auto cChassis = static_cast<CBoundingChassis *>(entity->GetComponent(CompType::CompBoundingChassis).get());
-        auto centerSph1 = cChassis->sphereBehind->center;
-        scene::ISceneNode* nodeSphere1 = smgr->getSceneNodeFromId(cId->id + Component::ID_DIFFERENCE);
-        nodeSphere1->setPosition(core::vector3df(centerSph1.x, centerSph1.y, centerSph1.z));
-        nodeSphere1->setVisible(showDebug);
-        auto centerSph2 = cChassis->sphereFront->center;
-        scene::ISceneNode* nodeSphere2 = smgr->getSceneNodeFromId(cId->id + Component::ID_DIFFERENCE + Component::ID_DIFFERENCE);
-        nodeSphere2->setPosition(core::vector3df(centerSph2.x, centerSph2.y, centerSph2.z));
-        nodeSphere2->setVisible(false);
-    }else{
-        bool hasSphere = entity->HasComponent(CompType::CompBoundingSphere);
-        if (hasSphere && Constants::DEBUG_SHOW_SPHERES) {
-            scene::ISceneNode* nodeSphere = smgr->getSceneNodeFromId(cId->id + Component::ID_DIFFERENCE);
-            nodeSphere->setPosition(core::vector3df(cTransformable->position.x, cTransformable->position.y, cTransformable->position.z));
-            nodeSphere->setVisible(showDebug);
-            //nodeSphere->setRotation(core::vector3df(cTransformable->rotation.x, cTransformable->rotation.y, cTransformable->rotation.z));
-            //nodeSphere->setScale(core::vector3df(cTransformable->scale.x, cTransformable->scale.y, cTransformable->scale.z));
-        }
-    }
-    */
-    
-
-}
 
 //Reajusta la camara
 void RenderFacadeIrrlicht::UpdateCamera(Entity* cam, ManCar* manCars) {

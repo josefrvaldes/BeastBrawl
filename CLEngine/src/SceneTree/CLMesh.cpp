@@ -6,8 +6,8 @@ CLMesh::CLMesh(){
     
 }
 
-void CLMesh::Draw(glm::mat4& m) {
+void CLMesh::Draw(GLuint shaderID) {
     if (mesh) {
-        mesh->Draw(m);
+        mesh->Draw(shaderID);
     }
 }
