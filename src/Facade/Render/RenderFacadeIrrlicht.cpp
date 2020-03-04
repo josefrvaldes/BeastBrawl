@@ -15,7 +15,6 @@
 #include <Components/CNamePlate.h>
 #include <Components/CPath.h>
 #include <Components/CTexture.h>
-#include <Components/CTargetNavMesh.h>
 #include <Components/CTotem.h>
 #include <Components/CType.h>
 #include <Components/CWayPointEdges.h>
@@ -286,7 +285,7 @@ const uint16_t RenderFacadeIrrlicht::FacadeAddObject(Entity* entity) {
         
         bool hasChassis = entity->HasComponent(CompType::CompBoundingChassis);
         if (hasChassis && Constants::DEBUG_SHOW_CHASSIS) {
-            // cout << "entramos aqui???" << endl;
+            //cout << "entramos aqui???" << endl;
             auto cChassis = static_cast<CBoundingChassis *>(entity->GetComponent(CompType::CompBoundingChassis).get());
             // primera esfera
             auto radiousSph1 = cChassis->sphereBehind->radius;
@@ -296,7 +295,7 @@ const uint16_t RenderFacadeIrrlicht::FacadeAddObject(Entity* entity) {
             nodeSphere1->setID(cId->id + Component::ID_DIFFERENCE);
             nodeSphere1->setPosition(core::vector3df(centerSph1.x, centerSph1.y, centerSph1.z));
             nodeSphere1->setScale(core::vector3df(1.f, 1.f, 1.f));
-            nodeSphere1->setMaterialTexture(0, driver->getTexture(path.c_str()));  //Obligado incluir el c_str() si no irrlicht no carga solo con un string
+            //nodeSphere1->setMaterialTexture(0, driver->getTexture(path.c_str()));  //Obligado incluir el c_str() si no irrlicht no carga solo con un string
             nodeSphere1->setMaterialFlag(video::EMF_LIGHTING, false);
             nodeSphere1->setVisible(false);
             // segunda esfera
@@ -958,19 +957,19 @@ void RenderFacadeIrrlicht::FacadeDrawAIDebug(ManCar* manCars, ManNavMesh* manNav
         auto cDimensions    = static_cast<CDimensions*>(navMesh->GetComponent(CompType::DimensionsComp).get());
 
         point0 = glm::vec3(cTransformable->position.x - (cDimensions->width/2),
-                            cTransformable->position.y+20,
+                            cTransformable->position.y - (cDimensions->height/2),
                             cTransformable->position.z - (cDimensions->depth/2));
 
         point1 = glm::vec3(cTransformable->position.x - (cDimensions->width/2),
-                            cTransformable->position.y+20,
+                            cTransformable->position.y - (cDimensions->height/2),
                             cTransformable->position.z + (cDimensions->depth/2));
 
         point2 = glm::vec3(cTransformable->position.x + (cDimensions->width/2),
-                            cTransformable->position.y+20,
+                            cTransformable->position.y - (cDimensions->height/2),
                             cTransformable->position.z + (cDimensions->depth/2));
                             
         point3 = glm::vec3(cTransformable->position.x + (cDimensions->width/2),
-                            cTransformable->position.y+20,
+                            cTransformable->position.y - (cDimensions->height/2),
                             cTransformable->position.z - (cDimensions->depth/2));
 
         point4 = glm::vec3(point0.x,point0.y + cDimensions->height, point0.z);
@@ -1017,7 +1016,7 @@ void RenderFacadeIrrlicht::FacadeDrawAIDebug(ManCar* manCars, ManNavMesh* manNav
             auto cTransformableCar = static_cast<CTransformable*>(carAI->GetComponent(CompType::TransformableComp).get());
             auto cDimensions = static_cast<CDimensions*>(carAI->GetComponent(CompType::DimensionsComp).get());
             auto cCurrentNavMesh = static_cast<CCurrentNavMesh*>(carAI->GetComponent(CompType::CurrentNavMeshComp).get());
-            auto cTargetNavMesh = static_cast<CTargetNavMesh*>(carAI->GetComponent(CompType::TargetNavMeshComp).get());
+            //auto cTargetNavMesh = static_cast<CTargetNavMesh*>(carAI->GetComponent(CompType::TargetNavMeshComp).get());
 
             Draw3DLine(cPosDestination->position,cTransformableCar->position);
             //Ahora vamos a dibujar su CPath
@@ -1056,8 +1055,8 @@ void RenderFacadeIrrlicht::FacadeDrawAIDebug(ManCar* manCars, ManNavMesh* manNav
             }
             pathText += core::stringw("\n");
 
-            core::stringw navMeshText = pathText + core::stringw("Current NavMesh: ") + core::stringw(cCurrentNavMesh->currentNavMesh) + core::stringw("\n")+
-                                                core::stringw("Target NavMesh: ")  + core::stringw(cTargetNavMesh->targetNavMesh) + core::stringw("\n");
+            core::stringw navMeshText = pathText + core::stringw("Current NavMesh: ") + core::stringw(cCurrentNavMesh->currentNavMesh) + core::stringw("\n")+core::stringw("\n");
+                                                //core::stringw("Target NavMesh: ")  + core::stringw(cTargetNavMesh->targetNavMesh) + 
             
             auto cMovementType = static_cast<CMovementType*>(carAI->GetComponent(CompType::MovementComp).get());
 

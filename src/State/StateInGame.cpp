@@ -46,7 +46,8 @@ void StateInGame::InitVirtualMethods() {
     InitializeSystems(*manCars.get(), *manBoundingWall.get(), *manBoundingOBB.get(), *manBoundingGround.get(), *manPowerUps.get(), *manNavMesh.get(), *manBoxPowerUps.get(), *manTotems.get());
     InitializeFacades();
 
-    CAMBIARCosasDeTotem(*manTotems.get());
+    //CAMBIARCosasDeTotem(*manTotems.get());
+    //CAMBIARCosasDeBoxPU(*manWayPoint.get(), *manBoxPowerUps.get());
     //CAMBIARCosasNavMesh(*manNavMesh.get());
 
     // esta llamada lo ideal es que sea la última porque hace uso de todo
@@ -62,6 +63,7 @@ void StateInGame::InitializeFacades() {
     renderEngine->FacadeSuscribeEvents();
 }
 
+/*
 void StateInGame::CAMBIARCosasDeTotem(ManTotem &manTotems) {
     // --------------------------------------------------------------------------------------------------------------------------------------------
     totemOnCar = make_shared<Entity>();
@@ -79,7 +81,7 @@ void StateInGame::CAMBIARCosasDeTotem(ManTotem &manTotems) {
     totemOnCar->AddComponent(make_shared<CShader>("CLEngine/src/Shaders/vertex.glsl","CLEngine/src/Shaders/fragment.glsl"));
     // ------------------------------------------------------------------------------------------------------------------------------------------------
 }
-
+*/
 void StateInGame::AddElementsToRender() {
     // Añadimos cosas a la fachada de render
     renderEngine->FacadeAddPlates(manNamePlates.get());
@@ -102,7 +104,7 @@ void StateInGame::AddElementsToRender() {
 
     renderEngine->FacadeAddObjectTotem(manTotems->GetEntities()[0].get());
     // este último probablemente haya que cambiarlo ¿?
-    renderEngine->FacadeAddObject(totemOnCar.get());
+    //renderEngine->FacadeAddObject(totemOnCar.get());
 }
 
 void StateInGame::InitializeCLPhysics(ManCar &manCars, ManBoundingWall &manWall, ManBoundingOBB &manOBB, ManBoundingGround &manGround, ManPowerUp &manPowerUp, ManNavMesh &manNavMesh, ManBoxPowerUp &manBoxPowerUp, ManTotem &manTotem) {
@@ -135,8 +137,8 @@ void StateInGame::InitializeManagers(Physics *physics, Camera *cam) {
     manBoundingWall = make_shared<ManBoundingWall>();
     manBoundingOBB = make_shared<ManBoundingOBB>();
     manBoundingGround = make_shared<ManBoundingGround>();
-    manTotems = make_shared<ManTotem>();
-    manNavMesh = make_shared<ManNavMesh>(manCars.get(), manTotems.get());
+    manNavMesh = make_shared<ManNavMesh>();
+    manTotems = make_shared<ManTotem>(manNavMesh.get());
     manNamePlates = make_shared<ManNamePlate>(manCars.get());
 }
 
@@ -161,11 +163,12 @@ void StateInGame::Update() {
     EventManager &em = EventManager::GetInstance();
     em.Update();
 
-    //ACTUALIZAMOS MANAGER NAVMESH CAR PLAYER
-    manNavMesh->UpdateNavMeshHuman(manCars.get()->GetCar().get());
-    // ACTUALIZACION DE LOS MANAGERS DE LOS COCHES
-    manCars->UpdateCar();
 
+    manNavMesh->Update(*(manCars.get()));
+
+
+    // ACTUALIZACION DE LOS MANAGERS DE LOS COCHES
+    manCars->UpdateCar(*(manTotems.get()));
     // ACTUALIZACION DE LAS FISICAS DE LOS COCHES
     physics->update(manCars->GetCar().get(), cam.get());
 
@@ -179,6 +182,7 @@ void StateInGame::Update() {
     clPhysics->IntersectsCarsPowerUps( *manCars.get(), *manPowerUps.get(), manNavMesh.get());
     clPhysics->IntersectCarsBoxPowerUp(*manCars.get(), *manBoxPowerUps.get());
     clPhysics->IntersectCarsTotem(*manCars.get(), *manTotems.get());
+    clPhysics->IntersectPowerUpWalls(*manPowerUps.get(), *manBoundingWall.get(), *manBoundingOBB.get());
     // COLISIONES entre BoxPowerUp y player
     //collisions->IntersectPlayerBoxPowerUp(manCars.get()->GetCar().get(), manBoxPowerUps.get());
     // COLISIONES entre powerUp y player
@@ -194,34 +198,11 @@ void StateInGame::Update() {
         physicsEngine->UpdatePowerUps(actualPowerUp.get());
 
     renderEngine->FacadeUpdatePlates(manNamePlates.get());
+    physicsEngine->UpdateTransformable(manTotems->GetEntities()[0].get());
 
+    // al final de la ejecucion eliminamos todos los powerUps que se deben eliminar
+    manPowerUps->Update();
 
-    /*
-    // VAMOS A HACER UN TEST A VER SI FUNCIONA TODA ESTA MIERDA
-    unique_ptr<CBoundingCilindre> cilindraco = make_unique<CBoundingCilindre>(vec3(4,0,4), vec3(4,0,0), 5.0);
-    unique_ptr<CBoundingSphere> esferaca = make_unique<CBoundingSphere>(vec3(10,0,1), 2.0);
-
-    IntersectData intersData  = cilindraco->IntersectSphere(*esferaca.get());
-    if(intersData.intersects){
-        cout << "DEBERIA DE DAR TRUE Y...... LO DA" << endl;
-    }
-    unique_ptr<CBoundingSphere> esferaca2 = make_unique<CBoundingSphere>(vec3(10,0,1), 0.5);
-    IntersectData intersData2  = cilindraco->IntersectSphere(*esferaca2.get());
-    if(!intersData2.intersects){
-        cout << "DEBERIA DE DAR FALSE Y...... LO DA" << endl;
-    }
-    //la prueba de fuego
-    unique_ptr<CBoundingSphere> esferaca3 = make_unique<CBoundingSphere>(vec3(10,0,8), 2.0);
-    IntersectData intersData3  = cilindraco->IntersectSphere(*esferaca3.get());
-    if(!intersData3.intersects){
-        cout << "DEBERIA DE DAR FALSE Y...... LO DA 2" << endl;
-    }
-    unique_ptr<CBoundingSphere> esferaca4 = make_unique<CBoundingSphere>(vec3(10,0,-2), 2.0);
-    IntersectData intersData4  = cilindraco->IntersectSphere(*esferaca4.get());
-    if(!intersData4.intersects){
-        cout << "DEBERIA DE DAR FALSE Y...... LO DA 3" << endl;
-    }
-    */
 }
 
 void StateInGame::Render() {
@@ -247,50 +228,4 @@ void StateInGame::Render() {
 
     renderEngine->FacadeDrawAIDebug(manCars.get(),manNavMesh.get(), manWayPoint.get());
     renderEngine->FacadeEndScene();
-}
-
-
-void StateInGame::CAMBIARCosasNavMesh(ManCar &manCars, ManNavMesh &manNavMesh){
-    // vamos a asignar el navmesh al que pertenecemos
-    for(auto& actualCar : manCars.GetEntities()){
-        auto cTransformableCar = static_cast<CTransformable*>(actualCar.get()->GetComponent(CompType::TransformableComp).get());     
-        for(auto& navmesh : manNavMesh.GetEntities()){
-            auto cDimensions = static_cast<CDimensions*>(navmesh.get()->GetComponent(CompType::DimensionsComp).get());
-            auto cTransformableNav = static_cast<CTransformable*>(navmesh.get()->GetComponent(CompType::TransformableComp).get()); 
-            if( ( (cTransformableCar->position.x >= (cTransformableNav->position.x-(cDimensions->width/2))) && 
-                (cTransformableCar->position.x <= (cTransformableNav->position.x+(cDimensions->width/2))) ) &&
-            ( (cTransformableCar->position.z >= (cTransformableNav->position.z-(cDimensions->depth/2))) && 
-                (cTransformableCar->position.z <= (cTransformableNav->position.z+(cDimensions->depth/2))) )  ){
-                    auto cCurrentNavMesh = static_cast<CCurrentNavMesh*>(actualCar.get()->GetComponent(CompType::CurrentNavMeshComp).get());
-                    auto cNavMesh = static_cast<CNavMesh*>(navmesh.get()->GetComponent(CompType::NavMeshComp).get());
-                    cCurrentNavMesh->currentNavMesh = cNavMesh->id;
-                    //std::cout << " EL NAVMESH DE LAS IA ES::::234563345677: " << cNavMesh->id << std::endl;
-                }       
-        }
-    } 
-}
-
-
-void StateInGame::CAMBIARPositionTotemAboveCar() {
-    bool todosFalse = true;
-    auto cTransformTotem = static_cast<CTransformable *>(totemOnCar->GetComponent(CompType::TransformableComp).get());
-    cTransformTotem->rotation.y += 0.1;
-    for (const auto& carAI : manCars->GetEntities()) {  // actualizamos los coche IA
-        // comprobamos el componente totem y si lo tienen se lo ponemos justo encima para que se sepa quien lo lleva
-        auto cTotem = static_cast<CTotem *>(carAI.get()->GetComponent(CompType::TotemComp).get());
-        if (cTotem->active) {
-            todosFalse = false;
-            auto cTransformCar = static_cast<CTransformable *>(carAI.get()->GetComponent(CompType::TransformableComp).get());
-            cTransformTotem->position.x = cTransformCar->position.x;
-            cTransformTotem->position.z = cTransformCar->position.z;
-            cTransformTotem->position.y = 22.0f;
-            break; // cuando encontramos a alguien que ya lleva el totem, nos salimos del for, no seguimos comprobando a los demás
-        }
-    }
-    if(todosFalse){
-        cTransformTotem->position.y = -100.0f;
-    }
-
-    physicsEngine->UpdateTransformable(totemOnCar.get());
-    //renderEngine->UpdateTransformable(totemOnCar.get());
 }

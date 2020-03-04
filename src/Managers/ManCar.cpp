@@ -61,11 +61,18 @@ ManCar::ManCar(Physics* _physics, Camera* _cam) : ManCar() {
 }
 
 // comprueba si has superado el tiempo necesario para ganar
-void ManCar::UpdateCar() {
+void ManCar::UpdateCar(ManTotem &manTotem_) {
+
     auto cTotem = static_cast<CTotem*>(GetCar()->GetComponent(CompType::TotemComp).get());
     if (cTotem->active) {
         cTotem->accumulatedTime += duration_cast<milliseconds>(system_clock::now() - cTotem->timeStart).count();
         cTotem->timeStart = system_clock::now();
+        // lo pintamos encima del coche
+        auto cTransformCar = static_cast<CTransformable *>(GetCar()->GetComponent(CompType::TransformableComp).get());
+        auto cTransformTotem = static_cast<CTransformable *>(manTotem_.GetEntities()[0]->GetComponent(CompType::TransformableComp).get());
+            cTransformTotem->position.x = cTransformCar->position.x;
+            cTransformTotem->position.z = cTransformCar->position.z;
+            cTransformTotem->position.y = cTransformCar->position.y + 10.0f;
     }
 
     if (cTotem->accumulatedTime / 1000.0 > cTotem->durationTime / 1000.0) {
@@ -90,8 +97,20 @@ void ManCar::UpdateCar() {
 // TODO: RECORDARRR!!!!!!!!!!!!!!!!!  TANTO EL "BtMoveTo" como el "systemPathPlanning" se deben hacer en la misma ITERACION!!!!
 // Es importante esto porque el BtMoveTo es el que calcula la posicion a la que ir y el systemBtLoDMove es el que utiliza esta posicion para
 // moverse a un sitio, si en algun momento intentamos ir a una posicion que no existe PETAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-void ManCar::UpdateCarAI(CarAI* carAI, ManPowerUp* m_manPowerUp, ManBoxPowerUp* m_manBoxPowerUp, ManTotem* m_manTotem, ManWayPoint* graph, ManNavMesh* manNavMesh,
-                         ManBoundingWall* m_manBoundingWall, SystemBtPowerUp* systemBtPowerUp, SystemBtMoveTo* systemBtMoveTo, SystemBtLoDMove* systemBtLoDMove, SystemPathPlanning* systemPathPlanning) {
+void ManCar::UpdateCarAI(CarAI* carAI, ManPowerUp* m_manPowerUp, ManBoxPowerUp* m_manBoxPowerUp, ManTotem* m_manTotem, ManWayPoint* graph, ManNavMesh* manNavMesh, 
+                        ManBoundingWall* m_manBoundingWall, SystemBtPowerUp* systemBtPowerUp, SystemBtMoveTo* systemBtMoveTo, SystemBtLoDMove* systemBtLoDMove, SystemPathPlanning *systemPathPlanning) {
+    
+
+    auto cTotem = static_cast<CTotem*>(carAI->GetComponent(CompType::TotemComp).get());
+    if (cTotem->active) {
+        auto cTransformCar = static_cast<CTransformable *>(carAI->GetComponent(CompType::TransformableComp).get());
+        auto cTransformTotem = static_cast<CTransformable *>(m_manTotem->GetEntities()[0]->GetComponent(CompType::TransformableComp).get());
+            cTransformTotem->position.x = cTransformCar->position.x;
+            cTransformTotem->position.z = cTransformCar->position.z;
+            cTransformTotem->position.y = cTransformCar->position.y + 10.0f;
+    }
+
+    //manNavMesh->UpdateNavMeshEntity(carAI);
     systemBtMoveTo->update(carAI, this, m_manPowerUp, m_manBoxPowerUp, m_manTotem, graph, manNavMesh);
 
     systemPathPlanning->Update(carAI, graph, manNavMesh);
@@ -318,6 +337,7 @@ void ManCar::CatchTotemCar(DataMap* d) {
     cTotem->timeStart = system_clock::now();
     // Sonido coger totem
     EventManager::GetInstance().AddEventMulti(Event{EventType::CATCH_TOTEM});
+
 }
 
 void ManCar::CatchTotemPlayer(DataMap* d) {
@@ -664,6 +684,13 @@ bool ManCar::anyCarInVisionRange(Entity* actualCar, uint32_t rangeVision) {
         }
     }
     return seeCar;
+}
+
+// comprobamos si el coche indicado en nuestro rango de vision // el rango de vision sera 60
+bool ManCar::CarTotemInVisionRange(Entity* actualCar, Entity* desCar, uint32_t rangeVision) {
+    if (carInVisionRange(actualCar, desCar, rangeVision) == true)
+        return true;
+    return false;
 }
 
 void ManCar::TurnLeftCar(DataMap* d) {
