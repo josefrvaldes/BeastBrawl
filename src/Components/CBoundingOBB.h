@@ -26,7 +26,7 @@ class CBoundingOBB : public Component {
     CBoundingOBB(const vector<glm::vec3> &, const vector<glm::vec3> &);
 
     // void Normalize();
-    IntersectData IntersectSphere(const CBoundingSphere &sphere, const CTransformable &trCar, const CCar &ccarCar);
+    IntersectData IntersectSphere(const CBoundingSphere &sphere);
 
     IntersectData IntersectPlane(const CBoundingPlane &other) const;
 

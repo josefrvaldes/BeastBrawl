@@ -151,16 +151,18 @@ struct HaveTotemOtherCar : public behaviourTree {
 };
 
 
-// To-Do: Esto era para el melon que ya no se lanza aqui
 struct LookEnemy : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
+        for(auto& currentCar : blackboard->manCars->GetEntities()){
+            auto cTotem = static_cast<CTotem*>(currentCar.get()->GetComponent(CompType::TotemComp).get()); 
+            if(cTotem->active == true && currentCar.get() != (blackboard->actualCar) ){
+                return blackboard->manCars->CarTotemInVisionRange(blackboard->actualCar, currentCar.get(), 20); 
+            }                                   
+        } 
         return false;
-        //std::cout << "miramos a ver si te veo,,,,,,," << std::endl;
-        //return blackboard->manCars->anyCarInVisionRange(blackboard->actualCar, 20);
-        // estrategia: que tu vector director y el vector alenemigo tengan una difrencia de maximo 5 grados
-        //return true;
     } 
 };
+
 
 struct HaveBanana : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
@@ -234,13 +236,14 @@ SystemBtPowerUp::SystemBtPowerUp(){
     sequence21->addChild(a_throwPowerUp);        // no implementado
 
     selector2->addChild(sequence3);
-    selector2->addChild(sequence4);
+    //selector2->addChild(sequence4);
 
     sequence3->addChild(c_lookEnemy);            // no implementado
+    sequence3->addChild(c_haveBanana);
     sequence3->addChild(a_throwPowerUp);
 
-    sequence4->addChild(c_haveBanana);
-    sequence4->addChild(a_throwPowerUp);
+    //sequence4->addChild(c_haveBanana);
+    //sequence4->addChild(a_throwPowerUp);
     
 }
 

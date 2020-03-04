@@ -16,12 +16,14 @@
 #include <Components/CBoundingSphere.h>
 #include <Components/CColliding.h>
 #include <Components/CCurrentNavMesh.h>
-#include <Components/CTargetNavMesh.h>
+#include "../Components/CTargetNavMesh.h"
 #include <Components/CBoundingRay.h>
 #include <Components/CMovementType.h>
 #include "../Components/CExternalForce.h"
 #include "../Components/CBoundingChassis.h"
+#include "../Components/CShader.h"
 #include "../Components/CGravity.h"
+#include "../Constants.h"
 
 
 class Position;
@@ -29,13 +31,23 @@ using namespace std;
 
 CarAI::CarAI(){
     typeCar = TypeCar::CarAI;
+
+    string mesh;
+    if(Constants::RENDER_ENGINE == Constants::RenderEngine::CLOVER){
+        mesh    = "kart_ia.obj";
+        
+    }else if(Constants::RENDER_ENGINE == Constants::RenderEngine::IRRLICHT){
+        mesh    =   "kart_ia.obj";
+    }
     
     // default values
     glm::vec3 pos   = glm::vec3(10.0f, 20.0f, 30.0f);
     glm::vec3 rot   = glm::vec3(0.0f, 90.0f, 0.0f);
     glm::vec3 scale = glm::vec3(0.6f, 0.6f, 0.6f);
     string texture = "";
-    string mesh    = "kart_ia.obj";
+    // string mesh    = "kart_ia.obj";
+    string vertexShader = "CLEngine/src/Shaders/vertex.glsl";
+    string fragmentShader = "CLEngine/src/Shaders/fragment.glsl";
     float maxSpeed = 200.0, acceleration = 1.5, friction = 1.0, slowDown = 2.5;
     
     shared_ptr<CId> cId   = make_shared<CId>();
@@ -72,6 +84,8 @@ CarAI::CarAI(){
 
     shared_ptr<CGravity> cGravity = make_shared<CGravity>();
 
+    shared_ptr<CShader> cShader = make_shared<CShader>(vertexShader,fragmentShader);
+
     AddComponent(cId);
     AddComponent(cType);
     AddComponent(cTransformable);
@@ -103,10 +117,11 @@ CarAI::CarAI(){
     AddComponent(cBoundingChassis);
 
     AddComponent(cGravity);
-    cout << "Acabamos de llamar al constructor default de car, su transformable es " << cTransformable << endl;
+
+    AddComponent(cShader);
 }
 
-CarAI::CarAI(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale,string texture, string mesh, float maxSpeed, float acceleration , float carFriction, float carSlowDown)
+CarAI::CarAI(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale,string texture, string mesh, float maxSpeed, float acceleration , float carFriction, float carSlowDown, std::string vertexShader, std::string fragmentShader)
     : CarAI(){
 
     CTransformable *cTransformable = (CTransformable *)m_components[CompType::TransformableComp].get();
@@ -125,6 +140,10 @@ CarAI::CarAI(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale,string texture, strin
     cCar->acceleration = acceleration;
     cCar->friction = carFriction;
     cCar->slowDown = carSlowDown;
+
+    shared_ptr<CShader> cShader = make_shared<CShader>(vertexShader,fragmentShader);
+    AddComponent(cShader);
+
 }
 
 

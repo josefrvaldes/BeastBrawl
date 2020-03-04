@@ -2,7 +2,7 @@
 
 #include <cmath>
 #include <algorithm>    // std::sort
-#include "../../Components/CBoundingChassis.h"
+#include "../../Components/CBoundingChassis.h" 
 #include "../../Components/CBoundingOBB.h"
 #include "../../Components/CPowerUp.h"
 
@@ -15,7 +15,6 @@
 #include <Components/CNamePlate.h>
 #include <Components/CPath.h>
 #include <Components/CTexture.h>
-#include <Components/CTargetNavMesh.h>
 #include <Components/CTotem.h>
 #include <Components/CType.h>
 #include <Components/CWayPointEdges.h>
@@ -33,8 +32,8 @@
 using namespace irr;
 using namespace video;
 
-bool RenderFacadeIrrlicht::showDebug = false;
-bool RenderFacadeIrrlicht::showAIDebug = false;
+// bool RenderFacadeIrrlicht::showDebug = false;
+// bool RenderFacadeIrrlicht::showAIDebug = false;
 
 //PUNTEROS A FUNCIONES
 RenderFacadeIrrlicht::~RenderFacadeIrrlicht() {
@@ -164,13 +163,13 @@ void RenderFacadeIrrlicht::FacadeDrawHUD(Entity* car, ManCar* manCars) {
                         video::SColor(255, 255, 255, 255), false);
 
     //operaciones para dejarle con un solo decimal
-    int time = cTotem->accumulatedTime / 100.0;
-    float time2 = time / 10.0;
-    core::stringw mainCarText = core::stringw("Main car   ");
-    core::stringw tiempoStringw = mainCarText + core::stringw(time2);
-    font->draw(tiempoStringw,
-               core::rect<s32>(200, 55, 300, 200),
-               video::SColor(255, 0, 0, 0));
+    // int time = cTotem->accumulatedTime / 100.0;
+    // float time2 = time / 10.0;
+    // core::stringw mainCarText = core::stringw("Main car   ");
+    // core::stringw tiempoStringw = mainCarText + core::stringw(time2);
+    // font->draw(tiempoStringw,
+    //            core::rect<s32>(200, 55, 300, 200),
+    //            video::SColor(255, 0, 0, 0));
     //Dibujamos powerUp
     driver->draw2DImage(powerUps[currentPowerUp], core::position2d<s32>(50, 50),
                         core::rect<s32>(0, 0, 100, 100), 0,
@@ -179,19 +178,23 @@ void RenderFacadeIrrlicht::FacadeDrawHUD(Entity* car, ManCar* manCars) {
     int i = 0;
     core::stringw textIA = core::stringw("Car ");
     for (const auto& cars : manCars->GetEntities()) {
-        if(manCars->GetCar().get() != cars.get()){
-            cTotem = static_cast<CTotem*>(cars->GetComponent(CompType::TotemComp).get());
+        
+        cTotem = static_cast<CTotem*>(cars->GetComponent(CompType::TotemComp).get());
 
-            int time = cTotem->accumulatedTime / 100.0;
-            float time2 = time / 10.0;
-
-            core::stringw iaText = textIA + core::stringw(i) + core::stringw("  ") + core::stringw(time2);
-            font->draw(iaText,
-                    core::rect<s32>(200, 70 + (i * 15), 300, 300),
-                    video::SColor(255, 0, 0, 0));
-
-            i++;
+        int time = cTotem->accumulatedTime / 100.0;
+        float time2 = time / 10.0;
+        video::SColor color(255,0,0,0);
+        if(cTotem->active){
+            //Si tiene el totem voy a dibujarlo rojo por ejemplo
+            color.setRed(255);
         }
+        core::stringw iaText = core::stringw(cTotem->positionRanking) + core::stringw("  ") + textIA + core::stringw(i) + core::stringw("  ") + core::stringw(time2);
+        font->draw(iaText,
+                core::rect<s32>(200, 70 + ((cTotem->positionRanking-1) * 15), 300, 300),
+                color);
+
+        i++;
+        
     }
 }
 
@@ -261,6 +264,9 @@ const uint16_t RenderFacadeIrrlicht::FacadeAddObject(Entity* entity) {
 
         case ModelType::Text:
             break;
+
+        case ModelType::Light:
+            break;
     }
 
     // y ahora a ese node, le ponemos sus parámetros
@@ -279,7 +285,7 @@ const uint16_t RenderFacadeIrrlicht::FacadeAddObject(Entity* entity) {
         
         bool hasChassis = entity->HasComponent(CompType::CompBoundingChassis);
         if (hasChassis && Constants::DEBUG_SHOW_CHASSIS) {
-            // cout << "entramos aqui???" << endl;
+            //cout << "entramos aqui???" << endl;
             auto cChassis = static_cast<CBoundingChassis *>(entity->GetComponent(CompType::CompBoundingChassis).get());
             // primera esfera
             auto radiousSph1 = cChassis->sphereBehind->radius;
@@ -289,7 +295,7 @@ const uint16_t RenderFacadeIrrlicht::FacadeAddObject(Entity* entity) {
             nodeSphere1->setID(cId->id + Component::ID_DIFFERENCE);
             nodeSphere1->setPosition(core::vector3df(centerSph1.x, centerSph1.y, centerSph1.z));
             nodeSphere1->setScale(core::vector3df(1.f, 1.f, 1.f));
-            nodeSphere1->setMaterialTexture(0, driver->getTexture(path.c_str()));  //Obligado incluir el c_str() si no irrlicht no carga solo con un string
+            //nodeSphere1->setMaterialTexture(0, driver->getTexture(path.c_str()));  //Obligado incluir el c_str() si no irrlicht no carga solo con un string
             nodeSphere1->setMaterialFlag(video::EMF_LIGHTING, false);
             nodeSphere1->setVisible(false);
             // segunda esfera
@@ -396,60 +402,7 @@ const uint16_t RenderFacadeIrrlicht::FacadeAddObjectTotem(Entity* entity) {
     return idTotem;
 }
 
-//TODO: Esto proximamente le pasaremos todos los entities y los modificará 1 a 1
-void RenderFacadeIrrlicht::UpdateTransformable(Entity* entity) {
-    //Cogemos los componentes de ID y CTransformable
-    auto cTransformable = static_cast<CTransformable*>(entity->GetComponent(CompType::TransformableComp).get());
-    auto cId = static_cast<CId*>(entity->GetComponent(CompType::IdComp).get());
 
-    // Cogemos el nodo de irrlicht con el ID igual al que le hemos pasado
-    scene::ISceneNode* node = smgr->getSceneNodeFromId(cId->id);
-
-    //Actualiza la posicion del objeto de irrlicht
-    node->setPosition(core::vector3df(cTransformable->position.x, cTransformable->position.y, cTransformable->position.z));
-
-    //Actualiza la rotacion del objeto de irrlicht
-    node->setRotation(core::vector3df(cTransformable->rotation.x, cTransformable->rotation.y, cTransformable->rotation.z));
-
-    //Actualiza el escalado del objeto de irrlicht
-    node->setScale(core::vector3df(cTransformable->scale.x, cTransformable->scale.y, cTransformable->scale.z));
-
-    //if(!showDebug) return;
-    //cout << "entramos?????????" << endl;
-    //bool hasSphere = entity->HasComponent(CompType::CompBoundingSphere);
-    //if (hasSphere && Constants::DEBUG_SHOW_SPHERES) {
-    //    scene::ISceneNode* nodeSphere = smgr->getSceneNodeFromId(cId->id + Component::ID_DIFFERENCE);
-    //    nodeSphere->setVisible(true);
-    //    //nodeSphere->setRotation(core::vector3df(cTransformable->rotation.x, cTransformable->rotation.y, cTransformable->rotation.z));
-    //    //nodeSphere->setScale(core::vector3df(cTransformable->scale.x, cTransformable->scale.y, cTransformable->scale.z));
-    //}
-    
-    /*
-    bool hasChassis = entity->HasComponent(CompType::CompBoundingChassis);
-    if (hasChassis && Constants::DEBUG_SHOW_CHASSIS) {
-        auto cChassis = static_cast<CBoundingChassis *>(entity->GetComponent(CompType::CompBoundingChassis).get());
-        auto centerSph1 = cChassis->sphereBehind->center;
-        scene::ISceneNode* nodeSphere1 = smgr->getSceneNodeFromId(cId->id + Component::ID_DIFFERENCE);
-        nodeSphere1->setPosition(core::vector3df(centerSph1.x, centerSph1.y, centerSph1.z));
-        nodeSphere1->setVisible(showDebug);
-        auto centerSph2 = cChassis->sphereFront->center;
-        scene::ISceneNode* nodeSphere2 = smgr->getSceneNodeFromId(cId->id + Component::ID_DIFFERENCE + Component::ID_DIFFERENCE);
-        nodeSphere2->setPosition(core::vector3df(centerSph2.x, centerSph2.y, centerSph2.z));
-        nodeSphere2->setVisible(false);
-    }else{
-        bool hasSphere = entity->HasComponent(CompType::CompBoundingSphere);
-        if (hasSphere && Constants::DEBUG_SHOW_SPHERES) {
-            scene::ISceneNode* nodeSphere = smgr->getSceneNodeFromId(cId->id + Component::ID_DIFFERENCE);
-            nodeSphere->setPosition(core::vector3df(cTransformable->position.x, cTransformable->position.y, cTransformable->position.z));
-            nodeSphere->setVisible(showDebug);
-            //nodeSphere->setRotation(core::vector3df(cTransformable->rotation.x, cTransformable->rotation.y, cTransformable->rotation.z));
-            //nodeSphere->setScale(core::vector3df(cTransformable->scale.x, cTransformable->scale.y, cTransformable->scale.z));
-        }
-    }
-    */
-    
-
-}
 
 //Reajusta la camara
 void RenderFacadeIrrlicht::UpdateCamera(Entity* cam, ManCar* manCars) {
@@ -1004,19 +957,19 @@ void RenderFacadeIrrlicht::FacadeDrawAIDebug(ManCar* manCars, ManNavMesh* manNav
         auto cDimensions    = static_cast<CDimensions*>(navMesh->GetComponent(CompType::DimensionsComp).get());
 
         point0 = glm::vec3(cTransformable->position.x - (cDimensions->width/2),
-                            cTransformable->position.y+20,
+                            cTransformable->position.y - (cDimensions->height/2),
                             cTransformable->position.z - (cDimensions->depth/2));
 
         point1 = glm::vec3(cTransformable->position.x - (cDimensions->width/2),
-                            cTransformable->position.y+20,
+                            cTransformable->position.y - (cDimensions->height/2),
                             cTransformable->position.z + (cDimensions->depth/2));
 
         point2 = glm::vec3(cTransformable->position.x + (cDimensions->width/2),
-                            cTransformable->position.y+20,
+                            cTransformable->position.y - (cDimensions->height/2),
                             cTransformable->position.z + (cDimensions->depth/2));
                             
         point3 = glm::vec3(cTransformable->position.x + (cDimensions->width/2),
-                            cTransformable->position.y+20,
+                            cTransformable->position.y - (cDimensions->height/2),
                             cTransformable->position.z - (cDimensions->depth/2));
 
         point4 = glm::vec3(point0.x,point0.y + cDimensions->height, point0.z);
@@ -1063,7 +1016,7 @@ void RenderFacadeIrrlicht::FacadeDrawAIDebug(ManCar* manCars, ManNavMesh* manNav
             auto cTransformableCar = static_cast<CTransformable*>(carAI->GetComponent(CompType::TransformableComp).get());
             auto cDimensions = static_cast<CDimensions*>(carAI->GetComponent(CompType::DimensionsComp).get());
             auto cCurrentNavMesh = static_cast<CCurrentNavMesh*>(carAI->GetComponent(CompType::CurrentNavMeshComp).get());
-            auto cTargetNavMesh = static_cast<CTargetNavMesh*>(carAI->GetComponent(CompType::TargetNavMeshComp).get());
+            //auto cTargetNavMesh = static_cast<CTargetNavMesh*>(carAI->GetComponent(CompType::TargetNavMeshComp).get());
 
             Draw3DLine(cPosDestination->position,cTransformableCar->position);
             //Ahora vamos a dibujar su CPath
@@ -1102,8 +1055,8 @@ void RenderFacadeIrrlicht::FacadeDrawAIDebug(ManCar* manCars, ManNavMesh* manNav
             }
             pathText += core::stringw("\n");
 
-            core::stringw navMeshText = pathText + core::stringw("Current NavMesh: ") + core::stringw(cCurrentNavMesh->currentNavMesh) + core::stringw("\n")+
-                                                core::stringw("Target NavMesh: ")  + core::stringw(cTargetNavMesh->targetNavMesh) + core::stringw("\n");
+            core::stringw navMeshText = pathText + core::stringw("Current NavMesh: ") + core::stringw(cCurrentNavMesh->currentNavMesh) + core::stringw("\n")+core::stringw("\n");
+                                                //core::stringw("Target NavMesh: ")  + core::stringw(cTargetNavMesh->targetNavMesh) + 
             
             auto cMovementType = static_cast<CMovementType*>(carAI->GetComponent(CompType::MovementComp).get());
 

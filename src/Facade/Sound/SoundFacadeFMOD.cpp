@@ -271,7 +271,7 @@ void SoundFacadeFMOD::LoadSoundBank(const string nameBank, const bool type) {
 
         string bank = "./media/fmod/" + nameBank + ".bank";
         ERRCHECK(system->loadBankFile(bank.c_str(), FMOD_STUDIO_LOAD_BANK_NORMAL, &banks[nameBank]));
-        cout << "***** Carcado el banco: " << nameBank << endl;
+        //cout << "***** Carcado el banco: " << nameBank << endl;
     }
 
     for (const auto& event : events[nameBank]) {

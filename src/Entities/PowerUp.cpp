@@ -7,8 +7,10 @@
 #include <Components/CBoundingSphere.h>
 #include <Components/CPowerUp.h>
 #include <Components/CTargetEntity.h>
+#include <Components/CShader.h>
 #include "../Components/CRemovableObject.h"
 #include <iostream>
+#include "../Constants.h"
 
 class Position;
 using namespace std;
@@ -16,9 +18,20 @@ using namespace std;
 PowerUp::PowerUp()
 {
     // default values
+
+    string mesh;
+    if(Constants::RENDER_ENGINE == Constants::RenderEngine::CLOVER){
+        mesh    = "kart_physics.fbx";
+        
+    }else if(Constants::RENDER_ENGINE == Constants::RenderEngine::IRRLICHT){
+        mesh    =   "kart_ia.obj";
+    } 
     string texture = "spheremap.jpg";
-    string mesh    = "media/ninja.b3d";
+    //string mesh    = "kart_ia.obj";
     typeCPowerUp typePowerUp = typeCPowerUp::None;
+
+    string vertexShader = "CLEngine/src/Shaders/vertex.glsl";
+    string fragmentShader = "CLEngine/src/Shaders/fragment.glsl";
     //float maxSpeed = 20.0, acceleration = .15, friction = 0.1, slowDown = 0.25;
     
     shared_ptr<CId> cId   = make_shared<CId>();
@@ -56,7 +69,7 @@ PowerUp::PowerUp()
 
 
 
-PowerUp::PowerUp(glm::vec3 _position, glm::vec3 _rotation, typeCPowerUp _typePowerUp, CTransformable* cTransformableTarget) : PowerUp(){
+PowerUp::PowerUp(glm::vec3 _position, glm::vec3 _rotation, typeCPowerUp _typePowerUp, CTransformable* cTransformableTarget, std::string vertexShader, std::string fragmentShader) : PowerUp(){
     
     CTransformable *cTransformable = (CTransformable *)m_components[CompType::TransformableComp].get();
     cTransformable->position = _position;
@@ -93,6 +106,11 @@ PowerUp::PowerUp(glm::vec3 _position, glm::vec3 _rotation, typeCPowerUp _typePow
         cPowerUp->speed = 375.0;
         // cTransformable->scale = glm::vec3(2,2,2);
     }
+
+    shared_ptr<CShader> cShader = make_shared<CShader>(vertexShader,fragmentShader);
+
+    AddComponent(cShader);
+
 }
 
 

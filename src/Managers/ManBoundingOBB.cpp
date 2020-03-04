@@ -75,15 +75,15 @@ ManBoundingOBB::ManBoundingOBB() {
     //auto verticesOBB = new vector<glm::vec3>;
     //plano1
 
-    verticesOBB.push_back(glm::vec3(100.f, 100.f, 50.f));
-    verticesOBB.push_back(glm::vec3(150.f, 100.f, 50.f));
-    verticesOBB.push_back(glm::vec3(150.f, -100.f, 50.f));
-    verticesOBB.push_back(glm::vec3(100.f, -100.f, 50.f));
-
     verticesOBB.push_back(glm::vec3(100.f, -100.f, 50.f));
     verticesOBB.push_back(glm::vec3(100.f, -100.f, 150.f));
     verticesOBB.push_back(glm::vec3(100.f, 100.f, 150.f));
     verticesOBB.push_back(glm::vec3(100.f, 100.f, 50.f));
+
+    verticesOBB.push_back(glm::vec3(100.f, 100.f, 50.f));
+    verticesOBB.push_back(glm::vec3(150.f, 100.f, 50.f));
+    verticesOBB.push_back(glm::vec3(150.f, -100.f, 50.f));
+    verticesOBB.push_back(glm::vec3(100.f, -100.f, 50.f));
 
     verticesOBB.push_back(glm::vec3(100.f, -100.f, 150.f));
     verticesOBB.push_back(glm::vec3(150.f, -100.f, 150.f));
@@ -101,138 +101,96 @@ ManBoundingOBB::ManBoundingOBB() {
     //planes.push_back(make_shared<CBoundingPlane>(verticesOBB[8], verticesOBB[9], verticesOBB[10], verticesOBB[11]));
     //planes.push_back(make_shared<CBoundingPlane>(verticesOBB[12], verticesOBB[13], verticesOBB[14], verticesOBB[15]));
 
-    auto centerPlane1   = glm::vec3( (100+150+150+100)/4 , (100+100-100-100)/4 , (50+50+50+50)/4 );
-    auto centerPlane2   = glm::vec3( (100+100+100+100)/4 , (100+100-100-100)/4 , (50+150+150+50)/4 );
+    auto centerPlane2   = glm::vec3( (100+150+150+100)/4 , (100+100-100-100)/4 , (50+50+50+50)/4 );
+    auto centerPlane1   = glm::vec3( (100+100+100+100)/4 , (100+100-100-100)/4 , (50+150+150+50)/4 );
     auto centerMass     = glm::vec3( (100+150+100+150+100+100+150+150)/8, (100-100-100+100-100+100-100+100)/8, (50+50+150+150+50+150+50+150)/8);
     cout << "el centro de masas es: ( " << centerMass.x << " , " << centerMass.y <<  " , " << centerMass.z << " )" << endl;
     // solo necesitamos 2 planos
-    if( EuclideanDis(centerPlane1, centerMass) > EuclideanDis(centerPlane2, centerMass)){
+    double posX, posX2, posZ, posZ2;
+    if( glm::distance(centerPlane1, centerMass) > glm::distance(centerPlane2, centerMass)){
         // el plano 1 por descarte es el pequeño
         auto aumentoZ = abs(verticesOBB[0].x - verticesOBB[2].x)/2;
         auto aumentoX = abs(verticesOBB[0].z - verticesOBB[2].z)/2;
-        cout << "lo que aumento en X eeeeeeeeeeessssssssssss: " << aumentoZ << endl;
-        cout << "lo que aumento en Z eeeeeeeeeeessssssssssss: " << aumentoX << endl;
-        auto posibleCP1X = centerPlane1;
-        posibleCP1X.x = centerPlane1.x+aumentoZ;
-        auto posibleCP2X = centerPlane1;
-        posibleCP2X.x = centerPlane1.x-aumentoZ;
-        if(EuclideanDis(posibleCP1X, centerMass) > EuclideanDis(posibleCP2X, centerMass)){
+        auto posibleCP1X = glm::vec3(centerPlane1.x+aumentoZ, centerPlane1.y, centerPlane1.z);
+        auto posibleCP2X = glm::vec3(centerPlane1.x-aumentoZ, centerPlane1.y, centerPlane1.z);
+        if(glm::distance(posibleCP1X, centerMass) > glm::distance(posibleCP2X, centerMass)){
             aumentoZ = -aumentoZ;
         }
-        auto posibleCP1Z = centerPlane1;
-        posibleCP1Z.z = centerPlane1.z+aumentoX;
-        auto posibleCP2Z = centerPlane1;
-        posibleCP2Z.z = centerPlane1.z-aumentoX;
-        if(EuclideanDis(posibleCP1Z, centerMass) > EuclideanDis(posibleCP2Z, centerMass)){
+        auto posibleCP1Z = glm::vec3(centerPlane1.x, centerPlane1.y, centerPlane1.z+aumentoX);
+        auto posibleCP2Z = glm::vec3(centerPlane1.x, centerPlane1.y, centerPlane1.z-aumentoX);
+        if(glm::distance(posibleCP1Z, centerMass) > glm::distance(posibleCP2Z, centerMass)){
             aumentoX = -aumentoX;
         }
         // calculamos el otro
-        double posX, posX2, posZ, posZ2;
         posX = posX2 = centerPlane1.x+aumentoX;
         posZ = posZ2 = centerPlane1.z+aumentoZ;
-        auto disX = abs(posX-centerMass.x);
-        cout << "la disancia en x es :  " << disX << endl;
-        auto disZ = abs(posZ-centerMass.z);
-        cout << "la disancia en z es :  " << disZ << endl;
-        if(posX < centerMass.x){
-            posX2 = centerMass.x+disX;
-        }else{
-            posX2 = centerMass.x-disX;   
-        }
-        if(posZ < centerMass.z){
-            posZ2 = centerMass.z+disZ;
-        }else{
-            posZ2 = centerMass.z-disZ;
-        }
-        centersMass.push_back(glm::vec3(posX, centerMass.y+30, posZ));
-        centersMass.push_back(glm::vec3(posX2, centerMass.y+30, posZ2));
+
     }else{
-
+        // el plano 1 por descarte es el pequeño
+        auto aumentoZ = abs(verticesOBB[4].x - verticesOBB[6].x)/2;
+        auto aumentoX = abs(verticesOBB[4].z - verticesOBB[6].z)/2;
+        auto posibleCP1X = glm::vec3(centerPlane2.x+aumentoZ, centerPlane2.y, centerPlane2.z);
+        auto posibleCP2X = glm::vec3(centerPlane2.x-aumentoZ, centerPlane2.y, centerPlane2.z);
+        if(glm::distance(posibleCP1X, centerMass) > glm::distance(posibleCP2X, centerMass)){
+            aumentoZ = -aumentoZ;
+        }
+        auto posibleCP1Z = glm::vec3(centerPlane2.x, centerPlane2.y, centerPlane2.z+aumentoX);
+        auto posibleCP2Z = glm::vec3(centerPlane2.x, centerPlane2.y, centerPlane2.z-aumentoX);
+        if(glm::distance(posibleCP1Z, centerMass) > glm::distance(posibleCP2Z, centerMass)){
+            aumentoX = -aumentoX;
+        }
+        // calculamos el otro
+        posX = posX2 = centerPlane2.x+aumentoX;
+        posZ = posZ2 = centerPlane2.z+aumentoZ;
     }
+    auto disX = abs(posX-centerMass.x);
+    auto disZ = abs(posZ-centerMass.z);
+    if(posX < centerMass.x) posX2 = centerMass.x+disX;
+    else posX2 = centerMass.x-disX;   
+    if(posZ < centerMass.z) posZ2 = centerMass.z+disZ;
+    else posZ2 = centerMass.z-disZ;
+    centersMass.push_back(glm::vec3(posX, centerMass.y+30, posZ));
+    centersMass.push_back(glm::vec3(posX2, centerMass.y+30, posZ2));
 
 
 
 
-    //glm::vec3 rotTotemOnCar1 = glm::vec3(0.0f, 90.0f, 0.0f);
-    //shared_ptr<Entity> totemOnCar1 = make_shared<Entity>();
-    //glm::vec3 scaleTotemOnCar1 = glm::vec3(0.5f, 0.5f, 0.5f);
-    //shared_ptr<CId> cIdTotemOnCar1 = make_shared<CId>();
-    //shared_ptr<CType> cTypeTotemOnCar1 = make_shared<CType>(ModelType::Cube);
-    //shared_ptr<CTransformable> cTransformableTotemOnCar1 = make_shared<CTransformable>(centersMass[0], rotTotemOnCar1, scaleTotemOnCar1);
-    //totemOnCar1->AddComponent(cIdTotemOnCar1);
-    //totemOnCar1->AddComponent(cTypeTotemOnCar1);
-    //totemOnCar1->AddComponent(cTransformableTotemOnCar1);
-    //totemOnCar1->AddComponent(make_shared<CTexture>("totem.jpg"));
-    //totemOnCar1->AddComponent(make_shared<CMesh>("media/ninja.b3d"));
+//glm::vec3 rotTotemOnCar1 = glm::vec3(0.0f, 90.0f, 0.0f);
+//shared_ptr<Entity> totemOnCar1 = make_shared<Entity>();
+//glm::vec3 scaleTotemOnCar1 = glm::vec3(0.5f, 0.5f, 0.5f);
+//shared_ptr<CId> cIdTotemOnCar1 = make_shared<CId>();
+//shared_ptr<CType> cTypeTotemOnCar1 = make_shared<CType>(ModelType::Cube);
+//shared_ptr<CTransformable> cTransformableTotemOnCar1 = make_shared<CTransformable>(centersMass[0], rotTotemOnCar1, scaleTotemOnCar1);
+//totemOnCar1->AddComponent(cIdTotemOnCar1);
+//totemOnCar1->AddComponent(cTypeTotemOnCar1);
+//totemOnCar1->AddComponent(cTransformableTotemOnCar1);
+//totemOnCar1->AddComponent(make_shared<CTexture>("totem.jpg"));
+//totemOnCar1->AddComponent(make_shared<CMesh>("media/ninja.b3d"));
 //
-//    //RenderFacade *renderEngine = RenderFacadeManager::GetInstance()->GetRenderFacade();
-//    //renderEngine->FacadeSuscribeEvents();
-//
-//    renderEngine->FacadeAddObject(totemOnCar1.get());
-//
-//    centerPlane1.y += 30;
-//    shared_ptr<Entity> totemOnCar = make_shared<Entity>();
-//
-//    glm::vec3 rotTotemOnCar = glm::vec3(0.0f, 90.0f, 0.0f);
-//    glm::vec3 scaleTotemOnCar= glm::vec3(0.5f, 0.5f, 0.5f);
-//    shared_ptr<CId> cIdTotemOnCar = make_shared<CId>();
-//    shared_ptr<CType> cTypeTotemOnCar = make_shared<CType>(ModelType::Cube);
-//    shared_ptr<CTransformable> cTransformableTotemOnCar = make_shared<CTransformable>(centersMass[1], rotTotemOnCar, scaleTotemOnCar);
-//    totemOnCar->AddComponent(cIdTotemOnCar);
-//    totemOnCar->AddComponent(cTypeTotemOnCar);
-//    totemOnCar->AddComponent(cTransformableTotemOnCar);
-//    totemOnCar->AddComponent(make_shared<CTexture>("totem.jpg"));
-//    totemOnCar->AddComponent(make_shared<CMesh>("media/ninja.b3d"));
-//
-//    renderEngine->FacadeAddObject(totemOnCar.get());
+//RenderFacade *renderEngine = RenderFacadeManager::GetInstance()->GetRenderFacade();
+//renderEngine->FacadeSuscribeEvents();
+//renderEngine->FacadeAddObject(totemOnCar1.get());
+//centerPlane1.y += 30;
+//shared_ptr<Entity> totemOnCar = make_shared<Entity>();
+//glm::vec3 rotTotemOnCar = glm::vec3(0.0f, 90.0f, 0.0f);
+//glm::vec3 scaleTotemOnCar= glm::vec3(0.5f, 0.5f, 0.5f);
+//shared_ptr<CId> cIdTotemOnCar = make_shared<CId>();
+//shared_ptr<CType> cTypeTotemOnCar = make_shared<CType>(ModelType::Cube);
+//shared_ptr<CTransformable> cTransformableTotemOnCar = make_shared<CTransformable>(centersMass[1], rotTotemOnCar, scaleTotemOnCar);
+//totemOnCar->AddComponent(cIdTotemOnCar);
+//totemOnCar->AddComponent(cTypeTotemOnCar);
+//totemOnCar->AddComponent(cTransformableTotemOnCar);
+//totemOnCar->AddComponent(make_shared<CTexture>("totem.jpg"));
+//totemOnCar->AddComponent(make_shared<CMesh>("media/ninja.b3d"));
+//renderEngine->FacadeAddObject(totemOnCar.get());
 
-
-
-
-
-
-    // con 4 planos creamos un mini Cubo para cmporbar colisiones
-    //CreateBoundingOBB(vec3(40.f, 40.f, 40.f),vec3(140.f, 40.f, 40.f),vec3(140.f, 10.f, 40.f),vec3(40.f, 10.f, 40.f));
-    //CreateBoundingOBB(vec3(40.f, 10.f, 160.f),vec3 (140.f, 10.f, 160.f),vec3(140.f, 40.f, 160.f),vec3(40.f, 40.f, 160.f));
-    //CreateBoundingOBB(vec3(30.f, 10.f, 50.f),vec3(30.f, 10.f, 150.f),vec3(30.f, 40.f, 150.f),vec3(30.f, 40.f, 50.f));
-    //CreateBoundingOBB(vec3(150.f, 40.f, 50.f),vec3(150.f, 40.f, 150.f),vec3(150.f, 10.f, 150.f),vec3(150.f, 10.f, 50.f));
-    //CreateBoundingOBB(vec3(30.f, 40.f, 50.f),vec3(40.f, 40.f, 40.f),vec3(40.f, 10.f, 40.f),vec3(30.f, 10.f, 50.f));
-
-    //auto verticesOBB = new vector<vec3>;
-    //verticesOBB->push_back(vec3(40.f, 40.f, 40.f));
-    //verticesOBB->push_back(vec3(140.f, 40.f, 40.f));
-    //verticesOBB->push_back(vec3(140.f, 10.f, 40.f));
-    //verticesOBB->push_back(vec3(40.f, 10.f, 40.f));
-//
-    //verticesOBB->push_back(vec3(40.f, 10.f, 160.f));
-    //verticesOBB->push_back(vec3 (140.f, 10.f, 160.f));
-    //verticesOBB->push_back(vec3(140.f, 40.f, 160.f));
-    //verticesOBB->push_back(vec3(40.f, 40.f, 160.f));
-//
-    //verticesOBB->push_back(vec3(30.f, 10.f, 50.f));
-    //verticesOBB->push_back(vec3(30.f, 10.f, 150.f));
-    //verticesOBB->push_back(vec3(30.f, 40.f, 150.f));
-    //verticesOBB->push_back(vec3(30.f, 40.f, 50.f));
-//
-    //verticesOBB->push_back(vec3(150.f, 40.f, 50.f));
-    //verticesOBB->push_back(vec3(150.f, 40.f, 150.f));
-    //verticesOBB->push_back(vec3(150.f, 10.f, 150.f));
-    //verticesOBB->push_back(vec3(150.f, 10.f, 50.f));
-//
-    //verticesOBB->push_back(vec3(30.f, 40.f, 50.f));
-    //verticesOBB->push_back(vec3(40.f, 40.f, 40.f));
-    //verticesOBB->push_back(vec3(40.f, 10.f, 40.f));
-    //verticesOBB->push_back(vec3(30.f, 10.f, 50.f));
-//
-    //vec3 centerMass = vec3( (40+140+40+140+30+30+150+150+30+40)/10, (40+10+10+40+10+40+40+10+40+10)/10, (40+40+160+160+50+150+50+150+50+40)/10);
 
     CreateBoundingOBB(verticesOBB, centersMass );
 
-
-
-
-    // Por consistencia para crear un plano
-
+    centersMass.clear();
+    centersMass.shrink_to_fit();
+    verticesOBB.clear();
+    verticesOBB.shrink_to_fit();
 }
 
 
@@ -254,6 +212,8 @@ void ManBoundingOBB::Integrate(float delta) {
     //No tiene integrate actualmente
 }
 
+/*
 double ManBoundingOBB::EuclideanDis(const glm::vec3 &p1, const glm::vec3 &p2) const{
     return sqrt(pow((p1.x-p2.x),2)+pow((p1.y-p2.y),2)+pow((p1.z-p2.z),2));
 }
+*/

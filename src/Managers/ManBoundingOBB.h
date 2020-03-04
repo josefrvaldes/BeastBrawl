@@ -18,5 +18,5 @@ class ManBoundingOBB : public Manager {
 
    private:
    //vector<shared_ptr<CBoundingPlane>> planes;
-   double EuclideanDis(const glm::vec3 &p1, const glm::vec3 &p2) const;
+   //double EuclideanDis(const glm::vec3 &p1, const glm::vec3 &p2) const;
 };

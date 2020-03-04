@@ -78,7 +78,7 @@ void EventManager::SubscribeMulti(const Listener& listener) {
     }
 
     iterator->second.push_back(listener);
-    std::cout << "Añadido el Listener: " << listener.name << "\n";
+    //std::cout << "Añadido el Listener: " << listener.name << "\n";
 }
 
 // Añade un listener al mapa
