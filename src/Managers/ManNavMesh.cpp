@@ -4,6 +4,7 @@
 #include <iostream>
 #include "ManCar.h"
 #include <Entities/NavMesh.h>
+#include <Entities/Car.h>
 #include <Components/CDimensions.h>
 #include <Components/CCurrentNavMesh.h>
 #include <Components/CNavMesh.h>

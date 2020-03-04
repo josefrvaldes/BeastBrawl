@@ -1,5 +1,5 @@
-#include <boost/array.hpp>
-#include <boost/asio.hpp>
+#include "../../include/boost/array.hpp"
+#include "../../include/boost/asio.hpp"
 #include <chrono>
 #include <iostream>
 #include "./UDPServer.h"
@@ -10,9 +10,6 @@ using boost::asio::ip::udp;
 using namespace boost;
 using namespace std;
 using namespace std::chrono;
-
-// #define PORT_UDP 443
-// #define PORT_TCP 80
 
 int main(int argc, char* argv[]) {
     try {

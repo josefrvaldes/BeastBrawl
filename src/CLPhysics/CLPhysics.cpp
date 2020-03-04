@@ -1177,10 +1177,11 @@ void CLPhysics::IntersectCarsTotem(ManCar &manCars, ManTotem &manTotem){
             if(intersect.intersects){   //TRUE
                 collision = true;
                 // debemos coger el TOTEM
+                //cout << "colisionamos con el totem " << endl;
                 shared_ptr<DataMap> dataCollisionTotem = make_shared<DataMap>();                                                                         
                 (*dataCollisionTotem)[TOTEM] = manTotem.GetEntities()[0];              // nos guardamos el puntero para eliminar el powerUp  
                 (*dataCollisionTotem)[ACTUAL_CAR] = currentCar.get();                                           
-                EventManager::GetInstance().AddEventMulti(Event{EventType::COLLISION_AI_TOTEM, dataCollisionTotem});
+                EventManager::GetInstance().AddEventMulti(Event{EventType::COLLISION_PLAYER_TOTEM, dataCollisionTotem});
             }
         }
     }

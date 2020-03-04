@@ -1,4 +1,5 @@
 #include "PhysicsPowerUp.h"
+#include "../Constants.h"
 
 
 PhysicsPowerUp::PhysicsPowerUp(){
@@ -28,8 +29,8 @@ void PhysicsPowerUp::updatePudinDeFrambuesa(Entity* pu){
        // Movimiento
       auto cTransformable = static_cast<CTransformable*>(pu->GetComponent(CompType::TransformableComp).get());
       float angleRotation = (cTransformable->rotation.y * PI) / 180.0;
-      cTransformable->position.x -= cos(angleRotation) * cPuActual->speed * 0.016;
-      cTransformable->position.z += sin(angleRotation) * cPuActual->speed * 0.016;
+      cTransformable->position.x -= cos(angleRotation) * cPuActual->speed * Constants::DELTA_TIME;
+      cTransformable->position.z += sin(angleRotation) * cPuActual->speed * Constants::DELTA_TIME;
       cPuActual->speed -= cPuActual->deceleration;
       if(cPuActual->speed > 0)
          cPuActual->speed = 0; 
@@ -48,8 +49,8 @@ void PhysicsPowerUp::updateTeleBanana(Entity* pu){
       }
       // Movimiento
       float angleRotation = (cTransformable->rotation.y * PI) / 180.0;
-      cTransformable->position.x -= cos(angleRotation) * cPuActual->speed * 0.016;
-      cTransformable->position.z += sin(angleRotation) * cPuActual->speed * 0.016;
+      cTransformable->position.x -= cos(angleRotation) * cPuActual->speed * Constants::DELTA_TIME;
+      cTransformable->position.z += sin(angleRotation) * cPuActual->speed * Constants::DELTA_TIME;
 
    }else if(static_cast<CTargetEntity*>(pu->GetComponent(CompType::TargetEntityComp).get())->cTransTarget != nullptr){
       // Vector
@@ -59,13 +60,13 @@ void PhysicsPowerUp::updateTeleBanana(Entity* pu){
       // divisor unitario
       float divisorUnitario = sqrt((vectorX*vectorX) + (vectorZ*vectorZ));
       // Movimiento perseguir
-      cTransformable->position.x += (vectorX/divisorUnitario) * cPuActual->speed * 0.016;
-      cTransformable->position.z += (vectorZ/divisorUnitario) * cPuActual->speed * 0.016;
+      cTransformable->position.x += (vectorX/divisorUnitario) * cPuActual->speed * Constants::DELTA_TIME;
+      cTransformable->position.z += (vectorZ/divisorUnitario) * cPuActual->speed * Constants::DELTA_TIME;
    }else{
       // Movimiento como melon molon
       float angleRotation = (cTransformable->rotation.y * PI) / 180.0;
-      cTransformable->position.x -= cos(angleRotation) * cPuActual->speed * 0.016;
-      cTransformable->position.z += sin(angleRotation) * cPuActual->speed * 0.016;
+      cTransformable->position.x -= cos(angleRotation) * cPuActual->speed * Constants::DELTA_TIME;
+      cTransformable->position.z += sin(angleRotation) * cPuActual->speed * Constants::DELTA_TIME;
    }
 }
 
@@ -78,6 +79,6 @@ void PhysicsPowerUp::updateMelonMolon(Entity* pu){
    // Movimiento
    auto cTransformable = static_cast<CTransformable*>(pu->GetComponent(CompType::TransformableComp).get());
    float angleRotation = (cTransformable->rotation.y * PI) / 180.0;
-   cTransformable->position.x -= cos(angleRotation) * cPuActual->speed * 0.016;
-   cTransformable->position.z += sin(angleRotation) * cPuActual->speed * 0.016;
+   cTransformable->position.x -= cos(angleRotation) * cPuActual->speed * Constants::DELTA_TIME;
+   cTransformable->position.z += sin(angleRotation) * cPuActual->speed * Constants::DELTA_TIME;
 }

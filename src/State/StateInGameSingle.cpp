@@ -1,7 +1,5 @@
 #include "StateInGameSingle.h"
 
-#include <Components/CTotem.h>
-
 StateInGameSingle::StateInGameSingle() : StateInGame() {
     systemBtPowerUp = make_unique<SystemBtPowerUp>();
     systemBtMoveTo = make_unique<SystemBtMoveTo>();
@@ -45,6 +43,7 @@ void StateInGameSingle::CAMBIARCosasNavMesh(ManCar &manCars, ManNavMesh &manNavM
     }   
 }
 */
+
 
 void StateInGameSingle::Input() {
     renderEngine->FacadeCheckInputSingle();

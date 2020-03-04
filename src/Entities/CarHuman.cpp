@@ -89,7 +89,6 @@ CarHuman::CarHuman() {
     AddComponent(cExternalForce);
     AddComponent(cBoundingChassis);
     AddComponent(cGravity);
-    cout << "Acabamos de llamar al constructor default de car, su transformable es " << cTransformable << endl;
 }
 
 CarHuman::CarHuman(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale,
@@ -122,7 +121,7 @@ CarHuman::CarHuman(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale,
     AddComponent(cRoboJorobo);
     AddComponent(cTotem);
     AddComponent(cColliding);
-    cout << "Acabamos de llamar al constructor default de car, su transformable es " << cTransformable << endl;
+    // cout << "Acabamos de llamar al constructor default de car, su transformable es " << cTransformable << endl;
 }
 
 CarHuman::CarHuman(glm::vec3 _position)

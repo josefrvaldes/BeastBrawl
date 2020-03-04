@@ -163,13 +163,13 @@ void RenderFacadeIrrlicht::FacadeDrawHUD(Entity* car, ManCar* manCars) {
                         video::SColor(255, 255, 255, 255), false);
 
     //operaciones para dejarle con un solo decimal
-    int time = cTotem->accumulatedTime / 100.0;
-    float time2 = time / 10.0;
-    core::stringw mainCarText = core::stringw("Main car   ");
-    core::stringw tiempoStringw = mainCarText + core::stringw(time2);
-    font->draw(tiempoStringw,
-               core::rect<s32>(200, 55, 300, 200),
-               video::SColor(255, 0, 0, 0));
+    // int time = cTotem->accumulatedTime / 100.0;
+    // float time2 = time / 10.0;
+    // core::stringw mainCarText = core::stringw("Main car   ");
+    // core::stringw tiempoStringw = mainCarText + core::stringw(time2);
+    // font->draw(tiempoStringw,
+    //            core::rect<s32>(200, 55, 300, 200),
+    //            video::SColor(255, 0, 0, 0));
     //Dibujamos powerUp
     driver->draw2DImage(powerUps[currentPowerUp], core::position2d<s32>(50, 50),
                         core::rect<s32>(0, 0, 100, 100), 0,
@@ -178,19 +178,23 @@ void RenderFacadeIrrlicht::FacadeDrawHUD(Entity* car, ManCar* manCars) {
     int i = 0;
     core::stringw textIA = core::stringw("Car ");
     for (const auto& cars : manCars->GetEntities()) {
-        if(manCars->GetCar().get() != cars.get()){
-            cTotem = static_cast<CTotem*>(cars->GetComponent(CompType::TotemComp).get());
+        
+        cTotem = static_cast<CTotem*>(cars->GetComponent(CompType::TotemComp).get());
 
-            int time = cTotem->accumulatedTime / 100.0;
-            float time2 = time / 10.0;
-
-            core::stringw iaText = textIA + core::stringw(i) + core::stringw("  ") + core::stringw(time2);
-            font->draw(iaText,
-                    core::rect<s32>(200, 70 + (i * 15), 300, 300),
-                    video::SColor(255, 0, 0, 0));
-
-            i++;
+        int time = cTotem->accumulatedTime / 100.0;
+        float time2 = time / 10.0;
+        video::SColor color(255,0,0,0);
+        if(cTotem->active){
+            //Si tiene el totem voy a dibujarlo rojo por ejemplo
+            color.setRed(255);
         }
+        core::stringw iaText = core::stringw(cTotem->positionRanking) + core::stringw("  ") + textIA + core::stringw(i) + core::stringw("  ") + core::stringw(time2);
+        font->draw(iaText,
+                core::rect<s32>(200, 70 + ((cTotem->positionRanking-1) * 15), 300, 300),
+                color);
+
+        i++;
+        
     }
 }
 

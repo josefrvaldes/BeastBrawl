@@ -92,14 +92,18 @@ void Collisions::IntersectsCarsPowerUps(ManCar* manCars, ManPowerUp* manPowerUps
     }
 }
 
-
+/**
+ * @Deprecated
+ * Este método se borrará en próximas iteraciones porque ya no se usa.
+ * Ahora se usa IntersectCarsTotem
+ */
 void Collisions::IntersectPlayerTotem(Car* carPlayer, ManTotem* manTotem){
 
-    for(auto& actualTotem : manTotem->GetEntities()){                                                       // SI HACE DANYO
-        if(Intersects(carPlayer, actualTotem.get())){   //TRUE
+    for(auto& currentTotem : manTotem->GetEntities()){   // SI HACE DANYO
+        if(Intersects(carPlayer, currentTotem.get())){   //TRUE
             // debemos coger el TOTEM
             shared_ptr<DataMap> dataCollisionTotem = make_shared<DataMap>();                                                                         
-            (*dataCollisionTotem)[TOTEM] = actualTotem;              // nos guardamos el puntero para eliminar el powerUp                                             
+            (*dataCollisionTotem)[TOTEM] = currentTotem;              // nos guardamos el puntero para eliminar el powerUp                                             
             EventManager::GetInstance().AddEventMulti(Event{EventType::COLLISION_PLAYER_TOTEM, dataCollisionTotem});
         }
     }
@@ -107,22 +111,21 @@ void Collisions::IntersectPlayerTotem(Car* carPlayer, ManTotem* manTotem){
 
 
 void Collisions::IntersectCarsTotem(ManCar* manCars, ManTotem* manTotem){
+    for(const auto& currentCar : manCars->GetEntities()){
+        for(shared_ptr<Entity> currentTotem : manTotem->GetEntities()){ // SI HACE DANYO
+            if(Intersects(currentCar.get(), currentTotem.get())){   //TRUE
+                // debemos coger el TOTEM
+                shared_ptr<DataMap> dataCollisionTotem = make_shared<DataMap>();                                                                         
 
-    for(const auto& actualCar : manCars->GetEntities()){
-        if(actualCar.get() != manCars->GetCar().get()){
-            for(shared_ptr<Entity> actualTotem : manTotem->GetEntities()){                                                       // SI HACE DANYO
-                if(Intersects(actualCar.get(), actualTotem.get())){   //TRUE
-                    // debemos coger el TOTEM
-                    shared_ptr<DataMap> dataCollisionTotem = make_shared<DataMap>();                                                                         
-
-                    (*dataCollisionTotem)[TOTEM] = actualTotem;              // nos guardamos el puntero para eliminar el powerUp  
-                    (*dataCollisionTotem)[ACTUAL_CAR] = actualCar.get();                                           
-                    EventManager::GetInstance().AddEventMulti(Event{EventType::COLLISION_AI_TOTEM, dataCollisionTotem});
-                }
+                (*dataCollisionTotem)[TOTEM] = currentTotem;              // nos guardamos el puntero para eliminar el powerUp  
+                (*dataCollisionTotem)[ACTUAL_CAR] = currentCar.get();                                           
+                EventManager::GetInstance().AddEventMulti(Event{EventType::COLLISION_PLAYER_TOTEM, dataCollisionTotem});
+                return; // con este return nos aseguramos de que solo 1 car pueda coger el totem a la vez, aunque colisionen varios
             }
         }
     }
 }
+
 
 
 
