@@ -254,13 +254,6 @@ void UDPClient::SendInputs(const vector<Constants::InputTypes>& inputs, uint16_t
             boost::asio::placeholders::bytes_transferred));
 }
 
-void UDPClient::HandleSentInputs(const boost::system::error_code& errorCode, std::size_t bytes_transferred) {
-    if (errorCode) {
-        cout << "Hubo un error enviando los inputs, madafaka" << endl;
-        // ResendInput();
-    }
-}
-
 void UDPClient::SendSync(uint16_t idOnline, const glm::vec3& posCar, const glm::vec3& rotCar, typeCPowerUp typePU, bool haveTotem,
                          int64_t totemTime, bool totemInGround, const glm::vec3& posTotem) {
     unsigned char requestBuff[Constants::ONLINE_BUFFER_SIZE];
@@ -318,6 +311,35 @@ void UDPClient::SendCatchPU(uint16_t idOnline, typeCPowerUp typePU) {
 }
 
 
+void UDPClient::SendCatchTotem(uint16_t idOnline, uint16_t idPlayerCatched){
+    unsigned char requestBuff[Constants::ONLINE_BUFFER_SIZE];
+    size_t currentBuffSize = 0;
+    uint8_t callType = Constants::PetitionTypes::CATCH_TOTEM;
+    int64_t time = Utils::getMillisSinceEpoch();
+    
+    Serialization::Serialize(requestBuff, &callType, currentBuffSize);
+    Serialization::Serialize(requestBuff, &time, currentBuffSize);
+    Serialization::Serialize(requestBuff, &idOnline, currentBuffSize);
+    Serialization::Serialize(requestBuff, &idPlayerCatched, currentBuffSize);
+
+    socket.async_send_to(
+        boost::asio::buffer(requestBuff, currentBuffSize),
+        serverEndpoint,
+        boost::bind(
+            &UDPClient::HandleSentCatchTotem,
+            this,
+            boost::asio::placeholders::error,
+            boost::asio::placeholders::bytes_transferred));
+}
+
+
+
+void UDPClient::HandleSentInputs(const boost::system::error_code& errorCode, std::size_t bytes_transferred) {
+    if (errorCode) {
+        cout << "Hubo un error enviando los inputs" << endl;
+    }
+}
+
 void UDPClient::HandleSentSync(const boost::system::error_code& errorCode, std::size_t bytes_transferred) {
     if (errorCode) {
         cout << "Hubo un error enviando la sincronizacion" << endl;
@@ -327,6 +349,12 @@ void UDPClient::HandleSentSync(const boost::system::error_code& errorCode, std::
 void UDPClient::HandleSentPU(const boost::system::error_code& errorCode, std::size_t bytes_transferred) {
     if (errorCode) {
         cout << "Hubo un error enviando el tipo de power up" << endl;
+    }
+}
+
+void UDPClient::HandleSentCatchTotem(const boost::system::error_code& errorCode, std::size_t bytes_transferred) {
+    if (errorCode) {
+        cout << "Hubo un error enviando el jugador que ha cogido el totem" << endl;
     }
 }
 

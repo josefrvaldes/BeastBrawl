@@ -22,12 +22,12 @@ SystemOnline::SystemOnline(ManCar &manCar_, uint16_t idOnlineMainCar_) : idOnlin
     shared_ptr<CarHuman> car = manCar.GetCar();
 }
 
-void SystemOnline::SendInputs(const vector<Constants::InputTypes> &inputs) {
+void SystemOnline::SendInputs(const vector<Constants::InputTypes> &inputs) const{
     // cout << Utils::getISOCurrentTimestampMillis() << "id[" << idOnlineMainCar << "] Enviamos los inputs" << endl;
     udpClient->SendInputs(inputs, idOnlineMainCar);
 }
 
-void SystemOnline::SendSync(ManCar *manCars, ManTotem *manTotem) {
+void SystemOnline::SendSync(ManCar *manCars, ManTotem *manTotem) const{
     // cout << Utils::getISOCurrentTimestampMillis() << "id[" << idOnlineMainCar << "] Enviamos sync" << endl;
     auto cTransCar = static_cast<CTransformable *>(manCars->GetCar()->GetComponent(CompType::TransformableComp).get());
     auto cTotem = static_cast<CTotem *>(manCars->GetCar()->GetComponent(CompType::TotemComp).get());
@@ -61,6 +61,13 @@ void SystemOnline::SendSync(ManCar *manCars, ManTotem *manTotem) {
 
 
 
-void SystemOnline::SendCatchPU(CPowerUp& cPowerUp){
+void SystemOnline::SendCatchPU(CPowerUp& cPowerUp) const{
     udpClient->SendCatchPU(idOnlineMainCar, cPowerUp.typePowerUp);
+}
+
+
+// lo enviamos tres veces para evitar que se pierdan todos los paquetes
+void SystemOnline::SendCatchTotem(uint16_t idCarCatched) const{
+    for(uint8_t i=0; i<3; ++i)
+        udpClient->SendCatchTotem(idOnlineMainCar, idCarCatched);
 }

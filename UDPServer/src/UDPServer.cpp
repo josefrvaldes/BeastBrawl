@@ -72,11 +72,18 @@ void UDPServer::HandleReceive(std::shared_ptr<unsigned char[]> recevBuff, std::s
                 } break;
                 case Constants::PetitionTypes::CATCH_PU: {
                     if (p.lastCatchPUTimeReceived < time) {
-                        cout << Utils::getISOCurrentTimestampMillis() << "Se ha recibido y reenviado un paquete de CatchPU del player " << idPlayer << endl;
                         p.lastCatchPUTimeReceived = time;
                         HandleReceivedCatchPU(idPlayer, buffRecieved, bytesTransferred, *remoteClient.get());
                     } else {
-                        cout << Utils::getISOCurrentTimestampMillis() << "Se ha ignorado un paquete de CatchPU porque era antiguo" << endl;
+                        //cout << Utils::getISOCurrentTimestampMillis() << "Se ha ignorado un paquete de CatchPU porque era antiguo" << endl;
+                    }
+                } break;
+                case Constants::PetitionTypes::CATCH_TOTEM: {
+                    if (p.lastCatchTotemTimeReceived < time) {
+                        p.lastCatchTotemTimeReceived = time;
+                        HandleReceivedCatchTotem(idPlayer, buffRecieved, bytesTransferred, *remoteClient.get());
+                    } else {
+                        cout << Utils::getISOCurrentTimestampMillis() << "Se ha ignorado un paquete de CatchTotem porque era antiguo" << endl;
                     }
                 } break;
                 default:
@@ -103,6 +110,11 @@ void UDPServer::HandleReceivedInputs(const uint16_t id, const unsigned char rese
 void UDPServer::HandleReceivedCatchPU(const uint16_t id, unsigned char resendPU[], const size_t currentBufferSize, const udp::endpoint& originalClient) {
     ResendBytesToOthers(id, resendPU, currentBufferSize, originalClient);
 }
+
+void UDPServer::HandleReceivedCatchTotem(const uint16_t id, unsigned char buffer[], const size_t currentBufferSize, const udp::endpoint& remoteClient){
+    std::cout << "Mensaje CathcTotem por parte de: " << id << "\n";
+}
+
 
 void UDPServer::HandleReceivedSync(const uint16_t id, unsigned char recevBuff[], const size_t currentBufferSize, const udp::endpoint& originalClient) {
     size_t currentIndex = 0;

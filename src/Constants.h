@@ -35,5 +35,6 @@ class Constants {
                          SEND_INPUTS,
                          SEND_SYNC,
                          CATCH_PU,
-                         SEND_DISCONNECTION };
+                         SEND_DISCONNECTION,
+                         CATCH_TOTEM };
 };

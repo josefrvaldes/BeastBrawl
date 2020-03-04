@@ -231,7 +231,7 @@ void ManCar::SubscribeToEvents() {
     EventManager::GetInstance().SubscribeMulti(Listener(
         EventType::COLLISION_PLAYER_TOTEM,
         bind(&ManCar::CatchTotemCar, this, placeholders::_1),
-        "CatchTotemAI"));
+        "CatchTotemCar"));
 
     EventManager::GetInstance().SubscribeMulti(Listener(
         EventType::CHANGE_TOTEM_CAR,
@@ -386,6 +386,12 @@ void ManCar::CatchTotemCar(DataMap* d) {
     cTotem->timeStart = system_clock::now();
     // Sonido coger totem
     EventManager::GetInstance().AddEventMulti(Event{EventType::CATCH_TOTEM});
+
+    
+    if(systemOnline != nullptr){
+        auto cId = static_cast<CId*>(any_cast<Entity*>((*d)[ACTUAL_CAR])->GetComponent(CompType::IdComp).get());
+        systemOnline->SendCatchTotem(cId->id);
+    }
 }
 
 void ManCar::CatchTotemPlayer(DataMap* d) {
