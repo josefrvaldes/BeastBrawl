@@ -248,20 +248,20 @@ void CLPhysics::RotateCarXZ(CTransformable &trcar, CBoundingChassis &chaCar, CBo
     auto newR_X = sin(dirRotateY) * (normalPlane.x*100);
     auto resultante_X = newR_X*100/(total);
     auto rotationX_exeX = angleRotate*(resultante_X/100);
-    //cout << "LA RESULTANTE X ES:  " << rotationX_exeX << endl;
+
     auto newR_Z = cos(dirRotateY) * (normalPlane.z*100);
     auto resultante_Z = newR_Z*100/total;
     auto rotationX_exeZ = angleRotate*(resultante_Z/100);
-    //cout << "LA RESULTANTE Z ES:  " << rotationX_exeZ << endl;
-    auto rotationFinal = rotationX_exeX + rotationX_exeZ;
-    if(abs(trcar.rotation.x - rotationFinal) > 3 ){  // deberia de multiplicarse por el delta
-        if( trcar.rotation.x < rotationFinal)
-            trcar.rotation.x += 3.0;
-        else
-            trcar.rotation.x -= 3.0;
-    }else{
-        trcar.rotation.x = rotationFinal;
-    }
+
+    //auto rotationFinal = rotationX_exeX + rotationX_exeZ;
+    //if(abs(trcar.rotation.x - rotationFinal) > 3 ){  // deberia de multiplicarse por el delta
+    //    if( trcar.rotation.x < rotationFinal)
+    //        trcar.rotation.x += 3.0;
+    //    else
+    //        trcar.rotation.x -= 3.0;
+    //}else{
+        trcar.rotation.x = rotationX_exeX + rotationX_exeZ;
+    //}
     //cout << "LA ROTACION APLICADA EN X ES: " << rotationFinal << endl;
 
 }
