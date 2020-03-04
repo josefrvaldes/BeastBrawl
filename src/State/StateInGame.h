@@ -115,8 +115,8 @@ class StateInGame : public State {
     virtual void AddElementsToRender();
     //virtual void CAMBIARCosasDeTotemUpdate(){};
 
-    void CAMBIARCosasDeTotem(ManTotem &);
-    void CAMBIARCosasNavMesh(ManCar &, ManNavMesh &);
-    void CAMBIARPositionTotemAboveCar();
+    //void CAMBIARCosasDeTotem(ManTotem &);
+    //void CAMBIARCosasNavMesh(ManCar &, ManNavMesh &);
+    //void CAMBIARPositionTotemAboveCar();
 
 };

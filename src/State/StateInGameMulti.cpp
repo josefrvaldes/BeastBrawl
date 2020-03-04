@@ -38,7 +38,7 @@ StateInGameMulti::StateInGameMulti(uint16_t IdOnline, const vector<uint16_t> IdP
     vector<Constants::InputTypes> inputs;
     sysOnline->SendInputs(inputs);  // enviamos un vector vacío la primera vez para que el servidor sepa que estamos vivos
 
-    CAMBIARCosasNavMesh(*manCars.get(), *manNavMesh.get());
+    //CAMBIARCosasNavMesh(*manCars.get(), *manNavMesh.get());
     // while(true){sleep(500);}; // esto solo sirve para depurar
 
 
@@ -87,7 +87,7 @@ void StateInGameMulti::Update() {
 
     for (auto actualCar : manCars->GetEntities()) {
         if (actualCar.get() != manCars->GetCar().get()) {
-            manNavMesh->UpdateNavMeshHuman(actualCar.get());  // actualizamos el navemesh en el que se encuentra al human
+            //manNavMesh->UpdateNavMeshHuman(actualCar.get());  // actualizamos el navemesh en el que se encuentra al human
             // funcion para recibir los inputs del servidor, otra para enviar los nuestros, crear componente de input
             physics->UpdateHuman(static_cast<Car *>(actualCar.get()));
             manCars->UpdateCarHuman(actualCar.get());
