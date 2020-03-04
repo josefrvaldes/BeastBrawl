@@ -7,7 +7,9 @@
 #include "../Components/CCurrentNavMesh.h"
 #include "../Components/CTotem.h"
 #include "../Components/CBoundingSphere.h"
+#include <Components/CShader.h>
 #include <iostream>
+#include "../Constants.h"
 
 using namespace std;
 
@@ -18,8 +20,21 @@ Totem::Totem()
     glm::vec3 rot   = glm::vec3(0.0f, 90.0f, 0.0f);
     glm::vec3 scale = glm::vec3(0.6f, 0.6f, 0.6f);
 
+    string mesh;
+    if(Constants::RENDER_ENGINE == Constants::RenderEngine::CLOVER){
+        //mesh    = "totem_tex.fbx";
+        mesh  = "TEST_BOX.fbx";
+        
+    }else if(Constants::RENDER_ENGINE == Constants::RenderEngine::IRRLICHT){
+        mesh    =   "kart_ia.obj";
+    }
+
     string texture = "totem.jpg";
-    string mesh    = "media/ninja.b3d";
+    //string mesh = "totem_tex.fbx";
+    //string mesh    = "kart_ia.obj";
+
+    string vertexShader = "CLEngine/src/Shaders/vertex.glsl";
+    string fragmentShader = "CLEngine/src/Shaders/fragment.glsl";
     
     shared_ptr<CId> cId   = make_shared<CId>();
     shared_ptr<CType> cType = make_shared<CType>(ModelType::Cube);
@@ -27,6 +42,8 @@ Totem::Totem()
     shared_ptr<CTexture> cTexture = make_shared<CTexture>(texture);
     shared_ptr<CMesh> cMesh   = make_shared<CMesh>(mesh);
     shared_ptr<CCurrentNavMesh> cCurrentNavMesh   = make_shared<CCurrentNavMesh>(-1);
+    shared_ptr<CShader> cShader = make_shared<CShader>(vertexShader,fragmentShader);
+
     shared_ptr<CBoundingSphere> cBoundingSphere = make_shared<CBoundingSphere>(vec3(0.0,0.0,0.0), 4.5);
     shared_ptr<CTotem> cTotem = make_shared<CTotem>();
     AddComponent(cId);
@@ -36,6 +53,7 @@ Totem::Totem()
     AddComponent(cMesh);
     AddComponent(cCurrentNavMesh);
     AddComponent(cBoundingSphere);
+    AddComponent(cShader);
     AddComponent(cTotem);
 }
 

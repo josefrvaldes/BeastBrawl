@@ -166,7 +166,7 @@ void SystemPathPlanning::CalculatePathToNavMesh(DataMap* data){
 
     auto path2 = path;
     while(!path2.empty()){
-        std::cout << "nodo del path x= " << path2.top() << std::endl;
+        //std::cout << "nodo del path x= " << path2.top() << std::endl;
         path2.pop();
     }
 

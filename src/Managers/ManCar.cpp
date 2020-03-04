@@ -127,7 +127,7 @@ void ManCar::UpdateCarHuman(Entity* CarHuman) {
 }
 
 void ManCar::CreateMainCar() {
-    car = make_shared<CarHuman>();
+    car = make_shared<CarHuman>(); 
     entities.push_back(car);
 }
 

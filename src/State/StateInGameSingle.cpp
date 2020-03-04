@@ -80,7 +80,7 @@ void StateInGameSingle::Update() {
     // Actualizamos posicion en Irrlicht
     for (auto actualAI : manCars->GetEntities()) { // CUIDADO!!! -> el static cast que solo se use en el single player, si no peta
         if (static_cast<Car*>(actualAI.get())->GetTypeCar() == TypeCar::CarAI){
-            physicsEngine->UpdateCarAI(actualAI.get());
+            physicsEngine->UpdateTransformable(actualAI.get());
         }
     }
 

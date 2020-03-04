@@ -15,7 +15,7 @@ class PowerUp : public Entity{
 public:
     PowerUp();
     //PowerUp(glm::vec3 _position);
-    PowerUp(glm::vec3 _position, glm::vec3 _rotation, typeCPowerUp typePowerUp, CTransformable* cTransformableTarget);
+    PowerUp(glm::vec3 _position, glm::vec3 _rotation, typeCPowerUp typePowerUp, CTransformable* cTransformableTarget, std::string vertexShader, std::string fragmentShader);
     ~PowerUp();
 
 };

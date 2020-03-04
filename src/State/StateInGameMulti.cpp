@@ -91,7 +91,7 @@ void StateInGameMulti::Update() {
             // funcion para recibir los inputs del servidor, otra para enviar los nuestros, crear componente de input
             physics->UpdateHuman(static_cast<Car *>(actualCar.get()));
             manCars->UpdateCarHuman(actualCar.get());
-            physicsEngine->UpdateCarAI(actualCar.get());
+            physicsEngine->UpdateTransformable(actualCar.get());
         }
     }
 

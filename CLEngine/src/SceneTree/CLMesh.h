@@ -2,6 +2,7 @@
 
 #include "CLEntity.h"
 #include "../ResourceManager/CLResourceMesh.h"
+#include "../ResourceManager/CLResourceTexture.h"
 
 
 namespace CLE {
@@ -17,11 +18,12 @@ namespace CLE {
             //GETTERS
             CLResource* GetMesh() const             { return mesh; }
 
-            void Draw(glm::mat4&);
+            void Draw(GLuint shaderID);
 
 
         private:
-            CLResource* mesh;
+            CLResourceMesh* mesh;
+            CLResourceTexture* texture;
 
             
     };

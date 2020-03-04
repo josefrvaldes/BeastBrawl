@@ -254,7 +254,7 @@ vec4 CBoundingPlane::equationPlane3Points(const vec3 &a, const vec3 &b, const ve
     double planeD = ((mat00*mat11*mat22)+(mat01*mat20*mat12)+(mat02*mat10*mat21)) 
                     - ((mat02*mat11*mat20)+(mat01*mat10*mat22)+(mat00*mat21*mat12));
 
-    std::cout << "LA ECUACION GENERAL DEL PLANTO ES: " << planeX << "x " << planeY << "y " << planeZ << "z " << planeD << std::endl;
+    //std::cout << "LA ECUACION GENERAL DEL PLANTO ES: " << planeX << "x " << planeY << "y " << planeZ << "z " << planeD << std::endl;
 
     return vec4(planeX,planeY,planeZ,planeD);
 }

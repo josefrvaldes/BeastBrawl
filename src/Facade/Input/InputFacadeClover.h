@@ -3,6 +3,7 @@
 #include <iostream>
 #include <memory>
 #include "InputFacade.h"
+#include "../Render/RenderFacadeManager.h"
 
 #include "../../../CLEngine/src/CLEngine.h"
 
@@ -20,7 +21,7 @@ class InputFacadeClover : public InputFacade{
         void SetWindowContext(CLEngine* d) {device = d;}
 
     private:
-      CLEngine* device;
+        CLEngine* device;
 
 
 };

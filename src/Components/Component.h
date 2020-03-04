@@ -43,7 +43,8 @@ enum CompType {
     CompRay,
     NamePlateComp,
     MovementComp,
-    OnlineComp
+    OnlineComp,
+    ShaderComp
 };
 
 class Component {

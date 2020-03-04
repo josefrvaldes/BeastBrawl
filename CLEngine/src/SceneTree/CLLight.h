@@ -17,7 +17,7 @@ namespace CLE {
             glm::vec3 GetIntensity() const      { return intensity; };
             bool GetOn() const                  { return on; };
 
-            void Draw(glm::mat4&);
+            void Draw(GLuint shaderID);
 
 
         protected:
