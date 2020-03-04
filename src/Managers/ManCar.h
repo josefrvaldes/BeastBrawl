@@ -12,6 +12,7 @@
 #include <Entities/WayPoint.h>
 
 #include <Systems/SystemPathPlanning.h>
+#include <Systems/SystemOnline.h>
 
 #include <cstdlib> /* srand, rand */
 #include <iostream>
@@ -61,6 +62,7 @@ class ManCar : public Manager {
     bool CarTotemInVisionRange(Entity *currentCar, Entity* desCar, uint32_t rangeVision);
     void Integrate(float) override;
     Entity* GetDesirableTarget(Entity* actualCar);
+    void setSystemOnline(SystemOnline* systOn){ systemOnline = systOn; };
     
 
    private:
@@ -81,6 +83,8 @@ class ManCar : public Manager {
     void ChangeTotemCar(DataMap* d);
     void NewInputsReceived(DataMap* d);
     void NewSyncReceived(DataMap* d);
+    void NewCatchPUReceived(DataMap* d);
+    void DeletePlayer(DataMap* d);
     //void ChangePosDestination(DataMap* d);
     //void MoveToPowerUp(DataMap* d);
     void ThrowTotem(Entity* carLoseTotem);
@@ -94,4 +98,6 @@ class ManCar : public Manager {
     void CatchPowerUpAI(DataMap* d);
     shared_ptr<CarHuman> car;
     unique_ptr<PhysicsAI> physicsAI;
+
+    SystemOnline* systemOnline = nullptr; // en caso de que sea Single va a ser un nullptr
 };

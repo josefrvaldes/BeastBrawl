@@ -250,7 +250,7 @@ void ManCar::SubscribeToEvents() {
     EventManager::GetInstance().SubscribeMulti(Listener(
         EventType::COLLISION_PLAYER_TOTEM,
         bind(&ManCar::CatchTotemCar, this, placeholders::_1),
-        "CatchTotemAI"));
+        "CatchTotemCar"));
 
     EventManager::GetInstance().SubscribeMulti(Listener(
         EventType::CHANGE_TOTEM_CAR,
@@ -266,7 +266,22 @@ void ManCar::SubscribeToEvents() {
         EventType::NEW_SYNC_RECEIVED_CAR,
         bind(&ManCar::NewSyncReceived, this, placeholders::_1),
         "NewSyncReceived"));
+    
+    EventManager::GetInstance().SubscribeMulti(Listener(
+        EventType::NEW_SYNC_RECEIVED_CATCH_PU,
+        bind(&ManCar::NewCatchPUReceived, this, placeholders::_1),
+        "NewCatchPUReceived"));
+    
+    /*EventManager::GetInstance().SubscribeMulti(Listener(
+        EventType::DISCONNECTED_PLAYER,
+        bind(&ManCar::DeletePlayer, this, placeholders::_1),
+        "DeletePlayer"));*/
 }
+
+
+///////////////////////////////////////////////////////////////////////7
+//                    EVENTOS DEL ONLINE
+///////////////////////////////////////////////////////////////////////
 
 void ManCar::NewInputsReceived(DataMap* d) {
     // cout << "Se ha lanzado el evento NewInputsReceived" << endl;
@@ -319,6 +334,59 @@ void ManCar::NewSyncReceived(DataMap* d) {
     }
 }
 
+
+void ManCar::NewCatchPUReceived(DataMap* d) {
+    auto idRecieved = any_cast<uint16_t>((*d)[DataType::ID_ONLINE]);
+    for (auto car : GetEntities()) {
+        if (car->HasComponent(CompType::OnlineComp)) {
+            COnline* compOnline = static_cast<COnline*>(car->GetComponent(CompType::OnlineComp).get());
+            if (compOnline->idClient == idRecieved) {
+                auto cPowerUp = static_cast<CPowerUp*>(car->GetComponent(CompType::PowerUpComp).get());
+                cPowerUp->typePowerUp = any_cast<typeCPowerUp>((*d)[DataType::TYPE_POWER_UP]);
+                break;
+            }
+        }
+    }
+}
+
+
+/*void ManCar::DeletePlayer(DataMap* d){
+    auto idRecieved = any_cast<uint16_t>((*d)[DataType::ID_ONLINE]);
+    for (auto& car : GetEntities()) {
+        if (car->HasComponent(CompType::OnlineComp)) {
+            COnline* compOnline = static_cast<COnline*>(car->GetComponent(CompType::OnlineComp).get());
+            if (compOnline->idClient == idRecieved) {
+                auto cTotem = static_cast<CTotem*>(car->GetComponent(CompType::TotemComp).get());
+                if(cTotem->active){     // comprobamos si tiene totem para quitarselo
+                    ThrowTotem(car.get());
+                    // auto dataTransformableCar = static_cast<CTransformable*>(car.get()->GetComponent(CompType::TransformableComp).get());
+                    // shared_ptr<DataMap> dataTransfCar = make_shared<DataMap>();                                                        
+                    // (*dataTransfCar)[CAR_TRANSFORMABLE] = dataTransformableCar;  
+                    // (*dataTransfCar)[ACTUAL_CAR] = car; 
+                    // (*dataTransfCar)[MAN_NAVMESH] = manNavMesh;
+                    // EventManager::GetInstance().AddEventMulti(Event{EventType::DROP_TOTEM, dataTransfCar}); 
+                    auto renderFacadeManager = RenderFacadeManager::GetInstance();
+                    auto renderEngine = renderFacadeManager->GetRenderFacade();
+                    for(auto i=0; i< entities.size(); ++i){
+                        if(entities[i] == car){
+                            renderEngine->DeleteEntity(entities[i].get());
+                            entities.erase(entities.begin()+i);
+                            break;
+                        }
+                    }
+                }
+                break;
+            }
+        }
+    }
+}*/
+
+//////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
+
+
+
+
 void ManCar::ChangeTotemCar(DataMap* d) {
     auto carWithTotem = any_cast<Entity*>((*d)[CAR_WITH_TOTEM]);
     auto carWithoutTotem = any_cast<Entity*>((*d)[CAR_WITHOUT_TOTEM]);
@@ -338,6 +406,11 @@ void ManCar::CatchTotemCar(DataMap* d) {
     // Sonido coger totem
     EventManager::GetInstance().AddEventMulti(Event{EventType::CATCH_TOTEM});
 
+    
+    if(systemOnline != nullptr){
+        auto cId = static_cast<CId*>(any_cast<Entity*>((*d)[ACTUAL_CAR])->GetComponent(CompType::IdComp).get());
+        systemOnline->SendCatchTotem(cId->id);
+    }
 }
 
 void ManCar::CatchTotemPlayer(DataMap* d) {
@@ -567,11 +640,14 @@ void ManCar::CatchPowerUp(DataMap* d) {
     auto cPowerUpCar = static_cast<CPowerUp*>(car.get()->GetComponent(CompType::PowerUpComp).get());
     if (cPowerUpCar->typePowerUp == typeCPowerUp::None) {
         cPowerUpCar->typePowerUp = (typeCPowerUp)indx;
+
         shared_ptr<DataMap> data = make_shared<DataMap>();
-
         (*data)[TYPE_POWER_UP] = cPowerUpCar->typePowerUp;
-
         EventManager::GetInstance().AddEventMulti(Event{EventType::UPDATE_POWERUP_HUD, data});
+
+        if(systemOnline != nullptr){
+            systemOnline->SendCatchPU(*cPowerUpCar);
+        }
     }
 }
 
@@ -632,6 +708,11 @@ void ManCar::CatchPowerUpAI(DataMap* d) {
             shared_ptr<DataMap> data = make_shared<DataMap>();
             (*data)[TYPE_POWER_UP] = cPowerUpCar->typePowerUp;
             EventManager::GetInstance().AddEventMulti(Event{EventType::UPDATE_POWERUP_HUD, data});
+
+            if(systemOnline != nullptr){
+                cout << "Se envia el PU mensaje 2" << "\n";
+                systemOnline->SendCatchPU(*cPowerUpCar);
+            }
         }
     }
     //cPowerUp->typePowerUp = dynamic_cast<typeCPowerUp*>(indx);

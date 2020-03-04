@@ -43,6 +43,18 @@ class Serialization{
     // se almacena el tipo de powerUp en los primeros 3 bits, y luego si tiene totem el mismo, y si existe en el mapa
     static void SerializePowerUpTotem(unsigned char* buff, const typeCPowerUp& typePU, bool haveTotem, bool totemInMap, size_t& currentSize) {
         unsigned char byte{0};
+        byte = SerializePowerUp(typePU);
+
+        if (haveTotem)
+            byte |= 1UL << 3;
+        if (totemInMap)
+            byte |= 1UL << 4;
+
+        Serialize(buff, &byte, currentSize);
+    }
+
+    static unsigned char SerializePowerUp(const typeCPowerUp& typePU){
+        unsigned char byte{0};
 
         switch (typePU) {
             case typeCPowerUp::RoboJorobo:
@@ -70,11 +82,12 @@ class Serialization{
                 // si no tiene PU se mantiene a 000
                 break;
         }
+        return byte;
+    }
 
-        if (haveTotem)
-            byte |= 1UL << 3;
-        if (totemInMap)
-            byte |= 1UL << 4;
+    static void SerializePowerUpOnly(unsigned char* buff, const typeCPowerUp& typePU, size_t& currentSize){
+        unsigned char byte{0};
+        byte = SerializePowerUp(typePU);
 
         Serialize(buff, &byte, currentSize);
     }
@@ -110,6 +123,33 @@ class Serialization{
             totemInMap = true;
         else
             totemInMap = false;
+    }
+
+
+    static typeCPowerUp DeserializePowerUpOnly(unsigned char* buff, size_t& currentIndex){
+        typeCPowerUp typePU;
+        unsigned char byte;
+        size_t itemSize = sizeof(byte);
+
+        Deserialize(&byte, itemSize, buff, currentIndex);
+
+        if (!((byte >> 2) & 1U) && !((byte >> 1) & 1U) && ((byte >> 0) & 1U)) {  // 001
+            typePU = typeCPowerUp::RoboJorobo;
+        } else if (!((byte >> 2) & 1U) && ((byte >> 1) & 1U) && !((byte >> 0) & 1U)) {  // 010
+            typePU = typeCPowerUp::SuperMegaNitro;
+        } else if (!((byte >> 2) & 1U) && ((byte >> 1) & 1U) && ((byte >> 0) & 1U)) {  // 011
+            typePU = typeCPowerUp::PudinDeFrambuesa;
+        } else if (((byte >> 2) & 1U) && !((byte >> 1) & 1U) && !((byte >> 0) & 1U)) {  // 100
+            typePU = typeCPowerUp::EscudoMerluzo;
+        } else if (((byte >> 2) & 1U) && !((byte >> 1) & 1U) && ((byte >> 0) & 1U)) {  // 101
+            typePU = typeCPowerUp::TeleBanana;
+        } else if (((byte >> 2) & 1U) && ((byte >> 1) & 1U) && !((byte >> 0) & 1U)) {  // 110
+            typePU = typeCPowerUp::MelonMolon;
+        } else {
+            typePU = typeCPowerUp::None;
+        }
+
+        return typePU;
     }
 
     // template <typename T>

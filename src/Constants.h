@@ -31,14 +31,13 @@ class Constants {
                         CLAXON,
                         DRIFT };
 
-      enum PetitionTypes { CONNECTION_REQUEST,
-                           SEND_INPUTS,
-                           SEND_SYNC };
-
+    enum PetitionTypes { CONNECTION_REQUEST,
+                         SEND_INPUTS,
+                         SEND_SYNC,
+                         CATCH_PU,
+                         SEND_DISCONNECTION,
+                         CATCH_TOTEM };
       enum RenderEngine { IRRLICHT,
                           CLOVER};
-
       inline static const RenderEngine RENDER_ENGINE = RenderEngine::IRRLICHT;
-
-
 };
