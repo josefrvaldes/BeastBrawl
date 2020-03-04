@@ -44,7 +44,7 @@ void Physics::CalculatePosition(CCar *cCar, CTransformable *cTransformable, CSpe
     if(cExternalForce->force > 0){
         // Este paso es una tonteria porque ya lo devolvemos normalizado
         cExternalForce->dirExternalForce = normalize(cExternalForce->dirExternalForce);
-    }
+    }  
 
     // Movimiento del coche
     cSpeed->speed.x = cos(angleRotation);  // * cCar->speed;

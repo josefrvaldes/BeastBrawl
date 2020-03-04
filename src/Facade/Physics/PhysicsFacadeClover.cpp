@@ -27,7 +27,7 @@ void PhysicsFacadeClover::UpdateCar(Entity* car, Entity* cam) {
     node->SetTranslation(glm::vec3(-cTransformable->position.x, cTransformable->position.y, -cTransformable->position.z));
 
     //Actualiza la rotacion del objeto de irrlicht
-    node->SetRotation(glm::vec3(cTransformable->rotation.x, cTransformable->rotation.y, cTransformable->rotation.z));
+    node->SetRotation(glm::vec3(-cTransformable->rotation.x, cTransformable->rotation.y, -cTransformable->rotation.z));
 
     //Actualiza el escalado del objeto de irrlicht
     node->SetScalation(glm::vec3(cTransformable->scale.x, cTransformable->scale.y, cTransformable->scale.z));
