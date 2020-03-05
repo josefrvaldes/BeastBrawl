@@ -63,7 +63,6 @@ enum EventType {
     MENU_OPTION,
     MENU_OK,
     MENU_BACK,
-    START_GAME,
     STATE_MENU,
     STATE_PAUSE,
     STATE_ENDRACE,

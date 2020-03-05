@@ -2,8 +2,10 @@
 
 #include <Entities/Totem.h>
 #include <Facade/Render/RenderFacadeManager.h>
+#include <Facade/Sound/SoundFacadeManager.h>
 #include <Components/CDimensions.h>
 #include <Components/CCurrentNavMesh.h>
+#include <Components/CId.h>
 #include "../Components/CTotem.h"
 #include <include_json/include_json.hpp>
 #include "ManNavMesh.h"
@@ -65,6 +67,10 @@ void ManTotem::CreateTotem() {
 void ManTotem::CreateTotem(glm::vec3 _position) {
     if(entities.size() == 0){
         shared_ptr<Totem> totem = make_shared<Totem>(_position);
+        string name = "Partida/totem";
+        auto idComp = static_cast<CId*>(totem->GetComponent(CompType::IdComp).get());
+        SoundFacadeManager::GetInstance()->GetSoundFacade()->CreateSoundDinamic3D(idComp->id, _position, name);
+
         entities.push_back(totem); 
     }
 }

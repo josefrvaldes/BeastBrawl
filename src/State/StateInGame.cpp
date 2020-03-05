@@ -153,7 +153,6 @@ void StateInGame::InitState() {
         //cout << "~~~ SoundEngine en INGAME es -> " << soundEngine << endl;
         if (soundEngine) {
             soundEngine->SetState(4);
-            EventManager::GetInstance().AddEventMulti(Event{EventType::START_GAME});
         }
     } else {
         soundEngine->ResumeAllEvent();
@@ -210,7 +209,7 @@ void StateInGame::Render() {
 
     soundEngine->UpdateCars(manCars->GetEntities());
     soundEngine->UpdatePowerUps(manPowerUps->GetEntities());
-    //soundEngine->UpdateTotem(manTotems->GetEntities());       //Perdera el sonido si se elimina el Totem del mapa
+    soundEngine->UpdateTotem(manTotems->GetEntities());       
     soundEngine->UpdateListener(manCars->GetCar());
 
     renderEngine->FacadeBeginScene();

@@ -35,7 +35,6 @@ class SoundFacadeFMOD : public SoundFacade {
         void UpdateListener(const shared_ptr<CarHuman>&)                override;
         void Update()                                                   override;
 
-
         void SetEventPositionEstatic3D(const string&, const glm::vec3&);
         void SetEventPositionDinamic3D(const string&, const glm::vec3&);
         void SetParameter(const string&, const string&, const float) override;
@@ -50,10 +49,11 @@ class SoundFacadeFMOD : public SoundFacade {
         void LoadSoundBank(const string&, const bool) override;
         void LoadSoundEvent(const string&, const bool) override;
 
+        void StartGame();
+
         void SubscribeToGameEvents(const uint8_t) override;
 
         // -------------------------------- Eventos del juego: IN GAME
-        void StartGame(DataMap*);
         void SoundClaxon(DataMap*);
         void SoundThrowPowerup(DataMap*);
         void SoundHurt(DataMap*);

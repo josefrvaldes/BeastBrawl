@@ -178,7 +178,24 @@ void StateInGameSingle::CAMBIARInicializarCarAIS(ManCar &manCars, ManWayPoint &m
     pathInit3.push(5);
     manCars.GetEntitiesAI()[2]->SetPath(pathInit3);
 */
-    manCars.CreateCarAI(glm::vec3(-200.0f, 15.0f, 700.0f));
-    manCars.CreateCarAI(glm::vec3(400.0f, 15.0f, -50.0f));
-    manCars.CreateCarAI(glm::vec3(300.0f, 15.0f, -300.0f));
+    auto posCar1 = glm::vec3(-200.0f, 15.0f, 700.0f);
+    auto posCar2 = glm::vec3(400.0f, 15.0f, -50.0f);
+    auto posCar3 = glm::vec3(300.0f, 15.0f, -300.0f);
+
+    manCars.CreateCarAI(posCar1);
+    manCars.CreateCarAI(posCar2);
+    manCars.CreateCarAI(posCar3);
+
+    //int i = -1;
+    for (auto e : manCars.GetEntities()) {
+        //i++;
+        //if (i != 0) {
+            auto idComp = static_cast<CId*>(e->GetComponent(CompType::IdComp).get());
+            auto posComp = static_cast<CTransformable*>(e->GetComponent(CompType::TransformableComp).get());
+            string nameEvent = "Coche/motor";
+            SoundFacadeManager::GetInstance()->GetSoundFacade()->CreateSoundDinamic3D(idComp->id, posComp->position, nameEvent);
+            nameEvent = "Coche/choque_powerup";
+            SoundFacadeManager::GetInstance()->GetSoundFacade()->CreateSoundDinamic3D(idComp->id, posComp->position, nameEvent);
+        //}
+    }
 }

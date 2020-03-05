@@ -43,10 +43,6 @@ using namespace std;
 ManCar::ManCar() {
     SubscribeToEvents();
     CreateMainCar();
-    auto idComp = static_cast<CId*>(car->GetComponent(CompType::IdComp).get());
-    auto posComp = static_cast<CTransformable*>(car->GetComponent(CompType::TransformableComp).get());
-    string nameEvent = "Coche/Motor";
-    SoundFacadeManager::GetInstance()->GetSoundFacade()->CreateSoundDinamic3D(idComp->id, posComp->position, nameEvent);
 
     // systemPathPlanning = make_unique<SystemPathPlanning>();
     physicsAI = make_unique<PhysicsAI>();
@@ -478,9 +474,15 @@ void ManCar::CollisionPowerUp(DataMap* d) {
         // Reducimos la velocidad -- TODO --> no solo reducir la velocidad a 0
         auto cCar = static_cast<CCar*>(car.get()->GetComponent(CompType::CarComp).get());
         cCar->speed = 0.0f;
+
         // Sonido choque con powerup
         shared_ptr<DataMap> data = make_shared<DataMap>();
+        auto cTransf = static_cast<CTransformable*>(car.get()->GetComponent(CompType::TransformableComp).get());
+        auto cId = static_cast<CId*>(car.get()->GetComponent(CompType::IdComp).get());
+        (*data)[VEC3_POS] = cTransf->position; 
+        (*data)[ID] = cId->id;
         (*data)[MAIN_CAR] = true;
+        cout << "SOY EL COCHE PRINSIPAL Y ME CHOCAO CON ALGO" << endl;
         EventManager::GetInstance().AddEventMulti(Event{EventType::HURT, data});
     } else {
         std::cout << "El escudo me salvo el culito :D" << std::endl;
@@ -493,17 +495,22 @@ void ManCar::CollisionPowerUp(DataMap* d) {
 
 void ManCar::CollisionPowerUpAI(DataMap* d) {
     // debemos desactivar el powerUp y para el contador de tiempo del totem
-    auto cShield = static_cast<CShield*>(any_cast<Entity*>((*d)[CAR_AI])->GetComponent(CompType::ShieldComp).get());
+    auto car = any_cast<Entity*>((*d)[CAR_AI]);
+    auto cShield = static_cast<CShield*>(car->GetComponent(CompType::ShieldComp).get());
     if (cShield->activePowerUp == false) {  // comprobamos si tiene el escudo
-        auto cTotem = static_cast<CTotem*>(any_cast<Entity*>((*d)[CAR_AI])->GetComponent(CompType::TotemComp).get());
+        auto cTotem = static_cast<CTotem*>(car->GetComponent(CompType::TotemComp).get());
         if (cTotem->active == true) {
-            ThrowTotem(any_cast<Entity*>((*d)[CAR_AI]));
+            ThrowTotem(car);
         }
         // Reducimos la velocidad -- TODO --> no solo reducir la velocidad a 0
-        auto cCar = static_cast<CCar*>(any_cast<Entity*>((*d)[CAR_AI])->GetComponent(CompType::CarComp).get());
+        auto cCar = static_cast<CCar*>(car->GetComponent(CompType::CarComp).get());
         cCar->speed = 0.0f;  // To-Do: no funciona en la IA por que la logica difusa no la hace acelerar
         // Sonido choque con powerup
         shared_ptr<DataMap> data = make_shared<DataMap>();
+        auto cTransf = static_cast<CTransformable*>(car->GetComponent(CompType::TransformableComp).get());
+        auto cId = static_cast<CId*>(car->GetComponent(CompType::IdComp).get());
+        (*data)[VEC3_POS] = cTransf->position; 
+        (*data)[ID] = cId->id;
         (*data)[MAIN_CAR] = false;
         EventManager::GetInstance().AddEventMulti(Event{EventType::HURT, data});
     } else {
@@ -719,7 +726,7 @@ void ManCar::CatchPowerUpAI(DataMap* d) {
         indx = 6;
 
 
-    //indx = 5;
+    //indx = 2;
     auto cPowerUpCar = static_cast<CPowerUp*>(actualCar->GetComponent(CompType::PowerUpComp).get());
     if (cPowerUpCar->typePowerUp == typeCPowerUp::None) {
         cPowerUpCar->typePowerUp = (typeCPowerUp)indx;
