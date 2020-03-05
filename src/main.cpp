@@ -5,7 +5,12 @@
 
 using namespace std;
 
-int main() {
+int main(int argc, char *argv[]) {
+
+    if(argc == 2) {
+        Constants::SERVER_HOST = argv[1];
+    }
+    cout << "La ip del servidor será " << Constants::SERVER_HOST << endl;
 
     //try {
     Game* game = Game::GetInstance();
