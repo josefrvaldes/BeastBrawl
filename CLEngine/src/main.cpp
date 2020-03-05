@@ -117,6 +117,8 @@ int main() {
     mesh2->SetRotation(glm::vec3(0.0f, 180.0f, 0.0f));
     mesh2->SetTranslation(glm::vec3(10.0f,0.0f,0.0f));
 
+    mesh2->GetGlobalTranslation();
+
     
     
     #pragma region Movidas
@@ -230,8 +232,9 @@ int main() {
 
         
         //meshes->SetRotation(glm::vec3(0.0f,0.0f,index));
-        //mesh1->SetRotation(glm::vec3(index,0.0f,index));
-        static_cast<CLCamera*>(camera->GetEntity())->SetCameraTarget(mesh1->GetTranslation());
+        // auto trans1 = mesh1->GetTranslation();
+        // mesh1->SetTranslation(glm::vec3(trans1.x+index,trans1.y,trans1.z));
+        static_cast<CLCamera*>(camera->GetEntity())->SetCameraTarget(mesh2->GetGlobalTranslation());
 
 
 

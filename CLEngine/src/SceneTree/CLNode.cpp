@@ -106,6 +106,26 @@ glm::vec3 CLNode::GetGlobalTranslation() const{
     return dev;
 }
 
+glm::vec3 CLNode::GetGlobalRotation() const{
+    glm::vec3 dev = this->rotation;
+    auto fatherNode = this->father;
+    while(fatherNode){
+        dev += fatherNode->GetRotation();
+        fatherNode = fatherNode->GetFather();
+    }
+    return dev;
+}
+
+glm::vec3 CLNode::GetGlobalScalation() const{
+    glm::vec3 dev = this->scalation;
+    auto fatherNode = this->father;
+    while(fatherNode){
+        dev += fatherNode->GetScalation();
+        fatherNode = fatherNode->GetFather();
+    }
+    return dev;
+}
+
 void CLNode::SetTranslation(glm::vec3 t) {
     translation = t; 
     ActivateFlag();
@@ -213,7 +233,8 @@ void CLNode::CalculateViewProjMatrix(){
             // Vector posicion de la camara, vector de posicion destino y vector ascendente en el espacio mundial. 
             
 
-            view = glm::lookAt(camera->GetTranslation(), -entityCamera->GetCameraTarget(), entityCamera->GetCameraUp());
+            //view = glm::lookAt(camera->GetTranslation(), -entityCamera->GetCameraTarget(), entityCamera->GetCameraUp());
+            view = glm::lookAt(camera->GetGlobalTranslation(), entityCamera->GetCameraTarget(), entityCamera->GetCameraUp());
 
             glUniform3fv(glGetUniformLocation(camera->GetShaderProgramID(), "viewPos"),1,glm::value_ptr(camera->GetTranslation()));
 
