@@ -32,6 +32,7 @@
 #include "../Systems/SystemBtLoDMove.h"
 #include "../Systems/SystemBtMoveTo.h"
 #include "../Systems/SystemBtPowerUp.h"
+#include "../Systems/SystemGameRules.h"
 #include "../Systems/Utils.h"
 #include "Manager.h"
 
@@ -43,7 +44,8 @@ ManCar::ManCar() {
     CreateMainCar();
 
     // systemPathPlanning = make_unique<SystemPathPlanning>();
-    physicsAI = make_unique<PhysicsAI>();
+    //physicsAI = make_unique<PhysicsAI>();
+    systemGameRules = make_unique<SystemGameRules>();
 
     cout << "Hemos creado un powerup, ahora tenemos " << entities.size() << " powerups" << endl;
 }
@@ -61,37 +63,10 @@ ManCar::ManCar(Physics* _physics, Camera* _cam) : ManCar() {
 }
 
 // comprueba si has superado el tiempo necesario para ganar
-void ManCar::UpdateCar(ManTotem &manTotem_) {
-
-    auto cTotem = static_cast<CTotem*>(GetCar()->GetComponent(CompType::TotemComp).get());
-    if (cTotem->active) {
-        cTotem->accumulatedTime += duration_cast<milliseconds>(system_clock::now() - cTotem->timeStart).count();
-        cTotem->timeStart = system_clock::now();
-        // lo pintamos encima del coche
-        auto cTransformCar = static_cast<CTransformable *>(GetCar()->GetComponent(CompType::TransformableComp).get());
-        auto cTransformTotem = static_cast<CTransformable *>(manTotem_.GetEntities()[0]->GetComponent(CompType::TransformableComp).get());
-            cTransformTotem->position.x = cTransformCar->position.x;
-            cTransformTotem->position.z = cTransformCar->position.z;
-            cTransformTotem->position.y = cTransformCar->position.y + 10.0f;
-    }
-
-    if (cTotem->accumulatedTime / 1000.0 > cTotem->durationTime / 1000.0) {
-        cout << "Has ganado\n";
-        //Game::GetInstance()->SetState(State::ENDRACE);
-        EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_ENDRACE});
-    }
-
-    // Actualiza el componente nitro
-    auto cNitro = static_cast<CNitro*>(GetCar()->GetComponent(CompType::NitroComp).get());
-    if (cNitro->activePowerUp == true && duration_cast<milliseconds>(system_clock::now() - cNitro->timeStart).count() > cNitro->durationTime) {  // comprueba el tiempo desde que se lanzo
-        cNitro->deactivePowerUp();
-    }
-
-    // Actualiza el componente escudo
-    auto cShield = static_cast<CShield*>(GetCar()->GetComponent(CompType::ShieldComp).get());
-    if (cShield->activePowerUp == true && duration_cast<milliseconds>(system_clock::now() - cShield->timeStart).count() > cShield->durationTime) {  // comprueba el tiempo desde que se lanzo
-        cShield->deactivePowerUp();
-    }
+void ManCar::UpdateCarPlayer(ManTotem &manTotem_) {
+    auto totem = manTotem_.GetEntities()[0].get();
+    auto carPlayer =  static_cast<Entity*>(this->GetCar().get());
+    UpdateGeneralCar(*carPlayer, *totem);
 }
 
 // TODO: RECORDARRR!!!!!!!!!!!!!!!!!  TANTO EL "BtMoveTo" como el "systemPathPlanning" se deben hacer en la misma ITERACION!!!!
@@ -100,16 +75,6 @@ void ManCar::UpdateCar(ManTotem &manTotem_) {
 void ManCar::UpdateCarAI(CarAI* carAI, ManPowerUp* m_manPowerUp, ManBoxPowerUp* m_manBoxPowerUp, ManTotem* m_manTotem, ManWayPoint* graph, ManNavMesh* manNavMesh, 
                         ManBoundingWall* m_manBoundingWall, SystemBtPowerUp* systemBtPowerUp, SystemBtMoveTo* systemBtMoveTo, SystemBtLoDMove* systemBtLoDMove, SystemPathPlanning *systemPathPlanning) {
     
-
-    auto cTotem = static_cast<CTotem*>(carAI->GetComponent(CompType::TotemComp).get());
-    if (cTotem->active) {
-        auto cTransformCar = static_cast<CTransformable *>(carAI->GetComponent(CompType::TransformableComp).get());
-        auto cTransformTotem = static_cast<CTransformable *>(m_manTotem->GetEntities()[0]->GetComponent(CompType::TransformableComp).get());
-            cTransformTotem->position.x = cTransformCar->position.x;
-            cTransformTotem->position.z = cTransformCar->position.z;
-            cTransformTotem->position.y = cTransformCar->position.y + 10.0f;
-    }
-
     //manNavMesh->UpdateNavMeshEntity(carAI);
     systemBtMoveTo->update(carAI, this, m_manPowerUp, m_manBoxPowerUp, m_manTotem, graph, manNavMesh);
 
@@ -117,13 +82,17 @@ void ManCar::UpdateCarAI(CarAI* carAI, ManPowerUp* m_manPowerUp, ManBoxPowerUp* 
 
     systemBtLoDMove->update(carAI, this, m_manPowerUp, m_manBoxPowerUp, m_manTotem, graph, manNavMesh, m_manBoundingWall);
 
-    physicsAI->Update(carAI, graph);
+    //physicsAI->Update(carAI, graph);
+    UpdateGeneralCar(*carAI, *(m_manTotem->GetEntities()[0].get()));
 
     systemBtPowerUp->update(carAI, this, m_manPowerUp, m_manBoxPowerUp, m_manTotem, graph, manNavMesh);
 }
+void ManCar::UpdateCarHuman(Entity* CarHuman, ManTotem* m_manTotem) {
+    UpdateGeneralCar(*CarHuman, *(m_manTotem->GetEntities()[0].get()));
+}
 
-void ManCar::UpdateCarHuman(Entity* CarHuman) {
-    physicsAI->UpdateCarPowerUps(CarHuman);
+void ManCar::UpdateGeneralCar(Entity& car_, Entity& totem_){
+    systemGameRules->UpdateRulesCarPowerUps(car_, totem_);
 }
 
 void ManCar::CreateMainCar() {

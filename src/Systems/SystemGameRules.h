@@ -17,12 +17,11 @@ struct CarAI;
 struct Entity;
 struct ManWayPoint;
 
-class PhysicsAI {
+class SystemGameRules {
 public:
-    PhysicsAI();
-    ~PhysicsAI(){};
-/*
-    void Update(CarAI* carAI, ManWayPoint* graph);
-    void UpdateCarPowerUps(Entity* carAI);
-*/
+    SystemGameRules();
+    ~SystemGameRules(){};
+
+    void UpdateRulesCarPowerUps(Entity& car_, Entity& totem_) const;
+
 };

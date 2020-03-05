@@ -15,7 +15,7 @@ PhysicsAI::PhysicsAI(){
 }
 
 
-
+/*
 void PhysicsAI::Update(CarAI* carAI, ManWayPoint* graph){
     UpdateCarPowerUps(carAI);
 }
@@ -46,5 +46,5 @@ void PhysicsAI::UpdateCarPowerUps(Entity* carAI){
     if(cShield->activePowerUp==true && duration_cast<milliseconds>(system_clock::now() - cShield->timeStart).count() > cShield->durationTime){  // comprueba el tiempo desde que se lanzo
         cShield->deactivePowerUp();
     }
-}
+}*/
 
