@@ -183,6 +183,7 @@ void SoundFacadeFMOD::LoadSoundByState(const uint8_t numState) {
             LoadSoundBank("InGame2D", 0);
             LoadSoundBank("InGame3DE", 1);
             LoadSoundBank("InGame3DD", 1);
+            PlayEvent("Ambiente/ambiente");
             break;
         case 5:  //EndRace
             StopAllEvents();
@@ -308,7 +309,7 @@ void SoundFacadeFMOD::ResumeEvent(const string& nameID) {
 /**
  *
  */
-void SoundFacadeFMOD::UpdateCars(const vector<shared_ptr<Entity> > &) {
+void SoundFacadeFMOD::UpdateCars(const vector<shared_ptr<Entity> > &e) {
 
 }
 
@@ -335,6 +336,7 @@ void SoundFacadeFMOD::UpdateCars(const vector<shared_ptr<Entity> > &) {
     //cout << "LA POSICION DEL PUTO COCHE ES: " << pos->position.x << " " << pos->position.y << " " << pos->position.z << endl;
     if(pos) {
         soundEngine->SetListenerPosition(pos->position);
+
     }
  }
 
@@ -356,7 +358,7 @@ void SoundFacadeFMOD::StartGame(DataMap* d) {
     string name = "Coche/motor";
     CreateSoundDinamic3D(0, pos, name);
     PlayEvent("Coche/motor0");*/
-    PlayEvent("Ambiente/ambiente");
+    //PlayEvent("Ambiente/ambiente");
     //PlayEvent("Musica/in_game_1");
     srand(time(nullptr));
     character = rand() % 5;

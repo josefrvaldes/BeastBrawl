@@ -481,6 +481,7 @@ void SoundEngine::CreateSoundNodeEstatic3D(uint16_t idE, glm::vec3& p, string& n
 }
 
 void SoundEngine::CreateSoundNodeDinamic3D(uint16_t idE, glm::vec3& p, string& nameEvent) {
+    cout << "++++++ CREATE SOUND: " << nameEvent << endl;
     std::string name = nameEvent + to_string(idE);
     unique_ptr<SoundNode> snode = make_unique<SoundNode>(idE, p);
     
@@ -490,6 +491,10 @@ void SoundEngine::CreateSoundNodeDinamic3D(uint16_t idE, glm::vec3& p, string& n
         ERRFMODCHECK(description->second->createInstance(&instance));
         snode->SetInstance(*instance);
         eventInstancesDinamic3D[name] = move(snode);
+        cout << "Instancia creada de: " << nameEvent << endl;
+        //PlayEvent(name);
+    } else {
+        cout << "No ta el sonido gelipollas" << endl;
     }
 }
 

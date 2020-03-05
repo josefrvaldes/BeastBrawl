@@ -35,12 +35,18 @@
 #include "../Systems/Utils.h"
 #include "Manager.h"
 
+#include <Facade/Sound/SoundFacadeManager.h>
+
 class Position;
 using namespace std;
 
 ManCar::ManCar() {
     SubscribeToEvents();
     CreateMainCar();
+    auto idComp = static_cast<CId*>(car->GetComponent(CompType::IdComp).get());
+    auto posComp = static_cast<CTransformable*>(car->GetComponent(CompType::TransformableComp).get());
+    string nameEvent = "Coche/Motor";
+    SoundFacadeManager::GetInstance()->GetSoundFacade()->CreateSoundDinamic3D(idComp->id, posComp->position, nameEvent);
 
     // systemPathPlanning = make_unique<SystemPathPlanning>();
     physicsAI = make_unique<PhysicsAI>();
