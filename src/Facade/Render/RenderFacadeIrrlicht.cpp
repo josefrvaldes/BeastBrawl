@@ -695,10 +695,10 @@ void RenderFacadeIrrlicht::FacadeCheckInputSingle() {
     }else if(!(receiver.IsKeyDown(KEY_ESCAPE) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_START))){
         SetValueInput(BUTTON_START, false);
     }
- }
+}
 
 
- vector<Constants::InputTypes> RenderFacadeIrrlicht::FacadeCheckInputMulti() {
+vector<Constants::InputTypes> RenderFacadeIrrlicht::FacadeCheckInputMulti() {
     EventManager &eventManager = EventManager::GetInstance();
     vector<Constants::InputTypes> inputs;
     inputs.reserve(4); // para evitar el funcionamiento de cómo se redimensiona
@@ -711,6 +711,14 @@ void RenderFacadeIrrlicht::FacadeCheckInputSingle() {
     if (receiver.IsKeyDown(KEY_KEY_P) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_STICK_R)) {
         eventManager.AddEventMulti(Event{EventType::PRESS_P});
         inputs.push_back(Constants::InputTypes::CLAXON);
+    }
+
+
+    if (receiver.IsKeyDown(KEY_KEY_U) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_X)) {
+        eventManager.AddEventMulti(Event{EventType::PRESS_SKID});
+        inputs.push_back(Constants::InputTypes::DRIFT);
+    } else {
+        eventManager.AddEventMulti(Event{EventType::NOT_SKID_PRESS});
     }
     // if (receiver.IsKeyDown(KEY_DELETE)) {
     //     eventManager.AddEventMulti(Event{EventType::PRESS_0});

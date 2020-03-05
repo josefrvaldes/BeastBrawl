@@ -43,6 +43,8 @@ class Physics {
     void NotAcceleratingOrDeceleratingHuman(CCar &cCar, CNitro &cNitro) const;
     void DecelerateHuman(CCar &cCar, CNitro &cNitro) const;
     void NotTurningHuman(CCar &cCar) const;
+    void SkidHuman(CCar &cCar, CTransformable &cTrans) const;
+    void NotSkiddingHuman(CCar &cCar, CTransformable &cTrans) const;
 
    protected:
    private:

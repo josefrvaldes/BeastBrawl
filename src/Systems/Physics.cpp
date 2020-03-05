@@ -415,6 +415,7 @@ void Physics::UpdateHuman(Car *car) {
 
     bool accDec = false;
     bool turning = false;
+    bool skidding = false;
     // actualizar inputs
     for(Constants::InputTypes input : cOnline->inputs){
         if(input == Constants::InputTypes::FORWARD){
@@ -436,12 +437,17 @@ void Physics::UpdateHuman(Car *car) {
 
             (*data)[DataType::ACTUAL_CAR] = car;
             EventManager::GetInstance().AddEventMulti(Event{EventType::THROW_POWERUP_HUMAN, data});
+        }else if(input == Constants::InputTypes::DRIFT){
+            SkidHuman(*cCar, *cTransformable);
+            skidding = true;
         }
     }
     if(accDec == false)
         NotAcceleratingOrDeceleratingHuman(*cCar, *cNitro);
     if(turning == false)
         NotTurningHuman(*cCar);
+    if(skidding == false)
+        NotSkiddingHuman(*cCar, *cTransformable);
 
 
     // actualizar posiciones
@@ -509,6 +515,11 @@ void Physics::TurnLeftHuman(CCar &cCar) const{
             cCar.wheelRotation = 0;
         }
     }
+
+    if(cCar.skidState == SkidState::SKID_START && cCar.speed>cCar.maxSpeed*0.6 && duration_cast<milliseconds>(system_clock::now() - cCar.skidStart).count() < cCar.skidActivationTime){
+        cCar.skidState = SkidState::SKID_TO_LEFT;
+        cCar.skidDeg = cCar.skidDegL;
+    }
 }
 
 //Entra cuando se presiona la D
@@ -531,6 +542,11 @@ void Physics::TurnRightHuman(CCar &cCar) const{
         } else {
             cCar.wheelRotation = 0;
         }
+    }
+
+    if(cCar.skidState == SkidState::SKID_START && cCar.speed>cCar.maxSpeed*0.6 && duration_cast<milliseconds>(system_clock::now() - cCar.skidStart).count() < cCar.skidActivationTime){
+        cCar.skidState = SkidState::SKID_TO_RIGHT;
+        cCar.skidDeg = cCar.skidDegR;
     }
 }
 
@@ -563,5 +579,61 @@ void Physics::NotTurningHuman(CCar &cCar) const{
         cCar.wheelRotation += cCar.decrementWheelRotation;
     } else {
         cCar.wheelRotation = 0;
+    }
+}
+
+
+
+
+
+void Physics::SkidHuman(CCar &cCar, CTransformable &cTrans) const{
+    if(cCar.skidState == SkidState::DISABLED ){ // Reiniciamos el reloj y comenzamos, en caso de pulsar una de las dos direcciones dentro de un tiempo comenzara el giro del derrape
+        cCar.skidStart = system_clock::now();
+        cCar.skidState = SkidState::SKID_START;
+    }
+
+    // Si se mantiene pulsado va a incrementar hasta que se alcance la posicion
+    if(cCar.skidState == SkidState::SKID_TO_LEFT){
+        cCar.skidRotation -= cCar.skidAcc;
+        cTrans.rotation.y -= cCar.skidAcc;
+        if(cCar.skidRotation < cCar.skidDeg){
+            cCar.skidRotation += cCar.skidAcc;
+            cTrans.rotation.y += cCar.skidAcc;
+            cCar.skidState = SkidState::SKID_LEFT;
+        }
+        if(cTrans.rotation.y < 0) cTrans.rotation.y += 360.0;
+    }else if(cCar.skidState == SkidState::SKID_TO_RIGHT){
+        cCar.skidRotation += cCar.skidAcc;
+        cTrans.rotation.y += cCar.skidAcc;
+        if(cCar.skidRotation > cCar.skidDeg){
+            cCar.skidRotation -= cCar.skidAcc;
+            cTrans.rotation.y -= cCar.skidAcc;
+            cCar.skidState = SkidState::SKID_RIGHT;
+        }
+        if(cTrans.rotation.y >= 360) cTrans.rotation.y -= 360.0;  
+    }
+    if(cCar.speed<cCar.maxSpeed*0.5){
+        if(cCar.skidState == SkidState::SKID_LEFT || cCar.skidState == SkidState::SKID_TO_LEFT)
+            cCar.skidState = SkidState::SKID_RECOVER_LEFT;
+        else if(cCar.skidState == SkidState::SKID_RIGHT || cCar.skidState == SkidState::SKID_TO_RIGHT)
+            cCar.skidState = SkidState::SKID_RECOVER_RIGHT;
+    }
+
+    RecoverSkid(cCar, cTrans);
+}
+
+
+void Physics::NotSkiddingHuman(CCar &cCar, CTransformable &cTrans) const{
+    // En caso de dejar de pulsar el derrape va a tener un periodo de recuperacion del derrape
+    if( cCar.skidState == SkidState::SKID_LEFT || cCar.skidState == SkidState::SKID_TO_LEFT)
+        cCar.skidState = SkidState::SKID_RECOVER_LEFT;
+    else if( cCar.skidState == SkidState::SKID_RIGHT || cCar.skidState == SkidState::SKID_TO_RIGHT)
+        cCar.skidState = SkidState::SKID_RECOVER_RIGHT;
+
+    RecoverSkid(cCar, cTrans);
+    
+    if(cCar.skidState == SkidState::SKID_START && duration_cast<milliseconds>(system_clock::now()-cCar.skidStart).count() > cCar.skidAnimationTime){
+        cCar.skidState = SkidState::DISABLED;
+        cCar.skidRotation = 0;
     }
 }
