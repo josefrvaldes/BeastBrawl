@@ -13,6 +13,7 @@ StateInGameMulti::StateInGameMulti(uint16_t IdOnline, const vector<uint16_t> IdP
     vector<uint16_t> arrayIdEnemies = IdPlayersOnline;
 
     sysOnline = make_unique<SystemOnline>(*manCars, IdOnline);
+    manCars->setSystemOnline(sysOnline.get());
 
     vec3 posIniciales[] = {
         vec3(120.0f, 10.0f, -300.0f),
@@ -39,7 +40,7 @@ StateInGameMulti::StateInGameMulti(uint16_t IdOnline, const vector<uint16_t> IdP
     vector<Constants::InputTypes> inputs;
     sysOnline->SendInputs(inputs);  // enviamos un vector vacío la primera vez para que el servidor sepa que estamos vivos
 
-    CAMBIARCosasNavMesh(*manCars.get(), *manNavMesh.get());
+    //CAMBIARCosasNavMesh(*manCars.get(), *manNavMesh.get());
     // while(true){sleep(500);}; // esto solo sirve para depurar
 
 
@@ -64,7 +65,7 @@ void StateInGameMulti::InitState() {
 void StateInGameMulti::Input() {
     const vector<Constants::InputTypes> &inputs = renderEngine->FacadeCheckInputMulti();
     if (previousInputs != inputs) {
-        cout << Utils::getISOCurrentTimestampMillis() << " [" << sysOnline->idOnlineMainCar << "] Enviamos los inputs porque han cambiado con respecto a la iteración anterior" << endl;
+        //cout << Utils::getISOCurrentTimestampMillis() << " [" << sysOnline->idOnlineMainCar << "] Enviamos los inputs porque han cambiado con respecto a la iteración anterior" << endl;
         sysOnline->SendInputs(inputs);
         previousInputs = inputs;
     }
@@ -88,15 +89,15 @@ void StateInGameMulti::Update() {
 
     for (auto actualCar : manCars->GetEntities()) {
         if (actualCar.get() != manCars->GetCar().get()) {
-            manNavMesh->UpdateNavMeshHuman(actualCar.get());  // actualizamos el navemesh en el que se encuentra al human
+            //manNavMesh->UpdateNavMeshHuman(actualCar.get());  // actualizamos el navemesh en el que se encuentra al human
             // funcion para recibir los inputs del servidor, otra para enviar los nuestros, crear componente de input
             physics->UpdateHuman(static_cast<Car *>(actualCar.get()));
             manCars->UpdateCarHuman(actualCar.get());
-            physicsEngine->UpdateCarAI(actualCar.get());
+            physicsEngine->UpdateTransformable(actualCar.get());
         }
     }
 
-    CAMBIARPositionTotemAboveCar();
+    //CAMBIARCosasDeTotemUpdate();
     // COLISIONES entre powerUp y cocheHuman
     //collisions->IntersectsCarsPowerUps(manCars.get(), manPowerUps.get(), manNavMesh.get());
     // COLISIONES entre BoxPowerUp y cocheHuman
@@ -129,3 +130,30 @@ void StateInGameMulti::InitializeFacades() {
 void StateInGameMulti::AddElementsToRender() {
     StateInGame::AddElementsToRender();
 }
+
+/*
+void StateInGameMulti::CAMBIARCosasDeTotemUpdate() {
+    bool todosFalse = true;
+    auto cTransformTotem = static_cast<CTransformable *>(totemOnCar.get()->GetComponent(CompType::TransformableComp).get());
+    cTransformTotem->rotation.y += 0.1;
+    for (auto currentCar : manCars->GetEntities()) {  // actualizamos los coche IA
+        // comprobamos el componente totem y si lo tienen se lo ponemos justo encima para que se sepa quien lo lleva
+        auto cTotem = static_cast<CTotem *>(currentCar.get()->GetComponent(CompType::TotemComp).get());
+        if (cTotem->active) {
+            todosFalse = false;
+            auto cTransformCar = static_cast<CTransformable *>(currentCar.get()->GetComponent(CompType::TransformableComp).get());
+            cTransformTotem->position.x = cTransformCar->position.x;
+            cTransformTotem->position.z = cTransformCar->position.z;
+            cTransformTotem->position.y = 32.0f;
+            // supuestamente esta el drawAll que te lo hace no?????????????????
+            // si esta cambiando pero no se esta redibujando
+            break;  // cuando encontramos a alguien que ya lleva el totem, nos salimos del for, no seguimos comprobando a los demás
+        }
+    }
+    if (todosFalse) {
+        cTransformTotem->position.y = -100.0f;
+    }
+
+    renderEngine->UpdateTransformable(totemOnCar.get());
+}
+*/

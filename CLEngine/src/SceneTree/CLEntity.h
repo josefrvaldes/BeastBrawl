@@ -13,7 +13,7 @@ namespace CLE {
 
             unsigned int GetID() { return id; }
 
-            virtual void Draw (glm::mat4&) = 0;
+            virtual void Draw (GLuint) = 0;
 
         protected:
 

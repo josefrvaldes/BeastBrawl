@@ -14,7 +14,7 @@ class PhysicsFacadeIrrlicht : public PhysicsFacade {
     PhysicsFacadeIrrlicht();
     ~PhysicsFacadeIrrlicht();
     void UpdateCar(Entity*, Entity*) override;
-    void UpdateCarAI(Entity*) override;
+    void UpdateTransformable(Entity*) override;
     void UpdatePowerUps(Entity*) override;
 
    private:

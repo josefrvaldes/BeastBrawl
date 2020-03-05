@@ -30,7 +30,9 @@ public:
     float tarZ;
 
     float rotExtraY;
-    float rotExtraCamera = 5.0;   // grados extra de la camara respecto al coche 
+    float incrementrotExtraY = 0.63;  // velocidad por iteracion que se gira la camara comprovar que es relativo al giro de la rueda
+    float decrementrotExtraY = 0.95;  // velocidad por iteracion que se recupera la camara comprovar que es relativo al giro de la rueda
+    float rotExtraCamera = 8.0;   // grados extra de la camara respecto al coche 
     CamType camType = CamType::NORMAL_CAM;        // Tipo de seguimiento
 
 

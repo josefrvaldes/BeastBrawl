@@ -2,7 +2,7 @@
 
 #include <cmath>
 #include <algorithm>    // std::sort
-#include "../../Components/CBoundingChassis.h"
+#include "../../Components/CBoundingChassis.h" 
 #include "../../Components/CBoundingOBB.h"
 #include "../../Components/CPowerUp.h"
 
@@ -15,7 +15,6 @@
 #include <Components/CNamePlate.h>
 #include <Components/CPath.h>
 #include <Components/CTexture.h>
-#include <Components/CTargetNavMesh.h>
 #include <Components/CTotem.h>
 #include <Components/CType.h>
 #include <Components/CWayPointEdges.h>
@@ -33,8 +32,8 @@
 using namespace irr;
 using namespace video;
 
-bool RenderFacadeIrrlicht::showDebug = false;
-bool RenderFacadeIrrlicht::showAIDebug = false;
+// bool RenderFacadeIrrlicht::showDebug = false;
+// bool RenderFacadeIrrlicht::showAIDebug = false;
 
 //PUNTEROS A FUNCIONES
 RenderFacadeIrrlicht::~RenderFacadeIrrlicht() {
@@ -48,6 +47,47 @@ RenderFacadeIrrlicht::RenderFacadeIrrlicht() {
     smgr = device->getSceneManager();
     font = device->getGUIEnvironment()->getBuiltInFont();
     FacadeInitHUD();
+
+
+    //core::array<SJoystickInfo> joystickInfo;
+    if(device->activateJoysticks(joystickInfo))
+    {
+        std::cout << "Joystick support is enabled and " << joystickInfo.size() << " joystick(s) are present." << std::endl;
+
+        for(u32 joystick = 0; joystick < joystickInfo.size(); ++joystick)
+        {
+            std::cout << "Joystick " << joystick << ":" << std::endl;
+            std::cout << "\tName: '" << joystickInfo[joystick].Name.c_str() << "'" << std::endl;
+            std::cout << "\tAxes: " << joystickInfo[joystick].Axes << std::endl;
+            std::cout << "\tButtons: " << joystickInfo[joystick].Buttons << std::endl;
+
+            std::cout << "\tHat is: ";
+            
+            switch(joystickInfo[joystick].PovHat)
+            {
+            case SJoystickInfo::POV_HAT_PRESENT:
+                std::cout << "present" << std::endl;
+                break;
+
+            case SJoystickInfo::POV_HAT_ABSENT:
+                std::cout << "absent" << std::endl;
+                break;
+
+            case SJoystickInfo::POV_HAT_UNKNOWN:
+            default:
+                std::cout << "unknown" << std::endl;
+                break;
+            }
+        }
+    }
+    else
+    {
+        std::cout << "Joystick support is not enabled." << std::endl;
+    }
+    
+    for(int i = 0; i != InputXBox::END; ++i){
+        inputsPressed.emplace(static_cast<InputXBox>(i), false);
+    }
 }
 
 void RenderFacadeIrrlicht::FacadeSuscribeEvents() {
@@ -265,6 +305,9 @@ const uint16_t RenderFacadeIrrlicht::FacadeAddObject(Entity* entity) {
 
         case ModelType::Text:
             break;
+
+        case ModelType::Light:
+            break;
     }
 
     // y ahora a ese node, le ponemos sus parámetros
@@ -283,7 +326,7 @@ const uint16_t RenderFacadeIrrlicht::FacadeAddObject(Entity* entity) {
         
         bool hasChassis = entity->HasComponent(CompType::CompBoundingChassis);
         if (hasChassis && Constants::DEBUG_SHOW_CHASSIS) {
-            // cout << "entramos aqui???" << endl;
+            //cout << "entramos aqui???" << endl;
             auto cChassis = static_cast<CBoundingChassis *>(entity->GetComponent(CompType::CompBoundingChassis).get());
             // primera esfera
             auto radiousSph1 = cChassis->sphereBehind->radius;
@@ -293,7 +336,7 @@ const uint16_t RenderFacadeIrrlicht::FacadeAddObject(Entity* entity) {
             nodeSphere1->setID(cId->id + Component::ID_DIFFERENCE);
             nodeSphere1->setPosition(core::vector3df(centerSph1.x, centerSph1.y, centerSph1.z));
             nodeSphere1->setScale(core::vector3df(1.f, 1.f, 1.f));
-            nodeSphere1->setMaterialTexture(0, driver->getTexture(path.c_str()));  //Obligado incluir el c_str() si no irrlicht no carga solo con un string
+            //nodeSphere1->setMaterialTexture(0, driver->getTexture(path.c_str()));  //Obligado incluir el c_str() si no irrlicht no carga solo con un string
             nodeSphere1->setMaterialFlag(video::EMF_LIGHTING, false);
             nodeSphere1->setVisible(false);
             // segunda esfera
@@ -400,60 +443,7 @@ const uint16_t RenderFacadeIrrlicht::FacadeAddObjectTotem(Entity* entity) {
     return idTotem;
 }
 
-//TODO: Esto proximamente le pasaremos todos los entities y los modificará 1 a 1
-void RenderFacadeIrrlicht::UpdateTransformable(Entity* entity) {
-    //Cogemos los componentes de ID y CTransformable
-    auto cTransformable = static_cast<CTransformable*>(entity->GetComponent(CompType::TransformableComp).get());
-    auto cId = static_cast<CId*>(entity->GetComponent(CompType::IdComp).get());
 
-    // Cogemos el nodo de irrlicht con el ID igual al que le hemos pasado
-    scene::ISceneNode* node = smgr->getSceneNodeFromId(cId->id);
-
-    //Actualiza la posicion del objeto de irrlicht
-    node->setPosition(core::vector3df(cTransformable->position.x, cTransformable->position.y, cTransformable->position.z));
-
-    //Actualiza la rotacion del objeto de irrlicht
-    node->setRotation(core::vector3df(cTransformable->rotation.x, cTransformable->rotation.y, cTransformable->rotation.z));
-
-    //Actualiza el escalado del objeto de irrlicht
-    node->setScale(core::vector3df(cTransformable->scale.x, cTransformable->scale.y, cTransformable->scale.z));
-
-    //if(!showDebug) return;
-    //cout << "entramos?????????" << endl;
-    //bool hasSphere = entity->HasComponent(CompType::CompBoundingSphere);
-    //if (hasSphere && Constants::DEBUG_SHOW_SPHERES) {
-    //    scene::ISceneNode* nodeSphere = smgr->getSceneNodeFromId(cId->id + Component::ID_DIFFERENCE);
-    //    nodeSphere->setVisible(true);
-    //    //nodeSphere->setRotation(core::vector3df(cTransformable->rotation.x, cTransformable->rotation.y, cTransformable->rotation.z));
-    //    //nodeSphere->setScale(core::vector3df(cTransformable->scale.x, cTransformable->scale.y, cTransformable->scale.z));
-    //}
-    
-    /*
-    bool hasChassis = entity->HasComponent(CompType::CompBoundingChassis);
-    if (hasChassis && Constants::DEBUG_SHOW_CHASSIS) {
-        auto cChassis = static_cast<CBoundingChassis *>(entity->GetComponent(CompType::CompBoundingChassis).get());
-        auto centerSph1 = cChassis->sphereBehind->center;
-        scene::ISceneNode* nodeSphere1 = smgr->getSceneNodeFromId(cId->id + Component::ID_DIFFERENCE);
-        nodeSphere1->setPosition(core::vector3df(centerSph1.x, centerSph1.y, centerSph1.z));
-        nodeSphere1->setVisible(showDebug);
-        auto centerSph2 = cChassis->sphereFront->center;
-        scene::ISceneNode* nodeSphere2 = smgr->getSceneNodeFromId(cId->id + Component::ID_DIFFERENCE + Component::ID_DIFFERENCE);
-        nodeSphere2->setPosition(core::vector3df(centerSph2.x, centerSph2.y, centerSph2.z));
-        nodeSphere2->setVisible(false);
-    }else{
-        bool hasSphere = entity->HasComponent(CompType::CompBoundingSphere);
-        if (hasSphere && Constants::DEBUG_SHOW_SPHERES) {
-            scene::ISceneNode* nodeSphere = smgr->getSceneNodeFromId(cId->id + Component::ID_DIFFERENCE);
-            nodeSphere->setPosition(core::vector3df(cTransformable->position.x, cTransformable->position.y, cTransformable->position.z));
-            nodeSphere->setVisible(showDebug);
-            //nodeSphere->setRotation(core::vector3df(cTransformable->rotation.x, cTransformable->rotation.y, cTransformable->rotation.z));
-            //nodeSphere->setScale(core::vector3df(cTransformable->scale.x, cTransformable->scale.y, cTransformable->scale.z));
-        }
-    }
-    */
-    
-
-}
 
 //Reajusta la camara
 void RenderFacadeIrrlicht::UpdateCamera(Entity* cam, ManCar* manCars) {
@@ -585,34 +575,66 @@ uint32_t RenderFacadeIrrlicht::FacadeGetTime() const{
 }
 
 
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////                        INPUTS                   ////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// mira si el input se encuentra pulsado
+bool RenderFacadeIrrlicht::IsInputPressed(InputXBox input){
+    auto mapByType = inputsPressed.find(input);
+    if (mapByType != inputsPressed.end()) {
+        return mapByType->second;
+    }else{
+        cout << "no encuentra el boton" << "\n";
+    }
+    return true; // en caso de que no exista
+}
+void RenderFacadeIrrlicht::SetValueInput(InputXBox input, bool valuePressed){
+    auto mapByType = inputsPressed.find(input);
+    if (mapByType != inputsPressed.end()) {
+        mapByType->second = valuePressed;
+    }
+}
+
 // To-Do: introducir multi input
 // Comprobar inputs del teclado
 void RenderFacadeIrrlicht::FacadeCheckInputSingle() {
     EventManager &eventManager = EventManager::GetInstance();
 
-    if (receiver.IsKeyDown(KEY_ESCAPE)) {
+    // device->activateJoysticks(joystickInfo);
+
+    if (receiver.IsKeyDown(KEY_DELETE)) {
         device->closeDevice();
     }
-    if (receiver.IsKeyDown(KEY_KEY_P)) {
+    if (receiver.IsKeyDown(KEY_KEY_P) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_STICK_R)) {
         eventManager.AddEventMulti(Event{EventType::PRESS_P});
     }
-    // if (receiver.IsKeyDown(KEY_KEY_0)) {
+    // if (receiver.IsKeyDown(KEY_DELETE)) {
     //     eventManager.AddEventMulti(Event{EventType::PRESS_0});
     // }
+
+    if (receiver.IsKeyDown(KEY_KEY_U) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_X)) {
+        eventManager.AddEventMulti(Event{EventType::PRESS_SKID});
+    } else {
+        eventManager.AddEventMulti(Event{EventType::NOT_SKID_PRESS});
+    }
     
     //  delante y detrás
-    if (receiver.IsKeyDown(KEY_KEY_I)) {
+    if (receiver.IsKeyDown(KEY_KEY_W) || (joystickInfo.size()>0 && receiver.GetJoyStickState().Axis[SEvent::SJoystickEvent::AXIS_V]>-15000)) {
         eventManager.AddEventMulti(Event{EventType::PRESS_I});
-    } else if (receiver.IsKeyDown(KEY_KEY_O)) {
+    } else if (receiver.IsKeyDown(KEY_KEY_S) || (joystickInfo.size()>0 && receiver.GetJoyStickState().Axis[SEvent::SJoystickEvent::AXIS_Z]>1500)) {
         eventManager.AddEventMulti(Event{EventType::PRESS_O});
     } else {
         eventManager.AddEventMulti(Event{EventType::NO_I_O_PRESS});
     }
 
     // izq y dch
-    if (receiver.IsKeyDown(KEY_KEY_D)) {
+    if (receiver.IsKeyDown(KEY_KEY_D) || receiver.GetJoyStickState().Axis[SEvent::SJoystickEvent::AXIS_X]>15000) {
         eventManager.AddEventMulti(Event{EventType::PRESS_D});
-    } else if (receiver.IsKeyDown(KEY_KEY_A)) {
+    } else if (receiver.IsKeyDown(KEY_KEY_A) || receiver.GetJoyStickState().Axis[SEvent::SJoystickEvent::AXIS_X]<-15000) {
         eventManager.AddEventMulti(Event{EventType::PRESS_A});
     } else {
         eventManager.AddEventMulti(Event{EventType::NO_A_D_PRESS});
@@ -645,56 +667,68 @@ void RenderFacadeIrrlicht::FacadeCheckInputSingle() {
     }
 
     // CAMARA
-    if (receiver.IsKeyDown(KEY_KEY_Q) && !invertedCam && !totemCamActive) {
+    if ((receiver.IsKeyDown(KEY_KEY_I) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_LB)) && !IsInputPressed(InputXBox::BUTTON_LB) && !totemCamActive) {
+        SetValueInput(InputXBox::BUTTON_LB, true);
         timeStart = system_clock::now();
         eventManager.AddEventMulti(Event{EventType::INVERT_CAMERA});
-        invertedCam = true;
-
-    } else if(receiver.IsKeyDown(KEY_KEY_E) && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelayCamera) {
+    } else if((receiver.IsKeyDown(KEY_KEY_O) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_RB))  && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelayCamera) {
         timeStart = system_clock::now();
         eventManager.AddEventMulti(Event{EventType::TOTEM_CAMERA});
         totemCamActive = !totemCamActive;
-    } else if (!receiver.IsKeyDown(KEY_KEY_Q) && !totemCamActive){
-        invertedCam = false;
+    } else if (!(receiver.IsKeyDown(KEY_KEY_I) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_LB)) && !totemCamActive){
+        SetValueInput(InputXBox::BUTTON_LB, false);
         eventManager.AddEventMulti(Event{EventType::NORMAL_CAMERA});
     }
 
     // POWERUPS
-    if (receiver.IsKeyDown(KEY_SPACE))
+    if ((receiver.IsKeyDown(KEY_SPACE) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_A)) && !IsInputPressed(InputXBox::BUTTON_A)){
         eventManager.AddEventMulti(Event{EventType::PRESS_SPACE});
+    }else if(!(receiver.IsKeyDown(KEY_SPACE) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_A))){
+        SetValueInput(InputXBox::BUTTON_A, false);
+    }
 
     //Cambiamos a menu
-    if (receiver.IsKeyDown(KEY_F2) && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay) {
-        timeStart = system_clock::now();
+    if ((receiver.IsKeyDown(KEY_ESCAPE) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_START)) && !IsInputPressed(InputXBox::BUTTON_START)) {
+        SetValueInput(InputXBox::BUTTON_START, true);
         eventManager.AddEventMulti(Event{EventType::STATE_PAUSE});
         //Game::GetInstance()->SetState(State::PAUSE);
+    }else if(!(receiver.IsKeyDown(KEY_ESCAPE) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_START))){
+        SetValueInput(BUTTON_START, false);
     }
- }
+}
 
 
- vector<Constants::InputTypes> RenderFacadeIrrlicht::FacadeCheckInputMulti() {
+vector<Constants::InputTypes> RenderFacadeIrrlicht::FacadeCheckInputMulti() {
     EventManager &eventManager = EventManager::GetInstance();
     vector<Constants::InputTypes> inputs;
     inputs.reserve(4); // para evitar el funcionamiento de cómo se redimensiona
                        // por defecto un vector, como sabemos que como máximo 
                        // va a haber un máximo de 4 inputs en el vector, 
                        // le reservamos directamente ya el espacio
-    if (receiver.IsKeyDown(KEY_ESCAPE)) {
+    if (receiver.IsKeyDown(KEY_DELETE)) {
         device->closeDevice();
     }
-    if (receiver.IsKeyDown(KEY_KEY_P)) {
+    if (receiver.IsKeyDown(KEY_KEY_P) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_STICK_R)) {
         eventManager.AddEventMulti(Event{EventType::PRESS_P});
         inputs.push_back(Constants::InputTypes::CLAXON);
     }
-    // if (receiver.IsKeyDown(KEY_KEY_0)) {
+
+
+    if (receiver.IsKeyDown(KEY_KEY_U) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_X)) {
+        eventManager.AddEventMulti(Event{EventType::PRESS_SKID});
+        inputs.push_back(Constants::InputTypes::DRIFT);
+    } else {
+        eventManager.AddEventMulti(Event{EventType::NOT_SKID_PRESS});
+    }
+    // if (receiver.IsKeyDown(KEY_DELETE)) {
     //     eventManager.AddEventMulti(Event{EventType::PRESS_0});
     // }
     
     //  delante y detrás
-    if (receiver.IsKeyDown(KEY_KEY_I)) {
+    if (receiver.IsKeyDown(KEY_KEY_W) || (joystickInfo.size()>0 && receiver.GetJoyStickState().Axis[SEvent::SJoystickEvent::AXIS_V]>-15000)) {
         eventManager.AddEventMulti(Event{EventType::PRESS_I});
         inputs.push_back(Constants::InputTypes::FORWARD);
-    } else if (receiver.IsKeyDown(KEY_KEY_O)) {
+    } else if (receiver.IsKeyDown(KEY_KEY_S) || (joystickInfo.size()>0 && receiver.GetJoyStickState().Axis[SEvent::SJoystickEvent::AXIS_Z]>-15000)) {
         eventManager.AddEventMulti(Event{EventType::PRESS_O});
         inputs.push_back(Constants::InputTypes::BACK);
     } else {
@@ -702,10 +736,10 @@ void RenderFacadeIrrlicht::FacadeCheckInputSingle() {
     }
 
     // izq y dch
-    if (receiver.IsKeyDown(KEY_KEY_D)) {
+    if (receiver.IsKeyDown(KEY_KEY_D) || receiver.GetJoyStickState().Axis[SEvent::SJoystickEvent::AXIS_X]>15000) {
         eventManager.AddEventMulti(Event{EventType::PRESS_D});
         inputs.push_back(Constants::InputTypes::RIGHT);
-    } else if (receiver.IsKeyDown(KEY_KEY_A)) {
+    } else if (receiver.IsKeyDown(KEY_KEY_A) || receiver.GetJoyStickState().Axis[SEvent::SJoystickEvent::AXIS_X]<-15000) {
         eventManager.AddEventMulti(Event{EventType::PRESS_A});
         inputs.push_back(Constants::InputTypes::LEFT);
     } else {
@@ -733,31 +767,31 @@ void RenderFacadeIrrlicht::FacadeCheckInputSingle() {
     }else if(receiver.IsKeyDown(KEY_KEY_3) && receiver.IsKeyDown(KEY_LSHIFT) && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay){
         timeStart = system_clock::now();
         idCarAIToDebug = 2;
-    }else if(receiver.IsKeyDown(KEY_KEY_0) && receiver.IsKeyDown(KEY_LSHIFT) && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay){
+    }else if(receiver.IsKeyDown(KEY_BACK) && receiver.IsKeyDown(KEY_LSHIFT) && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay){
         timeStart = system_clock::now();
         idCarAIToDebug = -1;
     }
 
     // CAMARA
-    if (receiver.IsKeyDown(KEY_KEY_Q) && !invertedCam && !totemCamActive) {
+    if ((receiver.IsKeyDown(KEY_KEY_I) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_LB)) && !IsInputPressed(InputXBox::BUTTON_LB) && !totemCamActive) {
+        SetValueInput(InputXBox::BUTTON_LB, true);
         timeStart = system_clock::now();
         eventManager.AddEventMulti(Event{EventType::INVERT_CAMERA});
-        invertedCam = true;
-
-    } else if(receiver.IsKeyDown(KEY_KEY_E) && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelayCamera) {
+    } else if((receiver.IsKeyDown(KEY_KEY_O) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_RB))  && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelayCamera) {
         timeStart = system_clock::now();
         eventManager.AddEventMulti(Event{EventType::TOTEM_CAMERA});
         totemCamActive = !totemCamActive;
-    } else if (!receiver.IsKeyDown(KEY_KEY_Q) && !totemCamActive){
-        invertedCam = false;
+    } else if (!(receiver.IsKeyDown(KEY_KEY_I) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_LB)) && !totemCamActive){
+        SetValueInput(InputXBox::BUTTON_LB, false);
         eventManager.AddEventMulti(Event{EventType::NORMAL_CAMERA});
-
     }
 
     // POWERUPS
-    if (receiver.IsKeyDown(KEY_SPACE)) {
+    if ((receiver.IsKeyDown(KEY_SPACE) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_A)) && !IsInputPressed(InputXBox::BUTTON_A)){
         eventManager.AddEventMulti(Event{EventType::PRESS_SPACE});
         inputs.push_back(Constants::InputTypes::LAUNCH_PU);
+    }else if(!(receiver.IsKeyDown(KEY_SPACE) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_A))){
+        SetValueInput(InputXBox::BUTTON_A, false);
     }
 
     //No debe tener menu pausa
@@ -768,7 +802,8 @@ void RenderFacadeIrrlicht::FacadeCheckInputSingle() {
 
 void RenderFacadeIrrlicht::FacadeCheckInputMenu() {
     //Cambiamos a ingame
-    if (receiver.IsKeyDown(KEY_F1)) {
+    if ((receiver.IsKeyDown(KEY_SPACE) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_A)) && !IsInputPressed(InputXBox::BUTTON_A)){
+        SetValueInput(InputXBox::BUTTON_A, true);
         numEnemyCars = 0;
 
         //Manera un poco cutre de resetear el CId al empezar el juego
@@ -778,52 +813,62 @@ void RenderFacadeIrrlicht::FacadeCheckInputMenu() {
         cNavMesh->ResetNumIds();
         //Game::GetInstance()->SetState(State::INGAME_SINGLE);
         EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_INGAMESINGLE});
-
-    } else if (receiver.IsKeyDown(KEY_ESCAPE)) {
+    } else if ((receiver.IsKeyDown(KEY_DELETE) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_BACK)) && !IsInputPressed(InputXBox::BUTTON_BACK)) {
+        SetValueInput(InputXBox::BUTTON_BACK, true);
         device->closeDevice();
-    } else if (receiver.IsKeyDown(KEY_KEY_M)) {
+    } else if ((receiver.IsKeyDown(KEY_KEY_M) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_Y)) && !IsInputPressed(InputXBox::BUTTON_Y)) {
         smgr->clear();
         EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_LOBBYMULTI});
     }
+
+    if(!(receiver.IsKeyDown(KEY_SPACE) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_A)))
+        SetValueInput(InputXBox::BUTTON_A, false);
+    if(!(receiver.IsKeyDown(KEY_ESCAPE) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_BACK)))
+        SetValueInput(InputXBox::BUTTON_BACK, false);
+    if(!(receiver.IsKeyDown(KEY_KEY_M) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_Y)))
+        SetValueInput(InputXBox::BUTTON_Y, false);
 }
 
 void RenderFacadeIrrlicht::FacadeCheckInputPause() {
     //Cambiamos a ingame
-    if (receiver.IsKeyDown(KEY_F3) && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay) {
-        timeStart = system_clock::now();
+    if ((receiver.IsKeyDown(KEY_ESCAPE) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_START)) && !IsInputPressed(InputXBox::BUTTON_START)) {
+        SetValueInput(InputXBox::BUTTON_START, true);
         Game::GetInstance()->SetState(State::INGAME_SINGLE);
-        //EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_INGAMESINGLE});
-
+    }else if(!(receiver.IsKeyDown(KEY_ESCAPE) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_START))){
+        SetValueInput(InputXBox::BUTTON_START, false);
     }
 
-    if (receiver.IsKeyDown(KEY_F4) && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay) {
-        timeStart = system_clock::now();
+    if ((receiver.IsKeyDown(KEY_KEY_N) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_B)) && !IsInputPressed(InputXBox::BUTTON_B)) {
+        SetValueInput(InputXBox::BUTTON_B, true);
 
         smgr->clear();
         //EventManager::GetInstance().ClearListeners();
         //EventManager::GetInstance().ClearEvents();
         Game::GetInstance()->SetState(State::MENU);
         //EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_MENU});
-
+    }else if(!(receiver.IsKeyDown(KEY_KEY_N) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_B))){
+        SetValueInput(InputXBox::BUTTON_B, false);
     }
 
-    if (receiver.IsKeyDown(KEY_ESCAPE)) {
+    if (receiver.IsKeyDown(KEY_DELETE)) {
         device->closeDevice();
     }
 }
 
 void RenderFacadeIrrlicht::FacadeCheckInputEndRace() {
-    if (receiver.IsKeyDown(KEY_F4) && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay) {
+    if ((receiver.IsKeyDown(KEY_SPACE) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_A)) && !IsInputPressed(InputXBox::BUTTON_A)) {
+        SetValueInput(InputXBox::BUTTON_A, true);
         smgr->clear();
         //EventManager::GetInstance().ClearListeners();
         //EventManager::GetInstance().ClearEvents();
         //Game::GetInstance()->SetState(State::MENU);
         cout << "ENTRAAAAAA ENDRACE\n";
         EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_MENU});
-
+    }else if(!(receiver.IsKeyDown(KEY_SPACE) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_A))){
+        SetValueInput(InputXBox::BUTTON_A, false);
     }
 
-    if (receiver.IsKeyDown(KEY_ESCAPE)) {
+    if (receiver.IsKeyDown(KEY_DELETE)) {
         device->closeDevice();
     }
 }
@@ -831,7 +876,7 @@ void RenderFacadeIrrlicht::FacadeCheckInputEndRace() {
 
 void RenderFacadeIrrlicht::FacadeCheckInputLobbyMulti() {
     //Cambiamos a ingame
-    if (receiver.IsKeyDown(KEY_ESCAPE)) {
+    if (receiver.IsKeyDown(KEY_DELETE)) {
         device->closeDevice();
     }
 }
@@ -1008,19 +1053,19 @@ void RenderFacadeIrrlicht::FacadeDrawAIDebug(ManCar* manCars, ManNavMesh* manNav
         auto cDimensions    = static_cast<CDimensions*>(navMesh->GetComponent(CompType::DimensionsComp).get());
 
         point0 = glm::vec3(cTransformable->position.x - (cDimensions->width/2),
-                            cTransformable->position.y+20,
+                            cTransformable->position.y - (cDimensions->height/2),
                             cTransformable->position.z - (cDimensions->depth/2));
 
         point1 = glm::vec3(cTransformable->position.x - (cDimensions->width/2),
-                            cTransformable->position.y+20,
+                            cTransformable->position.y - (cDimensions->height/2),
                             cTransformable->position.z + (cDimensions->depth/2));
 
         point2 = glm::vec3(cTransformable->position.x + (cDimensions->width/2),
-                            cTransformable->position.y+20,
+                            cTransformable->position.y - (cDimensions->height/2),
                             cTransformable->position.z + (cDimensions->depth/2));
                             
         point3 = glm::vec3(cTransformable->position.x + (cDimensions->width/2),
-                            cTransformable->position.y+20,
+                            cTransformable->position.y - (cDimensions->height/2),
                             cTransformable->position.z - (cDimensions->depth/2));
 
         point4 = glm::vec3(point0.x,point0.y + cDimensions->height, point0.z);
@@ -1067,7 +1112,7 @@ void RenderFacadeIrrlicht::FacadeDrawAIDebug(ManCar* manCars, ManNavMesh* manNav
             auto cTransformableCar = static_cast<CTransformable*>(carAI->GetComponent(CompType::TransformableComp).get());
             auto cDimensions = static_cast<CDimensions*>(carAI->GetComponent(CompType::DimensionsComp).get());
             auto cCurrentNavMesh = static_cast<CCurrentNavMesh*>(carAI->GetComponent(CompType::CurrentNavMeshComp).get());
-            auto cTargetNavMesh = static_cast<CTargetNavMesh*>(carAI->GetComponent(CompType::TargetNavMeshComp).get());
+            //auto cTargetNavMesh = static_cast<CTargetNavMesh*>(carAI->GetComponent(CompType::TargetNavMeshComp).get());
 
             Draw3DLine(cPosDestination->position,cTransformableCar->position);
             //Ahora vamos a dibujar su CPath
@@ -1106,8 +1151,8 @@ void RenderFacadeIrrlicht::FacadeDrawAIDebug(ManCar* manCars, ManNavMesh* manNav
             }
             pathText += core::stringw("\n");
 
-            core::stringw navMeshText = pathText + core::stringw("Current NavMesh: ") + core::stringw(cCurrentNavMesh->currentNavMesh) + core::stringw("\n")+
-                                                core::stringw("Target NavMesh: ")  + core::stringw(cTargetNavMesh->targetNavMesh) + core::stringw("\n");
+            core::stringw navMeshText = pathText + core::stringw("Current NavMesh: ") + core::stringw(cCurrentNavMesh->currentNavMesh) + core::stringw("\n")+core::stringw("\n");
+                                                //core::stringw("Target NavMesh: ")  + core::stringw(cTargetNavMesh->targetNavMesh) + 
             
             auto cMovementType = static_cast<CMovementType*>(carAI->GetComponent(CompType::MovementComp).get());
 

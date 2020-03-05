@@ -18,8 +18,8 @@ class CBoundingPlane : public Component {
     CBoundingPlane(const vec3 &a_, const vec3 &b_, const vec3 &c_, const vec3 &d_);
 
     // void Normalize();
-    IntersectData IntersectSphere(const CBoundingSphere &other, const CTransformable &trCar, const CCar &ccarCar);
-    IntersectData IntersectSphereCenter(const CBoundingSphere &other, const CTransformable &trCar); 
+    IntersectData IntersectSphere(const CBoundingSphere &);
+    IntersectData IntersectSphereCenter(const CBoundingSphere &); 
 
     IntersectData IntersectPlane(const CBoundingPlane &other) const;
 

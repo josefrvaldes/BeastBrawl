@@ -6,6 +6,6 @@ CLLight::CLLight(unsigned int idEntity): CLEntity(idEntity) {
     intensity = glm::vec3(1.0f, 1.0f, 1.0f);
 }
 
-void CLLight::Draw(glm::mat4&) {
+void CLLight::Draw(GLuint shaderID) {
 
 }

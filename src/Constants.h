@@ -18,20 +18,26 @@
 
 class Constants {
    public:
-    inline static const bool DEBUG_SHOW_CHASSIS{true};
-    inline static const bool DEBUG_SHOW_SPHERES{true};
-    inline static const size_t ONLINE_BUFFER_SIZE{512};
-    inline static const float DELTA_TIME{1.0 / FRAME_RATE};
+      inline static const bool DEBUG_SHOW_CHASSIS{true};
+      inline static const bool DEBUG_SHOW_SPHERES{true};
+      inline static const size_t ONLINE_BUFFER_SIZE{512};
+      inline static const float DELTA_TIME{1.0 / FRAME_RATE};
 
-    enum InputTypes { FORWARD,
-                      BACK,
-                      LEFT,
-                      RIGHT,
-                      LAUNCH_PU,
-                      CLAXON,
-                      DRIFT };
+      enum InputTypes { FORWARD,
+                        BACK,
+                        LEFT,
+                        RIGHT,
+                        LAUNCH_PU,
+                        CLAXON,
+                        DRIFT };
 
     enum PetitionTypes { CONNECTION_REQUEST,
                          SEND_INPUTS,
-                         SEND_SYNC };
+                         SEND_SYNC,
+                         CATCH_PU,
+                         SEND_DISCONNECTION,
+                         CATCH_TOTEM };
+      enum RenderEngine { IRRLICHT,
+                          CLOVER};
+      inline static const RenderEngine RENDER_ENGINE = RenderEngine::IRRLICHT;
 };

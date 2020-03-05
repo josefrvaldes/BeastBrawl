@@ -19,16 +19,25 @@ using namespace std;
 struct Car;
 struct CarAI;
 struct Data;
+struct CTransformable;
+struct ManCar;
 
 class ManNavMesh : public Manager{
    public:
-    ManNavMesh(ManCar *manCars, ManTotem *manTotems);
+    //ManNavMesh(){};
+    ManNavMesh();
     ~ManNavMesh(){};
 
     void CreateNavMesh(glm::vec3 pos, glm::vec3 rot, float width, float height, float depth, vector<int> waypoints);
     void CreateNavMesh();
 
-    void UpdateNavMeshHuman(Entity* carPlayer);
+    void Update(ManCar &);
+    void UpdateNavMeshEntity(Entity* entity_) const;
+    //static ManNavMesh& getInstance() {
+    //    static ManNavMesh instance;
+    //    return instance;
+    //};
+
     //void UpdateNavMeshCarsAI(ManCar* manCars);
 
     // vector<shared_ptr<NavMesh>> GetEntities() const {
@@ -38,7 +47,7 @@ class ManNavMesh : public Manager{
     // vector<shared_ptr<NavMesh>> GetEntities()  {
     //     return navMeshes;
     // };
-
+    int CalculateNavMesh(glm::vec3 &) const;    // version para llamar desde fuera de la clase NavMesh
 
    private:
     //vector<shared_ptr<NavMesh>> navMeshes;
@@ -46,5 +55,6 @@ class ManNavMesh : public Manager{
     void ActualizeNavMeshTotem(DataMap* d);
     void InitNavMeshTotem(ManTotem *manTotems);
     void ActualizeNavMeshCarAI(DataMap* d);
+    int CalculateNavMesh(CTransformable &) const;
     //void ActualizeNavMeshCarPlayer(Car* carPlayer);
 };

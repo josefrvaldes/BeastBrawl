@@ -25,19 +25,50 @@ Para compilar nuestro proyecto debes situarte en el directorio raíz (NO en el s
 * `make all` borra todos los archivos compilados,borra los ejecutables y compila todo; pero solo ejecuta el juego.
 
 
-## Controles de juego
+## Controles de juego TECLADO
 Actualmente los contoles de nuestro juego funcionan mediante teclado.
- * `I` para acelerar.
- * `O` para descelerar.
- * `A` y `D` para moverse a izquierda y derecha.
- * `SPACE` para lanzar power-up.
- * Mantener presionada `Q` para cambiar a la cámara trasera.
- * `E` para cambiar a la cámara totem.
- * `F1` para comenzar partida desde el menú.
- * `F2` para poner el juego en pausa a mitad de partida.
- * `F3` para reanudar partida en pausa.
- * `F4` para volver al menú principal desde el manú pausa.
- * `ESC` para salir.
+ * En carrera: 
+    * `W` para acelerar.
+    * `S` para descelerar.
+    * `A` y `D` para moverse a izquierda y derecha.
+    * Mantener `U` para derrapar.
+    * `SPACE` para lanzar power-up.
+    * Mantener presionada `I` para cambiar a la cámara trasera.
+    * Mantener presionada `O` para cambiar a la cámara del totem.
+    * Sonar el claxon `P`.
+    * `ESC` para poner el juego en pausa a mitad de partida, y volver a reanudarla.
+ * En el menú principal:
+    * `SPACE` para comenzar partida.
+    * `M` para entrar a la sala online.
+    * `SUPR` para salir.
+ * Desde el menú de pausa:
+    * `ESC` para reanudar el juego.
+    * `N` para volver al menú principal desde el manú pausa.
+ * Desde la pantalla de final de partida:
+    * `SPACE` para volver al menú principal.
+
+## Controles de juego MANDO
+Actualmente los contoles de nuestro juego funcionan mediante teclado.
+ * En carrera: 
+    * `RT` para acelerar.
+    * `LT` para descelerar.
+    * `Joystick` para moverse a izquierda y derecha.
+    * Mantener `X` para derrapar.
+    * `A` para lanzar power-up.
+    * Mantener presionada `LB` para cambiar a la cámara trasera.
+    * Mantener presionada `RB` para cambiar a la cámara del totem.
+    * Sonar el claxon `StickPressR`.
+    * `START` para poner el juego en pausa a mitad de partida, y volver a reanudarla.
+ * En el menú principal:
+    * `A` para comenzar partida.
+    * `Y` para entrar a la sala online.
+    * `BACK` para salir.
+ * Desde el menú de pausa:
+    * `START` para reanudar el juego.
+    * `B` para volver al menú principal desde el manú pausa.
+ * Desde la pantalla de final de partida:
+    * `A` para volver al menú principal.
+
  
  ## Controles de debug
  * `F3` muestra el grafo y las colisiones.
