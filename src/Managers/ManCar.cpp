@@ -668,7 +668,7 @@ void ManCar::CatchPowerUpAI(DataMap* d) {
     int maxPudin = maxNitro + 250;
     int maxEscudo = maxPudin + 150;
     int maxTelebanana = maxEscudo + 150;
-    int maxMelon = maxTelebanana + 200;
+    //No voy a poner el MelonMolon porque no se usa para comparar. De base tiene un 20%, del [80-100]
 
     auto actualCar = any_cast<Entity*>((*d)[ACTUAL_CAR]);
     auto cTotem = static_cast<CTotem*>(actualCar->GetComponent(CompType::TotemComp).get());
@@ -683,29 +683,33 @@ void ManCar::CatchPowerUpAI(DataMap* d) {
             maxPudin += 100;
             maxEscudo -= 50;
             maxTelebanana -= 50;
-            maxMelon += 125;
-        } else if (cPositionRanking == 5 || cPositionRanking == 6){
-            //cout << "------------- SOY EL 5/6" << endl;
-            maxRobojorobo += 25;
-            maxPudin -= 125;
+
+            if (cPositionRanking == 2) {
+                maxRobojorobo -= 25;
+            }
+
+        } else if ( cPositionRanking == entities.size() || (entities.size() > 3 && cPositionRanking == (entities.size()-1))){
+            //cout << "------------- SOY EL" << (entities.size()-1) << "/" << entities.size() << endl;
+            maxRobojorobo += 50;
+            maxPudin -= 150;
             maxTelebanana += 100;
+            maxNitro -= 50;
         }
     }
 
-    // To-Do: Porcentajes base
     srand(time(NULL));
-    int indx = rand() % 1000 + 1;   //No sale cero
-    if (indx <= maxRobojorobo)  // 5% Robojorobo
+    int indx = rand() % 1000 + 1;
+    if (indx <= maxRobojorobo)  // ROBOJOROBO -> 5% base - 0% primero - 2.5% segundo - 10% ultimo/s
         indx = 1;
-    else if (indx > maxRobojorobo && indx <= maxNitro)  // 20% Supermeganitro
+    else if (indx > maxRobojorobo && indx <= maxNitro)  // SUPERMEGANITRO -> 20% base - 12.5% primero - 12.5% segundo - 15% ultimo/s
         indx = 2;
-    else if (indx > maxNitro && indx <= maxPudin)  // 25% Pudin
+    else if (indx > maxNitro && indx <= maxPudin)  // PUDIN -> 25% base - 35% primero - 35% segundo - 10% ultimo/s
         indx = 3;
-    else if (indx > maxPudin && indx <= maxEscudo)  // 15% Escudo
+    else if (indx > maxPudin && indx <= maxEscudo)  // ESCUDO -> 15% base - 10% primero - 10% segundo - 15% ultimo/s
         indx = 4;
-    else if (indx > maxEscudo && indx <= maxTelebanana)  // 15% Telebanana
+    else if (indx > maxEscudo && indx <= maxTelebanana)  // TELEBANANA -> 15% base - 10% primero - 10% segundo - 25% ultimo/s
         indx = 5;
-    else if (indx > maxTelebanana)  //  20% MelonMolon
+    else if (indx > maxTelebanana)  // MELONMOLON ->  20% base - 32.5% primero - 30% segundo - 25% ultimo/s
         indx = 6;
 
 
