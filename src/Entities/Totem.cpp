@@ -22,8 +22,8 @@ Totem::Totem()
 
     string mesh;
     if(Constants::RENDER_ENGINE == Constants::RenderEngine::CLOVER){
-        //mesh    = "totem_tex.fbx";
-        mesh  = "TEST_BOX.fbx";
+        mesh    = "totem_tex.fbx";
+        //mesh  = "TEST_BOX.fbx";
         
     }else if(Constants::RENDER_ENGINE == Constants::RenderEngine::IRRLICHT){
         mesh    =   "kart_ia.obj";

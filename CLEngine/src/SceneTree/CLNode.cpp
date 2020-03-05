@@ -96,6 +96,16 @@ bool CLNode::HasChild(CLNode* child){
     return false;
 }
 
+glm::vec3 CLNode::GetGlobalTranslation() const{
+    glm::vec3 dev = this->translation;
+    auto fatherNode = this->father;
+    while(fatherNode){
+        dev += fatherNode->GetTranslation();
+        fatherNode = fatherNode->GetFather();
+    }
+    return dev;
+}
+
 void CLNode::SetTranslation(glm::vec3 t) {
     translation = t; 
     ActivateFlag();
@@ -201,6 +211,8 @@ void CLNode::CalculateViewProjMatrix(){
             //glUniformMatrix4fv(glGetUniformLocation(camera->GetShaderProgramID(), "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 
             // Vector posicion de la camara, vector de posicion destino y vector ascendente en el espacio mundial. 
+            
+
             view = glm::lookAt(camera->GetTranslation(), -entityCamera->GetCameraTarget(), entityCamera->GetCameraUp());
 
             glUniform3fv(glGetUniformLocation(camera->GetShaderProgramID(), "viewPos"),1,glm::value_ptr(camera->GetTranslation()));

@@ -283,12 +283,16 @@ void RenderFacadeClover::UpdateCamera(Entity* cam, ManCar* manCars) {
     auto cTransformable = static_cast<CTransformable*>(cam->GetComponent(CompType::TransformableComp).get());
     auto cCamera = static_cast<CCamera*>(cam->GetComponent(CompType::CameraComp).get());
 
+    auto cTransformableCar = static_cast<CTransformable*>(manCars->GetCar()->GetComponent(CompType::IdComp).get());
+
     //Cogemos la posicion de nuestro coche
     glm::vec3 targetPosition = smgr->GetNodeByID(idCar)->GetTranslation();
+    //glm::vec3 targetPosition = cTransformableCar->position;
+
 
     auto cameraEntity = static_cast<CLCamera*>(camera1->GetEntity());
 
-    targetPosition.y += 5;
+    targetPosition.y += -30;
 
     if(cCamera->camType == CamType::INVERTED_CAM){
         targetPosition.y += 0;
@@ -377,11 +381,11 @@ void RenderFacadeClover::UpdateCamera(Entity* cam, ManCar* manCars) {
         
         cameraEntity->SetFOV(90);
         camera1->SetTranslation(glm::vec3(
-            -cTransformableCar->position.x + 32.5 * cos(valueAtan2), 
+            cTransformableCar->position.x + 32.5 * cos(valueAtan2), 
             cTransformable->position.y, 
-            -cTransformableCar->position.z + 35 * sin(valueAtan2)));
+            cTransformableCar->position.z + 35 * sin(valueAtan2)));
 
-        camera1->SetRotation(glm::vec3(-cTransformable->rotation.x,cTransformable->rotation.y,-cTransformable->rotation.z));
+        camera1->SetRotation(glm::vec3(cTransformable->rotation.x,cTransformable->rotation.y,cTransformable->rotation.z));
         
     }
 
@@ -409,8 +413,8 @@ void RenderFacadeClover::FacadeAddCamera(Entity* camera) {
     float posX = cCamera->tarX - 40.0 * sin(((cTransformable->rotation.x) * M_PI) / 180.0);
     float posZ = cCamera->tarZ - 40.0 * cos(((cTransformable->rotation.z) * M_PI) / 180.0);
     cameraEntity->SetCameraTarget(glm::vec3(cCamera->tarX, cCamera->tarY, cCamera->tarZ));
-    camera1->SetTranslation(glm::vec3(-posX, cTransformable->position.y+100, -posZ));
-    camera1->SetRotation(glm::vec3(-cTransformable->rotation.x,cTransformable->rotation.y,-cTransformable->rotation.z));
+    camera1->SetTranslation(glm::vec3(posX, cTransformable->position.y+100, posZ));
+    camera1->SetRotation(glm::vec3(cTransformable->rotation.x,cTransformable->rotation.y,cTransformable->rotation.z));
     camera1->SetScalation(cTransformable->scale);
 
     // cameraEntity->SetCameraTarget(glm::vec3(0.0f, 0.0f, 0.0f));

@@ -33,6 +33,7 @@ class CLNode{
         glm::vec3 GetScalation()   const       { return scalation; }
         glm::mat4 GetTransformationMat() const { return transformationMat; }
         GLuint GetShaderProgramID() const      { return shaderProgramID;}
+        glm::vec3 GetGlobalTranslation() const;
         CLCamera* GetActiveCamera();
 
         //Setters
