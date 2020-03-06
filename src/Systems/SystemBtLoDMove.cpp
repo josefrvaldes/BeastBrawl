@@ -115,7 +115,10 @@ struct SBPursue_LoDMove : public behaviourTree {
         //return blackboard->steeringBehaviours->UpdateObstacleAvoidance(blackboard->actualCar, blackboard->manPowerUps);
         //std::cout << gola << std::endl;
         //return true;
-        float angle = blackboard->steeringBehaviours->UpdatePursuePowerUp(blackboard->actualCar, blackboard->manCars->GetDesirableTarget(blackboard->actualCar));  // To-Do: calcular coche a por el que se quiere ir
+        Entity* desirableTarget = blackboard->manCars->GetDesirableTarget(blackboard->actualCar);
+        if(blackboard->steeringBehaviours->IsTargeteable(blackboard->actualCar, desirableTarget, blackboard->manBoundingWall) == false)
+            return false;
+        float angle = blackboard->steeringBehaviours->UpdatePursuePowerUp(blackboard->actualCar, desirableTarget);  // To-Do: calcular coche a por el que se quiere ir
         if(angle>=-3 && angle <=3){
             shared_ptr<DataMap> data = make_shared<DataMap>();
 
