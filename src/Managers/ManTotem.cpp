@@ -19,7 +19,7 @@ ManTotem::ManTotem(ManNavMesh *manNavMesh_) : manNavMesh{manNavMesh_} {
     double totemPosX = j["TOTEM"]["x"].get<double>();
     double totemPosY = j["TOTEM"]["y"].get<double>();
     double totemPosZ = j["TOTEM"]["z"].get<double>();
-    vec3 posNewTotem = glm::vec3(totemPosX, totemPosY-15, totemPosZ);
+    vec3 posNewTotem = glm::vec3(totemPosX, totemPosY+5, totemPosZ);
     //std::cout << " LA POS X DEL TOTEM ES LA: " << totemPosX << std::endl;
     //CreateTotem(glm::vec3(-100.0, 20.0, -100.0));
     //CreateTotem(vec3(totemPosX, totemPosY-15, totemPosZ));
@@ -31,7 +31,7 @@ ManTotem::ManTotem(ManNavMesh *manNavMesh_) : manNavMesh{manNavMesh_} {
         // TODO:: RESETEARLO EN ALGUN PUNTO DE SPAWN DEL MAPA, EN ALGUN PUNTO DE SPAWN PREDETERMINADO PARA ESO
         ifstream i("data.json");
         json j = json::parse(i);
-        posNewTotem = glm::vec3(j["TOTEM"]["x"].get<double>(),j["TOTEM"]["y"].get<double>()-15,j["TOTEM"]["z"].get<double>());
+        posNewTotem = glm::vec3(j["TOTEM"]["x"].get<double>(),j["TOTEM"]["y"].get<double>()+5,j["TOTEM"]["z"].get<double>());
         currentNavMesh = manNavMesh->CalculateNavMesh(posNewTotem);
     }
     CreateTotem(posNewTotem);
@@ -39,6 +39,7 @@ ManTotem::ManTotem(ManNavMesh *manNavMesh_) : manNavMesh{manNavMesh_} {
     cCurrentNavMesh->currentNavMesh = currentNavMesh;
     auto cTotem = static_cast<CTotem*>(entities[0]->GetComponent(CompType::TotemComp).get());
     cTotem->active = true;
+    cout << "EL NAVMESH DEL TOTEM ES:::::::::::::::::::::::::::::::::::::::::::::::    " << cCurrentNavMesh->currentNavMesh << endl;
 
     SubscribeToEvents();
 
@@ -110,7 +111,7 @@ void ManTotem::ResetTotem(DataMap* d){
         // TODO:: RESETEARLO EN ALGUN PUNTO DE SPAWN DEL MAPA, EN ALGUN PUNTO DE SPAWN PREDETERMINADO PARA ESO
         ifstream i("data.json");
         json j = json::parse(i);
-        posNewTotem = glm::vec3(j["TOTEM"]["x"].get<double>(),j["TOTEM"]["y"].get<double>()-15,j["TOTEM"]["z"].get<double>());
+        posNewTotem = glm::vec3(j["TOTEM"]["x"].get<double>(),j["TOTEM"]["y"].get<double>()+5,j["TOTEM"]["z"].get<double>());
         currentNavMesh = manNavMesh->CalculateNavMesh(posNewTotem);
     }
     //CreateTotem(posNewTotem);

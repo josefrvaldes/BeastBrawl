@@ -693,7 +693,7 @@ void CLPhysics::SeparateSphereFromPlane(IntersectData &intersData, CTransformabl
     //cout << "NO SEPARO" << endl;
     vec3 direction = spCar1.center - plane.normal;  // te da la dirección al otro bounding en x, y, z, es decir, si tenemos 200, 10, 30, significa que estamos a 200 de distancia en x, a 10 en y y a 30 en z
     vec3 nuevaDirectionCar1 = -normalize(direction);
-    float correctedDistance = intersData.GetDistance() + 0.1;
+    float correctedDistance = intersData.GetDistance() + 0.05;
     trCar1.position.x += nuevaDirectionCar1.x * correctedDistance;
     trCar1.position.z += nuevaDirectionCar1.z * correctedDistance;
 }

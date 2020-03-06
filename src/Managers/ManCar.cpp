@@ -86,6 +86,7 @@ void ManCar::UpdateCarAI(CarAI* carAI, ManPowerUp* m_manPowerUp, ManBoxPowerUp* 
     UpdateGeneralCar(*carAI, *(m_manTotem->GetEntities()[0].get()));
 
     systemBtPowerUp->update(carAI, this, m_manPowerUp, m_manBoxPowerUp, m_manTotem, graph, manNavMesh);
+    
 }
 void ManCar::UpdateCarHuman(Entity* CarHuman, ManTotem* m_manTotem) {
     UpdateGeneralCar(*CarHuman, *(m_manTotem->GetEntities()[0].get()));
