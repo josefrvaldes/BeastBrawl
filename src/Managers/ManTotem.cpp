@@ -89,7 +89,7 @@ void ManTotem::AppertainCar(DataMap* d){
 }
 
 
-// crea el objeto en irlich y lo pone en el mapa de nuevo
+// lo pone en el mapa de nuevo
 void ManTotem::ResetTotem(DataMap* d){
     //std::cout << "reseteamos posicion del totem" << std::endl;
 
@@ -99,7 +99,7 @@ void ManTotem::ResetTotem(DataMap* d){
     float angleRotation = (transfActualCar->rotation.y * 3.141592) / 180.0;
     posNewTotem.x = transfActualCar->position.x - cos(angleRotation)*(-25);
     posNewTotem.z = transfActualCar->position.z + sin(angleRotation)*(-25);
-    posNewTotem.y = transfActualCar->position.y;
+    posNewTotem.y = transfActualCar->position.y + 15;
 
 
 
