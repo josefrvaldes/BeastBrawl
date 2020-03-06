@@ -102,6 +102,11 @@ void RenderFacadeIrrlicht::FacadeInitMenu() {
     driver->makeColorKeyTexture(menuBG, core::position2d<s32>(0, 0));
 }
 
+void RenderFacadeIrrlicht::FacadeInitControler() {
+    controlerBG = driver->getTexture("media/controller_scheme.png");
+    driver->makeColorKeyTexture(controlerBG, core::position2d<s32>(0, 0));
+}
+
 void RenderFacadeIrrlicht::FacadeInitPause() {
     pauseBG = driver->getTexture("media/pause_screen.png");
     driver->makeColorKeyTexture(pauseBG, core::position2d<s32>(0, 0));
@@ -317,7 +322,7 @@ const uint16_t RenderFacadeIrrlicht::FacadeAddObject(Entity* entity) {
         node->setPosition(core::vector3df(cTransformable->position.x, cTransformable->position.y, cTransformable->position.z));
         node->setRotation(core::vector3df(cTransformable->rotation.x, cTransformable->rotation.y, cTransformable->rotation.z));
         node->setScale(core::vector3df(cTransformable->scale.x, cTransformable->scale.y, cTransformable->scale.z));
-		//node->setMaterialTexture(0, driver->getTexture(path.c_str()));  //Obligado incluir el c_str() si no irrlicht no carga solo con un string
+        //node->setMaterialTexture(0, driver->getTexture(path.c_str()));  //Obligado incluir el c_str() si no irrlicht no carga solo con un string
         node->setMaterialFlag(video::EMF_LIGHTING, false);
 
         
@@ -819,6 +824,9 @@ void RenderFacadeIrrlicht::FacadeCheckInputMenu() {
     } else if ((receiver.IsKeyDown(KEY_KEY_M) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_Y)) && !IsInputPressed(InputXBox::BUTTON_Y)) {
         smgr->clear();
         EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_LOBBYMULTI});
+    }else if ((receiver.IsKeyDown(KEY_KEY_U) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_X)) && !IsInputPressed(InputXBox::BUTTON_X)) {
+        smgr->clear();
+        EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_CONTROLS});
     }
 
     if(!(receiver.IsKeyDown(KEY_SPACE) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_A)))
@@ -827,7 +835,29 @@ void RenderFacadeIrrlicht::FacadeCheckInputMenu() {
         SetValueInput(InputXBox::BUTTON_BACK, false);
     if(!(receiver.IsKeyDown(KEY_KEY_M) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_Y)))
         SetValueInput(InputXBox::BUTTON_Y, false);
+    if(!(receiver.IsKeyDown(KEY_KEY_U) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_X)))
+        SetValueInput(InputXBox::BUTTON_X, false);
 }
+
+
+void RenderFacadeIrrlicht::FacadeCheckInputControler() {
+    if ((receiver.IsKeyDown(KEY_KEY_N) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_B)) && !IsInputPressed(InputXBox::BUTTON_B)) {
+        SetValueInput(InputXBox::BUTTON_B, true);
+        smgr->clear();
+        //EventManager::GetInstance().ClearListeners();
+        //EventManager::GetInstance().ClearEvents();
+        //Game::GetInstance()->SetState(State::MENU);
+        cout << "ENTRAAAAAA pantalla\n";
+        EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_MENU});
+    }else if(!(receiver.IsKeyDown(KEY_KEY_N) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_B))){
+        SetValueInput(InputXBox::BUTTON_B, false);
+    }
+
+    if (receiver.IsKeyDown(KEY_DELETE)) {
+        device->closeDevice();
+    }
+}
+
 
 void RenderFacadeIrrlicht::FacadeCheckInputPause() {
     //Cambiamos a ingame
@@ -927,6 +957,15 @@ void RenderFacadeIrrlicht::FacadeDrawMenu() {
     driver->beginScene(true, true, video::SColor(255, 113, 113, 133));
     //smgr->drawAll();  // draw the 3d scene
     driver->draw2DImage(menuBG, core::position2d<s32>(0, 0),
+                        core::rect<s32>(0, 0, 1280, 720), 0,
+                        video::SColor(255, 255, 255, 255), false);
+    driver->endScene();
+}
+
+void RenderFacadeIrrlicht::FacadeDrawControler() {
+    driver->beginScene(true, true, video::SColor(255, 113, 113, 133));
+    //smgr->drawAll();  // draw the 3d scene
+    driver->draw2DImage(controlerBG, core::position2d<s32>(0, 0),
                         core::rect<s32>(0, 0, 1280, 720), 0,
                         video::SColor(255, 255, 255, 255), false);
     driver->endScene();
