@@ -18,20 +18,20 @@ using namespace std;
 
 BoxPowerUp::BoxPowerUp(){
     // default values
-    string texture = "t351sml.jpg";
+    string texture = "";
     string mesh;
     if(Constants::RENDER_ENGINE == Constants::RenderEngine::CLOVER){
         mesh    = "TEST_BOX.fbx";
         
     }else if(Constants::RENDER_ENGINE == Constants::RenderEngine::IRRLICHT){
-        mesh    =   "TEST_BOX.fbx";
+        mesh    =   "box_powerup.obj";
     }
     string vertexShader = "CLEngine/src/Shaders/vertex.glsl";
     string fragmentShader = "CLEngine/src/Shaders/fragment.glsl";
     //float maxSpeed = 20.0, acceleration = .15, friction = 0.1, slowDown = 0.25;
     
     shared_ptr<CId> cId   = make_shared<CId>();
-    shared_ptr<CType> cType = make_shared<CType>(ModelType::Cube);
+    shared_ptr<CType> cType = make_shared<CType>(ModelType::AnimatedMesh);
     shared_ptr<CTransformable> cTransformable = make_shared<CTransformable>(glm::vec3(0.0f,0.0f,0.0f), glm::vec3(0.0f,0.0f,0.0f), glm::vec3(1.0f,1.0f,1.0f)); 
     shared_ptr<CTexture> cTexture = make_shared<CTexture>(texture);
     shared_ptr<CMesh> cMesh   = make_shared<CMesh>(mesh);

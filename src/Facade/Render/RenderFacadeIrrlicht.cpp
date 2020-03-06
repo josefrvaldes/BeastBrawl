@@ -119,13 +119,13 @@ void RenderFacadeIrrlicht::FacadeInitLobbyMulti() {
 
 void RenderFacadeIrrlicht::FacadeInitHUD() {
     //Almacenamos los iconos de powerups
-    powerUps[0] = driver->getTexture("media/nonepowerup.jpg");
-    powerUps[1] = driver->getTexture("media/robojorobo.jpg");
-    powerUps[2] = driver->getTexture("media/nitro.jpg");
-    powerUps[3] = driver->getTexture("media/pudin.jpg");
-    powerUps[4] = driver->getTexture("media/escudomerluzo.jpg");
-    powerUps[5] = driver->getTexture("media/telebanana.jpg");
-    powerUps[6] = driver->getTexture("media/melonmolon.jpg");
+    powerUps[0] = driver->getTexture("media/nonepowerup.png");
+    powerUps[1] = driver->getTexture("media/robojorobo.png");
+    powerUps[2] = driver->getTexture("media/nitro.png");
+    powerUps[3] = driver->getTexture("media/pudin.png");
+    powerUps[4] = driver->getTexture("media/escudomerluzo.png");
+    powerUps[5] = driver->getTexture("media/telebanana.png");
+    powerUps[6] = driver->getTexture("media/melonmolon.png");
 
     whiteBG = driver->getTexture("media/whiteBG.png");
     driver->makeColorKeyTexture(whiteBG, core::position2d<s32>(0, 0));
@@ -213,8 +213,8 @@ void RenderFacadeIrrlicht::FacadeDrawHUD(Entity* car, ManCar* manCars) {
     //            video::SColor(255, 0, 0, 0));
     //Dibujamos powerUp
     driver->draw2DImage(powerUps[currentPowerUp], core::position2d<s32>(50, 50),
-                        core::rect<s32>(0, 0, 100, 100), 0,
-                        video::SColor(255, 255, 255, 255), false);
+                        core::rect<s32>(0, 0, 125, 125), 0,
+                        video::SColor(255, 255, 255, 255), true);
 
     int i = 0;
     core::stringw textIA = core::stringw("Car ");
@@ -317,7 +317,7 @@ const uint16_t RenderFacadeIrrlicht::FacadeAddObject(Entity* entity) {
         node->setPosition(core::vector3df(cTransformable->position.x, cTransformable->position.y, cTransformable->position.z));
         node->setRotation(core::vector3df(cTransformable->rotation.x, cTransformable->rotation.y, cTransformable->rotation.z));
         node->setScale(core::vector3df(cTransformable->scale.x, cTransformable->scale.y, cTransformable->scale.z));
-        node->setMaterialTexture(0, driver->getTexture(path.c_str()));  //Obligado incluir el c_str() si no irrlicht no carga solo con un string
+		//node->setMaterialTexture(0, driver->getTexture(path.c_str()));  //Obligado incluir el c_str() si no irrlicht no carga solo con un string
         node->setMaterialFlag(video::EMF_LIGHTING, false);
 
         
