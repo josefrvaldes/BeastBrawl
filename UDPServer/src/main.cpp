@@ -12,6 +12,13 @@ using namespace std;
 using namespace std::chrono;
 
 int main(int argc, char* argv[]) {
+
+    if(argc == 2) {
+        Constants::MIN_NUM_PLAYERS = std::stoi(argv[1]);
+    }
+    cout << "El número de jugadores será " << unsigned(Constants::MIN_NUM_PLAYERS) << endl;
+
+
     try {
         asio::io_context context;
         UDPServer serverUDP(context, SERVER_PORT_UDP);
