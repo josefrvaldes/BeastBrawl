@@ -21,6 +21,5 @@ int main(int argc, char* argv[]) {
 
     Server s;
     s.Start();
-    s.Restart();
     return 0;
 }
