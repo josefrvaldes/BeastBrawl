@@ -5,6 +5,7 @@
 #include "../../include/include_json/include_json.hpp"
 #include "../../src/Constants.h"
 #include "../src/Systems/Utils.h"
+#include "Server.h"
 #include "../../src/Systems/Serialization.h"
 
 
@@ -77,6 +78,8 @@ bool TCPServer::PlayerExists(TCPConnection::pointer new_connection) {
 
 // obtener el string con todos los datos
 void TCPServer::SendStartGame() {
+    // como ya vamos a empezar una partida nueva, a partir de ahora sí aceptaremos que la partida se pueda acabar
+    Server::ACCEPTING_ENDGAME = true; 
     for (const auto& currentPlayer : connections) {
         json j;
         uint8_t posVector = 0;
