@@ -4,6 +4,7 @@
 #include <iostream>
 #include "./UDPServer.h"
 #include "./TCPServer.h"
+#include "./Server.h"
 #include "../../src/Constants.h"
 
 using boost::asio::ip::udp;
@@ -18,18 +19,8 @@ int main(int argc, char* argv[]) {
     }
     cout << "El número de jugadores será " << unsigned(Constants::MIN_NUM_PLAYERS) << endl;
 
-
-    try {
-        asio::io_context context;
-        UDPServer serverUDP(context, SERVER_PORT_UDP);
-        TCPServer serverTCP(context, SERVER_PORT_TCP);
-        boost::asio::executor_work_guard<boost::asio::io_context::executor_type> work_guardUDP(context.get_executor());
-        serverUDP.StartReceiving();
-        serverTCP.StartReceiving();
-        context.run();
-        //contextTCP.run();
-    } catch (std::exception& e) {
-        cout << "Hubo una excepción " << e.what() << endl;
-    }
+    Server s;
+    s.Start();
+    s.Restart();
     return 0;
 }

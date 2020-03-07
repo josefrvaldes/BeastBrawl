@@ -20,7 +20,6 @@ struct Player {
 
     bool hasTotem {false};
 
-   private:
     static uint16_t nextId;
-
+   private:
 };

@@ -19,11 +19,15 @@ class SystemOnline {
     void Update();
     void SendInputs(const vector<Constants::InputTypes> &d) const;
     void SendSync(ManCar* manCars, ManTotem* manTotem) const;
+    void SendEndgame() const;
     void SendCatchPU(CPowerUp& cPowerUp) const;
     void SendCatchTotem(uint16_t idCarCatched) const;
     uint16_t idOnlineMainCar;
 
    private:
+    void SubscribeToEvents();
+    void EventEndgame(DataMap *);
+
     ManCar &manCar;
     unique_ptr<UDPClient> udpClient;
 };

@@ -11,8 +11,15 @@ using boost::asio::ip::udp;
 using namespace std::chrono;
 
 UDPServer::UDPServer(boost::asio::io_context& context_, uint16_t port_)
-    : socket(context_, udp::endpoint(udp::v4(), port_)) {
-    // StartReceiving();
+    : context{context_}, socket(context_, udp::endpoint(udp::v4(), port_)) {
+}
+
+UDPServer::~UDPServer() {
+    cout << "Se ha llamado al destructor de UDPServer" << endl;
+}
+
+void UDPServer::Close() {
+    socket.close();
 }
 
 void UDPServer::StartReceiving() {
@@ -85,6 +92,9 @@ void UDPServer::HandleReceive(std::shared_ptr<unsigned char[]> recevBuff, std::s
                     } else {
                         cout << Utils::getISOCurrentTimestampMillis() << "Se ha ignorado un paquete de CatchTotem porque era antiguo" << endl;
                     }
+                } break;
+                case Constants::PetitionTypes::ENDGAME: {
+                    context.stop();
                 } break;
                 default:
                     cout << "Petición incorrecta" << endl;

@@ -19,6 +19,17 @@ TCPServer::TCPServer(boost::asio::io_context& context_, uint16_t port_)
     //StartReceiving();
 }
 
+TCPServer::~TCPServer() {
+    cout << "Se ha llamado al destructor de TCPServer" << endl;
+}
+
+void TCPServer::Close() {
+    for(const auto connection : connections) {
+        connection->Close();
+    }
+    acceptor_.close();
+}
+
 void TCPServer::StartReceiving() {
     TCPConnection::pointer new_connection = TCPConnection::Create(context);
     acceptor_.async_accept(
@@ -55,7 +66,7 @@ void TCPServer::HandleAccept(TCPConnection::pointer new_connection, const boost:
 bool TCPServer::PlayerExists(TCPConnection::pointer new_connection) {
     string newAddress = new_connection->socket().remote_endpoint().address().to_string();
     uint16_t newPort = new_connection->socket().remote_endpoint().port();
-    for (auto currentPlayer : connections) {
+    for (const auto& currentPlayer : connections) {
         string currentAddress = currentPlayer->socket().remote_endpoint().address().to_string();
         uint16_t currentPort = currentPlayer->socket().remote_endpoint().port();
         if (newAddress == currentAddress && newPort == currentPort)
@@ -66,7 +77,7 @@ bool TCPServer::PlayerExists(TCPConnection::pointer new_connection) {
 
 // obtener el string con todos los datos
 void TCPServer::SendStartGame() {
-    for (auto currentPlayer : connections) {
+    for (const auto& currentPlayer : connections) {
         json j;
         uint8_t posVector = 0;
         uint16_t idPlayer = 0;

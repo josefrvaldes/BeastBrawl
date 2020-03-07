@@ -29,7 +29,7 @@ void SystemGameRules::UpdateRulesCarPowerUps(Entity& car_, Entity& totem_) const
     }
 
 
-    if(cTotem->accumulatedTime/1000.0 > cTotem->durationTime/1000.0){
+    if(cTotem->accumulatedTime/1000.0 > cTotem->DURATION_TIME/1000.0){
         cout << "Has ganado \n";
         //Game::GetInstance()->SetState(State::ENDRACE);
         EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_ENDRACE});
