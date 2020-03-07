@@ -91,7 +91,7 @@ void StateInGameMulti::Update() {
             //manNavMesh->UpdateNavMeshHuman(actualCar.get());  // actualizamos el navemesh en el que se encuentra al human
             // funcion para recibir los inputs del servidor, otra para enviar los nuestros, crear componente de input
             physics->UpdateHuman(static_cast<Car *>(actualCar.get()));
-            manCars->UpdateCarHuman(actualCar.get());
+            manCars->UpdateCarHuman(actualCar.get(), manTotems.get());
             physicsEngine->UpdateTransformable(actualCar.get());
         }
     }

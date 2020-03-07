@@ -6,6 +6,7 @@
 #include "State/StateLobbyMulti.h"
 #include "State/StateMenu.h"
 #include "State/StatePause.h"
+#include "State/StateControls.h"
 #include <Constants.h>
 
 
@@ -36,7 +37,12 @@ void Game::SetState(State::States stateType) {
             gameStarted = false;
             break;
         case State::CONTROLS:
-            //currentState = new StateControls();
+            EventManager::GetInstance().ClearEvents();
+            EventManager::GetInstance().ClearListeners();
+            currentState = make_shared<StateControls>();
+            gameState.reset();
+            SuscribeEvents();
+            gameStarted = false;
             break;
         case State::CREDITS:
             //currentState = new StateCredits();
@@ -151,6 +157,11 @@ void Game::SuscribeEvents() {
         EventType::STATE_LOBBYMULTI,
         bind(&Game::SetStateLobbyMulti, this, placeholders::_1),
         "SetStateLobbyMulti"));
+
+    EventManager::GetInstance().SubscribeMulti(Listener(
+        EventType::STATE_CONTROLS,
+        bind(&Game::SetStateControls, this, placeholders::_1),
+        "SetStateControls"));
 }
 
 void Game::MainLoop() {
@@ -230,4 +241,8 @@ void Game::SetStateEndRace(DataMap* d) {
 
 void Game::SetStateLobbyMulti(DataMap* d) {
     SetState(State::LOBBY_MULTI);
+}
+
+void Game::SetStateControls(DataMap* d){
+    SetState(State::CONTROLS);
 }
