@@ -16,7 +16,9 @@ using namespace std::chrono;
 class UDPServer : public boost::enable_shared_from_this<UDPServer> {
    public:
     UDPServer(asio::io_context& context_, uint16_t port_);
+    ~UDPServer();
     void StartReceiving();
+    void Close();
 
    private:
     void SavePlayerIfNotExists(const uint16_t id, udp::endpoint& endpoint);
@@ -63,6 +65,7 @@ class UDPServer : public boost::enable_shared_from_this<UDPServer> {
     // todos los clientes empiezan la partida, y en el primera paquete
     // udp, se actualizará el endpoint udp que corresponda a cada cliente
 
+    asio::io_context& context;
     udp::socket socket;
     std::vector<Player> players;
 };

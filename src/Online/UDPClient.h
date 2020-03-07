@@ -40,6 +40,7 @@ class UDPClient {
                   bool totemInGround, const glm::vec3& posTotem);
     void SendCatchPU(uint16_t idOnline, typeCPowerUp typePU);
     void SendCatchTotem(uint16_t idOnline, uint16_t idPlayerCatched);
+    void SendEndgame();
     void SendDateTime();
     uint32_t idMainCar;
 
@@ -55,6 +56,7 @@ class UDPClient {
     void HandleSentSync(const boost::system::error_code& errorCode, std::size_t bytes_transferred);
     void HandleSentPU(const boost::system::error_code& errorCode, std::size_t bytes_transferred);
     void HandleSentCatchTotem(const boost::system::error_code& errorCode, std::size_t bytes_transferred);
+    void HandleSentEndgame(const boost::system::error_code& errorCode, std::size_t bytes_transferred);
 
     void HandleSentDateTime(const boost::shared_ptr<std::string> message,
                             const boost::system::error_code& errorCode,

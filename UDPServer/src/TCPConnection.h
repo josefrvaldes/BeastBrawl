@@ -18,6 +18,7 @@ class TCPConnection : public boost::enable_shared_from_this<TCPConnection> {
     static pointer Create(boost::asio::io_context& io_context){ return pointer(new TCPConnection(io_context)); }
     tcp::socket& socket(){ return socket_;}
     void Start();
+    void Close();
     void SendStartMessage(string datos);
     void SendStartMessage(unsigned char *buff, size_t buffSize);
 

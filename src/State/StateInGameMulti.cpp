@@ -95,14 +95,6 @@ void StateInGameMulti::Update() {
             physicsEngine->UpdateTransformable(actualCar.get());
         }
     }
-
-    //CAMBIARCosasDeTotemUpdate();
-    // COLISIONES entre powerUp y cocheHuman
-    //collisions->IntersectsCarsPowerUps(manCars.get(), manPowerUps.get(), manNavMesh.get());
-    // COLISIONES entre BoxPowerUp y cocheHuman
-    //collisions->IntersectCarsBoxPowerUp(manCars.get(), manBoxPowerUps.get());
-    // COLISIONES  entre la cocheHuman y el Totem
-    //collisions->IntersectCarsTotem(manCars.get(), manTotems.get());
 }
 
 void StateInGameMulti::Render() {

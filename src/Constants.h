@@ -14,12 +14,13 @@
 
 #define SERVER_HOST_OVH "54.38.189.168"
 
-#define MIN_NUM_PLAYERS 3
+// #define MIN_NUM_PLAYERS 3
 #define FRAME_RATE 60
 
 class Constants {
    public:
       inline static std::string SERVER_HOST = "localhost";
+      inline static uint8_t MIN_NUM_PLAYERS = 4;
       inline static const bool DEBUG_SHOW_CHASSIS{true};
       inline static const bool DEBUG_SHOW_SPHERES{true};
       inline static const size_t ONLINE_BUFFER_SIZE{512};
@@ -34,6 +35,7 @@ class Constants {
                         DRIFT };
 
     enum PetitionTypes { CONNECTION_REQUEST,
+                         ENDGAME,
                          SEND_INPUTS,
                          SEND_SYNC,
                          CATCH_PU,

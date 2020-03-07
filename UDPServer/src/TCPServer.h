@@ -17,7 +17,9 @@ using namespace std::chrono;
 class TCPServer{
    public:
     TCPServer(boost::asio::io_context& context_, uint16_t port_);
+    ~TCPServer();
     void StartReceiving();
+    void Close();
 
    private:
     

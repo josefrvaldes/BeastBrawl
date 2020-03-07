@@ -3,16 +3,24 @@
 #include <boost/bind.hpp>
 #include "../../include/include_json/include_json.hpp"
 #include "../../src/Constants.h"
-#include "../../src/Systems/Utils.h"
 #include "../../src/Systems/Serialization.h"
+#include "../../src/Systems/Utils.h"
+#include "Server.h"
 
 using json = nlohmann::json;
 using boost::asio::ip::udp;
 using namespace std::chrono;
 
 UDPServer::UDPServer(boost::asio::io_context& context_, uint16_t port_)
-    : socket(context_, udp::endpoint(udp::v4(), port_)) {
-    // StartReceiving();
+    : context{context_}, socket(context_, udp::endpoint(udp::v4(), port_)) {
+}
+
+UDPServer::~UDPServer() {
+    cout << "Se ha llamado al destructor de UDPServer" << endl;
+}
+
+void UDPServer::Close() {
+    socket.close();
 }
 
 void UDPServer::StartReceiving() {
@@ -86,6 +94,14 @@ void UDPServer::HandleReceive(std::shared_ptr<unsigned char[]> recevBuff, std::s
                         cout << Utils::getISOCurrentTimestampMillis() << "Se ha ignorado un paquete de CatchTotem porque era antiguo" << endl;
                     }
                 } break;
+                case Constants::PetitionTypes::ENDGAME: {
+                    if (Server::ACCEPTING_ENDGAME) {
+                        cout << "Hemos recibido una petición de ENDGAME! vamos a reinciar el server!! ###########################" << endl;
+                        context.stop();
+                    } else {
+                        cout << "Hemos recibido una petición de ENDGAME! pero la ignoramos!! ###########################" << endl;
+                    }
+                } break;
                 default:
                     cout << "Petición incorrecta" << endl;
                     break;
@@ -111,10 +127,9 @@ void UDPServer::HandleReceivedCatchPU(const uint16_t id, unsigned char resendPU[
     ResendBytesToOthers(id, resendPU, currentBufferSize, originalClient);
 }
 
-void UDPServer::HandleReceivedCatchTotem(const uint16_t id, unsigned char buffer[], const size_t currentBufferSize, const udp::endpoint& remoteClient){
+void UDPServer::HandleReceivedCatchTotem(const uint16_t id, unsigned char buffer[], const size_t currentBufferSize, const udp::endpoint& remoteClient) {
     std::cout << "Mensaje CathcTotem por parte de: " << id << "\n";
 }
-
 
 void UDPServer::HandleReceivedSync(const uint16_t id, unsigned char recevBuff[], const size_t currentBufferSize, const udp::endpoint& originalClient) {
     size_t currentIndex = 0;
@@ -208,15 +223,12 @@ Player* UDPServer::GetPlayerById(uint16_t idPlayer) {
     return nullptr;
 }
 
-
-
-
 // se comprueba que el ultimo input mandado no supere el tiempo de desconexion
-void UDPServer::DetectUsersDisconnected(){
+void UDPServer::DetectUsersDisconnected() {
     uint16_t id = -1;
-    for(Player& actualPlayer : players){
+    for (Player& actualPlayer : players) {
         //cout << actualPlayer.lastSyncTimeReceived - Utils::getMillisSinceEpoch() << "\n";
-        if(Utils::getMillisSinceEpoch() - actualPlayer.lastInputTimeReceived > 10000 ){
+        if (Utils::getMillisSinceEpoch() - actualPlayer.lastInputTimeReceived > 10000) {
             cout << "Se ha desconectado el jugador: " << actualPlayer.id << "\n";
             id = actualPlayer.id;
             actualPlayer.lastInputTimeReceived = Utils::getMillisSinceEpoch();
@@ -224,7 +236,7 @@ void UDPServer::DetectUsersDisconnected(){
         }
     }
 
-    if(id >= 0){
+    if (id >= 0) {
         unsigned char sendBuff[Constants::ONLINE_BUFFER_SIZE];
         size_t currentBuffSize = 0;
         uint8_t callType = Constants::PetitionTypes::SEND_DISCONNECTION;
@@ -241,5 +253,4 @@ void UDPServer::DetectUsersDisconnected(){
         // To-Do: eliminarlo del array de players
         // To-Do: respuesta en el cliente
     }
-
 }
