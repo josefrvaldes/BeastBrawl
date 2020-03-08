@@ -30,6 +30,7 @@ class UDPServer : public boost::enable_shared_from_this<UDPServer> {
     void HandleReceivedSync(const uint16_t id, unsigned char resendSync[], const size_t currentBufferSize, const udp::endpoint& remoteClient);
     void HandleReceivedCatchPU(const uint16_t id, unsigned char resendPU[], const size_t currentBufferSize, const udp::endpoint& remoteClient);
     void HandleReceivedCatchTotem(const uint16_t id, unsigned char buffer[], const size_t currentBufferSize, const udp::endpoint& remoteClient);
+    void HandleReceivedLostTotem(const uint16_t id, unsigned char buffer[], const size_t currentBufferSize, const udp::endpoint& remoteClient);
     
     void ResendBytesToOthers(const uint16_t id, const unsigned char resendBytes[], const size_t currentBufferSize, const udp::endpoint& remoteClient);
     void SendBytes(const unsigned char resendBytes[], const size_t currentBufferSize, const Player& player);
@@ -78,4 +79,6 @@ class UDPServer : public boost::enable_shared_from_this<UDPServer> {
 
     std::unique_ptr<boost::asio::steady_timer> timer;
     int64_t timeServerStartedReceiving;
+
+    uint16_t playerWithTotem = 255; // ningun jugador va a tener el totem si es el 255
 };

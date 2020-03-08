@@ -68,7 +68,7 @@ class StateInGame : public State {
     virtual void Input() = 0;
     void Update() override;
     void Render() override;
-    States GetState() { return State::States::INGAME_SINGLE; };
+    States GetState() override { return State::States::INGAME_SINGLE; };
 
     shared_ptr<ManCar> manCars;
 

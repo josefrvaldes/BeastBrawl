@@ -99,6 +99,14 @@ void UDPServer::HandleReceive(std::shared_ptr<unsigned char[]> recevBuff, std::s
                             cout << Utils::getISOCurrentTimestampMillis() << "Se ha ignorado un paquete de CatchTotem porque era antiguo" << endl;
                         }
                     } break;
+                    case Constants::PetitionTypes::LOST_TOTEM: {
+                        if (p.lastLostTotemTimeReceived < time) {
+                            p.lastLostTotemTimeReceived = time;
+                            HandleReceivedLostTotem(idPlayer, buffRecieved, bytesTransferred, *remoteClient.get());
+                        } else {
+                            //cout << Utils::getISOCurrentTimestampMillis() << "Se ha ignorado un paquete de lostTotem porque era antiguo" << endl;
+                        }
+                    } break;
                     case Constants::PetitionTypes::ENDGAME: {
                         if (Server::ACCEPTING_ENDGAME) {
                             cout << "Hemos recibido una petición de ENDGAME! vamos a reinciar el server!! ###########################" << endl;
@@ -134,8 +142,48 @@ void UDPServer::HandleReceivedCatchPU(const uint16_t id, unsigned char resendPU[
 }
 
 void UDPServer::HandleReceivedCatchTotem(const uint16_t id, unsigned char buffer[], const size_t currentBufferSize, const udp::endpoint& remoteClient) {
-    std::cout << "Mensaje CathcTotem por parte de: " << id << "\n";
+    if(playerWithTotem == 255){  // en caso de que nadie tubiese el totem
+        size_t currentIndex = 0;
+        Serialization::Deserialize<uint8_t>(buffer, currentIndex);  // petitionType
+        int64_t time = Serialization::Deserialize<int64_t>(buffer, currentIndex);
+        uint16_t idCarOnline = Serialization::Deserialize<uint16_t>(buffer, currentIndex);
+        uint16_t idCarCatchTotem = Serialization::Deserialize<uint16_t>(buffer, currentIndex);
+
+        playerWithTotem = idCarCatchTotem;
+
+        /*unsigned char sendBuff[Constants::ONLINE_BUFFER_SIZE];
+        size_t sendBuffSize = 0;
+        uint8_t callType = Constants::PetitionTypes::CATCH_TOTEM;
+
+        Serialization::Serialize(sendBuff, &callType, sendBuffSize);
+        Serialization::Serialize(sendBuff, &time, sendBuffSize);
+        Serialization::Serialize(sendBuff, &idCarOnline, sendBuffSize);
+        Serialization::Serialize(sendBuff, &playerWithTotem, sendBuffSize);*/
+
+        for(uint8_t i=0; i<3; ++i)
+            for(Player& currentPlayer : players) 
+                SendBytes(buffer, currentBufferSize, currentPlayer); 
+    }
 }
+
+
+void UDPServer::HandleReceivedLostTotem(const uint16_t id, unsigned char buffer[], const size_t currentBufferSize, const udp::endpoint& remoteClient) {
+    // se comprueba que quien lo pierde es quien realmente lo tiene
+    size_t currentIndex = 0;
+    Serialization::Deserialize<uint8_t>(buffer, currentIndex);  // petitionType
+    int64_t time = Serialization::Deserialize<int64_t>(buffer, currentIndex);
+    uint16_t idCarOnline = Serialization::Deserialize<uint16_t>(buffer, currentIndex);
+    uint16_t idCarLostTotem = Serialization::Deserialize<uint16_t>(buffer, currentIndex);
+
+    if(playerWithTotem!=255 && playerWithTotem == idCarLostTotem){  // en caso de que alguien tubiese el totem
+        playerWithTotem = 255;
+
+        for(uint8_t i=0; i<3; ++i)
+            for(Player& currentPlayer : players) 
+                SendBytes(buffer, currentBufferSize, currentPlayer); 
+    }
+}
+
 
 void UDPServer::HandleReceivedSync(const uint16_t id, unsigned char recevBuff[], const size_t currentBufferSize, const udp::endpoint& originalClient) {
     size_t currentIndex = 0;

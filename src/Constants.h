@@ -40,7 +40,8 @@ class Constants {
                          SEND_SYNC,
                          CATCH_PU,
                          SEND_DISCONNECTION,
-                         CATCH_TOTEM };
+                         CATCH_TOTEM,
+                         LOST_TOTEM };
       enum RenderEngine { IRRLICHT,
                           CLOVER};
       inline static const RenderEngine RENDER_ENGINE = RenderEngine::IRRLICHT;

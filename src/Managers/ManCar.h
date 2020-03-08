@@ -12,7 +12,7 @@
 #include <Entities/WayPoint.h>
 
 #include <Systems/SystemPathPlanning.h>
-#include <Systems/SystemOnline.h>
+#include "../Systems/SystemOnline.h"
 
 #include <cstdlib> /* srand, rand */
 #include <iostream>
@@ -64,7 +64,7 @@ class ManCar : public Manager {
     bool CarTotemInVisionRange(Entity *currentCar, Entity* desCar, uint32_t rangeVision);
     void Integrate(float) override;
     Entity* GetDesirableTarget(Entity* actualCar);
-    void setSystemOnline(SystemOnline* systOn){ systemOnline = systOn; };
+    void SetSystemOnline(SystemOnline* systOn){ systemOnline = systOn; };
     
 
    private:
@@ -79,15 +79,15 @@ class ManCar : public Manager {
     void NotTurning(DataMap* d);
     void SkidCar(DataMap* d);
     void NotSkid(DataMap* d);
-    void CollisionPowerUp(DataMap* d);
-    void CollisionPowerUpAI(DataMap* d);
-    void CatchTotemPlayer(DataMap* d);
+    void CollisionCarPowerUp(DataMap* d);
     void CatchTotemCar(DataMap* d);
-    void UseTotem(Entity* carWinTotem);
+    void ObtainTotem(Entity* carWinTotem);
     void ChangeTotemCar(DataMap* d);
     void NewInputsReceived(DataMap* d);
     void NewSyncReceived(DataMap* d);
     void NewCatchPUReceived(DataMap* d);
+    void NewCatchTotemReceived(DataMap* d);
+    void NewLostTotemReceived(DataMap* d);
     void DeletePlayer(DataMap* d);
     //void ChangePosDestination(DataMap* d);
     //void MoveToPowerUp(DataMap* d);
