@@ -19,6 +19,8 @@ struct Player {
     int64_t lastCatchTotemTimeReceived{0};
 
     bool hasTotem {false};
+    bool disconnected {false};
+    bool readyToDelete {false};
 
     static uint16_t nextId;
    private:

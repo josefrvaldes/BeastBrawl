@@ -15,8 +15,8 @@ using namespace std::chrono;
 
 
 
-TCPServer::TCPServer(boost::asio::io_context& context_, uint16_t port_)
-    : context(context_), acceptor_(context_, tcp::endpoint(tcp::v4(), port_)) {
+TCPServer::TCPServer(boost::asio::io_context& context_, uint16_t port_, UDPServer &udpServer_)
+    : context{context_}, acceptor_{context_, tcp::endpoint(tcp::v4(), port_)}, udpServer{udpServer_} {
     //StartReceiving();
 }
 
@@ -79,7 +79,8 @@ bool TCPServer::PlayerExists(TCPConnection::pointer new_connection) {
 // obtener el string con todos los datos
 void TCPServer::SendStartGame() {
     // como ya vamos a empezar una partida nueva, a partir de ahora sí aceptaremos que la partida se pueda acabar
-    Server::ACCEPTING_ENDGAME = true; 
+    udpServer.StartReceiving();
+    udpServer.CheckDisconnectionsAfterSeconds();
     for (const auto& currentPlayer : connections) {
         json j;
         uint8_t posVector = 0;
@@ -109,4 +110,5 @@ void TCPServer::SendStartGame() {
 
         currentPlayer->SendStartMessage(buff.get(), currentBuffSize);
     }
+    Server::ACCEPTING_ENDGAME = true; 
 }

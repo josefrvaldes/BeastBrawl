@@ -19,6 +19,7 @@ class UDPServer : public boost::enable_shared_from_this<UDPServer> {
     ~UDPServer();
     void StartReceiving();
     void Close();
+    void CheckDisconnectionsAfterSeconds();
 
    private:
     void SavePlayerIfNotExists(const uint16_t id, udp::endpoint& endpoint);
@@ -37,8 +38,10 @@ class UDPServer : public boost::enable_shared_from_this<UDPServer> {
     void DetectUsersDisconnected();
 
     void ReceiveNewCar();
+    void SendEndgame(const Player &p);
 
     void RequestId();
+    void Exit();
     Player* GetPlayerById(uint16_t id);
 
     // --- TCP --- (sala de espera)
@@ -68,4 +71,11 @@ class UDPServer : public boost::enable_shared_from_this<UDPServer> {
     asio::io_context& context;
     udp::socket socket;
     std::vector<Player> players;
+
+    const uint16_t SEGUNDOS = 1000;
+    const uint32_t TIEMPO_DESCONEXION = 5 * SEGUNDOS;
+    const uint8_t TIME_BETWEEN_DISCONNECTION_CHECKS = 2;
+
+    std::unique_ptr<boost::asio::steady_timer> timer;
+    int64_t timeServerStartedReceiving;
 };

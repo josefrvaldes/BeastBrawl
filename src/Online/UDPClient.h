@@ -51,6 +51,7 @@ class UDPClient {
     void HandleReceivedSync(unsigned char* recevBuff, size_t bytesTransferred);
     void HandleReceivedCatchPU(unsigned char* recevBuff, size_t bytesTransferred);
     void HandleReceivedDisconnection(unsigned char* recevBuff, size_t bytesTransferred);
+    void HandleReceivedEndgame(unsigned char* recevBuff, size_t bytesTransferred);
 
     void HandleSentInputs(const boost::system::error_code& errorCode, std::size_t bytes_transferred);
     void HandleSentSync(const boost::system::error_code& errorCode, std::size_t bytes_transferred);

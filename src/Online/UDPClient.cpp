@@ -85,6 +85,9 @@ void UDPClient::HandleReceived(std::shared_ptr<unsigned char[]> recevBuff, const
             case Constants::PetitionTypes::SEND_DISCONNECTION:
                 HandleReceivedDisconnection(recevBuff.get(), bytesTransferred);
                 break;
+            case Constants::PetitionTypes::ENDGAME: {
+                EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_ENDRACE});
+            } break;
 
             default:
                 cout << "Tipo de petición no contemplada" << endl;
@@ -141,7 +144,7 @@ void UDPClient::HandleReceivedSync(unsigned char* recevBuff, size_t bytesTransfe
     size_t currentIndex = 0;
 
     Serialization::Deserialize<uint8_t>(recevBuff, currentIndex);  // petition tipe
-    int64_t time = Serialization::Deserialize<int64_t>(recevBuff, currentIndex);
+    /*int64_t time = */ Serialization::Deserialize<int64_t>(recevBuff, currentIndex);
     uint16_t idCarOnline = Serialization::Deserialize<uint16_t>(recevBuff, currentIndex);
 
     glm::vec3 posCar = Serialization::DeserializeVec3(recevBuff, currentIndex);
@@ -194,7 +197,7 @@ void UDPClient::HandleReceivedSync(unsigned char* recevBuff, size_t bytesTransfe
 void UDPClient::HandleReceivedCatchPU(unsigned char* recevBuff, size_t bytesTransferred) {
     size_t currentIndex = 0;
     Serialization::Deserialize<uint8_t>(recevBuff, currentIndex);  // petition tipe
-    int64_t time = Serialization::Deserialize<int64_t>(recevBuff, currentIndex);
+    /*int64_t time = */ Serialization::Deserialize<int64_t>(recevBuff, currentIndex);
     uint16_t idCarOnline = Serialization::Deserialize<uint16_t>(recevBuff, currentIndex);
     typeCPowerUp typePU = Serialization::DeserializePowerUpOnly(recevBuff, currentIndex);
 
@@ -208,7 +211,7 @@ void UDPClient::HandleReceivedCatchPU(unsigned char* recevBuff, size_t bytesTran
 void UDPClient::HandleReceivedDisconnection(unsigned char* recevBuff, size_t bytesTransferred) {
     size_t currentIndex = 0;
     Serialization::Deserialize<uint8_t>(recevBuff, currentIndex);  // petition tipe
-    uint16_t idCarOnline = Serialization::Deserialize<uint16_t>(recevBuff, currentIndex);
+    // uint16_t idCarOnline = Serialization::Deserialize<uint16_t>(recevBuff, currentIndex);
 
     /*std::shared_ptr<DataMap> data = make_shared<DataMap>();
     (*data)[DataType::ID_ONLINE] = idCarOnline;
@@ -326,7 +329,6 @@ void UDPClient::SendCatchTotem(uint16_t idOnline, uint16_t idPlayerCatched) {
             boost::asio::placeholders::bytes_transferred));
 }
 
-
 void UDPClient::SendEndgame() {
     unsigned char requestBuff[Constants::ONLINE_BUFFER_SIZE];
     size_t currentBuffSize = 0;
@@ -335,7 +337,7 @@ void UDPClient::SendEndgame() {
 
     Serialization::Serialize(requestBuff, &callType, currentBuffSize);
     Serialization::Serialize(requestBuff, &time, currentBuffSize);
-    
+
     socket.async_send_to(
         boost::asio::buffer(requestBuff, currentBuffSize),
         serverEndpoint,
