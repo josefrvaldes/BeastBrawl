@@ -142,7 +142,7 @@ void UDPServer::HandleReceivedCatchPU(const uint16_t id, unsigned char resendPU[
 }
 
 void UDPServer::HandleReceivedCatchTotem(const uint16_t id, unsigned char buffer[], const size_t currentBufferSize, const udp::endpoint& remoteClient) {
-    if(playerWithTotem == 255){  // en caso de que nadie tubiese el totem
+    if(playerWithTotem == NOBODY_HAS_TOTEM){  // en caso de que nadie tubiese el totem
         size_t currentIndex = 0;
         Serialization::Deserialize<uint8_t>(buffer, currentIndex);  // petitionType
         int64_t time = Serialization::Deserialize<int64_t>(buffer, currentIndex);
@@ -175,8 +175,8 @@ void UDPServer::HandleReceivedLostTotem(const uint16_t id, unsigned char buffer[
     uint16_t idCarOnline = Serialization::Deserialize<uint16_t>(buffer, currentIndex);
     uint16_t idCarLostTotem = Serialization::Deserialize<uint16_t>(buffer, currentIndex);
 
-    if(playerWithTotem!=255 && playerWithTotem == idCarLostTotem){  // en caso de que alguien tubiese el totem
-        playerWithTotem = 255;
+    if(playerWithTotem!=NOBODY_HAS_TOTEM && playerWithTotem == idCarLostTotem){  // en caso de que alguien tubiese el totem
+        playerWithTotem = NOBODY_HAS_TOTEM;
 
         for(uint8_t i=0; i<3; ++i)
             for(Player& currentPlayer : players) 

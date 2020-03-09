@@ -80,5 +80,6 @@ class UDPServer : public boost::enable_shared_from_this<UDPServer> {
     std::unique_ptr<boost::asio::steady_timer> timer;
     int64_t timeServerStartedReceiving;
 
-    uint16_t playerWithTotem = 255; // ningun jugador va a tener el totem si es el 255
+    const uint8_t NOBODY_HAS_TOTEM = 255;
+    uint16_t playerWithTotem = NOBODY_HAS_TOTEM; // ningun jugador va a tener el totem si es el 255
 };
