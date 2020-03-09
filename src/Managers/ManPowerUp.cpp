@@ -8,6 +8,7 @@
 #include <iostream>
 #include "../Components/CBoundingSphere.h"
 #include "../Components/CRemovableObject.h"
+#include <Game.h>
 #include "../Components/CType.h"
 
 class Position;

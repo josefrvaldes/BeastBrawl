@@ -33,7 +33,7 @@ class UDPServer : public boost::enable_shared_from_this<UDPServer> {
     void HandleReceivedLostTotem(const uint16_t id, unsigned char buffer[], const size_t currentBufferSize, const udp::endpoint& remoteClient);
     void HandleReceivedUsedRoboJorobo(const uint16_t id, unsigned char buffer[], const size_t currentBufferSize, const udp::endpoint& remoteClient);
     void HandleReceivedCollideNitro(const uint16_t id, unsigned char buffer[], const size_t currentBufferSize, const udp::endpoint& remoteClient);
-    void HandleReceivedThrowPU(const uint16_t id, unsigned char buffer[], const size_t currentBufferSize, const udp::endpoint& remoteClient);
+    void HandleReceivedThrowPU(const uint16_t id, const uint16_t idPUOnline, uint8_t typePU, unsigned char buffer[], const size_t currentBufferSize, const udp::endpoint& remoteClient);
     
     void ResendBytesToOthers(const uint16_t id, const unsigned char resendBytes[], const size_t currentBufferSize, const udp::endpoint& remoteClient);
     void SendBytes(const unsigned char resendBytes[], const size_t currentBufferSize, const Player& player);

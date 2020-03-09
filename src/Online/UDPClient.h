@@ -2,11 +2,11 @@
 
 #include <boost/array.hpp>
 #include <boost/asio.hpp>
-#include <unordered_map>
 #include <boost/asio/buffer.hpp>
 #include <chrono>
 #include <iostream>
 #include <thread>
+#include <unordered_map>
 #include "../../include/glm/vec3.hpp"
 #include "../Components/CPowerUp.h"
 #include "../Constants.h"
@@ -42,10 +42,10 @@ class UDPClient {
                   bool totemInGround, const glm::vec3& posTotem);
     void SendCatchPU(uint16_t idOnline, typeCPowerUp typePU);
     void SendCatchTotem(uint16_t idOnline, uint16_t idPlayerCatched);
-    void SendLostTotem(uint16_t idOnline, uint16_t idPlayerLosted, const glm::vec3 &pos, int numNavMesh);
+    void SendLostTotem(uint16_t idOnline, uint16_t idPlayerLosted, const glm::vec3& pos, int numNavMesh);
     void SendRoboJorobo(uint16_t idOnline);
     void SendCollideNitro(uint16_t idOnline, uint16_t idWithTotem, uint16_t idWithNitro);
-    void SendThrowMelonOPudin(uint16_t idOnline, int64_t time, const glm::vec3 &position, const glm::vec3 &rotation, int8_t typePU);
+    void SendThrowMelonOPudin(uint16_t idOnline, int64_t time, uint16_t idPUOnline, const glm::vec3& position, const glm::vec3& rotation, int8_t typePU);
     void SendEndgame();
     void SendDateTime();
     uint32_t idMainCar;
@@ -91,6 +91,4 @@ class UDPClient {
     unordered_map<uint16_t, int64_t> lastTimeLostTotemReceived;
     unordered_map<uint16_t, int64_t> lastTimeUsedRoboJoroboReceived;
     unordered_map<uint16_t, int64_t> lastTimeCollideNitroReceived;
-
-
 };

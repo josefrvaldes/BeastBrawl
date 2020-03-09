@@ -136,7 +136,9 @@ void UDPServer::HandleReceive(std::shared_ptr<unsigned char[]> recevBuff, std::s
                     case Constants::PetitionTypes::SEND_THROW_MELON_O_PUDIN: {
                         if (p.lastThrowPUReceived < time) {
                             p.lastThrowPUReceived = time;
-                            HandleReceivedThrowPU(idPlayer, buffRecieved, bytesTransferred, *remoteClient.get());
+                            uint8_t typePU = Serialization::Deserialize<int8_t>(recevBuff.get(), currentIndex);
+                            int16_t idPUOnline = Serialization::Deserialize<int16_t>(recevBuff.get(), currentIndex);
+                            HandleReceivedThrowPU(idPlayer, idPUOnline, typePU, buffRecieved, bytesTransferred, *remoteClient.get());
                         } else {
                             //cout << Utils::getISOCurrentTimestampMillis() << "Se ha ignorado un paquete de lostTotem porque era antiguo" << endl;
                         }
@@ -167,7 +169,10 @@ void UDPServer::HandleReceivedCatchPU(const uint16_t id, unsigned char resendPU[
     ResendBytesToOthers(id, resendPU, currentBufferSize, originalClient);
 }
 
-void UDPServer::HandleReceivedThrowPU(const uint16_t id, unsigned char resendPU[], const size_t currentBufferSize, const udp::endpoint& originalClient) {
+void UDPServer::HandleReceivedThrowPU(const uint16_t id, const uint16_t idPUOnline, uint8_t typePU, unsigned char resendPU[], const size_t currentBufferSize, const udp::endpoint& originalClient) {
+    // el id del melón es el id del user concatenado con el id real
+    idsMelons.push_back(idPUOnline);
+    std::cout << "Hemos creado el melón con id " << idPUOnline << ", y lo hemos guardado así que ahora tenemos " << idsMelons.size() << endl;
     ResendBytesToOthers(id, resendPU, currentBufferSize, originalClient);
 }
 
@@ -175,8 +180,8 @@ void UDPServer::HandleReceivedCatchTotem(const uint16_t id, unsigned char buffer
     if(playerWithTotem == Constants::ANY_PLAYER){  // en caso de que nadie tubiese el totem
         size_t currentIndex = 0;
         Serialization::Deserialize<uint8_t>(buffer, currentIndex);  // petitionType
-        int64_t time = Serialization::Deserialize<int64_t>(buffer, currentIndex);
-        uint16_t idCarOnline = Serialization::Deserialize<uint16_t>(buffer, currentIndex);
+        /*int64_t time = */Serialization::Deserialize<int64_t>(buffer, currentIndex);
+        /*uint16_t idCarOnline = */Serialization::Deserialize<uint16_t>(buffer, currentIndex);
         uint16_t idCarCatchTotem = Serialization::Deserialize<uint16_t>(buffer, currentIndex);
 
         playerWithTotem = idCarCatchTotem;
@@ -192,8 +197,8 @@ void UDPServer::HandleReceivedLostTotem(const uint16_t id, unsigned char buffer[
     // se comprueba que quien lo pierde es quien realmente lo tiene
     size_t currentIndex = 0;
     Serialization::Deserialize<uint8_t>(buffer, currentIndex);  // petitionType
-    int64_t time = Serialization::Deserialize<int64_t>(buffer, currentIndex);
-    uint16_t idCarOnline = Serialization::Deserialize<uint16_t>(buffer, currentIndex);
+    /*int64_t time = */Serialization::Deserialize<int64_t>(buffer, currentIndex);
+    /*uint16_t idCarOnline = */Serialization::Deserialize<uint16_t>(buffer, currentIndex);
     uint16_t idCarLostTotem = Serialization::Deserialize<uint16_t>(buffer, currentIndex);
 
     if(playerWithTotem!=Constants::ANY_PLAYER && playerWithTotem == idCarLostTotem){  // en caso de que alguien tubiese el totem
@@ -236,8 +241,8 @@ void UDPServer::HandleReceivedCollideNitro(const uint16_t id, unsigned char buff
     // se comprueba que quien lo pierde es quien realmente lo tiene
     size_t currentIndex = 0;
     Serialization::Deserialize<uint8_t>(buffer, currentIndex);  // petitionType
-    int64_t time = Serialization::Deserialize<int64_t>(buffer, currentIndex);
-    uint16_t idCarOnline = Serialization::Deserialize<uint16_t>(buffer, currentIndex);
+    /*int64_t time = */Serialization::Deserialize<int64_t>(buffer, currentIndex);
+    /*uint16_t idCarOnline = */Serialization::Deserialize<uint16_t>(buffer, currentIndex);
     uint16_t idCarWithTotem = Serialization::Deserialize<uint16_t>(buffer, currentIndex);
     uint16_t idCarWithNitro = Serialization::Deserialize<uint16_t>(buffer, currentIndex);
     

@@ -12,6 +12,7 @@
 #include "../Online/UDPClient.h"
 
 #include "../Components/COnline.h"
+#include "../Components/CIDOnline.h"
 #include "../Components/CPowerUp.h"
 #include "../Components/CTargetEntity.h"
 #include "../Components/CTotem.h"
@@ -94,7 +95,11 @@ void SystemOnline::SendLostTotem(uint16_t idCarCatched, const glm::vec3 &positio
         udpClient->SendLostTotem(idOnlineMainCar, idCarCatched, position, numNavMesh);
 }
 
-void SystemOnline::SendThrowPU(shared_ptr<PowerUp> &powerUp) const {
+void SystemOnline::SendThrowPU(shared_ptr<PowerUp> &powerUp) {
+    // se le asigna al powerup un id que será el que se guardará el server y servirá luego para eliminar este PU concreto cuando choque
+    shared_ptr<CIDOnline> cidOnline = make_shared<CIDOnline>(idOnlineMainCar);
+    powerUp->AddComponent(cidOnline);
+    cout << "Hemos creado un cidOnline que es " << cidOnline->idOnline << endl;
     auto cTransformable = static_cast<CTransformable *>(powerUp->GetComponent(CompType::TransformableComp).get());
     auto cPowerUp = static_cast<CPowerUp *>(powerUp->GetComponent(CompType::PowerUpComp).get());
     int64_t time = Utils::getMillisSinceEpoch();
@@ -106,7 +111,7 @@ void SystemOnline::SendThrowPU(shared_ptr<PowerUp> &powerUp) const {
         //     udpClient->SendThrowPUBanana(idOnlineMainCar, powerUp);
     } else {
         for (uint8_t i = 0; i < TIMES_RESEND; ++i)
-            udpClient->SendThrowMelonOPudin(idOnlineMainCar, time, cTransformable->position, cTransformable->rotation, static_cast<int8_t>(cPowerUp->typePowerUp));
+            udpClient->SendThrowMelonOPudin(idOnlineMainCar, time, cidOnline->idOnline, cTransformable->position, cTransformable->rotation, static_cast<int8_t>(cPowerUp->typePowerUp));
     }
 }
 

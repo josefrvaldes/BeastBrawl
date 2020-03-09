@@ -305,7 +305,9 @@ void UDPClient::HandleReceivedThrowMelonOPudin(unsigned char* recevBuff, size_t 
     Serialization::Deserialize<uint8_t>(recevBuff, currentIndex);   // petition tipe
     Serialization::Deserialize<int64_t>(recevBuff, currentIndex);   // tiempo
     Serialization::Deserialize<uint16_t>(recevBuff, currentIndex);  // idOnline del que lo envio
+    
     int8_t typePU = Serialization::Deserialize<int8_t>(recevBuff, currentIndex);
+    uint16_t idPUOnline = Serialization::Deserialize<uint16_t>(recevBuff, currentIndex);
     vec3 position = Serialization::DeserializeVec3(recevBuff, currentIndex);
     vec3 rotation = Serialization::DeserializeVec3(recevBuff, currentIndex);
     cout << "Hemos recibido un throw melon o pudin type[" << unsigned(typePU) << "] pos[" << position.x << "," << position.y << "," << position.z << "]" << endl
@@ -315,6 +317,7 @@ void UDPClient::HandleReceivedThrowMelonOPudin(unsigned char* recevBuff, size_t 
     (*data)[DataType::VEC3_POS] = position;
     (*data)[DataType::VEC3_ROT] = rotation;
     (*data)[DataType::TYPE_POWER_UP] = typePU;
+    (*data)[DataType::ID_ONLINE] = idPUOnline;
     EventManager::GetInstance().AddEventMulti(Event{EventType::NEW_THROW_PU_RECEIVED, data});
 }
 
@@ -466,7 +469,7 @@ void UDPClient::SendLostTotem(uint16_t idOnline, uint16_t idPlayerLosted, const 
             boost::asio::placeholders::bytes_transferred));
 }
 
-void UDPClient::SendThrowMelonOPudin(uint16_t idOnline, int64_t time, const glm::vec3& position, const glm::vec3& rotation, int8_t typePU) {
+void UDPClient::SendThrowMelonOPudin(uint16_t idOnline, int64_t time, uint16_t idPUOnline, const glm::vec3& position, const glm::vec3& rotation, int8_t typePU) {
     unsigned char requestBuff[Constants::ONLINE_BUFFER_SIZE];
     size_t currentBuffSize = 0;
     uint8_t callType = Constants::PetitionTypes::SEND_THROW_MELON_O_PUDIN;
@@ -475,6 +478,7 @@ void UDPClient::SendThrowMelonOPudin(uint16_t idOnline, int64_t time, const glm:
     Serialization::Serialize(requestBuff, &idOnline, currentBuffSize);
 
     Serialization::Serialize(requestBuff, &typePU, currentBuffSize);
+    Serialization::Serialize(requestBuff, &idPUOnline, currentBuffSize);
     Serialization::SerializeVec3(requestBuff, position, currentBuffSize);
     Serialization::SerializeVec3(requestBuff, rotation, currentBuffSize);
 
