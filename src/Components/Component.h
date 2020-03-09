@@ -23,6 +23,7 @@ enum CompType {
     NitroComp,
     RoboJoroboComp,
     TotemComp,
+    ClockComp,
     TargetEntityComp,
     WayPointEdgesComp,
     DimensionsComp,
