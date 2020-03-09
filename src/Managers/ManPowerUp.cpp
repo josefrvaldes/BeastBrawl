@@ -82,6 +82,7 @@ void ManPowerUp::CreatePowerUp(DataMap *d) {
                 // posteriormente materializará el PU
             } else {
                 systemOnline->SendThrowPU(powerUp);
+                MaterializePowerUp(powerUp);
             }
 
             // si el PU es distinto a telebanana, pudding o melón, no hacemos aquí el tratamiento especial
