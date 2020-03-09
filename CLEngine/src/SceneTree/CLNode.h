@@ -54,8 +54,8 @@ class CLNode{
         bool RemoveChild(CLNode* child);
         bool HasChild(CLNode* child);
         CLNode* GetNodeByID(unsigned int id);
-        void DeleteNode(unsigned int id);
-        void DeleteNode(CLNode* node);
+        bool DeleteNode(unsigned int id);
+        bool DeleteNode(CLNode* node);
         glm::mat4 TranslateMatrix();
         glm::mat4 RotateMatrix();
         glm::mat4 ScaleMatrix();

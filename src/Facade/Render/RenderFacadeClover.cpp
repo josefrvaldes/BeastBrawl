@@ -569,6 +569,8 @@ void RenderFacadeClover::Draw3DLine(vec3& pos1, vec3& pos2, uint16_t r, uint16_t
 }
 
 void RenderFacadeClover::DeleteEntity(Entity* entity) {
+    auto cId = static_cast<CId*>(entity->GetComponent(CompType::IdComp).get());
+    smgr->DeleteNode(cId->id);
 }
 
 void RenderFacadeClover::FacadeDrawBoundingPlane(Entity* entity) const {

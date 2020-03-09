@@ -80,7 +80,8 @@ int main() {
         mesh2->SetShaderProgramID(resourceShader->GetProgramID());
 
         
-
+        auto mesh3 = mesh2->AddMesh(5);
+        mesh3->SetShaderProgramID(resourceShader->GetProgramID());
 
         static_cast<CLCamera*>(camera->GetEntity())->SetCameraTarget(mesh1->GetTranslation());
 
@@ -91,7 +92,7 @@ int main() {
     int max = 200;
     int min = -200;
     int j = 0;
-    for(int i = 6; i<50; i++){
+    for(int i = 50; i<100; i++){
         nodes.push_back(meshes->AddMesh(i));
         nodes[j]->SetShaderProgramID(resourceShader->GetProgramID());
 
@@ -108,6 +109,7 @@ int main() {
 
     static_cast<CLMesh*>(mesh1->GetEntity())->SetMesh(resourceMeshBox);
     static_cast<CLMesh*>(mesh2->GetEntity())->SetMesh(resourceMesh);
+    static_cast<CLMesh*>(mesh3->GetEntity())->SetMesh(resourceMesh);
 
     camera->SetTranslation(glm::vec3(0.0f, 7.0f, 60.0f));
     mesh1->SetScalation(glm::vec3(2.0f, 2.0f, 2.0f));
@@ -116,6 +118,8 @@ int main() {
     mesh2->SetScalation(glm::vec3(0.2f, 0.2f, 0.2f));
     mesh2->SetRotation(glm::vec3(0.0f, 180.0f, 0.0f));
     mesh2->SetTranslation(glm::vec3(10.0f,0.0f,0.0f));
+    mesh3->SetTranslation(glm::vec3(-40.0f,0.0f,0.0f));
+    mesh3->SetScalation(glm::vec3(2.0f,2.0f,2.0f));
 
     mesh2->GetGlobalTranslation();
 
@@ -251,6 +255,10 @@ int main() {
             previousTime = currentTime;
         }
 
+
+        if (glfwGetKey(device->GetWindow(), GLFW_KEY_F1)) {
+            smgr->DeleteNode(mesh2->GetEntity()->GetID());
+        }
         
         device->DrawObjects();
         device->InputClose();
@@ -258,7 +266,7 @@ int main() {
         device->RenderImgui();
         device->EndScene();
         index += 0.2;
-    }
+    } 
 
 
     delete device;
