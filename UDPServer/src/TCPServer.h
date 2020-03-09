@@ -13,11 +13,14 @@ using namespace boost;
 using namespace std;
 using namespace std::chrono;
 
+class UDPServer;
 
 class TCPServer{
    public:
-    TCPServer(boost::asio::io_context& context_, uint16_t port_);
+    TCPServer(boost::asio::io_context& context_, uint16_t port_, UDPServer &udpServer_);
+    ~TCPServer();
     void StartReceiving();
+    void Close();
 
    private:
     
@@ -27,6 +30,7 @@ class TCPServer{
 
     boost::asio::io_context& context;
     tcp::acceptor acceptor_;
+    UDPServer &udpServer;
 
     vector<TCPConnection::pointer> connections;
     std::vector<Player> players;

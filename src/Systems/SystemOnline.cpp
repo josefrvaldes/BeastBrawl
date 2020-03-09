@@ -15,16 +15,34 @@
 #include "../Components/CTotem.h"
 #include "../Components/CTransformable.h"
 #include "../Systems/Utils.h"
+#include "../EventManager/Event.h"
+#include "../EventManager/EventManager.h"
 
 using namespace boost::asio;
 
-SystemOnline::SystemOnline(ManCar &manCar_, uint16_t idOnlineMainCar_) : idOnlineMainCar{idOnlineMainCar_}, manCar{manCar_}, udpClient{make_unique<UDPClient>(SERVER_HOST, SERVER_PORT_UDP)} {
+SystemOnline::SystemOnline(ManCar &manCar_, uint16_t idOnlineMainCar_) : idOnlineMainCar{idOnlineMainCar_}, manCar{manCar_}, udpClient{make_unique<UDPClient>(Constants::SERVER_HOST, SERVER_PORT_UDP)} {
     shared_ptr<CarHuman> car = manCar.GetCar();
+    SubscribeToEvents();
+}
+
+void SystemOnline::SubscribeToEvents() {
+    EventManager::GetInstance().SubscribeMulti(Listener(
+        EventType::STATE_ENDRACE,
+        bind(&SystemOnline::EventEndgame, this, std::placeholders::_1),
+        "Endgame"));
+}
+
+void SystemOnline::EventEndgame(DataMap *dataMap) {
+    udpClient->SendEndgame();
 }
 
 void SystemOnline::SendInputs(const vector<Constants::InputTypes> &inputs) const{
     // cout << Utils::getISOCurrentTimestampMillis() << "id[" << idOnlineMainCar << "] Enviamos los inputs" << endl;
     udpClient->SendInputs(inputs, idOnlineMainCar);
+}
+
+void SystemOnline::SendEndgame() const{
+    udpClient->SendEndgame();
 }
 
 void SystemOnline::SendSync(ManCar *manCars, ManTotem *manTotem) const{
@@ -70,4 +88,10 @@ void SystemOnline::SendCatchPU(CPowerUp& cPowerUp) const{
 void SystemOnline::SendCatchTotem(uint16_t idCarCatched) const{
     for(uint8_t i=0; i<3; ++i)
         udpClient->SendCatchTotem(idOnlineMainCar, idCarCatched);
+}
+
+
+void SystemOnline::SendLostTotem(uint16_t idCarCatched, const glm::vec3 &position, int numNavMesh) const{
+    for(uint8_t i=0; i<3; ++i)
+        udpClient->SendLostTotem(idOnlineMainCar, idCarCatched, position, numNavMesh);
 }

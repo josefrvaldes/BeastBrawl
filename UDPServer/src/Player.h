@@ -17,10 +17,12 @@ struct Player {
     int64_t lastSyncTimeReceived{0};
     int64_t lastCatchPUTimeReceived{0};
     int64_t lastCatchTotemTimeReceived{0};
+    int64_t lastLostTotemTimeReceived{0};
 
     bool hasTotem {false};
+    bool disconnected {false};
+    bool readyToDelete {false};
 
-   private:
     static uint16_t nextId;
-
+   private:
 };

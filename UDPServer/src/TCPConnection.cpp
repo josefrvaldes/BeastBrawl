@@ -15,6 +15,10 @@ TCPConnection::TCPConnection(asio::io_context& io_context) : socket_(io_context)
 
 }
 
+void TCPConnection::Close() {
+    socket_.close();
+}
+
 void TCPConnection::Start(){
     
     //message_ = GetTime();

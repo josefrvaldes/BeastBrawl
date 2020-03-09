@@ -18,18 +18,18 @@ Totem::Totem()
       // default values
     glm::vec3 pos   = glm::vec3(40.0f, 20.0f, 30.0f);
     glm::vec3 rot   = glm::vec3(0.0f, 90.0f, 0.0f);
-    glm::vec3 scale = glm::vec3(0.6f, 0.6f, 0.6f);
+    glm::vec3 scale = glm::vec3(0.4f, 0.4f, 0.4f);
 
     string mesh;
     if(Constants::RENDER_ENGINE == Constants::RenderEngine::CLOVER){
-        //mesh    = "totem_tex.fbx";
-        mesh  = "TEST_BOX.fbx";
+        mesh    = "totem_tex.fbx";
+        //mesh  = "TEST_BOX.fbx";
         
     }else if(Constants::RENDER_ENGINE == Constants::RenderEngine::IRRLICHT){
-        mesh    =   "kart_ia.obj";
+        mesh    =   "totem.obj";
     }
 
-    string texture = "totem.jpg";
+    string texture = " ";
     //string mesh = "totem_tex.fbx";
     //string mesh    = "kart_ia.obj";
 
@@ -37,7 +37,7 @@ Totem::Totem()
     string fragmentShader = "CLEngine/src/Shaders/fragment.glsl";
     
     shared_ptr<CId> cId   = make_shared<CId>();
-    shared_ptr<CType> cType = make_shared<CType>(ModelType::Cube);
+    shared_ptr<CType> cType = make_shared<CType>(ModelType::AnimatedMesh);
     shared_ptr<CTransformable> cTransformable = make_shared<CTransformable>(pos, rot, scale); 
     shared_ptr<CTexture> cTexture = make_shared<CTexture>(texture);
     shared_ptr<CMesh> cMesh   = make_shared<CMesh>(mesh);

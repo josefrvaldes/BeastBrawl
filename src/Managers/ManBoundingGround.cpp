@@ -15,13 +15,13 @@ ManBoundingGround::ManBoundingGround() {
 
     //CreateBoundingGround(vec3(-100.f, 100.f, 50.f),vec3(-100.f, 100.f, 100.f),vec3(100.f, 10.f, 100.f),vec3(100.f, 10.f, 50.f));
 
-    /*
+    
     double vertex1X = 0, vertex1Y = 0, vertex1Z = 0;  // utilizamos double porque tiene mas precison que float (64b vs 32b)
     double vertex2X = 0, vertex2Y = 0, vertex2Z = 0;
     double vertex3X = 0, vertex3Y = 0, vertex3Z = 0;
     double vertex4X = 0, vertex4Y = 0, vertex4Z = 0;
 
-    std::ifstream i("mayan_map.json");
+    std::ifstream i("data.json");
     std::stringstream buffer;
     buffer << i.rdbuf();
     string jsonString = buffer.str();
@@ -32,7 +32,7 @@ ManBoundingGround::ManBoundingGround() {
     std::cout << "EL NUMERO DE BOUNDING GROUNDS EN EL JSON ES: " << navMeshCount << std::endl;
     //Leemos el array de NavMesh
     for(long unsigned int i = 0; i< navMeshCount; ++i){
-        string idNavMesh = to_string(i);  //El primer elemento es "NAVMESH 1"
+        string idNavMesh = to_string(i);  
         auto boundingPlaneActual = j["BOUNDING GROUNDS"][idNavMesh];
         // cogemos los 4 vertices
         auto vertex1 = boundingPlaneActual["vertex1"];
@@ -59,7 +59,7 @@ ManBoundingGround::ManBoundingGround() {
         CreateBoundingGround(v_vertex1, v_vertex2, v_vertex4, v_vertex3);
     }
     
-    */
+    
 
 
     //CreateBoundingWall(vec3(-500.f, 20.f, -460.f),vec3(550.f, 20.f, -460.f),vec3(550.f, 120.f, -460.f),vec3(-500.f, 120.f, -460.f));
@@ -85,9 +85,11 @@ ManBoundingGround::ManBoundingGround() {
     //CreateBoundingWall(vec3(30.f, 40.f, 50.f),vec3(40.f, 40.f, 40.f),vec3(40.f, 10.f, 40.f),vec3(30.f, 10.f, 50.f));
 
     // TODO: Para ahorrar calculos ordenar elementos colisionables de arriba a bajo por la Y
+    /*
     CreateBoundingGround(vec3(-300.f, 50.f, 1000.f),vec3(300.f, 50.f, 1000.f),vec3(300.f, 50.f, 150.f),vec3(-300.f, 50.f, 150.f));
     CreateBoundingGround(vec3(-100.f, 50.f, 150.f),vec3(100.f, 50.f, 150.f),vec3(100.f, 10.f, 50.f),vec3(-100.f, 10.f, 50.f));
     CreateBoundingGround(vec3(-500.f, 10.f, 760.f),vec3(550.f, 10.f, 760.f),vec3(550.f, 10.f, -460.f),vec3(-500.f, 10.f, -460.f));
+    */
     //CreateBoundingGround(vec3(-500.f, -600.f, -100.f),vec3(550.f, -600.f, -100.f),vec3(550.f, -600.f, -460.f),vec3(-500.f, -600.f, -460.f));
 
 

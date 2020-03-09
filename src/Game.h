@@ -29,6 +29,7 @@ class Game{
         void SetStateInGameMulti(DataMap* d);
         void SetStateEndRace(DataMap* d);
         void SetStateLobbyMulti(DataMap* d);
+        void SetStateControls(DataMap* d);
         
     
 

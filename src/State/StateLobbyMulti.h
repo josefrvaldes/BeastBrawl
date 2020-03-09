@@ -19,7 +19,7 @@ class StateLobbyMulti : public State{
     void InitState() override;
     void Update() override;
     void Render() override;
-    States GetState() { return State::States::LOBBY_MULTI; };
+    States GetState() override { return State::States::LOBBY_MULTI; };
 
     void SendData();
    private:

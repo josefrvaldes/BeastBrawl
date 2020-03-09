@@ -18,7 +18,7 @@ class StatePause : public State{
         void InitState() override;
         void Update() override;
         void Render() override;
-        States GetState() { return State::States::PAUSE; };
+        States GetState() override { return State::States::PAUSE; };
 
 
     private:

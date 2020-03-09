@@ -24,6 +24,26 @@ SteeringBehaviours::SteeringBehaviours(){
 }
 
 
+//
+bool SteeringBehaviours::IsTargeteable(Entity* m_actualCar, Entity* m_targetCar, ManBoundingWall* m_manBoundingWall) const{
+    auto cTransCar1 = static_cast<CTransformable*>(m_actualCar->GetComponent(CompType::TransformableComp).get());
+    auto cTransCar2 = static_cast<CTransformable*>(m_targetCar->GetComponent(CompType::TransformableComp).get());
+    glm::vec3 vectorToCar(cTransCar2->position.x - cTransCar1->position.x , cTransCar2->position.y - cTransCar1->position.y, cTransCar2->position.z - cTransCar1->position.z );
+
+    // Normalizar vector
+    float vectorDistance = sqrt(vectorToCar.x*vectorToCar.x + vectorToCar.y*vectorToCar.y + vectorToCar.z*vectorToCar.z);
+    glm::vec3 vectorToCarNormalized = glm::vec3( vectorToCar.x*(1/vectorDistance) , vectorToCar.y*(1/vectorDistance) ,vectorToCar.z*(1/vectorDistance)) ;
+
+    for(const auto& obstacle : m_manBoundingWall->GetEntities()){
+        auto cBoundPlaneObject = static_cast<CBoundingPlane*>(obstacle->GetComponent(CompType::CompBoundingPlane).get());
+        IntersectData intersData = clPhysics->HandleCollisionsRayWithPlane(*cTransCar1, vectorToCarNormalized, *cBoundPlaneObject);
+        if(intersData.intersects == true) return false;
+    }
+    return true;
+}
+
+
+
 
 void SteeringBehaviours::UpdateSeek(Entity* m_actualCar){
     // se calcula el vector al siguiente punto al que avanzara el coche

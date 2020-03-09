@@ -168,7 +168,7 @@ void StateInGame::Update() {
 
 
     // ACTUALIZACION DE LOS MANAGERS DE LOS COCHES
-    manCars->UpdateCar(*(manTotems.get()));
+    manCars->UpdateCarPlayer(*(manTotems.get()));
     // ACTUALIZACION DE LAS FISICAS DE LOS COCHES
     physics->update(manCars->GetCar().get(), cam.get());
 
@@ -183,12 +183,7 @@ void StateInGame::Update() {
     clPhysics->IntersectCarsBoxPowerUp(*manCars.get(), *manBoxPowerUps.get());
     clPhysics->IntersectCarsTotem(*manCars.get(), *manTotems.get());
     clPhysics->IntersectPowerUpWalls(*manPowerUps.get(), *manBoundingWall.get(), *manBoundingOBB.get());
-    // COLISIONES entre BoxPowerUp y player
-    //collisions->IntersectPlayerBoxPowerUp(manCars.get()->GetCar().get(), manBoxPowerUps.get());
-    // COLISIONES entre powerUp y player
-    //collisions->IntersectPlayerPowerUps(manCars.get()->GetCar().get(), manPowerUps.get(), manNavMesh.get());
-    // COLISIONES entre el Player y el Totem
-    //collisions->IntersectPlayerTotem(manCars.get()->GetCar().get(), manTotems.get());
+    
 
     // Actualizaciones en Irrlich
     renderEngine->UpdateCamera(cam.get(), manCars.get());

@@ -14,7 +14,6 @@
 #include <Entities/Camera.h>
 #include <Entities/CarAI.h>
 #include <Entities/CarHuman.h>
-#include <Game.h>
 #include <Systems/Physics.h>
 #include <Systems/PhysicsAI.h>
 #include <functional>
@@ -32,6 +31,7 @@
 #include "../Systems/SystemBtLoDMove.h"
 #include "../Systems/SystemBtMoveTo.h"
 #include "../Systems/SystemBtPowerUp.h"
+#include "../Systems/SystemGameRules.h"
 #include "../Systems/Utils.h"
 #include "Manager.h"
 
@@ -45,7 +45,8 @@ ManCar::ManCar() {
     CreateMainCar();
 
     // systemPathPlanning = make_unique<SystemPathPlanning>();
-    physicsAI = make_unique<PhysicsAI>();
+    //physicsAI = make_unique<PhysicsAI>();
+    systemGameRules = make_unique<SystemGameRules>();
 
     cout << "Hemos creado un powerup, ahora tenemos " << entities.size() << " powerups" << endl;
 }
@@ -63,37 +64,10 @@ ManCar::ManCar(Physics* _physics, Camera* _cam) : ManCar() {
 }
 
 // comprueba si has superado el tiempo necesario para ganar
-void ManCar::UpdateCar(ManTotem &manTotem_) {
-
-    auto cTotem = static_cast<CTotem*>(GetCar()->GetComponent(CompType::TotemComp).get());
-    if (cTotem->active) {
-        cTotem->accumulatedTime += duration_cast<milliseconds>(system_clock::now() - cTotem->timeStart).count();
-        cTotem->timeStart = system_clock::now();
-        // lo pintamos encima del coche
-        auto cTransformCar = static_cast<CTransformable *>(GetCar()->GetComponent(CompType::TransformableComp).get());
-        auto cTransformTotem = static_cast<CTransformable *>(manTotem_.GetEntities()[0]->GetComponent(CompType::TransformableComp).get());
-            cTransformTotem->position.x = cTransformCar->position.x;
-            cTransformTotem->position.z = cTransformCar->position.z;
-            cTransformTotem->position.y = cTransformCar->position.y + 10.0f;
-    }
-
-    if (cTotem->accumulatedTime / 1000.0 > cTotem->durationTime / 1000.0) {
-        cout << "Has ganado\n";
-        //Game::GetInstance()->SetState(State::ENDRACE);
-        EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_ENDRACE});
-    }
-
-    // Actualiza el componente nitro
-    auto cNitro = static_cast<CNitro*>(GetCar()->GetComponent(CompType::NitroComp).get());
-    if (cNitro->activePowerUp == true && duration_cast<milliseconds>(system_clock::now() - cNitro->timeStart).count() > cNitro->durationTime) {  // comprueba el tiempo desde que se lanzo
-        cNitro->deactivePowerUp();
-    }
-
-    // Actualiza el componente escudo
-    auto cShield = static_cast<CShield*>(GetCar()->GetComponent(CompType::ShieldComp).get());
-    if (cShield->activePowerUp == true && duration_cast<milliseconds>(system_clock::now() - cShield->timeStart).count() > cShield->durationTime) {  // comprueba el tiempo desde que se lanzo
-        cShield->deactivePowerUp();
-    }
+void ManCar::UpdateCarPlayer(ManTotem &manTotem_) {
+    auto totem = manTotem_.GetEntities()[0].get();
+    auto carPlayer =  static_cast<Entity*>(this->GetCar().get());
+    UpdateGeneralCar(*carPlayer, *totem);
 }
 
 // TODO: RECORDARRR!!!!!!!!!!!!!!!!!  TANTO EL "BtMoveTo" como el "systemPathPlanning" se deben hacer en la misma ITERACION!!!!
@@ -102,16 +76,6 @@ void ManCar::UpdateCar(ManTotem &manTotem_) {
 void ManCar::UpdateCarAI(CarAI* carAI, ManPowerUp* m_manPowerUp, ManBoxPowerUp* m_manBoxPowerUp, ManTotem* m_manTotem, ManWayPoint* graph, ManNavMesh* manNavMesh, 
                         ManBoundingWall* m_manBoundingWall, SystemBtPowerUp* systemBtPowerUp, SystemBtMoveTo* systemBtMoveTo, SystemBtLoDMove* systemBtLoDMove, SystemPathPlanning *systemPathPlanning) {
     
-
-    auto cTotem = static_cast<CTotem*>(carAI->GetComponent(CompType::TotemComp).get());
-    if (cTotem->active) {
-        auto cTransformCar = static_cast<CTransformable *>(carAI->GetComponent(CompType::TransformableComp).get());
-        auto cTransformTotem = static_cast<CTransformable *>(m_manTotem->GetEntities()[0]->GetComponent(CompType::TransformableComp).get());
-            cTransformTotem->position.x = cTransformCar->position.x;
-            cTransformTotem->position.z = cTransformCar->position.z;
-            cTransformTotem->position.y = cTransformCar->position.y + 10.0f;
-    }
-
     //manNavMesh->UpdateNavMeshEntity(carAI);
     systemBtMoveTo->update(carAI, this, m_manPowerUp, m_manBoxPowerUp, m_manTotem, graph, manNavMesh);
 
@@ -119,13 +83,18 @@ void ManCar::UpdateCarAI(CarAI* carAI, ManPowerUp* m_manPowerUp, ManBoxPowerUp* 
 
     systemBtLoDMove->update(carAI, this, m_manPowerUp, m_manBoxPowerUp, m_manTotem, graph, manNavMesh, m_manBoundingWall);
 
-    physicsAI->Update(carAI, graph);
+    //physicsAI->Update(carAI, graph);
+    UpdateGeneralCar(*carAI, *(m_manTotem->GetEntities()[0].get()));
 
     systemBtPowerUp->update(carAI, this, m_manPowerUp, m_manBoxPowerUp, m_manTotem, graph, manNavMesh);
+    
+}
+void ManCar::UpdateCarHuman(Entity* CarHuman, ManTotem* m_manTotem) {
+    UpdateGeneralCar(*CarHuman, *(m_manTotem->GetEntities()[0].get()));
 }
 
-void ManCar::UpdateCarHuman(Entity* CarHuman) {
-    physicsAI->UpdateCarPowerUps(CarHuman);
+void ManCar::UpdateGeneralCar(Entity& car_, Entity& totem_){
+    systemGameRules->UpdateRulesCarPowerUps(car_, totem_);
 }
 
 void ManCar::CreateMainCar() {
@@ -245,19 +214,9 @@ void ManCar::SubscribeToEvents() {
         "ThrowPowerUpHuman"));
 
     EventManager::GetInstance().SubscribeMulti(Listener(
-        EventType::COLLISION_ENTITY_POWERUP,
-        bind(&ManCar::CollisionPowerUp, this, placeholders::_1),
-        "CollisionPowerUp"));
-
-    EventManager::GetInstance().SubscribeMulti(Listener(
-        EventType::COLLISION_ENTITY_AI_POWERUP,
-        bind(&ManCar::CollisionPowerUpAI, this, placeholders::_1),
-        "CollisionPowerUpAI"));
-
-     //EventManager::GetInstance().SubscribeMulti(Listener(
-     //    EventType::COLLISION_CAR_TOTEM,
-     //    bind(&ManCar::CatchTotemPlayer, this, placeholders::_1),
-     //    "CatchTotemPlayer"));
+        EventType::COLLISION_CAR_POWERUP,
+        bind(&ManCar::CollisionCarPowerUp, this, placeholders::_1),
+        "CollisionCarPowerUp"));
 
     EventManager::GetInstance().SubscribeMulti(Listener(
         EventType::COLLISION_PLAYER_TOTEM,
@@ -280,9 +239,19 @@ void ManCar::SubscribeToEvents() {
         "NewSyncReceived"));
     
     EventManager::GetInstance().SubscribeMulti(Listener(
-        EventType::NEW_SYNC_RECEIVED_CATCH_PU,
+        EventType::NEW_CATCH_PU_RECEIVED,
         bind(&ManCar::NewCatchPUReceived, this, placeholders::_1),
         "NewCatchPUReceived"));
+    
+    EventManager::GetInstance().SubscribeMulti(Listener(
+        EventType::NEW_CATCH_TOTEM_RECEIVED,
+        bind(&ManCar::NewCatchTotemReceived, this, placeholders::_1),
+        "NewCatchTotemReceived"));
+    
+    EventManager::GetInstance().SubscribeMulti(Listener(
+        EventType::NEW_LOST_TOTEM_RECEIVED,
+        bind(&ManCar::NewLostTotemReceived, this, placeholders::_1),
+        "NewLostTotemReceived"));
     
     /*EventManager::GetInstance().SubscribeMulti(Listener(
         EventType::DISCONNECTED_PLAYER,
@@ -300,7 +269,7 @@ void ManCar::NewInputsReceived(DataMap* d) {
     auto idRecieved = any_cast<uint16_t>((*d)[DataType::ID]);
     // cout << Utils::getISOCurrentTimestampMillis() << " Hemos recibido un input del id " << idRecieved << endl;
     auto inputs = any_cast<vector<Constants::InputTypes>>((*d)[DataType::INPUTS]);
-    for (shared_ptr<Entity> car : entities) {
+    for (const auto& car : GetEntities()) {
         if (car->HasComponent(CompType::OnlineComp) && car->HasComponent(CompType::BufferOnline)) {
             COnline* compOnline = static_cast<COnline*>(car->GetComponent(CompType::OnlineComp).get());
             uint16_t currentIDOnline = compOnline->idClient;
@@ -325,7 +294,7 @@ void ManCar::NewSyncReceived(DataMap* d) {
     // cout << "Se ha lanzado el evento NewInputsReceived" << endl;
     auto idRecieved = any_cast<uint16_t>((*d)[DataType::ID_ONLINE]);
     // cout << Utils::getISOCurrentTimestampMillis() << " Hemos recibido un sync del id " << idRecieved << endl;
-    for (auto car : GetEntities()) {
+    for (const auto& car : GetEntities()) {
         if (car->HasComponent(CompType::OnlineComp)) {
             COnline* compOnline = static_cast<COnline*>(car->GetComponent(CompType::OnlineComp).get());
             uint16_t currentIDOnline = compOnline->idClient;
@@ -347,15 +316,48 @@ void ManCar::NewSyncReceived(DataMap* d) {
 }
 
 
+// establecemos el Power Up que ha cogido
 void ManCar::NewCatchPUReceived(DataMap* d) {
     auto idRecieved = any_cast<uint16_t>((*d)[DataType::ID_ONLINE]);
-    for (auto car : GetEntities()) {
+    for (const auto& car : GetEntities()) {
         if (car->HasComponent(CompType::OnlineComp)) {
             COnline* compOnline = static_cast<COnline*>(car->GetComponent(CompType::OnlineComp).get());
             if (compOnline->idClient == idRecieved) {
                 auto cPowerUp = static_cast<CPowerUp*>(car->GetComponent(CompType::PowerUpComp).get());
                 cPowerUp->typePowerUp = any_cast<typeCPowerUp>((*d)[DataType::TYPE_POWER_UP]);
                 break;
+            }
+        }
+    }
+}
+
+
+// establecemos quien ha cogido el totem
+void ManCar::NewCatchTotemReceived(DataMap* d) {
+    auto idCarRecieved = any_cast<uint16_t>((*d)[DataType::ID_ONLINE]);
+    for (const auto& car : GetEntities()) {
+        if (car->HasComponent(CompType::OnlineComp)) {
+            COnline* compOnline = static_cast<COnline*>(car->GetComponent(CompType::OnlineComp).get());
+            auto cTotem = static_cast<CTotem*>(car->GetComponent(CompType::TotemComp).get());
+            if (compOnline->idClient == idCarRecieved) {
+                ObtainTotem(car.get());
+            }else{
+                cTotem->active = false;
+            }
+        }
+    }
+}
+
+
+// establecemos quien ha cogido el totem
+void ManCar::NewLostTotemReceived(DataMap* d) {
+    auto idCarLosted = any_cast<uint16_t>((*d)[DataType::ID_ONLINE]);
+    for (const auto& car : GetEntities()) {
+        if (car->HasComponent(CompType::OnlineComp)) {
+            COnline* compOnline = static_cast<COnline*>(car->GetComponent(CompType::OnlineComp).get());
+            auto cTotem = static_cast<CTotem*>(car->GetComponent(CompType::TotemComp).get());
+            if (compOnline->idClient == idCarLosted) {
+                ThrowTotem(car.get());
             }
         }
     }
@@ -409,37 +411,29 @@ void ManCar::ChangeTotemCar(DataMap* d) {
     cTotemWithout->timeStart = system_clock::now();
 }
 
-void ManCar::CatchTotemCar(DataMap* d) {
-    auto car = any_cast<Entity*>((*d)[ACTUAL_CAR]);
-    auto cTransformable = static_cast<CTransformable*>(car->GetComponent(CompType::TransformableComp).get());
-    auto cTotem = static_cast<CTotem*>(car->GetComponent(CompType::TotemComp).get());
+
+
+void ManCar::CatchTotemCar(DataMap* d) {    
+    if(Game::GetInstance()->GetState()->GetState() == State::States::INGAME_SINGLE){ // estamos en solo
+        ObtainTotem(any_cast<Entity*>((*d)[ACTUAL_CAR]));
+    }else if(Game::GetInstance()->GetState()->GetState() == State::States::INGAME_MULTI){
+        auto cOnline = static_cast<COnline*>(any_cast<Entity*>((*d)[ACTUAL_CAR])->GetComponent(CompType::OnlineComp).get());
+        systemOnline->SendCatchTotem(cOnline->idClient);
+    }
+}
+
+
+void ManCar::ObtainTotem(Entity* carWinTotem) {
+    auto cTotem = static_cast<CTotem*>(carWinTotem->GetComponent(CompType::TotemComp).get());
     cTotem->active = true;
     cTotem->timeStart = system_clock::now();
+
+    auto cTransformable = static_cast<CTransformable*>(carWinTotem->GetComponent(CompType::TransformableComp).get());
+
     // Sonido coger totem
     shared_ptr<DataMap> data = make_shared<DataMap>();
     (*data)[VEC3_POS] = cTransformable->position;
     EventManager::GetInstance().AddEventMulti(Event{EventType::CATCH_TOTEM, data});
-
-    
-    if(systemOnline != nullptr){
-        auto cId = static_cast<CId*>(any_cast<Entity*>((*d)[ACTUAL_CAR])->GetComponent(CompType::IdComp).get());
-        systemOnline->SendCatchTotem(cId->id);
-    }
-}
-
-void ManCar::CatchTotemPlayer(DataMap* d) {
-    auto cTotem = static_cast<CTotem*>(car->GetComponent(CompType::TotemComp).get());
-    cTotem->active = true;
-    cTotem->timeStart = system_clock::now();
-    // Sonido coger totem
-    EventManager::GetInstance().AddEventMulti(Event{EventType::CATCH_TOTEM});
-}
-
-void ManCar::UseTotem(Entity* carWinTotem) {
-    auto cTotem = static_cast<CTotem*>(carWinTotem->GetComponent(CompType::TotemComp).get());
-    cTotem->active = true;
-    cTotem->timeStart = system_clock::now();
-    //std::cout << "Has utilizado el robo jorobo de p*** madre coleeega ahora es tuyo" << std::endl;
 }
 
 void ManCar::ThrowTotem(Entity* carLoseTotem) {
@@ -451,63 +445,39 @@ void ManCar::ThrowTotem(Entity* carLoseTotem) {
 
 bool ManCar::useRoboJorobo(Entity* newCarWithTotem) {
     // recorremos los coches
-    for (const shared_ptr<Entity>& cars : entities) {
+    for (const auto& cars : entities) {
         auto cTotem = static_cast<CTotem*>(cars->GetComponent(CompType::TotemComp).get());
         // Si algun coche tenia el totem .... lo pierde, comprobamos que no sea el mmismo coche con las ID
         if (cTotem->active == true && newCarWithTotem != cars.get()) {
             ThrowTotem(cars.get());
             //al perderlo se lo asignamos al que ha usado el robo jorobo
-            UseTotem(newCarWithTotem);
-
+            ObtainTotem(newCarWithTotem);
             return true;  // para salirnos y no hacer mas calculos
         }
     }
     return false;
 }
 
-void ManCar::CollisionPowerUp(DataMap* d) {
-    // A ESTA FUNCION YA NO ENTRA
-    // debemos desactivar el powerUp y para el contador de tiempo del totem
-    auto cShield = static_cast<CShield*>(car.get()->GetComponent(CompType::ShieldComp).get());
-    if (cShield->activePowerUp == false) {  // comprobamos si tiene el escudo
-        auto cTotem = static_cast<CTotem*>(car.get()->GetComponent(CompType::TotemComp).get());
-        if (cTotem->active == true) {
-            ThrowTotem(car.get());
-        }
-        // Reducimos la velocidad -- TODO --> no solo reducir la velocidad a 0
-        auto cCar = static_cast<CCar*>(car.get()->GetComponent(CompType::CarComp).get());
-        cCar->speed = 0.0f;
 
-        // Sonido choque con powerup
-        shared_ptr<DataMap> data = make_shared<DataMap>();
-        auto cTransf = static_cast<CTransformable*>(car.get()->GetComponent(CompType::TransformableComp).get());
-        auto cId = static_cast<CId*>(car.get()->GetComponent(CompType::IdComp).get());
-        (*data)[VEC3_POS] = cTransf->position; 
-        (*data)[ID] = cId->id;
-        (*data)[MAIN_CAR] = true;
-        cout << "SOY EL COCHE PRINSIPAL Y ME CHOCAO CON ALGO" << endl;
-        EventManager::GetInstance().AddEventMulti(Event{EventType::HURT, data});
-    } else {
-        std::cout << "El escudo me salvo el culito :D" << std::endl;
-        cShield->deactivePowerUp();  // desactivamos el escudo
-
-        // Sonido coger totem
-        EventManager::GetInstance().AddEventMulti(Event{EventType::NO_SHIELD});
-    }
-}
-
-void ManCar::CollisionPowerUpAI(DataMap* d) {
-    // debemos desactivar el powerUp y para el contador de tiempo del totem
+void ManCar::CollisionCarPowerUp(DataMap* d) {
     auto car = any_cast<Entity*>((*d)[CAR_AI]);
-    auto cShield = static_cast<CShield*>(car->GetComponent(CompType::ShieldComp).get());
-    if (cShield->activePowerUp == false) {  // comprobamos si tiene el escudo
-        auto cTotem = static_cast<CTotem*>(car->GetComponent(CompType::TotemComp).get());
+    
+    // Reducimos la velocidad -- TODO --> no solo reducir la velocidad a 0
+    auto cCar = static_cast<CCar*>(car->GetComponent(CompType::CarComp).get());
+    cCar->speed = 0.0f;  // To-Do: no funciona en la IA por que la logica difusa no la hace acelerar
+    // Sonido choque con powerup
+    shared_ptr<DataMap> data = make_shared<DataMap>();
+    (*data)[MAIN_CAR] = false;
+    EventManager::GetInstance().AddEventMulti(Event{EventType::HURT, data});
+
+    // debemos desactivar el powerUp y para el contador de tiempo del totem
+    if(Game::GetInstance()->GetState()->GetState() == State::States::INGAME_SINGLE){
+        auto cTotem = static_cast<CTotem*>(any_cast<Entity*>((*d)[ACTUAL_CAR])->GetComponent(CompType::TotemComp).get());
         if (cTotem->active == true) {
-            ThrowTotem(car);
+            ThrowTotem(any_cast<Entity*>((*d)[ACTUAL_CAR]));
         }
-        // Reducimos la velocidad -- TODO --> no solo reducir la velocidad a 0
-        auto cCar = static_cast<CCar*>(car->GetComponent(CompType::CarComp).get());
-        cCar->speed = 0.0f;  // To-Do: no funciona en la IA por que la logica difusa no la hace acelerar
+    }
+
         // Sonido choque con powerup
         shared_ptr<DataMap> data = make_shared<DataMap>();
         auto cTransf = static_cast<CTransformable*>(car->GetComponent(CompType::TransformableComp).get());
@@ -520,14 +490,8 @@ void ManCar::CollisionPowerUpAI(DataMap* d) {
             (*data)[MAIN_CAR] = true;
         }
         EventManager::GetInstance().AddEventMulti(Event{EventType::HURT, data});
-    } else {
-        std::cout << "El escudo me salvo el culito :D" << std::endl;
-        cShield->deactivePowerUp();  // desactivamos el escudo
-
-        // Sonido coger totem
-        EventManager::GetInstance().AddEventMulti(Event{EventType::NO_SHIELD});
-    }
 }
+
 
 // se calcula el coche mas cercano en el rango de vision, en caso de no haber se devuelve un nullptr
 CTransformable* ManCar::calculateCloserCar(Entity* actualCar) {
@@ -675,7 +639,7 @@ void ManCar::CatchPowerUp(DataMap* d) {
         (*data)[TYPE_POWER_UP] = cPowerUpCar->typePowerUp;
         EventManager::GetInstance().AddEventMulti(Event{EventType::UPDATE_POWERUP_HUD, data});
 
-        if(systemOnline != nullptr){
+        if(Game::GetInstance()->GetState()->GetState() == State::States::INGAME_MULTI){
             systemOnline->SendCatchPU(*cPowerUpCar);
         }
     }
@@ -743,7 +707,7 @@ void ManCar::CatchPowerUpAI(DataMap* d) {
             (*data)[TYPE_POWER_UP] = cPowerUpCar->typePowerUp;
             EventManager::GetInstance().AddEventMulti(Event{EventType::UPDATE_POWERUP_HUD, data});
 
-            if(systemOnline != nullptr){
+            if(Game::GetInstance()->GetState()->GetState() == State::States::INGAME_MULTI){
                 cout << "Se envia el PU mensaje 2" << "\n";
                 systemOnline->SendCatchPU(*cPowerUpCar);
             }

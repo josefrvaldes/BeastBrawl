@@ -6,8 +6,6 @@
 #include "../../include/include_json/include_json.hpp"
 #include <fstream>
 
-
-
 #include "../Components/CId.h"
 #include "../Components/CType.h"
 #include "../Components/CTransformable.h"
@@ -19,141 +17,163 @@
 #include <Facade/Physics/PhysicsFacadeManager.h>
 #include <Facade/Render/RenderFacadeManager.h>
 
-
-
-
-
-
-
-
-
-
-
 using namespace std;
 using json = nlohmann::json;
 
 ManBoundingOBB::ManBoundingOBB() {
     SubscribeToEvents();
 
+    double vertex1X = 0, vertex1Y = 0, vertex1Z = 0;  // utilizamos double porque tiene mas precison que float (64b vs 32b)
+    double vertex2X = 0, vertex2Y = 0, vertex2Z = 0;
+    double vertex3X = 0, vertex3Y = 0, vertex3Z = 0;
+    double vertex4X = 0, vertex4Y = 0, vertex4Z = 0;
+
+    std::ifstream i("data.json");
+    std::stringstream buffer;
+    buffer << i.rdbuf();
+    string jsonString = buffer.str();
+    json j = json::parse(jsonString);
+    i.close();
 
 
-    // 4 Planos normales
-    //ManBoundingOBB(vec3(50.f, 40.f, 50.f),vec3(150.f, 40.f, 50.f),vec3(150.f, 10.f, 50.f),vec3(50.f, 10.f, 50.f));
-    //ManBoundingOBB(vec3(50.f, 10.f, 150.f),vec3 (150.f, 10.f, 150.f),vec3(150.f, 40.f, 150.f),vec3(50.f, 40.f, 150.f));
-    //ManBoundingOBB(vec3(50.f, 10.f, 50.f),vec3(50.f, 10.f, 150.f),vec3(50.f, 40.f, 150.f),vec3(50.f, 40.f, 50.f));
-    //ManBoundingOBB(vec3(150.f, 40.f, 50.f),vec3(150.f, 40.f, 150.f),vec3(150.f, 10.f, 150.f),vec3(150.f, 10.f, 50.f));
-
-    //auto verticesOBB = new vector<vec3>;
-    //verticesOBB->push_back(vec3(50.f, 40.f, 50.f));
-    //verticesOBB->push_back(vec3(150.f, 40.f, 50.f));
-    //verticesOBB->push_back(vec3(150.f, -300.f, 50.f));
-    //verticesOBB->push_back(vec3(50.f, -300.f, 50.f));
-//
-    //verticesOBB->push_back(vec3(50.f, -300.f, 150.f));
-    //verticesOBB->push_back(vec3 (150.f, -300.f, 150.f));
-    //verticesOBB->push_back(vec3(150.f, 40.f, 150.f));
-    //verticesOBB->push_back(vec3(50.f, 40.f, 150.f));
-//
-    //verticesOBB->push_back(vec3(50.f, -300.f, 50.f));
-    //verticesOBB->push_back(vec3(50.f, -300.f, 150.f));
-    //verticesOBB->push_back(vec3(50.f, 40.f, 150.f));
-    //verticesOBB->push_back(vec3(50.f, 40.f, 50.f));
-//
-    //verticesOBB->push_back(vec3(150.f, 40.f, 50.f));
-    //verticesOBB->push_back(vec3(150.f, 40.f, 150.f));
-    //verticesOBB->push_back(vec3(150.f, -300.f, 150.f));
-    //verticesOBB->push_back(vec3(150.f, -300.f, 50.f));
-//
-    //vec3 centerMass = vec3( (50+150+50+150+50+50+150+150)/8, (40-300-300+40-300+40-300+40)/8, (50+50+150+150+50+150+50+150)/8);
-
-    //TODO: esssta bien?
-    // TODO: CUANDO SE LEAN TENEMOS QUE ASEGURAR QUE LLEGAN 4 PLANOS
 
     vector<glm::vec3> verticesOBB;
     vector<glm::vec3> centersMass;
+    glm::vec3 centerPlane1  = glm::vec3(0.0,0.0,0.0);
+    glm::vec3 centerPlane2  = glm::vec3(0.0,0.0,0.0);
+    glm::vec3 centerMass    = glm::vec3(0.0,0.0,0.0); //     = glm::vec3( (100+150+100+150+100+100+150+150)/8, (100-100-100+100-100+100-100+100)/8, (50+50+150+150+50+150+50+150)/8);
+    double posX, posX2, posZ, posZ2;
+    long unsigned int obbCount = j["OBBS"].size();
+    std::cout << "EL NUMERO DE OBBs EN EL JSON ES: " << obbCount << std::endl;
+    //Leemos el array de NavMesh
+    for(long unsigned int i = 0; i< obbCount; ++i){
+        string idObb = to_string(i);  
+        auto obbActual = j["OBBS"][idObb];
+
+        verticesOBB.clear();
+        verticesOBB.shrink_to_fit();
+        centersMass.clear();
+        centersMass.shrink_to_fit();
+        centerMass = glm::vec3(0.0,0.0,0.0);
+
+        for(long unsigned int k=1; k<5; k++){
+            auto planeObbActual = obbActual["face"+to_string(k)+""];
+
+
+            // cogemos los 4 vertices
+            auto vertex1 = planeObbActual["vertex1"];
+            vertex1X = vertex1["x"].get<double>();
+            vertex1Y = vertex1["y"].get<double>();
+            vertex1Z = vertex1["z"].get<double>();
+
+            auto vertex2 = planeObbActual["vertex2"];
+            vertex2X = vertex2["x"].get<double>();
+            vertex2Y = vertex2["y"].get<double>();
+            vertex2Z = vertex2["z"].get<double>();
+
+            auto vertex3 = planeObbActual["vertex3"];
+            vertex3X = vertex3["x"].get<double>();
+            vertex3Y = vertex3["y"].get<double>();
+            vertex3Z = vertex3["z"].get<double>();
+
+            auto vertex4 = planeObbActual["vertex4"];
+            vertex4X = vertex4["x"].get<double>();
+            vertex4Y = vertex4["y"].get<double>();
+            vertex4Z = vertex4["z"].get<double>();
+
+            verticesOBB.push_back(glm::vec3(vertex1X, vertex1Y, vertex1Z));
+            verticesOBB.push_back(glm::vec3(vertex2X, vertex2Y, vertex2Z));
+            verticesOBB.push_back(glm::vec3(vertex4X, vertex4Y, vertex4Z));
+            verticesOBB.push_back(glm::vec3(vertex3X, vertex3Y, vertex3Z));
+
+            //cogemos el plano1
+            if(k==1){
+                centerPlane1 = glm::vec3( (vertex1X+vertex2X+vertex3X+vertex4X)/4 , (vertex1Y+vertex2Y-vertex3Y-vertex4Y)/4 , (vertex1Z+vertex2Z+vertex3Z+vertex4Z)/4 );
+             cout << "el centro de plano1 es: ( " << centerPlane1.x << " , " << centerPlane1.y <<  " , " << centerPlane1.z << " )" << endl;
+            }
+            if(k==2){
+                centerPlane2 = glm::vec3( (vertex1X+vertex2X+vertex3X+vertex4X)/4 , (vertex1Y+vertex2Y-vertex3Y-vertex4Y)/4 , (vertex1Z+vertex2Z+vertex3Z+vertex4Z)/4 );   
+            }
+            centerMass.x += vertex1X+vertex2X+vertex3X+vertex4X;
+            centerMass.y += vertex1Y+vertex2Y+vertex3Y+vertex4Y;
+            centerMass.z += vertex1Z+vertex2Z+vertex3Z+vertex4Z;
+        }
+        // aqui ya tenemos el array de OBB, nos faltan los centros de Massas 
+        centerMass = glm::vec3( (centerMass.x/16) , (centerMass.y/16) , (centerMass.z/16) );
+        cout << "el centro de masas es: ( " << centerMass.x << " , " << centerMass.y <<  " , " << centerMass.z << " )" << endl;
+
+
+        if( glm::distance(centerPlane1, centerMass) > glm::distance(centerPlane2, centerMass)){
+            cout << "entramos al 0-2" << endl;
+            // el plano 1 por descarte es el pequeño
+            auto aumentoZ = abs(verticesOBB[0].x - verticesOBB[2].x)/2;
+            auto aumentoX = abs(verticesOBB[0].z - verticesOBB[2].z)/2;
+            auto posibleCP1X = glm::vec3(centerPlane1.x+aumentoX, centerPlane1.y, centerPlane1.z);
+            auto posibleCP2X = glm::vec3(centerPlane1.x-aumentoX, centerPlane1.y, centerPlane1.z);
+            if(glm::distance(posibleCP1X, centerMass) > glm::distance(posibleCP2X, centerMass)){
+                aumentoX = -aumentoX;
+            }
+            auto posibleCP1Z = glm::vec3(centerPlane1.x, centerPlane1.y, centerPlane1.z+aumentoZ);
+            auto posibleCP2Z = glm::vec3(centerPlane1.x, centerPlane1.y, centerPlane1.z-aumentoZ);
+            if(glm::distance(posibleCP1Z, centerMass) > glm::distance(posibleCP2Z, centerMass)){
+                aumentoZ = -aumentoZ;
+            }
+            // calculamos el otro
+            posX = posX2 = centerPlane1.x+aumentoX;
+            posZ = posZ2 = centerPlane1.z+aumentoZ;
+
+        }else{
+            cout << "entramos al 4-6" << endl;
+            // el plano 1 por descarte es el pequeño
+            auto aumentoZ = abs(verticesOBB[4].x - verticesOBB[6].x)/2;
+            auto aumentoX = abs(verticesOBB[4].z - verticesOBB[6].z)/2;
+            auto posibleCP1X = glm::vec3(centerPlane2.x+aumentoZ, centerPlane2.y, centerPlane2.z);
+            auto posibleCP2X = glm::vec3(centerPlane2.x-aumentoZ, centerPlane2.y, centerPlane2.z);
+            if(glm::distance(posibleCP1X, centerMass) > glm::distance(posibleCP2X, centerMass)){
+                aumentoZ = -aumentoZ;
+            }
+            auto posibleCP1Z = glm::vec3(centerPlane2.x, centerPlane2.y, centerPlane2.z+aumentoX);
+            auto posibleCP2Z = glm::vec3(centerPlane2.x, centerPlane2.y, centerPlane2.z-aumentoX);
+            if(glm::distance(posibleCP1Z, centerMass) > glm::distance(posibleCP2Z, centerMass)){
+                aumentoX = -aumentoX;
+            }
+            // calculamos el otro
+            posX = posX2 = centerPlane2.x+aumentoX;
+            posZ = posZ2 = centerPlane2.z+aumentoZ;
+        }
+        auto disX = abs(posX-centerMass.x);
+        auto disZ = abs(posZ-centerMass.z);
+        if(posX < centerMass.x) posX2 = centerMass.x+disX;
+        else posX2 = centerMass.x-disX;   
+        if(posZ < centerMass.z) posZ2 = centerMass.z+disZ;
+        else posZ2 = centerMass.z-disZ;
+        centersMass.push_back(glm::vec3(posX, centerMass.y, posZ));
+        centersMass.push_back(glm::vec3(posX2, centerMass.y, posZ2));
+
+        CreateBoundingOBB(verticesOBB, centersMass );
+
+    }
 
     //auto verticesOBB = new vector<glm::vec3>;
-    //plano1
+    //verticesOBB.push_back(glm::vec3(100.f, -100.f, 50.f));
+    //verticesOBB.push_back(glm::vec3(100.f, -100.f, 150.f));
+    //verticesOBB.push_back(glm::vec3(100.f, 100.f, 150.f));
+    //verticesOBB.push_back(glm::vec3(100.f, 100.f, 50.f));
 
-    verticesOBB.push_back(glm::vec3(100.f, -100.f, 50.f));
-    verticesOBB.push_back(glm::vec3(100.f, -100.f, 150.f));
-    verticesOBB.push_back(glm::vec3(100.f, 100.f, 150.f));
-    verticesOBB.push_back(glm::vec3(100.f, 100.f, 50.f));
+    //verticesOBB.push_back(glm::vec3(100.f, 100.f, 50.f));
+    //verticesOBB.push_back(glm::vec3(150.f, 100.f, 50.f));
+    //verticesOBB.push_back(glm::vec3(150.f, -100.f, 50.f));
+    //verticesOBB.push_back(glm::vec3(100.f, -100.f, 50.f));
 
-    verticesOBB.push_back(glm::vec3(100.f, 100.f, 50.f));
-    verticesOBB.push_back(glm::vec3(150.f, 100.f, 50.f));
-    verticesOBB.push_back(glm::vec3(150.f, -100.f, 50.f));
-    verticesOBB.push_back(glm::vec3(100.f, -100.f, 50.f));
+    //verticesOBB.push_back(glm::vec3(100.f, -100.f, 150.f));
+    //verticesOBB.push_back(glm::vec3(150.f, -100.f, 150.f));
+    //verticesOBB.push_back(glm::vec3(150.f, 100.f, 150.f));
+    //verticesOBB.push_back(glm::vec3(100.f, 100.f, 150.f));
 
-    verticesOBB.push_back(glm::vec3(100.f, -100.f, 150.f));
-    verticesOBB.push_back(glm::vec3(150.f, -100.f, 150.f));
-    verticesOBB.push_back(glm::vec3(150.f, 100.f, 150.f));
-    verticesOBB.push_back(glm::vec3(100.f, 100.f, 150.f));
-
-    verticesOBB.push_back(glm::vec3(150.f, 100.f, 50.f));
-    verticesOBB.push_back(glm::vec3(150.f, 100.f, 150.f));
-    verticesOBB.push_back(glm::vec3(150.f, -100.f, 150.f));
-    verticesOBB.push_back(glm::vec3(150.f, -100.f, 50.f));
-
-     
-    //planes.push_back(make_shared<CBoundingPlane>(*verticesOBB[0], *verticesOBB[1], *verticesOBB[2], *verticesOBB[3]));
-    //planes.push_back(make_shared<CBoundingPlane>(verticesOBB[4], verticesOBB[5], verticesOBB[6], verticesOBB[7]));
-    //planes.push_back(make_shared<CBoundingPlane>(verticesOBB[8], verticesOBB[9], verticesOBB[10], verticesOBB[11]));
-    //planes.push_back(make_shared<CBoundingPlane>(verticesOBB[12], verticesOBB[13], verticesOBB[14], verticesOBB[15]));
-
-    auto centerPlane2   = glm::vec3( (100+150+150+100)/4 , (100+100-100-100)/4 , (50+50+50+50)/4 );
-    auto centerPlane1   = glm::vec3( (100+100+100+100)/4 , (100+100-100-100)/4 , (50+150+150+50)/4 );
-    auto centerMass     = glm::vec3( (100+150+100+150+100+100+150+150)/8, (100-100-100+100-100+100-100+100)/8, (50+50+150+150+50+150+50+150)/8);
-    cout << "el centro de masas es: ( " << centerMass.x << " , " << centerMass.y <<  " , " << centerMass.z << " )" << endl;
-    // solo necesitamos 2 planos
-    double posX, posX2, posZ, posZ2;
-    if( glm::distance(centerPlane1, centerMass) > glm::distance(centerPlane2, centerMass)){
-        // el plano 1 por descarte es el pequeño
-        auto aumentoZ = abs(verticesOBB[0].x - verticesOBB[2].x)/2;
-        auto aumentoX = abs(verticesOBB[0].z - verticesOBB[2].z)/2;
-        auto posibleCP1X = glm::vec3(centerPlane1.x+aumentoZ, centerPlane1.y, centerPlane1.z);
-        auto posibleCP2X = glm::vec3(centerPlane1.x-aumentoZ, centerPlane1.y, centerPlane1.z);
-        if(glm::distance(posibleCP1X, centerMass) > glm::distance(posibleCP2X, centerMass)){
-            aumentoZ = -aumentoZ;
-        }
-        auto posibleCP1Z = glm::vec3(centerPlane1.x, centerPlane1.y, centerPlane1.z+aumentoX);
-        auto posibleCP2Z = glm::vec3(centerPlane1.x, centerPlane1.y, centerPlane1.z-aumentoX);
-        if(glm::distance(posibleCP1Z, centerMass) > glm::distance(posibleCP2Z, centerMass)){
-            aumentoX = -aumentoX;
-        }
-        // calculamos el otro
-        posX = posX2 = centerPlane1.x+aumentoX;
-        posZ = posZ2 = centerPlane1.z+aumentoZ;
-
-    }else{
-        // el plano 1 por descarte es el pequeño
-        auto aumentoZ = abs(verticesOBB[4].x - verticesOBB[6].x)/2;
-        auto aumentoX = abs(verticesOBB[4].z - verticesOBB[6].z)/2;
-        auto posibleCP1X = glm::vec3(centerPlane2.x+aumentoZ, centerPlane2.y, centerPlane2.z);
-        auto posibleCP2X = glm::vec3(centerPlane2.x-aumentoZ, centerPlane2.y, centerPlane2.z);
-        if(glm::distance(posibleCP1X, centerMass) > glm::distance(posibleCP2X, centerMass)){
-            aumentoZ = -aumentoZ;
-        }
-        auto posibleCP1Z = glm::vec3(centerPlane2.x, centerPlane2.y, centerPlane2.z+aumentoX);
-        auto posibleCP2Z = glm::vec3(centerPlane2.x, centerPlane2.y, centerPlane2.z-aumentoX);
-        if(glm::distance(posibleCP1Z, centerMass) > glm::distance(posibleCP2Z, centerMass)){
-            aumentoX = -aumentoX;
-        }
-        // calculamos el otro
-        posX = posX2 = centerPlane2.x+aumentoX;
-        posZ = posZ2 = centerPlane2.z+aumentoZ;
-    }
-    auto disX = abs(posX-centerMass.x);
-    auto disZ = abs(posZ-centerMass.z);
-    if(posX < centerMass.x) posX2 = centerMass.x+disX;
-    else posX2 = centerMass.x-disX;   
-    if(posZ < centerMass.z) posZ2 = centerMass.z+disZ;
-    else posZ2 = centerMass.z-disZ;
-    centersMass.push_back(glm::vec3(posX, centerMass.y+30, posZ));
-    centersMass.push_back(glm::vec3(posX2, centerMass.y+30, posZ2));
-
-
-
+    //verticesOBB.push_back(glm::vec3(150.f, 100.f, 50.f));
+    //verticesOBB.push_back(glm::vec3(150.f, 100.f, 150.f));
+    //verticesOBB.push_back(glm::vec3(150.f, -100.f, 150.f));
+    //verticesOBB.push_back(glm::vec3(150.f, -100.f, 50.f));
 
 //glm::vec3 rotTotemOnCar1 = glm::vec3(0.0f, 90.0f, 0.0f);
 //shared_ptr<Entity> totemOnCar1 = make_shared<Entity>();
@@ -183,10 +203,6 @@ ManBoundingOBB::ManBoundingOBB() {
 //totemOnCar->AddComponent(make_shared<CTexture>("totem.jpg"));
 //totemOnCar->AddComponent(make_shared<CMesh>("media/ninja.b3d"));
 //renderEngine->FacadeAddObject(totemOnCar.get());
-
-
-    CreateBoundingOBB(verticesOBB, centersMass );
-
     centersMass.clear();
     centersMass.shrink_to_fit();
     verticesOBB.clear();

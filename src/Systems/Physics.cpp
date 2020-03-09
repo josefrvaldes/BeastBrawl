@@ -44,7 +44,7 @@ void Physics::CalculatePosition(CCar *cCar, CTransformable *cTransformable, CSpe
     if(cExternalForce->force > 0){
         // Este paso es una tonteria porque ya lo devolvemos normalizado
         cExternalForce->dirExternalForce = normalize(cExternalForce->dirExternalForce);
-    }
+    }  
 
     float angleRotation = cTransformable->rotation.y - cCar->skidRotation;
     angleRotation = Utils::GetAdjustedDegrees(angleRotation);
@@ -155,6 +155,9 @@ void Physics::TurnLeft(Car *car, Camera *cam) {
     auto cCamera = static_cast<CCamera*>(cam->GetComponent(CompType::CameraComp).get());
     //Componentes del coche
     auto cCar = static_cast<CCar *>(car->GetComponent(CompType::CarComp).get());
+    auto cTransformable = static_cast<CTransformable*>(car->GetComponent(CompType::TransformableComp).get());
+
+    //cout << cTransformable->rotation.x << " | " << cTransformable->rotation.z << endl;
 
     if (cCar->speed >= cCar->maxSpeed*0.15) {
         if (cCar->wheelRotation > -cCar->maxWheelRotation) {

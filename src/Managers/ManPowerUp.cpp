@@ -121,16 +121,6 @@ void ManPowerUp::SubscribeToEvents() {
         "CreatePowerUp"));
 
     //EventManager::GetInstance().SubscribeMulti(Listener(
-    //    EventType::COLLISION_ENTITY_POWERUP,
-    //    bind(&ManPowerUp::DeletePowerUp, this, placeholders::_1),
-    //    "DeletePowerUp"));
-    //
-    //EventManager::GetInstance().SubscribeMulti(Listener(
-    //    EventType::COLLISION_ENTITY_AI_POWERUP,
-    //    bind(&ManPowerUp::DeletePowerUp, this, placeholders::_1),
-    //    "DeletePowerUp"));
-//
-    //EventManager::GetInstance().SubscribeMulti(Listener(
     //    EventType::DELETE_POWERUP,
     //    bind(&ManPowerUp::DeletePowerUp, this, placeholders::_1),
     //    "DeletePowerUp"));
