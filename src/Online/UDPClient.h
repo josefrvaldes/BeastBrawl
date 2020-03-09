@@ -36,8 +36,12 @@ class UDPClient {
     ~UDPClient();
 
     void SendInputs(const vector<Constants::InputTypes>& inputs, uint16_t id);
-    void SendSync(uint16_t idOnline, const glm::vec3& posCar, const glm::vec3& rotCar, typeCPowerUp tipoPU, bool haveTotem, int64_t totemTime,
+    void SendSync(uint16_t idOnline, const glm::vec3& posCar, const glm::vec3& rotCar, typeCPowerUp typePU, bool haveTotem, int64_t totemTime,
                   bool totemInGround, const glm::vec3& posTotem);
+    void SendCatchPU(uint16_t idOnline, typeCPowerUp typePU);
+    void SendCatchTotem(uint16_t idOnline, uint16_t idPlayerCatched);
+    void SendLostTotem(uint16_t idOnline, uint16_t idPlayerLosted, const glm::vec3 &pos, int numNavMesh);
+    void SendEndgame();
     void SendDateTime();
     uint32_t idMainCar;
 
@@ -46,8 +50,17 @@ class UDPClient {
     void HandleReceived(std::shared_ptr<unsigned char[]> recevBuff, const boost::system::error_code& error, size_t bytesTransferred);
     void HandleReceivedInputs(const vector<Constants::InputTypes> inputs, const uint16_t idRival) const;
     void HandleReceivedSync(unsigned char* recevBuff, size_t bytesTransferred);
+    void HandleReceivedCatchPU(unsigned char* recevBuff, size_t bytesTransferred);
+    void HandleReceivedCatchTotem(unsigned char* recevBuff, size_t bytesTransferred);
+    void HandleReceivedLostTotem(unsigned char* recevBuff, size_t bytesTransferred);
+    void HandleReceivedDisconnection(unsigned char* recevBuff, size_t bytesTransferred);
+    void HandleReceivedEndgame(unsigned char* recevBuff, size_t bytesTransferred);
+
     void HandleSentInputs(const boost::system::error_code& errorCode, std::size_t bytes_transferred);
     void HandleSentSync(const boost::system::error_code& errorCode, std::size_t bytes_transferred);
+    void HandleSentPU(const boost::system::error_code& errorCode, std::size_t bytes_transferred);
+    void HandleSentCatchTotem(const boost::system::error_code& errorCode, std::size_t bytes_transferred);
+    void HandleSentEndgame(const boost::system::error_code& errorCode, std::size_t bytes_transferred);
 
     void HandleSentDateTime(const boost::shared_ptr<std::string> message,
                             const boost::system::error_code& errorCode,
@@ -61,5 +74,9 @@ class UDPClient {
 
     unordered_map<uint16_t, int64_t> lastTimeInputReceived;
     unordered_map<uint16_t, int64_t> lastTimeSyncReceived;
+    unordered_map<uint16_t, int64_t> lastTimeCatchPUReceived;
+    unordered_map<uint16_t, int64_t> lastTimeCatchTotemReceived;
+    unordered_map<uint16_t, int64_t> lastTimeLostTotemReceived;
+
 
 };

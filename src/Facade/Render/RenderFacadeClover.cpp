@@ -82,6 +82,10 @@ void RenderFacadeClover::FacadeInitMenu() {
     
 }
 
+void RenderFacadeClover::FacadeInitControler() {
+    
+}
+
 /**
  * Inicializa las cosas para el pause
  */
@@ -457,6 +461,9 @@ vector<Constants::InputTypes> RenderFacadeClover::FacadeCheckInputMulti() {
 void RenderFacadeClover::FacadeCheckInputMenu() {
 }
 
+void RenderFacadeClover::FacadeCheckInputControler() {
+}
+
 void RenderFacadeClover::FacadeCheckInputPause() {
 }
 
@@ -494,6 +501,9 @@ void RenderFacadeClover::FacadeDraw() const{
  * Dibuja las cosas del menu
  */
 void RenderFacadeClover::FacadeDrawMenu() {
+}
+
+void RenderFacadeClover::FacadeDrawControler() {
 }
 
 /**

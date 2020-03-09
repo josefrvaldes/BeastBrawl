@@ -29,6 +29,7 @@ public:
     SteeringBehaviours();
     ~SteeringBehaviours(){};
 
+    bool IsTargeteable(Entity* m_actualCar, Entity* m_targetCar, ManBoundingWall* m_manBoundingWall) const;
     
     void UpdateSeek(Entity* m_actualCar);
     void UpdateArrive(Entity* m_actualCar);

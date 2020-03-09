@@ -12,6 +12,8 @@ StateInGameMulti::StateInGameMulti(uint16_t IdOnline, const vector<uint16_t> IdP
     vector<uint16_t> arrayIdEnemies = IdPlayersOnline;
 
     sysOnline = make_unique<SystemOnline>(*manCars, IdOnline);
+    manCars->SetSystemOnline(sysOnline.get());
+    manTotems->SetSystemOnline(sysOnline.get());
 
     vec3 posIniciales[] = {
         vec3(120.0f, 10.0f, -300.0f),
@@ -63,7 +65,7 @@ void StateInGameMulti::InitState() {
 void StateInGameMulti::Input() {
     const vector<Constants::InputTypes> &inputs = renderEngine->FacadeCheckInputMulti();
     if (previousInputs != inputs) {
-        cout << Utils::getISOCurrentTimestampMillis() << " [" << sysOnline->idOnlineMainCar << "] Enviamos los inputs porque han cambiado con respecto a la iteración anterior" << endl;
+        //cout << Utils::getISOCurrentTimestampMillis() << " [" << sysOnline->idOnlineMainCar << "] Enviamos los inputs porque han cambiado con respecto a la iteración anterior" << endl;
         sysOnline->SendInputs(inputs);
         previousInputs = inputs;
     }
@@ -90,18 +92,10 @@ void StateInGameMulti::Update() {
             //manNavMesh->UpdateNavMeshHuman(actualCar.get());  // actualizamos el navemesh en el que se encuentra al human
             // funcion para recibir los inputs del servidor, otra para enviar los nuestros, crear componente de input
             physics->UpdateHuman(static_cast<Car *>(actualCar.get()));
-            manCars->UpdateCarHuman(actualCar.get());
+            manCars->UpdateCarHuman(actualCar.get(), manTotems.get());
             physicsEngine->UpdateTransformable(actualCar.get());
         }
     }
-
-    //CAMBIARCosasDeTotemUpdate();
-    // COLISIONES entre powerUp y cocheHuman
-    //collisions->IntersectsCarsPowerUps(manCars.get(), manPowerUps.get(), manNavMesh.get());
-    // COLISIONES entre BoxPowerUp y cocheHuman
-    //collisions->IntersectCarsBoxPowerUp(manCars.get(), manBoxPowerUps.get());
-    // COLISIONES  entre la cocheHuman y el Totem
-    //collisions->IntersectCarsTotem(manCars.get(), manTotems.get());
 }
 
 void StateInGameMulti::Render() {

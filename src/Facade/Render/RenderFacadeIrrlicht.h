@@ -45,15 +45,18 @@ class RenderFacadeIrrlicht : public RenderFacade {
     void FacadeDrawPause() override;
     void FacadeDrawEndRace() override;
     void FacadeDrawLobbyMulti() override;
+    void FacadeDrawControler() override;
     void FacadeInitMenu() override;
     void FacadeInitPause() override;
     void FacadeInitEndRace() override;
     void FacadeInitLobbyMulti() override;
+    void FacadeInitControler() override;
     void FacadeInitHUD() override;
     void FacadeCheckInputMenu() override;
     void FacadeCheckInputPause() override;
     void FacadeCheckInputEndRace() override;
     void FacadeCheckInputLobbyMulti() override;
+    void FacadeCheckInputControler() override;
     void FacadeUpdatePowerUpHUD(DataMap* d) override;
     void FacadeDrawHUD(Entity* car, ManCar* manCars) override;
     void FacadeSuscribeEvents() override;
@@ -93,6 +96,7 @@ class RenderFacadeIrrlicht : public RenderFacade {
     scene::ICameraSceneNode* camera1;
     MyEventReceiver receiver;
     video::ITexture* menuBG;
+    video::ITexture* controlerBG;
     video::ITexture* pauseBG;
     video::ITexture* endRaceBG;
     video::ITexture* lobbyMultBG;
@@ -100,5 +104,11 @@ class RenderFacadeIrrlicht : public RenderFacade {
     video::ITexture* powerUps[7];
     gui::IGUIFont* font;
 
+
+    enum InputXBox{BUTTON_A, BUTTON_B, BUTTON_X, BUTTON_Y, BUTTON_LB, BUTTON_RB, BUTTON_BACK, BUTTON_START, BUTTON_XBOX, BUTTON_STICK_L, BUTTON_STICK_R, END};
+    std::unordered_map<InputXBox, bool> inputsPressed;
+    core::array<SJoystickInfo> joystickInfo;
+    bool IsInputPressed(InputXBox input);
+    void SetValueInput(InputXBox input, bool valuePressed);
     //unordered_map<uint16_t,scene::ISceneNode*> sceneObjects; // CId - ISceneNode*
 };

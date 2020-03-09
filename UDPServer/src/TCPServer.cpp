@@ -5,6 +5,7 @@
 #include "../../include/include_json/include_json.hpp"
 #include "../../src/Constants.h"
 #include "../src/Systems/Utils.h"
+#include "Server.h"
 #include "../../src/Systems/Serialization.h"
 
 
@@ -14,9 +15,20 @@ using namespace std::chrono;
 
 
 
-TCPServer::TCPServer(boost::asio::io_context& context_, uint16_t port_)
-    : context(context_), acceptor_(context_, tcp::endpoint(tcp::v4(), port_)) {
+TCPServer::TCPServer(boost::asio::io_context& context_, uint16_t port_, UDPServer &udpServer_)
+    : context{context_}, acceptor_{context_, tcp::endpoint(tcp::v4(), port_)}, udpServer{udpServer_} {
     //StartReceiving();
+}
+
+TCPServer::~TCPServer() {
+    cout << "Se ha llamado al destructor de TCPServer" << endl;
+}
+
+void TCPServer::Close() {
+    for(const auto connection : connections) {
+        connection->Close();
+    }
+    acceptor_.close();
 }
 
 void TCPServer::StartReceiving() {
@@ -42,7 +54,7 @@ void TCPServer::HandleAccept(TCPConnection::pointer new_connection, const boost:
             players.push_back(p);
         }
         std::cout << "Num conexiones: " << connections.size() << std::endl;
-        if (connections.size() >= MIN_NUM_PLAYERS) {
+        if (connections.size() >= Constants::MIN_NUM_PLAYERS) {
             cout << "Ya hemos llegado al núm de conexiones para enviar partida, vamos a visar a los clientes" << endl;
             SendStartGame();
             // justo despues vaciar el tcp para otra conexion
@@ -55,7 +67,7 @@ void TCPServer::HandleAccept(TCPConnection::pointer new_connection, const boost:
 bool TCPServer::PlayerExists(TCPConnection::pointer new_connection) {
     string newAddress = new_connection->socket().remote_endpoint().address().to_string();
     uint16_t newPort = new_connection->socket().remote_endpoint().port();
-    for (auto currentPlayer : connections) {
+    for (const auto& currentPlayer : connections) {
         string currentAddress = currentPlayer->socket().remote_endpoint().address().to_string();
         uint16_t currentPort = currentPlayer->socket().remote_endpoint().port();
         if (newAddress == currentAddress && newPort == currentPort)
@@ -66,7 +78,10 @@ bool TCPServer::PlayerExists(TCPConnection::pointer new_connection) {
 
 // obtener el string con todos los datos
 void TCPServer::SendStartGame() {
-    for (auto currentPlayer : connections) {
+    // como ya vamos a empezar una partida nueva, a partir de ahora sí aceptaremos que la partida se pueda acabar
+    udpServer.StartReceiving();
+    udpServer.CheckDisconnectionsAfterSeconds();
+    for (const auto& currentPlayer : connections) {
         json j;
         uint8_t posVector = 0;
         uint16_t idPlayer = 0;
@@ -95,4 +110,5 @@ void TCPServer::SendStartGame() {
 
         currentPlayer->SendStartMessage(buff.get(), currentBuffSize);
     }
+    Server::ACCEPTING_ENDGAME = true; 
 }

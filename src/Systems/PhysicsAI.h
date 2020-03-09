@@ -21,8 +21,8 @@ class PhysicsAI {
 public:
     PhysicsAI();
     ~PhysicsAI(){};
-
+/*
     void Update(CarAI* carAI, ManWayPoint* graph);
     void UpdateCarPowerUps(Entity* carAI);
-
+*/
 };

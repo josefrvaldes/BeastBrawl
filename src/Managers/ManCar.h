@@ -12,6 +12,7 @@
 #include <Entities/WayPoint.h>
 
 #include <Systems/SystemPathPlanning.h>
+#include "../Systems/SystemOnline.h"
 
 #include <cstdlib> /* srand, rand */
 #include <iostream>
@@ -36,6 +37,7 @@ struct PhysicsAI;
 struct SystemBtPowerUp;
 struct SystemBtMoveTo;
 struct SystemBtLoDMove;
+struct SystemGameRules;
 
 
 class ManCar : public Manager {
@@ -46,10 +48,11 @@ class ManCar : public Manager {
 
     void CreateMainCar();
     void CreateHumanCar(glm::vec3 _position);
-    void UpdateCar(ManTotem &);
+    void UpdateCarPlayer(ManTotem &);
+    void UpdateGeneralCar(Entity& car_, Entity& totem_);
     void UpdateCarAI(CarAI* carAI, ManPowerUp* m_manPowerUp, ManBoxPowerUp* m_manBoxPowerUp, ManTotem* m_manTotem, ManWayPoint* graph, ManNavMesh* manNavMesh, 
                     ManBoundingWall* m_manBoundingWall, SystemBtPowerUp* systemBtPowerUp, SystemBtMoveTo* systemBtMoveTo, SystemBtLoDMove* systemBtLoDMove, SystemPathPlanning *systemPathPlanning);
-    void UpdateCarHuman(Entity* CarHuman);
+    void UpdateCarHuman(Entity* CarHuman, ManTotem*);
     shared_ptr<CarHuman>& GetCar() { return car; };
 
     void CreateCarAI();
@@ -61,6 +64,7 @@ class ManCar : public Manager {
     bool CarTotemInVisionRange(Entity *currentCar, Entity* desCar, uint32_t rangeVision);
     void Integrate(float) override;
     Entity* GetDesirableTarget(Entity* actualCar);
+    void SetSystemOnline(SystemOnline* systOn){ systemOnline = systOn; };
     
 
    private:
@@ -73,14 +77,18 @@ class ManCar : public Manager {
     void NotAcceleratingOrDecelerating(DataMap* d);
     void Decelerate(DataMap* d);
     void NotTurning(DataMap* d);
-    void CollisionPowerUp(DataMap* d);
-    void CollisionPowerUpAI(DataMap* d);
-    void CatchTotemPlayer(DataMap* d);
+    void SkidCar(DataMap* d);
+    void NotSkid(DataMap* d);
+    void CollisionCarPowerUp(DataMap* d);
     void CatchTotemCar(DataMap* d);
-    void UseTotem(Entity* carWinTotem);
+    void ObtainTotem(Entity* carWinTotem);
     void ChangeTotemCar(DataMap* d);
     void NewInputsReceived(DataMap* d);
     void NewSyncReceived(DataMap* d);
+    void NewCatchPUReceived(DataMap* d);
+    void NewCatchTotemReceived(DataMap* d);
+    void NewLostTotemReceived(DataMap* d);
+    void DeletePlayer(DataMap* d);
     //void ChangePosDestination(DataMap* d);
     //void MoveToPowerUp(DataMap* d);
     void ThrowTotem(Entity* carLoseTotem);
@@ -93,5 +101,8 @@ class ManCar : public Manager {
     void CatchPowerUp(DataMap* d);
     void CatchPowerUpAI(DataMap* d);
     shared_ptr<CarHuman> car;
-    unique_ptr<PhysicsAI> physicsAI;
+    //unique_ptr<PhysicsAI> physicsAI;
+    unique_ptr<SystemGameRules> systemGameRules;
+
+    SystemOnline* systemOnline = nullptr; // en caso de que sea Single va a ser un nullptr
 };

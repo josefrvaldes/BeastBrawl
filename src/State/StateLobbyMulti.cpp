@@ -8,7 +8,7 @@
 
 using namespace std;
 
-StateLobbyMulti::StateLobbyMulti() : tcpClient{make_shared<TCPClient>(SERVER_HOST, SERVER_PORT_TCP)} {
+StateLobbyMulti::StateLobbyMulti() : tcpClient{make_shared<TCPClient>(Constants::SERVER_HOST, SERVER_PORT_TCP)} {
     std::cout << "> LobbyMenu constructor" << std::endl;
 
     renderEngine = RenderFacadeManager::GetInstance()->GetRenderFacade();

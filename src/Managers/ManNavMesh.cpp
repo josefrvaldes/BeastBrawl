@@ -165,8 +165,9 @@ void ManNavMesh::UpdateNavMeshEntity(Entity* entity_) const{
     if(newNavMesh != -1){
         auto cCurrentNavMesh = static_cast<CCurrentNavMesh*>(entity_->GetComponent(CompType::CurrentNavMeshComp).get());
         cCurrentNavMesh->currentNavMesh = newNavMesh;
+        //cout << "MI NAVMESH ES:::::::::::::::::::::::::::::::::::::::::::::::::::::::: " << newNavMesh << endl;
     }//else
-       // cout << " NO PERTENECEMOS A NINGUN NAVMEEEESHHH " << endl;
+        //cout << " NO PERTENECEMOS A NINGUN NAVMEEEESHHH " << endl;
 }
 
 int ManNavMesh::CalculateNavMesh(CTransformable &cTransformable) const{
