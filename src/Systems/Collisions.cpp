@@ -75,7 +75,7 @@ void Collisions::IntersectsCarsPowerUps(ManCar* manCars, ManPowerUp* manPowerUps
 
                     (*dataCollisonCarPowerUp)[POWER_UP] = actualPowerUp;              // nos guardamos el puntero para eliminar el powerUp
                     (*dataCollisonCarPowerUp)[CAR_AI] = actualCar.get();              // nos guardamos el puntero al coche                              
-                    EventManager::GetInstance().AddEventMulti(Event{EventType::COLLISION_ENTITY_AI_POWERUP, dataCollisonCarPowerUp}); 
+                    EventManager::GetInstance().AddEventMulti(Event{EventType::COLLISION_CAR_POWERUP, dataCollisonCarPowerUp}); 
                     // comprobamos si el coche tenia escudo y el totem.. ya que debe de soltarlo
                     auto cShield = static_cast<CShield*>(actualCar.get()->GetComponent(CompType::ShieldComp).get());
                     if(cShield->activePowerUp==false && static_cast<CTotem*>(actualCar.get()->GetComponent(CompType::TotemComp).get())->active){  // TRUE

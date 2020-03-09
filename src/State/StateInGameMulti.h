@@ -15,7 +15,7 @@ class StateInGameMulti : public StateInGame {
     void Input() override;
     void Update() override;
     void Render() override;
-    States GetState() { return State::States::INGAME_MULTI; };
+    States GetState() override { return State::States::INGAME_MULTI; };
 
    private:
     void InitializeCLPhysics(ManCar &manCars, ManBoundingWall &, ManBoundingOBB &, ManBoundingGround &, ManPowerUp &, ManNavMesh&, ManBoxPowerUp&, ManTotem &) override;

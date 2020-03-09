@@ -89,3 +89,9 @@ void SystemOnline::SendCatchTotem(uint16_t idCarCatched) const{
     for(uint8_t i=0; i<3; ++i)
         udpClient->SendCatchTotem(idOnlineMainCar, idCarCatched);
 }
+
+
+void SystemOnline::SendLostTotem(uint16_t idCarCatched, const glm::vec3 &position, int numNavMesh) const{
+    for(uint8_t i=0; i<3; ++i)
+        udpClient->SendLostTotem(idOnlineMainCar, idCarCatched, position, numNavMesh);
+}

@@ -18,7 +18,7 @@ class StateControls : public State{
         void InitState() override;
         void Update() override;
         void Render() override;
-        States GetState() { return State::States::CONTROLS; };
+        States GetState() override { return State::States::CONTROLS; };
 
 
     private:

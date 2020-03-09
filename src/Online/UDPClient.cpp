@@ -82,9 +82,27 @@ void UDPClient::HandleReceived(std::shared_ptr<unsigned char[]> recevBuff, const
                     HandleReceivedCatchPU(recevBuff.get(), bytesTransferred);
                 }
                 break;
+            
+            case Constants::PetitionTypes::CATCH_TOTEM:
+                if (time > lastTimeCatchTotemReceived[idPlayer]) {
+                    lastTimeCatchTotemReceived[idPlayer] = time;
+                    HandleReceivedCatchTotem(recevBuff.get(), bytesTransferred);
+                }
+                break;
+            
+            case Constants::PetitionTypes::LOST_TOTEM:
+                if (time > lastTimeLostTotemReceived[idPlayer]) {
+                    lastTimeLostTotemReceived[idPlayer] = time;
+                    HandleReceivedLostTotem(recevBuff.get(), bytesTransferred);
+                }
+                break;
+
             case Constants::PetitionTypes::SEND_DISCONNECTION:
                 HandleReceivedDisconnection(recevBuff.get(), bytesTransferred);
                 break;
+            case Constants::PetitionTypes::ENDGAME: {
+                EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_ENDRACE});
+            } break;
 
             default:
                 cout << "Tipo de petición no contemplada" << endl;
@@ -141,7 +159,7 @@ void UDPClient::HandleReceivedSync(unsigned char* recevBuff, size_t bytesTransfe
     size_t currentIndex = 0;
 
     Serialization::Deserialize<uint8_t>(recevBuff, currentIndex);  // petition tipe
-    int64_t time = Serialization::Deserialize<int64_t>(recevBuff, currentIndex);
+    /*int64_t time = */ Serialization::Deserialize<int64_t>(recevBuff, currentIndex);
     uint16_t idCarOnline = Serialization::Deserialize<uint16_t>(recevBuff, currentIndex);
 
     glm::vec3 posCar = Serialization::DeserializeVec3(recevBuff, currentIndex);
@@ -194,21 +212,54 @@ void UDPClient::HandleReceivedSync(unsigned char* recevBuff, size_t bytesTransfe
 void UDPClient::HandleReceivedCatchPU(unsigned char* recevBuff, size_t bytesTransferred) {
     size_t currentIndex = 0;
     Serialization::Deserialize<uint8_t>(recevBuff, currentIndex);  // petition tipe
-    int64_t time = Serialization::Deserialize<int64_t>(recevBuff, currentIndex);
+    /*int64_t time = */ Serialization::Deserialize<int64_t>(recevBuff, currentIndex);
     uint16_t idCarOnline = Serialization::Deserialize<uint16_t>(recevBuff, currentIndex);
     typeCPowerUp typePU = Serialization::DeserializePowerUpOnly(recevBuff, currentIndex);
 
     std::shared_ptr<DataMap> data = make_shared<DataMap>();
     (*data)[DataType::ID_ONLINE] = idCarOnline;
     (*data)[DataType::TYPE_POWER_UP] = typePU;
-    EventManager::GetInstance().AddEventMulti(Event{EventType::NEW_SYNC_RECEIVED_CATCH_PU, data});
+    EventManager::GetInstance().AddEventMulti(Event{EventType::NEW_CATCH_PU_RECEIVED, data});
 }
+
+
+// recibes el jugador que ha cogido el totem
+void UDPClient::HandleReceivedCatchTotem(unsigned char* recevBuff, size_t bytesTransferred) {
+    size_t currentIndex = 0;
+    Serialization::Deserialize<uint8_t>(recevBuff, currentIndex);   // petition tipe
+    Serialization::Deserialize<int64_t>(recevBuff, currentIndex);   // tiempo
+    Serialization::Deserialize<uint16_t>(recevBuff, currentIndex);  // idOnline del que lo envio
+    uint16_t idCarOnlineCatched = Serialization::Deserialize<uint16_t>(recevBuff, currentIndex);
+
+    std::shared_ptr<DataMap> data = make_shared<DataMap>();
+    (*data)[DataType::ID_ONLINE] = idCarOnlineCatched;
+    EventManager::GetInstance().AddEventMulti(Event{EventType::NEW_CATCH_TOTEM_RECEIVED, data});
+}
+
+
+// recibes el jugador que ha perdido el totem, y la posicion del totem
+void UDPClient::HandleReceivedLostTotem(unsigned char* recevBuff, size_t bytesTransferred) {
+    size_t currentIndex = 0;
+    Serialization::Deserialize<uint8_t>(recevBuff, currentIndex);   // petition tipe
+    Serialization::Deserialize<int64_t>(recevBuff, currentIndex);   // tiempo
+    Serialization::Deserialize<uint16_t>(recevBuff, currentIndex);  // idOnline del que lo envio
+    uint16_t idCarOnlineCatched = Serialization::Deserialize<uint16_t>(recevBuff, currentIndex);
+    glm::vec3 position = Serialization::DeserializeVec3(recevBuff, currentIndex);
+    int numNavMesh = Serialization::Deserialize<int>(recevBuff, currentIndex);
+
+    std::shared_ptr<DataMap> data = make_shared<DataMap>();
+    (*data)[DataType::ID_ONLINE] = idCarOnlineCatched;
+    (*data)[DataType::VEC3_POS] = position;
+    (*data)[DataType::ID] = numNavMesh;
+    EventManager::GetInstance().AddEventMulti(Event{EventType::NEW_LOST_TOTEM_RECEIVED, data});
+}
+
 
 // recibes la desconexion de otro jugador
 void UDPClient::HandleReceivedDisconnection(unsigned char* recevBuff, size_t bytesTransferred) {
     size_t currentIndex = 0;
     Serialization::Deserialize<uint8_t>(recevBuff, currentIndex);  // petition tipe
-    uint16_t idCarOnline = Serialization::Deserialize<uint16_t>(recevBuff, currentIndex);
+    // uint16_t idCarOnline = Serialization::Deserialize<uint16_t>(recevBuff, currentIndex);
 
     /*std::shared_ptr<DataMap> data = make_shared<DataMap>();
     (*data)[DataType::ID_ONLINE] = idCarOnline;
@@ -327,6 +378,31 @@ void UDPClient::SendCatchTotem(uint16_t idOnline, uint16_t idPlayerCatched) {
 }
 
 
+void UDPClient::SendLostTotem(uint16_t idOnline, uint16_t idPlayerLosted, const glm::vec3 &pos, int numNavMesh){
+    unsigned char requestBuff[Constants::ONLINE_BUFFER_SIZE];
+    size_t currentBuffSize = 0;
+    uint8_t callType = Constants::PetitionTypes::LOST_TOTEM;
+    int64_t time = Utils::getMillisSinceEpoch();
+
+    Serialization::Serialize(requestBuff, &callType, currentBuffSize);
+    Serialization::Serialize(requestBuff, &time, currentBuffSize);
+    Serialization::Serialize(requestBuff, &idOnline, currentBuffSize);
+    Serialization::Serialize(requestBuff, &idPlayerLosted, currentBuffSize);
+    Serialization::SerializeVec3(requestBuff, pos, currentBuffSize);
+    Serialization::Serialize(requestBuff, &numNavMesh, currentBuffSize);
+
+    socket.async_send_to(
+        boost::asio::buffer(requestBuff, currentBuffSize),
+        serverEndpoint,
+        boost::bind(
+            &UDPClient::HandleSentCatchTotem,
+            this,
+            boost::asio::placeholders::error,
+            boost::asio::placeholders::bytes_transferred));
+}
+
+
+
 void UDPClient::SendEndgame() {
     unsigned char requestBuff[Constants::ONLINE_BUFFER_SIZE];
     size_t currentBuffSize = 0;
@@ -335,7 +411,7 @@ void UDPClient::SendEndgame() {
 
     Serialization::Serialize(requestBuff, &callType, currentBuffSize);
     Serialization::Serialize(requestBuff, &time, currentBuffSize);
-    
+
     socket.async_send_to(
         boost::asio::buffer(requestBuff, currentBuffSize),
         serverEndpoint,
