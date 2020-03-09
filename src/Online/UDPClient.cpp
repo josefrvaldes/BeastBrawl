@@ -117,7 +117,10 @@ void UDPClient::HandleReceived(std::shared_ptr<unsigned char[]> recevBuff, const
                 break;
 
             case Constants::PetitionTypes::SEND_THROW_MELON_O_PUDIN:
-                HandleReceivedThrowMelonOPudin(recevBuff.get(), bytesTransferred);
+                if (time > lastTimeThrowMelonOPudinReceived[idPlayer]) {
+                    lastTimeThrowMelonOPudinReceived[idPlayer] = time;
+                    HandleReceivedThrowMelonOPudin(recevBuff.get(), bytesTransferred);
+                }
                 break;
 
             case Constants::PetitionTypes::ENDGAME:
@@ -305,7 +308,7 @@ void UDPClient::HandleReceivedThrowMelonOPudin(unsigned char* recevBuff, size_t 
     Serialization::Deserialize<uint8_t>(recevBuff, currentIndex);   // petition tipe
     Serialization::Deserialize<int64_t>(recevBuff, currentIndex);   // tiempo
     Serialization::Deserialize<uint16_t>(recevBuff, currentIndex);  // idOnline del que lo envio
-    
+
     int8_t typePU = Serialization::Deserialize<int8_t>(recevBuff, currentIndex);
     uint16_t idPUOnline = Serialization::Deserialize<uint16_t>(recevBuff, currentIndex);
     vec3 position = Serialization::DeserializeVec3(recevBuff, currentIndex);

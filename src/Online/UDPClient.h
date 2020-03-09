@@ -91,4 +91,5 @@ class UDPClient {
     unordered_map<uint16_t, int64_t> lastTimeLostTotemReceived;
     unordered_map<uint16_t, int64_t> lastTimeUsedRoboJoroboReceived;
     unordered_map<uint16_t, int64_t> lastTimeCollideNitroReceived;
+    unordered_map<uint16_t, int64_t> lastTimeThrowMelonOPudinReceived;
 };

@@ -87,4 +87,6 @@ class UDPServer : public boost::enable_shared_from_this<UDPServer> {
     int64_t timeServerStartedReceiving;
 
     uint16_t playerWithTotem = Constants::ANY_PLAYER;
+
+    const uint8_t NUM_REINTENTOS = 3;
 };

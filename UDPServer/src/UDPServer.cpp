@@ -173,7 +173,9 @@ void UDPServer::HandleReceivedThrowPU(const uint16_t id, const uint16_t idPUOnli
     // el id del melón es el id del user concatenado con el id real
     idsMelons.push_back(idPUOnline);
     std::cout << "Hemos creado el melón con id " << idPUOnline << ", y lo hemos guardado así que ahora tenemos " << idsMelons.size() << endl;
-    ResendBytesToOthers(id, resendPU, currentBufferSize, originalClient);
+    
+    for(uint8_t i = 0; i < NUM_REINTENTOS; i++) 
+        ResendBytesToOthers(id, resendPU, currentBufferSize, originalClient);
 }
 
 void UDPServer::HandleReceivedCatchTotem(const uint16_t id, unsigned char buffer[], const size_t currentBufferSize, const udp::endpoint& remoteClient) {
@@ -186,7 +188,7 @@ void UDPServer::HandleReceivedCatchTotem(const uint16_t id, unsigned char buffer
 
         playerWithTotem = idCarCatchTotem;
 
-        for(uint8_t i=0; i<3; ++i)
+        for(uint8_t i=0; i<NUM_REINTENTOS; ++i)
             for(Player& currentPlayer : players) 
                 SendBytes(buffer, currentBufferSize, currentPlayer); 
     }
@@ -204,7 +206,7 @@ void UDPServer::HandleReceivedLostTotem(const uint16_t id, unsigned char buffer[
     if(playerWithTotem!=Constants::ANY_PLAYER && playerWithTotem == idCarLostTotem){  // en caso de que alguien tubiese el totem
         playerWithTotem = Constants::ANY_PLAYER;
 
-        for(uint8_t i=0; i<3; ++i)
+        for(uint8_t i=0; i<NUM_REINTENTOS; ++i)
             for(Player& currentPlayer : players) 
                 SendBytes(buffer, currentBufferSize, currentPlayer); 
     }
@@ -230,7 +232,7 @@ void UDPServer::HandleReceivedUsedRoboJorobo(const uint16_t id, unsigned char bu
 
         playerWithTotem = idCarOnline;
 
-        for(uint8_t i=0; i<3; ++i)
+        for(uint8_t i=0; i<NUM_REINTENTOS; ++i)
             for(Player& currentPlayer : players) 
                 SendBytes(requestBuff, currentBuffSize, currentPlayer);
     }
@@ -249,7 +251,7 @@ void UDPServer::HandleReceivedCollideNitro(const uint16_t id, unsigned char buff
     if(playerWithTotem!=Constants::ANY_PLAYER && playerWithTotem==idCarWithTotem){  // en caso de que alguien tubiese el totem otro
         playerWithTotem = idCarWithNitro;
 
-        for(uint8_t i=0; i<3; ++i)
+        for(uint8_t i=0; i<NUM_REINTENTOS; ++i)
             for(Player& currentPlayer : players) 
                 SendBytes(buffer, currentBufferSize, currentPlayer);
     }
