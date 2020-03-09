@@ -281,17 +281,9 @@ void ManCar::NewInputsReceived(DataMap* d) {
         if (car->HasComponent(CompType::OnlineComp) && car->HasComponent(CompType::BufferOnline)) {
             COnline* compOnline = static_cast<COnline*>(car->GetComponent(CompType::OnlineComp).get());
             uint16_t currentIDOnline = compOnline->idClient;
-            // cout << "El idOnline es " << currentIDOnline << endl;
             if (currentIDOnline == idRecieved) {
-                // cout << "Hemos encontrado un coche con el id " << id << " y vamos a actualizarle la pos" << endl;
-                compOnline->inputs = inputs;
-                // physics->UpdateHuman(static_cast<Car*>(car.get()));
-                
-                // CBufferOnline* buffer = static_cast<CBufferOnline*>(car->GetComponent(CompType::BufferOnline).get());
-                // CTransformable* cTransformable = static_cast<CTransformable*>(car->GetComponent(CompType::TransformableComp).get());
 
-                // BuffElement elem(inputs, cTransformable->position, cTransformable->rotation);
-                // buffer->elems.push_back(elem);
+                compOnline->inputs = inputs;
                 break;
             }
         }
@@ -594,11 +586,21 @@ void ManCar::ThrowPowerUp(Car* car_) {
                 EventManager::GetInstance().AddEventMulti(Event{EventType::PowerUp_Create, data});
                 break;
             default:  // en caso del melon molon o el pudding
-                (*data)[TYPE_POWER_UP] = cPowerUpCar->typePowerUp;
-                (*data)[CAR_EXIT_POSITION] = static_cast<CTransformable*>(car_->GetComponent(CompType::TransformableComp).get());
-                (*data)[CAR_EXIT_DIMENSION] =  static_cast<CDimensions*>(car_->GetComponent(CompType::DimensionsComp).get());
-                EventManager::GetInstance().AddEventMulti(Event{EventType::PowerUp_Create, data});
-
+                bool enviar = true;
+                // si estamos en el online
+                if(Game::GetInstance()->GetState()->GetState() == State::States::INGAME_MULTI) {
+                    // si no es el jugador original, no enviará el powerup porque eso lo gestiona el server
+                    COnline *cOnlineCarReceived = static_cast<COnline*>(car_->GetComponent(CompType::OnlineComp).get());
+                    COnline *cOnlineMainCar = static_cast<COnline*>(GetCar()->GetComponent(CompType::OnlineComp).get());
+                    if(cOnlineCarReceived->idClient != cOnlineMainCar->idClient)
+                        enviar = false;
+                }
+                if(enviar) {
+                    (*data)[TYPE_POWER_UP] = cPowerUpCar->typePowerUp;
+                    (*data)[CAR_EXIT_POSITION] = static_cast<CTransformable*>(car_->GetComponent(CompType::TransformableComp).get());
+                    (*data)[CAR_EXIT_DIMENSION] =  static_cast<CDimensions*>(car_->GetComponent(CompType::DimensionsComp).get());
+                    EventManager::GetInstance().AddEventMulti(Event{EventType::PowerUp_Create, data});
+                }
                 break;
         }
 
