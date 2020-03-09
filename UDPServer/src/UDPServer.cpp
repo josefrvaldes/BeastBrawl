@@ -133,6 +133,14 @@ void UDPServer::HandleReceive(std::shared_ptr<unsigned char[]> recevBuff, std::s
                             cout << "Hemos recibido una petición de ENDGAME! pero la ignoramos!! ###########################" << endl;
                         }
                     } break;
+                    case Constants::PetitionTypes::SEND_THROW_MELON_O_PUDIN: {
+                        if (p.lastThrowPUReceived < time) {
+                            p.lastThrowPUReceived = time;
+                            HandleReceivedThrowPU(idPlayer, buffRecieved, bytesTransferred, *remoteClient.get());
+                        } else {
+                            //cout << Utils::getISOCurrentTimestampMillis() << "Se ha ignorado un paquete de lostTotem porque era antiguo" << endl;
+                        }
+                    } break;
                     default:
                         cout << "Petición incorrecta" << endl;
                         break;
@@ -156,6 +164,10 @@ void UDPServer::HandleReceivedInputs(const uint16_t id, const unsigned char rese
 }
 
 void UDPServer::HandleReceivedCatchPU(const uint16_t id, unsigned char resendPU[], const size_t currentBufferSize, const udp::endpoint& originalClient) {
+    ResendBytesToOthers(id, resendPU, currentBufferSize, originalClient);
+}
+
+void UDPServer::HandleReceivedThrowPU(const uint16_t id, unsigned char resendPU[], const size_t currentBufferSize, const udp::endpoint& originalClient) {
     ResendBytesToOthers(id, resendPU, currentBufferSize, originalClient);
 }
 

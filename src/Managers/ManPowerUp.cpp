@@ -27,6 +27,17 @@ ManPowerUp::~ManPowerUp() {
 
 // Lugar en el que se crean los power ups
 
+void ManPowerUp::NewPowerUpReceivedFromServer(DataMap *d) {
+    int8_t auxTypePU = any_cast<int8_t>((*d)[TYPE_POWER_UP]);
+    typeCPowerUp typePU = static_cast<typeCPowerUp>(auxTypePU);
+    vec3 position = any_cast<vec3>((*d)[VEC3_POS]);
+    vec3 rotation = any_cast<vec3>((*d)[VEC3_ROT]);
+
+    shared_ptr<PowerUp> powerUp = make_shared<PowerUp>(position, rotation, typePU, nullptr);
+    MaterializePowerUp(powerUp);
+}
+
+
 void ManPowerUp::CreatePowerUp(DataMap *d) {
     typeCPowerUp type = any_cast<typeCPowerUp>((*d)[TYPE_POWER_UP]);
     cout << "el tipo de powerUp que recibimos es el: " << int(type) << endl;
@@ -130,12 +141,19 @@ void ManPowerUp::Update() {
     }
 }
 
+
+
 // TO-DO : tener una variable de control para eliminar todas las cosas de los arrays a la vez CUIDADO CON ESOOOO
 void ManPowerUp::SubscribeToEvents() {
     // lo ejecuta el coche al tirar power up
     EventManager::GetInstance().SubscribeMulti(Listener(
         EventType::PowerUp_Create,
         bind(&ManPowerUp::CreatePowerUp, this, placeholders::_1),
+        "CreatePowerUp"));
+
+    EventManager::GetInstance().SubscribeMulti(Listener(
+        EventType::NEW_THROW_PU_RECEIVED,
+        bind(&ManPowerUp::NewPowerUpReceivedFromServer, this, placeholders::_1),
         "CreatePowerUp"));
 
     //EventManager::GetInstance().SubscribeMulti(Listener(

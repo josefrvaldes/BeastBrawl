@@ -97,6 +97,7 @@ void SystemOnline::SendLostTotem(uint16_t idCarCatched, const glm::vec3 &positio
 void SystemOnline::SendThrowPU(shared_ptr<PowerUp> &powerUp) const {
     auto cTransformable = static_cast<CTransformable *>(powerUp->GetComponent(CompType::TransformableComp).get());
     auto cPowerUp = static_cast<CPowerUp *>(powerUp->GetComponent(CompType::PowerUpComp).get());
+    int64_t time = Utils::getMillisSinceEpoch();
     if (cPowerUp->typePowerUp == typeCPowerUp::TeleBanana) {
         // esto lo vamos a tener que gestionar aparte porque no podemos pasar un puntero
         // online
@@ -105,7 +106,7 @@ void SystemOnline::SendThrowPU(shared_ptr<PowerUp> &powerUp) const {
         //     udpClient->SendThrowPUBanana(idOnlineMainCar, powerUp);
     } else {
         for (uint8_t i = 0; i < TIMES_RESEND; ++i)
-            udpClient->SendThrowPU(idOnlineMainCar, cTransformable->position, cTransformable->rotation, static_cast<int8_t>(cPowerUp->typePowerUp));
+            udpClient->SendThrowMelonOPudin(idOnlineMainCar, time, cTransformable->position, cTransformable->rotation, static_cast<int8_t>(cPowerUp->typePowerUp));
     }
 }
 

@@ -19,7 +19,9 @@ class ManPowerUp : public Manager{
    public:
     ManPowerUp();
     ~ManPowerUp();
-
+    void SetSystemOnline(SystemOnline *sys) {
+        systemOnline = sys;
+    };
     
     //vector<shared_ptr<PowerUp>> GetEntities() const {
     //    return PowerUps;
@@ -30,6 +32,7 @@ class ManPowerUp : public Manager{
 	//vector<shared_ptr<PowerUp>> PowerUps;
     void SubscribeToEvents();
     void CreatePowerUp(DataMap* d);
+    void NewPowerUpReceivedFromServer(DataMap* d);
     void MaterializePowerUp(shared_ptr<PowerUp> powerUp);
     void DeletePowerUp(DataMap* d);
 

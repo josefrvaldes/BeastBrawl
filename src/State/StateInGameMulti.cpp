@@ -14,6 +14,7 @@ StateInGameMulti::StateInGameMulti(uint16_t IdOnline, const vector<uint16_t> IdP
     sysOnline = make_unique<SystemOnline>(*manCars, IdOnline);
     manCars->SetSystemOnline(sysOnline.get());
     manTotems->SetSystemOnline(sysOnline.get());
+    manPowerUps->SetSystemOnline(sysOnline.get());
 
     vec3 posIniciales[] = {
         vec3(120.0f, 10.0f, -300.0f),

@@ -45,7 +45,7 @@ class UDPClient {
     void SendLostTotem(uint16_t idOnline, uint16_t idPlayerLosted, const glm::vec3 &pos, int numNavMesh);
     void SendRoboJorobo(uint16_t idOnline);
     void SendCollideNitro(uint16_t idOnline, uint16_t idWithTotem, uint16_t idWithNitro);
-    void SendThrowPU(uint16_t idOnline, const glm::vec3 &position, const glm::vec3 &rotation, int8_t typePU);
+    void SendThrowMelonOPudin(uint16_t idOnline, int64_t time, const glm::vec3 &position, const glm::vec3 &rotation, int8_t typePU);
     void SendEndgame();
     void SendDateTime();
     uint32_t idMainCar;
@@ -62,6 +62,7 @@ class UDPClient {
     void HandleReceivedCollideNitro(unsigned char* recevBuff, size_t bytesTransferred);
     void HandleReceivedDisconnection(unsigned char* recevBuff, size_t bytesTransferred);
     void HandleReceivedEndgame(unsigned char* recevBuff, size_t bytesTransferred);
+    void HandleReceivedThrowMelonOPudin(unsigned char* recevBuff, size_t bytesTransferred);
 
     void HandleSentInputs(const boost::system::error_code& errorCode, std::size_t bytes_transferred);
     void HandleSentSync(const boost::system::error_code& errorCode, std::size_t bytes_transferred);
