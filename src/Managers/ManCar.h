@@ -88,6 +88,8 @@ class ManCar : public Manager {
     void NewCatchPUReceived(DataMap* d);
     void NewCatchTotemReceived(DataMap* d);
     void NewLostTotemReceived(DataMap* d);
+    void NewUsedRoboJoroboReceived(DataMap* d);
+    void NewCollideNitroReceived(DataMap* d);
     void DeletePlayer(DataMap* d);
     //void ChangePosDestination(DataMap* d);
     //void MoveToPowerUp(DataMap* d);

@@ -18,6 +18,8 @@ struct Player {
     int64_t lastCatchPUTimeReceived{0};
     int64_t lastCatchTotemTimeReceived{0};
     int64_t lastLostTotemTimeReceived{0};
+    int64_t lastUsedRoboJoroboTimeReceived{0};
+    int64_t lastCollideNitroTimeReceived{0};
 
     bool hasTotem {false};
     bool disconnected {false};

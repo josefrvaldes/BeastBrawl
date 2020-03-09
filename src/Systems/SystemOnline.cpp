@@ -95,3 +95,16 @@ void SystemOnline::SendLostTotem(uint16_t idCarCatched, const glm::vec3 &positio
     for(uint8_t i=0; i<3; ++i)
         udpClient->SendLostTotem(idOnlineMainCar, idCarCatched, position, numNavMesh);
 }
+
+
+void SystemOnline::SendRoboJorobo() const{
+    for(uint8_t i=0; i<3; ++i)
+        udpClient->SendRoboJorobo(idOnlineMainCar);
+}
+
+
+// se le pasa primero el coche que lleva totem, y luego el coche que choca con el
+void SystemOnline::SendNitro(uint16_t idCarWithTotem, uint16_t idCarWithNitro) const{
+    for(uint8_t i=0; i<3; ++i)
+        udpClient->SendCollideNitro(idOnlineMainCar, idCarWithTotem, idCarWithNitro);
+}

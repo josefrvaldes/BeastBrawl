@@ -5,5 +5,5 @@ CTotem::CTotem() /*: durationTime{30000}*/{
 }
 
 CTotem::~CTotem(){
-    
+
 } 

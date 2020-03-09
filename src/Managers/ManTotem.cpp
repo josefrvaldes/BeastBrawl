@@ -73,18 +73,8 @@ void ManTotem::CreateTotem(glm::vec3 _position) {
 }
 
 
-// elimina el totem de irrlich y lo oculta del mapa
+// oculta el totem
 void ManTotem::AppertainCar(DataMap* d){
-    /*
-    auto renderFacadeManager = RenderFacadeManager::GetInstance();
-    auto renderEngine = renderFacadeManager->GetRenderFacade();
-    for(long unsigned int i=0; i< entities.size(); ++i){
-        if(entities[i] == any_cast<shared_ptr<Entity>>((*d)[TOTEM])){
-            renderEngine->DeleteEntity(entities[i].get());
-            entities.erase(entities.begin()+i);
-        }
-    }
-    */
    // lo unico qe hacemos es ponerlo a false, para que nadie lo pueda coger
    auto cTotem = static_cast<CTotem*>(entities[0]->GetComponent(CompType::TotemComp).get());
    cTotem->active = false;
@@ -122,17 +112,22 @@ void ManTotem::ResetTotem(DataMap* d){
     }
 
     if(Game::GetInstance()->GetState()->GetState() == State::States::INGAME_SINGLE){
-        auto cTransformable = static_cast<CTransformable*>(entities[0]->GetComponent(CompType::TransformableComp).get());
-        cTransformable->position = posNewTotem;
-        auto cCurrentNavMesh = static_cast<CCurrentNavMesh*>(entities[0]->GetComponent(CompType::CurrentNavMeshComp).get());
-        cCurrentNavMesh->currentNavMesh = currentNavMesh;
-        auto cTotem = static_cast<CTotem*>(entities[0]->GetComponent(CompType::TotemComp).get());
-        cTotem->active = true;
-    }else{
+        ActivateTotem(posNewTotem, currentNavMesh);
+    }else if(Game::GetInstance()->GetState()->GetState() == State::States::INGAME_MULTI){
         auto cOnline = static_cast<COnline*>(any_cast<Entity*>((*d)[ACTUAL_CAR])->GetComponent(CompType::OnlineComp).get());
         systemOnline->SendLostTotem(cOnline->idClient, posNewTotem, currentNavMesh);
     }
 }
+
+void ManTotem::ActivateTotem(const glm::vec3 &position, int currentNavMesh){
+    auto cTransformable = static_cast<CTransformable*>(entities[0]->GetComponent(CompType::TransformableComp).get());
+    cTransformable->position = position;
+    auto cCurrentNavMesh = static_cast<CCurrentNavMesh*>(entities[0]->GetComponent(CompType::CurrentNavMeshComp).get());
+    cCurrentNavMesh->currentNavMesh = currentNavMesh;
+    auto cTotem = static_cast<CTotem*>(entities[0]->GetComponent(CompType::TotemComp).get());
+    cTotem->active = true;
+}
+
 
 
 void ManTotem::SubscribeToEvents() {
@@ -169,12 +164,7 @@ void ManTotem::RecievedCatchTotem(DataMap* d){
 
 
 void ManTotem::RecievedLostTotem(DataMap* d){
-    auto cTransformable = static_cast<CTransformable*>(entities[0]->GetComponent(CompType::TransformableComp).get());
-    cTransformable->position = any_cast<glm::vec3>((*d)[DataType::VEC3_POS]);
-    auto cCurrentNavMesh = static_cast<CCurrentNavMesh*>(entities[0]->GetComponent(CompType::CurrentNavMeshComp).get());
-    cCurrentNavMesh->currentNavMesh = any_cast<int>((*d)[DataType::ID]);
-    auto cTotem = static_cast<CTotem*>(entities[0]->GetComponent(CompType::TotemComp).get());
-    cTotem->active = true;
+    ActivateTotem(any_cast<glm::vec3>((*d)[DataType::VEC3_POS]), any_cast<int>((*d)[DataType::ID]));
 }
 
 

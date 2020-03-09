@@ -79,6 +79,7 @@ bool TCPServer::PlayerExists(TCPConnection::pointer new_connection) {
 // obtener el string con todos los datos
 void TCPServer::SendStartGame() {
     // como ya vamos a empezar una partida nueva, a partir de ahora sí aceptaremos que la partida se pueda acabar
+    udpServer.ResetTimerStartReceiving();
     udpServer.StartReceiving();
     udpServer.CheckDisconnectionsAfterSeconds();
     for (const auto& currentPlayer : connections) {

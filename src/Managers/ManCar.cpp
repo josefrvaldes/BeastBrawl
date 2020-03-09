@@ -251,6 +251,16 @@ void ManCar::SubscribeToEvents() {
         bind(&ManCar::NewLostTotemReceived, this, placeholders::_1),
         "NewLostTotemReceived"));
     
+    EventManager::GetInstance().SubscribeMulti(Listener(
+        EventType::NEW_ROBOJOROBO_RECEIVED,
+        bind(&ManCar::NewUsedRoboJoroboReceived, this, placeholders::_1),
+        "NewUsedRoboJoroboReceived"));
+    
+    EventManager::GetInstance().SubscribeMulti(Listener(
+        EventType::NEW_NITRO_RECEIVED,
+        bind(&ManCar::NewCollideNitroReceived, this, placeholders::_1),
+        "NewCollideNitroReceived"));
+    
     /*EventManager::GetInstance().SubscribeMulti(Listener(
         EventType::DISCONNECTED_PLAYER,
         bind(&ManCar::DeletePlayer, this, placeholders::_1),
@@ -347,13 +357,12 @@ void ManCar::NewCatchTotemReceived(DataMap* d) {
 }
 
 
-// establecemos quien ha cogido el totem
+// establecemos quien ha perdido el totem
 void ManCar::NewLostTotemReceived(DataMap* d) {
     auto idCarLosted = any_cast<uint16_t>((*d)[DataType::ID_ONLINE]);
     for (const auto& car : GetEntities()) {
         if (car->HasComponent(CompType::OnlineComp)) {
             COnline* compOnline = static_cast<COnline*>(car->GetComponent(CompType::OnlineComp).get());
-            auto cTotem = static_cast<CTotem*>(car->GetComponent(CompType::TotemComp).get());
             if (compOnline->idClient == idCarLosted) {
                 ThrowTotem(car.get());
             }
@@ -361,6 +370,37 @@ void ManCar::NewLostTotemReceived(DataMap* d) {
     }
 }
 
+// establecemos quien ha cogido el totem y quien lo ha perdido
+void ManCar::NewUsedRoboJoroboReceived(DataMap* d) {
+    auto idCarObtained = any_cast<uint16_t>((*d)[DataType::ID_ONLINE]);
+    for (const auto& car : GetEntities()) {
+        if (car->HasComponent(CompType::OnlineComp)) {
+            COnline* compOnline = static_cast<COnline*>(car->GetComponent(CompType::OnlineComp).get());
+            auto cTotem = static_cast<CTotem*>(car->GetComponent(CompType::TotemComp).get());
+            if (compOnline->idClient == idCarObtained) {
+                ObtainTotem(car.get());
+            }else if(cTotem->active == true){
+                ThrowTotem(car.get());
+            }
+        }
+    }
+}
+
+
+void ManCar::NewCollideNitroReceived(DataMap* d) {
+    auto idCarObtainedTotem = any_cast<uint16_t>((*d)[DataType::ID_ONLINE]);
+    for (const auto& car : GetEntities()) {
+        if (car->HasComponent(CompType::OnlineComp)) {
+            COnline* compOnline = static_cast<COnline*>(car->GetComponent(CompType::OnlineComp).get());
+            auto cTotem = static_cast<CTotem*>(car->GetComponent(CompType::TotemComp).get());
+            if (compOnline->idClient == idCarObtainedTotem) {
+                ObtainTotem(car.get());
+            }else if(cTotem->active == true){
+                ThrowTotem(car.get());
+            }
+        }
+    }
+}
 
 /*void ManCar::DeletePlayer(DataMap* d){
     auto idRecieved = any_cast<uint16_t>((*d)[DataType::ID_ONLINE]);
@@ -402,13 +442,17 @@ void ManCar::NewLostTotemReceived(DataMap* d) {
 void ManCar::ChangeTotemCar(DataMap* d) {
     auto carWithTotem = any_cast<Entity*>((*d)[CAR_WITH_TOTEM]);
     auto carWithoutTotem = any_cast<Entity*>((*d)[CAR_WITHOUT_TOTEM]);
-    ThrowTotem(carWithTotem);
-    // activamos el totem al coche que ahora lo tiene
-    auto cTotemWithout = static_cast<CTotem*>(carWithoutTotem->GetComponent(CompType::TotemComp).get());
-    cTotemWithout->active = true;
-    cTotemWithout->timeStart = system_clock::now();
-    // Sonido coger totem
-    EventManager::GetInstance().AddEventMulti(Event{EventType::CATCH_TOTEM});
+    if(Game::GetInstance()->GetState()->GetState() == State::States::INGAME_SINGLE){
+        ThrowTotem(carWithTotem);
+        // activamos el totem al coche que ahora lo tiene
+        ObtainTotem(carWithoutTotem);
+    }else if(Game::GetInstance()->GetState()->GetState() == State::States::INGAME_MULTI){
+        if(carWithTotem == GetCar().get() || carWithoutTotem == GetCar().get()){
+            auto cOnlineCarWithTotem = static_cast<COnline*>(carWithTotem->GetComponent(CompType::OnlineComp).get());
+            auto cOnlineCarWithoutTotem = static_cast<COnline*>(carWithoutTotem->GetComponent(CompType::OnlineComp).get());
+            systemOnline->SendNitro(cOnlineCarWithTotem->idClient, cOnlineCarWithoutTotem->idClient);
+        }
+    }
 }
 
 
@@ -439,14 +483,20 @@ void ManCar::ThrowTotem(Entity* carLoseTotem) {
 
 bool ManCar::useRoboJorobo(Entity* newCarWithTotem) {
     // recorremos los coches
-    for (const auto& cars : entities) {
-        auto cTotem = static_cast<CTotem*>(cars->GetComponent(CompType::TotemComp).get());
-        // Si algun coche tenia el totem .... lo pierde, comprobamos que no sea el mmismo coche con las ID
-        if (cTotem->active == true && newCarWithTotem != cars.get()) {
-            ThrowTotem(cars.get());
-            //al perderlo se lo asignamos al que ha usado el robo jorobo
-            ObtainTotem(newCarWithTotem);
-            return true;  // para salirnos y no hacer mas calculos
+    if(Game::GetInstance()->GetState()->GetState() == State::States::INGAME_SINGLE){
+        for (const auto& cars : entities) {
+            auto cTotem = static_cast<CTotem*>(cars->GetComponent(CompType::TotemComp).get());
+            // Si algun coche tenia el totem .... lo pierde, comprobamos que no sea el mmismo coche con las ID
+            if (cTotem->active == true && newCarWithTotem != cars.get()) {
+                ThrowTotem(cars.get());
+                //al perderlo se lo asignamos al que ha usado el robo jorobo
+                ObtainTotem(newCarWithTotem);
+                return true;  // para salirnos y no hacer mas calculos
+            }
+        }
+    }else if(Game::GetInstance()->GetState()->GetState() == State::States::INGAME_MULTI){
+        if(newCarWithTotem == GetCar().get()){
+            systemOnline->SendRoboJorobo();
         }
     }
     return false;
@@ -676,7 +726,7 @@ void ManCar::CatchPowerUpAI(DataMap* d) {
         indx = 6;
 
 
-    //indx = 5;
+    indx = 2;
     auto cPowerUpCar = static_cast<CPowerUp*>(actualCar->GetComponent(CompType::PowerUpComp).get());
     if (cPowerUpCar->typePowerUp == typeCPowerUp::None) {
         cPowerUpCar->typePowerUp = (typeCPowerUp)indx;
