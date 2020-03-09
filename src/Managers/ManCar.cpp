@@ -407,16 +407,18 @@ void ManCar::ChangeTotemCar(DataMap* d) {
     auto cTotemWithout = static_cast<CTotem*>(carWithoutTotem->GetComponent(CompType::TotemComp).get());
     cTotemWithout->active = true;
     cTotemWithout->timeStart = system_clock::now();
-    // Sonido coger totem
-    EventManager::GetInstance().AddEventMulti(Event{EventType::CATCH_TOTEM});
 }
 
 void ManCar::CatchTotemCar(DataMap* d) {
-    auto cTotem = static_cast<CTotem*>(any_cast<Entity*>((*d)[ACTUAL_CAR])->GetComponent(CompType::TotemComp).get());
+    auto car = any_cast<Entity*>((*d)[ACTUAL_CAR]);
+    auto cTransformable = static_cast<CTransformable*>(car->GetComponent(CompType::TransformableComp).get());
+    auto cTotem = static_cast<CTotem*>(car->GetComponent(CompType::TotemComp).get());
     cTotem->active = true;
     cTotem->timeStart = system_clock::now();
     // Sonido coger totem
-    EventManager::GetInstance().AddEventMulti(Event{EventType::CATCH_TOTEM});
+    shared_ptr<DataMap> data = make_shared<DataMap>();
+    (*data)[VEC3_POS] = cTransformable->position;
+    EventManager::GetInstance().AddEventMulti(Event{EventType::CATCH_TOTEM, data});
 
     
     if(systemOnline != nullptr){
@@ -464,6 +466,7 @@ bool ManCar::useRoboJorobo(Entity* newCarWithTotem) {
 }
 
 void ManCar::CollisionPowerUp(DataMap* d) {
+    // A ESTA FUNCION YA NO ENTRA
     // debemos desactivar el powerUp y para el contador de tiempo del totem
     auto cShield = static_cast<CShield*>(car.get()->GetComponent(CompType::ShieldComp).get());
     if (cShield->activePowerUp == false) {  // comprobamos si tiene el escudo
@@ -509,9 +512,13 @@ void ManCar::CollisionPowerUpAI(DataMap* d) {
         shared_ptr<DataMap> data = make_shared<DataMap>();
         auto cTransf = static_cast<CTransformable*>(car->GetComponent(CompType::TransformableComp).get());
         auto cId = static_cast<CId*>(car->GetComponent(CompType::IdComp).get());
-        (*data)[VEC3_POS] = cTransf->position; 
+        auto cIdMainCar = static_cast<CId*>(GetCar()->GetComponent(CompType::IdComp).get());
+        (*data)[VEC3_POS] = cTransf->position;
         (*data)[ID] = cId->id;
         (*data)[MAIN_CAR] = false;
+        if (cIdMainCar->id == cId->id) {
+            (*data)[MAIN_CAR] = true;
+        }
         EventManager::GetInstance().AddEventMulti(Event{EventType::HURT, data});
     } else {
         std::cout << "El escudo me salvo el culito :D" << std::endl;

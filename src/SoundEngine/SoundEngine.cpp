@@ -152,7 +152,7 @@ void SoundEngine::LoadSoundEvent(const string& nameEvent, const bool type) {
  * @param nameID - Identificador del sonido en el mapa de instancias.
  */
 void SoundEngine::PlayEvent(const string& nameID) {
-    cout << "*** Quiero que suene el evento: " << nameID << endl;
+    //cout << "*** Quiero que suene el evento: " << nameID << endl;
     auto instance = eventInstances2D.find(nameID);
     if (instance != eventInstances2D.end()) {
         ERRFMODCHECK(instance->second->GetInstance()->start());

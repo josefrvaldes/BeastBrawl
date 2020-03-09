@@ -392,7 +392,7 @@ void SoundFacadeFMOD::SoundHurt(DataMap* d) {
     auto mainCharacter = any_cast<bool>((*d)[MAIN_CAR]);
     auto position = any_cast<glm::vec3>((*d)[VEC3_POS]);
     auto id = any_cast<uint16_t>((*d)[ID]);
-    cout << "ES EL MAIN? " << mainCharacter << endl;
+    //cout << "ES EL MAIN? " << mainCharacter << endl;
 
     if (mainCharacter) {
         SetParameter("Personajes/voces", "Tipo", TipoVoz::ChoquePowerup);
@@ -404,16 +404,17 @@ void SoundFacadeFMOD::SoundHurt(DataMap* d) {
 }
 
 void SoundFacadeFMOD::SoundCatchTotem(DataMap* d) {
-    auto pos = glm::vec3(0.0f,0.0f,0.0f);
-    string name = "Partida/coger_totem";
-    CreateSoundEstatic3D(0, pos, name);
-    PlayEvent("Partida/coger_totem0");
+    auto position = any_cast<glm::vec3>((*d)[VEC3_POS]);
+    string mapID = "Partida/coger_totem0";
+    SetEventPositionEstatic3D(mapID, position);
+    PlayEvent(mapID);
 }
 
-// TO-DO: La voz se reproduce si el coche dañado es el principal
-// TO-DO: NO SE LLAMA NUNCA A ESTE EVENTO
+// TODO: Separar el evento para cuando es colision con un coche por la voz.
+// TODO: NO SE LLAMA NUNCA A ESTE EVENTO
 void SoundFacadeFMOD::SoundCrash(DataMap* d) {
     bool mainCharacter = any_cast<bool>((*d)[MAIN_CAR]);
+    auto id = any_cast<uint16_t>((*d)[ID]);
 
     int max = 100;
     int min = 0;
@@ -422,10 +423,8 @@ void SoundFacadeFMOD::SoundCrash(DataMap* d) {
         SetParameter("Personajes/voces", "Tipo", TipoVoz::ChoqueEnemigo);
         PlayEvent("Personajes/voces");
     }
-    /*eventInstances3DD["Coche/choque"] = CreateInstance("Coche/choque");
-    if (!IsPlaying(*eventInstances3DD.find("Coche/choque")->second)) {
-        PlayEvent("Coche/choque");
-    }*/
+    string mapID = "Coche/choque" + to_string(id);
+    PlayEvent(mapID);
 }
 
 void SoundFacadeFMOD::SoundBreakBox(DataMap* d) {
@@ -440,6 +439,7 @@ void SoundFacadeFMOD::SoundDrift(DataMap* d) {
     PlayEvent("Coche/derrape");*/
 }
 
+//TODO: No se hace nada para esto
 void SoundFacadeFMOD::SoundRandomSentence(DataMap* d) {
     SetParameter("Personajes/voces", "Tipo", TipoVoz::Random);
     PlayEvent("Personajes/voces");
@@ -452,6 +452,8 @@ void SoundFacadeFMOD::SoundMenuOption(DataMap* d) {
 // TO-DO: Cambiar de eventos 2D a 3D
 void SoundFacadeFMOD::SoundThrowPowerup(DataMap* d) {
     auto typepw = any_cast<typeCPowerUp>((*d)[TYPE_POWER_UP]);
+    /*auto cPos = any_cast<glm::vec3>((*d).find(VEC3_POS));
+    cout << "DEBUGEAO LA POS: " << cPos.x << " - " << cPos.y << " - " << cPos.z << endl;*/
 
     auto pos = glm::vec3(0.0f,0.0f,0.0f);
     string name;
