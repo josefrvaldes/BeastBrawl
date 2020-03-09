@@ -3,6 +3,7 @@
 #include <Components/CId.h>
 #include <Components/CBoundingChassis.h>
 #include <Components/CBoundingSphere.h>
+#include <Systems/Utils.h>
 
 PhysicsFacadeClover::PhysicsFacadeClover() {
     
@@ -19,15 +20,17 @@ void PhysicsFacadeClover::UpdateCar(Entity* car, Entity* cam) {
     auto cTransformable = static_cast<CTransformable*>(car->GetComponent(CompType::TransformableComp).get());
     auto cId = static_cast<CId*>(car->GetComponent(CompType::IdComp).get());
 
+    auto irrAngle = cTransformable->rotation.y;
+    auto openglAngle = Utils::IrrlichtAngleToOpenGL(130.0);
     //Actualizamos el valor en la estructura de irrlicht
     // Cogemos el nodo de irrlicht con el ID igual al que le hemos pasado
     auto node = smgr->GetNodeByID(cId->id);
 
     //Actualiza la posicion del objeto de irrlicht
-    node->SetTranslation(glm::vec3(-cTransformable->position.x, cTransformable->position.y, -cTransformable->position.z));
+    node->SetTranslation(glm::vec3(cTransformable->position.x, cTransformable->position.y, -cTransformable->position.z));
 
     //Actualiza la rotacion del objeto de irrlicht
-    node->SetRotation(glm::vec3(cTransformable->rotation.x, cTransformable->rotation.y, cTransformable->rotation.z));
+    node->SetRotation(glm::vec3(cTransformable->rotation.x, Utils::IrrlichtAngleToOpenGL(cTransformable->rotation.y), cTransformable->rotation.z));
 
     //Actualiza el escalado del objeto de irrlicht
     node->SetScalation(glm::vec3(cTransformable->scale.x, cTransformable->scale.y, cTransformable->scale.z));
@@ -51,7 +54,7 @@ void PhysicsFacadeClover::UpdateCar(Entity* car, Entity* cam) {
 
 //@deprecated
 void PhysicsFacadeClover::UpdateCam(Entity* cam) {
-    //Cogemos los componentes de la camara
+    //Cogemos los componentes de la camara 
     auto cTransformable = static_cast<CTransformable*>(cam->GetComponent(CompType::TransformableComp).get());
     auto cId = static_cast<CId*>(cam->GetComponent(CompType::IdComp).get());
 
@@ -64,6 +67,7 @@ void PhysicsFacadeClover::UpdateCam(Entity* cam) {
     entityCamera->SetCameraTarget(targetPosition);
 
     camera->SetTranslation(glm::vec3(-cTransformable->position.x, cTransformable->position.y, -cTransformable->position.z));
+    camera->SetRotation(glm::vec3(-cTransformable->rotation.x, cTransformable->rotation.y, -cTransformable->rotation.z));
 }
 
 //TODO:: Cambiar para que rediba todo el Manager
@@ -78,10 +82,10 @@ void PhysicsFacadeClover::UpdateTransformable(Entity* entity) {
     auto node = smgr->GetNodeByID(cId->id);
 
     //Actualiza la posicion del objeto de irrlicht
-    node->SetTranslation(glm::vec3(-cTransformable->position.x, cTransformable->position.y, -cTransformable->position.z));
+    node->SetTranslation(glm::vec3(cTransformable->position.x, cTransformable->position.y, -cTransformable->position.z));
 
     //Actualiza la rotacion del objeto de irrlicht
-    node->SetRotation(glm::vec3(-cTransformable->rotation.x, cTransformable->rotation.y, -cTransformable->rotation.z));
+    node->SetRotation(glm::vec3(cTransformable->rotation.x, Utils::IrrlichtAngleToOpenGL(cTransformable->rotation.y), cTransformable->rotation.z));
 
     //Actualiza el escalado del objeto de irrlicht
     node->SetScalation(glm::vec3(cTransformable->scale.x, cTransformable->scale.y, cTransformable->scale.z));
@@ -127,10 +131,10 @@ void PhysicsFacadeClover::UpdatePowerUps(Entity* powerUp) {
     auto node = smgr->GetNodeByID(cId->id);
 
     //Actualiza la posicion del objeto de irrlicht
-    node->SetTranslation(glm::vec3(-cTransformable->position.x, cTransformable->position.y, -cTransformable->position.z));
+    node->SetTranslation(glm::vec3(cTransformable->position.x, cTransformable->position.y, -cTransformable->position.z));
 
     //Actualiza la rotacion del objeto de irrlicht
-    node->SetRotation(glm::vec3(-cTransformable->rotation.x, cTransformable->rotation.y, -cTransformable->rotation.z));
+    node->SetRotation(glm::vec3(cTransformable->rotation.x, Utils::IrrlichtAngleToOpenGL(cTransformable->rotation.y), cTransformable->rotation.z));
 
     //Actualiza el escalado del objeto de irrlicht
     node->SetScalation(glm::vec3(cTransformable->scale.x, cTransformable->scale.y, cTransformable->scale.z));
