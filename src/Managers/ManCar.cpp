@@ -460,36 +460,34 @@ bool ManCar::useRoboJorobo(Entity* newCarWithTotem) {
 
 
 void ManCar::CollisionCarPowerUp(DataMap* d) {
-    auto car = any_cast<Entity*>((*d)[CAR_AI]);
+    auto car = any_cast<Entity*>((*d)[ACTUAL_CAR]);
     
     // Reducimos la velocidad -- TODO --> no solo reducir la velocidad a 0
     auto cCar = static_cast<CCar*>(car->GetComponent(CompType::CarComp).get());
     cCar->speed = 0.0f;  // To-Do: no funciona en la IA por que la logica difusa no la hace acelerar
+        
     // Sonido choque con powerup
-    shared_ptr<DataMap> data = make_shared<DataMap>();
-    (*data)[MAIN_CAR] = false;
-    EventManager::GetInstance().AddEventMulti(Event{EventType::HURT, data});
+    shared_ptr<DataMap> dataSound = make_shared<DataMap>();
+    auto cTransf = static_cast<CTransformable*>(car->GetComponent(CompType::TransformableComp).get());
+    auto cId = static_cast<CId*>(car->GetComponent(CompType::IdComp).get());
+    auto cIdMainCar = static_cast<CId*>(GetCar()->GetComponent(CompType::IdComp).get());
+    (*dataSound)[VEC3_POS] = cTransf->position;
+    (*dataSound)[ID] = cId->id;
+    (*dataSound)[MAIN_CAR] = false;
+    if (cIdMainCar->id == cId->id) {
+        (*dataSound)[MAIN_CAR] = true;
+    }
+    EventManager::GetInstance().AddEventMulti(Event{EventType::HURT, dataSound});
 
     // debemos desactivar el powerUp y para el contador de tiempo del totem
     if(Game::GetInstance()->GetState()->GetState() == State::States::INGAME_SINGLE){
         auto cTotem = static_cast<CTotem*>(any_cast<Entity*>((*d)[ACTUAL_CAR])->GetComponent(CompType::TotemComp).get());
         if (cTotem->active == true) {
-            ThrowTotem(any_cast<Entity*>((*d)[ACTUAL_CAR]));
+            ThrowTotem(car);
         }
     }
 
-        // Sonido choque con powerup
-        shared_ptr<DataMap> data = make_shared<DataMap>();
-        auto cTransf = static_cast<CTransformable*>(car->GetComponent(CompType::TransformableComp).get());
-        auto cId = static_cast<CId*>(car->GetComponent(CompType::IdComp).get());
-        auto cIdMainCar = static_cast<CId*>(GetCar()->GetComponent(CompType::IdComp).get());
-        (*data)[VEC3_POS] = cTransf->position;
-        (*data)[ID] = cId->id;
-        (*data)[MAIN_CAR] = false;
-        if (cIdMainCar->id == cId->id) {
-            (*data)[MAIN_CAR] = true;
-        }
-        EventManager::GetInstance().AddEventMulti(Event{EventType::HURT, data});
+
 }
 
 
