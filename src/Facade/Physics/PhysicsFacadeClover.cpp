@@ -35,7 +35,6 @@ void PhysicsFacadeClover::UpdateCar(Entity* car, Entity* cam) {
     //Actualiza el escalado del objeto de irrlicht
     node->SetScalation(glm::vec3(cTransformable->scale.x, cTransformable->scale.y, cTransformable->scale.z));
 
-    cout << cTransformable->rotation.x << " | " << cTransformable->rotation.y << " | " << cTransformable->rotation.z << endl;
     
     // vamos a ver si tiene CBoundingChassis
     // bool hasChassis = car->HasComponent(CompType::CompBoundingChassis); 
