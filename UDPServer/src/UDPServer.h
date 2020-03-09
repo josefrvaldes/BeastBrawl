@@ -74,6 +74,9 @@ class UDPServer : public boost::enable_shared_from_this<UDPServer> {
     asio::io_context& context;
     udp::socket socket;
     std::vector<Player> players;
+    std::vector<uint16_t> idsMelons;
+    std::vector<uint16_t> idsBananas;
+    std::vector<uint16_t> idsPuddings;
 
     const uint16_t SEGUNDOS = 1000;
     const uint32_t TIEMPO_DESCONEXION = 5 * SEGUNDOS;

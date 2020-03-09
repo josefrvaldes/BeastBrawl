@@ -1,14 +1,14 @@
 #include "ManPowerUp.h"
 
-#include <iostream>
+#include <Components/CDimensions.h>
 #include <Entities/PowerUp.h>
 #include <EventManager/Event.h>
 #include <EventManager/EventManager.h>
 #include <Facade/Render/RenderFacadeManager.h>
-#include <Components/CDimensions.h>
+#include <iostream>
 #include "../Components/CBoundingSphere.h"
-#include "../Components/CType.h"
 #include "../Components/CRemovableObject.h"
+#include "../Components/CType.h"
 
 class Position;
 using namespace std;
@@ -19,78 +19,97 @@ ManPowerUp::ManPowerUp() {
     SubscribeToEvents();
 }
 
-
 ManPowerUp::~ManPowerUp() {
     cout << "Llamando al destructor de ManPowerUps" << endl;
     entities.clear();
     entities.shrink_to_fit();
 }
 
-
 // Lugar en el que se crean los power ups
 
-void ManPowerUp::CreatePowerUp(DataMap* d) {
-
+void ManPowerUp::CreatePowerUp(DataMap *d) {
     typeCPowerUp type = any_cast<typeCPowerUp>((*d)[TYPE_POWER_UP]);
     cout << "el tipo de powerUp que recibimos es el: " << int(type) << endl;
 
     CTransformable *transforSalida = any_cast<CTransformable *>((*d)[CAR_EXIT_POSITION]);
     CDimensions *dimensionsCarSalida = any_cast<CDimensions *>((*d)[CAR_EXIT_DIMENSION]);
     CTransformable *transforPerse;
-    if(d->count(CAR_FOLLOW_POSITION) > 0){
+    if (d->count(CAR_FOLLOW_POSITION) > 0) {
         transforPerse = any_cast<CTransformable *>((*d)[CAR_FOLLOW_POSITION]);
-    }else
+    } else
         transforPerse = nullptr;
 
     // calculamos la posicion en la que debe salir el powerUp:
     int medidaPowerUp = 25;
     float posX = 0, posZ = 0;
 
-   float angleRotation = (transforSalida->rotation.y * 3.141592) / 180.0;
-   if(type == typeCPowerUp::PudinDeFrambuesa){
-        posX = transforSalida->position.x - cos(angleRotation)* (-1*((dimensionsCarSalida->width/2)+medidaPowerUp));
-        posZ = transforSalida->position.z + sin(angleRotation)* (-1*((dimensionsCarSalida->depth/2)+medidaPowerUp));
-   }else{
-        posX = transforSalida->position.x - cos(angleRotation) * ((dimensionsCarSalida->width/2)+medidaPowerUp);
-        posZ = transforSalida->position.z + sin(angleRotation) * ((dimensionsCarSalida->depth/2)+medidaPowerUp);    
-   }
+    float angleRotation = (transforSalida->rotation.y * 3.141592) / 180.0;
+    if (type == typeCPowerUp::PudinDeFrambuesa) {
+        posX = transforSalida->position.x - cos(angleRotation) * (-1 * ((dimensionsCarSalida->width / 2) + medidaPowerUp));
+        posZ = transforSalida->position.z + sin(angleRotation) * (-1 * ((dimensionsCarSalida->depth / 2) + medidaPowerUp));
+    } else {
+        posX = transforSalida->position.x - cos(angleRotation) * ((dimensionsCarSalida->width / 2) + medidaPowerUp);
+        posZ = transforSalida->position.z + sin(angleRotation) * ((dimensionsCarSalida->depth / 2) + medidaPowerUp);
+    }
 
-    vec3 positionPowerUp = vec3(posX,transforSalida->position.y+10,posZ);
+    vec3 positionPowerUp = vec3(posX, transforSalida->position.y + 10, posZ);
 
-    shared_ptr<PowerUp> powerUp = make_shared<PowerUp>(positionPowerUp, transforSalida->rotation, type, transforPerse,"CLEngine/src/Shaders/vertex.glsl","CLEngine/src/Shaders/fragment.glsl");
-    auto cTypePU = static_cast<CType*>(powerUp->GetComponent(CompType::TypeComp).get())->type;
-    if( int(cTypePU) >= 0 && int(cTypePU) < 50 ){
-        //std::cout << "Las dimensiones del coche son x:" << dimensionsCarSalida->width << " y:" << dimensionsCarSalida->height << " z:" << dimensionsCarSalida->depth << std::endl;
-        
-        entities.push_back(powerUp);
+    shared_ptr<PowerUp> powerUp = make_shared<PowerUp>(positionPowerUp, transforSalida->rotation, type, transforPerse);
 
-        auto renderFacadeManager = RenderFacadeManager::GetInstance();
-        auto renderEngine = renderFacadeManager->GetRenderFacade();
-        renderEngine->FacadeAddObject(powerUp.get());
+    // ojo con esta linea, no borrar porque es necesaria aunque parezca que no lo es
+    auto cTypePU = static_cast<CType *>(powerUp->GetComponent(CompType::TypeComp).get())->type;
 
+    if (int(cTypePU) >= 0 && int(cTypePU) < 50) {
+        // si el PU es telebanana, o pudding o melón, requieren un tratamiento especial para el online
+        if (type == typeCPowerUp::TeleBanana || type == typeCPowerUp::PudinDeFrambuesa || type == typeCPowerUp::MelonMolon) {
+            // si no estamos en online, simplemente materializamos el PU
+            if (systemOnline == nullptr) {
+                MaterializePowerUp(powerUp);
 
-        auto cDimensions = static_cast<CDimensions*>(powerUp->GetComponent(CompType::DimensionsComp).get());
-        auto radioSphere = ((cDimensions->width/2)+(cDimensions->depth/2))/2;
-        shared_ptr<CBoundingSphere> cBoundingSphere = make_shared<CBoundingSphere>(positionPowerUp, radioSphere);
-        powerUp->AddComponent(cBoundingSphere);
+                // si sí estamos en online, tenemos que decírselo al servidor y será él quien 
+                // posteriormente materializará el PU
+            } else {
+                systemOnline->SendThrowPU(powerUp);
+            }
 
-        //renderEngine->FacadeAddSphereOnObject(powerUp.get());
+            // si el PU es distinto a telebanana, pudding o melón, no hacemos aquí el tratamiento especial
+            // del online, por tanto, simplemente lo materializamos
+        } else {
+            MaterializePowerUp(powerUp);
+        }
 
-        //Cuando creamos el powerUp, ponemos su tiempo inicial de inactivadad --> para no danyarnos a nostros mismos
-        static_cast<CPowerUp*>(powerUp->GetComponent(CompType::PowerUpComp).get())->timeStart = system_clock::now();
-    }else{
-        cout << "el type powerUp es: " << int(cTypePU) << endl;
+    } else {
+        cout << "el type powerUp es: " << int(type) << endl;
         cout << "ESTO NO DEBERIA DE PASAR NUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUNCA JODER" << endl;
         cout << "SIIIIIIIIIIII TE PASA ESTOOOOOOOOOOOOOOOOOOOOOO HABLAAAAAAAAAAAAAAAR CON CARLOOOOOOOOOOOOOOOOOOOOOSSSSSSS" << endl;
     }
 }
 
+void ManPowerUp::MaterializePowerUp(shared_ptr<PowerUp> powerUp) {
+    entities.push_back(powerUp);
 
-// TO-DO ELIMINARLO TODO AL MISMO TIEMPO ANTES DE RENDERIZAR 
+    auto cTransformable = static_cast<CTransformable *>(powerUp->GetComponent(CompType::TransformableComp).get());
+
+    auto renderFacadeManager = RenderFacadeManager::GetInstance();
+    auto renderEngine = renderFacadeManager->GetRenderFacade();
+    renderEngine->FacadeAddObject(powerUp.get());
+
+    auto cDimensions = static_cast<CDimensions *>(powerUp->GetComponent(CompType::DimensionsComp).get());
+    auto radioSphere = ((cDimensions->width / 2) + (cDimensions->depth / 2)) / 2;
+    shared_ptr<CBoundingSphere> cBoundingSphere = make_shared<CBoundingSphere>(cTransformable->position, radioSphere);
+    powerUp->AddComponent(cBoundingSphere);
+
+    //renderEngine->FacadeAddSphereOnObject(powerUp.get());
+
+    //Cuando creamos el powerUp, ponemos su tiempo inicial de inactivadad --> para no danyarnos a nostros mismos
+    static_cast<CPowerUp *>(powerUp->GetComponent(CompType::PowerUpComp).get())->timeStart = system_clock::now();
+}
+
+// TO-DO ELIMINARLO TODO AL MISMO TIEMPO ANTES DE RENDERIZAR
 //void ManPowerUp::DeletePowerUp(DataMap* d){
 //    auto renderFacadeManager = RenderFacadeManager::GetInstance();
 //    auto renderEngine = renderFacadeManager->GetRenderFacade();
-//    
+//
 //    for(long unsigned int i=0; i< entities.size(); ++i){
 //        if(entities[i].get() == any_cast<Entity*>((*d)[POWER_UP])){
 //            renderEngine->DeleteEntity(entities[i].get());
@@ -99,18 +118,17 @@ void ManPowerUp::CreatePowerUp(DataMap* d) {
 //    }
 //}
 
-void ManPowerUp::Update(){
+void ManPowerUp::Update() {
     auto renderFacadeManager = RenderFacadeManager::GetInstance();
     auto renderEngine = renderFacadeManager->GetRenderFacade();
-    for(long unsigned int i=0; i< entities.size(); ++i){
-        auto cRemovableObj = static_cast<CRemovableObject*>(entities[i].get()->GetComponent(CompType::RemovableObjectComp).get());
-        if(cRemovableObj->destroy){
+    for (long unsigned int i = 0; i < entities.size(); ++i) {
+        auto cRemovableObj = static_cast<CRemovableObject *>(entities[i].get()->GetComponent(CompType::RemovableObjectComp).get());
+        if (cRemovableObj->destroy) {
             renderEngine->DeleteEntity(entities[i].get());
-            entities.erase(entities.begin()+i);   
+            entities.erase(entities.begin() + i);
         }
     }
 }
-
 
 // TO-DO : tener una variable de control para eliminar todas las cosas de los arrays a la vez CUIDADO CON ESOOOO
 void ManPowerUp::SubscribeToEvents() {
@@ -125,4 +143,3 @@ void ManPowerUp::SubscribeToEvents() {
     //    bind(&ManPowerUp::DeletePowerUp, this, placeholders::_1),
     //    "DeletePowerUp"));
 }
-

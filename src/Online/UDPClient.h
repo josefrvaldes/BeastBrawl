@@ -15,6 +15,8 @@ using boost::asio::ip::udp;
 using namespace std;
 using namespace std::chrono;
 
+class PowerUp;
+
 class UDPClient {
     // --- TCP --- (sala de espera)
     // .- enviamos al servidor un mensaje de que queremos conectar
@@ -43,6 +45,7 @@ class UDPClient {
     void SendLostTotem(uint16_t idOnline, uint16_t idPlayerLosted, const glm::vec3 &pos, int numNavMesh);
     void SendRoboJorobo(uint16_t idOnline);
     void SendCollideNitro(uint16_t idOnline, uint16_t idWithTotem, uint16_t idWithNitro);
+    void SendThrowPU(uint16_t idOnline, const glm::vec3 &position, const glm::vec3 &rotation, int8_t typePU);
     void SendEndgame();
     void SendDateTime();
     uint32_t idMainCar;
@@ -68,6 +71,7 @@ class UDPClient {
     void HandleSentRoboJorobo(const boost::system::error_code& errorCode, std::size_t bytes_transferred);
     void HandleSentCollideNitro(const boost::system::error_code& errorCode, std::size_t bytes_transferred);
     void HandleSentEndgame(const boost::system::error_code& errorCode, std::size_t bytes_transferred);
+    void HandleSentThrowPU(const boost::system::error_code& errorCode, std::size_t bytes_transferred);
 
     void HandleSentDateTime(const boost::shared_ptr<std::string> message,
                             const boost::system::error_code& errorCode,

@@ -11,6 +11,7 @@
 
 class PowerUp;
 class Data;
+class SystemOnline;
 
 using namespace std;
 
@@ -29,5 +30,8 @@ class ManPowerUp : public Manager{
 	//vector<shared_ptr<PowerUp>> PowerUps;
     void SubscribeToEvents();
     void CreatePowerUp(DataMap* d);
+    void MaterializePowerUp(shared_ptr<PowerUp> powerUp);
     void DeletePowerUp(DataMap* d);
+
+    SystemOnline *systemOnline;
 };

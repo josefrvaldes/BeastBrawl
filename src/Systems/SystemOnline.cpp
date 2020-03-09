@@ -3,6 +3,7 @@
 #include "../../include/glm/vec3.hpp"
 #include "../Constants.h"
 #include "../Entities/CarHuman.h"
+#include "../Entities/PowerUp.h"
 #include "../Entities/Totem.h"
 #include "../EventManager/Event.h"
 #include "../EventManager/EventManager.h"
@@ -12,11 +13,12 @@
 
 #include "../Components/COnline.h"
 #include "../Components/CPowerUp.h"
+#include "../Components/CTargetEntity.h"
 #include "../Components/CTotem.h"
 #include "../Components/CTransformable.h"
-#include "../Systems/Utils.h"
 #include "../EventManager/Event.h"
 #include "../EventManager/EventManager.h"
+#include "../Systems/Utils.h"
 
 using namespace boost::asio;
 
@@ -36,16 +38,16 @@ void SystemOnline::EventEndgame(DataMap *dataMap) {
     udpClient->SendEndgame();
 }
 
-void SystemOnline::SendInputs(const vector<Constants::InputTypes> &inputs) const{
+void SystemOnline::SendInputs(const vector<Constants::InputTypes> &inputs) const {
     // cout << Utils::getISOCurrentTimestampMillis() << "id[" << idOnlineMainCar << "] Enviamos los inputs" << endl;
     udpClient->SendInputs(inputs, idOnlineMainCar);
 }
 
-void SystemOnline::SendEndgame() const{
+void SystemOnline::SendEndgame() const {
     udpClient->SendEndgame();
 }
 
-void SystemOnline::SendSync(ManCar *manCars, ManTotem *manTotem) const{
+void SystemOnline::SendSync(ManCar *manCars, ManTotem *manTotem) const {
     // cout << Utils::getISOCurrentTimestampMillis() << "id[" << idOnlineMainCar << "] Enviamos sync" << endl;
     auto cTransCar = static_cast<CTransformable *>(manCars->GetCar()->GetComponent(CompType::TransformableComp).get());
     auto cTotem = static_cast<CTotem *>(manCars->GetCar()->GetComponent(CompType::TotemComp).get());
@@ -77,34 +79,45 @@ void SystemOnline::SendSync(ManCar *manCars, ManTotem *manTotem) const{
     udpClient->SendSync(idOnlineMainCar, cTransCar->position, cTransCar->rotation, cPowerUp->typePowerUp, cTotem->active, cTotem->accumulatedTime, totemInGround, posTotem);
 }
 
-
-
-void SystemOnline::SendCatchPU(CPowerUp& cPowerUp) const{
+void SystemOnline::SendCatchPU(CPowerUp &cPowerUp) const {
     udpClient->SendCatchPU(idOnlineMainCar, cPowerUp.typePowerUp);
 }
 
-
 // lo enviamos tres veces para evitar que se pierdan todos los paquetes
-void SystemOnline::SendCatchTotem(uint16_t idCarCatched) const{
-    for(uint8_t i=0; i<3; ++i)
+void SystemOnline::SendCatchTotem(uint16_t idCarCatched) const {
+    for (uint8_t i = 0; i < TIMES_RESEND; ++i)
         udpClient->SendCatchTotem(idOnlineMainCar, idCarCatched);
 }
 
-
-void SystemOnline::SendLostTotem(uint16_t idCarCatched, const glm::vec3 &position, int numNavMesh) const{
-    for(uint8_t i=0; i<3; ++i)
+void SystemOnline::SendLostTotem(uint16_t idCarCatched, const glm::vec3 &position, int numNavMesh) const {
+    for (uint8_t i = 0; i < TIMES_RESEND; ++i)
         udpClient->SendLostTotem(idOnlineMainCar, idCarCatched, position, numNavMesh);
+}
+
+void SystemOnline::SendThrowPU(shared_ptr<PowerUp> &powerUp) const {
+    auto cTransformable = static_cast<CTransformable *>(powerUp->GetComponent(CompType::TransformableComp).get());
+    auto cPowerUp = static_cast<CPowerUp *>(powerUp->GetComponent(CompType::PowerUpComp).get());
+    if (cPowerUp->typePowerUp == typeCPowerUp::TeleBanana) {
+        // esto lo vamos a tener que gestionar aparte porque no podemos pasar un puntero
+        // online
+        // auto cTransformableTarget = static_cast<CTargetEntity *>(powerUp->GetComponent(CompType::TargetEntityComp).get());
+        // for (uint8_t i = 0; i < TIMES_RESEND; ++i)
+        //     udpClient->SendThrowPUBanana(idOnlineMainCar, powerUp);
+    } else {
+        for (uint8_t i = 0; i < TIMES_RESEND; ++i)
+            udpClient->SendThrowPU(idOnlineMainCar, cTransformable->position, cTransformable->rotation, static_cast<int8_t>(cPowerUp->typePowerUp));
+    }
 }
 
 
 void SystemOnline::SendRoboJorobo() const{
-    for(uint8_t i=0; i<3; ++i)
+    for(uint8_t i=0; i<TIMES_RESEND; ++i)
         udpClient->SendRoboJorobo(idOnlineMainCar);
 }
 
 
 // se le pasa primero el coche que lleva totem, y luego el coche que choca con el
 void SystemOnline::SendNitro(uint16_t idCarWithTotem, uint16_t idCarWithNitro) const{
-    for(uint8_t i=0; i<3; ++i)
+    for(uint8_t i=0; i<TIMES_RESEND; ++i)
         udpClient->SendCollideNitro(idOnlineMainCar, idCarWithTotem, idCarWithNitro);
 }

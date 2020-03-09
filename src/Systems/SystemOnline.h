@@ -10,6 +10,7 @@ using namespace std;
 class ManCar;
 class CPowerUp;
 class ManTotem;
+class PowerUp;
 
 class SystemOnline {
    public:
@@ -21,6 +22,7 @@ class SystemOnline {
     void SendSync(ManCar* manCars, ManTotem* manTotem) const;
     void SendEndgame() const;
     void SendCatchPU(CPowerUp& cPowerUp) const;
+    void SendThrowPU(shared_ptr<PowerUp>& powerUp) const;
     void SendCatchTotem(uint16_t idCarCatched) const;
     void SendLostTotem(uint16_t idCarCatched, const glm::vec3 &position, int numNavMesh) const;
     void SendRoboJorobo() const;
@@ -33,4 +35,7 @@ class SystemOnline {
 
     ManCar &manCar;
     unique_ptr<UDPClient> udpClient;
+
+
+    const uint8_t TIMES_RESEND = 3;
 };
