@@ -22,6 +22,7 @@ struct Player {
     int64_t lastCollideNitroTimeReceived{0};
     int64_t lastThrowPUReceived{0};
     int64_t lastCrashPUCarReceived{0};
+    int64_t lastCrashPUWallReceived{0};
 
     bool hasTotem {false};
     bool disconnected {false};

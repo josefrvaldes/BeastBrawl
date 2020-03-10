@@ -136,6 +136,13 @@ void UDPClient::HandleReceived(std::shared_ptr<unsigned char[]> recevBuff, const
                 }
                 break;
 
+            case Constants::PetitionTypes::SEND_CRASH_PU_WALL:
+                if (time > lastTimeCrashPUWallReceived[idPlayer]) {
+                    lastTimeCrashPUWallReceived[idPlayer] = time;
+                    HandleReceivedCrashPUWall(recevBuff.get(), bytesTransferred);
+                }
+                break;
+
             case Constants::PetitionTypes::ENDGAME:
                 EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_ENDRACE});
                 break;
@@ -330,6 +337,20 @@ void UDPClient::HandleReceivedCrashPUCar(unsigned char* recevBuff, size_t bytesT
     (*data)[DataType::ID_PU] = idPUOnline;
     (*data)[DataType::ID_CAR] = idCarCrashed;
     EventManager::GetInstance().AddEventMulti(Event{EventType::NEW_CRASH_PU_CAR_RECEIVED, data});
+}
+
+void UDPClient::HandleReceivedCrashPUWall(unsigned char* recevBuff, size_t bytesTransferred) {
+    size_t currentIndex = 0;
+    Serialization::Deserialize<uint8_t>(recevBuff, currentIndex);   // petition tipe
+    Serialization::Deserialize<int64_t>(recevBuff, currentIndex);   // tiempo
+    Serialization::Deserialize<uint16_t>(recevBuff, currentIndex);  // idOnline del que lo envio
+
+    uint16_t idPUOnline = Serialization::Deserialize<uint16_t>(recevBuff, currentIndex);
+    
+    cout << "Hemos recibido un CrasPUWall con pu[" << idPUOnline << "]" << endl;
+    std::shared_ptr<DataMap> data = make_shared<DataMap>();
+    (*data)[DataType::ID_PU] = idPUOnline;
+    EventManager::GetInstance().AddEventMulti(Event{EventType::NEW_CRASH_PU_WALL_RECEIVED, data});
 }
 
 void UDPClient::HandleReceivedThrowTelebanana(unsigned char* recevBuff, size_t bytesTransferred) {
@@ -600,6 +621,28 @@ void UDPClient::SendCrashPUCar(const uint16_t idOnline, const uint16_t idPowerUp
             boost::asio::placeholders::bytes_transferred));
 }
 
+void UDPClient::SendCrashPUWall(const uint16_t idOnline, const uint16_t idPowerUp) {
+    unsigned char requestBuff[Constants::ONLINE_BUFFER_SIZE];
+    size_t currentBuffSize = 0;
+    uint8_t callType = Constants::PetitionTypes::SEND_CRASH_PU_WALL;
+    int64_t time = Utils::getMillisSinceEpoch();
+    Serialization::Serialize(requestBuff, &callType, currentBuffSize);
+    Serialization::Serialize(requestBuff, &time, currentBuffSize);
+    Serialization::Serialize(requestBuff, &idOnline, currentBuffSize);
+
+    Serialization::Serialize(requestBuff, &idPowerUp, currentBuffSize);
+
+    cout << "Soy el " << idOnline << ", estamos enviando un Crash PU-Wall del PU con id[" << idPowerUp << "]" << endl;
+    socket.async_send_to(
+        boost::asio::buffer(requestBuff, currentBuffSize),
+        serverEndpoint,
+        boost::bind(
+            &UDPClient::HandleSentCrashPUWall,
+            this,
+            boost::asio::placeholders::error,
+            boost::asio::placeholders::bytes_transferred));
+}
+
 void UDPClient::SendRoboJorobo(uint16_t idOnline) {
     unsigned char requestBuff[Constants::ONLINE_BUFFER_SIZE];
     size_t currentBuffSize = 0;
@@ -680,6 +723,12 @@ void UDPClient::HandleSentThrowPU(const boost::system::error_code& errorCode, st
 void UDPClient::HandleSentCrashPUCar(const boost::system::error_code& errorCode, std::size_t bytes_transferred) {
     if (errorCode) {
         cout << "Hubo un error enviando el Crash PU-Car [" << errorCode << "]" << endl;
+    }
+}
+
+void UDPClient::HandleSentCrashPUWall(const boost::system::error_code& errorCode, std::size_t bytes_transferred) {
+    if (errorCode) {
+        cout << "Hubo un error enviando el Crash PU-Wall [" << errorCode << "]" << endl;
     }
 }
 

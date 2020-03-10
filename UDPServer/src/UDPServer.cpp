@@ -150,7 +150,12 @@ void UDPServer::HandleReceive(std::shared_ptr<unsigned char[]> recevBuff, std::s
                             uint16_t idCar = Serialization::Deserialize<uint16_t>(recevBuff.get(), currentIndex);
                             HandleReceivedCrashPUCar(idPlayer, idPowerUp, idCar, buffRecieved, bytesTransferred, *remoteClient.get());
                         }
-
+                        break;
+                    case Constants::PetitionTypes::SEND_CRASH_PU_WALL:
+                        if (p.lastCrashPUWallReceived < time) {
+                            uint16_t idPowerUp = Serialization::Deserialize<uint16_t>(recevBuff.get(), currentIndex);
+                            HandleReceivedCrashPUWall(idPlayer, idPowerUp, buffRecieved, bytesTransferred, *remoteClient.get());
+                        }
                         break;
                     default:
                         cout << "Petición incorrecta" << endl;
@@ -185,6 +190,25 @@ void UDPServer::HandleReceivedThrowPU(const uint16_t id, const uint16_t idPUOnli
 
     for (uint8_t i = 0; i < NUM_REINTENTOS; i++)
         ResendBytesToOthers(id, resendPU, currentBufferSize, originalClient);
+}
+
+void UDPServer::HandleReceivedCrashPUWall(const uint16_t idPlayer, const uint16_t idPowerUp, unsigned char resendPU[], const size_t currentBufferSize, const udp::endpoint& originalClient) {
+    // si tenemos en nuestro vector de PUs el pu que acaba de chocar, entonces 
+    // operamos con él, si no, significa que ya ha chocado antes y no operamos
+    if (std::binary_search(idsPUs.begin(), idsPUs.end(), idPowerUp)) {
+        std::cout << "Hemos recibido un choque de PU-Wall idPowerUp " << idPowerUp << ". Antes teníamos " << idsPUs.size();
+        idsPUs.erase(
+            std::remove_if(
+                idsPUs.begin(),
+                idsPUs.end(),
+                [idPowerUp](const uint16_t currentIdPU) { return currentIdPU == idPowerUp; }),
+            idsPUs.end());
+        std::cout << " y ahora tenemos " << idsPUs.size() << endl;
+
+        for (uint8_t i = 0; i < NUM_REINTENTOS; ++i)
+            for (Player& currentPlayer : players)
+                SendBytes(resendPU, currentBufferSize, currentPlayer);
+    }
 }
 
 void UDPServer::HandleReceivedCrashPUCar(const uint16_t idPlayer, const uint16_t idPowerUp, const uint16_t idCarCrashed, unsigned char resendPU[], const size_t currentBufferSize, const udp::endpoint& originalClient) {

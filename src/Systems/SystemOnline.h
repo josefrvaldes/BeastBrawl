@@ -24,6 +24,7 @@ class SystemOnline {
     void SendCatchPU(CPowerUp& cPowerUp) const;
     void SendThrowPU(const shared_ptr<PowerUp>& powerUp, const uint16_t idToPursue) const;
     void SendCrashPUCar(const uint16_t idPowerUp, const uint16_t idCar) const;
+    void SendCrashPUWall(const uint16_t idPowerUp) const;
     void SendCatchTotem(uint16_t idCarCatched) const;
     void SendLostTotem(uint16_t idCarCatched, const glm::vec3 &position, int numNavMesh) const;
     void SendRoboJorobo() const;

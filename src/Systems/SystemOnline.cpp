@@ -100,6 +100,11 @@ void SystemOnline::SendCrashPUCar(const uint16_t idPowerUp, const uint16_t idCar
         udpClient->SendCrashPUCar(idOnlineMainCar, idPowerUp, idCar);
 }
 
+void SystemOnline::SendCrashPUWall(const uint16_t idPowerUp) const {
+    for (uint8_t i = 0; i < TIMES_RESEND; ++i)
+        udpClient->SendCrashPUWall(idOnlineMainCar, idPowerUp);
+}
+
 void SystemOnline::SendThrowPU(const shared_ptr<PowerUp> &powerUp, const uint16_t idToPursue) const {
     // se le asigna al powerup un id que será el que se guardará el server y
     // servirá luego para eliminar este PU concreto cuando choque

@@ -42,6 +42,7 @@ class Constants {
                         SEND_SYNC,
                         CATCH_PU,
                         SEND_CRASH_PU_CAR,
+                        SEND_CRASH_PU_WALL,
                         SEND_DISCONNECTION,
                         CATCH_TOTEM,
                         LOST_TOTEM,

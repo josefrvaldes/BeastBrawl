@@ -104,6 +104,7 @@ class CLPhysics {
     glm::vec3 CalculateVecDirCar(CTransformable &cTransformable) const;
 
     void NewCrashPUCarReceived(DataMap *d);
+    void NewCrashPUWallReceived(DataMap *d);
 
 
     vector<Manager *> managers;

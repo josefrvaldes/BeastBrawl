@@ -43,6 +43,7 @@ class UDPClient {
     void SendCatchPU(uint16_t idOnline, typeCPowerUp typePU);
     void SendCatchTotem(uint16_t idOnline, uint16_t idPlayerCatched);
     void SendCrashPUCar(const uint16_t idOnline, const uint16_t idPowerUp, const uint16_t idCar);
+    void SendCrashPUWall(const uint16_t idOnline, const uint16_t idPowerUp);
     void SendLostTotem(uint16_t idOnline, uint16_t idPlayerLosted, const glm::vec3& pos, int numNavMesh);
     void SendRoboJorobo(uint16_t idOnline);
     void SendCollideNitro(uint16_t idOnline, uint16_t idWithTotem, uint16_t idWithNitro);
@@ -67,6 +68,7 @@ class UDPClient {
     void HandleReceivedThrowMelonOPudin(unsigned char* recevBuff, size_t bytesTransferred);
     void HandleReceivedThrowTelebanana(unsigned char* recevBuff, size_t bytesTransferred);
     void HandleReceivedCrashPUCar(unsigned char* recevBuff, size_t bytesTransferred);
+    void HandleReceivedCrashPUWall(unsigned char* recevBuff, size_t bytesTransferred);
 
     void HandleSentInputs(const boost::system::error_code& errorCode, std::size_t bytes_transferred);
     void HandleSentSync(const boost::system::error_code& errorCode, std::size_t bytes_transferred);
@@ -78,6 +80,7 @@ class UDPClient {
     void HandleSentEndgame(const boost::system::error_code& errorCode, std::size_t bytes_transferred);
     void HandleSentThrowPU(const boost::system::error_code& errorCode, std::size_t bytes_transferred);
     void HandleSentCrashPUCar(const boost::system::error_code& errorCode, std::size_t bytes_transferred);
+    void HandleSentCrashPUWall(const boost::system::error_code& errorCode, std::size_t bytes_transferred);
 
     void HandleSentDateTime(const boost::shared_ptr<std::string> message,
                             const boost::system::error_code& errorCode,
@@ -99,4 +102,5 @@ class UDPClient {
     unordered_map<uint16_t, int64_t> lastTimeThrowMelonOPudinReceived;
     unordered_map<uint16_t, int64_t> lastTimeThrowTelebananaReceived;
     unordered_map<uint16_t, int64_t> lastTimeCrashPUCarReceived;
+    unordered_map<uint16_t, int64_t> lastTimeCrashPUWallReceived;
 };
