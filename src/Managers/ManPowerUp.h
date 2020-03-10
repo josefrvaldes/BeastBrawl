@@ -37,6 +37,6 @@ class ManPowerUp : public Manager{
     void MaterializePowerUp(shared_ptr<PowerUp> powerUp);
     void DeletePowerUp(DataMap* d);
 
-    SystemOnline *systemOnline;
+    SystemOnline *systemOnline {nullptr};
     shared_ptr<ManCar> manCars;
 };

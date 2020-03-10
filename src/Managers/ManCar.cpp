@@ -497,6 +497,8 @@ bool ManCar::useRoboJorobo(Entity* newCarWithTotem) {
 
 void ManCar::CollisionCarPowerUp(DataMap* d) {
     // Reducimos la velocidad -- TODO --> no solo reducir la velocidad a 0
+    
+    
     auto cCar = static_cast<CCar*>(any_cast<Entity*>((*d)[ACTUAL_CAR])->GetComponent(CompType::CarComp).get());
     cCar->speed = 0.0f;  // To-Do: no funciona en la IA por que la logica difusa no la hace acelerar
     // Sonido choque con powerup
@@ -735,7 +737,7 @@ void ManCar::CatchPowerUpAI(DataMap* d) {
         type = typeCPowerUp::MelonMolon;
 
 
-    type = typeCPowerUp::TeleBanana;
+    type = typeCPowerUp::MelonMolon;
     auto cPowerUpCar = static_cast<CPowerUp*>(actualCar->GetComponent(CompType::PowerUpComp).get());
     if (cPowerUpCar->typePowerUp == typeCPowerUp::None) {
         cPowerUpCar->typePowerUp = type;

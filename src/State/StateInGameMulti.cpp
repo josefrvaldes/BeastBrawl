@@ -4,6 +4,7 @@
 #include "../Components/COnline.h"
 #include "../Systems/SystemOnline.h"
 #include "../Systems/Utils.h"
+#include "../CLPhysics/CLPhysics.h"
 
 StateInGameMulti::StateInGameMulti(uint16_t IdOnline, const vector<uint16_t> IdPlayersOnline) : StateInGame() {
     InitVirtualMethods();
@@ -15,6 +16,7 @@ StateInGameMulti::StateInGameMulti(uint16_t IdOnline, const vector<uint16_t> IdP
     manCars->SetSystemOnline(sysOnline.get());
     manTotems->SetSystemOnline(sysOnline.get());
     manPowerUps->SetSystemOnline(sysOnline.get());
+    clPhysics->SetSystemOnline(sysOnline.get());
 
     vec3 posIniciales[] = {
         vec3(120.0f, 10.0f, -300.0f),

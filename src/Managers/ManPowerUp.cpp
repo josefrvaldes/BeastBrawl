@@ -1,6 +1,7 @@
 #include "ManPowerUp.h"
 
 #include <Components/CDimensions.h>
+#include <Components/CIDOnline.h>
 #include <Entities/PowerUp.h>
 #include <Entities/Car.h>
 #include <EventManager/Event.h>
@@ -35,6 +36,7 @@ void ManPowerUp::NewPowerUpReceivedFromServer(DataMap *d) {
     typeCPowerUp typePU = static_cast<typeCPowerUp>(auxTypePU);
     vec3 position = any_cast<vec3>((*d)[VEC3_POS]);
     vec3 rotation = any_cast<vec3>((*d)[VEC3_ROT]);
+    uint16_t idPUOnline = any_cast<uint16_t>((*d)[ID_ONLINE]);
     
     // si hay alguien a quien perseguir...
     CTransformable *transforPerse = nullptr;
@@ -49,6 +51,9 @@ void ManPowerUp::NewPowerUpReceivedFromServer(DataMap *d) {
         }
     }
     shared_ptr<PowerUp> powerUp = make_shared<PowerUp>(position, rotation, typePU, transforPerse);
+    shared_ptr<CIDOnline> cidOnline = make_shared<CIDOnline>(idPUOnline, true);
+    cidOnline->collided = true;
+    powerUp->AddComponent(cidOnline); 
     MaterializePowerUp(powerUp);
 }
 
@@ -166,6 +171,8 @@ void ManPowerUp::SubscribeToEvents() {
         EventType::NEW_THROW_PU_RECEIVED,
         bind(&ManPowerUp::NewPowerUpReceivedFromServer, this, placeholders::_1),
         "CreatePowerUp"));
+
+    
 
     //EventManager::GetInstance().SubscribeMulti(Listener(
     //    EventType::DELETE_POWERUP,

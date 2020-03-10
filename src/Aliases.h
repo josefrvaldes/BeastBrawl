@@ -30,6 +30,8 @@ enum DataType{
     POS_DESTINATION,
     DATA_SERVER,
     ID,
+    ID_CAR,
+    ID_PU,
     ID_DESTINATION,
     INPUTS,
     ID_ONLINE,

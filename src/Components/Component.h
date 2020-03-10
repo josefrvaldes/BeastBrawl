@@ -19,6 +19,7 @@ enum CompType {
     PowerUpComp,
     BoxPowerUpComp,
     BufferOnline,
+    CIDOnlineComp,
     ShieldComp,
     NitroComp,
     RoboJoroboComp,

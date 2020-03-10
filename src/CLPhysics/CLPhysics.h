@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <vector>
+#include "../Aliases.h"
 #include <glm/vec3.hpp>
 
 using namespace std;
@@ -23,6 +24,9 @@ class ManBoundingOBB;
 class ManBoundingWall;
 class IntersectData;
 class CCar;
+class PowerUp;
+class Car;
+class SystemOnline;
 
 
 class CLPhysics {
@@ -36,6 +40,7 @@ class CLPhysics {
     void RepositionBounding();
     void CentralSystemCollisions();
     void CentralSystemGravity();
+    void SubscribeToEvents();
 
     IntersectData HandleCollisionsRayWithSpheres(CTransformable &trCar1, CTransformable &trCar2, CBoundingSphere &spCar2, const glm::vec3 &normalRay);
     IntersectData HandleCollisionsRayWithPlane(CTransformable &trRayOrigin,  glm::vec3 &rayNormalNormalized, CBoundingPlane &planeObject);
@@ -44,6 +49,9 @@ class CLPhysics {
     void IntersectCarsTotem(ManCar &, ManTotem &);
     void IntersectCarsBoxPowerUp(ManCar &, ManBoxPowerUp &);
     void IntersectPowerUpWalls(ManPowerUp &, ManBoundingWall &, ManBoundingOBB &);
+    void SetSystemOnline(SystemOnline *systemOnline_) {
+        systemOnline = systemOnline_;
+    };
 
     static void RunTests();
 
@@ -67,6 +75,7 @@ class CLPhysics {
     bool HandleCollisions(CTransformable &trCar1, CBoundingSphere &spCar1, CCar &ccar1, bool mainCar, CTransformable &trCar2, CBoundingSphere &spCar2, CCar &ccar2, CExternalForce &cExtForc1, CExternalForce &cExtForc2);
     bool HandleCollisions(CTransformable &trCar1, CBoundingSphere &spCar1, CCar &ccar1, bool mainCar, CBoundingPlane &plane);
     bool HandleCollisions(CTransformable &trCar, CBoundingSphere &spCar, CCar &ccarCar, bool mainCar, CBoundingOBB &obb);
+    void HandleCollisionPUWithCar(PowerUp *powerUp, Entity *car);
     bool CollisionsBehindBehind(CTransformable &trCar1, CBoundingSphere &spCar1, CCar &ccar1, bool mainCar, CTransformable &trCar2, CBoundingSphere &spCar2, CCar &ccar2, CExternalForce &cExtForc1, CExternalForce &cExtForc2);
     bool CollisionsBehindFront(CTransformable &trCar1, CBoundingSphere &spCar1, CCar &ccar1, bool mainCar, CTransformable &trCar2, CBoundingSphere &spCar2, CCar &ccar2, CExternalForce &cExtForc1, CExternalForce &cExtForc2);
     bool CollisionsFrontBehind(CTransformable &trCar1, CBoundingSphere &spCar1, CCar &ccar1, bool mainCar, CTransformable &trCar2, CBoundingSphere &spCar2, CCar &ccar2, CExternalForce &cExtForc1, CExternalForce &cExtForc2);
@@ -93,7 +102,13 @@ class CLPhysics {
     double Angle2Vectors(const glm::vec3 &a, const glm::vec3 &b) const;
     glm::vec3 CalculateProyectPointRecta(const glm::vec3 &extrem1, const glm::vec3 &extrem2, const glm::vec3 &point_) const;
     glm::vec3 CalculateVecDirCar(CTransformable &cTransformable) const;
+
+    void NewCrashPUCarReceived(DataMap *d);
+
+
     vector<Manager *> managers;
     const float gravityCar = -2.0f;
     const float gravityPU = -1.0f;
+
+    SystemOnline *systemOnline {nullptr};
 };

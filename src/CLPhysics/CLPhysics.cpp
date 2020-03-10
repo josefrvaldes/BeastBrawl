@@ -2,11 +2,17 @@
 #include "CLPhysics.h"
 #include <iostream>
 #include <memory>
+#include "../EventManager/Event.h"
+#include "../Aliases.h"
+#include "../EventManager/EventManager.h"
 #include "../Components/CExternalForce.h"
 #include "../Components/CBoundingChassis.h"
 #include "../Components/CBoundingCilindre.h"
+#include "../Components/CIDOnline.h"
+#include "../Components/COnline.h"
 #include "../Components/CBoundingOBB.h"
 #include "../Entities/BoundingOBB.h"
+#include "../Entities/PowerUp.h"
 #include "../Managers/ManBoundingOBB.h"
 
 #include <Components/CAABoundingBox.h>
@@ -43,6 +49,7 @@
 using namespace std;
 
 CLPhysics::CLPhysics() {
+    SubscribeToEvents();
 }
 
 void CLPhysics::AddManager(Manager &m) {
@@ -67,7 +74,41 @@ void CLPhysics::Update(float delta) {
     CentralSystemCollisions();
 }
 
+void CLPhysics::SubscribeToEvents() {
+    
+    EventManager::GetInstance().SubscribeMulti(Listener(
+        EventType::NEW_CRASH_PU_CAR_RECEIVED,
+        bind(&CLPhysics::NewCrashPUCarReceived, this, placeholders::_1),
+        "CreatePowerUp"));
+}
 
+void CLPhysics::NewCrashPUCarReceived(DataMap *d) {
+    uint16_t idCar = any_cast<uint16_t>((*d)[DataType::ID_CAR]);
+    uint16_t idPU = any_cast<uint16_t>((*d)[DataType::ID_PU]);
+    const auto& manCars = managers[0];
+    const auto& manPowerUps = managers[4];
+    Entity *carFound = nullptr;
+    for(const auto& currentCar : manCars->GetEntities()) {
+        COnline *cOnline = static_cast<COnline *>(currentCar->GetComponent(CompType::OnlineComp).get());
+        if(cOnline->idClient == idCar) {
+            carFound = currentCar.get();
+            break;
+        }
+    }
+
+    PowerUp *puFound = nullptr;
+    for(const auto& currentPU : manPowerUps->GetEntities()) {
+        CIDOnline *cOnline = static_cast<CIDOnline *>(currentPU->GetComponent(CompType::CIDOnlineComp).get());
+        if(cOnline->idOnline == idPU) {
+            puFound = static_cast<PowerUp *>(currentPU.get());
+            break;
+        }
+    }
+
+    if(puFound != nullptr && carFound != nullptr) {
+        HandleCollisionPUWithCar(puFound, carFound);
+    }
+}
 
 void CLPhysics::CentralSystemGravity(){
     ConstGravity();
@@ -1246,36 +1287,56 @@ void CLPhysics::IntersectsCarsPowerUps(ManCar &manCars, ManPowerUp &manPowerUps,
                 intersect = cChassisCar->sphereFront->IntersectSphere(*cSpherePU);
             if(intersect.intersects){   //TRUE
                 collision = true;
-                cout << "intersecciooooooooon con PowerUp" << endl; 
-                // ponemos a true el componente DeleteEntity, para eliminarlo con seguridad beibeee
-                auto cRemovableObj = static_cast<CRemovableObject*>(currentPU.get()->GetComponent(CompType::RemovableObjectComp).get());
-                cRemovableObj->destroy = true;
-
-                // comprobamos si el coche tenia escudo y el totem.. ya que debe de soltarlo
-                auto cShield = static_cast<CShield*>(currentCar.get()->GetComponent(CompType::ShieldComp).get());
-                if(cShield->activePowerUp==false){  // TRUE
-                    // debemos hacer danyo al jugador
-                    shared_ptr<DataMap> dataCollisonCarPowerUp = make_shared<DataMap>();                                                         
-                    (*dataCollisonCarPowerUp)[ACTUAL_CAR] = currentCar.get();              // nos guardamos el puntero al coche                              
-                    EventManager::GetInstance().AddEventMulti(Event{EventType::COLLISION_CAR_POWERUP, dataCollisonCarPowerUp});
-
-                    if(static_cast<CTotem*>(currentCar.get()->GetComponent(CompType::TotemComp).get())->active){
-                        auto dataTransformableCar = static_cast<CTransformable*>(currentCar.get()->GetComponent(CompType::TransformableComp).get());
-                        shared_ptr<DataMap> dataTransfCar = make_shared<DataMap>();                                                                    
-                        (*dataTransfCar)[CAR_TRANSFORMABLE] = dataTransformableCar;  
-                        (*dataTransfCar)[ACTUAL_CAR] = currentCar.get(); 
-                        (*dataTransfCar)[MAN_NAVMESH] = manNavMesh;
-                        EventManager::GetInstance().AddEventMulti(Event{EventType::DROP_TOTEM, dataTransfCar});
+                // si estamos en online, avisamos al server de que un PU ha chocado con un coche,
+                // pero no lanzamos el choque en sí porque lo gestionará el server
+                if(systemOnline != nullptr) {
+                    CIDOnline *cidOnline = static_cast<CIDOnline*>(currentPU->GetComponent(CompType::CIDOnlineComp).get());
+                    // si no se había colisionado ya con este PU..
+                    if(!cidOnline->collided) {
+                        cidOnline->collided = true;
+                        COnline *carOnlineComp = static_cast<COnline*>(currentCar->GetComponent(CompType::OnlineComp).get());
+                        systemOnline->SendCrashPUCar(cidOnline->idOnline, carOnlineComp->idClient);
                     }
-                }else{
-                    cShield->deactivePowerUp();  // desactivamos el escudo
-                    // Sonido romper escudo
-                    EventManager::GetInstance().AddEventMulti(Event{EventType::NO_SHIELD});
+
+                    // si estamos en el single, lanzamos directamente el choque
+                } else {
+                    HandleCollisionPUWithCar(static_cast<PowerUp*>(currentPU.get()), currentCar.get());
                 }
             }
         }
     }
 }
+
+
+void CLPhysics::HandleCollisionPUWithCar(PowerUp *powerUp, Entity *car) {
+    cout << "intersecciooooooooon con PowerUp" << endl; 
+    // ponemos a true el componente DeleteEntity, para eliminarlo con seguridad beibeee
+    auto cRemovableObj = static_cast<CRemovableObject*>(powerUp->GetComponent(CompType::RemovableObjectComp).get());
+    cRemovableObj->destroy = true;
+
+    // comprobamos si el coche tenia escudo y el totem.. ya que debe de soltarlo
+    auto cShield = static_cast<CShield*>(car->GetComponent(CompType::ShieldComp).get());
+    if(cShield->activePowerUp==false){  // TRUE
+        // debemos hacer danyo al jugador
+        shared_ptr<DataMap> dataCollisonCarPowerUp = make_shared<DataMap>();                                                         
+        (*dataCollisonCarPowerUp)[ACTUAL_CAR] = car;              // nos guardamos el puntero al coche                              
+        EventManager::GetInstance().AddEventMulti(Event{EventType::COLLISION_CAR_POWERUP, dataCollisonCarPowerUp});
+
+        if(static_cast<CTotem*>(car->GetComponent(CompType::TotemComp).get())->active){
+            auto dataTransformableCar = static_cast<CTransformable*>(car->GetComponent(CompType::TransformableComp).get());
+            shared_ptr<DataMap> dataTransfCar = make_shared<DataMap>();                                                                    
+            (*dataTransfCar)[CAR_TRANSFORMABLE] = dataTransformableCar;  
+            (*dataTransfCar)[ACTUAL_CAR] = car; 
+            EventManager::GetInstance().AddEventMulti(Event{EventType::DROP_TOTEM, dataTransfCar});
+        }
+    }else{
+        cShield->deactivePowerUp();  // desactivamos el escudo
+        // Sonido romper escudo
+        EventManager::GetInstance().AddEventMulti(Event{EventType::NO_SHIELD});
+    }
+}
+
+
 
 
 void CLPhysics::IntersectPowerUpWalls(ManPowerUp &manPowerUp, ManBoundingWall &manWalls, ManBoundingOBB &manOBB){

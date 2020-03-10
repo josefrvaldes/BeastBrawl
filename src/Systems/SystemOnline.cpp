@@ -11,8 +11,8 @@
 #include "../Managers/ManTotem.h"
 #include "../Online/UDPClient.h"
 
-#include "../Components/COnline.h"
 #include "../Components/CIDOnline.h"
+#include "../Components/COnline.h"
 #include "../Components/CPowerUp.h"
 #include "../Components/CTargetEntity.h"
 #include "../Components/CTotem.h"
@@ -95,8 +95,13 @@ void SystemOnline::SendLostTotem(uint16_t idCarCatched, const glm::vec3 &positio
         udpClient->SendLostTotem(idOnlineMainCar, idCarCatched, position, numNavMesh);
 }
 
+void SystemOnline::SendCrashPUCar(const uint16_t idPowerUp, const uint16_t idCar) const {
+    for (uint8_t i = 0; i < TIMES_RESEND; ++i)
+        udpClient->SendCrashPUCar(idOnlineMainCar, idPowerUp, idCar);
+}
+
 void SystemOnline::SendThrowPU(const shared_ptr<PowerUp> &powerUp, const uint16_t idToPursue) const {
-    // se le asigna al powerup un id que será el que se guardará el server y 
+    // se le asigna al powerup un id que será el que se guardará el server y
     // servirá luego para eliminar este PU concreto cuando choque
     shared_ptr<CIDOnline> cidOnline = make_shared<CIDOnline>(idOnlineMainCar);
     powerUp->AddComponent(cidOnline);
@@ -113,15 +118,13 @@ void SystemOnline::SendThrowPU(const shared_ptr<PowerUp> &powerUp, const uint16_
     }
 }
 
-
-void SystemOnline::SendRoboJorobo() const{
-    for(uint8_t i=0; i<TIMES_RESEND; ++i)
+void SystemOnline::SendRoboJorobo() const {
+    for (uint8_t i = 0; i < TIMES_RESEND; ++i)
         udpClient->SendRoboJorobo(idOnlineMainCar);
 }
 
-
 // se le pasa primero el coche que lleva totem, y luego el coche que choca con el
-void SystemOnline::SendNitro(uint16_t idCarWithTotem, uint16_t idCarWithNitro) const{
-    for(uint8_t i=0; i<TIMES_RESEND; ++i)
+void SystemOnline::SendNitro(uint16_t idCarWithTotem, uint16_t idCarWithNitro) const {
+    for (uint8_t i = 0; i < TIMES_RESEND; ++i)
         udpClient->SendCollideNitro(idOnlineMainCar, idCarWithTotem, idCarWithNitro);
 }
