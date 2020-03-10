@@ -195,17 +195,18 @@ void StateInGame::Update() {
     renderEngine->FacadeUpdatePlates(manNamePlates.get());
     physicsEngine->UpdateTransformable(manTotems->GetEntities()[0].get());
 
+    //Updates de los eventos de sonido
+    soundEngine->UpdateCars(manCars->GetEntities());
+    soundEngine->UpdatePowerUps(manPowerUps->GetEntities());
+    soundEngine->UpdateTotem(manTotems->GetEntities());       
+    soundEngine->UpdateListener(manCars->GetCar());
+
     // al final de la ejecucion eliminamos todos los powerUps que se deben eliminar
     manPowerUps->Update();
 
 }
 
 void StateInGame::Render() {
-
-    soundEngine->UpdateCars(manCars->GetEntities());
-    soundEngine->UpdatePowerUps(manPowerUps->GetEntities());
-    soundEngine->UpdateTotem(manTotems->GetEntities());       
-    soundEngine->UpdateListener(manCars->GetCar());
 
     renderEngine->FacadeBeginScene();
     // renderEngine->FacadeDraw();  //Para dibujar primitivas debe ir entre el drawAll y el endScene

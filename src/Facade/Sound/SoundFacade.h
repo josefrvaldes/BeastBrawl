@@ -32,8 +32,8 @@ class SoundFacade {
 
 
         virtual void CreateSound2D(const string&) = 0;
-        virtual void CreateSoundEstatic3D(uint16_t, glm::vec3&, string&) = 0;
-        virtual void CreateSoundDinamic3D(uint16_t, glm::vec3&, string&) = 0;
+        virtual void CreateSoundEstatic3D(uint16_t, glm::vec3&, string&, bool) = 0;
+        virtual void CreateSoundDinamic3D(uint16_t, glm::vec3&, string&, bool, bool) = 0;
 
     private:
         virtual void LoadSoundByState(const uint8_t) = 0;

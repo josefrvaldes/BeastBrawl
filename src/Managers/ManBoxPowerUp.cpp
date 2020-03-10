@@ -59,7 +59,7 @@ void ManBoxPowerUp::CreateBoxPowerUp(glm::vec3 _position){
     entities.push_back(p);
     auto idComp = static_cast<CId*>(p->GetComponent(CompType::IdComp).get());
     string nameEvent = "Partida/coger_caja";
-    SoundFacadeManager::GetInstance()->GetSoundFacade()->CreateSoundEstatic3D(idComp->id, _position, nameEvent);
+    SoundFacadeManager::GetInstance()->GetSoundFacade()->CreateSoundEstatic3D(idComp->id, _position, nameEvent, 0);
 }
 
 

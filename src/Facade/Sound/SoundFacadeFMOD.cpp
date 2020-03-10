@@ -45,15 +45,15 @@ void SoundFacadeFMOD::CreateSound2D(const string& nameEvent) {
 /**
  * Crea la instancia de sonido 2D
  */
-void SoundFacadeFMOD::CreateSoundEstatic3D(uint16_t idE, glm::vec3& pos, string& nameEvent) {
-    soundEngine->CreateSoundNodeEstatic3D(idE, pos, nameEvent);
+void SoundFacadeFMOD::CreateSoundEstatic3D(uint16_t idE, glm::vec3& pos, string& nameEvent, bool p) {
+    soundEngine->CreateSoundNodeEstatic3D(idE, pos, nameEvent, p);
 }
 
 /**
  * Crea la instancia de sonido 2D
  */
-void SoundFacadeFMOD::CreateSoundDinamic3D(uint16_t idE, glm::vec3& pos, string& nameEvent) {
-    soundEngine->CreateSoundNodeDinamic3D(idE, pos, nameEvent);
+void SoundFacadeFMOD::CreateSoundDinamic3D(uint16_t idE, glm::vec3& pos, string& nameEvent, bool p, bool c) {
+    soundEngine->CreateSoundNodeDinamic3D(idE, pos, nameEvent, p, c);
 }
 
 
@@ -318,6 +318,10 @@ void SoundFacadeFMOD::UpdateCars(const vector<shared_ptr<Entity> > &e) {
             string name = "Coche/motor" + to_string(cId->id);
             SetEventPositionDinamic3D(name, cPos->position);
             SetParameter(name, "Velocidad", cCar->speed);
+            name = "PowerUp/escudo" + to_string(cId->id);
+            SetEventPositionDinamic3D(name, cPos->position);
+            //name = "Coche/derrape" + to_string(cId->id);
+
         }
     }
 }
@@ -325,31 +329,46 @@ void SoundFacadeFMOD::UpdateCars(const vector<shared_ptr<Entity> > &e) {
 /**
  *
  */
- void SoundFacadeFMOD::UpdatePowerUps(const vector<shared_ptr<Entity> > &) {
-
+ void SoundFacadeFMOD::UpdatePowerUps(const vector<shared_ptr<Entity> > &powerups) {
+    /*string name = "";
+    for(auto pu : powerups) {
+        auto cId = static_cast<CId*>(pu->GetComponent(CompType::IdComp).get());
+        auto cPos = static_cast<CTransformable*>(pu->GetComponent(CompType::TransformableComp).get());
+        auto cType = static_cast<CPowerUp*>(pu->GetComponent(CompType::PowerUpComp).get());
+        if(cPos && cId && cType) {
+            if (cType->typePowerUp == 3) {
+                name = "PowerUp/pudin" + to_string(cId->id);
+            } else if (cType->typePowerUp == 5) {
+                name = "PowerUp/telebanana_prov" + to_string(cId->id);
+            } else if (cType->typePowerUp == 6) {
+                name = "PowerUp/melonmolon" + to_string(cId->id);
+            }
+            soundEngine->Set3DAttributes(name, cPos->position);
+        }
+    }*/
  }
 
  /**
   *
   */
- void SoundFacadeFMOD::UpdateTotem(const vector<shared_ptr<Entity> > &totems) {
-    for(auto t : totems) {
-        auto cId = static_cast<CId*>(t->GetComponent(CompType::IdComp).get());
-        auto cPos = static_cast<CTransformable*>(t->GetComponent(CompType::TransformableComp).get());
-        if(cPos && cId) {
-            string name = "Partida/totem" + to_string(cId->id);
-            soundEngine->Set3DAttributes(name, cPos->position);
-            //cout << "ACTUALIZO POS TOTEM A: " << cPos->position.x << " - " << cPos->position.z << endl;
-        }
-    }
- }
+  void SoundFacadeFMOD::UpdateTotem(const vector<shared_ptr<Entity> > &totems) {
+     for(auto t : totems) {
+         auto cId = static_cast<CId*>(t->GetComponent(CompType::IdComp).get());
+         auto cPos = static_cast<CTransformable*>(t->GetComponent(CompType::TransformableComp).get());
+         if(cPos && cId) {
+             string name = "Partida/totem" + to_string(cId->id);
+             soundEngine->Set3DAttributes(name, cPos->position);
+             //cout << "ACTUALIZO POS TOTEM A: " << cPos->position.x << " - " << cPos->position.z << endl;
+         }
+     }
+  }
 
  /**
   *
   */
  void SoundFacadeFMOD::UpdateListener(const shared_ptr<CarHuman> &mainCar) {
     //cout << "############# UPDATE LISTENER" << endl;
-        auto cPos = static_cast<CTransformable*>(mainCar->GetComponent(CompType::TransformableComp).get());
+    auto cPos = static_cast<CTransformable*>(mainCar->GetComponent(CompType::TransformableComp).get());
     if(cPos) {
         soundEngine->SetListenerPosition(cPos->position);
     }
@@ -375,7 +394,7 @@ void SoundFacadeFMOD::StartGame() {
     cout << "++++ Personaje en sonido: " << character << endl;
     SetParameter("Personajes/voces", "Personaje", character);
     SetParameter("Coche/claxon", "Personaje", character);
-    SetParameter("Coche/motor", "Personaje", character);
+    //SetParameter("Coche/motor", "Personaje", character);
 }
 
 /*
@@ -451,7 +470,9 @@ void SoundFacadeFMOD::SoundMenuOption(DataMap* d) {
 
 // TO-DO: Cambiar de eventos 2D a 3D
 void SoundFacadeFMOD::SoundThrowPowerup(DataMap* d) {
+    uint16_t cId { 0 };
     auto typepw = any_cast<typeCPowerUp>((*d)[TYPE_POWER_UP]);
+    auto mainCar = any_cast<bool>((*d)[MAIN_CAR]);
     /*auto cPos = any_cast<glm::vec3>((*d).find(VEC3_POS));
     cout << "DEBUGEAO LA POS: " << cPos.x << " - " << cPos.y << " - " << cPos.z << endl;*/
 
@@ -461,33 +482,39 @@ void SoundFacadeFMOD::SoundThrowPowerup(DataMap* d) {
     switch (typepw) {
         case typeCPowerUp::RoboJorobo:
             name = "PowerUp/robojorobo";
-            CreateSoundDinamic3D(0, pos, name);
+            CreateSoundDinamic3D(0, pos, name, 0, 0);
             PlayEvent("PowerUp/robojorobo0");
             break;
-        case typeCPowerUp::EscudoMerluzo:
-            name = "PowerUp/escudo";
-            CreateSoundDinamic3D(0, pos, name);
-            PlayEvent("PowerUp/escudo0");
+        case typeCPowerUp::EscudoMerluzo:                                   // HECHO
+            cId = any_cast<uint16_t>((*d)[ID]);
+            name = "PowerUp/escudo" + to_string(cId);
+            PlayEvent(name);
             break;
         case typeCPowerUp::MelonMolon:
-            SetParameter("Personajes/voces", "Tipo", TipoVoz::Powerup);
-            PlayEvent("Personajes/voces");
+            if (mainCar) {
+                SetParameter("Personajes/voces", "Tipo", TipoVoz::Powerup);
+                PlayEvent("Personajes/voces");
+            }
             name = "PowerUp/melonmolon";
-            CreateSoundDinamic3D(0, pos, name);
+            CreateSoundDinamic3D(0, pos, name, 0, 0);
             PlayEvent("PowerUp/melonmolon0");
             break;
         case typeCPowerUp::TeleBanana:
-            SetParameter("Personajes/voces", "Tipo", TipoVoz::Powerup);
-            PlayEvent("Personajes/voces");
+            if (mainCar) {
+                SetParameter("Personajes/voces", "Tipo", TipoVoz::Powerup);
+                PlayEvent("Personajes/voces");
+            }
             name = "PowerUp/telebanana_prov";
-            CreateSoundDinamic3D(0, pos, name);
+            CreateSoundDinamic3D(0, pos, name, 0, 0);
             PlayEvent("PowerUp/telebanana_prov0");
             break;
         case typeCPowerUp::PudinDeFrambuesa:
-            SetParameter("Personajes/voces", "Tipo", TipoVoz::Powerup);
-            PlayEvent("Personajes/voces");
+            if (mainCar) {
+                SetParameter("Personajes/voces", "Tipo", TipoVoz::Powerup);
+                PlayEvent("Personajes/voces");
+            }
             name = "PowerUp/melonmolon";
-            CreateSoundDinamic3D(0, pos, name);
+            CreateSoundDinamic3D(0, pos, name, 0, 0);
             PlayEvent("PowerUp/pudin0");
             std::cout << "POWERUP: " << (int)typepw << endl;
             break;
@@ -500,12 +527,14 @@ void SoundFacadeFMOD::SoundThrowPowerup(DataMap* d) {
 
 
 void SoundFacadeFMOD::StopShield(DataMap* d) {
-    StopEvent("PowerUp/escudo0");
+    auto position = any_cast<glm::vec3>((*d)[VEC3_POS]);
+    auto id = any_cast<uint16_t>((*d)[ID]);
+    string mapID = "PowerUp/escudo" + to_string(id);
+    StopEvent(mapID);
 
-    auto pos = glm::vec3(0.0f,0.0f,0.0f);
-    string name = "PowerUp/escudo_roto";
-    CreateSoundEstatic3D(0, pos, name);
-    PlayEvent("PowerUp/escudo_roto0");
+    mapID = "PowerUp/escudo_roto" + to_string(id);
+    SetEventPositionEstatic3D(mapID, position);
+    PlayEvent(mapID);
 }
 
 void SoundFacadeFMOD::StopDrift(DataMap* d) {

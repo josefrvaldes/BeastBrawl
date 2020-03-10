@@ -45,8 +45,8 @@ namespace CLSE {
             void SetEventPosition3D(FMOD::Studio::EventInstance*, const glm::vec3&);
 
             void CreateSoundNode2D(const string&);
-            void CreateSoundNodeEstatic3D(uint16_t, glm::vec3&, string&);
-            void CreateSoundNodeDinamic3D(uint16_t, glm::vec3&, string&);
+            void CreateSoundNodeEstatic3D(uint16_t, glm::vec3&, string&, bool);
+            void CreateSoundNodeDinamic3D(uint16_t, glm::vec3&, string&, bool, bool);
 
 
 

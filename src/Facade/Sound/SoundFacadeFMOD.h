@@ -40,8 +40,8 @@ class SoundFacadeFMOD : public SoundFacade {
         void SetParameter(const string&, const string&, const float) override;
 
         void CreateSound2D(const string&) override;
-        void CreateSoundEstatic3D(uint16_t, glm::vec3&, string&) override;
-        void CreateSoundDinamic3D(uint16_t, glm::vec3&, string&) override;
+        void CreateSoundEstatic3D(uint16_t, glm::vec3&, string&, bool) override;
+        void CreateSoundDinamic3D(uint16_t, glm::vec3&, string&, bool, bool) override;
 
     private:
 
@@ -93,8 +93,8 @@ class SoundFacadeFMOD : public SoundFacade {
                                 "Partida/totem",
                                 "PowerUp/escudo",
                                 "PowerUp/melonmolon",
-                                "PowerUp/robojorobo",
                                 "PowerUp/telebanana",
+                                "PowerUp/pudin",
                                 "PowerUp/telebanana_prov"
                                 }
             },
@@ -103,8 +103,8 @@ class SoundFacadeFMOD : public SoundFacade {
                                 "PowerUp/escudo_roto",
                                 "Partida/coger_totem",
                                 "Coche/choque_powerup",
+                                "PowerUp/robojorobo",
                                 "Coche/choque",
-                                "PowerUp/pudin",
                                 "Partida/coger_caja"
                                 }
 

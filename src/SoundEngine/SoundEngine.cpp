@@ -159,10 +159,12 @@ void SoundEngine::PlayEvent(const string& nameID) {
     } else{
         instance = eventInstancesEstatic3D.find(nameID);
         if(instance != eventInstancesEstatic3D.end()) {
+            //cout << "Sonando el evento estatico: " << nameID << endl;
             ERRFMODCHECK(instance->second->GetInstance()->start());
         } else {
             instance = eventInstancesDinamic3D.find(nameID);
             if (instance != eventInstancesDinamic3D.end()) {
+                //cout << "Sonando el evento dinamico: " << nameID << endl;
                 ERRFMODCHECK(instance->second->GetInstance()->start());
             }
             else {
@@ -453,9 +455,9 @@ void SoundEngine::CreateSoundNode2D(const string& nameEvent) {
     }
 }
 
-void SoundEngine::CreateSoundNodeEstatic3D(uint16_t idE, glm::vec3& p, string& nameEvent) {
+void SoundEngine::CreateSoundNodeEstatic3D(uint16_t idE, glm::vec3& p, string& nameEvent, bool play) {
     std::string name = nameEvent + to_string(idE);
-    unique_ptr<SoundNode> snode = make_unique<SoundNode>(idE, p);
+    unique_ptr<SoundNode> snode = make_unique<SoundNode>(idE, p, 0);
     //cout << "**** VOY A CREAR LA INSTANCIA: " << nameEvent << " CON ID: " << name  << " CON LA POSICION: " << p.x << ", " << p.y << ", " << p.z << endl;
     
     FMOD::Studio::EventInstance* instance = nullptr;
@@ -465,13 +467,16 @@ void SoundEngine::CreateSoundNodeEstatic3D(uint16_t idE, glm::vec3& p, string& n
         snode->SetInstance(*instance);
         eventInstancesEstatic3D[name] = move(snode);
         SetEventPosition3D(eventInstancesEstatic3D[name].get()->GetInstance(), p);
+        if (play) {
+            PlayEvent(name);
+        }
     }
 }
 
-void SoundEngine::CreateSoundNodeDinamic3D(uint16_t idE, glm::vec3& p, string& nameEvent) {
+void SoundEngine::CreateSoundNodeDinamic3D(uint16_t idE, glm::vec3& p, string& nameEvent, bool play, bool c) {
     //cout << "++++++ CREATE SOUND: " << nameEvent << endl;
     std::string name = nameEvent + to_string(idE);
-    unique_ptr<SoundNode> snode = make_unique<SoundNode>(idE, p);
+    unique_ptr<SoundNode> snode = make_unique<SoundNode>(idE, p, c);
     //cout << "**** VOY A CREAR LA INSTANCIA DINAMICA: " << nameEvent << " CON ID: " << name  << " CON LA POSICION: " << p.x << ", " << p.y << ", " << p.z << endl;
     
     FMOD::Studio::EventInstance* instance = nullptr;
@@ -481,7 +486,9 @@ void SoundEngine::CreateSoundNodeDinamic3D(uint16_t idE, glm::vec3& p, string& n
         snode->SetInstance(*instance);
         eventInstancesDinamic3D[name] = move(snode);
         //cout << "Instancia creada de: " << nameEvent << endl;
-        PlayEvent(name);
+        if (play) {
+            PlayEvent(name);
+        }
     }
 }
 

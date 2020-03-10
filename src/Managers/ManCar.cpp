@@ -531,6 +531,9 @@ void ManCar::ThrowPowerUpHuman(DataMap* d) {
 }
 
 void ManCar::ThrowPowerUp(Car* car_) {
+    shared_ptr<DataMap> dataSound = make_shared<DataMap>();
+    
+    auto cIdCar = static_cast<CId*>(car_->GetComponent(CompType::IdComp).get());
     auto cPowerUpCar = static_cast<CPowerUp*>(car_->GetComponent(CompType::PowerUpComp).get());
     //auto cRoboJorobo = static_cast<CRoboJorobo*>(any_cast<CarAI*>(d[ACTUAL_CAR])->GetComponent(CompType::RoboJoroboComp).get());
     auto cShield = static_cast<CShield*>(car_->GetComponent(CompType::ShieldComp).get());
@@ -549,6 +552,8 @@ void ManCar::ThrowPowerUp(Car* car_) {
                 break;
             case (typeCPowerUp::EscudoMerluzo):
                 cShield->activatePowerUp();
+                //cout << "ACTIVO EL ESCUDO WEY" << endl;
+                (*dataSound)[ID] = cIdCar->id;
                 break;
             case (typeCPowerUp::SuperMegaNitro):
                 cNitro->activatePowerUp();
@@ -571,12 +576,17 @@ void ManCar::ThrowPowerUp(Car* car_) {
                 break;
         }
 
+
+        // Sonido de lanzar power-up
+        auto mainCarId = static_cast<CId*>(GetCar()->GetComponent(CompType::IdComp).get());
+        (*dataSound)[TYPE_POWER_UP] = cPowerUpCar->typePowerUp;
+        (*dataSound)[MAIN_CAR] = false;
+        if (mainCarId && cIdCar && mainCarId->id == cIdCar->id) {
+            (*dataSound)[MAIN_CAR] = true;
+        }
+        EventManager::GetInstance().AddEventMulti(Event{EventType::THROW_POWERUP, dataSound});
+
         if(car_ == GetCar().get()){
-            // Sonido de lanzar power-up
-            shared_ptr<DataMap> dataSound = make_shared<DataMap>();
-            (*dataSound)[TYPE_POWER_UP] = cPowerUpCar->typePowerUp;
-            //d->insert(TYPE_POWER_UP,cPowerUpCar->typePowerUp);
-            EventManager::GetInstance().AddEventMulti(Event{EventType::THROW_POWERUP, dataSound});
 
             // Ya no tenemos power-up
             shared_ptr<DataMap> dataHUD = make_shared<DataMap>();
@@ -646,7 +656,7 @@ void ManCar::CatchPowerUp(DataMap* d) {
 void ManCar::CatchPowerUpAI(DataMap* d) {
 
     int maxRobojorobo = 50;
-    int maxNitro = maxRobojorobo + 200;
+    int maxNitro = maxRobojorobo + 150;
     int maxPudin = maxNitro + 250;
     int maxEscudo = maxPudin + 150;
     int maxTelebanana = maxEscudo + 150;
@@ -675,7 +685,7 @@ void ManCar::CatchPowerUpAI(DataMap* d) {
             maxRobojorobo += 50;
             maxPudin -= 150;
             maxTelebanana += 100;
-            maxNitro -= 50;
+            maxNitro += 25;
         }
     }
 

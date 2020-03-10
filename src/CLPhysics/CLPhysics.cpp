@@ -1269,8 +1269,15 @@ void CLPhysics::IntersectsCarsPowerUps(ManCar &manCars, ManPowerUp &manPowerUps,
                     }
                 }else{
                     cShield->deactivePowerUp();  // desactivamos el escudo
-                    // Sonido romper escudo
-                    EventManager::GetInstance().AddEventMulti(Event{EventType::NO_SHIELD});
+                    // Sonido romper escudo  
+                    auto cId = static_cast<CId*>(currentCar->GetComponent(CompType::IdComp).get());
+                    auto cPos = static_cast<CTransformable*>(currentCar->GetComponent(CompType::TransformableComp).get());
+                    if ( cId && cPos) {
+                        shared_ptr<DataMap> dataSoundShild = make_shared<DataMap>(); 
+                        (*dataSoundShild)[ID] = cId->id;
+                        (*dataSoundShild)[VEC3_POS] = cPos->position;
+                        EventManager::GetInstance().AddEventMulti(Event{EventType::NO_SHIELD, dataSoundShild});
+                    }
                 }
             }
         }

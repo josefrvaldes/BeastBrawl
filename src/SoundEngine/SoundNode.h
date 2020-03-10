@@ -10,7 +10,7 @@ namespace CLSE {
     class SoundNode {
         public:
             SoundNode() {};
-            SoundNode(uint16_t, glm::vec3&);
+            SoundNode(uint16_t, glm::vec3&, bool);
             ~SoundNode() {};
 
             void SetInstance(FMOD::Studio::EventInstance& i)            { instance = &i; };
@@ -23,6 +23,7 @@ namespace CLSE {
         private:
             uint16_t idEntity { 0 };
             glm::vec3 pos { glm::vec3(0.0f,0.0f,0.0f) };
+            bool clean { false };
             FMOD::Studio::EventInstance* instance;
     };
 }

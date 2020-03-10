@@ -42,7 +42,7 @@ ManTotem::ManTotem(ManNavMesh *manNavMesh_) : manNavMesh{manNavMesh_} {
     //TODO: Esto es peligroso [0] aunque sabemos que va a ir
     auto cId = static_cast<CId*>(entities[0]->GetComponent(CompType::IdComp).get());
     string nameEvent = "Partida/coger_totem";
-    SoundFacadeManager::GetInstance()->GetSoundFacade()->CreateSoundEstatic3D(0, posNewTotem, nameEvent);
+    SoundFacadeManager::GetInstance()->GetSoundFacade()->CreateSoundEstatic3D(0, posNewTotem, nameEvent, 0);
 
     auto cCurrentNavMesh = static_cast<CCurrentNavMesh*>(entities[0]->GetComponent(CompType::CurrentNavMeshComp).get());
     cCurrentNavMesh->currentNavMesh = currentNavMesh;
@@ -77,7 +77,7 @@ void ManTotem::CreateTotem(glm::vec3 _position) {
         shared_ptr<Totem> totem = make_shared<Totem>(_position);
         string name = "Partida/totem";
         auto idComp = static_cast<CId*>(totem->GetComponent(CompType::IdComp).get());
-        SoundFacadeManager::GetInstance()->GetSoundFacade()->CreateSoundDinamic3D(idComp->id, _position, name);
+        SoundFacadeManager::GetInstance()->GetSoundFacade()->CreateSoundDinamic3D(idComp->id, _position, name, 1, 0);
 
         entities.push_back(totem); 
     }
