@@ -2,20 +2,22 @@
 
 #include <Components/CDimensions.h>
 #include <Entities/PowerUp.h>
+#include <Entities/Car.h>
 #include <EventManager/Event.h>
 #include <EventManager/EventManager.h>
 #include <Facade/Render/RenderFacadeManager.h>
+#include <Game.h>
 #include <iostream>
 #include "../Components/CBoundingSphere.h"
+#include "../Components/COnline.h"
 #include "../Components/CRemovableObject.h"
-#include <Game.h>
 #include "../Components/CType.h"
 
 class Position;
 using namespace std;
 
 // TODO: No es un to-do, pero quiero indicar que los powerUps tienen una reserva de 50
-ManPowerUp::ManPowerUp() {
+ManPowerUp::ManPowerUp(shared_ptr<ManCar> manCars_) : manCars{manCars_} {
     entities.reserve(50);
     SubscribeToEvents();
 }
@@ -33,11 +35,22 @@ void ManPowerUp::NewPowerUpReceivedFromServer(DataMap *d) {
     typeCPowerUp typePU = static_cast<typeCPowerUp>(auxTypePU);
     vec3 position = any_cast<vec3>((*d)[VEC3_POS]);
     vec3 rotation = any_cast<vec3>((*d)[VEC3_ROT]);
-
-    shared_ptr<PowerUp> powerUp = make_shared<PowerUp>(position, rotation, typePU, nullptr);
+    
+    // si hay alguien a quien perseguir...
+    CTransformable *transforPerse = nullptr;
+    if(d->count(ID_PURSUE) > 0) {
+        uint16_t idToPursue = any_cast<uint16_t>((*d)[ID_PURSUE]);
+        for(const auto& car : manCars->GetEntities()) {
+            COnline *cOnline = static_cast<COnline *>(car->GetComponent(CompType::OnlineComp).get());
+            if(cOnline->idClient == idToPursue) {
+                transforPerse = static_cast<CTransformable *>(car->GetComponent(CompType::TransformableComp).get());
+                break;
+            }
+        }
+    }
+    shared_ptr<PowerUp> powerUp = make_shared<PowerUp>(position, rotation, typePU, transforPerse);
     MaterializePowerUp(powerUp);
 }
-
 
 void ManPowerUp::CreatePowerUp(DataMap *d) {
     typeCPowerUp type = any_cast<typeCPowerUp>((*d)[TYPE_POWER_UP]);
@@ -45,9 +58,11 @@ void ManPowerUp::CreatePowerUp(DataMap *d) {
 
     CTransformable *transforSalida = any_cast<CTransformable *>((*d)[CAR_EXIT_POSITION]);
     CDimensions *dimensionsCarSalida = any_cast<CDimensions *>((*d)[CAR_EXIT_DIMENSION]);
-    CTransformable *transforPerse;
-    if (d->count(CAR_FOLLOW_POSITION) > 0) {
-        transforPerse = any_cast<CTransformable *>((*d)[CAR_FOLLOW_POSITION]);
+    CTransformable *transforPerse = nullptr;
+    Car *carPerse = nullptr;
+    if (d->count(CAR_FOLLOW) > 0) {
+        carPerse = any_cast<Car *>((*d)[CAR_FOLLOW]);
+        transforPerse = static_cast<CTransformable*>(carPerse->GetComponent(CompType::TransformableComp).get());
     } else
         transforPerse = nullptr;
 
@@ -72,24 +87,20 @@ void ManPowerUp::CreatePowerUp(DataMap *d) {
     auto cTypePU = static_cast<CType *>(powerUp->GetComponent(CompType::TypeComp).get())->type;
 
     if (int(cTypePU) >= 0 && int(cTypePU) < 50) {
-        // si el PU es telebanana, o pudding o melón, requieren un tratamiento especial para el online
-        if (type == typeCPowerUp::TeleBanana || type == typeCPowerUp::PudinDeFrambuesa || type == typeCPowerUp::MelonMolon) {
-            // si no estamos en online, simplemente materializamos el PU
-            if (systemOnline == nullptr) {
-                MaterializePowerUp(powerUp);
-
-                // si sí estamos en online, tenemos que decírselo al servidor y será él quien 
-                // posteriormente materializará el PU
-            } else {
-                systemOnline->SendThrowPU(powerUp);
-                MaterializePowerUp(powerUp);
+        
+        // si no estamos en online, simplemente materializamos el PU
+        if(systemOnline != nullptr) {
+            // si es una telebanana, necesitamos saber el id del coche al que perseguir
+            uint16_t idToPursue = -1;
+            // si es telebanana, y por tanto hay alguien a quien perseguir...
+            if(carPerse != nullptr) {
+                COnline *cOnline = static_cast<COnline*>(carPerse->GetComponent(CompType::OnlineComp).get());
+                // apuntamos el id de ese coche al que perseguir para enviarlo al online
+                idToPursue = cOnline->idClient;
             }
-
-            // si el PU es distinto a telebanana, pudding o melón, no hacemos aquí el tratamiento especial
-            // del online, por tanto, simplemente lo materializamos
-        } else {
-            MaterializePowerUp(powerUp);
+            systemOnline->SendThrowPU(powerUp, idToPursue);
         }
+        MaterializePowerUp(powerUp);
 
     } else {
         cout << "el type powerUp es: " << int(type) << endl;
@@ -142,8 +153,6 @@ void ManPowerUp::Update() {
         }
     }
 }
-
-
 
 // TO-DO : tener una variable de control para eliminar todas las cosas de los arrays a la vez CUIDADO CON ESOOOO
 void ManPowerUp::SubscribeToEvents() {

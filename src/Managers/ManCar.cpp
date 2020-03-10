@@ -515,9 +515,9 @@ void ManCar::CollisionCarPowerUp(DataMap* d) {
 
 
 // se calcula el coche mas cercano en el rango de vision, en caso de no haber se devuelve un nullptr
-CTransformable* ManCar::calculateCloserCar(Entity* actualCar) {
+Car* ManCar::calculateCloserCar(Entity* actualCar) {
     // Primero metemos al jugador por lo que no hace falta calcularlo luego
-    CTransformable* closestCar = nullptr;
+    Car* closestCar = nullptr;
     auto cTransActualCar = static_cast<CTransformable*>(actualCar->GetComponent(CompType::TransformableComp).get());
     float distanceMimum = 9999999999.0;
     float distanceNext;
@@ -525,16 +525,16 @@ CTransformable* ManCar::calculateCloserCar(Entity* actualCar) {
     float vectorZNext;
 
     // Para todos los coches
-    for (const shared_ptr<Entity>& cars : entities) {
-        if (actualCar != cars.get() && carInVisionRange(actualCar, cars.get(), 60) == true) {
-            auto cTransNextCar = static_cast<CTransformable*>(cars.get()->GetComponent(CompType::TransformableComp).get());
+    for (const shared_ptr<Entity>& car : entities) {
+        if (actualCar != car.get() && carInVisionRange(actualCar, car.get(), 60) == true) {
+            auto cTransNextCar = static_cast<CTransformable*>(car.get()->GetComponent(CompType::TransformableComp).get());
             vectorXNext = cTransNextCar->position.x - cTransActualCar->position.x;
             vectorZNext = cTransNextCar->position.z - cTransActualCar->position.z;
             distanceNext = sqrt((vectorXNext * vectorXNext) + (vectorZNext * vectorZNext));
 
             if (distanceMimum > distanceNext) {
                 distanceMimum = distanceNext;
-                closestCar = cTransNextCar;
+                closestCar = static_cast<Car*>(car.get());
             }
         }
     }
@@ -563,7 +563,7 @@ void ManCar::ThrowPowerUp(Car* car_) {
     if(cPowerUpCar->typePowerUp != typeCPowerUp::None){
         shared_ptr<DataMap> data = make_shared<DataMap>();
 
-        CTransformable* objectiveCar;
+        
         switch (cPowerUpCar->typePowerUp) {
             case (typeCPowerUp::RoboJorobo):
                 robado = useRoboJorobo(car_);
@@ -576,26 +576,20 @@ void ManCar::ThrowPowerUp(Car* car_) {
             case (typeCPowerUp::SuperMegaNitro):
                 cNitro->activatePowerUp();
                 break;
-            case (typeCPowerUp::TeleBanana):
-                objectiveCar = calculateCloserCar(car_);
-                if(objectiveCar != nullptr)
-                    (*data)[CAR_FOLLOW_POSITION] = objectiveCar;
-                (*data)[TYPE_POWER_UP] = cPowerUpCar->typePowerUp;
-                (*data)[CAR_EXIT_POSITION] = static_cast<CTransformable*>(car_->GetComponent(CompType::TransformableComp).get());
-                (*data)[CAR_EXIT_DIMENSION] =  static_cast<CDimensions*>(car_->GetComponent(CompType::DimensionsComp).get());
-                EventManager::GetInstance().AddEventMulti(Event{EventType::PowerUp_Create, data});
-                break;
-            default:  // en caso del melon molon o el pudding
-                bool enviar = true;
-                // si estamos en el online
-                if(Game::GetInstance()->GetState()->GetState() == State::States::INGAME_MULTI) {
-                    // si no es el jugador original, no enviará el powerup porque eso lo gestiona el server
-                    COnline *cOnlineCarReceived = static_cast<COnline*>(car_->GetComponent(CompType::OnlineComp).get());
-                    COnline *cOnlineMainCar = static_cast<COnline*>(GetCar()->GetComponent(CompType::OnlineComp).get());
-                    if(cOnlineCarReceived->idClient != cOnlineMainCar->idClient)
-                        enviar = false;
+            case (typeCPowerUp::TeleBanana): {
+                if(CheckIfPUWillBeFired(car_)) {
+                    Car* objectiveCar = calculateCloserCar(car_);
+                    if(objectiveCar != nullptr) {
+                        (*data)[CAR_FOLLOW] = objectiveCar;
+                    }
+                    (*data)[TYPE_POWER_UP] = cPowerUpCar->typePowerUp;
+                    (*data)[CAR_EXIT_POSITION] = static_cast<CTransformable*>(car_->GetComponent(CompType::TransformableComp).get());
+                    (*data)[CAR_EXIT_DIMENSION] =  static_cast<CDimensions*>(car_->GetComponent(CompType::DimensionsComp).get());
+                    EventManager::GetInstance().AddEventMulti(Event{EventType::PowerUp_Create, data});
                 }
-                if(enviar) {
+            } break;
+            default:  // en caso del melon molon o el pudding
+                if(CheckIfPUWillBeFired(car_)) {
                     (*data)[TYPE_POWER_UP] = cPowerUpCar->typePowerUp;
                     (*data)[CAR_EXIT_POSITION] = static_cast<CTransformable*>(car_->GetComponent(CompType::TransformableComp).get());
                     (*data)[CAR_EXIT_DIMENSION] =  static_cast<CDimensions*>(car_->GetComponent(CompType::DimensionsComp).get());
@@ -620,6 +614,18 @@ void ManCar::ThrowPowerUp(Car* car_) {
         }
         cPowerUpCar->typePowerUp = typeCPowerUp::None;
     }
+}
+
+bool ManCar::CheckIfPUWillBeFired(Car* car_) {
+    bool send = true;
+    if(Game::GetInstance()->GetState()->GetState() == State::States::INGAME_MULTI) {
+        // si no es el jugador original, no enviará el powerup porque eso lo gestiona el server
+        COnline *cOnlineCarReceived = static_cast<COnline*>(car_->GetComponent(CompType::OnlineComp).get());
+        COnline *cOnlineMainCar = static_cast<COnline*>(GetCar()->GetComponent(CompType::OnlineComp).get());
+        if(cOnlineCarReceived->idClient != cOnlineMainCar->idClient)
+            send = false;
+    }
+    return send;
 }
 
 /*
@@ -714,24 +720,25 @@ void ManCar::CatchPowerUpAI(DataMap* d) {
 
     srand(time(NULL));
     int indx = rand() % 1000 + 1;
+    typeCPowerUp type = typeCPowerUp::None;
     if (indx <= maxRobojorobo)  // ROBOJOROBO -> 5% base - 0% primero - 2.5% segundo - 10% ultimo/s
-        indx = 1;
+        type = typeCPowerUp::RoboJorobo;
     else if (indx > maxRobojorobo && indx <= maxNitro)  // SUPERMEGANITRO -> 20% base - 12.5% primero - 12.5% segundo - 15% ultimo/s
-        indx = 2;
+        type = typeCPowerUp::SuperMegaNitro;
     else if (indx > maxNitro && indx <= maxPudin)  // PUDIN -> 25% base - 35% primero - 35% segundo - 10% ultimo/s
-        indx = 3;
+        type = typeCPowerUp::PudinDeFrambuesa;
     else if (indx > maxPudin && indx <= maxEscudo)  // ESCUDO -> 15% base - 10% primero - 10% segundo - 15% ultimo/s
-        indx = 4;
+        type = typeCPowerUp::EscudoMerluzo;
     else if (indx > maxEscudo && indx <= maxTelebanana)  // TELEBANANA -> 15% base - 10% primero - 10% segundo - 25% ultimo/s
-        indx = 5;
+        type = typeCPowerUp::TeleBanana;
     else if (indx > maxTelebanana)  // MELONMOLON ->  20% base - 32.5% primero - 30% segundo - 25% ultimo/s
-        indx = 6;
+        type = typeCPowerUp::MelonMolon;
 
 
-    indx = 3;
+    type = typeCPowerUp::TeleBanana;
     auto cPowerUpCar = static_cast<CPowerUp*>(actualCar->GetComponent(CompType::PowerUpComp).get());
     if (cPowerUpCar->typePowerUp == typeCPowerUp::None) {
-        cPowerUpCar->typePowerUp = (typeCPowerUp)indx;
+        cPowerUpCar->typePowerUp = type;
         std::cout << "Power Up del coche es:   " << (int)cPowerUpCar->typePowerUp << std::endl;
         if(this->GetCar().get() == any_cast<Entity*>((*d)[ACTUAL_CAR])){
             shared_ptr<DataMap> data = make_shared<DataMap>();
@@ -744,7 +751,6 @@ void ManCar::CatchPowerUpAI(DataMap* d) {
             }
         }
     }
-    //cPowerUp->typePowerUp = dynamic_cast<typeCPowerUp*>(indx);
 }
 
 // calcula si el otro coche se encuentra en el rango de vision del coche actual

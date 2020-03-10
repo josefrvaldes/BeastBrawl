@@ -12,12 +12,13 @@
 class PowerUp;
 class Data;
 class SystemOnline;
+class ManCar;
 
 using namespace std;
 
 class ManPowerUp : public Manager{  
    public:
-    ManPowerUp();
+    ManPowerUp(shared_ptr<ManCar> manCars_);
     ~ManPowerUp();
     void SetSystemOnline(SystemOnline *sys) {
         systemOnline = sys;
@@ -37,4 +38,5 @@ class ManPowerUp : public Manager{
     void DeletePowerUp(DataMap* d);
 
     SystemOnline *systemOnline;
+    shared_ptr<ManCar> manCars;
 };

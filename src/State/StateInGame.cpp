@@ -132,7 +132,7 @@ void StateInGame::InitializeManagers(Physics *physics, Camera *cam) {
     // inicializa el man PU, no hace falta más código para esto
     manCars = make_shared<ManCar>(physics, cam);
     manWayPoint = make_shared<ManWayPoint>();  //Se crean todos los waypoints y edges
-    manPowerUps = make_shared<ManPowerUp>();
+    manPowerUps = make_shared<ManPowerUp>(manCars);
     manBoxPowerUps = make_shared<ManBoxPowerUp>();
     manBoundingWall = make_shared<ManBoundingWall>();
     manBoundingOBB = make_shared<ManBoundingOBB>();

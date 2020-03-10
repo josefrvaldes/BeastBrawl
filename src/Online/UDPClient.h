@@ -45,7 +45,8 @@ class UDPClient {
     void SendLostTotem(uint16_t idOnline, uint16_t idPlayerLosted, const glm::vec3& pos, int numNavMesh);
     void SendRoboJorobo(uint16_t idOnline);
     void SendCollideNitro(uint16_t idOnline, uint16_t idWithTotem, uint16_t idWithNitro);
-    void SendThrowMelonOPudin(uint16_t idOnline, int64_t time, uint16_t idPUOnline, const glm::vec3& position, const glm::vec3& rotation, int8_t typePU);
+    void SendThrowMelonOPudin(const uint16_t idOnline, const int64_t time, const uint16_t idPUOnline, const glm::vec3& position, const glm::vec3& rotation, const int8_t typePU);
+    void SendThrowTelebanana(const uint16_t idOnline, const int64_t time, const uint16_t idPUOnline, const glm::vec3& position, const glm::vec3& rotation, const int8_t typePU, const uint16_t idToPursue);
     void SendEndgame();
     void SendDateTime();
     uint32_t idMainCar;
@@ -63,6 +64,7 @@ class UDPClient {
     void HandleReceivedDisconnection(unsigned char* recevBuff, size_t bytesTransferred);
     void HandleReceivedEndgame(unsigned char* recevBuff, size_t bytesTransferred);
     void HandleReceivedThrowMelonOPudin(unsigned char* recevBuff, size_t bytesTransferred);
+    void HandleReceivedThrowTelebanana(unsigned char* recevBuff, size_t bytesTransferred);
 
     void HandleSentInputs(const boost::system::error_code& errorCode, std::size_t bytes_transferred);
     void HandleSentSync(const boost::system::error_code& errorCode, std::size_t bytes_transferred);
@@ -92,4 +94,5 @@ class UDPClient {
     unordered_map<uint16_t, int64_t> lastTimeUsedRoboJoroboReceived;
     unordered_map<uint16_t, int64_t> lastTimeCollideNitroReceived;
     unordered_map<uint16_t, int64_t> lastTimeThrowMelonOPudinReceived;
+    unordered_map<uint16_t, int64_t> lastTimeThrowTelebananaReceived;
 };

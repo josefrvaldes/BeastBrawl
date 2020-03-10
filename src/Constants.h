@@ -46,7 +46,8 @@ class Constants {
                         LOST_TOTEM,
                         USED_ROBOJOROBO,
                         COLLIDE_NITRO,
-                        SEND_THROW_MELON_O_PUDIN };
+                        SEND_THROW_MELON_O_PUDIN,
+                        SEND_THROW_TELEBANANA };
 
     enum RenderEngine { IRRLICHT,
                         CLOVER};

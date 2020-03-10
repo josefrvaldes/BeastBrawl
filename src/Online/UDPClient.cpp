@@ -123,6 +123,13 @@ void UDPClient::HandleReceived(std::shared_ptr<unsigned char[]> recevBuff, const
                 }
                 break;
 
+            case Constants::PetitionTypes::SEND_THROW_TELEBANANA:
+                if (time > lastTimeThrowTelebananaReceived[idPlayer]) {
+                    lastTimeThrowTelebananaReceived[idPlayer] = time;
+                    HandleReceivedThrowTelebanana(recevBuff.get(), bytesTransferred);
+                }
+                break;
+
             case Constants::PetitionTypes::ENDGAME:
                 EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_ENDRACE});
                 break;
@@ -303,14 +310,37 @@ void UDPClient::HandleReceivedCollideNitro(unsigned char* recevBuff, size_t byte
     EventManager::GetInstance().AddEventMulti(Event{EventType::NEW_NITRO_RECEIVED, data});
 }
 
+void UDPClient::HandleReceivedThrowTelebanana(unsigned char* recevBuff, size_t bytesTransferred) {
+    size_t currentIndex = 0;
+    Serialization::Deserialize<uint8_t>(recevBuff, currentIndex);   // petition tipe
+    Serialization::Deserialize<int64_t>(recevBuff, currentIndex);   // tiempo
+    Serialization::Deserialize<uint16_t>(recevBuff, currentIndex);  // idOnline del que lo envio
+
+    uint16_t idPUOnline = Serialization::Deserialize<uint16_t>(recevBuff, currentIndex);
+    uint16_t idToPursue = Serialization::Deserialize<uint16_t>(recevBuff, currentIndex);
+    int8_t typePU = Serialization::Deserialize<int8_t>(recevBuff, currentIndex);
+    vec3 position = Serialization::DeserializeVec3(recevBuff, currentIndex);
+    vec3 rotation = Serialization::DeserializeVec3(recevBuff, currentIndex);
+    cout << "Hemos recibido un throw telebanana type[" << unsigned(typePU) << "] pos[" << position.x << "," << position.y << "," << position.z << "]" << endl
+         << "\trot[" << rotation.x << "," << rotation.y << "," << rotation.z << "]"
+         << endl;
+    std::shared_ptr<DataMap> data = make_shared<DataMap>();
+    (*data)[DataType::VEC3_POS] = position;
+    (*data)[DataType::VEC3_ROT] = rotation;
+    (*data)[DataType::TYPE_POWER_UP] = typePU;
+    (*data)[DataType::ID_ONLINE] = idPUOnline;
+    (*data)[DataType::ID_PURSUE] = idToPursue;
+    EventManager::GetInstance().AddEventMulti(Event{EventType::NEW_THROW_PU_RECEIVED, data});
+}
+
 void UDPClient::HandleReceivedThrowMelonOPudin(unsigned char* recevBuff, size_t bytesTransferred) {
     size_t currentIndex = 0;
     Serialization::Deserialize<uint8_t>(recevBuff, currentIndex);   // petition tipe
     Serialization::Deserialize<int64_t>(recevBuff, currentIndex);   // tiempo
     Serialization::Deserialize<uint16_t>(recevBuff, currentIndex);  // idOnline del que lo envio
 
-    int8_t typePU = Serialization::Deserialize<int8_t>(recevBuff, currentIndex);
     uint16_t idPUOnline = Serialization::Deserialize<uint16_t>(recevBuff, currentIndex);
+    int8_t typePU = Serialization::Deserialize<int8_t>(recevBuff, currentIndex);
     vec3 position = Serialization::DeserializeVec3(recevBuff, currentIndex);
     vec3 rotation = Serialization::DeserializeVec3(recevBuff, currentIndex);
     cout << "Hemos recibido un throw melon o pudin type[" << unsigned(typePU) << "] pos[" << position.x << "," << position.y << "," << position.z << "]" << endl
@@ -472,7 +502,7 @@ void UDPClient::SendLostTotem(uint16_t idOnline, uint16_t idPlayerLosted, const 
             boost::asio::placeholders::bytes_transferred));
 }
 
-void UDPClient::SendThrowMelonOPudin(uint16_t idOnline, int64_t time, uint16_t idPUOnline, const glm::vec3& position, const glm::vec3& rotation, int8_t typePU) {
+void UDPClient::SendThrowMelonOPudin(const uint16_t idOnline, const int64_t time, const uint16_t idPUOnline, const glm::vec3& position, const glm::vec3& rotation, const int8_t typePU) {
     unsigned char requestBuff[Constants::ONLINE_BUFFER_SIZE];
     size_t currentBuffSize = 0;
     uint8_t callType = Constants::PetitionTypes::SEND_THROW_MELON_O_PUDIN;
@@ -480,12 +510,39 @@ void UDPClient::SendThrowMelonOPudin(uint16_t idOnline, int64_t time, uint16_t i
     Serialization::Serialize(requestBuff, &time, currentBuffSize);
     Serialization::Serialize(requestBuff, &idOnline, currentBuffSize);
 
-    Serialization::Serialize(requestBuff, &typePU, currentBuffSize);
     Serialization::Serialize(requestBuff, &idPUOnline, currentBuffSize);
+    Serialization::Serialize(requestBuff, &typePU, currentBuffSize);
     Serialization::SerializeVec3(requestBuff, position, currentBuffSize);
     Serialization::SerializeVec3(requestBuff, rotation, currentBuffSize);
 
     cout << "Soy el " << idOnline << ", estamos enviando un PU con type[" << unsigned(typePU) << "] pos[" << position.x << "," << position.y << "," << position.z << "]" << endl
+         << "\trot[" << rotation.x << "," << rotation.y << "," << rotation.z << "]"
+         << endl;
+    socket.async_send_to(
+        boost::asio::buffer(requestBuff, currentBuffSize),
+        serverEndpoint,
+        boost::bind(
+            &UDPClient::HandleSentThrowPU,
+            this,
+            boost::asio::placeholders::error,
+            boost::asio::placeholders::bytes_transferred));
+}
+
+void UDPClient::SendThrowTelebanana(const uint16_t idOnline, const int64_t time, const uint16_t idPUOnline, const glm::vec3& position, const glm::vec3& rotation, const int8_t typePU, const uint16_t idToPursue) {
+    unsigned char requestBuff[Constants::ONLINE_BUFFER_SIZE];
+    size_t currentBuffSize = 0;
+    uint8_t callType = Constants::PetitionTypes::SEND_THROW_TELEBANANA;
+    Serialization::Serialize(requestBuff, &callType, currentBuffSize);
+    Serialization::Serialize(requestBuff, &time, currentBuffSize);
+    Serialization::Serialize(requestBuff, &idOnline, currentBuffSize);
+
+    Serialization::Serialize(requestBuff, &idPUOnline, currentBuffSize);
+    Serialization::Serialize(requestBuff, &idToPursue, currentBuffSize);
+    Serialization::Serialize(requestBuff, &typePU, currentBuffSize);
+    Serialization::SerializeVec3(requestBuff, position, currentBuffSize);
+    Serialization::SerializeVec3(requestBuff, rotation, currentBuffSize);
+
+    cout << "Soy el " << idOnline << ", estamos enviando un PU telebanana con type[" << unsigned(typePU) << "] pos[" << position.x << "," << position.y << "," << position.z << "]" << endl
          << "\trot[" << rotation.x << "," << rotation.y << "," << rotation.z << "]"
          << endl;
     socket.async_send_to(

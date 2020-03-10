@@ -58,7 +58,7 @@ class ManCar : public Manager {
     void CreateCarAI();
     void CreateCarAI(glm::vec3 _position);
     void CreateCarAI(glm::vec3 _position, CWayPoint* _waypoint);
-    CTransformable* calculateCloserCar(Entity* actualCar);
+    Car* calculateCloserCar(Entity* actualCar);
     bool carInVisionRange(Entity* actualCar, Entity* otherCar, uint32_t rangeVision);
     bool anyCarInVisionRange(Entity* actualCar, uint32_t rangeVision);
     bool CarTotemInVisionRange(Entity *currentCar, Entity* desCar, uint32_t rangeVision);
@@ -101,6 +101,7 @@ class ManCar : public Manager {
     void ThrowPowerUpHuman(DataMap* d);
     void ThrowPowerUpAI(DataMap* d);
     void CatchPowerUp(DataMap* d);
+    bool CheckIfPUWillBeFired(Car* car_);
     void CatchPowerUpAI(DataMap* d);
     shared_ptr<CarHuman> car;
     //unique_ptr<PhysicsAI> physicsAI;
