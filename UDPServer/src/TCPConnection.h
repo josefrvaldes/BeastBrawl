@@ -22,13 +22,13 @@ class TCPConnection : public boost::enable_shared_from_this<TCPConnection> {
     void Close();
     void SendStartMessage(string datos);
     void SendStartMessage(unsigned char *buff, size_t buffSize);
+    void SendFullGame();
 
 
    private:
     TCPConnection(asio::io_context& io_context, std::vector<Player> &p, vector<TCPConnection::pointer>& connect);
     void HandleRead(std::shared_ptr<unsigned char[]> recevBuff, const boost::system::error_code& error, size_t bytes_transferred);
     void HandleWrite(const boost::system::error_code& error, size_t bytes_transferred);
-    void HandleDisconnection(std::shared_ptr<unsigned char[]> recevBuff, size_t bytes_transferred);
     void DeleteMe();
 
     string GetTime() {

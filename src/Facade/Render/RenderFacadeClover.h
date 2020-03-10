@@ -43,6 +43,7 @@ class RenderFacadeClover : public RenderFacade {
       void FacadeDrawPause() override;
       void FacadeDrawEndRace() override;
       void FacadeDrawLobbyMulti() override;
+      void FacadeDrawLobbyMultiExit() override;
       void FacadeDrawControler() override;
       void FacadeInitMenu() override;
       void FacadeInitPause() override;

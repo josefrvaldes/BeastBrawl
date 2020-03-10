@@ -18,7 +18,6 @@ StateLobbyMulti::StateLobbyMulti() : tcpClient{make_shared<TCPClient>(Constants:
 
     cout << "Enviamos SendConnectionRequest al server" << endl;
     tcpClient->SendConnectionRequest();
-    //tcpClient->SendDateTime();
 }
 
 // Cargamos los bancos de sonido Menu.
@@ -35,7 +34,11 @@ void StateLobbyMulti::InitState() {
 }
 
 void StateLobbyMulti::Render() {
-    renderEngine->FacadeDrawLobbyMulti();
+    if(!timerEnabled)
+        renderEngine->FacadeDrawLobbyMulti();
+    else
+        renderEngine->FacadeDrawLobbyMultiExit();
+    
 }
 
 void StateLobbyMulti::Input() {
@@ -45,23 +48,22 @@ void StateLobbyMulti::Input() {
 void StateLobbyMulti::Update() {
     EventManager::GetInstance().Update();
     //std::cout << "hola" << std::endl;
-    SendData();
+
+    if(timerEnabled)
+        Timer();
 }
 
-void StateLobbyMulti::SendData() {
-    //tcpClient->SendDateTime();
-}
 
 void StateLobbyMulti::SubscribeToEvents() {
     EventManager::GetInstance().SubscribeMulti(Listener(
         EventType::NEW_TCP_START_MULTI,
         bind(&StateLobbyMulti::StartGameMulti, this, placeholders::_1),
         "StartGameMulti"));
-
+    
     EventManager::GetInstance().SubscribeMulti(Listener(
-        EventType::NEW_TCP_RETURN_MENU,
-        bind(&StateLobbyMulti::SendDisconnectionMenu, this, placeholders::_1),
-        "SendDisconnectionMenu"));
+        EventType::PREPARE_TO_DISCONNECT,
+        bind(&StateLobbyMulti::ShowDisconnection, this, placeholders::_1),
+        "ShowDisconnection"));
 }
 
 void StateLobbyMulti::StartGameMulti(DataMap* d) {
@@ -73,6 +75,15 @@ void StateLobbyMulti::StartGameMulti(DataMap* d) {
 }
 
 
-void StateLobbyMulti::SendDisconnectionMenu(DataMap* d){
-    tcpClient->SendDisconnectionRequest();
+void StateLobbyMulti::ShowDisconnection(DataMap* d) {
+    timerEnabled = true;
+}
+
+
+void StateLobbyMulti::Timer(){
+    if(valueTimer<valueMaxTimer)
+        valueTimer++;
+    else
+        EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_MENU});
+    
 }

@@ -22,6 +22,7 @@ class Server {
     // 4 veces si hay 4 jugadores. Recibiremos uno, pondremos esto a false
     // y cuando empiece una nueva partida pondremos esto de nuevo a true
     inline static bool ACCEPTING_ENDGAME{true};
+    inline static bool GAME_STARTED{false};
 
    private:
     std::shared_ptr<asio::io_context> context;

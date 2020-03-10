@@ -42,24 +42,28 @@ void TCPServer::StartReceiving() {
 }
 
 void TCPServer::HandleAccept(TCPConnection::pointer new_connection, const boost::system::error_code& error) {
-    cout << "Algo ha pachao" << "\n";
     if (!error) {
         //std::cout << "Recibi un mensaje" << std::endl;
-        new_connection->Start();
+        if(Server::GAME_STARTED == false){
+            new_connection->Start();
 
-        // Comprobaciones para ver si existe el player
-        if (PlayerExists(new_connection) == false) {
-            connections.push_back(new_connection);
-            Player p;
-            p.endpointTCP = new_connection->socket().remote_endpoint();
-            cout << "Ids: " << p.id << "\n";
-            players.push_back(p);
-        }
-        std::cout << "Num conexiones: " << connections.size() << std::endl;
-        if (connections.size() >= Constants::MIN_NUM_PLAYERS) {
-            cout << "Ya hemos llegado al núm de conexiones para enviar partida, vamos a visar a los clientes" << endl;
-            SendStartGame();
-            // justo despues vaciar el tcp para otra conexion
+            // Comprobaciones para ver si existe el player
+            if (PlayerExists(new_connection) == false) {
+                connections.push_back(new_connection);
+                Player p;
+                p.endpointTCP = new_connection->socket().remote_endpoint();
+                players.push_back(p);
+            }
+            if (connections.size() >= Constants::MIN_NUM_PLAYERS) {
+                cout << "Ya hemos llegado al núm de conexiones para enviar partida, vamos a visar a los clientes" << endl;
+                Server::GAME_STARTED = true;
+                SendStartGame();
+                // justo despues vaciar el tcp para otra conexion
+            }
+        }else{
+            // no dejar entrar a la sala
+            cout << "ENTRA" << "\n";
+            new_connection->SendFullGame();
         }
     }
 

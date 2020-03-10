@@ -124,11 +124,11 @@ void TCPClient::HandleReceived(std::shared_ptr<unsigned char[]> recevBuff, const
         Constants::PetitionTypes callType = static_cast<Constants::PetitionTypes>(petitionType);
 
         switch (callType){
-            case Constants::PetitionTypes::DISCONNECTION_REQUEST :{
-                HandleReceivedDisconnection();
-            }break;
             case Constants::PetitionTypes::TCP_START_GAME :{
                 HandleReceivedStartGame(recevBuff, bytesTransferred);
+            }break;
+            case Constants::PetitionTypes::TCP_FULL_GAME :{
+                HandleReceivedFullGame();
             }break;
             default:
                 break;
@@ -159,9 +159,10 @@ void TCPClient::HandleReceivedStartGame(std::shared_ptr<unsigned char[]> recevBu
     EventManager::GetInstance().AddEventMulti(Event{EventType::NEW_TCP_START_MULTI, data});
 }
 
-void TCPClient::HandleReceivedDisconnection(){
-    cout << "Ya puedo desconectarme" << "\n";
-    EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_MENU});
+
+void TCPClient::HandleReceivedFullGame(){
+    cout << "Se prepara a desconectarme" << "\n";
+    EventManager::GetInstance().AddEventMulti(Event{EventType::PREPARE_TO_DISCONNECT});
 }
 
 
@@ -198,36 +199,4 @@ void TCPClient::HandleSentConnectionRequest(const boost::system::error_code& err
     }
 }
 
-
-void TCPClient::SendDisconnectionRequest() {
-    if (stopped) {
-        cout << "Hemos intentado SendConnectionRequest pero el cliente tcp estaba parado" << endl;
-        return;
-    }
-    unsigned char request[Constants::ONLINE_BUFFER_SIZE];
-    uint8_t numero = Constants::DISCONNECTION_REQUEST;
-    size_t currentBuffSize = 0;
-    Serialization::Serialize(request, &numero, currentBuffSize);
-
-    socket.async_send(
-        boost::asio::buffer(request, currentBuffSize),
-        boost::bind(
-            &TCPClient::HandleSentDisonnectionRequest,
-            this,
-            boost::asio::placeholders::error,
-            boost::asio::placeholders::bytes_transferred));
-}
-
-void TCPClient::HandleSentDisonnectionRequest(const boost::system::error_code& errorCode, std::size_t bytes_transferred) {
-    if (stopped) {
-        cout << "Hemos intentado DISCONNECTION pero el cliente tcp estaba parado" << endl;
-        return;
-    }
-
-    if (!errorCode) {
-        //cout << "Mensaje de desonecxion enviado cliente TCP" << endl;
-    } else {
-        cout << "Hubo un error enviando el mensaje de desconexion: " << errorCode.message() << endl;
-    }
-}
 

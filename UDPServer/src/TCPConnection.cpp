@@ -20,20 +20,6 @@ void TCPConnection::Close() {
 }
 
 void TCPConnection::Start(){
-    
-    //message_ = GetTime();
-    //asio::async_write(
-    //    socket_,
-    //    asio::buffer(message_),
-    //    boost::bind(&TCPConnection::HandleWrite,
-    //        shared_from_this(),
-    //        boost::asio::placeholders::error,
-    //        boost::asio::placeholders::bytes_transferred));
-    //std::cout << "Direccion: " << socket_.remote_endpoint().address().to_string() << "   Puerto: " << socket_.remote_endpoint().port() << std::endl;
-
-    //std::shared_ptr<boost::array<boost::asio::mutable_buffer,1>> recevBuff = make_shared<boost::array<boost::asio::mutable_buffer,1>>();
-    //std::shared_ptr<string> buffer = make_shared<string>();
-    //std::shared_ptr<boost::array<char, 512>> recevBuff = make_shared<boost::array<char, 512>>();
     std::shared_ptr<unsigned char[]> recevBuff(new unsigned char[Constants::ONLINE_BUFFER_SIZE]);
     socket_.async_receive(
         asio::buffer(recevBuff.get(), Constants::ONLINE_BUFFER_SIZE),
@@ -42,14 +28,6 @@ void TCPConnection::Start(){
             recevBuff,
             boost::asio::placeholders::error,
             boost::asio::placeholders::bytes_transferred));
-    //asio::async_read(
-    //    socket_,
-    //    asio::buffer(*recevBuff),
-    //    boost::bind(&TCPConnection::HandleRead,
-    //        shared_from_this(),
-    //        recevBuff,
-    //        boost::asio::placeholders::error,
-    //        boost::asio::placeholders::bytes_transferred));
 }
 
 
@@ -63,9 +41,6 @@ void TCPConnection::HandleRead(std::shared_ptr<unsigned char[]> recevBuff, const
         switch (callType){
             case Constants::PetitionTypes::CONNECTION_REQUEST :{
                 cout << "Se ha conectado un usuario" << "\n";
-            }break;
-            case Constants::PetitionTypes::DISCONNECTION_REQUEST :{
-                HandleDisconnection(recevBuff, bytes_transferred);
             }break;
             default:
                 break;
@@ -115,22 +90,6 @@ void TCPConnection::DeleteMe(){
 
 
 
-void TCPConnection::HandleDisconnection(std::shared_ptr<unsigned char[]> recevBuff, size_t bytes_transferred){
-    // poner algo a true de este señor
-    //cout << "Nos llega un mensaje de desconexion" << "\n";
-    unsigned char buffRecieved[Constants::ONLINE_BUFFER_SIZE];
-    memcpy(&buffRecieved[0], &recevBuff.get()[0], bytes_transferred);
-
-    socket_.async_send(
-        boost::asio::buffer(buffRecieved, bytes_transferred),
-        boost::bind(
-            &TCPConnection::HandleWrite,
-            this,
-            boost::asio::placeholders::error,
-            boost::asio::placeholders::bytes_transferred));
-}
-
-
 
 // void TCPConnection::SendStartMessage(string datos){
 //     socket_.async_send(
@@ -145,6 +104,22 @@ void TCPConnection::HandleDisconnection(std::shared_ptr<unsigned char[]> recevBu
 void TCPConnection::SendStartMessage(unsigned char *buff, size_t buffSize){
     socket_.async_send(
         boost::asio::buffer(buff, buffSize),
+        boost::bind(
+            &TCPConnection::HandleWrite,
+            this,
+            boost::asio::placeholders::error,
+            boost::asio::placeholders::bytes_transferred));
+}
+
+
+void TCPConnection::SendFullGame(){
+    unsigned char request[Constants::ONLINE_BUFFER_SIZE];
+    size_t currentBuffSize = 0;
+    uint8_t petitionType = Constants::TCP_FULL_GAME;
+    Serialization::Serialize(request, &petitionType, currentBuffSize);
+
+    socket_.async_send(
+        boost::asio::buffer(request, currentBuffSize),
         boost::bind(
             &TCPConnection::HandleWrite,
             this,

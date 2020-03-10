@@ -519,6 +519,9 @@ void RenderFacadeClover::FacadeDrawEndRace() {
 void RenderFacadeClover::FacadeDrawLobbyMulti() {
 }
 
+void RenderFacadeClover::FacadeDrawLobbyMultiExit() {
+}
+
 /**
  * Limpia la pantalla y vacia los buffers de pantalla
  */

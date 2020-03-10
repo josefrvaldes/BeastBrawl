@@ -42,6 +42,7 @@ class RenderFacade {
     virtual void FacadeDrawPause() = 0;
     virtual void FacadeDrawEndRace() = 0;
     virtual void FacadeDrawLobbyMulti() = 0;
+    virtual void FacadeDrawLobbyMultiExit() = 0;
     virtual void FacadeDrawControler() = 0;
     virtual void FacadeInitMenu() = 0;
     virtual void FacadeInitPause() = 0;
