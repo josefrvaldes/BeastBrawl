@@ -109,7 +109,7 @@ Mesh CLResourceMesh::processMesh(aiMesh *mesh, const aiScene *scene)
         // positions
         vecAux.x = mesh->mVertices[i].x;
         vecAux.y = mesh->mVertices[i].y;
-        vecAux.z = mesh->mVertices[i].z;
+        vecAux.z = mesh->mVertices[i].z; 
         vertex.position = vecAux;
         // normals
         vecAux.x = mesh->mNormals[i].x;
@@ -182,11 +182,12 @@ Mesh CLResourceMesh::processMesh(aiMesh *mesh, const aiScene *scene)
         vector<Texture> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
         textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
         //3. normal maps
-        std::vector<Texture> normalMaps = loadMaterialTextures(material, aiTextureType_HEIGHT, "texture_normal");
+        std::vector<Texture> normalMaps = loadMaterialTextures(material, aiTextureType_NORMALS, "texture_normal");
         textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
         // 4. height maps
-        std::vector<Texture> heightMaps = loadMaterialTextures(material, aiTextureType_AMBIENT, "texture_height");
+        std::vector<Texture> heightMaps = loadMaterialTextures(material, aiTextureType_HEIGHT, "texture_height");
         textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
+        
     }   
 
     
@@ -314,27 +315,28 @@ void CLResourceMesh::Draw(GLuint shaderID) {
     for(auto& mesh : vecMesh){
 
         // bind appropriate textures
-        unsigned int diffuseNr  = 1;
-        unsigned int specularNr = 1;
-        unsigned int normalNr   = 1;
-        unsigned int heightNr   = 1;
+        // unsigned int diffuseNr  = 1;
+        // unsigned int specularNr = 1;
+        // unsigned int normalNr   = 1;
+        // unsigned int heightNr   = 1;
         for(unsigned int i = 0; i < mesh.textures.size(); i++)
         {
             glActiveTexture(GL_TEXTURE0 + i); // active proper texture unit before binding
             // retrieve texture number (the N in diffuse_textureN)
-            string number;
             string name = mesh.textures[i].type;
             if(name == "texture_diffuse")
-                number = std::to_string(diffuseNr++);
+                glUniform1i(glGetUniformLocation(shaderID, "material.diffuse"), i);
             else if(name == "texture_specular")
-                number = std::to_string(specularNr++); // transfer unsigned int to stream
+                glUniform1i(glGetUniformLocation(shaderID, "material.specular"), i);
+
             else if(name == "texture_normal")
-                number = std::to_string(normalNr++); // transfer unsigned int to stream
-             else if(name == "texture_height")
-                number = std::to_string(heightNr++); // transfer unsigned int to stream
+                glUniform1i(glGetUniformLocation(shaderID, "material.normal"), i);
+
+            else if(name == "texture_height")
+                glUniform1i(glGetUniformLocation(shaderID, "material.height"), i);
+
 
             // now set the sampler to the correct texture unit
-            glUniform1i(glGetUniformLocation(shaderID, (name + number).c_str()), i);
             // and finally bind the texture
             glBindTexture(GL_TEXTURE_2D, mesh.textures[i].id);
         }
