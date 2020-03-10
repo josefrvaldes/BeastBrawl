@@ -32,7 +32,7 @@ void TCPServer::Close() {
 }
 
 void TCPServer::StartReceiving() {
-    TCPConnection::pointer new_connection = TCPConnection::Create(context);
+    TCPConnection::pointer new_connection = TCPConnection::Create(context, players, connections);
     acceptor_.async_accept(
         new_connection->socket(),
         boost::bind(&TCPServer::HandleAccept,
@@ -42,6 +42,7 @@ void TCPServer::StartReceiving() {
 }
 
 void TCPServer::HandleAccept(TCPConnection::pointer new_connection, const boost::system::error_code& error) {
+    cout << "Algo ha pachao" << "\n";
     if (!error) {
         //std::cout << "Recibi un mensaje" << std::endl;
         new_connection->Start();
@@ -51,6 +52,7 @@ void TCPServer::HandleAccept(TCPConnection::pointer new_connection, const boost:
             connections.push_back(new_connection);
             Player p;
             p.endpointTCP = new_connection->socket().remote_endpoint();
+            cout << "Ids: " << p.id << "\n";
             players.push_back(p);
         }
         std::cout << "Num conexiones: " << connections.size() << std::endl;
@@ -99,8 +101,10 @@ void TCPServer::SendStartGame() {
         // std::shared_ptr<boost::array<unsigned char, Constants::ONLINE_BUFFER_SIZE>> buff = make_shared<boost::array<unsigned char, Constants::ONLINE_BUFFER_SIZE>>();
         std::shared_ptr<unsigned char[]> buff(new unsigned char[Constants::ONLINE_BUFFER_SIZE]);
         size_t currentBuffSize = 0;
+        uint8_t callType = Constants::PetitionTypes::TCP_START_GAME;
         uint8_t enemiesSize = idsEnemies.size();
     
+        Serialization::Serialize(buff.get(), &callType, currentBuffSize);
         Serialization::Serialize(buff.get(), &idPlayer, currentBuffSize);
         Serialization::Serialize(buff.get(), &enemiesSize, currentBuffSize);
         Serialization::SerializeVector(buff.get(), idsEnemies, currentBuffSize);

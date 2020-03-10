@@ -25,6 +25,7 @@ class StateLobbyMulti : public State{
    private:
     void SubscribeToEvents();
     void StartGameMulti(DataMap* d);
+    void SendDisconnectionMenu(DataMap* d);
     RenderFacade* renderEngine = { nullptr };
     SoundFacade* soundEngine = { nullptr };
 

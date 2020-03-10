@@ -57,6 +57,11 @@ void StateLobbyMulti::SubscribeToEvents() {
         EventType::NEW_TCP_START_MULTI,
         bind(&StateLobbyMulti::StartGameMulti, this, placeholders::_1),
         "StartGameMulti"));
+
+    EventManager::GetInstance().SubscribeMulti(Listener(
+        EventType::NEW_TCP_RETURN_MENU,
+        bind(&StateLobbyMulti::SendDisconnectionMenu, this, placeholders::_1),
+        "SendDisconnectionMenu"));
 }
 
 void StateLobbyMulti::StartGameMulti(DataMap* d) {
@@ -65,4 +70,9 @@ void StateLobbyMulti::StartGameMulti(DataMap* d) {
     cout << "Yo soy el coche con idOnline " << idOnline  << endl;
     vector<uint16_t> vectorIdOnline = any_cast<vector<uint16_t>>((*d)[DataType::VECTOR_ID_ONLINE]);
     renderEngine->ThrowEventChangeToMulti(idOnline, vectorIdOnline);
+}
+
+
+void StateLobbyMulti::SendDisconnectionMenu(DataMap* d){
+    tcpClient->SendDisconnectionRequest();
 }

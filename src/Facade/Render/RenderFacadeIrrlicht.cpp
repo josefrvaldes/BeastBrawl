@@ -909,6 +909,14 @@ void RenderFacadeIrrlicht::FacadeCheckInputLobbyMulti() {
     if (receiver.IsKeyDown(KEY_DELETE)) {
         device->closeDevice();
     }
+
+    if ((receiver.IsKeyDown(KEY_KEY_N) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_B)) && !IsInputPressed(InputXBox::BUTTON_B)) {
+        SetValueInput(InputXBox::BUTTON_B, true);
+        EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_MENU});
+        //EventManager::GetInstance().AddEventMulti(Event{EventType::NEW_TCP_RETURN_MENU});
+    }else if(!(receiver.IsKeyDown(KEY_KEY_N) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_B))){
+        SetValueInput(InputXBox::BUTTON_B, false);
+    }
 }
 
 

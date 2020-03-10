@@ -37,6 +37,8 @@ class Constants {
                     DRIFT };
 
     enum PetitionTypes { CONNECTION_REQUEST,
+                        DISCONNECTION_REQUEST,
+                        TCP_START_GAME,
                         ENDGAME,
                         SEND_INPUTS,
                         SEND_SYNC,
