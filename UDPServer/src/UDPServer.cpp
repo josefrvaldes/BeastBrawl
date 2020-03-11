@@ -217,7 +217,6 @@ void UDPServer::HandleReceivedCrashPUCar(const uint16_t idPlayer, const uint16_t
     cout << Utils::getISOCurrentTimestampMillis() << "El coche " << idPlayer << " dice que hemos chocado con el PU-Car con el pu[" << idPowerUp << "] car[" << idCarCrashed << "], vamos a ver si está en la lista" << endl;
     cout << Utils::getISOCurrentTimestampMillis() << "Hemos chocado con el PU-Car con el pu[" << idPowerUp << "] car[" << idCarCrashed << "], vamos a ver si está en la lista" << endl;
 
-    bool binaryFind = std::binary_search(idsPUs.begin(), idsPUs.end(), idPowerUp);
     bool encontrado = false;
     for (size_t i = 0; i < idsPUs.size(); i++) {
         if (idsPUs[i] == idPowerUp) {
@@ -225,7 +224,7 @@ void UDPServer::HandleReceivedCrashPUCar(const uint16_t idPlayer, const uint16_t
             break;
         }
     }
-    cout << "El binary lo ha encontrado[" << binaryFind << "] y el for lo ha encontrado[" << encontrado << "]" << endl;
+    
     if (encontrado) {
         cout << Utils::getISOCurrentTimestampMillis() << "Lo hemos encontrado, así que vamos a borrarlo" << idsPUs.size() << endl;
         idsPUs.erase(
