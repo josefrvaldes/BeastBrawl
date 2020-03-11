@@ -54,6 +54,7 @@ void UDPServer::HandleReceive(std::shared_ptr<unsigned char[]> recevBuff, std::s
         // de una ejecución anterior del juego
         if (time > timeServerStartedReceiving) {
             uint16_t idPlayer = Serialization::Deserialize<uint16_t>(recevBuff.get(), currentIndex);
+            cout << Utils::getISOCurrentTimestampMillis() << " hemos recibido una petición de type[" << petitionType << "] del jugador[" << idPlayer << "] " << endl;
             //cout << Utils::getISOCurrentTimestampMillis() << " Hemos recibido en el server la llamada " << time << " de tipo " << unsigned(petitionType) << " del user " << idPlayer << endl;
             // TODO: esto creo que podría evitarse
             unsigned char buffRecieved[Constants::ONLINE_BUFFER_SIZE];
@@ -224,7 +225,7 @@ void UDPServer::HandleReceivedCrashPUCar(const uint16_t idPlayer, const uint16_t
             break;
         }
     }
-    
+
     if (encontrado) {
         cout << Utils::getISOCurrentTimestampMillis() << "Lo hemos encontrado, así que vamos a borrarlo" << idsPUs.size() << endl;
         idsPUs.erase(
