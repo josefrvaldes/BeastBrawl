@@ -44,7 +44,8 @@ enum CompType {
     NamePlateComp,
     MovementComp,
     OnlineComp,
-    ShaderComp
+    ShaderComp,
+    LightComp
 };
 
 class Component {
