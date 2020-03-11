@@ -369,9 +369,9 @@ void SoundFacadeFMOD::UpdateCars(const vector<shared_ptr<Entity> > &e) {
   */
  void SoundFacadeFMOD::UpdateListener(const shared_ptr<CarHuman> &mainCar) {
     //cout << "############# UPDATE LISTENER" << endl;
-    auto cPos = static_cast<CTransformable*>(mainCar->GetComponent(CompType::TransformableComp).get());
-    if(cPos) {
-        soundEngine->SetListenerPosition(cPos->position);
+    auto cTrans = static_cast<CTransformable*>(mainCar->GetComponent(CompType::TransformableComp).get());
+    if(cTrans) {
+        soundEngine->SetListenerPosition(cTrans->position, cTrans->rotation);
     }
  }
 

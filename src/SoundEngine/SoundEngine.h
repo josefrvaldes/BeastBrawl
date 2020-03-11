@@ -40,7 +40,7 @@ namespace CLSE {
             void UpdateEngine();
 
             void SetParameter(const string&, const string&, const float);
-            void SetListenerPosition(const glm::vec3&);
+            void SetListenerPosition(const glm::vec3&, const glm::vec3&);
             void Set3DAttributes(const string&, const glm::vec3&);
             void SetEventPosition3D(FMOD::Studio::EventInstance*, const glm::vec3&);
 

@@ -378,7 +378,7 @@ void SoundEngine::SetParameter(const string& nameID, const string& nameParameter
 /**
  *
  */
-void SoundEngine::SetListenerPosition(const glm::vec3 &pos) {
+void SoundEngine::SetListenerPosition(const glm::vec3 &pos, const glm::vec3 &rot) {
     FMOD_VECTOR vec;
     vec.x = pos.x*0.1;
     vec.y = pos.y*0.1;
@@ -386,6 +386,7 @@ void SoundEngine::SetListenerPosition(const glm::vec3 &pos) {
 
     FMOD_3D_ATTRIBUTES atr;
     atr.position = vec;
+    //TODO: Hay que cambiar la direccion boys y poniento la rotación tal cual no funsiona, seguramente porque habrá que cambiar también el UP
     atr.forward = {1.0, 0.0, 0.0};
     atr.up = {0.0, 1.0, 0.0};
     atr.velocity = {0.0, 0.0, 0.0}; // Para el senior efecto Doppler
