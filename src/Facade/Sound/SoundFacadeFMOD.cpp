@@ -477,11 +477,11 @@ void SoundFacadeFMOD::SoundThrowPowerup(DataMap* d) {
     /*auto cPos = any_cast<glm::vec3>((*d).find(VEC3_POS));
     cout << "DEBUGEAO LA POS: " << cPos.x << " - " << cPos.y << " - " << cPos.z << endl;*/
 
-    auto pos = glm::vec3(0.0f,0.0f,0.0f);
+    //auto pos = glm::vec3(0.0f,0.0f,0.0f);
     string name;
 
     switch (typepw) {
-        case typeCPowerUp::RoboJorobo:
+        case typeCPowerUp::RoboJorobo:                                      // HECHO
             if (mainCar) {
                 name = "PowerUp/robojorobo";
                 PlayEvent("PowerUp/robojorobo");
@@ -493,32 +493,32 @@ void SoundFacadeFMOD::SoundThrowPowerup(DataMap* d) {
             PlayEvent(name);
             break;
         case typeCPowerUp::MelonMolon:
-            if (mainCar) {
+            /*if (mainCar) {
                 SetParameter("Personajes/voces", "Tipo", TipoVoz::Powerup);
                 PlayEvent("Personajes/voces");
             }
             name = "PowerUp/melonmolon";
             CreateSoundDinamic3D(0, pos, name, 0, 0);
-            PlayEvent("PowerUp/melonmolon0");
+            PlayEvent("PowerUp/melonmolon0");*/
             break;
         case typeCPowerUp::TeleBanana:
-            if (mainCar) {
+            /*if (mainCar) {
                 SetParameter("Personajes/voces", "Tipo", TipoVoz::Powerup);
                 PlayEvent("Personajes/voces");
             }
             name = "PowerUp/telebanana_prov";
             CreateSoundDinamic3D(0, pos, name, 0, 0);
-            PlayEvent("PowerUp/telebanana_prov0");
+            PlayEvent("PowerUp/telebanana_prov0");*/
             break;
         case typeCPowerUp::PudinDeFrambuesa:
-            if (mainCar) {
+            /*if (mainCar) {
                 SetParameter("Personajes/voces", "Tipo", TipoVoz::Powerup);
                 PlayEvent("Personajes/voces");
             }
             name = "PowerUp/melonmolon";
             CreateSoundDinamic3D(0, pos, name, 0, 0);
             PlayEvent("PowerUp/pudin0");
-            std::cout << "POWERUP: " << (int)typepw << endl;
+            std::cout << "POWERUP: " << (int)typepw << endl;*/
             break;
         default:
             cout << "***** El powerup " << (int)typepw << " no tiene sonido" << endl;

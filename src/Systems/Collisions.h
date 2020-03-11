@@ -30,8 +30,8 @@ public:
     Collisions();
     ~Collisions(){};
     bool Intersects(Entity* ent1,Entity* ent2);
-    void IntersectsCarsPowerUps(ManCar* manCars, ManPowerUp* manPowerUps, ManNavMesh* manNavMesh);
-    void IntersectPlayerPowerUps(Car* carPlayer, ManPowerUp* manPowerUps, ManNavMesh* manNavMesh);
+    //void IntersectsCarsPowerUps(ManCar* manCars, ManPowerUp* manPowerUps, ManNavMesh* manNavMesh);
+    // void IntersectPlayerPowerUps(Car* carPlayer, ManPowerUp* manPowerUps, ManNavMesh* manNavMesh);
     void IntersectPlayerTotem(Car* carPlayer, ManTotem* manTotem);
     void IntersectCarsTotem(ManCar* manCars, ManTotem* manTotem);
     void IntersectPlayerBoxPowerUp(Car* carPlayer, ManBoxPowerUp* manBoxPowerUp);

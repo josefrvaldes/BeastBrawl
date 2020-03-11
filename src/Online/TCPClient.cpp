@@ -120,15 +120,19 @@ void TCPClient::HandleReceived(std::shared_ptr<unsigned char[]> recevBuff, const
 
     if (!errorCode && bytesTransferred > 0) {
         size_t currentIndex = 0;
+        uint8_t petitionType = Serialization::Deserialize<uint8_t>(recevBuff.get(), currentIndex); // numero
+        Constants::PetitionTypes callType = static_cast<Constants::PetitionTypes>(petitionType);
 
-        uint16_t idPlayer = Serialization::Deserialize<uint16_t>(recevBuff.get(), currentIndex);
-        uint8_t enemiesSize = Serialization::Deserialize<uint8_t>(recevBuff.get(), currentIndex);
-        vector<uint16_t> idEnemies = Serialization::DeserializeVector<uint16_t>(enemiesSize, recevBuff.get(), currentIndex);
-        
-        std::shared_ptr<DataMap> data = make_shared<DataMap>();
-        (*data)[DataType::ID_ONLINE] = idPlayer;
-        (*data)[DataType::VECTOR_ID_ONLINE] = idEnemies;
-        EventManager::GetInstance().AddEventMulti(Event{EventType::NEW_TCP_START_MULTI, data});
+        switch (callType){
+            case Constants::PetitionTypes::TCP_START_GAME :{
+                HandleReceivedStartGame(recevBuff, bytesTransferred);
+            }break;
+            case Constants::PetitionTypes::TCP_FULL_GAME :{
+                HandleReceivedFullGame();
+            }break;
+            default:
+                break;
+        }
 
         std::cout << "El cliente TCP recibe cosas" << std::endl;
     } else if (errorCode) {
@@ -139,6 +143,29 @@ void TCPClient::HandleReceived(std::shared_ptr<unsigned char[]> recevBuff, const
     StartReceiving();
 }
 
+
+
+void TCPClient::HandleReceivedStartGame(std::shared_ptr<unsigned char[]> recevBuff, size_t bytesTransferred){
+    size_t currentIndex = 0;
+
+    Serialization::Deserialize<uint8_t>(recevBuff.get(), currentIndex); // petitionType
+    uint16_t idPlayer = Serialization::Deserialize<uint16_t>(recevBuff.get(), currentIndex);
+    uint8_t enemiesSize = Serialization::Deserialize<uint8_t>(recevBuff.get(), currentIndex);
+    vector<uint16_t> idEnemies = Serialization::DeserializeVector<uint16_t>(enemiesSize, recevBuff.get(), currentIndex);
+    
+    std::shared_ptr<DataMap> data = make_shared<DataMap>();
+    (*data)[DataType::ID_ONLINE] = idPlayer;
+    (*data)[DataType::VECTOR_ID_ONLINE] = idEnemies;
+    EventManager::GetInstance().AddEventMulti(Event{EventType::NEW_TCP_START_MULTI, data});
+}
+
+
+void TCPClient::HandleReceivedFullGame(){
+    cout << "Se prepara a desconectarme" << "\n";
+    EventManager::GetInstance().AddEventMulti(Event{EventType::PREPARE_TO_DISCONNECT});
+}
+
+
 void TCPClient::SendConnectionRequest() {
     if (stopped) {
         cout << "Hemos intentado SendConnectionRequest pero el cliente tcp estaba parado" << endl;
@@ -146,9 +173,9 @@ void TCPClient::SendConnectionRequest() {
     }
 
     unsigned char request[Constants::ONLINE_BUFFER_SIZE];
-    uint8_t numero = Constants::CONNECTION_REQUEST;
     size_t currentBuffSize = 0;
-    Serialization::Serialize(request, &numero, currentBuffSize);
+    uint8_t petitionType = Constants::CONNECTION_REQUEST;
+    Serialization::Serialize(request, &petitionType, currentBuffSize);
 
     socket.async_send(
         boost::asio::buffer(request, currentBuffSize),
@@ -159,16 +186,17 @@ void TCPClient::SendConnectionRequest() {
             boost::asio::placeholders::bytes_transferred));
 }
 
-void TCPClient::HandleSentConnectionRequest(const boost::system::error_code& errorCode,
-                                            std::size_t bytes_transferred) {
+void TCPClient::HandleSentConnectionRequest(const boost::system::error_code& errorCode, std::size_t bytes_transferred) {
     if (stopped) {
         cout << "Hemos intentado HandleSentConnectionRequest pero el cliente tcp estaba parado" << endl;
         return;
     }
 
     if (!errorCode) {
-        cout << "Mensaje enviado cliente TCP" << endl;
+        cout << "Mensaje de conexion enviado cliente TCP" << endl;
     } else {
-        cout << "Hubo un error enviando el mensaje: " << errorCode.message() << endl;
+        cout << "Hubo un error enviando el mensaje de conexion: " << errorCode.message() << endl;
     }
 }
+
+
