@@ -50,7 +50,7 @@ int main() {
     //-------------------Resource manager-------------------
     shared_ptr<CLResourceManager> resourceManager = make_shared<CLResourceManager>();
     auto resourceShader = resourceManager->GetResourceShader("CLEngine/src/Shaders/vertex.glsl", "CLEngine/src/Shaders/fragment.glsl");
-    auto resourceMeshCar = resourceManager->GetResourceMesh("media/TEST_BOX.fbx");
+    auto resourceMeshBox = resourceManager->GetResourceMesh("media/TEST_BOX.fbx");
     auto resourceMeshTotem = resourceManager->GetResourceMesh("media/totem_tex.fbx");
     auto resourceMesh = resourceManager->GetResourceMesh("media/kart_physics.fbx");
 
@@ -68,7 +68,7 @@ int main() {
         auto light1 = smgr->AddLight(1);
         light1->SetShaderProgramID(resourceShader->GetProgramID());
 
-        auto meshes = smgr->AddGroup(10);
+        auto meshes = smgr->AddGroup(10000);
 
         auto mesh1 = smgr->AddMesh(2);
         mesh1->SetShaderProgramID(resourceShader->GetProgramID());
@@ -82,7 +82,7 @@ int main() {
         
 
 
-        static_cast<CLCamera*>(camera->GetEntity())->SetCameraTarget(mesh2->GetTranslation());
+        static_cast<CLCamera*>(camera->GetEntity())->SetCameraTarget(mesh1->GetTranslation());
 
     //smgr->DFSTree(glm::mat4(1.0));
     vector<shared_ptr<CLEntity>> mallas;
@@ -106,15 +106,18 @@ int main() {
     //      smgr->DrawTree(smgr);
 
 
-    static_cast<CLMesh*>(mesh1->GetEntity())->SetMesh(resourceMeshCar);
+    static_cast<CLMesh*>(mesh1->GetEntity())->SetMesh(resourceMeshBox);
     static_cast<CLMesh*>(mesh2->GetEntity())->SetMesh(resourceMesh);
 
     camera->SetTranslation(glm::vec3(0.0f, 7.0f, 60.0f));
     mesh1->SetScalation(glm::vec3(2.0f, 2.0f, 2.0f));
-    mesh1->SetRotation(glm::vec3(90.0f,0.0f,180.0f));
+    mesh1->SetRotation(glm::vec3(0.0f,0.0f,0.0f));
+    mesh1->SetTranslation(glm::vec3(50.0f,0.0f,0.0f));
     mesh2->SetScalation(glm::vec3(0.2f, 0.2f, 0.2f));
     mesh2->SetRotation(glm::vec3(0.0f, 180.0f, 0.0f));
     mesh2->SetTranslation(glm::vec3(10.0f,0.0f,0.0f));
+
+    mesh2->GetGlobalTranslation();
 
     
     
@@ -229,8 +232,9 @@ int main() {
 
         
         //meshes->SetRotation(glm::vec3(0.0f,0.0f,index));
-        //mesh1->SetRotation(glm::vec3(index,0.0f,index));
-        static_cast<CLCamera*>(camera->GetEntity())->SetCameraTarget(mesh2->GetTranslation());
+        // auto trans1 = mesh1->GetTranslation();
+        // mesh1->SetTranslation(glm::vec3(trans1.x+index,trans1.y,trans1.z));
+        static_cast<CLCamera*>(camera->GetEntity())->SetCameraTarget(mesh2->GetGlobalTranslation());
 
 
 

@@ -139,6 +139,10 @@ class Utils {
 
         return ptm;
     }
+
+    static float IrrlichtAngleToOpenGL(float angle){
+        return (angle + 180 - (angle*2));
+    }
 };
 
     

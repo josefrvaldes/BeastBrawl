@@ -140,6 +140,7 @@ void StateInGame::InitializeManagers(Physics *physics, Camera *cam) {
     manNavMesh = make_shared<ManNavMesh>();
     manTotems = make_shared<ManTotem>(manNavMesh.get());
     manNamePlates = make_shared<ManNamePlate>(manCars.get());
+    manGameRules = make_unique<ManGameRules>();
 }
 
 //Carga los bancos de sonido InGame.
@@ -163,9 +164,7 @@ void StateInGame::Update() {
     EventManager &em = EventManager::GetInstance();
     em.Update();
 
-
     manNavMesh->Update(*(manCars.get()));
-
 
     // ACTUALIZACION DE LOS MANAGERS DE LOS COCHES
     manCars->UpdateCarPlayer(*(manTotems.get()));
@@ -177,13 +176,11 @@ void StateInGame::Update() {
         phisicsPowerUp->update(actualPowerUp.get());
     }
 
-
     clPhysics->Update(0.1666f);
     clPhysics->IntersectsCarsPowerUps( *manCars.get(), *manPowerUps.get(), manNavMesh.get());
     clPhysics->IntersectCarsBoxPowerUp(*manCars.get(), *manBoxPowerUps.get());
     clPhysics->IntersectCarsTotem(*manCars.get(), *manTotems.get());
     clPhysics->IntersectPowerUpWalls(*manPowerUps.get(), *manBoundingWall.get(), *manBoundingOBB.get());
-    
 
     // Actualizaciones en Irrlich
     renderEngine->UpdateCamera(cam.get(), manCars.get());
@@ -197,7 +194,6 @@ void StateInGame::Update() {
 
     // al final de la ejecucion eliminamos todos los powerUps que se deben eliminar
     manPowerUps->Update();
-
 }
 
 void StateInGame::Render() {
