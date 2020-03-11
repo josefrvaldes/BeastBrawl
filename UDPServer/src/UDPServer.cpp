@@ -1,6 +1,6 @@
 #include "UDPServer.h"
-#include <boost/asio/placeholders.hpp>
 #include <algorithm>
+#include <boost/asio/placeholders.hpp>
 #include <boost/bind.hpp>
 #include "../../include/include_json/include_json.hpp"
 #include "../../src/Constants.h"
@@ -193,7 +193,7 @@ void UDPServer::HandleReceivedThrowPU(const uint16_t id, const uint16_t idPUOnli
 }
 
 void UDPServer::HandleReceivedCrashPUWall(const uint16_t idPlayer, const uint16_t idPowerUp, unsigned char resendPU[], const size_t currentBufferSize, const udp::endpoint& originalClient) {
-    // si tenemos en nuestro vector de PUs el pu que acaba de chocar, entonces 
+    // si tenemos en nuestro vector de PUs el pu que acaba de chocar, entonces
     // operamos con él, si no, significa que ya ha chocado antes y no operamos
     if (std::binary_search(idsPUs.begin(), idsPUs.end(), idPowerUp)) {
         std::cout << "Hemos recibido un choque de PU-Wall idPowerUp " << idPowerUp << ". Antes teníamos " << idsPUs.size();
@@ -212,11 +212,22 @@ void UDPServer::HandleReceivedCrashPUWall(const uint16_t idPlayer, const uint16_
 }
 
 void UDPServer::HandleReceivedCrashPUCar(const uint16_t idPlayer, const uint16_t idPowerUp, const uint16_t idCarCrashed, unsigned char resendPU[], const size_t currentBufferSize, const udp::endpoint& originalClient) {
-    // si tenemos en nuestro vector de PUs el pu que acaba de chocar, entonces 
+    // si tenemos en nuestro vector de PUs el pu que acaba de chocar, entonces
     // operamos con él, si no, significa que ya ha chocado antes y no operamos
-    cout << Utils::getISOCurrentTimestampMillis() << "Hemos chocado con el PU-Car con el pu[" << idPowerUp << "] car[" << idPlayer << "], vamos a ver si está en la lista" << endl;
-    if (std::binary_search(idsPUs.begin(), idsPUs.end(), idPowerUp)) {
-        cout << Utils::getISOCurrentTimestampMillis() << "Lo hemos encontrado, así que vamos a borrarlo" << idsPUs.size();
+    cout << Utils::getISOCurrentTimestampMillis() << "El coche " << idPlayer << " dice que hemos chocado con el PU-Car con el pu[" << idPowerUp << "] car[" << idCarCrashed << "], vamos a ver si está en la lista" << endl;
+    cout << Utils::getISOCurrentTimestampMillis() << "Hemos chocado con el PU-Car con el pu[" << idPowerUp << "] car[" << idCarCrashed << "], vamos a ver si está en la lista" << endl;
+
+    bool binaryFind = std::binary_search(idsPUs.begin(), idsPUs.end(), idPowerUp);
+    bool encontrado = false;
+    for (size_t i = 0; i < idsPUs.size(); i++) {
+        if (idsPUs[i] == idPowerUp) {
+            encontrado = true;
+            break;
+        }
+    }
+    cout << "El binary lo ha encontrado[" << binaryFind << "] y el for lo ha encontrado[" << encontrado << "]" << endl;
+    if (encontrado) {
+        cout << Utils::getISOCurrentTimestampMillis() << "Lo hemos encontrado, así que vamos a borrarlo" << idsPUs.size() << endl;
         idsPUs.erase(
             std::remove_if(
                 idsPUs.begin(),
@@ -229,7 +240,7 @@ void UDPServer::HandleReceivedCrashPUCar(const uint16_t idPlayer, const uint16_t
             for (Player& currentPlayer : players)
                 SendBytes(resendPU, currentBufferSize, currentPlayer);
     } else {
-        cout << Utils::getISOCurrentTimestampMillis() << "NOOOO Lo hemos encontrado" << idsPUs.size();
+        cout << Utils::getISOCurrentTimestampMillis() << "NOOOO Lo hemos encontrado" << idsPUs.size() << endl;
     }
 }
 

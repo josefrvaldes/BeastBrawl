@@ -1263,8 +1263,8 @@ void CLPhysics::IntersectsCarsPowerUps(ManCar &manCars, ManPowerUp &manPowerUps,
                     if (!cidOnline->collided) {
                         cidOnline->collided = true;
                         COnline *carOnlineComp = static_cast<COnline *>(currentCar->GetComponent(CompType::OnlineComp).get());
-                        CTransformable *transforPU = static_cast<CTransformable *>(currentPU->GetComponent(CompType::TransformableComp).get());
-                        transforPU->position.y -= 500;  // esto igual se podría eliminar directamente el PU en vez de ocultarlo bajo el suelo
+                        // CTransformable *transforPU = static_cast<CTransformable *>(currentPU->GetComponent(CompType::TransformableComp).get());
+                        // transforPU->position.y -= 500;  // esto igual se podría eliminar directamente el PU en vez de ocultarlo bajo el suelo
                         systemOnline->SendCrashPUCar(cidOnline->idOnline, carOnlineComp->idClient);
                         cout << "Hemos chocado con el PU-Car con el pu[" << cidOnline->idOnline << "] car[" << carOnlineComp->idClient << "] y lo vamos a enviar al servidor" << endl;
                     }
