@@ -36,7 +36,7 @@ void SystemOnline::SubscribeToEvents() {
 }
 
 void SystemOnline::EventEndgame(DataMap *dataMap) {
-    udpClient->SendEndgame();
+    udpClient->SendEndgame(idOnlineMainCar);
 }
 
 void SystemOnline::SendInputs(const vector<Constants::InputTypes> &inputs) const {
@@ -44,9 +44,9 @@ void SystemOnline::SendInputs(const vector<Constants::InputTypes> &inputs) const
     udpClient->SendInputs(inputs, idOnlineMainCar);
 }
 
-void SystemOnline::SendEndgame() const {
-    udpClient->SendEndgame();
-}
+/*void SystemOnline::SendEndgame() const {
+    udpClient->SendEndgame(idOnlineMainCar);
+}*/
 
 void SystemOnline::SendSync(ManCar *manCars, ManTotem *manTotem) const {
     // cout << Utils::getISOCurrentTimestampMillis() << "id[" << idOnlineMainCar << "] Enviamos sync" << endl;

@@ -684,7 +684,7 @@ void UDPClient::SendCollideNitro(uint16_t idOnline, uint16_t idWithTotem, uint16
             boost::asio::placeholders::bytes_transferred));
 }
 
-void UDPClient::SendEndgame() {
+void UDPClient::SendEndgame(uint16_t idPlayer) {
     unsigned char requestBuff[Constants::ONLINE_BUFFER_SIZE];
     size_t currentBuffSize = 0;
     uint8_t callType = Constants::PetitionTypes::ENDGAME;
@@ -692,6 +692,7 @@ void UDPClient::SendEndgame() {
 
     Serialization::Serialize(requestBuff, &callType, currentBuffSize);
     Serialization::Serialize(requestBuff, &time, currentBuffSize);
+    Serialization::Serialize(requestBuff, &idPlayer, currentBuffSize);
 
     socket.async_send_to(
         boost::asio::buffer(requestBuff, currentBuffSize),
