@@ -7,6 +7,7 @@
 #include "../CLPhysics/CLPhysics.h"
 
 StateInGameMulti::StateInGameMulti(uint16_t IdOnline, const vector<uint16_t> IdPlayersOnline) : StateInGame() {
+    InitState();
     InitVirtualMethods();
     // a este le llegan los coches
     //std::cout << "POR FIIIIIIIIIIIIIIIIIIIIIIIN: " << std::endl;

@@ -1299,7 +1299,14 @@ void CLPhysics::HandleCollisionPUWithCar(PowerUp *powerUp, Entity *car) {
     } else {
         cShield->deactivePowerUp();  // desactivamos el escudo
         // Sonido romper escudo
-        EventManager::GetInstance().AddEventMulti(Event{EventType::NO_SHIELD});
+        auto cId = static_cast<CId*>(car->GetComponent(CompType::IdComp).get());
+        auto cPos = static_cast<CTransformable*>(car->GetComponent(CompType::TransformableComp).get());
+        if ( cId && cPos) {
+            shared_ptr<DataMap> dataSoundShild = make_shared<DataMap>();
+            (*dataSoundShild)[ID] = cId->id;
+            (*dataSoundShild)[VEC3_POS] = cPos->position;
+            EventManager::GetInstance().AddEventMulti(Event{EventType::NO_SHIELD, dataSoundShild});
+        }
     }
 }
 

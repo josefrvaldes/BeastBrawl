@@ -75,7 +75,7 @@ void ManPowerUp::CreatePowerUp(DataMap *d) {
     int medidaPowerUp = 25;
     float posX = 0, posZ = 0;
 
-    float angleRotation = (transforSalida->rotation.y * 3.141592) / 180.0;
+   float angleRotation = (transforSalida->rotation.y * glm::pi<float>() / 180.0);
     if (type == typeCPowerUp::PudinDeFrambuesa) {
         posX = transforSalida->position.x - cos(angleRotation) * (-1 * ((dimensionsCarSalida->width / 2) + medidaPowerUp));
         posZ = transforSalida->position.z + sin(angleRotation) * (-1 * ((dimensionsCarSalida->depth / 2) + medidaPowerUp));

@@ -24,6 +24,7 @@ StateInGame::StateInGame() {
 
     cam = make_shared<Camera>(glm::vec3(100.0f, 0.0f, 30.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f));
     ground = make_shared<GameObject>(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), "", "training_ground.obj");
+
 }
 
 StateInGame::~StateInGame() {
@@ -153,7 +154,6 @@ void StateInGame::InitState() {
         //cout << "~~~ SoundEngine en INGAME es -> " << soundEngine << endl;
         if (soundEngine) {
             soundEngine->SetState(4);
-            EventManager::GetInstance().AddEventMulti(Event{EventType::START_GAME});
         }
     } else {
         soundEngine->ResumeAllEvent();
@@ -192,11 +192,18 @@ void StateInGame::Update() {
     renderEngine->FacadeUpdatePlates(manNamePlates.get());
     physicsEngine->UpdateTransformable(manTotems->GetEntities()[0].get());
 
+    //Updates de los eventos de sonido
+    soundEngine->UpdateCars(manCars->GetEntities());
+    soundEngine->UpdatePowerUps(manPowerUps->GetEntities());
+    soundEngine->UpdateTotem(manTotems->GetEntities());       
+    soundEngine->UpdateListener(manCars->GetCar());
+
     // al final de la ejecucion eliminamos todos los powerUps que se deben eliminar
     manPowerUps->Update();
 }
 
 void StateInGame::Render() {
+
     renderEngine->FacadeBeginScene();
     // renderEngine->FacadeDraw();  //Para dibujar primitivas debe ir entre el drawAll y el endScene
     renderEngine->FacadeDrawAll();
