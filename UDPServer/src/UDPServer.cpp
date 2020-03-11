@@ -214,8 +214,9 @@ void UDPServer::HandleReceivedCrashPUWall(const uint16_t idPlayer, const uint16_
 void UDPServer::HandleReceivedCrashPUCar(const uint16_t idPlayer, const uint16_t idPowerUp, const uint16_t idCarCrashed, unsigned char resendPU[], const size_t currentBufferSize, const udp::endpoint& originalClient) {
     // si tenemos en nuestro vector de PUs el pu que acaba de chocar, entonces 
     // operamos con él, si no, significa que ya ha chocado antes y no operamos
+    cout << Utils::getISOCurrentTimestampMillis() << "Hemos chocado con el PU-Car con el pu[" << idPowerUp << "] car[" << idPlayer << "], vamos a ver si está en la lista" << endl;
     if (std::binary_search(idsPUs.begin(), idsPUs.end(), idPowerUp)) {
-        std::cout << "Hemos recibido un choque de PU-Car  idPowerUp " << idPowerUp << ", e idCarCrashed " << idCarCrashed << ". Antes teníamos " << idsPUs.size();
+        cout << Utils::getISOCurrentTimestampMillis() << "Lo hemos encontrado, así que vamos a borrarlo" << idsPUs.size();
         idsPUs.erase(
             std::remove_if(
                 idsPUs.begin(),
@@ -227,6 +228,8 @@ void UDPServer::HandleReceivedCrashPUCar(const uint16_t idPlayer, const uint16_t
         for (uint8_t i = 0; i < NUM_REINTENTOS; ++i)
             for (Player& currentPlayer : players)
                 SendBytes(resendPU, currentBufferSize, currentPlayer);
+    } else {
+        cout << Utils::getISOCurrentTimestampMillis() << "NOOOO Lo hemos encontrado" << idsPUs.size();
     }
 }
 
@@ -451,7 +454,7 @@ void UDPServer::DetectUsersDisconnected() {
         players.end());
 
     size_t afterDelete = players.size();
-    cout << "Ahora tenemos " << afterDelete << " jugadores" << endl;
+    // cout << "Ahora tenemos " << afterDelete << " jugadores" << endl;
     // si antes había 1 y ahora hay 0, salimos
     // si antes había 2 y ahora hay 1, salimos
     if ((beforeDelete == 1 && afterDelete == 0) || (beforeDelete > 1 && afterDelete <= 1)) {

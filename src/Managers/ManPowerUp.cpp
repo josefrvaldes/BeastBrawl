@@ -103,6 +103,7 @@ void ManPowerUp::CreatePowerUp(DataMap *d) {
                 // apuntamos el id de ese coche al que perseguir para enviarlo al online
                 idToPursue = cOnline->idClient;
             }
+            // enviamos al server que ese PU se ha lanzado
             systemOnline->SendThrowPU(powerUp, idToPursue);
         }
         MaterializePowerUp(powerUp);
