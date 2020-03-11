@@ -52,7 +52,6 @@ void ManPowerUp::NewPowerUpReceivedFromServer(DataMap *d) {
     }
     shared_ptr<PowerUp> powerUp = make_shared<PowerUp>(position, rotation, typePU, transforPerse);
     shared_ptr<CIDOnline> cidOnline = make_shared<CIDOnline>(idPUOnline, true);
-    cidOnline->collided = true;
     powerUp->AddComponent(cidOnline); 
     MaterializePowerUp(powerUp);
 }

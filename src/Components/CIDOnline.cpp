@@ -13,6 +13,6 @@ CIDOnline::CIDOnline(uint16_t idPlayer) : idOnline{static_cast<uint16_t>(std::st
  * Este bool no sirve para nada, es solo porque necesito dos constructores del mismo tipo
  * pero que hagan dos cosas distintas, así que le he metido ese bool para distinguirlos
  */
-CIDOnline::CIDOnline(uint16_t idOnline_, bool noSirveParaNadaEsteBool) : idOnline{idOnline_} {
+CIDOnline::CIDOnline(uint16_t idOnline_, bool noSirveParaNadaEsteBool) : idOnline{idOnline_}, collided{false} {
     m_compType = CompType::CIDOnlineComp;
 }
