@@ -692,6 +692,7 @@ void RenderFacadeIrrlicht::FacadeCheckInputSingle() {
 
     // POWERUPS
     if ((receiver.IsKeyDown(KEY_SPACE) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_A)) && !IsInputPressed(InputXBox::BUTTON_A)){
+        SetValueInput(InputXBox::BUTTON_A, true);
         eventManager.AddEventMulti(Event{EventType::PRESS_SPACE});
     }else if(!(receiver.IsKeyDown(KEY_SPACE) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_A))){
         SetValueInput(InputXBox::BUTTON_A, false);
@@ -798,6 +799,7 @@ vector<Constants::InputTypes> RenderFacadeIrrlicht::FacadeCheckInputMulti() {
 
     // POWERUPS
     if ((receiver.IsKeyDown(KEY_SPACE) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_A)) && !IsInputPressed(InputXBox::BUTTON_A)){
+        SetValueInput(InputXBox::BUTTON_A, true);
         eventManager.AddEventMulti(Event{EventType::PRESS_SPACE});
         inputs.push_back(Constants::InputTypes::LAUNCH_PU);
     }else if(!(receiver.IsKeyDown(KEY_SPACE) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_A))){
