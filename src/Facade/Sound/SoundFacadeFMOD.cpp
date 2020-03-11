@@ -318,6 +318,7 @@ void SoundFacadeFMOD::UpdateCars(const vector<shared_ptr<Entity> > &e) {
             string name = "Coche/motor" + to_string(cId->id);
             SetEventPositionDinamic3D(name, cPos->position);
             SetParameter(name, "Velocidad", cCar->speed);
+            //cout << "VELOCIDAD DE COCHE " << cId->id << " A: " << cCar->speed << endl;
             name = "PowerUp/escudo" + to_string(cId->id);
             SetEventPositionDinamic3D(name, cPos->position);
             //name = "Coche/derrape" + to_string(cId->id);
@@ -481,9 +482,10 @@ void SoundFacadeFMOD::SoundThrowPowerup(DataMap* d) {
 
     switch (typepw) {
         case typeCPowerUp::RoboJorobo:
-            name = "PowerUp/robojorobo";
-            CreateSoundDinamic3D(0, pos, name, 0, 0);
-            PlayEvent("PowerUp/robojorobo0");
+            if (mainCar) {
+                name = "PowerUp/robojorobo";
+                PlayEvent("PowerUp/robojorobo");
+            }
             break;
         case typeCPowerUp::EscudoMerluzo:                                   // HECHO
             cId = any_cast<uint16_t>((*d)[ID]);

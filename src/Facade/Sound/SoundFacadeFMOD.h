@@ -84,6 +84,7 @@ class SoundFacadeFMOD : public SoundFacade {
                                 "Coche/claxon",
                                 "Personajes/voces",
                                 "Partida/cuenta_atras",
+                                "PowerUp/robojorobo",
                                 "Musica/in_game_1"
                                 } 
             },
@@ -103,7 +104,6 @@ class SoundFacadeFMOD : public SoundFacade {
                                 "PowerUp/escudo_roto",
                                 "Partida/coger_totem",
                                 "Coche/choque_powerup",
-                                "PowerUp/robojorobo",
                                 "Coche/choque",
                                 "Partida/coger_caja"
                                 }

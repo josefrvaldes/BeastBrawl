@@ -550,14 +550,17 @@ void ManCar::ThrowPowerUp(Car* car_) {
                 if (!robado)
                     std::cout << "La has cagado, el Totem no lo tenia nadie..." << std::endl;
                 break;
+
             case (typeCPowerUp::EscudoMerluzo):
                 cShield->activatePowerUp();
-                //cout << "ACTIVO EL ESCUDO WEY" << endl;
+                //Para el sonido
                 (*dataSound)[ID] = cIdCar->id;
                 break;
+
             case (typeCPowerUp::SuperMegaNitro):
                 cNitro->activatePowerUp();
                 break;
+
             case (typeCPowerUp::TeleBanana):
                 objectiveCar = calculateCloserCar(car_);
                 if(objectiveCar != nullptr)
@@ -567,6 +570,7 @@ void ManCar::ThrowPowerUp(Car* car_) {
                 (*data)[CAR_EXIT_DIMENSION] =  static_cast<CDimensions*>(car_->GetComponent(CompType::DimensionsComp).get());
                 EventManager::GetInstance().AddEventMulti(Event{EventType::PowerUp_Create, data});
                 break;
+
             default:  // en caso del melon molon o el pudding
                 (*data)[TYPE_POWER_UP] = cPowerUpCar->typePowerUp;
                 (*data)[CAR_EXIT_POSITION] = static_cast<CTransformable*>(car_->GetComponent(CompType::TransformableComp).get());
@@ -615,7 +619,7 @@ int calculateProbabilityPowerUp(int totalPowerUps, std::vector<int> probabilityP
 void ManCar::CatchPowerUp(DataMap* d) {
     // NO ENTRA AQUI YAAAA
     // To-Do: porcentajes temporales
-    srand(time(NULL));
+    /*srand(time(NULL));
     int indx = rand() % 100 + 1;
     if (indx <= 5)  // 5%
         indx = 1;
@@ -639,7 +643,7 @@ void ManCar::CatchPowerUp(DataMap* d) {
     //TeleBanana,         // 5
     //MelonMolon          // 6
     //indx = 6;
-    auto cPowerUpCar = static_cast<CPowerUp*>(car.get()->GetComponent(CompType::PowerUpComp).get());
+    auto cPowerUpCar = static_cast<CPowerUp*>(car->GetComponent(CompType::PowerUpComp).get());
     if (cPowerUpCar->typePowerUp == typeCPowerUp::None) {
         cPowerUpCar->typePowerUp = (typeCPowerUp)indx;
 
@@ -650,7 +654,7 @@ void ManCar::CatchPowerUp(DataMap* d) {
         if(Game::GetInstance()->GetState()->GetState() == State::States::INGAME_MULTI){
             systemOnline->SendCatchPU(*cPowerUpCar);
         }
-    }
+    }*/
 }
 
 void ManCar::CatchPowerUpAI(DataMap* d) {
@@ -689,11 +693,11 @@ void ManCar::CatchPowerUpAI(DataMap* d) {
         }
     }
 
-    srand(time(NULL));
+    srand(time(nullptr));
     int indx = rand() % 1000 + 1;
     if (indx <= maxRobojorobo)  // ROBOJOROBO -> 5% base - 0% primero - 2.5% segundo - 10% ultimo/s
         indx = 1;
-    else if (indx > maxRobojorobo && indx <= maxNitro)  // SUPERMEGANITRO -> 20% base - 12.5% primero - 12.5% segundo - 15% ultimo/s
+    else if (indx > maxRobojorobo && indx <= maxNitro)  // SUPERMEGANITRO -> 15% base - 7.5% primero - 12.5% segundo - 17.5% ultimo/s
         indx = 2;
     else if (indx > maxNitro && indx <= maxPudin)  // PUDIN -> 25% base - 35% primero - 35% segundo - 10% ultimo/s
         indx = 3;
@@ -701,11 +705,11 @@ void ManCar::CatchPowerUpAI(DataMap* d) {
         indx = 4;
     else if (indx > maxEscudo && indx <= maxTelebanana)  // TELEBANANA -> 15% base - 10% primero - 10% segundo - 25% ultimo/s
         indx = 5;
-    else if (indx > maxTelebanana)  // MELONMOLON ->  20% base - 32.5% primero - 30% segundo - 25% ultimo/s
+    else if (indx > maxTelebanana)  // MELONMOLON ->  25% base - 37.5% primero - 35% segundo - 22.5% ultimo/s
         indx = 6;
 
 
-    //indx = 2;
+    //indx = 4;
     auto cPowerUpCar = static_cast<CPowerUp*>(actualCar->GetComponent(CompType::PowerUpComp).get());
     if (cPowerUpCar->typePowerUp == typeCPowerUp::None) {
         cPowerUpCar->typePowerUp = (typeCPowerUp)indx;
