@@ -37,6 +37,8 @@ class CLNode{
         glm::vec3 GetGlobalRotation() const;
         glm::vec3 GetGlobalScalation() const;
         CLCamera* GetActiveCamera();
+        vector<CLNode*> GetLights()             { return lights; };
+        vector<CLNode*> GetCameras()            { return cameras; };
 
         //Setters
         bool SetFather(CLNode* f)                       { father = f; return true; }
