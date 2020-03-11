@@ -28,7 +28,7 @@ namespace CLE {
             float     GetConstant() const       { return constant;  };
             float     GetLinear() const         { return linear;    };
             float     GetQuadratic() const      { return quadratic; };
-            bool GetOn() const                  { return on; };
+            bool IsActive() const               { return on; };
 
             void Draw(GLuint shaderID);
 

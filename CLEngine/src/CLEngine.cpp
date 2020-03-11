@@ -112,6 +112,7 @@ void CLEngine::BeginScene(){
 
 void CLEngine::DrawObjects(){
     smgr->CalculateViewProjMatrix();
+    smgr->CalculateLights();
     smgr->DFSTree(glm::mat4(1.0f));
 }
 

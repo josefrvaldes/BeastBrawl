@@ -66,6 +66,7 @@ class CLNode{
         void Scale(glm::vec3);
         glm::mat4 CalculateTransformationMatrix();
         void CalculateViewProjMatrix();
+        void CalculateLights();
 
         void DrawTree(CLNode* root);
         void DFSTree(glm::mat4);
