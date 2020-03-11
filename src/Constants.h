@@ -18,31 +18,42 @@
 #define FRAME_RATE 60
 
 class Constants {
-   public:
-      inline static std::string SERVER_HOST = "localhost";
-      inline static uint8_t MIN_NUM_PLAYERS = 4;
-      inline static const bool DEBUG_SHOW_CHASSIS{true};
-      inline static const bool DEBUG_SHOW_SPHERES{true};
-      inline static const size_t ONLINE_BUFFER_SIZE{512};
-      inline static const float DELTA_TIME{1.0 / FRAME_RATE};
+  public:
+    inline static std::string SERVER_HOST = "localhost";
+    inline static uint8_t MIN_NUM_PLAYERS = 4;
+    inline static const bool DEBUG_SHOW_CHASSIS{true};
+    inline static const bool DEBUG_SHOW_SPHERES{true};
+    inline static const size_t ONLINE_BUFFER_SIZE{512};
+    inline static const float DELTA_TIME{1.0 / FRAME_RATE};
 
-      enum InputTypes { FORWARD,
-                        BACK,
-                        LEFT,
-                        RIGHT,
-                        LAUNCH_PU,
-                        CLAXON,
-                        DRIFT };
+    inline static const uint16_t ANY_PLAYER = 255;
+
+    enum InputTypes { FORWARD,
+                    BACK,
+                    LEFT,
+                    RIGHT,
+                    LAUNCH_PU,
+                    CLAXON,
+                    DRIFT };
 
     enum PetitionTypes { CONNECTION_REQUEST,
-                         ENDGAME,
-                         SEND_INPUTS,
-                         SEND_SYNC,
-                         CATCH_PU,
-                         SEND_DISCONNECTION,
-                         CATCH_TOTEM,
-                         LOST_TOTEM };
-      enum RenderEngine { IRRLICHT,
-                          CLOVER};
-      inline static const RenderEngine RENDER_ENGINE = RenderEngine::IRRLICHT;
+                        TCP_START_GAME,
+                        TCP_FULL_GAME,
+                        ENDGAME,
+                        SEND_INPUTS,
+                        SEND_SYNC,
+                        CATCH_PU,
+                        SEND_CRASH_PU_CAR,
+                        SEND_CRASH_PU_WALL,
+                        SEND_DISCONNECTION,
+                        CATCH_TOTEM,
+                        LOST_TOTEM,
+                        USED_ROBOJOROBO,
+                        COLLIDE_NITRO,
+                        SEND_THROW_MELON_O_PUDIN,
+                        SEND_THROW_TELEBANANA };
+
+    enum RenderEngine { IRRLICHT,
+                        CLOVER};
+    inline static const RenderEngine RENDER_ENGINE = RenderEngine::IRRLICHT;
 };

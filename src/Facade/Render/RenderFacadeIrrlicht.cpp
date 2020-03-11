@@ -118,9 +118,14 @@ void RenderFacadeIrrlicht::FacadeInitEndRace() {
 }
 
 void RenderFacadeIrrlicht::FacadeInitLobbyMulti() {
+    lobbyMultFullBG = driver->getTexture("media/LobbyMultiFull.png");
+    driver->makeColorKeyTexture(lobbyMultFullBG, core::position2d<s32>(0, 0));
+
     lobbyMultBG = driver->getTexture("media/LobbyMulti.png");
     driver->makeColorKeyTexture(lobbyMultBG, core::position2d<s32>(0, 0));
 }
+
+
 
 void RenderFacadeIrrlicht::FacadeInitHUD() {
     //Almacenamos los iconos de powerups
@@ -909,6 +914,13 @@ void RenderFacadeIrrlicht::FacadeCheckInputLobbyMulti() {
     if (receiver.IsKeyDown(KEY_DELETE)) {
         device->closeDevice();
     }
+
+    if ((receiver.IsKeyDown(KEY_KEY_N) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_B)) && !IsInputPressed(InputXBox::BUTTON_B)) {
+        SetValueInput(InputXBox::BUTTON_B, true);
+        EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_MENU});
+    }else if(!(receiver.IsKeyDown(KEY_KEY_N) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_B))){
+        SetValueInput(InputXBox::BUTTON_B, false);
+    }
 }
 
 
@@ -993,6 +1005,15 @@ void RenderFacadeIrrlicht::FacadeDrawLobbyMulti() {
     driver->beginScene(true, true, video::SColor(255, 113, 113, 133));
     //smgr->drawAll();  // draw the 3d scene
     driver->draw2DImage(lobbyMultBG, core::position2d<s32>(0, 0),
+                        core::rect<s32>(0, 0, 1280, 720), 0,
+                        video::SColor(255, 255, 255, 255), false);
+    driver->endScene();
+}
+
+void RenderFacadeIrrlicht::FacadeDrawLobbyMultiExit() {
+    driver->beginScene(true, true, video::SColor(255, 113, 113, 133));
+    //smgr->drawAll();  // draw the 3d scene
+    driver->draw2DImage(lobbyMultFullBG, core::position2d<s32>(0, 0),
                         core::rect<s32>(0, 0, 1280, 720), 0,
                         video::SColor(255, 255, 255, 255), false);
     driver->endScene();

@@ -11,6 +11,7 @@ void Server::Start() {
         // serverUDP->StartReceiving();
         cout << "El servidor está en marcha otra vez!! #############################" << endl;
         context->run();
+        GAME_STARTED = false;
         ACCEPTING_ENDGAME = false;
         Restart();
     }

@@ -1,5 +1,6 @@
 #include "UDPServer.h"
 #include <boost/asio/placeholders.hpp>
+#include <algorithm>
 #include <boost/bind.hpp>
 #include "../../include/include_json/include_json.hpp"
 #include "../../src/Constants.h"
@@ -23,8 +24,11 @@ void UDPServer::Close() {
     socket.close();
 }
 
-void UDPServer::StartReceiving() {
+void UDPServer::ResetTimerStartReceiving() {
     timeServerStartedReceiving = Utils::getMillisSinceEpoch();
+}
+
+void UDPServer::StartReceiving() {
     std::shared_ptr<unsigned char[]> recevBuff(new unsigned char[Constants::ONLINE_BUFFER_SIZE]);
     std::shared_ptr<udp::endpoint> receiverEndpoint = make_shared<udp::endpoint>();
     socket.async_receive_from(
@@ -44,7 +48,7 @@ void UDPServer::HandleReceive(std::shared_ptr<unsigned char[]> recevBuff, std::s
         size_t currentIndex = 0;
         uint8_t petitionType = Serialization::Deserialize<uint8_t>(recevBuff.get(), currentIndex);
         int64_t time = Serialization::Deserialize<int64_t>(recevBuff.get(), currentIndex);
-        
+
         // solo aceptamos peticiones nuevas, es decir, peticiones que salieron después de que
         // el servidor empezase a escuchar peticiones. Con esto nos evitamos recibir peticiones
         // de una ejecución anterior del juego
@@ -58,7 +62,6 @@ void UDPServer::HandleReceive(std::shared_ptr<unsigned char[]> recevBuff, std::s
             SavePlayerIfNotExists(idPlayer, *remoteClient.get());
 
             Constants::PetitionTypes callType = static_cast<Constants::PetitionTypes>(petitionType);
-
             auto player = GetPlayerById(idPlayer);
             if (player != nullptr) {
                 Player& p = *player;
@@ -107,6 +110,22 @@ void UDPServer::HandleReceive(std::shared_ptr<unsigned char[]> recevBuff, std::s
                             //cout << Utils::getISOCurrentTimestampMillis() << "Se ha ignorado un paquete de lostTotem porque era antiguo" << endl;
                         }
                     } break;
+                    case Constants::PetitionTypes::USED_ROBOJOROBO: {
+                        if (p.lastUsedRoboJoroboTimeReceived < time) {
+                            p.lastUsedRoboJoroboTimeReceived = time;
+                            HandleReceivedUsedRoboJorobo(idPlayer, buffRecieved, bytesTransferred, *remoteClient.get());
+                        } else {
+                            //cout << Utils::getISOCurrentTimestampMillis() << "Se ha ignorado un paquete de lostTotem porque era antiguo" << endl;
+                        }
+                    } break;
+                    case Constants::PetitionTypes::COLLIDE_NITRO: {
+                        if (p.lastCollideNitroTimeReceived < time) {
+                            p.lastCollideNitroTimeReceived = time;
+                            HandleReceivedCollideNitro(idPlayer, buffRecieved, bytesTransferred, *remoteClient.get());
+                        } else {
+                            //cout << Utils::getISOCurrentTimestampMillis() << "Se ha ignorado un paquete de lostTotem porque era antiguo" << endl;
+                        }
+                    } break;
                     case Constants::PetitionTypes::ENDGAME: {
                         if (Server::ACCEPTING_ENDGAME) {
                             cout << "Hemos recibido una petición de ENDGAME! vamos a reinciar el server!! ###########################" << endl;
@@ -115,6 +134,29 @@ void UDPServer::HandleReceive(std::shared_ptr<unsigned char[]> recevBuff, std::s
                             cout << "Hemos recibido una petición de ENDGAME! pero la ignoramos!! ###########################" << endl;
                         }
                     } break;
+                    case Constants::PetitionTypes::SEND_THROW_TELEBANANA:
+                    case Constants::PetitionTypes::SEND_THROW_MELON_O_PUDIN:
+                        if (p.lastThrowPUReceived < time) {
+                            p.lastThrowPUReceived = time;
+                            uint16_t idPUOnline = Serialization::Deserialize<uint16_t>(recevBuff.get(), currentIndex);
+                            HandleReceivedThrowPU(idPlayer, idPUOnline, buffRecieved, bytesTransferred, *remoteClient.get());
+                        } else {
+                            //cout << Utils::getISOCurrentTimestampMillis() << "Se ha ignorado un paquete de lostTotem porque era antiguo" << endl;
+                        }
+                        break;
+                    case Constants::PetitionTypes::SEND_CRASH_PU_CAR:
+                        if (p.lastCrashPUCarReceived < time) {
+                            uint16_t idPowerUp = Serialization::Deserialize<uint16_t>(recevBuff.get(), currentIndex);
+                            uint16_t idCar = Serialization::Deserialize<uint16_t>(recevBuff.get(), currentIndex);
+                            HandleReceivedCrashPUCar(idPlayer, idPowerUp, idCar, buffRecieved, bytesTransferred, *remoteClient.get());
+                        }
+                        break;
+                    case Constants::PetitionTypes::SEND_CRASH_PU_WALL:
+                        if (p.lastCrashPUWallReceived < time) {
+                            uint16_t idPowerUp = Serialization::Deserialize<uint16_t>(recevBuff.get(), currentIndex);
+                            HandleReceivedCrashPUWall(idPlayer, idPowerUp, buffRecieved, bytesTransferred, *remoteClient.get());
+                        }
+                        break;
                     default:
                         cout << "Petición incorrecta" << endl;
                         break;
@@ -141,49 +183,128 @@ void UDPServer::HandleReceivedCatchPU(const uint16_t id, unsigned char resendPU[
     ResendBytesToOthers(id, resendPU, currentBufferSize, originalClient);
 }
 
+void UDPServer::HandleReceivedThrowPU(const uint16_t id, const uint16_t idPUOnline, unsigned char resendPU[], const size_t currentBufferSize, const udp::endpoint& originalClient) {
+    // el id del melón es el id del user concatenado con el id real
+    idsPUs.push_back(idPUOnline);
+    std::cout << "Hemos creado un PU con id " << idPUOnline << ", y lo hemos guardado así que ahora tenemos " << idsPUs.size() << endl;
+
+    for (uint8_t i = 0; i < NUM_REINTENTOS; i++)
+        ResendBytesToOthers(id, resendPU, currentBufferSize, originalClient);
+}
+
+void UDPServer::HandleReceivedCrashPUWall(const uint16_t idPlayer, const uint16_t idPowerUp, unsigned char resendPU[], const size_t currentBufferSize, const udp::endpoint& originalClient) {
+    // si tenemos en nuestro vector de PUs el pu que acaba de chocar, entonces 
+    // operamos con él, si no, significa que ya ha chocado antes y no operamos
+    if (std::binary_search(idsPUs.begin(), idsPUs.end(), idPowerUp)) {
+        std::cout << "Hemos recibido un choque de PU-Wall idPowerUp " << idPowerUp << ". Antes teníamos " << idsPUs.size();
+        idsPUs.erase(
+            std::remove_if(
+                idsPUs.begin(),
+                idsPUs.end(),
+                [idPowerUp](const uint16_t currentIdPU) { return currentIdPU == idPowerUp; }),
+            idsPUs.end());
+        std::cout << " y ahora tenemos " << idsPUs.size() << endl;
+
+        for (uint8_t i = 0; i < NUM_REINTENTOS; ++i)
+            for (Player& currentPlayer : players)
+                SendBytes(resendPU, currentBufferSize, currentPlayer);
+    }
+}
+
+void UDPServer::HandleReceivedCrashPUCar(const uint16_t idPlayer, const uint16_t idPowerUp, const uint16_t idCarCrashed, unsigned char resendPU[], const size_t currentBufferSize, const udp::endpoint& originalClient) {
+    // si tenemos en nuestro vector de PUs el pu que acaba de chocar, entonces 
+    // operamos con él, si no, significa que ya ha chocado antes y no operamos
+    if (std::binary_search(idsPUs.begin(), idsPUs.end(), idPowerUp)) {
+        std::cout << "Hemos recibido un choque de PU-Car  idPowerUp " << idPowerUp << ", e idCarCrashed " << idCarCrashed << ". Antes teníamos " << idsPUs.size();
+        idsPUs.erase(
+            std::remove_if(
+                idsPUs.begin(),
+                idsPUs.end(),
+                [idPowerUp](const uint16_t currentIdPU) { return currentIdPU == idPowerUp; }),
+            idsPUs.end());
+        std::cout << " y ahora tenemos " << idsPUs.size() << endl;
+
+        for (uint8_t i = 0; i < NUM_REINTENTOS; ++i)
+            for (Player& currentPlayer : players)
+                SendBytes(resendPU, currentBufferSize, currentPlayer);
+    }
+}
+
 void UDPServer::HandleReceivedCatchTotem(const uint16_t id, unsigned char buffer[], const size_t currentBufferSize, const udp::endpoint& remoteClient) {
-    if(playerWithTotem == NOBODY_HAS_TOTEM){  // en caso de que nadie tubiese el totem
+    if (playerWithTotem == Constants::ANY_PLAYER) {  // en caso de que nadie tubiese el totem
         size_t currentIndex = 0;
         Serialization::Deserialize<uint8_t>(buffer, currentIndex);  // petitionType
-        int64_t time = Serialization::Deserialize<int64_t>(buffer, currentIndex);
-        uint16_t idCarOnline = Serialization::Deserialize<uint16_t>(buffer, currentIndex);
+        /*int64_t time = */ Serialization::Deserialize<int64_t>(buffer, currentIndex);
+        /*uint16_t idCarOnline = */ Serialization::Deserialize<uint16_t>(buffer, currentIndex);
         uint16_t idCarCatchTotem = Serialization::Deserialize<uint16_t>(buffer, currentIndex);
 
         playerWithTotem = idCarCatchTotem;
 
-        /*unsigned char sendBuff[Constants::ONLINE_BUFFER_SIZE];
-        size_t sendBuffSize = 0;
-        uint8_t callType = Constants::PetitionTypes::CATCH_TOTEM;
-
-        Serialization::Serialize(sendBuff, &callType, sendBuffSize);
-        Serialization::Serialize(sendBuff, &time, sendBuffSize);
-        Serialization::Serialize(sendBuff, &idCarOnline, sendBuffSize);
-        Serialization::Serialize(sendBuff, &playerWithTotem, sendBuffSize);*/
-
-        for(uint8_t i=0; i<3; ++i)
-            for(Player& currentPlayer : players) 
-                SendBytes(buffer, currentBufferSize, currentPlayer); 
+        for (uint8_t i = 0; i < NUM_REINTENTOS; ++i)
+            for (Player& currentPlayer : players)
+                SendBytes(buffer, currentBufferSize, currentPlayer);
     }
 }
-
 
 void UDPServer::HandleReceivedLostTotem(const uint16_t id, unsigned char buffer[], const size_t currentBufferSize, const udp::endpoint& remoteClient) {
     // se comprueba que quien lo pierde es quien realmente lo tiene
     size_t currentIndex = 0;
     Serialization::Deserialize<uint8_t>(buffer, currentIndex);  // petitionType
-    int64_t time = Serialization::Deserialize<int64_t>(buffer, currentIndex);
-    uint16_t idCarOnline = Serialization::Deserialize<uint16_t>(buffer, currentIndex);
+    /*int64_t time = */ Serialization::Deserialize<int64_t>(buffer, currentIndex);
+    /*uint16_t idCarOnline = */ Serialization::Deserialize<uint16_t>(buffer, currentIndex);
     uint16_t idCarLostTotem = Serialization::Deserialize<uint16_t>(buffer, currentIndex);
 
-    if(playerWithTotem!=NOBODY_HAS_TOTEM && playerWithTotem == idCarLostTotem){  // en caso de que alguien tubiese el totem
-        playerWithTotem = NOBODY_HAS_TOTEM;
+    if (playerWithTotem != Constants::ANY_PLAYER && playerWithTotem == idCarLostTotem) {  // en caso de que alguien tubiese el totem
+        playerWithTotem = Constants::ANY_PLAYER;
 
-        for(uint8_t i=0; i<3; ++i)
-            for(Player& currentPlayer : players) 
-                SendBytes(buffer, currentBufferSize, currentPlayer); 
+        for (uint8_t i = 0; i < NUM_REINTENTOS; ++i)
+            for (Player& currentPlayer : players)
+                SendBytes(buffer, currentBufferSize, currentPlayer);
     }
 }
 
+void UDPServer::HandleReceivedUsedRoboJorobo(const uint16_t id, unsigned char buffer[], const size_t currentBufferSize, const udp::endpoint& remoteClient) {
+    // se comprueba que quien lo pierde es quien realmente lo tiene
+    size_t currentIndex = 0;
+    Serialization::Deserialize<uint8_t>(buffer, currentIndex);  // petitionType
+    int64_t time = Serialization::Deserialize<int64_t>(buffer, currentIndex);
+    uint16_t idCarOnline = Serialization::Deserialize<uint16_t>(buffer, currentIndex);
+
+    if (playerWithTotem != Constants::ANY_PLAYER && playerWithTotem != idCarOnline) {  // en caso de que alguien tubiese el totem otro
+        unsigned char requestBuff[Constants::ONLINE_BUFFER_SIZE];
+        size_t currentBuffSize = 0;
+        uint8_t callType = Constants::PetitionTypes::USED_ROBOJOROBO;
+
+        Serialization::Serialize(requestBuff, &callType, currentBuffSize);
+        Serialization::Serialize(requestBuff, &time, currentBuffSize);
+        Serialization::Serialize(requestBuff, &idCarOnline, currentBuffSize);
+        Serialization::Serialize(requestBuff, &playerWithTotem, currentBuffSize);  // a quien se lo he robado
+
+        playerWithTotem = idCarOnline;
+
+        for (uint8_t i = 0; i < NUM_REINTENTOS; ++i)
+            for (Player& currentPlayer : players)
+                SendBytes(requestBuff, currentBuffSize, currentPlayer);
+    }
+}
+
+void UDPServer::HandleReceivedCollideNitro(const uint16_t id, unsigned char buffer[], const size_t currentBufferSize, const udp::endpoint& remoteClient) {
+    // se comprueba que quien lo pierde es quien realmente lo tiene
+    size_t currentIndex = 0;
+    Serialization::Deserialize<uint8_t>(buffer, currentIndex);  // petitionType
+    /*int64_t time = */ Serialization::Deserialize<int64_t>(buffer, currentIndex);
+    /*uint16_t idCarOnline = */ Serialization::Deserialize<uint16_t>(buffer, currentIndex);
+    uint16_t idCarWithTotem = Serialization::Deserialize<uint16_t>(buffer, currentIndex);
+    uint16_t idCarWithNitro = Serialization::Deserialize<uint16_t>(buffer, currentIndex);
+
+    if (playerWithTotem != Constants::ANY_PLAYER && playerWithTotem == idCarWithTotem) {  // en caso de que alguien tubiese el totem otro
+        playerWithTotem = idCarWithNitro;
+
+        for (uint8_t i = 0; i < NUM_REINTENTOS; ++i)
+            for (Player& currentPlayer : players)
+                SendBytes(buffer, currentBufferSize, currentPlayer);
+    }
+}
 
 void UDPServer::HandleReceivedSync(const uint16_t id, unsigned char recevBuff[], const size_t currentBufferSize, const udp::endpoint& originalClient) {
     size_t currentIndex = 0;

@@ -45,6 +45,7 @@ class RenderFacadeIrrlicht : public RenderFacade {
     void FacadeDrawPause() override;
     void FacadeDrawEndRace() override;
     void FacadeDrawLobbyMulti() override;
+    void FacadeDrawLobbyMultiExit() override;
     void FacadeDrawControler() override;
     void FacadeInitMenu() override;
     void FacadeInitPause() override;
@@ -100,6 +101,7 @@ class RenderFacadeIrrlicht : public RenderFacade {
     video::ITexture* pauseBG;
     video::ITexture* endRaceBG;
     video::ITexture* lobbyMultBG;
+    video::ITexture* lobbyMultFullBG;
     video::ITexture* whiteBG;
     video::ITexture* powerUps[7];
     gui::IGUIFont* font;

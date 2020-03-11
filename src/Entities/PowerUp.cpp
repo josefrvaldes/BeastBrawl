@@ -69,7 +69,7 @@ PowerUp::PowerUp()
 
 
 
-PowerUp::PowerUp(glm::vec3 _position, glm::vec3 _rotation, typeCPowerUp _typePowerUp, CTransformable* cTransformableTarget, std::string vertexShader, std::string fragmentShader) : PowerUp(){
+PowerUp::PowerUp(glm::vec3 _position, glm::vec3 _rotation, typeCPowerUp _typePowerUp, CTransformable* cTransformableTarget) : PowerUp(){
     
     CTransformable *cTransformable = (CTransformable *)m_components[CompType::TransformableComp].get();
     cTransformable->position = _position;
@@ -107,7 +107,7 @@ PowerUp::PowerUp(glm::vec3 _position, glm::vec3 _rotation, typeCPowerUp _typePow
         // cTransformable->scale = glm::vec3(2,2,2);
     }
 
-    shared_ptr<CShader> cShader = make_shared<CShader>(vertexShader,fragmentShader);
+    shared_ptr<CShader> cShader = make_shared<CShader>(VERTEX_SHADER, FRAGMENT_SHADER);
 
     AddComponent(cShader);
 
