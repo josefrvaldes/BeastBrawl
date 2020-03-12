@@ -12,6 +12,8 @@
 #include "CLLight.h"
 #include "CLCamera.h"
 
+#include "../Frustum/CLFrustum.h"
+
 
 using namespace std;
 //using namespace CLE;

@@ -177,8 +177,8 @@ void StateInGameSingle::CAMBIARInicializarCarAIS(ManCar &manCars, ManWayPoint &m
     pathInit3.push(5);
     manCars.GetEntitiesAI()[2]->SetPath(pathInit3);
 */
-    manCars.CreateCarAI(glm::vec3(0.0f, 15.0f, -200.0f));
-    manCars.CreateCarAI(glm::vec3(-202.0f, 15.0f, -145.0f));
-    manCars.CreateCarAI(glm::vec3(209.0f, 15.0f, -145.0f));
+    //manCars.CreateCarAI(glm::vec3(0.0f, 15.0f, -200.0f));
+    //manCars.CreateCarAI(glm::vec3(-202.0f, 15.0f, -145.0f));
+    //manCars.CreateCarAI(glm::vec3(209.0f, 15.0f, -145.0f));
 
 }

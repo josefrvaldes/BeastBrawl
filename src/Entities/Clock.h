@@ -6,5 +6,5 @@
 class Clock : public Entity {
    public:
     Clock();
-    ~Clock();
+    ~Clock(){};
 };

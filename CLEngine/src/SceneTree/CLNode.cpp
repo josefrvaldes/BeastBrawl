@@ -4,6 +4,8 @@
 #include <glm/ext.hpp>
 #include <glm/gtx/string_cast.hpp>
 
+#include "../Frustum/CLFrustum.h"
+
 using namespace CLE;
 
 CLNode::CLNode(){
@@ -157,9 +159,9 @@ glm::mat4 CLNode::TranslateMatrix(){
 
 glm::mat4 CLNode::RotateMatrix(){
     glm::mat4 aux = glm::mat4(1.0f);
-    aux = glm::rotate(aux, glm::radians(rotation.x) , glm::vec3(1,0,0));
     aux = glm::rotate(aux, glm::radians(rotation.y) , glm::vec3(0,1,0));
     aux = glm::rotate(aux, glm::radians(rotation.z) , glm::vec3(0,0,1));
+    aux = glm::rotate(aux, glm::radians(rotation.x) , glm::vec3(1,0,0));
     return aux;
 }
 
@@ -188,7 +190,6 @@ void CLNode::Scale(glm::vec3 s) {
 
 
 void CLNode::DFSTree(glm::mat4 mA) {
-
     // > Flag
     // > > Calcular matriz
     // > Dibujar
@@ -200,7 +201,10 @@ void CLNode::DFSTree(glm::mat4 mA) {
         changed = false;
     }
 
-    if(entity && visible) { 
+    auto& frustum_m = GetActiveCamera()->GetFrustum();
+    CLE::CLFrustum::Visibility frusVisibility = frustum_m.IsInside(translation);
+
+    if(entity && visible /*&& frusVisibility == CLE::CLFrustum::Visibility::Completly*/) { 
         // La matriz model se pasa aqui wey
         glUseProgram(shaderProgramID);
         glm::mat4 MVP = projection * view * transformationMat;
@@ -208,6 +212,8 @@ void CLNode::DFSTree(glm::mat4 mA) {
         glUniformMatrix4fv(glGetUniformLocation(shaderProgramID, "MVP"), 1, GL_FALSE, glm::value_ptr(MVP));
         //entity->Draw(transformationMat);
         entity->Draw(shaderProgramID);
+
+        //cout << "este objeto se dibuja" << endl;
     }
 
     for (auto node : childs) {
@@ -236,13 +242,27 @@ void CLNode::CalculateViewProjMatrix(){
             //view = glm::lookAt(camera->GetTranslation(), -entityCamera->GetCameraTarget(), entityCamera->GetCameraUp());
             view = glm::lookAt(camera->GetGlobalTranslation(), entityCamera->GetCameraTarget(), entityCamera->GetCameraUp());
 
+            //view = glm::lookAt(vec3(0.0,0.0,0.0), vec3(0.0,0.0,0.0), vec3(0.0,0.0,0.0));
+
             glUniform3fv(glGetUniformLocation(camera->GetShaderProgramID(), "viewPos"),1,glm::value_ptr(camera->GetTranslation()));
 
             //glUniformMatrix4fv(glGetUniformLocation(camera->GetShaderProgramID(), "view"), 1, GL_FALSE, glm::value_ptr(view));
 
+            // Una vez tenemos la View y la Projection vamos a calcular Frustum para los objetos
+            //auto& frustum_m = entityCamera->GetFrustum();
+            //frustum->Transform(projection,modelView);
+
         }
     }
+    auto modelView = transformationMat*view;
+    GetActiveCamera()->CalculateFrustum(projection, modelView);
 }
+
+
+
+
+
+
 
 //Devuelve el nodo por la id que le mandes
 //Lo hace a partir del padre que lo llame, lo suyo es llamarlo siempre con el nodo principal
