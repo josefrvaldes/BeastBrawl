@@ -11,8 +11,8 @@ CLight::CLight(glm::vec3 in, glm::vec3 amb, glm::vec3 diff, glm::vec3 spec, floa
     intensity = in;
     ambient   = amb;
     diffuse   = diff;
-    specular  = spec;
-    constant  = cons;
-    linear    = lin;
+    specular  = spec;     
+    constant  = cons; 
+    linear    = lin;  
     quadratic  = quadr;
 }

@@ -39,6 +39,7 @@
 #include <Managers/ManPowerUp.h>
 #include <Managers/ManTotem.h>
 #include <Managers/ManWayPoint.h>
+#include <Managers/ManLight.h>
 #include <Systems/Collisions.h>
 #include <Systems/Physics.h>
 #include <Systems/PhysicsPowerUp.h>
@@ -83,6 +84,7 @@ class StateInGame : public State {
     shared_ptr<ManBoundingWall> manBoundingWall;
     shared_ptr<ManBoundingOBB> manBoundingOBB;
     shared_ptr<ManBoundingGround> manBoundingGround;
+    shared_ptr<ManLight> manLight;
 
     RenderFacade *renderEngine = {nullptr};
     InputFacade *inputEngine = {nullptr};

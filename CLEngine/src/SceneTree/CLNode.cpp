@@ -253,12 +253,12 @@ void CLNode::CalculateViewProjMatrix(){
  */
 void CLNode::CalculateLights(){
     GLuint i = 0;
-
     for(auto light : lights){
         auto lightEntity = static_cast<CLLight*>(light->GetEntity());
         
         string number = to_string(i);
 
+        glUniform1i(glGetUniformLocation(light->GetShaderProgramID(),"num_Point_Lights"),lights.size());    
         //TODO: A ver esto deberia cambiarse y pasarselo al shader de las mallas que lo vayan a usar
         //      por si al final las luces usan otro shader
         glUniform3fv(glGetUniformLocation(light->GetShaderProgramID(), ("pointLights[" + number + "].position").c_str()),1,glm::value_ptr(light->GetGlobalTranslation()));

@@ -10,7 +10,7 @@ using namespace std;
 
 class ManLight : public Manager{
 public:
-    ManLight(){}; 
+    ManLight(); 
     ~ManLight(){};
 
     void CreateLight(glm::vec3 pos);

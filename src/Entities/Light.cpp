@@ -25,7 +25,7 @@ Light::Light(glm::vec3 pos)
     AddComponent(cTransformable);
     AddComponent(cType);
     AddComponent(cShader);
-    AddComponent(cLight);
+    AddComponent(cLight); 
 
 }
 

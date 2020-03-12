@@ -39,7 +39,7 @@ struct PointLight {
 uniform Material material;
 
 uniform int num_Point_Lights;
-#define NUM_POINT_LIGHTS 3
+#define NUM_POINT_LIGHTS 100
 uniform PointLight pointLights[NUM_POINT_LIGHTS]; 
 //uniform sampler2D texture_diffuse1;
 
@@ -77,8 +77,13 @@ void main()
     vec3 norm = normalize(Normal);
     vec3 viewDir = normalize(viewPos - FragPos); //Vector entre nosotros y el punto del objeto
     // phase 2: Point lights
-    for(int i = 0; i < NUM_POINT_LIGHTS; i++)
+    
+    int i = 0;
+    while(i<num_Point_Lights){
         totalPointLight += CalcPointLight(pointLights[i], norm, FragPos, viewDir); 
+        
+        i++;
+    }
 
     // vec3 ambient = pointLight.ambient * texture(material.diffuse,TexCoords).rgb;
 
