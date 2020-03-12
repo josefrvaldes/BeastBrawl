@@ -71,6 +71,12 @@ void CLEngine::CreateGlfwWindow (const unsigned int w, const unsigned int h, con
 
     // Activa el buffer de profundidad o ZBuffer, para que se diferencie que pixel se debe pintar.
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_BLEND);  
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); 
+
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
+    
 }
 
 

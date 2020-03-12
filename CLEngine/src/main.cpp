@@ -103,7 +103,7 @@ int main() {
     int max = 200;
     int min = -200;
     int j = 0;
-    for(int i = 50; i<100; i++){
+    for(int i = 50; i<6000; i++){
         nodes.push_back(meshes->AddMesh(i));
         nodes[j]->SetShaderProgramID(resourceShader->GetProgramID());
 
@@ -161,6 +161,7 @@ int main() {
         device->UpdateViewport(); //Por si reescalamos la ventana
 
         device->BeginScene();
+
 
         // Start the Dear ImGui frame
         ImGui_ImplOpenGL3_NewFrame();
