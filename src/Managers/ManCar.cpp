@@ -582,6 +582,7 @@ void ManCar::ThrowPowerUp(Car* car_) {
     //auto cRoboJorobo = static_cast<CRoboJorobo*>(any_cast<CarAI*>(d[ACTUAL_CAR])->GetComponent(CompType::RoboJoroboComp).get());
     auto cShield = static_cast<CShield*>(car_->GetComponent(CompType::ShieldComp).get());
     auto cNitro = static_cast<CNitro*>(car_->GetComponent(CompType::NitroComp).get());
+    auto cTransf = static_cast<CTransformable*>(car_->GetComponent(CompType::TransformableComp).get());
     bool robado = false; 
     
     if(cPowerUpCar->typePowerUp != typeCPowerUp::None){
@@ -593,12 +594,12 @@ void ManCar::ThrowPowerUp(Car* car_) {
                 robado = useRoboJorobo(car_);
                 if (!robado)
                     std::cout << "La has cagado, el Totem no lo tenia nadie..." << std::endl;
+                //Sonido robojorobo de coger totem
+                (*dataSound)[STOLE] = robado;
                 break;
 
             case (typeCPowerUp::EscudoMerluzo):
                 cShield->activatePowerUp();
-                //Para el sonido
-                (*dataSound)[ID] = cIdCar->id;
                 break;
 
             case (typeCPowerUp::SuperMegaNitro):
@@ -611,7 +612,7 @@ void ManCar::ThrowPowerUp(Car* car_) {
                         (*data)[CAR_FOLLOW] = objectiveCar;
                     }
                     (*data)[TYPE_POWER_UP] = cPowerUpCar->typePowerUp;
-                    (*data)[CAR_EXIT_POSITION] = static_cast<CTransformable*>(car_->GetComponent(CompType::TransformableComp).get());
+                    (*data)[CAR_EXIT_POSITION] = cTransf;
                     (*data)[CAR_EXIT_DIMENSION] =  static_cast<CDimensions*>(car_->GetComponent(CompType::DimensionsComp).get());
                     EventManager::GetInstance().AddEventMulti(Event{EventType::PowerUp_Create, data});
                 }
@@ -619,7 +620,7 @@ void ManCar::ThrowPowerUp(Car* car_) {
             default:  // en caso del melon molon o el pudding
                 if(CheckIfPUWillBeFired(car_)) {
                     (*data)[TYPE_POWER_UP] = cPowerUpCar->typePowerUp;
-                    (*data)[CAR_EXIT_POSITION] = static_cast<CTransformable*>(car_->GetComponent(CompType::TransformableComp).get());
+                    (*data)[CAR_EXIT_POSITION] = cTransf;
                     (*data)[CAR_EXIT_DIMENSION] =  static_cast<CDimensions*>(car_->GetComponent(CompType::DimensionsComp).get());
                     EventManager::GetInstance().AddEventMulti(Event{EventType::PowerUp_Create, data});
                 }
@@ -627,14 +628,20 @@ void ManCar::ThrowPowerUp(Car* car_) {
         }
 
 
-        // Sonido de lanzar power-up
         auto mainCarId = static_cast<CId*>(GetCar()->GetComponent(CompType::IdComp).get());
-        (*dataSound)[TYPE_POWER_UP] = cPowerUpCar->typePowerUp;
-        (*dataSound)[MAIN_CAR] = false;
-        if (mainCarId && cIdCar && mainCarId->id == cIdCar->id) {
-            (*dataSound)[MAIN_CAR] = true;
+
+        // Sonido de lanzar power-up
+        if(cIdCar && cPowerUpCar && cTransf && mainCarId) {
+            (*dataSound)[ID] = cIdCar->id;
+            (*dataSound)[TYPE_POWER_UP] = cPowerUpCar->typePowerUp;
+            (*dataSound)[VEC3_POS] = cTransf->position;
+            (*dataSound)[MAIN_CAR] = false;
+            if (cIdCar && mainCarId->id == cIdCar->id) {
+                (*dataSound)[MAIN_CAR] = true;
+            }
+            EventManager::GetInstance().AddEventMulti(Event{EventType::THROW_POWERUP, dataSound});
         }
-        EventManager::GetInstance().AddEventMulti(Event{EventType::THROW_POWERUP, dataSound});
+
 
         if(car_ == GetCar().get()){
 
@@ -768,7 +775,7 @@ void ManCar::CatchPowerUpAI(DataMap* d) {
         type = typeCPowerUp::MelonMolon;
 
 
-    //type = typeCPowerUp::MelonMolon;
+    //type = typeCPowerUp::SuperMegaNitro;
     auto cPowerUpCar = static_cast<CPowerUp*>(actualCar->GetComponent(CompType::PowerUpComp).get());
     if (cPowerUpCar->typePowerUp == typeCPowerUp::None) {
         cPowerUpCar->typePowerUp = type;

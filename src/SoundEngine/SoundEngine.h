@@ -25,6 +25,7 @@ namespace CLSE {
             bool LoadSoundBank(const string&);
             void LoadSoundEvent(const string&, const bool);
             void PlayEvent(const string&);
+            void PlayEventWithVolume(const string&, float);
             void StopAllEvents();
             void StopEvent(const string&);
             void PauseAllEvents();

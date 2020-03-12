@@ -464,7 +464,10 @@ void CLPhysics::Simulate(float delta) {
 }
 
 void CLPhysics::HandleCollisions() {
-    ManCar *manCar = static_cast<ManCar *>(managers[0]);
+
+    shared_ptr<DataMap> dataSound = make_shared<DataMap>();
+
+    auto *manCar = static_cast<ManCar *>(managers[0]);
 
     const auto &entities = manCar->GetEntities();
     size_t numEntities = entities.size();
@@ -493,6 +496,21 @@ void CLPhysics::HandleCollisions() {
             }
             if (intersect) {
                 checkCollisionNitro(car1, car2);
+
+                // Sonido choque
+                auto cId1 = static_cast<CId*>(car1->GetComponent(CompType::IdComp).get());
+                auto cId2 = static_cast<CId*>(car2->GetComponent(CompType::IdComp).get());
+                auto cMainId = static_cast<CId*>(manCar->GetCar()->GetComponent(CompType::IdComp).get());
+                auto cMainSpeed = static_cast<CCar*>(manCar->GetCar()->GetComponent(CompType::CarComp).get());
+                if(cId1 && cId2 && cMainId && cMainSpeed) {
+                    (*dataSound)[ID] = cId1->id;
+                    (*dataSound)[VEC3_POS] = trcar1->position;
+                    (*dataSound)[MAIN_CAR] = false;
+                    if ((cId1->id == cMainId->id || cId2 == cMainId) && cMainSpeed->speed > 175) {
+                        (*dataSound)[MAIN_CAR] = true;
+                    }
+                    EventManager::GetInstance().AddEventMulti(Event{CRASH, dataSound});
+                }
             }
         }
     }

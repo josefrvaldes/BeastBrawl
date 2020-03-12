@@ -19,6 +19,7 @@ class SoundFacade {
         virtual void SetParameter(const string&, const string&, const float) = 0;
 
         virtual void PlayEvent(const string&) = 0;
+        virtual void PlayEventWithSpecificVolume(const string&, float) = 0;
         virtual void StopAllEvents() = 0;
         virtual void StopEvent(const string&) = 0;
         virtual void PauseAllEvent() = 0;
