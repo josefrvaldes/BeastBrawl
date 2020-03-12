@@ -95,9 +95,9 @@ CLFrustum::Visibility CLFrustum::IsInside(const glm::vec3& point) const
 	return Completly;
 }
 /*
-CLFrustum::Visibility CLFrustum::IsInside(const Box3D& box) const
+CLFrustum::Visibility CLFrustum::IsInside(const BoundingBox& box) const
 {
-	auto GetVisibility = [](const dvec4& clip, const Box3D& box)
+	auto GetVisibility = [](const dvec4& clip, const BoundingBox& box)
 	{
 		double x0 = box.GetMin().x * clip.x;
 		double x1 = box.GetMax().x * clip.x;

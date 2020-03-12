@@ -257,6 +257,14 @@ const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
     node->SetTranslation(glm::vec3(cTransformable->position.x,cTransformable->position.y,-cTransformable->position.z));
     node->SetRotation(glm::vec3(cTransformable->rotation.x,Utils::IrrlichtAngleToOpenGL(cTransformable->rotation.y),cTransformable->rotation.z));
     node->SetScalation(cTransformable->scale);
+
+
+    // BOUNDING BOX
+    if(cType->type != ModelType::Light)
+        node->CalculateBoundingBox();
+
+
+
     //TODO: Esto luego deberia calcular con opengl las dimensiones 
     //Sacamos sus dimensiones
     float height = 10.0;

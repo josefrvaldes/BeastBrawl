@@ -11,6 +11,7 @@
 #include "CLMesh.h"
 #include "CLLight.h"
 #include "CLCamera.h"
+#include "../ResourceManager/CLResourceMesh.h"
 
 #include "../Frustum/CLFrustum.h"
 
@@ -69,6 +70,7 @@ class CLNode{
         glm::mat4 CalculateTransformationMatrix();
         void CalculateViewProjMatrix();
         void CalculateLights();
+        void CalculateBoundingBox();
 
         void DrawTree(CLNode* root);
         void DFSTree(glm::mat4);
@@ -86,13 +88,13 @@ class CLNode{
         CLNode* father {nullptr};
         vector<shared_ptr<CLNode>> childs;
 
-        glm::vec3 translation = glm::vec3(0.0f);
-        glm::vec3 rotation = glm::vec3(0.0f);
-        glm::vec3 scalation = glm::vec3(1.0f);
-        glm::mat4 transformationMat = glm::mat4(1.0f);
+        glm::vec3 translation       {glm::vec3(0.0f)};  // posicion del nodo
+        glm::vec3 rotation          {glm::vec3(0.0f)};  // rotacion del nodo
+        glm::vec3 scalation         {glm::vec3(1.0f)};  // escalado del nodo
+        glm::mat4 transformationMat {glm::mat4(1.0f)};  // matriz modelo del nodo
 
-        inline static glm::mat4 projection;
-        inline static glm::mat4 view;
+        inline static glm::mat4 projection;             // matriz proyeccion del modelo
+        inline static glm::mat4 view;                   // matriz view del modelo
 
         //Methods
         CLNode* GetNodeByIDAux(unsigned int id, CLNode* node, CLNode* root);
@@ -102,6 +104,10 @@ class CLNode{
 
         inline static vector<CLNode*> lights;
         inline static vector<CLNode*> cameras;
+
+        // BOUNDING BOX
+        glm::vec3 extremeMinMesh    {glm::vec3(0.0,0.0,0.0)}; // definimos el vertice mayor de la malla para el BoundingBpx
+        glm::vec3 extremeMaxMesh    {glm::vec3(0.0,0.0,0.0)}; // definimos el vertice menos de la malla para el BoundingBox
 
 };
 

@@ -354,3 +354,42 @@ void CLNode::DrawTree(CLNode* root){
 
     return;
 }
+
+
+void CLNode::CalculateBoundingBox(){
+    //auto mesh_m = static_cast<CLMesh*>(e.get())->GetMesh();
+    //auto vecMesh = mesh_m->GetvectorMesh();
+    auto resource = static_cast<CLMesh*>(this->GetEntity())->GetMesh();
+    auto vecMesh = static_cast<CLResourceMesh*>(resource)->GetvectorMesh();
+    cout << "Antes de entrar el extremo minimo y maximo era: " << endl;
+    cout << "minimo: ( " << extremeMinMesh.x<< " , " << extremeMinMesh.y<< " , " <<extremeMinMesh.z<< 
+    " ) , maximo: " << extremeMaxMesh.x<< " , " << extremeMaxMesh.y<< " , " << extremeMaxMesh.z<< " )"<< endl;
+
+    int i = 0;
+    for(auto currentVecMesh = vecMesh.begin(); currentVecMesh != vecMesh.end(); ++currentVecMesh){
+        auto vertexs = currentVecMesh->vertices;
+        for(long unsigned int j=0; j< vertexs.size(); j++){
+            if( i== 0 && j== 0){
+                // es el primer vertice, por lo que sera tanto el mayor como el menor
+                extremeMinMesh = vertexs[j].position;
+                extremeMaxMesh = vertexs[j].position;
+            }else{
+                // comprobamos para X
+                if(extremeMinMesh.x > vertexs[j].position.x ) extremeMinMesh.x = vertexs[j].position.x;
+                if(extremeMaxMesh.x < vertexs[j].position.x ) extremeMaxMesh.x = vertexs[j].position.x;
+
+                // comprobamos para Y
+                if(extremeMinMesh.y > vertexs[j].position.y ) extremeMinMesh.y = vertexs[j].position.y;
+                if(extremeMaxMesh.y < vertexs[j].position.y ) extremeMaxMesh.y = vertexs[j].position.y;
+
+                // comprobamos para Z
+                if(extremeMinMesh.z > vertexs[j].position.z ) extremeMinMesh.z = vertexs[j].position.z;
+                if(extremeMaxMesh.z < vertexs[j].position.z ) extremeMaxMesh.z = vertexs[j].position.z;
+            }
+        }
+        i++;
+    }
+    cout << "Despues de entrar el extremo minimo y maximo era: " << endl;
+    cout << "minimo: ( " << extremeMinMesh.x<< " , " << extremeMinMesh.y<< " , " <<extremeMinMesh.z<< 
+    " ) , maximo: " << extremeMaxMesh.x<< " , " << extremeMaxMesh.y<< " , " << extremeMaxMesh.z<< " )"<< endl;
+}

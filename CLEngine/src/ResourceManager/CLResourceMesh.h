@@ -60,7 +60,7 @@ namespace CLE {
 
             void Draw(GLuint shaderID) override;
             bool LoadFile(std::string) override;
-            vector<Mesh> GetMesh() { return vecMesh; }
+            vector<Mesh> GetvectorMesh() { return vecMesh; }
 
         private:
             void processNode(aiNode *node, const aiScene *scene);
