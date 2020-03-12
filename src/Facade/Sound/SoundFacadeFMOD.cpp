@@ -508,7 +508,7 @@ void SoundFacadeFMOD::SoundThrowPowerup(DataMap* d) {
         }
         case typeCPowerUp::SuperMegaNitro: {
             name = "Coche/motor" + to_string(cId);
-            SetParameter(name, "Personaje", 5);
+            SetParameter(name, "Personaje", 6);
             if (mainCar) {
                 SetParameter(name, "Personaje", character);
             }

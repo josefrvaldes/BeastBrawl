@@ -745,13 +745,6 @@ void CLPhysics::SeparateSphereFromPlane(IntersectData &intersData, CTransformabl
     trCar1.position.z += nuevaDirectionCar1.z * correctedDistance;
 }
 
-void CLPhysics::SonarChoque(bool mainCar) {
-    shared_ptr<DataMap> map = make_shared<DataMap>();
-    (*map)[MAIN_CAR] = mainCar;
-    Event e(EventType::CRASH_ENEMY, map);
-    EventManager::GetInstance().AddEventMulti(e);
-}
-
 /**
  * Recibe los componentes de los dos coches con los que se comprobará colisión
  * El bool mainCar define si los componentes del coche1 son los del coche principal o no
@@ -763,7 +756,7 @@ bool CLPhysics::HandleCollisions(CTransformable &trCar1, CBoundingSphere &spCar1
     PositionSphereIntoTransformable(trCar2, spCar2);
     IntersectData intersData = spCar1.IntersectSphere(spCar2);
     if (intersData.intersects) {
-        //SonarChoque(mainCar);
+        //TODO: SonarChoque(mainCar);
 
         SeparateSpheres(trCar1, spCar1, ccarCar1, trCar2, spCar2, ccarCar2);
         PositionSphereIntoTransformable(trCar1, spCar1);

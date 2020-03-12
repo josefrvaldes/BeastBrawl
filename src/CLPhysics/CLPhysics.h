@@ -95,7 +95,6 @@ class CLPhysics {
     void ReflectCollision(CTransformable &trCar1, CCar &cCar1, CTransformable &trCar2, CCar &cCar2);
     void ReflectSpherePlane(CTransformable &trCar, CCar &cCar1, CBoundingPlane &plane);
     void ExchangeVectors(CTransformable &trCar1, CCar &cCar1, CTransformable &trCar2, CCar &cCar2);
-    void SonarChoque(bool mainCar);
     void checkCollisionNitro(Entity* car1, Entity* car2);
     void impactCarCar(CCar &ccar1, CCar &ccar2) const;
     void ReciveExternalForce(CTransformable &trCar1,  CCar &ccar1, CExternalForce &cExtForc1, CTransformable &trCar2,  CCar &ccar2, CExternalForce &cExtForc2);
