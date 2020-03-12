@@ -50,9 +50,11 @@ int main() {
     //-------------------Resource manager-------------------
     shared_ptr<CLResourceManager> resourceManager = make_shared<CLResourceManager>();
     auto resourceShader = resourceManager->GetResourceShader("CLEngine/src/Shaders/vertex.glsl", "CLEngine/src/Shaders/fragment.glsl");
+    auto resourceShader2 = resourceManager->GetResourceShader("CLEngine/src/Shaders/phongMaterialVert.glsl", "CLEngine/src/Shaders/phongMaterialFrag.glsl");
     auto resourceMeshBox = resourceManager->GetResourceMesh("media/TEST_BOX.fbx");
     auto resourceMeshTotem = resourceManager->GetResourceMesh("media/totem_tex.fbx");
     auto resourceMesh = resourceManager->GetResourceMesh("media/kart_physics.fbx");
+    auto resourceMeshOBJ = resourceManager->GetResourceMesh("media/kart.obj");
 
     //----------------------------------------------------------------------------------------------------------------SHADER
     
@@ -67,6 +69,7 @@ int main() {
 
         auto light1 = smgr->AddLight(1);
         light1->SetShaderProgramID(resourceShader->GetProgramID());
+        static_cast<CLLight*>(light1->GetEntity())->SetLightAttributes(glm::vec3(1.0f,1.0f,1.0f),glm::vec3(0.5f,0.5f,0.5f),glm::vec3(0.2f,0.3f,0.42f),glm::vec3(0.1f,0.1,0.1f),1.0f,0.09f,0.032f);
 
         auto meshes = smgr->AddGroup(10000);
 
@@ -80,7 +83,8 @@ int main() {
         mesh2->SetShaderProgramID(resourceShader->GetProgramID());
 
         
-
+        auto mesh3 = mesh2->AddMesh(5);
+        mesh3->SetShaderProgramID(resourceShader2->GetProgramID());
 
         static_cast<CLCamera*>(camera->GetEntity())->SetCameraTarget(mesh1->GetTranslation());
 
@@ -91,7 +95,7 @@ int main() {
     int max = 200;
     int min = -200;
     int j = 0;
-    for(int i = 6; i<50; i++){
+    for(int i = 50; i<100; i++){
         nodes.push_back(meshes->AddMesh(i));
         nodes[j]->SetShaderProgramID(resourceShader->GetProgramID());
 
@@ -108,6 +112,7 @@ int main() {
 
     static_cast<CLMesh*>(mesh1->GetEntity())->SetMesh(resourceMeshBox);
     static_cast<CLMesh*>(mesh2->GetEntity())->SetMesh(resourceMesh);
+    static_cast<CLMesh*>(mesh3->GetEntity())->SetMesh(resourceMeshOBJ);
 
     camera->SetTranslation(glm::vec3(0.0f, 7.0f, 60.0f));
     mesh1->SetScalation(glm::vec3(2.0f, 2.0f, 2.0f));
@@ -116,6 +121,8 @@ int main() {
     mesh2->SetScalation(glm::vec3(0.2f, 0.2f, 0.2f));
     mesh2->SetRotation(glm::vec3(0.0f, 180.0f, 0.0f));
     mesh2->SetTranslation(glm::vec3(10.0f,0.0f,0.0f));
+    mesh3->SetTranslation(glm::vec3(-40.0f,0.0f,0.0f));
+    mesh3->SetScalation(glm::vec3(2.0f,2.0f,2.0f));
 
     mesh2->GetGlobalTranslation();
 
@@ -174,19 +181,16 @@ int main() {
 
 
     //LUCES Y COLORES
-    glm::vec3 color(1.0f, 0.0f, 0.0f);
-    glm::vec3 light = static_cast<CLLight*>(light1->GetEntity())->GetIntensity();
-    glm::vec3 lightPos = light1->GetTranslation();
-    float auxColor[3] = {color.x,color.y,color.z};
-    float auxLight[3] = {1.0f,1.0f,1.0f};
-    float auxLightPos[3] = {lightPos.x,lightPos.y,lightPos.z};
     float auxCameraPos[3] = {camera->GetTranslation().x, camera->GetTranslation().y, camera->GetTranslation().z};
+    float auxLightPos[3] = {light1->GetTranslation().x, light1->GetTranslation().y, light1->GetTranslation().z};
 
     float index = 0.01;
 
     double previousTime = glfwGetTime();
     int frameCount = 0;
 
+
+    //static_cast<CLCamera*>(camera->GetEntity())->SetPerspective(false);
     while (device->Run()) {
 
         //checkInput(device->GetWindow(), cameraPos, cameraFront, cameraUp);
@@ -202,17 +206,14 @@ int main() {
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
         ImGui::Begin("Modifica ilumnacion"); 
-        ImGui::SliderFloat3("Color",auxColor,0,1);
-        ImGui::SliderFloat3("Light",auxLight,0,1);
-        ImGui::SliderFloat3("LightPos",auxLightPos,-100,100);
         ImGui::SliderFloat3("CameraPos",auxCameraPos,-50,400);
+        ImGui::SliderFloat3("LightPos",auxLightPos,-300,400);
         ImGui::End(); 
 
-        glm::vec3 color(auxColor[0], auxColor[1], auxColor[2]);
-        glm::vec3 light(auxLight[0], auxLight[1], auxLight[2]);
-        glm::vec3 lightPos(auxLightPos[0], auxLightPos[1], auxLightPos[2]);
         glm::vec3 cameraPos(auxCameraPos[0], auxCameraPos[1], auxCameraPos[2]);
+        glm::vec3 lightPos(auxLightPos[0], auxLightPos[1], auxLightPos[2]);
         camera->SetTranslation(cameraPos);
+        light1->SetTranslation(lightPos);
 
 
         //Luces y colores
@@ -220,15 +221,18 @@ int main() {
         //glUniform3fv(glGetUniformLocation(resourceShader->GetProgramID(), "lightColor"),1,glm::value_ptr(light));
         //glUniform3fv(glGetUniformLocation(resourceShader->GetProgramID(), "viewPos"),1,glm::value_ptr(camera->GetTranslation()));
 
-        glUniform3f(glGetUniformLocation(resourceShader->GetProgramID(), "material.ambient"), 0.0215,0.175,0.0215);
-        glUniform3f(glGetUniformLocation(resourceShader->GetProgramID(), "material.diffuse2"), 0.075,0.614,0.075);
-        glUniform3f(glGetUniformLocation(resourceShader->GetProgramID(), "material.specular"), 0.633,0.727,0.633);
+        // glUniform3f(glGetUniformLocation(resourceShader2->GetProgramID(), "material.ambient"), 0.0215,0.175,0.0215);
+        // glUniform3f(glGetUniformLocation(resourceShader2->GetProgramID(), "material.diffuse2"), 0.075,0.614,0.075);
+        // glUniform3f(glGetUniformLocation(resourceShader2->GetProgramID(), "material.specular"), 0.633,0.727,0.633);
         glUniform1i(glGetUniformLocation(resourceShader->GetProgramID(), "material.shininess"), 76.8);
 
         glUniform3fv(glGetUniformLocation(resourceShader->GetProgramID(), "light.position"),1,glm::value_ptr(lightPos));
         glUniform3f(glGetUniformLocation(resourceShader->GetProgramID(),  "light.ambient"), 0.2,0.2,0.2);
         glUniform3f(glGetUniformLocation(resourceShader->GetProgramID(),  "light.diffuse"), 0.5,0.5,0.5);
         glUniform3f(glGetUniformLocation(resourceShader->GetProgramID(),  "light.specular"), 1.0,1.0,1.0);
+        glUniform1f(glGetUniformLocation(resourceShader->GetProgramID(),  "light.constant"),1.0);
+        glUniform1f(glGetUniformLocation(resourceShader->GetProgramID(),  "light.linear"), 0.09);
+        glUniform1f(glGetUniformLocation(resourceShader->GetProgramID(),  "light.quadratic"), 0.032);
 
         
         //meshes->SetRotation(glm::vec3(0.0f,0.0f,index));
@@ -251,6 +255,10 @@ int main() {
             previousTime = currentTime;
         }
 
+
+        if (glfwGetKey(device->GetWindow(), GLFW_KEY_F1)) {
+            smgr->DeleteNode(mesh2->GetEntity()->GetID());
+        }
         
         device->DrawObjects();
         device->InputClose();
@@ -258,7 +266,7 @@ int main() {
         device->RenderImgui();
         device->EndScene();
         index += 0.2;
-    }
+    } 
 
 
     delete device;
