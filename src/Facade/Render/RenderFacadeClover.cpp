@@ -21,6 +21,7 @@
 #include <Components/CType.h>
 #include <Components/CShader.h>
 #include <Components/CWayPointEdges.h>
+#include <Components/CLight.h>
 #include <Components/CMovementType.h>
 #include <Components/CNavMesh.h>
 #include <Components/CCurrentNavMesh.h>
@@ -201,11 +202,16 @@ const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
     auto cId = static_cast<CId*>(entity->GetComponent(CompType::IdComp).get());
     auto cTexture = static_cast<CTexture*>(entity->GetComponent(CompType::TextureComp).get());
     auto cType = static_cast<CType*>(entity->GetComponent(CompType::TypeComp).get());
-    auto cMesh = static_cast<CMesh*>(entity->GetComponent(CompType::MeshComp).get());
     auto cShader = static_cast<CShader*>(entity->GetComponent(CompType::ShaderComp).get());
 
-    std::string meshPath = "media/" + cMesh->mesh;
-    auto mesh = resourceManager->GetResourceMesh(meshPath);
+    CLResourceMesh* mesh = nullptr;
+    if(entity->HasComponent(CompType::MeshComp)){
+        auto cMesh = static_cast<CMesh*>(entity->GetComponent(CompType::MeshComp).get());
+
+        std::string meshPath = "media/" + cMesh->mesh;
+        mesh = resourceManager->GetResourceMesh(meshPath);
+    }
+    
     
     CLNode* node = nullptr;
     // añadimos el node al sceneManager dependiendo del tipo de node que sea
@@ -229,14 +235,16 @@ const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
             break;
 
         case ModelType::StaticMesh:
-            node = smgr->AddMesh(cId->id);
+            node = smgr->AddMesh(cId->id); 
             break;
 
         case ModelType::Text:
             node = smgr->AddMesh(cId->id);
             break;
         case ModelType::Light:
+            auto cLight = static_cast<CLight*>(entity->GetComponent(CompType::LightComp).get());
             node = smgr->AddLight(cId->id);
+            static_cast<CLLight*>(node->GetEntity())->SetLightAttributes(cLight->intensity,cLight->ambient,cLight->diffuse,cLight->specular,cLight->constant,cLight->linear,cLight->quadratic);
             break;
     }
 

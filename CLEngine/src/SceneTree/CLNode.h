@@ -39,6 +39,8 @@ class CLNode{
         glm::vec3 GetGlobalRotation() const;
         glm::vec3 GetGlobalScalation() const;
         CLCamera* GetActiveCamera();
+        vector<CLNode*> GetLights()             { return lights; };
+        vector<CLNode*> GetCameras()            { return cameras; };
 
         //Setters
         bool SetFather(CLNode* f)                       { father = f; return true; }
@@ -66,6 +68,7 @@ class CLNode{
         void Scale(glm::vec3);
         glm::mat4 CalculateTransformationMatrix();
         void CalculateViewProjMatrix();
+        void CalculateLights();
 
         void DrawTree(CLNode* root);
         void DFSTree(glm::mat4);

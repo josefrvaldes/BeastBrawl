@@ -69,7 +69,15 @@ int main() {
 
         auto light1 = smgr->AddLight(1);
         light1->SetShaderProgramID(resourceShader->GetProgramID());
-        static_cast<CLLight*>(light1->GetEntity())->SetLightAttributes(glm::vec3(1.0f,1.0f,1.0f),glm::vec3(0.5f,0.5f,0.5f),glm::vec3(0.2f,0.3f,0.42f),glm::vec3(0.1f,0.1,0.1f),1.0f,0.09f,0.032f);
+        static_cast<CLLight*>(light1->GetEntity())->SetLightAttributes(glm::vec3(1.0f,1.0f,1.0f),glm::vec3(0.5f,0.5f,0.5f),glm::vec3(0.2f,0.3f,0.42f),glm::vec3(0.1f,0.1,0.1f),0.3f,0.004f,0.00016f);
+
+        auto light2 = smgr->AddLight(6);
+        light2->SetShaderProgramID(resourceShader->GetProgramID());
+        static_cast<CLLight*>(light2->GetEntity())->SetLightAttributes(glm::vec3(1.0f,1.0f,1.0f),glm::vec3(0.5f,0.5f,0.5f),glm::vec3(0.2f,0.3f,0.42f),glm::vec3(0.1f,0.1,0.1f),0.3f,0.004f,0.00016f);
+
+        auto light3 = smgr->AddLight(7);
+        light3->SetShaderProgramID(resourceShader->GetProgramID());
+        static_cast<CLLight*>(light3->GetEntity())->SetLightAttributes(glm::vec3(1.0f,1.0f,1.0f),glm::vec3(0.5f,0.5f,0.5f),glm::vec3(0.2f,0.3f,0.42f),glm::vec3(0.1f,0.1,0.1f),0.3f,0.004f,0.00016f);
 
         auto meshes = smgr->AddGroup(10000);
 
@@ -114,7 +122,7 @@ int main() {
     static_cast<CLMesh*>(mesh2->GetEntity())->SetMesh(resourceMesh);
     static_cast<CLMesh*>(mesh3->GetEntity())->SetMesh(resourceMeshOBJ);
 
-    camera->SetTranslation(glm::vec3(0.0f, 7.0f, 60.0f));
+    camera->SetTranslation(glm::vec3(80.0f, 5.0f, -9.0f));
     mesh1->SetScalation(glm::vec3(2.0f, 2.0f, 2.0f));
     mesh1->SetRotation(glm::vec3(0.0f,0.0f,0.0f));
     mesh1->SetTranslation(glm::vec3(50.0f,0.0f,0.0f));
@@ -128,67 +136,20 @@ int main() {
 
     
     
-    #pragma region Movidas
-
-    /**
-    //TEXTURES
-    int width, height, nrChannels; // width, height, numero de colores
-    unsigned char *data = stbi_load("CLEngine/container.jpg", &width, &height, &nrChannels, 0); 
-
-    unsigned int texture1, texture2;
-    glGenTextures(1, &texture1);  //Como todos los ejemplos generamos un ID
-    glBindTexture(GL_TEXTURE_2D, texture1);  //Seleccionamos el ID a modificar
-
-    // set the texture wrapping/filtering options (on the currently bound texture object)
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
-    // 1) Tipo | 2) Mipmap levels | 3) Tipo de color | 4) Anchura | 5) Altura | 6) Siempre 0 | 7) y 8) Valores de la imagen cargada
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-    glGenerateMipmap(GL_TEXTURE_2D);
-
-    stbi_image_free(data);
-
-    data = stbi_load("CLEngine/awesomeface.png", &width, &height, &nrChannels, 0); 
-    glGenTextures(1, &texture2);  //Como todos los ejemplos generamos un ID
-    glBindTexture(GL_TEXTURE_2D, texture2);  //Seleccionamos el ID a modificar
-
-    // set the texture wrapping/filtering options (on the currently bound texture object)
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    // 1) Tipo | 2) Mipmap levels | 3) Tipo de color | 4) Anchura | 5) Altura | 6) Siempre 0 | 7) y 8) Valores de la imagen cargada
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-    glGenerateMipmap(GL_TEXTURE_2D);
-
-
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
-
-    
-    glUseProgram(resourceShader->GetProgramID());
-    glUniform1i(glGetUniformLocation(resourceShader->GetProgramID(),"texture1"),0);
-    glUniform1i(glGetUniformLocation(resourceShader->GetProgramID(),"texture2"),1);
-    *
-    */
-    #pragma endregion
-    
     
 
 
     //LUCES Y COLORES
     float auxCameraPos[3] = {camera->GetTranslation().x, camera->GetTranslation().y, camera->GetTranslation().z};
     float auxLightPos[3] = {light1->GetTranslation().x, light1->GetTranslation().y, light1->GetTranslation().z};
+    float auxLightPos2[3] = {light2->GetTranslation().x, light2->GetTranslation().y, light2->GetTranslation().z};
+    float auxLightPos3[3] = {light3->GetTranslation().x, light3->GetTranslation().y, light3->GetTranslation().z};
 
     float index = 0.01;
 
     double previousTime = glfwGetTime();
     int frameCount = 0;
-
+    auto lights = smgr->GetLights();
 
     //static_cast<CLCamera*>(camera->GetEntity())->SetPerspective(false);
     while (device->Run()) {
@@ -208,39 +169,46 @@ int main() {
         ImGui::Begin("Modifica ilumnacion"); 
         ImGui::SliderFloat3("CameraPos",auxCameraPos,-50,400);
         ImGui::SliderFloat3("LightPos",auxLightPos,-300,400);
+        ImGui::SliderFloat3("LightPos2",auxLightPos2,-300,400);
+        ImGui::SliderFloat3("LightPos3",auxLightPos3,-300,400);
         ImGui::End(); 
 
         glm::vec3 cameraPos(auxCameraPos[0], auxCameraPos[1], auxCameraPos[2]);
         glm::vec3 lightPos(auxLightPos[0], auxLightPos[1], auxLightPos[2]);
+        glm::vec3 lightPos2(auxLightPos2[0], auxLightPos2[1], auxLightPos2[2]);
+        glm::vec3 lightPos3(auxLightPos3[0], auxLightPos3[1], auxLightPos3[2]);
         camera->SetTranslation(cameraPos);
         light1->SetTranslation(lightPos);
+        light2->SetTranslation(lightPos2);
+        light3->SetTranslation(lightPos3);
 
 
-        //Luces y colores
-        //glUniform3fv(glGetUniformLocation(resourceShader->GetProgramID(), "objectColor"),1,glm::value_ptr(color));
-        //glUniform3fv(glGetUniformLocation(resourceShader->GetProgramID(), "lightColor"),1,glm::value_ptr(light));
-        //glUniform3fv(glGetUniformLocation(resourceShader->GetProgramID(), "viewPos"),1,glm::value_ptr(camera->GetTranslation()));
+        // GLuint i = 0;
+        // for(auto light : lights){
+        //     string number = to_string(i);
 
-        // glUniform3f(glGetUniformLocation(resourceShader2->GetProgramID(), "material.ambient"), 0.0215,0.175,0.0215);
-        // glUniform3f(glGetUniformLocation(resourceShader2->GetProgramID(), "material.diffuse2"), 0.075,0.614,0.075);
-        // glUniform3f(glGetUniformLocation(resourceShader2->GetProgramID(), "material.specular"), 0.633,0.727,0.633);
-        glUniform1i(glGetUniformLocation(resourceShader->GetProgramID(), "material.shininess"), 76.8);
+        //     auto lightEntity = static_cast<CLLight*>(light->GetEntity());
+            
+        //     glUniform3fv(glGetUniformLocation(resourceShader->GetProgramID(), ("pointLights[" + number + "].position").c_str()),1,glm::value_ptr(light->GetGlobalTranslation()));
+        //     glUniform3fv(glGetUniformLocation(resourceShader->GetProgramID(), ("pointLights[" + number + "].ambient").c_str()), 1,glm::value_ptr(lightEntity->GetAmbient()));
+        //     glUniform3fv(glGetUniformLocation(resourceShader->GetProgramID(), ("pointLights[" + number + "].diffuse").c_str()), 1, glm::value_ptr(lightEntity->GetDiffuse()));
+        //     glUniform3fv(glGetUniformLocation(resourceShader->GetProgramID(), ("pointLights[" + number + "].specular").c_str()), 1, glm::value_ptr(lightEntity->GetSpecular()));
+        //     glUniform1f(glGetUniformLocation(resourceShader->GetProgramID(), ("pointLights[" + number + "].constant").c_str()), lightEntity->GetConstant());
+        //     glUniform1f(glGetUniformLocation(resourceShader->GetProgramID(), ("pointLights[" + number + "].linear").c_str()), lightEntity->GetLinear());
+        //     glUniform1f(glGetUniformLocation(resourceShader->GetProgramID(), ("pointLights[" + number + "].quadratic").c_str()), lightEntity->GetQuadratic());
 
-        glUniform3fv(glGetUniformLocation(resourceShader->GetProgramID(), "light.position"),1,glm::value_ptr(lightPos));
-        glUniform3f(glGetUniformLocation(resourceShader->GetProgramID(),  "light.ambient"), 0.2,0.2,0.2);
-        glUniform3f(glGetUniformLocation(resourceShader->GetProgramID(),  "light.diffuse"), 0.5,0.5,0.5);
-        glUniform3f(glGetUniformLocation(resourceShader->GetProgramID(),  "light.specular"), 1.0,1.0,1.0);
-        glUniform1f(glGetUniformLocation(resourceShader->GetProgramID(),  "light.constant"),1.0);
-        glUniform1f(glGetUniformLocation(resourceShader->GetProgramID(),  "light.linear"), 0.09);
-        glUniform1f(glGetUniformLocation(resourceShader->GetProgramID(),  "light.quadratic"), 0.032);
 
+        //     i++;
+        // }
         
+
+
         //meshes->SetRotation(glm::vec3(0.0f,0.0f,index));
         // auto trans1 = mesh1->GetTranslation();
         // mesh1->SetTranslation(glm::vec3(trans1.x+index,trans1.y,trans1.z));
         static_cast<CLCamera*>(camera->GetEntity())->SetCameraTarget(mesh2->GetGlobalTranslation());
 
-
+        //cout << "Distancia entre coche y luz: " << glm::distance(mesh2->GetGlobalTranslation(),lightPos) << endl;
 
         // Measure speed
         double currentTime = glfwGetTime();
