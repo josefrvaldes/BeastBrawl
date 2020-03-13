@@ -39,7 +39,7 @@ struct PointLight {
 uniform Material material;
 
 uniform int num_Point_Lights;
-#define NUM_POINT_LIGHTS 100
+#define NUM_POINT_LIGHTS 25
 uniform PointLight pointLights[NUM_POINT_LIGHTS]; 
 //uniform sampler2D texture_diffuse1;
 

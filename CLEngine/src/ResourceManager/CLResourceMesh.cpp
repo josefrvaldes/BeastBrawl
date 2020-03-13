@@ -101,6 +101,7 @@ Mesh CLResourceMesh::processMesh(aiMesh *mesh, const aiScene *scene)
     vector<Vertex> vertices;
     vector<unsigned int> indices;
     vector<Texture> textures; 
+    vector<Material> materials;
 
     for(unsigned int i = 0; i < mesh->mNumVertices; i++)
     {
@@ -168,6 +169,8 @@ Mesh CLResourceMesh::processMesh(aiMesh *mesh, const aiScene *scene)
         // process materials
         aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];    
         Material m = loadMaterial(material);
+        materials.push_back(m);
+        
         // we assume a convention for sampler names in the shaders. Each diffuse texture should be named
         // as 'texture_diffuseN' where N is a sequential number ranging from 1 to MAX_SAMPLER_NUMBER. 
         // Same applies to other texture as the following list summarizes:
@@ -204,6 +207,7 @@ Material CLResourceMesh::loadMaterial(aiMaterial* mat) {
     Material material;
     aiColor3D color(0.f, 0.f, 0.f);
     float shininess;
+
 
     mat->Get(AI_MATKEY_COLOR_DIFFUSE, color);
     material.diffuse = glm::vec3(color.r, color.b, color.g);

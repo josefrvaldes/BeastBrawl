@@ -8,9 +8,7 @@ CLResourceManager::CLResourceManager() {
     //shaders = new std::vector<CLResourceShader*>();
 }
 
-CLResourceManager::~CLResourceManager() {
-    
-}
+
 
 CLResourceMesh* CLResourceManager::GetResourceMesh(const std::string file) {
     shared_ptr<CLResourceMesh> resource = nullptr;
@@ -46,6 +44,26 @@ CLResourceTexture* CLResourceManager::GetResourceTexture(const std::string file)
         resource->SetName(file);
         if (resource->LoadFile(file)) {
             textures.push_back(resource);
+        }
+    }
+
+    return resource.get();
+}
+
+CLResourceMaterial* CLResourceManager::GetResourceMaterial(const std::string file) {
+    shared_ptr<CLResourceMaterial> resource = nullptr;
+    bool search = true;
+    for (unsigned int i=0; i<materials.size() && search; ++ i) {
+        if (!file.compare(materials[i]->GetName())) {
+            resource = materials[i];
+            search = false;
+        }
+    }
+    if (!resource) {
+        resource = make_shared<CLResourceMaterial>();
+        resource->SetName(file);
+        if (resource->LoadFile(file)) {
+            materials.push_back(resource);
         }
     }
 

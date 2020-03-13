@@ -48,7 +48,7 @@ int main() {
 
     
     //-------------------Resource manager-------------------
-    shared_ptr<CLResourceManager> resourceManager = make_shared<CLResourceManager>();
+    CLResourceManager* resourceManager = CLResourceManager::GetResourceManager();
     auto resourceShader = resourceManager->GetResourceShader("CLEngine/src/Shaders/vertex.glsl", "CLEngine/src/Shaders/fragment.glsl");
     auto resourceShader2 = resourceManager->GetResourceShader("CLEngine/src/Shaders/phongMaterialVert.glsl", "CLEngine/src/Shaders/phongMaterialFrag.glsl");
     auto resourceMeshBox = resourceManager->GetResourceMesh("media/TEST_BOX.fbx");
@@ -56,6 +56,7 @@ int main() {
     auto resourceMesh = resourceManager->GetResourceMesh("media/kart_physics.fbx");
     auto resourceMeshOBJ = resourceManager->GetResourceMesh("media/kart.obj");
 
+    
     //----------------------------------------------------------------------------------------------------------------SHADER
     
  
@@ -83,7 +84,7 @@ int main() {
 
         auto mesh1 = smgr->AddMesh(2);
         mesh1->SetShaderProgramID(resourceShader->GetProgramID());
-
+        
         auto camera = smgr->AddCamera(3);
         camera->SetShaderProgramID(resourceShader->GetProgramID());
 

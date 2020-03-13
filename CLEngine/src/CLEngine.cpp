@@ -89,11 +89,9 @@ CLNode* CLEngine::GetSceneManager(){
 }
 
 CLResourceManager* CLEngine::GetResourceManager(){
-    if(!resourceManager){
-        resourceManager = make_unique<CLResourceManager>();
-    }
+    
 
-    return resourceManager.get();
+    return CLResourceManager::GetResourceManager();
 }
 
 /**
