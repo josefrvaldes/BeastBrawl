@@ -120,6 +120,9 @@ void InputFacadeClover::CheckInputPause(){
 
 
 void InputFacadeClover::CheckInputEndRace(){
+    if (glfwGetKey(device->GetWindow(),GLFW_KEY_ESCAPE)) {
+        device->CloseWindow();
+    }
 }
 
 

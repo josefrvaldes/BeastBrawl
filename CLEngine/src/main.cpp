@@ -103,7 +103,7 @@ int main() {
     int max = 200;
     int min = -200;
     int j = 0;
-    for(int i = 50; i<6000; i++){
+    for(int i = 50; i<100; i++){
         nodes.push_back(meshes->AddMesh(i));
         nodes[j]->SetShaderProgramID(resourceShader->GetProgramID());
 
@@ -130,7 +130,7 @@ int main() {
     mesh2->SetRotation(glm::vec3(0.0f, 180.0f, 0.0f));
     mesh2->SetTranslation(glm::vec3(10.0f,0.0f,0.0f));
     mesh3->SetTranslation(glm::vec3(-40.0f,0.0f,0.0f));
-    mesh3->SetScalation(glm::vec3(2.0f,2.0f,2.0f));
+    mesh3->SetScalation(glm::vec3(0.2f,0.2f,0.2f));
 
     mesh2->GetGlobalTranslation();
 
