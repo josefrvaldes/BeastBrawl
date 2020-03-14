@@ -2,13 +2,11 @@
 #include <algorithm>
 #include <boost/asio/placeholders.hpp>
 #include <boost/bind.hpp>
-#include "../../include/include_json/include_json.hpp"
 #include "../../src/Constants.h"
 #include "../../src/Systems/Serialization.h"
 #include "../../src/Systems/Utils.h"
 #include "Server.h"
 
-using json = nlohmann::json;
 using boost::asio::ip::udp;
 using namespace std::chrono;
 
@@ -129,10 +127,10 @@ void UDPServer::HandleReceive(std::shared_ptr<unsigned char[]> recevBuff, std::s
                     } break;
                     case Constants::PetitionTypes::ENDGAME: {
                         if (Server::ACCEPTING_ENDGAME) {
-                            cout << "Hemos recibido una petición de ENDGAME! vamos a reinciar el server!! ###########################" << endl;
+                            // cout << "Hemos recibido una petición de ENDGAME! vamos a reinciar el server!! ###########################" << endl;
                             Exit();
                         } else {
-                            cout << "Hemos recibido una petición de ENDGAME! pero la ignoramos!! ###########################" << endl;
+                            // cout << "Hemos recibido una petición de ENDGAME! pero la ignoramos!! ###########################" << endl;
                         }
                     } break;
                     case Constants::PetitionTypes::SEND_THROW_TELEBANANA:

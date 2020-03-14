@@ -1,6 +1,5 @@
 #pragma once
 
-#include <boost/array.hpp>
 #include <boost/asio.hpp>
 #include <boost/asio/buffer.hpp>
 #include <chrono>
@@ -82,7 +81,7 @@ class UDPClient {
     void HandleSentCrashPUCar(const boost::system::error_code& errorCode, std::size_t bytes_transferred);
     void HandleSentCrashPUWall(const boost::system::error_code& errorCode, std::size_t bytes_transferred);
 
-    void HandleSentDateTime(const boost::shared_ptr<std::string> message,
+    void HandleSentDateTime(const std::shared_ptr<std::string> message,
                             const boost::system::error_code& errorCode,
                             std::size_t bytes_transferred);
 

@@ -2,14 +2,11 @@
 #include <boost/asio/placeholders.hpp>
 #include <boost/bind.hpp>
 #include <deque>
-#include "../../include/include_json/include_json.hpp"
 #include "../EventManager/Event.h"
 #include "../EventManager/EventManager.h"
 #include "../Systems/Utils.h"
 #include "../Systems/Serialization.h"
 
-
-using json = nlohmann::json;
 
 using boost::asio::ip::tcp;
 using namespace boost;

@@ -1,18 +1,20 @@
 #include "TCPConnection.h"
 #include <boost/asio/placeholders.hpp>
 #include <boost/bind.hpp>
-#include "../../include/include_json/include_json.hpp"
 #include "../src/Constants.h"
 #include "../src/Systems/Utils.h"
 #include "../../src/Systems/Serialization.h"
 
 
-using json = nlohmann::json;
 using boost::asio::ip::tcp;
 using namespace std::chrono;
 
-TCPConnection::TCPConnection(asio::io_context& io_context, std::vector<Player> &p, vector<TCPConnection::pointer>& connect) : socket_(io_context), players(p), connections(connect){
+TCPConnection::TCPConnection(asio::io_context& io_context, std::vector<Player> &p, std::vector<TCPConnection::pointer>& connect) : socket_(io_context), players(p), connections(connect){
 
+}
+
+TCPConnection::~TCPConnection(){
+    cout << "Se ha llamado al destructor de TCPConnection" << endl;
 }
 
 void TCPConnection::Close() {
@@ -73,12 +75,6 @@ void TCPConnection::DeleteMe(){
     }
     Player::nextId = idPlayer;
 
-    /*for(const auto& actualConnection : connections){
-        if(socket_.remote_endpoint() == actualConnection->socket().remote_endpoint()){
-            actualConnection->Close();
-        }
-        break;
-    }*/
     // eliminar del array de conexiones
     connections.erase(
         std::remove_if(
@@ -131,9 +127,9 @@ void TCPConnection::SendFullGame(){
 
 void TCPConnection::HandleWrite(const boost::system::error_code& error, size_t bytes_transferred){
     if(!error){
-        std::cout << "Mensaje enviado del servidor TCP" << std::endl;
+        std::cout << "Mensaje enviado del servidor TCP" << "\n";
     }else{
-        std::cout << "Error al escribir: " << error.message() << std::endl;
+        std::cout << "Error al escribir: " << error.message() << "\n";
     }
     
 }

@@ -413,7 +413,7 @@ void UDPClient::HandleReceivedDisconnection(unsigned char* recevBuff, size_t byt
 ///////////////////////////////////////////////////////////////////////////////////////
 void UDPClient::SendDateTime() {
     // cout << "Vamos a enviar datos" << endl;
-    boost::shared_ptr<string> message(new string(Utils::GetFullDateTime()));
+    std::shared_ptr<string> message(new string(Utils::GetFullDateTime()));
     socket.async_send_to(
         boost::asio::buffer(*message),
         serverEndpoint,
@@ -764,7 +764,7 @@ void UDPClient::HandleSentCollideNitro(const boost::system::error_code& errorCod
              << "\n";
 }
 
-void UDPClient::HandleSentDateTime(const boost::shared_ptr<std::string> message,
+void UDPClient::HandleSentDateTime(const std::shared_ptr<std::string> message,
                                    const boost::system::error_code& errorCode,
                                    std::size_t bytes_transferred) {
     if (!errorCode) {
