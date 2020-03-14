@@ -29,6 +29,7 @@ namespace CLE {
             CLResourceTexture* GetResourceTexture(const std::string);
             CLResourceMaterial* GetResourceMaterial(const std::string);
             CLResourceShader* GetResourceShader(const std::string, const std::string);
+            CLResourceShader* GetResourceShader(const std::string, const std::string, const std::string);
 
         private:
             CLResourceManager();
