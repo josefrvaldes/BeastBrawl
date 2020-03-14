@@ -4,23 +4,23 @@
 
 //TODO: Leerlo de fichero
 ManLight::ManLight(){
-    shared_ptr<Light> p = make_shared<Light>(glm::vec3(0.0,100.0,0.0));
+    shared_ptr<Light> p = make_shared<Light>(glm::vec3(280.0,20.0,-180.0));
     entities.push_back(p);
 
-    shared_ptr<Light> p2 = make_shared<Light>(glm::vec3(100.0,100.0,0.0));
+    shared_ptr<Light> p2 = make_shared<Light>(glm::vec3(-320.0,20.0,-200.0));
     entities.push_back(p2);
 
-    shared_ptr<Light> p3 = make_shared<Light>(glm::vec3(0.0,100.0,100.0));
+    shared_ptr<Light> p3 = make_shared<Light>(glm::vec3(-150.0,100.0,180.0));
     entities.push_back(p3);
 
-    shared_ptr<Light> p4 = make_shared<Light>(glm::vec3(100.0,100.0,100.0));
+    shared_ptr<Light> p4 = make_shared<Light>(glm::vec3(-260.0,100.0,570.0));
     entities.push_back(p4);
 
-    shared_ptr<Light> p5 = make_shared<Light>(glm::vec3(-200.0,100.0,-100.0));
+    shared_ptr<Light> p5 = make_shared<Light>(glm::vec3(350.0,100.0,570.0));
     entities.push_back(p5);
 
-    shared_ptr<Light> p6 = make_shared<Light>(glm::vec3(300.0,100.0,-300.0));
-    entities.push_back(p6);
+    // shared_ptr<Light> p6 = make_shared<Light>(glm::vec3(300.0,100.0,-300.0));
+    // entities.push_back(p6);
 
 
 }

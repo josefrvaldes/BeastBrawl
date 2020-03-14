@@ -39,7 +39,7 @@ struct PointLight {
 uniform Material material;
 
 uniform int num_Point_Lights;
-#define NUM_POINT_LIGHTS 100
+#define NUM_POINT_LIGHTS 25
 uniform PointLight pointLights[NUM_POINT_LIGHTS]; 
 //uniform sampler2D texture_diffuse1;
 
@@ -85,33 +85,8 @@ void main()
         i++;
     }
 
-    // vec3 ambient = pointLight.ambient * texture(material.diffuse,TexCoords).rgb;
-
-    // // diffuse
-    // vec3 lightDir = normalize(pointLight.position - FragPos);
-    // float diff = max(dot(norm,lightDir), 0.0);
-    // vec3 diffuse = pointLight.diffuse * diff * texture(material.diffuse, TexCoords).rgb;  
-
-    // // specular
-    // vec3 reflectDir = reflect(-lightDir, norm);  //Angulo reflectado
-    // float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess); //Formula de la luz especular
-    // vec3 specular = pointLight.specular * spec * texture(material.specular,TexCoords).rgb;  //Multiplicamos todo 
-
-    // float distance    = length(pointLight.position - FragPos); //Distancia de la luz al objeto
-    // float attenuation = 1.0 / (pointLight.constant + pointLight.linear * distance + pointLight.quadratic * (distance * distance)); //Formula de la atenuacion
-
-    // ambient *= attenuation;
-    // diffuse *= attenuation;
-    // specular*= attenuation;
-    // vec3 result = (ambient + diffuse + specular);
-
     FragColor = vec4(totalPointLight,1.0);
-    //FragColor = texture(material.diffuse, TexCoords);
 
-    if(num_Point_Lights == 3){
-        //FragColor = vec4(1.0,0.0,0.0,1.0);
-
-    }
     
 
 }

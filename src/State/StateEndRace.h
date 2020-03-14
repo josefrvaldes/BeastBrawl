@@ -24,7 +24,7 @@ class StateEndRace : public State{
     private:
         RenderFacade* renderEngine = { nullptr };
         SoundFacade* soundEngine = { nullptr };
-        //InputFacade* inputEngine = { nullptr };
+        InputFacade* inputEngine = { nullptr };
         //PhysicsFacade* physicsEngine = { nullptr };
 
 

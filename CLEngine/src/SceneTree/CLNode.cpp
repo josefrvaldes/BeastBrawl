@@ -35,6 +35,7 @@ CLNode* CLNode::AddMesh(unsigned int id){
     childs.push_back(node);
     node->SetFather(this);
 
+
     return node.get();
     
 }

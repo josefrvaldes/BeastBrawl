@@ -258,8 +258,8 @@ const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
     node->SetRotation(glm::vec3(cTransformable->rotation.x,Utils::IrrlichtAngleToOpenGL(cTransformable->rotation.y),cTransformable->rotation.z));
     node->SetScalation(cTransformable->scale);
 
-    auto pos = cTransformable->position;
-    cout << " la posicion donde esta la entidad es ( " << pos.x<< " , " << pos.y<< " , " <<-pos.z<< " )" << endl;
+    //auto pos = cTransformable->position;
+    //cout << " la posicion donde esta la entidad es ( " << pos.x<< " , " << pos.y<< " , " <<-pos.z<< " )" << endl;
     // BOUNDING BOX
     if(cType->type != ModelType::Light){
         float dimAABB = node->CalculateBoundingBox();
