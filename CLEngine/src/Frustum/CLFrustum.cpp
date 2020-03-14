@@ -94,10 +94,53 @@ CLFrustum::Visibility CLFrustum::IsInside(const glm::vec3& point) const
 
 	return Completly;
 }
-/*
-CLFrustum::Visibility CLFrustum::IsInside(const BoundingBox& box) const
+
+
+
+CLFrustum::Visibility CLFrustum::IsInside( const glm::vec3& point, const float size ) const
 {
-	auto GetVisibility = [](const dvec4& clip, const BoundingBox& box)
+
+	for(int i = 0; i < 6; i++ )
+	{
+		if(m_data[i][A] * (point.x - size) + m_data[i][B] * (point.y - size) + m_data[i][C] * (point.z - size) + m_data[i][D] > 0)
+		   continue;
+		if(m_data[i][A] * (point.x + size) + m_data[i][B] * (point.y - size) + m_data[i][C] * (point.z - size) + m_data[i][D] > 0)
+		   continue;
+		if(m_data[i][A] * (point.x - size) + m_data[i][B] * (point.y + size) + m_data[i][C] * (point.z - size) + m_data[i][D] > 0)
+		   continue;
+		if(m_data[i][A] * (point.x + size) + m_data[i][B] * (point.y + size) + m_data[i][C] * (point.z - size) + m_data[i][D] > 0)
+		   continue;
+		if(m_data[i][A] * (point.x - size) + m_data[i][B] * (point.y - size) + m_data[i][C] * (point.z + size) + m_data[i][D] > 0)
+		   continue;
+		if(m_data[i][A] * (point.x + size) + m_data[i][B] * (point.y - size) + m_data[i][C] * (point.z + size) + m_data[i][D] > 0)
+		   continue;
+		if(m_data[i][A] * (point.x - size) + m_data[i][B] * (point.y + size) + m_data[i][C] * (point.z + size) + m_data[i][D] > 0)
+		   continue;
+		if(m_data[i][A] * (point.x + size) + m_data[i][B] * (point.y + size) + m_data[i][C] * (point.z + size) + m_data[i][D] > 0)
+		   continue;
+
+		// If we get here, it isn't in the frustum
+		return Invisible;
+	}
+
+	return Completly;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+CLFrustum::Visibility CLFrustum::IsInside(const Box3D& box) const
+{
+	auto GetVisibility = [](const dvec4& clip, const Box3D& box)
 	{
 		double x0 = box.GetMin().x * clip.x;
 		double x1 = box.GetMax().x * clip.x;
@@ -157,8 +200,8 @@ CLFrustum::Visibility CLFrustum::IsInside(const BoundingBox& box) const
 	}
 
 	return Partially;
-}
-*/
+}*/
+
 
 
 

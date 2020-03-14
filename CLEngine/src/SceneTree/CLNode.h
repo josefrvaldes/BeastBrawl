@@ -36,6 +36,7 @@ class CLNode{
         glm::vec3 GetScalation()   const       { return scalation; }
         glm::mat4 GetTransformationMat() const { return transformationMat; }
         GLuint GetShaderProgramID() const      { return shaderProgramID;}
+        float GetBoundingBox() const           { return dimensionsBoundingBox;}
         glm::vec3 GetGlobalTranslation() const;
         glm::vec3 GetGlobalRotation() const;
         glm::vec3 GetGlobalScalation() const;
@@ -70,7 +71,7 @@ class CLNode{
         glm::mat4 CalculateTransformationMatrix();
         void CalculateViewProjMatrix();
         void CalculateLights();
-        void CalculateBoundingBox();
+        float CalculateBoundingBox();
 
         void DrawTree(CLNode* root);
         void DFSTree(glm::mat4);
@@ -106,9 +107,11 @@ class CLNode{
         inline static vector<CLNode*> cameras;
 
         // BOUNDING BOX
-        glm::vec3 extremeMinMesh    {glm::vec3(0.0,0.0,0.0)}; // definimos el vertice mayor de la malla para el BoundingBpx
-        glm::vec3 extremeMaxMesh    {glm::vec3(0.0,0.0,0.0)}; // definimos el vertice menos de la malla para el BoundingBox
-
+        //glm::vec3 extremeMinMesh    {glm::vec3(0.0,0.0,0.0)}; // definimos el vertice mayor de la malla para el BoundingBpx
+        //glm::vec3 extremeMaxMesh    {glm::vec3(0.0,0.0,0.0)}; // definimos el vertice menos de la malla para el BoundingBox
+        float dimensionsBoundingBox {0.0}; // width , height, depht
+        glm::vec3 RotatePointAroundCenter(const glm::vec3& point_ , const glm::vec3& center, const glm::vec3& rot) const;
+        glm::vec3 TranslatePointAroundCenter(const glm::vec3& point_ , const glm::vec3& center, const glm::vec3& trans) const;
 };
 
 }

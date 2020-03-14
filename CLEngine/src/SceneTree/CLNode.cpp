@@ -133,13 +133,52 @@ glm::vec3 CLNode::GetGlobalScalation() const{
 }
 
 void CLNode::SetTranslation(glm::vec3 t) {
-    translation = t; 
+    // BOUNDING BOX
+    //auto diference = t-translation;
+    //extremeMinMesh += diference;
+    //extremeMaxMesh += diference;
+    // TRANSLATION
+    translation = t;
+
     ActivateFlag();
 }
 
 void CLNode::SetRotation(glm::vec3 r) {
+    // BPUNDONG BOX
+    //if(rotation != r){
+    //    extremeMinMesh = RotatePointAroundCenter(extremeMinMesh, translation, r);
+    //    extremeMaxMesh = RotatePointAroundCenter(extremeMaxMesh, translation, r);
+    //}
+    // ROTATION
     rotation = r; 
     ActivateFlag();
+}
+
+glm::vec3 CLNode::RotatePointAroundCenter(const glm::vec3& point_ , const glm::vec3& center, const glm::vec3& rot) const{
+    glm::vec3 newPoint = glm::vec3(0.0,0.0,0.0);
+    // rotation Y
+    if(rotation.y != rot.y){
+        newPoint.x += ((point_.x - center.x) * cos(rot.y-rotation.y))  + center.x;
+        newPoint.z += ((point_.z - center.z) * sin(rot.y-rotation.y))  + center.z;
+    }
+
+
+//x2 = x1 * cos(angulo) - y1 * sin(angulo)
+//y2 = x1 * sin(angulo) - y1 * cos(angulo)
+
+
+    // rotation X
+    //if(rotation.x != rot.x){
+    //    newPoint.y += ((point_.y - center.y) * cos(rot.x-rotation.x)) - ((center.z - point_.z) * sin(rot.x-rotation.x)) + center.y;
+    //    newPoint.z += ((center.z - point_.z) * cos(rot.x-rotation.x)) - ((point_.y - center.y) * sin(rot.x-rotation.x)) + center.z;
+    //}
+    //// rotation Z
+    //if(rotation.z != rot.z){
+    //    newPoint.y += ((point_.y - center.y) * cos(rot.z-rotation.z)) - ((center.x - point_.x) * sin(rot.z-rotation.z)) + center.y;
+    //    newPoint.x += ((center.x - point_.x) * cos(rot.z-rotation.z)) - ((point_.y - center.y) * sin(rot.z-rotation.z)) + center.x;
+    //}
+
+    return newPoint;
 }
 
 void CLNode::SetScalation(glm::vec3 s) {
@@ -206,9 +245,11 @@ void CLNode::DFSTree(glm::mat4 mA) {
     }
 
     auto& frustum_m = GetActiveCamera()->GetFrustum();
-    CLE::CLFrustum::Visibility frusVisibility = frustum_m.IsInside(translation);
+    //CLE::CLFrustum::Visibility frusVisibility = frustum_m.IsInside(translation);
+    CLE::CLFrustum::Visibility frusVisibility = frustum_m.IsInside(translation, dimensionsBoundingBox);
 
-    if(entity && visible /*&& frusVisibility == CLE::CLFrustum::Visibility::Completly*/) { 
+
+    if(entity && visible && frusVisibility == CLE::CLFrustum::Visibility::Completly) { 
         // La matriz model se pasa aqui wey
         glUseProgram(shaderProgramID);
         glm::mat4 MVP = projection * view * transformationMat;
@@ -356,14 +397,13 @@ void CLNode::DrawTree(CLNode* root){
 }
 
 
-void CLNode::CalculateBoundingBox(){
+float CLNode::CalculateBoundingBox(){
+    glm::vec3 extremeMinMesh = glm::vec3(0.0,0.0,0.0); 
+    glm::vec3 extremeMaxMesh = glm::vec3(0.0,0.0,0.0);
     //auto mesh_m = static_cast<CLMesh*>(e.get())->GetMesh();
     //auto vecMesh = mesh_m->GetvectorMesh();
     auto resource = static_cast<CLMesh*>(this->GetEntity())->GetMesh();
     auto vecMesh = static_cast<CLResourceMesh*>(resource)->GetvectorMesh();
-    cout << "Antes de entrar el extremo minimo y maximo era: " << endl;
-    cout << "minimo: ( " << extremeMinMesh.x<< " , " << extremeMinMesh.y<< " , " <<extremeMinMesh.z<< 
-    " ) , maximo: " << extremeMaxMesh.x<< " , " << extremeMaxMesh.y<< " , " << extremeMaxMesh.z<< " )"<< endl;
 
     int i = 0;
     for(auto currentVecMesh = vecMesh.begin(); currentVecMesh != vecMesh.end(); ++currentVecMesh){
@@ -389,7 +429,19 @@ void CLNode::CalculateBoundingBox(){
         }
         i++;
     }
-    cout << "Despues de entrar el extremo minimo y maximo era: " << endl;
-    cout << "minimo: ( " << extremeMinMesh.x<< " , " << extremeMinMesh.y<< " , " <<extremeMinMesh.z<< 
-    " ) , maximo: " << extremeMaxMesh.x<< " , " << extremeMaxMesh.y<< " , " << extremeMaxMesh.z<< " )"<< endl;
+    // una vez salimos, debemos transladarlo al lugar de creacion del objeto
+    extremeMinMesh += this->GetTranslation();
+    extremeMaxMesh += this->GetTranslation();
+
+    dimensionsBoundingBox = glm::distance(extremeMaxMesh.x, extremeMinMesh.x);
+    if(dimensionsBoundingBox < glm::distance(extremeMaxMesh.y, extremeMinMesh.y))
+        dimensionsBoundingBox = glm::distance(extremeMaxMesh.y, extremeMinMesh.y);
+    if(dimensionsBoundingBox < glm::distance(extremeMaxMesh.z, extremeMinMesh.z))
+        dimensionsBoundingBox = glm::distance(extremeMaxMesh.z, extremeMinMesh.z);
+
+    return dimensionsBoundingBox;
+
+    //cout << "Los extremos son: " << endl;
+    //cout << "minimo: ( " << extremeMinMesh.x<< " , " << extremeMinMesh.y<< " , " <<extremeMinMesh.z<< 
+    //" ) , maximo: " << extremeMaxMesh.x<< " , " << extremeMaxMesh.y<< " , " << extremeMaxMesh.z<< " )"<< endl;
 }
