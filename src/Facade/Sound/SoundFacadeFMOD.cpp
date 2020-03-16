@@ -115,6 +115,11 @@ void SoundFacadeFMOD::SubscribeToGameEvents(const uint8_t numState) {
                 "SoundCrash"});
 
             EventManager::GetInstance().SubscribeMulti(Listener{
+                    EventType::CRASH_WALL,
+                    bind(&SoundFacadeFMOD::SoundCrashWall, this, placeholders::_1),
+                    "SoundCrashWall"});
+
+            EventManager::GetInstance().SubscribeMulti(Listener{
                 EventType::BREAK_BOX,
                 bind(&SoundFacadeFMOD::SoundBreakBox, this, placeholders::_1),
                 "SoundBreakBox"});
@@ -439,7 +444,7 @@ void SoundFacadeFMOD::SoundCatchTotem(DataMap* d) {
     PlayEvent(mapID);
 }                       //------------------------------------ HECHO
 
-void SoundFacadeFMOD::SoundCrash(DataMap* d) {                                //------------------------------------ HECHO - TODO: Si esta con nitro no tiene que sonar la voz del choque, ya que es intencionado
+void SoundFacadeFMOD::SoundCrash(DataMap* d) {                                //------------------------------------ HECHO - Si esta con nitro no tiene que sonar la voz del choque, ya que es intencionado
     bool mainCharacter = any_cast<bool>((*d)[MAIN_CAR]);
     auto id = any_cast<uint16_t>((*d)[ID]);
     auto pos = any_cast<glm::vec3>((*d)[VEC3_POS]);
@@ -447,15 +452,31 @@ void SoundFacadeFMOD::SoundCrash(DataMap* d) {                                //
     //int max = 100;
     //int min = 0;
     //int randNum = rand() % (max - min + 1) + min;
-    if (mainCharacter /*&& randNum <= 33*/) {
+    if (mainCharacter /*&& randNum <= 33*/ && !soundEngine->IsPlaying2D("Personajes/nitro")) {
         SetParameter("Personajes/voces", "Tipo", TipoVoz::ChoqueEnemigo);
         PlayEvent("Personajes/voces");
     }
     string mapID = "Coche/choque" + to_string(id);
     if (!soundEngine->IsPlayingEstatic3D(mapID)) {
-        //cout << "**** QUE ME CHOCAO CON UN PAVO" << endl;
+        cout << "**** QUE ME CHOCAO CON UN PAVO" << endl;
         SetEventPositionEstatic3D(mapID, pos);
         PlayEvent(mapID);
+    }
+}
+
+void SoundFacadeFMOD::SoundCrashWall(DataMap* d) {                                //------------------------------------ HECHO - Si esta con nitro no tiene que sonar la voz del choque, ya que es intencionado
+
+    auto id = any_cast<uint16_t>((*d)[ID]);
+    auto pos = any_cast<glm::vec3>((*d)[VEC3_POS]);
+
+    string name = "Coche/motor" + to_string(id);
+    SetParameter(name, "Personaje", 6);
+
+    name = "Coche/choque" + to_string(id);
+    if (!soundEngine->IsPlayingEstatic3D(name)) {
+        cout << "**** QUE ME CHOCAO CON UNA PARED: " << name << endl;
+        SetEventPositionEstatic3D(name, pos);
+        PlayEvent(name);
     }
 }
 

@@ -56,6 +56,7 @@ enum EventType {
     CATCH_TOTEM,
     NO_SHIELD,
     CRASH,
+    CRASH_WALL,
     BREAK_BOX,
     DRIFT,
     NO_DRIFT,

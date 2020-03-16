@@ -60,6 +60,7 @@ class SoundFacadeFMOD : public SoundFacade {
         void SoundHurt(DataMap*);
         void SoundCatchTotem(DataMap*);
         void SoundCrash(DataMap*);
+        void SoundCrashWall(DataMap*);
         void SoundBreakBox(DataMap*);
         void SoundDrift(DataMap*);
         void SoundRandomSentence(DataMap*);
