@@ -23,6 +23,7 @@
 #include "ResourceManager/CLResourceShader.h"
 #include "ResourceManager/CLResourceMesh.h"
 #include "ResourceManager/CLResource.h"
+#include "Built-In-Classes/CLColor.h"
 
 
 
@@ -51,13 +52,13 @@ int main() {
     CLResourceManager* resourceManager = CLResourceManager::GetResourceManager();
     auto resourceShader = resourceManager->GetResourceShader("CLEngine/src/Shaders/lightMapping.vert", "CLEngine/src/Shaders/lightMapping.frag");
     auto resourceShader2 = resourceManager->GetResourceShader("CLEngine/src/Shaders/phongMaterialVert.glsl", "CLEngine/src/Shaders/phongMaterialFrag.glsl");
-    auto resourceShader3 = resourceManager->GetResourceShader("CLEngine/src/Shaders/debugShader.vert", "CLEngine/src/Shaders/debugShader.frag", "CLEngine/src/Shaders/debugShader.geom");
+    //auto debugShader = resourceManager->GetResourceShader("CLEngine/src/Shaders/debugShader.vert", "CLEngine/src/Shaders/debugShader.frag", "CLEngine/src/Shaders/debugShader.geom");
     auto resourceMeshBox = resourceManager->GetResourceMesh("media/TEST_BOX.fbx");
     auto resourceMeshTotem = resourceManager->GetResourceMesh("media/totem_tex.fbx");
     auto resourceMesh = resourceManager->GetResourceMesh("media/kart_physics.fbx");
     auto resourceMeshOBJ = resourceManager->GetResourceMesh("media/kart.obj");
-
-    
+ 
+    //auto id = debugShader->GetProgramID();
     //----------------------------------------------------------------------------------------------------------------SHADER
     
  
@@ -89,52 +90,50 @@ int main() {
         auto camera = smgr->AddCamera(3);
         camera->SetShaderProgramID(resourceShader->GetProgramID());
 
-        auto mesh2 = mesh1->AddMesh(4);
+        auto mesh2 = smgr->AddMesh(4);
         mesh2->SetShaderProgramID(resourceShader->GetProgramID());
 
         
-        auto mesh3 = mesh2->AddMesh(5);
-        mesh3->SetShaderProgramID(resourceShader2->GetProgramID());
+        //auto mesh3 = mesh2->AddMesh(5);
+        //mesh3->SetShaderProgramID(resourceShader2->GetProgramID());
 
         static_cast<CLCamera*>(camera->GetEntity())->SetCameraTarget(mesh1->GetTranslation());
 
     //smgr->DFSTree(glm::mat4(1.0));
-    vector<shared_ptr<CLEntity>> mallas;
-    vector<CLNode*> nodes;
+    // vector<shared_ptr<CLEntity>> mallas;
+    // vector<CLNode*> nodes;
 
-    int max = 200;
-    int min = -200;
-    int j = 0;
-    for(int i = 50; i<100; i++){
-        nodes.push_back(meshes->AddMesh(i));
-        nodes[j]->SetShaderProgramID(resourceShader->GetProgramID());
+    // int max = 200;
+    // int min = -200;
+    // int j = 0;
+    // for(int i = 50; i<100; i++){
+    //     nodes.push_back(meshes->AddMesh(i));
+    //     nodes[j]->SetShaderProgramID(resourceShader->GetProgramID());
 
-        int randNumX = rand()%(max-min + 1) + min;
-        int randNumY = rand()%(max-min + 1) + min;
-        int randNumZ = rand()%(max-min + 1) + min;
-        static_cast<CLMesh*>(nodes[j]->GetEntity())->SetMesh(resourceMeshTotem);
-        nodes[j]->SetTranslation(glm::vec3(randNumX,randNumY,randNumZ));
-        j++;
-    }
+    //     int randNumX = rand()%(max-min + 1) + min;
+    //     int randNumY = rand()%(max-min + 1) + min;
+    //     int randNumZ = rand()%(max-min + 1) + min;
+    //     static_cast<CLMesh*>(nodes[j]->GetEntity())->SetMesh(resourceMeshTotem);
+    //     nodes[j]->SetTranslation(glm::vec3(randNumX,randNumY,randNumZ));
+    //     j++;
+    // }
 
     //      smgr->DrawTree(smgr);
 
 
     static_cast<CLMesh*>(mesh1->GetEntity())->SetMesh(resourceMeshBox);
-    static_cast<CLMesh*>(mesh2->GetEntity())->SetMesh(resourceMesh);
-    static_cast<CLMesh*>(mesh3->GetEntity())->SetMesh(resourceMeshOBJ);
+    static_cast<CLMesh*>(mesh2->GetEntity())->SetMesh(resourceMeshBox);
+    //static_cast<CLMesh*>(mesh3->GetEntity())->SetMesh(resourceMeshOBJ);
 
-    camera->SetTranslation(glm::vec3(80.0f, 5.0f, -9.0f));
+    camera->SetTranslation(glm::vec3(70.0f, 0.0f, 60.0f));
     mesh1->SetScalation(glm::vec3(2.0f, 2.0f, 2.0f));
     mesh1->SetRotation(glm::vec3(0.0f,0.0f,0.0f));
-    mesh1->SetTranslation(glm::vec3(50.0f,0.0f,0.0f));
-    mesh2->SetScalation(glm::vec3(0.2f, 0.2f, 0.2f));
+    mesh1->SetTranslation(glm::vec3(50.0f,50.0f,50.0f));
+    mesh2->SetScalation(glm::vec3(2.0f, 2.0f, 2.0f));
     mesh2->SetRotation(glm::vec3(0.0f, 180.0f, 0.0f));
-    mesh2->SetTranslation(glm::vec3(10.0f,0.0f,0.0f));
-    mesh3->SetTranslation(glm::vec3(-40.0f,0.0f,0.0f));
-    mesh3->SetScalation(glm::vec3(0.2f,0.2f,0.2f));
+    mesh2->SetTranslation(glm::vec3(95.0f,80.0f,60.0f));
+    //mesh3->SetScalation(glm::vec3(0.2f,0.2f,0.2f));
 
-    mesh2->GetGlobalTranslation();
 
     
     
@@ -184,34 +183,18 @@ int main() {
         light1->SetTranslation(lightPos);
         light2->SetTranslation(lightPos2);
         light3->SetTranslation(lightPos3);
-
-
-        // GLuint i = 0;
-        // for(auto light : lights){
-        //     string number = to_string(i);
-
-        //     auto lightEntity = static_cast<CLLight*>(light->GetEntity());
-            
-        //     glUniform3fv(glGetUniformLocation(resourceShader->GetProgramID(), ("pointLights[" + number + "].position").c_str()),1,glm::value_ptr(light->GetGlobalTranslation()));
-        //     glUniform3fv(glGetUniformLocation(resourceShader->GetProgramID(), ("pointLights[" + number + "].ambient").c_str()), 1,glm::value_ptr(lightEntity->GetAmbient()));
-        //     glUniform3fv(glGetUniformLocation(resourceShader->GetProgramID(), ("pointLights[" + number + "].diffuse").c_str()), 1, glm::value_ptr(lightEntity->GetDiffuse()));
-        //     glUniform3fv(glGetUniformLocation(resourceShader->GetProgramID(), ("pointLights[" + number + "].specular").c_str()), 1, glm::value_ptr(lightEntity->GetSpecular()));
-        //     glUniform1f(glGetUniformLocation(resourceShader->GetProgramID(), ("pointLights[" + number + "].constant").c_str()), lightEntity->GetConstant());
-        //     glUniform1f(glGetUniformLocation(resourceShader->GetProgramID(), ("pointLights[" + number + "].linear").c_str()), lightEntity->GetLinear());
-        //     glUniform1f(glGetUniformLocation(resourceShader->GetProgramID(), ("pointLights[" + number + "].quadratic").c_str()), lightEntity->GetQuadratic());
-
-
-        //     i++;
-        // }
         
 
 
         //meshes->SetRotation(glm::vec3(0.0f,0.0f,index));
         // auto trans1 = mesh1->GetTranslation();
         // mesh1->SetTranslation(glm::vec3(trans1.x+index,trans1.y,trans1.z));
-        static_cast<CLCamera*>(camera->GetEntity())->SetCameraTarget(mesh2->GetGlobalTranslation());
+        //static_cast<CLCamera*>(camera->GetEntity())->SetCameraTarget(mesh2->GetGlobalTranslation());
+        static_cast<CLCamera*>(camera->GetEntity())->SetCameraTarget(glm::vec3(70.0f,70.0f,70.0f));
+        auto point1 = mesh1->GetGlobalTranslation();
+        auto point2 = mesh2->GetGlobalTranslation();
+        smgr->Draw3DLine(point1.x,point1.y,point1.z,point2.x,point2.y,point2.z,CLE::CLColor(255.0,0.0,0.0,255.0));
 
-        //cout << "Distancia entre coche y luz: " << glm::distance(mesh2->GetGlobalTranslation(),lightPos) << endl;
 
         // Measure speed
         double currentTime = glfwGetTime();

@@ -12,6 +12,10 @@
 #include "CLLight.h"
 #include "CLCamera.h"
 
+#include "../ResourceManager/CLResourceManager.h"
+#include "../ResourceManager/CLResourceShader.h"
+
+#include "../Built-In-Classes/CLColor.h"
 
 using namespace std;
 //using namespace CLE;
@@ -25,28 +29,28 @@ class CLNode{
         ~CLNode(){};
 
         //Getters
-        CLEntity* GetEntity() const                      { return entity.get(); }
-        CLNode*   GetFather() const                      { return father; }
+        CLEntity* GetEntity()                    const   { return entity.get(); }
+        CLNode*   GetFather()                    const   { return father; }
         vector<shared_ptr<CLNode>>   GetChilds() const   { return childs; }
-        glm::vec3 GetTranslation() const       { return translation; }
-        glm::vec3 GetRotation()    const       { return rotation; }
-        glm::vec3 GetScalation()   const       { return scalation; }
-        glm::mat4 GetTransformationMat() const { return transformationMat; }
-        GLuint GetShaderProgramID() const      { return shaderProgramID;}
-        glm::vec3 GetGlobalTranslation() const;
-        glm::vec3 GetGlobalRotation() const;
-        glm::vec3 GetGlobalScalation() const;
+        glm::vec3 GetTranslation()               const   { return translation; }
+        glm::vec3 GetRotation()                  const   { return rotation; }
+        glm::vec3 GetScalation()                 const   { return scalation; }
+        glm::mat4 GetTransformationMat()         const   { return transformationMat; }
+        GLuint GetShaderProgramID()              const   { return shaderProgramID;}
+        glm::vec3 GetGlobalTranslation()         const;
+        glm::vec3 GetGlobalRotation()            const;
+        glm::vec3 GetGlobalScalation()           const;
         CLCamera* GetActiveCamera();
-        vector<CLNode*> GetLights()             { return lights; };
-        vector<CLNode*> GetCameras()            { return cameras; };
+        vector<CLNode*> GetLights()                      { return lights; };
+        vector<CLNode*> GetCameras()                     { return cameras; };
 
         //Setters
-        bool SetFather(CLNode* f)                       { father = f; return true; }
+        bool SetFather(CLNode* f)                        { father = f; return true; }
         void SetTranslation(glm::vec3); 
         void SetRotation(glm::vec3);
         void SetScalation(glm::vec3);
         void SetTransformationMat(glm::mat4 transfMat)  { transformationMat = transfMat; }
-        void SetShaderProgramID(GLuint id)         { shaderProgramID = id; }
+        void SetShaderProgramID(GLuint id)              { shaderProgramID = id; }
 
         //Methods
         CLNode* AddGroup(unsigned int id);
@@ -67,12 +71,12 @@ class CLNode{
         glm::mat4 CalculateTransformationMatrix();
         void CalculateViewProjMatrix();
         void CalculateLights();
-
-        void DrawTree(CLNode* root);
         void DFSTree(glm::mat4);
-
         void SetVisible(bool v) {visible = v;};
+        const void Draw3DLine(float x1, float y1, float z1, float x2, float y2, float z2,CLColor color) const;
 
+        //DEBUG
+        void DrawTree(CLNode* root); 
     private:
 
         void ActivateFlag();
@@ -100,6 +104,7 @@ class CLNode{
 
         inline static vector<CLNode*> lights;
         inline static vector<CLNode*> cameras;
+        inline static GLuint debugShader = 0;
 
 };
 

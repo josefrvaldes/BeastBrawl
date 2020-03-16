@@ -11,6 +11,13 @@ CLNode::CLNode(){
     rotation = glm::vec3(0.0f, 0.0f, 0.0f);
     scalation = glm::vec3(1.0f, 1.0f, 1.0f);
     transformationMat = glm::mat4(1.0f);
+
+    //Inicializamos el shader de debug
+    if(!debugShader){
+        auto resourceDebugShader = CLResourceManager::GetResourceManager()->GetResourceShader("CLEngine/src/Shaders/debugShader.vert", "CLEngine/src/Shaders/debugShader.frag");
+        debugShader = resourceDebugShader->GetProgramID();
+    }
+    
 }
 
 CLNode::CLNode(shared_ptr<CLEntity> entity) : CLNode() {
@@ -312,6 +319,54 @@ CLCamera* CLNode::GetActiveCamera(){
         }
     }
     return nullptr;
+}
+
+const void CLNode::Draw3DLine(float x1, float y1, float z1, float x2, float y2, float z2,CLColor color) const{
+
+    // float line[] = {
+    //     x1, y1, z1,
+    //     x1, y2, z2
+    // };
+
+    float line[] = {
+        -1.0f,0.0f,1.0f,
+        0.0f,0.5f,1.0f
+    };
+ 
+    
+    glEnable(GL_LINE_SMOOTH);
+    glLineWidth(10);
+    glHint(GL_LINE_SMOOTH_HINT,  GL_NICEST);
+
+    unsigned int VBO, VAO;
+    glGenBuffers(1, &VBO);
+    glGenVertexArrays(1, &VAO);
+    glBindVertexArray(VAO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(line), line, GL_STATIC_DRAW);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE,  6 * sizeof(float), 0);
+    glBindVertexArray(0);
+
+    glm::mat4 modelMat(1.0f);
+    modelMat = glm::translate(modelMat,glm::vec3(x1,y1,z1));
+
+    glUseProgram(debugShader);
+
+    glm::vec4 clcolor(color.GetRedNormalized(),color.GetGreenNormalized(),color.GetBlueNormalized(),color.GetAlphaNormalized());
+    glUniformMatrix4fv(glGetUniformLocation(shaderProgramID, "model"), 1, GL_FALSE, glm::value_ptr(modelMat));
+    glUniformMatrix4fv(glGetUniformLocation(shaderProgramID, "view"), 1, GL_FALSE, glm::value_ptr(view));
+    glUniformMatrix4fv(glGetUniformLocation(shaderProgramID, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+    glUniformMatrix4fv(glGetUniformLocation(shaderProgramID, "clcolor"), 1, GL_FALSE, glm::value_ptr(clcolor));
+
+    glBindVertexArray(VAO);
+    glDrawArrays(GL_LINES, 0,4); 
+    glUseProgram(0);
+    glBindVertexArray(0);
+
+    // Dibujar el triángulo !
+    //glDrawArrays(GL_TRIANGLES, 0, 3); // Empezar desde el vértice 0S; 3 vértices en total -> 1 triángulo
+
 }
 
 
