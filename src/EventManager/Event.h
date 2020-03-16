@@ -55,7 +55,8 @@ enum EventType {
     HURT,
     CATCH_TOTEM,
     NO_SHIELD,
-    CRASH_ENEMY,
+    CRASH,
+    CRASH_WALL,
     BREAK_BOX,
     DRIFT,
     NO_DRIFT,
@@ -117,6 +118,7 @@ struct Data {
     CTransformable* posCochePerseguir;
     typeCPowerUp typePowerUp;
     bool mainCharacter;
+    bool stole;
 };
 
 struct Event {

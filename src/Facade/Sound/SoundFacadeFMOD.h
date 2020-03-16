@@ -22,6 +22,7 @@ class SoundFacadeFMOD : public SoundFacade {
         void SetState(const uint8_t)    override;
 
         void PlayEvent(const string&)   override;
+        void PlayEventWithSpecificVolume (const string&, float) override;
         void StopAllEvents()            override;
         void StopEvent(const string&)   override;
         void PauseAllEvent()            override;
@@ -59,6 +60,7 @@ class SoundFacadeFMOD : public SoundFacade {
         void SoundHurt(DataMap*);
         void SoundCatchTotem(DataMap*);
         void SoundCrash(DataMap*);
+        void SoundCrashWall(DataMap*);
         void SoundBreakBox(DataMap*);
         void SoundDrift(DataMap*);
         void SoundRandomSentence(DataMap*);

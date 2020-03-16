@@ -175,6 +175,36 @@ void SoundEngine::PlayEvent(const string& nameID) {
 }
 
 /**
+ * Ejecuta el evento de sonido con un volumen determinado
+ * TO-DO: Actualmente no se puede crear una instancia del mismo evento porque el ID es el mismo.
+ * @param nameID - Identificador del sonido en el mapa de instancias.
+ */
+void SoundEngine::PlayEventWithVolume(const string& nameID, float v) {
+    auto instance = eventInstances2D.find(nameID);
+    if (instance != eventInstances2D.end()) {
+        ERRFMODCHECK(instance->second->GetInstance()->setVolume(v));
+        ERRFMODCHECK(instance->second->GetInstance()->start());
+    } else{
+        instance = eventInstancesEstatic3D.find(nameID);
+        if(instance != eventInstancesEstatic3D.end()) {
+            //cout << "Sonando el evento estatico: " << nameID << endl;
+            ERRFMODCHECK(instance->second->GetInstance()->setVolume(v));
+            ERRFMODCHECK(instance->second->GetInstance()->start());
+        } else {
+            instance = eventInstancesDinamic3D.find(nameID);
+            if (instance != eventInstancesDinamic3D.end()) {
+                //cout << "Sonando el evento dinamico: " << nameID << endl;
+                ERRFMODCHECK(instance->second->GetInstance()->setVolume(v));
+                ERRFMODCHECK(instance->second->GetInstance()->start());
+            }
+            else {
+                cout << "EL EVENTO " << nameID << " NO ESTA" << endl;
+            }
+        }
+    }
+}
+
+/**
  * Para todos los sonidos.
  * @param nameID - Identificador del sonido en el mapa de instancias.
  */

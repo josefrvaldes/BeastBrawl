@@ -360,9 +360,9 @@ void CLPhysics::SeparateSphereGround(IntersectData &intersData, CTransformable &
 }
 
 void CLPhysics::CentralSystemCollisions() {
-    HandleCollisions();            // COLISIONES ENTRE COCHES --> HECHO
-    HandleCollisionsWithPlanes();  // COLISIONES COCHES PLANOS --> NO HECHO
-    HandleCollisionsWithOBB();     // COLISIONES COCHES OBB --> NO HECHO
+    HandleCollisions();            // COLISIONES ENTRE COCHES
+    HandleCollisionsWithPlanes();  // COLISIONES COCHES PLANOS
+    HandleCollisionsWithOBB();     // COLISIONES COCHES OBB
 }
 
 void CLPhysics::RepositionBounding() {
@@ -413,6 +413,7 @@ void CLPhysics::HandleCollisionsWithOBB() {
         CBoundingSphere *spcar = static_cast<CBoundingSphere *>(car->GetComponent(CompType::CompBoundingSphere).get());
         //CBoundingChassis *chaCar = static_cast<CBoundingChassis *>(car->GetComponent(CompType::CompBoundingChassis).get());
         CTransformable *trcar = static_cast<CTransformable *>(car->GetComponent(CompType::TransformableComp).get());
+        CId *cId = static_cast<CId *>(car->GetComponent(CompType::IdComp).get());
         CCar *ccarcar = static_cast<CCar *>(car->GetComponent(CompType::CarComp).get());
         //CExternalForce *cExternalForce = static_cast<CExternalForce *>(car->GetComponent(CompType::CompExternalForce).get());
         for (size_t currentOBB = 0; currentOBB < numOBBs; currentOBB++) {
@@ -422,9 +423,20 @@ void CLPhysics::HandleCollisionsWithOBB() {
             CBoundingOBB *cOBBactual = static_cast<CBoundingOBB *>(obbActual->GetComponent(CompType::CompBoundingOBB).get());
             ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             PositionSphereIntoTransformable(*trcar, *spcar);
-            HandleCollisions(*trcar, *spcar, *ccarcar, false, *cOBBactual);
+            auto cspeed = ccarcar->speed;
+            if ( HandleCollisions(*trcar, *spcar, *ccarcar, false, *cOBBactual) ) {
+                if (cspeed >= 100) {
+                    // Sonido choque
+                    shared_ptr<DataMap> dataSound = make_shared<DataMap>();
+                    (*dataSound)[ID] = cId->id;
+                    (*dataSound)[VEC3_POS] = trcar->position;
+                    EventManager::GetInstance().AddEventMulti(Event{CRASH_WALL, dataSound});
+                }
+            }
+
             ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //CollisionsSphereOBB(*trcar, *chaCar, *ccarcar, false, *cOBBactual);
+
         }
     }
 }
@@ -445,13 +457,23 @@ void CLPhysics::HandleCollisionsWithPlanes() {
         //CBoundingSphere *spcar = static_cast<CBoundingSphere *>(car->GetComponent(CompType::CompBoundingSphere).get());
         CBoundingChassis *chaCar = static_cast<CBoundingChassis *>(car->GetComponent(CompType::CompBoundingChassis).get());
         CTransformable *trcar = static_cast<CTransformable *>(car->GetComponent(CompType::TransformableComp).get());
+        CId *cId = static_cast<CId *>(car->GetComponent(CompType::IdComp).get());
         CCar *ccarcar = static_cast<CCar *>(car->GetComponent(CompType::CarComp).get());
         for (size_t currentWall = 0; currentWall < numWalls; currentWall++) {
             BoundingWall *wall = static_cast<BoundingWall *>(walls[currentWall].get());
             CBoundingPlane *plane = static_cast<CBoundingPlane *>(wall->GetComponent(CompType::CompBoundingPlane).get());
 
             //HandleCollisions(*trcar, *spcar, *ccarcar, false, *plane);
-            CollisionsSpherePlane(*trcar, *chaCar, *ccarcar, false, *plane);
+            auto cspeed = ccarcar->speed;
+            if ( CollisionsSpherePlane(*trcar, *chaCar, *ccarcar, false, *plane) ) {
+                if (cspeed >= 100) {
+                    // Sonido choque
+                    shared_ptr<DataMap> dataSound = make_shared<DataMap>();
+                    (*dataSound)[ID] = cId->id;
+                    (*dataSound)[VEC3_POS] = trcar->position;
+                    EventManager::GetInstance().AddEventMulti(Event{CRASH_WALL, dataSound});
+                }
+            }
         }
     }
 }
@@ -464,7 +486,10 @@ void CLPhysics::Simulate(float delta) {
 }
 
 void CLPhysics::HandleCollisions() {
-    ManCar *manCar = static_cast<ManCar *>(managers[0]);
+
+    shared_ptr<DataMap> dataSound = make_shared<DataMap>();
+
+    auto *manCar = static_cast<ManCar *>(managers[0]);
 
     const auto &entities = manCar->GetEntities();
     size_t numEntities = entities.size();
@@ -493,6 +518,22 @@ void CLPhysics::HandleCollisions() {
             }
             if (intersect) {
                 checkCollisionNitro(car1, car2);
+
+                // Sonido choque
+                auto cId1 = static_cast<CId*>(car1->GetComponent(CompType::IdComp).get());
+                auto cId2 = static_cast<CId*>(car2->GetComponent(CompType::IdComp).get());
+                auto cMainId = static_cast<CId*>(manCar->GetCar()->GetComponent(CompType::IdComp).get());
+                auto cMainSpeed = static_cast<CCar*>(manCar->GetCar()->GetComponent(CompType::CarComp).get());
+                if(cId1 && cId2 && cMainId && cMainSpeed) {
+                    (*dataSound)[ID] = cId1->id;
+                    (*dataSound)[VEC3_POS] = trcar1->position;
+                    (*dataSound)[MAIN_CAR] = false;
+                    if ((cId1->id == cMainId->id || cId2->id == cMainId->id) && cMainSpeed->speed > 150 && cMainSpeed->speed < 230) {
+                        (*dataSound)[MAIN_CAR] = true;
+                        //cout << "EL MAIN CAR IBA A: " << cMainSpeed->speed << endl;
+                    }
+                    EventManager::GetInstance().AddEventMulti(Event{CRASH, dataSound});
+                }
             }
         }
     }
@@ -590,7 +631,7 @@ bool CLPhysics::CollisionsCilindreSphere(CTransformable &trCar1, CCar &ccar1, CB
     return false;
 }
 
-void CLPhysics::CollisionsSpherePlane(CTransformable &trCar, CBoundingChassis &chaCar, CCar &ccar, bool mainCar, CBoundingPlane &plane) {
+bool CLPhysics::CollisionsSpherePlane(CTransformable &trCar, CBoundingChassis &chaCar, CCar &ccar, bool mainCar, CBoundingPlane &plane) {
     CBoundingSphere *spBehindCar = chaCar.sphereBehind.get();
     bool intersect = false;
     //PositionSphBehindIntoTransf(trCar, *spBehindCar);
@@ -598,8 +639,11 @@ void CLPhysics::CollisionsSpherePlane(CTransformable &trCar, CBoundingChassis &c
     if (!intersect) {
         CBoundingSphere *spFrontCar = chaCar.sphereFront.get();
         //PositionSphFrontIntoTransf(trCar, *spFrontCar);
-        HandleCollisions(trCar, *spFrontCar, ccar, false, plane);
+        intersect = HandleCollisions(trCar, *spFrontCar, ccar, false, plane);
+    } else {
+        intersect = true;
     }
+    return intersect;
 }
 
 // TODO: Relamente no deberia de ser /2 debera de depender de la fuerza con la que colisionan.... sino puede llegar a temblar, o desplazar
@@ -727,13 +771,6 @@ void CLPhysics::SeparateSphereFromPlane(IntersectData &intersData, CTransformabl
     trCar1.position.z += nuevaDirectionCar1.z * correctedDistance;
 }
 
-void CLPhysics::SonarChoque(bool mainCar) {
-    shared_ptr<DataMap> map = make_shared<DataMap>();
-    (*map)[MAIN_CAR] = mainCar;
-    Event e(EventType::CRASH_ENEMY, map);
-    EventManager::GetInstance().AddEventMulti(e);
-}
-
 /**
  * Recibe los componentes de los dos coches con los que se comprobará colisión
  * El bool mainCar define si los componentes del coche1 son los del coche principal o no
@@ -745,7 +782,7 @@ bool CLPhysics::HandleCollisions(CTransformable &trCar1, CBoundingSphere &spCar1
     PositionSphereIntoTransformable(trCar2, spCar2);
     IntersectData intersData = spCar1.IntersectSphere(spCar2);
     if (intersData.intersects) {
-        //SonarChoque(mainCar);
+        //TODO: SonarChoque(mainCar);
 
         SeparateSpheres(trCar1, spCar1, ccarCar1, trCar2, spCar2, ccarCar2);
         PositionSphereIntoTransformable(trCar1, spCar1);
