@@ -82,7 +82,7 @@ CLResourceShader* CLResourceManager::GetResourceShader(const std::string file1, 
     if (!resource) {
         cout << "Creo el shader: " << file1 <<endl;
         resource = make_shared<CLResourceShader>();
-        resource->SetName(file1+file2);
+        resource->SetName(file1);
         //resource->SetShaderType(type);
         if (resource->LoadFile(file1,file2)) {
             shaders.push_back(resource);
@@ -104,7 +104,7 @@ CLResourceShader* CLResourceManager::GetResourceShader(const std::string file1, 
     if (!resource) {
         cout << "Creo el shader: " << file1 <<endl;
         resource = make_shared<CLResourceShader>();
-        resource->SetName(file1+file2+file3);
+        resource->SetName(file1);
         //resource->SetShaderType(type);
         if (resource->LoadFile(file1,file2,file3)) {
             shaders.push_back(resource);

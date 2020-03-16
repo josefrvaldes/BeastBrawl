@@ -16,7 +16,7 @@ public:
     glm::vec3 ambient   {0.9f};
     glm::vec3 diffuse   {0.2f,0.3f,0.42f};
     glm::vec3 specular  {0.1f};
-    float constant      {0.1};
+    float constant      {0.01};
     float linear        {0.00025};
     float quadratic     {0.000016};
     

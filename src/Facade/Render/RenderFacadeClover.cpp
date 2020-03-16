@@ -246,7 +246,7 @@ const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
             node = smgr->AddLight(cId->id);
             static_cast<CLLight*>(node->GetEntity())->SetLightAttributes(cLight->intensity,cLight->ambient,cLight->diffuse,cLight->specular,cLight->constant,cLight->linear,cLight->quadratic);
             break;
-    }
+    } 
 
 
     
