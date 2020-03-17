@@ -560,6 +560,10 @@ void RenderFacadeClover::FacadeEndScene() const{
 void RenderFacadeClover::FacadeDeviceDrop() {
 }
 
+void RenderFacadeClover::FacadeAddSkybox(string right,string left,string top,string bottom,string front,string back){
+    smgr->AddSkybox(right, left, top, bottom, front, back);
+}
+
 //DEBUG dibuja las aristas entre los nodos del grafo
 void RenderFacadeClover::FacadeDrawGraphEdges(ManWayPoint* manWayPoints) const{
 }

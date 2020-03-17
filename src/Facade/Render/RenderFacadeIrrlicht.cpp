@@ -1037,6 +1037,10 @@ void RenderFacadeIrrlicht::FacadeDeviceDrop() {
     device->drop();
 }
 
+void RenderFacadeIrrlicht::FacadeAddSkybox(string right,string left,string top,string bottom,string front,string back){
+    
+}
+
 //DEBUG dibuja las aristas entre los nodos del grafo
 void RenderFacadeIrrlicht::FacadeDrawGraphEdges(ManWayPoint* manWayPoints) const{
     if (!showDebug) return;  //Si no esta activado debug retornamos
