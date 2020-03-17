@@ -289,11 +289,14 @@ const uint16_t RenderFacadeIrrlicht::FacadeAddObject(Entity* entity) {
     auto cId = static_cast<CId*>(entity->GetComponent(CompType::IdComp).get());
     auto cTexture = static_cast<CTexture*>(entity->GetComponent(CompType::TextureComp).get());
     auto cType = static_cast<CType*>(entity->GetComponent(CompType::TypeComp).get());
-    auto cMesh = static_cast<CMesh*>(entity->GetComponent(CompType::MeshComp).get());
 
     //Switch para añadir el tipo de objeto
     scene::ISceneNode* node = nullptr;
-    std::string meshPath = "media/" + cMesh->mesh;
+    std::string meshPath = "";
+    if(entity->HasComponent(CompType::MeshComp)){
+        auto cMesh = static_cast<CMesh*>(entity->GetComponent(CompType::MeshComp).get());
+        meshPath = "media/" + cMesh->mesh;
+    }
 
     // añadimos el node al sceneManager dependiendo del tipo de node que sea
     switch (cType->type) {

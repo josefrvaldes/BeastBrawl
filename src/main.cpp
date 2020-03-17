@@ -18,7 +18,7 @@ int main(int argc, char *argv[]) {
     game->InitGame();
 
     if(Constants::RENDER_ENGINE == Constants::RenderEngine::CLOVER){
-        game->SetState(State::States::INGAME_SINGLE);
+        game->SetState(State::States::LOBBY_MULTI);
         
     }else if(Constants::RENDER_ENGINE == Constants::RenderEngine::IRRLICHT){
         game->SetState(State::States::MENU);

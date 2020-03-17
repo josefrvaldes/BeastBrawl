@@ -5,6 +5,8 @@
 #include "../EventManager/Event.h"
 #include "../EventManager/EventManager.h"
 #include "../Online/TCPClient.h"
+#include "../Components/CId.h"
+#include "../Components/CNavMesh.h"
 
 using namespace std;
 
@@ -34,11 +36,12 @@ void StateLobbyMulti::InitState() {
 }
 
 void StateLobbyMulti::Render() {
+    renderEngine->FacadeBeginScene();
     if(!timerEnabled)
         renderEngine->FacadeDrawLobbyMulti();
     else
         renderEngine->FacadeDrawLobbyMultiExit();
-    
+    renderEngine->FacadeEndScene(); 
 }
 
 void StateLobbyMulti::Input() {
@@ -71,7 +74,20 @@ void StateLobbyMulti::StartGameMulti(DataMap* d) {
     uint16_t idOnline = any_cast<uint16_t>((*d)[DataType::ID_ONLINE]);
     cout << "Yo soy el coche con idOnline " << idOnline  << endl;
     vector<uint16_t> vectorIdOnline = any_cast<vector<uint16_t>>((*d)[DataType::VECTOR_ID_ONLINE]);
-    renderEngine->ThrowEventChangeToMulti(idOnline, vectorIdOnline);
+    // renderEngine->ThrowEventChangeToMulti(idOnline, vectorIdOnline);
+
+    //  numEnemyCars = 0;
+    //Manera un poco cutre de resetear el CId al empezar el juego
+    auto cId = make_shared<CId>();
+    cId->ResetNumIds();
+    auto cNavMesh = make_shared<CNavMesh>();
+    cNavMesh->ResetNumIds();
+    //Game::GetInstance()->SetState(State::INGAME_MULTI);
+    shared_ptr<DataMap> data = make_shared<DataMap>();
+    //(*data)[DataType::DATA_SERVER] = dataServer;
+    (*data)[DataType::ID_ONLINE] = idOnline;
+    (*data)[DataType::VECTOR_ID_ONLINE] = vectorIdOnline;
+    EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_INGAMEMULTI, data});
 }
 
 
