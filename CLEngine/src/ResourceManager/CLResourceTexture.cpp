@@ -41,5 +41,5 @@ bool CLResourceTexture::LoadFile(string file){
 }
 
 void CLResourceTexture::Draw(GLuint shaderID){
-
+    glBindTexture(GL_TEXTURE_2D, textureID);
 }
