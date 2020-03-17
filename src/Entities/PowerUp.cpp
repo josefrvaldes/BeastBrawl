@@ -107,12 +107,12 @@ PowerUp::PowerUp(glm::vec3 _position, glm::vec3 _rotation, typeCPowerUp _typePow
         // cTransformable->scale = glm::vec3(2,2,2);
     }
 
-    // string vertexShader = "CLEngine/src/Shaders/lightMapping.vert";
-    // string fragmentShader = "CLEngine/src/Shaders/lightMapping.frag";
+    string vertexShader = "CLEngine/src/Shaders/lightMapping.vert";
+    string fragmentShader = "CLEngine/src/Shaders/lightMapping.frag";
 
-    // shared_ptr<CShader> cShader = make_shared<CShader>(vertexShader,fragmentShader);
+    shared_ptr<CShader> cShader = make_shared<CShader>(vertexShader,fragmentShader);
 
-    // AddComponent(cShader);
+    AddComponent(cShader);
 
 }
 
