@@ -30,8 +30,8 @@ PowerUp::PowerUp()
     //string mesh    = "kart_ia.obj";
     typeCPowerUp typePowerUp = typeCPowerUp::None;
 
-    string vertexShader = "CLEngine/src/Shaders/vertex.glsl";
-    string fragmentShader = "CLEngine/src/Shaders/fragment.glsl";
+    string vertexShader = "CLEngine/src/Shaders/lightMapping.vert";
+    string fragmentShader = "CLEngine/src/Shaders/lightMapping.frag";
     //float maxSpeed = 20.0, acceleration = .15, friction = 0.1, slowDown = 0.25;
     
     shared_ptr<CId> cId   = make_shared<CId>();
@@ -69,7 +69,7 @@ PowerUp::PowerUp()
 
 
 
-PowerUp::PowerUp(glm::vec3 _position, glm::vec3 _rotation, typeCPowerUp _typePowerUp, CTransformable* cTransformableTarget, std::string vertexShader, std::string fragmentShader) : PowerUp(){
+PowerUp::PowerUp(glm::vec3 _position, glm::vec3 _rotation, typeCPowerUp _typePowerUp, CTransformable* cTransformableTarget) : PowerUp(){
     
     CTransformable *cTransformable = (CTransformable *)m_components[CompType::TransformableComp].get();
     cTransformable->position = _position;
@@ -107,9 +107,12 @@ PowerUp::PowerUp(glm::vec3 _position, glm::vec3 _rotation, typeCPowerUp _typePow
         // cTransformable->scale = glm::vec3(2,2,2);
     }
 
-    shared_ptr<CShader> cShader = make_shared<CShader>(vertexShader,fragmentShader);
+    // string vertexShader = "CLEngine/src/Shaders/lightMapping.vert";
+    // string fragmentShader = "CLEngine/src/Shaders/lightMapping.frag";
 
-    AddComponent(cShader);
+    // shared_ptr<CShader> cShader = make_shared<CShader>(vertexShader,fragmentShader);
+
+    // AddComponent(cShader);
 
 }
 

@@ -19,6 +19,19 @@ bool CLResourceShader::LoadFile(string file1, string file2){
     return true;
 }
 
+bool CLResourceShader::LoadFile(string file1, string file2, string file3){
+    if(!LoadShader(file1,GL_VERTEX_SHADER))
+        return false;
+    if(!LoadShader(file2,GL_FRAGMENT_SHADER))
+        return false;
+    if(!LoadShader(file2,GL_GEOMETRY_SHADER))
+    return false;
+    if(!LinkShaders())
+        return false;
+    
+    return true;
+}
+
 bool CLResourceShader::LoadShader(string file, GLenum type){
     string code;
     string typeStr;
@@ -31,6 +44,9 @@ bool CLResourceShader::LoadShader(string file, GLenum type){
         shader = &fragmentID;
         typeStr = "FRAGMENT";
 
+    }else if(type == GL_GEOMETRY_SHADER){
+        shader = &geometryID;
+        typeStr = "GEOMETRY";
     }
     *shader = glCreateShader(type); //Creamos el shader y nos guardamos su ID
 

@@ -12,8 +12,8 @@ using namespace std;
 
 Light::Light(glm::vec3 pos)
 {
-    string vertexShader = "CLEngine/src/Shaders/vertex.glsl";
-    string fragmentShader = "CLEngine/src/Shaders/fragment.glsl";
+    string vertexShader = "CLEngine/src/Shaders/lightMapping.vert";
+    string fragmentShader = "CLEngine/src/Shaders/lightMapping.frag";
 
     shared_ptr<Component> cId   = make_shared<CId>();
     shared_ptr<Component> cTransformable = make_shared<CTransformable>(pos,    glm::vec3(0.0f,0.0f,0.0f),    glm::vec3(1.0f,1.0f,1.0f));
@@ -33,8 +33,8 @@ Light::Light(glm::vec3 pos)
 Light::Light(glm::vec3 pos, glm::vec3 intensity, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float constant, float linear, float quadratic)
 {
 
-    string vertexShader = "CLEngine/src/Shaders/vertex.glsl";
-    string fragmentShader = "CLEngine/src/Shaders/fragment.glsl";
+    string vertexShader = "CLEngine/src/Shaders/lightMapping.vert";
+    string fragmentShader = "CLEngine/src/Shaders/lightMapping.frag";
 
     shared_ptr<Component> cId   = make_shared<CId>();
     shared_ptr<Component> cTransformable = make_shared<CTransformable>(pos, glm::vec3(0.0f,0.0f,0.0f),    glm::vec3(1.0f,1.0f,1.0f));
