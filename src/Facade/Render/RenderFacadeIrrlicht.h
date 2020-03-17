@@ -45,6 +45,7 @@ class RenderFacadeIrrlicht : public RenderFacade {
     void FacadeDrawPause() override;
     void FacadeDrawEndRace() override;
     void FacadeDrawLobbyMulti() override;
+    void FacadeDrawLobbyMultiExit() override;
     void FacadeDrawControler() override;
     void FacadeInitMenu() override;
     void FacadeInitPause() override;
@@ -63,6 +64,7 @@ class RenderFacadeIrrlicht : public RenderFacade {
     void FacadeAddPlates(Manager* manNamePlates) override;
     void FacadeUpdatePlates(Manager* manNamePlates) override;
     void ThrowEventChangeToMulti(uint16_t IdOnline, const vector<uint16_t> IdPlayersOnline) override;
+    void FacadeAddSkybox(string right,string left,string top,string bottom,string front,string back) override;
 
     //DEBUG
     void Draw3DLine(vec3& pos1, vec3& pos2, uint16_t r, uint16_t g, uint16_t b) const override;
@@ -100,6 +102,7 @@ class RenderFacadeIrrlicht : public RenderFacade {
     video::ITexture* pauseBG;
     video::ITexture* endRaceBG;
     video::ITexture* lobbyMultBG;
+    video::ITexture* lobbyMultFullBG;
     video::ITexture* whiteBG;
     video::ITexture* powerUps[7];
     gui::IGUIFont* font;

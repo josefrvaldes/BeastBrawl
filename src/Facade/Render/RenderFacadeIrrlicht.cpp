@@ -118,9 +118,14 @@ void RenderFacadeIrrlicht::FacadeInitEndRace() {
 }
 
 void RenderFacadeIrrlicht::FacadeInitLobbyMulti() {
+    lobbyMultFullBG = driver->getTexture("media/LobbyMultiFull.png");
+    driver->makeColorKeyTexture(lobbyMultFullBG, core::position2d<s32>(0, 0));
+
     lobbyMultBG = driver->getTexture("media/LobbyMulti.png");
     driver->makeColorKeyTexture(lobbyMultBG, core::position2d<s32>(0, 0));
 }
+
+
 
 void RenderFacadeIrrlicht::FacadeInitHUD() {
     //Almacenamos los iconos de powerups
@@ -337,7 +342,7 @@ const uint16_t RenderFacadeIrrlicht::FacadeAddObject(Entity* entity) {
             // primera esfera
             auto radiousSph1 = cChassis->sphereBehind->radius;
             auto centerSph1 = cChassis->sphereBehind->center;
-            cout << "POS X: " << centerSph1.x << " POS Y: " << centerSph1.y << "POS Z:" << centerSph1.z << endl;
+            //cout << "POS X: " << centerSph1.x << " POS Y: " << centerSph1.y << "POS Z:" << centerSph1.z << endl;
             scene::ISceneNode* nodeSphere1 = smgr->addSphereSceneNode(radiousSph1);
             nodeSphere1->setID(cId->id + Component::ID_DIFFERENCE);
             nodeSphere1->setPosition(core::vector3df(centerSph1.x, centerSph1.y, centerSph1.z));
@@ -348,7 +353,7 @@ const uint16_t RenderFacadeIrrlicht::FacadeAddObject(Entity* entity) {
             // segunda esfera
             auto radiousSph2 = cChassis->sphereFront->radius;
             auto centerSph2 = cChassis->sphereFront->center;
-            cout << "POS X: " << centerSph2.x << " POS Y: " << centerSph2.y << "POS Z:" << centerSph2.z << endl;
+            //cout << "POS X: " << centerSph2.x << " POS Y: " << centerSph2.y << "POS Z:" << centerSph2.z << endl;
             scene::ISceneNode* nodeSphere2 = smgr->addSphereSceneNode(radiousSph2);
             nodeSphere2->setID(cId->id + Component::ID_DIFFERENCE + Component::ID_DIFFERENCE);
             nodeSphere2->setPosition(core::vector3df(centerSph2.x, centerSph2.y, centerSph2.z));
@@ -910,6 +915,13 @@ void RenderFacadeIrrlicht::FacadeCheckInputLobbyMulti() {
     if (receiver.IsKeyDown(KEY_DELETE)) {
         device->closeDevice();
     }
+
+    if ((receiver.IsKeyDown(KEY_KEY_N) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_B)) && !IsInputPressed(InputXBox::BUTTON_B)) {
+        SetValueInput(InputXBox::BUTTON_B, true);
+        EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_MENU});
+    }else if(!(receiver.IsKeyDown(KEY_KEY_N) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_B))){
+        SetValueInput(InputXBox::BUTTON_B, false);
+    }
 }
 
 
@@ -999,6 +1011,15 @@ void RenderFacadeIrrlicht::FacadeDrawLobbyMulti() {
     driver->endScene();
 }
 
+void RenderFacadeIrrlicht::FacadeDrawLobbyMultiExit() {
+    driver->beginScene(true, true, video::SColor(255, 113, 113, 133));
+    //smgr->drawAll();  // draw the 3d scene
+    driver->draw2DImage(lobbyMultFullBG, core::position2d<s32>(0, 0),
+                        core::rect<s32>(0, 0, 1280, 720), 0,
+                        video::SColor(255, 255, 255, 255), false);
+    driver->endScene();
+}
+
 //Limpia la pantalla
 void RenderFacadeIrrlicht::FacadeBeginScene() const{
     driver->beginScene(true, true, video::SColor(255, 113, 113, 133));
@@ -1014,6 +1035,10 @@ void RenderFacadeIrrlicht::FacadeEndScene() const{
 
 void RenderFacadeIrrlicht::FacadeDeviceDrop() {
     device->drop();
+}
+
+void RenderFacadeIrrlicht::FacadeAddSkybox(string right,string left,string top,string bottom,string front,string back){
+    
 }
 
 //DEBUG dibuja las aristas entre los nodos del grafo

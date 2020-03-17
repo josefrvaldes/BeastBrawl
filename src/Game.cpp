@@ -61,6 +61,7 @@ void Game::SetState(State::States stateType) {
                 gameStarted = true;
             } else {
                 currentState = gameState;
+                currentState->InitState();
             }
             break;
         case State::INGAME_MULTI:
@@ -101,7 +102,8 @@ void Game::SetState(State::States stateType) {
     }
 
     // Inicializa los bancos cada vez que se cambia de estado.
-    currentState->InitState();
+    // Se cambia de sitio porque se tiene que hacer antes de iniciar los managers
+    //currentState->InitState();
 }
 
 void Game::InitGame() {
@@ -118,7 +120,7 @@ void Game::InitGame() {
 
     //Inicializa la fachada de FMOD.
     SoundFacadeManager::GetInstance()->InitializeFacadeFmod();
-    SoundFacadeManager::GetInstance()->GetSoundFacade()->InitSoundEngine();
+    SoundFacadeManager::GetInstance()->GetSoundFacade()->Initialize();
 
     SuscribeEvents();
 
@@ -193,7 +195,7 @@ void Game::MainLoop() {
 
 void Game::TerminateGame() {
     //Libera los sonidos y bancos.
-    SoundFacadeManager::GetInstance()->GetSoundFacade()->TerminateSoundEngine();
+    SoundFacadeManager::GetInstance()->GetSoundFacade()->Terminate();
     cout << "**********************************************" << endl;
     cout << "Game Terminate" << endl;
 }

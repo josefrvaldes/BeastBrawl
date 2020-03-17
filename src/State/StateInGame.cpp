@@ -24,6 +24,7 @@ StateInGame::StateInGame() {
 
     cam = make_shared<Camera>(glm::vec3(100.0f, 0.0f, 30.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f));
     ground = make_shared<GameObject>(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), "", "training_ground.obj");
+
 }
 
 StateInGame::~StateInGame() {
@@ -108,6 +109,13 @@ void StateInGame::AddElementsToRender() {
     for(auto light : manLight->GetEntities()){
         renderEngine->FacadeAddObject(light.get());
     }
+
+    renderEngine->FacadeAddSkybox("media/skybox/right.jpg",
+        "media/skybox/left.jpg",
+        "media/skybox/top.jpg",
+        "media/skybox/bottom.jpg",
+        "media/skybox/front.jpg",
+        "media/skybox/back.jpg");
 }
 
 void StateInGame::InitializeCLPhysics(ManCar &manCars, ManBoundingWall &manWall, ManBoundingOBB &manOBB, ManBoundingGround &manGround, ManPowerUp &manPowerUp, ManNavMesh &manNavMesh, ManBoxPowerUp &manBoxPowerUp, ManTotem &manTotem) {
@@ -135,7 +143,7 @@ void StateInGame::InitializeManagers(Physics *physics, Camera *cam) {
     // inicializa el man PU, no hace falta más código para esto
     manCars = make_shared<ManCar>(physics, cam);
     manWayPoint = make_shared<ManWayPoint>();  //Se crean todos los waypoints y edges
-    manPowerUps = make_shared<ManPowerUp>();
+    manPowerUps = make_shared<ManPowerUp>(manCars);
     manBoxPowerUps = make_shared<ManBoxPowerUp>();
     manBoundingWall = make_shared<ManBoundingWall>();
     manBoundingOBB = make_shared<ManBoundingOBB>();
@@ -157,7 +165,6 @@ void StateInGame::InitState() {
         //cout << "~~~ SoundEngine en INGAME es -> " << soundEngine << endl;
         if (soundEngine) {
             soundEngine->SetState(4);
-            EventManager::GetInstance().AddEventMulti(Event{EventType::START_GAME});
         }
     } else {
         soundEngine->ResumeAllEvent();
@@ -196,11 +203,18 @@ void StateInGame::Update() {
     renderEngine->FacadeUpdatePlates(manNamePlates.get());
     physicsEngine->UpdateTransformable(manTotems->GetEntities()[0].get());
 
+    //Updates de los eventos de sonido
+    soundEngine->UpdateCars(manCars->GetEntities());
+    soundEngine->UpdatePowerUps(manPowerUps->GetEntities());
+    soundEngine->UpdateTotem(manTotems->GetEntities());       
+    soundEngine->UpdateListener(manCars->GetCar());
+
     // al final de la ejecucion eliminamos todos los powerUps que se deben eliminar
     manPowerUps->Update();
 }
 
 void StateInGame::Render() {
+
     renderEngine->FacadeBeginScene();
     // renderEngine->FacadeDraw();  //Para dibujar primitivas debe ir entre el drawAll y el endScene
     renderEngine->FacadeDrawAll();

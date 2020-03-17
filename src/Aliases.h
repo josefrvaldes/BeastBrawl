@@ -18,6 +18,7 @@ enum DataType{
     ACTUAL_CAR,
     TOTEM,
     CAR_FOLLOW_POSITION,
+    CAR_FOLLOW,
     CAR_EXIT_POSITION,
     CAR_EXIT_DIMENSION,
     BOX_POWER_UP_COMPONENT,
@@ -29,13 +30,17 @@ enum DataType{
     POS_DESTINATION,
     DATA_SERVER,
     ID,
+    ID_CAR,
+    ID_PU,
     ID_DESTINATION,
     INPUTS,
     ID_ONLINE,
+    ID_PURSUE,
     VECTOR_ID_ONLINE,
     VEC3_POS,
     VEC3_ROT,
-    TIME_TOTEM
+    TIME_TOTEM,
+    STOLE
 };
 
 using EM = EventManager;

@@ -4,8 +4,10 @@
 #include "../Components/COnline.h"
 #include "../Systems/SystemOnline.h"
 #include "../Systems/Utils.h"
+#include "../CLPhysics/CLPhysics.h"
 
 StateInGameMulti::StateInGameMulti(uint16_t IdOnline, const vector<uint16_t> IdPlayersOnline) : StateInGame() {
+    InitState();
     InitVirtualMethods();
     // a este le llegan los coches
     //std::cout << "POR FIIIIIIIIIIIIIIIIIIIIIIIN: " << std::endl;
@@ -14,6 +16,8 @@ StateInGameMulti::StateInGameMulti(uint16_t IdOnline, const vector<uint16_t> IdP
     sysOnline = make_unique<SystemOnline>(*manCars, IdOnline);
     manCars->SetSystemOnline(sysOnline.get());
     manTotems->SetSystemOnline(sysOnline.get());
+    manPowerUps->SetSystemOnline(sysOnline.get());
+    clPhysics->SetSystemOnline(sysOnline.get());
 
     vec3 posIniciales[] = {
         vec3(120.0f, 10.0f, -300.0f),
@@ -52,6 +56,20 @@ StateInGameMulti::StateInGameMulti(uint16_t IdOnline, const vector<uint16_t> IdP
         buffer->elems.push_back(elem);
 
         car->AddComponent(buffer);
+
+        //Sonidos de los coches
+        auto idComp = static_cast<CId*>(car->GetComponent(CompType::IdComp).get());
+        auto posComp = static_cast<CTransformable*>(car->GetComponent(CompType::TransformableComp).get());
+        string nameEvent = "Coche/motor";
+        SoundFacadeManager::GetInstance()->GetSoundFacade()->CreateSoundDinamic3D(idComp->id, posComp->position, nameEvent, 1, 0);
+        nameEvent = "PowerUp/escudo";
+        SoundFacadeManager::GetInstance()->GetSoundFacade()->CreateSoundDinamic3D(idComp->id, posComp->position, nameEvent, 0, 0);
+        nameEvent = "PowerUp/escudo_roto";
+        SoundFacadeManager::GetInstance()->GetSoundFacade()->CreateSoundEstatic3D(idComp->id, posComp->position, nameEvent, 0);
+        nameEvent = "Coche/choque_powerup";
+        SoundFacadeManager::GetInstance()->GetSoundFacade()->CreateSoundEstatic3D(idComp->id, posComp->position, nameEvent, 0);
+        nameEvent = "Coche/choque";
+        SoundFacadeManager::GetInstance()->GetSoundFacade()->CreateSoundEstatic3D(idComp->id, posComp->position, nameEvent, 0);
     }
 }
 

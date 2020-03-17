@@ -39,8 +39,8 @@
 #include <Managers/ManPowerUp.h>
 #include <Managers/ManTotem.h>
 #include <Managers/ManWayPoint.h>
-#include "../Managers/ManGameRules.h"
 #include <Managers/ManLight.h>
+#include "../Managers/ManGameRules.h"
 #include <Systems/Collisions.h>
 #include <Systems/Physics.h>
 #include <Systems/PhysicsPowerUp.h>

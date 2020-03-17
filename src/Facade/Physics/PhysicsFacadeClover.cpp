@@ -24,7 +24,7 @@ void PhysicsFacadeClover::UpdateCar(Entity* car, Entity* cam) {
     //auto openglAngle = Utils::IrrlichtAngleToOpenGL(130.0);
     //Actualizamos el valor en la estructura de irrlicht
     // Cogemos el nodo de irrlicht con el ID igual al que le hemos pasado
-    auto node = smgr->GetNodeByID(cId->id);
+    auto node = smgr->GetNodeByID(cId->id); 
 
     //cout << cTransformable->position.x << " | " << cTransformable->position.y << " | " << cTransformable->position.z << endl;
     //Actualiza la posicion del objeto de irrlicht
@@ -131,6 +131,9 @@ void PhysicsFacadeClover::UpdatePowerUps(Entity* powerUp) {
     // Cogemos el nodo de irrlicht con el ID igual al que le hemos pasado
     auto node = smgr->GetNodeByID(cId->id);
 
+    if(!node){
+        return;
+    }
     //Actualiza la posicion del objeto de irrlicht
     node->SetTranslation(glm::vec3(cTransformable->position.x, cTransformable->position.y, -cTransformable->position.z));
 

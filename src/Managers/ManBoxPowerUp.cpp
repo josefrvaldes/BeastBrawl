@@ -5,6 +5,7 @@
 #include <sstream>
 #include <Entities/BoxPowerUp.h>
 #include <include_json/include_json.hpp>
+#include <Facade/Sound/SoundFacadeManager.h>
 
 class Position;
 using json = nlohmann::json;
@@ -56,6 +57,9 @@ ManBoxPowerUp::~ManBoxPowerUp() {
 void ManBoxPowerUp::CreateBoxPowerUp(glm::vec3 _position){
 	shared_ptr<BoxPowerUp> p = make_shared<BoxPowerUp>(_position);
     entities.push_back(p);
+    auto idComp = static_cast<CId*>(p->GetComponent(CompType::IdComp).get());
+    string nameEvent = "Partida/coger_caja";
+    SoundFacadeManager::GetInstance()->GetSoundFacade()->CreateSoundEstatic3D(idComp->id, _position, nameEvent, 0);
 }
 
 
@@ -78,8 +82,9 @@ void ManBoxPowerUp::EjecutarMeHanCogido(DataMap* d) {
         cBoxPowerUp->timeStart = system_clock::now();
 
         shared_ptr<DataMap> data = make_shared<DataMap>();
-        auto cTranformableBox = static_cast<CTransformable*>(actualBox.get()->GetComponent(CompType::TransformableComp).get());
-        (*data)[BOX_POSITION] = cTranformableBox->position;
+        /*auto cTranformableBox = static_cast<CTransformable*>(actualBox.get()->GetComponent(CompType::TransformableComp).get());
+        (*data)[BOX_POSITION] = cTranformableBox->position;*/
+        (*data)[ID] = static_cast<CId*>(actualBox.get()->GetComponent(CompType::IdComp).get())->id;
         EventManager::GetInstance().AddEventMulti(Event{EventType::BREAK_BOX, data});
     }
 }

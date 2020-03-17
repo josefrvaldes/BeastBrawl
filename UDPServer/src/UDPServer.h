@@ -20,7 +20,7 @@ class UDPServer : public boost::enable_shared_from_this<UDPServer> {
     void StartReceiving();
     void Close();
     void CheckDisconnectionsAfterSeconds();
-
+    void ResetTimerStartReceiving();
    private:
     void SavePlayerIfNotExists(const uint16_t id, udp::endpoint& endpoint);
 
@@ -31,6 +31,11 @@ class UDPServer : public boost::enable_shared_from_this<UDPServer> {
     void HandleReceivedCatchPU(const uint16_t id, unsigned char resendPU[], const size_t currentBufferSize, const udp::endpoint& remoteClient);
     void HandleReceivedCatchTotem(const uint16_t id, unsigned char buffer[], const size_t currentBufferSize, const udp::endpoint& remoteClient);
     void HandleReceivedLostTotem(const uint16_t id, unsigned char buffer[], const size_t currentBufferSize, const udp::endpoint& remoteClient);
+    void HandleReceivedUsedRoboJorobo(const uint16_t id, unsigned char buffer[], const size_t currentBufferSize, const udp::endpoint& remoteClient);
+    void HandleReceivedCollideNitro(const uint16_t id, unsigned char buffer[], const size_t currentBufferSize, const udp::endpoint& remoteClient);
+    void HandleReceivedThrowPU(const uint16_t id, const uint16_t idPUOnline, unsigned char buffer[], const size_t currentBufferSize, const udp::endpoint& remoteClient);
+    void HandleReceivedCrashPUCar(const uint16_t id, const uint16_t idPUOnline, const uint16_t idCar, unsigned char buffer[], const size_t currentBufferSize, const udp::endpoint& remoteClient);
+    void HandleReceivedCrashPUWall(const uint16_t id, const uint16_t idPUOnline, unsigned char buffer[], const size_t currentBufferSize, const udp::endpoint& remoteClient);
     
     void ResendBytesToOthers(const uint16_t id, const unsigned char resendBytes[], const size_t currentBufferSize, const udp::endpoint& remoteClient);
     void SendBytes(const unsigned char resendBytes[], const size_t currentBufferSize, const Player& player);
@@ -72,6 +77,7 @@ class UDPServer : public boost::enable_shared_from_this<UDPServer> {
     asio::io_context& context;
     udp::socket socket;
     std::vector<Player> players;
+    std::vector<uint16_t> idsPUs;
 
     const uint16_t SEGUNDOS = 1000;
     const uint32_t TIEMPO_DESCONEXION = 5 * SEGUNDOS;
@@ -80,6 +86,7 @@ class UDPServer : public boost::enable_shared_from_this<UDPServer> {
     std::unique_ptr<boost::asio::steady_timer> timer;
     int64_t timeServerStartedReceiving;
 
-    const uint8_t NOBODY_HAS_TOTEM = 255;
-    uint16_t playerWithTotem = NOBODY_HAS_TOTEM; // ningun jugador va a tener el totem si es el 255
+    uint16_t playerWithTotem = Constants::ANY_PLAYER;
+
+    const uint8_t NUM_REINTENTOS = 3;
 };

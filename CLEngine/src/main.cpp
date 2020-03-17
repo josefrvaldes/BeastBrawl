@@ -34,6 +34,7 @@
 #include <stdio.h>      /* printf, scanf, puts, NULL */
 #include <stdlib.h>     /* srand, rand */
 #include <time.h>       /* time */
+#include <string.h>       /* string */
 
 using namespace std;
 using namespace CLE;
@@ -52,6 +53,7 @@ int main() {
     auto resourceShader = resourceManager->GetResourceShader("CLEngine/src/Shaders/lightMapping.vert", "CLEngine/src/Shaders/lightMapping.frag");
     auto resourceShader2 = resourceManager->GetResourceShader("CLEngine/src/Shaders/phongMaterialVert.glsl", "CLEngine/src/Shaders/phongMaterialFrag.glsl");
     auto resourceShader3 = resourceManager->GetResourceShader("CLEngine/src/Shaders/debugShader.vert", "CLEngine/src/Shaders/debugShader.frag", "CLEngine/src/Shaders/debugShader.geom");
+    auto resourceShaderSkybox = resourceManager->GetResourceShader("CLEngine/src/Shaders/skybox.vert", "CLEngine/src/Shaders/skybox.frag");
     auto resourceMeshBox = resourceManager->GetResourceMesh("media/TEST_BOX.fbx");
     auto resourceMeshTotem = resourceManager->GetResourceMesh("media/totem_tex.fbx");
     auto resourceMesh = resourceManager->GetResourceMesh("media/kart_physics.fbx");
@@ -97,6 +99,13 @@ int main() {
         mesh3->SetShaderProgramID(resourceShader2->GetProgramID());
 
         static_cast<CLCamera*>(camera->GetEntity())->SetCameraTarget(mesh1->GetTranslation());
+
+        smgr->AddSkybox("media/skybox/right.jpg",
+        "media/skybox/left.jpg",
+        "media/skybox/top.jpg",
+        "media/skybox/bottom.jpg",
+        "media/skybox/front.jpg",
+        "media/skybox/back.jpg");
 
     //smgr->DFSTree(glm::mat4(1.0));
     vector<shared_ptr<CLEntity>> mallas;
@@ -153,7 +162,6 @@ int main() {
     int frameCount = 0;
     auto lights = smgr->GetLights();
 
-    //static_cast<CLCamera*>(camera->GetEntity())->SetPerspective(false);
     while (device->Run()) {
 
         //checkInput(device->GetWindow(), cameraPos, cameraFront, cameraUp);
@@ -184,34 +192,9 @@ int main() {
         light1->SetTranslation(lightPos);
         light2->SetTranslation(lightPos2);
         light3->SetTranslation(lightPos3);
-
-
-        // GLuint i = 0;
-        // for(auto light : lights){
-        //     string number = to_string(i);
-
-        //     auto lightEntity = static_cast<CLLight*>(light->GetEntity());
-            
-        //     glUniform3fv(glGetUniformLocation(resourceShader->GetProgramID(), ("pointLights[" + number + "].position").c_str()),1,glm::value_ptr(light->GetGlobalTranslation()));
-        //     glUniform3fv(glGetUniformLocation(resourceShader->GetProgramID(), ("pointLights[" + number + "].ambient").c_str()), 1,glm::value_ptr(lightEntity->GetAmbient()));
-        //     glUniform3fv(glGetUniformLocation(resourceShader->GetProgramID(), ("pointLights[" + number + "].diffuse").c_str()), 1, glm::value_ptr(lightEntity->GetDiffuse()));
-        //     glUniform3fv(glGetUniformLocation(resourceShader->GetProgramID(), ("pointLights[" + number + "].specular").c_str()), 1, glm::value_ptr(lightEntity->GetSpecular()));
-        //     glUniform1f(glGetUniformLocation(resourceShader->GetProgramID(), ("pointLights[" + number + "].constant").c_str()), lightEntity->GetConstant());
-        //     glUniform1f(glGetUniformLocation(resourceShader->GetProgramID(), ("pointLights[" + number + "].linear").c_str()), lightEntity->GetLinear());
-        //     glUniform1f(glGetUniformLocation(resourceShader->GetProgramID(), ("pointLights[" + number + "].quadratic").c_str()), lightEntity->GetQuadratic());
-
-
-        //     i++;
-        // }
         
-
-
-        //meshes->SetRotation(glm::vec3(0.0f,0.0f,index));
-        // auto trans1 = mesh1->GetTranslation();
-        // mesh1->SetTranslation(glm::vec3(trans1.x+index,trans1.y,trans1.z));
         static_cast<CLCamera*>(camera->GetEntity())->SetCameraTarget(mesh2->GetGlobalTranslation());
 
-        //cout << "Distancia entre coche y luz: " << glm::distance(mesh2->GetGlobalTranslation(),lightPos) << endl;
 
         // Measure speed
         double currentTime = glfwGetTime();
@@ -232,6 +215,8 @@ int main() {
         }
         
         device->DrawObjects();
+
+
         device->InputClose();
         device->PollEvents();
         device->RenderImgui();

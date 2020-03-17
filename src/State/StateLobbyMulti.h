@@ -21,12 +21,18 @@ class StateLobbyMulti : public State{
     void Render() override;
     States GetState() override { return State::States::LOBBY_MULTI; };
 
-    void SendData();
    private:
     void SubscribeToEvents();
     void StartGameMulti(DataMap* d);
+    void ShowDisconnection(DataMap* d);
+    void Timer();
     RenderFacade* renderEngine = { nullptr };
     SoundFacade* soundEngine = { nullptr };
+
+    uint64_t valueTimer = 0;
+    uint64_t valueMaxTimer = 60 * 5;  // framerate * 5 seconds
+
+    bool timerEnabled = false;
 
 
     shared_ptr<TCPClient> tcpClient;	

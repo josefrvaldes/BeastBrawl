@@ -64,6 +64,16 @@ CLNode* CLNode::AddCamera(unsigned int id){
     
 }
 
+void CLNode::AddSkybox(string right, string left, string top, string bottom, string front, string back){
+    if(!skyboxShader){
+        auto rm = CLResourceManager::GetResourceManager();
+        auto resourceShader = rm->GetResourceShader("CLEngine/src/Shaders/skybox.vert", "CLEngine/src/Shaders/skybox.frag");
+        skyboxShader = resourceShader->GetProgramID();
+        cout << skyboxShader << endl;
+    }
+    skybox = make_unique<CLSkybox>(right, left, top, bottom, front, back);
+}
+
 
 bool CLNode::RemoveChild(CLNode* child){
 
@@ -330,6 +340,20 @@ void CLNode::CalculateLights(){
     }
 }
 
+/**
+ * Dibuja el skybox lo primero de todo 
+ */
+void CLNode::DrawSkybox(){
+    if(skybox.get()){
+        glDepthMask(GL_FALSE);
+        glUseProgram(skyboxShader);
+
+        glm::mat4 view2 = glm::mat4(glm::mat3(view));
+        glUniformMatrix4fv(glGetUniformLocation(skyboxShader, "view"), 1, GL_FALSE, glm::value_ptr(view2));
+        glUniformMatrix4fv(glGetUniformLocation(skyboxShader, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+        skybox->Draw(skyboxShader);
+    }
+}
 
 //Devuelve el nodo por la id que le mandes
 //Lo hace a partir del padre que lo llame, lo suyo es llamarlo siempre con el nodo principal
