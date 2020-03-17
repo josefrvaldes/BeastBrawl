@@ -33,6 +33,7 @@ CLNode* CLNode::AddMesh(unsigned int id){
     childs.push_back(node);
     node->SetFather(this);
 
+
     return node.get();
     
 }
@@ -73,16 +74,20 @@ bool CLNode::RemoveChild(CLNode* child){
     return false;
 }
 
-void CLNode::DeleteNode(unsigned int id){
+bool CLNode::DeleteNode(unsigned int id){
     CLNode* node = nullptr;
     node = GetNodeByIDAux(id, node, this);
+    if(!node) return false;
     auto father = node->GetFather();
     father->RemoveChild(node);
+    return true;
 }
 
-void CLNode::DeleteNode(CLNode* node){
+bool CLNode::DeleteNode(CLNode* node){
+    if(!node) return false;
     auto father = node->GetFather();
     father->RemoveChild(node);
+    return true;
 }
 
 bool CLNode::HasChild(CLNode* child){
@@ -219,7 +224,6 @@ void CLNode::DFSTree(glm::mat4 mA) {
 /**
  * Calcula la matriz view y projection
  * TODO: Aun no se sabe seguro si se debe hacer asi
- * 
  */
 void CLNode::CalculateViewProjMatrix(){
     for(auto camera : cameras){
@@ -243,6 +247,34 @@ void CLNode::CalculateViewProjMatrix(){
         }
     }
 }
+
+
+/**
+ * Calcula la iluminación de la escena iterando por todas las luces
+ */
+void CLNode::CalculateLights(){
+    GLuint i = 0;
+    for(auto light : lights){
+        auto lightEntity = static_cast<CLLight*>(light->GetEntity());
+        
+        string number = to_string(i);
+
+        glUniform1i(glGetUniformLocation(light->GetShaderProgramID(),"num_Point_Lights"),lights.size());    
+        //TODO: A ver esto deberia cambiarse y pasarselo al shader de las mallas que lo vayan a usar
+        //      por si al final las luces usan otro shader
+        glUniform3fv(glGetUniformLocation(light->GetShaderProgramID(), ("pointLights[" + number + "].position").c_str()),1,glm::value_ptr(light->GetGlobalTranslation()));
+        glUniform3fv(glGetUniformLocation(light->GetShaderProgramID(), ("pointLights[" + number + "].ambient").c_str()), 1,glm::value_ptr(lightEntity->GetAmbient()));
+        glUniform3fv(glGetUniformLocation(light->GetShaderProgramID(), ("pointLights[" + number + "].diffuse").c_str()), 1, glm::value_ptr(lightEntity->GetDiffuse()));
+        glUniform3fv(glGetUniformLocation(light->GetShaderProgramID(), ("pointLights[" + number + "].specular").c_str()), 1, glm::value_ptr(lightEntity->GetSpecular()));
+        glUniform1f(glGetUniformLocation(light->GetShaderProgramID(), ("pointLights[" + number + "].constant").c_str()), lightEntity->GetConstant());
+        glUniform1f(glGetUniformLocation(light->GetShaderProgramID(), ("pointLights[" + number + "].linear").c_str()), lightEntity->GetLinear());
+        glUniform1f(glGetUniformLocation(light->GetShaderProgramID(), ("pointLights[" + number + "].quadratic").c_str()), lightEntity->GetQuadratic());
+
+
+        i++;
+    }
+}
+
 
 //Devuelve el nodo por la id que le mandes
 //Lo hace a partir del padre que lo llame, lo suyo es llamarlo siempre con el nodo principal

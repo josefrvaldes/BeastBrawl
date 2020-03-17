@@ -40,7 +40,7 @@ ManTotem::ManTotem(ManNavMesh *manNavMesh_) : manNavMesh{manNavMesh_} {
     }
     CreateTotem(posNewTotem);
     //TODO: Esto es peligroso [0] aunque sabemos que va a ir
-    auto cId = static_cast<CId*>(entities[0]->GetComponent(CompType::IdComp).get());
+    //auto cId = static_cast<CId*>(entities[0]->GetComponent(CompType::IdComp).get());
     string nameEvent = "Partida/coger_totem";
     SoundFacadeManager::GetInstance()->GetSoundFacade()->CreateSoundEstatic3D(0, posNewTotem, nameEvent, 0);
 

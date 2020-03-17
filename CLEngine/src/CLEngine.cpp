@@ -71,6 +71,12 @@ void CLEngine::CreateGlfwWindow (const unsigned int w, const unsigned int h, con
 
     // Activa el buffer de profundidad o ZBuffer, para que se diferencie que pixel se debe pintar.
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_BLEND);  
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); 
+
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
+    
 }
 
 
@@ -83,11 +89,9 @@ CLNode* CLEngine::GetSceneManager(){
 }
 
 CLResourceManager* CLEngine::GetResourceManager(){
-    if(!resourceManager){
-        resourceManager = make_unique<CLResourceManager>();
-    }
+    
 
-    return resourceManager.get();
+    return CLResourceManager::GetResourceManager();
 }
 
 /**
@@ -112,6 +116,7 @@ void CLEngine::BeginScene(){
 
 void CLEngine::DrawObjects(){
     smgr->CalculateViewProjMatrix();
+    smgr->CalculateLights();
     smgr->DFSTree(glm::mat4(1.0f));
 }
 

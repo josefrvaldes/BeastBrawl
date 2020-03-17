@@ -104,8 +104,11 @@ void StateInGame::AddElementsToRender() {
     renderEngine->FacadeAddCamera(cam.get());
 
     renderEngine->FacadeAddObjectTotem(manTotems->GetEntities()[0].get());
-    // este último probablemente haya que cambiarlo ¿?
-    //renderEngine->FacadeAddObject(totemOnCar.get());
+    
+    //Añadimos las luces
+    for(auto light : manLight->GetEntities()){
+        renderEngine->FacadeAddObject(light.get());
+    }
 }
 
 void StateInGame::InitializeCLPhysics(ManCar &manCars, ManBoundingWall &manWall, ManBoundingOBB &manOBB, ManBoundingGround &manGround, ManPowerUp &manPowerUp, ManNavMesh &manNavMesh, ManBoxPowerUp &manBoxPowerUp, ManTotem &manTotem) {
@@ -141,6 +144,7 @@ void StateInGame::InitializeManagers(Physics *physics, Camera *cam) {
     manNavMesh = make_shared<ManNavMesh>();
     manTotems = make_shared<ManTotem>(manNavMesh.get());
     manNamePlates = make_shared<ManNamePlate>(manCars.get());
+    manLight = make_shared<ManLight>();
     manGameRules = make_unique<ManGameRules>();
 }
 

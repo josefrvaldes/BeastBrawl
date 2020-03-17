@@ -87,9 +87,12 @@ void ManPowerUp::CreatePowerUp(DataMap *d) {
     vec3 positionPowerUp = vec3(posX, transforSalida->position.y + 10, posZ);
 
     shared_ptr<PowerUp> powerUp = make_shared<PowerUp>(positionPowerUp, transforSalida->rotation, type, transforPerse);
+    auto cTypePU = static_cast<CType*>(powerUp->GetComponent(CompType::TypeComp).get())->type;
+    if( int(cTypePU) >= 0 && int(cTypePU) < 50 )
+        entities.push_back(powerUp);
 
     // ojo con esta linea, no borrar porque es necesaria aunque parezca que no lo es
-    auto cTypePU = static_cast<CType *>(powerUp->GetComponent(CompType::TypeComp).get())->type;
+    //auto cTypePU = static_cast<CType *>(powerUp->GetComponent(CompType::TypeComp).get())->type;
 
     if (int(cTypePU) >= 0 && int(cTypePU) < 50) {
         
@@ -113,6 +116,8 @@ void ManPowerUp::CreatePowerUp(DataMap *d) {
         cout << "SIIIIIIIIIIII TE PASA ESTOOOOOOOOOOOOOOOOOOOOOO HABLAAAAAAAAAAAAAAAR CON CARLOOOOOOOOOOOOOOOOOOOOOSSSSSSS" << endl;
     }
 }
+    
+
 
 void ManPowerUp::MaterializePowerUp(shared_ptr<PowerUp> powerUp) {
     entities.push_back(powerUp);

@@ -317,6 +317,7 @@ const uint16_t RenderFacadeIrrlicht::FacadeAddObject(Entity* entity) {
             break;
 
         case ModelType::Light:
+            return 0;
             break;
     }
 

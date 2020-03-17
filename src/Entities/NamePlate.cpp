@@ -11,8 +11,8 @@ using namespace std;
 NamePlate::NamePlate(int _id)
 {
 
-    string vertexShader = "CLEngine/src/Shaders/vertex.glsl";
-    string fragmentShader = "CLEngine/src/Shaders/fragment.glsl";
+    string vertexShader = "CLEngine/src/Shaders/lightMapping.vert";
+    string fragmentShader = "CLEngine/src/Shaders/lightMapping.frag";
 
     shared_ptr<Component> cId   = make_shared<CId>();
     shared_ptr<Component> cType   = make_shared<CType>(ModelType::Text);
