@@ -329,8 +329,9 @@ const void CLNode::Draw3DLine(float x1, float y1, float z1, float x2, float y2, 
     // };
 
     float line[] = {
-        -1.0f,0.0f,1.0f,
-        0.0f,0.5f,1.0f
+        -0.6f,0.3f,0.0f,
+        0.8f,0.5f,0.0f,
+        1.0f,-0.2f,0.0f
     };
  
     
@@ -345,7 +346,7 @@ const void CLNode::Draw3DLine(float x1, float y1, float z1, float x2, float y2, 
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(line), line, GL_STATIC_DRAW);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE,  6 * sizeof(float), 0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE,  3 * sizeof(float), 0);
     glBindVertexArray(0);
 
     glm::mat4 modelMat(1.0f);
@@ -360,7 +361,7 @@ const void CLNode::Draw3DLine(float x1, float y1, float z1, float x2, float y2, 
     glUniformMatrix4fv(glGetUniformLocation(shaderProgramID, "clcolor"), 1, GL_FALSE, glm::value_ptr(clcolor));
 
     glBindVertexArray(VAO);
-    glDrawArrays(GL_LINES, 0,4); 
+    glDrawArrays(GL_LINE_STRIP, 0,3); 
     glUseProgram(0);
     glBindVertexArray(0);
 
