@@ -11,6 +11,7 @@
 #include "CLMesh.h"
 #include "CLLight.h"
 #include "CLCamera.h"
+#include "CLSprite.h"
 
 
 using namespace std;
@@ -53,6 +54,7 @@ class CLNode{
         CLNode* AddMesh(unsigned int id);
         CLNode* AddLight(unsigned int id);
         CLNode* AddCamera(unsigned int id);
+        CLNode* AddSprite(unsigned int id);
         bool RemoveChild(CLNode* child);
         bool HasChild(CLNode* child);
         CLNode* GetNodeByID(unsigned int id);

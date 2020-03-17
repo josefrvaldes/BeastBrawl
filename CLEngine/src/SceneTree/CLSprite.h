@@ -9,26 +9,26 @@
 namespace CLE {
 
     class CLSprite : public CLEntity {
-        public:
-            CLSprite() = default;
-            CLSprite(unsigned int idEntity) : CLEntity(idEntity) {};
-            ~CLSprite() = default;
+    public:
+        CLSprite() = default;
+        CLSprite(unsigned int idEntity) : CLEntity(idEntity) {};
+        ~CLSprite() = default;
 
-            //SETTERS
-            void SetTexture(CLResourceTexture* t)         { texture = t; }
+        //SETTERS
+        void SetTexture(CLResourceTexture* t)         { texture = t; }
 
-            //GETTERS
-            CLResource* GetTexture() const                { return texture; }
+        //GETTERS
+        [[nodiscard]] CLResource* GetTexture() const                { return texture; }
 
-            void Draw(GLuint shaderID, CLResourceTexture&, glm::vec2, glm::vec2, GLfloat, glm::vec3);
+        void Draw(GLuint shaderID) override;
 
 
-        private:
+    private:
 
-            GLuint quadVAO;
-            CLResourceTexture* texture;
+        GLuint quadVAO {0};
+        CLResourceTexture* texture {nullptr};
 
-            void initRenderData();
-            
+        void initRenderData();
+
     };
 }
