@@ -10,9 +10,9 @@ namespace CLE {
 
     class CLSprite : public CLEntity {
     public:
-        CLSprite() = default;
-        CLSprite(unsigned int idEntity) : CLEntity(idEntity) {};
-        ~CLSprite() = default;
+        CLSprite();
+        CLSprite(unsigned int idEntity);
+        ~CLSprite();
 
         //SETTERS
         void SetTexture(CLResourceTexture* t)         { texture = t; }

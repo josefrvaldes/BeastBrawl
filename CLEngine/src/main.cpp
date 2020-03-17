@@ -50,12 +50,17 @@ int main() {
     //-------------------Resource manager-------------------
     CLResourceManager* resourceManager = CLResourceManager::GetResourceManager();
     auto resourceShader = resourceManager->GetResourceShader("CLEngine/src/Shaders/lightMapping.vert", "CLEngine/src/Shaders/lightMapping.frag");
+    auto resourceShaderSprite = resourceManager->GetResourceShader("CLEngine/src/Shaders/spriteShader.vert", "CLEngine/src/Shaders/spriteShader.frag");
     auto resourceShader2 = resourceManager->GetResourceShader("CLEngine/src/Shaders/phongMaterialVert.glsl", "CLEngine/src/Shaders/phongMaterialFrag.glsl");
     auto resourceShader3 = resourceManager->GetResourceShader("CLEngine/src/Shaders/debugShader.vert", "CLEngine/src/Shaders/debugShader.frag", "CLEngine/src/Shaders/debugShader.geom");
     auto resourceMeshBox = resourceManager->GetResourceMesh("media/TEST_BOX.fbx");
     auto resourceMeshTotem = resourceManager->GetResourceMesh("media/totem_tex.fbx");
     auto resourceMesh = resourceManager->GetResourceMesh("media/kart_physics.fbx");
     auto resourceMeshOBJ = resourceManager->GetResourceMesh("media/kart.obj");
+
+    auto resourceTextureSprite = resourceManager->GetResourceTexture("media/awesomeface.obj");
+
+    cout << "+++++++ He compilado los shaders" << endl;
 
     
     //----------------------------------------------------------------------------------------------------------------SHADER
@@ -96,7 +101,17 @@ int main() {
         auto mesh3 = mesh2->AddMesh(5);
         mesh3->SetShaderProgramID(resourceShader2->GetProgramID());
 
-        static_cast<CLCamera*>(camera->GetEntity())->SetCameraTarget(mesh1->GetTranslation());
+        cout << "+++++++ He creado los objetos, voy a crear el sprite" << endl;
+
+        auto sprite = smgr->AddSprite(6);
+        sprite->SetShaderProgramID(resourceShaderSprite->GetProgramID());
+
+        cout << "+++++++ He creado el sprite" << endl;
+
+        static_cast<CLCamera*>(camera->GetEntity())->SetCameraTarget(mesh2->GetTranslation());
+
+
+        cout << "+++++++ He cambiado el target de la camara" << endl;
 
     //smgr->DFSTree(glm::mat4(1.0));
     vector<shared_ptr<CLEntity>> mallas;
@@ -123,6 +138,7 @@ int main() {
     static_cast<CLMesh*>(mesh1->GetEntity())->SetMesh(resourceMeshBox);
     static_cast<CLMesh*>(mesh2->GetEntity())->SetMesh(resourceMesh);
     static_cast<CLMesh*>(mesh3->GetEntity())->SetMesh(resourceMeshOBJ);
+    static_cast<CLSprite*>(sprite->GetEntity())->SetTexture(resourceTextureSprite);
 
     camera->SetTranslation(glm::vec3(80.0f, 5.0f, -9.0f));
     mesh1->SetScalation(glm::vec3(2.0f, 2.0f, 2.0f));
@@ -133,6 +149,10 @@ int main() {
     mesh2->SetTranslation(glm::vec3(10.0f,0.0f,0.0f));
     mesh3->SetTranslation(glm::vec3(-40.0f,0.0f,0.0f));
     mesh3->SetScalation(glm::vec3(0.2f,0.2f,0.2f));
+    sprite->SetTranslation(glm::vec3(300.f, 400.0f, 0.0f));
+    sprite->SetScalation(glm::vec3(50.f, 50.0f, 1.0f));
+
+    cout << "+++++++ He transladado/rotado/escalado objetos" << endl;
 
     mesh2->GetGlobalTranslation();
 
@@ -155,6 +175,7 @@ int main() {
 
     //static_cast<CLCamera*>(camera->GetEntity())->SetPerspective(false);
     while (device->Run()) {
+
 
         //checkInput(device->GetWindow(), cameraPos, cameraFront, cameraUp);
 
@@ -209,7 +230,7 @@ int main() {
         //meshes->SetRotation(glm::vec3(0.0f,0.0f,index));
         // auto trans1 = mesh1->GetTranslation();
         // mesh1->SetTranslation(glm::vec3(trans1.x+index,trans1.y,trans1.z));
-        static_cast<CLCamera*>(camera->GetEntity())->SetCameraTarget(mesh2->GetGlobalTranslation());
+        static_cast<CLCamera*>(camera->GetEntity())->SetCameraTarget(sprite->GetGlobalTranslation());
 
         //cout << "Distancia entre coche y luz: " << glm::distance(mesh2->GetGlobalTranslation(),lightPos) << endl;
 
@@ -230,13 +251,14 @@ int main() {
         if (glfwGetKey(device->GetWindow(), GLFW_KEY_F1)) {
             smgr->DeleteNode(mesh2->GetEntity()->GetID());
         }
-        
+
         device->DrawObjects();
         device->InputClose();
         device->PollEvents();
         device->RenderImgui();
         device->EndScene();
         index += 0.2;
+
     } 
 
 
