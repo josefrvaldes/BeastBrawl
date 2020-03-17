@@ -317,6 +317,7 @@ const uint16_t RenderFacadeIrrlicht::FacadeAddObject(Entity* entity) {
             break;
 
         case ModelType::Light:
+            return 0;
             break;
     }
 
@@ -341,7 +342,7 @@ const uint16_t RenderFacadeIrrlicht::FacadeAddObject(Entity* entity) {
             // primera esfera
             auto radiousSph1 = cChassis->sphereBehind->radius;
             auto centerSph1 = cChassis->sphereBehind->center;
-            cout << "POS X: " << centerSph1.x << " POS Y: " << centerSph1.y << "POS Z:" << centerSph1.z << endl;
+            //cout << "POS X: " << centerSph1.x << " POS Y: " << centerSph1.y << "POS Z:" << centerSph1.z << endl;
             scene::ISceneNode* nodeSphere1 = smgr->addSphereSceneNode(radiousSph1);
             nodeSphere1->setID(cId->id + Component::ID_DIFFERENCE);
             nodeSphere1->setPosition(core::vector3df(centerSph1.x, centerSph1.y, centerSph1.z));
@@ -352,7 +353,7 @@ const uint16_t RenderFacadeIrrlicht::FacadeAddObject(Entity* entity) {
             // segunda esfera
             auto radiousSph2 = cChassis->sphereFront->radius;
             auto centerSph2 = cChassis->sphereFront->center;
-            cout << "POS X: " << centerSph2.x << " POS Y: " << centerSph2.y << "POS Z:" << centerSph2.z << endl;
+            //cout << "POS X: " << centerSph2.x << " POS Y: " << centerSph2.y << "POS Z:" << centerSph2.z << endl;
             scene::ISceneNode* nodeSphere2 = smgr->addSphereSceneNode(radiousSph2);
             nodeSphere2->setID(cId->id + Component::ID_DIFFERENCE + Component::ID_DIFFERENCE);
             nodeSphere2->setPosition(core::vector3df(centerSph2.x, centerSph2.y, centerSph2.z));
@@ -1036,6 +1037,10 @@ void RenderFacadeIrrlicht::FacadeEndScene() const{
 
 void RenderFacadeIrrlicht::FacadeDeviceDrop() {
     device->drop();
+}
+
+void RenderFacadeIrrlicht::FacadeAddSkybox(string right,string left,string top,string bottom,string front,string back){
+    
 }
 
 //DEBUG dibuja las aristas entre los nodos del grafo

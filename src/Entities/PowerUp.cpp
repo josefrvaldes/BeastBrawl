@@ -30,8 +30,8 @@ PowerUp::PowerUp()
     //string mesh    = "kart_ia.obj";
     typeCPowerUp typePowerUp = typeCPowerUp::None;
 
-    string vertexShader = "CLEngine/src/Shaders/vertex.glsl";
-    string fragmentShader = "CLEngine/src/Shaders/fragment.glsl";
+    string vertexShader = "CLEngine/src/Shaders/lightMapping.vert";
+    string fragmentShader = "CLEngine/src/Shaders/lightMapping.frag";
     //float maxSpeed = 20.0, acceleration = .15, friction = 0.1, slowDown = 0.25;
     
     shared_ptr<CId> cId   = make_shared<CId>();
@@ -42,6 +42,8 @@ PowerUp::PowerUp()
     shared_ptr<CPowerUp> cPowerUp = make_shared<CPowerUp>(typePowerUp);
     shared_ptr<CTargetEntity> cTargetEntity = make_shared<CTargetEntity>();
     //shared_ptr<CBoundingSphere> cBoundingSphere = make_shared<CBoundingSphere>(vec3(0.0,0.0,0.0), 4.5);
+    shared_ptr<CShader> cShader = make_shared<CShader>(vertexShader,fragmentShader);
+
     shared_ptr<CRemovableObject> cRemovableObject = make_shared<CRemovableObject>();
     AddComponent(cId);
     AddComponent(cType);
@@ -52,6 +54,8 @@ PowerUp::PowerUp()
     AddComponent(cTargetEntity);
     //AddComponent(cBoundingSphere);  // Bounding con el que realmente colisionamos
     AddComponent(cRemovableObject); // componente para eliminar la entidad al final y no a medias de la ejecucion
+    AddComponent(cShader);
+
 }
 
 /*PowerUp::PowerUp(glm::vec3 _position) 
@@ -107,7 +111,10 @@ PowerUp::PowerUp(glm::vec3 _position, glm::vec3 _rotation, typeCPowerUp _typePow
         // cTransformable->scale = glm::vec3(2,2,2);
     }
 
-    shared_ptr<CShader> cShader = make_shared<CShader>(VERTEX_SHADER, FRAGMENT_SHADER);
+    string vertexShader = "CLEngine/src/Shaders/lightMapping.vert";
+    string fragmentShader = "CLEngine/src/Shaders/lightMapping.frag";
+
+    shared_ptr<CShader> cShader = make_shared<CShader>(vertexShader,fragmentShader);
 
     AddComponent(cShader);
 

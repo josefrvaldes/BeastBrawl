@@ -10,6 +10,8 @@ StateMenu::StateMenu(){
     renderEngine = RenderFacadeManager::GetInstance()->GetRenderFacade();
     renderEngine->FacadeInitMenu();
 
+    InitState();
+
 }
 
 // Cargamos los bancos de sonido Menu.

@@ -11,6 +11,10 @@
 #include "CLMesh.h"
 #include "CLLight.h"
 #include "CLCamera.h"
+#include "CLSkybox.h"
+
+#include "../ResourceManager/CLResourceManager.h"
+#include <stb_image.h>
 
 
 using namespace std;
@@ -36,7 +40,11 @@ class CLNode{
         glm::vec3 GetGlobalTranslation() const;
         glm::vec3 GetGlobalRotation() const;
         glm::vec3 GetGlobalScalation() const;
+        static glm::mat4 GetViewMatrix()               { return view; }
+        static glm::mat4 GetProjectionMatrix()         { return projection; }
         CLCamera* GetActiveCamera();
+        vector<CLNode*> GetLights()             { return lights; };
+        vector<CLNode*> GetCameras()            { return cameras; };
 
         //Setters
         bool SetFather(CLNode* f)                       { father = f; return true; }
@@ -51,11 +59,12 @@ class CLNode{
         CLNode* AddMesh(unsigned int id);
         CLNode* AddLight(unsigned int id);
         CLNode* AddCamera(unsigned int id);
+        void AddSkybox(string right, string left, string top, string bottom, string front, string back);
         bool RemoveChild(CLNode* child);
         bool HasChild(CLNode* child);
         CLNode* GetNodeByID(unsigned int id);
-        void DeleteNode(unsigned int id);
-        void DeleteNode(CLNode* node);
+        bool DeleteNode(unsigned int id);
+        bool DeleteNode(CLNode* node);
         glm::mat4 TranslateMatrix();
         glm::mat4 RotateMatrix();
         glm::mat4 ScaleMatrix();
@@ -64,9 +73,11 @@ class CLNode{
         void Scale(glm::vec3);
         glm::mat4 CalculateTransformationMatrix();
         void CalculateViewProjMatrix();
+        void CalculateLights();
 
         void DrawTree(CLNode* root);
         void DFSTree(glm::mat4);
+        void DrawSkybox();
 
         void SetVisible(bool v) {visible = v;};
 
@@ -98,6 +109,9 @@ class CLNode{
         inline static vector<CLNode*> lights;
         inline static vector<CLNode*> cameras;
 
+        //Skybox
+        inline static unique_ptr<CLSkybox> skybox = nullptr;
+        inline static GLuint skyboxShader = 0;
 };
 
 }

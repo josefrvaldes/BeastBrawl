@@ -48,6 +48,7 @@ class Mesh{
         vector<Vertex> vertices;
         vector<unsigned int> indices;
         vector<Texture> textures;
+        vector<Material> materials;
         unsigned int VAO, VBO, EBO;  
 
 };
