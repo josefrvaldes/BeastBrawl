@@ -413,7 +413,7 @@ void UDPClient::HandleReceivedDisconnection(unsigned char* recevBuff, size_t byt
 ///////////////////////////////////////////////////////////////////////////////////////
 void UDPClient::SendDateTime() {
     // cout << "Vamos a enviar datos" << endl;
-    boost::shared_ptr<string> message(new string(Utils::GetFullDateTime()));
+    std::shared_ptr<string> message(new string(Utils::GetFullDateTime()));
     socket.async_send_to(
         boost::asio::buffer(*message),
         serverEndpoint,
@@ -684,7 +684,7 @@ void UDPClient::SendCollideNitro(uint16_t idOnline, uint16_t idWithTotem, uint16
             boost::asio::placeholders::bytes_transferred));
 }
 
-void UDPClient::SendEndgame() {
+void UDPClient::SendEndgame(uint16_t idPlayer) {
     unsigned char requestBuff[Constants::ONLINE_BUFFER_SIZE];
     size_t currentBuffSize = 0;
     uint8_t callType = Constants::PetitionTypes::ENDGAME;
@@ -692,6 +692,7 @@ void UDPClient::SendEndgame() {
 
     Serialization::Serialize(requestBuff, &callType, currentBuffSize);
     Serialization::Serialize(requestBuff, &time, currentBuffSize);
+    Serialization::Serialize(requestBuff, &idPlayer, currentBuffSize);
 
     socket.async_send_to(
         boost::asio::buffer(requestBuff, currentBuffSize),
@@ -763,7 +764,7 @@ void UDPClient::HandleSentCollideNitro(const boost::system::error_code& errorCod
              << "\n";
 }
 
-void UDPClient::HandleSentDateTime(const boost::shared_ptr<std::string> message,
+void UDPClient::HandleSentDateTime(const std::shared_ptr<std::string> message,
                                    const boost::system::error_code& errorCode,
                                    std::size_t bytes_transferred) {
     if (!errorCode) {

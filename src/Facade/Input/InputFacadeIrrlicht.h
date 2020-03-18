@@ -52,7 +52,7 @@ class InputFacadeIrrlicht : public InputFacade{
     public:
         InputFacadeIrrlicht();
         ~InputFacadeIrrlicht();
-        void CheckInput()        override;
+        vector<Constants::InputTypes> CheckInput()        override;
         void CheckInputMenu()    override;
         void CheckInputPause()   override;
         void CheckInputEndRace() override;

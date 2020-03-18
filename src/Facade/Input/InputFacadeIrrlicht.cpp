@@ -1,11 +1,12 @@
 #include "InputFacadeIrrlicht.h"
+#include <Constants.h>
 
 InputFacadeIrrlicht::InputFacadeIrrlicht(){
     //eventManager = EventManager::GetInstance();
 	//RenderFacadeManager::GetInstance().GetRenderFacade()->AddReceiver(receiver);
 }
 
-void InputFacadeIrrlicht::CheckInput(){
+vector<Constants::InputTypes> InputFacadeIrrlicht::CheckInput(){
     //Data d;
 	//d.gameObject = &go;
 
@@ -16,7 +17,7 @@ void InputFacadeIrrlicht::CheckInput(){
 	//}else if(receiver->IsKeyDown(KEY_KEY_D)){
     //    eventManager->AddEventMulti(Event {EventType::PRESS_D,d});
 	//}
-
+	return vector<Constants::InputTypes>();
 }
 
 

@@ -1,8 +1,6 @@
 #pragma once
 
-#include "../../include/boost/array.hpp"
 #include "../../include/boost/asio.hpp"
-#include "../../include/boost/enable_shared_from_this.hpp"
 #include <chrono>
 #include <iostream>
 #include "../src/Constants.h"
@@ -13,7 +11,7 @@ using namespace boost;
 using namespace std;
 using namespace std::chrono;
 
-class UDPServer : public boost::enable_shared_from_this<UDPServer> {
+class UDPServer : public std::enable_shared_from_this<UDPServer> {
    public:
     UDPServer(asio::io_context& context_, uint16_t port_);
     ~UDPServer();

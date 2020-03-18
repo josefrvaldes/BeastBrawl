@@ -2,14 +2,12 @@
 
 #include <boost/asio/placeholders.hpp>
 #include <boost/bind.hpp>
-#include "../../include/include_json/include_json.hpp"
 #include "../../src/Constants.h"
 #include "../src/Systems/Utils.h"
 #include "Server.h"
 #include "../../src/Systems/Serialization.h"
 
 
-using json = nlohmann::json;
 using boost::asio::ip::tcp;
 using namespace std::chrono;
 
@@ -55,14 +53,13 @@ void TCPServer::HandleAccept(TCPConnection::pointer new_connection, const boost:
                 players.push_back(p);
             }
             if (connections.size() >= Constants::MIN_NUM_PLAYERS) {
-                cout << "Ya hemos llegado al núm de conexiones para enviar partida, vamos a visar a los clientes" << endl;
+                // cout << "Ya hemos llegado al núm de conexiones para enviar partida, vamos a visar a los clientes" << endl;
                 Server::GAME_STARTED = true;
                 SendStartGame();
                 // justo despues vaciar el tcp para otra conexion
             }
         }else{
             // no dejar entrar a la sala
-            cout << "ENTRA" << "\n";
             new_connection->SendFullGame();
         }
     }
@@ -89,7 +86,6 @@ void TCPServer::SendStartGame() {
     udpServer.StartReceiving();
     udpServer.CheckDisconnectionsAfterSeconds();
     for (const auto& currentPlayer : connections) {
-        json j;
         uint8_t posVector = 0;
         uint16_t idPlayer = 0;
         vector<uint16_t> idsEnemies;
@@ -102,7 +98,6 @@ void TCPServer::SendStartGame() {
             posVector++;
         }
 
-        // std::shared_ptr<boost::array<unsigned char, Constants::ONLINE_BUFFER_SIZE>> buff = make_shared<boost::array<unsigned char, Constants::ONLINE_BUFFER_SIZE>>();
         std::shared_ptr<unsigned char[]> buff(new unsigned char[Constants::ONLINE_BUFFER_SIZE]);
         size_t currentBuffSize = 0;
         uint8_t callType = Constants::PetitionTypes::TCP_START_GAME;
@@ -112,10 +107,6 @@ void TCPServer::SendStartGame() {
         Serialization::Serialize(buff.get(), &idPlayer, currentBuffSize);
         Serialization::Serialize(buff.get(), &enemiesSize, currentBuffSize);
         Serialization::SerializeVector(buff.get(), idsEnemies, currentBuffSize);
-
-        // j["idPlayer"] = idPlayer;
-        // j["idEnemies"] = idsEnemies;
-        // string datos = j.dump();
 
         currentPlayer->SendStartMessage(buff.get(), currentBuffSize);
     }

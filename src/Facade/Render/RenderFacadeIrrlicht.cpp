@@ -289,11 +289,14 @@ const uint16_t RenderFacadeIrrlicht::FacadeAddObject(Entity* entity) {
     auto cId = static_cast<CId*>(entity->GetComponent(CompType::IdComp).get());
     auto cTexture = static_cast<CTexture*>(entity->GetComponent(CompType::TextureComp).get());
     auto cType = static_cast<CType*>(entity->GetComponent(CompType::TypeComp).get());
-    auto cMesh = static_cast<CMesh*>(entity->GetComponent(CompType::MeshComp).get());
 
     //Switch para añadir el tipo de objeto
     scene::ISceneNode* node = nullptr;
-    std::string meshPath = "media/" + cMesh->mesh;
+    std::string meshPath = "";
+    if(entity->HasComponent(CompType::MeshComp)){
+        auto cMesh = static_cast<CMesh*>(entity->GetComponent(CompType::MeshComp).get());
+        meshPath = "media/" + cMesh->mesh;
+    }
 
     // añadimos el node al sceneManager dependiendo del tipo de node que sea
     switch (cType->type) {
@@ -693,6 +696,7 @@ void RenderFacadeIrrlicht::FacadeCheckInputSingle() {
 
     // POWERUPS
     if ((receiver.IsKeyDown(KEY_SPACE) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_A)) && !IsInputPressed(InputXBox::BUTTON_A)){
+        SetValueInput(InputXBox::BUTTON_A, true);
         eventManager.AddEventMulti(Event{EventType::PRESS_SPACE});
     }else if(!(receiver.IsKeyDown(KEY_SPACE) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_A))){
         SetValueInput(InputXBox::BUTTON_A, false);
@@ -799,6 +803,7 @@ vector<Constants::InputTypes> RenderFacadeIrrlicht::FacadeCheckInputMulti() {
 
     // POWERUPS
     if ((receiver.IsKeyDown(KEY_SPACE) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_A)) && !IsInputPressed(InputXBox::BUTTON_A)){
+        SetValueInput(InputXBox::BUTTON_A, true);
         eventManager.AddEventMulti(Event{EventType::PRESS_SPACE});
         inputs.push_back(Constants::InputTypes::LAUNCH_PU);
     }else if(!(receiver.IsKeyDown(KEY_SPACE) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_A))){
@@ -1035,6 +1040,10 @@ void RenderFacadeIrrlicht::FacadeEndScene() const{
 
 void RenderFacadeIrrlicht::FacadeDeviceDrop() {
     device->drop();
+}
+
+void RenderFacadeIrrlicht::FacadeAddSkybox(string right,string left,string top,string bottom,string front,string back){
+    
 }
 
 //DEBUG dibuja las aristas entre los nodos del grafo

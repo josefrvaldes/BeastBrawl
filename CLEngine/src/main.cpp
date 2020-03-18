@@ -22,6 +22,7 @@
 #include "ResourceManager/CLResourceManager.h"
 #include "ResourceManager/CLResourceShader.h"
 #include "ResourceManager/CLResourceMesh.h"
+#include "ResourceManager/CLResourceMaterial.h"
 #include "ResourceManager/CLResource.h"
 
 
@@ -34,6 +35,7 @@
 #include <stdio.h>      /* printf, scanf, puts, NULL */
 #include <stdlib.h>     /* srand, rand */
 #include <time.h>       /* time */
+#include <string.h>       /* string */
 
 using namespace std;
 using namespace CLE;
@@ -52,11 +54,14 @@ int main() {
     auto resourceShader = resourceManager->GetResourceShader("CLEngine/src/Shaders/lightMapping.vert", "CLEngine/src/Shaders/lightMapping.frag");
     auto resourceShaderSprite = resourceManager->GetResourceShader("CLEngine/src/Shaders/spriteShader.vert", "CLEngine/src/Shaders/spriteShader.frag");
     auto resourceShader2 = resourceManager->GetResourceShader("CLEngine/src/Shaders/phongMaterialVert.glsl", "CLEngine/src/Shaders/phongMaterialFrag.glsl");
+    auto resourceShaderMaterial = resourceManager->GetResourceShader("CLEngine/src/Shaders/materialShader.vert", "CLEngine/src/Shaders/materialShader.frag");
     auto resourceShader3 = resourceManager->GetResourceShader("CLEngine/src/Shaders/debugShader.vert", "CLEngine/src/Shaders/debugShader.frag", "CLEngine/src/Shaders/debugShader.geom");
+    auto resourceShaderSkybox = resourceManager->GetResourceShader("CLEngine/src/Shaders/skybox.vert", "CLEngine/src/Shaders/skybox.frag");
     auto resourceMeshBox = resourceManager->GetResourceMesh("media/TEST_BOX.fbx");
     auto resourceMeshTotem = resourceManager->GetResourceMesh("media/totem_tex.fbx");
     auto resourceMesh = resourceManager->GetResourceMesh("media/kart_physics.fbx");
     auto resourceMeshOBJ = resourceManager->GetResourceMesh("media/kart.obj");
+    auto resourceMaterial = resourceManager->GetResourceMaterial("media/kart.obj");
 
     auto resourceTextureSprite = resourceManager->GetResourceTexture("media/awesomeface.obj");
 
@@ -99,7 +104,7 @@ int main() {
 
         
         auto mesh3 = mesh2->AddMesh(5);
-        mesh3->SetShaderProgramID(resourceShader2->GetProgramID());
+        mesh3->SetShaderProgramID(resourceShaderMaterial->GetProgramID());
 
         cout << "+++++++ He creado los objetos, voy a crear el sprite" << endl;
 
@@ -112,6 +117,13 @@ int main() {
 
 
         cout << "+++++++ He cambiado el target de la camara" << endl;
+
+        smgr->AddSkybox("media/skybox/right.jpg",
+        "media/skybox/left.jpg",
+        "media/skybox/top.jpg",
+        "media/skybox/bottom.jpg",
+        "media/skybox/front.jpg",
+        "media/skybox/back.jpg");
 
     //smgr->DFSTree(glm::mat4(1.0));
     vector<shared_ptr<CLEntity>> mallas;
@@ -139,6 +151,7 @@ int main() {
     static_cast<CLMesh*>(mesh2->GetEntity())->SetMesh(resourceMesh);
     static_cast<CLMesh*>(mesh3->GetEntity())->SetMesh(resourceMeshOBJ);
     static_cast<CLSprite*>(sprite->GetEntity())->SetTexture(resourceTextureSprite);
+    static_cast<CLMesh*>(mesh3->GetEntity())->SetMaterial(resourceMaterial); 
 
     camera->SetTranslation(glm::vec3(80.0f, 5.0f, -9.0f));
     mesh1->SetScalation(glm::vec3(2.0f, 2.0f, 2.0f));
@@ -173,7 +186,6 @@ int main() {
     int frameCount = 0;
     auto lights = smgr->GetLights();
 
-    //static_cast<CLCamera*>(camera->GetEntity())->SetPerspective(false);
     while (device->Run()) {
 
 
@@ -205,25 +217,6 @@ int main() {
         light1->SetTranslation(lightPos);
         light2->SetTranslation(lightPos2);
         light3->SetTranslation(lightPos3);
-
-
-        // GLuint i = 0;
-        // for(auto light : lights){
-        //     string number = to_string(i);
-
-        //     auto lightEntity = static_cast<CLLight*>(light->GetEntity());
-            
-        //     glUniform3fv(glGetUniformLocation(resourceShader->GetProgramID(), ("pointLights[" + number + "].position").c_str()),1,glm::value_ptr(light->GetGlobalTranslation()));
-        //     glUniform3fv(glGetUniformLocation(resourceShader->GetProgramID(), ("pointLights[" + number + "].ambient").c_str()), 1,glm::value_ptr(lightEntity->GetAmbient()));
-        //     glUniform3fv(glGetUniformLocation(resourceShader->GetProgramID(), ("pointLights[" + number + "].diffuse").c_str()), 1, glm::value_ptr(lightEntity->GetDiffuse()));
-        //     glUniform3fv(glGetUniformLocation(resourceShader->GetProgramID(), ("pointLights[" + number + "].specular").c_str()), 1, glm::value_ptr(lightEntity->GetSpecular()));
-        //     glUniform1f(glGetUniformLocation(resourceShader->GetProgramID(), ("pointLights[" + number + "].constant").c_str()), lightEntity->GetConstant());
-        //     glUniform1f(glGetUniformLocation(resourceShader->GetProgramID(), ("pointLights[" + number + "].linear").c_str()), lightEntity->GetLinear());
-        //     glUniform1f(glGetUniformLocation(resourceShader->GetProgramID(), ("pointLights[" + number + "].quadratic").c_str()), lightEntity->GetQuadratic());
-
-
-        //     i++;
-        // }
         
 
 
@@ -231,8 +224,8 @@ int main() {
         // auto trans1 = mesh1->GetTranslation();
         // mesh1->SetTranslation(glm::vec3(trans1.x+index,trans1.y,trans1.z));
         static_cast<CLCamera*>(camera->GetEntity())->SetCameraTarget(sprite->GetGlobalTranslation());
+        static_cast<CLCamera*>(camera->GetEntity())->SetCameraTarget(mesh2->GetGlobalTranslation());
 
-        //cout << "Distancia entre coche y luz: " << glm::distance(mesh2->GetGlobalTranslation(),lightPos) << endl;
 
         // Measure speed
         double currentTime = glfwGetTime();
@@ -253,6 +246,8 @@ int main() {
         }
 
         device->DrawObjects();
+
+
         device->InputClose();
         device->PollEvents();
         device->RenderImgui();
