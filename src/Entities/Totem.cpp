@@ -87,8 +87,9 @@ Totem::Totem(glm::vec3 position_, glm::vec3 rotation_, string texture_, string m
     CTexture *cTexture = (CTexture *)m_components[CompType::TextureComp].get();
     cTexture->texture = texture_;
 
+    // DEBUG MESH
     CMesh *cMesh = (CMesh *)m_components[CompType::MeshComp].get();
-    cMesh->mesh = mesh_;
+    cMesh->mesh.push_back( mesh_ );
 
 }
 

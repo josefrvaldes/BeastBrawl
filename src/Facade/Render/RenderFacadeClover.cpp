@@ -207,8 +207,8 @@ const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
     CLResourceMesh* mesh = nullptr;
     if(entity->HasComponent(CompType::MeshComp)){
         auto cMesh = static_cast<CMesh*>(entity->GetComponent(CompType::MeshComp).get());
-
-        std::string meshPath = "media/" + cMesh->mesh;
+        std::string currentMesh = cMesh->mesh[0];
+        std::string meshPath = "media/" + currentMesh;
         mesh = resourceManager->GetResourceMesh(meshPath);
     }
     

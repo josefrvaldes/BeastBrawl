@@ -94,19 +94,21 @@ PowerUp::PowerUp(glm::vec3 _position, glm::vec3 _rotation, typeCPowerUp _typePow
 
     CTexture *cTexture = (CTexture *)m_components[CompType::TextureComp].get();
     CMesh *cMesh = (CMesh *)m_components[CompType::MeshComp].get();
+    cMesh->mesh.clear();
+    // DEBUG MESH
     if(_typePowerUp == typeCPowerUp::MelonMolon){           // Melon Molon
         cTexture->texture = "";
-        cMesh->mesh = "melon.obj";
+        cMesh->mesh.push_back("melon.obj");
         cPowerUp->speed = 510.0;
         // cTransformable->scale = glm::vec3(4,4,4);
     }else if(_typePowerUp == typeCPowerUp::PudinDeFrambuesa){   // Pudin Frambuesa
         cTexture->texture = "";
-        cMesh->mesh = "pudin.obj";
+        cMesh->mesh.push_back("pudin.obj");
         cPowerUp->speed = -510.0;
         // cTransformable->scale = glm::vec3(4,4,4);
     }else{                                                      // Telebanana
         cTexture->texture = "";
-        cMesh->mesh = "telebanana.obj";
+        cMesh->mesh.push_back("telebanana.obj");
         cPowerUp->speed = 375.0;
         // cTransformable->scale = glm::vec3(2,2,2);
     }
