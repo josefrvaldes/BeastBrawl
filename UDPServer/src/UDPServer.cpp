@@ -1,14 +1,12 @@
 #include "UDPServer.h"
-#include <boost/asio/placeholders.hpp>
 #include <algorithm>
+#include <boost/asio/placeholders.hpp>
 #include <boost/bind.hpp>
-#include "../../include/include_json/include_json.hpp"
 #include "../../src/Constants.h"
 #include "../../src/Systems/Serialization.h"
 #include "../../src/Systems/Utils.h"
 #include "Server.h"
 
-using json = nlohmann::json;
 using boost::asio::ip::udp;
 using namespace std::chrono;
 
@@ -54,6 +52,7 @@ void UDPServer::HandleReceive(std::shared_ptr<unsigned char[]> recevBuff, std::s
         // de una ejecución anterior del juego
         if (time > timeServerStartedReceiving) {
             uint16_t idPlayer = Serialization::Deserialize<uint16_t>(recevBuff.get(), currentIndex);
+            cout << Utils::getISOCurrentTimestampMillis() << " hemos recibido una petición de type[" << unsigned(petitionType) << "] del jugador[" << idPlayer << "] con ip["<<remoteClient->address().to_string() << ":" << to_string(remoteClient->port()) << "]" << endl;
             //cout << Utils::getISOCurrentTimestampMillis() << " Hemos recibido en el server la llamada " << time << " de tipo " << unsigned(petitionType) << " del user " << idPlayer << endl;
             // TODO: esto creo que podría evitarse
             unsigned char buffRecieved[Constants::ONLINE_BUFFER_SIZE];
@@ -128,10 +127,10 @@ void UDPServer::HandleReceive(std::shared_ptr<unsigned char[]> recevBuff, std::s
                     } break;
                     case Constants::PetitionTypes::ENDGAME: {
                         if (Server::ACCEPTING_ENDGAME) {
-                            cout << "Hemos recibido una petición de ENDGAME! vamos a reinciar el server!! ###########################" << endl;
+                            // cout << "Hemos recibido una petición de ENDGAME! vamos a reinciar el server!! ###########################" << endl;
                             Exit();
                         } else {
-                            cout << "Hemos recibido una petición de ENDGAME! pero la ignoramos!! ###########################" << endl;
+                            // cout << "Hemos recibido una petición de ENDGAME! pero la ignoramos!! ###########################" << endl;
                         }
                     } break;
                     case Constants::PetitionTypes::SEND_THROW_TELEBANANA:
@@ -193,7 +192,7 @@ void UDPServer::HandleReceivedThrowPU(const uint16_t id, const uint16_t idPUOnli
 }
 
 void UDPServer::HandleReceivedCrashPUWall(const uint16_t idPlayer, const uint16_t idPowerUp, unsigned char resendPU[], const size_t currentBufferSize, const udp::endpoint& originalClient) {
-    // si tenemos en nuestro vector de PUs el pu que acaba de chocar, entonces 
+    // si tenemos en nuestro vector de PUs el pu que acaba de chocar, entonces
     // operamos con él, si no, significa que ya ha chocado antes y no operamos
     if (std::binary_search(idsPUs.begin(), idsPUs.end(), idPowerUp)) {
         std::cout << "Hemos recibido un choque de PU-Wall idPowerUp " << idPowerUp << ". Antes teníamos " << idsPUs.size();
@@ -212,10 +211,21 @@ void UDPServer::HandleReceivedCrashPUWall(const uint16_t idPlayer, const uint16_
 }
 
 void UDPServer::HandleReceivedCrashPUCar(const uint16_t idPlayer, const uint16_t idPowerUp, const uint16_t idCarCrashed, unsigned char resendPU[], const size_t currentBufferSize, const udp::endpoint& originalClient) {
-    // si tenemos en nuestro vector de PUs el pu que acaba de chocar, entonces 
+    // si tenemos en nuestro vector de PUs el pu que acaba de chocar, entonces
     // operamos con él, si no, significa que ya ha chocado antes y no operamos
-    if (std::binary_search(idsPUs.begin(), idsPUs.end(), idPowerUp)) {
-        std::cout << "Hemos recibido un choque de PU-Car  idPowerUp " << idPowerUp << ", e idCarCrashed " << idCarCrashed << ". Antes teníamos " << idsPUs.size();
+    cout << Utils::getISOCurrentTimestampMillis() << "El coche " << idPlayer << " dice que hemos chocado con el PU-Car con el pu[" << idPowerUp << "] car[" << idCarCrashed << "], vamos a ver si está en la lista" << endl;
+    cout << Utils::getISOCurrentTimestampMillis() << "Hemos chocado con el PU-Car con el pu[" << idPowerUp << "] car[" << idCarCrashed << "], vamos a ver si está en la lista" << endl;
+
+    bool encontrado = false;
+    for (size_t i = 0; i < idsPUs.size(); i++) {
+        if (idsPUs[i] == idPowerUp) {
+            encontrado = true;
+            break;
+        }
+    }
+
+    if (encontrado) {
+        cout << Utils::getISOCurrentTimestampMillis() << "Lo hemos encontrado, así que vamos a borrarlo" << idsPUs.size() << endl;
         idsPUs.erase(
             std::remove_if(
                 idsPUs.begin(),
@@ -227,6 +237,8 @@ void UDPServer::HandleReceivedCrashPUCar(const uint16_t idPlayer, const uint16_t
         for (uint8_t i = 0; i < NUM_REINTENTOS; ++i)
             for (Player& currentPlayer : players)
                 SendBytes(resendPU, currentBufferSize, currentPlayer);
+    } else {
+        cout << Utils::getISOCurrentTimestampMillis() << "NOOOO Lo hemos encontrado" << idsPUs.size() << endl;
     }
 }
 
@@ -451,7 +463,7 @@ void UDPServer::DetectUsersDisconnected() {
         players.end());
 
     size_t afterDelete = players.size();
-    cout << "Ahora tenemos " << afterDelete << " jugadores" << endl;
+    // cout << "Ahora tenemos " << afterDelete << " jugadores" << endl;
     // si antes había 1 y ahora hay 0, salimos
     // si antes había 2 y ahora hay 1, salimos
     if ((beforeDelete == 1 && afterDelete == 0) || (beforeDelete > 1 && afterDelete <= 1)) {

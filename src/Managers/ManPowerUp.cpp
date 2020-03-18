@@ -53,7 +53,6 @@ void ManPowerUp::NewPowerUpReceivedFromServer(DataMap *d) {
     }
     shared_ptr<PowerUp> powerUp = make_shared<PowerUp>(position, rotation, typePU, transforPerse);
     shared_ptr<CIDOnline> cidOnline = make_shared<CIDOnline>(idPUOnline, true);
-    cidOnline->collided = true;
     powerUp->AddComponent(cidOnline); 
     MaterializePowerUp(powerUp);
 }
@@ -76,7 +75,7 @@ void ManPowerUp::CreatePowerUp(DataMap *d) {
     int medidaPowerUp = 25;
     float posX = 0, posZ = 0;
 
-   float angleRotation = (transforSalida->rotation.y * glm::pi<float>() / 180.0);
+    float angleRotation = (transforSalida->rotation.y * glm::pi<float>() / 180.0);
     if (type == typeCPowerUp::PudinDeFrambuesa) {
         posX = transforSalida->position.x - cos(angleRotation) * (-1 * ((dimensionsCarSalida->width / 2) + medidaPowerUp));
         posZ = transforSalida->position.z + sin(angleRotation) * (-1 * ((dimensionsCarSalida->depth / 2) + medidaPowerUp));
@@ -88,12 +87,9 @@ void ManPowerUp::CreatePowerUp(DataMap *d) {
     vec3 positionPowerUp = vec3(posX, transforSalida->position.y + 10, posZ);
 
     shared_ptr<PowerUp> powerUp = make_shared<PowerUp>(positionPowerUp, transforSalida->rotation, type, transforPerse);
-    auto cTypePU = static_cast<CType*>(powerUp->GetComponent(CompType::TypeComp).get())->type;
-    if( int(cTypePU) >= 0 && int(cTypePU) < 50 )
-        entities.push_back(powerUp);
-
+    
     // ojo con esta linea, no borrar porque es necesaria aunque parezca que no lo es
-    //auto cTypePU = static_cast<CType *>(powerUp->GetComponent(CompType::TypeComp).get())->type;
+    auto cTypePU = static_cast<CType *>(powerUp->GetComponent(CompType::TypeComp).get())->type;
 
     if (int(cTypePU) >= 0 && int(cTypePU) < 50) {
         
@@ -107,6 +103,7 @@ void ManPowerUp::CreatePowerUp(DataMap *d) {
                 // apuntamos el id de ese coche al que perseguir para enviarlo al online
                 idToPursue = cOnline->idClient;
             }
+            // enviamos al server que ese PU se ha lanzado
             systemOnline->SendThrowPU(powerUp, idToPursue);
         }
         MaterializePowerUp(powerUp);
@@ -158,7 +155,7 @@ void ManPowerUp::Update() {
     auto renderEngine = renderFacadeManager->GetRenderFacade();
     for (long unsigned int i = 0; i < entities.size(); ++i) {
         auto cRemovableObj = static_cast<CRemovableObject *>(entities[i].get()->GetComponent(CompType::RemovableObjectComp).get());
-        auto cId = static_cast<CId*>(entities[i].get()->GetComponent(CompType::IdComp).get());
+        // auto cId = static_cast<CId*>(entities[i].get()->GetComponent(CompType::IdComp).get());
         if (cRemovableObj->destroy) {
             cout << "El tamaño antes de borrar es de: " << entities.size() << endl;
             renderEngine->DeleteEntity(entities[i].get()); 

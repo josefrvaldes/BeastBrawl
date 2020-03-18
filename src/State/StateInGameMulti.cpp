@@ -81,7 +81,8 @@ void StateInGameMulti::InitState() {
 }
 
 void StateInGameMulti::Input() {
-    const vector<Constants::InputTypes> &inputs = renderEngine->FacadeCheckInputMulti();
+    // const vector<Constants::InputTypes> &inputs = renderEngine->FacadeCheckInputMulti();
+    const vector<Constants::InputTypes> &inputs = inputEngine->CheckInput();
     if (previousInputs != inputs) {
         //cout << Utils::getISOCurrentTimestampMillis() << " [" << sysOnline->idOnlineMainCar << "] Enviamos los inputs porque han cambiado con respecto a la iteración anterior" << endl;
         sysOnline->SendInputs(inputs);
