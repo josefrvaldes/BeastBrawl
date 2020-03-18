@@ -497,6 +497,8 @@ int RenderFacadeClover::FacadeGetFPS() const{
  * Pone el titulo de la ventana
  */
 void RenderFacadeClover::FacadeSetWindowCaption(std::string title, int fps) const{
+    std::string name = title + " - " + std::to_string(fps) + " FPS";
+    device->SetTitle(name);
 }
 
 /**

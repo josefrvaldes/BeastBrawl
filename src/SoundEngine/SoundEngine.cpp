@@ -489,7 +489,7 @@ void SoundEngine::CreateSoundNode2D(const string& nameEvent) {
 void SoundEngine::CreateSoundNodeEstatic3D(uint16_t idE, glm::vec3& p, string& nameEvent, bool play) {
     std::string name = nameEvent + to_string(idE);
     unique_ptr<SoundNode> snode = make_unique<SoundNode>(idE, p, 0);
-    cout << "**** VOY A CREAR LA INSTANCIA: " << nameEvent << " CON ID: " << name  << " CON LA POSICION: " << p.x << ", " << p.y << ", " << p.z << endl;
+    //cout << "**** VOY A CREAR LA INSTANCIA: " << nameEvent << " CON ID: " << name  << " CON LA POSICION: " << p.x << ", " << p.y << ", " << p.z << endl;
     
     FMOD::Studio::EventInstance* instance = nullptr;
     auto description = soundDescriptions.find(nameEvent);
