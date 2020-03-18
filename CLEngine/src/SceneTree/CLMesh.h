@@ -3,6 +3,7 @@
 #include "CLEntity.h"
 #include "../ResourceManager/CLResourceMesh.h"
 #include "../ResourceManager/CLResourceTexture.h"
+#include "../ResourceManager/CLResourceMaterial.h"
 
 
 namespace CLE {
@@ -13,7 +14,8 @@ namespace CLE {
             CLMesh(unsigned int idEntity) : CLEntity(idEntity) {};
             ~CLMesh() {};
 
-            void SetMesh(CLResourceMesh* m)         { mesh = m; }
+            void SetMesh(CLResourceMesh* m)                 { mesh = m; }
+            void SetMaterial(CLResourceMaterial* m)         { material = m; }
 
             //GETTERS
             CLResource* GetMesh() const             { return mesh; }
@@ -22,8 +24,9 @@ namespace CLE {
 
 
         private:
-            CLResourceMesh* mesh;
-            CLResourceTexture* texture;
+            CLResourceMesh* mesh = nullptr;
+            CLResourceMaterial* material = nullptr;
+            CLResourceTexture* texture = nullptr;
 
             
     };

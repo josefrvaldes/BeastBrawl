@@ -29,7 +29,7 @@ CBoundingPlane::CBoundingPlane(const vec3 &a_, const vec3 &b_, const vec3 &c_, c
       distance{(dot(normalizedNormal, a_))}      // calculamos la distancia del plano a su normal normalizada, la necesitamos 
 {
     m_compType = CompType::CompBoundingPlane;
-    equationPlane = equationPlane3Points(a_,b_,c_); 
+    equationPlane = glm::vec4(normal, -glm::dot(a_, normal));  // la ultima es como el valor "d" del plano
 }
 
 // TODO: Se va a tener en cuenta el angulo que formen????
@@ -235,28 +235,28 @@ bool CBoundingPlane::membershipPoint(const vec3 &point) const{
 }
 
 vec4 CBoundingPlane::equationPlane3Points(const vec3 &a, const vec3 &b, const vec3 &c) const{
-
+    /*
     double mat00 = -1*a.x; // realmente es X - A.X
     double mat01 = -1*a.y; // realmente es Y - A.Y
     double mat02 = -1*a.z; // realmente es Z - A.Z
-
     double mat10 = b.x - a.x; 
     double mat11 = b.y - a.y; 
     double mat12 = b.z - a.z; 
-
     double mat20 = c.x - a.x; 
     double mat21 = c.y - a.y; 
     double mat22 = c.z - a.z; 
-
     double planeX = (mat11*mat22) - (mat12*mat21);
     double planeY = (mat20*mat12) - (mat10*mat22);
     double planeZ = (mat10*mat21) - (mat11*mat20);
     double planeD = ((mat00*mat11*mat22)+(mat01*mat20*mat12)+(mat02*mat10*mat21)) 
                     - ((mat02*mat11*mat20)+(mat01*mat10*mat22)+(mat00*mat21*mat12));
-
-    //std::cout << "LA ECUACION GENERAL DEL PLANTO ES: " << planeX << "x " << planeY << "y " << planeZ << "z " << planeD << std::endl;
-
+    //d = -glm::dot(a, normal);
+    std::cout << "LA ECUACION GENERAL DEL PLANTO ES: " << planeX << "x " << planeY << "y " << planeZ << "z " << planeD << std::endl;
     return vec4(planeX,planeY,planeZ,planeD);
+    */
+    auto d_ = -glm::dot(a, normal);
+    std::cout << "LA ECUACION GENERAL DEL PLANTO ES: " << normal.x << "x " <<normal.y << "y " << normal.z << "z " << d_ << std::endl;
+    return vec4(normal.x,normal.y,normal.z,d_);
 }
 
 

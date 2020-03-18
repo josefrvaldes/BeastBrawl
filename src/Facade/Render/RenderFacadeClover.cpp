@@ -200,7 +200,7 @@ const void RenderFacadeClover::FacadeAddObjects(vector<Entity*> entities) {
 const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
     auto cTransformable = static_cast<CTransformable*>(entity->GetComponent(CompType::TransformableComp).get());
     auto cId = static_cast<CId*>(entity->GetComponent(CompType::IdComp).get());
-    auto cTexture = static_cast<CTexture*>(entity->GetComponent(CompType::TextureComp).get());
+    //auto cTexture = static_cast<CTexture*>(entity->GetComponent(CompType::TextureComp).get());
     auto cType = static_cast<CType*>(entity->GetComponent(CompType::TypeComp).get());
     auto cShader = static_cast<CShader*>(entity->GetComponent(CompType::ShaderComp).get());
 
@@ -246,7 +246,7 @@ const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
             node = smgr->AddLight(cId->id);
             static_cast<CLLight*>(node->GetEntity())->SetLightAttributes(cLight->intensity,cLight->ambient,cLight->diffuse,cLight->specular,cLight->constant,cLight->linear,cLight->quadratic);
             break;
-    }
+    } 
 
 
     
@@ -296,7 +296,7 @@ void RenderFacadeClover::UpdateCamera(Entity* cam, ManCar* manCars) {
     auto cTransformable = static_cast<CTransformable*>(cam->GetComponent(CompType::TransformableComp).get());
     auto cCamera = static_cast<CCamera*>(cam->GetComponent(CompType::CameraComp).get());
 
-    auto cTransformableCar = static_cast<CTransformable*>(manCars->GetCar()->GetComponent(CompType::IdComp).get());
+    //auto cTransformableCar = static_cast<CTransformable*>(manCars->GetCar()->GetComponent(CompType::IdComp).get());
 
     //Cogemos la posicion de nuestro coche
     glm::vec3 targetPosition = smgr->GetNodeByID(idCar)->GetTranslation();
@@ -532,6 +532,9 @@ void RenderFacadeClover::FacadeDrawEndRace() {
 void RenderFacadeClover::FacadeDrawLobbyMulti() {
 }
 
+void RenderFacadeClover::FacadeDrawLobbyMultiExit() {
+}
+
 /**
  * Limpia la pantalla y vacia los buffers de pantalla
  */
@@ -555,6 +558,10 @@ void RenderFacadeClover::FacadeEndScene() const{
 }
 
 void RenderFacadeClover::FacadeDeviceDrop() {
+}
+
+void RenderFacadeClover::FacadeAddSkybox(string right,string left,string top,string bottom,string front,string back){
+    smgr->AddSkybox(right, left, top, bottom, front, back);
 }
 
 //DEBUG dibuja las aristas entre los nodos del grafo

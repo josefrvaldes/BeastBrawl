@@ -29,12 +29,12 @@ struct Texture {
     string path;
 };
 
-struct Material {
-    glm::vec3 ambient;
-    glm::vec3 diffuse;
-    glm::vec3 specular;
-    float shininess;
-};
+// struct Material {
+//     glm::vec3 ambient;
+//     glm::vec3 diffuse;
+//     glm::vec3 specular;
+//     float shininess;
+// };
 
 class Mesh{
     
@@ -48,7 +48,7 @@ class Mesh{
         vector<Vertex> vertices;
         vector<unsigned int> indices;
         vector<Texture> textures;
-        vector<Material> materials;
+        //vector<Material> materials;
         unsigned int VAO, VBO, EBO;  
 
 };
@@ -68,7 +68,7 @@ namespace CLE {
             Mesh processMesh(aiMesh *mesh, const aiScene *scene);
             vector<Texture> loadMaterialTextures(aiMaterial *mat, aiTextureType type, string typeName);
             unsigned int TextureFromFile(const char *path, const string &directory, bool gamma = false);
-            Material loadMaterial(aiMaterial* mat); 
+            //Material loadMaterial(aiMaterial* mat); 
 
             vector<Mesh> vecMesh;
             vector<Texture> textures_loaded;	// stores all the textures loaded so far, optimization to make sure textures aren't loaded more than once.

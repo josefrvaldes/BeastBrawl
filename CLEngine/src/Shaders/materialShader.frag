@@ -18,9 +18,7 @@ struct Material {
     vec3 ambient;
     vec3 diffuse;
     vec3 specular;
-    sampler2D heigth;
-    sampler2D normal;
-    float shininess;
+    int shininess;
 }; 
 
 struct PointLight {
@@ -39,14 +37,14 @@ struct PointLight {
 uniform Material material;
 
 uniform int num_Point_Lights;
-#define NUM_POINT_LIGHTS 100
+#define NUM_POINT_LIGHTS 20
 uniform PointLight pointLights[NUM_POINT_LIGHTS]; 
 //uniform sampler2D texture_diffuse1;
 
 
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
 {
-    vec3 ambient = light.ambient * material.diffuse,TexCoords;
+    vec3 ambient = light.ambient * material.ambient;
 
     // diffuse
     vec3 lightDir = normalize(light.position - fragPos);

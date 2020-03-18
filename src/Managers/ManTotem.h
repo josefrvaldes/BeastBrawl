@@ -34,6 +34,7 @@ class ManTotem : public Manager{
    private:
     //shared_ptr<Totem> totem;
     //vector<shared_ptr<Totem>> totems;
+    void ActivateTotem(const glm::vec3 &position, int currentNavMesh);
     void AppertainCar(DataMap* d);
     void ResetTotem(DataMap* d);
     void SyncTotem(DataMap* d);

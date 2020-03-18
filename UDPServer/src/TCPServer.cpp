@@ -32,7 +32,7 @@ void TCPServer::Close() {
 }
 
 void TCPServer::StartReceiving() {
-    TCPConnection::pointer new_connection = TCPConnection::Create(context);
+    TCPConnection::pointer new_connection = TCPConnection::Create(context, players, connections);
     acceptor_.async_accept(
         new_connection->socket(),
         boost::bind(&TCPServer::HandleAccept,
@@ -44,20 +44,26 @@ void TCPServer::StartReceiving() {
 void TCPServer::HandleAccept(TCPConnection::pointer new_connection, const boost::system::error_code& error) {
     if (!error) {
         //std::cout << "Recibi un mensaje" << std::endl;
-        new_connection->Start();
+        if(Server::GAME_STARTED == false){
+            new_connection->Start();
 
-        // Comprobaciones para ver si existe el player
-        if (PlayerExists(new_connection) == false) {
-            connections.push_back(new_connection);
-            Player p;
-            p.endpointTCP = new_connection->socket().remote_endpoint();
-            players.push_back(p);
-        }
-        std::cout << "Num conexiones: " << connections.size() << std::endl;
-        if (connections.size() >= Constants::MIN_NUM_PLAYERS) {
-            cout << "Ya hemos llegado al núm de conexiones para enviar partida, vamos a visar a los clientes" << endl;
-            SendStartGame();
-            // justo despues vaciar el tcp para otra conexion
+            // Comprobaciones para ver si existe el player
+            if (PlayerExists(new_connection) == false) {
+                connections.push_back(new_connection);
+                Player p;
+                p.endpointTCP = new_connection->socket().remote_endpoint();
+                players.push_back(p);
+            }
+            if (connections.size() >= Constants::MIN_NUM_PLAYERS) {
+                cout << "Ya hemos llegado al núm de conexiones para enviar partida, vamos a visar a los clientes" << endl;
+                Server::GAME_STARTED = true;
+                SendStartGame();
+                // justo despues vaciar el tcp para otra conexion
+            }
+        }else{
+            // no dejar entrar a la sala
+            cout << "ENTRA" << "\n";
+            new_connection->SendFullGame();
         }
     }
 
@@ -79,6 +85,7 @@ bool TCPServer::PlayerExists(TCPConnection::pointer new_connection) {
 // obtener el string con todos los datos
 void TCPServer::SendStartGame() {
     // como ya vamos a empezar una partida nueva, a partir de ahora sí aceptaremos que la partida se pueda acabar
+    udpServer.ResetTimerStartReceiving();
     udpServer.StartReceiving();
     udpServer.CheckDisconnectionsAfterSeconds();
     for (const auto& currentPlayer : connections) {
@@ -98,8 +105,10 @@ void TCPServer::SendStartGame() {
         // std::shared_ptr<boost::array<unsigned char, Constants::ONLINE_BUFFER_SIZE>> buff = make_shared<boost::array<unsigned char, Constants::ONLINE_BUFFER_SIZE>>();
         std::shared_ptr<unsigned char[]> buff(new unsigned char[Constants::ONLINE_BUFFER_SIZE]);
         size_t currentBuffSize = 0;
+        uint8_t callType = Constants::PetitionTypes::TCP_START_GAME;
         uint8_t enemiesSize = idsEnemies.size();
     
+        Serialization::Serialize(buff.get(), &callType, currentBuffSize);
         Serialization::Serialize(buff.get(), &idPlayer, currentBuffSize);
         Serialization::Serialize(buff.get(), &enemiesSize, currentBuffSize);
         Serialization::SerializeVector(buff.get(), idsEnemies, currentBuffSize);

@@ -87,11 +87,8 @@ void main()
 
     FragColor = vec4(totalPointLight,1.0);
 
-    //IMPORTANTE:
-    //Para debugear si descomentas esta linea se ven los objetos con textura pero sin luces
-    //FragColor = texture(material.diffuse,TexCoords);
-
-    
+    //Si comentas esta linea se ve con luces
+    FragColor = texture(material.diffuse,TexCoords);
 
 }
 

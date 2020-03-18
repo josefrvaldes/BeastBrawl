@@ -22,6 +22,7 @@
 #include "ResourceManager/CLResourceManager.h"
 #include "ResourceManager/CLResourceShader.h"
 #include "ResourceManager/CLResourceMesh.h"
+#include "ResourceManager/CLResourceMaterial.h"
 #include "ResourceManager/CLResource.h"
 #include "Built-In-Classes/CLColor.h"
 
@@ -35,6 +36,7 @@
 #include <stdio.h>      /* printf, scanf, puts, NULL */
 #include <stdlib.h>     /* srand, rand */
 #include <time.h>       /* time */
+#include <string.h>       /* string */
 
 using namespace std;
 using namespace CLE;
@@ -51,14 +53,16 @@ int main() {
     //-------------------Resource manager-------------------
     CLResourceManager* resourceManager = CLResourceManager::GetResourceManager();
     auto resourceShader = resourceManager->GetResourceShader("CLEngine/src/Shaders/lightMapping.vert", "CLEngine/src/Shaders/lightMapping.frag");
-    auto resourceShader2 = resourceManager->GetResourceShader("CLEngine/src/Shaders/phongMaterialVert.glsl", "CLEngine/src/Shaders/phongMaterialFrag.glsl");
-    //auto debugShader = resourceManager->GetResourceShader("CLEngine/src/Shaders/debugShader.vert", "CLEngine/src/Shaders/debugShader.frag", "CLEngine/src/Shaders/debugShader.geom");
+    auto resourceShaderMaterial = resourceManager->GetResourceShader("CLEngine/src/Shaders/materialShader.vert", "CLEngine/src/Shaders/materialShader.frag");
+    auto resourceShader3 = resourceManager->GetResourceShader("CLEngine/src/Shaders/debugShader.vert", "CLEngine/src/Shaders/debugShader.frag", "CLEngine/src/Shaders/debugShader.geom");
+    auto resourceShaderSkybox = resourceManager->GetResourceShader("CLEngine/src/Shaders/skybox.vert", "CLEngine/src/Shaders/skybox.frag");
     auto resourceMeshBox = resourceManager->GetResourceMesh("media/TEST_BOX.fbx");
     auto resourceMeshTotem = resourceManager->GetResourceMesh("media/totem_tex.fbx");
     auto resourceMesh = resourceManager->GetResourceMesh("media/kart_physics.fbx");
     auto resourceMeshOBJ = resourceManager->GetResourceMesh("media/kart.obj");
- 
-    //auto id = debugShader->GetProgramID();
+    auto resourceMaterial = resourceManager->GetResourceMaterial("media/kart.obj");
+
+    
     //----------------------------------------------------------------------------------------------------------------SHADER
     
  
@@ -94,10 +98,17 @@ int main() {
         mesh2->SetShaderProgramID(resourceShader->GetProgramID());
 
         
-        //auto mesh3 = mesh2->AddMesh(5);
-        //mesh3->SetShaderProgramID(resourceShader2->GetProgramID());
+        auto mesh3 = mesh2->AddMesh(5);
+        mesh3->SetShaderProgramID(resourceShaderMaterial->GetProgramID());
 
         static_cast<CLCamera*>(camera->GetEntity())->SetCameraTarget(mesh1->GetTranslation());
+
+        smgr->AddSkybox("media/skybox/right.jpg",
+        "media/skybox/left.jpg",
+        "media/skybox/top.jpg",
+        "media/skybox/bottom.jpg",
+        "media/skybox/front.jpg",
+        "media/skybox/back.jpg");
 
     //smgr->DFSTree(glm::mat4(1.0));
     // vector<shared_ptr<CLEntity>> mallas;
@@ -152,7 +163,6 @@ int main() {
     int frameCount = 0;
     auto lights = smgr->GetLights();
 
-    //static_cast<CLCamera*>(camera->GetEntity())->SetPerspective(false);
     while (device->Run()) {
 
         //checkInput(device->GetWindow(), cameraPos, cameraFront, cameraUp);
@@ -215,6 +225,8 @@ int main() {
         }
         
         device->DrawObjects();
+
+
         device->InputClose();
         device->PollEvents();
         device->RenderImgui();

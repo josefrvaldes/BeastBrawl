@@ -12,6 +12,8 @@ StatePause::StatePause(){
 
     renderEngine->FacadeInitPause();
 
+    InitState();
+
 }
 
 void StatePause::InitState() {

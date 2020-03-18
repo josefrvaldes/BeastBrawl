@@ -38,12 +38,8 @@ enum EventType {
     ACTUALIZE_NAVMESH_TOTEM,
     ACTUALIZE_NAVMESH_CARAI,
     CHANGE_TOTEM_CAR,
-    PRIORIDAD1,
-    PRIORIDAD2,
-    PRIORIDAD3,
     COLLISION_PLAYER_TOTEM,
     COLLISION_AI_TOTEM,
-    POWER_UP_COGIDO,
     PowerUp_Create,
     CATCH_BOX_POWERUP,
     CATCH_AI_BOX_POWERUP,
@@ -56,11 +52,11 @@ enum EventType {
     CHANGE_DESTINATION,
     PRESS_P,
     UPDATE_POWERUP_HUD,
-    PRESS_0,
     HURT,
     CATCH_TOTEM,
     NO_SHIELD,
-    CRASH_ENEMY,
+    CRASH,
+    CRASH_WALL,
     BREAK_BOX,
     DRIFT,
     NO_DRIFT,
@@ -68,7 +64,6 @@ enum EventType {
     MENU_OPTION,
     MENU_OK,
     MENU_BACK,
-    START_GAME,
     STATE_MENU,
     STATE_PAUSE,
     STATE_ENDRACE,
@@ -77,6 +72,7 @@ enum EventType {
     STATE_LOBBYMULTI,
     STATE_CONTROLS,
     CALCULATE_PATH_TO_NAVMESH,
+    PREPARE_TO_DISCONNECT,
     NEW_TCP_START_MULTI,
     NEW_INPUTS_RECEIVED,
     NEW_SYNC_RECEIVED_CAR,
@@ -84,6 +80,11 @@ enum EventType {
     NEW_CATCH_PU_RECEIVED,
     NEW_CATCH_TOTEM_RECEIVED,
     NEW_LOST_TOTEM_RECEIVED,
+    NEW_ROBOJOROBO_RECEIVED,
+    NEW_NITRO_RECEIVED,
+    NEW_THROW_PU_RECEIVED,
+    NEW_CRASH_PU_CAR_RECEIVED,
+    NEW_CRASH_PU_WALL_RECEIVED,
     DISCONNECTED_PLAYER
 };
 
@@ -117,6 +118,7 @@ struct Data {
     CTransformable* posCochePerseguir;
     typeCPowerUp typePowerUp;
     bool mainCharacter;
+    bool stole;
 };
 
 struct Event {

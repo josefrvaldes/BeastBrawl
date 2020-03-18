@@ -42,7 +42,7 @@ bool Collisions::Intersects(Entity* entity1,Entity* entity2){
 }
 
 
-void Collisions::IntersectPlayerPowerUps(Car* carPlayer, ManPowerUp* manPowerUps, ManNavMesh* manNavMesh){
+/*void Collisions::IntersectPlayerPowerUps(Car* carPlayer, ManPowerUp* manPowerUps, ManNavMesh* manNavMesh){
     for(auto& actualPowerUp : manPowerUps->GetEntities()){                                                            // SI HACE DANYO
         if(Intersects(carPlayer, actualPowerUp.get())){   //TRUE
             // debemos eliminar el powerUp y hacer danyo al jugador
@@ -63,9 +63,9 @@ void Collisions::IntersectPlayerPowerUps(Car* carPlayer, ManPowerUp* manPowerUps
             }
         }
     }
-}
+}*/
 
-void Collisions::IntersectsCarsPowerUps(ManCar* manCars, ManPowerUp* manPowerUps, ManNavMesh* manNavMesh){
+/*void Collisions::IntersectsCarsPowerUps(ManCar* manCars, ManPowerUp* manPowerUps, ManNavMesh* manNavMesh){
     for(const auto& actualCar : manCars->GetEntities()){
         if(actualCar.get() != manCars->GetCar().get()){
             for(auto& actualPowerUp : manPowerUps->GetEntities()){                                                               // SI HACE DANYO
@@ -90,7 +90,7 @@ void Collisions::IntersectsCarsPowerUps(ManCar* manCars, ManPowerUp* manPowerUps
             }
         }
     }
-}
+}*/
 
 /**
  * @Deprecated
