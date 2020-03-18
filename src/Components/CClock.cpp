@@ -1,5 +1,5 @@
 #include "CClock.h"
 
 CClock::CClock() : active{false}{
-    CompType::ClockComp; 
+    m_compType = CompType::ClockComp; 
 }

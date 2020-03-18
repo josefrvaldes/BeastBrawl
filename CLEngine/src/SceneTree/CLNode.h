@@ -11,8 +11,10 @@
 #include "CLMesh.h"
 #include "CLLight.h"
 #include "CLCamera.h"
+#include "../ResourceManager/CLResourceMesh.h"
 #include "CLSkybox.h"
 
+#include "../Frustum/CLFrustum.h"
 #include "../ResourceManager/CLResourceManager.h"
 #include <stb_image.h>
 
@@ -37,6 +39,7 @@ class CLNode{
         glm::vec3 GetScalation()   const       { return scalation; }
         glm::mat4 GetTransformationMat() const { return transformationMat; }
         GLuint GetShaderProgramID() const      { return shaderProgramID;}
+        float GetBoundingBox() const           { return dimensionsBoundingBox;}
         glm::vec3 GetGlobalTranslation() const;
         glm::vec3 GetGlobalRotation() const;
         glm::vec3 GetGlobalScalation() const;
@@ -74,6 +77,7 @@ class CLNode{
         glm::mat4 CalculateTransformationMatrix();
         void CalculateViewProjMatrix();
         void CalculateLights();
+        float CalculateBoundingBox();
 
         void DrawTree(CLNode* root);
         void DFSTree(glm::mat4);
@@ -92,13 +96,13 @@ class CLNode{
         CLNode* father {nullptr};
         vector<shared_ptr<CLNode>> childs;
 
-        glm::vec3 translation = glm::vec3(0.0f);
-        glm::vec3 rotation = glm::vec3(0.0f);
-        glm::vec3 scalation = glm::vec3(1.0f);
-        glm::mat4 transformationMat = glm::mat4(1.0f);
+        glm::vec3 translation       {glm::vec3(0.0f)};  // posicion del nodo
+        glm::vec3 rotation          {glm::vec3(0.0f)};  // rotacion del nodo
+        glm::vec3 scalation         {glm::vec3(1.0f)};  // escalado del nodo
+        glm::mat4 transformationMat {glm::mat4(1.0f)};  // matriz modelo del nodo
 
-        inline static glm::mat4 projection;
-        inline static glm::mat4 view;
+        inline static glm::mat4 projection;             // matriz proyeccion del modelo
+        inline static glm::mat4 view;                   // matriz view del modelo
 
         //Methods
         CLNode* GetNodeByIDAux(unsigned int id, CLNode* node, CLNode* root);
@@ -109,6 +113,12 @@ class CLNode{
         inline static vector<CLNode*> lights;
         inline static vector<CLNode*> cameras;
 
+        // BOUNDING BOX
+        //glm::vec3 extremeMinMesh    {glm::vec3(0.0,0.0,0.0)}; // definimos el vertice mayor de la malla para el BoundingBpx
+        //glm::vec3 extremeMaxMesh    {glm::vec3(0.0,0.0,0.0)}; // definimos el vertice menos de la malla para el BoundingBox
+        float dimensionsBoundingBox {0.0}; // width , height, depht
+        glm::vec3 RotatePointAroundCenter(const glm::vec3& point_ , const glm::vec3& center, const glm::vec3& rot) const;
+        glm::vec3 TranslatePointAroundCenter(const glm::vec3& point_ , const glm::vec3& center, const glm::vec3& trans) const;
         //Skybox
         inline static unique_ptr<CLSkybox> skybox = nullptr;
         inline static GLuint skyboxShader = 0;
