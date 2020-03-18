@@ -37,6 +37,7 @@ class CLEngine {
         void BeginScene();
         void DrawObjects();
         void EndScene();
+        void SetTitle(string&);
         void RenderImgui();
         void UpdateViewport();
         double GetTime();

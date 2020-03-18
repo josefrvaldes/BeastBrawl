@@ -126,9 +126,15 @@ void CLEngine::DrawObjects(){
  */
 void CLEngine::EndScene(){
     
-    
     glfwSwapBuffers(window);
 
+}
+
+/**
+ *
+ */
+void CLEngine::SetTitle(string &t) {
+    glfwSetWindowTitle(window, t.c_str());
 }
 
 void CLEngine::RenderImgui(){
