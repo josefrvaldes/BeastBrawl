@@ -22,6 +22,7 @@
 #include "ResourceManager/CLResourceManager.h"
 #include "ResourceManager/CLResourceShader.h"
 #include "ResourceManager/CLResourceMesh.h"
+#include "ResourceManager/CLResourceMaterial.h"
 #include "ResourceManager/CLResource.h"
 
 
@@ -51,13 +52,14 @@ int main() {
     //-------------------Resource manager-------------------
     CLResourceManager* resourceManager = CLResourceManager::GetResourceManager();
     auto resourceShader = resourceManager->GetResourceShader("CLEngine/src/Shaders/lightMapping.vert", "CLEngine/src/Shaders/lightMapping.frag");
-    auto resourceShader2 = resourceManager->GetResourceShader("CLEngine/src/Shaders/phongMaterialVert.glsl", "CLEngine/src/Shaders/phongMaterialFrag.glsl");
+    auto resourceShaderMaterial = resourceManager->GetResourceShader("CLEngine/src/Shaders/materialShader.vert", "CLEngine/src/Shaders/materialShader.frag");
     auto resourceShader3 = resourceManager->GetResourceShader("CLEngine/src/Shaders/debugShader.vert", "CLEngine/src/Shaders/debugShader.frag", "CLEngine/src/Shaders/debugShader.geom");
     auto resourceShaderSkybox = resourceManager->GetResourceShader("CLEngine/src/Shaders/skybox.vert", "CLEngine/src/Shaders/skybox.frag");
     auto resourceMeshBox = resourceManager->GetResourceMesh("media/TEST_BOX.fbx");
     auto resourceMeshTotem = resourceManager->GetResourceMesh("media/totem_tex.fbx");
     auto resourceMesh = resourceManager->GetResourceMesh("media/kart_physics.fbx");
     auto resourceMeshOBJ = resourceManager->GetResourceMesh("media/kart.obj");
+    auto resourceMaterial = resourceManager->GetResourceMaterial("media/kart.obj");
 
     
     //----------------------------------------------------------------------------------------------------------------SHADER
@@ -96,7 +98,7 @@ int main() {
 
         
         auto mesh3 = mesh2->AddMesh(5);
-        mesh3->SetShaderProgramID(resourceShader2->GetProgramID());
+        mesh3->SetShaderProgramID(resourceShaderMaterial->GetProgramID());
 
         static_cast<CLCamera*>(camera->GetEntity())->SetCameraTarget(mesh1->GetTranslation());
 
@@ -132,6 +134,7 @@ int main() {
     static_cast<CLMesh*>(mesh1->GetEntity())->SetMesh(resourceMeshBox);
     static_cast<CLMesh*>(mesh2->GetEntity())->SetMesh(resourceMesh);
     static_cast<CLMesh*>(mesh3->GetEntity())->SetMesh(resourceMeshOBJ);
+    static_cast<CLMesh*>(mesh3->GetEntity())->SetMaterial(resourceMaterial); 
 
     camera->SetTranslation(glm::vec3(80.0f, 5.0f, -9.0f));
     mesh1->SetScalation(glm::vec3(2.0f, 2.0f, 2.0f));
