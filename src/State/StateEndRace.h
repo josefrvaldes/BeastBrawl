@@ -13,7 +13,7 @@
 class StateEndRace : public State{
     public:
         StateEndRace();
-        ~StateEndRace() = default;
+        ~StateEndRace() override = default;
         void Input() override;
         void InitState() override;
         void Update() override;

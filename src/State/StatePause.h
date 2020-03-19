@@ -13,7 +13,7 @@
 class StatePause : public State{
     public:
         StatePause();
-        ~StatePause() = default;
+        ~StatePause() override = default;
         void Input() override;
         void InitState() override;
         void Update() override;

@@ -1,12 +1,7 @@
 #include "InputFacadeClover.h"
 
 
-#include <codecvt>
 #include <iostream>
-#include <locale>
-#include <memory>
-#include <string>
-#include <unordered_map>
 
 InputFacadeClover::InputFacadeClover(){
 
@@ -26,18 +21,26 @@ vector<Constants::InputTypes> InputFacadeClover::CheckInput(){
                        // por defecto un vector, como sabemos que como máximo 
                        // va a haber un máximo de 4 inputs en el vector, 
                        // le reservamos directamente ya el espacio
-    if (glfwGetKey(device->GetWindow(),GLFW_KEY_ESCAPE)) {
+
+    //SALIMOS
+    if (glfwGetKey(device->GetWindow(),GLFW_KEY_DELETE)) {
         device->CloseWindow();
     }
+
+    //CLAXON
     if (glfwGetKey(device->GetWindow(),GLFW_KEY_P)) {
         eventManager.AddEventMulti(Event{EventType::PRESS_P});
         inputs.push_back(Constants::InputTypes::CLAXON);
     }
-    // if (receiver.IsKeyDown(KEY_KEY_0)) {
-    //     eventManager.AddEventMulti(Event{EventType::PRESS_0});
-    // }
+
+    //DERRAPE
+    if (glfwGetKey(device->GetWindow(),GLFW_KEY_U)) {
+        eventManager.AddEventMulti(Event{EventType::PRESS_SKID});
+    } else {
+        eventManager.AddEventMulti(Event{EventType::NOT_SKID_PRESS});
+    }
     
-    //  delante y detrás
+    //  ACELERAR y MARCHA ATRAS
     if (glfwGetKey(device->GetWindow(),GLFW_KEY_W)) {
         eventManager.AddEventMulti(Event{EventType::PRESS_I});
         inputs.push_back(Constants::InputTypes::FORWARD);
@@ -48,7 +51,7 @@ vector<Constants::InputTypes> InputFacadeClover::CheckInput(){
         eventManager.AddEventMulti(Event{EventType::NO_I_O_PRESS});
     }
 
-    // izq y dch
+    // IZQUIERDA y DERECHA
     if (glfwGetKey(device->GetWindow(),GLFW_KEY_D)) {
         eventManager.AddEventMulti(Event{EventType::PRESS_D});
         inputs.push_back(Constants::InputTypes::RIGHT);
@@ -92,17 +95,16 @@ vector<Constants::InputTypes> InputFacadeClover::CheckInput(){
         
     }
 
-    // CAMARA
-    if (glfwGetKey(device->GetWindow(),GLFW_KEY_Q) && !invertedCam && !totemCamActive) {
+    // CAMARA TRASERA Y TOTEM
+    if (glfwGetKey(device->GetWindow(),GLFW_KEY_I) && !invertedCam && !totemCamActive) {
         timeStart = system_clock::now();
         eventManager.AddEventMulti(Event{EventType::INVERT_CAMERA});
         invertedCam = true;
-
-    } else if(glfwGetKey(device->GetWindow(),GLFW_KEY_E) && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelayCamera) {
+    } else if(glfwGetKey(device->GetWindow(),GLFW_KEY_O) && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelayCamera) {
         timeStart = system_clock::now();
         eventManager.AddEventMulti(Event{EventType::TOTEM_CAMERA});
         totemCamActive = !totemCamActive;
-    } else if (!glfwGetKey(device->GetWindow(),GLFW_KEY_Q) && !totemCamActive){
+    } else if (!glfwGetKey(device->GetWindow(),GLFW_KEY_I) && !totemCamActive){
         invertedCam = false;
         eventManager.AddEventMulti(Event{EventType::NORMAL_CAMERA});
     }
@@ -135,10 +137,4 @@ void InputFacadeClover::CheckInputEndRace(){
     if (glfwGetKey(device->GetWindow(),GLFW_KEY_ESCAPE)) {
         device->CloseWindow();
     }
-}
-
-
-
-InputFacadeClover::~InputFacadeClover(){
-	
 }

@@ -8,7 +8,7 @@ class State{
     public:
         enum States{ NO_STATE, INTRO, MENU, MAP, INGAME_SINGLE, INGAME_MULTI, ENDRACE, PAUSE, CONTROLS, CREDITS, LOBBY_MULTI};
         State();
-        virtual ~State();
+        virtual ~State() = 0;
         virtual void InitState() = 0;
         virtual void Update() = 0;
         virtual void Input() = 0;
