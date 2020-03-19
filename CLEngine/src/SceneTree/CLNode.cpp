@@ -400,6 +400,10 @@ CLCamera* CLNode::GetActiveCamera(){
     return nullptr;
 }
 
+const void CLNode::Draw3DLine(float x1, float y1, float z1, float x2, float y2, float z2) const{
+    Draw3DLine(x1,y1,z1,x1,y2,z1,CLColor(255.0,0.0,0.0,255.0));
+}
+
 const void CLNode::Draw3DLine(float x1, float y1, float z1, float x2, float y2, float z2,CLColor color) const{
 
     // float line[] = {
@@ -410,7 +414,6 @@ const void CLNode::Draw3DLine(float x1, float y1, float z1, float x2, float y2, 
     float line[] = {
         -0.6f,0.3f,0.0f,
         0.8f,0.5f,0.0f,
-        1.0f,-0.2f,0.0f
     };
  
     
@@ -428,8 +431,7 @@ const void CLNode::Draw3DLine(float x1, float y1, float z1, float x2, float y2, 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE,  3 * sizeof(float), 0);
     glBindVertexArray(0);
 
-    glm::mat4 modelMat(1.0f);
-    modelMat = glm::translate(modelMat,glm::vec3(x1,y1,z1));
+    glm::mat4 modelMat = glm::identity<mat4>();
 
     glUseProgram(debugShader);
 
@@ -440,12 +442,12 @@ const void CLNode::Draw3DLine(float x1, float y1, float z1, float x2, float y2, 
     glUniformMatrix4fv(glGetUniformLocation(shaderProgramID, "clcolor"), 1, GL_FALSE, glm::value_ptr(clcolor));
 
     glBindVertexArray(VAO);
-    glDrawArrays(GL_LINE_STRIP, 0,3); 
+    glDrawArrays(GL_LINES_ADJACENCY, 0,4); 
     glUseProgram(0);
     glBindVertexArray(0);
 
-    // Dibujar el triángulo !
-    //glDrawArrays(GL_TRIANGLES, 0, 3); // Empezar desde el vértice 0S; 3 vértices en total -> 1 triángulo
+    glDeleteVertexArrays(1, &VAO);
+    glDeleteBuffers(1, &VBO);
 
 }
 

@@ -575,6 +575,44 @@ void RenderFacadeClover::FacadeAddSkybox(string right,string left,string top,str
 
 //DEBUG dibuja las aristas entre los nodos del grafo
 void RenderFacadeClover::FacadeDrawGraphEdges(ManWayPoint* manWayPoints) const{
+    //if (!showDebug) return;  //Si no esta activado debug retornamos
+
+    //Recorremos todos los WayPoints del manager
+    for (const auto& way : manWayPoints->GetEntities()) {
+        auto cWayPoint = static_cast<CWayPoint*>(way->GetComponent(CompType::WayPointComp).get());
+        auto cWayPointEdge = static_cast<CWayPointEdges*>(way->GetComponent(CompType::WayPointEdgesComp).get());
+
+        //Vamos a dibujar varias lineas para formar un "circulo"
+        auto centre = cWayPoint->position;
+        //La primera posicion es para el primer cuadrante angle 0
+        auto radious = cWayPoint->radious;
+        glm::vec3 lastPoint = glm::vec3(centre.x + radious,centre.y, centre.z);
+        float angle = 0;
+        float angleIncrement = 18; //Si quieres aumentar la precision debes bajar el numero y que siga siendo multiplo de 360
+
+        while(angle<=360){
+            angle += angleIncrement;
+            float radians = (angle*3.1415) / 180.0;
+            auto newPoint = glm::vec3(centre.x + (cos(radians) * radious), centre.y, centre.z + (sin(radians) * radious));
+
+            smgr->Draw3DLine(lastPoint.x,lastPoint.y,-lastPoint.z,newPoint.x,newPoint.y,newPoint.z);
+            lastPoint = newPoint;
+        }
+        //Recorremos el componente CWayPointEdges->edges para ir arista a arista
+        for (Edge e : cWayPointEdge->edges) {
+            //Cogemos la posicion de la arista que apunta e->to
+            auto cWayPoint2 = static_cast<CWayPoint*>(manWayPoints->GetEntities()[e.to]->GetComponent(CompType::WayPointComp).get());
+
+            //Usamos un color u otro en funcion de la distancia
+            if (e.cost < 300) {
+                smgr->Draw3DLine(cWayPoint->position.x,cWayPoint->position.y,-cWayPoint->position.z, cWayPoint2->position.x,cWayPoint2->position.y,-cWayPoint2->position.z, CLColor(0.0,0.0,255.0,255.0));
+            } else if (e.cost >= 300 && e.cost < 500) {
+                smgr->Draw3DLine(cWayPoint->position.x,cWayPoint->position.y,-cWayPoint->position.z, cWayPoint2->position.x,cWayPoint2->position.y,-cWayPoint2->position.z, CLColor(0.0,255.0,0.0,255.0));
+            } else if (e.cost >= 500) {
+                smgr->Draw3DLine(cWayPoint->position.x,cWayPoint->position.y,-cWayPoint->position.z, cWayPoint2->position.x,cWayPoint2->position.y,-cWayPoint2->position.z, CLColor(255.0,0.0,0.0,255.0));
+            }
+        }
+    }
 }
 
 void RenderFacadeClover::FacadeDrawAIDebug(ManCar* manCars, ManNavMesh* manNavMesh, ManWayPoint* manWayPoint) const{
@@ -587,9 +625,11 @@ void RenderFacadeClover::FacadeDrawAIDebugPath(Entity* carAI, ManWayPoint* manWa
 
 
 void RenderFacadeClover::Draw3DLine(vec3& pos1, vec3& pos2) const {
+    Draw3DLine(pos1, pos2, 255, 0, 0);
 }
 
 void RenderFacadeClover::Draw3DLine(vec3& pos1, vec3& pos2, uint16_t r, uint16_t g, uint16_t b) const {
+    smgr->Draw3DLine(pos1.x,pos1.y,pos1.z, pos2.x,pos2.y,pos2.z, CLE::CLColor(r,g,b,255.0));
 }
 
 void RenderFacadeClover::DeleteEntity(Entity* entity) {

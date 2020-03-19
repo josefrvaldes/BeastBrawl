@@ -110,8 +110,8 @@ bool CLResourceShader::LinkShadersGeometry(){
 
     //Bueno aqui es obvio, los enlaza ambos al programID
     glAttachShader(programID, vertexID);
-    glAttachShader(programID, fragmentID);
     glAttachShader(programID, geometryID);
+    glAttachShader(programID, fragmentID);
     glLinkProgram(programID);
 
     
@@ -120,7 +120,7 @@ bool CLResourceShader::LinkShadersGeometry(){
     glGetProgramiv(programID, GL_LINK_STATUS, &success);
     if(!success) {
         glGetProgramInfoLog(programID, 512, NULL, infoLog);
-        cout << "Ha petado el linkado de shaders :(\n";
+        cout << "Ha petado el linkado de shaders de geometry:(\n";
         return false;
     }
 

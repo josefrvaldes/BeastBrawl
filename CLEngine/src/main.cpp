@@ -54,7 +54,7 @@ int main() {
     CLResourceManager* resourceManager = CLResourceManager::GetResourceManager();
     auto resourceShader = resourceManager->GetResourceShader("CLEngine/src/Shaders/lightMapping.vert", "CLEngine/src/Shaders/lightMapping.frag");
     auto resourceShaderMaterial = resourceManager->GetResourceShader("CLEngine/src/Shaders/materialShader.vert", "CLEngine/src/Shaders/materialShader.frag");
-    auto resourceShader3 = resourceManager->GetResourceShader("CLEngine/src/Shaders/debugShader.vert", "CLEngine/src/Shaders/debugShader.frag", "CLEngine/src/Shaders/debugShader.geom");
+    auto resourceShader3 = resourceManager->GetResourceShader("CLEngine/src/Shaders/debugShader.vert", "CLEngine/src/Shaders/debugShader.frag");
     auto resourceShaderSkybox = resourceManager->GetResourceShader("CLEngine/src/Shaders/skybox.vert", "CLEngine/src/Shaders/skybox.frag");
     auto resourceMeshBox = resourceManager->GetResourceMesh("media/TEST_BOX.fbx");
     auto resourceMeshTotem = resourceManager->GetResourceMesh("media/totem_tex.fbx");
