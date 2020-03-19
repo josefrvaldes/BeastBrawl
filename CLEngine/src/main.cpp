@@ -57,7 +57,7 @@ int main() {
     auto resourceShaderSkybox = resourceManager->GetResourceShader("CLEngine/src/Shaders/skybox.vert", "CLEngine/src/Shaders/skybox.frag");
     auto resourceMeshBox = resourceManager->GetResourceMesh("media/TEST_BOX.fbx");
     auto resourceMeshTotem = resourceManager->GetResourceMesh("media/totem_tex.fbx");
-    auto resourceMesh = resourceManager->GetResourceMesh("media/kart_physics.fbx");
+    auto resourceMesh = resourceManager->GetResourceMesh("media/donut.fbx");
     auto resourceMeshOBJ = resourceManager->GetResourceMesh("media/kart.obj");
     auto resourceMaterial = resourceManager->GetResourceMaterial("media/kart.obj");
 
