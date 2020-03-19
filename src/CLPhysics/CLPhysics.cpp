@@ -285,8 +285,8 @@ void CLPhysics::LimitRotationCarY() const {
 // TODO: Actualmente solo esta con X por el puto irrlicht
 // TODO: Los calculos de aqui deben depender del delta
 
-void CLPhysics::RotateCarXZ(CTransformable &trcar, CBoundingChassis &chaCar, CBoundingPlane *pl1Car, CBoundingPlane *pl2Car) const {
-    //TENEMOS QUE HACER ROTACIONES CON PLANOS ORIENTADOS, O EN EL EJE X O EN EL EJE Z
+void CLPhysics::RotateCarXZ(CTransformable &trcar, CBoundingChassis &chaCar, CBoundingPlane *pl1Car, CBoundingPlane *pl2Car) const{
+
     auto normalPlane = pl1Car->normalizedNormal;
     if (pl1Car != pl2Car) {
         auto normalPlane1 = pl1Car->normalizedNormal;
@@ -317,6 +317,19 @@ void CLPhysics::RotateCarXZ(CTransformable &trcar, CBoundingChassis &chaCar, CBo
     trcar.rotation.x = rotationX_exeX + rotationX_exeZ;
     //}
     //cout << "LA ROTACION APLICADA EN X ES: " << rotationFinal << endl;
+
+
+    // rotacion en Z
+    auto newRz_X = -cos(dirRotateY) * (normalPlane.x*100);
+    auto resultantez_X = newRz_X*100/(total);
+    auto rotationZ_exeX = angleRotate*(resultantez_X/100);
+
+    auto newRz_Z = -sin(dirRotateY) * (normalPlane.z*100);
+    auto resultantez_Z = newRz_Z*100/total;
+    auto rotationZ_exeZ = angleRotate*(resultantez_Z/100);
+
+        trcar.rotation.z = rotationZ_exeX + rotationZ_exeZ;
+
 }
 
 /*
@@ -1300,7 +1313,10 @@ void CLPhysics::IntersectsCarsPowerUps(ManCar &manCars, ManPowerUp &manPowerUps,
                     if (!cidOnline->collided) {
                         cidOnline->collided = true;
                         COnline *carOnlineComp = static_cast<COnline *>(currentCar->GetComponent(CompType::OnlineComp).get());
+                        // CTransformable *transforPU = static_cast<CTransformable *>(currentPU->GetComponent(CompType::TransformableComp).get());
+                        // transforPU->position.y -= 500;  // esto igual se podría eliminar directamente el PU en vez de ocultarlo bajo el suelo
                         systemOnline->SendCrashPUCar(cidOnline->idOnline, carOnlineComp->idClient);
+                        cout << "Hemos chocado con el PU-Car con el pu[" << cidOnline->idOnline << "] car[" << carOnlineComp->idClient << "] y lo vamos a enviar al servidor" << endl;
                     }
 
                     // si estamos en el single, lanzamos directamente el choque

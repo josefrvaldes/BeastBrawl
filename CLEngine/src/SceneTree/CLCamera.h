@@ -4,6 +4,9 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <memory>
+
+#include "../Frustum/CLFrustum.h"
 
 namespace CLE {
 
@@ -31,6 +34,14 @@ namespace CLE {
             void Draw(GLuint shaderID);
             glm::mat4 CalculateProjectionMatrix();
 
+            void CalculateFrustum(glm::mat4& proj, glm::mat4& view);
+
+            CLFrustum& GetFrustum(){ return *(frustum.get());};
+
+            // tenemos que tener en todo momento nuestro Frustum, el cual nos tendra actualizados los 6 planos de vista de la camara
+            unique_ptr<CLFrustum> frustum;
+
+
         private:
 
             GLfloat near;
@@ -39,6 +50,7 @@ namespace CLE {
             GLfloat left;
             GLfloat top;
             GLfloat bottom;
+            GLfloat aspect;
 
             GLfloat fov;
 

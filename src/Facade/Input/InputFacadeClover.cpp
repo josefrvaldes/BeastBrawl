@@ -17,26 +17,33 @@ InputFacadeClover::InputFacadeClover(){
 
 }
 
-void InputFacadeClover::CheckInput(){
+vector<Constants::InputTypes> InputFacadeClover::CheckInput(){
     EventManager &eventManager = EventManager::GetInstance();
     auto renderFacade = RenderFacadeManager::GetInstance()->GetRenderFacade();
 
-
+    vector<Constants::InputTypes> inputs;
+    inputs.reserve(4); // para evitar el funcionamiento de cómo se redimensiona
+                       // por defecto un vector, como sabemos que como máximo 
+                       // va a haber un máximo de 4 inputs en el vector, 
+                       // le reservamos directamente ya el espacio
     if (glfwGetKey(device->GetWindow(),GLFW_KEY_ESCAPE)) {
         device->CloseWindow();
     }
     if (glfwGetKey(device->GetWindow(),GLFW_KEY_P)) {
         eventManager.AddEventMulti(Event{EventType::PRESS_P});
+        inputs.push_back(Constants::InputTypes::CLAXON);
     }
     // if (receiver.IsKeyDown(KEY_KEY_0)) {
     //     eventManager.AddEventMulti(Event{EventType::PRESS_0});
     // }
     
     //  delante y detrás
-    if (glfwGetKey(device->GetWindow(),GLFW_KEY_I)) {
+    if (glfwGetKey(device->GetWindow(),GLFW_KEY_W)) {
         eventManager.AddEventMulti(Event{EventType::PRESS_I});
-    } else if (glfwGetKey(device->GetWindow(),GLFW_KEY_O)) {
+        inputs.push_back(Constants::InputTypes::FORWARD);
+    } else if (glfwGetKey(device->GetWindow(),GLFW_KEY_S)) {
         eventManager.AddEventMulti(Event{EventType::PRESS_O});
+        inputs.push_back(Constants::InputTypes::BACK);
     } else {
         eventManager.AddEventMulti(Event{EventType::NO_I_O_PRESS});
     }
@@ -44,8 +51,10 @@ void InputFacadeClover::CheckInput(){
     // izq y dch
     if (glfwGetKey(device->GetWindow(),GLFW_KEY_D)) {
         eventManager.AddEventMulti(Event{EventType::PRESS_D});
+        inputs.push_back(Constants::InputTypes::RIGHT);
     } else if (glfwGetKey(device->GetWindow(),GLFW_KEY_A)) {
         eventManager.AddEventMulti(Event{EventType::PRESS_A});
+        inputs.push_back(Constants::InputTypes::LEFT);
     } else {
         eventManager.AddEventMulti(Event{EventType::NO_A_D_PRESS});
     }
@@ -99,8 +108,10 @@ void InputFacadeClover::CheckInput(){
     }
 
     // POWERUPS
-    if (glfwGetKey(device->GetWindow(),GLFW_KEY_SPACE))
+    if (glfwGetKey(device->GetWindow(),GLFW_KEY_SPACE)) {
         eventManager.AddEventMulti(Event{EventType::PRESS_SPACE});
+        inputs.push_back(Constants::InputTypes::LAUNCH_PU);
+    }
 
     //Cambiamos a menu
     if (glfwGetKey(device->GetWindow(),GLFW_KEY_F2) && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay) {
@@ -108,6 +119,7 @@ void InputFacadeClover::CheckInput(){
         eventManager.AddEventMulti(Event{EventType::STATE_PAUSE});
         //Game::GetInstance()->SetState(State::PAUSE);
     }
+    return inputs;
 }
 
 

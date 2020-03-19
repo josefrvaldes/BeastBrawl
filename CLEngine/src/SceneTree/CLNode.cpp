@@ -4,6 +4,8 @@
 #include <glm/ext.hpp>
 #include <glm/gtx/string_cast.hpp>
 
+#include "../Frustum/CLFrustum.h"
+
 using namespace CLE;
 
 CLNode::CLNode(){
@@ -149,13 +151,52 @@ glm::vec3 CLNode::GetGlobalScalation() const{
 }
 
 void CLNode::SetTranslation(glm::vec3 t) {
-    translation = t; 
+    // BOUNDING BOX
+    //auto diference = t-translation;
+    //extremeMinMesh += diference;
+    //extremeMaxMesh += diference;
+    // TRANSLATION
+    translation = t;
+
     ActivateFlag();
 }
 
 void CLNode::SetRotation(glm::vec3 r) {
+    // BPUNDONG BOX
+    //if(rotation != r){
+    //    extremeMinMesh = RotatePointAroundCenter(extremeMinMesh, translation, r);
+    //    extremeMaxMesh = RotatePointAroundCenter(extremeMaxMesh, translation, r);
+    //}
+    // ROTATION
     rotation = r; 
     ActivateFlag();
+}
+
+glm::vec3 CLNode::RotatePointAroundCenter(const glm::vec3& point_ , const glm::vec3& center, const glm::vec3& rot) const{
+    glm::vec3 newPoint = glm::vec3(0.0,0.0,0.0);
+    // rotation Y
+    if(rotation.y != rot.y){
+        newPoint.x += ((point_.x - center.x) * cos(rot.y-rotation.y))  + center.x;
+        newPoint.z += ((point_.z - center.z) * sin(rot.y-rotation.y))  + center.z;
+    }
+
+
+//x2 = x1 * cos(angulo) - y1 * sin(angulo)
+//y2 = x1 * sin(angulo) - y1 * cos(angulo)
+
+
+    // rotation X
+    //if(rotation.x != rot.x){
+    //    newPoint.y += ((point_.y - center.y) * cos(rot.x-rotation.x)) - ((center.z - point_.z) * sin(rot.x-rotation.x)) + center.y;
+    //    newPoint.z += ((center.z - point_.z) * cos(rot.x-rotation.x)) - ((point_.y - center.y) * sin(rot.x-rotation.x)) + center.z;
+    //}
+    //// rotation Z
+    //if(rotation.z != rot.z){
+    //    newPoint.y += ((point_.y - center.y) * cos(rot.z-rotation.z)) - ((center.x - point_.x) * sin(rot.z-rotation.z)) + center.y;
+    //    newPoint.x += ((center.x - point_.x) * cos(rot.z-rotation.z)) - ((point_.y - center.y) * sin(rot.z-rotation.z)) + center.x;
+    //}
+
+    return newPoint;
 }
 
 void CLNode::SetScalation(glm::vec3 s) {
@@ -179,9 +220,9 @@ glm::mat4 CLNode::TranslateMatrix(){
 
 glm::mat4 CLNode::RotateMatrix(){
     glm::mat4 aux = glm::mat4(1.0f);
-    aux = glm::rotate(aux, glm::radians(rotation.x) , glm::vec3(1,0,0));
     aux = glm::rotate(aux, glm::radians(rotation.y) , glm::vec3(0,1,0));
     aux = glm::rotate(aux, glm::radians(rotation.z) , glm::vec3(0,0,1));
+    aux = glm::rotate(aux, glm::radians(rotation.x) , glm::vec3(1,0,0));
     return aux;
 }
 
@@ -210,7 +251,6 @@ void CLNode::Scale(glm::vec3 s) {
 
 
 void CLNode::DFSTree(glm::mat4 mA) {
-
     // > Flag
     // > > Calcular matriz
     // > Dibujar
@@ -222,7 +262,12 @@ void CLNode::DFSTree(glm::mat4 mA) {
         changed = false;
     }
 
-    if(entity && visible) { 
+    auto& frustum_m = GetActiveCamera()->GetFrustum();
+    //CLE::CLFrustum::Visibility frusVisibility = frustum_m.IsInside(translation);
+    CLE::CLFrustum::Visibility frusVisibility = frustum_m.IsInside(translation, dimensionsBoundingBox);
+
+
+    if(entity && visible && frusVisibility == CLE::CLFrustum::Visibility::Completly) { 
         // La matriz model se pasa aqui wey
         glUseProgram(shaderProgramID);
         glm::mat4 MVP = projection * view * transformationMat;
@@ -230,6 +275,8 @@ void CLNode::DFSTree(glm::mat4 mA) {
         glUniformMatrix4fv(glGetUniformLocation(shaderProgramID, "MVP"), 1, GL_FALSE, glm::value_ptr(MVP));
         //entity->Draw(transformationMat);
         entity->Draw(shaderProgramID);
+
+        //cout << "este objeto se dibuja" << endl;
     }
 
     for (auto node : childs) {
@@ -257,12 +304,20 @@ void CLNode::CalculateViewProjMatrix(){
             //view = glm::lookAt(camera->GetTranslation(), -entityCamera->GetCameraTarget(), entityCamera->GetCameraUp());
             view = glm::lookAt(camera->GetGlobalTranslation(), entityCamera->GetCameraTarget(), entityCamera->GetCameraUp());
 
+            //view = glm::lookAt(vec3(0.0,0.0,0.0), vec3(0.0,0.0,0.0), vec3(0.0,0.0,0.0));
+
             glUniform3fv(glGetUniformLocation(camera->GetShaderProgramID(), "viewPos"),1,glm::value_ptr(camera->GetTranslation()));
 
             //glUniformMatrix4fv(glGetUniformLocation(camera->GetShaderProgramID(), "view"), 1, GL_FALSE, glm::value_ptr(view));
 
+            // Una vez tenemos la View y la Projection vamos a calcular Frustum para los objetos
+            //auto& frustum_m = entityCamera->GetFrustum();
+            //frustum->Transform(projection,modelView);
+
         }
     }
+    auto modelView = transformationMat*view;
+    GetActiveCamera()->CalculateFrustum(projection, modelView);
 }
 
 
@@ -420,4 +475,54 @@ void CLNode::DrawTree(CLNode* root){
     }
 
     return;
+}
+
+
+float CLNode::CalculateBoundingBox(){
+    glm::vec3 extremeMinMesh = glm::vec3(0.0,0.0,0.0); 
+    glm::vec3 extremeMaxMesh = glm::vec3(0.0,0.0,0.0);
+    //auto mesh_m = static_cast<CLMesh*>(e.get())->GetMesh();
+    //auto vecMesh = mesh_m->GetvectorMesh();
+    auto resource = static_cast<CLMesh*>(this->GetEntity())->GetMesh();
+    auto vecMesh = static_cast<CLResourceMesh*>(resource)->GetvectorMesh();
+
+    int i = 0;
+    for(auto currentVecMesh = vecMesh.begin(); currentVecMesh != vecMesh.end(); ++currentVecMesh){
+        auto vertexs = currentVecMesh->vertices;
+        for(long unsigned int j=0; j< vertexs.size(); j++){
+            if( i== 0 && j== 0){
+                // es el primer vertice, por lo que sera tanto el mayor como el menor
+                extremeMinMesh = vertexs[j].position;
+                extremeMaxMesh = vertexs[j].position;
+            }else{
+                // comprobamos para X
+                if(extremeMinMesh.x > vertexs[j].position.x ) extremeMinMesh.x = vertexs[j].position.x;
+                if(extremeMaxMesh.x < vertexs[j].position.x ) extremeMaxMesh.x = vertexs[j].position.x;
+
+                // comprobamos para Y
+                if(extremeMinMesh.y > vertexs[j].position.y ) extremeMinMesh.y = vertexs[j].position.y;
+                if(extremeMaxMesh.y < vertexs[j].position.y ) extremeMaxMesh.y = vertexs[j].position.y;
+
+                // comprobamos para Z
+                if(extremeMinMesh.z > vertexs[j].position.z ) extremeMinMesh.z = vertexs[j].position.z;
+                if(extremeMaxMesh.z < vertexs[j].position.z ) extremeMaxMesh.z = vertexs[j].position.z;
+            }
+        }
+        i++;
+    }
+    // una vez salimos, debemos transladarlo al lugar de creacion del objeto
+    extremeMinMesh += this->GetTranslation();
+    extremeMaxMesh += this->GetTranslation();
+
+    dimensionsBoundingBox = glm::distance(extremeMaxMesh.x, extremeMinMesh.x);
+    if(dimensionsBoundingBox < glm::distance(extremeMaxMesh.y, extremeMinMesh.y))
+        dimensionsBoundingBox = glm::distance(extremeMaxMesh.y, extremeMinMesh.y);
+    if(dimensionsBoundingBox < glm::distance(extremeMaxMesh.z, extremeMinMesh.z))
+        dimensionsBoundingBox = glm::distance(extremeMaxMesh.z, extremeMinMesh.z);
+
+    return dimensionsBoundingBox;
+
+    //cout << "Los extremos son: " << endl;
+    //cout << "minimo: ( " << extremeMinMesh.x<< " , " << extremeMinMesh.y<< " , " <<extremeMinMesh.z<< 
+    //" ) , maximo: " << extremeMaxMesh.x<< " , " << extremeMaxMesh.y<< " , " << extremeMaxMesh.z<< " )"<< endl;
 }

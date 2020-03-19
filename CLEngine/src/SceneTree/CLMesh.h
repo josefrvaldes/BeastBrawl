@@ -18,7 +18,7 @@ namespace CLE {
             void SetMaterial(CLResourceMaterial* m)         { material = m; }
 
             //GETTERS
-            CLResource* GetMesh() const             { return mesh; }
+            CLResourceMesh* GetMesh() const             { return mesh; }
 
             void Draw(GLuint shaderID);
 
