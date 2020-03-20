@@ -290,7 +290,6 @@ void CLNode::DFSTree(glm::mat4 mA) {
 
 
     if(entity && visible && frusVisibility == CLE::CLFrustum::Visibility::Completly) { 
-        // La matriz model se pasa aqui wey
         glUseProgram(shaderProgramID);
         //Calculamos las luces
         //TODO: Hacer un sistema de que si no hemos cambiado de shader no se recalculen
@@ -303,10 +302,8 @@ void CLNode::DFSTree(glm::mat4 mA) {
         glm::mat4 MVP = projection * view * transformationMat;
         glUniformMatrix4fv(glGetUniformLocation(shaderProgramID, "model"), 1, GL_FALSE, glm::value_ptr(transformationMat));
         glUniformMatrix4fv(glGetUniformLocation(shaderProgramID, "MVP"), 1, GL_FALSE, glm::value_ptr(MVP));
-        //entity->Draw(transformationMat);
         entity->Draw(shaderProgramID);
 
-        //cout << "este objeto se dibuja" << endl;
     }
 
     for (auto node : childs) {
@@ -432,20 +429,20 @@ const void CLNode::Draw3DLine(float x1, float y1, float z1, float x2, float y2, 
 
 const void CLNode::Draw3DLine(float x1, float y1, float z1, float x2, float y2, float z2,CLColor color) const{
 
-    // float line[] = {
-    //     x1, y1, 0.0f,
-    //     x1, y2, 0.0f
-    // };
-
     float line[] = {
-        -0.6f,0.3f,0.0f, 0.5f,0.3f,0.1f,
-        0.8f,0.5f,0.0f,  0.5f,0.3f,0.1f
+        x1, y1, z1,
+        x1, y2, z2
     };
+
+    // float line[] = {
+    //     -0.6f,0.3f,0.0f,
+    //     0.8f,0.5f,0.0f
+    // };
  
     
-    glEnable(GL_LINE_SMOOTH);
-    glLineWidth(10);
-    glHint(GL_LINE_SMOOTH_HINT,  GL_NICEST);
+    // glEnable(GL_LINE_SMOOTH);
+    // glLineWidth(10);
+    // glHint(GL_LINE_SMOOTH_HINT,  GL_NICEST);
 
     unsigned int VBO, VAO;
     glGenBuffers(1, &VBO);
@@ -455,8 +452,6 @@ const void CLNode::Draw3DLine(float x1, float y1, float z1, float x2, float y2, 
     glBufferData(GL_ARRAY_BUFFER, sizeof(line), line, GL_STATIC_DRAW);
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE,  3 * sizeof(float), 0);
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE,  3 * sizeof(float), (void*)(3 * sizeof(float)));
     glBindVertexArray(0);
 
     glm::mat4 modelMat = glm::identity<mat4>();
@@ -465,11 +460,11 @@ const void CLNode::Draw3DLine(float x1, float y1, float z1, float x2, float y2, 
     glUseProgram(debugShader);
 
     glm::vec4 clcolor(color.GetRedNormalized(),color.GetGreenNormalized(),color.GetBlueNormalized(),color.GetAlphaNormalized());
-    cout << clcolor.r << endl;
     glUniformMatrix4fv(glGetUniformLocation(debugShader, "model"), 1, GL_FALSE, glm::value_ptr(modelMat));
     glUniformMatrix4fv(glGetUniformLocation(debugShader, "view"), 1, GL_FALSE, glm::value_ptr(view));
     glUniformMatrix4fv(glGetUniformLocation(debugShader, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
-    glUniformMatrix4fv(glGetUniformLocation(debugShader, "clcolor"), 1, GL_FALSE, glm::value_ptr(clcolor));
+    glUniform4fv(glGetUniformLocation(debugShader, "clcolor"),1, glm::value_ptr(clcolor));
+    glUniform1i(glGetUniformLocation(debugShader,"prueba"),25);
 
     glBindVertexArray(VAO);
     glDrawArrays(GL_LINES, 0,2); 

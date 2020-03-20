@@ -106,12 +106,12 @@ int main() {
 
         static_cast<CLCamera*>(camera->GetEntity())->SetCameraTarget(mesh1->GetTranslation());
 
-        smgr->AddSkybox("media/skybox/right.jpg",
-        "media/skybox/left.jpg",
-        "media/skybox/top.jpg",
-        "media/skybox/bottom.jpg",
-        "media/skybox/front.jpg",
-        "media/skybox/back.jpg");
+        // smgr->AddSkybox("media/skybox/right.jpg",
+        // "media/skybox/left.jpg",
+        // "media/skybox/top.jpg",
+        // "media/skybox/bottom.jpg",
+        // "media/skybox/front.jpg",
+        // "media/skybox/back.jpg");
 
     //smgr->DFSTree(glm::mat4(1.0));
     // vector<shared_ptr<CLEntity>> mallas;
