@@ -6,11 +6,13 @@
 // #include <glew/glew.h>
 // #include <glfw/glfw3.h>
 
-#include "../include/glew/glew.h"
-#include "../include/glfw/glfw3.h"
+#include <glew/glew.h>
+#include <glfw/glfw3.h>
 #include "ImGUI/imgui.h"
 #include "ImGUI/imgui_impl_opengl3.h"
 #include "ImGUI/imgui_impl_glfw.h"
+
+#include <stb_image.h>
 
 
 //Motor grafico

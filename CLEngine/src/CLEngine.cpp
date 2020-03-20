@@ -1,5 +1,6 @@
 #include "CLEngine.h"
 
+
 using namespace std;
 using namespace CLE;
 
@@ -128,16 +129,17 @@ void CLEngine::DrawImage2D(float x, float y, float width, float height, string f
     }
 
     float vertices[] = {
-        // positions          // colors           // texture coords
-         0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // top right
-         0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // bottom right
-        -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // bottom left
-        -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // top left 
+             1.0f,  1.0f, 0.2f,   1.0f, 1.0f,         // top right
+             1.0f, -1.0f, 0.2f,   1.0f, 0.0f,         // bottom right
+            -1.0f, -1.0f, 0.2f,   0.0f, 0.0f,         // bottom left
+            -1.0f,  1.0f, 0.2f,   0.0f, 1.0f          // top left
     };
-    unsigned int indices[] = {  
-        0, 1, 3, // first triangle
-        1, 2, 3  // second triangle
+
+    unsigned int indices[] = {
+            0, 3, 1,
+            3, 2, 1
     };
+
     unsigned int VBO, VAO, EBO;
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
@@ -151,19 +153,12 @@ void CLEngine::DrawImage2D(float x, float y, float width, float height, string f
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-    // position attribute
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
-    // color attribute
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3* sizeof(float)));
     glEnableVertexAttribArray(1);
-    // texture coord attribute
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-    glEnableVertexAttribArray(2);
 
-
-    // load and create a texture 
-    // -------------------------
     unsigned int texture;
     glGenTextures(1, &texture);
     glBindTexture(GL_TEXTURE_2D, texture); // all upcoming GL_TEXTURE_2D operations now have effect on this texture object
@@ -174,12 +169,12 @@ void CLEngine::DrawImage2D(float x, float y, float width, float height, string f
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     // load image, create texture and generate mipmaps
-    int _width, _height, nrChannels;
+    int _width, _height, _nrChannels;
     // The FileSystem::getPath(...) is part of the GitHub repository so we can find files on any IDE/platform; replace it with your own image path.
-    unsigned char *data = stbi_load("media/container.jpg", &_width, &_height, &nrChannels, 0);
+    unsigned char *data = stbi_load("media/flower.png", &_width, &_height, &_nrChannels, 0);
     if (data)
     {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, _width, _height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
         glGenerateMipmap(GL_TEXTURE_2D);
     }
     else
@@ -187,82 +182,14 @@ void CLEngine::DrawImage2D(float x, float y, float width, float height, string f
         std::cout << "Failed to load texture" << std::endl;
     }
     stbi_image_free(data);
+    //resourceManager->GetResourceTexture("media/flower.png");
 
-    // bind Texture
-        glBindTexture(GL_TEXTURE_2D, texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
 
-        // render container
-        glUseProgram(hudShader);
-        glBindVertexArray(VAO);
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    glUseProgram(hudShader);
+    glBindVertexArray(VAO);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
-    // // Configure VAO/VBO
-    // GLuint VBO,quadVAO;
-    // GLfloat vertices[] = {
-    //         // Pos      // Tex
-    //         0.0f, 1.0f, 0.0f, 1.0f,
-    //         1.0f, 0.0f, 1.0f, 0.0f,
-    //         0.0f, 0.0f, 0.0f, 0.0f,
-
-    //         0.0f, 1.0f, 0.0f, 1.0f,
-    //         1.0f, 1.0f, 1.0f, 1.0f,
-    //         1.0f, 0.0f, 1.0f, 0.0f
-    // }; 
-
-    // glGenVertexArrays(1, &quadVAO);
-    // glGenBuffers(1, &VBO);
-
-    // glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    // glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-    // glBindVertexArray(VBO);
-    // glEnableVertexAttribArray(0);
-    // glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (GLvoid*)0);
-    // glBindBuffer(GL_ARRAY_BUFFER, 0);
-    // glBindVertexArray(0);
-
-    // GLuint textureID;
-    // //Leemos la textura 
-    // glGenTextures(1, &textureID);
-
-    // int widthImage, heightImage, nrComponents;
-    // unsigned char *data = stbi_load(file.c_str(), &widthImage, &heightImage, &nrComponents, 0);
-    // if (data)
-    // {
-    //     GLenum format;
-    //     if (nrComponents == 1)
-    //         format = GL_RED;
-    //     else if (nrComponents == 3)
-    //         format = GL_RGB;
-    //     else if (nrComponents == 4)
-    //         format = GL_RGBA;
-
-    //     glBindTexture(GL_TEXTURE_2D, textureID);
-    //     glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
-    //     glGenerateMipmap(GL_TEXTURE_2D); 
-
-    //     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); 
-    //     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    //     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    //     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    //     stbi_image_free(data);
-    // }
-    // else
-    // {
-    //     std::cout << "Texture failed to load at path: " << file << std::endl;
-    //     stbi_image_free(data);
-    // }
-
-    // glUseProgram(hudShader);
-
-    // glActiveTexture(GL_TEXTURE0);
-
-    // glBindTexture(GL_TEXTURE_2D, textureID);
-
-    // glBindVertexArray(quadVAO);
-    // glDrawArrays(GL_TRIANGLES, 0, 6);
-    // glBindVertexArray(0);
 }
 
 

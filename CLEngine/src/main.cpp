@@ -52,7 +52,7 @@ int main() {
     //-------------------Resource manager-------------------
     CLResourceManager* resourceManager = CLResourceManager::GetResourceManager();
     auto resourceShader = resourceManager->GetResourceShader("CLEngine/src/Shaders/lightMapping.vert", "CLEngine/src/Shaders/lightMapping.frag");
-    auto resourceShaderSprite = resourceManager->GetResourceShader("CLEngine/src/Shaders/spriteShader.vert", "CLEngine/src/Shaders/spriteShader.frag");
+    //auto resourceShaderSprite = resourceManager->GetResourceShader("CLEngine/src/Shaders/spriteShader.vert", "CLEngine/src/Shaders/spriteShader.frag");
     auto resourceShader2 = resourceManager->GetResourceShader("CLEngine/src/Shaders/phongMaterialVert.glsl", "CLEngine/src/Shaders/phongMaterialFrag.glsl");
     auto resourceShaderMaterial = resourceManager->GetResourceShader("CLEngine/src/Shaders/materialShader.vert", "CLEngine/src/Shaders/materialShader.frag");
     auto resourceShader3 = resourceManager->GetResourceShader("CLEngine/src/Shaders/debugShader.vert", "CLEngine/src/Shaders/debugShader.frag", "CLEngine/src/Shaders/debugShader.geom");
@@ -62,8 +62,6 @@ int main() {
     auto resourceMesh = resourceManager->GetResourceMesh("media/kart_physics.fbx");
     auto resourceMeshOBJ = resourceManager->GetResourceMesh("media/kart.obj");
     auto resourceMaterial = resourceManager->GetResourceMaterial("media/kart.obj");
-
-    auto resourceTextureSprite = resourceManager->GetResourceTexture("media/awesomeface.png");
 
     cout << "+++++++ He compilado los shaders" << endl;
 
@@ -106,17 +104,9 @@ int main() {
         auto mesh3 = mesh2->AddMesh(5);
         mesh3->SetShaderProgramID(resourceShaderMaterial->GetProgramID());
 
-        cout << "+++++++ He creado los objetos, voy a crear el sprite" << endl;
-
-        // auto sprite = smgr->AddSprite(10);
-        // sprite->SetShaderProgramID(resourceShaderSprite->GetProgramID());
-
-        // cout << "+++++++ He creado el sprite" << endl;
 
         static_cast<CLCamera*>(camera->GetEntity())->SetCameraTarget(mesh2->GetTranslation());
 
-
-        cout << "+++++++ He cambiado el target de la camara" << endl;
 
         smgr->AddSkybox("media/skybox/right.jpg",
         "media/skybox/left.jpg",
@@ -150,7 +140,6 @@ int main() {
     static_cast<CLMesh*>(mesh1->GetEntity())->SetMesh(resourceMeshBox);
     static_cast<CLMesh*>(mesh2->GetEntity())->SetMesh(resourceMesh);
     static_cast<CLMesh*>(mesh3->GetEntity())->SetMesh(resourceMeshOBJ);
-    // static_cast<CLSprite*>(sprite->GetEntity())->SetTexture(resourceTextureSprite);
     static_cast<CLMesh*>(mesh3->GetEntity())->SetMaterial(resourceMaterial); 
 
     camera->SetTranslation(glm::vec3(80.0f, 5.0f, -9.0f));
@@ -162,8 +151,6 @@ int main() {
     mesh2->SetTranslation(glm::vec3(10.0f,0.0f,0.0f));
     mesh3->SetTranslation(glm::vec3(-40.0f,0.0f,0.0f));
     mesh3->SetScalation(glm::vec3(0.2f,0.2f,0.2f));
-    // sprite->SetTranslation(glm::vec3(300.f, 400.0f, 0.0f));
-    // sprite->SetScalation(glm::vec3(50.f, 50.0f, 1.0f));
 
     cout << "+++++++ He transladado/rotado/escalado objetos" << endl;
 
@@ -222,7 +209,6 @@ int main() {
         //meshes->SetRotation(glm::vec3(0.0f,0.0f,index));
         // auto trans1 = mesh1->GetTranslation();
         // mesh1->SetTranslation(glm::vec3(trans1.x+index,trans1.y,trans1.z));
-        // static_cast<CLCamera*>(camera->GetEntity())->SetCameraTarget(sprite->GetGlobalTranslation());
         static_cast<CLCamera*>(camera->GetEntity())->SetCameraTarget(mesh2->GetGlobalTranslation());
 
 
@@ -246,7 +232,9 @@ int main() {
 
         device->DrawObjects();
 
-        device->DrawImage2D(1.0,1.0,1.0,1.0,"media/awesomeface.png");
+        //glUseProgram(resourceShaderSprite->GetProgramID());
+        //device->DrawImage2D(1.0,1.0,1.0,1.0,"media/awesomeface.png");
+        device->DrawImage2D(1.0f,1.0f,1.0f,1.0f,"media/awesomeface.png");
 
         device->InputClose();
         device->PollEvents();

@@ -3,7 +3,6 @@ using namespace CLE;
 
 bool CLResourceTexture::LoadFile(string file){
 
-
     glGenTextures(1, &textureID);
 
     int width, height, nrComponents;
