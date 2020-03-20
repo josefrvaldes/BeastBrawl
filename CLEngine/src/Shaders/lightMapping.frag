@@ -88,7 +88,7 @@ void main()
     FragColor = vec4(totalPointLight,1.0);
 
     //Si comentas esta linea se ve con luces
-    //FragColor = texture(material.diffuse,TexCoords);
+    FragColor = texture(material.diffuse,TexCoords);
 
 }
 
