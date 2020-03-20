@@ -84,6 +84,7 @@ class CLNode{
         void DrawSkybox();
 
         void SetVisible(bool v) {visible = v;};
+        void SetLightingEffects(bool l) { hasLightingEffects = l;};
 
     private:
 
@@ -91,6 +92,7 @@ class CLNode{
 
         bool changed { true };
         bool visible { true };
+        bool hasLightingEffects { true }; //Sirve para que no se le aplique luce y ahorrarse el calculo de luces
 
         shared_ptr<CLEntity> entity {nullptr};
         CLNode* father {nullptr};

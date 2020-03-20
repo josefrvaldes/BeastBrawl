@@ -144,7 +144,7 @@ int main() {
     mesh2->SetRotation(glm::vec3(0.0f, 180.0f, 0.0f));
     mesh2->SetTranslation(glm::vec3(10.0f,0.0f,0.0f));
     mesh3->SetTranslation(glm::vec3(-40.0f,0.0f,0.0f));
-    mesh3->SetScalation(glm::vec3(0.2f,0.2f,0.2f));
+    mesh3->SetScalation(glm::vec3(0.8f,0.8f,0.8f));
 
     mesh2->GetGlobalTranslation();
 
@@ -196,7 +196,7 @@ int main() {
         light2->SetTranslation(lightPos2);
         light3->SetTranslation(lightPos3);
         
-        static_cast<CLCamera*>(camera->GetEntity())->SetCameraTarget(mesh2->GetGlobalTranslation());
+        static_cast<CLCamera*>(camera->GetEntity())->SetCameraTarget(mesh3->GetGlobalTranslation());
 
 
         // Measure speed
