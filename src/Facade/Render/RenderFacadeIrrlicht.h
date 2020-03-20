@@ -63,6 +63,7 @@ class RenderFacadeIrrlicht : public RenderFacade {
     void FacadeSuscribeEvents() override;
     void FacadeAddPlates(Manager* manNamePlates) override;
     void FacadeUpdatePlates(Manager* manNamePlates) override;
+    void FacadeUpdateMeshesLoD(vector<shared_ptr<Entity>> entities) override;
     void ThrowEventChangeToMulti(uint16_t IdOnline, const vector<uint16_t> IdPlayersOnline) override;
     void FacadeAddSkybox(string right,string left,string top,string bottom,string front,string back) override;
 

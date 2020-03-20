@@ -17,7 +17,7 @@ using namespace std;
 NavMesh::NavMesh(glm::vec3 pos, glm::vec3 rot, float width, float height, float depth, const vector<int>& waypoints)
 {
     string texture = "spheremap.jpg";
-    string mesh    = "kart_ia.obj";
+    string meshCerca    = "kart_ia.obj";
 
     string vertexShader = "CLEngine/src/Shaders/lightMapping.vert";
     string fragmentShader = "CLEngine/src/Shaders/lightMapping.frag";
@@ -29,7 +29,7 @@ NavMesh::NavMesh(glm::vec3 pos, glm::vec3 rot, float width, float height, float 
     shared_ptr<CType> cType = make_shared<CType>(ModelType::Cube);
     shared_ptr<CTransformable> cTransformable = make_shared<CTransformable>(pos, rot, scale); 
     shared_ptr<CTexture> cTexture = make_shared<CTexture>(texture);
-    shared_ptr<CMesh> cMesh   = make_shared<CMesh>(mesh);
+    shared_ptr<CMesh> cMesh   = make_shared<CMesh>(meshCerca);
     shared_ptr<CNavMesh> cNavMesh   = make_shared<CNavMesh>(waypoints);
     shared_ptr<CDimensions> cDimensions   = make_shared<CDimensions>(width,height,depth);
     shared_ptr<CShader> cShader = make_shared<CShader>(vertexShader,fragmentShader);
