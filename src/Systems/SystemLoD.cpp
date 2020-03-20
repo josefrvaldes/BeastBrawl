@@ -12,7 +12,7 @@ void SetMeshAccordingToDistance(float distanceToCam, CMesh *cMesh) {
         cMesh->activeMesh = cMesh->mesh[0];
     } else if(cMesh->mesh.size() >= 2 && distanceToCam < cMesh->distanceMedium) {
         cMesh->activeMesh = cMesh->mesh[1];
-        cout << "Hemos puesto un mesh medium porque la distancia era " << distanceToCam << endl;
+        // cout << "Hemos puesto un mesh medium porque la distancia era " << distanceToCam << endl;
     } else if(cMesh->mesh.size() >= 3 && distanceToCam > cMesh->distanceMedium) {
         cMesh->activeMesh = cMesh->mesh[2];
     }
