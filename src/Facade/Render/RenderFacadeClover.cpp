@@ -257,13 +257,20 @@ const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
     node->SetTranslation(glm::vec3(cTransformable->position.x,cTransformable->position.y,-cTransformable->position.z));
     node->SetRotation(glm::vec3(cTransformable->rotation.x,Utils::IrrlichtAngleToOpenGL(cTransformable->rotation.y),cTransformable->rotation.z));
     node->SetScalation(cTransformable->scale);
-    //TODO: Esto luego deberia calcular con opengl las dimensiones 
-    //Sacamos sus dimensiones
-    float height = 10.0;
-    float width = 10.0;
-    float depth = 10.0;
-    shared_ptr<CDimensions> cDimensions = make_shared<CDimensions>(width, height, depth);
-    entity->AddComponent(cDimensions);  //Le añadimos el componente CDimensions al Entity que sea
+
+    //auto pos = cTransformable->position;
+    //cout << " la posicion donde esta la entidad es ( " << pos.x<< " , " << pos.y<< " , " <<-pos.z<< " )" << endl;
+    // BOUNDING BOX
+    if(cType->type != ModelType::Light){
+        float dimAABB = node->CalculateBoundingBox();
+        //Sacamos sus dimensiones
+        //float height = 10.0;
+        //float width = 10.0;
+        //float depth = 10.0;
+        // TODO: el CDimensions solo para NavMesh y para la creacion de PowerUps, no en los coches (o ya veremos)
+        shared_ptr<CDimensions> cDimensions = make_shared<CDimensions>(dimAABB, dimAABB, dimAABB);
+        entity->AddComponent(cDimensions);  //Le añadimos el componente CDimensions al Entity que sea
+    }
 
     return cId->id;
 }

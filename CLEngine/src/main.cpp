@@ -63,7 +63,7 @@ int main() {
     auto resourceMeshOBJ = resourceManager->GetResourceMesh("media/kart.obj");
     auto resourceMaterial = resourceManager->GetResourceMaterial("media/kart.obj");
 
-    auto resourceTextureSprite = resourceManager->GetResourceTexture("media/awesomeface.obj");
+    auto resourceTextureSprite = resourceManager->GetResourceTexture("media/awesomeface.png");
 
     cout << "+++++++ He compilado los shaders" << endl;
 
@@ -108,10 +108,10 @@ int main() {
 
         cout << "+++++++ He creado los objetos, voy a crear el sprite" << endl;
 
-        auto sprite = smgr->AddSprite(6);
-        sprite->SetShaderProgramID(resourceShaderSprite->GetProgramID());
+        // auto sprite = smgr->AddSprite(10);
+        // sprite->SetShaderProgramID(resourceShaderSprite->GetProgramID());
 
-        cout << "+++++++ He creado el sprite" << endl;
+        // cout << "+++++++ He creado el sprite" << endl;
 
         static_cast<CLCamera*>(camera->GetEntity())->SetCameraTarget(mesh2->GetTranslation());
 
@@ -150,7 +150,7 @@ int main() {
     static_cast<CLMesh*>(mesh1->GetEntity())->SetMesh(resourceMeshBox);
     static_cast<CLMesh*>(mesh2->GetEntity())->SetMesh(resourceMesh);
     static_cast<CLMesh*>(mesh3->GetEntity())->SetMesh(resourceMeshOBJ);
-    static_cast<CLSprite*>(sprite->GetEntity())->SetTexture(resourceTextureSprite);
+    // static_cast<CLSprite*>(sprite->GetEntity())->SetTexture(resourceTextureSprite);
     static_cast<CLMesh*>(mesh3->GetEntity())->SetMaterial(resourceMaterial); 
 
     camera->SetTranslation(glm::vec3(80.0f, 5.0f, -9.0f));
@@ -162,8 +162,8 @@ int main() {
     mesh2->SetTranslation(glm::vec3(10.0f,0.0f,0.0f));
     mesh3->SetTranslation(glm::vec3(-40.0f,0.0f,0.0f));
     mesh3->SetScalation(glm::vec3(0.2f,0.2f,0.2f));
-    sprite->SetTranslation(glm::vec3(300.f, 400.0f, 0.0f));
-    sprite->SetScalation(glm::vec3(50.f, 50.0f, 1.0f));
+    // sprite->SetTranslation(glm::vec3(300.f, 400.0f, 0.0f));
+    // sprite->SetScalation(glm::vec3(50.f, 50.0f, 1.0f));
 
     cout << "+++++++ He transladado/rotado/escalado objetos" << endl;
 
@@ -219,11 +219,10 @@ int main() {
         light3->SetTranslation(lightPos3);
         
 
-
         //meshes->SetRotation(glm::vec3(0.0f,0.0f,index));
         // auto trans1 = mesh1->GetTranslation();
         // mesh1->SetTranslation(glm::vec3(trans1.x+index,trans1.y,trans1.z));
-        static_cast<CLCamera*>(camera->GetEntity())->SetCameraTarget(sprite->GetGlobalTranslation());
+        // static_cast<CLCamera*>(camera->GetEntity())->SetCameraTarget(sprite->GetGlobalTranslation());
         static_cast<CLCamera*>(camera->GetEntity())->SetCameraTarget(mesh2->GetGlobalTranslation());
 
 
@@ -247,6 +246,7 @@ int main() {
 
         device->DrawObjects();
 
+        device->DrawImage2D(1.0,1.0,1.0,1.0,"media/awesomeface.png");
 
         device->InputClose();
         device->PollEvents();

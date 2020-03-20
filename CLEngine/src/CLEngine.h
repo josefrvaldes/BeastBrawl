@@ -45,6 +45,8 @@ class CLEngine {
         void CloseWindow();
         void PollEvents();
 
+        void DrawImage2D(float x, float y, float width, float height, string file);
+
 
         CLNode* GetSceneManager();
         CLResourceManager* GetResourceManager();
@@ -60,6 +62,7 @@ class CLEngine {
         int width;
         int height;
         GLFWwindow *window { nullptr };
+        unsigned int hudShader { 0 };
 
         
         std::unique_ptr<CLNode> smgr {nullptr};
