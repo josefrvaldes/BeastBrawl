@@ -117,7 +117,7 @@ void CLEngine::BeginScene(){
 void CLEngine::DrawObjects(){
     smgr->DrawSkybox();
     smgr->CalculateViewProjMatrix();
-    smgr->CalculateLights();
+    //smgr->CalculateLights();
     smgr->DFSTree(glm::mat4(1.0f));
 }
 
@@ -126,9 +126,15 @@ void CLEngine::DrawObjects(){
  */
 void CLEngine::EndScene(){
     
-    
     glfwSwapBuffers(window);
 
+}
+
+/**
+ *
+ */
+void CLEngine::SetTitle(string &t) {
+    glfwSetWindowTitle(window, t.c_str());
 }
 
 void CLEngine::RenderImgui(){

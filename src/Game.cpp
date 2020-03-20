@@ -171,7 +171,12 @@ void Game::MainLoop() {
 
     RenderFacadeManager* renderFacadeMan = RenderFacadeManager::GetInstance();
 
-    int lastFPS = -1;
+    int lastFPS = renderFacadeMan->GetRenderFacade()->FacadeGetFPS();
+    int frameCount = 0;
+
+    if (Constants::RENDER_ENGINE == Constants::RenderEngine::CLOVER) {
+        lastFPS = renderFacadeMan->GetRenderFacade()->FacadeGetTime();
+    }
 
     while (renderFacadeMan->GetRenderFacade()->FacadeRun()) {
         currentState->Input();
@@ -181,11 +186,24 @@ void Game::MainLoop() {
         soundFacadeManager->GetSoundFacade()->Update();
         currentState->Render();
 
-        int fps = renderFacadeMan->GetRenderFacade()->FacadeGetFPS();
-        if(lastFPS != fps) {
-            renderFacadeMan->GetRenderFacade()->FacadeSetWindowCaption("Beast Brawl", fps);
-            lastFPS = fps;
+        if (Constants::RENDER_ENGINE == Constants::RenderEngine::IRRLICHT) {
+            int fps = renderFacadeMan->GetRenderFacade()->FacadeGetFPS();
+            if(lastFPS != fps) {
+                renderFacadeMan->GetRenderFacade()->FacadeSetWindowCaption("Beast Brawl", fps);
+                lastFPS = fps;
+                frameCount = 0;
+            }
+        } else {
+            int currentTime = renderFacadeMan->GetRenderFacade()->FacadeGetTime();
+            frameCount++;
+            if ( currentTime - lastFPS >= 1.0 ) {
+                renderFacadeMan->GetRenderFacade()->FacadeSetWindowCaption("Beast Bral", frameCount);
+                cout << frameCount << endl;
+                frameCount = 0;
+                lastFPS = currentTime;
+            }
         }
+
     }
 
     renderFacadeMan->GetRenderFacade()->FacadeDeviceDrop();
