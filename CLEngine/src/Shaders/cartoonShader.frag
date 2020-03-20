@@ -1,5 +1,5 @@
 #version 450 core
-
+// http://in2gpu.com/2014/06/23/toon-shading-effect-and-simple-contour-detection/
 out vec4 FragColor;
 
 in vec2 TexCoords; //Coordenadas de textura
@@ -37,23 +37,36 @@ uniform int cartoonParts = 8;
 
 
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir){
+
     vec3 ambient = light.ambient * texture(material.diffuse,TexCoords).rgb;
     // diffuse
     vec3 lightDir = normalize(light.position - fragPos);
     float diff = max(dot(normal,lightDir), 0.0);
     vec3 diffuse = light.diffuse * diff * texture(material.diffuse, TexCoords).rgb;  
+    vec3 H = normalize(lightDir + viewDir);
     // specular
     vec3 reflectDir = reflect(-lightDir, normal);  //Angulo reflectado
-    float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess); //Formula de la luz especular
-    vec3 specular = light.specular * spec * texture(material.specular,TexCoords).rgb;  //Multiplicamos todo 
+
+    float spec = 0.0;
+    vec3 specular = vec3(1.0,1.0,1.0);
+
+    if( dot(lightDir,normal) > 0.0)
+    {
+        spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess); //Formula de la luz especular
+        specular = light.specular * spec * texture(material.specular,TexCoords).rgb;  //Multiplicamos todo 
+    }
   // attenuation
     float distance    = length(light.position - fragPos); //Distancia de la luz al objeto
     float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance)); //Formula de la atenuacion
 
+    //limit specular
+    float specMask = (pow(dot(H, normal), material.shininess) > 0.4) ? 1 : 0;
+    float edgeDetection = (dot(viewDir, normal) > 0.2) ? 1 : 0;
+
     ambient *= attenuation;
     diffuse *= attenuation;
     specular*= attenuation;
-    return (ambient + diffuse /*+ specular*/);
+    return edgeDetection * (ambient + diffuse /*+ specular*specMask*/);
 } 
 
 void main(){
@@ -67,12 +80,9 @@ void main(){
     int i = 0;
     while(i<num_Point_Lights){
         totalPointLight += CalcPointLight(pointLights[i], norm, FragPos, viewDir); 
-        
         i++;
     }
 
     FragColor = vec4(totalPointLight,1.0);
-    FragColor.x = floor(FragColor.x * cartoonParts) / cartoonParts;
-    FragColor.y = floor(FragColor.y * cartoonParts) / cartoonParts;
-    FragColor.z = floor(FragColor.z * cartoonParts) / cartoonParts; 
+    FragColor = floor(FragColor * cartoonParts) / cartoonParts;
 }
