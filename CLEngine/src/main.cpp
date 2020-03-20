@@ -52,6 +52,7 @@ int main() {
     //-------------------Resource manager-------------------
     CLResourceManager* resourceManager = CLResourceManager::GetResourceManager();
     auto resourceShader = resourceManager->GetResourceShader("CLEngine/src/Shaders/lightMapping.vert", "CLEngine/src/Shaders/lightMapping.frag");
+    auto resourceShaderCartoon = resourceManager->GetResourceShader("CLEngine/src/Shaders/cartoonShader.vert", "CLEngine/src/Shaders/cartoonShader.frag");
     auto resourceShaderMaterial = resourceManager->GetResourceShader("CLEngine/src/Shaders/materialShader.vert", "CLEngine/src/Shaders/materialShader.frag");
     auto resourceShader3 = resourceManager->GetResourceShader("CLEngine/src/Shaders/debugShader.vert", "CLEngine/src/Shaders/debugShader.frag", "CLEngine/src/Shaders/debugShader.geom");
     auto resourceShaderSkybox = resourceManager->GetResourceShader("CLEngine/src/Shaders/skybox.vert", "CLEngine/src/Shaders/skybox.frag");
@@ -74,31 +75,31 @@ int main() {
 
 
         auto light1 = smgr->AddLight(1);
-        light1->SetShaderProgramID(resourceShader->GetProgramID());
+        light1->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
         static_cast<CLLight*>(light1->GetEntity())->SetLightAttributes(glm::vec3(1.0f,1.0f,1.0f),glm::vec3(0.5f,0.5f,0.5f),glm::vec3(0.2f,0.3f,0.42f),glm::vec3(0.1f,0.1,0.1f),0.3f,0.004f,0.00016f);
 
         auto light2 = smgr->AddLight(6);
-        light2->SetShaderProgramID(resourceShader->GetProgramID());
+        light2->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
         static_cast<CLLight*>(light2->GetEntity())->SetLightAttributes(glm::vec3(1.0f,1.0f,1.0f),glm::vec3(0.5f,0.5f,0.5f),glm::vec3(0.2f,0.3f,0.42f),glm::vec3(0.1f,0.1,0.1f),0.3f,0.004f,0.00016f);
 
         auto light3 = smgr->AddLight(7);
-        light3->SetShaderProgramID(resourceShader->GetProgramID());
+        light3->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
         static_cast<CLLight*>(light3->GetEntity())->SetLightAttributes(glm::vec3(1.0f,1.0f,1.0f),glm::vec3(0.5f,0.5f,0.5f),glm::vec3(0.2f,0.3f,0.42f),glm::vec3(0.1f,0.1,0.1f),0.3f,0.004f,0.00016f);
 
         auto meshes = smgr->AddGroup(10000);
 
         auto mesh1 = smgr->AddMesh(2);
-        mesh1->SetShaderProgramID(resourceShader->GetProgramID());
+        mesh1->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
         
         auto camera = smgr->AddCamera(3);
-        camera->SetShaderProgramID(resourceShader->GetProgramID());
+        camera->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
 
         auto mesh2 = mesh1->AddMesh(4);
-        mesh2->SetShaderProgramID(resourceShader->GetProgramID());
+        mesh2->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
 
         
         auto mesh3 = mesh2->AddMesh(5);
-        mesh3->SetShaderProgramID(resourceShaderMaterial->GetProgramID());
+        mesh3->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
 
         static_cast<CLCamera*>(camera->GetEntity())->SetCameraTarget(mesh1->GetTranslation());
 
@@ -132,7 +133,7 @@ int main() {
 
 
     static_cast<CLMesh*>(mesh1->GetEntity())->SetMesh(resourceMeshBox);
-    static_cast<CLMesh*>(mesh2->GetEntity())->SetMesh(resourceMesh);
+    static_cast<CLMesh*>(mesh2->GetEntity())->SetMesh(resourceMeshOBJ);
     static_cast<CLMesh*>(mesh3->GetEntity())->SetMesh(resourceMeshOBJ);
     static_cast<CLMesh*>(mesh3->GetEntity())->SetMaterial(resourceMaterial); 
 
