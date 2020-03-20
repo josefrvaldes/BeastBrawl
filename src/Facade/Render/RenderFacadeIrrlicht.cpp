@@ -295,7 +295,7 @@ const uint16_t RenderFacadeIrrlicht::FacadeAddObject(Entity* entity) {
     std::string meshPath = "";
     if(entity->HasComponent(CompType::MeshComp)){
         auto cMesh = static_cast<CMesh*>(entity->GetComponent(CompType::MeshComp).get());
-        std::string currentMesh = cMesh->mesh[0];
+        std::string currentMesh = cMesh->activeMesh;
         meshPath = "media/" + currentMesh;
     }
 
@@ -417,7 +417,9 @@ const uint16_t RenderFacadeIrrlicht::FacadeAddObject(Entity* entity) {
 
 
 
+void RenderFacadeIrrlicht::FacadeUpdateMeshesLoD(vector<shared_ptr<Entity>> entities) {
 
+}
 
 
 //INPUTS : Una entidad GameObject

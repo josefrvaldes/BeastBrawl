@@ -207,7 +207,7 @@ const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
     CLResourceMesh* mesh = nullptr;
     if(entity->HasComponent(CompType::MeshComp)){
         auto cMesh = static_cast<CMesh*>(entity->GetComponent(CompType::MeshComp).get());
-        std::string currentMesh = cMesh->mesh[0];
+        std::string currentMesh = cMesh->activeMesh;
         std::string meshPath = "media/" + currentMesh;
         mesh = resourceManager->GetResourceMesh(meshPath);
     }
@@ -442,6 +442,20 @@ void RenderFacadeClover::FacadeAddCamera(Entity* camera) {
     // camera1->SetRotation(glm::vec3(0.0f,0.0f,0.0f));
     // camera1->SetScalation(glm::vec3(1.0f,1.0f,1.0f));
     
+}
+
+
+void RenderFacadeClover::FacadeUpdateMeshesLoD(vector<shared_ptr<Entity>> entities) {
+    for (const auto& entity : entities) {
+        CId *cid = static_cast<CId*>(entity->GetComponent(CompType::IdComp).get());
+        auto node = smgr->GetNodeByID(cid->id);
+        if(node) {
+            CMesh *cMesh = static_cast<CMesh*>(entity->GetComponent(CompType::MeshComp).get());
+            std::string currentMesh = cMesh->activeMesh;
+            std::string meshPath = "media/" + currentMesh;
+            static_cast<CLMesh*>(node->GetEntity())->SetMesh(resourceManager->GetResourceMesh(meshPath));
+        }
+    }
 }
 
 /**

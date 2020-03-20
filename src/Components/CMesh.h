@@ -2,16 +2,20 @@
 
 #include "Component.h"
 
-#include <string>
 #include <iostream>
+#include <string>
 #include <vector>
 
-class CMesh : public Component{
-public:
+class CMesh : public Component {
+   public:
+    CMesh() = delete;
     CMesh(std::string path);
     CMesh(std::string pathCerca, std::string pathMedio, std::string pathLejos);
     ~CMesh(){};
 
-
     std::vector<std::string> mesh;
+    std::string activeMesh;
+
+    float distanceNear{250};
+    float distanceMedium{400};
 };
