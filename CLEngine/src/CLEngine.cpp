@@ -160,7 +160,7 @@ void CLEngine::DrawImage2D(float x, float y, float width, float height, string f
     glEnableVertexAttribArray(1);
 
     unsigned int texture;
-    glGenTextures(1, &texture);
+    /*glGenTextures(1, &texture);
     glBindTexture(GL_TEXTURE_2D, texture); // all upcoming GL_TEXTURE_2D operations now have effect on this texture object
     // set the texture wrapping parameters
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// set texture wrapping to GL_REPEAT (default wrapping method)
@@ -181,8 +181,8 @@ void CLEngine::DrawImage2D(float x, float y, float width, float height, string f
     {
         std::cout << "Failed to load texture" << std::endl;
     }
-    stbi_image_free(data);
-    //resourceManager->GetResourceTexture("media/flower.png");
+    stbi_image_free(data);*/
+    texture = static_cast<CLResourceTexture*>(CLResourceManager::GetResourceManager()->GetResourceTexture("media/flower.png"))->GetTextureID();
 
     glBindTexture(GL_TEXTURE_2D, texture);
 

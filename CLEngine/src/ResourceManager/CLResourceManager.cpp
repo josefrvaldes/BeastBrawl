@@ -31,7 +31,6 @@ CLResourceMesh* CLResourceManager::GetResourceMesh(const std::string file) {
 }
 
 CLResourceTexture* CLResourceManager::GetResourceTexture(const std::string file) {
-    cout << "Se quiere objener el recurso: " << file << "\n";
     shared_ptr<CLResourceTexture> resource = nullptr;
     bool search = true;
     for (unsigned int i=0; i<textures.size() && search; ++ i) {
