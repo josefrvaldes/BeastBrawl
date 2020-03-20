@@ -44,6 +44,7 @@
 #include <Systems/Collisions.h>
 #include <Systems/Physics.h>
 #include <Systems/PhysicsPowerUp.h>
+#include <Systems/SystemLoD.h>
 #include <Systems/SystemBoxPowerUp.h>
 #include <behaviourTree/behaviourTree.h>
 #include <behaviourTree/decorator.h>
@@ -87,6 +88,7 @@ class StateInGame : public State {
     shared_ptr<ManBoundingGround> manBoundingGround;
     shared_ptr<ManLight> manLight;
     unique_ptr<ManGameRules> manGameRules;
+    unique_ptr<SystemLoD> sysLoD;
 
     RenderFacade *renderEngine = {nullptr};
     InputFacade *inputEngine = {nullptr};
