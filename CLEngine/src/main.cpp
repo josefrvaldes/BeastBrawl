@@ -101,6 +101,9 @@ int main() {
         auto mesh3 = mesh2->AddMesh(5);
         mesh3->SetShaderProgramID(resourceShaderMaterial->GetProgramID());
 
+        
+
+
         static_cast<CLCamera*>(camera->GetEntity())->SetCameraTarget(mesh1->GetTranslation());
 
         smgr->AddSkybox("media/skybox/right.jpg",
@@ -142,13 +145,10 @@ int main() {
     mesh1->SetTranslation(glm::vec3(50.0f,50.0f,50.0f));
     mesh2->SetScalation(glm::vec3(2.0f, 2.0f, 2.0f));
     mesh2->SetRotation(glm::vec3(0.0f, 180.0f, 0.0f));
-    mesh2->SetTranslation(glm::vec3(95.0f,80.0f,60.0f));
-    //mesh3->SetScalation(glm::vec3(0.2f,0.2f,0.2f));
+    mesh2->SetTranslation(glm::vec3(10.0f,0.0f,0.0f));
+    mesh3->SetTranslation(glm::vec3(-40.0f,0.0f,0.0f));
+    mesh3->SetScalation(glm::vec3(0.8f,0.8f,0.8f));
 
-
-    
-    
-    
 
 
     //LUCES Y COLORES
@@ -156,6 +156,8 @@ int main() {
     float auxLightPos[3] = {light1->GetTranslation().x, light1->GetTranslation().y, light1->GetTranslation().z};
     float auxLightPos2[3] = {light2->GetTranslation().x, light2->GetTranslation().y, light2->GetTranslation().z};
     float auxLightPos3[3] = {light3->GetTranslation().x, light3->GetTranslation().y, light3->GetTranslation().z};
+    float auxLineStart[3] = {0.0,0.0,0.0};
+    float auxLineEnd[3] = {200.0,200.0,200.0};
 
     float index = 0.01;
 
@@ -183,6 +185,8 @@ int main() {
         ImGui::SliderFloat3("LightPos",auxLightPos,-300,400);
         ImGui::SliderFloat3("LightPos2",auxLightPos2,-300,400);
         ImGui::SliderFloat3("LightPos3",auxLightPos3,-300,400);
+        ImGui::SliderFloat3("Line start",auxLineStart,-400,400);
+        ImGui::SliderFloat3("Line end",auxLineEnd,-400,400);
         ImGui::End(); 
 
         glm::vec3 cameraPos(auxCameraPos[0], auxCameraPos[1], auxCameraPos[2]);
@@ -194,16 +198,12 @@ int main() {
         light2->SetTranslation(lightPos2);
         light3->SetTranslation(lightPos3);
         
+        static_cast<CLCamera*>(camera->GetEntity())->SetCameraTarget(mesh3->GetGlobalTranslation());
 
-
-        //meshes->SetRotation(glm::vec3(0.0f,0.0f,index));
-        // auto trans1 = mesh1->GetTranslation();
-        // mesh1->SetTranslation(glm::vec3(trans1.x+index,trans1.y,trans1.z));
-        //static_cast<CLCamera*>(camera->GetEntity())->SetCameraTarget(mesh2->GetGlobalTranslation());
-        static_cast<CLCamera*>(camera->GetEntity())->SetCameraTarget(glm::vec3(70.0f,70.0f,70.0f));
+        static_cast<CLCamera*>(camera->GetEntity())->SetCameraTarget(glm::vec3(0.0f,0.0f,0.0f));
         auto point1 = mesh1->GetGlobalTranslation();
         auto point2 = mesh2->GetGlobalTranslation();
-        smgr->Draw3DLine(point1.x,point1.y,point1.z,point2.x,point2.y,point2.z,CLE::CLColor(255.0,0.0,0.0,255.0));
+        smgr->Draw3DLine(auxLineStart[0],auxLineStart[1],auxLineStart[2],auxLineEnd[0],auxLineEnd[1],auxLineEnd[2],CLE::CLColor(124.0,234.0,120.0,255.0));
 
 
         // Measure speed

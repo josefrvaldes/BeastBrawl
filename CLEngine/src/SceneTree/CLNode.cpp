@@ -35,6 +35,14 @@ CLNode* CLNode::AddGroup(unsigned int id){
     return node.get();
 }
 
+CLNode* CLNode::AddMesh(unsigned int id,string mesh){
+    auto node = AddMesh(id);
+    auto resourceMesh = CLResourceManager::GetResourceManager()->GetResourceMesh(mesh);
+    static_cast<CLMesh*>(node->GetEntity())->SetMesh(resourceMesh);
+
+    return node;
+}
+
 CLNode* CLNode::AddMesh(unsigned int id){
 
     shared_ptr<CLEntity> e = make_shared<CLMesh>(id);
@@ -44,8 +52,14 @@ CLNode* CLNode::AddMesh(unsigned int id){
 
 
     return node.get();
-    
 }
+
+CLNode* CLNode::AddLight(unsigned int id,glm::vec3 intensity, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float constant, float linear, float quadratic){
+    auto node = AddLight(id);
+    static_cast<CLLight*>(node->GetEntity())->SetLightAttributes(intensity,ambient,diffuse,specular,constant,linear,quadratic);
+    return node;
+}
+
 
 CLNode* CLNode::AddLight(unsigned int id){
 
@@ -84,6 +98,14 @@ void CLNode::AddSkybox(string right, string left, string top, string bottom, str
 
 bool CLNode::RemoveChild(CLNode* child){
 
+    if(child->GetChilds().size()>0){
+        for(auto childOfChild : child->GetChilds()){
+            
+            child->DeleteNode(childOfChild->GetEntity()->GetID());
+        }
+    }
+
+    //Childs son los hijos del padre en el que estara child
     for(unsigned int i = 0; i<childs.size(); ++i){
         if(child == childs[i].get()){
             childs.erase(childs.begin()+i);
@@ -270,6 +292,14 @@ void CLNode::DFSTree(glm::mat4 mA) {
     if(entity && visible && frusVisibility == CLE::CLFrustum::Visibility::Completly) { 
         // La matriz model se pasa aqui wey
         glUseProgram(shaderProgramID);
+        //Calculamos las luces
+        //TODO: Hacer un sistema de que si no hemos cambiado de shader no se recalculen
+
+        if(hasLightingEffects){
+            CalculateLights();
+
+        }
+
         glm::mat4 MVP = projection * view * transformationMat;
         glUniformMatrix4fv(glGetUniformLocation(shaderProgramID, "model"), 1, GL_FALSE, glm::value_ptr(transformationMat));
         glUniformMatrix4fv(glGetUniformLocation(shaderProgramID, "MVP"), 1, GL_FALSE, glm::value_ptr(MVP));
@@ -296,19 +326,15 @@ void CLNode::CalculateViewProjMatrix(){
             glUseProgram(camera->GetShaderProgramID());
 
             projection    = entityCamera->CalculateProjectionMatrix();
-            //glUniformMatrix4fv(glGetUniformLocation(camera->GetShaderProgramID(), "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 
             // Vector posicion de la camara, vector de posicion destino y vector ascendente en el espacio mundial. 
             
 
-            //view = glm::lookAt(camera->GetTranslation(), -entityCamera->GetCameraTarget(), entityCamera->GetCameraUp());
             view = glm::lookAt(camera->GetGlobalTranslation(), entityCamera->GetCameraTarget(), entityCamera->GetCameraUp());
 
-            //view = glm::lookAt(vec3(0.0,0.0,0.0), vec3(0.0,0.0,0.0), vec3(0.0,0.0,0.0));
 
             glUniform3fv(glGetUniformLocation(camera->GetShaderProgramID(), "viewPos"),1,glm::value_ptr(camera->GetTranslation()));
 
-            //glUniformMatrix4fv(glGetUniformLocation(camera->GetShaderProgramID(), "view"), 1, GL_FALSE, glm::value_ptr(view));
 
             // Una vez tenemos la View y la Projection vamos a calcular Frustum para los objetos
             //auto& frustum_m = entityCamera->GetFrustum();
@@ -331,16 +357,16 @@ void CLNode::CalculateLights(){
         
         string number = to_string(i);
 
-        glUniform1i(glGetUniformLocation(light->GetShaderProgramID(),"num_Point_Lights"),lights.size());    
+        glUniform1i(glGetUniformLocation(this->GetShaderProgramID(),"num_Point_Lights"),lights.size());    
         //TODO: A ver esto deberia cambiarse y pasarselo al shader de las mallas que lo vayan a usar
         //      por si al final las luces usan otro shader
-        glUniform3fv(glGetUniformLocation(light->GetShaderProgramID(), ("pointLights[" + number + "].position").c_str()),1,glm::value_ptr(light->GetGlobalTranslation()));
-        glUniform3fv(glGetUniformLocation(light->GetShaderProgramID(), ("pointLights[" + number + "].ambient").c_str()), 1,glm::value_ptr(lightEntity->GetAmbient()));
-        glUniform3fv(glGetUniformLocation(light->GetShaderProgramID(), ("pointLights[" + number + "].diffuse").c_str()), 1, glm::value_ptr(lightEntity->GetDiffuse()));
-        glUniform3fv(glGetUniformLocation(light->GetShaderProgramID(), ("pointLights[" + number + "].specular").c_str()), 1, glm::value_ptr(lightEntity->GetSpecular()));
-        glUniform1f(glGetUniformLocation(light->GetShaderProgramID(), ("pointLights[" + number + "].constant").c_str()), lightEntity->GetConstant());
-        glUniform1f(glGetUniformLocation(light->GetShaderProgramID(), ("pointLights[" + number + "].linear").c_str()), lightEntity->GetLinear());
-        glUniform1f(glGetUniformLocation(light->GetShaderProgramID(), ("pointLights[" + number + "].quadratic").c_str()), lightEntity->GetQuadratic());
+        glUniform3fv(glGetUniformLocation(this->GetShaderProgramID(), ("pointLights[" + number + "].position").c_str()),1,glm::value_ptr(light->GetGlobalTranslation()));
+        glUniform3fv(glGetUniformLocation(this->GetShaderProgramID(), ("pointLights[" + number + "].ambient").c_str()), 1,glm::value_ptr(lightEntity->GetAmbient()));
+        glUniform3fv(glGetUniformLocation(this->GetShaderProgramID(), ("pointLights[" + number + "].diffuse").c_str()), 1, glm::value_ptr(lightEntity->GetDiffuse()));
+        glUniform3fv(glGetUniformLocation(this->GetShaderProgramID(), ("pointLights[" + number + "].specular").c_str()), 1, glm::value_ptr(lightEntity->GetSpecular()));
+        glUniform1f(glGetUniformLocation(this->GetShaderProgramID(), ("pointLights[" + number + "].constant").c_str()), lightEntity->GetConstant());
+        glUniform1f(glGetUniformLocation(this->GetShaderProgramID(), ("pointLights[" + number + "].linear").c_str()), lightEntity->GetLinear());
+        glUniform1f(glGetUniformLocation(this->GetShaderProgramID(), ("pointLights[" + number + "].quadratic").c_str()), lightEntity->GetQuadratic());
 
 
         i++;
@@ -407,13 +433,13 @@ const void CLNode::Draw3DLine(float x1, float y1, float z1, float x2, float y2, 
 const void CLNode::Draw3DLine(float x1, float y1, float z1, float x2, float y2, float z2,CLColor color) const{
 
     // float line[] = {
-    //     x1, y1, z1,
-    //     x1, y2, z2
+    //     x1, y1, 0.0f,
+    //     x1, y2, 0.0f
     // };
 
     float line[] = {
-        -0.6f,0.3f,0.0f,
-        0.8f,0.5f,0.0f,
+        -0.6f,0.3f,0.0f, 0.5f,0.3f,0.1f,
+        0.8f,0.5f,0.0f,  0.5f,0.3f,0.1f
     };
  
     
@@ -429,20 +455,24 @@ const void CLNode::Draw3DLine(float x1, float y1, float z1, float x2, float y2, 
     glBufferData(GL_ARRAY_BUFFER, sizeof(line), line, GL_STATIC_DRAW);
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE,  3 * sizeof(float), 0);
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE,  3 * sizeof(float), (void*)(3 * sizeof(float)));
     glBindVertexArray(0);
 
     glm::mat4 modelMat = glm::identity<mat4>();
 
+    //99% seguro de que estoy enviando mal las matrices vista y projeccion
     glUseProgram(debugShader);
 
     glm::vec4 clcolor(color.GetRedNormalized(),color.GetGreenNormalized(),color.GetBlueNormalized(),color.GetAlphaNormalized());
-    glUniformMatrix4fv(glGetUniformLocation(shaderProgramID, "model"), 1, GL_FALSE, glm::value_ptr(modelMat));
-    glUniformMatrix4fv(glGetUniformLocation(shaderProgramID, "view"), 1, GL_FALSE, glm::value_ptr(view));
-    glUniformMatrix4fv(glGetUniformLocation(shaderProgramID, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
-    glUniformMatrix4fv(glGetUniformLocation(shaderProgramID, "clcolor"), 1, GL_FALSE, glm::value_ptr(clcolor));
+    cout << clcolor.r << endl;
+    glUniformMatrix4fv(glGetUniformLocation(debugShader, "model"), 1, GL_FALSE, glm::value_ptr(modelMat));
+    glUniformMatrix4fv(glGetUniformLocation(debugShader, "view"), 1, GL_FALSE, glm::value_ptr(view));
+    glUniformMatrix4fv(glGetUniformLocation(debugShader, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+    glUniformMatrix4fv(glGetUniformLocation(debugShader, "clcolor"), 1, GL_FALSE, glm::value_ptr(clcolor));
 
     glBindVertexArray(VAO);
-    glDrawArrays(GL_LINES_ADJACENCY, 0,4); 
+    glDrawArrays(GL_LINES, 0,2); 
     glUseProgram(0);
     glBindVertexArray(0);
 
@@ -459,7 +489,7 @@ const void CLNode::Draw3DLine(float x1, float y1, float z1, float x2, float y2, 
 void CLNode::DrawTree(CLNode* root){
     if(root->GetChilds().size()>0){
         //Tiene hijos
-        if( root->GetEntity() && !root->GetEntity()->GetID())
+        if( root->GetEntity() && root->GetEntity()->GetID())
             cout << root->GetEntity()->GetID() << " con hijos: ";
         else
             cout << "Este es un nodo sin entity con hijos: ";
@@ -468,7 +498,7 @@ void CLNode::DrawTree(CLNode* root){
             if(nodo->GetEntity() && nodo->GetEntity()->GetID())
                 cout << nodo->GetEntity()->GetID() << " ";
             else
-                cout << "(Este es un nodo sin entity)\n";
+                cout << "(hijo sin ID) ";
         }
         cout << "\n";
         for(auto& nodo : root->GetChilds()){

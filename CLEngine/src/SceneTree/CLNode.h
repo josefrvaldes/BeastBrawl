@@ -61,7 +61,9 @@ class CLNode{
         //Methods
         CLNode* AddGroup(unsigned int id);
         CLNode* AddMesh(unsigned int id);
+        CLNode* AddMesh(unsigned int id,string mesh);
         CLNode* AddLight(unsigned int id);
+        CLNode* AddLight(unsigned int id,glm::vec3 intensity, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float constant, float linear, float quadratic);
         CLNode* AddCamera(unsigned int id);
         void AddSkybox(string right, string left, string top, string bottom, string front, string back);
         bool RemoveChild(CLNode* child);
@@ -86,6 +88,7 @@ class CLNode{
         void SetVisible(bool v) {visible = v;};
         const void Draw3DLine(float x1, float y1, float z1, float x2, float y2, float z2,CLColor color) const;
         const void Draw3DLine(float x1, float y1, float z1, float x2, float y2, float z2) const;
+        void SetLightingEffects(bool l) { hasLightingEffects = l;};
 
         //DEBUG
         void DrawTree(CLNode* root); 
@@ -95,6 +98,7 @@ class CLNode{
 
         bool changed { true };
         bool visible { true };
+        bool hasLightingEffects { true }; //Sirve para que no se le aplique luce y ahorrarse el calculo de luces
 
         shared_ptr<CLEntity> entity {nullptr};
         CLNode* father {nullptr};
