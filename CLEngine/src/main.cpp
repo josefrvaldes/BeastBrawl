@@ -117,17 +117,17 @@ int main() {
     int max = 200;
     int min = -200;
     int j = 0;
-    for(int i = 50; i<100; i++){
-        nodes.push_back(meshes->AddMesh(i));
-        nodes[j]->SetShaderProgramID(resourceShader->GetProgramID());
+    // for(int i = 50; i<100; i++){
+    //     nodes.push_back(meshes->AddMesh(i));
+    //     nodes[j]->SetShaderProgramID(resourceShader->GetProgramID());
 
-        int randNumX = rand()%(max-min + 1) + min;
-        int randNumY = rand()%(max-min + 1) + min;
-        int randNumZ = rand()%(max-min + 1) + min;
-        static_cast<CLMesh*>(nodes[j]->GetEntity())->SetMesh(resourceMeshTotem);
-        nodes[j]->SetTranslation(glm::vec3(randNumX,randNumY,randNumZ));
-        j++;
-    }
+    //     int randNumX = rand()%(max-min + 1) + min;
+    //     int randNumY = rand()%(max-min + 1) + min;
+    //     int randNumZ = rand()%(max-min + 1) + min;
+    //     static_cast<CLMesh*>(nodes[j]->GetEntity())->SetMesh(resourceMeshTotem);
+    //     nodes[j]->SetTranslation(glm::vec3(randNumX,randNumY,randNumZ));
+    //     j++;
+    // }
 
     //      smgr->DrawTree(smgr);
 
@@ -149,11 +149,8 @@ int main() {
 
     mesh2->GetGlobalTranslation();
 
-    
-    
-    
 
-
+    cout << "Borra bien\n";
     //LUCES Y COLORES
     float auxCameraPos[3] = {camera->GetTranslation().x, camera->GetTranslation().y, camera->GetTranslation().z};
     float auxLightPos[3] = {light1->GetTranslation().x, light1->GetTranslation().y, light1->GetTranslation().z};

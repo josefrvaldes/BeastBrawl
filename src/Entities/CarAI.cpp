@@ -136,8 +136,9 @@ CarAI::CarAI(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale,string texture, strin
     CTexture *cTexture = (CTexture *)m_components[CompType::TextureComp].get();
     cTexture->texture = texture;
 
+    // DEBUG MESH debería tener 3 mesh en vez de una
     CMesh *cMesh = (CMesh *)m_components[CompType::MeshComp].get();  
-    cMesh->mesh = mesh;
+    cMesh->mesh.push_back( mesh );
 
     CCar *cCar = (CCar *)m_components[CompType::CarComp].get();
     cCar->maxSpeed = maxSpeed;

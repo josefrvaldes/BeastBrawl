@@ -77,6 +77,14 @@ void CLNode::AddSkybox(string right, string left, string top, string bottom, str
 
 bool CLNode::RemoveChild(CLNode* child){
 
+    if(child->GetChilds().size()>0){
+        for(auto childOfChild : child->GetChilds()){
+            
+            child->DeleteNode(childOfChild->GetEntity()->GetID());
+        }
+    }
+
+    //Childs son los hijos del padre en el que estara child
     for(unsigned int i = 0; i<childs.size(); ++i){
         if(child == childs[i].get()){
             childs.erase(childs.begin()+i);
@@ -405,7 +413,7 @@ CLCamera* CLNode::GetActiveCamera(){
 void CLNode::DrawTree(CLNode* root){
     if(root->GetChilds().size()>0){
         //Tiene hijos
-        if( root->GetEntity() && !root->GetEntity()->GetID())
+        if( root->GetEntity() && root->GetEntity()->GetID())
             cout << root->GetEntity()->GetID() << " con hijos: ";
         else
             cout << "Este es un nodo sin entity con hijos: ";
@@ -414,7 +422,7 @@ void CLNode::DrawTree(CLNode* root){
             if(nodo->GetEntity() && nodo->GetEntity()->GetID())
                 cout << nodo->GetEntity()->GetID() << " ";
             else
-                cout << "(Este es un nodo sin entity)\n";
+                cout << "(hijo sin ID) ";
         }
         cout << "\n";
         for(auto& nodo : root->GetChilds()){
