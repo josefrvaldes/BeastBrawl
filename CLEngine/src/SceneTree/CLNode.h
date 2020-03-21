@@ -13,6 +13,8 @@
 #include "CLCamera.h"
 #include "../ResourceManager/CLResourceMesh.h"
 #include "CLSkybox.h"
+#include "CLShadowMapping.h"
+
 
 #include "../Frustum/CLFrustum.h"
 #include "../ResourceManager/CLResourceManager.h"
@@ -48,6 +50,10 @@ class CLNode{
         CLCamera* GetActiveCamera();
         vector<CLNode*> GetLights()             { return lights; };
         vector<CLNode*> GetCameras()            { return cameras; };
+        CLShadowMapping* GetShadowMapping()     {return shadowMapping.get();};
+        GLuint GetSimpleDepthShader()           {return simpleDepthShader;};
+        CLResourceShader* GetDepthShader()      {return DepthShadder;};
+
 
         //Setters
         bool SetFather(CLNode* f)                       { father = f; return true; }
@@ -63,6 +69,8 @@ class CLNode{
         CLNode* AddLight(unsigned int id);
         CLNode* AddCamera(unsigned int id);
         void AddSkybox(string right, string left, string top, string bottom, string front, string back);
+        void AddShadowMapping();
+
         bool RemoveChild(CLNode* child);
         bool HasChild(CLNode* child);
         CLNode* GetNodeByID(unsigned int id);
@@ -81,6 +89,7 @@ class CLNode{
 
         void DrawTree(CLNode* root);
         void DFSTree(glm::mat4);
+        void DFSTree(glm::mat4 mA, GLuint shaderID);
         void DrawSkybox();
 
         void SetVisible(bool v) {visible = v;};
@@ -124,6 +133,11 @@ class CLNode{
         //Skybox
         inline static unique_ptr<CLSkybox> skybox = nullptr;
         inline static GLuint skyboxShader = 0;
+
+        unique_ptr<CLShadowMapping> shadowMapping = nullptr;
+        GLuint simpleDepthShader = 0;
+        CLResourceShader* DepthShadder = nullptr;
+
 };
 
 }

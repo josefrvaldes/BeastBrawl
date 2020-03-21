@@ -47,6 +47,7 @@ Mesh::Mesh(vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture
 
 
 // CLRESOURCEMESH -------------------------------------------------------------------
+#include "../SceneTree/CLShadowMapping.h"
 
 using namespace CLE;
 
@@ -343,6 +344,9 @@ void CLResourceMesh::Draw(GLuint shaderID) {
             // now set the sampler to the correct texture unit
             // and finally bind the texture
             glBindTexture(GL_TEXTURE_2D, mesh.textures[i].id);
+            
+            glActiveTexture(GL_TEXTURE1 + i);
+            glBindTexture(GL_TEXTURE_CUBE_MAP, CLShadowMapping::depthCubemap);
         }
 
 

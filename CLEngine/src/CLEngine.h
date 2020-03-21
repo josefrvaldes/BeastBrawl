@@ -19,6 +19,7 @@
 #include "SceneTree/CLMesh.h"
 #include "SceneTree/CLLight.h"
 #include "SceneTree/CLCamera.h"
+#include "SceneTree/CLShadowMapping.h"
 #include "ResourceManager/CLResourceManager.h"
 
 using namespace std;
@@ -44,6 +45,7 @@ class CLEngine {
         void InputClose();
         void CloseWindow();
         void PollEvents();
+        void RenderDepthMap(CLShadowMapping& shadowMap, CLResourceShader* depthShader, glm::vec3 posLight);
 
 
         CLNode* GetSceneManager();

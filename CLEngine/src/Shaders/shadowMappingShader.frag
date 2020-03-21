@@ -14,6 +14,9 @@ uniform vec3 viewPos;     //Posición de la camara
 
 uniform float attenuationValue; //Atenuación
 
+uniform samplerCube depthMap;
+uniform float far_plane;
+
 struct Material {
     vec3 ambient;
     sampler2D diffuse;
@@ -44,6 +47,23 @@ uniform PointLight pointLights[NUM_POINT_LIGHTS];
 //uniform sampler2D texture_diffuse1;
 
 
+float ShadowCalculation(vec3 fragPos, vec3 posLight)
+{
+     // get vector between fragment position and light position
+    vec3 fragToLight = fragPos - posLight;
+    // use the light to fragment vector to sample from the depth map    
+    float closestDepth = texture(depthMap, fragToLight).r;
+    // it is currently in linear range between [0,1]. Re-transform back to original value
+    closestDepth *= far_plane;
+    // now get current linear depth as the length between the fragment and light position
+    float currentDepth = length(fragToLight);
+    // now test for shadows
+    float bias = 0.05; 
+    float shadow = currentDepth -  bias > closestDepth ? 1.0 : 0.0;
+
+    return shadow;
+}
+
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
 {
     vec3 ambient = light.ambient * texture(material.diffuse,TexCoords).rgb;
@@ -61,11 +81,11 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
     // float distance    = length(light.position - fragPos); //Distancia de la luz al objeto
     // float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance)); //Formula de la atenuacion
 
-    // ambient *= attenuation;
-    // diffuse *= attenuation;
-    // specular*= attenuation;
-    
-    return (ambient + diffuse /*+ specular*/);
+    //ambient *= attenuation;
+    //diffuse *= attenuation;
+    //specular*= attenuation;
+    float shadow = ShadowCalculation(FragPos, light.position); 
+    return (ambient + (1.0 - shadow) * (diffuse /*+ specuñar*/));
 } 
 
 void main()

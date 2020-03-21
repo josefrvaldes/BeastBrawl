@@ -58,14 +58,14 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess); //Formula de la luz especular
     vec3 specular = light.specular * spec * texture(material.specular,TexCoords).rgb;  //Multiplicamos todo 
 
-    float distance    = length(light.position - fragPos); //Distancia de la luz al objeto
-    float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance)); //Formula de la atenuacion
+    // float distance    = length(light.position - fragPos); //Distancia de la luz al objeto
+    // float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance)); //Formula de la atenuacion
 
-    ambient *= attenuation;
-    diffuse *= attenuation;
-    specular*= attenuation;
+    //ambient *= attenuation;
+    //diffuse *= attenuation;
+    //specular*= attenuation;
     
-    return (ambient + diffuse + specular);
+    return (ambient + diffuse);
 } 
 
 void main()
@@ -78,7 +78,7 @@ void main()
     vec3 viewDir = normalize(viewPos - FragPos); //Vector entre nosotros y el punto del objeto
     // phase 2: Point lights
     
-    int i = 0;
+    int i = 2;
     while(i<num_Point_Lights){
         totalPointLight += CalcPointLight(pointLights[i], norm, FragPos, viewDir); 
         
@@ -88,7 +88,7 @@ void main()
     FragColor = vec4(totalPointLight,1.0);
 
     //Si comentas esta linea se ve con luces
-    FragColor = texture(material.diffuse,TexCoords);
+    //FragColor = texture(material.diffuse,TexCoords);
 
 }
 
