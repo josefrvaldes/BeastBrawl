@@ -24,8 +24,8 @@ bool CLResourceShader::LoadFile(string file1, string file2, string file3){
         return false;
     if(!LoadShader(file2,GL_FRAGMENT_SHADER))
         return false;
-    if(!LoadShader(file2,GL_GEOMETRY_SHADER))
-    return false;
+    if(!LoadShader(file3,GL_GEOMETRY_SHADER))
+        return false;
     if(!LinkShaders())
         return false;
     
