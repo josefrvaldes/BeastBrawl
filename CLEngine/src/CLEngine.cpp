@@ -1,5 +1,6 @@
 #include "CLEngine.h"
 
+
 using namespace std;
 using namespace CLE;
 
@@ -18,7 +19,7 @@ static void error(int error, const char* description) {
  * @param h - Altura en pixeles de la ventana.
  * @param title - Titulo de la ventana.
  */
-CLEngine::CLEngine (const unsigned int w, const unsigned int h, const string& title) {
+CLEngine::CLEngine (const unsigned int w, const unsigned int h, const string& title) : width(w), height(h) {
     CreateGlfwWindow(w, h, title);
     glewInit();
     ImGuiInit();
@@ -55,7 +56,7 @@ void CLEngine::CreateGlfwWindow (const unsigned int w, const unsigned int h, con
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    window = glfwCreateWindow( w, h, title.c_str(), NULL, NULL );
+    window = glfwCreateWindow( w, h, title.c_str(), nullptr, nullptr );
     if (!window) {
         cout << "    > La ventana no se ha podido crear" << endl;
         glfwTerminate();
@@ -84,13 +85,10 @@ CLNode* CLEngine::GetSceneManager(){
     if(!smgr){
         smgr = make_unique<CLNode>();
     }
-
     return smgr.get();
 }
 
 CLResourceManager* CLEngine::GetResourceManager(){
-    
-
     return CLResourceManager::GetResourceManager();
 }
 
@@ -120,6 +118,60 @@ void CLEngine::DrawObjects(){
     //smgr->CalculateLights();
     smgr->DFSTree(glm::mat4(1.0f));
 }
+
+void CLEngine::DrawImage2D(float _x, float _y, float _width, float _height, float _depth, string& file, bool vertically){
+    if(!hudShader){
+        auto resourceShader = CLResourceManager::GetResourceManager()->GetResourceShader("CLEngine/src/Shaders/spriteShader.vert", "CLEngine/src/Shaders/spriteShader.frag");
+        hudShader = resourceShader->GetProgramID();
+    }
+
+    float nXLeft    =     (2.0f * _x)/width - 1.0f;
+    float nYUp      =     -1.0f * (((2.0f * _y)/height) - 1.0f);
+    float nXRight   =     ((2.0f * _width) / width) + nXLeft;
+    float nYDown    =     -1.0f * (((2.0f * _height) / height)) + nYUp;
+
+    float vertices[] = {                    // TEXT CORDS
+        nXRight,    nYUp,       _depth,       1.0f, 1.0f,         // top right
+        nXRight,    nYDown,     _depth,       1.0f, 0.0f,         // bottom right
+        nXLeft,     nYDown,     _depth,       0.0f, 0.0f,         // bottom left
+        nXLeft,     nYUp,       _depth,       0.0f, 1.0f          // top left
+    };
+
+    unsigned int indices[] = {
+            0, 3, 1,
+            3, 2, 1
+    };
+
+    unsigned int VBO, VAO, EBO;
+    glGenVertexArrays(1, &VAO);
+    glGenBuffers(1, &VBO);
+    glGenBuffers(1, &EBO);
+
+    glBindVertexArray(VAO);
+
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3* sizeof(float)));
+    glEnableVertexAttribArray(1);
+
+    unsigned int texture;
+    texture = static_cast<CLResourceTexture*>(CLResourceManager::GetResourceManager()->GetResourceTexture(file, vertically))->GetTextureID();
+
+    glBindTexture(GL_TEXTURE_2D, texture);
+
+    glUseProgram(hudShader);
+    glBindVertexArray(VAO);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+}
+
 
 /**
  * Renderiza las cosas de ImGui y cambia el buffer de la ventana. 

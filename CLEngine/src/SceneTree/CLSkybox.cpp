@@ -19,6 +19,7 @@ CLSkybox::CLSkybox(string right, string left, string top, string bottom, string 
     glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxID);
 
     int width, height, nrChannels;
+    stbi_set_flip_vertically_on_load(false);
     unsigned char *data;  
     for(GLuint i = 0; i < textures_faces.size(); i++)
     {

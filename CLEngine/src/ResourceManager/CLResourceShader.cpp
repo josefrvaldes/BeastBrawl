@@ -3,7 +3,7 @@
 using namespace CLE;
 
 //Ya no se usa este 
-bool CLResourceShader::LoadFile(string file) {
+bool CLResourceShader::LoadFile(string file, bool vertically) {
     
     return true;
 }

@@ -197,7 +197,7 @@ void Game::MainLoop() {
             int currentTime = renderFacadeMan->GetRenderFacade()->FacadeGetTime();
             frameCount++;
             if ( currentTime - lastFPS >= 1.0 ) {
-                renderFacadeMan->GetRenderFacade()->FacadeSetWindowCaption("Beast Bral", frameCount);
+                renderFacadeMan->GetRenderFacade()->FacadeSetWindowCaption("Beast Brawl", frameCount);
                 cout << frameCount << endl;
                 frameCount = 0;
                 lastFPS = currentTime;

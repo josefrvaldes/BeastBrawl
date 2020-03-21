@@ -14,8 +14,8 @@
 #include <unordered_map>
 
 
-using namespace std;
 using namespace CLE;
+
 class RenderFacadeClover : public RenderFacade {
    public:
       RenderFacadeClover();
@@ -24,12 +24,12 @@ class RenderFacadeClover : public RenderFacade {
       void FacadeAddSphereOnObject(Entity* entity) override;
       const uint16_t FacadeAddObjectCar(Entity*) override;
       const uint16_t FacadeAddObjectTotem(Entity* entity) override;
-      const void FacadeAddObjects(vector<Entity*>) override;
+      const void FacadeAddObjects(std::vector<Entity*>) override;
       void FacadeAddCamera(Entity*) override;
       void UpdateCamera(Entity*, ManCar* manCars) override;
       bool FacadeRun() override;
       uint32_t FacadeGetTime() const override;
-      vector<Constants::InputTypes> FacadeCheckInputMulti() override;
+      std::vector<Constants::InputTypes> FacadeCheckInputMulti() override;
       void FacadeCheckInputSingle() override;
       int FacadeGetFPS() const override;
       void FacadeSetWindowCaption(std::string, int) const override;
@@ -62,7 +62,7 @@ class RenderFacadeClover : public RenderFacade {
       void FacadeAddPlates(Manager* manNamePlates) override;
       void FacadeUpdatePlates(Manager* manNamePlates) override;
       void FacadeUpdateMeshesLoD(vector<shared_ptr<Entity>> entities) override;
-      void ThrowEventChangeToMulti(uint16_t IdOnline, const vector<uint16_t> IdPlayersOnline) override;
+      void ThrowEventChangeToMulti(uint16_t IdOnline, const std::vector<uint16_t> IdPlayersOnline) override;
       void FacadeAddSkybox(string right,string left,string top,string bottom,string front,string back) override;
 
       //DEBUG
@@ -92,10 +92,12 @@ class RenderFacadeClover : public RenderFacade {
 
 
 
-   private:
+    private:
 
-      CLEngine* device;
-      CLNode* smgr;
-      CLResourceManager* resourceManager;
-      CLNode* camera1;
+        std::string powerUps[7];
+
+        CLEngine* device;
+        CLNode* smgr;
+        CLResourceManager* resourceManager;
+        CLNode* camera1;
 };

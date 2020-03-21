@@ -60,7 +60,7 @@ namespace CLE {
             ~CLResourceMesh(){};
 
             void Draw(GLuint shaderID) override;
-            bool LoadFile(std::string) override;
+            bool LoadFile(std::string, bool) override;
             vector<Mesh> GetvectorMesh() { return vecMesh; }
 
         private:

@@ -28,7 +28,7 @@ namespace CLE {
             ~CLResourceMaterial() {};
 
             void Draw(GLuint shaderID) override;
-            bool LoadFile(std::string file) override;
+            bool LoadFile(std::string file, bool) override;
             vector<Material> GetMaterials() { return materials;};
 
         private:
