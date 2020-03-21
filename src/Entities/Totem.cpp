@@ -44,6 +44,7 @@ Totem::Totem()
     shared_ptr<CTransformable> cTransformable = make_shared<CTransformable>(pos, rot, scale); 
     shared_ptr<CTexture> cTexture = make_shared<CTexture>(texture);
     shared_ptr<CMesh> cMesh   = make_shared<CMesh>(mesh);
+    cMesh->mesh.push_back("telebanana.obj");
     shared_ptr<CCurrentNavMesh> cCurrentNavMesh   = make_shared<CCurrentNavMesh>(-1);
     shared_ptr<CShader> cShader = make_shared<CShader>(vertexShader,fragmentShader);
 
