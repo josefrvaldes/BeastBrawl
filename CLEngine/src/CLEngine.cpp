@@ -170,6 +170,9 @@ void CLEngine::DrawImage2D(float _x, float _y, float _width, float _height, floa
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
+    glDeleteVertexArrays(1, &VAO);
+    glDeleteBuffers(1, &VBO);
+
 }
 
 
