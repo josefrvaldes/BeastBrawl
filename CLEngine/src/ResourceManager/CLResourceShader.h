@@ -24,6 +24,7 @@ namespace CLE {
         private:
             bool LoadShader(string, GLenum);
             bool LinkShaders();
+            bool LinkShadersWithGeom();
             GLuint vertexID;
             GLuint fragmentID;
             GLuint geometryID;
