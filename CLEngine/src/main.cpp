@@ -56,6 +56,7 @@ int main() {
     //-------------------Resource manager-------------------
     CLResourceManager* resourceManager = CLResourceManager::GetResourceManager();
     auto resourceShader = resourceManager->GetResourceShader("CLEngine/src/Shaders/lightMapping.vert", "CLEngine/src/Shaders/lightMapping.frag");
+    auto resourceShaderCartoon = resourceManager->GetResourceShader("CLEngine/src/Shaders/cartoonShader.vert", "CLEngine/src/Shaders/cartoonShader.frag");
     //auto resourceShaderSprite = resourceManager->GetResourceShader("CLEngine/src/Shaders/spriteShader.vert", "CLEngine/src/Shaders/spriteShader.frag");
     auto resourceShader2 = resourceManager->GetResourceShader("CLEngine/src/Shaders/phongMaterialVert.glsl", "CLEngine/src/Shaders/phongMaterialFrag.glsl");
     auto resourceShaderMaterial = resourceManager->GetResourceShader("CLEngine/src/Shaders/materialShader.vert", "CLEngine/src/Shaders/materialShader.frag");
@@ -82,31 +83,31 @@ int main() {
 
 
         auto light1 = smgr->AddLight(1);
-        light1->SetShaderProgramID(resourceShader->GetProgramID());
+        light1->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
         static_cast<CLLight*>(light1->GetEntity())->SetLightAttributes(glm::vec3(1.0f,1.0f,1.0f),glm::vec3(0.5f,0.5f,0.5f),glm::vec3(0.2f,0.3f,0.42f),glm::vec3(0.1f,0.1,0.1f),0.3f,0.004f,0.00016f);
 
         auto light2 = smgr->AddLight(6);
-        light2->SetShaderProgramID(resourceShader->GetProgramID());
+        light2->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
         static_cast<CLLight*>(light2->GetEntity())->SetLightAttributes(glm::vec3(1.0f,1.0f,1.0f),glm::vec3(0.5f,0.5f,0.5f),glm::vec3(0.2f,0.3f,0.42f),glm::vec3(0.1f,0.1,0.1f),0.3f,0.004f,0.00016f);
 
         auto light3 = smgr->AddLight(7);
-        light3->SetShaderProgramID(resourceShader->GetProgramID());
+        light3->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
         static_cast<CLLight*>(light3->GetEntity())->SetLightAttributes(glm::vec3(1.0f,1.0f,1.0f),glm::vec3(0.5f,0.5f,0.5f),glm::vec3(0.2f,0.3f,0.42f),glm::vec3(0.1f,0.1,0.1f),0.3f,0.004f,0.00016f);
 
         auto meshes = smgr->AddGroup(10000);
 
         auto mesh1 = smgr->AddMesh(2);
-        mesh1->SetShaderProgramID(resourceShader->GetProgramID());
+        mesh1->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
         
         auto camera = smgr->AddCamera(3);
-        camera->SetShaderProgramID(resourceShader->GetProgramID());
+        camera->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
 
         auto mesh2 = mesh1->AddMesh(4);
-        mesh2->SetShaderProgramID(resourceShader->GetProgramID());
+        mesh2->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
 
         
         auto mesh3 = mesh2->AddMesh(5);
-        mesh3->SetShaderProgramID(resourceShaderMaterial->GetProgramID());
+        mesh3->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
 
 
         static_cast<CLCamera*>(camera->GetEntity())->SetCameraTarget(mesh2->GetTranslation());
@@ -126,21 +127,22 @@ int main() {
     int max = 200;
     int min = -200;
     int j = 0;
-    for(int i = 50; i<100; i++){
-        nodes.push_back(meshes->AddMesh(i));
-        nodes[j]->SetShaderProgramID(resourceShader->GetProgramID());
+    // for(int i = 50; i<100; i++){
+    //     nodes.push_back(meshes->AddMesh(i));
+    //     nodes[j]->SetShaderProgramID(resourceShader->GetProgramID());
 
-        int randNumX = rand()%(max-min + 1) + min;
-        int randNumY = rand()%(max-min + 1) + min;
-        int randNumZ = rand()%(max-min + 1) + min;
-        static_cast<CLMesh*>(nodes[j]->GetEntity())->SetMesh(resourceMeshTotem);
-        nodes[j]->SetTranslation(glm::vec3(randNumX,randNumY,randNumZ));
-        j++;
-    }
+    //     int randNumX = rand()%(max-min + 1) + min;
+    //     int randNumY = rand()%(max-min + 1) + min;
+    //     int randNumZ = rand()%(max-min + 1) + min;
+    //     static_cast<CLMesh*>(nodes[j]->GetEntity())->SetMesh(resourceMeshTotem);
+    //     nodes[j]->SetTranslation(glm::vec3(randNumX,randNumY,randNumZ));
+    //     j++;
+    // }
 
     //      smgr->DrawTree(smgr);
-    
-    static_cast<CLMesh*>(mesh1->GetEntity())->SetMesh(resourceMeshBox);
+
+
+    static_cast<CLMesh*>(mesh1->GetEntity())->SetMesh(resourceMeshTotem);
     static_cast<CLMesh*>(mesh2->GetEntity())->SetMesh(resourceMesh);
     static_cast<CLMesh*>(mesh3->GetEntity())->SetMesh(resourceMeshOBJ);
     static_cast<CLMesh*>(mesh3->GetEntity())->SetMaterial(resourceMaterial); 
@@ -159,11 +161,8 @@ int main() {
 
     mesh2->GetGlobalTranslation();
 
-    
-    
-    
 
-
+    cout << "Borra bien\n";
     //LUCES Y COLORES
     float auxCameraPos[3] = {camera->GetTranslation().x, camera->GetTranslation().y, camera->GetTranslation().z};
     float auxLightPos[3] = {light1->GetTranslation().x, light1->GetTranslation().y, light1->GetTranslation().z};

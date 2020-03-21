@@ -46,8 +46,12 @@ CarAI::CarAI(){
     glm::vec3 scale = glm::vec3(0.6f, 0.6f, 0.6f);
     string texture = "";
     // string mesh    = "kart_ia.obj";
-    string vertexShader = "CLEngine/src/Shaders/lightMapping.vert";
-    string fragmentShader = "CLEngine/src/Shaders/lightMapping.frag";
+    //string vertexShader = "CLEngine/src/Shaders/lightMapping.vert";
+    //string fragmentShader = "CLEngine/src/Shaders/lightMapping.frag";
+
+    string vertexShader = "CLEngine/src/Shaders/cartoonShader.vert";
+    string fragmentShader = "CLEngine/src/Shaders/cartoonShader.frag";
+
     float maxSpeed = 200.0, acceleration = 1.5, friction = 1.0, slowDown = 2.5;
     
     shared_ptr<CId> cId   = make_shared<CId>();
@@ -132,8 +136,9 @@ CarAI::CarAI(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale,string texture, strin
     CTexture *cTexture = (CTexture *)m_components[CompType::TextureComp].get();
     cTexture->texture = texture;
 
+    // DEBUG MESH debería tener 3 mesh en vez de una
     CMesh *cMesh = (CMesh *)m_components[CompType::MeshComp].get();  
-    cMesh->mesh = mesh;
+    cMesh->mesh.push_back( mesh );
 
     CCar *cCar = (CCar *)m_components[CompType::CarComp].get();
     cCar->maxSpeed = maxSpeed;

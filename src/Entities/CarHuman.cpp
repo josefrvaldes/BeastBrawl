@@ -49,8 +49,8 @@ CarHuman::CarHuman() {
     //string mesh    = "kart_physics.fbx";
     // string mesh    = "kart.obj";
 
-    string vertexShader = "CLEngine/src/Shaders/lightMapping.vert";
-    string fragmentShader = "CLEngine/src/Shaders/lightMapping.frag";
+    string vertexShader = "CLEngine/src/Shaders/cartoonShader.vert";
+    string fragmentShader = "CLEngine/src/Shaders/cartoonShader.frag";
     float maxSpeed = 200.0, acceleration = 1.5, friction = 1.0, slowDown = 2.5;
     
     shared_ptr<CId> cId   = make_shared<CId>();

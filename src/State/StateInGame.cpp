@@ -137,6 +137,7 @@ void StateInGame::InitializeSystems(ManCar &manCars, ManBoundingWall &manWall, M
     phisicsPowerUp = make_shared<PhysicsPowerUp>();  // Creamos sistemas
     collisions = make_shared<Collisions>();
     sysBoxPowerUp = make_shared<SystemBoxPowerUp>();
+    sysLoD = make_unique<SystemLoD>();
 }
 
 void StateInGame::InitializeManagers(Physics *physics, Camera *cam) {
@@ -211,6 +212,16 @@ void StateInGame::Update() {
 
     // al final de la ejecucion eliminamos todos los powerUps que se deben eliminar
     manPowerUps->Update();
+
+    sysLoD->Update(manCars->GetEntities(), cam.get());
+    sysLoD->Update(manPowerUps->GetEntities(), cam.get());
+    sysLoD->Update(manBoxPowerUps->GetEntities(), cam.get());
+    sysLoD->Update(manTotems->GetEntities(), cam.get());
+
+    renderEngine->FacadeUpdateMeshesLoD(manCars->GetEntities());
+    renderEngine->FacadeUpdateMeshesLoD(manPowerUps->GetEntities());
+    renderEngine->FacadeUpdateMeshesLoD(manBoxPowerUps->GetEntities());
+    renderEngine->FacadeUpdateMeshesLoD(manTotems->GetEntities());
 }
 
 void StateInGame::Render() {
