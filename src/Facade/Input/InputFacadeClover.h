@@ -13,7 +13,7 @@ using namespace CLE;
 class InputFacadeClover : public InputFacade{
     public:
         InputFacadeClover();
-        ~InputFacadeClover();
+        ~InputFacadeClover() = default;
         vector<Constants::InputTypes> CheckInput()        override;
         void CheckInputMenu()    override;
         void CheckInputPause()   override;

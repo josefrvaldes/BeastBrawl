@@ -25,9 +25,9 @@ namespace CLE {
                 return instance;
             }
 
-            CLResourceMesh* GetResourceMesh(const std::string);
-            CLResourceTexture* GetResourceTexture(const std::string);
-            CLResourceMaterial* GetResourceMaterial(const std::string);
+            CLResourceMesh* GetResourceMesh(const std::string, bool);
+            CLResourceTexture* GetResourceTexture(const std::string, bool);
+            CLResourceMaterial* GetResourceMaterial(const std::string, bool);
             CLResourceShader* GetResourceShader(const std::string, const std::string);
             CLResourceShader* GetResourceShader(const std::string, const std::string, const std::string);
 

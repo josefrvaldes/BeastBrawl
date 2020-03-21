@@ -46,6 +46,10 @@ using namespace CLE;
 int main() {
     CLEngine *device = new CLEngine(1280, 720, "Beast Brawl");
 
+    float normX = ((2.0*640)/1280.0) - 1.0;
+    float normY = ((2.0*360)/720.0) - 1.0;
+    cout << "--------------------------------- La X normalizada es: " << normX << endl;
+    cout << "--------------------------------- La Y normalizada es: " << normY << endl;
     
 
     
@@ -53,14 +57,18 @@ int main() {
     CLResourceManager* resourceManager = CLResourceManager::GetResourceManager();
     auto resourceShader = resourceManager->GetResourceShader("CLEngine/src/Shaders/lightMapping.vert", "CLEngine/src/Shaders/lightMapping.frag");
     auto resourceShaderCartoon = resourceManager->GetResourceShader("CLEngine/src/Shaders/cartoonShader.vert", "CLEngine/src/Shaders/cartoonShader.frag");
+    //auto resourceShaderSprite = resourceManager->GetResourceShader("CLEngine/src/Shaders/spriteShader.vert", "CLEngine/src/Shaders/spriteShader.frag");
+    auto resourceShader2 = resourceManager->GetResourceShader("CLEngine/src/Shaders/phongMaterialVert.glsl", "CLEngine/src/Shaders/phongMaterialFrag.glsl");
     auto resourceShaderMaterial = resourceManager->GetResourceShader("CLEngine/src/Shaders/materialShader.vert", "CLEngine/src/Shaders/materialShader.frag");
     auto resourceShader3 = resourceManager->GetResourceShader("CLEngine/src/Shaders/debugShader.vert", "CLEngine/src/Shaders/debugShader.frag", "CLEngine/src/Shaders/debugShader.geom");
     auto resourceShaderSkybox = resourceManager->GetResourceShader("CLEngine/src/Shaders/skybox.vert", "CLEngine/src/Shaders/skybox.frag");
-    auto resourceMeshBox = resourceManager->GetResourceMesh("media/TEST_BOX.fbx");
-    auto resourceMeshTotem = resourceManager->GetResourceMesh("media/totem_tex.fbx");
-    auto resourceMesh = resourceManager->GetResourceMesh("media/kart_physics.fbx");
-    auto resourceMeshOBJ = resourceManager->GetResourceMesh("media/kart.obj");
-    auto resourceMaterial = resourceManager->GetResourceMaterial("media/kart.obj");
+    auto resourceMeshBox = resourceManager->GetResourceMesh("media/TEST_BOX.fbx", false);
+    auto resourceMeshTotem = resourceManager->GetResourceMesh("media/totem_tex.fbx", false);
+    auto resourceMesh = resourceManager->GetResourceMesh("media/kart_physics.fbx", false);
+    auto resourceMeshOBJ = resourceManager->GetResourceMesh("media/kart.obj", false);
+    auto resourceMaterial = resourceManager->GetResourceMaterial("media/kart.obj", false);
+
+    cout << "+++++++ He compilado los shaders" << endl;
 
     
     //----------------------------------------------------------------------------------------------------------------SHADER
@@ -101,7 +109,9 @@ int main() {
         auto mesh3 = mesh2->AddMesh(5);
         mesh3->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
 
-        static_cast<CLCamera*>(camera->GetEntity())->SetCameraTarget(mesh1->GetTranslation());
+
+        static_cast<CLCamera*>(camera->GetEntity())->SetCameraTarget(mesh2->GetTranslation());
+
 
         smgr->AddSkybox("media/skybox/right.jpg",
         "media/skybox/left.jpg",
@@ -145,7 +155,9 @@ int main() {
     mesh2->SetRotation(glm::vec3(0.0f, 180.0f, 0.0f));
     mesh2->SetTranslation(glm::vec3(10.0f,0.0f,0.0f));
     mesh3->SetTranslation(glm::vec3(-40.0f,0.0f,0.0f));
-    mesh3->SetScalation(glm::vec3(0.8f,0.8f,0.8f));
+    mesh3->SetScalation(glm::vec3(0.2f,0.2f,0.2f));
+
+    cout << "+++++++ He transladado/rotado/escalado objetos" << endl;
 
     mesh2->GetGlobalTranslation();
 
@@ -164,6 +176,7 @@ int main() {
     auto lights = smgr->GetLights();
 
     while (device->Run()) {
+
 
         //checkInput(device->GetWindow(), cameraPos, cameraFront, cameraUp);
 
@@ -194,7 +207,11 @@ int main() {
         light2->SetTranslation(lightPos2);
         light3->SetTranslation(lightPos3);
         
-        static_cast<CLCamera*>(camera->GetEntity())->SetCameraTarget(mesh3->GetGlobalTranslation());
+
+        //meshes->SetRotation(glm::vec3(0.0f,0.0f,index));
+        // auto trans1 = mesh1->GetTranslation();
+        // mesh1->SetTranslation(glm::vec3(trans1.x+index,trans1.y,trans1.z));
+        static_cast<CLCamera*>(camera->GetEntity())->SetCameraTarget(mesh2->GetGlobalTranslation());
 
 
         // Measure speed
@@ -214,15 +231,18 @@ int main() {
         if (glfwGetKey(device->GetWindow(), GLFW_KEY_F1)) {
             smgr->DeleteNode(mesh2->GetEntity()->GetID());
         }
-        
+
         device->DrawObjects();
 
+        string file = "media/pudin.png";
+        device->DrawImage2D(25.0f,25.0f,150.0f,150.0f, 0.2f, file, true);
 
         device->InputClose();
         device->PollEvents();
         device->RenderImgui();
         device->EndScene();
         index += 0.2;
+
     } 
 
 

@@ -12,7 +12,7 @@ namespace CLE {
             ~CLResourceShader() {};
 
             void Draw(GLuint shaderID) override;
-            bool LoadFile(string) override;
+            bool LoadFile(string, bool) override;
             bool LoadFile(string,string);
             bool LoadFile(string,string,string);
 
