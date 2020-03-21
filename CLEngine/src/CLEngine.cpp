@@ -115,7 +115,7 @@ void CLEngine::BeginScene(){
 
 
 void CLEngine::DrawObjects(){
-    smgr->DrawSkybox();
+    //smgr->DrawSkybox();
     smgr->CalculateViewProjMatrix();
     //smgr->CalculateLights();
     smgr->DFSTree(glm::mat4(1.0f));
@@ -207,7 +207,7 @@ void CLEngine::RenderDepthMap(CLShadowMapping& shadowMap, CLResourceShader* dept
     // crear las matrices de transformacion del cubemap
     float aspect = (float)shadowMap.SHADOW_WIDTH/(float)shadowMap.SHADOW_HEIGHT;
     float near = 1.0f;
-    float far = 25.0f;
+    float far = 5000.0f;
     glm::mat4 shadowProj = glm::perspective(glm::radians(90.0f), aspect, near, far); 
     // view Matrix
     std::vector<glm::mat4> shadowTransforms;

@@ -244,14 +244,11 @@ int main() {
         
 
         // 1. Se renderiza con el shadowMap
-        smgr->CalculateViewProjMatrix();
-        device->RenderDepthMap(*smgr->GetShadowMapping(), smgr->GetDepthShader(), light3->GetTranslation());
+        device->RenderDepthMap(*smgr->GetShadowMapping(), smgr->GetDepthShader(), light3->GetGlobalTranslation());
 
         // 2. then render scene as normal with shadow mapping (using depth map)
         device->UpdateViewport();
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-
         device->DrawObjects();
 
 

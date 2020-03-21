@@ -285,7 +285,7 @@ void CLNode::DFSTree(glm::mat4 mA) {
         glUniformMatrix4fv(glGetUniformLocation(shaderProgramID, "model"), 1, GL_FALSE, glm::value_ptr(transformationMat));
         glUniformMatrix4fv(glGetUniformLocation(shaderProgramID, "MVP"), 1, GL_FALSE, glm::value_ptr(MVP));
         glUniform1i(glGetUniformLocation(shaderProgramID, "shadows"), true); 
-        glUniform1f(glGetUniformLocation(shaderProgramID, "far_plane"), 25.0); 
+        glUniform1f(glGetUniformLocation(shaderProgramID, "far_plane"), 5000.0); 
 
         //entity->Draw(transformationMat);
         entity->Draw(shaderProgramID);
@@ -308,7 +308,7 @@ void CLNode::DFSTree(glm::mat4 mA, GLuint shaderID) {
     //auto& frustum_m = GetActiveCamera()->GetFrustum();
     //CLE::CLFrustum::Visibility frusVisibility = frustum_m.IsInside(translation);
     //CLE::CLFrustum::Visibility frusVisibility = frustum_m.IsInside(translation, dimensionsBoundingBox);
-
+    //glUseProgram(shaderID);
 
     if(entity && visible /*&& frusVisibility == CLE::CLFrustum::Visibility::Completly*/) { 
         // La matriz model se pasa aqui wey
