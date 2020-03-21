@@ -66,6 +66,8 @@ RenderFacadeClover::RenderFacadeClover() {
     smgr = device->GetSceneManager();
     resourceManager = device->GetResourceManager();
 
+    FacadeInitMenu();
+
 
 }
 
@@ -73,14 +75,34 @@ RenderFacadeClover::RenderFacadeClover() {
  * Suscripcion de eventos
  */
 void RenderFacadeClover::FacadeSuscribeEvents() {
-    
+    EventManager::GetInstance().Subscribe(Listener{
+        EventType::UPDATE_POWERUP_HUD,
+        bind( &RenderFacadeClover::FacadeUpdatePowerUpHUD, this, placeholders::_1 ),
+        "facadeUpdatePowerUpHUD"});
 }
 
 /**
  * Inicializa las cosas para el menu
  */
 void RenderFacadeClover::FacadeInitMenu() {
-    
+
+    powerUps[0] = "media/nonepowerup.png";
+    powerUps[1] = "media/robojorobo.png";
+    powerUps[2] = "media/nitro.png";
+    powerUps[3] = "media/pudin.png";
+    powerUps[4] = "media/escudomerluzo.png";
+    powerUps[5] = "media/telebanana.png";
+    powerUps[6] = "media/melonmolon.png";
+
+    device->GetResourceManager()->GetResourceTexture(powerUps[0]);
+    device->GetResourceManager()->GetResourceTexture(powerUps[1]);
+    device->GetResourceManager()->GetResourceTexture(powerUps[2]);
+    device->GetResourceManager()->GetResourceTexture(powerUps[3]);
+    device->GetResourceManager()->GetResourceTexture(powerUps[4]);
+    device->GetResourceManager()->GetResourceTexture(powerUps[5]);
+    device->GetResourceManager()->GetResourceTexture(powerUps[6]);
+
+    currentPowerUp = 0;
 }
 
 void RenderFacadeClover::FacadeInitControler() {
@@ -116,6 +138,8 @@ void RenderFacadeClover::FacadeInitHUD() {
  * @param {CTypePowerUp}
  */
 void RenderFacadeClover::FacadeUpdatePowerUpHUD(DataMap* d) {
+    auto type = any_cast<typeCPowerUp>((*d)[TYPE_POWER_UP]);
+    currentPowerUp = int(type);
 }
 
 /**
@@ -151,6 +175,9 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars) {
         }
 
         std::sort (ranking.begin(), ranking.end(), ranking_t());
+
+        //DIBUJAMOS CURRENTPOWERUP
+        device->DrawImage2D(25.0f, 25.0f, 150.0f, 150.0f, 0.1f ,powerUps[currentPowerUp]);
     }
 
     //Ya tenemos ordenados las posiciones, ahora vamos a actualizar sus valores en el CTotem
@@ -430,8 +457,8 @@ void RenderFacadeClover::FacadeAddCamera(Entity* camera) {
     auto cTransformable = static_cast<CTransformable*>(camera->GetComponent(CompType::TransformableComp).get());
     auto cCamera = static_cast<CCamera*>(camera->GetComponent(CompType::CameraComp).get());
 
-    float posX = cCamera->tarX - 40.0 * sin(((cTransformable->rotation.x) * M_PI) / 180.0);
-    float posZ = cCamera->tarZ - 40.0 * cos(((cTransformable->rotation.z) * M_PI) / 180.0);
+    float posX = cCamera->tarX - 40.0 * glm::sin( glm::radians( cTransformable->rotation.x ));
+    float posZ = cCamera->tarZ - 40.0 * glm::cos(glm::radians( cTransformable->rotation.z ));
     cameraEntity->SetCameraTarget(glm::vec3(cCamera->tarX, cCamera->tarY, cCamera->tarZ));
     camera1->SetTranslation(glm::vec3(posX, cTransformable->position.y+100, posZ));
     camera1->SetRotation(glm::vec3(cTransformable->rotation.x,cTransformable->rotation.y,cTransformable->rotation.z));
