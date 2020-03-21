@@ -54,7 +54,7 @@ using namespace CLE;
  * 
  * @param file - Ruta del archivo a leer.
  */
-bool CLResourceMesh::LoadFile(std::string file) {
+bool CLResourceMesh::LoadFile(std::string file, bool vertically) {
     Assimp::Importer importer;
 
     // Importamos el fichero.

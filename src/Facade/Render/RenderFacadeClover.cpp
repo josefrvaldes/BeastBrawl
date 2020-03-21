@@ -94,13 +94,13 @@ void RenderFacadeClover::FacadeInitMenu() {
     powerUps[5] = "media/telebanana.png";
     powerUps[6] = "media/melonmolon.png";
 
-    device->GetResourceManager()->GetResourceTexture(powerUps[0]);
-    device->GetResourceManager()->GetResourceTexture(powerUps[1]);
-    device->GetResourceManager()->GetResourceTexture(powerUps[2]);
-    device->GetResourceManager()->GetResourceTexture(powerUps[3]);
-    device->GetResourceManager()->GetResourceTexture(powerUps[4]);
-    device->GetResourceManager()->GetResourceTexture(powerUps[5]);
-    device->GetResourceManager()->GetResourceTexture(powerUps[6]);
+    device->GetResourceManager()->GetResourceTexture(powerUps[0], true);
+    device->GetResourceManager()->GetResourceTexture(powerUps[1], true);
+    device->GetResourceManager()->GetResourceTexture(powerUps[2], true);
+    device->GetResourceManager()->GetResourceTexture(powerUps[3], true);
+    device->GetResourceManager()->GetResourceTexture(powerUps[4], true);
+    device->GetResourceManager()->GetResourceTexture(powerUps[5], true);
+    device->GetResourceManager()->GetResourceTexture(powerUps[6], true);
 
     currentPowerUp = 0;
 }
@@ -177,7 +177,7 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars) {
         std::sort (ranking.begin(), ranking.end(), ranking_t());
 
         //DIBUJAMOS CURRENTPOWERUP
-        device->DrawImage2D(25.0f, 25.0f, 150.0f, 150.0f, 0.1f ,powerUps[currentPowerUp]);
+        device->DrawImage2D(25.0f, 25.0f, 150.0f, 150.0f, 0.1f ,powerUps[currentPowerUp], true);
     }
 
     //Ya tenemos ordenados las posiciones, ahora vamos a actualizar sus valores en el CTotem
@@ -236,7 +236,7 @@ const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
         auto cMesh = static_cast<CMesh*>(entity->GetComponent(CompType::MeshComp).get());
         std::string currentMesh = cMesh->activeMesh;
         std::string meshPath = "media/" + currentMesh;
-        mesh = resourceManager->GetResourceMesh(meshPath);
+        mesh = resourceManager->GetResourceMesh(meshPath, false);
     }
     
     
@@ -480,7 +480,7 @@ void RenderFacadeClover::FacadeUpdateMeshesLoD(vector<shared_ptr<Entity>> entiti
             CMesh *cMesh = static_cast<CMesh*>(entity->GetComponent(CompType::MeshComp).get());
             std::string currentMesh = cMesh->activeMesh;
             std::string meshPath = "media/" + currentMesh;
-            static_cast<CLMesh*>(node->GetEntity())->SetMesh(resourceManager->GetResourceMesh(meshPath));
+            static_cast<CLMesh*>(node->GetEntity())->SetMesh(resourceManager->GetResourceMesh(meshPath, false));
         }
     }
 }

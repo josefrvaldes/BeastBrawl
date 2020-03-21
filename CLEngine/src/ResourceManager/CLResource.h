@@ -14,7 +14,7 @@ namespace CLE {
             ~CLResource() {};
 
             virtual void Draw(GLuint shaderID) = 0;
-            virtual bool LoadFile(string) = 0;
+            virtual bool LoadFile(string, bool) = 0;
 
             void SetName(string n)  { name = n; }
 

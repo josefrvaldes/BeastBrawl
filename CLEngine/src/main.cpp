@@ -62,11 +62,11 @@ int main() {
     auto resourceShaderMaterial = resourceManager->GetResourceShader("CLEngine/src/Shaders/materialShader.vert", "CLEngine/src/Shaders/materialShader.frag");
     auto resourceShader3 = resourceManager->GetResourceShader("CLEngine/src/Shaders/debugShader.vert", "CLEngine/src/Shaders/debugShader.frag", "CLEngine/src/Shaders/debugShader.geom");
     auto resourceShaderSkybox = resourceManager->GetResourceShader("CLEngine/src/Shaders/skybox.vert", "CLEngine/src/Shaders/skybox.frag");
-    auto resourceMeshBox = resourceManager->GetResourceMesh("media/TEST_BOX.fbx");
-    auto resourceMeshTotem = resourceManager->GetResourceMesh("media/totem_tex.fbx");
-    auto resourceMesh = resourceManager->GetResourceMesh("media/kart_physics.fbx");
-    auto resourceMeshOBJ = resourceManager->GetResourceMesh("media/kart.obj");
-    auto resourceMaterial = resourceManager->GetResourceMaterial("media/kart.obj");
+    auto resourceMeshBox = resourceManager->GetResourceMesh("media/TEST_BOX.fbx", false);
+    auto resourceMeshTotem = resourceManager->GetResourceMesh("media/totem_tex.fbx", false);
+    auto resourceMesh = resourceManager->GetResourceMesh("media/kart_physics.fbx", false);
+    auto resourceMeshOBJ = resourceManager->GetResourceMesh("media/kart.obj", false);
+    auto resourceMaterial = resourceManager->GetResourceMaterial("media/kart.obj", false);
 
     cout << "+++++++ He compilado los shaders" << endl;
 
@@ -234,8 +234,8 @@ int main() {
 
         device->DrawObjects();
 
-        string file = "media/nonepowerup.png";
-        device->DrawImage2D(25.0f,25.0f,150.0f,150.0f, 0.2f, file);
+        string file = "media/pudin.png";
+        device->DrawImage2D(25.0f,25.0f,150.0f,150.0f, 0.2f, file, true);
 
         device->InputClose();
         device->PollEvents();
