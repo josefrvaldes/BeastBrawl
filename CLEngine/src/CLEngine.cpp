@@ -19,7 +19,7 @@ static void error(int error, const char* description) {
  * @param h - Altura en pixeles de la ventana.
  * @param title - Titulo de la ventana.
  */
-CLEngine::CLEngine (const unsigned int w, const unsigned int h, const string& title) {
+CLEngine::CLEngine (const unsigned int w, const unsigned int h, const string& title) : width(w), height(h) {
     CreateGlfwWindow(w, h, title);
     glewInit();
     ImGuiInit();
@@ -56,7 +56,7 @@ void CLEngine::CreateGlfwWindow (const unsigned int w, const unsigned int h, con
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    window = glfwCreateWindow( w, h, title.c_str(), NULL, NULL );
+    window = glfwCreateWindow( w, h, title.c_str(), nullptr, nullptr );
     if (!window) {
         cout << "    > La ventana no se ha podido crear" << endl;
         glfwTerminate();
@@ -85,13 +85,10 @@ CLNode* CLEngine::GetSceneManager(){
     if(!smgr){
         smgr = make_unique<CLNode>();
     }
-
     return smgr.get();
 }
 
 CLResourceManager* CLEngine::GetResourceManager(){
-    
-
     return CLResourceManager::GetResourceManager();
 }
 
@@ -122,17 +119,22 @@ void CLEngine::DrawObjects(){
     smgr->DFSTree(glm::mat4(1.0f));
 }
 
-void CLEngine::DrawImage2D(float x, float y, float width, float height, string file){
+void CLEngine::DrawImage2D(float _x, float _y, float _width, float _height, float _depth, string& file){
     if(!hudShader){
         auto resourceShader = CLResourceManager::GetResourceManager()->GetResourceShader("CLEngine/src/Shaders/spriteShader.vert", "CLEngine/src/Shaders/spriteShader.frag");
         hudShader = resourceShader->GetProgramID();
     }
 
-    float vertices[] = {
-             1.0f,  1.0f, 0.2f,   1.0f, 1.0f,         // top right
-             1.0f, -1.0f, 0.2f,   1.0f, 0.0f,         // bottom right
-            -1.0f, -1.0f, 0.2f,   0.0f, 0.0f,         // bottom left
-            -1.0f,  1.0f, 0.2f,   0.0f, 1.0f          // top left
+    float nXLeft    =     (2.0f * _x)/width - 1.0f;
+    float nYUp      =     -1.0f * (((2.0f * _y)/height) - 1.0f);
+    float nXRight   =     ((2.0f * _width) / width) + nXLeft;
+    float nYDown    =     -1.0f * (((2.0f * _height) / height)) + nYUp;
+
+    float vertices[] = {                    // TEXT CORDS
+        nXRight,    nYUp,       _depth,       1.0f, 1.0f,         // top right
+        nXRight,    nYDown,     _depth,       1.0f, 0.0f,         // bottom right
+        nXLeft,     nYDown,     _depth,       0.0f, 0.0f,         // bottom left
+        nXLeft,     nYUp,       _depth,       0.0f, 1.0f          // top left
     };
 
     unsigned int indices[] = {
@@ -160,29 +162,7 @@ void CLEngine::DrawImage2D(float x, float y, float width, float height, string f
     glEnableVertexAttribArray(1);
 
     unsigned int texture;
-    /*glGenTextures(1, &texture);
-    glBindTexture(GL_TEXTURE_2D, texture); // all upcoming GL_TEXTURE_2D operations now have effect on this texture object
-    // set the texture wrapping parameters
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// set texture wrapping to GL_REPEAT (default wrapping method)
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    // set texture filtering parameters
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    // load image, create texture and generate mipmaps
-    int _width, _height, _nrChannels;
-    // The FileSystem::getPath(...) is part of the GitHub repository so we can find files on any IDE/platform; replace it with your own image path.
-    unsigned char *data = stbi_load("media/flower.png", &_width, &_height, &_nrChannels, 0);
-    if (data)
-    {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, _width, _height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-        glGenerateMipmap(GL_TEXTURE_2D);
-    }
-    else
-    {
-        std::cout << "Failed to load texture" << std::endl;
-    }
-    stbi_image_free(data);*/
-    texture = static_cast<CLResourceTexture*>(CLResourceManager::GetResourceManager()->GetResourceTexture("media/flower.png"))->GetTextureID();
+    texture = static_cast<CLResourceTexture*>(CLResourceManager::GetResourceManager()->GetResourceTexture(file))->GetTextureID();
 
     glBindTexture(GL_TEXTURE_2D, texture);
 

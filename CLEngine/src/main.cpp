@@ -46,6 +46,10 @@ using namespace CLE;
 int main() {
     CLEngine *device = new CLEngine(1280, 720, "Beast Brawl");
 
+    float normX = ((2.0*640)/1280.0) - 1.0;
+    float normY = ((2.0*360)/720.0) - 1.0;
+    cout << "--------------------------------- La X normalizada es: " << normX << endl;
+    cout << "--------------------------------- La Y normalizada es: " << normY << endl;
     
 
     
@@ -231,9 +235,8 @@ int main() {
 
         device->DrawObjects();
 
-        //glUseProgram(resourceShaderSprite->GetProgramID());
-        //device->DrawImage2D(1.0,1.0,1.0,1.0,"media/awesomeface.png");
-        device->DrawImage2D(1.0f,1.0f,1.0f,1.0f,"media/awesomeface.png");
+        string file = "media/nonepowerup.png";
+        device->DrawImage2D(25.0f,25.0f,150.0f,150.0f, 0.2f, file);
 
         device->InputClose();
         device->PollEvents();

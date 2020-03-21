@@ -47,7 +47,7 @@ class CLEngine {
         void CloseWindow();
         void PollEvents();
 
-        void DrawImage2D(float x, float y, float width, float height, string file);
+        void DrawImage2D(float _x, float _y, float _width, float _height, float _depth, string& file);
 
 
         CLNode* GetSceneManager();
