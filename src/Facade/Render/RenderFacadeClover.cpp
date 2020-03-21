@@ -464,10 +464,6 @@ void RenderFacadeClover::FacadeAddCamera(Entity* camera) {
     camera1->SetRotation(glm::vec3(cTransformable->rotation.x,cTransformable->rotation.y,cTransformable->rotation.z));
     camera1->SetScalation(cTransformable->scale);
 
-    // cameraEntity->SetCameraTarget(glm::vec3(0.0f, 0.0f, 0.0f));
-    // camera1->SetTranslation(glm::vec3(0.0f,100.0f,400.0f));
-    // camera1->SetRotation(glm::vec3(0.0f,0.0f,0.0f));
-    // camera1->SetScalation(glm::vec3(1.0f,1.0f,1.0f));
     
 }
 
@@ -616,7 +612,7 @@ void RenderFacadeClover::FacadeAddSkybox(string right,string left,string top,str
 
 //DEBUG dibuja las aristas entre los nodos del grafo
 void RenderFacadeClover::FacadeDrawGraphEdges(ManWayPoint* manWayPoints) const{
-    //if (!showDebug) return;  //Si no esta activado debug retornamos
+    if (!showDebug) return;  //Si no esta activado debug retornamos
 
     //Recorremos todos los WayPoints del manager
     for (const auto& way : manWayPoints->GetEntities()) {
@@ -636,7 +632,7 @@ void RenderFacadeClover::FacadeDrawGraphEdges(ManWayPoint* manWayPoints) const{
             float radians = (angle*3.1415) / 180.0;
             auto newPoint = glm::vec3(centre.x + (cos(radians) * radious), centre.y, centre.z + (sin(radians) * radious));
 
-            smgr->Draw3DLine(lastPoint.x,lastPoint.y,-lastPoint.z,newPoint.x,newPoint.y,-newPoint.z);
+            Draw3DLine(lastPoint,newPoint);
             lastPoint = newPoint;
         }
         //Recorremos el componente CWayPointEdges->edges para ir arista a arista
@@ -646,18 +642,18 @@ void RenderFacadeClover::FacadeDrawGraphEdges(ManWayPoint* manWayPoints) const{
 
             //Usamos un color u otro en funcion de la distancia
             if (e.cost < 300) {
-                smgr->Draw3DLine(cWayPoint->position.x,cWayPoint->position.y,-cWayPoint->position.z, cWayPoint2->position.x,cWayPoint2->position.y,-cWayPoint2->position.z, CLColor(0.0,0.0,255.0,255.0));
+                Draw3DLine(cWayPoint->position, cWayPoint2->position, 0.0,0.0,255.0);
             } else if (e.cost >= 300 && e.cost < 500) {
-                smgr->Draw3DLine(cWayPoint->position.x,cWayPoint->position.y,-cWayPoint->position.z, cWayPoint2->position.x,cWayPoint2->position.y,-cWayPoint2->position.z, CLColor(0.0,255.0,0.0,255.0));
+                Draw3DLine(cWayPoint->position, cWayPoint2->position,0.0,255.0,0.0);
             } else if (e.cost >= 500) {
-                smgr->Draw3DLine(cWayPoint->position.x,cWayPoint->position.y,-cWayPoint->position.z, cWayPoint2->position.x,cWayPoint2->position.y,-cWayPoint2->position.z, CLColor(255.0,0.0,0.0,255.0));
+                Draw3DLine(cWayPoint->position, cWayPoint2->position, 255.0,0.0,0.0);
             }
         }
     }
 }
 
 void RenderFacadeClover::FacadeDrawAIDebug(ManCar* manCars, ManNavMesh* manNavMesh, ManWayPoint* manWayPoint) const{
-    //if(!showAIDebug) return;
+    if(!showAIDebug) return;
 
 
     /*
@@ -744,7 +740,7 @@ void RenderFacadeClover::FacadeDrawAIDebug(ManCar* manCars, ManNavMesh* manNavMe
         }
     }else{
         //Si tenemos seleccionado un coche en concreto dibujamos solo el suyo
-        /*
+        
         auto carAI = manCars->GetEntities()[idCarAIToDebug+1]; //Cogemos el coche que vamos a debugear
         if (static_cast<Car*>(carAI.get())->GetTypeCar() == TypeCar::CarAI){
             auto cPosDestination = static_cast<CPosDestination*>(carAI->GetComponent(CompType::PosDestination).get());
@@ -757,6 +753,7 @@ void RenderFacadeClover::FacadeDrawAIDebug(ManCar* manCars, ManNavMesh* manNavMe
             //Ahora vamos a dibujar su CPath
             FacadeDrawAIDebugPath(carAI.get(),manWayPoint);
 
+            /*
             //Ahora por ultimo en la esquina superior derecha escribimos strings con datos
             auto cCar = static_cast<CCar*>(carAI->GetComponent(CompType::CarComp).get());        
             core::stringw transfomableText = core::stringw("Post - Rot - Scale: (") + 
@@ -800,8 +797,9 @@ void RenderFacadeClover::FacadeDrawAIDebug(ManCar* manCars, ManNavMesh* manNavMe
             font->draw(movementTypeText,
                 core::rect<s32>(900, 55, 500, 500),
                 video::SColor(255, 0, 0, 0));
+            */
         }
-        */   
+           
     }
 
 }
@@ -844,7 +842,7 @@ void RenderFacadeClover::Draw3DLine(vec3& pos1, vec3& pos2) const {
 }
 
 void RenderFacadeClover::Draw3DLine(vec3& pos1, vec3& pos2, uint16_t r, uint16_t g, uint16_t b) const {
-    smgr->Draw3DLine(pos1.x,pos1.y,pos1.z, pos2.x,pos2.y,pos2.z, CLE::CLColor(r,g,b,255.0));
+    smgr->Draw3DLine(pos1.x,pos1.y,-pos1.z, pos2.x,pos2.y,-pos2.z, CLE::CLColor(r,g,b,255.0));
 }
 
 void RenderFacadeClover::DeleteEntity(Entity* entity) {

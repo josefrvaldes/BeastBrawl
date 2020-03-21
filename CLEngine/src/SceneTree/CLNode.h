@@ -91,6 +91,7 @@ class CLNode{
         void SetVisible(bool v) {visible = v;};
         const void Draw3DLine(float x1, float y1, float z1, float x2, float y2, float z2,CLColor color) const;
         const void Draw3DLine(float x1, float y1, float z1, float x2, float y2, float z2) const;
+        void SetDrawLineWidth(int w) {lineWidth = w;};
         void SetLightingEffects(bool l) { hasLightingEffects = l;};
 
         //DEBUG
@@ -120,7 +121,7 @@ class CLNode{
 
         // Identificadores de las variables que cambia para pasarle info al shader.
         GLuint shaderProgramID;
-
+        int lineWidth = 1;
         inline static vector<CLNode*> lights;
         inline static vector<CLNode*> cameras;
         inline static GLuint debugShader = 0;

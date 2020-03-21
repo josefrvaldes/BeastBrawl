@@ -450,9 +450,9 @@ const void CLNode::Draw3DLine(float x1, float y1, float z1, float x2, float y2, 
     // };
  
     
-    // glEnable(GL_LINE_SMOOTH);
-    // glLineWidth(10);
-    // glHint(GL_LINE_SMOOTH_HINT,  GL_NICEST);
+    glEnable(GL_LINE_SMOOTH);
+    glLineWidth(lineWidth);
+    glHint(GL_LINE_SMOOTH_HINT,  GL_NICEST);
 
     unsigned int VBO, VAO;
     glGenBuffers(1, &VBO);
@@ -477,7 +477,7 @@ const void CLNode::Draw3DLine(float x1, float y1, float z1, float x2, float y2, 
     glUniform1i(glGetUniformLocation(debugShader,"prueba"),25);
 
     glBindVertexArray(VAO);
-    glDrawArrays(GL_LINES, 0,2); 
+    glDrawArrays(GL_LINE_LOOP, 0,2); 
     glUseProgram(0);
     glBindVertexArray(0);
 
