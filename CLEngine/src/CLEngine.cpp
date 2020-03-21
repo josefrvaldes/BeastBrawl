@@ -75,8 +75,8 @@ void CLEngine::CreateGlfwWindow (const unsigned int w, const unsigned int h, con
     glEnable(GL_BLEND);  
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); 
 
-    glEnable(GL_CULL_FACE);
-    glCullFace(GL_BACK);
+    // glEnable(GL_CULL_FACE);
+    // glCullFace(GL_BACK);
     
 }
 
@@ -107,7 +107,7 @@ void CLEngine::PollEvents(){
  * Limpia la pantalla pintandola de un color.
  */
 void CLEngine::BeginScene(){
-    glClearColor(0.3f, 0.2f, 0.4f, 1.0f);
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
@@ -169,6 +169,9 @@ void CLEngine::DrawImage2D(float _x, float _y, float _width, float _height, floa
     glUseProgram(hudShader);
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+    glDeleteVertexArrays(1, &VAO);
+    glDeleteBuffers(1, &VBO);
 
 }
 

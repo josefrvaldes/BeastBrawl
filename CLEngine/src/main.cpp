@@ -24,6 +24,7 @@
 #include "ResourceManager/CLResourceMesh.h"
 #include "ResourceManager/CLResourceMaterial.h"
 #include "ResourceManager/CLResource.h"
+#include "Built-In-Classes/CLColor.h"
 
 
 
@@ -60,7 +61,7 @@ int main() {
     //auto resourceShaderSprite = resourceManager->GetResourceShader("CLEngine/src/Shaders/spriteShader.vert", "CLEngine/src/Shaders/spriteShader.frag");
     auto resourceShader2 = resourceManager->GetResourceShader("CLEngine/src/Shaders/phongMaterialVert.glsl", "CLEngine/src/Shaders/phongMaterialFrag.glsl");
     auto resourceShaderMaterial = resourceManager->GetResourceShader("CLEngine/src/Shaders/materialShader.vert", "CLEngine/src/Shaders/materialShader.frag");
-    auto resourceShader3 = resourceManager->GetResourceShader("CLEngine/src/Shaders/debugShader.vert", "CLEngine/src/Shaders/debugShader.frag", "CLEngine/src/Shaders/debugShader.geom");
+    auto resourceShader3 = resourceManager->GetResourceShader("CLEngine/src/Shaders/debugShader.vert", "CLEngine/src/Shaders/debugShader.frag");
     auto resourceShaderSkybox = resourceManager->GetResourceShader("CLEngine/src/Shaders/skybox.vert", "CLEngine/src/Shaders/skybox.frag");
     auto resourceMeshBox = resourceManager->GetResourceMesh("media/TEST_BOX.fbx", false);
     auto resourceMeshTotem = resourceManager->GetResourceMesh("media/totem_tex.fbx", false);
@@ -121,12 +122,12 @@ int main() {
         "media/skybox/back.jpg");
 
     //smgr->DFSTree(glm::mat4(1.0));
-    vector<shared_ptr<CLEntity>> mallas;
-    vector<CLNode*> nodes;
+    // vector<shared_ptr<CLEntity>> mallas;
+    // vector<CLNode*> nodes;
 
-    int max = 200;
-    int min = -200;
-    int j = 0;
+    // int max = 200;
+    // int min = -200;
+    // int j = 0;
     // for(int i = 50; i<100; i++){
     //     nodes.push_back(meshes->AddMesh(i));
     //     nodes[j]->SetShaderProgramID(resourceShader->GetProgramID());
@@ -147,27 +148,25 @@ int main() {
     static_cast<CLMesh*>(mesh3->GetEntity())->SetMesh(resourceMeshOBJ);
     static_cast<CLMesh*>(mesh3->GetEntity())->SetMaterial(resourceMaterial); 
 
-    camera->SetTranslation(glm::vec3(80.0f, 5.0f, -9.0f));
+    camera->SetTranslation(glm::vec3(70.0f, 0.0f, 60.0f));
     mesh1->SetScalation(glm::vec3(2.0f, 2.0f, 2.0f));
     mesh1->SetRotation(glm::vec3(0.0f,0.0f,0.0f));
-    mesh1->SetTranslation(glm::vec3(50.0f,0.0f,0.0f));
-    mesh2->SetScalation(glm::vec3(0.2f, 0.2f, 0.2f));
+    mesh1->SetTranslation(glm::vec3(50.0f,50.0f,50.0f));
+    mesh2->SetScalation(glm::vec3(2.0f, 2.0f, 2.0f));
     mesh2->SetRotation(glm::vec3(0.0f, 180.0f, 0.0f));
     mesh2->SetTranslation(glm::vec3(10.0f,0.0f,0.0f));
     mesh3->SetTranslation(glm::vec3(-40.0f,0.0f,0.0f));
     mesh3->SetScalation(glm::vec3(0.2f,0.2f,0.2f));
 
-    cout << "+++++++ He transladado/rotado/escalado objetos" << endl;
-
-    mesh2->GetGlobalTranslation();
 
 
-    cout << "Borra bien\n";
     //LUCES Y COLORES
     float auxCameraPos[3] = {camera->GetTranslation().x, camera->GetTranslation().y, camera->GetTranslation().z};
     float auxLightPos[3] = {light1->GetTranslation().x, light1->GetTranslation().y, light1->GetTranslation().z};
     float auxLightPos2[3] = {light2->GetTranslation().x, light2->GetTranslation().y, light2->GetTranslation().z};
     float auxLightPos3[3] = {light3->GetTranslation().x, light3->GetTranslation().y, light3->GetTranslation().z};
+    float auxLineStart[3] = {0.0,0.0,0.0};
+    float auxLineEnd[3] = {200.0,200.0,200.0};
 
     float index = 0.01;
 
@@ -196,6 +195,8 @@ int main() {
         ImGui::SliderFloat3("LightPos",auxLightPos,-300,400);
         ImGui::SliderFloat3("LightPos2",auxLightPos2,-300,400);
         ImGui::SliderFloat3("LightPos3",auxLightPos3,-300,400);
+        ImGui::SliderFloat3("Line start",auxLineStart,-400,400);
+        ImGui::SliderFloat3("Line end",auxLineEnd,-400,400);
         ImGui::End(); 
 
         glm::vec3 cameraPos(auxCameraPos[0], auxCameraPos[1], auxCameraPos[2]);

@@ -24,9 +24,9 @@ bool CLResourceShader::LoadFile(string file1, string file2, string file3){
         return false;
     if(!LoadShader(file2,GL_FRAGMENT_SHADER))
         return false;
-    if(!LoadShader(file2,GL_GEOMETRY_SHADER))
-    return false;
-    if(!LinkShaders())
+    if(!LoadShader(file3,GL_GEOMETRY_SHADER))
+        return false;
+    if(!LinkShadersGeometry())
         return false;
     
     return true;
@@ -102,6 +102,32 @@ bool CLResourceShader::LinkShaders(){
     //Tecnicamente una vez linkados se pueden borrar los shaders
     glDeleteShader(vertexID);
     glDeleteShader(fragmentID); 
+    return true;
+}
+
+bool CLResourceShader::LinkShadersGeometry(){
+    programID = glCreateProgram(); //Como siempre nos devuelve un identificador
+
+    //Bueno aqui es obvio, los enlaza ambos al programID
+    glAttachShader(programID, vertexID);
+    glAttachShader(programID, geometryID);
+    glAttachShader(programID, fragmentID);
+    glLinkProgram(programID);
+
+    
+    int  success;
+    char infoLog[512];
+    glGetProgramiv(programID, GL_LINK_STATUS, &success);
+    if(!success) {
+        glGetProgramInfoLog(programID, 512, NULL, infoLog);
+        cout << "Ha petado el linkado de shaders de geometry:(\n";
+        return false;
+    }
+
+    //Tecnicamente una vez linkados se pueden borrar los shaders
+    glDeleteShader(vertexID);
+    glDeleteShader(fragmentID); 
+    glDeleteShader(geometryID); 
     return true;
 }
 

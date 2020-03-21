@@ -8,6 +8,9 @@ CLResourceManager::CLResourceManager() {
     //shaders = new std::vector<CLResourceShader*>();
 }
 
+CLResourceMesh* CLResourceManager::GetResourceMesh(const std::string file){
+    return GetResourceMesh(file,false);
+}
 
 
 CLResourceMesh* CLResourceManager::GetResourceMesh(const std::string file, bool vertically) {
@@ -30,6 +33,11 @@ CLResourceMesh* CLResourceManager::GetResourceMesh(const std::string file, bool 
     return resource.get();
 }
 
+CLResourceTexture* CLResourceManager::GetResourceTexture(const std::string file){
+    return GetResourceTexture(file);
+}
+
+
 CLResourceTexture* CLResourceManager::GetResourceTexture(const std::string file, bool vertically) {
     shared_ptr<CLResourceTexture> resource = nullptr;
     bool search = true;
@@ -48,6 +56,10 @@ CLResourceTexture* CLResourceManager::GetResourceTexture(const std::string file,
     }
 
     return resource.get();
+}
+
+CLResourceMaterial* CLResourceManager::GetResourceMaterial(const std::string file) {
+    return GetResourceMaterial(file,false);
 }
 
 CLResourceMaterial* CLResourceManager::GetResourceMaterial(const std::string file, bool vertically) {

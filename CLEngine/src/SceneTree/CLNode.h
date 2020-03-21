@@ -17,8 +17,9 @@
 
 #include "../Frustum/CLFrustum.h"
 #include "../ResourceManager/CLResourceManager.h"
-#include <stb_image.h>
+#include "../ResourceManager/CLResourceShader.h"
 
+#include "../Built-In-Classes/CLColor.h"
 
 using namespace std;
 //using namespace CLE;
@@ -32,8 +33,8 @@ class CLNode{
         ~CLNode(){};
 
         //Getters
-        CLEntity* GetEntity() const                      { return entity.get(); }
-        CLNode*   GetFather() const                      { return father; }
+        CLEntity* GetEntity()                    const   { return entity.get(); }
+        CLNode*   GetFather()                    const   { return father; }
         vector<shared_ptr<CLNode>>   GetChilds() const   { return childs; }
         glm::vec3 GetTranslation() const       { return translation; }
         glm::vec3 GetRotation()    const       { return rotation; }
@@ -47,21 +48,23 @@ class CLNode{
         static glm::mat4 GetViewMatrix()               { return view; }
         static glm::mat4 GetProjectionMatrix()         { return projection; }
         CLCamera* GetActiveCamera();
-        vector<CLNode*> GetLights()             { return lights; };
-        vector<CLNode*> GetCameras()            { return cameras; };
+        vector<CLNode*> GetLights()                      { return lights; };
+        vector<CLNode*> GetCameras()                     { return cameras; };
 
         //Setters
-        bool SetFather(CLNode* f)                       { father = f; return true; }
+        bool SetFather(CLNode* f)                        { father = f; return true; }
         void SetTranslation(glm::vec3); 
         void SetRotation(glm::vec3);
         void SetScalation(glm::vec3);
         void SetTransformationMat(glm::mat4 transfMat)  { transformationMat = transfMat; }
-        void SetShaderProgramID(GLuint id)         { shaderProgramID = id; }
+        void SetShaderProgramID(GLuint id)              { shaderProgramID = id; }
 
         //Methods
         CLNode* AddGroup(unsigned int id);
         CLNode* AddMesh(unsigned int id);
+        CLNode* AddMesh(unsigned int id,string mesh);
         CLNode* AddLight(unsigned int id);
+        CLNode* AddLight(unsigned int id,glm::vec3 intensity, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float constant, float linear, float quadratic);
         CLNode* AddCamera(unsigned int id);
         CLNode* AddSprite(unsigned int id);
         void AddSkybox(string right, string left, string top, string bottom, string front, string back);
@@ -81,14 +84,18 @@ class CLNode{
         void CalculateLights();
         float CalculateBoundingBox();
 
-        void DrawTree(CLNode* root);
         void DFSTree(glm::mat4);
         void DrawSkybox();
         
 
         void SetVisible(bool v) {visible = v;};
+        const void Draw3DLine(float x1, float y1, float z1, float x2, float y2, float z2,CLColor color) const;
+        const void Draw3DLine(float x1, float y1, float z1, float x2, float y2, float z2) const;
+        void SetDrawLineWidth(int w) {lineWidth = w;};
         void SetLightingEffects(bool l) { hasLightingEffects = l;};
 
+        //DEBUG
+        void DrawTree(CLNode* root); 
     private:
 
         void ActivateFlag();
@@ -114,9 +121,10 @@ class CLNode{
 
         // Identificadores de las variables que cambia para pasarle info al shader.
         GLuint shaderProgramID;
-
+        int lineWidth = 1;
         inline static vector<CLNode*> lights;
         inline static vector<CLNode*> cameras;
+        inline static GLuint debugShader = 0;
 
         // BOUNDING BOX
         //glm::vec3 extremeMinMesh    {glm::vec3(0.0,0.0,0.0)}; // definimos el vertice mayor de la malla para el BoundingBpx
