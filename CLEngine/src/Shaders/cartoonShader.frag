@@ -34,6 +34,7 @@ uniform PointLight pointLights[NUM_POINT_LIGHTS];
 //uniform sampler2D texture_diffuse1;
 
 uniform int cartoonParts = 8;
+//const float scaleFactor = 1.0 / cartoonParts;
 
 
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir){
@@ -42,7 +43,8 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir){
     // diffuse
     vec3 lightDir = normalize(light.position - fragPos);
     float diff = max(dot(normal,lightDir), 0.0);
-    vec3 diffuse = light.diffuse * diff * texture(material.diffuse, TexCoords).rgb;  
+    vec3 diffuse = light.diffuse * diff * texture(material.diffuse, TexCoords).rgb; 
+    diffuse  = light.diffuse * texture(material.diffuse, TexCoords).rgb * floor(diff * cartoonParts) /  cartoonParts;
     vec3 H = normalize(lightDir + viewDir);
     // specular
     vec3 reflectDir = reflect(-lightDir, normal);  //Angulo reflectado
@@ -84,7 +86,7 @@ void main(){
     }
 
     FragColor = vec4(totalPointLight,1.0);
-    FragColor = floor(FragColor * cartoonParts) / cartoonParts;
+    //FragColor = floor(FragColor * cartoonParts) / cartoonParts;  // estaba mal aplicado, era en la luz difusa solo
 
     //Si comentas esta linea se ve con luces
     FragColor = texture(material.diffuse,TexCoords);
