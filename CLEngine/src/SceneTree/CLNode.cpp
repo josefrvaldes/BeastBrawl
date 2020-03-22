@@ -85,15 +85,6 @@ CLNode* CLNode::AddCamera(unsigned int id){
     
 }
 
-CLNode* CLNode::AddSprite(unsigned int id){
-    shared_ptr<CLEntity> e = make_shared<CLSprite>(id);
-    shared_ptr<CLNode> node = make_shared<CLNode>(e);
-    childs.push_back(node);
-    node->SetFather(this);
-    cameras.push_back(node.get());
-    return node.get();
-}
-
 void CLNode::AddSkybox(string right, string left, string top, string bottom, string front, string back){
     if(!skyboxShader){
         auto rm = CLResourceManager::GetResourceManager();

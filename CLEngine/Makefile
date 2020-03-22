@@ -19,7 +19,8 @@ else
 	LIBS 	    	+= -L./lib/linux/glfw -lglfw3 -lGL -lX11 -lpthread -lXrandr -lXi -ldl -Wl,-rpath=lib/linux/glfw
 	LIBS 	    	+= -L./lib/linux/glew -lGLEW -Wl,-rpath=lib/linux/glew
 	LIBS 	    	+= -L./lib/linux/assimp -lassimp -Wl,-rpath=lib/linux/assimp
-	INCLUDE     	:= -I./include -I../include
+	LIBS			+= -L./lib/linux/freeType2 -lfreetype -Wl,-rpath=lib/linux/freeType2
+	INCLUDE     	:= -I./include -I../include -I./include/freeType2
 	CC			:= g++
 endif
 

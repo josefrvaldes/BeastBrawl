@@ -1,5 +1,8 @@
 #include "InputFacadeClover.h"
 
+#include <Components/CId.h>
+#include <Components/CNavMesh.h>
+
 
 #include <iostream>
 
@@ -126,6 +129,20 @@ vector<Constants::InputTypes> InputFacadeClover::CheckInput(){
 
 
 void InputFacadeClover::CheckInputMenu(){
+    if (glfwGetKey(device->GetWindow(), GLFW_KEY_SPACE)){
+        RenderFacadeManager::GetInstance()->GetRenderFacade()->SetNumEnemyCars(0);
+
+        //Manera un poco cutre de resetear el CId al empezar el juego
+        auto cId = make_shared<CId>();
+        cId->ResetNumIds();
+        auto cNavMesh = make_shared<CNavMesh>();
+        cNavMesh->ResetNumIds();
+
+        EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_INGAMESINGLE});
+
+    } else if (glfwGetKey(device->GetWindow(), GLFW_KEY_DELETE)) {
+        device->CloseWindow();
+    }
 }
 
 
@@ -134,7 +151,7 @@ void InputFacadeClover::CheckInputPause(){
 
 
 void InputFacadeClover::CheckInputEndRace(){
-    if (glfwGetKey(device->GetWindow(),GLFW_KEY_ESCAPE)) {
+    if (glfwGetKey(device->GetWindow(),GLFW_KEY_DELETE)) {
         device->CloseWindow();
     }
 }

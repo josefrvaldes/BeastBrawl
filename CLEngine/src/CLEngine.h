@@ -2,9 +2,7 @@
 
 #include <iostream>
 #include <memory>
-
-// #include <glew/glew.h>
-// #include <glfw/glfw3.h>
+#include <map>
 
 #include <glew/glew.h>
 #include <glfw/glfw3.h>
@@ -13,6 +11,8 @@
 #include "ImGUI/imgui_impl_glfw.h"
 
 #include <stb_image.h>
+#include <ft2build.h>
+#include FT_FREETYPE_H
 
 
 //Motor grafico
@@ -26,10 +26,17 @@
 using namespace std;
 
 namespace CLE {
-    
+
+struct Character {
+    GLuint      TextureID;   // ID handle of the glyph texture
+    glm::ivec2  Size;    // Size of glyph
+    glm::ivec2  Bearing;  // Offset from baseline to left/top of glyph
+    GLuint      Advance;    // Horizontal offset to advance to next glyph
+};
+
 class CLEngine {
     public:
-        CLEngine() {};
+        CLEngine() = default;;
         CLEngine(const unsigned int, const unsigned int, const string&);
         ~CLEngine();
 
@@ -48,26 +55,36 @@ class CLEngine {
         void PollEvents();
 
         void DrawImage2D(float _x, float _y, float _width, float _height, float _depth, string& file, bool);
+        void RenderText2D(std::string& text, GLfloat x, GLfloat y, GLfloat depth, GLfloat scale, glm::vec3& color);
 
 
         CLNode* GetSceneManager();
         CLResourceManager* GetResourceManager();
+
+        int GetScreenWidth() { return width; };
+        int GetScreenHeight() { return height; };
 
         
     private:
 
         void CreateGlfwWindow(const unsigned int, const unsigned int, const string&);
 
+        void InitFreeType();
+
         void ImGuiInit();
         void TerminateImGui();
 
-        int width;
-        int height;
+        int width{};
+        int height{};
         GLFWwindow *window { nullptr };
         unsigned int hudShader { 0 };
+        unsigned int textShader { 0 };
 
         
         std::unique_ptr<CLNode> smgr {nullptr};
         std::unique_ptr<CLResourceManager> resourceManager {nullptr};
+
+        GLuint VAOText, VBOText;
+        std::map<GLchar, Character> characters;
 };
 }

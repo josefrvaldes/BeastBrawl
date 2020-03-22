@@ -83,6 +83,9 @@ class RenderFacade {
     virtual bool GetShowDebugAI() = 0;
     virtual int  GetIDCarAIToDebug() = 0;
 
+    int GetNumEnemyCars() { return numEnemyCars; };
+    void SetNumEnemyCars(int n) { numEnemyCars = n; };
+
    protected:
     uint16_t idCar = 0;
     uint16_t idTotem = 0;
