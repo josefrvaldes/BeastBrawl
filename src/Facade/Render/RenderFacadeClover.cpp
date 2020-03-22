@@ -176,8 +176,6 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars) {
 
         std::sort (ranking.begin(), ranking.end(), ranking_t());
 
-        //DIBUJAMOS CURRENTPOWERUP
-        device->DrawImage2D(25.0f, 25.0f, 150.0f, 150.0f, 0.1f ,powerUps[currentPowerUp], true);
     }
 
     //Ya tenemos ordenados las posiciones, ahora vamos a actualizar sus valores en el CTotem
@@ -196,6 +194,31 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars) {
     //     cout << "El coche numero " << k++ << " va en la posicion: " << cTotem->positionRanking << endl;
     // }
 
+    //DIBUJAMOS CURRENTPOWERUP
+    device->DrawImage2D(25.0f, 25.0f, 150.0f, 150.0f, 0.1f ,powerUps[currentPowerUp], true);
+
+    //RANKING
+    int i = 0;
+    //core::stringw textIA = core::stringw("Car ");
+    for (const auto& cars : manCars->GetEntities()) {
+
+        cTotem = static_cast<CTotem*>(cars->GetComponent(CompType::TotemComp).get());
+
+        int time = cTotem->accumulatedTime / 100.0;
+        float time2 = time / 10.0;
+        glm::vec3 color = glm::vec3(0.0f,255.0f,0.0f);
+        if(cTotem->active){
+            //Si tiene el totem voy a dibujarlo rojo por ejemplo
+            color = glm::vec3(255.0f, 0.0f, 0.0f);
+        }
+        std::string cadena = std::to_string(cTotem->positionRanking) + ". Car " + std::to_string(i) + " - " + std::to_string(time2);
+        //TODO: Problema con el origen de la lectura de letras. La madre que la pario
+        float altura = (device->GetScreenHeight() - 125.0f) + ((cTotem->positionRanking-1.0f)*18.0f);
+        device->RenderText2D(cadena, 200.0f, altura, 0.1f, 0.35f, color);
+
+        i++;
+
+    }
 }
 
 /**

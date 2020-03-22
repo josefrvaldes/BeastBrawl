@@ -1,6 +1,6 @@
 #include <iostream>
 #include <memory>
-#include <math.h>
+#include <map>
 
 // INCLUDES
 #include <glew/glew.h>
@@ -8,6 +8,9 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+
+#include <ft2build.h>
+#include FT_FREETYPE_H
 
 // #define STB_IMAGE_IMPLEMENTATION
 // #include <stb_image.h>
@@ -43,22 +46,15 @@ using namespace CLE;
 
 
 
+
 int main() {
     CLEngine *device = new CLEngine(1280, 720, "Beast Brawl");
 
-    float normX = ((2.0*640)/1280.0) - 1.0;
-    float normY = ((2.0*360)/720.0) - 1.0;
-    cout << "--------------------------------- La X normalizada es: " << normX << endl;
-    cout << "--------------------------------- La Y normalizada es: " << normY << endl;
-    
 
-    
     //-------------------Resource manager-------------------
     CLResourceManager* resourceManager = CLResourceManager::GetResourceManager();
     auto resourceShader = resourceManager->GetResourceShader("CLEngine/src/Shaders/lightMapping.vert", "CLEngine/src/Shaders/lightMapping.frag");
     auto resourceShaderCartoon = resourceManager->GetResourceShader("CLEngine/src/Shaders/cartoonShader.vert", "CLEngine/src/Shaders/cartoonShader.frag");
-    //auto resourceShaderSprite = resourceManager->GetResourceShader("CLEngine/src/Shaders/spriteShader.vert", "CLEngine/src/Shaders/spriteShader.frag");
-    auto resourceShader2 = resourceManager->GetResourceShader("CLEngine/src/Shaders/phongMaterialVert.glsl", "CLEngine/src/Shaders/phongMaterialFrag.glsl");
     auto resourceShaderMaterial = resourceManager->GetResourceShader("CLEngine/src/Shaders/materialShader.vert", "CLEngine/src/Shaders/materialShader.frag");
     auto resourceShader3 = resourceManager->GetResourceShader("CLEngine/src/Shaders/debugShader.vert", "CLEngine/src/Shaders/debugShader.frag", "CLEngine/src/Shaders/debugShader.geom");
     auto resourceShaderSkybox = resourceManager->GetResourceShader("CLEngine/src/Shaders/skybox.vert", "CLEngine/src/Shaders/skybox.frag");
@@ -177,13 +173,8 @@ int main() {
 
     while (device->Run()) {
 
-
-        //checkInput(device->GetWindow(), cameraPos, cameraFront, cameraUp);
-
         //Apartir de aqui hacemos cosas, de momento en el main para testear
-
         device->UpdateViewport(); //Por si reescalamos la ventana
-
         device->BeginScene();
 
 
@@ -236,6 +227,13 @@ int main() {
 
         string file = "media/pudin.png";
         device->DrawImage2D(25.0f,25.0f,150.0f,150.0f, 0.2f, file, true);
+
+
+            //TEXTO -----------------
+            string cadena = "Meg";
+            glm::vec3 vect3 = glm::vec3(0.5, 0.8f, 0.2f);
+        device->RenderText2D(cadena, 25.0f, 25.0f, 0.05f, 1.0f, vect3);
+
 
         device->InputClose();
         device->PollEvents();

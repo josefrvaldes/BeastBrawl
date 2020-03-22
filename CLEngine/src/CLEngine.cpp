@@ -23,6 +23,7 @@ CLEngine::CLEngine (const unsigned int w, const unsigned int h, const string& ti
     CreateGlfwWindow(w, h, title);
     glewInit();
     ImGuiInit();
+    InitFreeType();
 }
 
 /**
@@ -80,6 +81,91 @@ void CLEngine::CreateGlfwWindow (const unsigned int w, const unsigned int h, con
     
 }
 
+
+/**
+ *
+ */
+ void CLEngine::InitFreeType() {
+    //SHADER
+    if (!textShader) {
+        auto resourceShader = CLResourceManager::GetResourceManager()->GetResourceShader("CLEngine/src/Shaders/textShader.vert", "CLEngine/src/Shaders/textShader.frag");
+        textShader = resourceShader->GetProgramID();
+    }
+
+    glm::mat4 projection = glm::ortho(0.0f, (float)width, 0.0f, (float)height);
+    glUseProgram(textShader);
+    glUniformMatrix4fv(glGetUniformLocation(textShader, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+
+
+    FT_Library ft;
+    if (FT_Init_FreeType(&ft))
+        std::cout << "ERROR::FREETYPE: Fallo al cargar la libreria Free Type" << std::endl;
+
+    FT_Face face;
+    if (FT_New_Face(ft, "fonts/arial.ttf", 0, &face))
+        std::cout << "ERROR::FREETYPE: No se ha podido cargar la fuente. ¿La tienes?" << std::endl;
+
+    FT_Set_Pixel_Sizes(face, 0, 48);
+
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+    // Carga los primetos 128 caracteres ASCII
+    for (GLubyte c = 0; c < 128; c++)
+    {
+        if (FT_Load_Char(face, c, FT_LOAD_RENDER))
+        {
+            std::cout << "ERROR::FREETYTPE: No se ha podio cargar el glifo" << std::endl;
+            continue;
+        }
+
+        GLuint texture;
+        glGenTextures(1, &texture);
+        glBindTexture(GL_TEXTURE_2D, texture);
+        glTexImage2D(
+                GL_TEXTURE_2D,
+                0,
+                GL_RED,
+                face->glyph->bitmap.width,
+                face->glyph->bitmap.rows,
+                0,
+                GL_RED,
+                GL_UNSIGNED_BYTE,
+                face->glyph->bitmap.buffer
+        );
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+        Character character = {
+                texture,
+                glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows),
+                glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top),
+                static_cast<GLuint>(face->glyph->advance.x)
+        };
+        characters.insert(std::pair<GLchar, Character>(c, character));
+    }
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    // Destruye FreeType
+    FT_Done_Face(face);
+    FT_Done_FreeType(ft);
+
+
+    // Configuramos los VAO/VBO para los quads de cada textura
+    glGenVertexArrays(1, &VAOText);
+    glGenBuffers(1, &VBOText);
+    glBindVertexArray(VAOText);
+    glBindBuffer(GL_ARRAY_BUFFER, VBOText);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 6 * 5, nullptr, GL_DYNAMIC_DRAW);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (void*)0);
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3* sizeof(float)));
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
+}
 
 CLNode* CLEngine::GetSceneManager(){
     if(!smgr){
@@ -170,6 +256,58 @@ void CLEngine::DrawImage2D(float _x, float _y, float _width, float _height, floa
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
+}
+
+/**
+ * Renderizamos el texto por pantalla
+ * @param text - Cadena de caracteres a renderizar
+ * @param x - Posicion en X
+ * @param y - Posicion en Y
+ * @param depth - Profundidas del render
+ * @param scale - Tamanyo de la letra
+ * @param color - Color
+ */
+void CLEngine::RenderText2D(std::string& text, GLfloat x, GLfloat y, GLfloat depth, GLfloat scale, glm::vec3& color) {
+
+    glUseProgram(textShader);
+    glUniform3f(glGetUniformLocation(textShader, "textColor"), color.x, color.y, color.z);
+    glActiveTexture(GL_TEXTURE0);
+    glBindVertexArray(VAOText);
+
+    std::string::const_iterator c;
+    for (c = text.begin(); c != text.end(); c++)
+    {
+        Character ch = characters[*c];
+
+        GLfloat xpos = x + ch.Bearing.x * scale;
+        GLfloat ypos = y - (ch.Size.y - ch.Bearing.y) * scale;
+
+        GLfloat w = ch.Size.x * scale;
+        GLfloat h = ch.Size.y * scale;
+
+        cout << "YPOS: " << ypos << endl;
+
+        // Update VBO for each character
+        GLfloat vertices[6][5] = {
+                { xpos,     ypos,       depth,   0.0f, 1.0f },
+                { xpos + w, ypos,       depth,   1.0f, 1.0f },
+                { xpos,     ypos + h,   depth,   0.0f, 0.0f },
+
+                { xpos,     ypos + h,   depth,   0.0f, 0.0f },
+                { xpos + w, ypos,       depth,   1.0f, 1.0f },
+                { xpos + w, ypos + h,   depth,   1.0f, 0.0f }
+        };
+
+        glBindTexture(GL_TEXTURE_2D, ch.TextureID);
+        glBindBuffer(GL_ARRAY_BUFFER, VBOText);
+        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
+
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+        x += (ch.Advance >> 6) * scale;
+    }
+    glBindVertexArray(0);
+    glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 
