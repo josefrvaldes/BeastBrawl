@@ -288,7 +288,7 @@ void CLEngine::RenderText2D(std::string& text, GLfloat x, GLfloat y, GLfloat dep
         GLfloat w = ch.Size.x * scale;
         GLfloat h = ch.Size.y * scale;
 
-        cout << "YPOS: " << ypos << endl;
+        //cout << "YPOS: " << ypos << endl;
 
         // Update VBO for each character
         GLfloat vertices[6][5] = {

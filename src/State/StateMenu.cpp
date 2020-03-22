@@ -31,12 +31,15 @@ void StateMenu::InitState() {
 
 
 void StateMenu::Render(){
+    renderEngine->FacadeBeginScene();
     renderEngine->FacadeDrawMenu();
+    renderEngine->FacadeEndScene();
 }
 
 
 void StateMenu::Input(){
     renderEngine->FacadeCheckInputMenu();
+    inputEngine->CheckInputMenu();
 }
 
 

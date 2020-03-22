@@ -31,9 +31,7 @@ void StateEndRace::InitState() {
 
 void StateEndRace::Render(){
     renderEngine->FacadeBeginScene();
-
     renderEngine->FacadeDrawEndRace();
-
     renderEngine->FacadeEndScene();
 }
 

@@ -578,6 +578,8 @@ void RenderFacadeClover::FacadeDraw() const{
  * Dibuja las cosas del menu
  */
 void RenderFacadeClover::FacadeDrawMenu() {
+    std::string file = "media/main_menu.png";
+    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
 }
 
 void RenderFacadeClover::FacadeDrawControler() {
@@ -593,6 +595,8 @@ void RenderFacadeClover::FacadeDrawPause() {
  * Dibuja las cosas del EndRace
  */
 void RenderFacadeClover::FacadeDrawEndRace() {
+    std::string file = "media/finish_screen.png";
+    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
 }
 
 /**
