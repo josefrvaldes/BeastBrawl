@@ -5,7 +5,7 @@ using namespace std;
 
 StateEndRace::StateEndRace(){
     // constructor
-    std::cout << ">>>>> Estado EndRace Creado" << std::endl;
+    //std::cout << ">>>>> Estado EndRace Creado" << std::endl;
     // Inicializamos las facadas
     renderEngine = RenderFacadeManager::GetInstance()->GetRenderFacade();
     inputEngine = InputFacadeManager::GetInstance()->GetInputFacade();
@@ -19,7 +19,7 @@ StateEndRace::StateEndRace(){
 
 void StateEndRace::InitState() {
 
-    cout << "~~~ ENTRO A ENDRACE" << endl;
+    //cout << "~~~ ENTRO A ENDRACE" << endl;
 
     if (!soundEngine){
         soundEngine = SoundFacadeManager::GetInstance()->GetSoundFacade();

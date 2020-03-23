@@ -71,7 +71,7 @@ RenderFacadeClover::RenderFacadeClover() {
     smgr = device->GetSceneManager();
     resourceManager = device->GetResourceManager();
 
-    FacadeInitMenu();
+    FacadeInitIntro();
 
 
 }
@@ -84,6 +84,15 @@ void RenderFacadeClover::FacadeSuscribeEvents() {
         EventType::UPDATE_POWERUP_HUD,
         bind( &RenderFacadeClover::FacadeUpdatePowerUpHUD, this, placeholders::_1 ),
         "facadeUpdatePowerUpHUD"});
+}
+
+
+/**
+ *
+ */
+void RenderFacadeClover::FacadeInitIntro() {
+    std::string name = "media/pauseMenu.png";
+    device->GetResourceManager()->GetResourceTexture(name, true);
 }
 
 /**
@@ -136,6 +145,7 @@ void RenderFacadeClover::FacadeInitLobbyMulti() {
  * Inicializa las cosas del HUD
  */
 void RenderFacadeClover::FacadeInitHUD() {
+
 }
 
 /**
@@ -532,17 +542,20 @@ void RenderFacadeClover::FacadeCheckInputSingle() {
 
 vector<Constants::InputTypes> RenderFacadeClover::FacadeCheckInputMulti() {
     vector<Constants::InputTypes> inputs;
-    
-
-
     return inputs;
 }
+
+void RenderFacadeClover::FacadeCheckInputIntro() {
+    InputFacadeManager::GetInstance()->GetInputFacade()->CheckInputIntro();
+}
+
 
 void RenderFacadeClover::FacadeCheckInputMenu() {
     InputFacadeManager::GetInstance()->GetInputFacade()->CheckInputMenu(inputMenu, maxInputMenu);
 }
 
 void RenderFacadeClover::FacadeCheckInputControler() {
+    InputFacadeManager::GetInstance()->GetInputFacade()->CheckInputController();
 }
 
 void RenderFacadeClover::FacadeCheckInputPause() {
@@ -554,6 +567,7 @@ void RenderFacadeClover::FacadeCheckInputEndRace() {
 
 
 void RenderFacadeClover::FacadeCheckInputLobbyMulti() {
+    InputFacadeManager::GetInstance()->GetInputFacade()->CheckInputLobbyMulti();
 }
 
 
@@ -582,14 +596,13 @@ void RenderFacadeClover::FacadeDraw() const{
 }
 
 /**
- * Dibuja las cosas del menu
+ *
  */
-void RenderFacadeClover::FacadeDrawMenu() {
-
-    std::string file = "media/main_menu.png";
+void RenderFacadeClover::FacadeDrawIntro() {
+    std::string file = "media/pauseMenu.png";
     device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
 
-    std::string text;
+    /*std::string text;
     //glm::vec3 color = glm::vec3(0.0f, 255.0f, 0.0f);
     glm::vec3 color[3] = {
             glm::vec3(0.0f, 255.0f, 0.0f),
@@ -602,11 +615,40 @@ void RenderFacadeClover::FacadeDrawMenu() {
     text = "Multijugador";
     device->RenderText2D(text, 500.0f, 350.0f, 0.05f, 1.0f, color[1]);
     text = "Salir";
+    device->RenderText2D(text, 500.0f, 300.0f, 0.05f, 1.0f, color[2]);*/
+}
+
+/**
+ * Dibuja las cosas del menu
+ */
+void RenderFacadeClover::FacadeDrawMenu() {
+
+    std::string file = "media/main_menu.png";
+    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
+
+    std::string text;
+    //glm::vec3 color = glm::vec3(0.0f, 255.0f, 0.0f);
+    glm::vec3 color[4] = {
+            glm::vec3(0.0f, 255.0f, 0.0f),
+            glm::vec3(0.0f, 255.0f, 0.0f),
+            glm::vec3(0.0f, 255.0f, 0.0f),
+            glm::vec3(0.0f, 255.0f, 0.0f)
+    };
+    color[inputMenu] = glm::vec3(255.0f, 0.0f, 0.0f);
+    text = "Un jugador";
+    device->RenderText2D(text, 500.0f, 400.0f, 0.05f, 1.0f, color[0]);
+    text = "Multijugador";
+    device->RenderText2D(text, 500.0f, 350.0f, 0.05f, 1.0f, color[1]);
+    text = "Controles";
     device->RenderText2D(text, 500.0f, 300.0f, 0.05f, 1.0f, color[2]);
+    text = "Salir";
+    device->RenderText2D(text, 500.0f, 250.0f, 0.05f, 1.0f, color[3]);
 
 }
 
 void RenderFacadeClover::FacadeDrawControler() {
+    std::string file = "media/controller_scheme.png";
+    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
 }
 
 /**
@@ -640,6 +682,8 @@ void RenderFacadeClover::FacadeDrawEndRace() {
  * Dibuja las cosas del LobbyMulti
  */
 void RenderFacadeClover::FacadeDrawLobbyMulti() {
+    std::string file = "media/LobbyMulti.png";
+    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
 }
 
 void RenderFacadeClover::FacadeDrawLobbyMultiExit() {

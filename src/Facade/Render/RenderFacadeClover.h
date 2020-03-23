@@ -39,18 +39,21 @@ class RenderFacadeClover : public RenderFacade {
       void FacadeDeviceDrop() override;
       void FacadeDraw() const override;
       void DeleteEntity(Entity*) override;
+      void FacadeDrawIntro() override;
       void FacadeDrawMenu() override;
       void FacadeDrawPause() override;
       void FacadeDrawEndRace() override;
       void FacadeDrawLobbyMulti() override;
       void FacadeDrawLobbyMultiExit() override;
       void FacadeDrawControler() override;
+      void FacadeInitIntro() override;
       void FacadeInitMenu() override;
       void FacadeInitPause() override;
       void FacadeInitEndRace() override;
       void FacadeInitLobbyMulti() override;
       void FacadeInitControler() override;
       void FacadeInitHUD() override;
+      void FacadeCheckInputIntro() override;
       void FacadeCheckInputMenu() override;
       void FacadeCheckInputPause() override;
       void FacadeCheckInputEndRace() override;
@@ -98,7 +101,7 @@ class RenderFacadeClover : public RenderFacade {
         std::string powerUps[7];
 
         int inputMenu { 0 };
-        int maxInputMenu { 2 };
+        int maxInputMenu { 3 };
         int inputPause { 0 };
         int maxInputPause { 1 };
 

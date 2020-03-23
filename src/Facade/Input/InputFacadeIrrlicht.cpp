@@ -21,6 +21,18 @@ vector<Constants::InputTypes> InputFacadeIrrlicht::CheckInput(){
 }
 
 
+void InputFacadeIrrlicht::CheckInputIntro() {
+
+}
+
+void InputFacadeIrrlicht::CheckInputLobbyMulti() {
+
+}
+
+void InputFacadeIrrlicht::CheckInputController() {
+
+}
+
 void InputFacadeIrrlicht::CheckInputMenu(int&, int){
 }
 
