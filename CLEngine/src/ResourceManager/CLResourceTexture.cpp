@@ -8,7 +8,7 @@ bool CLResourceTexture::LoadFile(string file, bool vertically){
     int width, height, nrComponents;
     stbi_set_flip_vertically_on_load(false);
     if(vertically) {
-        cout << "----------------------- ENTRO AQUI: " << file << endl;
+        //cout << "----------------------- ENTRO AQUI: " << file << endl;
         stbi_set_flip_vertically_on_load(true);
     }
     unsigned char *data = stbi_load(file.c_str(), &width, &height, &nrComponents, 0);
