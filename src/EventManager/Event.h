@@ -64,6 +64,7 @@ enum EventType {
     MENU_OPTION,
     MENU_OK,
     MENU_BACK,
+    STATE_INTRO,
     STATE_MENU,
     STATE_PAUSE,
     STATE_ENDRACE,

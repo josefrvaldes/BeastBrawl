@@ -5,11 +5,11 @@ using namespace std;
 
 StateMenu::StateMenu(){
 
-    std::cout << "> MENU constructor" << std::endl;
     renderEngine = RenderFacadeManager::GetInstance()->GetRenderFacade();
     renderEngine->FacadeInitMenu();
 
     InitState();
+    std::cout << ">>>>> Estado MENU Creado" << std::endl;
 
 }
 

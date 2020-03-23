@@ -17,6 +17,118 @@ InputFacadeClover::InputFacadeClover(){
 
 }
 
+
+void InputFacadeClover::CheckInputIntro(){
+
+    //SALIR
+    int estado = glfwGetKey(device->GetWindow(), GLFW_KEY_DELETE);
+    if(estado == GLFW_RELEASE){
+        deletePress = false;
+    }
+    if(!deletePress && estado == GLFW_PRESS) {
+        deletePress = true;
+        device->CloseWindow();
+    }
+
+    //ENTRAR
+    estado = glfwGetKey(device->GetWindow(), GLFW_KEY_SPACE);
+    if (estado == GLFW_RELEASE) {
+        spacePress = false;
+    }
+    if (!spacePress && estado == GLFW_PRESS) {
+        spacePress = true;
+        EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_MENU});
+    }
+}
+
+void InputFacadeClover::CheckInputController() {
+    //ATRAS
+    int estado = glfwGetKey(device->GetWindow(), GLFW_KEY_DELETE);
+    if(estado == GLFW_RELEASE){
+        deletePress = false;
+    }
+    if(!deletePress && estado == GLFW_PRESS) {
+        deletePress = true;
+        EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_MENU});
+    }
+}
+
+void InputFacadeClover::CheckInputMenu(int& input, int maxInput){
+
+    //ATRAS
+    int estado = glfwGetKey(device->GetWindow(), GLFW_KEY_DELETE);
+    if(estado == GLFW_RELEASE){
+        deletePress = false;
+    }
+    if(!deletePress && estado == GLFW_PRESS) {
+        deletePress = true;
+        EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_INTRO});
+    }
+
+    //SUBIR
+    estado = glfwGetKey(device->GetWindow(), GLFW_KEY_UP);
+    if (estado == GLFW_RELEASE) {
+        upPress = false;
+    }
+    if (!upPress && estado == GLFW_PRESS) {
+        upPress = true;
+        input--;
+        if(input < 0)
+            input = maxInput;
+    }
+
+    //BAJAR
+    estado = glfwGetKey(device->GetWindow(), GLFW_KEY_DOWN);
+    if (estado == GLFW_RELEASE) {
+        downPress = false;
+    }
+    if (!downPress && estado == GLFW_PRESS) {
+        downPress = true;
+        input++;
+        if(input > maxInput) {
+            input = 0;
+        }
+    }
+
+    //ESPACIO
+    estado = glfwGetKey(device->GetWindow(), GLFW_KEY_SPACE);
+    if (estado == GLFW_RELEASE) {
+        spacePress = false;
+    }
+    if (!spacePress && estado == GLFW_PRESS) {
+        spacePress = true;
+
+        switch (input) {
+            case 0: {
+                RenderFacadeManager::GetInstance()->GetRenderFacade()->SetNumEnemyCars(0);
+
+                //Manera un poco cutre de resetear el CId al empezar el juego
+                auto cId = make_shared<CId>();
+                cId->ResetNumIds();
+                auto cNavMesh = make_shared<CNavMesh>();
+                cNavMesh->ResetNumIds();
+
+                EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_INGAMESINGLE});
+                break;
+            }
+            case 1: {
+                RenderFacadeManager::GetInstance()->GetRenderFacade()->CleanScene();
+                EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_LOBBYMULTI});
+                break;
+            }
+            case 2: {
+                EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_CONTROLS});
+                break;
+            }
+            case 3: {
+                device->CloseWindow();
+                break;
+            }
+        }
+    }
+}
+
+
 vector<Constants::InputTypes> InputFacadeClover::CheckInput(){
     EventManager &eventManager = EventManager::GetInstance();
     auto renderFacade = RenderFacadeManager::GetInstance()->GetRenderFacade();
@@ -133,70 +245,9 @@ vector<Constants::InputTypes> InputFacadeClover::CheckInput(){
 }
 
 
-void InputFacadeClover::CheckInputMenu(int& input, int maxInput){
-
-    //SUBIR
-    int estado = glfwGetKey(device->GetWindow(), GLFW_KEY_UP);
-    if (estado == GLFW_RELEASE) {
-        upPress = false;
-    }
-    if (!upPress && estado == GLFW_PRESS) {
-        upPress = true;
-        input--;
-        if(input < 0)
-            input = maxInput;
-    }
-
-    //BAJAR
-    estado = glfwGetKey(device->GetWindow(), GLFW_KEY_DOWN);
-    if (estado == GLFW_RELEASE) {
-        downPress = false;
-    }
-    if (!downPress && estado == GLFW_PRESS) {
-        downPress = true;
-        input++;
-        if(input > maxInput) {
-            input = 0;
-        }
-    }
-
-    //ESPACIO
-    estado = glfwGetKey(device->GetWindow(), GLFW_KEY_SPACE);
-    if (estado == GLFW_RELEASE) {
-        spacePress = false;
-    }
-    if (!spacePress && estado == GLFW_PRESS) {
-        spacePress = true;
-
-        switch (input) {
-            case 0: {
-                RenderFacadeManager::GetInstance()->GetRenderFacade()->SetNumEnemyCars(0);
-
-                //Manera un poco cutre de resetear el CId al empezar el juego
-                auto cId = make_shared<CId>();
-                cId->ResetNumIds();
-                auto cNavMesh = make_shared<CNavMesh>();
-                cNavMesh->ResetNumIds();
-
-                EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_INGAMESINGLE});
-                break;
-            }
-            case 1: {
-
-                break;
-            }
-            case 2: {
-                device->CloseWindow();
-                break;
-            }
-        }
-    }
-}
-
 
 void InputFacadeClover::CheckInputPause(int& input, int maxInput){
 
-    //cout << "¿HOLA?" << input << " - " << maxInput << endl;
 
     //SUBIR
     int estado = glfwGetKey(device->GetWindow(), GLFW_KEY_UP);
@@ -259,4 +310,11 @@ void InputFacadeClover::CheckInputEndRace(){
     } /*else if (glfwGetKey(device->GetWindow(),GLFW_KEY_DELETE)) {
         device->CloseWindow();
     }*/
+}
+
+
+void InputFacadeClover::CheckInputLobbyMulti() {
+    if (glfwGetKey(device->GetWindow(),GLFW_KEY_DELETE)) {
+        device->CloseWindow();
+    }
 }

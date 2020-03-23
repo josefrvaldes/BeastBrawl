@@ -97,6 +97,11 @@ void RenderFacadeIrrlicht::FacadeSuscribeEvents() {
         "facadeUpdatePowerUpHUD"});
 }
 
+void RenderFacadeIrrlicht::FacadeInitIntro() {
+    introBG = driver->getTexture("media/pauseMenu.png");
+    driver->makeColorKeyTexture(introBG, core::position2d<s32>(0, 0));
+}
+
 void RenderFacadeIrrlicht::FacadeInitMenu() {
     menuBG = driver->getTexture("media/main_menu.png");
     driver->makeColorKeyTexture(menuBG, core::position2d<s32>(0, 0));
@@ -616,6 +621,10 @@ void RenderFacadeIrrlicht::SetValueInput(InputXBox input, bool valuePressed){
     }
 }
 
+void RenderFacadeIrrlicht::FacadeCheckInputIntro() {
+
+}
+
 // To-Do: introducir multi input
 // Comprobar inputs del teclado
 void RenderFacadeIrrlicht::FacadeCheckInputSingle() {
@@ -971,6 +980,17 @@ void RenderFacadeIrrlicht::FacadeSetWindowCaption(std::string title, int fps) co
 void RenderFacadeIrrlicht::FacadeDraw() const{
     driver->beginScene(true, true, video::SColor(255, 113, 113, 133));
     smgr->drawAll();  // draw the 3d scene
+    driver->endScene();
+}
+
+/**
+ *
+ */
+void RenderFacadeIrrlicht::FacadeDrawIntro() {
+    driver->beginScene(true, true, video::SColor(255, 113, 113, 133));
+    driver->draw2DImage(introBG, core::position2d<s32>(0, 0),
+                        core::rect<s32>(0, 0, 1280, 720), 0,
+                        video::SColor(255, 255, 255, 255), false);
     driver->endScene();
 }
 

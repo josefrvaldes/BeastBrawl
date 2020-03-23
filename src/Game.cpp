@@ -1,5 +1,6 @@
 #include "Game.h"
 #include "Facade/Physics/PhysicsFacadeManager.h"
+#include "State/StateInit.h"
 #include "State/StateEndRace.h"
 #include "State/StateInGameMulti.h"
 #include "State/StateInGameSingle.h"
@@ -26,6 +27,12 @@ void Game::SetState(State::States stateType) {
     switch (stateType) {
         case State::INTRO:
             //currentState = new StateIntro();
+            EventManager::GetInstance().ClearEvents();
+            EventManager::GetInstance().ClearListeners();
+            currentState = make_shared<StateInit>();
+            gameState.reset();
+            SuscribeEvents();
+            gameStarted = false;
             break;
         case State::MENU:
             //Al volver al menu todo el mundo se desuscribe o sea que volvemos a añadir las suscripciones
@@ -130,6 +137,12 @@ void Game::InitGame() {
 
 void Game::SuscribeEvents() {
     //cout << "Suscripciones\n";
+
+    EventManager::GetInstance().SubscribeMulti(Listener(
+            EventType::STATE_INTRO,
+            bind(&Game::SetStateIntro, this, placeholders::_1),
+            "StateIntro"));
+
     EventManager::GetInstance().SubscribeMulti(Listener(
         EventType::STATE_MENU,
         bind(&Game::SetStateMenu, this, placeholders::_1),
@@ -220,8 +233,11 @@ void Game::TerminateGame() {
 
 //Funciones del EventManager
 
+void Game::SetStateIntro(DataMap* d) {
+    SetState(State::INTRO);
+}
+
 void Game::SetStateMenu(DataMap* d) {
-    cout << "LLEGA\n";
     SetState(State::MENU);
 }
 

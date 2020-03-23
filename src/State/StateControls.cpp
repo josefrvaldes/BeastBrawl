@@ -15,20 +15,22 @@ StateControls::StateControls(){
 // Cargamos los bancos de sonido Menu.
 void StateControls::InitState() {
     
-    cout << "~~~ ENTRO A MENU" << endl;
+    /*cout << "~~~ ENTRO A MENU" << endl;
     if (!soundEngine){
         soundEngine = SoundFacadeManager::GetInstance()->GetSoundFacade();
         cout << "~~~ SoundEngine en MENU es -> " << soundEngine << endl;
     }
     soundEngine->SetState(2);
-    soundEngine->PlayEvent("Musica/menu");
+    soundEngine->PlayEvent("Musica/menu");*/
 
     //cout << "> MENU iniciado" << endl;
 }
 
 
 void StateControls::Render(){
+    renderEngine->FacadeBeginScene();
     renderEngine->FacadeDrawControler();
+    renderEngine->FacadeEndScene();
 }
 
 
