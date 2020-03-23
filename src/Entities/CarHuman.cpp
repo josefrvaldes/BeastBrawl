@@ -81,7 +81,7 @@ CarHuman::CarHuman() {
     // TODO: jesuuuuuuus pasame los bounding desde phyton mamoooon JESUS
     glm::vec3 pSphBehind = pos;
     glm::vec3 pSphFront = pos;
-    shared_ptr<CBoundingChassis> cBoundingChassis = make_shared<CBoundingChassis>(pSphBehind, 7.5, pSphFront, 7.5);
+    shared_ptr<CBoundingChassis> cBoundingChassis = make_shared<CBoundingChassis>(pSphBehind, 7.5, 7.0, pSphFront, 7.5, 7.0);
 
     shared_ptr<CGravity> cGravity = make_shared<CGravity>();
 

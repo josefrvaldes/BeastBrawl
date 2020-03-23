@@ -98,14 +98,14 @@ void CLNode::AddSkybox(string right, string left, string top, string bottom, str
 
 
 bool CLNode::RemoveChild(CLNode* child){
-
-    // if(child->GetChilds().size()>0){
-    //     for(auto childOfChild : child->GetChilds()){
+    /*
+    if(child->GetChilds().size()>0){
+        for(auto childOfChild : child->GetChilds()){
             
-    //         child->DeleteNode(childOfChild->GetEntity()->GetID());
-    //     }
-    // }
-
+            child->DeleteNode(childOfChild->GetEntity()->GetID());
+        }
+    }
+    */
     //Childs son los hijos del padre en el que estara child
     for(unsigned int i = 0; i<childs.size(); ++i){
         if(child == childs[i].get()){
