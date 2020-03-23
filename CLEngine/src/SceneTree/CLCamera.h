@@ -32,6 +32,8 @@ namespace CLE {
             glm::vec3 GetCameraUp()         { return cameraUp; };
 
             void Draw(GLuint shaderID);
+            void DrawDepthMap (GLuint shaderID);
+
             glm::mat4 CalculateProjectionMatrix();
 
             void CalculateFrustum(glm::mat4& proj, glm::mat4& view);

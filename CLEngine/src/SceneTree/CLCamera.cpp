@@ -45,6 +45,9 @@ void CLCamera::Draw(GLuint shaderID) {
 
 }
 
+void CLCamera::DrawDepthMap (GLuint shaderID){}
+
+
 
 void CLCamera::CalculateFrustum(glm::mat4& proj, glm::mat4& view) {
     frustum->Transform(proj, view);

@@ -244,7 +244,9 @@ int main() {
         
 
         // 1. Se renderiza con el shadowMap
+        glCullFace(GL_FRONT);
         device->RenderDepthMap(*smgr->GetShadowMapping(), smgr->GetDepthShader(), light3->GetGlobalTranslation());
+        glCullFace(GL_BACK);
 
         // 2. then render scene as normal with shadow mapping (using depth map)
         device->UpdateViewport();

@@ -12,10 +12,13 @@ namespace CLE {
 
             //void PrepareToRender();
             void Draw(GLuint shaderID);
+            void DrawDepthMap(GLuint shaderID);
 
             // variables
-            static inline unsigned int depthMapFBO, depthCubemap;
-            const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
+            unsigned int depthMapFBO;
+            static inline unsigned int depthCubemap;
+            const unsigned int SHADOW_WIDTH = 1024;
+            const unsigned int SHADOW_HEIGHT = 1024;
                   
     };
 }

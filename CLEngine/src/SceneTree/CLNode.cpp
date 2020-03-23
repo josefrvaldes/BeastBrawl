@@ -320,7 +320,7 @@ void CLNode::DFSTree(glm::mat4 mA, GLuint shaderID) {
         }
         glUniformMatrix4fv(glGetUniformLocation(shaderID, "model"), 1, GL_FALSE, glm::value_ptr(transformationMat));
         //entity->Draw(transformationMat);
-        entity->Draw(shaderID);
+        entity->DrawDepthMap(shaderID);
 
         //cout << "este objeto se dibuja" << endl;
     }

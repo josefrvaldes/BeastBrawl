@@ -115,7 +115,7 @@ void CLEngine::BeginScene(){
 
 
 void CLEngine::DrawObjects(){
-    //smgr->DrawSkybox();
+    smgr->DrawSkybox();
     smgr->CalculateViewProjMatrix();
     //smgr->CalculateLights();
     smgr->DFSTree(glm::mat4(1.0f));

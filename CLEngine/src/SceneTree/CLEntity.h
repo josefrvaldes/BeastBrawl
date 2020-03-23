@@ -14,6 +14,7 @@ namespace CLE {
             unsigned int GetID() { return id; }
 
             virtual void Draw (GLuint) = 0;
+            virtual void DrawDepthMap (GLuint) = 0;
 
         protected:
 

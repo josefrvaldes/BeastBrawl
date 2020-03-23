@@ -55,6 +55,11 @@ void CLShadowMapping::Draw(GLuint shaderID){
 }
 
 
+void CLShadowMapping::DrawDepthMap(GLuint shaderID){
+
+}
+
+
 /*
     // 1. first render to depth map
     glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
