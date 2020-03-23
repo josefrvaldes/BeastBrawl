@@ -1,6 +1,7 @@
 #include "Game.h"
 #include "Facade/Physics/PhysicsFacadeManager.h"
 #include "State/StateInit.h"
+#include "State/StateSelectCharacter.h"
 #include "State/StateEndRace.h"
 #include "State/StateInGameMulti.h"
 #include "State/StateInGameSingle.h"
@@ -39,6 +40,14 @@ void Game::SetState(State::States stateType) {
             EventManager::GetInstance().ClearEvents();
             EventManager::GetInstance().ClearListeners();
             currentState = make_shared<StateMenu>();
+            gameState.reset();
+            SuscribeEvents();
+            gameStarted = false;
+            break;
+        case State::SELECT_CHARACTER:
+            EventManager::GetInstance().ClearEvents();
+            EventManager::GetInstance().ClearListeners();
+            currentState = make_shared<StateSelectCharacter>();
             gameState.reset();
             SuscribeEvents();
             gameStarted = false;
@@ -148,6 +157,12 @@ void Game::SuscribeEvents() {
         bind(&Game::SetStateMenu, this, placeholders::_1),
         "StateMenu"));
 
+
+    EventManager::GetInstance().SubscribeMulti(Listener(
+            EventType::STATE_SELECT_CHARACTER,
+            bind(&Game::SetStateSelectCharacter, this, placeholders::_1),
+            "StateSelectCharacter"));
+
     EventManager::GetInstance().SubscribeMulti(Listener(
         EventType::STATE_PAUSE,
         bind(&Game::SetStatePause, this, placeholders::_1),
@@ -239,6 +254,10 @@ void Game::SetStateIntro(DataMap* d) {
 
 void Game::SetStateMenu(DataMap* d) {
     SetState(State::MENU);
+}
+
+void Game::SetStateSelectCharacter(DataMap* d) {
+    SetState(State::SELECT_CHARACTER);
 }
 
 void Game::SetStatePause(DataMap* d) {

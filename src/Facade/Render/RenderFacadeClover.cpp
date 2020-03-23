@@ -119,6 +119,10 @@ void RenderFacadeClover::FacadeInitMenu() {
     currentPowerUp = 0;
 }
 
+void RenderFacadeClover::FacadeInitSelectCharacter() {
+
+}
+
 void RenderFacadeClover::FacadeInitControler() {
     
 }
@@ -178,9 +182,9 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars) {
     vector<ranking_t> ranking;
 
     //Si existen coches de IA
-    if(manCars->GetEntities().size()>0){
+    if(!manCars->GetEntities().empty()){
         //Primero vamos a meter al coche principal
-        ranking_t rank;
+        ranking_t rank{};
         int i = 0;
         for(auto& carAux : manCars->GetEntities()){
             cTotem = static_cast<CTotem*>(carAux->GetComponent(CompType::TotemComp).get());
@@ -554,6 +558,10 @@ void RenderFacadeClover::FacadeCheckInputMenu() {
     InputFacadeManager::GetInstance()->GetInputFacade()->CheckInputMenu(inputMenu, maxInputMenu);
 }
 
+void RenderFacadeClover::FacadeCheckInputSelectCharacter() {
+    InputFacadeManager::GetInstance()->GetInputFacade()->CheckInputSelectCharacter(inputSC, maxInputSC);
+}
+
 void RenderFacadeClover::FacadeCheckInputControler() {
     InputFacadeManager::GetInstance()->GetInputFacade()->CheckInputController();
 }
@@ -645,6 +653,13 @@ void RenderFacadeClover::FacadeDrawMenu() {
     device->RenderText2D(text, 500.0f, 250.0f, 0.05f, 1.0f, color[3]);
 
 }
+
+/**
+ *
+ */
+ void RenderFacadeClover::FacadeDrawSelectCharacter() {
+
+ }
 
 void RenderFacadeClover::FacadeDrawControler() {
     std::string file = "media/controller_scheme.png";

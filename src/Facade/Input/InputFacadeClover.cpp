@@ -109,6 +109,7 @@ void InputFacadeClover::CheckInputMenu(int& input, int maxInput){
                 cNavMesh->ResetNumIds();
 
                 EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_INGAMESINGLE});
+                //EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_SELECT_CHARACTER});
                 break;
             }
             case 1: {
@@ -126,6 +127,10 @@ void InputFacadeClover::CheckInputMenu(int& input, int maxInput){
             }
         }
     }
+}
+
+void InputFacadeClover::CheckInputSelectCharacter(int &, int) {
+    cout << "JEJE" << endl;
 }
 
 
@@ -153,6 +158,7 @@ vector<Constants::InputTypes> InputFacadeClover::CheckInput(){
     //DERRAPE
     if (glfwGetKey(device->GetWindow(),GLFW_KEY_U)) {
         eventManager.AddEventMulti(Event{EventType::PRESS_SKID});
+        inputs.push_back(Constants::InputTypes::DRIFT);
     } else {
         eventManager.AddEventMulti(Event{EventType::NOT_SKID_PRESS});
     }

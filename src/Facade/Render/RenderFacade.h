@@ -36,28 +36,35 @@ class RenderFacade {
     virtual void FacadeDrawAll() const = 0;
     virtual void FacadeEndScene() const = 0;
     virtual void FacadeDeviceDrop() = 0;
-    virtual void FacadeDraw() const = 0;
     virtual void DeleteEntity(Entity*) = 0;
+
+    virtual void FacadeDraw() const = 0;
     virtual void FacadeDrawIntro() = 0;
     virtual void FacadeDrawMenu() = 0;
+    virtual void FacadeDrawSelectCharacter() = 0;
     virtual void FacadeDrawPause() = 0;
     virtual void FacadeDrawEndRace() = 0;
     virtual void FacadeDrawLobbyMulti() = 0;
     virtual void FacadeDrawLobbyMultiExit() = 0;
     virtual void FacadeDrawControler() = 0;
+
     virtual void FacadeInitIntro() = 0;
     virtual void FacadeInitMenu() = 0;
+    virtual void FacadeInitSelectCharacter() = 0;
     virtual void FacadeInitPause() = 0;
     virtual void FacadeInitEndRace() = 0;
     virtual void FacadeInitLobbyMulti() = 0;
     virtual void FacadeInitControler() = 0;
     virtual void FacadeInitHUD() = 0;
+
     virtual void FacadeCheckInputIntro() = 0;
     virtual void FacadeCheckInputMenu() = 0;
+    virtual void FacadeCheckInputSelectCharacter() = 0;
     virtual void FacadeCheckInputPause() = 0;
     virtual void FacadeCheckInputEndRace() = 0;
     virtual void FacadeCheckInputLobbyMulti() = 0;
     virtual void FacadeCheckInputControler() = 0;
+
     virtual void FacadeUpdatePowerUpHUD(DataMap* d) = 0;
     virtual void FacadeDrawHUD(Entity* car, ManCar* manCars) = 0;
     virtual void FacadeSuscribeEvents() = 0;

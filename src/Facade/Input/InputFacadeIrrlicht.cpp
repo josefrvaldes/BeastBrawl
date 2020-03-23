@@ -36,6 +36,9 @@ void InputFacadeIrrlicht::CheckInputController() {
 void InputFacadeIrrlicht::CheckInputMenu(int&, int){
 }
 
+void InputFacadeIrrlicht::CheckInputSelectCharacter(int &, int) {
+
+}
 
 void InputFacadeIrrlicht::CheckInputPause(int&, int){
 }
