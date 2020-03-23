@@ -6,8 +6,6 @@ using namespace std;
 StateMenu::StateMenu(){
 
     std::cout << "> MENU constructor" << std::endl;
-
-    inputEngine = InputFacadeManager::GetInstance()->GetInputFacade();
     renderEngine = RenderFacadeManager::GetInstance()->GetRenderFacade();
     renderEngine->FacadeInitMenu();
 
@@ -39,7 +37,6 @@ void StateMenu::Render(){
 
 void StateMenu::Input(){
     renderEngine->FacadeCheckInputMenu();
-    inputEngine->CheckInputMenu();
 }
 
 

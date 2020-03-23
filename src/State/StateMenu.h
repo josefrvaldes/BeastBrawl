@@ -23,7 +23,7 @@ class StateMenu : public State{
 
     private:
         RenderFacade* renderEngine = { nullptr };
-        InputFacade* inputEngine = { nullptr };
+        //InputFacade* inputEngine = { nullptr };
         //PhysicsFacade* physicsEngine = { nullptr };
         SoundFacade* soundEngine = { nullptr };
 

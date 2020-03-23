@@ -15,13 +15,18 @@ class InputFacadeClover : public InputFacade{
         InputFacadeClover();
         ~InputFacadeClover() = default;
         vector<Constants::InputTypes> CheckInput()        override;
-        void CheckInputMenu()    override;
-        void CheckInputPause()   override;
+        void CheckInputMenu(int&, int)    override;
+        void CheckInputPause(int&, int)   override;
         void CheckInputEndRace() override;
         void SetWindowContext(CLEngine* d) {device = d;}
 
     private:
         CLEngine* device;
+
+        bool scapePress { false };
+        bool spacePress { false };
+        bool upPress { false };
+        bool downPress { false };
 
 
 };
