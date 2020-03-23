@@ -64,6 +64,7 @@ class RenderFacadeClover : public RenderFacade {
       void FacadeUpdateMeshesLoD(vector<shared_ptr<Entity>> entities) override;
       void ThrowEventChangeToMulti(uint16_t IdOnline, const std::vector<uint16_t> IdPlayersOnline) override;
       void FacadeAddSkybox(string right,string left,string top,string bottom,string front,string back) override;
+      void CleanScene() override;
 
       //DEBUG
       void Draw3DLine(vec3& pos1, vec3& pos2, uint16_t r, uint16_t g, uint16_t b) const override;

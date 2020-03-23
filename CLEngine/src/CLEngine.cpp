@@ -23,7 +23,8 @@ CLEngine::CLEngine (const unsigned int w, const unsigned int h, const string& ti
     CreateGlfwWindow(w, h, title);
     glewInit();
     ImGuiInit();
-    InitFreeType();
+    const std::string f = "fonts/arial.ttf";
+    LoadFont(f);
 }
 
 /**
@@ -85,7 +86,7 @@ void CLEngine::CreateGlfwWindow (const unsigned int w, const unsigned int h, con
 /**
  *
  */
- void CLEngine::InitFreeType() {
+ void CLEngine::LoadFont(const std::string &font) {
     //SHADER
     if (!textShader) {
         auto resourceShader = CLResourceManager::GetResourceManager()->GetResourceShader("CLEngine/src/Shaders/textShader.vert", "CLEngine/src/Shaders/textShader.frag");
@@ -96,13 +97,12 @@ void CLEngine::CreateGlfwWindow (const unsigned int w, const unsigned int h, con
     glUseProgram(textShader);
     glUniformMatrix4fv(glGetUniformLocation(textShader, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 
-
     FT_Library ft;
     if (FT_Init_FreeType(&ft))
         std::cout << "ERROR::FREETYPE: Fallo al cargar la libreria Free Type" << std::endl;
 
     FT_Face face;
-    if (FT_New_Face(ft, "fonts/arial.ttf", 0, &face))
+    if (FT_New_Face(ft, font.c_str(), 0, &face))
         std::cout << "ERROR::FREETYPE: No se ha podido cargar la fuente. ¿La tienes?" << std::endl;
 
     FT_Set_Pixel_Sizes(face, 0, 48);
@@ -204,6 +204,7 @@ void CLEngine::DrawObjects(){
     //smgr->CalculateLights();
     smgr->DFSTree(glm::mat4(1.0f));
 }
+
 
 void CLEngine::DrawImage2D(float _x, float _y, float _width, float _height, float _depth, string& file, bool vertically){
     if(!hudShader){

@@ -589,6 +589,8 @@ void RenderFacadeClover::FacadeDrawControler() {
  * Dibuja las cosas del pause
  */
 void RenderFacadeClover::FacadeDrawPause() {
+    std::string file = "media/pause_screen.png";
+    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
 }
 
 /**
@@ -894,4 +896,13 @@ void RenderFacadeClover::FacadeDrawBoundingBox(Entity* entity, bool colliding) c
 
 void RenderFacadeClover::FacadeAddSphereOnObject(Entity* entity){
     
+}
+
+void RenderFacadeClover::CleanScene() {
+    if (smgr) {
+        for (const auto& c : smgr->GetChilds()) {
+            smgr->RemoveChild(c.get());
+        }
+    }
+
 }

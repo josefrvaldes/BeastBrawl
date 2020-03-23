@@ -1394,3 +1394,8 @@ void RenderFacadeIrrlicht::FacadeDrawBoundingBox(Entity* entity, bool colliding)
         driver->draw3DBox(boundingBox, video::SColor(255, 0, 255, 0));
     }
 }
+
+
+void RenderFacadeIrrlicht::CleanScene() {
+    smgr->clear();
+}

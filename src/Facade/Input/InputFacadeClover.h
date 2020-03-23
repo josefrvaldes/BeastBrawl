@@ -23,5 +23,6 @@ class InputFacadeClover : public InputFacade{
     private:
         CLEngine* device;
 
+        bool pausePress { false };
 
 };

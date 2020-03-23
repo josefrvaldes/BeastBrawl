@@ -3,6 +3,8 @@
 #include <Components/CId.h>
 #include <Components/CNavMesh.h>
 
+#include <Game.h>
+
 
 #include <iostream>
 
@@ -118,11 +120,14 @@ vector<Constants::InputTypes> InputFacadeClover::CheckInput(){
         inputs.push_back(Constants::InputTypes::LAUNCH_PU);
     }
 
-    //Cambiamos a menu
-    if (glfwGetKey(device->GetWindow(),GLFW_KEY_F2) && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay) {
-        timeStart = system_clock::now();
+    //PAUSE
+    int estado = glfwGetKey(device->GetWindow(), GLFW_KEY_ESCAPE);
+    if (estado == GLFW_RELEASE) {
+        pausePress = false;
+    }
+    if (!pausePress && estado == GLFW_PRESS) {
         eventManager.AddEventMulti(Event{EventType::STATE_PAUSE});
-        //Game::GetInstance()->SetState(State::PAUSE);
+        pausePress = true;
     }
     return inputs;
 }
@@ -147,11 +152,26 @@ void InputFacadeClover::CheckInputMenu(){
 
 
 void InputFacadeClover::CheckInputPause(){
+    //IN GAME
+    int estado = glfwGetKey(device->GetWindow(), GLFW_KEY_ESCAPE);
+    if (estado == GLFW_RELEASE) {
+        pausePress = false;
+    }
+    if (!pausePress && estado == GLFW_PRESS) {
+        pausePress = true;
+        Game::GetInstance()->SetState(State::INGAME_SINGLE);
+        //EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_INGAMESINGLE});
+    }
 }
 
 
 void InputFacadeClover::CheckInputEndRace(){
-    if (glfwGetKey(device->GetWindow(),GLFW_KEY_DELETE)) {
+    if (glfwGetKey(device->GetWindow(),GLFW_KEY_SPACE)) {
+        RenderFacadeManager::GetInstance()->GetRenderFacade()->CleanScene();
+        //cout << "ENTRAAAAAA ENDRACE\n";
+        EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_MENU});
+
+    } else if (glfwGetKey(device->GetWindow(),GLFW_KEY_DELETE)) {
         device->CloseWindow();
     }
 }
