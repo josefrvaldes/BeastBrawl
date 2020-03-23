@@ -285,7 +285,7 @@ void InputFacadeClover::CheckInputPause(int& input, int maxInput){
     }
 
     //IN GAME
-    if (glfwGetKey(device->GetWindow(), GLFW_KEY_SPACE) || state.buttons[GLFW_GAMEPAD_BUTTON_A] && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay) {
+    if ((glfwGetKey(device->GetWindow(), GLFW_KEY_SPACE) || state.buttons[GLFW_GAMEPAD_BUTTON_A]) && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay) {
         timeStart = system_clock::now();
 
         scapePress = true;
