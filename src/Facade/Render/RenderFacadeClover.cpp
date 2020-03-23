@@ -386,7 +386,7 @@ void RenderFacadeClover::UpdateCamera(Entity* cam, ManCar* manCars) {
         float distZ = abs(cTransformable->position.z - targetPosition.z);
 
         if(cTransformable->position.x - targetPosition.x < 0){
-            targetPosition.x = targetPosition.y - (2*distX);
+            targetPosition.x = targetPosition.x - (2*distX);
 
         }else{
             targetPosition.x = targetPosition.x + (2*distX);
@@ -394,10 +394,10 @@ void RenderFacadeClover::UpdateCamera(Entity* cam, ManCar* manCars) {
         }
 
         if(cTransformable->position.z - targetPosition.z < 0){
-            targetPosition.z = targetPosition.z - (2*distZ);
+            targetPosition.z = targetPosition.z + (2*distZ);
 
         }else{
-            targetPosition.z = targetPosition.z + (2*distZ);
+            targetPosition.z = targetPosition.z - (2*distZ);
 
         }
         //float angleRotation = (60 * M_PI) / 180.0;
