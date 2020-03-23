@@ -17,8 +17,8 @@ class InputFacade {
     public:
         virtual ~InputFacade() = default;
         virtual vector<Constants::InputTypes> CheckInput()        = 0;
-        virtual void CheckInputMenu()    = 0;
-        virtual void CheckInputPause()   = 0;
+        virtual void CheckInputMenu(int&, int)    = 0;
+        virtual void CheckInputPause(int&, int)   = 0;
         virtual void CheckInputEndRace() = 0;
 
     protected:

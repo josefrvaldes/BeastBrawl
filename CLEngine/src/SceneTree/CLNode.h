@@ -49,6 +49,7 @@ class CLNode{
         CLCamera* GetActiveCamera();
         vector<CLNode*> GetLights()                      { return lights; };
         vector<CLNode*> GetCameras()                     { return cameras; };
+        void RemoveLightsAndCameras();
 
         //Setters
         bool SetFather(CLNode* f)                        { father = f; return true; }

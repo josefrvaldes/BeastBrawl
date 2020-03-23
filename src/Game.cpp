@@ -230,7 +230,6 @@ void Game::SetStatePause(DataMap* d) {
 }
 
 void Game::SetStateInGameSingle(DataMap* d) {
-    cout << "¿HOLA?" << endl;
     shared_ptr<DataMap> data = make_shared<DataMap>();
 
     (*data)[TYPE_POWER_UP] = typeCPowerUp::None;

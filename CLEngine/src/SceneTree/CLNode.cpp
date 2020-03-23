@@ -284,11 +284,9 @@ void CLNode::DFSTree(glm::mat4 mA) {
         transformationMat = mA*CalculateTransformationMatrix();
         changed = false;
     }
-
     auto& frustum_m = GetActiveCamera()->GetFrustum();
     //CLE::CLFrustum::Visibility frusVisibility = frustum_m.IsInside(translation);
     CLE::CLFrustum::Visibility frusVisibility = frustum_m.IsInside(translation, dimensionsBoundingBox);
-
 
     if(entity && visible && frusVisibility == CLE::CLFrustum::Visibility::Completly) { 
         glUseProgram(shaderProgramID);
@@ -553,4 +551,10 @@ float CLNode::CalculateBoundingBox(){
     //cout << "Los extremos son: " << endl;
     //cout << "minimo: ( " << extremeMinMesh.x<< " , " << extremeMinMesh.y<< " , " <<extremeMinMesh.z<< 
     //" ) , maximo: " << extremeMaxMesh.x<< " , " << extremeMaxMesh.y<< " , " << extremeMaxMesh.z<< " )"<< endl;
+}
+
+
+void CLNode::RemoveLightsAndCameras() {
+    cameras.clear();
+    lights.clear();
 }

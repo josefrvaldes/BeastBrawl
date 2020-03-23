@@ -53,6 +53,7 @@ class CLEngine {
         void InputClose();
         void CloseWindow();
         void PollEvents();
+        void Clear();
 
         void LoadFont(const std::string&);
         void DrawImage2D(float _x, float _y, float _width, float _height, float _depth, string& file, bool);

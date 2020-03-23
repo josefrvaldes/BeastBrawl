@@ -37,7 +37,6 @@ void StateMenu::Render(){
 
 void StateMenu::Input(){
     renderEngine->FacadeCheckInputMenu();
-    InputFacadeManager::GetInstance()->GetInputFacade()->CheckInputMenu();
 }
 
 

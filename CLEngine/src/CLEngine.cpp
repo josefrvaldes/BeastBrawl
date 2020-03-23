@@ -363,6 +363,14 @@ void CLEngine::CloseWindow(){
 
 }
 
+void CLEngine::Clear(){
+    if (smgr) {
+        for (const auto& c : smgr->GetChilds()) {
+            smgr->RemoveChild(c.get());
+        }
+        smgr->RemoveLightsAndCameras();
+    }
+}
 
 
 // -----------------------------------------------------------

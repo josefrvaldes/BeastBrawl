@@ -97,6 +97,11 @@ class RenderFacadeClover : public RenderFacade {
 
         std::string powerUps[7];
 
+        int inputMenu { 0 };
+        int maxInputMenu { 2 };
+        int inputPause { 0 };
+        int maxInputPause { 1 };
+
         CLEngine* device;
         CLNode* smgr;
         CLResourceManager* resourceManager;

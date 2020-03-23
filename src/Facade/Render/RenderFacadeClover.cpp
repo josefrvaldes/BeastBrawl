@@ -4,10 +4,9 @@
 #include <cmath>
 #include <algorithm>    // std::sort
 
-#include "../../Components/CBoundingChassis.h"
-#include "../../Components/CBoundingOBB.h"
-#include "../../Components/CPowerUp.h"
-
+#include <Components/CBoundingChassis.h>
+#include <Components/CBoundingOBB.h>
+#include <Components/CPowerUp.h>
 #include <Components/CBoundingPlane.h>
 #include <Components/CBoundingSphere.h>
 #include <Components/CCamera.h>
@@ -26,14 +25,20 @@
 #include <Components/CNavMesh.h>
 #include <Components/CCurrentNavMesh.h>
 #include <Components/CCar.h>
+
 #include <Entities/CarAI.h>
 #include <Entities/CarHuman.h>
+
 #include <Systems/Physics.h>
 #include <Systems/Utils.h>
+
 #include <Managers/ManNavMesh.h>
+
 #include <Constants.h>
+
 #include <Game.h>
 
+#include <Facade/Input/InputFacadeManager.h>
 
 
 
@@ -534,12 +539,14 @@ vector<Constants::InputTypes> RenderFacadeClover::FacadeCheckInputMulti() {
 }
 
 void RenderFacadeClover::FacadeCheckInputMenu() {
+    InputFacadeManager::GetInstance()->GetInputFacade()->CheckInputMenu(inputMenu, maxInputMenu);
 }
 
 void RenderFacadeClover::FacadeCheckInputControler() {
 }
 
 void RenderFacadeClover::FacadeCheckInputPause() {
+    InputFacadeManager::GetInstance()->GetInputFacade()->CheckInputPause(inputPause, maxInputPause);
 }
 
 void RenderFacadeClover::FacadeCheckInputEndRace() {
@@ -578,8 +585,25 @@ void RenderFacadeClover::FacadeDraw() const{
  * Dibuja las cosas del menu
  */
 void RenderFacadeClover::FacadeDrawMenu() {
+
     std::string file = "media/main_menu.png";
     device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
+
+    std::string text;
+    //glm::vec3 color = glm::vec3(0.0f, 255.0f, 0.0f);
+    glm::vec3 color[3] = {
+            glm::vec3(0.0f, 255.0f, 0.0f),
+            glm::vec3(0.0f, 255.0f, 0.0f),
+            glm::vec3(0.0f, 255.0f, 0.0f)
+    };
+    color[inputMenu] = glm::vec3(255.0f, 0.0f, 0.0f);
+    text = "Un jugador";
+    device->RenderText2D(text, 500.0f, 400.0f, 0.05f, 1.0f, color[0]);
+    text = "Multijugador";
+    device->RenderText2D(text, 500.0f, 350.0f, 0.05f, 1.0f, color[1]);
+    text = "Salir";
+    device->RenderText2D(text, 500.0f, 300.0f, 0.05f, 1.0f, color[2]);
+
 }
 
 void RenderFacadeClover::FacadeDrawControler() {
@@ -591,6 +615,17 @@ void RenderFacadeClover::FacadeDrawControler() {
 void RenderFacadeClover::FacadeDrawPause() {
     std::string file = "media/pause_screen.png";
     device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
+
+    std::string text;
+    glm::vec3 color[2] = {
+            glm::vec3(0.0f, 255.0f, 0.0f),
+            glm::vec3(0.0f, 255.0f, 0.0f)
+    };
+    color[inputPause] = glm::vec3(255.0f, 0.0f, 0.0f);
+    text = "Continuar";
+    device->RenderText2D(text, 500.0f, 400.0f, 0.05f, 1.0f, color[0]);
+    text = "Salir";
+    device->RenderText2D(text, 500.0f, 300.0f, 0.05f, 1.0f, color[1]);
 }
 
 /**
@@ -899,10 +934,7 @@ void RenderFacadeClover::FacadeAddSphereOnObject(Entity* entity){
 }
 
 void RenderFacadeClover::CleanScene() {
-    if (smgr) {
-        for (const auto& c : smgr->GetChilds()) {
-            smgr->RemoveChild(c.get());
-        }
-    }
+
+    device->Clear();
 
 }
