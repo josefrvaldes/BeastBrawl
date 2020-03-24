@@ -16,7 +16,8 @@ using namespace chrono;
 class InputFacade {
     public:
         virtual ~InputFacade() = default;
-        virtual vector<Constants::InputTypes> CheckInput()        = 0;
+        virtual vector<Constants::InputTypes> CheckInputMulti()  = 0;
+        virtual void CheckInputSingle()  = 0;
         virtual void CheckInputMenu(int&, int)    = 0;
         virtual void CheckInputSelectCharacter(int&, int) = 0;
         virtual void CheckInputPause(int&, int)   = 0;
@@ -24,6 +25,7 @@ class InputFacade {
         virtual void CheckInputEndRace() = 0;
         virtual void CheckInputLobbyMulti() = 0;
         virtual void CheckInputController() = 0;
+
 
     protected:
         time_point<system_clock> timeStart;

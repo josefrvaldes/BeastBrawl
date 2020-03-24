@@ -14,7 +14,8 @@ class InputFacadeClover : public InputFacade{
     public:
         InputFacadeClover();
         ~InputFacadeClover() override = default;
-        vector<Constants::InputTypes> CheckInput()        override;
+        vector<Constants::InputTypes> CheckInputMulti()        override;
+        void CheckInputSingle()  override;
         void CheckInputMenu(int&, int)    override;
         void CheckInputSelectCharacter(int&, int) override;
         void CheckInputPause(int&, int)   override;
@@ -33,5 +34,9 @@ class InputFacadeClover : public InputFacade{
         bool downPress { false };
         bool deletePress { false };
 
-
+        enum InputXBox{BUTTON_A, BUTTON_B, BUTTON_X, BUTTON_Y, BUTTON_LB, BUTTON_RB, BUTTON_BACK, BUTTON_START, BUTTON_XBOX, BUTTON_STICK_L, BUTTON_STICK_R, END};
+        std::unordered_map<InputXBox, bool> inputsPressed;
+        core::array<SJoystickInfo> joystickInfo;
+        bool IsInputPressed(InputXBox input);
+        void SetValueInput(InputXBox input, bool valuePressed);
 };
