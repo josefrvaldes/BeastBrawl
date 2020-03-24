@@ -39,7 +39,8 @@ CarAI::CarAI(){
 
     string mesh;
     if(Constants::RENDER_ENGINE == Constants::RenderEngine::CLOVER){
-        mesh    = "kart_physics.fbx";
+        //mesh    = "kart_physics.fbx";
+        mesh    =   "kart_ia.obj";
         
     }else if(Constants::RENDER_ENGINE == Constants::RenderEngine::IRRLICHT){
         mesh    =   "kart_ia.obj";
