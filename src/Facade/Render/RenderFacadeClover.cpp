@@ -225,7 +225,7 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars) {
 
         int time = cTotem->accumulatedTime / 100.0;
         float time2 = time / 10.0;
-        glm::vec3 color = glm::vec3(0.0f,255.0f,0.0f);
+        glm::vec3 color = glm::vec3(0.0f,0.0f,255.0f);
         if(cTotem->active){
             //Si tiene el totem voy a dibujarlo rojo por ejemplo
             color = glm::vec3(255.0f, 0.0f, 0.0f);
@@ -607,7 +607,7 @@ void RenderFacadeClover::FacadeDraw() const{
  *
  */
 void RenderFacadeClover::FacadeDrawIntro() {
-    std::string file = "media/pauseMenu.png";
+    std::string file = "media/intro.png";
     device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
 
     /*std::string text;
@@ -637,12 +637,12 @@ void RenderFacadeClover::FacadeDrawMenu() {
     std::string text;
     //glm::vec3 color = glm::vec3(0.0f, 255.0f, 0.0f);
     glm::vec3 color[4] = {
-            glm::vec3(0.0f, 255.0f, 0.0f),
-            glm::vec3(0.0f, 255.0f, 0.0f),
-            glm::vec3(0.0f, 255.0f, 0.0f),
-            glm::vec3(0.0f, 255.0f, 0.0f)
+            glm::vec3(0.0f, 0.0f, 255.0f),
+            glm::vec3(0.0f, 0.0f, 255.0f),
+            glm::vec3(0.0f, 0.0f, 255.0f),
+            glm::vec3(0.0f, 0.0f, 255.0f)
     };
-    color[inputMenu] = glm::vec3(255.0f, 0.0f, 0.0f);
+    color[inputMenu] = glm::vec3(0.0f, 255.0f, 0.0f);
     text = "Un jugador";
     device->RenderText2D(text, 500.0f, 400.0f, 0.05f, 1.0f, color[0]);
     text = "Multijugador";
@@ -675,10 +675,10 @@ void RenderFacadeClover::FacadeDrawPause() {
 
     std::string text;
     glm::vec3 color[2] = {
-            glm::vec3(0.0f, 255.0f, 0.0f),
-            glm::vec3(0.0f, 255.0f, 0.0f)
+            glm::vec3(0.0f, 0.0f, 255.0f),
+            glm::vec3(0.0f, 0.0f, 255.0f)
     };
-    color[inputPause] = glm::vec3(255.0f, 0.0f, 0.0f);
+    color[inputPause] = glm::vec3(0.0f, 255.0f, 0.0f);
     text = "Continuar";
     device->RenderText2D(text, 500.0f, 400.0f, 0.05f, 1.0f, color[0]);
     text = "Salir";
