@@ -37,29 +37,36 @@ class RenderFacadeClover : public RenderFacade {
       void FacadeDrawAll() const override;
       void FacadeEndScene() const override;
       void FacadeDeviceDrop() override;
-      void FacadeDraw() const override;
       void DeleteEntity(Entity*) override;
+
+      void FacadeDraw() const override;
       void FacadeDrawIntro() override;
       void FacadeDrawMenu() override;
+      void FacadeDrawSelectCharacter() override;
       void FacadeInitResources() override;
       void FacadeDrawPause() override;
       void FacadeDrawEndRace() override;
       void FacadeDrawLobbyMulti() override;
       void FacadeDrawLobbyMultiExit() override;
       void FacadeDrawControler() override;
+
       void FacadeInitIntro() override;
       void FacadeInitMenu() override;
+      void FacadeInitSelectCharacter() override;
       void FacadeInitPause() override;
       void FacadeInitEndRace() override;
       void FacadeInitLobbyMulti() override;
       void FacadeInitControler() override;
       void FacadeInitHUD() override;
+
       void FacadeCheckInputIntro() override;
       void FacadeCheckInputMenu() override;
+      void FacadeCheckInputSelectCharacter() override;
       void FacadeCheckInputPause() override;
       void FacadeCheckInputEndRace() override;
       void FacadeCheckInputLobbyMulti() override;
       void FacadeCheckInputControler() override;
+
       void FacadeUpdatePowerUpHUD(DataMap* d) override;
       void FacadeDrawHUD(Entity* car, ManCar* manCars) override;
       void FacadeSuscribeEvents() override;
@@ -105,6 +112,8 @@ class RenderFacadeClover : public RenderFacade {
         int maxInputMenu { 3 };
         int inputPause { 0 };
         int maxInputPause { 1 };
+        int inputSC { 0 };
+        int maxInputSC { 1 };
 
         CLEngine* device;
         CLNode* smgr;

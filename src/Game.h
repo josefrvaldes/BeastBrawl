@@ -25,6 +25,7 @@ class Game{
         //EventManager
         void SetStateIntro(DataMap* d);
         void SetStateMenu(DataMap* d);
+        void SetStateSelectCharacter(DataMap* d);
         void SetStatePause(DataMap* d);
         void SetStateInGameSingle(DataMap* d);
         void SetStateInGameMulti(DataMap* d);
