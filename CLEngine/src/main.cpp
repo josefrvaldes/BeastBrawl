@@ -107,7 +107,7 @@ int main() {
         mesh3->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
 
         auto mesh4 = smgr->AddMesh(6);
-        mesh4->SetShaderProgramID(resourceShader->GetProgramID());
+        mesh4->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
         
 
         static_cast<CLCamera*>(camera->GetEntity())->SetCameraTarget(mesh2->GetTranslation());
@@ -150,18 +150,19 @@ int main() {
     //static_cast<CLMesh*>(mesh3->GetEntity())->SetMaterial(resourceMaterial); 
     static_cast<CLMesh*>(mesh4->GetEntity())->SetMesh(resourceMeshBox);
 
-    camera->SetTranslation(glm::vec3(70.0f, 0.0f, 60.0f));
+    camera->SetTranslation(glm::vec3(121.127f, 70.42f, -11.9f));
+    light1->SetTranslation(glm::vec3(54.9f, 35.2f, -14.08f));
     mesh1->SetScalation(glm::vec3(2.0f, 2.0f, 2.0f));
     mesh1->SetRotation(glm::vec3(0.0f,0.0f,0.0f));
     mesh1->SetTranslation(glm::vec3(50.0f,50.0f,50.0f));
-    mesh2->SetScalation(glm::vec3(2.0f, 2.0f, 2.0f));
+    mesh2->SetScalation(glm::vec3(0.5f, 0.5f, 0.5f));
     mesh2->SetRotation(glm::vec3(0.0f, 180.0f, 0.0f));
     mesh2->SetTranslation(glm::vec3(10.0f,0.0f,0.0f));
     mesh3->SetTranslation(glm::vec3(-40.0f,0.0f,0.0f));
     mesh3->SetScalation(glm::vec3(0.2f,0.2f,0.2f));
 
-    mesh4->SetScalation(glm::vec3(10.0f, 10.0f, 4.0f));
-    mesh4->SetTranslation(glm::vec3(65.0f,0.0f,10.0f));
+    mesh4->SetScalation(glm::vec3(100.0f, 100.0f, 10.0f));
+    mesh4->SetTranslation(glm::vec3(65.0f,50.0f, 70.0f));
 
 
     //LUCES Y COLORES
@@ -240,7 +241,7 @@ int main() {
 
 
             //TEXTO -----------------
-            string cadena = "Meg";
+            string cadena = "Buenos dias, achis achis D':";
             glm::vec3 vect3 = glm::vec3(0.5, 0.8f, 0.2f);
         device->RenderText2D(cadena, 25.0f, 25.0f, 0.05f, 1.0f, vect3);
 

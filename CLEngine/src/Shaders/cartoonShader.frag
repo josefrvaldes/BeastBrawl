@@ -114,7 +114,7 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir, i
     
     float shadow = 0.0;
     /*if(i == 0)
-        shadow = ShadowCalculation(FragPos, light.position); */
+        shadow = ShadowCalculation(FragPos, light.position);*/
     return edgeDetection * (ambient + (1.0 - shadow) * (diffuse /*+ specular*specMask*/));
     //return edgeDetection * (ambient + diffuse /*+ specular*specMask*/);
 } 
