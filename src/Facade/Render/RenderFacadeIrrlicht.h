@@ -41,23 +41,34 @@ class RenderFacadeIrrlicht : public RenderFacade {
     void FacadeDeviceDrop() override;
     void FacadeDraw() const override;
     void DeleteEntity(Entity*) override;
+
+    void FacadeDrawIntro() override;
     void FacadeDrawMenu() override;
+    void FacadeDrawSelectCharacter() override;
+    void FacadeInitResources() override;
     void FacadeDrawPause() override;
     void FacadeDrawEndRace() override;
     void FacadeDrawLobbyMulti() override;
     void FacadeDrawLobbyMultiExit() override;
     void FacadeDrawControler() override;
+
+    void FacadeInitIntro() override;
     void FacadeInitMenu() override;
+    void FacadeInitSelectCharacter() override;
     void FacadeInitPause() override;
     void FacadeInitEndRace() override;
     void FacadeInitLobbyMulti() override;
     void FacadeInitControler() override;
     void FacadeInitHUD() override;
+
+    void FacadeCheckInputIntro() override;
     void FacadeCheckInputMenu() override;
+    void FacadeCheckInputSelectCharacter() override;
     void FacadeCheckInputPause() override;
     void FacadeCheckInputEndRace() override;
     void FacadeCheckInputLobbyMulti() override;
     void FacadeCheckInputControler() override;
+
     void FacadeUpdatePowerUpHUD(DataMap* d) override;
     void FacadeDrawHUD(Entity* car, ManCar* manCars) override;
     void FacadeSuscribeEvents() override;
@@ -66,6 +77,7 @@ class RenderFacadeIrrlicht : public RenderFacade {
     void FacadeUpdateMeshesLoD(vector<shared_ptr<Entity>> entities) override;
     void ThrowEventChangeToMulti(uint16_t IdOnline, const vector<uint16_t> IdPlayersOnline) override;
     void FacadeAddSkybox(string right,string left,string top,string bottom,string front,string back) override;
+    void CleanScene() override;
 
     //DEBUG
     void Draw3DLine(vec3& pos1, vec3& pos2, uint16_t r, uint16_t g, uint16_t b) const override;
@@ -98,6 +110,7 @@ class RenderFacadeIrrlicht : public RenderFacade {
     scene::ISceneManager* smgr;
     scene::ICameraSceneNode* camera1;
     MyEventReceiver receiver;
+    video::ITexture* introBG;
     video::ITexture* menuBG;
     video::ITexture* controlerBG;
     video::ITexture* pauseBG;

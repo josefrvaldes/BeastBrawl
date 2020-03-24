@@ -208,7 +208,7 @@ void SoundFacadeFMOD::LoadSoundByState(const uint8_t numState) {
  * @param type - 1 para eventos 3D y 0 para eventos 2D.
  */
 void SoundFacadeFMOD::LoadSoundBank(const string& nameBank, const bool type) {
-    cout << "********* Voy a cargar el banco: " << nameBank << endl;
+    //cout << "********* Voy a cargar el banco: " << nameBank << endl;
     soundEngine->LoadSoundBank(nameBank);
     auto it = events.find(nameBank);
     if ( it != events.end()) {
@@ -406,7 +406,7 @@ void SoundFacadeFMOD::StartGame() {
     PlayEvent("Musica/in_game_1");
     srand(time(nullptr));
     character = rand() % 5;
-    cout << "++++ Personaje en sonido: " << character << endl;
+    //cout << "++++ Personaje en sonido: " << character << endl;
     SetParameter("Personajes/voces", "Personaje", character);
     SetParameter("Coche/claxon", "Personaje", character);
     //SetParameter("Coche/motor", "Personaje", character);
@@ -458,7 +458,7 @@ void SoundFacadeFMOD::SoundCrash(DataMap* d) {                                //
     }
     string mapID = "Coche/choque" + to_string(id);
     if (!soundEngine->IsPlayingEstatic3D(mapID)) {
-        cout << "**** QUE ME CHOCAO CON UN PAVO" << endl;
+        //cout << "**** QUE ME CHOCAO CON UN PAVO" << endl;
         SetEventPositionEstatic3D(mapID, pos);
         PlayEvent(mapID);
     }
@@ -474,7 +474,7 @@ void SoundFacadeFMOD::SoundCrashWall(DataMap* d) {                              
 
     name = "Coche/choque" + to_string(id);
     if (!soundEngine->IsPlayingEstatic3D(name)) {
-        cout << "**** QUE ME CHOCAO CON UNA PARED: " << name << endl;
+        //cout << "**** QUE ME CHOCAO CON UNA PARED: " << name << endl;
         SetEventPositionEstatic3D(name, pos);
         PlayEvent(name);
     }

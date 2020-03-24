@@ -97,6 +97,15 @@ void RenderFacadeIrrlicht::FacadeSuscribeEvents() {
         "facadeUpdatePowerUpHUD"});
 }
 
+void RenderFacadeIrrlicht::FacadeInitIntro() {
+    introBG = driver->getTexture("media/pauseMenu.png");
+    driver->makeColorKeyTexture(introBG, core::position2d<s32>(0, 0));
+}
+
+void RenderFacadeIrrlicht::FacadeInitSelectCharacter() {
+
+}
+
 void RenderFacadeIrrlicht::FacadeInitMenu() {
     menuBG = driver->getTexture("media/main_menu.png");
     driver->makeColorKeyTexture(menuBG, core::position2d<s32>(0, 0));
@@ -616,6 +625,10 @@ void RenderFacadeIrrlicht::SetValueInput(InputXBox input, bool valuePressed){
     }
 }
 
+void RenderFacadeIrrlicht::FacadeCheckInputIntro() {
+
+}
+
 // To-Do: introducir multi input
 // Comprobar inputs del teclado
 void RenderFacadeIrrlicht::FacadeCheckInputSingle() {
@@ -819,6 +832,10 @@ vector<Constants::InputTypes> RenderFacadeIrrlicht::FacadeCheckInputMulti() {
     return inputs;
 }
 
+void RenderFacadeIrrlicht::FacadeCheckInputSelectCharacter() {
+
+}
+
 void RenderFacadeIrrlicht::FacadeCheckInputMenu() {
     //Cambiamos a ingame
     if ((receiver.IsKeyDown(KEY_SPACE) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_A)) && !IsInputPressed(InputXBox::BUTTON_A)){
@@ -974,6 +991,21 @@ void RenderFacadeIrrlicht::FacadeDraw() const{
     driver->endScene();
 }
 
+/**
+ *
+ */
+void RenderFacadeIrrlicht::FacadeDrawIntro() {
+    driver->beginScene(true, true, video::SColor(255, 113, 113, 133));
+    driver->draw2DImage(introBG, core::position2d<s32>(0, 0),
+                        core::rect<s32>(0, 0, 1280, 720), 0,
+                        video::SColor(255, 255, 255, 255), false);
+    driver->endScene();
+}
+
+void RenderFacadeIrrlicht::FacadeDrawSelectCharacter() {
+
+}
+
 void RenderFacadeIrrlicht::FacadeDrawMenu() {
     driver->beginScene(true, true, video::SColor(255, 113, 113, 133));
     //smgr->drawAll();  // draw the 3d scene
@@ -981,6 +1013,10 @@ void RenderFacadeIrrlicht::FacadeDrawMenu() {
                         core::rect<s32>(0, 0, 1280, 720), 0,
                         video::SColor(255, 255, 255, 255), false);
     driver->endScene();
+}
+
+void RenderFacadeIrrlicht::FacadeInitResources(){
+
 }
 
 void RenderFacadeIrrlicht::FacadeDrawControler() {
@@ -1393,4 +1429,9 @@ void RenderFacadeIrrlicht::FacadeDrawBoundingBox(Entity* entity, bool colliding)
     } else {
         driver->draw3DBox(boundingBox, video::SColor(255, 0, 255, 0));
     }
+}
+
+
+void RenderFacadeIrrlicht::CleanScene() {
+    smgr->clear();
 }

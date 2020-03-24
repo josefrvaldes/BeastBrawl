@@ -2,7 +2,7 @@
 
 using namespace CLE;
 
-bool CLResourceMaterial::LoadFile(string file){
+bool CLResourceMaterial::LoadFile(string file, bool vertically){
 
     Assimp::Importer importer;
 

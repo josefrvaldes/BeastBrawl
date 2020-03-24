@@ -12,8 +12,11 @@ using namespace std;
 
 Light::Light(glm::vec3 pos)
 {
-    string vertexShader = "CLEngine/src/Shaders/lightMapping.vert";
-    string fragmentShader = "CLEngine/src/Shaders/lightMapping.frag";
+    //string vertexShader = "CLEngine/src/Shaders/lightMapping.vert";
+    //string fragmentShader = "CLEngine/src/Shaders/lightMapping.frag";
+
+    string vertexShader = "CLEngine/src/Shaders/cartoonShader.vert";
+    string fragmentShader = "CLEngine/src/Shaders/cartoonShader.frag";
 
     shared_ptr<Component> cId   = make_shared<CId>();
     shared_ptr<Component> cTransformable = make_shared<CTransformable>(pos,    glm::vec3(0.0f,0.0f,0.0f),    glm::vec3(1.0f,1.0f,1.0f));

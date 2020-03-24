@@ -36,25 +36,36 @@ class RenderFacade {
     virtual void FacadeDrawAll() const = 0;
     virtual void FacadeEndScene() const = 0;
     virtual void FacadeDeviceDrop() = 0;
-    virtual void FacadeDraw() const = 0;
     virtual void DeleteEntity(Entity*) = 0;
+
+    virtual void FacadeDraw() const = 0;
+    virtual void FacadeDrawIntro() = 0;
     virtual void FacadeDrawMenu() = 0;
+    virtual void FacadeDrawSelectCharacter() = 0;
+    virtual void FacadeInitResources() = 0;
     virtual void FacadeDrawPause() = 0;
     virtual void FacadeDrawEndRace() = 0;
     virtual void FacadeDrawLobbyMulti() = 0;
     virtual void FacadeDrawLobbyMultiExit() = 0;
     virtual void FacadeDrawControler() = 0;
+
+    virtual void FacadeInitIntro() = 0;
     virtual void FacadeInitMenu() = 0;
+    virtual void FacadeInitSelectCharacter() = 0;
     virtual void FacadeInitPause() = 0;
     virtual void FacadeInitEndRace() = 0;
     virtual void FacadeInitLobbyMulti() = 0;
     virtual void FacadeInitControler() = 0;
     virtual void FacadeInitHUD() = 0;
+
+    virtual void FacadeCheckInputIntro() = 0;
     virtual void FacadeCheckInputMenu() = 0;
+    virtual void FacadeCheckInputSelectCharacter() = 0;
     virtual void FacadeCheckInputPause() = 0;
     virtual void FacadeCheckInputEndRace() = 0;
     virtual void FacadeCheckInputLobbyMulti() = 0;
     virtual void FacadeCheckInputControler() = 0;
+
     virtual void FacadeUpdatePowerUpHUD(DataMap* d) = 0;
     virtual void FacadeDrawHUD(Entity* car, ManCar* manCars) = 0;
     virtual void FacadeSuscribeEvents() = 0;
@@ -63,6 +74,7 @@ class RenderFacade {
     virtual void FacadeUpdateMeshesLoD(vector<shared_ptr<Entity>> entities) = 0;
     virtual void ThrowEventChangeToMulti(uint16_t IdOnline, const vector<uint16_t> IdPlayersOnline) = 0;
     virtual void FacadeAddSkybox(string right,string left,string top,string bottom,string front,string back) = 0;
+    virtual void CleanScene() = 0;
 
     //DEBUG
     virtual void Draw3DLine(vec3 &pos1, vec3 &pos2, uint16_t r, uint16_t g, uint16_t b) const = 0;
@@ -82,6 +94,9 @@ class RenderFacade {
     virtual bool GetShowDebug() = 0;
     virtual bool GetShowDebugAI() = 0;
     virtual int  GetIDCarAIToDebug() = 0;
+
+    int GetNumEnemyCars() { return numEnemyCars; };
+    void SetNumEnemyCars(int n) { numEnemyCars = n; };
 
    protected:
     uint16_t idCar = 0;

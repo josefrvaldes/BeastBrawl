@@ -1,12 +1,16 @@
 #include "CLResourceTexture.h"
 using namespace CLE;
 
-bool CLResourceTexture::LoadFile(string file){
-
+bool CLResourceTexture::LoadFile(string file, bool vertically){
 
     glGenTextures(1, &textureID);
 
     int width, height, nrComponents;
+    stbi_set_flip_vertically_on_load(false);
+    if(vertically) {
+        //cout << "----------------------- ENTRO AQUI: " << file << endl;
+        stbi_set_flip_vertically_on_load(true);
+    }
     unsigned char *data = stbi_load(file.c_str(), &width, &height, &nrComponents, 0);
     if (data)
     {
@@ -41,5 +45,5 @@ bool CLResourceTexture::LoadFile(string file){
 }
 
 void CLResourceTexture::Draw(GLuint shaderID){
-
+    glBindTexture(GL_TEXTURE_2D, textureID);
 }

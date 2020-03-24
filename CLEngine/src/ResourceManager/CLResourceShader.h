@@ -12,19 +12,16 @@ namespace CLE {
             ~CLResourceShader() {};
 
             void Draw(GLuint shaderID) override;
-            bool LoadFile(string) override;
+            bool LoadFile(string, bool) override;
             bool LoadFile(string,string);
             bool LoadFile(string,string,string);
 
-
-            GLuint GetVertexID()                const { return vertexID;   }
-            GLuint GetFragmentID()              const { return fragmentID;   }
             int GetProgramID()                  const { return programID;   }
 
         private:
             bool LoadShader(string, GLenum);
             bool LinkShaders();
-            bool LinkShadersWithGeom();
+            bool LinkShadersGeometry();
             GLuint vertexID;
             GLuint fragmentID;
             GLuint geometryID;

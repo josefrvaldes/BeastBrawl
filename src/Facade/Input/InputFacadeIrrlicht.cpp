@@ -21,11 +21,26 @@ vector<Constants::InputTypes> InputFacadeIrrlicht::CheckInput(){
 }
 
 
-void InputFacadeIrrlicht::CheckInputMenu(){
+void InputFacadeIrrlicht::CheckInputIntro() {
+
 }
 
+void InputFacadeIrrlicht::CheckInputLobbyMulti() {
 
-void InputFacadeIrrlicht::CheckInputPause(){
+}
+
+void InputFacadeIrrlicht::CheckInputController() {
+
+}
+
+void InputFacadeIrrlicht::CheckInputMenu(int&, int){
+}
+
+void InputFacadeIrrlicht::CheckInputSelectCharacter(int &, int) {
+
+}
+
+void InputFacadeIrrlicht::CheckInputPause(int&, int){
 }
 
 

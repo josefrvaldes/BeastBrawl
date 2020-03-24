@@ -62,6 +62,9 @@ void StateInGame::InitializeFacades() {
     physicsEngine = PhysicsFacadeManager::GetInstance()->GetPhysicsFacade();
     renderEngine = RenderFacadeManager::GetInstance()->GetRenderFacade();
     renderEngine->FacadeSuscribeEvents();
+
+    //Pantalla de carga
+    renderEngine->FacadeInitResources(); 
 }
 
 /*
@@ -216,10 +219,12 @@ void StateInGame::Update() {
     sysLoD->Update(manCars->GetEntities(), cam.get());
     sysLoD->Update(manPowerUps->GetEntities(), cam.get());
     sysLoD->Update(manBoxPowerUps->GetEntities(), cam.get());
+    sysLoD->Update(manTotems->GetEntities(), cam.get());
 
     renderEngine->FacadeUpdateMeshesLoD(manCars->GetEntities());
     renderEngine->FacadeUpdateMeshesLoD(manPowerUps->GetEntities());
     renderEngine->FacadeUpdateMeshesLoD(manBoxPowerUps->GetEntities());
+    renderEngine->FacadeUpdateMeshesLoD(manTotems->GetEntities());
 }
 
 void StateInGame::Render() {

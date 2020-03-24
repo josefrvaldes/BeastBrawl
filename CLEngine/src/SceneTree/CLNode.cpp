@@ -13,6 +13,13 @@ CLNode::CLNode(){
     rotation = glm::vec3(0.0f, 0.0f, 0.0f);
     scalation = glm::vec3(1.0f, 1.0f, 1.0f);
     transformationMat = glm::mat4(1.0f);
+
+    //Inicializamos el shader de debug
+    if(!debugShader){
+        auto resourceDebugShader = CLResourceManager::GetResourceManager()->GetResourceShader("CLEngine/src/Shaders/debugShader.vert", "CLEngine/src/Shaders/debugShader.frag");
+        debugShader = resourceDebugShader->GetProgramID();
+    }
+    
 }
 
 CLNode::CLNode(shared_ptr<CLEntity> entity) : CLNode() {
@@ -28,6 +35,14 @@ CLNode* CLNode::AddGroup(unsigned int id){
     return node.get();
 }
 
+CLNode* CLNode::AddMesh(unsigned int id,string mesh){
+    auto node = AddMesh(id);
+    auto resourceMesh = CLResourceManager::GetResourceManager()->GetResourceMesh(mesh);
+    static_cast<CLMesh*>(node->GetEntity())->SetMesh(resourceMesh);
+
+    return node;
+}
+
 CLNode* CLNode::AddMesh(unsigned int id){
 
     shared_ptr<CLEntity> e = make_shared<CLMesh>(id);
@@ -37,8 +52,14 @@ CLNode* CLNode::AddMesh(unsigned int id){
 
 
     return node.get();
-    
 }
+
+CLNode* CLNode::AddLight(unsigned int id,glm::vec3 intensity, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float constant, float linear, float quadratic){
+    auto node = AddLight(id);
+    static_cast<CLLight*>(node->GetEntity())->SetLightAttributes(intensity,ambient,diffuse,specular,constant,linear,quadratic);
+    return node;
+}
+
 
 CLNode* CLNode::AddLight(unsigned int id){
 
@@ -86,7 +107,15 @@ void CLNode::AddShadowMapping(){
 
 
 bool CLNode::RemoveChild(CLNode* child){
-
+    /*
+    if(child->GetChilds().size()>0){
+        for(auto childOfChild : child->GetChilds()){
+            
+            child->DeleteNode(childOfChild->GetEntity()->GetID());
+        }
+    }
+    */
+    //Childs son los hijos del padre en el que estara child
     for(unsigned int i = 0; i<childs.size(); ++i){
         if(child == childs[i].get()){
             childs.erase(childs.begin()+i);
@@ -264,14 +293,11 @@ void CLNode::DFSTree(glm::mat4 mA) {
         transformationMat = mA*CalculateTransformationMatrix();
         changed = false;
     }
-
     auto& frustum_m = GetActiveCamera()->GetFrustum();
     //CLE::CLFrustum::Visibility frusVisibility = frustum_m.IsInside(translation);
     CLE::CLFrustum::Visibility frusVisibility = frustum_m.IsInside(translation, dimensionsBoundingBox);
 
-
     if(entity && visible && frusVisibility == CLE::CLFrustum::Visibility::Completly) { 
-        // La matriz model se pasa aqui wey
         glUseProgram(shaderProgramID);
         //Calculamos las luces
         //TODO: Hacer un sistema de que si no hemos cambiado de shader no se recalculen
@@ -286,11 +312,8 @@ void CLNode::DFSTree(glm::mat4 mA) {
         glUniformMatrix4fv(glGetUniformLocation(shaderProgramID, "MVP"), 1, GL_FALSE, glm::value_ptr(MVP));
         glUniform1i(glGetUniformLocation(shaderProgramID, "shadows"), true); 
         glUniform1f(glGetUniformLocation(shaderProgramID, "far_plane"), 5000.0); 
-
-        //entity->Draw(transformationMat);
         entity->Draw(shaderProgramID);
 
-        //cout << "este objeto se dibuja" << endl;
     }
 
     for (auto node : childs) {
@@ -443,6 +466,59 @@ CLCamera* CLNode::GetActiveCamera(){
     return nullptr;
 }
 
+const void CLNode::Draw3DLine(float x1, float y1, float z1, float x2, float y2, float z2) const{
+    Draw3DLine(x1,y1,z1,x1,y2,z1,CLColor(255.0,0.0,0.0,255.0));
+}
+
+const void CLNode::Draw3DLine(float x1, float y1, float z1, float x2, float y2, float z2,CLColor color) const{
+
+    float line[] = {
+        x1, y1, z1,
+        x1, y2, z2
+    };
+
+    // float line[] = {
+    //     -0.6f,0.3f,0.0f,
+    //     0.8f,0.5f,0.0f
+    // };
+ 
+    
+    glEnable(GL_LINE_SMOOTH);
+    glLineWidth(lineWidth);
+    glHint(GL_LINE_SMOOTH_HINT,  GL_NICEST);
+
+    unsigned int VBO, VAO;
+    glGenBuffers(1, &VBO);
+    glGenVertexArrays(1, &VAO);
+    glBindVertexArray(VAO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(line), line, GL_STATIC_DRAW);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE,  3 * sizeof(float), 0);
+    glBindVertexArray(0);
+
+    glm::mat4 modelMat = glm::identity<mat4>();
+
+    //99% seguro de que estoy enviando mal las matrices vista y projeccion
+    glUseProgram(debugShader);
+
+    glm::vec4 clcolor(color.GetRedNormalized(),color.GetGreenNormalized(),color.GetBlueNormalized(),color.GetAlphaNormalized());
+    glUniformMatrix4fv(glGetUniformLocation(debugShader, "model"), 1, GL_FALSE, glm::value_ptr(modelMat));
+    glUniformMatrix4fv(glGetUniformLocation(debugShader, "view"), 1, GL_FALSE, glm::value_ptr(view));
+    glUniformMatrix4fv(glGetUniformLocation(debugShader, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+    glUniform4fv(glGetUniformLocation(debugShader, "clcolor"),1, glm::value_ptr(clcolor));
+    glUniform1i(glGetUniformLocation(debugShader,"prueba"),25);
+
+    glBindVertexArray(VAO);
+    glDrawArrays(GL_LINE_LOOP, 0,2); 
+    glUseProgram(0);
+    glBindVertexArray(0);
+
+    glDeleteVertexArrays(1, &VAO);
+    glDeleteBuffers(1, &VBO);
+
+}
+
 
 
 /**
@@ -451,7 +527,7 @@ CLCamera* CLNode::GetActiveCamera(){
 void CLNode::DrawTree(CLNode* root){
     if(root->GetChilds().size()>0){
         //Tiene hijos
-        if( root->GetEntity() && !root->GetEntity()->GetID())
+        if( root->GetEntity() && root->GetEntity()->GetID())
             cout << root->GetEntity()->GetID() << " con hijos: ";
         else
             cout << "Este es un nodo sin entity con hijos: ";
@@ -460,7 +536,7 @@ void CLNode::DrawTree(CLNode* root){
             if(nodo->GetEntity() && nodo->GetEntity()->GetID())
                 cout << nodo->GetEntity()->GetID() << " ";
             else
-                cout << "(Este es un nodo sin entity)\n";
+                cout << "(hijo sin ID) ";
         }
         cout << "\n";
         for(auto& nodo : root->GetChilds()){
@@ -519,4 +595,10 @@ float CLNode::CalculateBoundingBox(){
     //cout << "Los extremos son: " << endl;
     //cout << "minimo: ( " << extremeMinMesh.x<< " , " << extremeMinMesh.y<< " , " <<extremeMinMesh.z<< 
     //" ) , maximo: " << extremeMaxMesh.x<< " , " << extremeMaxMesh.y<< " , " << extremeMaxMesh.z<< " )"<< endl;
+}
+
+
+void CLNode::RemoveLightsAndCameras() {
+    cameras.clear();
+    lights.clear();
 }

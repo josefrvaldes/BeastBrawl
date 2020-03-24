@@ -14,8 +14,8 @@
 #include <unordered_map>
 
 
-using namespace std;
 using namespace CLE;
+
 class RenderFacadeClover : public RenderFacade {
    public:
       RenderFacadeClover();
@@ -24,12 +24,12 @@ class RenderFacadeClover : public RenderFacade {
       void FacadeAddSphereOnObject(Entity* entity) override;
       const uint16_t FacadeAddObjectCar(Entity*) override;
       const uint16_t FacadeAddObjectTotem(Entity* entity) override;
-      const void FacadeAddObjects(vector<Entity*>) override;
+      const void FacadeAddObjects(std::vector<Entity*>) override;
       void FacadeAddCamera(Entity*) override;
       void UpdateCamera(Entity*, ManCar* manCars) override;
       bool FacadeRun() override;
       uint32_t FacadeGetTime() const override;
-      vector<Constants::InputTypes> FacadeCheckInputMulti() override;
+      std::vector<Constants::InputTypes> FacadeCheckInputMulti() override;
       void FacadeCheckInputSingle() override;
       int FacadeGetFPS() const override;
       void FacadeSetWindowCaption(std::string, int) const override;
@@ -37,33 +37,45 @@ class RenderFacadeClover : public RenderFacade {
       void FacadeDrawAll() const override;
       void FacadeEndScene() const override;
       void FacadeDeviceDrop() override;
-      void FacadeDraw() const override;
       void DeleteEntity(Entity*) override;
+
+      void FacadeDraw() const override;
+      void FacadeDrawIntro() override;
       void FacadeDrawMenu() override;
+      void FacadeDrawSelectCharacter() override;
+      void FacadeInitResources() override;
       void FacadeDrawPause() override;
       void FacadeDrawEndRace() override;
       void FacadeDrawLobbyMulti() override;
       void FacadeDrawLobbyMultiExit() override;
       void FacadeDrawControler() override;
+
+      void FacadeInitIntro() override;
       void FacadeInitMenu() override;
+      void FacadeInitSelectCharacter() override;
       void FacadeInitPause() override;
       void FacadeInitEndRace() override;
       void FacadeInitLobbyMulti() override;
       void FacadeInitControler() override;
       void FacadeInitHUD() override;
+
+      void FacadeCheckInputIntro() override;
       void FacadeCheckInputMenu() override;
+      void FacadeCheckInputSelectCharacter() override;
       void FacadeCheckInputPause() override;
       void FacadeCheckInputEndRace() override;
       void FacadeCheckInputLobbyMulti() override;
       void FacadeCheckInputControler() override;
+
       void FacadeUpdatePowerUpHUD(DataMap* d) override;
       void FacadeDrawHUD(Entity* car, ManCar* manCars) override;
       void FacadeSuscribeEvents() override;
       void FacadeAddPlates(Manager* manNamePlates) override;
       void FacadeUpdatePlates(Manager* manNamePlates) override;
       void FacadeUpdateMeshesLoD(vector<shared_ptr<Entity>> entities) override;
-      void ThrowEventChangeToMulti(uint16_t IdOnline, const vector<uint16_t> IdPlayersOnline) override;
+      void ThrowEventChangeToMulti(uint16_t IdOnline, const std::vector<uint16_t> IdPlayersOnline) override;
       void FacadeAddSkybox(string right,string left,string top,string bottom,string front,string back) override;
+      void CleanScene() override;
 
       //DEBUG
       void Draw3DLine(vec3& pos1, vec3& pos2, uint16_t r, uint16_t g, uint16_t b) const override;
@@ -92,10 +104,19 @@ class RenderFacadeClover : public RenderFacade {
 
 
 
-   private:
+    private:
 
-      CLEngine* device;
-      CLNode* smgr;
-      CLResourceManager* resourceManager;
-      CLNode* camera1;
+        std::string powerUps[7];
+
+        int inputMenu { 0 };
+        int maxInputMenu { 3 };
+        int inputPause { 0 };
+        int maxInputPause { 1 };
+        int inputSC { 0 };
+        int maxInputSC { 1 };
+
+        CLEngine* device;
+        CLNode* smgr;
+        CLResourceManager* resourceManager;
+        CLNode* camera1;
 };

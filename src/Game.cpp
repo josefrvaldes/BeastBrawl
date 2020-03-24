@@ -1,5 +1,7 @@
 #include "Game.h"
 #include "Facade/Physics/PhysicsFacadeManager.h"
+#include "State/StateInit.h"
+#include "State/StateSelectCharacter.h"
 #include "State/StateEndRace.h"
 #include "State/StateInGameMulti.h"
 #include "State/StateInGameSingle.h"
@@ -21,17 +23,31 @@ Game* Game::GetInstance() {
 }
 
 void Game::SetState(State::States stateType) {
-    cout << "GAME inicia estado nuevo" << endl;
+    //cout << "GAME inicia estado nuevo" << endl;
 
     switch (stateType) {
         case State::INTRO:
             //currentState = new StateIntro();
+            EventManager::GetInstance().ClearEvents();
+            EventManager::GetInstance().ClearListeners();
+            currentState = make_shared<StateInit>();
+            gameState.reset();
+            SuscribeEvents();
+            gameStarted = false;
             break;
         case State::MENU:
             //Al volver al menu todo el mundo se desuscribe o sea que volvemos a añadir las suscripciones
             EventManager::GetInstance().ClearEvents();
             EventManager::GetInstance().ClearListeners();
             currentState = make_shared<StateMenu>();
+            gameState.reset();
+            SuscribeEvents();
+            gameStarted = false;
+            break;
+        case State::SELECT_CHARACTER:
+            EventManager::GetInstance().ClearEvents();
+            EventManager::GetInstance().ClearListeners();
+            currentState = make_shared<StateSelectCharacter>();
             gameState.reset();
             SuscribeEvents();
             gameStarted = false;
@@ -130,10 +146,22 @@ void Game::InitGame() {
 
 void Game::SuscribeEvents() {
     //cout << "Suscripciones\n";
+
+    EventManager::GetInstance().SubscribeMulti(Listener(
+            EventType::STATE_INTRO,
+            bind(&Game::SetStateIntro, this, placeholders::_1),
+            "StateIntro"));
+
     EventManager::GetInstance().SubscribeMulti(Listener(
         EventType::STATE_MENU,
         bind(&Game::SetStateMenu, this, placeholders::_1),
         "StateMenu"));
+
+
+    EventManager::GetInstance().SubscribeMulti(Listener(
+            EventType::STATE_SELECT_CHARACTER,
+            bind(&Game::SetStateSelectCharacter, this, placeholders::_1),
+            "StateSelectCharacter"));
 
     EventManager::GetInstance().SubscribeMulti(Listener(
         EventType::STATE_PAUSE,
@@ -197,8 +225,8 @@ void Game::MainLoop() {
             int currentTime = renderFacadeMan->GetRenderFacade()->FacadeGetTime();
             frameCount++;
             if ( currentTime - lastFPS >= 1.0 ) {
-                renderFacadeMan->GetRenderFacade()->FacadeSetWindowCaption("Beast Bral", frameCount);
-                cout << frameCount << endl;
+                renderFacadeMan->GetRenderFacade()->FacadeSetWindowCaption("Beast Brawl", frameCount);
+                //cout << frameCount << endl;
                 frameCount = 0;
                 lastFPS = currentTime;
             }
@@ -220,9 +248,16 @@ void Game::TerminateGame() {
 
 //Funciones del EventManager
 
+void Game::SetStateIntro(DataMap* d) {
+    SetState(State::INTRO);
+}
+
 void Game::SetStateMenu(DataMap* d) {
-    cout << "LLEGA\n";
     SetState(State::MENU);
+}
+
+void Game::SetStateSelectCharacter(DataMap* d) {
+    SetState(State::SELECT_CHARACTER);
 }
 
 void Game::SetStatePause(DataMap* d) {

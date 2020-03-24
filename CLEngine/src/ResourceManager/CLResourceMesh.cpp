@@ -55,7 +55,7 @@ using namespace CLE;
  * 
  * @param file - Ruta del archivo a leer.
  */
-bool CLResourceMesh::LoadFile(std::string file) {
+bool CLResourceMesh::LoadFile(std::string file, bool vertically) {
     Assimp::Importer importer;
 
     // Importamos el fichero.
@@ -269,7 +269,7 @@ unsigned int CLResourceMesh::TextureFromFile(const char *path, const string &dir
     std::string token;
     while ((pos = filename.find(delimiter)) != std::string::npos) {
         token = filename.substr(0, pos);
-        std::cout << token << std::endl;
+        //std::cout << token << std::endl;
         filename.erase(0, pos + delimiter.length());
     }
 
@@ -284,7 +284,7 @@ unsigned int CLResourceMesh::TextureFromFile(const char *path, const string &dir
     unsigned char *data = stbi_load(filename.c_str(), &width, &height, &nrComponents, 0);
     if (data)
     {
-        GLenum format;
+        GLenum format = 0;
         if (nrComponents == 1)
             format = GL_RED;
         else if (nrComponents == 3)

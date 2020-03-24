@@ -49,8 +49,8 @@ CarHuman::CarHuman() {
     //string mesh    = "kart_physics.fbx";
     // string mesh    = "kart.obj";
 
-    string vertexShader = "CLEngine/src/Shaders/lightMapping.vert";
-    string fragmentShader = "CLEngine/src/Shaders/lightMapping.frag";
+    string vertexShader = "CLEngine/src/Shaders/cartoonShader.vert";
+    string fragmentShader = "CLEngine/src/Shaders/cartoonShader.frag";
     float maxSpeed = 200.0, acceleration = 1.5, friction = 1.0, slowDown = 2.5;
     
     shared_ptr<CId> cId   = make_shared<CId>();
@@ -81,7 +81,7 @@ CarHuman::CarHuman() {
     // TODO: jesuuuuuuus pasame los bounding desde phyton mamoooon JESUS
     glm::vec3 pSphBehind = pos;
     glm::vec3 pSphFront = pos;
-    shared_ptr<CBoundingChassis> cBoundingChassis = make_shared<CBoundingChassis>(pSphBehind, 7.5, pSphFront, 7.5);
+    shared_ptr<CBoundingChassis> cBoundingChassis = make_shared<CBoundingChassis>(pSphBehind, 7.5, 7.0, pSphFront, 7.5, 7.0);
 
     shared_ptr<CGravity> cGravity = make_shared<CGravity>();
 

@@ -15,8 +15,9 @@ namespace CLE {
             ~CLResourceTexture() {};
 
             void Draw(GLuint shaderID) override;
-            bool LoadFile(string) override;
-
+            bool LoadFile(string, bool) override;
+            
+            unsigned int GetTextureID() { return textureID; };
 
         private:
             unsigned int textureID;
