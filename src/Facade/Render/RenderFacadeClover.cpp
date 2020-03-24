@@ -270,11 +270,13 @@ const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
     auto cShader = static_cast<CShader*>(entity->GetComponent(CompType::ShaderComp).get());
 
     CLResourceMesh* mesh = nullptr;
+    CLResourceMaterial* mat = nullptr;
     if(entity->HasComponent(CompType::MeshComp)){
         auto cMesh = static_cast<CMesh*>(entity->GetComponent(CompType::MeshComp).get());
         std::string currentMesh = cMesh->activeMesh;
         std::string meshPath = "media/" + currentMesh;
         mesh = resourceManager->GetResourceMesh(meshPath, false);
+        mat = resourceManager->GetResourceMaterial(meshPath);
     }
     
     
@@ -284,6 +286,7 @@ const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
         case ModelType::Sphere:
             node = smgr->AddMesh(cId->id);
             static_cast<CLMesh*>(node->GetEntity())->SetMesh(mesh);
+            static_cast<CLMesh*>(node->GetEntity())->SetMaterial(mat);
 
             break;
 
@@ -296,6 +299,7 @@ const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
         case ModelType::AnimatedMesh:
             node = smgr->AddMesh(cId->id);
             static_cast<CLMesh*>(node->GetEntity())->SetMesh(mesh);
+            static_cast<CLMesh*>(node->GetEntity())->SetMaterial(mat);
 
             break;
 
@@ -308,8 +312,8 @@ const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
             break;
         case ModelType::Light:
             auto cLight = static_cast<CLight*>(entity->GetComponent(CompType::LightComp).get());
-            node = smgr->AddLight(cId->id);
-            static_cast<CLLight*>(node->GetEntity())->SetLightAttributes(cLight->intensity,cLight->ambient,cLight->diffuse,cLight->specular,cLight->constant,cLight->linear,cLight->quadratic);
+            node = smgr->AddLight(cId->id,cLight->intensity,cLight->ambient,cLight->diffuse,cLight->specular,cLight->constant,cLight->linear,cLight->quadratic);
+            //static_cast<CLLight*>(node->GetEntity())->SetLightAttributes(cLight->intensity,cLight->ambient,cLight->diffuse,cLight->specular,cLight->constant,cLight->linear,cLight->quadratic);
             break;
     } 
 

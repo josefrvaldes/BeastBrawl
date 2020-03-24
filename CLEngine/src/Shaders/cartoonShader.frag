@@ -59,7 +59,7 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir){
     }
   // attenuation
     float distance    = length(light.position - fragPos); //Distancia de la luz al objeto
-    float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance)); //Formula de la atenuacion
+    float attenuation = 1.0 / ((light.constant) + (light.linear * distance) + (light.quadratic * (distance * distance))); //Formula de la atenuacion
 
     //limit specular
     float specMask = (pow(dot(H, normal), material.shininess) > 0.4) ? 1 : 0;

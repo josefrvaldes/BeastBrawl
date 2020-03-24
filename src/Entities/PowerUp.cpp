@@ -30,8 +30,11 @@ PowerUp::PowerUp()
     //string mesh    = "kart_ia.obj";
     typeCPowerUp typePowerUp = typeCPowerUp::None;
 
-    string vertexShader = "CLEngine/src/Shaders/lightMapping.vert";
-    string fragmentShader = "CLEngine/src/Shaders/lightMapping.frag";
+    // string vertexShader = "CLEngine/src/Shaders/lightMapping.vert";
+    // string fragmentShader = "CLEngine/src/Shaders/lightMapping.frag";
+
+    string vertexShader = "CLEngine/src/Shaders/cartoonShader.vert";
+    string fragmentShader = "CLEngine/src/Shaders/cartoonShader.frag";
     //float maxSpeed = 20.0, acceleration = .15, friction = 0.1, slowDown = 0.25;
     
     shared_ptr<CId> cId   = make_shared<CId>();
@@ -115,8 +118,11 @@ PowerUp::PowerUp(glm::vec3 _position, glm::vec3 _rotation, typeCPowerUp _typePow
     }
     cMesh->activeMesh = cMesh->mesh[0];
 
-    string vertexShader = "CLEngine/src/Shaders/lightMapping.vert";
-    string fragmentShader = "CLEngine/src/Shaders/lightMapping.frag";
+    // string vertexShader = "CLEngine/src/Shaders/lightMapping.vert";
+    // string fragmentShader = "CLEngine/src/Shaders/lightMapping.frag";
+
+    string vertexShader = "CLEngine/src/Shaders/cartoonShader.vert";
+    string fragmentShader = "CLEngine/src/Shaders/cartoonShader.frag";
 
     shared_ptr<CShader> cShader = make_shared<CShader>(vertexShader,fragmentShader);
 

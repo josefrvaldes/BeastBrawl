@@ -142,7 +142,7 @@ int main() {
     static_cast<CLMesh*>(mesh1->GetEntity())->SetMesh(resourceMeshTotem);
     static_cast<CLMesh*>(mesh2->GetEntity())->SetMesh(resourceMesh);
     static_cast<CLMesh*>(mesh3->GetEntity())->SetMesh(resourceMeshOBJ);
-    static_cast<CLMesh*>(mesh3->GetEntity())->SetMaterial(resourceMaterial); 
+    //static_cast<CLMesh*>(mesh3->GetEntity())->SetMaterial(resourceMaterial); 
 
     camera->SetTranslation(glm::vec3(70.0f, 0.0f, 60.0f));
     mesh1->SetScalation(glm::vec3(2.0f, 2.0f, 2.0f));
