@@ -54,6 +54,7 @@ class CLEngine {
         void InputClose();
         void CloseWindow();
         void PollEvents();
+        void DrawDepthMap();
         void RenderDepthMap(CLShadowMapping& shadowMap, CLResourceShader* depthShader, glm::vec3 posLight);
         void Clear();
 

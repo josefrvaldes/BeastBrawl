@@ -7,7 +7,7 @@ namespace CLE {
 
     class CLShadowMapping : public CLEntity {
         public:
-            CLShadowMapping();
+            CLShadowMapping(GLuint _lightId);
             ~CLShadowMapping() {};
 
             //void PrepareToRender();
@@ -15,6 +15,7 @@ namespace CLE {
             void DrawDepthMap(GLuint shaderID);
 
             // variables
+            GLuint lightId = 0;
             unsigned int depthMapFBO;
             static inline unsigned int depthCubemap;
             const unsigned int SHADOW_WIDTH = 1024;

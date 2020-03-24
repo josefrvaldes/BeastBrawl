@@ -119,6 +119,12 @@ void StateInGame::AddElementsToRender() {
         "media/skybox/bottom.jpg",
         "media/skybox/front.jpg",
         "media/skybox/back.jpg");
+    
+    if(manLight->GetEntities().size()>0){
+        auto lightWithShadow = manLight->GetEntities()[0];
+        auto cId = static_cast<CId*>(lightWithShadow->GetComponent(CompType::IdComp).get());
+        renderEngine->FacadeAddShadowMapping(cId->id);
+    }
 }
 
 void StateInGame::InitializeCLPhysics(ManCar &manCars, ManBoundingWall &manWall, ManBoundingOBB &manOBB, ManBoundingGround &manGround, ManPowerUp &manPowerUp, ManNavMesh &manNavMesh, ManBoxPowerUp &manBoxPowerUp, ManTotem &manTotem) {

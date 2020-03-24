@@ -769,6 +769,11 @@ void RenderFacadeClover::FacadeAddSkybox(string right,string left,string top,str
     smgr->AddSkybox(right, left, top, bottom, front, back);
 }
 
+void RenderFacadeClover::FacadeAddShadowMapping(unsigned int lightId){
+    smgr->AddShadowMapping(lightId);
+}
+
+
 //DEBUG dibuja las aristas entre los nodos del grafo
 void RenderFacadeClover::FacadeDrawGraphEdges(ManWayPoint* manWayPoints) const{
     if (!showDebug) return;  //Si no esta activado debug retornamos

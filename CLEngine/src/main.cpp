@@ -120,7 +120,7 @@ int main() {
         "media/skybox/front.jpg",
         "media/skybox/back.jpg");
 
-        smgr->AddShadowMapping();
+        smgr->AddShadowMapping(light1->GetEntity()->GetID());
 
     //smgr->DFSTree(glm::mat4(1.0));
     // vector<shared_ptr<CLEntity>> mallas;
@@ -233,14 +233,6 @@ int main() {
         }
         
 
-        // 1. Se renderiza con el shadowMap
-        glCullFace(GL_FRONT);
-        device->RenderDepthMap(*smgr->GetShadowMapping(), smgr->GetDepthShader(), light3->GetGlobalTranslation());
-        glCullFace(GL_BACK);
-
-        // 2. then render scene as normal with shadow mapping (using depth map)
-        device->UpdateViewport();
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         device->DrawObjects();
 
         string file = "media/pudin.png";

@@ -86,7 +86,7 @@ float ShadowCalculation(vec3 fragPos, vec3 posLight)
     return shadow;
 }
 
-vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
+vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir, int i)
 {
     vec3 ambient = light.ambient * texture(material.diffuse,TexCoords).rgb;
 
@@ -106,7 +106,9 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
     //ambient *= attenuation;
     //diffuse *= attenuation;
     //specular*= attenuation;
-    float shadow = ShadowCalculation(FragPos, light.position); 
+    float shadow = 0.0;
+    if(i == 0)
+        shadow = ShadowCalculation(FragPos, light.position); 
     return (ambient + (1.0 - shadow) * (diffuse /*+ specuñar*/));
 } 
 
@@ -120,9 +122,10 @@ void main()
     vec3 viewDir = normalize(viewPos - FragPos); //Vector entre nosotros y el punto del objeto
     // phase 2: Point lights
     
-    int i = 2;
+    // TODO: Pasarle la posicion en el array de la luz que ejecuta las sombras
+    int i = 0;
     while(i<num_Point_Lights){
-        totalPointLight += CalcPointLight(pointLights[i], norm, FragPos, viewDir); 
+        totalPointLight += CalcPointLight(pointLights[i], norm, FragPos, viewDir, i); 
         
         i++;
     }

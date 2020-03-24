@@ -4,7 +4,7 @@ using namespace CLE;
 
 
 // url: https://learnopengl.com/Advanced-Lighting/Shadows/Shadow-Mapping
-CLShadowMapping::CLShadowMapping(){
+CLShadowMapping::CLShadowMapping(GLuint _lightId) : lightId{_lightId}{
     
     // generar el framebuffer
     glGenFramebuffers(1, &depthMapFBO);

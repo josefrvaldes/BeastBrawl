@@ -74,6 +74,7 @@ class RenderFacade {
     virtual void FacadeUpdateMeshesLoD(vector<shared_ptr<Entity>> entities) = 0;
     virtual void ThrowEventChangeToMulti(uint16_t IdOnline, const vector<uint16_t> IdPlayersOnline) = 0;
     virtual void FacadeAddSkybox(string right,string left,string top,string bottom,string front,string back) = 0;
+    virtual void FacadeAddShadowMapping(unsigned int lightId) = 0;
     virtual void CleanScene() = 0;
 
     //DEBUG

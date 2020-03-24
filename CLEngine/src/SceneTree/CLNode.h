@@ -73,7 +73,7 @@ class CLNode{
         CLNode* AddLight(unsigned int id,glm::vec3 intensity, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float constant, float linear, float quadratic);
         CLNode* AddCamera(unsigned int id);
         void AddSkybox(string right, string left, string top, string bottom, string front, string back);
-        void AddShadowMapping();
+        void AddShadowMapping(GLuint lightId);
 
         bool RemoveChild(CLNode* child);
         bool HasChild(CLNode* child);

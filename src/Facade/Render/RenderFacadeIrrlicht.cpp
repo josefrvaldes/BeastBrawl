@@ -1086,6 +1086,9 @@ void RenderFacadeIrrlicht::FacadeAddSkybox(string right,string left,string top,s
     
 }
 
+void RenderFacadeIrrlicht::FacadeAddShadowMapping(unsigned int lightId){}
+
+
 //DEBUG dibuja las aristas entre los nodos del grafo
 void RenderFacadeIrrlicht::FacadeDrawGraphEdges(ManWayPoint* manWayPoints) const{
     if (!showDebug) return;  //Si no esta activado debug retornamos
