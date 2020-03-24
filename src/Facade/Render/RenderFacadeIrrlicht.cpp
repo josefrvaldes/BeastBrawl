@@ -1003,6 +1003,10 @@ void RenderFacadeIrrlicht::FacadeDrawMenu() {
     driver->endScene();
 }
 
+void RenderFacadeIrrlicht::FacadeInitResources(){
+
+}
+
 void RenderFacadeIrrlicht::FacadeDrawControler() {
     driver->beginScene(true, true, video::SColor(255, 113, 113, 133));
     //smgr->drawAll();  // draw the 3d scene

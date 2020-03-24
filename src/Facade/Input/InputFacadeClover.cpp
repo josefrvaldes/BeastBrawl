@@ -33,7 +33,7 @@ void InputFacadeClover::CheckInputIntro(){
     
     GLFWgamepadstate state;
     glfwGetGamepadState(GLFW_JOYSTICK_1, &state);
-
+    //cout << "ENTRAAAA\n";
     //cout << state.axes[GLFW_GAMEPAD_AXIS_RIGHT_X] << endl;
     //SALIR
     if((glfwGetKey(device->GetWindow(), GLFW_KEY_DELETE) || state.buttons[GLFW_GAMEPAD_BUTTON_B]) && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay) {

@@ -43,6 +43,7 @@ class RenderFacadeIrrlicht : public RenderFacade {
     void DeleteEntity(Entity*) override;
     void FacadeDrawIntro() override;
     void FacadeDrawMenu() override;
+    void FacadeInitResources() override;
     void FacadeDrawPause() override;
     void FacadeDrawEndRace() override;
     void FacadeDrawLobbyMulti() override;

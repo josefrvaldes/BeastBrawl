@@ -394,14 +394,14 @@ void RenderFacadeClover::UpdateCamera(Entity* cam, ManCar* manCars) {
         }
 
         if(cTransformable->position.z - targetPosition.z < 0){
-            targetPosition.z = targetPosition.z + (2*distZ);
+            targetPosition.z = targetPosition.z - (2*distZ);
 
         }else{
-            targetPosition.z = targetPosition.z - (2*distZ);
+            targetPosition.z = targetPosition.z + (2*distZ);
 
         }
         //float angleRotation = (60 * M_PI) / 180.0;
-
+        cout << targetPosition.x << " | " << targetPosition.z << endl;
         cameraEntity->SetCameraTarget(glm::vec3(targetPosition.x,targetPosition.y,targetPosition.z));
         cameraEntity->SetFOV(60);
         camera1->SetTranslation(glm::vec3(cTransformable->position.x, cTransformable->position.y-5, -cTransformable->position.z));
@@ -645,6 +645,38 @@ void RenderFacadeClover::FacadeDrawMenu() {
     device->RenderText2D(text, 500.0f, 250.0f, 0.05f, 1.0f, color[3]);
 
 }
+
+void RenderFacadeClover::FacadeInitResources(){
+    FacadeBeginScene();
+    std::string file = "media/loading_screen.png";
+    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
+    FacadeEndScene();
+    //Cargamos todas las mallas
+    //Mallas
+    resourceManager->GetResourceMesh("media/kart_physics.fbx");
+    resourceManager->GetResourceMesh("media/kart_ia.obj");
+    resourceManager->GetResourceMesh("media/melon.obj");
+    resourceManager->GetResourceMesh("media/totem_tex.fbx");
+    resourceManager->GetResourceMesh("media/TEST_BOX.fbx");
+    resourceManager->GetResourceMesh("media/pudin.obj");
+    resourceManager->GetResourceMesh("media/telebanana.obj");
+    resourceManager->GetResourceMesh("media/training_ground.obj");
+
+    //Texturas
+    resourceManager->GetResourceTexture("media/escudomerluzo.png",true);
+    resourceManager->GetResourceTexture("media/melonmolon.png",true);
+    resourceManager->GetResourceTexture("media/nitro.png",true);
+    resourceManager->GetResourceTexture("media/nonepowerup.png",true);
+    resourceManager->GetResourceTexture("media/pudin.png",true);
+    resourceManager->GetResourceTexture("media/robojorobo.png",true);
+    resourceManager->GetResourceTexture("media/telebanana.png",true);
+
+    //Shaders
+    resourceManager->GetResourceShader("CLEngine/src/Shaders/cartoonShader.vert", "CLEngine/src/Shaders/cartoonShader.frag");
+
+    
+}
+
 
 void RenderFacadeClover::FacadeDrawControler() {
     std::string file = "media/controller_scheme.png";

@@ -62,6 +62,9 @@ void StateInGame::InitializeFacades() {
     physicsEngine = PhysicsFacadeManager::GetInstance()->GetPhysicsFacade();
     renderEngine = RenderFacadeManager::GetInstance()->GetRenderFacade();
     renderEngine->FacadeSuscribeEvents();
+
+    //Pantalla de carga
+    renderEngine->FacadeInitResources(); 
 }
 
 /*

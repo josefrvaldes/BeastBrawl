@@ -268,7 +268,7 @@ unsigned int CLResourceMesh::TextureFromFile(const char *path, const string &dir
     std::string token;
     while ((pos = filename.find(delimiter)) != std::string::npos) {
         token = filename.substr(0, pos);
-        std::cout << token << std::endl;
+        //std::cout << token << std::endl;
         filename.erase(0, pos + delimiter.length());
     }
 

@@ -34,6 +34,7 @@ void StateInit::Render(){
 
 
 void StateInit::Input(){
+    inputEngine->CheckInputIntro();
     renderEngine->FacadeCheckInputIntro();
 }
 

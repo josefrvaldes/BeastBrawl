@@ -40,6 +40,7 @@ class RenderFacade {
     virtual void DeleteEntity(Entity*) = 0;
     virtual void FacadeDrawIntro() = 0;
     virtual void FacadeDrawMenu() = 0;
+    virtual void FacadeInitResources() = 0;
     virtual void FacadeDrawPause() = 0;
     virtual void FacadeDrawEndRace() = 0;
     virtual void FacadeDrawLobbyMulti() = 0;
