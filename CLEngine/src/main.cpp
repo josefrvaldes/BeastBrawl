@@ -54,7 +54,7 @@ int main() {
 
     //-------------------Resource manager-------------------
     CLResourceManager* resourceManager = CLResourceManager::GetResourceManager();
-    auto resourceShader = resourceManager->GetResourceShader("CLEngine/src/Shaders/lightMapping.vert", "CLEngine/src/Shaders/lightMapping.frag");
+    auto resourceShader = resourceManager->GetResourceShader("CLEngine/src/Shaders/shadowMappingShader.vert", "CLEngine/src/Shaders/shadowMappingShader.frag");
     auto resourceShaderCartoon = resourceManager->GetResourceShader("CLEngine/src/Shaders/cartoonShader.vert", "CLEngine/src/Shaders/cartoonShader.frag");
     auto resourceShaderMaterial = resourceManager->GetResourceShader("CLEngine/src/Shaders/materialShader.vert", "CLEngine/src/Shaders/materialShader.frag");
     auto resourceShader3 = resourceManager->GetResourceShader("CLEngine/src/Shaders/debugShader.vert", "CLEngine/src/Shaders/debugShader.frag");
@@ -106,8 +106,9 @@ int main() {
         auto mesh3 = mesh2->AddMesh(5);
         mesh3->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
 
-        mesh4->SetShaderProgramID(resourceShader->GetProgramID());
         auto mesh4 = smgr->AddMesh(6);
+        mesh4->SetShaderProgramID(resourceShader->GetProgramID());
+        
 
         static_cast<CLCamera*>(camera->GetEntity())->SetCameraTarget(mesh2->GetTranslation());
 
@@ -147,7 +148,7 @@ int main() {
     static_cast<CLMesh*>(mesh2->GetEntity())->SetMesh(resourceMesh);
     static_cast<CLMesh*>(mesh3->GetEntity())->SetMesh(resourceMeshOBJ);
     //static_cast<CLMesh*>(mesh3->GetEntity())->SetMaterial(resourceMaterial); 
-    static_cast<CLMesh*>(mesh4->GetEntity())->SetMesh(resourceMeshBox2);
+    static_cast<CLMesh*>(mesh4->GetEntity())->SetMesh(resourceMeshBox);
 
     camera->SetTranslation(glm::vec3(70.0f, 0.0f, 60.0f));
     mesh1->SetScalation(glm::vec3(2.0f, 2.0f, 2.0f));
