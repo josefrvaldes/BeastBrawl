@@ -26,7 +26,7 @@ class InputFacadeClover : public InputFacade{
 
     private:
         CLEngine* device;
-
+        
         bool scapePress { false };
         bool spacePress { false };
         bool upPress { false };

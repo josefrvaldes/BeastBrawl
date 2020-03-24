@@ -23,7 +23,7 @@ Game* Game::GetInstance() {
 }
 
 void Game::SetState(State::States stateType) {
-    cout << "GAME inicia estado nuevo" << endl;
+    //cout << "GAME inicia estado nuevo" << endl;
 
     switch (stateType) {
         case State::INTRO:
@@ -226,7 +226,7 @@ void Game::MainLoop() {
             frameCount++;
             if ( currentTime - lastFPS >= 1.0 ) {
                 renderFacadeMan->GetRenderFacade()->FacadeSetWindowCaption("Beast Brawl", frameCount);
-                cout << frameCount << endl;
+                //cout << frameCount << endl;
                 frameCount = 0;
                 lastFPS = currentTime;
             }

@@ -11,12 +11,12 @@ StateInit::StateInit(){
     renderEngine->FacadeInitIntro();
     InitState();
 
-    std::cout << ">>>>> Estado Init Creado" << std::endl;
+    //std::cout << ">>>>> Estado Init Creado" << std::endl;
 }
 
 void StateInit::InitState() {
 
-    cout << "~~~ ENTRO A STATE INIT" << endl;
+    //cout << "~~~ ENTRO A STATE INIT" << endl;
 
     /*if (!soundEngine){
         soundEngine = SoundFacadeManager::GetInstance()->GetSoundFacade();
