@@ -618,6 +618,7 @@ bool RenderFacadeIrrlicht::IsInputPressed(InputXBox input){
     }
     return true; // en caso de que no exista
 }
+
 void RenderFacadeIrrlicht::SetValueInput(InputXBox input, bool valuePressed){
     auto mapByType = inputsPressed.find(input);
     if (mapByType != inputsPressed.end()) {
@@ -718,7 +719,7 @@ void RenderFacadeIrrlicht::FacadeCheckInputSingle() {
         SetValueInput(InputXBox::BUTTON_A, false);
     }
 
-    //Cambiamos a menu
+    //Cambiamos a pause
     if ((receiver.IsKeyDown(KEY_ESCAPE) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_START)) && !IsInputPressed(InputXBox::BUTTON_START)) {
         SetValueInput(InputXBox::BUTTON_START, true);
         eventManager.AddEventMulti(Event{EventType::STATE_PAUSE});
