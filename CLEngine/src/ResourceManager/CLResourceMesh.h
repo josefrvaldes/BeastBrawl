@@ -61,6 +61,7 @@ namespace CLE {
 
             void Draw(GLuint shaderID) override;
             bool LoadFile(std::string, bool) override;
+            void DrawDepthMap(GLuint shaderID);
             vector<Mesh> GetvectorMesh() { return vecMesh; }
 
         private:

@@ -13,6 +13,8 @@
 #include "CLCamera.h"
 #include "../ResourceManager/CLResourceMesh.h"
 #include "CLSkybox.h"
+#include "CLShadowMapping.h"
+
 
 #include "../Frustum/CLFrustum.h"
 #include "../ResourceManager/CLResourceManager.h"
@@ -47,9 +49,13 @@ class CLNode{
         static glm::mat4 GetViewMatrix()               { return view; }
         static glm::mat4 GetProjectionMatrix()         { return projection; }
         CLCamera* GetActiveCamera();
-        vector<CLNode*> GetLights()                      { return lights; };
-        vector<CLNode*> GetCameras()                     { return cameras; };
+        vector<CLNode*> GetLights()             { return lights; };
+        vector<CLNode*> GetCameras()            { return cameras; };
+        CLShadowMapping* GetShadowMapping()     {return shadowMapping.get();};
+        GLuint GetSimpleDepthShader()           {return simpleDepthShader;};
+        CLResourceShader* GetDepthShader()      {return DepthShadder;};
         void RemoveLightsAndCameras();
+
 
         //Setters
         bool SetFather(CLNode* f)                        { father = f; return true; }
@@ -67,6 +73,8 @@ class CLNode{
         CLNode* AddLight(unsigned int id,glm::vec3 intensity, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float constant, float linear, float quadratic);
         CLNode* AddCamera(unsigned int id);
         void AddSkybox(string right, string left, string top, string bottom, string front, string back);
+        void AddShadowMapping();
+
         bool RemoveChild(CLNode* child);
         bool HasChild(CLNode* child);
         CLNode* GetNodeByID(unsigned int id);
@@ -84,6 +92,7 @@ class CLNode{
         float CalculateBoundingBox();
 
         void DFSTree(glm::mat4);
+        void DFSTree(glm::mat4 mA, GLuint shaderID);
         void DrawSkybox();
         
 
@@ -134,6 +143,11 @@ class CLNode{
         //Skybox
         inline static unique_ptr<CLSkybox> skybox = nullptr;
         inline static GLuint skyboxShader = 0;
+
+        unique_ptr<CLShadowMapping> shadowMapping = nullptr;
+        GLuint simpleDepthShader = 0;
+        CLResourceShader* DepthShadder = nullptr;
+
 };
 
 }

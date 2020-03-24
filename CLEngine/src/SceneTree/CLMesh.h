@@ -21,6 +21,7 @@ namespace CLE {
             CLResourceMesh* GetMesh() const             { return mesh; }
 
             void Draw(GLuint shaderID);
+            void DrawDepthMap(GLuint shaderID);
 
 
         private:

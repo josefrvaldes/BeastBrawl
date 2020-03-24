@@ -60,3 +60,7 @@ void CLSkybox::Draw(GLuint shaderID) {
     glDrawArrays(GL_TRIANGLES, 0, 36);
     glDepthMask(GL_TRUE);
 }
+
+void CLSkybox::DrawDepthMap(GLuint shaderID){
+
+}

@@ -20,3 +20,5 @@ void CLLight::SetLightAttributes(glm::vec3 inte,glm::vec3 amb, glm::vec3 diff, g
 void CLLight::Draw(GLuint shaderID) {
 
 }
+
+void CLLight::DrawDepthMap(GLuint shaderID){}

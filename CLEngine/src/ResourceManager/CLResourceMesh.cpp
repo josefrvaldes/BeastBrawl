@@ -47,6 +47,7 @@ Mesh::Mesh(vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture
 
 
 // CLRESOURCEMESH -------------------------------------------------------------------
+#include "../SceneTree/CLShadowMapping.h"
 
 using namespace CLE;
 
@@ -323,6 +324,7 @@ void CLResourceMesh::Draw(GLuint shaderID) {
         // unsigned int specularNr = 1;
         // unsigned int normalNr   = 1;
         // unsigned int heightNr   = 1;
+        
         for(unsigned int i = 0; i < mesh.textures.size(); i++)
         {
             glActiveTexture(GL_TEXTURE0 + i); // active proper texture unit before binding
@@ -344,6 +346,9 @@ void CLResourceMesh::Draw(GLuint shaderID) {
             // and finally bind the texture
             glBindTexture(GL_TEXTURE_2D, mesh.textures[i].id);
         }
+        glActiveTexture(GL_TEXTURE1);
+        glUniform1i(glGetUniformLocation(shaderID, "depthMap"), 1);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, CLShadowMapping::depthCubemap);
 
 
 
@@ -353,5 +358,19 @@ void CLResourceMesh::Draw(GLuint shaderID) {
 
         // always good practice to set everything back to defaults once configured.
         glActiveTexture(GL_TEXTURE0);
+    }
+}
+
+
+
+
+/**
+ * Aqui se llega normalmente desde la clase CLMesh->Draw()
+ */
+void CLResourceMesh::DrawDepthMap(GLuint shaderID) {
+    for(auto& mesh : vecMesh){
+        glBindVertexArray(mesh.VAO);
+        glDrawElements(GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT, 0);
+        glBindVertexArray(0);
     }
 }

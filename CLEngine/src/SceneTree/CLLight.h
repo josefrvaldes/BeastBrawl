@@ -31,6 +31,7 @@ namespace CLE {
             bool IsActive() const               { return on; };
 
             void Draw(GLuint shaderID);
+            void DrawDepthMap(GLuint shaderID);
 
 
         private:

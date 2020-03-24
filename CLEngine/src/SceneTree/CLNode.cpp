@@ -96,6 +96,15 @@ void CLNode::AddSkybox(string right, string left, string top, string bottom, str
 }
 
 
+void CLNode::AddShadowMapping(){
+    if(!simpleDepthShader){
+        auto rm = CLResourceManager::GetResourceManager();
+        DepthShadder = rm->GetResourceShader("CLEngine/src/Shaders/simpleDepthShader.vert", "CLEngine/src/Shaders/simpleDepthShader.frag", "CLEngine/src/Shaders/simpleDepthShader.geom");
+        simpleDepthShader = DepthShadder->GetProgramID();
+    }
+    shadowMapping = make_unique<CLShadowMapping>();
+}
+
 
 bool CLNode::RemoveChild(CLNode* child){
     /*
@@ -301,6 +310,8 @@ void CLNode::DFSTree(glm::mat4 mA) {
         glm::mat4 MVP = projection * view * transformationMat;
         glUniformMatrix4fv(glGetUniformLocation(shaderProgramID, "model"), 1, GL_FALSE, glm::value_ptr(transformationMat));
         glUniformMatrix4fv(glGetUniformLocation(shaderProgramID, "MVP"), 1, GL_FALSE, glm::value_ptr(MVP));
+        glUniform1i(glGetUniformLocation(shaderProgramID, "shadows"), true); 
+        glUniform1f(glGetUniformLocation(shaderProgramID, "far_plane"), 5000.0); 
         entity->Draw(shaderProgramID);
 
     }
@@ -309,6 +320,39 @@ void CLNode::DFSTree(glm::mat4 mA) {
         node->DFSTree(transformationMat);
     }
 }
+
+
+void CLNode::DFSTree(glm::mat4 mA, GLuint shaderID) {
+    if (changed) {
+        transformationMat = mA*CalculateTransformationMatrix();
+        changed = false;
+    }
+
+    //auto& frustum_m = GetActiveCamera()->GetFrustum();
+    //CLE::CLFrustum::Visibility frusVisibility = frustum_m.IsInside(translation);
+    //CLE::CLFrustum::Visibility frusVisibility = frustum_m.IsInside(translation, dimensionsBoundingBox);
+    //glUseProgram(shaderID);
+
+    if(entity && visible /*&& frusVisibility == CLE::CLFrustum::Visibility::Completly*/) { 
+        // La matriz model se pasa aqui wey
+        //Calculamos las luces
+        //TODO: Hacer un sistema de que si no hemos cambiado de shader no se recalculen
+
+        if(hasLightingEffects){
+            CalculateLights();
+        }
+        glUniformMatrix4fv(glGetUniformLocation(shaderID, "model"), 1, GL_FALSE, glm::value_ptr(transformationMat));
+        //entity->Draw(transformationMat);
+        entity->DrawDepthMap(shaderID);
+
+        //cout << "este objeto se dibuja" << endl;
+    }
+
+    for (auto node : childs) {
+        node->DFSTree(transformationMat, shaderID);
+    }
+}
+
 
 
 /**
