@@ -19,7 +19,7 @@ class StateInGameMulti : public StateInGame {
 
    private:
     void InitializeCLPhysics(ManCar &manCars, ManBoundingWall &, ManBoundingOBB &, ManBoundingGround &, ManPowerUp &, ManNavMesh&, ManBoxPowerUp&, ManTotem &) override;
-    void InitializeManagers(Physics *physics, Camera *cam) override;
+    void InitializeManagers(Physics *physics, Camera *cam, const uint32_t timeGame) override;
     void InitializeSystems(ManCar &manCars, ManBoundingWall &, ManBoundingOBB &, ManBoundingGround &, ManPowerUp &, ManNavMesh&, ManBoxPowerUp&, ManTotem &) override;
     void InitializeFacades() override;
     void AddElementsToRender() override;

@@ -115,7 +115,7 @@ class StateInGame : public State {
     //float CalculateDelta(float);
 
     virtual void InitializeCLPhysics(ManCar&, ManBoundingWall&, ManBoundingOBB&, ManBoundingGround&, ManPowerUp&, ManNavMesh&, ManBoxPowerUp&, ManTotem &);
-    virtual void InitializeManagers(Physics *, Camera *);
+    virtual void InitializeManagers(Physics *, Camera *, const uint32_t timeGame);
     virtual void InitializeSystems(ManCar&, ManBoundingWall&, ManBoundingOBB&, ManBoundingGround&, ManPowerUp&, ManNavMesh&, ManBoxPowerUp&, ManTotem &);
     virtual void InitializeFacades();
     virtual void AddElementsToRender();

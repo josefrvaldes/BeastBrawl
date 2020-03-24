@@ -29,21 +29,23 @@ Para compilar nuestro proyecto debes situarte en el directorio raíz (NO en el s
 Actualmente los contoles de nuestro juego funcionan mediante teclado.
  * En carrera: 
     * `W` para acelerar.
-    * `S` para descelerar.
+    * `S` para descelerar e ir marcha atrás.
     * `A` y `D` para moverse a izquierda y derecha.
     * Mantener `U` para derrapar.
     * `SPACE` para lanzar power-up.
     * Mantener presionada `I` para cambiar a la cámara trasera.
     * Mantener presionada `O` para cambiar a la cámara del totem.
     * Sonar el claxon `P`.
-    * `ESC` para poner el juego en pausa a mitad de partida, y volver a reanudarla.
+    * `ESC` para poner el juego en pausa.
+ * Menú intro:
+    * `SPACE` para ir al menú principal.
  * En el menú principal:
-    * `SPACE` para comenzar partida.
-    * `M` para entrar a la sala online.
-    * `SUPR` para salir.
+    * Moverse entre opciones con las flechas.
+    * `SPACE` para seleccionar.
+    * `SUPR` para atrás.
  * Desde el menú de pausa:
-    * `ESC` para reanudar el juego.
-    * `N` para volver al menú principal desde el manú pausa.
+    * Moverse entre opciones con las flechas.
+    * `SPACE` para seleccionar.
  * Desde la pantalla de final de partida:
     * `SPACE` para volver al menú principal.
 
@@ -58,14 +60,16 @@ Actualmente los contoles de nuestro juego funcionan mediante teclado.
     * Mantener presionada `LB` para cambiar a la cámara trasera.
     * Mantener presionada `RB` para cambiar a la cámara del totem.
     * Sonar el claxon `StickPressR`.
-    * `START` para poner el juego en pausa a mitad de partida, y volver a reanudarla.
+    * `START` para poner el juego en pausa.
+ * Menú intro:
+    * `A` para ir al menú principal.
  * En el menú principal:
-    * `A` para comenzar partida.
-    * `Y` para entrar a la sala online.
-    * `BACK` para salir.
+    * `A` para seleccionar.
+    * `Joystick` para moverse entre opciones.
+    * `B` para atrás.
  * Desde el menú de pausa:
-    * `START` para reanudar el juego.
-    * `B` para volver al menú principal desde el manú pausa.
+    * `A` para seleccionar.
+    * `Joystick` para moverse entre opciones.
  * Desde la pantalla de final de partida:
     * `A` para volver al menú principal.
 

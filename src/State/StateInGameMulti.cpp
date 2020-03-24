@@ -126,8 +126,8 @@ void StateInGameMulti::InitializeCLPhysics(ManCar &manCars, ManBoundingWall &man
     StateInGame::InitializeCLPhysics(manCars, manWall, manOBB, manGround, manPowerUp, manNavMesh, manBoxPowerUp, manTotem);
 }
 
-void StateInGameMulti::InitializeManagers(Physics *physics, Camera *cam) {
-    StateInGame::InitializeManagers(physics, cam);
+void StateInGameMulti::InitializeManagers(Physics *physics, Camera *cam, const uint32_t timeGame) {
+    StateInGame::InitializeManagers(physics, cam, timeGame);
 }
 
 void StateInGameMulti::InitializeSystems(ManCar &manCars, ManBoundingWall &manWall, ManBoundingOBB &manOBB, ManBoundingGround &manGround, ManPowerUp &manPowerUp, ManNavMesh &manNavMesh, ManBoxPowerUp &manBoxPowerUp, ManTotem &manTotem) {
