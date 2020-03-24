@@ -5,6 +5,6 @@
 
 class Clock : public Entity {
    public:
-    Clock();
+    Clock(uint32_t durationTime_);
     ~Clock() = default; 
 };

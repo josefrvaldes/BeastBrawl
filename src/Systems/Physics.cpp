@@ -43,6 +43,7 @@ void Physics::CalculatePosition(CCar *cCar, CTransformable *cTransformable, CSpe
     // debemos de tener encuenta la fuerza externa, asi como la direccion final que tomaremos (el angulo final)
     if(cExternalForce->force > 0){
         // Este paso es una tonteria porque ya lo devolvemos normalizado
+        //cout << " la fuerza exterman SIIII es mayor a 0, por lo que tenemos fuerza externa" << endl;
         cExternalForce->dirExternalForce = normalize(cExternalForce->dirExternalForce);
     }  
 

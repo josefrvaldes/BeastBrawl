@@ -4,12 +4,32 @@
 #include <Components/CShield.h>
 #include <Components/CTotem.h>
 #include <Components/CNitro.h>
+#include <Components/CClock.h>
 
 #include <Facade/Render/RenderFacadeManager.h>
 
 
 
 SystemGameRules::SystemGameRules(){
+
+}
+
+void SystemGameRules::UpdateGameRules(Entity& globalClock_) const{
+
+    // UPDATE RELOJ GLOBAL
+    auto cClock = static_cast<CClock*>(globalClock_.GetComponent(CompType::ClockComp).get());
+    auto holita = cClock->accumulatedTime;
+    if(cClock->active) {
+        cClock->accumulatedTime += duration_cast<milliseconds>(system_clock::now() - cClock->timeStart).count();
+        cClock->timeStart = system_clock::now();
+    }
+    if(cClock->accumulatedTime/1000.0 > cClock->DURATION_TIME/1000.0){
+        cout << "Se acabo el tiempo, nadie gana!!! \n";
+        //Game::GetInstance()->SetState(State::ENDRACE);
+        EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_ENDRACE});
+
+    }
+
 
 }
 
