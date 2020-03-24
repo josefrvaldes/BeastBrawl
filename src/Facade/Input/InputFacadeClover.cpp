@@ -116,6 +116,7 @@ void InputFacadeClover::CheckInputMenu(int& input, int maxInput){
                 cNavMesh->ResetNumIds();
 
                 EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_INGAMESINGLE});
+                //EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_SELECT_CHARACTER});
                 break;
             }
             case 1: {
@@ -133,6 +134,10 @@ void InputFacadeClover::CheckInputMenu(int& input, int maxInput){
             }
         }
     }
+}
+
+void InputFacadeClover::CheckInputSelectCharacter(int &, int) {
+    cout << "JEJE" << endl;
 }
 
 
