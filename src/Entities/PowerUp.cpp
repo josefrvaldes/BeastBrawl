@@ -106,7 +106,7 @@ PowerUp::PowerUp(glm::vec3 _position, glm::vec3 _rotation, typeCPowerUp _typePow
         // cTransformable->scale = glm::vec3(4,4,4);
     }else if(_typePowerUp == typeCPowerUp::PudinDeFrambuesa){   // Pudin Frambuesa
         cTexture->texture = "";
-        cMesh->mesh.push_back("kart_physics.fbx");
+        cMesh->mesh.push_back("pudin.obj");
         cMesh->mesh.push_back("pudin.obj");
         cPowerUp->speed = -510.0;
         // cTransformable->scale = glm::vec3(4,4,4);

@@ -12,5 +12,5 @@ CMesh::CMesh(std::string pathCerca)
 CMesh::CMesh(std::string pathCerca, std::string pathMedio, std::string pathLejos)
 : mesh{pathCerca, pathMedio, pathLejos}, activeMesh{mesh[0]}
 {
-    m_compType = CompType::MeshComp;
+    m_compType = CompType::MeshComp;  
 }

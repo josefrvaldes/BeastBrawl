@@ -32,18 +32,20 @@ using namespace std;
 CarAI::CarAI(){
     typeCar = TypeCar::CarAI;
 
+    // default values
+    glm::vec3 pos   = glm::vec3(10.0f, 20.0f, 30.0f);
+    glm::vec3 rot   = glm::vec3(0.0f, 90.0f, 0.0f);
+    glm::vec3 scale = glm::vec3(0.6f, 0.6f, 0.6f);
+
     string mesh;
     if(Constants::RENDER_ENGINE == Constants::RenderEngine::CLOVER){
-        mesh    = "kart_ia.obj";
+        mesh    = "kart_physics.fbx";
         
     }else if(Constants::RENDER_ENGINE == Constants::RenderEngine::IRRLICHT){
         mesh    =   "kart_ia.obj";
     }
     
-    // default values
-    glm::vec3 pos   = glm::vec3(10.0f, 20.0f, 30.0f);
-    glm::vec3 rot   = glm::vec3(0.0f, 90.0f, 0.0f);
-    glm::vec3 scale = glm::vec3(0.6f, 0.6f, 0.6f);
+    
     string texture = "";
     // string mesh    = "kart_ia.obj";
     //string vertexShader = "CLEngine/src/Shaders/lightMapping.vert";
@@ -132,6 +134,14 @@ CarAI::CarAI(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale,string texture, strin
     cTransformable->position = pos;
     cTransformable->rotation = rot;
     cTransformable->scale    = scale;
+
+    if(Constants::RENDER_ENGINE == Constants::RenderEngine::CLOVER){
+        cTransformable->rotation.x += 90.0;
+    }else if(Constants::RENDER_ENGINE == Constants::RenderEngine::IRRLICHT){
+
+    } 
+
+    
 
     CTexture *cTexture = (CTexture *)m_components[CompType::TextureComp].get();
     cTexture->texture = texture;

@@ -40,7 +40,7 @@ CarHuman::CarHuman() {
 
     string mesh;
     if(Constants::RENDER_ENGINE == Constants::RenderEngine::CLOVER){
-        mesh    = "kart_ia.obj";
+        mesh    = "kart_physics.fbx";
         
     }else if(Constants::RENDER_ENGINE == Constants::RenderEngine::IRRLICHT){
         mesh    =   "kart.obj";
