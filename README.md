@@ -60,7 +60,7 @@ Actualmente los contoles de nuestro juego funcionan mediante teclado.
     * Mantener presionada `LB` para cambiar a la cámara trasera.
     * Mantener presionada `RB` para cambiar a la cámara del totem.
     * Sonar el claxon `StickPressR`.
-    * `START` para poner el juego en pausa a mitad de partida, y volver a reanudarla.
+    * `START` para poner el juego en pausa.
  * Menú intro:
     * `A` para ir al menú principal.
  * En el menú principal:
