@@ -62,8 +62,8 @@ int main() {
     auto resourceMeshBox = resourceManager->GetResourceMesh("media/TEST_BOX.fbx", false);
     auto resourceMeshTotem = resourceManager->GetResourceMesh("media/totem_tex.fbx", false);
     auto resourceMesh = resourceManager->GetResourceMesh("media/kart_physics.fbx", false);
-    auto resourceMeshOBJ = resourceManager->GetResourceMesh("media/kart.obj", false);
-    auto resourceMaterial = resourceManager->GetResourceMaterial("media/kart.obj", false);
+    auto resourceMeshOBJ = resourceManager->GetResourceMesh("media/kart_physics.obj", false);
+    auto resourceMaterial = resourceManager->GetResourceMaterial("media/kart_physics.obj", false);
 
     cout << "+++++++ He compilado los shaders" << endl;
 
@@ -103,7 +103,7 @@ int main() {
         mesh2->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
 
         
-        auto mesh3 = mesh2->AddMesh(5);
+        auto mesh3 = smgr->AddMesh(5);
         mesh3->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
 
         auto mesh4 = smgr->AddMesh(6);
@@ -159,7 +159,7 @@ int main() {
     mesh2->SetRotation(glm::vec3(0.0f, 90.0f, 90.0f));
     mesh2->SetTranslation(glm::vec3(10.0f,0.0f,0.0f));
     mesh3->SetTranslation(glm::vec3(-40.0f,0.0f,0.0f));
-    mesh3->SetScalation(glm::vec3(0.2f,0.2f,0.2f));
+    mesh3->SetScalation(glm::vec3(4.0f,4.0f,4.0f));
 
     mesh4->SetScalation(glm::vec3(100.0f, 100.0f, 10.0f));
     mesh4->SetTranslation(glm::vec3(65.0f,50.0f, 70.0f));
