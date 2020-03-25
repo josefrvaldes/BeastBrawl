@@ -156,7 +156,7 @@ int main() {
     mesh1->SetRotation(glm::vec3(0.0f,0.0f,0.0f));
     mesh1->SetTranslation(glm::vec3(50.0f,50.0f,50.0f));
     mesh2->SetScalation(glm::vec3(0.5f, 0.5f, 0.5f));
-    mesh2->SetRotation(glm::vec3(0.0f, 180.0f, 0.0f));
+    mesh2->SetRotation(glm::vec3(0.0f, 90.0f, 90.0f));
     mesh2->SetTranslation(glm::vec3(10.0f,0.0f,0.0f));
     mesh3->SetTranslation(glm::vec3(-40.0f,0.0f,0.0f));
     mesh3->SetScalation(glm::vec3(0.2f,0.2f,0.2f));
