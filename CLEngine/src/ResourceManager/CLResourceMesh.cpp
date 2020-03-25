@@ -55,12 +55,16 @@ using namespace CLE;
  * 
  * @param file - Ruta del archivo a leer.
  */
-bool CLResourceMesh::LoadFile(std::string file, bool vertically) {
+bool CLResourceMesh::LoadFile(std::string file, bool flipUV) {
     Assimp::Importer importer;
+    auto assimpFlags = aiProcess_Triangulate | /*aiProcess_FlipUVs | */aiProcess_GenNormals | aiProcess_CalcTangentSpace 
+                                | aiProcess_OptimizeMeshes | aiProcess_TransformUVCoords | aiProcess_JoinIdenticalVertices 
+                                | aiProcess_ImproveCacheLocality | aiProcess_GenUVCoords;
 
+    if(flipUV)
+        assimpFlags |= aiProcess_FlipUVs;
     // Importamos el fichero.
-    scene = importer.ReadFile(file, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_GenNormals | aiProcess_CalcTangentSpace 
-                                | aiProcess_OptimizeMeshes);
+    scene = importer.ReadFile(file, assimpFlags);
 
     // Error de carga
     if(!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) 

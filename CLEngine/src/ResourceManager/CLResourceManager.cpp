@@ -13,7 +13,7 @@ CLResourceMesh* CLResourceManager::GetResourceMesh(const std::string file){
 }
 
 
-CLResourceMesh* CLResourceManager::GetResourceMesh(const std::string file, bool vertically) {
+CLResourceMesh* CLResourceManager::GetResourceMesh(const std::string file, bool flipUV) {
     shared_ptr<CLResourceMesh> resource = nullptr;
     bool search = true;
     for (unsigned int i=0; i<meshes.size() && search; ++ i) {
@@ -25,7 +25,7 @@ CLResourceMesh* CLResourceManager::GetResourceMesh(const std::string file, bool 
     if (!resource) {
         resource = make_shared<CLResourceMesh>();
         resource->SetName(file);
-        if (resource->LoadFile(file, vertically)) {
+        if (resource->LoadFile(file, flipUV)) {
             meshes.push_back(resource);
         }
     }
