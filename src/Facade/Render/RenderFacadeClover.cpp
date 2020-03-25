@@ -662,7 +662,33 @@ void RenderFacadeClover::FacadeDrawMenu() {
  *
  */
  void RenderFacadeClover::FacadeDrawSelectCharacter() {
-
+    glm::vec3 color[8] = {
+            glm::vec3(0.0f, 0.0f, 255.0f),
+            glm::vec3(0.0f, 0.0f, 255.0f),
+            glm::vec3(0.0f, 0.0f, 255.0f),
+            glm::vec3(0.0f, 0.0f, 255.0f),
+            glm::vec3(0.0f, 0.0f, 255.0f),
+            glm::vec3(0.0f, 0.0f, 255.0f),
+            glm::vec3(0.0f, 0.0f, 255.0f),
+            glm::vec3(0.0f, 0.0f, 255.0f)
+    };
+    color[inputSC] = glm::vec3(0.0f, 255.0f, 0.0f);
+    std::string name = "Atras";
+    device->RenderText2D(name, 50.0f, 50.0f, 0.05f, 0.5f, color[0]);
+    name = "Mr Penguin";
+    device->RenderText2D(name, 100.0f, 350.0f, 0.05f, 0.75f, color[1]);
+    name = "Captain Sharky";
+    device->RenderText2D(name, 500.0f, 350.0f, 0.05f, 0.75f, color[3]);
+    name = "Kaiser Kong";
+    device->RenderText2D(name, 900.0f, 350.0f, 0.05f, 0.75f, color[5]);
+    name = "Deacon Dragon";
+    device->RenderText2D(name, 100.0f, 250.0f, 0.05f, 0.75f, color[2]);
+    name = "Mrs Baxter";
+    device->RenderText2D(name, 500.0f, 250.0f, 0.05f, 0.75f, color[4]);
+    name = "Cyberoctopus";
+    device->RenderText2D(name, 900.0f, 250.0f, 0.05f, 0.75f, color[6]);
+    name = "Aceptar";
+    device->RenderText2D(name, 950.0f, 50.0f, 0.05f, 0.5f, color[7]);
  }
 
 void RenderFacadeClover::FacadeInitResources(){
