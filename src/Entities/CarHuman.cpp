@@ -44,7 +44,7 @@ CarHuman::CarHuman() {
         mesh    =   "kart_physics.obj";
         
     }else if(Constants::RENDER_ENGINE == Constants::RenderEngine::IRRLICHT){
-        mesh    =   "kart.obj";
+        mesh    =   "kart_physics.obj";
     }
 
     //string mesh    = "kart_physics.fbx";
@@ -82,7 +82,7 @@ CarHuman::CarHuman() {
     // TODO: jesuuuuuuus pasame los bounding desde phyton mamoooon JESUS
     glm::vec3 pSphBehind = pos;
     glm::vec3 pSphFront = pos;
-    shared_ptr<CBoundingChassis> cBoundingChassis = make_shared<CBoundingChassis>(pSphBehind, 7.5, 7.0, pSphFront, 7.5, 7.0);
+    shared_ptr<CBoundingChassis> cBoundingChassis = make_shared<CBoundingChassis>(pSphBehind, 7.0, 5.0, pSphFront, 7.0, 5.0);
 
     shared_ptr<CGravity> cGravity = make_shared<CGravity>();
 

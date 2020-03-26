@@ -593,8 +593,8 @@ void CLPhysics::PositionSphereIntoTransformable(CTransformable &tr, CBoundingSph
 void CLPhysics::PositionSphBehindIntoTransf(CTransformable &tr, CBoundingSphere &sp) const {
     sp.center.x = tr.position.x;
     sp.center.z = tr.position.z;
-    float x = -cos(Utils::DegToRad(tr.rotation.y)) * (sp.radius);
-    float z = sin(Utils::DegToRad(tr.rotation.y)) * (sp.radius);
+    float x = -cos(Utils::DegToRad(tr.rotation.y)) * (-5);
+    float z = sin(Utils::DegToRad(tr.rotation.y)) * (-5);
     sp.center.x += x;
     sp.center.z += z;
     // Necesitamos tambien actualizar el CILINDRO
@@ -603,8 +603,8 @@ void CLPhysics::PositionSphBehindIntoTransf(CTransformable &tr, CBoundingSphere 
 void CLPhysics::PositionSphFrontIntoTransf(CTransformable &tr, CBoundingSphere &sp) const {
     sp.center.x = tr.position.x;
     sp.center.z = tr.position.z;
-    float x = -cos(Utils::DegToRad(tr.rotation.y)) * (sp.radius + 10);
-    float z = sin(Utils::DegToRad(tr.rotation.y)) * (sp.radius + 10);
+    float x = -cos(Utils::DegToRad(tr.rotation.y)) * (5);
+    float z = sin(Utils::DegToRad(tr.rotation.y)) * (5);
     sp.center.x += x;
     sp.center.z += z;
     // Necesitamos tambien actualizar el cilindro
