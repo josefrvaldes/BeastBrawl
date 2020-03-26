@@ -409,7 +409,7 @@ void RenderFacadeClover::UpdateCamera(Entity* cam, ManCar* manCars) {
 
         }
         //float angleRotation = (60 * M_PI) / 180.0;
-        cout << targetPosition.x << " | " << targetPosition.z << endl;
+        cout << cTransformable->position.x << " | " << cTransformable->position.y << " | " << cTransformable->position.z << endl;
         cameraEntity->SetCameraTarget(glm::vec3(targetPosition.x,targetPosition.y,targetPosition.z));
         cameraEntity->SetFOV(60);
         camera1->SetTranslation(glm::vec3(cTransformable->position.x, cTransformable->position.y-5, -cTransformable->position.z));

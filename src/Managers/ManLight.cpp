@@ -4,7 +4,7 @@
 
 //TODO: Leerlo de fichero
 ManLight::ManLight(){
-    shared_ptr<Light> p = make_shared<Light>(glm::vec3(0.0,-100.0,0.0));
+    shared_ptr<Light> p = make_shared<Light>(glm::vec3(-20.0,500.0,0.0));
     entities.push_back(p);
 
     // shared_ptr<Light> p2 = make_shared<Light>(glm::vec3(250.0,40.0,-250.0));

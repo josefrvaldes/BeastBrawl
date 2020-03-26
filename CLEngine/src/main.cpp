@@ -59,12 +59,12 @@ int main() {
     auto resourceShaderMaterial = resourceManager->GetResourceShader("CLEngine/src/Shaders/materialShader.vert", "CLEngine/src/Shaders/materialShader.frag");
     auto resourceShader3 = resourceManager->GetResourceShader("CLEngine/src/Shaders/debugShader.vert", "CLEngine/src/Shaders/debugShader.frag");
     auto resourceShaderSkybox = resourceManager->GetResourceShader("CLEngine/src/Shaders/skybox.vert", "CLEngine/src/Shaders/skybox.frag");
-    auto resourceMeshBox = resourceManager->GetResourceMesh("media/TEST_BOX.fbx", true);
-    auto resourceMeshTotem = resourceManager->GetResourceMesh("media/totem_tex.fbx", true);
+    auto resourceMeshGround = resourceManager->GetResourceMesh("media/training_ground.obj", true);
+    // auto resourceMeshTotem = resourceManager->GetResourceMesh("media/totem_tex.fbx", true);
     auto resourceMesh = resourceManager->GetResourceMesh("media/kart_physics.fbx", true);
-    //auto resourceMesh2 = resourceManager->GetResourceMesh("media/kart_physics4.fbx", true);
-    auto resourceMeshOBJ = resourceManager->GetResourceMesh("media/kart.obj", true);
-    auto resourceMaterial = resourceManager->GetResourceMaterial("media/kart.obj", true);
+    // //auto resourceMesh2 = resourceManager->GetResourceMesh("media/kart_physics4.fbx", true);
+    // auto resourceMeshOBJ = resourceManager->GetResourceMesh("media/kart.obj", true);
+    // auto resourceMaterial = resourceManager->GetResourceMaterial("media/kart.obj", true);
 
     cout << "+++++++ He compilado los shaders" << endl;
 
@@ -104,11 +104,11 @@ int main() {
         mesh2->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
 
         
-        auto mesh3 = smgr->AddMesh(5);
-        mesh3->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
+        // auto mesh3 = smgr->AddMesh(5);
+        // mesh3->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
 
-        auto mesh4 = smgr->AddMesh(6);
-        mesh4->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
+        // auto mesh4 = smgr->AddMesh(6);
+        // mesh4->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
         
 
         static_cast<CLCamera*>(camera->GetEntity())->SetCameraTarget(mesh2->GetTranslation());
@@ -145,27 +145,27 @@ int main() {
     //      smgr->DrawTree(smgr);
 
 
-    static_cast<CLMesh*>(mesh1->GetEntity())->SetMesh(resourceMeshTotem);
+    static_cast<CLMesh*>(mesh1->GetEntity())->SetMesh(resourceMeshGround);
     static_cast<CLMesh*>(mesh2->GetEntity())->SetMesh(resourceMesh);
-    static_cast<CLMesh*>(mesh3->GetEntity())->SetMesh(resourceMesh);
+    // static_cast<CLMesh*>(mesh3->GetEntity())->SetMesh(resourceMesh);
     //static_cast<CLMesh*>(mesh3->GetEntity())->SetMaterial(resourceMaterial); 
-    static_cast<CLMesh*>(mesh4->GetEntity())->SetMesh(resourceMeshBox);
+    // static_cast<CLMesh*>(mesh4->GetEntity())->SetMesh(resourceMeshBox);
 
     camera->SetTranslation(glm::vec3(121.127f, 70.42f, -11.9f));
     light1->SetTranslation(glm::vec3(54.9f, 35.2f, -14.08f));
-    mesh1->SetScalation(glm::vec3(2.0f, 2.0f, 2.0f));
+    mesh1->SetScalation(glm::vec3(0.5f, 0.5f, 0.5f));
     mesh1->SetRotation(glm::vec3(0.0f,0.0f,0.0f));
     mesh1->SetTranslation(glm::vec3(50.0f,50.0f,50.0f));
     mesh2->SetScalation(glm::vec3(0.5f, 0.5f, 0.5f));
     mesh2->SetRotation(glm::vec3(0.0f, 0.0f, 0.0f));
     mesh2->SetTranslation(glm::vec3(10.0f,0.0f,0.0f));
-    mesh3->SetTranslation(glm::vec3(-40.0f,0.0f,0.0f));
-    mesh3->SetScalation(glm::vec3(0.5f,0.5f,0.5f));
-    mesh3->SetRotation(glm::vec3(0.0f, 0.0f, 0.0f));
+    // mesh3->SetTranslation(glm::vec3(-40.0f,0.0f,0.0f));
+    // mesh3->SetScalation(glm::vec3(0.5f,0.5f,0.5f));
+    // mesh3->SetRotation(glm::vec3(0.0f, 0.0f, 0.0f));
 
 
-    mesh4->SetScalation(glm::vec3(100.0f, 100.0f, 10.0f));
-    mesh4->SetTranslation(glm::vec3(65.0f,50.0f, 70.0f));
+    // mesh4->SetScalation(glm::vec3(100.0f, 100.0f, 10.0f));
+    // mesh4->SetTranslation(glm::vec3(65.0f,50.0f, 70.0f));
 
 
     //LUCES Y COLORES
