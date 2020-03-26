@@ -19,7 +19,7 @@
 #include "SceneTree/CLNode.h"
 #include "SceneTree/CLEntity.h"
 #include "SceneTree/CLMesh.h"
-#include "SceneTree/CLLight.h"
+#include "SceneTree/CLPointLight.h"
 #include "SceneTree/CLCamera.h"
 #include "SceneTree/CLShadowMapping.h"
 #include "ResourceManager/CLResourceManager.h"

@@ -18,7 +18,6 @@ void SystemGameRules::UpdateGameRules(Entity& globalClock_) const{
 
     // UPDATE RELOJ GLOBAL
     auto cClock = static_cast<CClock*>(globalClock_.GetComponent(CompType::ClockComp).get());
-    auto holita = cClock->accumulatedTime;
     if(cClock->active) {
         cClock->accumulatedTime += duration_cast<milliseconds>(system_clock::now() - cClock->timeStart).count();
         cClock->timeStart = system_clock::now();

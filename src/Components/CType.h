@@ -13,7 +13,7 @@ enum ModelType{
     StaticMesh,
     AnimatedMesh,
     Text,
-    Light
+    PointLight
 };
 
 class CType : public Component{

@@ -54,20 +54,20 @@ CLNode* CLNode::AddMesh(unsigned int id){
     return node.get();
 }
 
-CLNode* CLNode::AddLight(unsigned int id,glm::vec3 intensity, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float constant, float linear, float quadratic){
-    auto node = AddLight(id);
-    static_cast<CLLight*>(node->GetEntity())->SetLightAttributes(intensity,ambient,diffuse,specular,constant,linear,quadratic);
+CLNode* CLNode::AddPointLight(unsigned int id,glm::vec3 intensity, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float constant, float linear, float quadratic){
+    auto node = AddPointLight(id);
+    static_cast<CLPointLight*>(node->GetEntity())->SetLightAttributes(intensity,ambient,diffuse,specular,constant,linear,quadratic);
     return node;
 }
 
 
-CLNode* CLNode::AddLight(unsigned int id){
+CLNode* CLNode::AddPointLight(unsigned int id){
 
-    shared_ptr<CLEntity> e = make_shared<CLLight>(id);
+    shared_ptr<CLEntity> e = make_shared<CLPointLight>(id);
     shared_ptr<CLNode> node = make_shared<CLNode>(e);
     childs.push_back(node);
     node->SetFather(this);
-    lights.push_back(node.get());
+    pointLights.push_back(node.get());
 
     return node.get();
     
@@ -392,12 +392,12 @@ void CLNode::CalculateViewProjMatrix(){
  */
 void CLNode::CalculateLights(){
     GLuint i = 0;
-    for(auto light : lights){
-        auto lightEntity = static_cast<CLLight*>(light->GetEntity());
+    for(auto light : pointLights){
+        auto lightEntity = static_cast<CLPointLight*>(light->GetEntity());
         
-        string number = to_string(i);
+        string number = to_string(i); 
 
-        glUniform1i(glGetUniformLocation(this->GetShaderProgramID(),"num_Point_Lights"),lights.size());    
+        glUniform1i(glGetUniformLocation(this->GetShaderProgramID(),"num_Point_Lights"),pointLights.size());    
         //TODO: A ver esto deberia cambiarse y pasarselo al shader de las mallas que lo vayan a usar
         //      por si al final las luces usan otro shader
         glUniform3fv(glGetUniformLocation(this->GetShaderProgramID(), ("pointLights[" + number + "].position").c_str()),1,glm::value_ptr(light->GetGlobalTranslation()));
@@ -600,5 +600,5 @@ float CLNode::CalculateBoundingBox(){
 
 void CLNode::RemoveLightsAndCameras() {
     cameras.clear();
-    lights.clear();
+    pointLights.clear();
 }

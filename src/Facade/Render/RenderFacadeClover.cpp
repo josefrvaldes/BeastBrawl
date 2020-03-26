@@ -314,9 +314,9 @@ const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
         case ModelType::Text:
             node = smgr->AddMesh(cId->id);
             break;
-        case ModelType::Light:
+        case ModelType::PointLight:
             auto cLight = static_cast<CLight*>(entity->GetComponent(CompType::LightComp).get());
-            node = smgr->AddLight(cId->id,cLight->intensity,cLight->ambient,cLight->diffuse,cLight->specular,cLight->constant,cLight->linear,cLight->quadratic);
+            node = smgr->AddPointLight(cId->id,cLight->intensity,cLight->ambient,cLight->diffuse,cLight->specular,cLight->constant,cLight->linear,cLight->quadratic);
             //static_cast<CLLight*>(node->GetEntity())->SetLightAttributes(cLight->intensity,cLight->ambient,cLight->diffuse,cLight->specular,cLight->constant,cLight->linear,cLight->quadratic);
             break;
     } 
@@ -334,7 +334,7 @@ const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
     //auto pos = cTransformable->position;
     //cout << " la posicion donde esta la entidad es ( " << pos.x<< " , " << pos.y<< " , " <<-pos.z<< " )" << endl;
     // BOUNDING BOX
-    if(cType->type != ModelType::Light){
+    if(cType->type != ModelType::PointLight){
         float dimAABB = node->CalculateBoundingBox();
         //Sacamos sus dimensiones
         //float height = 10.0;

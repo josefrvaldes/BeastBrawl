@@ -4,12 +4,12 @@
 
 namespace CLE {
 
-    class CLLight : public CLEntity {
+    class CLPointLight : public CLEntity {
         public:
         
-            CLLight() {};
-            CLLight(unsigned int idEntity);
-            ~CLLight() {};
+            CLPointLight() {};
+            CLPointLight(unsigned int idEntity);
+            ~CLPointLight() {};
 
             void SetIntensity(glm::vec3 i)          { intensity = i;    };
             void SetAmbient(glm::vec3 amb)          { ambient = amb;    };

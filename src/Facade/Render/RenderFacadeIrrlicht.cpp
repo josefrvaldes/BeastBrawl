@@ -329,7 +329,7 @@ const uint16_t RenderFacadeIrrlicht::FacadeAddObject(Entity* entity) {
         case ModelType::Text:
             break;
 
-        case ModelType::Light:
+        case ModelType::PointLight:
             return 0;
             break;
     }

@@ -20,7 +20,7 @@ Light::Light(glm::vec3 pos)
 
     shared_ptr<Component> cId   = make_shared<CId>();
     shared_ptr<Component> cTransformable = make_shared<CTransformable>(pos,    glm::vec3(0.0f,0.0f,0.0f),    glm::vec3(1.0f,1.0f,1.0f));
-    shared_ptr<CType> cType   = make_shared<CType>(ModelType::Light);
+    shared_ptr<CType> cType   = make_shared<CType>(ModelType::PointLight);
     shared_ptr<CShader> cShader = make_shared<CShader>(vertexShader,fragmentShader);
     shared_ptr<CLight> cLight   = make_shared<CLight>();
 
@@ -41,7 +41,7 @@ Light::Light(glm::vec3 pos, glm::vec3 intensity, glm::vec3 ambient, glm::vec3 di
 
     shared_ptr<Component> cId   = make_shared<CId>();
     shared_ptr<Component> cTransformable = make_shared<CTransformable>(pos, glm::vec3(0.0f,0.0f,0.0f),    glm::vec3(1.0f,1.0f,1.0f));
-    shared_ptr<CType> cType   = make_shared<CType>(ModelType::Light);
+    shared_ptr<CType> cType   = make_shared<CType>(ModelType::PointLight);
     shared_ptr<CShader> cShader = make_shared<CShader>(vertexShader,fragmentShader);
     shared_ptr<CLight> cLight   = make_shared<CLight>(intensity,ambient,diffuse,specular,constant,linear,quadratic);
 

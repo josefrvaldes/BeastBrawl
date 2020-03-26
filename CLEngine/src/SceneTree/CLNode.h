@@ -9,7 +9,7 @@
 
 #include "CLEntity.h"
 #include "CLMesh.h"
-#include "CLLight.h"
+#include "CLPointLight.h"
 #include "CLCamera.h"
 #include "../ResourceManager/CLResourceMesh.h"
 #include "CLSkybox.h"
@@ -49,7 +49,7 @@ class CLNode{
         static glm::mat4 GetViewMatrix()               { return view; }
         static glm::mat4 GetProjectionMatrix()         { return projection; }
         CLCamera* GetActiveCamera();
-        vector<CLNode*> GetLights()             { return lights; };
+        vector<CLNode*> GetPointLights()             { return pointLights; };
         vector<CLNode*> GetCameras()            { return cameras; };
         CLShadowMapping* GetShadowMapping()     {return shadowMapping.get();};
         GLuint GetSimpleDepthShader()           {return simpleDepthShader;};
@@ -69,8 +69,8 @@ class CLNode{
         CLNode* AddGroup(unsigned int id);
         CLNode* AddMesh(unsigned int id);
         CLNode* AddMesh(unsigned int id,string mesh);
-        CLNode* AddLight(unsigned int id);
-        CLNode* AddLight(unsigned int id,glm::vec3 intensity, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float constant, float linear, float quadratic);
+        CLNode* AddPointLight(unsigned int id);
+        CLNode* AddPointLight(unsigned int id,glm::vec3 intensity, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float constant, float linear, float quadratic);
         CLNode* AddCamera(unsigned int id);
         void AddSkybox(string right, string left, string top, string bottom, string front, string back);
         void AddShadowMapping(GLuint lightId);
@@ -130,7 +130,7 @@ class CLNode{
         // Identificadores de las variables que cambia para pasarle info al shader.
         GLuint shaderProgramID;
         int lineWidth = 1;
-        inline static vector<CLNode*> lights;
+        inline static vector<CLNode*> pointLights;
         inline static vector<CLNode*> cameras;
         inline static GLuint debugShader = 0;
 

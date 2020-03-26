@@ -18,7 +18,7 @@
 
 //SRC
 #include "CLEngine.h"
-#include "SceneTree/CLLight.h"
+#include "SceneTree/CLPointLight.h"
 #include "SceneTree/CLCamera.h"
 #include "SceneTree/CLNode.h"
 #include "SceneTree/CLMesh.h"
@@ -80,17 +80,17 @@ int main() {
     CLNode* smgr = device->GetSceneManager();
 
 
-        auto light1 = smgr->AddLight(1);
+        auto light1 = smgr->AddPointLight(1);
         light1->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
-        static_cast<CLLight*>(light1->GetEntity())->SetLightAttributes(glm::vec3(1.0f,1.0f,1.0f),glm::vec3(0.5f,0.5f,0.5f),glm::vec3(0.2f,0.3f,0.42f),glm::vec3(0.1f,0.1,0.1f),0.3f,0.004f,0.00016f);
+        static_cast<CLPointLight*>(light1->GetEntity())->SetLightAttributes(glm::vec3(1.0f,1.0f,1.0f),glm::vec3(0.5f,0.5f,0.5f),glm::vec3(0.2f,0.3f,0.42f),glm::vec3(0.1f,0.1,0.1f),0.3f,0.004f,0.00016f);
 
-        auto light2 = smgr->AddLight(6);
+        auto light2 = smgr->AddPointLight(6);
         light2->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
-        static_cast<CLLight*>(light2->GetEntity())->SetLightAttributes(glm::vec3(1.0f,1.0f,1.0f),glm::vec3(0.5f,0.5f,0.5f),glm::vec3(0.2f,0.3f,0.42f),glm::vec3(0.1f,0.1,0.1f),0.3f,0.004f,0.00016f);
+        static_cast<CLPointLight*>(light2->GetEntity())->SetLightAttributes(glm::vec3(1.0f,1.0f,1.0f),glm::vec3(0.5f,0.5f,0.5f),glm::vec3(0.2f,0.3f,0.42f),glm::vec3(0.1f,0.1,0.1f),0.3f,0.004f,0.00016f);
 
-        auto light3 = smgr->AddLight(7);
+        auto light3 = smgr->AddPointLight(7);
         light3->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
-        static_cast<CLLight*>(light3->GetEntity())->SetLightAttributes(glm::vec3(1.0f,1.0f,1.0f),glm::vec3(0.5f,0.5f,0.5f),glm::vec3(0.2f,0.3f,0.42f),glm::vec3(0.1f,0.1,0.1f),0.3f,0.004f,0.00016f);
+        static_cast<CLPointLight*>(light3->GetEntity())->SetLightAttributes(glm::vec3(1.0f,1.0f,1.0f),glm::vec3(0.5f,0.5f,0.5f),glm::vec3(0.2f,0.3f,0.42f),glm::vec3(0.1f,0.1,0.1f),0.3f,0.004f,0.00016f);
 
         auto meshes = smgr->AddGroup(10000);
 
@@ -123,26 +123,6 @@ int main() {
 
         smgr->AddShadowMapping(light1->GetEntity()->GetID());
 
-    //smgr->DFSTree(glm::mat4(1.0));
-    // vector<shared_ptr<CLEntity>> mallas;
-    // vector<CLNode*> nodes;
-
-    // int max = 200;
-    // int min = -200;
-    // int j = 0;
-    // for(int i = 50; i<100; i++){
-    //     nodes.push_back(meshes->AddMesh(i));
-    //     nodes[j]->SetShaderProgramID(resourceShader->GetProgramID());
-
-    //     int randNumX = rand()%(max-min + 1) + min;
-    //     int randNumY = rand()%(max-min + 1) + min;
-    //     int randNumZ = rand()%(max-min + 1) + min;
-    //     static_cast<CLMesh*>(nodes[j]->GetEntity())->SetMesh(resourceMeshTotem);
-    //     nodes[j]->SetTranslation(glm::vec3(randNumX,randNumY,randNumZ));
-    //     j++;
-    // }
-
-    //      smgr->DrawTree(smgr);
 
 
     static_cast<CLMesh*>(mesh1->GetEntity())->SetMesh(resourceMeshGround);
@@ -180,7 +160,7 @@ int main() {
 
     double previousTime = glfwGetTime();
     int frameCount = 0;
-    auto lights = smgr->GetLights();
+    auto lights = smgr->GetPointLights();
 
     while (device->Run()) {
         
