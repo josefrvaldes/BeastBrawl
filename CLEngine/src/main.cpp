@@ -84,13 +84,13 @@ int main() {
         light1->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
         static_cast<CLPointLight*>(light1->GetEntity())->SetLightAttributes(glm::vec3(1.0f,1.0f,1.0f),glm::vec3(0.5f,0.5f,0.5f),glm::vec3(0.2f,0.3f,0.42f),glm::vec3(0.1f,0.1,0.1f),0.3f,0.004f,0.00016f);
 
-        auto light2 = smgr->AddPointLight(6);
+        auto light2 = smgr->AddDirectLight(6);
         light2->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
-        static_cast<CLPointLight*>(light2->GetEntity())->SetLightAttributes(glm::vec3(1.0f,1.0f,1.0f),glm::vec3(0.5f,0.5f,0.5f),glm::vec3(0.2f,0.3f,0.42f),glm::vec3(0.1f,0.1,0.1f),0.3f,0.004f,0.00016f);
+        static_cast<CLDirectLight*>(light2->GetEntity())->SetLightAttributes(glm::vec3(1.0f,0.0f,0.0f),glm::vec3(1.0f,1.0f,1.0f),glm::vec3(0.5f,0.5f,0.5f),glm::vec3(0.2f,0.3f,0.42f),glm::vec3(0.1f,0.1,0.1f),0.3f,0.004f,0.00016f);
 
-        auto light3 = smgr->AddPointLight(7);
+        auto light3 = smgr->AddSpotLight(7);
         light3->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
-        static_cast<CLPointLight*>(light3->GetEntity())->SetLightAttributes(glm::vec3(1.0f,1.0f,1.0f),glm::vec3(0.5f,0.5f,0.5f),glm::vec3(0.2f,0.3f,0.42f),glm::vec3(0.1f,0.1,0.1f),0.3f,0.004f,0.00016f);
+        static_cast<CLSpotLight*>(light3->GetEntity())->SetLightAttributes(glm::vec3(1.0f,0.0f,0.0f),glm::cos(glm::radians(12.5f)),glm::cos(glm::radians(15.5f)),glm::vec3(1.0f,1.0f,1.0f),glm::vec3(0.5f,0.5f,0.5f),glm::vec3(0.2f,0.3f,0.42f),glm::vec3(0.1f,0.1,0.1f),0.3f,0.004f,0.00016f);
 
         auto meshes = smgr->AddGroup(10000);
 

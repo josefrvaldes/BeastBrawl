@@ -10,6 +10,8 @@
 #include "CLEntity.h"
 #include "CLMesh.h"
 #include "CLPointLight.h"
+#include "CLDirectLight.h"
+#include "CLSpotLight.h"
 #include "CLCamera.h"
 #include "../ResourceManager/CLResourceMesh.h"
 #include "CLSkybox.h"
@@ -49,7 +51,8 @@ class CLNode{
         static glm::mat4 GetViewMatrix()               { return view; }
         static glm::mat4 GetProjectionMatrix()         { return projection; }
         CLCamera* GetActiveCamera();
-        vector<CLNode*> GetPointLights()             { return pointLights; };
+        vector<CLNode*> GetPointLights()              { return pointLights; };
+        vector<CLNode*> GetDirectLights()             { return directLights; };
         vector<CLNode*> GetCameras()            { return cameras; };
         CLShadowMapping* GetShadowMapping()     {return shadowMapping.get();};
         GLuint GetSimpleDepthShader()           {return simpleDepthShader;};
@@ -71,6 +74,10 @@ class CLNode{
         CLNode* AddMesh(unsigned int id,string mesh);
         CLNode* AddPointLight(unsigned int id);
         CLNode* AddPointLight(unsigned int id,glm::vec3 intensity, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float constant, float linear, float quadratic);
+        CLNode* AddDirectLight(unsigned int id);
+        CLNode* AddDirectLight(unsigned int id,glm::vec3 direction,glm::vec3 intensity, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float constant, float linear, float quadratic);
+        CLNode* AddSpotLight(unsigned int id);
+        CLNode* AddSpotLight(unsigned int id,glm::vec3 direction,float cutOff,float outerCutOff,glm::vec3 intensity, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float constant, float linear, float quadratic);
         CLNode* AddCamera(unsigned int id);
         void AddSkybox(string right, string left, string top, string bottom, string front, string back);
         void AddShadowMapping(GLuint lightId);
@@ -131,6 +138,8 @@ class CLNode{
         GLuint shaderProgramID;
         int lineWidth = 1;
         inline static vector<CLNode*> pointLights;
+        inline static vector<CLNode*> directLights;
+        inline static vector<CLNode*> spotLights;
         inline static vector<CLNode*> cameras;
         inline static GLuint debugShader = 0;
 

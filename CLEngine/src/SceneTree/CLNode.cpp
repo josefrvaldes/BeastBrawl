@@ -73,6 +73,44 @@ CLNode* CLNode::AddPointLight(unsigned int id){
     
 }
 
+CLNode* CLNode::AddDirectLight(unsigned int id,glm::vec3 direction,glm::vec3 intensity, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float constant, float linear, float quadratic){
+    auto node = AddDirectLight(id);
+    static_cast<CLDirectLight*>(node->GetEntity())->SetLightAttributes(direction,intensity,ambient,diffuse,specular,constant,linear,quadratic);
+    return node;
+}
+
+
+CLNode* CLNode::AddDirectLight(unsigned int id){
+
+    shared_ptr<CLEntity> e = make_shared<CLDirectLight>(id);
+    shared_ptr<CLNode> node = make_shared<CLNode>(e);
+    childs.push_back(node);
+    node->SetFather(this);
+    directLights.push_back(node.get());
+
+    return node.get();
+    
+}
+
+CLNode* CLNode::AddSpotLight(unsigned int id,glm::vec3 direction,float cutOff,float outerCutOff,glm::vec3 intensity, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float constant, float linear, float quadratic){
+    auto node = AddSpotLight(id);
+    static_cast<CLSpotLight*>(node->GetEntity())->SetLightAttributes(direction,cutOff,outerCutOff,intensity,ambient,diffuse,specular,constant,linear,quadratic);
+    return node;
+}
+
+
+CLNode* CLNode::AddSpotLight(unsigned int id){
+
+    shared_ptr<CLEntity> e = make_shared<CLSpotLight>(id);
+    shared_ptr<CLNode> node = make_shared<CLNode>(e);
+    childs.push_back(node);
+    node->SetFather(this);
+    spotLights.push_back(node.get());
+
+    return node.get();
+    
+}
+
 CLNode* CLNode::AddCamera(unsigned int id){
 
     shared_ptr<CLEntity> e = make_shared<CLCamera>(id);
@@ -392,21 +430,60 @@ void CLNode::CalculateViewProjMatrix(){
  */
 void CLNode::CalculateLights(){
     GLuint i = 0;
-    for(auto light : pointLights){
-        auto lightEntity = static_cast<CLPointLight*>(light->GetEntity());
+    for(auto pointLight : pointLights){
+        auto pointLightEntity = static_cast<CLPointLight*>(pointLight->GetEntity());
         
         string number = to_string(i); 
 
         glUniform1i(glGetUniformLocation(this->GetShaderProgramID(),"num_Point_Lights"),pointLights.size());    
-        //TODO: A ver esto deberia cambiarse y pasarselo al shader de las mallas que lo vayan a usar
-        //      por si al final las luces usan otro shader
-        glUniform3fv(glGetUniformLocation(this->GetShaderProgramID(), ("pointLights[" + number + "].position").c_str()),1,glm::value_ptr(light->GetGlobalTranslation()));
-        glUniform3fv(glGetUniformLocation(this->GetShaderProgramID(), ("pointLights[" + number + "].ambient").c_str()), 1,glm::value_ptr(lightEntity->GetAmbient()));
-        glUniform3fv(glGetUniformLocation(this->GetShaderProgramID(), ("pointLights[" + number + "].diffuse").c_str()), 1, glm::value_ptr(lightEntity->GetDiffuse()));
-        glUniform3fv(glGetUniformLocation(this->GetShaderProgramID(), ("pointLights[" + number + "].specular").c_str()), 1, glm::value_ptr(lightEntity->GetSpecular()));
-        glUniform1f(glGetUniformLocation(this->GetShaderProgramID(), ("pointLights[" + number + "].constant").c_str()), lightEntity->GetConstant());
-        glUniform1f(glGetUniformLocation(this->GetShaderProgramID(), ("pointLights[" + number + "].linear").c_str()), lightEntity->GetLinear());
-        glUniform1f(glGetUniformLocation(this->GetShaderProgramID(), ("pointLights[" + number + "].quadratic").c_str()), lightEntity->GetQuadratic());
+        glUniform3fv(glGetUniformLocation(this->GetShaderProgramID(), ("pointLights[" + number + "].position").c_str()),1,glm::value_ptr(pointLight->GetGlobalTranslation()));
+        glUniform3fv(glGetUniformLocation(this->GetShaderProgramID(), ("pointLights[" + number + "].ambient").c_str()), 1,glm::value_ptr(pointLightEntity->GetAmbient()));
+        glUniform3fv(glGetUniformLocation(this->GetShaderProgramID(), ("pointLights[" + number + "].diffuse").c_str()), 1, glm::value_ptr(pointLightEntity->GetDiffuse()));
+        glUniform3fv(glGetUniformLocation(this->GetShaderProgramID(), ("pointLights[" + number + "].specular").c_str()), 1, glm::value_ptr(pointLightEntity->GetSpecular()));
+        glUniform1f(glGetUniformLocation(this->GetShaderProgramID(), ("pointLights[" + number + "].constant").c_str()), pointLightEntity->GetConstant());
+        glUniform1f(glGetUniformLocation(this->GetShaderProgramID(), ("pointLights[" + number + "].linear").c_str()), pointLightEntity->GetLinear());
+        glUniform1f(glGetUniformLocation(this->GetShaderProgramID(), ("pointLights[" + number + "].quadratic").c_str()), pointLightEntity->GetQuadratic());
+
+
+        i++;
+    }
+
+    i = 0;
+    for(auto directLight : directLights){
+        auto directLightEntity = static_cast<CLDirectLight*>(directLight->GetEntity());
+        
+        string number = to_string(i); 
+
+        glUniform1i(glGetUniformLocation(this->GetShaderProgramID(),"num_Direct_Lights"),directLights.size());    
+        glUniform3fv(glGetUniformLocation(this->GetShaderProgramID(), ("directLights[" + number + "].direction").c_str()),1,glm::value_ptr(directLightEntity->GetDirection()));
+        glUniform3fv(glGetUniformLocation(this->GetShaderProgramID(), ("directLights[" + number + "].ambient").c_str()), 1,glm::value_ptr(directLightEntity->GetAmbient()));
+        glUniform3fv(glGetUniformLocation(this->GetShaderProgramID(), ("directLights[" + number + "].diffuse").c_str()), 1, glm::value_ptr(directLightEntity->GetDiffuse()));
+        glUniform3fv(glGetUniformLocation(this->GetShaderProgramID(), ("directLights[" + number + "].specular").c_str()), 1, glm::value_ptr(directLightEntity->GetSpecular()));
+        glUniform1f(glGetUniformLocation(this->GetShaderProgramID(), ("directLights[" + number + "].constant").c_str()), directLightEntity->GetConstant());
+        glUniform1f(glGetUniformLocation(this->GetShaderProgramID(), ("directLights[" + number + "].linear").c_str()), directLightEntity->GetLinear());
+        glUniform1f(glGetUniformLocation(this->GetShaderProgramID(), ("directLights[" + number + "].quadratic").c_str()), directLightEntity->GetQuadratic());
+
+
+        i++;
+    }
+
+    i = 0;
+    for(auto spotLight : spotLights){
+        auto spotLightEntity = static_cast<CLSpotLight*>(spotLight->GetEntity());
+        
+        string number = to_string(i); 
+
+        glUniform1i(glGetUniformLocation(this->GetShaderProgramID(),"num_Spot_Lights"),spotLights.size());  
+        glUniform3fv(glGetUniformLocation(this->GetShaderProgramID(), ("spotLights[" + number + "].position").c_str()),1,glm::value_ptr(spotLight->GetGlobalTranslation()));
+        glUniform3fv(glGetUniformLocation(this->GetShaderProgramID(), ("spotLights[" + number + "].direction").c_str()),1,glm::value_ptr(spotLightEntity->GetDirection()));
+        glUniform1f(glGetUniformLocation(this->GetShaderProgramID(), ("spotLights[" + number + "].cutOff").c_str()),spotLightEntity->GetCutOff());
+        glUniform1f(glGetUniformLocation(this->GetShaderProgramID(), ("spotLights[" + number + "].outerCutOff").c_str()),spotLightEntity->GetOuterCutOff());
+        glUniform3fv(glGetUniformLocation(this->GetShaderProgramID(), ("spotLights[" + number + "].ambient").c_str()), 1,glm::value_ptr(spotLightEntity->GetAmbient()));
+        glUniform3fv(glGetUniformLocation(this->GetShaderProgramID(), ("spotLights[" + number + "].diffuse").c_str()), 1, glm::value_ptr(spotLightEntity->GetDiffuse()));
+        glUniform3fv(glGetUniformLocation(this->GetShaderProgramID(), ("spotLights[" + number + "].specular").c_str()), 1, glm::value_ptr(spotLightEntity->GetSpecular()));
+        glUniform1f(glGetUniformLocation(this->GetShaderProgramID(), ("spotLights[" + number + "].constant").c_str()), spotLightEntity->GetConstant());
+        glUniform1f(glGetUniformLocation(this->GetShaderProgramID(), ("spotLights[" + number + "].linear").c_str()), spotLightEntity->GetLinear());
+        glUniform1f(glGetUniformLocation(this->GetShaderProgramID(), ("spotLights[" + number + "].quadratic").c_str()), spotLightEntity->GetQuadratic());
 
 
         i++;
