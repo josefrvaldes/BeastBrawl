@@ -1,15 +1,17 @@
 #include "SystemFuzzyLogicAI.h"
 
 #include <Components/CTransformable.h>
+#include <Components/CExternalForce.h>
 #include <Components/Component.h>
 #include <Components/CCar.h>
 #include <Components/CWayPoint.h>
 #include <Components/CNitro.h>
 #include <Entities/CarAI.h>
-
+#include "../Systems/Utils.h"
 
 
 #include <cmath>
+#include <iostream>
 #include <memory>
 #define PI 3.141592
 
@@ -199,6 +201,7 @@ void SystemFuzzyLogicAI::Update(CarAI* car, float deltaTime){
 	auto cTransformable = static_cast<CTransformable*>(car->GetComponent(CompType::TransformableComp).get());
     //auto cWayPoint     = static_cast<CWayPoint*>(car->GetComponent(CompType::WayPointComp).get());
     auto cPosDestination = static_cast<CPosDestination*>(car->GetComponent(CompType::PosDestination).get());
+    auto cExternalForce = static_cast<CExternalForce*>(car->GetComponent(CompType::CompExternalForce).get());
     auto cCar        = static_cast<CCar*>(car->GetComponent(CompType::CarComp).get());
     float angleRange = 0;
     float angle = 0;
@@ -245,14 +248,31 @@ void SystemFuzzyLogicAI::Update(CarAI* car, float deltaTime){
 
     // calculamos las posiciones
     float angleRotation = (cTransformable->rotation.y * PI) / 180.0;
-    cTransformable->position.x -= cos(angleRotation) * cCar->speed * deltaTime;
-    cTransformable->position.z += sin(angleRotation) * cCar->speed * deltaTime;
+    glm::vec2 carForce(-cos(angleRotation)*cCar->speed , sin(angleRotation)*cCar->speed);  // Fijarse en el menos de la X
+    glm::vec2 finalForce = ApplyExternalForce(cCar, cExternalForce, carForce);
+
+    cTransformable->position.x += finalForce.x * deltaTime;
+    cTransformable->position.z += finalForce.y * deltaTime;
     if(cCar->wheelRotation != 0){
         cTransformable->rotation.y += cCar->wheelRotation * 0.20;
-        if(cTransformable->rotation.y>=360.0)
-            cTransformable->rotation.y -= 360.0;
-        else if(cTransformable->rotation.y < 0.0)
-            cTransformable->rotation.y += 360.0;
+        cTransformable->rotation.y = Utils::GetAdjustedDegrees(cTransformable->rotation.y);
     }
-    
+}
+
+
+
+// aplicamos al movimiento del coche el desplazamiento en caso de que alguien lo empuje
+glm::vec2 SystemFuzzyLogicAI::ApplyExternalForce(CCar *cCar, CExternalForce *externalForce, const glm::vec2& carForce) const{
+    glm::vec2 finalForce(carForce);
+    if(externalForce->force > 0){
+        glm::vec2 collisionForce(externalForce->dirExternalForce.x*externalForce->force, externalForce->dirExternalForce.z*externalForce->force);
+        float angleForces = glm::degrees(atan2(collisionForce.y, collisionForce.x)) - glm::degrees(atan2(carForce.y, carForce.x));
+        angleForces = Utils::GetAdjustedDegrees(angleForces);
+        finalForce.x = carForce.x + collisionForce.x;
+        finalForce.y = carForce.y + collisionForce.y;
+        externalForce->force -= externalForce->friction;
+    }else{
+        externalForce->force = 0.0;
+    }
+    return finalForce;
 }

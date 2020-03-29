@@ -28,6 +28,8 @@ class Constants {
 
     inline static const uint16_t ANY_PLAYER = 255;
 
+    inline static const float MELON_MOLON_SPEED = 510.0;
+
     enum InputTypes { FORWARD,
                     BACK,
                     LEFT,

@@ -776,7 +776,7 @@ void ManCar::CatchPowerUpAI(DataMap* d) {
         type = typeCPowerUp::MelonMolon;
 
 
-    type = typeCPowerUp::SuperMegaNitro;
+    // type = typeCPowerUp::SuperMegaNitro;
     auto cPowerUpCar = static_cast<CPowerUp*>(actualCar->GetComponent(CompType::PowerUpComp).get());
     if (cPowerUpCar->typePowerUp == typeCPowerUp::None) {
         cPowerUpCar->typePowerUp = type;
