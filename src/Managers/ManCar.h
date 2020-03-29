@@ -33,6 +33,7 @@ struct ManBoxPowerUp;
 struct ManTotem;
 struct ManNavMesh;
 struct ManBoundingWall;
+struct ManBoundingOBB;
 struct PhysicsAI;
 struct SystemBtPowerUp;
 struct SystemBtMoveTo;
@@ -51,7 +52,7 @@ class ManCar : public Manager {
     void UpdateCarPlayer(ManTotem &);
     void UpdateGeneralCar(Entity& car_, Entity& totem_);
     void UpdateCarAI(CarAI* carAI, ManPowerUp* m_manPowerUp, ManBoxPowerUp* m_manBoxPowerUp, ManTotem* m_manTotem, ManWayPoint* graph, ManNavMesh* manNavMesh, 
-                    ManBoundingWall* m_manBoundingWall, SystemBtPowerUp* systemBtPowerUp, SystemBtMoveTo* systemBtMoveTo, SystemBtLoDMove* systemBtLoDMove, SystemPathPlanning *systemPathPlanning);
+                    ManBoundingWall* m_manBoundingWall, ManBoundingOBB* m_manBoundingOBB, SystemBtPowerUp* systemBtPowerUp, SystemBtMoveTo* systemBtMoveTo, SystemBtLoDMove* systemBtLoDMove, SystemPathPlanning *systemPathPlanning);
     void UpdateCarHuman(Entity* CarHuman, ManTotem*);
     shared_ptr<CarHuman>& GetCar() { return car; };
 

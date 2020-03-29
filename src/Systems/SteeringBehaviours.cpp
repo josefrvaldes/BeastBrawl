@@ -4,6 +4,7 @@
 #include <Managers/ManBoxPowerUp.h>
 #include <Managers/ManPowerUp.h>
 #include <Managers/ManBoundingWall.h>
+#include <Managers/ManBoundingOBB.h>
 #include <Entities/Car.h>
 #include <Entities/CarHuman.h>
 #include <Entities/CarAI.h>
@@ -11,8 +12,10 @@
 #include <Components/CCar.h>
 #include <Components/CBoundingSphere.h>
 #include <Components/CBoundingPlane.h>
+#include <Components/CBoundingOBB.h>
 #include <Components/CBoundingRay.h>
 #include "../Constants.h"
+#include <math.h>
 
 
 
@@ -129,7 +132,7 @@ bool SteeringBehaviours::UpdateObstacleAvoidance(Entity* m_Car, ManCar* m_manCar
 }
 
 
-bool SteeringBehaviours::UpdateWallAvoidance(Entity* m_Car,  ManBoundingWall* m_manBoundingWall) const{
+bool SteeringBehaviours::UpdateWallAvoidance(Entity* m_Car,  ManBoundingWall* m_manBoundingWall, ManBoundingOBB* m_manBoundingOBB) const{
     // se calcula el vector al siguiente punto al que avanzara el coche
     auto cTransformable = static_cast<CTransformable*>(m_Car->GetComponent(CompType::TransformableComp).get());
     auto cCar = static_cast<CCar*>(m_Car->GetComponent(CompType::CarComp).get());
@@ -137,7 +140,7 @@ bool SteeringBehaviours::UpdateWallAvoidance(Entity* m_Car,  ManBoundingWall* m_
     glm::vec2 vectorVelocity = CalculateVectorVelocity(*cCar, *cTransformable);
 
     // wall avoidance
-    glm::vec2 vectorForceAvoid = WallAvoidance(m_Car, m_manBoundingWall, vectorVelocity);
+    glm::vec2 vectorForceAvoid = WallAvoidance(m_Car, m_manBoundingWall, m_manBoundingOBB, vectorVelocity);
 
     if(vectorForceAvoid.x != 0.0 || vectorForceAvoid.y != 0.0 ){
         float angle = CalculateAngle(vectorVelocity, vectorForceAvoid, cTransformable->rotation.y);
@@ -382,7 +385,7 @@ glm::vec2 SteeringBehaviours::ObstacleAvoidance(Entity* m_Car, ManCar* m_manCar,
 
 
 // obtiene un vector fuerza en caso de ir a colisionar contra un muro con bounding de plano
-glm::vec2 SteeringBehaviours::WallAvoidance(Entity* m_Car, ManBoundingWall* m_manBoundingWall, const glm::vec2& m_velocityVector) const{
+glm::vec2 SteeringBehaviours::WallAvoidance(Entity* m_Car, ManBoundingWall* m_manBoundingWall, ManBoundingOBB* m_manBoundingOBB, const glm::vec2& m_velocityVector) const{
     auto cCar = static_cast<CCar*>(m_Car->GetComponent(CompType::CarComp).get());
     auto cRay = static_cast<CBoundingRay*>(m_Car->GetComponent(CompType::CompBoundingRay).get());
     glm::vec2 vectorForce = glm::vec2(0.0, 0.0);
@@ -392,6 +395,7 @@ glm::vec2 SteeringBehaviours::WallAvoidance(Entity* m_Car, ManBoundingWall* m_ma
     glm::vec2 vectorForceAvoid;
     Entity* actualObstacle = nullptr;
 
+    // colisiones con paredes sueltas
     for(const auto& obstacle : m_manBoundingWall->GetEntities()){
         if(CollisionRayPlane(m_Car, obstacle.get(), m_velocityVector, distance, vectorForceAvoid, target)==true){
             if(distance < finalDistance && distance < cCar->speed*0.4+cRay->baseDistancePlane && distance > 0){
@@ -402,6 +406,19 @@ glm::vec2 SteeringBehaviours::WallAvoidance(Entity* m_Car, ManBoundingWall* m_ma
             }
         }
     }
+
+    // colisiones con OBB
+    for(const auto& obstacleOBB : m_manBoundingOBB->GetEntities()){
+        if(CollisionRayPlane(m_Car, obstacleOBB.get(), m_velocityVector, distance, vectorForceAvoid, target)==true){
+            if(distance < finalDistance && distance < cCar->speed*0.4+cRay->baseDistancePlane && distance > 0){
+                //std::cout << "Collisiona" << std::endl;
+                finalDistance = distance;
+                vectorForce = vectorForceAvoid;
+                actualObstacle = obstacleOBB.get();
+            }
+        }
+    }
+
 
     // modifica el vectorForce
     AvoidTrapCorner(m_Car, actualObstacle, m_velocityVector, target, vectorForce);
@@ -435,18 +452,24 @@ bool SteeringBehaviours::CollisionRaySphere(Entity* m_Car, Entity* m_object, con
 bool SteeringBehaviours::CollisionRayPlane(Entity* m_Car, Entity* m_object, const glm::vec2& m_velocityVector, float& distance, glm::vec2& vectorForceAvoid, glm::vec3& target) const{
     //auto cCar = static_cast<CCar*>(m_Car->GetComponent(CompType::CarComp).get());
     auto cTransformableCar = static_cast<CTransformable*>(m_Car->GetComponent(CompType::TransformableComp).get());
-    auto cBoundPlaneObject = static_cast<CBoundingPlane*>(m_object->GetComponent(CompType::CompBoundingPlane).get());
-
     // Normalizar vector velocidad del coche
     float vectorDistance = sqrt(m_velocityVector.x*m_velocityVector.x + m_velocityVector.y*m_velocityVector.y);
     glm::vec3 vectorVelocityN = glm::vec3( m_velocityVector.x*(1/vectorDistance) , 0.0 ,m_velocityVector.y*(1/vectorDistance)) ;
+    IntersectData intersData{0, glm::vec3(0,0,0)};
 
-    IntersectData intersData = clPhysics->HandleCollisionsRayWithPlane(*cTransformableCar, vectorVelocityN, *cBoundPlaneObject);
+    if(m_object->HasComponent(CompType::CompBoundingPlane) && !m_object->HasComponent(CompType::CompBoundingOBB)){
+        auto cBoundPlaneObject = static_cast<CBoundingPlane*>(m_object->GetComponent(CompType::CompBoundingPlane).get());
+        intersData = clPhysics->HandleCollisionsRayWithPlane(*cTransformableCar, vectorVelocityN, *cBoundPlaneObject);
+    }else if(m_object->HasComponent(CompType::CompBoundingOBB)){
+        auto cBoundOBBObject = static_cast<CBoundingOBB*>(m_object->GetComponent(CompType::CompBoundingOBB).get());
+        intersData = clPhysics->HandleCollisionsRayWithOBB(*cTransformableCar, vectorVelocityN, *cBoundOBBObject);
+    }
+
     if(intersData.intersects == false) return false;
     distance = intersData.distance;
     target = intersData.direction;
     vectorForceAvoid = Seek(m_Car, intersData.direction, m_velocityVector); // aunque ponga direction es el target
-
+    //cout << "Distance: " << distance << "    , direction: (" << vectorForceAvoid.x << " , " << vectorForceAvoid.y << ") \n";
     return true;
 }
 
@@ -455,26 +478,36 @@ bool SteeringBehaviours::CollisionRayPlane(Entity* m_Car, Entity* m_object, cons
 // trata de evitar quedarse atrapado en la esquina devolviendo el vector al que debe moverse el coche
 void SteeringBehaviours::AvoidTrapCorner(Entity* m_Car, Entity *actualObstacle, const glm::vec2& m_velocityVector, const glm::vec3& target, glm::vec2& vectorForce) const{
     auto cRay = static_cast<CBoundingRay*>(m_Car->GetComponent(CompType::CompBoundingRay).get());
+    auto cTrans = static_cast<CTransformable*>(m_Car->GetComponent(CompType::TransformableComp).get());
     // evitar quedar atrapado en la esquina
     if(actualObstacle == nullptr){                     // no colisiona contra nada
-        if(cRay->previousPlane != nullptr && cRay->iteratorSamePlane < cRay->maxItSamePlane){
+        if(cRay->previousIdCollided != nullptr && cRay->iteratorSamePlane < cRay->maxItSamePlane){
             cRay->iteratorSamePlane++;
             vectorForce = Seek(m_Car, cRay->target, m_velocityVector);
             
         }else if(cRay->iteratorSamePlane >= cRay->maxItSamePlane){
             cRay->iteratorSamePlane = 0;
-            cRay->previousPlane = nullptr; 
+            cRay->previousIdCollided = nullptr; 
+            cRay->prevToPrevIdCollided = nullptr; 
         }
     }else{                                          // colisiona contra un muro
-        auto planeObstacle = static_cast<CBoundingPlane*>(actualObstacle->GetComponent(CompType::CompBoundingPlane).get());                           
-        if(planeObstacle != cRay->previousPlane){
-            if(cRay->previousPlane != nullptr && cRay->iteratorSamePlane < cRay->maxItSamePlane){
+        auto planeIdObstacle = static_cast<CId*>(actualObstacle->GetComponent(CompType::IdComp).get());                           
+        if(planeIdObstacle != cRay->previousIdCollided && planeIdObstacle!=cRay->prevToPrevIdCollided){
+            if(cRay->previousIdCollided != nullptr && cRay->iteratorSamePlane < cRay->maxItSamePlane){
                 cRay->iteratorSamePlane++;
                 vectorForce = Seek(m_Car, cRay->target, m_velocityVector);
-            }else if(cRay->iteratorSamePlane >= cRay->maxItSamePlane || cRay->previousPlane == nullptr){
+            }else if(cRay->iteratorSamePlane >= cRay->maxItSamePlane || cRay->previousIdCollided == nullptr){
                 cRay->iteratorSamePlane = 0;
-                cRay->previousPlane = planeObstacle;
+                cRay->prevToPrevIdCollided = cRay->previousIdCollided;
+                cRay->previousIdCollided = planeIdObstacle;
                 cRay->target = target;
+            }
+        }else if(planeIdObstacle==cRay->prevToPrevIdCollided){ // si se queda atrapado en un bucle tratamos de salir fijando durante mas tiempo
+            cRay->iteratorSamePlane++;
+            vectorForce = Seek(m_Car, cRay->target, m_velocityVector);
+            if(cRay->iteratorSamePlane>cRay->maxItDistinctPlane){
+                cRay->previousIdCollided = nullptr; 
+                cRay->prevToPrevIdCollided = nullptr; 
             }
         }else if(cRay->iteratorSamePlane == 0){
             cRay->target = target;
