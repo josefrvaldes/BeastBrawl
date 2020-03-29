@@ -167,6 +167,7 @@ struct CollisionAvoidance_LoDMove : public behaviourTree {
 
             if(result){
                 auto cMovementType = static_cast<CMovementType*>(blackboard->actualCar->GetComponent(CompType::MovementComp).get());
+                cMovementType->movementType = "Evasion de coche";
             }
             return result;
         }else{
