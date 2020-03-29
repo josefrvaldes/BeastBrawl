@@ -478,7 +478,6 @@ bool SteeringBehaviours::CollisionRayPlane(Entity* m_Car, Entity* m_object, cons
 // trata de evitar quedarse atrapado en la esquina devolviendo el vector al que debe moverse el coche
 void SteeringBehaviours::AvoidTrapCorner(Entity* m_Car, Entity *actualObstacle, const glm::vec2& m_velocityVector, const glm::vec3& target, glm::vec2& vectorForce) const{
     auto cRay = static_cast<CBoundingRay*>(m_Car->GetComponent(CompType::CompBoundingRay).get());
-    auto cTrans = static_cast<CTransformable*>(m_Car->GetComponent(CompType::TransformableComp).get());
     // evitar quedar atrapado en la esquina
     if(actualObstacle == nullptr){                     // no colisiona contra nada
         if(cRay->previousIdCollided != nullptr && cRay->iteratorSamePlane < cRay->maxItSamePlane){
