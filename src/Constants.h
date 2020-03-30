@@ -30,6 +30,8 @@ class Constants {
 
     inline static const float MELON_MOLON_SPEED = 510.0;
 
+    inline static const float FAR_PLANE = 1500.0;
+
     enum InputTypes { FORWARD,
                     BACK,
                     LEFT,

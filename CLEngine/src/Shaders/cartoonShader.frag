@@ -87,7 +87,7 @@ float ShadowCalculation(vec3 fragPos, vec3 posLight)
     // now get current linear depth as the length between the fragment and light position
     float currentDepth = length(fragToLight);
     // now test for shadows
-    float bias = 0.05; 
+    float bias = 0.5; 
     float shadow = currentDepth -  bias > closestDepth ? 1.0 : 0.0;
 
     /*vec3 sampleOffsetDirections[20] = vec3[](
@@ -130,13 +130,13 @@ vec3 CalcDirLight(DirectLight light, vec3 normal,vec3 fragPos, vec3 viewDir)
     vec3 specular = light.specular * spec * vec3(texture(material.specular, TexCoords));
 
      // attenuation
-    // float distance    = length(light.position - fragPos); //Distancia de la luz al objeto
-    // float attenuation = 1.0 / ((light.constant) + (light.linear * distance) + (light.quadratic * (distance * distance))); //Formula de la atenuacion
+    float distance    = length(light.position - fragPos); //Distancia de la luz al objeto
+    float attenuation = 1.0 / ((light.constant) + (light.linear * distance) + (light.quadratic * (distance * distance))); //Formula de la atenuacion
 
 
-    // ambient *= attenuation;
-    // diffuse *= attenuation;
-    // specular*= attenuation;
+    ambient *= attenuation;
+    diffuse *= attenuation;
+    specular*= attenuation;
 
     return (ambient + diffuse + specular);
 }
@@ -149,7 +149,7 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir, i
     vec3 lightDir = normalize(light.position - fragPos);
     float diff = max(dot(normal,lightDir), 0.0);
     vec3 diffuse = light.diffuse * diff * texture(material.diffuse, TexCoords).rgb; 
-    diffuse  = light.diffuse * texture(material.diffuse, TexCoords).rgb * floor(diff * cartoonParts) /  cartoonParts;
+    /*diffuse  = light.diffuse * texture(material.diffuse, TexCoords).rgb * floor(diff * cartoonParts) /  cartoonParts;*/
     vec3 H = normalize(lightDir + viewDir);
     // specular
     vec3 reflectDir = reflect(-lightDir, normal);  //Angulo reflectado

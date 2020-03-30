@@ -5,6 +5,7 @@
 #include <glm/gtx/string_cast.hpp>
 
 #include "../Frustum/CLFrustum.h"
+#include "../../../src/Constants.h"
 
 using namespace CLE;
 
@@ -349,7 +350,7 @@ void CLNode::DFSTree(glm::mat4 mA) {
         glUniformMatrix4fv(glGetUniformLocation(shaderProgramID, "model"), 1, GL_FALSE, glm::value_ptr(transformationMat));
         glUniformMatrix4fv(glGetUniformLocation(shaderProgramID, "MVP"), 1, GL_FALSE, glm::value_ptr(MVP));
         glUniform1i(glGetUniformLocation(shaderProgramID, "shadows"), true); 
-        glUniform1f(glGetUniformLocation(shaderProgramID, "far_plane"), 200.0); 
+        glUniform1f(glGetUniformLocation(shaderProgramID, "far_plane"), Constants::FAR_PLANE); 
         entity->Draw(shaderProgramID);
 
     }
