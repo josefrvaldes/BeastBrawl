@@ -202,9 +202,9 @@ void CLEngine::DrawDepthMap(){
     auto light = smgr->GetNodeByID(smgr->GetShadowMapping()->lightId);
 
     // 1. Se renderiza con el shadowMap
-    glCullFace(GL_FRONT);
+    //glCullFace(GL_FRONT);
     RenderDepthMap(*smgr->GetShadowMapping(), smgr->GetDepthShader(), light->GetGlobalTranslation());
-    glCullFace(GL_BACK);
+    //glCullFace(GL_BACK);
 
     // 2. then render scene as normal with shadow mapping (using depth map)
     UpdateViewport();
@@ -427,7 +427,7 @@ void CLEngine::RenderDepthMap(CLShadowMapping& shadowMap, CLResourceShader* dept
     // crear las matrices de transformacion del cubemap
     float aspect = (float)shadowMap.SHADOW_WIDTH/(float)shadowMap.SHADOW_HEIGHT;
     float near = 1.0f;
-    float far = 1500.0f;
+    float far = Constants::FAR_PLANE;
     glm::mat4 shadowProj = glm::perspective(glm::radians(90.0f), aspect, near, far); 
     // view Matrix
     std::vector<glm::mat4> shadowTransforms;
@@ -456,7 +456,7 @@ void CLEngine::RenderDepthMap(CLShadowMapping& shadowMap, CLResourceShader* dept
         string name = "shadowMatrices[" + std::to_string(i) + "]";
         glUniformMatrix4fv(glGetUniformLocation(depthShader->GetProgramID(), name.c_str()), 1, GL_FALSE, &(shadowTransforms[i])[0][0]);
     }
-    glUniform1f(glGetUniformLocation(depthShader->GetProgramID(), "far_plane"), Constants::FAR_PLANE); 
+    glUniform1f(glGetUniformLocation(depthShader->GetProgramID(), "far_plane"), far); 
     glUniform3fv(glGetUniformLocation(depthShader->GetProgramID(), "lightPos"), 1, &posLight[0]); 
     
     

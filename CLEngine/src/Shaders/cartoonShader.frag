@@ -87,7 +87,7 @@ float ShadowCalculation(vec3 fragPos, vec3 posLight)
     // now get current linear depth as the length between the fragment and light position
     float currentDepth = length(fragToLight);
     // now test for shadows
-    float bias = 0.5; 
+    float bias = 20.0; 
     float shadow = currentDepth -  bias > closestDepth ? 1.0 : 0.0;
 
     /*vec3 sampleOffsetDirections[20] = vec3[](
@@ -99,7 +99,7 @@ float ShadowCalculation(vec3 fragPos, vec3 posLight)
     );  
 
     float shadow = 0.0;
-    float bias   = 0.15;
+    float bias   = 20.0;
     int samples  = 20;
     float viewDistance = length(viewPos - fragPos);
     float diskRadius = (1.0 + (viewDistance / far_plane)) / 25.0;  
