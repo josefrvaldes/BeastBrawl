@@ -215,7 +215,7 @@ void CLEngine::DrawDepthMap(){
 
 
 void CLEngine::DrawObjects(){
-    //DrawDepthMap();
+    DrawDepthMap();
 
     smgr->DrawSkybox();
     smgr->CalculateViewProjMatrix();

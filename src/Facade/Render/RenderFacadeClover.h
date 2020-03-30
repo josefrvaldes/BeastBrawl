@@ -77,6 +77,7 @@ class RenderFacadeClover : public RenderFacade {
       void FacadeAddSkybox(string right,string left,string top,string bottom,string front,string back) override;
       void FacadeAddShadowMapping(unsigned int lightId) override;
       void CleanScene() override;
+      void FacadeUpdateViewport() override;
 
       //DEBUG
       void Draw3DLine(vec3& pos1, vec3& pos2, uint16_t r, uint16_t g, uint16_t b) const override;

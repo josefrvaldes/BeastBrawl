@@ -38,6 +38,7 @@ uniform PointLight pointLights[NUM_POINT_LIGHTS];
 
 //Luces dirigidas
 struct DirectLight {
+    vec3 position;
     vec3 direction;
   
     vec3 ambient;
@@ -115,7 +116,7 @@ float ShadowCalculation(vec3 fragPos, vec3 posLight)
 }
 
 // calculates the color when using a directional light.
-vec3 CalcDirLight(DirectLight light, vec3 normal, vec3 viewDir)
+vec3 CalcDirLight(DirectLight light, vec3 normal,vec3 fragPos, vec3 viewDir)
 {
     vec3 lightDir = normalize(-light.direction);
     // diffuse shading
@@ -127,6 +128,16 @@ vec3 CalcDirLight(DirectLight light, vec3 normal, vec3 viewDir)
     vec3 ambient = light.ambient * vec3(texture(material.diffuse, TexCoords));
     vec3 diffuse = light.diffuse * diff * vec3(texture(material.diffuse, TexCoords));
     vec3 specular = light.specular * spec * vec3(texture(material.specular, TexCoords));
+
+     // attenuation
+    // float distance    = length(light.position - fragPos); //Distancia de la luz al objeto
+    // float attenuation = 1.0 / ((light.constant) + (light.linear * distance) + (light.quadratic * (distance * distance))); //Formula de la atenuacion
+
+
+    // ambient *= attenuation;
+    // diffuse *= attenuation;
+    // specular*= attenuation;
+
     return (ambient + diffuse + specular);
 }
 
@@ -148,7 +159,7 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir, i
 
     if( dot(lightDir,normal) > 0.0)
     {
-        spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess); //Formula de la luz especular
+        spec = pow(max(dot(viewDir, reflectDir), 0.0), 0/*material.shininess*/); //Formula de la luz especular
         specular = light.specular * spec * texture(material.specular,TexCoords).rgb;  //Multiplicamos todo 
     }
   // attenuation
@@ -156,7 +167,7 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir, i
     float attenuation = 1.0 / ((light.constant) + (light.linear * distance) + (light.quadratic * (distance * distance))); //Formula de la atenuacion
 
     //limit specular
-    float specMask = (pow(dot(H, normal), material.shininess) > 0.4) ? 1 : 0;
+    float specMask = (pow(dot(H, normal), 0/*material.shininess*/) > 0.4) ? 1 : 0;
     float edgeDetection = (dot(viewDir, normal) > 0.2) ? 1 : 0;
 
     ambient *= attenuation;
@@ -164,8 +175,8 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir, i
     specular*= attenuation;
     
     float shadow = 0.0;
-    /*if(i == 0)
-        shadow = ShadowCalculation(FragPos, light.position);*/
+    if(i == 0)
+        shadow = ShadowCalculation(FragPos, light.position);
     return edgeDetection * (ambient + (1.0 - shadow) * (diffuse /*+ specular*specMask*/));
     //return edgeDetection * (ambient + diffuse /*+ specular*specMask*/);
 } 
@@ -207,7 +218,7 @@ void main(){
     // Luces direccionales
     int j = 0;
     while(j<num_Direct_Lights){
-        result += CalcDirLight(directLights[j],norm,viewDir);
+        result += CalcDirLight(directLights[j],norm,FragPos,viewDir);
         j++;
     }
 
@@ -229,5 +240,5 @@ void main(){
     //FragColor = floor(FragColor * cartoonParts) / cartoonParts;  // estaba mal aplicado, era en la luz difusa solo
 
     //Si comentas esta linea se ve con luces
-    FragColor = texture(material.diffuse,TexCoords);
+    //FragColor = texture(material.diffuse,TexCoords);
 }

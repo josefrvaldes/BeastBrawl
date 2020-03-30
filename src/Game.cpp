@@ -209,6 +209,7 @@ void Game::MainLoop() {
     while (renderFacadeMan->GetRenderFacade()->FacadeRun()) {
         currentState->Input();
         currentState->Update();
+        renderFacadeMan->GetRenderFacade()->FacadeUpdateViewport();
 
         //Actualiza el motor de audio.
         soundFacadeManager->GetSoundFacade()->Update();

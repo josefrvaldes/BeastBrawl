@@ -66,7 +66,6 @@ int main() {
     // auto resourceMeshOBJ = resourceManager->GetResourceMesh("media/kart.obj", true);
     // auto resourceMaterial = resourceManager->GetResourceMaterial("media/kart.obj", true);
 
-    cout << "+++++++ He compilado los shaders" << endl;
 
     
     //----------------------------------------------------------------------------------------------------------------SHADER
@@ -82,15 +81,19 @@ int main() {
 
         auto light1 = smgr->AddPointLight(1);
         light1->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
-        static_cast<CLPointLight*>(light1->GetEntity())->SetLightAttributes(glm::vec3(1.0f,1.0f,1.0f),glm::vec3(0.5f,0.5f,0.5f),glm::vec3(0.2f,0.3f,0.42f),glm::vec3(0.1f,0.1,0.1f),0.3f,0.004f,0.00016f);
+        static_cast<CLPointLight*>(light1->GetEntity())->SetLightAttributes(glm::vec3(1.0f,1.0f,1.0f),glm::vec3(0.5f,0.5f,0.5f),glm::vec3(0.2f,0.3f,0.42f),glm::vec3(0.1f,0.1,0.1f),1.0f,0.0014f,0.000007f);
 
-        auto light2 = smgr->AddDirectLight(6);
+        auto light2 = smgr->AddPointLight(6);
         light2->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
-        static_cast<CLDirectLight*>(light2->GetEntity())->SetLightAttributes(glm::vec3(1.0f,0.0f,0.0f),glm::vec3(1.0f,1.0f,1.0f),glm::vec3(0.5f,0.5f,0.5f),glm::vec3(0.2f,0.3f,0.42f),glm::vec3(0.1f,0.1,0.1f),0.3f,0.004f,0.00016f);
+        static_cast<CLPointLight*>(light2->GetEntity())->SetLightAttributes(glm::vec3(1.0f,1.0f,1.0f),glm::vec3(0.5f,0.5f,0.5f),glm::vec3(0.2f,0.3f,0.42f),glm::vec3(0.1f,0.1,0.1f),1.0f,0.0014f,0.000016f);
 
-        auto light3 = smgr->AddSpotLight(7);
-        light3->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
-        static_cast<CLSpotLight*>(light3->GetEntity())->SetLightAttributes(glm::vec3(1.0f,0.0f,0.0f),glm::cos(glm::radians(12.5f)),glm::cos(glm::radians(15.5f)),glm::vec3(1.0f,1.0f,1.0f),glm::vec3(0.5f,0.5f,0.5f),glm::vec3(0.2f,0.3f,0.42f),glm::vec3(0.1f,0.1,0.1f),0.3f,0.004f,0.00016f);
+        // auto light2 = smgr->AddDirectLight(6);
+        // light2->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
+        // static_cast<CLDirectLight*>(light2->GetEntity())->SetLightAttributes(glm::vec3(0.5f,0.5f,0.0f),glm::vec3(1.0f,1.0f,1.0f),glm::vec3(0.5f,0.5f,0.5f),glm::vec3(0.2f,0.3f,0.42f),glm::vec3(0.1f,0.1,0.1f),0.3f,0.004f,0.00016f);
+
+        // auto light3 = smgr->AddSpotLight(7);
+        // light3->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
+        // static_cast<CLSpotLight*>(light3->GetEntity())->SetLightAttributes(glm::vec3(1.0f,0.0f,0.0f),glm::cos(glm::radians(12.5f)),glm::cos(glm::radians(15.5f)),glm::vec3(1.0f,1.0f,1.0f),glm::vec3(0.5f,0.5f,0.5f),glm::vec3(0.2f,0.3f,0.42f),glm::vec3(0.1f,0.1,0.1f),0.3f,0.004f,0.00016f);
 
         auto meshes = smgr->AddGroup(10000);
 
@@ -131,14 +134,15 @@ int main() {
     //static_cast<CLMesh*>(mesh3->GetEntity())->SetMaterial(resourceMaterial); 
     // static_cast<CLMesh*>(mesh4->GetEntity())->SetMesh(resourceMeshBox);
 
-    camera->SetTranslation(glm::vec3(121.127f, 70.42f, -11.9f));
-    light1->SetTranslation(glm::vec3(54.9f, 35.2f, -14.08f));
-    mesh1->SetScalation(glm::vec3(0.5f, 0.5f, 0.5f));
+    camera->SetTranslation(glm::vec3(400.127f, 400.42f, 0.9f));
+    light1->SetTranslation(glm::vec3(75.9f, 300.2f, 15.08f));
+    light2->SetTranslation(glm::vec3(300.9f, 300.2f, 300.08f));
+    mesh1->SetScalation(glm::vec3(1.0f, 1.0f, 1.0f));
     mesh1->SetRotation(glm::vec3(0.0f,0.0f,0.0f));
     mesh1->SetTranslation(glm::vec3(50.0f,50.0f,50.0f));
-    mesh2->SetScalation(glm::vec3(0.5f, 0.5f, 0.5f));
-    mesh2->SetRotation(glm::vec3(0.0f, 0.0f, 0.0f));
-    mesh2->SetTranslation(glm::vec3(10.0f,0.0f,0.0f));
+    mesh2->SetScalation(glm::vec3(3.5f, 3.5f, 3.5f));
+    mesh2->SetRotation(glm::vec3(-90.0f, 0.0f, 0.0f));
+    mesh2->SetTranslation(glm::vec3(50.0f,80.0f,-50.0f));
     // mesh3->SetTranslation(glm::vec3(-40.0f,0.0f,0.0f));
     // mesh3->SetScalation(glm::vec3(0.5f,0.5f,0.5f));
     // mesh3->SetRotation(glm::vec3(0.0f, 0.0f, 0.0f));
@@ -152,15 +156,14 @@ int main() {
     float auxCameraPos[3] = {camera->GetTranslation().x, camera->GetTranslation().y, camera->GetTranslation().z};
     float auxLightPos[3] = {light1->GetTranslation().x, light1->GetTranslation().y, light1->GetTranslation().z};
     float auxLightPos2[3] = {light2->GetTranslation().x, light2->GetTranslation().y, light2->GetTranslation().z};
-    float auxLightPos3[3] = {light3->GetTranslation().x, light3->GetTranslation().y, light3->GetTranslation().z};
-    float auxLineStart[3] = {0.0,0.0,0.0};
-    float auxLineEnd[3] = {200.0,200.0,200.0};
 
     float index = 0.01;
 
     double previousTime = glfwGetTime();
     int frameCount = 0;
-    auto lights = smgr->GetPointLights();
+
+    CLNode* light3 = nullptr;
+        
 
     while (device->Run()) {
         
@@ -168,28 +171,32 @@ int main() {
         device->UpdateViewport(); //Por si reescalamos la ventana
         device->BeginScene();
 
-
+        if(glfwGetKey(device->GetWindow(),GLFW_KEY_SPACE) && light3 == nullptr){
+            light3 = smgr->AddSpotLight(7);
+            light3->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
+            static_cast<CLSpotLight*>(light3->GetEntity())->SetLightAttributes(glm::vec3(0.0f,-1.0f,0.0f),glm::cos(glm::radians(20.5f)),glm::cos(glm::radians(40.5f)),glm::vec3(1.0f,1.0f,1.0f),glm::vec3(0.5f,0.5f,0.5f),glm::vec3(0.2f,0.3f,0.42f),glm::vec3(0.1f,0.1,0.1f),0.3f,0.4f,0.16f);
+            light3->SetTranslation(glm::vec3(mesh1->GetGlobalTranslation().x,100.0f,mesh1->GetGlobalTranslation().z+20));
+            auxCameraPos[0] = 40;
+            auxCameraPos[1] = 400;
+            auxCameraPos[2] = 0;
+        }
+        
         // Start the Dear ImGui frame
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
         ImGui::Begin("Modifica ilumnacion"); 
-        ImGui::SliderFloat3("CameraPos",auxCameraPos,-50,400);
-        ImGui::SliderFloat3("LightPos",auxLightPos,-300,400);
-        ImGui::SliderFloat3("LightPos2",auxLightPos2,-300,400);
-        ImGui::SliderFloat3("LightPos3",auxLightPos3,-300,400);
-        ImGui::SliderFloat3("Line start",auxLineStart,-400,400);
-        ImGui::SliderFloat3("Line end",auxLineEnd,-400,400);
+        ImGui::SliderFloat3("CameraPos",auxCameraPos,-600,600);
+        ImGui::SliderFloat3("LightPos",auxLightPos,-600,600);
+        ImGui::SliderFloat3("LightPos2",auxLightPos2,-600,600);
         ImGui::End(); 
 
         glm::vec3 cameraPos(auxCameraPos[0], auxCameraPos[1], auxCameraPos[2]);
         glm::vec3 lightPos(auxLightPos[0], auxLightPos[1], auxLightPos[2]);
         glm::vec3 lightPos2(auxLightPos2[0], auxLightPos2[1], auxLightPos2[2]);
-        glm::vec3 lightPos3(auxLightPos3[0], auxLightPos3[1], auxLightPos3[2]);
         camera->SetTranslation(cameraPos);
         light1->SetTranslation(lightPos);
         light2->SetTranslation(lightPos2);
-        light3->SetTranslation(lightPos3);
         
 
         //meshes->SetRotation(glm::vec3(0.0f,0.0f,index));
@@ -212,10 +219,6 @@ int main() {
         }
 
 
-        if (glfwGetKey(device->GetWindow(), GLFW_KEY_F1)) {
-            smgr->DeleteNode(mesh2->GetEntity()->GetID());
-        }
-        
 
         device->DrawObjects();
 
@@ -224,7 +227,7 @@ int main() {
 
 
             //TEXTO -----------------
-            string cadena = "Buenos dias, achis achis D':";
+            string cadena = "Demo tecnica CLEngine";
             glm::vec3 vect3 = glm::vec3(0.5, 0.8f, 0.2f);
         device->RenderText2D(cadena, 25.0f, 25.0f, 0.05f, 1.0f, vect3);
 

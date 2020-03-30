@@ -1439,3 +1439,7 @@ void RenderFacadeIrrlicht::FacadeDrawBoundingBox(Entity* entity, bool colliding)
 void RenderFacadeIrrlicht::CleanScene() {
     smgr->clear();
 }
+
+void RenderFacadeIrrlicht::FacadeUpdateViewport(){
+    //device->UpdateViewport();
+}

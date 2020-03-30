@@ -76,6 +76,7 @@ class RenderFacade {
     virtual void FacadeAddSkybox(string right,string left,string top,string bottom,string front,string back) = 0;
     virtual void FacadeAddShadowMapping(unsigned int lightId) = 0;
     virtual void CleanScene() = 0;
+    virtual void FacadeUpdateViewport() = 0;
 
     //DEBUG
     virtual void Draw3DLine(vec3 &pos1, vec3 &pos2, uint16_t r, uint16_t g, uint16_t b) const = 0;

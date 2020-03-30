@@ -455,6 +455,7 @@ void CLNode::CalculateLights(){
         string number = to_string(i); 
 
         glUniform1i(glGetUniformLocation(this->GetShaderProgramID(),"num_Direct_Lights"),directLights.size());    
+        glUniform3fv(glGetUniformLocation(this->GetShaderProgramID(), ("directLights[" + number + "].position").c_str()),1,glm::value_ptr(directLight->GetGlobalTranslation()));
         glUniform3fv(glGetUniformLocation(this->GetShaderProgramID(), ("directLights[" + number + "].direction").c_str()),1,glm::value_ptr(directLightEntity->GetDirection()));
         glUniform3fv(glGetUniformLocation(this->GetShaderProgramID(), ("directLights[" + number + "].ambient").c_str()), 1,glm::value_ptr(directLightEntity->GetAmbient()));
         glUniform3fv(glGetUniformLocation(this->GetShaderProgramID(), ("directLights[" + number + "].diffuse").c_str()), 1, glm::value_ptr(directLightEntity->GetDiffuse()));

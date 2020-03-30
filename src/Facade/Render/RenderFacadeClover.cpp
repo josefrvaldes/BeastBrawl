@@ -1064,3 +1064,7 @@ void RenderFacadeClover::CleanScene() {
     device->Clear();
 
 }
+
+void RenderFacadeClover::FacadeUpdateViewport(){
+    device->UpdateViewport();
+}
