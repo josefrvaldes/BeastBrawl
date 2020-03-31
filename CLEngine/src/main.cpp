@@ -199,10 +199,10 @@ int main() {
         // ImGui::SliderFloat3("LightPos2",auxLightPos2,-1000,1000);
         // ImGui::End(); 
 
-        glm::vec3 cameraPos(auxCameraPos[0], auxCameraPos[1], auxCameraPos[2]);
+        //glm::vec3 cameraPos(auxCameraPos[0], auxCameraPos[1], auxCameraPos[2]);
         glm::vec3 lightPos(auxLightPos[0], auxLightPos[1], auxLightPos[2]);
         glm::vec3 lightPos2(auxLightPos2[0], auxLightPos2[1], auxLightPos2[2]);
-        camera->SetTranslation(cameraPos);
+        camera->SetTranslation(glm::vec3(sin(index/20.0f)*600,camera->GetGlobalTranslation().y,cos(index/20.0)*600));
         light1->SetTranslation(lightPos);
         light2->SetTranslation(lightPos2); 
         
@@ -233,8 +233,8 @@ int main() {
 
         device->DrawObjects();
 
-        string file = "media/pudin.png";
-        device->DrawImage2D(25.0f,25.0f,150.0f,150.0f, 0.2f, file, true);
+        string file = "media/logo_clover.png";
+        device->DrawImage2D(10.0f,10.0f,200.0f,200.0f, 0.2f, file, true);
 
 
             //TEXTO -----------------
