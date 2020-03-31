@@ -178,7 +178,7 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir, i
     float shadow = 0.0;
 
     //PARA DESACTIVAR EL CARTOON DESCOMENTAR ESTA LINEA
-    //edgeDetection = 1.0;
+    edgeDetection = 1.0;
     if(i == id_luz_shadowMapping)
         shadow = ShadowCalculation(FragPos, light.position);
 

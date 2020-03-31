@@ -83,17 +83,17 @@ int main() {
 
         auto light1 = smgr->AddPointLight(1);
         light1->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
-        static_cast<CLPointLight*>(light1->GetEntity())->SetLightAttributes(glm::vec3(1.0f,1.0f,1.0f),glm::vec3(1.0f,1.0f,1.0f),glm::vec3(1.0f,1.0f,1.0f),glm::vec3(0.1f,0.1,0.1f),1.0f,0.00005f,0.0000008f);
+        static_cast<CLPointLight*>(light1->GetEntity())->SetLightAttributes(glm::vec3(1.0f,1.0f,1.0f),glm::vec3(0.7f,0.7f,0.7f),glm::vec3(1.0f,1.0f,1.0f),glm::vec3(0.1f,0.1,0.1f),1.0f,0.00005f,0.0000014f);
 
         auto light2 = smgr->AddPointLight(123451);
         light2->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
-        static_cast<CLPointLight*>(light2->GetEntity())->SetLightAttributes(glm::vec3(1.0f,1.0f,1.0f),glm::vec3(1.0f,1.0f,1.0f),glm::vec3(1.0f,1.0f,1.0f),glm::vec3(0.1f,0.1,0.1f),1.0f,0.00007f,0.00010f);
+        static_cast<CLPointLight*>(light2->GetEntity())->SetLightAttributes(glm::vec3(1.0f,1.0f,1.0f),glm::vec3(0.2f,0.2f,0.2f),glm::vec3(1.0f,1.0f,1.0f),glm::vec3(0.1f,0.1,0.1f),1.0f,0.00007f,0.00008f);
 
 
         auto meshes = smgr->AddGroup(10000);
 
         auto mesh1 = smgr->AddMesh(2);
-        mesh1->SetShaderProgramID(resourceShaderLightMapping->GetProgramID());
+        mesh1->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
         
         auto camera = smgr->AddCamera(3);
         camera->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
@@ -172,8 +172,8 @@ int main() {
         if(glfwGetKey(device->GetWindow(),GLFW_KEY_SPACE) && light3 == nullptr){
             light3 = smgr->AddSpotLight(7);
             light3->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
-            static_cast<CLSpotLight*>(light3->GetEntity())->SetLightAttributes(glm::vec3(0.0f,-1.0f,0.0f),glm::cos(glm::radians(12.5f)),glm::cos(glm::radians(20.0f)),glm::vec3(1.0f,1.0f,1.0f),glm::vec3(0.5f,0.5f,0.5f),glm::vec3(0.2f,0.3f,0.42f),glm::vec3(0.1f,0.1,0.1f),1.0f,0.0000002f,0.000000009f);
-            light3->SetTranslation(glm::vec3(mesh1->GetGlobalTranslation().x,1000.0f,mesh1->GetGlobalTranslation().z+50));
+            static_cast<CLSpotLight*>(light3->GetEntity())->SetLightAttributes(glm::vec3(0.0f,-1.0f,0.0f),glm::cos(glm::radians(12.5f)),glm::cos(glm::radians(20.0f)),glm::vec3(1.0f,1.0f,1.0f),glm::vec3(0.5f,0.5f,0.5f),glm::vec3(0.2f,0.3f,0.42f),glm::vec3(0.1f,0.1,0.1f),1.0f,0.00000002f,0.0000000009f);
+            light3->SetTranslation(glm::vec3(mesh1->GetGlobalTranslation().x,1000.0f,mesh1->GetGlobalTranslation().z));
             // auxCameraPos[0] = 40;
             // auxCameraPos[1] = 400;
             // auxCameraPos[2] = 0;
@@ -182,6 +182,10 @@ int main() {
             auxLightPos[0] = 10000.0f;
             auxLightPos[1] = 10000.0f;
             auxLightPos[2] = 10000.0f;
+
+            auxLightPos2[0] = 10000.0f;
+            auxLightPos2[1] = 10000.0f;
+            auxLightPos2[2] = 10000.0f;
         }
 
         if(glfwGetKey(device->GetWindow(),GLFW_KEY_R) && deleteMesh3 == false){
