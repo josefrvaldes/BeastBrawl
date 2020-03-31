@@ -188,20 +188,16 @@ int main() {
             auxLightPos2[2] = 10000.0f;
         }
 
-        if(glfwGetKey(device->GetWindow(),GLFW_KEY_R) && deleteMesh3 == false){
-            smgr->DeleteNode(mesh3->GetEntity()->GetID());
-            deleteMesh3 = true;
-        }
         
         // Start the Dear ImGui frame
-        ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplGlfw_NewFrame();
-        ImGui::NewFrame();
-        ImGui::Begin("Modifica ilumnacion"); 
-        ImGui::SliderFloat3("CameraPos",auxCameraPos,-600,600);
-        ImGui::SliderFloat3("LightPos",auxLightPos,-1000,1000);
-        ImGui::SliderFloat3("LightPos2",auxLightPos2,-1000,1000);
-        ImGui::End(); 
+        // ImGui_ImplOpenGL3_NewFrame();
+        // ImGui_ImplGlfw_NewFrame();
+        // ImGui::NewFrame();
+        // ImGui::Begin("Modifica ilumnacion"); 
+        // ImGui::SliderFloat3("CameraPos",auxCameraPos,-600,600);
+        // ImGui::SliderFloat3("LightPos",auxLightPos,-1000,1000);
+        // ImGui::SliderFloat3("LightPos2",auxLightPos2,-1000,1000);
+        // ImGui::End(); 
 
         glm::vec3 cameraPos(auxCameraPos[0], auxCameraPos[1], auxCameraPos[2]);
         glm::vec3 lightPos(auxLightPos[0], auxLightPos[1], auxLightPos[2]);
@@ -243,13 +239,13 @@ int main() {
 
             //TEXTO -----------------
             string cadena = "Demo tecnica CLEngine";
-            glm::vec3 vect3 = glm::vec3(0.5, 0.8f, 0.2f);
+            glm::vec3 vect3 = glm::vec3(1.0f, 0.8f, 0.2f);
         device->RenderText2D(cadena, 25.0f, 25.0f, 0.05f, 1.0f, vect3);
 
 
         device->InputClose();
         device->PollEvents();
-        device->RenderImgui();
+        // device->RenderImgui();
         device->EndScene();
         index += 0.2;
 
