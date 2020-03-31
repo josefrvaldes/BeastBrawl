@@ -32,8 +32,8 @@ GameObject::GameObject(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale, const stri
     //string vertexShader = "CLEngine/src/Shaders/lightMapping.vert";
     //string fragmentShader = "CLEngine/src/Shaders/lightMapping.frag";
 
-    string vertexShader = "CLEngine/src/Shaders/cartoonShader.vert";
-    string fragmentShader = "CLEngine/src/Shaders/cartoonShader.frag";
+    string vertexShader = "CLEngine/src/Shaders/lightMapping.vert";
+    string fragmentShader = "CLEngine/src/Shaders/lightMapping.frag";
 
     shared_ptr<Component> cId   = make_shared<CId>();
     shared_ptr<Component> cType = make_shared<CType>(ModelType::AnimatedMesh);

@@ -15,7 +15,7 @@ namespace CLE {
             void DrawDepthMap(GLuint shaderID);
 
             // variables
-            GLuint lightId = 0;
+            //GLuint lightId = 0;
             unsigned int depthMapFBO;
             static inline unsigned int depthCubemap;
             const unsigned int SHADOW_WIDTH = 1024;

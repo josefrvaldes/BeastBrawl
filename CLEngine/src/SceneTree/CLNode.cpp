@@ -135,11 +135,11 @@ void CLNode::AddSkybox(string right, string left, string top, string bottom, str
 }
 
 
-void CLNode::AddShadowMapping(GLuint lightId){
+void CLNode::AddShadowMapping(GLuint lightId){ 
     if(!simpleDepthShader){
         auto rm = CLResourceManager::GetResourceManager();
-        DepthShadder = rm->GetResourceShader("CLEngine/src/Shaders/simpleDepthShader.vert", "CLEngine/src/Shaders/simpleDepthShader.frag", "CLEngine/src/Shaders/simpleDepthShader.geom");
-        simpleDepthShader = DepthShadder->GetProgramID();
+        depthShadder = rm->GetResourceShader("CLEngine/src/Shaders/simpleDepthShader.vert", "CLEngine/src/Shaders/simpleDepthShader.frag", "CLEngine/src/Shaders/simpleDepthShader.geom");
+        simpleDepthShader = depthShadder->GetProgramID();
     }
     shadowMapping = make_unique<CLShadowMapping>(lightId);
 }
@@ -435,7 +435,11 @@ void CLNode::CalculateLights(){
         auto pointLightEntity = static_cast<CLPointLight*>(pointLight->GetEntity());
         
         string number = to_string(i); 
+        //Tenemos que mirar que luz es la del shadowmapping
+        if(shadowMapping && pointLight->GetEntity()->GetID() == shadowMapping->GetID()){
+            glUniform1i(glGetUniformLocation(this->GetShaderProgramID(),"id_luz_shadowMapping"),i);    
 
+        }
         glUniform1i(glGetUniformLocation(this->GetShaderProgramID(),"num_Point_Lights"),pointLights.size());    
         glUniform3fv(glGetUniformLocation(this->GetShaderProgramID(), ("pointLights[" + number + "].position").c_str()),1,glm::value_ptr(pointLight->GetGlobalTranslation()));
         glUniform3fv(glGetUniformLocation(this->GetShaderProgramID(), ("pointLights[" + number + "].ambient").c_str()), 1,glm::value_ptr(pointLightEntity->GetAmbient()));
@@ -454,7 +458,7 @@ void CLNode::CalculateLights(){
         auto directLightEntity = static_cast<CLDirectLight*>(directLight->GetEntity());
         
         string number = to_string(i); 
-
+        
         glUniform1i(glGetUniformLocation(this->GetShaderProgramID(),"num_Direct_Lights"),directLights.size());    
         glUniform3fv(glGetUniformLocation(this->GetShaderProgramID(), ("directLights[" + number + "].position").c_str()),1,glm::value_ptr(directLight->GetGlobalTranslation()));
         glUniform3fv(glGetUniformLocation(this->GetShaderProgramID(), ("directLights[" + number + "].direction").c_str()),1,glm::value_ptr(directLightEntity->GetDirection()));

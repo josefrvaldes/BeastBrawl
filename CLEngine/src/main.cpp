@@ -56,6 +56,8 @@ int main() {
     CLResourceManager* resourceManager = CLResourceManager::GetResourceManager();
     auto resourceShader = resourceManager->GetResourceShader("CLEngine/src/Shaders/shadowMappingShader.vert", "CLEngine/src/Shaders/shadowMappingShader.frag");
     auto resourceShaderCartoon = resourceManager->GetResourceShader("CLEngine/src/Shaders/cartoonShader.vert", "CLEngine/src/Shaders/cartoonShader.frag");
+    auto resourceShaderLightMapping = resourceManager->GetResourceShader("CLEngine/src/Shaders/lightMapping.vert", "CLEngine/src/Shaders/lightMapping.frag");
+
     auto resourceShaderMaterial = resourceManager->GetResourceShader("CLEngine/src/Shaders/materialShader.vert", "CLEngine/src/Shaders/materialShader.frag");
     auto resourceShader3 = resourceManager->GetResourceShader("CLEngine/src/Shaders/debugShader.vert", "CLEngine/src/Shaders/debugShader.frag");
     auto resourceShaderSkybox = resourceManager->GetResourceShader("CLEngine/src/Shaders/skybox.vert", "CLEngine/src/Shaders/skybox.frag");
@@ -81,24 +83,17 @@ int main() {
 
         auto light1 = smgr->AddPointLight(1);
         light1->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
-        static_cast<CLPointLight*>(light1->GetEntity())->SetLightAttributes(glm::vec3(1.0f,1.0f,1.0f),glm::vec3(1.0f,1.0f,1.0f),glm::vec3(1.0f,1.0f,1.0f),glm::vec3(0.1f,0.1,0.1f),1.0f,0.00002f,0.00000006f);
+        static_cast<CLPointLight*>(light1->GetEntity())->SetLightAttributes(glm::vec3(1.0f,1.0f,1.0f),glm::vec3(1.0f,1.0f,1.0f),glm::vec3(1.0f,1.0f,1.0f),glm::vec3(0.1f,0.1,0.1f),1.0f,0.00005f,0.0000008f);
 
-        // auto light2 = smgr->AddPointLight(6);
-        // light2->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
-        // static_cast<CLPointLight*>(light2->GetEntity())->SetLightAttributes(glm::vec3(1.0f,1.0f,1.0f),glm::vec3(0.5f,0.5f,0.5f),glm::vec3(0.2f,0.3f,0.42f),glm::vec3(0.1f,0.1,0.1f),1.0f,0.0014f,0.000003f);
+        auto light2 = smgr->AddPointLight(123451);
+        light2->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
+        static_cast<CLPointLight*>(light2->GetEntity())->SetLightAttributes(glm::vec3(1.0f,1.0f,1.0f),glm::vec3(1.0f,1.0f,1.0f),glm::vec3(1.0f,1.0f,1.0f),glm::vec3(0.1f,0.1,0.1f),1.0f,0.00007f,0.00010f);
 
-        // auto light2 = smgr->AddDirectLight(6);
-        // light2->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
-        // static_cast<CLDirectLight*>(light2->GetEntity())->SetLightAttributes(glm::vec3(0.0f,0.0f,-1.0f),glm::vec3(1.0f,1.0f,1.0f),glm::vec3(0.5f,0.5f,0.5f),glm::vec3(0.2f,0.3f,0.42f),glm::vec3(0.1f,0.1,0.1f),1.0f,0.000002f,0.00000002f);
-
-        // auto light3 = smgr->AddSpotLight(7);
-        // light3->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
-        // static_cast<CLSpotLight*>(light3->GetEntity())->SetLightAttributes(glm::vec3(1.0f,0.0f,0.0f),glm::cos(glm::radians(12.5f)),glm::cos(glm::radians(15.5f)),glm::vec3(1.0f,1.0f,1.0f),glm::vec3(0.5f,0.5f,0.5f),glm::vec3(0.2f,0.3f,0.42f),glm::vec3(0.1f,0.1,0.1f),0.3f,0.004f,0.00016f);
 
         auto meshes = smgr->AddGroup(10000);
 
         auto mesh1 = smgr->AddMesh(2);
-        mesh1->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
+        mesh1->SetShaderProgramID(resourceShaderLightMapping->GetProgramID());
         
         auto camera = smgr->AddCamera(3);
         camera->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
@@ -124,7 +119,7 @@ int main() {
         "media/skybox/front.jpg",
         "media/skybox/back.jpg");
 
-        smgr->AddShadowMapping(light1->GetEntity()->GetID());
+        smgr->AddShadowMapping(light2->GetEntity()->GetID());
 
 
 
@@ -135,6 +130,7 @@ int main() {
 
     camera->SetTranslation(glm::vec3(400.127f, 400.42f, 0.9f));
     light1->SetTranslation(glm::vec3(75.9f, 1000.2f, 15.08f));
+    light2->SetTranslation(glm::vec3(295.9f, 300.2f, 15.08f));
 
     mesh1->SetScalation(glm::vec3(1.0f, 1.0f, 1.0f));
     mesh1->SetRotation(glm::vec3(0.0f,0.0f,0.0f));
@@ -157,7 +153,7 @@ int main() {
     //LUCES Y COLORES
     float auxCameraPos[3] = {camera->GetTranslation().x, camera->GetTranslation().y, camera->GetTranslation().z};
     float auxLightPos[3] = {light1->GetTranslation().x, light1->GetTranslation().y, light1->GetTranslation().z};
-    // float auxLightPos2[3] = {light2->GetTranslation().x, light2->GetTranslation().y, light2->GetTranslation().z};
+    float auxLightPos2[3] = {light2->GetTranslation().x, light2->GetTranslation().y, light2->GetTranslation().z};
 
     float index = 0.01;
 
@@ -200,15 +196,15 @@ int main() {
         ImGui::Begin("Modifica ilumnacion"); 
         ImGui::SliderFloat3("CameraPos",auxCameraPos,-600,600);
         ImGui::SliderFloat3("LightPos",auxLightPos,-1000,1000);
-        // ImGui::SliderFloat3("LightPos2",auxLightPos2,-1000,1000);
+        ImGui::SliderFloat3("LightPos2",auxLightPos2,-1000,1000);
         ImGui::End(); 
 
         glm::vec3 cameraPos(auxCameraPos[0], auxCameraPos[1], auxCameraPos[2]);
         glm::vec3 lightPos(auxLightPos[0], auxLightPos[1], auxLightPos[2]);
-        // glm::vec3 lightPos2(auxLightPos2[0], auxLightPos2[1], auxLightPos2[2]);
+        glm::vec3 lightPos2(auxLightPos2[0], auxLightPos2[1], auxLightPos2[2]);
         camera->SetTranslation(cameraPos);
         light1->SetTranslation(lightPos);
-        // light2->SetTranslation(lightPos2); 
+        light2->SetTranslation(lightPos2); 
         
         if(!deleteMesh3){
             mesh3->SetRotation(glm::vec3(0.0f,0.0f,index));

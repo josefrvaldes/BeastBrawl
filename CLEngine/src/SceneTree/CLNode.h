@@ -54,9 +54,9 @@ class CLNode{
         vector<CLNode*> GetPointLights()              { return pointLights; };
         vector<CLNode*> GetDirectLights()             { return directLights; };
         vector<CLNode*> GetCameras()            { return cameras; };
-        CLShadowMapping* GetShadowMapping()     {return shadowMapping.get();};
-        GLuint GetSimpleDepthShader()           {return simpleDepthShader;};
-        CLResourceShader* GetDepthShader()      {return DepthShadder;};
+        static CLShadowMapping* GetShadowMapping()     {return shadowMapping.get();};
+        //GLuint GetSimpleDepthShader()           {return simpleDepthShader;};
+        CLResourceShader* GetDepthShader()      {return depthShadder;};
         void RemoveLightsAndCameras();
 
 
@@ -153,9 +153,9 @@ class CLNode{
         inline static unique_ptr<CLSkybox> skybox = nullptr;
         inline static GLuint skyboxShader = 0;
 
-        unique_ptr<CLShadowMapping> shadowMapping = nullptr;
+        inline static unique_ptr<CLShadowMapping> shadowMapping = nullptr;
         GLuint simpleDepthShader = 0;
-        CLResourceShader* DepthShadder = nullptr;
+        CLResourceShader* depthShadder = nullptr;
 
 };
 

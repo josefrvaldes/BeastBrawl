@@ -199,7 +199,7 @@ void CLEngine::BeginScene(){
 
 
 void CLEngine::DrawDepthMap(){
-    auto light = smgr->GetNodeByID(smgr->GetShadowMapping()->lightId);
+    auto light = smgr->GetNodeByID(smgr->GetShadowMapping()->GetID());
 
     // 1. Se renderiza con el shadowMap
     //glCullFace(GL_FRONT);
