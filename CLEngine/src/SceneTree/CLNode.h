@@ -16,7 +16,7 @@
 #include "../ResourceManager/CLResourceMesh.h"
 #include "CLSkybox.h"
 #include "CLShadowMapping.h"
-
+#include "CLBillboard.h"
 
 #include "../Frustum/CLFrustum.h"
 #include "../ResourceManager/CLResourceManager.h"
@@ -81,6 +81,7 @@ class CLNode{
         CLNode* AddCamera(unsigned int id);
         void AddSkybox(string right, string left, string top, string bottom, string front, string back);
         void AddShadowMapping(GLuint lightId);
+        void AddBillBoard(float width_, float height_);
 
         bool RemoveChild(CLNode* child);
         bool HasChild(CLNode* child);
@@ -152,6 +153,9 @@ class CLNode{
         //Skybox
         inline static unique_ptr<CLSkybox> skybox = nullptr;
         inline static GLuint skyboxShader = 0;
+
+        unique_ptr<CLBillboard> billBoard = nullptr;
+        GLuint billboardShader = 0;
 
         unique_ptr<CLShadowMapping> shadowMapping = nullptr;
         GLuint simpleDepthShader = 0;

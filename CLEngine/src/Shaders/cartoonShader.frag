@@ -241,5 +241,5 @@ void main(){
     //FragColor = floor(FragColor * cartoonParts) / cartoonParts;  // estaba mal aplicado, era en la luz difusa solo
 
     //Si comentas esta linea se ve con luces
-    //FragColor = texture(material.diffuse,TexCoords);
+    FragColor = texture(material.diffuse,TexCoords);
 }
