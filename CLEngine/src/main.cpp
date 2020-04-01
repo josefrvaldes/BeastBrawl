@@ -202,7 +202,14 @@ int main() {
         //glm::vec3 cameraPos(auxCameraPos[0], auxCameraPos[1], auxCameraPos[2]);
         glm::vec3 lightPos(auxLightPos[0], auxLightPos[1], auxLightPos[2]);
         glm::vec3 lightPos2(auxLightPos2[0], auxLightPos2[1], auxLightPos2[2]);
-        camera->SetTranslation(glm::vec3(sin(index/20.0f)*600,camera->GetGlobalTranslation().y,cos(index/20.0)*600));
+
+        if(glfwGetKey(device->GetWindow(),GLFW_KEY_L)){
+            camera->SetTranslation(glm::vec3(sin(index/20.0f)*600,camera->GetGlobalTranslation().y,/*cos(index/20.0)*600*/ camera->GetGlobalTranslation().z));
+
+        }else{
+            camera->SetTranslation(glm::vec3(sin(index/20.0f)*600,camera->GetGlobalTranslation().y,cos(index/20.0)*600));
+
+        }
         light1->SetTranslation(lightPos);
         light2->SetTranslation(lightPos2); 
         
