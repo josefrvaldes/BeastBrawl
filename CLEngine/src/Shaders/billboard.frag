@@ -1,16 +1,19 @@
-#version 440 core
+#version 450 core
 
-uniform sampler2D glColorMap;
+uniform sampler2D ourTexture;
 
-in vec2  TextCoord;
+in vec2 TexCoords;
 out vec4 FragColor;
 
 void main()
 {
-    FragColor = texture2D(glColorMap, TextCoord);
 
-    //if(FragColor.a < 0.7)
-    //{
-    //    discard;
-    //}
+    FragColor = texture2D(ourTexture, TexCoords);
+
+    //We discard this kind of fragment to achieve transparency in our billboards
+    if(FragColor.r == 0 && FragColor.g == 0 && FragColor.b == 0)
+    {
+        discard;
+    }
+
 }

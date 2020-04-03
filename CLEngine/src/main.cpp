@@ -106,6 +106,12 @@ int main() {
         auto mesh2 = smgr->AddMesh(4);
         mesh2->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
 
+
+
+        string fileBillBoard = "media/pudin.png";
+        smgr->AddBillBoard(fileBillBoard, true, glm::vec3(0.0,100.0,0.0));
+
+
         
         // auto mesh3 = smgr->AddMesh(5);
         // mesh3->SetShaderProgramID(resourceShaderCartoon->GetProgramID());

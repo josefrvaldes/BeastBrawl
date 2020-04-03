@@ -218,9 +218,11 @@ void CLEngine::DrawObjects(){
     DrawDepthMap();
 
     smgr->DrawSkybox();
+    smgr->DrawBillBoard();
     smgr->CalculateViewProjMatrix();
     //smgr->CalculateLights();
     smgr->DFSTree(glm::mat4(1.0f));
+    
 }
 
 
@@ -331,7 +333,6 @@ void CLEngine::RenderText2D(std::string& text, GLfloat x, GLfloat y, GLfloat dep
     glBindVertexArray(0);
     glBindTexture(GL_TEXTURE_2D, 0);
 }
-
 
 /**
  * Renderiza las cosas de ImGui y cambia el buffer de la ventana. 

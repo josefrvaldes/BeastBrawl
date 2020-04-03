@@ -1,25 +1,30 @@
 #pragma once
 
 #include "CLEntity.h"
+#include "../ResourceManager/CLResourceMesh.h"
+#include "../ResourceManager/CLResourceTexture.h"
 
 
 namespace CLE {
 
     class CLBillboard : public CLEntity {
         public:
-            CLBillboard(GLuint _lightId);
+            CLBillboard(CLResourceTexture* texture_, glm::vec3 posBillBoard_);
             ~CLBillboard() {};
 
-            //void PrepareToRender();
             void Draw(GLuint shaderID);
             void DrawDepthMap(GLuint shaderID);
 
-            // variables
-            GLuint lightId = 0;
-            unsigned int depthMapFBO;
-            static inline unsigned int depthCubemap;
-            const unsigned int SHADOW_WIDTH = 1024;
-            const unsigned int SHADOW_HEIGHT = 1024;
+
+            CLResourceTexture* getTexture(){ return texture;};
+            glm::vec3 getPosition(){ return position;};
+            void setTexture(CLResourceTexture* t) { texture = t;};
+            void setPosition(glm::vec3 p) { position = p;};
+
+        private:
+            CLResourceTexture*  texture = nullptr;
+            glm::vec3 position;
+            GLuint vertexBuffer;
                   
     };
 }

@@ -81,7 +81,7 @@ class CLNode{
         CLNode* AddCamera(unsigned int id);
         void AddSkybox(string right, string left, string top, string bottom, string front, string back);
         void AddShadowMapping(GLuint lightId);
-        void AddBillBoard(float width_, float height_);
+        void AddBillBoard(string& file, bool vertically, glm::vec3 posBillBoard);
 
         bool RemoveChild(CLNode* child);
         bool HasChild(CLNode* child);
@@ -102,6 +102,8 @@ class CLNode{
         void DFSTree(glm::mat4);
         void DFSTree(glm::mat4 mA, GLuint shaderID);
         void DrawSkybox();
+
+        void DrawBillBoard();
         
 
         void SetVisible(bool v) {visible = v;};

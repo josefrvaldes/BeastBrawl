@@ -143,6 +143,15 @@ void CLNode::AddShadowMapping(GLuint lightId){
     shadowMapping = make_unique<CLShadowMapping>(lightId);
 }
 
+void CLNode::AddBillBoard(string& file, bool vertically, glm::vec3 posBillBoard){
+    if(!billboardShader){
+        auto rm = CLResourceManager::GetResourceManager();
+        CLResourceTexture* t = rm->GetResourceTexture(file, vertically);
+        auto resourceShader = rm->GetResourceShader("CLEngine/src/Shaders/billboard.vert", "CLEngine/src/Shaders/billboard.frag", "CLEngine/src/Shaders/billboard.geom");
+        billboardShader = resourceShader->GetProgramID();
+        billBoard = make_unique<CLBillboard>(t, posBillBoard);
+    }
+}
 
 bool CLNode::RemoveChild(CLNode* child){
     /*
@@ -332,6 +341,7 @@ void CLNode::DFSTree(glm::mat4 mA) {
         changed = false;
     }
     auto& frustum_m = GetActiveCamera()->GetFrustum();
+
     //CLE::CLFrustum::Visibility frusVisibility = frustum_m.IsInside(translation);
     CLE::CLFrustum::Visibility frusVisibility = frustum_m.IsInside(translation, dimensionsBoundingBox);
 
@@ -505,6 +515,24 @@ void CLNode::DrawSkybox(){
         skybox->Draw(skyboxShader);
     }
 }
+
+void CLNode::DrawBillBoard(){
+
+    if(billBoard.get()){
+        glm::mat4 viewProjection = view*projection;
+	    glm::vec3 camPos = glm::vec3(-view[3][2], -view[3][1], -view[3][0]);
+
+        glUseProgram(billboardShader);
+	    GLuint VPMatrix = glGetUniformLocation(billboardShader, "VPMatrix");
+	    glUniformMatrix4fv(VPMatrix, 1, GL_FALSE, &viewProjection[0][0]);
+
+	    GLuint cameraPosition = glGetUniformLocation(billboardShader, "cameraPosition");
+	    glUniform3fv(cameraPosition, 1, &camPos[0]);
+
+        billBoard->Draw(billboardShader);
+    }
+}
+
 
 //Devuelve el nodo por la id que le mandes
 //Lo hace a partir del padre que lo llame, lo suyo es llamarlo siempre con el nodo principal
