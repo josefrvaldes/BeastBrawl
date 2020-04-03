@@ -108,11 +108,6 @@ int main() {
 
 
 
-        string fileBillBoard = "media/pudin.png";
-        smgr->AddBillBoard(fileBillBoard, true, glm::vec3(0.0,100.0,0.0));
-
-
-        
         // auto mesh3 = smgr->AddMesh(5);
         // mesh3->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
 
@@ -121,6 +116,9 @@ int main() {
         
 
         static_cast<CLCamera*>(camera->GetEntity())->SetCameraTarget(mesh2->GetTranslation());
+
+        string fileBillBoard = "media/flower.png";
+        smgr->AddBillBoard(fileBillBoard, true, glm::vec3(0.0,100.0,0.0));
 
 
         smgr->AddSkybox("media/skybox/right.jpg",
@@ -230,6 +228,7 @@ int main() {
 
         string file = "media/pudin.png";
         device->DrawImage2D(25.0f,25.0f,150.0f,150.0f, 0.2f, file, true);
+
 
 
             //TEXTO -----------------

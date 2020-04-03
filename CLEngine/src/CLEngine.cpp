@@ -218,11 +218,10 @@ void CLEngine::DrawObjects(){
     DrawDepthMap();
 
     smgr->DrawSkybox();
-    smgr->DrawBillBoard();
     smgr->CalculateViewProjMatrix();
     //smgr->CalculateLights();
     smgr->DFSTree(glm::mat4(1.0f));
-    
+    smgr->DrawBillBoard();
 }
 
 

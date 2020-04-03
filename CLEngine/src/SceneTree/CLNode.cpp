@@ -519,15 +519,16 @@ void CLNode::DrawSkybox(){
 void CLNode::DrawBillBoard(){
 
     if(billBoard.get()){
-        glm::mat4 viewProjection = view*projection;
-	    glm::vec3 camPos = glm::vec3(-view[3][2], -view[3][1], -view[3][0]);
-
+        //glDepthMask(GL_FALSE);
         glUseProgram(billboardShader);
+
+        glm::mat4 viewProjection = view*projection;
+        glm::vec3 camPos = cameras[0]->translation;
 	    GLuint VPMatrix = glGetUniformLocation(billboardShader, "VPMatrix");
-	    glUniformMatrix4fv(VPMatrix, 1, GL_FALSE, &viewProjection[0][0]);
+	    glUniformMatrix4fv(VPMatrix, 1, GL_FALSE, glm::value_ptr(viewProjection));
 
 	    GLuint cameraPosition = glGetUniformLocation(billboardShader, "cameraPosition");
-	    glUniform3fv(cameraPosition, 1, &camPos[0]);
+	    glUniform3fv(cameraPosition, 1, glm::value_ptr(camPos));
 
         billBoard->Draw(billboardShader);
     }
