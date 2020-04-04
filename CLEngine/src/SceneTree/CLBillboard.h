@@ -24,7 +24,7 @@ namespace CLE {
         private:
             CLResourceTexture*  texture = nullptr;
             glm::vec3 position;
-            GLuint vertexBuffer;
+            GLuint vertexBuffer {0}, VAO {0};
                   
     };
 }
