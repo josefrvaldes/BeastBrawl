@@ -117,8 +117,8 @@ int main() {
 
         static_cast<CLCamera*>(camera->GetEntity())->SetCameraTarget(mesh2->GetTranslation());
 
-        string fileBillBoard = "media/flower.png";
-        smgr->AddBillBoard(fileBillBoard, true, glm::vec3(0.0,200.0,0.0), 100.0,100.0);
+        string fileBillBoard = "media/mrPinguin.png";
+        smgr->AddBillBoard(fileBillBoard, false, glm::vec3(50.0,100.0,0.0), 100.0,50.0);
 
 
         smgr->AddSkybox("media/skybox/right.jpg",
