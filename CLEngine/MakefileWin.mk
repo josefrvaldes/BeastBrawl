@@ -12,17 +12,12 @@ else
 	CXXFLAGS += -O3
 endif
 
-ifdef WINDOWS
-	INCLUDE     := -I. 
-	CC			:= g++
-else
-	LIBS 	    	+= -L./lib/linux/glfw -lglfw3 -lGL -lX11 -lpthread -lXrandr -lXi -ldl -Wl,-rpath=./lib/linux/glfw
-	LIBS 	    	+= -L./lib/linux/glew -lGLEW -Wl,-rpath=./lib/linux/glew
-	LIBS 	    	+= -L./lib/linux/assimp -lassimp -Wl,-rpath=lib/linux/assimp
-	LIBS			+= -L./lib/linux/freeType2 -lfreetype -Wl,-rpath=lib/linux/freeType2
-	INCLUDE     	:= -I./include -I../include -I./include/freeType2
-	CC			:= g++
-endif
+LIBS 	    	+= -L./lib/windows/glfw -lglfw3 -lGL -lX11 -lpthread -lXrandr -lXi -ldl -Wl,-rpath=./lib/windows/glfw
+LIBS 	    	+= -L./lib/windows/glew -lGLEW -Wl,-rpath=lib/windows/glew
+LIBS 	    	+= -L./lib/linux/assimp -lassimp -Wl,-rpath=lib/linux/assimp
+LIBS			+= -L./lib/linux/freeType2 -lfreetype -Wl,-rpath=lib/linux/freeType2
+INCLUDE     	:= -I./include -I../include -I./include/freeType2
+CC			:= x86_64-w64-mingw32-g++
 
 SOURCES  	:= $(wildcard *.cpp)
 OBJ_PATH    := ../obj/CLEngine
@@ -40,7 +35,7 @@ ifdef CACHE
 	CC := ccache g++
 	CXXFLAGS += -fuse-ld=gold
 else
-	CC := g++
+	CC := x86_64-w64-mingw32-g++
 endif
 
 

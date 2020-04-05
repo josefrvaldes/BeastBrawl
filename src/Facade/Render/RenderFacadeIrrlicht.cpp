@@ -1,5 +1,7 @@
 #include "RenderFacadeIrrlicht.h"
 
+#define _USE_MATH_DEFINES
+
 #include <cmath>
 #include <algorithm>    // std::sort
 #include "../../Components/CBoundingChassis.h" 
@@ -584,8 +586,8 @@ void RenderFacadeIrrlicht::FacadeAddCamera(Entity* camera) {
     auto cTransformable = static_cast<CTransformable*>(camera->GetComponent(CompType::TransformableComp).get());
     auto cCamera = static_cast<CCamera*>(camera->GetComponent(CompType::CameraComp).get());
 
-    float posX = cCamera->tarX - 40.0 * sin(((cTransformable->rotation.x) * M_PI) / 180.0);
-    float posZ = cCamera->tarZ - 40.0 * cos(((cTransformable->rotation.z) * M_PI) / 180.0);
+    float posX = cCamera->tarX - 40.0 * sin(((cTransformable->rotation.x) * PI) / 180.0);
+    float posZ = cCamera->tarZ - 40.0 * cos(((cTransformable->rotation.z) * PI) / 180.0);
     camera1->setTarget(core::vector3df(cCamera->tarX, cCamera->tarY, cCamera->tarZ));
     camera1->setPosition(core::vector3df(posX, cTransformable->position.y, posZ));
     //camera1->setFOV(40);
