@@ -37,7 +37,7 @@ struct Character {
 
 class CLEngine {
     public:
-        CLEngine() = default;;
+        CLEngine() = default;
         CLEngine(const unsigned int, const unsigned int, const string&);
         ~CLEngine();
 

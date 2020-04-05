@@ -13,6 +13,7 @@
 #include "CLDirectLight.h"
 #include "CLSpotLight.h"
 #include "CLCamera.h"
+#include "CLParticleSystem.h"
 #include "../ResourceManager/CLResourceMesh.h"
 #include "CLSkybox.h"
 #include "CLShadowMapping.h"
@@ -26,6 +27,7 @@
 
 using namespace std;
 //using namespace CLE;
+
 
 namespace CLE{
 
@@ -79,6 +81,7 @@ class CLNode{
         CLNode* AddSpotLight(unsigned int id);
         CLNode* AddSpotLight(unsigned int id,glm::vec3 direction,float cutOff,float outerCutOff,glm::vec3 intensity, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float constant, float linear, float quadratic);
         CLNode* AddCamera(unsigned int id);
+        CLNode* AddParticleSystem(unsigned int id);
         void AddSkybox(string right, string left, string top, string bottom, string front, string back);
         void AddShadowMapping(GLuint lightId);
 
@@ -156,6 +159,9 @@ class CLNode{
         inline static unique_ptr<CLShadowMapping> shadowMapping = nullptr;
         GLuint simpleDepthShader = 0;
         CLResourceShader* depthShadder = nullptr;
+
+        //Particle system
+        inline static GLuint particleSystemShader = 0;
 
 };
 

@@ -4,6 +4,7 @@
 #include <glm/ext.hpp>
 #include <glm/gtx/string_cast.hpp>
 
+
 #include "../Frustum/CLFrustum.h"
 #include "../../../src/Constants.h"
 
@@ -124,12 +125,31 @@ CLNode* CLNode::AddCamera(unsigned int id){
     
 }
 
+CLNode* CLNode::AddParticleSystem(unsigned int id){
+    if(particleSystemShader == 0){
+        auto rm = CLResourceManager::GetResourceManager();
+        auto resourceShader = rm->GetResourceShader("CLEngine/src/Shaders/particleSystem.vert", "CLEngine/src/Shaders/particleSystem.frag");
+        particleSystemShader = resourceShader->GetProgramID();
+    }
+    shared_ptr<CLEntity> e = make_shared<CLParticleSystem>(id,1,glm::vec3(0.0f,10.0f,0.0f));
+    shared_ptr<CLNode> node = make_shared<CLNode>(e);
+    childs.push_back(node);
+    node->SetFather(this);
+    node->SetShaderProgramID(particleSystemShader);
+
+    //Configuraciones especificas de un particlesystem
+    if(auto particleSystem = dynamic_cast<CLParticleSystem*>(e.get())){
+        particleSystem->SetCLNode(node.get());
+    }
+
+    return node.get();
+}
+
 void CLNode::AddSkybox(string right, string left, string top, string bottom, string front, string back){
     if(!skyboxShader){
         auto rm = CLResourceManager::GetResourceManager();
         auto resourceShader = rm->GetResourceShader("CLEngine/src/Shaders/skybox.vert", "CLEngine/src/Shaders/skybox.frag");
         skyboxShader = resourceShader->GetProgramID();
-        cout << skyboxShader << endl;
     }
     skybox = make_unique<CLSkybox>(right, left, top, bottom, front, back);
 }
@@ -582,7 +602,6 @@ const void CLNode::Draw3DLine(float x1, float y1, float z1, float x2, float y2, 
 
     glm::mat4 modelMat = glm::identity<mat4>();
 
-    //99% seguro de que estoy enviando mal las matrices vista y projeccion
     glUseProgram(debugShader);
 
     glm::vec4 clcolor(color.GetRedNormalized(),color.GetGreenNormalized(),color.GetBlueNormalized(),color.GetAlphaNormalized());
