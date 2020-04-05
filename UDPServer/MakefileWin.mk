@@ -14,7 +14,7 @@ else
 endif
 
 INCLUDE     := -I. -I../include
-LIBS 		:= -ws2_32
+LIBS 		:=  -lws2_32 -lwsock32
 CC			:= x86_64-w64-mingw32-g++
 
 
@@ -22,9 +22,10 @@ SOURCES  	:= $(wildcard *.cpp)
 OBJ_PATH    := obj
 SRC_PATH	:= src
 
-NAME_EXE	:= Server
-CXXFLAGS 	+= -Wall -Wno-unknown-pragmas -static-libstdc++ -static-libgcc -static -pthread # el no-unknown-pragmas es para que no salga el warning de los pragma region
-																			# el -fuse-ld=gold es para el ccache
+NAME_EXE	:= Server.exe
+CXXFLAGS 	+= -Wall -Wno-unknown-pragmas -static-libstdc++ -std=gnu++1z -static-libgcc -static -pthread # el no-unknown-pragmas es para que no salga el warning de los pragma region
+																										 # el -fuse-ld=gold es para el ccache
+																										 # si pongo -std=c++17 falla M_PI, poniendo -std=gnu++17 funciona bien en windows
 ALLCPPS		:= $(shell find src/ -type f -iname *.cpp)
 ALLCPPSOBJ	:= $(patsubst $(SRC_PATH)/%.cpp,$(OBJ_PATH)/%.o,$(ALLCPPS))
 SUBDIRS		:= $(shell find src/ -type d)
