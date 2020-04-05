@@ -81,7 +81,7 @@ class CLNode{
         CLNode* AddCamera(unsigned int id);
         void AddSkybox(string right, string left, string top, string bottom, string front, string back);
         void AddShadowMapping(GLuint lightId);
-        void AddBillBoard(string& file, bool vertically, glm::vec3 posBillBoard);
+        void AddBillBoard(string& file, bool vertically, glm::vec3 posBillBoard, float width_, float height_);
 
         bool RemoveChild(CLNode* child);
         bool HasChild(CLNode* child);

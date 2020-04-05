@@ -9,7 +9,7 @@ namespace CLE {
 
     class CLBillboard : public CLEntity {
         public:
-            CLBillboard(CLResourceTexture* texture_, glm::vec3 posBillBoard_);
+            CLBillboard(CLResourceTexture* texture_, glm::vec3 posBillBoard_, float width_, float height_);
             ~CLBillboard() {};
 
             void Draw(GLuint shaderID);
@@ -25,6 +25,7 @@ namespace CLE {
             CLResourceTexture*  texture = nullptr;
             glm::vec3 position;
             GLuint vertexBuffer {0}, VAO {0};
+            float width {0}, height {0};
                   
     };
 }

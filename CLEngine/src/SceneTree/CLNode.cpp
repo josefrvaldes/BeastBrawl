@@ -143,13 +143,13 @@ void CLNode::AddShadowMapping(GLuint lightId){
     shadowMapping = make_unique<CLShadowMapping>(lightId);
 }
 
-void CLNode::AddBillBoard(string& file, bool vertically, glm::vec3 posBillBoard){
+void CLNode::AddBillBoard(string& file, bool vertically, glm::vec3 posBillBoard, float width_, float height_){
     if(!billboardShader){
         auto rm = CLResourceManager::GetResourceManager();
         CLResourceTexture* t = rm->GetResourceTexture(file, vertically);
         auto resourceShader = rm->GetResourceShader("CLEngine/src/Shaders/billboard.vert", "CLEngine/src/Shaders/billboard.frag", "CLEngine/src/Shaders/billboard.geom");
         billboardShader = resourceShader->GetProgramID();
-        billBoard = make_unique<CLBillboard>(t, posBillBoard);
+        billBoard = make_unique<CLBillboard>(t, posBillBoard, width_, height_);
     }
 }
 
@@ -533,12 +533,6 @@ void CLNode::DrawBillBoard(){
 
 	    GLuint cameraPosition = glGetUniformLocation(billboardShader, "cameraPosition");
 	    glUniform3fv(cameraPosition, 1, glm::value_ptr(camPos));
-
-        float width_ = 50.0f;
-        glUniform1f(glGetUniformLocation(billboardShader, "width"), width_);
-
-        float height_ = 50.0f;
-        glUniform1f(glGetUniformLocation(billboardShader, "height"), height_);
 
         billBoard->Draw(billboardShader);
     }

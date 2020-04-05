@@ -2,15 +2,20 @@
 
 
 
-CLE::CLBillboard::CLBillboard(CLResourceTexture* texture_, glm::vec3 posBillBoard_){
+CLE::CLBillboard::CLBillboard(CLResourceTexture* texture_, glm::vec3 posBillBoard_, float width_, float height_){
     texture = texture_;
     position = posBillBoard_;
+    width = width_;
+    height = height_;
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &vertexBuffer);
 }
 
 void CLE::CLBillboard::Draw(GLuint shaderID){
     if(texture != nullptr){
+        glUniform1f(glGetUniformLocation(shaderID, "width"), width);
+        glUniform1f(glGetUniformLocation(shaderID, "height"), height);
+
         glActiveTexture(GL_TEXTURE0); 
         glBindTexture(GL_TEXTURE_2D, texture->GetTextureID());
         glBindVertexArray(VAO);

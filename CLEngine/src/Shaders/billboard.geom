@@ -41,3 +41,5 @@ void main()
 
     EndPrimitive();
 }
+
+//http://ogldev.atspace.co.uk/www/tutorial27/tutorial27.html
