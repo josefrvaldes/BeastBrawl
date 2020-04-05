@@ -33,3 +33,5 @@ lib/fmod/libfmodstudioL.so.11
 lib/fmod/libfmodstudioL.so
 
 UDPServer/Server
+
+UDPServer/Server.exe
