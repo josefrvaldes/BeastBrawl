@@ -12,10 +12,10 @@ else
 	CXXFLAGS += -O3
 endif
 
-LIBS 	    	+= -L./lib/windows/glfw -lglfw3 -lGL -lX11 -lpthread -lXrandr -lXi -ldl -Wl,-rpath=./lib/windows/glfw
-LIBS 	    	+= -L./lib/windows/glew -lGLEW -Wl,-rpath=lib/windows/glew
-LIBS 	    	+= -L./lib/linux/assimp -lassimp -Wl,-rpath=lib/linux/assimp
-LIBS			+= -L./lib/linux/freeType2 -lfreetype -Wl,-rpath=lib/linux/freeType2
+LIBS 	    	+= -L./lib/windows/glfw -lglfw3 -lopengl32 -lX11 -lpthread -lXrandr -lXi -ldl -Wl,-rpath=./lib/windows/glfw
+LIBS 	    	+= -L./lib/windows/glew -lglew32 -Wl,-rpath=lib/windows/glew
+LIBS 	    	+= -L./lib/windows/assimp -lassimp -Wl,-rpath=lib/windows/assimp
+LIBS			+= -L./lib/windows/freeType2 -lfreetype -Wl,-rpath=lib/windows/freeType2
 INCLUDE     	:= -I./include -I../include -I./include/freeType2
 CC			:= x86_64-w64-mingw32-g++
 
@@ -24,19 +24,15 @@ OBJ_PATH    := ../obj/CLEngine
 SRC_PATH	:= src
 
 NAME_EXE	:= CLEngine
-CXXFLAGS 	+= -Wall -Wno-unknown-pragmas  -std=c++17  # el no-unknown-pragmas es para que no salga el warning de los pragma region
+CXXFLAGS 	+= -Wall -Wno-unknown-pragmas -static-libstdc++ -std=gnu++1z -static-libgcc -static -pthread # el no-unknown-pragmas es para que no salga el warning de los pragma region
+																										 # el -fuse-ld=gold es para el ccache
+																										 # si pongo -std=c++17 falla M_PI, poniendo -std=gnu++17 funciona bien en windows
 
 ALLCPPS		:= $(shell find src/ -type f -iname *.cpp)
 ALLCPPSOBJ	:= $(patsubst $(SRC_PATH)/%.cpp,$(OBJ_PATH)/%.o,$(ALLCPPS))
 SUBDIRS		:= $(shell find src/ -type d)
 OBJSUBDIRS  := $(patsubst $(SRC_PATH)%,$(OBJ_PATH)%,$(SUBDIRS))
 
-ifdef CACHE
-	CC := ccache g++
-	CXXFLAGS += -fuse-ld=gold
-else
-	CC := x86_64-w64-mingw32-g++
-endif
 
 
 #Esto crea el ejecutable

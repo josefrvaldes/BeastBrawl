@@ -40,12 +40,7 @@ ALLCPPSOBJ_CLE  := $(filter-out $(MAIN_CLE),$(ALLCPPSOBJ_CLE))								# >>> Filt
 SUBDIRS_CLE    	:= $(shell find CLEngine/src/ -type d)										# Busca y obtiene los subdirectorios de ClEngine/src
 OBJSUBDIRS_CLE  := $(patsubst $(SRC_CLE_PATH)%,$(OBJ_CLE_PATH)%,$(SUBDIRS_CLE))				# Cambia los 'src' por 'obj'
 
-ifdef CACHE
-	CC := ccache g++
-	CXXFLAGS += -fuse-ld=gold
-else
-	CC := g++
-endif
+
 
 ifdef DEBUG
 	CXXFLAGS += -g
@@ -65,6 +60,7 @@ LIBS		+= -L./lib/linux/freeType2 -lfreetype -Wl,-rpath=lib/linux/freeType2
 INCLUDE     := -I./include -I./src -I./include/fmod/core -I./include/fmod/studio -I./include/freeType2
 CREATE_SYMLINKS := bash symlinks.sh
 CC			:= x86_64-w64-mingw32-g++
+
 
 
 #Esto crea el ejecutable
