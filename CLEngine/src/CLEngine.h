@@ -37,7 +37,7 @@ struct Character {
 
 class CLEngine {
     public:
-        CLEngine() = default;;
+        CLEngine() = default;
         CLEngine(const unsigned int, const unsigned int, const string&);
         ~CLEngine();
 
@@ -48,6 +48,7 @@ class CLEngine {
         void DrawObjects();
         void EndScene();
         void SetTitle(string&);
+        void SetTitle(string&&);
         void RenderImgui();
         void UpdateViewport();
         double GetTime();
@@ -61,6 +62,8 @@ class CLEngine {
         void LoadFont(const std::string&);
         void DrawImage2D(float _x, float _y, float _width, float _height, float _depth, string& file, bool);
         void RenderText2D(std::string& text, GLfloat x, GLfloat y, GLfloat depth, GLfloat scale, glm::vec3& color);
+
+        //void renderBillboard();
 
 
         CLNode* GetSceneManager();

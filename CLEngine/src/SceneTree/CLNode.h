@@ -13,10 +13,11 @@
 #include "CLDirectLight.h"
 #include "CLSpotLight.h"
 #include "CLCamera.h"
+#include "CLParticleSystem.h"
 #include "../ResourceManager/CLResourceMesh.h"
 #include "CLSkybox.h"
 #include "CLShadowMapping.h"
-
+#include "CLBillboard.h"
 
 #include "../Frustum/CLFrustum.h"
 #include "../ResourceManager/CLResourceManager.h"
@@ -26,6 +27,7 @@
 
 using namespace std;
 //using namespace CLE;
+
 
 namespace CLE{
 
@@ -51,6 +53,7 @@ class CLNode{
         static glm::mat4 GetViewMatrix()               { return view; }
         static glm::mat4 GetProjectionMatrix()         { return projection; }
         CLCamera* GetActiveCamera();
+        CLNode*   GetActiveCameraNode();
         vector<CLNode*> GetPointLights()              { return pointLights; };
         vector<CLNode*> GetDirectLights()             { return directLights; };
         vector<CLNode*> GetCameras()            { return cameras; };
@@ -79,8 +82,10 @@ class CLNode{
         CLNode* AddSpotLight(unsigned int id);
         CLNode* AddSpotLight(unsigned int id,glm::vec3 direction,float cutOff,float outerCutOff,glm::vec3 intensity, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float constant, float linear, float quadratic);
         CLNode* AddCamera(unsigned int id);
+        CLNode* AddParticleSystem(unsigned int id);
         void AddSkybox(string right, string left, string top, string bottom, string front, string back);
         void AddShadowMapping(GLuint lightId);
+        void AddBillBoard(string& file, bool vertically, glm::vec3 posBillBoard, float width_, float height_);
 
         bool RemoveChild(CLNode* child);
         bool HasChild(CLNode* child);
@@ -101,6 +106,8 @@ class CLNode{
         void DFSTree(glm::mat4);
         void DFSTree(glm::mat4 mA, GLuint shaderID);
         void DrawSkybox();
+
+        void DrawBillBoard();
         
 
         void SetVisible(bool v) {visible = v;};
@@ -153,9 +160,15 @@ class CLNode{
         inline static unique_ptr<CLSkybox> skybox = nullptr;
         inline static GLuint skyboxShader = 0;
 
+        inline static unique_ptr<CLBillboard> billBoard = nullptr;
+        inline static GLuint billboardShader = 0;
+
         inline static unique_ptr<CLShadowMapping> shadowMapping = nullptr;
-        GLuint simpleDepthShader = 0;
-        CLResourceShader* depthShadder = nullptr;
+        inline static GLuint simpleDepthShader = 0;
+        inline static CLResourceShader* depthShadder = nullptr;
+
+        //Particle system
+        inline static GLuint particleSystemShader = 0;
 
 };
 
