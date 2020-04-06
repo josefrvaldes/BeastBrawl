@@ -2,6 +2,8 @@
 
 #include "CLEntity.h"
 #include "CLNode.h"
+#include "../ResourceManager/CLResourceManager.h"
+#include "../ResourceManager/CLResourceTexture.h"
 #include "../../../src/Constants.h"
 
 
@@ -48,9 +50,9 @@ class CLNode;
 
                 private:
                     void Update();              //Aqui haremos los calculos necesarios de vida, posicion, etc
-
-                    unsigned int VAO,VBO,EBO;
+                    
                     CLParticleSystem* particleSystem {nullptr};
+
 
             };
             

@@ -1,6 +1,7 @@
 #include <iostream>
 #include <memory>
 #include <map>
+#include <string>
 
 // INCLUDES
 #include <glew/glew.h>
@@ -102,17 +103,17 @@ int main() {
         auto mesh2 = smgr->AddMesh(4);
         mesh2->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
 
-        
-        auto mesh3 = smgr->AddMesh(54212);
-        mesh3->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
 
-        auto mesh4 = mesh3->AddMesh(102123);
-        mesh4->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
+
+
 
         auto ps1   = smgr->AddParticleSystem(123940);
         
 
         static_cast<CLCamera*>(camera->GetEntity())->SetCameraTarget(mesh2->GetTranslation());
+
+        string fileBillBoard = "media/mrPinguin.png";
+        smgr->AddBillBoard(fileBillBoard, false, glm::vec3(50.0,100.0,0.0), 100.0,50.0);
 
 
         smgr->AddSkybox("media/skybox/right.jpg",
@@ -128,8 +129,6 @@ int main() {
 
     static_cast<CLMesh*>(mesh1->GetEntity())->SetMesh(resourceMeshGround);
     static_cast<CLMesh*>(mesh2->GetEntity())->SetMesh(resourceMesh);
-    static_cast<CLMesh*>(mesh3->GetEntity())->SetMesh(resourceMeshBox);
-    static_cast<CLMesh*>(mesh4->GetEntity())->SetMesh(resourceMeshTotem);
 
     camera->SetTranslation(glm::vec3(400.127f, 400.42f, 0.9f));
     light1->SetTranslation(glm::vec3(75.9f, 1000.2f, 15.08f));
@@ -143,14 +142,8 @@ int main() {
     mesh2->SetRotation(glm::vec3(-90.0f, 0.0f, 0.0f));
     mesh2->SetTranslation(glm::vec3(50.0f,80.0f,-50.0f));
 
-    mesh3->SetTranslation(glm::vec3(240.0f,200.0f,0.0f));
-    mesh3->SetScalation(glm::vec3(10.0f,10.0f,10.0f));
-    mesh3->SetRotation(glm::vec3(0.0f, 0.0f, 0.0f));
 
-    // light2->SetTranslation(mesh2->GetGlobalTranslation());
-
-    mesh4->SetScalation(glm::vec3(2.0f, 2.0f, 2.0f));
-    mesh4->SetTranslation(glm::vec3(0.0f,0.0f, -10.0f));
+    
 
     ps1->SetTranslation(mesh2->GetTranslation());
     ps1->SetScalation(glm::vec3(10.0f,10.0f,10.0f));
@@ -166,7 +159,6 @@ int main() {
 
     CLNode* light3 = nullptr;
         
-    bool deleteMesh3 = false;
     while (device->Run()) {
         
         //Apartir de aqui hacemos cosas, de momento en el main para testear
@@ -204,6 +196,7 @@ int main() {
         {
             // Display the frame count here any way you want.
             cout << frameCount << endl;
+            device->SetTitle("BeastBrawl <"+to_string(frameCount) + ">");
 
             frameCount = 0;
             previousTime = currentTime;
@@ -215,6 +208,7 @@ int main() {
 
         string file = "media/logo_clover.png";
         device->DrawImage2D(10.0f,10.0f,200.0f,200.0f, 0.2f, file, true);
+
 
 
             //TEXTO -----------------
