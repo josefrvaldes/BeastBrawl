@@ -221,6 +221,8 @@ void CLEngine::DrawObjects(){
     smgr->CalculateViewProjMatrix();
     //smgr->CalculateLights();
     smgr->DFSTree(glm::mat4(1.0f));
+    // smgr->DrawGrass();
+
 }
 
 
@@ -277,7 +279,6 @@ void CLEngine::DrawImage2D(float _x, float _y, float _width, float _height, floa
 
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
-
 }
 
 /**

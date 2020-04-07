@@ -57,6 +57,7 @@ int main() {
     auto resourceShader = resourceManager->GetResourceShader("CLEngine/src/Shaders/shadowMappingShader.vert", "CLEngine/src/Shaders/shadowMappingShader.frag");
     auto resourceShaderCartoon = resourceManager->GetResourceShader("CLEngine/src/Shaders/cartoonShader.vert", "CLEngine/src/Shaders/cartoonShader.frag");
     auto resourceShaderLightMapping = resourceManager->GetResourceShader("CLEngine/src/Shaders/lightMapping.vert", "CLEngine/src/Shaders/lightMapping.frag");
+    auto resourceShaderHud = resourceManager->GetResourceShader("CLEngine/src/Shaders/spriteShader.vert", "CLEngine/src/Shaders/spriteShader.frag");
 
     auto resourceShaderMaterial = resourceManager->GetResourceShader("CLEngine/src/Shaders/materialShader.vert", "CLEngine/src/Shaders/materialShader.frag");
     auto resourceShader3 = resourceManager->GetResourceShader("CLEngine/src/Shaders/debugShader.vert", "CLEngine/src/Shaders/debugShader.frag");
@@ -65,6 +66,7 @@ int main() {
     auto resourceMeshTotem = resourceManager->GetResourceMesh("media/totem_tex.fbx", true);
     auto resourceMesh = resourceManager->GetResourceMesh("media/kart_physics.fbx", true);
     auto resourceMeshBox = resourceManager->GetResourceMesh("media/TEST_BOX.fbx", true);
+    auto resourceMeshCochesito = resourceManager->GetResourceMesh("media/hierva.fbx", true);
     // auto resourceMeshOBJ = resourceManager->GetResourceMesh("media/kart.obj", true);
     // auto resourceMaterial = resourceManager->GetResourceMaterial("media/kart.obj", true);
 
@@ -107,10 +109,19 @@ int main() {
 
         auto mesh4 = mesh3->AddMesh(102123);
         mesh4->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
-        
+
+        //auto mesh7 = smgr->AddMesh(1456);
+        //mesh7->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
+
 
         static_cast<CLCamera*>(camera->GetEntity())->SetCameraTarget(mesh2->GetTranslation());
-
+        
+        // smgr->AddGrass();
+        auto grass = smgr->AddGrass(123, glm::vec3(140.0f,100.0f,-50.0f));
+        grass->SetScalation(glm::vec3(1.0f,1.0f,1.0f));
+        grass->SetTranslation(glm::vec3(140.0f,100.0f,-50.0f));
+        grass->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
+        // grass->SetShaderProgramID(resourceShaderHud->GetProgramID());
 
         smgr->AddSkybox("media/skybox/right.jpg",
         "media/skybox/left.jpg",
@@ -118,6 +129,8 @@ int main() {
         "media/skybox/bottom.jpg",
         "media/skybox/front.jpg",
         "media/skybox/back.jpg");
+
+
 
         smgr->AddShadowMapping(light2->GetEntity()->GetID());
 
@@ -127,6 +140,8 @@ int main() {
     static_cast<CLMesh*>(mesh2->GetEntity())->SetMesh(resourceMesh);
     static_cast<CLMesh*>(mesh3->GetEntity())->SetMesh(resourceMeshBox);
     static_cast<CLMesh*>(mesh4->GetEntity())->SetMesh(resourceMeshTotem);
+    // static_cast<CLMesh*>(mesh7->GetEntity())->SetMesh(resourceMeshCochesito);
+
 
     camera->SetTranslation(glm::vec3(400.127f, 400.42f, 0.9f));
     light1->SetTranslation(glm::vec3(75.9f, 1000.2f, 15.08f));
@@ -148,6 +163,10 @@ int main() {
 
     mesh4->SetScalation(glm::vec3(2.0f, 2.0f, 2.0f));
     mesh4->SetTranslation(glm::vec3(0.0f,0.0f, -10.0f));
+
+    // mesh7->SetScalation(glm::vec3(10.5f, 10.5f, 10.5f));
+    // mesh7->SetRotation(glm::vec3(-90.0f, 0.0f, 0.0f));
+    // mesh7->SetTranslation(glm::vec3(140.0f,100.0f,-50.0f));
 
 
     //LUCES Y COLORES
@@ -174,9 +193,9 @@ int main() {
             light3->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
             static_cast<CLSpotLight*>(light3->GetEntity())->SetLightAttributes(glm::vec3(0.0f,-1.0f,0.0f),glm::cos(glm::radians(12.5f)),glm::cos(glm::radians(20.0f)),glm::vec3(1.0f,1.0f,1.0f),glm::vec3(0.5f,0.5f,0.5f),glm::vec3(0.2f,0.3f,0.42f),glm::vec3(0.1f,0.1,0.1f),1.0f,0.00000002f,0.0000000009f);
             light3->SetTranslation(glm::vec3(mesh1->GetGlobalTranslation().x,1000.0f,mesh1->GetGlobalTranslation().z));
-            // auxCameraPos[0] = 40;
-            // auxCameraPos[1] = 400;
-            // auxCameraPos[2] = 0;
+            //auxCameraPos[0] = 40;
+            //auxCameraPos[1] = 100;
+            //auxCameraPos[2] = -50;
 
             // light1->SetTranslation(glm::vec3(10000.0f,10000.0f,100000.0f));
             auxLightPos[0] = 10000.0f;
@@ -190,26 +209,24 @@ int main() {
 
         
         // Start the Dear ImGui frame
-        // ImGui_ImplOpenGL3_NewFrame();
-        // ImGui_ImplGlfw_NewFrame();
-        // ImGui::NewFrame();
-        // ImGui::Begin("Modifica ilumnacion"); 
-        // ImGui::SliderFloat3("CameraPos",auxCameraPos,-600,600);
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+        ImGui::Begin("Modifica ilumnacion"); 
+        ImGui::SliderFloat3("CameraPos",auxCameraPos,-600,600);
         // ImGui::SliderFloat3("LightPos",auxLightPos,-1000,1000);
         // ImGui::SliderFloat3("LightPos2",auxLightPos2,-1000,1000);
-        // ImGui::End(); 
+        ImGui::End(); 
 
-        //glm::vec3 cameraPos(auxCameraPos[0], auxCameraPos[1], auxCameraPos[2]);
+        glm::vec3 cameraPos(auxCameraPos[0], auxCameraPos[1], auxCameraPos[2]);
         glm::vec3 lightPos(auxLightPos[0], auxLightPos[1], auxLightPos[2]);
         glm::vec3 lightPos2(auxLightPos2[0], auxLightPos2[1], auxLightPos2[2]);
-
-        if(glfwGetKey(device->GetWindow(),GLFW_KEY_L)){
-            camera->SetTranslation(glm::vec3(sin(index/20.0f)*600,camera->GetGlobalTranslation().y,/*cos(index/20.0)*600*/ camera->GetGlobalTranslation().z));
-
-        }else{
-            camera->SetTranslation(glm::vec3(sin(index/20.0f)*600,camera->GetGlobalTranslation().y,cos(index/20.0)*600));
-
-        }
+        camera->SetTranslation(cameraPos);
+        // if(glfwGetKey(device->GetWindow(),GLFW_KEY_L)){
+        //     camera->SetTranslation(glm::vec3(sin(index/20.0f)*600,camera->GetGlobalTranslation().y,/*cos(index/20.0)*600*/ camera->GetGlobalTranslation().z));
+        // }else{
+        //     camera->SetTranslation(glm::vec3(sin(index/20.0f)*600,camera->GetGlobalTranslation().y,cos(index/20.0)*600));
+        // }
         light1->SetTranslation(lightPos);
         light2->SetTranslation(lightPos2); 
         
@@ -252,7 +269,7 @@ int main() {
 
         device->InputClose();
         device->PollEvents();
-        // device->RenderImgui();
+        device->RenderImgui();
         device->EndScene();
         index += 0.2;
 

@@ -7,6 +7,7 @@
 #include "../Frustum/CLFrustum.h"
 #include "../../../src/Constants.h"
 
+
 using namespace CLE;
 
 CLNode::CLNode(){
@@ -120,9 +121,45 @@ CLNode* CLNode::AddCamera(unsigned int id){
     node->SetFather(this);
     cameras.push_back(node.get());
 
-    return node.get();
-    
+    return node.get();   
 }
+
+
+CLNode* CLNode::AddGrass(unsigned int id){
+    shared_ptr<CLEntity> e = make_shared<CLGrass>(id);
+    shared_ptr<CLNode> node = make_shared<CLNode>(e);
+    childs.push_back(node);
+    node->SetFather(this);
+
+    return node.get();   
+}
+
+
+void CLNode::AddGrass(){
+    // SetTranslation
+    if(!grassShader){
+        auto rm = CLResourceManager::GetResourceManager();
+        auto resourceShader = rm->GetResourceShader("CLEngine/src/Shaders/spriteShader.vert", "CLEngine/src/Shaders/spriteShader.frag");
+        grassShader = resourceShader->GetProgramID();
+    }
+    grass = make_unique<CLGrass>();
+}
+
+
+CLNode* CLNode::AddGrass(unsigned int id, const glm::vec3& pos){
+    auto grass = AddGrass(id);
+    grass->SetTranslation(pos);
+
+    return grass;
+}
+CLNode* CLNode::AddGrass(unsigned int id, const glm::vec3& pos, const glm::vec3& rot, const glm::vec3& scale){
+    auto grass = AddGrass(id, pos);
+    grass->SetRotation(rot);
+    grass->SetScalation(scale);
+
+    return grass;
+}
+
 
 void CLNode::AddSkybox(string right, string left, string top, string bottom, string front, string back){
     if(!skyboxShader){
@@ -361,6 +398,19 @@ void CLNode::DFSTree(glm::mat4 mA) {
 }
 
 
+void CLNode::DrawGrass(){
+    if(grass.get()){
+        glUseProgram(grassShader);
+
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(50.0, 80.0, -50.0));
+        glUniformMatrix4fv(glGetUniformLocation(grassShader, "model"), 1, GL_FALSE, glm::value_ptr(model));
+
+        grass->Draw(grassShader);
+    }
+}
+
+
 void CLNode::DFSTree(glm::mat4 mA, GLuint shaderID) {
     if (changed) {
         transformationMat = mA*CalculateTransformationMatrix();
@@ -510,6 +560,11 @@ void CLNode::DrawSkybox(){
         skybox->Draw(skyboxShader);
     }
 }
+
+
+
+
+
 
 //Devuelve el nodo por la id que le mandes
 //Lo hace a partir del padre que lo llame, lo suyo es llamarlo siempre con el nodo principal

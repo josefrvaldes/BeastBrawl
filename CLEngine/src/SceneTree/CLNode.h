@@ -16,6 +16,8 @@
 #include "../ResourceManager/CLResourceMesh.h"
 #include "CLSkybox.h"
 #include "CLShadowMapping.h"
+#include "CLGrass.h"
+
 
 
 #include "../Frustum/CLFrustum.h"
@@ -82,6 +84,12 @@ class CLNode{
         void AddSkybox(string right, string left, string top, string bottom, string front, string back);
         void AddShadowMapping(GLuint lightId);
 
+        CLNode* AddGrass(unsigned int id);
+        void AddGrass();
+        CLNode* AddGrass(unsigned int id, const glm::vec3& pos);
+        CLNode* AddGrass(unsigned int id, const glm::vec3& pos, const glm::vec3& rot, const glm::vec3& scale);
+
+
         bool RemoveChild(CLNode* child);
         bool HasChild(CLNode* child);
         CLNode* GetNodeByID(unsigned int id);
@@ -101,6 +109,7 @@ class CLNode{
         void DFSTree(glm::mat4);
         void DFSTree(glm::mat4 mA, GLuint shaderID);
         void DrawSkybox();
+        void DrawGrass();
         
 
         void SetVisible(bool v) {visible = v;};
@@ -156,6 +165,11 @@ class CLNode{
         inline static unique_ptr<CLShadowMapping> shadowMapping = nullptr;
         GLuint simpleDepthShader = 0;
         CLResourceShader* depthShadder = nullptr;
+
+        inline static unique_ptr<CLGrass> grass = nullptr;
+        inline static GLuint grassShader = 0;
+
+
 
 };
 
