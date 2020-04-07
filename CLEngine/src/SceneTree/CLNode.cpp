@@ -4,6 +4,7 @@
 #include <glm/ext.hpp>
 #include <glm/gtx/string_cast.hpp>
 
+
 #include "../Frustum/CLFrustum.h"
 #include "../../../src/Constants.h"
 
@@ -161,12 +162,31 @@ CLNode* CLNode::AddGrass(unsigned int id, const glm::vec3& pos, const glm::vec3&
 }
 
 
+CLNode* CLNode::AddParticleSystem(unsigned int id){
+    if(particleSystemShader == 0){
+        auto rm = CLResourceManager::GetResourceManager();
+        auto resourceShader = rm->GetResourceShader("CLEngine/src/Shaders/particleSystem.vert", "CLEngine/src/Shaders/particleSystem.frag","CLEngine/src/Shaders/particleSystem.geom");
+        particleSystemShader = resourceShader->GetProgramID();
+    }
+    shared_ptr<CLEntity> e = make_shared<CLParticleSystem>(id,1,glm::vec3(0.0f,10.0f,0.0f));
+    shared_ptr<CLNode> node = make_shared<CLNode>(e);
+    childs.push_back(node);
+    node->SetFather(this);
+    node->SetShaderProgramID(particleSystemShader);
+
+    //Configuraciones especificas de un particlesystem
+    if(auto particleSystem = dynamic_cast<CLParticleSystem*>(e.get())){
+        particleSystem->SetCLNode(node.get());
+    }
+
+    return node.get();
+}
+
 void CLNode::AddSkybox(string right, string left, string top, string bottom, string front, string back){
     if(!skyboxShader){
         auto rm = CLResourceManager::GetResourceManager();
         auto resourceShader = rm->GetResourceShader("CLEngine/src/Shaders/skybox.vert", "CLEngine/src/Shaders/skybox.frag");
         skyboxShader = resourceShader->GetProgramID();
-        cout << skyboxShader << endl;
     }
     skybox = make_unique<CLSkybox>(right, left, top, bottom, front, back);
 }
@@ -181,6 +201,15 @@ void CLNode::AddShadowMapping(GLuint lightId){
     shadowMapping = make_unique<CLShadowMapping>(lightId);
 }
 
+void CLNode::AddBillBoard(string& file, bool vertically, glm::vec3 posBillBoard, float width_, float height_){
+    if(!billboardShader){
+        auto rm = CLResourceManager::GetResourceManager();
+        CLResourceTexture* t = rm->GetResourceTexture(file, vertically);
+        auto resourceShader = rm->GetResourceShader("CLEngine/src/Shaders/billboard.vert", "CLEngine/src/Shaders/billboard.frag", "CLEngine/src/Shaders/billboard.geom");
+        billboardShader = resourceShader->GetProgramID();
+        billBoard = make_unique<CLBillboard>(t, posBillBoard, width_, height_);
+    }
+}
 
 bool CLNode::RemoveChild(CLNode* child){
     /*
@@ -370,10 +399,12 @@ void CLNode::DFSTree(glm::mat4 mA) {
         changed = false;
     }
     auto& frustum_m = GetActiveCamera()->GetFrustum();
+
     //CLE::CLFrustum::Visibility frusVisibility = frustum_m.IsInside(translation);
     CLE::CLFrustum::Visibility frusVisibility = frustum_m.IsInside(translation, dimensionsBoundingBox);
 
-    if(entity && visible && frusVisibility == CLE::CLFrustum::Visibility::Completly) { 
+    //Voy a comentar de momento el frustrum ya que para el particle system puede dar problemas
+    if(entity && visible /*&& frusVisibility == CLE::CLFrustum::Visibility::Completly*/) { 
         glUseProgram(shaderProgramID);
         //Calculamos las luces
         //TODO: Hacer un sistema de que si no hemos cambiado de shader no se recalculen
@@ -561,9 +592,27 @@ void CLNode::DrawSkybox(){
     }
 }
 
+void CLNode::DrawBillBoard(){
 
+    if(billBoard.get()){
 
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+        //glDepthMask(GL_FALSE);
+        glUseProgram(billboardShader);
+
+        glm::mat4 viewProjection = projection*view;
+        glm::vec3 camPos = cameras[0]->translation;
+	    GLuint VPMatrix = glGetUniformLocation(billboardShader, "VPMatrix");
+	    glUniformMatrix4fv(VPMatrix, 1, GL_FALSE, glm::value_ptr(viewProjection));
+
+	    GLuint cameraPosition = glGetUniformLocation(billboardShader, "cameraPosition");
+	    glUniform3fv(cameraPosition, 1, glm::value_ptr(camPos));
+
+        billBoard->Draw(billboardShader);
+    }
+}
 
 
 //Devuelve el nodo por la id que le mandes
@@ -604,6 +653,16 @@ CLCamera* CLNode::GetActiveCamera(){
     return nullptr;
 }
 
+CLNode* CLNode::GetActiveCameraNode(){
+    for(auto camera : cameras){
+        auto entityCamera = static_cast<CLCamera*>(camera->GetEntity());
+        if(entityCamera->IsActive()){
+            return camera;
+        }
+    }
+    return nullptr;
+}
+
 const void CLNode::Draw3DLine(float x1, float y1, float z1, float x2, float y2, float z2) const{
     Draw3DLine(x1,y1,z1,x1,y2,z1,CLColor(255.0,0.0,0.0,255.0));
 }
@@ -637,7 +696,6 @@ const void CLNode::Draw3DLine(float x1, float y1, float z1, float x2, float y2, 
 
     glm::mat4 modelMat = glm::identity<mat4>();
 
-    //99% seguro de que estoy enviando mal las matrices vista y projeccion
     glUseProgram(debugShader);
 
     glm::vec4 clcolor(color.GetRedNormalized(),color.GetGreenNormalized(),color.GetBlueNormalized(),color.GetAlphaNormalized());

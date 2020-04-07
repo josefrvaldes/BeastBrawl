@@ -221,6 +221,7 @@ void CLEngine::DrawObjects(){
     smgr->CalculateViewProjMatrix();
     //smgr->CalculateLights();
     smgr->DFSTree(glm::mat4(1.0f));
+    smgr->DrawBillBoard();
     // smgr->DrawGrass();
 
 }
@@ -333,7 +334,6 @@ void CLEngine::RenderText2D(std::string& text, GLfloat x, GLfloat y, GLfloat dep
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-
 /**
  * Renderiza las cosas de ImGui y cambia el buffer de la ventana. 
  */
@@ -347,6 +347,10 @@ void CLEngine::EndScene(){
  *
  */
 void CLEngine::SetTitle(string &t) {
+    glfwSetWindowTitle(window, t.c_str());
+}
+
+void CLEngine::SetTitle(string &&t) {
     glfwSetWindowTitle(window, t.c_str());
 }
 

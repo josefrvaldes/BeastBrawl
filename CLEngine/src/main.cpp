@@ -1,6 +1,7 @@
 #include <iostream>
 #include <memory>
 #include <map>
+#include <string>
 
 // INCLUDES
 #include <glew/glew.h>
@@ -22,6 +23,7 @@
 #include "SceneTree/CLCamera.h"
 #include "SceneTree/CLNode.h"
 #include "SceneTree/CLMesh.h"
+#include "SceneTree/CLParticleSystem.h"
 #include "ResourceManager/CLResourceManager.h"
 #include "ResourceManager/CLResourceShader.h"
 #include "ResourceManager/CLResourceMesh.h"
@@ -103,12 +105,12 @@ int main() {
         auto mesh2 = smgr->AddMesh(4);
         mesh2->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
 
-        
-        auto mesh3 = smgr->AddMesh(54212);
-        mesh3->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
 
-        auto mesh4 = mesh3->AddMesh(102123);
-        mesh4->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
+
+
+
+        auto ps1   = smgr->AddParticleSystem(123940);
+        
 
         //auto mesh7 = smgr->AddMesh(1456);
         //mesh7->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
@@ -122,6 +124,10 @@ int main() {
         grass->SetTranslation(glm::vec3(140.0f,100.0f,-50.0f));
         grass->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
         // grass->SetShaderProgramID(resourceShaderHud->GetProgramID());
+
+        string fileBillBoard = "media/mrPinguin.png";
+        smgr->AddBillBoard(fileBillBoard, false, glm::vec3(50.0,100.0,0.0), 100.0,50.0);
+
 
         smgr->AddSkybox("media/skybox/right.jpg",
         "media/skybox/left.jpg",
@@ -138,8 +144,6 @@ int main() {
 
     static_cast<CLMesh*>(mesh1->GetEntity())->SetMesh(resourceMeshGround);
     static_cast<CLMesh*>(mesh2->GetEntity())->SetMesh(resourceMesh);
-    static_cast<CLMesh*>(mesh3->GetEntity())->SetMesh(resourceMeshBox);
-    static_cast<CLMesh*>(mesh4->GetEntity())->SetMesh(resourceMeshTotem);
     // static_cast<CLMesh*>(mesh7->GetEntity())->SetMesh(resourceMeshCochesito);
 
 
@@ -155,18 +159,14 @@ int main() {
     mesh2->SetRotation(glm::vec3(-90.0f, 0.0f, 0.0f));
     mesh2->SetTranslation(glm::vec3(50.0f,80.0f,-50.0f));
 
-    mesh3->SetTranslation(glm::vec3(240.0f,200.0f,0.0f));
-    mesh3->SetScalation(glm::vec3(10.0f,10.0f,10.0f));
-    mesh3->SetRotation(glm::vec3(0.0f, 0.0f, 0.0f));
 
-    // light2->SetTranslation(mesh2->GetGlobalTranslation());
+    
 
-    mesh4->SetScalation(glm::vec3(2.0f, 2.0f, 2.0f));
-    mesh4->SetTranslation(glm::vec3(0.0f,0.0f, -10.0f));
-
+    ps1->SetTranslation(mesh2->GetTranslation());
+    ps1->SetScalation(glm::vec3(10.0f,10.0f,10.0f));
     // mesh7->SetScalation(glm::vec3(10.5f, 10.5f, 10.5f));
-    // mesh7->SetRotation(glm::vec3(-90.0f, 0.0f, 0.0f));
     // mesh7->SetTranslation(glm::vec3(140.0f,100.0f,-50.0f));
+    // mesh7->SetRotation(glm::vec3(-90.0f, 0.0f, 0.0f));
 
 
     //LUCES Y COLORES
@@ -181,31 +181,12 @@ int main() {
 
     CLNode* light3 = nullptr;
         
-    bool deleteMesh3 = false;
     while (device->Run()) {
         
         //Apartir de aqui hacemos cosas, de momento en el main para testear
         device->UpdateViewport(); //Por si reescalamos la ventana
         device->BeginScene();
 
-        if(glfwGetKey(device->GetWindow(),GLFW_KEY_SPACE) && light3 == nullptr){
-            light3 = smgr->AddSpotLight(7);
-            light3->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
-            static_cast<CLSpotLight*>(light3->GetEntity())->SetLightAttributes(glm::vec3(0.0f,-1.0f,0.0f),glm::cos(glm::radians(12.5f)),glm::cos(glm::radians(20.0f)),glm::vec3(1.0f,1.0f,1.0f),glm::vec3(0.5f,0.5f,0.5f),glm::vec3(0.2f,0.3f,0.42f),glm::vec3(0.1f,0.1,0.1f),1.0f,0.00000002f,0.0000000009f);
-            light3->SetTranslation(glm::vec3(mesh1->GetGlobalTranslation().x,1000.0f,mesh1->GetGlobalTranslation().z));
-            //auxCameraPos[0] = 40;
-            //auxCameraPos[1] = 100;
-            //auxCameraPos[2] = -50;
-
-            // light1->SetTranslation(glm::vec3(10000.0f,10000.0f,100000.0f));
-            auxLightPos[0] = 10000.0f;
-            auxLightPos[1] = 10000.0f;
-            auxLightPos[2] = 10000.0f;
-
-            auxLightPos2[0] = 10000.0f;
-            auxLightPos2[1] = 10000.0f;
-            auxLightPos2[2] = 10000.0f;
-        }
 
         
         // Start the Dear ImGui frame
@@ -214,29 +195,18 @@ int main() {
         ImGui::NewFrame();
         ImGui::Begin("Modifica ilumnacion"); 
         ImGui::SliderFloat3("CameraPos",auxCameraPos,-600,600);
-        // ImGui::SliderFloat3("LightPos",auxLightPos,-1000,1000);
-        // ImGui::SliderFloat3("LightPos2",auxLightPos2,-1000,1000);
+        ImGui::SliderFloat3("LightPos",auxLightPos,-1000,1000);
+        ImGui::SliderFloat3("LightPos2",auxLightPos2,-1000,1000);
         ImGui::End(); 
 
         glm::vec3 cameraPos(auxCameraPos[0], auxCameraPos[1], auxCameraPos[2]);
         glm::vec3 lightPos(auxLightPos[0], auxLightPos[1], auxLightPos[2]);
         glm::vec3 lightPos2(auxLightPos2[0], auxLightPos2[1], auxLightPos2[2]);
+
         camera->SetTranslation(cameraPos);
-        // if(glfwGetKey(device->GetWindow(),GLFW_KEY_L)){
-        //     camera->SetTranslation(glm::vec3(sin(index/20.0f)*600,camera->GetGlobalTranslation().y,/*cos(index/20.0)*600*/ camera->GetGlobalTranslation().z));
-        // }else{
-        //     camera->SetTranslation(glm::vec3(sin(index/20.0f)*600,camera->GetGlobalTranslation().y,cos(index/20.0)*600));
-        // }
         light1->SetTranslation(lightPos);
         light2->SetTranslation(lightPos2); 
         
-        if(!deleteMesh3){
-            mesh3->SetRotation(glm::vec3(0.0f,0.0f,index));
-            mesh4->SetTranslation(glm::vec3(sin(index/10.0)*10,mesh4->GetTranslation().y,cos(index/10.0)*10));
-
-        }
-        // auto trans1 = mesh1->GetTranslation();
-        // mesh1->SetTranslation(glm::vec3(trans1.x+index,trans1.y,trans1.z));
         static_cast<CLCamera*>(camera->GetEntity())->SetCameraTarget(mesh2->GetGlobalTranslation());
 
 
@@ -248,6 +218,7 @@ int main() {
         {
             // Display the frame count here any way you want.
             cout << frameCount << endl;
+            device->SetTitle("BeastBrawl <"+to_string(frameCount) + ">");
 
             frameCount = 0;
             previousTime = currentTime;
@@ -259,6 +230,7 @@ int main() {
 
         string file = "media/logo_clover.png";
         device->DrawImage2D(10.0f,10.0f,200.0f,200.0f, 0.2f, file, true);
+
 
 
             //TEXTO -----------------
