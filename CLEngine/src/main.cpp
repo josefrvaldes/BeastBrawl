@@ -145,7 +145,7 @@ int main() {
 
     
 
-    ps1->SetTranslation(mesh2->GetTranslation());
+    ps1->SetTranslation(glm::vec3(mesh2->GetTranslation().x,mesh2->GetTranslation().y+80,mesh2->GetTranslation().z));
     ps1->SetScalation(glm::vec3(10.0f,10.0f,10.0f));
     //LUCES Y COLORES
     float auxCameraPos[3] = {camera->GetTranslation().x, camera->GetTranslation().y, camera->GetTranslation().z};
@@ -195,7 +195,6 @@ int main() {
         if ( currentTime - previousTime >= 1.0 )
         {
             // Display the frame count here any way you want.
-            cout << frameCount << endl;
             device->SetTitle("BeastBrawl <"+to_string(frameCount) + ">");
 
             frameCount = 0;

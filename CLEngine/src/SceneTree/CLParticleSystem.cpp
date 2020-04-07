@@ -3,7 +3,7 @@
 using namespace CLE;
 
 
-CLParticleSystem::CLParticleSystem(unsigned int idEntity, ulong particlesNumber, glm::vec3 _speedDirection,string texture,uint16_t _width, uint16_t _height,float _spawnDelay,uint16_t _nParticlesToSpawn) : CLEntity(idEntity){
+CLParticleSystem::CLParticleSystem(unsigned int idEntity, ulong particlesNumber, glm::vec3 _speedDirection,string texture,uint16_t _width, uint16_t _height,float _spawnDelay,uint16_t _nParticlesToSpawn,float _lifeSpan) : CLEntity(idEntity){
     nParticles        = particlesNumber;
     speedDirection    = _speedDirection;
     clTexture         = CLResourceManager::GetResourceManager()->GetResourceTexture(texture,false);
@@ -11,6 +11,7 @@ CLParticleSystem::CLParticleSystem(unsigned int idEntity, ulong particlesNumber,
     height            = _height;
     spawnDelay        = _spawnDelay;
     nParticlesToSpawn = _nParticlesToSpawn;
+    lifeSpan          = _lifeSpan;
 
     particles.reserve(nParticles);
 
@@ -43,7 +44,6 @@ void CLParticleSystem::Update(){
     auto diff = duration_cast<milliseconds>(system_clock::now() - timeStart).count();
 
     if(diff > spawnDelay){
-        cout << "Numero de particulas: " << particles.size() << endl;
         timeStart = system_clock::now();
 
         for(uint16_t i = 0; i<nParticlesToSpawn && particles.size()+nParticlesToSpawn<=nParticles ; ++i){
@@ -62,6 +62,7 @@ void CLParticleSystem::SetCLNode(CLNode* clnode){
 CLParticleSystem::CLParticle::CLParticle(CLParticleSystem* emitter){
     particleSystem = emitter;   
     position       = particleSystem->GetCLNode()->GetGlobalTranslation();
+    lifeSpan       = particleSystem->GetLifeSpan();
 
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
@@ -71,7 +72,6 @@ CLParticleSystem::CLParticle::CLParticle(CLParticleSystem* emitter){
 void CLParticleSystem::CLParticle::Draw(GLuint shaderID){
     Update();
     
-
     glUniform1f(glGetUniformLocation(shaderID, "width"), particleSystem->GetWidth());
     glUniform1f(glGetUniformLocation(shaderID, "height"), particleSystem->GetHeight());
     
@@ -89,5 +89,16 @@ void CLParticleSystem::CLParticle::Draw(GLuint shaderID){
 }
 
 void CLParticleSystem::CLParticle::Update(){
-
+    //Comprobamos si deberia seguir con vida la particula
+    auto diff = duration_cast<milliseconds>(system_clock::now() - timeStart).count();
+    if(diff >= lifeSpan){
+        //la respawneamos en la posicion inicial
+        position = particleSystem->GetCLNode()->GetGlobalTranslation();
+        timeStart = system_clock::now();
+    }else{
+        //la movemos
+        position.x += particleSystem->GetSpeedDirection().x * Constants::DELTA_TIME;
+        position.y += particleSystem->GetSpeedDirection().y * Constants::DELTA_TIME;
+        position.z += particleSystem->GetSpeedDirection().z * Constants::DELTA_TIME;
+    }
 }

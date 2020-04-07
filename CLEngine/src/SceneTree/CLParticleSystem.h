@@ -22,7 +22,7 @@ class CLNode;
         public:
             //CLParticleSystem() = default;
             //CLParticleSystem(unsigned int idEntity) : CLEntity(idEntity) {};
-            CLParticleSystem(unsigned int idEntity, ulong _nParticles, glm::vec3 _speedDirection,string texture,uint16_t _width, uint16_t _height,float _spawnDelay,uint16_t _nParticlesToSpawn);
+            CLParticleSystem(unsigned int idEntity, ulong _nParticles, glm::vec3 _speedDirection,string texture,uint16_t _width, uint16_t _height,float _spawnDelay,uint16_t _nParticlesToSpawn,float _lifeSpan);
 
             ~CLParticleSystem() = default;
 
@@ -44,6 +44,7 @@ class CLNode;
             uint16_t           GetHeight()            const { return height; }
             float              GetSpawnDelay()        const { return spawnDelay; }
             uint16_t           GetNParticlesToSpawn() const { return nParticlesToSpawn; }
+            float              GetLifeSpan()          const { return lifeSpan; }
 
 
 
@@ -60,6 +61,7 @@ class CLNode;
             time_point<system_clock> timeStart;
             float spawnDelay = 1000; //Tiempo en ms
             uint16_t nParticlesToSpawn = 1; //Particulas a spawnear a la vez
+            float lifeSpan = 1000; //Tiempo de vida de las particulas
 
 
             class CLParticle{
@@ -77,6 +79,8 @@ class CLNode;
                     GLuint VBO,VAO;
                     CLParticleSystem* particleSystem {nullptr};
                     glm::vec3 position;
+                    float lifeSpan = 1000;
+                    time_point<system_clock> timeStart;
 
 
             };
