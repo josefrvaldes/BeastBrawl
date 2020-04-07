@@ -12,10 +12,62 @@ CLParticleSystem::CLParticleSystem(unsigned int idEntity, ulong particlesNumber,
     spawnDelay        = _spawnDelay;
     nParticlesToSpawn = _nParticlesToSpawn;
     lifeSpan          = _lifeSpan;
+    spawnType         = SpawnType::Point;
 
     particles.reserve(nParticles);
 
 }
+
+//Line, Square y Cube, depende del valor de _offset
+CLParticleSystem::CLParticleSystem(unsigned int idEntity, ulong _nParticles, glm::vec3 _speedDirection,string texture,uint16_t _width, uint16_t _height,float _spawnDelay,uint16_t _nParticlesToSpawn,float _lifeSpan,glm::vec3 _offset) 
+: CLParticleSystem(idEntity,_nParticles,_speedDirection,texture,_width,_height,_spawnDelay,_nParticlesToSpawn,_lifeSpan){
+
+    offset = _offset;
+    if((offset.x != 0 && !offset.y && !offset.z) || (!offset.x && offset.y != 0 && !offset.z) || (!offset.x && !offset.y && offset.z != 0)){
+
+        //Si solo tiene 1 valor es linea
+        spawnType = SpawnType::Line;
+        cout << "Soy una linea\n";
+
+    }else if((offset.x != 0 && offset.y != 0 && !offset.z) || (offset.x != 0 && !offset.y && offset.z != 0) || (!offset.x && offset.y != 0 && offset.z != 0)){
+
+        //Si tiene 2 valores es Cuadrado
+        spawnType = SpawnType::Square;
+        cout << "Soy un cuadrado\n";
+    }else if( offset.x != 0 && offset.y != 0 && offset.z != 0){
+
+        //Si tiene 3 valores es Cubo
+        spawnType = SpawnType::Cube;
+        cout << "Soy un cubo\n";
+    }else{
+        spawnType = SpawnType::Point;
+        cout << "Soy un punto\n";
+
+    }
+}
+
+//Circle
+CLParticleSystem::CLParticleSystem(unsigned int idEntity, ulong _nParticles, glm::vec3 _speedDirection,string texture,uint16_t _width, uint16_t _height,float _spawnDelay,uint16_t _nParticlesToSpawn,float _lifeSpan,float _radious, glm::vec3 _orientation)
+: CLParticleSystem(idEntity,_nParticles,_speedDirection,texture,_width,_height,_spawnDelay,_nParticlesToSpawn,_lifeSpan){
+
+    spawnType = SpawnType::Circle;
+    radious = _radious;
+    orientation = _orientation;
+    cout << "Soy un circulo\n";
+
+}
+
+//Sphere
+CLParticleSystem::CLParticleSystem(unsigned int idEntity, ulong _nParticles, glm::vec3 _speedDirection,string texture,uint16_t _width, uint16_t _height,float _spawnDelay,uint16_t _nParticlesToSpawn,float _lifeSpan,float _radious)
+: CLParticleSystem(idEntity,_nParticles,_speedDirection,texture,_width,_height,_spawnDelay,_nParticlesToSpawn,_lifeSpan){
+
+    spawnType = SpawnType::Sphere;
+    radious = _radious;
+    cout << "Soy una esfera\n";
+
+}
+
+
 
 void CLParticleSystem::Draw(GLuint shaderID) {
     //En este Draw que llama al resto de draws podriamos settear cosas generales para todos las particulas
@@ -52,9 +104,6 @@ void CLParticleSystem::Update(){
     }
 }
 
-void CLParticleSystem::SetCLNode(CLNode* clnode){
-    node = clnode;
-}
 // -----------------------------------------
 // ------------Clase CLParticle-------------
 // -----------------------------------------

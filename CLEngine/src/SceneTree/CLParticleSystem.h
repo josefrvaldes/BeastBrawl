@@ -14,15 +14,31 @@
 using namespace std;
 using namespace std::chrono;
 using namespace std::chrono_literals;
+
+enum SpawnType{
+   Point,
+   Line,
+   Square,
+   Cube,
+   Circle,
+   Sphere
+    
+};
+
 namespace CLE {
 class CLNode;
 
     class CLParticleSystem : public CLEntity {
 
         public:
-            //CLParticleSystem() = default;
-            //CLParticleSystem(unsigned int idEntity) : CLEntity(idEntity) {};
+            //Point
             CLParticleSystem(unsigned int idEntity, ulong _nParticles, glm::vec3 _speedDirection,string texture,uint16_t _width, uint16_t _height,float _spawnDelay,uint16_t _nParticlesToSpawn,float _lifeSpan);
+            //Line, Square y Cube, depende del valor de _offset
+            CLParticleSystem(unsigned int idEntity, ulong _nParticles, glm::vec3 _speedDirection,string texture,uint16_t _width, uint16_t _height,float _spawnDelay,uint16_t _nParticlesToSpawn,float _lifeSpan,glm::vec3 _offset);
+            //Circle
+            CLParticleSystem(unsigned int idEntity, ulong _nParticles, glm::vec3 _speedDirection,string texture,uint16_t _width, uint16_t _height,float _spawnDelay,uint16_t _nParticlesToSpawn,float _lifeSpan,float _radious, glm::vec3 _orientation);
+            //Sphere
+            CLParticleSystem(unsigned int idEntity, ulong _nParticles, glm::vec3 _speedDirection,string texture,uint16_t _width, uint16_t _height,float _spawnDelay,uint16_t _nParticlesToSpawn,float _lifeSpan,float _radious);
 
             ~CLParticleSystem() = default;
 
@@ -31,8 +47,8 @@ class CLNode;
             void Update();
 
             //SETTERS
-            void SetCLNode(CLNode* clnode);
-            void SetPosition(glm::vec3 position);
+            void SetCLNode(CLNode* clnode) {node = clnode;}
+            void SetLoop(bool _loop) {loop = _loop;}
 
             //GETTERS
             CLNode*            GetCLNode()            const { return node; }
@@ -45,6 +61,11 @@ class CLNode;
             float              GetSpawnDelay()        const { return spawnDelay; }
             uint16_t           GetNParticlesToSpawn() const { return nParticlesToSpawn; }
             float              GetLifeSpan()          const { return lifeSpan; }
+            bool               GetLoop()              const { return loop; }
+            SpawnType          GetSpawnType()         const { return spawnType; }
+            float              GetRadious()           const { return radious; }
+            glm::vec3          GetOrientation()       const { return orientation; }
+            glm::vec3          GetOffset()            const { return offset; }
 
 
 
@@ -62,6 +83,11 @@ class CLNode;
             float spawnDelay = 1000; //Tiempo en ms
             uint16_t nParticlesToSpawn = 1; //Particulas a spawnear a la vez
             float lifeSpan = 1000; //Tiempo de vida de las particulas
+            bool loop = true;
+            SpawnType spawnType = SpawnType::Point;
+            float radious = 0; //Usado en SpawnType::Circle y SpawnType::Sphere
+            glm::vec3 orientation; //Usado en SpawnType::Circle
+            glm::vec3 offset; //Usado en SpawnType::Line, SpawnType::Square y  SpawnType::Cube
 
 
             class CLParticle{

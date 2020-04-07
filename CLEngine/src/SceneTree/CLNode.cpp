@@ -133,7 +133,8 @@ CLNode* CLNode::AddParticleSystem(unsigned int id){
     }
 
     //Lo paso de momento todo a pillon, luego pongo pasar los valores por el metodo
-    shared_ptr<CLEntity> e = make_shared<CLParticleSystem>(id,100,glm::vec3(0.0f,90.0f,0.0f),"media/particle_test.png",10,10,500,1,20000);
+    shared_ptr<CLEntity> e = make_shared<CLParticleSystem>(id,100,glm::vec3(0.0f,90.0f,0.0f),"media/particle_test.png",10,10,500,1,20000,glm::vec3(10.0f,0.0f,0.0f));
+
     shared_ptr<CLNode> node = make_shared<CLNode>(e);
     childs.push_back(node);
     node->SetFather(this);
