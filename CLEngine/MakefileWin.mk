@@ -12,9 +12,9 @@ else
 	CXXFLAGS += -O3
 endif
 
-LIBS 	    	+= -L./lib/windows/glfw -lglfw3 -lopengl32 -lX11 -lpthread -lXrandr -lXi -ldl -Wl,-rpath=./lib/windows/glfw
+LIBS 	    	+= -L./lib/windows/glfw -lglfw3 -lglfw3dll -lopengl32 -lpthread -Wl,-rpath=./lib/windows/glfw
 LIBS 	    	+= -L./lib/windows/glew -lglew32 -Wl,-rpath=lib/windows/glew
-LIBS 	    	+= -L./lib/windows/assimp -lassimp -Wl,-rpath=lib/windows/assimp
+LIBS 	    	+= -L./lib/windows/assimp -lassimp -lIrrXML -Wl,-rpath=lib/windows/assimp
 LIBS			+= -L./lib/windows/freeType2 -lfreetype -Wl,-rpath=lib/windows/freeType2
 INCLUDE     	:= -I./include -I../include -I./include/freeType2
 CC			:= x86_64-w64-mingw32-g++

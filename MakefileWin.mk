@@ -13,10 +13,9 @@ JUMP_LINE		   := @echo
 SOURCES  	:= $(wildcard *.cpp)
 
 NAME_EXE	:= Beast_Brawl
-CXXFLAGS 	+= -Wall -Wno-unknown-pragmas -std=c++17 -pthread # el no-unknown-pragmas es para que no salga el warning de los pragma region
-																					# -pthread es para la librería asio
-																					# -ltbb es para la librería tbb
-																					# -fuse-ld=gold es para ccache # el no-unknown-pragmas es para que no salga el warning de los pragma region
+CXXFLAGS 	+= -Wall -Wno-unknown-pragmas -static-libstdc++ -std=gnu++1z -static-libgcc -static -pthread # el no-unknown-pragmas es para que no salga el warning de los pragma region
+																										 # el -fuse-ld=gold es para el ccache
+																										 # si pongo -std=c++17 falla M_PI, poniendo -std=gnu++17 funciona bien en windows
 
 # Objs del juego
 
@@ -50,10 +49,10 @@ endif
 
 
 #LIBS		:= -L/usr/lib32 -lX11
-LIBS 	    += -L./lib/windows/glew -lGLEW -lGL -Wl,-rpath=lib/windows/glew
+LIBS 	    += -L./lib/windows/glew -lglew32 -Wl,-rpath=lib/windows/glew
 LIBS 	    += -L./lib/linux/irrlicht -lIrrlicht -Wl,-rpath=lib/linux/irrlicht
 LIBS 	    += -L./lib/linux/fmod -lfmod -lfmodstudio -Wl,-rpath=lib/linux/fmod
-LIBS 	    += -L./lib/windows/glfw -lglfw3 -lGL -lX11 -lpthread -lXrandr -lXi -ldl -Wl,-rpath=lib/windows/glfw
+LIBS 	    += -L./lib/windows/glfw -lglfw3 -lopengl32 -lX11 -lpthread -lXrandr -lXi -ldl -Wl,-rpath=./lib/windows/glfw
 LIBS 	    += -L./lib/linux/assimp -lassimp -Wl,-rpath=lib/linux/assimp
 LIBS		+= -L./lib/linux/freeType2 -lfreetype -Wl,-rpath=lib/linux/freeType2
 
