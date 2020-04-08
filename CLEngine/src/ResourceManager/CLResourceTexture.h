@@ -18,10 +18,14 @@ namespace CLE {
             bool LoadFile(string, bool) override;
             
             unsigned int GetTextureID() { return textureID; };
+            int GetWidth(){ return widthText; };
+            int GetHeight(){ return heightText; };
 
-        private:
+         private:
             unsigned int textureID;
             string type;
+            int widthText = 0;
+            int heightText = 0;
     };
 
 }

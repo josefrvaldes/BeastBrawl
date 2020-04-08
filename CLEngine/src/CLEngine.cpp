@@ -221,8 +221,10 @@ void CLEngine::DrawObjects(){
     smgr->CalculateViewProjMatrix();
     //smgr->CalculateLights();
     smgr->DFSTree(glm::mat4(1.0f));
+    smgr->DrawGrass();
     smgr->DrawBillBoard();
-    // smgr->DrawGrass();
+    //smgr->DrawGrass(glm::vec3(0.0f,60.0f,0.0f));
+    //smgr->DrawGrass(glm::vec3(0.0f,120.0f,0.0f));
 
 }
 

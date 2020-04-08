@@ -12,6 +12,9 @@ bool CLResourceTexture::LoadFile(string file, bool vertically){
         stbi_set_flip_vertically_on_load(true);
     }
     unsigned char *data = stbi_load(file.c_str(), &width, &height, &nrComponents, 0);
+    widthText = width;
+    heightText = height;
+    
     if (data)
     {
         GLenum format;

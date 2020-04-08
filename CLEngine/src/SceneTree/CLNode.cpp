@@ -11,7 +11,7 @@
 
 using namespace CLE;
 
-CLNode::CLNode(){
+CLNode::CLNode(){ 
     translation = glm::vec3(0.0f, 0.0f, 0.0f);
     rotation = glm::vec3(0.0f, 0.0f, 0.0f);
     scalation = glm::vec3(1.0f, 1.0f, 1.0f);
@@ -140,10 +140,10 @@ void CLNode::AddGrass(){
     // SetTranslation
     if(!grassShader){
         auto rm = CLResourceManager::GetResourceManager();
-        auto resourceShader = rm->GetResourceShader("CLEngine/src/Shaders/spriteShader.vert", "CLEngine/src/Shaders/spriteShader.frag");
+        auto resourceShader = rm->GetResourceShader("CLEngine/src/Shaders/grassShader.vert", "CLEngine/src/Shaders/grassShader.frag");
         grassShader = resourceShader->GetProgramID();
     }
-    grass = make_unique<CLGrass>();
+    manGrass = make_unique<CLGrassManager>(300.0, 150.0, glm::vec3(100.0f,55.0f,-50.0f), glm::vec3(20.0,20.0,20.0));
 }
 
 
@@ -430,14 +430,8 @@ void CLNode::DFSTree(glm::mat4 mA) {
 
 
 void CLNode::DrawGrass(){
-    if(grass.get()){
-        glUseProgram(grassShader);
-
-        glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(50.0, 80.0, -50.0));
-        glUniformMatrix4fv(glGetUniformLocation(grassShader, "model"), 1, GL_FALSE, glm::value_ptr(model));
-
-        grass->Draw(grassShader);
+    if(manGrass.get()){
+        manGrass->Draw(grassShader, projection, view);
     }
 }
 

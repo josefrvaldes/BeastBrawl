@@ -22,7 +22,7 @@
 
 #include "../Frustum/CLFrustum.h"
 #include "../ResourceManager/CLResourceManager.h"
-#include "../ResourceManager/CLResourceShader.h"
+#include "../ResourceManager/CLGrassManager.h"
 
 #include "../Built-In-Classes/CLColor.h"
 
@@ -180,6 +180,11 @@ class CLNode{
 
         inline static unique_ptr<CLGrass> grass = nullptr;
         inline static GLuint grassShader = 0;
+
+        unique_ptr<CLGrassManager> manGrass = nullptr;
+
+
+
 
 
 
