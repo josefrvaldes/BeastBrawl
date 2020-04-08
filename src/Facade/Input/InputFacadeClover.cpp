@@ -150,16 +150,7 @@ void InputFacadeClover::CheckInputMenu(int& input, int maxInput){
 
         switch (input) {
             case 0: {
-                RenderFacadeManager::GetInstance()->GetRenderFacade()->SetNumEnemyCars(0);
-
-                //Manera un poco cutre de resetear el CId al empezar el juego
-                auto cId = make_shared<CId>();
-                cId->ResetNumIds();
-                auto cNavMesh = make_shared<CNavMesh>();
-                cNavMesh->ResetNumIds();
-
-                EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_INGAMESINGLE});
-                //EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_SELECT_CHARACTER});
+                EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_SELECT_CHARACTER});
                 break;
             }
             case 1: {
@@ -201,38 +192,71 @@ void InputFacadeClover::CheckInputSelectCharacter(int &input, int maxInput) {
         SetValueInput(BUTTON_B, false);
     }
 
-    //SUBIR
-    if ((glfwGetKey(device->GetWindow(), GLFW_KEY_UP ) || state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_UP])
+    //IZQUIERDA Y DERECHA
+    if ((glfwGetKey(device->GetWindow(), GLFW_KEY_RIGHT ) || state.buttons[GLFW_GAMEPAD_BUTTON_RIGHT_THUMB]
+            || glfwGetKey(device->GetWindow(), GLFW_KEY_LEFT ) || state.buttons[GLFW_GAMEPAD_BUTTON_LEFT_THUMB])
         && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay) {
 
         timeStart = system_clock::now();
-        input--;
-        if(input < 0) {
-            input = maxInput;
+        if (input%2 == 0) {
+            ++input;
+        } else {
+            --input;
         }
     }
 
     //BAJAR
-    if ((glfwGetKey(device->GetWindow(), GLFW_KEY_DOWN ) || state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_DOWN])
-        && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay ) {
-
-        timeStart = system_clock::now();
-        input++;
-        if(input > maxInput) {
-            input = 0;
-        }
-    }
-
-    //DERECHA
-    if((glfwGetKey(device->GetWindow(), GLFW_KEY_RIGHT) || state.buttons[GLFW_GAMEPAD_BUTTON_RIGHT_THUMB])
+    if((glfwGetKey(device->GetWindow(), GLFW_KEY_DOWN) || state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_DOWN])
             && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay ) {
 
         timeStart = system_clock::now();
         input += 2;
         if(input > maxInput) {
-            input = maxInput;
+            if (input%2 == 0) {
+                input = 0;
+            } else {
+                input = 1;
+            }
         }
     }
+
+    //SUBIR
+    if((glfwGetKey(device->GetWindow(), GLFW_KEY_UP) || state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_UP])
+       && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay ) {
+
+        timeStart = system_clock::now();
+        input -= 2;
+        if(input < 0) {
+            if (input%2 == 0) {
+                input = maxInput-1;
+            } else {
+                input = maxInput;
+            }
+        }
+    }
+
+
+    //ACEPTAR - ESPACIO
+    if ((glfwGetKey(device->GetWindow(), GLFW_KEY_SPACE) || state.buttons[GLFW_GAMEPAD_BUTTON_A])
+        && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay
+        && !IsInputPressed(BUTTON_A)) {
+
+        timeStart = system_clock::now();
+        SetValueInput(BUTTON_A, true);
+
+        RenderFacadeManager::GetInstance()->GetRenderFacade()->SetNumEnemyCars(0);
+
+        //Manera un poco cutre de resetear el CId al empezar el juego
+        auto cId = make_shared<CId>();
+        cId->ResetNumIds();
+        auto cNavMesh = make_shared<CNavMesh>();
+        cNavMesh->ResetNumIds();
+        EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_INGAMESINGLE});
+
+    } else if (!(glfwGetKey(device->GetWindow(), GLFW_KEY_SPACE) || state.buttons[GLFW_GAMEPAD_BUTTON_A]) ) {
+        SetValueInput(BUTTON_A, false);
+    }
+
 }
 
 void InputFacadeClover::CheckInputSingle(){

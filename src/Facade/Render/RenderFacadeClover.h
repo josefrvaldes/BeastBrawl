@@ -114,8 +114,8 @@ class RenderFacadeClover : public RenderFacade {
         int maxInputMenu { 3 };
         int inputPause { 0 };
         int maxInputPause { 1 };
-        int inputSC { 1 };
-        int maxInputSC { 7 };
+        int inputSC { 0 };
+        int maxInputSC { 5 };
 
         CLEngine* device;
         CLNode* smgr;

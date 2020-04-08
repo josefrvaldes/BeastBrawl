@@ -662,9 +662,7 @@ void RenderFacadeClover::FacadeDrawMenu() {
  *
  */
  void RenderFacadeClover::FacadeDrawSelectCharacter() {
-    glm::vec3 color[8] = {
-            glm::vec3(0.0f, 0.0f, 255.0f),
-            glm::vec3(0.0f, 0.0f, 255.0f),
+    glm::vec3 color[6] = {
             glm::vec3(0.0f, 0.0f, 255.0f),
             glm::vec3(0.0f, 0.0f, 255.0f),
             glm::vec3(0.0f, 0.0f, 255.0f),
@@ -672,23 +670,24 @@ void RenderFacadeClover::FacadeDrawMenu() {
             glm::vec3(0.0f, 0.0f, 255.0f),
             glm::vec3(0.0f, 0.0f, 255.0f)
     };
+    glm::vec3 colorB = glm::vec3(255.0f, 0.0f, 0.0f);
     color[inputSC] = glm::vec3(0.0f, 255.0f, 0.0f);
-    std::string name = "Atras";
-    device->RenderText2D(name, 50.0f, 50.0f, 0.05f, 0.5f, color[0]);
+    std::string name = "<- (B)";
+    device->RenderText2D(name, 50.0f, 50.0f, 0.05f, 0.5f, colorB);
     name = "Mr Penguin";
-    device->RenderText2D(name, 100.0f, 350.0f, 0.05f, 0.75f, color[1]);
+    device->RenderText2D(name, 600.0f, 550.0f, 0.05f, 0.75f, color[0]);
     name = "Captain Sharky";
-    device->RenderText2D(name, 500.0f, 350.0f, 0.05f, 0.75f, color[3]);
+    device->RenderText2D(name, 600.0f, 425.0f, 0.05f, 0.75f, color[2]);
     name = "Kaiser Kong";
-    device->RenderText2D(name, 900.0f, 350.0f, 0.05f, 0.75f, color[5]);
+    device->RenderText2D(name, 600.0f, 300.0f, 0.05f, 0.75f, color[4]);
     name = "Deacon Dragon";
-    device->RenderText2D(name, 100.0f, 250.0f, 0.05f, 0.75f, color[2]);
+    device->RenderText2D(name, 900.0f, 550.0f, 0.05f, 0.75f, color[1]);
     name = "Mrs Baxter";
-    device->RenderText2D(name, 500.0f, 250.0f, 0.05f, 0.75f, color[4]);
+    device->RenderText2D(name, 900.0f, 425.0f, 0.05f, 0.75f, color[3]);
     name = "Cyberoctopus";
-    device->RenderText2D(name, 900.0f, 250.0f, 0.05f, 0.75f, color[6]);
-    name = "Aceptar";
-    device->RenderText2D(name, 950.0f, 50.0f, 0.05f, 0.5f, color[7]);
+    device->RenderText2D(name, 900.0f, 300.0f, 0.05f, 0.75f, color[5]);
+    name = "(A) Aceptar";
+    device->RenderText2D(name, 950.0f, 50.0f, 0.05f, 0.5f, colorB);
  }
 
 void RenderFacadeClover::FacadeInitResources(){
