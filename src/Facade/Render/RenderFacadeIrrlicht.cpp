@@ -106,6 +106,10 @@ void RenderFacadeIrrlicht::FacadeInitSelectCharacter() {
 
 }
 
+void RenderFacadeIrrlicht::FacadeInitGameOptions() {
+
+}
+
 void RenderFacadeIrrlicht::FacadeInitMenu() {
     menuBG = driver->getTexture("media/main_menu.png");
     driver->makeColorKeyTexture(menuBG, core::position2d<s32>(0, 0));
@@ -114,6 +118,10 @@ void RenderFacadeIrrlicht::FacadeInitMenu() {
 void RenderFacadeIrrlicht::FacadeInitControler() {
     controlerBG = driver->getTexture("media/controller_scheme.png");
     driver->makeColorKeyTexture(controlerBG, core::position2d<s32>(0, 0));
+}
+
+void RenderFacadeIrrlicht::FacadeInitCredits() {
+
 }
 
 void RenderFacadeIrrlicht::FacadeInitPause() {
@@ -837,6 +845,10 @@ void RenderFacadeIrrlicht::FacadeCheckInputSelectCharacter() {
 
 }
 
+void RenderFacadeIrrlicht::FacadeCheckInputGameOptions() {
+
+}
+
 void RenderFacadeIrrlicht::FacadeCheckInputMenu() {
     //Cambiamos a ingame
     if ((receiver.IsKeyDown(KEY_SPACE) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_A)) && !IsInputPressed(InputXBox::BUTTON_A)){
@@ -890,6 +902,9 @@ void RenderFacadeIrrlicht::FacadeCheckInputControler() {
     }
 }
 
+void RenderFacadeIrrlicht::FacadeCheckInputCredits() {
+
+}
 
 void RenderFacadeIrrlicht::FacadeCheckInputPause() {
     //Cambiamos a ingame
@@ -1007,6 +1022,10 @@ void RenderFacadeIrrlicht::FacadeDrawSelectCharacter() {
 
 }
 
+void RenderFacadeIrrlicht::FacadeDrawGameOptions() {
+
+}
+
 void RenderFacadeIrrlicht::FacadeDrawMenu() {
     driver->beginScene(true, true, video::SColor(255, 113, 113, 133));
     //smgr->drawAll();  // draw the 3d scene
@@ -1027,6 +1046,10 @@ void RenderFacadeIrrlicht::FacadeDrawControler() {
                         core::rect<s32>(0, 0, 1280, 720), 0,
                         video::SColor(255, 255, 255, 255), false);
     driver->endScene();
+}
+
+void RenderFacadeIrrlicht::FacadeDrawCredits() {
+
 }
 
 void RenderFacadeIrrlicht::FacadeDrawPause() {

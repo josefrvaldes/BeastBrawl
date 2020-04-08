@@ -1,20 +1,18 @@
-#include "StateControls.h"
+#include "StateCredits.h"
 #include <iostream>
 
-using namespace std;
+StateCredits::StateCredits(){
 
-StateControls::StateControls(){
-
-    std::cout << "> CRONTROLS constructor" << std::endl;
+    std::cout << "> CREDITS constructor" << std::endl;
 
     renderEngine = RenderFacadeManager::GetInstance()->GetRenderFacade();
-    renderEngine->FacadeInitControler();
+    renderEngine->FacadeInitCredits();
 
 }
 
 // Cargamos los bancos de sonido Menu.
-void StateControls::InitState() {
-    
+void StateCredits::InitState() {
+
     /*cout << "~~~ ENTRO A MENU" << endl;
     if (!soundEngine){
         soundEngine = SoundFacadeManager::GetInstance()->GetSoundFacade();
@@ -27,18 +25,18 @@ void StateControls::InitState() {
 }
 
 
-void StateControls::Render(){
+void StateCredits::Render(){
     renderEngine->FacadeBeginScene();
-    renderEngine->FacadeDrawControler();
+    renderEngine->FacadeDrawCredits();
     renderEngine->FacadeEndScene();
 }
 
 
-void StateControls::Input(){
-    renderEngine->FacadeCheckInputControler();
+void StateCredits::Input(){
+    renderEngine->FacadeCheckInputCredits();
 }
 
 
-void StateControls::Update(){
+void StateCredits::Update(){
     EventManager::GetInstance().Update();
 }

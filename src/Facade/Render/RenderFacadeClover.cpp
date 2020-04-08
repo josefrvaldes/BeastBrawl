@@ -123,8 +123,16 @@ void RenderFacadeClover::FacadeInitSelectCharacter() {
 
 }
 
+void RenderFacadeClover::FacadeInitGameOptions() {
+
+}
+
 void RenderFacadeClover::FacadeInitControler() {
     
+}
+
+void RenderFacadeClover::FacadeInitCredits() {
+
 }
 
 /**
@@ -566,8 +574,16 @@ void RenderFacadeClover::FacadeCheckInputSelectCharacter() {
     InputFacadeManager::GetInstance()->GetInputFacade()->CheckInputSelectCharacter(inputSC, maxInputSC);
 }
 
+void RenderFacadeClover::FacadeCheckInputGameOptions() {
+    InputFacadeManager::GetInstance()->GetInputFacade()->CheckInputGameOptions(inputGO, maxInputGO, option);
+}
+
 void RenderFacadeClover::FacadeCheckInputControler() {
     InputFacadeManager::GetInstance()->GetInputFacade()->CheckInputController();
+}
+
+void RenderFacadeClover::FacadeCheckInputCredits() {
+    InputFacadeManager::GetInstance()->GetInputFacade()->CheckInputCredits();
 }
 
 void RenderFacadeClover::FacadeCheckInputPause() {
@@ -640,7 +656,8 @@ void RenderFacadeClover::FacadeDrawMenu() {
 
     std::string text;
     //glm::vec3 color = glm::vec3(0.0f, 255.0f, 0.0f);
-    glm::vec3 color[4] = {
+    glm::vec3 color[5] = {
+            glm::vec3(0.0f, 0.0f, 255.0f),
             glm::vec3(0.0f, 0.0f, 255.0f),
             glm::vec3(0.0f, 0.0f, 255.0f),
             glm::vec3(0.0f, 0.0f, 255.0f),
@@ -653,8 +670,10 @@ void RenderFacadeClover::FacadeDrawMenu() {
     device->RenderText2D(text, 500.0f, 350.0f, 0.05f, 1.0f, color[1]);
     text = "Controles";
     device->RenderText2D(text, 500.0f, 300.0f, 0.05f, 1.0f, color[2]);
-    text = "Salir";
+    text = "Creditos";
     device->RenderText2D(text, 500.0f, 250.0f, 0.05f, 1.0f, color[3]);
+    text = "Salir";
+    device->RenderText2D(text, 500.0f, 200.0f, 0.05f, 1.0f, color[4]);
 
 }
 
@@ -690,6 +709,70 @@ void RenderFacadeClover::FacadeDrawMenu() {
     device->RenderText2D(name, 950.0f, 50.0f, 0.05f, 0.5f, colorB);
  }
 
+/**
+ * Dibuja las cosos de las opciones de partida.
+ */
+void RenderFacadeClover::FacadeDrawGameOptions() {
+    std::string file = "media/gameoptions.png";
+    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
+
+    //¿TRABAJAR A NIVEL DE BIT?
+    //TODO: Faltan cosas. ¿Como hago esto tio?
+    glm::vec3 colorB = glm::vec3(255.0f, 0.0f, 0.0f);
+    glm::vec3 colorTitle = glm::vec3(255.0f, 255.0f, 0.0f);
+
+    glm::vec3 colorOp1[4] = {
+            glm::vec3(0.0f, 0.0f, 255.0f),
+            glm::vec3(0.0f, 0.0f, 255.0f),
+            glm::vec3(0.0f, 0.0f, 255.0f),
+            glm::vec3(0.0f, 0.0f, 255.0f)
+    };
+    colorOp1[inputGO[0]] = glm::vec3(0.0f, 255.0f, 0.0f);
+    std::string name = "Duracion de partida";
+    device->RenderText2D(name, 450.0f, 600.0f, 0.05f, 0.75f, colorTitle);
+    name = "2 min";
+    device->RenderText2D(name, 300.0f, 500.0f, 0.05f, 0.75f, colorOp1[0]);
+    name = "3 min";
+    device->RenderText2D(name, 500.0f, 500.0f, 0.05f, 0.75f, colorOp1[1]);
+    name = "4 min";
+    device->RenderText2D(name, 700.0f, 500.0f, 0.05f, 0.75f, colorOp1[2]);
+    name = "5 min";
+    device->RenderText2D(name, 900.0f, 500.0f, 0.05f, 0.75f, colorOp1[3]);
+
+    glm::vec3 colorOp2[3] = {
+            glm::vec3(0.0f, 0.0f, 255.0f),
+            glm::vec3(0.0f, 0.0f, 255.0f),
+            glm::vec3(0.0f, 0.0f, 255.0f)
+    };
+    colorOp2[inputGO[1]] = glm::vec3(0.0f, 255.0f, 0.0f);
+    name = "Tiempo de posesion";
+    device->RenderText2D(name, 450.0f, 350.0f, 0.05f, 0.75f, colorTitle);
+    name = "30s";
+    device->RenderText2D(name, 500.0f, 250.0f, 0.05f, 0.75f, colorOp2[0]);
+    name = "45s";
+    device->RenderText2D(name, 600.0f, 250.0f, 0.05f, 0.75f, colorOp2[1]);
+    name = "1 min";
+    device->RenderText2D(name, 700.0f, 250.0f, 0.05f, 0.75f, colorOp2[2]);
+
+    glm::vec3 colorOp3;
+    if (inputGO[2] == 0) {
+        colorOp3 = glm::vec3(0.0f, 255.0f, 0.0f);
+    } else {
+        colorOp3 = glm::vec3(0.0f, 0.0f, 255.0f);
+    }
+    name = "Aceptar";
+    device->RenderText2D(name, 500.0f, 150.0f, 0.05f, 1.25f, colorOp3);
+
+    name = "---->";
+    float sel[3] = { 500.0f, 250.0f, 150.0f };
+    device->RenderText2D(name, 100.0f, sel[option], 0.05f, 1.0f, colorB);
+
+
+    name = "<- (B)";
+    device->RenderText2D(name, 50.0f, 50.0f, 0.05f, 0.5f, colorB);
+
+}
+
 void RenderFacadeClover::FacadeInitResources(){
     FacadeBeginScene();
     std::string file = "media/loading_screen.png";
@@ -721,7 +804,9 @@ void RenderFacadeClover::FacadeInitResources(){
     
 }
 
-
+/**
+ * Dibuja las cosas de los controles
+ */
 void RenderFacadeClover::FacadeDrawControler() {
     std::string file = "media/controller_scheme.png";
     device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
@@ -751,6 +836,14 @@ void RenderFacadeClover::FacadeDrawPause() {
  */
 void RenderFacadeClover::FacadeDrawEndRace() {
     std::string file = "media/finish_screen.png";
+    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
+}
+
+/**
+ * Dibuja las cosas de los creditos
+ */
+void RenderFacadeClover::FacadeDrawCredits() {
+    std::string file = "media/creditos.png";
     device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
 }
 

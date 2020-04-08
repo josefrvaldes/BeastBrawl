@@ -48,6 +48,8 @@ class RenderFacade {
     virtual void FacadeDrawLobbyMulti() = 0;
     virtual void FacadeDrawLobbyMultiExit() = 0;
     virtual void FacadeDrawControler() = 0;
+    virtual void FacadeDrawCredits() = 0;
+    virtual void FacadeDrawGameOptions() = 0;
 
     virtual void FacadeInitIntro() = 0;
     virtual void FacadeInitMenu() = 0;
@@ -57,6 +59,8 @@ class RenderFacade {
     virtual void FacadeInitLobbyMulti() = 0;
     virtual void FacadeInitControler() = 0;
     virtual void FacadeInitHUD() = 0;
+    virtual void FacadeInitCredits() = 0;
+    virtual void FacadeInitGameOptions() = 0;
 
     virtual void FacadeCheckInputIntro() = 0;
     virtual void FacadeCheckInputMenu() = 0;
@@ -65,6 +69,8 @@ class RenderFacade {
     virtual void FacadeCheckInputEndRace() = 0;
     virtual void FacadeCheckInputLobbyMulti() = 0;
     virtual void FacadeCheckInputControler() = 0;
+    virtual void FacadeCheckInputCredits() = 0;
+    virtual void FacadeCheckInputGameOptions() = 0;
 
     virtual void FacadeUpdatePowerUpHUD(DataMap* d) = 0;
     virtual void FacadeDrawHUD(Entity* car, ManCar* manCars) = 0;

@@ -45,29 +45,35 @@ class RenderFacadeIrrlicht : public RenderFacade {
     void FacadeDrawIntro() override;
     void FacadeDrawMenu() override;
     void FacadeDrawSelectCharacter() override;
+    void FacadeDrawGameOptions() override;
     void FacadeInitResources() override;
     void FacadeDrawPause() override;
     void FacadeDrawEndRace() override;
     void FacadeDrawLobbyMulti() override;
     void FacadeDrawLobbyMultiExit() override;
     void FacadeDrawControler() override;
+    void FacadeDrawCredits() override;
 
     void FacadeInitIntro() override;
     void FacadeInitMenu() override;
     void FacadeInitSelectCharacter() override;
+    void FacadeInitGameOptions() override;
     void FacadeInitPause() override;
     void FacadeInitEndRace() override;
     void FacadeInitLobbyMulti() override;
     void FacadeInitControler() override;
     void FacadeInitHUD() override;
+    void FacadeInitCredits() override;
 
     void FacadeCheckInputIntro() override;
     void FacadeCheckInputMenu() override;
     void FacadeCheckInputSelectCharacter() override;
+    void FacadeCheckInputGameOptions() override;
     void FacadeCheckInputPause() override;
     void FacadeCheckInputEndRace() override;
     void FacadeCheckInputLobbyMulti() override;
     void FacadeCheckInputControler() override;
+    void FacadeCheckInputCredits() override;
 
     void FacadeUpdatePowerUpHUD(DataMap* d) override;
     void FacadeDrawHUD(Entity* car, ManCar* manCars) override;

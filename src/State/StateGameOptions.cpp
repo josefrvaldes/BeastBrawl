@@ -1,20 +1,19 @@
-#include "StateControls.h"
+#include "StateGameOptions.h"
+
 #include <iostream>
 
-using namespace std;
-
-StateControls::StateControls(){
-
-    std::cout << "> CRONTROLS constructor" << std::endl;
+StateGameOptions::StateGameOptions(){
 
     renderEngine = RenderFacadeManager::GetInstance()->GetRenderFacade();
-    renderEngine->FacadeInitControler();
+    renderEngine->FacadeInitGameOptions();
+
+    InitState();
+    std::cout << ">>>>> Estado GAME OPTIONS creado" << std::endl;
 
 }
 
-// Cargamos los bancos de sonido Menu.
-void StateControls::InitState() {
-    
+void StateGameOptions::InitState() {
+
     /*cout << "~~~ ENTRO A MENU" << endl;
     if (!soundEngine){
         soundEngine = SoundFacadeManager::GetInstance()->GetSoundFacade();
@@ -27,18 +26,18 @@ void StateControls::InitState() {
 }
 
 
-void StateControls::Render(){
+void StateGameOptions::Render(){
     renderEngine->FacadeBeginScene();
-    renderEngine->FacadeDrawControler();
+    renderEngine->FacadeDrawGameOptions();
     renderEngine->FacadeEndScene();
 }
 
 
-void StateControls::Input(){
-    renderEngine->FacadeCheckInputControler();
+void StateGameOptions::Input(){
+    renderEngine->FacadeCheckInputGameOptions();
 }
 
 
-void StateControls::Update(){
+void StateGameOptions::Update(){
     EventManager::GetInstance().Update();
 }

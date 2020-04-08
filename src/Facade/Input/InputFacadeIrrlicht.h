@@ -51,16 +51,18 @@ class MyEventReceiver : public IEventReceiver{
 class InputFacadeIrrlicht : public InputFacade{
     public:
         InputFacadeIrrlicht();
-        ~InputFacadeIrrlicht();
-        vector<Constants::InputTypes> CheckInputMulti()        override;
-        void CheckInputSingle()  override;
-        void CheckInputMenu(int&, int)    override;
-        void CheckInputSelectCharacter(int&, int)    override;
-        void CheckInputPause(int&, int)   override;
+        ~InputFacadeIrrlicht() override = default;
+        vector<Constants::InputTypes> CheckInputMulti() override;
+        void CheckInputSingle() override;
+        void CheckInputMenu(int&, int) override;
+        void CheckInputSelectCharacter(int&, int) override;
+        void CheckInputGameOptions(std::vector<int>&, int[], int&) override;
+        void CheckInputPause(int&, int) override;
         void CheckInputIntro() override;
         void CheckInputEndRace() override;
         void CheckInputLobbyMulti() override;
         void CheckInputController() override;
+        void CheckInputCredits() override;
 
     private:
         MyEventReceiver receiver;

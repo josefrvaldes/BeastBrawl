@@ -18,11 +18,13 @@ class InputFacadeClover : public InputFacade{
         void CheckInputSingle()  override;
         void CheckInputMenu(int&, int)    override;
         void CheckInputSelectCharacter(int&, int) override;
+        void CheckInputGameOptions(std::vector<int>&, int[], int&) override;
         void CheckInputPause(int&, int)   override;
         void CheckInputIntro() override;
         void CheckInputEndRace() override;
         void CheckInputLobbyMulti() override;
         void CheckInputController() override;
+        void CheckInputCredits() override;
         void SetWindowContext(CLEngine* d) {device = d;}
 
     private:

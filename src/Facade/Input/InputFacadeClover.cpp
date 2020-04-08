@@ -4,8 +4,6 @@
 #include <Components/CNavMesh.h>
 
 #include <Game.h>
-
-
 #include <iostream>
 
 InputFacadeClover::InputFacadeClover(){
@@ -163,6 +161,10 @@ void InputFacadeClover::CheckInputMenu(int& input, int maxInput){
                 break;
             }
             case 3: {
+                EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_CREDITS});
+                break;
+            }
+            case 4: {
                 device->CloseWindow();
                 break;
             }
@@ -244,6 +246,46 @@ void InputFacadeClover::CheckInputSelectCharacter(int &input, int maxInput) {
         timeStart = system_clock::now();
         SetValueInput(BUTTON_A, true);
 
+        EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_GAME_OPTIONS});
+
+    } else if (!(glfwGetKey(device->GetWindow(), GLFW_KEY_SPACE) || state.buttons[GLFW_GAMEPAD_BUTTON_A]) ) {
+        SetValueInput(BUTTON_A, false);
+    }
+
+}
+
+/**
+ *
+ * @param input - Vector con las opciones. Sus valores son el valor seleccionado
+ * @param maxInput - Vector con las opciones. Sus valores son el maximo valor que puede alcanzar cada uno.
+ * @param pos - En que opcion nos encontramos.
+ * 0 = Tiempo partida, 1 = Tiempo posesion, 2 = Aceptar
+ */
+void InputFacadeClover::CheckInputGameOptions(std::vector<int> &input, int maxInput[], int& pos) {
+    GLFWgamepadstate state;
+    glfwGetGamepadState(GLFW_JOYSTICK_1, &state);
+    //ATRAS
+    if((glfwGetKey(device->GetWindow(), GLFW_KEY_DELETE) || state.buttons[GLFW_GAMEPAD_BUTTON_B])
+       && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay
+       && !IsInputPressed(BUTTON_B)) {
+
+        timeStart = system_clock::now();
+        SetValueInput(BUTTON_B, true);
+        EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_SELECT_CHARACTER});
+
+    } else if(!(glfwGetKey(device->GetWindow(), GLFW_KEY_DELETE) || state.buttons[GLFW_GAMEPAD_BUTTON_B])) {
+        SetValueInput(BUTTON_B, false);
+    }
+
+    //ACEPTAR - ESPACIO
+    if ( pos == 2 &&
+        (glfwGetKey(device->GetWindow(), GLFW_KEY_SPACE) || state.buttons[GLFW_GAMEPAD_BUTTON_A])
+        && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay
+        && !IsInputPressed(BUTTON_A)) {
+
+        timeStart = system_clock::now();
+        SetValueInput(BUTTON_A, true);
+
         RenderFacadeManager::GetInstance()->GetRenderFacade()->SetNumEnemyCars(0);
 
         //Manera un poco cutre de resetear el CId al empezar el juego
@@ -256,6 +298,60 @@ void InputFacadeClover::CheckInputSelectCharacter(int &input, int maxInput) {
     } else if (!(glfwGetKey(device->GetWindow(), GLFW_KEY_SPACE) || state.buttons[GLFW_GAMEPAD_BUTTON_A]) ) {
         SetValueInput(BUTTON_A, false);
     }
+
+    //DERECHA
+    if ((glfwGetKey(device->GetWindow(), GLFW_KEY_RIGHT ) || state.buttons[GLFW_GAMEPAD_BUTTON_RIGHT_THUMB])
+        && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay) {
+
+        timeStart = system_clock::now();
+        ++input[pos];
+        if(input[pos] > maxInput[pos]) {
+            input[pos] = 0;
+        }
+    }
+
+    //IZQUIERDA
+    if ((glfwGetKey(device->GetWindow(), GLFW_KEY_LEFT ) || state.buttons[GLFW_GAMEPAD_BUTTON_LEFT_THUMB])
+        && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay) {
+
+        timeStart = system_clock::now();
+        --input[pos];
+        if(input[pos] < 0) {
+            input[pos] = maxInput[pos];
+        }
+    }
+
+    //ARRIBA
+    if((glfwGetKey(device->GetWindow(), GLFW_KEY_UP) || state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_UP])
+       && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay ) {
+
+        timeStart = system_clock::now();
+        --pos;
+        if(pos < 0) {
+            pos = input.size()-1;
+        }
+    }
+
+    //BAJAR
+    if((glfwGetKey(device->GetWindow(), GLFW_KEY_DOWN) || state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_DOWN])
+       && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay ) {
+
+        timeStart = system_clock::now();
+        ++pos;
+        if(pos > (input.size()-1)) {
+            pos = 0;
+        }
+    }
+
+    if(pos != 2) {
+        input[2] = 1;
+    } else {
+        input[2] = 0;
+    }
+
+    //cout << "POS: " << pos << endl;
+    //cout << "MAX: " << maxInput[pos] << endl;
+    //cout << "OPCION: " << input[pos] << endl;
 
 }
 
@@ -583,5 +679,23 @@ void InputFacadeClover::CheckInputLobbyMulti() {
     //TODO: Input temporal. Hay que poner el atras, no salir
     if (glfwGetKey(device->GetWindow(),GLFW_KEY_DELETE)) {
         device->CloseWindow();
+    }
+}
+
+void InputFacadeClover::CheckInputCredits() {
+    GLFWgamepadstate state;
+    glfwGetGamepadState(GLFW_JOYSTICK_1, &state);
+
+    //ATRAS
+    if((glfwGetKey(device->GetWindow(), GLFW_KEY_SPACE) || state.buttons[GLFW_GAMEPAD_BUTTON_A])
+       && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay
+       && !IsInputPressed(BUTTON_A)) {
+
+        timeStart = system_clock::now();
+        SetValueInput(BUTTON_A, true);
+        EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_MENU});
+
+    } else if((glfwGetKey(device->GetWindow(), GLFW_KEY_SPACE) || state.buttons[GLFW_GAMEPAD_BUTTON_A])) {
+        SetValueInput(BUTTON_A, false);
     }
 }

@@ -43,6 +43,10 @@ void InputFacadeIrrlicht::CheckInputSelectCharacter(int &, int) {
 
 }
 
+void InputFacadeIrrlicht::CheckInputGameOptions(std::vector<int>&, int[], int&) {
+
+}
+
 void InputFacadeIrrlicht::CheckInputPause(int&, int){
 }
 
@@ -50,8 +54,6 @@ void InputFacadeIrrlicht::CheckInputPause(int&, int){
 void InputFacadeIrrlicht::CheckInputEndRace(){
 }
 
+void InputFacadeIrrlicht::CheckInputCredits() {
 
-
-InputFacadeIrrlicht::~InputFacadeIrrlicht(){
-	
 }
