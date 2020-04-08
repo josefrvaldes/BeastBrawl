@@ -3,7 +3,7 @@
 using namespace CLE;
 
 
-CLParticleSystem::CLParticleSystem(unsigned int idEntity, ulong particlesNumber, glm::vec3 _speedDirection,string texture,uint16_t _width, uint16_t _height,float _spawnDelay,unsigned int _nParticlesToSpawn,float _lifeSpan) : CLEntity(idEntity){
+CLParticleSystem::CLParticleSystem(unsigned int idEntity, ulong particlesNumber, glm::vec3 _speedDirection,string texture,uint16_t _width, uint16_t _height,float _spawnDelay,unsigned int _nParticlesToSpawn,float _lifeSpan, std::uint_fast8_t _flags) : CLEntity(idEntity){
     nParticles        = particlesNumber;
     speedDirection    = _speedDirection;
     clTexture         = CLResourceManager::GetResourceManager()->GetResourceTexture(texture,false);
@@ -13,14 +13,15 @@ CLParticleSystem::CLParticleSystem(unsigned int idEntity, ulong particlesNumber,
     nParticlesToSpawn = _nParticlesToSpawn;
     lifeSpan          = _lifeSpan;
     spawnType         = SpawnType::Point;
+    flags             = _flags;
 
     particles.reserve(nParticles);
 
 }
 
 //Line, Square y Cube, depende del valor de _offset
-CLParticleSystem::CLParticleSystem(unsigned int idEntity, ulong _nParticles, glm::vec3 _speedDirection,string texture,uint16_t _width, uint16_t _height,float _spawnDelay,unsigned int _nParticlesToSpawn,float _lifeSpan,glm::vec3 _offset, glm::vec3 _orientation) 
-: CLParticleSystem(idEntity,_nParticles,_speedDirection,texture,_width,_height,_spawnDelay,_nParticlesToSpawn,_lifeSpan){
+CLParticleSystem::CLParticleSystem(unsigned int idEntity, ulong _nParticles, glm::vec3 _speedDirection,string texture,uint16_t _width, uint16_t _height,float _spawnDelay,unsigned int _nParticlesToSpawn,float _lifeSpan,glm::vec3 _offset, glm::vec3 _orientation, std::uint_fast8_t _flags) 
+: CLParticleSystem(idEntity,_nParticles,_speedDirection,texture,_width,_height,_spawnDelay,_nParticlesToSpawn,_lifeSpan,_flags){
 
     offset = _offset;
     orientation = _orientation;
@@ -48,9 +49,10 @@ CLParticleSystem::CLParticleSystem(unsigned int idEntity, ulong _nParticles, glm
 }
 
 //Circle
-CLParticleSystem::CLParticleSystem(unsigned int idEntity, ulong _nParticles, glm::vec3 _speedDirection,string texture,uint16_t _width, uint16_t _height,float _spawnDelay,unsigned int _nParticlesToSpawn,float _lifeSpan,float _radious, glm::vec3 _orientation)
-: CLParticleSystem(idEntity,_nParticles,_speedDirection,texture,_width,_height,_spawnDelay,_nParticlesToSpawn,_lifeSpan){
+CLParticleSystem::CLParticleSystem(unsigned int idEntity, ulong _nParticles, glm::vec3 _speedDirection,string texture,uint16_t _width, uint16_t _height,float _spawnDelay,unsigned int _nParticlesToSpawn,float _lifeSpan,float _radious, glm::vec3 _orientation, std::uint_fast8_t _flags)
+: CLParticleSystem(idEntity,_nParticles,_speedDirection,texture,_width,_height,_spawnDelay,_nParticlesToSpawn,_lifeSpan,_flags){
 
+    //No lo estoy controlando porque es mi propio motor pero lo suyo es que solo pase 2 ejes en el _orientation
     spawnType = SpawnType::Circle;
     radious = _radious;
     orientation = _orientation;
@@ -59,8 +61,8 @@ CLParticleSystem::CLParticleSystem(unsigned int idEntity, ulong _nParticles, glm
 }
 
 //Sphere
-CLParticleSystem::CLParticleSystem(unsigned int idEntity, ulong _nParticles, glm::vec3 _speedDirection,string texture,uint16_t _width, uint16_t _height,float _spawnDelay,unsigned int _nParticlesToSpawn,float _lifeSpan,float _radious)
-: CLParticleSystem(idEntity,_nParticles,_speedDirection,texture,_width,_height,_spawnDelay,_nParticlesToSpawn,_lifeSpan){
+CLParticleSystem::CLParticleSystem(unsigned int idEntity, ulong _nParticles, glm::vec3 _speedDirection,string texture,uint16_t _width, uint16_t _height,float _spawnDelay,unsigned int _nParticlesToSpawn,float _lifeSpan,float _radious, std::uint_fast8_t _flags)
+: CLParticleSystem(idEntity,_nParticles,_speedDirection,texture,_width,_height,_spawnDelay,_nParticlesToSpawn,_lifeSpan,_flags){
 
     spawnType = SpawnType::Sphere;
     radious = _radious;
@@ -113,6 +115,45 @@ CLParticleSystem::CLParticle::CLParticle(CLParticleSystem* emitter){
     particleSystem = emitter;   
     position       = CalculateSpawnPosition();
     lifeSpan       = particleSystem->GetLifeSpan();
+    velocity       = particleSystem->GetSpeedDirection();
+
+    //Comprobamos si el flag del effecto esta activado
+    if(particleSystem->GetFlags() & EFFECT_DIR_ALEATORITY){
+        std::random_device rd;
+        std::mt19937 rng(rd());
+        std::uniform_int_distribution<int> xDir(-1, 1);
+        std::uniform_int_distribution<int> yDir(-1, 1);
+        std::uniform_int_distribution<int> zDir(-1, 1);
+
+        // velocity.x = (xDir(rng)) ? -particleSystem->GetSpeedDirection().x : particleSystem->GetSpeedDirection().x;
+        // velocity.y = (yDir(rng)) ? -particleSystem->GetSpeedDirection().y : particleSystem->GetSpeedDirection().y;
+        // velocity.z = (zDir(rng)) ? -particleSystem->GetSpeedDirection().z : particleSystem->GetSpeedDirection().z;
+        int valueX = 0;
+        int valueY = 0;
+        int valueZ = 0;
+
+        do{
+            valueX = xDir(rng);
+            valueY = yDir(rng);
+            valueZ = zDir(rng);
+
+            xDir(rng);xDir(rng);xDir(rng);
+            yDir(rng);yDir(rng);yDir(rng);
+            zDir(rng);zDir(rng);zDir(rng);
+        }while(!valueX && !valueY && !valueZ);
+
+        velocity.x *= valueX;
+        velocity.y *= valueY;
+        velocity.z *= valueZ;
+
+        //Reset de numeros aleatorios
+        xDir(rng);xDir(rng);xDir(rng);
+        yDir(rng);yDir(rng);yDir(rng);
+        zDir(rng);zDir(rng);zDir(rng);
+
+    }else{
+        velocity = particleSystem->GetSpeedDirection();
+    }
 
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
@@ -130,9 +171,9 @@ void CLParticleSystem::CLParticle::Update(){
         timeStart = system_clock::now();
     }else{
         //la movemos
-        position.x += particleSystem->GetSpeedDirection().x * Constants::DELTA_TIME;
-        position.y += particleSystem->GetSpeedDirection().y * Constants::DELTA_TIME;
-        position.z += particleSystem->GetSpeedDirection().z * Constants::DELTA_TIME;
+        position.x += velocity.x * Constants::DELTA_TIME;
+        position.y += velocity.y * Constants::DELTA_TIME;
+        position.z += velocity.z * Constants::DELTA_TIME;
     }
 }
 
@@ -162,6 +203,24 @@ glm::vec3 CLParticleSystem::CLParticle::CalculateSpawnPosition(){
 
 
         newPosition = glm::vec3(offX,offY,offZ);
+    }else if(spawnType == SpawnType::Sphere || spawnType == SpawnType::Circle){
+        float radious = particleSystem->GetRadious();
+        glm::vec3 orientation = particleSystem->GetOrientation();
+
+        std::uniform_real_distribution<float> genX(center.x - (radious*orientation.x), center.x + (radious*orientation.x));
+        std::uniform_real_distribution<float> genY(center.y - (radious*orientation.y), center.y + (radious*orientation.y));
+        std::uniform_real_distribution<float> genZ(center.z - (radious*orientation.z), center.z + (radious*orientation.z));
+        float offX = genX(rng);
+        float offY = genY(rng);
+        float offZ = genZ(rng);
+
+        //Reset de numeros aleatorios
+        genX(rng);genX(rng);genX(rng);
+        genY(rng);genY(rng);genY(rng);
+        genZ(rng);genZ(rng);genZ(rng);
+    }else{
+        newPosition = particleSystem->GetCLNode()->GetGlobalTranslation();
+
     }
     
     

@@ -133,7 +133,19 @@ CLNode* CLNode::AddParticleSystem(unsigned int id){
     }
 
     //Lo paso de momento todo a pillon, luego pongo pasar los valores por el metodo
-    shared_ptr<CLEntity> e = make_shared<CLParticleSystem>(id,1000,glm::vec3(0.0f,200.0f,0.0f),"media/particle_test.png",10,10,100,1,20000,glm::vec3(50.0f,50.0f,0.0f),glm::vec3(1.0f,1.0f,0.0f));
+    int nParticles = 2000;
+    glm::vec3 velocity = glm::vec3(200.0f,200.0f,200.0f);
+    string texture = "media/particle_test.png"; 
+    int width = 10;
+    int height= 10;
+    int spawnDelay = 10;
+    int particlesToSpawn = 15;
+    int lifeSpan = 2000;
+    glm::vec3 offset = glm::vec3(50.0f,50.0f,50.0f);
+    glm::vec3 orientation = glm::vec3(1.0f,1.0f,0.0f);
+    std::uint_fast8_t flags = EFFECT_DIR_ALEATORITY;
+
+    shared_ptr<CLEntity> e = make_shared<CLParticleSystem>(id,nParticles,velocity,texture,width,height,spawnDelay,particlesToSpawn,lifeSpan,offset,orientation,flags);
 
     shared_ptr<CLNode> node = make_shared<CLNode>(e);
     childs.push_back(node);

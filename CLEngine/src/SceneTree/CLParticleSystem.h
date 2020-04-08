@@ -12,9 +12,21 @@
 #include <random>
 #include <vector>
 
+#include <stdio.h>      /* printf, scanf, puts, NULL */
+#include <stdlib.h>     /* srand, rand */
+#include <time.h>       /* time */
+
 using namespace std;
 using namespace std::chrono;
 using namespace std::chrono_literals;
+
+/**
+ * Utilizamos flags por bits para saber que efectos tiene que aplicarse
+ */
+constexpr std::uint_fast8_t EFFECT_DIR_ALEATORITY{ 0x1 }; // hex for 0000 0001 
+constexpr std::uint_fast8_t EFFECT_ZIG_ZAG{ 0x2 }; // hex for 0000 0010
+// constexpr std::uint_fast8_t mask2{ 0x4 }; // hex for 0000 0100
+// constexpr std::uint_fast8_t mask3{ 0x8 }; // hex for 0000 1000
 
 enum SpawnType{
    Point,
@@ -33,13 +45,13 @@ class CLNode;
 
         public:
             //Point
-            CLParticleSystem(unsigned int idEntity, ulong _nParticles, glm::vec3 _speedDirection,string texture,uint16_t _width, uint16_t _height,float _spawnDelay,unsigned int _nParticlesToSpawn,float _lifeSpan);
+            CLParticleSystem(unsigned int idEntity, ulong _nParticles, glm::vec3 _speedDirection,string texture,uint16_t _width, uint16_t _height,float _spawnDelay,unsigned int _nParticlesToSpawn,float _lifeSpan, std::uint_fast8_t _flags);
             //Line, Square y Cube, depende del valor de _offset
-            CLParticleSystem(unsigned int idEntity, ulong _nParticles, glm::vec3 _speedDirection,string texture,uint16_t _width, uint16_t _height,float _spawnDelay,unsigned int _nParticlesToSpawn,float _lifeSpan,glm::vec3 _offset,glm::vec3 _orientation);
+            CLParticleSystem(unsigned int idEntity, ulong _nParticles, glm::vec3 _speedDirection,string texture,uint16_t _width, uint16_t _height,float _spawnDelay,unsigned int _nParticlesToSpawn,float _lifeSpan,glm::vec3 _offset,glm::vec3 _orientation, std::uint_fast8_t _flags);
             //Circle
-            CLParticleSystem(unsigned int idEntity, ulong _nParticles, glm::vec3 _speedDirection,string texture,uint16_t _width, uint16_t _height,float _spawnDelay,unsigned int _nParticlesToSpawn,float _lifeSpan,float _radious, glm::vec3 _orientation);
+            CLParticleSystem(unsigned int idEntity, ulong _nParticles, glm::vec3 _speedDirection,string texture,uint16_t _width, uint16_t _height,float _spawnDelay,unsigned int _nParticlesToSpawn,float _lifeSpan,float _radious, glm::vec3 _orientation, std::uint_fast8_t _flags);
             //Sphere
-            CLParticleSystem(unsigned int idEntity, ulong _nParticles, glm::vec3 _speedDirection,string texture,uint16_t _width, uint16_t _height,float _spawnDelay,unsigned int _nParticlesToSpawn,float _lifeSpan,float _radious);
+            CLParticleSystem(unsigned int idEntity, ulong _nParticles, glm::vec3 _speedDirection,string texture,uint16_t _width, uint16_t _height,float _spawnDelay,unsigned int _nParticlesToSpawn,float _lifeSpan,float _radious, std::uint_fast8_t _flags);
 
             ~CLParticleSystem() = default;
 
@@ -67,6 +79,7 @@ class CLNode;
             float              GetRadious()           const { return radious; }
             glm::vec3          GetOrientation()       const { return orientation; }
             glm::vec3          GetOffset()            const { return offset; }
+            std::uint_fast8_t  GetFlags()             const { return flags; }
 
 
 
@@ -87,8 +100,9 @@ class CLNode;
             bool loop = true;
             SpawnType spawnType = SpawnType::Point;
             float radious = 0; //Usado en SpawnType::Circle y SpawnType::Sphere
-            glm::vec3 orientation; //Usado en SpawnType::Circle
+            glm::vec3 orientation = glm::vec3(1.0f); //Usado en SpawnType::Circle
             glm::vec3 offset; //Usado en SpawnType::Line, SpawnType::Square y  SpawnType::Cube
+            std::uint_fast8_t flags = 0x0;
 
 
             class CLParticle{
@@ -107,6 +121,7 @@ class CLNode;
                     GLuint VBO,VAO;
                     CLParticleSystem* particleSystem {nullptr};
                     glm::vec3 position;
+                    glm::vec3 velocity;
                     float lifeSpan = 1000;
                     time_point<system_clock> timeStart;
 

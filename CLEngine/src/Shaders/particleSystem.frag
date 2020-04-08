@@ -16,6 +16,10 @@ void main()
         discard;
     }
 
+    if(FragColor.a < 0.1){
+        discard;
+    }
+
 }
 
 //http://ogldev.atspace.co.uk/www/tutorial27/tutorial27.html
