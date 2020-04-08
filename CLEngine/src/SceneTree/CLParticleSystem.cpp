@@ -3,7 +3,7 @@
 using namespace CLE;
 
 
-CLParticleSystem::CLParticleSystem(unsigned int idEntity, ulong particlesNumber, glm::vec3 _speedDirection,string texture,uint16_t _width, uint16_t _height,float _spawnDelay,uint16_t _nParticlesToSpawn,float _lifeSpan) : CLEntity(idEntity){
+CLParticleSystem::CLParticleSystem(unsigned int idEntity, ulong particlesNumber, glm::vec3 _speedDirection,string texture,uint16_t _width, uint16_t _height,float _spawnDelay,unsigned int _nParticlesToSpawn,float _lifeSpan) : CLEntity(idEntity){
     nParticles        = particlesNumber;
     speedDirection    = _speedDirection;
     clTexture         = CLResourceManager::GetResourceManager()->GetResourceTexture(texture,false);
@@ -19,7 +19,7 @@ CLParticleSystem::CLParticleSystem(unsigned int idEntity, ulong particlesNumber,
 }
 
 //Line, Square y Cube, depende del valor de _offset
-CLParticleSystem::CLParticleSystem(unsigned int idEntity, ulong _nParticles, glm::vec3 _speedDirection,string texture,uint16_t _width, uint16_t _height,float _spawnDelay,uint16_t _nParticlesToSpawn,float _lifeSpan,glm::vec3 _offset, glm::vec3 _orientation) 
+CLParticleSystem::CLParticleSystem(unsigned int idEntity, ulong _nParticles, glm::vec3 _speedDirection,string texture,uint16_t _width, uint16_t _height,float _spawnDelay,unsigned int _nParticlesToSpawn,float _lifeSpan,glm::vec3 _offset, glm::vec3 _orientation) 
 : CLParticleSystem(idEntity,_nParticles,_speedDirection,texture,_width,_height,_spawnDelay,_nParticlesToSpawn,_lifeSpan){
 
     offset = _offset;
@@ -48,7 +48,7 @@ CLParticleSystem::CLParticleSystem(unsigned int idEntity, ulong _nParticles, glm
 }
 
 //Circle
-CLParticleSystem::CLParticleSystem(unsigned int idEntity, ulong _nParticles, glm::vec3 _speedDirection,string texture,uint16_t _width, uint16_t _height,float _spawnDelay,uint16_t _nParticlesToSpawn,float _lifeSpan,float _radious, glm::vec3 _orientation)
+CLParticleSystem::CLParticleSystem(unsigned int idEntity, ulong _nParticles, glm::vec3 _speedDirection,string texture,uint16_t _width, uint16_t _height,float _spawnDelay,unsigned int _nParticlesToSpawn,float _lifeSpan,float _radious, glm::vec3 _orientation)
 : CLParticleSystem(idEntity,_nParticles,_speedDirection,texture,_width,_height,_spawnDelay,_nParticlesToSpawn,_lifeSpan){
 
     spawnType = SpawnType::Circle;
@@ -59,7 +59,7 @@ CLParticleSystem::CLParticleSystem(unsigned int idEntity, ulong _nParticles, glm
 }
 
 //Sphere
-CLParticleSystem::CLParticleSystem(unsigned int idEntity, ulong _nParticles, glm::vec3 _speedDirection,string texture,uint16_t _width, uint16_t _height,float _spawnDelay,uint16_t _nParticlesToSpawn,float _lifeSpan,float _radious)
+CLParticleSystem::CLParticleSystem(unsigned int idEntity, ulong _nParticles, glm::vec3 _speedDirection,string texture,uint16_t _width, uint16_t _height,float _spawnDelay,unsigned int _nParticlesToSpawn,float _lifeSpan,float _radious)
 : CLParticleSystem(idEntity,_nParticles,_speedDirection,texture,_width,_height,_spawnDelay,_nParticlesToSpawn,_lifeSpan){
 
     spawnType = SpawnType::Sphere;
@@ -99,7 +99,7 @@ void CLParticleSystem::Update(){
     if(diff > spawnDelay){
         timeStart = system_clock::now();
 
-        for(uint16_t i = 0; i<nParticlesToSpawn && particles.size()+nParticlesToSpawn<=nParticles ; ++i){
+        for(unsigned int i = 0; i<nParticlesToSpawn && particles.size()+nParticlesToSpawn<=nParticles ; ++i){
             particles.emplace_back(make_shared<CLParticle>(this));
         }
     }
@@ -111,13 +111,63 @@ void CLParticleSystem::Update(){
 
 CLParticleSystem::CLParticle::CLParticle(CLParticleSystem* emitter){
     particleSystem = emitter;   
-    position       = particleSystem->GetCLNode()->GetGlobalTranslation();
+    position       = CalculateSpawnPosition();
     lifeSpan       = particleSystem->GetLifeSpan();
 
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
 
 }
+
+
+
+void CLParticleSystem::CLParticle::Update(){
+    //Comprobamos si deberia seguir con vida la particula
+    auto diff = duration_cast<milliseconds>(system_clock::now() - timeStart).count();
+    if(diff >= lifeSpan){
+        //la respawneamos en la posicion inicial
+        position = CalculateSpawnPosition();
+        timeStart = system_clock::now();
+    }else{
+        //la movemos
+        position.x += particleSystem->GetSpeedDirection().x * Constants::DELTA_TIME;
+        position.y += particleSystem->GetSpeedDirection().y * Constants::DELTA_TIME;
+        position.z += particleSystem->GetSpeedDirection().z * Constants::DELTA_TIME;
+    }
+}
+
+glm::vec3 CLParticleSystem::CLParticle::CalculateSpawnPosition(){
+    glm::vec3 newPosition(0.0f);
+    SpawnType spawnType = particleSystem->GetSpawnType();
+    glm::vec3 center = particleSystem->GetCLNode()->GetGlobalTranslation();
+
+    std::random_device rd;
+    std::mt19937 rng(rd());
+
+
+    if(spawnType == SpawnType::Point){
+        newPosition = particleSystem->GetCLNode()->GetGlobalTranslation();
+    }else if(spawnType == SpawnType::Line || spawnType == SpawnType::Square || spawnType == SpawnType::Cube){
+        std::uniform_real_distribution<float> genX(center.x - particleSystem->GetOffset().x, center.x + particleSystem->GetOffset().x);
+        std::uniform_real_distribution<float> genY(center.y - particleSystem->GetOffset().y, center.y + particleSystem->GetOffset().y);
+        std::uniform_real_distribution<float> genZ(center.z - particleSystem->GetOffset().z, center.z + particleSystem->GetOffset().z);
+        float offX = genX(rng);
+        float offY = genY(rng);
+        float offZ = genZ(rng);
+
+        //Reset de numeros aleatorios
+        genX(rng);genX(rng);genX(rng);
+        genY(rng);genY(rng);genY(rng);
+        genZ(rng);genZ(rng);genZ(rng);
+
+
+        newPosition = glm::vec3(offX,offY,offZ);
+    }
+    
+    
+    return newPosition;
+}
+
 
 void CLParticleSystem::CLParticle::Draw(GLuint shaderID){
     Update();
@@ -136,19 +186,4 @@ void CLParticleSystem::CLParticle::Draw(GLuint shaderID){
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
     
-}
-
-void CLParticleSystem::CLParticle::Update(){
-    //Comprobamos si deberia seguir con vida la particula
-    auto diff = duration_cast<milliseconds>(system_clock::now() - timeStart).count();
-    if(diff >= lifeSpan){
-        //la respawneamos en la posicion inicial
-        position = particleSystem->GetCLNode()->GetGlobalTranslation();
-        timeStart = system_clock::now();
-    }else{
-        //la movemos
-        position.x += particleSystem->GetSpeedDirection().x * Constants::DELTA_TIME;
-        position.y += particleSystem->GetSpeedDirection().y * Constants::DELTA_TIME;
-        position.z += particleSystem->GetSpeedDirection().z * Constants::DELTA_TIME;
-    }
 }

@@ -9,6 +9,7 @@
 #include <chrono>
 #include <iostream>
 #include <memory>
+#include <random>
 #include <vector>
 
 using namespace std;
@@ -32,13 +33,13 @@ class CLNode;
 
         public:
             //Point
-            CLParticleSystem(unsigned int idEntity, ulong _nParticles, glm::vec3 _speedDirection,string texture,uint16_t _width, uint16_t _height,float _spawnDelay,uint16_t _nParticlesToSpawn,float _lifeSpan);
+            CLParticleSystem(unsigned int idEntity, ulong _nParticles, glm::vec3 _speedDirection,string texture,uint16_t _width, uint16_t _height,float _spawnDelay,unsigned int _nParticlesToSpawn,float _lifeSpan);
             //Line, Square y Cube, depende del valor de _offset
-            CLParticleSystem(unsigned int idEntity, ulong _nParticles, glm::vec3 _speedDirection,string texture,uint16_t _width, uint16_t _height,float _spawnDelay,uint16_t _nParticlesToSpawn,float _lifeSpan,glm::vec3 _offset,glm::vec3 _orientation);
+            CLParticleSystem(unsigned int idEntity, ulong _nParticles, glm::vec3 _speedDirection,string texture,uint16_t _width, uint16_t _height,float _spawnDelay,unsigned int _nParticlesToSpawn,float _lifeSpan,glm::vec3 _offset,glm::vec3 _orientation);
             //Circle
-            CLParticleSystem(unsigned int idEntity, ulong _nParticles, glm::vec3 _speedDirection,string texture,uint16_t _width, uint16_t _height,float _spawnDelay,uint16_t _nParticlesToSpawn,float _lifeSpan,float _radious, glm::vec3 _orientation);
+            CLParticleSystem(unsigned int idEntity, ulong _nParticles, glm::vec3 _speedDirection,string texture,uint16_t _width, uint16_t _height,float _spawnDelay,unsigned int _nParticlesToSpawn,float _lifeSpan,float _radious, glm::vec3 _orientation);
             //Sphere
-            CLParticleSystem(unsigned int idEntity, ulong _nParticles, glm::vec3 _speedDirection,string texture,uint16_t _width, uint16_t _height,float _spawnDelay,uint16_t _nParticlesToSpawn,float _lifeSpan,float _radious);
+            CLParticleSystem(unsigned int idEntity, ulong _nParticles, glm::vec3 _speedDirection,string texture,uint16_t _width, uint16_t _height,float _spawnDelay,unsigned int _nParticlesToSpawn,float _lifeSpan,float _radious);
 
             ~CLParticleSystem() = default;
 
@@ -59,7 +60,7 @@ class CLNode;
             uint16_t           GetWidth()             const { return width; }
             uint16_t           GetHeight()            const { return height; }
             float              GetSpawnDelay()        const { return spawnDelay; }
-            uint16_t           GetNParticlesToSpawn() const { return nParticlesToSpawn; }
+            unsigned int       GetNParticlesToSpawn() const { return nParticlesToSpawn; }
             float              GetLifeSpan()          const { return lifeSpan; }
             bool               GetLoop()              const { return loop; }
             SpawnType          GetSpawnType()         const { return spawnType; }
@@ -81,7 +82,7 @@ class CLNode;
             uint16_t width{0}, height{0};
             time_point<system_clock> timeStart;
             float spawnDelay = 1000; //Tiempo en ms
-            uint16_t nParticlesToSpawn = 1; //Particulas a spawnear a la vez
+            unsigned int nParticlesToSpawn = 1; //Particulas a spawnear a la vez
             float lifeSpan = 1000; //Tiempo de vida de las particulas
             bool loop = true;
             SpawnType spawnType = SpawnType::Point;
@@ -101,6 +102,7 @@ class CLNode;
 
                 private:
                     void Update();              //Aqui haremos los calculos necesarios de vida, posicion, etc
+                    glm::vec3 CalculateSpawnPosition();
                     
                     GLuint VBO,VAO;
                     CLParticleSystem* particleSystem {nullptr};
