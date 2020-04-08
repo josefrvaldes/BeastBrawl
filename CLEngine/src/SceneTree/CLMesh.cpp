@@ -15,3 +15,15 @@ void CLMesh::Draw(GLuint shaderID) {
     }
     
 }
+
+
+
+void CLMesh::DrawDepthMap(GLuint shaderID) {
+    /*if(material){
+        material->Draw(shaderID); 
+    }*/
+    if (mesh) {
+        mesh->DrawDepthMap(shaderID);
+    }
+    
+}

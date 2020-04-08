@@ -17,6 +17,7 @@ namespace CLE {
             //GETTERS
 
             void Draw(GLuint shaderID);
+            void DrawDepthMap(GLuint shaderID);
 
 
         private:

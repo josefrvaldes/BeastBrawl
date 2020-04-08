@@ -120,7 +120,7 @@ bool SoundEngine::LoadSoundBank(const string& nameBank) {
 
         string bank = "./media/fmod/" + nameBank + ".bank";
         ERRFMODCHECK(system->loadBankFile(bank.c_str(), FMOD_STUDIO_LOAD_BANK_NORMAL, &banks[nameBank]));
-        cout << "***** Cargado el banco: " << nameBank << endl;
+        //cout << "***** Cargado el banco: " << nameBank << endl;
         return true;
     }
     return false;

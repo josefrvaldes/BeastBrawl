@@ -43,20 +43,23 @@ void Physics::CalculatePosition(CCar *cCar, CTransformable *cTransformable, CSpe
     // debemos de tener encuenta la fuerza externa, asi como la direccion final que tomaremos (el angulo final)
     if(cExternalForce->force > 0){
         // Este paso es una tonteria porque ya lo devolvemos normalizado
+        //cout << " la fuerza exterman SIIII es mayor a 0, por lo que tenemos fuerza externa" << endl;
         cExternalForce->dirExternalForce = normalize(cExternalForce->dirExternalForce);
     }  
 
     float angleRotation = cTransformable->rotation.y - cCar->skidRotation;
     angleRotation = Utils::GetAdjustedDegrees(angleRotation);
 
-    // Movimiento del coche
     cSpeed->speed.x = cos(glm::radians(angleRotation));  // * cCar->speed;
     cSpeed->speed.z = sin(glm::radians(angleRotation));  // * cCar->speed;
-    cSpeed->speed.y = 0.f;                 // TODO, esto lo cacharreará el CLPhysics
-    cTransformable->position.x -= cSpeed->speed.x * cCar->speed * deltaTime;
-    cTransformable->position.z += cSpeed->speed.z * cCar->speed * deltaTime;
+    glm::vec2 carForce(-cSpeed->speed.x*cCar->speed , cSpeed->speed.z*cCar->speed);  // Fijarse en el menos de la X
+    glm::vec2 finalForce = ApplyExternalForce(cCar, cExternalForce, carForce);
 
-    
+    // Movimiento del coche
+    //cSpeed->speed.y = 0.f;                 // TODO, esto lo cacharreará el CLPhysics
+    cTransformable->position.x += finalForce.x * deltaTime;
+    cTransformable->position.z += finalForce.y * deltaTime;
+
     // Rotacion del coche
     if(cCar->skidRotation != 0){
         //std::cout << "Incremento con skid: " << cCar->wheelRotation * 0.05 + 0.04 * cCar->skidRotation << "\n";
@@ -65,28 +68,29 @@ void Physics::CalculatePosition(CCar *cCar, CTransformable *cTransformable, CSpe
         //std::cout << "Incremento no  skid: " << cCar->wheelRotation * 0.20 << "\n";
         cTransformable->rotation.y += cCar->wheelRotation * 0.20;
     }
-
     cTransformable->rotation.y = Utils::GetAdjustedDegrees(cTransformable->rotation.y);
 }
 
 vec3 Physics::CalculateVecDirCar(CTransformable *cTransformable) const{
-
    float angleRotation = (cTransformable->rotation.y * PI) / 180.0;
    float nextPosX    = cTransformable->position.x - cos(angleRotation) * 1;
    float nexPosZ     = cTransformable->position.z + sin(angleRotation) * 1;
 
    return vec3(nextPosX-cTransformable->position.x, 0, nexPosZ-cTransformable->position.z);
-
 }
+
 
 //Calcula la posicion del coche (duda con las formulas preguntar a Jose)
 void Physics::CalculatePositionReverse(CCar *cCar, CTransformable *cTransformable, CExternalForce *cExternalForce, float deltaTime) {
     float angleRotation = (cTransformable->rotation.y * PI) / 180.0;
     float delta = deltaTime;
 
+    glm::vec2 carForce(-cos(angleRotation)*cCar->speed , sin(angleRotation)*cCar->speed);  // Fijarse en el menos de la X
+    glm::vec2 finalForce = ApplyExternalForce(cCar, cExternalForce, carForce);
+
     //Modificamos la posicion en X y Z en funcion del angulo
-    cTransformable->position.z += sin(angleRotation) * cCar->speed * delta;
-    cTransformable->position.x -= cos(angleRotation) * cCar->speed * delta;
+    cTransformable->position.x += finalForce.x * delta;
+    cTransformable->position.z += finalForce.y * delta;
 
     //Si tiene rotacion, rotamos el coche
     if (cCar->wheelRotation != 0) {
@@ -105,6 +109,23 @@ void Physics::CalculatePositionCamera(CCar *cCar, CTransformable *cTransformable
     cTransformableCamera->position.y = cTransformableCar->position.y + 20;
     cTransformableCamera->position.x = (cTransformableCar->position.x + 40 * cos(((rotationFinal) * PI) / 180.0));
     cTransformableCamera->position.z = (cTransformableCar->position.z - 40 * sin(((rotationFinal) * PI) / 180.0));
+}
+
+
+// aplicamos al movimiento del coche el desplazamiento en caso de que alguien lo empuje
+glm::vec2 Physics::ApplyExternalForce(CCar *cCar, CExternalForce *externalForce, const glm::vec2& carForce) const{
+    glm::vec2 finalForce(carForce);
+    if(externalForce->force > 0){
+        glm::vec2 collisionForce(externalForce->dirExternalForce.x*externalForce->force, externalForce->dirExternalForce.z*externalForce->force);
+        float angleForces = glm::degrees(atan2(collisionForce.y, collisionForce.x)) - glm::degrees(atan2(carForce.y, carForce.x));
+        angleForces = Utils::GetAdjustedDegrees(angleForces);
+        finalForce.x = carForce.x + collisionForce.x;
+        finalForce.y = carForce.y + collisionForce.y;
+        externalForce->force -= externalForce->friction;
+    }else{
+        externalForce->force = 0.0;
+    }
+    return finalForce;
 }
 
 
@@ -281,9 +302,7 @@ void Physics::NotAcceleratingOrDecelerating(Car *car, Camera *cam) {
 }
 
 
-void Physics::FrictionExternalForce(CCar *cCar, CExternalForce *externalForce) const{
-    externalForce->force -= cCar->friction;
-}
+
 
 
 //Aqui entra cuando no se esta presionando ni A ni D

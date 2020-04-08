@@ -274,11 +274,13 @@ const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
     auto cShader = static_cast<CShader*>(entity->GetComponent(CompType::ShaderComp).get());
 
     CLResourceMesh* mesh = nullptr;
+    CLResourceMaterial* mat = nullptr;
     if(entity->HasComponent(CompType::MeshComp)){
         auto cMesh = static_cast<CMesh*>(entity->GetComponent(CompType::MeshComp).get());
         std::string currentMesh = cMesh->activeMesh;
         std::string meshPath = "media/" + currentMesh;
         mesh = resourceManager->GetResourceMesh(meshPath, false);
+        mat = resourceManager->GetResourceMaterial(meshPath);
     }
     
     
@@ -288,6 +290,7 @@ const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
         case ModelType::Sphere:
             node = smgr->AddMesh(cId->id);
             static_cast<CLMesh*>(node->GetEntity())->SetMesh(mesh);
+            static_cast<CLMesh*>(node->GetEntity())->SetMaterial(mat);
 
             break;
 
@@ -300,6 +303,7 @@ const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
         case ModelType::AnimatedMesh:
             node = smgr->AddMesh(cId->id);
             static_cast<CLMesh*>(node->GetEntity())->SetMesh(mesh);
+            static_cast<CLMesh*>(node->GetEntity())->SetMaterial(mat);
 
             break;
 
@@ -310,10 +314,10 @@ const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
         case ModelType::Text:
             node = smgr->AddMesh(cId->id);
             break;
-        case ModelType::Light:
+        case ModelType::PointLight:
             auto cLight = static_cast<CLight*>(entity->GetComponent(CompType::LightComp).get());
-            node = smgr->AddLight(cId->id);
-            static_cast<CLLight*>(node->GetEntity())->SetLightAttributes(cLight->intensity,cLight->ambient,cLight->diffuse,cLight->specular,cLight->constant,cLight->linear,cLight->quadratic);
+            node = smgr->AddPointLight(cId->id,cLight->intensity,cLight->ambient,cLight->diffuse,cLight->specular,cLight->constant,cLight->linear,cLight->quadratic);
+            //static_cast<CLLight*>(node->GetEntity())->SetLightAttributes(cLight->intensity,cLight->ambient,cLight->diffuse,cLight->specular,cLight->constant,cLight->linear,cLight->quadratic);
             break;
     } 
 
@@ -330,7 +334,7 @@ const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
     //auto pos = cTransformable->position;
     //cout << " la posicion donde esta la entidad es ( " << pos.x<< " , " << pos.y<< " , " <<-pos.z<< " )" << endl;
     // BOUNDING BOX
-    if(cType->type != ModelType::Light){
+    if(cType->type != ModelType::PointLight){
         float dimAABB = node->CalculateBoundingBox();
         //Sacamos sus dimensiones
         //float height = 10.0;
@@ -390,7 +394,7 @@ void RenderFacadeClover::UpdateCamera(Entity* cam, ManCar* manCars) {
         float distZ = abs(cTransformable->position.z - targetPosition.z);
 
         if(cTransformable->position.x - targetPosition.x < 0){
-            targetPosition.x = targetPosition.y - (2*distX);
+            targetPosition.x = targetPosition.x - (2*distX);
 
         }else{
             targetPosition.x = targetPosition.x + (2*distX);
@@ -405,7 +409,7 @@ void RenderFacadeClover::UpdateCamera(Entity* cam, ManCar* manCars) {
 
         }
         //float angleRotation = (60 * M_PI) / 180.0;
-
+        cout << cTransformable->position.x << " | " << cTransformable->position.y << " | " << cTransformable->position.z << endl;
         cameraEntity->SetCameraTarget(glm::vec3(targetPosition.x,targetPosition.y,targetPosition.z));
         cameraEntity->SetFOV(60);
         camera1->SetTranslation(glm::vec3(cTransformable->position.x, cTransformable->position.y-5, -cTransformable->position.z));
@@ -658,8 +662,66 @@ void RenderFacadeClover::FacadeDrawMenu() {
  *
  */
  void RenderFacadeClover::FacadeDrawSelectCharacter() {
-
+    glm::vec3 color[8] = {
+            glm::vec3(0.0f, 0.0f, 255.0f),
+            glm::vec3(0.0f, 0.0f, 255.0f),
+            glm::vec3(0.0f, 0.0f, 255.0f),
+            glm::vec3(0.0f, 0.0f, 255.0f),
+            glm::vec3(0.0f, 0.0f, 255.0f),
+            glm::vec3(0.0f, 0.0f, 255.0f),
+            glm::vec3(0.0f, 0.0f, 255.0f),
+            glm::vec3(0.0f, 0.0f, 255.0f)
+    };
+    color[inputSC] = glm::vec3(0.0f, 255.0f, 0.0f);
+    std::string name = "Atras";
+    device->RenderText2D(name, 50.0f, 50.0f, 0.05f, 0.5f, color[0]);
+    name = "Mr Penguin";
+    device->RenderText2D(name, 100.0f, 350.0f, 0.05f, 0.75f, color[1]);
+    name = "Captain Sharky";
+    device->RenderText2D(name, 500.0f, 350.0f, 0.05f, 0.75f, color[3]);
+    name = "Kaiser Kong";
+    device->RenderText2D(name, 900.0f, 350.0f, 0.05f, 0.75f, color[5]);
+    name = "Deacon Dragon";
+    device->RenderText2D(name, 100.0f, 250.0f, 0.05f, 0.75f, color[2]);
+    name = "Mrs Baxter";
+    device->RenderText2D(name, 500.0f, 250.0f, 0.05f, 0.75f, color[4]);
+    name = "Cyberoctopus";
+    device->RenderText2D(name, 900.0f, 250.0f, 0.05f, 0.75f, color[6]);
+    name = "Aceptar";
+    device->RenderText2D(name, 950.0f, 50.0f, 0.05f, 0.5f, color[7]);
  }
+
+void RenderFacadeClover::FacadeInitResources(){
+    FacadeBeginScene();
+    std::string file = "media/loading_screen.png";
+    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
+    FacadeEndScene();
+    //Cargamos todas las mallas
+    //Mallas
+    resourceManager->GetResourceMesh("media/kart_physics.fbx");
+    resourceManager->GetResourceMesh("media/kart_ia.obj");
+    resourceManager->GetResourceMesh("media/melon.obj");
+    resourceManager->GetResourceMesh("media/totem_tex.fbx");
+    resourceManager->GetResourceMesh("media/TEST_BOX.fbx");
+    resourceManager->GetResourceMesh("media/pudin.obj");
+    resourceManager->GetResourceMesh("media/telebanana.obj");
+    resourceManager->GetResourceMesh("media/training_ground.obj");
+
+    //Texturas
+    resourceManager->GetResourceTexture("media/escudomerluzo.png",true);
+    resourceManager->GetResourceTexture("media/melonmolon.png",true);
+    resourceManager->GetResourceTexture("media/nitro.png",true);
+    resourceManager->GetResourceTexture("media/nonepowerup.png",true);
+    resourceManager->GetResourceTexture("media/pudin.png",true);
+    resourceManager->GetResourceTexture("media/robojorobo.png",true);
+    resourceManager->GetResourceTexture("media/telebanana.png",true);
+
+    //Shaders
+    resourceManager->GetResourceShader("CLEngine/src/Shaders/cartoonShader.vert", "CLEngine/src/Shaders/cartoonShader.frag");
+
+    
+}
+
 
 void RenderFacadeClover::FacadeDrawControler() {
     std::string file = "media/controller_scheme.png";
@@ -732,6 +794,11 @@ void RenderFacadeClover::FacadeDeviceDrop() {
 void RenderFacadeClover::FacadeAddSkybox(string right,string left,string top,string bottom,string front,string back){
     smgr->AddSkybox(right, left, top, bottom, front, back);
 }
+
+void RenderFacadeClover::FacadeAddShadowMapping(unsigned int lightId){
+    smgr->AddShadowMapping(lightId);
+}
+
 
 //DEBUG dibuja las aristas entre los nodos del grafo
 void RenderFacadeClover::FacadeDrawGraphEdges(ManWayPoint* manWayPoints) const{
@@ -868,8 +935,8 @@ void RenderFacadeClover::FacadeDrawAIDebug(ManCar* manCars, ManNavMesh* manNavMe
         if (static_cast<Car*>(carAI.get())->GetTypeCar() == TypeCar::CarAI){
             auto cPosDestination = static_cast<CPosDestination*>(carAI->GetComponent(CompType::PosDestination).get());
             auto cTransformableCar = static_cast<CTransformable*>(carAI->GetComponent(CompType::TransformableComp).get());
-            auto cDimensions = static_cast<CDimensions*>(carAI->GetComponent(CompType::DimensionsComp).get());
-            auto cCurrentNavMesh = static_cast<CCurrentNavMesh*>(carAI->GetComponent(CompType::CurrentNavMeshComp).get());
+            // auto cDimensions = static_cast<CDimensions*>(carAI->GetComponent(CompType::DimensionsComp).get());
+            // auto cCurrentNavMesh = static_cast<CCurrentNavMesh*>(carAI->GetComponent(CompType::CurrentNavMeshComp).get());
             //auto cTargetNavMesh = static_cast<CTargetNavMesh*>(carAI->GetComponent(CompType::TargetNavMeshComp).get());
 
             Draw3DLine(cPosDestination->position,cTransformableCar->position);
@@ -996,4 +1063,8 @@ void RenderFacadeClover::CleanScene() {
 
     device->Clear();
 
+}
+
+void RenderFacadeClover::FacadeUpdateViewport(){
+    device->UpdateViewport();
 }

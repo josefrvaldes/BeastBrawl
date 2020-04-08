@@ -9,10 +9,15 @@
 
 #include "CLEntity.h"
 #include "CLMesh.h"
-#include "CLLight.h"
+#include "CLPointLight.h"
+#include "CLDirectLight.h"
+#include "CLSpotLight.h"
 #include "CLCamera.h"
+#include "CLParticleSystem.h"
 #include "../ResourceManager/CLResourceMesh.h"
 #include "CLSkybox.h"
+#include "CLShadowMapping.h"
+#include "CLBillboard.h"
 
 #include "../Frustum/CLFrustum.h"
 #include "../ResourceManager/CLResourceManager.h"
@@ -22,6 +27,7 @@
 
 using namespace std;
 //using namespace CLE;
+
 
 namespace CLE{
 
@@ -47,9 +53,15 @@ class CLNode{
         static glm::mat4 GetViewMatrix()               { return view; }
         static glm::mat4 GetProjectionMatrix()         { return projection; }
         CLCamera* GetActiveCamera();
-        vector<CLNode*> GetLights()                      { return lights; };
-        vector<CLNode*> GetCameras()                     { return cameras; };
+        CLNode*   GetActiveCameraNode();
+        vector<CLNode*> GetPointLights()              { return pointLights; };
+        vector<CLNode*> GetDirectLights()             { return directLights; };
+        vector<CLNode*> GetCameras()            { return cameras; };
+        static CLShadowMapping* GetShadowMapping()     {return shadowMapping.get();};
+        //GLuint GetSimpleDepthShader()           {return simpleDepthShader;};
+        CLResourceShader* GetDepthShader()      {return depthShadder;};
         void RemoveLightsAndCameras();
+
 
         //Setters
         bool SetFather(CLNode* f)                        { father = f; return true; }
@@ -63,10 +75,18 @@ class CLNode{
         CLNode* AddGroup(unsigned int id);
         CLNode* AddMesh(unsigned int id);
         CLNode* AddMesh(unsigned int id,string mesh);
-        CLNode* AddLight(unsigned int id);
-        CLNode* AddLight(unsigned int id,glm::vec3 intensity, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float constant, float linear, float quadratic);
+        CLNode* AddPointLight(unsigned int id);
+        CLNode* AddPointLight(unsigned int id,glm::vec3 intensity, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float constant, float linear, float quadratic);
+        CLNode* AddDirectLight(unsigned int id);
+        CLNode* AddDirectLight(unsigned int id,glm::vec3 direction,glm::vec3 intensity, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float constant, float linear, float quadratic);
+        CLNode* AddSpotLight(unsigned int id);
+        CLNode* AddSpotLight(unsigned int id,glm::vec3 direction,float cutOff,float outerCutOff,glm::vec3 intensity, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float constant, float linear, float quadratic);
         CLNode* AddCamera(unsigned int id);
+        CLNode* AddParticleSystem(unsigned int id);
         void AddSkybox(string right, string left, string top, string bottom, string front, string back);
+        void AddShadowMapping(GLuint lightId);
+        void AddBillBoard(string& file, bool vertically, glm::vec3 posBillBoard, float width_, float height_);
+
         bool RemoveChild(CLNode* child);
         bool HasChild(CLNode* child);
         CLNode* GetNodeByID(unsigned int id);
@@ -84,7 +104,10 @@ class CLNode{
         float CalculateBoundingBox();
 
         void DFSTree(glm::mat4);
+        void DFSTree(glm::mat4 mA, GLuint shaderID);
         void DrawSkybox();
+
+        void DrawBillBoard();
         
 
         void SetVisible(bool v) {visible = v;};
@@ -121,7 +144,9 @@ class CLNode{
         // Identificadores de las variables que cambia para pasarle info al shader.
         GLuint shaderProgramID;
         int lineWidth = 1;
-        inline static vector<CLNode*> lights;
+        inline static vector<CLNode*> pointLights;
+        inline static vector<CLNode*> directLights;
+        inline static vector<CLNode*> spotLights;
         inline static vector<CLNode*> cameras;
         inline static GLuint debugShader = 0;
 
@@ -134,6 +159,17 @@ class CLNode{
         //Skybox
         inline static unique_ptr<CLSkybox> skybox = nullptr;
         inline static GLuint skyboxShader = 0;
+
+        inline static unique_ptr<CLBillboard> billBoard = nullptr;
+        inline static GLuint billboardShader = 0;
+
+        inline static unique_ptr<CLShadowMapping> shadowMapping = nullptr;
+        inline static GLuint simpleDepthShader = 0;
+        inline static CLResourceShader* depthShadder = nullptr;
+
+        //Particle system
+        inline static GLuint particleSystemShader = 0;
+
 };
 
 }

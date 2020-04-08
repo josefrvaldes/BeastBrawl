@@ -24,6 +24,7 @@
 #include "../Facade/Render/RenderFacadeManager.h"
 #include "../Game.h"
 #include "../Managers/ManBoundingWall.h"
+#include "../Managers/ManBoundingOBB.h"
 #include "../Managers/ManBoxPowerUp.h"
 #include "../Managers/ManNavMesh.h"
 #include "../Managers/ManPowerUp.h"
@@ -74,14 +75,14 @@ void ManCar::UpdateCarPlayer(ManTotem &manTotem_) {
 // Es importante esto porque el BtMoveTo es el que calcula la posicion a la que ir y el systemBtLoDMove es el que utiliza esta posicion para
 // moverse a un sitio, si en algun momento intentamos ir a una posicion que no existe PETAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 void ManCar::UpdateCarAI(CarAI* carAI, ManPowerUp* m_manPowerUp, ManBoxPowerUp* m_manBoxPowerUp, ManTotem* m_manTotem, ManWayPoint* graph, ManNavMesh* manNavMesh, 
-                        ManBoundingWall* m_manBoundingWall, SystemBtPowerUp* systemBtPowerUp, SystemBtMoveTo* systemBtMoveTo, SystemBtLoDMove* systemBtLoDMove, SystemPathPlanning *systemPathPlanning) {
+                        ManBoundingWall* m_manBoundingWall, ManBoundingOBB* m_manBoundingOBB, SystemBtPowerUp* systemBtPowerUp, SystemBtMoveTo* systemBtMoveTo, SystemBtLoDMove* systemBtLoDMove, SystemPathPlanning *systemPathPlanning) {
     
     //manNavMesh->UpdateNavMeshEntity(carAI);
     systemBtMoveTo->update(carAI, this, m_manPowerUp, m_manBoxPowerUp, m_manTotem, graph, manNavMesh);
 
     systemPathPlanning->Update(carAI, graph, manNavMesh);
 
-    systemBtLoDMove->update(carAI, this, m_manPowerUp, m_manBoxPowerUp, m_manTotem, graph, manNavMesh, m_manBoundingWall);
+    systemBtLoDMove->update(carAI, this, m_manPowerUp, m_manBoxPowerUp, m_manTotem, graph, manNavMesh, m_manBoundingWall, m_manBoundingOBB);
 
     //physicsAI->Update(carAI, graph);
     UpdateGeneralCar(*carAI, *(m_manTotem->GetEntities()[0].get()));
@@ -775,7 +776,7 @@ void ManCar::CatchPowerUpAI(DataMap* d) {
         type = typeCPowerUp::MelonMolon;
 
 
-    //type = typeCPowerUp::SuperMegaNitro;
+    // type = typeCPowerUp::SuperMegaNitro;
     auto cPowerUpCar = static_cast<CPowerUp*>(actualCar->GetComponent(CompType::PowerUpComp).get());
     if (cPowerUpCar->typePowerUp == typeCPowerUp::None) {
         cPowerUpCar->typePowerUp = type;

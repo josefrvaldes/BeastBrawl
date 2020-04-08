@@ -155,12 +155,9 @@ void ManPowerUp::Update() {
     auto renderEngine = renderFacadeManager->GetRenderFacade();
     for (long unsigned int i = 0; i < entities.size(); ++i) {
         auto cRemovableObj = static_cast<CRemovableObject *>(entities[i].get()->GetComponent(CompType::RemovableObjectComp).get());
-        // auto cId = static_cast<CId*>(entities[i].get()->GetComponent(CompType::IdComp).get());
         if (cRemovableObj->destroy) {
-            cout << "El tamaño antes de borrar es de: " << entities.size() << endl;
             renderEngine->DeleteEntity(entities[i].get()); 
             entities.erase(entities.begin() + i);
-            cout << "El tamaño DESPUES de borrar es de: " << entities.size() << endl;
 
         }
     }

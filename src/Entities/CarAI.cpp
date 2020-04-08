@@ -32,18 +32,21 @@ using namespace std;
 CarAI::CarAI(){
     typeCar = TypeCar::CarAI;
 
-    string mesh;
-    if(Constants::RENDER_ENGINE == Constants::RenderEngine::CLOVER){
-        mesh    = "kart_ia.obj";
-        
-    }else if(Constants::RENDER_ENGINE == Constants::RenderEngine::IRRLICHT){
-        mesh    =   "kart_ia.obj";
-    }
-    
     // default values
     glm::vec3 pos   = glm::vec3(10.0f, 20.0f, 30.0f);
     glm::vec3 rot   = glm::vec3(0.0f, 90.0f, 0.0f);
-    glm::vec3 scale = glm::vec3(0.6f, 0.6f, 0.6f);
+    glm::vec3 scale = glm::vec3(6.0f, 6.0f, 6.0f);
+
+    string mesh;
+    if(Constants::RENDER_ENGINE == Constants::RenderEngine::CLOVER){
+        //mesh    = "kart_physics.fbx";
+        mesh    =   "kart_physics.obj";
+        
+    }else if(Constants::RENDER_ENGINE == Constants::RenderEngine::IRRLICHT){
+        mesh    =   "kart_physics.obj";
+    }
+    
+    
     string texture = "";
     // string mesh    = "kart_ia.obj";
     //string vertexShader = "CLEngine/src/Shaders/lightMapping.vert";
@@ -84,7 +87,7 @@ CarAI::CarAI(){
 
     glm::vec3 pSphBehind = pos;
     glm::vec3 pSphFront = pos;
-    shared_ptr<CBoundingChassis> cBoundingChassis = make_shared<CBoundingChassis>(pSphBehind, 7.5, pSphFront, 7.5);
+    shared_ptr<CBoundingChassis> cBoundingChassis = make_shared<CBoundingChassis>(pSphBehind, 7.0, 5.0, pSphFront, 7.0, 5.0);
 
     shared_ptr<CGravity> cGravity = make_shared<CGravity>();
 
@@ -132,6 +135,14 @@ CarAI::CarAI(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale,string texture, strin
     cTransformable->position = pos;
     cTransformable->rotation = rot;
     cTransformable->scale    = scale;
+
+    if(Constants::RENDER_ENGINE == Constants::RenderEngine::CLOVER){
+        cTransformable->rotation.x += 90.0;
+    }else if(Constants::RENDER_ENGINE == Constants::RenderEngine::IRRLICHT){
+
+    } 
+
+    
 
     CTexture *cTexture = (CTexture *)m_components[CompType::TextureComp].get();
     cTexture->texture = texture;

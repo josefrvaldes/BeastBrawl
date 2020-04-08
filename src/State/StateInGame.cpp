@@ -43,7 +43,7 @@ StateInGame::~StateInGame() {
  *  Y ES OBLIGATORIO llamar a este método desde el constructor de los hijos
  */
 void StateInGame::InitVirtualMethods() {
-    InitializeManagers(physics.get(), cam.get());
+    InitializeManagers(physics.get(), cam.get(), 300);
     InitializeSystems(*manCars.get(), *manBoundingWall.get(), *manBoundingOBB.get(), *manBoundingGround.get(), *manPowerUps.get(), *manNavMesh.get(), *manBoxPowerUps.get(), *manTotems.get());
     InitializeFacades();
 
@@ -62,6 +62,9 @@ void StateInGame::InitializeFacades() {
     physicsEngine = PhysicsFacadeManager::GetInstance()->GetPhysicsFacade();
     renderEngine = RenderFacadeManager::GetInstance()->GetRenderFacade();
     renderEngine->FacadeSuscribeEvents();
+
+    //Pantalla de carga
+    renderEngine->FacadeInitResources(); 
 }
 
 /*
@@ -116,6 +119,12 @@ void StateInGame::AddElementsToRender() {
         "media/skybox/bottom.jpg",
         "media/skybox/front.jpg",
         "media/skybox/back.jpg");
+    
+    if(manLight->GetEntities().size()>0){
+        auto lightWithShadow = manLight->GetEntities()[0];
+        auto cId = static_cast<CId*>(lightWithShadow->GetComponent(CompType::IdComp).get());
+        renderEngine->FacadeAddShadowMapping(cId->id);
+    }
 }
 
 void StateInGame::InitializeCLPhysics(ManCar &manCars, ManBoundingWall &manWall, ManBoundingOBB &manOBB, ManBoundingGround &manGround, ManPowerUp &manPowerUp, ManNavMesh &manNavMesh, ManBoxPowerUp &manBoxPowerUp, ManTotem &manTotem) {
@@ -140,7 +149,7 @@ void StateInGame::InitializeSystems(ManCar &manCars, ManBoundingWall &manWall, M
     sysLoD = make_unique<SystemLoD>();
 }
 
-void StateInGame::InitializeManagers(Physics *physics, Camera *cam) {
+void StateInGame::InitializeManagers(Physics *physics, Camera *cam, const uint32_t timeGame) {
     // inicializa el man PU, no hace falta más código para esto
     manCars = make_shared<ManCar>(physics, cam);
     manWayPoint = make_shared<ManWayPoint>();  //Se crean todos los waypoints y edges
@@ -153,7 +162,7 @@ void StateInGame::InitializeManagers(Physics *physics, Camera *cam) {
     manTotems = make_shared<ManTotem>(manNavMesh.get());
     manNamePlates = make_shared<ManNamePlate>(manCars.get());
     manLight = make_shared<ManLight>();
-    manGameRules = make_unique<ManGameRules>();
+    manGameRules = make_unique<ManGameRules>(timeGame);
 }
 
 //Carga los bancos de sonido InGame.
@@ -222,6 +231,9 @@ void StateInGame::Update() {
     renderEngine->FacadeUpdateMeshesLoD(manPowerUps->GetEntities());
     renderEngine->FacadeUpdateMeshesLoD(manBoxPowerUps->GetEntities());
     renderEngine->FacadeUpdateMeshesLoD(manTotems->GetEntities());
+
+
+    manGameRules->Update();
 }
 
 void StateInGame::Render() {

@@ -4,6 +4,7 @@
 #include <EventManager/Event.h>
 #include <EventManager/EventManager.h>
 #include <glm/vec3.hpp>
+#include <glm/vec2.hpp>
 #include <glm/geometric.hpp>
 
 #include <math.h>
@@ -52,7 +53,7 @@ class Physics {
     void CalculatePositionReverse(CCar *cCar, CTransformable *cTransformable, CExternalForce *cExternalForce, float deltaTime);
     void CalculatePositionCamera(CCar *cCar, CTransformable *cTransformableCar, CTransformable *cTransformableCamera, CCamera *cCamera);
     glm::vec3 CalculateVecDirCar(CTransformable *cTransformable) const;
-    void FrictionExternalForce(CCar *cCar, CExternalForce *externalForce) const;
+    glm::vec2 ApplyExternalForce(CCar *cCar, CExternalForce *externalForce, const glm::vec2& carForce) const;
 
     void RecoverSkid(CCar &cCar, CTransformable &cTrans) const;
 

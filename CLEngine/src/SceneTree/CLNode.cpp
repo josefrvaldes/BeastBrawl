@@ -4,7 +4,9 @@
 #include <glm/ext.hpp>
 #include <glm/gtx/string_cast.hpp>
 
+
 #include "../Frustum/CLFrustum.h"
+#include "../../../src/Constants.h"
 
 using namespace CLE;
 
@@ -54,20 +56,58 @@ CLNode* CLNode::AddMesh(unsigned int id){
     return node.get();
 }
 
-CLNode* CLNode::AddLight(unsigned int id,glm::vec3 intensity, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float constant, float linear, float quadratic){
-    auto node = AddLight(id);
-    static_cast<CLLight*>(node->GetEntity())->SetLightAttributes(intensity,ambient,diffuse,specular,constant,linear,quadratic);
+CLNode* CLNode::AddPointLight(unsigned int id,glm::vec3 intensity, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float constant, float linear, float quadratic){
+    auto node = AddPointLight(id);
+    static_cast<CLPointLight*>(node->GetEntity())->SetLightAttributes(intensity,ambient,diffuse,specular,constant,linear,quadratic);
     return node;
 }
 
 
-CLNode* CLNode::AddLight(unsigned int id){
+CLNode* CLNode::AddPointLight(unsigned int id){
 
-    shared_ptr<CLEntity> e = make_shared<CLLight>(id);
+    shared_ptr<CLEntity> e = make_shared<CLPointLight>(id);
     shared_ptr<CLNode> node = make_shared<CLNode>(e);
     childs.push_back(node);
     node->SetFather(this);
-    lights.push_back(node.get());
+    pointLights.push_back(node.get());
+
+    return node.get();
+    
+}
+
+CLNode* CLNode::AddDirectLight(unsigned int id,glm::vec3 direction,glm::vec3 intensity, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float constant, float linear, float quadratic){
+    auto node = AddDirectLight(id);
+    static_cast<CLDirectLight*>(node->GetEntity())->SetLightAttributes(direction,intensity,ambient,diffuse,specular,constant,linear,quadratic);
+    return node;
+}
+
+
+CLNode* CLNode::AddDirectLight(unsigned int id){
+
+    shared_ptr<CLEntity> e = make_shared<CLDirectLight>(id);
+    shared_ptr<CLNode> node = make_shared<CLNode>(e);
+    childs.push_back(node);
+    node->SetFather(this);
+    directLights.push_back(node.get());
+
+    return node.get();
+    
+}
+
+CLNode* CLNode::AddSpotLight(unsigned int id,glm::vec3 direction,float cutOff,float outerCutOff,glm::vec3 intensity, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float constant, float linear, float quadratic){
+    auto node = AddSpotLight(id);
+    static_cast<CLSpotLight*>(node->GetEntity())->SetLightAttributes(direction,cutOff,outerCutOff,intensity,ambient,diffuse,specular,constant,linear,quadratic);
+    return node;
+}
+
+
+CLNode* CLNode::AddSpotLight(unsigned int id){
+
+    shared_ptr<CLEntity> e = make_shared<CLSpotLight>(id);
+    shared_ptr<CLNode> node = make_shared<CLNode>(e);
+    childs.push_back(node);
+    node->SetFather(this);
+    spotLights.push_back(node.get());
 
     return node.get();
     
@@ -85,27 +125,64 @@ CLNode* CLNode::AddCamera(unsigned int id){
     
 }
 
+CLNode* CLNode::AddParticleSystem(unsigned int id){
+    if(particleSystemShader == 0){
+        auto rm = CLResourceManager::GetResourceManager();
+        auto resourceShader = rm->GetResourceShader("CLEngine/src/Shaders/particleSystem.vert", "CLEngine/src/Shaders/particleSystem.frag","CLEngine/src/Shaders/particleSystem.geom");
+        particleSystemShader = resourceShader->GetProgramID();
+    }
+    shared_ptr<CLEntity> e = make_shared<CLParticleSystem>(id,1,glm::vec3(0.0f,10.0f,0.0f));
+    shared_ptr<CLNode> node = make_shared<CLNode>(e);
+    childs.push_back(node);
+    node->SetFather(this);
+    node->SetShaderProgramID(particleSystemShader);
+
+    //Configuraciones especificas de un particlesystem
+    if(auto particleSystem = dynamic_cast<CLParticleSystem*>(e.get())){
+        particleSystem->SetCLNode(node.get());
+    }
+
+    return node.get();
+}
+
 void CLNode::AddSkybox(string right, string left, string top, string bottom, string front, string back){
     if(!skyboxShader){
         auto rm = CLResourceManager::GetResourceManager();
         auto resourceShader = rm->GetResourceShader("CLEngine/src/Shaders/skybox.vert", "CLEngine/src/Shaders/skybox.frag");
         skyboxShader = resourceShader->GetProgramID();
-        cout << skyboxShader << endl;
     }
     skybox = make_unique<CLSkybox>(right, left, top, bottom, front, back);
 }
 
 
+void CLNode::AddShadowMapping(GLuint lightId){ 
+    if(!simpleDepthShader){
+        auto rm = CLResourceManager::GetResourceManager();
+        depthShadder = rm->GetResourceShader("CLEngine/src/Shaders/simpleDepthShader.vert", "CLEngine/src/Shaders/simpleDepthShader.frag", "CLEngine/src/Shaders/simpleDepthShader.geom");
+        simpleDepthShader = depthShadder->GetProgramID();
+    }
+    shadowMapping = make_unique<CLShadowMapping>(lightId);
+}
+
+void CLNode::AddBillBoard(string& file, bool vertically, glm::vec3 posBillBoard, float width_, float height_){
+    if(!billboardShader){
+        auto rm = CLResourceManager::GetResourceManager();
+        CLResourceTexture* t = rm->GetResourceTexture(file, vertically);
+        auto resourceShader = rm->GetResourceShader("CLEngine/src/Shaders/billboard.vert", "CLEngine/src/Shaders/billboard.frag", "CLEngine/src/Shaders/billboard.geom");
+        billboardShader = resourceShader->GetProgramID();
+        billBoard = make_unique<CLBillboard>(t, posBillBoard, width_, height_);
+    }
+}
 
 bool CLNode::RemoveChild(CLNode* child){
-
-    // if(child->GetChilds().size()>0){
-    //     for(auto childOfChild : child->GetChilds()){
+    /*
+    if(child->GetChilds().size()>0){
+        for(auto childOfChild : child->GetChilds()){
             
-    //         child->DeleteNode(childOfChild->GetEntity()->GetID());
-    //     }
-    // }
-
+            child->DeleteNode(childOfChild->GetEntity()->GetID());
+        }
+    }
+    */
     //Childs son los hijos del padre en el que estara child
     for(unsigned int i = 0; i<childs.size(); ++i){
         if(child == childs[i].get()){
@@ -285,10 +362,12 @@ void CLNode::DFSTree(glm::mat4 mA) {
         changed = false;
     }
     auto& frustum_m = GetActiveCamera()->GetFrustum();
+
     //CLE::CLFrustum::Visibility frusVisibility = frustum_m.IsInside(translation);
     CLE::CLFrustum::Visibility frusVisibility = frustum_m.IsInside(translation, dimensionsBoundingBox);
 
-    if(entity && visible && frusVisibility == CLE::CLFrustum::Visibility::Completly) { 
+    //Voy a comentar de momento el frustrum ya que para el particle system puede dar problemas
+    if(entity && visible /*&& frusVisibility == CLE::CLFrustum::Visibility::Completly*/) { 
         glUseProgram(shaderProgramID);
         //Calculamos las luces
         //TODO: Hacer un sistema de que si no hemos cambiado de shader no se recalculen
@@ -301,6 +380,8 @@ void CLNode::DFSTree(glm::mat4 mA) {
         glm::mat4 MVP = projection * view * transformationMat;
         glUniformMatrix4fv(glGetUniformLocation(shaderProgramID, "model"), 1, GL_FALSE, glm::value_ptr(transformationMat));
         glUniformMatrix4fv(glGetUniformLocation(shaderProgramID, "MVP"), 1, GL_FALSE, glm::value_ptr(MVP));
+        glUniform1i(glGetUniformLocation(shaderProgramID, "shadows"), true); 
+        glUniform1f(glGetUniformLocation(shaderProgramID, "far_plane"), Constants::FAR_PLANE); 
         entity->Draw(shaderProgramID);
 
     }
@@ -309,6 +390,39 @@ void CLNode::DFSTree(glm::mat4 mA) {
         node->DFSTree(transformationMat);
     }
 }
+
+
+void CLNode::DFSTree(glm::mat4 mA, GLuint shaderID) {
+    if (changed) {
+        transformationMat = mA*CalculateTransformationMatrix();
+        changed = false;
+    }
+
+    auto& frustum_m = GetActiveCamera()->GetFrustum();
+    //CLE::CLFrustum::Visibility frusVisibility = frustum_m.IsInside(translation);
+    CLE::CLFrustum::Visibility frusVisibility = frustum_m.IsInside(translation, dimensionsBoundingBox);
+    //glUseProgram(shaderID);
+
+    if(entity && visible && frusVisibility == CLE::CLFrustum::Visibility::Completly) { 
+        // La matriz model se pasa aqui wey
+        //Calculamos las luces
+        //TODO: Hacer un sistema de que si no hemos cambiado de shader no se recalculen
+
+        //if(hasLightingEffects){
+        //    CalculateLights();
+        //}
+        glUniformMatrix4fv(glGetUniformLocation(shaderID, "model"), 1, GL_FALSE, glm::value_ptr(transformationMat));
+        //entity->Draw(transformationMat);
+        entity->DrawDepthMap(shaderID);
+
+        //cout << "este objeto se dibuja" << endl;
+    }
+
+    for (auto node : childs) {
+        node->DFSTree(transformationMat, shaderID);
+    }
+}
+
 
 
 /**
@@ -348,21 +462,65 @@ void CLNode::CalculateViewProjMatrix(){
  */
 void CLNode::CalculateLights(){
     GLuint i = 0;
-    for(auto light : lights){
-        auto lightEntity = static_cast<CLLight*>(light->GetEntity());
+    for(auto pointLight : pointLights){
+        auto pointLightEntity = static_cast<CLPointLight*>(pointLight->GetEntity());
         
-        string number = to_string(i);
+        string number = to_string(i); 
+        //Tenemos que mirar que luz es la del shadowmapping
+        if(shadowMapping && pointLight->GetEntity()->GetID() == shadowMapping->GetID()){
+            glUniform1i(glGetUniformLocation(this->GetShaderProgramID(),"id_luz_shadowMapping"),i);    
 
-        glUniform1i(glGetUniformLocation(this->GetShaderProgramID(),"num_Point_Lights"),lights.size());    
-        //TODO: A ver esto deberia cambiarse y pasarselo al shader de las mallas que lo vayan a usar
-        //      por si al final las luces usan otro shader
-        glUniform3fv(glGetUniformLocation(this->GetShaderProgramID(), ("pointLights[" + number + "].position").c_str()),1,glm::value_ptr(light->GetGlobalTranslation()));
-        glUniform3fv(glGetUniformLocation(this->GetShaderProgramID(), ("pointLights[" + number + "].ambient").c_str()), 1,glm::value_ptr(lightEntity->GetAmbient()));
-        glUniform3fv(glGetUniformLocation(this->GetShaderProgramID(), ("pointLights[" + number + "].diffuse").c_str()), 1, glm::value_ptr(lightEntity->GetDiffuse()));
-        glUniform3fv(glGetUniformLocation(this->GetShaderProgramID(), ("pointLights[" + number + "].specular").c_str()), 1, glm::value_ptr(lightEntity->GetSpecular()));
-        glUniform1f(glGetUniformLocation(this->GetShaderProgramID(), ("pointLights[" + number + "].constant").c_str()), lightEntity->GetConstant());
-        glUniform1f(glGetUniformLocation(this->GetShaderProgramID(), ("pointLights[" + number + "].linear").c_str()), lightEntity->GetLinear());
-        glUniform1f(glGetUniformLocation(this->GetShaderProgramID(), ("pointLights[" + number + "].quadratic").c_str()), lightEntity->GetQuadratic());
+        }
+        glUniform1i(glGetUniformLocation(this->GetShaderProgramID(),"num_Point_Lights"),pointLights.size());    
+        glUniform3fv(glGetUniformLocation(this->GetShaderProgramID(), ("pointLights[" + number + "].position").c_str()),1,glm::value_ptr(pointLight->GetGlobalTranslation()));
+        glUniform3fv(glGetUniformLocation(this->GetShaderProgramID(), ("pointLights[" + number + "].ambient").c_str()), 1,glm::value_ptr(pointLightEntity->GetAmbient()));
+        glUniform3fv(glGetUniformLocation(this->GetShaderProgramID(), ("pointLights[" + number + "].diffuse").c_str()), 1, glm::value_ptr(pointLightEntity->GetDiffuse()));
+        glUniform3fv(glGetUniformLocation(this->GetShaderProgramID(), ("pointLights[" + number + "].specular").c_str()), 1, glm::value_ptr(pointLightEntity->GetSpecular()));
+        glUniform1f(glGetUniformLocation(this->GetShaderProgramID(), ("pointLights[" + number + "].constant").c_str()), pointLightEntity->GetConstant());
+        glUniform1f(glGetUniformLocation(this->GetShaderProgramID(), ("pointLights[" + number + "].linear").c_str()), pointLightEntity->GetLinear());
+        glUniform1f(glGetUniformLocation(this->GetShaderProgramID(), ("pointLights[" + number + "].quadratic").c_str()), pointLightEntity->GetQuadratic());
+
+
+        i++;
+    }
+
+    i = 0;
+    for(auto directLight : directLights){
+        auto directLightEntity = static_cast<CLDirectLight*>(directLight->GetEntity());
+        
+        string number = to_string(i); 
+        
+        glUniform1i(glGetUniformLocation(this->GetShaderProgramID(),"num_Direct_Lights"),directLights.size());    
+        glUniform3fv(glGetUniformLocation(this->GetShaderProgramID(), ("directLights[" + number + "].position").c_str()),1,glm::value_ptr(directLight->GetGlobalTranslation()));
+        glUniform3fv(glGetUniformLocation(this->GetShaderProgramID(), ("directLights[" + number + "].direction").c_str()),1,glm::value_ptr(directLightEntity->GetDirection()));
+        glUniform3fv(glGetUniformLocation(this->GetShaderProgramID(), ("directLights[" + number + "].ambient").c_str()), 1,glm::value_ptr(directLightEntity->GetAmbient()));
+        glUniform3fv(glGetUniformLocation(this->GetShaderProgramID(), ("directLights[" + number + "].diffuse").c_str()), 1, glm::value_ptr(directLightEntity->GetDiffuse()));
+        glUniform3fv(glGetUniformLocation(this->GetShaderProgramID(), ("directLights[" + number + "].specular").c_str()), 1, glm::value_ptr(directLightEntity->GetSpecular()));
+        glUniform1f(glGetUniformLocation(this->GetShaderProgramID(), ("directLights[" + number + "].constant").c_str()), directLightEntity->GetConstant());
+        glUniform1f(glGetUniformLocation(this->GetShaderProgramID(), ("directLights[" + number + "].linear").c_str()), directLightEntity->GetLinear());
+        glUniform1f(glGetUniformLocation(this->GetShaderProgramID(), ("directLights[" + number + "].quadratic").c_str()), directLightEntity->GetQuadratic());
+
+
+        i++;
+    }
+
+    i = 0;
+    for(auto spotLight : spotLights){
+        auto spotLightEntity = static_cast<CLSpotLight*>(spotLight->GetEntity());
+        
+        string number = to_string(i); 
+
+        glUniform1i(glGetUniformLocation(this->GetShaderProgramID(),"num_Spot_Lights"),spotLights.size());  
+        glUniform3fv(glGetUniformLocation(this->GetShaderProgramID(), ("spotLights[" + number + "].position").c_str()),1,glm::value_ptr(spotLight->GetGlobalTranslation()));
+        glUniform3fv(glGetUniformLocation(this->GetShaderProgramID(), ("spotLights[" + number + "].direction").c_str()),1,glm::value_ptr(spotLightEntity->GetDirection()));
+        glUniform1f(glGetUniformLocation(this->GetShaderProgramID(), ("spotLights[" + number + "].cutOff").c_str()),spotLightEntity->GetCutOff());
+        glUniform1f(glGetUniformLocation(this->GetShaderProgramID(), ("spotLights[" + number + "].outerCutOff").c_str()),spotLightEntity->GetOuterCutOff());
+        glUniform3fv(glGetUniformLocation(this->GetShaderProgramID(), ("spotLights[" + number + "].ambient").c_str()), 1,glm::value_ptr(spotLightEntity->GetAmbient()));
+        glUniform3fv(glGetUniformLocation(this->GetShaderProgramID(), ("spotLights[" + number + "].diffuse").c_str()), 1, glm::value_ptr(spotLightEntity->GetDiffuse()));
+        glUniform3fv(glGetUniformLocation(this->GetShaderProgramID(), ("spotLights[" + number + "].specular").c_str()), 1, glm::value_ptr(spotLightEntity->GetSpecular()));
+        glUniform1f(glGetUniformLocation(this->GetShaderProgramID(), ("spotLights[" + number + "].constant").c_str()), spotLightEntity->GetConstant());
+        glUniform1f(glGetUniformLocation(this->GetShaderProgramID(), ("spotLights[" + number + "].linear").c_str()), spotLightEntity->GetLinear());
+        glUniform1f(glGetUniformLocation(this->GetShaderProgramID(), ("spotLights[" + number + "].quadratic").c_str()), spotLightEntity->GetQuadratic());
 
 
         i++;
@@ -383,6 +541,29 @@ void CLNode::DrawSkybox(){
         skybox->Draw(skyboxShader);
     }
 }
+
+void CLNode::DrawBillBoard(){
+
+    if(billBoard.get()){
+
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+        //glDepthMask(GL_FALSE);
+        glUseProgram(billboardShader);
+
+        glm::mat4 viewProjection = projection*view;
+        glm::vec3 camPos = cameras[0]->translation;
+	    GLuint VPMatrix = glGetUniformLocation(billboardShader, "VPMatrix");
+	    glUniformMatrix4fv(VPMatrix, 1, GL_FALSE, glm::value_ptr(viewProjection));
+
+	    GLuint cameraPosition = glGetUniformLocation(billboardShader, "cameraPosition");
+	    glUniform3fv(cameraPosition, 1, glm::value_ptr(camPos));
+
+        billBoard->Draw(billboardShader);
+    }
+}
+
 
 //Devuelve el nodo por la id que le mandes
 //Lo hace a partir del padre que lo llame, lo suyo es llamarlo siempre con el nodo principal
@@ -422,6 +603,16 @@ CLCamera* CLNode::GetActiveCamera(){
     return nullptr;
 }
 
+CLNode* CLNode::GetActiveCameraNode(){
+    for(auto camera : cameras){
+        auto entityCamera = static_cast<CLCamera*>(camera->GetEntity());
+        if(entityCamera->IsActive()){
+            return camera;
+        }
+    }
+    return nullptr;
+}
+
 const void CLNode::Draw3DLine(float x1, float y1, float z1, float x2, float y2, float z2) const{
     Draw3DLine(x1,y1,z1,x1,y2,z1,CLColor(255.0,0.0,0.0,255.0));
 }
@@ -455,7 +646,6 @@ const void CLNode::Draw3DLine(float x1, float y1, float z1, float x2, float y2, 
 
     glm::mat4 modelMat = glm::identity<mat4>();
 
-    //99% seguro de que estoy enviando mal las matrices vista y projeccion
     glUseProgram(debugShader);
 
     glm::vec4 clcolor(color.GetRedNormalized(),color.GetGreenNormalized(),color.GetBlueNormalized(),color.GetAlphaNormalized());
@@ -556,5 +746,5 @@ float CLNode::CalculateBoundingBox(){
 
 void CLNode::RemoveLightsAndCameras() {
     cameras.clear();
-    lights.clear();
+    pointLights.clear();
 }

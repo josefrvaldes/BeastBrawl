@@ -11,9 +11,11 @@ using namespace std::chrono;
 
 class CClock : public Component{
 public:
-    CClock();
+    CClock(const uint32_t durationGame);
     ~CClock(){};
 
     bool active;
-    time_point<system_clock> timeStart;        // reloj que contaviliza, cada vez que tenemos el totem, el tiempo
+    time_point<system_clock> timeStart;        // reloj que contabiliza, cada vez que tenemos el totem, el tiempo
+    const uint32_t DURATION_TIME;
+    int64_t accumulatedTime;
 };

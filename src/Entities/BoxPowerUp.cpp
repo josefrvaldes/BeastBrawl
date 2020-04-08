@@ -20,8 +20,10 @@ BoxPowerUp::BoxPowerUp(){
     // default values
     string texture = "";
     string mesh;
+    glm::vec3 scale = vec3(1.0f,1.0f,1.0f);
     if(Constants::RENDER_ENGINE == Constants::RenderEngine::CLOVER){
         mesh    = "TEST_BOX.fbx";
+        scale = vec3(4.0f,4.0f,4.0f);
         
     }else if(Constants::RENDER_ENGINE == Constants::RenderEngine::IRRLICHT){
         mesh    =   "box_powerup.obj";
@@ -35,7 +37,7 @@ BoxPowerUp::BoxPowerUp(){
     
     shared_ptr<CId> cId   = make_shared<CId>();
     shared_ptr<CType> cType = make_shared<CType>(ModelType::AnimatedMesh);
-    shared_ptr<CTransformable> cTransformable = make_shared<CTransformable>(glm::vec3(0.0f,0.0f,0.0f), glm::vec3(0.0f,0.0f,0.0f), glm::vec3(1.0f,1.0f,1.0f)); 
+    shared_ptr<CTransformable> cTransformable = make_shared<CTransformable>(glm::vec3(0.0f,0.0f,0.0f), glm::vec3(0.0f,0.0f,0.0f), scale); 
     shared_ptr<CTexture> cTexture = make_shared<CTexture>(texture);
     shared_ptr<CMesh> cMesh   = make_shared<CMesh>(mesh);
     shared_ptr<CBoxPowerUp> cBoxPowerUp   = make_shared<CBoxPowerUp>();

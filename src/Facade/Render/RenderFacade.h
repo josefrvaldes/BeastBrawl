@@ -42,6 +42,7 @@ class RenderFacade {
     virtual void FacadeDrawIntro() = 0;
     virtual void FacadeDrawMenu() = 0;
     virtual void FacadeDrawSelectCharacter() = 0;
+    virtual void FacadeInitResources() = 0;
     virtual void FacadeDrawPause() = 0;
     virtual void FacadeDrawEndRace() = 0;
     virtual void FacadeDrawLobbyMulti() = 0;
@@ -73,7 +74,9 @@ class RenderFacade {
     virtual void FacadeUpdateMeshesLoD(vector<shared_ptr<Entity>> entities) = 0;
     virtual void ThrowEventChangeToMulti(uint16_t IdOnline, const vector<uint16_t> IdPlayersOnline) = 0;
     virtual void FacadeAddSkybox(string right,string left,string top,string bottom,string front,string back) = 0;
+    virtual void FacadeAddShadowMapping(unsigned int lightId) = 0;
     virtual void CleanScene() = 0;
+    virtual void FacadeUpdateViewport() = 0;
 
     //DEBUG
     virtual void Draw3DLine(vec3 &pos1, vec3 &pos2, uint16_t r, uint16_t g, uint16_t b) const = 0;

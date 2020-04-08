@@ -19,8 +19,9 @@
 #include "SceneTree/CLNode.h"
 #include "SceneTree/CLEntity.h"
 #include "SceneTree/CLMesh.h"
-#include "SceneTree/CLLight.h"
+#include "SceneTree/CLPointLight.h"
 #include "SceneTree/CLCamera.h"
+#include "SceneTree/CLShadowMapping.h"
 #include "ResourceManager/CLResourceManager.h"
 
 using namespace std;
@@ -36,7 +37,7 @@ struct Character {
 
 class CLEngine {
     public:
-        CLEngine() = default;;
+        CLEngine() = default;
         CLEngine(const unsigned int, const unsigned int, const string&);
         ~CLEngine();
 
@@ -47,17 +48,22 @@ class CLEngine {
         void DrawObjects();
         void EndScene();
         void SetTitle(string&);
+        void SetTitle(string&&);
         void RenderImgui();
         void UpdateViewport();
         double GetTime();
         void InputClose();
         void CloseWindow();
         void PollEvents();
+        void DrawDepthMap();
+        void RenderDepthMap(CLShadowMapping& shadowMap, CLResourceShader* depthShader, glm::vec3 posLight);
         void Clear();
 
         void LoadFont(const std::string&);
         void DrawImage2D(float _x, float _y, float _width, float _height, float _depth, string& file, bool);
         void RenderText2D(std::string& text, GLfloat x, GLfloat y, GLfloat depth, GLfloat scale, glm::vec3& color);
+
+        //void renderBillboard();
 
 
         CLNode* GetSceneManager();

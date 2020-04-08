@@ -43,6 +43,7 @@ class RenderFacadeClover : public RenderFacade {
       void FacadeDrawIntro() override;
       void FacadeDrawMenu() override;
       void FacadeDrawSelectCharacter() override;
+      void FacadeInitResources() override;
       void FacadeDrawPause() override;
       void FacadeDrawEndRace() override;
       void FacadeDrawLobbyMulti() override;
@@ -74,7 +75,9 @@ class RenderFacadeClover : public RenderFacade {
       void FacadeUpdateMeshesLoD(vector<shared_ptr<Entity>> entities) override;
       void ThrowEventChangeToMulti(uint16_t IdOnline, const std::vector<uint16_t> IdPlayersOnline) override;
       void FacadeAddSkybox(string right,string left,string top,string bottom,string front,string back) override;
+      void FacadeAddShadowMapping(unsigned int lightId) override;
       void CleanScene() override;
+      void FacadeUpdateViewport() override;
 
       //DEBUG
       void Draw3DLine(vec3& pos1, vec3& pos2, uint16_t r, uint16_t g, uint16_t b) const override;
@@ -111,8 +114,8 @@ class RenderFacadeClover : public RenderFacade {
         int maxInputMenu { 3 };
         int inputPause { 0 };
         int maxInputPause { 1 };
-        int inputSC { 0 };
-        int maxInputSC { 1 };
+        int inputSC { 1 };
+        int maxInputSC { 7 };
 
         CLEngine* device;
         CLNode* smgr;

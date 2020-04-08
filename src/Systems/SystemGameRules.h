@@ -23,5 +23,6 @@ public:
     ~SystemGameRules(){};
 
     void UpdateRulesCarPowerUps(Entity& car_, Entity& totem_) const;
+    void UpdateGameRules(Entity& globalClock_) const;
 
 };

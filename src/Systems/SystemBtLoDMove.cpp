@@ -160,16 +160,16 @@ struct ApplyFuzzyLogic_LoDMove : public behaviourTree {
 
 struct CollisionAvoidance_LoDMove : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
-        bool collisionWall = blackboard->steeringBehaviours->UpdateWallAvoidance(blackboard->actualCar, blackboard->manBoundingWall);
+        bool collisionWall = blackboard->steeringBehaviours->UpdateWallAvoidance(blackboard->actualCar, blackboard->manBoundingWall, blackboard->manBoundingOBB);
 
         if(collisionWall == false){
             bool result = blackboard->steeringBehaviours->UpdateObstacleAvoidance(blackboard->actualCar, blackboard->manCars);
 
             if(result){
                 auto cMovementType = static_cast<CMovementType*>(blackboard->actualCar->GetComponent(CompType::MovementComp).get());
-                cMovementType->movementType = "Evasion de jugador";
+                cMovementType->movementType = "Evasion de coche";
             }
-            return result;
+            return false;
         }else{
             auto cMovementType = static_cast<CMovementType*>(blackboard->actualCar->GetComponent(CompType::MovementComp).get());
             cMovementType->movementType = "Evasion de muro";
@@ -261,13 +261,14 @@ SystemBtLoDMove::SystemBtLoDMove(){
 
 
 
-void SystemBtLoDMove::update(CarAI* actualCar, ManCar* manCars,ManPowerUp* manPowerUps, ManBoxPowerUp* manBoxPowerUps, ManTotem* manTotems, ManWayPoint* manWayPoint, ManNavMesh* manNavMesh, ManBoundingWall* m_manBoundingWall){
+void SystemBtLoDMove::update(CarAI* actualCar, ManCar* manCars,ManPowerUp* manPowerUps, ManBoxPowerUp* manBoxPowerUps, ManTotem* manTotems, 
+                            ManWayPoint* manWayPoint, ManNavMesh* manNavMesh, ManBoundingWall* m_manBoundingWall, ManBoundingOBB* m_manBoundingOBB){
     if(entradoFL==false){
         fuzzyLogic->InitSystemFuzzyLogicAI(actualCar);  // To-Do: arreglar esta llamada para solo hacerla una vez
         entradoFL=true;
     }
 
-    unique_ptr<Blackboard> blackboard = make_unique<Blackboard>(actualCar, manCars, manPowerUps, manBoxPowerUps, manTotems, manWayPoint, fuzzyLogic.get(), steeringBehaviours.get(),manNavMesh, m_manBoundingWall);
+    unique_ptr<Blackboard> blackboard = make_unique<Blackboard>(actualCar, manCars, manPowerUps, manBoxPowerUps, manTotems, manWayPoint, fuzzyLogic.get(), steeringBehaviours.get(),manNavMesh, m_manBoundingWall, m_manBoundingOBB);
 
     selectorBehaviourTree->run(blackboard.get());
 }

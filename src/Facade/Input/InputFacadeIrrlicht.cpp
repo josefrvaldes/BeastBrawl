@@ -6,7 +6,7 @@ InputFacadeIrrlicht::InputFacadeIrrlicht(){
 	//RenderFacadeManager::GetInstance().GetRenderFacade()->AddReceiver(receiver);
 }
 
-vector<Constants::InputTypes> InputFacadeIrrlicht::CheckInput(){
+vector<Constants::InputTypes> InputFacadeIrrlicht::CheckInputMulti(){
     //Data d;
 	//d.gameObject = &go;
 
@@ -20,6 +20,9 @@ vector<Constants::InputTypes> InputFacadeIrrlicht::CheckInput(){
 	return vector<Constants::InputTypes>();
 }
 
+void InputFacadeIrrlicht::CheckInputSingle(){
+	
+}
 
 void InputFacadeIrrlicht::CheckInputIntro() {
 

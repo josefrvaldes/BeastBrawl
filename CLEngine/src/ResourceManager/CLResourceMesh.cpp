@@ -47,6 +47,7 @@ Mesh::Mesh(vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture
 
 
 // CLRESOURCEMESH -------------------------------------------------------------------
+#include "../SceneTree/CLShadowMapping.h"
 
 using namespace CLE;
 
@@ -54,12 +55,16 @@ using namespace CLE;
  * 
  * @param file - Ruta del archivo a leer.
  */
-bool CLResourceMesh::LoadFile(std::string file, bool vertically) {
+bool CLResourceMesh::LoadFile(std::string file, bool flipUV) {
     Assimp::Importer importer;
+    auto assimpFlags = aiProcess_Triangulate | /*aiProcess_FlipUVs | */aiProcess_GenNormals | aiProcess_CalcTangentSpace 
+                                | aiProcess_OptimizeMeshes | aiProcess_TransformUVCoords | aiProcess_JoinIdenticalVertices 
+                                | aiProcess_ImproveCacheLocality | aiProcess_GenUVCoords;
 
+    if(flipUV)
+        assimpFlags |= aiProcess_FlipUVs;
     // Importamos el fichero.
-    scene = importer.ReadFile(file, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_GenNormals | aiProcess_CalcTangentSpace 
-                                | aiProcess_OptimizeMeshes);
+    scene = importer.ReadFile(file, assimpFlags);
 
     // Error de carga
     if(!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) 
@@ -268,7 +273,7 @@ unsigned int CLResourceMesh::TextureFromFile(const char *path, const string &dir
     std::string token;
     while ((pos = filename.find(delimiter)) != std::string::npos) {
         token = filename.substr(0, pos);
-        std::cout << token << std::endl;
+        //std::cout << token << std::endl;
         filename.erase(0, pos + delimiter.length());
     }
 
@@ -283,7 +288,7 @@ unsigned int CLResourceMesh::TextureFromFile(const char *path, const string &dir
     unsigned char *data = stbi_load(filename.c_str(), &width, &height, &nrComponents, 0);
     if (data)
     {
-        GLenum format;
+        GLenum format = 0;
         if (nrComponents == 1)
             format = GL_RED;
         else if (nrComponents == 3)
@@ -323,6 +328,7 @@ void CLResourceMesh::Draw(GLuint shaderID) {
         // unsigned int specularNr = 1;
         // unsigned int normalNr   = 1;
         // unsigned int heightNr   = 1;
+        
         for(unsigned int i = 0; i < mesh.textures.size(); i++)
         {
             glActiveTexture(GL_TEXTURE0 + i); // active proper texture unit before binding
@@ -344,6 +350,9 @@ void CLResourceMesh::Draw(GLuint shaderID) {
             // and finally bind the texture
             glBindTexture(GL_TEXTURE_2D, mesh.textures[i].id);
         }
+        glActiveTexture(GL_TEXTURE1);
+        glUniform1i(glGetUniformLocation(shaderID, "depthMap"), 1);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, CLShadowMapping::depthCubemap);
 
 
 
@@ -353,5 +362,19 @@ void CLResourceMesh::Draw(GLuint shaderID) {
 
         // always good practice to set everything back to defaults once configured.
         glActiveTexture(GL_TEXTURE0);
+    }
+}
+
+
+
+
+/**
+ * Aqui se llega normalmente desde la clase CLMesh->Draw()
+ */
+void CLResourceMesh::DrawDepthMap(GLuint shaderID) {
+    for(auto& mesh : vecMesh){
+        glBindVertexArray(mesh.VAO);
+        glDrawElements(GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT, 0);
+        glBindVertexArray(0);
     }
 }

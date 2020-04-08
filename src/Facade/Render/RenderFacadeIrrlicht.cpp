@@ -329,7 +329,7 @@ const uint16_t RenderFacadeIrrlicht::FacadeAddObject(Entity* entity) {
         case ModelType::Text:
             break;
 
-        case ModelType::Light:
+        case ModelType::PointLight:
             return 0;
             break;
     }
@@ -618,6 +618,7 @@ bool RenderFacadeIrrlicht::IsInputPressed(InputXBox input){
     }
     return true; // en caso de que no exista
 }
+
 void RenderFacadeIrrlicht::SetValueInput(InputXBox input, bool valuePressed){
     auto mapByType = inputsPressed.find(input);
     if (mapByType != inputsPressed.end()) {
@@ -718,7 +719,7 @@ void RenderFacadeIrrlicht::FacadeCheckInputSingle() {
         SetValueInput(InputXBox::BUTTON_A, false);
     }
 
-    //Cambiamos a menu
+    //Cambiamos a pause
     if ((receiver.IsKeyDown(KEY_ESCAPE) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_START)) && !IsInputPressed(InputXBox::BUTTON_START)) {
         SetValueInput(InputXBox::BUTTON_START, true);
         eventManager.AddEventMulti(Event{EventType::STATE_PAUSE});
@@ -1015,6 +1016,10 @@ void RenderFacadeIrrlicht::FacadeDrawMenu() {
     driver->endScene();
 }
 
+void RenderFacadeIrrlicht::FacadeInitResources(){
+
+}
+
 void RenderFacadeIrrlicht::FacadeDrawControler() {
     driver->beginScene(true, true, video::SColor(255, 113, 113, 133));
     //smgr->drawAll();  // draw the 3d scene
@@ -1080,6 +1085,9 @@ void RenderFacadeIrrlicht::FacadeDeviceDrop() {
 void RenderFacadeIrrlicht::FacadeAddSkybox(string right,string left,string top,string bottom,string front,string back){
     
 }
+
+void RenderFacadeIrrlicht::FacadeAddShadowMapping(unsigned int lightId){}
+
 
 //DEBUG dibuja las aristas entre los nodos del grafo
 void RenderFacadeIrrlicht::FacadeDrawGraphEdges(ManWayPoint* manWayPoints) const{
@@ -1430,4 +1438,8 @@ void RenderFacadeIrrlicht::FacadeDrawBoundingBox(Entity* entity, bool colliding)
 
 void RenderFacadeIrrlicht::CleanScene() {
     smgr->clear();
+}
+
+void RenderFacadeIrrlicht::FacadeUpdateViewport(){
+    //device->UpdateViewport();
 }

@@ -5,15 +5,18 @@
 using namespace std;
 
 class Entity;
+struct SystemGameRules;
 
 class ManGameRules{
    public:
-    ManGameRules();
+    ManGameRules( const uint32_t durationTime_);
     ~ManGameRules();
 
     void SubscribeToEvents();
+    void Update();
 
    private:
-    void CreateGlobalClock();
+    void CreateGlobalClock( const uint32_t durationTime_ );
     unique_ptr<Entity> globalClock;
+    unique_ptr<SystemGameRules> systemGameRules;
 };
