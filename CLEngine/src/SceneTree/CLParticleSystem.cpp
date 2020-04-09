@@ -116,6 +116,7 @@ CLParticleSystem::CLParticle::CLParticle(CLParticleSystem* emitter){
     position       = CalculateSpawnPosition();
     lifeSpan       = particleSystem->GetLifeSpan();
     velocity       = particleSystem->GetSpeedDirection();
+    timeStart      = system_clock::now();
 
     //Comprobamos si el flag del effecto esta activado
     if(particleSystem->GetFlags() & EFFECT_DIR_ALEATORITY){
@@ -161,14 +162,38 @@ CLParticleSystem::CLParticle::CLParticle(CLParticleSystem* emitter){
 }
 
 
+void CLParticleSystem::CLParticle::Draw(GLuint shaderID){
+    if(particleDead) return;
+    Update();
+    
+    glUniform1f(glGetUniformLocation(shaderID, "width"), particleSystem->GetWidth());
+    glUniform1f(glGetUniformLocation(shaderID, "height"), particleSystem->GetHeight());
+    
+    glActiveTexture(GL_TEXTURE0); 
+    glBindTexture(GL_TEXTURE_2D, particleSystem->GetTexture()->GetTextureID());
+    glBindVertexArray(VAO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(position), &position[0], GL_STATIC_DRAW);
+    glVertexAttribPointer(0,3, GL_FLOAT, GL_FALSE, 0, (void*)0);    
+    glEnableVertexAttribArray(0);
+    glDrawArrays(GL_POINTS, 0, 1);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
+    
+}
 
 void CLParticleSystem::CLParticle::Update(){
     //Comprobamos si deberia seguir con vida la particula
     auto diff = duration_cast<milliseconds>(system_clock::now() - timeStart).count();
     if(diff >= lifeSpan){
-        //la respawneamos en la posicion inicial
-        position = CalculateSpawnPosition();
-        timeStart = system_clock::now();
+        if(particleSystem->GetLoop()){
+            //la respawneamos en la posicion inicial
+            position = CalculateSpawnPosition();
+            timeStart = system_clock::now();
+        }else{
+            particleDead = true;
+        }
+        
     }else{
         //la movemos
         position.x += velocity.x * Constants::DELTA_TIME;
@@ -227,22 +252,3 @@ glm::vec3 CLParticleSystem::CLParticle::CalculateSpawnPosition(){
     return newPosition;
 }
 
-
-void CLParticleSystem::CLParticle::Draw(GLuint shaderID){
-    Update();
-    
-    glUniform1f(glGetUniformLocation(shaderID, "width"), particleSystem->GetWidth());
-    glUniform1f(glGetUniformLocation(shaderID, "height"), particleSystem->GetHeight());
-    
-    glActiveTexture(GL_TEXTURE0); 
-    glBindTexture(GL_TEXTURE_2D, particleSystem->GetTexture()->GetTextureID());
-    glBindVertexArray(VAO);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(position), &position[0], GL_STATIC_DRAW);
-    glVertexAttribPointer(0,3, GL_FLOAT, GL_FALSE, 0, (void*)0);    
-    glEnableVertexAttribArray(0);
-    glDrawArrays(GL_POINTS, 0, 1);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
-    
-}
