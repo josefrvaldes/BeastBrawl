@@ -114,6 +114,8 @@ class CLNode;
                     ~CLParticle() = default;
 
                     void Draw(GLuint shaderID);
+                    bool GetParticleDead() const { return particleDead; }
+                    void ReviveParticle() { particleDead = false; }
 
                 private:
                     void Update();              //Aqui haremos los calculos necesarios de vida, posicion, etc

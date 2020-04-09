@@ -200,7 +200,13 @@ int main() {
         
         static_cast<CLCamera*>(camera->GetEntity())->SetCameraTarget(mesh2->GetGlobalTranslation());
 
+        if(glfwGetKey(device->GetWindow(),GLFW_KEY_E)){
+            static_cast<CLParticleSystem*>(ps1->GetEntity())->SetLoop(true);
+        }
 
+        if(glfwGetKey(device->GetWindow(),GLFW_KEY_Q)){
+            static_cast<CLParticleSystem*>(ps1->GetEntity())->SetLoop(false);
+        }
         // Measure speed
         double currentTime = glfwGetTime();
         frameCount++;

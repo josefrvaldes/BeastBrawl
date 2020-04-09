@@ -104,7 +104,22 @@ void CLParticleSystem::Update(){
         for(unsigned int i = 0; i<nParticlesToSpawn && particles.size()+nParticlesToSpawn<=nParticles ; ++i){
             particles.emplace_back(make_shared<CLParticle>(this));
         }
+
+        //Vamos a comprobar si tenemos que revivir alguna particula porque han activado de nuevo el loop
+        if(loop){
+            int particlesToRespawn = nParticlesToSpawn; //Solo vamos a revivir por iteracion a nParticlesToSpawn
+            for(auto& particle : particles){
+                if(particle->GetParticleDead()){
+                    particle->ReviveParticle();
+                    particlesToRespawn--;
+                }
+
+                if(particlesToRespawn == 0) break;
+            }
+        }
     }
+
+
 }
 
 // -----------------------------------------
@@ -126,9 +141,6 @@ CLParticleSystem::CLParticle::CLParticle(CLParticleSystem* emitter){
         std::uniform_int_distribution<int> yDir(-1, 1);
         std::uniform_int_distribution<int> zDir(-1, 1);
 
-        // velocity.x = (xDir(rng)) ? -particleSystem->GetSpeedDirection().x : particleSystem->GetSpeedDirection().x;
-        // velocity.y = (yDir(rng)) ? -particleSystem->GetSpeedDirection().y : particleSystem->GetSpeedDirection().y;
-        // velocity.z = (zDir(rng)) ? -particleSystem->GetSpeedDirection().z : particleSystem->GetSpeedDirection().z;
         int valueX = 0;
         int valueY = 0;
         int valueZ = 0;
@@ -191,7 +203,9 @@ void CLParticleSystem::CLParticle::Update(){
             position = CalculateSpawnPosition();
             timeStart = system_clock::now();
         }else{
+            //Si no hay loop al llegar a su lifeSpan la desactivamos y reposicionamos
             particleDead = true;
+            position = CalculateSpawnPosition();
         }
         
     }else{

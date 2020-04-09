@@ -155,7 +155,7 @@ CLNode* CLNode::AddParticleSystem(unsigned int id){
     //Configuraciones especificas de un particlesystem
     if(auto particleSystem = dynamic_cast<CLParticleSystem*>(e.get())){
         particleSystem->SetCLNode(node.get());
-        particleSystem->SetLoop(false);
+        particleSystem->SetLoop(true);
     }
 
     return node.get();
