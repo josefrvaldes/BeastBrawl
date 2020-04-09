@@ -214,17 +214,12 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars) {
 
     }
 
-    //Por si quieres imprimir las posiciones de los coches
-    // int k = 1;
-    // for(auto auxCar : manCars->GetEntities()){
-    //     cTotem = static_cast<CTotem*>(auxCar->GetComponent(CompType::TotemComp).get());
-    //     cout << "El coche numero " << k++ << " va en la posicion: " << cTotem->positionRanking << endl;
-    // }
 
     //DIBUJAMOS CURRENTPOWERUP
     device->DrawImage2D(25.0f, 25.0f, 150.0f, 150.0f, 0.1f ,powerUps[currentPowerUp], true);
 
     //RANKING
+    //TODO: Dejar como debug
     int i = 0;
     //core::stringw textIA = core::stringw("Car ");
     for (const auto& cars : manCars->GetEntities()) {
@@ -244,8 +239,30 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars) {
         device->RenderText2D(cadena, 200.0f, altura, 0.1f, 0.35f, color);
 
         i++;
-
     }
+
+    //Para mostrar el marcador
+    for(const auto& cars : manCars->GetEntities()) {
+        cTotem = static_cast<CTotem*>(cars->GetComponent(CompType::TotemComp).get());
+        if (cTotem->active) {
+            std::string cadena = "media/marcador.png";
+            device->DrawImage2D(550.0f, 50.0f ,225.0f, 90.0f, 0.2f, cadena, true);
+            cadena = "media/gorilaHUD.png";
+            device->DrawImage2D(585.0f,70.0f, 50.0f, 50.0f, 0.05f, cadena, true);
+
+            int time = cTotem->accumulatedTime / 100.0;
+            int time2 = cTotem->SEGUNDOS - (time / 10.0) + 1.0;
+            cadena = std::to_string(time2);
+            float altura = (device->GetScreenHeight()-110.0f);
+            glm::vec3 color = glm::vec3(0.0f, 0.0f, 0.0f);
+            if(time2 <= 5) {
+                color = glm::vec3(255.0f, 0.0f, 0.0f);
+            }
+            device->RenderText2D(cadena, 680.0f, altura, 0.05f, 0.75f, color);
+            break;
+        }
+    }
+
 }
 
 /**
@@ -630,20 +647,6 @@ void RenderFacadeClover::FacadeDrawIntro() {
     std::string file = "media/intro.png";
     device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
 
-    /*std::string text;
-    //glm::vec3 color = glm::vec3(0.0f, 255.0f, 0.0f);
-    glm::vec3 color[3] = {
-            glm::vec3(0.0f, 255.0f, 0.0f),
-            glm::vec3(0.0f, 255.0f, 0.0f),
-            glm::vec3(0.0f, 255.0f, 0.0f)
-    };
-    color[inputMenu] = glm::vec3(255.0f, 0.0f, 0.0f);
-    text = "Un jugador";
-    device->RenderText2D(text, 500.0f, 400.0f, 0.05f, 1.0f, color[0]);
-    text = "Multijugador";
-    device->RenderText2D(text, 500.0f, 350.0f, 0.05f, 1.0f, color[1]);
-    text = "Salir";
-    device->RenderText2D(text, 500.0f, 300.0f, 0.05f, 1.0f, color[2]);*/
 }
 
 /**
