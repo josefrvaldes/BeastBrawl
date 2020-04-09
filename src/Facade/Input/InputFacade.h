@@ -28,6 +28,7 @@ class InputFacade {
         virtual void CheckInputLobbyMulti() = 0;
         virtual void CheckInputController() = 0;
         virtual void CheckInputCredits() = 0;
+        virtual void CheckInputSettings(std::vector<int> &inputs, int maxInputs[], int& option) = 0;
 
 
     protected:

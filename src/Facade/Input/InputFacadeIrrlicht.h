@@ -63,6 +63,7 @@ class InputFacadeIrrlicht : public InputFacade{
         void CheckInputLobbyMulti() override;
         void CheckInputController() override;
         void CheckInputCredits() override;
+        void CheckInputSettings(std::vector<int> &inputs, int maxInputs[], int& option) override;
 
     private:
         MyEventReceiver receiver;

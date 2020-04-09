@@ -29,7 +29,10 @@ InputFacadeClover::InputFacadeClover(){
 }
 
 
-// mira si el input se encuentra pulsado
+/**
+ * Comprueba si el input que le pasamos estaba pulsado
+ * @param input - Input a comprobar.
+ */
 bool InputFacadeClover::IsInputPressed(InputXBox input){
     auto mapByType = inputsPressed.find(input);
     if (mapByType != inputsPressed.end()) {
@@ -40,6 +43,11 @@ bool InputFacadeClover::IsInputPressed(InputXBox input){
     return true; // en caso de que no exista
 }
 
+/**
+ * Cambia el estado del input que se le pasa
+ * @param input - Input a buscar
+ * @param valuePressed - Valor a actualizar
+ */
 void InputFacadeClover::SetValueInput(InputXBox input, bool valuePressed){
     auto mapByType = inputsPressed.find(input);
     if (mapByType != inputsPressed.end()) {
@@ -47,78 +55,99 @@ void InputFacadeClover::SetValueInput(InputXBox input, bool valuePressed){
     }
 }
 
-void InputFacadeClover::CheckInputIntro(){
-
+/**
+ * Comprueba si se ha pulsado una tecla o boton del teclado
+ * @param key - Input de teclado
+ * @param button - Input de mando
+ */
+bool InputFacadeClover::IsKeyOrGamepadPress(int key, int button, bool axes, float axe) {
     GLFWgamepadstate state;
     glfwGetGamepadState(GLFW_JOYSTICK_1, &state);
+    if(!axes)
+        return ( glfwGetKey(device->GetWindow(), key) || state.buttons[button] ) ;
+    return ( glfwGetKey(device->GetWindow(), key) || state.axes[button] > axe);
+}
+
+/**
+ * Comprueba si se ha pasado el tiempo de delay desde la ultima vez que se pulso el boton.
+ */
+bool InputFacadeClover::HasDelayPassed() {
+    return duration_cast<milliseconds>(system_clock::now() - timeStart).count() > inputDelay;
+}
+
+//////////////////////
+// CHECKS DE MENUS  //
+//////////////////////
+
+
+/**
+ * Inputs de la pantalla de inicio.
+ */
+void InputFacadeClover::CheckInputIntro(){
 
     //SALIR
-    if((glfwGetKey(device->GetWindow(), GLFW_KEY_DELETE) || state.buttons[GLFW_GAMEPAD_BUTTON_BACK])
-            && duration_cast<milliseconds>(system_clock::now() - timeStart).count() > inputDelay
-            && !IsInputPressed(BUTTON_BACK)) {
+    if( IsKeyOrGamepadPress(GLFW_KEY_DELETE, GLFW_GAMEPAD_BUTTON_BACK, false, 0) && HasDelayPassed() && !IsInputPressed(BUTTON_BACK) ) {
 
         timeStart = system_clock::now();
         SetValueInput(BUTTON_BACK, true);
         device->CloseWindow();
 
-    } else if (!(glfwGetKey(device->GetWindow(), GLFW_KEY_DELETE) || state.buttons[GLFW_GAMEPAD_BUTTON_BACK])) {
+    } else if ( !IsKeyOrGamepadPress(GLFW_KEY_DELETE, GLFW_GAMEPAD_BUTTON_BACK, false, 0) ) {
         SetValueInput(BUTTON_BACK, false);
     }
 
     //ENTRAR
-    if ((glfwGetKey(device->GetWindow(), GLFW_KEY_SPACE) || state.buttons[GLFW_GAMEPAD_BUTTON_A])
-            && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay
-            && !IsInputPressed(BUTTON_A)) {
+    if ( IsKeyOrGamepadPress(GLFW_KEY_SPACE, GLFW_GAMEPAD_BUTTON_A, false, 0) && HasDelayPassed() && !IsInputPressed(BUTTON_A) ) {
 
         timeStart = system_clock::now();
         SetValueInput(BUTTON_A, true);
         EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_MENU});
 
-    } else if (!(glfwGetKey(device->GetWindow(), GLFW_KEY_SPACE) || state.buttons[GLFW_GAMEPAD_BUTTON_A])) {
+    } else if ( !IsKeyOrGamepadPress(GLFW_KEY_SPACE, GLFW_GAMEPAD_BUTTON_A, false, 0) ) {
         SetValueInput(BUTTON_A, false);
     }
 }
 
+/**
+ * Inputs del menu de controles.
+ */
 void InputFacadeClover::CheckInputController() {
 
-    GLFWgamepadstate state;
-    glfwGetGamepadState(GLFW_JOYSTICK_1, &state);
-
     //ATRAS
-    if((glfwGetKey(device->GetWindow(), GLFW_KEY_DELETE) || state.buttons[GLFW_GAMEPAD_BUTTON_B])
-            && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay
-            && !IsInputPressed(BUTTON_B)) {
+    if( IsKeyOrGamepadPress(GLFW_KEY_DELETE, GLFW_GAMEPAD_BUTTON_B, false, 0) && HasDelayPassed() && !IsInputPressed(BUTTON_B) ) {
 
         timeStart = system_clock::now();
         SetValueInput(BUTTON_B, true);
         EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_MENU});
 
-    } else if((glfwGetKey(device->GetWindow(), GLFW_KEY_DELETE) || state.buttons[GLFW_GAMEPAD_BUTTON_B])) {
+    } else if( !IsKeyOrGamepadPress(GLFW_KEY_DELETE, GLFW_GAMEPAD_BUTTON_B, false, 0)) {
         SetValueInput(BUTTON_B, false);
     }
 }
 
+/**
+ * Inputs del menu.
+ * @param input - Seleccion.
+ * @param maxInput - ID maximo de seleccion.
+ */
 void InputFacadeClover::CheckInputMenu(int& input, int maxInput){
 
     GLFWgamepadstate state;
     glfwGetGamepadState(GLFW_JOYSTICK_1, &state);
 
     //ATRAS
-    if((glfwGetKey(device->GetWindow(), GLFW_KEY_DELETE) || state.buttons[GLFW_GAMEPAD_BUTTON_B])
-            && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay
-            && !IsInputPressed(BUTTON_B)) {
+    if(IsKeyOrGamepadPress(GLFW_KEY_DELETE, GLFW_GAMEPAD_BUTTON_B, false, 0) && HasDelayPassed() && !IsInputPressed(BUTTON_B)) {
 
         timeStart = system_clock::now();
         SetValueInput(BUTTON_B, true);
         EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_INTRO});
 
-    } else if(!(glfwGetKey(device->GetWindow(), GLFW_KEY_DELETE) || state.buttons[GLFW_GAMEPAD_BUTTON_B])) {
+    } else if(!IsKeyOrGamepadPress(GLFW_KEY_DELETE, GLFW_GAMEPAD_BUTTON_B, false, 0)) {
         SetValueInput(BUTTON_B, false);
     }
 
     //SUBIR
-    if ((glfwGetKey(device->GetWindow(), GLFW_KEY_UP ) || state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_UP])
-            && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay) {
+    if ( IsKeyOrGamepadPress(GLFW_KEY_UP, 0, 0, 0) && HasDelayPassed() ) {
 
         timeStart = system_clock::now();
         input--;
@@ -128,8 +157,7 @@ void InputFacadeClover::CheckInputMenu(int& input, int maxInput){
     }
 
     //BAJAR
-    if ((glfwGetKey(device->GetWindow(), GLFW_KEY_DOWN ) || state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_DOWN])
-            && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay ) {
+    if (IsKeyOrGamepadPress(GLFW_KEY_DOWN, 0, 0, 0) && HasDelayPassed() ) {
 
         timeStart = system_clock::now();
         input++;
@@ -139,9 +167,7 @@ void InputFacadeClover::CheckInputMenu(int& input, int maxInput){
     }
 
     //ESPACIO
-    if ((glfwGetKey(device->GetWindow(), GLFW_KEY_SPACE) || state.buttons[GLFW_GAMEPAD_BUTTON_A])
-            && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay
-            && !IsInputPressed(BUTTON_A)) {
+    if (IsKeyOrGamepadPress(GLFW_KEY_SPACE, 0, 0, 0) && HasDelayPassed() && !IsInputPressed(BUTTON_A)) {
 
         timeStart = system_clock::now();
         SetValueInput(BUTTON_A, true);
@@ -171,33 +197,31 @@ void InputFacadeClover::CheckInputMenu(int& input, int maxInput){
             default : cout << "ESTE CODIGO DE INPUT NO EXISTE\n";
         }
 
-    } else if (!(glfwGetKey(device->GetWindow(), GLFW_KEY_SPACE) || state.buttons[GLFW_GAMEPAD_BUTTON_A]) ) {
+    } else if (!IsKeyOrGamepadPress(GLFW_KEY_SPACE, 0, 0, 0) ) {
         SetValueInput(BUTTON_A, false);
     }
 }
 
+/**
+ * Input de la pantalla de seleccion de personaje.
+ * @param input - Seleccion.
+ * @param maxInput - ID maximo de seleccion.
+ */
 void InputFacadeClover::CheckInputSelectCharacter(int &input, int maxInput) {
 
-    GLFWgamepadstate state;
-    glfwGetGamepadState(GLFW_JOYSTICK_1, &state);
-
     //ATRAS
-    if((glfwGetKey(device->GetWindow(), GLFW_KEY_DELETE) || state.buttons[GLFW_GAMEPAD_BUTTON_B])
-       && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay
-       && !IsInputPressed(BUTTON_B)) {
+    if( IsKeyOrGamepadPress(GLFW_KEY_DELETE, GLFW_GAMEPAD_BUTTON_B, false, 0) && HasDelayPassed() && !IsInputPressed(BUTTON_B)) {
 
         timeStart = system_clock::now();
         SetValueInput(BUTTON_B, true);
         EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_MENU});
 
-    } else if(!(glfwGetKey(device->GetWindow(), GLFW_KEY_DELETE) || state.buttons[GLFW_GAMEPAD_BUTTON_B])) {
+    } else if(!IsKeyOrGamepadPress(GLFW_KEY_DELETE, GLFW_GAMEPAD_BUTTON_B, false, 0)) {
         SetValueInput(BUTTON_B, false);
     }
 
     //IZQUIERDA Y DERECHA
-    if ((glfwGetKey(device->GetWindow(), GLFW_KEY_RIGHT ) || state.buttons[GLFW_GAMEPAD_BUTTON_RIGHT_THUMB]
-            || glfwGetKey(device->GetWindow(), GLFW_KEY_LEFT ) || state.buttons[GLFW_GAMEPAD_BUTTON_LEFT_THUMB])
-        && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay) {
+    if ( (IsKeyOrGamepadPress(GLFW_KEY_RIGHT, 0, 0, 0) || IsKeyOrGamepadPress(GLFW_KEY_LEFT, 0, 0, 0) ) && HasDelayPassed() ) {
 
         timeStart = system_clock::now();
         if (input%2 == 0) {
@@ -208,8 +232,7 @@ void InputFacadeClover::CheckInputSelectCharacter(int &input, int maxInput) {
     }
 
     //BAJAR
-    if((glfwGetKey(device->GetWindow(), GLFW_KEY_DOWN) || state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_DOWN])
-            && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay ) {
+    if( IsKeyOrGamepadPress(GLFW_KEY_DOWN, 0, 0, 0) && HasDelayPassed() ) {
 
         timeStart = system_clock::now();
         input += 2;
@@ -223,8 +246,7 @@ void InputFacadeClover::CheckInputSelectCharacter(int &input, int maxInput) {
     }
 
     //SUBIR
-    if((glfwGetKey(device->GetWindow(), GLFW_KEY_UP) || state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_UP])
-       && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay ) {
+    if( IsKeyOrGamepadPress(GLFW_KEY_UP, 0, 0, 0) && HasDelayPassed() ) {
 
         timeStart = system_clock::now();
         input -= 2;
@@ -237,71 +259,60 @@ void InputFacadeClover::CheckInputSelectCharacter(int &input, int maxInput) {
         }
     }
 
-
     //ACEPTAR - ESPACIO
-    if ((glfwGetKey(device->GetWindow(), GLFW_KEY_SPACE) || state.buttons[GLFW_GAMEPAD_BUTTON_A])
-        && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay
-        && !IsInputPressed(BUTTON_A)) {
+    if ( IsKeyOrGamepadPress(GLFW_KEY_SPACE, GLFW_GAMEPAD_BUTTON_A, false, 0) && HasDelayPassed() && !IsInputPressed(BUTTON_A) ) {
 
         timeStart = system_clock::now();
         SetValueInput(BUTTON_A, true);
-
         EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_GAME_OPTIONS});
 
-    } else if (!(glfwGetKey(device->GetWindow(), GLFW_KEY_SPACE) || state.buttons[GLFW_GAMEPAD_BUTTON_A]) ) {
+    } else if (!IsKeyOrGamepadPress(GLFW_KEY_SPACE, GLFW_GAMEPAD_BUTTON_A, false, 0) ) {
         SetValueInput(BUTTON_A, false);
     }
 
 }
 
 /**
- *
+ * Inputs de la pantalla de opciones de partida
  * @param input - Vector con las opciones. Sus valores son el valor seleccionado
  * @param maxInput - Vector con las opciones. Sus valores son el maximo valor que puede alcanzar cada uno.
  * @param pos - En que opcion nos encontramos.
  * 0 = Tiempo partida, 1 = Tiempo posesion, 2 = Aceptar
  */
 void InputFacadeClover::CheckInputGameOptions(std::vector<int> &input, int maxInput[], int& pos) {
-    GLFWgamepadstate state;
-    glfwGetGamepadState(GLFW_JOYSTICK_1, &state);
+
     //ATRAS
-    if((glfwGetKey(device->GetWindow(), GLFW_KEY_DELETE) || state.buttons[GLFW_GAMEPAD_BUTTON_B])
-       && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay
-       && !IsInputPressed(BUTTON_B)) {
+    if( IsKeyOrGamepadPress(GLFW_KEY_DELETE, GLFW_GAMEPAD_BUTTON_B, false, 0) && HasDelayPassed() && !IsInputPressed(BUTTON_B)) {
 
         timeStart = system_clock::now();
         SetValueInput(BUTTON_B, true);
         EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_SELECT_CHARACTER});
 
-    } else if(!(glfwGetKey(device->GetWindow(), GLFW_KEY_DELETE) || state.buttons[GLFW_GAMEPAD_BUTTON_B])) {
+    } else if( !IsKeyOrGamepadPress(GLFW_KEY_DELETE, GLFW_GAMEPAD_BUTTON_B, false, 0)) {
         SetValueInput(BUTTON_B, false);
     }
 
     //ACEPTAR - ESPACIO
-    if ( pos == 2 &&
-        (glfwGetKey(device->GetWindow(), GLFW_KEY_SPACE) || state.buttons[GLFW_GAMEPAD_BUTTON_A])
-        && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay
-        && !IsInputPressed(BUTTON_A)) {
+    if ( pos == 2 && IsKeyOrGamepadPress(GLFW_KEY_SPACE, GLFW_GAMEPAD_BUTTON_A, false, 0) && HasDelayPassed() && !IsInputPressed(BUTTON_A)) {
 
         timeStart = system_clock::now();
         SetValueInput(BUTTON_A, true);
 
+        //Manera un poco cutre de resetear el CId al empezar el juego
         RenderFacadeManager::GetInstance()->GetRenderFacade()->SetNumEnemyCars(0);
 
-        //Manera un poco cutre de resetear el CId al empezar el juego
         auto cId = make_shared<CId>();
         cId->ResetNumIds();
         auto cNavMesh = make_shared<CNavMesh>();
         cNavMesh->ResetNumIds();
         EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_INGAMESINGLE});
 
-    } else if (!(glfwGetKey(device->GetWindow(), GLFW_KEY_SPACE) || state.buttons[GLFW_GAMEPAD_BUTTON_A]) ) {
+    } else if ( !IsKeyOrGamepadPress(GLFW_KEY_SPACE, GLFW_GAMEPAD_BUTTON_A, false, 0) ) {
         SetValueInput(BUTTON_A, false);
     }
 
     //DERECHA
-    if ((glfwGetKey(device->GetWindow(), GLFW_KEY_RIGHT ) || state.buttons[GLFW_GAMEPAD_BUTTON_RIGHT_THUMB])
-        && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay) {
+    if (IsKeyOrGamepadPress(GLFW_KEY_RIGHT, 0, 0, 0) && HasDelayPassed() ) {
 
         timeStart = system_clock::now();
         ++input[pos];
@@ -311,8 +322,7 @@ void InputFacadeClover::CheckInputGameOptions(std::vector<int> &input, int maxIn
     }
 
     //IZQUIERDA
-    if ((glfwGetKey(device->GetWindow(), GLFW_KEY_LEFT ) || state.buttons[GLFW_GAMEPAD_BUTTON_LEFT_THUMB])
-        && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay) {
+    if ( IsKeyOrGamepadPress(GLFW_KEY_LEFT, 0, 0, 0) && HasDelayPassed()) {
 
         timeStart = system_clock::now();
         --input[pos];
@@ -322,8 +332,7 @@ void InputFacadeClover::CheckInputGameOptions(std::vector<int> &input, int maxIn
     }
 
     //ARRIBA
-    if((glfwGetKey(device->GetWindow(), GLFW_KEY_UP) || state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_UP])
-       && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay ) {
+    if( IsKeyOrGamepadPress(GLFW_KEY_UP, 0, 0, 0) && HasDelayPassed() ) {
 
         timeStart = system_clock::now();
         --pos;
@@ -333,8 +342,7 @@ void InputFacadeClover::CheckInputGameOptions(std::vector<int> &input, int maxIn
     }
 
     //BAJAR
-    if((glfwGetKey(device->GetWindow(), GLFW_KEY_DOWN) || state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_DOWN])
-       && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay ) {
+    if( IsKeyOrGamepadPress(GLFW_KEY_DOWN, 0, 0, 0) && HasDelayPassed() ) {
 
         timeStart = system_clock::now();
         ++pos;
@@ -349,12 +357,14 @@ void InputFacadeClover::CheckInputGameOptions(std::vector<int> &input, int maxIn
         input[2] = 0;
     }
 
-    //cout << "POS: " << pos << endl;
-    //cout << "MAX: " << maxInput[pos] << endl;
-    //cout << "OPCION: " << input[pos] << endl;
-
 }
 
+
+
+
+/**
+ * Input de la partida un jugador.
+ */
 void InputFacadeClover::CheckInputSingle(){
     GLFWgamepadstate state;
     glfwGetGamepadState(GLFW_JOYSTICK_1, &state);
@@ -364,7 +374,7 @@ void InputFacadeClover::CheckInputSingle(){
 
 
     //CLAXON
-    if (glfwGetKey(device->GetWindow(),GLFW_KEY_P) || state.buttons[GLFW_GAMEPAD_BUTTON_RIGHT_THUMB]) {
+    if ( glfwGetKey(device->GetWindow(),GLFW_KEY_P) || state.buttons[GLFW_GAMEPAD_BUTTON_RIGHT_THUMB] ) {
         eventManager.AddEventMulti(Event{EventType::PRESS_P});
     }
 
@@ -474,7 +484,11 @@ void InputFacadeClover::CheckInputSingle(){
 
 }
 
+/**
+ * Inputs de la partida multijugador
+ */
 vector<Constants::InputTypes> InputFacadeClover::CheckInputMulti(){
+
     GLFWgamepadstate state;
     glfwGetGamepadState(GLFW_JOYSTICK_1, &state);
 
@@ -482,15 +496,12 @@ vector<Constants::InputTypes> InputFacadeClover::CheckInputMulti(){
     auto renderFacade = RenderFacadeManager::GetInstance()->GetRenderFacade();
 
     vector<Constants::InputTypes> inputs;
-    inputs.reserve(4); // para evitar el funcionamiento de cómo se redimensiona
-                       // por defecto un vector, como sabemos que como máximo 
-                       // va a haber un máximo de 4 inputs en el vector, 
-                       // le reservamos directamente ya el espacio
-
-    //SALIMOS
-    /*if (glfwGetKey(device->GetWindow(),GLFW_KEY_DELETE)) {
-        device->CloseWindow();
-    }*/
+    /**
+     * Para evitar el funcionamiento de cómo se redimensiona por defecto un vector,
+     * como sabemos que como máximo va a haber un máximo de 4 inputs en el vector,
+     * le reservamos directamente ya el espacio
+     */
+    inputs.reserve(4);
 
     //CLAXON
     if (glfwGetKey(device->GetWindow(),GLFW_KEY_P) || state.buttons[GLFW_GAMEPAD_BUTTON_RIGHT_THUMB]) {
@@ -505,7 +516,7 @@ vector<Constants::InputTypes> InputFacadeClover::CheckInputMulti(){
     } else {
         eventManager.AddEventMulti(Event{EventType::NOT_SKID_PRESS});
     }
-    
+
     //  ACELERAR y MARCHA ATRAS
     if (glfwGetKey(device->GetWindow(),GLFW_KEY_W) || state.axes[GLFW_GAMEPAD_AXIS_RIGHT_TRIGGER] > 0) {
         eventManager.AddEventMulti(Event{EventType::PRESS_I});
@@ -531,13 +542,13 @@ vector<Constants::InputTypes> InputFacadeClover::CheckInputMulti(){
     // MODO DEBUG
     if (glfwGetKey(device->GetWindow(),GLFW_KEY_F3) && !glfwGetKey(device->GetWindow(),GLFW_KEY_LEFT_SHIFT) && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay) {
         timeStart = system_clock::now();
-        //showDebug = !showDebug; 
+        //showDebug = !showDebug;
         renderFacade->SetShowDebug(!renderFacade->GetShowDebug());
 
     }else if(glfwGetKey(device->GetWindow(),GLFW_KEY_F3) && glfwGetKey(device->GetWindow(),GLFW_KEY_LEFT_SHIFT) && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay){
         timeStart = system_clock::now();
         renderFacade->SetShowDebugAI(!renderFacade->GetShowDebugAI());
-        
+
     }
 
     //TODO: Alargar esto para cuando tengamos mas coches para debugear
@@ -550,39 +561,39 @@ vector<Constants::InputTypes> InputFacadeClover::CheckInputMulti(){
     }else if(glfwGetKey(device->GetWindow(),GLFW_KEY_2) && glfwGetKey(device->GetWindow(),GLFW_KEY_LEFT_SHIFT) && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay){
         timeStart = system_clock::now();
         renderFacade->SetIDCarAIToDebug(1);
-        
+
     }else if(glfwGetKey(device->GetWindow(),GLFW_KEY_3) && glfwGetKey(device->GetWindow(),GLFW_KEY_LEFT_SHIFT) && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay){
         timeStart = system_clock::now();
         renderFacade->SetIDCarAIToDebug(2);
-        
+
     }else if(glfwGetKey(device->GetWindow(),GLFW_KEY_0) && glfwGetKey(device->GetWindow(),GLFW_KEY_LEFT_SHIFT) && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay){
         timeStart = system_clock::now();
         renderFacade->SetIDCarAIToDebug(-1);
-        
+
     }
 
     // CAMARA TRASERA Y TOTEM
     if ((glfwGetKey(device->GetWindow(),GLFW_KEY_I) || state.buttons[GLFW_GAMEPAD_BUTTON_LEFT_BUMPER])
-            && !invertedCam
-            && !totemCamActive) {
+        && !invertedCam
+        && !totemCamActive) {
 
         invertedCam = true;
         eventManager.AddEventMulti(Event{EventType::INVERT_CAMERA});
 
     } else if((glfwGetKey(device->GetWindow(),GLFW_KEY_O) || state.buttons[GLFW_GAMEPAD_BUTTON_RIGHT_BUMPER])
-            && !invertedCam ) {
+              && !invertedCam ) {
 
         totemCamActive = true;
         eventManager.AddEventMulti(Event{EventType::TOTEM_CAMERA});
 
     } else if (!(glfwGetKey(device->GetWindow(),GLFW_KEY_I) || state.buttons[GLFW_GAMEPAD_BUTTON_LEFT_BUMPER])
-            && !totemCamActive){
+               && !totemCamActive){
 
         invertedCam = false;
         eventManager.AddEventMulti(Event{EventType::NORMAL_CAMERA});
 
     } else if (!(glfwGetKey(device->GetWindow(),GLFW_KEY_I) || state.buttons[GLFW_GAMEPAD_BUTTON_LEFT_BUMPER])
-            && !invertedCam ) {
+               && !invertedCam ) {
 
         totemCamActive = false;
         eventManager.AddEventMulti(Event{EventType::NORMAL_CAMERA});
@@ -590,7 +601,7 @@ vector<Constants::InputTypes> InputFacadeClover::CheckInputMulti(){
 
     // POWERUPS
     if ((glfwGetKey(device->GetWindow(),GLFW_KEY_SPACE) || state.buttons[GLFW_GAMEPAD_BUTTON_A])
-            && !IsInputPressed(BUTTON_A)) {
+        && !IsInputPressed(BUTTON_A)) {
 
         SetValueInput(InputXBox::BUTTON_A, true);
         eventManager.AddEventMulti(Event{EventType::PRESS_SPACE});
@@ -604,14 +615,13 @@ vector<Constants::InputTypes> InputFacadeClover::CheckInputMulti(){
 }
 
 
+
+
+
 void InputFacadeClover::CheckInputPause(int& input, int maxInput){
 
-    GLFWgamepadstate state;
-    glfwGetGamepadState(GLFW_JOYSTICK_1, &state);
-
     //SUBIR
-    if ((glfwGetKey(device->GetWindow(), GLFW_KEY_UP ) || state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_UP])
-            && duration_cast<milliseconds>(system_clock::now() - timeStart).count() > inputDelay) {
+    if ( IsKeyOrGamepadPress(GLFW_KEY_UP, 0, 0, 0) && HasDelayPassed() ) {
 
         timeStart = system_clock::now();
         input--;
@@ -620,8 +630,7 @@ void InputFacadeClover::CheckInputPause(int& input, int maxInput){
     }
 
     //BAJAR
-    if ((glfwGetKey(device->GetWindow(), GLFW_KEY_DOWN ) || state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_DOWN])
-            && duration_cast<milliseconds>(system_clock::now() - timeStart).count() > inputDelay ) {
+    if ( IsKeyOrGamepadPress(GLFW_KEY_DOWN, 0, 0, 0) && HasDelayPassed() ) {
 
         timeStart = system_clock::now();
         input++;
@@ -630,9 +639,7 @@ void InputFacadeClover::CheckInputPause(int& input, int maxInput){
     }
 
     //IN GAME
-    if ((glfwGetKey(device->GetWindow(), GLFW_KEY_SPACE) || state.buttons[GLFW_GAMEPAD_BUTTON_A])
-            && duration_cast<milliseconds>(system_clock::now() - timeStart).count() > inputDelay
-            && !IsInputPressed(BUTTON_A)) {
+    if ( IsKeyOrGamepadPress(GLFW_KEY_SPACE, GLFW_GAMEPAD_BUTTON_A, false, 0) && HasDelayPassed() && !IsInputPressed(BUTTON_A)) {
 
         timeStart = system_clock::now();
         SetValueInput(BUTTON_A, true);
@@ -649,53 +656,46 @@ void InputFacadeClover::CheckInputPause(int& input, int maxInput){
             }
         }
 
-    } else if ( !(glfwGetKey(device->GetWindow(), GLFW_KEY_SPACE) || state.buttons[GLFW_GAMEPAD_BUTTON_A]) ) {
+    } else if ( !IsKeyOrGamepadPress(GLFW_KEY_SPACE, GLFW_GAMEPAD_BUTTON_A, false, 0) ) {
         SetValueInput(BUTTON_A, false);
     }
 }
 
-
 void InputFacadeClover::CheckInputEndRace(){
-    GLFWgamepadstate state;
-    glfwGetGamepadState(GLFW_JOYSTICK_1, &state);
 
-
-    if ((glfwGetKey(device->GetWindow(), GLFW_KEY_SPACE) || state.buttons[GLFW_GAMEPAD_BUTTON_A])
-            && duration_cast<milliseconds>(system_clock::now() - timeStart).count() > inputDelay
-            && !IsInputPressed(BUTTON_A)) {
+    if ( IsKeyOrGamepadPress(GLFW_KEY_SPACE, GLFW_GAMEPAD_BUTTON_A, false, 0) && HasDelayPassed() && !IsInputPressed(BUTTON_A)) {
 
         timeStart = system_clock::now();
         SetValueInput(BUTTON_A, true);
         RenderFacadeManager::GetInstance()->GetRenderFacade()->CleanScene();
         EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_MENU});
 
-    } else if( !(glfwGetKey(device->GetWindow(), GLFW_KEY_SPACE) || state.buttons[GLFW_GAMEPAD_BUTTON_A]) ) {
+    } else if( !IsKeyOrGamepadPress(GLFW_KEY_SPACE, GLFW_GAMEPAD_BUTTON_A, false, 0) ) {
         SetValueInput(BUTTON_A, false);
     }
 }
 
-
 void InputFacadeClover::CheckInputLobbyMulti() {
     //TODO: Input temporal. Hay que poner el atras, no salir
-    if (glfwGetKey(device->GetWindow(),GLFW_KEY_DELETE)) {
+    if ( IsKeyOrGamepadPress(GLFW_KEY_DELETE, GLFW_GAMEPAD_BUTTON_B, false, 0)) {
         device->CloseWindow();
     }
 }
 
 void InputFacadeClover::CheckInputCredits() {
-    GLFWgamepadstate state;
-    glfwGetGamepadState(GLFW_JOYSTICK_1, &state);
 
     //ATRAS
-    if((glfwGetKey(device->GetWindow(), GLFW_KEY_SPACE) || state.buttons[GLFW_GAMEPAD_BUTTON_A])
-       && duration_cast<milliseconds>(system_clock::now() - timeStart).count()>inputDelay
-       && !IsInputPressed(BUTTON_A)) {
+    if( IsKeyOrGamepadPress(GLFW_KEY_SPACE, GLFW_GAMEPAD_BUTTON_A, false, 0) && HasDelayPassed() && !IsInputPressed(BUTTON_A) ) {
 
         timeStart = system_clock::now();
         SetValueInput(BUTTON_A, true);
         EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_MENU});
 
-    } else if((glfwGetKey(device->GetWindow(), GLFW_KEY_SPACE) || state.buttons[GLFW_GAMEPAD_BUTTON_A])) {
+    } else if( !IsKeyOrGamepadPress(GLFW_KEY_SPACE, GLFW_GAMEPAD_BUTTON_A, false, 0) ) {
         SetValueInput(BUTTON_A, false);
     }
+}
+
+void InputFacadeClover::CheckInputSettings(std::vector<int> &inputs, int *maxInputs, int &option) {
+
 }
