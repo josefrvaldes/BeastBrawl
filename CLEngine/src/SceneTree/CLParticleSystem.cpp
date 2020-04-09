@@ -205,7 +205,7 @@ void CLParticleSystem::CLParticle::Update(){
         }else{
             //Si no hay loop al llegar a su lifeSpan la desactivamos y reposicionamos
             particleDead = true;
-            position = CalculateSpawnPosition();
+            //position = CalculateSpawnPosition();
         }
         
     }else{
@@ -266,3 +266,7 @@ glm::vec3 CLParticleSystem::CLParticle::CalculateSpawnPosition(){
     return newPosition;
 }
 
+void CLParticleSystem::CLParticle::ReviveParticle(){
+    particleDead = false;
+    position = CalculateSpawnPosition();
+}
