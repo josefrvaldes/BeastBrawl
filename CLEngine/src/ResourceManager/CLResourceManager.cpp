@@ -83,6 +83,7 @@ CLResourceMaterial* CLResourceManager::GetResourceMaterial(const std::string fil
 }
 
 CLResourceShader* CLResourceManager::GetResourceShader(const std::string file1, const std::string file2) {
+    cout << "Dentro de GetResourceShader" << endl;
     shared_ptr<CLResourceShader> resource = NULL;
     bool search = true;
     for (unsigned int i=0; i<shaders.size() && search; ++ i) {

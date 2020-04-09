@@ -35,3 +35,5 @@ lib/fmod/libfmodstudioL.so
 UDPServer/Server
 
 UDPServer/Server.exe
+
+CLEngine/CLEngine.exe
