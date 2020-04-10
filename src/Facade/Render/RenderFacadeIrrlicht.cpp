@@ -994,6 +994,16 @@ void RenderFacadeIrrlicht::ThrowEventChangeToMulti(uint16_t IdOnline, const vect
 }
 
 
+void RenderFacadeIrrlicht::ResetInputGameOptions() {
+
+}
+
+void RenderFacadeIrrlicht::ResetInputCharacter() {
+
+}
+
+
+
 int RenderFacadeIrrlicht::FacadeGetFPS() const{
     return driver->getFPS();
 }

@@ -18,7 +18,7 @@ class StateSelectCharacter : public State {
         void InitState() override;
         void Update() override;
         void Render() override;
-        States GetState() override { return State::States::MENU; };
+        States GetState() override { return State::States::SELECT_CHARACTER; };
 
 
     private:

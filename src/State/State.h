@@ -6,7 +6,7 @@ using namespace std;
 
 class State{
     public:
-        enum States{ NO_STATE, INTRO, MENU, SELECT_CHARACTER, GAME_OPTIONS, INGAME_SINGLE, INGAME_MULTI, ENDRACE, PAUSE, CONTROLS, CREDITS, LOBBY_MULTI};
+        enum States{ NO_STATE, INTRO, MENU, SELECT_CHARACTER, GAME_OPTIONS, INGAME_SINGLE, INGAME_MULTI, ENDRACE, PAUSE, CONTROLS, CREDITS, LOBBY_MULTI, SETTINGS};
         State();
         virtual ~State() = 0;
         virtual void InitState() = 0;

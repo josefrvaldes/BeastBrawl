@@ -570,6 +570,19 @@ void RenderFacadeClover::FacadeCheckInputSettings() {
     InputFacadeManager::GetInstance()->GetInputFacade()->CheckInputSettings(inputSettings, maxInputSettings, optionSettings);
 }
 
+//TODO: Deberia ser un evento
+void RenderFacadeClover::ResetInputCharacter() {
+    inputSC = 0;
+}
+
+//TODO: Deberia ser un evento
+void RenderFacadeClover::ResetInputGameOptions() {
+    option = 2;
+    inputGO[0] = 1;
+    inputGO[1] = 1;
+    inputGO[2] = 0;
+}
+
 
 //////////////
 //  DRAW    //
@@ -837,9 +850,9 @@ void RenderFacadeClover::FacadeDrawLobbyMulti() {
     device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
 }
 
-// TODO: No se usa
 void RenderFacadeClover::FacadeDrawLobbyMultiExit() {
-
+    std::string file = "media/LobbyMultiFull.png";
+    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
 }
 
 void RenderFacadeClover::FacadeDrawSettings() {

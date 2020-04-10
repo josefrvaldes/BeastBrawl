@@ -110,6 +110,10 @@ class RenderFacadeIrrlicht : public RenderFacade {
     int  GetIDCarAIToDebug() override { return idCarAIToDebug;};
 
 
+    void ResetInputGameOptions() override;
+    void ResetInputCharacter() override;
+
+
     scene::ISceneManager* GetSceneManager() { return smgr; };
     scene::ICameraSceneNode* GetCamera1() { return camera1; };
     inline static bool showDebug = false;

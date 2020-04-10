@@ -108,6 +108,9 @@ class RenderFacadeClover : public RenderFacade {
       bool GetShowDebugAI() override { return showAIDebug;};
       int  GetIDCarAIToDebug() override { return idCarAIToDebug;};
 
+      void ResetInputGameOptions() override;
+      void ResetInputCharacter() override;
+
       //Metodos exclusivos de RenderClover
       CLEngine* GetDevice() { return device;};
 
