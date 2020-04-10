@@ -702,7 +702,8 @@ void RenderFacadeClover::FacadeDrawMenu() {
 
     std::string text;
     //glm::vec3 color = glm::vec3(0.0f, 255.0f, 0.0f);
-    glm::vec3 color[5] = {
+    glm::vec3 color[6] = {
+            glm::vec3(0.0f, 0.0f, 255.0f),
             glm::vec3(0.0f, 0.0f, 255.0f),
             glm::vec3(0.0f, 0.0f, 255.0f),
             glm::vec3(0.0f, 0.0f, 255.0f),
@@ -712,15 +713,17 @@ void RenderFacadeClover::FacadeDrawMenu() {
     color[inputMenu] = glm::vec3(0.0f, 255.0f, 0.0f);
 
     text = "Un jugador";
-    device->RenderText2D(text, 500.0f, 400.0f, 0.05f, 1.0f, color[0]);
+    device->RenderText2D(text, 500.0f, 425.0f, 0.05f, 1.0f, color[0]);
     text = "Multijugador";
-    device->RenderText2D(text, 500.0f, 350.0f, 0.05f, 1.0f, color[1]);
+    device->RenderText2D(text, 500.0f, 375.0f, 0.05f, 1.0f, color[1]);
     text = "Controles";
-    device->RenderText2D(text, 500.0f, 300.0f, 0.05f, 1.0f, color[2]);
+    device->RenderText2D(text, 500.0f, 325.0f, 0.05f, 1.0f, color[2]);
     text = "Creditos";
-    device->RenderText2D(text, 500.0f, 250.0f, 0.05f, 1.0f, color[3]);
+    device->RenderText2D(text, 500.0f, 275.0f, 0.05f, 1.0f, color[3]);
+    text = "Ajustes";
+    device->RenderText2D(text, 500.0f, 225.0f, 0.05f, 1.0f, color[4]);
     text = "Salir";
-    device->RenderText2D(text, 500.0f, 200.0f, 0.05f, 1.0f, color[4]);
+    device->RenderText2D(text, 500.0f, 175.0f, 0.05f, 1.0f, color[5]);
 
 }
 
@@ -858,6 +861,73 @@ void RenderFacadeClover::FacadeDrawLobbyMultiExit() {
 void RenderFacadeClover::FacadeDrawSettings() {
     std::string file = "media/settings.png";
     device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
+
+    //¿TRABAJAR A NIVEL DE BIT?
+    //TODO: Faltan cosas. ¿Como hago esto tio?
+    glm::vec3 colorBase = glm::vec3(255.0f, 0.0f, 0.0f);
+    glm::vec3 colorTitle = glm::vec3(255.0f, 255.0f, 0.0f);
+
+    glm::vec3 colorOp1[4] = {
+            glm::vec3(0.0f, 0.0f, 255.0f),
+            glm::vec3(0.0f, 0.0f, 255.0f),
+            glm::vec3(0.0f, 0.0f, 255.0f),
+            glm::vec3(0.0f, 0.0f, 255.0f)
+    };
+    colorOp1[inputSettings[0]] = glm::vec3(0.0f, 255.0f, 0.0f);
+    std::string name = "Sonido";
+    device->RenderText2D(name, 600.0f, 600.0f, 0.05f, 0.75f, colorTitle);
+    name = "No";
+    device->RenderText2D(name, 300.0f, 500.0f, 0.05f, 0.75f, colorOp1[0]);
+    name = "Bajo";
+    device->RenderText2D(name, 500.0f, 500.0f, 0.05f, 0.75f, colorOp1[1]);
+    name = "Medio";
+    device->RenderText2D(name, 700.0f, 500.0f, 0.05f, 0.75f, colorOp1[2]);
+    name = "Alto";
+    device->RenderText2D(name, 900.0f, 500.0f, 0.05f, 0.75f, colorOp1[3]);
+
+    glm::vec3 colorOp2[2] = {
+            glm::vec3(0.0f, 0.0f, 255.0f),
+            glm::vec3(0.0f, 0.0f, 255.0f)
+    };
+    colorOp2[inputSettings[1]] = glm::vec3(0.0f, 255.0f, 0.0f);
+    name = "VSYNC";
+    device->RenderText2D(name, 600.0f, 450.0f, 0.05f, 0.75f, colorTitle);
+    name = "Si";
+    device->RenderText2D(name, 500.0f, 350.0f, 0.05f, 0.75f, colorOp2[0]);
+    name = "No";
+    device->RenderText2D(name, 600.0f, 350.0f, 0.05f, 0.75f, colorOp2[1]);
+
+    glm::vec3 colorOp3[3] = {
+            glm::vec3(0.0f, 0.0f, 255.0f),
+            glm::vec3(0.0f, 0.0f, 255.0f),
+            glm::vec3(0.0f, 0.0f, 255.0f)
+    };
+    colorOp3[inputSettings[2]] = glm::vec3(0.0f, 255.0f, 0.0f);
+    name = "Resolucion";
+    device->RenderText2D(name, 600.0f, 300.0f, 0.05f, 0.75f, colorTitle);
+    name = "yyyyxyyyy";
+    device->RenderText2D(name, 250.0f, 250.0f, 0.05f, 0.75f, colorOp3[0]);
+    name = "1280x720";
+    device->RenderText2D(name, 500.0f, 250.0f, 0.05f, 0.75f, colorOp3[1]);
+    name = "zzzzxzzzz";
+    device->RenderText2D(name, 750.0f, 250.0f, 0.05f, 0.75f, colorOp3[2]);
+
+    glm::vec3 colorOp4;
+    if (inputSettings[3] == 0) {
+        colorOp4 = glm::vec3(0.0f, 255.0f, 0.0f);
+    } else {
+        colorOp4 = glm::vec3(0.0f, 0.0f, 255.0f);
+    }
+    name = "Aceptar";
+    device->RenderText2D(name, 500.0f, 150.0f, 0.05f, 1.25f, colorOp4);
+
+    name = "---->";
+    float sel[4] = { 500.0f, 325.0f, 250.0f, 150.0f };
+    device->RenderText2D(name, 100.0f, sel[optionSettings], 0.05f, 1.0f, colorBase);
+
+
+    name = "<- (B)";
+    device->RenderText2D(name, 50.0f, 50.0f, 0.05f, 0.5f, colorBase);
 }
 
 

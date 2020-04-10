@@ -1,5 +1,7 @@
 #include "Game.h"
+
 #include "Facade/Physics/PhysicsFacadeManager.h"
+
 #include "State/StateInit.h"
 #include "State/StateSelectCharacter.h"
 #include "State/StateGameOptions.h"
@@ -11,6 +13,8 @@
 #include "State/StatePause.h"
 #include "State/StateControls.h"
 #include "State/StateCredits.h"
+#include "State/StateSettings.h"
+
 #include <Constants.h>
 
 
@@ -73,6 +77,14 @@ void Game::SetState(State::States stateType) {
             EventManager::GetInstance().ClearEvents();
             EventManager::GetInstance().ClearListeners();
             currentState = make_shared<StateCredits>();
+            gameState.reset();
+            SuscribeEvents();
+            gameStarted = false;
+            break;
+        case State::SETTINGS:
+            EventManager::GetInstance().ClearEvents();
+            EventManager::GetInstance().ClearListeners();
+            currentState = make_shared<StateSettings>();
             gameState.reset();
             SuscribeEvents();
             gameStarted = false;
@@ -214,6 +226,11 @@ void Game::SuscribeEvents() {
             EventType::STATE_CREDITS,
             bind(&Game::SetStateCredits, this, placeholders::_1),
             "SetStateCredits"));
+
+    EventManager::GetInstance().SubscribeMulti(Listener(
+            EventType::STATE_SETTINGS,
+            bind(&Game::SetStateSettings, this, placeholders::_1),
+            "SetStateSettings"));
 }
 
 void Game::MainLoop() {
@@ -331,4 +348,8 @@ void Game::SetStateControls(DataMap* d){
 
 void Game::SetStateCredits(DataMap* d){
     SetState(State::CREDITS);
+}
+
+void Game::SetStateSettings(DataMap *d) {
+    SetState(State::SETTINGS);
 }

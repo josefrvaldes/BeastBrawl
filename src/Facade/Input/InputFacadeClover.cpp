@@ -198,6 +198,10 @@ void InputFacadeClover::CheckInputMenu(int& input, int maxInput){
                 break;
             }
             case 4: {
+                EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_SETTINGS});
+                break;
+            }
+            case 5: {
                 device->CloseWindow();
                 break;
             }
@@ -764,5 +768,90 @@ void InputFacadeClover::CheckInputCredits() {
 }
 
 void InputFacadeClover::CheckInputSettings(std::vector<int> &inputs, int *maxInputs, int &option) {
-    cout << "HOLI JEJE" << endl;
+
+    //ATRAS
+    if( IsKeyOrGamepadPress(GLFW_KEY_BACKSPACE, GLFW_GAMEPAD_BUTTON_B, false, 0) && HasDelayPassed() && !IsInputPressed(BUTTON_B) ) {
+
+        timeStart = system_clock::now();
+        SetValueInput(BUTTON_B, true);
+        EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_MENU});
+
+    } else if( !IsKeyOrGamepadPress(GLFW_KEY_BACKSPACE, GLFW_GAMEPAD_BUTTON_B, false, 0) ) {
+        SetValueInput(BUTTON_B, false);
+    }
+
+
+    //DERECHA
+    if (IsKeyOrGamepadPress(GLFW_KEY_RIGHT, GLFW_GAMEPAD_AXIS_LEFT_X, true, 0.5)
+        && ( (IsInputPressed(BUTTON_STICK_R) && HasDelayPassed() ) || !IsInputPressed(BUTTON_STICK_R) )) {
+
+        timeStart = system_clock::now();
+        ++inputs[option];
+        if(inputs[option] > maxInputs[option]) {
+            inputs[option] = 0;
+        }
+        SetValueInput(BUTTON_STICK_R, true);
+    } else if ( !IsKeyOrGamepadPress(GLFW_KEY_RIGHT, GLFW_GAMEPAD_AXIS_LEFT_X, true, 0.5) ) {
+        SetValueInput(BUTTON_STICK_R, false);
+    }
+
+    //IZQUIERDA
+    if ( IsKeyOrGamepadPress(GLFW_KEY_LEFT, GLFW_GAMEPAD_AXIS_LEFT_X, true, -0.5)
+         && ( (IsInputPressed(BUTTON_STICK_L) && HasDelayPassed() ) || !IsInputPressed(BUTTON_STICK_L) )) {
+
+        timeStart = system_clock::now();
+        --inputs[option];
+        if(inputs[option] < 0) {
+            inputs[option] = maxInputs[option];
+        }
+        SetValueInput(BUTTON_STICK_L, true);
+    } else if ( !IsKeyOrGamepadPress(GLFW_KEY_LEFT, GLFW_GAMEPAD_AXIS_LEFT_X, true, -0.5) ) {
+        SetValueInput(BUTTON_STICK_L, false);
+    }
+
+    //ARRIBA
+    if( IsKeyOrGamepadPress(GLFW_KEY_UP, GLFW_GAMEPAD_AXIS_LEFT_Y, true, -0.5)
+        && ( (IsInputPressed(BUTTON_STICK_UP) && HasDelayPassed() ) || !IsInputPressed(BUTTON_STICK_UP) )) {
+
+        timeStart = system_clock::now();
+        --option;
+        if(option < 0) {
+            option = inputs.size()-1;
+        }
+        SetValueInput(BUTTON_STICK_UP, true);
+    } else if ( !IsKeyOrGamepadPress(GLFW_KEY_UP, GLFW_GAMEPAD_AXIS_LEFT_Y, true, -0.5) ) {
+        SetValueInput(BUTTON_STICK_UP, true);
+    }
+
+    //BAJAR
+    if( IsKeyOrGamepadPress(GLFW_KEY_DOWN, GLFW_GAMEPAD_AXIS_LEFT_Y, true, 0.5)
+        && ( (IsInputPressed(BUTTON_STICK_DOWN) && HasDelayPassed() ) || !IsInputPressed(BUTTON_STICK_DOWN) )) {
+
+        timeStart = system_clock::now();
+        ++option;
+        if(option > (inputs.size()-1)) {
+            option = 0;
+        }
+        SetValueInput(BUTTON_STICK_DOWN, true);
+    } else if( !IsKeyOrGamepadPress(GLFW_KEY_DOWN, GLFW_GAMEPAD_AXIS_LEFT_Y, true, 0.5) ) {
+        SetValueInput(BUTTON_STICK_DOWN, true);
+    }
+
+    //ACEPTAR - ESPACIO
+    if ( option == 2 && IsKeyOrGamepadPress(GLFW_KEY_SPACE, GLFW_GAMEPAD_BUTTON_A, false, 0) && HasDelayPassed() && !IsInputPressed(BUTTON_A)) {
+
+        timeStart = system_clock::now();
+        SetValueInput(BUTTON_A, true);
+        EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_MENU});
+
+    } else if ( !IsKeyOrGamepadPress(GLFW_KEY_SPACE, GLFW_GAMEPAD_BUTTON_A, false, 0) ) {
+        SetValueInput(BUTTON_A, false);
+    }
+
+    if(option != 3) {
+        inputs[3] = 1;
+    } else {
+        inputs[3] = 0;
+    }
+
 }

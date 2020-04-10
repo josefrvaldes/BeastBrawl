@@ -125,7 +125,7 @@ class RenderFacadeClover : public RenderFacade {
 
         //Menu
         int inputMenu { 0 };
-        int maxInputMenu { 4 };
+        int maxInputMenu { 5 };
         //Pause
         int inputPause { 0 };
         int maxInputPause { 1 };
@@ -137,9 +137,9 @@ class RenderFacadeClover : public RenderFacade {
         std::vector<int> inputGO {1,1,0};
         int maxInputGO[3] {3, 2, 0};
         //Ajustes
-        int optionSettings { 1 };
-        std::vector<int> inputSettings {1,0};
-        int maxInputSettings[2] {3, 0};
+        int optionSettings { 3 };
+        std::vector<int> inputSettings {1,0,0,1};
+        int maxInputSettings[4] {3, 1, 2, 0};
 
         CLEngine* device {nullptr};
         CLNode* smgr {nullptr};

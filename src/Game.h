@@ -34,6 +34,7 @@ class Game{
         void SetStateLobbyMulti(DataMap* d);
         void SetStateControls(DataMap* d);
         void SetStateCredits(DataMap* d);
+        void SetStateSettings(DataMap* d);
 
 
     private:
