@@ -692,9 +692,13 @@ void InputFacadeClover::CheckInputEndRace(){
 
 void InputFacadeClover::CheckInputLobbyMulti() {
     //TODO: Input temporal. Hay que poner el atras, no salir
-    if ( IsKeyOrGamepadPress(GLFW_KEY_DELETE, GLFW_GAMEPAD_BUTTON_B, false, 0)) {
-        device->CloseWindow();
+    if ( IsKeyOrGamepadPress(GLFW_KEY_DELETE, GLFW_GAMEPAD_BUTTON_B, false, 0) && !IsInputPressed(BUTTON_B)) {
+        SetValueInput(InputXBox::BUTTON_B, true);
+        EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_MENU});
+    } else if ( !IsKeyOrGamepadPress(GLFW_KEY_DELETE, GLFW_GAMEPAD_BUTTON_B, false, 0 ) ) {
+        SetValueInput(InputXBox::BUTTON_B, false);
     }
+
 }
 
 void InputFacadeClover::CheckInputCredits() {
