@@ -143,7 +143,7 @@ CLNode* CLNode::AddParticleSystem(unsigned int id){
     int lifeSpan = 2000;
     glm::vec3 offset = glm::vec3(50.0f,50.0f,50.0f);
     glm::vec3 orientation = glm::vec3(1.0f,1.0f,0.0f);
-    std::uint_fast8_t flags = EFFECT_NONE;
+    std::uint_fast8_t flags = EFFECT_FADING;
 
     shared_ptr<CLEntity> e = make_shared<CLParticleSystem>(id,nParticles,velocity,texture,width,height,spawnDelay,particlesToSpawn,lifeSpan,offset,orientation,flags);
 
