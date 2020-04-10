@@ -15,6 +15,7 @@ endif
 LIBS 	    	+= -L./lib/windows/glfw -lglfw3 -lglfw3dll -lopengl32 -lgdi32 -luser32 -lcomdlg32 -lpthread -Wl,-rpath=./lib/windows/glfw
 LIBS 	    	+= -L./lib/windows/glew -lglew32 -Wl,-rpath=lib/windows/glew
 LIBS 	    	+= -L./lib/windows/assimp -lassimp -Wl,-rpath=lib/windows/assimp
+#LIBS 	    	+= -L/usr/x86_64-w64-mingw32/bin -lassimp -Wl,-rpath=/usr/x86_64-w64-mingw32/bin
 LIBS			+= -L./lib/windows/freeType2 -lfreetype -Wl,-rpath=lib/windows/freeType2
 INCLUDE     	:= -I./include -I../include -I./include/freeType2
 CC			:= x86_64-w64-mingw32-g++
@@ -27,7 +28,9 @@ NAME_EXE	:= CLEngine.exe
 CXXFLAGS 	+= -Wall -Wno-unknown-pragmas -std=gnu++1z # el no-unknown-pragmas es para que no salga el warning de los pragma region
 																										 # el -fuse-ld=gold es para el ccache
 																										 # si pongo -std=c++17 falla M_PI, poniendo -std=gnu++17 funciona bien en windows
+			# -static-libstdc++ -static-libgcc -static -pthread 
 
+			
 ALLCPPS		:= $(shell find src/ -type f -iname *.cpp)
 ALLCPPSOBJ	:= $(patsubst $(SRC_PATH)/%.cpp,$(OBJ_PATH)/%.o,$(ALLCPPS))
 SUBDIRS		:= $(shell find src/ -type d)
