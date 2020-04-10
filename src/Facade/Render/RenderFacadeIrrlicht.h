@@ -53,6 +53,7 @@ class RenderFacadeIrrlicht : public RenderFacade {
     void FacadeDrawLobbyMultiExit() override;
     void FacadeDrawControler() override;
     void FacadeDrawCredits() override;
+    void FacadeDrawSettings() override;
 
     void FacadeInitIntro() override;
     void FacadeInitMenu() override;
@@ -64,6 +65,7 @@ class RenderFacadeIrrlicht : public RenderFacade {
     void FacadeInitControler() override;
     void FacadeInitHUD() override;
     void FacadeInitCredits() override;
+    void FacadeInitSettings() override;
 
     void FacadeCheckInputIntro() override;
     void FacadeCheckInputMenu() override;
@@ -74,6 +76,7 @@ class RenderFacadeIrrlicht : public RenderFacade {
     void FacadeCheckInputLobbyMulti() override;
     void FacadeCheckInputControler() override;
     void FacadeCheckInputCredits() override;
+    void FacadeCheckInputSettings() override;
 
     void FacadeUpdatePowerUpHUD(DataMap* d) override;
     void FacadeDrawHUD(Entity* car, ManCar* manCars) override;

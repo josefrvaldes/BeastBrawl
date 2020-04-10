@@ -65,7 +65,9 @@ bool InputFacadeClover::IsKeyOrGamepadPress(int key, int button, bool axes, floa
     glfwGetGamepadState(GLFW_JOYSTICK_1, &state);
     if(!axes)
         return ( glfwGetKey(device->GetWindow(), key) || state.buttons[button] ) ;
-    return ( glfwGetKey(device->GetWindow(), key) || state.axes[button] > axe);
+    if(axe > 0)
+        return ( glfwGetKey(device->GetWindow(), key) || state.axes[button] > axe);
+    return ( glfwGetKey(device->GetWindow(), key) || state.axes[button] < axe);
 }
 
 /**
@@ -147,7 +149,7 @@ void InputFacadeClover::CheckInputMenu(int& input, int maxInput){
     }
 
     //SUBIR
-    if ( IsKeyOrGamepadPress(GLFW_KEY_UP, 0, 0, 0) && HasDelayPassed() ) {
+    if ( IsKeyOrGamepadPress(GLFW_KEY_UP, GLFW_GAMEPAD_AXIS_LEFT_Y, true, 0.5) && HasDelayPassed() ) {
 
         timeStart = system_clock::now();
         input--;
@@ -157,7 +159,7 @@ void InputFacadeClover::CheckInputMenu(int& input, int maxInput){
     }
 
     //BAJAR
-    if (IsKeyOrGamepadPress(GLFW_KEY_DOWN, 0, 0, 0) && HasDelayPassed() ) {
+    if (IsKeyOrGamepadPress(GLFW_KEY_DOWN, GLFW_GAMEPAD_AXIS_LEFT_Y, true, -0.5) && HasDelayPassed() ) {
 
         timeStart = system_clock::now();
         input++;
@@ -167,7 +169,7 @@ void InputFacadeClover::CheckInputMenu(int& input, int maxInput){
     }
 
     //ESPACIO
-    if (IsKeyOrGamepadPress(GLFW_KEY_SPACE, 0, 0, 0) && HasDelayPassed() && !IsInputPressed(BUTTON_A)) {
+    if (IsKeyOrGamepadPress(GLFW_KEY_SPACE, GLFW_GAMEPAD_BUTTON_A, false, 0) && HasDelayPassed() && !IsInputPressed(BUTTON_A)) {
 
         timeStart = system_clock::now();
         SetValueInput(BUTTON_A, true);
@@ -197,7 +199,7 @@ void InputFacadeClover::CheckInputMenu(int& input, int maxInput){
             default : cout << "ESTE CODIGO DE INPUT NO EXISTE\n";
         }
 
-    } else if (!IsKeyOrGamepadPress(GLFW_KEY_SPACE, 0, 0, 0) ) {
+    } else if (!IsKeyOrGamepadPress(GLFW_KEY_SPACE, GLFW_GAMEPAD_BUTTON_A, false, 0) ) {
         SetValueInput(BUTTON_A, false);
     }
 }
@@ -221,7 +223,7 @@ void InputFacadeClover::CheckInputSelectCharacter(int &input, int maxInput) {
     }
 
     //IZQUIERDA Y DERECHA
-    if ( (IsKeyOrGamepadPress(GLFW_KEY_RIGHT, 0, 0, 0) || IsKeyOrGamepadPress(GLFW_KEY_LEFT, 0, 0, 0) ) && HasDelayPassed() ) {
+    if ( (IsKeyOrGamepadPress(GLFW_KEY_RIGHT, GLFW_GAMEPAD_AXIS_LEFT_X, true, 0.5) || IsKeyOrGamepadPress(GLFW_KEY_LEFT, GLFW_GAMEPAD_AXIS_LEFT_X, true, -0.5) ) && HasDelayPassed() ) {
 
         timeStart = system_clock::now();
         if (input%2 == 0) {
@@ -232,7 +234,7 @@ void InputFacadeClover::CheckInputSelectCharacter(int &input, int maxInput) {
     }
 
     //BAJAR
-    if( IsKeyOrGamepadPress(GLFW_KEY_DOWN, 0, 0, 0) && HasDelayPassed() ) {
+    if( IsKeyOrGamepadPress(GLFW_KEY_DOWN, GLFW_GAMEPAD_AXIS_LEFT_Y, true, -0.5) && HasDelayPassed() ) {
 
         timeStart = system_clock::now();
         input += 2;
@@ -246,7 +248,7 @@ void InputFacadeClover::CheckInputSelectCharacter(int &input, int maxInput) {
     }
 
     //SUBIR
-    if( IsKeyOrGamepadPress(GLFW_KEY_UP, 0, 0, 0) && HasDelayPassed() ) {
+    if( IsKeyOrGamepadPress(GLFW_KEY_UP, GLFW_GAMEPAD_AXIS_LEFT_X, true, 0.5) && HasDelayPassed() ) {
 
         timeStart = system_clock::now();
         input -= 2;
@@ -312,7 +314,7 @@ void InputFacadeClover::CheckInputGameOptions(std::vector<int> &input, int maxIn
     }
 
     //DERECHA
-    if (IsKeyOrGamepadPress(GLFW_KEY_RIGHT, 0, 0, 0) && HasDelayPassed() ) {
+    if (IsKeyOrGamepadPress(GLFW_KEY_RIGHT, GLFW_GAMEPAD_AXIS_LEFT_X, true, 0.5) && HasDelayPassed() ) {
 
         timeStart = system_clock::now();
         ++input[pos];
@@ -322,7 +324,7 @@ void InputFacadeClover::CheckInputGameOptions(std::vector<int> &input, int maxIn
     }
 
     //IZQUIERDA
-    if ( IsKeyOrGamepadPress(GLFW_KEY_LEFT, 0, 0, 0) && HasDelayPassed()) {
+    if ( IsKeyOrGamepadPress(GLFW_KEY_LEFT, GLFW_GAMEPAD_AXIS_LEFT_X, true, -0.5) && HasDelayPassed()) {
 
         timeStart = system_clock::now();
         --input[pos];
@@ -332,7 +334,7 @@ void InputFacadeClover::CheckInputGameOptions(std::vector<int> &input, int maxIn
     }
 
     //ARRIBA
-    if( IsKeyOrGamepadPress(GLFW_KEY_UP, 0, 0, 0) && HasDelayPassed() ) {
+    if( IsKeyOrGamepadPress(GLFW_KEY_UP, GLFW_GAMEPAD_AXIS_LEFT_Y, true, 0.5) && HasDelayPassed() ) {
 
         timeStart = system_clock::now();
         --pos;
@@ -342,7 +344,7 @@ void InputFacadeClover::CheckInputGameOptions(std::vector<int> &input, int maxIn
     }
 
     //BAJAR
-    if( IsKeyOrGamepadPress(GLFW_KEY_DOWN, 0, 0, 0) && HasDelayPassed() ) {
+    if( IsKeyOrGamepadPress(GLFW_KEY_DOWN, GLFW_GAMEPAD_AXIS_LEFT_Y, true, -0.5) && HasDelayPassed() ) {
 
         timeStart = system_clock::now();
         ++pos;
@@ -621,7 +623,7 @@ vector<Constants::InputTypes> InputFacadeClover::CheckInputMulti(){
 void InputFacadeClover::CheckInputPause(int& input, int maxInput){
 
     //SUBIR
-    if ( IsKeyOrGamepadPress(GLFW_KEY_UP, 0, 0, 0) && HasDelayPassed() ) {
+    if ( IsKeyOrGamepadPress(GLFW_KEY_UP, GLFW_GAMEPAD_AXIS_LEFT_Y, true, 0.5) && HasDelayPassed() ) {
 
         timeStart = system_clock::now();
         input--;
@@ -630,7 +632,7 @@ void InputFacadeClover::CheckInputPause(int& input, int maxInput){
     }
 
     //BAJAR
-    if ( IsKeyOrGamepadPress(GLFW_KEY_DOWN, 0, 0, 0) && HasDelayPassed() ) {
+    if ( IsKeyOrGamepadPress(GLFW_KEY_DOWN, GLFW_GAMEPAD_AXIS_LEFT_Y, true, -0.5) && HasDelayPassed() ) {
 
         timeStart = system_clock::now();
         input++;
@@ -697,5 +699,5 @@ void InputFacadeClover::CheckInputCredits() {
 }
 
 void InputFacadeClover::CheckInputSettings(std::vector<int> &inputs, int *maxInputs, int &option) {
-
+    cout << "HOLI JEJE" << endl;
 }

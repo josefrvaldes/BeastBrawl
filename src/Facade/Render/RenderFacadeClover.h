@@ -52,6 +52,7 @@ class RenderFacadeClover : public RenderFacade {
       void FacadeDrawLobbyMultiExit() override;
       void FacadeDrawControler() override;
       void FacadeDrawCredits() override;
+      void FacadeDrawSettings() override;
 
       void FacadeInitIntro() override;
       void FacadeInitMenu() override;
@@ -63,6 +64,7 @@ class RenderFacadeClover : public RenderFacade {
       void FacadeInitControler() override;
       void FacadeInitHUD() override;
       void FacadeInitCredits() override;
+      void FacadeInitSettings() override;
 
       void FacadeCheckInputIntro() override;
       void FacadeCheckInputMenu() override;
@@ -73,6 +75,7 @@ class RenderFacadeClover : public RenderFacade {
       void FacadeCheckInputLobbyMulti() override;
       void FacadeCheckInputControler() override;
       void FacadeCheckInputCredits() override;
+      void FacadeCheckInputSettings() override;
 
       void FacadeUpdatePowerUpHUD(DataMap* d) override;
       void FacadeDrawHUD(Entity* car, ManCar* manCars) override;
@@ -128,11 +131,15 @@ class RenderFacadeClover : public RenderFacade {
         int maxInputSC { 5 };
         //Opciones de partida (Hay que contar el 0)
         int option { 2 };
-        std::vector<int> inputGO = {1,1,0};
-        int maxInputGO[3] = {3, 2, 0};
+        std::vector<int> inputGO {1,1,0};
+        int maxInputGO[3] {3, 2, 0};
+        //Ajustes
+        int optionSettings { 1 };
+        std::vector<int> inputSettings {1,0};
+        int maxInputSettings[2] {3, 0};
 
-        CLEngine* device;
-        CLNode* smgr;
-        CLResourceManager* resourceManager;
-        CLNode* camera1;
+        CLEngine* device {nullptr};
+        CLNode* smgr {nullptr};
+        CLResourceManager* resourceManager {nullptr};
+        CLNode* camera1 {nullptr};
 };

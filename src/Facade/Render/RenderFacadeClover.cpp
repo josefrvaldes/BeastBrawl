@@ -88,79 +88,6 @@ void RenderFacadeClover::FacadeSuscribeEvents() {
 
 
 /**
- *
- */
-void RenderFacadeClover::FacadeInitIntro() {
-    std::string name = "media/pauseMenu.png";
-    device->GetResourceManager()->GetResourceTexture(name, true);
-}
-
-/**
- * Inicializa las cosas para el menu
- */
-void RenderFacadeClover::FacadeInitMenu() {
-
-    powerUps[0] = "media/nonepowerup.png";
-    powerUps[1] = "media/robojorobo.png";
-    powerUps[2] = "media/nitro.png";
-    powerUps[3] = "media/pudin.png";
-    powerUps[4] = "media/escudomerluzo.png";
-    powerUps[5] = "media/telebanana.png";
-    powerUps[6] = "media/melonmolon.png";
-
-    device->GetResourceManager()->GetResourceTexture(powerUps[0], true);
-    device->GetResourceManager()->GetResourceTexture(powerUps[1], true);
-    device->GetResourceManager()->GetResourceTexture(powerUps[2], true);
-    device->GetResourceManager()->GetResourceTexture(powerUps[3], true);
-    device->GetResourceManager()->GetResourceTexture(powerUps[4], true);
-    device->GetResourceManager()->GetResourceTexture(powerUps[5], true);
-    device->GetResourceManager()->GetResourceTexture(powerUps[6], true);
-
-    currentPowerUp = 0;
-}
-
-void RenderFacadeClover::FacadeInitSelectCharacter() {
-
-}
-
-void RenderFacadeClover::FacadeInitGameOptions() {
-
-}
-
-void RenderFacadeClover::FacadeInitControler() {
-    
-}
-
-void RenderFacadeClover::FacadeInitCredits() {
-
-}
-
-/**
- * Inicializa las cosas para el pause
- */
-void RenderFacadeClover::FacadeInitPause() {
-}
-
-/**
- * Inicializa las cosas para EndRace
- */
-void RenderFacadeClover::FacadeInitEndRace() {
-}
-
-/**
- * Inicializa las cosas de LobbyMulti
- */
-void RenderFacadeClover::FacadeInitLobbyMulti() {
-}
-
-/**
- * Inicializa las cosas del HUD
- */
-void RenderFacadeClover::FacadeInitHUD() {
-
-}
-
-/**
  * Actualiza en el hud el icono de powerup
  * @param {CTypePowerUp}
  */
@@ -169,143 +96,6 @@ void RenderFacadeClover::FacadeUpdatePowerUpHUD(DataMap* d) {
     currentPowerUp = int(type);
 }
 
-/**
- * Cargamos lo necesario para la partida.
- */
-void RenderFacadeClover::FacadeInitResources(){
-    FacadeBeginScene();
-    std::string file = "media/loading_screen.png";
-    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
-    FacadeEndScene();
-    //Cargamos todas las mallas
-    //Mallas
-    resourceManager->GetResourceMesh("media/kart_physics.fbx");
-    resourceManager->GetResourceMesh("media/kart_ia.obj");
-    resourceManager->GetResourceMesh("media/melon.obj");
-    resourceManager->GetResourceMesh("media/totem_tex.fbx");
-    resourceManager->GetResourceMesh("media/TEST_BOX.fbx");
-    resourceManager->GetResourceMesh("media/pudin.obj");
-    resourceManager->GetResourceMesh("media/telebanana.obj");
-    resourceManager->GetResourceMesh("media/training_ground.obj");
-
-    //Texturas
-    resourceManager->GetResourceTexture("media/escudomerluzo.png",true);
-    resourceManager->GetResourceTexture("media/melonmolon.png",true);
-    resourceManager->GetResourceTexture("media/nitro.png",true);
-    resourceManager->GetResourceTexture("media/nonepowerup.png",true);
-    resourceManager->GetResourceTexture("media/pudin.png",true);
-    resourceManager->GetResourceTexture("media/robojorobo.png",true);
-    resourceManager->GetResourceTexture("media/telebanana.png",true);
-    resourceManager->GetResourceTexture("media/gorilaHUD.png", true);
-    resourceManager->GetResourceTexture("media/gorilaHUD.png", true);
-    resourceManager->GetResourceTexture("media/marcador.png", true);
-    resourceManager->GetResourceTexture("media/Minimapa240.png", true);
-
-    //Shaders
-    resourceManager->GetResourceShader("CLEngine/src/Shaders/cartoonShader.vert", "CLEngine/src/Shaders/cartoonShader.frag");
-
-}
-
-/**
- * Repintamos el HUD, como el ranking por ejemplo
- * @param {coche principal, manager de coches}
- */
-void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars) {
-
-    //Voy a actualizar aqui las posiciones donde van porque es el unico sitio donde tengo ambos tipos de coches
-    //struct auxiliar para guardarme tiempo y numero de coche
-    struct ranking_t{
-        uint16_t carNumber;
-        float    time;
-        inline bool operator() (const ranking_t& struct1, const ranking_t& struct2)
-        {
-            return (struct1.time > struct2.time);
-        }
-    };
-
-    CTotem* cTotem;
-    vector<ranking_t> ranking;
-    std::string cadena;
-
-    //Si existen coches de IA
-    if(!manCars->GetEntities().empty()){
-        //Primero vamos a meter al coche principal
-        ranking_t rank{};
-        int i = 0;
-        for(auto& carAux : manCars->GetEntities()){
-            cTotem = static_cast<CTotem*>(carAux->GetComponent(CompType::TotemComp).get());
-            rank.carNumber = i++;
-            rank.time = cTotem->accumulatedTime;
-            ranking.push_back(rank);
-        }
-
-        std::sort (ranking.begin(), ranking.end(), ranking_t());
-
-    }
-
-    //Ya tenemos ordenados las posiciones, ahora vamos a actualizar sus valores en el CTotem
-    int j = 1;
-    for(auto aux : ranking){
-        uint16_t numCar = aux.carNumber;
-        cTotem = static_cast<CTotem*>(manCars->GetEntities()[numCar]->GetComponent(CompType::TotemComp).get());
-        if(cTotem) {
-            cTotem->positionRanking = j++;
-        }
-
-    }
-
-    //CURRENT POWERUP
-    device->DrawImage2D(25.0f, 25.0f, 150.0f, 150.0f, 0.1f ,powerUps[currentPowerUp], true);
-
-    //RANKING
-    //TODO: Dejar como debug
-    /*int i = 0;
-    //core::stringw textIA = core::stringw("Car ");
-    for (const auto& cars : manCars->GetEntities()) {
-
-        cTotem = static_cast<CTotem*>(cars->GetComponent(CompType::TotemComp).get());
-
-        int time = cTotem->accumulatedTime / 100.0;
-        float time2 = time / 10.0;
-        glm::vec3 color = glm::vec3(0.0f,0.0f,255.0f);
-        if(cTotem->active){
-            //Si tiene el totem voy a dibujarlo rojo por ejemplo
-            color = glm::vec3(255.0f, 0.0f, 0.0f);
-        }
-        cadena = std::to_string(cTotem->positionRanking) + ". Car " + std::to_string(i) + " - " + std::to_string(time2);
-        float altura = (device->GetScreenHeight() - 125.0f) + ((cTotem->positionRanking-1.0f)*18.0f);
-        device->RenderText2D(cadena, 200.0f, altura, 0.1f, 0.35f, color);
-
-        i++;
-    }*/
-
-    //MARCADOR DE TIEMPO
-    for(const auto& cars : manCars->GetEntities()) {
-        cTotem = static_cast<CTotem*>(cars->GetComponent(CompType::TotemComp).get());
-        if (cTotem && cTotem->active) {
-            cadena = "media/marcador.png";
-            device->DrawImage2D(550.0f, 50.0f ,225.0f, 90.0f, 0.2f, cadena, true);
-            cadena = "media/gorilaHUD.png";
-            device->DrawImage2D(585.0f,70.0f, 50.0f, 50.0f, 0.05f, cadena, true);
-
-            int time = cTotem->accumulatedTime / 100;
-            int time2 = cTotem->SEGUNDOS - (time / 10);
-            cadena = std::to_string(time2);
-            glm::vec3 color = glm::vec3(0.0f, 0.0f, 0.0f);
-
-            if(time2 <= 5) {
-                color = glm::vec3(255.0f, 0.0f, 0.0f);
-            }
-            device->RenderText2D(cadena, 680.0f, 610.0f, 0.05f, 0.75f, color);
-            break;
-        }
-    }
-
-    //MINIMAPA
-    cadena = "media/Minimapa240.png";
-    device->DrawImage2D((device->GetScreenWidth() - 280.0f), (device->GetScreenHeight() - 220.0f), 240.0f, 192.0f, 0.1f, cadena, true);
-
-}
 
 /**
  * Se llama una vez para añadir las NamePlates
@@ -595,25 +385,145 @@ void RenderFacadeClover::FacadeUpdateMeshesLoD(vector<shared_ptr<Entity>> entiti
 }
 
 /**
- * @return {si el juego sigue abierto o no}
+ * @return - ¿El juego sigue abierto?
  */
 bool RenderFacadeClover::FacadeRun() {
     return device->Run();
 }
 
 /**
- * @return {tiempo de glfw}
+ * @return - Tiempo de glfw
  */
 uint32_t RenderFacadeClover::FacadeGetTime() const{
     return device->GetTime();
 }
 
+void RenderFacadeClover::ThrowEventChangeToMulti(uint16_t IdOnline, const vector<uint16_t> IdPlayersOnline){
+}
 
-// To-Do: introducir multi input
-// Comprobar inputs del teclado
+/**
+ * Devuelve los fps a los que vamos
+ */
+int RenderFacadeClover::FacadeGetFPS() const{
+    return 1;
+}
+
+/**
+ * Cambia el titulo de la ventana
+ */
+void RenderFacadeClover::FacadeSetWindowCaption(std::string title, int fps) const{
+    std::string name = title + " - " + std::to_string(fps) + " FPS";
+    device->SetTitle(name);
+}
+
+//////////////////////////
+//  INICIA LOS MENUS    //
+//////////////////////////
+
+/**
+ * Cargamos lo necesario para la partida.
+ */
+void RenderFacadeClover::FacadeInitResources(){
+    FacadeBeginScene();
+    std::string file = "media/loading_screen.png";
+    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
+    FacadeEndScene();
+
+    //Cargamos todas las mallas
+    //Mallas
+    resourceManager->GetResourceMesh("media/kart_physics.fbx");
+    resourceManager->GetResourceMesh("media/kart_ia.obj");
+    resourceManager->GetResourceMesh("media/melon.obj");
+    resourceManager->GetResourceMesh("media/totem_tex.fbx");
+    resourceManager->GetResourceMesh("media/TEST_BOX.fbx");
+    resourceManager->GetResourceMesh("media/pudin.obj");
+    resourceManager->GetResourceMesh("media/telebanana.obj");
+    resourceManager->GetResourceMesh("media/training_ground.obj");
+
+    //HUD
+    currentPowerUp = 0;
+
+    powerUps[0] = "media/nonepowerup.png";
+    powerUps[1] = "media/robojorobo.png";
+    powerUps[2] = "media/nitro.png";
+    powerUps[3] = "media/pudin.png";
+    powerUps[4] = "media/escudomerluzo.png";
+    powerUps[5] = "media/telebanana.png";
+    powerUps[6] = "media/melonmolon.png";
+
+    device->GetResourceManager()->GetResourceTexture(powerUps[0], true);
+    device->GetResourceManager()->GetResourceTexture(powerUps[1], true);
+    device->GetResourceManager()->GetResourceTexture(powerUps[2], true);
+    device->GetResourceManager()->GetResourceTexture(powerUps[3], true);
+    device->GetResourceManager()->GetResourceTexture(powerUps[4], true);
+    device->GetResourceManager()->GetResourceTexture(powerUps[5], true);
+    device->GetResourceManager()->GetResourceTexture(powerUps[6], true);
+
+    resourceManager->GetResourceTexture("media/gorilaHUD.png", true);
+    resourceManager->GetResourceTexture("media/marcador.png", true);
+    resourceManager->GetResourceTexture("media/Minimapa240.png", true);
+
+    //Shaders
+    resourceManager->GetResourceShader("CLEngine/src/Shaders/cartoonShader.vert", "CLEngine/src/Shaders/cartoonShader.frag");
+
+}
+
+void RenderFacadeClover::FacadeInitIntro() {
+    std::string name = "media/pauseMenu.png";
+    device->GetResourceManager()->GetResourceTexture(name, true);
+}
+
+void RenderFacadeClover::FacadeInitMenu() {
+
+}
+
+void RenderFacadeClover::FacadeInitSelectCharacter() {
+
+}
+
+void RenderFacadeClover::FacadeInitGameOptions() {
+
+}
+
+void RenderFacadeClover::FacadeInitControler() {
+
+}
+
+void RenderFacadeClover::FacadeInitCredits() {
+
+}
+
+void RenderFacadeClover::FacadeInitPause() {
+}
+
+void RenderFacadeClover::FacadeInitEndRace() {
+
+}
+
+void RenderFacadeClover::FacadeInitLobbyMulti() {
+
+}
+
+//TODO: No se usa
+void RenderFacadeClover::FacadeInitHUD() {
+
+}
+
+void RenderFacadeClover::FacadeInitSettings() {
+    resourceManager->GetResourceTexture("media/settings.png", true);
+}
+
+
+//////////////////////
+//  CHECK INPUTS    //
+//////////////////////
+
+// TODO: ¿Poner los input que el render no necesita info fuera del render?
+// TODO: introducir multi input
+
 void RenderFacadeClover::FacadeCheckInputSingle() {
- }
 
+ }
 
 vector<Constants::InputTypes> RenderFacadeClover::FacadeCheckInputMulti() {
     vector<Constants::InputTypes> inputs;
@@ -623,7 +533,6 @@ vector<Constants::InputTypes> RenderFacadeClover::FacadeCheckInputMulti() {
 void RenderFacadeClover::FacadeCheckInputIntro() {
     InputFacadeManager::GetInstance()->GetInputFacade()->CheckInputIntro();
 }
-
 
 void RenderFacadeClover::FacadeCheckInputMenu() {
     InputFacadeManager::GetInstance()->GetInputFacade()->CheckInputMenu(inputMenu, maxInputMenu);
@@ -650,48 +559,129 @@ void RenderFacadeClover::FacadeCheckInputPause() {
 }
 
 void RenderFacadeClover::FacadeCheckInputEndRace() {
+
 }
 
 void RenderFacadeClover::FacadeCheckInputLobbyMulti() {
     InputFacadeManager::GetInstance()->GetInputFacade()->CheckInputLobbyMulti();
 }
 
-void RenderFacadeClover::ThrowEventChangeToMulti(uint16_t IdOnline, const vector<uint16_t> IdPlayersOnline){
+void RenderFacadeClover::FacadeCheckInputSettings() {
+    InputFacadeManager::GetInstance()->GetInputFacade()->CheckInputSettings(inputSettings, maxInputSettings, optionSettings);
 }
 
-/**
- * Devuelve los fps a los que vamos
- */
-int RenderFacadeClover::FacadeGetFPS() const{
-    return 1;
-}
 
-/**
- * Cambia el titulo de la ventana
- */
-void RenderFacadeClover::FacadeSetWindowCaption(std::string title, int fps) const{
-    std::string name = title + " - " + std::to_string(fps) + " FPS";
-    device->SetTitle(name);
-}
+//////////////
+//  DRAW    //
+//////////////
 
-/**
- * Ni idea de que hace esto, creo que ni se usa
- */
+// TODO: No se usa
 void RenderFacadeClover::FacadeDraw() const{
+
 }
 
-/**
- *
- */
+void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars) {
+
+    //Voy a actualizar aqui las posiciones donde van porque es el unico sitio donde tengo ambos tipos de coches
+    //struct auxiliar para guardarme tiempo y numero de coche
+    struct ranking_t{
+        uint16_t carNumber;
+        float    time;
+        inline bool operator() (const ranking_t& struct1, const ranking_t& struct2)
+        {
+            return (struct1.time > struct2.time);
+        }
+    };
+
+    CTotem* cTotem;
+    vector<ranking_t> ranking;
+    std::string cadena;
+
+    //Si existen coches de IA
+    if(!manCars->GetEntities().empty()){
+        //Primero vamos a meter al coche principal
+        ranking_t rank{};
+        int i = 0;
+        for(auto& carAux : manCars->GetEntities()){
+            cTotem = static_cast<CTotem*>(carAux->GetComponent(CompType::TotemComp).get());
+            rank.carNumber = i++;
+            rank.time = cTotem->accumulatedTime;
+            ranking.push_back(rank);
+        }
+
+        std::sort (ranking.begin(), ranking.end(), ranking_t());
+
+    }
+
+    //Ya tenemos ordenados las posiciones, ahora vamos a actualizar sus valores en el CTotem
+    int j = 1;
+    for(auto aux : ranking){
+        uint16_t numCar = aux.carNumber;
+        cTotem = static_cast<CTotem*>(manCars->GetEntities()[numCar]->GetComponent(CompType::TotemComp).get());
+        if(cTotem) {
+            cTotem->positionRanking = j++;
+        }
+
+    }
+
+    //CURRENT POWERUP
+    device->DrawImage2D(25.0f, 25.0f, 150.0f, 150.0f, 0.1f ,powerUps[currentPowerUp], true);
+
+    //RANKING
+    //TODO: Dejar como debug
+    /*int i = 0;
+    //core::stringw textIA = core::stringw("Car ");
+    for (const auto& cars : manCars->GetEntities()) {
+
+        cTotem = static_cast<CTotem*>(cars->GetComponent(CompType::TotemComp).get());
+
+        int time = cTotem->accumulatedTime / 100.0;
+        float time2 = time / 10.0;
+        glm::vec3 color = glm::vec3(0.0f,0.0f,255.0f);
+        if(cTotem->active){
+            //Si tiene el totem voy a dibujarlo rojo por ejemplo
+            color = glm::vec3(255.0f, 0.0f, 0.0f);
+        }
+        cadena = std::to_string(cTotem->positionRanking) + ". Car " + std::to_string(i) + " - " + std::to_string(time2);
+        float altura = (device->GetScreenHeight() - 125.0f) + ((cTotem->positionRanking-1.0f)*18.0f);
+        device->RenderText2D(cadena, 200.0f, altura, 0.1f, 0.35f, color);
+
+        i++;
+    }*/
+
+    //MARCADOR DE TIEMPO
+    for(const auto& cars : manCars->GetEntities()) {
+        cTotem = static_cast<CTotem*>(cars->GetComponent(CompType::TotemComp).get());
+        if (cTotem && cTotem->active) {
+            cadena = "media/marcador.png";
+            device->DrawImage2D(550.0f, 50.0f ,225.0f, 90.0f, 0.2f, cadena, true);
+            cadena = "media/gorilaHUD.png";
+            device->DrawImage2D(585.0f,70.0f, 50.0f, 50.0f, 0.05f, cadena, true);
+
+            int time = cTotem->accumulatedTime / 100;
+            int time2 = cTotem->SEGUNDOS - (time / 10);
+            cadena = std::to_string(time2);
+            glm::vec3 color = glm::vec3(0.0f, 0.0f, 0.0f);
+
+            if(time2 <= 5) {
+                color = glm::vec3(255.0f, 0.0f, 0.0f);
+            }
+            device->RenderText2D(cadena, 680.0f, 610.0f, 0.05f, 0.75f, color);
+            break;
+        }
+    }
+
+    //MINIMAPA
+    cadena = "media/Minimapa240.png";
+    device->DrawImage2D((device->GetScreenWidth() - 280.0f), (device->GetScreenHeight() - 220.0f), 240.0f, 192.0f, 0.1f, cadena, true);
+
+}
+
 void RenderFacadeClover::FacadeDrawIntro() {
     std::string file = "media/intro.png";
     device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
-
 }
 
-/**
- * Dibuja las cosas del menu
- */
 void RenderFacadeClover::FacadeDrawMenu() {
 
     std::string file = "media/main_menu.png";
@@ -707,6 +697,7 @@ void RenderFacadeClover::FacadeDrawMenu() {
             glm::vec3(0.0f, 0.0f, 255.0f)
     };
     color[inputMenu] = glm::vec3(0.0f, 255.0f, 0.0f);
+
     text = "Un jugador";
     device->RenderText2D(text, 500.0f, 400.0f, 0.05f, 1.0f, color[0]);
     text = "Multijugador";
@@ -720,9 +711,6 @@ void RenderFacadeClover::FacadeDrawMenu() {
 
 }
 
-/**
- *
- */
  void RenderFacadeClover::FacadeDrawSelectCharacter() {
     glm::vec3 color[6] = {
             glm::vec3(0.0f, 0.0f, 255.0f),
@@ -752,9 +740,6 @@ void RenderFacadeClover::FacadeDrawMenu() {
     device->RenderText2D(name, 950.0f, 50.0f, 0.05f, 0.5f, colorB);
  }
 
-/**
- * Dibuja las cosos de las opciones de partida.
- */
 void RenderFacadeClover::FacadeDrawGameOptions() {
     std::string file = "media/gameoptions.png";
     device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
@@ -816,19 +801,11 @@ void RenderFacadeClover::FacadeDrawGameOptions() {
 
 }
 
-
-
-/**
- * Dibuja las cosas de los controles
- */
 void RenderFacadeClover::FacadeDrawControler() {
     std::string file = "media/controller_scheme.png";
     device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
 }
 
-/**
- * Dibuja las cosas del pause
- */
 void RenderFacadeClover::FacadeDrawPause() {
     std::string file = "media/pause_screen.png";
     device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
@@ -845,32 +822,33 @@ void RenderFacadeClover::FacadeDrawPause() {
     device->RenderText2D(text, 500.0f, 300.0f, 0.05f, 1.0f, color[1]);
 }
 
-/**
- * Dibuja las cosas del EndRace
- */
 void RenderFacadeClover::FacadeDrawEndRace() {
     std::string file = "media/finish_screen.png";
     device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
 }
 
-/**
- * Dibuja las cosas de los creditos
- */
 void RenderFacadeClover::FacadeDrawCredits() {
     std::string file = "media/creditos.png";
     device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
 }
 
-/**
- * Dibuja las cosas del LobbyMulti
- */
 void RenderFacadeClover::FacadeDrawLobbyMulti() {
     std::string file = "media/LobbyMulti.png";
     device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
 }
 
+// TODO: No se usa
 void RenderFacadeClover::FacadeDrawLobbyMultiExit() {
+
 }
+
+void RenderFacadeClover::FacadeDrawSettings() {
+    std::string file = "media/settings.png";
+    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
+}
+
+
+
 
 /**
  * Limpia la pantalla y vacia los buffers de pantalla
@@ -895,6 +873,7 @@ void RenderFacadeClover::FacadeEndScene() const{
 }
 
 void RenderFacadeClover::FacadeDeviceDrop() {
+
 }
 
 void RenderFacadeClover::FacadeAddSkybox(string right,string left,string top,string bottom,string front,string back){
@@ -1131,8 +1110,6 @@ void RenderFacadeClover::FacadeDrawAIDebugPath(Entity* carAI, ManWayPoint* manWa
     }
 }
 
-
-
 void RenderFacadeClover::Draw3DLine(vec3& pos1, vec3& pos2) const {
     Draw3DLine(pos1, pos2, 255, 0, 0);
 }
@@ -1147,6 +1124,7 @@ void RenderFacadeClover::DeleteEntity(Entity* entity) {
 }
 
 void RenderFacadeClover::FacadeDrawBoundingPlane(Entity* entity) const {
+
 }
 
 
@@ -1159,6 +1137,7 @@ void RenderFacadeClover::FacadeDrawBoundingGround(Entity* entity) const {
 }
 
 void RenderFacadeClover::FacadeDrawBoundingBox(Entity* entity, bool colliding) const{
+
 }
 
 void RenderFacadeClover::FacadeAddSphereOnObject(Entity* entity){
@@ -1166,9 +1145,7 @@ void RenderFacadeClover::FacadeAddSphereOnObject(Entity* entity){
 }
 
 void RenderFacadeClover::CleanScene() {
-
     device->Clear();
-
 }
 
 void RenderFacadeClover::FacadeUpdateViewport(){
