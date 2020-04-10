@@ -51,10 +51,7 @@ Mesh::Mesh(vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture
 
 using namespace CLE;
 
-/**
- * 
- * @param file - Ruta del archivo a leer.
- */
+
 bool CLResourceMesh::LoadFile(std::string file, bool flipUV) {
     Assimp::Importer importer;
     auto assimpFlags = aiProcess_Triangulate | /*aiProcess_FlipUVs | */aiProcess_GenNormals | aiProcess_CalcTangentSpace 
@@ -77,11 +74,7 @@ bool CLResourceMesh::LoadFile(std::string file, bool flipUV) {
     return true;
 }  
 
-/**
- * Recorremos los nodos para recuperar todos la informacion de la malla.
- * @param node - 
- * @param scene - 
- */
+
 void CLResourceMesh::processNode(aiNode *node, const aiScene *scene){
     // process all the node's meshes (if any)
     for(unsigned int i = 0; i < node->mNumMeshes; i++)
@@ -96,11 +89,6 @@ void CLResourceMesh::processNode(aiNode *node, const aiScene *scene){
     }
 }
 
-/**
- * Almacenamos los valores que recoge assimp de cada submalla.
- * @param mesh -
- * @param scene -
- */
 Mesh CLResourceMesh::processMesh(aiMesh *mesh, const aiScene *scene)
 {
     vector<Vertex> vertices;
@@ -316,9 +304,7 @@ unsigned int CLResourceMesh::TextureFromFile(const char *path, const string &dir
     return textureID;
 }
 
-/**
- * Aqui se llega normalmente desde la clase CLMesh->Draw()
- */
+
 void CLResourceMesh::Draw(GLuint shaderID) {
 
     for(auto& mesh : vecMesh){
@@ -368,9 +354,6 @@ void CLResourceMesh::Draw(GLuint shaderID) {
 
 
 
-/**
- * Aqui se llega normalmente desde la clase CLMesh->Draw()
- */
 void CLResourceMesh::DrawDepthMap(GLuint shaderID) {
     for(auto& mesh : vecMesh){
         glBindVertexArray(mesh.VAO);

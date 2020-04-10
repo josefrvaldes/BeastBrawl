@@ -21,7 +21,7 @@ struct Material {
 
 namespace CLE {
     
-    
+    //! Clase para almacenar materiales
     class CLResourceMaterial : public CLResource {
         public:
             CLResourceMaterial() {};
@@ -29,6 +29,8 @@ namespace CLE {
 
             void Draw(GLuint shaderID) override;
             bool LoadFile(std::string file, bool) override;
+            //! Devuelve los materiales
+            //! @returns materials std::vector<Material> materiales del recurso
             vector<Material> GetMaterials() { return materials;};
 
         private:

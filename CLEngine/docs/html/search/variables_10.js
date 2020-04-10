@@ -1,0 +1,19 @@
+var searchData=
+[
+  ['rasterizerflags_4440',['RasterizerFlags',['../struct_im_font_config.html#a80d05eea7733731a3e9ac1d9e905e5b3',1,'ImFontConfig']]],
+  ['rasterizermultiply_4441',['RasterizerMultiply',['../struct_im_font_config.html#a9365265cc52098a8ecf89ff47f6106f2',1,'ImFontConfig']]],
+  ['readlinefn_4442',['ReadLineFn',['../struct_im_gui_settings_handler.html#a0a02bad8569c2d9f22e1a532d1e2de60',1,'ImGuiSettingsHandler']]],
+  ['readopenfn_4443',['ReadOpenFn',['../struct_im_gui_settings_handler.html#accadc3cc1599382b55b58dac53df0b24',1,'ImGuiSettingsHandler']]],
+  ['rectrel_4444',['RectRel',['../struct_im_gui_nav_move_result.html#ae1be85fdcad1fc7c2bfa367862da2ccf',1,'ImGuiNavMoveResult']]],
+  ['redo_5fchar_5fpoint_4445',['redo_char_point',['../struct_stb_undo_state.html#aab6e5eeb964882e6d9f5d2952b7352e3',1,'StbUndoState']]],
+  ['redo_5fpoint_4446',['redo_point',['../struct_stb_undo_state.html#a719ba014b2db8a8ea55739664b445af0',1,'StbUndoState']]],
+  ['refframe_4447',['RefFrame',['../struct_im_gui_once_upon_a_frame.html#a2d44776b8e7bdeec217f88be9f832e08',1,'ImGuiOnceUponAFrame']]],
+  ['renderdrawlistsfn_4448',['RenderDrawListsFn',['../struct_im_gui_i_o.html#ae16a9f25f36fe9706d8a33fb128e538a',1,'ImGuiIO']]],
+  ['reorderrequestdir_4449',['ReorderRequestDir',['../struct_im_gui_tab_bar.html#adb5c5e4dd8c0331a229dd9e38042677f',1,'ImGuiTabBar']]],
+  ['reorderrequesttabid_4450',['ReorderRequestTabId',['../struct_im_gui_tab_bar.html#a63b10062043a569efbb55462602d7b27',1,'ImGuiTabBar']]],
+  ['resizeborderheld_4451',['ResizeBorderHeld',['../struct_im_gui_window.html#a2f7c042fc7e8359d4736cab69fff8490',1,'ImGuiWindow']]],
+  ['restriction_4452',['restriction',['../_l_i_c_e_n_s_e_8txt.html#ac0e1e4a858a6a19c5392f7f6d29f969c',1,'LICENSE.txt']]],
+  ['rootwindow_4453',['RootWindow',['../struct_im_gui_window.html#aef9281297b0993c8f1b7c1ff7987cb61',1,'ImGuiWindow']]],
+  ['rootwindowfornav_4454',['RootWindowForNav',['../struct_im_gui_window.html#a949a4aa260a21e8a8d2f65ffbe789712',1,'ImGuiWindow']]],
+  ['rootwindowfortitlebarhighlight_4455',['RootWindowForTitleBarHighlight',['../struct_im_gui_window.html#ae5d5c6637b63f35edc415162a5674c1e',1,'ImGuiWindow']]]
+];
