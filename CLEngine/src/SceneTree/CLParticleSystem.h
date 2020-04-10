@@ -26,6 +26,7 @@ using namespace std::chrono_literals;
 constexpr std::uint_fast8_t EFFECT_NONE          { 0x0 }; // hex for 0000 0001 
 constexpr std::uint_fast8_t EFFECT_DIR_ALEATORITY{ 0x1 }; // hex for 0000 0001 
 constexpr std::uint_fast8_t EFFECT_ZIG_ZAG       { 0x2 }; // hex for 0000 0010
+constexpr std::uint_fast8_t EFFECT_FADING        { 0x4 }; // hex for 0000 0100
 // constexpr std::uint_fast8_t mask2{ 0x4 }; // hex for 0000 0100
 // constexpr std::uint_fast8_t mask3{ 0x8 }; // hex for 0000 1000
 
@@ -122,6 +123,7 @@ class CLNode;
                     glm::vec3 CalculateSpawnPosition();
                     
                     GLuint VBO,VAO;
+                    float lifeTime = 0;
                     CLParticleSystem* particleSystem {nullptr};
                     glm::vec3 position;
                     glm::vec3 velocity;

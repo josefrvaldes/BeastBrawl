@@ -178,6 +178,13 @@ void CLParticleSystem::CLParticle::Draw(GLuint shaderID){
     if(particleDead) return;
     Update();
     
+    if(particleSystem->GetFlags() & EFFECT_FADING){
+        glUniform1f(glGetUniformLocation(shaderID, "alpha"), glm::min(lifeTime / lifeSpan,1.0f));
+
+    }else{
+        glUniform1f(glGetUniformLocation(shaderID, "alpha"), 100);
+
+    }
     glUniform1f(glGetUniformLocation(shaderID, "width"), particleSystem->GetWidth());
     glUniform1f(glGetUniformLocation(shaderID, "height"), particleSystem->GetHeight());
     
@@ -196,8 +203,10 @@ void CLParticleSystem::CLParticle::Draw(GLuint shaderID){
 
 void CLParticleSystem::CLParticle::Update(){
     //Comprobamos si deberia seguir con vida la particula
-    auto diff = duration_cast<milliseconds>(system_clock::now() - timeStart).count();
-    if(diff >= lifeSpan){
+    lifeTime = duration_cast<milliseconds>(system_clock::now() - timeStart).count();
+
+    if(lifeTime >= lifeSpan){
+        lifeTime = lifeSpan;
         if(particleSystem->GetLoop()){
             //la respawneamos en la posicion inicial
             position = CalculateSpawnPosition();

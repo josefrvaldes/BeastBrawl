@@ -117,10 +117,21 @@ int main() {
         mesh2->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
 
 
+        // //Lo paso de momento todo a pillon, luego pongo pasar los valores por el metodo
+    // int nParticles = 50;
+    // glm::vec3 velocity = glm::vec3(0.0f,50.0f,0.0f);
+    // string texture = "media/particle_test.png"; 
+    // int width = 10;
+    // int height= 10;
+    // int spawnDelay = 100;
+    // int particlesToSpawn = 2;
+    // int lifeSpan = 2000;
+    // glm::vec3 offset = glm::vec3(50.0f,50.0f,50.0f);
+    // glm::vec3 orientation = glm::vec3(1.0f,1.0f,0.0f);
+    // std::uint_fast8_t flags = EFFECT_FADING;
 
 
-
-        auto ps1   = smgr->AddParticleSystem(123940);
+        auto ps1   = smgr->AddParticleSystem(123940,50,glm::vec3(0.0f,50.0f,0.0f),"media/particle_test.png",10,10,100,2,2000,glm::vec3(50.0f,50.0f,50.0f),glm::vec3(1.0f,1.0f,1.0f),EFFECT_FADING);
         
 
         static_cast<CLCamera*>(camera->GetEntity())->SetCameraTarget(mesh2->GetTranslation());
