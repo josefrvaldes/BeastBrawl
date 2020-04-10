@@ -17,6 +17,8 @@ namespace CLE {
             void Draw(GLuint shaderID) override;
             bool LoadFile(string, bool) override;
             
+            //! Devuelve el ID de la textura
+            //! @returns textureID ID de OpenGL para identificar texturas
             unsigned int GetTextureID() { return textureID; };
 
         private:
