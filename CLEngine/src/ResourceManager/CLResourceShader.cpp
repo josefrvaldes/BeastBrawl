@@ -2,16 +2,16 @@
 
 using namespace CLE;
 
-//Ya no se usa este 
+
 bool CLResourceShader::LoadFile(string file, bool vertically) {
     
     return true;
 }
 
-bool CLResourceShader::LoadFile(string file1, string file2){
-    if(!LoadShader(file1,GL_VERTEX_SHADER))
+bool CLResourceShader::LoadFile(string vertex, string fragment){
+    if(!LoadShader(vertex,GL_VERTEX_SHADER))
         return false;
-    if(!LoadShader(file2,GL_FRAGMENT_SHADER))
+    if(!LoadShader(fragment,GL_FRAGMENT_SHADER))
         return false;
     if(!LinkShaders())
         return false;
@@ -19,12 +19,12 @@ bool CLResourceShader::LoadFile(string file1, string file2){
     return true;
 }
 
-bool CLResourceShader::LoadFile(string file1, string file2, string file3){
-    if(!LoadShader(file1,GL_VERTEX_SHADER))
+bool CLResourceShader::LoadFile(string vertex, string fragment, string geometry){
+    if(!LoadShader(vertex,GL_VERTEX_SHADER))
         return false;
-    if(!LoadShader(file2,GL_FRAGMENT_SHADER))
+    if(!LoadShader(fragment,GL_FRAGMENT_SHADER))
         return false;
-    if(!LoadShader(file3,GL_GEOMETRY_SHADER))
+    if(!LoadShader(geometry,GL_GEOMETRY_SHADER))
         return false;
     if(!LinkShadersGeometry())
         return false;

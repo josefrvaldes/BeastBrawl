@@ -3,7 +3,8 @@
 #include "CLEntity.h"
 
 namespace CLE {
-
+    //! Clase para luces dirigidas
+    //! Clase que permite crear luces dirigidas en nuestro motor gráfico
     class CLDirectLight : public CLEntity {
         public:
         

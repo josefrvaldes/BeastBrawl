@@ -47,10 +47,23 @@ using namespace std;
 using namespace CLE;
 
 
-
+constexpr std::uint_fast8_t mask0{ 0x1 }; // hex for 0000 0001 
+constexpr std::uint_fast8_t mask1{ 0x2 }; // hex for 0000 0010
+constexpr std::uint_fast8_t mask2{ 0x4 }; // hex for 0000 0100
+constexpr std::uint_fast8_t mask3{ 0x8 }; // hex for 0000 1000
+constexpr std::uint_fast8_t mask4{ 0x10 }; // hex for 0001 0000
+constexpr std::uint_fast8_t mask5{ 0x20 }; // hex for 0010 0000
+constexpr std::uint_fast8_t mask6{ 0x40 }; // hex for 0100 0000
+constexpr std::uint_fast8_t mask7{ 0x80 }; // hex for 1000 0000
 
 
 int main() {
+
+    uint_fast8_t flags = mask0 | mask1 | mask4;
+
+    if(flags & mask4){
+        cout << "Flag 0 activado\n";
+    }
     CLEngine *device = new CLEngine(1280, 720, "Beast Brawl");
 
 
@@ -145,7 +158,7 @@ int main() {
 
     
 
-    ps1->SetTranslation(mesh2->GetTranslation());
+    ps1->SetTranslation(glm::vec3(mesh2->GetTranslation().x,mesh2->GetTranslation().y+80,mesh2->GetTranslation().z));
     ps1->SetScalation(glm::vec3(10.0f,10.0f,10.0f));
     //LUCES Y COLORES
     float auxCameraPos[3] = {camera->GetTranslation().x, camera->GetTranslation().y, camera->GetTranslation().z};
@@ -187,7 +200,13 @@ int main() {
         
         static_cast<CLCamera*>(camera->GetEntity())->SetCameraTarget(mesh2->GetGlobalTranslation());
 
+        if(glfwGetKey(device->GetWindow(),GLFW_KEY_E)){
+            static_cast<CLParticleSystem*>(ps1->GetEntity())->SetLoop(true);
+        }
 
+        if(glfwGetKey(device->GetWindow(),GLFW_KEY_Q)){
+            static_cast<CLParticleSystem*>(ps1->GetEntity())->SetLoop(false);
+        }
         // Measure speed
         double currentTime = glfwGetTime();
         frameCount++;
@@ -195,7 +214,6 @@ int main() {
         if ( currentTime - previousTime >= 1.0 )
         {
             // Display the frame count here any way you want.
-            cout << frameCount << endl;
             device->SetTitle("BeastBrawl <"+to_string(frameCount) + ">");
 
             frameCount = 0;
