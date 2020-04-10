@@ -131,7 +131,22 @@ CLNode* CLNode::AddParticleSystem(unsigned int id){
         auto resourceShader = rm->GetResourceShader("CLEngine/src/Shaders/particleSystem.vert", "CLEngine/src/Shaders/particleSystem.frag","CLEngine/src/Shaders/particleSystem.geom");
         particleSystemShader = resourceShader->GetProgramID();
     }
-    shared_ptr<CLEntity> e = make_shared<CLParticleSystem>(id,1,glm::vec3(0.0f,10.0f,0.0f));
+
+    //Lo paso de momento todo a pillon, luego pongo pasar los valores por el metodo
+    int nParticles = 50;
+    glm::vec3 velocity = glm::vec3(0.0f,50.0f,0.0f);
+    string texture = "media/particle_test.png"; 
+    int width = 10;
+    int height= 10;
+    int spawnDelay = 100;
+    int particlesToSpawn = 2;
+    int lifeSpan = 2000;
+    glm::vec3 offset = glm::vec3(50.0f,50.0f,50.0f);
+    glm::vec3 orientation = glm::vec3(1.0f,1.0f,0.0f);
+    std::uint_fast8_t flags = EFFECT_NONE;
+
+    shared_ptr<CLEntity> e = make_shared<CLParticleSystem>(id,nParticles,velocity,texture,width,height,spawnDelay,particlesToSpawn,lifeSpan,offset,orientation,flags);
+
     shared_ptr<CLNode> node = make_shared<CLNode>(e);
     childs.push_back(node);
     node->SetFather(this);
@@ -140,6 +155,7 @@ CLNode* CLNode::AddParticleSystem(unsigned int id){
     //Configuraciones especificas de un particlesystem
     if(auto particleSystem = dynamic_cast<CLParticleSystem*>(e.get())){
         particleSystem->SetCLNode(node.get());
+        particleSystem->SetLoop(true);
     }
 
     return node.get();
