@@ -18,11 +18,10 @@
 #include "CLSkybox.h"
 #include "CLShadowMapping.h"
 #include "CLBillboard.h"
-#include "CLGrass.h"
 
 #include "../Frustum/CLFrustum.h"
 #include "../ResourceManager/CLResourceManager.h"
-#include "../ResourceManager/CLGrassManager.h"
+#include "CLGrassSystem.h"
 
 #include "../Built-In-Classes/CLColor.h"
 
@@ -90,8 +89,6 @@ class CLNode{
 
         CLNode* AddGrass(unsigned int id);
         void AddGrass();
-        CLNode* AddGrass(unsigned int id, const glm::vec3& pos);
-        CLNode* AddGrass(unsigned int id, const glm::vec3& pos, const glm::vec3& rot, const glm::vec3& scale);
 
 
         bool RemoveChild(CLNode* child);
@@ -178,10 +175,8 @@ class CLNode{
         //Particle system
         inline static GLuint particleSystemShader = 0;
 
-        inline static unique_ptr<CLGrass> grass = nullptr;
         inline static GLuint grassShader = 0;
-
-        unique_ptr<CLGrassManager> manGrass = nullptr;
+        unique_ptr<CLGrassSystem> manGrass = nullptr;
 
 
 

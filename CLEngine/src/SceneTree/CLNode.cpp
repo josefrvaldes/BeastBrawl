@@ -127,38 +127,22 @@ CLNode* CLNode::AddCamera(unsigned int id){
 
 
 CLNode* CLNode::AddGrass(unsigned int id){
-    shared_ptr<CLEntity> e = make_shared<CLGrass>(id);
-    shared_ptr<CLNode> node = make_shared<CLNode>(e);
-    childs.push_back(node);
-    node->SetFather(this);
-
-    return node.get();   
+    //shared_ptr<CLEntity> e = make_shared<CLGrassSystem>(1000.0, 1000.0, glm::vec3(100.0f,55.0f,-50.0f), glm::vec3(20.0,20.0,20.0));
+    //shared_ptr<CLNode> node = make_shared<CLNode>(e);
+    //childs.push_back(node);
+    //node->SetFather(this);
+//
+    //return node.get();   
 }
 
 
 void CLNode::AddGrass(){
-    // SetTranslation
     if(!grassShader){
         auto rm = CLResourceManager::GetResourceManager();
         auto resourceShader = rm->GetResourceShader("CLEngine/src/Shaders/grassShader.vert", "CLEngine/src/Shaders/grassShader.frag");
         grassShader = resourceShader->GetProgramID();
     }
-    manGrass = make_unique<CLGrassManager>(300.0, 150.0, glm::vec3(100.0f,55.0f,-50.0f), glm::vec3(20.0,20.0,20.0));
-}
-
-
-CLNode* CLNode::AddGrass(unsigned int id, const glm::vec3& pos){
-    auto grass = AddGrass(id);
-    grass->SetTranslation(pos);
-
-    return grass;
-}
-CLNode* CLNode::AddGrass(unsigned int id, const glm::vec3& pos, const glm::vec3& rot, const glm::vec3& scale){
-    auto grass = AddGrass(id, pos);
-    grass->SetRotation(rot);
-    grass->SetScalation(scale);
-
-    return grass;
+    manGrass = make_unique<CLGrassSystem>(500.0, 600.0, glm::vec3(100.0f,55.0f,-50.0f), glm::vec3(20.0,20.0,20.0), false);
 }
 
 
