@@ -280,12 +280,11 @@ class CLNode{
         //! Añade un billboard
         //! @param file Fichero de la textura
         //! @param vertically Parametro para poner vertical la textura
-        //! @param posBillboard Posición del billboard
         //! @param width_ Anchura del billboard
         //! @param height Altura del billboard
+        //! @returns CLE::CLNode()
         //! @see CLE::CLBillboard()
-        void AddBillBoard(string& file, bool vertically, glm::vec3 posBillBoard, float width_, float height_);
-
+        CLNode* AddBillBoard(unsigned int id,string& file, bool vertically, float width_, float height_);
         //! Elimina un hijo de ese nodo
         //! @param child Puntero al hijo para eliminar
         //! @returns bool Si ha sido finalizado con exito o no
@@ -328,7 +327,6 @@ class CLNode{
         //! Dibuja el skybox
         void DrawSkybox();
 
-        void DrawBillBoard();
         
         //! Dibuja una linea primitiva en 3D
         //! @param x1 X inicial
@@ -404,7 +402,6 @@ class CLNode{
         inline static unique_ptr<CLSkybox> skybox = nullptr;
         inline static GLuint skyboxShader = 0;
 
-        inline static unique_ptr<CLBillboard> billBoard = nullptr;
         inline static GLuint billboardShader = 0;
 
         inline static unique_ptr<CLShadowMapping> shadowMapping = nullptr;

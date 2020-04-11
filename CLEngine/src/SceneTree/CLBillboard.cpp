@@ -2,9 +2,8 @@
 
 
 
-CLE::CLBillboard::CLBillboard(CLResourceTexture* texture_, glm::vec3 posBillBoard_, float width_, float height_){
+CLE::CLBillboard::CLBillboard(unsigned int id,CLResourceTexture* texture_, float width_, float height_) : CLEntity(id){
     texture = texture_;
-    position = posBillBoard_;
     width = width_;
     height = height_;
     glGenVertexArrays(1, &VAO);
@@ -13,6 +12,8 @@ CLE::CLBillboard::CLBillboard(CLResourceTexture* texture_, glm::vec3 posBillBoar
 
 void CLE::CLBillboard::Draw(GLuint shaderID){
     if(texture != nullptr){
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glUniform1f(glGetUniformLocation(shaderID, "width"), width);
         glUniform1f(glGetUniformLocation(shaderID, "height"), height);
 
@@ -31,7 +32,3 @@ void CLE::CLBillboard::Draw(GLuint shaderID){
     }
 }
 
-
-void CLE::CLBillboard::DrawDepthMap(GLuint shaderID){
-
-}

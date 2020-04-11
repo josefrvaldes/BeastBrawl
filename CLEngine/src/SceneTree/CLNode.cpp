@@ -242,14 +242,22 @@ void CLNode::AddShadowMapping(GLuint lightId){
     shadowMapping = make_unique<CLShadowMapping>(lightId);
 }
 
-void CLNode::AddBillBoard(string& file, bool vertically, glm::vec3 posBillBoard, float width_, float height_){
+CLNode* CLNode::AddBillBoard(unsigned int id,string& file, bool vertically, float width_, float height_){
+    auto rm = CLResourceManager::GetResourceManager();
     if(!billboardShader){
-        auto rm = CLResourceManager::GetResourceManager();
-        CLResourceTexture* t = rm->GetResourceTexture(file, vertically);
         auto resourceShader = rm->GetResourceShader("CLEngine/src/Shaders/billboard.vert", "CLEngine/src/Shaders/billboard.frag", "CLEngine/src/Shaders/billboard.geom");
         billboardShader = resourceShader->GetProgramID();
-        billBoard = make_unique<CLBillboard>(t, posBillBoard, width_, height_);
     }
+
+    CLResourceTexture* texture = rm->GetResourceTexture(file, vertically);
+    auto entity = make_shared<CLBillboard>(id,texture,width_,height_);
+    auto node = make_shared<CLNode>(entity);
+
+    node->SetFather(this);
+    childs.push_back(node);
+    node->SetShaderProgramID(billboardShader);
+
+    return node.get();
 }
 
 bool CLNode::RemoveChild(CLNode* child){
@@ -460,6 +468,13 @@ void CLNode::DFSTree(glm::mat4 mA) {
         glUniformMatrix4fv(glGetUniformLocation(shaderProgramID, "MVP"), 1, GL_FALSE, glm::value_ptr(MVP));
         glUniform1i(glGetUniformLocation(shaderProgramID, "shadows"), true); 
         glUniform1f(glGetUniformLocation(shaderProgramID, "far_plane"), Constants::FAR_PLANE); 
+
+        glm::mat4 viewProjection = projection*view;
+        glm::vec3 camPos = GetActiveCameraNode()->GetGlobalTranslation();
+        glm::vec3 pos    = GetGlobalTranslation();
+        glUniformMatrix4fv(glGetUniformLocation(shaderProgramID, "VPMatrix"), 1, GL_FALSE, glm::value_ptr(viewProjection));
+        glUniform3fv(glGetUniformLocation(shaderProgramID, "cameraPosition"), 1, glm::value_ptr(camPos));
+        glUniform3fv(glGetUniformLocation(shaderProgramID, "position"), 1, glm::value_ptr(pos));
         entity->Draw(shaderProgramID);
 
     }
@@ -620,27 +635,7 @@ void CLNode::DrawSkybox(){
     }
 }
 
-void CLNode::DrawBillBoard(){
 
-    if(billBoard.get()){
-
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-        //glDepthMask(GL_FALSE);
-        glUseProgram(billboardShader);
-
-        glm::mat4 viewProjection = projection*view;
-        glm::vec3 camPos = cameras[0]->translation;
-	    GLuint VPMatrix = glGetUniformLocation(billboardShader, "VPMatrix");
-	    glUniformMatrix4fv(VPMatrix, 1, GL_FALSE, glm::value_ptr(viewProjection));
-
-	    GLuint cameraPosition = glGetUniformLocation(billboardShader, "cameraPosition");
-	    glUniform3fv(cameraPosition, 1, glm::value_ptr(camPos));
-
-        billBoard->Draw(billboardShader);
-    }
-}
 
 
 //Devuelve el nodo por la id que le mandes

@@ -194,28 +194,6 @@ Mesh CLResourceMesh::processMesh(aiMesh *mesh, const aiScene *scene)
 }  
 
 
-// Material CLResourceMesh::loadMaterial(aiMaterial* mat) {
-//     //Ruben del futuro:
-//     //Una vez tienes estos valores se los mandas al fragment por el struct material y ya estaria yo creo
-//     Material material;
-//     aiColor3D color(0.f, 0.f, 0.f);
-//     float shininess;
-
-
-//     mat->Get(AI_MATKEY_COLOR_DIFFUSE, color);
-//     material.diffuse = glm::vec3(color.r, color.b, color.g);
-
-//     mat->Get(AI_MATKEY_COLOR_AMBIENT, color);
-//     material.ambient = glm::vec3(color.r, color.b, color.g);
-
-//     mat->Get(AI_MATKEY_COLOR_SPECULAR, color);
-//     material.specular = glm::vec3(color.r, color.b, color.g);
-
-//     mat->Get(AI_MATKEY_SHININESS, shininess);
-//     material.shininess = shininess;
-
-//     return material;
-// }
 
 
 vector<Texture> CLResourceMesh::loadMaterialTextures(aiMaterial *mat, aiTextureType type, string typeName)
