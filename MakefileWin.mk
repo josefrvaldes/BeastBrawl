@@ -58,7 +58,7 @@ LIBS			+= -L./lib/windows/freeType2 -lfreetype -Wl,-rpath=lib/windows/freeType2
 #LIBS			+= -L./lib/windows -lwinpthread-1 -Wl,-rpath=lib/windows
 #LIBS			+= -L./lib/windows -lwinpthread -Wl,-rpath=lib/windows
 
-LIBS 	    	+= -L./lib/linux/fmod -lfmod -lfmodstudio -Wl,-rpath=lib/linux/fmod
+LIBS 	    	+= -L"ws2_32" -L./lib/windows/fmod -lfmod -lfmodL -lfmodstudio -lfmodstudioL -Wl,-rpath=lib/windows/fmod
 
 INCLUDE     := -I./include -I./src -I./include/fmod/core -I./include/fmod/studio -I./include/freeType2
 CREATE_SYMLINKS := 
