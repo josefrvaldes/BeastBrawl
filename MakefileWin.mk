@@ -49,12 +49,13 @@ endif
 
 
 #LIBS		:= -L/usr/lib32 -lX11
-LIBS 	    += -L./lib/windows/glew -lglew32 -Wl,-rpath=lib/windows/glew
-LIBS 	    += -L./lib/linux/irrlicht -lIrrlicht -Wl,-rpath=lib/linux/irrlicht
-LIBS 	    += -L./lib/linux/fmod -lfmod -lfmodstudio -Wl,-rpath=lib/linux/fmod
-LIBS 	    += -L./lib/windows/glfw -lglfw3 -lopengl32 -lX11 -lpthread -lXrandr -lXi -ldl -Wl,-rpath=./lib/windows/glfw
-LIBS 	    += -L./lib/linux/assimp -lassimp -Wl,-rpath=lib/linux/assimp
-LIBS		+= -L./lib/linux/freeType2 -lfreetype -Wl,-rpath=lib/linux/freeType2
+LIBS 	    	+= -L./lib/windows/glfw -lglfw3 -lglfw3dll -lopengl32 -lgdi32 -luser32 -lcomdlg32 -lpthread -Wl,-rpath=./lib/windows/glfw
+LIBS 	    	+= -L./lib/windows/glew -lglew32 -Wl,-rpath=lib/windows/glew
+LIBS 	    	+= -L./lib/windows/assimp -lassimp -Wl,-rpath=lib/windows/assimp
+
+LIBS 	    	+= -L./lib/linux/irrlicht -lIrrlicht -Wl,-rpath=lib/linux/irrlicht
+LIBS 	    	+= -L./lib/linux/fmod -lfmod -lfmodstudio -Wl,-rpath=lib/linux/fmod
+LIBS			+= -L./lib/windows/freeType2 -lfreetype -Wl,-rpath=lib/windows/freeType2
 
 INCLUDE     := -I./include -I./src -I./include/fmod/core -I./include/fmod/studio -I./include/freeType2
 CREATE_SYMLINKS := bash symlinks.sh
