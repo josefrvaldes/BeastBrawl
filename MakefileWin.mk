@@ -54,11 +54,10 @@ LIBS 	    	+= -L./lib/windows/glew -lglew32 -Wl,-rpath=lib/windows/glew
 LIBS 	    	+= -L./lib/windows/assimp -lassimp -Wl,-rpath=lib/windows/assimp
 LIBS 	    	+= -L./lib/windows/irrlicht -lIrrlicht -Wl,-rpath=lib/windows/irrlicht
 LIBS			+= -L./lib/windows/freeType2 -lfreetype -Wl,-rpath=lib/windows/freeType2
-
-#LIBS			+= -L./lib/windows -lwinpthread-1 -Wl,-rpath=lib/windows
-#LIBS			+= -L./lib/windows -lwinpthread -Wl,-rpath=lib/windows
-
-LIBS 	    	+= -L"ws2_32" -L./lib/windows/fmod -lfmod -lfmodL -lfmodstudio -lfmodstudioL -Wl,-rpath=lib/windows/fmod
+#LIBS 	    	+= -L./lib/windows/fmod -lfmod -lfmod_vc -lfmodL_vc -lfmodL -lfmodstudio -lfmodstudio_vc -lfmodstudioL -lfmodstudioL_vc -Wl,-rpath=lib/windows/fmod
+#LIBS 	    	+= -L./lib/windows/fmod -lfmod_vc -lfmodL_vc -lfmodstudio_vc -lfmodstudioL_vc -Wl,-rpath=lib/windows/fmod
+LIBS 	    	+= -L./lib/windows/fmod -lfmod -lfmodL -lfmodstudio -lfmodstudioL -Wl,-rpath=lib/windows/fmod #-Wl,--no-demangle
+LIBS 			+= -lws2_32 -lwsock32 # necesarias para asio
 
 INCLUDE     := -I./include -I./src -I./include/fmod/core -I./include/fmod/studio -I./include/freeType2
 CREATE_SYMLINKS := 
