@@ -47,8 +47,8 @@ namespace CLE {
 
         private:
 
-            //GLfloat near;
-            //GLfloat far;
+            GLfloat m_near;
+            GLfloat m_far;
             GLfloat right;
             GLfloat left;
             GLfloat top;

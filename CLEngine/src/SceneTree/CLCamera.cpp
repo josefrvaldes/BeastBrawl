@@ -8,8 +8,8 @@ CLCamera::CLCamera(unsigned int idEntity) : CLEntity(idEntity) {
     right = 1280.0f;
     top = 0.0f;
     bottom = 720.0f;
-    near= 0.1f;
-    far = 5000.0f;
+    m_near= 0.1f;
+    m_far = 5000.0f;
     fov = 70.0f;
     aspect = 1280.f / 720.0f; // 2,05
 
@@ -20,7 +20,7 @@ CLCamera::CLCamera(unsigned int idEntity) : CLEntity(idEntity) {
  * Cambia los valores de configuracion de la camara.
  */
 void CLCamera::SetCameraConfig(GLfloat n, GLfloat f, GLfloat r, GLfloat l, GLfloat t, GLfloat b) {
-    near = n; far = f; right = r; left = l; top = t; bottom = b;
+    m_near = n; m_far = f; right = r; left = l; top = t; bottom = b;
     CalculateProjectionMatrix();
 }
 
@@ -31,10 +31,10 @@ glm::mat4 CLCamera::CalculateProjectionMatrix() {
     glm::mat4 projection = glm::mat4(0.0f);
     if (perspective) {
         //TO-DO: Poner variable el spect
-        projection = glm::perspective(glm::radians(fov), aspect, near, far);
+        projection = glm::perspective(glm::radians(fov), aspect, m_near, m_far);
     }
     else {
-        projection = glm::ortho(left, right, bottom, top, near, far);
+        projection = glm::ortho(left, right, bottom, top, m_near, m_far);
     }
 
     return projection;
