@@ -11,7 +11,7 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
-
+//! Estructura que engloba el material de un objeto
 struct Material {
     glm::vec3 ambient;
     glm::vec3 diffuse;

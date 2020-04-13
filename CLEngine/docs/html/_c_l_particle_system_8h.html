@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>CLEngine: src/SceneTree/CLParticleSystem.h File Reference</title>
+<title>CLEngine: CLEngine/src/SceneTree/CLParticleSystem.h File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -28,7 +28,7 @@
    <div id="projectname">CLEngine
    &#160;<span id="projectnumber">1.0</span>
    </div>
-   <div id="projectbrief">Motor gráfico para TAG</div>
+   <div id="projectbrief">Motor grafico para Beast Brawl</div>
   </td>
  </tr>
  </tbody>
@@ -111,6 +111,7 @@ $(document).ready(function(){initNavTree('_c_l_particle_system_8h.html',''); ini
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_particle_system.html">CLE::CLParticleSystem</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clase para crear sistemas de particulas.  <a href="class_c_l_e_1_1_c_l_particle_system.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="namespaces"></a>
@@ -130,17 +131,23 @@ Enumerations</h2></td></tr>
 <a class="el" href="_c_l_particle_system_8h.html#a2955cca9df1e3f8faa105a79669676dca3b4c5831cd0a4399644876494915540a">Sphere</a>
 <br />
  }</td></tr>
+<tr class="memdesc:a2955cca9df1e3f8faa105a79669676dc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enum para diferentes tipos shapes para el spawner.  <a href="_c_l_particle_system_8h.html#a2955cca9df1e3f8faa105a79669676dc">More...</a><br /></td></tr>
 <tr class="separator:a2955cca9df1e3f8faa105a79669676dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Variables</h2></td></tr>
 <tr class="memitem:aaadcc26190ada45c9f48b67e9c8bb66e"><td class="memItemLeft" align="right" valign="top">constexpr std::uint_fast8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_c_l_particle_system_8h.html#aaadcc26190ada45c9f48b67e9c8bb66e">EFFECT_NONE</a> { 0x0 }</td></tr>
-<tr class="memdesc:aaadcc26190ada45c9f48b67e9c8bb66e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Utilizamos flags por bits para saber que efectos tiene que aplicarse.  <a href="_c_l_particle_system_8h.html#aaadcc26190ada45c9f48b67e9c8bb66e">More...</a><br /></td></tr>
+<tr class="memdesc:aaadcc26190ada45c9f48b67e9c8bb66e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Mask para no aplicar efectos.  <a href="_c_l_particle_system_8h.html#aaadcc26190ada45c9f48b67e9c8bb66e">More...</a><br /></td></tr>
 <tr class="separator:aaadcc26190ada45c9f48b67e9c8bb66e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afa51de700ad08346bd51691868455d46"><td class="memItemLeft" align="right" valign="top">constexpr std::uint_fast8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_c_l_particle_system_8h.html#afa51de700ad08346bd51691868455d46">EFFECT_DIR_ALEATORITY</a> { 0x1 }</td></tr>
+<tr class="memdesc:afa51de700ad08346bd51691868455d46"><td class="mdescLeft">&#160;</td><td class="mdescRight">Mask para aplicar el efecto de direccion aleatoria.  <a href="_c_l_particle_system_8h.html#afa51de700ad08346bd51691868455d46">More...</a><br /></td></tr>
 <tr class="separator:afa51de700ad08346bd51691868455d46"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0950a89b28c3c243223e5b3f68fed7de"><td class="memItemLeft" align="right" valign="top">constexpr std::uint_fast8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_c_l_particle_system_8h.html#a0950a89b28c3c243223e5b3f68fed7de">EFFECT_ZIG_ZAG</a> { 0x2 }</td></tr>
+<tr class="memdesc:a0950a89b28c3c243223e5b3f68fed7de"><td class="mdescLeft">&#160;</td><td class="mdescRight">Mask para aplicar el efecto de zigzag.  <a href="_c_l_particle_system_8h.html#a0950a89b28c3c243223e5b3f68fed7de">More...</a><br /></td></tr>
 <tr class="separator:a0950a89b28c3c243223e5b3f68fed7de"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a60a5f8aa9ca1cecfb08fce466324df0d"><td class="memItemLeft" align="right" valign="top">constexpr std::uint_fast8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_c_l_particle_system_8h.html#a60a5f8aa9ca1cecfb08fce466324df0d">EFFECT_FADING</a> { 0x4 }</td></tr>
+<tr class="memdesc:a60a5f8aa9ca1cecfb08fce466324df0d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Mask para efecto de desvanecimiento.  <a href="_c_l_particle_system_8h.html#a60a5f8aa9ca1cecfb08fce466324df0d">More...</a><br /></td></tr>
+<tr class="separator:a60a5f8aa9ca1cecfb08fce466324df0d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Enumeration Type Documentation</h2>
 <a id="a2955cca9df1e3f8faa105a79669676dc"></a>
@@ -154,6 +161,8 @@ Variables</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Enum para diferentes tipos shapes para el spawner. </p>
 <table class="fieldtable">
 <tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a2955cca9df1e3f8faa105a79669676dca5b577e188dc4657a3e573fb2dae1a924"></a>Point&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a2955cca9df1e3f8faa105a79669676dca2d65321ae3e5a5fd9390d2a281a95d45"></a>Line&#160;</td><td class="fielddoc"></td></tr>
@@ -186,6 +195,32 @@ Variables</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Mask para aplicar el efecto de direccion aleatoria. </p>
+
+</div>
+</div>
+<a id="a60a5f8aa9ca1cecfb08fce466324df0d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a60a5f8aa9ca1cecfb08fce466324df0d">&#9670;&nbsp;</a></span>EFFECT_FADING</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr std::uint_fast8_t EFFECT_FADING { 0x4 }</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">constexpr</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Mask para efecto de desvanecimiento. </p>
+
 </div>
 </div>
 <a id="aaadcc26190ada45c9f48b67e9c8bb66e"></a>
@@ -208,7 +243,7 @@ Variables</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Utilizamos flags por bits para saber que efectos tiene que aplicarse. </p>
+<p>Mask para no aplicar efectos. </p>
 
 </div>
 </div>
@@ -232,6 +267,8 @@ Variables</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Mask para aplicar el efecto de zigzag. </p>
+
 </div>
 </div>
 </div><!-- contents -->
@@ -239,7 +276,7 @@ Variables</h2></td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_6cc3bb592afc4ef2912c846e4b92b502.html">SceneTree</a></li><li class="navelem"><a class="el" href="_c_l_particle_system_8h.html">CLParticleSystem.h</a></li>
+    <li class="navelem"><a class="el" href="dir_aead3dff2facb086e221c03efe0c7a1a.html">CLEngine</a></li><li class="navelem"><a class="el" href="dir_9779f9edaadacf3bb82da7e0c320dbcf.html">src</a></li><li class="navelem"><a class="el" href="dir_ca9cb8684183ff4a03c141bd178d050c.html">SceneTree</a></li><li class="navelem"><a class="el" href="_c_l_particle_system_8h.html">CLParticleSystem.h</a></li>
     <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.17 </li>

@@ -30,12 +30,12 @@ using namespace std;
 
 
 namespace CLE{
-
+//! Clase Nodo de la escena
+//! En la escena gestionaremos todo mediante nodos de manera recursiva
+//! aqui puedes crear nodos y asignarles cualquier tipo de entidad disponible
+//! @see CLE::CLEntity
 class CLNode{
-    //! Clase Nodo de la escena
-    //! En la escena gestionaremos todo mediante nodos de manera recursiva
-    //! aqui puedes crear nodos y asignarles cualquier tipo de entidad disponible
-    //! @see CLE::CLEntity
+    
     public:
         CLNode();
         CLNode(shared_ptr<CLEntity> entity);

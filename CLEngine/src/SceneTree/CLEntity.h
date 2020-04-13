@@ -5,6 +5,7 @@
 
 namespace CLE {
 
+    //! Clase virtual para que hereden el resto de entidades
     class CLEntity {
         public:
             CLEntity(){};

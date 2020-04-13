@@ -1,5 +1,8 @@
 var NAVTREEINDEX2 =
 {
+"struct_material.html#a099904e2f5a7bbec3cba6bf8ec546b11":[1,0,1,1],
+"struct_material.html#a9dc184c883ec135ace28c1917af3fe84":[1,0,1,2],
+"struct_material.html#aac1c499923ff99564cdd97a4b5e504a9":[1,0,1,3],
 "struct_material.html#af99c823542e497c98a35d1aac5fc9012":[1,0,1,0],
 "struct_texture.html":[1,0,3],
 "struct_texture.html#a2bb543fb01b98cc7406ee7466030e7d2":[1,0,3,1],
