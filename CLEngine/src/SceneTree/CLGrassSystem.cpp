@@ -1,7 +1,6 @@
 #include "CLGrassSystem.h"
 #include "../ResourceManager/CLResourceManager.h"
-#include <cstdlib>
-#include <ctime>
+#include <random>
 
 
 using namespace CLE;
@@ -63,17 +62,29 @@ void CLGrassSystem::CreateRealistGrass(){
     glm::vec3 posActual = glm::vec3(position.x - numBushesRows*0.5*extraSize , position.y, position.z - numBushesFiles*0.5*extraSize);
     glm::vec3 auxScale(scale);
     glm::vec3 auxPosition(posActual);
-    std::srand(std::time(NULL));
+    std::random_device rd;
+    std::mt19937 rng(rd());
+    std::uniform_real_distribution<float> exScale(0, extraScaleRealistic);
+    std::uniform_real_distribution<float> exPosX(0, extraPositionRealistic);
+    std::uniform_real_distribution<float> exPosZ(0, extraPositionRealistic);
+
     while(posActual.x < (position.x+numBushesRows*0.5*extraSize)){
         while(posActual.z < (position.z+numBushesFiles*0.5*extraSize)){
             auxScale = scale;
-            extraScale = float(std::rand() % extraScaleRealistic);
-            extraPosX =  float(std::rand() % extraPositionRealistic);
-            extraPosZ =  float(std::rand() % extraPositionRealistic);
-            cout << extraScale << "  --  " << extraPosX << "  --  " << extraPosZ << "\n";
+            // resetear aleatorios
+            exScale(rng);exScale(rng);exScale(rng);
+            exPosX(rng);exPosX(rng);exPosX(rng);
+            exPosZ(rng);exPosZ(rng);exPosZ(rng);
+            // Obtener numeros aleatorios
+            extraScale = exScale(rng);
+            extraPosX = exPosX(rng);
+            extraPosZ = exPosZ(rng);
+            // cout << extraScale << "  --  " << extraPosX << "  --  " << extraPosZ << "\n";
+            
             auxScale += extraScale;
             auxPosition.x = posActual.x + extraPosX;
             auxPosition.z = posActual.z + extraPosZ;
+            // generar las hojas
             AddLeafs(auxPosition, auxScale);
             posActual.z = posActual.z + extraSize;
         }
@@ -85,7 +96,7 @@ void CLGrassSystem::CreateRealistGrass(){
 
 
 // Anyade los tres planos de un arbusto al vector, calculamos la matriz modelo
-void CLGrassSystem::AddLeafs(const glm::vec3& posLeaf, const glm::vec3& scaleLeaf){
+void CLGrassSystem::AddLeafs(const glm::vec3& posLeaf, const glm::vec3& scaleLeaf){ 
     glm::mat4 auxTrans = glm::mat4(1.0f);
     auxTrans = glm::translate(auxTrans, posLeaf);
 

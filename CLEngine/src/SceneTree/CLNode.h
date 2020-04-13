@@ -86,8 +86,6 @@ class CLNode{
         void AddSkybox(string right, string left, string top, string bottom, string front, string back);
         void AddShadowMapping(GLuint lightId);
         void AddBillBoard(string& file, bool vertically, glm::vec3 posBillBoard, float width_, float height_);
-
-        CLNode* AddGrass(unsigned int id);
         void AddGrass();
 
 
