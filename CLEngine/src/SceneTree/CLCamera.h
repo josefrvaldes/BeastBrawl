@@ -4,6 +4,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include "../include/glew/glew.h"
 #include <memory>
 
 #include "../Frustum/CLFrustum.h"
@@ -46,8 +47,8 @@ namespace CLE {
 
         private:
 
-            GLfloat near;
-            GLfloat far;
+            //GLfloat near;
+            //GLfloat far;
             GLfloat right;
             GLfloat left;
             GLfloat top;

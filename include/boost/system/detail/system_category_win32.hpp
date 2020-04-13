@@ -49,7 +49,7 @@ inline char const * unknown_message_win32( int ev, char * buffer, std::size_t le
 
 inline char const * unknown_message_win32( int ev, char * buffer, std::size_t len )
 {
-    std::snprintf( buffer, len, "Unknown error (%d)", ev );
+    //std::snprintf( buffer, len, "Unknown error (%d)", ev );
     return buffer;
 }
 
