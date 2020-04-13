@@ -33,12 +33,12 @@ constexpr std::uint_fast8_t EFFECT_FADING        { 0x4 }; // hex for 0000 0100
 
 //! Enum para diferentes tipos shapes para el spawner
 enum SpawnType{
-   Point,
-   Line,
-   Square,
-   Cube,
-   Circle,
-   Sphere
+   PointSpawn,
+   LineSpawn,
+   SquareSpawn,
+   CubeSpawn,
+   CircleSpawn,
+   SphereSpawn
     
 };
 
@@ -106,7 +106,6 @@ class CLNode;
 
             void Draw(GLuint shaderID) override;
             void DrawDepthMap(GLuint shaderID) override {};
-            void Update();
 
             //SETTERS
             //! Asigna el nodo del arbol 
@@ -115,6 +114,11 @@ class CLNode;
             //! Asigna el estado de loop
             //! @param _loop Si el spawner esta en modo repetición o no
             void SetLoop(bool _loop) {loop = _loop;}
+            //! Inicia la emisión de particulas
+            void Start() { started = true; }
+            //! Inicia una sola iteracion de particulas
+            void StartOneIteration() { started = true; oneIterationMode = true; }
+            
 
             //GETTERS
             //! Devuelve el nodo del arbol donde spawnea
@@ -166,10 +170,19 @@ class CLNode;
             //! Devuelve los flags de los efectos del spawner
             //! @returns flags
             std::uint_fast8_t  GetFlags()             const { return flags; }
+            //! Devuele si esta activado el modo de 1 iteracion
+            //! @returns oneIterationMode
+            bool               GetOneIterationMode()  const { return oneIterationMode; }
 
 
 
         private:
+
+            void Update();
+            //! Indica que ha muerto o revivido una particula
+            //! @note puede ser 1 o -1
+            void UpdateNumParticlesDead(int change) { numParticleDeads += change; }
+
             class CLParticle; //Forward declaration
 
             vector<shared_ptr<CLParticle>> particles;
@@ -183,8 +196,11 @@ class CLNode;
             float spawnDelay = 1000; //Tiempo en ms
             unsigned int nParticlesToSpawn = 1; //Particulas a spawnear a la vez
             float lifeSpan = 1000; //Tiempo de vida de las particulas
-            bool loop = true;
-            SpawnType spawnType = SpawnType::Point;
+            bool loop = false;
+            bool started = false;
+            bool oneIterationMode = false;
+            ulong numParticleDeads = 0;
+            SpawnType spawnType = SpawnType::PointSpawn;
             float radious = 0; //Usado en SpawnType::Circle y SpawnType::Sphere
             glm::vec3 orientation = glm::vec3(1.0f); //Usado en SpawnType::Circle
             glm::vec3 offset; //Usado en SpawnType::Line, SpawnType::Square y  SpawnType::Cube
@@ -205,6 +221,7 @@ class CLNode;
                 private:
                     void Update();              //Aqui haremos los calculos necesarios de vida, posicion, etc
                     glm::vec3 CalculateSpawnPosition();
+                    void CalculateVelocity();
                     
                     GLuint VBO,VAO;
                     float lifeTime = 0;
