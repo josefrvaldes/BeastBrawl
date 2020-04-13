@@ -47,7 +47,8 @@ enum CompType {
     MovementComp,
     OnlineComp,
     ShaderComp,
-    LightComp
+    LightComp,
+    ParentNodeComp
 };
 
 class Component {

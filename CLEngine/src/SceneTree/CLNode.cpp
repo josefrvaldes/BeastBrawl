@@ -143,7 +143,6 @@ CLNode* CLNode::AddParticleSystem(unsigned int id,int nParticles,glm::vec3 veloc
     //Configuraciones especificas de un particlesystem
     if(auto particleSystem = dynamic_cast<CLParticleSystem*>(e.get())){
         particleSystem->SetCLNode(node.get());
-        particleSystem->SetLoop(true);
     }
 
     return node.get();
@@ -167,7 +166,6 @@ CLNode* CLNode::AddParticleSystem(unsigned int id,int nParticles,glm::vec3 veloc
     //Configuraciones especificas de un particlesystem
     if(auto particleSystem = dynamic_cast<CLParticleSystem*>(e.get())){
         particleSystem->SetCLNode(node.get());
-        particleSystem->SetLoop(true);
     }
 
     return node.get();
@@ -192,7 +190,6 @@ CLNode* CLNode::AddParticleSystem(unsigned int id,int nParticles,glm::vec3 veloc
     //Configuraciones especificas de un particlesystem
     if(auto particleSystem = dynamic_cast<CLParticleSystem*>(e.get())){
         particleSystem->SetCLNode(node.get());
-        particleSystem->SetLoop(true);
     }
 
     return node.get();
@@ -217,7 +214,6 @@ CLNode* CLNode::AddParticleSystem(unsigned int id,int nParticles,glm::vec3 veloc
     //Configuraciones especificas de un particlesystem
     if(auto particleSystem = dynamic_cast<CLParticleSystem*>(e.get())){
         particleSystem->SetCLNode(node.get());
-        particleSystem->SetLoop(true);
     }
 
     return node.get();

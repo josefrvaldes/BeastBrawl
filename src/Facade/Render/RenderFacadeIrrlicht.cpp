@@ -332,6 +332,10 @@ const uint16_t RenderFacadeIrrlicht::FacadeAddObject(Entity* entity) {
         case ModelType::PointLight:
             return 0;
             break;
+
+        case ModelType::ParticleSystem:
+
+            break;
     }
 
     // y ahora a ese node, le ponemos sus parámetros
