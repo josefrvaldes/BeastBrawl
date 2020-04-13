@@ -131,13 +131,13 @@ int main() {
     // std::uint_fast8_t flags = EFFECT_FADING;
 
 
-        auto ps1   = smgr->AddParticleSystem(123940,50,glm::vec3(0.0f,50.0f,0.0f),"media/particle_test.png",10,10,100,2,2000,glm::vec3(50.0f,50.0f,50.0f),glm::vec3(1.0f,1.0f,1.0f),EFFECT_FADING);
+        auto ps1   = mesh2->AddParticleSystem(123940,50,glm::vec3(0.0f,50.0f,0.0f),"media/particle_test.png",10,10,100,2,2000,glm::vec3(50.0f,50.0f,50.0f),glm::vec3(1.0f,1.0f,1.0f),EFFECT_FADING);
         
 
         static_cast<CLCamera*>(camera->GetEntity())->SetCameraTarget(mesh2->GetTranslation());
 
         string fileBillBoard = "media/mrPinguin.png";
-        smgr->AddBillBoard(fileBillBoard, false, glm::vec3(50.0,100.0,0.0), 100.0,50.0);
+        mesh2->AddBillBoard(2468,fileBillBoard, false, 100.0,50.0);
 
 
         smgr->AddSkybox("media/skybox/right.jpg",
@@ -218,6 +218,15 @@ int main() {
         if(glfwGetKey(device->GetWindow(),GLFW_KEY_Q)){
             static_cast<CLParticleSystem*>(ps1->GetEntity())->SetLoop(false);
         }
+
+        if(glfwGetKey(device->GetWindow(),GLFW_KEY_LEFT)){
+            mesh2->SetTranslation(mesh2->GetTranslation()+ glm::vec3(-1.0f,-1.0f,-1.0f));
+        }
+
+        if(glfwGetKey(device->GetWindow(),GLFW_KEY_RIGHT)){
+            mesh2->SetTranslation(mesh2->GetTranslation()+ glm::vec3(1.0f,1.0f,1.0f));
+        }
+
         // Measure speed
         double currentTime = glfwGetTime();
         frameCount++;

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['normal_619',['normal',['../struct_vertex.html#a3aa35fe84025ecf1acccb5f65f5577fd',1,'Vertex']]]
+  ['kind_641',['KIND',['../_l_i_c_e_n_s_e_8txt.html#a8e1a82be600178fe97c0e1339897c260',1,'LICENSE.txt']]]
 ];

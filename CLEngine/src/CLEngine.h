@@ -28,6 +28,7 @@ using namespace std;
 
 namespace CLE {
 
+//! Estructura utilizada para el dibujado de caracteres
 struct Character {
     GLuint      TextureID;   // ID handle of the glyph texture
     glm::ivec2  Size;    // Size of glyph
@@ -35,8 +36,8 @@ struct Character {
     GLuint      Advance;    // Horizontal offset to advance to next glyph
 };
 
+//! Clase para iniciar el motor
 class CLEngine {
-    //! Clase para iniciar el motor
     public:
         CLEngine() = default;
         CLEngine(const unsigned int, const unsigned int, const string&);

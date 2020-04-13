@@ -3,7 +3,7 @@
 #include "CLEntity.h"
 
 namespace CLE {
-
+    //! Clase para crear luces de tipo Spot
     class CLSpotLight : public CLEntity {
         public:
         

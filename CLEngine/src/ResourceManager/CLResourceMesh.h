@@ -24,13 +24,14 @@ struct Vertex {
     glm::vec3 bitangent;
 };
 
+//! Estructura para almacenar informacion sobre las texturas del modelado
 struct Texture {
     unsigned int id;
     string type;
     string path;
 };
 
-
+//! Clase auxiliar para manejar mas facil las submallas de una malla que leemos
 class Mesh{
     
 
