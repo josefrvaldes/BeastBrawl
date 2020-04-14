@@ -1,0 +1,1 @@
+cat ./CLEngine/lib/linux/assimp/lib_part_* > ./CLEngine/lib/linux/assimp/libassimp5.0.0.so

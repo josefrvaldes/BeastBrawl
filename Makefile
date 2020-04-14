@@ -48,24 +48,17 @@ else
 	CXXFLAGS += -O3
 endif
 
-ifdef WINDOWS
-	LIBS 	    := -L./lib/windows/irrlicht -lIrrlicht 
-	LIBS		+= -L./lib/windows/fmod -lfmod -lfmodstudio
-	INCLUDE     := -I./include -I./src -I./include/fmod/core -I./include/fmod/studio -I./include/freeType2
-	CC			:= g++
-else
-	#LIBS		:= -L/usr/lib32 -lX11
-	LIBS 	    += -L./lib/linux/irrlicht -lIrrlicht -Wl,-rpath=lib/linux/irrlicht
-	LIBS 	    += -L./lib/linux/fmod -lfmod -lfmodstudio -Wl,-rpath=lib/linux/fmod
-	LIBS 	    += -L./lib/linux/glew -lGLEW -lGL -Wl,-rpath=lib/linux/glew
-	LIBS 	    += -L./lib/linux/glfw -lglfw3 -lGL -lX11 -lpthread -lXrandr -lXi -ldl -Wl,-rpath=lib/linux/glfw
-	LIBS 	    += -L./lib/linux/assimp -lassimp -Wl,-rpath=lib/linux/assimp
-	LIBS		+= -L./lib/linux/freeType2 -lfreetype -Wl,-rpath=lib/linux/freeType2
+LIBS 	    += -L./lib/linux/irrlicht -lIrrlicht -Wl,-rpath=lib/linux/irrlicht
+LIBS 	    += -L./lib/linux/fmod -lfmod -lfmodstudio -Wl,-rpath=lib/linux/fmod
+LIBS 	    += -L./CLEngine/lib/linux/glew -lGLEW -lGL -Wl,-rpath=./CLEngine/lib/linux/glew
+LIBS 	    += -L./CLEngine/lib/linux/glfw -lglfw3 -lGL -lX11 -lpthread -lXrandr -lXi -ldl -Wl,-rpath=./CLEngine/lib/linux/glfw
+LIBS 	    += -L./CLEngine/lib/linux/assimp -lassimp5.0.0 -Wl,-rpath=./CLEngine/lib/linux/assimp
+LIBS		+= -L./CLEngine/lib/linux/freeType2 -lfreetype -Wl,-rpath=./CLEngine/lib/linux/freeType2
 
-	INCLUDE     := -I./include -I./src -I./include/fmod/core -I./include/fmod/studio -I./include/freeType2
-	CREATE_SYMLINKS := bash symlinks.sh
-	CC			:= g++
-endif
+INCLUDE     := -I./include -I./src -I./include/fmod/core -I./include/fmod/studio -I./include/freeType2
+CREATE_SYMLINKS := bash symlinks.sh
+CC			:= g++
+
 
 ifdef CACHE
 	CC := ccache g++
