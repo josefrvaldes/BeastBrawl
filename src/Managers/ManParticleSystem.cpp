@@ -28,7 +28,7 @@ void ManParticleSystem::SubscribeToEvents(){
 void ManParticleSystem::ActivarParticulas(DataMap* data){
     auto idEntity = any_cast<uint16_t>((*data)[ID]);
 
-    for(const auto& particleSystem : entities){
+    for(auto particleSystem : entities){
         auto cParentNode = static_cast<CParentNode*>(particleSystem->GetComponent(CompType::ParentNodeComp).get());
         if(cParentNode->idParentNode == idEntity){
             //Se debe activar este sistema de particulas

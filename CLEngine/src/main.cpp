@@ -124,7 +124,7 @@ int main() {
     // std::uint_fast8_t flags = EFFECT_FADING;
 
 
-        auto ps1   = mesh2->AddParticleSystem(123940,50,glm::vec3(500.0f,500.0f,500.0f),"media/particle_test.png",10,10,100,50,2000,EFFECT_DIR_ALEATORITY);
+        auto ps1   = mesh2->AddParticleSystem(123940,30,glm::vec3(500.0f,500.0f,500.0f),"media/particle_test.png",10,10,100,30,250,EFFECT_DIR_ALEATORITY | EFFECT_FADING);
         
 
         static_cast<CLCamera*>(camera->GetEntity())->SetCameraTarget(mesh2->GetTranslation());
@@ -175,7 +175,6 @@ int main() {
     int frameCount = 0;
 
     CLNode* light3 = nullptr;
-        
     while (device->Run()) {
         
         //Apartir de aqui hacemos cosas, de momento en el main para testear
@@ -218,6 +217,7 @@ int main() {
 
         if(glfwGetKey(device->GetWindow(),GLFW_KEY_R)){
             static_cast<CLParticleSystem*>(ps1->GetEntity())->StartOneIteration();
+            cout << "Realizamos una iteracion\n";
         }
 
         if(glfwGetKey(device->GetWindow(),GLFW_KEY_LEFT)){
@@ -244,7 +244,6 @@ int main() {
             frameCount = 0;
             previousTime = currentTime;
         }
-
 
 
         device->DrawObjects();

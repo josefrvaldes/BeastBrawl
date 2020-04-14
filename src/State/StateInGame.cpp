@@ -171,9 +171,9 @@ void StateInGame::InitializeManagers(Physics *physics, Camera *cam, const uint32
 
     // Es raro pero diria que aqui tengo que ir añadiendo sistemas de particulas
     // Añadimos las particulas a todas las cajas
-    for(const auto& boxPowerUp : manBoxPowerUps->GetEntities()){
+    for(auto boxPowerUp : manBoxPowerUps->GetEntities()){
         auto cId = static_cast<CId*>(boxPowerUp->GetComponent(CompType::IdComp).get());
-        manParticleSystem->CreateParticleSystem(cId->id,glm::vec3(0.0f,0.0f,0.0f),50,glm::vec3(500.0f,500.0f,500.0f),"media/particle_test.png",10,10,100,50,2000,glm::vec3(0.0f,0.0f,0.0f),glm::vec3(0.0f,0.0f,0.0f),0,0x1,false,false);
+        manParticleSystem->CreateParticleSystem(cId->id,glm::vec3(0.0f,0.0f,0.0f),30,glm::vec3(200.0f,400.0f,200.0f),"media/particle_test.png",10,10,100,30,150,glm::vec3(0.0f,0.0f,0.0f),glm::vec3(0.0f,0.0f,0.0f),0, 0x1 | 0x4 ,false,false);
     }
 }
 

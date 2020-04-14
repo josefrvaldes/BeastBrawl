@@ -449,7 +449,7 @@ void CLNode::DFSTree(glm::mat4 mA) {
     CLE::CLFrustum::Visibility frusVisibility = frustum_m.IsInside(translation, dimensionsBoundingBox);
 
     //Voy a comentar de momento el frustrum ya que para el particle system puede dar problemas
-    if(entity && visible && frusVisibility == CLE::CLFrustum::Visibility::Completly) { 
+    if(entity && visible /*&& frusVisibility == CLE::CLFrustum::Visibility::Completly*/) { 
         glUseProgram(shaderProgramID);
         //Calculamos las luces
         //TODO: Hacer un sistema de que si no hemos cambiado de shader no se recalculen

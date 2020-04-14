@@ -170,11 +170,16 @@ void RenderFacadeClover::FacadeUpdatePowerUpHUD(DataMap* d) {
 
 void RenderFacadeClover::FacadeInitParticleSystem(DataMap* d){
     auto idEntity = any_cast<uint16_t>((*d)[ID]);
-    //FALLA PORQUE ESTAMOS ELIMINANDO LAS CAJAS Y POR TANTO SU PARTICLE SYSTEM TAMBIEN
+
     auto node = smgr->GetNodeByID(idEntity);
-    smgr->DrawTree(smgr);
-    static_cast<CLParticleSystem*>(node->GetEntity())->Start();
-    static_cast<CLParticleSystem*>(node->GetEntity())->StartOneIteration();
+    auto clParticleSystem = static_cast<CLParticleSystem*>(node->GetEntity());
+
+    if(!clParticleSystem->GetStarted()){
+        clParticleSystem->Start();
+
+    }else{
+        clParticleSystem->StartOneIteration();
+    }
 }
 
 /**

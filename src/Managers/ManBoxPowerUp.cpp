@@ -48,7 +48,6 @@ ManBoxPowerUp::ManBoxPowerUp() {
 
 
 ManBoxPowerUp::~ManBoxPowerUp() {
-    cout << "Llamando al destructor de ManBoxPowerUps" << endl;
     entities.clear();
     entities.shrink_to_fit();
 }
