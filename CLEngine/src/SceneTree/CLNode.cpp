@@ -139,10 +139,10 @@ CLNode* CLNode::AddCamera(unsigned int id){
 void CLNode::AddGrass(){
     if(!grassShader){
         auto rm = CLResourceManager::GetResourceManager();
-        auto resourceShader = rm->GetResourceShader("CLEngine/src/Shaders/grassShader.vert", "CLEngine/src/Shaders/grassShader.frag");
+        auto resourceShader = rm->GetResourceShader("CLEngine/src/Shaders/grassShader.vert", "CLEngine/src/Shaders/grassShader.frag", "CLEngine/src/Shaders/grassShader.geom");
         grassShader = resourceShader->GetProgramID();
     }
-    manGrass = make_unique<CLGrassSystem>(300.0, 200.0, glm::vec3(140.0f,55.0f,-50.0f), glm::vec3(20.0,20.0,20.0), true);
+    manGrass = make_unique<CLGrassSystem>(300.0, 200.0, glm::vec3(140.0f,55.0f,-50.0f), glm::vec3(20.0,20.0,20.0), false);
 }
 
 

@@ -95,7 +95,7 @@ bool CLResourceShader::LinkShaders(){
     glGetProgramiv(programID, GL_LINK_STATUS, &success);
     if(!success) {
         glGetProgramInfoLog(programID, 512, NULL, infoLog);
-        cout << "Ha petado el linkado de shaders :(\n";
+        cout << "Ha petado el linkado de shaders de geometry:( --> " << infoLog << "\n";
         return false;
     }
 
@@ -120,7 +120,7 @@ bool CLResourceShader::LinkShadersGeometry(){
     glGetProgramiv(programID, GL_LINK_STATUS, &success);
     if(!success) {
         glGetProgramInfoLog(programID, 512, NULL, infoLog);
-        cout << "Ha petado el linkado de shaders de geometry:(\n";
+        cout << "Ha petado el linkado de shaders de geometry:( --> " << infoLog << "\n";
         return false;
     }
 

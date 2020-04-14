@@ -36,12 +36,14 @@ namespace CLE {
             float sizeGrass = 0;
             float extraSize = 0;
             std::vector<glm::mat4> modelLeafVector;
+            std::vector<glm::vec3> posLeafVector;
 
             int extraScaleRealistic = 20;
             int extraPositionRealistic = 20;
+            float wingTimer = 0.0;
 
             // buffers
-            unsigned int bufferVBO, lalaVAO;
+            unsigned int bufferVBO, bufferPosVBO;
             unsigned int planeVAO, planeVBO;
 
             // 6 vertices de la textura de la hierva
