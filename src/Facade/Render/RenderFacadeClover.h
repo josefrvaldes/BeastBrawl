@@ -108,6 +108,9 @@ class RenderFacadeClover : public RenderFacade {
       bool GetShowDebugAI() override { return showAIDebug;};
       int  GetIDCarAIToDebug() override { return idCarAIToDebug;};
 
+      void SetMenuEndRace(bool b) override { menuER = b; };
+      bool GetMenuEndRace() override { return menuER; };
+
       void ResetInputGameOptions() override;
       void ResetInputCharacter() override;
 
@@ -132,6 +135,10 @@ class RenderFacadeClover : public RenderFacade {
         //Seleccion de personaje
         int inputSC { 0 };
         int maxInputSC { 5 };
+        //End Race
+        bool menuER { false };
+        int inputER { 0 };
+        int maxInputER { 2 };
         //Opciones de partida (Hay que contar el 0)
         int option { 2 };
         std::vector<int> inputGO {1,1,0};

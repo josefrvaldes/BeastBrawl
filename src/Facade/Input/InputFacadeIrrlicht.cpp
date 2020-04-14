@@ -51,7 +51,7 @@ void InputFacadeIrrlicht::CheckInputPause(int&, int){
 }
 
 
-void InputFacadeIrrlicht::CheckInputEndRace(){
+void InputFacadeIrrlicht::CheckInputEndRace(int&, int, bool){
 }
 
 void InputFacadeIrrlicht::CheckInputCredits() {

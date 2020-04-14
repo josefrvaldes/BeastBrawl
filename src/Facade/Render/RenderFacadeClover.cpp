@@ -575,7 +575,7 @@ void RenderFacadeClover::FacadeCheckInputPause() {
 }
 
 void RenderFacadeClover::FacadeCheckInputEndRace() {
-
+    InputFacadeManager::GetInstance()->GetInputFacade()->CheckInputEndRace(inputER, maxInputER, menuER);
 }
 
 void RenderFacadeClover::FacadeCheckInputLobbyMulti() {
@@ -857,6 +857,24 @@ void RenderFacadeClover::FacadeDrawPause() {
 void RenderFacadeClover::FacadeDrawEndRace() {
     std::string file = "media/finish_screen.png";
     device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
+
+    if (menuER) {
+        file = "media/endraceMenu.png";
+        device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.08f, file, true);
+
+        glm::vec3 color[3] = {
+                glm::vec3(0.0f, 0.0f, 255.0f),
+                glm::vec3(0.0f, 0.0f, 255.0f),
+                glm::vec3(0.0f, 0.0f, 255.0f)
+        };
+        color[inputER] = glm::vec3(0.0f, 255.0f, 0.0f);
+        file = "Volver a jugar";
+        device->RenderText2D(file, 500.0f, 400.0f, 0.05f, 1.0f, color[0]);
+        file = "Cambiar de personaje";
+        device->RenderText2D(file, 500.0f, 300.0f, 0.05f, 1.0f, color[1]);
+        file = "Salir al menu";
+        device->RenderText2D(file, 500.0f, 200.0f, 0.05f, 1.0f, color[2]);
+    }
 }
 
 void RenderFacadeClover::FacadeDrawCredits() {

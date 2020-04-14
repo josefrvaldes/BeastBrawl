@@ -113,6 +113,9 @@ class RenderFacadeIrrlicht : public RenderFacade {
     void ResetInputGameOptions() override;
     void ResetInputCharacter() override;
 
+    void SetMenuEndRace(bool b) override { menuER = b; };
+    bool GetMenuEndRace() override { return menuER; };
+
 
     scene::ISceneManager* GetSceneManager() { return smgr; };
     scene::ICameraSceneNode* GetCamera1() { return camera1; };
@@ -135,6 +138,8 @@ class RenderFacadeIrrlicht : public RenderFacade {
     video::ITexture* whiteBG;
     video::ITexture* powerUps[7];
     gui::IGUIFont* font;
+
+    bool menuER { false };
 
 
     enum InputXBox{BUTTON_A, BUTTON_B, BUTTON_X, BUTTON_Y, BUTTON_LB, BUTTON_RB, BUTTON_BACK, BUTTON_START, BUTTON_XBOX, BUTTON_STICK_L, BUTTON_STICK_R, END};

@@ -24,7 +24,7 @@ class InputFacade {
         virtual void CheckInputGameOptions(std::vector<int>&, int[], int&) = 0;
         virtual void CheckInputPause(int&, int)   = 0;
         virtual void CheckInputIntro() = 0;
-        virtual void CheckInputEndRace() = 0;
+        virtual void CheckInputEndRace(int&, int, bool) = 0;
         virtual void CheckInputLobbyMulti() = 0;
         virtual void CheckInputController() = 0;
         virtual void CheckInputCredits() = 0;

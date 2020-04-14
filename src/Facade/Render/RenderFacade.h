@@ -108,6 +108,8 @@ class RenderFacade {
 
     virtual void ResetInputGameOptions() = 0;
     virtual void ResetInputCharacter() = 0;
+    virtual void SetMenuEndRace(bool) = 0;
+    virtual bool GetMenuEndRace() = 0;
 
     int GetNumEnemyCars() { return numEnemyCars; };
     void SetNumEnemyCars(int n) { numEnemyCars = n; };
