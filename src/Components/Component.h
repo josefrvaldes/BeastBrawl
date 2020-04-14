@@ -48,7 +48,8 @@ enum CompType {
     OnlineComp,
     ShaderComp,
     LightComp,
-    ParentNodeComp
+    ParentNodeComp,
+    ParticleSystemComp
 };
 
 class Component {

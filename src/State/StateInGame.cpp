@@ -128,6 +128,10 @@ void StateInGame::AddElementsToRender() {
         auto cId = static_cast<CId*>(lightWithShadow->GetComponent(CompType::IdComp).get());
         renderEngine->FacadeAddShadowMapping(cId->id);
     }
+
+    for(auto particleSystem : manParticleSystem->GetEntities()){
+        renderEngine->FacadeAddObject(particleSystem.get());
+    }
 }
 
 void StateInGame::InitializeCLPhysics(ManCar &manCars, ManBoundingWall &manWall, ManBoundingOBB &manOBB, ManBoundingGround &manGround, ManPowerUp &manPowerUp, ManNavMesh &manNavMesh, ManBoxPowerUp &manBoxPowerUp, ManTotem &manTotem) {
@@ -154,18 +158,26 @@ void StateInGame::InitializeSystems(ManCar &manCars, ManBoundingWall &manWall, M
 
 void StateInGame::InitializeManagers(Physics *physics, Camera *cam, const uint32_t timeGame) {
     // inicializa el man PU, no hace falta más código para esto
-    manCars = make_shared<ManCar>(physics, cam);
-    manWayPoint = make_shared<ManWayPoint>();  //Se crean todos los waypoints y edges
-    manPowerUps = make_shared<ManPowerUp>(manCars);
-    manBoxPowerUps = make_shared<ManBoxPowerUp>();
-    manBoundingWall = make_shared<ManBoundingWall>();
-    manBoundingOBB = make_shared<ManBoundingOBB>();
-    manBoundingGround = make_shared<ManBoundingGround>();
-    manNavMesh = make_shared<ManNavMesh>();
-    manTotems = make_shared<ManTotem>(manNavMesh.get());
-    manNamePlates = make_shared<ManNamePlate>(manCars.get());
-    manLight = make_shared<ManLight>();
-    manGameRules = make_unique<ManGameRules>(timeGame);
+    manCars             = make_shared<ManCar>(physics, cam);
+    manWayPoint         = make_shared<ManWayPoint>();  //Se crean todos los waypoints y edges
+    manPowerUps         = make_shared<ManPowerUp>(manCars);
+    manBoxPowerUps      = make_shared<ManBoxPowerUp>();
+    manBoundingWall     = make_shared<ManBoundingWall>();
+    manBoundingOBB      = make_shared<ManBoundingOBB>();
+    manBoundingGround   = make_shared<ManBoundingGround>();
+    manNavMesh          = make_shared<ManNavMesh>();
+    manTotems           = make_shared<ManTotem>(manNavMesh.get());
+    manNamePlates       = make_shared<ManNamePlate>(manCars.get());
+    manLight            = make_shared<ManLight>();
+    manGameRules        = make_unique<ManGameRules>(timeGame);
+    manParticleSystem   = make_unique<ManParticleSystem>();
+
+    // Es raro pero diria que aqui tengo que ir añadiendo sistemas de particulas
+    // Añadimos las particulas a todas las cajas
+    for(auto boxPowerUp : manBoxPowerUps->GetEntities()){
+        auto cId = static_cast<CId*>(boxPowerUp->GetComponent(CompType::IdComp).get());
+        manParticleSystem->CreateParticleSystem(cId->id,glm::vec3(0.0f,0.0f,0.0f),30,glm::vec3(200.0f,400.0f,200.0f),"media/particle_test.png",5,5,100,30,150,glm::vec3(0.0f,0.0f,0.0f),glm::vec3(0.0f,0.0f,0.0f),0, 0x1 | 0x4 ,false,false);
+    }
 }
 
 //Carga los bancos de sonido InGame.

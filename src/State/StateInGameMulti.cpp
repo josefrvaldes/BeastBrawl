@@ -141,7 +141,7 @@ void StateInGameMulti::InitializeFacades() {
 void StateInGameMulti::AddElementsToRender() {
     StateInGame::AddElementsToRender();
 }
-
+ 
 /*
 void StateInGameMulti::CAMBIARCosasDeTotemUpdate() {
     bool todosFalse = true;

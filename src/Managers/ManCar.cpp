@@ -53,7 +53,6 @@ ManCar::ManCar() {
 }
 
 ManCar::~ManCar() {
-    cout << "Llamando al destructor de ManCar" << endl;
     entities.clear();
     entities.shrink_to_fit();
 }

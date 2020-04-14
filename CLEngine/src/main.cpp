@@ -47,22 +47,15 @@ using namespace std;
 using namespace CLE;
 
 
-constexpr std::uint_fast8_t mask0{ 0x1 }; // hex for 0000 0001 
-constexpr std::uint_fast8_t mask1{ 0x2 }; // hex for 0000 0010
-constexpr std::uint_fast8_t mask2{ 0x4 }; // hex for 0000 0100
-constexpr std::uint_fast8_t mask3{ 0x8 }; // hex for 0000 1000
-constexpr std::uint_fast8_t mask4{ 0x10 }; // hex for 0001 0000
-constexpr std::uint_fast8_t mask5{ 0x20 }; // hex for 0010 0000
-constexpr std::uint_fast8_t mask6{ 0x40 }; // hex for 0100 0000
-constexpr std::uint_fast8_t mask7{ 0x80 }; // hex for 1000 0000
+
 
 
 int main() {
 
-    uint_fast8_t flags = mask0 | mask1 | mask4;
+    auto flags = 0x1 | 0x2;
 
-    if(flags & mask4){
-        cout << "Flag 0 activado\n";
+    if(flags & 0x3){
+        cout << "El OR ha funcionado\n";
     }
     CLEngine *device = new CLEngine(1280, 720, "Beast Brawl");
 
@@ -131,7 +124,7 @@ int main() {
     // std::uint_fast8_t flags = EFFECT_FADING;
 
 
-        auto ps1   = mesh2->AddParticleSystem(123940,50,glm::vec3(500.0f,500.0f,500.0f),"media/particle_test.png",10,10,100,50,2000,EFFECT_DIR_ALEATORITY);
+        auto ps1   = mesh2->AddParticleSystem(123940,30,glm::vec3(500.0f,500.0f,500.0f),"media/particle_test.png",10,10,100,30,250,EFFECT_DIR_ALEATORITY | EFFECT_FADING);
         
 
         static_cast<CLCamera*>(camera->GetEntity())->SetCameraTarget(mesh2->GetTranslation());
@@ -182,7 +175,6 @@ int main() {
     int frameCount = 0;
 
     CLNode* light3 = nullptr;
-        
     while (device->Run()) {
         
         //Apartir de aqui hacemos cosas, de momento en el main para testear
@@ -225,6 +217,7 @@ int main() {
 
         if(glfwGetKey(device->GetWindow(),GLFW_KEY_R)){
             static_cast<CLParticleSystem*>(ps1->GetEntity())->StartOneIteration();
+            cout << "Realizamos una iteracion\n";
         }
 
         if(glfwGetKey(device->GetWindow(),GLFW_KEY_LEFT)){
@@ -233,6 +226,10 @@ int main() {
 
         if(glfwGetKey(device->GetWindow(),GLFW_KEY_RIGHT)){
             mesh2->SetTranslation(mesh2->GetTranslation()+ glm::vec3(1.0f,1.0f,1.0f));
+        }
+
+        if(glfwGetKey(device->GetWindow(),GLFW_KEY_K)){
+            mesh2->SetVisible(false);
         }
 
         // Measure speed
@@ -247,7 +244,6 @@ int main() {
             frameCount = 0;
             previousTime = currentTime;
         }
-
 
 
         device->DrawObjects();

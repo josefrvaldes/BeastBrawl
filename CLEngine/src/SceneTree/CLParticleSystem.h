@@ -170,6 +170,9 @@ class CLNode;
             //! Devuelve los flags de los efectos del spawner
             //! @returns flags
             std::uint_fast8_t  GetFlags()             const { return flags; }
+            //! Devuelve si ha empezado alguna vez
+            //! @returns started
+            bool               GetStarted()           const { return started; }
             //! Devuele si esta activado el modo de 1 iteracion
             //! @returns oneIterationMode
             bool               GetOneIterationMode()  const { return oneIterationMode; }

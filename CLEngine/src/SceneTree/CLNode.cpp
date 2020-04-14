@@ -126,7 +126,7 @@ CLNode* CLNode::AddCamera(unsigned int id){
 }
 
 //Spawner Punto
-CLNode* CLNode::AddParticleSystem(unsigned int id,int nParticles,glm::vec3 velocity,string texture,int width,int height,int spawnDelay,int particlesToSpawn,int lifeSpan, std::uint_fast8_t flags){
+CLNode* CLNode::AddParticleSystem(unsigned int id,ulong nParticles,glm::vec3 velocity,string texture,int width,int height,int spawnDelay,int particlesToSpawn,int lifeSpan, std::uint_fast8_t flags){
     if(particleSystemShader == 0){
         auto rm = CLResourceManager::GetResourceManager();
         auto resourceShader = rm->GetResourceShader("CLEngine/src/Shaders/particleSystem.vert", "CLEngine/src/Shaders/particleSystem.frag","CLEngine/src/Shaders/particleSystem.geom");
@@ -149,7 +149,7 @@ CLNode* CLNode::AddParticleSystem(unsigned int id,int nParticles,glm::vec3 veloc
 }
 
 //Spawner linea, cuadrado y cubo
-CLNode* CLNode::AddParticleSystem(unsigned int id,int nParticles,glm::vec3 velocity,string texture,int width,int height,int spawnDelay,int particlesToSpawn,int lifeSpan,glm::vec3 offset, glm::vec3 orientation, std::uint_fast8_t flags){
+CLNode* CLNode::AddParticleSystem(unsigned int id,ulong nParticles,glm::vec3 velocity,string texture,int width,int height,int spawnDelay,int particlesToSpawn,int lifeSpan,glm::vec3 offset, glm::vec3 orientation, std::uint_fast8_t flags){
     if(particleSystemShader == 0){
         auto rm = CLResourceManager::GetResourceManager();
         auto resourceShader = rm->GetResourceShader("CLEngine/src/Shaders/particleSystem.vert", "CLEngine/src/Shaders/particleSystem.frag","CLEngine/src/Shaders/particleSystem.geom");
@@ -172,7 +172,7 @@ CLNode* CLNode::AddParticleSystem(unsigned int id,int nParticles,glm::vec3 veloc
 }
 
 //Spawner esfera
-CLNode* CLNode::AddParticleSystem(unsigned int id,int nParticles,glm::vec3 velocity,string texture,int width,int height,int spawnDelay,int particlesToSpawn,int lifeSpan,float radious, std::uint_fast8_t flags){
+CLNode* CLNode::AddParticleSystem(unsigned int id,ulong nParticles,glm::vec3 velocity,string texture,int width,int height,int spawnDelay,int particlesToSpawn,int lifeSpan,float radious, std::uint_fast8_t flags){
     if(particleSystemShader == 0){
         auto rm = CLResourceManager::GetResourceManager();
         auto resourceShader = rm->GetResourceShader("CLEngine/src/Shaders/particleSystem.vert", "CLEngine/src/Shaders/particleSystem.frag","CLEngine/src/Shaders/particleSystem.geom");
@@ -196,7 +196,7 @@ CLNode* CLNode::AddParticleSystem(unsigned int id,int nParticles,glm::vec3 veloc
 }
 
 //Spawner circulo
-CLNode* CLNode::AddParticleSystem(unsigned int id,int nParticles,glm::vec3 velocity,string texture,int width,int height,int spawnDelay,int particlesToSpawn,int lifeSpan,float radious,glm::vec3 orientation, std::uint_fast8_t flags){
+CLNode* CLNode::AddParticleSystem(unsigned int id,ulong nParticles,glm::vec3 velocity,string texture,int width,int height,int spawnDelay,int particlesToSpawn,int lifeSpan,float radious,glm::vec3 orientation, std::uint_fast8_t flags){
     if(particleSystemShader == 0){
         auto rm = CLResourceManager::GetResourceManager();
         auto resourceShader = rm->GetResourceShader("CLEngine/src/Shaders/particleSystem.vert", "CLEngine/src/Shaders/particleSystem.frag","CLEngine/src/Shaders/particleSystem.geom");
@@ -449,7 +449,7 @@ void CLNode::DFSTree(glm::mat4 mA) {
     CLE::CLFrustum::Visibility frusVisibility = frustum_m.IsInside(translation, dimensionsBoundingBox);
 
     //Voy a comentar de momento el frustrum ya que para el particle system puede dar problemas
-    if(entity && visible && frusVisibility == CLE::CLFrustum::Visibility::Completly) { 
+    if(entity && visible /*&& frusVisibility == CLE::CLFrustum::Visibility::Completly*/) { 
         glUseProgram(shaderProgramID);
         //Calculamos las luces
         //TODO: Hacer un sistema de que si no hemos cambiado de shader no se recalculen
