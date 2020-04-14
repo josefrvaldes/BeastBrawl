@@ -143,6 +143,7 @@ void InputFacadeClover::CheckInputMenu(int& input, int maxInput){
         timeStart = system_clock::now();
         SetValueInput(BUTTON_B, true);
         EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_INTRO});
+        input = 0;
 
     } else if(!IsKeyOrGamepadPress(GLFW_KEY_BACKSPACE, GLFW_GAMEPAD_BUTTON_B, false, 0)) {
         SetValueInput(BUTTON_B, false);
@@ -912,7 +913,7 @@ void InputFacadeClover::CheckInputSettings(std::vector<int> &inputs, int *maxInp
     }
 
     //ACEPTAR - ESPACIO
-    if ( option == 2 && IsKeyOrGamepadPress(GLFW_KEY_SPACE, GLFW_GAMEPAD_BUTTON_A, false, 0) && HasDelayPassed() && !IsInputPressed(BUTTON_A)) {
+    if ( option == 3 && IsKeyOrGamepadPress(GLFW_KEY_SPACE, GLFW_GAMEPAD_BUTTON_A, false, 0) && HasDelayPassed() && !IsInputPressed(BUTTON_A)) {
 
         timeStart = system_clock::now();
         SetValueInput(BUTTON_A, true);

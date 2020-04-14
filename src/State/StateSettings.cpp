@@ -4,25 +4,19 @@
 
 StateSettings::StateSettings(){
 
+    std::cout << "> SETTINGS constructor" << std::endl;
     renderEngine = RenderFacadeManager::GetInstance()->GetRenderFacade();
     renderEngine->FacadeInitSettings();
 
     InitState();
-    std::cout << ">>>>> Estado GAME OPTIONS creado" << std::endl;
 
 }
 
 void StateSettings::InitState() {
-
-    /*cout << "~~~ ENTRO A MENU" << endl;
-    if (!soundEngine){
-        soundEngine = SoundFacadeManager::GetInstance()->GetSoundFacade();
-        cout << "~~~ SoundEngine en MENU es -> " << soundEngine << endl;
-    }
-    soundEngine->SetState(2);
-    soundEngine->PlayEvent("Musica/menu");*/
-
-    //cout << "> MENU iniciado" << endl;
+    //if (!soundEngine){
+    //    soundEngine = SoundFacadeManager::GetInstance()->GetSoundFacade();
+    //}
+    //soundEngine->SetState(8);
 }
 
 

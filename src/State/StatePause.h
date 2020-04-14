@@ -3,8 +3,6 @@
 #include "State.h"
 
 #include <EventManager/EventManager.h>
-#include <Facade/Input/InputFacadeManager.h>
-#include <Facade/Physics/PhysicsFacadeManager.h>
 #include <Facade/Render/RenderFacadeManager.h>
 #include <Facade/Sound/SoundFacadeManager.h>
 
@@ -23,8 +21,6 @@ class StatePause : public State{
 
     private:
         RenderFacade* renderEngine = { nullptr };
-        //InputFacade* inputEngine = { nullptr };
-        //PhysicsFacade* physicsEngine = { nullptr };
         SoundFacade* soundEngine = { nullptr };
 
 

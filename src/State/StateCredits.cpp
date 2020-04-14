@@ -12,16 +12,10 @@ StateCredits::StateCredits(){
 
 // Cargamos los bancos de sonido Menu.
 void StateCredits::InitState() {
-
-    /*cout << "~~~ ENTRO A MENU" << endl;
-    if (!soundEngine){
-        soundEngine = SoundFacadeManager::GetInstance()->GetSoundFacade();
-        cout << "~~~ SoundEngine en MENU es -> " << soundEngine << endl;
-    }
-    soundEngine->SetState(2);
-    soundEngine->PlayEvent("Musica/menu");*/
-
-    //cout << "> MENU iniciado" << endl;
+    //if (!soundEngine){
+    //    soundEngine = SoundFacadeManager::GetInstance()->GetSoundFacade();
+    //}
+    //soundEngine->SetState(9);
 }
 
 

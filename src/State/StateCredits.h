@@ -3,8 +3,6 @@
 #include "State.h"
 
 #include <EventManager/EventManager.h>
-#include <Facade/Input/InputFacadeManager.h>
-#include <Facade/Physics/PhysicsFacadeManager.h>
 #include <Facade/Render/RenderFacadeManager.h>
 #include <Facade/Sound/SoundFacadeManager.h>
 
@@ -23,5 +21,6 @@ class StateCredits : public State {
 
     private:
         RenderFacade* renderEngine = { nullptr };
+        SoundFacade* soundEngine = { nullptr };
 };
 

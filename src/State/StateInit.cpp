@@ -6,23 +6,22 @@ using namespace std;
 
 StateInit::StateInit(){
 
+    std::cout << "> INIT constructor" << std::endl;
+
     renderEngine = RenderFacadeManager::GetInstance()->GetRenderFacade();
     inputEngine = InputFacadeManager::GetInstance()->GetInputFacade();
     renderEngine->FacadeInitIntro();
     InitState();
 
-    //std::cout << ">>>>> Estado Init Creado" << std::endl;
 }
 
 void StateInit::InitState() {
 
-    //cout << "~~~ ENTRO A STATE INIT" << endl;
-
-    /*if (!soundEngine){
+    if (!soundEngine){
         soundEngine = SoundFacadeManager::GetInstance()->GetSoundFacade();
     }
     soundEngine->SetState(0);
-    soundEngine->PlayEvent("Musica/menu");*/
+
 }
 
 

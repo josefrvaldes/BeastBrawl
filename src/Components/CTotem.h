@@ -20,7 +20,7 @@ public:
     bool active = false;
     time_point<system_clock> timeStart;        // reloj que contaviliza, cada vez que tenemos el totem, el tiempo
     
-    const uint32_t SEGUNDOS = 5;
+    const uint32_t SEGUNDOS = 30;
     const uint32_t DURATION_TIME = 1000 * SEGUNDOS;       // 30 seg, debes mantenerlo en tu poder
     
     int64_t accumulatedTime = 0;

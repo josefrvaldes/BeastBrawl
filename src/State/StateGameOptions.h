@@ -4,6 +4,7 @@
 
 #include <EventManager/EventManager.h>
 #include <Facade/Render/RenderFacadeManager.h>
+#include <Facade/Sound/SoundFacadeManager.h>
 
 
 
@@ -19,5 +20,6 @@ class StateGameOptions : public State {
 
     private:
         RenderFacade* renderEngine = { nullptr };
+        SoundFacade* soundEngine = { nullptr };
 };
 

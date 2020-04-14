@@ -4,25 +4,22 @@
 
 StateGameOptions::StateGameOptions(){
 
+    std::cout << "> GAME OPTIONS constructor" << std::endl;
+
     renderEngine = RenderFacadeManager::GetInstance()->GetRenderFacade();
     renderEngine->FacadeInitGameOptions();
 
     InitState();
-    std::cout << ">>>>> Estado GAME OPTIONS creado" << std::endl;
 
 }
 
 void StateGameOptions::InitState() {
 
-    /*cout << "~~~ ENTRO A MENU" << endl;
-    if (!soundEngine){
-        soundEngine = SoundFacadeManager::GetInstance()->GetSoundFacade();
-        cout << "~~~ SoundEngine en MENU es -> " << soundEngine << endl;
-    }
-    soundEngine->SetState(2);
-    soundEngine->PlayEvent("Musica/menu");*/
-
-    //cout << "> MENU iniciado" << endl;
+    //if (!soundEngine){
+    //    soundEngine = SoundFacadeManager::GetInstance()->GetSoundFacade();
+    //}
+    //Estado a 3, no hace nada de sonido
+    //soundEngine->SetState(3);
 }
 
 
