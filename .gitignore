@@ -39,3 +39,5 @@ UDPServer/Server.exe
 CLEngine/CLEngine.exe
 
 CLEngine/CLEngine.exe.old
+
+CLEngine/lib/linux/assimp/libassimp5.0.0.so

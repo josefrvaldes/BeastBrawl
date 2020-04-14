@@ -57,6 +57,7 @@ LIBS		+= -L./CLEngine/lib/linux/freeType2 -lfreetype -Wl,-rpath=./CLEngine/lib/l
 
 INCLUDE     := -I./include -I./src -I./include/fmod/core -I./include/fmod/studio -I./include/freeType2
 CREATE_SYMLINKS := bash symlinks.sh
+JOIN_ASSIMP := bash join_assimp.sh
 CC			:= g++
 
 
@@ -70,6 +71,7 @@ endif
 #Esto crea el ejecutable
 $(NAME_EXE): $(OBJSUBDIRS) $(ALLCPPSOBJ) $(OBJSUBDIRS_CLE) $(ALLCPPSOBJ_CLE)
 	$(CREATE_SYMLINKS)
+	$(JOIN_ASSIMP)
 	$(COMPILING_TEXT_OK)
 	$(JUMP_LINE)
 	$(LINKING_TEXT)
