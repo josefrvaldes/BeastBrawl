@@ -15,6 +15,9 @@ using namespace std;
 using namespace chrono;
 
 StateInGame::StateInGame() {
+
+    std::cout << "> INGAME constructor" << std::endl;
+
     // aunque physics es un sistema, no se llama desde InitializeSystems
     // porque tiene que estar inicializado antes de llamar a InitializeManagers
     cout << "------------------------------------------------------------------" << endl;
@@ -167,12 +170,10 @@ void StateInGame::InitializeManagers(Physics *physics, Camera *cam, const uint32
 
 //Carga los bancos de sonido InGame.
 void StateInGame::InitState() {
-    cout << "~~~ ENTRO A INGAME" << endl;
 
     //Si la direccion de soundEngine!=0 es que viene del PAUSE, por lo que no deberia hacerlo.
     if (!soundEngine) {
         soundEngine = SoundFacadeManager::GetInstance()->GetSoundFacade();
-        //cout << "~~~ SoundEngine en INGAME es -> " << soundEngine << endl;
         if (soundEngine) {
             soundEngine->SetState(4);
         }

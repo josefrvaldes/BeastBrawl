@@ -11,6 +11,7 @@
 #include <locale>
 #include <memory>
 #include <string>
+#include <vector>
 #include <unordered_map>
 
 
@@ -43,29 +44,38 @@ class RenderFacadeClover : public RenderFacade {
       void FacadeDrawIntro() override;
       void FacadeDrawMenu() override;
       void FacadeDrawSelectCharacter() override;
+      void FacadeDrawGameOptions() override;
       void FacadeInitResources() override;
       void FacadeDrawPause() override;
       void FacadeDrawEndRace() override;
       void FacadeDrawLobbyMulti() override;
       void FacadeDrawLobbyMultiExit() override;
       void FacadeDrawControler() override;
+      void FacadeDrawCredits() override;
+      void FacadeDrawSettings() override;
 
       void FacadeInitIntro() override;
       void FacadeInitMenu() override;
       void FacadeInitSelectCharacter() override;
+      void FacadeInitGameOptions() override;
       void FacadeInitPause() override;
       void FacadeInitEndRace() override;
       void FacadeInitLobbyMulti() override;
       void FacadeInitControler() override;
       void FacadeInitHUD() override;
+      void FacadeInitCredits() override;
+      void FacadeInitSettings() override;
 
       void FacadeCheckInputIntro() override;
       void FacadeCheckInputMenu() override;
       void FacadeCheckInputSelectCharacter() override;
+      void FacadeCheckInputGameOptions() override;
       void FacadeCheckInputPause() override;
       void FacadeCheckInputEndRace() override;
       void FacadeCheckInputLobbyMulti() override;
       void FacadeCheckInputControler() override;
+      void FacadeCheckInputCredits() override;
+      void FacadeCheckInputSettings() override;
 
       void FacadeUpdatePowerUpHUD(DataMap* d) override;
       void FacadeDrawHUD(Entity* car, ManCar* manCars) override;
@@ -98,6 +108,12 @@ class RenderFacadeClover : public RenderFacade {
       bool GetShowDebugAI() override { return showAIDebug;};
       int  GetIDCarAIToDebug() override { return idCarAIToDebug;};
 
+      void SetMenuEndRace(bool b) override { menuER = b; };
+      bool GetMenuEndRace() override { return menuER; };
+
+      void ResetInputGameOptions() override;
+      void ResetInputCharacter() override;
+
       //Metodos exclusivos de RenderClover
       CLEngine* GetDevice() { return device;};
 
@@ -110,15 +126,30 @@ class RenderFacadeClover : public RenderFacade {
 
         std::string powerUps[7];
 
+        //Menu
         int inputMenu { 0 };
-        int maxInputMenu { 3 };
+        int maxInputMenu { 5 };
+        //Pause
         int inputPause { 0 };
         int maxInputPause { 1 };
-        int inputSC { 1 };
-        int maxInputSC { 7 };
+        //Seleccion de personaje
+        int inputSC { 0 };
+        int maxInputSC { 5 };
+        //End Race
+        bool menuER { false };
+        int inputER { 0 };
+        int maxInputER { 2 };
+        //Opciones de partida (Hay que contar el 0)
+        int option { 2 };
+        std::vector<int> inputGO {1,1,0};
+        int maxInputGO[3] {3, 2, 0};
+        //Ajustes
+        int optionSettings { 3 };
+        std::vector<int> inputSettings {1,0,0,1};
+        int maxInputSettings[4] {3, 1, 2, 0};
 
-        CLEngine* device;
-        CLNode* smgr;
-        CLResourceManager* resourceManager;
-        CLNode* camera1;
+        CLEngine* device {nullptr};
+        CLNode* smgr {nullptr};
+        CLResourceManager* resourceManager {nullptr};
+        CLNode* camera1 {nullptr};
 };

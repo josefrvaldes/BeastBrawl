@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <string>
 #include <chrono>
+#include <vector>
 
 #include <EventManager/EventManager.h>
 #include <EventManager/Event.h>
@@ -20,11 +21,14 @@ class InputFacade {
         virtual void CheckInputSingle()  = 0;
         virtual void CheckInputMenu(int&, int)    = 0;
         virtual void CheckInputSelectCharacter(int&, int) = 0;
+        virtual void CheckInputGameOptions(std::vector<int>&, int[], int&) = 0;
         virtual void CheckInputPause(int&, int)   = 0;
         virtual void CheckInputIntro() = 0;
-        virtual void CheckInputEndRace() = 0;
+        virtual void CheckInputEndRace(int&, int, bool) = 0;
         virtual void CheckInputLobbyMulti() = 0;
         virtual void CheckInputController() = 0;
+        virtual void CheckInputCredits() = 0;
+        virtual void CheckInputSettings(std::vector<int> &inputs, int maxInputs[], int& option) = 0;
 
 
     protected:

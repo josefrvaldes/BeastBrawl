@@ -45,29 +45,38 @@ class RenderFacadeIrrlicht : public RenderFacade {
     void FacadeDrawIntro() override;
     void FacadeDrawMenu() override;
     void FacadeDrawSelectCharacter() override;
+    void FacadeDrawGameOptions() override;
     void FacadeInitResources() override;
     void FacadeDrawPause() override;
     void FacadeDrawEndRace() override;
     void FacadeDrawLobbyMulti() override;
     void FacadeDrawLobbyMultiExit() override;
     void FacadeDrawControler() override;
+    void FacadeDrawCredits() override;
+    void FacadeDrawSettings() override;
 
     void FacadeInitIntro() override;
     void FacadeInitMenu() override;
     void FacadeInitSelectCharacter() override;
+    void FacadeInitGameOptions() override;
     void FacadeInitPause() override;
     void FacadeInitEndRace() override;
     void FacadeInitLobbyMulti() override;
     void FacadeInitControler() override;
     void FacadeInitHUD() override;
+    void FacadeInitCredits() override;
+    void FacadeInitSettings() override;
 
     void FacadeCheckInputIntro() override;
     void FacadeCheckInputMenu() override;
     void FacadeCheckInputSelectCharacter() override;
+    void FacadeCheckInputGameOptions() override;
     void FacadeCheckInputPause() override;
     void FacadeCheckInputEndRace() override;
     void FacadeCheckInputLobbyMulti() override;
     void FacadeCheckInputControler() override;
+    void FacadeCheckInputCredits() override;
+    void FacadeCheckInputSettings() override;
 
     void FacadeUpdatePowerUpHUD(DataMap* d) override;
     void FacadeDrawHUD(Entity* car, ManCar* manCars) override;
@@ -101,6 +110,13 @@ class RenderFacadeIrrlicht : public RenderFacade {
     int  GetIDCarAIToDebug() override { return idCarAIToDebug;};
 
 
+    void ResetInputGameOptions() override;
+    void ResetInputCharacter() override;
+
+    void SetMenuEndRace(bool b) override { menuER = b; };
+    bool GetMenuEndRace() override { return menuER; };
+
+
     scene::ISceneManager* GetSceneManager() { return smgr; };
     scene::ICameraSceneNode* GetCamera1() { return camera1; };
     inline static bool showDebug = false;
@@ -122,6 +138,8 @@ class RenderFacadeIrrlicht : public RenderFacade {
     video::ITexture* whiteBG;
     video::ITexture* powerUps[7];
     gui::IGUIFont* font;
+
+    bool menuER { false };
 
 
     enum InputXBox{BUTTON_A, BUTTON_B, BUTTON_X, BUTTON_Y, BUTTON_LB, BUTTON_RB, BUTTON_BACK, BUTTON_START, BUTTON_XBOX, BUTTON_STICK_L, BUTTON_STICK_R, END};
