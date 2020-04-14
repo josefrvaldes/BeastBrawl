@@ -12,8 +12,8 @@ JUMP_LINE		   := @echo
 
 SOURCES  	:= $(wildcard *.cpp)
 
-NAME_EXE	:= Beast_Brawl
-CXXFLAGS 	+= -Wall -Wno-unknown-pragmas -static-libstdc++ -std=gnu++1z -static-libgcc # el no-unknown-pragmas es para que no salga el warning de los pragma region
+NAME_EXE	:= Beast_Brawl.exe
+CXXFLAGS 	+= -Wall -Wno-unknown-pragmas -std=gnu++1z -static-libgcc -static-libstdc++ # el no-unknown-pragmas es para que no salga el warning de los pragma region
 																										 # el -fuse-ld=gold es para el ccache
 																										 # si pongo -std=c++17 falla M_PI, poniendo -std=gnu++17 funciona bien en windows
 
@@ -40,7 +40,6 @@ SUBDIRS_CLE    	:= $(shell find CLEngine/src/ -type d)										# Busca y obtien
 OBJSUBDIRS_CLE  := $(patsubst $(SRC_CLE_PATH)%,$(OBJ_CLE_PATH)%,$(SUBDIRS_CLE))				# Cambia los 'src' por 'obj'
 
 
-
 ifdef DEBUG
 	CXXFLAGS += -g
 else
@@ -48,20 +47,24 @@ else
 endif
 
 
-#LIBS		:= -L/usr/lib32 -lX11
-LIBS 	    	+= -L./lib/windows/glfw -lglfw3 -lglfw3dll -lopengl32 -lgdi32 -luser32 -lcomdlg32 -lpthread -Wl,-rpath=./lib/windows/glfw
-LIBS 	    	+= -L./lib/windows/glew -lglew32 -Wl,-rpath=lib/windows/glew
-LIBS 	    	+= -L./lib/windows/assimp -lassimp -Wl,-rpath=lib/windows/assimp
+# gráficos
+LIBS 	    	+= -L./CLEngine/lib/windows/glfw -lglfw3 -lglfw3dll -lopengl32 -lgdi32 -luser32 -lcomdlg32 -lpthread -Wl,-rpath=./CLEngine/lib/windows/glfw
+LIBS 	    	+= -L./CLEngine/lib/windows/glew -lglew32 -Wl,-rpath=./CLEngine/lib/windows/glew
+LIBS 	    	+= -L./CLEngine/lib/windows/assimp -lassimp -Wl,-rpath=./CLEngine/lib/windows/assimp
+LIBS			+= -L./CLEngine/lib/windows/freeType2 -lfreetype -Wl,-rpath=./CLEngine/lib/windows/freeType2
+
+# irrlicht
 LIBS 	    	+= -L./lib/windows/irrlicht -lIrrlicht -Wl,-rpath=lib/windows/irrlicht
-LIBS			+= -L./lib/windows/freeType2 -lfreetype -Wl,-rpath=lib/windows/freeType2
-#LIBS 	    	+= -L./lib/windows/fmod -lfmod -lfmod_vc -lfmodL_vc -lfmodL -lfmodstudio -lfmodstudio_vc -lfmodstudioL -lfmodstudioL_vc -Wl,-rpath=lib/windows/fmod
-#LIBS 	    	+= -L./lib/windows/fmod -lfmod_vc -lfmodL_vc -lfmodstudio_vc -lfmodstudioL_vc -Wl,-rpath=lib/windows/fmod
-LIBS 	    	+= -L./lib/windows/fmod -lfmod -lfmodL -lfmodstudio -lfmodstudioL -Wl,-rpath=lib/windows/fmod #-Wl,--no-demangle
+
+# fmod
+LIBS 	    	+= -L./lib/windows/fmod -lfmod -lfmodL -lfmodstudio -lfmodstudioL -Wl,-rpath=lib/windows/fmod
+
+# asio 
 LIBS 			+= -lws2_32 -lwsock32 # necesarias para asio
 
 INCLUDE     := -I./include -I./src -I./include/fmod/core -I./include/fmod/studio -I./include/freeType2
 CREATE_SYMLINKS := 
-CC			:= x86_64-w64-mingw32-g++-posix
+CC			:= x86_64-w64-mingw32-g++-posix # sin posix no podemos utilizar thread ni mutex
 #CC			:= x86_64-w64-mingw32-g++
 
 
@@ -72,7 +75,7 @@ $(NAME_EXE): $(OBJSUBDIRS) $(ALLCPPSOBJ) $(OBJSUBDIRS_CLE) $(ALLCPPSOBJ_CLE)
 	$(COMPILING_TEXT_OK)
 	$(JUMP_LINE)
 	$(LINKING_TEXT)
-	$(CC) -o $(NAME_EXE) $(ALLCPPSOBJ) $(ALLCPPSOBJ_CLE) $(INCLUDE) $(LIBS) $(CXXFLAGS) -static-libstdc++
+	$(CC) -o $(NAME_EXE) $(ALLCPPSOBJ) $(ALLCPPSOBJ_CLE) $(INCLUDE) $(LIBS) $(CXXFLAGS) 
 	$(LINKING_TEXT_OK)
 	$(JUMP_LINE)
 

@@ -18,6 +18,7 @@ LIBS 	    	+= -L./lib/windows/assimp -lassimp -Wl,-rpath=lib/windows/assimp
 LIBS			+= -L./lib/windows/freeType2 -lfreetype -Wl,-rpath=lib/windows/freeType2
 
 INCLUDE     	:= -I./include -I../include -I./include/freeType2
+
 #CC			:= x86_64-w64-mingw32-g++
 CC			:= x86_64-w64-mingw32-g++-posix
 
