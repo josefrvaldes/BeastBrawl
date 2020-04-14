@@ -37,6 +37,7 @@ class RenderFacade {
     virtual void FacadeEndScene() const = 0;
     virtual void FacadeDeviceDrop() = 0;
     virtual void DeleteEntity(Entity*) = 0;
+    virtual void FacadeSetVisibleEntity(Entity*,bool) = 0;
 
     virtual void FacadeDraw() const = 0;
     virtual void FacadeDrawIntro() = 0;
@@ -78,6 +79,7 @@ class RenderFacade {
     virtual void CleanScene() = 0;
     virtual void FacadeUpdateViewport() = 0;
 
+    virtual void FacadeInitParticleSystem(DataMap* d) = 0;
     //DEBUG
     virtual void Draw3DLine(vec3 &pos1, vec3 &pos2, uint16_t r, uint16_t g, uint16_t b) const = 0;
     virtual void Draw3DLine(vec3 &pos1, vec3 &pos2) const = 0;

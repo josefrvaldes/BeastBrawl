@@ -29,21 +29,19 @@ CLParticleSystem::CLParticleSystem(unsigned int idEntity, ulong _nParticles, glm
 
         //Si solo tiene 1 valor es linea
         spawnType = SpawnType::LineSpawn;
-        cout << "Soy una linea\n";
 
     }else if((offset.x != 0 && offset.y != 0 && !offset.z) || (offset.x != 0 && !offset.y && offset.z != 0) || (!offset.x && offset.y != 0 && offset.z != 0)){
 
         //Si tiene 2 valores es Cuadrado
         spawnType = SpawnType::SquareSpawn;
-        cout << "Soy un cuadrado\n";
+
     }else if( offset.x != 0 && offset.y != 0 && offset.z != 0){
 
         //Si tiene 3 valores es Cubo
         spawnType = SpawnType::CubeSpawn;
-        cout << "Soy un cubo\n";
+
     }else{
         spawnType = SpawnType::PointSpawn;
-        cout << "Soy un punto\n";
 
     }
 }
@@ -56,7 +54,6 @@ CLParticleSystem::CLParticleSystem(unsigned int idEntity, ulong _nParticles, glm
     spawnType = SpawnType::CircleSpawn;
     radious = _radious;
     orientation = _orientation;
-    cout << "Soy un circulo\n";
 
 }
 
@@ -66,7 +63,6 @@ CLParticleSystem::CLParticleSystem(unsigned int idEntity, ulong _nParticles, glm
 
     spawnType = SpawnType::SphereSpawn;
     radious = _radious;
-    cout << "Soy una esfera\n";
 
 }
 

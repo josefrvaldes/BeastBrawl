@@ -216,7 +216,7 @@ class CLNode{
         //! @param flags Mascara de bytes para aplicarle efectos
         //! @returns CLE::CLNode()
         //! @see CLE::CLParticleSystem()
-        CLNode* AddParticleSystem(unsigned int id,int nParticles,glm::vec3 velocity,string texture,int width,int height,int spawnDelay,int particlesToSpawn,int lifeSpan, std::uint_fast8_t flags);
+        CLNode* AddParticleSystem(unsigned int id,ulong nParticles,glm::vec3 velocity,string texture,int width,int height,int spawnDelay,int particlesToSpawn,int lifeSpan, std::uint_fast8_t flags);
         //! Añade un sistema de particulas version **Linea, Cuadrado o Cubo**
         //! @param id Identificador del nodo
         //! @param nParticles Número de particulas
@@ -232,7 +232,7 @@ class CLNode{
         //! @param flags Mascara de bytes para aplicarle efectos
         //! @returns CLE::CLNode()
         //! @see CLE::CLParticleSystem()
-        CLNode* AddParticleSystem(unsigned int id,int nParticles,glm::vec3 velocity,string texture,int width,int height,int spawnDelay,int particlesToSpawn,int lifeSpan,glm::vec3 offset, glm::vec3 orientation, std::uint_fast8_t flags);
+        CLNode* AddParticleSystem(unsigned int id,ulong nParticles,glm::vec3 velocity,string texture,int width,int height,int spawnDelay,int particlesToSpawn,int lifeSpan,glm::vec3 offset, glm::vec3 orientation, std::uint_fast8_t flags);
         //! Añade un sistema de particulas version **Esfera**
         //! @param id Identificador del nodo
         //! @param nParticles Número de particulas
@@ -247,7 +247,7 @@ class CLNode{
         //! @param flags Mascara de bytes para aplicarle efectos
         //! @returns CLE::CLNode()
         //! @see CLE::CLParticleSystem()
-        CLNode* AddParticleSystem(unsigned int id,int nParticles,glm::vec3 velocity,string texture,int width,int height,int spawnDelay,int particlesToSpawn,int lifeSpan,float radious, std::uint_fast8_t flags);
+        CLNode* AddParticleSystem(unsigned int id,ulong nParticles,glm::vec3 velocity,string texture,int width,int height,int spawnDelay,int particlesToSpawn,int lifeSpan,float radious, std::uint_fast8_t flags);
         //! Añade un sistema de particulas version **Circulo**
         //! @param id Identificador del nodo
         //! @param nParticles Número de particulas
@@ -262,7 +262,7 @@ class CLNode{
         //! @param flags Mascara de bytes para aplicarle efectos
         //! @returns CLE::CLNode()
         //! @see CLE::CLParticleSystem()
-        CLNode* AddParticleSystem(unsigned int id,int nParticles,glm::vec3 velocity,string texture,int width,int height,int spawnDelay,int particlesToSpawn,int lifeSpan,float radious,glm::vec3 orientation, std::uint_fast8_t flags);
+        CLNode* AddParticleSystem(unsigned int id,ulong nParticles,glm::vec3 velocity,string texture,int width,int height,int spawnDelay,int particlesToSpawn,int lifeSpan,float radious,glm::vec3 orientation, std::uint_fast8_t flags);
 
         //! Añade un skybox a la escena
         //! @param right Textura right del cubo

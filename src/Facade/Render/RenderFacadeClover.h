@@ -38,6 +38,8 @@ class RenderFacadeClover : public RenderFacade {
       void FacadeEndScene() const override;
       void FacadeDeviceDrop() override;
       void DeleteEntity(Entity*) override;
+      void FacadeSetVisibleEntity(Entity*,bool) override;
+
 
       void FacadeDraw() const override;
       void FacadeDrawIntro() override;
@@ -78,6 +80,8 @@ class RenderFacadeClover : public RenderFacade {
       void FacadeAddShadowMapping(unsigned int lightId) override;
       void CleanScene() override;
       void FacadeUpdateViewport() override;
+
+      void FacadeInitParticleSystem(DataMap* d) override;
 
       //DEBUG
       void Draw3DLine(vec3& pos1, vec3& pos2, uint16_t r, uint16_t g, uint16_t b) const override;

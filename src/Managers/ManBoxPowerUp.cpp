@@ -77,7 +77,8 @@ void ManBoxPowerUp::EjecutarMeHanCogido(DataMap* d) {
         //cout << "Han cogido un powerup, madafaka!! sera la primera" << endl;
         auto renderFacadeManager = RenderFacadeManager::GetInstance();
         auto renderEngine = renderFacadeManager->GetRenderFacade();
-        renderEngine->DeleteEntity(actualBox.get());       // se elmina la caja en irrlich para que no la dibuje, pero en nuestro array sigue estando
+        renderEngine->FacadeSetVisibleEntity(actualBox.get(),false);
+        //renderEngine->DeleteEntity(actualBox.get());       // se elmina la caja en irrlich para que no la dibuje, pero en nuestro array sigue estando
         cBoxPowerUp->active = false;
         cBoxPowerUp->timeStart = system_clock::now();
 
@@ -112,5 +113,6 @@ void ManBoxPowerUp::SubscribeToEvents() {
 void ManBoxPowerUp::resetBox(Entity* resetBox){
     auto renderFacadeManager = RenderFacadeManager::GetInstance();
     auto renderEngine = renderFacadeManager->GetRenderFacade();
-    renderEngine->FacadeAddObject(resetBox);
+    //renderEngine->FacadeAddObject(resetBox);
+    renderEngine->FacadeSetVisibleEntity(resetBox,true);
 }

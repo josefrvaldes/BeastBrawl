@@ -14,6 +14,7 @@
 #include <Components/CDimensions.h>
 #include <Components/CId.h>
 #include <Components/CMesh.h>
+#include <Components/CParticleSystem.h>
 #include <Components/CNamePlate.h>
 #include <Components/CPath.h>
 #include <Components/CTexture.h>
@@ -85,6 +86,11 @@ void RenderFacadeClover::FacadeSuscribeEvents() {
         EventType::UPDATE_POWERUP_HUD,
         bind( &RenderFacadeClover::FacadeUpdatePowerUpHUD, this, placeholders::_1 ),
         "facadeUpdatePowerUpHUD"});
+
+    EventManager::GetInstance().Subscribe(Listener{
+        EventType::INIT_PARTICLE_SYSTEM,
+        bind( &RenderFacadeClover::FacadeInitParticleSystem, this, placeholders::_1 ),
+        "FacadeInitParticleSystem"});
 }
 
 
@@ -110,7 +116,7 @@ void RenderFacadeClover::FacadeInitMenu() {
     powerUps[6] = "media/melonmolon.png";
 
     device->GetResourceManager()->GetResourceTexture(powerUps[0], true);
-    device->GetResourceManager()->GetResourceTexture(powerUps[1], true);
+    device->GetResourceManager()->GetResourceTexture(powerUps[1], true); 
     device->GetResourceManager()->GetResourceTexture(powerUps[2], true);
     device->GetResourceManager()->GetResourceTexture(powerUps[3], true);
     device->GetResourceManager()->GetResourceTexture(powerUps[4], true);
@@ -160,6 +166,15 @@ void RenderFacadeClover::FacadeInitHUD() {
 void RenderFacadeClover::FacadeUpdatePowerUpHUD(DataMap* d) {
     auto type = any_cast<typeCPowerUp>((*d)[TYPE_POWER_UP]);
     currentPowerUp = int(type);
+}
+
+void RenderFacadeClover::FacadeInitParticleSystem(DataMap* d){
+    auto idEntity = any_cast<uint16_t>((*d)[ID]);
+    //FALLA PORQUE ESTAMOS ELIMINANDO LAS CAJAS Y POR TANTO SU PARTICLE SYSTEM TAMBIEN
+    auto node = smgr->GetNodeByID(idEntity);
+    smgr->DrawTree(smgr);
+    static_cast<CLParticleSystem*>(node->GetEntity())->Start();
+    static_cast<CLParticleSystem*>(node->GetEntity())->StartOneIteration();
 }
 
 /**
@@ -274,11 +289,10 @@ const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
     if(entity->HasComponent(CompType::ParentNodeComp)){
         auto cParentNode = static_cast<CParentNode*>(entity->GetComponent(CompType::ParentNodeComp).get());
         father = smgr->GetNodeByID(cParentNode->idParentNode);
-    }
+    } 
 
     auto cTransformable = static_cast<CTransformable*>(entity->GetComponent(CompType::TransformableComp).get());
     auto cId = static_cast<CId*>(entity->GetComponent(CompType::IdComp).get());
-    //auto cTexture = static_cast<CTexture*>(entity->GetComponent(CompType::TextureComp).get());
     auto cType = static_cast<CType*>(entity->GetComponent(CompType::TypeComp).get());
     auto cShader = static_cast<CShader*>(entity->GetComponent(CompType::ShaderComp).get());
 
@@ -291,17 +305,15 @@ const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
         mesh = resourceManager->GetResourceMesh(meshPath, false);
         mat = resourceManager->GetResourceMaterial(meshPath);
     }
-    
+
     
     CLNode* node = nullptr;
     // añadimos el node al sceneManager dependiendo del tipo de node que sea
     switch (cType->type) {
 
-        case ModelType::ParticleSystem:
-            //node = father->AddParticleSystem();
-            break;
 
         case ModelType::Sphere:
+
             node = father->AddMesh(cId->id);
             static_cast<CLMesh*>(node->GetEntity())->SetMesh(mesh);
             static_cast<CLMesh*>(node->GetEntity())->SetMaterial(mat);
@@ -314,6 +326,10 @@ const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
 
             break;
 
+        case ModelType::StaticMesh:
+            node = father->AddMesh(cId->id); 
+            break;
+
         case ModelType::AnimatedMesh:
             node = father->AddMesh(cId->id);
             static_cast<CLMesh*>(node->GetEntity())->SetMesh(mesh);
@@ -321,20 +337,47 @@ const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
 
             break;
 
-        case ModelType::StaticMesh:
-            node = father->AddMesh(cId->id); 
-            break;
-
         case ModelType::Text:
             node = father->AddMesh(cId->id);
             break;
 
-        case ModelType::PointLight:
+        case ModelType::PointLight:{
             auto cLight = static_cast<CLight*>(entity->GetComponent(CompType::LightComp).get());
             node = father->AddPointLight(cId->id,cLight->intensity,cLight->ambient,cLight->diffuse,cLight->specular,cLight->constant,cLight->linear,cLight->quadratic);
             break;
-
+        }
+            
         
+        case ModelType::ParticleSystem:{
+            auto cParticleSystem = static_cast<CParticleSystem*>(entity->GetComponent(CompType::ParticleSystemComp).get());
+ 
+            if(cParticleSystem->radious != 0){  
+                //Es circulo o esfera
+                if(cParticleSystem->orientation == glm::vec3(0.0f,0.0f,0.0f)){
+                    //Es esfera
+                    node = father->AddParticleSystem(cId->id,cParticleSystem->nParticles,cParticleSystem->velocity,cParticleSystem->texture,cParticleSystem->width,cParticleSystem->height,cParticleSystem->spawnDelay,cParticleSystem->particlesToSpawn,cParticleSystem->lifeSpan,cParticleSystem->radious,cParticleSystem->flags);
+                }else{
+                    //Es circulo
+                    node = father->AddParticleSystem(cId->id,cParticleSystem->nParticles,cParticleSystem->velocity,cParticleSystem->texture,cParticleSystem->width,cParticleSystem->height,cParticleSystem->spawnDelay,cParticleSystem->particlesToSpawn,cParticleSystem->lifeSpan,cParticleSystem->radious,cParticleSystem->orientation,cParticleSystem->flags);
+                }
+            }else{
+                //Es punto, linea, cuadrado o cubo
+                node = father->AddParticleSystem(cId->id,cParticleSystem->nParticles,cParticleSystem->velocity,cParticleSystem->texture,cParticleSystem->width,cParticleSystem->height,cParticleSystem->spawnDelay,cParticleSystem->particlesToSpawn,cParticleSystem->lifeSpan,cParticleSystem->offset,cParticleSystem->orientation,cParticleSystem->flags);
+            }
+            static_cast<CLParticleSystem*>(node->GetEntity())->SetLoop(cParticleSystem->loop);
+
+            if(cParticleSystem->started){
+                static_cast<CLParticleSystem*>(node->GetEntity())->Start();
+            }
+            
+            node->SetTranslation(glm::vec3(cTransformable->position.x,cTransformable->position.y,-cTransformable->position.z));
+            node->SetRotation(glm::vec3(cTransformable->rotation.x,Utils::IrrlichtAngleToOpenGL(cTransformable->rotation.y),cTransformable->rotation.z));
+            node->SetScalation(cTransformable->scale);
+
+            return cId->id;
+            break;
+        }
+            
     } 
 
 
@@ -1055,6 +1098,13 @@ void RenderFacadeClover::DeleteEntity(Entity* entity) {
     auto cId = static_cast<CId*>(entity->GetComponent(CompType::IdComp).get());
     smgr->DeleteNode(cId->id);
 }
+
+void RenderFacadeClover::FacadeSetVisibleEntity(Entity* entity, bool visible){
+    auto cId = static_cast<CId*>(entity->GetComponent(CompType::IdComp).get());
+    auto node = smgr->GetNodeByID(cId->id);
+    node->SetVisible(visible);
+}
+
 
 void RenderFacadeClover::FacadeDrawBoundingPlane(Entity* entity) const {
 }
