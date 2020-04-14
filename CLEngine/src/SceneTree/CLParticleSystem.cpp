@@ -12,7 +12,7 @@ CLParticleSystem::CLParticleSystem(unsigned int idEntity, ulong particlesNumber,
     spawnDelay        = _spawnDelay;
     nParticlesToSpawn = _nParticlesToSpawn;
     lifeSpan          = _lifeSpan;
-    spawnType         = SpawnType::Point;
+    spawnType         = SpawnType::PointSpawn;
     flags             = _flags;
 
     particles.reserve(nParticles);
@@ -28,21 +28,21 @@ CLParticleSystem::CLParticleSystem(unsigned int idEntity, ulong _nParticles, glm
     if((offset.x != 0 && !offset.y && !offset.z) || (!offset.x && offset.y != 0 && !offset.z) || (!offset.x && !offset.y && offset.z != 0)){
 
         //Si solo tiene 1 valor es linea
-        spawnType = SpawnType::Line;
+        spawnType = SpawnType::LineSpawn;
         cout << "Soy una linea\n";
 
     }else if((offset.x != 0 && offset.y != 0 && !offset.z) || (offset.x != 0 && !offset.y && offset.z != 0) || (!offset.x && offset.y != 0 && offset.z != 0)){
 
         //Si tiene 2 valores es Cuadrado
-        spawnType = SpawnType::Square;
+        spawnType = SpawnType::SquareSpawn;
         cout << "Soy un cuadrado\n";
     }else if( offset.x != 0 && offset.y != 0 && offset.z != 0){
 
         //Si tiene 3 valores es Cubo
-        spawnType = SpawnType::Cube;
+        spawnType = SpawnType::CubeSpawn;
         cout << "Soy un cubo\n";
     }else{
-        spawnType = SpawnType::Point;
+        spawnType = SpawnType::PointSpawn;
         cout << "Soy un punto\n";
 
     }
@@ -53,7 +53,7 @@ CLParticleSystem::CLParticleSystem(unsigned int idEntity, ulong _nParticles, glm
 : CLParticleSystem(idEntity,_nParticles,_speedDirection,texture,_width,_height,_spawnDelay,_nParticlesToSpawn,_lifeSpan,_flags){
 
     //No lo estoy controlando porque es mi propio motor pero lo suyo es que solo pase 2 ejes en el _orientation
-    spawnType = SpawnType::Circle;
+    spawnType = SpawnType::CircleSpawn;
     radious = _radious;
     orientation = _orientation;
     cout << "Soy un circulo\n";
@@ -64,7 +64,7 @@ CLParticleSystem::CLParticleSystem(unsigned int idEntity, ulong _nParticles, glm
 CLParticleSystem::CLParticleSystem(unsigned int idEntity, ulong _nParticles, glm::vec3 _speedDirection,string texture,uint16_t _width, uint16_t _height,float _spawnDelay,unsigned int _nParticlesToSpawn,float _lifeSpan,float _radious, std::uint_fast8_t _flags)
 : CLParticleSystem(idEntity,_nParticles,_speedDirection,texture,_width,_height,_spawnDelay,_nParticlesToSpawn,_lifeSpan,_flags){
 
-    spawnType = SpawnType::Sphere;
+    spawnType = SpawnType::SphereSpawn;
     radious = _radious;
     cout << "Soy una esfera\n";
 
@@ -73,6 +73,7 @@ CLParticleSystem::CLParticleSystem(unsigned int idEntity, ulong _nParticles, glm
 
 
 void CLParticleSystem::Draw(GLuint shaderID) {
+    if(!started) return;
     //En este Draw que llama al resto de draws podriamos settear cosas generales para todos las particulas
     Update(); //Este Update se encarga de cosas como spawnear nuevas particulas
 
@@ -95,18 +96,21 @@ void CLParticleSystem::Draw(GLuint shaderID) {
 }
 
 void CLParticleSystem::Update(){
+
+    //cout << "Hay " << numParticleDeads << " particulas muertas de " << nParticles << endl;
+    
     //Comprobamos si ha pasado el tiempo de spawn
     auto diff = duration_cast<milliseconds>(system_clock::now() - timeStart).count();
 
     if(diff > spawnDelay){
         timeStart = system_clock::now();
 
-        for(unsigned int i = 0; i<nParticlesToSpawn && particles.size()+nParticlesToSpawn<=nParticles ; ++i){
+        for(unsigned int i = 0; i<nParticlesToSpawn && particles.size()<nParticles ; ++i){
             particles.emplace_back(make_shared<CLParticle>(this));
         }
 
         //Vamos a comprobar si tenemos que revivir alguna particula porque han activado de nuevo el loop
-        if(loop){
+        if(loop || oneIterationMode){ 
             int particlesToRespawn = nParticlesToSpawn; //Solo vamos a revivir por iteracion a nParticlesToSpawn
             for(auto& particle : particles){
                 if(particle->GetParticleDead()){
@@ -114,11 +118,15 @@ void CLParticleSystem::Update(){
                     particlesToRespawn--;
                 }
 
-                if(particlesToRespawn == 0) break;
+                if(particlesToRespawn <= 0) break;
             }
         }
     }
 
+
+    if(numParticleDeads == 0){
+        oneIterationMode = false;
+    }
 
 }
 
@@ -134,39 +142,7 @@ CLParticleSystem::CLParticle::CLParticle(CLParticleSystem* emitter){
     timeStart      = system_clock::now();
 
     //Comprobamos si el flag del effecto esta activado
-    if(particleSystem->GetFlags() & EFFECT_DIR_ALEATORITY){
-        std::random_device rd;
-        std::mt19937 rng(rd());
-        std::uniform_int_distribution<int> xDir(-1, 1);
-        std::uniform_int_distribution<int> yDir(-1, 1);
-        std::uniform_int_distribution<int> zDir(-1, 1);
-
-        int valueX = 0;
-        int valueY = 0;
-        int valueZ = 0;
-
-        do{
-            valueX = xDir(rng);
-            valueY = yDir(rng);
-            valueZ = zDir(rng);
-
-            xDir(rng);xDir(rng);xDir(rng);
-            yDir(rng);yDir(rng);yDir(rng);
-            zDir(rng);zDir(rng);zDir(rng);
-        }while(!valueX && !valueY && !valueZ);
-
-        velocity.x *= valueX;
-        velocity.y *= valueY;
-        velocity.z *= valueZ;
-
-        //Reset de numeros aleatorios
-        xDir(rng);xDir(rng);xDir(rng);
-        yDir(rng);yDir(rng);yDir(rng);
-        zDir(rng);zDir(rng);zDir(rng);
-
-    }else{
-        velocity = particleSystem->GetSpeedDirection();
-    }
+    CalculateVelocity();
 
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
@@ -178,6 +154,13 @@ void CLParticleSystem::CLParticle::Draw(GLuint shaderID){
     if(particleDead) return;
     Update();
     
+    if(particleSystem->GetFlags() & EFFECT_FADING){
+        glUniform1f(glGetUniformLocation(shaderID, "alpha"), glm::min(lifeTime / lifeSpan,1.0f));
+
+    }else{
+        glUniform1f(glGetUniformLocation(shaderID, "alpha"), 100);
+
+    }
     glUniform1f(glGetUniformLocation(shaderID, "width"), particleSystem->GetWidth());
     glUniform1f(glGetUniformLocation(shaderID, "height"), particleSystem->GetHeight());
     
@@ -196,8 +179,10 @@ void CLParticleSystem::CLParticle::Draw(GLuint shaderID){
 
 void CLParticleSystem::CLParticle::Update(){
     //Comprobamos si deberia seguir con vida la particula
-    auto diff = duration_cast<milliseconds>(system_clock::now() - timeStart).count();
-    if(diff >= lifeSpan){
+    lifeTime = duration_cast<milliseconds>(system_clock::now() - timeStart).count();
+
+    if(lifeTime >= lifeSpan){
+        lifeTime = lifeSpan;
         if(particleSystem->GetLoop()){
             //la respawneamos en la posicion inicial
             position = CalculateSpawnPosition();
@@ -205,7 +190,7 @@ void CLParticleSystem::CLParticle::Update(){
         }else{
             //Si no hay loop al llegar a su lifeSpan la desactivamos y reposicionamos
             particleDead = true;
-            //position = CalculateSpawnPosition();
+            particleSystem->UpdateNumParticlesDead(+1);
         }
         
     }else{
@@ -225,9 +210,9 @@ glm::vec3 CLParticleSystem::CLParticle::CalculateSpawnPosition(){
     std::mt19937 rng(rd());
 
 
-    if(spawnType == SpawnType::Point){
+    if(spawnType == SpawnType::PointSpawn){
         newPosition = particleSystem->GetCLNode()->GetGlobalTranslation();
-    }else if(spawnType == SpawnType::Line || spawnType == SpawnType::Square || spawnType == SpawnType::Cube){
+    }else if(spawnType == SpawnType::LineSpawn || spawnType == SpawnType::SquareSpawn || spawnType == SpawnType::CubeSpawn){
         std::uniform_real_distribution<float> genX(center.x - particleSystem->GetOffset().x, center.x + particleSystem->GetOffset().x);
         std::uniform_real_distribution<float> genY(center.y - particleSystem->GetOffset().y, center.y + particleSystem->GetOffset().y);
         std::uniform_real_distribution<float> genZ(center.z - particleSystem->GetOffset().z, center.z + particleSystem->GetOffset().z);
@@ -242,16 +227,13 @@ glm::vec3 CLParticleSystem::CLParticle::CalculateSpawnPosition(){
 
 
         newPosition = glm::vec3(offX,offY,offZ);
-    }else if(spawnType == SpawnType::Sphere || spawnType == SpawnType::Circle){
+    }else if(spawnType == SpawnType::SphereSpawn || spawnType == SpawnType::CircleSpawn){
         float radious = particleSystem->GetRadious();
         glm::vec3 orientation = particleSystem->GetOrientation();
 
         std::uniform_real_distribution<float> genX(center.x - (radious*orientation.x), center.x + (radious*orientation.x));
         std::uniform_real_distribution<float> genY(center.y - (radious*orientation.y), center.y + (radious*orientation.y));
         std::uniform_real_distribution<float> genZ(center.z - (radious*orientation.z), center.z + (radious*orientation.z));
-        float offX = genX(rng);
-        float offY = genY(rng);
-        float offZ = genZ(rng);
 
         //Reset de numeros aleatorios
         genX(rng);genX(rng);genX(rng);
@@ -268,5 +250,47 @@ glm::vec3 CLParticleSystem::CLParticle::CalculateSpawnPosition(){
 
 void CLParticleSystem::CLParticle::ReviveParticle(){
     particleDead = false;
+    particleSystem->UpdateNumParticlesDead(-1);
     position = CalculateSpawnPosition();
+    CalculateVelocity();
+    timeStart = system_clock::now();
+}
+
+void CLParticleSystem::CLParticle::CalculateVelocity(){
+
+    //Comprobamos si el flag del effecto esta activado
+    if(particleSystem->GetFlags() & EFFECT_DIR_ALEATORITY){
+        std::random_device rd;
+        std::mt19937 rng(rd());
+        std::uniform_real_distribution<float> xDir(-1, 1);
+        std::uniform_real_distribution<float> yDir(-1, 1);
+        std::uniform_real_distribution<float> zDir(-1, 1);
+
+        float valueX = 0;
+        float valueY = 0;
+        float valueZ = 0;
+
+        do{
+            valueX = xDir(rng);
+            valueY = yDir(rng);
+            valueZ = zDir(rng);
+
+            xDir(rng);xDir(rng);xDir(rng);
+            yDir(rng);yDir(rng);yDir(rng);
+            zDir(rng);zDir(rng);zDir(rng);
+        }while(!valueX && !valueY && !valueZ);
+
+        velocity.x = particleSystem->GetSpeedDirection().x * valueX;
+        velocity.y = particleSystem->GetSpeedDirection().y * valueY;
+        velocity.z = particleSystem->GetSpeedDirection().z * valueZ;
+
+        //Reset de numeros aleatorios
+        xDir(rng);xDir(rng);xDir(rng);
+        yDir(rng);yDir(rng);yDir(rng);
+        zDir(rng);zDir(rng);zDir(rng);
+
+    }else{
+        velocity = particleSystem->GetSpeedDirection();
+    }
+
 }

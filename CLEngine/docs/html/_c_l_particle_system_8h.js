@@ -10,6 +10,7 @@ var _c_l_particle_system_8h =
       [ "Sphere", "_c_l_particle_system_8h.html#a2955cca9df1e3f8faa105a79669676dca3b4c5831cd0a4399644876494915540a", null ]
     ] ],
     [ "EFFECT_DIR_ALEATORITY", "_c_l_particle_system_8h.html#afa51de700ad08346bd51691868455d46", null ],
+    [ "EFFECT_FADING", "_c_l_particle_system_8h.html#a60a5f8aa9ca1cecfb08fce466324df0d", null ],
     [ "EFFECT_NONE", "_c_l_particle_system_8h.html#aaadcc26190ada45c9f48b67e9c8bb66e", null ],
     [ "EFFECT_ZIG_ZAG", "_c_l_particle_system_8h.html#a0950a89b28c3c243223e5b3f68fed7de", null ]
 ];

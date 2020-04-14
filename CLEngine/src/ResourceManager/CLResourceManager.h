@@ -15,7 +15,7 @@
 using namespace std;
 namespace CLE {
 
-    //! Clase para gestionar la leectura de recursos
+    //! Clase para gestionar la lectura de recursos
     //! Esta clase engloba todos los metodos para leer diferentes tipos de archivos
     //! @note Es singleton
     class CLResourceManager {

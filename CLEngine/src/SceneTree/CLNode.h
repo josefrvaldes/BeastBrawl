@@ -30,12 +30,12 @@ using namespace std;
 
 
 namespace CLE{
-
+//! Clase Nodo de la escena
+//! En la escena gestionaremos todo mediante nodos de manera recursiva
+//! aqui puedes crear nodos y asignarles cualquier tipo de entidad disponible
+//! @see CLE::CLEntity
 class CLNode{
-    //! Clase Nodo de la escena
-    //! En la escena gestionaremos todo mediante nodos de manera recursiva
-    //! aqui puedes crear nodos y asignarles cualquier tipo de entidad disponible
-    //! @see CLE::CLEntity
+    
     public:
         CLNode();
         CLNode(shared_ptr<CLEntity> entity);
@@ -203,11 +203,67 @@ class CLNode{
         //! @returns CLE::CLNode* 
         //! @see CLE::CLCamera()
         CLNode* AddCamera(unsigned int id);
-        //! Añade un sistema de particulas
+        //! Añade un sistema de particulas version **Punto**
         //! @param id Identificador del nodo
-        //! @returns CLE::CLNode* 
+        //! @param nParticles Número de particulas
+        //! @param velocity Vector de velocidad
+        //! @param texture Ruta de la textura de la particula
+        //! @param width Anchura de la particula
+        //! @param height Altura de la particula
+        //! @param spawnDelay Tiempo entre cada spawn de particula
+        //! @param particlesToSpawn Particulas que se spawnean a la vez
+        //! @param lifeSpan Vida de las particulas
+        //! @param flags Mascara de bytes para aplicarle efectos
+        //! @returns CLE::CLNode()
         //! @see CLE::CLParticleSystem()
-        CLNode* AddParticleSystem(unsigned int id);
+        CLNode* AddParticleSystem(unsigned int id,int nParticles,glm::vec3 velocity,string texture,int width,int height,int spawnDelay,int particlesToSpawn,int lifeSpan, std::uint_fast8_t flags);
+        //! Añade un sistema de particulas version **Linea, Cuadrado o Cubo**
+        //! @param id Identificador del nodo
+        //! @param nParticles Número de particulas
+        //! @param velocity Vector de velocidad
+        //! @param texture Ruta de la textura de la particula
+        //! @param width Anchura de la particula
+        //! @param height Altura de la particula
+        //! @param spawnDelay Tiempo entre cada spawn de particula
+        //! @param particlesToSpawn Particulas que se spawnean a la vez
+        //! @param lifeSpan Vida de las particulas
+        //! @param offset Dimensiones del objeto donde se spawnean las particulas
+        //! @param orientation Orientacion de dicho spawner
+        //! @param flags Mascara de bytes para aplicarle efectos
+        //! @returns CLE::CLNode()
+        //! @see CLE::CLParticleSystem()
+        CLNode* AddParticleSystem(unsigned int id,int nParticles,glm::vec3 velocity,string texture,int width,int height,int spawnDelay,int particlesToSpawn,int lifeSpan,glm::vec3 offset, glm::vec3 orientation, std::uint_fast8_t flags);
+        //! Añade un sistema de particulas version **Esfera**
+        //! @param id Identificador del nodo
+        //! @param nParticles Número de particulas
+        //! @param velocity Vector de velocidad
+        //! @param texture Ruta de la textura de la particula
+        //! @param width Anchura de la particula
+        //! @param height Altura de la particula
+        //! @param spawnDelay Tiempo entre cada spawn de particula
+        //! @param particlesToSpawn Particulas que se spawnean a la vez
+        //! @param lifeSpan Vida de las particulas
+        //! @param radious Radio de la esfera
+        //! @param flags Mascara de bytes para aplicarle efectos
+        //! @returns CLE::CLNode()
+        //! @see CLE::CLParticleSystem()
+        CLNode* AddParticleSystem(unsigned int id,int nParticles,glm::vec3 velocity,string texture,int width,int height,int spawnDelay,int particlesToSpawn,int lifeSpan,float radious, std::uint_fast8_t flags);
+        //! Añade un sistema de particulas version **Circulo**
+        //! @param id Identificador del nodo
+        //! @param nParticles Número de particulas
+        //! @param velocity Vector de velocidad
+        //! @param texture Ruta de la textura de la particula
+        //! @param width Anchura de la particula
+        //! @param height Altura de la particula
+        //! @param spawnDelay Tiempo entre cada spawn de particula
+        //! @param particlesToSpawn Particulas que se spawnean a la vez
+        //! @param lifeSpan Vida de las particulas
+        //! @param radious Radio del circulo
+        //! @param flags Mascara de bytes para aplicarle efectos
+        //! @returns CLE::CLNode()
+        //! @see CLE::CLParticleSystem()
+        CLNode* AddParticleSystem(unsigned int id,int nParticles,glm::vec3 velocity,string texture,int width,int height,int spawnDelay,int particlesToSpawn,int lifeSpan,float radious,glm::vec3 orientation, std::uint_fast8_t flags);
+
         //! Añade un skybox a la escena
         //! @param right Textura right del cubo
         //! @param left Textura left del cubo
@@ -224,12 +280,11 @@ class CLNode{
         //! Añade un billboard
         //! @param file Fichero de la textura
         //! @param vertically Parametro para poner vertical la textura
-        //! @param posBillboard Posición del billboard
         //! @param width_ Anchura del billboard
         //! @param height Altura del billboard
+        //! @returns CLE::CLNode()
         //! @see CLE::CLBillboard()
-        void AddBillBoard(string& file, bool vertically, glm::vec3 posBillBoard, float width_, float height_);
-
+        CLNode* AddBillBoard(unsigned int id,string& file, bool vertically, float width_, float height_);
         //! Elimina un hijo de ese nodo
         //! @param child Puntero al hijo para eliminar
         //! @returns bool Si ha sido finalizado con exito o no
@@ -272,7 +327,6 @@ class CLNode{
         //! Dibuja el skybox
         void DrawSkybox();
 
-        void DrawBillBoard();
         
         //! Dibuja una linea primitiva en 3D
         //! @param x1 X inicial
@@ -348,7 +402,6 @@ class CLNode{
         inline static unique_ptr<CLSkybox> skybox = nullptr;
         inline static GLuint skyboxShader = 0;
 
-        inline static unique_ptr<CLBillboard> billBoard = nullptr;
         inline static GLuint billboardShader = 0;
 
         inline static unique_ptr<CLShadowMapping> shadowMapping = nullptr;

@@ -125,25 +125,36 @@ CLNode* CLNode::AddCamera(unsigned int id){
     
 }
 
-CLNode* CLNode::AddParticleSystem(unsigned int id){
+//Spawner Punto
+CLNode* CLNode::AddParticleSystem(unsigned int id,int nParticles,glm::vec3 velocity,string texture,int width,int height,int spawnDelay,int particlesToSpawn,int lifeSpan, std::uint_fast8_t flags){
     if(particleSystemShader == 0){
         auto rm = CLResourceManager::GetResourceManager();
         auto resourceShader = rm->GetResourceShader("CLEngine/src/Shaders/particleSystem.vert", "CLEngine/src/Shaders/particleSystem.frag","CLEngine/src/Shaders/particleSystem.geom");
         particleSystemShader = resourceShader->GetProgramID();
     }
 
-    //Lo paso de momento todo a pillon, luego pongo pasar los valores por el metodo
-    int nParticles = 50;
-    glm::vec3 velocity = glm::vec3(0.0f,50.0f,0.0f);
-    string texture = "media/particle_test.png"; 
-    int width = 10;
-    int height= 10;
-    int spawnDelay = 100;
-    int particlesToSpawn = 2;
-    int lifeSpan = 2000;
-    glm::vec3 offset = glm::vec3(50.0f,50.0f,50.0f);
-    glm::vec3 orientation = glm::vec3(1.0f,1.0f,0.0f);
-    std::uint_fast8_t flags = EFFECT_NONE;
+    shared_ptr<CLEntity> e = make_shared<CLParticleSystem>(id,nParticles,velocity,texture,width,height,spawnDelay,particlesToSpawn,lifeSpan,flags);
+
+    shared_ptr<CLNode> node = make_shared<CLNode>(e);
+    childs.push_back(node);
+    node->SetFather(this);
+    node->SetShaderProgramID(particleSystemShader);
+
+    //Configuraciones especificas de un particlesystem
+    if(auto particleSystem = dynamic_cast<CLParticleSystem*>(e.get())){
+        particleSystem->SetCLNode(node.get());
+    }
+
+    return node.get();
+}
+
+//Spawner linea, cuadrado y cubo
+CLNode* CLNode::AddParticleSystem(unsigned int id,int nParticles,glm::vec3 velocity,string texture,int width,int height,int spawnDelay,int particlesToSpawn,int lifeSpan,glm::vec3 offset, glm::vec3 orientation, std::uint_fast8_t flags){
+    if(particleSystemShader == 0){
+        auto rm = CLResourceManager::GetResourceManager();
+        auto resourceShader = rm->GetResourceShader("CLEngine/src/Shaders/particleSystem.vert", "CLEngine/src/Shaders/particleSystem.frag","CLEngine/src/Shaders/particleSystem.geom");
+        particleSystemShader = resourceShader->GetProgramID();
+    }
 
     shared_ptr<CLEntity> e = make_shared<CLParticleSystem>(id,nParticles,velocity,texture,width,height,spawnDelay,particlesToSpawn,lifeSpan,offset,orientation,flags);
 
@@ -155,7 +166,54 @@ CLNode* CLNode::AddParticleSystem(unsigned int id){
     //Configuraciones especificas de un particlesystem
     if(auto particleSystem = dynamic_cast<CLParticleSystem*>(e.get())){
         particleSystem->SetCLNode(node.get());
-        particleSystem->SetLoop(true);
+    }
+
+    return node.get();
+}
+
+//Spawner esfera
+CLNode* CLNode::AddParticleSystem(unsigned int id,int nParticles,glm::vec3 velocity,string texture,int width,int height,int spawnDelay,int particlesToSpawn,int lifeSpan,float radious, std::uint_fast8_t flags){
+    if(particleSystemShader == 0){
+        auto rm = CLResourceManager::GetResourceManager();
+        auto resourceShader = rm->GetResourceShader("CLEngine/src/Shaders/particleSystem.vert", "CLEngine/src/Shaders/particleSystem.frag","CLEngine/src/Shaders/particleSystem.geom");
+        particleSystemShader = resourceShader->GetProgramID();
+    }
+
+
+    shared_ptr<CLEntity> e = make_shared<CLParticleSystem>(id,nParticles,velocity,texture,width,height,spawnDelay,particlesToSpawn,lifeSpan,radious,flags);
+
+    shared_ptr<CLNode> node = make_shared<CLNode>(e);
+    childs.push_back(node);
+    node->SetFather(this);
+    node->SetShaderProgramID(particleSystemShader);
+
+    //Configuraciones especificas de un particlesystem
+    if(auto particleSystem = dynamic_cast<CLParticleSystem*>(e.get())){
+        particleSystem->SetCLNode(node.get());
+    }
+
+    return node.get();
+}
+
+//Spawner circulo
+CLNode* CLNode::AddParticleSystem(unsigned int id,int nParticles,glm::vec3 velocity,string texture,int width,int height,int spawnDelay,int particlesToSpawn,int lifeSpan,float radious,glm::vec3 orientation, std::uint_fast8_t flags){
+    if(particleSystemShader == 0){
+        auto rm = CLResourceManager::GetResourceManager();
+        auto resourceShader = rm->GetResourceShader("CLEngine/src/Shaders/particleSystem.vert", "CLEngine/src/Shaders/particleSystem.frag","CLEngine/src/Shaders/particleSystem.geom");
+        particleSystemShader = resourceShader->GetProgramID();
+    }
+
+
+    shared_ptr<CLEntity> e = make_shared<CLParticleSystem>(id,nParticles,velocity,texture,width,height,spawnDelay,particlesToSpawn,lifeSpan,radious,orientation,flags);
+
+    shared_ptr<CLNode> node = make_shared<CLNode>(e);
+    childs.push_back(node);
+    node->SetFather(this);
+    node->SetShaderProgramID(particleSystemShader);
+
+    //Configuraciones especificas de un particlesystem
+    if(auto particleSystem = dynamic_cast<CLParticleSystem*>(e.get())){
+        particleSystem->SetCLNode(node.get());
     }
 
     return node.get();
@@ -180,14 +238,22 @@ void CLNode::AddShadowMapping(GLuint lightId){
     shadowMapping = make_unique<CLShadowMapping>(lightId);
 }
 
-void CLNode::AddBillBoard(string& file, bool vertically, glm::vec3 posBillBoard, float width_, float height_){
+CLNode* CLNode::AddBillBoard(unsigned int id,string& file, bool vertically, float width_, float height_){
+    auto rm = CLResourceManager::GetResourceManager();
     if(!billboardShader){
-        auto rm = CLResourceManager::GetResourceManager();
-        CLResourceTexture* t = rm->GetResourceTexture(file, vertically);
         auto resourceShader = rm->GetResourceShader("CLEngine/src/Shaders/billboard.vert", "CLEngine/src/Shaders/billboard.frag", "CLEngine/src/Shaders/billboard.geom");
         billboardShader = resourceShader->GetProgramID();
-        billBoard = make_unique<CLBillboard>(t, posBillBoard, width_, height_);
     }
+
+    CLResourceTexture* texture = rm->GetResourceTexture(file, vertically);
+    auto entity = make_shared<CLBillboard>(id,texture,width_,height_);
+    auto node = make_shared<CLNode>(entity);
+
+    node->SetFather(this);
+    childs.push_back(node);
+    node->SetShaderProgramID(billboardShader);
+
+    return node.get();
 }
 
 bool CLNode::RemoveChild(CLNode* child){
@@ -383,7 +449,7 @@ void CLNode::DFSTree(glm::mat4 mA) {
     CLE::CLFrustum::Visibility frusVisibility = frustum_m.IsInside(translation, dimensionsBoundingBox);
 
     //Voy a comentar de momento el frustrum ya que para el particle system puede dar problemas
-    if(entity && visible /*&& frusVisibility == CLE::CLFrustum::Visibility::Completly*/) { 
+    if(entity && visible && frusVisibility == CLE::CLFrustum::Visibility::Completly) { 
         glUseProgram(shaderProgramID);
         //Calculamos las luces
         //TODO: Hacer un sistema de que si no hemos cambiado de shader no se recalculen
@@ -398,6 +464,13 @@ void CLNode::DFSTree(glm::mat4 mA) {
         glUniformMatrix4fv(glGetUniformLocation(shaderProgramID, "MVP"), 1, GL_FALSE, glm::value_ptr(MVP));
         glUniform1i(glGetUniformLocation(shaderProgramID, "shadows"), true); 
         glUniform1f(glGetUniformLocation(shaderProgramID, "far_plane"), Constants::FAR_PLANE); 
+
+        glm::mat4 viewProjection = projection*view;
+        glm::vec3 camPos = GetActiveCameraNode()->GetGlobalTranslation();
+        glm::vec3 pos    = GetGlobalTranslation();
+        glUniformMatrix4fv(glGetUniformLocation(shaderProgramID, "VPMatrix"), 1, GL_FALSE, glm::value_ptr(viewProjection));
+        glUniform3fv(glGetUniformLocation(shaderProgramID, "cameraPosition"), 1, glm::value_ptr(camPos));
+        glUniform3fv(glGetUniformLocation(shaderProgramID, "position"), 1, glm::value_ptr(pos));
         entity->Draw(shaderProgramID);
 
     }
@@ -558,27 +631,7 @@ void CLNode::DrawSkybox(){
     }
 }
 
-void CLNode::DrawBillBoard(){
 
-    if(billBoard.get()){
-
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-        //glDepthMask(GL_FALSE);
-        glUseProgram(billboardShader);
-
-        glm::mat4 viewProjection = projection*view;
-        glm::vec3 camPos = cameras[0]->translation;
-	    GLuint VPMatrix = glGetUniformLocation(billboardShader, "VPMatrix");
-	    glUniformMatrix4fv(VPMatrix, 1, GL_FALSE, glm::value_ptr(viewProjection));
-
-	    GLuint cameraPosition = glGetUniformLocation(billboardShader, "cameraPosition");
-	    glUniform3fv(cameraPosition, 1, glm::value_ptr(camPos));
-
-        billBoard->Draw(billboardShader);
-    }
-}
 
 
 //Devuelve el nodo por la id que le mandes

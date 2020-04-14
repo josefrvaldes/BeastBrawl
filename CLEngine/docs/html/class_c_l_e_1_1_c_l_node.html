@@ -28,7 +28,7 @@
    <div id="projectname">CLEngine
    &#160;<span id="projectnumber">1.0</span>
    </div>
-   <div id="projectbrief">Motor gráfico para TAG</div>
+   <div id="projectbrief">Motor grafico para Beast Brawl</div>
   </td>
  </tr>
  </tbody>
@@ -92,12 +92,14 @@ $(document).ready(function(){initNavTree('class_c_l_e_1_1_c_l_node.html',''); in
 </div><!--header-->
 <div class="contents">
 
+<p>Clase Nodo de la escena En la escena gestionaremos todo mediante nodos de manera recursiva aqui puedes crear nodos y asignarles cualquier tipo de entidad disponible.  
+ <a href="class_c_l_e_1_1_c_l_node.html#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="_c_l_node_8h_source.html">CLNode.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:aa9b6eebb02a9bb5e190b29c47df56430"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_node.html#aa9b6eebb02a9bb5e190b29c47df56430">CLNode</a> ()</td></tr>
-<tr class="memdesc:aa9b6eebb02a9bb5e190b29c47df56430"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clase Nodo de la escena En la escena gestionaremos todo mediante nodos de manera recursiva aqui puedes crear nodos y asignarles cualquier tipo de entidad disponible.  <a href="class_c_l_e_1_1_c_l_node.html#aa9b6eebb02a9bb5e190b29c47df56430">More...</a><br /></td></tr>
 <tr class="separator:aa9b6eebb02a9bb5e190b29c47df56430"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aee7937be406e5c02a1a6d165f4d36f01"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_node.html#aee7937be406e5c02a1a6d165f4d36f01">CLNode</a> (shared_ptr&lt; <a class="el" href="class_c_l_e_1_1_c_l_entity.html">CLEntity</a> &gt; entity)</td></tr>
 <tr class="separator:aee7937be406e5c02a1a6d165f4d36f01"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -206,18 +208,27 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:afd2c3bbe8012f22de6637c3a32675e41"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_c_l_e_1_1_c_l_node.html">CLNode</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_node.html#afd2c3bbe8012f22de6637c3a32675e41">AddCamera</a> (unsigned int id)</td></tr>
 <tr class="memdesc:afd2c3bbe8012f22de6637c3a32675e41"><td class="mdescLeft">&#160;</td><td class="mdescRight">Añade una camara a la escena.  <a href="class_c_l_e_1_1_c_l_node.html#afd2c3bbe8012f22de6637c3a32675e41">More...</a><br /></td></tr>
 <tr class="separator:afd2c3bbe8012f22de6637c3a32675e41"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6dace0de98a6291e1ed3ad846359f182"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_c_l_e_1_1_c_l_node.html">CLNode</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_node.html#a6dace0de98a6291e1ed3ad846359f182">AddParticleSystem</a> (unsigned int id)</td></tr>
-<tr class="memdesc:a6dace0de98a6291e1ed3ad846359f182"><td class="mdescLeft">&#160;</td><td class="mdescRight">Añade un sistema de particulas.  <a href="class_c_l_e_1_1_c_l_node.html#a6dace0de98a6291e1ed3ad846359f182">More...</a><br /></td></tr>
-<tr class="separator:a6dace0de98a6291e1ed3ad846359f182"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afede72716223874e44229dcbfcf8a4a0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_c_l_e_1_1_c_l_node.html">CLNode</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_node.html#afede72716223874e44229dcbfcf8a4a0">AddParticleSystem</a> (unsigned int id, int nParticles, glm::vec3 velocity, string texture, int width, int height, int spawnDelay, int particlesToSpawn, int lifeSpan, std::uint_fast8_t flags)</td></tr>
+<tr class="memdesc:afede72716223874e44229dcbfcf8a4a0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Añade un sistema de particulas version <b>Punto</b>  <a href="class_c_l_e_1_1_c_l_node.html#afede72716223874e44229dcbfcf8a4a0">More...</a><br /></td></tr>
+<tr class="separator:afede72716223874e44229dcbfcf8a4a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a696d8d2e92ff48ae24ec2d7547579e22"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_c_l_e_1_1_c_l_node.html">CLNode</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_node.html#a696d8d2e92ff48ae24ec2d7547579e22">AddParticleSystem</a> (unsigned int id, int nParticles, glm::vec3 velocity, string texture, int width, int height, int spawnDelay, int particlesToSpawn, int lifeSpan, glm::vec3 offset, glm::vec3 orientation, std::uint_fast8_t flags)</td></tr>
+<tr class="memdesc:a696d8d2e92ff48ae24ec2d7547579e22"><td class="mdescLeft">&#160;</td><td class="mdescRight">Añade un sistema de particulas version <b>Linea, Cuadrado o Cubo</b>  <a href="class_c_l_e_1_1_c_l_node.html#a696d8d2e92ff48ae24ec2d7547579e22">More...</a><br /></td></tr>
+<tr class="separator:a696d8d2e92ff48ae24ec2d7547579e22"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa2ca45f9a39d850a7dde882b133bad94"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_c_l_e_1_1_c_l_node.html">CLNode</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_node.html#aa2ca45f9a39d850a7dde882b133bad94">AddParticleSystem</a> (unsigned int id, int nParticles, glm::vec3 velocity, string texture, int width, int height, int spawnDelay, int particlesToSpawn, int lifeSpan, float radious, std::uint_fast8_t flags)</td></tr>
+<tr class="memdesc:aa2ca45f9a39d850a7dde882b133bad94"><td class="mdescLeft">&#160;</td><td class="mdescRight">Añade un sistema de particulas version <b>Esfera</b>  <a href="class_c_l_e_1_1_c_l_node.html#aa2ca45f9a39d850a7dde882b133bad94">More...</a><br /></td></tr>
+<tr class="separator:aa2ca45f9a39d850a7dde882b133bad94"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7d9fa244dacbc642ee3e86effaa88a0a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_c_l_e_1_1_c_l_node.html">CLNode</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_node.html#a7d9fa244dacbc642ee3e86effaa88a0a">AddParticleSystem</a> (unsigned int id, int nParticles, glm::vec3 velocity, string texture, int width, int height, int spawnDelay, int particlesToSpawn, int lifeSpan, float radious, glm::vec3 orientation, std::uint_fast8_t flags)</td></tr>
+<tr class="memdesc:a7d9fa244dacbc642ee3e86effaa88a0a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Añade un sistema de particulas version <b>Circulo</b>  <a href="class_c_l_e_1_1_c_l_node.html#a7d9fa244dacbc642ee3e86effaa88a0a">More...</a><br /></td></tr>
+<tr class="separator:a7d9fa244dacbc642ee3e86effaa88a0a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a139116b1564e51dd9318f7a9fda984d3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_node.html#a139116b1564e51dd9318f7a9fda984d3">AddSkybox</a> (string right, string left, string top, string bottom, string front, string back)</td></tr>
 <tr class="memdesc:a139116b1564e51dd9318f7a9fda984d3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Añade un skybox a la escena.  <a href="class_c_l_e_1_1_c_l_node.html#a139116b1564e51dd9318f7a9fda984d3">More...</a><br /></td></tr>
 <tr class="separator:a139116b1564e51dd9318f7a9fda984d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad50b61f5baa162da2f708133fd19a521"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_node.html#ad50b61f5baa162da2f708133fd19a521">AddShadowMapping</a> (GLuint lightId)</td></tr>
 <tr class="memdesc:ad50b61f5baa162da2f708133fd19a521"><td class="mdescLeft">&#160;</td><td class="mdescRight">Añade la luz para usar shadow mapping.  <a href="class_c_l_e_1_1_c_l_node.html#ad50b61f5baa162da2f708133fd19a521">More...</a><br /></td></tr>
 <tr class="separator:ad50b61f5baa162da2f708133fd19a521"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad3daf086a3b335c1e66c601993fe4309"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_node.html#ad3daf086a3b335c1e66c601993fe4309">AddBillBoard</a> (string &amp;file, bool vertically, glm::vec3 posBillBoard, float width_, float height_)</td></tr>
-<tr class="memdesc:ad3daf086a3b335c1e66c601993fe4309"><td class="mdescLeft">&#160;</td><td class="mdescRight">Añade un billboard.  <a href="class_c_l_e_1_1_c_l_node.html#ad3daf086a3b335c1e66c601993fe4309">More...</a><br /></td></tr>
-<tr class="separator:ad3daf086a3b335c1e66c601993fe4309"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad3587e594e0007eeb75f93f9de7085a5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_c_l_e_1_1_c_l_node.html">CLNode</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_node.html#ad3587e594e0007eeb75f93f9de7085a5">AddBillBoard</a> (unsigned int id, string &amp;file, bool vertically, float width_, float height_)</td></tr>
+<tr class="memdesc:ad3587e594e0007eeb75f93f9de7085a5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Añade un billboard.  <a href="class_c_l_e_1_1_c_l_node.html#ad3587e594e0007eeb75f93f9de7085a5">More...</a><br /></td></tr>
+<tr class="separator:ad3587e594e0007eeb75f93f9de7085a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab6032f57b5112ac07fae72ec57aae5ec"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_node.html#ab6032f57b5112ac07fae72ec57aae5ec">RemoveChild</a> (<a class="el" href="class_c_l_e_1_1_c_l_node.html">CLNode</a> *child)</td></tr>
 <tr class="memdesc:ab6032f57b5112ac07fae72ec57aae5ec"><td class="mdescLeft">&#160;</td><td class="mdescRight">Elimina un hijo de ese nodo.  <a href="class_c_l_e_1_1_c_l_node.html#ab6032f57b5112ac07fae72ec57aae5ec">More...</a><br /></td></tr>
 <tr class="separator:ab6032f57b5112ac07fae72ec57aae5ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -267,8 +278,6 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ab877d635cffc1422a66089c3eb40eb6f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_node.html#ab877d635cffc1422a66089c3eb40eb6f">DrawSkybox</a> ()</td></tr>
 <tr class="memdesc:ab877d635cffc1422a66089c3eb40eb6f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Dibuja el skybox.  <a href="class_c_l_e_1_1_c_l_node.html#ab877d635cffc1422a66089c3eb40eb6f">More...</a><br /></td></tr>
 <tr class="separator:ab877d635cffc1422a66089c3eb40eb6f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af09cd31a872f9426194465c2cff7072a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_node.html#af09cd31a872f9426194465c2cff7072a">DrawBillBoard</a> ()</td></tr>
-<tr class="separator:af09cd31a872f9426194465c2cff7072a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7471b8c55d6a078c18cd1231d8d6e11f"><td class="memItemLeft" align="right" valign="top">const void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_node.html#a7471b8c55d6a078c18cd1231d8d6e11f">Draw3DLine</a> (float x1, float y1, float z1, float x2, float y2, float z2, <a class="el" href="class_c_l_e_1_1_c_l_color.html">CLColor</a> color) const</td></tr>
 <tr class="memdesc:a7471b8c55d6a078c18cd1231d8d6e11f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Dibuja una linea primitiva en 3D.  <a href="class_c_l_e_1_1_c_l_node.html#a7471b8c55d6a078c18cd1231d8d6e11f">More...</a><br /></td></tr>
 <tr class="separator:a7471b8c55d6a078c18cd1231d8d6e11f"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -296,7 +305,10 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memdesc:a45ce65e480939caa62439f3662f506ec"><td class="mdescLeft">&#160;</td><td class="mdescRight">Devuelve el ShadowMapping.  <a href="class_c_l_e_1_1_c_l_node.html#a45ce65e480939caa62439f3662f506ec">More...</a><br /></td></tr>
 <tr class="separator:a45ce65e480939caa62439f3662f506ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Clase Nodo de la escena En la escena gestionaremos todo mediante nodos de manera recursiva aqui puedes crear nodos y asignarles cualquier tipo de entidad disponible. </p>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="class_c_l_e_1_1_c_l_entity.html" title="Clase virtual para que hereden el resto de entidades.">CLE::CLEntity</a> </dd></dl>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="aa9b6eebb02a9bb5e190b29c47df56430"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aa9b6eebb02a9bb5e190b29c47df56430">&#9670;&nbsp;</a></span>CLNode() <span class="overload">[1/2]</span></h2>
 
@@ -311,9 +323,6 @@ Static Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-
-<p>Clase Nodo de la escena En la escena gestionaremos todo mediante nodos de manera recursiva aqui puedes crear nodos y asignarles cualquier tipo de entidad disponible. </p>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="class_c_l_e_1_1_c_l_entity.html">CLE::CLEntity</a> </dd></dl>
 
 </div>
 </div>
@@ -361,15 +370,21 @@ Static Public Member Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="ad3daf086a3b335c1e66c601993fe4309"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad3daf086a3b335c1e66c601993fe4309">&#9670;&nbsp;</a></span>AddBillBoard()</h2>
+<a id="ad3587e594e0007eeb75f93f9de7085a5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad3587e594e0007eeb75f93f9de7085a5">&#9670;&nbsp;</a></span>AddBillBoard()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void CLNode::AddBillBoard </td>
+          <td class="memname"><a class="el" href="class_c_l_e_1_1_c_l_node.html">CLNode</a> * CLNode::AddBillBoard </td>
           <td>(</td>
+          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramname"><em>id</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
           <td class="paramtype">string &amp;&#160;</td>
           <td class="paramname"><em>file</em>, </td>
         </tr>
@@ -378,12 +393,6 @@ Static Public Member Functions</h2></td></tr>
           <td></td>
           <td class="paramtype">bool&#160;</td>
           <td class="paramname"><em>vertically</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">glm::vec3&#160;</td>
-          <td class="paramname"><em>posBillBoard</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -410,12 +419,12 @@ Static Public Member Functions</h2></td></tr>
   <table class="params">
     <tr><td class="paramname">file</td><td>Fichero de la textura </td></tr>
     <tr><td class="paramname">vertically</td><td>Parametro para poner vertical la textura </td></tr>
-    <tr><td class="paramname">posBillboard</td><td>Posición del billboard </td></tr>
     <tr><td class="paramname">width_</td><td>Anchura del billboard </td></tr>
     <tr><td class="paramname">height</td><td>Altura del billboard </td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_c_l_e_1_1_c_l_node.html" title="Clase Nodo de la escena En la escena gestionaremos todo mediante nodos de manera recursiva aqui puede...">CLE::CLNode()</a> </dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="class_c_l_e_1_1_c_l_billboard.html" title="Clase para añadir billboards.">CLE::CLBillboard()</a> </dd></dl>
 
 </div>
@@ -443,7 +452,7 @@ Static Public Member Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_c_l_e_1_1_c_l_node.html">CLE::CLNode</a>* </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_c_l_e_1_1_c_l_node.html" title="Clase Nodo de la escena En la escena gestionaremos todo mediante nodos de manera recursiva aqui puede...">CLE::CLNode</a>* </dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="class_c_l_e_1_1_c_l_camera.html" title="Clase para las camaras del motor En esta clase encontramos muchos metodo utiles para gestionar camara...">CLE::CLCamera()</a> </dd></dl>
 
 </div>
@@ -471,7 +480,7 @@ Static Public Member Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_c_l_e_1_1_c_l_node.html">CLE::CLNode</a>* </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_c_l_e_1_1_c_l_node.html" title="Clase Nodo de la escena En la escena gestionaremos todo mediante nodos de manera recursiva aqui puede...">CLE::CLNode</a>* </dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="class_c_l_e_1_1_c_l_direct_light.html" title="Clase para luces dirigidas Clase que permite crear luces dirigidas en nuestro motor gráfico.">CLE::CLDirectLight()</a> </dd></dl>
 
 </div>
@@ -559,7 +568,7 @@ Static Public Member Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_c_l_e_1_1_c_l_node.html">CLE::CLNode</a>* </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_c_l_e_1_1_c_l_node.html" title="Clase Nodo de la escena En la escena gestionaremos todo mediante nodos de manera recursiva aqui puede...">CLE::CLNode</a>* </dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="class_c_l_e_1_1_c_l_direct_light.html" title="Clase para luces dirigidas Clase que permite crear luces dirigidas en nuestro motor gráfico.">CLE::CLDirectLight()</a> </dd></dl>
 
 </div>
@@ -587,7 +596,7 @@ Static Public Member Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_c_l_e_1_1_c_l_node.html">CLE::CLNode()</a> </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_c_l_e_1_1_c_l_node.html" title="Clase Nodo de la escena En la escena gestionaremos todo mediante nodos de manera recursiva aqui puede...">CLE::CLNode()</a> </dd></dl>
 
 </div>
 </div>
@@ -614,7 +623,7 @@ Static Public Member Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_c_l_e_1_1_c_l_node.html">CLE::CLNode()</a> </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_c_l_e_1_1_c_l_node.html" title="Clase Nodo de la escena En la escena gestionaremos todo mediante nodos de manera recursiva aqui puede...">CLE::CLNode()</a> </dd></dl>
 
 </div>
 </div>
@@ -652,13 +661,13 @@ Static Public Member Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_c_l_e_1_1_c_l_node.html">CLE::CLNode</a>* </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_c_l_e_1_1_c_l_node.html" title="Clase Nodo de la escena En la escena gestionaremos todo mediante nodos de manera recursiva aqui puede...">CLE::CLNode</a>* </dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="class_c_l_e_1_1_c_l_mesh.html" title="Clase para crear mallas Clase que permite crear mallas en nuestro motor gráfico.">CLE::CLMesh()</a> </dd></dl>
 
 </div>
 </div>
-<a id="a6dace0de98a6291e1ed3ad846359f182"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6dace0de98a6291e1ed3ad846359f182">&#9670;&nbsp;</a></span>AddParticleSystem()</h2>
+<a id="a7d9fa244dacbc642ee3e86effaa88a0a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7d9fa244dacbc642ee3e86effaa88a0a">&#9670;&nbsp;</a></span>AddParticleSystem() <span class="overload">[1/4]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -667,21 +676,407 @@ Static Public Member Functions</h2></td></tr>
           <td class="memname"><a class="el" href="class_c_l_e_1_1_c_l_node.html">CLNode</a> * CLNode::AddParticleSystem </td>
           <td>(</td>
           <td class="paramtype">unsigned int&#160;</td>
-          <td class="paramname"><em>id</em></td><td>)</td>
+          <td class="paramname"><em>id</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>nParticles</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">glm::vec3&#160;</td>
+          <td class="paramname"><em>velocity</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>texture</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>width</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>height</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>spawnDelay</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>particlesToSpawn</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>lifeSpan</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>radious</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">glm::vec3&#160;</td>
+          <td class="paramname"><em>orientation</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::uint_fast8_t&#160;</td>
+          <td class="paramname"><em>flags</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Añade un sistema de particulas. </p>
+<p>Añade un sistema de particulas version <b>Circulo</b> </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">id</td><td>Identificador del nodo </td></tr>
+    <tr><td class="paramname">nParticles</td><td>Número de particulas </td></tr>
+    <tr><td class="paramname">velocity</td><td>Vector de velocidad </td></tr>
+    <tr><td class="paramname">texture</td><td>Ruta de la textura de la particula </td></tr>
+    <tr><td class="paramname">width</td><td>Anchura de la particula </td></tr>
+    <tr><td class="paramname">height</td><td>Altura de la particula </td></tr>
+    <tr><td class="paramname">spawnDelay</td><td>Tiempo entre cada spawn de particula </td></tr>
+    <tr><td class="paramname">particlesToSpawn</td><td>Particulas que se spawnean a la vez </td></tr>
+    <tr><td class="paramname">lifeSpan</td><td>Vida de las particulas </td></tr>
+    <tr><td class="paramname">radious</td><td>Radio del circulo </td></tr>
+    <tr><td class="paramname">flags</td><td>Mascara de bytes para aplicarle efectos </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_c_l_e_1_1_c_l_node.html">CLE::CLNode</a>* </dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="class_c_l_e_1_1_c_l_particle_system.html">CLE::CLParticleSystem()</a> </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_c_l_e_1_1_c_l_node.html" title="Clase Nodo de la escena En la escena gestionaremos todo mediante nodos de manera recursiva aqui puede...">CLE::CLNode()</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="class_c_l_e_1_1_c_l_particle_system.html" title="Clase para crear sistemas de particulas.">CLE::CLParticleSystem()</a> </dd></dl>
+
+</div>
+</div>
+<a id="aa2ca45f9a39d850a7dde882b133bad94"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa2ca45f9a39d850a7dde882b133bad94">&#9670;&nbsp;</a></span>AddParticleSystem() <span class="overload">[2/4]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_c_l_e_1_1_c_l_node.html">CLNode</a> * CLNode::AddParticleSystem </td>
+          <td>(</td>
+          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramname"><em>id</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>nParticles</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">glm::vec3&#160;</td>
+          <td class="paramname"><em>velocity</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>texture</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>width</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>height</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>spawnDelay</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>particlesToSpawn</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>lifeSpan</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>radious</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::uint_fast8_t&#160;</td>
+          <td class="paramname"><em>flags</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Añade un sistema de particulas version <b>Esfera</b> </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">id</td><td>Identificador del nodo </td></tr>
+    <tr><td class="paramname">nParticles</td><td>Número de particulas </td></tr>
+    <tr><td class="paramname">velocity</td><td>Vector de velocidad </td></tr>
+    <tr><td class="paramname">texture</td><td>Ruta de la textura de la particula </td></tr>
+    <tr><td class="paramname">width</td><td>Anchura de la particula </td></tr>
+    <tr><td class="paramname">height</td><td>Altura de la particula </td></tr>
+    <tr><td class="paramname">spawnDelay</td><td>Tiempo entre cada spawn de particula </td></tr>
+    <tr><td class="paramname">particlesToSpawn</td><td>Particulas que se spawnean a la vez </td></tr>
+    <tr><td class="paramname">lifeSpan</td><td>Vida de las particulas </td></tr>
+    <tr><td class="paramname">radious</td><td>Radio de la esfera </td></tr>
+    <tr><td class="paramname">flags</td><td>Mascara de bytes para aplicarle efectos </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_c_l_e_1_1_c_l_node.html" title="Clase Nodo de la escena En la escena gestionaremos todo mediante nodos de manera recursiva aqui puede...">CLE::CLNode()</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="class_c_l_e_1_1_c_l_particle_system.html" title="Clase para crear sistemas de particulas.">CLE::CLParticleSystem()</a> </dd></dl>
+
+</div>
+</div>
+<a id="a696d8d2e92ff48ae24ec2d7547579e22"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a696d8d2e92ff48ae24ec2d7547579e22">&#9670;&nbsp;</a></span>AddParticleSystem() <span class="overload">[3/4]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_c_l_e_1_1_c_l_node.html">CLNode</a> * CLNode::AddParticleSystem </td>
+          <td>(</td>
+          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramname"><em>id</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>nParticles</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">glm::vec3&#160;</td>
+          <td class="paramname"><em>velocity</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>texture</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>width</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>height</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>spawnDelay</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>particlesToSpawn</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>lifeSpan</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">glm::vec3&#160;</td>
+          <td class="paramname"><em>offset</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">glm::vec3&#160;</td>
+          <td class="paramname"><em>orientation</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::uint_fast8_t&#160;</td>
+          <td class="paramname"><em>flags</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Añade un sistema de particulas version <b>Linea, Cuadrado o Cubo</b> </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">id</td><td>Identificador del nodo </td></tr>
+    <tr><td class="paramname">nParticles</td><td>Número de particulas </td></tr>
+    <tr><td class="paramname">velocity</td><td>Vector de velocidad </td></tr>
+    <tr><td class="paramname">texture</td><td>Ruta de la textura de la particula </td></tr>
+    <tr><td class="paramname">width</td><td>Anchura de la particula </td></tr>
+    <tr><td class="paramname">height</td><td>Altura de la particula </td></tr>
+    <tr><td class="paramname">spawnDelay</td><td>Tiempo entre cada spawn de particula </td></tr>
+    <tr><td class="paramname">particlesToSpawn</td><td>Particulas que se spawnean a la vez </td></tr>
+    <tr><td class="paramname">lifeSpan</td><td>Vida de las particulas </td></tr>
+    <tr><td class="paramname">offset</td><td>Dimensiones del objeto donde se spawnean las particulas </td></tr>
+    <tr><td class="paramname">orientation</td><td>Orientacion de dicho spawner </td></tr>
+    <tr><td class="paramname">flags</td><td>Mascara de bytes para aplicarle efectos </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_c_l_e_1_1_c_l_node.html" title="Clase Nodo de la escena En la escena gestionaremos todo mediante nodos de manera recursiva aqui puede...">CLE::CLNode()</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="class_c_l_e_1_1_c_l_particle_system.html" title="Clase para crear sistemas de particulas.">CLE::CLParticleSystem()</a> </dd></dl>
+
+</div>
+</div>
+<a id="afede72716223874e44229dcbfcf8a4a0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afede72716223874e44229dcbfcf8a4a0">&#9670;&nbsp;</a></span>AddParticleSystem() <span class="overload">[4/4]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_c_l_e_1_1_c_l_node.html">CLNode</a> * CLNode::AddParticleSystem </td>
+          <td>(</td>
+          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramname"><em>id</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>nParticles</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">glm::vec3&#160;</td>
+          <td class="paramname"><em>velocity</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>texture</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>width</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>height</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>spawnDelay</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>particlesToSpawn</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>lifeSpan</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::uint_fast8_t&#160;</td>
+          <td class="paramname"><em>flags</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Añade un sistema de particulas version <b>Punto</b> </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">id</td><td>Identificador del nodo </td></tr>
+    <tr><td class="paramname">nParticles</td><td>Número de particulas </td></tr>
+    <tr><td class="paramname">velocity</td><td>Vector de velocidad </td></tr>
+    <tr><td class="paramname">texture</td><td>Ruta de la textura de la particula </td></tr>
+    <tr><td class="paramname">width</td><td>Anchura de la particula </td></tr>
+    <tr><td class="paramname">height</td><td>Altura de la particula </td></tr>
+    <tr><td class="paramname">spawnDelay</td><td>Tiempo entre cada spawn de particula </td></tr>
+    <tr><td class="paramname">particlesToSpawn</td><td>Particulas que se spawnean a la vez </td></tr>
+    <tr><td class="paramname">lifeSpan</td><td>Vida de las particulas </td></tr>
+    <tr><td class="paramname">flags</td><td>Mascara de bytes para aplicarle efectos </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_c_l_e_1_1_c_l_node.html" title="Clase Nodo de la escena En la escena gestionaremos todo mediante nodos de manera recursiva aqui puede...">CLE::CLNode()</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="class_c_l_e_1_1_c_l_particle_system.html" title="Clase para crear sistemas de particulas.">CLE::CLParticleSystem()</a> </dd></dl>
 
 </div>
 </div>
@@ -708,8 +1103,8 @@ Static Public Member Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_c_l_e_1_1_c_l_node.html">CLE::CLNode</a>* </dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="class_c_l_e_1_1_c_l_point_light.html">CLE::CLPointLight()</a> </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_c_l_e_1_1_c_l_node.html" title="Clase Nodo de la escena En la escena gestionaremos todo mediante nodos de manera recursiva aqui puede...">CLE::CLNode</a>* </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="class_c_l_e_1_1_c_l_point_light.html" title="Clase para crear luces puntuales.">CLE::CLPointLight()</a> </dd></dl>
 
 </div>
 </div>
@@ -789,8 +1184,8 @@ Static Public Member Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_c_l_e_1_1_c_l_node.html">CLE::CLNode</a>* </dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="class_c_l_e_1_1_c_l_point_light.html">CLE::CLPointLight()</a> </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_c_l_e_1_1_c_l_node.html" title="Clase Nodo de la escena En la escena gestionaremos todo mediante nodos de manera recursiva aqui puede...">CLE::CLNode</a>* </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="class_c_l_e_1_1_c_l_point_light.html" title="Clase para crear luces puntuales.">CLE::CLPointLight()</a> </dd></dl>
 
 </div>
 </div>
@@ -817,7 +1212,7 @@ Static Public Member Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="class_c_l_e_1_1_c_l_shadow_mapping.html">CLE::CLShadowMapping()</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="class_c_l_e_1_1_c_l_shadow_mapping.html" title="Clase para añadir sombras en el motor.">CLE::CLShadowMapping()</a> </dd></dl>
 
 </div>
 </div>
@@ -883,7 +1278,7 @@ Static Public Member Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="class_c_l_e_1_1_c_l_skybox.html">CLE::CLSkybox()</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="class_c_l_e_1_1_c_l_skybox.html" title="Clase para crear un Skybox en el arbol.">CLE::CLSkybox()</a> </dd></dl>
 
 </div>
 </div>
@@ -910,8 +1305,8 @@ Static Public Member Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_c_l_e_1_1_c_l_node.html">CLE::CLNode</a>* </dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="class_c_l_e_1_1_c_l_spot_light.html">CLE::CLSpotLight()</a> </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_c_l_e_1_1_c_l_node.html" title="Clase Nodo de la escena En la escena gestionaremos todo mediante nodos de manera recursiva aqui puede...">CLE::CLNode</a>* </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="class_c_l_e_1_1_c_l_spot_light.html" title="Clase para crear luces de tipo Spot.">CLE::CLSpotLight()</a> </dd></dl>
 
 </div>
 </div>
@@ -1012,8 +1407,8 @@ Static Public Member Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_c_l_e_1_1_c_l_node.html">CLE::CLNode</a>* </dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="class_c_l_e_1_1_c_l_spot_light.html">CLE::CLSpotLight()</a> </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_c_l_e_1_1_c_l_node.html" title="Clase Nodo de la escena En la escena gestionaremos todo mediante nodos de manera recursiva aqui puede...">CLE::CLNode</a>* </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="class_c_l_e_1_1_c_l_spot_light.html" title="Clase para crear luces de tipo Spot.">CLE::CLSpotLight()</a> </dd></dl>
 
 </div>
 </div>
@@ -1333,23 +1728,6 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="af09cd31a872f9426194465c2cff7072a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af09cd31a872f9426194465c2cff7072a">&#9670;&nbsp;</a></span>DrawBillBoard()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void CLNode::DrawBillBoard </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="ab877d635cffc1422a66089c3eb40eb6f"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ab877d635cffc1422a66089c3eb40eb6f">&#9670;&nbsp;</a></span>DrawSkybox()</h2>
 
@@ -1601,7 +1979,7 @@ Static Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Devuelve la entidad del nodo. </p>
-<dl class="section return"><dt>Returns</dt><dd>entity Puntero a la entidad <a class="el" href="class_c_l_e_1_1_c_l_entity.html">CLE::CLEntity</a> </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>entity Puntero a la entidad <a class="el" href="class_c_l_e_1_1_c_l_entity.html" title="Clase virtual para que hereden el resto de entidades.">CLE::CLEntity</a> </dd></dl>
 
 </div>
 </div>
@@ -1629,7 +2007,7 @@ Static Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Devuelve el nodo padre. </p>
-<dl class="section return"><dt>Returns</dt><dd>father Puntero al nodo padre <a class="el" href="class_c_l_e_1_1_c_l_node.html">CLE::CLNode</a> </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>father Puntero al nodo padre <a class="el" href="class_c_l_e_1_1_c_l_node.html" title="Clase Nodo de la escena En la escena gestionaremos todo mediante nodos de manera recursiva aqui puede...">CLE::CLNode</a> </dd></dl>
 
 </div>
 </div>
@@ -1884,7 +2262,7 @@ Static Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Devuelve el ShadowMapping. </p>
-<dl class="section return"><dt>Returns</dt><dd>shadowMapping Objeto <a class="el" href="class_c_l_e_1_1_c_l_shadow_mapping.html">CLE::CLShadowMapping</a> </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>shadowMapping Objeto <a class="el" href="class_c_l_e_1_1_c_l_shadow_mapping.html" title="Clase para añadir sombras en el motor.">CLE::CLShadowMapping</a> </dd></dl>
 
 </div>
 </div>
@@ -2414,8 +2792,8 @@ Static Public Member Functions</h2></td></tr>
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following files:<ul>
-<li>src/SceneTree/<a class="el" href="_c_l_node_8h_source.html">CLNode.h</a></li>
-<li>src/SceneTree/<a class="el" href="_c_l_node_8cpp.html">CLNode.cpp</a></li>
+<li>CLEngine/src/SceneTree/<a class="el" href="_c_l_node_8h_source.html">CLNode.h</a></li>
+<li>CLEngine/src/SceneTree/<a class="el" href="_c_l_node_8cpp.html">CLNode.cpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

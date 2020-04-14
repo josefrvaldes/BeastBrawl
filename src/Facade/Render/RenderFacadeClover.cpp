@@ -10,6 +10,7 @@
 #include <Components/CBoundingPlane.h>
 #include <Components/CBoundingSphere.h>
 #include <Components/CCamera.h>
+#include <Components/CParentNode.h>
 #include <Components/CDimensions.h>
 #include <Components/CId.h>
 #include <Components/CMesh.h>
@@ -124,6 +125,14 @@ const void RenderFacadeClover::FacadeAddObjects(vector<Entity*> entities) {
  * @return {id del objeto que pasas}
  */
 const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
+
+    //Comprobamos si el objeto debe añadirse a la raiz o a algun nodo padre
+    CLNode* father = smgr;
+    if(entity->HasComponent(CompType::ParentNodeComp)){
+        auto cParentNode = static_cast<CParentNode*>(entity->GetComponent(CompType::ParentNodeComp).get());
+        father = smgr->GetNodeByID(cParentNode->idParentNode);
+    }
+
     auto cTransformable = static_cast<CTransformable*>(entity->GetComponent(CompType::TransformableComp).get());
     auto cId = static_cast<CId*>(entity->GetComponent(CompType::IdComp).get());
     //auto cTexture = static_cast<CTexture*>(entity->GetComponent(CompType::TextureComp).get());
@@ -144,38 +153,45 @@ const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
     CLNode* node = nullptr;
     // añadimos el node al sceneManager dependiendo del tipo de node que sea
     switch (cType->type) {
+
+        case ModelType::ParticleSystem:
+            //node = father->AddParticleSystem();
+            break;
+
         case ModelType::Sphere:
-            node = smgr->AddMesh(cId->id);
+            node = father->AddMesh(cId->id);
             static_cast<CLMesh*>(node->GetEntity())->SetMesh(mesh);
             static_cast<CLMesh*>(node->GetEntity())->SetMaterial(mat);
 
             break;
 
         case ModelType::Cube:
-            node = smgr->AddMesh(cId->id);
+            node = father->AddMesh(cId->id);
             static_cast<CLMesh*>(node->GetEntity())->SetMesh(mesh);
 
             break;
 
         case ModelType::AnimatedMesh:
-            node = smgr->AddMesh(cId->id);
+            node = father->AddMesh(cId->id);
             static_cast<CLMesh*>(node->GetEntity())->SetMesh(mesh);
             static_cast<CLMesh*>(node->GetEntity())->SetMaterial(mat);
 
             break;
 
         case ModelType::StaticMesh:
-            node = smgr->AddMesh(cId->id); 
+            node = father->AddMesh(cId->id); 
             break;
 
         case ModelType::Text:
-            node = smgr->AddMesh(cId->id);
+            node = father->AddMesh(cId->id);
             break;
+
         case ModelType::PointLight:
             auto cLight = static_cast<CLight*>(entity->GetComponent(CompType::LightComp).get());
-            node = smgr->AddPointLight(cId->id,cLight->intensity,cLight->ambient,cLight->diffuse,cLight->specular,cLight->constant,cLight->linear,cLight->quadratic);
-            //static_cast<CLLight*>(node->GetEntity())->SetLightAttributes(cLight->intensity,cLight->ambient,cLight->diffuse,cLight->specular,cLight->constant,cLight->linear,cLight->quadratic);
+            node = father->AddPointLight(cId->id,cLight->intensity,cLight->ambient,cLight->diffuse,cLight->specular,cLight->constant,cLight->linear,cLight->quadratic);
             break;
+
+        
     } 
 
 

@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['update_574',['Update',['../class_c_l_e_1_1_c_l_particle_system.html#a838bad8cc3db45f6c226534182347a32',1,'CLE::CLParticleSystem']]],
-  ['updateviewport_575',['UpdateViewport',['../class_c_l_e_1_1_c_l_engine.html#aaacb2a40a7d01b7292692da5696815a6',1,'CLE::CLEngine']]]
+  ['transform_592',['Transform',['../class_c_l_e_1_1_c_l_frustum.html#adb7ee7b58e3600993b0a86a2c352fc1a',1,'CLE::CLFrustum']]],
+  ['translate_593',['Translate',['../class_c_l_e_1_1_c_l_node.html#aa9df1c4ae067a19400a52097578ba781',1,'CLE::CLNode']]],
+  ['translatematrix_594',['TranslateMatrix',['../class_c_l_e_1_1_c_l_node.html#a88c436f0e13858b08dee80b6ca6ba2f6',1,'CLE::CLNode']]]
 ];

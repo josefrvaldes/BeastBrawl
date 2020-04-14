@@ -8,7 +8,7 @@
 
 namespace CLE {
     
-    
+    //! Clase para gestionar la lectura de texturas
     class CLResourceTexture : public CLResource {
         public:
             CLResourceTexture() {};

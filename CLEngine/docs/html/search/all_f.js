@@ -1,13 +1,13 @@
 var searchData=
 [
-  ['tangent_281',['tangent',['../struct_vertex.html#a89587fd853d4f3f42900715620a7364d',1,'Vertex']]],
-  ['texcoords_282',['texCoords',['../struct_vertex.html#a8d5babcf0ee1f315dae1207c375759a4',1,'Vertex']]],
-  ['texture_283',['Texture',['../struct_texture.html',1,'']]],
-  ['textureid_284',['TextureID',['../struct_c_l_e_1_1_character.html#a62b797fbcd0f78d07c90259002e239a9',1,'CLE::Character']]],
-  ['textures_285',['textures',['../class_mesh.html#a09bf4e8307bf7717c56501ca6293c6c0',1,'Mesh']]],
-  ['top_286',['Top',['../class_c_l_e_1_1_c_l_frustum.html#a166d93073d486188eb585b8ff7d5a2a4a723f9fd65d7dd8fbd50a7a48d90888d1',1,'CLE::CLFrustum']]],
-  ['transform_287',['Transform',['../class_c_l_e_1_1_c_l_frustum.html#adb7ee7b58e3600993b0a86a2c352fc1a',1,'CLE::CLFrustum']]],
-  ['translate_288',['Translate',['../class_c_l_e_1_1_c_l_node.html#aa9df1c4ae067a19400a52097578ba781',1,'CLE::CLNode']]],
-  ['translatematrix_289',['TranslateMatrix',['../class_c_l_e_1_1_c_l_node.html#a88c436f0e13858b08dee80b6ca6ba2f6',1,'CLE::CLNode']]],
-  ['type_290',['type',['../struct_texture.html#adacb495ed5140ec76a09cd130e7d5c32',1,'Texture']]]
+  ['removechild_243',['RemoveChild',['../class_c_l_e_1_1_c_l_node.html#ab6032f57b5112ac07fae72ec57aae5ec',1,'CLE::CLNode']]],
+  ['removelightsandcameras_244',['RemoveLightsAndCameras',['../class_c_l_e_1_1_c_l_node.html#a0e46428ff2e0fa1fe9534d9f58be512f',1,'CLE::CLNode']]],
+  ['renderdepthmap_245',['RenderDepthMap',['../class_c_l_e_1_1_c_l_engine.html#a6530a147cd808e628035127686430e2c',1,'CLE::CLEngine']]],
+  ['renderimgui_246',['RenderImgui',['../class_c_l_e_1_1_c_l_engine.html#a27a4521152394d8a9222ac31fb4ab25e',1,'CLE::CLEngine']]],
+  ['rendertext2d_247',['RenderText2D',['../class_c_l_e_1_1_c_l_engine.html#a65cd5f65e3df57cc30dcfb2456cd24cb',1,'CLE::CLEngine']]],
+  ['restriction_248',['restriction',['../_l_i_c_e_n_s_e_8txt.html#ac0e1e4a858a6a19c5392f7f6d29f969c',1,'LICENSE.txt']]],
+  ['right_249',['Right',['../class_c_l_e_1_1_c_l_frustum.html#a166d93073d486188eb585b8ff7d5a2a4ac942551763df470987867b9e9ad8fa80',1,'CLE::CLFrustum']]],
+  ['rotate_250',['Rotate',['../class_c_l_e_1_1_c_l_node.html#a4790a30745c200bed2f8a87a351e5ff8',1,'CLE::CLNode']]],
+  ['rotatematrix_251',['RotateMatrix',['../class_c_l_e_1_1_c_l_node.html#a239044422c8d0d4fa796b325683b8d99',1,'CLE::CLNode']]],
+  ['run_252',['Run',['../class_c_l_e_1_1_c_l_engine.html#a61fbce85f76ea85ee46c900de16f3210',1,'CLE::CLEngine']]]
 ];

@@ -117,16 +117,27 @@ int main() {
         mesh2->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
 
 
+        // //Lo paso de momento todo a pillon, luego pongo pasar los valores por el metodo
+    // int nParticles = 50;
+    // glm::vec3 velocity = glm::vec3(0.0f,50.0f,0.0f);
+    // string texture = "media/particle_test.png"; 
+    // int width = 10;
+    // int height= 10;
+    // int spawnDelay = 100;
+    // int particlesToSpawn = 2;
+    // int lifeSpan = 2000;
+    // glm::vec3 offset = glm::vec3(50.0f,50.0f,50.0f);
+    // glm::vec3 orientation = glm::vec3(1.0f,1.0f,0.0f);
+    // std::uint_fast8_t flags = EFFECT_FADING;
 
 
-
-        auto ps1   = smgr->AddParticleSystem(123940);
+        auto ps1   = mesh2->AddParticleSystem(123940,50,glm::vec3(500.0f,500.0f,500.0f),"media/particle_test.png",10,10,100,50,2000,EFFECT_DIR_ALEATORITY);
         
 
         static_cast<CLCamera*>(camera->GetEntity())->SetCameraTarget(mesh2->GetTranslation());
 
         string fileBillBoard = "media/mrPinguin.png";
-        smgr->AddBillBoard(fileBillBoard, false, glm::vec3(50.0,100.0,0.0), 100.0,50.0);
+        mesh2->AddBillBoard(2468,fileBillBoard, false, 100.0,50.0);
 
 
         smgr->AddSkybox("media/skybox/right.jpg",
@@ -207,6 +218,23 @@ int main() {
         if(glfwGetKey(device->GetWindow(),GLFW_KEY_Q)){
             static_cast<CLParticleSystem*>(ps1->GetEntity())->SetLoop(false);
         }
+
+        if(glfwGetKey(device->GetWindow(),GLFW_KEY_W)){
+            static_cast<CLParticleSystem*>(ps1->GetEntity())->Start();
+        }
+
+        if(glfwGetKey(device->GetWindow(),GLFW_KEY_R)){
+            static_cast<CLParticleSystem*>(ps1->GetEntity())->StartOneIteration();
+        }
+
+        if(glfwGetKey(device->GetWindow(),GLFW_KEY_LEFT)){
+            mesh2->SetTranslation(mesh2->GetTranslation()+ glm::vec3(-1.0f,-1.0f,-1.0f));
+        }
+
+        if(glfwGetKey(device->GetWindow(),GLFW_KEY_RIGHT)){
+            mesh2->SetTranslation(mesh2->GetTranslation()+ glm::vec3(1.0f,1.0f,1.0f));
+        }
+
         // Measure speed
         double currentTime = glfwGetTime();
         frameCount++;
