@@ -494,11 +494,11 @@ void RenderFacadeClover::FacadeInitResources(){
 
     //Cargamos todas las mallas
     //Mallas
-    resourceManager->GetResourceMesh("media/kart_physics.fbx");
-    resourceManager->GetResourceMesh("media/kart_ia.obj");
+    resourceManager->GetResourceMesh("media/kart_physics.obj");
+    //resourceManager->GetResourceMesh("media/kart_ia.obj");
     resourceManager->GetResourceMesh("media/melon.obj");
-    resourceManager->GetResourceMesh("media/totem_tex.fbx");
-    resourceManager->GetResourceMesh("media/TEST_BOX.fbx");
+    resourceManager->GetResourceMesh("media/totem.obj");
+    resourceManager->GetResourceMesh("media/TEST_BOX.obj");
     resourceManager->GetResourceMesh("media/pudin.obj");
     resourceManager->GetResourceMesh("media/telebanana.obj");
     resourceManager->GetResourceMesh("media/training_ground.obj");

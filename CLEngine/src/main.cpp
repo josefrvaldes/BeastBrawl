@@ -59,6 +59,7 @@ int main() {
     }
     CLEngine *device = new CLEngine(1280, 720, "Beast Brawl");
 
+    try {
 
     //-------------------Resource manager-------------------
     CLResourceManager* resourceManager = CLResourceManager::GetResourceManager();
@@ -77,16 +78,18 @@ int main() {
     // auto resourceMaterial = resourceManager->GetResourceMaterial("media/kart.obj", true);
 
 
-    
-    //----------------------------------------------------------------------------------------------------------------SHADER
-    
- 
-    
-    //------------------------------------------------------------------------- ARBOLITO
+        cout << "+++++++ He compilado los shaders" << endl;
 
-    //Nodo raiz
-    //shared_ptr<CLNode> smgr = make_shared<CLNode>(entity1.get());
-    CLNode* smgr = device->GetSceneManager();
+        
+        //----------------------------------------------------------------------------------------------------------------SHADER
+        
+    
+        
+        //------------------------------------------------------------------------- ARBOLITO
+
+        //Nodo raiz
+        //shared_ptr<CLNode> smgr = make_shared<CLNode>(entity1.get());
+        CLNode* smgr = device->GetSceneManager();
 
 
         auto light1 = smgr->AddPointLight(1);
@@ -98,16 +101,16 @@ int main() {
         static_cast<CLPointLight*>(light2->GetEntity())->SetLightAttributes(glm::vec3(1.0f,1.0f,1.0f),glm::vec3(0.2f,0.2f,0.2f),glm::vec3(1.0f,1.0f,1.0f),glm::vec3(0.1f,0.1,0.1f),1.0f,0.00007f,0.00008f);
 
 
-        auto meshes = smgr->AddGroup(10000);
+            auto meshes = smgr->AddGroup(10000);
 
-        auto mesh1 = smgr->AddMesh(2);
-        mesh1->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
-        
-        auto camera = smgr->AddCamera(3);
-        camera->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
+            auto mesh1 = smgr->AddMesh(2);
+            mesh1->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
+            
+            auto camera = smgr->AddCamera(3);
+            camera->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
 
-        auto mesh2 = smgr->AddMesh(4);
-        mesh2->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
+            auto mesh2 = smgr->AddMesh(4);
+            mesh2->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
 
 
         // //Lo paso de momento todo a pillon, luego pongo pasar los valores por el metodo
@@ -127,7 +130,7 @@ int main() {
         auto ps1   = mesh2->AddParticleSystem(123940,30,glm::vec3(500.0f,500.0f,500.0f),"media/particle_test.png",10,10,100,30,250,EFFECT_DIR_ALEATORITY | EFFECT_FADING);
         
 
-        static_cast<CLCamera*>(camera->GetEntity())->SetCameraTarget(mesh2->GetTranslation());
+            static_cast<CLCamera*>(camera->GetEntity())->SetCameraTarget(mesh2->GetTranslation());
 
         string fileBillBoard = "media/mrPinguin.png";
         mesh2->AddBillBoard(2468,fileBillBoard, false, 100.0,50.0);
@@ -169,7 +172,7 @@ int main() {
     float auxLightPos[3] = {light1->GetTranslation().x, light1->GetTranslation().y, light1->GetTranslation().z};
     float auxLightPos2[3] = {light2->GetTranslation().x, light2->GetTranslation().y, light2->GetTranslation().z};
 
-    float index = 0.01;
+        float index = 0.01;
 
     double previousTime = glfwGetTime();
     int frameCount = 0;
@@ -241,9 +244,9 @@ int main() {
             // Display the frame count here any way you want.
             device->SetTitle("BeastBrawl <"+to_string(frameCount) + ">");
 
-            frameCount = 0;
-            previousTime = currentTime;
-        }
+                frameCount = 0;
+                previousTime = currentTime;
+            }
 
 
         device->DrawObjects();
@@ -259,16 +262,20 @@ int main() {
         device->RenderText2D(cadena, 25.0f, 25.0f, 0.05f, 1.0f, vect3);
 
 
-        device->InputClose();
-        device->PollEvents();
-        device->RenderImgui();
-        device->EndScene();
-        index += 0.2;
+            device->InputClose();
+            device->PollEvents();
+            device->RenderImgui();
+            device->EndScene();
+            index += 0.2;
 
-    } 
+        } 
 
 
-    delete device;
+        delete device;
+
+    } catch(std::exception &ex) {
+        cout << "Hubo una excepción " << ex.what() << endl;
+    }
 
     return 0;
 }

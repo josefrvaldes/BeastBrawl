@@ -4,9 +4,11 @@
 #include <unordered_map>
 #include <memory>
 
-#include <fmod_studio.hpp>
-#include <fmod.hpp>
-#include <fmod_errors.h>
+extern "C" {
+    #include <fmod_studio.h>
+    #include <fmod.h>
+    #include <fmod_errors.h>
+}
 
 #include "SoundNode.h"
 
@@ -33,7 +35,7 @@ namespace CLSE {
             void PauseEvent(const string&);
             void ResumeEvent(const string&);
 
-            bool IsPlaying(FMOD::Studio::EventInstance*) const;
+            bool IsPlaying(FMOD_STUDIO_EVENTINSTANCE*) const;
             bool IsPlaying2D(const string&) const;
             bool IsPlayingEstatic3D(const string&) const;
             bool IsPlayingDinamic3D(const string&) const;
@@ -43,7 +45,7 @@ namespace CLSE {
             void SetParameter(const string&, const string&, const float);
             void SetListenerPosition(const glm::vec3&, const glm::vec3&);
             void Set3DAttributes(const string&, const glm::vec3&);
-            void SetEventPosition3D(FMOD::Studio::EventInstance*, const glm::vec3&);
+            void SetEventPosition3D(FMOD_STUDIO_EVENTINSTANCE*, const glm::vec3&);
 
             void CreateSoundNode2D(const string&);
             void CreateSoundNodeEstatic3D(uint16_t, glm::vec3&, string&, bool);
@@ -55,13 +57,13 @@ namespace CLSE {
             void LoadMasterBank();
             void UnloadMasterBank();
 
-            FMOD::System*           coreSystem  { nullptr };
-            FMOD::Studio::System*   system      { nullptr };
-            FMOD::Studio::Bank*     masterBank  { nullptr };
-            FMOD::Studio::Bank*     stringsBank { nullptr };
+            FMOD_SYSTEM*           coreSystem  { nullptr };
+            FMOD_STUDIO_SYSTEM*   system      { nullptr };
+            FMOD_STUDIO_BANK*     masterBank  { nullptr };
+            FMOD_STUDIO_BANK*     stringsBank { nullptr };
 
-            unordered_map<string, FMOD::Studio::Bank*>              banks;
-            unordered_map<string, FMOD::Studio::EventDescription*>  soundDescriptions;
+            unordered_map<string, FMOD_STUDIO_BANK*>              banks;
+            unordered_map<string, FMOD_STUDIO_EVENTDESCRIPTION *>  soundDescriptions;
 
             unordered_map<string, unique_ptr<SoundNode>>     eventInstances2D;
             unordered_map<string, unique_ptr<SoundNode>>     eventInstancesEstatic3D;

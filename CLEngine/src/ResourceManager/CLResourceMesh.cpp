@@ -243,7 +243,7 @@ unsigned int CLResourceMesh::TextureFromFile(const char *path, const string &dir
         filename.erase(0, pos + delimiter.length());
     }
 
-    filename = "media/" + filename;
+    filename = "media/clv_" + filename;
 
     
 
@@ -275,7 +275,7 @@ unsigned int CLResourceMesh::TextureFromFile(const char *path, const string &dir
     }
     else
     {
-        std::cout << "Texture failed to load at path: " << path << std::endl;
+        std::cout << "Texture failed to load at path: " << filename << std::endl;
         stbi_image_free(data);
     }
 

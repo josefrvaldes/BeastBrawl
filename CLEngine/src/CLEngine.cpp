@@ -24,7 +24,9 @@ CLEngine::CLEngine (const unsigned int w, const unsigned int h, const string& ti
     glewInit();
     ImGuiInit();
     const std::string f = "fonts/arial.ttf";
+    cout << "Antes de cargar la fuente" << endl;
     LoadFont(f);
+    cout << "Después de cargar la fuente" << endl;
 }
 
 /**
