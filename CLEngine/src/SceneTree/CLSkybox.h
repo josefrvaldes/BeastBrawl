@@ -6,7 +6,7 @@
 
 
 namespace CLE {
-
+    //! Clase para crear un Skybox en el arbol
     class CLSkybox : public CLEntity {
         public:
             CLSkybox();

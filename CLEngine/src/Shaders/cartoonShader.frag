@@ -222,10 +222,10 @@ void main(){
 
     // Luces direccionales
     int j = 0;
-    // while(j<num_Direct_Lights){
-    //     result += CalcDirLight(directLights[j],norm,FragPos,viewDir);
-    //     j++;
-    // }
+    while(j<num_Direct_Lights){
+        result += CalcDirLight(directLights[j],norm,FragPos,viewDir);
+        j++;
+    }
 
     // Luces puntuales
     int i = 0;
@@ -236,14 +236,14 @@ void main(){
 
     //Luces spot
     int k = 0;
-    // while(k<num_Spot_Lights){
-    //     result += CalcSpotLight(spotLights[k],norm, FragPos, viewDir);
-    //     k++;
-    // }
+    while(k<num_Spot_Lights){
+        result += CalcSpotLight(spotLights[k],norm, FragPos, viewDir);
+        k++;
+    }
 
     FragColor = vec4(result,1.0);
     //FragColor = floor(FragColor * cartoonParts) / cartoonParts;  // estaba mal aplicado, era en la luz difusa solo
 
     //Si comentas esta linea se ve con luces
-    //FragColor = texture(material.diffuse,TexCoords);
+    FragColor = texture(material.diffuse,TexCoords);
 }

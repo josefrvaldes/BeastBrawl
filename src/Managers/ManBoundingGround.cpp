@@ -104,7 +104,6 @@ void ManBoundingGround::CreateBoundingGround(glm::vec3 a, glm::vec3 b, glm::vec3
 }
 
 ManBoundingGround::~ManBoundingGround() {
-    cout << "Llamando al destructor de ManBoundingGround" << endl;
 }
 
 void ManBoundingGround::SubscribeToEvents() {

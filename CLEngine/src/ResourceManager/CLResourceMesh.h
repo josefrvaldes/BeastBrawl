@@ -9,7 +9,8 @@
 #include <stddef.h>     /* offsetof */
 
 
-
+//! Estructura para almacenar datos de un vertice
+//! Guardamos datos que recogemos de assimp como la posicion, normal, coordenada de texturas, tangentes y bitangentes
 struct Vertex {
     // position
     glm::vec3 position;
@@ -23,19 +24,14 @@ struct Vertex {
     glm::vec3 bitangent;
 };
 
+//! Estructura para almacenar informacion sobre las texturas del modelado
 struct Texture {
     unsigned int id;
     string type;
     string path;
 };
 
-// struct Material {
-//     glm::vec3 ambient;
-//     glm::vec3 diffuse;
-//     glm::vec3 specular;
-//     float shininess;
-// };
-
+//! Clase auxiliar para manejar mas facil las submallas de una malla que leemos
 class Mesh{
     
 
@@ -54,6 +50,8 @@ class Mesh{
 };
 
 namespace CLE {
+    //! Clase para gestionar la lectura de mallas
+    //! Mediante la utilización de assimp leemos y gestionamos todos los datos que puede ser de utilidad
     class CLResourceMesh : public CLResource {
         public:
             CLResourceMesh(){};
@@ -62,6 +60,8 @@ namespace CLE {
             void Draw(GLuint shaderID) override;
             bool LoadFile(std::string, bool) override;
             void DrawDepthMap(GLuint shaderID);
+            //! Devuelve el vector de mallas
+            //! @returns vecMeshes Las posibles submallas que pueda tener la malla leida
             vector<Mesh> GetvectorMesh() { return vecMesh; }
 
         private:
@@ -72,7 +72,7 @@ namespace CLE {
             //Material loadMaterial(aiMaterial* mat); 
 
             vector<Mesh> vecMesh;
-            vector<Texture> textures_loaded;	// stores all the textures loaded so far, optimization to make sure textures aren't loaded more than once.
+            vector<Texture> textures_loaded;
             string directory;
             bool gammaCorrection;
             const aiScene *scene;

@@ -82,21 +82,21 @@ CLResourceMaterial* CLResourceManager::GetResourceMaterial(const std::string fil
     return resource.get();
 }
 
-CLResourceShader* CLResourceManager::GetResourceShader(const std::string file1, const std::string file2) {
+CLResourceShader* CLResourceManager::GetResourceShader(const std::string vertex, const std::string fragment) {
     shared_ptr<CLResourceShader> resource = NULL;
     bool search = true;
     for (unsigned int i=0; i<shaders.size() && search; ++ i) {
-        if (!file1.compare(shaders[i]->GetName())) {
+        if (!vertex.compare(shaders[i]->GetName())) {
             resource = shaders[i];
             search = false;
         }
     }
     if (!resource) {
-        cout << "Creo el shader: " << file1 <<endl;
+        cout << "Creo el shader: " << vertex <<endl;
         resource = make_shared<CLResourceShader>();
-        resource->SetName(file1);
+        resource->SetName(vertex);
         //resource->SetShaderType(type);
-        if (resource->LoadFile(file1,file2)) {
+        if (resource->LoadFile(vertex,fragment)) {
             shaders.push_back(resource);
         }
     }
@@ -104,21 +104,21 @@ CLResourceShader* CLResourceManager::GetResourceShader(const std::string file1, 
     return resource.get();
 }
 
-CLResourceShader* CLResourceManager::GetResourceShader(const std::string file1, const std::string file2, const std::string file3) {
+CLResourceShader* CLResourceManager::GetResourceShader(const std::string vertex, const std::string fragment, const std::string geometry) {
     shared_ptr<CLResourceShader> resource = NULL;
     bool search = true;
     for (unsigned int i=0; i<shaders.size() && search; ++ i) {
-        if (!file1.compare(shaders[i]->GetName())) {
+        if (!vertex.compare(shaders[i]->GetName())) {
             resource = shaders[i];
             search = false;
         }
     }
     if (!resource) {
-        cout << "Creo el shader: " << file1 <<endl;
+        cout << "Creo el shader: " << vertex <<endl;
         resource = make_shared<CLResourceShader>();
-        resource->SetName(file1);
+        resource->SetName(vertex);
         //resource->SetShaderType(type);
-        if (resource->LoadFile(file1,file2,file3)) {
+        if (resource->LoadFile(vertex,fragment,geometry)) {
             shaders.push_back(resource);
         }
     }

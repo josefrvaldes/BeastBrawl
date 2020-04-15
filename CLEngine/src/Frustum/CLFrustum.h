@@ -8,7 +8,9 @@ using namespace glm;
 using namespace std;
 
 namespace CLE{
-
+//! Clase para el frustrum
+//! Esta clase es utilizada para saber cuando le objeto se encuentra dentro o fuera del campo de visión de la camara
+//! @see CLE::CLNode::DFSTree(glm::mat4)
 class CLFrustum{
 
 	public:
@@ -39,31 +41,4 @@ class CLFrustum{
 };
 
 }
-
-/*
-namespace CLE{
-    class CLFrustum {
-       public:
-        CLFrustum();
-        ~CLFrustum(){};
-        //Check a single point
-        int Intersects(glm::vec3& point);
-        //Check a bounding box
-        //int Intersects(BoundingBox& box);
-        enum {
-            COORD_BOTTOMLEFT = 0,COORD_BOTTOMRIGHT,COORD_TOPLEFT,COORD_TOPRIGHT
-        };
-        enum {
-            PLANE_LEFT = 0,PLANE_RIGHT,PLANE_BOTTOM,PLANE_TOPPLANE_NEAR,PLANE_FAR
-        };
-        //Defines our near and far vertices
-        vector<glm::vec3> fnear;    // seran 4
-        vector<glm::vec3> ffar;     // seran 4
-        //The center of the frustum (useful for extents/CSM)
-        glm::vec3 center;
-        //Plane planes[6];
-        vector<PlaneCamera> planesCam;  // seran 6
-    };
-}*/
-
 

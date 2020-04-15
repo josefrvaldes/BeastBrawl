@@ -18,14 +18,13 @@ class StateEndRace : public State{
         void InitState() override;
         void Update() override;
         void Render() override;
-        States GetState() override { return State::States::MENU; };
+        States GetState() override { return State::States::ENDRACE; };
 
 
     private:
         RenderFacade* renderEngine = { nullptr };
         SoundFacade* soundEngine = { nullptr };
         InputFacade* inputEngine = { nullptr };
-        //PhysicsFacade* physicsEngine = { nullptr };
 
 
 	

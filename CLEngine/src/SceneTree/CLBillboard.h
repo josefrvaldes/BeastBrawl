@@ -6,24 +6,35 @@
 
 
 namespace CLE {
-
+    //! Clase para añadir billboards
+    //! @see Esta clase nos permite añadir billboards en nuestro arbol de la escena CLE::CLNode::AddBillboard(string&,bool,glm::vec3,floatfloat)
     class CLBillboard : public CLEntity {
         public:
-            CLBillboard(CLResourceTexture* texture_, glm::vec3 posBillBoard_, float width_, float height_);
+            //! Constructor de Billboards
+            //! @param texture_ Objecto CLResourceTexture para la textura del billboard
+            //! @param offset_ Margen de la posicion original
+            //! @param width_ Anchura del billboard
+            //! @param height Altura del billboard
+            CLBillboard(unsigned int id,CLResourceTexture* texture_, float width_, float height_);
             ~CLBillboard() {};
 
-            void Draw(GLuint shaderID);
-            void DrawDepthMap(GLuint shaderID);
+            void Draw(GLuint shaderID) override;
+            void DrawDepthMap(GLuint shaderID) {};
 
-
+            //! Devuelve la textura
+            //! @returns texture El objeto CLResourceTexture
             CLResourceTexture* getTexture(){ return texture;};
-            glm::vec3 getPosition(){ return position;};
+            //! Asigna una textura
+            //! @param t Objeto de la textura
             void setTexture(CLResourceTexture* t) { texture = t;};
-            void setPosition(glm::vec3 p) { position = p;};
 
         private:
             CLResourceTexture*  texture = nullptr;
-            glm::vec3 position;
+            //Placeholder para mandar algo por el VAO si no no dibuja
+            float position[6] = {
+                1.0,1.0,1.0,
+                1.0,1.0,1.0
+            };
             GLuint vertexBuffer {0}, VAO {0};
             float width {0}, height {0};
                   

@@ -1344,7 +1344,6 @@ void CLPhysics::IntersectsCarsPowerUps(ManCar &manCars, ManPowerUp &manPowerUps,
 }
 
 void CLPhysics::HandleCollisionPUWithCar(PowerUp *powerUp, Entity *car) {
-    cout << "intersecciooooooooon con PowerUp" << endl;
     // ponemos a true el componente DeleteEntity, para eliminarlo con seguridad beibeee
     auto cRemovableObj = static_cast<CRemovableObject *>(powerUp->GetComponent(CompType::RemovableObjectComp).get());
     cRemovableObj->destroy = true;

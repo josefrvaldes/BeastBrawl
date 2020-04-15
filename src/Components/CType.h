@@ -13,6 +13,7 @@ enum ModelType{
     StaticMesh,
     AnimatedMesh,
     Text,
+    ParticleSystem,
     PointLight
 };
 

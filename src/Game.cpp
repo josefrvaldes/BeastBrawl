@@ -1,7 +1,10 @@
 #include "Game.h"
+
 #include "Facade/Physics/PhysicsFacadeManager.h"
+
 #include "State/StateInit.h"
 #include "State/StateSelectCharacter.h"
+#include "State/StateGameOptions.h"
 #include "State/StateEndRace.h"
 #include "State/StateInGameMulti.h"
 #include "State/StateInGameSingle.h"
@@ -9,6 +12,9 @@
 #include "State/StateMenu.h"
 #include "State/StatePause.h"
 #include "State/StateControls.h"
+#include "State/StateCredits.h"
+#include "State/StateSettings.h"
+
 #include <Constants.h>
 
 
@@ -27,7 +33,6 @@ void Game::SetState(State::States stateType) {
 
     switch (stateType) {
         case State::INTRO:
-            //currentState = new StateIntro();
             EventManager::GetInstance().ClearEvents();
             EventManager::GetInstance().ClearListeners();
             currentState = make_shared<StateInit>();
@@ -52,6 +57,14 @@ void Game::SetState(State::States stateType) {
             SuscribeEvents();
             gameStarted = false;
             break;
+        case State::GAME_OPTIONS:
+            EventManager::GetInstance().ClearEvents();
+            EventManager::GetInstance().ClearListeners();
+            currentState = make_shared<StateGameOptions>();
+            gameState.reset();
+            SuscribeEvents();
+            gameStarted = false;
+            break;
         case State::CONTROLS:
             EventManager::GetInstance().ClearEvents();
             EventManager::GetInstance().ClearListeners();
@@ -61,10 +74,20 @@ void Game::SetState(State::States stateType) {
             gameStarted = false;
             break;
         case State::CREDITS:
-            //currentState = new StateCredits();
+            EventManager::GetInstance().ClearEvents();
+            EventManager::GetInstance().ClearListeners();
+            currentState = make_shared<StateCredits>();
+            gameState.reset();
+            SuscribeEvents();
+            gameStarted = false;
             break;
-        case State::MAP:
-            //currentState = new StateMap();
+        case State::SETTINGS:
+            EventManager::GetInstance().ClearEvents();
+            EventManager::GetInstance().ClearListeners();
+            currentState = make_shared<StateSettings>();
+            gameState.reset();
+            SuscribeEvents();
+            gameStarted = false;
             break;
         case State::INGAME_SINGLE:
             if (!gameStarted) {
@@ -163,6 +186,12 @@ void Game::SuscribeEvents() {
             bind(&Game::SetStateSelectCharacter, this, placeholders::_1),
             "StateSelectCharacter"));
 
+
+    EventManager::GetInstance().SubscribeMulti(Listener(
+            EventType::STATE_GAME_OPTIONS,
+            bind(&Game::SetStateGameOptions, this, placeholders::_1),
+            "StateGameOptions"));
+
     EventManager::GetInstance().SubscribeMulti(Listener(
         EventType::STATE_PAUSE,
         bind(&Game::SetStatePause, this, placeholders::_1),
@@ -192,6 +221,16 @@ void Game::SuscribeEvents() {
         EventType::STATE_CONTROLS,
         bind(&Game::SetStateControls, this, placeholders::_1),
         "SetStateControls"));
+
+    EventManager::GetInstance().SubscribeMulti(Listener(
+            EventType::STATE_CREDITS,
+            bind(&Game::SetStateCredits, this, placeholders::_1),
+            "SetStateCredits"));
+
+    EventManager::GetInstance().SubscribeMulti(Listener(
+            EventType::STATE_SETTINGS,
+            bind(&Game::SetStateSettings, this, placeholders::_1),
+            "SetStateSettings"));
 }
 
 void Game::MainLoop() {
@@ -261,6 +300,10 @@ void Game::SetStateSelectCharacter(DataMap* d) {
     SetState(State::SELECT_CHARACTER);
 }
 
+void Game::SetStateGameOptions(DataMap* d) {
+    SetState(State::GAME_OPTIONS);
+}
+
 void Game::SetStatePause(DataMap* d) {
     SetState(State::PAUSE);
 }
@@ -301,4 +344,12 @@ void Game::SetStateLobbyMulti(DataMap* d) {
 
 void Game::SetStateControls(DataMap* d){
     SetState(State::CONTROLS);
+}
+
+void Game::SetStateCredits(DataMap* d){
+    SetState(State::CREDITS);
+}
+
+void Game::SetStateSettings(DataMap *d) {
+    SetState(State::SETTINGS);
 }

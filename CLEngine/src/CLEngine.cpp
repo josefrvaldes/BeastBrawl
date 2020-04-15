@@ -24,7 +24,9 @@ CLEngine::CLEngine (const unsigned int w, const unsigned int h, const string& ti
     glewInit();
     ImGuiInit();
     const std::string f = "fonts/arial.ttf";
+    cout << "Antes de cargar la fuente" << endl;
     LoadFont(f);
+    cout << "Después de cargar la fuente" << endl;
 }
 
 /**
@@ -219,13 +221,9 @@ void CLEngine::DrawObjects(){
 
     smgr->DrawSkybox();
     smgr->CalculateViewProjMatrix();
-    //smgr->CalculateLights();
     smgr->DFSTree(glm::mat4(1.0f));
     smgr->DrawGrass();
-    smgr->DrawBillBoard();
-    //smgr->DrawGrass(glm::vec3(0.0f,60.0f,0.0f));
-    //smgr->DrawGrass(glm::vec3(0.0f,120.0f,0.0f));
-
+    smgr->DrawGrass();
 }
 
 

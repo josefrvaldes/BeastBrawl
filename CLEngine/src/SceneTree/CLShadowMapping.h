@@ -4,7 +4,7 @@
 
 
 namespace CLE {
-
+    //! Clase para añadir sombras en el motor
     class CLShadowMapping : public CLEntity {
         public:
             CLShadowMapping(GLuint _lightId);

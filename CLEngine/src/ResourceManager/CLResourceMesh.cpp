@@ -51,10 +51,7 @@ Mesh::Mesh(vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture
 
 using namespace CLE;
 
-/**
- * 
- * @param file - Ruta del archivo a leer.
- */
+
 bool CLResourceMesh::LoadFile(std::string file, bool flipUV) {
     Assimp::Importer importer;
     auto assimpFlags = aiProcess_Triangulate | /*aiProcess_FlipUVs | */aiProcess_GenNormals | aiProcess_CalcTangentSpace 
@@ -77,11 +74,7 @@ bool CLResourceMesh::LoadFile(std::string file, bool flipUV) {
     return true;
 }  
 
-/**
- * Recorremos los nodos para recuperar todos la informacion de la malla.
- * @param node - 
- * @param scene - 
- */
+
 void CLResourceMesh::processNode(aiNode *node, const aiScene *scene){
     // process all the node's meshes (if any)
     for(unsigned int i = 0; i < node->mNumMeshes; i++)
@@ -96,11 +89,6 @@ void CLResourceMesh::processNode(aiNode *node, const aiScene *scene){
     }
 }
 
-/**
- * Almacenamos los valores que recoge assimp de cada submalla.
- * @param mesh -
- * @param scene -
- */
 Mesh CLResourceMesh::processMesh(aiMesh *mesh, const aiScene *scene)
 {
     vector<Vertex> vertices;
@@ -206,28 +194,6 @@ Mesh CLResourceMesh::processMesh(aiMesh *mesh, const aiScene *scene)
 }  
 
 
-// Material CLResourceMesh::loadMaterial(aiMaterial* mat) {
-//     //Ruben del futuro:
-//     //Una vez tienes estos valores se los mandas al fragment por el struct material y ya estaria yo creo
-//     Material material;
-//     aiColor3D color(0.f, 0.f, 0.f);
-//     float shininess;
-
-
-//     mat->Get(AI_MATKEY_COLOR_DIFFUSE, color);
-//     material.diffuse = glm::vec3(color.r, color.b, color.g);
-
-//     mat->Get(AI_MATKEY_COLOR_AMBIENT, color);
-//     material.ambient = glm::vec3(color.r, color.b, color.g);
-
-//     mat->Get(AI_MATKEY_COLOR_SPECULAR, color);
-//     material.specular = glm::vec3(color.r, color.b, color.g);
-
-//     mat->Get(AI_MATKEY_SHININESS, shininess);
-//     material.shininess = shininess;
-
-//     return material;
-// }
 
 
 vector<Texture> CLResourceMesh::loadMaterialTextures(aiMaterial *mat, aiTextureType type, string typeName)
@@ -277,7 +243,7 @@ unsigned int CLResourceMesh::TextureFromFile(const char *path, const string &dir
         filename.erase(0, pos + delimiter.length());
     }
 
-    filename = "media/" + filename;
+    filename = "media/clv_" + filename;
 
     
 
@@ -309,16 +275,14 @@ unsigned int CLResourceMesh::TextureFromFile(const char *path, const string &dir
     }
     else
     {
-        std::cout << "Texture failed to load at path: " << path << std::endl;
+        std::cout << "Texture failed to load at path: " << filename << std::endl;
         stbi_image_free(data);
     }
 
     return textureID;
 }
 
-/**
- * Aqui se llega normalmente desde la clase CLMesh->Draw()
- */
+
 void CLResourceMesh::Draw(GLuint shaderID) {
 
     for(auto& mesh : vecMesh){
@@ -368,9 +332,6 @@ void CLResourceMesh::Draw(GLuint shaderID) {
 
 
 
-/**
- * Aqui se llega normalmente desde la clase CLMesh->Draw()
- */
 void CLResourceMesh::DrawDepthMap(GLuint shaderID) {
     for(auto& mesh : vecMesh){
         glBindVertexArray(mesh.VAO);
