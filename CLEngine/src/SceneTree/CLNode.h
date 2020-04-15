@@ -86,7 +86,7 @@ class CLNode{
         void AddSkybox(string right, string left, string top, string bottom, string front, string back);
         void AddShadowMapping(GLuint lightId);
         void AddBillBoard(string& file, bool vertically, glm::vec3 posBillBoard, float width_, float height_);
-        void AddGrass();
+        void AddGrass(float _width, float _height, const glm::vec3& _position, const glm::vec3& _scale, bool realistGrass);
 
 
         bool RemoveChild(CLNode* child);
@@ -174,7 +174,8 @@ class CLNode{
         inline static GLuint particleSystemShader = 0;
 
         inline static GLuint grassShader = 0;
-        unique_ptr<CLGrassSystem> manGrass = nullptr;
+        //unique_ptr<CLGrassSystem> sysGrass = nullptr;
+        std::vector<unique_ptr<CLGrassSystem>> sysGrassVector;
 
 
 

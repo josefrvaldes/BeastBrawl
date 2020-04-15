@@ -40,7 +40,6 @@ void CLGrassSystem::CalculateNumBushes(){
 
 // Crea las posiciones de la hierva de forma uniforme con un cuadrado, con el mismo tamanyo
 void CLGrassSystem::CreateGrass(){ 
-    //auto grassAux = make_unique<CLGrass>(glm::vec3(50.0f,50.0f,50.0f));
     glm::vec3 posActual = glm::vec3(position.x - numBushesRows*0.5*extraSize , position.y, position.z - numBushesFiles*0.5*extraSize);
     while(posActual.x < (position.x+numBushesRows*0.5*extraSize)){
         while(posActual.z < (position.z+numBushesFiles*0.5*extraSize)){
@@ -79,7 +78,6 @@ void CLGrassSystem::CreateRealistGrass(){
             extraScale = exScale(rng);
             extraPosX = exPosX(rng);
             extraPosZ = exPosZ(rng);
-            cout << extraScale << "  --  " << extraPosX << "  --  " << extraPosZ << "\n";
             
             auxScale += extraScale;
             auxPosition.x = posActual.x + extraPosX;
@@ -93,9 +91,7 @@ void CLGrassSystem::CreateRealistGrass(){
     }
 }
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 // Anyade los tres planos de un arbusto al vector, calculamos la matriz modelo
 void CLGrassSystem::AddLeafs(const glm::vec3& posLeaf, const glm::vec3& scaleLeaf){ 
@@ -118,9 +114,16 @@ void CLGrassSystem::AddLeafs(const glm::vec3& posLeaf, const glm::vec3& scaleLea
 
 
 void CLGrassSystem::ConfigureBuffers(){
+    glm::mat4 modelMatrices[modelLeafVector.size()];
+    std::copy(modelLeafVector.begin(), modelLeafVector.end(), modelMatrices);
     glm::vec3 posMatrices[posLeafVector.size()];
     std::copy(posLeafVector.begin(), posLeafVector.end(), posMatrices);
-    //std::unique_ptr<glm::mat4> modelMatrices = make_unique<glm::mat4>(modelLeafVector.data());
+
+    // buffer de las matrices modelo
+    glGenBuffers(1, &bufferModelVBO);
+    glBindBuffer(GL_ARRAY_BUFFER, bufferModelVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::mat4) * modelLeafVector.size(), &modelMatrices[0], GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     // buffer de las posiciones
     glGenBuffers(1, &bufferPosVBO);
@@ -130,11 +133,31 @@ void CLGrassSystem::ConfigureBuffers(){
 
     // VAO del plano
     glGenVertexArrays(1, &planeVAO);
+    glBindVertexArray(planeVAO);
+
     // se instancia el array de posiciones (vec3)
-    glEnableVertexAttribArray(2);
+    glEnableVertexAttribArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, bufferPosVBO);
-    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glVertexAttribDivisor(0, 1);
+
+    // se instancia en 4 elementos la mat4 ya que lo maximo que admite el vertex es un vec3 
+    glEnableVertexAttribArray(1);
+    glBindBuffer(GL_ARRAY_BUFFER, bufferModelVBO);
+    glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)0);
+    glEnableVertexAttribArray(2);
+    glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)(sizeof(glm::vec4)));
+    glEnableVertexAttribArray(3);
+    glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)(2 * sizeof(glm::vec4)));
+    glEnableVertexAttribArray(4);
+    glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)(3 * sizeof(glm::vec4)));
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    glVertexAttribDivisor(1, 1);    // el uno se pone para decirle a openGL que en vez de actualizar el valor cada vertice lo haga cada instancia(objeto)
+    glVertexAttribDivisor(2, 1);
+    glVertexAttribDivisor(3, 1);
+    glVertexAttribDivisor(4, 1);
 
     glBindVertexArray(0);
 }
@@ -155,16 +178,7 @@ void CLGrassSystem::Draw(GLuint shaderID, const glm::mat4& projection, const glm
     glUniformMatrix4fv(glGetUniformLocation(shaderID, "VPmatrix"), 1, GL_FALSE, glm::value_ptr(VPmatrix));
     glUniform1f(glGetUniformLocation(shaderID, "timeElapsedWing"), wingTimer);
 
-
-    glm::mat4 MVP(1.f);
-    for(std::size_t i=0; i<modelLeafVector.size(); i++){
-        MVP = VPmatrix * modelLeafVector[i];
-        glUniformMatrix4fv(glGetUniformLocation(shaderID, "MVP"), 1, GL_FALSE, glm::value_ptr(MVP));
-        glUniform3fv(glGetUniformLocation(shaderID, "posVec3"), 1, glm::value_ptr(posLeafVector[i]));
-        glDrawArrays(GL_POINTS, 0, 1); 
-    }
-
-    // glDrawArraysInstanced(GL_POINTS, 0, 1, modelLeafVector.size()); 
+    glDrawArraysInstanced(GL_POINTS, 0, 1, modelLeafVector.size()); 
     glBindVertexArray(0);
 
     wingTimer += 0.01;
@@ -212,8 +226,8 @@ void CLGrassSystem::ConfigureBuffers(){
     //std::unique_ptr<glm::mat4> modelMatrices = make_unique<glm::mat4>(modelLeafVector.data());
 
     // buffer de las matrices modelo
-    glGenBuffers(1, &bufferVBO);
-    glBindBuffer(GL_ARRAY_BUFFER, bufferVBO);
+    glGenBuffers(1, &bufferModelVBO);
+    glBindBuffer(GL_ARRAY_BUFFER, bufferModelVBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(glm::mat4) * modelLeafVector.size(), &modelMatrices[0], GL_STATIC_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
@@ -244,7 +258,7 @@ void CLGrassSystem::ConfigureBuffers(){
 
     // se instancia en 4 elementos la mat4 ya que lo maximo que admite el vertex es un vec3 
     glEnableVertexAttribArray(3);
-    glBindBuffer(GL_ARRAY_BUFFER, bufferVBO);
+    glBindBuffer(GL_ARRAY_BUFFER, bufferModelVBO);
     glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)0);
     glEnableVertexAttribArray(4);
     glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)(sizeof(glm::vec4)));

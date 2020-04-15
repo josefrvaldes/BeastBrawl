@@ -17,8 +17,8 @@ namespace CLE {
             void CalculateNumBushes();
             void CreateGrass();
             void CreateRealistGrass();
-            void Draw(GLuint shaderID, const glm::mat4& projection, const glm::mat4& view);
             void ConfigureBuffers();
+            void Draw(GLuint shaderID, const glm::mat4& projection, const glm::mat4& view);
 
         private:
             void AddLeafs(const glm::vec3& posLeaf, const glm::vec3& scaleLeaf);
@@ -43,11 +43,11 @@ namespace CLE {
             float wingTimer = 0.0;
 
             // buffers
-            unsigned int bufferVBO, bufferPosVBO;
-            unsigned int planeVAO, planeVBO;
+            unsigned int bufferModelVBO, bufferPosVBO;
+            unsigned int planeVAO;
 
             // 6 vertices de la textura de la hierva
-            float grassVertices[30] = {
+            /*float grassVertices[30] = {
                 // positions         // texture Coords (swapped y coordinates because texture is flipped upside down)
                 -0.5f,  1.0f,  0.0f,  0.0f,  0.0f,
                 -0.5f, 0.0f,  0.0f,  0.0f,  1.0f,
@@ -56,7 +56,7 @@ namespace CLE {
                 -0.5f,  1.0f,  0.0f,  0.0f,  0.0f,
                 0.5f, 0.0f,  0.0f,  1.0f,  1.0f,
                 0.5f,  1.0f,  0.0f,  1.0f,  0.0f
-            };
+            };*/
 
     };
 }

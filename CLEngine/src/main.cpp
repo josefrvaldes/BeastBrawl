@@ -118,12 +118,9 @@ int main() {
 
         static_cast<CLCamera*>(camera->GetEntity())->SetCameraTarget(mesh2->GetTranslation());
         
-        smgr->AddGrass();
-        // auto grass = smgr->AddGrass(123, glm::vec3(140.0f,100.0f,-50.0f));
-        // grass->SetScalation(glm::vec3(1.0f,1.0f,1.0f));
-        // grass->SetTranslation(glm::vec3(140.0f,100.0f,-50.0f));
-        // grass->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
-        // grass->SetShaderProgramID(resourceShaderHud->GetProgramID());
+        smgr->AddGrass(300.0, 200.0, glm::vec3(140.0f,55.0f,-50.0f), glm::vec3(20.0,20.0,20.0), false);
+        smgr->AddGrass(100.0, 100.0, glm::vec3(140.0f,55.0f,-300.0f), glm::vec3(10.0,10.0,10.0), true);
+
 
         string fileBillBoard = "media/mrPinguin.png";
         smgr->AddBillBoard(fileBillBoard, false, glm::vec3(50.0,100.0,0.0), 100.0,50.0);
