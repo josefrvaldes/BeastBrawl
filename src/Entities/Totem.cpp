@@ -46,7 +46,7 @@ Totem::Totem()
     shared_ptr<CTexture> cTexture = make_shared<CTexture>(texture);
     shared_ptr<CMesh> cMesh   = make_shared<CMesh>(mesh);
     if(Constants::RENDER_ENGINE == Constants::RenderEngine::CLOVER){
-        cMesh->mesh.push_back("totem_tex.fbx");
+        //cMesh->mesh.push_back("totem_tex.fbx");
 
     }
     shared_ptr<CCurrentNavMesh> cCurrentNavMesh   = make_shared<CCurrentNavMesh>(-1);
