@@ -38,10 +38,14 @@ SoundEngine::SoundEngine() {
 }
 
 SoundEngine::~SoundEngine() {
-    delete coreSystem;
-    delete system;
-    delete masterBank;
-    delete stringsBank;
+    // delete coreSystem;
+    // delete system;
+    // delete masterBank;
+    // delete stringsBank;
+    free(coreSystem) ;
+    free(system);
+    free(masterBank);
+    free(stringsBank);
 }
 
 
