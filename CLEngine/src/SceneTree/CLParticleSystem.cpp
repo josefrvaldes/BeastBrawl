@@ -1,5 +1,6 @@
 #include "CLParticleSystem.h"
 #include "CLNode.h"
+#include "../../../src/Systems/Utils.h"
 using namespace CLE;
 
 
@@ -202,39 +203,27 @@ glm::vec3 CLParticleSystem::CLParticle::CalculateSpawnPosition(){
     SpawnType spawnType = particleSystem->GetSpawnType();
     glm::vec3 center = particleSystem->GetCLNode()->GetGlobalTranslation();
 
-    std::random_device rd;
-    std::mt19937 rng(chrono::high_resolution_clock::now().time_since_epoch().count());
-
-
+    
     if(spawnType == SpawnType::PointSpawn){
         newPosition = particleSystem->GetCLNode()->GetGlobalTranslation();
     }else if(spawnType == SpawnType::LineSpawn || spawnType == SpawnType::SquareSpawn || spawnType == SpawnType::CubeSpawn){
-        std::uniform_real_distribution<float> genX(center.x - particleSystem->GetOffset().x, center.x + particleSystem->GetOffset().x);
-        std::uniform_real_distribution<float> genY(center.y - particleSystem->GetOffset().y, center.y + particleSystem->GetOffset().y);
-        std::uniform_real_distribution<float> genZ(center.z - particleSystem->GetOffset().z, center.z + particleSystem->GetOffset().z);
-        float offX = genX(rng);
-        float offY = genY(rng);
-        float offZ = genZ(rng);
-
-        //Reset de numeros aleatorios
-        genX(rng);genX(rng);genX(rng);
-        genY(rng);genY(rng);genY(rng);
-        genZ(rng);genZ(rng);genZ(rng);
-
+        float offX = Utils::getRandomFloat(center.x - particleSystem->GetOffset().x, center.x + particleSystem->GetOffset().x);//genX(rng);
+        float offY = Utils::getRandomFloat(center.y - particleSystem->GetOffset().y, center.y + particleSystem->GetOffset().y);//genY(rng);
+        float offZ = Utils::getRandomFloat(center.z - particleSystem->GetOffset().z, center.z + particleSystem->GetOffset().z);//genZ(rng);
 
         newPosition = glm::vec3(offX,offY,offZ);
     }else if(spawnType == SpawnType::SphereSpawn || spawnType == SpawnType::CircleSpawn){
         float radious = particleSystem->GetRadious();
         glm::vec3 orientation = particleSystem->GetOrientation();
 
-        std::uniform_real_distribution<float> genX(center.x - (radious*orientation.x), center.x + (radious*orientation.x));
+        /*std::uniform_real_distribution<float> genX(center.x - (radious*orientation.x), center.x + (radious*orientation.x));
         std::uniform_real_distribution<float> genY(center.y - (radious*orientation.y), center.y + (radious*orientation.y));
         std::uniform_real_distribution<float> genZ(center.z - (radious*orientation.z), center.z + (radious*orientation.z));
 
         //Reset de numeros aleatorios
         genX(rng);genX(rng);genX(rng);
         genY(rng);genY(rng);genY(rng);
-        genZ(rng);genZ(rng);genZ(rng);
+        genZ(rng);genZ(rng);genZ(rng);*/
     }else{
         newPosition = particleSystem->GetCLNode()->GetGlobalTranslation();
 
@@ -256,34 +245,20 @@ void CLParticleSystem::CLParticle::CalculateVelocity(){
 
     //Comprobamos si el flag del effecto esta activado
     if(particleSystem->GetFlags() & EFFECT_DIR_ALEATORITY){
-        std::random_device rd;
-        std::mt19937 rng(chrono::high_resolution_clock::now().time_since_epoch().count());
-        std::uniform_real_distribution<float> xDir(-1, 1);
-        std::uniform_real_distribution<float> yDir(-1, 1);
-        std::uniform_real_distribution<float> zDir(-1, 1);
 
         float valueX = 0;
         float valueY = 0;
         float valueZ = 0;
 
         do{
-            valueX = xDir(rng);
-            valueY = yDir(rng);
-            valueZ = zDir(rng);
-
-            xDir(rng);xDir(rng);xDir(rng);
-            yDir(rng);yDir(rng);yDir(rng);
-            zDir(rng);zDir(rng);zDir(rng);
+            valueX = Utils::getRandomFloat(-1.0,1.0);
+            valueY = Utils::getRandomFloat(-1.0,1.0);
+            valueZ = Utils::getRandomFloat(-1.0,1.0);
         }while(!valueX && !valueY && !valueZ);
 
         velocity.x = particleSystem->GetSpeedDirection().x * valueX;
         velocity.y = particleSystem->GetSpeedDirection().y * valueY;
         velocity.z = particleSystem->GetSpeedDirection().z * valueZ;
-
-        //Reset de numeros aleatorios
-        xDir(rng);xDir(rng);xDir(rng);
-        yDir(rng);yDir(rng);yDir(rng);
-        zDir(rng);zDir(rng);zDir(rng);
 
     }else{
         velocity = particleSystem->GetSpeedDirection();
