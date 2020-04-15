@@ -746,10 +746,10 @@ void InputFacadeClover::CheckInputEndRace(int& input, int maxInput, bool menu){
             RenderFacadeManager::GetInstance()->GetRenderFacade()->SetMenuEndRace(true);
         } else {
 
+            RenderFacadeManager::GetInstance()->GetRenderFacade()->CleanScene();
             switch(input) {
                 case 0: {
                     if (multiplayer) {
-                        RenderFacadeManager::GetInstance()->GetRenderFacade()->CleanScene();
                         EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_LOBBYMULTI});
                     } else {
                         //Manera un poco cutre de resetear el CId al empezar el juego
@@ -760,7 +760,6 @@ void InputFacadeClover::CheckInputEndRace(int& input, int maxInput, bool menu){
                         auto cNavMesh = make_shared<CNavMesh>();
                         cNavMesh->ResetNumIds();
                         EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_INGAMESINGLE});
-                        RenderFacadeManager::GetInstance()->GetRenderFacade()->CleanScene();
                         break;
                     }
                 }
@@ -772,7 +771,6 @@ void InputFacadeClover::CheckInputEndRace(int& input, int maxInput, bool menu){
                     break;
                 }
                 case 2: {
-                    RenderFacadeManager::GetInstance()->GetRenderFacade()->CleanScene();
                     EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_MENU});
 
                     //TODO: ¿Deberia resetear al volver al comenzar o al volver al menú?
@@ -781,6 +779,7 @@ void InputFacadeClover::CheckInputEndRace(int& input, int maxInput, bool menu){
                     break;
                 }
             }
+            input = 0;
             RenderFacadeManager::GetInstance()->GetRenderFacade()->SetMenuEndRace(false);
         }
 

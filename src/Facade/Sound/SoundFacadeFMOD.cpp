@@ -201,6 +201,7 @@ void SoundFacadeFMOD::LoadSoundByState(const uint8_t numState) {
             break;*/
         case 4:         // INGAME
             StopEvent("Musica/menu");
+            StopEvent("Musica/fin_partida");
             LoadSoundBank("InGame2D", 0);
             LoadSoundBank("InGame3DE", 1);
             LoadSoundBank("InGame3DD", 1);
