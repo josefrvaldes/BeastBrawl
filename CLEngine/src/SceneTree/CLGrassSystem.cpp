@@ -1,6 +1,8 @@
 #include "CLGrassSystem.h"
 #include "../ResourceManager/CLResourceManager.h"
-#include <random>
+#include "../../../src/Systems/Utils.h"
+#include <chrono>
+
 
 
 using namespace CLE;
@@ -61,24 +63,16 @@ void CLGrassSystem::CreateRealistGrass(){
     glm::vec3 posActual = glm::vec3(position.x - numBushesRows*0.5*extraSize , position.y, position.z - numBushesFiles*0.5*extraSize);
     glm::vec3 auxScale(scale);
     glm::vec3 auxPosition(posActual);
-    std::random_device rd;
-    std::mt19937 rng(rd());
-    std::uniform_real_distribution<float> exScale(0, extraScaleRealistic);
-    std::uniform_real_distribution<float> exPosX(0, extraPositionRealistic);
-    std::uniform_real_distribution<float> exPosZ(0, extraPositionRealistic);
+    srand(chrono::high_resolution_clock::now().time_since_epoch().count());
 
     while(posActual.x < (position.x+numBushesRows*0.5*extraSize)){
         while(posActual.z < (position.z+numBushesFiles*0.5*extraSize)){
             auxScale = scale;
-            // resetear aleatorios
-            exScale(rng);exScale(rng);exScale(rng);
-            exPosX(rng);exPosX(rng);exPosX(rng);
-            exPosZ(rng);exPosZ(rng);exPosZ(rng);
             // Obtener numeros aleatorios
-            extraScale = exScale(rng);
-            extraPosX = exPosX(rng);
-            extraPosZ = exPosZ(rng);
-            
+            extraScale = Utils::getRandomFloat(0, extraScaleRealistic);
+            extraPosX = Utils::getRandomFloat(0, extraPositionRealistic);
+            extraPosZ = Utils::getRandomFloat(0, extraPositionRealistic);
+            cout << extraScale << "  --  " << extraPosX << "  --  " << extraPosZ << "\n";
             auxScale += extraScale;
             auxPosition.x = posActual.x + extraPosX;
             auxPosition.z = posActual.z + extraPosZ;

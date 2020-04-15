@@ -234,7 +234,7 @@ int main() {
 
         if(glfwGetKey(device->GetWindow(),GLFW_KEY_R)){
             static_cast<CLParticleSystem*>(ps1->GetEntity())->StartOneIteration();
-            cout << "Realizamos una iteracion\n";
+            // cout << "Realizamos una iteracion\n";
         }
 
         if(glfwGetKey(device->GetWindow(),GLFW_KEY_LEFT)){
