@@ -72,7 +72,6 @@ void CLGrassSystem::CreateRealistGrass(){
             extraScale = Utils::getRandomFloat(0, extraScaleRealistic);
             extraPosX = Utils::getRandomFloat(0, extraPositionRealistic);
             extraPosZ = Utils::getRandomFloat(0, extraPositionRealistic);
-            cout << extraScale << "  --  " << extraPosX << "  --  " << extraPosZ << "\n";
             auxScale += extraScale;
             auxPosition.x = posActual.x + extraPosX;
             auxPosition.z = posActual.z + extraPosZ;
