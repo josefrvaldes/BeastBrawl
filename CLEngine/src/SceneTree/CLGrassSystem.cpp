@@ -27,7 +27,7 @@ CLGrassSystem::CLGrassSystem(float _width, float _height, const glm::vec3& _posi
         CreateGrass();
 
     ConfigureBuffers();
-    cout << "Num Text plantas: " << modelLeafVector.size() << "\n";
+    // cout << "Num Text plantas: " << modelLeafVector.size() << "\n";
 }
 
 
