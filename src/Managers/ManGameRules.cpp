@@ -20,7 +20,6 @@ void ManGameRules::CreateGlobalClock( const uint32_t durationTime_) {
 }
 
 ManGameRules::~ManGameRules() {
-    std::cout << "Llamando al destructor de ManGameRules" << std::endl;
 }
 
 void ManGameRules::Update(){

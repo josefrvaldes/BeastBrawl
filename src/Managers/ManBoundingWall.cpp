@@ -95,7 +95,6 @@ void ManBoundingWall::CreateBoundingWall(glm::vec3 a, glm::vec3 b, glm::vec3 c, 
 }
 
 ManBoundingWall::~ManBoundingWall() {
-    cout << "Llamando al destructor de ManBoundingWall" << endl;
 }
 
 void ManBoundingWall::SubscribeToEvents() {

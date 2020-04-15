@@ -760,6 +760,7 @@ void InputFacadeClover::CheckInputEndRace(int& input, int maxInput, bool menu){
                         auto cNavMesh = make_shared<CNavMesh>();
                         cNavMesh->ResetNumIds();
                         EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_INGAMESINGLE});
+                        RenderFacadeManager::GetInstance()->GetRenderFacade()->CleanScene();
                         break;
                     }
                 }
