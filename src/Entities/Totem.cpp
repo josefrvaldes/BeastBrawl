@@ -22,8 +22,8 @@ Totem::Totem()
 
     string mesh;
     if(Constants::RENDER_ENGINE == Constants::RenderEngine::CLOVER){
-        mesh    = "totem_tex.fbx";
-        scale = glm::vec3(3.0f,3.0f,3.0f);
+        mesh    = "totem.obj";
+        //scale = glm::vec3(1.0f,1.0f,1.0f);
         //mesh  = "TEST_BOX.fbx";
         
     }else if(Constants::RENDER_ENGINE == Constants::RenderEngine::IRRLICHT){
