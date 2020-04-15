@@ -203,7 +203,7 @@ glm::vec3 CLParticleSystem::CLParticle::CalculateSpawnPosition(){
     glm::vec3 center = particleSystem->GetCLNode()->GetGlobalTranslation();
 
     std::random_device rd;
-    std::mt19937 rng(rd());
+    std::mt19937 rng(chrono::high_resolution_clock::now().time_since_epoch().count());
 
 
     if(spawnType == SpawnType::PointSpawn){
@@ -257,7 +257,7 @@ void CLParticleSystem::CLParticle::CalculateVelocity(){
     //Comprobamos si el flag del effecto esta activado
     if(particleSystem->GetFlags() & EFFECT_DIR_ALEATORITY){
         std::random_device rd;
-        std::mt19937 rng(rd());
+        std::mt19937 rng(chrono::high_resolution_clock::now().time_since_epoch().count());
         std::uniform_real_distribution<float> xDir(-1, 1);
         std::uniform_real_distribution<float> yDir(-1, 1);
         std::uniform_real_distribution<float> zDir(-1, 1);
