@@ -21,7 +21,7 @@
 
 #include "../Frustum/CLFrustum.h"
 #include "../ResourceManager/CLResourceManager.h"
-#include "../ResourceManager/CLResourceShader.h"
+#include "CLGrassSystem.h"
 
 #include "../Built-In-Classes/CLColor.h"
 
@@ -285,6 +285,14 @@ class CLNode{
         //! @returns CLE::CLNode()
         //! @see CLE::CLBillboard()
         CLNode* AddBillBoard(unsigned int id,string& file, bool vertically, float width_, float height_);
+        //! Crea un modulo de hierba
+        //! @param _width Anchura de la celda de hierba
+        //! @param _height Altura de la celda de hierba
+        //! @param _position Posicion central de la celda de hierba
+        //! @param _scale Escala de cada planta
+        //! @param realistGrass True, hierba aleatoria. False, cuadrado de hierba.
+        //! @see CLE::CLGrassSystem()
+        void AddGrass(float _width, float _height, const glm::vec3& _position, const glm::vec3& _scale, bool realistGrass);
         //! Elimina un hijo de ese nodo
         //! @param child Puntero al hijo para eliminar
         //! @returns bool Si ha sido finalizado con exito o no
@@ -326,6 +334,7 @@ class CLNode{
         void DFSTree(glm::mat4 mA, GLuint shaderID);
         //! Dibuja el skybox
         void DrawSkybox();
+        void DrawGrass();
 
         
         //! Dibuja una linea primitiva en 3D
@@ -410,6 +419,15 @@ class CLNode{
 
         //Particle system
         inline static GLuint particleSystemShader = 0;
+
+        inline static GLuint grassShader = 0;
+        //unique_ptr<CLGrassSystem> sysGrass = nullptr;
+        std::vector<unique_ptr<CLGrassSystem>> sysGrassVector;
+
+
+
+
+
 
 };
 

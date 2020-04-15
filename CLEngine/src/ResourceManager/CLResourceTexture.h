@@ -20,10 +20,14 @@ namespace CLE {
             //! Devuelve el ID de la textura
             //! @returns textureID ID de OpenGL para identificar texturas
             unsigned int GetTextureID() { return textureID; };
+            int GetWidth(){ return widthText; };
+            int GetHeight(){ return heightText; };
 
-        private:
+         private:
             unsigned int textureID;
             string type;
+            int widthText = 0;
+            int heightText = 0;
     };
 
 }

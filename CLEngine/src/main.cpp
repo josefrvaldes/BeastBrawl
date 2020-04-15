@@ -66,6 +66,7 @@ int main() {
     auto resourceShader = resourceManager->GetResourceShader("CLEngine/src/Shaders/shadowMappingShader.vert", "CLEngine/src/Shaders/shadowMappingShader.frag");
     auto resourceShaderCartoon = resourceManager->GetResourceShader("CLEngine/src/Shaders/cartoonShader.vert", "CLEngine/src/Shaders/cartoonShader.frag");
     auto resourceShaderLightMapping = resourceManager->GetResourceShader("CLEngine/src/Shaders/lightMapping.vert", "CLEngine/src/Shaders/lightMapping.frag");
+    auto resourceShaderHud = resourceManager->GetResourceShader("CLEngine/src/Shaders/spriteShader.vert", "CLEngine/src/Shaders/spriteShader.frag");
 
     auto resourceShaderMaterial = resourceManager->GetResourceShader("CLEngine/src/Shaders/materialShader.vert", "CLEngine/src/Shaders/materialShader.frag");
     auto resourceShader3 = resourceManager->GetResourceShader("CLEngine/src/Shaders/debugShader.vert", "CLEngine/src/Shaders/debugShader.frag");
@@ -131,6 +132,10 @@ int main() {
         
 
             static_cast<CLCamera*>(camera->GetEntity())->SetCameraTarget(mesh2->GetTranslation());
+        
+        smgr->AddGrass(300.0, 200.0, glm::vec3(140.0f,55.0f,-50.0f), glm::vec3(20.0,20.0,20.0), false);
+        smgr->AddGrass(100.0, 100.0, glm::vec3(140.0f,55.0f,-300.0f), glm::vec3(10.0,10.0,10.0), true);
+
 
         string fileBillBoard = "media/mrPinguin.png";
         mesh2->AddBillBoard(2468,fileBillBoard, false, 100.0,50.0);
@@ -143,12 +148,16 @@ int main() {
         "media/skybox/front.jpg",
         "media/skybox/back.jpg");
 
+
+
         smgr->AddShadowMapping(light2->GetEntity()->GetID());
 
 
 
     static_cast<CLMesh*>(mesh1->GetEntity())->SetMesh(resourceMeshGround);
     static_cast<CLMesh*>(mesh2->GetEntity())->SetMesh(resourceMesh);
+    // static_cast<CLMesh*>(mesh7->GetEntity())->SetMesh(resourceMeshCochesito);
+
 
     camera->SetTranslation(glm::vec3(400.127f, 400.42f, 0.9f));
     light1->SetTranslation(glm::vec3(75.9f, 1000.2f, 15.08f));
@@ -167,6 +176,11 @@ int main() {
 
     ps1->SetTranslation(glm::vec3(mesh2->GetTranslation().x,mesh2->GetTranslation().y+80,mesh2->GetTranslation().z));
     ps1->SetScalation(glm::vec3(10.0f,10.0f,10.0f));
+    // mesh7->SetScalation(glm::vec3(10.5f, 10.5f, 10.5f));
+    // mesh7->SetTranslation(glm::vec3(140.0f,100.0f,-50.0f));
+    // mesh7->SetRotation(glm::vec3(-90.0f, 0.0f, 0.0f));
+
+
     //LUCES Y COLORES
     float auxCameraPos[3] = {camera->GetTranslation().x, camera->GetTranslation().y, camera->GetTranslation().z};
     float auxLightPos[3] = {light1->GetTranslation().x, light1->GetTranslation().y, light1->GetTranslation().z};

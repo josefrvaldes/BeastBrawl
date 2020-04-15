@@ -8,9 +8,10 @@
 #include "../Frustum/CLFrustum.h"
 #include "../../../src/Constants.h"
 
+
 using namespace CLE;
 
-CLNode::CLNode(){
+CLNode::CLNode(){ 
     translation = glm::vec3(0.0f, 0.0f, 0.0f);
     rotation = glm::vec3(0.0f, 0.0f, 0.0f);
     scalation = glm::vec3(1.0f, 1.0f, 1.0f);
@@ -121,9 +122,18 @@ CLNode* CLNode::AddCamera(unsigned int id){
     node->SetFather(this);
     cameras.push_back(node.get());
 
-    return node.get();
-    
+    return node.get();   
 }
+
+void CLNode::AddGrass(float _width, float _height, const glm::vec3& _position, const glm::vec3& _scale, bool realistGrass){
+    if(!grassShader){
+        auto rm = CLResourceManager::GetResourceManager();
+        auto resourceShader = rm->GetResourceShader("CLEngine/src/Shaders/grassShader.vert", "CLEngine/src/Shaders/grassShader.frag", "CLEngine/src/Shaders/grassShader.geom");
+        grassShader = resourceShader->GetProgramID();
+    }
+    sysGrassVector.emplace_back(make_unique<CLGrassSystem>(_width, _height, _position, _scale, realistGrass));
+}
+
 
 //Spawner Punto
 CLNode* CLNode::AddParticleSystem(unsigned int id,unsigned int nParticles,glm::vec3 velocity,string texture,int width,int height,int spawnDelay,int particlesToSpawn,int lifeSpan, std::uint_fast8_t flags){
@@ -477,6 +487,13 @@ void CLNode::DFSTree(glm::mat4 mA) {
 
     for (auto node : childs) {
         node->DFSTree(transformationMat);
+    }
+}
+
+
+void CLNode::DrawGrass(){
+    for(const auto& sysGrass : sysGrassVector){
+        sysGrass->Draw(grassShader, projection, view);
     }
 }
 
