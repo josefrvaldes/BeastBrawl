@@ -89,7 +89,7 @@ ManBoundingOBB::ManBoundingOBB() {
             //cogemos el plano1
             if(k==1){
                 centerPlane1 = glm::vec3( (vertex1X+vertex2X+vertex3X+vertex4X)/4 , (vertex1Y+vertex2Y-vertex3Y-vertex4Y)/4 , (vertex1Z+vertex2Z+vertex3Z+vertex4Z)/4 );
-             cout << "el centro de plano1 es: ( " << centerPlane1.x << " , " << centerPlane1.y <<  " , " << centerPlane1.z << " )" << endl;
+                //cout << "el centro de plano1 es: ( " << centerPlane1.x << " , " << centerPlane1.y <<  " , " << centerPlane1.z << " )" << endl;
             }
             if(k==2){
                 centerPlane2 = glm::vec3( (vertex1X+vertex2X+vertex3X+vertex4X)/4 , (vertex1Y+vertex2Y-vertex3Y-vertex4Y)/4 , (vertex1Z+vertex2Z+vertex3Z+vertex4Z)/4 );   
@@ -100,7 +100,7 @@ ManBoundingOBB::ManBoundingOBB() {
         }
         // aqui ya tenemos el array de OBB, nos faltan los centros de Massas 
         centerMass = glm::vec3( (centerMass.x/16) , (centerMass.y/16) , (centerMass.z/16) );
-        cout << "el centro de masas es: ( " << centerMass.x << " , " << centerMass.y <<  " , " << centerMass.z << " )" << endl;
+        //cout << "el centro de masas es: ( " << centerMass.x << " , " << centerMass.y <<  " , " << centerMass.z << " )" << endl;
 
 
         if( glm::distance(centerPlane1, centerMass) > glm::distance(centerPlane2, centerMass)){
@@ -217,7 +217,6 @@ void ManBoundingOBB::CreateBoundingOBB(const vector<vec3> &vertices, const vecto
 
 
 ManBoundingOBB::~ManBoundingOBB() {
-    cout << "Llamando al destructor de ManBoundingOBB" << endl;
 }
 
 void ManBoundingOBB::SubscribeToEvents() {

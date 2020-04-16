@@ -23,7 +23,7 @@ struct CBoundingCilindre;
 
 class CBoundingChassis : public Component {
    public:
-    CBoundingChassis(const vec3 &spCenterBehind, const float &spRadiusBehind, const vec3 &spCenterFront, const float &spRadiusFront);
+    CBoundingChassis(const vec3 &spCB, const float &spRB, const float &spRBFloor, const vec3 &spCF, const float &spRF, const float &spRFFloor);
 
     shared_ptr<CBoundingSphere> sphereBehind;
     shared_ptr<CBoundingSphere> sphereFront;

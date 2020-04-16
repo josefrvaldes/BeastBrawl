@@ -1,0 +1,1 @@
+split -b 80MB ./CLEngine/lib/linux/assimp/libassimp5.0.0.so ./CLEngine/lib/linux/assimp/lib_assimp_5_part_

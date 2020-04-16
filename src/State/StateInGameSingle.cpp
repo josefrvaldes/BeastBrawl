@@ -48,7 +48,7 @@ void StateInGameSingle::CAMBIARCosasNavMesh(ManCar &manCars, ManNavMesh &manNavM
 
 void StateInGameSingle::Input() {
     renderEngine->FacadeCheckInputSingle();
-    inputEngine->CheckInput();
+    inputEngine->CheckInputSingle();
 }
 
 void StateInGameSingle::Update() {
@@ -62,7 +62,8 @@ void StateInGameSingle::Update() {
                 manTotems.get(), 
                 manWayPoint.get(), 
                 manNavMesh.get(), 
-                manBoundingWall.get(), 
+                manBoundingWall.get(),
+                manBoundingOBB.get(), 
                 systemBtPowerUp.get(), 
                 systemBtMoveTo.get(), 
                 systemBtLoDMove.get(),
@@ -104,8 +105,8 @@ void StateInGameSingle::InitializeCLPhysics(ManCar &manCars, ManBoundingWall &ma
     StateInGame::InitializeCLPhysics(manCars, manWall, manOBB, manGround, manPowerUp, manNavMesh, manBoxPowerUp, manTotem);
 }
 
-void StateInGameSingle::InitializeManagers(Physics *physics, Camera *cam) {
-    StateInGame::InitializeManagers(physics, cam);
+void StateInGameSingle::InitializeManagers(Physics *physics, Camera *cam, const uint32_t timeGame) {
+    StateInGame::InitializeManagers(physics, cam, timeGame);
     CAMBIARInicializarCarAIS(*manCars, *manWayPoint);
 }
 
@@ -203,6 +204,6 @@ void StateInGameSingle::CAMBIARInicializarCarAIS(ManCar &manCars, ManWayPoint &m
             SoundFacadeManager::GetInstance()->GetSoundFacade()->CreateSoundEstatic3D(idComp->id, posComp->position, nameEvent, 0);
             nameEvent = "Coche/choque";
             SoundFacadeManager::GetInstance()->GetSoundFacade()->CreateSoundEstatic3D(idComp->id, posComp->position, nameEvent, 0);
-        //}
+        //} 
     }
 }

@@ -81,7 +81,8 @@ void StateInGameMulti::InitState() {
 }
 
 void StateInGameMulti::Input() {
-    const vector<Constants::InputTypes> &inputs = renderEngine->FacadeCheckInputMulti();
+    // const vector<Constants::InputTypes> &inputs = renderEngine->FacadeCheckInputMulti();
+    const vector<Constants::InputTypes> &inputs = inputEngine->CheckInputMulti();
     if (previousInputs != inputs) {
         //cout << Utils::getISOCurrentTimestampMillis() << " [" << sysOnline->idOnlineMainCar << "] Enviamos los inputs porque han cambiado con respecto a la iteración anterior" << endl;
         sysOnline->SendInputs(inputs);
@@ -125,8 +126,8 @@ void StateInGameMulti::InitializeCLPhysics(ManCar &manCars, ManBoundingWall &man
     StateInGame::InitializeCLPhysics(manCars, manWall, manOBB, manGround, manPowerUp, manNavMesh, manBoxPowerUp, manTotem);
 }
 
-void StateInGameMulti::InitializeManagers(Physics *physics, Camera *cam) {
-    StateInGame::InitializeManagers(physics, cam);
+void StateInGameMulti::InitializeManagers(Physics *physics, Camera *cam, const uint32_t timeGame) {
+    StateInGame::InitializeManagers(physics, cam, timeGame);
 }
 
 void StateInGameMulti::InitializeSystems(ManCar &manCars, ManBoundingWall &manWall, ManBoundingOBB &manOBB, ManBoundingGround &manGround, ManPowerUp &manPowerUp, ManNavMesh &manNavMesh, ManBoxPowerUp &manBoxPowerUp, ManTotem &manTotem) {
@@ -140,7 +141,7 @@ void StateInGameMulti::InitializeFacades() {
 void StateInGameMulti::AddElementsToRender() {
     StateInGame::AddElementsToRender();
 }
-
+ 
 /*
 void StateInGameMulti::CAMBIARCosasDeTotemUpdate() {
     bool todosFalse = true;

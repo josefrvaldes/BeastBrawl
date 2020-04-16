@@ -23,20 +23,22 @@ class Game{
 
 
         //EventManager
+        void SetStateIntro(DataMap* d);
         void SetStateMenu(DataMap* d);
+        void SetStateSelectCharacter(DataMap* d);
+        void SetStateGameOptions(DataMap* d);
         void SetStatePause(DataMap* d);
         void SetStateInGameSingle(DataMap* d);
         void SetStateInGameMulti(DataMap* d);
         void SetStateEndRace(DataMap* d);
         void SetStateLobbyMulti(DataMap* d);
         void SetStateControls(DataMap* d);
-        
-    
-
+        void SetStateCredits(DataMap* d);
+        void SetStateSettings(DataMap* d);
 
 
     private:
-        Game(){};
+        Game()= default;;
         static Game* game;
         void SuscribeEvents();
 

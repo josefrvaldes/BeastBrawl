@@ -8,8 +8,11 @@ using namespace std;
 
 Camera::Camera()
 {
-    string vertexShader = "CLEngine/src/Shaders/vertex.glsl";
-    string fragmentShader = "CLEngine/src/Shaders/fragment.glsl";
+    //string vertexShader = "CLEngine/src/Shaders/lightMapping.vert";
+    //string fragmentShader = "CLEngine/src/Shaders/lightMapping.frag";
+
+    string vertexShader = "CLEngine/src/Shaders/cartoonShader.vert";
+    string fragmentShader = "CLEngine/src/Shaders/cartoonShader.frag";
 
     shared_ptr<Component> cId   = make_shared<CId>();
     shared_ptr<Component> cTransformable = make_shared<CTransformable>(glm::vec3(10.0f,20.0f,30.0f),    glm::vec3(0.0f,0.0f,0.0f),    glm::vec3(1.0f,1.0f,1.0f));
@@ -24,8 +27,8 @@ Camera::Camera()
 
 Camera::Camera(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale)
 {
-    string vertexShader = "CLEngine/src/Shaders/vertex.glsl";
-    string fragmentShader = "CLEngine/src/Shaders/fragment.glsl";
+    string vertexShader = "CLEngine/src/Shaders/lightMapping.vert";
+    string fragmentShader = "CLEngine/src/Shaders/lightMapping.frag";
 
     shared_ptr<Component> cId   = make_shared<CId>();
     shared_ptr<Component> cTransformable = make_shared<CTransformable>(pos,rot,scale);

@@ -2,14 +2,11 @@
 #include <boost/asio/placeholders.hpp>
 #include <boost/bind.hpp>
 #include <deque>
-#include "../../include/include_json/include_json.hpp"
 #include "../EventManager/Event.h"
 #include "../EventManager/EventManager.h"
 #include "../Systems/Utils.h"
 #include "../Systems/Serialization.h"
 
-
-using json = nlohmann::json;
 
 using boost::asio::ip::tcp;
 using namespace boost;
@@ -152,6 +149,7 @@ void TCPClient::HandleReceivedStartGame(std::shared_ptr<unsigned char[]> recevBu
     uint16_t idPlayer = Serialization::Deserialize<uint16_t>(recevBuff.get(), currentIndex);
     uint8_t enemiesSize = Serialization::Deserialize<uint8_t>(recevBuff.get(), currentIndex);
     vector<uint16_t> idEnemies = Serialization::DeserializeVector<uint16_t>(enemiesSize, recevBuff.get(), currentIndex);
+    cout << Utils::getISOCurrentTimestampMillis() << " hemos recibido un startGame y voy a ser el id " << idPlayer << endl;
     
     std::shared_ptr<DataMap> data = make_shared<DataMap>();
     (*data)[DataType::ID_ONLINE] = idPlayer;

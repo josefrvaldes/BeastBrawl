@@ -15,6 +15,9 @@ using namespace std;
 using namespace chrono;
 
 StateInGame::StateInGame() {
+
+    std::cout << "> INGAME constructor" << std::endl;
+
     // aunque physics es un sistema, no se llama desde InitializeSystems
     // porque tiene que estar inicializado antes de llamar a InitializeManagers
     cout << "------------------------------------------------------------------" << endl;
@@ -43,7 +46,7 @@ StateInGame::~StateInGame() {
  *  Y ES OBLIGATORIO llamar a este método desde el constructor de los hijos
  */
 void StateInGame::InitVirtualMethods() {
-    InitializeManagers(physics.get(), cam.get());
+    InitializeManagers(physics.get(), cam.get(), 300);
     InitializeSystems(*manCars.get(), *manBoundingWall.get(), *manBoundingOBB.get(), *manBoundingGround.get(), *manPowerUps.get(), *manNavMesh.get(), *manBoxPowerUps.get(), *manTotems.get());
     InitializeFacades();
 
@@ -62,6 +65,9 @@ void StateInGame::InitializeFacades() {
     physicsEngine = PhysicsFacadeManager::GetInstance()->GetPhysicsFacade();
     renderEngine = RenderFacadeManager::GetInstance()->GetRenderFacade();
     renderEngine->FacadeSuscribeEvents();
+
+    //Pantalla de carga
+    renderEngine->FacadeInitResources(); 
 }
 
 /*
@@ -104,8 +110,28 @@ void StateInGame::AddElementsToRender() {
     renderEngine->FacadeAddCamera(cam.get());
 
     renderEngine->FacadeAddObjectTotem(manTotems->GetEntities()[0].get());
-    // este último probablemente haya que cambiarlo ¿?
-    //renderEngine->FacadeAddObject(totemOnCar.get());
+    
+    //Añadimos las luces
+    for(auto light : manLight->GetEntities()){
+        renderEngine->FacadeAddObject(light.get());
+    }
+
+    renderEngine->FacadeAddSkybox("media/skybox/right.jpg",
+        "media/skybox/left.jpg",
+        "media/skybox/top.jpg",
+        "media/skybox/bottom.jpg",
+        "media/skybox/front.jpg",
+        "media/skybox/back.jpg");
+    
+    if(manLight->GetEntities().size()>0){
+        auto lightWithShadow = manLight->GetEntities()[0];
+        auto cId = static_cast<CId*>(lightWithShadow->GetComponent(CompType::IdComp).get());
+        renderEngine->FacadeAddShadowMapping(cId->id);
+    }
+
+    for(auto particleSystem : manParticleSystem->GetEntities()){
+        renderEngine->FacadeAddObject(particleSystem.get());
+    }
 }
 
 void StateInGame::InitializeCLPhysics(ManCar &manCars, ManBoundingWall &manWall, ManBoundingOBB &manOBB, ManBoundingGround &manGround, ManPowerUp &manPowerUp, ManNavMesh &manNavMesh, ManBoxPowerUp &manBoxPowerUp, ManTotem &manTotem) {
@@ -127,31 +153,39 @@ void StateInGame::InitializeSystems(ManCar &manCars, ManBoundingWall &manWall, M
     phisicsPowerUp = make_shared<PhysicsPowerUp>();  // Creamos sistemas
     collisions = make_shared<Collisions>();
     sysBoxPowerUp = make_shared<SystemBoxPowerUp>();
+    sysLoD = make_unique<SystemLoD>();
 }
 
-void StateInGame::InitializeManagers(Physics *physics, Camera *cam) {
+void StateInGame::InitializeManagers(Physics *physics, Camera *cam, const uint32_t timeGame) {
     // inicializa el man PU, no hace falta más código para esto
-    manCars = make_shared<ManCar>(physics, cam);
-    manWayPoint = make_shared<ManWayPoint>();  //Se crean todos los waypoints y edges
-    manPowerUps = make_shared<ManPowerUp>(manCars);
-    manBoxPowerUps = make_shared<ManBoxPowerUp>();
-    manBoundingWall = make_shared<ManBoundingWall>();
-    manBoundingOBB = make_shared<ManBoundingOBB>();
-    manBoundingGround = make_shared<ManBoundingGround>();
-    manNavMesh = make_shared<ManNavMesh>();
-    manTotems = make_shared<ManTotem>(manNavMesh.get());
-    manNamePlates = make_shared<ManNamePlate>(manCars.get());
-    manGameRules = make_unique<ManGameRules>();
+    manCars             = make_shared<ManCar>(physics, cam);
+    manWayPoint         = make_shared<ManWayPoint>();  //Se crean todos los waypoints y edges
+    manPowerUps         = make_shared<ManPowerUp>(manCars);
+    manBoxPowerUps      = make_shared<ManBoxPowerUp>();
+    manBoundingWall     = make_shared<ManBoundingWall>();
+    manBoundingOBB      = make_shared<ManBoundingOBB>();
+    manBoundingGround   = make_shared<ManBoundingGround>();
+    manNavMesh          = make_shared<ManNavMesh>();
+    manTotems           = make_shared<ManTotem>(manNavMesh.get());
+    manNamePlates       = make_shared<ManNamePlate>(manCars.get());
+    manLight            = make_shared<ManLight>();
+    manGameRules        = make_unique<ManGameRules>(timeGame);
+    manParticleSystem   = make_unique<ManParticleSystem>();
+
+    // Es raro pero diria que aqui tengo que ir añadiendo sistemas de particulas
+    // Añadimos las particulas a todas las cajas
+    for(auto boxPowerUp : manBoxPowerUps->GetEntities()){
+        auto cId = static_cast<CId*>(boxPowerUp->GetComponent(CompType::IdComp).get());
+        manParticleSystem->CreateParticleSystem(cId->id,glm::vec3(0.0f,0.0f,0.0f),30,glm::vec3(200.0f,400.0f,200.0f),"media/particle_test.png",5,5,100,30,150,glm::vec3(0.0f,0.0f,0.0f),glm::vec3(0.0f,0.0f,0.0f),0, 0x1 | 0x4 ,false,false);
+    }
 }
 
 //Carga los bancos de sonido InGame.
 void StateInGame::InitState() {
-    cout << "~~~ ENTRO A INGAME" << endl;
 
     //Si la direccion de soundEngine!=0 es que viene del PAUSE, por lo que no deberia hacerlo.
     if (!soundEngine) {
         soundEngine = SoundFacadeManager::GetInstance()->GetSoundFacade();
-        //cout << "~~~ SoundEngine en INGAME es -> " << soundEngine << endl;
         if (soundEngine) {
             soundEngine->SetState(4);
         }
@@ -200,6 +234,19 @@ void StateInGame::Update() {
 
     // al final de la ejecucion eliminamos todos los powerUps que se deben eliminar
     manPowerUps->Update();
+
+    sysLoD->Update(manCars->GetEntities(), cam.get());
+    sysLoD->Update(manPowerUps->GetEntities(), cam.get());
+    sysLoD->Update(manBoxPowerUps->GetEntities(), cam.get());
+    sysLoD->Update(manTotems->GetEntities(), cam.get());
+
+    renderEngine->FacadeUpdateMeshesLoD(manCars->GetEntities());
+    renderEngine->FacadeUpdateMeshesLoD(manPowerUps->GetEntities());
+    renderEngine->FacadeUpdateMeshesLoD(manBoxPowerUps->GetEntities());
+    renderEngine->FacadeUpdateMeshesLoD(manTotems->GetEntities());
+
+
+    manGameRules->Update();
 }
 
 void StateInGame::Render() {

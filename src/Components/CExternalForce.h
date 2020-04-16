@@ -7,10 +7,9 @@ using namespace glm;
 
 class CExternalForce : public Component {
    public:
-    CExternalForce() : force{0}{
-        m_compType = CompType::CompExternalForce;
-    }
+    CExternalForce();
 
     vec3 dirExternalForce;
     float force;
+    float friction = 6.0 /* *deltaTime */;  // tiempo que tarda en reducirse el choque
 };

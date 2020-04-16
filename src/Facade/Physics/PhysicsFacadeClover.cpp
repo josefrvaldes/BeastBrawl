@@ -20,12 +20,13 @@ void PhysicsFacadeClover::UpdateCar(Entity* car, Entity* cam) {
     auto cTransformable = static_cast<CTransformable*>(car->GetComponent(CompType::TransformableComp).get());
     auto cId = static_cast<CId*>(car->GetComponent(CompType::IdComp).get());
 
-    auto irrAngle = cTransformable->rotation.y;
-    auto openglAngle = Utils::IrrlichtAngleToOpenGL(130.0);
+    //auto irrAngle = cTransformable->rotation.y;
+    //auto openglAngle = Utils::IrrlichtAngleToOpenGL(130.0);
     //Actualizamos el valor en la estructura de irrlicht
     // Cogemos el nodo de irrlicht con el ID igual al que le hemos pasado
-    auto node = smgr->GetNodeByID(cId->id);
+    auto node = smgr->GetNodeByID(cId->id); 
 
+    //cout << cTransformable->position.x << " | " << cTransformable->position.y << " | " << cTransformable->position.z << endl;
     //Actualiza la posicion del objeto de irrlicht
     node->SetTranslation(glm::vec3(cTransformable->position.x, cTransformable->position.y, -cTransformable->position.z));
 

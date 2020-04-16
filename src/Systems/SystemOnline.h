@@ -20,7 +20,7 @@ class SystemOnline {
     void Update();
     void SendInputs(const vector<Constants::InputTypes> &d) const;
     void SendSync(ManCar* manCars, ManTotem* manTotem) const;
-    void SendEndgame() const;
+    // void SendEndgame() const;
     void SendCatchPU(CPowerUp& cPowerUp) const;
     void SendThrowPU(const shared_ptr<PowerUp>& powerUp, const uint16_t idToPursue) const;
     void SendCrashPUCar(const uint16_t idPowerUp, const uint16_t idCar) const;

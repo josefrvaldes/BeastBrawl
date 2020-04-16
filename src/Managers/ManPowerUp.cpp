@@ -2,6 +2,7 @@
 
 #include <Components/CDimensions.h>
 #include <Components/CIDOnline.h>
+#include <Components/CId.h>
 #include <Entities/PowerUp.h>
 #include <Entities/Car.h>
 #include <EventManager/Event.h>
@@ -24,7 +25,6 @@ ManPowerUp::ManPowerUp(shared_ptr<ManCar> manCars_) : manCars{manCars_} {
 }
 
 ManPowerUp::~ManPowerUp() {
-    cout << "Llamando al destructor de ManPowerUps" << endl;
     entities.clear();
     entities.shrink_to_fit();
 }
@@ -52,14 +52,12 @@ void ManPowerUp::NewPowerUpReceivedFromServer(DataMap *d) {
     }
     shared_ptr<PowerUp> powerUp = make_shared<PowerUp>(position, rotation, typePU, transforPerse);
     shared_ptr<CIDOnline> cidOnline = make_shared<CIDOnline>(idPUOnline, true);
-    cidOnline->collided = true;
     powerUp->AddComponent(cidOnline); 
     MaterializePowerUp(powerUp);
 }
 
 void ManPowerUp::CreatePowerUp(DataMap *d) {
     typeCPowerUp type = any_cast<typeCPowerUp>((*d)[TYPE_POWER_UP]);
-    cout << "el tipo de powerUp que recibimos es el: " << int(type) << endl;
 
     CTransformable *transforSalida = any_cast<CTransformable *>((*d)[CAR_EXIT_POSITION]);
     CDimensions *dimensionsCarSalida = any_cast<CDimensions *>((*d)[CAR_EXIT_DIMENSION]);
@@ -75,7 +73,7 @@ void ManPowerUp::CreatePowerUp(DataMap *d) {
     int medidaPowerUp = 25;
     float posX = 0, posZ = 0;
 
-   float angleRotation = (transforSalida->rotation.y * glm::pi<float>() / 180.0);
+    float angleRotation = (transforSalida->rotation.y * glm::pi<float>() / 180.0);
     if (type == typeCPowerUp::PudinDeFrambuesa) {
         posX = transforSalida->position.x - cos(angleRotation) * (-1 * ((dimensionsCarSalida->width / 2) + medidaPowerUp));
         posZ = transforSalida->position.z + sin(angleRotation) * (-1 * ((dimensionsCarSalida->depth / 2) + medidaPowerUp));
@@ -87,7 +85,7 @@ void ManPowerUp::CreatePowerUp(DataMap *d) {
     vec3 positionPowerUp = vec3(posX, transforSalida->position.y + 10, posZ);
 
     shared_ptr<PowerUp> powerUp = make_shared<PowerUp>(positionPowerUp, transforSalida->rotation, type, transforPerse);
-
+    
     // ojo con esta linea, no borrar porque es necesaria aunque parezca que no lo es
     auto cTypePU = static_cast<CType *>(powerUp->GetComponent(CompType::TypeComp).get())->type;
 
@@ -103,6 +101,7 @@ void ManPowerUp::CreatePowerUp(DataMap *d) {
                 // apuntamos el id de ese coche al que perseguir para enviarlo al online
                 idToPursue = cOnline->idClient;
             }
+            // enviamos al server que ese PU se ha lanzado
             systemOnline->SendThrowPU(powerUp, idToPursue);
         }
         MaterializePowerUp(powerUp);
@@ -113,6 +112,8 @@ void ManPowerUp::CreatePowerUp(DataMap *d) {
         cout << "SIIIIIIIIIIII TE PASA ESTOOOOOOOOOOOOOOOOOOOOOO HABLAAAAAAAAAAAAAAAR CON CARLOOOOOOOOOOOOOOOOOOOOOSSSSSSS" << endl;
     }
 }
+    
+
 
 void ManPowerUp::MaterializePowerUp(shared_ptr<PowerUp> powerUp) {
     entities.push_back(powerUp);
@@ -153,10 +154,12 @@ void ManPowerUp::Update() {
     for (long unsigned int i = 0; i < entities.size(); ++i) {
         auto cRemovableObj = static_cast<CRemovableObject *>(entities[i].get()->GetComponent(CompType::RemovableObjectComp).get());
         if (cRemovableObj->destroy) {
-            renderEngine->DeleteEntity(entities[i].get());
+            renderEngine->DeleteEntity(entities[i].get()); 
             entities.erase(entities.begin() + i);
+
         }
     }
+
 }
 
 // TO-DO : tener una variable de control para eliminar todas las cosas de los arrays a la vez CUIDADO CON ESOOOO

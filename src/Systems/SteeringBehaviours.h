@@ -8,20 +8,18 @@
 #include <map>
 #include <CLPhysics/CLPhysics.h>
 
-//#include "../../lib/glm/mat4x4.hpp"
-//#include "../../lib/glm/gtc/matrix_transform.hpp"
-//#include "../../lib/glm/gtc/quaternion.hpp"
-//#include "../../lib/glm/gtx/quaternion.hpp"
-
 using namespace std;
 
-struct ManCar;
+class ManCar;
 class Entity;
 class CTransformable;
-struct CNitro;
+class CNitro;
 class CCar;
-struct ManPowerUp;
-struct ManBoundingWall;
+class CExternalForce;
+class ManPowerUp;
+class ManBoundingWall;
+class ManBoundingOBB;
+
 
 class SteeringBehaviours{
 
@@ -29,36 +27,38 @@ public:
     SteeringBehaviours();
     ~SteeringBehaviours(){};
 
-    bool IsTargeteable(Entity* m_actualCar, Entity* m_targetCar, ManBoundingWall* m_manBoundingWall) const;
+    bool IsTargeteable(Entity* actualCar, Entity* targetCar, ManBoundingWall* manBoundingWall) const;
     
-    void UpdateSeek(Entity* m_actualCar);
-    void UpdateArrive(Entity* m_actualCar);
-    float UpdatePursuePowerUp(Entity* m_actualCar, Entity* m_targetCar);
-    bool UpdateObstacleAvoidance(Entity* m_Car,  ManCar* m_manCar) const;
-    bool UpdateWallAvoidance(Entity* m_Car,  ManBoundingWall* m_manBoundingWall) const;
+    void UpdateSeek(Entity* actualCar);
+    void UpdateArrive(Entity* actualCar);
+    float UpdatePursuePowerUp(Entity* actualCar, Entity* targetCar);
+    bool UpdateObstacleAvoidance(Entity* actualCar,  ManCar* manCar) const;
+    bool UpdateWallAvoidance(Entity* actualCar,  ManBoundingWall* manBoundingWall, ManBoundingOBB* manBoundingOBB) const;
 
-    glm::vec2 Seek(Entity* m_originCar, const glm::vec3& m_posTargetCar, const glm::vec2& m_velocityVector) const;
-    glm::vec2 Arrive(Entity* m_originCar, const glm::vec3& m_posTargetCar, const glm::vec2& m_velocityVector) const;
-    glm::vec2 Pursue(Entity* m_originCar, Entity* m_targetCar, const glm::vec2& m_velocityVector) const;
-    glm::vec2 PursuePowerUp(Entity* m_originCar, Entity* m_targetCar, const glm::vec2& m_velocityVector) const;
-    glm::vec2 ObstacleAvoidance(Entity* m_Car, ManCar* m_manCar, const glm::vec2& m_velocityVector) const;
-    glm::vec2 WallAvoidance(Entity* m_Car, ManBoundingWall* m_manBoundingWall, const glm::vec2& m_velocityVector) const;
+    glm::vec2 Seek(Entity* originCar, const glm::vec3& posTargetCar, const glm::vec2& velocityVector) const;
+    glm::vec2 Arrive(Entity* originCar, const glm::vec3& posTargetCar, const glm::vec2& velocityVector) const;
+    glm::vec2 Pursue(Entity* originCar, Entity* targetCar, const glm::vec2& velocityVector) const;
+    glm::vec2 PursuePowerUp(Entity* originCar, Entity* targetCar, const glm::vec2& velocityVector) const;
+    glm::vec2 ObstacleAvoidance(Entity* actualCar, ManCar* manCar, const glm::vec2& velocityVector) const;
+    glm::vec2 WallAvoidance(Entity* actualCar, ManBoundingWall* manBoundingWall, ManBoundingOBB* manBoundingOBB, const glm::vec2& velocityVector) const;
 
-    void UpdateAngleRotation(CCar* m_cCar, float angle) const;
-    void UpdateSpeed(CCar* m_cCar, CNitro* m_cNitro) const;
-    void UpdateSpeedAvoidance(CCar* m_cCar, CNitro* m_cNitro) const;
-    void UpdatePosition(CCar* m_cCar, CTransformable* m_cTransformableCar) const;
+    void UpdateAngleRotation(CCar* cCar, float angle) const;
+    void UpdateSpeed(CCar* cCar, CNitro* cNitro) const;
+    void UpdateSpeedAvoidance(CCar* cCar, CNitro* cNitro) const;
+    void UpdatePosition(CCar* cCar, CTransformable* cTransformableCar, CExternalForce* cExternalForce) const;
 
-    glm::vec2 CalculateVectorVelocity(CCar &m_cCar, CTransformable &transformableCar) const;
-    float CalculateAngle(const glm::vec2& m_originVec, const glm::vec2& m_destinyVec, float m_rotationY) const;
-    bool CollisionRaySphere(Entity* m_Car, Entity* m_object, const glm::vec2& m_velocityVector, float& distance, glm::vec2& vectorForceAvoid) const;
-    bool CollisionRayPlane(Entity* m_Car, Entity* m_object, const glm::vec2& m_velocityVector, float& distance, glm::vec2& vectorForceAvoid, glm::vec3& target) const;
+    glm::vec2 CalculateVectorVelocity(CCar &cCar, CTransformable &transformableCar) const;
+    float CalculateAngle(const glm::vec2& originVec, const glm::vec2& destinyVec, float rotationY) const;
+    bool CollisionRaySphere(Entity* actualCar, Entity* object, const glm::vec2& velocityVector, float& distance, glm::vec2& vectorForceAvoid) const;
+    bool CollisionRayPlane(Entity* actualCar, Entity* object, const glm::vec2& velocityVector, float& distance, glm::vec2& vectorForceAvoid, glm::vec3& target) const;
 
-    bool CollisionFaceToFace(Entity* m_Car, Entity *m_object) const;
-    void AvoidVibration(Entity* m_Car, Entity *actualObstacle, const glm::vec2& m_velocityVector, glm::vec2& vectorForce) const;
-    void AvoidTrapCorner(Entity* m_Car, Entity *actualObstacle, const glm::vec2& m_velocityVector, const glm::vec3& target, glm::vec2& vectorForce) const;
+    bool CollisionFaceToFace(Entity* actualCar, Entity *object) const;
+    void AvoidVibration(Entity* actualCar, Entity *actualObstacle, const glm::vec2& velocityVector, glm::vec2& vectorForce) const;
+    void AvoidTrapCorner(Entity* actualCar, Entity *actualObstacle, const glm::vec2& velocityVector, const glm::vec3& target, glm::vec2& vectorForce) const;
 
 protected:
 private:
     unique_ptr<CLPhysics> clPhysics;
+    glm::vec2 ApplyExternalForce(CCar *cCar, CExternalForce *externalForce, const glm::vec2& carForce) const;
+
 };

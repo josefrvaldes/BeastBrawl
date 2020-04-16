@@ -72,7 +72,6 @@ class SoundFacadeFMOD : public SoundFacade {
         void SoundMenuOption(DataMap*);
 
 
-
         float character { 0 } ;
         enum TipoVoz { ChoqueEnemigo, ChoquePowerup, Derrape, Powerup, Random };
         CLSE::SoundEngine* soundEngine { nullptr };

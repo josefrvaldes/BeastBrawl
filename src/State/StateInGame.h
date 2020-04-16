@@ -39,10 +39,13 @@
 #include <Managers/ManPowerUp.h>
 #include <Managers/ManTotem.h>
 #include <Managers/ManWayPoint.h>
+#include <Managers/ManLight.h>
+#include <Managers/ManParticleSystem.h>
 #include "../Managers/ManGameRules.h"
 #include <Systems/Collisions.h>
 #include <Systems/Physics.h>
 #include <Systems/PhysicsPowerUp.h>
+#include <Systems/SystemLoD.h>
 #include <Systems/SystemBoxPowerUp.h>
 #include <behaviourTree/behaviourTree.h>
 #include <behaviourTree/decorator.h>
@@ -84,7 +87,10 @@ class StateInGame : public State {
     shared_ptr<ManBoundingWall> manBoundingWall;
     shared_ptr<ManBoundingOBB> manBoundingOBB;
     shared_ptr<ManBoundingGround> manBoundingGround;
+    shared_ptr<ManLight> manLight;
     unique_ptr<ManGameRules> manGameRules;
+    unique_ptr<ManParticleSystem> manParticleSystem;
+    unique_ptr<SystemLoD> sysLoD;
 
     RenderFacade *renderEngine = {nullptr};
     InputFacade *inputEngine = {nullptr};
@@ -111,7 +117,7 @@ class StateInGame : public State {
     //float CalculateDelta(float);
 
     virtual void InitializeCLPhysics(ManCar&, ManBoundingWall&, ManBoundingOBB&, ManBoundingGround&, ManPowerUp&, ManNavMesh&, ManBoxPowerUp&, ManTotem &);
-    virtual void InitializeManagers(Physics *, Camera *);
+    virtual void InitializeManagers(Physics *, Camera *, const uint32_t timeGame);
     virtual void InitializeSystems(ManCar&, ManBoundingWall&, ManBoundingOBB&, ManBoundingGround&, ManPowerUp&, ManNavMesh&, ManBoxPowerUp&, ManTotem &);
     virtual void InitializeFacades();
     virtual void AddElementsToRender();

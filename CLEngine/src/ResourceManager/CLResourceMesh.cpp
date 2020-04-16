@@ -47,19 +47,21 @@ Mesh::Mesh(vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture
 
 
 // CLRESOURCEMESH -------------------------------------------------------------------
+#include "../SceneTree/CLShadowMapping.h"
 
 using namespace CLE;
 
-/**
- * 
- * @param file - Ruta del archivo a leer.
- */
-bool CLResourceMesh::LoadFile(std::string file) {
-    Assimp::Importer importer;
 
+bool CLResourceMesh::LoadFile(std::string file, bool flipUV) {
+    Assimp::Importer importer;
+    auto assimpFlags = aiProcess_Triangulate | /*aiProcess_FlipUVs | */aiProcess_GenNormals | aiProcess_CalcTangentSpace 
+                                | aiProcess_OptimizeMeshes | aiProcess_TransformUVCoords | aiProcess_JoinIdenticalVertices 
+                                | aiProcess_ImproveCacheLocality | aiProcess_GenUVCoords;
+
+    if(flipUV)
+        assimpFlags |= aiProcess_FlipUVs;
     // Importamos el fichero.
-    scene = importer.ReadFile(file, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_GenNormals | aiProcess_CalcTangentSpace 
-                                | aiProcess_OptimizeMeshes);
+    scene = importer.ReadFile(file, assimpFlags);
 
     // Error de carga
     if(!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) 
@@ -72,11 +74,7 @@ bool CLResourceMesh::LoadFile(std::string file) {
     return true;
 }  
 
-/**
- * Recorremos los nodos para recuperar todos la informacion de la malla.
- * @param node - 
- * @param scene - 
- */
+
 void CLResourceMesh::processNode(aiNode *node, const aiScene *scene){
     // process all the node's meshes (if any)
     for(unsigned int i = 0; i < node->mNumMeshes; i++)
@@ -91,16 +89,12 @@ void CLResourceMesh::processNode(aiNode *node, const aiScene *scene){
     }
 }
 
-/**
- * Almacenamos los valores que recoge assimp de cada submalla.
- * @param mesh -
- * @param scene -
- */
 Mesh CLResourceMesh::processMesh(aiMesh *mesh, const aiScene *scene)
 {
     vector<Vertex> vertices;
     vector<unsigned int> indices;
     vector<Texture> textures; 
+    //vector<Material> materials;
 
     for(unsigned int i = 0; i < mesh->mNumVertices; i++)
     {
@@ -109,7 +103,7 @@ Mesh CLResourceMesh::processMesh(aiMesh *mesh, const aiScene *scene)
         // positions
         vecAux.x = mesh->mVertices[i].x;
         vecAux.y = mesh->mVertices[i].y;
-        vecAux.z = mesh->mVertices[i].z;
+        vecAux.z = mesh->mVertices[i].z; 
         vertex.position = vecAux;
         // normals
         vecAux.x = mesh->mNormals[i].x;
@@ -165,9 +159,11 @@ Mesh CLResourceMesh::processMesh(aiMesh *mesh, const aiScene *scene)
     // process material
     if(mesh->mMaterialIndex >= 0)
     { 
-        // process materials
+        // // process materials
         aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];    
-        Material m = loadMaterial(material);
+        // Material m = loadMaterial(material);
+        // materials.push_back(m);
+        
         // we assume a convention for sampler names in the shaders. Each diffuse texture should be named
         // as 'texture_diffuseN' where N is a sequential number ranging from 1 to MAX_SAMPLER_NUMBER. 
         // Same applies to other texture as the following list summarizes:
@@ -182,11 +178,12 @@ Mesh CLResourceMesh::processMesh(aiMesh *mesh, const aiScene *scene)
         vector<Texture> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
         textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
         //3. normal maps
-        std::vector<Texture> normalMaps = loadMaterialTextures(material, aiTextureType_HEIGHT, "texture_normal");
+        std::vector<Texture> normalMaps = loadMaterialTextures(material, aiTextureType_NORMALS, "texture_normal");
         textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
         // 4. height maps
-        std::vector<Texture> heightMaps = loadMaterialTextures(material, aiTextureType_AMBIENT, "texture_height");
+        std::vector<Texture> heightMaps = loadMaterialTextures(material, aiTextureType_HEIGHT, "texture_height");
         textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
+        
     }   
 
     
@@ -197,27 +194,6 @@ Mesh CLResourceMesh::processMesh(aiMesh *mesh, const aiScene *scene)
 }  
 
 
-Material CLResourceMesh::loadMaterial(aiMaterial* mat) {
-    //Ruben del futuro:
-    //Una vez tienes estos valores se los mandas al fragment por el struct material y ya estaria yo creo
-    Material material;
-    aiColor3D color(0.f, 0.f, 0.f);
-    float shininess;
-
-    mat->Get(AI_MATKEY_COLOR_DIFFUSE, color);
-    material.diffuse = glm::vec3(color.r, color.b, color.g);
-
-    mat->Get(AI_MATKEY_COLOR_AMBIENT, color);
-    material.ambient = glm::vec3(color.r, color.b, color.g);
-
-    mat->Get(AI_MATKEY_COLOR_SPECULAR, color);
-    material.specular = glm::vec3(color.r, color.b, color.g);
-
-    mat->Get(AI_MATKEY_SHININESS, shininess);
-    material.shininess = shininess;
-
-    return material;
-}
 
 
 vector<Texture> CLResourceMesh::loadMaterialTextures(aiMaterial *mat, aiTextureType type, string typeName)
@@ -263,11 +239,11 @@ unsigned int CLResourceMesh::TextureFromFile(const char *path, const string &dir
     std::string token;
     while ((pos = filename.find(delimiter)) != std::string::npos) {
         token = filename.substr(0, pos);
-        std::cout << token << std::endl;
+        //std::cout << token << std::endl;
         filename.erase(0, pos + delimiter.length());
     }
 
-    filename = "media/" + filename;
+    filename = "media/clv_" + filename;
 
     
 
@@ -278,7 +254,7 @@ unsigned int CLResourceMesh::TextureFromFile(const char *path, const string &dir
     unsigned char *data = stbi_load(filename.c_str(), &width, &height, &nrComponents, 0);
     if (data)
     {
-        GLenum format;
+        GLenum format = 0;
         if (nrComponents == 1)
             format = GL_RED;
         else if (nrComponents == 3)
@@ -299,45 +275,48 @@ unsigned int CLResourceMesh::TextureFromFile(const char *path, const string &dir
     }
     else
     {
-        std::cout << "Texture failed to load at path: " << path << std::endl;
+        std::cout << "Texture failed to load at path: " << filename << std::endl;
         stbi_image_free(data);
     }
 
     return textureID;
 }
 
-/**
- * Aqui se llega normalmente desde la clase CLMesh->Draw()
- */
+
 void CLResourceMesh::Draw(GLuint shaderID) {
 
     for(auto& mesh : vecMesh){
 
         // bind appropriate textures
-        unsigned int diffuseNr  = 1;
-        unsigned int specularNr = 1;
-        unsigned int normalNr   = 1;
-        unsigned int heightNr   = 1;
+        // unsigned int diffuseNr  = 1;
+        // unsigned int specularNr = 1;
+        // unsigned int normalNr   = 1;
+        // unsigned int heightNr   = 1;
+        
         for(unsigned int i = 0; i < mesh.textures.size(); i++)
         {
             glActiveTexture(GL_TEXTURE0 + i); // active proper texture unit before binding
             // retrieve texture number (the N in diffuse_textureN)
-            string number;
             string name = mesh.textures[i].type;
             if(name == "texture_diffuse")
-                number = std::to_string(diffuseNr++);
+                glUniform1i(glGetUniformLocation(shaderID, "material.diffuse"), i);
             else if(name == "texture_specular")
-                number = std::to_string(specularNr++); // transfer unsigned int to stream
+                glUniform1i(glGetUniformLocation(shaderID, "material.specular"), i);
+
             else if(name == "texture_normal")
-                number = std::to_string(normalNr++); // transfer unsigned int to stream
-             else if(name == "texture_height")
-                number = std::to_string(heightNr++); // transfer unsigned int to stream
+                glUniform1i(glGetUniformLocation(shaderID, "material.normal"), i);
+
+            else if(name == "texture_height")
+                glUniform1i(glGetUniformLocation(shaderID, "material.height"), i);
+
 
             // now set the sampler to the correct texture unit
-            glUniform1i(glGetUniformLocation(shaderID, (name + number).c_str()), i);
             // and finally bind the texture
             glBindTexture(GL_TEXTURE_2D, mesh.textures[i].id);
         }
+        glActiveTexture(GL_TEXTURE1);
+        glUniform1i(glGetUniformLocation(shaderID, "depthMap"), 1);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, CLShadowMapping::depthCubemap);
 
 
 
@@ -347,5 +326,16 @@ void CLResourceMesh::Draw(GLuint shaderID) {
 
         // always good practice to set everything back to defaults once configured.
         glActiveTexture(GL_TEXTURE0);
+    }
+}
+
+
+
+
+void CLResourceMesh::DrawDepthMap(GLuint shaderID) {
+    for(auto& mesh : vecMesh){
+        glBindVertexArray(mesh.VAO);
+        glDrawElements(GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT, 0);
+        glBindVertexArray(0);
     }
 }

@@ -1,5 +1,7 @@
 #include "RenderFacadeIrrlicht.h"
 
+#define _USE_MATH_DEFINES
+
 #include <cmath>
 #include <algorithm>    // std::sort
 #include "../../Components/CBoundingChassis.h" 
@@ -97,6 +99,24 @@ void RenderFacadeIrrlicht::FacadeSuscribeEvents() {
         "facadeUpdatePowerUpHUD"});
 }
 
+
+//////////////////////////
+//  INICIA LOS MENUS    //
+//////////////////////////
+
+void RenderFacadeIrrlicht::FacadeInitIntro() {
+    introBG = driver->getTexture("media/pauseMenu.png");
+    driver->makeColorKeyTexture(introBG, core::position2d<s32>(0, 0));
+}
+
+void RenderFacadeIrrlicht::FacadeInitSelectCharacter() {
+
+}
+
+void RenderFacadeIrrlicht::FacadeInitGameOptions() {
+
+}
+
 void RenderFacadeIrrlicht::FacadeInitMenu() {
     menuBG = driver->getTexture("media/main_menu.png");
     driver->makeColorKeyTexture(menuBG, core::position2d<s32>(0, 0));
@@ -105,6 +125,10 @@ void RenderFacadeIrrlicht::FacadeInitMenu() {
 void RenderFacadeIrrlicht::FacadeInitControler() {
     controlerBG = driver->getTexture("media/controller_scheme.png");
     driver->makeColorKeyTexture(controlerBG, core::position2d<s32>(0, 0));
+}
+
+void RenderFacadeIrrlicht::FacadeInitCredits() {
+
 }
 
 void RenderFacadeIrrlicht::FacadeInitPause() {
@@ -151,11 +175,19 @@ void RenderFacadeIrrlicht::FacadeInitHUD() {
     currentPowerUp = 0;
 }
 
+void RenderFacadeIrrlicht::FacadeInitSettings() {
+
+}
+
+
 void RenderFacadeIrrlicht::FacadeUpdatePowerUpHUD(DataMap* d) {
     typeCPowerUp type = any_cast<typeCPowerUp>((*d)[TYPE_POWER_UP]);
     //cout << "Facada recibe el power up: " << (int)type << endl;
     currentPowerUp = int(type);
 }
+
+
+
 
 void RenderFacadeIrrlicht::FacadeDrawHUD(Entity* car, ManCar* manCars) {
 
@@ -249,6 +281,8 @@ void RenderFacadeIrrlicht::FacadeDrawHUD(Entity* car, ManCar* manCars) {
     }
 }
 
+
+
 //Crea las plates de los nombres de los coches
 void RenderFacadeIrrlicht::FacadeAddPlates(Manager* manNamePlates) {
     for (const auto& plate : manNamePlates->GetEntities()) {
@@ -272,6 +306,7 @@ void RenderFacadeIrrlicht::FacadeUpdatePlates(Manager* manNamePlates) {
         node->setPosition(core::vector3df(carAI->getPosition().X, carAI->getPosition().Y + 20, carAI->getPosition().Z));
     }
 }
+
 const void RenderFacadeIrrlicht::FacadeAddObjects(vector<Entity*> entities) {
     for (Entity* e : entities) {
         FacadeAddObject(e);
@@ -289,11 +324,15 @@ const uint16_t RenderFacadeIrrlicht::FacadeAddObject(Entity* entity) {
     auto cId = static_cast<CId*>(entity->GetComponent(CompType::IdComp).get());
     auto cTexture = static_cast<CTexture*>(entity->GetComponent(CompType::TextureComp).get());
     auto cType = static_cast<CType*>(entity->GetComponent(CompType::TypeComp).get());
-    auto cMesh = static_cast<CMesh*>(entity->GetComponent(CompType::MeshComp).get());
 
     //Switch para añadir el tipo de objeto
     scene::ISceneNode* node = nullptr;
-    std::string meshPath = "media/" + cMesh->mesh;
+    std::string meshPath = "";
+    if(entity->HasComponent(CompType::MeshComp)){
+        auto cMesh = static_cast<CMesh*>(entity->GetComponent(CompType::MeshComp).get());
+        std::string currentMesh = cMesh->activeMesh;
+        meshPath = "media/" + currentMesh;
+    }
 
     // añadimos el node al sceneManager dependiendo del tipo de node que sea
     switch (cType->type) {
@@ -316,7 +355,12 @@ const uint16_t RenderFacadeIrrlicht::FacadeAddObject(Entity* entity) {
         case ModelType::Text:
             break;
 
-        case ModelType::Light:
+        case ModelType::PointLight:
+            return 0;
+            break;
+
+        case ModelType::ParticleSystem:
+
             break;
     }
 
@@ -410,9 +454,9 @@ const uint16_t RenderFacadeIrrlicht::FacadeAddObject(Entity* entity) {
     return cId->id;
 }
 
+void RenderFacadeIrrlicht::FacadeUpdateMeshesLoD(vector<shared_ptr<Entity>> entities) {
 
-
-
+}
 
 
 //INPUTS : Una entidad GameObject
@@ -568,8 +612,8 @@ void RenderFacadeIrrlicht::FacadeAddCamera(Entity* camera) {
     auto cTransformable = static_cast<CTransformable*>(camera->GetComponent(CompType::TransformableComp).get());
     auto cCamera = static_cast<CCamera*>(camera->GetComponent(CompType::CameraComp).get());
 
-    float posX = cCamera->tarX - 40.0 * sin(((cTransformable->rotation.x) * M_PI) / 180.0);
-    float posZ = cCamera->tarZ - 40.0 * cos(((cTransformable->rotation.z) * M_PI) / 180.0);
+    float posX = cCamera->tarX - 40.0 * sin(((cTransformable->rotation.x) * PI) / 180.0);
+    float posZ = cCamera->tarZ - 40.0 * cos(((cTransformable->rotation.z) * PI) / 180.0);
     camera1->setTarget(core::vector3df(cCamera->tarX, cCamera->tarY, cCamera->tarZ));
     camera1->setPosition(core::vector3df(posX, cTransformable->position.y, posZ));
     //camera1->setFOV(40);
@@ -587,11 +631,10 @@ uint32_t RenderFacadeIrrlicht::FacadeGetTime() const{
 
 
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////                        INPUTS                   ////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////
+//  CHECK INPUTS    //
+//////////////////////
+
 // mira si el input se encuentra pulsado
 bool RenderFacadeIrrlicht::IsInputPressed(InputXBox input){
     auto mapByType = inputsPressed.find(input);
@@ -602,6 +645,7 @@ bool RenderFacadeIrrlicht::IsInputPressed(InputXBox input){
     }
     return true; // en caso de que no exista
 }
+
 void RenderFacadeIrrlicht::SetValueInput(InputXBox input, bool valuePressed){
     auto mapByType = inputsPressed.find(input);
     if (mapByType != inputsPressed.end()) {
@@ -609,8 +653,14 @@ void RenderFacadeIrrlicht::SetValueInput(InputXBox input, bool valuePressed){
     }
 }
 
-// To-Do: introducir multi input
-// Comprobar inputs del teclado
+void RenderFacadeIrrlicht::FacadeCheckInputIntro() {
+
+}
+
+void RenderFacadeIrrlicht::FacadeCheckInputSettings() {
+
+}
+
 void RenderFacadeIrrlicht::FacadeCheckInputSingle() {
     EventManager &eventManager = EventManager::GetInstance();
 
@@ -692,12 +742,13 @@ void RenderFacadeIrrlicht::FacadeCheckInputSingle() {
 
     // POWERUPS
     if ((receiver.IsKeyDown(KEY_SPACE) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_A)) && !IsInputPressed(InputXBox::BUTTON_A)){
+        SetValueInput(InputXBox::BUTTON_A, true);
         eventManager.AddEventMulti(Event{EventType::PRESS_SPACE});
     }else if(!(receiver.IsKeyDown(KEY_SPACE) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_A))){
         SetValueInput(InputXBox::BUTTON_A, false);
     }
 
-    //Cambiamos a menu
+    //Cambiamos a pause
     if ((receiver.IsKeyDown(KEY_ESCAPE) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_START)) && !IsInputPressed(InputXBox::BUTTON_START)) {
         SetValueInput(InputXBox::BUTTON_START, true);
         eventManager.AddEventMulti(Event{EventType::STATE_PAUSE});
@@ -706,7 +757,6 @@ void RenderFacadeIrrlicht::FacadeCheckInputSingle() {
         SetValueInput(BUTTON_START, false);
     }
 }
-
 
 vector<Constants::InputTypes> RenderFacadeIrrlicht::FacadeCheckInputMulti() {
     EventManager &eventManager = EventManager::GetInstance();
@@ -798,6 +848,7 @@ vector<Constants::InputTypes> RenderFacadeIrrlicht::FacadeCheckInputMulti() {
 
     // POWERUPS
     if ((receiver.IsKeyDown(KEY_SPACE) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_A)) && !IsInputPressed(InputXBox::BUTTON_A)){
+        SetValueInput(InputXBox::BUTTON_A, true);
         eventManager.AddEventMulti(Event{EventType::PRESS_SPACE});
         inputs.push_back(Constants::InputTypes::LAUNCH_PU);
     }else if(!(receiver.IsKeyDown(KEY_SPACE) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_A))){
@@ -808,6 +859,14 @@ vector<Constants::InputTypes> RenderFacadeIrrlicht::FacadeCheckInputMulti() {
 
 
     return inputs;
+}
+
+void RenderFacadeIrrlicht::FacadeCheckInputSelectCharacter() {
+
+}
+
+void RenderFacadeIrrlicht::FacadeCheckInputGameOptions() {
+
 }
 
 void RenderFacadeIrrlicht::FacadeCheckInputMenu() {
@@ -844,7 +903,6 @@ void RenderFacadeIrrlicht::FacadeCheckInputMenu() {
         SetValueInput(InputXBox::BUTTON_X, false);
 }
 
-
 void RenderFacadeIrrlicht::FacadeCheckInputControler() {
     if ((receiver.IsKeyDown(KEY_KEY_N) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_B)) && !IsInputPressed(InputXBox::BUTTON_B)) {
         SetValueInput(InputXBox::BUTTON_B, true);
@@ -863,6 +921,9 @@ void RenderFacadeIrrlicht::FacadeCheckInputControler() {
     }
 }
 
+void RenderFacadeIrrlicht::FacadeCheckInputCredits() {
+
+}
 
 void RenderFacadeIrrlicht::FacadeCheckInputPause() {
     //Cambiamos a ingame
@@ -908,7 +969,6 @@ void RenderFacadeIrrlicht::FacadeCheckInputEndRace() {
     }
 }
 
-
 void RenderFacadeIrrlicht::FacadeCheckInputLobbyMulti() {
     //Cambiamos a ingame
     if (receiver.IsKeyDown(KEY_DELETE)) {
@@ -940,6 +1000,16 @@ void RenderFacadeIrrlicht::ThrowEventChangeToMulti(uint16_t IdOnline, const vect
 }
 
 
+void RenderFacadeIrrlicht::ResetInputGameOptions() {
+
+}
+
+void RenderFacadeIrrlicht::ResetInputCharacter() {
+
+}
+
+
+
 int RenderFacadeIrrlicht::FacadeGetFPS() const{
     return driver->getFPS();
 }
@@ -958,11 +1028,32 @@ void RenderFacadeIrrlicht::FacadeSetWindowCaption(std::string title, int fps) co
     device->setWindowCaption(txt);
 }
 
+
+//////////////
+//  DRAW    //
+//////////////
+
 //Toda la rutina de limpiar y dibujar de irrlicht
 void RenderFacadeIrrlicht::FacadeDraw() const{
     driver->beginScene(true, true, video::SColor(255, 113, 113, 133));
     smgr->drawAll();  // draw the 3d scene
     driver->endScene();
+}
+
+void RenderFacadeIrrlicht::FacadeDrawIntro() {
+    driver->beginScene(true, true, video::SColor(255, 113, 113, 133));
+    driver->draw2DImage(introBG, core::position2d<s32>(0, 0),
+                        core::rect<s32>(0, 0, 1280, 720), 0,
+                        video::SColor(255, 255, 255, 255), false);
+    driver->endScene();
+}
+
+void RenderFacadeIrrlicht::FacadeDrawSelectCharacter() {
+
+}
+
+void RenderFacadeIrrlicht::FacadeDrawGameOptions() {
+
 }
 
 void RenderFacadeIrrlicht::FacadeDrawMenu() {
@@ -974,6 +1065,10 @@ void RenderFacadeIrrlicht::FacadeDrawMenu() {
     driver->endScene();
 }
 
+void RenderFacadeIrrlicht::FacadeInitResources(){
+
+}
+
 void RenderFacadeIrrlicht::FacadeDrawControler() {
     driver->beginScene(true, true, video::SColor(255, 113, 113, 133));
     //smgr->drawAll();  // draw the 3d scene
@@ -983,6 +1078,10 @@ void RenderFacadeIrrlicht::FacadeDrawControler() {
     driver->endScene();
 }
 
+void RenderFacadeIrrlicht::FacadeDrawCredits() {
+
+}
+
 void RenderFacadeIrrlicht::FacadeDrawPause() {
     driver->beginScene(true, true, video::SColor(255, 113, 113, 133));
     //smgr->drawAll();  // draw the 3d scene
@@ -990,6 +1089,10 @@ void RenderFacadeIrrlicht::FacadeDrawPause() {
                         core::rect<s32>(0, 0, 1280, 720), 0,
                         video::SColor(255, 255, 255, 255), false);
     driver->endScene();
+}
+
+void RenderFacadeIrrlicht::FacadeDrawSettings() {
+
 }
 
 void RenderFacadeIrrlicht::FacadeDrawEndRace() {
@@ -1019,6 +1122,9 @@ void RenderFacadeIrrlicht::FacadeDrawLobbyMultiExit() {
     driver->endScene();
 }
 
+
+
+
 //Limpia la pantalla
 void RenderFacadeIrrlicht::FacadeBeginScene() const{
     driver->beginScene(true, true, video::SColor(255, 113, 113, 133));
@@ -1035,6 +1141,13 @@ void RenderFacadeIrrlicht::FacadeEndScene() const{
 void RenderFacadeIrrlicht::FacadeDeviceDrop() {
     device->drop();
 }
+
+void RenderFacadeIrrlicht::FacadeAddSkybox(string right,string left,string top,string bottom,string front,string back){
+    
+}
+
+void RenderFacadeIrrlicht::FacadeAddShadowMapping(unsigned int lightId){}
+
 
 //DEBUG dibuja las aristas entre los nodos del grafo
 void RenderFacadeIrrlicht::FacadeDrawGraphEdges(ManWayPoint* manWayPoints) const{
@@ -1380,4 +1493,13 @@ void RenderFacadeIrrlicht::FacadeDrawBoundingBox(Entity* entity, bool colliding)
     } else {
         driver->draw3DBox(boundingBox, video::SColor(255, 0, 255, 0));
     }
+}
+
+
+void RenderFacadeIrrlicht::CleanScene() {
+    smgr->clear();
+}
+
+void RenderFacadeIrrlicht::FacadeUpdateViewport(){
+    //device->UpdateViewport();
 }

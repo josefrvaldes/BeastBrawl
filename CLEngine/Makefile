@@ -12,16 +12,17 @@ else
 	CXXFLAGS += -O3
 endif
 
-ifdef WINDOWS
-	INCLUDE     := -I. 
-	CC			:= g++
-else
-	LIBS 	    	+= -L./lib/linux/glfw -lglfw3 -lGL -lX11 -lpthread -lXrandr -lXi -ldl -Wl,-rpath=lib/linux/glfw
-	LIBS 	    	+= -L./lib/linux/glew -lGLEW -Wl,-rpath=lib/linux/glew
-	LIBS 	    	+= -L./lib/linux/assimp -lassimp -Wl,-rpath=lib/linux/assimp
-	INCLUDE     	:= -I./include -I../include
-	CC			:= g++
-endif
+
+LIBS 	    	+= -L./lib/linux/glfw -lglfw3 -lGL -lX11 -lpthread -lXrandr -lXi -ldl -Wl,-rpath=./lib/linux/glfw
+LIBS 	    	+= -L./lib/linux/glew -lGLEW -Wl,-rpath=./lib/linux/glew
+LIBS 	    	+= -L./lib/linux/assimp -lassimp5.0.0 -Wl,-rpath=lib/linux/assimp
+LIBS			+= -L./lib/linux/freeType2 -lfreetype -Wl,-rpath=lib/linux/freeType2
+INCLUDE     	:= -I./include -I../include -I./include/freeType2
+CC				:= g++
+
+CREATE_SYMLINKS := bash symlinks.sh
+JOIN_ASSIMP := bash join_assimp.sh
+
 
 SOURCES  	:= $(wildcard *.cpp)
 OBJ_PATH    := ../obj/CLEngine
@@ -45,6 +46,8 @@ endif
 
 #Esto crea el ejecutable
 $(NAME_EXE): $(OBJSUBDIRS) $(ALLCPPSOBJ)
+	$(JOIN_ASSIMP)
+	$(CREATE_SYMLINKS)
 	$(COMPILING_TEXT_OK)
 	$(JUMP_LINE)
 	$(LINKING_TEXT)

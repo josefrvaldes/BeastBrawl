@@ -81,38 +81,40 @@ void SoundFacadeFMOD::SetState(const uint8_t numState) {
  */
 void SoundFacadeFMOD::SubscribeToGameEvents(const uint8_t numState) {
     switch (numState) {
-        case 1:  // Intro
+        /*case 0:       // INTRO
             break;
-        case 2:  // Menu
+        case 1:         // MENU
             break;
-        case 3:  // Map
+        case 2:         // SELECCION PERSONAJE
             break;
-        case 4:  // InGame
+        case 3:         // OPCIONES DE PARTIDA
+            break;*/
+        case 4: {       // INGAME
 
             EventManager::GetInstance().SubscribeMulti(Listener{
-                EventType::PRESS_P,
-                bind(&SoundFacadeFMOD::SoundClaxon, this, placeholders::_1),
-                "SoundClaxon"});
+                    EventType::PRESS_P,
+                    bind(&SoundFacadeFMOD::SoundClaxon, this, placeholders::_1),
+                    "SoundClaxon"});
 
             EventManager::GetInstance().SubscribeMulti(Listener(
-                EventType::THROW_POWERUP,
-                bind(&SoundFacadeFMOD::SoundThrowPowerup, this, placeholders::_1),
-                "SoundThrowPowerup"));
+                    EventType::THROW_POWERUP,
+                    bind(&SoundFacadeFMOD::SoundThrowPowerup, this, placeholders::_1),
+                    "SoundThrowPowerup"));
 
             EventManager::GetInstance().SubscribeMulti(Listener{
-                EventType::HURT,
-                bind(&SoundFacadeFMOD::SoundHurt, this, placeholders::_1),
-                "SoundHurt"});
+                    EventType::HURT,
+                    bind(&SoundFacadeFMOD::SoundHurt, this, placeholders::_1),
+                    "SoundHurt"});
 
             EventManager::GetInstance().SubscribeMulti(Listener{
-                EventType::CATCH_TOTEM,
-                bind(&SoundFacadeFMOD::SoundCatchTotem, this, placeholders::_1),
-                "SoundCatchTotem"});
+                    EventType::CATCH_TOTEM,
+                    bind(&SoundFacadeFMOD::SoundCatchTotem, this, placeholders::_1),
+                    "SoundCatchTotem"});
 
             EventManager::GetInstance().SubscribeMulti(Listener{
-                EventType::CRASH,
-                bind(&SoundFacadeFMOD::SoundCrash, this, placeholders::_1),
-                "SoundCrash"});
+                    EventType::CRASH,
+                    bind(&SoundFacadeFMOD::SoundCrash, this, placeholders::_1),
+                    "SoundCrash"});
 
             EventManager::GetInstance().SubscribeMulti(Listener{
                     EventType::CRASH_WALL,
@@ -120,47 +122,51 @@ void SoundFacadeFMOD::SubscribeToGameEvents(const uint8_t numState) {
                     "SoundCrashWall"});
 
             EventManager::GetInstance().SubscribeMulti(Listener{
-                EventType::BREAK_BOX,
-                bind(&SoundFacadeFMOD::SoundBreakBox, this, placeholders::_1),
-                "SoundBreakBox"});
+                    EventType::BREAK_BOX,
+                    bind(&SoundFacadeFMOD::SoundBreakBox, this, placeholders::_1),
+                    "SoundBreakBox"});
 
             EventManager::GetInstance().SubscribeMulti(Listener{
-                EventType::DRIFT,
-                bind(&SoundFacadeFMOD::SoundBreakBox, this, placeholders::_1),
-                "SoundBreakBox"});
+                    EventType::DRIFT,
+                    bind(&SoundFacadeFMOD::SoundBreakBox, this, placeholders::_1),
+                    "SoundBreakBox"});
 
             EventManager::GetInstance().SubscribeMulti(Listener{
-                EventType::VRANDOM,
-                bind(&SoundFacadeFMOD::SoundRandomSentence, this, placeholders::_1),
-                "SoundRandomSentence"});
+                    EventType::VRANDOM,
+                    bind(&SoundFacadeFMOD::SoundRandomSentence, this, placeholders::_1),
+                    "SoundRandomSentence"});
 
             EventManager::GetInstance().SubscribeMulti(Listener{
-                EventType::MENU_OPTION,
-                bind(&SoundFacadeFMOD::SoundMenuOption, this, placeholders::_1),
-                "SoundMenuOption"});
+                    EventType::MENU_OPTION,
+                    bind(&SoundFacadeFMOD::SoundMenuOption, this, placeholders::_1),
+                    "SoundMenuOption"});
 
             // --- STOP
 
             EventManager::GetInstance().SubscribeMulti(Listener{
-                EventType::NO_SHIELD,
-                bind(&SoundFacadeFMOD::StopShield, this, placeholders::_1),
-                "StopShield"});
+                    EventType::NO_SHIELD,
+                    bind(&SoundFacadeFMOD::StopShield, this, placeholders::_1),
+                    "StopShield"});
 
             EventManager::GetInstance().SubscribeMulti(Listener{
-                EventType::NO_DRIFT,
-                bind(&SoundFacadeFMOD::StopDrift, this, placeholders::_1),
-                "StopDrift"});
+                    EventType::NO_DRIFT,
+                    bind(&SoundFacadeFMOD::StopDrift, this, placeholders::_1),
+                    "StopDrift"});
 
             break;
-
-        case 5:  // EndRace
+        }
+        /*case 5:         // ENDRACE
             break;
-        case 7:  // Controls
+        case 6:         // LOBBY
             break;
-
-        case 8:  // Credits
+        case 7:         // PAUSE
             break;
-
+        case 8:         // SETTINGS
+            break;
+        case 9:         // CREDITS
+            break;
+        case 10:        // CONTROLS
+            break;*/
         default:
             break;
     }
@@ -172,31 +178,51 @@ void SoundFacadeFMOD::SubscribeToGameEvents(const uint8_t numState) {
  */
 void SoundFacadeFMOD::LoadSoundByState(const uint8_t numState) {
     switch (numState) {
-        case 0:
-            break;
-        case 1:
-            break;
-        case 2:  // menu
+        case 0:         // INTRO
             soundEngine->UnloadAllBanks();
             LoadSoundBank("Menu", 0);
+            //PlayEvent("Musica/menu");
             break;
-        case 3:
+        case 1:         // MENU
+            StopEvent("Musica/fin_partida");
+            if(!soundEngine->IsPlaying2D("Musica/menu")) {
+                ResumeAllEvent();
+                StopAllEvents();
+                PlayEvent("Musica/menu");
+            }
             break;
-        case 4:  //InGame
+        case 2:         // SELECCION PERSONAJE
+            StopEvent("Musica/fin_partida");
+            if(!soundEngine->IsPlaying2D("Musica/menu")) {
+                PlayEvent("Musica/menu");
+            }
+            break;
+        /*case 3:       // OPCIONES DE PARTIDA
+            break;*/
+        case 4:         // INGAME
             StopEvent("Musica/menu");
+            StopEvent("Musica/fin_partida");
             LoadSoundBank("InGame2D", 0);
             LoadSoundBank("InGame3DE", 1);
             LoadSoundBank("InGame3DD", 1);
             StartGame();
             break;
-        case 5:  //EndRace
+        case 5:         // ENDRACE
             StopAllEvents();
             LoadSoundBank("EndRace", 0);
+            PlayEvent("Musica/fin_partida");
             break;
-        case 7:  // Controls
+        /*case 6:       // LOBBY
+            break;*/
+        case 7:         // PAUSE
+            PauseAllEvent();
             break;
-        case 8:  // Creadits
-            break;
+        /*case 8:       // SETTINGS
+            break;*/
+        /*case 9:       // CREDITS
+            break;*/
+        /*case 10:      // CONTROLS
+            break;*/
         default:
             std::cout << "***** Este estado no existe: " << numState << endl;
     }
@@ -208,7 +234,7 @@ void SoundFacadeFMOD::LoadSoundByState(const uint8_t numState) {
  * @param type - 1 para eventos 3D y 0 para eventos 2D.
  */
 void SoundFacadeFMOD::LoadSoundBank(const string& nameBank, const bool type) {
-    cout << "********* Voy a cargar el banco: " << nameBank << endl;
+    //cout << "********* Voy a cargar el banco: " << nameBank << endl;
     soundEngine->LoadSoundBank(nameBank);
     auto it = events.find(nameBank);
     if ( it != events.end()) {
@@ -406,7 +432,7 @@ void SoundFacadeFMOD::StartGame() {
     PlayEvent("Musica/in_game_1");
     srand(time(nullptr));
     character = rand() % 5;
-    cout << "++++ Personaje en sonido: " << character << endl;
+    //cout << "++++ Personaje en sonido: " << character << endl;
     SetParameter("Personajes/voces", "Personaje", character);
     SetParameter("Coche/claxon", "Personaje", character);
     //SetParameter("Coche/motor", "Personaje", character);
@@ -458,7 +484,7 @@ void SoundFacadeFMOD::SoundCrash(DataMap* d) {                                //
     }
     string mapID = "Coche/choque" + to_string(id);
     if (!soundEngine->IsPlayingEstatic3D(mapID)) {
-        cout << "**** QUE ME CHOCAO CON UN PAVO" << endl;
+        //cout << "**** QUE ME CHOCAO CON UN PAVO" << endl;
         SetEventPositionEstatic3D(mapID, pos);
         PlayEvent(mapID);
     }
@@ -474,7 +500,7 @@ void SoundFacadeFMOD::SoundCrashWall(DataMap* d) {                              
 
     name = "Coche/choque" + to_string(id);
     if (!soundEngine->IsPlayingEstatic3D(name)) {
-        cout << "**** QUE ME CHOCAO CON UNA PARED: " << name << endl;
+        //cout << "**** QUE ME CHOCAO CON UNA PARED: " << name << endl;
         SetEventPositionEstatic3D(name, pos);
         PlayEvent(name);
     }

@@ -13,7 +13,7 @@
 class StateControls : public State{
     public:
         StateControls();
-        ~StateControls() = default;
+        ~StateControls() override = default;
         void Input() override;
         void InitState() override;
         void Update() override;
@@ -23,8 +23,6 @@ class StateControls : public State{
 
     private:
         RenderFacade* renderEngine = { nullptr };
-        //InputFacade* inputEngine = { nullptr };
-        //PhysicsFacade* physicsEngine = { nullptr };
         SoundFacade* soundEngine = { nullptr };
 
 

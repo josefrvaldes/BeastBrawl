@@ -1,6 +1,5 @@
 #pragma once
 
-#include <boost/array.hpp>
 #include <boost/asio.hpp>
 #include <boost/asio/buffer.hpp>
 #include <chrono>
@@ -49,7 +48,7 @@ class UDPClient {
     void SendCollideNitro(uint16_t idOnline, uint16_t idWithTotem, uint16_t idWithNitro);
     void SendThrowMelonOPudin(const uint16_t idOnline, const int64_t time, const uint16_t idPUOnline, const glm::vec3& position, const glm::vec3& rotation, const int8_t typePU);
     void SendThrowTelebanana(const uint16_t idOnline, const int64_t time, const uint16_t idPUOnline, const glm::vec3& position, const glm::vec3& rotation, const int8_t typePU, const uint16_t idToPursue);
-    void SendEndgame();
+    void SendEndgame(uint16_t idPlayer);
     void SendDateTime();
     uint32_t idMainCar;
 
@@ -82,7 +81,7 @@ class UDPClient {
     void HandleSentCrashPUCar(const boost::system::error_code& errorCode, std::size_t bytes_transferred);
     void HandleSentCrashPUWall(const boost::system::error_code& errorCode, std::size_t bytes_transferred);
 
-    void HandleSentDateTime(const boost::shared_ptr<std::string> message,
+    void HandleSentDateTime(const std::shared_ptr<std::string> message,
                             const boost::system::error_code& errorCode,
                             std::size_t bytes_transferred);
 

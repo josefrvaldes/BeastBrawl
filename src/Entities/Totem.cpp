@@ -22,7 +22,8 @@ Totem::Totem()
 
     string mesh;
     if(Constants::RENDER_ENGINE == Constants::RenderEngine::CLOVER){
-        mesh    = "totem_tex.fbx";
+        mesh    = "totem.obj";
+        //scale = glm::vec3(1.0f,1.0f,1.0f);
         //mesh  = "TEST_BOX.fbx";
         
     }else if(Constants::RENDER_ENGINE == Constants::RenderEngine::IRRLICHT){
@@ -33,14 +34,21 @@ Totem::Totem()
     //string mesh = "totem_tex.fbx";
     //string mesh    = "kart_ia.obj";
 
-    string vertexShader = "CLEngine/src/Shaders/vertex.glsl";
-    string fragmentShader = "CLEngine/src/Shaders/fragment.glsl";
+    //string vertexShader = "CLEngine/src/Shaders/lightMapping.vert";
+    //string fragmentShader = "CLEngine/src/Shaders/lightMapping.frag";
+
+    string vertexShader = "CLEngine/src/Shaders/cartoonShader.vert";
+    string fragmentShader = "CLEngine/src/Shaders/cartoonShader.frag";
     
     shared_ptr<CId> cId   = make_shared<CId>();
     shared_ptr<CType> cType = make_shared<CType>(ModelType::AnimatedMesh);
     shared_ptr<CTransformable> cTransformable = make_shared<CTransformable>(pos, rot, scale); 
     shared_ptr<CTexture> cTexture = make_shared<CTexture>(texture);
     shared_ptr<CMesh> cMesh   = make_shared<CMesh>(mesh);
+    if(Constants::RENDER_ENGINE == Constants::RenderEngine::CLOVER){
+        //cMesh->mesh.push_back("totem_tex.fbx");
+
+    }
     shared_ptr<CCurrentNavMesh> cCurrentNavMesh   = make_shared<CCurrentNavMesh>(-1);
     shared_ptr<CShader> cShader = make_shared<CShader>(vertexShader,fragmentShader);
 
@@ -87,8 +95,9 @@ Totem::Totem(glm::vec3 position_, glm::vec3 rotation_, string texture_, string m
     CTexture *cTexture = (CTexture *)m_components[CompType::TextureComp].get();
     cTexture->texture = texture_;
 
+    // DEBUG MESH
     CMesh *cMesh = (CMesh *)m_components[CompType::MeshComp].get();
-    cMesh->mesh = mesh_;
+    cMesh->mesh.push_back( mesh_ );
 
 }
 
