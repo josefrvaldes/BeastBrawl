@@ -22,8 +22,8 @@ Totem::Totem()
 
     string mesh;
     if(Constants::RENDER_ENGINE == Constants::RenderEngine::CLOVER){
-        mesh    = "totem_tex.fbx";
-        scale = glm::vec3(3.0f,3.0f,3.0f);
+        mesh    = "totem.obj";
+        //scale = glm::vec3(1.0f,1.0f,1.0f);
         //mesh  = "TEST_BOX.fbx";
         
     }else if(Constants::RENDER_ENGINE == Constants::RenderEngine::IRRLICHT){
@@ -46,7 +46,7 @@ Totem::Totem()
     shared_ptr<CTexture> cTexture = make_shared<CTexture>(texture);
     shared_ptr<CMesh> cMesh   = make_shared<CMesh>(mesh);
     if(Constants::RENDER_ENGINE == Constants::RenderEngine::CLOVER){
-        cMesh->mesh.push_back("totem_tex.fbx");
+        //cMesh->mesh.push_back("totem_tex.fbx");
 
     }
     shared_ptr<CCurrentNavMesh> cCurrentNavMesh   = make_shared<CCurrentNavMesh>(-1);

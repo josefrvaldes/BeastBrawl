@@ -10,3 +10,6 @@ ln -sf ./libfmodstudio.so.11.5 ./lib/linux/fmod/libfmodstudio.so.11
 ln -sf ./libfmodstudioL.so.11.5 ./lib/linux/fmod/libfmodstudioL.so
 ln -sf ./libfmodstudioL.so.11.5 ./lib/linux/fmod/libfmodstudioL.so.11
 
+ln -sf ./libassimp5.0.0.so ./CLEngine/lib/linux/assimp/libassimp.so.5
+ln -sf ./libassimp5.0.0.so ./CLEngine/lib/linux/assimp/libassimp.so.5.0
+ln -sf ./libassimp5.0.0.so ./CLEngine/lib/linux/assimp/libassimp.so.5.0.0

@@ -21,7 +21,7 @@
 
 #include "../Frustum/CLFrustum.h"
 #include "../ResourceManager/CLResourceManager.h"
-#include "../ResourceManager/CLResourceShader.h"
+#include "CLGrassSystem.h"
 
 #include "../Built-In-Classes/CLColor.h"
 
@@ -216,7 +216,7 @@ class CLNode{
         //! @param flags Mascara de bytes para aplicarle efectos
         //! @returns CLE::CLNode()
         //! @see CLE::CLParticleSystem()
-        CLNode* AddParticleSystem(unsigned int id,ulong nParticles,glm::vec3 velocity,string texture,int width,int height,int spawnDelay,int particlesToSpawn,int lifeSpan, std::uint_fast8_t flags);
+        CLNode* AddParticleSystem(unsigned int id, unsigned int nParticles,glm::vec3 velocity,string texture,int width,int height,int spawnDelay,int particlesToSpawn,int lifeSpan, std::uint_fast8_t flags);
         //! Añade un sistema de particulas version **Linea, Cuadrado o Cubo**
         //! @param id Identificador del nodo
         //! @param nParticles Número de particulas
@@ -232,7 +232,7 @@ class CLNode{
         //! @param flags Mascara de bytes para aplicarle efectos
         //! @returns CLE::CLNode()
         //! @see CLE::CLParticleSystem()
-        CLNode* AddParticleSystem(unsigned int id,ulong nParticles,glm::vec3 velocity,string texture,int width,int height,int spawnDelay,int particlesToSpawn,int lifeSpan,glm::vec3 offset, glm::vec3 orientation, std::uint_fast8_t flags);
+        CLNode* AddParticleSystem(unsigned int id,unsigned int nParticles,glm::vec3 velocity,string texture,int width,int height,int spawnDelay,int particlesToSpawn,int lifeSpan,glm::vec3 offset, glm::vec3 orientation, std::uint_fast8_t flags);
         //! Añade un sistema de particulas version **Esfera**
         //! @param id Identificador del nodo
         //! @param nParticles Número de particulas
@@ -247,7 +247,7 @@ class CLNode{
         //! @param flags Mascara de bytes para aplicarle efectos
         //! @returns CLE::CLNode()
         //! @see CLE::CLParticleSystem()
-        CLNode* AddParticleSystem(unsigned int id,ulong nParticles,glm::vec3 velocity,string texture,int width,int height,int spawnDelay,int particlesToSpawn,int lifeSpan,float radious, std::uint_fast8_t flags);
+        CLNode* AddParticleSystem(unsigned int id,unsigned int nParticles,glm::vec3 velocity,string texture,int width,int height,int spawnDelay,int particlesToSpawn,int lifeSpan,float radious, std::uint_fast8_t flags);
         //! Añade un sistema de particulas version **Circulo**
         //! @param id Identificador del nodo
         //! @param nParticles Número de particulas
@@ -262,7 +262,7 @@ class CLNode{
         //! @param flags Mascara de bytes para aplicarle efectos
         //! @returns CLE::CLNode()
         //! @see CLE::CLParticleSystem()
-        CLNode* AddParticleSystem(unsigned int id,ulong nParticles,glm::vec3 velocity,string texture,int width,int height,int spawnDelay,int particlesToSpawn,int lifeSpan,float radious,glm::vec3 orientation, std::uint_fast8_t flags);
+        CLNode* AddParticleSystem(unsigned int id,unsigned int nParticles,glm::vec3 velocity,string texture,int width,int height,int spawnDelay,int particlesToSpawn,int lifeSpan,float radious,glm::vec3 orientation, std::uint_fast8_t flags);
 
         //! Añade un skybox a la escena
         //! @param right Textura right del cubo
@@ -285,6 +285,14 @@ class CLNode{
         //! @returns CLE::CLNode()
         //! @see CLE::CLBillboard()
         CLNode* AddBillBoard(unsigned int id,string& file, bool vertically, float width_, float height_);
+        //! Crea un modulo de hierba
+        //! @param _width Anchura de la celda de hierba
+        //! @param _height Altura de la celda de hierba
+        //! @param _position Posicion central de la celda de hierba
+        //! @param _scale Escala de cada planta
+        //! @param realistGrass True, hierba aleatoria. False, cuadrado de hierba.
+        //! @see CLE::CLGrassSystem()
+        void AddGrass(float _width, float _height, const glm::vec3& _position, const glm::vec3& _scale, bool realistGrass);
         //! Elimina un hijo de ese nodo
         //! @param child Puntero al hijo para eliminar
         //! @returns bool Si ha sido finalizado con exito o no
@@ -326,6 +334,7 @@ class CLNode{
         void DFSTree(glm::mat4 mA, GLuint shaderID);
         //! Dibuja el skybox
         void DrawSkybox();
+        void DrawGrass();
 
         
         //! Dibuja una linea primitiva en 3D
@@ -410,6 +419,15 @@ class CLNode{
 
         //Particle system
         inline static GLuint particleSystemShader = 0;
+
+        inline static GLuint grassShader = 0;
+        //unique_ptr<CLGrassSystem> sysGrass = nullptr;
+        std::vector<unique_ptr<CLGrassSystem>> sysGrassVector;
+
+
+
+
+
 
 };
 

@@ -17,7 +17,7 @@ using namespace std;
 NavMesh::NavMesh(glm::vec3 pos, glm::vec3 rot, float width, float height, float depth, const vector<int>& waypoints)
 {
     string texture = "spheremap.jpg";
-    string meshCerca    = "kart_ia.obj";
+    string meshCerca    = "kart.obj";
 
     //string vertexShader = "CLEngine/src/Shaders/lightMapping.vert";
     //string fragmentShader = "CLEngine/src/Shaders/lightMapping.frag";

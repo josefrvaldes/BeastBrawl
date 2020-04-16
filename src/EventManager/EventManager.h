@@ -7,7 +7,7 @@
 #include <mutex>
 #include "Event.h"
 
-using namespace std;
+//using namespace std;
 
 class EventManager {
    public:

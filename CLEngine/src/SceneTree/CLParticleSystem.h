@@ -59,7 +59,7 @@ class CLNode;
             //! @param _nParticlesToSpawn Número de particulas a spawnear cada vez que pasa _SpawnDelay
             //! @param _lifeSpan Vida de las particulas
             //! @param _flags Mascara con los efectos para aplicarle
-            CLParticleSystem(unsigned int idEntity, ulong _nParticles, glm::vec3 _speedDirection,string texture,uint16_t _width, uint16_t _height,float _spawnDelay,unsigned int _nParticlesToSpawn,float _lifeSpan, std::uint_fast8_t _flags);
+            CLParticleSystem(unsigned int idEntity, unsigned int _nParticles, glm::vec3 _speedDirection,string texture,uint16_t _width, uint16_t _height,float _spawnDelay,unsigned int _nParticlesToSpawn,float _lifeSpan, std::uint_fast8_t _flags);
             //! Constructor para spawner de linea, cuadrado y cubo
             //! @param idEntity Id de la entidad
             //! @param _nParticles Número de particulas
@@ -73,7 +73,7 @@ class CLNode;
             //! @param _offset Propiedades del shape del spawner, dependiendo de los valores puede ser una linea, un cuadrado o un cubo
             //! @param _orientation Direccion a la que mira la shape del spawner
             //! @param _flags Mascara con los efectos para aplicarle
-            CLParticleSystem(unsigned int idEntity, ulong _nParticles, glm::vec3 _speedDirection,string texture,uint16_t _width, uint16_t _height,float _spawnDelay,unsigned int _nParticlesToSpawn,float _lifeSpan,glm::vec3 _offset,glm::vec3 _orientation, std::uint_fast8_t _flags);
+            CLParticleSystem(unsigned int idEntity, unsigned int _nParticles, glm::vec3 _speedDirection,string texture,uint16_t _width, uint16_t _height,float _spawnDelay,unsigned int _nParticlesToSpawn,float _lifeSpan,glm::vec3 _offset,glm::vec3 _orientation, std::uint_fast8_t _flags);
             //! Constructor para spawner de circulo
             //! @param idEntity Id de la entidad
             //! @param _nParticles Número de particulas
@@ -87,7 +87,7 @@ class CLNode;
             //! @param _radious Radio del circulo del spawner
             //! @param _orientation Direccion a la que mira la shape del spawner
             //! @param _flags Mascara con los efectos para aplicarle
-            CLParticleSystem(unsigned int idEntity, ulong _nParticles, glm::vec3 _speedDirection,string texture,uint16_t _width, uint16_t _height,float _spawnDelay,unsigned int _nParticlesToSpawn,float _lifeSpan,float _radious, glm::vec3 _orientation, std::uint_fast8_t _flags);
+            CLParticleSystem(unsigned int idEntity, unsigned int _nParticles, glm::vec3 _speedDirection,string texture,uint16_t _width, uint16_t _height,float _spawnDelay,unsigned int _nParticlesToSpawn,float _lifeSpan,float _radious, glm::vec3 _orientation, std::uint_fast8_t _flags);
             //! Constructor para spawner de esfera
             //! @param idEntity Id de la entidad
             //! @param _nParticles Número de particulas
@@ -100,7 +100,7 @@ class CLNode;
             //! @param _lifeSpan Vida de las particulas
             //! @param _radious Radio de la circunferencia
             //! @param _flags Mascara con los efectos para aplicarle
-            CLParticleSystem(unsigned int idEntity, ulong _nParticles, glm::vec3 _speedDirection,string texture,uint16_t _width, uint16_t _height,float _spawnDelay,unsigned int _nParticlesToSpawn,float _lifeSpan,float _radious, std::uint_fast8_t _flags);
+            CLParticleSystem(unsigned int idEntity, unsigned int _nParticles, glm::vec3 _speedDirection,string texture,uint16_t _width, uint16_t _height,float _spawnDelay,unsigned int _nParticlesToSpawn,float _lifeSpan,float _radious, std::uint_fast8_t _flags);
 
             ~CLParticleSystem() = default;
 
@@ -129,7 +129,7 @@ class CLNode;
             glm::vec3          GetSpeedDirection()    const { return speedDirection; }
             //! Devuelve el numero de particulas
             //! @returns nParticles
-            ulong              GetNumberOfParticles() const { return nParticles; }
+            unsigned int              GetNumberOfParticles() const { return nParticles; }
             //! Devuelve la posición del spawner
             //! @returns spawnerPosition
             glm::vec3          GetSpawnerPosition()   const { return spawnerPosition; }
@@ -190,7 +190,7 @@ class CLNode;
 
             vector<shared_ptr<CLParticle>> particles;
             CLNode* node {nullptr};     //CLNode para poder acceder a su matriz modelo, vista, proyeccion y demas cosas utiles
-            ulong nParticles { 10 }; //Numero de particulas que vamos a tener
+            unsigned int nParticles { 10 }; //Numero de particulas que vamos a tener
             glm::vec3 speedDirection;
             glm::vec3 spawnerPosition;
             CLResourceTexture* clTexture {nullptr};
@@ -202,7 +202,7 @@ class CLNode;
             bool loop = false;
             bool started = false;
             bool oneIterationMode = false;
-            ulong numParticleDeads = 0;
+            uint32_t numParticleDeads = 0;
             SpawnType spawnType = SpawnType::PointSpawn;
             float radious = 0; //Usado en SpawnType::Circle y SpawnType::Sphere
             glm::vec3 orientation = glm::vec3(1.0f); //Usado en SpawnType::Circle

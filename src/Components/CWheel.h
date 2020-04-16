@@ -25,7 +25,7 @@ public:
     float offsetZ = 0.0;
     float rotY = 0.0;
     string texture = "wall.bmp";
-    string mesh    = "kart_ia.obj";
+    string mesh    = "kart.obj";
     uint32_t IdWheelTopLeft;
     uint32_t IdWheelTopRight;
     uint32_t IdWheelBottomLeft;

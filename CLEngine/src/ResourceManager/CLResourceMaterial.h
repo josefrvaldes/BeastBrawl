@@ -10,6 +10,7 @@
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
+#include <vector>
 
 //! Estructura que engloba el material de un objeto
 struct Material {
@@ -37,7 +38,7 @@ namespace CLE {
             void processNode(aiNode *node, const aiScene *scene);
             Material processMaterial(aiMesh *mesh, const aiScene *scene);
             Material loadMaterial(aiMaterial* mat); 
-            vector<Material> materials;
+            std::vector<Material> materials;
 
             const aiScene *scene;
 

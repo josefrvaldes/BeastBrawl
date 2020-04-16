@@ -1,6 +1,8 @@
 #pragma once
 
-#include <math.h>
+#define _USE_MATH_DEFINES
+
+#include <cmath>
 #include <cstring>
 #include <iostream>
 #include <sstream>
@@ -142,6 +144,15 @@ class Utils {
 
     static float IrrlichtAngleToOpenGL(float angle){
         return (angle + 180 - (angle*2));
+    }
+
+
+    static float getRandomFloat(float LO, float HI) {
+        return LO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(HI-LO)));
+    }
+
+    static float getRandomInt(int LO, int HI) {
+        return LO + rand() /(RAND_MAX/(HI-LO));
     }
 
 };

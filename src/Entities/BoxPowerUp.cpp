@@ -20,10 +20,10 @@ BoxPowerUp::BoxPowerUp(){
     // default values
     string texture = "";
     string mesh;
-    glm::vec3 scale = vec3(1.0f,1.0f,1.0f);
+    glm::vec3 scale = vec3(1.5f,1.5f,1.5f);
     if(Constants::RENDER_ENGINE == Constants::RenderEngine::CLOVER){
-        mesh    = "TEST_BOX.fbx";
-        scale = vec3(4.0f,4.0f,4.0f);
+        mesh    = "TEST_BOX.obj";
+        //scale = vec3(1.0f,1.0f,1.0f);
         
     }else if(Constants::RENDER_ENGINE == Constants::RenderEngine::IRRLICHT){
         mesh    =   "box_powerup.obj";
