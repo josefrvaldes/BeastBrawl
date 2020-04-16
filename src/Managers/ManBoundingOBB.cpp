@@ -217,7 +217,6 @@ void ManBoundingOBB::CreateBoundingOBB(const vector<vec3> &vertices, const vecto
 
 
 ManBoundingOBB::~ManBoundingOBB() {
-    cout << "Llamando al destructor de ManBoundingOBB" << endl;
 }
 
 void ManBoundingOBB::SubscribeToEvents() {

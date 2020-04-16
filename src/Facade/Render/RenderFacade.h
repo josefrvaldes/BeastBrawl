@@ -37,17 +37,20 @@ class RenderFacade {
     virtual void FacadeEndScene() const = 0;
     virtual void FacadeDeviceDrop() = 0;
     virtual void DeleteEntity(Entity*) = 0;
+    virtual void FacadeSetVisibleEntity(Entity*,bool) = 0;
 
     virtual void FacadeDraw() const = 0;
     virtual void FacadeDrawIntro() = 0;
     virtual void FacadeDrawMenu() = 0;
     virtual void FacadeDrawSelectCharacter() = 0;
-    virtual void FacadeInitResources() = 0;
     virtual void FacadeDrawPause() = 0;
     virtual void FacadeDrawEndRace() = 0;
     virtual void FacadeDrawLobbyMulti() = 0;
     virtual void FacadeDrawLobbyMultiExit() = 0;
     virtual void FacadeDrawControler() = 0;
+    virtual void FacadeDrawCredits() = 0;
+    virtual void FacadeDrawGameOptions() = 0;
+    virtual void FacadeDrawSettings() = 0;
 
     virtual void FacadeInitIntro() = 0;
     virtual void FacadeInitMenu() = 0;
@@ -57,6 +60,9 @@ class RenderFacade {
     virtual void FacadeInitLobbyMulti() = 0;
     virtual void FacadeInitControler() = 0;
     virtual void FacadeInitHUD() = 0;
+    virtual void FacadeInitCredits() = 0;
+    virtual void FacadeInitGameOptions() = 0;
+    virtual void FacadeInitSettings() = 0;
 
     virtual void FacadeCheckInputIntro() = 0;
     virtual void FacadeCheckInputMenu() = 0;
@@ -65,8 +71,12 @@ class RenderFacade {
     virtual void FacadeCheckInputEndRace() = 0;
     virtual void FacadeCheckInputLobbyMulti() = 0;
     virtual void FacadeCheckInputControler() = 0;
+    virtual void FacadeCheckInputCredits() = 0;
+    virtual void FacadeCheckInputGameOptions() = 0;
+    virtual void FacadeCheckInputSettings() = 0;
 
     virtual void FacadeUpdatePowerUpHUD(DataMap* d) = 0;
+    virtual void FacadeInitResources() = 0;
     virtual void FacadeDrawHUD(Entity* car, ManCar* manCars) = 0;
     virtual void FacadeSuscribeEvents() = 0;
     virtual void FacadeAddPlates(Manager* manNamePlates) = 0;
@@ -78,6 +88,7 @@ class RenderFacade {
     virtual void CleanScene() = 0;
     virtual void FacadeUpdateViewport() = 0;
 
+    virtual void FacadeInitParticleSystem(DataMap* d) = 0;
     //DEBUG
     virtual void Draw3DLine(vec3 &pos1, vec3 &pos2, uint16_t r, uint16_t g, uint16_t b) const = 0;
     virtual void Draw3DLine(vec3 &pos1, vec3 &pos2) const = 0;
@@ -97,21 +108,26 @@ class RenderFacade {
     virtual bool GetShowDebugAI() = 0;
     virtual int  GetIDCarAIToDebug() = 0;
 
+    virtual void ResetInputGameOptions() = 0;
+    virtual void ResetInputCharacter() = 0;
+    virtual void SetMenuEndRace(bool) = 0;
+    virtual bool GetMenuEndRace() = 0;
+
     int GetNumEnemyCars() { return numEnemyCars; };
     void SetNumEnemyCars(int n) { numEnemyCars = n; };
 
    protected:
-    uint16_t idCar = 0;
-    uint16_t idTotem = 0;
-    uint16_t idCarWithTotem = 0;
-    int numEnemyCars = 0;
-    int currentPowerUp = 0;
+    uint16_t idCar { 0 };
+    uint16_t idTotem { 0 };
+    uint16_t idCarWithTotem { 0 };
+    int numEnemyCars { 0 };
+    int currentPowerUp { 0 };
 
 
     time_point<system_clock> timeStart;
-    const int64_t inputDelay = 500;       // 0.5 segundos
-    const int64_t inputDelayCamera = 250;       // 0.5 segundos
-    bool invertedCam = false;
-    bool totemCamActive = false;
-    int idCarAIToDebug = 0;
+    const int64_t inputDelay { 500 };       // 0.5 segundos
+    const int64_t inputDelayCamera { 250 };       // 0.5 segundos
+    bool invertedCam { false };
+    bool totemCamActive { false };
+    int idCarAIToDebug { 0 };
 };

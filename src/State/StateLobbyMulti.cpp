@@ -11,7 +11,7 @@
 using namespace std;
 
 StateLobbyMulti::StateLobbyMulti() : tcpClient{make_shared<TCPClient>(Constants::SERVER_HOST, SERVER_PORT_TCP)} {
-    std::cout << "> LobbyMenu constructor" << std::endl;
+    std::cout << "> LOBBY constructor" << std::endl;
 
     renderEngine = RenderFacadeManager::GetInstance()->GetRenderFacade();
     renderEngine->FacadeInitLobbyMulti();
@@ -24,15 +24,11 @@ StateLobbyMulti::StateLobbyMulti() : tcpClient{make_shared<TCPClient>(Constants:
 
 // Cargamos los bancos de sonido Menu.
 void StateLobbyMulti::InitState() {
-    // cout << "~~~ ENTRO A MENU" << endl;
     // if (!soundEngine){
     //     soundEngine = SoundFacadeManager::GetInstance()->GetSoundFacade();
-    //     cout << "~~~ SoundEngine en MENU es -> " << soundEngine << endl;
     // }
-    // soundEngine->SetState(2);
-    // soundEngine->PlayEvent("Musica/menu");
-
-    //cout << "> MENU iniciado" << endl;
+    // Estado a 6, no hace nada de sonido
+    // soundEngine->SetState(6);
 }
 
 void StateLobbyMulti::Render() {

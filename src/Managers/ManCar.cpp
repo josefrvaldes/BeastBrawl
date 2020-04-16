@@ -53,7 +53,6 @@ ManCar::ManCar() {
 }
 
 ManCar::~ManCar() {
-    cout << "Llamando al destructor de ManCar" << endl;
     entities.clear();
     entities.shrink_to_fit();
 }
@@ -759,7 +758,7 @@ void ManCar::CatchPowerUpAI(DataMap* d) {
         }
     }
 
-    srand(time(nullptr));
+    //srand(time(nullptr));
     int indx = rand() % 1000 + 1;
     typeCPowerUp type = typeCPowerUp::None;
     if (indx <= maxRobojorobo)  // ROBOJOROBO -> 5% base - 0% primero - 2.5% segundo - 10% ultimo/s

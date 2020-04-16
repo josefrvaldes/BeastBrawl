@@ -48,14 +48,13 @@ ManTotem::ManTotem(ManNavMesh *manNavMesh_) : manNavMesh{manNavMesh_} {
     cCurrentNavMesh->currentNavMesh = currentNavMesh;
     auto cTotem = static_cast<CTotem*>(entities[0]->GetComponent(CompType::TotemComp).get());
     cTotem->active = true;
-    cout << "EL NAVMESH DEL TOTEM ES:::::::::::::::::::::::::::::::::::::::::::::::    " << cCurrentNavMesh->currentNavMesh << endl;
+    //cout << "EL NAVMESH DEL TOTEM ES:::::::::::::::::::::::::::::::::::::::::::::::    " << cCurrentNavMesh->currentNavMesh << endl;
 
     SubscribeToEvents();
 
 }
 
 ManTotem::~ManTotem() {
-    cout << "Llamando al destructor de ManTotem" << endl;
     entities.clear();
     entities.shrink_to_fit();
 }

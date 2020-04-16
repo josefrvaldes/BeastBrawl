@@ -122,7 +122,7 @@ typedef double				f64;
 #define snprintf sprintf_s
 #elif !defined(__CYGWIN__)
 #define swprintf _snwprintf
-#define snprintf _snprintf
+//#define snprintf _snprintf
 #endif
 
 // define the wchar_t type if not already built in.

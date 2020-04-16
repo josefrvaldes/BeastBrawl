@@ -1,5 +1,9 @@
 #include "SoundEngine.h"
 
+#include <fmod_studio.h>
+#include <fmod.h>
+#include <fmod_errors.h>
+
 using namespace CLSE;
 
 /*
@@ -34,10 +38,14 @@ SoundEngine::SoundEngine() {
 }
 
 SoundEngine::~SoundEngine() {
-    delete coreSystem;
-    delete system;
-    delete masterBank;
-    delete stringsBank;
+    // delete coreSystem;
+    // delete system;
+    // delete masterBank;
+    // delete stringsBank;
+    free(coreSystem) ;
+    free(system);
+    free(masterBank);
+    free(stringsBank);
 }
 
 
@@ -45,10 +53,14 @@ SoundEngine::~SoundEngine() {
  * Inicializa FMOD Studio, inicializando tambien FMOD Core.
  */
 void SoundEngine::InitSoundEngine() {
-    ERRFMODCHECK(FMOD::Studio::System::create(&system));
-    ERRFMODCHECK(system->getCoreSystem(&coreSystem));
-    ERRFMODCHECK(coreSystem->setSoftwareFormat(0, FMOD_SPEAKERMODE_5POINT1, 0));
-    ERRFMODCHECK(system->initialize(512, FMOD_STUDIO_INIT_NORMAL, FMOD_INIT_NORMAL, nullptr));
+    //ERRFMODCHECK(FMOD_Studio_System_Create(&system));
+    ERRFMODCHECK(FMOD_Studio_System_Create(&system, FMOD_VERSION));
+    //ERRFMODCHECK(system->getCoreSystem(&coreSystem));
+    ERRFMODCHECK(FMOD_Studio_System_GetCoreSystem(system, &coreSystem));
+    //ERRFMODCHECK(coreSystem->setSoftwareFormat(0, FMOD_SPEAKERMODE_5POINT1, 0));
+    ERRFMODCHECK(FMOD_System_SetSoftwareFormat(coreSystem, 0, FMOD_SPEAKERMODE_5POINT1, 0));
+    //ERRFMODCHECK(system->initialize(512, FMOD_STUDIO_INIT_NORMAL, FMOD_INIT_NORMAL, nullptr));
+    ERRFMODCHECK(FMOD_Studio_System_Initialize(system, 512, FMOD_STUDIO_INIT_NORMAL, FMOD_INIT_NORMAL, nullptr));
 }
 
 /**
@@ -58,7 +70,8 @@ void SoundEngine::TerminateSoundEngine() {
     UnloadAllBanks();
     UnloadMasterBank();
 
-    ERRFMODCHECK(system->release());
+    //ERRFMODCHECK(system->release());
+    ERRFMODCHECK(FMOD_Studio_System_Release(system));
     std::cout << "***** Sound engine K.O." << endl;
 }
 
@@ -66,16 +79,18 @@ void SoundEngine::TerminateSoundEngine() {
  * Carga el banco Master y el MasterStrings.
  */
 void SoundEngine::LoadMasterBank() {
-    ERRFMODCHECK(system->loadBankFile("./media/fmod/Master.bank", FMOD_STUDIO_LOAD_BANK_NORMAL, &masterBank));
-    ERRFMODCHECK(system->loadBankFile("./media/fmod/Master.strings.bank", FMOD_STUDIO_LOAD_BANK_NORMAL, &stringsBank));
+    //ERRFMODCHECK(system->loadBankFile("./media/fmod/Master.bank", FMOD_STUDIO_LOAD_BANK_NORMAL, &masterBank));
+    ERRFMODCHECK(FMOD_Studio_System_LoadBankFile(system, "./media/fmod/Master.bank", FMOD_STUDIO_LOAD_BANK_NORMAL, &masterBank));
+    ERRFMODCHECK(FMOD_Studio_System_LoadBankFile(system, "./media/fmod/Master.strings.bank", FMOD_STUDIO_LOAD_BANK_NORMAL, &stringsBank));
 }
 
 /**
  * Libera el banco Master y MasterStrings.
 */
 void SoundEngine::UnloadMasterBank() {
-    ERRFMODCHECK(stringsBank->unload());
-    ERRFMODCHECK(masterBank->unload());
+    //ERRFMODCHECK(stringsBank->unload());
+    ERRFMODCHECK(FMOD_Studio_Bank_Unload(stringsBank));
+    ERRFMODCHECK(FMOD_Studio_Bank_Unload(masterBank));
     std::cout << "***** Master bank a la shit" << endl;
 }
 
@@ -86,24 +101,25 @@ void SoundEngine::UnloadMasterBank() {
  */
 void SoundEngine::UnloadAllBanks() {
     for ( auto it = eventInstances2D.begin(); it != eventInstances2D.end(); it++){
-        ERRFMODCHECK(it->second.get()->GetInstance()->release());
+        //ERRFMODCHECK(it->second.get()->GetInstance()->release());
+        ERRFMODCHECK(FMOD_Studio_EventInstance_Release(it->second.get()->GetInstance()));
     }
     eventInstances2D.clear();
 
     for ( auto it = eventInstancesEstatic3D.begin(); it != eventInstancesEstatic3D.end(); it++){
-        ERRFMODCHECK(it->second.get()->GetInstance()->release());
+        ERRFMODCHECK(FMOD_Studio_EventInstance_Release(it->second.get()->GetInstance()));
     }
     eventInstancesEstatic3D.clear();
     
     for ( auto it = eventInstancesDinamic3D.begin(); it != eventInstancesDinamic3D.end(); it++){
-        ERRFMODCHECK(it->second.get()->GetInstance()->release());
+        ERRFMODCHECK(FMOD_Studio_EventInstance_Release(it->second.get()->GetInstance()));
     }
     eventInstancesDinamic3D.clear();
 
     soundDescriptions.clear();
 
     for (auto bank : banks) {
-        ERRFMODCHECK(bank.second->unload());
+        ERRFMODCHECK(FMOD_Studio_Bank_Unload(bank.second));
     }
     banks.clear();
     std::cout << "***** Bancos y sonidos liberados" << endl;
@@ -119,7 +135,7 @@ bool SoundEngine::LoadSoundBank(const string& nameBank) {
         banks[nameBank] = nullptr;
 
         string bank = "./media/fmod/" + nameBank + ".bank";
-        ERRFMODCHECK(system->loadBankFile(bank.c_str(), FMOD_STUDIO_LOAD_BANK_NORMAL, &banks[nameBank]));
+        ERRFMODCHECK(FMOD_Studio_System_LoadBankFile(system, bank.c_str(), FMOD_STUDIO_LOAD_BANK_NORMAL, &banks[nameBank]));
         //cout << "***** Cargado el banco: " << nameBank << endl;
         return true;
     }
@@ -136,10 +152,12 @@ void SoundEngine::LoadSoundEvent(const string& nameEvent, const bool type) {
         soundDescriptions[nameEvent] = nullptr;
 
         string event = "event:/" + nameEvent;
-        ERRFMODCHECK(system->getEvent(event.c_str(), &soundDescriptions[nameEvent]));
+        //ERRFMODCHECK(system->getEvent(event.c_str(), &soundDescriptions[nameEvent]));
+        ERRFMODCHECK(FMOD_Studio_System_GetEvent(system, event.c_str(), &soundDescriptions[nameEvent]));
 
         if (type) {
-            ERRFMODCHECK(soundDescriptions[nameEvent]->loadSampleData());
+            //ERRFMODCHECK(soundDescriptions[nameEvent]->loadSampleData());
+            ERRFMODCHECK(FMOD_Studio_EventDescription_LoadSampleData(soundDescriptions[nameEvent]));
         } else {
             CreateSoundNode2D(nameEvent);
         }
@@ -155,17 +173,17 @@ void SoundEngine::PlayEvent(const string& nameID) {
     //cout << "*** Quiero que suene el evento: " << nameID << endl;
     auto instance = eventInstances2D.find(nameID);
     if (instance != eventInstances2D.end()) {
-        ERRFMODCHECK(instance->second->GetInstance()->start());
+        ERRFMODCHECK(FMOD_Studio_EventInstance_Start(instance->second->GetInstance()));
     } else{
         instance = eventInstancesEstatic3D.find(nameID);
         if(instance != eventInstancesEstatic3D.end()) {
             //cout << "Sonando el evento estatico: " << nameID << endl;
-            ERRFMODCHECK(instance->second->GetInstance()->start());
+            ERRFMODCHECK(FMOD_Studio_EventInstance_Start(instance->second->GetInstance()));
         } else {
             instance = eventInstancesDinamic3D.find(nameID);
             if (instance != eventInstancesDinamic3D.end()) {
                 //cout << "Sonando el evento dinamico: " << nameID << endl;
-                ERRFMODCHECK(instance->second->GetInstance()->start());
+                ERRFMODCHECK(FMOD_Studio_EventInstance_Start(instance->second->GetInstance()));
             }
             else {
                 cout << "EL EVENTO " << nameID << " NO ESTA" << endl;
@@ -182,20 +200,20 @@ void SoundEngine::PlayEvent(const string& nameID) {
 void SoundEngine::PlayEventWithVolume(const string& nameID, float v) {
     auto instance = eventInstances2D.find(nameID);
     if (instance != eventInstances2D.end()) {
-        ERRFMODCHECK(instance->second->GetInstance()->setVolume(v));
-        ERRFMODCHECK(instance->second->GetInstance()->start());
+        ERRFMODCHECK(FMOD_Studio_EventInstance_SetVolume(instance->second->GetInstance(), v));
+        ERRFMODCHECK(FMOD_Studio_EventInstance_Start(instance->second->GetInstance()));
     } else{
         instance = eventInstancesEstatic3D.find(nameID);
         if(instance != eventInstancesEstatic3D.end()) {
             //cout << "Sonando el evento estatico: " << nameID << endl;
-            ERRFMODCHECK(instance->second->GetInstance()->setVolume(v));
-            ERRFMODCHECK(instance->second->GetInstance()->start());
+            ERRFMODCHECK(FMOD_Studio_EventInstance_SetVolume(instance->second->GetInstance(), v));
+            ERRFMODCHECK(FMOD_Studio_EventInstance_Start(instance->second->GetInstance()));
         } else {
             instance = eventInstancesDinamic3D.find(nameID);
             if (instance != eventInstancesDinamic3D.end()) {
                 //cout << "Sonando el evento dinamico: " << nameID << endl;
-                ERRFMODCHECK(instance->second->GetInstance()->setVolume(v));
-                ERRFMODCHECK(instance->second->GetInstance()->start());
+                ERRFMODCHECK(FMOD_Studio_EventInstance_SetVolume(instance->second->GetInstance(), v));
+                ERRFMODCHECK(FMOD_Studio_EventInstance_Start(instance->second->GetInstance()));
             }
             else {
                 cout << "EL EVENTO " << nameID << " NO ESTA" << endl;
@@ -210,13 +228,14 @@ void SoundEngine::PlayEventWithVolume(const string& nameID, float v) {
  */
 void SoundEngine::StopAllEvents() {
     for ( auto it = eventInstances2D.begin(); it != eventInstances2D.end(); it++){
-        ERRFMODCHECK(it->second->GetInstance()->stop(FMOD_STUDIO_STOP_IMMEDIATE));
+        //ERRFMODCHECK(it->second->GetInstance()->stop(FMOD_STUDIO_STOP_IMMEDIATE));
+        ERRFMODCHECK(FMOD_Studio_EventInstance_Stop(it->second->GetInstance(), FMOD_STUDIO_STOP_IMMEDIATE));
     }
     for ( auto it = eventInstancesEstatic3D.begin(); it != eventInstancesEstatic3D.end(); it++){
-        ERRFMODCHECK(it->second->GetInstance()->stop(FMOD_STUDIO_STOP_IMMEDIATE));
+        ERRFMODCHECK(FMOD_Studio_EventInstance_Stop(it->second->GetInstance(), FMOD_STUDIO_STOP_IMMEDIATE));
     }
     for ( auto it = eventInstancesDinamic3D.begin(); it != eventInstancesDinamic3D.end(); it++){
-        ERRFMODCHECK(it->second->GetInstance()->stop(FMOD_STUDIO_STOP_IMMEDIATE));
+        ERRFMODCHECK(FMOD_Studio_EventInstance_Stop(it->second->GetInstance(), FMOD_STUDIO_STOP_IMMEDIATE));
     }
 }
 
@@ -227,15 +246,15 @@ void SoundEngine::StopAllEvents() {
 void SoundEngine::StopEvent(const string& nameID) {
     auto instance = eventInstances2D.find(nameID);
     if (instance != eventInstances2D.end()) {
-        ERRFMODCHECK(instance->second->GetInstance()->stop(FMOD_STUDIO_STOP_IMMEDIATE));
+        ERRFMODCHECK(FMOD_Studio_EventInstance_Stop(instance->second->GetInstance(), FMOD_STUDIO_STOP_IMMEDIATE));
     } else {
         instance = eventInstancesEstatic3D.find(nameID);
         if (instance != eventInstancesEstatic3D.end()) {
-            ERRFMODCHECK(instance->second->GetInstance()->stop(FMOD_STUDIO_STOP_IMMEDIATE));
+            ERRFMODCHECK(FMOD_Studio_EventInstance_Stop(instance->second->GetInstance(), FMOD_STUDIO_STOP_IMMEDIATE));
         } else {
             instance = eventInstancesDinamic3D.find(nameID);
             if (instance != eventInstancesDinamic3D.end()) {
-                ERRFMODCHECK(instance->second->GetInstance()->stop(FMOD_STUDIO_STOP_IMMEDIATE));
+                ERRFMODCHECK(FMOD_Studio_EventInstance_Stop(instance->second->GetInstance(), FMOD_STUDIO_STOP_IMMEDIATE));
             }
         }
     }
@@ -280,15 +299,15 @@ void SoundEngine::ResumeAllEvents() {
 void SoundEngine::PauseEvent(const string& nameID) {
     auto instance = eventInstances2D.find(nameID);
     if (instance != eventInstances2D.end()) {
-        ERRFMODCHECK(instance->second->GetInstance()->setPaused(true));
+        ERRFMODCHECK(FMOD_Studio_EventInstance_SetPaused(instance->second->GetInstance(), true));
     } else {
         instance = eventInstancesEstatic3D.find(nameID);
         if (instance != eventInstancesEstatic3D.end()) {
-            ERRFMODCHECK(instance->second->GetInstance()->setPaused(true));
+            ERRFMODCHECK(FMOD_Studio_EventInstance_SetPaused(instance->second->GetInstance(), true));
         } else {
             instance = eventInstancesDinamic3D.find(nameID);
             if (instance != eventInstancesDinamic3D.end()) {
-                ERRFMODCHECK(instance->second->GetInstance()->setPaused(true));
+                ERRFMODCHECK(FMOD_Studio_EventInstance_SetPaused(instance->second->GetInstance(), true));
             }
         }
     }
@@ -301,15 +320,15 @@ void SoundEngine::PauseEvent(const string& nameID) {
 void SoundEngine::ResumeEvent(const string& nameID) {
     auto instance = eventInstances2D.find(nameID);
     if (instance != eventInstances2D.end()) {
-        ERRFMODCHECK(instance->second->GetInstance()->setPaused(false));
+        ERRFMODCHECK(FMOD_Studio_EventInstance_SetPaused(instance->second->GetInstance(), false));
     } else {
         instance = eventInstancesEstatic3D.find(nameID);
         if (instance != eventInstancesEstatic3D.end()) {
-            ERRFMODCHECK(instance->second->GetInstance()->setPaused(false));
+            ERRFMODCHECK(FMOD_Studio_EventInstance_SetPaused(instance->second->GetInstance(), false));
         } else {
             instance = eventInstancesDinamic3D.find(nameID);
             if (instance != eventInstancesDinamic3D.end()) {
-                ERRFMODCHECK(instance->second->GetInstance()->setPaused(false));
+                ERRFMODCHECK(FMOD_Studio_EventInstance_SetPaused(instance->second->GetInstance(), false));
             }
         }
     }
@@ -318,10 +337,10 @@ void SoundEngine::ResumeEvent(const string& nameID) {
 /**
  *
  */
- bool SoundEngine::IsPlaying(FMOD::Studio::EventInstance* instance) const {
+ bool SoundEngine::IsPlaying(FMOD_STUDIO_EVENTINSTANCE* instance) const {
      if (instance) {
          FMOD_STUDIO_PLAYBACK_STATE eventState;
-         ERRFMODCHECK(instance->getPlaybackState(&eventState));
+         ERRFMODCHECK(FMOD_Studio_EventInstance_GetPlaybackState(instance, &eventState));
          if (eventState == FMOD_STUDIO_PLAYBACK_PLAYING || eventState == FMOD_STUDIO_PLAYBACK_STARTING /*|| eventState == FMOD_STUDIO_PLAYBACK_SUSTAINING*/) {
              return true;
          }
@@ -369,7 +388,8 @@ bool SoundEngine::IsPlayingDinamic3D(const string& nameEvent) const {
  * Actualiza el motor de sonido de FMOD.
  */
 void SoundEngine::UpdateEngine(){
-    ERRFMODCHECK(system->update());
+    //ERRFMODCHECK(system->update());
+    ERRFMODCHECK(FMOD_Studio_System_Update(system));
 }
 
 
@@ -391,15 +411,16 @@ void SoundEngine::SetParameter(const string& nameID, const string& nameParameter
     //cout << "+++++++" << nameID << " A " << value << endl; 
     auto instance = eventInstances2D.find(nameID);
     if (instance != eventInstances2D.end()) {
-        instance->second->GetInstance()->setParameterByName(nameParameter.c_str(), value);
+        //instance->second->GetInstance()->setParameterByName(nameParameter.c_str(), value);
+        FMOD_Studio_EventInstance_SetParameterByName(instance->second->GetInstance(), nameParameter.c_str(), value, false);
     } else {
         instance = eventInstancesEstatic3D.find(nameID);
         if(instance != eventInstancesEstatic3D.end()) {
-            instance->second->GetInstance()->setParameterByName(nameParameter.c_str(), value);
+            FMOD_Studio_EventInstance_SetParameterByName(instance->second->GetInstance(), nameParameter.c_str(), value, false);
         } else {
             instance = eventInstancesDinamic3D.find(nameID);
             if (instance != eventInstancesDinamic3D.end()) {
-                instance->second->GetInstance()->setParameterByName(nameParameter.c_str(), value);
+                FMOD_Studio_EventInstance_SetParameterByName(instance->second->GetInstance(), nameParameter.c_str(), value, false);
             }
         }
     }
@@ -421,7 +442,7 @@ void SoundEngine::SetListenerPosition(const glm::vec3 &pos, const glm::vec3 &rot
     atr.up = {0.0, 1.0, 0.0};
     atr.velocity = {0.0, 0.0, 0.0}; // Para el senior efecto Doppler
     //cout << "La posicion del coche es: " << pos.x << " - " << pos.y << " - " << pos.z << endl;
-    ERRFMODCHECK(system->setListenerAttributes(0, &atr));
+    ERRFMODCHECK(FMOD_Studio_System_SetListenerAttributes(system, 0, &atr));
 }
 
 
@@ -430,7 +451,7 @@ void SoundEngine::SetListenerPosition(const glm::vec3 &pos, const glm::vec3 &rot
  * Se cambia la posicion desde donde se escucha un sonido.
  * TO-DO: Aqui solo se cambia la posicion, para el efecto Doppler hace falta la velocidad. Creo que hay mas cosas a parte.
  */
-void SoundEngine::SetEventPosition3D(FMOD::Studio::EventInstance* i, const glm::vec3& pos) {
+void SoundEngine::SetEventPosition3D(FMOD_STUDIO_EVENTINSTANCE * i, const glm::vec3& pos) {
     //auto instance = eventInstancesDinamic3D.find(nameID);
     if (i) {
         FMOD_VECTOR vec;
@@ -446,7 +467,7 @@ void SoundEngine::SetEventPosition3D(FMOD::Studio::EventInstance* i, const glm::
         atr.up = {0.0, 1.0, 0.0};
         atr.velocity = {0.0, 0.0, 0.0}; // Para el senior efecto Doppler
 
-        ERRFMODCHECK(i->set3DAttributes(&atr));
+        ERRFMODCHECK( FMOD_Studio_EventInstance_Set3DAttributes(i, &atr));
     }
 }
 
@@ -477,24 +498,24 @@ void SoundEngine::Set3DAttributes(const string &nameEvent, const glm::vec3 &pos)
 void SoundEngine::CreateSoundNode2D(const string& nameEvent) {
     unique_ptr<SoundNode> snode = make_unique<SoundNode>();
 
-    FMOD::Studio::EventInstance* instance = nullptr;
+    FMOD_STUDIO_EVENTINSTANCE* instance = nullptr;
     auto description = soundDescriptions.find(nameEvent);
     if (description != soundDescriptions.end()) {
-        ERRFMODCHECK(description->second->createInstance(&instance));
+        ERRFMODCHECK( FMOD_Studio_EventDescription_CreateInstance(description->second, &instance));
         snode->SetInstance(*instance);
         eventInstances2D[nameEvent] = move(snode);
     }
 }
 
 void SoundEngine::CreateSoundNodeEstatic3D(uint16_t idE, glm::vec3& p, string& nameEvent, bool play) {
-    std::string name = nameEvent + to_string(idE);
+    std::string name = nameEvent + std::to_string(idE);
     unique_ptr<SoundNode> snode = make_unique<SoundNode>(idE, p, 0);
     //cout << "**** VOY A CREAR LA INSTANCIA: " << nameEvent << " CON ID: " << name  << " CON LA POSICION: " << p.x << ", " << p.y << ", " << p.z << endl;
     
-    FMOD::Studio::EventInstance* instance = nullptr;
+    FMOD_STUDIO_EVENTINSTANCE * instance = nullptr;
     auto description = soundDescriptions.find(nameEvent);
     if (description != soundDescriptions.end()) {
-        ERRFMODCHECK(description->second->createInstance(&instance));
+        ERRFMODCHECK( FMOD_Studio_EventDescription_CreateInstance(description->second, &instance));
         snode->SetInstance(*instance);
         eventInstancesEstatic3D[name] = move(snode);
         SetEventPosition3D(eventInstancesEstatic3D[name].get()->GetInstance(), p);
@@ -506,14 +527,14 @@ void SoundEngine::CreateSoundNodeEstatic3D(uint16_t idE, glm::vec3& p, string& n
 
 void SoundEngine::CreateSoundNodeDinamic3D(uint16_t idE, glm::vec3& p, string& nameEvent, bool play, bool c) {
     //cout << "++++++ CREATE SOUND: " << nameEvent << endl;
-    std::string name = nameEvent + to_string(idE);
+    std::string name = nameEvent + std::to_string(idE);
     unique_ptr<SoundNode> snode = make_unique<SoundNode>(idE, p, c);
     //cout << "**** VOY A CREAR LA INSTANCIA DINAMICA: " << nameEvent << " CON ID: " << name  << " CON LA POSICION: " << p.x << ", " << p.y << ", " << p.z << endl;
     
-    FMOD::Studio::EventInstance* instance = nullptr;
+    FMOD_STUDIO_EVENTINSTANCE* instance = nullptr;
     auto description = soundDescriptions.find(nameEvent);
     if (description != soundDescriptions.end()) {
-        ERRFMODCHECK(description->second->createInstance(&instance));
+        ERRFMODCHECK( FMOD_Studio_EventDescription_CreateInstance(description->second, &instance));
         snode->SetInstance(*instance);
         eventInstancesDinamic3D[name] = move(snode);
         //cout << "Instancia creada de: " << nameEvent << endl;
