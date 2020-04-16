@@ -91,7 +91,8 @@ enum EventType {
     NEW_CRASH_PU_CAR_RECEIVED,
     NEW_CRASH_PU_WALL_RECEIVED,
     DISCONNECTED_PLAYER,
-    INIT_PARTICLE_SYSTEM
+    INIT_PARTICLE_SYSTEM,
+    RANDOM_VOICE
 };
 
 // enum DataType{
@@ -125,6 +126,7 @@ struct Data {
     typeCPowerUp typePowerUp;
     bool mainCharacter;
     bool stole;
+    int num;
 };
 
 struct Event {

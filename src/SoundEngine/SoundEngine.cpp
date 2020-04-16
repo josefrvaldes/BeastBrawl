@@ -31,8 +31,9 @@ void ERRFMODCHECK_fn(FMOD_RESULT result, const char* file, int line) {
  ************************************************
  */
 
+//TODO: El true no deberia de estar ahi. Inicia a coordenadas diestras.
 SoundEngine::SoundEngine() {
-    InitSoundEngine();
+    InitSoundEngine(true);
     LoadMasterBank();
     std::cout << "***** Sound engine ON" << endl;
 }
@@ -52,7 +53,7 @@ SoundEngine::~SoundEngine() {
 /**
  * Inicializa FMOD Studio, inicializando tambien FMOD Core.
  */
-void SoundEngine::InitSoundEngine() {
+void SoundEngine::InitSoundEngine(bool righthanded) {
     //ERRFMODCHECK(FMOD_Studio_System_Create(&system));
     ERRFMODCHECK(FMOD_Studio_System_Create(&system, FMOD_VERSION));
     //ERRFMODCHECK(system->getCoreSystem(&coreSystem));
@@ -60,7 +61,11 @@ void SoundEngine::InitSoundEngine() {
     //ERRFMODCHECK(coreSystem->setSoftwareFormat(0, FMOD_SPEAKERMODE_5POINT1, 0));
     ERRFMODCHECK(FMOD_System_SetSoftwareFormat(coreSystem, 0, FMOD_SPEAKERMODE_5POINT1, 0));
     //ERRFMODCHECK(system->initialize(512, FMOD_STUDIO_INIT_NORMAL, FMOD_INIT_NORMAL, nullptr));
-    ERRFMODCHECK(FMOD_Studio_System_Initialize(system, 512, FMOD_STUDIO_INIT_NORMAL, FMOD_INIT_NORMAL, nullptr));
+    if(righthanded) {
+        ERRFMODCHECK(FMOD_Studio_System_Initialize(system, 512, FMOD_STUDIO_INIT_NORMAL, FMOD_INIT_3D_RIGHTHANDED, nullptr));
+    } else {
+        ERRFMODCHECK(FMOD_Studio_System_Initialize(system, 512, FMOD_STUDIO_INIT_NORMAL, FMOD_INIT_NORMAL, nullptr));
+    }
 }
 
 /**
@@ -412,36 +417,38 @@ void SoundEngine::SetParameter(const string& nameID, const string& nameParameter
     auto instance = eventInstances2D.find(nameID);
     if (instance != eventInstances2D.end()) {
         //instance->second->GetInstance()->setParameterByName(nameParameter.c_str(), value);
-        FMOD_Studio_EventInstance_SetParameterByName(instance->second->GetInstance(), nameParameter.c_str(), value, false);
+        ERRFMODCHECK(FMOD_Studio_EventInstance_SetParameterByName(instance->second->GetInstance(), nameParameter.c_str(), value, false));
     } else {
         instance = eventInstancesEstatic3D.find(nameID);
         if(instance != eventInstancesEstatic3D.end()) {
-            FMOD_Studio_EventInstance_SetParameterByName(instance->second->GetInstance(), nameParameter.c_str(), value, false);
+            ERRFMODCHECK(FMOD_Studio_EventInstance_SetParameterByName(instance->second->GetInstance(), nameParameter.c_str(), value, false));
         } else {
             instance = eventInstancesDinamic3D.find(nameID);
             if (instance != eventInstancesDinamic3D.end()) {
-                FMOD_Studio_EventInstance_SetParameterByName(instance->second->GetInstance(), nameParameter.c_str(), value, false);
+                ERRFMODCHECK(FMOD_Studio_EventInstance_SetParameterByName(instance->second->GetInstance(), nameParameter.c_str(), value, false));
             }
-        }
+        } 
     }
 }
 
 /**
- *
+ * Cambia de posicion el listener.
  */
 void SoundEngine::SetListenerPosition(const glm::vec3 &pos, const glm::vec3 &rot) {
+
+    //float rad = glm::radians(rot.y);
     FMOD_VECTOR vec;
     vec.x = pos.x*0.1;
     vec.y = pos.y*0.1;
     vec.z = pos.z*0.1;
 
     FMOD_3D_ATTRIBUTES atr;
-    atr.position = vec;
+    atr.position = {vec};
     //TODO: Hay que cambiar la direccion boys y poniento la rotación tal cual no funsiona, seguramente porque habrá que cambiar también el UP
-    atr.forward = {1.0, 0.0, 0.0};
+    atr.forward = {glm::cos(glm::radians(rot.y)), 0.0, -glm::sin(glm::radians(rot.y))};
     atr.up = {0.0, 1.0, 0.0};
     atr.velocity = {0.0, 0.0, 0.0}; // Para el senior efecto Doppler
-    //cout << "La posicion del coche es: " << pos.x << " - " << pos.y << " - " << pos.z << endl;
+    //std::cout << "El forward es: " << glm::cos(glm::radians(rot.y)) << " - " << glm::sin(glm::radians(rot.y)) << std::endl;
     ERRFMODCHECK(FMOD_Studio_System_SetListenerAttributes(system, 0, &atr));
 }
 
@@ -449,23 +456,20 @@ void SoundEngine::SetListenerPosition(const glm::vec3 &pos, const glm::vec3 &rot
 
 /**
  * Se cambia la posicion desde donde se escucha un sonido.
- * TO-DO: Aqui solo se cambia la posicion, para el efecto Doppler hace falta la velocidad. Creo que hay mas cosas a parte.
+ * TODO: Aqui solo se cambia la posicion, para el efecto Doppler hace falta la velocidad. Creo que hay mas cosas a parte.
  */
-void SoundEngine::SetEventPosition3D(FMOD_STUDIO_EVENTINSTANCE * i, const glm::vec3& pos) {
-    //auto instance = eventInstancesDinamic3D.find(nameID);
+void SoundEngine::SetEventPosition3D(FMOD_STUDIO_EVENTINSTANCE * i, const glm::vec3& pos, const float vel) {
     if (i) {
         FMOD_VECTOR vec;
         vec.x = pos.x*0.1;
         vec.y = pos.y*0.1;
         vec.z = pos.z*0.1;
 
-        //cout << "***** SE ACTUALIZA A " << vec.x << " " << vec.y << " " << vec.z << endl;
-
         FMOD_3D_ATTRIBUTES atr;
         atr.position = vec;
         atr.forward = {1.0, 0.0, 0.0};
         atr.up = {0.0, 1.0, 0.0};
-        atr.velocity = {0.0, 0.0, 0.0}; // Para el senior efecto Doppler
+        atr.velocity = {vel*0.1f, vel*0.1f, vel*0.1f}; // Para el senior efecto Doppler
 
         ERRFMODCHECK( FMOD_Studio_EventInstance_Set3DAttributes(i, &atr));
     }
@@ -476,15 +480,14 @@ void SoundEngine::SetEventPosition3D(FMOD_STUDIO_EVENTINSTANCE * i, const glm::v
  * @param nameEvent - Nombre de la clave.
  * @param pos - Posicion a la que hay que poner el sonido.
  */
-void SoundEngine::Set3DAttributes(const string &nameEvent, const glm::vec3 &pos) {
-    //cout << "***** LA INSTANCIA:  " << nameEvent << endl;
+void SoundEngine::Set3DAttributes(const string &nameEvent, const glm::vec3 &pos, const float vel) {
     auto it = eventInstancesEstatic3D.find(nameEvent);
     if (it != eventInstancesEstatic3D.end()) {
-        SetEventPosition3D(it->second->GetInstance(), pos);
+        SetEventPosition3D(it->second->GetInstance(), pos, vel);
     } else {
         it = eventInstancesDinamic3D.find(nameEvent);
         if (it != eventInstancesDinamic3D.end()) {
-            SetEventPosition3D(it->second->GetInstance(), pos);
+            SetEventPosition3D(it->second->GetInstance(), pos, vel);
         }
     }
 }
@@ -510,7 +513,6 @@ void SoundEngine::CreateSoundNode2D(const string& nameEvent) {
 void SoundEngine::CreateSoundNodeEstatic3D(uint16_t idE, glm::vec3& p, string& nameEvent, bool play) {
     std::string name = nameEvent + std::to_string(idE);
     unique_ptr<SoundNode> snode = make_unique<SoundNode>(idE, p, 0);
-    //cout << "**** VOY A CREAR LA INSTANCIA: " << nameEvent << " CON ID: " << name  << " CON LA POSICION: " << p.x << ", " << p.y << ", " << p.z << endl;
     
     FMOD_STUDIO_EVENTINSTANCE * instance = nullptr;
     auto description = soundDescriptions.find(nameEvent);
@@ -518,7 +520,7 @@ void SoundEngine::CreateSoundNodeEstatic3D(uint16_t idE, glm::vec3& p, string& n
         ERRFMODCHECK( FMOD_Studio_EventDescription_CreateInstance(description->second, &instance));
         snode->SetInstance(*instance);
         eventInstancesEstatic3D[name] = move(snode);
-        SetEventPosition3D(eventInstancesEstatic3D[name].get()->GetInstance(), p);
+        SetEventPosition3D(eventInstancesEstatic3D[name].get()->GetInstance(), p, 0.0);
         if (play) {
             PlayEvent(name);
         }
@@ -526,10 +528,8 @@ void SoundEngine::CreateSoundNodeEstatic3D(uint16_t idE, glm::vec3& p, string& n
 }
 
 void SoundEngine::CreateSoundNodeDinamic3D(uint16_t idE, glm::vec3& p, string& nameEvent, bool play, bool c) {
-    //cout << "++++++ CREATE SOUND: " << nameEvent << endl;
     std::string name = nameEvent + std::to_string(idE);
     unique_ptr<SoundNode> snode = make_unique<SoundNode>(idE, p, c);
-    //cout << "**** VOY A CREAR LA INSTANCIA DINAMICA: " << nameEvent << " CON ID: " << name  << " CON LA POSICION: " << p.x << ", " << p.y << ", " << p.z << endl;
     
     FMOD_STUDIO_EVENTINSTANCE* instance = nullptr;
     auto description = soundDescriptions.find(nameEvent);
@@ -537,7 +537,6 @@ void SoundEngine::CreateSoundNodeDinamic3D(uint16_t idE, glm::vec3& p, string& n
         ERRFMODCHECK( FMOD_Studio_EventDescription_CreateInstance(description->second, &instance));
         snode->SetInstance(*instance);
         eventInstancesDinamic3D[name] = move(snode);
-        //cout << "Instancia creada de: " << nameEvent << endl;
         if (play) {
             PlayEvent(name);
         }

@@ -805,13 +805,13 @@ void RenderFacadeClover::FacadeDrawMenu() {
     device->RenderText2D(name, 50.0f, 50.0f, 0.05f, 0.5f, colorB);
     name = "Mr Penguin";
     device->RenderText2D(name, 600.0f, 550.0f, 0.05f, 0.75f, color[0]);
-    name = "Captain Sharky";
+    name = "Sharky";
     device->RenderText2D(name, 600.0f, 425.0f, 0.05f, 0.75f, color[2]);
-    name = "Kaiser Kong";
+    name = "Deacon";
     device->RenderText2D(name, 600.0f, 300.0f, 0.05f, 0.75f, color[4]);
-    name = "Deacon Dragon";
-    device->RenderText2D(name, 900.0f, 550.0f, 0.05f, 0.75f, color[1]);
     name = "Mrs Baxter";
+    device->RenderText2D(name, 900.0f, 550.0f, 0.05f, 0.75f, color[1]);
+    name = "Kaiser Kong";
     device->RenderText2D(name, 900.0f, 425.0f, 0.05f, 0.75f, color[3]);
     name = "Cyberoctopus";
     device->RenderText2D(name, 900.0f, 300.0f, 0.05f, 0.75f, color[5]);

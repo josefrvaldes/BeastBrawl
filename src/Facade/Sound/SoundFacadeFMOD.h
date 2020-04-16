@@ -37,7 +37,7 @@ class SoundFacadeFMOD : public SoundFacade {
         void Update()                                                   override;
 
         void SetEventPositionEstatic3D(const string&, const glm::vec3&);
-        void SetEventPositionDinamic3D(const string&, const glm::vec3&);
+        void SetEventPositionDinamic3D(const string&, const glm::vec3&, const float);
         void SetParameter(const string&, const string&, const float) override;
 
         void CreateSound2D(const string&) override;
@@ -73,7 +73,7 @@ class SoundFacadeFMOD : public SoundFacade {
 
 
         float character { 0 } ;
-        enum TipoVoz { ChoqueEnemigo, ChoquePowerup, Derrape, Powerup, Random };
+        enum TipoVoz { ChoqueEnemigo, ChoquePowerup, Derrape, Powerup, Random, Nitro, Seleccion };
         CLSE::SoundEngine* soundEngine { nullptr };
 
         shared_ptr<EventManager> eventManager;

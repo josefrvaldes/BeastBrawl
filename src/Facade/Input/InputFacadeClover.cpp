@@ -245,6 +245,11 @@ void InputFacadeClover::CheckInputSelectCharacter(int &input, int maxInput) {
             --input;
         }
         SetValueInput(BUTTON_STICK_R, true);
+        shared_ptr<DataMap> data = make_shared<DataMap>();
+        int num = input;
+        (*data)[NUM] = num;
+        EventManager::GetInstance().AddEventMulti(Event{EventType::RANDOM_VOICE, data});
+        EventManager::GetInstance().AddEventMulti(Event{EventType::MENU_OPTION});
     } else if ( !(IsKeyOrGamepadPress(GLFW_KEY_RIGHT, GLFW_GAMEPAD_AXIS_LEFT_X, true, 0.5) || IsKeyOrGamepadPress(GLFW_KEY_LEFT, GLFW_GAMEPAD_AXIS_LEFT_X, true, -0.5)) ) {
         SetValueInput(BUTTON_STICK_R, false);
     }
@@ -263,6 +268,11 @@ void InputFacadeClover::CheckInputSelectCharacter(int &input, int maxInput) {
             }
         }
         SetValueInput(BUTTON_STICK_DOWN, true);
+        shared_ptr<DataMap> data = make_shared<DataMap>();
+        int num = input;
+        (*data)[NUM] = num;
+        EventManager::GetInstance().AddEventMulti(Event{EventType::RANDOM_VOICE, data});
+        EventManager::GetInstance().AddEventMulti(Event{EventType::MENU_OPTION});
     } else if ( !IsKeyOrGamepadPress(GLFW_KEY_DOWN, GLFW_GAMEPAD_AXIS_LEFT_Y, true, 0.5) ) {
         SetValueInput(BUTTON_STICK_DOWN, false);
     }
@@ -281,6 +291,11 @@ void InputFacadeClover::CheckInputSelectCharacter(int &input, int maxInput) {
             }
         }
         SetValueInput(BUTTON_STICK_UP, true);
+        shared_ptr<DataMap> data = make_shared<DataMap>();
+        int num = input;
+        (*data)[NUM] = num;
+        EventManager::GetInstance().AddEventMulti(Event{EventType::RANDOM_VOICE, data});
+        EventManager::GetInstance().AddEventMulti(Event{EventType::MENU_OPTION});
     } else if ( !IsKeyOrGamepadPress(GLFW_KEY_UP, GLFW_GAMEPAD_AXIS_LEFT_Y, true, -0.5) ) {
         SetValueInput(BUTTON_STICK_UP, false);
     }
