@@ -29,6 +29,11 @@ SystemPathPlanning::SystemPathPlanning(){
     SubscribeToEvents();
 }
 
+void SystemPathPlanning::AddManager(Manager &m) {
+    managers.push_back(&m);
+}
+
+
 void SystemPathPlanning::SubscribeToEvents() {
 
     EventManager::GetInstance().SubscribeMulti(Listener(
@@ -47,7 +52,6 @@ void SystemPathPlanning::SubscribeToEvents() {
         "MoveRandomPowerUp"));
 
 }
-
 
 void SystemPathPlanning::MoveRandomPowerUp(DataMap* data){
     //std::cout << " -entramoooos o que beibeeeeeeee ???????????????????????\n";
@@ -181,8 +185,8 @@ void SystemPathPlanning::CalculatePathToNavMesh(DataMap* data){
 
 
 
-void SystemPathPlanning::Update(CarAI* carAI, ManWayPoint* graph, ManNavMesh* manNavMesh) const{
-    UpdateDijkstra(carAI, graph, manNavMesh);    
+void SystemPathPlanning::update(CarAI* carAI){
+    UpdateDijkstra(carAI, static_cast<ManWayPoint*>(managers[4]), static_cast<ManNavMesh*>(managers[5]));    
 }
 
 void SystemPathPlanning::UpdateDijkstra(CarAI* carAI, ManWayPoint* graph, ManNavMesh* manNavMesh) const{

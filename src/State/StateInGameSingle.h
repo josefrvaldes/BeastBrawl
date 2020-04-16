@@ -27,6 +27,12 @@ class StateInGameSingle : public StateInGame {
     //void CAMBIARCosasNavMesh(ManCar &, ManNavMesh &);
     //void CAMBIARCosasDeTotemUpdate() override;
 
+    void InitBtPowerUp();
+    void InitBtMoveTo();
+    void InitBtLoDMove();
+    void InitPathPlanning();
+
+
     unique_ptr<SystemBtPowerUp> systemBtPowerUp;
     unique_ptr<SystemBtMoveTo> systemBtMoveTo;
     unique_ptr<SystemBtLoDMove> systemBtLoDMove;

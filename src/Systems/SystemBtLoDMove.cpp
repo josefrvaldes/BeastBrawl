@@ -10,6 +10,12 @@
 
 #include <Components/CMovementType.h>
 
+
+
+void SystemBtLoDMove::AddManager(Manager &m) {
+    managers.push_back(&m);
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //                           COMPROBAR BEHAVIOR TREE
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -261,14 +267,15 @@ SystemBtLoDMove::SystemBtLoDMove(){
 
 
 
-void SystemBtLoDMove::update(CarAI* actualCar, ManCar* manCars,ManPowerUp* manPowerUps, ManBoxPowerUp* manBoxPowerUps, ManTotem* manTotems, 
-                            ManWayPoint* manWayPoint, ManNavMesh* manNavMesh, ManBoundingWall* m_manBoundingWall, ManBoundingOBB* m_manBoundingOBB){
+void SystemBtLoDMove::update(CarAI* actualCar){
     if(entradoFL==false){
         fuzzyLogic->InitSystemFuzzyLogicAI(actualCar);  // To-Do: arreglar esta llamada para solo hacerla una vez
         entradoFL=true;
     }
 
-    unique_ptr<Blackboard> blackboard = make_unique<Blackboard>(actualCar, manCars, manPowerUps, manBoxPowerUps, manTotems, manWayPoint, fuzzyLogic.get(), steeringBehaviours.get(),manNavMesh, m_manBoundingWall, m_manBoundingOBB);
+    unique_ptr<Blackboard> blackboard = make_unique<Blackboard>(actualCar, static_cast<ManCar*>(managers[0]), static_cast<ManPowerUp*>(managers[1]), 
+            static_cast<ManBoxPowerUp*>(managers[2]), static_cast<ManTotem*>(managers[3]), static_cast<ManWayPoint*>(managers[4]), fuzzyLogic.get(), 
+            steeringBehaviours.get(), static_cast<ManNavMesh*>(managers[5]), static_cast<ManBoundingWall*>(managers[6]), static_cast<ManBoundingOBB*>(managers[7]));
 
     selectorBehaviourTree->run(blackboard.get());
 }

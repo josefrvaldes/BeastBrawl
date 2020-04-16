@@ -1,13 +1,15 @@
 #include "StateInGameSingle.h"
 
 StateInGameSingle::StateInGameSingle() : StateInGame() {
-    systemBtPowerUp = make_unique<SystemBtPowerUp>();
-    systemBtMoveTo = make_unique<SystemBtMoveTo>();
-    systemBtLoDMove = make_unique<SystemBtLoDMove>();
-    systemPathPlanning = make_unique<SystemPathPlanning>();
 
     InitState();
     InitVirtualMethods();
+
+
+    InitBtPowerUp();
+    InitBtMoveTo();
+    InitBtLoDMove();
+    InitPathPlanning();
 
     //CAMBIARCosasNavMesh(*manCars.get(), *manNavMesh.get());
 
@@ -56,18 +58,13 @@ void StateInGameSingle::Update() {
     for (auto actualAI : manCars->GetEntities()) { // CUIDADO!!! -> el static cast que solo se use en el single player, si no peta
         if (static_cast<Car*>(actualAI.get())->GetTypeCar() == TypeCar::CarAI){
             manCars->UpdateCarAI(
-                static_cast<CarAI*>(actualAI.get()), 
-                manPowerUps.get(), 
-                manBoxPowerUps.get(), 
+                static_cast<CarAI*>(actualAI.get()),
                 manTotems.get(), 
-                manWayPoint.get(), 
-                manNavMesh.get(), 
-                manBoundingWall.get(),
-                manBoundingOBB.get(), 
                 systemBtPowerUp.get(), 
                 systemBtMoveTo.get(), 
                 systemBtLoDMove.get(),
-                systemPathPlanning.get());
+                systemPathPlanning.get()
+            );
         }
     }
     //CAMBIARCosasDeTotemUpdate();
@@ -206,4 +203,55 @@ void StateInGameSingle::CAMBIARInicializarCarAIS(ManCar &manCars, ManWayPoint &m
             SoundFacadeManager::GetInstance()->GetSoundFacade()->CreateSoundEstatic3D(idComp->id, posComp->position, nameEvent, 0);
         //}
     }
+}
+
+
+
+void StateInGameSingle::InitBtPowerUp(){
+    systemBtPowerUp = make_unique<SystemBtPowerUp>();
+
+    systemBtPowerUp->AddManager(*manCars.get());
+    systemBtPowerUp->AddManager(*manPowerUps.get());
+    systemBtPowerUp->AddManager(*manBoxPowerUps.get());
+    systemBtPowerUp->AddManager(*manTotems.get());
+    systemBtPowerUp->AddManager(*manWayPoint.get());
+    systemBtPowerUp->AddManager(*manNavMesh.get());
+    systemBtPowerUp->AddManager(*manBoundingWall.get());
+    systemBtPowerUp->AddManager(*manBoundingOBB.get());
+}
+void StateInGameSingle::InitBtMoveTo(){
+    systemBtMoveTo = make_unique<SystemBtMoveTo>();
+
+    systemBtMoveTo->AddManager(*manCars.get());
+    systemBtMoveTo->AddManager(*manPowerUps.get());
+    systemBtMoveTo->AddManager(*manBoxPowerUps.get());
+    systemBtMoveTo->AddManager(*manTotems.get());
+    systemBtMoveTo->AddManager(*manWayPoint.get());
+    systemBtMoveTo->AddManager(*manNavMesh.get());
+    systemBtMoveTo->AddManager(*manBoundingWall.get());
+    systemBtMoveTo->AddManager(*manBoundingOBB.get());
+}
+void StateInGameSingle::InitBtLoDMove(){
+    systemBtLoDMove = make_unique<SystemBtLoDMove>();
+
+    systemBtLoDMove->AddManager(*manCars.get());
+    systemBtLoDMove->AddManager(*manPowerUps.get());
+    systemBtLoDMove->AddManager(*manBoxPowerUps.get());
+    systemBtLoDMove->AddManager(*manTotems.get());
+    systemBtLoDMove->AddManager(*manWayPoint.get());
+    systemBtLoDMove->AddManager(*manNavMesh.get());
+    systemBtLoDMove->AddManager(*manBoundingWall.get());
+    systemBtLoDMove->AddManager(*manBoundingOBB.get());
+}
+void StateInGameSingle::InitPathPlanning(){
+    systemPathPlanning = make_unique<SystemPathPlanning>();
+
+    systemPathPlanning->AddManager(*manCars.get());
+    systemPathPlanning->AddManager(*manPowerUps.get());
+    systemPathPlanning->AddManager(*manBoxPowerUps.get());
+    systemPathPlanning->AddManager(*manTotems.get());
+    systemPathPlanning->AddManager(*manWayPoint.get());
+    systemPathPlanning->AddManager(*manNavMesh.get());
+    systemPathPlanning->AddManager(*manBoundingWall.get());
+    systemPathPlanning->AddManager(*manBoundingOBB.get());
 }

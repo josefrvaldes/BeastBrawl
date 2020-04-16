@@ -11,6 +11,9 @@
 #include <Components/CCurrentNavMesh.h>
 #include <Components/CTargetNavMesh.h>
 
+void SystemBtMoveTo::AddManager(Manager &m) {
+    managers.push_back(&m);
+}
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //                           COMPROBAR BEHAVIOR TREE
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -299,8 +302,9 @@ SystemBtMoveTo::SystemBtMoveTo(){
 
 
 
-void SystemBtMoveTo::update(CarAI* actualCar, ManCar* manCars,ManPowerUp* manPowerUps, ManBoxPowerUp* manBoxPowerUps, ManTotem* manTotems, ManWayPoint* manWayPoint, ManNavMesh* manNavMesh){
-    unique_ptr<Blackboard> blackboard = make_unique<Blackboard>(actualCar, manCars, manPowerUps, manBoxPowerUps, manTotems, manWayPoint, manNavMesh);
+void SystemBtMoveTo::update(CarAI* actualCar){
+    unique_ptr<Blackboard> blackboard = make_unique<Blackboard>(actualCar, static_cast<ManCar*>(managers[0]), static_cast<ManPowerUp*>(managers[1]), 
+        static_cast<ManBoxPowerUp*>(managers[2]), static_cast<ManTotem*>(managers[3]), static_cast<ManWayPoint*>(managers[4]), static_cast<ManNavMesh*>(managers[5]) );
     
     
 
