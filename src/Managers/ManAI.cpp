@@ -5,6 +5,10 @@
 using namespace std::chrono;
 
 
+ManAI::ManAI(){
+    
+}
+
 void ManAI::addBehavior(CarAI* carAI_, SystemAI* sysAI_, float frec, float pharse){
 
 
@@ -30,6 +34,16 @@ void ManAI::Update(){
     // Keep a list of behaviors to run --> runThese
 
 
+    // prueba con todos a ver que tal.. parte crucial de toda la puta semana
+    for(auto currentBehaviour : behaviours){
+        runThese.push(currentBehaviour);
+    }
+    auto numToRun = runThese.size();
+    for(long unsigned int i=0; i<numToRun; i++){
+        runThese.front().b_sysAI->update(runThese.front().b_carAI);
+        runThese.pop();
+    }
+    /*
     // Go through each behavior
     for(auto currentBehaviour : behaviours){
         if( currentBehaviour.b_frecuency / (frameActual+currentBehaviour.b_pharse) )
@@ -52,6 +66,7 @@ void ManAI::Update(){
         }
         lastTime = currentTime;
     }
+    */
 
 
 

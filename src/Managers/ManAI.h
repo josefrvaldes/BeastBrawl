@@ -25,7 +25,7 @@ struct BehaviorRecord
 class ManAI {
    public:
     ManAI();
-    ~ManAI();
+    ~ManAI(){};
 
     void addBehavior(CarAI* , SystemAI*, float frec, float phase);
 

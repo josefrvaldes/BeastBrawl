@@ -19,11 +19,14 @@ class SystemBtMoveTo : public SystemAI{
     void init();
     void update(CarAI* actualCar) override;
 
-   void AddManager(Manager &e);
+    void AddManager(Manager &e);
+
+    float getFrecuency(){ return frec; };
 
    protected:
    private:
    shared_ptr<selector> selectorBehaviourTree;
 
    vector<Manager *> managers;
+   float frec {1};
 };

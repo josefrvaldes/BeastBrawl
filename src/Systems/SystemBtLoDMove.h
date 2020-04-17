@@ -26,6 +26,8 @@ class SystemBtLoDMove : public SystemAI{
 
       void AddManager(Manager &);
 
+      float getFrecuency(){ return frec; };
+
 
    private:
       shared_ptr<selector> selectorBehaviourTree;
@@ -34,4 +36,7 @@ class SystemBtLoDMove : public SystemAI{
 
       vector<Manager *> managers;
       bool entradoFL = false;
+
+      float frec {1};
+
 };

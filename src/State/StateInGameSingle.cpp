@@ -1,15 +1,14 @@
 #include "StateInGameSingle.h"
 
+#include "../Managers/ManAI.h"
+
 StateInGameSingle::StateInGameSingle() : StateInGame() {
 
     InitState();
     InitVirtualMethods();
 
 
-    InitBtPowerUp();
-    InitBtMoveTo();
-    InitBtLoDMove();
-    InitPathPlanning();
+    createSystemAI();
 
     //CAMBIARCosasNavMesh(*manCars.get(), *manNavMesh.get());
 
@@ -21,31 +20,6 @@ StateInGameSingle::~StateInGameSingle() {
 void StateInGameSingle::InitState() {
     StateInGame::InitState();
 }
-
-
-/*
-void StateInGameSingle::CAMBIARCosasNavMesh(ManCar &manCars, ManNavMesh &manNavMesh){
-    // vamos a asignar el navmesh al que pertenecemos
-    for(auto& carAI : manCars.GetEntities()){
-        if(static_cast<Car*>(carAI.get())->GetTypeCar() == TypeCar::CarAI){
-            auto cTransformableCar = static_cast<CTransformable*>(carAI.get()->GetComponent(CompType::TransformableComp).get());     
-            for(auto& navmesh : manNavMesh.GetEntities()){
-                auto cDimensions = static_cast<CDimensions*>(navmesh.get()->GetComponent(CompType::DimensionsComp).get());
-                auto cTransformableNav = static_cast<CTransformable*>(navmesh.get()->GetComponent(CompType::TransformableComp).get()); 
-                if( ( (cTransformableCar->position.x >= (cTransformableNav->position.x-(cDimensions->width/2))) && 
-                    (cTransformableCar->position.x <= (cTransformableNav->position.x+(cDimensions->width/2))) ) &&
-                ( (cTransformableCar->position.z >= (cTransformableNav->position.z-(cDimensions->depth/2))) && 
-                    (cTransformableCar->position.z <= (cTransformableNav->position.z+(cDimensions->depth/2))) )  ){
-                        auto cCurrentNavMesh = static_cast<CCurrentNavMesh*>(carAI.get()->GetComponent(CompType::CurrentNavMeshComp).get());
-                        auto cNavMesh = static_cast<CNavMesh*>(navmesh.get()->GetComponent(CompType::NavMeshComp).get());
-                        cCurrentNavMesh->currentNavMesh = cNavMesh->id;
-                        //std::cout << " EL NAVMESH DE LAS IA ES::::234563345677: " << cNavMesh->id << std::endl;
-                    }       
-            }
-        }
-    }   
-}
-*/
 
 
 void StateInGameSingle::Input() {
@@ -120,32 +94,80 @@ void StateInGameSingle::AddElementsToRender() {
     
 }
 
-/*
-void StateInGameSingle::CAMBIARCosasDeTotemUpdate() {
-    bool todosFalse = true;
-    auto cTransformTotem = static_cast<CTransformable *>(totemOnCar->GetComponent(CompType::TransformableComp).get());
-    cTransformTotem->rotation.y += 0.1;
-    for (const auto& carAI : manCars->GetEntities()) {  // actualizamos los coche IA
-        // comprobamos el componente totem y si lo tienen se lo ponemos justo encima para que se sepa quien lo lleva
-        auto cTotem = static_cast<CTotem *>(carAI.get()->GetComponent(CompType::TotemComp).get());
-        if (cTotem->active) {
-            todosFalse = false;
-            auto cTransformCar = static_cast<CTransformable *>(carAI.get()->GetComponent(CompType::TransformableComp).get());
-            cTransformTotem->position.x = cTransformCar->position.x;
-            cTransformTotem->position.z = cTransformCar->position.z;
-            cTransformTotem->position.y = 22.0f;
-            // supuestamente esta el drawAll que te lo hace no?????????????????
-            // si esta cambiando pero no se esta redibujando
-            break; // cuando encontramos a alguien que ya lleva el totem, nos salimos del for, no seguimos comprobando a los demás
-        }
-    }
-    if(todosFalse){
-        cTransformTotem->position.y = -100.0f;
-    }
 
-    renderEngine->UpdateTransformable(totemOnCar.get());
+void StateInGameSingle::createSystemAI(){
+    // creamos ManAI
+    manAI = make_unique<ManAI>();
+
+
+    // iniciamos los sistemas
+    InitBtMoveTo();
+    InitPathPlanning();
+    InitBtLoDMove();
+    InitBtPowerUp();
+
+    //creamos comportamientos IA
+    for(long unsigned int i=0; i<manCars.get()->GetEntities().size(); i++){
+        manAI->addBehavior(static_cast<CarAI*>(manCars.get()->GetEntities()[i].get()), systemBtMoveTo.get(), systemBtMoveTo->getFrecuency(), i );
+        manAI->addBehavior(static_cast<CarAI*>(manCars.get()->GetEntities()[i].get()), systemPathPlanning.get(), systemPathPlanning->getFrecuency(), i );
+        manAI->addBehavior(static_cast<CarAI*>(manCars.get()->GetEntities()[i].get()), systemBtLoDMove.get(), systemBtLoDMove->getFrecuency(), i );
+        manAI->addBehavior(static_cast<CarAI*>(manCars.get()->GetEntities()[i].get()), systemBtPowerUp.get(), systemBtPowerUp->getFrecuency(), i );
+    }
 }
-*/
+
+
+void StateInGameSingle::InitBtPowerUp(){
+    systemBtPowerUp = make_unique<SystemBtPowerUp>();
+
+    systemBtPowerUp->AddManager(*manCars.get());
+    systemBtPowerUp->AddManager(*manPowerUps.get());
+    systemBtPowerUp->AddManager(*manBoxPowerUps.get());
+    systemBtPowerUp->AddManager(*manTotems.get());
+    systemBtPowerUp->AddManager(*manWayPoint.get());
+    systemBtPowerUp->AddManager(*manNavMesh.get());
+    systemBtPowerUp->AddManager(*manBoundingWall.get());
+    systemBtPowerUp->AddManager(*manBoundingOBB.get());
+}
+void StateInGameSingle::InitBtMoveTo(){
+    systemBtMoveTo = make_unique<SystemBtMoveTo>();
+
+    systemBtMoveTo->AddManager(*manCars.get());
+    systemBtMoveTo->AddManager(*manPowerUps.get());
+    systemBtMoveTo->AddManager(*manBoxPowerUps.get());
+    systemBtMoveTo->AddManager(*manTotems.get());
+    systemBtMoveTo->AddManager(*manWayPoint.get());
+    systemBtMoveTo->AddManager(*manNavMesh.get());
+    systemBtMoveTo->AddManager(*manBoundingWall.get());
+    systemBtMoveTo->AddManager(*manBoundingOBB.get());
+}
+void StateInGameSingle::InitBtLoDMove(){
+    systemBtLoDMove = make_unique<SystemBtLoDMove>();
+
+    systemBtLoDMove->AddManager(*manCars.get());
+    systemBtLoDMove->AddManager(*manPowerUps.get());
+    systemBtLoDMove->AddManager(*manBoxPowerUps.get());
+    systemBtLoDMove->AddManager(*manTotems.get());
+    systemBtLoDMove->AddManager(*manWayPoint.get());
+    systemBtLoDMove->AddManager(*manNavMesh.get());
+    systemBtLoDMove->AddManager(*manBoundingWall.get());
+    systemBtLoDMove->AddManager(*manBoundingOBB.get());
+}
+void StateInGameSingle::InitPathPlanning(){
+    systemPathPlanning = make_unique<SystemPathPlanning>();
+
+    systemPathPlanning->AddManager(*manCars.get());
+    systemPathPlanning->AddManager(*manPowerUps.get());
+    systemPathPlanning->AddManager(*manBoxPowerUps.get());
+    systemPathPlanning->AddManager(*manTotems.get());
+    systemPathPlanning->AddManager(*manWayPoint.get());
+    systemPathPlanning->AddManager(*manNavMesh.get());
+    systemPathPlanning->AddManager(*manBoundingWall.get());
+    systemPathPlanning->AddManager(*manBoundingOBB.get());
+}
+
+
+
+
 
 void StateInGameSingle::CAMBIARInicializarCarAIS(ManCar &manCars, ManWayPoint &manWayPoint) {
 /*    
@@ -207,51 +229,54 @@ void StateInGameSingle::CAMBIARInicializarCarAIS(ManCar &manCars, ManWayPoint &m
 
 
 
-void StateInGameSingle::InitBtPowerUp(){
-    systemBtPowerUp = make_unique<SystemBtPowerUp>();
-
-    systemBtPowerUp->AddManager(*manCars.get());
-    systemBtPowerUp->AddManager(*manPowerUps.get());
-    systemBtPowerUp->AddManager(*manBoxPowerUps.get());
-    systemBtPowerUp->AddManager(*manTotems.get());
-    systemBtPowerUp->AddManager(*manWayPoint.get());
-    systemBtPowerUp->AddManager(*manNavMesh.get());
-    systemBtPowerUp->AddManager(*manBoundingWall.get());
-    systemBtPowerUp->AddManager(*manBoundingOBB.get());
+/*
+void StateInGameSingle::CAMBIARCosasNavMesh(ManCar &manCars, ManNavMesh &manNavMesh){
+    // vamos a asignar el navmesh al que pertenecemos
+    for(auto& carAI : manCars.GetEntities()){
+        if(static_cast<Car*>(carAI.get())->GetTypeCar() == TypeCar::CarAI){
+            auto cTransformableCar = static_cast<CTransformable*>(carAI.get()->GetComponent(CompType::TransformableComp).get());     
+            for(auto& navmesh : manNavMesh.GetEntities()){
+                auto cDimensions = static_cast<CDimensions*>(navmesh.get()->GetComponent(CompType::DimensionsComp).get());
+                auto cTransformableNav = static_cast<CTransformable*>(navmesh.get()->GetComponent(CompType::TransformableComp).get()); 
+                if( ( (cTransformableCar->position.x >= (cTransformableNav->position.x-(cDimensions->width/2))) && 
+                    (cTransformableCar->position.x <= (cTransformableNav->position.x+(cDimensions->width/2))) ) &&
+                ( (cTransformableCar->position.z >= (cTransformableNav->position.z-(cDimensions->depth/2))) && 
+                    (cTransformableCar->position.z <= (cTransformableNav->position.z+(cDimensions->depth/2))) )  ){
+                        auto cCurrentNavMesh = static_cast<CCurrentNavMesh*>(carAI.get()->GetComponent(CompType::CurrentNavMeshComp).get());
+                        auto cNavMesh = static_cast<CNavMesh*>(navmesh.get()->GetComponent(CompType::NavMeshComp).get());
+                        cCurrentNavMesh->currentNavMesh = cNavMesh->id;
+                        //std::cout << " EL NAVMESH DE LAS IA ES::::234563345677: " << cNavMesh->id << std::endl;
+                    }       
+            }
+        }
+    }   
 }
-void StateInGameSingle::InitBtMoveTo(){
-    systemBtMoveTo = make_unique<SystemBtMoveTo>();
+*/
 
-    systemBtMoveTo->AddManager(*manCars.get());
-    systemBtMoveTo->AddManager(*manPowerUps.get());
-    systemBtMoveTo->AddManager(*manBoxPowerUps.get());
-    systemBtMoveTo->AddManager(*manTotems.get());
-    systemBtMoveTo->AddManager(*manWayPoint.get());
-    systemBtMoveTo->AddManager(*manNavMesh.get());
-    systemBtMoveTo->AddManager(*manBoundingWall.get());
-    systemBtMoveTo->AddManager(*manBoundingOBB.get());
-}
-void StateInGameSingle::InitBtLoDMove(){
-    systemBtLoDMove = make_unique<SystemBtLoDMove>();
 
-    systemBtLoDMove->AddManager(*manCars.get());
-    systemBtLoDMove->AddManager(*manPowerUps.get());
-    systemBtLoDMove->AddManager(*manBoxPowerUps.get());
-    systemBtLoDMove->AddManager(*manTotems.get());
-    systemBtLoDMove->AddManager(*manWayPoint.get());
-    systemBtLoDMove->AddManager(*manNavMesh.get());
-    systemBtLoDMove->AddManager(*manBoundingWall.get());
-    systemBtLoDMove->AddManager(*manBoundingOBB.get());
-}
-void StateInGameSingle::InitPathPlanning(){
-    systemPathPlanning = make_unique<SystemPathPlanning>();
+/*
+void StateInGameSingle::CAMBIARCosasDeTotemUpdate() {
+    bool todosFalse = true;
+    auto cTransformTotem = static_cast<CTransformable *>(totemOnCar->GetComponent(CompType::TransformableComp).get());
+    cTransformTotem->rotation.y += 0.1;
+    for (const auto& carAI : manCars->GetEntities()) {  // actualizamos los coche IA
+        // comprobamos el componente totem y si lo tienen se lo ponemos justo encima para que se sepa quien lo lleva
+        auto cTotem = static_cast<CTotem *>(carAI.get()->GetComponent(CompType::TotemComp).get());
+        if (cTotem->active) {
+            todosFalse = false;
+            auto cTransformCar = static_cast<CTransformable *>(carAI.get()->GetComponent(CompType::TransformableComp).get());
+            cTransformTotem->position.x = cTransformCar->position.x;
+            cTransformTotem->position.z = cTransformCar->position.z;
+            cTransformTotem->position.y = 22.0f;
+            // supuestamente esta el drawAll que te lo hace no?????????????????
+            // si esta cambiando pero no se esta redibujando
+            break; // cuando encontramos a alguien que ya lleva el totem, nos salimos del for, no seguimos comprobando a los demás
+        }
+    }
+    if(todosFalse){
+        cTransformTotem->position.y = -100.0f;
+    }
 
-    systemPathPlanning->AddManager(*manCars.get());
-    systemPathPlanning->AddManager(*manPowerUps.get());
-    systemPathPlanning->AddManager(*manBoxPowerUps.get());
-    systemPathPlanning->AddManager(*manTotems.get());
-    systemPathPlanning->AddManager(*manWayPoint.get());
-    systemPathPlanning->AddManager(*manNavMesh.get());
-    systemPathPlanning->AddManager(*manBoundingWall.get());
-    systemPathPlanning->AddManager(*manBoundingOBB.get());
+    renderEngine->UpdateTransformable(totemOnCar.get());
 }
+*/

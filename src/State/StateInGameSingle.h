@@ -6,6 +6,8 @@
 #include "../Systems/SystemBtMoveTo.h"
 #include "../Systems/SystemBtLoDMove.h"
 
+#include "../Managers/ManAI.h"
+
 class StateInGameSingle : public StateInGame {
    public:
     StateInGameSingle();
@@ -27,15 +29,16 @@ class StateInGameSingle : public StateInGame {
     //void CAMBIARCosasNavMesh(ManCar &, ManNavMesh &);
     //void CAMBIARCosasDeTotemUpdate() override;
 
+    void createSystemAI();
     void InitBtPowerUp();
     void InitBtMoveTo();
     void InitBtLoDMove();
     void InitPathPlanning();
 
-
+    unique_ptr<ManAI> manAI;
     unique_ptr<SystemBtPowerUp> systemBtPowerUp;
     unique_ptr<SystemBtMoveTo> systemBtMoveTo;
     unique_ptr<SystemBtLoDMove> systemBtLoDMove;
-    shared_ptr<SystemPathPlanning> systemPathPlanning;
+    unique_ptr<SystemPathPlanning> systemPathPlanning;
 
 };
