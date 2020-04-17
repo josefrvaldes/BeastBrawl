@@ -311,7 +311,7 @@ void RenderFacadeClover::UpdateCamera(Entity* cam, ManCar* manCars) {
         targetPosition.y += 0;
 
         float distX = abs(cTransformable->position.x - targetPosition.x);
-        float distZ = abs(cTransformable->position.z - targetPosition.z);
+        float distZ = abs(-cTransformable->position.z - targetPosition.z);
 
         if(cTransformable->position.x - targetPosition.x < 0){
             targetPosition.x = targetPosition.x - (2*distX);
@@ -320,8 +320,8 @@ void RenderFacadeClover::UpdateCamera(Entity* cam, ManCar* manCars) {
             targetPosition.x = targetPosition.x + (2*distX);
 
         }
-
-        if(cTransformable->position.z - targetPosition.z < 0){
+ 
+        if(-cTransformable->position.z - targetPosition.z < 0){
             targetPosition.z = targetPosition.z - (2*distZ);
 
         }else{
@@ -329,11 +329,12 @@ void RenderFacadeClover::UpdateCamera(Entity* cam, ManCar* manCars) {
 
         }
         //float angleRotation = (60 * M_PI) / 180.0;
-        cout << cTransformable->position.x << " | " << cTransformable->position.y << " | " << cTransformable->position.z << endl;
-        cameraEntity->SetCameraTarget(glm::vec3(targetPosition.x,targetPosition.y,targetPosition.z));
         cameraEntity->SetFOV(60);
+
+        
+        cameraEntity->SetCameraTarget(glm::vec3(targetPosition.x,targetPosition.y,targetPosition.z));
         camera1->SetTranslation(glm::vec3(cTransformable->position.x, cTransformable->position.y-5, -cTransformable->position.z));
-        camera1->SetRotation(glm::vec3(cTransformable->rotation.x,Utils::IrrlichtAngleToOpenGL(cTransformable->rotation.y),cTransformable->rotation.z));
+        //camera1->SetRotation(glm::vec3(cTransformable->rotation.x,cTransformable->rotation.y,cTransformable->rotation.z));
 
 
     }else if(cCamera->camType == CamType::NORMAL_CAM){
@@ -343,7 +344,7 @@ void RenderFacadeClover::UpdateCamera(Entity* cam, ManCar* manCars) {
         
         cameraEntity->SetFOV(70);
         camera1->SetTranslation(glm::vec3(cTransformable->position.x, cTransformable->position.y, -cTransformable->position.z));
-        camera1->SetRotation(glm::vec3(cTransformable->rotation.x,Utils::IrrlichtAngleToOpenGL(cTransformable->rotation.y),cTransformable->rotation.z));
+        //camera1->SetRotation(glm::vec3(cTransformable->rotation.x,Utils::IrrlichtAngleToOpenGL(cTransformable->rotation.y),cTransformable->rotation.z));
 
     }else if (cCamera->camType == CamType::TOTEM_CAM){
 
@@ -398,7 +399,7 @@ void RenderFacadeClover::UpdateCamera(Entity* cam, ManCar* manCars) {
             cTransformable->position.y, 
             -cTransformableCar->position.z + 35 * sin(valueAtan2)));
 
-        camera1->SetRotation(glm::vec3(-cTransformable->rotation.x,Utils::IrrlichtAngleToOpenGL(cTransformable->rotation.y),-cTransformable->rotation.z));
+        //camera1->SetRotation(glm::vec3(-cTransformable->rotation.x,Utils::IrrlichtAngleToOpenGL(cTransformable->rotation.y),-cTransformable->rotation.z));
         
     }
 
