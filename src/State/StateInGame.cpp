@@ -178,6 +178,13 @@ void StateInGame::InitializeManagers(Physics *physics, Camera *cam, const uint32
         auto cId = static_cast<CId*>(boxPowerUp->GetComponent(CompType::IdComp).get());
         manParticleSystem->CreateParticleSystem(cId->id,glm::vec3(0.0f,0.0f,0.0f),30,glm::vec3(200.0f,400.0f,200.0f),"media/particle_test.png",5,5,100,30,150,glm::vec3(0.0f,0.0f,0.0f),glm::vec3(0.0f,0.0f,0.0f),0, 0x1 | 0x4 ,false,false);
     }
+
+    // Añadimos sistema de particulas a los (el) totem
+    for(auto totem : manTotems->GetEntities()){
+        auto cId = static_cast<CId*>(totem->GetComponent(CompType::IdComp).get());
+        manParticleSystem->CreateParticleSystem(cId->id,glm::vec3(0.0f,0.0f,0.0f),100,glm::vec3(0.0f,50.0f,0.0f),"media/particle_test.png",5,15,100,2,5000,glm::vec3(30.0f,0.0f,30.0f),glm::vec3(0.0f,0.0f,0.0f),0, 0x4 ,true,true);
+        
+    }
 }
 
 //Carga los bancos de sonido InGame.

@@ -127,9 +127,23 @@ int main() {
     // glm::vec3 orientation = glm::vec3(1.0f,1.0f,0.0f);
     // std::uint_fast8_t flags = EFFECT_FADING;
 
+    /////////////////////////////////////////////////////
+    //////////////////// MOVIDAS DE LAS PARTICULAS///////
+    /////////////////////////////////////////////////////
 
-        auto ps1   = mesh2->AddParticleSystem(123940,30,glm::vec3(500.0f,500.0f,500.0f),"media/particle_test.png",10,10,100,30,250,EFFECT_DIR_ALEATORITY | EFFECT_FADING);
-        
+    auto ps1   = mesh2->AddParticleSystem(123940,30,glm::vec3(500.0f,500.0f,500.0f),"media/particle_test.png",10,10,100,30,250,EFFECT_DIR_ALEATORITY | EFFECT_FADING);
+
+    auto ps2   = smgr->AddParticleSystem(123941,100,glm::vec3(0.0f,100.0f,0.0f),"media/particle3.png",100,100,100,2,5000,glm::vec3(30.0f,0.0f,30.0f),glm::vec3(0.0f,0.0f,0.0f),EFFECT_FADING);
+    ps2->SetTranslation(glm::vec3(0.0f,40.0f,0.0f));
+    //static_cast<CLParticleSystem*>(ps2->GetEntity())->Start();
+    //static_cast<CLParticleSystem*>(ps2->GetEntity())->SetLoop(true);
+
+
+    auto ps3   = smgr->AddParticleSystem(123942,500,glm::vec3(0.0f,-200.0f,0.0f),"media/rain3.png",6,6,200,50,2500,glm::vec3(500.0f,0.0f,500.0f),glm::vec3(0.0f,0.0f,0.0f),EFFECT_NONE);
+    ps3->SetTranslation(glm::vec3(0.0f,300.0f,0.0f));
+    //static_cast<CLParticleSystem*>(ps3->GetEntity())->Start();
+    //static_cast<CLParticleSystem*>(ps3->GetEntity())->SetLoop(true);
+
 
             static_cast<CLCamera*>(camera->GetEntity())->SetCameraTarget(mesh2->GetTranslation());
         
@@ -159,7 +173,7 @@ int main() {
     // static_cast<CLMesh*>(mesh7->GetEntity())->SetMesh(resourceMeshCochesito);
 
 
-    camera->SetTranslation(glm::vec3(400.127f, 400.42f, 0.9f));
+    camera->SetTranslation(glm::vec3(230.127f, 70.42f, 0.9f));
     light1->SetTranslation(glm::vec3(75.9f, 1000.2f, 15.08f));
     light2->SetTranslation(glm::vec3(295.9f, 300.2f, 15.08f));
 

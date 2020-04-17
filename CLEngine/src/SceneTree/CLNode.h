@@ -376,6 +376,7 @@ class CLNode{
         bool changed { true };
         bool visible { true };
         bool hasLightingEffects { true }; //Sirve para que no se le aplique luce y ahorrarse el calculo de luces
+        bool ignoreFrustrum { false }; //Si esta a true no le afecta el frustrum culling
 
         shared_ptr<CLEntity> entity {nullptr};
         CLNode* father {nullptr};
