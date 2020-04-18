@@ -15,9 +15,21 @@ uniform mat4 view;
 uniform mat4 projection;
 uniform mat4 MVP;
 
+uniform vec3 animationOffset;
+
+// A = (0,0) kf1
+// A = (1,1)
+// A = (2,2)
+// A = (3,3)
+//     .
+//     .
+//     .
+// A = (10,10) kf2
+
 void main()
 {
     //gl_Position = projection * view * model * vec4(aPos, 1.0);
+    aPos += animationOffset
     gl_Position = MVP * vec4(aPos,1.0);
     FragPos = vec3(model * vec4(aPos,1.0));
 

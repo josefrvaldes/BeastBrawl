@@ -63,6 +63,8 @@ namespace CLE {
             //! Devuelve el vector de mallas
             //! @returns vecMeshes Las posibles submallas que pueda tener la malla leida
             vector<Mesh> GetvectorMesh() { return vecMesh; }
+            vector<Mesh> &GetvectorMeshRef() { return vecMesh; }
+            vector<Mesh> *GetvectorMeshPtr() { return &vecMesh; }
 
         private:
             void processNode(aiNode *node, const aiScene *scene);

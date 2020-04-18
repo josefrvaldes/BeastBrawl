@@ -32,6 +32,8 @@ namespace CLE {
 
 
         private:
+            void Update();
+            vector<CLResourceMesh*> keyframes; // 4
             CLResourceMesh* mesh = nullptr;
             CLResourceMaterial* material = nullptr;
             CLResourceTexture* texture = nullptr;
