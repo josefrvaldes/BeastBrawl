@@ -12,15 +12,18 @@ struct CarAI;
 
 class SystemAI {
    public:
-    SystemAI();
-    ~SystemAI(){};
+      SystemAI();
+      ~SystemAI(){};
 
-    //virtual void init();
-    virtual void update(CarAI* actualCar) = 0;
+      //virtual void init();
+      virtual void update(CarAI* actualCar) = 0;   
 
+      void setMaxProcessTime(double maxTime) { maxProcessTime = maxTime; };
+      double getMaxProcessTime()             { return maxProcessTime; };
 
    protected:
-   //private:
-   //shared_ptr<selector> selectorBehaviourTree;
+      //private:
+      //shared_ptr<selector> selectorBehaviourTree;
+      double maxProcessTime {0.0005};
 
 };

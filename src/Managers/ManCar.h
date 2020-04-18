@@ -104,4 +104,6 @@ class ManCar : public Manager {
     unique_ptr<SystemGameRules> systemGameRules;
 
     SystemOnline* systemOnline = nullptr; // en caso de que sea Single va a ser un nullptr
+
+    double maxTimeAccumulated {0};
 };

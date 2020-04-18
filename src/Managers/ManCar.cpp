@@ -41,6 +41,10 @@
 class Position;
 using namespace std;
 
+
+#include <limits>
+typedef std::numeric_limits< double > dbl;
+
 ManCar::ManCar() {
     SubscribeToEvents();
     CreateMainCar();
@@ -77,16 +81,21 @@ void ManCar::UpdateCarAI(CarAI* carAI, ManTotem* m_manTotem, SystemBtPowerUp* sy
                                 SystemPathPlanning *systemPathPlanning) {
     
     //manNavMesh->UpdateNavMeshEntity(carAI);
-    systemBtMoveTo->update(carAI);
+    //systemBtMoveTo->update(carAI);
+    //systemPathPlanning->update(carAI);
+    //systemBtLoDMove->update(carAI);
+    //systemBtPowerUp->update(carAI);
 
-    systemPathPlanning->update(carAI);
+    //auto time0 = system_clock::now();
+    //auto time1 = system_clock::now();
+    //double timeAccumulated = duration_cast<microseconds>(time1 - time0).count();
+    //cout.precision(dbl::max_digits10);
+    //if(timeAccumulated > maxTimeAccumulated) maxTimeAccumulated = timeAccumulated;
+    //cout << maxTimeAccumulated << " - ";
 
-    systemBtLoDMove->update(carAI);
 
     //physicsAI->Update(carAI, graph);
     UpdateGeneralCar(*carAI, *(m_manTotem->GetEntities()[0].get()));
-
-    systemBtPowerUp->update(carAI);
     
 }
 void ManCar::UpdateCarHuman(Entity* CarHuman, ManTotem* m_manTotem) {

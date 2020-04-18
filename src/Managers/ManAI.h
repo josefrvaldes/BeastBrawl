@@ -27,7 +27,7 @@ class ManAI {
     ManAI();
     ~ManAI(){};
 
-    void addBehavior(CarAI* , SystemAI*, float frec, float phase);
+    void addBehavior(CarAI* , SystemAI*, float frec, float phase, double timeMax);
 
     void Update();
 
