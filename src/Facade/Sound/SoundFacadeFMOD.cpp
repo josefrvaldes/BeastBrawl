@@ -81,29 +81,76 @@ void SoundFacadeFMOD::SetState(const uint8_t numState) {
  */
 void SoundFacadeFMOD::SubscribeToGameEvents(const uint8_t numState) {
     switch (numState) {
-        /*case 0:       // INTRO
+        case 0:         // INTRO            
+            EventManager::GetInstance().SubscribeMulti(Listener{
+                    EventType::MENU_OK,
+                    bind(&SoundFacadeFMOD::SoundMenuOk, this, placeholders::_1),
+                    "SoundMenuOk"});
             break;
         case 1:         // MENU
-            break;*/
+            EventManager::GetInstance().SubscribeMulti(Listener{
+                    EventType::MENU_OPTION,
+                    bind(&SoundFacadeFMOD::SoundMenuOption, this, placeholders::_1),
+                    "SoundMenuOption"});
+            
+            EventManager::GetInstance().SubscribeMulti(Listener{
+                    EventType::MENU_OK,
+                    bind(&SoundFacadeFMOD::SoundMenuOk, this, placeholders::_1),
+                    "SoundMenuOk"});
+            
+            EventManager::GetInstance().SubscribeMulti(Listener{
+                    EventType::MENU_BACK,
+                    bind(&SoundFacadeFMOD::SoundMenuBack, this, placeholders::_1),
+                    "SoundMenuBack"});
+            break;
         case 2:         // SELECCION PERSONAJE
             EventManager::GetInstance().SubscribeMulti(Listener{
-                EventType::RANDOM_VOICE,
-                bind(&SoundFacadeFMOD::SoundRandomSentence, this, placeholders::_1),
-                "SoundRandomSentence"});
+                    EventType::RANDOM_VOICE,
+                    bind(&SoundFacadeFMOD::SoundRandomSentence, this, placeholders::_1),
+                    "SoundRandomSentence"});
 
             EventManager::GetInstance().SubscribeMulti(Listener{
                     EventType::MENU_OPTION,
                     bind(&SoundFacadeFMOD::SoundMenuOption, this, placeholders::_1),
                     "SoundMenuOption"});
+            
+            EventManager::GetInstance().SubscribeMulti(Listener{
+                    EventType::MENU_OK,
+                    bind(&SoundFacadeFMOD::SoundMenuOk, this, placeholders::_1),
+                    "SoundMenuOk"});
+            
+            EventManager::GetInstance().SubscribeMulti(Listener{
+                    EventType::MENU_BACK,
+                    bind(&SoundFacadeFMOD::SoundMenuBack, this, placeholders::_1),
+                    "SoundMenuBack"});
             break;
-        /*case 3:         // OPCIONES DE PARTIDA
-            break;*/
+        case 3:         // OPCIONES DE PARTIDA
+            EventManager::GetInstance().SubscribeMulti(Listener{
+                    EventType::MENU_OPTION,
+                    bind(&SoundFacadeFMOD::SoundMenuOption, this, placeholders::_1),
+                    "SoundMenuOption"});
+            
+            EventManager::GetInstance().SubscribeMulti(Listener{
+                    EventType::MENU_OK,
+                    bind(&SoundFacadeFMOD::SoundMenuOk, this, placeholders::_1),
+                    "SoundMenuOk"});
+            
+            EventManager::GetInstance().SubscribeMulti(Listener{
+                    EventType::MENU_BACK,
+                    bind(&SoundFacadeFMOD::SoundMenuBack, this, placeholders::_1),
+                    "SoundMenuBack"});
+            break;
         case 4: {       // INGAME
 
             EventManager::GetInstance().SubscribeMulti(Listener{
                     EventType::PRESS_P,
                     bind(&SoundFacadeFMOD::SoundClaxon, this, placeholders::_1),
                     "SoundClaxon"});
+
+            EventManager::GetInstance().SubscribeMulti(Listener{
+                    EventType::CLOCK,
+                    bind(&SoundFacadeFMOD::SoundClock, this, placeholders::_1),
+                    "SoundClock"});
 
             EventManager::GetInstance().SubscribeMulti(Listener(
                     EventType::THROW_POWERUP,
@@ -158,20 +205,65 @@ void SoundFacadeFMOD::SubscribeToGameEvents(const uint8_t numState) {
                     bind(&SoundFacadeFMOD::StopDrift, this, placeholders::_1),
                     "StopDrift"});
 
+            EventManager::GetInstance().SubscribeMulti(Listener{
+                    EventType::NOT_CLOCK,
+                    bind(&SoundFacadeFMOD::StopClock, this, placeholders::_1),
+                    "StopClock"});
+
             break;
         }
-        /*case 5:         // ENDRACE
+        case 5:         // ENDRACE
+            EventManager::GetInstance().SubscribeMulti(Listener{
+                    EventType::MENU_OPTION,
+                    bind(&SoundFacadeFMOD::SoundMenuOption, this, placeholders::_1),
+                    "SoundMenuOption"});
+            
+            EventManager::GetInstance().SubscribeMulti(Listener{
+                    EventType::MENU_OK,
+                    bind(&SoundFacadeFMOD::SoundMenuOk, this, placeholders::_1),
+                    "SoundMenuOk"});
+
+            EventManager::GetInstance().SubscribeMulti(Listener{
+                    EventType::VICTORY,
+                    bind(&SoundFacadeFMOD::SoundVictory, this, placeholders::_1),
+                    "SoundVictory"});
+
+            EventManager::GetInstance().SubscribeMulti(Listener{
+                    EventType::DEFEAT,
+                    bind(&SoundFacadeFMOD::SoundDefeat, this, placeholders::_1),
+                    "SoundDefeat"});
             break;
         case 6:         // LOBBY
+            EventManager::GetInstance().SubscribeMulti(Listener{
+                    EventType::MENU_BACK,
+                    bind(&SoundFacadeFMOD::SoundMenuBack, this, placeholders::_1),
+                    "SoundMenuBack"});
             break;
-        case 7:         // PAUSE
-            break;
+        /*case 7:         // PAUSE - Noy hay eventmanager
+            break;*/
         case 8:         // SETTINGS
+            EventManager::GetInstance().SubscribeMulti(Listener{
+                    EventType::MENU_OPTION,
+                    bind(&SoundFacadeFMOD::SoundMenuOption, this, placeholders::_1),
+                    "SoundMenuOption"});
+            
+            EventManager::GetInstance().SubscribeMulti(Listener{
+                    EventType::MENU_BACK,
+                    bind(&SoundFacadeFMOD::SoundMenuBack, this, placeholders::_1),
+                    "SoundMenuBack"});
             break;
         case 9:         // CREDITS
+            EventManager::GetInstance().SubscribeMulti(Listener{
+                    EventType::MENU_BACK,
+                    bind(&SoundFacadeFMOD::SoundMenuBack, this, placeholders::_1),
+                    "SoundMenuBack"});
             break;
         case 10:        // CONTROLS
-            break;*/
+            EventManager::GetInstance().SubscribeMulti(Listener{
+                    EventType::MENU_BACK,
+                    bind(&SoundFacadeFMOD::SoundMenuBack, this, placeholders::_1),
+                    "SoundMenuBack"});
+            break;
         default:
             break;
     }
@@ -184,15 +276,18 @@ void SoundFacadeFMOD::SubscribeToGameEvents(const uint8_t numState) {
 void SoundFacadeFMOD::LoadSoundByState(const uint8_t numState) {
     switch (numState) {
         case 0:         // INTRO
-            soundEngine->UnloadAllBanks();
+            //soundEngine->UnloadAllBanks();
+            //StopEvent("Musica/menu");
             LoadSoundBank("Menu", 0);
-            //PlayEvent("Musica/menu");
+            if (!soundEngine->IsPlaying2D("Musica/menu")) {
+                PlayEvent("Musica/menu");
+            }
             break;
         case 1:         // MENU
             StopEvent("Musica/fin_partida");
             if(!soundEngine->IsPlaying2D("Musica/menu")) {
                 ResumeAllEvent();
-                StopAllEvents();
+                StopAllEvents();            //Esto me esta jodiendo el aceptar del PAUSE y ENDRACE. Se arreglaria dandole un tiempecito al volver.
                 PlayEvent("Musica/menu");
             }
             break;
@@ -217,11 +312,15 @@ void SoundFacadeFMOD::LoadSoundByState(const uint8_t numState) {
             StopAllEvents();
             LoadSoundBank("EndRace", 0);
             PlayEvent("Musica/fin_partida");
+            SoundVictoryVoice();
             break;
         /*case 6:       // LOBBY
             break;*/
         case 7:         // PAUSE
             PauseAllEvent();
+            ResumeEvent("Menu/cambio_opcion");
+            ResumeEvent("Menu/atras");
+            ResumeEvent("Menu/aceptar");
             break;
         /*case 8:       // SETTINGS
             break;*/
@@ -517,7 +616,6 @@ void SoundFacadeFMOD::SoundDrift(DataMap* d) {
 //TODO: No se hace nada para esto
 void SoundFacadeFMOD::SoundRandomSentence(DataMap* d) {
     auto cPersonaje = any_cast<int>((*d)[NUM]);
-    //cout << "PERSONAJE: " << cPersonaje << endl;
     
     SetParameter("Personajes/voces", "personaje", cPersonaje);
     SetParameter("Personajes/voces", "Tipo", TipoVoz::Seleccion);
@@ -526,6 +624,14 @@ void SoundFacadeFMOD::SoundRandomSentence(DataMap* d) {
 
 void SoundFacadeFMOD::SoundMenuOption(DataMap* d) {
     PlayEvent("Menu/cambio_opcion");
+}
+
+void SoundFacadeFMOD::SoundMenuOk(DataMap* d) {
+    PlayEvent("Menu/aceptar");
+}
+
+void SoundFacadeFMOD::SoundMenuBack(DataMap* d) {
+    PlayEvent("Menu/atras");
 }
 
 
@@ -601,6 +707,27 @@ void SoundFacadeFMOD::SoundThrowPowerup(DataMap* d) {
     }
 }
 
+void SoundFacadeFMOD::SoundClock(DataMap* d) {
+    if(!soundEngine->IsPlaying2D("Partida/reloj")){
+        PlayEvent("Partida/reloj");
+    }
+}
+
+void SoundFacadeFMOD::SoundVictoryVoice(){
+    SetParameter("Personajes/victoria", "personaje", character);
+    PlayEvent("Personajes/victoria");
+}
+
+void SoundFacadeFMOD::SoundVictory(DataMap* d){
+    SetParameter("Personajes/victoria", "personaje", character);
+    PlayEvent("Personajes/victoria");
+}
+
+void SoundFacadeFMOD::SoundDefeat(DataMap* d){
+    SetParameter("Personajes/victoria", "personaje", character);
+    PlayEvent("Personajes/derrota");
+}
+
 // -------------> STOP
 
 
@@ -617,4 +744,8 @@ void SoundFacadeFMOD::StopShield(DataMap* d) {                                //
 
 void SoundFacadeFMOD::StopDrift(DataMap* d) {
     StopEvent("Coche/derrape");
+}
+
+void SoundFacadeFMOD::StopClock(DataMap* d) {
+    StopEvent("Partida/reloj");
 }

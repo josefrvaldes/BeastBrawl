@@ -867,7 +867,7 @@ void RenderFacadeClover::FacadeDrawGameOptions() {
     } else {
         colorOp3 = glm::vec3(0.0f, 0.0f, 255.0f);
     }
-    name = "Aceptar";
+    name = "Empezar";
     device->RenderText2D(name, 500.0f, 150.0f, 0.05f, 1.25f, colorOp3);
 
     name = "---->";
@@ -993,17 +993,8 @@ void RenderFacadeClover::FacadeDrawSettings() {
     name = "zzzzxzzzz";
     device->RenderText2D(name, 750.0f, 250.0f, 0.05f, 0.75f, colorOp3[2]);
 
-    glm::vec3 colorOp4;
-    if (inputSettings[3] == 0) {
-        colorOp4 = glm::vec3(0.0f, 255.0f, 0.0f);
-    } else {
-        colorOp4 = glm::vec3(0.0f, 0.0f, 255.0f);
-    }
-    name = "Aceptar";
-    device->RenderText2D(name, 500.0f, 150.0f, 0.05f, 1.25f, colorOp4);
-
     name = "---->";
-    float sel[4] = { 500.0f, 325.0f, 250.0f, 150.0f };
+    float sel[3] = { 500.0f, 325.0f, 250.0f };
     device->RenderText2D(name, 100.0f, sel[optionSettings], 0.05f, 1.0f, colorBase);
 
 

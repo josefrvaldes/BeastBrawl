@@ -28,7 +28,7 @@ class SoundFacadeFMOD : public SoundFacade {
         void PauseAllEvent()            override;
         void ResumeAllEvent()           override;
         void PauseEvent(const string&);
-        void ResumeEvent(const string&);
+        void ResumeEvent(const string&) override;
 
         void UpdateCars(const vector<shared_ptr<Entity>>&)              override;
         void UpdatePowerUps(const vector<shared_ptr<Entity>>&)          override;
@@ -64,12 +64,20 @@ class SoundFacadeFMOD : public SoundFacade {
         void SoundBreakBox(DataMap*);
         void SoundDrift(DataMap*);
         void SoundRandomSentence(DataMap*);
+        void SoundClock(DataMap*);
 
         void StopShield(DataMap*);
         void StopDrift(DataMap*);
+        void StopClock(DataMap*);
 
         // -------------------------------- Eventos del juego: MENU
         void SoundMenuOption(DataMap*);
+        void SoundMenuOk(DataMap*);
+        void SoundMenuBack(DataMap*);
+
+        void SoundVictoryVoice();
+        void SoundVictory(DataMap*);
+        void SoundDefeat(DataMap*);
 
 
         float character { 0 } ;
@@ -86,7 +94,8 @@ class SoundFacadeFMOD : public SoundFacade {
                                 "Personajes/voces",
                                 "Partida/cuenta_atras",
                                 "PowerUp/robojorobo",
-                                "Musica/in_game_1"
+                                "Musica/in_game_1",
+                                "Partida/reloj"
                                 } 
             },
             { "InGame3DD",
