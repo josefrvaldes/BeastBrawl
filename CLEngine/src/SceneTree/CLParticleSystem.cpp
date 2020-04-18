@@ -4,10 +4,13 @@
 using namespace CLE;
 
 
-CLParticleSystem::CLParticleSystem(unsigned int idEntity, unsigned int particlesNumber, glm::vec3 _speedDirection,string texture,uint16_t _width, uint16_t _height,float _spawnDelay,unsigned int _nParticlesToSpawn,float _lifeSpan, std::uint_fast8_t _flags) : CLEntity(idEntity){
+CLParticleSystem::CLParticleSystem(unsigned int idEntity, unsigned int particlesNumber, glm::vec3 _speedDirection,vector<string> textures,uint16_t _width, uint16_t _height,float _spawnDelay,unsigned int _nParticlesToSpawn,float _lifeSpan, std::uint_fast8_t _flags) : CLEntity(idEntity){
     nParticles        = particlesNumber;
     speedDirection    = _speedDirection;
-    clTexture         = CLResourceManager::GetResourceManager()->GetResourceTexture(texture,false);
+    for(string path : textures){
+        clTextures.emplace_back(*CLResourceManager::GetResourceManager()->GetResourceTexture(path,false));
+    }
+    //clTexture         = CLResourceManager::GetResourceManager()->GetResourceTexture(texture,false);
     width             = _width;
     height            = _height;
     spawnDelay        = _spawnDelay;
@@ -21,8 +24,8 @@ CLParticleSystem::CLParticleSystem(unsigned int idEntity, unsigned int particles
 }
 
 //Line, Square y Cube, depende del valor de _offset
-CLParticleSystem::CLParticleSystem(unsigned int idEntity, unsigned int _nParticles, glm::vec3 _speedDirection,string texture,uint16_t _width, uint16_t _height,float _spawnDelay,unsigned int _nParticlesToSpawn,float _lifeSpan,glm::vec3 _offset, glm::vec3 _orientation, std::uint_fast8_t _flags) 
-: CLParticleSystem(idEntity,_nParticles,_speedDirection,texture,_width,_height,_spawnDelay,_nParticlesToSpawn,_lifeSpan,_flags){
+CLParticleSystem::CLParticleSystem(unsigned int idEntity, unsigned int _nParticles, glm::vec3 _speedDirection,vector<string> textures,uint16_t _width, uint16_t _height,float _spawnDelay,unsigned int _nParticlesToSpawn,float _lifeSpan,glm::vec3 _offset, glm::vec3 _orientation, std::uint_fast8_t _flags) 
+: CLParticleSystem(idEntity,_nParticles,_speedDirection,textures,_width,_height,_spawnDelay,_nParticlesToSpawn,_lifeSpan,_flags){
 
     offset = _offset;
     orientation = _orientation;
@@ -48,8 +51,8 @@ CLParticleSystem::CLParticleSystem(unsigned int idEntity, unsigned int _nParticl
 }
 
 //Circle
-CLParticleSystem::CLParticleSystem(unsigned int idEntity, unsigned int _nParticles, glm::vec3 _speedDirection,string texture,uint16_t _width, uint16_t _height,float _spawnDelay,unsigned int _nParticlesToSpawn,float _lifeSpan,float _radious, glm::vec3 _orientation, std::uint_fast8_t _flags)
-: CLParticleSystem(idEntity,_nParticles,_speedDirection,texture,_width,_height,_spawnDelay,_nParticlesToSpawn,_lifeSpan,_flags){
+CLParticleSystem::CLParticleSystem(unsigned int idEntity, unsigned int _nParticles, glm::vec3 _speedDirection,vector<string> textures,uint16_t _width, uint16_t _height,float _spawnDelay,unsigned int _nParticlesToSpawn,float _lifeSpan,float _radious, glm::vec3 _orientation, std::uint_fast8_t _flags)
+: CLParticleSystem(idEntity,_nParticles,_speedDirection,textures,_width,_height,_spawnDelay,_nParticlesToSpawn,_lifeSpan,_flags){
 
     //No lo estoy controlando porque es mi propio motor pero lo suyo es que solo pase 2 ejes en el _orientation
     spawnType = SpawnType::CircleSpawn;
@@ -59,8 +62,8 @@ CLParticleSystem::CLParticleSystem(unsigned int idEntity, unsigned int _nParticl
 }
 
 //Sphere
-CLParticleSystem::CLParticleSystem(unsigned int idEntity, unsigned int _nParticles, glm::vec3 _speedDirection,string texture,uint16_t _width, uint16_t _height,float _spawnDelay,unsigned int _nParticlesToSpawn,float _lifeSpan,float _radious, std::uint_fast8_t _flags)
-: CLParticleSystem(idEntity,_nParticles,_speedDirection,texture,_width,_height,_spawnDelay,_nParticlesToSpawn,_lifeSpan,_flags){
+CLParticleSystem::CLParticleSystem(unsigned int idEntity, unsigned int _nParticles, glm::vec3 _speedDirection,vector<string> textures,uint16_t _width, uint16_t _height,float _spawnDelay,unsigned int _nParticlesToSpawn,float _lifeSpan,float _radious, std::uint_fast8_t _flags)
+: CLParticleSystem(idEntity,_nParticles,_speedDirection,textures,_width,_height,_spawnDelay,_nParticlesToSpawn,_lifeSpan,_flags){
 
     spawnType = SpawnType::SphereSpawn;
     radious = _radious;
@@ -138,6 +141,11 @@ CLParticleSystem::CLParticle::CLParticle(CLParticleSystem* emitter){
     velocity       = particleSystem->GetSpeedDirection();
     timeStart      = system_clock::now();
 
+    int indxTexture = 1;
+    if(particleSystem->GetTextures().size() > 1){
+        indxTexture = Utils::getRandomInt(1,particleSystem->GetTextures().size());
+    }
+    texture = particleSystem->GetTextures().at(indxTexture-1);
     //Comprobamos si el flag del effecto esta activado
     CalculateVelocity();
 
@@ -162,7 +170,7 @@ void CLParticleSystem::CLParticle::Draw(GLuint shaderID){
     glUniform1f(glGetUniformLocation(shaderID, "height"), particleSystem->GetHeight());
     
     glActiveTexture(GL_TEXTURE0); 
-    glBindTexture(GL_TEXTURE_2D, particleSystem->GetTexture()->GetTextureID());
+    glBindTexture(GL_TEXTURE_2D, texture.GetTextureID());
     glBindVertexArray(VAO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(position), &position[0], GL_STATIC_DRAW);
@@ -223,7 +231,7 @@ glm::vec3 CLParticleSystem::CLParticle::CalculateSpawnPosition(){
         //Reset de numeros aleatorios
         genX(rng);genX(rng);genX(rng);
         genY(rng);genY(rng);genY(rng);
-        genZ(rng);genZ(rng);genZ(rng);*/
+        genZ(rng);genZ(rng);genZ(rng);*/ 
     }else{
         newPosition = particleSystem->GetCLNode()->GetGlobalTranslation();
 

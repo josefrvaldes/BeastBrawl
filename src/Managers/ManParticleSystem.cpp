@@ -10,9 +10,9 @@ ManParticleSystem::ManParticleSystem() {
     SubscribeToEvents();
 }
 
-void ManParticleSystem::CreateParticleSystem(unsigned int parentId, glm::vec3 pos,unsigned long _nParticles, glm::vec3 _velocity, string _texture, int _width, int _height, int _spawnDelay, int _particlesToSpawn, int _lifeSpan, glm::vec3 _offset, glm::vec3 _orientation, float _radious, std::uint_fast8_t _flags, bool _loop, bool _started){
+void ManParticleSystem::CreateParticleSystem(unsigned int parentId, glm::vec3 pos,unsigned long _nParticles, glm::vec3 _velocity, vector<string> _textures, int _width, int _height, int _spawnDelay, int _particlesToSpawn, int _lifeSpan, glm::vec3 _offset, glm::vec3 _orientation, float _radious, std::uint_fast8_t _flags, bool _loop, bool _started){
 
-    shared_ptr<ParticleSystem> e = make_shared<ParticleSystem>(parentId,pos,_nParticles,_velocity,_texture,_width,_height,_spawnDelay,_particlesToSpawn,_lifeSpan,_offset,_orientation,_radious,_flags,_loop, _started);
+    shared_ptr<ParticleSystem> e = make_shared<ParticleSystem>(parentId,pos,_nParticles,_velocity,_textures,_width,_height,_spawnDelay,_particlesToSpawn,_lifeSpan,_offset,_orientation,_radious,_flags,_loop, _started);
 
     entities.push_back(e);
  
