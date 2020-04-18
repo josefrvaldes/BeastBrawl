@@ -13,19 +13,19 @@
 //! Guardamos datos que recogemos de assimp como la posicion, normal, coordenada de texturas, tangentes y bitangentes
 struct Vertex {
     // position
-    glm::vec3 position;
+    glm::vec3 position {0.f,0.f,0.f};
     // normal
-    glm::vec3 normal;
+    glm::vec3 normal {0.f,0.f,0.f};
     // texCoords
-    glm::vec2 texCoords;
+    glm::vec2 texCoords {0.f,0.f};
     // tangent
-    glm::vec3 tangent;
+    glm::vec3 tangent {0.f,0.f,0.f};
     // bitangent
-    glm::vec3 bitangent;
+    glm::vec3 bitangent {0.f,0.f,0.f};
     // offset
-    glm::vec3 animationOffsetPos;
+    glm::vec3 animationOffsetPos {0.f,0.f,0.f};
     // offset
-    glm::vec3 animationOffsetNormal;
+    glm::vec3 animationOffsetNormal {0.f,0.f,0.f};
 };
 
 //! Estructura para almacenar informacion sobre las texturas del modelado

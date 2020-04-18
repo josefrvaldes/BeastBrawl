@@ -53,6 +53,7 @@ int main() {
     try {
         //-------------------Resource manager-------------------
         CLResourceManager* resourceManager = CLResourceManager::GetResourceManager();
+        
         auto resourceShader = resourceManager->GetResourceShader("CLEngine/src/Shaders/shadowMappingShader.vert", "CLEngine/src/Shaders/shadowMappingShader.frag");
         auto resourceShaderCartoon = resourceManager->GetResourceShader("CLEngine/src/Shaders/cartoonShader.vert", "CLEngine/src/Shaders/cartoonShader.frag");
         auto resourceShaderLightMapping = resourceManager->GetResourceShader("CLEngine/src/Shaders/lightMapping.vert", "CLEngine/src/Shaders/lightMapping.frag");
@@ -65,11 +66,9 @@ int main() {
         auto resourceMeshTotem = resourceManager->GetResourceMesh("media/totem.obj", true);
         auto resourceMesh = resourceManager->GetResourceMesh("media/kart_physics.obj", true);
         auto resourceMeshBox = resourceManager->GetResourceMesh("media/TEST_BOX.obj", true);
+        // auto animationCube = resourceManager->GetResourceAnimation("media/animations/cube/cube.obj", 4, true);
 
-        auto resourceMeshCubeAnim1 = resourceManager->GetResourceMesh("media/animations/cube/001cube.obj", true);
-        auto resourceMeshCubeAnim2 = resourceManager->GetResourceMesh("media/animations/cube/002cube.obj", true);
-        auto resourceMeshCubeAnim3 = resourceManager->GetResourceMesh("media/animations/cube/003cube.obj", true);
-        auto resourceMeshCubeAnim4 = resourceManager->GetResourceMesh("media/animations/cube/004cube.obj", true);
+
 
         // auto resourceMeshOBJ = resourceManager->GetResourceMesh("media/kart.obj", true);
         // auto resourceMaterial = resourceManager->GetResourceMaterial("media/kart.obj", true);
@@ -140,7 +139,8 @@ int main() {
 
         static_cast<CLMesh*>(mesh1->GetEntity())->SetMesh(resourceMeshGround);
         static_cast<CLMesh*>(mesh2->GetEntity())->SetMesh(resourceMesh);
-        static_cast<CLMesh*>(nodeCubeAnim->GetEntity())->SetMesh(resourceMeshCubeAnim3);
+        vector<uint8_t> distanceBetweenFrames {10,10,10,10};
+        // static_cast<CLMesh*>(nodeCubeAnim->GetEntity())->SetAnimation(animationCube, distanceBetweenFrames);
         // static_cast<CLMesh*>(mesh7->GetEntity())->SetMesh(resourceMeshCochesito);
 
         camera->SetTranslation(glm::vec3(160.0f, 92.42f, -60.9f));
@@ -202,7 +202,7 @@ int main() {
             light1->SetTranslation(lightPos);
             light2->SetTranslation(lightPos2);
 
-            static_cast<CLCamera*>(camera->GetEntity())->SetCameraTarget(nodeCubeAnim->GetGlobalTranslation());
+            static_cast<CLCamera*>(camera->GetEntity())->SetCameraTarget(mesh2->GetGlobalTranslation());
 
             if (glfwGetKey(device->GetWindow(), GLFW_KEY_E)) {
                 static_cast<CLParticleSystem*>(ps1->GetEntity())->SetLoop(true);
@@ -256,40 +256,7 @@ int main() {
             device->RenderText2D(cadena, 25.0f, 25.0f, 0.05f, 1.0f, vect3);
 
             // animaciones
-            auto now = Utils::getMillisSinceEpoch();
-            uint64_t timeElapsed = now - start;
-            if (timeElapsed < ANIMATION_DURATION) {
-                double percentTick = std::min(1.0f, (static_cast<float>(timeElapsed) / ANIMATION_DURATION));
-
-                for (size_t i = 0; i < 3000; i++) {
-                    for (size_t idxMesh = 0; idxMesh < resourceMeshCubeAnim1->GetvectorMesh().size(); idxMesh++) {
-                        auto& prevMesh = resourceMeshCubeAnim1->GetvectorMeshPtr()->at(idxMesh);
-                        auto& nextMesh = resourceMeshCubeAnim2->GetvectorMeshPtr()->at(idxMesh);
-                        auto& currMesh = resourceMeshCubeAnim3->GetvectorMeshPtr()->at(idxMesh);
-                        // cout << "Las mallas " << idxMesh << " tienen " << prevMesh.vertices.size() << ", " << currMesh.vertices.size() << " y " << nextMesh.vertices.size() << " vértices respectivamente" << endl;
-                        for (size_t idxVertex = 0; idxVertex < prevMesh.vertices.size(); idxVertex++) {
-                            auto& prevVertex = prevMesh.vertices[idxVertex];
-                            auto& nextVertex = nextMesh.vertices[idxVertex];
-                            auto& currVertex = currMesh.vertices[idxVertex];
-
-                            currVertex.position = mix(prevVertex.position, nextVertex.position, percentTick);
-                            currVertex.normal = mix(prevVertex.normal, nextVertex.normal, percentTick);
-                            currVertex.animationOffsetPos = currVertex.position - prevVertex.position;
-                            currVertex.animationOffsetNormal = currVertex.normal - prevVertex.normal;
-
-                            // cout << "Tenemos un vértice en " << currVertex.position.x << "," << currVertex.position.y << "," << currVertex.position.z << endl;
-                            // cout << "El next un vértice es " << nextVertex.position.x << "," << nextVertex.position.y << "," << nextVertex.position.z << endl;
-                            if (idxMesh == 0 && idxVertex == 0) {
-                                // cout << "El timeElapsed es " << timeElapsed << " y el percentTick es " << percentTick << ". La nueva pos es " << currVertex.position.x << "," << currVertex.position.y << "," << currVertex.position.z << endl;
-                                // cout << "La pos variable local es " << currVertex.position.x << "," << currVertex.position.y << "," << currVertex.position.z << endl
-                                //     << "La pos variable miembro es " << resourceMeshCubeAnim3->GetvectorMeshPtr()->at(idxMesh).vertices.at(idxVertex).position.x
-                                //     << "," << resourceMeshCubeAnim3->GetvectorMeshPtr()->at(idxMesh).vertices.at(idxVertex).position.y
-                                //     << "," << resourceMeshCubeAnim3->GetvectorMeshPtr()->at(idxMesh).vertices.at(idxVertex).position.z << endl << endl;
-                            }
-                        }
-                    }
-                }
-            }
+            // static_cast<CLMesh*>(nodeCubeAnim->GetEntity())->Animate();
 
             device->InputClose();
             device->PollEvents();

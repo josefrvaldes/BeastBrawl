@@ -49,7 +49,8 @@ enum CompType {
     ShaderComp,
     LightComp,
     ParentNodeComp,
-    ParticleSystemComp
+    ParticleSystemComp,
+    AnimationComp
 };
 
 class Component {

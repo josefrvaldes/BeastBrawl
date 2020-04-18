@@ -269,6 +269,7 @@ void CLResourceMesh::Draw(GLuint shaderID) {
         // glEnableVertexAttribArray(1);
         // glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, normal));
 
+        // estas líneas son necesarias para las animaciones
         // vertex animationOffsetPos
         glEnableVertexAttribArray(3);
         glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, animationOffsetPos));
