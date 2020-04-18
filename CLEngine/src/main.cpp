@@ -271,11 +271,8 @@ int main() {
                         auto& nextVertex = nextMesh.vertices[idxVertex];
                         auto& currVertex = currMesh.vertices[idxVertex];
 
-                        currVertex.position.x = (nextVertex.position.x - prevVertex.position.x) * percentTick + prevVertex.position.x;
-                        currVertex.position.y = (nextVertex.position.y - prevVertex.position.y) * percentTick + prevVertex.position.y;
-                        currVertex.position.z = (nextVertex.position.z - prevVertex.position.z) * percentTick + prevVertex.position.z;
-
-                        //static_cast<CLMesh*>(nodeCubeAnim->GetEntity())->SetMesh(resourceMeshCubeAnim3);
+                        currVertex.position = mix(prevVertex.position, nextVertex.position, percentTick);
+                        currVertex.animationOffsetPos = currVertex.position - prevVertex.position;
 
                         // cout << "Tenemos un vértice en " << currVertex.position.x << "," << currVertex.position.y << "," << currVertex.position.z << endl;
                         // cout << "El next un vértice es " << nextVertex.position.x << "," << nextVertex.position.y << "," << nextVertex.position.z << endl;
@@ -287,8 +284,6 @@ int main() {
                                 << "," << resourceMeshCubeAnim3->GetvectorMeshPtr()->at(idxMesh).vertices.at(idxVertex).position.z << endl << endl;
                         }
                     }
-                    // 2.38914,0.767759,-1.29264
-                    // 2.39546,0.766702,-1.29397
                 }
                 static_cast<CLMesh*>(nodeCubeAnim->GetEntity())->SetMesh(resourceMeshCubeAnim3);
             }

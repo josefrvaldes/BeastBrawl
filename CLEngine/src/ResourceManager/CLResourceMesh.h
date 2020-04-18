@@ -22,6 +22,10 @@ struct Vertex {
     glm::vec3 tangent;
     // bitangent
     glm::vec3 bitangent;
+    // offset
+    glm::vec3 animationOffsetPos;
+    // offset
+    glm::vec3 animationOffsetNormal;
 };
 
 //! Estructura para almacenar informacion sobre las texturas del modelado
