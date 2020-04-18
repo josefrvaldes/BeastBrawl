@@ -19,11 +19,11 @@ void CLMesh::Animate() {
     // si tenemos que cambiar ya de keyFrame
     if (currentDistance == distanceBetweenKeyFrames[currentKeyFrameIndex]) {
         currentKeyFrameIndex++;
-        if(currentKeyFrameIndex > keyframes.size()) 
+        if(currentKeyFrameIndex > keyframes.size() - 1) 
             currentKeyFrameIndex = 0;
         
         uint8_t nextKeyframeIndex = currentKeyFrameIndex + 1;
-        if(nextKeyframeIndex > keyframes.size()) 
+        if(nextKeyframeIndex > keyframes.size() - 1) 
             nextKeyframeIndex = 0;
         mesh = keyframes[currentKeyFrameIndex];
         nextMesh = keyframes[nextKeyframeIndex];
@@ -39,8 +39,8 @@ void CLMesh::Animate() {
         //auto& currMesh = resourceMeshCubeAnim3->GetvectorMeshPtr()->at(idxMesh);
         // cout << "Las mallas " << idxMesh << " tienen " << prevMesh.vertices.size() << ", " << currMesh.vertices.size() << " y " << nextMesh.vertices.size() << " vértices respectivamente" << endl;
         for (size_t idxVertex = 0; idxVertex < prevSubMesh.vertices.size(); idxVertex++) {
-            auto& prevVertex = prevSubMesh.vertices[idxVertex];
-            auto& nextVertex = nextSubMesh.vertices[idxVertex];
+            auto& prevVertex = prevSubMesh.vertices.at(idxVertex);
+            auto& nextVertex = nextSubMesh.vertices.at(idxVertex);
             //auto& currVertex = currMesh.vertices[idxVertex];
 
             glm::vec3 position = mix(prevVertex.position, nextVertex.position, percentTick);
@@ -59,6 +59,7 @@ void CLMesh::Animate() {
             }
         }
     }
+    currentDistance++;
 }
 
 void CLMesh::DrawDepthMap(GLuint shaderID) {

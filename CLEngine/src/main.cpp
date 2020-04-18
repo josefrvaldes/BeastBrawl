@@ -66,7 +66,7 @@ int main() {
         auto resourceMeshTotem = resourceManager->GetResourceMesh("media/totem.obj", true);
         auto resourceMesh = resourceManager->GetResourceMesh("media/kart_physics.obj", true);
         auto resourceMeshBox = resourceManager->GetResourceMesh("media/TEST_BOX.obj", true);
-        // auto animationCube = resourceManager->GetResourceAnimation("media/animations/cube/cube.obj", 4, true);
+        auto animationCube = resourceManager->GetResourceAnimation("media/animations/cube/cube.obj", 4, true);
 
 
 
@@ -139,8 +139,8 @@ int main() {
 
         static_cast<CLMesh*>(mesh1->GetEntity())->SetMesh(resourceMeshGround);
         static_cast<CLMesh*>(mesh2->GetEntity())->SetMesh(resourceMesh);
-        vector<uint8_t> distanceBetweenFrames {10,10,10,10};
-        // static_cast<CLMesh*>(nodeCubeAnim->GetEntity())->SetAnimation(animationCube, distanceBetweenFrames);
+        vector<uint8_t> distanceBetweenFrames {120,120,120,120};
+        static_cast<CLMesh*>(nodeCubeAnim->GetEntity())->SetAnimation(animationCube, distanceBetweenFrames);
         // static_cast<CLMesh*>(mesh7->GetEntity())->SetMesh(resourceMeshCochesito);
 
         camera->SetTranslation(glm::vec3(160.0f, 92.42f, -60.9f));
@@ -202,7 +202,7 @@ int main() {
             light1->SetTranslation(lightPos);
             light2->SetTranslation(lightPos2);
 
-            static_cast<CLCamera*>(camera->GetEntity())->SetCameraTarget(mesh2->GetGlobalTranslation());
+            static_cast<CLCamera*>(camera->GetEntity())->SetCameraTarget(nodeCubeAnim->GetGlobalTranslation());
 
             if (glfwGetKey(device->GetWindow(), GLFW_KEY_E)) {
                 static_cast<CLParticleSystem*>(ps1->GetEntity())->SetLoop(true);
@@ -256,7 +256,7 @@ int main() {
             device->RenderText2D(cadena, 25.0f, 25.0f, 0.05f, 1.0f, vect3);
 
             // animaciones
-            // static_cast<CLMesh*>(nodeCubeAnim->GetEntity())->Animate();
+            static_cast<CLMesh*>(nodeCubeAnim->GetEntity())->Animate();
 
             device->InputClose();
             device->PollEvents();
