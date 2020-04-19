@@ -21,12 +21,12 @@ class SystemBtMoveTo : public SystemAI{
 
     void AddManager(Manager &e);
 
-    float getFrecuency(){ return frec; };
+    int getFrecuency(){ return frec; };
 
    protected:
    private:
    shared_ptr<selector> selectorBehaviourTree;
 
    vector<Manager *> managers;
-   float frec {1};
+   int frec {1};
 };

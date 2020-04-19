@@ -27,7 +27,7 @@ public:
     void UpdateDijkstra(CarAI* carAI, ManWayPoint* graph, ManNavMesh* manNavMesh) const;
     stack<int> Dijkstra(ManWayPoint* graph, const uint16_t start, const uint16_t end);
 
-    float getFrecuency(){ return frec; };
+    int getFrecuency(){ return frec; };
 
    private:
     void SubscribeToEvents();
@@ -40,5 +40,5 @@ public:
     bool graphCreated = false;
 
     vector<Manager *> managers;
-    float frec {1};
+    int frec {1};
 };

@@ -46,7 +46,7 @@ StateInGame::~StateInGame() {
  *  Y ES OBLIGATORIO llamar a este método desde el constructor de los hijos
  */
 void StateInGame::InitVirtualMethods() {
-    InitializeManagers(physics.get(), cam.get(), 300);
+    InitializeManagers(physics.get(), cam.get(), 3000000);
     InitializeSystems(*manCars.get(), *manBoundingWall.get(), *manBoundingOBB.get(), *manBoundingGround.get(), *manPowerUps.get(), *manNavMesh.get(), *manBoxPowerUps.get(), *manTotems.get());
     InitializeFacades();
 
@@ -58,6 +58,7 @@ void StateInGame::InitVirtualMethods() {
     // lo anterior y debe de estar todo inicializado
     AddElementsToRender();
 }
+
 
 void StateInGame::InitializeFacades() {
     // Inicializamos las facadas

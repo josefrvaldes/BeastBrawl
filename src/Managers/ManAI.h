@@ -16,8 +16,8 @@ struct BehaviorRecord
 {
     CarAI*      b_carAI;
     SystemAI*   b_sysAI;
-    float      b_frecuency;
-    float      b_pharse;
+    int      b_frecuency;
+    int      b_pharse;
     double      b_timeMax;
 };
 
@@ -27,12 +27,12 @@ class ManAI {
     ManAI();
     ~ManAI(){};
 
-    void addBehavior(CarAI* , SystemAI*, float frec, float phase, double timeMax);
+    void addBehavior(CarAI* , SystemAI*, int frec, int phase, double timeMax);
 
     void Update();
 
    private:
-    double frameActual {0};
+    int frameActual {0};
     //unique_ptr<SystemGameRules> systemGameRules;
     std::vector<BehaviorRecord> behaviours;
     std::queue<BehaviorRecord>  runThese;  

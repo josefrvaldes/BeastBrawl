@@ -9,7 +9,7 @@ ManAI::ManAI(){
 
 }
 
-void ManAI::addBehavior(CarAI* carAI_, SystemAI* sysAI_, float frec, float pharse, double timeMax){
+void ManAI::addBehavior(CarAI* carAI_, SystemAI* sysAI_, int frec, int pharse, double timeMax){
 
 
     //Create AI Behavior Event
@@ -35,9 +35,18 @@ void ManAI::Update(){
 
     cout << "antes de entrar tenemos:  " << runThese.size() << endl;
     // prueba con todos a ver que tal.. parte crucial de toda la puta semana
+    //for(auto currentBehaviour : behaviours){
+    //    runThese.push(currentBehaviour);
+    //}
+
+
+    // Go through each behavior
     for(auto currentBehaviour : behaviours){
-        runThese.push(currentBehaviour);
+        if((frameActual+currentBehaviour.b_pharse) % currentBehaviour.b_frecuency == 0) 
+            runThese.push(currentBehaviour);
     }
+
+
     cout << "una vez llenado tenemos:  " << runThese.size() << endl;
     auto numToRun = runThese.size();
     for(long unsigned int i=0; i<numToRun; i++){
