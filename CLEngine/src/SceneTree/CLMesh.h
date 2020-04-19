@@ -21,11 +21,21 @@ namespace CLE {
             
             //! Asigna una animación
             //! @param m Objecto CLResourceMesh donde tiene la malla
-            void SetAnimation(vector<CLResourceMesh*> keyframes_, vector<uint8_t> framesBetweenKeyFrames_) { 
+            void SetAnimation(vector<CLResourceMesh*> keyframes_) { 
+                keyframes = keyframes_; 
+                mesh = keyframes[0]; 
+                nextMesh = keyframes[1];
+                isInterpolated = false;
+            }
+            
+            //! Asigna una animación
+            //! @param m Objecto CLResourceMesh donde tiene la malla
+            void SetAnimationInterpolated(vector<CLResourceMesh*> keyframes_, vector<uint8_t> framesBetweenKeyFrames_) { 
                 keyframes = keyframes_; 
                 mesh = keyframes[0]; 
                 nextMesh = keyframes[1];
                 distanceBetweenKeyFrames = framesBetweenKeyFrames_;
+                isInterpolated = true;
             }
 
             //! Asigna un material
@@ -54,6 +64,7 @@ namespace CLE {
 
             // indica el keyframe que estamos procesando ahora
             uint8_t currentKeyFrameIndex {0};
+            bool isInterpolated{false};
 
             // vector que indica las distancias entre los distintos keyframes
             vector<uint8_t> distanceBetweenKeyFrames;

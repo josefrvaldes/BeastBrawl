@@ -66,7 +66,7 @@ int main() {
         auto resourceMeshTotem = resourceManager->GetResourceMesh("media/totem.obj", true);
         auto resourceMesh = resourceManager->GetResourceMesh("media/kart_physics.obj", true);
         auto resourceMeshBox = resourceManager->GetResourceMesh("media/TEST_BOX.obj", true);
-        auto animationCube = resourceManager->GetResourceAnimation("media/animations/kong/kong.obj", 75, true);
+        auto animationCube = resourceManager->GetResourceAnimation("media/animations/kong/001kong.obj", 75, true);
 
         // auto resourceMeshOBJ = resourceManager->GetResourceMesh("media/kart.obj", true);
         // auto resourceMaterial = resourceManager->GetResourceMaterial("media/kart.obj", true);
@@ -141,7 +141,7 @@ int main() {
         for (uint8_t i = 0; i < 75; i++)
             distanceBetweenFrames[i] = 1;
         cout << "Mi vector tiene size " << distanceBetweenFrames.size() << endl;
-        static_cast<CLMesh*>(nodeCubeAnim->GetEntity())->SetAnimation(animationCube, distanceBetweenFrames);
+        static_cast<CLMesh*>(nodeCubeAnim->GetEntity())->SetAnimation(animationCube);
         // static_cast<CLMesh*>(mesh7->GetEntity())->SetMesh(resourceMeshCochesito);
 
         camera->SetTranslation(glm::vec3(160.0f, 92.42f, -60.9f));

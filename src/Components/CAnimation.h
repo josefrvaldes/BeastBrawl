@@ -12,12 +12,25 @@ class Animation {
     //! Constructor de la clase animación
     //! @param path_ Ruta y nombre del archivo de malla, es decir, el obj. El formato será algo parecido a '/media/coche.obj'
     //! @param numKeyFrames_ El número de keyframes que hay en la animación
-    //! @param distances_ vector que representa la cantidad de frames que hay entre cada keyframe. El size debe coincidir con el numKeyFrames.
+    Animation(std::string path_, uint8_t numKeyFrames_)
+        : path{path_}, numKeyFrames{numKeyFrames_}, isInterpolated{false} {};
+
+    //! Constructor de la clase animación
+    //! @param path_ Ruta y nombre del archivo de malla, es decir, el obj. El formato será algo parecido a '/media/coche.obj'
+    //! @param numKeyFrames_ El número de keyframes que hay en la animación
+    //! @param distances_ vector de distancias en fps entre frame y frame. Su size tiene que coincidir con numKeyFrames.
     Animation(std::string path_, uint8_t numKeyFrames_, std::vector<uint8_t> distances_)
-        : path{path_}, numKeyFrames{numKeyFrames_}, distances{distances_} {};
+        : path{path_}, numKeyFrames{numKeyFrames_}, distances{distances_}, isInterpolated{true} {};
+
     std::string path;
     uint8_t numKeyFrames;
+    std::vector<uint8_t> GetDistances() { return distances; };
+    bool IsInterpolated() { return isInterpolated; };
+
+
+   private:
     std::vector<uint8_t> distances;
+    bool isInterpolated{false};
 };
 
 class CAnimation : public Component {
@@ -25,17 +38,18 @@ class CAnimation : public Component {
     CAnimation() = delete;
     CAnimation(Animation animClose);
     CAnimation(Animation animClose, Animation animMedium, Animation animFar);
-
-    // TODO: implementar animaciones con LoD
-    // CAnimation(std::string pathCerca, std::string pathMedio, std::string pathLejos, uint8_t numKeyFrames);
     ~CAnimation(){};
-
-    std::vector<Animation> animations;
-    Animation activeAnimation;
 
     //float distanceNear{250};
     //float distanceMedium{400};
+    std::vector<Animation> GetAnimations() { return animations; };
+    Animation GetActiveAnimation() { return activeAnimation; };
 
     float distanceNear{5000};
     float distanceMedium{10000};
+
+   private:
+
+    std::vector<Animation> animations;
+    Animation activeAnimation;
 };

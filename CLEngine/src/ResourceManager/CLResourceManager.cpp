@@ -36,7 +36,7 @@ CLResourceMesh* CLResourceManager::GetResourceMesh(const std::string file, bool 
 
 vector<CLResourceMesh*> CLResourceManager::GetResourceAnimation(const std::string path, uint8_t numKeyFrames, bool flipUV) {
     string folder = path.substr(0, path.find_last_of("/") + 1);
-    string fileName = path.substr(path.find_last_of("/") + 1);
+    string fileName = path.substr(path.find_last_of("/") + 1).substr(3);
     vector<CLResourceMesh*> keyFrames;
     for(uint8_t i = 1; i <= numKeyFrames; i++) {
         string stringIndex = std::to_string(i);

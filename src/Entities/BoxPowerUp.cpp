@@ -36,15 +36,17 @@ BoxPowerUp::BoxPowerUp(){
     //float maxSpeed = 20.0, acceleration = .15, friction = 0.1, slowDown = 0.25;
     
     shared_ptr<CId> cId   = make_shared<CId>();
-    shared_ptr<CType> cType = make_shared<CType>(ModelType::StaticMesh);
     shared_ptr<CTransformable> cTransformable = make_shared<CTransformable>(glm::vec3(0.0f,0.0f,0.0f), glm::vec3(0.0f,0.0f,0.0f), scale); 
     shared_ptr<CTexture> cTexture = make_shared<CTexture>(texture);
 
-    string animationPath = "animations/cube/cube.obj";
+    // animaciones
+    string animationPath = "animations/cube/001cube.obj";
     uint8_t numFrames = 4;
-    vector<uint8_t> distances {120,120,120,120};
+    vector<uint8_t> distances {60,60,60,60};
+    shared_ptr<CType> cType = make_shared<CType>(ModelType::StaticMesh);
     Animation anim{animationPath, numFrames, distances};
     shared_ptr<CAnimation> cMesh   = make_shared<CAnimation>(anim);
+
     shared_ptr<CBoxPowerUp> cBoxPowerUp   = make_shared<CBoxPowerUp>();
     shared_ptr<CShader> cShader = make_shared<CShader>(vertexShader,fragmentShader);
     //shared_ptr<CRemovableObject> cRemovableObject = make_shared<CRemovableObject>();

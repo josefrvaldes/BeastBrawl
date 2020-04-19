@@ -28,12 +28,12 @@ void CLMesh::GoToNextKeyFrames() {
 }
 
 void CLMesh::Animate() {
-    // si tenemos que cambiar ya de keyFrame
+    // cambiamos de frame
     GoToNextKeyFrames();
 }
 
 void CLMesh::AnimateInterpolated() {
-    // si tenemos que cambiar ya de keyFrame
+    // si tenemos que cambiar ya de keyFrame...
     if (currentDistance == distanceBetweenKeyFrames[currentKeyFrameIndex]) {
         GoToNextKeyFrames();
         currentDistance = 0;
