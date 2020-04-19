@@ -154,8 +154,21 @@ void ManPowerUp::Update() {
     for (long unsigned int i = 0; i < entities.size(); ++i) {
         auto cRemovableObj = static_cast<CRemovableObject *>(entities[i].get()->GetComponent(CompType::RemovableObjectComp).get());
         if (cRemovableObj->destroy) {
+            auto cTransformable = static_cast<CTransformable*>(entities[i].get()->GetComponent(CompType::TransformableComp).get());
+            
+            //Eliminamos el powerup y lanzamos el evento para las particlas
+            //Comentar si la queremos para todas o simplemente para banana y melon
+            //VEC3_POS
+            shared_ptr<DataMap> data = make_shared<DataMap>();
+
+            (*data)[VEC3_POS] = cTransformable->position;
+
+            EventManager::GetInstance().AddEventMulti(Event{EventType::CREATE_PARTICLES_COLLISION_POWERUP, data});
+
+
             renderEngine->DeleteEntity(entities[i].get()); 
             entities.erase(entities.begin() + i);
+
 
         }
     }
