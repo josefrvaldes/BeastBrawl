@@ -69,6 +69,8 @@ class SoundFacadeFMOD : public SoundFacade {
         void StopShield(DataMap*);
         void StopDrift(DataMap*);
         void StopClock(DataMap*);
+        void StopSoundMM(DataMap*);
+        void StopSoundTB(DataMap*);
 
         // -------------------------------- Eventos del juego: MENU
         void SoundMenuOption(DataMap*);

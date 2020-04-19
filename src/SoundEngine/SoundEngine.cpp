@@ -249,6 +249,7 @@ void SoundEngine::StopAllEvents() {
  * @param nameID - Identificador del sonido en el mapa de instancias.
  */
 void SoundEngine::StopEvent(const string& nameID) {
+    //cout << nameID << endl;
     auto instance = eventInstances2D.find(nameID);
     if (instance != eventInstances2D.end()) {
         ERRFMODCHECK(FMOD_Studio_EventInstance_Stop(instance->second->GetInstance(), FMOD_STUDIO_STOP_IMMEDIATE));
@@ -260,10 +261,14 @@ void SoundEngine::StopEvent(const string& nameID) {
             instance = eventInstancesDinamic3D.find(nameID);
             if (instance != eventInstancesDinamic3D.end()) {
                 ERRFMODCHECK(FMOD_Studio_EventInstance_Stop(instance->second->GetInstance(), FMOD_STUDIO_STOP_IMMEDIATE));
+                //cout << "++++ Sonido " << nameID << " ha sido parado con exito" << endl;
+            } else {
+                cout << "++++ Sonido " << nameID << " no se ha podido borrar, no esta" << endl;
             }
         }
     }
 }
+
 
 
 /**
@@ -394,6 +399,19 @@ bool SoundEngine::IsPlayingDinamic3D(const string& nameEvent) const {
  */
 void SoundEngine::UpdateEngine(){
     //ERRFMODCHECK(system->update());
+
+    for ( auto it = eventInstancesDinamic3D.begin(); it != eventInstancesDinamic3D.end(); ) {
+        if ( !IsPlayingDinamic3D(it->first) && it->second->GetClean()) {
+            ERRFMODCHECK(FMOD_Studio_EventInstance_Release(it->second.get()->GetInstance()));
+            cout << "Se ha borrado la instancia: " << it->first << endl;
+            it = eventInstancesDinamic3D.erase(it);
+        } else {
+            ++it;
+        }
+    }
+
+    //cout << "INSTANCIAS 3DD: " << eventInstancesDinamic3D.size() << endl;
+
     ERRFMODCHECK(FMOD_Studio_System_Update(system));
 }
 
@@ -529,6 +547,7 @@ void SoundEngine::CreateSoundNodeEstatic3D(uint16_t idE, glm::vec3& p, string& n
 
 void SoundEngine::CreateSoundNodeDinamic3D(uint16_t idE, glm::vec3& p, string& nameEvent, bool play, bool c) {
     std::string name = nameEvent + std::to_string(idE);
+    //cout << "Creada instancia: " << name << endl;
     unique_ptr<SoundNode> snode = make_unique<SoundNode>(idE, p, c);
     
     FMOD_STUDIO_EVENTINSTANCE* instance = nullptr;

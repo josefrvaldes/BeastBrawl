@@ -210,6 +210,16 @@ void SoundFacadeFMOD::SubscribeToGameEvents(const uint8_t numState) {
                     bind(&SoundFacadeFMOD::StopClock, this, placeholders::_1),
                     "StopClock"});
 
+            EventManager::GetInstance().SubscribeMulti(Listener{
+                    EventType::STOP_SOUND_MM,
+                    bind(&SoundFacadeFMOD::StopSoundMM, this, placeholders::_1),
+                    "StopSoundMM"});
+
+            EventManager::GetInstance().SubscribeMulti(Listener{
+                    EventType::STOP_SOUND_TB,
+                    bind(&SoundFacadeFMOD::StopSoundTB, this, placeholders::_1),
+                    "StopSoundTB"});
+
             break;
         }
         case 5:         // ENDRACE
@@ -475,22 +485,23 @@ void SoundFacadeFMOD::UpdateCars(const vector<shared_ptr<Entity> > &e) {
  *
  */
  void SoundFacadeFMOD::UpdatePowerUps(const vector<shared_ptr<Entity> > &powerups) {
-    /*string name = "";
+    string name = "";
     for(auto pu : powerups) {
         auto cId = static_cast<CId*>(pu->GetComponent(CompType::IdComp).get());
         auto cPos = static_cast<CTransformable*>(pu->GetComponent(CompType::TransformableComp).get());
         auto cType = static_cast<CPowerUp*>(pu->GetComponent(CompType::PowerUpComp).get());
         if(cPos && cId && cType) {
-            if (cType->typePowerUp == 3) {
+            //cout << "Actualizo el PU: " << cId->id << endl;
+            if (int(cType->typePowerUp) == 3) {
                 name = "PowerUp/pudin" + to_string(cId->id);
-            } else if (cType->typePowerUp == 5) {
+            } else if (int(cType->typePowerUp) == 5) {
                 name = "PowerUp/telebanana_prov" + to_string(cId->id);
-            } else if (cType->typePowerUp == 6) {
+            } else if (int(cType->typePowerUp) == 6) {
                 name = "PowerUp/melonmolon" + to_string(cId->id);
             }
-            soundEngine->Set3DAttributes(name, cPos->position);
+            soundEngine->Set3DAttributes(name, cPos->position, 0.0);
         }
-    }*/
+    }
  }
 
  /**
@@ -525,6 +536,7 @@ void SoundFacadeFMOD::UpdateCars(const vector<shared_ptr<Entity> > &e) {
  */
 void SoundFacadeFMOD::Update() {
     soundEngine->UpdateEngine();
+
 }
 
 
@@ -676,9 +688,6 @@ void SoundFacadeFMOD::SoundThrowPowerup(DataMap* d) {
                 SetParameter("Personajes/voces", "Tipo", TipoVoz::Powerup);
                 PlayEvent("Personajes/voces");
             }
-            /*name = "PowerUp/melonmolon";
-            CreateSoundDinamic3D(0, pos, name, 0, 0);
-            PlayEvent("PowerUp/melonmolon0");*/
             break;
         }
         case typeCPowerUp::TeleBanana: {
@@ -686,9 +695,6 @@ void SoundFacadeFMOD::SoundThrowPowerup(DataMap* d) {
                 SetParameter("Personajes/voces", "Tipo", TipoVoz::Powerup);
                 PlayEvent("Personajes/voces");
             }
-            /*name = "PowerUp/telebanana_prov";
-            CreateSoundDinamic3D(0, pos, name, 0, 0);
-            PlayEvent("PowerUp/telebanana_prov0");*/
             break;
         }
         case typeCPowerUp::PudinDeFrambuesa: {
@@ -696,10 +702,6 @@ void SoundFacadeFMOD::SoundThrowPowerup(DataMap* d) {
                 SetParameter("Personajes/voces", "Tipo", TipoVoz::Powerup);
                 PlayEvent("Personajes/voces");
             }
-            /*name = "PowerUp/melonmolon";
-            CreateSoundDinamic3D(0, pos, name, 0, 0);
-            PlayEvent("PowerUp/pudin0");
-            std::cout << "POWERUP: " << (int)typepw << endl;*/
             break;
         }
         default:
@@ -748,4 +750,18 @@ void SoundFacadeFMOD::StopDrift(DataMap* d) {
 
 void SoundFacadeFMOD::StopClock(DataMap* d) {
     StopEvent("Partida/reloj");
+}
+
+void SoundFacadeFMOD::StopSoundMM(DataMap* d) {
+    //cout << "BORRAME MM" << endl;
+    auto id = any_cast<uint16_t>((*d)[ID]);
+    string name = "PowerUp/melonmolon" + std::to_string(id);
+    soundEngine->StopEvent(name);
+}
+
+void SoundFacadeFMOD::StopSoundTB(DataMap* d) {
+    //cout << "BORRAME TB" << endl;
+    auto id = any_cast<uint16_t>((*d)[ID]);
+    string name = "PowerUp/telebanana" + std::to_string(id);
+    soundEngine->StopEvent(name);
 }

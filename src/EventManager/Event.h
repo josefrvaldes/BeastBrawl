@@ -63,6 +63,8 @@ enum EventType {
     DEFEAT,
     CLOCK,
     NOT_CLOCK,
+    STOP_SOUND_MM,
+    STOP_SOUND_TB,
     CRASH_WALL,
     BREAK_BOX,
     DRIFT,
