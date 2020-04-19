@@ -175,6 +175,10 @@ void StateInGame::InitializeManagers(Physics *physics, Camera *cam, const uint32
     // Es raro pero diria que aqui tengo que ir añadiendo sistemas de particulas
     // Añadimos las particulas a todas las cajas
     vector<string> puParticles;
+    puParticles.push_back("media/particleRedStar.png");
+    puParticles.push_back("media/particleYellowStar.png");
+    puParticles.push_back("media/particleRedTriangle.png");
+    puParticles.push_back("media/particleYellowTriangle.png");
     puParticles.push_back("media/particle_test.png");
     for(auto boxPowerUp : manBoxPowerUps->GetEntities()){
         auto cId = static_cast<CId*>(boxPowerUp->GetComponent(CompType::IdComp).get());

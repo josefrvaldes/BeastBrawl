@@ -68,6 +68,8 @@ void PhysicsPowerUp::updateTeleBanana(Entity* pu){
       cTransformable->position.x -= cos(angleRotation) * cPuActual->speed * Constants::DELTA_TIME;
       cTransformable->position.z += sin(angleRotation) * cPuActual->speed * Constants::DELTA_TIME;
    }
+
+   cTransformable->rotation.y += 400 * Constants::DELTA_TIME;
 }
 
 
@@ -81,4 +83,6 @@ void PhysicsPowerUp::updateMelonMolon(Entity* pu){
    float angleRotation = (cTransformable->rotation.y * PI) / 180.0;
    cTransformable->position.x -= cos(angleRotation) * cPuActual->speed * Constants::DELTA_TIME;
    cTransformable->position.z += sin(angleRotation) * cPuActual->speed * Constants::DELTA_TIME;
+
+   cTransformable->rotation.z += 400 * Constants::DELTA_TIME;
 }
