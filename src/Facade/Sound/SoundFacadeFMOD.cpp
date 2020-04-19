@@ -105,7 +105,7 @@ void SoundFacadeFMOD::SubscribeToGameEvents(const uint8_t numState) {
             break;
         case 2:         // SELECCION PERSONAJE
             EventManager::GetInstance().SubscribeMulti(Listener{
-                    EventType::RANDOM_VOICE,
+                    EventType::VRANDOM,
                     bind(&SoundFacadeFMOD::SoundRandomSentence, this, placeholders::_1),
                     "SoundRandomSentence"});
 
@@ -186,11 +186,6 @@ void SoundFacadeFMOD::SubscribeToGameEvents(const uint8_t numState) {
                     EventType::DRIFT,
                     bind(&SoundFacadeFMOD::SoundBreakBox, this, placeholders::_1),
                     "SoundBreakBox"});
-
-            /*EventManager::GetInstance().SubscribeMulti(Listener{
-                    EventType::VRANDOM,
-                    bind(&SoundFacadeFMOD::SoundRandomSentence, this, placeholders::_1),
-                    "SoundRandomSentence"});*/
 
 
             // --- STOP
