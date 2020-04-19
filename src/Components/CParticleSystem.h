@@ -4,17 +4,18 @@
 #include "Component.h"
 #include <glm/vec3.hpp>
 #include <string>
+#include <vector>
 using namespace std;
 
 class CParticleSystem : public Component{
 public:
     CParticleSystem();
-    CParticleSystem(uint32_t _nParticles, glm::vec3 _velocity, string _texture, int _width, int _height, int _spawnDelay, int _particlesToSpawn, int _lifeSpan, glm::vec3 _offset, glm::vec3 _orientation, float _radious, std::uint_fast8_t _flags, bool _loop, bool _started);
+    CParticleSystem(uint32_t _nParticles, glm::vec3 _velocity, vector<string> _textures, int _width, int _height, int _spawnDelay, int _particlesToSpawn, int _lifeSpan, glm::vec3 _offset, glm::vec3 _orientation, float _radious, std::uint_fast8_t _flags, bool _loop, bool _started);
     ~CParticleSystem() = default;
 
     uint32_t nParticles {0}; // Numero de particulas
     glm::vec3 velocity;           // Velocidad de las particulas
-    string texture;               // Textura de la particula
+    vector<string> textures;               // Textura de la particula
     int width {50};               // Anchura de la particula
     int height{50};               // Altura de la particula
     int spawnDelay {100};         // Tiempo de spawn entre particulas

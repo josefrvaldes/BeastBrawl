@@ -196,8 +196,17 @@ void ManPowerUp::Update() {
                     EventManager::GetInstance().AddEventMulti(Event{EventType::STOP_SOUND_TB, data});
                 }
 
+            //Eliminamos el powerup y lanzamos el evento para las particlas
+            //Comentar si la queremos para todas o simplemente para banana y melon
+            //VEC3_POS
+            shared_ptr<DataMap> data = make_shared<DataMap>();
+            (*data)[VEC3_POS] = cTransformable->position;
+            EventManager::GetInstance().AddEventMulti(Event{EventType::CREATE_PARTICLES_COLLISION_POWERUP, data});
+
+
             renderEngine->DeleteEntity(entities[i].get()); 
             entities.erase(entities.begin() + i);
+
 
         }
     }
