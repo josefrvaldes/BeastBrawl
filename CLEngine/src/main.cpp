@@ -53,7 +53,7 @@ int main() {
     try {
         //-------------------Resource manager-------------------
         CLResourceManager* resourceManager = CLResourceManager::GetResourceManager();
-        
+
         auto resourceShader = resourceManager->GetResourceShader("CLEngine/src/Shaders/shadowMappingShader.vert", "CLEngine/src/Shaders/shadowMappingShader.frag");
         auto resourceShaderCartoon = resourceManager->GetResourceShader("CLEngine/src/Shaders/cartoonShader.vert", "CLEngine/src/Shaders/cartoonShader.frag");
         auto resourceShaderLightMapping = resourceManager->GetResourceShader("CLEngine/src/Shaders/lightMapping.vert", "CLEngine/src/Shaders/lightMapping.frag");
@@ -66,9 +66,7 @@ int main() {
         auto resourceMeshTotem = resourceManager->GetResourceMesh("media/totem.obj", true);
         auto resourceMesh = resourceManager->GetResourceMesh("media/kart_physics.obj", true);
         auto resourceMeshBox = resourceManager->GetResourceMesh("media/TEST_BOX.obj", true);
-        auto animationCube = resourceManager->GetResourceAnimation("media/animations/cube/cube.obj", 4, true);
-
-
+        auto animationCube = resourceManager->GetResourceAnimation("media/animations/kong/kong.obj", 75, true);
 
         // auto resourceMeshOBJ = resourceManager->GetResourceMesh("media/kart.obj", true);
         // auto resourceMaterial = resourceManager->GetResourceMaterial("media/kart.obj", true);
@@ -139,7 +137,10 @@ int main() {
 
         static_cast<CLMesh*>(mesh1->GetEntity())->SetMesh(resourceMeshGround);
         static_cast<CLMesh*>(mesh2->GetEntity())->SetMesh(resourceMesh);
-        vector<uint8_t> distanceBetweenFrames {120,120,120,120};
+        vector<uint8_t> distanceBetweenFrames(75);
+        for (uint8_t i = 0; i < 75; i++)
+            distanceBetweenFrames[i] = 1;
+        cout << "Mi vector tiene size " << distanceBetweenFrames.size() << endl;
         static_cast<CLMesh*>(nodeCubeAnim->GetEntity())->SetAnimation(animationCube, distanceBetweenFrames);
         // static_cast<CLMesh*>(mesh7->GetEntity())->SetMesh(resourceMeshCochesito);
 

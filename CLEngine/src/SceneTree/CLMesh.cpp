@@ -14,19 +14,28 @@ void CLMesh::Draw(GLuint shaderID) {
     }
 }
 
+void CLMesh::GoToNextKeyFrames() {
+    currentKeyFrameIndex++;
+    if (currentKeyFrameIndex > keyframes.size() - 1)
+        currentKeyFrameIndex = 0;
+
+    uint8_t nextKeyframeIndex = currentKeyFrameIndex + 1;
+    if (nextKeyframeIndex > keyframes.size() - 1)
+        nextKeyframeIndex = 0;
+
+    mesh = keyframes[currentKeyFrameIndex];
+    nextMesh = keyframes[nextKeyframeIndex];
+}
+
 void CLMesh::Animate() {
-    
+    // si tenemos que cambiar ya de keyFrame
+    GoToNextKeyFrames();
+}
+
+void CLMesh::AnimateInterpolated() {
     // si tenemos que cambiar ya de keyFrame
     if (currentDistance == distanceBetweenKeyFrames[currentKeyFrameIndex]) {
-        currentKeyFrameIndex++;
-        if(currentKeyFrameIndex > keyframes.size() - 1) 
-            currentKeyFrameIndex = 0;
-        
-        uint8_t nextKeyframeIndex = currentKeyFrameIndex + 1;
-        if(nextKeyframeIndex > keyframes.size() - 1) 
-            nextKeyframeIndex = 0;
-        mesh = keyframes[currentKeyFrameIndex];
-        nextMesh = keyframes[nextKeyframeIndex];
+        GoToNextKeyFrames();
         currentDistance = 0;
     }
 
@@ -49,15 +58,16 @@ void CLMesh::Animate() {
             // cout << "Tenemos un vértice en " << currVertex.position.x << "," << currVertex.position.y << "," << currVertex.position.z << endl;
             // cout << "El next un vértice es " << nextVertex.position.x << "," << nextVertex.position.y << "," << nextVertex.position.z << endl;
             // if (idxMesh == 0 && idxVertex == 0) {
-                // cout << "El timeElapsed es " << timeElapsed << " y el percentTick es " << percentTick << ". La nueva pos es " << currVertex.position.x << "," << currVertex.position.y << "," << currVertex.position.z << endl;
-                // cout << "La pos variable local es " << currVertex.position.x << "," << currVertex.position.y << "," << currVertex.position.z << endl
-                //     << "La pos variable miembro es " << resourceMeshCubeAnim3->GetvectorMeshPtr()->at(idxMesh).vertices.at(idxVertex).position.x
-                //     << "," << resourceMeshCubeAnim3->GetvectorMeshPtr()->at(idxMesh).vertices.at(idxVertex).position.y
-                //     << "," << resourceMeshCubeAnim3->GetvectorMeshPtr()->at(idxMesh).vertices.at(idxVertex).position.z << endl << endl;
+            // cout << "El timeElapsed es " << timeElapsed << " y el percentTick es " << percentTick << ". La nueva pos es " << currVertex.position.x << "," << currVertex.position.y << "," << currVertex.position.z << endl;
+            // cout << "La pos variable local es " << currVertex.position.x << "," << currVertex.position.y << "," << currVertex.position.z << endl
+            //     << "La pos variable miembro es " << resourceMeshCubeAnim3->GetvectorMeshPtr()->at(idxMesh).vertices.at(idxVertex).position.x
+            //     << "," << resourceMeshCubeAnim3->GetvectorMeshPtr()->at(idxMesh).vertices.at(idxVertex).position.y
+            //     << "," << resourceMeshCubeAnim3->GetvectorMeshPtr()->at(idxMesh).vertices.at(idxVertex).position.z << endl << endl;
             // }
         }
     }
     currentDistance++;
+    // cout << "currentKeyFrameIndex -> " << unsigned(currentKeyFrameIndex) << endl;
 }
 
 void CLMesh::DrawDepthMap(GLuint shaderID) {

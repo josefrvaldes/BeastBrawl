@@ -39,6 +39,7 @@ namespace CLE {
 
             void Draw(GLuint shaderID);
             void Animate();
+            void AnimateInterpolated();
             void DrawDepthMap(GLuint shaderID);
 
 
@@ -61,6 +62,8 @@ namespace CLE {
             CLResourceMesh* nextMesh = nullptr;
             CLResourceMaterial* material = nullptr;
             CLResourceTexture* texture = nullptr;
+
+            void GoToNextKeyFrames();
 
             
     };

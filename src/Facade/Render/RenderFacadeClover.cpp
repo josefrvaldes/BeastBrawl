@@ -27,6 +27,7 @@
 #include <Components/CNavMesh.h>
 #include <Components/CCurrentNavMesh.h>
 #include <Components/CCar.h>
+#include <Components/CAnimation.h>
 
 #include <Entities/CarAI.h>
 #include <Entities/CarHuman.h>
@@ -158,6 +159,7 @@ const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
     auto cShader = static_cast<CShader*>(entity->GetComponent(CompType::ShaderComp).get());
 
     CLResourceMesh* mesh = nullptr;
+    vector<CLResourceMesh*> animations;
     CLResourceMaterial* mat = nullptr;
     if(entity->HasComponent(CompType::MeshComp)){
         auto cMesh = static_cast<CMesh*>(entity->GetComponent(CompType::MeshComp).get());
@@ -165,7 +167,7 @@ const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
         std::string meshPath = "media/" + currentMesh;
         mesh = resourceManager->GetResourceMesh(meshPath, false);
         mat = resourceManager->GetResourceMaterial(meshPath);
-    }
+    } 
 
     
     CLNode* node = nullptr;
@@ -184,12 +186,18 @@ const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
         case ModelType::Cube:
             node = father->AddMesh(cId->id);
             static_cast<CLMesh*>(node->GetEntity())->SetMesh(mesh);
-
             break;
 
-        case ModelType::StaticMesh:
+        case ModelType::StaticMesh: {
+            auto cAnimation = static_cast<CAnimation*>(entity->GetComponent(CompType::AnimationComp).get());
+            std::string path = cAnimation->activeAnimation.path;
+            std::string animationPath = "media/" + path;
+            vector<CLResourceMesh*> clAnimations = resourceManager->GetResourceAnimation(animationPath, cAnimation->activeAnimation.numKeyFrames, false);
+            mat = resourceManager->GetResourceMaterial(animationPath);
             node = father->AddMesh(cId->id); 
-            break;
+            static_cast<CLMesh*>(node->GetEntity())->SetAnimation(animations, cAnimation->activeAnimation.distances);
+            static_cast<CLMesh*>(node->GetEntity())->SetMaterial(mat);
+        }   break;
 
         case ModelType::AnimatedMesh:
             node = father->AddMesh(cId->id);
