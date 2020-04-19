@@ -806,13 +806,13 @@ void RenderFacadeClover::FacadeDrawMenu() {
     device->RenderText2D(name, 50.0f, 50.0f, 0.05f, 0.5f, colorB);
     name = "Mr Penguin";
     device->RenderText2D(name, 600.0f, 550.0f, 0.05f, 0.75f, color[0]);
-    name = "Captain Sharky";
+    name = "Sharky";
     device->RenderText2D(name, 600.0f, 425.0f, 0.05f, 0.75f, color[2]);
-    name = "Kaiser Kong";
+    name = "Deacon";
     device->RenderText2D(name, 600.0f, 300.0f, 0.05f, 0.75f, color[4]);
-    name = "Deacon Dragon";
-    device->RenderText2D(name, 900.0f, 550.0f, 0.05f, 0.75f, color[1]);
     name = "Mrs Baxter";
+    device->RenderText2D(name, 900.0f, 550.0f, 0.05f, 0.75f, color[1]);
+    name = "Kaiser Kong";
     device->RenderText2D(name, 900.0f, 425.0f, 0.05f, 0.75f, color[3]);
     name = "Cyberoctopus";
     device->RenderText2D(name, 900.0f, 300.0f, 0.05f, 0.75f, color[5]);
@@ -868,7 +868,7 @@ void RenderFacadeClover::FacadeDrawGameOptions() {
     } else {
         colorOp3 = glm::vec3(0.0f, 0.0f, 255.0f);
     }
-    name = "Aceptar";
+    name = "Empezar";
     device->RenderText2D(name, 500.0f, 150.0f, 0.05f, 1.25f, colorOp3);
 
     name = "---->";
@@ -994,17 +994,8 @@ void RenderFacadeClover::FacadeDrawSettings() {
     name = "zzzzxzzzz";
     device->RenderText2D(name, 750.0f, 250.0f, 0.05f, 0.75f, colorOp3[2]);
 
-    glm::vec3 colorOp4;
-    if (inputSettings[3] == 0) {
-        colorOp4 = glm::vec3(0.0f, 255.0f, 0.0f);
-    } else {
-        colorOp4 = glm::vec3(0.0f, 0.0f, 255.0f);
-    }
-    name = "Aceptar";
-    device->RenderText2D(name, 500.0f, 150.0f, 0.05f, 1.25f, colorOp4);
-
     name = "---->";
-    float sel[4] = { 500.0f, 325.0f, 250.0f, 150.0f };
+    float sel[3] = { 500.0f, 325.0f, 250.0f };
     device->RenderText2D(name, 100.0f, sel[optionSettings], 0.05f, 1.0f, colorBase);
 
 

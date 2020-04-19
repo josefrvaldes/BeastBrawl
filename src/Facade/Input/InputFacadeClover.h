@@ -4,6 +4,7 @@
 #include <memory>
 #include "InputFacade.h"
 #include "../Render/RenderFacadeManager.h"
+#include "../Sound/SoundFacadeManager.h"
 
 #include "../../../CLEngine/src/CLEngine.h"
 

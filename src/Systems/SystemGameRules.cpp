@@ -48,6 +48,16 @@ void SystemGameRules::UpdateRulesCarPowerUps(Entity& car_, Entity& totem_) const
     }
 
 
+    //Sonido reloj - ESTE EN REALIDAD SERIA EL RELOJ GLOBAL
+    /*int time = (cTotem->DURATION_TIME/1000.0 - cTotem->accumulatedTime/1000.0);
+    if ( cTotem->active && time == 4) {
+        //cout << "PLAY" << endl;
+        EventManager::GetInstance().AddEventMulti(Event{EventType::CLOCK});
+    } else if(cTotem->active && (time > 4 || time < 0))  {
+        //cout << "PARA" << endl;
+        EventManager::GetInstance().AddEventMulti(Event{EventType::NOT_CLOCK});
+    }*/
+
     if(cTotem->accumulatedTime/1000.0 > cTotem->DURATION_TIME/1000.0){
         cout << "Has ganado \n";
         //Game::GetInstance()->SetState(State::ENDRACE);

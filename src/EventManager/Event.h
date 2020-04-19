@@ -35,6 +35,9 @@ enum EventType {
     //ACTUALIZE_NAVMESH_TOTEM,
     //ACTUALIZE_NAVMESH_CARAI,
     NOT_SKID_PRESS,
+    MENU_OPTION,
+    MENU_OK,
+    MENU_BACK,
     ACTUALIZE_NAVMESH_TOTEM,
     ACTUALIZE_NAVMESH_CARAI,
     CHANGE_TOTEM_CAR,
@@ -58,14 +61,17 @@ enum EventType {
     CATCH_TOTEM,
     NO_SHIELD,
     CRASH,
+    VICTORY,
+    DEFEAT,
+    CLOCK,
+    NOT_CLOCK,
+    STOP_SOUND_MM,
+    STOP_SOUND_TB,
     CRASH_WALL,
     BREAK_BOX,
     DRIFT,
     NO_DRIFT,
     VRANDOM,
-    MENU_OPTION,
-    MENU_OK,
-    MENU_BACK,
     STATE_INTRO,
     STATE_MENU,
     STATE_SELECT_CHARACTER,
@@ -92,7 +98,7 @@ enum EventType {
     NEW_THROW_PU_RECEIVED,
     NEW_CRASH_PU_CAR_RECEIVED,
     NEW_CRASH_PU_WALL_RECEIVED,
-    DISCONNECTED_PLAYER
+    DISCONNECTED_PLAYER,
 };
 
 // enum DataType{
@@ -126,6 +132,7 @@ struct Data {
     typeCPowerUp typePowerUp;
     bool mainCharacter;
     bool stole;
+    int num;
 };
 
 struct Event {

@@ -23,6 +23,7 @@ class SoundFacade {
         virtual void StopAllEvents() = 0;
         virtual void StopEvent(const string&) = 0;
         virtual void PauseAllEvent() = 0;
+        virtual void ResumeEvent(const string&) = 0;
         virtual void ResumeAllEvent() = 0;
 
         virtual void UpdateCars(const vector<shared_ptr<Entity>>&) = 0;
