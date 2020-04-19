@@ -365,6 +365,10 @@ void CLEngine::RenderImgui(){
 double CLEngine::GetTime(){
     return glfwGetTime();
 }
+
+void CLEngine::UnableCursor(){
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+}
 /**
  * Mira si se han actualizado los valores de anchura y altura de la ventana y actualiza el viewport.
  */
@@ -373,13 +377,6 @@ void CLEngine::UpdateViewport(){
     glViewport(0, 0, width, height);
 }
 
-//Borrar esto 
-void CLEngine::InputClose(){
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE)) {
-        glfwSetWindowShouldClose(window, true);
-    }
-    
-}
 
 void CLEngine::CloseWindow(){
     glfwSetWindowShouldClose(window, true);
