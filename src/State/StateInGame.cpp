@@ -238,13 +238,11 @@ void StateInGame::Update() {
     sysLoD->UpdateMeshes(manCars->GetEntities(), cam.get());
     sysLoD->UpdateMeshes(manPowerUps->GetEntities(), cam.get());
     sysLoD->UpdateMeshes(manTotems->GetEntities(), cam.get());
-
     sysLoD->UpdateAnimations(manBoxPowerUps->GetEntities(), cam.get());
 
     renderEngine->FacadeUpdateMeshesLoD(manCars->GetEntities());
     renderEngine->FacadeUpdateMeshesLoD(manPowerUps->GetEntities());
     renderEngine->FacadeUpdateMeshesLoD(manTotems->GetEntities());
-
     renderEngine->FacadeUpdateAnimationsLoD(manBoxPowerUps->GetEntities());
 
     renderEngine->FacadeAnimate(manBoxPowerUps->GetEntities());

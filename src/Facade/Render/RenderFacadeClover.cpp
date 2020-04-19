@@ -440,8 +440,6 @@ void RenderFacadeClover::FacadeAddCamera(Entity* camera) {
     camera1->SetTranslation(glm::vec3(posX, cTransformable->position.y+100, posZ));
     camera1->SetRotation(glm::vec3(cTransformable->rotation.x,cTransformable->rotation.y,cTransformable->rotation.z));
     camera1->SetScalation(cTransformable->scale);
-
-    
 }
 
 

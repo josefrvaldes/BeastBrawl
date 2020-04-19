@@ -66,7 +66,8 @@ int main() {
         auto resourceMeshTotem = resourceManager->GetResourceMesh("media/totem.obj", true);
         auto resourceMesh = resourceManager->GetResourceMesh("media/kart_physics.obj", true);
         auto resourceMeshBox = resourceManager->GetResourceMesh("media/TEST_BOX.obj", true);
-        auto animationCube = resourceManager->GetResourceAnimation("media/animations/kong/001kong.obj", 75, true);
+        auto animationKong = resourceManager->GetResourceAnimation("media/animations/kong/001kong.obj", 75, true);
+        auto animationCube = resourceManager->GetResourceAnimation("media/animations/cube/001cube.obj", 4, true);
 
         // auto resourceMeshOBJ = resourceManager->GetResourceMesh("media/kart.obj", true);
         // auto resourceMaterial = resourceManager->GetResourceMaterial("media/kart.obj", true);
@@ -100,7 +101,10 @@ int main() {
         auto mesh2 = smgr->AddMesh(4);
         mesh2->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
 
-        auto nodeCubeAnim = smgr->AddMesh(5);
+        auto nodeKongAnim = smgr->AddMesh(5);
+        nodeKongAnim->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
+
+        auto nodeCubeAnim = smgr->AddMesh(6);
         nodeCubeAnim->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
 
         // //Lo paso de momento todo a pillon, luego pongo pasar los valores por el metodo
@@ -141,7 +145,9 @@ int main() {
         for (uint8_t i = 0; i < 75; i++)
             distanceBetweenFrames[i] = 1;
         cout << "Mi vector tiene size " << distanceBetweenFrames.size() << endl;
-        static_cast<CLMesh*>(nodeCubeAnim->GetEntity())->SetAnimation(animationCube);
+        static_cast<CLMesh*>(nodeKongAnim->GetEntity())->SetAnimation(animationKong);
+        std::vector<uint8_t> distances{60, 60, 60, 60};
+        static_cast<CLMesh*>(nodeCubeAnim->GetEntity())->SetAnimationInterpolated(animationCube, distances);
         // static_cast<CLMesh*>(mesh7->GetEntity())->SetMesh(resourceMeshCochesito);
 
         camera->SetTranslation(glm::vec3(160.0f, 92.42f, -60.9f));
@@ -156,9 +162,13 @@ int main() {
         mesh2->SetRotation(glm::vec3(-90.0f, 0.0f, 0.0f));
         mesh2->SetTranslation(glm::vec3(50.0f, 80.0f, -50.0f));
 
+        nodeKongAnim->SetScalation(glm::vec3(1.0f, 1.0f, 1.0f));
+        nodeKongAnim->SetRotation(glm::vec3(0.0f, 0.0f, 0.0f));
+        nodeKongAnim->SetTranslation(glm::vec3(150.0f, 80.0f, -50.0f));
+
         nodeCubeAnim->SetScalation(glm::vec3(1.0f, 1.0f, 1.0f));
         nodeCubeAnim->SetRotation(glm::vec3(0.0f, 0.0f, 0.0f));
-        nodeCubeAnim->SetTranslation(glm::vec3(150.0f, 80.0f, -50.0f));
+        nodeCubeAnim->SetTranslation(glm::vec3(150.0f, 80.0f, 50.0f));
 
         ps1->SetTranslation(glm::vec3(mesh2->GetTranslation().x, mesh2->GetTranslation().y + 80, mesh2->GetTranslation().z));
         ps1->SetScalation(glm::vec3(10.0f, 10.0f, 10.0f));
@@ -203,7 +213,7 @@ int main() {
             light1->SetTranslation(lightPos);
             light2->SetTranslation(lightPos2);
 
-            static_cast<CLCamera*>(camera->GetEntity())->SetCameraTarget(nodeCubeAnim->GetGlobalTranslation());
+            static_cast<CLCamera*>(camera->GetEntity())->SetCameraTarget(nodeKongAnim->GetGlobalTranslation());
 
             if (glfwGetKey(device->GetWindow(), GLFW_KEY_E)) {
                 static_cast<CLParticleSystem*>(ps1->GetEntity())->SetLoop(true);
@@ -257,7 +267,8 @@ int main() {
             device->RenderText2D(cadena, 25.0f, 25.0f, 0.05f, 1.0f, vect3);
 
             // animaciones
-            static_cast<CLMesh*>(nodeCubeAnim->GetEntity())->Animate();
+            static_cast<CLMesh*>(nodeKongAnim->GetEntity())->Animate();
+            static_cast<CLMesh*>(nodeCubeAnim->GetEntity())->AnimateInterpolated();
 
             device->InputClose();
             device->PollEvents();
