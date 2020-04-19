@@ -247,6 +247,8 @@ void StateInGame::Update() {
 
     renderEngine->FacadeUpdateAnimationsLoD(manBoxPowerUps->GetEntities());
 
+    renderEngine->FacadeAnimate(manBoxPowerUps->GetEntities());
+
     manGameRules->Update();
 }
 

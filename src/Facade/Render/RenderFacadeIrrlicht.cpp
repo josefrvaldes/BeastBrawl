@@ -462,6 +462,10 @@ void RenderFacadeIrrlicht::FacadeUpdateAnimationsLoD(vector<shared_ptr<Entity>> 
 
 }
 
+void RenderFacadeIrrlicht::FacadeAnimate(vector<shared_ptr<Entity>> entities) {
+
+}
+
 
 //INPUTS : Una entidad GameObject
 //TODO: Llevar cuidado con las rutas de las texturas si luego se mueven las carpetas

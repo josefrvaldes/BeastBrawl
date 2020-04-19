@@ -477,6 +477,23 @@ void RenderFacadeClover::FacadeUpdateAnimationsLoD(vector<shared_ptr<Entity>> en
     }
 }
 
+
+
+void RenderFacadeClover::FacadeAnimate(vector<shared_ptr<Entity>> entities) {
+    for (const auto& entity : entities) {
+        CId *cid = static_cast<CId*>(entity->GetComponent(CompType::IdComp).get());
+        auto node = smgr->GetNodeByID(cid->id);
+        if(node) {
+            auto cAnimation = static_cast<CAnimation*>(entity->GetComponent(CompType::AnimationComp).get());
+            if (cAnimation->GetActiveAnimation().IsInterpolated()) {
+                static_cast<CLMesh*>(node->GetEntity())->AnimateInterpolated();
+            } else {
+                static_cast<CLMesh*>(node->GetEntity())->Animate();
+            }
+        }
+    }
+}
+
 /**
  * @return - ¿El juego sigue abierto?
  */
