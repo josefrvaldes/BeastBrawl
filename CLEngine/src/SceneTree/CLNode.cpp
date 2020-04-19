@@ -145,14 +145,14 @@ void CLNode::AddGrass(float _width, float _height, const glm::vec3& _position, c
 
 
 //Spawner Punto
-CLNode* CLNode::AddParticleSystem(unsigned int id,unsigned int nParticles,glm::vec3 velocity,string texture,int width,int height,int spawnDelay,int particlesToSpawn,int lifeSpan, std::uint_fast8_t flags){
+CLNode* CLNode::AddParticleSystem(unsigned int id,unsigned int nParticles,glm::vec3 velocity,vector<string> textures,int width,int height,int spawnDelay,int particlesToSpawn,int lifeSpan, std::uint_fast8_t flags){
     if(particleSystemShader == 0){
         auto rm = CLResourceManager::GetResourceManager();
         auto resourceShader = rm->GetResourceShader("CLEngine/src/Shaders/particleSystem.vert", "CLEngine/src/Shaders/particleSystem.frag","CLEngine/src/Shaders/particleSystem.geom");
         particleSystemShader = resourceShader->GetProgramID();
     }
 
-    shared_ptr<CLEntity> e = make_shared<CLParticleSystem>(id,nParticles,velocity,texture,width,height,spawnDelay,particlesToSpawn,lifeSpan,flags);
+    shared_ptr<CLEntity> e = make_shared<CLParticleSystem>(id,nParticles,velocity,textures,width,height,spawnDelay,particlesToSpawn,lifeSpan,flags);
 
     shared_ptr<CLNode> node = make_shared<CLNode>(e);
     childs.push_back(node);
@@ -169,14 +169,14 @@ CLNode* CLNode::AddParticleSystem(unsigned int id,unsigned int nParticles,glm::v
 }
 
 //Spawner linea, cuadrado y cubo
-CLNode* CLNode::AddParticleSystem(unsigned int id,unsigned int nParticles,glm::vec3 velocity,string texture,int width,int height,int spawnDelay,int particlesToSpawn,int lifeSpan,glm::vec3 offset, glm::vec3 orientation, std::uint_fast8_t flags){
+CLNode* CLNode::AddParticleSystem(unsigned int id,unsigned int nParticles,glm::vec3 velocity,vector<string> textures,int width,int height,int spawnDelay,int particlesToSpawn,int lifeSpan,glm::vec3 offset, glm::vec3 orientation, std::uint_fast8_t flags){
     if(particleSystemShader == 0){
         auto rm = CLResourceManager::GetResourceManager();
         auto resourceShader = rm->GetResourceShader("CLEngine/src/Shaders/particleSystem.vert", "CLEngine/src/Shaders/particleSystem.frag","CLEngine/src/Shaders/particleSystem.geom");
         particleSystemShader = resourceShader->GetProgramID();
     }
 
-    shared_ptr<CLEntity> e = make_shared<CLParticleSystem>(id,nParticles,velocity,texture,width,height,spawnDelay,particlesToSpawn,lifeSpan,offset,orientation,flags);
+    shared_ptr<CLEntity> e = make_shared<CLParticleSystem>(id,nParticles,velocity,textures,width,height,spawnDelay,particlesToSpawn,lifeSpan,offset,orientation,flags);
 
     shared_ptr<CLNode> node = make_shared<CLNode>(e);
     childs.push_back(node);
@@ -194,7 +194,7 @@ CLNode* CLNode::AddParticleSystem(unsigned int id,unsigned int nParticles,glm::v
 }
 
 //Spawner esfera
-CLNode* CLNode::AddParticleSystem(unsigned int id,unsigned int nParticles,glm::vec3 velocity,string texture,int width,int height,int spawnDelay,int particlesToSpawn,int lifeSpan,float radious, std::uint_fast8_t flags){
+CLNode* CLNode::AddParticleSystem(unsigned int id,unsigned int nParticles,glm::vec3 velocity,vector<string> textures,int width,int height,int spawnDelay,int particlesToSpawn,int lifeSpan,float radious, std::uint_fast8_t flags){
     if(particleSystemShader == 0){
         auto rm = CLResourceManager::GetResourceManager();
         auto resourceShader = rm->GetResourceShader("CLEngine/src/Shaders/particleSystem.vert", "CLEngine/src/Shaders/particleSystem.frag","CLEngine/src/Shaders/particleSystem.geom");
@@ -202,7 +202,7 @@ CLNode* CLNode::AddParticleSystem(unsigned int id,unsigned int nParticles,glm::v
     }
 
 
-    shared_ptr<CLEntity> e = make_shared<CLParticleSystem>(id,nParticles,velocity,texture,width,height,spawnDelay,particlesToSpawn,lifeSpan,radious,flags);
+    shared_ptr<CLEntity> e = make_shared<CLParticleSystem>(id,nParticles,velocity,textures,width,height,spawnDelay,particlesToSpawn,lifeSpan,radious,flags);
 
     shared_ptr<CLNode> node = make_shared<CLNode>(e);
     childs.push_back(node);
@@ -220,7 +220,7 @@ CLNode* CLNode::AddParticleSystem(unsigned int id,unsigned int nParticles,glm::v
 }
 
 //Spawner circulo
-CLNode* CLNode::AddParticleSystem(unsigned int id,unsigned int nParticles,glm::vec3 velocity,string texture,int width,int height,int spawnDelay,int particlesToSpawn,int lifeSpan,float radious,glm::vec3 orientation, std::uint_fast8_t flags){
+CLNode* CLNode::AddParticleSystem(unsigned int id,unsigned int nParticles,glm::vec3 velocity,vector<string> textures,int width,int height,int spawnDelay,int particlesToSpawn,int lifeSpan,float radious,glm::vec3 orientation, std::uint_fast8_t flags){
     if(particleSystemShader == 0){
         auto rm = CLResourceManager::GetResourceManager();
         auto resourceShader = rm->GetResourceShader("CLEngine/src/Shaders/particleSystem.vert", "CLEngine/src/Shaders/particleSystem.frag","CLEngine/src/Shaders/particleSystem.geom");
@@ -228,7 +228,7 @@ CLNode* CLNode::AddParticleSystem(unsigned int id,unsigned int nParticles,glm::v
     }
 
 
-    shared_ptr<CLEntity> e = make_shared<CLParticleSystem>(id,nParticles,velocity,texture,width,height,spawnDelay,particlesToSpawn,lifeSpan,radious,orientation,flags);
+    shared_ptr<CLEntity> e = make_shared<CLParticleSystem>(id,nParticles,velocity,textures,width,height,spawnDelay,particlesToSpawn,lifeSpan,radious,orientation,flags);
 
     shared_ptr<CLNode> node = make_shared<CLNode>(e);
     childs.push_back(node);

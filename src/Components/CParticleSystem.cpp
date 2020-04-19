@@ -4,12 +4,12 @@ CParticleSystem::CParticleSystem(){
     m_compType = CompType::ParticleSystemComp;
 }
 
-CParticleSystem::CParticleSystem(uint32_t _nParticles, glm::vec3 _velocity, string _texture, int _width, int _height, int _spawnDelay, int _particlesToSpawn, int _lifeSpan, glm::vec3 _offset, glm::vec3 _orientation, float _radious, std::uint_fast8_t _flags, bool _loop, bool _started){
+CParticleSystem::CParticleSystem(uint32_t _nParticles, glm::vec3 _velocity, vector<string> _textures, int _width, int _height, int _spawnDelay, int _particlesToSpawn, int _lifeSpan, glm::vec3 _offset, glm::vec3 _orientation, float _radious, std::uint_fast8_t _flags, bool _loop, bool _started){
  
     m_compType       = CompType::ParticleSystemComp;
     nParticles       = _nParticles;
     velocity         = _velocity;
-    texture          = _texture;
+    textures         = _textures;
     width            = _width;
     height           = _height;
     spawnDelay       = _spawnDelay;
