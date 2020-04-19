@@ -132,15 +132,21 @@ int main() {
     /////////////////////////////////////////////////////
     vector<string> texturesPs1;
     texturesPs1.push_back("media/particle_test.png");
-    texturesPs1.push_back("media/particleRedStar.png");
-    texturesPs1.push_back("media/particleYellowStar.png");
-    texturesPs1.push_back("");
+    // texturesPs1.push_back("media/particleRedStar.png");
+    // texturesPs1.push_back("media/particleYellowStar.png");
+    // texturesPs1.push_back("");
     //texturesPs1.push_back("media/particleYellowTriangle.png");
     //texturesPs1.push_back("media/particleRedTriangle.png");
 
     auto ps1   = mesh2->AddParticleSystem(123940,30,glm::vec3(500.0f,500.0f,500.0f),texturesPs1,10,10,100,30,250,EFFECT_DIR_ALEATORITY | EFFECT_FADING);
 
+    vector<string> texturePs2;
+    texturePs2.push_back("media/particleRedStar.png");
+    texturePs2.push_back("media/particleYellowStar.png");
+    texturePs2.push_back("media/particleRedTriangle.png");
+    texturePs2.push_back("media/particleYellowTriangle.png");
 
+    auto ps2   = smgr->AddParticleSystem(123941,15,glm::vec3(400.0f,400.0f,400.0f),texturePs2,10,10,100,15,250,5,EFFECT_DIR_ALEATORITY);
 
             static_cast<CLCamera*>(camera->GetEntity())->SetCameraTarget(mesh2->GetTranslation());
         
@@ -187,6 +193,10 @@ int main() {
 
     ps1->SetTranslation(glm::vec3(mesh2->GetTranslation().x,mesh2->GetTranslation().y+80,mesh2->GetTranslation().z));
     ps1->SetScalation(glm::vec3(10.0f,10.0f,10.0f));
+
+    ps2->SetTranslation(glm::vec3(mesh2->GetTranslation().x,mesh2->GetTranslation().y+80,mesh2->GetTranslation().z));
+    ps2->SetScalation(glm::vec3(10.0f,10.0f,10.0f));
+
     // mesh7->SetScalation(glm::vec3(10.5f, 10.5f, 10.5f));
     // mesh7->SetTranslation(glm::vec3(140.0f,100.0f,-50.0f));
     // mesh7->SetRotation(glm::vec3(-90.0f, 0.0f, 0.0f));
@@ -232,33 +242,23 @@ int main() {
         static_cast<CLCamera*>(camera->GetEntity())->SetCameraTarget(mesh2->GetGlobalTranslation());
 
         if(glfwGetKey(device->GetWindow(),GLFW_KEY_E)){
-            static_cast<CLParticleSystem*>(ps1->GetEntity())->SetLoop(true);
+            static_cast<CLParticleSystem*>(ps2->GetEntity())->SetLoop(true);
         }
 
         if(glfwGetKey(device->GetWindow(),GLFW_KEY_Q)){
-            static_cast<CLParticleSystem*>(ps1->GetEntity())->SetLoop(false);
+            static_cast<CLParticleSystem*>(ps2->GetEntity())->SetLoop(false);
         }
 
         if(glfwGetKey(device->GetWindow(),GLFW_KEY_W)){
-            static_cast<CLParticleSystem*>(ps1->GetEntity())->Start();
+            static_cast<CLParticleSystem*>(ps2->GetEntity())->Start();
         }
 
         if(glfwGetKey(device->GetWindow(),GLFW_KEY_R)){
-            static_cast<CLParticleSystem*>(ps1->GetEntity())->StartOneIteration();
+            static_cast<CLParticleSystem*>(ps2->GetEntity())->StartOneIteration();
             // cout << "Realizamos una iteracion\n";
         }
 
-        if(glfwGetKey(device->GetWindow(),GLFW_KEY_LEFT)){
-            mesh2->SetTranslation(mesh2->GetTranslation()+ glm::vec3(-1.0f,-1.0f,-1.0f));
-        }
 
-        if(glfwGetKey(device->GetWindow(),GLFW_KEY_RIGHT)){
-            mesh2->SetTranslation(mesh2->GetTranslation()+ glm::vec3(1.0f,1.0f,1.0f));
-        }
-
-        if(glfwGetKey(device->GetWindow(),GLFW_KEY_K)){
-            mesh2->SetVisible(false);
-        }
 
         // Measure speed
         double currentTime = glfwGetTime();

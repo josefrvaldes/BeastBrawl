@@ -88,7 +88,7 @@ void RenderFacadeClover::FacadeSuscribeEvents() {
         "facadeUpdatePowerUpHUD"});
 
     EventManager::GetInstance().Subscribe(Listener{
-        EventType::INIT_PARTICLE_SYSTEM,
+        EventType::INIT_PARTICLES_BOX,
         bind( &RenderFacadeClover::FacadeInitParticleSystem, this, placeholders::_1 ),
         "FacadeInitParticleSystem"});
 }

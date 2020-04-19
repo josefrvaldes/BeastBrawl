@@ -143,7 +143,7 @@ CLParticleSystem::CLParticle::CLParticle(CLParticleSystem* emitter){
 
     int indxTexture = 1;
     if(particleSystem->GetTextures().size() > 1){
-        indxTexture = Utils::getRandomInt(1,particleSystem->GetTextures().size());
+        indxTexture = Utils::getRandomInt(1,particleSystem->GetTextures().size()+1);
     }
     texture = particleSystem->GetTextures().at(indxTexture-1);
     //Comprobamos si el flag del effecto esta activado
@@ -224,14 +224,11 @@ glm::vec3 CLParticleSystem::CLParticle::CalculateSpawnPosition(){
         float radious = particleSystem->GetRadious();
         glm::vec3 orientation = particleSystem->GetOrientation();
 
-        /*std::uniform_real_distribution<float> genX(center.x - (radious*orientation.x), center.x + (radious*orientation.x));
-        std::uniform_real_distribution<float> genY(center.y - (radious*orientation.y), center.y + (radious*orientation.y));
-        std::uniform_real_distribution<float> genZ(center.z - (radious*orientation.z), center.z + (radious*orientation.z));
+        float offX = Utils::getRandomFloat(center.x - (radious*orientation.x), center.x + (radious*orientation.x));
+        float offY = Utils::getRandomFloat(center.y - (radious*orientation.y), center.y + (radious*orientation.y));
+        float offZ = Utils::getRandomFloat(center.z - (radious*orientation.z), center.z + (radious*orientation.z));
 
-        //Reset de numeros aleatorios
-        genX(rng);genX(rng);genX(rng);
-        genY(rng);genY(rng);genY(rng);
-        genZ(rng);genZ(rng);genZ(rng);*/ 
+        newPosition = glm::vec3(offX,offY,offZ);
     }else{
         newPosition = particleSystem->GetCLNode()->GetGlobalTranslation();
 
