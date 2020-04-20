@@ -28,12 +28,7 @@ struct CarAI;
 struct Data;
 struct Physics;
 struct Camera;
-struct ManPowerUp;
-struct ManBoxPowerUp;
 struct ManTotem;
-struct ManNavMesh;
-struct ManBoundingWall;
-struct ManBoundingOBB;
 struct PhysicsAI;
 struct SystemBtPowerUp;
 struct SystemBtMoveTo;
@@ -51,8 +46,7 @@ class ManCar : public Manager {
     void CreateHumanCar(glm::vec3 _position);
     void UpdateCarPlayer(ManTotem &);
     void UpdateGeneralCar(Entity& car_, Entity& totem_);
-    void UpdateCarAI(CarAI* carAI, ManPowerUp* m_manPowerUp, ManBoxPowerUp* m_manBoxPowerUp, ManTotem* m_manTotem, ManWayPoint* graph, ManNavMesh* manNavMesh, 
-                    ManBoundingWall* m_manBoundingWall, ManBoundingOBB* m_manBoundingOBB, SystemBtPowerUp* systemBtPowerUp, SystemBtMoveTo* systemBtMoveTo, SystemBtLoDMove* systemBtLoDMove, SystemPathPlanning *systemPathPlanning);
+    void UpdateCarAI(CarAI* carAI, ManTotem* m_manTotem);
     void UpdateCarHuman(Entity* CarHuman, ManTotem*);
     shared_ptr<CarHuman>& GetCar() { return car; };
 
@@ -109,4 +103,6 @@ class ManCar : public Manager {
     unique_ptr<SystemGameRules> systemGameRules;
 
     SystemOnline* systemOnline = nullptr; // en caso de que sea Single va a ser un nullptr
+
+    double maxTimeAccumulated {0};
 };

@@ -59,6 +59,7 @@ void StateInGame::InitVirtualMethods() {
     AddElementsToRender();
 }
 
+
 void StateInGame::InitializeFacades() {
     // Inicializamos las facadas
     inputEngine = InputFacadeManager::GetInstance()->GetInputFacade();
