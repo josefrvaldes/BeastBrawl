@@ -40,5 +40,5 @@ public:
     bool graphCreated = false;
 
     vector<Manager *> managers;
-    int frec {1};
+    int frec {2};
 };

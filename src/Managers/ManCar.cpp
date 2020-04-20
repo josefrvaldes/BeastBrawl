@@ -74,11 +74,7 @@ void ManCar::UpdateCarPlayer(ManTotem &manTotem_) {
     UpdateGeneralCar(*carPlayer, *totem);
 }
 
-// TODO: RECORDARRR!!!!!!!!!!!!!!!!!  TANTO EL "BtMoveTo" como el "systemPathPlanning" se deben hacer en la misma ITERACION!!!!
-// Es importante esto porque el BtMoveTo es el que calcula la posicion a la que ir y el systemBtLoDMove es el que utiliza esta posicion para
-// moverse a un sitio, si en algun momento intentamos ir a una posicion que no existe PETAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-void ManCar::UpdateCarAI(CarAI* carAI, ManTotem* m_manTotem, SystemBtPowerUp* systemBtPowerUp, SystemBtMoveTo* systemBtMoveTo, SystemBtLoDMove* systemBtLoDMove, 
-                                SystemPathPlanning *systemPathPlanning) {
+void ManCar::UpdateCarAI(CarAI* carAI, ManTotem* m_manTotem) {
     
     //manNavMesh->UpdateNavMeshEntity(carAI);
     //systemBtMoveTo->update(carAI);

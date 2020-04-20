@@ -32,20 +32,13 @@ void StateInGameSingle::Update() {
 
 
     //std::cout << "LOS TIEMPOS SON:  ";
-    cout << " ------------------------------------------------------------------------------- " << endl;
+    //cout << " ------------------------------------------------------------------------------- " << endl;
     manAI->Update();
 
 
     for (auto actualAI : manCars->GetEntities()) { // CUIDADO!!! -> el static cast que solo se use en el single player, si no peta
         if (static_cast<Car*>(actualAI.get())->GetTypeCar() == TypeCar::CarAI){
-            manCars->UpdateCarAI(
-                static_cast<CarAI*>(actualAI.get()),
-                manTotems.get(), 
-                systemBtPowerUp.get(), 
-                systemBtMoveTo.get(), 
-                systemBtLoDMove.get(),
-                systemPathPlanning.get()
-            );
+            manCars->UpdateCarAI(static_cast<CarAI*>(actualAI.get()),manTotems.get());
         }
     }
 
@@ -114,15 +107,16 @@ void StateInGameSingle::createSystemAI(){
     InitBtPowerUp();
 
     //creamos comportamientos IA
-    uint32_t i = 1;
+    uint32_t i = 0;
     for(auto actualAI : manCars->GetEntities()){
         if (static_cast<Car*>(actualAI.get())->GetTypeCar() == TypeCar::CarAI){
             manAI->addBehavior(static_cast<CarAI*>(actualAI.get()), systemBtMoveTo.get(),     systemBtMoveTo->getFrecuency(),     i, systemBtMoveTo.get()->getMaxProcessTime() );
             manAI->addBehavior(static_cast<CarAI*>(actualAI.get()), systemPathPlanning.get(), systemPathPlanning->getFrecuency(), i, systemPathPlanning.get()->getMaxProcessTime() );
             manAI->addBehavior(static_cast<CarAI*>(actualAI.get()), systemBtLoDMove.get(),    systemBtLoDMove->getFrecuency(),    i, systemBtLoDMove.get()->getMaxProcessTime() );
             manAI->addBehavior(static_cast<CarAI*>(actualAI.get()), systemBtPowerUp.get(),    systemBtPowerUp->getFrecuency(),    i, systemBtPowerUp.get()->getMaxProcessTime() );
+            
+            i++;
         }
-        i++;
     }
 }
 

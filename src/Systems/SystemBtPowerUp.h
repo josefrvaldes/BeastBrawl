@@ -30,6 +30,6 @@ class SystemBtPowerUp : public SystemAI{
 
    vector<Manager *> managers;
 
-   int frec {6};
+   int frec {60};
 
 };

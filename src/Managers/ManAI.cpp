@@ -27,46 +27,29 @@ void ManAI::addBehavior(CarAI* carAI_, SystemAI* sysAI_, int frec, int pharse, d
 
 void ManAI::Update(){
 //def run(timeToRun):
-    double timeToRun_sec = 0.00015*10;;
+    double timeToRun_sec = 0.0035 * 10000 * 100000; // en nanosegundos = 0.0035 segundos .. de los que nos sobran 0.34 :)
 
     // Increment the frame number
     frameActual += 1;
     // Keep a list of behaviors to run --> runThese
 
-    cout << "antes de entrar tenemos:  " << runThese.size() << endl;
-    // prueba con todos a ver que tal.. parte crucial de toda la puta semana
-    //for(auto currentBehaviour : behaviours){
-    //    runThese.push(currentBehaviour);
-    //}
-
-
+    //cout << "antes de entrar tenemos:  " << runThese.size() << endl;
     // Go through each behavior
     for(auto currentBehaviour : behaviours){
         if((frameActual+currentBehaviour.b_pharse) % currentBehaviour.b_frecuency == 0) 
             runThese.push(currentBehaviour);
     }
 
-
-    cout << "una vez llenado tenemos:  " << runThese.size() << endl;
-    auto numToRun = runThese.size();
-    for(long unsigned int i=0; i<numToRun; i++){
-        runThese.front().b_sysAI->update(runThese.front().b_carAI);
-        runThese.pop();
-    }
-    cout << "cuando salimos tenemos :  " << runThese.size() << endl;
-    /*
-    // Go through each behavior
-    for(auto currentBehaviour : behaviours){
-        if( currentBehaviour.b_frecuency / (frameActual+currentBehaviour.b_pharse) )
-            runThese.push(currentBehaviour);
-    }
+    //cout << "una vez llenado tenemos:  " << runThese.size() << endl;
     // Keep track of the current time
     auto lastTime = system_clock::now();
     // Find the number of behaviors we need to run
     auto numToRun = runThese.size();
+    //cout << "antes de entrar el tiempo que tengo es:   " << timeToRun_sec << endl;
     for(long unsigned int i=0; i<numToRun; i++){
         auto currentTime = system_clock::now();
-        timeToRun_sec -= duration_cast<milliseconds>(currentTime - lastTime).count();
+        //cout << "le restamos   :   " << duration_cast<nanoseconds>(currentTime - lastTime).count() << endl;
+        timeToRun_sec -= duration_cast<nanoseconds>(currentTime - lastTime).count();
         //auto availabeTime = timeToRun_sec / ( numToRun - i);
         if( timeToRun_sec > runThese.front().b_timeMax){
             //run
@@ -77,8 +60,6 @@ void ManAI::Update(){
         }
         lastTime = currentTime;
     }
-    */
-
-
+    //cout << "cuando salimos tenemos :  " << runThese.size() << " con un timpo sobrante de: " << timeToRun_sec <<endl;
 
 }

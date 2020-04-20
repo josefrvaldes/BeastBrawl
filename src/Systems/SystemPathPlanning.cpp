@@ -193,7 +193,9 @@ void SystemPathPlanning::UpdateDijkstra(CarAI* carAI, ManWayPoint* graph, ManNav
     //Guardamos en varAIbles los componentes
 	auto cTransformable = static_cast<CTransformable*>(carAI->GetComponent(CompType::TransformableComp).get());
     auto cPosDestination     = static_cast<CPosDestination*>(carAI->GetComponent(CompType::PosDestination).get());
-    float radious = cPosDestination->radious;
+    float radious = 10.0f;
+    if(cPosDestination->radious >=10)
+        radious = cPosDestination->radious;
 
     //Vamos a comprobar si esta en el rango del waypoint
     if((cPosDestination->position.z - radious) < cTransformable->position.z && (cPosDestination->position.z + radious) >= cTransformable->position.z 

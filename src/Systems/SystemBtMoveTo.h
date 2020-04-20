@@ -28,5 +28,5 @@ class SystemBtMoveTo : public SystemAI{
    shared_ptr<selector> selectorBehaviourTree;
 
    vector<Manager *> managers;
-   int frec {1};
+   int frec {25};
 };
