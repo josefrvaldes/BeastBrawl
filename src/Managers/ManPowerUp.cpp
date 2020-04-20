@@ -8,6 +8,7 @@
 #include <EventManager/Event.h>
 #include <EventManager/EventManager.h>
 #include <Facade/Render/RenderFacadeManager.h>
+#include <Facade/Sound/SoundFacadeManager.h>
 #include <Game.h>
 #include <iostream>
 #include "../Components/CBoundingSphere.h"
@@ -133,6 +134,32 @@ void ManPowerUp::MaterializePowerUp(shared_ptr<PowerUp> powerUp) {
 
     //Cuando creamos el powerUp, ponemos su tiempo inicial de inactivadad --> para no danyarnos a nostros mismos
     static_cast<CPowerUp *>(powerUp->GetComponent(CompType::PowerUpComp).get())->timeStart = system_clock::now();
+
+
+    // Sonido de powerUp
+    auto cId = static_cast<CId*>(powerUp->GetComponent(CompType::IdComp).get());
+    auto cType = static_cast<CPowerUp*>(powerUp->GetComponent(CompType::PowerUpComp).get());
+    if (cId && cType) {
+        switch(int(cType->typePowerUp)) {
+            case int(typeCPowerUp::PudinDeFrambuesa): {
+                string nameEvent = "PowerUp/pudin";
+                SoundFacadeManager::GetInstance()->GetSoundFacade()->CreateSoundDinamic3D(cId->id, cTransformable->position, nameEvent, 1, 1);
+                break;
+            }
+            case int(typeCPowerUp::MelonMolon): {
+                string nameEvent = "PowerUp/melonmolon";
+                SoundFacadeManager::GetInstance()->GetSoundFacade()->CreateSoundDinamic3D(cId->id, cTransformable->position, nameEvent, 1, 1);
+                break;
+            }
+            case int(typeCPowerUp::TeleBanana): {
+                string nameEvent = "PowerUp/telebanana";
+                SoundFacadeManager::GetInstance()->GetSoundFacade()->CreateSoundDinamic3D(cId->id, cTransformable->position, nameEvent, 1, 1);
+                break;
+            }
+            default:
+                break;
+        }
+    }
 }
 
 // TO-DO ELIMINARLO TODO AL MISMO TIEMPO ANTES DE RENDERIZAR
@@ -153,16 +180,27 @@ void ManPowerUp::Update() {
     auto renderEngine = renderFacadeManager->GetRenderFacade();
     for (long unsigned int i = 0; i < entities.size(); ++i) {
         auto cRemovableObj = static_cast<CRemovableObject *>(entities[i].get()->GetComponent(CompType::RemovableObjectComp).get());
-        if (cRemovableObj->destroy) {
-            auto cTransformable = static_cast<CTransformable*>(entities[i].get()->GetComponent(CompType::TransformableComp).get());
-            
+        auto cId = static_cast<CId*>(entities[i].get()->GetComponent(CompType::IdComp).get());
+        auto cTypePU = static_cast<CPowerUp*>(entities[i].get()->GetComponent(CompType::PowerUpComp).get());
+        auto cTransformable = static_cast<CTransformable*>(entities[i].get()->GetComponent(CompType::TransformableComp).get());
+        if (cId && cTypePU && cTransformable && cRemovableObj->destroy) {
+
+            //Antes de borrarlo paro su sonido
+                if (cTypePU->typePowerUp == typeCPowerUp::MelonMolon) {
+                    shared_ptr<DataMap> data = make_shared<DataMap>();
+                    (*data)[ID] = cId->id;
+                    EventManager::GetInstance().AddEventMulti(Event{EventType::STOP_SOUND_MM, data});
+                } else if (cTypePU->typePowerUp == typeCPowerUp::TeleBanana) {
+                    shared_ptr<DataMap> data = make_shared<DataMap>();
+                    (*data)[ID] = cId->id;
+                    EventManager::GetInstance().AddEventMulti(Event{EventType::STOP_SOUND_TB, data});
+                }
+
             //Eliminamos el powerup y lanzamos el evento para las particlas
             //Comentar si la queremos para todas o simplemente para banana y melon
             //VEC3_POS
             shared_ptr<DataMap> data = make_shared<DataMap>();
-
             (*data)[VEC3_POS] = cTransformable->position;
-
             EventManager::GetInstance().AddEventMulti(Event{EventType::CREATE_PARTICLES_COLLISION_POWERUP, data});
 
 

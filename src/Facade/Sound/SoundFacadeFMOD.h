@@ -28,7 +28,7 @@ class SoundFacadeFMOD : public SoundFacade {
         void PauseAllEvent()            override;
         void ResumeAllEvent()           override;
         void PauseEvent(const string&);
-        void ResumeEvent(const string&);
+        void ResumeEvent(const string&) override;
 
         void UpdateCars(const vector<shared_ptr<Entity>>&)              override;
         void UpdatePowerUps(const vector<shared_ptr<Entity>>&)          override;
@@ -37,7 +37,7 @@ class SoundFacadeFMOD : public SoundFacade {
         void Update()                                                   override;
 
         void SetEventPositionEstatic3D(const string&, const glm::vec3&);
-        void SetEventPositionDinamic3D(const string&, const glm::vec3&);
+        void SetEventPositionDinamic3D(const string&, const glm::vec3&, const float);
         void SetParameter(const string&, const string&, const float) override;
 
         void CreateSound2D(const string&) override;
@@ -64,16 +64,26 @@ class SoundFacadeFMOD : public SoundFacade {
         void SoundBreakBox(DataMap*);
         void SoundDrift(DataMap*);
         void SoundRandomSentence(DataMap*);
+        void SoundClock(DataMap*);
 
         void StopShield(DataMap*);
         void StopDrift(DataMap*);
+        void StopClock(DataMap*);
+        void StopSoundMM(DataMap*);
+        void StopSoundTB(DataMap*);
 
         // -------------------------------- Eventos del juego: MENU
         void SoundMenuOption(DataMap*);
+        void SoundMenuOk(DataMap*);
+        void SoundMenuBack(DataMap*);
+
+        void SoundVictoryVoice();
+        void SoundVictory(DataMap*);
+        void SoundDefeat(DataMap*);
 
 
         float character { 0 } ;
-        enum TipoVoz { ChoqueEnemigo, ChoquePowerup, Derrape, Powerup, Random };
+        enum TipoVoz { ChoqueEnemigo, ChoquePowerup, Derrape, Powerup, Random, Nitro, Seleccion };
         CLSE::SoundEngine* soundEngine { nullptr };
 
         shared_ptr<EventManager> eventManager;
@@ -86,7 +96,8 @@ class SoundFacadeFMOD : public SoundFacade {
                                 "Personajes/voces",
                                 "Partida/cuenta_atras",
                                 "PowerUp/robojorobo",
-                                "Musica/in_game_1"
+                                "Musica/in_game_1",
+                                "Partida/reloj"
                                 } 
             },
             { "InGame3DD",

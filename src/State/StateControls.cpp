@@ -10,14 +10,15 @@ StateControls::StateControls(){
     renderEngine = RenderFacadeManager::GetInstance()->GetRenderFacade();
     renderEngine->FacadeInitControler();
 
+    InitState();
 }
 
 // Cargamos los bancos de sonido Menu.
 void StateControls::InitState() {
-    //if (!soundEngine){
-    //    soundEngine = SoundFacadeManager::GetInstance()->GetSoundFacade();
-    //}
-    //soundEngine->SetState(10);
+    if (!soundEngine){
+        soundEngine = SoundFacadeManager::GetInstance()->GetSoundFacade();
+    }
+    soundEngine->SetState(10);
 }
 
 

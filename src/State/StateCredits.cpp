@@ -7,15 +7,17 @@ StateCredits::StateCredits(){
 
     renderEngine = RenderFacadeManager::GetInstance()->GetRenderFacade();
     renderEngine->FacadeInitCredits();
+    
+    InitState();
 
 }
 
 // Cargamos los bancos de sonido Menu.
 void StateCredits::InitState() {
-    //if (!soundEngine){
-    //    soundEngine = SoundFacadeManager::GetInstance()->GetSoundFacade();
-    //}
-    //soundEngine->SetState(9);
+    if (!soundEngine){
+        soundEngine = SoundFacadeManager::GetInstance()->GetSoundFacade();
+    }
+    soundEngine->SetState(9);
 }
 
 
