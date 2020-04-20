@@ -34,6 +34,7 @@ CLNode* CLNode::AddGroup(unsigned int id){
     shared_ptr<CLNode> node = make_shared<CLNode>();
     childs.push_back(node);
     node->SetFather(this);
+    hasLightingEffects = false;
 
     return node.get();
 }
@@ -71,6 +72,7 @@ CLNode* CLNode::AddPointLight(unsigned int id){
     childs.push_back(node);
     node->SetFather(this);
     pointLights.push_back(node.get());
+    hasLightingEffects = false;
 
     return node.get();
     
@@ -79,6 +81,7 @@ CLNode* CLNode::AddPointLight(unsigned int id){
 CLNode* CLNode::AddDirectLight(unsigned int id,glm::vec3 direction,glm::vec3 intensity, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float constant, float linear, float quadratic){
     auto node = AddDirectLight(id);
     static_cast<CLDirectLight*>(node->GetEntity())->SetLightAttributes(direction,intensity,ambient,diffuse,specular,constant,linear,quadratic);
+    
     return node;
 }
 
@@ -90,6 +93,7 @@ CLNode* CLNode::AddDirectLight(unsigned int id){
     childs.push_back(node);
     node->SetFather(this);
     directLights.push_back(node.get());
+    hasLightingEffects = false;
 
     return node.get();
     
@@ -98,6 +102,7 @@ CLNode* CLNode::AddDirectLight(unsigned int id){
 CLNode* CLNode::AddSpotLight(unsigned int id,glm::vec3 direction,float cutOff,float outerCutOff,glm::vec3 intensity, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float constant, float linear, float quadratic){
     auto node = AddSpotLight(id);
     static_cast<CLSpotLight*>(node->GetEntity())->SetLightAttributes(direction,cutOff,outerCutOff,intensity,ambient,diffuse,specular,constant,linear,quadratic);
+    
     return node;
 }
 
@@ -109,6 +114,7 @@ CLNode* CLNode::AddSpotLight(unsigned int id){
     childs.push_back(node);
     node->SetFather(this);
     spotLights.push_back(node.get());
+    hasLightingEffects = false;
 
     return node.get();
     
@@ -121,6 +127,7 @@ CLNode* CLNode::AddCamera(unsigned int id){
     childs.push_back(node);
     node->SetFather(this);
     cameras.push_back(node.get());
+    hasLightingEffects = false;
 
     return node.get();   
 }
@@ -132,18 +139,20 @@ void CLNode::AddGrass(float _width, float _height, const glm::vec3& _position, c
         grassShader = resourceShader->GetProgramID();
     }
     sysGrassVector.emplace_back(make_unique<CLGrassSystem>(_width, _height, _position, _scale, realistGrass));
+    hasLightingEffects = false;
+
 }
 
 
 //Spawner Punto
-CLNode* CLNode::AddParticleSystem(unsigned int id,unsigned int nParticles,glm::vec3 velocity,string texture,int width,int height,int spawnDelay,int particlesToSpawn,int lifeSpan, std::uint_fast8_t flags){
+CLNode* CLNode::AddParticleSystem(unsigned int id,unsigned int nParticles,glm::vec3 velocity,vector<string> textures,int width,int height,int spawnDelay,int particlesToSpawn,int lifeSpan, std::uint_fast8_t flags){
     if(particleSystemShader == 0){
         auto rm = CLResourceManager::GetResourceManager();
         auto resourceShader = rm->GetResourceShader("CLEngine/src/Shaders/particleSystem.vert", "CLEngine/src/Shaders/particleSystem.frag","CLEngine/src/Shaders/particleSystem.geom");
         particleSystemShader = resourceShader->GetProgramID();
     }
 
-    shared_ptr<CLEntity> e = make_shared<CLParticleSystem>(id,nParticles,velocity,texture,width,height,spawnDelay,particlesToSpawn,lifeSpan,flags);
+    shared_ptr<CLEntity> e = make_shared<CLParticleSystem>(id,nParticles,velocity,textures,width,height,spawnDelay,particlesToSpawn,lifeSpan,flags);
 
     shared_ptr<CLNode> node = make_shared<CLNode>(e);
     childs.push_back(node);
@@ -154,19 +163,20 @@ CLNode* CLNode::AddParticleSystem(unsigned int id,unsigned int nParticles,glm::v
     if(auto particleSystem = dynamic_cast<CLParticleSystem*>(e.get())){
         particleSystem->SetCLNode(node.get());
     }
-
+    hasLightingEffects = false;
+    ignoreFrustrum = true;
     return node.get();
 }
 
 //Spawner linea, cuadrado y cubo
-CLNode* CLNode::AddParticleSystem(unsigned int id,unsigned int nParticles,glm::vec3 velocity,string texture,int width,int height,int spawnDelay,int particlesToSpawn,int lifeSpan,glm::vec3 offset, glm::vec3 orientation, std::uint_fast8_t flags){
+CLNode* CLNode::AddParticleSystem(unsigned int id,unsigned int nParticles,glm::vec3 velocity,vector<string> textures,int width,int height,int spawnDelay,int particlesToSpawn,int lifeSpan,glm::vec3 offset, glm::vec3 orientation, std::uint_fast8_t flags){
     if(particleSystemShader == 0){
         auto rm = CLResourceManager::GetResourceManager();
         auto resourceShader = rm->GetResourceShader("CLEngine/src/Shaders/particleSystem.vert", "CLEngine/src/Shaders/particleSystem.frag","CLEngine/src/Shaders/particleSystem.geom");
         particleSystemShader = resourceShader->GetProgramID();
     }
 
-    shared_ptr<CLEntity> e = make_shared<CLParticleSystem>(id,nParticles,velocity,texture,width,height,spawnDelay,particlesToSpawn,lifeSpan,offset,orientation,flags);
+    shared_ptr<CLEntity> e = make_shared<CLParticleSystem>(id,nParticles,velocity,textures,width,height,spawnDelay,particlesToSpawn,lifeSpan,offset,orientation,flags);
 
     shared_ptr<CLNode> node = make_shared<CLNode>(e);
     childs.push_back(node);
@@ -177,12 +187,14 @@ CLNode* CLNode::AddParticleSystem(unsigned int id,unsigned int nParticles,glm::v
     if(auto particleSystem = dynamic_cast<CLParticleSystem*>(e.get())){
         particleSystem->SetCLNode(node.get());
     }
+    hasLightingEffects = false;
+    ignoreFrustrum = true;
 
     return node.get();
 }
 
 //Spawner esfera
-CLNode* CLNode::AddParticleSystem(unsigned int id,unsigned int nParticles,glm::vec3 velocity,string texture,int width,int height,int spawnDelay,int particlesToSpawn,int lifeSpan,float radious, std::uint_fast8_t flags){
+CLNode* CLNode::AddParticleSystem(unsigned int id,unsigned int nParticles,glm::vec3 velocity,vector<string> textures,int width,int height,int spawnDelay,int particlesToSpawn,int lifeSpan,float radious, std::uint_fast8_t flags){
     if(particleSystemShader == 0){
         auto rm = CLResourceManager::GetResourceManager();
         auto resourceShader = rm->GetResourceShader("CLEngine/src/Shaders/particleSystem.vert", "CLEngine/src/Shaders/particleSystem.frag","CLEngine/src/Shaders/particleSystem.geom");
@@ -190,7 +202,7 @@ CLNode* CLNode::AddParticleSystem(unsigned int id,unsigned int nParticles,glm::v
     }
 
 
-    shared_ptr<CLEntity> e = make_shared<CLParticleSystem>(id,nParticles,velocity,texture,width,height,spawnDelay,particlesToSpawn,lifeSpan,radious,flags);
+    shared_ptr<CLEntity> e = make_shared<CLParticleSystem>(id,nParticles,velocity,textures,width,height,spawnDelay,particlesToSpawn,lifeSpan,radious,flags);
 
     shared_ptr<CLNode> node = make_shared<CLNode>(e);
     childs.push_back(node);
@@ -201,12 +213,14 @@ CLNode* CLNode::AddParticleSystem(unsigned int id,unsigned int nParticles,glm::v
     if(auto particleSystem = dynamic_cast<CLParticleSystem*>(e.get())){
         particleSystem->SetCLNode(node.get());
     }
+    hasLightingEffects = false;
+    ignoreFrustrum = true;
 
     return node.get();
 }
 
 //Spawner circulo
-CLNode* CLNode::AddParticleSystem(unsigned int id,unsigned int nParticles,glm::vec3 velocity,string texture,int width,int height,int spawnDelay,int particlesToSpawn,int lifeSpan,float radious,glm::vec3 orientation, std::uint_fast8_t flags){
+CLNode* CLNode::AddParticleSystem(unsigned int id,unsigned int nParticles,glm::vec3 velocity,vector<string> textures,int width,int height,int spawnDelay,int particlesToSpawn,int lifeSpan,float radious,glm::vec3 orientation, std::uint_fast8_t flags){
     if(particleSystemShader == 0){
         auto rm = CLResourceManager::GetResourceManager();
         auto resourceShader = rm->GetResourceShader("CLEngine/src/Shaders/particleSystem.vert", "CLEngine/src/Shaders/particleSystem.frag","CLEngine/src/Shaders/particleSystem.geom");
@@ -214,7 +228,7 @@ CLNode* CLNode::AddParticleSystem(unsigned int id,unsigned int nParticles,glm::v
     }
 
 
-    shared_ptr<CLEntity> e = make_shared<CLParticleSystem>(id,nParticles,velocity,texture,width,height,spawnDelay,particlesToSpawn,lifeSpan,radious,orientation,flags);
+    shared_ptr<CLEntity> e = make_shared<CLParticleSystem>(id,nParticles,velocity,textures,width,height,spawnDelay,particlesToSpawn,lifeSpan,radious,orientation,flags);
 
     shared_ptr<CLNode> node = make_shared<CLNode>(e);
     childs.push_back(node);
@@ -225,6 +239,8 @@ CLNode* CLNode::AddParticleSystem(unsigned int id,unsigned int nParticles,glm::v
     if(auto particleSystem = dynamic_cast<CLParticleSystem*>(e.get())){
         particleSystem->SetCLNode(node.get());
     }
+    hasLightingEffects = false;
+    ignoreFrustrum = true;
 
     return node.get();
 }
@@ -236,6 +252,8 @@ void CLNode::AddSkybox(string right, string left, string top, string bottom, str
         skyboxShader = resourceShader->GetProgramID();
     }
     skybox = make_unique<CLSkybox>(right, left, top, bottom, front, back);
+    hasLightingEffects = false;
+
 }
 
 
@@ -262,6 +280,8 @@ CLNode* CLNode::AddBillBoard(unsigned int id,string& file, bool vertically, floa
     node->SetFather(this);
     childs.push_back(node);
     node->SetShaderProgramID(billboardShader);
+
+    hasLightingEffects = false;
 
     return node.get();
 }
@@ -459,10 +479,9 @@ void CLNode::DFSTree(glm::mat4 mA) {
     CLE::CLFrustum::Visibility frusVisibility = frustum_m.IsInside(translation, dimensionsBoundingBox);
 
     //Voy a comentar de momento el frustrum ya que para el particle system puede dar problemas
-    if(entity && visible /*&& frusVisibility == CLE::CLFrustum::Visibility::Completly*/) { 
+    if(entity && visible && (frusVisibility == CLE::CLFrustum::Visibility::Completly || !ignoreFrustrum)) { 
         glUseProgram(shaderProgramID);
         //Calculamos las luces
-        //TODO: Hacer un sistema de que si no hemos cambiado de shader no se recalculen
 
         if(hasLightingEffects){
             CalculateLights();
