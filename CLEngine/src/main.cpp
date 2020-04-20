@@ -282,18 +282,17 @@ int main() {
 
 
             //TEXTO -----------------
-            string cadena = "Demo tecnica CLEngine";
-            glm::vec3 vect3 = glm::vec3(1.0f, 0.8f, 0.2f);
+        string cadena = "Demo tecnica CLEngine";
+        glm::vec3 vect3 = glm::vec3(1.0f, 0.8f, 0.2f);
         device->RenderText2D(cadena, 25.0f, 25.0f, 0.05f, 1.0f, vect3);
 
 
-            device->InputClose();
-            device->PollEvents();
-            device->RenderImgui();
-            device->EndScene();
-            index += 0.2;
+        device->PollEvents();
+        device->RenderImgui();
+        device->EndScene();
+        index += 0.2;
 
-        } 
+    } 
 
 
         delete device;

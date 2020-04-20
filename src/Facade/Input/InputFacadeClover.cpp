@@ -11,6 +11,8 @@ InputFacadeClover::InputFacadeClover(){
     cout << "Creado el input de Clover\n"; 
     auto renderFacade = static_cast<RenderFacadeClover*>(RenderFacadeManager::GetInstance()->GetRenderFacade());
     device = renderFacade->GetDevice();
+
+    device->UnableCursor();
     
     if(glfwJoystickIsGamepad(GLFW_JOYSTICK_1)){
         string name = glfwGetGamepadName(GLFW_JOYSTICK_1);
