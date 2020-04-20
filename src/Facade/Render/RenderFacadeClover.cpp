@@ -27,6 +27,7 @@
 #include <Components/CNavMesh.h>
 #include <Components/CCurrentNavMesh.h>
 #include <Components/CCar.h>
+#include <Components/CClock.h>
 
 #include <Entities/CarAI.h>
 #include <Entities/CarHuman.h>
@@ -657,7 +658,7 @@ void RenderFacadeClover::FacadeDraw() const{
 
 }
 
-void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars) {
+void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* globalClock) {
 
     //Voy a actualizar aqui las posiciones donde van porque es el unico sitio donde tengo ambos tipos de coches
     //struct auxiliar para guardarme tiempo y numero de coche
@@ -746,6 +747,30 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars) {
             device->RenderText2D(cadena, 680.0f, 610.0f, 0.05f, 0.75f, color);
             break;
         }
+    }
+
+    if (globalClock) {
+        cadena = "media/marcador.png";
+        device->DrawImage2D(1025.0f, 50.0f ,225.0f, 90.0f, 0.2f, cadena, true);
+        
+        auto cGClock = static_cast<CClock*>(globalClock->GetComponent(CompType::ClockComp).get());
+        int time = cGClock->DURATION_TIME/1000 - cGClock->accumulatedTime/1000;
+        int min = time/60;
+        int seg = time - min*60;
+        
+        cadena = std::to_string(min) + ":" + std::to_string(seg);
+        if (seg < 10) {
+            cadena = std::to_string(min) + ":0" + std::to_string(seg);
+        }
+        if (min < 10) {
+            cadena = "0" + cadena;
+        }
+
+        glm::vec3 color = glm::vec3(0.0f, 0.0f, 0.0f);
+        if(min == 0 && seg <= 30) {
+            color = glm::vec3(255.0f, 0.0f, 0.0f);
+        }
+        device->RenderText2D(cadena, 1100.0f, 610.0f, 0.05f, 0.75f, color);
     }
 
     //MINIMAPA
