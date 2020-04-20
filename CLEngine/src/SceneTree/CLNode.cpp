@@ -856,6 +856,12 @@ void CLNode::RemoveLightsAndCameras() {
 
 // comprueba si el bounding del octree se encuentra en camera
 bool CLNode::OctreeIncamera(float size, const glm::vec3& pos){
+    //CalculateViewProjMatrix();
+    //if (changed) {
+    //    transformationMat = CalculateTransformationMatrix();
+    //    changed = false;
+    //}
+
     auto& frustum_m = GetActiveCamera()->GetFrustum();
     CLE::CLFrustum::Visibility frusVisibility = frustum_m.IsInside(pos, size);
 

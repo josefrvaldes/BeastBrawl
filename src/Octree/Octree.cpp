@@ -107,7 +107,6 @@ void Octree::CreateTree(){
 // calcula si se encuentra dentro del AABB, fuera, o colisiona con el borde
 TypeCollision Octree::CollideAABB(Entity* object, const BoundingOctree& nodeBox) const{
     auto cTran = static_cast<CTransformable*>(object->GetComponent(CompType::TransformableComp).get());
-    auto cId = static_cast<CId*>(object->GetComponent(CompType::IdComp).get());
     if(!object->HasComponent(CompType::DimensionsComp)){
         //cout << "No existe el CDimensions \n";
         return TypeCollision::Border;   // no tienen el componente
@@ -131,13 +130,13 @@ TypeCollision Octree::CollideAABB(Entity* object, const BoundingOctree& nodeBox)
         return TypeCollision::No_Collision;
     }
 
-} 
+}
 
 
 
 // Comprueba si es visible el cuadrado en el frustum y pone los elementos que los contienen como dibujable en el motor
 void Octree::UpdateVisibleObjects(RenderFacade* renderEngine){
-    if(entitiesContained.size()!=0){
+    if(entitiesContained.size()>0){
         visible = renderEngine->FacadeOctreeInCamera(size*2.0, centralPosition);
         for(const auto& entity : entitiesContained){
             auto cId = static_cast<CId*>(entity->GetComponent(CompType::IdComp).get());

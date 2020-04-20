@@ -37,7 +37,7 @@ class Octree{
 
     glm::vec3 centralPosition;
     float size;                 // es el radio o la mitad del cuadrado
-    const float minSize = 200.0;  // es el radio o la mitad del cuadrado
+    const float minSize = 15.0;  // es el radio o la mitad del cuadrado
 
     Octree* father {nullptr};
     
