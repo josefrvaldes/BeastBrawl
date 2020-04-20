@@ -46,6 +46,10 @@ namespace CLSE {
             void SetListenerPosition(const glm::vec3&, const glm::vec3&);
             void Set3DAttributes(const string&, const glm::vec3&, const float);
             void SetEventPosition3D(FMOD_STUDIO_EVENTINSTANCE*, const glm::vec3&, const float);
+            void SetGlobalVolume(float gv);
+            float GetGlobalVolume() { return globalVolume; };
+            void SetVolume(FMOD_STUDIO_EVENTINSTANCE*, float);
+            void SetVolume(const string&, float);
 
             void CreateSoundNode2D(const string&);
             void CreateSoundNodeEstatic3D(uint16_t, glm::vec3&, string&, bool);
@@ -62,7 +66,7 @@ namespace CLSE {
             FMOD_STUDIO_BANK*     masterBank  { nullptr };
             FMOD_STUDIO_BANK*     stringsBank { nullptr };
 
-            float globalVolume { 1.0 };
+            float globalVolume { 0.33 };
 
             unordered_map<string, FMOD_STUDIO_BANK*>              banks;
             unordered_map<string, FMOD_STUDIO_EVENTDESCRIPTION *>  soundDescriptions;

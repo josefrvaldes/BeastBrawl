@@ -256,6 +256,11 @@ void SoundFacadeFMOD::SubscribeToGameEvents(const uint8_t numState) {
                     EventType::MENU_BACK,
                     bind(&SoundFacadeFMOD::SoundMenuBack, this, placeholders::_1),
                     "SoundMenuBack"});
+
+            EventManager::GetInstance().SubscribeMulti(Listener{
+                    EventType::SET_GLOBAL_VOLUME,
+                    bind(&SoundFacadeFMOD::SetGlobalVolume, this, placeholders::_1),
+                    "SetGlobalVolume"});
             break;
         case 9:         // CREDITS
             EventManager::GetInstance().SubscribeMulti(Listener{
@@ -554,6 +559,14 @@ void SoundFacadeFMOD::StartGame() {
  * EVENTOS
  * *************************************************************************
 */
+
+// -------------------------------------------------- AJUSTES
+void SoundFacadeFMOD::SetGlobalVolume(DataMap* d) { 
+    auto volume = any_cast<float>((*d)[NUM]);
+    soundEngine->SetGlobalVolume(volume);
+}
+
+// --------------------------------------------------
 
 void SoundFacadeFMOD::SoundClaxon(DataMap* d) {
     PlayEvent("Coche/claxon");

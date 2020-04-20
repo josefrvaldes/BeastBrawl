@@ -548,8 +548,7 @@ void InputFacadeClover::CheckInputSingle(){
     }
 
     // POWERUPS
-    if ((glfwGetKey(device->GetWindow(),GLFW_KEY_SPACE) || state.buttons[GLFW_GAMEPAD_BUTTON_A])
-            && !IsInputPressed(BUTTON_A)) {
+    if ((glfwGetKey(device->GetWindow(),GLFW_KEY_SPACE) || state.buttons[GLFW_GAMEPAD_BUTTON_A]) && !IsInputPressed(BUTTON_A)) {
 
         SetValueInput(InputXBox::BUTTON_A, true);
         eventManager.AddEventMulti(Event{EventType::PRESS_SPACE});
@@ -684,8 +683,7 @@ vector<Constants::InputTypes> InputFacadeClover::CheckInputMulti(){
     }
 
     // POWERUPS
-    if ((glfwGetKey(device->GetWindow(),GLFW_KEY_SPACE) || state.buttons[GLFW_GAMEPAD_BUTTON_A])
-        && !IsInputPressed(BUTTON_A)) {
+    if ((glfwGetKey(device->GetWindow(),GLFW_KEY_SPACE) || state.buttons[GLFW_GAMEPAD_BUTTON_A]) && !IsInputPressed(BUTTON_A)) {
 
         SetValueInput(InputXBox::BUTTON_A, true);
         eventManager.AddEventMulti(Event{EventType::PRESS_SPACE});
@@ -914,6 +912,20 @@ void InputFacadeClover::CheckInputSettings(std::vector<int> &inputs, int *maxInp
         }
         SetValueInput(BUTTON_STICK_R, true);
         EventManager::GetInstance().AddEventMulti(Event{EventType::MENU_OPTION});
+
+        shared_ptr<DataMap> d = make_shared<DataMap>();
+        float value;
+        switch (option) {
+            case 0:
+                value = inputs[option]*0.33f;
+                (*d)[NUM] = value;
+                EventManager::GetInstance().AddEventMulti(Event{EventType::SET_GLOBAL_VOLUME, d});
+                break;
+            default:
+                cout << "Esta opcion de ajustes no me gusta" << endl;
+                break;
+        }
+
     } else if ( !IsKeyOrGamepadPress(GLFW_KEY_RIGHT, GLFW_GAMEPAD_AXIS_LEFT_X, true, 0.5) ) {
         SetValueInput(BUTTON_STICK_R, false);
     }
@@ -929,6 +941,19 @@ void InputFacadeClover::CheckInputSettings(std::vector<int> &inputs, int *maxInp
         }
         SetValueInput(BUTTON_STICK_L, true);
         EventManager::GetInstance().AddEventMulti(Event{EventType::MENU_OPTION});
+
+        shared_ptr<DataMap> d = make_shared<DataMap>();
+        float value;
+        switch (option) {
+            case 0: // SONIDO
+                value = inputs[option]*0.33f;
+                (*d)[NUM] = value;
+                EventManager::GetInstance().AddEventMulti(Event{EventType::SET_GLOBAL_VOLUME, d});
+                break;
+            default:
+                cout << "Esta opcion de ajustes no me gusta" << endl;
+                break;
+        }
     } else if ( !IsKeyOrGamepadPress(GLFW_KEY_LEFT, GLFW_GAMEPAD_AXIS_LEFT_X, true, -0.5) ) {
         SetValueInput(BUTTON_STICK_L, false);
     }

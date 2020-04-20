@@ -956,7 +956,7 @@ void RenderFacadeClover::FacadeDrawSettings() {
             glm::vec3(0.0f, 0.0f, 255.0f)
     };
     colorOp1[inputSettings[0]] = glm::vec3(0.0f, 255.0f, 0.0f);
-    std::string name = "Sonido";
+    std::string name = "Sonido General";
     device->RenderText2D(name, 600.0f, 600.0f, 0.05f, 0.75f, colorTitle);
     name = "No";
     device->RenderText2D(name, 300.0f, 500.0f, 0.05f, 0.75f, colorOp1[0]);
