@@ -176,33 +176,7 @@ void SoundEngine::LoadSoundEvent(const string& nameEvent, const bool type) {
  */
 void SoundEngine::PlayEvent(const string& nameID) {
     //cout << "*** Quiero que suene el evento: " << nameID << endl;
-    auto instance = eventInstances2D.find(nameID);
-    if (instance != eventInstances2D.end()) {
-        ERRFMODCHECK(FMOD_Studio_EventInstance_Start(instance->second->GetInstance()));
-    } else{
-        instance = eventInstancesEstatic3D.find(nameID);
-        if(instance != eventInstancesEstatic3D.end()) {
-            //cout << "Sonando el evento estatico: " << nameID << endl;
-            ERRFMODCHECK(FMOD_Studio_EventInstance_Start(instance->second->GetInstance()));
-        } else {
-            instance = eventInstancesDinamic3D.find(nameID);
-            if (instance != eventInstancesDinamic3D.end()) {
-                //cout << "Sonando el evento dinamico: " << nameID << endl;
-                ERRFMODCHECK(FMOD_Studio_EventInstance_Start(instance->second->GetInstance()));
-            }
-            else {
-                cout << "EL EVENTO " << nameID << " NO ESTA" << endl;
-            }
-        }
-    }
-}
-
-/**
- * Ejecuta el evento de sonido con un volumen determinado
- * TO-DO: Actualmente no se puede crear una instancia del mismo evento porque el ID es el mismo.
- * @param nameID - Identificador del sonido en el mapa de instancias.
- */
-void SoundEngine::PlayEventWithVolume(const string& nameID, float v) {
+    auto v = globalVolume;
     auto instance = eventInstances2D.find(nameID);
     if (instance != eventInstances2D.end()) {
         ERRFMODCHECK(FMOD_Studio_EventInstance_SetVolume(instance->second->GetInstance(), v));
@@ -218,6 +192,37 @@ void SoundEngine::PlayEventWithVolume(const string& nameID, float v) {
             if (instance != eventInstancesDinamic3D.end()) {
                 //cout << "Sonando el evento dinamico: " << nameID << endl;
                 ERRFMODCHECK(FMOD_Studio_EventInstance_SetVolume(instance->second->GetInstance(), v));
+                ERRFMODCHECK(FMOD_Studio_EventInstance_Start(instance->second->GetInstance()));
+            }
+            else {
+                cout << "EL EVENTO " << nameID << " NO ESTA" << endl;
+            }
+        }
+    }
+}
+
+/**
+ * Ejecuta el evento de sonido con un volumen determinado
+ * TO-DO: Actualmente no se puede crear una instancia del mismo evento porque el ID es el mismo.
+ * @param nameID - Identificador del sonido en el mapa de instancias.
+ */
+void SoundEngine::PlayEventWithVolume(const string& nameID, float v) {
+    auto vol = globalVolume * v;
+    auto instance = eventInstances2D.find(nameID);
+    if (instance != eventInstances2D.end()) {
+        ERRFMODCHECK(FMOD_Studio_EventInstance_SetVolume(instance->second->GetInstance(), vol));
+        ERRFMODCHECK(FMOD_Studio_EventInstance_Start(instance->second->GetInstance()));
+    } else{
+        instance = eventInstancesEstatic3D.find(nameID);
+        if(instance != eventInstancesEstatic3D.end()) {
+            //cout << "Sonando el evento estatico: " << nameID << endl;
+            ERRFMODCHECK(FMOD_Studio_EventInstance_SetVolume(instance->second->GetInstance(), vol));
+            ERRFMODCHECK(FMOD_Studio_EventInstance_Start(instance->second->GetInstance()));
+        } else {
+            instance = eventInstancesDinamic3D.find(nameID);
+            if (instance != eventInstancesDinamic3D.end()) {
+                //cout << "Sonando el evento dinamico: " << nameID << endl;
+                ERRFMODCHECK(FMOD_Studio_EventInstance_SetVolume(instance->second->GetInstance(), vol));
                 ERRFMODCHECK(FMOD_Studio_EventInstance_Start(instance->second->GetInstance()));
             }
             else {

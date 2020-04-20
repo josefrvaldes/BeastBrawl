@@ -62,6 +62,8 @@ namespace CLSE {
             FMOD_STUDIO_BANK*     masterBank  { nullptr };
             FMOD_STUDIO_BANK*     stringsBank { nullptr };
 
+            float globalVolume { 1.0 };
+
             unordered_map<string, FMOD_STUDIO_BANK*>              banks;
             unordered_map<string, FMOD_STUDIO_EVENTDESCRIPTION *>  soundDescriptions;
 
