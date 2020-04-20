@@ -69,7 +69,8 @@ class CLEngine {
         //! Devuelve el tiempo
         //! @returns time Tiempo de ejecucion
         double GetTime();
-        void InputClose();
+        //! Desactiva el cursor
+        void UnableCursor();
         void CloseWindow();
         void PollEvents();
         void DrawDepthMap();

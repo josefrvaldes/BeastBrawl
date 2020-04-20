@@ -13,12 +13,13 @@ namespace CLSE {
             SoundNode(uint16_t, glm::vec3&, bool);
             ~SoundNode() {};
 
-            void SetInstance(FMOD_STUDIO_EVENTINSTANCE& i)            { instance = &i; };
+            void SetInstance(FMOD_STUDIO_EVENTINSTANCE& i)              { instance = &i; };
             void SetPosition(glm::vec3 p)                               { pos = p; };
 
             uint16_t GetIdEntity() const                                { return idEntity; };
             glm::vec3 GetPosition() const                               { return pos; };
-            FMOD_STUDIO_EVENTINSTANCE* GetInstance() const            { return instance; };
+            FMOD_STUDIO_EVENTINSTANCE* GetInstance() const              { return instance; };
+            bool GetClean() const                                       { return clean; };
 
         private:
             uint16_t idEntity { 0 };

@@ -15,11 +15,10 @@ StateGameOptions::StateGameOptions(){
 
 void StateGameOptions::InitState() {
 
-    //if (!soundEngine){
-    //    soundEngine = SoundFacadeManager::GetInstance()->GetSoundFacade();
-    //}
-    //Estado a 3, no hace nada de sonido
-    //soundEngine->SetState(3);
+    if (!soundEngine){
+        soundEngine = SoundFacadeManager::GetInstance()->GetSoundFacade();
+    }
+    soundEngine->SetState(3);
 }
 
 

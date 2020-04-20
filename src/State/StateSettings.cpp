@@ -13,10 +13,10 @@ StateSettings::StateSettings(){
 }
 
 void StateSettings::InitState() {
-    //if (!soundEngine){
-    //    soundEngine = SoundFacadeManager::GetInstance()->GetSoundFacade();
-    //}
-    //soundEngine->SetState(8);
+    if (!soundEngine){
+        soundEngine = SoundFacadeManager::GetInstance()->GetSoundFacade();
+    }
+    soundEngine->SetState(8);
 }
 
 

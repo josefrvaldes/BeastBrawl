@@ -228,6 +228,8 @@ void StateInGameSingle::CAMBIARInicializarCarAIS(ManCar &manCars, ManWayPoint &m
             auto posComp = static_cast<CTransformable*>(e->GetComponent(CompType::TransformableComp).get());
             string nameEvent = "Coche/motor";
             SoundFacadeManager::GetInstance()->GetSoundFacade()->CreateSoundDinamic3D(idComp->id, posComp->position, nameEvent, 1, 0);
+            nameEvent = "Coche/motor" + idComp->id;
+            SoundFacadeManager::GetInstance()->GetSoundFacade()->SetParameter(nameEvent, "personaje", 6);
             nameEvent = "PowerUp/escudo";
             SoundFacadeManager::GetInstance()->GetSoundFacade()->CreateSoundDinamic3D(idComp->id, posComp->position, nameEvent, 0, 0);
             nameEvent = "PowerUp/escudo_roto";
