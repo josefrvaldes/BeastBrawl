@@ -67,6 +67,20 @@ namespace CLE {
             //! @returns Puntero a un CLE::CLResource::CLResourceShader
             CLResourceShader* GetResourceShader(const std::string vertex, const std::string fragment, const std::string geometry);
 
+            //! Libera la memoria de una textura
+            //! @param file
+            //! @returns bool
+            bool DeleteResourceTexture(const std::string file);
+            //! Libera la memoria de una malla
+            //! @param file
+            //! @returns bool
+            bool DeleteResourceMesh(const std::string file);
+            //! Libera la memoria de un material
+            //! @param file
+            //! @returns bool
+            bool DeleteResourceMaterial(const std::string file);
+            
+
         private:
             CLResourceManager();
             inline static CLResourceManager* instance { nullptr };

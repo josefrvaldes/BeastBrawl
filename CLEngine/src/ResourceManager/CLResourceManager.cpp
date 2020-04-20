@@ -34,7 +34,7 @@ CLResourceMesh* CLResourceManager::GetResourceMesh(const std::string file, bool 
 }
 
 CLResourceTexture* CLResourceManager::GetResourceTexture(const std::string file){
-    return GetResourceTexture(file);
+    return GetResourceTexture(file,false);
 }
 
 
@@ -124,4 +124,38 @@ CLResourceShader* CLResourceManager::GetResourceShader(const std::string vertex,
     }
 
     return resource.get();
+}
+
+
+bool CLResourceManager::DeleteResourceTexture(const std::string file){
+    for (unsigned int i=0; i<textures.size(); ++ i) {
+        if (!file.compare(textures[i]->GetName())) {
+            textures.erase(textures.begin()+i);
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool CLResourceManager::DeleteResourceMesh(const std::string file){
+    for (unsigned int i=0; i<meshes.size(); ++ i) {
+        if (!file.compare(meshes[i]->GetName())) {
+            meshes.erase(meshes.begin()+i);
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool CLResourceManager::DeleteResourceMaterial(const std::string file){
+    for (unsigned int i=0; i<materials.size(); ++ i) {
+        if (!file.compare(materials[i]->GetName())) {
+            materials.erase(materials.begin()+i);
+            return true;
+        }
+    }
+
+    return false;
 }

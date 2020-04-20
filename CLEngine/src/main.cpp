@@ -52,14 +52,8 @@ using namespace CLE;
 
 int main() {
 
-    auto flags = 0x1 | 0x2;
-
-    if(flags & 0x3){
-        cout << "El OR ha funcionado\n";
-    }
     CLEngine *device = new CLEngine(1280, 720, "Beast Brawl");
 
-    try {
 
     //-------------------Resource manager-------------------
     CLResourceManager* resourceManager = CLResourceManager::GetResourceManager();
@@ -79,9 +73,15 @@ int main() {
     // auto resourceMaterial = resourceManager->GetResourceMaterial("media/kart.obj", true);
 
 
-        cout << "+++++++ He compilado los shaders" << endl;
+    auto texture1 = resourceManager->GetResourceTexture("media/logo_clover.png");
+    auto texture2 = resourceManager->GetResourceTexture("media/main_menu.png");
+    auto texture3 = resourceManager->GetResourceTexture("media/nitro.jpg");
 
-        
+    bool deleted = resourceManager->DeleteResourceTexture("media/main_menu.png");
+    deleted = resourceManager->DeleteResourceTexture("media/main_menu.png");
+    
+    texture2 = resourceManager->GetResourceTexture("media/main_menu.png");
+
         //----------------------------------------------------------------------------------------------------------------SHADER
         
     
@@ -297,9 +297,6 @@ int main() {
 
         delete device;
 
-    } catch(std::exception &ex) {
-        cout << "Hubo una excepción " << ex.what() << endl;
-    }
 
     return 0;
 }
