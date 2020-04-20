@@ -54,6 +54,9 @@ class SoundFacadeFMOD : public SoundFacade {
 
         void SubscribeToGameEvents(const uint8_t) override;
 
+        // -------------------------------- Eventos: Ajustes
+        void SetGlobalVolume(DataMap*);
+
         // -------------------------------- Eventos del juego: IN GAME
         void SoundClaxon(DataMap*);
         void SoundThrowPowerup(DataMap*);
@@ -80,7 +83,6 @@ class SoundFacadeFMOD : public SoundFacade {
         void SoundVictoryVoice();
         void SoundVictory(DataMap*);
         void SoundDefeat(DataMap*);
-
 
         float character { 0 } ;
         enum TipoVoz { ChoqueEnemigo, ChoquePowerup, Derrape, Powerup, Random, Nitro, Seleccion };

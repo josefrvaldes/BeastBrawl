@@ -176,18 +176,22 @@ void SoundEngine::LoadSoundEvent(const string& nameEvent, const bool type) {
  */
 void SoundEngine::PlayEvent(const string& nameID) {
     //cout << "*** Quiero que suene el evento: " << nameID << endl;
+    auto v = globalVolume;
     auto instance = eventInstances2D.find(nameID);
     if (instance != eventInstances2D.end()) {
+        SetVolume(instance->second->GetInstance(), globalVolume);
         ERRFMODCHECK(FMOD_Studio_EventInstance_Start(instance->second->GetInstance()));
     } else{
         instance = eventInstancesEstatic3D.find(nameID);
         if(instance != eventInstancesEstatic3D.end()) {
             //cout << "Sonando el evento estatico: " << nameID << endl;
+            SetVolume(instance->second->GetInstance(), globalVolume);
             ERRFMODCHECK(FMOD_Studio_EventInstance_Start(instance->second->GetInstance()));
         } else {
             instance = eventInstancesDinamic3D.find(nameID);
             if (instance != eventInstancesDinamic3D.end()) {
                 //cout << "Sonando el evento dinamico: " << nameID << endl;
+                SetVolume(instance->second->GetInstance(), globalVolume);
                 ERRFMODCHECK(FMOD_Studio_EventInstance_Start(instance->second->GetInstance()));
             }
             else {
@@ -203,21 +207,22 @@ void SoundEngine::PlayEvent(const string& nameID) {
  * @param nameID - Identificador del sonido en el mapa de instancias.
  */
 void SoundEngine::PlayEventWithVolume(const string& nameID, float v) {
+    auto vol = globalVolume * v;
     auto instance = eventInstances2D.find(nameID);
     if (instance != eventInstances2D.end()) {
-        ERRFMODCHECK(FMOD_Studio_EventInstance_SetVolume(instance->second->GetInstance(), v));
+        SetVolume(instance->second->GetInstance(), vol);
         ERRFMODCHECK(FMOD_Studio_EventInstance_Start(instance->second->GetInstance()));
     } else{
         instance = eventInstancesEstatic3D.find(nameID);
         if(instance != eventInstancesEstatic3D.end()) {
             //cout << "Sonando el evento estatico: " << nameID << endl;
-            ERRFMODCHECK(FMOD_Studio_EventInstance_SetVolume(instance->second->GetInstance(), v));
+            SetVolume(instance->second->GetInstance(), vol);
             ERRFMODCHECK(FMOD_Studio_EventInstance_Start(instance->second->GetInstance()));
         } else {
             instance = eventInstancesDinamic3D.find(nameID);
             if (instance != eventInstancesDinamic3D.end()) {
                 //cout << "Sonando el evento dinamico: " << nameID << endl;
-                ERRFMODCHECK(FMOD_Studio_EventInstance_SetVolume(instance->second->GetInstance(), v));
+                SetVolume(instance->second->GetInstance(), vol);
                 ERRFMODCHECK(FMOD_Studio_EventInstance_Start(instance->second->GetInstance()));
             }
             else {
@@ -423,6 +428,35 @@ void SoundEngine::UpdateEngine(){
  ************************************************
  */
 
+void SoundEngine::SetGlobalVolume(float gv){
+    globalVolume = gv;
+    for ( auto it = eventInstances2D.begin(); it != eventInstances2D.end(); it++) {
+        SetVolume(it->second->GetInstance(), globalVolume);
+    }
+}
+
+void SoundEngine::SetVolume(const string& nameID, float v) {
+    auto instance = eventInstances2D.find(nameID);
+    if (instance != eventInstances2D.end()) {
+        SetVolume(instance->second->GetInstance(), v);
+    } else {
+        instance = eventInstancesEstatic3D.find(nameID);
+        if(instance != eventInstancesEstatic3D.end()) {
+            SetVolume(instance->second->GetInstance(), v);
+        } else {
+            instance = eventInstancesDinamic3D.find(nameID);
+            if (instance != eventInstancesDinamic3D.end()) {
+                SetVolume(instance->second->GetInstance(), v);
+            }
+        } 
+    }
+}
+
+void SoundEngine::SetVolume(FMOD_STUDIO_EVENTINSTANCE* instance, float v) {
+    if (instance) {
+        ERRFMODCHECK(FMOD_Studio_EventInstance_SetVolume(instance, globalVolume*v));
+    }
+}
 
 /**
  * Cambia el valor de un parametro del evento pasado por parametro.
