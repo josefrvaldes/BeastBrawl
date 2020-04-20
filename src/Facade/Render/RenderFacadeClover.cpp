@@ -262,6 +262,7 @@ const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
         //float depth = 10.0;
         // TODO: el CDimensions solo para NavMesh y para la creacion de PowerUps, no en los coches (o ya veremos)
         shared_ptr<CDimensions> cDimensions = make_shared<CDimensions>(dimAABB, dimAABB, dimAABB);
+        cDimensions->boundingBoxMesh = GetBoundingByMesh(cId->id);
         entity->AddComponent(cDimensions);  //Le añadimos el componente CDimensions al Entity que sea
     }
 

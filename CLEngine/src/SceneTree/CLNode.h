@@ -124,6 +124,10 @@ class CLNode{
         //! Asigna la visibilidad del nodo
         //! @param v Si es visible o no
         void SetVisible(bool v) {visible = v;};
+        //! Asigna la visibilidad del nodo dependiendo del octree
+        //! @param id El id del nodo
+        //! @param v Si es visible o no
+        void SetOctreeVisibleById(unsigned int id, bool v);
         void SetTransformationMat(glm::mat4 transfMat)  { transformationMat = transfMat; }
         void SetShaderProgramID(GLuint id)              { shaderProgramID = id; }
         
@@ -305,6 +309,15 @@ class CLNode{
         //! @param id Identificador para buscar
         //! @returns CLNode* Puntero al nodo
         CLNode* GetNodeByID(unsigned int id);
+        //! Busca el nodo respectivo en el arbol y te devuelve las dimensiones de su BoundingBox
+        //! @param id Identificador para buscar
+        //! @returns float tamanyo de lado del cuadrado
+        float GetBoundingSizeById(unsigned int id);
+        //! Compureba si el Bounding Volume se encuentra en camara
+        //! @param size Longitud de un lado
+        //! @param pos Posicion
+        //! @returns bool si se encuentra en camara
+        bool OctreeIncamera(float size, const glm::vec3& pos);
         //! Elimina un hijo del arbol por su id
         //! @param id Identificador al hijo para eliminar
         //! @returns bool Si ha sido finalizado con exito o no
@@ -375,6 +388,7 @@ class CLNode{
 
         bool changed { true };
         bool visible { true };
+        bool octreeVisible { true };
         bool hasLightingEffects { true }; //Sirve para que no se le aplique luce y ahorrarse el calculo de luces
 
         shared_ptr<CLEntity> entity {nullptr};
