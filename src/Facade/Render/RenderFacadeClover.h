@@ -12,7 +12,11 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <chrono>
 #include <unordered_map>
+
+using namespace std::chrono;
+
 
 
 using namespace CLE;
@@ -126,34 +130,62 @@ class RenderFacadeClover : public RenderFacade {
 
 
 
-    private:
+   private:
+      class Animation2D;
 
-        std::string powerUps[7];
+      std::string powerUps[7];
 
-        //Menu
-        int inputMenu { 0 };
-        int maxInputMenu { 5 };
-        //Pause
-        int inputPause { 0 };
-        int maxInputPause { 1 };
-        //Seleccion de personaje
-        int inputSC { 0 };
-        int maxInputSC { 5 };
-        //End Race
-        bool menuER { false };
-        int inputER { 0 };
-        int maxInputER { 2 };
-        //Opciones de partida (Hay que contar el 0)
-        int option { 2 };
-        std::vector<int> inputGO {1,1,0};
-        int maxInputGO[3] {3, 2, 0};
-        //Ajustes
-        int optionSettings { 3 };
-        std::vector<int> inputSettings {1,0,0,1};
-        int maxInputSettings[4] {3, 1, 2, 0};
+      //Menu
+      int inputMenu { 0 };
+      int maxInputMenu { 5 };
+      //Pause
+      int inputPause { 0 };
+      int maxInputPause { 1 };
+      //Seleccion de personaje
+      int inputSC { 0 };
+      int maxInputSC { 5 };
+      //End Race
+      bool menuER { false };
+      int inputER { 0 };
+      int maxInputER { 2 };
+      //Opciones de partida (Hay que contar el 0)
+      int option { 2 };
+      std::vector<int> inputGO {1,1,0};
+      int maxInputGO[3] {3, 2, 0};
+      //Ajustes
+      int optionSettings { 3 };
+      std::vector<int> inputSettings {1,0,0,1};
+      int maxInputSettings[4] {3, 1, 2, 0};
 
-        CLEngine* device {nullptr};
-        CLNode* smgr {nullptr};
-        CLResourceManager* resourceManager {nullptr};
-        CLNode* camera1 {nullptr};
+      CLEngine* device {nullptr};
+      CLNode* smgr {nullptr};
+      CLResourceManager* resourceManager {nullptr};
+      CLNode* camera1 {nullptr};
+
+      //Animaciones
+      unique_ptr<Animation2D> introAnimation {nullptr};
+
+      class Animation2D{
+         public:
+            Animation2D(const std::string _path, uint16_t _numFrames, uint16_t _fps);
+            ~Animation2D() = default;
+
+            void Update();
+            void Start();
+
+            string GetCurrentPath() const { return currentPath; }
+
+         private:
+            string path;
+            string currentPath;
+            uint16_t numFrames {0};
+            uint16_t fps {60};
+            float timeBetweenFrames {0.16};
+            int actualFrame {0};
+            bool started { false };
+            bool finished { false };
+            time_point<system_clock> timeStart;
+
+
+      };
 };

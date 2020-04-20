@@ -278,6 +278,8 @@ int main() {
 
         string file = "media/logo_clover.png";
         device->DrawImage2D(10.0f,10.0f,200.0f,200.0f, 0.2f, file, true);
+        file = "media/introAnimation/Beast Brawl203.jpg";
+        device->DrawImage2D(0.0f,0.0f,1280.0f,720.0f, 0.2f, file, true);
 
 
 

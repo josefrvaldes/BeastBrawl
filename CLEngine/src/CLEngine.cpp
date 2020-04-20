@@ -227,7 +227,7 @@ void CLEngine::DrawObjects(){
 }
 
 
-void CLEngine::DrawImage2D(float _x, float _y, float _width, float _height, float _depth, string& file, bool vertically){
+void CLEngine::DrawImage2D(float _x, float _y, float _width, float _height, float _depth, string file, bool vertically){
     if(!hudShader){
         auto resourceShader = CLResourceManager::GetResourceManager()->GetResourceShader("CLEngine/src/Shaders/spriteShader.vert", "CLEngine/src/Shaders/spriteShader.frag");
         hudShader = resourceShader->GetProgramID();
@@ -270,7 +270,13 @@ void CLEngine::DrawImage2D(float _x, float _y, float _width, float _height, floa
     glEnableVertexAttribArray(1);
 
     unsigned int texture;
-    texture = static_cast<CLResourceTexture*>(CLResourceManager::GetResourceManager()->GetResourceTexture(file, vertically))->GetTextureID();
+    auto resourceTexture = CLResourceManager::GetResourceManager()->GetResourceTexture(file, vertically);
+    if(!resourceTexture){
+        glDeleteVertexArrays(1, &VAO);
+        glDeleteBuffers(1, &VBO);
+        return;
+    }
+    texture = static_cast<CLResourceTexture*>(resourceTexture)->GetTextureID();
 
     glBindTexture(GL_TEXTURE_2D, texture);
 
