@@ -416,6 +416,14 @@ void CLNode::SetScalation(glm::vec3 s) {
     ActivateFlag();
 }
 
+
+
+void CLNode::SetOctreeVisibleById(unsigned int id, bool v){
+    CLNode* node = GetNodeByID(id);
+    node->octreeVisible = v;
+}
+
+
 void CLNode::ActivateFlag() {
     changed = true;
     for (auto node : childs) {
@@ -468,6 +476,9 @@ void CLNode::DFSTree(glm::mat4 mA) {
     // > Dibujar
     // > Para cada hijo
     // > > DFSTree(mT)
+    
+    //if(!octreeVisible)
+    //    return;
 
     if (changed) {
         transformationMat = mA*CalculateTransformationMatrix();
@@ -518,6 +529,9 @@ void CLNode::DrawGrass(){
 
 
 void CLNode::DFSTree(glm::mat4 mA, GLuint shaderID) {
+    if(!octreeVisible)
+        return;
+
     if (changed) {
         transformationMat = mA*CalculateTransformationMatrix();
         changed = false;
@@ -698,6 +712,12 @@ CLNode* CLNode::GetNodeByIDAux(unsigned int id, CLNode* node, CLNode* root){
     return node;
 }
 
+float CLNode::GetBoundingSizeById(unsigned int id){
+    CLNode* node = GetNodeByID(id);
+    return node->CalculateBoundingBox();
+}
+
+
 CLCamera* CLNode::GetActiveCamera(){
     for(auto camera : cameras){
         auto entityCamera = static_cast<CLCamera*>(camera->GetEntity());
@@ -852,4 +872,24 @@ float CLNode::CalculateBoundingBox(){
 void CLNode::RemoveLightsAndCameras() {
     cameras.clear();
     pointLights.clear();
+}
+
+
+
+
+// comprueba si el bounding del octree se encuentra en camera
+bool CLNode::OctreeIncamera(float size, const glm::vec3& pos){
+    //CalculateViewProjMatrix();
+    //if (changed) {
+    //    transformationMat = CalculateTransformationMatrix();
+    //    changed = false;
+    //}
+
+    auto& frustum_m = GetActiveCamera()->GetFrustum();
+    CLE::CLFrustum::Visibility frusVisibility = frustum_m.IsInside(pos, size);
+
+    if(frusVisibility == CLE::CLFrustum::Visibility::Invisible)
+        return false;
+    else
+        return true;
 }

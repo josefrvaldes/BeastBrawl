@@ -173,6 +173,11 @@ void StateInGame::InitializeManagers(Physics *physics, Camera *cam, const uint32
     manGameRules        = make_unique<ManGameRules>(timeGame);
     manParticleSystem   = make_unique<ManParticleSystem>();
 
+    managersEntities.emplace_back(manCars);
+    managersEntities.emplace_back(manPowerUps);
+    managersEntities.emplace_back(manBoxPowerUps);
+    managersEntities.emplace_back(manTotems);
+
     // Es raro pero diria que aqui tengo que ir añadiendo sistemas de particulas
     // Añadimos las particulas a todas las cajas
     vector<string> puParticles;
@@ -264,6 +269,12 @@ void StateInGame::Update() {
     renderEngine->FacadeAnimate(manBoxPowerUps->GetEntities());
 
     manGameRules->Update();
+
+    //if(octreeI == 0){
+    //    octreeI++;
+    //}
+    //octreeScene = make_unique<Octree>(glm::vec3(0.0, 500.0, 0.0), 700.0, managersEntities);
+    //octreeScene->UpdateVisibleObjects(renderEngine);
 }
 
 void StateInGame::Render() {
@@ -271,6 +282,9 @@ void StateInGame::Render() {
     renderEngine->FacadeBeginScene();
     // renderEngine->FacadeDraw();  //Para dibujar primitivas debe ir entre el drawAll y el endScene
     renderEngine->FacadeDrawAll();
+    
+    //if(octreeI>0)
+    //    octreeScene->Draw(renderEngine);
     renderEngine->FacadeDrawHUD(manCars->GetCar().get(), manCars.get(), manGameRules->GetGlobalClock().get());
     renderEngine->FacadeDrawGraphEdges(manWayPoint.get());
     // renderEngine->FacadeDrawBoundingBox(manCars.get()->GetCar().get(), isColliding);
@@ -287,6 +301,7 @@ void StateInGame::Render() {
     for (auto& obb : manBoundingOBB->GetEntities()) {
         renderEngine->FacadeDrawBoundingOBB(obb.get());
     }
+
 
     renderEngine->FacadeDrawAIDebug(manCars.get(),manNavMesh.get(), manWayPoint.get());
     renderEngine->FacadeEndScene();
