@@ -286,6 +286,7 @@ void CLEngine::DrawImage2D(float _x, float _y, float _width, float _height, floa
 
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
+    glDeleteBuffers(1, &EBO);
 }
 
 /**
@@ -372,7 +373,7 @@ double CLEngine::GetTime(){
     return glfwGetTime();
 }
 
-void CLEngine::UnableCursor(){
+void CLEngine::DisableCursor(){
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 }
 /**

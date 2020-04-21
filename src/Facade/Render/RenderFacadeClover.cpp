@@ -72,7 +72,6 @@ RenderFacadeClover::RenderFacadeClover() {
     //Inicializamos el arbol de la escena
     smgr = device->GetSceneManager();
     resourceManager = device->GetResourceManager();
-
     FacadeInitIntro();
 
 
@@ -759,6 +758,7 @@ void RenderFacadeClover::FacadeDrawIntro() {
         introAnimation = make_unique<Animation2D>("media/introAnimation/Beast Brawl",356,24);
         introAnimation->Start();
     }
+    resourceManager->DeleteResourceTexture(introAnimation->GetCurrentPath() + ".jpg");
     introAnimation->Update();
     // std::string file = "media/intro.png";
     device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, introAnimation->GetCurrentPath()+".jpg", true);
@@ -1375,4 +1375,10 @@ void RenderFacadeClover::Animation2D::Update(){
 void RenderFacadeClover::Animation2D::Start(){
     timeStart = system_clock::now();
     started = true;
+}
+
+void RenderFacadeClover::Animation2D::Restart(){
+    currentPath = path;
+    actualFrame = 0;
+    finished    = false;
 }

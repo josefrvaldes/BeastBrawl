@@ -73,14 +73,6 @@ int main() {
     // auto resourceMaterial = resourceManager->GetResourceMaterial("media/kart.obj", true);
 
 
-    auto texture1 = resourceManager->GetResourceTexture("media/logo_clover.png");
-    auto texture2 = resourceManager->GetResourceTexture("media/main_menu.png");
-    auto texture3 = resourceManager->GetResourceTexture("media/nitro.jpg");
-
-    bool deleted = resourceManager->DeleteResourceTexture("media/main_menu.png");
-    deleted = resourceManager->DeleteResourceTexture("media/main_menu.png");
-    
-    texture2 = resourceManager->GetResourceTexture("media/main_menu.png");
 
         //----------------------------------------------------------------------------------------------------------------SHADER
         
@@ -278,8 +270,7 @@ int main() {
 
         string file = "media/logo_clover.png";
         device->DrawImage2D(10.0f,10.0f,200.0f,200.0f, 0.2f, file, true);
-        file = "media/introAnimation/Beast Brawl203.jpg";
-        device->DrawImage2D(0.0f,0.0f,1280.0f,720.0f, 0.2f, file, true);
+
 
 
 
