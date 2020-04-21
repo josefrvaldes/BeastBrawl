@@ -136,13 +136,8 @@ TypeCollision Octree::CollideAABB(Entity* object, const BoundingOctree& nodeBox)
 
 // Comprueba si es visible el cuadrado en el frustum y pone los elementos que los contienen como dibujable en el motor
 void Octree::UpdateVisibleObjects(RenderFacade* renderEngine){
-<<<<<<< HEAD
     visible = renderEngine->FacadeOctreeInCamera(size*2.0, centralPosition);
     if(entitiesContained.size()>0){
-=======
-    if(entitiesContained.size()>0){
-        visible = renderEngine->FacadeOctreeInCamera(size*2.0, centralPosition);
->>>>>>> ClippingOctree
         for(const auto& entity : entitiesContained){
             auto cId = static_cast<CId*>(entity->GetComponent(CompType::IdComp).get());
             renderEngine->FacadeSetOctreeVisibleById(cId->id, visible);

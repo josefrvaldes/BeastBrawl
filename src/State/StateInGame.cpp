@@ -266,13 +266,8 @@ void StateInGame::Render() {
     // renderEngine->FacadeDraw();  //Para dibujar primitivas debe ir entre el drawAll y el endScene
     renderEngine->FacadeDrawAll();
     
-<<<<<<< HEAD
     //if(octreeI>0)
     //    octreeScene->Draw(renderEngine);
-=======
-    if(octreeI>0)
-        octreeScene->Draw(renderEngine);
->>>>>>> ClippingOctree
 
     renderEngine->FacadeDrawHUD(manCars->GetCar().get(), manCars.get());
     renderEngine->FacadeDrawGraphEdges(manWayPoint.get());
