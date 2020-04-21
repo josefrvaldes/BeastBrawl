@@ -27,6 +27,7 @@
 #include <Components/CNavMesh.h>
 #include <Components/CCurrentNavMesh.h>
 #include <Components/CCar.h>
+#include <Components/CAnimation.h>
 #include <Components/CClock.h>
 
 #include <Entities/CarAI.h>
@@ -166,7 +167,7 @@ const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
         std::string meshPath = "media/" + currentMesh;
         mesh = resourceManager->GetResourceMesh(meshPath, false);
         mat = resourceManager->GetResourceMaterial(meshPath);
-    }
+    } 
 
     
     CLNode* node = nullptr;
@@ -185,12 +186,22 @@ const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
         case ModelType::Cube:
             node = father->AddMesh(cId->id);
             static_cast<CLMesh*>(node->GetEntity())->SetMesh(mesh);
-
             break;
 
-        case ModelType::StaticMesh:
+        case ModelType::StaticMesh: {
+            auto cAnimation = static_cast<CAnimation*>(entity->GetComponent(CompType::AnimationComp).get());
+            std::string path = cAnimation->GetActiveAnimation().path;
+            std::string animationPath = "media/" + path;
+            vector<CLResourceMesh*> clAnimations = resourceManager->GetResourceAnimation(animationPath, cAnimation->GetActiveAnimation().numKeyFrames, false);
+            mat = resourceManager->GetResourceMaterial(animationPath);
             node = father->AddMesh(cId->id); 
-            break;
+            if (cAnimation->GetActiveAnimation().IsInterpolated()) {
+                static_cast<CLMesh*>(node->GetEntity())->SetAnimationInterpolated(clAnimations, cAnimation->GetActiveAnimation().GetDistances());
+            } else {
+                static_cast<CLMesh*>(node->GetEntity())->SetAnimation(clAnimations);
+            }
+            static_cast<CLMesh*>(node->GetEntity())->SetMaterial(mat);
+        }   break;
 
         case ModelType::AnimatedMesh:
             node = father->AddMesh(cId->id);
@@ -431,8 +442,6 @@ void RenderFacadeClover::FacadeAddCamera(Entity* camera) {
     camera1->SetTranslation(glm::vec3(posX, cTransformable->position.y+100, posZ));
     camera1->SetRotation(glm::vec3(cTransformable->rotation.x,cTransformable->rotation.y,cTransformable->rotation.z));
     camera1->SetScalation(cTransformable->scale);
-
-    
 }
 
 
@@ -445,6 +454,42 @@ void RenderFacadeClover::FacadeUpdateMeshesLoD(vector<shared_ptr<Entity>> entiti
             std::string currentMesh = cMesh->activeMesh;
             std::string meshPath = "media/" + currentMesh;
             static_cast<CLMesh*>(node->GetEntity())->SetMesh(resourceManager->GetResourceMesh(meshPath, false));
+        }
+    }
+}
+
+
+void RenderFacadeClover::FacadeUpdateAnimationsLoD(vector<shared_ptr<Entity>> entities) {
+    for (const auto& entity : entities) {
+        CId *cid = static_cast<CId*>(entity->GetComponent(CompType::IdComp).get());
+        auto node = smgr->GetNodeByID(cid->id);
+        if(node) {
+            auto cAnimation = static_cast<CAnimation*>(entity->GetComponent(CompType::AnimationComp).get());
+            std::string path = cAnimation->GetActiveAnimation().path;
+            std::string animationPath = "media/" + path;
+            vector<CLResourceMesh*> clAnimations = resourceManager->GetResourceAnimation(animationPath, cAnimation->GetActiveAnimation().numKeyFrames, false);
+            if (cAnimation->GetActiveAnimation().IsInterpolated()) {
+                static_cast<CLMesh*>(node->GetEntity())->SetAnimationInterpolated(clAnimations, cAnimation->GetActiveAnimation().GetDistances());
+            } else {
+                static_cast<CLMesh*>(node->GetEntity())->SetAnimation(clAnimations);
+            }
+        }
+    }
+}
+
+
+
+void RenderFacadeClover::FacadeAnimate(vector<shared_ptr<Entity>> entities) {
+    for (const auto& entity : entities) {
+        CId *cid = static_cast<CId*>(entity->GetComponent(CompType::IdComp).get());
+        auto node = smgr->GetNodeByID(cid->id);
+        if(node) {
+            auto cAnimation = static_cast<CAnimation*>(entity->GetComponent(CompType::AnimationComp).get());
+            if (cAnimation->GetActiveAnimation().IsInterpolated()) {
+                static_cast<CLMesh*>(node->GetEntity())->AnimateInterpolated();
+            } else {
+                static_cast<CLMesh*>(node->GetEntity())->Animate();
+            }
         }
     }
 }

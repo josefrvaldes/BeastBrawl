@@ -33,6 +33,22 @@ CLResourceMesh* CLResourceManager::GetResourceMesh(const std::string file, bool 
     return resource.get();
 }
 
+
+vector<CLResourceMesh*> CLResourceManager::GetResourceAnimation(const std::string path, uint8_t numKeyFrames, bool flipUV) {
+    string folder = path.substr(0, path.find_last_of("/") + 1);
+    string fileName = path.substr(path.find_last_of("/") + 1).substr(3);
+    vector<CLResourceMesh*> keyFrames;
+    for(uint8_t i = 1; i <= numKeyFrames; i++) {
+        string stringIndex = std::to_string(i);
+        // añade ceros al principio para que el fichero no sea 1ojete.obj, sino que sea 001ojete.obj
+        string auxIndex = std::string(3 - stringIndex.length(), '0') + stringIndex; 
+        string totalPath = folder + auxIndex + fileName;
+        CLResourceMesh *resource = GetResourceMesh(totalPath, flipUV);
+        keyFrames.push_back(resource);
+    }
+    return keyFrames;
+}
+
 CLResourceTexture* CLResourceManager::GetResourceTexture(const std::string file){
     return GetResourceTexture(file);
 }
