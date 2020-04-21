@@ -456,8 +456,9 @@ void CLNode::DFSTree(glm::mat4 mA) {
     // > Dibujar
     // > Para cada hijo
     // > > DFSTree(mT)
-    if(!octreeVisible)
-        return;
+    
+    //if(!octreeVisible)
+    //    return;
 
     if (changed) {
         transformationMat = mA*CalculateTransformationMatrix();
@@ -509,6 +510,9 @@ void CLNode::DrawGrass(){
 
 
 void CLNode::DFSTree(glm::mat4 mA, GLuint shaderID) {
+    if(!octreeVisible)
+        return;
+
     if (changed) {
         transformationMat = mA*CalculateTransformationMatrix();
         changed = false;
@@ -856,11 +860,17 @@ void CLNode::RemoveLightsAndCameras() {
 
 // comprueba si el bounding del octree se encuentra en camera
 bool CLNode::OctreeIncamera(float size, const glm::vec3& pos){
+    //CalculateViewProjMatrix();
+    //if (changed) {
+    //    transformationMat = CalculateTransformationMatrix();
+    //    changed = false;
+    //}
+
     auto& frustum_m = GetActiveCamera()->GetFrustum();
     CLE::CLFrustum::Visibility frusVisibility = frustum_m.IsInside(pos, size);
 
-    if(frusVisibility == CLE::CLFrustum::Visibility::Completly || frusVisibility == CLE::CLFrustum::Visibility::Partially)
-        return true;
-    else
+    if(frusVisibility == CLE::CLFrustum::Visibility::Invisible)
         return false;
+    else
+        return true;
 }

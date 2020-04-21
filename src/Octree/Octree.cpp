@@ -107,7 +107,6 @@ void Octree::CreateTree(){
 // calcula si se encuentra dentro del AABB, fuera, o colisiona con el borde
 TypeCollision Octree::CollideAABB(Entity* object, const BoundingOctree& nodeBox) const{
     auto cTran = static_cast<CTransformable*>(object->GetComponent(CompType::TransformableComp).get());
-    auto cId = static_cast<CId*>(object->GetComponent(CompType::IdComp).get());
     if(!object->HasComponent(CompType::DimensionsComp)){
         //cout << "No existe el CDimensions \n";
         return TypeCollision::Border;   // no tienen el componente
@@ -131,24 +130,22 @@ TypeCollision Octree::CollideAABB(Entity* object, const BoundingOctree& nodeBox)
         return TypeCollision::No_Collision;
     }
 
-} 
+}
 
 
 
 // Comprueba si es visible el cuadrado en el frustum y pone los elementos que los contienen como dibujable en el motor
 void Octree::UpdateVisibleObjects(RenderFacade* renderEngine){
-    if(entitiesContained.size()!=0){
-        visible = renderEngine->FacadeOctreeInCamera(size*2.0, centralPosition);
+    visible = renderEngine->FacadeOctreeInCamera(size*2.0, centralPosition);
+    if(entitiesContained.size()>0){
         for(const auto& entity : entitiesContained){
             auto cId = static_cast<CId*>(entity->GetComponent(CompType::IdComp).get());
             renderEngine->FacadeSetOctreeVisibleById(cId->id, visible);
         }
     } 
 
-    if(numChilds>0){
-        for(int i = 0; i<numChilds; i++){
-            childs[i]->UpdateVisibleObjects(renderEngine);
-        }
+    for(int i = 0; i<numChilds; i++){
+        childs[i]->UpdateVisibleObjects(renderEngine);
     }
 }
 
@@ -156,63 +153,69 @@ void Octree::UpdateVisibleObjects(RenderFacade* renderEngine){
 
 // Para depuracion grafica dibujar el octree
 void Octree::Draw(RenderFacade* renderEngine) const{
-    if(numChilds>0){
-        for(int i = 0; i<numChilds; i++){
-            childs[i]->Draw(renderEngine);
-        }
+    for(int i = 0; i<numChilds; i++){
+        childs[i]->Draw(renderEngine);
     }
-    DrawCube(renderEngine);
+
+    //if(entitiesContained.size()>0)
+    //    DrawCube(renderEngine, 255, 255, 0);
+    if(visible)
+        DrawCube(renderEngine, 255, 0, 255);
+    else
+        DrawCube(renderEngine, 255, 0, 0);
+
 }
 
-void Octree::DrawCube(RenderFacade* renderEngine) const{
+void Octree::DrawCube(RenderFacade* renderEngine, int r, int g, int b) const{
+        //cout << "( " << centralPosition.x << " , " << centralPosition.y << " , " << centralPosition.z << " ) --> " << size << "\n";
         glm::vec3 min0 = glm::vec3(centralPosition.x - size, centralPosition.y - size, centralPosition.z - size);
         glm::vec3 max0 = glm::vec3(centralPosition.x + size, centralPosition.y - size, centralPosition.z - size);
-        renderEngine->Draw3DLine(min0, max0);
+        renderEngine->Draw3DLine(min0, max0, r, g, b);
 
         glm::vec3 min1 = glm::vec3(centralPosition.x - size, centralPosition.y - size, centralPosition.z - size);
         glm::vec3 max1 = glm::vec3(centralPosition.x - size, centralPosition.y + size, centralPosition.z - size);
-        renderEngine->Draw3DLine(min1, max1);
+        renderEngine->Draw3DLine(min1, max1, r, g, b);
 
         glm::vec3 min2 = glm::vec3(centralPosition.x - size, centralPosition.y - size, centralPosition.z - size);
         glm::vec3 max2 = glm::vec3(centralPosition.x - size, centralPosition.y - size, centralPosition.z + size);
-        renderEngine->Draw3DLine(min2, max2);
+        renderEngine->Draw3DLine(min2, max2, r, g, b);
 
         glm::vec3 min3 = glm::vec3(centralPosition.x + size, centralPosition.y + size, centralPosition.z + size);
         glm::vec3 max3 = glm::vec3(centralPosition.x + size, centralPosition.y + size, centralPosition.z - size);
-        renderEngine->Draw3DLine(min3, max3);
+        renderEngine->Draw3DLine(min3, max3, r, g, b);
 
         glm::vec3 min4 = glm::vec3(centralPosition.x + size, centralPosition.y + size, centralPosition.z + size);
         glm::vec3 max4 = glm::vec3(centralPosition.x + size, centralPosition.y - size, centralPosition.z + size);
-        renderEngine->Draw3DLine(min4, max4);
+        renderEngine->Draw3DLine(min4, max4, r, g, b);
 
         glm::vec3 min5 = glm::vec3(centralPosition.x + size, centralPosition.y + size, centralPosition.z + size);
         glm::vec3 max5 = glm::vec3(centralPosition.x - size, centralPosition.y + size, centralPosition.z + size);
-        renderEngine->Draw3DLine(min5, max5);
+        renderEngine->Draw3DLine(min5, max5, r, g, b);
 
 
         glm::vec3 min6 = glm::vec3(centralPosition.x + size, centralPosition.y - size, centralPosition.z - size);
         glm::vec3 max6 = glm::vec3(centralPosition.x + size, centralPosition.y - size, centralPosition.z + size);
-        renderEngine->Draw3DLine(min6, max6);
+        renderEngine->Draw3DLine(min6, max6, r, g, b);
 
         glm::vec3 min7 = glm::vec3(centralPosition.x + size, centralPosition.y - size, centralPosition.z - size);
         glm::vec3 max7 = glm::vec3(centralPosition.x + size, centralPosition.y + size, centralPosition.z - size);
-        renderEngine->Draw3DLine(min7, max7);
+        renderEngine->Draw3DLine(min7, max7, r, g, b);
 
 
         glm::vec3 min8 = glm::vec3(centralPosition.x - size, centralPosition.y + size, centralPosition.z - size);
         glm::vec3 max8 = glm::vec3(centralPosition.x + size, centralPosition.y + size, centralPosition.z - size);
-        renderEngine->Draw3DLine(min8, max8);
+        renderEngine->Draw3DLine(min8, max8, r, g, b);
 
         glm::vec3 min9 = glm::vec3(centralPosition.x - size, centralPosition.y + size, centralPosition.z - size);
         glm::vec3 max9 = glm::vec3(centralPosition.x - size, centralPosition.y + size, centralPosition.z + size);
-        renderEngine->Draw3DLine(min9, max9);
+        renderEngine->Draw3DLine(min9, max9, r, g, b);
 
 
         glm::vec3 min10 = glm::vec3(centralPosition.x - size, centralPosition.y - size, centralPosition.z + size);
         glm::vec3 max10 = glm::vec3(centralPosition.x - size, centralPosition.y + size, centralPosition.z + size);
-        renderEngine->Draw3DLine(min10, max10);
+        renderEngine->Draw3DLine(min10, max10, r, g, b);
 
         glm::vec3 min11 = glm::vec3(centralPosition.x - size, centralPosition.y - size, centralPosition.z + size);
         glm::vec3 max11 = glm::vec3(centralPosition.x + size, centralPosition.y - size, centralPosition.z + size);
-        renderEngine->Draw3DLine(min11, max11);        
+        renderEngine->Draw3DLine(min11, max11, r, g, b);        
 }

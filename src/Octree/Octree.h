@@ -33,11 +33,11 @@ class Octree{
   private:
     // void AddChild();
     TypeCollision CollideAABB(Entity* object, const BoundingOctree& nodeBox) const;
-    void DrawCube(RenderFacade* renderEngine) const;
+    void DrawCube(RenderFacade* renderEngine, int r, int g, int b) const;
 
     glm::vec3 centralPosition;
     float size;                 // es el radio o la mitad del cuadrado
-    const float minSize = 200.0;  // es el radio o la mitad del cuadrado
+    const float minSize = 15.0;  // es el radio o la mitad del cuadrado
 
     Octree* father {nullptr};
     
