@@ -41,6 +41,10 @@
 class Position;
 using namespace std;
 
+
+#include <limits>
+typedef std::numeric_limits< double > dbl;
+
 ManCar::ManCar() {
     SubscribeToEvents();
     CreateMainCar();
@@ -70,23 +74,24 @@ void ManCar::UpdateCarPlayer(ManTotem &manTotem_) {
     UpdateGeneralCar(*carPlayer, *totem);
 }
 
-// TODO: RECORDARRR!!!!!!!!!!!!!!!!!  TANTO EL "BtMoveTo" como el "systemPathPlanning" se deben hacer en la misma ITERACION!!!!
-// Es importante esto porque el BtMoveTo es el que calcula la posicion a la que ir y el systemBtLoDMove es el que utiliza esta posicion para
-// moverse a un sitio, si en algun momento intentamos ir a una posicion que no existe PETAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-void ManCar::UpdateCarAI(CarAI* carAI, ManPowerUp* m_manPowerUp, ManBoxPowerUp* m_manBoxPowerUp, ManTotem* m_manTotem, ManWayPoint* graph, ManNavMesh* manNavMesh, 
-                        ManBoundingWall* m_manBoundingWall, ManBoundingOBB* m_manBoundingOBB, SystemBtPowerUp* systemBtPowerUp, SystemBtMoveTo* systemBtMoveTo, SystemBtLoDMove* systemBtLoDMove, SystemPathPlanning *systemPathPlanning) {
+void ManCar::UpdateCarAI(CarAI* carAI, ManTotem* m_manTotem) {
     
     //manNavMesh->UpdateNavMeshEntity(carAI);
-    systemBtMoveTo->update(carAI, this, m_manPowerUp, m_manBoxPowerUp, m_manTotem, graph, manNavMesh);
+    //systemBtMoveTo->update(carAI);
+    //systemPathPlanning->update(carAI);
+    //systemBtLoDMove->update(carAI);
+    //systemBtPowerUp->update(carAI);
 
-    systemPathPlanning->Update(carAI, graph, manNavMesh);
+    //auto time0 = system_clock::now();
+    //auto time1 = system_clock::now();
+    //double timeAccumulated = duration_cast<microseconds>(time1 - time0).count();
+    //cout.precision(dbl::max_digits10);
+    //if(timeAccumulated > maxTimeAccumulated) maxTimeAccumulated = timeAccumulated;
+    //cout << maxTimeAccumulated << " - ";
 
-    systemBtLoDMove->update(carAI, this, m_manPowerUp, m_manBoxPowerUp, m_manTotem, graph, manNavMesh, m_manBoundingWall, m_manBoundingOBB);
 
     //physicsAI->Update(carAI, graph);
     UpdateGeneralCar(*carAI, *(m_manTotem->GetEntities()[0].get()));
-
-    systemBtPowerUp->update(carAI, this, m_manPowerUp, m_manBoxPowerUp, m_manTotem, graph, manNavMesh);
     
 }
 void ManCar::UpdateCarHuman(Entity* CarHuman, ManTotem* m_manTotem) {

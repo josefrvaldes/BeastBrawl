@@ -4,30 +4,29 @@
 
 #include <iostream>
 #include <memory>
+#include <vector>
+
+#include "SystemAI.h" 
 
 using namespace std;
 
 struct selector;
 struct CarAI;
-struct ManCar;
-struct ManPowerUp;
-struct ManBoxPowerUp;
-struct ManTotem;
-struct ManWayPoint;
-struct ManBoundingWall;
-struct ManBoundingOBB;
-struct ManNavMesh;
+struct Manager;
 struct SystemFuzzyLogicAI;
 struct SteeringBehaviours;
 
-class SystemBtLoDMove {
+class SystemBtLoDMove : public SystemAI{
    public:
       SystemBtLoDMove();
       ~SystemBtLoDMove(){};
 
       void init();
-      void update(CarAI* actualCar, ManCar* manCars, ManPowerUp* manPowerUps, ManBoxPowerUp* manBoxPowerUps, ManTotem* manTotems, ManWayPoint* manWayPoint, 
-                  ManNavMesh* manNavMesh, ManBoundingWall* m_manBoundingWall, ManBoundingOBB* m_manBoundingOBB);
+      void update(CarAI* actualCar) override;
+
+      void AddManager(Manager &);
+
+      int getFrecuency(){ return frec; };
 
 
    private:
@@ -35,6 +34,9 @@ class SystemBtLoDMove {
       shared_ptr<SystemFuzzyLogicAI> fuzzyLogic;
       shared_ptr<SteeringBehaviours> steeringBehaviours;
 
+      vector<Manager *> managers;
       bool entradoFL = false;
+
+      int frec {1};
 
 };
