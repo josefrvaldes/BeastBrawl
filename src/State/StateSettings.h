@@ -4,6 +4,7 @@
 
 #include <EventManager/EventManager.h>
 #include <Facade/Render/RenderFacadeManager.h>
+#include <Facade/Sound/SoundFacadeManager.h>
 
 class StateSettings : public State {
 public:
@@ -16,6 +17,7 @@ public:
     States GetState() override { return State::States::SETTINGS; };
 
 private:
-    RenderFacade* renderEngine = { nullptr };
+    RenderFacade* renderEngine { nullptr };
+    SoundFacade* soundEngine { nullptr };
 };
 

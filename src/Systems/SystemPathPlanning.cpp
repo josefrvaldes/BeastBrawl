@@ -29,6 +29,11 @@ SystemPathPlanning::SystemPathPlanning(){
     SubscribeToEvents();
 }
 
+void SystemPathPlanning::AddManager(Manager &m) {
+    managers.push_back(&m);
+}
+
+
 void SystemPathPlanning::SubscribeToEvents() {
 
     EventManager::GetInstance().SubscribeMulti(Listener(
@@ -47,7 +52,6 @@ void SystemPathPlanning::SubscribeToEvents() {
         "MoveRandomPowerUp"));
 
 }
-
 
 void SystemPathPlanning::MoveRandomPowerUp(DataMap* data){
     //std::cout << " -entramoooos o que beibeeeeeeee ???????????????????????\n";
@@ -181,15 +185,17 @@ void SystemPathPlanning::CalculatePathToNavMesh(DataMap* data){
 
 
 
-void SystemPathPlanning::Update(CarAI* carAI, ManWayPoint* graph, ManNavMesh* manNavMesh) const{
-    UpdateDijkstra(carAI, graph, manNavMesh);    
+void SystemPathPlanning::update(CarAI* carAI){
+    UpdateDijkstra(carAI, static_cast<ManWayPoint*>(managers[4]), static_cast<ManNavMesh*>(managers[5]));    
 }
 
 void SystemPathPlanning::UpdateDijkstra(CarAI* carAI, ManWayPoint* graph, ManNavMesh* manNavMesh) const{
     //Guardamos en varAIbles los componentes
 	auto cTransformable = static_cast<CTransformable*>(carAI->GetComponent(CompType::TransformableComp).get());
     auto cPosDestination     = static_cast<CPosDestination*>(carAI->GetComponent(CompType::PosDestination).get());
-    float radious = cPosDestination->radious;
+    float radious = 10.0f;
+    if(cPosDestination->radious >=10)
+        radious = cPosDestination->radious;
 
     //Vamos a comprobar si esta en el rango del waypoint
     if((cPosDestination->position.z - radious) < cTransformable->position.z && (cPosDestination->position.z + radious) >= cTransformable->position.z 

@@ -14,6 +14,7 @@ class ManGameRules{
 
     void SubscribeToEvents();
     void Update();
+    unique_ptr<Entity>& GetGlobalClock() { return globalClock; };
 
    private:
     void CreateGlobalClock( const uint32_t durationTime_ );

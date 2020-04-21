@@ -46,7 +46,7 @@ StateInGame::~StateInGame() {
  *  Y ES OBLIGATORIO llamar a este método desde el constructor de los hijos
  */
 void StateInGame::InitVirtualMethods() {
-    InitializeManagers(physics.get(), cam.get(), 300);
+    InitializeManagers(physics.get(), cam.get(), 120);
     InitializeSystems(*manCars.get(), *manBoundingWall.get(), *manBoundingOBB.get(), *manBoundingGround.get(), *manPowerUps.get(), *manNavMesh.get(), *manBoxPowerUps.get(), *manTotems.get());
     InitializeFacades();
 
@@ -58,6 +58,7 @@ void StateInGame::InitVirtualMethods() {
     // lo anterior y debe de estar todo inicializado
     AddElementsToRender();
 }
+
 
 void StateInGame::InitializeFacades() {
     // Inicializamos las facadas
@@ -174,9 +175,24 @@ void StateInGame::InitializeManagers(Physics *physics, Camera *cam, const uint32
 
     // Es raro pero diria que aqui tengo que ir añadiendo sistemas de particulas
     // Añadimos las particulas a todas las cajas
+    vector<string> puParticles;
+    puParticles.push_back("media/particleRedStar.png");
+    puParticles.push_back("media/particleYellowStar.png");
+    puParticles.push_back("media/particleRedTriangle.png");
+    puParticles.push_back("media/particleYellowTriangle.png");
+    puParticles.push_back("media/particle_test.png");
     for(auto boxPowerUp : manBoxPowerUps->GetEntities()){
         auto cId = static_cast<CId*>(boxPowerUp->GetComponent(CompType::IdComp).get());
-        manParticleSystem->CreateParticleSystem(cId->id,glm::vec3(0.0f,0.0f,0.0f),30,glm::vec3(200.0f,400.0f,200.0f),"media/particle_test.png",5,5,100,30,150,glm::vec3(0.0f,0.0f,0.0f),glm::vec3(0.0f,0.0f,0.0f),0, 0x1 | 0x4 ,false,false);
+        manParticleSystem->CreateParticleSystem(cId->id,glm::vec3(0.0f,0.0f,0.0f),30,glm::vec3(200.0f,400.0f,200.0f),puParticles,5,5,100,30,150,glm::vec3(0.0f,0.0f,0.0f),glm::vec3(0.0f,0.0f,0.0f),0, 0x1 | 0x4 ,false,false);
+    }
+
+    // Añadimos sistema de particulas a los (el) totem
+    vector<string> totemParticles;
+    totemParticles.push_back("media/particle_test.png");
+    for(auto totem : manTotems->GetEntities()){
+        auto cId = static_cast<CId*>(totem->GetComponent(CompType::IdComp).get());
+        manParticleSystem->CreateParticleSystem(cId->id,glm::vec3(0.0f,0.0f,0.0f),100,glm::vec3(0.0f,50.0f,0.0f),totemParticles,5,15,100,2,5000,glm::vec3(30.0f,0.0f,30.0f),glm::vec3(0.0f,0.0f,0.0f),0, 0x4 ,true,true);
+        
     }
 }
 
@@ -255,7 +271,7 @@ void StateInGame::Render() {
     renderEngine->FacadeBeginScene();
     // renderEngine->FacadeDraw();  //Para dibujar primitivas debe ir entre el drawAll y el endScene
     renderEngine->FacadeDrawAll();
-    renderEngine->FacadeDrawHUD(manCars->GetCar().get(), manCars.get());
+    renderEngine->FacadeDrawHUD(manCars->GetCar().get(), manCars.get(), manGameRules->GetGlobalClock().get());
     renderEngine->FacadeDrawGraphEdges(manWayPoint.get());
     // renderEngine->FacadeDrawBoundingBox(manCars.get()->GetCar().get(), isColliding);
 
