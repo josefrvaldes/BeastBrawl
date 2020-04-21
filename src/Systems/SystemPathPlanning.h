@@ -4,6 +4,8 @@
 #include <stack>
 #include <Aliases.h>
 
+#include "SystemAI.h"
+
 using namespace std;
 
 struct CarAI;
@@ -12,14 +14,20 @@ struct ManNavMesh;
 struct Manager;
 struct Data;
 
-class SystemPathPlanning {
+
+class SystemPathPlanning : public SystemAI {
 public:
     SystemPathPlanning();
     ~SystemPathPlanning();
 
-    void Update(CarAI* carAI, ManWayPoint* graph, ManNavMesh* manNavMesh) const;
+    void update(CarAI* actualCar) override;
+
+    void AddManager(Manager &e);
+
     void UpdateDijkstra(CarAI* carAI, ManWayPoint* graph, ManNavMesh* manNavMesh) const;
     stack<int> Dijkstra(ManWayPoint* graph, const uint16_t start, const uint16_t end);
+
+    int getFrecuency(){ return frec; };
 
    private:
     void SubscribeToEvents();
@@ -31,4 +39,6 @@ public:
     int graphSize = 0;
     bool graphCreated = false;
 
+    vector<Manager *> managers;
+    int frec {2};
 };

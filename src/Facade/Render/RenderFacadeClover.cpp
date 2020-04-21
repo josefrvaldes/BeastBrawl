@@ -27,6 +27,8 @@
 #include <Components/CNavMesh.h>
 #include <Components/CCurrentNavMesh.h>
 #include <Components/CCar.h>
+#include <Components/CAnimation.h>
+#include <Components/CClock.h>
 
 #include <Entities/CarAI.h>
 #include <Entities/CarHuman.h>
@@ -88,7 +90,7 @@ void RenderFacadeClover::FacadeSuscribeEvents() {
         "facadeUpdatePowerUpHUD"});
 
     EventManager::GetInstance().Subscribe(Listener{
-        EventType::INIT_PARTICLE_SYSTEM,
+        EventType::INIT_PARTICLES_BOX,
         bind( &RenderFacadeClover::FacadeInitParticleSystem, this, placeholders::_1 ),
         "FacadeInitParticleSystem"});
 }
@@ -165,7 +167,7 @@ const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
         std::string meshPath = "media/" + currentMesh;
         mesh = resourceManager->GetResourceMesh(meshPath, false);
         mat = resourceManager->GetResourceMaterial(meshPath);
-    }
+    } 
 
     
     CLNode* node = nullptr;
@@ -184,12 +186,22 @@ const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
         case ModelType::Cube:
             node = father->AddMesh(cId->id);
             static_cast<CLMesh*>(node->GetEntity())->SetMesh(mesh);
-
             break;
 
-        case ModelType::StaticMesh:
+        case ModelType::StaticMesh: {
+            auto cAnimation = static_cast<CAnimation*>(entity->GetComponent(CompType::AnimationComp).get());
+            std::string path = cAnimation->GetActiveAnimation().path;
+            std::string animationPath = "media/" + path;
+            vector<CLResourceMesh*> clAnimations = resourceManager->GetResourceAnimation(animationPath, cAnimation->GetActiveAnimation().numKeyFrames, false);
+            mat = resourceManager->GetResourceMaterial(animationPath);
             node = father->AddMesh(cId->id); 
-            break;
+            if (cAnimation->GetActiveAnimation().IsInterpolated()) {
+                static_cast<CLMesh*>(node->GetEntity())->SetAnimationInterpolated(clAnimations, cAnimation->GetActiveAnimation().GetDistances());
+            } else {
+                static_cast<CLMesh*>(node->GetEntity())->SetAnimation(clAnimations);
+            }
+            static_cast<CLMesh*>(node->GetEntity())->SetMaterial(mat);
+        }   break;
 
         case ModelType::AnimatedMesh:
             node = father->AddMesh(cId->id);
@@ -216,14 +228,14 @@ const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
                 //Es circulo o esfera
                 if(cParticleSystem->orientation == glm::vec3(0.0f,0.0f,0.0f)){
                     //Es esfera
-                    node = father->AddParticleSystem(cId->id,cParticleSystem->nParticles,cParticleSystem->velocity,cParticleSystem->texture,cParticleSystem->width,cParticleSystem->height,cParticleSystem->spawnDelay,cParticleSystem->particlesToSpawn,cParticleSystem->lifeSpan,cParticleSystem->radious,cParticleSystem->flags);
+                    node = father->AddParticleSystem(cId->id,cParticleSystem->nParticles,cParticleSystem->velocity,cParticleSystem->textures,cParticleSystem->width,cParticleSystem->height,cParticleSystem->spawnDelay,cParticleSystem->particlesToSpawn,cParticleSystem->lifeSpan,cParticleSystem->radious,cParticleSystem->flags);
                 }else{
                     //Es circulo
-                    node = father->AddParticleSystem(cId->id,cParticleSystem->nParticles,cParticleSystem->velocity,cParticleSystem->texture,cParticleSystem->width,cParticleSystem->height,cParticleSystem->spawnDelay,cParticleSystem->particlesToSpawn,cParticleSystem->lifeSpan,cParticleSystem->radious,cParticleSystem->orientation,cParticleSystem->flags);
+                    node = father->AddParticleSystem(cId->id,cParticleSystem->nParticles,cParticleSystem->velocity,cParticleSystem->textures,cParticleSystem->width,cParticleSystem->height,cParticleSystem->spawnDelay,cParticleSystem->particlesToSpawn,cParticleSystem->lifeSpan,cParticleSystem->radious,cParticleSystem->orientation,cParticleSystem->flags);
                 }
             }else{
                 //Es punto, linea, cuadrado o cubo
-                node = father->AddParticleSystem(cId->id,cParticleSystem->nParticles,cParticleSystem->velocity,cParticleSystem->texture,cParticleSystem->width,cParticleSystem->height,cParticleSystem->spawnDelay,cParticleSystem->particlesToSpawn,cParticleSystem->lifeSpan,cParticleSystem->offset,cParticleSystem->orientation,cParticleSystem->flags);
+                node = father->AddParticleSystem(cId->id,cParticleSystem->nParticles,cParticleSystem->velocity,cParticleSystem->textures,cParticleSystem->width,cParticleSystem->height,cParticleSystem->spawnDelay,cParticleSystem->particlesToSpawn,cParticleSystem->lifeSpan,cParticleSystem->offset,cParticleSystem->orientation,cParticleSystem->flags);
             }
             static_cast<CLParticleSystem*>(node->GetEntity())->SetLoop(cParticleSystem->loop);
 
@@ -312,7 +324,7 @@ void RenderFacadeClover::UpdateCamera(Entity* cam, ManCar* manCars) {
         targetPosition.y += 0;
 
         float distX = abs(cTransformable->position.x - targetPosition.x);
-        float distZ = abs(cTransformable->position.z - targetPosition.z);
+        float distZ = abs(-cTransformable->position.z - targetPosition.z);
 
         if(cTransformable->position.x - targetPosition.x < 0){
             targetPosition.x = targetPosition.x - (2*distX);
@@ -321,8 +333,8 @@ void RenderFacadeClover::UpdateCamera(Entity* cam, ManCar* manCars) {
             targetPosition.x = targetPosition.x + (2*distX);
 
         }
-
-        if(cTransformable->position.z - targetPosition.z < 0){
+ 
+        if(-cTransformable->position.z - targetPosition.z < 0){
             targetPosition.z = targetPosition.z - (2*distZ);
 
         }else{
@@ -330,11 +342,12 @@ void RenderFacadeClover::UpdateCamera(Entity* cam, ManCar* manCars) {
 
         }
         //float angleRotation = (60 * M_PI) / 180.0;
-        cout << cTransformable->position.x << " | " << cTransformable->position.y << " | " << cTransformable->position.z << endl;
-        cameraEntity->SetCameraTarget(glm::vec3(targetPosition.x,targetPosition.y,targetPosition.z));
         cameraEntity->SetFOV(60);
+
+        
+        cameraEntity->SetCameraTarget(glm::vec3(targetPosition.x,targetPosition.y,targetPosition.z));
         camera1->SetTranslation(glm::vec3(cTransformable->position.x, cTransformable->position.y-5, -cTransformable->position.z));
-        camera1->SetRotation(glm::vec3(cTransformable->rotation.x,Utils::IrrlichtAngleToOpenGL(cTransformable->rotation.y),cTransformable->rotation.z));
+        //camera1->SetRotation(glm::vec3(cTransformable->rotation.x,cTransformable->rotation.y,cTransformable->rotation.z));
 
 
     }else if(cCamera->camType == CamType::NORMAL_CAM){
@@ -344,7 +357,7 @@ void RenderFacadeClover::UpdateCamera(Entity* cam, ManCar* manCars) {
         
         cameraEntity->SetFOV(70);
         camera1->SetTranslation(glm::vec3(cTransformable->position.x, cTransformable->position.y, -cTransformable->position.z));
-        camera1->SetRotation(glm::vec3(cTransformable->rotation.x,Utils::IrrlichtAngleToOpenGL(cTransformable->rotation.y),cTransformable->rotation.z));
+        //camera1->SetRotation(glm::vec3(cTransformable->rotation.x,Utils::IrrlichtAngleToOpenGL(cTransformable->rotation.y),cTransformable->rotation.z));
 
     }else if (cCamera->camType == CamType::TOTEM_CAM){
 
@@ -399,7 +412,7 @@ void RenderFacadeClover::UpdateCamera(Entity* cam, ManCar* manCars) {
             cTransformable->position.y, 
             -cTransformableCar->position.z + 35 * sin(valueAtan2)));
 
-        camera1->SetRotation(glm::vec3(-cTransformable->rotation.x,Utils::IrrlichtAngleToOpenGL(cTransformable->rotation.y),-cTransformable->rotation.z));
+        //camera1->SetRotation(glm::vec3(-cTransformable->rotation.x,Utils::IrrlichtAngleToOpenGL(cTransformable->rotation.y),-cTransformable->rotation.z));
         
     }
 
@@ -430,8 +443,6 @@ void RenderFacadeClover::FacadeAddCamera(Entity* camera) {
     camera1->SetTranslation(glm::vec3(posX, cTransformable->position.y+100, posZ));
     camera1->SetRotation(glm::vec3(cTransformable->rotation.x,cTransformable->rotation.y,cTransformable->rotation.z));
     camera1->SetScalation(cTransformable->scale);
-
-    
 }
 
 
@@ -444,6 +455,42 @@ void RenderFacadeClover::FacadeUpdateMeshesLoD(vector<shared_ptr<Entity>> entiti
             std::string currentMesh = cMesh->activeMesh;
             std::string meshPath = "media/" + currentMesh;
             static_cast<CLMesh*>(node->GetEntity())->SetMesh(resourceManager->GetResourceMesh(meshPath, false));
+        }
+    }
+}
+
+
+void RenderFacadeClover::FacadeUpdateAnimationsLoD(vector<shared_ptr<Entity>> entities) {
+    for (const auto& entity : entities) {
+        CId *cid = static_cast<CId*>(entity->GetComponent(CompType::IdComp).get());
+        auto node = smgr->GetNodeByID(cid->id);
+        if(node) {
+            auto cAnimation = static_cast<CAnimation*>(entity->GetComponent(CompType::AnimationComp).get());
+            std::string path = cAnimation->GetActiveAnimation().path;
+            std::string animationPath = "media/" + path;
+            vector<CLResourceMesh*> clAnimations = resourceManager->GetResourceAnimation(animationPath, cAnimation->GetActiveAnimation().numKeyFrames, false);
+            if (cAnimation->GetActiveAnimation().IsInterpolated()) {
+                static_cast<CLMesh*>(node->GetEntity())->SetAnimationInterpolated(clAnimations, cAnimation->GetActiveAnimation().GetDistances());
+            } else {
+                static_cast<CLMesh*>(node->GetEntity())->SetAnimation(clAnimations);
+            }
+        }
+    }
+}
+
+
+
+void RenderFacadeClover::FacadeAnimate(vector<shared_ptr<Entity>> entities) {
+    for (const auto& entity : entities) {
+        CId *cid = static_cast<CId*>(entity->GetComponent(CompType::IdComp).get());
+        auto node = smgr->GetNodeByID(cid->id);
+        if(node) {
+            auto cAnimation = static_cast<CAnimation*>(entity->GetComponent(CompType::AnimationComp).get());
+            if (cAnimation->GetActiveAnimation().IsInterpolated()) {
+                static_cast<CLMesh*>(node->GetEntity())->AnimateInterpolated();
+            } else {
+                static_cast<CLMesh*>(node->GetEntity())->Animate();
+            }
         }
     }
 }
@@ -657,7 +704,7 @@ void RenderFacadeClover::FacadeDraw() const{
 
 }
 
-void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars) {
+void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* globalClock) {
 
     //Voy a actualizar aqui las posiciones donde van porque es el unico sitio donde tengo ambos tipos de coches
     //struct auxiliar para guardarme tiempo y numero de coche
@@ -748,6 +795,30 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars) {
         }
     }
 
+    if (globalClock) {
+        cadena = "media/marcador.png";
+        device->DrawImage2D(1025.0f, 50.0f ,225.0f, 90.0f, 0.2f, cadena, true);
+        
+        auto cGClock = static_cast<CClock*>(globalClock->GetComponent(CompType::ClockComp).get());
+        int time = cGClock->DURATION_TIME/1000 - cGClock->accumulatedTime/1000;
+        int min = time/60;
+        int seg = time - min*60;
+        
+        cadena = std::to_string(min) + ":" + std::to_string(seg);
+        if (seg < 10) {
+            cadena = std::to_string(min) + ":0" + std::to_string(seg);
+        }
+        if (min < 10) {
+            cadena = "0" + cadena;
+        }
+
+        glm::vec3 color = glm::vec3(0.0f, 0.0f, 0.0f);
+        if(min == 0 && seg <= 30) {
+            color = glm::vec3(255.0f, 0.0f, 0.0f);
+        }
+        device->RenderText2D(cadena, 1100.0f, 610.0f, 0.05f, 0.75f, color);
+    }
+
     //MINIMAPA
     cadena = "media/Minimapa240.png";
     device->DrawImage2D((device->GetScreenWidth() - 280.0f), (device->GetScreenHeight() - 220.0f), 240.0f, 192.0f, 0.1f, cadena, true);
@@ -806,13 +877,13 @@ void RenderFacadeClover::FacadeDrawMenu() {
     device->RenderText2D(name, 50.0f, 50.0f, 0.05f, 0.5f, colorB);
     name = "Mr Penguin";
     device->RenderText2D(name, 600.0f, 550.0f, 0.05f, 0.75f, color[0]);
-    name = "Captain Sharky";
+    name = "Sharky";
     device->RenderText2D(name, 600.0f, 425.0f, 0.05f, 0.75f, color[2]);
-    name = "Kaiser Kong";
+    name = "Deacon";
     device->RenderText2D(name, 600.0f, 300.0f, 0.05f, 0.75f, color[4]);
-    name = "Deacon Dragon";
-    device->RenderText2D(name, 900.0f, 550.0f, 0.05f, 0.75f, color[1]);
     name = "Mrs Baxter";
+    device->RenderText2D(name, 900.0f, 550.0f, 0.05f, 0.75f, color[1]);
+    name = "Kaiser Kong";
     device->RenderText2D(name, 900.0f, 425.0f, 0.05f, 0.75f, color[3]);
     name = "Cyberoctopus";
     device->RenderText2D(name, 900.0f, 300.0f, 0.05f, 0.75f, color[5]);
@@ -868,7 +939,7 @@ void RenderFacadeClover::FacadeDrawGameOptions() {
     } else {
         colorOp3 = glm::vec3(0.0f, 0.0f, 255.0f);
     }
-    name = "Aceptar";
+    name = "Empezar";
     device->RenderText2D(name, 500.0f, 150.0f, 0.05f, 1.25f, colorOp3);
 
     name = "---->";
@@ -956,7 +1027,7 @@ void RenderFacadeClover::FacadeDrawSettings() {
             glm::vec3(0.0f, 0.0f, 255.0f)
     };
     colorOp1[inputSettings[0]] = glm::vec3(0.0f, 255.0f, 0.0f);
-    std::string name = "Sonido";
+    std::string name = "Sonido General";
     device->RenderText2D(name, 600.0f, 600.0f, 0.05f, 0.75f, colorTitle);
     name = "No";
     device->RenderText2D(name, 300.0f, 500.0f, 0.05f, 0.75f, colorOp1[0]);
@@ -994,17 +1065,8 @@ void RenderFacadeClover::FacadeDrawSettings() {
     name = "zzzzxzzzz";
     device->RenderText2D(name, 750.0f, 250.0f, 0.05f, 0.75f, colorOp3[2]);
 
-    glm::vec3 colorOp4;
-    if (inputSettings[3] == 0) {
-        colorOp4 = glm::vec3(0.0f, 255.0f, 0.0f);
-    } else {
-        colorOp4 = glm::vec3(0.0f, 0.0f, 255.0f);
-    }
-    name = "Aceptar";
-    device->RenderText2D(name, 500.0f, 150.0f, 0.05f, 1.25f, colorOp4);
-
     name = "---->";
-    float sel[4] = { 500.0f, 325.0f, 250.0f, 150.0f };
+    float sel[3] = { 500.0f, 325.0f, 250.0f };
     device->RenderText2D(name, 100.0f, sel[optionSettings], 0.05f, 1.0f, colorBase);
 
 

@@ -13,7 +13,8 @@ class SystemLoD {
     SystemLoD() = default;
     ~SystemLoD() = default;
 
-    void Update(vector<shared_ptr<Entity>> entities, Camera *cam);
+    void UpdateMeshes(vector<shared_ptr<Entity>> entities, Camera *cam);
+    void UpdateAnimations(vector<shared_ptr<Entity>> entities, Camera *cam);
 
    private:
 };

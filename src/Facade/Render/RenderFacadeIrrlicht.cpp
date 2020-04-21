@@ -189,7 +189,7 @@ void RenderFacadeIrrlicht::FacadeUpdatePowerUpHUD(DataMap* d) {
 
 
 
-void RenderFacadeIrrlicht::FacadeDrawHUD(Entity* car, ManCar* manCars) {
+void RenderFacadeIrrlicht::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* globalClock) {
 
     //Voy a actualizar aqui las posiciones donde van porque es el unico sitio donde tengo ambos tipos de coches
 
@@ -455,6 +455,14 @@ const uint16_t RenderFacadeIrrlicht::FacadeAddObject(Entity* entity) {
 }
 
 void RenderFacadeIrrlicht::FacadeUpdateMeshesLoD(vector<shared_ptr<Entity>> entities) {
+
+}
+
+void RenderFacadeIrrlicht::FacadeUpdateAnimationsLoD(vector<shared_ptr<Entity>> entities) {
+
+}
+
+void RenderFacadeIrrlicht::FacadeAnimate(vector<shared_ptr<Entity>> entities) {
 
 }
 

@@ -80,11 +80,13 @@ class RenderFacadeClover : public RenderFacade {
       void FacadeCheckInputSettings() override;
 
       void FacadeUpdatePowerUpHUD(DataMap* d) override;
-      void FacadeDrawHUD(Entity* car, ManCar* manCars) override;
+      void FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* globalClock) override;
       void FacadeSuscribeEvents() override;
       void FacadeAddPlates(Manager* manNamePlates) override;
       void FacadeUpdatePlates(Manager* manNamePlates) override;
       void FacadeUpdateMeshesLoD(vector<shared_ptr<Entity>> entities) override;
+      void FacadeUpdateAnimationsLoD(vector<shared_ptr<Entity>> entities) override;
+      void FacadeAnimate(vector<shared_ptr<Entity>> entities) override;
       void ThrowEventChangeToMulti(uint16_t IdOnline, const std::vector<uint16_t> IdPlayersOnline) override;
       void FacadeAddSkybox(string right,string left,string top,string bottom,string front,string back) override;
       void FacadeAddShadowMapping(unsigned int lightId) override;
@@ -151,9 +153,9 @@ class RenderFacadeClover : public RenderFacade {
         std::vector<int> inputGO {1,1,0};
         int maxInputGO[3] {3, 2, 0};
         //Ajustes
-        int optionSettings { 3 };
-        std::vector<int> inputSettings {1,0,0,1};
-        int maxInputSettings[4] {3, 1, 2, 0};
+        int optionSettings { 0 };
+        std::vector<int> inputSettings {1,0,0};
+        int maxInputSettings[4] {3, 1, 2};
 
         CLEngine* device {nullptr};
         CLNode* smgr {nullptr};

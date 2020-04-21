@@ -81,11 +81,13 @@ class RenderFacadeIrrlicht : public RenderFacade {
     void FacadeCheckInputSettings() override;
 
     void FacadeUpdatePowerUpHUD(DataMap* d) override;
-    void FacadeDrawHUD(Entity* car, ManCar* manCars) override;
+    void FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* globalClock) override;
     void FacadeSuscribeEvents() override;
     void FacadeAddPlates(Manager* manNamePlates) override;
     void FacadeUpdatePlates(Manager* manNamePlates) override;
     void FacadeUpdateMeshesLoD(vector<shared_ptr<Entity>> entities) override;
+    void FacadeAnimate(vector<shared_ptr<Entity>> entities) override;
+    void FacadeUpdateAnimationsLoD(vector<shared_ptr<Entity>> entities) override;
     void ThrowEventChangeToMulti(uint16_t IdOnline, const vector<uint16_t> IdPlayersOnline) override;
     void FacadeAddSkybox(string right,string left,string top,string bottom,string front,string back) override;
     void FacadeAddShadowMapping(unsigned int lightId) override;

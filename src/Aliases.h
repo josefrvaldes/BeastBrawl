@@ -40,7 +40,8 @@ enum DataType{
     VEC3_POS,
     VEC3_ROT,
     TIME_TOTEM,
-    STOLE
+    STOLE,
+    NUM
 };
 
 using EM = EventManager;

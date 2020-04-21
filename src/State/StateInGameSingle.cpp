@@ -1,13 +1,14 @@
 #include "StateInGameSingle.h"
 
+#include "../Managers/ManAI.h"
+
 StateInGameSingle::StateInGameSingle() : StateInGame() {
-    systemBtPowerUp = make_unique<SystemBtPowerUp>();
-    systemBtMoveTo = make_unique<SystemBtMoveTo>();
-    systemBtLoDMove = make_unique<SystemBtLoDMove>();
-    systemPathPlanning = make_unique<SystemPathPlanning>();
 
     InitState();
     InitVirtualMethods();
+
+
+    createSystemAI();
 
     //CAMBIARCosasNavMesh(*manCars.get(), *manNavMesh.get());
 
@@ -21,31 +22,6 @@ void StateInGameSingle::InitState() {
 }
 
 
-/*
-void StateInGameSingle::CAMBIARCosasNavMesh(ManCar &manCars, ManNavMesh &manNavMesh){
-    // vamos a asignar el navmesh al que pertenecemos
-    for(auto& carAI : manCars.GetEntities()){
-        if(static_cast<Car*>(carAI.get())->GetTypeCar() == TypeCar::CarAI){
-            auto cTransformableCar = static_cast<CTransformable*>(carAI.get()->GetComponent(CompType::TransformableComp).get());     
-            for(auto& navmesh : manNavMesh.GetEntities()){
-                auto cDimensions = static_cast<CDimensions*>(navmesh.get()->GetComponent(CompType::DimensionsComp).get());
-                auto cTransformableNav = static_cast<CTransformable*>(navmesh.get()->GetComponent(CompType::TransformableComp).get()); 
-                if( ( (cTransformableCar->position.x >= (cTransformableNav->position.x-(cDimensions->width/2))) && 
-                    (cTransformableCar->position.x <= (cTransformableNav->position.x+(cDimensions->width/2))) ) &&
-                ( (cTransformableCar->position.z >= (cTransformableNav->position.z-(cDimensions->depth/2))) && 
-                    (cTransformableCar->position.z <= (cTransformableNav->position.z+(cDimensions->depth/2))) )  ){
-                        auto cCurrentNavMesh = static_cast<CCurrentNavMesh*>(carAI.get()->GetComponent(CompType::CurrentNavMeshComp).get());
-                        auto cNavMesh = static_cast<CNavMesh*>(navmesh.get()->GetComponent(CompType::NavMeshComp).get());
-                        cCurrentNavMesh->currentNavMesh = cNavMesh->id;
-                        //std::cout << " EL NAVMESH DE LAS IA ES::::234563345677: " << cNavMesh->id << std::endl;
-                    }       
-            }
-        }
-    }   
-}
-*/
-
-
 void StateInGameSingle::Input() {
     renderEngine->FacadeCheckInputSingle();
     inputEngine->CheckInputSingle();
@@ -53,23 +29,20 @@ void StateInGameSingle::Input() {
 
 void StateInGameSingle::Update() {
     StateInGame::Update();
+
+
+    //std::cout << "LOS TIEMPOS SON:  ";
+    //cout << " ------------------------------------------------------------------------------- " << endl;
+    manAI->Update();
+
+
     for (auto actualAI : manCars->GetEntities()) { // CUIDADO!!! -> el static cast que solo se use en el single player, si no peta
         if (static_cast<Car*>(actualAI.get())->GetTypeCar() == TypeCar::CarAI){
-            manCars->UpdateCarAI(
-                static_cast<CarAI*>(actualAI.get()), 
-                manPowerUps.get(), 
-                manBoxPowerUps.get(), 
-                manTotems.get(), 
-                manWayPoint.get(), 
-                manNavMesh.get(), 
-                manBoundingWall.get(),
-                manBoundingOBB.get(), 
-                systemBtPowerUp.get(), 
-                systemBtMoveTo.get(), 
-                systemBtLoDMove.get(),
-                systemPathPlanning.get());
+            manCars->UpdateCarAI(static_cast<CarAI*>(actualAI.get()),manTotems.get());
         }
     }
+
+    //std::cout << " " << std::endl;
     //CAMBIARCosasDeTotemUpdate();
 
     // COLISIONES entre powerUp y IA
@@ -85,8 +58,6 @@ void StateInGameSingle::Update() {
             physicsEngine->UpdateTransformable(actualAI.get());
         }
     }
-
-
 }
 
 void StateInGameSingle::Render() {
@@ -123,32 +94,93 @@ void StateInGameSingle::AddElementsToRender() {
     
 }
 
-/*
-void StateInGameSingle::CAMBIARCosasDeTotemUpdate() {
-    bool todosFalse = true;
-    auto cTransformTotem = static_cast<CTransformable *>(totemOnCar->GetComponent(CompType::TransformableComp).get());
-    cTransformTotem->rotation.y += 0.1;
-    for (const auto& carAI : manCars->GetEntities()) {  // actualizamos los coche IA
-        // comprobamos el componente totem y si lo tienen se lo ponemos justo encima para que se sepa quien lo lleva
-        auto cTotem = static_cast<CTotem *>(carAI.get()->GetComponent(CompType::TotemComp).get());
-        if (cTotem->active) {
-            todosFalse = false;
-            auto cTransformCar = static_cast<CTransformable *>(carAI.get()->GetComponent(CompType::TransformableComp).get());
-            cTransformTotem->position.x = cTransformCar->position.x;
-            cTransformTotem->position.z = cTransformCar->position.z;
-            cTransformTotem->position.y = 22.0f;
-            // supuestamente esta el drawAll que te lo hace no?????????????????
-            // si esta cambiando pero no se esta redibujando
-            break; // cuando encontramos a alguien que ya lleva el totem, nos salimos del for, no seguimos comprobando a los demás
+
+void StateInGameSingle::createSystemAI(){
+    // creamos ManAI
+    manAI = make_unique<ManAI>();
+
+
+    // iniciamos los sistemas
+    InitBtMoveTo();
+    InitPathPlanning();
+    InitBtLoDMove();
+    InitBtPowerUp();
+
+    //creamos comportamientos IA
+    uint32_t i = 0;
+    for(auto actualAI : manCars->GetEntities()){
+        if (static_cast<Car*>(actualAI.get())->GetTypeCar() == TypeCar::CarAI){
+            manAI->addBehavior(static_cast<CarAI*>(actualAI.get()), systemBtMoveTo.get(),     systemBtMoveTo->getFrecuency(),     i, systemBtMoveTo.get()->getMaxProcessTime() );
+            manAI->addBehavior(static_cast<CarAI*>(actualAI.get()), systemPathPlanning.get(), systemPathPlanning->getFrecuency(), i, systemPathPlanning.get()->getMaxProcessTime() );
+            manAI->addBehavior(static_cast<CarAI*>(actualAI.get()), systemBtLoDMove.get(),    systemBtLoDMove->getFrecuency(),    i, systemBtLoDMove.get()->getMaxProcessTime() );
+            manAI->addBehavior(static_cast<CarAI*>(actualAI.get()), systemBtPowerUp.get(),    systemBtPowerUp->getFrecuency(),    i, systemBtPowerUp.get()->getMaxProcessTime() );
+            
+            i++;
         }
     }
-    if(todosFalse){
-        cTransformTotem->position.y = -100.0f;
-    }
-
-    renderEngine->UpdateTransformable(totemOnCar.get());
 }
-*/
+
+
+void StateInGameSingle::InitBtPowerUp(){
+    systemBtPowerUp = make_unique<SystemBtPowerUp>();
+
+    systemBtPowerUp->AddManager(*manCars.get());
+    systemBtPowerUp->AddManager(*manPowerUps.get());
+    systemBtPowerUp->AddManager(*manBoxPowerUps.get());
+    systemBtPowerUp->AddManager(*manTotems.get());
+    systemBtPowerUp->AddManager(*manWayPoint.get());
+    systemBtPowerUp->AddManager(*manNavMesh.get());
+    systemBtPowerUp->AddManager(*manBoundingWall.get());
+    systemBtPowerUp->AddManager(*manBoundingOBB.get());
+    // Precalculado
+    systemBtPowerUp->setMaxProcessTime(0.00025);
+}
+void StateInGameSingle::InitBtMoveTo(){
+    systemBtMoveTo = make_unique<SystemBtMoveTo>();
+
+    systemBtMoveTo->AddManager(*manCars.get());
+    systemBtMoveTo->AddManager(*manPowerUps.get());
+    systemBtMoveTo->AddManager(*manBoxPowerUps.get());
+    systemBtMoveTo->AddManager(*manTotems.get());
+    systemBtMoveTo->AddManager(*manWayPoint.get());
+    systemBtMoveTo->AddManager(*manNavMesh.get());
+    systemBtMoveTo->AddManager(*manBoundingWall.get());
+    systemBtMoveTo->AddManager(*manBoundingOBB.get());
+
+    systemBtMoveTo->setMaxProcessTime(0.00035);
+}
+void StateInGameSingle::InitBtLoDMove(){
+    systemBtLoDMove = make_unique<SystemBtLoDMove>();
+
+    systemBtLoDMove->AddManager(*manCars.get());
+    systemBtLoDMove->AddManager(*manPowerUps.get());
+    systemBtLoDMove->AddManager(*manBoxPowerUps.get());
+    systemBtLoDMove->AddManager(*manTotems.get());
+    systemBtLoDMove->AddManager(*manWayPoint.get());
+    systemBtLoDMove->AddManager(*manNavMesh.get());
+    systemBtLoDMove->AddManager(*manBoundingWall.get());
+    systemBtLoDMove->AddManager(*manBoundingOBB.get());
+
+    systemBtLoDMove->setMaxProcessTime(0.00053);
+}
+void StateInGameSingle::InitPathPlanning(){
+    systemPathPlanning = make_unique<SystemPathPlanning>();
+
+    systemPathPlanning->AddManager(*manCars.get());
+    systemPathPlanning->AddManager(*manPowerUps.get());
+    systemPathPlanning->AddManager(*manBoxPowerUps.get());
+    systemPathPlanning->AddManager(*manTotems.get());
+    systemPathPlanning->AddManager(*manWayPoint.get());
+    systemPathPlanning->AddManager(*manNavMesh.get());
+    systemPathPlanning->AddManager(*manBoundingWall.get());
+    systemPathPlanning->AddManager(*manBoundingOBB.get());
+
+    systemPathPlanning->setMaxProcessTime(0.00025);
+}
+
+
+
+
 
 void StateInGameSingle::CAMBIARInicializarCarAIS(ManCar &manCars, ManWayPoint &manWayPoint) {
 /*    
@@ -196,6 +228,8 @@ void StateInGameSingle::CAMBIARInicializarCarAIS(ManCar &manCars, ManWayPoint &m
             auto posComp = static_cast<CTransformable*>(e->GetComponent(CompType::TransformableComp).get());
             string nameEvent = "Coche/motor";
             SoundFacadeManager::GetInstance()->GetSoundFacade()->CreateSoundDinamic3D(idComp->id, posComp->position, nameEvent, 1, 0);
+            nameEvent = "Coche/motor" + idComp->id;
+            SoundFacadeManager::GetInstance()->GetSoundFacade()->SetParameter(nameEvent, "personaje", 6);
             nameEvent = "PowerUp/escudo";
             SoundFacadeManager::GetInstance()->GetSoundFacade()->CreateSoundDinamic3D(idComp->id, posComp->position, nameEvent, 0, 0);
             nameEvent = "PowerUp/escudo_roto";
@@ -207,3 +241,57 @@ void StateInGameSingle::CAMBIARInicializarCarAIS(ManCar &manCars, ManWayPoint &m
         //} 
     }
 }
+
+
+
+/*
+void StateInGameSingle::CAMBIARCosasNavMesh(ManCar &manCars, ManNavMesh &manNavMesh){
+    // vamos a asignar el navmesh al que pertenecemos
+    for(auto& carAI : manCars.GetEntities()){
+        if(static_cast<Car*>(carAI.get())->GetTypeCar() == TypeCar::CarAI){
+            auto cTransformableCar = static_cast<CTransformable*>(carAI.get()->GetComponent(CompType::TransformableComp).get());     
+            for(auto& navmesh : manNavMesh.GetEntities()){
+                auto cDimensions = static_cast<CDimensions*>(navmesh.get()->GetComponent(CompType::DimensionsComp).get());
+                auto cTransformableNav = static_cast<CTransformable*>(navmesh.get()->GetComponent(CompType::TransformableComp).get()); 
+                if( ( (cTransformableCar->position.x >= (cTransformableNav->position.x-(cDimensions->width/2))) && 
+                    (cTransformableCar->position.x <= (cTransformableNav->position.x+(cDimensions->width/2))) ) &&
+                ( (cTransformableCar->position.z >= (cTransformableNav->position.z-(cDimensions->depth/2))) && 
+                    (cTransformableCar->position.z <= (cTransformableNav->position.z+(cDimensions->depth/2))) )  ){
+                        auto cCurrentNavMesh = static_cast<CCurrentNavMesh*>(carAI.get()->GetComponent(CompType::CurrentNavMeshComp).get());
+                        auto cNavMesh = static_cast<CNavMesh*>(navmesh.get()->GetComponent(CompType::NavMeshComp).get());
+                        cCurrentNavMesh->currentNavMesh = cNavMesh->id;
+                        //std::cout << " EL NAVMESH DE LAS IA ES::::234563345677: " << cNavMesh->id << std::endl;
+                    }       
+            }
+        }
+    }   
+}
+*/
+
+
+/*
+void StateInGameSingle::CAMBIARCosasDeTotemUpdate() {
+    bool todosFalse = true;
+    auto cTransformTotem = static_cast<CTransformable *>(totemOnCar->GetComponent(CompType::TransformableComp).get());
+    cTransformTotem->rotation.y += 0.1;
+    for (const auto& carAI : manCars->GetEntities()) {  // actualizamos los coche IA
+        // comprobamos el componente totem y si lo tienen se lo ponemos justo encima para que se sepa quien lo lleva
+        auto cTotem = static_cast<CTotem *>(carAI.get()->GetComponent(CompType::TotemComp).get());
+        if (cTotem->active) {
+            todosFalse = false;
+            auto cTransformCar = static_cast<CTransformable *>(carAI.get()->GetComponent(CompType::TransformableComp).get());
+            cTransformTotem->position.x = cTransformCar->position.x;
+            cTransformTotem->position.z = cTransformCar->position.z;
+            cTransformTotem->position.y = 22.0f;
+            // supuestamente esta el drawAll que te lo hace no?????????????????
+            // si esta cambiando pero no se esta redibujando
+            break; // cuando encontramos a alguien que ya lleva el totem, nos salimos del for, no seguimos comprobando a los demás
+        }
+    }
+    if(todosFalse){
+        cTransformTotem->position.y = -100.0f;
+    }
+
+    renderEngine->UpdateTransformable(totemOnCar.get());
+}
+*/

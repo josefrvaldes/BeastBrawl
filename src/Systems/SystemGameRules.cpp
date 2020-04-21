@@ -29,6 +29,14 @@ void SystemGameRules::UpdateGameRules(Entity& globalClock_) const{
 
     }
 
+    //Sonido reloj
+    int time = cClock->DURATION_TIME/1000 - cClock->accumulatedTime/1000;
+    if (time == 30) {
+        EventManager::GetInstance().AddEventMulti(Event{EventType::CLOCK});
+    } else if (time == 0 ) {
+        EventManager::GetInstance().AddEventMulti(Event{EventType::NOT_CLOCK});
+    }
+
 
 }
 
@@ -46,6 +54,8 @@ void SystemGameRules::UpdateRulesCarPowerUps(Entity& car_, Entity& totem_) const
             cTransformTotem->position.z = cTransformCar->position.z;
             cTransformTotem->position.y = cTransformCar->position.y + 10.0f;
     }
+
+
 
 
     if(cTotem->accumulatedTime/1000.0 > cTotem->DURATION_TIME/1000.0){

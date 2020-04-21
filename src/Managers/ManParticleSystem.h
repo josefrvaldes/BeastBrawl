@@ -20,9 +20,10 @@ class ManParticleSystem : public Manager{
     ManParticleSystem();
     ~ManParticleSystem() = default;
 
-    void CreateParticleSystem(unsigned int parentId, glm::vec3 pos,unsigned long _nParticles, glm::vec3 _velocity, string _texture, int _width, int _height, int _spawnDelay, int _particlesToSpawn, int _lifeSpan, glm::vec3 _offset, glm::vec3 _orientation, float _radious, std::uint_fast8_t _flags, bool _loop, bool _started);
+    void CreateParticleSystem(unsigned int parentId, glm::vec3 pos,unsigned long _nParticles, glm::vec3 _velocity, vector<string> _textures, int _width, int _height, int _spawnDelay, int _particlesToSpawn, int _lifeSpan, glm::vec3 _offset, glm::vec3 _orientation, float _radious, std::uint_fast8_t _flags, bool _loop, bool _started);
 
-    void ActivarParticulas(DataMap* data);
+    void ActivateParticlesBoxPowerUp(DataMap* data);
+    void CreateParticlePowerUpCollision(DataMap* data);
 
 
    private:
