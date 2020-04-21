@@ -10,6 +10,7 @@
 #include "../Components/CBoundingCilindre.h"
 #include "../Components/CTotem.h"
 #include "../Constants.h"
+#include <GameOptions.h>
 
 using namespace std;
 using namespace chrono;
@@ -210,7 +211,21 @@ void StateInGame::InitState() {
     }
 }
 
+
+void StateInGame::CreateMainCar() {
+    if(manCars) {
+        auto pj = GameOptions::GetInstance()->GetCharacter();
+        manCars->CreateMainCar(pj);
+    }
+}
+
+///////////////////////
+
+///////////////////////
+
 void StateInGame::Update() {
+
+
     EventManager &em = EventManager::GetInstance();
     em.Update();
 

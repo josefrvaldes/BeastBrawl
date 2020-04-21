@@ -14,13 +14,14 @@ using namespace glm;
 using namespace chrono;
 
 enum class SkidState{DISABLED, SKID_START, SKID_TO_LEFT, SKID_TO_RIGHT, SKID_LEFT, SKID_RIGHT, SKID_RECOVER_RIGHT, SKID_RECOVER_LEFT};
+enum class mainCharacter {PENGUIN, TIGER, SHARK, GORILLA, DRAGON, OCTOPUS};
 
 class CCar : public Component
 {
 public:
-    CCar();
-    CCar(float maxSpeed,float acceleration, float carFriction, float carSlowDown);
-    CCar(float maxSpeed,float acceleration, float carFriction, float carSlowDown, float maxWheelRot);
+    CCar(mainCharacter);
+    CCar(mainCharacter, float maxSpeed,float acceleration, float carFriction, float carSlowDown);
+    CCar(mainCharacter, float maxSpeed,float acceleration, float carFriction, float carSlowDown, float maxWheelRot);
     ~CCar(){};
 
     friend ostream &operator<<(ostream &out, CCar &c)
@@ -28,6 +29,9 @@ public:
         //out << "(" << c.GetX() << "," << c.GetY() << "," << c.GetZ() << ")";
         return out;
     }
+
+    //PERSONAJE
+    mainCharacter character { mainCharacter::PENGUIN };
 
     float speed = 0.0;
     float maxSpeed;

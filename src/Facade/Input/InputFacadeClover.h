@@ -2,6 +2,8 @@
 
 #include <iostream>
 #include <memory>
+#include <GameOptions.h>
+
 #include "InputFacade.h"
 #include "../Render/RenderFacadeManager.h"
 #include "../Sound/SoundFacadeManager.h"

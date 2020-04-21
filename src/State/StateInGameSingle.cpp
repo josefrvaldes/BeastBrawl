@@ -7,7 +7,6 @@ StateInGameSingle::StateInGameSingle() : StateInGame() {
     InitState();
     InitVirtualMethods();
 
-
     createSystemAI();
 
     //CAMBIARCosasNavMesh(*manCars.get(), *manNavMesh.get());
@@ -78,6 +77,9 @@ void StateInGameSingle::InitializeCLPhysics(ManCar &manCars, ManBoundingWall &ma
 
 void StateInGameSingle::InitializeManagers(Physics *physics, Camera *cam, const uint32_t timeGame) {
     StateInGame::InitializeManagers(physics, cam, timeGame);
+
+    //Cambiar
+    StateInGame::CreateMainCar();
     CAMBIARInicializarCarAIS(*manCars, *manWayPoint);
 }
 
@@ -215,9 +217,10 @@ void StateInGameSingle::CAMBIARInicializarCarAIS(ManCar &manCars, ManWayPoint &m
     auto posCar2 = glm::vec3(-202.0f, 15.0f, -145.0f);
     auto posCar3 = glm::vec3(209.0f, 15.0f, -145.0f);
 
-    manCars.CreateCarAI(posCar1);
-    manCars.CreateCarAI(posCar2);
-    manCars.CreateCarAI(posCar3);
+    //Cambiar
+    manCars.CreateCarAI(0, posCar1);
+    manCars.CreateCarAI(0, posCar2);
+    manCars.CreateCarAI(0, posCar3);
 
     //int i = -1;
     //TODO: Cambiar de sitio

@@ -29,7 +29,20 @@
 class Position;
 using namespace std;
 
-CarAI::CarAI(){
+CarAI::CarAI(int pj){
+
+    mainCharacter _pj;
+
+    switch (pj) {
+        case 0: _pj = mainCharacter::PENGUIN; break;
+        case 1: _pj = mainCharacter::TIGER; break;
+        case 2: _pj = mainCharacter::SHARK; break;
+        case 3: _pj = mainCharacter::GORILLA; break;
+        case 4: _pj = mainCharacter::DRAGON; break;
+        case 5: _pj = mainCharacter::OCTOPUS; break;
+        default: break;
+    }
+
     typeCar = TypeCar::CarAI;
 
     // default values
@@ -62,7 +75,7 @@ CarAI::CarAI(){
     shared_ptr<CTransformable> cTransformable = make_shared<CTransformable>(pos, rot, scale); 
     shared_ptr<CTexture> cTexture = make_shared<CTexture>(texture);
     shared_ptr<CMesh> cMesh   = make_shared<CMesh>(mesh);
-    shared_ptr<CCar> cCar = make_shared<CCar>(maxSpeed, acceleration, friction, slowDown, 10.0);
+    shared_ptr<CCar> cCar = make_shared<CCar>(_pj, maxSpeed, acceleration, friction, slowDown, 10.0);
 
     shared_ptr<CWayPoint> cWayPoint = make_shared<CWayPoint>();
     shared_ptr<CPosDestination> cPosDestination = make_shared<CPosDestination>();
@@ -128,8 +141,8 @@ CarAI::CarAI(){
     AddComponent(cShader);
 }
 
-CarAI::CarAI(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale,string texture, string mesh, float maxSpeed, float acceleration , float carFriction, float carSlowDown, std::string vertexShader, std::string fragmentShader)
-    : CarAI(){
+CarAI::CarAI(int pj, glm::vec3 pos, glm::vec3 rot, glm::vec3 scale,string texture, string mesh, float maxSpeed, float acceleration , float carFriction, float carSlowDown, std::string vertexShader, std::string fragmentShader)
+    : CarAI(pj){
 
     CTransformable *cTransformable = (CTransformable *)m_components[CompType::TransformableComp].get();
     cTransformable->position = pos;
@@ -164,8 +177,8 @@ CarAI::CarAI(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale,string texture, strin
 
 
 
-CarAI::CarAI(glm::vec3 _position) 
-    : CarAI()
+CarAI::CarAI(int pj, glm::vec3 _position) 
+    : CarAI(pj)
 {
     CTransformable *cTransformable = (CTransformable *)m_components[CompType::TransformableComp].get();
     cTransformable->position = _position;

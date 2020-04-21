@@ -29,7 +29,20 @@ class Position;
 
 using namespace std;
 
-CarHuman::CarHuman() {
+CarHuman::CarHuman(int pj) {
+
+    mainCharacter _pj;
+
+    switch (pj) {
+        case 0: _pj = mainCharacter::PENGUIN; break;
+        case 1: _pj = mainCharacter::TIGER; break;
+        case 2: _pj = mainCharacter::SHARK; break;
+        case 3: _pj = mainCharacter::GORILLA; break;
+        case 4: _pj = mainCharacter::DRAGON; break;
+        case 5: _pj = mainCharacter::OCTOPUS; break;
+        default: break;
+    }
+
     typeCar = TypeCar::CarHuman;
 
     // default values
@@ -59,7 +72,7 @@ CarHuman::CarHuman() {
     shared_ptr<CTransformable> cTransformable = make_shared<CTransformable>(pos, rot, scale);
     shared_ptr<CTexture> cTexture = make_shared<CTexture>(texture);
     shared_ptr<CMesh> cMesh = make_shared<CMesh>(mesh);
-    shared_ptr<CCar> cCar = make_shared<CCar>(maxSpeed, acceleration, friction, slowDown);
+    shared_ptr<CCar> cCar = make_shared<CCar>(_pj, maxSpeed, acceleration, friction, slowDown);
     shared_ptr<CSpeed> cSpeed = make_shared<CSpeed>();
     shared_ptr<CPowerUp> cPowerUp = make_shared<CPowerUp>();
     shared_ptr<CShield> cShield = make_shared<CShield>();
@@ -110,9 +123,22 @@ CarHuman::CarHuman() {
     //cout << "Acabamos de llamar al constructor default de car, su transformable es " << cTransformable << endl;
 }
 
-CarHuman::CarHuman(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale,
+CarHuman::CarHuman(int pj, glm::vec3 pos, glm::vec3 rot, glm::vec3 scale,
          string texture, string mesh,
          float maxSpeed, float acceleration, float carFriction, float carSlowDown,string vertexShader, string fragmentShader) {
+
+    mainCharacter _pj;
+
+    switch (pj) {
+        case 0: _pj = mainCharacter::PENGUIN; break;
+        case 1: _pj = mainCharacter::TIGER; break;
+        case 2: _pj = mainCharacter::SHARK; break;
+        case 3: _pj = mainCharacter::GORILLA; break;
+        case 4: _pj = mainCharacter::DRAGON; break;
+        case 5: _pj = mainCharacter::OCTOPUS; break;
+        default: break;
+    }
+
     typeCar = TypeCar::CarHuman;
     
     shared_ptr<CId> cId = make_shared<CId>();
@@ -120,7 +146,7 @@ CarHuman::CarHuman(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale,
     shared_ptr<CTransformable> cTransformable = make_shared<CTransformable>(pos, rot, scale);
     shared_ptr<CTexture> cTexture = make_shared<CTexture>(texture);
     shared_ptr<CMesh> cMesh = make_shared<CMesh>(mesh);
-    shared_ptr<CCar> cCar = make_shared<CCar>(maxSpeed, acceleration, carFriction, carSlowDown);
+    shared_ptr<CCar> cCar = make_shared<CCar>(_pj, maxSpeed, acceleration, carFriction, carSlowDown);
     shared_ptr<CPowerUp> cPowerUp = make_shared<CPowerUp>();
     shared_ptr<CShield> cShield = make_shared<CShield>();
     shared_ptr<CNitro> cNitro = make_shared<CNitro>();
@@ -145,8 +171,8 @@ CarHuman::CarHuman(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale,
     //cout << "Acabamos de llamar al constructor default de car, su transformable es " << cTransformable << endl;
 }
 
-CarHuman::CarHuman(glm::vec3 _position)
-    : CarHuman() {
+CarHuman::CarHuman(int pj, glm::vec3 _position)
+    : CarHuman(pj) {
     CTransformable *cTransformable = (CTransformable *)m_components[CompType::TransformableComp].get();
     cTransformable->position.x = _position.x;
     cTransformable->position.y = _position.y;

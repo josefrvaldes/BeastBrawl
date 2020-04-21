@@ -15,9 +15,9 @@ struct CPosDestination;
 class CarAI : public Car{
 
    public:
-    CarAI();
-    CarAI(glm::vec3 pos);
-    CarAI(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale, string texture, string mesh, float maxSpeed, float acceleration, float carFriction, float carSlowDown, std::string vertexShader, std::string fragmentShader);
+    CarAI(int pj);
+    CarAI(int pj, glm::vec3 pos);
+    CarAI(int pj, glm::vec3 pos, glm::vec3 rot, glm::vec3 scale, string texture, string mesh, float maxSpeed, float acceleration, float carFriction, float carSlowDown, std::string vertexShader, std::string fragmentShader);
     ~CarAI();
 
 

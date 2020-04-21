@@ -73,6 +73,7 @@ class StateInGame : public State {
     void Update() override;
     void Render() override;
     States GetState() override { return State::States::INGAME_SINGLE; };
+    void CreateMainCar();
 
     shared_ptr<ManCar> manCars;
 
