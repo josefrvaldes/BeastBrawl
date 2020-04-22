@@ -132,7 +132,7 @@ class CLNode{
 
 
         //! Dibuja la escena
-        void DFSTree(glm::mat4);
+        void DFSTree(glm::mat4,CLCamera* cam);
         void DFSTree(glm::mat4 mA, GLuint shaderID);
 
 

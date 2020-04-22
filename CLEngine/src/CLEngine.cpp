@@ -226,7 +226,7 @@ void CLEngine::DrawObjects(){
     DrawSkybox();
     CalculateViewProjMatrix();
     CalculateLights();
-    smgr->DFSTree(glm::mat4(1.0f));
+    smgr->DFSTree(glm::mat4(1.0f),GetActiveCamera());
     DrawGrass();
 }
 
