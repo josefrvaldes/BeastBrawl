@@ -322,7 +322,7 @@ void InputFacadeClover::CheckInputSelectCharacter(int &input, int maxInput) {
             EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_LOBBYMULTI});
         } else{
             EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_GAME_OPTIONS});
-            GameOptions::GetInstance()->SetCharacter(input);
+            GameValues::GetInstance()->SetCharacter(input);
         }
 
     } else if (!IsKeyOrGamepadPress(GLFW_KEY_SPACE, GLFW_GAMEPAD_BUTTON_A, false, 0) ) {

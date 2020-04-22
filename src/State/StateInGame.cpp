@@ -10,7 +10,7 @@
 #include "../Components/CBoundingCilindre.h"
 #include "../Components/CTotem.h"
 #include "../Constants.h"
-#include <GameOptions.h>
+#include <GameValues.h>
 
 using namespace std;
 using namespace chrono;
@@ -214,7 +214,7 @@ void StateInGame::InitState() {
 
 void StateInGame::CreateMainCar() {
     if(manCars) {
-        auto pj = GameOptions::GetInstance()->GetCharacter();
+        auto pj = GameValues::GetInstance()->GetCharacter();
         manCars->CreateMainCar(pj);
         /*auto cCar = static_cast<CCar*>(manCars->GetCar()->GetComponent(CompType::CarComp).get());
         if (cCar){

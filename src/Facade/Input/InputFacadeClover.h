@@ -2,7 +2,7 @@
 
 #include <iostream>
 #include <memory>
-#include <GameOptions.h>
+#include <GameValues.h>
 
 #include "InputFacade.h"
 #include "../Render/RenderFacadeManager.h"

@@ -16,7 +16,7 @@
 #include "State/StateSettings.h"
 
 #include <Constants.h>
-#include "GameOptions.h"
+#include "GameValues.h"
 
 
 using namespace std;
@@ -159,7 +159,7 @@ void Game::InitGame() {
     
 
     //Se inicia GameOptions
-    GameOptions::GetInstance();
+    GameValues::GetInstance();
 
     //Inicializa la fachada de FMOD.
     SoundFacadeManager::GetInstance()->InitializeFacadeFmod();

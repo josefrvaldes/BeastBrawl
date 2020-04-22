@@ -2,10 +2,10 @@
 
 #include <vector>
 
-class GameOptions {
+class GameValues {
     public:
-        virtual ~GameOptions(){};
-        static GameOptions* GetInstance();
+        virtual ~GameValues(){};
+        static GameValues* GetInstance();
 
         void SetCharacter(int c);
         void SetMainCPoints(int p)                      { mainCPoints = p; };
@@ -17,8 +17,8 @@ class GameOptions {
         const std::vector<int>& GetIACharacters()       { return iaCharacter; };
 
     private:
-        GameOptions() = default;;
-        static GameOptions* instance;
+        GameValues() = default;;
+        static GameValues* instance;
 
         int mainCharacter { 0 };
         std::vector<int> iaCharacter = { 1, 2, 3, 4, 5};  // Por defecto  

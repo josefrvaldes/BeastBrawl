@@ -215,7 +215,7 @@ void StateInGameSingle::CAMBIARInicializarCarAIS(ManCar &manCars, ManWayPoint &m
 */
 
 
-    auto iaPjs = GameOptions::GetInstance()->GetIACharacters();
+    auto iaPjs = GameValues::GetInstance()->GetIACharacters();
 
 
 

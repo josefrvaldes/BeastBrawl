@@ -1,25 +1,25 @@
-#include "GameOptions.h"
+#include "GameValues.h"
 
 #include <algorithm>
 #include <iostream>
 
-GameOptions* GameOptions::instance = 0;
+GameValues* GameValues::instance = 0;
 
-GameOptions* GameOptions::GetInstance() {
+GameValues* GameValues::GetInstance() {
     if (instance == 0) {
-        instance = new GameOptions();
+        instance = new GameValues();
     }
     return instance;
 }
 
-void GameOptions::SetCharacter(int c) {
+void GameValues::SetCharacter(int c) {
 
     mainCharacter = c;
 
     //Randomiza los personajes de la IA cuando te coges un personaje nuevo
     std::vector<int> personajes = {0, 1, 2, 3, 4, 5};
     std::random_shuffle(personajes.begin(), personajes.end());
-    auto mCharacter = GameOptions::GetInstance()->GetCharacter();
+    auto mCharacter = GameValues::GetInstance()->GetCharacter();
     for(size_t i = 0; i < personajes.size(); ++i) {
         if (personajes[i] == mCharacter) {
             auto aux = personajes.back();
