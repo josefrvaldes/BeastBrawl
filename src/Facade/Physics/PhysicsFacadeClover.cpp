@@ -24,7 +24,7 @@ void PhysicsFacadeClover::UpdateCar(Entity* car, Entity* cam) {
     //auto openglAngle = Utils::IrrlichtAngleToOpenGL(130.0);
     //Actualizamos el valor en la estructura de irrlicht
     // Cogemos el nodo de irrlicht con el ID igual al que le hemos pasado
-    auto node = smgr->GetNodeByID(cId->id); 
+    auto node = device->GetNodeByID(cId->id); 
 
     //cout << cTransformable->position.x << " | " << cTransformable->position.y << " | " << cTransformable->position.z << endl;
     //Actualiza la posicion del objeto de irrlicht
@@ -61,7 +61,7 @@ void PhysicsFacadeClover::UpdateCam(Entity* cam) {
 
     //Cogemos la posicion de nuestro coche
     //TODO: cambiar ese 0 por el id de CarManager
-    auto camera = smgr->GetNodeByID(cId->id);
+    auto camera = device->GetNodeByID(cId->id);
     auto entityCamera = static_cast<CLCamera*>(camera->GetEntity());
     glm::vec3 targetPosition = camera->GetTranslation();
     targetPosition.y += 17;
@@ -80,7 +80,7 @@ void PhysicsFacadeClover::UpdateTransformable(Entity* entity) {
 
     //Actualizamos el valor en la estructura de irrlicht
     // Cogemos el nodo de irrlicht con el ID igual al que le hemos pasado
-    auto node = smgr->GetNodeByID(cId->id);
+    auto node = device->GetNodeByID(cId->id);
 
     //Actualiza la posicion del objeto de irrlicht
     node->SetTranslation(glm::vec3(cTransformable->position.x, cTransformable->position.y, -cTransformable->position.z));
@@ -129,7 +129,7 @@ void PhysicsFacadeClover::UpdatePowerUps(Entity* powerUp) {
 
     //Actualizamos el valor en la estructura de irrlicht
     // Cogemos el nodo de irrlicht con el ID igual al que le hemos pasado
-    auto node = smgr->GetNodeByID(cId->id);
+    auto node = device->GetNodeByID(cId->id);
 
     //Actualiza la posicion del objeto de irrlicht
     node->SetTranslation(glm::vec3(cTransformable->position.x, cTransformable->position.y, -cTransformable->position.z));
