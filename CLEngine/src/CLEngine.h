@@ -378,6 +378,10 @@ class CLEngine {
         void SetDrawLineWidth(int w) {lineWidth = w;};
 
 
+
+
+
+
         //! Elimina todas las luces y camaras de la escena
         void RemoveLightsAndCameras();
 
@@ -387,6 +391,10 @@ class CLEngine {
         void CalculateLights();
 
         CLNode* GetRootNode() const { return smgr.get(); };
+
+        CLNode* GetNodeByIDAux(unsigned int id, CLNode* node, CLNode* root);
+
+        void SetOctreeVisibleById(unsigned int id, bool v);
 
 
         

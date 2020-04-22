@@ -205,7 +205,7 @@ void CLEngine::BeginScene(){
 
 
 void CLEngine::DrawDepthMap(){
-    auto light = smgr->GetNodeByID(GetShadowMapping()->GetID());
+    auto light = GetNodeByID(GetShadowMapping()->GetID());
 
     // 1. Se renderiza con el shadowMap
     //glCullFace(GL_FRONT);
@@ -227,7 +227,6 @@ void CLEngine::DrawObjects(){
     CalculateViewProjMatrix();
     CalculateLights();
     smgr->DFSTree(glm::mat4(1.0f));
-    DrawGrass();
     DrawGrass();
 }
 
@@ -733,23 +732,65 @@ bool CLEngine::HasChild(CLNode* child){
 }
 
 CLNode* CLEngine::GetNodeByID(unsigned int id){
-    return smgr->GetNodeByID(id);
+    CLNode* node = nullptr;
+    node = GetNodeByIDAux(id, node, smgr.get());
+    return node;
+}
+
+
+CLNode* CLEngine::GetNodeByIDAux(unsigned int id, CLNode* node, CLNode* root){
+ 
+    if(node!=nullptr) return node; //Caso base, ha encontrado ya al nodo que busca
+    if(root->GetChilds().size()>0){
+        //Tiene hijos
+        for(auto& nodo : root->GetChilds()){
+            if(nodo->GetEntity() && nodo->GetEntity()->GetID() == id){
+                node = nodo.get();
+                return node;
+            }else{
+                node = GetNodeByIDAux(id, node, nodo.get());
+
+            }
+        }
+
+    }
+
+    return node;
 }
 
 float CLEngine::GetBoundingSizeById(unsigned int id){
-    return smgr->GetBoundingSizeById(id);
+    CLNode* node = GetNodeByID(id);
+    return node->CalculateBoundingBox();
 }
 
 bool CLEngine::OctreeIncamera(float size, const glm::vec3& pos){
-    return smgr->OctreeIncamera(size, pos);
+    
+    CalculateViewProjMatrix();
+    
+
+    auto& frustum_m = GetActiveCamera()->GetFrustum();
+    CLE::CLFrustum::Visibility frusVisibility = frustum_m.IsInside(pos, size);
+
+    if(frusVisibility == CLE::CLFrustum::Visibility::Invisible)
+       return false;
+    else
+       return true;
 }
 
 bool CLEngine::DeleteNode(unsigned int id){
-    return smgr->DeleteNode(id);
+    CLNode* node = nullptr;
+    node = GetNodeByIDAux(id, node, smgr.get());
+    if(!node) return false;
+    auto father = node->GetFather();
+    father->RemoveChild(node);
+    return true;
 }
 
 bool CLEngine::DeleteNode(CLNode* node){
-    return smgr->DeleteNode(node);
+    if(!node) return false;
+    auto father = node->GetFather();
+    father->RemoveChild(node);
+    return true;
 }
 
 
@@ -942,10 +983,18 @@ void CLEngine::CalculateViewProjMatrix(){
         glUniformMatrix4fv(glGetUniformLocation(shader, "view"), 1, GL_FALSE, glm::value_ptr(view));
         glUniformMatrix4fv(glGetUniformLocation(shader, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
         glUniform3fv(glGetUniformLocation(shader, "cameraPosition"), 1, glm::value_ptr(camPos));
+        glUniform1i(glGetUniformLocation(shader, "shadows"), true); 
+        glUniform1f(glGetUniformLocation(shader, "far_plane"), Constants::FAR_PLANE);
     }
 
     
 
     auto modelView = cam->GetTransformationMat() * view;
     entityCamera->CalculateFrustum(projection,modelView);
+}
+
+
+void CLEngine::SetOctreeVisibleById(unsigned int id, bool v){
+    CLNode* node = GetNodeByID(id);
+    node->SetOctreeVisible(v);
 }

@@ -105,10 +105,10 @@ class CLNode{
         //! @param id El id del nodo
         //! @param v Si es visible o no
         void SetOctreeVisibleById(unsigned int id, bool v);
-        void SetTransformationMat(glm::mat4 transfMat)  { transformationMat = transfMat; }
+
         void SetShaderProgramID(GLuint id)              { shaderProgramID = id; }
         
-
+        void SetOctreeVisible(bool v) { octreeVisible = v; };
         
         //! Elimina un hijo de ese nodo
         //! @param child Puntero al hijo para eliminar
@@ -121,30 +121,12 @@ class CLNode{
         //! Busca un nodo en el arbol por su ID
         //! @param id Identificador para buscar
         //! @returns CLNode* Puntero al nodo
-        CLNode* GetNodeByID(unsigned int id);
-        //! Busca el nodo respectivo en el arbol y te devuelve las dimensiones de su BoundingBox
-        //! @param id Identificador para buscar
-        //! @returns float tamanyo de lado del cuadrado
         float GetBoundingSizeById(unsigned int id);
-        //! Compureba si el Bounding Volume se encuentra en camara
-        //! @param size Longitud de un lado
-        //! @param pos Posicion
-        //! @returns bool si se encuentra en camara
-        bool OctreeIncamera(float size, const glm::vec3& pos);
-        //! Elimina un hijo del arbol por su id
-        //! @param id Identificador al hijo para eliminar
-        //! @returns bool Si ha sido finalizado con exito o no
-        bool DeleteNode(unsigned int id);
-        //! Elimina un hijo del arbol por su dirección de memoria
-        //! @param node Puntero al hijo para eliminar
-        //! @returns bool Si ha sido finalizado con exito o no
-        bool DeleteNode(CLNode* node);
+
         glm::mat4 TranslateMatrix();
         glm::mat4 RotateMatrix();
         glm::mat4 ScaleMatrix();
         glm::mat4 CalculateTransformationMatrix();
-        //! Calcula las luces de la escena
-        void CalculateLights();
         //! Calcula la bounding box del objeto
         float CalculateBoundingBox();
 
@@ -184,8 +166,6 @@ class CLNode{
         glm::mat4 transformationMat {glm::mat4(1.0f)};  // matriz modelo del nodo
 
 
-        //Methods
-        CLNode* GetNodeByIDAux(unsigned int id, CLNode* node, CLNode* root);
 
 
         // BOUNDING BOX

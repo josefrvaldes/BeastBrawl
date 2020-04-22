@@ -47,21 +47,7 @@ bool CLNode::RemoveChild(CLNode* child){
     return false;
 }
 
-bool CLNode::DeleteNode(unsigned int id){
-    CLNode* node = nullptr;
-    node = GetNodeByIDAux(id, node, this);
-    if(!node) return false;
-    auto father = node->GetFather();
-    father->RemoveChild(node);
-    return true;
-}
 
-bool CLNode::DeleteNode(CLNode* node){
-    if(!node) return false;
-    auto father = node->GetFather();
-    father->RemoveChild(node);
-    return true;
-}
 
 bool CLNode::HasChild(CLNode* child){
 
@@ -127,13 +113,6 @@ glm::vec3 CLNode::RotatePointAroundCenter(const glm::vec3& point_ , const glm::v
 void CLNode::SetScalation(glm::vec3 s) {
     scalation = s; 
     ActivateFlag();
-}
-
-
-
-void CLNode::SetOctreeVisibleById(unsigned int id, bool v){
-    CLNode* node = GetNodeByID(id);
-    node->octreeVisible = v;
 }
 
 
@@ -259,41 +238,6 @@ void CLNode::DFSTree(glm::mat4 mA, GLuint shaderID) {
 
 
 
-//Devuelve el nodo por la id que le mandes
-//Lo hace a partir del padre que lo llame, lo suyo es llamarlo siempre con el nodo principal
-CLNode* CLNode::GetNodeByID(unsigned int id){
-    CLNode* node = nullptr;
-    node = GetNodeByIDAux(id, node, this);
-    return node;
-}
-
-CLNode* CLNode::GetNodeByIDAux(unsigned int id, CLNode* node, CLNode* root){
- 
-    if(node!=nullptr) return node; //Caso base, ha encontrado ya al nodo que busca
-    if(root->GetChilds().size()>0){
-        //Tiene hijos
-        for(auto& nodo : root->GetChilds()){
-            if(nodo->GetEntity() && nodo->GetEntity()->GetID() == id){
-                node = nodo.get();
-                return node;
-            }else{
-                node = GetNodeByIDAux(id, node, nodo.get());
-
-            }
-        }
-
-    }
-
-    return node;
-}
-
-float CLNode::GetBoundingSizeById(unsigned int id){
-    CLNode* node = GetNodeByID(id);
-    return node->CalculateBoundingBox();
-}
-
-
-
 
 /**
  * Metodo de debug para imprimir los nodos del arbol
@@ -372,23 +316,3 @@ float CLNode::CalculateBoundingBox(){
 }
 
 
-
-
-
-
-// comprueba si el bounding del octree se encuentra en camera
-bool CLNode::OctreeIncamera(float size, const glm::vec3& pos){
-    //CalculateViewProjMatrix();
-    //if (changed) {
-    //    transformationMat = CalculateTransformationMatrix();
-    //    changed = false;
-    //}
-
-    //auto& frustum_m = device->GetActiveCamera()->GetFrustum();
-    //CLE::CLFrustum::Visibility frusVisibility = frustum_m.IsInside(pos, size)//;
-//
-    //if(frusVisibility == CLE::CLFrustum::Visibility::Invisible)//
-    //    return false;//
-    //else
-    //    return true;
-}

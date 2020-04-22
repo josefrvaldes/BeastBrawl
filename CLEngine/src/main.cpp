@@ -189,7 +189,6 @@ int main() {
 
         smgr->DrawTree(smgr);
 
-
         CLNode* light3 = nullptr;
         while (device->Run()) {
             //Apartir de aqui hacemos cosas, de momento en el main para testear
