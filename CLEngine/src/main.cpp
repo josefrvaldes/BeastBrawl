@@ -76,41 +76,38 @@ int main() {
         //Nodo raiz
         //shared_ptr<CLNode> smgr = make_shared<CLNode>(entity1.get());
         CLNode* smgr = device->GetRootNode();
-        smgr->SetDevice(device);
         auto light1 = device->AddPointLight(device->GetRootNode(),1);
         light1->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
         static_cast<CLPointLight*>(light1->GetEntity())->SetLightAttributes(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.7f, 0.7f, 0.7f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.1f, 0.1, 0.1f), 1.0f, 0.00005f, 0.0000014f);
 
-        auto light2 = device->AddPointLight(device->GetRootNode(),123451);
+        auto light2 = device->AddPointLight(device->GetRootNode(),2);
         light2->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
         static_cast<CLPointLight*>(light2->GetEntity())->SetLightAttributes(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.2f, 0.2f, 0.2f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.1f, 0.1, 0.1f), 1.0f, 0.00007f, 0.00008f);
 
-        auto meshes = device->AddGroup(device->GetRootNode(),10000);
 
-        auto mesh1 = device->AddMesh(device->GetRootNode(),2);
+        auto mesh1 = device->AddMesh(device->GetRootNode(),3);
         mesh1->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
 
-        auto camera = device->AddCamera(device->GetRootNode(),3);
+        auto camera = device->AddCamera(device->GetRootNode(),4);
         camera->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
 
-        auto mesh2 = device->AddMesh(device->GetRootNode(),4);
+        auto mesh2 = device->AddMesh(mesh1,5);
         mesh2->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
 
-        auto nodeKongAnim = device->AddMesh(device->GetRootNode(),5);
+        auto nodeKongAnim = device->AddMesh(device->GetRootNode(),6);
         nodeKongAnim->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
 
-        auto nodeCubeAnim = device->AddMesh(device->GetRootNode(),6);
+        auto nodeCubeAnim = device->AddMesh(device->GetRootNode(),7);
         nodeCubeAnim->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
 
         
-
         /////////////////////////////////////////////////////
         //////////////////// MOVIDAS DE LAS PARTICULAS///////
         /////////////////////////////////////////////////////
         vector<string> texturesPs1;
         texturesPs1.push_back("media/particle_test.png");
 
-        auto ps1 = device->AddParticleSystem(mesh2,123940, 30, glm::vec3(500.0f, 500.0f, 500.0f), texturesPs1, 10, 10, 100, 30, 250, EFFECT_DIR_ALEATORITY | EFFECT_FADING);
+        auto ps1 = device->AddParticleSystem(mesh2,8, 30, glm::vec3(500.0f, 500.0f, 500.0f), texturesPs1, 10, 10, 100, 30, 250, EFFECT_DIR_ALEATORITY | EFFECT_FADING);
 
         vector<string> texturePs2;
         texturePs2.push_back("media/particleRedStar.png");
@@ -118,7 +115,7 @@ int main() {
         texturePs2.push_back("media/particleRedTriangle.png");
         texturePs2.push_back("media/particleYellowTriangle.png");
 
-        auto ps2 = device->AddParticleSystem(device->GetRootNode(),123941, 15, glm::vec3(400.0f, 400.0f, 400.0f), texturePs2, 10, 10, 100, 15, 250, 5, EFFECT_DIR_ALEATORITY);
+        auto ps2 = device->AddParticleSystem(device->GetRootNode(),9, 15, glm::vec3(400.0f, 400.0f, 400.0f), texturePs2, 10, 10, 100, 15, 250, 5, EFFECT_DIR_ALEATORITY);
 
         static_cast<CLCamera*>(camera->GetEntity())->SetCameraTarget(mesh2->GetTranslation());
 
@@ -126,7 +123,7 @@ int main() {
         device->AddGrass(100.0, 100.0, glm::vec3(140.0f, 55.0f, -300.0f), glm::vec3(10.0, 10.0, 10.0), true);
 
         string fileBillBoard = "media/mrPinguin.png";
-        device->AddBillBoard(mesh2,2468, fileBillBoard, false, 100.0, 50.0);
+        device->AddBillBoard(mesh2,10, fileBillBoard, false, 100.0, 50.0);
 
         device->AddSkybox("media/skybox/right.jpg",
                         "media/skybox/left.jpg",
@@ -190,6 +187,9 @@ int main() {
         const uint64_t ANIMATION_DURATION = 5000;
         auto start = Utils::getMillisSinceEpoch();
 
+        smgr->DrawTree(smgr);
+
+
         CLNode* light3 = nullptr;
         while (device->Run()) {
             //Apartir de aqui hacemos cosas, de momento en el main para testear
@@ -206,6 +206,7 @@ int main() {
             ImGui::SliderFloat3("LightPos2", auxLightPos2, -1000, 1000);
             ImGui::End();
 
+            device->Draw3DLine(0,0,0,100,100,100);
             glm::vec3 cameraPos(auxCameraPos[0], auxCameraPos[1], auxCameraPos[2]);
             glm::vec3 lightPos(auxLightPos[0], auxLightPos[1], auxLightPos[2]);
             glm::vec3 lightPos2(auxLightPos2[0], auxLightPos2[1], auxLightPos2[2]);

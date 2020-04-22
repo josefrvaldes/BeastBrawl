@@ -19,7 +19,7 @@
 
 
 //Motor grafico
-//#include "SceneTree/CLNode.h"
+#include "SceneTree/CLNode.h"
 #include "SceneTree/CLEntity.h"
 #include "SceneTree/CLMesh.h"
 #include "SceneTree/CLPointLight.h"
@@ -384,7 +384,7 @@ class CLEngine {
         //! Calcula las matriecs view y projection
         void CalculateViewProjMatrix();
         //! Calcula las luces de la escena
-        void CalculateLights(CLNode* node);
+        void CalculateLights();
 
         CLNode* GetRootNode() const { return smgr.get(); };
 
@@ -403,6 +403,7 @@ class CLEngine {
         unsigned int hudShader { 0 };
         unsigned int textShader { 0 };
 
+        vector<unsigned int> shaders;
         
         std::unique_ptr<CLNode> smgr {nullptr};
         std::unique_ptr<CLResourceManager> resourceManager {nullptr};

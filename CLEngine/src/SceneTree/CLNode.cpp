@@ -186,34 +186,36 @@ void CLNode::DFSTree(glm::mat4 mA) {
         transformationMat = mA*CalculateTransformationMatrix();
         changed = false;
     }
-    auto& frustum_m = device->GetActiveCamera()->GetFrustum();
+    //auto& frustum_m = device->GetActiveCamera()->GetFrustum();
 
     //CLE::CLFrustum::Visibility frusVisibility = frustum_m.IsInside(translation);
-    CLE::CLFrustum::Visibility frusVisibility = frustum_m.IsInside(translation, dimensionsBoundingBox);
+    //CLE::CLFrustum::Visibility frusVisibility = frustum_m.IsInside(translation, dimensionsBoundingBox);
 
     //Voy a comentar de momento el frustrum ya que para el particle system puede dar problemas
-    if(entity && visible && (frusVisibility == CLE::CLFrustum::Visibility::Completly || !ignoreFrustrum)) { 
+    if(entity && visible /*&& (frusVisibility == CLE::CLFrustum::Visibility::Completly || !ignoreFrustrum)*/) { 
+        //cout << entity->GetID() << endl;
+        //auto m = transformationMat;
         glUseProgram(shaderProgramID);
         //Calculamos las luces
 
-        if(hasLightingEffects){
-            device->CalculateLights(this);
+        // if(hasLightingEffects){
+        //     device->CalculateLights(this);
 
-        }
+        // }
         //IMPORTANTE Esto pero con el ID del nodo no de la camara
         //glUniform3fv(glGetUniformLocation(cam->GetShaderProgramID(),"viewPos"),1,glm::value_ptr(cam->GetGlobalTranslation()));
 
-        glm::mat4 MVP = device->GetProjectionMatrix() * device->GetViewMatrix() * transformationMat;
+        // glm::mat4 MVP = device->GetProjectionMatrix() * device->GetViewMatrix() * transformationMat;
         glUniformMatrix4fv(glGetUniformLocation(shaderProgramID, "model"), 1, GL_FALSE, glm::value_ptr(transformationMat));
-        glUniformMatrix4fv(glGetUniformLocation(shaderProgramID, "MVP"), 1, GL_FALSE, glm::value_ptr(MVP));
-        glUniform1i(glGetUniformLocation(shaderProgramID, "shadows"), true); 
-        glUniform1f(glGetUniformLocation(shaderProgramID, "far_plane"), Constants::FAR_PLANE); 
+        // glUniformMatrix4fv(glGetUniformLocation(shaderProgramID, "MVP"), 1, GL_FALSE, glm::value_ptr(MVP));
+        // glUniform1i(glGetUniformLocation(shaderProgramID, "shadows"), true); 
+        // glUniform1f(glGetUniformLocation(shaderProgramID, "far_plane"), Constants::FAR_PLANE); 
 
-        glm::mat4 viewProjection = device->GetProjectionMatrix()*device->GetViewMatrix();
-        glm::vec3 camPos = device->GetActiveCameraNode()->GetGlobalTranslation();
+        // glm::mat4 viewProjection = device->GetProjectionMatrix()*device->GetViewMatrix();
+        // glm::vec3 camPos = device->GetActiveCameraNode()->GetGlobalTranslation();
+        // glUniformMatrix4fv(glGetUniformLocation(shaderProgramID, "VPMatrix"), 1, GL_FALSE, glm::value_ptr(viewProjection));
+        // glUniform3fv(glGetUniformLocation(shaderProgramID, "cameraPosition"), 1, glm::value_ptr(camPos));
         glm::vec3 pos    = GetGlobalTranslation();
-        glUniformMatrix4fv(glGetUniformLocation(shaderProgramID, "VPMatrix"), 1, GL_FALSE, glm::value_ptr(viewProjection));
-        glUniform3fv(glGetUniformLocation(shaderProgramID, "cameraPosition"), 1, glm::value_ptr(camPos));
         glUniform3fv(glGetUniformLocation(shaderProgramID, "position"), 1, glm::value_ptr(pos));
         entity->Draw(shaderProgramID);
 
@@ -229,18 +231,18 @@ void CLNode::DFSTree(glm::mat4 mA) {
 
 
 void CLNode::DFSTree(glm::mat4 mA, GLuint shaderID) {
-    if(!octreeVisible)
-        return;
+    // if(!octreeVisible)
+    //     return;
 
     if (changed) {
         transformationMat = mA*CalculateTransformationMatrix();
         changed = false;
     }
 
-    auto& frustum_m = device->GetActiveCamera()->GetFrustum();
-    CLE::CLFrustum::Visibility frusVisibility = frustum_m.IsInside(translation, dimensionsBoundingBox);
+    //auto& frustum_m = device->GetActiveCamera()->GetFrustum();
+    //CLE::CLFrustum::Visibility frusVisibility = frustum_m.IsInside(translation, dimensionsBoundingBox);
 
-    if(entity && visible && frusVisibility == CLE::CLFrustum::Visibility::Completly) { 
+    if(entity && visible /*&& frusVisibility == CLE::CLFrustum::Visibility::Completly*/) { 
         
         glUniformMatrix4fv(glGetUniformLocation(shaderID, "model"), 1, GL_FALSE, glm::value_ptr(transformationMat));
         entity->DrawDepthMap(shaderID);
@@ -382,11 +384,11 @@ bool CLNode::OctreeIncamera(float size, const glm::vec3& pos){
     //    changed = false;
     //}
 
-    auto& frustum_m = device->GetActiveCamera()->GetFrustum();
-    CLE::CLFrustum::Visibility frusVisibility = frustum_m.IsInside(pos, size);
-
-    if(frusVisibility == CLE::CLFrustum::Visibility::Invisible)
-        return false;
-    else
-        return true;
+    //auto& frustum_m = device->GetActiveCamera()->GetFrustum();
+    //CLE::CLFrustum::Visibility frusVisibility = frustum_m.IsInside(pos, size)//;
+//
+    //if(frusVisibility == CLE::CLFrustum::Visibility::Invisible)//
+    //    return false;//
+    //else
+    //    return true;
 }

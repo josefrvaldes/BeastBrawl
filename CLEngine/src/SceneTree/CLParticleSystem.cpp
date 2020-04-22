@@ -83,11 +83,11 @@ void CLParticleSystem::Draw(GLuint shaderID) {
     //glDepthMask(GL_FALSE);
     glUseProgram(shaderID);
 
-    glm::mat4 viewProjection = node->GetDevice()->GetProjectionMatrix()*node->GetDevice()->GetViewMatrix();
-    glUniformMatrix4fv(glGetUniformLocation(shaderID, "VPMatrix"), 1, GL_FALSE, glm::value_ptr(viewProjection));
+    // glm::mat4 viewProjection = node->GetProjectionMatrix()*node->GetViewMatrix();
+    // glUniformMatrix4fv(glGetUniformLocation(shaderID, "VPMatrix"), 1, GL_FALSE, glm::value_ptr(viewProjection));
 
-    glm::vec3 camPos = node->GetDevice()->GetActiveCameraNode()->GetGlobalTranslation();
-    glUniform3fv(glGetUniformLocation(shaderID, "cameraPosition"), 1, glm::value_ptr(camPos));
+    // glm::vec3 camPos = node->GetActiveCameraNode()->GetGlobalTranslation();
+    // glUniform3fv(glGetUniformLocation(shaderID, "cameraPosition"), 1, glm::value_ptr(camPos));
 
 
     for(auto& particle : particles){

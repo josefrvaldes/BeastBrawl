@@ -157,9 +157,7 @@ class CLNode{
         void SetLightingEffects(bool l) { hasLightingEffects = l;};
         void SetIgnoreFrustrum(bool f) { ignoreFrustrum = f;};
 
-        class CLE::CLEngine;
-        void SetDevice(CLEngine* d) { device = d; };
-        CLEngine* GetDevice() const { return device; };
+
 
         //DEBUG
         //! Imprime el arbol
@@ -198,7 +196,6 @@ class CLNode{
         glm::vec3 TranslatePointAroundCenter(const glm::vec3& point_ , const glm::vec3& center, const glm::vec3& trans) const;
 
 
-        inline static CLEngine* device {nullptr};
 
 
 

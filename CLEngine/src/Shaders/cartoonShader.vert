@@ -32,7 +32,7 @@ void main()
     //gl_Position = projection * view * model * vec4(aPos, 1.0);
     vec3 newPos = aPos + animationOffsetPos;
     vec3 newNormal = aNormal + animationOffsetNormal;
-    gl_Position = MVP * vec4(newPos,1.0);
+    gl_Position = projection*view*model * vec4(newPos,1.0);
     FragPos = vec3(model * vec4(newPos,1.0));
 
     // Hacemos esto para ajustar las normales en caso de escalar las mallas
