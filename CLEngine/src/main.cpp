@@ -43,11 +43,7 @@ using namespace std;
 using namespace CLE;
 
 int main() {
-    auto flags = 0x1 | 0x2;
 
-    if (flags & 0x3) {
-        cout << "El OR ha funcionado\n";
-    }
     CLEngine* device = new CLEngine(1280, 720, "Beast Brawl");
 
     try {
@@ -66,13 +62,12 @@ int main() {
         auto resourceMeshTotem = resourceManager->GetResourceMesh("media/totem.obj", true);
         auto resourceMesh = resourceManager->GetResourceMesh("media/kart_physics.obj", true);
         auto resourceMeshBox = resourceManager->GetResourceMesh("media/TEST_BOX.obj", true);
-        auto animationKong = resourceManager->GetResourceAnimation("media/animations/kong/001kong.obj", 75, true);
-        auto animationCube = resourceManager->GetResourceAnimation("media/animations/cube/001cube.obj", 4, true);
+        // auto animationKong = resourceManager->GetResourceAnimation("media/animations/kong/001kong.obj", 75, true);
+        // auto animationCube = resourceManager->GetResourceAnimation("media/animations/cube/001cube.obj", 4, true);
 
         // auto resourceMeshOBJ = resourceManager->GetResourceMesh("media/kart.obj", true);
         // auto resourceMaterial = resourceManager->GetResourceMaterial("media/kart.obj", true);
 
-        cout << "+++++++ He compilado los shaders" << endl;
 
         //----------------------------------------------------------------------------------------------------------------SHADER
 
@@ -80,58 +75,42 @@ int main() {
 
         //Nodo raiz
         //shared_ptr<CLNode> smgr = make_shared<CLNode>(entity1.get());
-        CLNode* smgr = device->GetSceneManager();
-
-        auto light1 = smgr->AddPointLight(1);
+        CLNode* smgr = device->GetRootNode();
+        smgr->SetDevice(device);
+        auto light1 = device->AddPointLight(device->GetRootNode(),1);
         light1->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
         static_cast<CLPointLight*>(light1->GetEntity())->SetLightAttributes(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.7f, 0.7f, 0.7f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.1f, 0.1, 0.1f), 1.0f, 0.00005f, 0.0000014f);
 
-        auto light2 = smgr->AddPointLight(123451);
+        auto light2 = device->AddPointLight(device->GetRootNode(),123451);
         light2->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
         static_cast<CLPointLight*>(light2->GetEntity())->SetLightAttributes(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.2f, 0.2f, 0.2f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.1f, 0.1, 0.1f), 1.0f, 0.00007f, 0.00008f);
 
-        auto meshes = smgr->AddGroup(10000);
+        auto meshes = device->AddGroup(device->GetRootNode(),10000);
 
-        auto mesh1 = smgr->AddMesh(2);
+        auto mesh1 = device->AddMesh(device->GetRootNode(),2);
         mesh1->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
 
-        auto camera = smgr->AddCamera(3);
+        auto camera = device->AddCamera(device->GetRootNode(),3);
         camera->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
 
-        auto mesh2 = smgr->AddMesh(4);
+        auto mesh2 = device->AddMesh(device->GetRootNode(),4);
         mesh2->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
 
-        auto nodeKongAnim = smgr->AddMesh(5);
+        auto nodeKongAnim = device->AddMesh(device->GetRootNode(),5);
         nodeKongAnim->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
 
-        auto nodeCubeAnim = smgr->AddMesh(6);
+        auto nodeCubeAnim = device->AddMesh(device->GetRootNode(),6);
         nodeCubeAnim->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
 
-        // //Lo paso de momento todo a pillon, luego pongo pasar los valores por el metodo
-        // int nParticles = 50;
-        // glm::vec3 velocity = glm::vec3(0.0f,50.0f,0.0f);
-        // string texture = "media/particle_test.png";
-        // int width = 10;
-        // int height= 10;
-        // int spawnDelay = 100;
-        // int particlesToSpawn = 2;
-        // int lifeSpan = 2000;
-        // glm::vec3 offset = glm::vec3(50.0f,50.0f,50.0f);
-        // glm::vec3 orientation = glm::vec3(1.0f,1.0f,0.0f);
-        // std::uint_fast8_t flags = EFFECT_FADING;
+        
 
         /////////////////////////////////////////////////////
         //////////////////// MOVIDAS DE LAS PARTICULAS///////
         /////////////////////////////////////////////////////
         vector<string> texturesPs1;
         texturesPs1.push_back("media/particle_test.png");
-        // texturesPs1.push_back("media/particleRedStar.png");
-        // texturesPs1.push_back("media/particleYellowStar.png");
-        // texturesPs1.push_back("");
-        //texturesPs1.push_back("media/particleYellowTriangle.png");
-        //texturesPs1.push_back("media/particleRedTriangle.png");
 
-        auto ps1 = mesh2->AddParticleSystem(123940, 30, glm::vec3(500.0f, 500.0f, 500.0f), texturesPs1, 10, 10, 100, 30, 250, EFFECT_DIR_ALEATORITY | EFFECT_FADING);
+        auto ps1 = device->AddParticleSystem(mesh2,123940, 30, glm::vec3(500.0f, 500.0f, 500.0f), texturesPs1, 10, 10, 100, 30, 250, EFFECT_DIR_ALEATORITY | EFFECT_FADING);
 
         vector<string> texturePs2;
         texturePs2.push_back("media/particleRedStar.png");
@@ -139,37 +118,37 @@ int main() {
         texturePs2.push_back("media/particleRedTriangle.png");
         texturePs2.push_back("media/particleYellowTriangle.png");
 
-        auto ps2 = smgr->AddParticleSystem(123941, 15, glm::vec3(400.0f, 400.0f, 400.0f), texturePs2, 10, 10, 100, 15, 250, 5, EFFECT_DIR_ALEATORITY);
+        auto ps2 = device->AddParticleSystem(device->GetRootNode(),123941, 15, glm::vec3(400.0f, 400.0f, 400.0f), texturePs2, 10, 10, 100, 15, 250, 5, EFFECT_DIR_ALEATORITY);
 
         static_cast<CLCamera*>(camera->GetEntity())->SetCameraTarget(mesh2->GetTranslation());
 
-        smgr->AddGrass(300.0, 200.0, glm::vec3(140.0f, 55.0f, -50.0f), glm::vec3(20.0, 20.0, 20.0), false);
-        smgr->AddGrass(100.0, 100.0, glm::vec3(140.0f, 55.0f, -300.0f), glm::vec3(10.0, 10.0, 10.0), true);
+        device->AddGrass(300.0, 200.0, glm::vec3(140.0f, 55.0f, -50.0f), glm::vec3(20.0, 20.0, 20.0), false);
+        device->AddGrass(100.0, 100.0, glm::vec3(140.0f, 55.0f, -300.0f), glm::vec3(10.0, 10.0, 10.0), true);
 
         string fileBillBoard = "media/mrPinguin.png";
-        mesh2->AddBillBoard(2468, fileBillBoard, false, 100.0, 50.0);
+        device->AddBillBoard(mesh2,2468, fileBillBoard, false, 100.0, 50.0);
 
-        smgr->AddSkybox("media/skybox/right.jpg",
+        device->AddSkybox("media/skybox/right.jpg",
                         "media/skybox/left.jpg",
                         "media/skybox/top.jpg",
                         "media/skybox/bottom.jpg",
                         "media/skybox/front.jpg",
                         "media/skybox/back.jpg");
 
-        smgr->AddShadowMapping(light2->GetEntity()->GetID());
+        device->AddShadowMapping(light2->GetEntity()->GetID());
 
         static_cast<CLMesh*>(mesh1->GetEntity())->SetMesh(resourceMeshGround);
         static_cast<CLMesh*>(mesh2->GetEntity())->SetMesh(resourceMesh);
-        vector<uint8_t> distanceBetweenFrames(75);
-        for (uint8_t i = 0; i < 75; i++)
-            distanceBetweenFrames[i] = 1;
-        cout << "Mi vector tiene size " << distanceBetweenFrames.size() << endl;
-        static_cast<CLMesh*>(nodeKongAnim->GetEntity())->SetAnimation(animationKong);
-        std::vector<uint8_t> distances{60, 60, 60, 60};
-        static_cast<CLMesh*>(nodeCubeAnim->GetEntity())->SetAnimationInterpolated(animationCube, distances);
+        // vector<uint8_t> distanceBetweenFrames(75);
+        // for (uint8_t i = 0; i < 75; i++)
+        //     distanceBetweenFrames[i] = 1;
+        // cout << "Mi vector tiene size " << distanceBetweenFrames.size() << endl;
+        // static_cast<CLMesh*>(nodeKongAnim->GetEntity())->SetAnimation(animationKong);
+        // std::vector<uint8_t> distances{60, 60, 60, 60};
+        // static_cast<CLMesh*>(nodeCubeAnim->GetEntity())->SetAnimationInterpolated(animationCube, distances);
         // static_cast<CLMesh*>(mesh7->GetEntity())->SetMesh(resourceMeshCochesito);
 
-        camera->SetTranslation(glm::vec3(160.0f, 92.42f, -60.9f));
+        camera->SetTranslation(glm::vec3(430.0f, 230.42f, -60.9f));
         light1->SetTranslation(glm::vec3(75.9f, 1000.2f, 15.08f));
         light2->SetTranslation(glm::vec3(295.9f, 300.2f, 15.08f));
 
@@ -277,8 +256,8 @@ int main() {
             device->RenderText2D(cadena, 25.0f, 25.0f, 0.05f, 1.0f, vect3);
 
             // animaciones
-            static_cast<CLMesh*>(nodeKongAnim->GetEntity())->Animate();
-            static_cast<CLMesh*>(nodeCubeAnim->GetEntity())->AnimateInterpolated();
+            // static_cast<CLMesh*>(nodeKongAnim->GetEntity())->Animate();
+            // static_cast<CLMesh*>(nodeCubeAnim->GetEntity())->AnimateInterpolated();
 
             device->PollEvents();
             device->RenderImgui();
