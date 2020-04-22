@@ -728,12 +728,23 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
     }*/
 
     //MARCADOR DE TIEMPO
+    CCar* cCar;
     for(const auto& cars : manCars->GetEntities()) {
         cTotem = static_cast<CTotem*>(cars->GetComponent(CompType::TotemComp).get());
-        if (cTotem && cTotem->active) {
+        cCar = static_cast<CCar*>(cars->GetComponent(CompType::CarComp).get());
+        if (cTotem && cCar && cTotem->active) {
             cadena = "media/marcador.png";
             device->DrawImage2D(550.0f, 50.0f ,225.0f, 90.0f, 0.2f, cadena, true);
-            cadena = "media/gorilaHUD.png";
+
+            switch (cCar->character) {
+                case mainCharacter::PENGUIN:    cadena = "media/hudPenguin.png";    break;
+                case mainCharacter::TIGER:      cadena = "media/hudTiger.png";      break;
+                case mainCharacter::SHARK:      cadena = "media/hudShark.png";      break;
+                case mainCharacter::GORILLA:    cadena = "media/hudGorilla.png";    break;
+                case mainCharacter::DRAGON:     cadena = "media/hudDragon.png";     break;
+                case mainCharacter::OCTOPUS:    cadena = "media/hudOctopus.png";    break;
+                default:                                                    break;
+            }
             device->DrawImage2D(585.0f,70.0f, 50.0f, 50.0f, 0.05f, cadena, true);
 
             int time = cTotem->accumulatedTime / 100;

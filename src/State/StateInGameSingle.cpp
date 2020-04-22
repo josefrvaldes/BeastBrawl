@@ -213,14 +213,35 @@ void StateInGameSingle::CAMBIARInicializarCarAIS(ManCar &manCars, ManWayPoint &m
     pathInit3.push(5);
     manCars.GetEntitiesAI()[2]->SetPath(pathInit3);
 */
+
+
+    auto iaPjs = GameOptions::GetInstance()->GetIACharacters();
+
+
+
     auto posCar1 = glm::vec3(0.0f, 15.0f, -200.0f);
     auto posCar2 = glm::vec3(-202.0f, 15.0f, -145.0f);
     auto posCar3 = glm::vec3(209.0f, 15.0f, -145.0f);
 
-    //Cambiar
-    manCars.CreateCarAI(0, posCar1);
-    manCars.CreateCarAI(0, posCar2);
-    manCars.CreateCarAI(0, posCar3);
+    //Para asegurarse por si petara, que no debe
+    if ( !iaPjs.empty() ){
+        if (iaPjs.size() < 5) {
+            cout << "++++++++++ El vector de IA no tiene el tamanyo que debe tener. Si peta despues de esto, buscame.";
+        }
+        
+        //Cambiar
+        manCars.CreateCarAI(iaPjs[0], posCar1);
+        manCars.CreateCarAI(iaPjs[1], posCar2);
+        manCars.CreateCarAI(iaPjs[2], posCar3);
+
+    } else {
+        cout << "++++++++++ Algo no va bien asique ahora todos son pinguinos.";
+        manCars.CreateCarAI(0, posCar1);
+        manCars.CreateCarAI(0, posCar2);
+        manCars.CreateCarAI(0, posCar3);
+    }
+
+
 
     //int i = -1;
     //TODO: Cambiar de sitio
