@@ -20,8 +20,8 @@ class CCar : public Component
 {
 public:
     CCar(mainCharacter);
-    CCar(mainCharacter, float maxSpeed,float acceleration, float carFriction, float carSlowDown);
-    CCar(mainCharacter, float maxSpeed,float acceleration, float carFriction, float carSlowDown, float maxWheelRot);
+    CCar(mainCharacter, float weight, float maxSpeed,float acceleration, float carFriction, float carSlowDown);
+    CCar(mainCharacter, float weight, float maxSpeed,float acceleration, float carFriction, float carSlowDown, float maxWheelRot);
     ~CCar(){};
 
     friend ostream &operator<<(ostream &out, CCar &c)
@@ -32,10 +32,12 @@ public:
 
     //PERSONAJE
     mainCharacter character { mainCharacter::PENGUIN };
-
+    
+    float weight { 50.0 };
     float speed = 0.0;
     float maxSpeed;
     float acceleration = 0.0;
+
     float reverseMaxSpeed = -60.0;
     float wheelRotation = 0.0;
     float incrementWheelRotation = 0.5;  // velocidad por iteracion que se gira la rueda

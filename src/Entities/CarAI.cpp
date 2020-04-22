@@ -31,19 +31,46 @@ using namespace std;
 
 CarAI::CarAI(int pj){
 
-    mainCharacter _pj;
+    typeCar = TypeCar::CarAI;
 
+    mainCharacter _pj;
+    float weight = 50;
+    float maxSpeed = 200.0;
+    float acceleration = 1.5;
+    
     switch (pj) {
-        case 0: _pj = mainCharacter::PENGUIN; break;
-        case 1: _pj = mainCharacter::TIGER; break;
-        case 2: _pj = mainCharacter::SHARK; break;
-        case 3: _pj = mainCharacter::GORILLA; break;
-        case 4: _pj = mainCharacter::DRAGON; break;
-        case 5: _pj = mainCharacter::OCTOPUS; break;
+        case 0: 
+            _pj = mainCharacter::PENGUIN;
+            weight = 30.0;
+            maxSpeed = 220.0;
+            break;
+        case 1: 
+            _pj = mainCharacter::TIGER; 
+            weight = 40.0;
+            acceleration = 1.75;
+            break;
+        case 2: 
+            _pj = mainCharacter::SHARK; 
+            weight = 30.0;
+            maxSpeed = 220.0;
+            acceleration = 2.0;
+            break;
+        case 3: 
+            _pj = mainCharacter::GORILLA; 
+            weight = 70.0;
+            maxSpeed = 220.0;
+            acceleration = 1.25;
+            break;
+        case 4: 
+            _pj = mainCharacter::DRAGON; 
+            acceleration = 2.0;
+            break;
+        case 5: 
+            _pj = mainCharacter::OCTOPUS; 
+            break;
         default: break;
     }
 
-    typeCar = TypeCar::CarAI;
 
     // default values
     glm::vec3 pos   = glm::vec3(10.0f, 20.0f, 30.0f);
@@ -61,21 +88,18 @@ CarAI::CarAI(int pj){
     
     
     string texture = "";
-    // string mesh    = "kart_ia.obj";
-    //string vertexShader = "CLEngine/src/Shaders/lightMapping.vert";
-    //string fragmentShader = "CLEngine/src/Shaders/lightMapping.frag";
 
     string vertexShader = "CLEngine/src/Shaders/cartoonShader.vert";
     string fragmentShader = "CLEngine/src/Shaders/cartoonShader.frag";
 
-    float maxSpeed = 200.0, acceleration = 1.5, friction = 1.0, slowDown = 2.5;
+    float friction = 1.0, slowDown = 2.5;
     
     shared_ptr<CId> cId   = make_shared<CId>();
     shared_ptr<CType> cType = make_shared<CType>(ModelType::AnimatedMesh);
     shared_ptr<CTransformable> cTransformable = make_shared<CTransformable>(pos, rot, scale); 
     shared_ptr<CTexture> cTexture = make_shared<CTexture>(texture);
     shared_ptr<CMesh> cMesh   = make_shared<CMesh>(mesh);
-    shared_ptr<CCar> cCar = make_shared<CCar>(_pj, maxSpeed, acceleration, friction, slowDown, 10.0);
+    shared_ptr<CCar> cCar = make_shared<CCar>(_pj, weight, maxSpeed, acceleration, friction, slowDown, 10.0);
 
     shared_ptr<CWayPoint> cWayPoint = make_shared<CWayPoint>();
     shared_ptr<CPosDestination> cPosDestination = make_shared<CPosDestination>();

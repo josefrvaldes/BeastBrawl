@@ -216,6 +216,10 @@ void StateInGame::CreateMainCar() {
     if(manCars) {
         auto pj = GameOptions::GetInstance()->GetCharacter();
         manCars->CreateMainCar(pj);
+        /*auto cCar = static_cast<CCar*>(manCars->GetCar()->GetComponent(CompType::CarComp).get());
+        if (cCar){
+            cout << "PESO: " << cCar->weight << " - VELMAX: " << cCar->maxSpeed << " - ACELETARION: " << cCar->acceleration << "\n";
+        }*/
     }
 }
 
