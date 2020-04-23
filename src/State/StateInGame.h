@@ -47,6 +47,7 @@
 #include <Systems/PhysicsPowerUp.h>
 #include <Systems/SystemLoD.h>
 #include <Systems/SystemBoxPowerUp.h>
+#include <Systems/SystemRanking.h>
 #include <behaviourTree/behaviourTree.h>
 #include <behaviourTree/decorator.h>
 #include <behaviourTree/selector.h>
@@ -101,6 +102,7 @@ class StateInGame : public State {
     shared_ptr<Physics> physics;
     //shared_ptr<float> deltaTime;
     
+    shared_ptr<SystemRanking> sysRanking;
     shared_ptr<PhysicsPowerUp> phisicsPowerUp;
     shared_ptr<SystemBoxPowerUp> sysBoxPowerUp;
     shared_ptr<Collisions> collisions;

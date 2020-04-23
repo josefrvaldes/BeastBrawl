@@ -660,54 +660,16 @@ void RenderFacadeClover::FacadeDraw() const{
 
 void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* globalClock) {
 
-    //Voy a actualizar aqui las posiciones donde van porque es el unico sitio donde tengo ambos tipos de coches
-    //struct auxiliar para guardarme tiempo y numero de coche
-    struct ranking_t{
-        uint16_t carNumber;
-        float    time;
-        inline bool operator() (const ranking_t& struct1, const ranking_t& struct2)
-        {
-            return (struct1.time > struct2.time);
-        }
-    };
-
-    CTotem* cTotem;
-    vector<ranking_t> ranking;
     std::string cadena;
-
-    //Si existen coches de IA
-    if(!manCars->GetEntities().empty()){
-        //Primero vamos a meter al coche principal
-        ranking_t rank{};
-        int i = 0;
-        for(auto& carAux : manCars->GetEntities()){
-            cTotem = static_cast<CTotem*>(carAux->GetComponent(CompType::TotemComp).get());
-            rank.carNumber = i++;
-            rank.time = cTotem->accumulatedTime;
-            ranking.push_back(rank);
-        }
-
-        std::sort (ranking.begin(), ranking.end(), ranking_t());
-
-    }
-
-    //Ya tenemos ordenados las posiciones, ahora vamos a actualizar sus valores en el CTotem
-    int j = 1;
-    for(auto aux : ranking){
-        uint16_t numCar = aux.carNumber;
-        cTotem = static_cast<CTotem*>(manCars->GetEntities()[numCar]->GetComponent(CompType::TotemComp).get());
-        if(cTotem) {
-            cTotem->positionRanking = j++;
-        }
-
-    }
+    CTotem* cTotem;
+    CCar* cCar;
 
     //CURRENT POWERUP
     device->DrawImage2D(25.0f, 25.0f, 150.0f, 150.0f, 0.1f ,powerUps[currentPowerUp], true);
 
     //RANKING
     //TODO: Dejar como debug
-    /*int i = 0;
+    int i = 0;
     //core::stringw textIA = core::stringw("Car ");
     for (const auto& cars : manCars->GetEntities()) {
 
@@ -725,10 +687,9 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
         device->RenderText2D(cadena, 200.0f, altura, 0.1f, 0.35f, color);
 
         i++;
-    }*/
+    }
 
     //MARCADOR DE TIEMPO
-    CCar* cCar;
     for(const auto& cars : manCars->GetEntities()) {
         cTotem = static_cast<CTotem*>(cars->GetComponent(CompType::TotemComp).get());
         cCar = static_cast<CCar*>(cars->GetComponent(CompType::CarComp).get());
@@ -939,8 +900,39 @@ void RenderFacadeClover::FacadeDrawPause() {
 }
 
 void RenderFacadeClover::FacadeDrawEndRace() {
-    std::string file = "media/finish_screen.png";
+    std::string file = "media/endrace.png";
     device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
+
+    glm::vec3 colorranking = glm::vec3(0.0f, 0.0f, 0.0f);
+    auto rank = GameValues::GetInstance()->GetRanking();
+    if (!rank.empty()) {
+        for ( auto it = rank.begin(); it != rank.end(); ++it) {
+            file = std::to_string(it->first);
+            switch (it->second) {
+            case (uint16_t)mainCharacter::PENGUIN:
+                file += ". Pinguino";
+                break;
+            case (uint16_t)mainCharacter::TIGER:
+                file += ". Tigre";
+                break;
+            case (uint16_t)mainCharacter::SHARK:
+                file += + ". Tiburon";
+                break;
+            case (uint16_t)mainCharacter::GORILLA:
+                file += ". Gorila";
+                break;
+            case (uint16_t)mainCharacter::DRAGON:
+                file += ". Dragon";
+                break;
+            case (uint16_t)mainCharacter::OCTOPUS:
+                file += ". Octopus";
+                break;
+            default:
+                break;
+            }
+            device->RenderText2D(file, 200.0, device->GetScreenHeight() - 100.0f - (100.0*it->first), 0.75f, 0.75f, colorranking);
+        }
+    }
 
     if (menuER) {
         file = "media/endraceMenu.png";
@@ -980,8 +972,6 @@ void RenderFacadeClover::FacadeDrawSettings() {
     std::string file = "media/settings.png";
     device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
 
-    //¿TRABAJAR A NIVEL DE BIT?
-    //TODO: Faltan cosas. ¿Como hago esto tio?
     glm::vec3 colorBase = glm::vec3(255.0f, 0.0f, 0.0f);
     glm::vec3 colorTitle = glm::vec3(255.0f, 255.0f, 0.0f);
 

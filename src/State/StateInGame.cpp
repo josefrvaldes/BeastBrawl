@@ -156,6 +156,7 @@ void StateInGame::InitializeSystems(ManCar &manCars, ManBoundingWall &manWall, M
     collisions = make_shared<Collisions>();
     sysBoxPowerUp = make_shared<SystemBoxPowerUp>();
     sysLoD = make_unique<SystemLoD>();
+    sysRanking = make_unique<SystemRanking>();
 }
 
 void StateInGame::InitializeManagers(Physics *physics, Camera *cam, const uint32_t timeGame) {
@@ -280,7 +281,7 @@ void StateInGame::Update() {
     renderEngine->FacadeUpdateMeshesLoD(manBoxPowerUps->GetEntities());
     renderEngine->FacadeUpdateMeshesLoD(manTotems->GetEntities());
 
-
+    sysRanking->Update(manCars.get());
     manGameRules->Update();
 }
 
