@@ -17,8 +17,8 @@ uniform mat4 MVP;
 
 void main()
 {
-    //gl_Position = projection * view * model * vec4(aPos, 1.0);
-    gl_Position = MVP * vec4(aPos,1.0);
+    gl_Position = projection * view * model * vec4(aPos, 1.0);
+    //gl_Position = MVP * vec4(aPos,1.0);
     FragPos = vec3(model * vec4(aPos,1.0));
 
     // Hacemos esto para ajustar las normales en caso de escalar las mallas
