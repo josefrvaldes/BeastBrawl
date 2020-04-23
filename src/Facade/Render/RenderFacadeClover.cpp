@@ -74,7 +74,6 @@ RenderFacadeClover::RenderFacadeClover() {
     //Inicializamos el arbol de la escena
     smgr = device->GetSceneManager();
     resourceManager = device->GetResourceManager();
-
     FacadeInitIntro();
 
 
@@ -838,8 +837,14 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
 }
 
 void RenderFacadeClover::FacadeDrawIntro() {
-    std::string file = "media/intro.png";
-    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
+    if(!introAnimation){
+        introAnimation = make_unique<Animation2D>("media/introAnimation/Beast Brawl",356,24);
+        introAnimation->Start();
+    }
+    resourceManager->DeleteResourceTexture(introAnimation->GetCurrentPath() + ".jpg");
+    introAnimation->Update();
+    // std::string file = "media/intro.png";
+    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, introAnimation->GetCurrentPath()+".jpg", true);
 }
 
 void RenderFacadeClover::FacadeDrawMenu() {
@@ -1396,4 +1401,58 @@ void RenderFacadeClover::CleanScene() {
 
 void RenderFacadeClover::FacadeUpdateViewport(){
     device->UpdateViewport();
+}
+
+
+////////////////////////////////////////////////////////////////////////////
+////////////////////////////  CLASE ANIMATION2D  ///////////////////////////
+////////////////////////////////////////////////////////////////////////////
+
+RenderFacadeClover::Animation2D::Animation2D(const std::string _path, uint16_t _numFrames, uint16_t _fps){
+    path = _path;
+    numFrames = _numFrames;
+    fps = _fps;
+    timeBetweenFrames = 1.0/(float)fps;
+}
+
+void RenderFacadeClover::Animation2D::Update(){
+    if(finished) return;
+    float time = duration_cast<milliseconds>(system_clock::now() - timeStart).count();
+    string newPath = path;
+
+    //Cambiamos de frame
+    if(time >= timeBetweenFrames){
+        if(actualFrame >= numFrames){
+            finished = true;
+            return;
+        }else{ 
+            int numFramesDigits = to_string(numFrames-1).length();
+            int actualFrameDigits = to_string(actualFrame).length();
+
+            int numOfZeros = numFramesDigits - actualFrameDigits;
+            for(int i = 0; i<numOfZeros; ++i){
+                newPath.append("0");
+            }
+            newPath.append(to_string(actualFrame));
+
+            
+        }
+
+        timeStart = system_clock::now();
+        actualFrame++;
+
+    }
+
+    currentPath = newPath;
+}
+
+void RenderFacadeClover::Animation2D::Start(){
+    timeStart = system_clock::now();
+    started = true;
+}
+
+void RenderFacadeClover::Animation2D::Restart(){
+    currentPath = path;
+    actualFrame = 0;
+    finished    = false;
 }

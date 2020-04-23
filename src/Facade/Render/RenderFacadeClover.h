@@ -12,7 +12,11 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <chrono>
 #include <unordered_map>
+
+using namespace std::chrono;
+
 
 
 using namespace CLE;
@@ -131,9 +135,10 @@ class RenderFacadeClover : public RenderFacade {
 
 
 
-    private:
+   private:
+      class Animation2D;
 
-        std::string powerUps[7];
+      std::string powerUps[7];
 
         //Menu
         int inputMenu { 0 };
@@ -157,8 +162,36 @@ class RenderFacadeClover : public RenderFacade {
         std::vector<int> inputSettings {1,0,0};
         int maxInputSettings[4] {3, 1, 2};
 
-        CLEngine* device {nullptr};
-        CLNode* smgr {nullptr};
-        CLResourceManager* resourceManager {nullptr};
-        CLNode* camera1 {nullptr};
+      CLEngine* device {nullptr};
+      CLNode* smgr {nullptr};
+      CLResourceManager* resourceManager {nullptr};
+      CLNode* camera1 {nullptr};
+
+      //Animaciones
+      unique_ptr<Animation2D> introAnimation {nullptr};
+
+      class Animation2D{
+         public:
+            Animation2D(const std::string _path, uint16_t _numFrames, uint16_t _fps);
+            ~Animation2D(){};
+
+            void Update();
+            void Start();
+            void Restart();
+
+            string GetCurrentPath() const { return currentPath; }
+
+         private:
+            string path;
+            string currentPath;
+            uint16_t numFrames {0};
+            uint16_t fps {60};
+            float timeBetweenFrames {0.16};
+            int actualFrame {0};
+            bool started { false };
+            bool finished { false };
+            time_point<system_clock> timeStart;
+
+
+      };
 };

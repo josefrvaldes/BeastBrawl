@@ -12,7 +12,7 @@ InputFacadeClover::InputFacadeClover(){
     auto renderFacade = static_cast<RenderFacadeClover*>(RenderFacadeManager::GetInstance()->GetRenderFacade());
     device = renderFacade->GetDevice();
 
-    device->UnableCursor();
+    device->DisableCursor();
     
     if(glfwJoystickIsGamepad(GLFW_JOYSTICK_1)){
         string name = glfwGetGamepadName(GLFW_JOYSTICK_1);
