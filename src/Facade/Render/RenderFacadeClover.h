@@ -94,8 +94,8 @@ class RenderFacadeClover : public RenderFacade {
       void FacadeUpdateViewport() override;
 
       void FacadeInitParticleSystem(DataMap* d) override;
-      bool FacadeOctreeInCamera(float size, const glm::vec3& pos) override {return smgr->OctreeIncamera(size, pos);};
-      void FacadeSetOctreeVisibleById(unsigned int id, bool v) override {smgr->SetOctreeVisibleById(id, v);};
+      bool FacadeOctreeInCamera(float size, const glm::vec3& pos) override {return device->OctreeIncamera(size, pos);};
+      void FacadeSetOctreeVisibleById(unsigned int id, bool v) override {device->SetOctreeVisibleById(id, v);};
 
       //DEBUG
       void Draw3DLine(vec3& pos1, vec3& pos2, uint16_t r, uint16_t g, uint16_t b) const override;
@@ -123,7 +123,7 @@ class RenderFacadeClover : public RenderFacade {
       void ResetInputCharacter() override;
 
       //Metodos exclusivos de RenderClover
-      float GetBoundingByMesh(uint16_t id) {return smgr->GetBoundingSizeById(id);};
+      float GetBoundingByMesh(uint16_t id) {return device->GetBoundingSizeById(id);};
       CLEngine* GetDevice() { return device;};
 
       inline static bool showDebug = false;
