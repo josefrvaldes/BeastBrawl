@@ -110,6 +110,11 @@ void SoundFacadeFMOD::SubscribeToGameEvents(const uint8_t numState) {
                     "SoundRandomSentence"});
 
             EventManager::GetInstance().SubscribeMulti(Listener{
+                    EventType::UPDATE_SOUNDCHARACTER,
+                    bind(&SoundFacadeFMOD::SetCharacter, this, placeholders::_1),
+                    "SetCharacter"});
+
+            EventManager::GetInstance().SubscribeMulti(Listener{
                     EventType::MENU_OPTION,
                     bind(&SoundFacadeFMOD::SoundMenuOption, this, placeholders::_1),
                     "SoundMenuOption"});
@@ -547,8 +552,8 @@ void SoundFacadeFMOD::Update() {
 void SoundFacadeFMOD::StartGame() {
     PlayEvent("Ambiente/ambiente");
     PlayEvent("Musica/in_game_1");
-    srand(time(nullptr));
-    character = rand() % 5;
+    //srand(time(nullptr));
+    //character = rand() % 5;
     //cout << "++++ Personaje en sonido: " << character << endl;
     SetParameter("Personajes/voces", "personaje", character);
     SetParameter("Coche/claxon", "personaje", character);
@@ -564,6 +569,22 @@ void SoundFacadeFMOD::StartGame() {
 void SoundFacadeFMOD::SetGlobalVolume(DataMap* d) { 
     auto volume = any_cast<float>((*d)[NUM]);
     soundEngine->SetGlobalVolume(volume);
+}
+
+// -------------------------------------------------- SELECCION
+
+void SoundFacadeFMOD::SoundRandomSentence(DataMap* d) {
+    auto cPersonaje = any_cast<int>((*d)[NUM]);
+    
+    SetParameter("Personajes/voces", "personaje", cPersonaje);
+    SetParameter("Personajes/voces", "Tipo", TipoVoz::Seleccion);
+    PlayEvent("Personajes/voces");
+}
+
+void SoundFacadeFMOD::SetCharacter(DataMap* d) {
+    auto cPersonaje = any_cast<int>((*d)[NUM]);
+    
+    character = cPersonaje;
 }
 
 // --------------------------------------------------
@@ -633,14 +654,8 @@ void SoundFacadeFMOD::SoundDrift(DataMap* d) {
     PlayEvent("Coche/derrape");*/
 }
 
-//TODO: No se hace nada para esto
-void SoundFacadeFMOD::SoundRandomSentence(DataMap* d) {
-    auto cPersonaje = any_cast<int>((*d)[NUM]);
-    
-    SetParameter("Personajes/voces", "personaje", cPersonaje);
-    SetParameter("Personajes/voces", "Tipo", TipoVoz::Seleccion);
-    PlayEvent("Personajes/voces");
-}
+
+
 
 void SoundFacadeFMOD::SoundMenuOption(DataMap* d) {
     PlayEvent("Menu/cambio_opcion");

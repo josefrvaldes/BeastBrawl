@@ -540,6 +540,15 @@ void RenderFacadeClover::FacadeInitIntro() {
 
 void RenderFacadeClover::FacadeInitMenu() {
 
+    resourceManager->GetResourceTexture("media/menu/main_menu.png", true);
+    resourceManager->GetResourceTexture("media/menu/elements_menu.png", true);
+    resourceManager->GetResourceTexture("media/menu/unjugador_hover.png", true);
+    resourceManager->GetResourceTexture("media/menu/multijugador_hover.png", true);
+    resourceManager->GetResourceTexture("media/menu/controles_hover.png", true);
+    resourceManager->GetResourceTexture("media/menu/creditos_hover.png", true);
+    resourceManager->GetResourceTexture("media/menu/ajustes_hover.png", true);
+    resourceManager->GetResourceTexture("media/menu/salir_hover.png", true);
+    
 }
 
 void RenderFacadeClover::FacadeInitSelectCharacter() {
@@ -669,7 +678,7 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
 
     //RANKING
     //TODO: Dejar como debug
-    int i = 0;
+    /*int i = 0;
     //core::stringw textIA = core::stringw("Car ");
     for (const auto& cars : manCars->GetEntities()) {
 
@@ -687,7 +696,7 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
         device->RenderText2D(cadena, 200.0f, altura, 0.1f, 0.35f, color);
 
         i++;
-    }
+    }*/
 
     //MARCADOR DE TIEMPO
     for(const auto& cars : manCars->GetEntities()) {
@@ -758,33 +767,22 @@ void RenderFacadeClover::FacadeDrawIntro() {
 
 void RenderFacadeClover::FacadeDrawMenu() {
 
-    std::string file = "media/main_menu.png";
-    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
+    std::string file = "media/menu/main_menu.png";
+    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.9f, file, true);
 
-    std::string text;
-    //glm::vec3 color = glm::vec3(0.0f, 255.0f, 0.0f);
-    glm::vec3 color[6] = {
-            glm::vec3(0.0f, 0.0f, 255.0f),
-            glm::vec3(0.0f, 0.0f, 255.0f),
-            glm::vec3(0.0f, 0.0f, 255.0f),
-            glm::vec3(0.0f, 0.0f, 255.0f),
-            glm::vec3(0.0f, 0.0f, 255.0f),
-            glm::vec3(0.0f, 0.0f, 255.0f)
+    file = "media/menu/elements_menu.png";
+    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.8f, file, true);
+
+    std::string files[6] = {
+        "media/menu/unjugador_hover.png",
+        "media/menu/multijugador_hover.png",
+        "media/menu/controles_hover.png",
+        "media/menu/creditos_hover.png",
+        "media/menu/ajustes_hover.png",
+        "media/menu/salir_hover.png"
     };
-    color[inputMenu] = glm::vec3(0.0f, 255.0f, 0.0f);
 
-    text = "Un jugador";
-    device->RenderText2D(text, 500.0f, 425.0f, 0.05f, 1.0f, color[0]);
-    text = "Multijugador";
-    device->RenderText2D(text, 500.0f, 375.0f, 0.05f, 1.0f, color[1]);
-    text = "Controles";
-    device->RenderText2D(text, 500.0f, 325.0f, 0.05f, 1.0f, color[2]);
-    text = "Creditos";
-    device->RenderText2D(text, 500.0f, 275.0f, 0.05f, 1.0f, color[3]);
-    text = "Ajustes";
-    device->RenderText2D(text, 500.0f, 225.0f, 0.05f, 1.0f, color[4]);
-    text = "Salir";
-    device->RenderText2D(text, 500.0f, 175.0f, 0.05f, 1.0f, color[5]);
+    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.7f, files[inputMenu], true);
 
 }
 

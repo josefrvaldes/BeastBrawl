@@ -316,11 +316,25 @@ void InputFacadeClover::CheckInputSelectCharacter(int &input, int maxInput) {
         SetValueInput(BUTTON_A, true);
         EventManager::GetInstance().AddEventMulti(Event{EventType::MENU_OK});
 
+        //Actualiza la vez del personaje a usar
+        shared_ptr<DataMap> data = make_shared<DataMap>();
+        int num = input;
+        (*data)[NUM] = num;
+        EventManager::GetInstance().AddEventMulti(Event{EventType::UPDATE_SOUNDCHARACTER, data});
+        
+        //Registra el personaje a usar
+        GameValues::GetInstance()->SetCharacter(input);
+
         //TODO: Ahora mismo, SELECCIONAR PERSONAJE y VOLVER A JUGAR del EndRace, hacen lo mismo. Falta la gestion online.
         if ( multiplayer ) {
             RenderFacadeManager::GetInstance()->GetRenderFacade()->CleanScene();
             EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_LOBBYMULTI});
         } else{
+            shared_ptr<DataMap> data = make_shared<DataMap>();
+            int num = input;
+            (*data)[NUM] = num;
+            EventManager::GetInstance().AddEventMulti(Event{EventType::UPDATE_SOUNDCHARACTER, data});
+            
             EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_GAME_OPTIONS});
             GameValues::GetInstance()->SetCharacter(input);
         }
