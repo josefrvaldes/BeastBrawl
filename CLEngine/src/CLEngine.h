@@ -124,6 +124,15 @@ class CLEngine {
 
 
         //Methods
+        //! Añade un shader al motor
+        //! @param vertex Ruta del vertex shader
+        //! @param fragment Ruta del fragment shader
+        void AddShader(const string vertex, const string fragment);
+        //! Añade un shader al motor
+        //! @param vertex Ruta del vertex shader
+        //! @param fragment Ruta del fragment shader
+        //! @param geometry Ruta del geometry shader
+        void AddShader(const string vertex, const string fragment, const string geometry);
         //! Añade un grupo a la escena
         //! @param id Identificador del nodo
         //! @returns CLE::CLNode()
@@ -376,24 +385,11 @@ class CLEngine {
         const void Draw3DLine(float x1, float y1, float z1, float x2, float y2, float z2) const;
         //! Asigna la anchura de la linea
         void SetDrawLineWidth(int w) {lineWidth = w;};
-
-
-
-
-
-
         //! Elimina todas las luces y camaras de la escena
         void RemoveLightsAndCameras();
-
-        //! Calcula las matriecs view y projection
-        void CalculateViewProjMatrix();
-        //! Calcula las luces de la escena
-        void CalculateLights();
-
+        //! Devuelve el nodo padre de la escena
         CLNode* GetRootNode() const { return smgr.get(); };
-
-        CLNode* GetNodeByIDAux(unsigned int id, CLNode* node, CLNode* root);
-
+        //! Asigna si el nodo es visible en el octree
         void SetOctreeVisibleById(unsigned int id, bool v);
 
 
@@ -402,8 +398,13 @@ class CLEngine {
 
         void CreateGlfwWindow(const unsigned int, const unsigned int, const string&);
 
+        CLNode* GetNodeByIDAux(unsigned int id, CLNode* node, CLNode* root);
         void ImGuiInit();
         void TerminateImGui();
+        //! Calcula las matriecs view y projection
+        void CalculateViewProjMatrix();
+        //! Calcula las luces de la escena
+        void CalculateLights();
 
         int width{};
         int height{};

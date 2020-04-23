@@ -476,11 +476,19 @@ void CLEngine::RenderDepthMap(CLShadowMapping& shadowMap, CLResourceShader* dept
 
 
 //Methods
+void CLEngine::AddShader(const string vertex, const string fragment){
+    shaders.emplace_back(resourceManager->GetResourceShader(vertex, fragment)->GetProgramID());
+    
+}
+
+void CLEngine::AddShader(const string vertex, const string fragment, const string geometry){
+    shaders.emplace_back(resourceManager->GetResourceShader(vertex, fragment,geometry)->GetProgramID());
+    
+}
 
 CLNode* CLEngine::AddGroup(CLNode* parent,unsigned int id){
     shared_ptr<CLNode> node = make_shared<CLNode>();
     parent->AddChild(node);
-    node->SetLightingEffects(false);
 
     return node.get();
 }
@@ -509,7 +517,6 @@ CLNode* CLEngine::AddPointLight(CLNode* parent,unsigned int id){
     shared_ptr<CLNode> node = make_shared<CLNode>(e);
     parent->AddChild(node);
     pointLights.push_back(node.get());
-    node->SetLightingEffects(false);
     return node.get();
 }
 
@@ -525,7 +532,6 @@ CLNode* CLEngine::AddDirectLight(CLNode* parent,unsigned int id){
     shared_ptr<CLNode> node = make_shared<CLNode>(e);
     parent->AddChild(node);
     directLights.push_back(node.get());
-    node->SetLightingEffects(false);
     return node.get();
 }
 
@@ -541,7 +547,7 @@ CLNode* CLEngine::AddSpotLight(CLNode* parent,unsigned int id){
     shared_ptr<CLNode> node = make_shared<CLNode>(e);
     parent->AddChild(node);
     spotLights.push_back(node.get());
-    node->SetLightingEffects(false);
+
     return node.get();
 }
 
@@ -558,7 +564,6 @@ CLNode* CLEngine::AddCamera(CLNode* parent,unsigned int id){
     shared_ptr<CLNode> node = make_shared<CLNode>(e);
     parent->AddChild(node);
     cameras.push_back(node.get());
-    node->SetLightingEffects(false);
 
     return node.get(); 
 }
@@ -582,7 +587,6 @@ CLNode* CLEngine::AddParticleSystem(CLNode* parent,unsigned int id, unsigned int
     if(auto particleSystem = dynamic_cast<CLParticleSystem*>(e.get())){
         particleSystem->SetCLNode(node.get());
     }
-    node->SetLightingEffects(false);
     node->SetIgnoreFrustrum(true);
     return node.get();
 }
@@ -607,7 +611,6 @@ CLNode* CLEngine::AddParticleSystem(CLNode* parent,unsigned int id,unsigned int 
     if(auto particleSystem = dynamic_cast<CLParticleSystem*>(e.get())){
         particleSystem->SetCLNode(node.get());
     }
-    node->SetLightingEffects(false);
     node->SetIgnoreFrustrum(true);
     return node.get();
 }
@@ -633,7 +636,6 @@ CLNode* CLEngine::AddParticleSystem(CLNode* parent,unsigned int id,unsigned int 
     if(auto particleSystem = dynamic_cast<CLParticleSystem*>(e.get())){
         particleSystem->SetCLNode(node.get());
     }
-    node->SetLightingEffects(false);
     node->SetIgnoreFrustrum(true);
 
     return node.get();
@@ -660,7 +662,6 @@ CLNode* CLEngine::AddParticleSystem(CLNode* parent,unsigned int id,unsigned int 
     if(auto particleSystem = dynamic_cast<CLParticleSystem*>(e.get())){
         particleSystem->SetCLNode(node.get());
     }
-    node->SetLightingEffects(false);
     node->SetIgnoreFrustrum(true);
     return node.get();
 }
@@ -707,7 +708,6 @@ CLNode* CLEngine::AddBillBoard(CLNode* parent,unsigned int id,string& file, bool
     parent->AddChild(node);
     node->SetShaderProgramID(billboardShader);
 
-    node->SetLightingEffects(false);
 
     return node.get();
 }

@@ -136,7 +136,6 @@ class CLNode{
         void DFSTree(glm::mat4 mA, GLuint shaderID);
 
 
-        void SetLightingEffects(bool l) { hasLightingEffects = l;};
         void SetIgnoreFrustrum(bool f) { ignoreFrustrum = f;};
 
 
@@ -152,7 +151,6 @@ class CLNode{
         bool changed { true };
         bool visible { true };
         bool octreeVisible { true };
-        bool hasLightingEffects { true }; //Sirve para que no se le aplique luce y ahorrarse el calculo de luces
         bool ignoreFrustrum { false }; //Si esta a true no le afecta el frustrum culling
 
         shared_ptr<CLEntity> entity {nullptr};
