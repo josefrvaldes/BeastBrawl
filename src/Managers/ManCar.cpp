@@ -47,7 +47,7 @@ typedef std::numeric_limits< double > dbl;
 
 ManCar::ManCar() {
     SubscribeToEvents();
-    CreateMainCar();
+    //CreateMainCar();
 
     // systemPathPlanning = make_unique<SystemPathPlanning>();
     //physicsAI = make_unique<PhysicsAI>();
@@ -75,24 +75,7 @@ void ManCar::UpdateCarPlayer(ManTotem &manTotem_) {
 }
 
 void ManCar::UpdateCarAI(CarAI* carAI, ManTotem* m_manTotem) {
-    
-    //manNavMesh->UpdateNavMeshEntity(carAI);
-    //systemBtMoveTo->update(carAI);
-    //systemPathPlanning->update(carAI);
-    //systemBtLoDMove->update(carAI);
-    //systemBtPowerUp->update(carAI);
-
-    //auto time0 = system_clock::now();
-    //auto time1 = system_clock::now();
-    //double timeAccumulated = duration_cast<microseconds>(time1 - time0).count();
-    //cout.precision(dbl::max_digits10);
-    //if(timeAccumulated > maxTimeAccumulated) maxTimeAccumulated = timeAccumulated;
-    //cout << maxTimeAccumulated << " - ";
-
-
-    //physicsAI->Update(carAI, graph);
     UpdateGeneralCar(*carAI, *(m_manTotem->GetEntities()[0].get()));
-    
 }
 void ManCar::UpdateCarHuman(Entity* CarHuman, ManTotem* m_manTotem) {
     UpdateGeneralCar(*CarHuman, *(m_manTotem->GetEntities()[0].get()));
@@ -102,29 +85,33 @@ void ManCar::UpdateGeneralCar(Entity& car_, Entity& totem_){
     systemGameRules->UpdateRulesCarPowerUps(car_, totem_);
 }
 
-void ManCar::CreateMainCar() {
-    car = make_shared<CarHuman>(); 
+void ManCar::CreateMainCar(int pj, int timeTotem) {
+    car = make_shared<CarHuman>(pj, timeTotem); 
     entities.push_back(car);
 }
 
-void ManCar::CreateHumanCar(glm::vec3 _position) {
-    shared_ptr<CarHuman> p = make_shared<CarHuman>(_position);
+//Cambiar PJ
+void ManCar::CreateHumanCar(int pj, int timeTotem, glm::vec3 _position) {
+    shared_ptr<CarHuman> p = make_shared<CarHuman>(pj, timeTotem, _position);
     entities.push_back(p);
 }
 
-void ManCar::CreateCarAI(glm::vec3 _position) {
-    shared_ptr<CarAI> p = make_shared<CarAI>(_position);
+//Cambiar PJ
+void ManCar::CreateCarAI(int pj, int timeTotem, glm::vec3 _position) {
+    shared_ptr<CarAI> p = make_shared<CarAI>(pj, timeTotem, _position);
     entities.push_back(p);
 }
 
-void ManCar::CreateCarAI(glm::vec3 _position, CWayPoint* _waypoint) {
-    shared_ptr<CarAI> p = make_shared<CarAI>(_position);
+//Cambiar PJ
+void ManCar::CreateCarAI(int pj, int timeTotem, glm::vec3 _position, CWayPoint* _waypoint) {
+    shared_ptr<CarAI> p = make_shared<CarAI>(pj, timeTotem, _position);
     entities.push_back(p);
     p->SetWayPoint(_waypoint);
 }
 
-void ManCar::CreateCarAI() {
-    shared_ptr<CarAI> p = make_shared<CarAI>();
+//Cambiar PJ
+void ManCar::CreateCarAI(int pj, int timeTotem) {
+    shared_ptr<CarAI> p = make_shared<CarAI>(pj, timeTotem);
     entities.push_back(p);
 }
 

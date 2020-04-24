@@ -10,6 +10,7 @@
 #include "../Components/CBoundingCilindre.h"
 #include "../Components/CTotem.h"
 #include "../Constants.h"
+#include <GameValues.h>
 
 using namespace std;
 using namespace chrono;
@@ -46,7 +47,8 @@ StateInGame::~StateInGame() {
  *  Y ES OBLIGATORIO llamar a este método desde el constructor de los hijos
  */
 void StateInGame::InitVirtualMethods() {
-    InitializeManagers(physics.get(), cam.get(), 120);
+    auto gameTime = GameValues::GetInstance()->GetGameTime();
+    InitializeManagers(physics.get(), cam.get(), gameTime);
     InitializeSystems(*manCars.get(), *manBoundingWall.get(), *manBoundingOBB.get(), *manBoundingGround.get(), *manPowerUps.get(), *manNavMesh.get(), *manBoxPowerUps.get(), *manTotems.get());
     InitializeFacades();
 
@@ -70,26 +72,8 @@ void StateInGame::InitializeFacades() {
     //Pantalla de carga
     renderEngine->FacadeInitResources(); 
 }
-
-/*
-void StateInGame::CAMBIARCosasDeTotem(ManTotem &manTotems) {
-    // --------------------------------------------------------------------------------------------------------------------------------------------
-    totemOnCar = make_shared<Entity>();
-    glm::vec3 postoTemOnCar = glm::vec3(40.0f, -100.0f, 30.0f);
-    glm::vec3 rotTotemOnCar = glm::vec3(0.0f, 90.0f, 0.0f);
-    glm::vec3 scaleTotemOnCar = glm::vec3(0.5f, 0.5f, 0.5f);
-    shared_ptr<CId> cIdTotemOnCar = make_shared<CId>();
-    shared_ptr<CType> cTypeTotemOnCar = make_shared<CType>(ModelType::Cube);
-    shared_ptr<CTransformable> cTransformableTotemOnCar = make_shared<CTransformable>(postoTemOnCar, rotTotemOnCar, scaleTotemOnCar);
-    totemOnCar->AddComponent(cIdTotemOnCar);
-    totemOnCar->AddComponent(cTypeTotemOnCar);
-    totemOnCar->AddComponent(cTransformableTotemOnCar);
-    totemOnCar->AddComponent(make_shared<CTexture>("totem.jpg"));
-    totemOnCar->AddComponent(make_shared<CMesh>("kart_ia.obj"));
-    totemOnCar->AddComponent(make_shared<CShader>("CLEngine/src/Shaders/vertex.glsl","CLEngine/src/Shaders/fragment.glsl"));
-    // ------------------------------------------------------------------------------------------------------------------------------------------------
-}
-*/
+ 
+ 
 void StateInGame::AddElementsToRender() {
     // Añadimos cosas a la fachada de render
     renderEngine->FacadeAddPlates(manNamePlates.get());
@@ -155,6 +139,7 @@ void StateInGame::InitializeSystems(ManCar &manCars, ManBoundingWall &manWall, M
     collisions = make_shared<Collisions>();
     sysBoxPowerUp = make_shared<SystemBoxPowerUp>();
     sysLoD = make_unique<SystemLoD>();
+    sysRanking = make_unique<SystemRanking>();
 }
 
 void StateInGame::InitializeManagers(Physics *physics, Camera *cam, const uint32_t timeGame) {
@@ -167,7 +152,7 @@ void StateInGame::InitializeManagers(Physics *physics, Camera *cam, const uint32
     manBoundingOBB      = make_shared<ManBoundingOBB>();
     manBoundingGround   = make_shared<ManBoundingGround>();
     manNavMesh          = make_shared<ManNavMesh>();
-    manTotems           = make_shared<ManTotem>(manNavMesh.get());
+    manTotems           = make_shared<ManTotem>(manNavMesh.get(), 45);
     manNamePlates       = make_shared<ManNamePlate>(manCars.get());
     manLight            = make_shared<ManLight>();
     manGameRules        = make_unique<ManGameRules>(timeGame);
@@ -215,7 +200,26 @@ void StateInGame::InitState() {
     }
 }
 
+
+void StateInGame::CreateMainCar() {
+    if(manCars) {
+        auto pj = GameValues::GetInstance()->GetCharacter();
+        auto timeTotem = GameValues::GetInstance()->GetTimeTotem();
+        manCars->CreateMainCar(pj, timeTotem);
+        /*auto cCar = static_cast<CCar*>(manCars->GetCar()->GetComponent(CompType::CarComp).get());
+        if (cCar){
+            cout << "PESO: " << cCar->weight << " - VELMAX: " << cCar->maxSpeed << " - ACELETARION: " << cCar->acceleration << "\n";
+        }*/
+    }
+}
+
+///////////////////////
+
+///////////////////////
+
 void StateInGame::Update() {
+
+
     EventManager &em = EventManager::GetInstance();
     em.Update();
 
@@ -268,6 +272,7 @@ void StateInGame::Update() {
 
     renderEngine->FacadeAnimate(manBoxPowerUps->GetEntities());
 
+    sysRanking->Update(manCars.get());
     manGameRules->Update();
 
     if(Constants::CLIPPING_OCTREE){

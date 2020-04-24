@@ -176,7 +176,7 @@ void SoundEngine::LoadSoundEvent(const string& nameEvent, const bool type) {
  */
 void SoundEngine::PlayEvent(const string& nameID) {
     //cout << "*** Quiero que suene el evento: " << nameID << endl;
-    auto v = globalVolume;
+    //auto v = globalVolume;
     auto instance = eventInstances2D.find(nameID);
     if (instance != eventInstances2D.end()) {
         SetVolume(instance->second->GetInstance(), globalVolume);

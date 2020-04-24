@@ -1,6 +1,6 @@
 #include "CTotem.h"
 
-CTotem::CTotem() /*: durationTime{30000}*/{
+CTotem::CTotem(int time) : SEGUNDOS(time) {
     m_compType = CompType::TotemComp;  
 }
 

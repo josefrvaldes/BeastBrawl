@@ -15,7 +15,7 @@
 class Position;
 using namespace std;
 using json = nlohmann::json;
-ManTotem::ManTotem(ManNavMesh *manNavMesh_) : manNavMesh{manNavMesh_} {
+ManTotem::ManTotem(ManNavMesh *manNavMesh_, int timeTotem) : manNavMesh{manNavMesh_} {
     // CREAMOS EL TOTEM
     ifstream i("data.json");
     json j = json::parse(i);
@@ -38,7 +38,7 @@ ManTotem::ManTotem(ManNavMesh *manNavMesh_) : manNavMesh{manNavMesh_} {
         posNewTotem = glm::vec3(j["TOTEM"]["x"].get<double>(),j["TOTEM"]["y"].get<double>()+5,j["TOTEM"]["z"].get<double>());
         currentNavMesh = manNavMesh->CalculateNavMesh(posNewTotem);
     }
-    CreateTotem(posNewTotem);
+    CreateTotem(posNewTotem, timeTotem);
     //TODO: Esto es peligroso [0] aunque sabemos que va a ir
     //auto cId = static_cast<CId*>(entities[0]->GetComponent(CompType::IdComp).get());
     string nameEvent = "Partida/coger_totem";
@@ -64,16 +64,16 @@ void ManTotem::Update(){
 }
 
 
-void ManTotem::CreateTotem() {
+void ManTotem::CreateTotem(int timeTotem) {
     if(entities.size() == 0){
-        shared_ptr<Totem> totem = make_shared<Totem>();
+        shared_ptr<Totem> totem = make_shared<Totem>(timeTotem);
         entities.push_back(totem);
     }
 }
 
-void ManTotem::CreateTotem(glm::vec3 _position) {
+void ManTotem::CreateTotem(glm::vec3 _position, int timeTotem) {
     if(entities.size() == 0){
-        shared_ptr<Totem> totem = make_shared<Totem>(_position);
+        shared_ptr<Totem> totem = make_shared<Totem>(_position, timeTotem);
         string name = "Partida/totem";
         auto idComp = static_cast<CId*>(totem->GetComponent(CompType::IdComp).get());
         SoundFacadeManager::GetInstance()->GetSoundFacade()->CreateSoundDinamic3D(idComp->id, _position, name, 1, 0);

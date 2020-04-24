@@ -72,7 +72,7 @@ class CLEngine {
         //! @returns time Tiempo de ejecucion
         double GetTime();
         //! Desactiva el cursor
-        void UnableCursor();
+        void DisableCursor();
         void CloseWindow();
         void PollEvents();
         void DrawDepthMap();
@@ -90,7 +90,7 @@ class CLEngine {
         //! @param _depth Valor de la profundidad
         //! @param file Ruta a la imagen
         //! @param bool Flip vertical
-        void DrawImage2D(float _x, float _y, float _width, float _height, float _depth, string& file, bool);
+        void DrawImage2D(float _x, float _y, float _width, float _height, float _depth, string file, bool);
         //! Dibuja texto 2D
         //! @param text Texto para dibujar
         //! @param x Posicion en X

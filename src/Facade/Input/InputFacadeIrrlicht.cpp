@@ -20,8 +20,8 @@ vector<Constants::InputTypes> InputFacadeIrrlicht::CheckInputMulti(){
 	return vector<Constants::InputTypes>();
 }
 
-void InputFacadeIrrlicht::CheckInputSingle(){
-	
+bool InputFacadeIrrlicht::CheckInputSingle(){
+	return false;
 }
 
 void InputFacadeIrrlicht::CheckInputIntro() {

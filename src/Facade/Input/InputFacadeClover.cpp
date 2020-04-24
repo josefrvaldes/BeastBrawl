@@ -2,6 +2,9 @@
 
 #include <Components/CId.h>
 #include <Components/CNavMesh.h>
+#include <Systems/Utils.h>
+
+#include <../../include/boost/asio.hpp>
 
 #include <Game.h>
 #include <iostream>
@@ -12,7 +15,7 @@ InputFacadeClover::InputFacadeClover(){
     auto renderFacade = static_cast<RenderFacadeClover*>(RenderFacadeManager::GetInstance()->GetRenderFacade());
     device = renderFacade->GetDevice();
 
-    device->UnableCursor();
+    device->DisableCursor();
     
     if(glfwJoystickIsGamepad(GLFW_JOYSTICK_1)){
         string name = glfwGetGamepadName(GLFW_JOYSTICK_1);
@@ -316,12 +319,28 @@ void InputFacadeClover::CheckInputSelectCharacter(int &input, int maxInput) {
         SetValueInput(BUTTON_A, true);
         EventManager::GetInstance().AddEventMulti(Event{EventType::MENU_OK});
 
+        //Actualiza la vez del personaje a usar
+        shared_ptr<DataMap> data = make_shared<DataMap>();
+        int num = input;
+        (*data)[NUM] = num;
+        EventManager::GetInstance().AddEventMulti(Event{EventType::UPDATE_SOUNDCHARACTER, data});
+        
+        //Registra el personaje a usar
+        GameValues::GetInstance()->SetCharacter(input);
+
         //TODO: Ahora mismo, SELECCIONAR PERSONAJE y VOLVER A JUGAR del EndRace, hacen lo mismo. Falta la gestion online.
         if ( multiplayer ) {
             RenderFacadeManager::GetInstance()->GetRenderFacade()->CleanScene();
             EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_LOBBYMULTI});
         } else{
+            shared_ptr<DataMap> data = make_shared<DataMap>();
+            int num = input;
+            (*data)[NUM] = num;
+            EventManager::GetInstance().AddEventMulti(Event{EventType::UPDATE_SOUNDCHARACTER, data});
+            
             EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_GAME_OPTIONS});
+            //Change caracter
+            GameValues::GetInstance()->SetCharacter(input);
         }
 
     } else if (!IsKeyOrGamepadPress(GLFW_KEY_SPACE, GLFW_GAMEPAD_BUTTON_A, false, 0) ) {
@@ -382,6 +401,9 @@ void InputFacadeClover::CheckInputGameOptions(std::vector<int> &input, int maxIn
             input[pos] = 0;
         }
         SetValueInput(BUTTON_STICK_R, true);
+
+        ChangeGameOptions(pos, input[pos]);
+
         EventManager::GetInstance().AddEventMulti(Event{EventType::MENU_OPTION});
     } else if ( !IsKeyOrGamepadPress(GLFW_KEY_RIGHT, GLFW_GAMEPAD_AXIS_LEFT_X, true, 0.5) ) {
         SetValueInput(BUTTON_STICK_R, false);
@@ -397,6 +419,9 @@ void InputFacadeClover::CheckInputGameOptions(std::vector<int> &input, int maxIn
             input[pos] = maxInput[pos];
         }
         SetValueInput(BUTTON_STICK_L, true);
+
+        ChangeGameOptions(pos, input[pos]);
+
         EventManager::GetInstance().AddEventMulti(Event{EventType::MENU_OPTION});
     } else if ( !IsKeyOrGamepadPress(GLFW_KEY_LEFT, GLFW_GAMEPAD_AXIS_LEFT_X, true, -0.5) ) {
         SetValueInput(BUTTON_STICK_L, false);
@@ -423,7 +448,7 @@ void InputFacadeClover::CheckInputGameOptions(std::vector<int> &input, int maxIn
 
         timeStart = system_clock::now();
         ++pos;
-        if(pos > (input.size()-1)) {
+        if(pos > (static_cast<int>(input.size())-1)) {
             pos = 0;
         }
         SetValueInput(BUTTON_STICK_DOWN, true);
@@ -446,8 +471,9 @@ void InputFacadeClover::CheckInputGameOptions(std::vector<int> &input, int maxIn
 /**
  * Input de la partida un jugador.
  * TODO: Igual habría que quitar el renderFacade y que eso sean eventos.
+ * @return bool que indica si vamos a ir a pausa o no
  */
-void InputFacadeClover::CheckInputSingle(){
+bool InputFacadeClover::CheckInputSingle(){
     GLFWgamepadstate state;
     glfwGetGamepadState(GLFW_JOYSTICK_1, &state);
 
@@ -561,10 +587,11 @@ void InputFacadeClover::CheckInputSingle(){
     if ( IsKeyOrGamepadPress(GLFW_KEY_ESCAPE, GLFW_GAMEPAD_BUTTON_START, false, 0) && !IsInputPressed(BUTTON_START)) {
         SetValueInput(InputXBox::BUTTON_START, true);
         eventManager.AddEventMulti(Event{EventType::STATE_PAUSE});
+        return true;
     } else if (!IsKeyOrGamepadPress(GLFW_KEY_ESCAPE, GLFW_GAMEPAD_BUTTON_START, false, 0)) {
         SetValueInput(InputXBox::BUTTON_START, false);
     }
-
+    return false;
 }
 
 /**
@@ -702,158 +729,179 @@ vector<Constants::InputTypes> InputFacadeClover::CheckInputMulti(){
 
 void InputFacadeClover::CheckInputPause(int& input, int maxInput){
 
-    EventManager &eventManager = EventManager::GetInstance();
-
-    //SUBIR
-    if ( IsKeyOrGamepadPress(GLFW_KEY_UP, GLFW_GAMEPAD_AXIS_LEFT_Y, true, -0.5)
-         && ( (IsInputPressed(BUTTON_STICK_UP) && HasDelayPassed() ) || !IsInputPressed(BUTTON_STICK_UP) ) ) {
-
-        timeStart = system_clock::now();
-        input--;
-        if(input < 0)
-            input = maxInput;
-        SetValueInput(BUTTON_STICK_UP, true);
-        //EventManager::GetInstance().AddEventMulti(Event{EventType::MENU_OPTION});
-        SoundFacadeManager::GetInstance()->GetSoundFacade()->PlayEvent("Menu/cambio_opcion");
-    } else if( !IsKeyOrGamepadPress(GLFW_KEY_UP, GLFW_GAMEPAD_AXIS_LEFT_Y, true, -0.5) ){
-        SetValueInput(BUTTON_STICK_UP, false);
-    }
-
-    //BAJAR
-    if ( IsKeyOrGamepadPress(GLFW_KEY_DOWN, GLFW_GAMEPAD_AXIS_LEFT_Y, true, 0.5)
-         && ( (IsInputPressed(BUTTON_STICK_DOWN) && HasDelayPassed() ) || !IsInputPressed(BUTTON_STICK_DOWN) )) {
-
-        timeStart = system_clock::now();
-        input++;
-        if(input > maxInput)
-            input = 0;
-        SetValueInput(BUTTON_STICK_DOWN, true);
-        //EventManager::GetInstance().AddEventMulti(Event{EventType::MENU_OPTION});
-        SoundFacadeManager::GetInstance()->GetSoundFacade()->PlayEvent("Menu/cambio_opcion");
-    } else if( !IsKeyOrGamepadPress(GLFW_KEY_DOWN, GLFW_GAMEPAD_AXIS_LEFT_Y, true, 0.5) ){
-        SetValueInput(BUTTON_STICK_DOWN, false);
-    }
-
-    //IN GAME
-    if ( IsKeyOrGamepadPress(GLFW_KEY_ESCAPE, GLFW_GAMEPAD_BUTTON_START, false, 0) && !IsInputPressed(BUTTON_START)) {
-        SetValueInput(InputXBox::BUTTON_START, true);
-        //EventManager::GetInstance().AddEventMulti(Event{EventType::MENU_BACK});
-        SoundFacadeManager::GetInstance()->GetSoundFacade()->PlayEvent("Menu/atras");
-        Game::GetInstance()->SetState(State::INGAME_SINGLE);
-        input = 0;
-    } else if (!IsKeyOrGamepadPress(GLFW_KEY_ESCAPE, GLFW_GAMEPAD_BUTTON_START, false, 0)) {
-        SetValueInput(InputXBox::BUTTON_START, false);
-    }
-
-    //IN GAME
-    if ( IsKeyOrGamepadPress(GLFW_KEY_SPACE, GLFW_GAMEPAD_BUTTON_A, false, 0) && HasDelayPassed() && !IsInputPressed(BUTTON_A)) {
-
-        timeStart = system_clock::now();
-        SetValueInput(BUTTON_A, true);
-        //EventManager::GetInstance().AddEventMulti(Event{EventType::MENU_OK});
-        SoundFacadeManager::GetInstance()->GetSoundFacade()->PlayEvent("Menu/aceptar");
-
-        switch (input) {
-            case 0: {
-                Game::GetInstance()->SetState(State::INGAME_SINGLE);
-                input = 0;
-                break;
-            }
-            case 1: {
-                RenderFacadeManager::GetInstance()->GetRenderFacade()->CleanScene();
-                Game::GetInstance()->SetState(State::MENU);
-                input = 0;
-                break;
-            }
-        }
-
-    } else if ( !IsKeyOrGamepadPress(GLFW_KEY_SPACE, GLFW_GAMEPAD_BUTTON_A, false, 0) ) {
-        SetValueInput(BUTTON_A, false);
-    }
-}
-
-void InputFacadeClover::CheckInputEndRace(int& input, int maxInput, bool menu){
-
-    //ESPACIO
-    if ( IsKeyOrGamepadPress(GLFW_KEY_SPACE, GLFW_GAMEPAD_BUTTON_A, false, 0) && HasDelayPassed() && !IsInputPressed(BUTTON_A)) {
-
-        timeStart = system_clock::now();
-        SetValueInput(BUTTON_A, true);
-
-        if ( !menu ) {
-            RenderFacadeManager::GetInstance()->GetRenderFacade()->SetMenuEndRace(true);
-        } else {
-
-            EventManager::GetInstance().AddEventMulti(Event{EventType::MENU_OK});
+    // esto es una cutrez que se hace porque si no al volver del menú no se oye el sonido de "salir" del menú. Que conste que yo no quería, Judith me obligó :(
+    if (WeHaveToGoToMenu) {
+        uint64_t now = Utils::getMillisSinceEpoch();
+        uint64_t interval = now - timerGoToMenu;
+        if(interval > 250) {
             RenderFacadeManager::GetInstance()->GetRenderFacade()->CleanScene();
-            switch(input) {
-                case 0: {
-                    if (multiplayer) {
-                        EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_LOBBYMULTI});
-                    } else {
-                        //Manera un poco cutre de resetear el CId al empezar el juego
-                        RenderFacadeManager::GetInstance()->GetRenderFacade()->SetNumEnemyCars(0);
-
-                        auto cId = make_shared<CId>();
-                        cId->ResetNumIds();
-                        auto cNavMesh = make_shared<CNavMesh>();
-                        cNavMesh->ResetNumIds();
-                        EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_INGAMESINGLE});
-                        break;
-                    }
-                }
-                case 1: {
-                    EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_SELECT_CHARACTER});
-                    //TODO: ¿Deberia resetear al volver al comenzar o al volver al menú?
-                    RenderFacadeManager::GetInstance()->GetRenderFacade()->ResetInputGameOptions();
-                    RenderFacadeManager::GetInstance()->GetRenderFacade()->ResetInputCharacter();
-                    break;
-                }
-                case 2: {
-                    EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_MENU});
-
-                    //TODO: ¿Deberia resetear al volver al comenzar o al volver al menú?
-                    RenderFacadeManager::GetInstance()->GetRenderFacade()->ResetInputGameOptions();
-                    RenderFacadeManager::GetInstance()->GetRenderFacade()->ResetInputCharacter();
-                    break;
-                }
-            }
+            Game::GetInstance()->SetState(State::MENU);
             input = 0;
-            RenderFacadeManager::GetInstance()->GetRenderFacade()->SetMenuEndRace(false);
+            WeHaveToGoToMenu = false;
         }
-
-    } else if( !IsKeyOrGamepadPress(GLFW_KEY_SPACE, GLFW_GAMEPAD_BUTTON_A, false, 0) ) {
-        SetValueInput(BUTTON_A, false);
-    }
-
-
-    if ( menu ) {
-
+    } else {
         //SUBIR
-        if ( IsKeyOrGamepadPress(GLFW_KEY_UP, GLFW_GAMEPAD_AXIS_LEFT_Y, true, -0.5) && ( (IsInputPressed(BUTTON_STICK_UP) && HasDelayPassed() ) || !IsInputPressed(BUTTON_STICK_UP) ) ) {
+        if ( IsKeyOrGamepadPress(GLFW_KEY_UP, GLFW_GAMEPAD_AXIS_LEFT_Y, true, -0.5)
+            && ( (IsInputPressed(BUTTON_STICK_UP) && HasDelayPassed() ) || !IsInputPressed(BUTTON_STICK_UP) ) ) {
+
             timeStart = system_clock::now();
             input--;
-            if (input < 0) {
+            if(input < 0)
                 input = maxInput;
-            }
             SetValueInput(BUTTON_STICK_UP, true);
-            EventManager::GetInstance().AddEventMulti(Event{EventType::MENU_OPTION});
-        } else if ( !IsKeyOrGamepadPress(GLFW_KEY_UP, GLFW_GAMEPAD_AXIS_LEFT_Y, true, -0.5) ){
+            //EventManager::GetInstance().AddEventMulti(Event{EventType::MENU_OPTION});
+            SoundFacadeManager::GetInstance()->GetSoundFacade()->PlayEvent("Menu/cambio_opcion");
+        } else if( !IsKeyOrGamepadPress(GLFW_KEY_UP, GLFW_GAMEPAD_AXIS_LEFT_Y, true, -0.5) ){
             SetValueInput(BUTTON_STICK_UP, false);
         }
 
         //BAJAR
-        if (IsKeyOrGamepadPress(GLFW_KEY_DOWN, GLFW_GAMEPAD_AXIS_LEFT_Y, true, 0.5) && ( (IsInputPressed(BUTTON_STICK_DOWN) && HasDelayPassed() ) || !IsInputPressed(BUTTON_STICK_DOWN) ) ) {
+        if ( IsKeyOrGamepadPress(GLFW_KEY_DOWN, GLFW_GAMEPAD_AXIS_LEFT_Y, true, 0.5)
+            && ( (IsInputPressed(BUTTON_STICK_DOWN) && HasDelayPassed() ) || !IsInputPressed(BUTTON_STICK_DOWN) )) {
 
             timeStart = system_clock::now();
             input++;
-            if(input > maxInput) {
+            if(input > maxInput)
                 input = 0;
-            }
             SetValueInput(BUTTON_STICK_DOWN, true);
-            EventManager::GetInstance().AddEventMulti(Event{EventType::MENU_OPTION});
-        } else if ( !IsKeyOrGamepadPress(GLFW_KEY_DOWN, GLFW_GAMEPAD_AXIS_LEFT_Y, true, -0.5) ){
+            //EventManager::GetInstance().AddEventMulti(Event{EventType::MENU_OPTION});
+            SoundFacadeManager::GetInstance()->GetSoundFacade()->PlayEvent("Menu/cambio_opcion");
+        } else if( !IsKeyOrGamepadPress(GLFW_KEY_DOWN, GLFW_GAMEPAD_AXIS_LEFT_Y, true, 0.5) ){
             SetValueInput(BUTTON_STICK_DOWN, false);
+        }
+
+        //IN GAME
+        if ( IsKeyOrGamepadPress(GLFW_KEY_ESCAPE, GLFW_GAMEPAD_BUTTON_START, false, 0) && !IsInputPressed(BUTTON_START)) {
+            SetValueInput(InputXBox::BUTTON_START, true);
+            //EventManager::GetInstance().AddEventMulti(Event{EventType::MENU_BACK});
+            SoundFacadeManager::GetInstance()->GetSoundFacade()->PlayEvent("Menu/atras");
+            Game::GetInstance()->SetState(State::INGAME_SINGLE);
+            input = 0;
+        } else if (!IsKeyOrGamepadPress(GLFW_KEY_ESCAPE, GLFW_GAMEPAD_BUTTON_START, false, 0)) {
+            SetValueInput(InputXBox::BUTTON_START, false);
+        }
+
+        //IN GAME
+        if ( IsKeyOrGamepadPress(GLFW_KEY_SPACE, GLFW_GAMEPAD_BUTTON_A, false, 0) && HasDelayPassed() && !IsInputPressed(BUTTON_A)) {
+
+            timeStart = system_clock::now();
+            SetValueInput(BUTTON_A, true);
+            //EventManager::GetInstance().AddEventMulti(Event{EventType::MENU_OK});
+            SoundFacadeManager::GetInstance()->GetSoundFacade()->PlayEvent("Menu/aceptar");
+
+        
+
+            switch (input) {
+                case 0: {
+                    Game::GetInstance()->SetState(State::INGAME_SINGLE);
+                    input = 0;                
+                    break;
+                }
+                case 1: {
+                    WeHaveToGoToMenu = true;
+                    timerGoToMenu = Utils::getMillisSinceEpoch();
+                    break;
+                }
+            }
+
+        } else if ( !IsKeyOrGamepadPress(GLFW_KEY_SPACE, GLFW_GAMEPAD_BUTTON_A, false, 0) ) {
+            SetValueInput(BUTTON_A, false);
+        }
+    }
+}
+
+void InputFacadeClover::CheckInputEndRace(int& input, int maxInput, bool menu){
+    // esto es una cutrez que se hace porque si no al volver al menú no se oye el sonido de "salir". Que conste que yo no quería, Judith me obligó :(
+    if (WeHaveToGoToMenu) {
+        uint64_t now = Utils::getMillisSinceEpoch();
+        uint64_t interval = now - timerGoToMenu;
+        if(interval > 250) {
+            EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_MENU});
+            //TODO: ¿Deberia resetear al volver al comenzar o al volver al menú?
+            RenderFacadeManager::GetInstance()->GetRenderFacade()->ResetInputGameOptions();
+            RenderFacadeManager::GetInstance()->GetRenderFacade()->ResetInputCharacter();
+            WeHaveToGoToMenu = false;
+        }
+    } else {
+
+        //ESPACIO
+        if ( IsKeyOrGamepadPress(GLFW_KEY_SPACE, GLFW_GAMEPAD_BUTTON_A, false, 0) && HasDelayPassed() && !IsInputPressed(BUTTON_A)) {
+
+            timeStart = system_clock::now();
+            SetValueInput(BUTTON_A, true);
+
+            if ( !menu ) {
+                RenderFacadeManager::GetInstance()->GetRenderFacade()->SetMenuEndRace(true);
+            } else {
+
+                EventManager::GetInstance().AddEventMulti(Event{EventType::MENU_OK});
+                RenderFacadeManager::GetInstance()->GetRenderFacade()->CleanScene();
+                switch(input) {
+                    case 0: {
+                        if (multiplayer) {
+                            EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_LOBBYMULTI});
+                        } else {
+                            //Manera un poco cutre de resetear el CId al empezar el juego
+                            RenderFacadeManager::GetInstance()->GetRenderFacade()->SetNumEnemyCars(0);
+
+                            auto cId = make_shared<CId>();
+                            cId->ResetNumIds();
+                            auto cNavMesh = make_shared<CNavMesh>();
+                            cNavMesh->ResetNumIds();
+                            EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_INGAMESINGLE});
+                            break;
+                        }
+                    }
+                    case 1: {
+                        EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_SELECT_CHARACTER});
+                        //TODO: ¿Deberia resetear al volver al comenzar o al volver al menú?
+                        RenderFacadeManager::GetInstance()->GetRenderFacade()->ResetInputGameOptions();
+                        RenderFacadeManager::GetInstance()->GetRenderFacade()->ResetInputCharacter();
+                        break;
+                    }
+                    case 2: {
+                        WeHaveToGoToMenu = true;
+                        timerGoToMenu = Utils::getMillisSinceEpoch();
+                        break;
+                    }
+                }
+                input = 0;
+                RenderFacadeManager::GetInstance()->GetRenderFacade()->SetMenuEndRace(false);
+            }
+
+        } else if( !IsKeyOrGamepadPress(GLFW_KEY_SPACE, GLFW_GAMEPAD_BUTTON_A, false, 0) ) {
+            SetValueInput(BUTTON_A, false);
+        }
+
+
+        if ( menu ) {
+
+            //SUBIR
+            if ( IsKeyOrGamepadPress(GLFW_KEY_UP, GLFW_GAMEPAD_AXIS_LEFT_Y, true, -0.5) && ( (IsInputPressed(BUTTON_STICK_UP) && HasDelayPassed() ) || !IsInputPressed(BUTTON_STICK_UP) ) ) {
+                timeStart = system_clock::now();
+                input--;
+                if (input < 0) {
+                    input = maxInput;
+                }
+                SetValueInput(BUTTON_STICK_UP, true);
+                EventManager::GetInstance().AddEventMulti(Event{EventType::MENU_OPTION});
+            } else if ( !IsKeyOrGamepadPress(GLFW_KEY_UP, GLFW_GAMEPAD_AXIS_LEFT_Y, true, -0.5) ){
+                SetValueInput(BUTTON_STICK_UP, false);
+            }
+
+            //BAJAR
+            if (IsKeyOrGamepadPress(GLFW_KEY_DOWN, GLFW_GAMEPAD_AXIS_LEFT_Y, true, 0.5) && ( (IsInputPressed(BUTTON_STICK_DOWN) && HasDelayPassed() ) || !IsInputPressed(BUTTON_STICK_DOWN) ) ) {
+
+                timeStart = system_clock::now();
+                input++;
+                if(input > maxInput) {
+                    input = 0;
+                }
+                SetValueInput(BUTTON_STICK_DOWN, true);
+                EventManager::GetInstance().AddEventMulti(Event{EventType::MENU_OPTION});
+            } else if ( !IsKeyOrGamepadPress(GLFW_KEY_DOWN, GLFW_GAMEPAD_AXIS_LEFT_Y, true, -0.5) ){
+                SetValueInput(BUTTON_STICK_DOWN, false);
+            }
         }
     }
 }
@@ -979,7 +1027,7 @@ void InputFacadeClover::CheckInputSettings(std::vector<int> &inputs, int *maxInp
 
         timeStart = system_clock::now();
         ++option;
-        if(option > (inputs.size()-1)) {
+        if(option > (static_cast<int>(inputs.size())-1)) {
             option = 0;
         }
         SetValueInput(BUTTON_STICK_DOWN, true);
@@ -988,4 +1036,25 @@ void InputFacadeClover::CheckInputSettings(std::vector<int> &inputs, int *maxInp
         SetValueInput(BUTTON_STICK_DOWN, true);
     }
 
+}
+
+
+
+// --------- CHANGES
+
+void InputFacadeClover::ChangeGameOptions(int option, int value) {
+    switch (option) {
+        case 0:
+            if (value == 0) GameValues::GetInstance()->SetGameTime(120);
+            if (value == 1) GameValues::GetInstance()->SetGameTime(180);
+            if (value == 2) GameValues::GetInstance()->SetGameTime(240);
+            if (value == 3) GameValues::GetInstance()->SetGameTime(300);
+            break;
+        case 1:
+            if (value == 0) GameValues::GetInstance()->SetTimeTotem(30);
+            if (value == 1) GameValues::GetInstance()->SetTimeTotem(45);
+            if (value == 2) GameValues::GetInstance()->SetTimeTotem(60);
+    
+        default: break;
+    }
 }

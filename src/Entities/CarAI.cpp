@@ -29,8 +29,48 @@
 class Position;
 using namespace std;
 
-CarAI::CarAI(){
+CarAI::CarAI(int pj, int timeTotem){
+
     typeCar = TypeCar::CarAI;
+
+    mainCharacter _pj;
+    float weight = 50;
+    float maxSpeed = 200.0;
+    float acceleration = 1.5;
+    
+    switch (pj) {
+        case 0: 
+            _pj = mainCharacter::PENGUIN;
+            weight = 30.0;
+            maxSpeed = 220.0;
+            break;
+        case 1: 
+            _pj = mainCharacter::TIGER; 
+            weight = 40.0;
+            acceleration = 1.75;
+            break;
+        case 2: 
+            _pj = mainCharacter::SHARK; 
+            weight = 30.0;
+            maxSpeed = 220.0;
+            acceleration = 2.0;
+            break;
+        case 3: 
+            _pj = mainCharacter::GORILLA; 
+            weight = 70.0;
+            maxSpeed = 220.0;
+            acceleration = 1.25;
+            break;
+        case 4: 
+            _pj = mainCharacter::DRAGON; 
+            acceleration = 2.0;
+            break;
+        case 5: 
+            _pj = mainCharacter::OCTOPUS; 
+            break;
+        default: break;
+    }
+
 
     // default values
     glm::vec3 pos   = glm::vec3(10.0f, 20.0f, 30.0f);
@@ -48,21 +88,18 @@ CarAI::CarAI(){
     
     
     string texture = "";
-    // string mesh    = "kart_ia.obj";
-    //string vertexShader = "CLEngine/src/Shaders/lightMapping.vert";
-    //string fragmentShader = "CLEngine/src/Shaders/lightMapping.frag";
 
     string vertexShader = "CLEngine/src/Shaders/cartoonShader.vert";
     string fragmentShader = "CLEngine/src/Shaders/cartoonShader.frag";
 
-    float maxSpeed = 200.0, acceleration = 1.5, friction = 1.0, slowDown = 2.5;
+    float friction = 1.0, slowDown = 2.5;
     
     shared_ptr<CId> cId   = make_shared<CId>();
     shared_ptr<CType> cType = make_shared<CType>(ModelType::AnimatedMesh);
     shared_ptr<CTransformable> cTransformable = make_shared<CTransformable>(pos, rot, scale); 
     shared_ptr<CTexture> cTexture = make_shared<CTexture>(texture);
     shared_ptr<CMesh> cMesh   = make_shared<CMesh>(mesh);
-    shared_ptr<CCar> cCar = make_shared<CCar>(maxSpeed, acceleration, friction, slowDown, 10.0);
+    shared_ptr<CCar> cCar = make_shared<CCar>(_pj, weight, maxSpeed, acceleration, friction, slowDown, 10.0);
 
     shared_ptr<CWayPoint> cWayPoint = make_shared<CWayPoint>();
     shared_ptr<CPosDestination> cPosDestination = make_shared<CPosDestination>();
@@ -71,7 +108,7 @@ CarAI::CarAI(){
     shared_ptr<CShield> cShield = make_shared<CShield>();
     shared_ptr<CNitro> cNitro = make_shared<CNitro>();
     shared_ptr<CRoboJorobo> cRoboJorobo = make_shared<CRoboJorobo>();
-    shared_ptr<CTotem> cTotem = make_shared<CTotem>();
+    shared_ptr<CTotem> cTotem = make_shared<CTotem>(timeTotem);
     shared_ptr<CPath> cPath   = make_shared<CPath>();
     shared_ptr<CSpeed> cSpeed = make_shared<CSpeed>();
     shared_ptr<CCurrentNavMesh> cCurrentNavMesh = make_shared<CCurrentNavMesh>(-1);  //  ponemos -1 por defecto ya que haremos el calculo al empezar la partida
@@ -128,8 +165,8 @@ CarAI::CarAI(){
     AddComponent(cShader);
 }
 
-CarAI::CarAI(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale,string texture, string mesh, float maxSpeed, float acceleration , float carFriction, float carSlowDown, std::string vertexShader, std::string fragmentShader)
-    : CarAI(){
+CarAI::CarAI(int pj, int timeTotem, glm::vec3 pos, glm::vec3 rot, glm::vec3 scale,string texture, string mesh, float maxSpeed, float acceleration , float carFriction, float carSlowDown, std::string vertexShader, std::string fragmentShader)
+    : CarAI(pj, timeTotem){
 
     CTransformable *cTransformable = (CTransformable *)m_components[CompType::TransformableComp].get();
     cTransformable->position = pos;
@@ -164,8 +201,8 @@ CarAI::CarAI(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale,string texture, strin
 
 
 
-CarAI::CarAI(glm::vec3 _position) 
-    : CarAI()
+CarAI::CarAI(int pj, int timeTotem, glm::vec3 _position) 
+    : CarAI(pj, timeTotem)
 {
     CTransformable *cTransformable = (CTransformable *)m_components[CompType::TransformableComp].get();
     cTransformable->position = _position;
