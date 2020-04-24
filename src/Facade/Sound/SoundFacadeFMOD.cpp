@@ -6,6 +6,7 @@
 #include <Components/CId.h>
 #include <Components/CTransformable.h>
 #include <Components/CCar.h>
+#include <GameValues.h>
 
 using namespace std;
 
@@ -583,7 +584,7 @@ void SoundFacadeFMOD::SoundRandomSentence(DataMap* d) {
 
 void SoundFacadeFMOD::SetCharacter(DataMap* d) {
     auto cPersonaje = any_cast<int>((*d)[NUM]);
-    
+    //cout << "++++++++++++++++++ PERSONAJE: " << cPersonaje << endl;
     character = cPersonaje;
 }
 
@@ -739,8 +740,13 @@ void SoundFacadeFMOD::SoundClock(DataMap* d) {
 }
 
 void SoundFacadeFMOD::SoundVictoryVoice(){
+    cout << "+++++++++++++++++ PERSONAJE: " << character << endl;
     SetParameter("Personajes/victoria", "personaje", character);
-    PlayEvent("Personajes/victoria");
+    if ( GameValues::GetInstance()->GetWin() ) {
+        PlayEvent("Personajes/victoria");
+    } else {
+        PlayEvent("Personajes/derrota");
+    }
 }
 
 void SoundFacadeFMOD::SoundVictory(DataMap* d){
