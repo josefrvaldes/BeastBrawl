@@ -47,7 +47,7 @@ typedef std::numeric_limits< double > dbl;
 
 ManCar::ManCar() {
     SubscribeToEvents();
-    CreateMainCar();
+    //CreateMainCar();
 
     // systemPathPlanning = make_unique<SystemPathPlanning>();
     //physicsAI = make_unique<PhysicsAI>();
@@ -102,29 +102,33 @@ void ManCar::UpdateGeneralCar(Entity& car_, Entity& totem_){
     systemGameRules->UpdateRulesCarPowerUps(car_, totem_);
 }
 
-void ManCar::CreateMainCar() {
-    car = make_shared<CarHuman>(); 
+void ManCar::CreateMainCar(int pj, int timeTotem) {
+    car = make_shared<CarHuman>(pj, timeTotem); 
     entities.push_back(car);
 }
 
-void ManCar::CreateHumanCar(glm::vec3 _position) {
-    shared_ptr<CarHuman> p = make_shared<CarHuman>(_position);
+//Cambiar PJ
+void ManCar::CreateHumanCar(int pj, int timeTotem, glm::vec3 _position) {
+    shared_ptr<CarHuman> p = make_shared<CarHuman>(pj, timeTotem, _position);
     entities.push_back(p);
 }
 
-void ManCar::CreateCarAI(glm::vec3 _position) {
-    shared_ptr<CarAI> p = make_shared<CarAI>(_position);
+//Cambiar PJ
+void ManCar::CreateCarAI(int pj, int timeTotem, glm::vec3 _position) {
+    shared_ptr<CarAI> p = make_shared<CarAI>(pj, timeTotem, _position);
     entities.push_back(p);
 }
 
-void ManCar::CreateCarAI(glm::vec3 _position, CWayPoint* _waypoint) {
-    shared_ptr<CarAI> p = make_shared<CarAI>(_position);
+//Cambiar PJ
+void ManCar::CreateCarAI(int pj, int timeTotem, glm::vec3 _position, CWayPoint* _waypoint) {
+    shared_ptr<CarAI> p = make_shared<CarAI>(pj, timeTotem, _position);
     entities.push_back(p);
     p->SetWayPoint(_waypoint);
 }
 
-void ManCar::CreateCarAI() {
-    shared_ptr<CarAI> p = make_shared<CarAI>();
+//Cambiar PJ
+void ManCar::CreateCarAI(int pj, int timeTotem) {
+    shared_ptr<CarAI> p = make_shared<CarAI>(pj, timeTotem);
     entities.push_back(p);
 }
 

@@ -25,6 +25,7 @@ void SystemGameRules::UpdateGameRules(Entity& globalClock_) const{
     if(cClock->accumulatedTime/1000.0 > cClock->DURATION_TIME/1000.0){
         cout << "Se acabo el tiempo, nadie gana!!! \n";
         //Game::GetInstance()->SetState(State::ENDRACE);
+        
         EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_ENDRACE});
 
     }

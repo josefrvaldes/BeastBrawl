@@ -21,11 +21,11 @@ class ManNavMesh;
 class ManTotem : public Manager{
    public:
     //using ManNavMesh::CalculateNavMesh;
-    ManTotem(ManNavMesh *);
+    ManTotem(ManNavMesh *, int timeTotem);
     ~ManTotem();
 
-    void CreateTotem();
-    void CreateTotem(glm::vec3 _position);
+    void CreateTotem(int timeTotem);
+    void CreateTotem(glm::vec3 _position, int timeTotem);
     void Update();
     void SetSystemOnline(SystemOnline* systOn){ systemOnline = systOn; };
     //shared_ptr<Totem>& GetTotem() { return totem; };

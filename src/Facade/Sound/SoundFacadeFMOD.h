@@ -55,6 +55,7 @@ class SoundFacadeFMOD : public SoundFacade {
         void SubscribeToGameEvents(const uint8_t) override;
 
         // -------------------------------- Eventos: Ajustes
+        void SetCharacter(DataMap*);
         void SetGlobalVolume(DataMap*);
 
         // -------------------------------- Eventos del juego: IN GAME

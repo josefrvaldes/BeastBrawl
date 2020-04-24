@@ -13,7 +13,7 @@
 
 using namespace std;
 
-Totem::Totem()
+Totem::Totem(int time)
 {
       // default values
     glm::vec3 pos   = glm::vec3(40.0f, 20.0f, 30.0f);
@@ -53,7 +53,7 @@ Totem::Totem()
     shared_ptr<CShader> cShader = make_shared<CShader>(vertexShader,fragmentShader);
 
     shared_ptr<CBoundingSphere> cBoundingSphere = make_shared<CBoundingSphere>(vec3(0.0,0.0,0.0), 4.5);
-    shared_ptr<CTotem> cTotem = make_shared<CTotem>();
+    shared_ptr<CTotem> cTotem = make_shared<CTotem>(time);
     AddComponent(cId);
     AddComponent(cType);
     AddComponent(cTransformable);
@@ -65,7 +65,7 @@ Totem::Totem()
     AddComponent(cTotem);
 }
 
-Totem::Totem(glm::vec3 position_) : Totem(){
+Totem::Totem(glm::vec3 position_, int time) : Totem(time){
 
     CTransformable *cTransformable = (CTransformable *)m_components[CompType::TransformableComp].get();
     cTransformable->position = position_;
@@ -74,7 +74,7 @@ Totem::Totem(glm::vec3 position_) : Totem(){
     cBoundingSPhere->center = position_;
 }
 
-Totem::Totem(glm::vec3 position_, glm::vec3 rotation_) : Totem(){
+Totem::Totem(glm::vec3 position_, glm::vec3 rotation_, int time) : Totem(time){
 
     CTransformable *cTransformable = (CTransformable *)m_components[CompType::TransformableComp].get();
     cTransformable->position = position_;
@@ -84,7 +84,7 @@ Totem::Totem(glm::vec3 position_, glm::vec3 rotation_) : Totem(){
     cBoundingSPhere->center = position_;
 }
 
-Totem::Totem(glm::vec3 position_, glm::vec3 rotation_, string texture_, string mesh_) : Totem(){
+Totem::Totem(glm::vec3 position_, glm::vec3 rotation_, string texture_, string mesh_, int time) : Totem(time){
     CTransformable *cTransformable = (CTransformable *)m_components[CompType::TransformableComp].get();
     cTransformable->position = position_;
     cTransformable->rotation = rotation_;

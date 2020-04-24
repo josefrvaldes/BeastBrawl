@@ -2,6 +2,8 @@
 
 #include <iostream>
 #include <memory>
+#include <GameValues.h>
+
 #include "InputFacade.h"
 #include "../Render/RenderFacadeManager.h"
 #include "../Sound/SoundFacadeManager.h"
@@ -49,4 +51,6 @@ class InputFacadeClover : public InputFacade{
 
         bool WeHaveToGoToMenu {false}; // esto sirve para que se oiga el sonidito de pasar desde pausa ingame hasta menú, es una chapuza pero no quiero perder más tiempo en esa chorrada
         uint64_t timerGoToMenu {0};
+
+        void ChangeGameOptions(int, int);
 };

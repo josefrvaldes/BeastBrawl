@@ -319,12 +319,28 @@ void InputFacadeClover::CheckInputSelectCharacter(int &input, int maxInput) {
         SetValueInput(BUTTON_A, true);
         EventManager::GetInstance().AddEventMulti(Event{EventType::MENU_OK});
 
+        //Actualiza la vez del personaje a usar
+        shared_ptr<DataMap> data = make_shared<DataMap>();
+        int num = input;
+        (*data)[NUM] = num;
+        EventManager::GetInstance().AddEventMulti(Event{EventType::UPDATE_SOUNDCHARACTER, data});
+        
+        //Registra el personaje a usar
+        GameValues::GetInstance()->SetCharacter(input);
+
         //TODO: Ahora mismo, SELECCIONAR PERSONAJE y VOLVER A JUGAR del EndRace, hacen lo mismo. Falta la gestion online.
         if ( multiplayer ) {
             RenderFacadeManager::GetInstance()->GetRenderFacade()->CleanScene();
             EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_LOBBYMULTI});
         } else{
+            shared_ptr<DataMap> data = make_shared<DataMap>();
+            int num = input;
+            (*data)[NUM] = num;
+            EventManager::GetInstance().AddEventMulti(Event{EventType::UPDATE_SOUNDCHARACTER, data});
+            
             EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_GAME_OPTIONS});
+            //Change caracter
+            GameValues::GetInstance()->SetCharacter(input);
         }
 
     } else if (!IsKeyOrGamepadPress(GLFW_KEY_SPACE, GLFW_GAMEPAD_BUTTON_A, false, 0) ) {
@@ -385,6 +401,9 @@ void InputFacadeClover::CheckInputGameOptions(std::vector<int> &input, int maxIn
             input[pos] = 0;
         }
         SetValueInput(BUTTON_STICK_R, true);
+
+        ChangeGameOptions(pos, input[pos]);
+
         EventManager::GetInstance().AddEventMulti(Event{EventType::MENU_OPTION});
     } else if ( !IsKeyOrGamepadPress(GLFW_KEY_RIGHT, GLFW_GAMEPAD_AXIS_LEFT_X, true, 0.5) ) {
         SetValueInput(BUTTON_STICK_R, false);
@@ -400,6 +419,9 @@ void InputFacadeClover::CheckInputGameOptions(std::vector<int> &input, int maxIn
             input[pos] = maxInput[pos];
         }
         SetValueInput(BUTTON_STICK_L, true);
+
+        ChangeGameOptions(pos, input[pos]);
+
         EventManager::GetInstance().AddEventMulti(Event{EventType::MENU_OPTION});
     } else if ( !IsKeyOrGamepadPress(GLFW_KEY_LEFT, GLFW_GAMEPAD_AXIS_LEFT_X, true, -0.5) ) {
         SetValueInput(BUTTON_STICK_L, false);
@@ -1012,4 +1034,25 @@ void InputFacadeClover::CheckInputSettings(std::vector<int> &inputs, int *maxInp
         SetValueInput(BUTTON_STICK_DOWN, true);
     }
 
+}
+
+
+
+// --------- CHANGES
+
+void InputFacadeClover::ChangeGameOptions(int option, int value) {
+    switch (option) {
+        case 0:
+            if (value == 0) GameValues::GetInstance()->SetGameTime(120);
+            if (value == 1) GameValues::GetInstance()->SetGameTime(180);
+            if (value == 2) GameValues::GetInstance()->SetGameTime(240);
+            if (value == 3) GameValues::GetInstance()->SetGameTime(300);
+            break;
+        case 1:
+            if (value == 0) GameValues::GetInstance()->SetTimeTotem(30);
+            if (value == 1) GameValues::GetInstance()->SetTimeTotem(45);
+            if (value == 2) GameValues::GetInstance()->SetTimeTotem(60);
+    
+        default: break;
+    }
 }

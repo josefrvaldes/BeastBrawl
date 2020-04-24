@@ -7,7 +7,6 @@ StateInGameSingle::StateInGameSingle() : StateInGame() {
     InitState();
     InitVirtualMethods();
 
-
     createSystemAI();
 
     //CAMBIARCosasNavMesh(*manCars.get(), *manNavMesh.get());
@@ -78,6 +77,9 @@ void StateInGameSingle::InitializeCLPhysics(ManCar &manCars, ManBoundingWall &ma
 
 void StateInGameSingle::InitializeManagers(Physics *physics, Camera *cam, const uint32_t timeGame) {
     StateInGame::InitializeManagers(physics, cam, timeGame);
+
+    //Cambiar
+    StateInGame::CreateMainCar();
     CAMBIARInicializarCarAIS(*manCars, *manWayPoint);
 }
 
@@ -211,13 +213,35 @@ void StateInGameSingle::CAMBIARInicializarCarAIS(ManCar &manCars, ManWayPoint &m
     pathInit3.push(5);
     manCars.GetEntitiesAI()[2]->SetPath(pathInit3);
 */
+
+
+    auto iaPjs = GameValues::GetInstance()->GetIACharacters();
+    auto timeTotem = GameValues::GetInstance()->GetTimeTotem();
+
+
     auto posCar1 = glm::vec3(0.0f, 15.0f, -200.0f);
     auto posCar2 = glm::vec3(-202.0f, 15.0f, -145.0f);
     auto posCar3 = glm::vec3(209.0f, 15.0f, -145.0f);
 
-    manCars.CreateCarAI(posCar1);
-    manCars.CreateCarAI(posCar2);
-    manCars.CreateCarAI(posCar3);
+    //Para asegurarse por si petara, que no debe
+    if ( !iaPjs.empty() ){
+        if (iaPjs.size() < 5) {
+            cout << "++++++++++ El vector de IA no tiene el tamanyo que debe tener. Si peta despues de esto, buscame.";
+        }
+        
+        //Cambiar
+        manCars.CreateCarAI(iaPjs[0], timeTotem, posCar1);
+        manCars.CreateCarAI(iaPjs[1], timeTotem, posCar2);
+        manCars.CreateCarAI(iaPjs[2], timeTotem, posCar3);
+
+    } else {
+        cout << "++++++++++ Algo no va bien asique ahora todos son pinguinos.";
+        manCars.CreateCarAI(0, timeTotem, posCar1);
+        manCars.CreateCarAI(0, timeTotem, posCar2);
+        manCars.CreateCarAI(0, timeTotem, posCar3);
+    }
+
+
 
     //int i = -1;
     //TODO: Cambiar de sitio
