@@ -53,7 +53,7 @@ class InputFacadeIrrlicht : public InputFacade{
         InputFacadeIrrlicht();
         ~InputFacadeIrrlicht() override = default;
         vector<Constants::InputTypes> CheckInputMulti() override;
-        void CheckInputSingle() override;
+        bool CheckInputSingle() override;
         void CheckInputMenu(int&, int) override;
         void CheckInputSelectCharacter(int&, int) override;
         void CheckInputGameOptions(std::vector<int>&, int[], int&) override;

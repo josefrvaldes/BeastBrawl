@@ -75,24 +75,7 @@ void ManCar::UpdateCarPlayer(ManTotem &manTotem_) {
 }
 
 void ManCar::UpdateCarAI(CarAI* carAI, ManTotem* m_manTotem) {
-    
-    //manNavMesh->UpdateNavMeshEntity(carAI);
-    //systemBtMoveTo->update(carAI);
-    //systemPathPlanning->update(carAI);
-    //systemBtLoDMove->update(carAI);
-    //systemBtPowerUp->update(carAI);
-
-    //auto time0 = system_clock::now();
-    //auto time1 = system_clock::now();
-    //double timeAccumulated = duration_cast<microseconds>(time1 - time0).count();
-    //cout.precision(dbl::max_digits10);
-    //if(timeAccumulated > maxTimeAccumulated) maxTimeAccumulated = timeAccumulated;
-    //cout << maxTimeAccumulated << " - ";
-
-
-    //physicsAI->Update(carAI, graph);
     UpdateGeneralCar(*carAI, *(m_manTotem->GetEntities()[0].get()));
-    
 }
 void ManCar::UpdateCarHuman(Entity* CarHuman, ManTotem* m_manTotem) {
     UpdateGeneralCar(*CarHuman, *(m_manTotem->GetEntities()[0].get()));

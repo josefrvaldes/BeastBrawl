@@ -24,5 +24,6 @@ public:
 
     void UpdateRulesCarPowerUps(Entity& car_, Entity& totem_) const;
     void UpdateGameRules(Entity& globalClock_) const;
+    void RestartAllTimers(vector<shared_ptr<Entity>> entities, Entity &globalClock);
 
 };

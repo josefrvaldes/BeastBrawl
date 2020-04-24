@@ -471,8 +471,9 @@ void InputFacadeClover::CheckInputGameOptions(std::vector<int> &input, int maxIn
 /**
  * Input de la partida un jugador.
  * TODO: Igual habría que quitar el renderFacade y que eso sean eventos.
+ * @return bool que indica si vamos a ir a pausa o no
  */
-void InputFacadeClover::CheckInputSingle(){
+bool InputFacadeClover::CheckInputSingle(){
     GLFWgamepadstate state;
     glfwGetGamepadState(GLFW_JOYSTICK_1, &state);
 
@@ -586,10 +587,11 @@ void InputFacadeClover::CheckInputSingle(){
     if ( IsKeyOrGamepadPress(GLFW_KEY_ESCAPE, GLFW_GAMEPAD_BUTTON_START, false, 0) && !IsInputPressed(BUTTON_START)) {
         SetValueInput(InputXBox::BUTTON_START, true);
         eventManager.AddEventMulti(Event{EventType::STATE_PAUSE});
+        return true;
     } else if (!IsKeyOrGamepadPress(GLFW_KEY_ESCAPE, GLFW_GAMEPAD_BUTTON_START, false, 0)) {
         SetValueInput(InputXBox::BUTTON_START, false);
     }
-
+    return false;
 }
 
 /**

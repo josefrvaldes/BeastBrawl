@@ -158,8 +158,8 @@ void CLNode::DFSTree(glm::mat4 mA, CLCamera* cam) {
     // > Para cada hijo
     // > > DFSTree(mT)
     
-    //if(!octreeVisible)
-    //    return;
+    if(Constants::CLIPPING_OCTREE && !octreeVisible)
+        return;
 
     if (changed) {
         transformationMat = mA*CalculateTransformationMatrix();
@@ -192,8 +192,8 @@ void CLNode::DFSTree(glm::mat4 mA, CLCamera* cam) {
 
 
 void CLNode::DFSTree(glm::mat4 mA, GLuint shaderID) {
-    // if(!octreeVisible)
-    //     return;
+    if(Constants::CLIPPING_OCTREE && !octreeVisible)
+        return;
 
     if (changed) {
         transformationMat = mA*CalculateTransformationMatrix();
@@ -289,6 +289,8 @@ float CLNode::CalculateBoundingBox(){
         dimensionsBoundingBox = glm::distance(extremeMaxMesh.y, extremeMinMesh.y);
     if(dimensionsBoundingBox < glm::distance(extremeMaxMesh.z, extremeMinMesh.z))
         dimensionsBoundingBox = glm::distance(extremeMaxMesh.z, extremeMinMesh.z);
+
+    dimensionsBoundingBox = dimensionsBoundingBox * GetGlobalScalation().x;
 
     return dimensionsBoundingBox;
 
