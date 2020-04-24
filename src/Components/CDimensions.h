@@ -18,4 +18,6 @@ public:
     float height;
     float depth;
 
+    float boundingBoxMesh = -1;
+
 };

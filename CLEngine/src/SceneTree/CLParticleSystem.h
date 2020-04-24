@@ -215,7 +215,7 @@ class CLNode;
                 public:
                     CLParticle() = default;
                     CLParticle(CLParticleSystem* emitter);
-                    ~CLParticle() = default;
+                    ~CLParticle() { glDeleteVertexArrays(1, &VAO);glDeleteBuffers(1, &VBO);};
 
                     void Draw(GLuint shaderID);
                     bool GetParticleDead() const { return particleDead; }

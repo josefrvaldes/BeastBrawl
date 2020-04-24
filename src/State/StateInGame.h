@@ -57,6 +57,8 @@
 #include <Components/CCurrentNavMesh.h>
 #include "../Managers/ManBoundingOBB.h"
 #include "../Constants.h"
+#include "../Octree/Octree.h"
+
 
 
 using namespace std;
@@ -93,6 +95,10 @@ class StateInGame : public State {
     unique_ptr<ManGameRules> manGameRules;
     unique_ptr<ManParticleSystem> manParticleSystem;
     unique_ptr<SystemLoD> sysLoD;
+
+    std::vector<shared_ptr<Manager>> managersEntities;
+    std::unique_ptr<Octree> octreeScene;
+    int octreeI = 0;
 
     RenderFacade *renderEngine = {nullptr};
     InputFacade *inputEngine = {nullptr};

@@ -1,6 +1,7 @@
 #include "SystemLoD.h"
 #include "../Components/CCamera.h"
 #include "../Components/CMesh.h"
+#include "../Components/CAnimation.h"
 #include "../Entities/Camera.h"
 #include "../Entities/Entity.h"
 #include "../../include/glm/glm.hpp"
@@ -18,7 +19,18 @@ void SetMeshAccordingToDistance(float distanceToCam, CMesh *cMesh) {
     }
 }
 
-void SystemLoD::Update(vector<shared_ptr<Entity>> entities, Camera *cam) {
+void SetMeshAccordingToDistance(float distanceToCam, CAnimation *cAnimation) {
+    if (distanceToCam < cAnimation->distanceNear) {
+        cAnimation->GetActiveAnimation() = cAnimation->GetAnimations()[0];
+    } else if(cAnimation->GetAnimations().size() >= 2 && distanceToCam < cAnimation->distanceMedium) {
+        cAnimation->GetActiveAnimation() = cAnimation->GetAnimations()[1];
+        // cout << "Hemos puesto un mesh medium porque la distancia era " << distanceToCam << endl;
+    } else if(cAnimation->GetAnimations().size() >= 3 && distanceToCam > cAnimation->distanceMedium) {
+        cAnimation->GetActiveAnimation() = cAnimation->GetAnimations()[2];
+    }
+}
+
+void SystemLoD::UpdateMeshes(vector<shared_ptr<Entity>> entities, Camera *cam) {
     CTransformable *cCam = static_cast<CTransformable *>(cam->GetComponent(CompType::TransformableComp).get());
     glm::vec3 camPosition = cCam->position;
     for (const auto &entity : entities) {
@@ -27,5 +39,17 @@ void SystemLoD::Update(vector<shared_ptr<Entity>> entities, Camera *cam) {
         glm::vec3 entityPos = entityTransfor->position;
         float distanceToCam = glm::distance(camPosition, entityPos);
         SetMeshAccordingToDistance(distanceToCam, cMesh);
+    }
+}
+
+void SystemLoD::UpdateAnimations(vector<shared_ptr<Entity>> entities, Camera *cam) {
+    CTransformable *cCam = static_cast<CTransformable *>(cam->GetComponent(CompType::TransformableComp).get());
+    glm::vec3 camPosition = cCam->position;
+    for (const auto &entity : entities) {
+        CTransformable *entityTransfor = static_cast<CTransformable *>(entity->GetComponent(CompType::TransformableComp).get());
+        CAnimation *cAnimation = static_cast<CAnimation *>(entity->GetComponent(CompType::AnimationComp).get());
+        glm::vec3 entityPos = entityTransfor->position;
+        float distanceToCam = glm::distance(camPosition, entityPos);
+        SetMeshAccordingToDistance(distanceToCam, cAnimation);
     }
 }

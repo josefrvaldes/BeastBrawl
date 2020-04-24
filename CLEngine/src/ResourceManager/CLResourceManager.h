@@ -28,6 +28,12 @@ namespace CLE {
                 return instance;
             }
 
+            //! Metodo para leer animaciones
+            //! @param file Ruta al fichero
+            //! @param numKeyFrames Número de keyframes de la animación
+            //! @param flipUV Bool para invertir los UV's al leer la textura
+            //! @returns Puntero a un CLE::CLResource::CLResourceMesh
+            vector<CLResourceMesh*> GetResourceAnimation(const std::string file, uint8_t numKeyFrames, bool flipUV);
             //! Metodo para leer mallas
             //! @param file Ruta al fichero
             //! @param flipUV Bool para invertir los UV's al leer la textura
@@ -66,6 +72,20 @@ namespace CLE {
             //! @param geometry Ruta al geometry shader
             //! @returns Puntero a un CLE::CLResource::CLResourceShader
             CLResourceShader* GetResourceShader(const std::string vertex, const std::string fragment, const std::string geometry);
+
+            //! Libera la memoria de una textura
+            //! @param file
+            //! @returns bool
+            bool DeleteResourceTexture(const std::string file);
+            //! Libera la memoria de una malla
+            //! @param file
+            //! @returns bool
+            bool DeleteResourceMesh(const std::string file);
+            //! Libera la memoria de un material
+            //! @param file
+            //! @returns bool
+            bool DeleteResourceMaterial(const std::string file);
+            
 
         private:
             CLResourceManager();

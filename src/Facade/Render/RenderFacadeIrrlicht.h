@@ -86,6 +86,8 @@ class RenderFacadeIrrlicht : public RenderFacade {
     void FacadeAddPlates(Manager* manNamePlates) override;
     void FacadeUpdatePlates(Manager* manNamePlates) override;
     void FacadeUpdateMeshesLoD(vector<shared_ptr<Entity>> entities) override;
+    void FacadeAnimate(vector<shared_ptr<Entity>> entities) override;
+    void FacadeUpdateAnimationsLoD(vector<shared_ptr<Entity>> entities) override;
     void ThrowEventChangeToMulti(uint16_t IdOnline, const vector<uint16_t> IdPlayersOnline) override;
     void FacadeAddSkybox(string right,string left,string top,string bottom,string front,string back) override;
     void FacadeAddShadowMapping(unsigned int lightId) override;
@@ -93,6 +95,8 @@ class RenderFacadeIrrlicht : public RenderFacade {
     void FacadeUpdateViewport() override;
     
     void FacadeInitParticleSystem(DataMap* d) override {};
+    bool FacadeOctreeInCamera(float size, const glm::vec3& pos) override {return true;};
+    void FacadeSetOctreeVisibleById(unsigned int id, bool v) override {};
 
     //DEBUG
     void Draw3DLine(vec3& pos1, vec3& pos2, uint16_t r, uint16_t g, uint16_t b) const override;

@@ -82,6 +82,8 @@ class RenderFacade {
     virtual void FacadeAddPlates(Manager* manNamePlates) = 0;
     virtual void FacadeUpdatePlates(Manager* manNamePlates) = 0;
     virtual void FacadeUpdateMeshesLoD(vector<shared_ptr<Entity>> entities) = 0;
+    virtual void FacadeUpdateAnimationsLoD(vector<shared_ptr<Entity>> entities) = 0;
+    virtual void FacadeAnimate(vector<shared_ptr<Entity>> entities) = 0;
     virtual void ThrowEventChangeToMulti(uint16_t IdOnline, const vector<uint16_t> IdPlayersOnline) = 0;
     virtual void FacadeAddSkybox(string right,string left,string top,string bottom,string front,string back) = 0;
     virtual void FacadeAddShadowMapping(unsigned int lightId) = 0;
@@ -89,6 +91,8 @@ class RenderFacade {
     virtual void FacadeUpdateViewport() = 0;
 
     virtual void FacadeInitParticleSystem(DataMap* d) = 0;
+    virtual bool FacadeOctreeInCamera(float size, const glm::vec3& pos) = 0;
+    virtual void FacadeSetOctreeVisibleById(unsigned int id, bool v) = 0;
     //DEBUG
     virtual void Draw3DLine(vec3 &pos1, vec3 &pos2, uint16_t r, uint16_t g, uint16_t b) const = 0;
     virtual void Draw3DLine(vec3 &pos1, vec3 &pos2) const = 0;
