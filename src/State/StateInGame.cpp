@@ -72,26 +72,8 @@ void StateInGame::InitializeFacades() {
     //Pantalla de carga
     renderEngine->FacadeInitResources(); 
 }
-
-/*
-void StateInGame::CAMBIARCosasDeTotem(ManTotem &manTotems) {
-    // --------------------------------------------------------------------------------------------------------------------------------------------
-    totemOnCar = make_shared<Entity>();
-    glm::vec3 postoTemOnCar = glm::vec3(40.0f, -100.0f, 30.0f);
-    glm::vec3 rotTotemOnCar = glm::vec3(0.0f, 90.0f, 0.0f);
-    glm::vec3 scaleTotemOnCar = glm::vec3(0.5f, 0.5f, 0.5f);
-    shared_ptr<CId> cIdTotemOnCar = make_shared<CId>();
-    shared_ptr<CType> cTypeTotemOnCar = make_shared<CType>(ModelType::Cube);
-    shared_ptr<CTransformable> cTransformableTotemOnCar = make_shared<CTransformable>(postoTemOnCar, rotTotemOnCar, scaleTotemOnCar);
-    totemOnCar->AddComponent(cIdTotemOnCar);
-    totemOnCar->AddComponent(cTypeTotemOnCar);
-    totemOnCar->AddComponent(cTransformableTotemOnCar);
-    totemOnCar->AddComponent(make_shared<CTexture>("totem.jpg"));
-    totemOnCar->AddComponent(make_shared<CMesh>("kart_ia.obj"));
-    totemOnCar->AddComponent(make_shared<CShader>("CLEngine/src/Shaders/vertex.glsl","CLEngine/src/Shaders/fragment.glsl"));
-    // ------------------------------------------------------------------------------------------------------------------------------------------------
-}
-*/
+ 
+ 
 void StateInGame::AddElementsToRender() {
     // Añadimos cosas a la fachada de render
     renderEngine->FacadeAddPlates(manNamePlates.get());

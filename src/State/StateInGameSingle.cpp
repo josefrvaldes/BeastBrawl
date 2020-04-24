@@ -23,10 +23,23 @@ void StateInGameSingle::InitState() {
 
 void StateInGameSingle::Input() {
     renderEngine->FacadeCheckInputSingle();
-    inputEngine->CheckInputSingle();
+    goingToPause = inputEngine->CheckInputSingle();
 }
 
 void StateInGameSingle::Update() {
+    // si estamos yendo a pausa, paramos los temporizadores
+    if(goingToPause) {
+        goingToPause = false;
+        comingBackFromPause = true;
+        cout << "Vamos a ir a pausa, teóricamente paramos los temporizadores" << endl;
+
+        // si volvemos de pausa, reiniciamos los temporizadores
+    } else if(comingBackFromPause) {
+        cout << "Volvemos de pausa, reiniciamos los temporizadores" << endl;
+        manGameRules->RestartAllTimers(manCars->GetEntities());
+        comingBackFromPause = false;
+    }
+
     StateInGame::Update();
 
 

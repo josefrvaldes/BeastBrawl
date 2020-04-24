@@ -24,7 +24,10 @@ ManGameRules::~ManGameRules() {
 
 void ManGameRules::Update(){
     systemGameRules->UpdateGameRules( *(globalClock.get()) );
+}
 
+void ManGameRules::RestartAllTimers(vector<shared_ptr<Entity>> entities) {
+    systemGameRules->RestartAllTimers(entities, *(globalClock.get()));
 }
 
 void ManGameRules::SubscribeToEvents() {
