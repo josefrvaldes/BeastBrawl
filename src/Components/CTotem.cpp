@@ -1,6 +1,9 @@
 #include "CTotem.h"
+#include "GameValues.h"
 
-CTotem::CTotem(int time) : SEGUNDOS(time) {
+CTotem::CTotem() {
+    auto time = GameValues::GetInstance()->GetTimeTotem();
+    SEGUNDOS = time;
     m_compType = CompType::TotemComp;  
 }
 

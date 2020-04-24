@@ -13,7 +13,7 @@ using namespace std::chrono;
 
 class CTotem : public Component{
 public:
-    CTotem(int);
+    CTotem();
     ~CTotem();
 
 
