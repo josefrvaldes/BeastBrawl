@@ -49,5 +49,8 @@ class InputFacadeClover : public InputFacade{
         bool IsKeyOrGamepadPress(int key, int button, bool axes, float axe);
         bool HasDelayPassed();
 
+        bool WeHaveToGoToMenu {false}; // esto sirve para que se oiga el sonidito de pasar desde pausa ingame hasta menú, es una chapuza pero no quiero perder más tiempo en esa chorrada
+        uint64_t timerGoToMenu {0};
+
         void ChangeGameOptions(int, int);
 };
