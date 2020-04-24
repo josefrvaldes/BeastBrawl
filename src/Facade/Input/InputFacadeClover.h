@@ -48,4 +48,6 @@ class InputFacadeClover : public InputFacade{
         void SetValueInput(InputXBox input, bool valuePressed);
         bool IsKeyOrGamepadPress(int key, int button, bool axes, float axe);
         bool HasDelayPassed();
+
+        void ChangeGameOptions(int, int);
 };

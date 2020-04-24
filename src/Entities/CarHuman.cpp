@@ -29,7 +29,7 @@ class Position;
 
 using namespace std;
 
-CarHuman::CarHuman(int pj) {
+CarHuman::CarHuman(int pj, int timeTotem) {
 
 
     typeCar = TypeCar::CarHuman;
@@ -107,7 +107,7 @@ CarHuman::CarHuman(int pj) {
     shared_ptr<CShield> cShield = make_shared<CShield>();
     shared_ptr<CNitro> cNitro = make_shared<CNitro>();
     shared_ptr<CRoboJorobo> cRoboJorobo = make_shared<CRoboJorobo>();
-    shared_ptr<CTotem> cTotem = make_shared<CTotem>();
+    shared_ptr<CTotem> cTotem = make_shared<CTotem>(timeTotem);
     shared_ptr<CCurrentNavMesh> cCurrentNavMesh = make_shared<CCurrentNavMesh>(-1);  //  ponemos 0 por defecto ya que haremos el calculo al empezar la partida
     shared_ptr<COnline> cOnline = make_shared<COnline>();  //  ponemos 0 por defecto ya que haremos el calculo al empezar la partida
     shared_ptr<CShader> cShader = make_shared<CShader>(vertexShader,fragmentShader);  
@@ -153,7 +153,7 @@ CarHuman::CarHuman(int pj) {
 }
 
 // TODO: ¿Este constructor esta deprecated verdad?
-CarHuman::CarHuman(int pj, glm::vec3 pos, glm::vec3 rot, glm::vec3 scale,
+CarHuman::CarHuman(int pj, int timeTotem, glm::vec3 pos, glm::vec3 rot, glm::vec3 scale,
          string texture, string mesh,
          float maxSpeed, float acceleration, float carFriction, float carSlowDown,string vertexShader, string fragmentShader) {
 
@@ -208,7 +208,7 @@ CarHuman::CarHuman(int pj, glm::vec3 pos, glm::vec3 rot, glm::vec3 scale,
     shared_ptr<CNitro> cNitro = make_shared<CNitro>();
     shared_ptr<CRoboJorobo> cRoboJorobo = make_shared<CRoboJorobo>();
     shared_ptr<CColliding> cColliding = make_shared<CColliding>(false);
-    shared_ptr<CTotem> cTotem = make_shared<CTotem>();
+    shared_ptr<CTotem> cTotem = make_shared<CTotem>(timeTotem);
     shared_ptr<CShader> cShader = make_shared<CShader>(vertexShader,fragmentShader);
 
     AddComponent(cId);
@@ -227,8 +227,8 @@ CarHuman::CarHuman(int pj, glm::vec3 pos, glm::vec3 rot, glm::vec3 scale,
     //cout << "Acabamos de llamar al constructor default de car, su transformable es " << cTransformable << endl;
 }
 
-CarHuman::CarHuman(int pj, glm::vec3 _position)
-    : CarHuman(pj) {
+CarHuman::CarHuman(int pj, int timeTotem, glm::vec3 _position)
+    : CarHuman(pj, timeTotem) {
     CTransformable *cTransformable = (CTransformable *)m_components[CompType::TransformableComp].get();
     cTransformable->position.x = _position.x;
     cTransformable->position.y = _position.y;

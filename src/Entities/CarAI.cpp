@@ -29,7 +29,7 @@
 class Position;
 using namespace std;
 
-CarAI::CarAI(int pj){
+CarAI::CarAI(int pj, int timeTotem){
 
     typeCar = TypeCar::CarAI;
 
@@ -108,7 +108,7 @@ CarAI::CarAI(int pj){
     shared_ptr<CShield> cShield = make_shared<CShield>();
     shared_ptr<CNitro> cNitro = make_shared<CNitro>();
     shared_ptr<CRoboJorobo> cRoboJorobo = make_shared<CRoboJorobo>();
-    shared_ptr<CTotem> cTotem = make_shared<CTotem>();
+    shared_ptr<CTotem> cTotem = make_shared<CTotem>(timeTotem);
     shared_ptr<CPath> cPath   = make_shared<CPath>();
     shared_ptr<CSpeed> cSpeed = make_shared<CSpeed>();
     shared_ptr<CCurrentNavMesh> cCurrentNavMesh = make_shared<CCurrentNavMesh>(-1);  //  ponemos -1 por defecto ya que haremos el calculo al empezar la partida
@@ -165,8 +165,8 @@ CarAI::CarAI(int pj){
     AddComponent(cShader);
 }
 
-CarAI::CarAI(int pj, glm::vec3 pos, glm::vec3 rot, glm::vec3 scale,string texture, string mesh, float maxSpeed, float acceleration , float carFriction, float carSlowDown, std::string vertexShader, std::string fragmentShader)
-    : CarAI(pj){
+CarAI::CarAI(int pj, int timeTotem, glm::vec3 pos, glm::vec3 rot, glm::vec3 scale,string texture, string mesh, float maxSpeed, float acceleration , float carFriction, float carSlowDown, std::string vertexShader, std::string fragmentShader)
+    : CarAI(pj, timeTotem){
 
     CTransformable *cTransformable = (CTransformable *)m_components[CompType::TransformableComp].get();
     cTransformable->position = pos;
@@ -201,8 +201,8 @@ CarAI::CarAI(int pj, glm::vec3 pos, glm::vec3 rot, glm::vec3 scale,string textur
 
 
 
-CarAI::CarAI(int pj, glm::vec3 _position) 
-    : CarAI(pj)
+CarAI::CarAI(int pj, int timeTotem, glm::vec3 _position) 
+    : CarAI(pj, timeTotem)
 {
     CTransformable *cTransformable = (CTransformable *)m_components[CompType::TransformableComp].get();
     cTransformable->position = _position;

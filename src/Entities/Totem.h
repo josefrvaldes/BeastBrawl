@@ -13,11 +13,11 @@ using namespace std;
 class Totem : public Entity{
 
 public:
-    Totem();
+    Totem(int time);
     //PowerUp(glm::vec3 _position);
-    Totem(glm::vec3 _position);
-    Totem(glm::vec3 _position, glm::vec3 _rotation);
-    Totem(glm::vec3 _position, glm::vec3 _rotation, string texture, string mesh);
+    Totem(glm::vec3 _position, int time);
+    Totem(glm::vec3 _position, glm::vec3 _rotation, int time);
+    Totem(glm::vec3 _position, glm::vec3 _rotation, string texture, string mesh, int time);
     void Update(Manager* manNavMesh);
     ~Totem();
 

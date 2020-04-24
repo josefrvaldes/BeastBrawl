@@ -740,8 +740,9 @@ void SoundFacadeFMOD::SoundClock(DataMap* d) {
 }
 
 void SoundFacadeFMOD::SoundVictoryVoice(){
-    cout << "+++++++++++++++++ PERSONAJE: " << character << endl;
+    //cout << "+++++++++++++++++ PERSONAJE: " << character << endl;
     SetParameter("Personajes/victoria", "personaje", character);
+    SetParameter("Personajes/derrota", "personaje", character);
     if ( GameValues::GetInstance()->GetWin() ) {
         PlayEvent("Personajes/victoria");
     } else {

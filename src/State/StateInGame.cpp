@@ -47,7 +47,8 @@ StateInGame::~StateInGame() {
  *  Y ES OBLIGATORIO llamar a este método desde el constructor de los hijos
  */
 void StateInGame::InitVirtualMethods() {
-    InitializeManagers(physics.get(), cam.get(), 120);
+    auto gameTime = GameValues::GetInstance()->GetGameTime();
+    InitializeManagers(physics.get(), cam.get(), gameTime);
     InitializeSystems(*manCars.get(), *manBoundingWall.get(), *manBoundingOBB.get(), *manBoundingGround.get(), *manPowerUps.get(), *manNavMesh.get(), *manBoxPowerUps.get(), *manTotems.get());
     InitializeFacades();
 
@@ -169,7 +170,7 @@ void StateInGame::InitializeManagers(Physics *physics, Camera *cam, const uint32
     manBoundingOBB      = make_shared<ManBoundingOBB>();
     manBoundingGround   = make_shared<ManBoundingGround>();
     manNavMesh          = make_shared<ManNavMesh>();
-    manTotems           = make_shared<ManTotem>(manNavMesh.get());
+    manTotems           = make_shared<ManTotem>(manNavMesh.get(), 45);
     manNamePlates       = make_shared<ManNamePlate>(manCars.get());
     manLight            = make_shared<ManLight>();
     manGameRules        = make_unique<ManGameRules>(timeGame);
@@ -221,7 +222,8 @@ void StateInGame::InitState() {
 void StateInGame::CreateMainCar() {
     if(manCars) {
         auto pj = GameValues::GetInstance()->GetCharacter();
-        manCars->CreateMainCar(pj);
+        auto timeTotem = GameValues::GetInstance()->GetTimeTotem();
+        manCars->CreateMainCar(pj, timeTotem);
         /*auto cCar = static_cast<CCar*>(manCars->GetCar()->GetComponent(CompType::CarComp).get());
         if (cCar){
             cout << "PESO: " << cCar->weight << " - VELMAX: " << cCar->maxSpeed << " - ACELETARION: " << cCar->acceleration << "\n";

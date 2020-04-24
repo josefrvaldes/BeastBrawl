@@ -42,17 +42,17 @@ class ManCar : public Manager {
     ManCar(Physics *, Camera *);
     ~ManCar();
 
-    void CreateMainCar(int);
-    void CreateHumanCar(int, glm::vec3 _position);
+    void CreateMainCar(int pj, int timeTotem);
+    void CreateHumanCar(int pj, int timeTotem, glm::vec3 _position);
     void UpdateCarPlayer(ManTotem &);
     void UpdateGeneralCar(Entity& car_, Entity& totem_);
     void UpdateCarAI(CarAI* carAI, ManTotem* m_manTotem);
     void UpdateCarHuman(Entity* CarHuman, ManTotem*);
     shared_ptr<CarHuman>& GetCar() { return car; };
 
-    void CreateCarAI(int);
-    void CreateCarAI(int, glm::vec3 _position);
-    void CreateCarAI(int, glm::vec3 _position, CWayPoint* _waypoint);
+    void CreateCarAI(int pj, int timeTotem);
+    void CreateCarAI(int pj, int timeTotem, glm::vec3 _position);
+    void CreateCarAI(int pj, int timeTotem, glm::vec3 _position, CWayPoint* _waypoint);
     Car* calculateCloserCar(Entity* actualCar);
     bool carInVisionRange(Entity* actualCar, Entity* otherCar, uint32_t rangeVision);
     bool anyCarInVisionRange(Entity* actualCar, uint32_t rangeVision);
