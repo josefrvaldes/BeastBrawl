@@ -43,7 +43,7 @@ class Octree{
     
     std::vector<std::shared_ptr<Entity>> entitiesContained;
 
-    int numChilds = 0;
+    unsigned int numChilds = 0;
     std::unique_ptr<Octree> childs[8];
 
     bool visible = false;

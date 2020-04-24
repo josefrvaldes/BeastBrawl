@@ -1,12 +1,12 @@
 #include "CLGrassSystem.h"
+
+#include <chrono>
 #include "../ResourceManager/CLResourceManager.h"
 #include "../../../src/Systems/Utils.h"
-#include <chrono>
-
+#include "../../../src/Constants.h"
 
 
 using namespace CLE;
-
 
 
 
@@ -174,7 +174,7 @@ void CLGrassSystem::Draw(GLuint shaderID, const glm::mat4& projection, const glm
     glDrawArraysInstanced(GL_POINTS, 0, 1, modelLeafVector.size()); 
     glBindVertexArray(0);
 
-    wingTimer += 0.01;
+    wingTimer += 0.6 * Constants::DELTA_TIME;
     if(wingTimer >= 360)
         wingTimer = 0;
 }
