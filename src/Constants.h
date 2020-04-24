@@ -32,6 +32,8 @@ class Constants {
 
     inline static const float FAR_PLANE = 1500.0;
 
+    inline static const bool CLIPPING_OCTREE = false;
+
     enum InputTypes { FORWARD,
                     BACK,
                     LEFT,

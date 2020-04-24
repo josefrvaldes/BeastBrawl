@@ -51,6 +51,7 @@ namespace CLE {
             //! Devuelve el target de la camara
             //! @returns cameraTarget
             glm::vec3 GetCameraTarget()      { return cameraTarget; };
+            float GetCameraFov()      { return fov; };
             glm::vec3 GetCameraUp()         { return cameraUp; };
 
             void Draw(GLuint shaderID);

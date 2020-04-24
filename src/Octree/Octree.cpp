@@ -21,16 +21,14 @@ Octree::Octree(const glm::vec3& posCenter, float _size, const std::vector<shared
             entitiesContained.emplace_back(actualEntity);
         }
     }
-
     numChilds = 0;
-    //cout << "Empieza a crearse el arbol con " << entitiesContained.size() << " elementos\n";
+
     CreateTree();
 }
 
 
 Octree::Octree(const glm::vec3& posCenter, float _size, const std::vector<std::shared_ptr<Entity>>& vecEntities) 
-    : centralPosition(posCenter), size(_size), entitiesContained(vecEntities){
-        numChilds = 0;
+    : centralPosition(posCenter), size(_size), entitiesContained(vecEntities), numChilds(0){
 }
 
 
@@ -45,30 +43,29 @@ void Octree::CreateTree(){
     if(actualSize < minSize)
         return;
 
-
-    BoundingOctree boxes[8];
-    boxes[0] = {actualSize, centralPosition - glm::vec3(actualSize, actualSize, actualSize)};
-    boxes[1] = {actualSize, centralPosition - glm::vec3(actualSize, actualSize, -actualSize)};
-    boxes[2] = {actualSize, centralPosition - glm::vec3(actualSize, -actualSize, actualSize)};
-    boxes[3] = {actualSize, centralPosition - glm::vec3(actualSize, -actualSize, -actualSize)};
-    boxes[4] = {actualSize, centralPosition - glm::vec3(-actualSize, actualSize, actualSize)};
-    boxes[5] = {actualSize, centralPosition - glm::vec3(-actualSize, actualSize, -actualSize)};
-    boxes[6] = {actualSize, centralPosition - glm::vec3(-actualSize, -actualSize, actualSize)};
-    boxes[7] = {actualSize, centralPosition - glm::vec3(-actualSize, -actualSize, -actualSize)};
+    BoundingOctree boxes[]{
+        {actualSize, centralPosition - glm::vec3(actualSize, actualSize, actualSize)},
+        {actualSize, centralPosition - glm::vec3(actualSize, actualSize, -actualSize)},
+        {actualSize, centralPosition - glm::vec3(actualSize, -actualSize, actualSize)},
+        {actualSize, centralPosition - glm::vec3(actualSize, -actualSize, -actualSize)},
+        {actualSize, centralPosition - glm::vec3(-actualSize, actualSize, actualSize)},
+        {actualSize, centralPosition - glm::vec3(-actualSize, actualSize, -actualSize)},
+        {actualSize, centralPosition - glm::vec3(-actualSize, -actualSize, actualSize)},
+        {actualSize, centralPosition - glm::vec3(-actualSize, -actualSize, -actualSize)}
+    };
 
     std::vector<std::shared_ptr<Entity>> entitiesIn[8]; // para tener las entidades que van a estar dentro
     std::vector<std::shared_ptr<Entity>> entitiesDelete; // para tener las entidades que van a estar dentro
 
 
+    // comprobamos si las entidades caben en uno de los 8 cubos de los hijos del nodo
     for(const auto& actualEntity : entitiesContained){
         for(unsigned int i = 0; i < 8; i++){
             TypeCollision typeCol = CollideAABB(actualEntity.get(), boxes[i]);
             if(typeCol == TypeCollision::No_Collision)
                 continue;
-            
             if(typeCol == TypeCollision::Border)
                 break;
-            
             if(typeCol == TypeCollision::Inside){
                 entitiesIn[i].emplace_back(actualEntity);
                 entitiesDelete.emplace_back(actualEntity);
@@ -78,7 +75,7 @@ void Octree::CreateTree(){
         }
     }
 
-    // delete objects from entitiesDlete in entitiesContained   PUEDE FALLAR
+    // elimina los objetos que aparecen en entitiesDlete en entitiesContained
     for(const auto& actualDelEntity : entitiesDelete){
         for(auto it=entitiesContained.begin(); it!=entitiesContained.end(); it++){
             if(it->get() == actualDelEntity.get()){
@@ -98,8 +95,6 @@ void Octree::CreateTree(){
             numChilds++;
         }
     }
-
-
 }
 
 
@@ -108,12 +103,11 @@ void Octree::CreateTree(){
 TypeCollision Octree::CollideAABB(Entity* object, const BoundingOctree& nodeBox) const{
     auto cTran = static_cast<CTransformable*>(object->GetComponent(CompType::TransformableComp).get());
     if(!object->HasComponent(CompType::DimensionsComp)){
-        //cout << "No existe el CDimensions \n";
         return TypeCollision::Border;   // no tienen el componente
     }
 
     auto cDim = static_cast<CDimensions*>(object->GetComponent(CompType::DimensionsComp).get());
-    float dimension = cTran->scale.x * cDim->boundingBoxMesh * 0.5;
+    float dimension = cDim->boundingBoxMesh * 0.5;
     glm::vec3 nodeMin = nodeBox.centerAABB - nodeBox.sizeAABB;
     glm::vec3 nodeMax = nodeBox.centerAABB + nodeBox.sizeAABB;
 
@@ -134,40 +128,38 @@ TypeCollision Octree::CollideAABB(Entity* object, const BoundingOctree& nodeBox)
 
 
 
-// Comprueba si es visible el cuadrado en el frustum y pone los elementos que los contienen como dibujable en el motor
+// Comprueba si es visible el cuadrado en la camara y pone los elementos que los contienen como dibujable en el motor
 void Octree::UpdateVisibleObjects(RenderFacade* renderEngine){
-    visible = renderEngine->FacadeOctreeInCamera(size*2.0, centralPosition);
-    if(entitiesContained.size()>0){
-        for(const auto& entity : entitiesContained){
-            auto cId = static_cast<CId*>(entity->GetComponent(CompType::IdComp).get());
-            renderEngine->FacadeSetOctreeVisibleById(cId->id, visible);
-        }
-    } 
+    visible = renderEngine->FacadeOctreeInCamera(size, centralPosition);
+    for(const auto& entity : entitiesContained){
+        auto cId = static_cast<CId*>(entity->GetComponent(CompType::IdComp).get());
+        renderEngine->FacadeSetOctreeVisibleById(cId->id, visible);
+    }
 
-    for(int i = 0; i<numChilds; i++){
+    for(unsigned int i = 0; i<numChilds; i++){
         childs[i]->UpdateVisibleObjects(renderEngine);
     }
 }
 
 
 
-// Para depuracion grafica dibujar el octree
+// DEBUG para dibujar octree
 void Octree::Draw(RenderFacade* renderEngine) const{
-    for(int i = 0; i<numChilds; i++){
+    for(unsigned int i = 0; i<numChilds; i++){
         childs[i]->Draw(renderEngine);
     }
 
-    //if(entitiesContained.size()>0)
-    //    DrawCube(renderEngine, 255, 255, 0);
-    if(visible)
-        DrawCube(renderEngine, 255, 0, 255);
+    if(entitiesContained.size()>0)
+        DrawCube(renderEngine, 255, 255, 0);    // amarillo
+    else if(visible)
+        DrawCube(renderEngine, 255, 0, 255);    // morado
     else
-        DrawCube(renderEngine, 255, 0, 0);
-
+        DrawCube(renderEngine, 255, 0, 0);      // rojo
 }
 
+
+// metodo muy guarro para DEBUG del octree
 void Octree::DrawCube(RenderFacade* renderEngine, int r, int g, int b) const{
-        //cout << "( " << centralPosition.x << " , " << centralPosition.y << " , " << centralPosition.z << " ) --> " << size << "\n";
         glm::vec3 min0 = glm::vec3(centralPosition.x - size, centralPosition.y - size, centralPosition.z - size);
         glm::vec3 max0 = glm::vec3(centralPosition.x + size, centralPosition.y - size, centralPosition.z - size);
         renderEngine->Draw3DLine(min0, max0, r, g, b);
@@ -192,7 +184,6 @@ void Octree::DrawCube(RenderFacade* renderEngine, int r, int g, int b) const{
         glm::vec3 max5 = glm::vec3(centralPosition.x - size, centralPosition.y + size, centralPosition.z + size);
         renderEngine->Draw3DLine(min5, max5, r, g, b);
 
-
         glm::vec3 min6 = glm::vec3(centralPosition.x + size, centralPosition.y - size, centralPosition.z - size);
         glm::vec3 max6 = glm::vec3(centralPosition.x + size, centralPosition.y - size, centralPosition.z + size);
         renderEngine->Draw3DLine(min6, max6, r, g, b);
@@ -201,7 +192,6 @@ void Octree::DrawCube(RenderFacade* renderEngine, int r, int g, int b) const{
         glm::vec3 max7 = glm::vec3(centralPosition.x + size, centralPosition.y + size, centralPosition.z - size);
         renderEngine->Draw3DLine(min7, max7, r, g, b);
 
-
         glm::vec3 min8 = glm::vec3(centralPosition.x - size, centralPosition.y + size, centralPosition.z - size);
         glm::vec3 max8 = glm::vec3(centralPosition.x + size, centralPosition.y + size, centralPosition.z - size);
         renderEngine->Draw3DLine(min8, max8, r, g, b);
@@ -209,7 +199,6 @@ void Octree::DrawCube(RenderFacade* renderEngine, int r, int g, int b) const{
         glm::vec3 min9 = glm::vec3(centralPosition.x - size, centralPosition.y + size, centralPosition.z - size);
         glm::vec3 max9 = glm::vec3(centralPosition.x - size, centralPosition.y + size, centralPosition.z + size);
         renderEngine->Draw3DLine(min9, max9, r, g, b);
-
 
         glm::vec3 min10 = glm::vec3(centralPosition.x - size, centralPosition.y - size, centralPosition.z + size);
         glm::vec3 max10 = glm::vec3(centralPosition.x - size, centralPosition.y + size, centralPosition.z + size);

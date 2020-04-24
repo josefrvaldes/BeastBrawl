@@ -758,24 +758,74 @@ CLNode* CLEngine::GetNodeByIDAux(unsigned int id, CLNode* node, CLNode* root){
     return node;
 }
 
+
 float CLEngine::GetBoundingSizeById(unsigned int id){
     CLNode* node = GetNodeByID(id);
     return node->CalculateBoundingBox();
 }
 
+
+// Comprueba si el cubo del octree se ve en la camara del jugador
 bool CLEngine::OctreeIncamera(float size, const glm::vec3& pos){
-    
+    glm::vec3 pos2 = glm::vec3(pos.x, pos.y, -pos.z);
+    glm::vec3 pointBox[]{
+        {pos2 - glm::vec3(size, size, size)},
+        {pos2 - glm::vec3(size, size, -size)},
+        {pos2 - glm::vec3(size, -size, size)},
+        {pos2 - glm::vec3(size, -size, -size)},
+        {pos2 - glm::vec3(-size, size, size)},
+        {pos2 - glm::vec3(-size, size, -size)},
+        {pos2 - glm::vec3(-size, -size, size)},
+        {pos2 - glm::vec3(-size, -size, -size)}
+    };
+
+    CLCamera* camera = GetActiveCamera();
+    CLNode* nodeCam = GetNodeByID(camera->GetID());
+
+    float vectorToTargetX = camera->GetCameraTarget().x - nodeCam->GetGlobalTranslation().x;
+    float vectorToTargetZ = camera->GetCameraTarget().z - nodeCam->GetGlobalTranslation().z;
+    float valueCentralDegree = glm::degrees( atan2(vectorToTargetZ, vectorToTargetX) );
+    if (valueCentralDegree < 0) valueCentralDegree += 360;
+
+    float minVision = valueCentralDegree - camera->GetCameraFov();
+    if (minVision < 0) minVision += 360;
+
+    float maxVision = valueCentralDegree + camera->GetCameraFov();
+    if (maxVision >= 360) maxVision -= 360;
+
+    // comprobamos si algun punto del cubo se encuentra dentro de la camara
+    for(unsigned int i=0; i<8; i++){
+        float vectorToBoxX = pointBox[i].x - nodeCam->GetGlobalTranslation().x;
+        float vectorToBoxZ = pointBox[i].z - nodeCam->GetGlobalTranslation().z;
+        float valueDegreeBox = glm::degrees( atan2(vectorToBoxZ, vectorToBoxX) );
+        if (valueDegreeBox < 0) valueDegreeBox += 360;
+
+        if(minVision>maxVision){
+            if(minVision<valueDegreeBox || maxVision>valueDegreeBox)
+                return true;
+        }else{
+            if(minVision<valueDegreeBox && maxVision>valueDegreeBox)
+                return true;
+        }
+    }
+
+    // no se ve en caso que que ningun punto este dentro de la camara
+    return false;
+
+
+    /*
+    glm::vec3 pos2 = glm::vec3(pos.x, pos.y, -pos.z);
     CalculateViewProjMatrix();
-    
-
     auto& frustum_m = GetActiveCamera()->GetFrustum();
-    CLE::CLFrustum::Visibility frusVisibility = frustum_m.IsInside(pos, size);
-
+    CLE::CLFrustum::Visibility frusVisibility = frustum_m.IsInsideSomewhere(pos2, size);
     if(frusVisibility == CLE::CLFrustum::Visibility::Invisible)
        return false;
     else
        return true;
+    */
 }
+
+
 
 bool CLEngine::DeleteNode(unsigned int id){
     CLNode* node = nullptr;

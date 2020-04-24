@@ -270,12 +270,13 @@ void StateInGame::Update() {
 
     manGameRules->Update();
 
-    //if(octreeI == 0){
-    //    octreeI++;
-    //}
-    //octreeScene = make_unique<Octree>(glm::vec3(0.0, 500.0, 0.0), 700.0, managersEntities);
-    //octreeScene->UpdateVisibleObjects(renderEngine);
+    if(Constants::CLIPPING_OCTREE){
+        octreeScene = make_unique<Octree>(glm::vec3(0.0, 500.0, 0.0), 700.0, managersEntities);
+        octreeScene->UpdateVisibleObjects(renderEngine);
+    }
 }
+
+
 
 void StateInGame::Render() {
 
@@ -283,8 +284,9 @@ void StateInGame::Render() {
     // renderEngine->FacadeDraw();  //Para dibujar primitivas debe ir entre el drawAll y el endScene
     renderEngine->FacadeDrawAll();
     
-    //if(octreeI>0)
-    //    octreeScene->Draw(renderEngine);
+    if(Constants::CLIPPING_OCTREE && octreeScene.get())
+        octreeScene->Draw(renderEngine);
+
     renderEngine->FacadeDrawHUD(manCars->GetCar().get(), manCars.get(), manGameRules->GetGlobalClock().get());
     renderEngine->FacadeDrawGraphEdges(manWayPoint.get());
     // renderEngine->FacadeDrawBoundingBox(manCars.get()->GetCar().get(), isColliding);
