@@ -170,7 +170,7 @@ void StateInGame::InitializeManagers(Physics *physics, Camera *cam, const uint32
     manBoundingOBB      = make_shared<ManBoundingOBB>();
     manBoundingGround   = make_shared<ManBoundingGround>();
     manNavMesh          = make_shared<ManNavMesh>();
-    manTotems           = make_shared<ManTotem>(manNavMesh.get(), 45);
+    manTotems           = make_shared<ManTotem>(manNavMesh.get());
     manNamePlates       = make_shared<ManNamePlate>(manCars.get());
     manLight            = make_shared<ManLight>();
     manGameRules        = make_unique<ManGameRules>(timeGame);
@@ -222,8 +222,7 @@ void StateInGame::InitState() {
 void StateInGame::CreateMainCar() {
     if(manCars) {
         auto pj = GameValues::GetInstance()->GetCharacter();
-        auto timeTotem = GameValues::GetInstance()->GetTimeTotem();
-        manCars->CreateMainCar(pj, timeTotem);
+        manCars->CreateMainCar(pj);
         /*auto cCar = static_cast<CCar*>(manCars->GetCar()->GetComponent(CompType::CarComp).get());
         if (cCar){
             cout << "PESO: " << cCar->weight << " - VELMAX: " << cCar->maxSpeed << " - ACELETARION: " << cCar->acceleration << "\n";

@@ -216,7 +216,6 @@ void StateInGameSingle::CAMBIARInicializarCarAIS(ManCar &manCars, ManWayPoint &m
 
 
     auto iaPjs = GameValues::GetInstance()->GetIACharacters();
-    auto timeTotem = GameValues::GetInstance()->GetTimeTotem();
 
 
     auto posCar1 = glm::vec3(0.0f, 15.0f, -200.0f);
@@ -230,15 +229,15 @@ void StateInGameSingle::CAMBIARInicializarCarAIS(ManCar &manCars, ManWayPoint &m
         }
         
         //Cambiar
-        manCars.CreateCarAI(iaPjs[0], timeTotem, posCar1);
-        manCars.CreateCarAI(iaPjs[1], timeTotem, posCar2);
-        manCars.CreateCarAI(iaPjs[2], timeTotem, posCar3);
+        manCars.CreateCarAI(iaPjs[0], posCar1);
+        manCars.CreateCarAI(iaPjs[1], posCar2);
+        manCars.CreateCarAI(iaPjs[2], posCar3);
 
     } else {
         cout << "++++++++++ Algo no va bien asique ahora todos son pinguinos.";
-        manCars.CreateCarAI(0, timeTotem, posCar1);
-        manCars.CreateCarAI(0, timeTotem, posCar2);
-        manCars.CreateCarAI(0, timeTotem, posCar3);
+        manCars.CreateCarAI(0, posCar1);
+        manCars.CreateCarAI(0, posCar2);
+        manCars.CreateCarAI(0, posCar3);
     }
 
 

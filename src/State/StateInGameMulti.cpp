@@ -35,8 +35,7 @@ StateInGameMulti::StateInGameMulti(uint16_t IdOnline, const vector<uint16_t> IdP
     for (auto idEnemy : IdPlayersOnline) {
         vec3 pos = posIniciales[idEnemy - 1];
         //Le paso el PERSONAJE: ahora mismo a piñon
-        int totemTime = GameValues::GetInstance()->GetTimeTotem();
-        manCars->CreateHumanCar(0, totemTime, pos);
+        manCars->CreateHumanCar(0, pos);
         shared_ptr<Entity> car = manCars->GetEntities()[manCars->GetEntities().size() - 1];
         COnline *cOnline = static_cast<COnline *>(car->GetComponent(CompType::OnlineComp).get());
         cOnline->idClient = idEnemy;
