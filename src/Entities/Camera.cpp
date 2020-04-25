@@ -109,3 +109,8 @@ void Camera::NormalCamera(DataMap* d){
 
 }
 
+void Camera::setTarget(glm::vec3 tar_){
+    auto cCamera = static_cast<CCamera*>(GetComponent(CompType::CameraComp).get());
+
+    cCamera->target = tar_;
+}

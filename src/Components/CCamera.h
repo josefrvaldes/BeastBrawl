@@ -6,6 +6,7 @@
 #include <iostream>
 
 using namespace std;
+using namespace glm;
 enum CamType{
     NORMAL_CAM,
     INVERTED_CAM,
@@ -42,6 +43,8 @@ class CCamera : public Component
         float maxSpeed;
         float acceleration;
         float reverseMaxSpeed;
+
+        glm::vec3 target;
 //cTransformable->position.x
     private:
 
