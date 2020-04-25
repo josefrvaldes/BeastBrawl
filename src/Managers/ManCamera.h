@@ -37,6 +37,7 @@ class ManCamera{
     void TurnLeftCar(DataMap* d);
     void TurnRightCar(DataMap* d);
     void NotTurning(DataMap* d);
-
+    void AccCadence(DataMap* d);
+    void AccNoCadence(DataMap* d);
 
 };

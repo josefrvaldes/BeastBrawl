@@ -59,7 +59,32 @@ void ManCamera::SubscribeToEvents() {
             EventType::NO_A_D_PRESS,
             bind(&ManCamera::NotTurning, this, placeholders::_1),
             "NotTurning"));
+
+        EventManager::GetInstance().SubscribeMulti(Listener(
+            EventType::PRESS_I,
+            bind(&ManCamera::AccCadence, this, placeholders::_1),
+            "AccCadence"));
+
+        EventManager::GetInstance().SubscribeMulti(Listener(
+            EventType::PRESS_O,
+            bind(&ManCamera::AccNoCadence, this, placeholders::_1),
+            "AccNoCadence"));
+
+        EventManager::GetInstance().SubscribeMulti(Listener(
+            EventType::NO_I_O_PRESS,
+            bind(&ManCamera::AccNoCadence, this, placeholders::_1),
+            "AccNoCadence"));
+
+
     }
+}
+
+
+void ManCamera::AccCadence(DataMap* d){
+    physicsCamera->AccCadence(playerFollow, camera.get());
+}
+void ManCamera::AccNoCadence(DataMap* d){
+    physicsCamera->AccNoCadence(playerFollow, camera.get());
 }
 
 void ManCamera::TurnLeftCar(DataMap* d) {
