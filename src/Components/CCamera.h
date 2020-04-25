@@ -4,6 +4,7 @@
 
 #include <string>
 #include <iostream>
+#include <glm/vec3.hpp>
 
 using namespace std;
 using namespace glm;
