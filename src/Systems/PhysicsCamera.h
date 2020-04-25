@@ -31,8 +31,6 @@ class PhysicsCamera {
     void TurnLeft(Car *, Camera *);
     void TurnRight(Car *, Camera *);
     void NotTurning(Car *, Camera *);
-    void AccCadence(Car *, Camera *);
-    void AccNoCadence(Car *, Camera *);
 
    protected:
    private:

@@ -33,89 +33,70 @@ void PhysicsCamera::update(Car *car, Camera *cam) {
 }
 
 //Calcula la posicion de la camara (duda con las formulas preguntar a Jose)
-void PhysicsCamera::CalculatePositionCamera(CCar *cCar, CTransformable *cTransformableCar, CTransformable *cTransformableCamera, CCamera *cCamera, CSpeed *cSpeedCam) {
+void PhysicsCamera::CalculatePositionCamera(CCar *cCar, CTransformable *cTransformableCar, CTransformable *cTransCam, CCamera *cCamera, CSpeed *cSpeedCam) {
     float rotationFinal = cTransformableCar->rotation.y - cCar->skidRotation - cCamera->rotExtraY;
     rotationFinal = Utils::GetAdjustedDegrees(rotationFinal);
 
-    cTransformableCamera->position.y = cTransformableCar->position.y + 20;
-    cTransformableCamera->position.z = (cTransformableCar->position.z - 40 * sin(((rotationFinal) * PI) / 180.0));
-    cTransformableCamera->position.x = (cTransformableCar->position.x + 40 * cos(((rotationFinal) * PI) / 180.0));
-    //rotFinal = Utils::GetAdjustedDegrees(rotFinal);
+    cTransCam->position.y = cTransformableCar->position.y + 20;
+    cTransCam->position.z = (cTransformableCar->position.z - 40 * sin(((rotationFinal) * PI) / 180.0));
+    cTransCam->position.x = (cTransformableCar->position.x + 40 * cos(((rotationFinal) * PI) / 180.0));
+
     //float rotFinal = cTransformableCar->rotation.y - cCar->skidRotation - cCamera->rotExtraY;
     //auto carPos =  cTransformableCar->position;
     //auto destPosition = glm::vec3((carPos.x + 40 * cos(((rotFinal)*PI)/180.0)), carPos.y + 20, (carPos.z - 40 * sin(((rotFinal)*PI)/180.0)));
+    //auto maxPosition = glm::vec3((carPos.x + 50 * cos(((rotFinal)*PI)/180.0)), carPos.y + 20, (carPos.z - 50 * sin(((rotFinal)*PI)/180.0)));
+    //auto disDest_X = abs(destPosition.x - cTransCam->position.x); 
+    //if( disDest_X < abs( cTransformableCar->position.x - cTransCam->position.x))     Accelerate_X(cCar, cCamera, cSpeedCam);
+    //else                                                                                        Decelerate_X(cCar, cCamera, cSpeedCam);
+    //
+    //auto disDest_Z = abs(destPosition.z - cTransCam->position.z); 
+    //if( disDest_Z < abs( cTransformableCar->position.z - cTransCam->position.z))     Accelerate_Z(cCar, cCamera, cSpeedCam);
+    //else                                                                                        Decelerate_Z(cCar, cCamera, cSpeedCam);
+    //
 //
-//    //auto disDest_X = abs(destPosition.x - cTransformableCamera->position.x); 
-//    //if( disDest_X < abs( cTransformableCar->position.x - cTransformableCamera->position.x))     Accelerate_X(cCar, cCamera, cSpeedCam);
 //
-//    //else                                                                                        Decelerate_X(cCar, cCamera, cSpeedCam);
-//    //
-//    //auto disDest_Z = abs(destPosition.z - cTransformableCamera->position.z); 
-//    //if( disDest_Z < abs( cTransformableCar->position.z - cTransformableCamera->position.z))     Accelerate_Z(cCar, cCamera, cSpeedCam);
-//    else                                                                                        Decelerate_Z(cCar, cCamera, cSpeedCam);
-//    
-//    double angleRotCamera = atan2(destPosition.z-cTransformableCamera->position.z, destPosition.x-cTransformableCamera->position.x)*180/M_PI;
-//    angleRotCamera = 180.0 - angleRotCamera; // se le restan ya que el eje empieza en el lado contrario 
-//    if(angleRotCamera<0)
-//        angleRotCamera += 360;
+    //double angleRotCamera = atan2(destPosition.z-cTransCam->position.z, destPosition.x-cTransCam->position.x)*180/M_PI;
+    //angleRotCamera = 180.0 - angleRotCamera; // se le restan ya que el eje empieza en el lado contrario 
+    //if(angleRotCamera<0)
+    //    angleRotCamera += 360;
+//
+    //auto speedX = -cos(radians(angleRotCamera))*cSpeedCam->speed.x;  
+    //auto speedZ = sin(radians(angleRotCamera))*cSpeedCam->speed.z;  
+//
+    ////cout << "el cCamara speed X es: " << cSpeedCam->speed.x <<" el speedX es: " << speedX << " y por el delta es: " << speedX * deltaTime << endl;
+    //if( abs(speedX * deltaTime) < disDest_X)  cTransCam->position.x += speedX * deltaTime;
+    //else{
+    //    cTransCam->position.x = destPosition.x;
+    //    cSpeedCam->speed.x = cCar->speed;
+    //}          
+//
+    //if( abs(speedZ * deltaTime) < disDest_Z)  cTransCam->position.z += speedZ * deltaTime;
+    //else{
+    //    cTransCam->position.z = destPosition.z;
+    //    cSpeedCam->speed.z = cCar->speed;
+    //}   
+    //cTransCam->position.y  = destPosition.y;
+//
+//
+    //if( disDest_X > abs(destPosition.x - maxPosition.x)){     
+    //    cTransCam->position.x = maxPosition.x; 
+    //}
+    //if( disDest_Z > abs(destPosition.z - maxPosition.z)){     
+    //    cTransCam->position.z = maxPosition.z; 
+    //}
+//
+//
+    //if( abs(cTransCam->position.x - maxPosition.x) > abs(destPosition.x - maxPosition.x)){     
+    //    cTransCam->position.x = destPosition.x; 
+    //}
+    //if( abs(cTransCam->position.z - maxPosition.z) > abs(destPosition.z - maxPosition.z)){     
+    //    cTransCam->position.z = destPosition.z; 
+    //}
 
-//    auto speedX = -cos(radians(angleRotCamera))*cSpeedCam->speed.x;  
-//    auto speedZ = sin(radians(angleRotCamera))*cSpeedCam->speed.z;  
-//
-//    //cout << "el cCamara speed X es: " << cSpeedCam->speed.x <<" el speedX es: " << speedX << " y por el delta es: " << speedX * deltaTime << endl;
-//    if( abs(speedX * deltaTime) < disDest_X)  cTransformableCamera->position.x += speedX * deltaTime;
-//
-//    else{
-//        cTransformableCamera->position.x = destPosition.x;
-//        cSpeedCam->speed.x = cCar->speed;
-//    }                                    
-//    if( abs(speedZ * deltaTime) < disDest_Z)  cTransformableCamera->position.z += speedZ * deltaTime;
-//    else{
-//        cTransformableCamera->position.z = destPosition.z;
-//        cSpeedCam->speed.z = cCar->speed;
-//    }   
-//    cTransformableCamera->position.y  = destPosition.y;
 
 }
 
 
-void PhysicsCamera::AccCadence(Car *car, Camera *cam){
-    // comento la primera linea porque la pos de la cámara en altura (por ahora) es siempre la misma
-    //auto cTransCam = static_cast<CTransformable *>(cam->GetComponent(CompType::TransformableComp).get());
-    //auto cCamera = static_cast<CCamera *>(cam->GetComponent(CompType::CameraComp).get());
-    //auto cCar = static_cast<CCar *>(car->GetComponent(CompType::CarComp).get());
-    //auto cTransCar = static_cast<CTransformable *>(car->GetComponent(CompType::TransformableComp).get());
-//
-//
-    //float rotationFinal = cTransCar->rotation.y - cCar->skidRotation - cCamera->rotExtraY;
-    //rotationFinal = Utils::GetAdjustedDegrees(rotationFinal);
-//
-    //cTransCam->position.y = cTransCar->position.y + 20;
-//
-//
-    //auto dest_Z = (cTransCar->position.z - 60 * sin(((rotationFinal) * PI) / 180.0))
-    //if()
-//
-//
-    //cTransCam->position.z = dest;
-    //cTransCam->position.x = (cTransCar->position.x + 60 * cos(((rotationFinal) * PI) / 180.0));
-}
-void PhysicsCamera::AccNoCadence(Car *car, Camera *cam){
-    // comento la primera linea porque la pos de la cámara en altura (por ahora) es siempre la misma
-    //auto cTransformableCamera = static_cast<CTransformable *>(cam->GetComponent(CompType::TransformableComp).get());
-    //auto cCar = static_cast<CCar *>(car->GetComponent(CompType::CarComp).get());
-    //auto cCamera = static_cast<CCamera *>(cam->GetComponent(CompType::CameraComp).get());
-    //auto cTransformableCar = static_cast<CTransformable *>(car->GetComponent(CompType::TransformableComp).get());
-//
-//
-//
-    //float rotationFinal = cTransformableCar->rotation.y - cCar->skidRotation - cCamera->rotExtraY;
-    //rotationFinal = Utils::GetAdjustedDegrees(rotationFinal);
-//
-    //cTransformableCamera->position.y = cTransformableCar->position.y + 20;
-    //cTransformableCamera->position.z = (cTransformableCar->position.z - 40 * sin(((rotationFinal) * PI) / 180.0));
-    //cTransformableCamera->position.x = (cTransformableCar->position.x + 40 * cos(((rotationFinal) * PI) / 180.0));
-}
 
 //Entra cuando se presionaS la A
 void PhysicsCamera::TurnLeft(Car *car, Camera *cam) {
@@ -134,13 +115,7 @@ void PhysicsCamera::TurnLeft(Car *car, Camera *cam) {
         }
     } else {  // la rueda vuelve a su sitio original al no dejarte rotar
 
-        if (cCamera->rotExtraY >= cCar->decrementWheelRotation) {
-            cCamera->rotExtraY -= cCamera->decrementrotExtraY;
-        } else if (cCamera->rotExtraY <= -cCar->decrementWheelRotation) {
-            cCamera->rotExtraY += cCamera->decrementrotExtraY;
-        } else {
-            cCamera->rotExtraY = 0;
-        }
+
     }
 }
 
@@ -161,13 +136,7 @@ void PhysicsCamera::TurnRight(Car *car, Camera *cam) {
             cCamera->rotExtraY += cCamera->incrementrotExtraY;
         }
     } else {  // la rueda vuelve a su sitio original al no dejarte rotar
-        if (cCamera->rotExtraY >= cCar->decrementWheelRotation) {
-            cCamera->rotExtraY -= cCamera->decrementrotExtraY;
-        } else if (cCamera->rotExtraY <= -cCar->decrementWheelRotation) {
-            cCamera->rotExtraY += cCamera->decrementrotExtraY;
-        } else {
-            cCamera->rotExtraY = 0;
-        }
+
     }
 }
 
