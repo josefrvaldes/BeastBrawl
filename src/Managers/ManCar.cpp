@@ -501,6 +501,7 @@ void ManCar::CollisionCarPowerUp(DataMap* d) {
     // Reducimos la velocidad -- TODO --> no solo reducir la velocidad a 0
     auto cCar = static_cast<CCar*>(car->GetComponent(CompType::CarComp).get());
     cCar->speed = 0.0f;  // To-Do: no funciona en la IA por que la logica difusa no la hace acelerar
+    cCar->hurt = true;
         
     // Sonido choque con powerup
     shared_ptr<DataMap> dataSound = make_shared<DataMap>();
