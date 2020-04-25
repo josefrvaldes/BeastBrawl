@@ -24,9 +24,9 @@ StateInGame::StateInGame() {
     cout << "------------------------------------------------------------------" << endl;
     cout << "delta vale" << Constants::DELTA_TIME << endl;
     cout << "------------------------------------------------------------------" << endl;
-    physics = make_unique<Physics>(Constants::DELTA_TIME);
+    //physics = make_unique<Physics>(Constants::DELTA_TIME);
 
-    cam = make_shared<Camera>(glm::vec3(100.0f, 0.0f, 30.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f));
+    //cam = make_shared<Camera>(glm::vec3(100.0f, 0.0f, 30.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f));
     ground = make_shared<GameObject>(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), "", "training_ground.obj");
 
 }
@@ -48,7 +48,7 @@ StateInGame::~StateInGame() {
  */
 void StateInGame::InitVirtualMethods() {
     auto gameTime = GameValues::GetInstance()->GetGameTime();
-    InitializeManagers(physics.get(), cam.get(), gameTime);
+    InitializeManagers(gameTime);
     InitializeSystems(*manCars.get(), *manBoundingWall.get(), *manBoundingOBB.get(), *manBoundingGround.get(), *manPowerUps.get(), *manNavMesh.get(), *manBoxPowerUps.get(), *manTotems.get());
     InitializeFacades();
 
@@ -92,7 +92,7 @@ void StateInGame::AddElementsToRender() {
     for (auto bpu : manBoxPowerUps->GetEntities())
         renderEngine->FacadeAddObject(bpu.get());
 
-    renderEngine->FacadeAddCamera(cam.get());
+    renderEngine->FacadeAddCamera(manCamera.get()->getCamera());
 
     renderEngine->FacadeAddObjectTotem(manTotems->GetEntities()[0].get());
     
@@ -142,9 +142,11 @@ void StateInGame::InitializeSystems(ManCar &manCars, ManBoundingWall &manWall, M
     sysRanking = make_unique<SystemRanking>();
 }
 
-void StateInGame::InitializeManagers(Physics *physics, Camera *cam, const uint32_t timeGame) {
+void StateInGame::InitializeManagers(const uint32_t timeGame) {
     // inicializa el man PU, no hace falta más código para esto
-    manCars             = make_shared<ManCar>(physics, cam);
+    manCars             = make_shared<ManCar>();
+    StateInGame::CreateMainCar();
+    manCamera           = make_unique<ManCamera>(manCars->GetCar().get(), Constants::DELTA_TIME);
     manWayPoint         = make_shared<ManWayPoint>();  //Se crean todos los waypoints y edges
     manPowerUps         = make_shared<ManPowerUp>(manCars);
     manBoxPowerUps      = make_shared<ManBoxPowerUp>();
@@ -227,7 +229,8 @@ void StateInGame::Update() {
     // ACTUALIZACION DE LOS MANAGERS DE LOS COCHES
     manCars->UpdateCarPlayer(*(manTotems.get()));
     // ACTUALIZACION DE LAS FISICAS DE LOS COCHES
-    physics->update(manCars->GetCar().get(), cam.get());
+    //physics->update(manCars->GetCar().get());
+    manCamera->Update();
 
     sysBoxPowerUp->update(manBoxPowerUps.get());
     for(auto& actualPowerUp : manPowerUps->GetEntities()){  // actualizamos las fisicas de los powerUps
@@ -241,8 +244,8 @@ void StateInGame::Update() {
     clPhysics->IntersectPowerUpWalls(*manPowerUps.get(), *manBoundingWall.get(), *manBoundingOBB.get());
 
     // Actualizaciones en Irrlich
-    renderEngine->UpdateCamera(cam.get(), manCars.get());
-    physicsEngine->UpdateCar(manCars.get()->GetCar().get(), cam.get());
+    renderEngine->UpdateCamera(manCamera.get()->getCamera(), manCars.get());
+    physicsEngine->UpdateCar(manCars.get()->GetCar().get(), manCamera.get()->getCamera());
 
     for (auto actualPowerUp : manPowerUps->GetEntities())  // actualizamos los powerUp en irrlich
         physicsEngine->UpdatePowerUps(actualPowerUp.get());
@@ -259,10 +262,10 @@ void StateInGame::Update() {
     // al final de la ejecucion eliminamos todos los powerUps que se deben eliminar
     manPowerUps->Update();
 
-    sysLoD->UpdateMeshes(manCars->GetEntities(), cam.get());
-    sysLoD->UpdateMeshes(manPowerUps->GetEntities(), cam.get());
-    sysLoD->UpdateMeshes(manTotems->GetEntities(), cam.get());
-    sysLoD->UpdateAnimations(manBoxPowerUps->GetEntities(), cam.get());
+    sysLoD->UpdateMeshes(manCars->GetEntities(), manCamera.get()->getCamera());
+    sysLoD->UpdateMeshes(manPowerUps->GetEntities(), manCamera.get()->getCamera());
+    sysLoD->UpdateMeshes(manTotems->GetEntities(), manCamera.get()->getCamera());
+    sysLoD->UpdateAnimations(manBoxPowerUps->GetEntities(), manCamera.get()->getCamera());
 
     renderEngine->FacadeUpdateMeshesLoD(manCars->GetEntities());
     renderEngine->FacadeUpdateMeshesLoD(manPowerUps->GetEntities());

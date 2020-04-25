@@ -11,7 +11,7 @@
 #include <Components/CNitro.h>
 #include <Components/CShield.h>
 #include <Components/CTotem.h>
-#include <Entities/Camera.h>
+//#include <Entities/Camera.h>
 #include <Entities/CarAI.h>
 #include <Entities/CarHuman.h>
 #include <Systems/Physics.h>
@@ -52,6 +52,7 @@ ManCar::ManCar() {
     // systemPathPlanning = make_unique<SystemPathPlanning>();
     //physicsAI = make_unique<PhysicsAI>();
     systemGameRules = make_unique<SystemGameRules>();
+    physics         = make_unique<Physics>(Constants::DELTA_TIME);
 
     cout << "Hemos creado un powerup, ahora tenemos " << entities.size() << " powerups" << endl;
 }
@@ -62,23 +63,38 @@ ManCar::~ManCar() {
 }
 
 // TO-DO: este paso de physics es kk, hay que revisarlo de enviarlo como referencia o algo pero me da error
-ManCar::ManCar(Physics* _physics, Camera* _cam) : ManCar() {
-    this->physics = _physics;
-    this->cam = _cam;
-}
+//ManCar::ManCar(Physics* _physics) : ManCar() {
+//    //this->physics = _physics;
+//    //this->cam = _cam;
+//}
 
 // comprueba si has superado el tiempo necesario para ganar
 void ManCar::UpdateCarPlayer(ManTotem &manTotem_) {
     auto totem = manTotem_.GetEntities()[0].get();
     auto carPlayer =  static_cast<Entity*>(this->GetCar().get());
     UpdateGeneralCar(*carPlayer, *totem);
-}
 
-void ManCar::UpdateCarAI(CarAI* carAI, ManTotem* m_manTotem) {
-    UpdateGeneralCar(*carAI, *(m_manTotem->GetEntities()[0].get()));
+    physics->update(this->GetCar().get());
 }
 void ManCar::UpdateCarHuman(Entity* CarHuman, ManTotem* m_manTotem) {
     UpdateGeneralCar(*CarHuman, *(m_manTotem->GetEntities()[0].get()));
+    physics->UpdateHuman(static_cast<Car *>(CarHuman));
+}
+void ManCar::UpdateCarAI(CarAI* carAI, ManTotem* m_manTotem) {
+    //manNavMesh->UpdateNavMeshEntity(carAI);
+    //systemBtMoveTo->update(carAI);
+    //systemPathPlanning->update(carAI);
+    //systemBtLoDMove->update(carAI);
+    //systemBtPowerUp->update(carAI);
+
+    //auto time0 = system_clock::now();
+    //auto time1 = system_clock::now();
+    //double timeAccumulated = duration_cast<microseconds>(time1 - time0).count();
+    //cout.precision(dbl::max_digits10);
+    //if(timeAccumulated > maxTimeAccumulated) maxTimeAccumulated = timeAccumulated;
+    //cout << maxTimeAccumulated << " - ";
+    //physicsAI->Update(carAI, graph);
+    UpdateGeneralCar(*carAI, *(m_manTotem->GetEntities()[0].get()));
 }
 
 void ManCar::UpdateGeneralCar(Entity& car_, Entity& totem_){
@@ -766,7 +782,7 @@ void ManCar::CatchPowerUpAI(DataMap* d) {
     else if (indx > maxTelebanana)  // MELONMOLON ->  25% base - 37.5% primero - 35% segundo - 22.5% ultimo/s
         type = typeCPowerUp::MelonMolon;
 
-
+    //type = typeCPowerUp::SuperMegaNitro;
     // type = typeCPowerUp::SuperMegaNitro;
     auto cPowerUpCar = static_cast<CPowerUp*>(actualCar->GetComponent(CompType::PowerUpComp).get());
     if (cPowerUpCar->typePowerUp == typeCPowerUp::None) {
@@ -843,35 +859,35 @@ bool ManCar::CarTotemInVisionRange(Entity* actualCar, Entity* desCar, uint32_t r
 
 void ManCar::TurnLeftCar(DataMap* d) {
     // cout << "Han llamado izquierda" << endl;
-    physics->TurnLeft(car.get(), cam);
+    physics->TurnLeft(car.get());
 }
 
 void ManCar::NotTurning(DataMap* d) {
     // cout << "Han llamado not turning" << endl;
-    physics->NotTurning(car.get(), cam);
+    physics->NotTurning(car.get());
 }
 
 void ManCar::Decelerate(DataMap* d) {
     // cout << "Han llamado decel" << endl;
-    physics->Decelerate(car.get(), cam);
+    physics->Decelerate(car.get());
 }
 
 void ManCar::NotAcceleratingOrDecelerating(DataMap* d) {
     // cout << "Han llamado notaccel" << endl;
-    physics->NotAcceleratingOrDecelerating(car.get(), cam);
+    physics->NotAcceleratingOrDecelerating(car.get());
 }
 
 void ManCar::TurnRightCar(DataMap* d) {
     // cout << "Han llamado derecha" << endl;
-    physics->TurnRight(car.get(), cam);
+    physics->TurnRight(car.get());
 }
 
 void ManCar::SkidCar(DataMap* d) {
-    physics->Skid(car.get(), cam);
+    physics->Skid(car.get());
 }
 
 void ManCar::NotSkid(DataMap* d) {
-    physics->NotSkidding(car.get(), cam);
+    physics->NotSkidding(car.get());
 }
 
 void ManCar::AccelerateCar(DataMap* d) {
@@ -883,7 +899,7 @@ void ManCar::AccelerateCar(DataMap* d) {
     // vector<int> mvect = any_cast<vector<int>>(d["vector"]);
     // cout << "Hemos recibido por evento un int=" << mint << " un float=" << mfloat << " y un vector de int con size=" << mvect.size() << endl;
 
-    physics->Accelerate(car.get(), cam);
+    physics->Accelerate(car.get());
 }
 
 void ManCar::Integrate(float delta) {
