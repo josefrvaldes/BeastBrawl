@@ -27,9 +27,15 @@ void StateInGameSingle::UpdateAnimationStart() {
     StateInGame::UpdateAnimationStart();
 }
 
+void StateInGameSingle::UpdateAnimationCountdown() {
+    StateInGame::UpdateAnimationCountdown();
+}
+
 void StateInGameSingle::UpdateAnimationEnd() {
     StateInGame::UpdateAnimationEnd();
 }
+
+
 
 void StateInGameSingle::UpdateGame() {
     // si estamos yendo a pausa, paramos los temporizadores
@@ -79,6 +85,9 @@ void StateInGameSingle::Update() {
     switch (currentUpdateState) {
         case UpdateState::START:
             UpdateAnimationStart();
+            break;
+        case UpdateState::COUNTDOWN:
+            UpdateAnimationCountdown();
             break;
         case UpdateState::END:
             UpdateAnimationEnd();

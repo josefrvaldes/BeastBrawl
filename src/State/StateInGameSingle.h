@@ -15,6 +15,7 @@ class StateInGameSingle : public StateInGame {
     void InitState() override;
     void Input() override;
     void UpdateAnimationStart() override;
+    void UpdateAnimationCountdown() override;
     void UpdateAnimationEnd() override;
     void UpdateGame() override;
     void Update() override;

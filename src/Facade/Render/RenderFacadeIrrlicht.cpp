@@ -466,6 +466,9 @@ void RenderFacadeIrrlicht::FacadeAnimate(vector<shared_ptr<Entity>> entities) {
 
 }
 
+void RenderFacadeIrrlicht::Draw2DImage(float x_, float y_, int width_, int height_, float depth_, string file_, bool bool_) const {}
+
+std::tuple<int, int> RenderFacadeIrrlicht::GetScreenSize() {return std::tuple<int, int>(0,0);}
 
 //INPUTS : Una entidad GameObject
 //TODO: Llevar cuidado con las rutas de las texturas si luego se mueven las carpetas

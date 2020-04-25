@@ -71,6 +71,7 @@ class CLPhysics;
 
 enum UpdateState {
     START,
+    COUNTDOWN,
     GAME,
     END
 };
@@ -84,6 +85,7 @@ class StateInGame : public State {
     virtual void Input() = 0;
     void Update() override;
     virtual void UpdateAnimationStart();
+    virtual void UpdateAnimationCountdown();
     virtual void UpdateAnimationEnd();
     virtual void UpdateGame();
     void Render() override;
@@ -149,6 +151,7 @@ class StateInGame : public State {
     //void CAMBIARCosasNavMesh(ManCar &, ManNavMesh &);
     //void CAMBIARPositionTotemAboveCar();
     UpdateState currentUpdateState {UpdateState::START};
-
+    int64_t timerCountdown;
+    uint8_t currentCountdown{3};
 
 };

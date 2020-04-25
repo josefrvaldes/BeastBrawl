@@ -15,6 +15,7 @@ class StateInGameMulti : public StateInGame {
     void Input() override;
     void Update() override;
     void UpdateAnimationStart() override;
+    void UpdateAnimationCountdown() override;
     void UpdateAnimationEnd() override;
     void UpdateGame() override;
     void Render() override;

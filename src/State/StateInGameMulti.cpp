@@ -113,6 +113,10 @@ void StateInGameMulti::UpdateAnimationStart() {
     StateInGame::UpdateAnimationStart();
 }
 
+void StateInGameMulti::UpdateAnimationCountdown() {
+    StateInGame::UpdateAnimationCountdown();
+}
+
 void StateInGameMulti::UpdateGame() {
     StateInGame::UpdateGame();
 
@@ -130,6 +134,9 @@ void StateInGameMulti::Update() {
     switch (currentUpdateState) {
         case UpdateState::START:
             UpdateAnimationStart();
+            break;
+        case UpdateState::COUNTDOWN:
+            UpdateAnimationCountdown();
             break;
         case UpdateState::END:
             UpdateAnimationEnd();

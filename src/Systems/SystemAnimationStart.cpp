@@ -62,8 +62,8 @@ void SystemAnimationStart::CalculatePosStartEndTotem() {
 void SystemAnimationStart::CalculatePosStartEndRandomCar() {
     auto cTransformableTotem = static_cast<CTransformable*>(car->GetComponent(CompType::TransformableComp).get());
     currentStartPosition = currentEndPosition = cTransformableTotem->position;
-    currentStartPosition.x += 50;
-    currentEndPosition.z += 50;
+    currentStartPosition.z += 50;
+    currentEndPosition.x += 50;
 }
 
 

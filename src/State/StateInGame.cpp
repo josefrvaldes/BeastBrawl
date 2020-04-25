@@ -227,9 +227,31 @@ void StateInGame::UpdateAnimationStart() {
     auto cCam = static_cast<CCamera*>(manCamera.get()->getCamera()->GetComponent(CompType::CameraComp).get());
     renderEngine->SetCamTarget(cCam->target);
 
+    // si hemos acabado la animación de inicio...
     if(animationFinished) {
-        currentUpdateState = UpdateState::GAME;
-        cout << "Cambiamos a UpdateGame" << endl;
+        // ponemos como próximo state el countdown
+        currentUpdateState = UpdateState::COUNTDOWN;
+        cout << "Cambiamos a UpdateCountdown" << endl;
+        // actualizamos la pos de la cámara para que se ponga detrás del coche principal
+        manCamera->Update();
+        renderEngine->UpdateCamera(manCamera.get()->getCamera(), manCars.get());
+
+        // iniciamos el timer de countdown
+        timerCountdown = Utils::getMillisSinceEpoch();
+        cout << "Current countdown " << unsigned(currentCountdown) << endl;
+    }
+}
+
+void StateInGame::UpdateAnimationCountdown() {
+    int64_t now = Utils::getMillisSinceEpoch();
+    int64_t interval = now - timerCountdown;
+    if(interval > 1000 && timerCountdown > 0) {
+        currentCountdown--;
+        cout << "Current countdown " << unsigned(currentCountdown) << endl;
+        timerCountdown = Utils::getMillisSinceEpoch();
+        if(currentCountdown == 0) {
+            currentUpdateState = UpdateState::GAME;
+        }
     }
 }
 
@@ -327,6 +349,19 @@ void StateInGame::Render() {
 
     renderEngine->FacadeDrawHUD(manCars->GetCar().get(), manCars.get(), manGameRules->GetGlobalClock().get());
     renderEngine->FacadeDrawGraphEdges(manWayPoint.get());
+    if(currentUpdateState == UpdateState::COUNTDOWN) {
+        // todo: esto de meter el width y el height aquí a piñón y los filenames.. es una kk
+        const int fileWIDTH = 300;
+        const int fileHEIGHT = 200;
+        string fileName = "media/" + std::to_string(currentCountdown) + ".png";
+        tuple<int, int> screenSize = renderEngine->GetScreenSize();
+        int width = std::get<0>(screenSize);
+        // int height = std::get<1>(screenSize);
+        int posX = width / 2 - fileWIDTH / 2;
+        int posY = 200;
+        renderEngine->Draw2DImage(posX, posY, fileWIDTH, fileHEIGHT, 0.7, fileName, true);
+        
+    }
     // renderEngine->FacadeDrawBoundingBox(manCars.get()->GetCar().get(), isColliding);
 
     for (auto &actualPowerUp : manPowerUps->GetEntities()) {
