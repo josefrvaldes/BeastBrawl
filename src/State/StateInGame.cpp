@@ -142,9 +142,11 @@ void StateInGame::InitializeSystems(ManCar &manCars, ManBoundingWall &manWall, M
     sysBoxPowerUp = make_shared<SystemBoxPowerUp>();
     sysLoD = make_unique<SystemLoD>();
     sysRanking = make_unique<SystemRanking>();
-    Car *car = static_cast<Car *>(manCars.GetEntities()[2].get());
+
+    Car *mainCar = static_cast<Car *>(manCars.GetCar().get());
+    Car *car = static_cast<Car *>(manCars.GetEntities()[Utils::getRandomInt(1, manCars.GetEntities().size() - 1)].get());
     Totem *totem = static_cast<Totem *>(manTotems->GetEntities()[0].get());
-    sysAnimStart = make_unique<SystemAnimationStart>(manCamera->getCamera(), totem, car);
+    sysAnimStart = make_unique<SystemAnimationStart>(manCamera->getCamera(), totem, mainCar, car);
 }
 
 void StateInGame::InitializeManagers(const uint32_t timeGame) {
@@ -221,15 +223,23 @@ void StateInGame::CreateMainCar() {
 ///////////////////////
 
 void StateInGame::UpdateAnimationStart() {
-    int64_t now = Utils::getMillisSinceEpoch();
-    int64_t interval = now - timeInitAnimationStart;
-    if (interval > 3000) {
+    bool animationFinished = sysAnimStart->Animate();
+    renderEngine->UpdateCamera(manCamera.get()->getCamera(), manCars.get());
+    if(animationFinished) {
         currentUpdateState = UpdateState::GAME;
         cout << "Cambiamos a UpdateGame" << endl;
-    } else {
-        sysAnimStart->Animate();
-        renderEngine->UpdateCamera(manCamera.get()->getCamera(), manCars.get());
     }
+    // currentUpdateState = UpdateState::GAME;
+    // cout << "Cambiamos a UpdateGame" << endl;
+    // int64_t now = Utils::getMillisSinceEpoch();
+    // int64_t interval = now - timeInitAnimationStart;
+    // if (interval > 3000) {
+    //     currentUpdateState = UpdateState::GAME;
+    //     cout << "Cambiamos a UpdateGame" << endl;
+    // } else {
+    //     sysAnimStart->Animate();
+    //     renderEngine->UpdateCamera(manCamera.get()->getCamera(), manCars.get());
+    // }
 }
 
 void StateInGame::UpdateAnimationEnd() {
