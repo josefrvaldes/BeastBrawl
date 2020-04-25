@@ -55,7 +55,7 @@ void StateInGameSingle::UpdateGame() {
 
     //std::cout << "LOS TIEMPOS SON:  ";
     //cout << " ------------------------------------------------------------------------------- " << endl;
-    manAI->Update();
+    //manAI->Update();
 
     for (auto actualAI : manCars->GetEntities()) {  // CUIDADO!!! -> el static cast que solo se use en el single player, si no peta
         if (static_cast<Car *>(actualAI.get())->GetTypeCar() == TypeCar::CarAI) {
