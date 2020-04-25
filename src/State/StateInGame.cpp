@@ -60,9 +60,10 @@ void StateInGame::InitVirtualMethods() {
     // lo anterior y debe de estar todo inicializado
     AddElementsToRender();
 
-    // TODO: esto semánticamente no debería ir aquí, no es un método virtual, es algo que quiero que se cargue 
+    // TODO: esto semánticamente no debería ir aquí, no es un método virtual, es algo que quiero que se cargue
     // después de los virtual methods pero semánticamente debería ir en un método aparte o en una llamada aparte
     timeInitAnimationStart = Utils::getMillisSinceEpoch();
+    sysAnimStart->ResetTimer();
 }
 
 void StateInGame::InitializeFacades() {
@@ -141,25 +142,28 @@ void StateInGame::InitializeSystems(ManCar &manCars, ManBoundingWall &manWall, M
     sysBoxPowerUp = make_shared<SystemBoxPowerUp>();
     sysLoD = make_unique<SystemLoD>();
     sysRanking = make_unique<SystemRanking>();
+    Car *car = static_cast<Car *>(manCars.GetEntities()[2].get());
+    Totem *totem = static_cast<Totem *>(manTotems->GetEntities()[0].get());
+    sysAnimStart = make_unique<SystemAnimationStart>(manCamera->getCamera(), totem, car);
 }
 
 void StateInGame::InitializeManagers(const uint32_t timeGame) {
     // inicializa el man PU, no hace falta más código para esto
-    manCars             = make_shared<ManCar>();
+    manCars = make_shared<ManCar>();
     StateInGame::CreateMainCar();
-    manCamera           = make_unique<ManCamera>(manCars->GetCar().get(), Constants::DELTA_TIME);
-    manWayPoint         = make_shared<ManWayPoint>();  //Se crean todos los waypoints y edges
-    manPowerUps         = make_shared<ManPowerUp>(manCars);
-    manBoxPowerUps      = make_shared<ManBoxPowerUp>();
-    manBoundingWall     = make_shared<ManBoundingWall>();
-    manBoundingOBB      = make_shared<ManBoundingOBB>();
-    manBoundingGround   = make_shared<ManBoundingGround>();
-    manNavMesh          = make_shared<ManNavMesh>();
-    manTotems           = make_shared<ManTotem>(manNavMesh.get());
-    manNamePlates       = make_shared<ManNamePlate>(manCars.get());
-    manLight            = make_shared<ManLight>();
-    manGameRules        = make_unique<ManGameRules>(timeGame);
-    manParticleSystem   = make_unique<ManParticleSystem>();
+    manCamera = make_unique<ManCamera>(manCars->GetCar().get(), Constants::DELTA_TIME);
+    manWayPoint = make_shared<ManWayPoint>();  //Se crean todos los waypoints y edges
+    manPowerUps = make_shared<ManPowerUp>(manCars);
+    manBoxPowerUps = make_shared<ManBoxPowerUp>();
+    manBoundingWall = make_shared<ManBoundingWall>();
+    manBoundingOBB = make_shared<ManBoundingOBB>();
+    manBoundingGround = make_shared<ManBoundingGround>();
+    manNavMesh = make_shared<ManNavMesh>();
+    manTotems = make_shared<ManTotem>(manNavMesh.get());
+    manNamePlates = make_shared<ManNamePlate>(manCars.get());
+    manLight = make_shared<ManLight>();
+    manGameRules = make_unique<ManGameRules>(timeGame);
+    manParticleSystem = make_unique<ManParticleSystem>();
 
     managersEntities.emplace_back(manCars);
     managersEntities.emplace_back(manPowerUps);
@@ -223,8 +227,8 @@ void StateInGame::UpdateAnimationStart() {
         currentUpdateState = UpdateState::GAME;
         cout << "Cambiamos a UpdateGame" << endl;
     } else {
-        
-        cout << "Estamos en UpdateAnimationStart" << endl;
+        sysAnimStart->Animate();
+        renderEngine->UpdateCamera(manCamera.get()->getCamera(), manCars.get());
     }
 }
 
