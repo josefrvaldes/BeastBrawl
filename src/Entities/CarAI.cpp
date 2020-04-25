@@ -8,7 +8,6 @@
 #include <Components/CPowerUp.h>
 #include <Components/CTransformable.h>
 #include <Components/CCar.h>
-#include <Components/CPath.h>
 #include <Components/CShield.h>
 #include <Components/CTotem.h>
 #include <Components/CRoboJorobo.h>
@@ -16,13 +15,12 @@
 #include <Components/CBoundingSphere.h>
 #include <Components/CColliding.h>
 #include <Components/CCurrentNavMesh.h>
-#include "../Components/CTargetNavMesh.h"
 #include <Components/CBoundingRay.h>
-#include <Components/CMovementType.h>
 #include "../Components/CExternalForce.h"
 #include "../Components/CBoundingChassis.h"
 #include "../Components/CShader.h"
 #include "../Components/CGravity.h"
+#include "../Components/CBrainAI.h"
 #include "../Constants.h"
 #include "GameValues.h"
 
@@ -110,16 +108,13 @@ CarAI::CarAI(int pj){
     shared_ptr<CNitro> cNitro = make_shared<CNitro>();
     shared_ptr<CRoboJorobo> cRoboJorobo = make_shared<CRoboJorobo>();
     shared_ptr<CTotem> cTotem = make_shared<CTotem>();
-    shared_ptr<CPath> cPath   = make_shared<CPath>();
     shared_ptr<CSpeed> cSpeed = make_shared<CSpeed>();
     shared_ptr<CCurrentNavMesh> cCurrentNavMesh = make_shared<CCurrentNavMesh>(-1);  //  ponemos -1 por defecto ya que haremos el calculo al empezar la partida
-    shared_ptr<CTargetNavMesh> cTargetNavMesh = make_shared<CTargetNavMesh>(-1);  //  ponemos -1 por defecto ya que haremos el calculo al empezar la partida
 
 
     shared_ptr<CColliding> cColliding = make_shared<CColliding>(false);
     shared_ptr<CBoundingSphere> cBoundSphere = make_shared<CBoundingSphere>(pos);
     shared_ptr<CBoundingRay> cBoundRay = make_shared<CBoundingRay>();
-    shared_ptr<CMovementType> cMovementType = make_shared<CMovementType>("Empty");
 
     shared_ptr<CExternalForce> cExternalForce = make_shared<CExternalForce>();
 
@@ -130,6 +125,7 @@ CarAI::CarAI(int pj){
     shared_ptr<CGravity> cGravity = make_shared<CGravity>();
 
     shared_ptr<CShader> cShader = make_shared<CShader>(vertexShader,fragmentShader);
+    shared_ptr<CBrainAI> cBrainAI = make_shared<CBrainAI>();
 
     AddComponent(cId);
     AddComponent(cType);
@@ -141,21 +137,18 @@ CarAI::CarAI(int pj){
     // TODO quitar el compoentne cWayPoint del coche ya que al coche solo le hace falta su siguiente destino.
     AddComponent(cWayPoint);
     AddComponent(cPosDestination);
-    AddComponent(cMovementType);
 
     AddComponent(cPowerUp);
     AddComponent(cShield);
     AddComponent(cNitro);
     AddComponent(cRoboJorobo);
     AddComponent(cTotem);
-    AddComponent(cPath);
     AddComponent(cBoundSphere);
     AddComponent(cBoundRay);
     AddComponent(cColliding);
     AddComponent(cSpeed);
 
     AddComponent(cCurrentNavMesh);
-    AddComponent(cTargetNavMesh);
 
     AddComponent(cExternalForce);
 
@@ -164,6 +157,7 @@ CarAI::CarAI(int pj){
     AddComponent(cGravity);
 
     AddComponent(cShader);
+    AddComponent(cBrainAI);
 }
 
 CarAI::CarAI(int pj, glm::vec3 pos, glm::vec3 rot, glm::vec3 scale,string texture, string mesh, float maxSpeed, float acceleration , float carFriction, float carSlowDown, std::string vertexShader, std::string fragmentShader)
@@ -230,8 +224,8 @@ void CarAI::SetDestination(CPosDestination* posDestination){
 }
 
 void CarAI::SetPath(stack<int> path){
-    auto cPath = static_cast<CPath*>(m_components[CompType::PathComp].get());
-    cPath->stackPath = path;
+    auto cBrainAI = static_cast<CBrainAI*>(m_components[CompType::BrainAIComp].get());
+    cBrainAI->stackPath = path;
 
 }
 
