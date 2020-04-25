@@ -34,21 +34,12 @@ void PhysicsCamera::update(Car *car, Camera *cam) {
 
 //Calcula la posicion de la camara (duda con las formulas preguntar a Jose)
 void PhysicsCamera::CalculatePositionCamera(CCar *cCar, CTransformable *cTransformableCar, CTransformable *cTransformableCamera, CCamera *cCamera, CSpeed *cSpeedCam) {
-
-    // comento la primera linea porque la pos de la cámara en altura (por ahora) es siempre la misma
     float rotationFinal = cTransformableCar->rotation.y - cCar->skidRotation - cCamera->rotExtraY;
     rotationFinal = Utils::GetAdjustedDegrees(rotationFinal);
 
     cTransformableCamera->position.y = cTransformableCar->position.y + 20;
     cTransformableCamera->position.z = (cTransformableCar->position.z - 40 * sin(((rotationFinal) * PI) / 180.0));
     cTransformableCamera->position.x = (cTransformableCar->position.x + 40 * cos(((rotationFinal) * PI) / 180.0));
-
-
-
-
-
-
-
     //rotFinal = Utils::GetAdjustedDegrees(rotFinal);
     //float rotFinal = cTransformableCar->rotation.y - cCar->skidRotation - cCamera->rotExtraY;
     //auto carPos =  cTransformableCar->position;
@@ -87,83 +78,44 @@ void PhysicsCamera::CalculatePositionCamera(CCar *cCar, CTransformable *cTransfo
 
 }
 
-void PhysicsCamera::Accelerate_X(CCar *cCar, CCamera *cCamera, CSpeed *cSpeedCam){
-    cSpeedCam->speed.x += cCamera->acceleration;
-    if(cSpeedCam->speed.x > cCamera->maxSpeed) cSpeedCam->speed.x = cCamera->maxSpeed;
+
+void PhysicsCamera::AccCadence(Car *car, Camera *cam){
+    // comento la primera linea porque la pos de la cámara en altura (por ahora) es siempre la misma
+    //auto cTransCam = static_cast<CTransformable *>(cam->GetComponent(CompType::TransformableComp).get());
+    //auto cCamera = static_cast<CCamera *>(cam->GetComponent(CompType::CameraComp).get());
+    //auto cCar = static_cast<CCar *>(car->GetComponent(CompType::CarComp).get());
+    //auto cTransCar = static_cast<CTransformable *>(car->GetComponent(CompType::TransformableComp).get());
+//
+//
+    //float rotationFinal = cTransCar->rotation.y - cCar->skidRotation - cCamera->rotExtraY;
+    //rotationFinal = Utils::GetAdjustedDegrees(rotationFinal);
+//
+    //cTransCam->position.y = cTransCar->position.y + 20;
+//
+//
+    //auto dest_Z = (cTransCar->position.z - 60 * sin(((rotationFinal) * PI) / 180.0))
+    //if()
+//
+//
+    //cTransCam->position.z = dest;
+    //cTransCam->position.x = (cTransCar->position.x + 60 * cos(((rotationFinal) * PI) / 180.0));
 }
-void PhysicsCamera::Decelerate_X(CCar *cCar, CCamera *cCamera, CSpeed *cSpeedCam){
-    cSpeedCam->speed.x -= cCamera->slowDown;
-    if (cSpeedCam->speed.x < cCamera->reverseMaxSpeed) cSpeedCam->speed.x = cCamera->reverseMaxSpeed;
+void PhysicsCamera::AccNoCadence(Car *car, Camera *cam){
+    // comento la primera linea porque la pos de la cámara en altura (por ahora) es siempre la misma
+    //auto cTransformableCamera = static_cast<CTransformable *>(cam->GetComponent(CompType::TransformableComp).get());
+    //auto cCar = static_cast<CCar *>(car->GetComponent(CompType::CarComp).get());
+    //auto cCamera = static_cast<CCamera *>(cam->GetComponent(CompType::CameraComp).get());
+    //auto cTransformableCar = static_cast<CTransformable *>(car->GetComponent(CompType::TransformableComp).get());
+//
+//
+//
+    //float rotationFinal = cTransformableCar->rotation.y - cCar->skidRotation - cCamera->rotExtraY;
+    //rotationFinal = Utils::GetAdjustedDegrees(rotationFinal);
+//
+    //cTransformableCamera->position.y = cTransformableCar->position.y + 20;
+    //cTransformableCamera->position.z = (cTransformableCar->position.z - 40 * sin(((rotationFinal) * PI) / 180.0));
+    //cTransformableCamera->position.x = (cTransformableCar->position.x + 40 * cos(((rotationFinal) * PI) / 180.0));
 }
-
-void PhysicsCamera::Accelerate_Z(CCar *cCar, CCamera *cCamera, CSpeed *cSpeedCam){
-    cSpeedCam->speed.z += cCamera->acceleration;
-    if(cSpeedCam->speed.z > cCamera->maxSpeed) cSpeedCam->speed.z = cCamera->maxSpeed;
-}
-void PhysicsCamera::Decelerate_Z(CCar *cCar, CCamera *cCamera, CSpeed *cSpeedCam){
-    cSpeedCam->speed.z -= cCamera->slowDown;
-    if (cSpeedCam->speed.z < cCamera->reverseMaxSpeed) cSpeedCam->speed.z = cCamera->reverseMaxSpeed;
-}
-
-
-void PhysicsCamera::Accelerate(CCar *cCar, CCamera *cCamera){
-    cCamera->speed += cCamera->acceleration;
-    if(cCamera->speed > cCamera->maxSpeed) cCamera->speed = cCamera->maxSpeed;
-}
-void PhysicsCamera::Decelerate(CCar *cCar, CCamera *cCamera){
-    cCamera->speed -= cCamera->slowDown;
-    if (cCamera->speed < cCamera->reverseMaxSpeed) cCamera->speed = cCamera->reverseMaxSpeed;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-void PhysicsCamera::ApplyFrictionX(CCar *cCar, CCamera *cCamera, CSpeed *cSpeedCam){
-    if(cSpeedCam->speed.x > cCar->speed){
-        cSpeedCam->speed.x -= cCamera->slowDown;
-    }
-    if(cSpeedCam->speed.x < cCar->speed){
-        cSpeedCam->speed.x += cCamera->acceleration;
-    }
-}
-void PhysicsCamera::ApplyFrictionZ(CCar *cCar, CCamera *cCamera, CSpeed *cSpeedCam){
-    if(cSpeedCam->speed.z > cCar->speed){
-        cSpeedCam->speed.z -= cCamera->slowDown;
-    }
-    if(cSpeedCam->speed.z < cCar->speed){
-        cSpeedCam->speed.z += cCamera->acceleration;
-    }  
-}
-
-
-void PhysicsCamera::Accelerate(Car *, Camera *){
-}
-void PhysicsCamera::Decelerate(Car *, Camera *){
-    
-}
-void PhysicsCamera::NotAcceleratingOrDecelerating(Car *, Camera *){
-}
-
 
 //Entra cuando se presionaS la A
 void PhysicsCamera::TurnLeft(Car *car, Camera *cam) {
@@ -235,6 +187,80 @@ void PhysicsCamera::NotTurning(Car *car, Camera *cam) {
     }
 }
 
+
+
+
+
+
+
+
+void PhysicsCamera::Accelerate_X(CCar *cCar, CCamera *cCamera, CSpeed *cSpeedCam){
+    cSpeedCam->speed.x += cCamera->acceleration;
+    if(cSpeedCam->speed.x > cCamera->maxSpeed) cSpeedCam->speed.x = cCamera->maxSpeed;
+}
+void PhysicsCamera::Decelerate_X(CCar *cCar, CCamera *cCamera, CSpeed *cSpeedCam){
+    cSpeedCam->speed.x -= cCamera->slowDown;
+    if (cSpeedCam->speed.x < cCamera->reverseMaxSpeed) cSpeedCam->speed.x = cCamera->reverseMaxSpeed;
+}
+
+void PhysicsCamera::Accelerate_Z(CCar *cCar, CCamera *cCamera, CSpeed *cSpeedCam){
+    cSpeedCam->speed.z += cCamera->acceleration;
+    if(cSpeedCam->speed.z > cCamera->maxSpeed) cSpeedCam->speed.z = cCamera->maxSpeed;
+}
+void PhysicsCamera::Decelerate_Z(CCar *cCar, CCamera *cCamera, CSpeed *cSpeedCam){
+    cSpeedCam->speed.z -= cCamera->slowDown;
+    if (cSpeedCam->speed.z < cCamera->reverseMaxSpeed) cSpeedCam->speed.z = cCamera->reverseMaxSpeed;
+}
+
+
+void PhysicsCamera::Accelerate(CCar *cCar, CCamera *cCamera){
+    cCamera->speed += cCamera->acceleration;
+    if(cCamera->speed > cCamera->maxSpeed) cCamera->speed = cCamera->maxSpeed;
+}
+void PhysicsCamera::Decelerate(CCar *cCar, CCamera *cCamera){
+    cCamera->speed -= cCamera->slowDown;
+    if (cCamera->speed < cCamera->reverseMaxSpeed) cCamera->speed = cCamera->reverseMaxSpeed;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+void PhysicsCamera::ApplyFrictionX(CCar *cCar, CCamera *cCamera, CSpeed *cSpeedCam){
+    if(cSpeedCam->speed.x > cCar->speed){
+        cSpeedCam->speed.x -= cCamera->slowDown;
+    }
+    if(cSpeedCam->speed.x < cCar->speed){
+        cSpeedCam->speed.x += cCamera->acceleration;
+    }
+}
+void PhysicsCamera::ApplyFrictionZ(CCar *cCar, CCamera *cCamera, CSpeed *cSpeedCam){
+    if(cSpeedCam->speed.z > cCar->speed){
+        cSpeedCam->speed.z -= cCamera->slowDown;
+    }
+    if(cSpeedCam->speed.z < cCar->speed){
+        cSpeedCam->speed.z += cCamera->acceleration;
+    }  
+}
 
 double PhysicsCamera::Angle2Vectors(const vec3 &a, const vec3 &b) const {
     vec3 aN = glm::normalize(a);

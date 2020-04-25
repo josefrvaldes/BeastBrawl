@@ -20,6 +20,7 @@ public:
     ~Camera();
 
     void SuscribeEvents();
+    void setTarget(glm::vec3);
 
     void InvertCamera(DataMap* d);
     void TotemCamera(DataMap* d);
