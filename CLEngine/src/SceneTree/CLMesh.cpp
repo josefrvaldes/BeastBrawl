@@ -67,8 +67,8 @@ void CLMesh::AnimateInterpolated() {
         }
     }
     currentDistance++;
-    cout << "currentKeyFrameIndex -> " << unsigned(currentKeyFrameIndex) << ", nextKeyFrameIndex -> " << unsigned(nextKeyFrameIndex) << endl;
-    cout << "los archivos cargados son " << mesh->GetName() << " y " << nextMesh->GetName()  << " y la distancia es " << unsigned(distanceBetweenKeyFrames[currentKeyFrameIndex]) << endl;
+    //cout << "currentKeyFrameIndex -> " << unsigned(currentKeyFrameIndex) << ", nextKeyFrameIndex -> " << unsigned(nextKeyFrameIndex) << endl;
+    //cout << "los archivos cargados son " << mesh->GetName() << " y " << nextMesh->GetName()  << " y la distancia es " << unsigned(distanceBetweenKeyFrames[currentKeyFrameIndex]) << endl;
 }
 
 void CLMesh::DrawDepthMap(GLuint shaderID) {

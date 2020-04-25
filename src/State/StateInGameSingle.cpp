@@ -33,7 +33,7 @@ void StateInGameSingle::Update() {
 
     //std::cout << "LOS TIEMPOS SON:  ";
     //cout << " ------------------------------------------------------------------------------- " << endl;
-    manAI->Update();
+    //manAI->Update();
 
 
     for (auto actualAI : manCars->GetEntities()) { // CUIDADO!!! -> el static cast que solo se use en el single player, si no peta
@@ -76,8 +76,8 @@ void StateInGameSingle::InitializeCLPhysics(ManCar &manCars, ManBoundingWall &ma
     StateInGame::InitializeCLPhysics(manCars, manWall, manOBB, manGround, manPowerUp, manNavMesh, manBoxPowerUp, manTotem);
 }
 
-void StateInGameSingle::InitializeManagers(Physics *physics, Camera *cam, const uint32_t timeGame) {
-    StateInGame::InitializeManagers(physics, cam, timeGame);
+void StateInGameSingle::InitializeManagers(const uint32_t timeGame) {
+    StateInGame::InitializeManagers(timeGame);
     CAMBIARInicializarCarAIS(*manCars, *manWayPoint);
 }
 

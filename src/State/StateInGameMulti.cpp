@@ -110,7 +110,6 @@ void StateInGameMulti::Update() {
         if (actualCar.get() != manCars->GetCar().get()) {
             //manNavMesh->UpdateNavMeshHuman(actualCar.get());  // actualizamos el navemesh en el que se encuentra al human
             // funcion para recibir los inputs del servidor, otra para enviar los nuestros, crear componente de input
-            physics->UpdateHuman(static_cast<Car *>(actualCar.get()));
             manCars->UpdateCarHuman(actualCar.get(), manTotems.get());
             physicsEngine->UpdateTransformable(actualCar.get());
         }
@@ -126,8 +125,8 @@ void StateInGameMulti::InitializeCLPhysics(ManCar &manCars, ManBoundingWall &man
     StateInGame::InitializeCLPhysics(manCars, manWall, manOBB, manGround, manPowerUp, manNavMesh, manBoxPowerUp, manTotem);
 }
 
-void StateInGameMulti::InitializeManagers(Physics *physics, Camera *cam, const uint32_t timeGame) {
-    StateInGame::InitializeManagers(physics, cam, timeGame);
+void StateInGameMulti::InitializeManagers(const uint32_t timeGame) {
+    StateInGame::InitializeManagers(timeGame);
 }
 
 void StateInGameMulti::InitializeSystems(ManCar &manCars, ManBoundingWall &manWall, ManBoundingOBB &manOBB, ManBoundingGround &manGround, ManPowerUp &manPowerUp, ManNavMesh &manNavMesh, ManBoxPowerUp &manBoxPowerUp, ManTotem &manTotem) {

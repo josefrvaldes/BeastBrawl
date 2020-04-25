@@ -27,15 +27,15 @@ class Physics {
    public:
     Physics(float);
     ~Physics(){};
-    void update(Car* car, Camera* cam);
-    void Accelerate(Car *, Camera *);
-    void TurnLeft(Car *, Camera *);
-    void TurnRight(Car *, Camera *);
-    void NotAcceleratingOrDecelerating(Car *, Camera *);
-    void Decelerate(Car *, Camera *);
-    void NotTurning(Car *, Camera *);
-    void Skid(Car *, Camera *);
-    void NotSkidding(Car *, Camera *);
+    void update(Car* car);
+    void Accelerate(Car *);
+    void TurnLeft(Car *);
+    void TurnRight(Car *);
+    void NotAcceleratingOrDecelerating(Car *);
+    void Decelerate(Car *);
+    void NotTurning(Car *);
+    void Skid(Car *);
+    void NotSkidding(Car *);
 
     void UpdateHuman(Car* car);
     void AccelerateHuman(CCar &cCar, CNitro &cNitro) const;
@@ -51,7 +51,7 @@ class Physics {
    private:
     void CalculatePosition(CCar *cCar, CTransformable *cTransformable, CSpeed *cSpeed, CExternalForce *cExternalForce, float deltaTime);
     void CalculatePositionReverse(CCar *cCar, CTransformable *cTransformable, CExternalForce *cExternalForce, float deltaTime);
-    void CalculatePositionCamera(CCar *cCar, CTransformable *cTransformableCar, CTransformable *cTransformableCamera, CCamera *cCamera);
+    //void CalculatePositionCamera(CCar *cCar, CTransformable *cTransformableCar, CTransformable *cTransformableCamera, CCamera *cCamera);
     glm::vec3 CalculateVecDirCar(CTransformable *cTransformable) const;
     glm::vec2 ApplyExternalForce(CCar *cCar, CExternalForce *externalForce, const glm::vec2& carForce) const;
 
