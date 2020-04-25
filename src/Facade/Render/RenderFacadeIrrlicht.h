@@ -112,6 +112,7 @@ class RenderFacadeIrrlicht : public RenderFacade {
     void SetShowDebug(bool b) override { showDebug = b;};
     void SetShowDebugAI(bool b) override { showAIDebug = b;};
     void SetIDCarAIToDebug(int id) override {idCarAIToDebug = id;};
+    void SetCamTarget(glm::vec3 pos) override;
 
     bool GetShowDebug() override { return showDebug;};
     bool GetShowDebugAI() override { return showAIDebug;};

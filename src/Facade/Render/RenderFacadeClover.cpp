@@ -1456,3 +1456,10 @@ void RenderFacadeClover::Animation2D::Restart(){
     actualFrame = 0;
     finished    = false;
 }
+
+
+void RenderFacadeClover::SetCamTarget(glm::vec3 pos) {
+    auto cameraEntity = static_cast<CLCamera*>(camera1->GetEntity());
+    pos.z *= -1; // se invierte pq en opengl este eje se invierte
+    cameraEntity->SetCameraTarget(pos);
+}

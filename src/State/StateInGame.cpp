@@ -225,6 +225,12 @@ void StateInGame::CreateMainCar() {
 void StateInGame::UpdateAnimationStart() {
     bool animationFinished = sysAnimStart->Animate();
     renderEngine->UpdateCamera(manCamera.get()->getCamera(), manCars.get());
+    auto cCam = static_cast<CCamera*>(manCamera.get()->getCamera()->GetComponent(CompType::CameraComp).get());
+    // cout << "El target de la cam es " << cCam->target.x << "," << cCam->target.y << "," << cCam->target.z << endl;
+    // auto cTransformableTotem = static_cast<CTransformable*>( manTotems->GetEntities()[0]->GetComponent(CompType::TransformableComp).get());
+    // cout << "La pos del totem es " << cTransformableTotem->position.x << "," << cTransformableTotem->position.y << "," << cTransformableTotem->position.z << endl;
+    renderEngine->SetCamTarget(cCam->target);
+
     if(animationFinished) {
         currentUpdateState = UpdateState::GAME;
         cout << "Cambiamos a UpdateGame" << endl;

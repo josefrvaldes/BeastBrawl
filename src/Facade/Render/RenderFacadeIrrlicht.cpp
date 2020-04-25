@@ -1511,3 +1511,7 @@ void RenderFacadeIrrlicht::CleanScene() {
 void RenderFacadeIrrlicht::FacadeUpdateViewport(){
     //device->UpdateViewport();
 }
+
+void RenderFacadeIrrlicht::SetCamTarget(glm::vec3 pos) {
+    
+};

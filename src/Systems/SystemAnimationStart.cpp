@@ -45,6 +45,8 @@ void SystemAnimationStart::AnimatePanMap() {
         MoveCam(interval, currentDuration);
     } else {
         CalculatePosStartEndTotem();
+        auto cTransformableTotem = static_cast<CTransformable*>(totem->GetComponent(CompType::TransformableComp).get());
+        cam->setTarget(cTransformableTotem->position);
         ResetTimer();
         currentIndexAnimation++;
     }

@@ -108,6 +108,8 @@ class RenderFacade {
     virtual void SetShowDebugAI(bool) = 0;
     virtual void SetIDCarAIToDebug(int) = 0;
 
+    virtual void SetCamTarget(glm::vec3 pos) = 0;
+
     virtual bool GetShowDebug() = 0;
     virtual bool GetShowDebugAI() = 0;
     virtual int  GetIDCarAIToDebug() = 0;
