@@ -4,3 +4,4 @@ CBrainAI::CBrainAI(){
     m_compType = CompType::BrainAIComp;
 }
  
+//
