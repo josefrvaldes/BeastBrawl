@@ -14,6 +14,9 @@ class StateInGameMulti : public StateInGame {
     void InitState() override;
     void Input() override;
     void Update() override;
+    void UpdateAnimationStart() override;
+    void UpdateAnimationEnd() override;
+    void UpdateGame() override;
     void Render() override;
     States GetState() override { return State::States::INGAME_MULTI; };
 

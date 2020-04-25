@@ -48,6 +48,7 @@
 #include <Systems/SystemLoD.h>
 #include <Systems/SystemBoxPowerUp.h>
 #include <Systems/SystemRanking.h>
+#include <Systems/Utils.h>
 #include <behaviourTree/behaviourTree.h>
 #include <behaviourTree/decorator.h>
 #include <behaviourTree/selector.h>
@@ -66,6 +67,12 @@ using namespace chrono;
 
 class CLPhysics;
 
+enum UpdateState {
+    START,
+    GAME,
+    END
+};
+
 class StateInGame : public State {
    public:
     StateInGame();
@@ -74,6 +81,9 @@ class StateInGame : public State {
     void InitState() override;
     virtual void Input() = 0;
     void Update() override;
+    virtual void UpdateAnimationStart();
+    virtual void UpdateAnimationEnd();
+    virtual void UpdateGame();
     void Render() override;
     States GetState() override { return State::States::INGAME_SINGLE; };
     void CreateMainCar();
@@ -134,5 +144,8 @@ class StateInGame : public State {
     //void CAMBIARCosasDeTotem(ManTotem &);
     //void CAMBIARCosasNavMesh(ManCar &, ManNavMesh &);
     //void CAMBIARPositionTotemAboveCar();
+    UpdateState currentUpdateState {UpdateState::START};
+    int64_t timeInitAnimationStart {0};
+
 
 };
