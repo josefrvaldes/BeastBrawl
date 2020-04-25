@@ -44,9 +44,9 @@ void SystemAnimationStart::AnimatePanMap() {
     if (interval < currentDuration) {
         MoveCam(interval, currentDuration);
     } else {
-        CalculatePosStartEndTotem();
         auto cTransformableTotem = static_cast<CTransformable*>(totem->GetComponent(CompType::TransformableComp).get());
         cam->setTarget(cTransformableTotem->position);
+        CalculatePosStartEndTotem();
         ResetTimer();
         currentIndexAnimation++;
     }
@@ -74,6 +74,8 @@ void SystemAnimationStart::AnimateTotem(){
     if (interval < currentDuration) {
         MoveCam(interval, currentDuration);
     } else {
+        auto cTransformableCar = static_cast<CTransformable*>(car->GetComponent(CompType::TransformableComp).get());
+        cam->setTarget(cTransformableCar->position);
         CalculatePosStartEndRandomCar();
         ResetTimer();
         currentIndexAnimation++;

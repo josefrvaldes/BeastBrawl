@@ -149,7 +149,6 @@ class StateInGame : public State {
     //void CAMBIARCosasNavMesh(ManCar &, ManNavMesh &);
     //void CAMBIARPositionTotemAboveCar();
     UpdateState currentUpdateState {UpdateState::START};
-    int64_t timeInitAnimationStart {0};
 
 
 };
