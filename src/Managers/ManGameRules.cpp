@@ -19,6 +19,12 @@ void ManGameRules::CreateGlobalClock( const uint32_t durationTime_) {
     cClock->timeStart = system_clock::now();
 }
 
+void ManGameRules::ResetClock() {
+    auto cClock = static_cast<CClock*>(globalClock->GetComponent(CompType::ClockComp).get());
+    cClock->active = true;
+    cClock->timeStart = system_clock::now();
+}
+
 ManGameRules::~ManGameRules() {
 }
 

@@ -251,6 +251,7 @@ void StateInGame::UpdateAnimationCountdown() {
         timerCountdown = Utils::getMillisSinceEpoch();
         if(currentCountdown == 0) {
             currentUpdateState = UpdateState::GAME;
+            manGameRules->ResetClock();
         }
     }
 }
@@ -314,6 +315,7 @@ void StateInGame::UpdateGame() {
 
     sysRanking->Update(manCars.get());
     manGameRules->Update();
+    
 
     if (Constants::CLIPPING_OCTREE) {
         octreeScene = make_unique<Octree>(glm::vec3(0.0, 500.0, 0.0), 700.0, managersEntities);
