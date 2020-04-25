@@ -9,8 +9,6 @@
 #include <vector>
 #include "../../include/date/date.h"
 #include "../../include/glm/vec3.hpp"
-#include "../Components/CPowerUp.h"
-#include "../Constants.h"
 
 using namespace glm;
 using namespace std;

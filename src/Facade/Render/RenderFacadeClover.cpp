@@ -74,7 +74,6 @@ RenderFacadeClover::RenderFacadeClover() {
     //Inicializamos el arbol de la escena
     smgr = device->GetSceneManager();
     resourceManager = device->GetResourceManager();
-
     FacadeInitIntro();
 
 
@@ -108,7 +107,7 @@ void RenderFacadeClover::FacadeUpdatePowerUpHUD(DataMap* d) {
 void RenderFacadeClover::FacadeInitParticleSystem(DataMap* d){
     auto idEntity = any_cast<uint16_t>((*d)[ID]);
 
-    auto node = smgr->GetNodeByID(idEntity);
+    auto node = device->GetNodeByID(idEntity);
     auto clParticleSystem = static_cast<CLParticleSystem*>(node->GetEntity());
 
     if(!clParticleSystem->GetStarted()){
@@ -151,7 +150,7 @@ const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
     CLNode* father = smgr;
     if(entity->HasComponent(CompType::ParentNodeComp)){
         auto cParentNode = static_cast<CParentNode*>(entity->GetComponent(CompType::ParentNodeComp).get());
-        father = smgr->GetNodeByID(cParentNode->idParentNode);
+        father = device->GetNodeByID(cParentNode->idParentNode);
     } 
 
     auto cTransformable = static_cast<CTransformable*>(entity->GetComponent(CompType::TransformableComp).get());
@@ -177,14 +176,16 @@ const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
 
         case ModelType::Sphere:
 
-            node = father->AddMesh(cId->id);
+            //node = father->AddMesh(cId->id);
+            node = device->AddMesh(father,cId->id);
             static_cast<CLMesh*>(node->GetEntity())->SetMesh(mesh);
             static_cast<CLMesh*>(node->GetEntity())->SetMaterial(mat);
 
             break;
 
         case ModelType::Cube:
-            node = father->AddMesh(cId->id);
+            //node = father->AddMesh(cId->id);
+            node = device->AddMesh(father,cId->id);
             static_cast<CLMesh*>(node->GetEntity())->SetMesh(mesh);
             break;
 
@@ -194,7 +195,9 @@ const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
             std::string animationPath = "media/" + path;
             vector<CLResourceMesh*> clAnimations = resourceManager->GetResourceAnimation(animationPath, cAnimation->GetActiveAnimation().numKeyFrames, false);
             mat = resourceManager->GetResourceMaterial(animationPath);
-            node = father->AddMesh(cId->id); 
+            //node = father->AddMesh(cId->id); 
+            node = device->AddMesh(father,cId->id);
+
             if (cAnimation->GetActiveAnimation().IsInterpolated()) {
                 static_cast<CLMesh*>(node->GetEntity())->SetAnimationInterpolated(clAnimations, cAnimation->GetActiveAnimation().GetDistances());
             } else {
@@ -204,19 +207,25 @@ const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
         }   break;
 
         case ModelType::AnimatedMesh:
-            node = father->AddMesh(cId->id);
+            //node = father->AddMesh(cId->id);
+            node = device->AddMesh(father,cId->id);
+
             static_cast<CLMesh*>(node->GetEntity())->SetMesh(mesh);
             static_cast<CLMesh*>(node->GetEntity())->SetMaterial(mat);
 
             break;
 
         case ModelType::Text:
-            node = father->AddMesh(cId->id);
+            //node = father->AddMesh(cId->id);
+            node = device->AddMesh(father,cId->id);
+
             break;
 
         case ModelType::PointLight:{
             auto cLight = static_cast<CLight*>(entity->GetComponent(CompType::LightComp).get());
-            node = father->AddPointLight(cId->id,cLight->intensity,cLight->ambient,cLight->diffuse,cLight->specular,cLight->constant,cLight->linear,cLight->quadratic);
+            //node = father->AddPointLight(cId->id,cLight->intensity,cLight->ambient,cLight->diffuse,cLight->specular,cLight->constant,cLight->linear,cLight->quadratic);
+            node = device->AddPointLight(father,cId->id,cLight->intensity,cLight->ambient,cLight->diffuse,cLight->specular,cLight->constant,cLight->linear,cLight->quadratic);
+            
             break;
         }
             
@@ -228,14 +237,16 @@ const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
                 //Es circulo o esfera
                 if(cParticleSystem->orientation == glm::vec3(0.0f,0.0f,0.0f)){
                     //Es esfera
-                    node = father->AddParticleSystem(cId->id,cParticleSystem->nParticles,cParticleSystem->velocity,cParticleSystem->textures,cParticleSystem->width,cParticleSystem->height,cParticleSystem->spawnDelay,cParticleSystem->particlesToSpawn,cParticleSystem->lifeSpan,cParticleSystem->radious,cParticleSystem->flags);
+                    //node = father->AddParticleSystem(cId->id,cParticleSystem->nParticles,cParticleSystem->velocity,cParticleSystem->textures,cParticleSystem->width,cParticleSystem->height,cParticleSystem->spawnDelay,cParticleSystem->particlesToSpawn,cParticleSystem->lifeSpan,cParticleSystem->radious,cParticleSystem->flags);
+                    node = device->AddParticleSystem(father,cId->id,cParticleSystem->nParticles,cParticleSystem->velocity,cParticleSystem->textures,cParticleSystem->width,cParticleSystem->height,cParticleSystem->spawnDelay,cParticleSystem->particlesToSpawn,cParticleSystem->lifeSpan,cParticleSystem->radious,cParticleSystem->flags);
                 }else{
                     //Es circulo
-                    node = father->AddParticleSystem(cId->id,cParticleSystem->nParticles,cParticleSystem->velocity,cParticleSystem->textures,cParticleSystem->width,cParticleSystem->height,cParticleSystem->spawnDelay,cParticleSystem->particlesToSpawn,cParticleSystem->lifeSpan,cParticleSystem->radious,cParticleSystem->orientation,cParticleSystem->flags);
+                    //node = father->AddParticleSystem(cId->id,cParticleSystem->nParticles,cParticleSystem->velocity,cParticleSystem->textures,cParticleSystem->width,cParticleSystem->height,cParticleSystem->spawnDelay,cParticleSystem->particlesToSpawn,cParticleSystem->lifeSpan,cParticleSystem->radious,cParticleSystem->orientation,cParticleSystem->flags);
+                    node = device->AddParticleSystem(father,cId->id,cParticleSystem->nParticles,cParticleSystem->velocity,cParticleSystem->textures,cParticleSystem->width,cParticleSystem->height,cParticleSystem->spawnDelay,cParticleSystem->particlesToSpawn,cParticleSystem->lifeSpan,cParticleSystem->radious,cParticleSystem->orientation,cParticleSystem->flags);
                 }
             }else{
                 //Es punto, linea, cuadrado o cubo
-                node = father->AddParticleSystem(cId->id,cParticleSystem->nParticles,cParticleSystem->velocity,cParticleSystem->textures,cParticleSystem->width,cParticleSystem->height,cParticleSystem->spawnDelay,cParticleSystem->particlesToSpawn,cParticleSystem->lifeSpan,cParticleSystem->offset,cParticleSystem->orientation,cParticleSystem->flags);
+                node = device->AddParticleSystem(father,cId->id,cParticleSystem->nParticles,cParticleSystem->velocity,cParticleSystem->textures,cParticleSystem->width,cParticleSystem->height,cParticleSystem->spawnDelay,cParticleSystem->particlesToSpawn,cParticleSystem->lifeSpan,cParticleSystem->offset,cParticleSystem->orientation,cParticleSystem->flags);
             }
             static_cast<CLParticleSystem*>(node->GetEntity())->SetLoop(cParticleSystem->loop);
 
@@ -274,7 +285,7 @@ const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
         //float depth = 10.0;
         // TODO: el CDimensions solo para NavMesh y para la creacion de PowerUps, no en los coches (o ya veremos)
         shared_ptr<CDimensions> cDimensions = make_shared<CDimensions>(dimAABB, dimAABB, dimAABB);
-        cDimensions->boundingBoxMesh = GetBoundingByMesh(cId->id);
+        cDimensions->boundingBoxMesh = GetBoundingByMesh(cId->id); 
         entity->AddComponent(cDimensions);  //Le añadimos el componente CDimensions al Entity que sea
     }
 
@@ -300,48 +311,6 @@ const uint16_t RenderFacadeClover::FacadeAddObjectTotem(Entity* entity) {
 
 
 /**
- * Se llama una vez para crear la camara
- */
-void RenderFacadeClover::FacadeAddCamera(Entity* camera) {
-    auto cId = static_cast<CId*>(camera->GetComponent(CompType::IdComp).get());
-    auto cShader = static_cast<CShader*>(camera->GetComponent(CompType::ShaderComp).get());
-
-    camera1 = smgr->AddCamera(cId->id);
-
-    //leemos y asignamos el shader
-    auto shader = resourceManager->GetResourceShader(cShader->vertexShader,cShader->fragmentShader);
-    camera1->SetShaderProgramID(shader->GetProgramID());
-
-    auto cameraEntity = static_cast<CLCamera*>(camera1->GetEntity());
-
-    auto cTransformable = static_cast<CTransformable*>(camera->GetComponent(CompType::TransformableComp).get());
-    auto cCamera = static_cast<CCamera*>(camera->GetComponent(CompType::CameraComp).get());
-
-    float posX = cCamera->tarX - 40.0 * glm::sin( glm::radians( cTransformable->rotation.x ));
-    float posZ = cCamera->tarZ - 40.0 * glm::cos(glm::radians( cTransformable->rotation.z ));
-    cameraEntity->SetCameraTarget(glm::vec3(cCamera->tarX, cCamera->tarY, cCamera->tarZ));
-    camera1->SetTranslation(glm::vec3(posX, cTransformable->position.y+100, posZ));
-    camera1->SetRotation(glm::vec3(cTransformable->rotation.x,cTransformable->rotation.y,cTransformable->rotation.z));
-    camera1->SetScalation(cTransformable->scale);
-
-
-
-    //float dimAABB = node->CalculateBoundingBox();
-    //Sacamos sus dimensiones
-    float height = 10.0;
-    float width = 10.0;
-    float depth = 10.0;
-    shared_ptr<CDimensions> cDimensions = make_shared<CDimensions>(width, height, depth);
-    //cDimensions->boundingBoxMesh = GetBoundingByMesh(cId->id);
-    camera->AddComponent(cDimensions);  //Le añadimos el componente CDimensions al Entity que sea
-
-
-}
-
-
-
-
-/**
  * Actualiza la camara
  * @param { camara , todos los coches para saber quien tiene el totem a seguir}
  */
@@ -355,7 +324,7 @@ void RenderFacadeClover::UpdateCamera(Entity* cam, ManCar* manCars) {
     //auto cTransformableCar = static_cast<CTransformable*>(manCars->GetCar()->GetComponent(CompType::IdComp).get());
 
     //Cogemos la posicion de nuestro coche
-    glm::vec3 targetPosition = smgr->GetNodeByID(idCar)->GetTranslation();
+    glm::vec3 targetPosition = device->GetNodeByID(idCar)->GetTranslation();
     //glm::vec3 targetPosition = cTransformableCar->position;
 
 
@@ -418,11 +387,11 @@ void RenderFacadeClover::UpdateCamera(Entity* cam, ManCar* manCars) {
         //Nadie tiene el totem
         if(idCarAIWithTotem==-1){
             //Posicion del totem en el suelo
-            targetPosition = smgr->GetNodeByID(idTotem)->GetTranslation();
+            targetPosition = device->GetNodeByID(idTotem)->GetTranslation();
 
         }else{
             //Posicion del coche que lleva el totem
-            targetPosition = smgr->GetNodeByID(idCarAIWithTotem)->GetTranslation();
+            targetPosition = device->GetNodeByID(idCarAIWithTotem)->GetTranslation();
 
         }
 
@@ -450,10 +419,49 @@ void RenderFacadeClover::UpdateCamera(Entity* cam, ManCar* manCars) {
     
 }
 
+/**
+ * Se llama una vez para crear la camara
+ */
+void RenderFacadeClover::FacadeAddCamera(Entity* camera) {
+    auto cId = static_cast<CId*>(camera->GetComponent(CompType::IdComp).get());
+    auto cShader = static_cast<CShader*>(camera->GetComponent(CompType::ShaderComp).get());
+
+    camera1 = device->AddCamera(device->GetRootNode(),cId->id);
+
+    //leemos y asignamos el shader
+    auto shader = resourceManager->GetResourceShader(cShader->vertexShader,cShader->fragmentShader);
+    camera1->SetShaderProgramID(shader->GetProgramID());
+
+    auto cameraEntity = static_cast<CLCamera*>(camera1->GetEntity());
+
+    auto cTransformable = static_cast<CTransformable*>(camera->GetComponent(CompType::TransformableComp).get());
+    auto cCamera = static_cast<CCamera*>(camera->GetComponent(CompType::CameraComp).get());
+
+    float posX = cCamera->tarX - 40.0 * glm::sin( glm::radians( cTransformable->rotation.x ));
+    float posZ = cCamera->tarZ - 40.0 * glm::cos(glm::radians( cTransformable->rotation.z ));
+    cameraEntity->SetCameraTarget(glm::vec3(cCamera->tarX, cCamera->tarY, cCamera->tarZ));
+    camera1->SetTranslation(glm::vec3(posX, cTransformable->position.y+100, posZ));
+    camera1->SetRotation(glm::vec3(cTransformable->rotation.x,cTransformable->rotation.y,cTransformable->rotation.z));
+    camera1->SetScalation(cTransformable->scale);
+
+
+
+    //float dimAABB = node->CalculateBoundingBox();
+    //Sacamos sus dimensiones
+    float height = 10.0;
+    float width = 10.0;
+    float depth = 10.0;
+    shared_ptr<CDimensions> cDimensions = make_shared<CDimensions>(width, height, depth);
+    //cDimensions->boundingBoxMesh = GetBoundingByMesh(cId->id);
+    camera->AddComponent(cDimensions);  //Le añadimos el componente CDimensions al Entity que sea
+
+}
+
+
 void RenderFacadeClover::FacadeUpdateMeshesLoD(vector<shared_ptr<Entity>> entities) {
     for (const auto& entity : entities) {
         CId *cid = static_cast<CId*>(entity->GetComponent(CompType::IdComp).get());
-        auto node = smgr->GetNodeByID(cid->id);
+        auto node = device->GetNodeByID(cid->id);
         if(node) {
             CMesh *cMesh = static_cast<CMesh*>(entity->GetComponent(CompType::MeshComp).get());
             std::string currentMesh = cMesh->activeMesh;
@@ -467,7 +475,7 @@ void RenderFacadeClover::FacadeUpdateMeshesLoD(vector<shared_ptr<Entity>> entiti
 void RenderFacadeClover::FacadeUpdateAnimationsLoD(vector<shared_ptr<Entity>> entities) {
     for (const auto& entity : entities) {
         CId *cid = static_cast<CId*>(entity->GetComponent(CompType::IdComp).get());
-        auto node = smgr->GetNodeByID(cid->id);
+        auto node = device->GetNodeByID(cid->id);
         if(node) {
             auto cAnimation = static_cast<CAnimation*>(entity->GetComponent(CompType::AnimationComp).get());
             std::string path = cAnimation->GetActiveAnimation().path;
@@ -487,7 +495,7 @@ void RenderFacadeClover::FacadeUpdateAnimationsLoD(vector<shared_ptr<Entity>> en
 void RenderFacadeClover::FacadeAnimate(vector<shared_ptr<Entity>> entities) {
     for (const auto& entity : entities) {
         CId *cid = static_cast<CId*>(entity->GetComponent(CompType::IdComp).get());
-        auto node = smgr->GetNodeByID(cid->id);
+        auto node = device->GetNodeByID(cid->id);
         if(node) {
             auto cAnimation = static_cast<CAnimation*>(entity->GetComponent(CompType::AnimationComp).get());
             if (cAnimation->GetActiveAnimation().IsInterpolated()) {
@@ -590,6 +598,15 @@ void RenderFacadeClover::FacadeInitIntro() {
 
 void RenderFacadeClover::FacadeInitMenu() {
 
+    resourceManager->GetResourceTexture("media/menu/main_menu.png", true);
+    resourceManager->GetResourceTexture("media/menu/elements_menu.png", true);
+    resourceManager->GetResourceTexture("media/menu/unjugador_hover.png", true);
+    resourceManager->GetResourceTexture("media/menu/multijugador_hover.png", true);
+    resourceManager->GetResourceTexture("media/menu/controles_hover.png", true);
+    resourceManager->GetResourceTexture("media/menu/creditos_hover.png", true);
+    resourceManager->GetResourceTexture("media/menu/ajustes_hover.png", true);
+    resourceManager->GetResourceTexture("media/menu/salir_hover.png", true);
+    
 }
 
 void RenderFacadeClover::FacadeInitSelectCharacter() {
@@ -710,47 +727,9 @@ void RenderFacadeClover::FacadeDraw() const{
 
 void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* globalClock) {
 
-    //Voy a actualizar aqui las posiciones donde van porque es el unico sitio donde tengo ambos tipos de coches
-    //struct auxiliar para guardarme tiempo y numero de coche
-    struct ranking_t{
-        uint16_t carNumber;
-        float    time;
-        inline bool operator() (const ranking_t& struct1, const ranking_t& struct2)
-        {
-            return (struct1.time > struct2.time);
-        }
-    };
-
-    CTotem* cTotem;
-    vector<ranking_t> ranking;
     std::string cadena;
-
-    //Si existen coches de IA
-    if(!manCars->GetEntities().empty()){
-        //Primero vamos a meter al coche principal
-        ranking_t rank{};
-        int i = 0;
-        for(auto& carAux : manCars->GetEntities()){
-            cTotem = static_cast<CTotem*>(carAux->GetComponent(CompType::TotemComp).get());
-            rank.carNumber = i++;
-            rank.time = cTotem->accumulatedTime;
-            ranking.push_back(rank);
-        }
-
-        std::sort (ranking.begin(), ranking.end(), ranking_t());
-
-    }
-
-    //Ya tenemos ordenados las posiciones, ahora vamos a actualizar sus valores en el CTotem
-    int j = 1;
-    for(auto aux : ranking){
-        uint16_t numCar = aux.carNumber;
-        cTotem = static_cast<CTotem*>(manCars->GetEntities()[numCar]->GetComponent(CompType::TotemComp).get());
-        if(cTotem) {
-            cTotem->positionRanking = j++;
-        }
-
-    }
+    CTotem* cTotem;
+    CCar* cCar;
 
     //CURRENT POWERUP
     device->DrawImage2D(25.0f, 25.0f, 150.0f, 150.0f, 0.1f ,powerUps[currentPowerUp], true);
@@ -780,10 +759,20 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
     //MARCADOR DE TIEMPO
     for(const auto& cars : manCars->GetEntities()) {
         cTotem = static_cast<CTotem*>(cars->GetComponent(CompType::TotemComp).get());
-        if (cTotem && cTotem->active) {
+        cCar = static_cast<CCar*>(cars->GetComponent(CompType::CarComp).get());
+        if (cTotem && cCar && cTotem->active) {
             cadena = "media/marcador.png";
             device->DrawImage2D(550.0f, 50.0f ,225.0f, 90.0f, 0.2f, cadena, true);
-            cadena = "media/gorilaHUD.png";
+
+            switch (cCar->character) {
+                case mainCharacter::PENGUIN:    cadena = "media/hudPenguin.png";    break;
+                case mainCharacter::TIGER:      cadena = "media/hudTiger.png";      break;
+                case mainCharacter::SHARK:      cadena = "media/hudShark.png";      break;
+                case mainCharacter::GORILLA:    cadena = "media/hudGorilla.png";    break;
+                case mainCharacter::DRAGON:     cadena = "media/hudDragon.png";     break;
+                case mainCharacter::OCTOPUS:    cadena = "media/hudOctopus.png";    break;
+                default:                                                    break;
+            }
             device->DrawImage2D(585.0f,70.0f, 50.0f, 50.0f, 0.05f, cadena, true);
 
             int time = cTotem->accumulatedTime / 100;
@@ -830,39 +819,34 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
 }
 
 void RenderFacadeClover::FacadeDrawIntro() {
-    std::string file = "media/intro.png";
-    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
+    if(!introAnimation){
+        introAnimation = make_unique<Animation2D>("media/introAnimation/Beast Brawl",356,24);
+        introAnimation->Start();
+    }
+    resourceManager->DeleteResourceTexture(introAnimation->GetCurrentPath() + ".jpg");
+    introAnimation->Update();
+    // std::string file = "media/intro.png";
+    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, introAnimation->GetCurrentPath()+".jpg", true);
 }
 
 void RenderFacadeClover::FacadeDrawMenu() {
 
-    std::string file = "media/main_menu.png";
-    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
+    std::string file = "media/menu/main_menu.png";
+    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.9f, file, true);
 
-    std::string text;
-    //glm::vec3 color = glm::vec3(0.0f, 255.0f, 0.0f);
-    glm::vec3 color[6] = {
-            glm::vec3(0.0f, 0.0f, 255.0f),
-            glm::vec3(0.0f, 0.0f, 255.0f),
-            glm::vec3(0.0f, 0.0f, 255.0f),
-            glm::vec3(0.0f, 0.0f, 255.0f),
-            glm::vec3(0.0f, 0.0f, 255.0f),
-            glm::vec3(0.0f, 0.0f, 255.0f)
+    file = "media/menu/elements_menu.png";
+    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.8f, file, true);
+
+    std::string files[6] = {
+        "media/menu/unjugador_hover.png",
+        "media/menu/multijugador_hover.png",
+        "media/menu/controles_hover.png",
+        "media/menu/creditos_hover.png",
+        "media/menu/ajustes_hover.png",
+        "media/menu/salir_hover.png"
     };
-    color[inputMenu] = glm::vec3(0.0f, 255.0f, 0.0f);
 
-    text = "Un jugador";
-    device->RenderText2D(text, 500.0f, 425.0f, 0.05f, 1.0f, color[0]);
-    text = "Multijugador";
-    device->RenderText2D(text, 500.0f, 375.0f, 0.05f, 1.0f, color[1]);
-    text = "Controles";
-    device->RenderText2D(text, 500.0f, 325.0f, 0.05f, 1.0f, color[2]);
-    text = "Creditos";
-    device->RenderText2D(text, 500.0f, 275.0f, 0.05f, 1.0f, color[3]);
-    text = "Ajustes";
-    device->RenderText2D(text, 500.0f, 225.0f, 0.05f, 1.0f, color[4]);
-    text = "Salir";
-    device->RenderText2D(text, 500.0f, 175.0f, 0.05f, 1.0f, color[5]);
+    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.7f, files[inputMenu], true);
 
 }
 
@@ -978,8 +962,39 @@ void RenderFacadeClover::FacadeDrawPause() {
 }
 
 void RenderFacadeClover::FacadeDrawEndRace() {
-    std::string file = "media/finish_screen.png";
+    std::string file = "media/endrace.png";
     device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
+
+    glm::vec3 colorranking = glm::vec3(0.0f, 0.0f, 0.0f);
+    auto rank = GameValues::GetInstance()->GetRanking();
+    if (!rank.empty()) {
+        for ( auto it = rank.begin(); it != rank.end(); ++it) {
+            file = std::to_string(it->first);
+            switch (it->second) {
+            case (uint16_t)mainCharacter::PENGUIN:
+                file += ". Pinguino";
+                break;
+            case (uint16_t)mainCharacter::TIGER:
+                file += ". Tigre";
+                break;
+            case (uint16_t)mainCharacter::SHARK:
+                file += + ". Tiburon";
+                break;
+            case (uint16_t)mainCharacter::GORILLA:
+                file += ". Gorila";
+                break;
+            case (uint16_t)mainCharacter::DRAGON:
+                file += ". Dragon";
+                break;
+            case (uint16_t)mainCharacter::OCTOPUS:
+                file += ". Octopus";
+                break;
+            default:
+                break;
+            }
+            device->RenderText2D(file, 200.0, device->GetScreenHeight() - 100.0f - (100.0*it->first), 0.75f, 0.75f, colorranking);
+        }
+    }
 
     if (menuER) {
         file = "media/endraceMenu.png";
@@ -1019,8 +1034,6 @@ void RenderFacadeClover::FacadeDrawSettings() {
     std::string file = "media/settings.png";
     device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
 
-    //¿TRABAJAR A NIVEL DE BIT?
-    //TODO: Faltan cosas. ¿Como hago esto tio?
     glm::vec3 colorBase = glm::vec3(255.0f, 0.0f, 0.0f);
     glm::vec3 colorTitle = glm::vec3(255.0f, 255.0f, 0.0f);
 
@@ -1108,11 +1121,11 @@ void RenderFacadeClover::FacadeDeviceDrop() {
 }
 
 void RenderFacadeClover::FacadeAddSkybox(string right,string left,string top,string bottom,string front,string back){
-    smgr->AddSkybox(right, left, top, bottom, front, back);
+    device->AddSkybox(right, left, top, bottom, front, back);
 }
 
 void RenderFacadeClover::FacadeAddShadowMapping(unsigned int lightId){
-    smgr->AddShadowMapping(lightId);
+    device->AddShadowMapping(lightId);
 }
 
 
@@ -1346,17 +1359,17 @@ void RenderFacadeClover::Draw3DLine(vec3& pos1, vec3& pos2) const {
 }
 
 void RenderFacadeClover::Draw3DLine(vec3& pos1, vec3& pos2, uint16_t r, uint16_t g, uint16_t b) const {
-    smgr->Draw3DLine(pos1.x,pos1.y,-pos1.z, pos2.x,pos2.y,-pos2.z, CLE::CLColor(r,g,b,255.0));
+    device->Draw3DLine(pos1.x,pos1.y,-pos1.z, pos2.x,pos2.y,-pos2.z, CLE::CLColor(r,g,b,255.0));
 }
 
 void RenderFacadeClover::DeleteEntity(Entity* entity) {
     auto cId = static_cast<CId*>(entity->GetComponent(CompType::IdComp).get());
-    smgr->DeleteNode(cId->id);
+    device->DeleteNode(cId->id);
 }
 
 void RenderFacadeClover::FacadeSetVisibleEntity(Entity* entity, bool visible){
     auto cId = static_cast<CId*>(entity->GetComponent(CompType::IdComp).get());
-    auto node = smgr->GetNodeByID(cId->id);
+    auto node = device->GetNodeByID(cId->id);
     node->SetVisible(visible);
 }
 
@@ -1388,4 +1401,58 @@ void RenderFacadeClover::CleanScene() {
 
 void RenderFacadeClover::FacadeUpdateViewport(){
     device->UpdateViewport();
+}
+
+
+////////////////////////////////////////////////////////////////////////////
+////////////////////////////  CLASE ANIMATION2D  ///////////////////////////
+////////////////////////////////////////////////////////////////////////////
+
+RenderFacadeClover::Animation2D::Animation2D(const std::string _path, uint16_t _numFrames, uint16_t _fps){
+    path = _path;
+    numFrames = _numFrames;
+    fps = _fps;
+    timeBetweenFrames = 1.0/(float)fps;
+}
+
+void RenderFacadeClover::Animation2D::Update(){
+    if(finished) return;
+    float time = duration_cast<milliseconds>(system_clock::now() - timeStart).count();
+    string newPath = path;
+
+    //Cambiamos de frame
+    if(time >= timeBetweenFrames){
+        if(actualFrame >= numFrames){
+            finished = true;
+            return;
+        }else{ 
+            int numFramesDigits = to_string(numFrames-1).length();
+            int actualFrameDigits = to_string(actualFrame).length();
+
+            int numOfZeros = numFramesDigits - actualFrameDigits;
+            for(int i = 0; i<numOfZeros; ++i){
+                newPath.append("0");
+            }
+            newPath.append(to_string(actualFrame));
+
+            
+        }
+
+        timeStart = system_clock::now();
+        actualFrame++;
+
+    }
+
+    currentPath = newPath;
+}
+
+void RenderFacadeClover::Animation2D::Start(){
+    timeStart = system_clock::now();
+    started = true;
+}
+
+void RenderFacadeClover::Animation2D::Restart(){
+    currentPath = path;
+    actualFrame = 0;
+    finished    = false;
 }

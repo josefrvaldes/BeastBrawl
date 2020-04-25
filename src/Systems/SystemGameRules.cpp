@@ -25,6 +25,7 @@ void SystemGameRules::UpdateGameRules(Entity& globalClock_) const{
     if(cClock->accumulatedTime/1000.0 > cClock->DURATION_TIME/1000.0){
         cout << "Se acabo el tiempo, nadie gana!!! \n";
         //Game::GetInstance()->SetState(State::ENDRACE);
+        
         EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_ENDRACE});
 
     }
@@ -73,5 +74,33 @@ void SystemGameRules::UpdateRulesCarPowerUps(Entity& car_, Entity& totem_) const
     auto cShield = static_cast<CShield *>(car_.GetComponent(CompType::ShieldComp).get());
     if(cShield->activePowerUp==true && duration_cast<milliseconds>(system_clock::now() - cShield->timeStart).count() > cShield->durationTime){  // comprueba el tiempo desde que se lanzo
         cShield->deactivePowerUp();
+    }
+}
+
+
+void SystemGameRules::RestartAllTimers(vector<shared_ptr<Entity>> entities, Entity &globalClock_) {
+    cout << "Estamos reseteando los timers" << endl;
+    auto cClock = static_cast<CClock*>(globalClock_.GetComponent(CompType::ClockComp).get());
+    if(cClock->active) 
+        cClock->timeStart = system_clock::now();
+
+    for(auto e : entities) {
+        auto cTotem = static_cast<CTotem*>(e->GetComponent(CompType::TotemComp).get());
+        if(cTotem->active)
+            cTotem->timeStart = system_clock::now();
+
+        bool hasNitro = e->HasComponent(CompType::NitroComp);
+        if(hasNitro) {
+            auto cNitro = static_cast<CNitro*>(e->GetComponent(CompType::NitroComp).get());
+            if(cNitro->activePowerUp)
+                cNitro->timeStart = system_clock::now();
+        }
+
+        bool hasShield = e->HasComponent(CompType::NitroComp);
+        if(hasShield) {
+            auto cShield = static_cast<CShield*>(e->GetComponent(CompType::ShieldComp).get());
+            if(cShield->activePowerUp)
+                cShield->timeStart = system_clock::now();
+        }
     }
 }

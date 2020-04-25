@@ -2,6 +2,8 @@
 
 #include <iostream>
 #include <memory>
+#include <GameValues.h>
+
 #include "InputFacade.h"
 #include "../Render/RenderFacadeManager.h"
 #include "../Sound/SoundFacadeManager.h"
@@ -21,7 +23,7 @@ class InputFacadeClover : public InputFacade{
 
         void CheckInputSelectCharacter(int&, int) override;
         void CheckInputGameOptions(std::vector<int>&, int[], int&) override;
-        void CheckInputSingle()  override;
+        bool CheckInputSingle()  override;
         void CheckInputLobbyMulti() override;
         vector<Constants::InputTypes> CheckInputMulti()override;
 
@@ -44,6 +46,11 @@ class InputFacadeClover : public InputFacade{
 
         bool IsInputPressed(InputXBox input);
         void SetValueInput(InputXBox input, bool valuePressed);
-        bool IsKeyOrGamepadPress(int key, int button, bool axes, float axe);
+        bool IsKeyOrGamepadPress(int key, int button1, bool axes, float axe, int button2, bool doubleGamepad);
         bool HasDelayPassed();
+
+        bool WeHaveToGoToMenu {false}; // esto sirve para que se oiga el sonidito de pasar desde pausa ingame hasta menú, es una chapuza pero no quiero perder más tiempo en esa chorrada
+        uint64_t timerGoToMenu {0};
+
+        void ChangeGameOptions(int, int);
 };

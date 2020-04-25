@@ -18,7 +18,7 @@ class InputFacade {
     public:
         virtual ~InputFacade() = default;
         virtual vector<Constants::InputTypes> CheckInputMulti()  = 0;
-        virtual void CheckInputSingle()  = 0;
+        virtual bool CheckInputSingle()  = 0;
         virtual void CheckInputMenu(int&, int)    = 0;
         virtual void CheckInputSelectCharacter(int&, int) = 0;
         virtual void CheckInputGameOptions(std::vector<int>&, int[], int&) = 0;

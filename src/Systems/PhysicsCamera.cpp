@@ -165,7 +165,7 @@ void PhysicsCamera::NotAcceleratingOrDecelerating(Car *, Camera *){
 }
 
 
-//Entra cuando se presiona la A
+//Entra cuando se presionaS la A
 void PhysicsCamera::TurnLeft(Car *car, Camera *cam) {
     //Componentes de la camara
     auto cCamera = static_cast<CCamera*>(cam->GetComponent(CompType::CameraComp).get());

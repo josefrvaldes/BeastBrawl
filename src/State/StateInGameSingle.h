@@ -41,4 +41,7 @@ class StateInGameSingle : public StateInGame {
     unique_ptr<SystemBtLoDMove> systemBtLoDMove;
     unique_ptr<SystemPathPlanning> systemPathPlanning;
 
+
+    bool goingToPause {false};
+    bool comingBackFromPause {false};
 };

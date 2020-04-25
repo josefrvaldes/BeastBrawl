@@ -12,7 +12,12 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <chrono>
+#include <map>
 #include <unordered_map>
+
+using namespace std::chrono;
+
 
 
 using namespace CLE;
@@ -94,8 +99,8 @@ class RenderFacadeClover : public RenderFacade {
       void FacadeUpdateViewport() override;
 
       void FacadeInitParticleSystem(DataMap* d) override;
-      bool FacadeOctreeInCamera(float size, const glm::vec3& pos) override {return smgr->OctreeIncamera(size, pos);};
-      void FacadeSetOctreeVisibleById(unsigned int id, bool v) override {smgr->SetOctreeVisibleById(id, v);};
+      bool FacadeOctreeInCamera(float size, const glm::vec3& pos) override {return device->OctreeIncamera(size, pos);};
+      void FacadeSetOctreeVisibleById(unsigned int id, bool v) override {device->SetOctreeVisibleById(id, v);};
 
       //DEBUG
       void Draw3DLine(vec3& pos1, vec3& pos2, uint16_t r, uint16_t g, uint16_t b) const override;
@@ -123,7 +128,7 @@ class RenderFacadeClover : public RenderFacade {
       void ResetInputCharacter() override;
 
       //Metodos exclusivos de RenderClover
-      float GetBoundingByMesh(uint16_t id) {return smgr->GetBoundingSizeById(id);};
+      float GetBoundingByMesh(uint16_t id) {return device->GetBoundingSizeById(id);};
       CLEngine* GetDevice() { return device;};
 
       inline static bool showDebug = false;
@@ -131,9 +136,10 @@ class RenderFacadeClover : public RenderFacade {
 
 
 
-    private:
+   private:
+      class Animation2D;
 
-        std::string powerUps[7];
+      std::string powerUps[7];
 
         //Menu
         int inputMenu { 0 };
@@ -157,8 +163,36 @@ class RenderFacadeClover : public RenderFacade {
         std::vector<int> inputSettings {1,0,0};
         int maxInputSettings[4] {3, 1, 2};
 
-        CLEngine* device {nullptr};
-        CLNode* smgr {nullptr};
-        CLResourceManager* resourceManager {nullptr};
-        CLNode* camera1 {nullptr};
+      CLEngine* device {nullptr};
+      CLNode* smgr {nullptr};
+      CLResourceManager* resourceManager {nullptr};
+      CLNode* camera1 {nullptr};
+
+      //Animaciones
+      unique_ptr<Animation2D> introAnimation {nullptr};
+
+      class Animation2D{
+         public:
+            Animation2D(const std::string _path, uint16_t _numFrames, uint16_t _fps);
+            ~Animation2D(){};
+
+            void Update();
+            void Start();
+            void Restart();
+
+            string GetCurrentPath() const { return currentPath; }
+
+         private:
+            string path;
+            string currentPath;
+            uint16_t numFrames {0};
+            uint16_t fps {60};
+            float timeBetweenFrames {0.16};
+            int actualFrame {0};
+            bool started { false };
+            bool finished { false };
+            time_point<system_clock> timeStart;
+
+
+      };
 };

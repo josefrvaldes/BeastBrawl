@@ -16,6 +16,7 @@
 #include "State/StateSettings.h"
 
 #include <Constants.h>
+#include "GameValues.h"
 
 
 using namespace std;
@@ -156,6 +157,9 @@ void Game::InitGame() {
         PhysicsFacadeManager::GetInstance()->InitializeIrrlicht();
     } 
     
+
+    //Se inicia GameOptions
+    GameValues::GetInstance();
 
     //Inicializa la fachada de FMOD.
     SoundFacadeManager::GetInstance()->InitializeFacadeFmod();

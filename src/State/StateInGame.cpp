@@ -10,6 +10,7 @@
 #include "../Components/CBoundingCilindre.h"
 #include "../Components/CTotem.h"
 #include "../Constants.h"
+#include <GameValues.h>
 
 using namespace std;
 using namespace chrono;
@@ -46,7 +47,8 @@ StateInGame::~StateInGame() {
  *  Y ES OBLIGATORIO llamar a este método desde el constructor de los hijos
  */
 void StateInGame::InitVirtualMethods() {
-    InitializeManagers(120);
+    auto gameTime = GameValues::GetInstance()->GetGameTime();
+    InitializeManagers(gameTime);
     InitializeSystems(*manCars.get(), *manBoundingWall.get(), *manBoundingOBB.get(), *manBoundingGround.get(), *manPowerUps.get(), *manNavMesh.get(), *manBoxPowerUps.get(), *manTotems.get());
     InitializeFacades();
 
@@ -70,26 +72,8 @@ void StateInGame::InitializeFacades() {
     //Pantalla de carga
     renderEngine->FacadeInitResources(); 
 }
-
-/*
-void StateInGame::CAMBIARCosasDeTotem(ManTotem &manTotems) {
-    // --------------------------------------------------------------------------------------------------------------------------------------------
-    totemOnCar = make_shared<Entity>();
-    glm::vec3 postoTemOnCar = glm::vec3(40.0f, -100.0f, 30.0f);
-    glm::vec3 rotTotemOnCar = glm::vec3(0.0f, 90.0f, 0.0f);
-    glm::vec3 scaleTotemOnCar = glm::vec3(0.5f, 0.5f, 0.5f);
-    shared_ptr<CId> cIdTotemOnCar = make_shared<CId>();
-    shared_ptr<CType> cTypeTotemOnCar = make_shared<CType>(ModelType::Cube);
-    shared_ptr<CTransformable> cTransformableTotemOnCar = make_shared<CTransformable>(postoTemOnCar, rotTotemOnCar, scaleTotemOnCar);
-    totemOnCar->AddComponent(cIdTotemOnCar);
-    totemOnCar->AddComponent(cTypeTotemOnCar);
-    totemOnCar->AddComponent(cTransformableTotemOnCar);
-    totemOnCar->AddComponent(make_shared<CTexture>("totem.jpg"));
-    totemOnCar->AddComponent(make_shared<CMesh>("kart_ia.obj"));
-    totemOnCar->AddComponent(make_shared<CShader>("CLEngine/src/Shaders/vertex.glsl","CLEngine/src/Shaders/fragment.glsl"));
-    // ------------------------------------------------------------------------------------------------------------------------------------------------
-}
-*/
+ 
+ 
 void StateInGame::AddElementsToRender() {
     // Añadimos cosas a la fachada de render
     renderEngine->FacadeAddPlates(manNamePlates.get());
@@ -155,11 +139,13 @@ void StateInGame::InitializeSystems(ManCar &manCars, ManBoundingWall &manWall, M
     collisions = make_shared<Collisions>();
     sysBoxPowerUp = make_shared<SystemBoxPowerUp>();
     sysLoD = make_unique<SystemLoD>();
+    sysRanking = make_unique<SystemRanking>();
 }
 
 void StateInGame::InitializeManagers(const uint32_t timeGame) {
     // inicializa el man PU, no hace falta más código para esto
     manCars             = make_shared<ManCar>();
+    StateInGame::CreateMainCar();
     manCamera           = make_unique<ManCamera>(manCars->GetCar().get(), Constants::DELTA_TIME);
     manWayPoint         = make_shared<ManWayPoint>();  //Se crean todos los waypoints y edges
     manPowerUps         = make_shared<ManPowerUp>(manCars);
@@ -216,7 +202,25 @@ void StateInGame::InitState() {
     }
 }
 
+
+void StateInGame::CreateMainCar() {
+    if(manCars) {
+        auto pj = GameValues::GetInstance()->GetCharacter();
+        manCars->CreateMainCar(pj);
+        /*auto cCar = static_cast<CCar*>(manCars->GetCar()->GetComponent(CompType::CarComp).get());
+        if (cCar){
+            cout << "PESO: " << cCar->weight << " - VELMAX: " << cCar->maxSpeed << " - ACELETARION: " << cCar->acceleration << "\n";
+        }*/
+    }
+}
+
+///////////////////////
+
+///////////////////////
+
 void StateInGame::Update() {
+
+
     EventManager &em = EventManager::GetInstance();
     em.Update();
 
@@ -270,14 +274,16 @@ void StateInGame::Update() {
 
     renderEngine->FacadeAnimate(manBoxPowerUps->GetEntities());
 
+    sysRanking->Update(manCars.get());
     manGameRules->Update();
 
-    //if(octreeI == 0){
-    //    octreeI++;
-    //}
-    //octreeScene = make_unique<Octree>(glm::vec3(0.0, 500.0, 0.0), 700.0, managersEntities);
-    //octreeScene->UpdateVisibleObjects(renderEngine);
+    if(Constants::CLIPPING_OCTREE){
+        octreeScene = make_unique<Octree>(glm::vec3(0.0, 500.0, 0.0), 700.0, managersEntities);
+        octreeScene->UpdateVisibleObjects(renderEngine);
+    }
 }
+
+
 
 void StateInGame::Render() {
 
@@ -285,8 +291,9 @@ void StateInGame::Render() {
     // renderEngine->FacadeDraw();  //Para dibujar primitivas debe ir entre el drawAll y el endScene
     renderEngine->FacadeDrawAll();
     
-    //if(octreeI>0)
-    //    octreeScene->Draw(renderEngine);
+    if(Constants::CLIPPING_OCTREE && octreeScene.get())
+        octreeScene->Draw(renderEngine);
+
     renderEngine->FacadeDrawHUD(manCars->GetCar().get(), manCars.get(), manGameRules->GetGlobalClock().get());
     renderEngine->FacadeDrawGraphEdges(manWayPoint.get());
     // renderEngine->FacadeDrawBoundingBox(manCars.get()->GetCar().get(), isColliding);

@@ -24,18 +24,63 @@
 #include "../Components/CGravity.h"
 #include "../Components/CShader.h"
 #include "../Constants.h"
+#include "GameValues.h"
 
 class Position;
 
 using namespace std;
 
-CarHuman::CarHuman() {
+CarHuman::CarHuman(int pj) {
+
+
     typeCar = TypeCar::CarHuman;
+
+
+    mainCharacter _pj;
+    float weight = 50;
+    float maxSpeed = 200.0;
+    float acceleration = 1.5;
+    
+    switch (pj) {
+        case 0: 
+            _pj = mainCharacter::PENGUIN;
+            weight = 30.0;
+            maxSpeed = 220.0;
+            break;
+        case 1: 
+            _pj = mainCharacter::TIGER; 
+            weight = 40.0;
+            acceleration = 1.75;
+            break;
+        case 2: 
+            _pj = mainCharacter::SHARK; 
+            weight = 30.0;
+            maxSpeed = 220.0;
+            acceleration = 2.0;
+            break;
+        case 3: 
+            _pj = mainCharacter::GORILLA; 
+            weight = 70.0;
+            maxSpeed = 220.0;
+            acceleration = 1.25;
+            break;
+        case 4: 
+            _pj = mainCharacter::DRAGON; 
+            acceleration = 2.0;
+            break;
+        case 5: 
+            _pj = mainCharacter::OCTOPUS; 
+            break;
+        default: break;
+    }
+
+
 
     // default values
     glm::vec3 pos = glm::vec3(-20.0f, 15.0f, -300.0f);
     glm::vec3 rot = glm::vec3(0.0f, 90.0f, 0.0f);
     glm::vec3 scale = glm::vec3(6.0f, 6.0f, 6.0f);
+
     string texture = "";
 
     string mesh;
@@ -47,19 +92,17 @@ CarHuman::CarHuman() {
         mesh    =   "kart_physics.obj";
     }
 
-    //string mesh    = "kart_physics.fbx";
-    // string mesh    = "kart.obj";
+    float friction = 1.0, slowDown = 2.5;
 
     string vertexShader = "CLEngine/src/Shaders/cartoonShader.vert";
     string fragmentShader = "CLEngine/src/Shaders/cartoonShader.frag";
-    float maxSpeed = 200.0, acceleration = 1.5, friction = 1.0, slowDown = 2.5;
     
     shared_ptr<CId> cId   = make_shared<CId>();
     shared_ptr<CType> cType = make_shared<CType>(ModelType::AnimatedMesh);
     shared_ptr<CTransformable> cTransformable = make_shared<CTransformable>(pos, rot, scale);
     shared_ptr<CTexture> cTexture = make_shared<CTexture>(texture);
     shared_ptr<CMesh> cMesh = make_shared<CMesh>(mesh);
-    shared_ptr<CCar> cCar = make_shared<CCar>(maxSpeed, acceleration, friction, slowDown);
+    shared_ptr<CCar> cCar = make_shared<CCar>(_pj, weight, maxSpeed, acceleration, friction, slowDown);
     shared_ptr<CSpeed> cSpeed = make_shared<CSpeed>();
     shared_ptr<CPowerUp> cPowerUp = make_shared<CPowerUp>();
     shared_ptr<CShield> cShield = make_shared<CShield>();
@@ -110,9 +153,49 @@ CarHuman::CarHuman() {
     //cout << "Acabamos de llamar al constructor default de car, su transformable es " << cTransformable << endl;
 }
 
-CarHuman::CarHuman(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale,
+// TODO: ¿Este constructor esta deprecated verdad?
+CarHuman::CarHuman(int pj, glm::vec3 pos, glm::vec3 rot, glm::vec3 scale,
          string texture, string mesh,
          float maxSpeed, float acceleration, float carFriction, float carSlowDown,string vertexShader, string fragmentShader) {
+
+    mainCharacter _pj;
+    float weight = 50;
+    //float maxSpeed = 200.0;
+    //float acceleration = 1.5;
+    
+    switch (pj) {
+        case 0: 
+            _pj = mainCharacter::PENGUIN;
+            weight = 30.0;
+            //maxSpeed = 220.0;
+            break;
+        case 1: 
+            _pj = mainCharacter::TIGER; 
+            weight = 40.0;
+            //acceleration = 1.75;
+            break;
+        case 2: 
+            _pj = mainCharacter::SHARK; 
+            weight = 30.0;
+            //maxSpeed = 220.0;
+            //acceleration = 2.0;
+            break;
+        case 3: 
+            _pj = mainCharacter::GORILLA; 
+            weight = 70.0;
+            //maxSpeed = 220.0;
+            //acceleration = 1.25;
+            break;
+        case 4: 
+            _pj = mainCharacter::DRAGON; 
+            //acceleration = 2.0;
+            break;
+        case 5: 
+            _pj = mainCharacter::OCTOPUS; 
+            break;
+        default: break;
+    }
+
     typeCar = TypeCar::CarHuman;
     
     shared_ptr<CId> cId = make_shared<CId>();
@@ -120,7 +203,7 @@ CarHuman::CarHuman(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale,
     shared_ptr<CTransformable> cTransformable = make_shared<CTransformable>(pos, rot, scale);
     shared_ptr<CTexture> cTexture = make_shared<CTexture>(texture);
     shared_ptr<CMesh> cMesh = make_shared<CMesh>(mesh);
-    shared_ptr<CCar> cCar = make_shared<CCar>(maxSpeed, acceleration, carFriction, carSlowDown);
+    shared_ptr<CCar> cCar = make_shared<CCar>(_pj, weight, maxSpeed, acceleration, carFriction, carSlowDown);
     shared_ptr<CPowerUp> cPowerUp = make_shared<CPowerUp>();
     shared_ptr<CShield> cShield = make_shared<CShield>();
     shared_ptr<CNitro> cNitro = make_shared<CNitro>();
@@ -145,8 +228,8 @@ CarHuman::CarHuman(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale,
     //cout << "Acabamos de llamar al constructor default de car, su transformable es " << cTransformable << endl;
 }
 
-CarHuman::CarHuman(glm::vec3 _position)
-    : CarHuman() {
+CarHuman::CarHuman(int pj, glm::vec3 _position)
+    : CarHuman(pj) {
     CTransformable *cTransformable = (CTransformable *)m_components[CompType::TransformableComp].get();
     cTransformable->position.x = _position.x;
     cTransformable->position.y = _position.y;

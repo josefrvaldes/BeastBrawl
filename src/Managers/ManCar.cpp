@@ -47,7 +47,7 @@ typedef std::numeric_limits< double > dbl;
 
 ManCar::ManCar() {
     SubscribeToEvents();
-    CreateMainCar();
+    //CreateMainCar();
 
     // systemPathPlanning = make_unique<SystemPathPlanning>();
     //physicsAI = make_unique<PhysicsAI>();
@@ -95,36 +95,39 @@ void ManCar::UpdateCarAI(CarAI* carAI, ManTotem* m_manTotem) {
     //cout << maxTimeAccumulated << " - ";
     //physicsAI->Update(carAI, graph);
     UpdateGeneralCar(*carAI, *(m_manTotem->GetEntities()[0].get()));
-    
 }
 
 void ManCar::UpdateGeneralCar(Entity& car_, Entity& totem_){
     systemGameRules->UpdateRulesCarPowerUps(car_, totem_);
 }
 
-void ManCar::CreateMainCar() {
-    car = make_shared<CarHuman>(); 
+void ManCar::CreateMainCar(int pj) {
+    car = make_shared<CarHuman>(pj); 
     entities.push_back(car);
 }
 
-void ManCar::CreateHumanCar(glm::vec3 _position) {
-    shared_ptr<CarHuman> p = make_shared<CarHuman>(_position);
+//Cambiar PJ
+void ManCar::CreateHumanCar(int pj, glm::vec3 _position) {
+    shared_ptr<CarHuman> p = make_shared<CarHuman>(pj, _position);
     entities.push_back(p);
 }
 
-void ManCar::CreateCarAI(glm::vec3 _position) {
-    shared_ptr<CarAI> p = make_shared<CarAI>(_position);
+//Cambiar PJ
+void ManCar::CreateCarAI(int pj, glm::vec3 _position) {
+    shared_ptr<CarAI> p = make_shared<CarAI>(pj, _position);
     entities.push_back(p);
 }
 
-void ManCar::CreateCarAI(glm::vec3 _position, CWayPoint* _waypoint) {
-    shared_ptr<CarAI> p = make_shared<CarAI>(_position);
+//Cambiar PJ
+void ManCar::CreateCarAI(int pj, glm::vec3 _position, CWayPoint* _waypoint) {
+    shared_ptr<CarAI> p = make_shared<CarAI>(pj, _position);
     entities.push_back(p);
     p->SetWayPoint(_waypoint);
 }
 
-void ManCar::CreateCarAI() {
-    shared_ptr<CarAI> p = make_shared<CarAI>();
+//Cambiar PJ
+void ManCar::CreateCarAI(int pj) {
+    shared_ptr<CarAI> p = make_shared<CarAI>(pj);
     entities.push_back(p);
 }
 
@@ -779,7 +782,7 @@ void ManCar::CatchPowerUpAI(DataMap* d) {
     else if (indx > maxTelebanana)  // MELONMOLON ->  25% base - 37.5% primero - 35% segundo - 22.5% ultimo/s
         type = typeCPowerUp::MelonMolon;
 
-        type = typeCPowerUp::SuperMegaNitro;
+    //type = typeCPowerUp::SuperMegaNitro;
     // type = typeCPowerUp::SuperMegaNitro;
     auto cPowerUpCar = static_cast<CPowerUp*>(actualCar->GetComponent(CompType::PowerUpComp).get());
     if (cPowerUpCar->typePowerUp == typeCPowerUp::None) {
