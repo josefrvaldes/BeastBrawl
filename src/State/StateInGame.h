@@ -41,6 +41,7 @@
 #include <Managers/ManWayPoint.h>
 #include <Managers/ManLight.h>
 #include <Managers/ManParticleSystem.h>
+#include <Managers/ManCamera.h>
 #include "../Managers/ManGameRules.h"
 #include <Systems/Collisions.h>
 #include <Systems/Physics.h>
@@ -92,7 +93,8 @@ class StateInGame : public State {
 
    protected:
     shared_ptr<GameObject> ground;
-    shared_ptr<Camera> cam;
+    //shared_ptr<Camera> cam;
+    unique_ptr<ManCamera> manCamera;
     shared_ptr<ManPowerUp> manPowerUps;
     shared_ptr<ManBoxPowerUp> manBoxPowerUps;
     shared_ptr<ManNavMesh> manNavMesh;
@@ -114,7 +116,7 @@ class StateInGame : public State {
     PhysicsFacade *physicsEngine = {nullptr};
     SoundFacade *soundEngine = {nullptr};
 
-    shared_ptr<Physics> physics;
+    //shared_ptr<Physics> physics;
     //shared_ptr<float> deltaTime;
     
     shared_ptr<SystemRanking> sysRanking;
@@ -135,7 +137,7 @@ class StateInGame : public State {
     //float CalculateDelta(float);
 
     virtual void InitializeCLPhysics(ManCar&, ManBoundingWall&, ManBoundingOBB&, ManBoundingGround&, ManPowerUp&, ManNavMesh&, ManBoxPowerUp&, ManTotem &);
-    virtual void InitializeManagers(Physics *, Camera *, const uint32_t timeGame);
+    virtual void InitializeManagers(const uint32_t timeGame);
     virtual void InitializeSystems(ManCar&, ManBoundingWall&, ManBoundingOBB&, ManBoundingGround&, ManPowerUp&, ManNavMesh&, ManBoxPowerUp&, ManTotem &);
     virtual void InitializeFacades();
     virtual void AddElementsToRender();

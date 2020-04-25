@@ -109,11 +109,8 @@ void StateInGameSingle::InitializeCLPhysics(ManCar &manCars, ManBoundingWall &ma
     StateInGame::InitializeCLPhysics(manCars, manWall, manOBB, manGround, manPowerUp, manNavMesh, manBoxPowerUp, manTotem);
 }
 
-void StateInGameSingle::InitializeManagers(Physics *physics, Camera *cam, const uint32_t timeGame) {
-    StateInGame::InitializeManagers(physics, cam, timeGame);
-
-    //Cambiar
-    StateInGame::CreateMainCar();
+void StateInGameSingle::InitializeManagers(const uint32_t timeGame) {
+    StateInGame::InitializeManagers(timeGame);
     CAMBIARInicializarCarAIS(*manCars, *manWayPoint);
 }
 

@@ -27,7 +27,7 @@ struct CarHuman;
 struct CarAI;
 struct Data;
 struct Physics;
-struct Camera;
+//struct Camera;
 struct ManTotem;
 struct PhysicsAI;
 struct SystemBtPowerUp;
@@ -39,7 +39,7 @@ struct SystemGameRules;
 class ManCar : public Manager {
    public:
     ManCar();
-    ManCar(Physics *, Camera *);
+    //ManCar();
     ~ManCar();
 
     void CreateMainCar(int pj);
@@ -63,8 +63,8 @@ class ManCar : public Manager {
     
 
    private:
-    Physics *physics;
-    Camera *cam;
+    //Physics *physics;
+    //Camera *cam;
     void AccelerateCar(DataMap* d);
     void SubscribeToEvents() override;
     void TurnLeftCar(DataMap* d);
@@ -101,6 +101,7 @@ class ManCar : public Manager {
     shared_ptr<CarHuman> car;
     //unique_ptr<PhysicsAI> physicsAI;
     unique_ptr<SystemGameRules> systemGameRules;
+    unique_ptr<Physics> physics;
 
     SystemOnline* systemOnline = nullptr; // en caso de que sea Single va a ser un nullptr
 

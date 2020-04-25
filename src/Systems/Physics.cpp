@@ -1,9 +1,7 @@
 #include "Physics.h"
-#include <Components/CCamera.h>
 #include <Components/CCar.h>
 #include <Components/CNitro.h>
 #include <Components/CSpeed.h>
-#include <Entities/Camera.h>
 #include <Entities/Car.h>
 #include "../Entities/CarHuman.h"
 #include "../Components/COnline.h"
@@ -21,12 +19,12 @@
 Physics::Physics(float _deltaTime) : deltaTime(_deltaTime) {
 }
 
-void Physics::update(Car *car, Camera *cam) {
+void Physics::update(Car *car) {
     // actualizar posiciones
     auto cTransformable = static_cast<CTransformable *>(car->GetComponent(CompType::TransformableComp).get());
     auto cCar = static_cast<CCar *>(car->GetComponent(CompType::CarComp).get());
-    auto cCamera = static_cast<CCamera *>(cam->GetComponent(CompType::CameraComp).get());
-    auto cTransformableCam = static_cast<CTransformable *>(cam->GetComponent(CompType::TransformableComp).get());
+    //auto cCamera = static_cast<CCamera *>(cam->GetComponent(CompType::CameraComp).get());
+    //auto cTransformableCam = static_cast<CTransformable *>(cam->GetComponent(CompType::TransformableComp).get());
     auto cSpeed = static_cast<CSpeed *>(car->GetComponent(CompType::SpeedComp).get());
     auto cExternalForce = static_cast<CExternalForce *>(car->GetComponent(CompType::CompExternalForce).get());
 
@@ -34,7 +32,7 @@ void Physics::update(Car *car, Camera *cam) {
         CalculatePosition(cCar, cTransformable, cSpeed, cExternalForce, deltaTime);
     else
         CalculatePositionReverse(cCar, cTransformable, cExternalForce, deltaTime);
-    CalculatePositionCamera(cCar, cTransformable, cTransformableCam, cCamera);
+    //CalculatePositionCamera(cCar, cTransformable, cTransformableCam, cCamera);
 }
 
 //Calcula la posicion del coche (duda con las formulas preguntar a Jose)
@@ -52,7 +50,7 @@ void Physics::CalculatePosition(CCar *cCar, CTransformable *cTransformable, CSpe
 
     cSpeed->speed.x = cos(glm::radians(angleRotation));  // * cCar->speed;
     cSpeed->speed.z = sin(glm::radians(angleRotation));  // * cCar->speed;
-    glm::vec2 carForce(-cSpeed->speed.x*cCar->speed , cSpeed->speed.z*cCar->speed);  // Fijarse en el menos de la X
+    glm::vec2 carForce(-cos(glm::radians(angleRotation))*cCar->speed , sin(glm::radians(angleRotation))*cCar->speed);  // Fijarse en el menos de la X
     glm::vec2 finalForce = ApplyExternalForce(cCar, cExternalForce, carForce);
 
     // Movimiento del coche
@@ -101,15 +99,44 @@ void Physics::CalculatePositionReverse(CCar *cCar, CTransformable *cTransformabl
 
 
 //Calcula la posicion de la camara (duda con las formulas preguntar a Jose)
-void Physics::CalculatePositionCamera(CCar *cCar, CTransformable *cTransformableCar, CTransformable *cTransformableCamera, CCamera *cCamera) {
-    // comento la primera linea porque la pos de la cámara en altura (por ahora) es siempre la misma
-    float rotationFinal = cTransformableCar->rotation.y - cCar->skidRotation - cCamera->rotExtraY;
-    rotationFinal = Utils::GetAdjustedDegrees(rotationFinal);
-
-    cTransformableCamera->position.y = cTransformableCar->position.y + 20;
-    cTransformableCamera->position.x = (cTransformableCar->position.x + 40 * cos(((rotationFinal) * PI) / 180.0));
-    cTransformableCamera->position.z = (cTransformableCar->position.z - 40 * sin(((rotationFinal) * PI) / 180.0));
-}
+//void Physics::CalculatePositionCamera(CCar *cCar, CTransformable *cTransformableCar, CTransformable *cTransformableCamera, CCamera *cCamera) {
+//    // comento la primera linea porque la pos de la cámara en altura (por ahora) es siempre la misma
+//    float rotationFinal = cTransformableCar->rotation.y - cCar->skidRotation - cCamera->rotExtraY;
+//    rotationFinal = Utils::GetAdjustedDegrees(rotationFinal);
+//
+//    ///float angleRotation = cTransformable->rotation.y - cCar->skidRotation;
+//    ///angleRotation = Utils::GetAdjustedDegrees(angleRotation);
+/////
+//    ///cSpeed->speed.x = cos(glm::radians(angleRotation));  // * cCar->speed;
+//    ///cSpeed->speed.z = sin(glm::radians(angleRotation));  // * cCar->speed;
+//
+//
+//    auto carPos_X = (cTransformableCar->position.x + 40 * cos(((rotationFinal) * PI) / 180.0));
+//    if(  cTransformableCamera->position.x  < (carPos_X - 0.10)   ){
+//        // debemos de aplicarle la aceleracion
+//        cTransformableCamera->position.x += 0.10;
+//    }
+//    if(  cTransformableCamera->position.x  > (carPos_X + 0.10)  ){
+//        // debemos de aplicarle la aceleracion
+//        cTransformableCamera->position.x -= 0.10;
+//    }
+//
+//    auto carPos_Z = (cTransformableCar->position.z - 40 * sin(((rotationFinal) * PI) / 180.0));
+//    if(  cTransformableCamera->position.z  < (carPos_Z - 0.10)  ){
+//        // debemos de aplicarle la aceleracion
+//        cTransformableCamera->position.z += 0.10;
+//    }
+//    if(  cTransformableCamera->position.z  > (carPos_Z + 0.10)  ){
+//        // debemos de aplicarle la aceleracion
+//        cTransformableCamera->position.z -= 0.10;
+//    }
+//
+//
+//
+//    cTransformableCamera->position.y = cTransformableCar->position.y + 20;
+//    //cTransformableCamera->position.x = (cTransformableCar->position.x + 40 * cos(((rotationFinal) * PI) / 180.0));
+//    //cTransformableCamera->position.z = (cTransformableCar->position.z - 40 * sin(((rotationFinal) * PI) / 180.0));
+//}
 
 
 // aplicamos al movimiento del coche el desplazamiento en caso de que alguien lo empuje
@@ -131,7 +158,7 @@ glm::vec2 Physics::ApplyExternalForce(CCar *cCar, CExternalForce *externalForce,
 
 
 //Entra cuando se presiona la I
-void Physics::Accelerate(Car *car, Camera *cam) {
+void Physics::Accelerate(Car *car) {
     // versión anterior
     auto cCar = static_cast<CCar *>(car->GetComponent(CompType::CarComp).get());
     //auto cSpeed = static_cast<CSpeed *>(car->GetComponent(CompType::SpeedComp).get());
@@ -153,7 +180,7 @@ void Physics::Accelerate(Car *car, Camera *cam) {
 }
 
 //Entra cuando se presiona la O
-void Physics::Decelerate(Car *car, Camera *cam) {
+void Physics::Decelerate(Car *car) {
     auto cCar = static_cast<CCar *>(car->GetComponent(CompType::CarComp).get());
     auto cNitro = static_cast<CNitro *>(car->GetComponent(CompType::NitroComp).get());
     //Reducimos la velocidad
@@ -171,9 +198,7 @@ void Physics::Decelerate(Car *car, Camera *cam) {
 }
 
 //Entra cuando se presiona la A
-void Physics::TurnLeft(Car *car, Camera *cam) {
-    //Componentes de la camara
-    auto cCamera = static_cast<CCamera*>(cam->GetComponent(CompType::CameraComp).get());
+void Physics::TurnLeft(Car *car) {
     //Componentes del coche
     auto cCar = static_cast<CCar *>(car->GetComponent(CompType::CarComp).get());
 
@@ -182,17 +207,10 @@ void Physics::TurnLeft(Car *car, Camera *cam) {
             //Aumentamos la rotacion hacia la izquierda
             cCar->wheelRotation -= cCar->incrementWheelRotation;
         }
-
-        if (cCamera->rotExtraY > -(cCar->maxWheelRotation + cCamera->rotExtraCamera)) {
-            cCamera->rotExtraY -= cCamera->incrementrotExtraY;
-        }
     } else if (cCar->speed <= -cCar->maxSpeed*0.15) {
         if (cCar->wheelRotation > -cCar->maxWheelRotation) {
             //Aumentamos la rotacion hacia la izquierda
             cCar->wheelRotation -= cCar->incrementWheelRotation;
-        }
-        if (cCamera->rotExtraY > -(cCar->maxWheelRotation + cCamera->rotExtraCamera)) {
-            cCamera->rotExtraY -= cCamera->incrementrotExtraY;
         }
     } else {  // la rueda vuelve a su sitio original al no dejarte rotar
         if (cCar->wheelRotation >= cCar->decrementWheelRotation) {
@@ -202,16 +220,7 @@ void Physics::TurnLeft(Car *car, Camera *cam) {
         } else {
             cCar->wheelRotation = 0;
         }
-
-        if (cCamera->rotExtraY >= cCar->decrementWheelRotation) {
-            cCamera->rotExtraY -= cCamera->decrementrotExtraY;
-        } else if (cCamera->rotExtraY <= -cCar->decrementWheelRotation) {
-            cCamera->rotExtraY += cCamera->decrementrotExtraY;
-        } else {
-            cCamera->rotExtraY = 0;
-        }
     }
-
 
     /*if(cCar->skidState == SkidState::SKID_LEFT){
         auto cTrans = static_cast<CTransformable *>(car->GetComponent(CompType::TransformableComp).get());
@@ -230,10 +239,7 @@ void Physics::TurnLeft(Car *car, Camera *cam) {
 }
 
 //Entra cuando se presiona la D
-void Physics::TurnRight(Car *car, Camera *cam) {
-    //Componentes de la camara
-    auto cCamera = static_cast<CCamera *>(cam->GetComponent(CompType::CameraComp).get());
-
+void Physics::TurnRight(Car *car) {
     //Componentes del coche
     auto cCar = static_cast<CCar *>(car->GetComponent(CompType::CarComp).get());
 
@@ -242,17 +248,10 @@ void Physics::TurnRight(Car *car, Camera *cam) {
             //Aumentamos la rotacion hacia la derecha
             cCar->wheelRotation += cCar->incrementWheelRotation;
         }
-
-        if (cCamera->rotExtraY < (cCar->maxWheelRotation + cCamera->rotExtraCamera)) {
-            cCamera->rotExtraY += cCamera->incrementrotExtraY;
-        }
     } else if (cCar->speed <= -cCar->maxSpeed*0.15) {
         if (cCar->wheelRotation < cCar->maxWheelRotation) {
             //Aumentamos la rotacion hacia la derecha
             cCar->wheelRotation += cCar->incrementWheelRotation;
-        }
-        if (cCamera->rotExtraY < (cCar->maxWheelRotation + cCamera->rotExtraCamera)) {
-            cCamera->rotExtraY += cCamera->incrementrotExtraY;
         }
     } else {  // la rueda vuelve a su sitio original al no dejarte rotar
         if (cCar->wheelRotation >= cCar->decrementWheelRotation) {
@@ -261,14 +260,6 @@ void Physics::TurnRight(Car *car, Camera *cam) {
             cCar->wheelRotation += cCar->decrementWheelRotation;
         } else {
             cCar->wheelRotation = 0;
-        }
-
-        if (cCamera->rotExtraY >= cCar->decrementWheelRotation) {
-            cCamera->rotExtraY -= cCamera->decrementrotExtraY;
-        } else if (cCamera->rotExtraY <= -cCar->decrementWheelRotation) {
-            cCamera->rotExtraY += cCamera->decrementrotExtraY;
-        } else {
-            cCamera->rotExtraY = 0;
         }
     }
 
@@ -279,7 +270,7 @@ void Physics::TurnRight(Car *car, Camera *cam) {
 }
 
 //Aqui entra cuando no se esta presionando ni I ni O
-void Physics::NotAcceleratingOrDecelerating(Car *car, Camera *cam) {
+void Physics::NotAcceleratingOrDecelerating(Car *car) {
     auto cCar = static_cast<CCar *>(car->GetComponent(CompType::CarComp).get());
     auto cNitro = static_cast<CNitro *>(car->GetComponent(CompType::NitroComp).get());
 
@@ -302,14 +293,8 @@ void Physics::NotAcceleratingOrDecelerating(Car *car, Camera *cam) {
 }
 
 
-
-
-
 //Aqui entra cuando no se esta presionando ni A ni D
-void Physics::NotTurning(Car *car, Camera *cam) {
-    //Componentes de la camara
-    auto cCamera = static_cast<CCamera *>(cam->GetComponent(CompType::CameraComp).get());
-
+void Physics::NotTurning(Car *car) {
     //Componentes del coche
     auto cCar = static_cast<CCar *>(car->GetComponent(CompType::CarComp).get());
 
@@ -320,21 +305,11 @@ void Physics::NotTurning(Car *car, Camera *cam) {
     } else {
         cCar->wheelRotation = 0;
     }
-
-    if (cCamera->rotExtraY >= cCar->decrementWheelRotation) {
-        cCamera->rotExtraY -= cCamera->decrementrotExtraY;
-    } else if (cCamera->rotExtraY <= -cCar->decrementWheelRotation) {
-        cCamera->rotExtraY += cCamera->decrementrotExtraY;
-    } else {
-        cCamera->rotExtraY = 0;
-    }
 }
 
 
-
-
 // Metodo para cuando pulsamos el derrape
-void Physics::Skid(Car *car, Camera *){
+void Physics::Skid(Car *car){
     auto cCar = static_cast<CCar *>(car->GetComponent(CompType::CarComp).get());
     auto cTrans = static_cast<CTransformable *>(car->GetComponent(CompType::TransformableComp).get());
 
@@ -378,7 +353,7 @@ void Physics::Skid(Car *car, Camera *){
 }
 
 
-void Physics::NotSkidding(Car *car, Camera *){
+void Physics::NotSkidding(Car *car){
     auto cCar = static_cast<CCar *>(car->GetComponent(CompType::CarComp).get());
     auto cTrans = static_cast<CTransformable *>(car->GetComponent(CompType::TransformableComp).get());
 
