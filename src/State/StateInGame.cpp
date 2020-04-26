@@ -261,12 +261,12 @@ void StateInGame::UpdateAnimationEnd() {
         if(sysAnimEnd->GetWinner() == nullptr) {
             Car *winner = static_cast<Car*>(manCars->GetCurrentWinner());
             sysAnimEnd->SetWinner(winner);
-            auto cCam = static_cast<CCamera *>(manCamera.get()->getCamera()->GetComponent(CompType::CameraComp).get());
-            renderEngine->SetCamTarget(cCam->target);
         }
         // y ya animamos y demás
         sysAnimEnd->Animate();
         renderEngine->UpdateCamera(manCamera.get()->getCamera(), manCars.get());
+        auto cCam = static_cast<CCamera *>(manCamera.get()->getCamera()->GetComponent(CompType::CameraComp).get());
+        renderEngine->SetCamTarget(cCam->target);
     }
 }
 
