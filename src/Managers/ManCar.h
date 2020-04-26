@@ -54,7 +54,7 @@ class ManCar : public Manager {
     bool UpdateCarAI(CarAI* carAI, ManTotem* m_manTotem);
     bool UpdateCarHuman(Entity* CarHuman, ManTotem*);
 
-    
+
     shared_ptr<CarHuman>& GetCar() { return car; };
 
     void CreateCarAI(int pj);
@@ -67,6 +67,7 @@ class ManCar : public Manager {
     void Integrate(float) override;
     Entity* GetDesirableTarget(Entity* actualCar);
     void SetSystemOnline(SystemOnline* systOn){ systemOnline = systOn; };
+    Entity* GetCurrentWinner();
     
 
    private:

@@ -964,3 +964,17 @@ Entity* ManCar::GetDesirableTarget(Entity* actualCar) {
     }
     return closestCarEntity;
 }
+
+Entity* ManCar::GetCurrentWinner() {
+    int64_t max = 0;
+    size_t maxIndex = 0;
+    for(size_t i = 0; i < entities.size(); i++) {
+        auto car = entities[i];
+        auto cTotem = static_cast<CTotem*>(car->GetComponent(CompType::TotemComp).get());
+        if(cTotem->accumulatedTime > max) {
+            max = cTotem->accumulatedTime;
+            maxIndex = i;
+        }
+    }
+    return entities[maxIndex].get();
+}

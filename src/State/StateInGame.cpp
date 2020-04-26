@@ -146,6 +146,7 @@ void StateInGame::InitializeSystems(ManCar &manCars, ManBoundingWall &manWall, M
     Car *car = static_cast<Car *>(manCars.GetEntities()[Utils::getRandomInt(1, manCars.GetEntities().size() - 1)].get());
     Totem *totem = static_cast<Totem *>(manTotems->GetEntities()[0].get());
     sysAnimStart = make_unique<SystemAnimationStart>(manCamera->getCamera(), totem, mainCar, car);
+    sysAnimEnd = make_unique<SystemAnimationEnd>(manCamera->getCamera());
 }
 
 void StateInGame::InitializeManagers(const uint32_t timeGame) {
@@ -260,9 +261,23 @@ void StateInGame::UpdateAnimationEnd() {
     int64_t now = Utils::getMillisSinceEpoch();
     int64_t interval = now - timerEnd;
     // cout << "Estamos en UpdateAnimationEnd, timerEnd[" << timerEnd << "] now[" << now << "] interval[" << interval << "]" << endl;
-    if (interval > 1000) {
+    // si ha terminado la animación, salimos
+    if (interval > 4000) {
         EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_ENDRACE});
         EventManager::GetInstance().Update();
+
+        // si no ha terminado..
+    } else {
+        // si todavía no habíamos asignado un winner, es decir, es el primer frame, buscamos winner y se lo asignamos
+        if(sysAnimEnd->GetWinner() == nullptr) {
+            Car *winner = static_cast<Car*>(manCars->GetCurrentWinner());
+            sysAnimEnd->SetWinner(winner);
+            auto cCam = static_cast<CCamera *>(manCamera.get()->getCamera()->GetComponent(CompType::CameraComp).get());
+            renderEngine->SetCamTarget(cCam->target);
+        }
+        // y ya animamos y demás
+        sysAnimEnd->Animate();
+        renderEngine->UpdateCamera(manCamera.get()->getCamera(), manCars.get());
     }
 }
 

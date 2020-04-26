@@ -48,6 +48,7 @@
 #include <Systems/PhysicsPowerUp.h>
 #include <Systems/SystemLoD.h>
 #include <Systems/SystemAnimationStart.h>
+#include <Systems/SystemAnimationEnd.h>
 #include <Systems/SystemBoxPowerUp.h>
 #include <Systems/SystemRanking.h>
 #include <Systems/Utils.h>
@@ -111,6 +112,7 @@ class StateInGame : public State {
     unique_ptr<ManParticleSystem> manParticleSystem;
     unique_ptr<SystemLoD> sysLoD;
     unique_ptr<SystemAnimationStart> sysAnimStart;
+    unique_ptr<SystemAnimationEnd> sysAnimEnd;
 
     std::vector<shared_ptr<Manager>> managersEntities;
     std::unique_ptr<Octree> octreeScene;
