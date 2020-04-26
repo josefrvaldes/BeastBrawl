@@ -230,16 +230,7 @@ void StateInGame::UpdateAnimationStart() {
 
     // si hemos acabado la animación de inicio...
     if (animationFinished) {
-        // ponemos como próximo state el countdown
-        currentUpdateState = UpdateState::COUNTDOWN;
-        cout << "Cambiamos a UpdateCountdown" << endl;
-        // actualizamos la pos de la cámara para que se ponga detrás del coche principal
-        manCamera->Update();
-        renderEngine->UpdateCamera(manCamera.get()->getCamera(), manCars.get());
-
-        // iniciamos el timer de countdown
-        timerCountdown = Utils::getMillisSinceEpoch();
-        cout << "Current countdown " << unsigned(currentCountdown) << endl;
+        GoToCountdownAnimation();
     }
 }
 
@@ -263,9 +254,7 @@ void StateInGame::UpdateAnimationEnd() {
     // cout << "Estamos en UpdateAnimationEnd, timerEnd[" << timerEnd << "] now[" << now << "] interval[" << interval << "]" << endl;
     // si ha terminado la animación, salimos
     if (interval > 4000) {
-        EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_ENDRACE});
-        EventManager::GetInstance().Update();
-
+        GoToStateEndrace();
         // si no ha terminado..
     } else {
         // si todavía no habíamos asignado un winner, es decir, es el primer frame, buscamos winner y se lo asignamos
@@ -411,4 +400,22 @@ void StateInGame::Render() {
 void StateInGame::GoToEndAnimation() {
     currentUpdateState = UpdateState::END;
     timerEnd = Utils::getMillisSinceEpoch();
+}
+
+void StateInGame::GoToCountdownAnimation() {
+    // ponemos como próximo state el countdown
+    currentUpdateState = UpdateState::COUNTDOWN;
+    cout << "Cambiamos a UpdateCountdown" << endl;
+    // actualizamos la pos de la cámara para que se ponga detrás del coche principal
+    manCamera->Update();
+    renderEngine->UpdateCamera(manCamera.get()->getCamera(), manCars.get());
+
+    // iniciamos el timer de countdown
+    timerCountdown = Utils::getMillisSinceEpoch();
+    cout << "Current countdown " << unsigned(currentCountdown) << endl;
+}
+
+void StateInGame::GoToStateEndrace() {
+    EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_ENDRACE});
+    EventManager::GetInstance().Update();
 }

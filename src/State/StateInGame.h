@@ -148,6 +148,8 @@ class StateInGame : public State {
     virtual void InitializeFacades();
     virtual void AddElementsToRender();
     void GoToEndAnimation();
+    void GoToStateEndrace();
+    void GoToCountdownAnimation();
     //virtual void CAMBIARCosasDeTotemUpdate(){};
 
     //void CAMBIARCosasDeTotem(ManTotem &);

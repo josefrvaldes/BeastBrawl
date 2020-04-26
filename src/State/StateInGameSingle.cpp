@@ -19,8 +19,16 @@ void StateInGameSingle::InitState() {
 }
 
 void StateInGameSingle::Input() {
-    renderEngine->FacadeCheckInputSingle();
-    goingToPause = inputEngine->CheckInputSingle();
+    if (currentUpdateState == UpdateState::GAME) {
+        renderEngine->FacadeCheckInputSingle();
+        goingToPause = inputEngine->CheckInputSingle();   
+    } else if(currentUpdateState == UpdateState::START || currentUpdateState == UpdateState::END) {
+        bool spacePressed = inputEngine->CheckInputAnimationsStartEnd();
+        if(spacePressed && currentUpdateState == UpdateState::START)
+            GoToCountdownAnimation();
+        else if(spacePressed)
+            GoToStateEndrace();
+    }
 }
 
 void StateInGameSingle::UpdateAnimationStart() {

@@ -17,19 +17,9 @@ void SystemAnimationEnd::MoveCam(int64_t interval, int64_t duration) {
     auto cTransforCam = static_cast<CTransformable *>(cam->GetComponent(CompType::TransformableComp).get());
     cTransforCam->position = cTransforCar->position;
     cTransforCam->position.y += 20;
-    vec3 auxPosition(0.f, 0.f, 0.f);
-    auxPosition.x = sin(glm::radians(rotation));
-    auxPosition.z = cos(glm::radians(rotation));
-    // cout << "rot[" << rotation << "] Current auxPosition -> " << auxPosition.x << "," << auxPosition.y << "," << auxPosition.z << endl;
-
-
-    auxPosition *= 30;
-    cTransforCam->position += auxPosition;
+    cTransforCam->position.x += sin(glm::radians(rotation)) * 30;
+    cTransforCam->position.z += cos(glm::radians(rotation)) * 30;
     rotation += ROTATION_SPEED;
-    // rotation = rotation % 360;
-    // cout << "Current auxPosition -> " << auxPosition.x << "," << auxPosition.y << "," << auxPosition.z << endl;
-    // cout << "Current rotation " << rotation << endl;
-    // cout << "Current cam pos -> " << currentPos.x << "," << currentPos.y << "," << currentPos.z << endl;
 }
 
 void SystemAnimationEnd::ResetTimer() {
