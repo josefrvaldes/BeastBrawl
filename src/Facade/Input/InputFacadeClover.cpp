@@ -468,6 +468,18 @@ void InputFacadeClover::CheckInputGameOptions(std::vector<int> &input, int maxIn
 }
 
 
+bool InputFacadeClover::CheckInputAnimationsStartEnd() {
+    GLFWgamepadstate state;
+    glfwGetGamepadState(GLFW_JOYSTICK_1, &state);
+
+    // si están pulsando espacio o A(xbox)
+    if ( glfwGetKey(device->GetWindow(), GLFW_KEY_SPACE) || state.buttons[GLFW_GAMEPAD_BUTTON_A] ) {
+        return true;
+    }
+    return false;
+};
+
+
 
 
 /**

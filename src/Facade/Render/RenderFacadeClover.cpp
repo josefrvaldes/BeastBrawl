@@ -1488,3 +1488,19 @@ void RenderFacadeClover::Animation2D::Restart(){
     actualFrame = 0;
     finished    = false;
 }
+
+
+void RenderFacadeClover::SetCamTarget(glm::vec3 pos) {
+    auto cameraEntity = static_cast<CLCamera*>(camera1->GetEntity());
+    pos.z *= -1; // se invierte pq en opengl este eje se invierte
+    cameraEntity->SetCameraTarget(pos);
+}
+
+
+void RenderFacadeClover::Draw2DImage(float x_, float y_, int width_, int height_, float depth_, string file_, bool vertically_) const {
+    device->DrawImage2D(x_, y_, width_, height_, depth_, file_, vertically_);
+}
+
+std::tuple<int, int> RenderFacadeClover::GetScreenSize() {
+    return std::tuple<int, int>(device->GetScreenWidth(), device->GetScreenHeight());
+}

@@ -61,3 +61,8 @@ void InputFacadeIrrlicht::CheckInputCredits() {
 void InputFacadeIrrlicht::CheckInputSettings(std::vector<int> &inputs, int *maxInputs, int &option) {
 
 }
+
+
+bool InputFacadeIrrlicht::CheckInputAnimationsStartEnd() {
+	
+};

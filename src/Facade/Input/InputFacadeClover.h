@@ -32,6 +32,7 @@ class InputFacadeClover : public InputFacade{
         void CheckInputController() override;
         void CheckInputCredits() override;
         void CheckInputSettings(std::vector<int> &inputs, int maxInputs[], int& option) override;
+        bool CheckInputAnimationsStartEnd() override;
 
         void SetWindowContext(CLEngine* d) {device = d;}
 

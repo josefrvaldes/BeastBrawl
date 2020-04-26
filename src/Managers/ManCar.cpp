@@ -69,36 +69,29 @@ ManCar::~ManCar() {
 //}
 
 // comprueba si has superado el tiempo necesario para ganar
-void ManCar::UpdateCarPlayer(ManTotem &manTotem_) {
+bool ManCar::UpdateCarPlayer(ManTotem &manTotem_) {
     auto totem = manTotem_.GetEntities()[0].get();
     auto carPlayer =  static_cast<Entity*>(this->GetCar().get());
-    UpdateGeneralCar(*carPlayer, *totem);
+    bool gameFinished = UpdateGeneralCar(*carPlayer, *totem);
 
     physics->update(this->GetCar().get());
+    return gameFinished;
 }
-void ManCar::UpdateCarHuman(Entity* CarHuman, ManTotem* m_manTotem) {
-    UpdateGeneralCar(*CarHuman, *(m_manTotem->GetEntities()[0].get()));
+
+bool ManCar::UpdateCarHuman(Entity* CarHuman, ManTotem* m_manTotem) {
+    bool gameFinished = UpdateGeneralCar(*CarHuman, *(m_manTotem->GetEntities()[0].get()));
     physics->UpdateHuman(static_cast<Car *>(CarHuman));
-}
-void ManCar::UpdateCarAI(CarAI* carAI, ManTotem* m_manTotem) {
-    //manNavMesh->UpdateNavMeshEntity(carAI);
-    //systemBtMoveTo->update(carAI);
-    //systemPathPlanning->update(carAI);
-    //systemBtLoDMove->update(carAI);
-    //systemBtPowerUp->update(carAI);
-
-    //auto time0 = system_clock::now();
-    //auto time1 = system_clock::now();
-    //double timeAccumulated = duration_cast<microseconds>(time1 - time0).count();
-    //cout.precision(dbl::max_digits10);
-    //if(timeAccumulated > maxTimeAccumulated) maxTimeAccumulated = timeAccumulated;
-    //cout << maxTimeAccumulated << " - ";
-    //physicsAI->Update(carAI, graph);
-    UpdateGeneralCar(*carAI, *(m_manTotem->GetEntities()[0].get()));
+    return gameFinished;
 }
 
-void ManCar::UpdateGeneralCar(Entity& car_, Entity& totem_){
-    systemGameRules->UpdateRulesCarPowerUps(car_, totem_);
+bool ManCar::UpdateCarAI(CarAI* carAI, ManTotem* m_manTotem) {
+    return UpdateGeneralCar(*carAI, *(m_manTotem->GetEntities()[0].get()));
+}
+
+// todo, creo que este método no se debería llamar así, y probablemente igual no debería ni estar aquí, 
+// podría llamarse a lo mejor a systemGameRules->updateblabla directamente desde el state
+bool ManCar::UpdateGeneralCar(Entity& car_, Entity& totem_){
+    return systemGameRules->UpdateRulesCarPowerUps(car_, totem_);
 }
 
 void ManCar::CreateMainCar(int pj) {
@@ -517,6 +510,7 @@ void ManCar::CollisionCarPowerUp(DataMap* d) {
     // Reducimos la velocidad -- TODO --> no solo reducir la velocidad a 0
     auto cCar = static_cast<CCar*>(car->GetComponent(CompType::CarComp).get());
     cCar->speed = 0.0f;  // To-Do: no funciona en la IA por que la logica difusa no la hace acelerar
+    cCar->hurt = true;
         
     // Sonido choque con powerup
     shared_ptr<DataMap> dataSound = make_shared<DataMap>();
@@ -969,4 +963,18 @@ Entity* ManCar::GetDesirableTarget(Entity* actualCar) {
         }
     }
     return closestCarEntity;
+}
+
+Entity* ManCar::GetCurrentWinner() {
+    int64_t max = 0;
+    size_t maxIndex = 0;
+    for(size_t i = 0; i < entities.size(); i++) {
+        auto car = entities[i];
+        auto cTotem = static_cast<CTotem*>(car->GetComponent(CompType::TotemComp).get());
+        if(cTotem->accumulatedTime > max) {
+            max = cTotem->accumulatedTime;
+            maxIndex = i;
+        }
+    }
+    return entities[maxIndex].get();
 }

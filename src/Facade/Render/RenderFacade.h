@@ -96,6 +96,7 @@ class RenderFacade {
     //DEBUG
     virtual void Draw3DLine(vec3 &pos1, vec3 &pos2, uint16_t r, uint16_t g, uint16_t b) const = 0;
     virtual void Draw3DLine(vec3 &pos1, vec3 &pos2) const = 0;
+    virtual void Draw2DImage(float x_, float y_, int width_, int height_, float depth_, string file_, bool) const = 0;
     virtual void FacadeDrawGraphEdges(ManWayPoint* manWayPoints) const = 0;
     virtual void FacadeDrawBoundingBox(Entity* entity, bool colliding) const = 0;
     virtual void FacadeDrawBoundingPlane(Entity* entity) const = 0;
@@ -108,9 +109,12 @@ class RenderFacade {
     virtual void SetShowDebugAI(bool) = 0;
     virtual void SetIDCarAIToDebug(int) = 0;
 
+    virtual void SetCamTarget(glm::vec3 pos) = 0;
+
     virtual bool GetShowDebug() = 0;
     virtual bool GetShowDebugAI() = 0;
     virtual int  GetIDCarAIToDebug() = 0;
+    virtual std::tuple<int, int> GetScreenSize() = 0;
 
     virtual void ResetInputGameOptions() = 0;
     virtual void ResetInputCharacter() = 0;
