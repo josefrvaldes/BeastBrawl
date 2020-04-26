@@ -41,7 +41,10 @@ enum DataType{
     VEC3_ROT,
     TIME_TOTEM,
     STOLE,
-    NUM
+    NUM,
+    BOOL,
+    SCREEN_WIDTH,
+    SCREEN_HEIGHT
 };
 
 using EM = EventManager;

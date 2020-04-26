@@ -53,4 +53,5 @@ class InputFacadeClover : public InputFacade{
         uint64_t timerGoToMenu {0};
 
         void ChangeGameOptions(int, int);
+        void ChangeSettings(int, int);
 };

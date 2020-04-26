@@ -1044,27 +1044,33 @@ void RenderFacadeClover::FacadeDrawSettings() {
     };
     colorOp1[inputSettings[0]] = glm::vec3(0.0f, 255.0f, 0.0f);
     std::string name = "Sonido General";
-    device->RenderText2D(name, 600.0f, 600.0f, 0.05f, 0.75f, colorTitle);
+    device->RenderText2D(name, 600.0f, 650.0f, 0.05f, 0.5f, colorTitle);
     name = "No";
-    device->RenderText2D(name, 300.0f, 500.0f, 0.05f, 0.75f, colorOp1[0]);
+    device->RenderText2D(name, 300.0f, 600.0f, 0.05f, 0.5f, colorOp1[0]);
     name = "Bajo";
-    device->RenderText2D(name, 500.0f, 500.0f, 0.05f, 0.75f, colorOp1[1]);
+    device->RenderText2D(name, 500.0f, 600.0f, 0.05f, 0.5f, colorOp1[1]);
     name = "Medio";
-    device->RenderText2D(name, 700.0f, 500.0f, 0.05f, 0.75f, colorOp1[2]);
+    device->RenderText2D(name, 700.0f, 600.0f, 0.05f, 0.5f, colorOp1[2]);
     name = "Alto";
-    device->RenderText2D(name, 900.0f, 500.0f, 0.05f, 0.75f, colorOp1[3]);
+    device->RenderText2D(name, 900.0f, 600.0f, 0.05f, 0.5f, colorOp1[3]);
 
-    glm::vec3 colorOp2[2] = {
+    glm::vec3 colorOp2[4] = {
+            glm::vec3(0.0f, 0.0f, 255.0f),
+            glm::vec3(0.0f, 0.0f, 255.0f),
             glm::vec3(0.0f, 0.0f, 255.0f),
             glm::vec3(0.0f, 0.0f, 255.0f)
     };
     colorOp2[inputSettings[1]] = glm::vec3(0.0f, 255.0f, 0.0f);
-    name = "VSYNC";
-    device->RenderText2D(name, 600.0f, 450.0f, 0.05f, 0.75f, colorTitle);
-    name = "Si";
-    device->RenderText2D(name, 500.0f, 350.0f, 0.05f, 0.75f, colorOp2[0]);
+    name = "Musica";
+    device->RenderText2D(name, 600.0f, 550.0f, 0.05f, 0.5f, colorTitle);
     name = "No";
-    device->RenderText2D(name, 600.0f, 350.0f, 0.05f, 0.75f, colorOp2[1]);
+    device->RenderText2D(name, 300.0f, 500.0f, 0.05f, 0.5f, colorOp2[0]);
+    name = "Baja";
+    device->RenderText2D(name, 500.0f, 500.0f, 0.05f, 0.5f, colorOp2[1]);
+    name = "Media";
+    device->RenderText2D(name, 700.0f, 500.0f, 0.05f, 0.5f, colorOp2[2]);
+    name = "Alta";
+    device->RenderText2D(name, 900.0f, 500.0f, 0.05f, 0.5f, colorOp2[3]);
 
     glm::vec3 colorOp3[3] = {
             glm::vec3(0.0f, 0.0f, 255.0f),
@@ -1073,16 +1079,53 @@ void RenderFacadeClover::FacadeDrawSettings() {
     };
     colorOp3[inputSettings[2]] = glm::vec3(0.0f, 255.0f, 0.0f);
     name = "Resolucion";
-    device->RenderText2D(name, 600.0f, 300.0f, 0.05f, 0.75f, colorTitle);
-    name = "yyyyxyyyy";
-    device->RenderText2D(name, 250.0f, 250.0f, 0.05f, 0.75f, colorOp3[0]);
+    device->RenderText2D(name, 600.0f, 450.0f, 0.05f, 0.5f, colorTitle);
+    name = "1024x576";
+    device->RenderText2D(name, 250.0f, 400.0f, 0.05f, 0.5f, colorOp3[0]);
     name = "1280x720";
-    device->RenderText2D(name, 500.0f, 250.0f, 0.05f, 0.75f, colorOp3[1]);
-    name = "zzzzxzzzz";
-    device->RenderText2D(name, 750.0f, 250.0f, 0.05f, 0.75f, colorOp3[2]);
+    device->RenderText2D(name, 500.0f, 400.0f, 0.05f, 0.5f, colorOp3[1]);
+    name = "1920x1080";
+    device->RenderText2D(name, 750.0f, 400.0f, 0.05f, 0.5f, colorOp3[2]);
+
+    glm::vec3 colorOp4[2] = {
+            glm::vec3(0.0f, 0.0f, 255.0f),
+            glm::vec3(0.0f, 0.0f, 255.0f)
+    };
+    colorOp4[inputSettings[3]] = glm::vec3(0.0f, 255.0f, 0.0f);
+    name = "Particulas";
+    device->RenderText2D(name, 600.0f, 350.0f, 0.05f, 0.5f, colorTitle);
+    name = "No";
+    device->RenderText2D(name, 400.0f, 300.0f, 0.05f, 0.5f, colorOp4[0]);
+    name = "Si";
+    device->RenderText2D(name, 700.0f, 300.0f, 0.05f, 0.5f, colorOp4[1]);
+
+    glm::vec3 colorOp5[2] = {
+        glm::vec3(0.0f, 0.0f, 255.0f),
+        glm::vec3(0.0f, 0.0f, 255.0f)
+    };
+    colorOp5[inputSettings[4]] = glm::vec3(0.0f, 255.0f, 0.0f);
+    name = "Vegetacion";
+    device->RenderText2D(name, 600.0f, 250.0f, 0.05f, 0.5f, colorTitle);
+    name = "No";
+    device->RenderText2D(name, 400.0f, 200.0f, 0.05f, 0.5f, colorOp5[0]);
+    name = "Si";
+    device->RenderText2D(name, 700.0f, 200.0f, 0.05f, 0.5f, colorOp5[1]);
+
+    glm::vec3 colorOp6[2] = {
+        glm::vec3(0.0f, 0.0f, 255.0f),
+        glm::vec3(0.0f, 0.0f, 255.0f)
+    };
+    colorOp6[inputSettings[5]] = glm::vec3(0.0f, 255.0f, 0.0f);
+    name = "Sombras";
+    device->RenderText2D(name, 600.0f, 150.0f, 0.05f, 0.5f, colorTitle);
+    name = "No";
+    device->RenderText2D(name, 400.0f, 100.0f, 0.05f, 0.5f, colorOp6[0]);
+    name = "Si";
+    device->RenderText2D(name, 700.0f, 100.0f, 0.05f, 0.5f, colorOp6[1]);
+
 
     name = "---->";
-    float sel[3] = { 500.0f, 325.0f, 250.0f };
+    float sel[6] = { 600.0f, 500.0f, 400.0f, 300.0f, 200.0f, 100.0f };
     device->RenderText2D(name, 100.0f, sel[optionSettings], 0.05f, 1.0f, colorBase);
 
 

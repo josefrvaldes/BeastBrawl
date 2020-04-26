@@ -55,26 +55,31 @@ enum EventType {
     THROW_POWERUP_HUMAN,
     MOVE_TO_POWERUP,
     CHANGE_DESTINATION,
-    PRESS_P,
-    UPDATE_POWERUP_HUD,
-    SET_GLOBAL_VOLUME,
-    HURT,
-    CATCH_TOTEM,
-    NO_SHIELD,
+    PRESS_P,                    // Sonido pito
+    UPDATE_POWERUP_HUD,         // Actualiza el hud de powerup
+    SET_GLOBAL_VOLUME,          // Actualizar volumen global
+    SET_MUSIC_VOLUME,
+    SET_RESOLUTION,
+    ENABLE_PARTICLES,
+    ENABLE_VEGETATION,
+    ENABLE_SHADERS,
+    HURT,                       // Sonido danyo
+    CATCH_TOTEM,                // Sonido coger totem
+    NO_SHIELD,                  // Sonido escudo roto
     CRASH,
     VICTORY,
     DEFEAT,
-    CLOCK,
-    NOT_CLOCK,
-    STOP_SOUND_MM,
-    STOP_SOUND_TB,
-    CRASH_WALL,
-    BREAK_BOX,
+    CLOCK,                      // Poner reloj global a sonar
+    NOT_CLOCK,                  // Parar reloj global
+    STOP_SOUND_MM,              // Parar sonido melon molon
+    STOP_SOUND_TB,              // Parar sonido telebanana
+    CRASH_WALL,                 // Sonido golpe con pared
+    BREAK_BOX,                  // Sonido romper caja
     DRIFT,
     NO_DRIFT,
-    VRANDOM,
-    UPDATE_SOUNDCHARACTER,
-    STATE_INTRO,
+    VRANDOM,                    // Que el personaje hable en la seleccion
+    UPDATE_SOUNDCHARACTER,      // Updatear el personaje que habla
+    STATE_INTRO,                //Cambiar al estado Intro
     STATE_MENU,
     STATE_SELECT_CHARACTER,
     STATE_PAUSE,
