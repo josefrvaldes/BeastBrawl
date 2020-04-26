@@ -8,7 +8,8 @@
 ManGameRules::ManGameRules( const uint32_t durationTime_) {
     // creamos el reloj global
     systemGameRules = make_unique<SystemGameRules>();
-    CreateGlobalClock(durationTime_);
+    // CreateGlobalClock(durationTime_);
+    CreateGlobalClock(5);
 
 }
 void ManGameRules::CreateGlobalClock( const uint32_t durationTime_) {
@@ -28,8 +29,8 @@ void ManGameRules::ResetClock() {
 ManGameRules::~ManGameRules() {
 }
 
-void ManGameRules::Update(){
-    systemGameRules->UpdateGameRules( *(globalClock.get()) );
+bool ManGameRules::Update(){
+    return systemGameRules->UpdateGameRules( *(globalClock.get()) );
 }
 
 void ManGameRules::RestartAllTimers(vector<shared_ptr<Entity>> entities) {

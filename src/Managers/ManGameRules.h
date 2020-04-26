@@ -16,7 +16,11 @@ class ManGameRules{
     void SubscribeToEvents();
     void RestartAllTimers(vector<shared_ptr<Entity>> entities);
     void ResetClock();
-    void Update();
+
+    /**
+     * @return true o false dependiendo si la partida debe terminar o no
+     */
+    bool Update();
     unique_ptr<Entity>& GetGlobalClock() { return globalClock; };
 
    private:

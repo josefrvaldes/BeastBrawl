@@ -224,11 +224,11 @@ void StateInGame::CreateMainCar() {
 void StateInGame::UpdateAnimationStart() {
     bool animationFinished = sysAnimStart->Animate();
     renderEngine->UpdateCamera(manCamera.get()->getCamera(), manCars.get());
-    auto cCam = static_cast<CCamera*>(manCamera.get()->getCamera()->GetComponent(CompType::CameraComp).get());
+    auto cCam = static_cast<CCamera *>(manCamera.get()->getCamera()->GetComponent(CompType::CameraComp).get());
     renderEngine->SetCamTarget(cCam->target);
 
     // si hemos acabado la animación de inicio...
-    if(animationFinished) {
+    if (animationFinished) {
         // ponemos como próximo state el countdown
         currentUpdateState = UpdateState::COUNTDOWN;
         cout << "Cambiamos a UpdateCountdown" << endl;
@@ -245,11 +245,11 @@ void StateInGame::UpdateAnimationStart() {
 void StateInGame::UpdateAnimationCountdown() {
     int64_t now = Utils::getMillisSinceEpoch();
     int64_t interval = now - timerCountdown;
-    if(interval > 1000 && timerCountdown > 0) {
+    if (interval > 1000 && timerCountdown > 0) {
         currentCountdown--;
         cout << "Current countdown " << unsigned(currentCountdown) << endl;
         timerCountdown = Utils::getMillisSinceEpoch();
-        if(currentCountdown == 0) {
+        if (currentCountdown == 0) {
             currentUpdateState = UpdateState::GAME;
             manGameRules->ResetClock();
         }
@@ -257,6 +257,13 @@ void StateInGame::UpdateAnimationCountdown() {
 }
 
 void StateInGame::UpdateAnimationEnd() {
+    int64_t now = Utils::getMillisSinceEpoch();
+    int64_t interval = now - timerEnd;
+    // cout << "Estamos en UpdateAnimationEnd, timerEnd[" << timerEnd << "] now[" << now << "] interval[" << interval << "]" << endl;
+    if (interval > 1000) {
+        EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_ENDRACE});
+        EventManager::GetInstance().Update();
+    }
 }
 
 void StateInGame::UpdateGame() {
@@ -266,7 +273,10 @@ void StateInGame::UpdateGame() {
     manNavMesh->Update(*(manCars.get()));
 
     // ACTUALIZACION DE LOS MANAGERS DE LOS COCHES
-    manCars->UpdateCarPlayer(*(manTotems.get()));
+    bool gameFinished = manCars->UpdateCarPlayer(*(manTotems.get()));
+    if (gameFinished)
+        GoToEndAnimation();
+
     // ACTUALIZACION DE LAS FISICAS DE LOS COCHES
     //physics->update(manCars->GetCar().get());
     manCamera->Update();
@@ -314,8 +324,9 @@ void StateInGame::UpdateGame() {
     renderEngine->FacadeAnimate(manBoxPowerUps->GetEntities());
 
     sysRanking->Update(manCars.get());
-    manGameRules->Update();
-    
+    gameFinished = manGameRules->Update();
+    if (gameFinished)
+        GoToEndAnimation();
 
     if (Constants::CLIPPING_OCTREE) {
         octreeScene = make_unique<Octree>(glm::vec3(0.0, 500.0, 0.0), 700.0, managersEntities);
@@ -351,7 +362,7 @@ void StateInGame::Render() {
 
     renderEngine->FacadeDrawHUD(manCars->GetCar().get(), manCars.get(), manGameRules->GetGlobalClock().get());
     renderEngine->FacadeDrawGraphEdges(manWayPoint.get());
-    if(currentUpdateState == UpdateState::COUNTDOWN) {
+    if (currentUpdateState == UpdateState::COUNTDOWN) {
         // todo: esto de meter el width y el height aquí a piñón y los filenames.. es una kk
         const int fileWIDTH = 300;
         const int fileHEIGHT = 200;
@@ -362,7 +373,6 @@ void StateInGame::Render() {
         int posX = width / 2 - fileWIDTH / 2;
         int posY = 200;
         renderEngine->Draw2DImage(posX, posY, fileWIDTH, fileHEIGHT, 0.7, fileName, true);
-        
     }
     // renderEngine->FacadeDrawBoundingBox(manCars.get()->GetCar().get(), isColliding);
 
@@ -381,4 +391,9 @@ void StateInGame::Render() {
 
     renderEngine->FacadeDrawAIDebug(manCars.get(), manNavMesh.get(), manWayPoint.get());
     renderEngine->FacadeEndScene();
+}
+
+void StateInGame::GoToEndAnimation() {
+    currentUpdateState = UpdateState::END;
+    timerEnd = Utils::getMillisSinceEpoch();
 }

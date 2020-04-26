@@ -145,6 +145,7 @@ class StateInGame : public State {
     virtual void InitializeSystems(ManCar&, ManBoundingWall&, ManBoundingOBB&, ManBoundingGround&, ManPowerUp&, ManNavMesh&, ManBoxPowerUp&, ManTotem &);
     virtual void InitializeFacades();
     virtual void AddElementsToRender();
+    void GoToEndAnimation();
     //virtual void CAMBIARCosasDeTotemUpdate(){};
 
     //void CAMBIARCosasDeTotem(ManTotem &);
@@ -153,5 +154,5 @@ class StateInGame : public State {
     UpdateState currentUpdateState {UpdateState::START};
     int64_t timerCountdown;
     uint8_t currentCountdown{3};
-
+    int64_t timerEnd {0};
 };
