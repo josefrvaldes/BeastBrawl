@@ -17,6 +17,7 @@ public:
     CBrainAI();
     ~CBrainAI(){};
 
+    void CleanVisionRange();
 
 
 
@@ -50,11 +51,12 @@ public:
 
 
     // elementos en el rango de vision
-    struct elementInVision{
-        std::vector<Car> carsVec;
-        std::vector<BoxPowerUp> boxsVec;
-        Totem* totemVec = nullptr;
-    };
+    int fov = 75;
+    float distanceVision = 600;
+    std::vector<Entity*> carInVision;
+    std::vector<Entity*> boxInVision;
+    Entity* totemInVision = nullptr;
+    
 
     // objetivo
     Car* targetCar = nullptr;

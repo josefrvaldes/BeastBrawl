@@ -113,6 +113,7 @@ void StateInGameSingle::createSystemAI(){
 
 
     // iniciamos los sistemas
+    InitVision();
     InitBtMoveTo();
     InitPathPlanning();
     InitBtLoDMove();
@@ -122,6 +123,7 @@ void StateInGameSingle::createSystemAI(){
     uint32_t i = 0;
     for(auto actualAI : manCars->GetEntities()){
         if (static_cast<Car*>(actualAI.get())->GetTypeCar() == TypeCar::CarAI){
+            manAI->addBehavior(static_cast<CarAI*>(actualAI.get()), systemVision.get(),     systemVision->getFrecuency(),     i, systemVision.get()->getMaxProcessTime() );
             manAI->addBehavior(static_cast<CarAI*>(actualAI.get()), systemBtMoveTo.get(),     systemBtMoveTo->getFrecuency(),     i, systemBtMoveTo.get()->getMaxProcessTime() );
             manAI->addBehavior(static_cast<CarAI*>(actualAI.get()), systemPathPlanning.get(), systemPathPlanning->getFrecuency(), i, systemPathPlanning.get()->getMaxProcessTime() );
             manAI->addBehavior(static_cast<CarAI*>(actualAI.get()), systemBtLoDMove.get(),    systemBtLoDMove->getFrecuency(),    i, systemBtLoDMove.get()->getMaxProcessTime() );
@@ -188,6 +190,21 @@ void StateInGameSingle::InitPathPlanning(){
     systemPathPlanning->AddManager(*manBoundingOBB.get());
 
     systemPathPlanning->setMaxProcessTime(0.00025);
+}
+
+void StateInGameSingle::InitVision(){
+    systemVision = make_unique<SystemVision>();
+
+    systemVision->AddManager(*manCars.get());
+    systemVision->AddManager(*manPowerUps.get());
+    systemVision->AddManager(*manBoxPowerUps.get());
+    systemVision->AddManager(*manTotems.get());
+    systemVision->AddManager(*manWayPoint.get());
+    systemVision->AddManager(*manNavMesh.get());
+    systemVision->AddManager(*manBoundingWall.get());
+    systemVision->AddManager(*manBoundingOBB.get());
+
+    systemVision->setMaxProcessTime(0.00025);
 }
 
 

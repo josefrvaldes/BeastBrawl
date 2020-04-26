@@ -24,6 +24,7 @@
 #include "../Components/CGravity.h"
 #include "../Components/CShader.h"
 #include "../Constants.h"
+// #include "../Components/CBrainAI.h"
 #include "GameValues.h"
 
 class Position;
@@ -128,6 +129,7 @@ CarHuman::CarHuman(int pj) {
     shared_ptr<CBoundingChassis> cBoundingChassis = make_shared<CBoundingChassis>(pSphBehind, 7.0, 5.0, pSphFront, 7.0, 5.0);
 
     shared_ptr<CGravity> cGravity = make_shared<CGravity>();
+    // shared_ptr<CBrainAI> cBrainAI = make_shared<CBrainAI>();
 
     AddComponent(cId);
     AddComponent(cType);
@@ -150,6 +152,7 @@ CarHuman::CarHuman(int pj) {
     AddComponent(cBoundingChassis);
     AddComponent(cGravity);
     AddComponent(cShader);
+    // AddComponent(cBrainAI);
     //cout << "Acabamos de llamar al constructor default de car, su transformable es " << cTransformable << endl;
 }
 
