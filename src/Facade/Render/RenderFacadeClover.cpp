@@ -591,8 +591,18 @@ void RenderFacadeClover::FacadeInitResources(){
 }
 
 void RenderFacadeClover::FacadeInitIntro() {
-    std::string name = "media/pauseMenu.png";
-    device->GetResourceManager()->GetResourceTexture(name, true);
+    resourceManager->GetResourceTexture("media/pauseMenu.png", true);
+    resourceManager->GetResourceTexture("media/menu/main_menu.png", true);
+    resourceManager->GetResourceTexture("media/menu/elements_menu.png", true);
+
+    resourceManager->DeleteResourceTexture("media/menu/main_menu.png");
+
+    resourceManager->GetResourceTexture("media/menu/creditos_hover.png", true);
+
+    resourceManager->GetResourceTexture("media/menu/main_menu.png", true);
+
+
+
 }
 
 void RenderFacadeClover::FacadeInitMenu() {
@@ -819,13 +829,14 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
 
 void RenderFacadeClover::FacadeDrawIntro() {
     if(!introAnimation){
-        introAnimation = make_unique<Animation2D>("media/introAnimation/Beast Brawl",356,24);
+        introAnimation = make_unique<Animation2D>("media/introAnimation/Beast Brawl.jpg",356,24);
         introAnimation->Start();
     }
-    resourceManager->DeleteResourceTexture(introAnimation->GetCurrentPath() + ".jpg");
+    
+
+    resourceManager->DeleteResourceTexture(introAnimation->GetCurrentPath());
     introAnimation->Update();
-    // std::string file = "media/intro.png";
-    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, introAnimation->GetCurrentPath()+".jpg", true);
+    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, introAnimation->GetCurrentPath(), true);
 }
 
 void RenderFacadeClover::FacadeDrawMenu() {
@@ -1407,11 +1418,30 @@ void RenderFacadeClover::FacadeUpdateViewport(){
 ////////////////////////////  CLASE ANIMATION2D  ///////////////////////////
 ////////////////////////////////////////////////////////////////////////////
 
-RenderFacadeClover::Animation2D::Animation2D(const std::string _path, uint16_t _numFrames, uint16_t _fps){
+RenderFacadeClover::Animation2D::Animation2D(std::string _path, uint16_t _numFrames, uint16_t _fps){
     path = _path;
     numFrames = _numFrames;
     fps = _fps;
     timeBetweenFrames = 1.0/(float)fps;
+
+    std::string delimiter = ".";
+
+    size_t pos = 0;
+
+    string auxPath = _path;
+    while ((pos = auxPath.find(delimiter)) != std::string::npos) {
+
+        auxPath.erase(0, pos + delimiter.length());
+    }
+    extension = "." + auxPath;
+
+    auxPath = _path;
+    while ((pos = auxPath.find(delimiter)) != std::string::npos) {
+
+        auxPath.erase(pos, pos + delimiter.length());
+    }
+
+    path = auxPath;
 }
 
 void RenderFacadeClover::Animation2D::Update(){
@@ -1421,10 +1451,13 @@ void RenderFacadeClover::Animation2D::Update(){
 
     //Cambiamos de frame
     if(time >= timeBetweenFrames){
+        //Borramos el frame anterior
+        
         if(actualFrame >= numFrames){
             finished = true;
             return;
         }else{ 
+
             int numFramesDigits = to_string(numFrames-1).length();
             int actualFrameDigits = to_string(actualFrame).length();
 

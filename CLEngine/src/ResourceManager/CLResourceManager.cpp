@@ -71,6 +71,8 @@ CLResourceTexture* CLResourceManager::GetResourceTexture(const std::string file,
         }
     }
 
+    
+
     return resource.get();
 }
 
@@ -144,6 +146,7 @@ CLResourceShader* CLResourceManager::GetResourceShader(const std::string vertex,
 
 
 bool CLResourceManager::DeleteResourceTexture(const std::string file){
+
     for (unsigned int i=0; i<textures.size(); ++ i) {
         if (!file.compare(textures[i]->GetName())) {
             textures.erase(textures.begin()+i);
@@ -151,6 +154,7 @@ bool CLResourceManager::DeleteResourceTexture(const std::string file){
         }
     }
 
+    
     return false;
 }
 

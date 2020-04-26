@@ -12,7 +12,7 @@ namespace CLE {
     class CLResourceTexture : public CLResource {
         public:
             CLResourceTexture() {};
-            ~CLResourceTexture() {};
+            ~CLResourceTexture();
 
             void Draw(GLuint shaderID) override;
             bool LoadFile(string, bool) override;
