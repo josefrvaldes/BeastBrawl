@@ -8,7 +8,7 @@
 
 #include <behaviourTree/Blackboard.h>
 
-#include <Components/CMovementType.h>
+#include <Components/CBrainAI.h>
 
 
 
@@ -133,8 +133,8 @@ struct SBPursue_LoDMove : public behaviourTree {
         }
         //std::cout << "Aplico SB pursuePU" << std::endl;
 
-        auto cMovementType = static_cast<CMovementType*>(blackboard->actualCar->GetComponent(CompType::MovementComp).get());
-        cMovementType->movementType = "Steering Behaviour prediccion";
+        auto cBrainAI = static_cast<CBrainAI*>(blackboard->actualCar->GetComponent(CompType::BrainAIComp).get());
+        cBrainAI->movementType = "Steering Behaviour prediccion";
         return true;
     } 
 };
@@ -145,8 +145,8 @@ struct SBArrive_LoDMove : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
         blackboard->steeringBehaviours->UpdateArrive(blackboard->actualCar);
         //std::cout << "Aplico SB Arrive" << std::endl;
-        auto cMovementType = static_cast<CMovementType*>(blackboard->actualCar->GetComponent(CompType::MovementComp).get());
-        cMovementType->movementType = "Steering Behaviour moverse";
+        auto cBrainAI = static_cast<CBrainAI*>(blackboard->actualCar->GetComponent(CompType::BrainAIComp).get());
+        cBrainAI->movementType = "Steering Behaviour moverse";
         return true;
     }
 };
@@ -156,8 +156,8 @@ struct SBArrive_LoDMove : public behaviourTree {
 struct ApplyFuzzyLogic_LoDMove : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
         blackboard->systemFuzzyLogicAI->Update(blackboard->actualCar, Constants::DELTA_TIME);
-        auto cMovementType = static_cast<CMovementType*>(blackboard->actualCar->GetComponent(CompType::MovementComp).get());
-        cMovementType->movementType = "Logica difusa";
+        auto cBrainAI = static_cast<CBrainAI*>(blackboard->actualCar->GetComponent(CompType::BrainAIComp).get());
+        cBrainAI->movementType = "Logica difusa";
         //std::cout << "Aplico FL" << std::endl;    
         return true;
     } 
@@ -172,13 +172,13 @@ struct CollisionAvoidance_LoDMove : public behaviourTree {
             bool result = blackboard->steeringBehaviours->UpdateObstacleAvoidance(blackboard->actualCar, blackboard->manCars);
 
             if(result){
-                auto cMovementType = static_cast<CMovementType*>(blackboard->actualCar->GetComponent(CompType::MovementComp).get());
-                cMovementType->movementType = "Evasion de coche";
+                auto cBrainAI = static_cast<CBrainAI*>(blackboard->actualCar->GetComponent(CompType::BrainAIComp).get());
+                cBrainAI->movementType = "Evasion de coche";
             }
             return false;
         }else{
-            auto cMovementType = static_cast<CMovementType*>(blackboard->actualCar->GetComponent(CompType::MovementComp).get());
-            cMovementType->movementType = "Evasion de muro";
+            auto cBrainAI = static_cast<CBrainAI*>(blackboard->actualCar->GetComponent(CompType::BrainAIComp).get());
+            cBrainAI->movementType = "Evasion de muro";
             return true;
         }
     } 

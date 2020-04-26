@@ -16,14 +16,13 @@
 #include <Components/CMesh.h>
 #include <Components/CParticleSystem.h>
 #include <Components/CNamePlate.h>
-#include <Components/CPath.h>
 #include <Components/CTexture.h>
 #include <Components/CTotem.h>
 #include <Components/CType.h>
 #include <Components/CShader.h>
 #include <Components/CWayPointEdges.h>
 #include <Components/CLight.h>
-#include <Components/CMovementType.h>
+#include <Components/CBrainAI.h>
 #include <Components/CNavMesh.h>
 #include <Components/CCurrentNavMesh.h>
 #include <Components/CCar.h>
@@ -592,8 +591,18 @@ void RenderFacadeClover::FacadeInitResources(){
 }
 
 void RenderFacadeClover::FacadeInitIntro() {
-    std::string name = "media/pauseMenu.png";
-    device->GetResourceManager()->GetResourceTexture(name, true);
+    resourceManager->GetResourceTexture("media/pauseMenu.png", true);
+    resourceManager->GetResourceTexture("media/menu/main_menu.png", true);
+    resourceManager->GetResourceTexture("media/menu/elements_menu.png", true);
+
+    resourceManager->DeleteResourceTexture("media/menu/main_menu.png");
+
+    resourceManager->GetResourceTexture("media/menu/creditos_hover.png", true);
+
+    resourceManager->GetResourceTexture("media/menu/main_menu.png", true);
+
+
+
 }
 
 void RenderFacadeClover::FacadeInitMenu() {
@@ -820,13 +829,14 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
 
 void RenderFacadeClover::FacadeDrawIntro() {
     if(!introAnimation){
-        introAnimation = make_unique<Animation2D>("media/introAnimation/Beast Brawl",356,24);
+        introAnimation = make_unique<Animation2D>("media/introAnimation/Beast Brawl.jpg",356,24);
         introAnimation->Start();
     }
-    resourceManager->DeleteResourceTexture(introAnimation->GetCurrentPath() + ".jpg");
+    
+
+    resourceManager->DeleteResourceTexture(introAnimation->GetCurrentPath());
     introAnimation->Update();
-    // std::string file = "media/intro.png";
-    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, introAnimation->GetCurrentPath()+".jpg", true);
+    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, introAnimation->GetCurrentPath(), true);
 }
 
 void RenderFacadeClover::FacadeDrawMenu() {
@@ -1266,7 +1276,7 @@ void RenderFacadeClover::FacadeDrawAIDebug(ManCar* manCars, ManNavMesh* manNavMe
             auto cTransformableCar = static_cast<CTransformable*>(carAI->GetComponent(CompType::TransformableComp).get());
             // auto cDimensions = static_cast<CDimensions*>(carAI->GetComponent(CompType::DimensionsComp).get());
             // auto cCurrentNavMesh = static_cast<CCurrentNavMesh*>(carAI->GetComponent(CompType::CurrentNavMeshComp).get());
-            //auto cTargetNavMesh = static_cast<CTargetNavMesh*>(carAI->GetComponent(CompType::TargetNavMeshComp).get());
+            //auto CBrainAI = static_cast<CBrainAI*>(carAI->GetComponent(CompType::BrainAIComp).get());
 
             Draw3DLine(cPosDestination->position,cTransformableCar->position);
             //Ahora vamos a dibujar su CPath
@@ -1295,8 +1305,8 @@ void RenderFacadeClover::FacadeDrawAIDebug(ManCar* manCars, ManNavMesh* manNavMe
                                                         core::stringw(cPosDestination->position.y) +core::stringw(" | ") + 
                                                         core::stringw(cPosDestination->position.z) +core::stringw(" \n ");
 
-            auto cPath = static_cast<CPath*>(carAI->GetComponent(CompType::PathComp).get());
-            auto cPathAux = stack<int>(cPath->stackPath);
+            auto cBrainAI = static_cast<CBrainAI*>(carAI->GetComponent(CompType::BrainAIComp).get());
+            auto cPathAux = stack<int>(cBrainAI->stackPath);
 
             core::stringw pathText = posDestinationText + core::stringw("Path: ");
             while(!cPathAux.empty()){
@@ -1307,11 +1317,11 @@ void RenderFacadeClover::FacadeDrawAIDebug(ManCar* manCars, ManNavMesh* manNavMe
             pathText += core::stringw("\n");
 
             core::stringw navMeshText = pathText + core::stringw("Current NavMesh: ") + core::stringw(cCurrentNavMesh->currentNavMesh) + core::stringw("\n")+core::stringw("\n");
-                                                //core::stringw("Target NavMesh: ")  + core::stringw(cTargetNavMesh->targetNavMesh) + 
+                                                //core::stringw("Target NavMesh: ")  + core::stringw(CBrainAI->targetNavMesh) + 
             
-            auto cMovementType = static_cast<CMovementType*>(carAI->GetComponent(CompType::MovementComp).get());
+            auto cBrainAI = static_cast<CBrainAI*>(carAI->GetComponent(CompType::BrainAIComp).get());
 
-            core::stringw movementTypeText = navMeshText + core::stringw("Tipo de IA: ") + core::stringw(cMovementType->movementType.c_str()) + core::stringw("\n");
+            core::stringw movementTypeText = navMeshText + core::stringw("Tipo de IA: ") + core::stringw(cBrainAI->movementType.c_str()) + core::stringw("\n");
 
             font->draw(movementTypeText,
                 core::rect<s32>(900, 55, 500, 500),
@@ -1324,9 +1334,9 @@ void RenderFacadeClover::FacadeDrawAIDebug(ManCar* manCars, ManNavMesh* manNavMe
 }
 
 void RenderFacadeClover::FacadeDrawAIDebugPath(Entity* carAI, ManWayPoint* manWayPoint) const{
-    auto cPath = static_cast<CPath*>(carAI->GetComponent(CompType::PathComp).get());
+    auto cBrainAI = static_cast<CBrainAI*>(carAI->GetComponent(CompType::BrainAIComp).get());
 
-    auto cPathAux = stack<int>(cPath->stackPath);
+    auto cPathAux = stack<int>(cBrainAI->stackPath);
 
     auto lastWaypoint = -1;
     if(!cPathAux.empty()){
@@ -1408,11 +1418,30 @@ void RenderFacadeClover::FacadeUpdateViewport(){
 ////////////////////////////  CLASE ANIMATION2D  ///////////////////////////
 ////////////////////////////////////////////////////////////////////////////
 
-RenderFacadeClover::Animation2D::Animation2D(const std::string _path, uint16_t _numFrames, uint16_t _fps){
+RenderFacadeClover::Animation2D::Animation2D(std::string _path, uint16_t _numFrames, uint16_t _fps){
     path = _path;
     numFrames = _numFrames;
     fps = _fps;
     timeBetweenFrames = 1.0/(float)fps;
+
+    std::string delimiter = ".";
+
+    size_t pos = 0;
+
+    string auxPath = _path;
+    while ((pos = auxPath.find(delimiter)) != std::string::npos) {
+
+        auxPath.erase(0, pos + delimiter.length());
+    }
+    extension = "." + auxPath;
+
+    auxPath = _path;
+    while ((pos = auxPath.find(delimiter)) != std::string::npos) {
+
+        auxPath.erase(pos, pos + delimiter.length());
+    }
+
+    path = auxPath;
 }
 
 void RenderFacadeClover::Animation2D::Update(){
@@ -1422,10 +1451,13 @@ void RenderFacadeClover::Animation2D::Update(){
 
     //Cambiamos de frame
     if(time >= timeBetweenFrames){
+        //Borramos el frame anterior
+        
         if(actualFrame >= numFrames){
             finished = true;
             return;
         }else{ 
+
             int numFramesDigits = to_string(numFrames-1).length();
             int actualFrameDigits = to_string(actualFrame).length();
 

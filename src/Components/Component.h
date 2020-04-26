@@ -38,19 +38,17 @@ enum CompType {
     CompBoundingChassis,
     CompBoundingRay,
     CollidingComp,
-    PathComp,
     NavMeshComp,
     CurrentNavMeshComp,
-    TargetNavMeshComp,
     CompRay,
     NamePlateComp,
-    MovementComp,
     OnlineComp,
     ShaderComp,
     LightComp,
     ParentNodeComp,
     ParticleSystemComp,
-    AnimationComp
+    AnimationComp,
+    BrainAIComp
 };
 
 class Component {

@@ -176,20 +176,22 @@ class RenderFacadeClover : public RenderFacade {
 
       class Animation2D{
          public:
-            Animation2D(const std::string _path, uint16_t _numFrames, uint16_t _fps);
+            Animation2D(std::string _path, uint16_t _numFrames, uint16_t _fps);
             ~Animation2D(){};
 
             void Update();
             void Start();
             void Restart();
 
-            string GetCurrentPath() const { return currentPath; }
+            string GetCurrentPath() const { return currentPath + extension; }
 
          private:
             string path;
+            string extension;
             string currentPath;
             uint16_t numFrames {0};
             uint16_t fps {60};
+            float time {0};
             float timeBetweenFrames {0.16};
             int actualFrame {0};
             bool started { false };
