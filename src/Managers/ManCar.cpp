@@ -726,55 +726,96 @@ void ManCar::CatchPowerUp(DataMap* d) {
 
 void ManCar::CatchPowerUpAI(DataMap* d) {
 
-    int maxRobojorobo = 50;
-    int maxNitro = maxRobojorobo + 150;
-    int maxPudin = maxNitro + 250;
-    int maxEscudo = maxPudin + 150;
-    int maxTelebanana = maxEscudo + 150;
-    //No voy a poner el MelonMolon porque no se usa para comparar. De base tiene un 20%, del [80-100]
+    int maxRobojorobo   = 50;
+    int maxNitro        = 150;
+    int maxPudin        = 150;
+    int maxEscudo       = 75;
+    int maxTelebanana   = 225;
+    //  mm              = 350
 
     auto actualCar = any_cast<Entity*>((*d)[ACTUAL_CAR]);
     auto cTotem = static_cast<CTotem*>(actualCar->GetComponent(CompType::TotemComp).get());
-    //cout << "------------- POSICION: " << cTotem->positionRanking << endl;
 
     if (cTotem) {
-        auto cPositionRanking = cTotem->positionRanking;
-        if (cPositionRanking == 1 || cPositionRanking == 2) {
-            //cout << "------------- SOY EL 1/2" << endl;
-            maxRobojorobo -= 50;
-            maxNitro -= 75;
-            maxPudin += 100;
-            maxEscudo -= 50;
-            maxTelebanana -= 50;
+        int myTime = cTotem->accumulatedTime/1000;
+        int time = cTotem->SEGUNDOS;
+        if (time > 0) {
+            // No has llevado el totem ni la mitad del tiempo requerido
+            if ((myTime*100/time) < 50) {      
+                maxNitro -= 25;             // 125
+                maxPudin -= 50;             // 100
+                maxEscudo -= 25;            // 50
+                maxTelebanana += 50;        // 275 
+                
+                // Llevas el totem
+                if (cTotem->active) {          
+                    maxRobojorobo -= 50;    // 0
+                    maxNitro += 25;         // 175
+                    maxPudin += 25;         // 125
+                    maxEscudo += 50;        // 100
+                    maxTelebanana -= 50;    // 225
+                    //cout << "MODO: <50 con totem - " << myTime << "segundos \n";
 
-            if (cPositionRanking == 2) {
-                maxRobojorobo -= 25;
+                //Vas ultimo, penultimo o no tienes el totem ni el 10% del tiempo
+                } else if ((myTime*100/time) < 10 || cTotem->positionRanking == entities.size() || cTotem->positionRanking == (entities.size() - 1)) {      
+                    maxNitro -= 25;         // 100
+                    maxRobojorobo += 25;    // 75
+                    maxTelebanana +=25;     // 300
+                    //cout << "MODO: <50 ultimo/penultimo/<10% - " << myTime << "segundos\n";
+                }
+
+            // Has llevado el totem mas del 75% del tiempo requerido
+            } else if ((myTime*100/time) > 75) {
+                maxRobojorobo -= 50;        // 0
+                maxPudin += 100;            // 250
+                maxEscudo += 25;            // 100
+                maxTelebanana -= 75;        // 150
+
+                // Llevas el totem
+                if (cTotem->active) {
+                    maxNitro += 25;         // 175
+                    maxPudin += 50;         // 300
+                    maxEscudo -= 25;        // 75
+                    maxTelebanana -= 25;    // 125
+                    //cout << "MODO: >75 con totem - " << myTime << "segundos \n";
+                }
             }
-
-        } else if ( cPositionRanking == entities.size() || (entities.size() > 3 && cPositionRanking == (entities.size()-1))){
-            //cout << "------------- SOY EL" << (entities.size()-1) << "/" << entities.size() << endl;
-            maxRobojorobo += 50;
-            maxPudin -= 150;
-            maxTelebanana += 100;
-            maxNitro += 25;
         }
     }
+
+    // RJ                                      BASE: 5%     1-5        (+)<50% BASE: 5%    1-5         (++)CON: 0%      0           (++)U/P/<10%: 7.5%  1-7.5       (+)>75% BASE: 0    0       (++)CON: 0      0
+    maxNitro        += maxRobojorobo;       // BASE: 15%    5-20       (+)<50% BASE: 12.5% 5-17.5      (++)CON: 15%     0-15        (++)U/P/<10%: 10%   7.5-17.5    (+)>75% BASE: 15%  1-15    (++)CON: 17.5%  1-17.5
+    maxPudin        += maxNitro;            // BASE: 15%    20-35      (+)<50% BASE: 10%   17.5-27.5   (++)CON: 12.5%   15-27.5     (++)U/P/<10%: 10%   17.5-27.5   (+)>75% BASE: 25%  15-40   (++)CON: 30%    17.5-47.5
+    maxEscudo       += maxPudin;            // BASE: 7.5%   35-42.5    (+)<50% BASE: 5%    27.5-32.5   (++)CON: 10%     27.5-37.5   (++)U/P/<10%: 5%    27.5-32.5   (+)>75% BASE: 10%  40-50   (++)CON: 7.5%   47.5-55
+    maxTelebanana   += maxEscudo;           // BASE: 22.5%  42.5-65    (+)<50% BASE: 27.5% 32.5-60     (++)CON: 22.5%   37.5-60     (++)U/P/<10%: 30%   32.5-62.5   (+)>75% BASE: 15%  40-65   (++)CON: 12.5%  55-17.5
+    // MM                                      BASE: 35%    65-100     (+)<50% BASE: 40%   60-100      (++)CON: 40%     60-100      (++)U/P/<10%: 37.5% 62.5-100    (+)>75% BASE: 35%  65-100  (++)CON: 32.5%  67.5-100
+
+    //cout << "MAX RJ: " << maxRobojorobo << " - MAX N: " << maxNitro << " - MAX P: " << maxPudin << " - MAX E: " << maxEscudo << " - MAX TB: " << maxTelebanana << endl;
 
     //srand(time(nullptr));
     int indx = rand() % 1000 + 1;
     typeCPowerUp type = typeCPowerUp::None;
-    if (indx <= maxRobojorobo)  // ROBOJOROBO -> 5% base - 0% primero - 2.5% segundo - 10% ultimo/s
+    if (indx <= maxRobojorobo) {
         type = typeCPowerUp::RoboJorobo;
-    else if (indx > maxRobojorobo && indx <= maxNitro)  // SUPERMEGANITRO -> 15% base - 175% primero - 12.5% segundo - 17.5% ultimo/s
+    }
+    else if (indx > maxRobojorobo && indx <= maxNitro) {
         type = typeCPowerUp::SuperMegaNitro;
-    else if (indx > maxNitro && indx <= maxPudin)  // PUDIN -> 25% base - 35% primero - 35% segundo - 10% ultimo/s
+    }
+    else if (indx > maxNitro && indx <= maxPudin) {
         type = typeCPowerUp::PudinDeFrambuesa;
-    else if (indx > maxPudin && indx <= maxEscudo)  // ESCUDO -> 15% base - 10% primero - 10% segundo - 15% ultimo/s
+    }
+    else if (indx > maxPudin && indx <= maxEscudo) {
         type = typeCPowerUp::EscudoMerluzo;
-    else if (indx > maxEscudo && indx <= maxTelebanana)  // TELEBANANA -> 15% base - 10% primero - 10% segundo - 25% ultimo/s
+    }
+    else if (indx > maxEscudo && indx <= maxTelebanana) {
         type = typeCPowerUp::TeleBanana;
-    else if (indx > maxTelebanana)  // MELONMOLON ->  25% base - 37.5% primero - 35% segundo - 22.5% ultimo/s
+    }
+    else if (indx > maxTelebanana) {
         type = typeCPowerUp::MelonMolon;
+    }
+
+    
+    //cout << "EL VALOR QUE SALE ES: " << indx << " - CORRESPONDIENTE AL PU: " << (int)type << endl;
 
     //type = typeCPowerUp::SuperMegaNitro;
     // type = typeCPowerUp::SuperMegaNitro;

@@ -54,6 +54,6 @@ void CLResourceTexture::Draw(GLuint shaderID){
 }
 
 CLResourceTexture::~CLResourceTexture() {
-    cout << "Entra en el destructor de Textura\n";
+    //cout << "Entra en el destructor de Textura\n";
     glDeleteTextures(1, &textureID);
 }
