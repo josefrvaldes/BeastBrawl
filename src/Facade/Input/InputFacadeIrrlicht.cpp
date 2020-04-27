@@ -64,5 +64,5 @@ void InputFacadeIrrlicht::CheckInputSettings(std::vector<int> &inputs, int *maxI
 
 
 bool InputFacadeIrrlicht::CheckInputAnimationsStartEnd() {
-	
+	return false;
 };
