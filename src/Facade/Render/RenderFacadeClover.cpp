@@ -28,6 +28,7 @@
 #include <Components/CCar.h>
 #include <Components/CAnimation.h>
 #include <Components/CClock.h>
+// #include <Components/CBrain.h>
 
 #include <Entities/CarAI.h>
 #include <Entities/CarHuman.h>
@@ -1274,59 +1275,75 @@ void RenderFacadeClover::FacadeDrawAIDebug(ManCar* manCars, ManNavMesh* manNavMe
         if (static_cast<Car*>(carAI.get())->GetTypeCar() == TypeCar::CarAI){
             auto cPosDestination = static_cast<CPosDestination*>(carAI->GetComponent(CompType::PosDestination).get());
             auto cTransformableCar = static_cast<CTransformable*>(carAI->GetComponent(CompType::TransformableComp).get());
-            // auto cDimensions = static_cast<CDimensions*>(carAI->GetComponent(CompType::DimensionsComp).get());
-            // auto cCurrentNavMesh = static_cast<CCurrentNavMesh*>(carAI->GetComponent(CompType::CurrentNavMeshComp).get());
-            //auto CBrainAI = static_cast<CBrainAI*>(carAI->GetComponent(CompType::BrainAIComp).get());
+            auto cDimensions = static_cast<CDimensions*>(carAI->GetComponent(CompType::DimensionsComp).get());
+            auto cCurrentNavMesh = static_cast<CCurrentNavMesh*>(carAI->GetComponent(CompType::CurrentNavMeshComp).get());
+            // auto CBrainAI = static_cast<CBrainAI*>(carAI->GetComponent(CompType::BrainAIComp).get());
 
             Draw3DLine(cPosDestination->position,cTransformableCar->position);
             //Ahora vamos a dibujar su CPath
             FacadeDrawAIDebugPath(carAI.get(),manWayPoint);
 
-            /*
+            int yPos = 650;
+            int yIncrement = -25;
             //Ahora por ultimo en la esquina superior derecha escribimos strings con datos
-            auto cCar = static_cast<CCar*>(carAI->GetComponent(CompType::CarComp).get());        
-            core::stringw transfomableText = core::stringw("Post - Rot - Scale: (") + 
-                                core::stringw(cTransformableCar->position.x) + core::stringw(" | ") +
-                                core::stringw(cTransformableCar->position.y) + core::stringw(" | ") +
-                                core::stringw(cTransformableCar->position.z) + core::stringw(")\n(") +
-                                core::stringw(cTransformableCar->rotation.x) + core::stringw(" | ") +
-                                core::stringw(cTransformableCar->rotation.y) + core::stringw(" | ") +
-                                core::stringw(cTransformableCar->rotation.z) + core::stringw(")\n(") +
-                                core::stringw(cTransformableCar->scale.x)    + core::stringw(" | ") +
-                                core::stringw(cTransformableCar->scale.y)    + core::stringw(" | ") +
-                                core::stringw(cTransformableCar->scale.z)    + core::stringw(")\n") ;
+            auto cCar = static_cast<CCar*>(carAI->GetComponent(CompType::CarComp).get());
+            string text = "Pos - Rot - Scale:(" +
+                                        to_string(cTransformableCar->position.x) + " | " +
+                                        to_string(cTransformableCar->position.y) + " | " +
+                                        to_string(cTransformableCar->position.z) + ")";
 
-            core::stringw dimensionsText = transfomableText + core::stringw("Dimensions: ") + core::stringw(cDimensions->width) + core::stringw(" | ")+ 
-                                                            core::stringw(cDimensions->height) + core::stringw(" | ") + 
-                                                            core::stringw(cDimensions->depth) + core::stringw("\n");
+            device->RenderText2D(text,200,yPos,0.05,0.3,glm::vec3(0.0,0.0,0.0));
+            yPos += yIncrement;
 
-            core::stringw carText = dimensionsText + core::stringw("Speed: ") + core::stringw(cCar->speed) +core::stringw("\n");
-            core::stringw posDestinationText = carText + core::stringw("Destination: ") + core::stringw(cPosDestination->position.x) +core::stringw(" | ") +
-                                                        core::stringw(cPosDestination->position.y) +core::stringw(" | ") + 
-                                                        core::stringw(cPosDestination->position.z) +core::stringw(" \n ");
+            text = "(" +    to_string(cTransformableCar->rotation.x) + " | " +
+                            to_string(cTransformableCar->rotation.y) + " | " +
+                            to_string(cTransformableCar->rotation.z) + ")";
+            device->RenderText2D(text,200,yPos,0.05,0.3,glm::vec3(0.0,0.0,0.0));
+            yPos += yIncrement;
+
+            text = "(" +    to_string(cTransformableCar->scale.x) + " | " +
+                            to_string(cTransformableCar->scale.y) + " | " +
+                            to_string(cTransformableCar->scale.z) + ")"; 
+            device->RenderText2D(text,200,yPos,0.05,0.3,glm::vec3(0.0,0.0,0.0));
+            yPos += yIncrement;
+
+            text = "Dimensions: " + to_string(cDimensions->width) + " | " + to_string(cDimensions->height) + " | " + to_string(cDimensions->depth); 
+            device->RenderText2D(text,200,yPos,0.05,0.3,glm::vec3(0.0,0.0,0.0));
+            yPos += yIncrement;
+
+            text = "Speed: " + to_string(cCar->speed);
+            device->RenderText2D(text,200,yPos,0.05,0.3,glm::vec3(0.0,0.0,0.0));
+            yPos += yIncrement;
+
+            text = "Destination: " + to_string(cPosDestination->position.x) + " | " + to_string(cPosDestination->position.y) + " | " + to_string(cPosDestination->position.z);
+            device->RenderText2D(text,200,yPos,0.05,0.3,glm::vec3(0.0,0.0,0.0));
+            yPos += yIncrement;
 
             auto cBrainAI = static_cast<CBrainAI*>(carAI->GetComponent(CompType::BrainAIComp).get());
             auto cPathAux = stack<int>(cBrainAI->stackPath);
-
-            core::stringw pathText = posDestinationText + core::stringw("Path: ");
+            text = "Path: ";
             while(!cPathAux.empty()){
                 auto idWaypoint = cPathAux.top();
-                pathText += core::stringw(idWaypoint) + core::stringw(" - ");
+                text += to_string(idWaypoint) + " - ";
                 cPathAux.pop();
             }
-            pathText += core::stringw("\n");
-
-            core::stringw navMeshText = pathText + core::stringw("Current NavMesh: ") + core::stringw(cCurrentNavMesh->currentNavMesh) + core::stringw("\n")+core::stringw("\n");
-                                                //core::stringw("Target NavMesh: ")  + core::stringw(CBrainAI->targetNavMesh) + 
             
-            auto cBrainAI = static_cast<CBrainAI*>(carAI->GetComponent(CompType::BrainAIComp).get());
+            device->RenderText2D(text,200,yPos,0.05,0.3,glm::vec3(0.0,0.0,0.0));
+            yPos += yIncrement;
 
-            core::stringw movementTypeText = navMeshText + core::stringw("Tipo de IA: ") + core::stringw(cBrainAI->movementType.c_str()) + core::stringw("\n");
+            text = "Current NavMesh: " + to_string(cCurrentNavMesh->currentNavMesh);
+            device->RenderText2D(text,200,yPos,0.05,0.3,glm::vec3(0.0,0.0,0.0));
+            yPos += yIncrement;
 
-            font->draw(movementTypeText,
-                core::rect<s32>(900, 55, 500, 500),
-                video::SColor(255, 0, 0, 0));
-            */
+            text = "Target NavMesh: " + to_string(cBrainAI->targetNavMesh);
+            device->RenderText2D(text,200,yPos,0.05,0.3,glm::vec3(0.0,0.0,0.0));
+            yPos += yIncrement;
+
+            text = "Tipo de IA: " + cBrainAI->movementType;
+            device->RenderText2D(text,200,yPos,0.05,0.3,glm::vec3(0.0,0.0,0.0));
+            yPos += yIncrement;
+
+            
         }
            
     }
