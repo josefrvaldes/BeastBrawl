@@ -25,7 +25,7 @@ class SystemBtDecisionMove : public SystemAI{
 
    protected:
    private:
-   unique_ptr<selector> selectorBehaviourTree;
+   shared_ptr<selector> selectorBehaviourTree;
 
    vector<Manager *> managers;
    int frec {25};
