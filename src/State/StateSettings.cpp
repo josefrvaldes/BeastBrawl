@@ -6,6 +6,7 @@ StateSettings::StateSettings(){
 
     std::cout << "> SETTINGS constructor" << std::endl;
     renderEngine = RenderFacadeManager::GetInstance()->GetRenderFacade();
+    renderEngine->FacadeSuscribeEventsSettings();
     renderEngine->FacadeInitSettings();
 
     InitState();

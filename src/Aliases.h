@@ -42,7 +42,7 @@ enum DataType{
     TIME_TOTEM,
     STOLE,
     NUM,
-    BOOL,
+    TRUEFALSE,
     SCREEN_WIDTH,
     SCREEN_HEIGHT
 };

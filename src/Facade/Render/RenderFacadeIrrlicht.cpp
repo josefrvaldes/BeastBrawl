@@ -100,6 +100,11 @@ void RenderFacadeIrrlicht::FacadeSuscribeEvents() {
 }
 
 
+void RenderFacadeIrrlicht::FacadeSuscribeEventsSettings() {
+    
+}
+
+
 //////////////////////////
 //  INICIA LOS MENUS    //
 //////////////////////////

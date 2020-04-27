@@ -1071,17 +1071,17 @@ void InputFacadeClover::ChangeSettings(int option, int value) {
             //cout << "TOY CAMBIANDO LA RESOLUNION DE LA PANTALLA\n";
             break;
         case 3:
-            (*d)[BOOL] = value;
+            (*d)[TRUEFALSE] = value;
             EventManager::GetInstance().AddEventMulti(Event{EventType::ENABLE_PARTICLES, d});
             //cout << "TOY PONIENDO O QUITANDO PARTICULAS\n";
             break;
         case 4:
-            (*d)[BOOL] = value;
+            (*d)[TRUEFALSE] = value;
             EventManager::GetInstance().AddEventMulti(Event{EventType::ENABLE_VEGETATION, d});
             //cout << "TOY PONIENDO O QUITANDO VEGETACION\n";
             break;
         case 5:
-            (*d)[BOOL] = value;
+            (*d)[TRUEFALSE] = value;
             EventManager::GetInstance().AddEventMulti(Event{EventType::ENABLE_SHADERS, d});
             //cout << "TOY PONIENDO O QUITANDO SOMBRAS\n";
             break;

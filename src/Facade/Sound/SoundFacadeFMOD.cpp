@@ -338,8 +338,9 @@ void SoundFacadeFMOD::LoadSoundByState(const uint8_t numState) {
             ResumeEvent("Menu/atras");
             ResumeEvent("Menu/aceptar");
             break;
-        /*case 8:       // SETTINGS
-            break;*/
+        case 8:       // SETTINGS
+            cout << "Estado de ajustes" << endl; 
+            break;
         /*case 9:       // CREDITS
             break;*/
         /*case 10:      // CONTROLS

@@ -45,6 +45,7 @@ class RenderFacadeClover : public RenderFacade {
       void FacadeDeviceDrop() override;
       void DeleteEntity(Entity*) override;
       void FacadeSetVisibleEntity(Entity*,bool) override;
+      void FacadeSetWindowSize(DataMap* d) override;
 
 
       void FacadeDraw() const override;
@@ -87,6 +88,7 @@ class RenderFacadeClover : public RenderFacade {
       void FacadeUpdatePowerUpHUD(DataMap* d) override;
       void FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* globalClock) override;
       void FacadeSuscribeEvents() override;
+      void FacadeSuscribeEventsSettings() override;
       void FacadeAddPlates(Manager* manNamePlates) override;
       void FacadeUpdatePlates(Manager* manNamePlates) override;
       void FacadeUpdateMeshesLoD(vector<shared_ptr<Entity>> entities) override;

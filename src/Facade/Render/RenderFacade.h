@@ -38,6 +38,7 @@ class RenderFacade {
     virtual void FacadeDeviceDrop() = 0;
     virtual void DeleteEntity(Entity*) = 0;
     virtual void FacadeSetVisibleEntity(Entity*,bool) = 0;
+    virtual void FacadeSetWindowSize(DataMap* d) = 0;
 
     virtual void FacadeDraw() const = 0;
     virtual void FacadeDrawIntro() = 0;
@@ -79,6 +80,7 @@ class RenderFacade {
     virtual void FacadeInitResources() = 0;
     virtual void FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* globalClock) = 0;
     virtual void FacadeSuscribeEvents() = 0;
+    virtual void FacadeSuscribeEventsSettings() = 0;
     virtual void FacadeAddPlates(Manager* manNamePlates) = 0;
     virtual void FacadeUpdatePlates(Manager* manNamePlates) = 0;
     virtual void FacadeUpdateMeshesLoD(vector<shared_ptr<Entity>> entities) = 0;

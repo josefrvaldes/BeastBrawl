@@ -42,6 +42,7 @@ class RenderFacadeIrrlicht : public RenderFacade {
     void FacadeDraw() const override;
     void DeleteEntity(Entity*) override;
     void FacadeSetVisibleEntity(Entity*,bool) override {};
+    void FacadeSetWindowSize(DataMap* d) override {};
 
 
     void FacadeDrawIntro() override;
@@ -83,6 +84,7 @@ class RenderFacadeIrrlicht : public RenderFacade {
     void FacadeUpdatePowerUpHUD(DataMap* d) override;
     void FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* globalClock) override;
     void FacadeSuscribeEvents() override;
+    void FacadeSuscribeEventsSettings() override;
     void FacadeAddPlates(Manager* manNamePlates) override;
     void FacadeUpdatePlates(Manager* manNamePlates) override;
     void FacadeUpdateMeshesLoD(vector<shared_ptr<Entity>> entities) override;

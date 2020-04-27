@@ -117,6 +117,12 @@ class CLEngine {
         //! Devuelve la altura de la pantalla
         //! @returns height Altura de la pantalla
         int GetScreenHeight() { return height; };
+        //! Cambia el valor de la anchura de la pantalla
+        //! @param w Anchura de la pantalla
+        void SetScreenWidth(int w) { width = w; };
+        //! Cambia el valor de la altura de la pantalla
+        //! @param h Altura de la pantalla
+        void SetScreenHeight(int h) { height = h; };
 
 
 

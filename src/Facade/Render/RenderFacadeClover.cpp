@@ -92,7 +92,20 @@ void RenderFacadeClover::FacadeSuscribeEvents() {
         EventType::INIT_PARTICLES_BOX,
         bind( &RenderFacadeClover::FacadeInitParticleSystem, this, placeholders::_1 ),
         "FacadeInitParticleSystem"});
+
 }
+
+/**
+ * Suscripcion de eventos del settings 
+ */
+void RenderFacadeClover::FacadeSuscribeEventsSettings() {
+
+    EventManager::GetInstance().Subscribe(Listener{
+        EventType::SET_RESOLUTION,
+        bind( &RenderFacadeClover::FacadeSetWindowSize, this, placeholders::_1 ),
+        "FacadeSetWindowSize"});
+}
+
 
 
 /**
@@ -536,6 +549,16 @@ int RenderFacadeClover::FacadeGetFPS() const{
 void RenderFacadeClover::FacadeSetWindowCaption(std::string title, int fps) const{
     std::string name = title + " - " + std::to_string(fps) + " FPS";
     device->SetTitle(name);
+}
+
+/**
+ * Redimensiona la pantalla
+ */
+void RenderFacadeClover::FacadeSetWindowSize(DataMap* d) {
+    auto w = any_cast<int>((*d)[SCREEN_WIDTH]);
+    auto h = any_cast<int>((*d)[SCREEN_HEIGHT]);
+    device->SetScreenHeight(h);
+    device->SetScreenWidth(w);
 }
 
 //////////////////////////
