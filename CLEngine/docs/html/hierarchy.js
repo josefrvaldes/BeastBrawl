@@ -15,6 +15,7 @@ var hierarchy =
       [ "CLE::CLSpotLight", "class_c_l_e_1_1_c_l_spot_light.html", null ]
     ] ],
     [ "CLE::CLFrustum", "class_c_l_e_1_1_c_l_frustum.html", null ],
+    [ "CLE::CLGrassSystem", "class_c_l_e_1_1_c_l_grass_system.html", null ],
     [ "CLE::CLNode", "class_c_l_e_1_1_c_l_node.html", null ],
     [ "CLE::CLResource", "class_c_l_e_1_1_c_l_resource.html", [
       [ "CLE::CLResourceMaterial", "class_c_l_e_1_1_c_l_resource_material.html", null ],

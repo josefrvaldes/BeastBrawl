@@ -28,7 +28,7 @@
    <div id="projectname">CLEngine
    &#160;<span id="projectnumber">1.0</span>
    </div>
-   <div id="projectbrief">Motor grafico para Beast Brawl</div>
+   <div id="projectbrief">Motor gráfico para TAG</div>
   </td>
  </tr>
  </tbody>
@@ -101,6 +101,9 @@ $(document).ready(function(){initNavTree('class_c_l_e_1_1_c_l_resource_manager.h
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a36590d1a912ba643bc3aa0a280064060"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_resource_manager.html#a36590d1a912ba643bc3aa0a280064060">~CLResourceManager</a> ()</td></tr>
 <tr class="separator:a36590d1a912ba643bc3aa0a280064060"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a83937c491dc50742b34ba15880cc1ca5"><td class="memItemLeft" align="right" valign="top">vector&lt; <a class="el" href="class_c_l_e_1_1_c_l_resource_mesh.html">CLResourceMesh</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_resource_manager.html#a83937c491dc50742b34ba15880cc1ca5">GetResourceAnimation</a> (const std::string file, uint8_t numKeyFrames, bool flipUV)</td></tr>
+<tr class="memdesc:a83937c491dc50742b34ba15880cc1ca5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Metodo para leer animaciones.  <a href="class_c_l_e_1_1_c_l_resource_manager.html#a83937c491dc50742b34ba15880cc1ca5">More...</a><br /></td></tr>
+<tr class="separator:a83937c491dc50742b34ba15880cc1ca5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afe4d2fe29dfcd75c56618360fc394ea3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_c_l_e_1_1_c_l_resource_mesh.html">CLResourceMesh</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_resource_manager.html#afe4d2fe29dfcd75c56618360fc394ea3">GetResourceMesh</a> (const std::string file, bool flipUV)</td></tr>
 <tr class="memdesc:afe4d2fe29dfcd75c56618360fc394ea3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Metodo para leer mallas.  <a href="class_c_l_e_1_1_c_l_resource_manager.html#afe4d2fe29dfcd75c56618360fc394ea3">More...</a><br /></td></tr>
 <tr class="separator:afe4d2fe29dfcd75c56618360fc394ea3"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -125,6 +128,15 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a624d9ffa0e605c976e65b6a2444c37d4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_c_l_e_1_1_c_l_resource_shader.html">CLResourceShader</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_resource_manager.html#a624d9ffa0e605c976e65b6a2444c37d4">GetResourceShader</a> (const std::string vertex, const std::string fragment, const std::string geometry)</td></tr>
 <tr class="memdesc:a624d9ffa0e605c976e65b6a2444c37d4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Metodo para leer shaders.  <a href="class_c_l_e_1_1_c_l_resource_manager.html#a624d9ffa0e605c976e65b6a2444c37d4">More...</a><br /></td></tr>
 <tr class="separator:a624d9ffa0e605c976e65b6a2444c37d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a44ab82dfd3e12e88899760bc7a2b1840"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_resource_manager.html#a44ab82dfd3e12e88899760bc7a2b1840">DeleteResourceTexture</a> (const std::string file)</td></tr>
+<tr class="memdesc:a44ab82dfd3e12e88899760bc7a2b1840"><td class="mdescLeft">&#160;</td><td class="mdescRight">Libera la memoria de una textura.  <a href="class_c_l_e_1_1_c_l_resource_manager.html#a44ab82dfd3e12e88899760bc7a2b1840">More...</a><br /></td></tr>
+<tr class="separator:a44ab82dfd3e12e88899760bc7a2b1840"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a44752b380b73b4f68c4db1cc5e472fba"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_resource_manager.html#a44752b380b73b4f68c4db1cc5e472fba">DeleteResourceMesh</a> (const std::string file)</td></tr>
+<tr class="memdesc:a44752b380b73b4f68c4db1cc5e472fba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Libera la memoria de una malla.  <a href="class_c_l_e_1_1_c_l_resource_manager.html#a44752b380b73b4f68c4db1cc5e472fba">More...</a><br /></td></tr>
+<tr class="separator:a44752b380b73b4f68c4db1cc5e472fba"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad6f61c0d2ce8651be65870e0a56cfa11"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_resource_manager.html#ad6f61c0d2ce8651be65870e0a56cfa11">DeleteResourceMaterial</a> (const std::string file)</td></tr>
+<tr class="memdesc:ad6f61c0d2ce8651be65870e0a56cfa11"><td class="mdescLeft">&#160;</td><td class="mdescRight">Libera la memoria de un material.  <a href="class_c_l_e_1_1_c_l_resource_manager.html#ad6f61c0d2ce8651be65870e0a56cfa11">More...</a><br /></td></tr>
+<tr class="separator:ad6f61c0d2ce8651be65870e0a56cfa11"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
@@ -161,6 +173,132 @@ Static Public Member Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="ad6f61c0d2ce8651be65870e0a56cfa11"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad6f61c0d2ce8651be65870e0a56cfa11">&#9670;&nbsp;</a></span>DeleteResourceMaterial()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool CLResourceManager::DeleteResourceMaterial </td>
+          <td>(</td>
+          <td class="paramtype">const std::string&#160;</td>
+          <td class="paramname"><em>file</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Libera la memoria de un material. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">file</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>bool </dd></dl>
+
+</div>
+</div>
+<a id="a44752b380b73b4f68c4db1cc5e472fba"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a44752b380b73b4f68c4db1cc5e472fba">&#9670;&nbsp;</a></span>DeleteResourceMesh()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool CLResourceManager::DeleteResourceMesh </td>
+          <td>(</td>
+          <td class="paramtype">const std::string&#160;</td>
+          <td class="paramname"><em>file</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Libera la memoria de una malla. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">file</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>bool </dd></dl>
+
+</div>
+</div>
+<a id="a44ab82dfd3e12e88899760bc7a2b1840"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a44ab82dfd3e12e88899760bc7a2b1840">&#9670;&nbsp;</a></span>DeleteResourceTexture()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool CLResourceManager::DeleteResourceTexture </td>
+          <td>(</td>
+          <td class="paramtype">const std::string&#160;</td>
+          <td class="paramname"><em>file</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Libera la memoria de una textura. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">file</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>bool </dd></dl>
+
+</div>
+</div>
+<a id="a83937c491dc50742b34ba15880cc1ca5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a83937c491dc50742b34ba15880cc1ca5">&#9670;&nbsp;</a></span>GetResourceAnimation()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">vector&lt; <a class="el" href="class_c_l_e_1_1_c_l_resource_mesh.html">CLResourceMesh</a> * &gt; CLResourceManager::GetResourceAnimation </td>
+          <td>(</td>
+          <td class="paramtype">const std::string&#160;</td>
+          <td class="paramname"><em>file</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>numKeyFrames</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>flipUV</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Metodo para leer animaciones. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">file</td><td>Ruta al fichero </td></tr>
+    <tr><td class="paramname">numKeyFrames</td><td>Número de keyframes de la animación </td></tr>
+    <tr><td class="paramname">flipUV</td><td>Bool para invertir los UV's al leer la textura </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Puntero a un CLE::CLResource::CLResourceMesh </dd></dl>
+
+</div>
+</div>
 <a id="a1ffb06eaf347e7bbf5f54cd972dc8b84"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a1ffb06eaf347e7bbf5f54cd972dc8b84">&#9670;&nbsp;</a></span>GetResourceManager()</h2>
 
@@ -465,8 +603,8 @@ Static Public Member Functions</h2></td></tr>
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following files:<ul>
-<li>CLEngine/src/ResourceManager/<a class="el" href="_c_l_resource_manager_8h_source.html">CLResourceManager.h</a></li>
-<li>CLEngine/src/ResourceManager/<a class="el" href="_c_l_resource_manager_8cpp.html">CLResourceManager.cpp</a></li>
+<li>D:/Escritorio/Beast_Brawl/CLEngine/src/ResourceManager/<a class="el" href="_c_l_resource_manager_8h_source.html">CLResourceManager.h</a></li>
+<li>D:/Escritorio/Beast_Brawl/CLEngine/src/ResourceManager/<a class="el" href="_c_l_resource_manager_8cpp.html">CLResourceManager.cpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

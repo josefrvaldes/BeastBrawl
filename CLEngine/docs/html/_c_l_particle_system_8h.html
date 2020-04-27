@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>CLEngine: CLEngine/src/SceneTree/CLParticleSystem.h File Reference</title>
+<title>CLEngine: D:/Escritorio/Beast_Brawl/CLEngine/src/SceneTree/CLParticleSystem.h File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -28,7 +28,7 @@
    <div id="projectname">CLEngine
    &#160;<span id="projectnumber">1.0</span>
    </div>
-   <div id="projectbrief">Motor grafico para Beast Brawl</div>
+   <div id="projectbrief">Motor gráfico para TAG</div>
   </td>
  </tr>
  </tbody>
@@ -122,13 +122,13 @@ Namespaces</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
 Enumerations</h2></td></tr>
 <tr class="memitem:a2955cca9df1e3f8faa105a79669676dc"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_c_l_particle_system_8h.html#a2955cca9df1e3f8faa105a79669676dc">SpawnType</a> { <br />
-&#160;&#160;<a class="el" href="_c_l_particle_system_8h.html#a2955cca9df1e3f8faa105a79669676dca5b577e188dc4657a3e573fb2dae1a924">Point</a>, 
-<a class="el" href="_c_l_particle_system_8h.html#a2955cca9df1e3f8faa105a79669676dca2d65321ae3e5a5fd9390d2a281a95d45">Line</a>, 
-<a class="el" href="_c_l_particle_system_8h.html#a2955cca9df1e3f8faa105a79669676dca1abc09cb455486ade0f6353591699809">Square</a>, 
-<a class="el" href="_c_l_particle_system_8h.html#a2955cca9df1e3f8faa105a79669676dca9a0ac0e1bcb1e95a77ef54d9f6658337">Cube</a>, 
+&#160;&#160;<a class="el" href="_c_l_particle_system_8h.html#a2955cca9df1e3f8faa105a79669676dca3a6fb2b4d13fd3b918b880111f72c64d">PointSpawn</a>, 
+<a class="el" href="_c_l_particle_system_8h.html#a2955cca9df1e3f8faa105a79669676dca3f6f1f9fb0de1ddac423f306054193d8">LineSpawn</a>, 
+<a class="el" href="_c_l_particle_system_8h.html#a2955cca9df1e3f8faa105a79669676dca2ffbf00024091da3a6c5d205ae0c848d">SquareSpawn</a>, 
+<a class="el" href="_c_l_particle_system_8h.html#a2955cca9df1e3f8faa105a79669676dca4eaf4dab3b51d55716a570bc98ada71c">CubeSpawn</a>, 
 <br />
-&#160;&#160;<a class="el" href="_c_l_particle_system_8h.html#a2955cca9df1e3f8faa105a79669676dcad3ce82743a8255ccd69f5b67d257c489">Circle</a>, 
-<a class="el" href="_c_l_particle_system_8h.html#a2955cca9df1e3f8faa105a79669676dca3b4c5831cd0a4399644876494915540a">Sphere</a>
+&#160;&#160;<a class="el" href="_c_l_particle_system_8h.html#a2955cca9df1e3f8faa105a79669676dca4f09c9d11a2dc31bf05eb5b42366d54b">CircleSpawn</a>, 
+<a class="el" href="_c_l_particle_system_8h.html#a2955cca9df1e3f8faa105a79669676dca5f7909ab461255470e589196b38b3ff5">SphereSpawn</a>
 <br />
  }</td></tr>
 <tr class="memdesc:a2955cca9df1e3f8faa105a79669676dc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enum para diferentes tipos shapes para el spawner.  <a href="_c_l_particle_system_8h.html#a2955cca9df1e3f8faa105a79669676dc">More...</a><br /></td></tr>
@@ -164,12 +164,12 @@ Variables</h2></td></tr>
 
 <p>Enum para diferentes tipos shapes para el spawner. </p>
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a2955cca9df1e3f8faa105a79669676dca5b577e188dc4657a3e573fb2dae1a924"></a>Point&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a2955cca9df1e3f8faa105a79669676dca2d65321ae3e5a5fd9390d2a281a95d45"></a>Line&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a2955cca9df1e3f8faa105a79669676dca1abc09cb455486ade0f6353591699809"></a>Square&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a2955cca9df1e3f8faa105a79669676dca9a0ac0e1bcb1e95a77ef54d9f6658337"></a>Cube&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a2955cca9df1e3f8faa105a79669676dcad3ce82743a8255ccd69f5b67d257c489"></a>Circle&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a2955cca9df1e3f8faa105a79669676dca3b4c5831cd0a4399644876494915540a"></a>Sphere&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a2955cca9df1e3f8faa105a79669676dca3a6fb2b4d13fd3b918b880111f72c64d"></a>PointSpawn&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a2955cca9df1e3f8faa105a79669676dca3f6f1f9fb0de1ddac423f306054193d8"></a>LineSpawn&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a2955cca9df1e3f8faa105a79669676dca2ffbf00024091da3a6c5d205ae0c848d"></a>SquareSpawn&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a2955cca9df1e3f8faa105a79669676dca4eaf4dab3b51d55716a570bc98ada71c"></a>CubeSpawn&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a2955cca9df1e3f8faa105a79669676dca4f09c9d11a2dc31bf05eb5b42366d54b"></a>CircleSpawn&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a2955cca9df1e3f8faa105a79669676dca5f7909ab461255470e589196b38b3ff5"></a>SphereSpawn&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
 </div>
@@ -276,7 +276,7 @@ Variables</h2></td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_aead3dff2facb086e221c03efe0c7a1a.html">CLEngine</a></li><li class="navelem"><a class="el" href="dir_9779f9edaadacf3bb82da7e0c320dbcf.html">src</a></li><li class="navelem"><a class="el" href="dir_ca9cb8684183ff4a03c141bd178d050c.html">SceneTree</a></li><li class="navelem"><a class="el" href="_c_l_particle_system_8h.html">CLParticleSystem.h</a></li>
+    <li class="navelem"><a class="el" href="dir_275089585c7fc1b5fd5d7d42c69cb1da.html">D:</a></li><li class="navelem"><a class="el" href="dir_2078a0179f569e7f19f5e7d00d1b0a11.html">Escritorio</a></li><li class="navelem"><a class="el" href="dir_f27230be065b78f5ced2df3240f3eded.html">Beast_Brawl</a></li><li class="navelem"><a class="el" href="dir_f316691a7e2a135e2efe7001f6d5b377.html">CLEngine</a></li><li class="navelem"><a class="el" href="dir_38b7e1994c4893711c1637cc36dcd89e.html">src</a></li><li class="navelem"><a class="el" href="dir_68a470a683d34fed4144bce44877275f.html">SceneTree</a></li><li class="navelem"><a class="el" href="_c_l_particle_system_8h.html">CLParticleSystem.h</a></li>
     <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.17 </li>

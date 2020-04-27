@@ -1,4 +1,8 @@
 var searchData=
 [
-  ['liability_642',['LIABILITY',['../_l_i_c_e_n_s_e_8txt.html#a154c0f6f925190567752588d1ff5458f',1,'LICENSE.txt']]]
+  ['shadow_5fheight_661',['SHADOW_HEIGHT',['../class_c_l_e_1_1_c_l_shadow_mapping.html#aa30bf0ac54d2a1d59e7070d299d6d1a8',1,'CLE::CLShadowMapping']]],
+  ['shadow_5fwidth_662',['SHADOW_WIDTH',['../class_c_l_e_1_1_c_l_shadow_mapping.html#a84027bbf56e41fbe1ada807e319f0d1c',1,'CLE::CLShadowMapping']]],
+  ['shininess_663',['shininess',['../struct_material.html#a9dc184c883ec135ace28c1917af3fe84',1,'Material']]],
+  ['size_664',['Size',['../struct_c_l_e_1_1_character.html#a0e6369a28e594a5284d2e539e62aaa3d',1,'CLE::Character']]],
+  ['specular_665',['specular',['../struct_material.html#aac1c499923ff99564cdd97a4b5e504a9',1,'Material']]]
 ];

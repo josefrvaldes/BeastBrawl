@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>CLEngine: CLEngine/src/ResourceManager/CLResourceManager.h Source File</title>
+<title>CLEngine: D:/Escritorio/Beast_Brawl/CLEngine/src/ResourceManager/CLResourceManager.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -28,7 +28,7 @@
    <div id="projectname">CLEngine
    &#160;<span id="projectnumber">1.0</span>
    </div>
-   <div id="projectbrief">Motor grafico para Beast Brawl</div>
+   <div id="projectbrief">Motor gráfico para TAG</div>
   </td>
  </tr>
  </tbody>
@@ -114,34 +114,40 @@ $(document).ready(function(){initNavTree('_c_l_resource_manager_8h_source.html',
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;                <span class="keywordflow">return</span> instance;</div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;            }</div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160; </div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;            <a class="code" href="class_c_l_e_1_1_c_l_resource_mesh.html">CLResourceMesh</a>* GetResourceMesh(<span class="keyword">const</span> std::string file, <span class="keywordtype">bool</span> flipUV);</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;            <a class="code" href="class_c_l_e_1_1_c_l_resource_mesh.html">CLResourceMesh</a>* GetResourceMesh(<span class="keyword">const</span> std::string file);</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;            <a class="code" href="class_c_l_e_1_1_c_l_resource_texture.html">CLResourceTexture</a>* GetResourceTexture(<span class="keyword">const</span> std::string file, <span class="keywordtype">bool</span> vertically);</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;            <a class="code" href="class_c_l_e_1_1_c_l_resource_texture.html">CLResourceTexture</a>* GetResourceTexture(<span class="keyword">const</span> std::string file);</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;            <a class="code" href="class_c_l_e_1_1_c_l_resource_material.html">CLResourceMaterial</a>* GetResourceMaterial(<span class="keyword">const</span> std::string file, <span class="keywordtype">bool</span> vertically);</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;            <a class="code" href="class_c_l_e_1_1_c_l_resource_material.html">CLResourceMaterial</a>* GetResourceMaterial(<span class="keyword">const</span> std::string file);</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;            <a class="code" href="class_c_l_e_1_1_c_l_resource_shader.html">CLResourceShader</a>* GetResourceShader(<span class="keyword">const</span> std::string vertex, <span class="keyword">const</span> std::string fragment);</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;            <a class="code" href="class_c_l_e_1_1_c_l_resource_shader.html">CLResourceShader</a>* GetResourceShader(<span class="keyword">const</span> std::string vertex, <span class="keyword">const</span> std::string fragment, <span class="keyword">const</span> std::string geometry);</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160; </div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;        <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;            <a class="code" href="class_c_l_e_1_1_c_l_resource_manager.html">CLResourceManager</a>();</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;            <span class="keyword">inline</span> <span class="keyword">static</span> <a class="code" href="class_c_l_e_1_1_c_l_resource_manager.html">CLResourceManager</a>* instance { <span class="keyword">nullptr</span> };</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;            vector&lt;shared_ptr&lt;CLResourceMesh&gt;&gt; meshes;</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;            vector&lt;shared_ptr&lt;CLResourceTexture&gt;&gt; textures;</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;            vector&lt;shared_ptr&lt;CLResourceMaterial&gt;&gt; materials;</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;            vector&lt;shared_ptr&lt;CLResourceShader&gt;&gt; shaders;</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160; </div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;    };</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160; </div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;}</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;            vector&lt;CLResourceMesh*&gt; GetResourceAnimation(<span class="keyword">const</span> std::string file, uint8_t numKeyFrames, <span class="keywordtype">bool</span> flipUV);</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;            <a class="code" href="class_c_l_e_1_1_c_l_resource_mesh.html">CLResourceMesh</a>* GetResourceMesh(<span class="keyword">const</span> std::string file, <span class="keywordtype">bool</span> flipUV);</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;            <a class="code" href="class_c_l_e_1_1_c_l_resource_mesh.html">CLResourceMesh</a>* GetResourceMesh(<span class="keyword">const</span> std::string file);</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;            <a class="code" href="class_c_l_e_1_1_c_l_resource_texture.html">CLResourceTexture</a>* GetResourceTexture(<span class="keyword">const</span> std::string file, <span class="keywordtype">bool</span> vertically);</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;            <a class="code" href="class_c_l_e_1_1_c_l_resource_texture.html">CLResourceTexture</a>* GetResourceTexture(<span class="keyword">const</span> std::string file);</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;            <a class="code" href="class_c_l_e_1_1_c_l_resource_material.html">CLResourceMaterial</a>* GetResourceMaterial(<span class="keyword">const</span> std::string file, <span class="keywordtype">bool</span> vertically);</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;            <a class="code" href="class_c_l_e_1_1_c_l_resource_material.html">CLResourceMaterial</a>* GetResourceMaterial(<span class="keyword">const</span> std::string file);</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;            <a class="code" href="class_c_l_e_1_1_c_l_resource_shader.html">CLResourceShader</a>* GetResourceShader(<span class="keyword">const</span> std::string vertex, <span class="keyword">const</span> std::string fragment);</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;            <a class="code" href="class_c_l_e_1_1_c_l_resource_shader.html">CLResourceShader</a>* GetResourceShader(<span class="keyword">const</span> std::string vertex, <span class="keyword">const</span> std::string fragment, <span class="keyword">const</span> std::string geometry);</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160; </div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;            <span class="keywordtype">bool</span> DeleteResourceTexture(<span class="keyword">const</span> std::string file);</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;            <span class="keywordtype">bool</span> DeleteResourceMesh(<span class="keyword">const</span> std::string file);</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;            <span class="keywordtype">bool</span> DeleteResourceMaterial(<span class="keyword">const</span> std::string file);</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;            </div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160; </div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;        <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;            <a class="code" href="class_c_l_e_1_1_c_l_resource_manager.html">CLResourceManager</a>();</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;            <span class="keyword">inline</span> <span class="keyword">static</span> <a class="code" href="class_c_l_e_1_1_c_l_resource_manager.html">CLResourceManager</a>* instance { <span class="keyword">nullptr</span> };</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;            vector&lt;shared_ptr&lt;CLResourceMesh&gt;&gt; meshes;</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;            vector&lt;shared_ptr&lt;CLResourceTexture&gt;&gt; textures;</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;            vector&lt;shared_ptr&lt;CLResourceMaterial&gt;&gt; materials;</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;            vector&lt;shared_ptr&lt;CLResourceShader&gt;&gt; shaders;</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160; </div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;    };</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160; </div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;}</div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <div class="ttc" id="aclass_c_l_e_1_1_c_l_resource_manager_html_a1ffb06eaf347e7bbf5f54cd972dc8b84"><div class="ttname"><a href="class_c_l_e_1_1_c_l_resource_manager.html#a1ffb06eaf347e7bbf5f54cd972dc8b84">CLE::CLResourceManager::GetResourceManager</a></div><div class="ttdeci">static CLResourceManager * GetResourceManager()</div><div class="ttdef"><b>Definition:</b> CLResourceManager.h:24</div></div>
 <div class="ttc" id="a_c_l_resource_shader_8h_html"><div class="ttname"><a href="_c_l_resource_shader_8h.html">CLResourceShader.h</a></div></div>
 <div class="ttc" id="a_c_l_resource_texture_8h_html"><div class="ttname"><a href="_c_l_resource_texture_8h.html">CLResourceTexture.h</a></div></div>
 <div class="ttc" id="a_c_l_resource_material_8h_html"><div class="ttname"><a href="_c_l_resource_material_8h.html">CLResourceMaterial.h</a></div></div>
-<div class="ttc" id="aclass_c_l_e_1_1_c_l_resource_mesh_html"><div class="ttname"><a href="class_c_l_e_1_1_c_l_resource_mesh.html">CLE::CLResourceMesh</a></div><div class="ttdoc">Clase para gestionar la lectura de mallas Mediante la utilización de assimp leemos y gestionamos todo...</div><div class="ttdef"><b>Definition:</b> CLResourceMesh.h:55</div></div>
-<div class="ttc" id="aclass_c_l_e_1_1_c_l_resource_material_html"><div class="ttname"><a href="class_c_l_e_1_1_c_l_resource_material.html">CLE::CLResourceMaterial</a></div><div class="ttdoc">Clase para almacenar materiales.</div><div class="ttdef"><b>Definition:</b> CLResourceMaterial.h:25</div></div>
+<div class="ttc" id="aclass_c_l_e_1_1_c_l_resource_mesh_html"><div class="ttname"><a href="class_c_l_e_1_1_c_l_resource_mesh.html">CLE::CLResourceMesh</a></div><div class="ttdoc">Clase para gestionar la lectura de mallas Mediante la utilización de assimp leemos y gestionamos todo...</div><div class="ttdef"><b>Definition:</b> CLResourceMesh.h:59</div></div>
+<div class="ttc" id="aclass_c_l_e_1_1_c_l_resource_material_html"><div class="ttname"><a href="class_c_l_e_1_1_c_l_resource_material.html">CLE::CLResourceMaterial</a></div><div class="ttdoc">Clase para almacenar materiales.</div><div class="ttdef"><b>Definition:</b> CLResourceMaterial.h:26</div></div>
 <div class="ttc" id="a_c_l_resource_mesh_8h_html"><div class="ttname"><a href="_c_l_resource_mesh_8h.html">CLResourceMesh.h</a></div></div>
 <div class="ttc" id="anamespace_c_l_e_html"><div class="ttname"><a href="namespace_c_l_e.html">CLE</a></div><div class="ttdef"><b>Definition:</b> CLColor.h:5</div></div>
 <div class="ttc" id="aclass_c_l_e_1_1_c_l_resource_texture_html"><div class="ttname"><a href="class_c_l_e_1_1_c_l_resource_texture.html">CLE::CLResourceTexture</a></div><div class="ttdoc">Clase para gestionar la lectura de texturas.</div><div class="ttdef"><b>Definition:</b> CLResourceTexture.h:12</div></div>
@@ -151,7 +157,7 @@ $(document).ready(function(){initNavTree('_c_l_resource_manager_8h_source.html',
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_aead3dff2facb086e221c03efe0c7a1a.html">CLEngine</a></li><li class="navelem"><a class="el" href="dir_9779f9edaadacf3bb82da7e0c320dbcf.html">src</a></li><li class="navelem"><a class="el" href="dir_c9703864c94a5efc579f38b2f3787437.html">ResourceManager</a></li><li class="navelem"><a class="el" href="_c_l_resource_manager_8h.html">CLResourceManager.h</a></li>
+    <li class="navelem"><a class="el" href="dir_275089585c7fc1b5fd5d7d42c69cb1da.html">D:</a></li><li class="navelem"><a class="el" href="dir_2078a0179f569e7f19f5e7d00d1b0a11.html">Escritorio</a></li><li class="navelem"><a class="el" href="dir_f27230be065b78f5ced2df3240f3eded.html">Beast_Brawl</a></li><li class="navelem"><a class="el" href="dir_f316691a7e2a135e2efe7001f6d5b377.html">CLEngine</a></li><li class="navelem"><a class="el" href="dir_38b7e1994c4893711c1637cc36dcd89e.html">src</a></li><li class="navelem"><a class="el" href="dir_1a8b83d01d55408d49443b6a1d4e7dfd.html">ResourceManager</a></li><li class="navelem"><a class="el" href="_c_l_resource_manager_8h.html">CLResourceManager.h</a></li>
     <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.17 </li>

@@ -7,6 +7,7 @@ var class_c_l_e_1_1_c_l_camera =
     [ "CalculateProjectionMatrix", "class_c_l_e_1_1_c_l_camera.html#a040347d304b082a0340711b85f74e62c", null ],
     [ "Draw", "class_c_l_e_1_1_c_l_camera.html#a7d3cd43cdf267c26a2bb54a4f556c8dc", null ],
     [ "DrawDepthMap", "class_c_l_e_1_1_c_l_camera.html#a7b9961bda27421fd8b8fdd7dfe0b7c3c", null ],
+    [ "GetCameraFov", "class_c_l_e_1_1_c_l_camera.html#a10fa3ff92c45ab19d837c4763b771d9b", null ],
     [ "GetCameraTarget", "class_c_l_e_1_1_c_l_camera.html#a64c6f615fa91575b0e46b22c5716db82", null ],
     [ "GetCameraUp", "class_c_l_e_1_1_c_l_camera.html#aebad0e6c63c16802e6e7e3eb8d88a934", null ],
     [ "GetFrustum", "class_c_l_e_1_1_c_l_camera.html#adecdc65f235d5a52d02f32bceac30ca2", null ],
