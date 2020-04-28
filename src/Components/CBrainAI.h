@@ -22,7 +22,7 @@ public:
 
 
     // CTargetNavMesh
-    int targetNavMesh = -1;  //NavMesh actual del coche/entidad     //ponemos -1 por defecto ya que haremos el calculo al empezar la partida
+    int targetNavMesh {-1};  //NavMesh actual del coche/entidad     //ponemos -1 por defecto ya que haremos el calculo al empezar la partida
 
 
     // CPath
@@ -30,7 +30,7 @@ public:
 
 
     // CMovementType
-    std::string movementType = "Empty";     // Para el debug de la IA decirte que decision estas tomando
+    std::string movementType {"Empty"};     // Para el debug de la IA decirte que decision estas tomando
 
 
     // CPosDestinatation
@@ -52,13 +52,15 @@ public:
 
     // elementos en el rango de vision
     int fov = 75;
-    float distanceVision = 600;
+    float distanceVision {600};
     std::vector<Entity*> carInVision;
     std::vector<Entity*> boxInVision;
-    Entity* totemInVision = nullptr;
+    Entity* totemInVision {nullptr};
     
-
     // objetivo
-    Car* targetCar = nullptr;
+    Car* targetCar {nullptr};
+
+    // Pensamiento de la IA = mirar minimapa, mirar marcadores, etc, durante ese tiempo no actua
+    bool thinking {false};
 
 };
