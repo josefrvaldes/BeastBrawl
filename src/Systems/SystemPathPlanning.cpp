@@ -6,7 +6,7 @@
 #include <EventManager/Event.h>
 #include <EventManager/EventManager.h>
 
-#include <Components/CPath.h>
+#include <Components/CBrainAI.h>
 #include <Components/CWayPointEdges.h>
 #include <Components/CCurrentNavMesh.h>
 #include <Components/CNavMesh.h>
@@ -60,11 +60,11 @@ void SystemPathPlanning::MoveRandomPowerUp(DataMap* data){
     auto graph = any_cast<ManWayPoint*>((*data)[MAN_WAYPOINTS]);
     
     auto cCurrentNavMesh = static_cast<CCurrentNavMesh*>(carAI->GetComponent(CompType::CurrentNavMeshComp).get());
-    auto cPath = static_cast<CPath*>(carAI->GetComponent(CompType::PathComp).get());
+    auto cBrainAI = static_cast<CBrainAI*>(carAI->GetComponent(CompType::BrainAIComp).get());
     //auto cTransformableCar = static_cast<CTransformable*>(carAI->GetComponent(CompType::TransformableComp).get());
 
     // Finalmente cogemos un camino de un nodo a otro cualquiera del mapa
-    if(cPath->stackPath.empty()){
+    if(cBrainAI->stackPath.empty()){
         // cogemos el primer nodo (nodo de referencia de nuestro NavMesh)
         auto navMesh = manNavMesh->GetEntities()[cCurrentNavMesh->currentNavMesh]; //NavMesh en el que esta el coche
         auto cNavMesh = static_cast<CNavMesh*>(navMesh->GetComponent(CompType::NavMeshComp).get());
@@ -117,9 +117,9 @@ void SystemPathPlanning::ChangePosDestination(DataMap* data){
     carAI->SetDestination(cPosDestination);
 
     // ya que ponemos posicion fija, limpiamos el path
-    auto cPath = static_cast<CPath*>(carAI->GetComponent(CompType::PathComp).get());
-    while(!cPath->stackPath.empty()){
-        cPath->stackPath.pop();
+    auto cBrainAI = static_cast<CBrainAI*>(carAI->GetComponent(CompType::BrainAIComp).get());
+    while(!cBrainAI->stackPath.empty()){
+        cBrainAI->stackPath.pop();
     }
 }
 
@@ -129,14 +129,14 @@ void SystemPathPlanning::CalculatePathToNavMesh(DataMap* data){
     auto graph = any_cast<ManWayPoint*>((*data)[MAN_WAYPOINTS]);
     auto carAI = any_cast<CarAI*>((*data)[ACTUAL_CAR]);
     auto targetNavMesh = any_cast<int>((*data)[ID_DESTINATION]);
-    auto cPath = static_cast<CPath*>(carAI->GetComponent(CompType::PathComp).get());
+    auto cBrainAI = static_cast<CBrainAI*>(carAI->GetComponent(CompType::BrainAIComp).get());
     auto cCurrentNavMesh = static_cast<CCurrentNavMesh*>(carAI->GetComponent(CompType::CurrentNavMeshComp).get());
     //cout << "Mi NavMesh actual es el: " << cCurrentNavMesh->currentNavMesh << endl;
     // auto cPosDestination = static_cast<CPosDestination*>(any_cast<CarAI*>(data[ACTUAL_CAR])->GetComponent(CompType::PosDestination).get());
 
     //Vaciamos el Path
-    while(!cPath->stackPath.empty()){
-        cPath->stackPath.pop();
+    while(!cBrainAI->stackPath.empty()){
+        cBrainAI->stackPath.pop();
     }
 
     //Buscamos el waypoint de referencia == 2
@@ -202,13 +202,13 @@ void SystemPathPlanning::UpdateDijkstra(CarAI* carAI, ManWayPoint* graph, ManNav
         && (cPosDestination->position.x - radious) < cTransformable->position.x && (cPosDestination->position.x + radious) >= cTransformable->position.x
         && (cPosDestination->position.y - radious) < cTransformable->position.y && (cPosDestination->position.y + radious) >= cTransformable->position.y){
         //Tenemos que comprobar si le quedan mas nodos que visitar en el path
-        auto cPath = static_cast<CPath*>(carAI->GetComponent(CompType::PathComp).get());
+        auto cBrainAI = static_cast<CBrainAI*>(carAI->GetComponent(CompType::BrainAIComp).get());
 
-        if(!cPath->stackPath.empty()){
-            //auto actualNode = cPath->stackPath.top(); //Id del waypoint en el que estamos
-            cPath->stackPath.pop();
-            if(!cPath->stackPath.empty()){
-                auto cWayPoint = static_cast<CWayPoint*>(graph->GetEntities()[cPath->stackPath.top()]->GetComponent(CompType::WayPointComp).get());
+        if(!cBrainAI->stackPath.empty()){
+            //auto actualNode = cBrainAI->stackPath.top(); //Id del waypoint en el que estamos
+            cBrainAI->stackPath.pop();
+            if(!cBrainAI->stackPath.empty()){
+                auto cWayPoint = static_cast<CWayPoint*>(graph->GetEntities()[cBrainAI->stackPath.top()]->GetComponent(CompType::WayPointComp).get());
                 cPosDestination->position = cWayPoint->position;
                 carAI->SetDestination(cPosDestination);
             }

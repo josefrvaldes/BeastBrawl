@@ -98,7 +98,7 @@ class CLEngine {
         //! @param depth Profundidad
         //! @param scale Escalado
         //! @param color Color 
-        void RenderText2D(std::string& text, GLfloat x, GLfloat y, GLfloat depth, GLfloat scale, glm::vec3& color);
+        void RenderText2D(std::string text, GLfloat x, GLfloat y, GLfloat depth, GLfloat scale, glm::vec3 color);
 
         //void renderBillboard();
 

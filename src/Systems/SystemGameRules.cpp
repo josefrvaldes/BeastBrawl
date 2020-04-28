@@ -14,7 +14,7 @@ SystemGameRules::SystemGameRules(){
 
 }
 
-void SystemGameRules::UpdateGameRules(Entity& globalClock_) const{
+bool SystemGameRules::UpdateGameRules(Entity& globalClock_) const{
 
     // UPDATE RELOJ GLOBAL
     auto cClock = static_cast<CClock*>(globalClock_.GetComponent(CompType::ClockComp).get());
@@ -25,9 +25,8 @@ void SystemGameRules::UpdateGameRules(Entity& globalClock_) const{
     if(cClock->accumulatedTime/1000.0 > cClock->DURATION_TIME/1000.0){
         cout << "Se acabo el tiempo, nadie gana!!! \n";
         //Game::GetInstance()->SetState(State::ENDRACE);
-        
-        EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_ENDRACE});
-
+        return true;
+        // EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_ENDRACE});
     }
 
     //Sonido reloj
@@ -38,12 +37,12 @@ void SystemGameRules::UpdateGameRules(Entity& globalClock_) const{
         EventManager::GetInstance().AddEventMulti(Event{EventType::NOT_CLOCK});
     }
 
-
+    return false;
 }
 
 
 
-void SystemGameRules::UpdateRulesCarPowerUps(Entity& car_, Entity& totem_) const{
+bool SystemGameRules::UpdateRulesCarPowerUps(Entity& car_, Entity& totem_) const{
     auto cTotem = static_cast<CTotem*>(car_.GetComponent(CompType::TotemComp).get());
     if (cTotem->active) {
         cTotem->accumulatedTime += duration_cast<milliseconds>(system_clock::now() - cTotem->timeStart).count();
@@ -62,7 +61,8 @@ void SystemGameRules::UpdateRulesCarPowerUps(Entity& car_, Entity& totem_) const
     if(cTotem->accumulatedTime/1000.0 > cTotem->DURATION_TIME/1000.0){
         cout << "Has ganado \n";
         //Game::GetInstance()->SetState(State::ENDRACE);
-        EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_ENDRACE});
+        return true;
+        // EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_ENDRACE});
 
     }
     // Actualiza el componente nitro
@@ -75,6 +75,7 @@ void SystemGameRules::UpdateRulesCarPowerUps(Entity& car_, Entity& totem_) const
     if(cShield->activePowerUp==true && duration_cast<milliseconds>(system_clock::now() - cShield->timeStart).count() > cShield->durationTime){  // comprueba el tiempo desde que se lanzo
         cShield->deactivePowerUp();
     }
+    return false;
 }
 
 

@@ -15,12 +15,11 @@
 #include <Components/CId.h>
 #include <Components/CMesh.h>
 #include <Components/CNamePlate.h>
-#include <Components/CPath.h>
+#include <Components/CBrainAI.h>
 #include <Components/CTexture.h>
 #include <Components/CTotem.h>
 #include <Components/CType.h>
 #include <Components/CWayPointEdges.h>
-#include <Components/CMovementType.h>
 #include <Components/CNavMesh.h>
 #include <Components/CCurrentNavMesh.h>
 #include <Components/CCar.h>
@@ -471,6 +470,9 @@ void RenderFacadeIrrlicht::FacadeAnimate(vector<shared_ptr<Entity>> entities) {
 
 }
 
+void RenderFacadeIrrlicht::Draw2DImage(float x_, float y_, int width_, int height_, float depth_, string file_, bool bool_) const {}
+
+std::tuple<int, int> RenderFacadeIrrlicht::GetScreenSize() {return std::tuple<int, int>(0,0);}
 
 //INPUTS : Una entidad GameObject
 //TODO: Llevar cuidado con las rutas de las texturas si luego se mueven las carpetas
@@ -1298,7 +1300,7 @@ void RenderFacadeIrrlicht::FacadeDrawAIDebug(ManCar* manCars, ManNavMesh* manNav
             auto cTransformableCar = static_cast<CTransformable*>(carAI->GetComponent(CompType::TransformableComp).get());
             auto cDimensions = static_cast<CDimensions*>(carAI->GetComponent(CompType::DimensionsComp).get());
             auto cCurrentNavMesh = static_cast<CCurrentNavMesh*>(carAI->GetComponent(CompType::CurrentNavMeshComp).get());
-            //auto cTargetNavMesh = static_cast<CTargetNavMesh*>(carAI->GetComponent(CompType::TargetNavMeshComp).get());
+            //auto CBrainAI = static_cast<CBrainAI*>(carAI->GetComponent(CompType::BrainAIComp).get());
 
             Draw3DLine(cPosDestination->position,cTransformableCar->position);
             //Ahora vamos a dibujar su CPath
@@ -1326,8 +1328,8 @@ void RenderFacadeIrrlicht::FacadeDrawAIDebug(ManCar* manCars, ManNavMesh* manNav
                                                         core::stringw(cPosDestination->position.y) +core::stringw(" | ") + 
                                                         core::stringw(cPosDestination->position.z) +core::stringw(" \n ");
 
-            auto cPath = static_cast<CPath*>(carAI->GetComponent(CompType::PathComp).get());
-            auto cPathAux = stack<int>(cPath->stackPath);
+            auto cBrainAI = static_cast<CBrainAI*>(carAI->GetComponent(CompType::BrainAIComp).get());
+            auto cPathAux = stack<int>(cBrainAI->stackPath);
 
             core::stringw pathText = posDestinationText + core::stringw("Path: ");
             while(!cPathAux.empty()){
@@ -1338,11 +1340,10 @@ void RenderFacadeIrrlicht::FacadeDrawAIDebug(ManCar* manCars, ManNavMesh* manNav
             pathText += core::stringw("\n");
 
             core::stringw navMeshText = pathText + core::stringw("Current NavMesh: ") + core::stringw(cCurrentNavMesh->currentNavMesh) + core::stringw("\n")+core::stringw("\n");
-                                                //core::stringw("Target NavMesh: ")  + core::stringw(cTargetNavMesh->targetNavMesh) + 
+                                                //core::stringw("Target NavMesh: ")  + core::stringw(CBrainAI->targetNavMesh) + 
             
-            auto cMovementType = static_cast<CMovementType*>(carAI->GetComponent(CompType::MovementComp).get());
 
-            core::stringw movementTypeText = navMeshText + core::stringw("Tipo de IA: ") + core::stringw(cMovementType->movementType.c_str()) + core::stringw("\n");
+            core::stringw movementTypeText = navMeshText + core::stringw("Tipo de IA: ") + core::stringw(cBrainAI->movementType.c_str()) + core::stringw("\n");
 
             font->draw(movementTypeText,
                 core::rect<s32>(900, 55, 500, 500),
@@ -1354,9 +1355,9 @@ void RenderFacadeIrrlicht::FacadeDrawAIDebug(ManCar* manCars, ManNavMesh* manNav
 }
 
 void RenderFacadeIrrlicht::FacadeDrawAIDebugPath(Entity* carAI, ManWayPoint* manWayPoint) const{
-    auto cPath = static_cast<CPath*>(carAI->GetComponent(CompType::PathComp).get());
+    auto cBrainAI = static_cast<CBrainAI*>(carAI->GetComponent(CompType::BrainAIComp).get());
 
-    auto cPathAux = stack<int>(cPath->stackPath);
+    auto cPathAux = stack<int>(cBrainAI->stackPath);
 
     auto lastWaypoint = -1;
     if(!cPathAux.empty()){
@@ -1516,3 +1517,7 @@ void RenderFacadeIrrlicht::CleanScene() {
 void RenderFacadeIrrlicht::FacadeUpdateViewport(){
     //device->UpdateViewport();
 }
+
+void RenderFacadeIrrlicht::SetCamTarget(glm::vec3 pos) {
+    
+};

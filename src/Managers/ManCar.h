@@ -27,7 +27,7 @@ struct CarHuman;
 struct CarAI;
 struct Data;
 struct Physics;
-struct Camera;
+//struct Camera;
 struct ManTotem;
 struct PhysicsAI;
 struct SystemBtPowerUp;
@@ -39,15 +39,22 @@ struct SystemGameRules;
 class ManCar : public Manager {
    public:
     ManCar();
-    ManCar(Physics *, Camera *);
+    //ManCar();
     ~ManCar();
 
     void CreateMainCar(int pj);
     void CreateHumanCar(int pj, glm::vec3 _position);
-    void UpdateCarPlayer(ManTotem &);
-    void UpdateGeneralCar(Entity& car_, Entity& totem_);
-    void UpdateCarAI(CarAI* carAI, ManTotem* m_manTotem);
-    void UpdateCarHuman(Entity* CarHuman, ManTotem*);
+
+
+    /**
+     * @return true o false dependiendo si la partida debe terminar o no
+     */
+    bool UpdateCarPlayer(ManTotem &);
+    bool UpdateGeneralCar(Entity& car_, Entity& totem_);
+    bool UpdateCarAI(CarAI* carAI, ManTotem* m_manTotem);
+    bool UpdateCarHuman(Entity* CarHuman, ManTotem*);
+
+
     shared_ptr<CarHuman>& GetCar() { return car; };
 
     void CreateCarAI(int pj);
@@ -60,11 +67,12 @@ class ManCar : public Manager {
     void Integrate(float) override;
     Entity* GetDesirableTarget(Entity* actualCar);
     void SetSystemOnline(SystemOnline* systOn){ systemOnline = systOn; };
+    Entity* GetCurrentWinner();
     
 
    private:
-    Physics *physics;
-    Camera *cam;
+    //Physics *physics;
+    //Camera *cam;
     void AccelerateCar(DataMap* d);
     void SubscribeToEvents() override;
     void TurnLeftCar(DataMap* d);
@@ -101,6 +109,7 @@ class ManCar : public Manager {
     shared_ptr<CarHuman> car;
     //unique_ptr<PhysicsAI> physicsAI;
     unique_ptr<SystemGameRules> systemGameRules;
+    unique_ptr<Physics> physics;
 
     SystemOnline* systemOnline = nullptr; // en caso de que sea Single va a ser un nullptr
 

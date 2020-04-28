@@ -1351,17 +1351,20 @@ void CLPhysics::HandleCollisionPUWithCar(PowerUp *powerUp, Entity *car) {
     // comprobamos si el coche tenia escudo y el totem.. ya que debe de soltarlo
     auto cShield = static_cast<CShield *>(car->GetComponent(CompType::ShieldComp).get());
     if (cShield->activePowerUp == false) {  // TRUE
-        // debemos hacer danyo al jugador
-        shared_ptr<DataMap> dataCollisonCarPowerUp = make_shared<DataMap>();
-        (*dataCollisonCarPowerUp)[ACTUAL_CAR] = car;  // nos guardamos el puntero al coche
-        EventManager::GetInstance().AddEventMulti(Event{EventType::COLLISION_CAR_POWERUP, dataCollisonCarPowerUp});
+        auto cCar = static_cast<CCar *>(car->GetComponent(CompType::CarComp).get());
+        if(!cCar->hurt) {
+            // debemos hacer danyo al jugador
+            shared_ptr<DataMap> dataCollisonCarPowerUp = make_shared<DataMap>();
+            (*dataCollisonCarPowerUp)[ACTUAL_CAR] = car;  // nos guardamos el puntero al coche
+            EventManager::GetInstance().AddEventMulti(Event{EventType::COLLISION_CAR_POWERUP, dataCollisonCarPowerUp});
 
-        if (static_cast<CTotem *>(car->GetComponent(CompType::TotemComp).get())->active) {
-            auto dataTransformableCar = static_cast<CTransformable *>(car->GetComponent(CompType::TransformableComp).get());
-            shared_ptr<DataMap> dataTransfCar = make_shared<DataMap>();
-            (*dataTransfCar)[CAR_TRANSFORMABLE] = dataTransformableCar;
-            (*dataTransfCar)[ACTUAL_CAR] = car;
-            EventManager::GetInstance().AddEventMulti(Event{EventType::DROP_TOTEM, dataTransfCar});
+            if (static_cast<CTotem *>(car->GetComponent(CompType::TotemComp).get())->active) {
+                auto dataTransformableCar = static_cast<CTransformable *>(car->GetComponent(CompType::TransformableComp).get());
+                shared_ptr<DataMap> dataTransfCar = make_shared<DataMap>();
+                (*dataTransfCar)[CAR_TRANSFORMABLE] = dataTransformableCar;
+                (*dataTransfCar)[ACTUAL_CAR] = car;
+                EventManager::GetInstance().AddEventMulti(Event{EventType::DROP_TOTEM, dataTransfCar});
+            }
         }
     } else {
         cShield->deactivePowerUp();  // desactivamos el escudo

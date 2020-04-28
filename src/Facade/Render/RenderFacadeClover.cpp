@@ -16,19 +16,19 @@
 #include <Components/CMesh.h>
 #include <Components/CParticleSystem.h>
 #include <Components/CNamePlate.h>
-#include <Components/CPath.h>
 #include <Components/CTexture.h>
 #include <Components/CTotem.h>
 #include <Components/CType.h>
 #include <Components/CShader.h>
 #include <Components/CWayPointEdges.h>
 #include <Components/CLight.h>
-#include <Components/CMovementType.h>
+#include <Components/CBrainAI.h>
 #include <Components/CNavMesh.h>
 #include <Components/CCurrentNavMesh.h>
 #include <Components/CCar.h>
 #include <Components/CAnimation.h>
 #include <Components/CClock.h>
+// #include <Components/CBrain.h>
 
 #include <Entities/CarAI.h>
 #include <Entities/CarHuman.h>
@@ -266,6 +266,7 @@ const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
             if(cParticleSystem->started){
                 static_cast<CLParticleSystem*>(node->GetEntity())->Start();
             }
+
             
             node->SetTranslation(glm::vec3(cTransformable->position.x,cTransformable->position.y,-cTransformable->position.z));
             node->SetRotation(glm::vec3(cTransformable->rotation.x,Utils::IrrlichtAngleToOpenGL(cTransformable->rotation.y),cTransformable->rotation.z));
@@ -292,15 +293,34 @@ const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
     // BOUNDING BOX
     if(cType->type != ModelType::PointLight){
         float dimAABB = node->CalculateBoundingBox();
-        //Sacamos sus dimensiones
-        //float height = 10.0;
-        //float width = 10.0;
-        //float depth = 10.0;
         // TODO: el CDimensions solo para NavMesh y para la creacion de PowerUps, no en los coches (o ya veremos)
         shared_ptr<CDimensions> cDimensions = make_shared<CDimensions>(dimAABB, dimAABB, dimAABB);
         cDimensions->boundingBoxMesh = GetBoundingByMesh(cId->id); 
         entity->AddComponent(cDimensions);  //Le añadimos el componente CDimensions al Entity que sea
     }
+
+
+    bool hasChassis = entity->HasComponent(CompType::CompBoundingChassis);
+        if (hasChassis && Constants::DEBUG_SHOW_CHASSIS) {
+            auto cChassis = static_cast<CBoundingChassis *>(entity->GetComponent(CompType::CompBoundingChassis).get());
+            // primera esfera
+            auto radiousSph1 = cChassis->sphereBehind->radius; 
+            auto centerSph1 = cChassis->sphereBehind->center;
+            //cout << "POS X: " << centerSph1.x << " POS Y: " << centerSph1.y << "POS Z:" << centerSph1.z << endl;
+            auto nodeSphere1 = device->AddMesh(device->GetRootNode(),cId->id + Component::ID_DIFFERENCE,"media/sphera.obj");
+            nodeSphere1->SetTranslation(glm::vec3(centerSph1.x, centerSph1.y, -centerSph1.z));
+            nodeSphere1->SetScalation(glm::vec3(radiousSph1));
+            nodeSphere1->SetVisible(false);
+            // segunda esfera
+            auto radiousSph2 = cChassis->sphereFront->radius;
+            auto centerSph2 = cChassis->sphereFront->center;
+            //cout << "POS X: " << centerSph2.x << " POS Y: " << centerSph2.y << "POS Z:" << centerSph2.z << endl;
+            auto nodeSphere2 = device->AddMesh(device->GetRootNode(),cId->id + Component::ID_DIFFERENCE + Component::ID_DIFFERENCE,"media/sphera.obj");
+            nodeSphere2->SetTranslation(glm::vec3(centerSph2.x, centerSph2.y, -centerSph2.z));
+            nodeSphere2->SetScalation(glm::vec3(radiousSph2));
+            nodeSphere2->SetVisible(false);
+        }
+        
 
     return cId->id;
 }
@@ -320,6 +340,7 @@ const uint16_t RenderFacadeClover::FacadeAddObjectTotem(Entity* entity) {
     idTotem = FacadeAddObject(entity);
     return idTotem;
 }
+
 
 
 /**
@@ -342,7 +363,7 @@ void RenderFacadeClover::UpdateCamera(Entity* cam, ManCar* manCars) {
 
     auto cameraEntity = static_cast<CLCamera*>(camera1->GetEntity());
 
-    targetPosition.y += 17;
+    targetPosition.y += 12;
 
     if(cCamera->camType == CamType::INVERTED_CAM){
         targetPosition.y += 0;
@@ -350,30 +371,18 @@ void RenderFacadeClover::UpdateCamera(Entity* cam, ManCar* manCars) {
         float distX = abs(cTransformable->position.x - targetPosition.x);
         float distZ = abs(-cTransformable->position.z - targetPosition.z);
 
-        if(cTransformable->position.x - targetPosition.x < 0){
-            targetPosition.x = targetPosition.x - (2*distX);
+        if(cTransformable->position.x - targetPosition.x < 0)   targetPosition.x = targetPosition.x - (2*distX);
+        else                                                    targetPosition.x = targetPosition.x + (2*distX);
 
-        }else{
-            targetPosition.x = targetPosition.x + (2*distX);
+        if(-cTransformable->position.z - targetPosition.z < 0)  targetPosition.z = targetPosition.z - (2*distZ);
+        else                                                    targetPosition.z = targetPosition.z + (2*distZ);
 
-        }
- 
-        if(-cTransformable->position.z - targetPosition.z < 0){
-            targetPosition.z = targetPosition.z - (2*distZ);
-
-        }else{
-            targetPosition.z = targetPosition.z + (2*distZ);
-
-        }
         //float angleRotation = (60 * M_PI) / 180.0;
         cameraEntity->SetFOV(60);
-
-        
         cameraEntity->SetCameraTarget(glm::vec3(targetPosition.x,targetPosition.y,targetPosition.z));
         camera1->SetTranslation(glm::vec3(cTransformable->position.x, cTransformable->position.y-5, -cTransformable->position.z));
         //camera1->SetRotation(glm::vec3(cTransformable->rotation.x,cTransformable->rotation.y,cTransformable->rotation.z));
-
-
+        
     }else if(cCamera->camType == CamType::NORMAL_CAM){
         //float angleRotation = (70 * M_PI) / 180.0;
 
@@ -467,6 +476,18 @@ void RenderFacadeClover::FacadeAddCamera(Entity* camera) {
     camera1->SetTranslation(glm::vec3(posX, cTransformable->position.y+100, posZ));
     camera1->SetRotation(glm::vec3(cTransformable->rotation.x,cTransformable->rotation.y,cTransformable->rotation.z));
     camera1->SetScalation(cTransformable->scale);
+
+
+
+    //float dimAABB = node->CalculateBoundingBox();
+    //Sacamos sus dimensiones
+    float height = 10.0;
+    float width = 10.0;
+    float depth = 10.0;
+    shared_ptr<CDimensions> cDimensions = make_shared<CDimensions>(width, height, depth);
+    //cDimensions->boundingBoxMesh = GetBoundingByMesh(cId->id);
+    camera->AddComponent(cDimensions);  //Le añadimos el componente CDimensions al Entity que sea
+
 }
 
 
@@ -614,8 +635,18 @@ void RenderFacadeClover::FacadeInitResources(){
 }
 
 void RenderFacadeClover::FacadeInitIntro() {
-    std::string name = "media/pauseMenu.png";
-    device->GetResourceManager()->GetResourceTexture(name, true);
+    // resourceManager->GetResourceTexture("media/pauseMenu.png", true);
+    // resourceManager->GetResourceTexture("media/menu/main_menu.png", true);
+    // resourceManager->GetResourceTexture("media/menu/elements_menu.png", true);
+
+    // resourceManager->DeleteResourceTexture("media/menu/main_menu.png");
+
+    // resourceManager->GetResourceTexture("media/menu/creditos_hover.png", true);
+
+    // resourceManager->GetResourceTexture("media/menu/main_menu.png", true);
+
+
+
 }
 
 void RenderFacadeClover::FacadeInitMenu() {
@@ -845,13 +876,14 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
 
 void RenderFacadeClover::FacadeDrawIntro() {
     if(!introAnimation){
-        introAnimation = make_unique<Animation2D>("media/introAnimation/Beast Brawl",356,24);
+        introAnimation = make_unique<Animation2D>("media/introAnimation/Beast Brawl.jpg",356,24);
         introAnimation->Start();
     }
-    resourceManager->DeleteResourceTexture(introAnimation->GetCurrentPath() + ".jpg");
+    
+
+    //resourceManager->DeleteResourceTexture(introAnimation->GetCurrentPath());
     introAnimation->Update();
-    // std::string file = "media/intro.png";
-    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, introAnimation->GetCurrentPath()+".jpg", true);
+    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, introAnimation->GetCurrentPath(), true);
 }
 
 void RenderFacadeClover::FacadeDrawMenu() {
@@ -1332,59 +1364,75 @@ void RenderFacadeClover::FacadeDrawAIDebug(ManCar* manCars, ManNavMesh* manNavMe
         if (static_cast<Car*>(carAI.get())->GetTypeCar() == TypeCar::CarAI){
             auto cPosDestination = static_cast<CPosDestination*>(carAI->GetComponent(CompType::PosDestination).get());
             auto cTransformableCar = static_cast<CTransformable*>(carAI->GetComponent(CompType::TransformableComp).get());
-            // auto cDimensions = static_cast<CDimensions*>(carAI->GetComponent(CompType::DimensionsComp).get());
-            // auto cCurrentNavMesh = static_cast<CCurrentNavMesh*>(carAI->GetComponent(CompType::CurrentNavMeshComp).get());
-            //auto cTargetNavMesh = static_cast<CTargetNavMesh*>(carAI->GetComponent(CompType::TargetNavMeshComp).get());
+            auto cDimensions = static_cast<CDimensions*>(carAI->GetComponent(CompType::DimensionsComp).get());
+            auto cCurrentNavMesh = static_cast<CCurrentNavMesh*>(carAI->GetComponent(CompType::CurrentNavMeshComp).get());
+            // auto CBrainAI = static_cast<CBrainAI*>(carAI->GetComponent(CompType::BrainAIComp).get());
 
             Draw3DLine(cPosDestination->position,cTransformableCar->position);
             //Ahora vamos a dibujar su CPath
             FacadeDrawAIDebugPath(carAI.get(),manWayPoint);
 
-            /*
+            int yPos = 650;
+            int yIncrement = -25;
             //Ahora por ultimo en la esquina superior derecha escribimos strings con datos
-            auto cCar = static_cast<CCar*>(carAI->GetComponent(CompType::CarComp).get());        
-            core::stringw transfomableText = core::stringw("Post - Rot - Scale: (") + 
-                                core::stringw(cTransformableCar->position.x) + core::stringw(" | ") +
-                                core::stringw(cTransformableCar->position.y) + core::stringw(" | ") +
-                                core::stringw(cTransformableCar->position.z) + core::stringw(")\n(") +
-                                core::stringw(cTransformableCar->rotation.x) + core::stringw(" | ") +
-                                core::stringw(cTransformableCar->rotation.y) + core::stringw(" | ") +
-                                core::stringw(cTransformableCar->rotation.z) + core::stringw(")\n(") +
-                                core::stringw(cTransformableCar->scale.x)    + core::stringw(" | ") +
-                                core::stringw(cTransformableCar->scale.y)    + core::stringw(" | ") +
-                                core::stringw(cTransformableCar->scale.z)    + core::stringw(")\n") ;
+            auto cCar = static_cast<CCar*>(carAI->GetComponent(CompType::CarComp).get());
+            string text = "Pos - Rot - Scale:(" +
+                                        to_string(cTransformableCar->position.x) + " | " +
+                                        to_string(cTransformableCar->position.y) + " | " +
+                                        to_string(cTransformableCar->position.z) + ")";
 
-            core::stringw dimensionsText = transfomableText + core::stringw("Dimensions: ") + core::stringw(cDimensions->width) + core::stringw(" | ")+ 
-                                                            core::stringw(cDimensions->height) + core::stringw(" | ") + 
-                                                            core::stringw(cDimensions->depth) + core::stringw("\n");
+            device->RenderText2D(text,200,yPos,0.05,0.3,glm::vec3(0.0,0.0,0.0));
+            yPos += yIncrement;
 
-            core::stringw carText = dimensionsText + core::stringw("Speed: ") + core::stringw(cCar->speed) +core::stringw("\n");
-            core::stringw posDestinationText = carText + core::stringw("Destination: ") + core::stringw(cPosDestination->position.x) +core::stringw(" | ") +
-                                                        core::stringw(cPosDestination->position.y) +core::stringw(" | ") + 
-                                                        core::stringw(cPosDestination->position.z) +core::stringw(" \n ");
+            text = "(" +    to_string(cTransformableCar->rotation.x) + " | " +
+                            to_string(cTransformableCar->rotation.y) + " | " +
+                            to_string(cTransformableCar->rotation.z) + ")";
+            device->RenderText2D(text,200,yPos,0.05,0.3,glm::vec3(0.0,0.0,0.0));
+            yPos += yIncrement;
 
-            auto cPath = static_cast<CPath*>(carAI->GetComponent(CompType::PathComp).get());
-            auto cPathAux = stack<int>(cPath->stackPath);
+            text = "(" +    to_string(cTransformableCar->scale.x) + " | " +
+                            to_string(cTransformableCar->scale.y) + " | " +
+                            to_string(cTransformableCar->scale.z) + ")"; 
+            device->RenderText2D(text,200,yPos,0.05,0.3,glm::vec3(0.0,0.0,0.0));
+            yPos += yIncrement;
 
-            core::stringw pathText = posDestinationText + core::stringw("Path: ");
+            text = "Dimensions: " + to_string(cDimensions->width) + " | " + to_string(cDimensions->height) + " | " + to_string(cDimensions->depth); 
+            device->RenderText2D(text,200,yPos,0.05,0.3,glm::vec3(0.0,0.0,0.0));
+            yPos += yIncrement;
+
+            text = "Speed: " + to_string(cCar->speed);
+            device->RenderText2D(text,200,yPos,0.05,0.3,glm::vec3(0.0,0.0,0.0));
+            yPos += yIncrement;
+
+            text = "Destination: " + to_string(cPosDestination->position.x) + " | " + to_string(cPosDestination->position.y) + " | " + to_string(cPosDestination->position.z);
+            device->RenderText2D(text,200,yPos,0.05,0.3,glm::vec3(0.0,0.0,0.0));
+            yPos += yIncrement;
+
+            auto cBrainAI = static_cast<CBrainAI*>(carAI->GetComponent(CompType::BrainAIComp).get());
+            auto cPathAux = stack<int>(cBrainAI->stackPath);
+            text = "Path: ";
             while(!cPathAux.empty()){
                 auto idWaypoint = cPathAux.top();
-                pathText += core::stringw(idWaypoint) + core::stringw(" - ");
+                text += to_string(idWaypoint) + " - ";
                 cPathAux.pop();
             }
-            pathText += core::stringw("\n");
-
-            core::stringw navMeshText = pathText + core::stringw("Current NavMesh: ") + core::stringw(cCurrentNavMesh->currentNavMesh) + core::stringw("\n")+core::stringw("\n");
-                                                //core::stringw("Target NavMesh: ")  + core::stringw(cTargetNavMesh->targetNavMesh) + 
             
-            auto cMovementType = static_cast<CMovementType*>(carAI->GetComponent(CompType::MovementComp).get());
+            device->RenderText2D(text,200,yPos,0.05,0.3,glm::vec3(0.0,0.0,0.0));
+            yPos += yIncrement;
 
-            core::stringw movementTypeText = navMeshText + core::stringw("Tipo de IA: ") + core::stringw(cMovementType->movementType.c_str()) + core::stringw("\n");
+            text = "Current NavMesh: " + to_string(cCurrentNavMesh->currentNavMesh);
+            device->RenderText2D(text,200,yPos,0.05,0.3,glm::vec3(0.0,0.0,0.0));
+            yPos += yIncrement;
 
-            font->draw(movementTypeText,
-                core::rect<s32>(900, 55, 500, 500),
-                video::SColor(255, 0, 0, 0));
-            */
+            text = "Target NavMesh: " + to_string(cBrainAI->targetNavMesh);
+            device->RenderText2D(text,200,yPos,0.05,0.3,glm::vec3(0.0,0.0,0.0));
+            yPos += yIncrement;
+
+            text = "Tipo de IA: " + cBrainAI->movementType;
+            device->RenderText2D(text,200,yPos,0.05,0.3,glm::vec3(0.0,0.0,0.0));
+            yPos += yIncrement;
+
+            
         }
            
     }
@@ -1392,9 +1440,9 @@ void RenderFacadeClover::FacadeDrawAIDebug(ManCar* manCars, ManNavMesh* manNavMe
 }
 
 void RenderFacadeClover::FacadeDrawAIDebugPath(Entity* carAI, ManWayPoint* manWayPoint) const{
-    auto cPath = static_cast<CPath*>(carAI->GetComponent(CompType::PathComp).get());
+    auto cBrainAI = static_cast<CBrainAI*>(carAI->GetComponent(CompType::BrainAIComp).get());
 
-    auto cPathAux = stack<int>(cPath->stackPath);
+    auto cPathAux = stack<int>(cBrainAI->stackPath);
 
     auto lastWaypoint = -1;
     if(!cPathAux.empty()){
@@ -1443,17 +1491,55 @@ void RenderFacadeClover::FacadeSetVisibleEntity(Entity* entity, bool visible){
 
 
 void RenderFacadeClover::FacadeDrawBoundingPlane(Entity* entity) const {
+    if (!showDebug) return;  //Si no esta activado debug retornamos
 
-}
-
-
-void RenderFacadeClover::FacadeDrawBoundingOBB(Entity* entity) const {
-
+    CBoundingPlane *plane = static_cast<CBoundingPlane*>(entity->GetComponent(CompType::CompBoundingPlane).get());
+    
+    vec3 &a = plane->a;
+    vec3 &b = plane->b;
+    vec3 &c = plane->c;
+    vec3 &d = plane->d;
+    
+    Draw3DLine(a, b);
+    Draw3DLine(b, c);
+    Draw3DLine(c, d);
+    Draw3DLine(d, a);
 }
 
 void RenderFacadeClover::FacadeDrawBoundingGround(Entity* entity) const {
+    if (!showDebug) return;  //Si no esta activado debug retornamos
 
+    CBoundingPlane *plane = static_cast<CBoundingPlane*>(entity->GetComponent(CompType::CompBoundingPlane).get());
+    
+    vec3 &a = plane->a;
+    vec3 &b = plane->b;
+    vec3 &c = plane->c;
+    vec3 &d = plane->d;
+    
+    Draw3DLine(a, b, 0, 0, 0);
+    Draw3DLine(b, c, 0, 0, 0);
+    Draw3DLine(c, d, 0, 0, 0);
+    Draw3DLine(d, a, 0, 0, 0);
 }
+
+void RenderFacadeClover::FacadeDrawBoundingOBB(Entity* entity) const {
+    if (!showDebug) return;  //Si no esta activado debug retornamos
+
+    CBoundingOBB *obb = static_cast<CBoundingOBB*>(entity->GetComponent(CompType::CompBoundingOBB).get());
+    
+    for(auto& obbActual : obb->planes){
+        vec3 &a = obbActual.get()->a;
+        vec3 &b = obbActual.get()->b;
+        vec3 &c = obbActual.get()->c;
+        vec3 &d = obbActual.get()->d;
+
+        Draw3DLine(a, b, 0, 0, 200);
+        Draw3DLine(b, c, 0, 0, 200);
+        Draw3DLine(c, d, 0, 0, 200);
+        Draw3DLine(d, a, 0, 0, 200);
+    }
+}
+
 
 void RenderFacadeClover::FacadeDrawBoundingBox(Entity* entity, bool colliding) const{
 
@@ -1476,11 +1562,30 @@ void RenderFacadeClover::FacadeUpdateViewport(){
 ////////////////////////////  CLASE ANIMATION2D  ///////////////////////////
 ////////////////////////////////////////////////////////////////////////////
 
-RenderFacadeClover::Animation2D::Animation2D(const std::string _path, uint16_t _numFrames, uint16_t _fps){
+RenderFacadeClover::Animation2D::Animation2D(std::string _path, uint16_t _numFrames, uint16_t _fps){
     path = _path;
     numFrames = _numFrames;
     fps = _fps;
     timeBetweenFrames = 1.0/(float)fps;
+
+    std::string delimiter = ".";
+
+    size_t pos = 0;
+
+    string auxPath = _path;
+    while ((pos = auxPath.find(delimiter)) != std::string::npos) {
+
+        auxPath.erase(0, pos + delimiter.length());
+    }
+    extension = "." + auxPath;
+
+    auxPath = _path;
+    while ((pos = auxPath.find(delimiter)) != std::string::npos) {
+
+        auxPath.erase(pos, pos + delimiter.length());
+    }
+
+    path = auxPath;
 }
 
 void RenderFacadeClover::Animation2D::Update(){
@@ -1490,10 +1595,13 @@ void RenderFacadeClover::Animation2D::Update(){
 
     //Cambiamos de frame
     if(time >= timeBetweenFrames){
+        //Borramos el frame anterior
+        
         if(actualFrame >= numFrames){
             finished = true;
             return;
         }else{ 
+
             int numFramesDigits = to_string(numFrames-1).length();
             int actualFrameDigits = to_string(actualFrame).length();
 
@@ -1523,4 +1631,20 @@ void RenderFacadeClover::Animation2D::Restart(){
     currentPath = path;
     actualFrame = 0;
     finished    = false;
+}
+
+
+void RenderFacadeClover::SetCamTarget(glm::vec3 pos) {
+    auto cameraEntity = static_cast<CLCamera*>(camera1->GetEntity());
+    pos.z *= -1; // se invierte pq en opengl este eje se invierte
+    cameraEntity->SetCameraTarget(pos);
+}
+
+
+void RenderFacadeClover::Draw2DImage(float x_, float y_, int width_, int height_, float depth_, string file_, bool vertically_) const {
+    device->DrawImage2D(x_, y_, width_, height_, depth_, file_, vertically_);
+}
+
+std::tuple<int, int> RenderFacadeClover::GetScreenSize() {
+    return std::tuple<int, int>(device->GetScreenWidth(), device->GetScreenHeight());
 }

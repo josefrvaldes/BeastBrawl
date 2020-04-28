@@ -14,12 +14,16 @@ class StateInGameMulti : public StateInGame {
     void InitState() override;
     void Input() override;
     void Update() override;
+    void UpdateAnimationStart() override;
+    void UpdateAnimationCountdown() override;
+    void UpdateAnimationEnd() override;
+    void UpdateGame() override;
     void Render() override;
     States GetState() override { return State::States::INGAME_MULTI; };
 
    private:
     void InitializeCLPhysics(ManCar &manCars, ManBoundingWall &, ManBoundingOBB &, ManBoundingGround &, ManPowerUp &, ManNavMesh&, ManBoxPowerUp&, ManTotem &) override;
-    void InitializeManagers(Physics *physics, Camera *cam, const uint32_t timeGame) override;
+    void InitializeManagers(const uint32_t timeGame) override;
     void InitializeSystems(ManCar &manCars, ManBoundingWall &, ManBoundingOBB &, ManBoundingGround &, ManPowerUp &, ManNavMesh&, ManBoxPowerUp&, ManTotem &) override;
     void InitializeFacades() override;
     void AddElementsToRender() override;
