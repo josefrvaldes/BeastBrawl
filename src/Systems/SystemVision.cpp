@@ -64,6 +64,9 @@ void SystemVision::SaveCarInVision(Entity* actualCar, CBrainAI* cBrainAI, ManCar
 void SystemVision::SaveBoxPowerUpInVision(Entity* actualCar, CBrainAI* cBrainAI, ManBoxPowerUp* manBoxPowerUp, ManBoundingOBB* manBoundingOBB){
     for(const auto& boxVision : manBoxPowerUp->GetEntities()){
         auto cTransBox = static_cast<CTransformable*>(boxVision->GetComponent(CompType::TransformableComp).get());
+        auto cBoxPowerUp = static_cast<CBoxPowerUp*>(boxVision->GetComponent(CompType::BoxPowerUpComp).get());
+        if(!cBoxPowerUp->active)
+            continue;
         if(EntityInVisionRange(actualCar, cTransBox->position, cBrainAI->fov)){
             if(!IsOcludedOrFar(actualCar, cBrainAI, cTransBox->position, manBoundingOBB))
                 cBrainAI->boxInVision.emplace_back(boxVision.get());
@@ -126,7 +129,7 @@ glm::vec3 SystemVision::CalculateVectorVelocity(CCar &cCar, CTransformable &tran
 
 
 // comprueba si se encuentra en su campo de vision
-bool SystemVision::EntityInVisionRange(Entity* actualCar, const glm::vec3& posEntity, uint32_t rangeVision) const{
+bool SystemVision::EntityInVisionRange(Entity* actualCar, const glm::vec3& posEntity, int rangeVision) const{
     float seeCar = false;
     // calcular un desplazamiento para ser en tercera persona
     auto cTransformableActual = static_cast<CTransformable*>(actualCar->GetComponent(CompType::TransformableComp).get());
@@ -143,7 +146,13 @@ bool SystemVision::EntityInVisionRange(Entity* actualCar, const glm::vec3& posEn
     if (valueAtan2 < 0)
         valueAtan2 += 360;
 
+
     //compare with actualCar actualRotation
+    float offset = valueAtan2 - cTransformableActual->rotation.y;
+    if(offset<=rangeVision && offset>=-rangeVision){
+        seeCar = true;
+    }
+/*
     if (cTransformableActual->rotation.y - rangeVision >= 0 && cTransformableActual->rotation.y + rangeVision < 360) {
         if (cTransformableActual->rotation.y - rangeVision < valueAtan2 && cTransformableActual->rotation.y + rangeVision > valueAtan2) {
             seeCar = true;
@@ -158,7 +167,7 @@ bool SystemVision::EntityInVisionRange(Entity* actualCar, const glm::vec3& posEn
         if (rotMin < valueAtan2 || rotMax > valueAtan2) {
             seeCar = true;
         }
-    }
+    }*/
     return seeCar;
 }
 

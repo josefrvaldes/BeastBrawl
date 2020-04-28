@@ -51,7 +51,7 @@ public:
 
 
     // elementos en el rango de vision
-    int fov = 75;
+    int fov = 70;
     float distanceVision {600};
     std::vector<Entity*> carInVision;
     std::vector<Entity*> boxInVision;
