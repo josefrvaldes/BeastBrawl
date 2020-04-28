@@ -10,22 +10,22 @@ extern "C" {
     #include <fmod_errors.h>
 }
 
-#include "SoundNode.h"
+#include "SharpNode.h"
 
 
 using namespace std;
 
 namespace CLSE {
-    class SoundEngine {
+    class SharpEngine {
         public:
-            explicit SoundEngine();
-            ~SoundEngine();
+            explicit SharpEngine();
+            ~SharpEngine();
 
-            void InitSoundEngine(bool);
-            void TerminateSoundEngine();
+            void InitSharpEngine(bool);
+            void TerminateSharpEngine();
             void UnloadAllBanks();
             bool LoadSoundBank(const string&);
-            void LoadSoundEvent(const string&, const bool);
+            void LoadSoundEvent(const string&, const bool, const bool);
             void PlayEvent(const string&);
             void PlayEventWithVolume(const string&, float);
             void StopAllEvents();
@@ -46,12 +46,13 @@ namespace CLSE {
             void SetListenerPosition(const glm::vec3&, const glm::vec3&);
             void Set3DAttributes(const string&, const glm::vec3&, const float);
             void SetEventPosition3D(FMOD_STUDIO_EVENTINSTANCE*, const glm::vec3&, const float);
+            void SetMusicVolume(float mv);
             void SetGlobalVolume(float gv);
-            float GetGlobalVolume() { return globalVolume; };
             void SetVolume(FMOD_STUDIO_EVENTINSTANCE*, float);
             void SetVolume(const string&, float);
+            float GetGlobalVolume() { return globalVolume; };
 
-            void CreateSoundNode2D(const string&);
+            void CreateSoundNode2D(const string&, bool);
             void CreateSoundNodeEstatic3D(uint16_t, glm::vec3&, string&, bool);
             void CreateSoundNodeDinamic3D(uint16_t, glm::vec3&, string&, bool, bool);
 
@@ -67,12 +68,13 @@ namespace CLSE {
             FMOD_STUDIO_BANK*     stringsBank { nullptr };
 
             float globalVolume { 0.33 };
+            float musicVolume { 0.99 };
 
             unordered_map<string, FMOD_STUDIO_BANK*>              banks;
             unordered_map<string, FMOD_STUDIO_EVENTDESCRIPTION *>  soundDescriptions;
 
-            unordered_map<string, unique_ptr<SoundNode>>     eventInstances2D;
-            unordered_map<string, unique_ptr<SoundNode>>     eventInstancesEstatic3D;
-            unordered_map<string, unique_ptr<SoundNode>>     eventInstancesDinamic3D;
+            unordered_map<string, unique_ptr<SharpNode>>     eventInstances2D;
+            unordered_map<string, unique_ptr<SharpNode>>     eventInstancesEstatic3D;
+            unordered_map<string, unique_ptr<SharpNode>>     eventInstancesDinamic3D;
     };
 }

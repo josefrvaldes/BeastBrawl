@@ -19,14 +19,14 @@ SoundFacadeFMOD::~SoundFacadeFMOD() {
 }
 
 void SoundFacadeFMOD::Initialize() {
-    soundEngine = new CLSE::SoundEngine();
+    soundEngine = new CLSE::SharpEngine();
 }
 
 /**
  * Libera los audios y bancos de sonido.
  */
 void SoundFacadeFMOD::Terminate() {
-    soundEngine->TerminateSoundEngine();
+    soundEngine->TerminateSharpEngine();
 }
 
 
@@ -40,7 +40,7 @@ void SoundFacadeFMOD::Terminate() {
  * Crea la instancia de sonido 2D
  */
 void SoundFacadeFMOD::CreateSound2D(const string& nameEvent) {
-    soundEngine->CreateSoundNode2D(nameEvent);
+    soundEngine->CreateSoundNode2D(nameEvent, false);
 }
 
 /**
@@ -267,6 +267,12 @@ void SoundFacadeFMOD::SubscribeToGameEvents(const uint8_t numState) {
                     EventType::SET_GLOBAL_VOLUME,
                     bind(&SoundFacadeFMOD::SetGlobalVolume, this, placeholders::_1),
                     "SetGlobalVolume"});
+
+            EventManager::GetInstance().SubscribeMulti(Listener{
+                    EventType::SET_MUSIC_VOLUME,
+                    bind(&SoundFacadeFMOD::SetMusicVolume, this, placeholders::_1),
+                    "SetMusicVolume"});
+
             break;
         case 9:         // CREDITS
             EventManager::GetInstance().SubscribeMulti(Listener{
@@ -295,6 +301,7 @@ void SoundFacadeFMOD::LoadSoundByState(const uint8_t numState) {
             //soundEngine->UnloadAllBanks();
             //StopEvent("Musica/menu");
             LoadSoundBank("Menu", 0);
+            LoadSoundBank("Musica", 0);
             if (!soundEngine->IsPlaying2D("Musica/menu")) {
                 PlayEvent("Musica/menu");
             }
@@ -356,13 +363,20 @@ void SoundFacadeFMOD::LoadSoundByState(const uint8_t numState) {
  * @param type - 1 para eventos 3D y 0 para eventos 2D.
  */
 void SoundFacadeFMOD::LoadSoundBank(const string& nameBank, const bool type) {
-    //cout << "********* Voy a cargar el banco: " << nameBank << endl;
     soundEngine->LoadSoundBank(nameBank);
     auto it = events.find(nameBank);
     if ( it != events.end()) {
-        for (const auto& event : events[nameBank]) {
-            LoadSoundEvent(event, type);
+        if (nameBank.compare("Musica") != 0) {
+            for (const auto& event : events[nameBank]) {
+                LoadSoundEvent(event, type, false);
+            }
+        } else {
+            for (const auto& event : events[nameBank]) {
+                LoadSoundEvent(event, type, true);
+            }
         }
+        //cout << "********* Cargado el banco: " << nameBank << endl;
+
     }
 
 }
@@ -372,8 +386,9 @@ void SoundFacadeFMOD::LoadSoundBank(const string& nameBank, const bool type) {
  * @param nameEvent - Identificacion del evento en FMOD Studio.
  * @param type - 3D es 1 y 2D es 0
  */
-void SoundFacadeFMOD::LoadSoundEvent(const string& nameEvent, const bool type) {
-    soundEngine->LoadSoundEvent(nameEvent, type);
+void SoundFacadeFMOD::LoadSoundEvent(const string& nameEvent, const bool type, const bool music) {
+    soundEngine->LoadSoundEvent(nameEvent, type, music);
+    //cout << "***** Cargado el evento: " << nameEvent << endl;
 }
 
 /**
@@ -571,6 +586,11 @@ void SoundFacadeFMOD::StartGame() {
 void SoundFacadeFMOD::SetGlobalVolume(DataMap* d) { 
     auto volume = any_cast<float>((*d)[NUM]);
     soundEngine->SetGlobalVolume(volume);
+}
+
+void SoundFacadeFMOD::SetMusicVolume(DataMap* d) { 
+    auto volume = any_cast<float>((*d)[NUM]);
+    soundEngine->SetMusicVolume(volume);
 }
 
 // -------------------------------------------------- SELECCION
