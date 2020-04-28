@@ -408,7 +408,7 @@ void SoundEngine::UpdateEngine(){
     for ( auto it = eventInstancesDinamic3D.begin(); it != eventInstancesDinamic3D.end(); ) {
         if ( !IsPlayingDinamic3D(it->first) && it->second->GetClean()) {
             ERRFMODCHECK(FMOD_Studio_EventInstance_Release(it->second.get()->GetInstance()));
-            cout << "Se ha borrado la instancia: " << it->first << endl;
+            //cout << "Se ha borrado la instancia: " << it->first << endl;
             it = eventInstancesDinamic3D.erase(it);
         } else {
             ++it;

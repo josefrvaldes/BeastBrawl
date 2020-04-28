@@ -253,6 +253,7 @@ const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
             if(cParticleSystem->started){
                 static_cast<CLParticleSystem*>(node->GetEntity())->Start();
             }
+
             
             node->SetTranslation(glm::vec3(cTransformable->position.x,cTransformable->position.y,-cTransformable->position.z));
             node->SetRotation(glm::vec3(cTransformable->rotation.x,Utils::IrrlichtAngleToOpenGL(cTransformable->rotation.y),cTransformable->rotation.z));
@@ -279,15 +280,34 @@ const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
     // BOUNDING BOX
     if(cType->type != ModelType::PointLight){
         float dimAABB = node->CalculateBoundingBox();
-        //Sacamos sus dimensiones
-        //float height = 10.0;
-        //float width = 10.0;
-        //float depth = 10.0;
         // TODO: el CDimensions solo para NavMesh y para la creacion de PowerUps, no en los coches (o ya veremos)
         shared_ptr<CDimensions> cDimensions = make_shared<CDimensions>(dimAABB, dimAABB, dimAABB);
         cDimensions->boundingBoxMesh = GetBoundingByMesh(cId->id); 
         entity->AddComponent(cDimensions);  //Le añadimos el componente CDimensions al Entity que sea
     }
+
+
+    bool hasChassis = entity->HasComponent(CompType::CompBoundingChassis);
+        if (hasChassis && Constants::DEBUG_SHOW_CHASSIS) {
+            auto cChassis = static_cast<CBoundingChassis *>(entity->GetComponent(CompType::CompBoundingChassis).get());
+            // primera esfera
+            auto radiousSph1 = cChassis->sphereBehind->radius; 
+            auto centerSph1 = cChassis->sphereBehind->center;
+            //cout << "POS X: " << centerSph1.x << " POS Y: " << centerSph1.y << "POS Z:" << centerSph1.z << endl;
+            auto nodeSphere1 = device->AddMesh(device->GetRootNode(),cId->id + Component::ID_DIFFERENCE,"media/sphera.obj");
+            nodeSphere1->SetTranslation(glm::vec3(centerSph1.x, centerSph1.y, -centerSph1.z));
+            nodeSphere1->SetScalation(glm::vec3(radiousSph1));
+            nodeSphere1->SetVisible(false);
+            // segunda esfera
+            auto radiousSph2 = cChassis->sphereFront->radius;
+            auto centerSph2 = cChassis->sphereFront->center;
+            //cout << "POS X: " << centerSph2.x << " POS Y: " << centerSph2.y << "POS Z:" << centerSph2.z << endl;
+            auto nodeSphere2 = device->AddMesh(device->GetRootNode(),cId->id + Component::ID_DIFFERENCE + Component::ID_DIFFERENCE,"media/sphera.obj");
+            nodeSphere2->SetTranslation(glm::vec3(centerSph2.x, centerSph2.y, -centerSph2.z));
+            nodeSphere2->SetScalation(glm::vec3(radiousSph2));
+            nodeSphere2->SetVisible(false);
+        }
+        
 
     return cId->id;
 }
@@ -592,15 +612,15 @@ void RenderFacadeClover::FacadeInitResources(){
 }
 
 void RenderFacadeClover::FacadeInitIntro() {
-    resourceManager->GetResourceTexture("media/pauseMenu.png", true);
-    resourceManager->GetResourceTexture("media/menu/main_menu.png", true);
-    resourceManager->GetResourceTexture("media/menu/elements_menu.png", true);
+    // resourceManager->GetResourceTexture("media/pauseMenu.png", true);
+    // resourceManager->GetResourceTexture("media/menu/main_menu.png", true);
+    // resourceManager->GetResourceTexture("media/menu/elements_menu.png", true);
 
-    resourceManager->DeleteResourceTexture("media/menu/main_menu.png");
+    // resourceManager->DeleteResourceTexture("media/menu/main_menu.png");
 
-    resourceManager->GetResourceTexture("media/menu/creditos_hover.png", true);
+    // resourceManager->GetResourceTexture("media/menu/creditos_hover.png", true);
 
-    resourceManager->GetResourceTexture("media/menu/main_menu.png", true);
+    // resourceManager->GetResourceTexture("media/menu/main_menu.png", true);
 
 
 
@@ -835,7 +855,7 @@ void RenderFacadeClover::FacadeDrawIntro() {
     }
     
 
-    resourceManager->DeleteResourceTexture(introAnimation->GetCurrentPath());
+    //resourceManager->DeleteResourceTexture(introAnimation->GetCurrentPath());
     introAnimation->Update();
     device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, introAnimation->GetCurrentPath(), true);
 }
@@ -1402,17 +1422,55 @@ void RenderFacadeClover::FacadeSetVisibleEntity(Entity* entity, bool visible){
 
 
 void RenderFacadeClover::FacadeDrawBoundingPlane(Entity* entity) const {
+    if (!showDebug) return;  //Si no esta activado debug retornamos
 
-}
-
-
-void RenderFacadeClover::FacadeDrawBoundingOBB(Entity* entity) const {
-
+    CBoundingPlane *plane = static_cast<CBoundingPlane*>(entity->GetComponent(CompType::CompBoundingPlane).get());
+    
+    vec3 &a = plane->a;
+    vec3 &b = plane->b;
+    vec3 &c = plane->c;
+    vec3 &d = plane->d;
+    
+    Draw3DLine(a, b);
+    Draw3DLine(b, c);
+    Draw3DLine(c, d);
+    Draw3DLine(d, a);
 }
 
 void RenderFacadeClover::FacadeDrawBoundingGround(Entity* entity) const {
+    if (!showDebug) return;  //Si no esta activado debug retornamos
 
+    CBoundingPlane *plane = static_cast<CBoundingPlane*>(entity->GetComponent(CompType::CompBoundingPlane).get());
+    
+    vec3 &a = plane->a;
+    vec3 &b = plane->b;
+    vec3 &c = plane->c;
+    vec3 &d = plane->d;
+    
+    Draw3DLine(a, b, 0, 0, 0);
+    Draw3DLine(b, c, 0, 0, 0);
+    Draw3DLine(c, d, 0, 0, 0);
+    Draw3DLine(d, a, 0, 0, 0);
 }
+
+void RenderFacadeClover::FacadeDrawBoundingOBB(Entity* entity) const {
+    if (!showDebug) return;  //Si no esta activado debug retornamos
+
+    CBoundingOBB *obb = static_cast<CBoundingOBB*>(entity->GetComponent(CompType::CompBoundingOBB).get());
+    
+    for(auto& obbActual : obb->planes){
+        vec3 &a = obbActual.get()->a;
+        vec3 &b = obbActual.get()->b;
+        vec3 &c = obbActual.get()->c;
+        vec3 &d = obbActual.get()->d;
+
+        Draw3DLine(a, b, 0, 0, 200);
+        Draw3DLine(b, c, 0, 0, 200);
+        Draw3DLine(c, d, 0, 0, 200);
+        Draw3DLine(d, a, 0, 0, 200);
+    }
+}
+
 
 void RenderFacadeClover::FacadeDrawBoundingBox(Entity* entity, bool colliding) const{
 

@@ -60,7 +60,7 @@ int main() {
         auto resourceShaderSkybox = resourceManager->GetResourceShader("CLEngine/src/Shaders/skybox.vert", "CLEngine/src/Shaders/skybox.frag");
         auto resourceMeshGround = resourceManager->GetResourceMesh("media/training_ground.obj", true);
         auto resourceMeshTotem = resourceManager->GetResourceMesh("media/totem.obj", true);
-        auto resourceMesh = resourceManager->GetResourceMesh("media/kart_physics.obj", true);
+        auto resourceMesh = resourceManager->GetResourceMesh("media/sphere.OBJ", true);
         auto resourceMeshBox = resourceManager->GetResourceMesh("media/TEST_BOX.obj", true);
         // auto animationKong = resourceManager->GetResourceAnimation("media/animations/kong/001kong.obj", 75, true);
         // auto animationCube = resourceManager->GetResourceAnimation("media/animations/cube/001cube.obj", 4, true);
@@ -91,7 +91,7 @@ int main() {
         auto camera = device->AddCamera(device->GetRootNode(),4);
         camera->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
 
-        auto mesh2 = device->AddMesh(mesh1,5);
+        auto mesh2 = device->AddMesh(device->GetRootNode(),5);
         mesh2->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
 
         auto nodeKongAnim = device->AddMesh(device->GetRootNode(),6);
@@ -153,7 +153,7 @@ int main() {
         mesh1->SetRotation(glm::vec3(0.0f, 0.0f, 0.0f));
         mesh1->SetTranslation(glm::vec3(50.0f, 50.0f, 50.0f));
 
-        mesh2->SetScalation(glm::vec3(3.5f, 3.5f, 3.5f));
+        mesh2->SetScalation(glm::vec3(10.5f, 10.5f, 10.5f));
         mesh2->SetRotation(glm::vec3(-90.0f, 0.0f, 0.0f));
         mesh2->SetTranslation(glm::vec3(50.0f, 80.0f, -50.0f));
 
@@ -187,7 +187,6 @@ int main() {
         const uint64_t ANIMATION_DURATION = 5000;
         auto start = Utils::getMillisSinceEpoch();
 
-        smgr->DrawTree(smgr);
 
         CLNode* light3 = nullptr;
         while (device->Run()) {

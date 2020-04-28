@@ -38,19 +38,22 @@ void PhysicsFacadeClover::UpdateCar(Entity* car, Entity* cam) {
 
     
     // vamos a ver si tiene CBoundingChassis
-    // bool hasChassis = car->HasComponent(CompType::CompBoundingChassis); 
-    // if (hasChassis && Constants::DEBUG_SHOW_CHASSIS) {
-    //     auto cChassis = static_cast<CBoundingChassis *>(car->GetComponent(CompType::CompBoundingChassis).get());
-    //     auto cSphere1 = cChassis->sphereBehind;
-    //     auto nodeSphere1 = smgr->GetNodeByID(cId->id + Component::ID_DIFFERENCE);
-    //     nodeSphere1->SetTranslation(glm::vec3(cSphere1->center.x, cSphere1->center.y, cSphere1->center.z));
-    //     nodeSphere1->SetVisible(RenderFacadeIrrlicht::showDebug);
-    //     auto cSphere2 = cChassis->sphereFront;
-    //     auto nodeSphere2 = smgr->GetNodeByID(cId->id + Component::ID_DIFFERENCE + Component::ID_DIFFERENCE);
-    //     nodeSphere2->SetTranslation(glm::vec3(cSphere2->center.x, cSphere2->center.y, cSphere2->center.z));
-    //     nodeSphere2->SetVisible(RenderFacadeIrrlicht::showDebug);
+    bool hasChassis = car->HasComponent(CompType::CompBoundingChassis); 
+    if (hasChassis && Constants::DEBUG_SHOW_CHASSIS) {
+        auto cChassis = static_cast<CBoundingChassis *>(car->GetComponent(CompType::CompBoundingChassis).get());
+        auto cSphere1 = cChassis->sphereBehind;
+        auto nodeSphere1 = device->GetNodeByID(cId->id + Component::ID_DIFFERENCE);
+        nodeSphere1->SetTranslation(glm::vec3(cSphere1->center.x, cSphere1->center.y, -cSphere1->center.z));
+        nodeSphere1->SetVisible(RenderFacadeClover::showDebug);
+        auto cSphere2 = cChassis->sphereFront;
+        auto nodeSphere2 = device->GetNodeByID(cId->id + Component::ID_DIFFERENCE + Component::ID_DIFFERENCE);
+        nodeSphere2->SetTranslation(glm::vec3(cSphere2->center.x, cSphere2->center.y, -cSphere2->center.z));
 
-    // }
+        // cout << "Primera esfera: " << cSphere1->center.x << " | " << cSphere1->center.y << " | " << cSphere1->center.z << endl;
+        // cout << "Segunda esfera: " << cSphere2->center.x << " | " << cSphere2->center.y << " | " << cSphere2->center.z << endl;
+        nodeSphere2->SetVisible(RenderFacadeClover::showDebug);
+
+    }
 }
 
 //@deprecated
@@ -91,33 +94,33 @@ void PhysicsFacadeClover::UpdateTransformable(Entity* entity) {
     //Actualiza el escalado del objeto de irrlicht
     node->SetScalation(glm::vec3(cTransformable->scale.x, cTransformable->scale.y, cTransformable->scale.z));
 
-    /*
-    bool hasSphere = entity->HasComponent(CompType::CompBoundingSphere);
-    if (hasSphere && Constants::DEBUG_SHOW_SPHERES) {
-        auto cSphere = static_cast<CBoundingSphere*>(entity->GetComponent(CompType::CompBoundingSphere).get());
-        scene::ISceneNode* nodeSphere = smgr->getSceneNodeFromId(cId->id + Component::ID_DIFFERENCE);
-        nodeSphere->SetTranslation(glm::vec3(cSphere->center.x, cSphere->center.y, cSphere->center.z));
-        nodeSphere->setVisible(RenderFacadeIrrlicht::showDebug);
-        //nodeSphere->setRotation(glm::vec3(cTransformable->rotation.x, cTransformable->rotation.y, cTransformable->rotation.z));
-        //nodeSphere->setScale(glm::vec3(cTransformable->scale.x, cTransformable->scale.y, cTransformable->scale.z));
-    }
-    */
+    
+    // bool hasSphere = entity->HasComponent(CompType::CompBoundingSphere);
+    // if (hasSphere && Constants::DEBUG_SHOW_SPHERES) {
+    //     auto cSphere = static_cast<CBoundingSphere*>(entity->GetComponent(CompType::CompBoundingSphere).get());
+    //     auto nodeSphere = device->GetNodeByID(cId->id + Component::ID_DIFFERENCE);
+    //     nodeSphere->SetTranslation(glm::vec3(cSphere->center.x, cSphere->center.y, cSphere->center.z));
+    //     nodeSphere->SetVisible(RenderFacadeIrrlicht::showDebug);
+    //     //nodeSphere->setRotation(glm::vec3(cTransformable->rotation.x, cTransformable->rotation.y, cTransformable->rotation.z));
+    //     //nodeSphere->setScale(glm::vec3(cTransformable->scale.x, cTransformable->scale.y, cTransformable->scale.z));
+    // }
+    
    
     
     // vamos a ver si tiene CBoundingChassis
-    // bool hasChassis = entity->HasComponent(CompType::CompBoundingChassis);
-    // if (hasChassis && Constants::DEBUG_SHOW_CHASSIS) {
-    //     auto cChassis = static_cast<CBoundingChassis *>(entity->GetComponent(CompType::CompBoundingChassis).get());
-    //     auto cSphere1 = cChassis->sphereBehind;
-    //     scene::ISceneNode* nodeSphere1 = smgr->getSceneNodeFromId(cId->id + Component::ID_DIFFERENCE);
-    //     nodeSphere1->SetTranslation(glm::vec3(cSphere1->center.x, cSphere1->center.y, cSphere1->center.z));
-    //     nodeSphere1->setVisible(RenderFacadeIrrlicht::showDebug);
-    //     auto cSphere2 = cChassis->sphereFront;
-    //     scene::ISceneNode* nodeSphere2 = smgr->getSceneNodeFromId(cId->id + Component::ID_DIFFERENCE + Component::ID_DIFFERENCE );
-    //     nodeSphere2->SetTranslation(glm::vec3(cSphere2->center.x, cSphere2->center.y, cSphere2->center.z));
-    //     nodeSphere2->setVisible(RenderFacadeIrrlicht::showDebug);
+    bool hasChassis = entity->HasComponent(CompType::CompBoundingChassis);
+    if (hasChassis && Constants::DEBUG_SHOW_CHASSIS) {
+        auto cChassis = static_cast<CBoundingChassis *>(entity->GetComponent(CompType::CompBoundingChassis).get());
+        auto cSphere1 = cChassis->sphereBehind;
+        auto nodeSphere1 = device->GetNodeByID(cId->id + Component::ID_DIFFERENCE);
+        nodeSphere1->SetTranslation(glm::vec3(cSphere1->center.x, cSphere1->center.y, -cSphere1->center.z));
+        nodeSphere1->SetVisible(RenderFacadeClover::showDebug);
+        auto cSphere2 = cChassis->sphereFront;
+        auto nodeSphere2 = device->GetNodeByID(cId->id + Component::ID_DIFFERENCE + Component::ID_DIFFERENCE );
+        nodeSphere2->SetTranslation(glm::vec3(cSphere2->center.x, cSphere2->center.y, -cSphere2->center.z));
+        nodeSphere2->SetVisible(RenderFacadeClover::showDebug);
 
-    // }
+    }
 
 }
 

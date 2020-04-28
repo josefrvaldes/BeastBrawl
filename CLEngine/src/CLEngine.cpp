@@ -904,12 +904,12 @@ const void CLEngine::Draw3DLine(float x1, float y1, float z1, float x2, float y2
     }
     float line[] = {
         x1, y1, z1,
-        x1, y2, z2
+        x2, y2, z2
     };
 
     
     //glEnable(GL_LINE_SMOOTH);
-    //glLineWidth(lineWidth);
+    glLineWidth(lineWidth);
     //glHint(GL_LINE_SMOOTH_HINT,  GL_NICEST);
 
     unsigned int VBOLine, VAOLine;
@@ -922,16 +922,13 @@ const void CLEngine::Draw3DLine(float x1, float y1, float z1, float x2, float y2
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE,  3 * sizeof(float), 0);
     glBindVertexArray(0);
 
-    glm::mat4 modelMat = glm::identity<mat4>();
 
     glUseProgram(debugShader);
 
     glm::vec4 clcolor(color.GetRedNormalized(),color.GetGreenNormalized(),color.GetBlueNormalized(),color.GetAlphaNormalized());
-    glUniformMatrix4fv(glGetUniformLocation(debugShader, "model"), 1, GL_FALSE, glm::value_ptr(modelMat));
     glUniformMatrix4fv(glGetUniformLocation(debugShader, "view"), 1, GL_FALSE, glm::value_ptr(view));
     glUniformMatrix4fv(glGetUniformLocation(debugShader, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
     glUniform4fv(glGetUniformLocation(debugShader, "clcolor"),1, glm::value_ptr(clcolor));
-    glUniform1i(glGetUniformLocation(debugShader,"prueba"),25);
 
     glBindVertexArray(VAOLine);
     glDrawArrays(GL_LINE_LOOP, 0,2); 
