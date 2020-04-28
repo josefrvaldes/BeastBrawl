@@ -91,6 +91,7 @@ class CLEngine {
         //! @param file Ruta a la imagen
         //! @param bool Flip vertical
         void DrawImage2D(float _x, float _y, float _width, float _height, float _depth, string file, bool);
+        void DrawImage2D(float _x, float _y, float scale, float _depth, string file, bool);
         //! Dibuja texto 2D
         //! @param text Texto para dibujar
         //! @param x Posicion en X

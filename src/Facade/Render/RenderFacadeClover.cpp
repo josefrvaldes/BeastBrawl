@@ -785,11 +785,14 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
     CCar* cCar;
     auto w = device->GetScreenWidth();
     auto h = device->GetScreenHeight();
-    auto w2 = w/2;
-    //auto h2 = h/2;
+    auto xtext = 640.0f;
+    auto ytext = 610.0f;
+    float scale = 1.0f;
+    if (w == 1024) scale = 0.75;
+    else if (w == 1920) scale = 1.25;
 
     //CURRENT POWERUP
-    device->DrawImage2D(25.0f, 25.0f, 150.0f, 150.0f, 0.1f ,powerUps[currentPowerUp], true);
+    device->DrawImage2D(25.0f*scale, 25.0f*scale, 150.0f*scale, 150.0f*scale, 0.1f ,powerUps[currentPowerUp], true);
 
     //RANKING
     //TODO: Dejar como debug
@@ -819,7 +822,7 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
         cCar = static_cast<CCar*>(cars->GetComponent(CompType::CarComp).get());
         if (cTotem && cCar && cTotem->active) {
             cadena = "media/marcador.png";
-            device->DrawImage2D(w2 - 112.0f, 50.0f ,225.0f, 90.0f, 0.2f, cadena, true);
+            device->DrawImage2D(w/2 - 112.0f*scale, 50.0f*scale , scale, 0.2f, cadena, true);
 
             switch (cCar->character) {
                 case mainCharacter::PENGUIN:    cadena = "media/hudPenguin.png";    break;
@@ -830,7 +833,7 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
                 case mainCharacter::OCTOPUS:    cadena = "media/hudOctopus.png";    break;
                 default:                                                    break;
             }
-            device->DrawImage2D(w2 - 80.0f, 70.0f, 50.0f, 50.0f, 0.05f, cadena, true);
+            device->DrawImage2D(w/2 - 80.0f*scale, 70.0f*scale, scale/2, 0.05f, cadena, true);
 
             int time = cTotem->SEGUNDOS - cTotem->accumulatedTime/1000;
             cadena = std::to_string(time);
@@ -839,14 +842,18 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
             if(time <= 5) {
                 color = glm::vec3(255.0f, 0.0f, 0.0f);
             }
-            device->RenderText2D(cadena, 640.0f, 610.0f, 0.05f, 0.75f, color);
+
+
+            if (scale == 0.75) { xtext=650.0f; ytext=620.0f; } 
+            else if (scale == 1.25) { xtext=650.0f; ytext=630.0f; }
+            device->RenderText2D(cadena, xtext, ytext, 0.05f, 0.75f, color);
             break;
         }
     }
 
     if (globalClock) {
         cadena = "media/marcador.png";
-        device->DrawImage2D(w-275.0f, 50.0f ,225.0f, 90.0f, 0.2f, cadena, true);
+        device->DrawImage2D(w-275.0f*scale, 50.0f*scale ,scale, 0.2f, cadena, true);
         
         auto cGClock = static_cast<CClock*>(globalClock->GetComponent(CompType::ClockComp).get());
         int time = cGClock->DURATION_TIME/1000 - cGClock->accumulatedTime/1000;
@@ -865,12 +872,15 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
         if(min == 0 && seg <= 30) {
             color = glm::vec3(255.0f, 0.0f, 0.0f);
         }
-        device->RenderText2D(cadena, 1075.0f, 610.0f, 0.05f, 0.75f, color);
+        xtext = 1075.0f;
+        if (scale == 0.75) { xtext=1085.0f; ytext=620.0f; } 
+        else if (scale == 1.25) { xtext=1095.0f; ytext=630.0f; }
+        device->RenderText2D(cadena, xtext, ytext, 0.05f, 0.75f, color);
     }
 
     //MINIMAPA
     cadena = "media/Minimapa240.png";
-    device->DrawImage2D((w - 290.0f), (h - 220.0f), 240.0f, 192.0f, 0.1f, cadena, true);
+    device->DrawImage2D((w - 290.0f*scale), (h - 220.0f*scale), scale, 0.1f, cadena, true);
 
 }
 
