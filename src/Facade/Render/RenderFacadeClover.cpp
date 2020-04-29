@@ -111,6 +111,11 @@ void RenderFacadeClover::FacadeSuscribeEventsSettings() {
         EventType::ENABLE_PARTICLES,
         bind( &RenderFacadeClover::FacadeSetParticlesVisibility, this, placeholders::_1 ),
         "FacadeSetParticlesVisibility"});
+
+    EventManager::GetInstance().Subscribe(Listener{
+        EventType::ENABLE_VEGETATION,
+        bind( &RenderFacadeClover::FacadeSetGrassActivate, this, placeholders::_1 ),
+        "FacadeSetGrassActivate"});
 }
 
 
@@ -142,6 +147,12 @@ void RenderFacadeClover::FacadeSetParticlesVisibility(DataMap* d) const{
     auto mode = any_cast<int>((*d)[TRUEFALSE]);
 
     device->SetParticlesVisibility(mode);
+}
+
+void RenderFacadeClover::FacadeSetGrassActivate(DataMap* d) const{
+    auto mode = any_cast<int>((*d)[TRUEFALSE]);
+
+    device->SetGrassActivate(mode);
 }
 
 /**

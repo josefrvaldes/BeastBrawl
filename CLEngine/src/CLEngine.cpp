@@ -227,7 +227,9 @@ void CLEngine::DrawObjects(){
     CalculateViewProjMatrix();
     CalculateLights();
     smgr->DFSTree(glm::mat4(1.0f),GetActiveCamera());
-    DrawGrass();
+
+    if(grassActivate)
+        DrawGrass();
 }
 
 

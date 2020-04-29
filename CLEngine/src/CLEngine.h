@@ -401,6 +401,9 @@ class CLEngine {
         //! Activa o desactiva las particulas
         //! @param mode Booleano para cambiar el modo
         void SetParticlesVisibility(bool mode);
+        //! Activa o desactiva las vegetación
+        //! @param mode Booleano para cambiar el modo
+        void SetGrassActivate(bool mode) { grassActivate = mode; };
 
 
         
@@ -430,7 +433,7 @@ class CLEngine {
         GLuint VAOText, VBOText;
         std::map<GLchar, Character> characters;
 
-
+        bool grassActivate { true };
 
         inline static glm::mat4 projection;             // matriz proyeccion del modelo
         inline static glm::mat4 view;                   // matriz view del modelo
