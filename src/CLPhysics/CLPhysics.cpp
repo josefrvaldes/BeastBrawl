@@ -1364,6 +1364,14 @@ void CLPhysics::HandleCollisionPUWithCar(PowerUp *powerUp, Entity *car) {
                 (*dataTransfCar)[CAR_TRANSFORMABLE] = dataTransformableCar;
                 (*dataTransfCar)[ACTUAL_CAR] = car;
                 EventManager::GetInstance().AddEventMulti(Event{EventType::DROP_TOTEM, dataTransfCar});
+
+                //EVENTO HUD
+                shared_ptr<DataMap> dataHud = make_shared<DataMap>();
+                if (cCar) {
+                    (*dataHud)[NUM] = (uint16_t)cCar->character;
+                    (*dataHud)[TYPE] = 3;  //Lose
+                    EventManager::GetInstance().AddEventMulti(Event{EventType::SET_EVENT_HUD, dataHud});
+                }
             }
         }
     } else {

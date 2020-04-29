@@ -193,7 +193,7 @@ void RenderFacadeIrrlicht::FacadeUpdatePowerUpHUD(DataMap* d) {
 
 
 
-void RenderFacadeIrrlicht::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* globalClock) {
+void RenderFacadeIrrlicht::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* globalClock, ManHUDEvent* manHud) {
 
     //Voy a actualizar aqui las posiciones donde van porque es el unico sitio donde tengo ambos tipos de coches
 

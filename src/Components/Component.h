@@ -48,7 +48,8 @@ enum CompType {
     ParentNodeComp,
     ParticleSystemComp,
     AnimationComp,
-    BrainAIComp
+    BrainAIComp,
+    EventHudComp
 };
 
 class Component {

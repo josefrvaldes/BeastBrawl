@@ -778,7 +778,7 @@ void RenderFacadeClover::FacadeDraw() const{
 
 }
 
-void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* globalClock) {
+void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* globalClock, ManHUDEvent* manHud) {
 
     std::string cadena;
     CTotem* cTotem;
@@ -881,6 +881,28 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
     //MINIMAPA
     cadena = "media/Minimapa240.png";
     device->DrawImage2D((w - 290.0f*scale), (h - 220.0f*scale), scale, 0.1f, cadena, true);
+
+    //EVENTS
+    if (manHud && manHud->IsEventHUDActive()) {
+        auto& eventhud = manHud->GetEventShow();
+        auto cEventHUD = static_cast<CEventHUD*>(eventhud.get()->GetComponent(CompType::EventHudComp).get());
+        if (cEventHUD) {
+            switch(cEventHUD->typeEvent) {
+                case eventHUDType::LOSE:
+                    device->DrawImage2D(50.0f, h - 200.0f, scale, 0.1f, cadena, true);
+                    break;
+                case eventHUDType::STOLE:
+                    cadena = "media/hudPenguin.png";
+                    device->DrawImage2D(50.0f, h - 200.0f, scale, 0.1f, cadena, true);
+                    break;
+                case eventHUDType::CATCH:
+                    cadena = "media/hudGorilla.png";
+                    device->DrawImage2D(50.0f, h - 200.0f, scale, 0.1f, cadena, true);
+                    break;
+                default: cout << "+++++++ No entiendo este evento" << endl; break;
+            }
+        }
+    }
 
 }
 

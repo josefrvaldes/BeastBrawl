@@ -141,6 +141,7 @@ void StateInGame::InitializeSystems(ManCar &manCars, ManBoundingWall &manWall, M
     sysBoxPowerUp = make_shared<SystemBoxPowerUp>();
     sysLoD = make_unique<SystemLoD>();
     sysRanking = make_unique<SystemRanking>();
+    sysHud = make_unique<SysHud>();
 
     Car *mainCar = static_cast<Car *>(manCars.GetCar().get());
     Car *car = static_cast<Car *>(manCars.GetEntities()[Utils::getRandomInt(1, manCars.GetEntities().size() - 1)].get());
@@ -165,6 +166,7 @@ void StateInGame::InitializeManagers(const uint32_t timeGame) {
     manNamePlates = make_shared<ManNamePlate>(manCars.get());
     manLight = make_shared<ManLight>();
     manGameRules = make_unique<ManGameRules>(timeGame);
+    manHudEvent = make_unique<ManHUDEvent>();
     manParticleSystem = make_unique<ManParticleSystem>();
 
     managersEntities.emplace_back(manCars);
@@ -327,7 +329,9 @@ void StateInGame::UpdateGame() {
 
     renderEngine->FacadeAnimate(manBoxPowerUps->GetEntities());
 
+    //Actualiza el ranking y los eventos de hud
     sysRanking->Update(manCars.get());
+    sysHud->UpdateEventHud(manHudEvent.get());
     gameFinished = manGameRules->Update();
     if (gameFinished)
         GoToEndAnimation();
@@ -364,7 +368,7 @@ void StateInGame::Render() {
     if (Constants::CLIPPING_OCTREE && octreeScene.get())
         octreeScene->Draw(renderEngine);
 
-    renderEngine->FacadeDrawHUD(manCars->GetCar().get(), manCars.get(), manGameRules->GetGlobalClock().get());
+    renderEngine->FacadeDrawHUD(manCars->GetCar().get(), manCars.get(), manGameRules->GetGlobalClock().get(), manHudEvent.get());
     renderEngine->FacadeDrawGraphEdges(manWayPoint.get());
     if (currentUpdateState == UpdateState::COUNTDOWN) {
         // todo: esto de meter el width y el height aquí a piñón y los filenames.. es una kk

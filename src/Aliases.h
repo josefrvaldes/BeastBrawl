@@ -43,6 +43,7 @@ enum DataType{
     STOLE,
     NUM,
     TRUEFALSE,
+    TYPE,
     SCREEN_WIDTH,
     SCREEN_HEIGHT
 };

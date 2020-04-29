@@ -57,6 +57,7 @@ enum EventType {
     CHANGE_DESTINATION,
     PRESS_P,                    // Sonido pito
     UPDATE_POWERUP_HUD,         // Actualiza el hud de powerup
+    SET_EVENT_HUD,
     SET_GLOBAL_VOLUME,          // Actualizar volumen global
     SET_MUSIC_VOLUME,
     SET_RESOLUTION,
