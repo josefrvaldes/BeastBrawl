@@ -1084,6 +1084,7 @@ void InputFacadeClover::ChangeSettings(int option, int value) {
             break;
         case 3:
             (*d)[TRUEFALSE] = value;
+            cout << value << endl;
             EventManager::GetInstance().AddEventMulti(Event{EventType::ENABLE_PARTICLES, d});
             //cout << "TOY PONIENDO O QUITANDO PARTICULAS\n";
             break;

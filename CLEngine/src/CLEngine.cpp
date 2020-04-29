@@ -227,7 +227,9 @@ void CLEngine::DrawObjects(){
     CalculateViewProjMatrix();
     CalculateLights();
     smgr->DFSTree(glm::mat4(1.0f),GetActiveCamera());
-    DrawGrass();
+
+    if(grassActivate)
+        DrawGrass();
 }
 
 
@@ -841,6 +843,10 @@ CLNode* CLEngine::GetNodeByIDAux(unsigned int id, CLNode* node, CLNode* root){
 float CLEngine::GetBoundingSizeById(unsigned int id){
     CLNode* node = GetNodeByID(id);
     return node->CalculateBoundingBox();
+}
+
+void CLEngine::SetParticlesVisibility(bool mode){
+    smgr->SetParticlesActivated(mode);
 }
 
 
