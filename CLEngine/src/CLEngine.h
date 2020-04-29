@@ -398,6 +398,9 @@ class CLEngine {
         CLNode* GetRootNode() const { return smgr.get(); };
         //! Asigna si el nodo es visible en el octree
         void SetOctreeVisibleById(unsigned int id, bool v);
+        //! Activa o desactiva las particulas
+        //! @param mode Booleano para cambiar el modo
+        void SetParticlesVisibility(bool mode);
 
 
         

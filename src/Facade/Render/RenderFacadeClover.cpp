@@ -93,6 +93,8 @@ void RenderFacadeClover::FacadeSuscribeEvents() {
         bind( &RenderFacadeClover::FacadeInitParticleSystem, this, placeholders::_1 ),
         "FacadeInitParticleSystem"});
 
+    
+
 }
 
 /**
@@ -104,6 +106,11 @@ void RenderFacadeClover::FacadeSuscribeEventsSettings() {
         EventType::SET_RESOLUTION,
         bind( &RenderFacadeClover::FacadeSetWindowSize, this, placeholders::_1 ),
         "FacadeSetWindowSize"});
+
+    EventManager::GetInstance().Subscribe(Listener{
+        EventType::ENABLE_PARTICLES,
+        bind( &RenderFacadeClover::FacadeSetParticlesVisibility, this, placeholders::_1 ),
+        "FacadeSetParticlesVisibility"});
 }
 
 
@@ -117,7 +124,7 @@ void RenderFacadeClover::FacadeUpdatePowerUpHUD(DataMap* d) {
     currentPowerUp = int(type);
 }
 
-void RenderFacadeClover::FacadeInitParticleSystem(DataMap* d){
+void RenderFacadeClover::FacadeInitParticleSystem(DataMap* d) const{
     auto idEntity = any_cast<uint16_t>((*d)[ID]);
 
     auto node = device->GetNodeByID(idEntity);
@@ -129,6 +136,12 @@ void RenderFacadeClover::FacadeInitParticleSystem(DataMap* d){
     }else{
         clParticleSystem->StartOneIteration();
     }
+}
+
+void RenderFacadeClover::FacadeSetParticlesVisibility(DataMap* d) const{
+    auto mode = any_cast<int>((*d)[TRUEFALSE]);
+
+    device->SetParticlesVisibility(mode);
 }
 
 /**

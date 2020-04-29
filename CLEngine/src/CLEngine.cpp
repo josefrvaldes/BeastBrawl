@@ -843,6 +843,10 @@ float CLEngine::GetBoundingSizeById(unsigned int id){
     return node->CalculateBoundingBox();
 }
 
+void CLEngine::SetParticlesVisibility(bool mode){
+    smgr->SetParticlesActivated(mode);
+}
+
 
 // Comprueba si el cubo del octree se ve en la camara del jugador
 bool CLEngine::OctreeIncamera(float size, const glm::vec3& pos){
