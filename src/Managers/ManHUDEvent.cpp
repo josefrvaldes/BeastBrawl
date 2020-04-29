@@ -20,6 +20,12 @@ void ManHUDEvent::SetEventHUD(eventHUDType type, uint16_t pj) {
     if (cEventHudComp) {
         cEventHudComp->characterEventHUD = pj;
         cEventHudComp->typeEvent = type;
+        switch ((int)type) {
+            case 1: cEventHudComp->spriteTypeEvent = "media/stoleHUD.png"; break;
+            case 2: cEventHudComp->spriteTypeEvent = "media/catchHUD.png"; break;
+            case 3: cEventHudComp->spriteTypeEvent = "media/loseHUD.png"; break;
+            default: break;
+        }
         cEventHudComp->timeStart = system_clock::now();
         eventActive = true;
     }

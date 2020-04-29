@@ -652,6 +652,10 @@ void RenderFacadeClover::FacadeInitResources(){
     resourceManager->GetResourceTexture("media/gorilaHUD.png", true);
     resourceManager->GetResourceTexture("media/marcador.png", true);
     resourceManager->GetResourceTexture("media/Minimapa240.png", true);
+    //Events hud
+    resourceManager->GetResourceTexture("media/stoleHUD.png", true);
+    resourceManager->GetResourceTexture("media/loseHUD.png", true);
+    resourceManager->GetResourceTexture("media/catchHUD.png", true);
 
     //Shaders
     resourceManager->GetResourceShader("CLEngine/src/Shaders/cartoonShader.vert", "CLEngine/src/Shaders/cartoonShader.frag");
@@ -911,20 +915,18 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
         auto& eventhud = manHud->GetEventShow();
         auto cEventHUD = static_cast<CEventHUD*>(eventhud.get()->GetComponent(CompType::EventHudComp).get());
         if (cEventHUD) {
-            switch(cEventHUD->typeEvent) {
-                case eventHUDType::LOSE:
-                    device->DrawImage2D(50.0f, h - 200.0f, scale, 0.1f, cadena, true);
-                    break;
-                case eventHUDType::STOLE:
-                    cadena = "media/hudPenguin.png";
-                    device->DrawImage2D(50.0f, h - 200.0f, scale, 0.1f, cadena, true);
-                    break;
-                case eventHUDType::CATCH:
-                    cadena = "media/hudGorilla.png";
-                    device->DrawImage2D(50.0f, h - 200.0f, scale, 0.1f, cadena, true);
-                    break;
-                default: cout << "+++++++ No entiendo este evento" << endl; break;
+            switch(cEventHUD->characterEventHUD) {
+                case 0: cadena = "media/hudPenguin.png";    break;
+                case 1: cadena = "media/hudTiger.png";      break;
+                case 2: cadena = "media/hudShark.png";      break;
+                case 3: cadena = "media/hudGorilla.png";    break;
+                case 4: cadena = "media/hudDragon.png";     break;
+                case 5: cadena = "media/hudOctopus.png";    break;
+                default: cout << "+++++++ No entiendo este personaje para el evento" << endl; break;
             }
+            device->DrawImage2D(50.0f*scale, h - 100.0f*scale, scale*0.7, 0.1f, cadena, true);
+            cadena = cEventHUD->spriteTypeEvent;
+            device->DrawImage2D(150.0f*scale, h - 100.0f*scale, scale*0.7, 0.1f, cadena, true);
         }
     }
 
