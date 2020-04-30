@@ -39,13 +39,11 @@ struct Inverter_dm : public Decorator {  // Decorator Inverter
 //CONDICION Tenemos powerUp?
 struct HavePowerUp_dm : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
-        //return true;
         auto cPowerUp = static_cast<CPowerUp*>(blackboard->actualCar->GetComponent(CompType::PowerUpComp).get());
-        if(cPowerUp->typePowerUp == typeCPowerUp::None){
-            //std::cout << "No tenemos powerUp" << std::endl;
-            return false;
+        if(cPowerUp->typePowerUp != typeCPowerUp::None){
+            return true;
         }
-        return true;
+        return false;
     }
 };
 //CONDICION esa el Totem suelto por el mapa?
@@ -137,10 +135,19 @@ struct NoThink_dm : public behaviourTree {
     }
 };
 
-// TODO: NO IMPLEMENTADO
+// TODO: IMPLEMENTADO - No probado
 struct NoCriticalTime_dm : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
         // cogemos el tiempo que llevamos el totem y vemos si supera el tiempo critico
+        for(const auto& actualAI : blackboard->manCars->GetEntities()){
+            if (static_cast<Car*>(actualAI.get())->GetTypeCar() == TypeCar::CarAI){
+                auto cTotemAI = static_cast<CTotem*>(actualAI->GetComponent(CompType::TotemComp).get());
+                if(cTotemAI->active && (cTotemAI->accumulatedTime/1000.0 + 10.0 < cTotemAI->DURATION_TIME/1000.0) ){
+                    // si el tiempo actual + el critco es menor al total = no estamos en tiempo critico
+                    return true;
+                }
+            }
+        }
         return false;
     }
 };
@@ -220,37 +227,73 @@ struct MovNavMeshTotem_dm : public behaviourTree {
         return true;
     }
 };
-// TODO: NO IMPLEMENTADO
+// TODO: IMPLEMENTADO PARCIAL -> QUEDA LA OTRA PARTE
 struct MoveRandom_dm : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
-        //std::cout << "Vamos a movernos por los powerUps UUUEEEEPAA" << std::endl;    
-        //shared_ptr<DataMap> dataPowerUp = make_shared<DataMap>();
-        //(*dataPowerUp)[ACTUAL_CAR] = blackboard->actualCar;     
-        //(*dataPowerUp)[MAN_WAYPOINTS] = blackboard->manWayPoint;  
-        //blackboard->manWayPoint->GetEntities()[1]->
-        //(*dataPowerUp)[MAN_NAVMESH] = blackboard->manNavMesh;                                                                                                      
-        //EventManager::GetInstance().AddEventMulti(Event{EventType::MOVE_TO_POWERUP, dataPowerUp}); 
+        std::cout << "Vamos a movernos por los powerUps UUUEEEEPAA" << std::endl;    
+        shared_ptr<DataMap> dataPowerUp = make_shared<DataMap>();
+        (*dataPowerUp)[ACTUAL_CAR] = blackboard->actualCar;     
+        (*dataPowerUp)[MAN_WAYPOINTS] = blackboard->manWayPoint;  
+        (*dataPowerUp)[MAN_NAVMESH] = blackboard->manNavMesh;                                                                                                      
+        EventManager::GetInstance().AddEventMulti(Event{EventType::MOVE_TO_POWERUP, dataPowerUp}); 
         return true;
     }
 };
-// TODO: NO IMPLEMENTADO
+// TODO: NO IMPLEMENTADO COMPLETO -> indicar, con otro evento, que debe ser un powerUp del NavMesh central locoooo
 struct MoveRandomCentral_dm : public behaviourTree {
-    virtual bool run(Blackboard* blackboard) override { 
+    virtual bool run(Blackboard* blackboard) override {  
+        shared_ptr<DataMap> dataPowerUp = make_shared<DataMap>();
+        (*dataPowerUp)[ACTUAL_CAR] = blackboard->actualCar;     
+        (*dataPowerUp)[MAN_WAYPOINTS] = blackboard->manWayPoint;  
+        (*dataPowerUp)[MAN_NAVMESH] = blackboard->manNavMesh;                                                                                                      
+        EventManager::GetInstance().AddEventMulti(Event{EventType::MOVE_TO_POWERUP, dataPowerUp}); 
         return true;
     }
 };
 
 // TODO: NO IMPLEMENTADO  -> movernos al coche que estamos viendo delante nuestra
+// accedemos aqui cuando el tiempo no es critico, y tenemos coches en el rango de vision
+// importante recordar que vienen ordenados por el FOV y por tanto debo coger el primero
 struct MovCarView_dm : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override { 
+        auto actualCar = blackboard->actualCar;
+        auto cBrain = static_cast<CBrainAI*>(actualCar->GetComponent(CompType::BrainAIComp).get());
+            auto carFollow = static_cast<Car*>(cBrain->carInVision[0]);
+            auto cTransCarFollow = static_cast<CTransformable*>(carFollow->GetComponent(CompType::TransformableComp).get());
+        // lo primero actualizamos el targetCar
+        cBrain->targetCar = carFollow;
+        // y despues nos dirigimos a el -> A MATARLO, por ser CALVO
+        shared_ptr<DataMap> dataFollow = make_shared<DataMap>();
+        (*dataFollow)[ACTUAL_CAR] = blackboard->actualCar;     
+        (*dataFollow)[POS_DESTINATION] = cTransCarFollow->position;                                        
+        EventManager::GetInstance().AddEventMulti(Event{EventType::CHANGE_DESTINATION, dataFollow}); 
+
         return true;
     }
 };
 
-// TODO: NO IMPLEMENTADO  -> movernos al coche que estamos viendo delante y tiene el totem
+// TODO: IMPLEMENTADO  - No probado -> movernos al coche que estamos viendo delante y tiene el totem
 struct MovCarViewTotem_dm : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override { 
-        return true;
+        auto actualCar = blackboard->actualCar;
+        auto cBrain = static_cast<CBrainAI*>(actualCar->GetComponent(CompType::BrainAIComp).get());
+        if(cBrain->carInVision.size() > 0){
+            for(const auto& currentCar : cBrain->carInVision){
+                auto cTotemCar = static_cast<CTotem*>(currentCar->GetComponent(CompType::TotemComp).get());
+                if(cTotemCar->active == true){
+                    auto cTransCarFollow = static_cast<CTransformable*>(currentCar->GetComponent(CompType::TransformableComp).get());
+                    // lo primero actualizamos el targetCar
+                    cBrain->targetCar = static_cast<Car*>(currentCar);
+                    // y despues nos dirigimos a el -> A MATARLO, por ser CALVO
+                    shared_ptr<DataMap> dataFollow = make_shared<DataMap>();
+                    (*dataFollow)[ACTUAL_CAR] = blackboard->actualCar;     
+                    (*dataFollow)[POS_DESTINATION] = cTransCarFollow->position;                                        
+                    EventManager::GetInstance().AddEventMulti(Event{EventType::CHANGE_DESTINATION, dataFollow}); 
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 };
 
@@ -308,35 +351,20 @@ struct MoveToCarTotem_dm : public behaviourTree {
             if (static_cast<Car*>(actualAI.get())->GetTypeCar() == TypeCar::CarAI){
                 auto cTotem = static_cast<CTotem*>(actualAI->GetComponent(CompType::TotemComp).get());
                 if(cTotem->active == true){
-                    auto cCurrendNavMeshCar = static_cast<CCurrentNavMesh*>(actualCar->GetComponent(CompType::CurrentNavMeshComp).get());
                     auto cCurrendNavMeshCarAI = static_cast<CCurrentNavMesh*>(actualAI->GetComponent(CompType::CurrentNavMeshComp).get());
-                    if(cCurrendNavMeshCar->currentNavMesh == cCurrendNavMeshCarAI->currentNavMesh){
-                        auto cBrainAI = static_cast<CBrainAI*>(blackboard->actualCar->GetComponent(CompType::BrainAIComp).get());
-                        cBrainAI->targetNavMesh = -1;
-                        //if(actualCar != actualAI.get()){
-                        auto cTransformable = static_cast<CTransformable*>(actualAI->GetComponent(CompType::TransformableComp).get());
-                        shared_ptr<DataMap> dataCarTotem = make_shared<DataMap>();                                                                    
-                        (*dataCarTotem)[ACTUAL_CAR] = actualCar;             
-                        (*dataCarTotem)[POS_DESTINATION] = cTransformable->position;                                        
-                        EventManager::GetInstance().AddEventMulti(Event{EventType::CHANGE_DESTINATION, dataCarTotem});
+                    auto cBrainAI = static_cast<CBrainAI*>(actualCar->GetComponent(CompType::BrainAIComp).get());
+                    if(cBrainAI->targetNavMesh != cCurrendNavMeshCarAI->currentNavMesh){
+                        cBrainAI->targetNavMesh = cCurrendNavMeshCarAI->currentNavMesh;
 
-                        return true;
-                    }else{
-                        auto cBrainAI = static_cast<CBrainAI*>(blackboard->actualCar->GetComponent(CompType::BrainAIComp).get());
-                        auto cCurrendNavMeshCarAI = static_cast<CCurrentNavMesh*>(actualAI->GetComponent(CompType::CurrentNavMeshComp).get());
-                        if(cBrainAI->targetNavMesh != cCurrendNavMeshCarAI->currentNavMesh){
-                            cBrainAI->targetNavMesh = cCurrendNavMeshCarAI->currentNavMesh;
+                        shared_ptr<DataMap> dataNavCar = make_shared<DataMap>();      
+                        (*dataNavCar)[ACTUAL_CAR] = actualCar;     
+                        (*dataNavCar)[MAN_WAYPOINTS] = blackboard->manWayPoint;
+                        (*dataNavCar)[MAN_NAVMESH] = blackboard->manNavMesh;  
+                        (*dataNavCar)[ID_DESTINATION] = cCurrendNavMeshCarAI->currentNavMesh;                                                                                                   
+                        EventManager::GetInstance().AddEventMulti(Event{EventType::CALCULATE_PATH_TO_NAVMESH, dataNavCar}); 
+                    }  
+                    return true;
 
-                            shared_ptr<DataMap> dataPowerUp = make_shared<DataMap>();    
-                            (*dataPowerUp)[ACTUAL_CAR] = actualCar;     
-                            (*dataPowerUp)[MAN_WAYPOINTS] = blackboard->manWayPoint;
-                            (*dataPowerUp)[MAN_NAVMESH] = blackboard->manNavMesh;   
-                            (*dataPowerUp)[ID_DESTINATION] = cCurrendNavMeshCarAI->currentNavMesh;                                                                
-                            EventManager::GetInstance().AddEventMulti(Event{EventType::CALCULATE_PATH_TO_NAVMESH, dataPowerUp}); 
-                        }
-
-                        return true;
-                    }
                 }
             }
         }
@@ -400,7 +428,9 @@ SystemBtDecisionMove::SystemBtDecisionMove(){
                                     shared_ptr<MovCarViewTotem_dm> a_MovCarViewTotem= make_unique<MovCarViewTotem_dm>();
                         shared_ptr<selector> selector1211                           = make_unique<selector>();
                                 shared_ptr<Facil2times_dm> d_Facil2TimesMC          = make_unique<Facil2times_dm>();
-                                    shared_ptr<MoveRandom_dm> a_MoveRandom          = make_unique<MoveRandom_dm>();   
+                                    shared_ptr<sequence> sequence1211_1             = make_unique<sequence>();  
+                                        //shared_ptr<NoThink_dm> a_NoThinck         = make_unique<NoThink_dm>();                   
+                                        shared_ptr<MoveRandom_dm> a_MoveRandom      = make_unique<MoveRandom_dm>();   
                                 //shared_ptr<Think_dm> a_Thinck                     = make_unique<Think_dm>();
                 shared_ptr<selector> selector123                                    = make_unique<selector>();
                     shared_ptr<sequence> sequence123_2                              = make_unique<sequence>();
@@ -408,13 +438,13 @@ SystemBtDecisionMove::SystemBtDecisionMove(){
                             shared_ptr<HavePowerUp_dm> c_HavePowerUp                = make_unique<HavePowerUp_dm>(); 
                         shared_ptr<selector> selector1234                           = make_unique<selector>();
                             shared_ptr<sequence> sequence1234_1                     = make_unique<sequence>();
-                                //shared_ptr<SeePowerUp_dm> c_SeePowerUp              = make_unique<SeePowerUp_dm>();
+                                //shared_ptr<SeePowerUp_dm> c_SeePowerUp            = make_unique<SeePowerUp_dm>();
                                 //shared_ptr<MovViewPowerUp_dm> a_MovViewPowerUp    = make_unique<MovViewPowerUp_dm>();
                           //shared_ptr<MoveRandom_dm> a_MoveRandom                  = make_unique<MoveRandom_dm>();
                   //shared_ptr<MoveRandom_dm> a_MoveRandom                          = make_unique<MoveRandom_dm>();
     // selector YO TOTEM
-    shared_ptr<selector> selector2                                                 = make_unique<selector>();
-        shared_ptr<sequence> sequence2_1                                           = make_unique<sequence>();
+    shared_ptr<selector> selector2                                                  = make_unique<selector>();
+        shared_ptr<sequence> sequence2_1                                            = make_unique<sequence>();
             //shared_ptr<CriticalTime_dm> c_CriticalTime                            = make_unique<CriticalTime_dm>();
             //shared_ptr<MoveRandom_dm> a_MoveRandom                                = make_unique<MoveRandom_dm>();
         shared_ptr<MoveRandomCentral_dm> a_MoveRandomCentral                        = make_unique<MoveRandomCentral_dm>();
@@ -452,28 +482,30 @@ SystemBtDecisionMove::SystemBtDecisionMove(){
                             sequence121_1->addChild(c_SeeCar);//hecho 
                             sequence121_1->addChild(selector122);//hecho
                                 selector122->addChild(sequence122_1);//hecho
-                                    sequence122_1->addChild(c_NoCriticalTime);
-                                    sequence122_1->addChild(a_MovCarView);
-                                selector122->addChild(sequence122_2);
-                                    sequence122_2->addChild(c_SeeCarTotem);
-                                    sequence122_2->addChild(a_MovCarViewTotem);
-                        selector121->addChild(selector1211);
-                            selector1211->addChild(d_Facil2TimesMC);
-                                d_Facil2TimesMC->addChild(a_MoveRandom);
-                            selector1211->addChild(a_Thinck);
-                selector12->addChild(selector123);
-                    selector123->addChild(sequence123_2);
-                        sequence123_2->addChild(m_Inverter1);
-                            m_Inverter1->addChild(c_HavePowerUp);
-                        sequence123_2->addChild(selector1234);
-                            selector1234->addChild(sequence1234_1);
-                                sequence1234_1->addChild(c_SeePowerUp);
-                                sequence1234_1->addChild(a_MovViewPowerUp);
-                            selector1234->addChild(a_MoveRandom);
-                    selector123->addChild(a_MoveRandom);
-    selectorBehaviourTree->addChild(selector2);
-        selector2->addChild(sequence2_1);
-        selector2->addChild(a_MoveRandomCentral);
+                                    sequence122_1->addChild(c_NoCriticalTime);//hecho
+                                    sequence122_1->addChild(a_MovCarView);//hecho
+                                selector122->addChild(sequence122_2);//hecho
+                                    sequence122_2->addChild(c_SeeCarTotem);//hecho
+                                    sequence122_2->addChild(a_MovCarViewTotem);//hecho
+                        selector121->addChild(selector1211);//hecho
+                            selector1211->addChild(d_Facil2TimesMC);//hecho
+                                d_Facil2TimesMC->addChild(sequence1211_1);//hecho
+                                    sequence1211_1->addChild(a_NoThinck);//hecho
+                                    sequence1211_1->addChild(a_MoveRandom);//hecho
+                            selector1211->addChild(a_Thinck);//hecho
+                selector12->addChild(selector123);//hecho
+                    selector123->addChild(sequence123_2);//hecho
+                        sequence123_2->addChild(m_Inverter1);//hecho
+                            m_Inverter1->addChild(c_HavePowerUp);//hecho
+                        sequence123_2->addChild(selector1234);//hecho
+                            selector1234->addChild(sequence1234_1);//hecho
+                                sequence1234_1->addChild(c_SeePowerUp);//hecho
+                                sequence1234_1->addChild(a_MovViewPowerUp);//hecho
+                            selector1234->addChild(a_MoveRandom);//hecho
+                    selector123->addChild(a_MoveRandom);//hecho
+    selectorBehaviourTree->addChild(selector2);//hecho
+        selector2->addChild(sequence2_1);//hecho
+        selector2->addChild(a_MoveRandomCentral);//por decidir--> de momento igual que un random normal
 
 
 
