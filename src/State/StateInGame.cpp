@@ -153,6 +153,7 @@ void StateInGame::InitializeSystems(ManCar &manCars, ManBoundingWall &manWall, M
     Totem *totem = static_cast<Totem *>(manTotems->GetEntities()[0].get());
     sysAnimStart = make_unique<SystemAnimationStart>(manCamera->getCamera(), totem, mainCar, car);
     sysAnimEnd = make_unique<SystemAnimationEnd>(manCamera->getCamera());
+    sysHurt = make_unique<SystemHurt>();
 }
 
 void StateInGame::InitializeManagers(const uint32_t timeGame) {
@@ -332,6 +333,8 @@ void StateInGame::UpdateGame() {
     sysLoD->UpdateMeshes(manPowerUps->GetEntities(), manCamera.get()->getCamera());
     sysLoD->UpdateMeshes(manTotems->GetEntities(), manCamera.get()->getCamera());
     sysLoD->UpdateAnimations(manBoxPowerUps->GetEntities(), manCamera.get()->getCamera());
+    
+    sysHurt->Update(manCars->GetEntities());
 
     renderEngine->FacadeUpdateMeshesLoD(manCars->GetEntities());
     renderEngine->FacadeUpdateMeshesLoD(manPowerUps->GetEntities());

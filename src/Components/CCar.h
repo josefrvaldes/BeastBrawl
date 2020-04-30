@@ -60,8 +60,4 @@ public:
     float skidDeg;              // giro en el derrape
     float skidDegL = -35.0;  
     float skidDegR = 35.0;   
-
-    bool hurt {false};
-    int64_t currentTimeHurt;
-    const int64_t TIME_HURT {1600};
 };

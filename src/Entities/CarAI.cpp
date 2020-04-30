@@ -16,6 +16,7 @@
 #include <Components/CColliding.h>
 #include <Components/CCurrentNavMesh.h>
 #include <Components/CBoundingRay.h>
+#include <Components/CHurt.h>
 #include "../Components/CExternalForce.h"
 #include "../Components/CBoundingChassis.h"
 #include "../Components/CShader.h"
@@ -126,6 +127,8 @@ CarAI::CarAI(int pj){
 
     shared_ptr<CShader> cShader = make_shared<CShader>(vertexShader,fragmentShader);
     shared_ptr<CBrainAI> cBrainAI = make_shared<CBrainAI>();
+    
+    shared_ptr<CHurt> cHurt = make_shared<CHurt>();
 
     AddComponent(cId);
     AddComponent(cType);
@@ -158,6 +161,7 @@ CarAI::CarAI(int pj){
 
     AddComponent(cShader);
     AddComponent(cBrainAI);
+    AddComponent(cHurt);
 }
 
 CarAI::CarAI(int pj, glm::vec3 pos, glm::vec3 rot, glm::vec3 scale,string texture, string mesh, float maxSpeed, float acceleration , float carFriction, float carSlowDown, std::string vertexShader, std::string fragmentShader)

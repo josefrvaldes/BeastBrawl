@@ -9,6 +9,7 @@
 #include <Components/CCar.h>
 #include <Components/CDimensions.h>
 #include <Components/CNitro.h>
+#include <Components/CHurt.h>
 #include <Components/CShield.h>
 #include <Components/CTotem.h>
 //#include <Entities/Camera.h>
@@ -510,7 +511,9 @@ void ManCar::CollisionCarPowerUp(DataMap* d) {
     // Reducimos la velocidad -- TODO --> no solo reducir la velocidad a 0
     auto cCar = static_cast<CCar*>(car->GetComponent(CompType::CarComp).get());
     cCar->speed = 0.0f;  // To-Do: no funciona en la IA por que la logica difusa no la hace acelerar
-    // cCar->hurt = true;
+    auto cHurt = static_cast<CHurt*>(car->GetComponent(CompType::HurtComp).get());
+    cHurt->hurt = true;
+    cHurt->timeStartHurt = Utils::getMillisSinceEpoch();
         
     // Sonido choque con powerup
     shared_ptr<DataMap> dataSound = make_shared<DataMap>();
