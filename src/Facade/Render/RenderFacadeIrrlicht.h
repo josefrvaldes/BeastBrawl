@@ -99,6 +99,7 @@ class RenderFacadeIrrlicht : public RenderFacade {
     void FacadeInitParticleSystem(DataMap* d) const override {};
     void FacadeSetParticlesVisibility(DataMap* d) const {};
     void FacadeSetGrassActivate(DataMap* d) const {};
+    void FacadeUpdateVisibility(DataMap* d) override {};
     bool FacadeOctreeInCamera(float size, const glm::vec3& pos) override {return true;};
     void FacadeSetOctreeVisibleById(unsigned int id, bool v) override {};
 

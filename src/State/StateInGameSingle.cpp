@@ -299,7 +299,9 @@ void StateInGameSingle::CAMBIARInicializarCarAIS(ManCar &manCars, ManWayPoint &m
         SoundFacadeManager::GetInstance()->GetSoundFacade()->CreateSoundEstatic3D(idComp->id, posComp->position, nameEvent, 0);
         nameEvent = "Coche/choque";
         SoundFacadeManager::GetInstance()->GetSoundFacade()->CreateSoundEstatic3D(idComp->id, posComp->position, nameEvent, 0);
-        //}
+
+        //Lo meto aqui aunque pone cambiar de sitio porque no queda otra
+        manShield->CreateShield(idComp->id,glm::vec3(0.0f),glm::vec3(0.0f),glm::vec3(1.5f));
     }
 }
 

@@ -115,8 +115,14 @@ void StateInGame::AddElementsToRender() {
         renderEngine->FacadeAddShadowMapping(cId->id);
     }
 
+    //Añadimos las particulas al arbol
     for (auto particleSystem : manParticleSystem->GetEntities()) {
         renderEngine->FacadeAddObject(particleSystem.get());
+    }
+
+    //Añadimos los escudos al arbol
+    for(auto shield : manShield->GetEntities()){
+        renderEngine->FacadeAddObject(shield.get());
     }
 }
 
@@ -168,6 +174,7 @@ void StateInGame::InitializeManagers(const uint32_t timeGame) {
     manGameRules = make_unique<ManGameRules>(timeGame);
     manHudEvent = make_unique<ManHUDEvent>();
     manParticleSystem = make_unique<ManParticleSystem>();
+    manShield = make_unique<ManShield>();
 
     managersEntities.emplace_back(manCars);
     managersEntities.emplace_back(manPowerUps);
@@ -194,6 +201,12 @@ void StateInGame::InitializeManagers(const uint32_t timeGame) {
         auto cId = static_cast<CId *>(totem->GetComponent(CompType::IdComp).get());
         manParticleSystem->CreateParticleSystem(cId->id, glm::vec3(0.0f, 0.0f, 0.0f), 100, glm::vec3(0.0f, 50.0f, 0.0f), totemParticles, 5, 15, 100, 2, 5000, glm::vec3(30.0f, 0.0f, 30.0f), glm::vec3(0.0f, 0.0f, 0.0f), 0, 0x4, true, true);
     }
+
+    // //Voy a añadir los escudos a los coches
+    // for(auto car : manCars->GetEntities()){
+    //     auto cId = static_cast<CId *>(car->GetComponent(CompType::IdComp).get());
+    //     manShield->CreateShield(cId->id,glm::vec3(0.0),glm::vec3(0.0),glm::vec3(1.5));
+    // }
 }
 
 //Carga los bancos de sonido InGame.

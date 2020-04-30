@@ -14,7 +14,8 @@ enum ModelType{
     AnimatedMesh,
     Text,
     ParticleSystem,
-    PointLight
+    PointLight,
+    Shield
 };
 
 class CType : public Component{

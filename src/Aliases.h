@@ -17,6 +17,7 @@ enum DataType{
     BOX_POSITION,
     ACTUAL_CAR,
     TOTEM,
+    TRUEFALSE,
     CAR_FOLLOW_POSITION,
     CAR_FOLLOW,
     CAR_EXIT_POSITION,
@@ -42,7 +43,6 @@ enum DataType{
     TIME_TOTEM,
     STOLE,
     NUM,
-    TRUEFALSE,
     TYPE,
     SCREEN_WIDTH,
     SCREEN_HEIGHT

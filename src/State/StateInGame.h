@@ -20,9 +20,6 @@
 #include <Entities/Totem.h>
 #include <Entities/WayPoint.h>
 #include <Entities/NavMesh.h>
-#include <Managers/ManPowerUp.h>
-#include <Managers/ManWayPoint.h>
-#include <Managers/ManNavMesh.h>
 #include <EventManager/EventManager.h>
 #include <Facade/Input/InputFacadeManager.h>
 #include <Facade/Physics/PhysicsFacadeManager.h>
@@ -31,6 +28,9 @@
 #include <Facade/Sound/SoundFacadeManager.h>
 #include <Systems/SystemPathPlanning.h>
 #include <Game.h>
+#include <Managers/ManPowerUp.h>
+#include <Managers/ManWayPoint.h>
+#include <Managers/ManNavMesh.h>
 #include <Managers/ManBoundingWall.h>
 #include <Managers/ManBoundingGround.h>
 #include <Managers/ManBoxPowerUp.h>
@@ -41,6 +41,7 @@
 #include <Managers/ManWayPoint.h>
 #include <Managers/ManLight.h>
 #include <Managers/ManParticleSystem.h>
+#include <Managers/ManShield.h>
 #include <Managers/ManCamera.h>
 #include "../Managers/ManGameRules.h"
 #include <Managers/ManHUDEvent.h>
@@ -113,6 +114,7 @@ class StateInGame : public State {
     unique_ptr<ManGameRules> manGameRules;
     unique_ptr<ManHUDEvent> manHudEvent;
     unique_ptr<ManParticleSystem> manParticleSystem;
+    unique_ptr<ManShield> manShield;
     unique_ptr<SystemLoD> sysLoD;
     unique_ptr<SystemAnimationStart> sysAnimStart;
     unique_ptr<SystemAnimationEnd> sysAnimEnd;

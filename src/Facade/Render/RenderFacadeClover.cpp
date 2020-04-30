@@ -93,8 +93,10 @@ void RenderFacadeClover::FacadeSuscribeEvents() {
         bind( &RenderFacadeClover::FacadeInitParticleSystem, this, placeholders::_1 ),
         "FacadeInitParticleSystem"});
 
-    
-
+    EventManager::GetInstance().Subscribe(Listener{
+        EventType::UPDATE_FACADE_VISIBILITY,
+        bind( &RenderFacadeClover::FacadeUpdateVisibility, this, placeholders::_1 ),
+        "FacadeUpdateVisibility"});
 }
 
 /**
@@ -142,6 +144,16 @@ void RenderFacadeClover::FacadeInitParticleSystem(DataMap* d) const{
         clParticleSystem->StartOneIteration();
     }
 }
+
+void RenderFacadeClover::FacadeUpdateVisibility(DataMap* d){
+    //Seguramente venga un ID y un true o false
+    auto idEntity = any_cast<uint16_t>((*d)[ID]);
+    auto visibility = any_cast<bool>((*d)[TRUEFALSE]);
+
+    auto node = device->GetNodeByID(idEntity);
+    node->SetVisible(visibility);
+}
+
 
 void RenderFacadeClover::FacadeSetParticlesVisibility(DataMap* d) const{
     auto mode = any_cast<int>((*d)[TRUEFALSE]);
@@ -250,6 +262,13 @@ const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
             static_cast<CLMesh*>(node->GetEntity())->SetMesh(mesh);
             static_cast<CLMesh*>(node->GetEntity())->SetMaterial(mat);
 
+            break;
+
+        case ModelType::Shield:
+            node = device->AddMesh(father,cId->id);
+            static_cast<CLMesh*>(node->GetEntity())->SetMesh(mesh);
+            static_cast<CLMesh*>(node->GetEntity())->SetMaterial(mat);
+            node->SetVisible(false);
             break;
 
         case ModelType::Text:

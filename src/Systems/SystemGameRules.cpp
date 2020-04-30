@@ -5,6 +5,7 @@
 #include <Components/CTotem.h>
 #include <Components/CNitro.h>
 #include <Components/CClock.h>
+#include <Components/CId.h>
 
 #include <Facade/Render/RenderFacadeManager.h>
 
@@ -73,7 +74,13 @@ bool SystemGameRules::UpdateRulesCarPowerUps(Entity& car_, Entity& totem_) const
     // Actualiza el componente escudo
     auto cShield = static_cast<CShield *>(car_.GetComponent(CompType::ShieldComp).get());
     if(cShield->activePowerUp==true && duration_cast<milliseconds>(system_clock::now() - cShield->timeStart).count() > cShield->durationTime){  // comprueba el tiempo desde que se lanzo
+        auto cId = static_cast<CId*>(car_.GetComponent(CompType::IdComp).get());
+        
         cShield->deactivePowerUp();
+        shared_ptr<DataMap> data = make_shared<DataMap>();
+        (*data)[ID] = cId->id;
+        (*data)[TRUEFALSE] = false;
+        EventManager::GetInstance().AddEventMulti(Event{EventType::UPDATE_SHIELD_VISIBILITY, data});
     }
     return false;
 }

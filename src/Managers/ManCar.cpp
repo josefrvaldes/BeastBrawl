@@ -633,6 +633,10 @@ void ManCar::ThrowPowerUp(Car* car_) {
 
             case (typeCPowerUp::EscudoMerluzo):
                 cShield->activatePowerUp();
+                (*data)[ID] = cIdCar->id;
+                (*data)[TRUEFALSE] = true;
+                EventManager::GetInstance().AddEventMulti(Event{EventType::UPDATE_SHIELD_VISIBILITY, data});
+
                 break;
 
             case (typeCPowerUp::SuperMegaNitro):
@@ -845,7 +849,6 @@ void ManCar::CatchPowerUpAI(DataMap* d) {
         type = typeCPowerUp::MelonMolon;
     }
 
-    
     //cout << "EL VALOR QUE SALE ES: " << indx << " - CORRESPONDIENTE AL PU: " << (int)type << endl;
 
     //type = typeCPowerUp::SuperMegaNitro;
