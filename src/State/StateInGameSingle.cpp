@@ -123,7 +123,7 @@ void StateInGameSingle::createSystemAI(){
     uint32_t i = 0;
     for(auto actualAI : manCars->GetEntities()){
         if (static_cast<Car*>(actualAI.get())->GetTypeCar() == TypeCar::CarAI){
-            manAI->addBehavior(static_cast<CarAI*>(actualAI.get()), systemVision.get(),     systemVision->getFrecuency(),     i, systemVision.get()->getMaxProcessTime() );
+            manAI->addBehavior(static_cast<CarAI*>(actualAI.get()), systemVisionAI.get(),     systemVisionAI->getFrecuency(),     i, systemVisionAI.get()->getMaxProcessTime() );
             manAI->addBehavior(static_cast<CarAI*>(actualAI.get()), systemBtMoveTo.get(),     systemBtMoveTo->getFrecuency(),     i, systemBtMoveTo.get()->getMaxProcessTime() );
             manAI->addBehavior(static_cast<CarAI*>(actualAI.get()), systemPathPlanning.get(), systemPathPlanning->getFrecuency(), i, systemPathPlanning.get()->getMaxProcessTime() );
             manAI->addBehavior(static_cast<CarAI*>(actualAI.get()), systemBtLoDMove.get(),    systemBtLoDMove->getFrecuency(),    i, systemBtLoDMove.get()->getMaxProcessTime() );
@@ -193,18 +193,18 @@ void StateInGameSingle::InitPathPlanning(){
 }
 
 void StateInGameSingle::InitVision(){
-    systemVision = make_unique<SystemVision>();
+    systemVisionAI = make_unique<SystemVisionAI>();
 
-    systemVision->AddManager(*manCars.get());
-    systemVision->AddManager(*manPowerUps.get());
-    systemVision->AddManager(*manBoxPowerUps.get());
-    systemVision->AddManager(*manTotems.get());
-    systemVision->AddManager(*manWayPoint.get());
-    systemVision->AddManager(*manNavMesh.get());
-    systemVision->AddManager(*manBoundingWall.get());
-    systemVision->AddManager(*manBoundingOBB.get());
+    systemVisionAI->AddManager(*manCars.get());
+    systemVisionAI->AddManager(*manPowerUps.get());
+    systemVisionAI->AddManager(*manBoxPowerUps.get());
+    systemVisionAI->AddManager(*manTotems.get());
+    systemVisionAI->AddManager(*manWayPoint.get());
+    systemVisionAI->AddManager(*manNavMesh.get());
+    systemVisionAI->AddManager(*manBoundingWall.get());
+    systemVisionAI->AddManager(*manBoundingOBB.get());
 
-    systemVision->setMaxProcessTime(0.00025);
+    systemVisionAI->setMaxProcessTime(0.00025);
 }
 
 

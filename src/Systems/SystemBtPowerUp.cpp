@@ -74,6 +74,7 @@ struct HaveSomePowerUp_pu : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
         //return true;
         auto cPowerUp = static_cast<CPowerUp*>(blackboard->actualCar->GetComponent(CompType::PowerUpComp).get());
+        cout << "Tipo de PU: " << int(cPowerUp->typePowerUp) << "\n";
         if(cPowerUp->typePowerUp == typeCPowerUp::None)
             return false;
         return true;

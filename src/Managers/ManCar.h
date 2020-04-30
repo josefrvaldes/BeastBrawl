@@ -13,6 +13,7 @@
 
 #include <Systems/SystemPathPlanning.h>
 #include "../Systems/SystemOnline.h"
+#include "../Systems/SystemVision.h"
 
 #include <cstdlib> /* srand, rand */
 #include <iostream>
@@ -29,7 +30,7 @@ struct Data;
 struct Physics;
 //struct Camera;
 struct ManTotem;
-struct PhysicsAI;
+//struct PhysicsAI;
 struct SystemBtPowerUp;
 struct SystemBtMoveTo;
 struct SystemBtLoDMove;
@@ -61,7 +62,7 @@ class ManCar : public Manager {
     Entity* GetDesirableTarget(Entity* actualCar);
     void SetSystemOnline(SystemOnline* systOn){ systemOnline = systOn; };
     
-
+    unique_ptr<SystemVision> systemVision; 
    private:
     //Physics *physics;
     //Camera *cam;

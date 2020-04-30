@@ -1,6 +1,17 @@
 
 #include "SystemVision.h"
 
+
+#include "../Managers/ManCar.h"
+#include "../Managers/ManBoxPowerUp.h"
+#include "../Managers/ManTotem.h"
+#include "../Managers/ManBoundingOBB.h"
+
+#include "../Entities/Entity.h"
+#include "../Entities/CarAI.h"
+#include "../Entities/Car.h"
+#include "../Entities/CarHuman.h"
+
 #include "../Components/CBrainAI.h"
 #include "../Components/CBoundingOBB.h"
 #include "../Components/CTransformable.h"
@@ -8,45 +19,15 @@
 #include "../Components/CBrainAI.h"
 #include "../Components/CTotem.h"
 
-#include "../Entities/Entity.h"
-#include "../Entities/CarAI.h"
-// #include "../Entities/Car.h"
-// #include "../Entities/CarHuman.h"
+#include "../Facade/Render/RenderFacadeManager.h"
 
-#include "../Managers/ManCar.h"
-#include "../Managers/ManBoxPowerUp.h"
-#include "../Managers/ManTotem.h"
-#include "../Managers/ManBoundingOBB.h"
 
 
 SystemVision::SystemVision(){
     clPhysics = make_unique<CLPhysics>();
+    renderEngine = RenderFacadeManager::GetInstance()->GetRenderFacade();
 }
 
-void SystemVision::AddManager(Manager &m) {
-    managers.push_back(&m);
-}
-
-
-void SystemVision::update(CarAI* actualCar){
-    auto cBrainAI = static_cast<CBrainAI*>(actualCar->GetComponent(CompType::BrainAIComp).get());
-
-    cBrainAI->CleanVisionRange();
-
-    SaveCarInVision(actualCar, cBrainAI, static_cast<ManCar*>(managers[0]), static_cast<ManBoundingOBB*>(managers[7]));
-    SaveBoxPowerUpInVision(actualCar, cBrainAI, static_cast<ManBoxPowerUp*>(managers[2]), static_cast<ManBoundingOBB*>(managers[7]));
-    SaveTotemInVision(actualCar, cBrainAI, static_cast<ManTotem*>(managers[3]), static_cast<ManBoundingOBB*>(managers[7]));
-
-    // auto cBrainAII = static_cast<CBrainAI*>((static_cast<ManCar*>(managers[0]))->GetCar()->GetComponent(CompType::BrainAIComp).get());
-    // cBrainAII->CleanVisionRange();
-    // SaveCarInVision((static_cast<ManCar*>(managers[0]))->GetCar().get(), cBrainAII, static_cast<ManCar*>(managers[0]), static_cast<ManBoundingOBB*>(managers[7]));
-    // SaveBoxPowerUpInVision((static_cast<ManCar*>(managers[0]))->GetCar().get(), cBrainAII, static_cast<ManBoxPowerUp*>(managers[2]), static_cast<ManBoundingOBB*>(managers[7]));
-    // SaveTotemInVision((static_cast<ManCar*>(managers[0]))->GetCar().get(), cBrainAII, static_cast<ManTotem*>(managers[3]), static_cast<ManBoundingOBB*>(managers[7]));
-    //cout << "NumCars: " << cBrainAII->carInVision.size() << "\n";
-    //cout << "NumBox: " << cBrainAII->boxInVision.size() << "\n";
-    //if(cBrainAII->totemInVision!=nullptr)
-    //    cout << "Totem: 1\n";
-}
 
 
 
@@ -148,12 +129,20 @@ bool SystemVision::EntityInVisionRange(Entity* actualCar, const glm::vec3& posEn
 
 
     //compare with actualCar actualRotation
-    float offset = valueAtan2 - cTransformableActual->rotation.y;
-    if(offset<=rangeVision && offset>=-rangeVision){
-        seeCar = true;
+    float rotMin = cTransformableActual->rotation.y - rangeVision;
+    if (rotMin < 0) rotMin += 360;
+    float rotMax = cTransformableActual->rotation.y + rangeVision;
+    if (rotMax >= 360) rotMax -= 360;
+
+    if(rotMin<rotMax){
+        if(rotMin<valueAtan2 && rotMax>valueAtan2)
+            return true;
+    }else{
+        if(rotMin<valueAtan2 || rotMax>valueAtan2)
+            return true;
     }
-/*
-    if (cTransformableActual->rotation.y - rangeVision >= 0 && cTransformableActual->rotation.y + rangeVision < 360) {
+
+    /*if (cTransformableActual->rotation.y - rangeVision >= 0 && cTransformableActual->rotation.y + rangeVision < 360) {
         if (cTransformableActual->rotation.y - rangeVision < valueAtan2 && cTransformableActual->rotation.y + rangeVision > valueAtan2) {
             seeCar = true;
         }
@@ -169,6 +158,40 @@ bool SystemVision::EntityInVisionRange(Entity* actualCar, const glm::vec3& posEn
         }
     }*/
     return seeCar;
+}
+
+
+
+bool SystemVision::EntityInVisionHuman(const glm::vec3& posEntity) const{
+    float rangeVision = renderEngine->FacadeGetFovActualCamera();
+    glm::vec3 targetCamera = renderEngine->FacadeGetTargetActualCamera();
+    glm::vec3 posCamera = renderEngine->FacadeGetPositionActualCamera();
+
+    float vectorToTargetX = targetCamera.x - posCamera.x;
+    float vectorToTargetZ = targetCamera.z - posCamera.z;
+    float valueCentralDegree = glm::degrees( atan2(vectorToTargetZ, vectorToTargetX) );
+    if (valueCentralDegree < 0) valueCentralDegree += 360;
+
+    float vectorToEntityX = posEntity.x - posCamera.x;
+    float vectorToEntityZ = posEntity.z - posCamera.z;
+    float valueDegreeEntity = glm::degrees( atan2(vectorToEntityZ, vectorToEntityX) );
+    if (valueDegreeEntity < 0) valueDegreeEntity += 360;
+
+
+    //compare with actualCar actualRotation
+    float rotMin = valueCentralDegree - rangeVision;
+    if (rotMin < 0) rotMin += 360;
+    float rotMax = valueCentralDegree + rangeVision;
+    if (rotMax >= 360) rotMax -= 360;
+
+    if(rotMin<rotMax){
+        if(rotMin<valueDegreeEntity && rotMax>valueDegreeEntity)
+            return true;
+    }else{
+        if(rotMin<valueDegreeEntity || rotMax>valueDegreeEntity)
+            return true;
+    }
+    return false;
 }
 
 

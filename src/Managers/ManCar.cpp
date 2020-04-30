@@ -15,7 +15,7 @@
 #include <Entities/CarAI.h>
 #include <Entities/CarHuman.h>
 #include <Systems/Physics.h>
-#include <Systems/PhysicsAI.h>
+//#include <Systems/PhysicsAI.h>
 #include <functional>
 #include <iostream>
 
@@ -53,6 +53,7 @@ ManCar::ManCar() {
     //physicsAI = make_unique<PhysicsAI>();
     systemGameRules = make_unique<SystemGameRules>();
     physics         = make_unique<Physics>(Constants::DELTA_TIME);
+    systemVision    = make_unique<SystemVision>();
 
     cout << "Hemos creado un powerup, ahora tenemos " << entities.size() << " powerups" << endl;
 }
