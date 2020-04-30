@@ -3,6 +3,7 @@
 #include <Components/CCar.h>
 #include <Components/CNitro.h>
 #include <Components/CSpeed.h>
+#include <Components/CHurt.h>
 #include <Entities/Camera.h>
 #include <Entities/Car.h>
 #include "../Entities/CarHuman.h"
@@ -28,14 +29,23 @@ void PhysicsCamera::update(Car *car, Camera *cam) {
     auto cCamera = static_cast<CCamera *>(cam->GetComponent(CompType::CameraComp).get());
     auto cSpeedCam = static_cast<CSpeed *>(cam->GetComponent(CompType::SpeedComp).get());
     auto cTransformableCam = static_cast<CTransformable *>(cam->GetComponent(CompType::TransformableComp).get());
+    auto cHurt = static_cast<CHurt *>(car->GetComponent(CompType::HurtComp).get());
 
-    CalculatePositionCamera(cCar, cTransformable, cTransformableCam, cCamera, cSpeedCam);
+    CalculatePositionCamera(cCar, cTransformable, cTransformableCam, cCamera, cSpeedCam, cHurt);
 }
 
 //Calcula la posicion de la camara (duda con las formulas preguntar a Jose)
-void PhysicsCamera::CalculatePositionCamera(CCar *cCar, CTransformable *cTransformableCar, CTransformable *cTransCam, CCamera *cCamera, CSpeed *cSpeedCam) {
-    float rotationFinal = cTransformableCar->rotation.y - cCar->skidRotation - cCamera->rotExtraY;
+void PhysicsCamera::CalculatePositionCamera(CCar *cCar, CTransformable *cTransformableCar, CTransformable *cTransCam, CCamera *cCamera, CSpeed *cSpeedCam, CHurt *cHurt) {
+    float rotationFinal;
+    rotationFinal = cTransformableCar->rotation.y - cCar->skidRotation - cCamera->rotExtraY - cHurt->currentRotation;
     rotationFinal = Utils::GetAdjustedDegrees(rotationFinal);
+    // if(cHurt->currentRotation > 0) {
+    //     rotationFinal = cHurt->originalCarRotation - cCar->skidRotation - cCamera->rotExtraY - cHurt->currentRotation;
+    //     rotationFinal = Utils::GetAdjustedDegrees(rotationFinal);
+        // cout << "el cTransformable.rotation es " << cTransformableCar->rotation.y << " y el churt.rotation es " << cHurt->currentRotation << " el rotation final es " << rotationFinal << endl;
+    // } else {
+    // }
+    
 
     cTransCam->position.y = cTransformableCar->position.y + 20;
     cTransCam->position.z = (cTransformableCar->position.z - 40 * sin(((rotationFinal) * PI) / 180.0));

@@ -22,6 +22,7 @@ class CCamera;
 class CSpeed;
 class CNitro;
 class CSpeed;
+class CHurt;
 
 class PhysicsCamera {
    public:
@@ -35,7 +36,7 @@ class PhysicsCamera {
    protected:
    private:
     float deltaTime;
-    void CalculatePositionCamera(CCar *cCar, CTransformable *cTransformableCar, CTransformable *cTransformableCamera, CCamera *cCamera, CSpeed *cSpeed);
+    void CalculatePositionCamera(CCar *cCar, CTransformable *cTransformableCar, CTransformable *cTransformableCamera, CCamera *cCamera, CSpeed *cSpeed, CHurt *cHurt);
     void Accelerate(CCar *cCar, CCamera *cCamera);
     void Decelerate(CCar *cCar, CCamera *cCamera);
     void Accelerate_X(CCar *cCar, CCamera *cCamera, CSpeed *cSpeedCam);
