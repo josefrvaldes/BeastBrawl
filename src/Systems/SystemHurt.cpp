@@ -3,6 +3,7 @@
 #include "../Entities/Entity.h"
 #include "../Components/CHurt.h"
 #include "../Components/CTransformable.h"
+#include "../Components/CCar.h"
 #include "Utils.h"
 
 void SystemHurt::Update(vector<shared_ptr<Entity>> entities) {
@@ -15,10 +16,10 @@ void SystemHurt::Update(vector<shared_ptr<Entity>> entities) {
                 cHurt->currentRotation = 0;
                 cTransformable->rotation.y = cHurt->originalCarRotation;
             } else {
+                auto cCar = static_cast<CCar*>(e->GetComponent(CompType::CarComp).get());
+                cCar->speed = 0;
                 cHurt->currentRotation += cHurt->speedRotation;
-                // cout << "El ctransformable.rotation era " << cTransformable->rotation.y << " y el hurt rotation es " << cHurt->currentRotation << endl;
-                cTransformable->rotation.y += cHurt->speedRotation;
-                // cout << "Tras sumar, el ctransformable.rotation es " << cTransformable->rotation.y << endl;
+                cTransformable->rotation.y = cHurt->originalCarRotation + cHurt->currentRotation;
             }
         }
     }
