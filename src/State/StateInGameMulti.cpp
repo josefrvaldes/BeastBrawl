@@ -1,10 +1,12 @@
 #include "StateInGameMulti.h"
+
 #include <Components/CBufferOnline.h>
 #include <Components/CTotem.h>
+
+#include "../CLPhysics/CLPhysics.h"
 #include "../Components/COnline.h"
 #include "../Systems/SystemOnline.h"
 #include "../Systems/Utils.h"
-#include "../CLPhysics/CLPhysics.h"
 
 StateInGameMulti::StateInGameMulti(uint16_t IdOnline, const vector<uint16_t> IdPlayersOnline) : StateInGame() {
     InitState();
@@ -48,19 +50,18 @@ StateInGameMulti::StateInGameMulti(uint16_t IdOnline, const vector<uint16_t> IdP
     //CAMBIARCosasNavMesh(*manCars.get(), *manNavMesh.get());
     // while(true){sleep(500);}; // esto solo sirve para depurar
 
-
     for (const auto &car : manCars->GetEntities()) {
         const auto cTransformable = static_cast<CTransformable *>(manCars->GetCar()->GetComponent(CompType::TransformableComp).get());
 
-        shared_ptr<CBufferOnline> buffer = make_shared<CBufferOnline>();        
+        shared_ptr<CBufferOnline> buffer = make_shared<CBufferOnline>();
         BuffElement elem(inputs, cTransformable->position, cTransformable->rotation);
         buffer->elems.push_back(elem);
 
         car->AddComponent(buffer);
 
         //Sonidos de los coches
-        auto idComp = static_cast<CId*>(car->GetComponent(CompType::IdComp).get());
-        auto posComp = static_cast<CTransformable*>(car->GetComponent(CompType::TransformableComp).get());
+        auto idComp = static_cast<CId *>(car->GetComponent(CompType::IdComp).get());
+        auto posComp = static_cast<CTransformable *>(car->GetComponent(CompType::TransformableComp).get());
         string nameEvent = "Coche/motor";
         SoundFacadeManager::GetInstance()->GetSoundFacade()->CreateSoundDinamic3D(idComp->id, posComp->position, nameEvent, 1, 0);
         nameEvent = "PowerUp/escudo";
@@ -71,6 +72,9 @@ StateInGameMulti::StateInGameMulti(uint16_t IdOnline, const vector<uint16_t> IdP
         SoundFacadeManager::GetInstance()->GetSoundFacade()->CreateSoundEstatic3D(idComp->id, posComp->position, nameEvent, 0);
         nameEvent = "Coche/choque";
         SoundFacadeManager::GetInstance()->GetSoundFacade()->CreateSoundEstatic3D(idComp->id, posComp->position, nameEvent, 0);
+
+        manShield->CreateShield(idComp->id,glm::vec3(0.0f),glm::vec3(0.0f),glm::vec3(1.5f));
+
     }
 }
 
@@ -104,16 +108,52 @@ void StateInGameMulti::Input() {
     }
 }
 
-void StateInGameMulti::Update() {
-    StateInGame::Update();
+void StateInGameMulti::UpdateAnimationEnd() {
+    StateInGame::UpdateAnimationEnd();
+}
+
+void StateInGameMulti::UpdateAnimationStart() {
+    StateInGame::UpdateAnimationStart();
+}
+
+void StateInGameMulti::UpdateAnimationCountdown() {
+    StateInGame::UpdateAnimationCountdown();
+}
+
+void StateInGameMulti::UpdateGame() {
+    StateInGame::UpdateGame();
 
     for (auto actualCar : manCars->GetEntities()) {
         if (actualCar.get() != manCars->GetCar().get()) {
             //manNavMesh->UpdateNavMeshHuman(actualCar.get());  // actualizamos el navemesh en el que se encuentra al human
             // funcion para recibir los inputs del servidor, otra para enviar los nuestros, crear componente de input
-            manCars->UpdateCarHuman(actualCar.get(), manTotems.get());
+            bool gameFinished = manCars->UpdateCarHuman(actualCar.get(), manTotems.get());
+            if(gameFinished) 
+                GoToEndAnimation();
+            
             physicsEngine->UpdateTransformable(actualCar.get());
         }
+    }
+}
+
+void StateInGameMulti::Update() {
+    switch (currentUpdateState) {
+        case UpdateState::START:
+            UpdateAnimationStart();
+            break;
+        case UpdateState::COUNTDOWN:
+            UpdateAnimationCountdown();
+            break;
+        case UpdateState::END:
+            UpdateAnimationEnd();
+            break;
+        case UpdateState::GAME:
+            UpdateGame();
+            break;
+
+        default:
+            cout << "currentUpdateState inválido" << endl;
+            break;
     }
 }
 
@@ -141,7 +181,7 @@ void StateInGameMulti::InitializeFacades() {
 void StateInGameMulti::AddElementsToRender() {
     StateInGame::AddElementsToRender();
 }
- 
+
 /*
 void StateInGameMulti::CAMBIARCosasDeTotemUpdate() {
     bool todosFalse = true;

@@ -28,7 +28,7 @@
    <div id="projectname">CLEngine
    &#160;<span id="projectnumber">1.0</span>
    </div>
-   <div id="projectbrief">Motor grafico para Beast Brawl</div>
+   <div id="projectbrief">Motor gráfico para TAG</div>
   </td>
  </tr>
  </tbody>
@@ -86,9 +86,6 @@ $(document).ready(function(){initNavTree('functions_func_s.html',''); initResiza
 &#160;
 
 <h3><a id="index_s"></a>- s -</h3><ul>
-<li>Scale()
-: <a class="el" href="class_c_l_e_1_1_c_l_node.html#aab2dbb8c4041a553e04e738644321ca8">CLE::CLNode</a>
-</li>
 <li>ScaleMatrix()
 : <a class="el" href="class_c_l_e_1_1_c_l_node.html#a931532fd37584ac6779ce1613c02baac">CLE::CLNode</a>
 </li>
@@ -99,6 +96,12 @@ $(document).ready(function(){initNavTree('functions_func_s.html',''); initResiza
 : <a class="el" href="class_c_l_e_1_1_c_l_direct_light.html#ad1c6b30f316f3d7d7c6178fd92855969">CLE::CLDirectLight</a>
 , <a class="el" href="class_c_l_e_1_1_c_l_point_light.html#af7c7c955151556e40952991989fb2ae4">CLE::CLPointLight</a>
 , <a class="el" href="class_c_l_e_1_1_c_l_spot_light.html#a38fa97ae45e3a77f81fd02de93ccd6f5">CLE::CLSpotLight</a>
+</li>
+<li>SetAnimation()
+: <a class="el" href="class_c_l_e_1_1_c_l_mesh.html#a194e0af0e2a19139e21554cc9210f64d">CLE::CLMesh</a>
+</li>
+<li>SetAnimationInterpolated()
+: <a class="el" href="class_c_l_e_1_1_c_l_mesh.html#a46fd7ef96ffebd985a13da988bf23b83">CLE::CLMesh</a>
 </li>
 <li>SetCameraConfig()
 : <a class="el" href="class_c_l_e_1_1_c_l_camera.html#a7558884de3085d231e93291491364e5f">CLE::CLCamera</a>
@@ -130,13 +133,16 @@ $(document).ready(function(){initNavTree('functions_func_s.html',''); initResiza
 , <a class="el" href="class_c_l_e_1_1_c_l_spot_light.html#a809604bc476c7cb16b0cff4f1f0dfddf">CLE::CLSpotLight</a>
 </li>
 <li>SetDrawLineWidth()
-: <a class="el" href="class_c_l_e_1_1_c_l_node.html#a29fef79aabec899f85ac76d592b418e8">CLE::CLNode</a>
+: <a class="el" href="class_c_l_e_1_1_c_l_engine.html#a7fc8838fb4112cc646a0862a66614640">CLE::CLEngine</a>
 </li>
 <li>SetFather()
 : <a class="el" href="class_c_l_e_1_1_c_l_node.html#af5b81874aea3db8986e2e76cd14ec855">CLE::CLNode</a>
 </li>
 <li>SetFOV()
 : <a class="el" href="class_c_l_e_1_1_c_l_camera.html#a01eddf67dccd2498b8acb8bf835345ae">CLE::CLCamera</a>
+</li>
+<li>SetIgnoreFrustrum()
+: <a class="el" href="class_c_l_e_1_1_c_l_node.html#ad23ab42e09287b23f4db5aee89b28918">CLE::CLNode</a>
 </li>
 <li>SetIntensity()
 : <a class="el" href="class_c_l_e_1_1_c_l_direct_light.html#a4702cc15006d8e83761b522da246304b">CLE::CLDirectLight</a>
@@ -147,9 +153,6 @@ $(document).ready(function(){initNavTree('functions_func_s.html',''); initResiza
 : <a class="el" href="class_c_l_e_1_1_c_l_direct_light.html#a9f1aec43525805b2d62d8dc58e8882b2">CLE::CLDirectLight</a>
 , <a class="el" href="class_c_l_e_1_1_c_l_point_light.html#a34bdb01c8ad6f3e639f212444b069a5d">CLE::CLPointLight</a>
 , <a class="el" href="class_c_l_e_1_1_c_l_spot_light.html#a1227f5bf10e19ecdd5f83066e6814153">CLE::CLSpotLight</a>
-</li>
-<li>SetLightingEffects()
-: <a class="el" href="class_c_l_e_1_1_c_l_node.html#ac6d87ade00d0e3ce04fa7ef06439ee19">CLE::CLNode</a>
 </li>
 <li>SetLinear()
 : <a class="el" href="class_c_l_e_1_1_c_l_direct_light.html#a33f56ba99ef7f0caade6d5c6a8262b42">CLE::CLDirectLight</a>
@@ -167,6 +170,13 @@ $(document).ready(function(){initNavTree('functions_func_s.html',''); initResiza
 </li>
 <li>SetName()
 : <a class="el" href="class_c_l_e_1_1_c_l_resource.html#acbbc35787c72072fa017c344b1e9f1c2">CLE::CLResource</a>
+</li>
+<li>SetOctreeVisible()
+: <a class="el" href="class_c_l_e_1_1_c_l_node.html#a0ed6564a510db8c9582276bb7ae4b3ed">CLE::CLNode</a>
+</li>
+<li>SetOctreeVisibleById()
+: <a class="el" href="class_c_l_e_1_1_c_l_engine.html#a01afbf9b2c9593af2cd34dd717889a45">CLE::CLEngine</a>
+, <a class="el" href="class_c_l_e_1_1_c_l_node.html#acfa35552f9d36fb498b01e020bf7af17">CLE::CLNode</a>
 </li>
 <li>SetOn()
 : <a class="el" href="class_c_l_e_1_1_c_l_direct_light.html#abde5ce6fab79f60a4a023ffa7d7e1cd8">CLE::CLDirectLight</a>
@@ -202,16 +212,19 @@ $(document).ready(function(){initNavTree('functions_func_s.html',''); initResiza
 : <a class="el" href="class_c_l_e_1_1_c_l_billboard.html#a19d86317c412da078ba18310b696f8d9">CLE::CLBillboard</a>
 </li>
 <li>SetTitle()
-: <a class="el" href="class_c_l_e_1_1_c_l_engine.html#a822c8cdc6393162aa30adeca3d80f0ab">CLE::CLEngine</a>
-</li>
-<li>SetTransformationMat()
-: <a class="el" href="class_c_l_e_1_1_c_l_node.html#ab8bfefc54981169f256d9cd994e00efb">CLE::CLNode</a>
+: <a class="el" href="class_c_l_e_1_1_c_l_engine.html#a4772e755af83d95eb9446241b05c0e8c">CLE::CLEngine</a>
 </li>
 <li>SetTranslation()
 : <a class="el" href="class_c_l_e_1_1_c_l_node.html#ae31ce882babd330919dc1fbf67276799">CLE::CLNode</a>
 </li>
 <li>SetVisible()
 : <a class="el" href="class_c_l_e_1_1_c_l_node.html#a64b933c361526fcc0ee9490e34d12da4">CLE::CLNode</a>
+</li>
+<li>Start()
+: <a class="el" href="class_c_l_e_1_1_c_l_particle_system.html#a8fc64f3d25e0c927de113fb9c32d03ad">CLE::CLParticleSystem</a>
+</li>
+<li>StartOneIteration()
+: <a class="el" href="class_c_l_e_1_1_c_l_particle_system.html#a973c23026fcb428157d060b03621767d">CLE::CLParticleSystem</a>
 </li>
 </ul>
 </div><!-- contents -->

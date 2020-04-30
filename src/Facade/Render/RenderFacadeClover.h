@@ -99,6 +99,7 @@ class RenderFacadeClover : public RenderFacade {
       void FacadeUpdateViewport() override;
 
       void FacadeInitParticleSystem(DataMap* d) override;
+      void FacadeUpdateVisibility(DataMap* d) override;
       bool FacadeOctreeInCamera(float size, const glm::vec3& pos) override {return device->OctreeIncamera(size, pos);};
       void FacadeSetOctreeVisibleById(unsigned int id, bool v) override {device->SetOctreeVisibleById(id, v);};
 
@@ -109,6 +110,7 @@ class RenderFacadeClover : public RenderFacade {
       //DEBUG
       void Draw3DLine(vec3& pos1, vec3& pos2, uint16_t r, uint16_t g, uint16_t b) const override;
       void Draw3DLine(vec3& pos1, vec3& pos2) const override;
+      void Draw2DImage(float x_, float y_, int width_, int height_, float depth_, string file_, bool) const override;
       void FacadeDrawGraphEdges(ManWayPoint* manWayPoints) const override;
       void FacadeDrawBoundingBox(Entity* entity, bool colliding) const override;
       void FacadeDrawBoundingPlane(Entity* entity) const override;
@@ -120,10 +122,12 @@ class RenderFacadeClover : public RenderFacade {
       void SetShowDebug(bool b) override { showDebug = b;};
       void SetShowDebugAI(bool b) override { showAIDebug = b;};
       void SetIDCarAIToDebug(int id) override {idCarAIToDebug = id;};
+      void SetCamTarget(glm::vec3 pos) override;
 
       bool GetShowDebug() override { return showDebug;};
       bool GetShowDebugAI() override { return showAIDebug;};
       int  GetIDCarAIToDebug() override { return idCarAIToDebug;};
+      std::tuple<int, int> GetScreenSize() override;
 
       void SetMenuEndRace(bool b) override { menuER = b; };
       bool GetMenuEndRace() override { return menuER; };
@@ -177,20 +181,22 @@ class RenderFacadeClover : public RenderFacade {
 
       class Animation2D{
          public:
-            Animation2D(const std::string _path, uint16_t _numFrames, uint16_t _fps);
+            Animation2D(std::string _path, uint16_t _numFrames, uint16_t _fps);
             ~Animation2D(){};
 
             void Update();
             void Start();
             void Restart();
 
-            string GetCurrentPath() const { return currentPath; }
+            string GetCurrentPath() const { return currentPath + extension; }
 
          private:
             string path;
+            string extension;
             string currentPath;
             uint16_t numFrames {0};
             uint16_t fps {60};
+            float time {0};
             float timeBetweenFrames {0.16};
             int actualFrame {0};
             bool started { false };

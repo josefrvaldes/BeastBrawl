@@ -135,7 +135,7 @@ class CLNode;
             glm::vec3          GetSpawnerPosition()   const { return spawnerPosition; }
             //! Devuelve las texturas de las particulas del spawner
             //! @returns clTextures
-            vector<CLResourceTexture> GetTextures()           const { return clTextures; }
+            vector<CLResourceTexture*> GetTextures()           const { return clTextures; }
             //! Devuelve el ancho de las particulas
             //! @returns width
             uint16_t           GetWidth()             const { return width; }
@@ -193,7 +193,7 @@ class CLNode;
             unsigned int nParticles { 10 }; //Numero de particulas que vamos a tener
             glm::vec3 speedDirection;
             glm::vec3 spawnerPosition;
-            vector<CLResourceTexture> clTextures;
+            vector<CLResourceTexture*> clTextures;
             uint16_t width{0}, height{0};
             time_point<system_clock> timeStart;
             float spawnDelay = 1000; //Tiempo en ms
@@ -228,7 +228,7 @@ class CLNode;
                     
                     GLuint VBO,VAO;
                     float lifeTime = 0;
-                    CLResourceTexture texture;
+                    CLResourceTexture* texture;
                     CLParticleSystem* particleSystem {nullptr};
                     glm::vec3 position;
                     glm::vec3 velocity;

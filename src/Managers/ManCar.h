@@ -45,10 +45,17 @@ class ManCar : public Manager {
 
     void CreateMainCar(int pj);
     void CreateHumanCar(int pj, glm::vec3 _position);
-    void UpdateCarPlayer(ManTotem &);
-    void UpdateGeneralCar(Entity& car_, Entity& totem_);
-    void UpdateCarAI(CarAI* carAI, ManTotem* m_manTotem);
-    void UpdateCarHuman(Entity* CarHuman, ManTotem*);
+
+
+    /**
+     * @return true o false dependiendo si la partida debe terminar o no
+     */
+    bool UpdateCarPlayer(ManTotem &);
+    bool UpdateGeneralCar(Entity& car_, Entity& totem_);
+    bool UpdateCarAI(CarAI* carAI, ManTotem* m_manTotem);
+    bool UpdateCarHuman(Entity* CarHuman, ManTotem*);
+
+
     shared_ptr<CarHuman>& GetCar() { return car; };
 
     void CreateCarAI(int pj);
@@ -61,6 +68,7 @@ class ManCar : public Manager {
     void Integrate(float) override;
     Entity* GetDesirableTarget(Entity* actualCar);
     void SetSystemOnline(SystemOnline* systOn){ systemOnline = systOn; };
+    Entity* GetCurrentWinner();
     
     unique_ptr<SystemVision> systemVision; 
    private:

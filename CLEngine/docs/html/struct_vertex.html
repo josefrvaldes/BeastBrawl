@@ -28,7 +28,7 @@
    <div id="projectname">CLEngine
    &#160;<span id="projectnumber">1.0</span>
    </div>
-   <div id="projectbrief">Motor grafico para Beast Brawl</div>
+   <div id="projectbrief">Motor gráfico para TAG</div>
   </td>
  </tr>
  </tbody>
@@ -98,20 +98,52 @@ $(document).ready(function(){initNavTree('struct_vertex.html',''); initResizable
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:a030819fdc241743bbd3e180a6b132ed3"><td class="memItemLeft" align="right" valign="top">glm::vec3&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_vertex.html#a030819fdc241743bbd3e180a6b132ed3">position</a></td></tr>
+<tr class="memitem:a030819fdc241743bbd3e180a6b132ed3"><td class="memItemLeft" align="right" valign="top">glm::vec3&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_vertex.html#a030819fdc241743bbd3e180a6b132ed3">position</a> {0.f,0.f,0.f}</td></tr>
 <tr class="separator:a030819fdc241743bbd3e180a6b132ed3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3aa35fe84025ecf1acccb5f65f5577fd"><td class="memItemLeft" align="right" valign="top">glm::vec3&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_vertex.html#a3aa35fe84025ecf1acccb5f65f5577fd">normal</a></td></tr>
+<tr class="memitem:a3aa35fe84025ecf1acccb5f65f5577fd"><td class="memItemLeft" align="right" valign="top">glm::vec3&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_vertex.html#a3aa35fe84025ecf1acccb5f65f5577fd">normal</a> {0.f,0.f,0.f}</td></tr>
 <tr class="separator:a3aa35fe84025ecf1acccb5f65f5577fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8d5babcf0ee1f315dae1207c375759a4"><td class="memItemLeft" align="right" valign="top">glm::vec2&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_vertex.html#a8d5babcf0ee1f315dae1207c375759a4">texCoords</a></td></tr>
+<tr class="memitem:a8d5babcf0ee1f315dae1207c375759a4"><td class="memItemLeft" align="right" valign="top">glm::vec2&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_vertex.html#a8d5babcf0ee1f315dae1207c375759a4">texCoords</a> {0.f,0.f}</td></tr>
 <tr class="separator:a8d5babcf0ee1f315dae1207c375759a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a89587fd853d4f3f42900715620a7364d"><td class="memItemLeft" align="right" valign="top">glm::vec3&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_vertex.html#a89587fd853d4f3f42900715620a7364d">tangent</a></td></tr>
+<tr class="memitem:a89587fd853d4f3f42900715620a7364d"><td class="memItemLeft" align="right" valign="top">glm::vec3&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_vertex.html#a89587fd853d4f3f42900715620a7364d">tangent</a> {0.f,0.f,0.f}</td></tr>
 <tr class="separator:a89587fd853d4f3f42900715620a7364d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8c7489e0319ee0b6a214b0753907a80f"><td class="memItemLeft" align="right" valign="top">glm::vec3&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_vertex.html#a8c7489e0319ee0b6a214b0753907a80f">bitangent</a></td></tr>
+<tr class="memitem:a8c7489e0319ee0b6a214b0753907a80f"><td class="memItemLeft" align="right" valign="top">glm::vec3&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_vertex.html#a8c7489e0319ee0b6a214b0753907a80f">bitangent</a> {0.f,0.f,0.f}</td></tr>
 <tr class="separator:a8c7489e0319ee0b6a214b0753907a80f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a320f061f6cbb5fc36ea14d9151886646"><td class="memItemLeft" align="right" valign="top">glm::vec3&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_vertex.html#a320f061f6cbb5fc36ea14d9151886646">animationOffsetPos</a> {0.f,0.f,0.f}</td></tr>
+<tr class="separator:a320f061f6cbb5fc36ea14d9151886646"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8a6acb55d99ae255132c74bada46255e"><td class="memItemLeft" align="right" valign="top">glm::vec3&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_vertex.html#a8a6acb55d99ae255132c74bada46255e">animationOffsetNormal</a> {0.f,0.f,0.f}</td></tr>
+<tr class="separator:a8a6acb55d99ae255132c74bada46255e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Estructura para almacenar datos de un vertice Guardamos datos que recogemos de assimp como la posicion, normal, coordenada de texturas, tangentes y bitangentes. </p>
 </div><h2 class="groupheader">Member Data Documentation</h2>
+<a id="a8a6acb55d99ae255132c74bada46255e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8a6acb55d99ae255132c74bada46255e">&#9670;&nbsp;</a></span>animationOffsetNormal</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">glm::vec3 Vertex::animationOffsetNormal {0.f,0.f,0.f}</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a320f061f6cbb5fc36ea14d9151886646"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a320f061f6cbb5fc36ea14d9151886646">&#9670;&nbsp;</a></span>animationOffsetPos</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">glm::vec3 Vertex::animationOffsetPos {0.f,0.f,0.f}</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a8c7489e0319ee0b6a214b0753907a80f"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a8c7489e0319ee0b6a214b0753907a80f">&#9670;&nbsp;</a></span>bitangent</h2>
 
@@ -119,7 +151,7 @@ Public Attributes</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">glm::vec3 Vertex::bitangent</td>
+          <td class="memname">glm::vec3 Vertex::bitangent {0.f,0.f,0.f}</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -133,7 +165,7 @@ Public Attributes</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">glm::vec3 Vertex::normal</td>
+          <td class="memname">glm::vec3 Vertex::normal {0.f,0.f,0.f}</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -147,7 +179,7 @@ Public Attributes</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">glm::vec3 Vertex::position</td>
+          <td class="memname">glm::vec3 Vertex::position {0.f,0.f,0.f}</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -161,7 +193,7 @@ Public Attributes</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">glm::vec3 Vertex::tangent</td>
+          <td class="memname">glm::vec3 Vertex::tangent {0.f,0.f,0.f}</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -175,7 +207,7 @@ Public Attributes</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">glm::vec2 Vertex::texCoords</td>
+          <td class="memname">glm::vec2 Vertex::texCoords {0.f,0.f}</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -183,7 +215,7 @@ Public Attributes</h2></td></tr>
 </div>
 </div>
 <hr/>The documentation for this struct was generated from the following file:<ul>
-<li>CLEngine/src/ResourceManager/<a class="el" href="_c_l_resource_mesh_8h_source.html">CLResourceMesh.h</a></li>
+<li>D:/Escritorio/Beast_Brawl/CLEngine/src/ResourceManager/<a class="el" href="_c_l_resource_mesh_8h_source.html">CLResourceMesh.h</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

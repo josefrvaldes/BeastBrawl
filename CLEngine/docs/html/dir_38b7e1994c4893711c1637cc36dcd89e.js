@@ -5,9 +5,6 @@ var dir_38b7e1994c4893711c1637cc36dcd89e =
     [ "ResourceManager", "dir_1a8b83d01d55408d49443b6a1d4e7dfd.html", "dir_1a8b83d01d55408d49443b6a1d4e7dfd" ],
     [ "SceneTree", "dir_68a470a683d34fed4144bce44877275f.html", "dir_68a470a683d34fed4144bce44877275f" ],
     [ "CLEngine.cpp", "_c_l_engine_8cpp.html", null ],
-    [ "CLEngine.h", "_c_l_engine_8h.html", [
-      [ "Character", "struct_c_l_e_1_1_character.html", "struct_c_l_e_1_1_character" ],
-      [ "CLEngine", "class_c_l_e_1_1_c_l_engine.html", "class_c_l_e_1_1_c_l_engine" ]
-    ] ],
+    [ "CLEngine.h", "_c_l_engine_8h.html", "_c_l_engine_8h" ],
     [ "main.cpp", "main_8cpp.html", "main_8cpp" ]
 ];

@@ -95,6 +95,7 @@ class RenderFacadeIrrlicht : public RenderFacade {
     void FacadeUpdateViewport() override;
     
     void FacadeInitParticleSystem(DataMap* d) override {};
+    void FacadeUpdateVisibility(DataMap* d) override {};
     bool FacadeOctreeInCamera(float size, const glm::vec3& pos) override {return true;};
     void FacadeSetOctreeVisibleById(unsigned int id, bool v) override {};
 
@@ -105,6 +106,7 @@ class RenderFacadeIrrlicht : public RenderFacade {
     //DEBUG
     void Draw3DLine(vec3& pos1, vec3& pos2, uint16_t r, uint16_t g, uint16_t b) const override;
     void Draw3DLine(vec3& pos1, vec3& pos2) const override;
+    void Draw2DImage(float x_, float y_, int width_, int height_, float depth_, string file_, bool) const override;
     void FacadeDrawGraphEdges(ManWayPoint* manWayPoints) const override;
     void FacadeDrawBoundingBox(Entity* entity, bool colliding) const override;
     void FacadeDrawBoundingPlane(Entity* entity) const override;
@@ -116,11 +118,12 @@ class RenderFacadeIrrlicht : public RenderFacade {
     void SetShowDebug(bool b) override { showDebug = b;};
     void SetShowDebugAI(bool b) override { showAIDebug = b;};
     void SetIDCarAIToDebug(int id) override {idCarAIToDebug = id;};
+    void SetCamTarget(glm::vec3 pos) override;
 
     bool GetShowDebug() override { return showDebug;};
     bool GetShowDebugAI() override { return showAIDebug;};
     int  GetIDCarAIToDebug() override { return idCarAIToDebug;};
-
+    std::tuple<int, int> GetScreenSize() override;
 
     void ResetInputGameOptions() override;
     void ResetInputCharacter() override;

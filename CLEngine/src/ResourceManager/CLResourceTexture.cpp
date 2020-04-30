@@ -52,3 +52,8 @@ bool CLResourceTexture::LoadFile(string file, bool vertically){
 void CLResourceTexture::Draw(GLuint shaderID){
     glBindTexture(GL_TEXTURE_2D, textureID);
 }
+
+CLResourceTexture::~CLResourceTexture() {
+    //cout << "Entra en el destructor de Textura\n";
+    glDeleteTextures(1, &textureID);
+}

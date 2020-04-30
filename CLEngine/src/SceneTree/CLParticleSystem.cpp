@@ -8,7 +8,7 @@ CLParticleSystem::CLParticleSystem(unsigned int idEntity, unsigned int particles
     nParticles        = particlesNumber;
     speedDirection    = _speedDirection;
     for(string path : textures){
-        clTextures.emplace_back(*CLResourceManager::GetResourceManager()->GetResourceTexture(path,false));
+        clTextures.emplace_back(CLResourceManager::GetResourceManager()->GetResourceTexture(path,false));
     }
     //clTexture         = CLResourceManager::GetResourceManager()->GetResourceTexture(texture,false);
     width             = _width;
@@ -83,11 +83,6 @@ void CLParticleSystem::Draw(GLuint shaderID) {
     //glDepthMask(GL_FALSE);
     glUseProgram(shaderID);
 
-    // glm::mat4 viewProjection = node->GetProjectionMatrix()*node->GetViewMatrix();
-    // glUniformMatrix4fv(glGetUniformLocation(shaderID, "VPMatrix"), 1, GL_FALSE, glm::value_ptr(viewProjection));
-
-    // glm::vec3 camPos = node->GetActiveCameraNode()->GetGlobalTranslation();
-    // glUniform3fv(glGetUniformLocation(shaderID, "cameraPosition"), 1, glm::value_ptr(camPos));
 
 
     for(auto& particle : particles){
@@ -170,7 +165,7 @@ void CLParticleSystem::CLParticle::Draw(GLuint shaderID){
     glUniform1f(glGetUniformLocation(shaderID, "height"), particleSystem->GetHeight());
     
     glActiveTexture(GL_TEXTURE0); 
-    glBindTexture(GL_TEXTURE_2D, texture.GetTextureID());
+    glBindTexture(GL_TEXTURE_2D, texture->GetTextureID());
     glBindVertexArray(VAO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(position), &position[0], GL_STATIC_DRAW);

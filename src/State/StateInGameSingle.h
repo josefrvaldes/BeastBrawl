@@ -15,6 +15,10 @@ class StateInGameSingle : public StateInGame {
     ~StateInGameSingle();
     void InitState() override;
     void Input() override;
+    void UpdateAnimationStart() override;
+    void UpdateAnimationCountdown() override;
+    void UpdateAnimationEnd() override;
+    void UpdateGame() override;
     void Update() override;
     void Render() override;
     States GetState() override { return State::States::INGAME_SINGLE; };

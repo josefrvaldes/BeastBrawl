@@ -20,9 +20,6 @@
 #include <Entities/Totem.h>
 #include <Entities/WayPoint.h>
 #include <Entities/NavMesh.h>
-#include <Managers/ManPowerUp.h>
-#include <Managers/ManWayPoint.h>
-#include <Managers/ManNavMesh.h>
 #include <EventManager/EventManager.h>
 #include <Facade/Input/InputFacadeManager.h>
 #include <Facade/Physics/PhysicsFacadeManager.h>
@@ -31,6 +28,9 @@
 #include <Facade/Sound/SoundFacadeManager.h>
 #include <Systems/SystemPathPlanning.h>
 #include <Game.h>
+#include <Managers/ManPowerUp.h>
+#include <Managers/ManWayPoint.h>
+#include <Managers/ManNavMesh.h>
 #include <Managers/ManBoundingWall.h>
 #include <Managers/ManBoundingGround.h>
 #include <Managers/ManBoxPowerUp.h>
@@ -41,14 +41,18 @@
 #include <Managers/ManWayPoint.h>
 #include <Managers/ManLight.h>
 #include <Managers/ManParticleSystem.h>
+#include <Managers/ManShield.h>
 #include <Managers/ManCamera.h>
 #include "../Managers/ManGameRules.h"
 #include <Systems/Collisions.h>
 #include <Systems/Physics.h>
 #include <Systems/PhysicsPowerUp.h>
 #include <Systems/SystemLoD.h>
+#include <Systems/SystemAnimationStart.h>
+#include <Systems/SystemAnimationEnd.h>
 #include <Systems/SystemBoxPowerUp.h>
 #include <Systems/SystemRanking.h>
+#include <Systems/Utils.h>
 #include <behaviourTree/behaviourTree.h>
 #include <behaviourTree/decorator.h>
 #include <behaviourTree/selector.h>
@@ -67,6 +71,13 @@ using namespace chrono;
 
 class CLPhysics;
 
+enum UpdateState {
+    START,
+    COUNTDOWN,
+    GAME,
+    END
+};
+
 class StateInGame : public State {
    public:
     StateInGame();
@@ -75,6 +86,10 @@ class StateInGame : public State {
     void InitState() override;
     virtual void Input() = 0;
     void Update() override;
+    virtual void UpdateAnimationStart();
+    virtual void UpdateAnimationCountdown();
+    virtual void UpdateAnimationEnd();
+    virtual void UpdateGame();
     void Render() override;
     States GetState() override { return State::States::INGAME_SINGLE; };
     void CreateMainCar();
@@ -96,7 +111,10 @@ class StateInGame : public State {
     shared_ptr<ManLight> manLight;
     unique_ptr<ManGameRules> manGameRules;
     unique_ptr<ManParticleSystem> manParticleSystem;
+    unique_ptr<ManShield> manShield;
     unique_ptr<SystemLoD> sysLoD;
+    unique_ptr<SystemAnimationStart> sysAnimStart;
+    unique_ptr<SystemAnimationEnd> sysAnimEnd;
 
     std::vector<shared_ptr<Manager>> managersEntities;
     std::unique_ptr<Octree> octreeScene;
@@ -131,10 +149,16 @@ class StateInGame : public State {
     virtual void InitializeSystems(ManCar&, ManBoundingWall&, ManBoundingOBB&, ManBoundingGround&, ManPowerUp&, ManNavMesh&, ManBoxPowerUp&, ManTotem &);
     virtual void InitializeFacades();
     virtual void AddElementsToRender();
+    void GoToEndAnimation();
+    void GoToStateEndrace();
+    void GoToCountdownAnimation();
     //virtual void CAMBIARCosasDeTotemUpdate(){};
 
     //void CAMBIARCosasDeTotem(ManTotem &);
     //void CAMBIARCosasNavMesh(ManCar &, ManNavMesh &);
     //void CAMBIARPositionTotemAboveCar();
-
+    UpdateState currentUpdateState {UpdateState::START};
+    int64_t timerCountdown;
+    uint8_t currentCountdown{3};
+    int64_t timerEnd {0};
 };

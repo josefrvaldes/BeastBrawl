@@ -28,7 +28,7 @@
    <div id="projectname">CLEngine
    &#160;<span id="projectnumber">1.0</span>
    </div>
-   <div id="projectbrief">Motor grafico para Beast Brawl</div>
+   <div id="projectbrief">Motor gráfico para TAG</div>
   </td>
  </tr>
  </tbody>
@@ -85,7 +85,6 @@ $(document).ready(function(){initNavTree('class_c_l_e_1_1_c_l_node.html',''); in
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
-<a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="class_c_l_e_1_1_c_l_node-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">CLE::CLNode Class Reference</div>  </div>
@@ -105,6 +104,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:aee7937be406e5c02a1a6d165f4d36f01"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac04140726c2842807653da077378cdce"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_node.html#ac04140726c2842807653da077378cdce">~CLNode</a> ()</td></tr>
 <tr class="separator:ac04140726c2842807653da077378cdce"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7d807ae7279d87d66f8cf15f1a886b0d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_node.html#a7d807ae7279d87d66f8cf15f1a886b0d">AddChild</a> (shared_ptr&lt; <a class="el" href="class_c_l_e_1_1_c_l_node.html">CLNode</a> &gt; child)</td></tr>
+<tr class="separator:a7d807ae7279d87d66f8cf15f1a886b0d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2b2744b542a575f90482d746748478f7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_c_l_e_1_1_c_l_entity.html">CLEntity</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_node.html#a2b2744b542a575f90482d746748478f7">GetEntity</a> () const</td></tr>
 <tr class="memdesc:a2b2744b542a575f90482d746748478f7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Devuelve la entidad del nodo.  <a href="class_c_l_e_1_1_c_l_node.html#a2b2744b542a575f90482d746748478f7">More...</a><br /></td></tr>
 <tr class="separator:a2b2744b542a575f90482d746748478f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -141,24 +142,6 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:af7b6af0374da38265a020612400e18c7"><td class="memItemLeft" align="right" valign="top">glm::vec3&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_node.html#af7b6af0374da38265a020612400e18c7">GetGlobalScalation</a> () const</td></tr>
 <tr class="memdesc:af7b6af0374da38265a020612400e18c7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Devuelve el escalado global del nodo.  <a href="class_c_l_e_1_1_c_l_node.html#af7b6af0374da38265a020612400e18c7">More...</a><br /></td></tr>
 <tr class="separator:af7b6af0374da38265a020612400e18c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a94ec407f18837d4e27c5b79609e4c947"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_c_l_e_1_1_c_l_camera.html">CLCamera</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_node.html#a94ec407f18837d4e27c5b79609e4c947">GetActiveCamera</a> ()</td></tr>
-<tr class="memdesc:a94ec407f18837d4e27c5b79609e4c947"><td class="mdescLeft">&#160;</td><td class="mdescRight">Devuelve la entidad de la camara activa.  <a href="class_c_l_e_1_1_c_l_node.html#a94ec407f18837d4e27c5b79609e4c947">More...</a><br /></td></tr>
-<tr class="separator:a94ec407f18837d4e27c5b79609e4c947"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7535a1060549f193d62b065e45995b63"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_c_l_e_1_1_c_l_node.html">CLNode</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_node.html#a7535a1060549f193d62b065e45995b63">GetActiveCameraNode</a> ()</td></tr>
-<tr class="memdesc:a7535a1060549f193d62b065e45995b63"><td class="mdescLeft">&#160;</td><td class="mdescRight">Devuelve el nodo de la camara activa.  <a href="class_c_l_e_1_1_c_l_node.html#a7535a1060549f193d62b065e45995b63">More...</a><br /></td></tr>
-<tr class="separator:a7535a1060549f193d62b065e45995b63"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a03ef9f952a5adca897eb8d5fa028a913"><td class="memItemLeft" align="right" valign="top">vector&lt; <a class="el" href="class_c_l_e_1_1_c_l_node.html">CLNode</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_node.html#a03ef9f952a5adca897eb8d5fa028a913">GetPointLights</a> ()</td></tr>
-<tr class="memdesc:a03ef9f952a5adca897eb8d5fa028a913"><td class="mdescLeft">&#160;</td><td class="mdescRight">Devuelve las luces puntuales de la escena.  <a href="class_c_l_e_1_1_c_l_node.html#a03ef9f952a5adca897eb8d5fa028a913">More...</a><br /></td></tr>
-<tr class="separator:a03ef9f952a5adca897eb8d5fa028a913"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aba1a1a1d591ad58757b3ddf4fd1f5cc7"><td class="memItemLeft" align="right" valign="top">vector&lt; <a class="el" href="class_c_l_e_1_1_c_l_node.html">CLNode</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_node.html#aba1a1a1d591ad58757b3ddf4fd1f5cc7">GetDirectLights</a> ()</td></tr>
-<tr class="memdesc:aba1a1a1d591ad58757b3ddf4fd1f5cc7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Devuelve las luces direccionales de la escena.  <a href="class_c_l_e_1_1_c_l_node.html#aba1a1a1d591ad58757b3ddf4fd1f5cc7">More...</a><br /></td></tr>
-<tr class="separator:aba1a1a1d591ad58757b3ddf4fd1f5cc7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abe351c82b7173c06ed230a91c0cadaf6"><td class="memItemLeft" align="right" valign="top">vector&lt; <a class="el" href="class_c_l_e_1_1_c_l_node.html">CLNode</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_node.html#abe351c82b7173c06ed230a91c0cadaf6">GetCameras</a> ()</td></tr>
-<tr class="memdesc:abe351c82b7173c06ed230a91c0cadaf6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Devuelve las camaras de la escena.  <a href="class_c_l_e_1_1_c_l_node.html#abe351c82b7173c06ed230a91c0cadaf6">More...</a><br /></td></tr>
-<tr class="separator:abe351c82b7173c06ed230a91c0cadaf6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a89d2fe5414fdd6aae3c1163b5932f79d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_c_l_e_1_1_c_l_resource_shader.html">CLResourceShader</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_node.html#a89d2fe5414fdd6aae3c1163b5932f79d">GetDepthShader</a> ()</td></tr>
-<tr class="memdesc:a89d2fe5414fdd6aae3c1163b5932f79d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Devuelve el objeto shader del shadowMapping.  <a href="class_c_l_e_1_1_c_l_node.html#a89d2fe5414fdd6aae3c1163b5932f79d">More...</a><br /></td></tr>
-<tr class="separator:a89d2fe5414fdd6aae3c1163b5932f79d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af5b81874aea3db8986e2e76cd14ec855"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_node.html#af5b81874aea3db8986e2e76cd14ec855">SetFather</a> (<a class="el" href="class_c_l_e_1_1_c_l_node.html">CLNode</a> *f)</td></tr>
 <tr class="memdesc:af5b81874aea3db8986e2e76cd14ec855"><td class="mdescLeft">&#160;</td><td class="mdescRight">Asigna un padre al nodo.  <a href="class_c_l_e_1_1_c_l_node.html#af5b81874aea3db8986e2e76cd14ec855">More...</a><br /></td></tr>
 <tr class="separator:af5b81874aea3db8986e2e76cd14ec855"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -174,136 +157,43 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a64b933c361526fcc0ee9490e34d12da4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_node.html#a64b933c361526fcc0ee9490e34d12da4">SetVisible</a> (bool v)</td></tr>
 <tr class="memdesc:a64b933c361526fcc0ee9490e34d12da4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Asigna la visibilidad del nodo.  <a href="class_c_l_e_1_1_c_l_node.html#a64b933c361526fcc0ee9490e34d12da4">More...</a><br /></td></tr>
 <tr class="separator:a64b933c361526fcc0ee9490e34d12da4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab8bfefc54981169f256d9cd994e00efb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_node.html#ab8bfefc54981169f256d9cd994e00efb">SetTransformationMat</a> (glm::mat4 transfMat)</td></tr>
-<tr class="separator:ab8bfefc54981169f256d9cd994e00efb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acfa35552f9d36fb498b01e020bf7af17"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_node.html#acfa35552f9d36fb498b01e020bf7af17">SetOctreeVisibleById</a> (unsigned int id, bool v)</td></tr>
+<tr class="memdesc:acfa35552f9d36fb498b01e020bf7af17"><td class="mdescLeft">&#160;</td><td class="mdescRight">Asigna la visibilidad del nodo dependiendo del octree.  <a href="class_c_l_e_1_1_c_l_node.html#acfa35552f9d36fb498b01e020bf7af17">More...</a><br /></td></tr>
+<tr class="separator:acfa35552f9d36fb498b01e020bf7af17"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa3f91058968c85a89973c8b1f9ca47cf"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_node.html#aa3f91058968c85a89973c8b1f9ca47cf">SetShaderProgramID</a> (GLuint id)</td></tr>
 <tr class="separator:aa3f91058968c85a89973c8b1f9ca47cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af6b05614d72e57b2f7b514535150707d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_c_l_e_1_1_c_l_node.html">CLNode</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_node.html#af6b05614d72e57b2f7b514535150707d">AddGroup</a> (unsigned int id)</td></tr>
-<tr class="memdesc:af6b05614d72e57b2f7b514535150707d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Añade un grupo a la escena.  <a href="class_c_l_e_1_1_c_l_node.html#af6b05614d72e57b2f7b514535150707d">More...</a><br /></td></tr>
-<tr class="separator:af6b05614d72e57b2f7b514535150707d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3c38ccf19fc35c4e71ef7c96ed4f4447"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_c_l_e_1_1_c_l_node.html">CLNode</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_node.html#a3c38ccf19fc35c4e71ef7c96ed4f4447">AddMesh</a> (unsigned int id)</td></tr>
-<tr class="memdesc:a3c38ccf19fc35c4e71ef7c96ed4f4447"><td class="mdescLeft">&#160;</td><td class="mdescRight">Añade una malla a la escena.  <a href="class_c_l_e_1_1_c_l_node.html#a3c38ccf19fc35c4e71ef7c96ed4f4447">More...</a><br /></td></tr>
-<tr class="separator:a3c38ccf19fc35c4e71ef7c96ed4f4447"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a109e2cfc7b212af74d75641a0be7f1a7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_c_l_e_1_1_c_l_node.html">CLNode</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_node.html#a109e2cfc7b212af74d75641a0be7f1a7">AddMesh</a> (unsigned int id, string mesh)</td></tr>
-<tr class="memdesc:a109e2cfc7b212af74d75641a0be7f1a7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Añade una malla a la escena.  <a href="class_c_l_e_1_1_c_l_node.html#a109e2cfc7b212af74d75641a0be7f1a7">More...</a><br /></td></tr>
-<tr class="separator:a109e2cfc7b212af74d75641a0be7f1a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6cb84c3b16a1c3ed982fa19a7c9e583b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_c_l_e_1_1_c_l_node.html">CLNode</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_node.html#a6cb84c3b16a1c3ed982fa19a7c9e583b">AddPointLight</a> (unsigned int id)</td></tr>
-<tr class="memdesc:a6cb84c3b16a1c3ed982fa19a7c9e583b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Añade una luz puntual a la escena.  <a href="class_c_l_e_1_1_c_l_node.html#a6cb84c3b16a1c3ed982fa19a7c9e583b">More...</a><br /></td></tr>
-<tr class="separator:a6cb84c3b16a1c3ed982fa19a7c9e583b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a913587a2c28cbed3e8505dc9a5abf67c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_c_l_e_1_1_c_l_node.html">CLNode</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_node.html#a913587a2c28cbed3e8505dc9a5abf67c">AddPointLight</a> (unsigned int id, glm::vec3 intensity, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float constant, float linear, float quadratic)</td></tr>
-<tr class="memdesc:a913587a2c28cbed3e8505dc9a5abf67c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Añade una luz puntual a la escena.  <a href="class_c_l_e_1_1_c_l_node.html#a913587a2c28cbed3e8505dc9a5abf67c">More...</a><br /></td></tr>
-<tr class="separator:a913587a2c28cbed3e8505dc9a5abf67c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa509e471eb0453f5e53807c7870d7d2a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_c_l_e_1_1_c_l_node.html">CLNode</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_node.html#aa509e471eb0453f5e53807c7870d7d2a">AddDirectLight</a> (unsigned int id)</td></tr>
-<tr class="memdesc:aa509e471eb0453f5e53807c7870d7d2a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Añade una luz direccional a la escena.  <a href="class_c_l_e_1_1_c_l_node.html#aa509e471eb0453f5e53807c7870d7d2a">More...</a><br /></td></tr>
-<tr class="separator:aa509e471eb0453f5e53807c7870d7d2a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab689a5975dd0ec784532ed19ce5ee965"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_c_l_e_1_1_c_l_node.html">CLNode</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_node.html#ab689a5975dd0ec784532ed19ce5ee965">AddDirectLight</a> (unsigned int id, glm::vec3 direction, glm::vec3 intensity, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float constant, float linear, float quadratic)</td></tr>
-<tr class="memdesc:ab689a5975dd0ec784532ed19ce5ee965"><td class="mdescLeft">&#160;</td><td class="mdescRight">Añade una luz puntual a la escena.  <a href="class_c_l_e_1_1_c_l_node.html#ab689a5975dd0ec784532ed19ce5ee965">More...</a><br /></td></tr>
-<tr class="separator:ab689a5975dd0ec784532ed19ce5ee965"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a317a2512ec43d6b99d0c23f6fc7ca1ed"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_c_l_e_1_1_c_l_node.html">CLNode</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_node.html#a317a2512ec43d6b99d0c23f6fc7ca1ed">AddSpotLight</a> (unsigned int id)</td></tr>
-<tr class="memdesc:a317a2512ec43d6b99d0c23f6fc7ca1ed"><td class="mdescLeft">&#160;</td><td class="mdescRight">Añade una luz spot a la escena.  <a href="class_c_l_e_1_1_c_l_node.html#a317a2512ec43d6b99d0c23f6fc7ca1ed">More...</a><br /></td></tr>
-<tr class="separator:a317a2512ec43d6b99d0c23f6fc7ca1ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a344079059191932d72b2a021171a9562"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_c_l_e_1_1_c_l_node.html">CLNode</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_node.html#a344079059191932d72b2a021171a9562">AddSpotLight</a> (unsigned int id, glm::vec3 direction, float cutOff, float outerCutOff, glm::vec3 intensity, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float constant, float linear, float quadratic)</td></tr>
-<tr class="memdesc:a344079059191932d72b2a021171a9562"><td class="mdescLeft">&#160;</td><td class="mdescRight">Añade una luz spot a la escena.  <a href="class_c_l_e_1_1_c_l_node.html#a344079059191932d72b2a021171a9562">More...</a><br /></td></tr>
-<tr class="separator:a344079059191932d72b2a021171a9562"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afd2c3bbe8012f22de6637c3a32675e41"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_c_l_e_1_1_c_l_node.html">CLNode</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_node.html#afd2c3bbe8012f22de6637c3a32675e41">AddCamera</a> (unsigned int id)</td></tr>
-<tr class="memdesc:afd2c3bbe8012f22de6637c3a32675e41"><td class="mdescLeft">&#160;</td><td class="mdescRight">Añade una camara a la escena.  <a href="class_c_l_e_1_1_c_l_node.html#afd2c3bbe8012f22de6637c3a32675e41">More...</a><br /></td></tr>
-<tr class="separator:afd2c3bbe8012f22de6637c3a32675e41"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afede72716223874e44229dcbfcf8a4a0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_c_l_e_1_1_c_l_node.html">CLNode</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_node.html#afede72716223874e44229dcbfcf8a4a0">AddParticleSystem</a> (unsigned int id, int nParticles, glm::vec3 velocity, string texture, int width, int height, int spawnDelay, int particlesToSpawn, int lifeSpan, std::uint_fast8_t flags)</td></tr>
-<tr class="memdesc:afede72716223874e44229dcbfcf8a4a0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Añade un sistema de particulas version <b>Punto</b>  <a href="class_c_l_e_1_1_c_l_node.html#afede72716223874e44229dcbfcf8a4a0">More...</a><br /></td></tr>
-<tr class="separator:afede72716223874e44229dcbfcf8a4a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a696d8d2e92ff48ae24ec2d7547579e22"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_c_l_e_1_1_c_l_node.html">CLNode</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_node.html#a696d8d2e92ff48ae24ec2d7547579e22">AddParticleSystem</a> (unsigned int id, int nParticles, glm::vec3 velocity, string texture, int width, int height, int spawnDelay, int particlesToSpawn, int lifeSpan, glm::vec3 offset, glm::vec3 orientation, std::uint_fast8_t flags)</td></tr>
-<tr class="memdesc:a696d8d2e92ff48ae24ec2d7547579e22"><td class="mdescLeft">&#160;</td><td class="mdescRight">Añade un sistema de particulas version <b>Linea, Cuadrado o Cubo</b>  <a href="class_c_l_e_1_1_c_l_node.html#a696d8d2e92ff48ae24ec2d7547579e22">More...</a><br /></td></tr>
-<tr class="separator:a696d8d2e92ff48ae24ec2d7547579e22"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa2ca45f9a39d850a7dde882b133bad94"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_c_l_e_1_1_c_l_node.html">CLNode</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_node.html#aa2ca45f9a39d850a7dde882b133bad94">AddParticleSystem</a> (unsigned int id, int nParticles, glm::vec3 velocity, string texture, int width, int height, int spawnDelay, int particlesToSpawn, int lifeSpan, float radious, std::uint_fast8_t flags)</td></tr>
-<tr class="memdesc:aa2ca45f9a39d850a7dde882b133bad94"><td class="mdescLeft">&#160;</td><td class="mdescRight">Añade un sistema de particulas version <b>Esfera</b>  <a href="class_c_l_e_1_1_c_l_node.html#aa2ca45f9a39d850a7dde882b133bad94">More...</a><br /></td></tr>
-<tr class="separator:aa2ca45f9a39d850a7dde882b133bad94"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7d9fa244dacbc642ee3e86effaa88a0a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_c_l_e_1_1_c_l_node.html">CLNode</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_node.html#a7d9fa244dacbc642ee3e86effaa88a0a">AddParticleSystem</a> (unsigned int id, int nParticles, glm::vec3 velocity, string texture, int width, int height, int spawnDelay, int particlesToSpawn, int lifeSpan, float radious, glm::vec3 orientation, std::uint_fast8_t flags)</td></tr>
-<tr class="memdesc:a7d9fa244dacbc642ee3e86effaa88a0a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Añade un sistema de particulas version <b>Circulo</b>  <a href="class_c_l_e_1_1_c_l_node.html#a7d9fa244dacbc642ee3e86effaa88a0a">More...</a><br /></td></tr>
-<tr class="separator:a7d9fa244dacbc642ee3e86effaa88a0a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a139116b1564e51dd9318f7a9fda984d3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_node.html#a139116b1564e51dd9318f7a9fda984d3">AddSkybox</a> (string right, string left, string top, string bottom, string front, string back)</td></tr>
-<tr class="memdesc:a139116b1564e51dd9318f7a9fda984d3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Añade un skybox a la escena.  <a href="class_c_l_e_1_1_c_l_node.html#a139116b1564e51dd9318f7a9fda984d3">More...</a><br /></td></tr>
-<tr class="separator:a139116b1564e51dd9318f7a9fda984d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad50b61f5baa162da2f708133fd19a521"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_node.html#ad50b61f5baa162da2f708133fd19a521">AddShadowMapping</a> (GLuint lightId)</td></tr>
-<tr class="memdesc:ad50b61f5baa162da2f708133fd19a521"><td class="mdescLeft">&#160;</td><td class="mdescRight">Añade la luz para usar shadow mapping.  <a href="class_c_l_e_1_1_c_l_node.html#ad50b61f5baa162da2f708133fd19a521">More...</a><br /></td></tr>
-<tr class="separator:ad50b61f5baa162da2f708133fd19a521"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad3587e594e0007eeb75f93f9de7085a5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_c_l_e_1_1_c_l_node.html">CLNode</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_node.html#ad3587e594e0007eeb75f93f9de7085a5">AddBillBoard</a> (unsigned int id, string &amp;file, bool vertically, float width_, float height_)</td></tr>
-<tr class="memdesc:ad3587e594e0007eeb75f93f9de7085a5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Añade un billboard.  <a href="class_c_l_e_1_1_c_l_node.html#ad3587e594e0007eeb75f93f9de7085a5">More...</a><br /></td></tr>
-<tr class="separator:ad3587e594e0007eeb75f93f9de7085a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0ed6564a510db8c9582276bb7ae4b3ed"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_node.html#a0ed6564a510db8c9582276bb7ae4b3ed">SetOctreeVisible</a> (bool v)</td></tr>
+<tr class="separator:a0ed6564a510db8c9582276bb7ae4b3ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab6032f57b5112ac07fae72ec57aae5ec"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_node.html#ab6032f57b5112ac07fae72ec57aae5ec">RemoveChild</a> (<a class="el" href="class_c_l_e_1_1_c_l_node.html">CLNode</a> *child)</td></tr>
 <tr class="memdesc:ab6032f57b5112ac07fae72ec57aae5ec"><td class="mdescLeft">&#160;</td><td class="mdescRight">Elimina un hijo de ese nodo.  <a href="class_c_l_e_1_1_c_l_node.html#ab6032f57b5112ac07fae72ec57aae5ec">More...</a><br /></td></tr>
 <tr class="separator:ab6032f57b5112ac07fae72ec57aae5ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac3f5efdf3a651e05f381a61514ca8ca9"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_node.html#ac3f5efdf3a651e05f381a61514ca8ca9">HasChild</a> (<a class="el" href="class_c_l_e_1_1_c_l_node.html">CLNode</a> *child)</td></tr>
 <tr class="memdesc:ac3f5efdf3a651e05f381a61514ca8ca9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Comprueba si tiene ese hijo.  <a href="class_c_l_e_1_1_c_l_node.html#ac3f5efdf3a651e05f381a61514ca8ca9">More...</a><br /></td></tr>
 <tr class="separator:ac3f5efdf3a651e05f381a61514ca8ca9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6d830e0b7d672beb1ff4909801879bed"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_c_l_e_1_1_c_l_node.html">CLNode</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_node.html#a6d830e0b7d672beb1ff4909801879bed">GetNodeByID</a> (unsigned int id)</td></tr>
-<tr class="memdesc:a6d830e0b7d672beb1ff4909801879bed"><td class="mdescLeft">&#160;</td><td class="mdescRight">Busca un nodo en el arbol por su ID.  <a href="class_c_l_e_1_1_c_l_node.html#a6d830e0b7d672beb1ff4909801879bed">More...</a><br /></td></tr>
-<tr class="separator:a6d830e0b7d672beb1ff4909801879bed"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adcbaefc7f18942227e39da34a897a9dc"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_node.html#adcbaefc7f18942227e39da34a897a9dc">DeleteNode</a> (unsigned int id)</td></tr>
-<tr class="memdesc:adcbaefc7f18942227e39da34a897a9dc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Elimina un hijo del arbol por su id.  <a href="class_c_l_e_1_1_c_l_node.html#adcbaefc7f18942227e39da34a897a9dc">More...</a><br /></td></tr>
-<tr class="separator:adcbaefc7f18942227e39da34a897a9dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aacd78c4591b0f0185ba81597e0c8dda1"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_node.html#aacd78c4591b0f0185ba81597e0c8dda1">DeleteNode</a> (<a class="el" href="class_c_l_e_1_1_c_l_node.html">CLNode</a> *node)</td></tr>
-<tr class="memdesc:aacd78c4591b0f0185ba81597e0c8dda1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Elimina un hijo del arbol por su dirección de memoria.  <a href="class_c_l_e_1_1_c_l_node.html#aacd78c4591b0f0185ba81597e0c8dda1">More...</a><br /></td></tr>
-<tr class="separator:aacd78c4591b0f0185ba81597e0c8dda1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae51ac42be99c2ee52306641b38aeb284"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_node.html#ae51ac42be99c2ee52306641b38aeb284">GetBoundingSizeById</a> (unsigned int id)</td></tr>
+<tr class="memdesc:ae51ac42be99c2ee52306641b38aeb284"><td class="mdescLeft">&#160;</td><td class="mdescRight">Busca un nodo en el arbol por su ID.  <a href="class_c_l_e_1_1_c_l_node.html#ae51ac42be99c2ee52306641b38aeb284">More...</a><br /></td></tr>
+<tr class="separator:ae51ac42be99c2ee52306641b38aeb284"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a88c436f0e13858b08dee80b6ca6ba2f6"><td class="memItemLeft" align="right" valign="top">glm::mat4&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_node.html#a88c436f0e13858b08dee80b6ca6ba2f6">TranslateMatrix</a> ()</td></tr>
 <tr class="separator:a88c436f0e13858b08dee80b6ca6ba2f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a239044422c8d0d4fa796b325683b8d99"><td class="memItemLeft" align="right" valign="top">glm::mat4&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_node.html#a239044422c8d0d4fa796b325683b8d99">RotateMatrix</a> ()</td></tr>
 <tr class="separator:a239044422c8d0d4fa796b325683b8d99"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a931532fd37584ac6779ce1613c02baac"><td class="memItemLeft" align="right" valign="top">glm::mat4&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_node.html#a931532fd37584ac6779ce1613c02baac">ScaleMatrix</a> ()</td></tr>
 <tr class="separator:a931532fd37584ac6779ce1613c02baac"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa9df1c4ae067a19400a52097578ba781"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_node.html#aa9df1c4ae067a19400a52097578ba781">Translate</a> (glm::vec3)</td></tr>
-<tr class="separator:aa9df1c4ae067a19400a52097578ba781"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4790a30745c200bed2f8a87a351e5ff8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_node.html#a4790a30745c200bed2f8a87a351e5ff8">Rotate</a> (glm::vec3)</td></tr>
-<tr class="separator:a4790a30745c200bed2f8a87a351e5ff8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aab2dbb8c4041a553e04e738644321ca8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_node.html#aab2dbb8c4041a553e04e738644321ca8">Scale</a> (glm::vec3)</td></tr>
-<tr class="separator:aab2dbb8c4041a553e04e738644321ca8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3e8b266d8688a9f2963960741ac5c238"><td class="memItemLeft" align="right" valign="top">glm::mat4&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_node.html#a3e8b266d8688a9f2963960741ac5c238">CalculateTransformationMatrix</a> ()</td></tr>
 <tr class="separator:a3e8b266d8688a9f2963960741ac5c238"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a21c1cfca218f9466c92071cf8605f3e1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_node.html#a21c1cfca218f9466c92071cf8605f3e1">CalculateViewProjMatrix</a> ()</td></tr>
-<tr class="memdesc:a21c1cfca218f9466c92071cf8605f3e1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calcula las matriecs view y projection.  <a href="class_c_l_e_1_1_c_l_node.html#a21c1cfca218f9466c92071cf8605f3e1">More...</a><br /></td></tr>
-<tr class="separator:a21c1cfca218f9466c92071cf8605f3e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a18022e55f08840775e6b365b6d121391"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_node.html#a18022e55f08840775e6b365b6d121391">CalculateLights</a> ()</td></tr>
-<tr class="memdesc:a18022e55f08840775e6b365b6d121391"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calcula las luces de la escena.  <a href="class_c_l_e_1_1_c_l_node.html#a18022e55f08840775e6b365b6d121391">More...</a><br /></td></tr>
-<tr class="separator:a18022e55f08840775e6b365b6d121391"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1bdfd418a5885c900797f1bce4005f50"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_node.html#a1bdfd418a5885c900797f1bce4005f50">CalculateBoundingBox</a> ()</td></tr>
 <tr class="memdesc:a1bdfd418a5885c900797f1bce4005f50"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calcula la bounding box del objeto.  <a href="class_c_l_e_1_1_c_l_node.html#a1bdfd418a5885c900797f1bce4005f50">More...</a><br /></td></tr>
 <tr class="separator:a1bdfd418a5885c900797f1bce4005f50"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0e46428ff2e0fa1fe9534d9f58be512f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_node.html#a0e46428ff2e0fa1fe9534d9f58be512f">RemoveLightsAndCameras</a> ()</td></tr>
-<tr class="memdesc:a0e46428ff2e0fa1fe9534d9f58be512f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Elimina todas las luces y camaras de la escena.  <a href="class_c_l_e_1_1_c_l_node.html#a0e46428ff2e0fa1fe9534d9f58be512f">More...</a><br /></td></tr>
-<tr class="separator:a0e46428ff2e0fa1fe9534d9f58be512f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3ae23db204ab874ee9a2e643c92a3bd6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_node.html#a3ae23db204ab874ee9a2e643c92a3bd6">DFSTree</a> (glm::mat4)</td></tr>
-<tr class="memdesc:a3ae23db204ab874ee9a2e643c92a3bd6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Dibuja la escena.  <a href="class_c_l_e_1_1_c_l_node.html#a3ae23db204ab874ee9a2e643c92a3bd6">More...</a><br /></td></tr>
-<tr class="separator:a3ae23db204ab874ee9a2e643c92a3bd6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a857aade2687fcf4f90012e71fe5b6f41"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_node.html#a857aade2687fcf4f90012e71fe5b6f41">DFSTree</a> (glm::mat4, <a class="el" href="class_c_l_e_1_1_c_l_camera.html">CLCamera</a> *cam)</td></tr>
+<tr class="memdesc:a857aade2687fcf4f90012e71fe5b6f41"><td class="mdescLeft">&#160;</td><td class="mdescRight">Dibuja la escena.  <a href="class_c_l_e_1_1_c_l_node.html#a857aade2687fcf4f90012e71fe5b6f41">More...</a><br /></td></tr>
+<tr class="separator:a857aade2687fcf4f90012e71fe5b6f41"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a927a9184f88dd621d44f837659921d4e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_node.html#a927a9184f88dd621d44f837659921d4e">DFSTree</a> (glm::mat4 mA, GLuint shaderID)</td></tr>
 <tr class="separator:a927a9184f88dd621d44f837659921d4e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab877d635cffc1422a66089c3eb40eb6f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_node.html#ab877d635cffc1422a66089c3eb40eb6f">DrawSkybox</a> ()</td></tr>
-<tr class="memdesc:ab877d635cffc1422a66089c3eb40eb6f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Dibuja el skybox.  <a href="class_c_l_e_1_1_c_l_node.html#ab877d635cffc1422a66089c3eb40eb6f">More...</a><br /></td></tr>
-<tr class="separator:ab877d635cffc1422a66089c3eb40eb6f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7471b8c55d6a078c18cd1231d8d6e11f"><td class="memItemLeft" align="right" valign="top">const void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_node.html#a7471b8c55d6a078c18cd1231d8d6e11f">Draw3DLine</a> (float x1, float y1, float z1, float x2, float y2, float z2, <a class="el" href="class_c_l_e_1_1_c_l_color.html">CLColor</a> color) const</td></tr>
-<tr class="memdesc:a7471b8c55d6a078c18cd1231d8d6e11f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Dibuja una linea primitiva en 3D.  <a href="class_c_l_e_1_1_c_l_node.html#a7471b8c55d6a078c18cd1231d8d6e11f">More...</a><br /></td></tr>
-<tr class="separator:a7471b8c55d6a078c18cd1231d8d6e11f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1cf45ffcca9f640690f5c328403a033d"><td class="memItemLeft" align="right" valign="top">const void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_node.html#a1cf45ffcca9f640690f5c328403a033d">Draw3DLine</a> (float x1, float y1, float z1, float x2, float y2, float z2) const</td></tr>
-<tr class="memdesc:a1cf45ffcca9f640690f5c328403a033d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Dibuja una linea primitiva en 3D.  <a href="class_c_l_e_1_1_c_l_node.html#a1cf45ffcca9f640690f5c328403a033d">More...</a><br /></td></tr>
-<tr class="separator:a1cf45ffcca9f640690f5c328403a033d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a29fef79aabec899f85ac76d592b418e8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_node.html#a29fef79aabec899f85ac76d592b418e8">SetDrawLineWidth</a> (int w)</td></tr>
-<tr class="memdesc:a29fef79aabec899f85ac76d592b418e8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Asigna la anchura de la linea.  <a href="class_c_l_e_1_1_c_l_node.html#a29fef79aabec899f85ac76d592b418e8">More...</a><br /></td></tr>
-<tr class="separator:a29fef79aabec899f85ac76d592b418e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac6d87ade00d0e3ce04fa7ef06439ee19"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_node.html#ac6d87ade00d0e3ce04fa7ef06439ee19">SetLightingEffects</a> (bool l)</td></tr>
-<tr class="separator:ac6d87ade00d0e3ce04fa7ef06439ee19"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad23ab42e09287b23f4db5aee89b28918"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_node.html#ad23ab42e09287b23f4db5aee89b28918">SetIgnoreFrustrum</a> (bool f)</td></tr>
+<tr class="separator:ad23ab42e09287b23f4db5aee89b28918"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1c413850aa20cd06654d0e7ca15c7875"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_node.html#a1c413850aa20cd06654d0e7ca15c7875">DrawTree</a> (<a class="el" href="class_c_l_e_1_1_c_l_node.html">CLNode</a> *root)</td></tr>
 <tr class="memdesc:a1c413850aa20cd06654d0e7ca15c7875"><td class="mdescLeft">&#160;</td><td class="mdescRight">Imprime el arbol.  <a href="class_c_l_e_1_1_c_l_node.html#a1c413850aa20cd06654d0e7ca15c7875">More...</a><br /></td></tr>
 <tr class="separator:a1c413850aa20cd06654d0e7ca15c7875"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
-Static Public Member Functions</h2></td></tr>
-<tr class="memitem:af6573b9945040e9937774338c8dc3e03"><td class="memItemLeft" align="right" valign="top">static glm::mat4&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_node.html#af6573b9945040e9937774338c8dc3e03">GetViewMatrix</a> ()</td></tr>
-<tr class="memdesc:af6573b9945040e9937774338c8dc3e03"><td class="mdescLeft">&#160;</td><td class="mdescRight">Devuelve la matriz view de la escena.  <a href="class_c_l_e_1_1_c_l_node.html#af6573b9945040e9937774338c8dc3e03">More...</a><br /></td></tr>
-<tr class="separator:af6573b9945040e9937774338c8dc3e03"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a987664cda72ef3f63f971bfc31a469a4"><td class="memItemLeft" align="right" valign="top">static glm::mat4&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_node.html#a987664cda72ef3f63f971bfc31a469a4">GetProjectionMatrix</a> ()</td></tr>
-<tr class="memdesc:a987664cda72ef3f63f971bfc31a469a4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Devuelve la matriz projection de la escena.  <a href="class_c_l_e_1_1_c_l_node.html#a987664cda72ef3f63f971bfc31a469a4">More...</a><br /></td></tr>
-<tr class="separator:a987664cda72ef3f63f971bfc31a469a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a45ce65e480939caa62439f3662f506ec"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_c_l_e_1_1_c_l_shadow_mapping.html">CLShadowMapping</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_node.html#a45ce65e480939caa62439f3662f506ec">GetShadowMapping</a> ()</td></tr>
-<tr class="memdesc:a45ce65e480939caa62439f3662f506ec"><td class="mdescLeft">&#160;</td><td class="mdescRight">Devuelve el ShadowMapping.  <a href="class_c_l_e_1_1_c_l_node.html#a45ce65e480939caa62439f3662f506ec">More...</a><br /></td></tr>
-<tr class="separator:a45ce65e480939caa62439f3662f506ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Clase Nodo de la escena En la escena gestionaremos todo mediante nodos de manera recursiva aqui puedes crear nodos y asignarles cualquier tipo de entidad disponible. </p>
@@ -370,1045 +260,21 @@ Static Public Member Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="ad3587e594e0007eeb75f93f9de7085a5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad3587e594e0007eeb75f93f9de7085a5">&#9670;&nbsp;</a></span>AddBillBoard()</h2>
+<a id="a7d807ae7279d87d66f8cf15f1a886b0d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7d807ae7279d87d66f8cf15f1a886b0d">&#9670;&nbsp;</a></span>AddChild()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="class_c_l_e_1_1_c_l_node.html">CLNode</a> * CLNode::AddBillBoard </td>
+          <td class="memname">void CLNode::AddChild </td>
           <td>(</td>
-          <td class="paramtype">unsigned int&#160;</td>
-          <td class="paramname"><em>id</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">string &amp;&#160;</td>
-          <td class="paramname"><em>file</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>vertically</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>width_</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>height_</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Añade un billboard. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">file</td><td>Fichero de la textura </td></tr>
-    <tr><td class="paramname">vertically</td><td>Parametro para poner vertical la textura </td></tr>
-    <tr><td class="paramname">width_</td><td>Anchura del billboard </td></tr>
-    <tr><td class="paramname">height</td><td>Altura del billboard </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_c_l_e_1_1_c_l_node.html" title="Clase Nodo de la escena En la escena gestionaremos todo mediante nodos de manera recursiva aqui puede...">CLE::CLNode()</a> </dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="class_c_l_e_1_1_c_l_billboard.html" title="Clase para añadir billboards.">CLE::CLBillboard()</a> </dd></dl>
-
-</div>
-</div>
-<a id="afd2c3bbe8012f22de6637c3a32675e41"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afd2c3bbe8012f22de6637c3a32675e41">&#9670;&nbsp;</a></span>AddCamera()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="class_c_l_e_1_1_c_l_node.html">CLNode</a> * CLNode::AddCamera </td>
-          <td>(</td>
-          <td class="paramtype">unsigned int&#160;</td>
-          <td class="paramname"><em>id</em></td><td>)</td>
+          <td class="paramtype">shared_ptr&lt; <a class="el" href="class_c_l_e_1_1_c_l_node.html">CLNode</a> &gt;&#160;</td>
+          <td class="paramname"><em>child</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
-
-<p>Añade una camara a la escena. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">id</td><td>Identificador del nodo </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_c_l_e_1_1_c_l_node.html" title="Clase Nodo de la escena En la escena gestionaremos todo mediante nodos de manera recursiva aqui puede...">CLE::CLNode</a>* </dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="class_c_l_e_1_1_c_l_camera.html" title="Clase para las camaras del motor En esta clase encontramos muchos metodo utiles para gestionar camara...">CLE::CLCamera()</a> </dd></dl>
-
-</div>
-</div>
-<a id="aa509e471eb0453f5e53807c7870d7d2a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa509e471eb0453f5e53807c7870d7d2a">&#9670;&nbsp;</a></span>AddDirectLight() <span class="overload">[1/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="class_c_l_e_1_1_c_l_node.html">CLNode</a> * CLNode::AddDirectLight </td>
-          <td>(</td>
-          <td class="paramtype">unsigned int&#160;</td>
-          <td class="paramname"><em>id</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Añade una luz direccional a la escena. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">id</td><td>Identificador del nodo </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_c_l_e_1_1_c_l_node.html" title="Clase Nodo de la escena En la escena gestionaremos todo mediante nodos de manera recursiva aqui puede...">CLE::CLNode</a>* </dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="class_c_l_e_1_1_c_l_direct_light.html" title="Clase para luces dirigidas Clase que permite crear luces dirigidas en nuestro motor gráfico.">CLE::CLDirectLight()</a> </dd></dl>
-
-</div>
-</div>
-<a id="ab689a5975dd0ec784532ed19ce5ee965"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab689a5975dd0ec784532ed19ce5ee965">&#9670;&nbsp;</a></span>AddDirectLight() <span class="overload">[2/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="class_c_l_e_1_1_c_l_node.html">CLNode</a> * CLNode::AddDirectLight </td>
-          <td>(</td>
-          <td class="paramtype">unsigned int&#160;</td>
-          <td class="paramname"><em>id</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">glm::vec3&#160;</td>
-          <td class="paramname"><em>direction</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">glm::vec3&#160;</td>
-          <td class="paramname"><em>intensity</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">glm::vec3&#160;</td>
-          <td class="paramname"><em>ambient</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">glm::vec3&#160;</td>
-          <td class="paramname"><em>diffuse</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">glm::vec3&#160;</td>
-          <td class="paramname"><em>specular</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>constant</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>linear</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>quadratic</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Añade una luz puntual a la escena. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">id</td><td>Identificador del nodo </td></tr>
-    <tr><td class="paramname">direction</td><td>Vector de dirección de la luz </td></tr>
-    <tr><td class="paramname">intensity</td><td>Intensidad de la luz </td></tr>
-    <tr><td class="paramname">ambient</td><td>Valor ambiente de la luz </td></tr>
-    <tr><td class="paramname">diffuse</td><td>Valor difuso de la luz </td></tr>
-    <tr><td class="paramname">specular</td><td>Valor especular de la luz </td></tr>
-    <tr><td class="paramname">constant</td><td>Valor constante de la atenuación de la luz </td></tr>
-    <tr><td class="paramname">linear</td><td>Valor lineal de la atenuación de la luz </td></tr>
-    <tr><td class="paramname">quadratic</td><td>Valor cuadratico de la atenuación de la luz </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_c_l_e_1_1_c_l_node.html" title="Clase Nodo de la escena En la escena gestionaremos todo mediante nodos de manera recursiva aqui puede...">CLE::CLNode</a>* </dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="class_c_l_e_1_1_c_l_direct_light.html" title="Clase para luces dirigidas Clase que permite crear luces dirigidas en nuestro motor gráfico.">CLE::CLDirectLight()</a> </dd></dl>
-
-</div>
-</div>
-<a id="af6b05614d72e57b2f7b514535150707d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af6b05614d72e57b2f7b514535150707d">&#9670;&nbsp;</a></span>AddGroup()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="class_c_l_e_1_1_c_l_node.html">CLNode</a> * CLNode::AddGroup </td>
-          <td>(</td>
-          <td class="paramtype">unsigned int&#160;</td>
-          <td class="paramname"><em>id</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Añade un grupo a la escena. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">id</td><td>Identificador del nodo </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_c_l_e_1_1_c_l_node.html" title="Clase Nodo de la escena En la escena gestionaremos todo mediante nodos de manera recursiva aqui puede...">CLE::CLNode()</a> </dd></dl>
-
-</div>
-</div>
-<a id="a3c38ccf19fc35c4e71ef7c96ed4f4447"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3c38ccf19fc35c4e71ef7c96ed4f4447">&#9670;&nbsp;</a></span>AddMesh() <span class="overload">[1/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="class_c_l_e_1_1_c_l_node.html">CLNode</a> * CLNode::AddMesh </td>
-          <td>(</td>
-          <td class="paramtype">unsigned int&#160;</td>
-          <td class="paramname"><em>id</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Añade una malla a la escena. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">id</td><td>Identificador del nodo </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_c_l_e_1_1_c_l_node.html" title="Clase Nodo de la escena En la escena gestionaremos todo mediante nodos de manera recursiva aqui puede...">CLE::CLNode()</a> </dd></dl>
-
-</div>
-</div>
-<a id="a109e2cfc7b212af74d75641a0be7f1a7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a109e2cfc7b212af74d75641a0be7f1a7">&#9670;&nbsp;</a></span>AddMesh() <span class="overload">[2/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="class_c_l_e_1_1_c_l_node.html">CLNode</a> * CLNode::AddMesh </td>
-          <td>(</td>
-          <td class="paramtype">unsigned int&#160;</td>
-          <td class="paramname"><em>id</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">string&#160;</td>
-          <td class="paramname"><em>mesh</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Añade una malla a la escena. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">id</td><td>Identificador del nodo </td></tr>
-    <tr><td class="paramname">mesh</td><td>Ruta de la malla </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_c_l_e_1_1_c_l_node.html" title="Clase Nodo de la escena En la escena gestionaremos todo mediante nodos de manera recursiva aqui puede...">CLE::CLNode</a>* </dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="class_c_l_e_1_1_c_l_mesh.html" title="Clase para crear mallas Clase que permite crear mallas en nuestro motor gráfico.">CLE::CLMesh()</a> </dd></dl>
-
-</div>
-</div>
-<a id="a7d9fa244dacbc642ee3e86effaa88a0a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7d9fa244dacbc642ee3e86effaa88a0a">&#9670;&nbsp;</a></span>AddParticleSystem() <span class="overload">[1/4]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="class_c_l_e_1_1_c_l_node.html">CLNode</a> * CLNode::AddParticleSystem </td>
-          <td>(</td>
-          <td class="paramtype">unsigned int&#160;</td>
-          <td class="paramname"><em>id</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>nParticles</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">glm::vec3&#160;</td>
-          <td class="paramname"><em>velocity</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">string&#160;</td>
-          <td class="paramname"><em>texture</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>width</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>height</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>spawnDelay</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>particlesToSpawn</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>lifeSpan</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>radious</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">glm::vec3&#160;</td>
-          <td class="paramname"><em>orientation</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">std::uint_fast8_t&#160;</td>
-          <td class="paramname"><em>flags</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Añade un sistema de particulas version <b>Circulo</b> </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">id</td><td>Identificador del nodo </td></tr>
-    <tr><td class="paramname">nParticles</td><td>Número de particulas </td></tr>
-    <tr><td class="paramname">velocity</td><td>Vector de velocidad </td></tr>
-    <tr><td class="paramname">texture</td><td>Ruta de la textura de la particula </td></tr>
-    <tr><td class="paramname">width</td><td>Anchura de la particula </td></tr>
-    <tr><td class="paramname">height</td><td>Altura de la particula </td></tr>
-    <tr><td class="paramname">spawnDelay</td><td>Tiempo entre cada spawn de particula </td></tr>
-    <tr><td class="paramname">particlesToSpawn</td><td>Particulas que se spawnean a la vez </td></tr>
-    <tr><td class="paramname">lifeSpan</td><td>Vida de las particulas </td></tr>
-    <tr><td class="paramname">radious</td><td>Radio del circulo </td></tr>
-    <tr><td class="paramname">flags</td><td>Mascara de bytes para aplicarle efectos </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_c_l_e_1_1_c_l_node.html" title="Clase Nodo de la escena En la escena gestionaremos todo mediante nodos de manera recursiva aqui puede...">CLE::CLNode()</a> </dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="class_c_l_e_1_1_c_l_particle_system.html" title="Clase para crear sistemas de particulas.">CLE::CLParticleSystem()</a> </dd></dl>
-
-</div>
-</div>
-<a id="aa2ca45f9a39d850a7dde882b133bad94"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa2ca45f9a39d850a7dde882b133bad94">&#9670;&nbsp;</a></span>AddParticleSystem() <span class="overload">[2/4]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="class_c_l_e_1_1_c_l_node.html">CLNode</a> * CLNode::AddParticleSystem </td>
-          <td>(</td>
-          <td class="paramtype">unsigned int&#160;</td>
-          <td class="paramname"><em>id</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>nParticles</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">glm::vec3&#160;</td>
-          <td class="paramname"><em>velocity</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">string&#160;</td>
-          <td class="paramname"><em>texture</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>width</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>height</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>spawnDelay</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>particlesToSpawn</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>lifeSpan</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>radious</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">std::uint_fast8_t&#160;</td>
-          <td class="paramname"><em>flags</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Añade un sistema de particulas version <b>Esfera</b> </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">id</td><td>Identificador del nodo </td></tr>
-    <tr><td class="paramname">nParticles</td><td>Número de particulas </td></tr>
-    <tr><td class="paramname">velocity</td><td>Vector de velocidad </td></tr>
-    <tr><td class="paramname">texture</td><td>Ruta de la textura de la particula </td></tr>
-    <tr><td class="paramname">width</td><td>Anchura de la particula </td></tr>
-    <tr><td class="paramname">height</td><td>Altura de la particula </td></tr>
-    <tr><td class="paramname">spawnDelay</td><td>Tiempo entre cada spawn de particula </td></tr>
-    <tr><td class="paramname">particlesToSpawn</td><td>Particulas que se spawnean a la vez </td></tr>
-    <tr><td class="paramname">lifeSpan</td><td>Vida de las particulas </td></tr>
-    <tr><td class="paramname">radious</td><td>Radio de la esfera </td></tr>
-    <tr><td class="paramname">flags</td><td>Mascara de bytes para aplicarle efectos </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_c_l_e_1_1_c_l_node.html" title="Clase Nodo de la escena En la escena gestionaremos todo mediante nodos de manera recursiva aqui puede...">CLE::CLNode()</a> </dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="class_c_l_e_1_1_c_l_particle_system.html" title="Clase para crear sistemas de particulas.">CLE::CLParticleSystem()</a> </dd></dl>
-
-</div>
-</div>
-<a id="a696d8d2e92ff48ae24ec2d7547579e22"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a696d8d2e92ff48ae24ec2d7547579e22">&#9670;&nbsp;</a></span>AddParticleSystem() <span class="overload">[3/4]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="class_c_l_e_1_1_c_l_node.html">CLNode</a> * CLNode::AddParticleSystem </td>
-          <td>(</td>
-          <td class="paramtype">unsigned int&#160;</td>
-          <td class="paramname"><em>id</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>nParticles</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">glm::vec3&#160;</td>
-          <td class="paramname"><em>velocity</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">string&#160;</td>
-          <td class="paramname"><em>texture</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>width</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>height</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>spawnDelay</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>particlesToSpawn</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>lifeSpan</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">glm::vec3&#160;</td>
-          <td class="paramname"><em>offset</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">glm::vec3&#160;</td>
-          <td class="paramname"><em>orientation</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">std::uint_fast8_t&#160;</td>
-          <td class="paramname"><em>flags</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Añade un sistema de particulas version <b>Linea, Cuadrado o Cubo</b> </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">id</td><td>Identificador del nodo </td></tr>
-    <tr><td class="paramname">nParticles</td><td>Número de particulas </td></tr>
-    <tr><td class="paramname">velocity</td><td>Vector de velocidad </td></tr>
-    <tr><td class="paramname">texture</td><td>Ruta de la textura de la particula </td></tr>
-    <tr><td class="paramname">width</td><td>Anchura de la particula </td></tr>
-    <tr><td class="paramname">height</td><td>Altura de la particula </td></tr>
-    <tr><td class="paramname">spawnDelay</td><td>Tiempo entre cada spawn de particula </td></tr>
-    <tr><td class="paramname">particlesToSpawn</td><td>Particulas que se spawnean a la vez </td></tr>
-    <tr><td class="paramname">lifeSpan</td><td>Vida de las particulas </td></tr>
-    <tr><td class="paramname">offset</td><td>Dimensiones del objeto donde se spawnean las particulas </td></tr>
-    <tr><td class="paramname">orientation</td><td>Orientacion de dicho spawner </td></tr>
-    <tr><td class="paramname">flags</td><td>Mascara de bytes para aplicarle efectos </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_c_l_e_1_1_c_l_node.html" title="Clase Nodo de la escena En la escena gestionaremos todo mediante nodos de manera recursiva aqui puede...">CLE::CLNode()</a> </dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="class_c_l_e_1_1_c_l_particle_system.html" title="Clase para crear sistemas de particulas.">CLE::CLParticleSystem()</a> </dd></dl>
-
-</div>
-</div>
-<a id="afede72716223874e44229dcbfcf8a4a0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afede72716223874e44229dcbfcf8a4a0">&#9670;&nbsp;</a></span>AddParticleSystem() <span class="overload">[4/4]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="class_c_l_e_1_1_c_l_node.html">CLNode</a> * CLNode::AddParticleSystem </td>
-          <td>(</td>
-          <td class="paramtype">unsigned int&#160;</td>
-          <td class="paramname"><em>id</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>nParticles</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">glm::vec3&#160;</td>
-          <td class="paramname"><em>velocity</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">string&#160;</td>
-          <td class="paramname"><em>texture</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>width</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>height</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>spawnDelay</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>particlesToSpawn</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>lifeSpan</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">std::uint_fast8_t&#160;</td>
-          <td class="paramname"><em>flags</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Añade un sistema de particulas version <b>Punto</b> </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">id</td><td>Identificador del nodo </td></tr>
-    <tr><td class="paramname">nParticles</td><td>Número de particulas </td></tr>
-    <tr><td class="paramname">velocity</td><td>Vector de velocidad </td></tr>
-    <tr><td class="paramname">texture</td><td>Ruta de la textura de la particula </td></tr>
-    <tr><td class="paramname">width</td><td>Anchura de la particula </td></tr>
-    <tr><td class="paramname">height</td><td>Altura de la particula </td></tr>
-    <tr><td class="paramname">spawnDelay</td><td>Tiempo entre cada spawn de particula </td></tr>
-    <tr><td class="paramname">particlesToSpawn</td><td>Particulas que se spawnean a la vez </td></tr>
-    <tr><td class="paramname">lifeSpan</td><td>Vida de las particulas </td></tr>
-    <tr><td class="paramname">flags</td><td>Mascara de bytes para aplicarle efectos </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_c_l_e_1_1_c_l_node.html" title="Clase Nodo de la escena En la escena gestionaremos todo mediante nodos de manera recursiva aqui puede...">CLE::CLNode()</a> </dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="class_c_l_e_1_1_c_l_particle_system.html" title="Clase para crear sistemas de particulas.">CLE::CLParticleSystem()</a> </dd></dl>
-
-</div>
-</div>
-<a id="a6cb84c3b16a1c3ed982fa19a7c9e583b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6cb84c3b16a1c3ed982fa19a7c9e583b">&#9670;&nbsp;</a></span>AddPointLight() <span class="overload">[1/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="class_c_l_e_1_1_c_l_node.html">CLNode</a> * CLNode::AddPointLight </td>
-          <td>(</td>
-          <td class="paramtype">unsigned int&#160;</td>
-          <td class="paramname"><em>id</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Añade una luz puntual a la escena. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">id</td><td>Identificador del nodo </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_c_l_e_1_1_c_l_node.html" title="Clase Nodo de la escena En la escena gestionaremos todo mediante nodos de manera recursiva aqui puede...">CLE::CLNode</a>* </dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="class_c_l_e_1_1_c_l_point_light.html" title="Clase para crear luces puntuales.">CLE::CLPointLight()</a> </dd></dl>
-
-</div>
-</div>
-<a id="a913587a2c28cbed3e8505dc9a5abf67c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a913587a2c28cbed3e8505dc9a5abf67c">&#9670;&nbsp;</a></span>AddPointLight() <span class="overload">[2/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="class_c_l_e_1_1_c_l_node.html">CLNode</a> * CLNode::AddPointLight </td>
-          <td>(</td>
-          <td class="paramtype">unsigned int&#160;</td>
-          <td class="paramname"><em>id</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">glm::vec3&#160;</td>
-          <td class="paramname"><em>intensity</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">glm::vec3&#160;</td>
-          <td class="paramname"><em>ambient</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">glm::vec3&#160;</td>
-          <td class="paramname"><em>diffuse</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">glm::vec3&#160;</td>
-          <td class="paramname"><em>specular</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>constant</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>linear</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>quadratic</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Añade una luz puntual a la escena. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">id</td><td>Identificador del nodo </td></tr>
-    <tr><td class="paramname">intensity</td><td>Intensidad de la luz </td></tr>
-    <tr><td class="paramname">ambient</td><td>Valor ambiente de la luz </td></tr>
-    <tr><td class="paramname">diffuse</td><td>Valor difuso de la luz </td></tr>
-    <tr><td class="paramname">specular</td><td>Valor especular de la luz </td></tr>
-    <tr><td class="paramname">constant</td><td>Valor constante de la atenuación de la luz </td></tr>
-    <tr><td class="paramname">linear</td><td>Valor lineal de la atenuación de la luz </td></tr>
-    <tr><td class="paramname">quadratic</td><td>Valor cuadratico de la atenuación de la luz </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_c_l_e_1_1_c_l_node.html" title="Clase Nodo de la escena En la escena gestionaremos todo mediante nodos de manera recursiva aqui puede...">CLE::CLNode</a>* </dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="class_c_l_e_1_1_c_l_point_light.html" title="Clase para crear luces puntuales.">CLE::CLPointLight()</a> </dd></dl>
-
-</div>
-</div>
-<a id="ad50b61f5baa162da2f708133fd19a521"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad50b61f5baa162da2f708133fd19a521">&#9670;&nbsp;</a></span>AddShadowMapping()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void CLNode::AddShadowMapping </td>
-          <td>(</td>
-          <td class="paramtype">GLuint&#160;</td>
-          <td class="paramname"><em>lightId</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Añade la luz para usar shadow mapping. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">lightId</td><td>ID de del nodo de la luz a utilizar </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="class_c_l_e_1_1_c_l_shadow_mapping.html" title="Clase para añadir sombras en el motor.">CLE::CLShadowMapping()</a> </dd></dl>
-
-</div>
-</div>
-<a id="a139116b1564e51dd9318f7a9fda984d3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a139116b1564e51dd9318f7a9fda984d3">&#9670;&nbsp;</a></span>AddSkybox()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void CLNode::AddSkybox </td>
-          <td>(</td>
-          <td class="paramtype">string&#160;</td>
-          <td class="paramname"><em>right</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">string&#160;</td>
-          <td class="paramname"><em>left</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">string&#160;</td>
-          <td class="paramname"><em>top</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">string&#160;</td>
-          <td class="paramname"><em>bottom</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">string&#160;</td>
-          <td class="paramname"><em>front</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">string&#160;</td>
-          <td class="paramname"><em>back</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Añade un skybox a la escena. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">right</td><td>Textura right del cubo </td></tr>
-    <tr><td class="paramname">left</td><td>Textura left del cubo </td></tr>
-    <tr><td class="paramname">top</td><td>Textura top del cubo </td></tr>
-    <tr><td class="paramname">bottom</td><td>Textura bottom del cubo </td></tr>
-    <tr><td class="paramname">front</td><td>Textura front del cubo </td></tr>
-    <tr><td class="paramname">back</td><td>Textura back del cubo </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="class_c_l_e_1_1_c_l_skybox.html" title="Clase para crear un Skybox en el arbol.">CLE::CLSkybox()</a> </dd></dl>
-
-</div>
-</div>
-<a id="a317a2512ec43d6b99d0c23f6fc7ca1ed"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a317a2512ec43d6b99d0c23f6fc7ca1ed">&#9670;&nbsp;</a></span>AddSpotLight() <span class="overload">[1/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="class_c_l_e_1_1_c_l_node.html">CLNode</a> * CLNode::AddSpotLight </td>
-          <td>(</td>
-          <td class="paramtype">unsigned int&#160;</td>
-          <td class="paramname"><em>id</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Añade una luz spot a la escena. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">id</td><td>Identificador del nodo </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_c_l_e_1_1_c_l_node.html" title="Clase Nodo de la escena En la escena gestionaremos todo mediante nodos de manera recursiva aqui puede...">CLE::CLNode</a>* </dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="class_c_l_e_1_1_c_l_spot_light.html" title="Clase para crear luces de tipo Spot.">CLE::CLSpotLight()</a> </dd></dl>
-
-</div>
-</div>
-<a id="a344079059191932d72b2a021171a9562"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a344079059191932d72b2a021171a9562">&#9670;&nbsp;</a></span>AddSpotLight() <span class="overload">[2/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="class_c_l_e_1_1_c_l_node.html">CLNode</a> * CLNode::AddSpotLight </td>
-          <td>(</td>
-          <td class="paramtype">unsigned int&#160;</td>
-          <td class="paramname"><em>id</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">glm::vec3&#160;</td>
-          <td class="paramname"><em>direction</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>cutOff</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>outerCutOff</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">glm::vec3&#160;</td>
-          <td class="paramname"><em>intensity</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">glm::vec3&#160;</td>
-          <td class="paramname"><em>ambient</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">glm::vec3&#160;</td>
-          <td class="paramname"><em>diffuse</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">glm::vec3&#160;</td>
-          <td class="paramname"><em>specular</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>constant</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>linear</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>quadratic</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Añade una luz spot a la escena. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">id</td><td>Identificador del nodo </td></tr>
-    <tr><td class="paramname">direction</td><td>Vector de dirección de la luz </td></tr>
-    <tr><td class="paramname">cutOff</td><td>Valor de cutOff de la luz </td></tr>
-    <tr><td class="paramname">outerCutOff</td><td>Valor de outerCutOff de la luz </td></tr>
-    <tr><td class="paramname">intensity</td><td>Intensidad de la luz </td></tr>
-    <tr><td class="paramname">ambient</td><td>Valor ambiente de la luz </td></tr>
-    <tr><td class="paramname">diffuse</td><td>Valor difuso de la luz </td></tr>
-    <tr><td class="paramname">specular</td><td>Valor especular de la luz </td></tr>
-    <tr><td class="paramname">constant</td><td>Valor constante de la atenuación de la luz </td></tr>
-    <tr><td class="paramname">linear</td><td>Valor lineal de la atenuación de la luz </td></tr>
-    <tr><td class="paramname">quadratic</td><td>Valor cuadratico de la atenuación de la luz </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_c_l_e_1_1_c_l_node.html" title="Clase Nodo de la escena En la escena gestionaremos todo mediante nodos de manera recursiva aqui puede...">CLE::CLNode</a>* </dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="class_c_l_e_1_1_c_l_spot_light.html" title="Clase para crear luces de tipo Spot.">CLE::CLSpotLight()</a> </dd></dl>
 
 </div>
 </div>
@@ -1431,26 +297,6 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a18022e55f08840775e6b365b6d121391"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a18022e55f08840775e6b365b6d121391">&#9670;&nbsp;</a></span>CalculateLights()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void CLNode::CalculateLights </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Calcula las luces de la escena. </p>
-<p>Calcula la iluminación de la escena iterando por todas las luces. </p>
-
-</div>
-</div>
 <a id="a3e8b266d8688a9f2963960741ac5c238"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a3e8b266d8688a9f2963960741ac5c238">&#9670;&nbsp;</a></span>CalculateTransformationMatrix()</h2>
 
@@ -1465,80 +311,6 @@ Static Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-
-</div>
-</div>
-<a id="a21c1cfca218f9466c92071cf8605f3e1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a21c1cfca218f9466c92071cf8605f3e1">&#9670;&nbsp;</a></span>CalculateViewProjMatrix()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void CLNode::CalculateViewProjMatrix </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Calcula las matriecs view y projection. </p>
-<p>Calcula la matriz view y projection TODO: Aun no se sabe seguro si se debe hacer asi. </p>
-
-</div>
-</div>
-<a id="aacd78c4591b0f0185ba81597e0c8dda1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aacd78c4591b0f0185ba81597e0c8dda1">&#9670;&nbsp;</a></span>DeleteNode() <span class="overload">[1/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool CLNode::DeleteNode </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="class_c_l_e_1_1_c_l_node.html">CLNode</a> *&#160;</td>
-          <td class="paramname"><em>node</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Elimina un hijo del arbol por su dirección de memoria. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">node</td><td>Puntero al hijo para eliminar </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>bool Si ha sido finalizado con exito o no </dd></dl>
-
-</div>
-</div>
-<a id="adcbaefc7f18942227e39da34a897a9dc"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#adcbaefc7f18942227e39da34a897a9dc">&#9670;&nbsp;</a></span>DeleteNode() <span class="overload">[2/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool CLNode::DeleteNode </td>
-          <td>(</td>
-          <td class="paramtype">unsigned int&#160;</td>
-          <td class="paramname"><em>id</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Elimina un hijo del arbol por su id. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">id</td><td>Identificador al hijo para eliminar </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>bool Si ha sido finalizado con exito o no </dd></dl>
 
 </div>
 </div>
@@ -1570,8 +342,8 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a3ae23db204ab874ee9a2e643c92a3bd6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3ae23db204ab874ee9a2e643c92a3bd6">&#9670;&nbsp;</a></span>DFSTree() <span class="overload">[2/2]</span></h2>
+<a id="a857aade2687fcf4f90012e71fe5b6f41"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a857aade2687fcf4f90012e71fe5b6f41">&#9670;&nbsp;</a></span>DFSTree() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1580,171 +352,23 @@ Static Public Member Functions</h2></td></tr>
           <td class="memname">void CLNode::DFSTree </td>
           <td>(</td>
           <td class="paramtype">glm::mat4&#160;</td>
-          <td class="paramname"><em>mA</em></td><td>)</td>
+          <td class="paramname"><em>mA</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype"><a class="el" href="class_c_l_e_1_1_c_l_camera.html">CLCamera</a> *&#160;</td>
+          <td class="paramname"><em>cam</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 <p>Dibuja la escena. </p>
-
-</div>
-</div>
-<a id="a1cf45ffcca9f640690f5c328403a033d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1cf45ffcca9f640690f5c328403a033d">&#9670;&nbsp;</a></span>Draw3DLine() <span class="overload">[1/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">const void CLNode::Draw3DLine </td>
-          <td>(</td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>x1</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>y1</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>z1</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>x2</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>y2</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>z2</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td> const</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Dibuja una linea primitiva en 3D. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">x1</td><td>X inicial </td></tr>
-    <tr><td class="paramname">y1</td><td>Y inicial </td></tr>
-    <tr><td class="paramname">z1</td><td>Z inicial </td></tr>
-    <tr><td class="paramname">x2</td><td>X final </td></tr>
-    <tr><td class="paramname">y2</td><td>Y final </td></tr>
-    <tr><td class="paramname">z2</td><td>Z final </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a id="a7471b8c55d6a078c18cd1231d8d6e11f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7471b8c55d6a078c18cd1231d8d6e11f">&#9670;&nbsp;</a></span>Draw3DLine() <span class="overload">[2/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">const void CLNode::Draw3DLine </td>
-          <td>(</td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>x1</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>y1</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>z1</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>x2</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>y2</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>z2</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="class_c_l_e_1_1_c_l_color.html">CLColor</a>&#160;</td>
-          <td class="paramname"><em>color</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td> const</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Dibuja una linea primitiva en 3D. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">x1</td><td>X inicial </td></tr>
-    <tr><td class="paramname">y1</td><td>Y inicial </td></tr>
-    <tr><td class="paramname">z1</td><td>Z inicial </td></tr>
-    <tr><td class="paramname">x2</td><td>X final </td></tr>
-    <tr><td class="paramname">y2</td><td>Y final </td></tr>
-    <tr><td class="paramname">z2</td><td>Z final </td></tr>
-    <tr><td class="paramname">color</td><td>Color de la linea </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="class_c_l_e_1_1_c_l_color.html" title="Clase para crear colores Usamos esta clase para enviarle objetos a algunos metodos que reciben colore...">CLE::CLColor()</a> </dd></dl>
-
-</div>
-</div>
-<a id="ab877d635cffc1422a66089c3eb40eb6f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab877d635cffc1422a66089c3eb40eb6f">&#9670;&nbsp;</a></span>DrawSkybox()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void CLNode::DrawSkybox </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Dibuja el skybox. </p>
-<p>Dibuja el skybox lo primero de todo. </p>
 
 </div>
 </div>
@@ -1772,46 +396,6 @@ Static Public Member Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-
-</div>
-</div>
-<a id="a94ec407f18837d4e27c5b79609e4c947"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a94ec407f18837d4e27c5b79609e4c947">&#9670;&nbsp;</a></span>GetActiveCamera()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="class_c_l_e_1_1_c_l_camera.html">CLCamera</a> * CLNode::GetActiveCamera </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Devuelve la entidad de la camara activa. </p>
-<dl class="section return"><dt>Returns</dt><dd>camera Camara activa en la escena <a class="el" href="class_c_l_e_1_1_c_l_camera.html" title="Clase para las camaras del motor En esta clase encontramos muchos metodo utiles para gestionar camara...">CLE::CLCamera</a> </dd></dl>
-
-</div>
-</div>
-<a id="a7535a1060549f193d62b065e45995b63"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7535a1060549f193d62b065e45995b63">&#9670;&nbsp;</a></span>GetActiveCameraNode()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="class_c_l_e_1_1_c_l_node.html">CLNode</a> * CLNode::GetActiveCameraNode </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Devuelve el nodo de la camara activa. </p>
-<dl class="section return"><dt>Returns</dt><dd>camera Nodo de la camara activa en la escena </dd></dl>
 
 </div>
 </div>
@@ -1843,31 +427,30 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="abe351c82b7173c06ed230a91c0cadaf6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abe351c82b7173c06ed230a91c0cadaf6">&#9670;&nbsp;</a></span>GetCameras()</h2>
+<a id="ae51ac42be99c2ee52306641b38aeb284"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae51ac42be99c2ee52306641b38aeb284">&#9670;&nbsp;</a></span>GetBoundingSizeById()</h2>
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">vector&lt;<a class="el" href="class_c_l_e_1_1_c_l_node.html">CLNode</a>*&gt; CLE::CLNode::GetCameras </td>
+          <td class="memname">float CLE::CLNode::GetBoundingSizeById </td>
           <td>(</td>
-          <td class="paramname"></td><td>)</td>
+          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramname"><em>id</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
-<p>Devuelve las camaras de la escena. </p>
-<dl class="section return"><dt>Returns</dt><dd>cameras Vector de camaras de la escena </dd></dl>
+<p>Busca un nodo en el arbol por su ID. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">id</td><td>Identificador para buscar </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>CLNode* Puntero al nodo </dd></dl>
 
 </div>
 </div>
@@ -1896,62 +479,6 @@ Static Public Member Functions</h2></td></tr>
 
 <p>Devuelve un vector de hijos. </p>
 <dl class="section return"><dt>Returns</dt><dd>childs vector&lt;shader_ptr&lt;CLNode&gt;&gt; los hijos de ese nodo </dd></dl>
-
-</div>
-</div>
-<a id="a89d2fe5414fdd6aae3c1163b5932f79d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a89d2fe5414fdd6aae3c1163b5932f79d">&#9670;&nbsp;</a></span>GetDepthShader()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="class_c_l_e_1_1_c_l_resource_shader.html">CLResourceShader</a>* CLE::CLNode::GetDepthShader </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Devuelve el objeto shader del shadowMapping. </p>
-<dl class="section return"><dt>Returns</dt><dd>depthShdder Objeto <a class="el" href="class_c_l_e_1_1_c_l_resource_shader.html" title="Clase para gestionar los shaders leidos Con ella se pueden leer cualquier shader y acceder de manera ...">CLE::CLResourceShader</a> </dd></dl>
-
-</div>
-</div>
-<a id="aba1a1a1d591ad58757b3ddf4fd1f5cc7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aba1a1a1d591ad58757b3ddf4fd1f5cc7">&#9670;&nbsp;</a></span>GetDirectLights()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">vector&lt;<a class="el" href="class_c_l_e_1_1_c_l_node.html">CLNode</a>*&gt; CLE::CLNode::GetDirectLights </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Devuelve las luces direccionales de la escena. </p>
-<dl class="section return"><dt>Returns</dt><dd>directLights Vector de luces direccionales de la escena </dd></dl>
 
 </div>
 </div>
@@ -2071,89 +598,6 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a6d830e0b7d672beb1ff4909801879bed"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6d830e0b7d672beb1ff4909801879bed">&#9670;&nbsp;</a></span>GetNodeByID()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="class_c_l_e_1_1_c_l_node.html">CLNode</a> * CLNode::GetNodeByID </td>
-          <td>(</td>
-          <td class="paramtype">unsigned int&#160;</td>
-          <td class="paramname"><em>id</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Busca un nodo en el arbol por su ID. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">id</td><td>Identificador para buscar </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>CLNode* Puntero al nodo </dd></dl>
-
-</div>
-</div>
-<a id="a03ef9f952a5adca897eb8d5fa028a913"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a03ef9f952a5adca897eb8d5fa028a913">&#9670;&nbsp;</a></span>GetPointLights()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">vector&lt;<a class="el" href="class_c_l_e_1_1_c_l_node.html">CLNode</a>*&gt; CLE::CLNode::GetPointLights </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Devuelve las luces puntuales de la escena. </p>
-<dl class="section return"><dt>Returns</dt><dd>pointLights Vector de luces puntuales de la escena </dd></dl>
-
-</div>
-</div>
-<a id="a987664cda72ef3f63f971bfc31a469a4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a987664cda72ef3f63f971bfc31a469a4">&#9670;&nbsp;</a></span>GetProjectionMatrix()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static glm::mat4 CLE::CLNode::GetProjectionMatrix </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Devuelve la matriz projection de la escena. </p>
-<dl class="section return"><dt>Returns</dt><dd>projection Matriz projection de la escena </dd></dl>
-
-</div>
-</div>
 <a id="aa0e3d8e058a6508e0ee91f0cfe64d4fc"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aa0e3d8e058a6508e0ee91f0cfe64d4fc">&#9670;&nbsp;</a></span>GetRotation()</h2>
 
@@ -2238,34 +682,6 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a45ce65e480939caa62439f3662f506ec"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a45ce65e480939caa62439f3662f506ec">&#9670;&nbsp;</a></span>GetShadowMapping()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static <a class="el" href="class_c_l_e_1_1_c_l_shadow_mapping.html">CLShadowMapping</a>* CLE::CLNode::GetShadowMapping </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Devuelve el ShadowMapping. </p>
-<dl class="section return"><dt>Returns</dt><dd>shadowMapping Objeto <a class="el" href="class_c_l_e_1_1_c_l_shadow_mapping.html" title="Clase para añadir sombras en el motor.">CLE::CLShadowMapping</a> </dd></dl>
-
-</div>
-</div>
 <a id="a8a7e4765f00fcf58d6fc912ea254be43"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a8a7e4765f00fcf58d6fc912ea254be43">&#9670;&nbsp;</a></span>GetTransformationMat()</h2>
 
@@ -2319,34 +735,6 @@ Static Public Member Functions</h2></td></tr>
 
 <p>Devuelve la traslacion del nodo. </p>
 <dl class="section return"><dt>Returns</dt><dd>traslation Traslacion del nodo </dd></dl>
-
-</div>
-</div>
-<a id="af6573b9945040e9937774338c8dc3e03"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af6573b9945040e9937774338c8dc3e03">&#9670;&nbsp;</a></span>GetViewMatrix()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static glm::mat4 CLE::CLNode::GetViewMatrix </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Devuelve la matriz view de la escena. </p>
-<dl class="section return"><dt>Returns</dt><dd>view Matriz view de la escena </dd></dl>
 
 </div>
 </div>
@@ -2404,43 +792,6 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a0e46428ff2e0fa1fe9534d9f58be512f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0e46428ff2e0fa1fe9534d9f58be512f">&#9670;&nbsp;</a></span>RemoveLightsAndCameras()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void CLNode::RemoveLightsAndCameras </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Elimina todas las luces y camaras de la escena. </p>
-
-</div>
-</div>
-<a id="a4790a30745c200bed2f8a87a351e5ff8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4790a30745c200bed2f8a87a351e5ff8">&#9670;&nbsp;</a></span>Rotate()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void CLNode::Rotate </td>
-          <td>(</td>
-          <td class="paramtype">glm::vec3&#160;</td>
-          <td class="paramname"><em>r</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="a239044422c8d0d4fa796b325683b8d99"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a239044422c8d0d4fa796b325683b8d99">&#9670;&nbsp;</a></span>RotateMatrix()</h2>
 
@@ -2451,24 +802,6 @@ Static Public Member Functions</h2></td></tr>
           <td class="memname">glm::mat4 CLNode::RotateMatrix </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="aab2dbb8c4041a553e04e738644321ca8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aab2dbb8c4041a553e04e738644321ca8">&#9670;&nbsp;</a></span>Scale()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void CLNode::Scale </td>
-          <td>(</td>
-          <td class="paramtype">glm::vec3&#160;</td>
-          <td class="paramname"><em>s</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -2490,45 +823,6 @@ Static Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-
-</div>
-</div>
-<a id="a29fef79aabec899f85ac76d592b418e8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a29fef79aabec899f85ac76d592b418e8">&#9670;&nbsp;</a></span>SetDrawLineWidth()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void CLE::CLNode::SetDrawLineWidth </td>
-          <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>w</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Asigna la anchura de la linea. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">x1</td><td>X inicial </td></tr>
-    <tr><td class="paramname">y1</td><td>Y inicial </td></tr>
-    <tr><td class="paramname">z1</td><td>Z inicial </td></tr>
-    <tr><td class="paramname">x2</td><td>X final </td></tr>
-    <tr><td class="paramname">y2</td><td>Y final </td></tr>
-    <tr><td class="paramname">z2</td><td>Z final </td></tr>
-  </table>
-  </dd>
-</dl>
 
 </div>
 </div>
@@ -2566,8 +860,8 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="ac6d87ade00d0e3ce04fa7ef06439ee19"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac6d87ade00d0e3ce04fa7ef06439ee19">&#9670;&nbsp;</a></span>SetLightingEffects()</h2>
+<a id="ad23ab42e09287b23f4db5aee89b28918"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad23ab42e09287b23f4db5aee89b28918">&#9670;&nbsp;</a></span>SetIgnoreFrustrum()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -2576,10 +870,10 @@ Static Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void CLE::CLNode::SetLightingEffects </td>
+          <td class="memname">void CLE::CLNode::SetIgnoreFrustrum </td>
           <td>(</td>
           <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>l</em></td><td>)</td>
+          <td class="paramname"><em>f</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -2589,6 +883,69 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+</div>
+</div>
+<a id="a0ed6564a510db8c9582276bb7ae4b3ed"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0ed6564a510db8c9582276bb7ae4b3ed">&#9670;&nbsp;</a></span>SetOctreeVisible()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void CLE::CLNode::SetOctreeVisible </td>
+          <td>(</td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>v</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="acfa35552f9d36fb498b01e020bf7af17"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acfa35552f9d36fb498b01e020bf7af17">&#9670;&nbsp;</a></span>SetOctreeVisibleById()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void CLE::CLNode::SetOctreeVisibleById </td>
+          <td>(</td>
+          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramname"><em>id</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>v</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Asigna la visibilidad del nodo dependiendo del octree. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">id</td><td>El id del nodo </td></tr>
+    <tr><td class="paramname">v</td><td>Si es visible o no </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -2670,32 +1027,6 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="ab8bfefc54981169f256d9cd994e00efb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab8bfefc54981169f256d9cd994e00efb">&#9670;&nbsp;</a></span>SetTransformationMat()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void CLE::CLNode::SetTransformationMat </td>
-          <td>(</td>
-          <td class="paramtype">glm::mat4&#160;</td>
-          <td class="paramname"><em>transfMat</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="ae31ce882babd330919dc1fbf67276799"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ae31ce882babd330919dc1fbf67276799">&#9670;&nbsp;</a></span>SetTranslation()</h2>
 
@@ -2756,24 +1087,6 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="aa9df1c4ae067a19400a52097578ba781"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa9df1c4ae067a19400a52097578ba781">&#9670;&nbsp;</a></span>Translate()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void CLNode::Translate </td>
-          <td>(</td>
-          <td class="paramtype">glm::vec3&#160;</td>
-          <td class="paramname"><em>t</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="a88c436f0e13858b08dee80b6ca6ba2f6"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a88c436f0e13858b08dee80b6ca6ba2f6">&#9670;&nbsp;</a></span>TranslateMatrix()</h2>
 
@@ -2792,8 +1105,8 @@ Static Public Member Functions</h2></td></tr>
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following files:<ul>
-<li>CLEngine/src/SceneTree/<a class="el" href="_c_l_node_8h_source.html">CLNode.h</a></li>
-<li>CLEngine/src/SceneTree/<a class="el" href="_c_l_node_8cpp.html">CLNode.cpp</a></li>
+<li>D:/Escritorio/Beast_Brawl/CLEngine/src/SceneTree/<a class="el" href="_c_l_node_8h_source.html">CLNode.h</a></li>
+<li>D:/Escritorio/Beast_Brawl/CLEngine/src/SceneTree/<a class="el" href="_c_l_node_8cpp.html">CLNode.cpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

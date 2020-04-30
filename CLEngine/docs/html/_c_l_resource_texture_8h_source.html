@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>CLEngine: CLEngine/src/ResourceManager/CLResourceTexture.h Source File</title>
+<title>CLEngine: D:/Escritorio/Beast_Brawl/CLEngine/src/ResourceManager/CLResourceTexture.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -28,7 +28,7 @@
    <div id="projectname">CLEngine
    &#160;<span id="projectnumber">1.0</span>
    </div>
-   <div id="projectbrief">Motor grafico para Beast Brawl</div>
+   <div id="projectbrief">Motor gráfico para TAG</div>
   </td>
  </tr>
  </tbody>
@@ -100,34 +100,40 @@ $(document).ready(function(){initNavTree('_c_l_resource_texture_8h_source.html',
 <div class="line"><a name="l00012"></a><span class="lineno"><a class="line" href="class_c_l_e_1_1_c_l_resource_texture.html">   12</a></span>&#160;    <span class="keyword">class </span><a class="code" href="class_c_l_e_1_1_c_l_resource_texture.html">CLResourceTexture</a> : <span class="keyword">public</span> <a class="code" href="class_c_l_e_1_1_c_l_resource.html">CLResource</a> {</div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;        <span class="keyword">public</span>:</div>
 <div class="line"><a name="l00014"></a><span class="lineno"><a class="line" href="class_c_l_e_1_1_c_l_resource_texture.html#a1811f7503763d2456920f3b59ab881d3">   14</a></span>&#160;            <a class="code" href="class_c_l_e_1_1_c_l_resource_texture.html#a1811f7503763d2456920f3b59ab881d3">CLResourceTexture</a>() {};</div>
-<div class="line"><a name="l00015"></a><span class="lineno"><a class="line" href="class_c_l_e_1_1_c_l_resource_texture.html#a281a4a42ca03652a339368e0e3762a33">   15</a></span>&#160;            <a class="code" href="class_c_l_e_1_1_c_l_resource_texture.html#a281a4a42ca03652a339368e0e3762a33">~CLResourceTexture</a>() {};</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;            <a class="code" href="class_c_l_e_1_1_c_l_resource_texture.html#a09c24c5238a4a18f6f79ca46bd26e0d4">~CLResourceTexture</a>();</div>
 <div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160; </div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;            <span class="keywordtype">void</span> <a class="code" href="class_c_l_e_1_1_c_l_resource_texture.html#a798a548624dadd4fe3aefbc17ea73646">Draw</a>(GLuint shaderID) <span class="keyword">override</span>;</div>
 <div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;            <span class="keywordtype">bool</span> <a class="code" href="class_c_l_e_1_1_c_l_resource_texture.html#a068daf0ba599947cdfcaf8361634f235">LoadFile</a>(<span class="keywordtype">string</span>, <span class="keywordtype">bool</span>) <span class="keyword">override</span>;</div>
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;            </div>
 <div class="line"><a name="l00022"></a><span class="lineno"><a class="line" href="class_c_l_e_1_1_c_l_resource_texture.html#a71d74f91c7c55d06e66fb53ab1dacda0">   22</a></span>&#160;            <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="class_c_l_e_1_1_c_l_resource_texture.html#a71d74f91c7c55d06e66fb53ab1dacda0">GetTextureID</a>() { <span class="keywordflow">return</span> textureID; };</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160; </div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;        <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;            <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> textureID;</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;            <span class="keywordtype">string</span> type;</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    };</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160; </div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;}</div>
+<div class="line"><a name="l00023"></a><span class="lineno"><a class="line" href="class_c_l_e_1_1_c_l_resource_texture.html#a8fb47c67871fabb7c657ea06770a32a4">   23</a></span>&#160;            <span class="keywordtype">int</span> <a class="code" href="class_c_l_e_1_1_c_l_resource_texture.html#a8fb47c67871fabb7c657ea06770a32a4">GetWidth</a>(){ <span class="keywordflow">return</span> widthText; };</div>
+<div class="line"><a name="l00024"></a><span class="lineno"><a class="line" href="class_c_l_e_1_1_c_l_resource_texture.html#a2ddbb3dc5ae3de4525cf7a91b42192bb">   24</a></span>&#160;            <span class="keywordtype">int</span> <a class="code" href="class_c_l_e_1_1_c_l_resource_texture.html#a2ddbb3dc5ae3de4525cf7a91b42192bb">GetHeight</a>(){ <span class="keywordflow">return</span> heightText; };</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160; </div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;         <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;            <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> textureID;</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;            <span class="keywordtype">string</span> type;</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;            <span class="keywordtype">int</span> widthText = 0;</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;            <span class="keywordtype">int</span> heightText = 0;</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    };</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160; </div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;}</div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <div class="ttc" id="a_c_l_resource_8h_html"><div class="ttname"><a href="_c_l_resource_8h.html">CLResource.h</a></div></div>
 <div class="ttc" id="aclass_c_l_e_1_1_c_l_resource_texture_html_a1811f7503763d2456920f3b59ab881d3"><div class="ttname"><a href="class_c_l_e_1_1_c_l_resource_texture.html#a1811f7503763d2456920f3b59ab881d3">CLE::CLResourceTexture::CLResourceTexture</a></div><div class="ttdeci">CLResourceTexture()</div><div class="ttdef"><b>Definition:</b> CLResourceTexture.h:14</div></div>
+<div class="ttc" id="aclass_c_l_e_1_1_c_l_resource_texture_html_a8fb47c67871fabb7c657ea06770a32a4"><div class="ttname"><a href="class_c_l_e_1_1_c_l_resource_texture.html#a8fb47c67871fabb7c657ea06770a32a4">CLE::CLResourceTexture::GetWidth</a></div><div class="ttdeci">int GetWidth()</div><div class="ttdef"><b>Definition:</b> CLResourceTexture.h:23</div></div>
+<div class="ttc" id="aclass_c_l_e_1_1_c_l_resource_texture_html_a2ddbb3dc5ae3de4525cf7a91b42192bb"><div class="ttname"><a href="class_c_l_e_1_1_c_l_resource_texture.html#a2ddbb3dc5ae3de4525cf7a91b42192bb">CLE::CLResourceTexture::GetHeight</a></div><div class="ttdeci">int GetHeight()</div><div class="ttdef"><b>Definition:</b> CLResourceTexture.h:24</div></div>
 <div class="ttc" id="aclass_c_l_e_1_1_c_l_resource_html"><div class="ttname"><a href="class_c_l_e_1_1_c_l_resource.html">CLE::CLResource</a></div><div class="ttdoc">Clase virtual para los recursos Utilizada por el polimorfismo en todas las clases de recursos.</div><div class="ttdef"><b>Definition:</b> CLResource.h:13</div></div>
-<div class="ttc" id="aclass_c_l_e_1_1_c_l_resource_texture_html_a798a548624dadd4fe3aefbc17ea73646"><div class="ttname"><a href="class_c_l_e_1_1_c_l_resource_texture.html#a798a548624dadd4fe3aefbc17ea73646">CLE::CLResourceTexture::Draw</a></div><div class="ttdeci">void Draw(GLuint shaderID) override</div><div class="ttdoc">Metodo virtual para algunos recursos que necesiten dibujado.</div><div class="ttdef"><b>Definition:</b> CLResourceTexture.cpp:47</div></div>
+<div class="ttc" id="aclass_c_l_e_1_1_c_l_resource_texture_html_a798a548624dadd4fe3aefbc17ea73646"><div class="ttname"><a href="class_c_l_e_1_1_c_l_resource_texture.html#a798a548624dadd4fe3aefbc17ea73646">CLE::CLResourceTexture::Draw</a></div><div class="ttdeci">void Draw(GLuint shaderID) override</div><div class="ttdoc">Metodo virtual para algunos recursos que necesiten dibujado.</div><div class="ttdef"><b>Definition:</b> CLResourceTexture.cpp:52</div></div>
 <div class="ttc" id="aclass_c_l_e_1_1_c_l_resource_texture_html_a71d74f91c7c55d06e66fb53ab1dacda0"><div class="ttname"><a href="class_c_l_e_1_1_c_l_resource_texture.html#a71d74f91c7c55d06e66fb53ab1dacda0">CLE::CLResourceTexture::GetTextureID</a></div><div class="ttdeci">unsigned int GetTextureID()</div><div class="ttdoc">Devuelve el ID de la textura.</div><div class="ttdef"><b>Definition:</b> CLResourceTexture.h:22</div></div>
+<div class="ttc" id="aclass_c_l_e_1_1_c_l_resource_texture_html_a09c24c5238a4a18f6f79ca46bd26e0d4"><div class="ttname"><a href="class_c_l_e_1_1_c_l_resource_texture.html#a09c24c5238a4a18f6f79ca46bd26e0d4">CLE::CLResourceTexture::~CLResourceTexture</a></div><div class="ttdeci">~CLResourceTexture()</div><div class="ttdef"><b>Definition:</b> CLResourceTexture.cpp:56</div></div>
 <div class="ttc" id="anamespace_c_l_e_html"><div class="ttname"><a href="namespace_c_l_e.html">CLE</a></div><div class="ttdef"><b>Definition:</b> CLColor.h:5</div></div>
-<div class="ttc" id="aclass_c_l_e_1_1_c_l_resource_texture_html_a281a4a42ca03652a339368e0e3762a33"><div class="ttname"><a href="class_c_l_e_1_1_c_l_resource_texture.html#a281a4a42ca03652a339368e0e3762a33">CLE::CLResourceTexture::~CLResourceTexture</a></div><div class="ttdeci">~CLResourceTexture()</div><div class="ttdef"><b>Definition:</b> CLResourceTexture.h:15</div></div>
 <div class="ttc" id="aclass_c_l_e_1_1_c_l_resource_texture_html"><div class="ttname"><a href="class_c_l_e_1_1_c_l_resource_texture.html">CLE::CLResourceTexture</a></div><div class="ttdoc">Clase para gestionar la lectura de texturas.</div><div class="ttdef"><b>Definition:</b> CLResourceTexture.h:12</div></div>
 <div class="ttc" id="aclass_c_l_e_1_1_c_l_resource_texture_html_a068daf0ba599947cdfcaf8361634f235"><div class="ttname"><a href="class_c_l_e_1_1_c_l_resource_texture.html#a068daf0ba599947cdfcaf8361634f235">CLE::CLResourceTexture::LoadFile</a></div><div class="ttdeci">bool LoadFile(string, bool) override</div><div class="ttdoc">Metodo virtual para leer ficheros.</div><div class="ttdef"><b>Definition:</b> CLResourceTexture.cpp:4</div></div>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_aead3dff2facb086e221c03efe0c7a1a.html">CLEngine</a></li><li class="navelem"><a class="el" href="dir_9779f9edaadacf3bb82da7e0c320dbcf.html">src</a></li><li class="navelem"><a class="el" href="dir_c9703864c94a5efc579f38b2f3787437.html">ResourceManager</a></li><li class="navelem"><a class="el" href="_c_l_resource_texture_8h.html">CLResourceTexture.h</a></li>
+    <li class="navelem"><a class="el" href="dir_275089585c7fc1b5fd5d7d42c69cb1da.html">D:</a></li><li class="navelem"><a class="el" href="dir_2078a0179f569e7f19f5e7d00d1b0a11.html">Escritorio</a></li><li class="navelem"><a class="el" href="dir_f27230be065b78f5ced2df3240f3eded.html">Beast_Brawl</a></li><li class="navelem"><a class="el" href="dir_f316691a7e2a135e2efe7001f6d5b377.html">CLEngine</a></li><li class="navelem"><a class="el" href="dir_38b7e1994c4893711c1637cc36dcd89e.html">src</a></li><li class="navelem"><a class="el" href="dir_1a8b83d01d55408d49443b6a1d4e7dfd.html">ResourceManager</a></li><li class="navelem"><a class="el" href="_c_l_resource_texture_8h.html">CLResourceTexture.h</a></li>
     <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.17 </li>

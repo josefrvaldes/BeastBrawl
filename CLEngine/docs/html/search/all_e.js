@@ -1,11 +1,11 @@
 var searchData=
 [
-  ['partially_235',['Partially',['../class_c_l_e_1_1_c_l_frustum.html#ae59c5b0093dfa9564459f5be3bb62734a7f9eeee7ded48b54c81f3edf175a6e0c',1,'CLE::CLFrustum']]],
-  ['path_236',['path',['../struct_texture.html#a2bb543fb01b98cc7406ee7466030e7d2',1,'Texture']]],
-  ['plane_5fenum_237',['Plane_enum',['../class_c_l_e_1_1_c_l_frustum.html#a166d93073d486188eb585b8ff7d5a2a4',1,'CLE::CLFrustum']]],
-  ['point_238',['Point',['../_c_l_particle_system_8h.html#a2955cca9df1e3f8faa105a79669676dca5b577e188dc4657a3e573fb2dae1a924',1,'CLParticleSystem.h']]],
-  ['pollevents_239',['PollEvents',['../class_c_l_e_1_1_c_l_engine.html#a10778899bf87d6ae7270ae2c17b039d7',1,'CLE::CLEngine']]],
-  ['position_240',['position',['../struct_vertex.html#a030819fdc241743bbd3e180a6b132ed3',1,'Vertex']]],
-  ['prueba_2etxt_241',['prueba.txt',['../prueba_8txt.html',1,'']]],
-  ['publish_242',['publish',['../_l_i_c_e_n_s_e_8txt.html#ae6b6c4d3ae1a4140d31294e27bb0ebd8',1,'LICENSE.txt']]]
+  ['removechild_245',['RemoveChild',['../class_c_l_e_1_1_c_l_engine.html#aa883f125ee84ee2c0a4e2755a5ba6ad5',1,'CLE::CLEngine::RemoveChild()'],['../class_c_l_e_1_1_c_l_node.html#ab6032f57b5112ac07fae72ec57aae5ec',1,'CLE::CLNode::RemoveChild()']]],
+  ['removelightsandcameras_246',['RemoveLightsAndCameras',['../class_c_l_e_1_1_c_l_engine.html#ab6bb94e99302a7bdf45858a37f32850a',1,'CLE::CLEngine']]],
+  ['renderdepthmap_247',['RenderDepthMap',['../class_c_l_e_1_1_c_l_engine.html#a6530a147cd808e628035127686430e2c',1,'CLE::CLEngine']]],
+  ['renderimgui_248',['RenderImgui',['../class_c_l_e_1_1_c_l_engine.html#a27a4521152394d8a9222ac31fb4ab25e',1,'CLE::CLEngine']]],
+  ['rendertext2d_249',['RenderText2D',['../class_c_l_e_1_1_c_l_engine.html#a65cd5f65e3df57cc30dcfb2456cd24cb',1,'CLE::CLEngine']]],
+  ['right_250',['Right',['../class_c_l_e_1_1_c_l_frustum.html#a166d93073d486188eb585b8ff7d5a2a4ac942551763df470987867b9e9ad8fa80',1,'CLE::CLFrustum']]],
+  ['rotatematrix_251',['RotateMatrix',['../class_c_l_e_1_1_c_l_node.html#a239044422c8d0d4fa796b325683b8d99',1,'CLE::CLNode']]],
+  ['run_252',['Run',['../class_c_l_e_1_1_c_l_engine.html#a61fbce85f76ea85ee46c900de16f3210',1,'CLE::CLEngine']]]
 ];
