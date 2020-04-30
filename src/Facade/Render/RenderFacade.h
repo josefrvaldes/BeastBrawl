@@ -91,6 +91,7 @@ class RenderFacade {
     virtual void FacadeUpdateViewport() = 0;
 
     virtual void FacadeInitParticleSystem(DataMap* d) = 0;
+    virtual void FacadeUpdateVisibility(DataMap* d) = 0;
     virtual bool FacadeOctreeInCamera(float size, const glm::vec3& pos) = 0;
     virtual void FacadeSetOctreeVisibleById(unsigned int id, bool v) = 0;
     //DEBUG

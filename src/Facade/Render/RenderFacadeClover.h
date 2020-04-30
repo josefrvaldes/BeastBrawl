@@ -99,6 +99,7 @@ class RenderFacadeClover : public RenderFacade {
       void FacadeUpdateViewport() override;
 
       void FacadeInitParticleSystem(DataMap* d) override;
+      void FacadeUpdateVisibility(DataMap* d) override;
       bool FacadeOctreeInCamera(float size, const glm::vec3& pos) override {return device->OctreeIncamera(size, pos);};
       void FacadeSetOctreeVisibleById(unsigned int id, bool v) override {device->SetOctreeVisibleById(id, v);};
 
