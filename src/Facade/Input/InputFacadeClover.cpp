@@ -335,6 +335,8 @@ void InputFacadeClover::CheckInputSelectCharacter(int &input, int maxInput) {
             RenderFacadeManager::GetInstance()->GetRenderFacade()->CleanScene();
             EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_LOBBYMULTI});
         } else{
+            RenderFacadeManager::GetInstance()->GetRenderFacade()->CleanScene();
+
             shared_ptr<DataMap> data = make_shared<DataMap>();
             int num = input;
             (*data)[NUM] = num;

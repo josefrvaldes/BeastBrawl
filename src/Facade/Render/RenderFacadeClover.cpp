@@ -711,6 +711,22 @@ void RenderFacadeClover::FacadeInitMenu() {
 
 void RenderFacadeClover::FacadeInitSelectCharacter() {
 
+    //Creamos la camara apuntando al (0,0,0)
+    auto cam = device->AddCamera(device->GetRootNode(),1);
+    auto shader = resourceManager->GetResourceShader("CLEngine/src/Shaders/cartoonShader.vert","CLEngine/src/Shaders/cartoonShader.frag");
+    cam->SetShaderProgramID(shader->GetProgramID());
+    auto cameraEntity = static_cast<CLCamera*>(cam->GetEntity());
+    cameraEntity->SetCameraTarget(glm::vec3(0.0f));
+    cam->SetTranslation(glm::vec3(40.0f,0.0f,0.0f));
+    cam->SetRotation(glm::vec3(0.0f));
+
+
+    auto mesh1 = device->AddMesh(smgr,2,"media/kart_penguin.obj");
+    mesh1->SetScalation(glm::vec3(5.0f));
+    mesh1->SetTranslation(glm::vec3(0.0f,0.0f,30.0f));
+    auto shader1 = resourceManager->GetResourceShader("CLEngine/src/Shaders/basicShader.vert","CLEngine/src/Shaders/basicShader.frag");
+
+    mesh1->SetShaderProgramID(shader1->GetProgramID());
 }
 
 void RenderFacadeClover::FacadeInitGameOptions() {

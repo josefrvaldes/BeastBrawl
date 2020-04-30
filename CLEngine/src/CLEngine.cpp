@@ -33,6 +33,7 @@ CLEngine::CLEngine (const unsigned int w, const unsigned int h, const string& ti
     shaders.emplace_back(resourceManager->GetResourceShader("CLEngine/src/Shaders/shadowMappingShader.vert", "CLEngine/src/Shaders/shadowMappingShader.frag")->GetProgramID());
     shaders.emplace_back(resourceManager->GetResourceShader("CLEngine/src/Shaders/cartoonShader.vert", "CLEngine/src/Shaders/cartoonShader.frag")->GetProgramID());
     shaders.emplace_back(resourceManager->GetResourceShader("CLEngine/src/Shaders/lightMapping.vert", "CLEngine/src/Shaders/lightMapping.frag")->GetProgramID());
+    shaders.emplace_back(resourceManager->GetResourceShader("CLEngine/src/Shaders/basicShader.vert", "CLEngine/src/Shaders/basicShader.frag")->GetProgramID());
 
 }
 
@@ -221,7 +222,8 @@ void CLEngine::DrawDepthMap(){
 
 
 void CLEngine::DrawObjects(){
-    DrawDepthMap();
+    if(shadowMapping)
+        DrawDepthMap();
 
     DrawSkybox();
     CalculateViewProjMatrix();
@@ -1094,6 +1096,8 @@ void CLEngine::CalculateLights(){
 void CLEngine::RemoveLightsAndCameras() {
     cameras.clear();
     pointLights.clear();
+    shadowMapping = nullptr;
+    skybox = nullptr;
 }
 
 

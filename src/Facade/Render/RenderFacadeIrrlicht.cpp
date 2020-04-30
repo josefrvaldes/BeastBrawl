@@ -114,7 +114,7 @@ void RenderFacadeIrrlicht::FacadeInitIntro() {
 }
 
 void RenderFacadeIrrlicht::FacadeInitSelectCharacter() {
-
+    
 }
 
 void RenderFacadeIrrlicht::FacadeInitGameOptions() {

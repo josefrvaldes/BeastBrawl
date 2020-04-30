@@ -54,13 +54,14 @@ int main() {
         auto resourceShaderCartoon = resourceManager->GetResourceShader("CLEngine/src/Shaders/cartoonShader.vert", "CLEngine/src/Shaders/cartoonShader.frag");
         auto resourceShaderLightMapping = resourceManager->GetResourceShader("CLEngine/src/Shaders/lightMapping.vert", "CLEngine/src/Shaders/lightMapping.frag");
         auto resourceShaderHud = resourceManager->GetResourceShader("CLEngine/src/Shaders/spriteShader.vert", "CLEngine/src/Shaders/spriteShader.frag");
+        auto resourceShaderBasic = resourceManager->GetResourceShader("CLEngine/src/Shaders/basicShader.vert", "CLEngine/src/Shaders/basicShader.frag");
 
         auto resourceShaderMaterial = resourceManager->GetResourceShader("CLEngine/src/Shaders/materialShader.vert", "CLEngine/src/Shaders/materialShader.frag");
         auto resourceShader3 = resourceManager->GetResourceShader("CLEngine/src/Shaders/debugShader.vert", "CLEngine/src/Shaders/debugShader.frag");
         auto resourceShaderSkybox = resourceManager->GetResourceShader("CLEngine/src/Shaders/skybox.vert", "CLEngine/src/Shaders/skybox.frag");
         auto resourceMeshGround = resourceManager->GetResourceMesh("media/training_ground.obj", true);
         auto resourceMeshTotem = resourceManager->GetResourceMesh("media/totem.obj", true);
-        auto resourceMesh = resourceManager->GetResourceMesh("media/sphere.OBJ", true);
+        auto resourceMesh = resourceManager->GetResourceMesh("media/sphera.obj", true);
         auto resourceMeshBox = resourceManager->GetResourceMesh("media/TEST_BOX.obj", true);
         // auto animationKong = resourceManager->GetResourceAnimation("media/animations/kong/001kong.obj", 75, true);
         // auto animationCube = resourceManager->GetResourceAnimation("media/animations/cube/001cube.obj", 4, true);
@@ -77,28 +78,28 @@ int main() {
         //shared_ptr<CLNode> smgr = make_shared<CLNode>(entity1.get());
         CLNode* smgr = device->GetRootNode();
         auto light1 = device->AddPointLight(device->GetRootNode(),1);
-        light1->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
+        light1->SetShaderProgramID(resourceShaderBasic->GetProgramID());
         static_cast<CLPointLight*>(light1->GetEntity())->SetLightAttributes(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.7f, 0.7f, 0.7f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.1f, 0.1, 0.1f), 1.0f, 0.00005f, 0.0000014f);
 
         auto light2 = device->AddPointLight(device->GetRootNode(),2);
-        light2->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
+        light2->SetShaderProgramID(resourceShaderBasic->GetProgramID());
         static_cast<CLPointLight*>(light2->GetEntity())->SetLightAttributes(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.2f, 0.2f, 0.2f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.1f, 0.1, 0.1f), 1.0f, 0.00007f, 0.00008f);
 
 
         auto mesh1 = device->AddMesh(device->GetRootNode(),3);
-        mesh1->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
+        mesh1->SetShaderProgramID(resourceShaderBasic->GetProgramID());
 
         auto camera = device->AddCamera(device->GetRootNode(),4);
-        camera->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
+        camera->SetShaderProgramID(resourceShaderBasic->GetProgramID());
 
         auto mesh2 = device->AddMesh(device->GetRootNode(),5);
-        mesh2->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
+        mesh2->SetShaderProgramID(resourceShaderBasic->GetProgramID());
 
         auto nodeKongAnim = device->AddMesh(device->GetRootNode(),6);
-        nodeKongAnim->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
+        nodeKongAnim->SetShaderProgramID(resourceShaderBasic->GetProgramID());
 
         auto nodeCubeAnim = device->AddMesh(device->GetRootNode(),7);
-        nodeCubeAnim->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
+        nodeCubeAnim->SetShaderProgramID(resourceShaderBasic->GetProgramID());
 
         
         /////////////////////////////////////////////////////
