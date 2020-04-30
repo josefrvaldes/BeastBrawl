@@ -36,15 +36,8 @@ void PhysicsCamera::update(Car *car, Camera *cam) {
 
 //Calcula la posicion de la camara (duda con las formulas preguntar a Jose)
 void PhysicsCamera::CalculatePositionCamera(CCar *cCar, CTransformable *cTransformableCar, CTransformable *cTransCam, CCamera *cCamera, CSpeed *cSpeedCam, CHurt *cHurt) {
-    float rotationFinal;
-    rotationFinal = cTransformableCar->rotation.y - cCar->skidRotation - cCamera->rotExtraY - cHurt->currentRotation;
+    float rotationFinal = cTransformableCar->rotation.y - cCar->skidRotation - cCamera->rotExtraY - cHurt->currentRotation;
     rotationFinal = Utils::GetAdjustedDegrees(rotationFinal);
-    // if(cHurt->currentRotation > 0) {
-    //     rotationFinal = cHurt->originalCarRotation - cCar->skidRotation - cCamera->rotExtraY - cHurt->currentRotation;
-    //     rotationFinal = Utils::GetAdjustedDegrees(rotationFinal);
-        // cout << "el cTransformable.rotation es " << cTransformableCar->rotation.y << " y el churt.rotation es " << cHurt->currentRotation << " el rotation final es " << rotationFinal << endl;
-    // } else {
-    // }
     
 
     cTransCam->position.y = cTransformableCar->position.y + 20;
