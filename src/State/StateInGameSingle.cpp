@@ -155,16 +155,18 @@ void StateInGameSingle::createSystemAI() {
     InitPathPlanning();
     InitBtLoDMove();
     InitBtPowerUp();
+    InitBtDecisionMove();
 
     //creamos comportamientos IA
     uint32_t i = 0;
     for(auto actualAI : manCars->GetEntities()){
         if (static_cast<Car*>(actualAI.get())->GetTypeCar() == TypeCar::CarAI){
-            manAI->addBehavior(static_cast<CarAI*>(actualAI.get()), systemVisionAI.get(),     systemVisionAI->getFrecuency(),     i, systemVisionAI.get()->getMaxProcessTime() );
-            manAI->addBehavior(static_cast<CarAI*>(actualAI.get()), systemBtMoveTo.get(),     systemBtMoveTo->getFrecuency(),     i, systemBtMoveTo.get()->getMaxProcessTime() );
-            manAI->addBehavior(static_cast<CarAI*>(actualAI.get()), systemPathPlanning.get(), systemPathPlanning->getFrecuency(), i, systemPathPlanning.get()->getMaxProcessTime() );
-            manAI->addBehavior(static_cast<CarAI*>(actualAI.get()), systemBtLoDMove.get(),    systemBtLoDMove->getFrecuency(),    i, systemBtLoDMove.get()->getMaxProcessTime() );
-            manAI->addBehavior(static_cast<CarAI*>(actualAI.get()), systemBtPowerUp.get(),    systemBtPowerUp->getFrecuency(),    i, systemBtPowerUp.get()->getMaxProcessTime() );
+            manAI->addBehavior(static_cast<CarAI*>(actualAI.get()), systemVisionAI.get(),       systemVisionAI->getFrecuency(),         i, systemVisionAI.get()->getMaxProcessTime() );
+            manAI->addBehavior(static_cast<CarAI*>(actualAI.get()), systemBtDecisionMove.get(), systemBtDecisionMove->getFrecuency(),   i, systemBtDecisionMove.get()->getMaxProcessTime() );
+            //manAI->addBehavior(static_cast<CarAI*>(actualAI.get()), systemBtMoveTo.get(),     systemBtMoveTo->getFrecuency(),         i, systemBtMoveTo.get()->getMaxProcessTime() );
+            manAI->addBehavior(static_cast<CarAI*>(actualAI.get()), systemPathPlanning.get(),   systemPathPlanning->getFrecuency(),     i, systemPathPlanning.get()->getMaxProcessTime() );
+            manAI->addBehavior(static_cast<CarAI*>(actualAI.get()), systemBtLoDMove.get(),      systemBtLoDMove->getFrecuency(),        i, systemBtLoDMove.get()->getMaxProcessTime() );
+            manAI->addBehavior(static_cast<CarAI*>(actualAI.get()), systemBtPowerUp.get(),      systemBtPowerUp->getFrecuency(),        i, systemBtPowerUp.get()->getMaxProcessTime() );
             
             i++;
         }
@@ -243,7 +245,20 @@ void StateInGameSingle::InitVision(){
     systemVisionAI->setMaxProcessTime(0.00025);
 }
 
+void StateInGameSingle::InitBtDecisionMove(){
+    systemBtDecisionMove = make_unique<SystemBtDecisionMove>();
 
+    systemBtDecisionMove->AddManager(*manCars.get());
+    systemBtDecisionMove->AddManager(*manPowerUps.get());
+    systemBtDecisionMove->AddManager(*manBoxPowerUps.get());
+    systemBtDecisionMove->AddManager(*manTotems.get());
+    systemBtDecisionMove->AddManager(*manWayPoint.get());
+    systemBtDecisionMove->AddManager(*manNavMesh.get());
+    systemBtDecisionMove->AddManager(*manBoundingWall.get());
+    systemBtDecisionMove->AddManager(*manBoundingOBB.get());
+
+    systemBtDecisionMove->setMaxProcessTime(0.00050);
+}
 
 
 
@@ -279,9 +294,10 @@ void StateInGameSingle::CAMBIARInicializarCarAIS(ManCar &manCars, ManWayPoint &m
 
     auto iaPjs = GameValues::GetInstance()->GetIACharacters();
 
-    auto posCar1 = glm::vec3(0.0f, 15.0f, -200.0f);
-    auto posCar2 = glm::vec3(-202.0f, 15.0f, -145.0f);
-    auto posCar3 = glm::vec3(209.0f, 15.0f, -145.0f);
+
+    auto posCar1 = glm::vec3(290.0f, 15.0f, -300.0f);
+    //auto posCar2 = glm::vec3(-202.0f, 15.0f, -145.0f);
+    //auto posCar3 = glm::vec3(209.0f, 15.0f, -145.0f);
 
     //Para asegurarse por si petara, que no debe
     if (!iaPjs.empty()) {
@@ -291,14 +307,14 @@ void StateInGameSingle::CAMBIARInicializarCarAIS(ManCar &manCars, ManWayPoint &m
 
         //Cambiar
         manCars.CreateCarAI(iaPjs[0], posCar1);
-        manCars.CreateCarAI(iaPjs[1], posCar2);
-        manCars.CreateCarAI(iaPjs[2], posCar3);
+        //manCars.CreateCarAI(iaPjs[1], posCar2);
+        //manCars.CreateCarAI(iaPjs[2], posCar3);
 
     } else {
         cout << "++++++++++ Algo no va bien asique ahora todos son pinguinos.";
         manCars.CreateCarAI(0, posCar1);
-        manCars.CreateCarAI(0, posCar2);
-        manCars.CreateCarAI(0, posCar3);
+        //manCars.CreateCarAI(0, posCar2);
+        //manCars.CreateCarAI(0, posCar3);
     }
 
     //int i = -1;

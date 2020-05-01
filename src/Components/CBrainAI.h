@@ -51,7 +51,7 @@ public:
 
 
     // elementos en el rango de vision
-    int fov = 70;
+    int fov = 50;
     float distanceVision {600};
     std::vector<Entity*> carInVision;
     std::vector<Entity*> boxInVision;
@@ -59,6 +59,7 @@ public:
     
     // objetivo
     Car* targetCar {nullptr};
+    BoxPowerUp* targetBoxPowerUp {nullptr};
 
     // Pensamiento de la IA = mirar minimapa, mirar marcadores, etc, durante ese tiempo no actua
     bool thinking {false};

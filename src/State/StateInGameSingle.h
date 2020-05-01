@@ -6,6 +6,7 @@
 #include "../Systems/SystemBtMoveTo.h"
 #include "../Systems/SystemBtLoDMove.h"
 #include "../Systems/SystemVisionAI.h"
+#include "../Systems/SystemBtDecisionMove.h"
 
 #include "../Managers/ManAI.h"
 
@@ -40,6 +41,7 @@ class StateInGameSingle : public StateInGame {
     void InitBtLoDMove();
     void InitPathPlanning();
     void InitVision();
+    void InitBtDecisionMove();
 
     unique_ptr<ManAI> manAI;
     unique_ptr<SystemBtPowerUp> systemBtPowerUp;
@@ -47,7 +49,7 @@ class StateInGameSingle : public StateInGame {
     unique_ptr<SystemBtLoDMove> systemBtLoDMove;
     unique_ptr<SystemPathPlanning> systemPathPlanning;
     unique_ptr<SystemVisionAI> systemVisionAI;
-
+    unique_ptr<SystemBtDecisionMove> systemBtDecisionMove;
 
     bool goingToPause {false};
     bool comingBackFromPause {false};
