@@ -6,6 +6,8 @@
 #include "../Systems/Utils.h"
 
 SystemAnimationStart::SystemAnimationStart(Camera *cam_, Totem *totem_, Car *mainCar_, Car *car_) : cam{cam_}, totem{totem_}, mainCar{mainCar_}, car{car_}, timeStartAnim{Utils::getMillisSinceEpoch()} {
+    auto cTransformable = static_cast<CTransformable*>(totem->GetComponent(CompType::TransformableComp).get());
+    cam->setTarget(cTransformable->position);
 }
 
 bool SystemAnimationStart::Animate() {
