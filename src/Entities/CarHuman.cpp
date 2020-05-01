@@ -18,6 +18,7 @@
 #include <Components/CRoboJorobo.h>
 #include <Components/CNitro.h>
 #include <Components/CCurrentNavMesh.h>
+#include <Components/CHurt.h>
 #include "../Components/COnline.h"
 #include "../Components/CExternalForce.h"
 #include "../Components/CBoundingChassis.h"
@@ -129,6 +130,8 @@ CarHuman::CarHuman(int pj) {
     shared_ptr<CBoundingChassis> cBoundingChassis = make_shared<CBoundingChassis>(pSphBehind, 7.0, 5.0, pSphFront, 7.0, 5.0);
 
     shared_ptr<CGravity> cGravity = make_shared<CGravity>();
+    shared_ptr<CHurt> cHurt = make_shared<CHurt>();
+
 
     AddComponent(cId);
     AddComponent(cType);
@@ -151,6 +154,7 @@ CarHuman::CarHuman(int pj) {
     AddComponent(cBoundingChassis);
     AddComponent(cGravity);
     AddComponent(cShader);
+    AddComponent(cHurt);
     //cout << "Acabamos de llamar al constructor default de car, su transformable es " << cTransformable << endl;
 }
 

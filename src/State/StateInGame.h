@@ -53,6 +53,7 @@
 #include <Systems/SystemAnimationEnd.h>
 #include <Systems/SystemBoxPowerUp.h>
 #include <Systems/SystemRanking.h>
+#include <Systems/SystemHurt.h>
 #include <Systems/Utils.h>
 #include <Systems/SysHud.h>
 #include <behaviourTree/behaviourTree.h>
@@ -118,6 +119,7 @@ class StateInGame : public State {
     unique_ptr<SystemLoD> sysLoD;
     unique_ptr<SystemAnimationStart> sysAnimStart;
     unique_ptr<SystemAnimationEnd> sysAnimEnd;
+    unique_ptr<SystemHurt> sysHurt;
     unique_ptr<SysHud> sysHud;
 
     std::vector<shared_ptr<Manager>> managersEntities;
