@@ -100,7 +100,10 @@ struct HavePowerUpAttack_dm : public behaviourTree {
         if( cPowerUp->typePowerUp == typeCPowerUp::MelonMolon || 
             cPowerUp->typePowerUp == typeCPowerUp::TeleBanana ||
             cPowerUp->typePowerUp == typeCPowerUp::SuperMegaNitro  ){
-            std::cout << "TENEMOS POWERUP DE ATAQUE" << std::endl;
+            std::cout << "TENEMOS POWERUP DE ATAQUE ";
+            if(cPowerUp->typePowerUp == typeCPowerUp::MelonMolon)  cout << "MELON " <<endl;
+            if(cPowerUp->typePowerUp == typeCPowerUp::TeleBanana)  cout << "BANANA " <<endl;
+            if(cPowerUp->typePowerUp == typeCPowerUp::SuperMegaNitro)  cout << "SUPERMEGANITRO " <<endl;
             return true;
         }
         cout << "NOOOOOO TENEMOS POWERUP DE ATAQUE " <<endl;
@@ -370,7 +373,6 @@ struct MovCarViewTotem_dm : public behaviourTree {
                 }
             }
         }
-        cout << "NO DEBERIA DE PASAR ESTO NUNCA BROOOOOdsfh dcthvjnvbhdffsdjfhgdjhgxfjvhfgbjdvgjfgvfjhgjdhgvdvfgsduryjfvsgdjfgavsrjkvfasgkfjasgfjsd " << endl;
         return false;
     }
 };
@@ -420,7 +422,6 @@ struct MoveToCarTotem_dm : public behaviourTree {
                 }
             }
         }
-        cout << "ESTO NO DEBERIA DE PASAR PERO BUEBO ..... ESTAMOS EN EL MOVETOCARTOTEM" <<endl;
         return false;     
     }
 };
@@ -452,7 +453,6 @@ struct MoveToNavMeshCarTotem_dm : public behaviourTree {
                 }
             }
         }
-        cout << "ESTO NO DEBERIA DE PASAR PERO BUEBO ..... ESTAMOS EN EL MOVETONACMESHCARTOTEM" <<endl;
         return false;     
     }
 };
