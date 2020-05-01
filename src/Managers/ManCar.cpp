@@ -513,8 +513,7 @@ void ManCar::CollisionCarPowerUp(DataMap* d) {
     auto cCar = static_cast<CCar*>(car->GetComponent(CompType::CarComp).get());
     cCar->speed = 0.0f;  // To-Do: no funciona en la IA por que la logica difusa no la hace acelerar
     auto cHurt = static_cast<CHurt*>(car->GetComponent(CompType::HurtComp).get());
-    cHurt->hurt = true;
-    cHurt->originalCarRotation = cTransf->rotation.y;
+    cHurt->Hurt(cCar, cTransf);
         
     // Sonido choque con powerup
     shared_ptr<DataMap> dataSound = make_shared<DataMap>();

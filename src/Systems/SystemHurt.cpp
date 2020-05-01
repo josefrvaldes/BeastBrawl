@@ -13,11 +13,12 @@ void SystemHurt::Update(vector<shared_ptr<Entity>> entities) {
         if(cHurt->hurt) {
             auto cTransformable = static_cast<CTransformable*>(e->GetComponent(CompType::TransformableComp).get());
             // si hemos acabado las dos vueltas...
-            if(cHurt->currentRotation >= cHurt->FINAL_ROTATION) {
+            if(cHurt->currentRotation >= cHurt->FINAL_ROTATION || cHurt->currentRotation <= -cHurt->FINAL_ROTATION) {
                 // ponemos hurt a false y reiniciamos estado
                 cHurt->hurt = false;
                 cHurt->currentRotation = 0;
                 cTransformable->rotation.y = cHurt->originalCarRotation;
+                
 
                 // si estamos dando vueltas..
             } else {
@@ -25,12 +26,16 @@ void SystemHurt::Update(vector<shared_ptr<Entity>> entities) {
                 auto cCar = static_cast<CCar*>(e->GetComponent(CompType::CarComp).get());
                 cCar->speed = 0;
 
-                // interpolamos la velocidad de giro para que empiece rápido girando y acabe girando lento
-                float percentTick = std::min(1.0f, cHurt->currentRotation / cHurt->FINAL_ROTATION);
-                float currentSpeed = mix(cHurt->speedRotationHigh, cHurt->speedRotationLow, percentTick);
+                // interpolamos la velocidad de giro para que empiece girando rápido y acabe girando lento
+                float percentTick = std::min(1.0f, std::fabs(cHurt->currentRotation) / cHurt->FINAL_ROTATION);
+                float currentSpeed = mix(cHurt->speedRotationHigh, cHurt->speedRotationLow, percentTick) * cHurt->GetLeftMultiplier();
+
 
                 // y finalmente aplicamos la rotación.
                 cHurt->currentRotation += currentSpeed;
+                
+                
+                // cout << "currentRotation[" << cHurt->currentRotation << "]" << endl;
                 cTransformable->rotation.y = cHurt->originalCarRotation + cHurt->currentRotation;
             }
         }
