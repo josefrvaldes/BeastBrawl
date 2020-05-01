@@ -6,14 +6,16 @@
 #include "../Managers/ManBoxPowerUp.h"
 #include "../Managers/ManTotem.h"
 #include "../Managers/ManBoundingOBB.h"
+#include "../Managers/ManBoundingWall.h"
+#include "../Managers/ManBoundingGround.h"
 
 #include "../Entities/Entity.h"
 #include "../Entities/CarAI.h"
-#include "../Entities/Car.h"
 #include "../Entities/CarHuman.h"
 
 #include "../Components/CBrainAI.h"
 #include "../Components/CBoundingOBB.h"
+#include "../Components/CBoundingPlane.h"
 #include "../Components/CTransformable.h"
 #include "../Components/CCar.h"
 #include "../Components/CBrainAI.h"
@@ -31,36 +33,42 @@ SystemVision::SystemVision(){
 
 
 
-void SystemVision::SaveCarInVision(Entity* actualCar, CBrainAI* cBrainAI, ManCar* manCar, ManBoundingOBB* manBoundingOBB){
+void SystemVision::SaveCarInVision(Entity* actualCar, CBrainAI* cBrainAI, ManCar* manCar, ManBoundingWall* manBoundingWall, 
+                                    ManBoundingOBB* manBoundingOBB, ManBoundingGround* manBoundingGround){
     for(const auto& carVision : manCar->GetEntities()){
         auto cTransCar = static_cast<CTransformable*>(carVision->GetComponent(CompType::TransformableComp).get());
         if(actualCar!=carVision.get() && EntityInVisionRange(actualCar, cTransCar->position, cBrainAI->fov)){
             auto cTransCar = static_cast<CTransformable*>(carVision->GetComponent(CompType::TransformableComp).get());
-            if(!IsOcludedOrFar(actualCar, cBrainAI, cTransCar->position, manBoundingOBB))
+            if(!IsFar(actualCar, cBrainAI, cTransCar->position) && !CollideWithOBB(actualCar, cTransCar->position, manBoundingOBB)
+            && !CollideWithGround(actualCar, cTransCar->position, manBoundingGround) && !CollideWithWall(actualCar, cTransCar->position, manBoundingWall))
                 cBrainAI->carInVision.emplace_back(carVision.get());
         }
     }
 }
 
-void SystemVision::SaveBoxPowerUpInVision(Entity* actualCar, CBrainAI* cBrainAI, ManBoxPowerUp* manBoxPowerUp, ManBoundingOBB* manBoundingOBB){
+void SystemVision::SaveBoxPowerUpInVision(Entity* actualCar, CBrainAI* cBrainAI, ManBoxPowerUp* manBoxPowerUp, ManBoundingWall* manBoundingWall, 
+                                        ManBoundingOBB* manBoundingOBB, ManBoundingGround* manBoundingGround){
     for(const auto& boxVision : manBoxPowerUp->GetEntities()){
         auto cTransBox = static_cast<CTransformable*>(boxVision->GetComponent(CompType::TransformableComp).get());
         auto cBoxPowerUp = static_cast<CBoxPowerUp*>(boxVision->GetComponent(CompType::BoxPowerUpComp).get());
         if(!cBoxPowerUp->active)
             continue;
         if(EntityInVisionRange(actualCar, cTransBox->position, cBrainAI->fov)){
-            if(!IsOcludedOrFar(actualCar, cBrainAI, cTransBox->position, manBoundingOBB))
+            if(!IsFar(actualCar, cBrainAI, cTransBox->position) && !CollideWithOBB(actualCar, cTransBox->position, manBoundingOBB)
+            && !CollideWithGround(actualCar, cTransBox->position, manBoundingGround) && !CollideWithWall(actualCar, cTransBox->position, manBoundingWall))
                 cBrainAI->boxInVision.emplace_back(boxVision.get());
         }
     }
 }
 
-void SystemVision::SaveTotemInVision(Entity* actualCar, CBrainAI* cBrainAI, ManTotem* manTotem, ManBoundingOBB* manBoundingOBB){
+void SystemVision::SaveTotemInVision(Entity* actualCar, CBrainAI* cBrainAI, ManTotem* manTotem, ManBoundingWall* manBoundingWall, 
+                                    ManBoundingOBB* manBoundingOBB, ManBoundingGround* manBoundingGround){
     auto cTotem = static_cast<CTotem*>(manTotem->GetEntities()[0]->GetComponent(CompType::TotemComp).get());
     if(cTotem->active == true){
         auto cTransTotem = static_cast<CTransformable*>(manTotem->GetEntities()[0]->GetComponent(CompType::TransformableComp).get());
         if(EntityInVisionRange(actualCar, cTransTotem->position, cBrainAI->fov)){
-            if(!IsOcludedOrFar(actualCar, cBrainAI, cTransTotem->position, manBoundingOBB))
+            if(!IsFar(actualCar, cBrainAI, cTransTotem->position) && !CollideWithOBB(actualCar, cTransTotem->position, manBoundingOBB)
+            && !CollideWithGround(actualCar, cTransTotem->position, manBoundingGround) && !CollideWithWall(actualCar, cTransTotem->position, manBoundingWall))
                 cBrainAI->totemInVision = manTotem->GetEntities()[0].get();
         }
     }
@@ -68,50 +76,20 @@ void SystemVision::SaveTotemInVision(Entity* actualCar, CBrainAI* cBrainAI, ManT
 
 
 
-// comprueba lanzando un rayo si se encuentra ocluido o si se encuentra muy lejos
-bool SystemVision::IsOcludedOrFar(Entity* actualCar, CBrainAI* cBrainAI, const glm::vec3& posEntity, ManBoundingOBB* manBoundingOBB) const{
+// comprueba lanzando un rayo si se encuentra muy lejos
+bool SystemVision::IsFar(Entity* actualCar, CBrainAI* cBrainAI, const glm::vec3& posEntity) const{
     auto cTransCar = static_cast<CTransformable*>(actualCar->GetComponent(CompType::TransformableComp).get());
-    auto cCar = static_cast<CCar*>(actualCar->GetComponent(CompType::CarComp).get());
     float distanceToTarget = glm::distance(cTransCar->position, posEntity);
-    IntersectData intersData{0, glm::vec3(0,0,0)};
 
-    // comprobamos si se encuentra muy lejos para verlo
     if(cBrainAI->distanceVision < distanceToTarget)
         return true;    // se encuentra lejos
-
-    // genera el vector normal de movimiento
-    glm::vec3 velocityVector = CalculateVectorVelocity(*cCar, *cTransCar);
-    float vectorDistance = sqrt(velocityVector.x*velocityVector.x + velocityVector.z*velocityVector.z);
-    glm::vec3 vectorVelocityN = glm::vec3( velocityVector.x*(1/vectorDistance) , 0.0 ,velocityVector.z*(1/vectorDistance));
-
-    // comprueba las colisiones
-    for(const auto& obstacle : manBoundingOBB->GetEntities()){
-        auto cBoundOBBObject = static_cast<CBoundingOBB*>(obstacle->GetComponent(CompType::CompBoundingOBB).get());
-        intersData = clPhysics->HandleCollisionsRayWithOBB(*cTransCar, vectorVelocityN, *cBoundOBBObject);
-
-        if(intersData.intersects == false) 
-            continue;       // no se ocluye por este muro
-        if(intersData.distance < distanceToTarget)
-            return true;    // se encuentra ocluido
-    }
-
     return false;
-}
-
-
-glm::vec3 SystemVision::CalculateVectorVelocity(CCar &cCar, CTransformable &transformableCar) const{
-    if(cCar.speed==0) cCar.speed=0.1;
-    float angleRotation = (transformableCar.rotation.y * PI) / 180.0;
-    float posXSiguiente = transformableCar.position.x - cos(angleRotation) * cCar.speed;
-    float posZSiguiente = transformableCar.position.z + sin(angleRotation) * cCar.speed;
-    return glm::vec3(posXSiguiente - transformableCar.position.x , 0.0, posZSiguiente - transformableCar.position.z);
 }
 
 
 
 // comprueba si se encuentra en su campo de vision
-bool SystemVision::EntityInVisionRange(Entity* actualCar, const glm::vec3& posEntity, int rangeVision) const{
-    float seeCar = false;
+bool SystemVision::EntityInVisionRange(Entity* actualCar, const glm::vec3& posEntity, int visionRange) const{
     // calcular un desplazamiento para ser en tercera persona
     auto cTransformableActual = static_cast<CTransformable*>(actualCar->GetComponent(CompType::TransformableComp).get());
     float posXActualCar = cTransformableActual->position.x + 40 * cos(glm::radians(cTransformableActual->rotation.y));
@@ -129,9 +107,9 @@ bool SystemVision::EntityInVisionRange(Entity* actualCar, const glm::vec3& posEn
 
 
     //compare with actualCar actualRotation
-    float rotMin = cTransformableActual->rotation.y - rangeVision;
+    float rotMin = cTransformableActual->rotation.y - visionRange;
     if (rotMin < 0) rotMin += 360;
-    float rotMax = cTransformableActual->rotation.y + rangeVision;
+    float rotMax = cTransformableActual->rotation.y + visionRange;
     if (rotMax >= 360) rotMax -= 360;
 
     if(rotMin<rotMax){
@@ -142,30 +120,17 @@ bool SystemVision::EntityInVisionRange(Entity* actualCar, const glm::vec3& posEn
             return true;
     }
 
-    /*if (cTransformableActual->rotation.y - rangeVision >= 0 && cTransformableActual->rotation.y + rangeVision < 360) {
-        if (cTransformableActual->rotation.y - rangeVision < valueAtan2 && cTransformableActual->rotation.y + rangeVision > valueAtan2) {
-            seeCar = true;
-        }
-    } else {  // coge el angulo 0 de por medio
-        float rotMin = cTransformableActual->rotation.y - rangeVision;
-        float rotMax = cTransformableActual->rotation.y + rangeVision;
-        if (cTransformableActual->rotation.y - rangeVision < 0)
-            rotMin += 360;
-        if (cTransformableActual->rotation.y + rangeVision >= 360)
-            rotMax -= 360;
-        if (rotMin < valueAtan2 || rotMax > valueAtan2) {
-            seeCar = true;
-        }
-    }*/
-    return seeCar;
+    return false;
 }
 
 
 
 bool SystemVision::EntityInVisionHuman(const glm::vec3& posEntity) const{
-    float rangeVision = renderEngine->FacadeGetFovActualCamera();
+    float visionRange = renderEngine->FacadeGetFovActualCamera();
     glm::vec3 targetCamera = renderEngine->FacadeGetTargetActualCamera();
     glm::vec3 posCamera = renderEngine->FacadeGetPositionActualCamera();
+    targetCamera.z = targetCamera.z * (-1); // la Z esta invertida en el motor
+    posCamera.z = posCamera.z * (-1);
 
     float vectorToTargetX = targetCamera.x - posCamera.x;
     float vectorToTargetZ = targetCamera.z - posCamera.z;
@@ -179,9 +144,9 @@ bool SystemVision::EntityInVisionHuman(const glm::vec3& posEntity) const{
 
 
     //compare with actualCar actualRotation
-    float rotMin = valueCentralDegree - rangeVision;
+    float rotMin = valueCentralDegree - visionRange;
     if (rotMin < 0) rotMin += 360;
-    float rotMax = valueCentralDegree + rangeVision;
+    float rotMax = valueCentralDegree + visionRange;
     if (rotMax >= 360) rotMax -= 360;
 
     if(rotMin<rotMax){
@@ -190,6 +155,142 @@ bool SystemVision::EntityInVisionHuman(const glm::vec3& posEntity) const{
     }else{
         if(rotMin<valueDegreeEntity || rotMax>valueDegreeEntity)
             return true;
+    }
+    return false;
+}
+
+
+// devuelve los grados que separan una entidad de tu eje central de vision
+float SystemVision::DegreesFromCenter(Entity* actualCar, Entity* targetCar) const{
+    auto cTransCar = static_cast<CTransformable*>(actualCar->GetComponent(CompType::TransformableComp).get());
+    auto cTransTargetCar = static_cast<CTransformable*>(targetCar->GetComponent(CompType::TransformableComp).get());
+
+    // calcular vector al target
+    float vetorTargetX = (cTransTargetCar->position.x - cTransCar->position.x );
+    float vetorTargetZ = (cTransTargetCar->position.z - cTransCar->position.z);
+    
+    // calcular un desplazamiento para ser en tercera persona
+    float posXCar = cTransCar->position.x + 40 * cos(glm::radians(cTransCar->rotation.y));
+    float posZCar = cTransCar->position.z - 40 * sin(glm::radians(cTransCar->rotation.y));
+    // se calcula el vector entre el siguiente punto y y el punto actual del coche
+    float xCoche = (posXCar - cTransCar->position.x );
+    float zCoche = (posZCar - cTransCar->position.z);
+
+    // se calcula el angulo entre los dos vectores
+    float numerador = xCoche*vetorTargetX + zCoche*vetorTargetZ;
+    float denominador = sqrt(xCoche*xCoche + zCoche*zCoche) * sqrt(vetorTargetX*vetorTargetX + vetorTargetZ*vetorTargetZ);
+    float angle = 0.0;
+    if(denominador!=0)
+        angle = acos(numerador/denominador);
+    angle = glm::degrees(angle);
+
+    angle = (angle - 180.0) * (-1);
+    if(angle<0) angle+=360;
+    
+
+    return angle;
+}
+
+// calcula el coche mas centrado al que lanzarle la telebanana
+Car* SystemVision::CalculateCentredCar(Entity* actualCar, int visionRange, ManCar* manCar, 
+        ManBoundingWall* manBoundingWall, ManBoundingOBB* manBoundingOBB, ManBoundingGround* manBoundingGround) const{
+    Entity* objectiveCar = nullptr;
+    float minDegrees = visionRange+1.0;
+    float degreesFromCenter;
+    cout << "Corre platano\n";
+    for(const auto& car : manCar->GetEntities()){
+        if(car.get()!=actualCar){
+            degreesFromCenter = DegreesFromCenter(actualCar, car.get());
+            cout << degreesFromCenter << "\n";
+            if(minDegrees>degreesFromCenter){
+                auto cTransTarget = static_cast<CTransformable*>(car->GetComponent(CompType::TransformableComp).get());
+                if(!CollideWithWall(actualCar,cTransTarget->position,manBoundingWall) && !CollideWithOBB(actualCar,cTransTarget->position,manBoundingOBB) 
+                && !CollideWithGround(actualCar,cTransTarget->position,manBoundingGround)){
+                    minDegrees = degreesFromCenter;
+                    objectiveCar = car.get();
+                    cout << "Objetivo encontrado\n";
+
+                }
+            }
+        }
+    }
+
+    return static_cast<Car*>(objectiveCar);
+}
+
+
+// comprueba si los muros ocluyen el objetivo
+bool SystemVision::CollideWithWall(Entity* actualCar, const glm::vec3& posTarget, ManBoundingWall* manBoundingWall) const{
+    auto cTransCar = static_cast<CTransformable*>(actualCar->GetComponent(CompType::TransformableComp).get());
+    float distanceToTarget = glm::distance(cTransCar->position, posTarget);
+    IntersectData intersData{0, glm::vec3(0,0,0)};
+
+    // genera el vector normal de movimiento
+    glm::vec3 targetVector = posTarget - cTransCar->position;
+    float vectorDistance = sqrt(targetVector.x*targetVector.x + targetVector.y*targetVector.y + targetVector.z*targetVector.z);
+    glm::vec3 vectorVelocityN = glm::vec3( targetVector.x*(1/vectorDistance) , targetVector.y*(1/vectorDistance) ,targetVector.z*(1/vectorDistance));
+
+    // comprueba las colisiones
+    for(const auto& obstacle : manBoundingWall->GetEntities()){
+        auto cBoundPlane = static_cast<CBoundingPlane*>(obstacle->GetComponent(CompType::CompBoundingPlane).get());
+        intersData = clPhysics->HandleCollisionsRayWithPlane(*cTransCar, vectorVelocityN, *cBoundPlane);
+
+        if(intersData.intersects == false) 
+            continue;       // no se ocluye por este muro
+        if(intersData.distance < distanceToTarget)
+            return true;    // se encuentra ocluido
+    }
+    return false;
+}
+
+// comprueba si los OBBs ocluyen el objetivo
+bool SystemVision::CollideWithOBB(Entity* actualCar, const glm::vec3& posTarget, ManBoundingOBB* manBoundingOBB) const{
+    auto cTransCar = static_cast<CTransformable*>(actualCar->GetComponent(CompType::TransformableComp).get());
+    float distanceToTarget = glm::distance(cTransCar->position, posTarget);
+    IntersectData intersData{0, glm::vec3(0,0,0)};
+
+    // genera el vector normal de movimiento
+    glm::vec3 targetVector = posTarget - cTransCar->position;
+    float vectorDistance = sqrt(targetVector.x*targetVector.x + targetVector.y*targetVector.y + targetVector.z*targetVector.z);
+    glm::vec3 vectorVelocityN = glm::vec3( targetVector.x*(1/vectorDistance) , targetVector.y*(1/vectorDistance) ,targetVector.z*(1/vectorDistance));
+
+    // comprueba las colisiones
+    for(const auto& obstacle : manBoundingOBB->GetEntities()){
+        auto cBoundOBBObject = static_cast<CBoundingOBB*>(obstacle->GetComponent(CompType::CompBoundingOBB).get());
+        intersData = clPhysics->HandleCollisionsRayWithOBB(*cTransCar, vectorVelocityN, *cBoundOBBObject);
+
+        if(intersData.intersects == false) 
+            continue;       // no se ocluye por este muro
+        if(intersData.distance < distanceToTarget)
+            return true;    // se encuentra ocluido
+    }
+    return false;
+}
+
+
+// comprueba si los suelos ocluyen el objetivo
+bool SystemVision::CollideWithGround(Entity* actualCar, const glm::vec3& posTarget, ManBoundingGround* manBoundingGround) const{
+    auto cTransCar = static_cast<CTransformable*>(actualCar->GetComponent(CompType::TransformableComp).get());
+    CTransformable cTransCar2 = *cTransCar;
+    cTransCar2.position.y += 20;
+    glm::vec3 posTarget2 = glm::vec3(posTarget.x, posTarget.y+20, posTarget.z);
+    float distanceToTarget = glm::distance(cTransCar2.position, posTarget2);
+    IntersectData intersData{0, glm::vec3(0,0,0)};
+
+    // genera el vector normal de movimiento
+    glm::vec3 targetVector = posTarget2 - cTransCar2.position;
+    float vectorDistance = sqrt(targetVector.x*targetVector.x + targetVector.y*targetVector.y + targetVector.z*targetVector.z);
+    glm::vec3 vectorVelocityN = glm::vec3( targetVector.x*(1/vectorDistance) , targetVector.y*(1/vectorDistance) ,targetVector.z*(1/vectorDistance));
+
+    // comprueba las colisiones
+    for(const auto& obstacle : manBoundingGround->GetEntities()){
+        auto cBoundPlane = static_cast<CBoundingPlane*>(obstacle->GetComponent(CompType::CompBoundingPlane).get());
+        intersData = clPhysics->HandleCollisionsRayWithPlane(cTransCar2, vectorVelocityN, *cBoundPlane);
+
+        if(intersData.intersects == false) 
+            continue;       // no se ocluye por este muro
+        if(intersData.distance < distanceToTarget)
+            return true;    // se encuentra ocluido
     }
     return false;
 }

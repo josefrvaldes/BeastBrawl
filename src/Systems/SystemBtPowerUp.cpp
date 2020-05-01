@@ -74,7 +74,7 @@ struct HaveSomePowerUp_pu : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
         //return true;
         auto cPowerUp = static_cast<CPowerUp*>(blackboard->actualCar->GetComponent(CompType::PowerUpComp).get());
-        cout << "Tipo de PU: " << int(cPowerUp->typePowerUp) << "\n";
+        //cout << "Tipo de PU: " << int(cPowerUp->typePowerUp) << "\n";
         if(cPowerUp->typePowerUp == typeCPowerUp::None)
             return false;
         return true;
@@ -231,7 +231,6 @@ struct ThrowPowerUp_pu : public behaviourTree {
         shared_ptr<DataMap> data = make_shared<DataMap>();
         (*data)[ACTUAL_CAR] = blackboard->actualCar;
         EventManager::GetInstance().AddEventMulti(Event{EventType::THROW_POWERUP_AI, data});
-        std::cout << "Lanzo" << std::endl;
         return true;
     }
 };
@@ -240,7 +239,6 @@ struct ThrowPowerUp_pu : public behaviourTree {
 struct SavePowerUp_pu : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
         // lo guardas devolviendo true
-        std::cout << "Guardo" << std::endl;
         return true;
     }
 };

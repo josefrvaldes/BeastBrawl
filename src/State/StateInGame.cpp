@@ -139,8 +139,25 @@ void StateInGame::InitializeCLPhysics(ManCar &manCars, ManBoundingWall &manWall,
     clPhysics->AddManager(manTotem);
 }
 
+void StateInGame::InitializeSystemData(){
+    systemDataVision = make_unique<SystemData>();
+
+    systemDataVision->AddManager(*manCars.get());
+    systemDataVision->AddManager(*manPowerUps.get());
+    systemDataVision->AddManager(*manBoxPowerUps.get());
+    systemDataVision->AddManager(*manTotems.get());
+    systemDataVision->AddManager(*manWayPoint.get());
+    systemDataVision->AddManager(*manNavMesh.get());
+    systemDataVision->AddManager(*manBoundingWall.get());
+    systemDataVision->AddManager(*manBoundingOBB.get());
+    systemDataVision->AddManager(*manBoundingGround.get());
+
+    manCars->AddSystemDataVision(systemDataVision.get());
+}
+
 void StateInGame::InitializeSystems(ManCar &manCars, ManBoundingWall &manWall, ManBoundingOBB &manOBB, ManBoundingGround &manGround, ManPowerUp &manPowerUp, ManNavMesh &manNavMesh, ManBoxPowerUp &manBoxPowerUp, ManTotem &manTotem) {
     InitializeCLPhysics(manCars, manWall, manOBB, manGround, manPowerUp, manNavMesh, manBoxPowerUp, manTotem);
+    InitializeSystemData();
     // incializa el system physics PU, no hace falta más código para esto
     phisicsPowerUp = make_shared<PhysicsPowerUp>();  // Creamos sistemas
     collisions = make_shared<Collisions>();

@@ -417,8 +417,8 @@ glm::vec2 SteeringBehaviours::CarAvoidance(Entity* actualCar, const glm::vec2& v
     auto cBrainAI = static_cast<CBrainAI*>(actualCar->GetComponent(CompType::BrainAIComp).get());
     auto cRay = static_cast<CBoundingRay*>(actualCar->GetComponent(CompType::CompBoundingRay).get());
     glm::vec2 vectorForce = glm::vec2(0.0, 0.0);
-    float distance = 999999.0;
-    float finalDistance = 99999.0;
+    float distance = 99999.0;
+    float finalDistance = 9999.0;
     glm::vec2 vectorForceAvoid;
     Entity* actualObstacle = nullptr;
 
