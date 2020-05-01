@@ -259,6 +259,7 @@ void StateInGame::UpdateAnimationCountdown() {
         if (currentCountdown == 0) {
             currentUpdateState = UpdateState::GAME;
             manGameRules->ResetClock();
+            EventManager::GetInstance().AddEventMulti(Event{EventType::START_MINGAME});
         }
     }
 }
@@ -293,8 +294,9 @@ void StateInGame::UpdateGame() {
 
     // ACTUALIZACION DE LOS MANAGERS DE LOS COCHES
     bool gameFinished = manCars->UpdateCarPlayer(*(manTotems.get()));
-    if (gameFinished)
+    if (gameFinished) {
         GoToEndAnimation();
+    }
 
     // ACTUALIZACION DE LAS FISICAS DE LOS COCHES
     //physics->update(manCars->GetCar().get());
@@ -346,8 +348,9 @@ void StateInGame::UpdateGame() {
     sysRanking->Update(manCars.get());
     sysHud->UpdateEventHud(manHudEvent.get());
     gameFinished = manGameRules->Update();
-    if (gameFinished)
+    if (gameFinished) {
         GoToEndAnimation();
+    }
 
     if (Constants::CLIPPING_OCTREE) {
         octreeScene = make_unique<Octree>(glm::vec3(0.0, 500.0, 0.0), 700.0, managersEntities);
@@ -365,6 +368,7 @@ void StateInGame::Update() {
             break;
         case UpdateState::GAME:
             UpdateGame();
+            EventManager::GetInstance().AddEventMulti(Event{EventType::START_MINGAME});
             break;
 
         default:
@@ -415,11 +419,13 @@ void StateInGame::Render() {
 }
 
 void StateInGame::GoToEndAnimation() {
+    soundEngine->SetState(11);
     currentUpdateState = UpdateState::END;
     timerEnd = Utils::getMillisSinceEpoch();
 }
 
 void StateInGame::GoToCountdownAnimation() {
+    soundEngine->SetState(12);
     // ponemos como próximo state el countdown
     currentUpdateState = UpdateState::COUNTDOWN;
     cout << "Cambiamos a UpdateCountdown" << endl;

@@ -65,6 +65,8 @@ enum EventType {
     ENABLE_PARTICLES,
     ENABLE_VEGETATION,
     ENABLE_SHADERS,
+    START_MINGAME,
+    STOP_MINGAME,
     HURT,                       // Sonido danyo
     CATCH_TOTEM,                // Sonido coger totem
     NO_SHIELD,                  // Sonido escudo roto

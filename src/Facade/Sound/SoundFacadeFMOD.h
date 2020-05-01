@@ -51,6 +51,7 @@ class SoundFacadeFMOD : public SoundFacade {
         void LoadSoundEvent(const string&, const bool, const bool) override;
 
         void StartGame();
+        void StopMusicInGame();
 
         void SubscribeToGameEvents(const uint8_t) override;
 
@@ -60,6 +61,7 @@ class SoundFacadeFMOD : public SoundFacade {
         void SetMusicVolume(DataMap*);
 
         // -------------------------------- Eventos del juego: IN GAME
+        void StartMusicInGame(DataMap*);
         void SoundClaxon(DataMap*);
         void SoundThrowPowerup(DataMap*);
         void SoundHurt(DataMap*);
@@ -83,8 +85,8 @@ class SoundFacadeFMOD : public SoundFacade {
         void SoundMenuBack(DataMap*);
 
         void SoundVictoryVoice();
-        void SoundVictory(DataMap*);
-        void SoundDefeat(DataMap*);
+        //void SoundVictory(DataMap*);
+        //void SoundDefeat(DataMap*);
 
         float character { 0 } ;
         enum TipoVoz { ChoqueEnemigo, ChoquePowerup, Derrape, Powerup, Random, Nitro, Seleccion };
@@ -100,7 +102,8 @@ class SoundFacadeFMOD : public SoundFacade {
                                 "Personajes/voces",
                                 "Partida/cuenta_atras",
                                 "PowerUp/robojorobo",
-                                "Partida/reloj"
+                                "Partida/reloj",
+                                "Partida/pitido_final"
                                 } 
             },
             { "InGame3DD",
@@ -118,7 +121,7 @@ class SoundFacadeFMOD : public SoundFacade {
                             {
                                 "PowerUp/escudo_roto",
                                 "Partida/coger_totem",
-                                "Coche/choque_powerup",
+                                "PowerUp/choque_powerup",
                                 "Coche/choque",
                                 "Partida/coger_caja"
                                 }

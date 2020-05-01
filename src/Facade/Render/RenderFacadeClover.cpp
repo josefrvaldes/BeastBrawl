@@ -668,7 +668,12 @@ void RenderFacadeClover::FacadeInitResources(){
     device->GetResourceManager()->GetResourceTexture(powerUps[5], true);
     device->GetResourceManager()->GetResourceTexture(powerUps[6], true);
 
-    resourceManager->GetResourceTexture("media/gorilaHUD.png", true);
+    resourceManager->GetResourceTexture("media/hudPenguin.png", true);
+    resourceManager->GetResourceTexture("media/hudTiger.png", true);
+    resourceManager->GetResourceTexture("media/hudShark.png", true);
+    resourceManager->GetResourceTexture("media/hudGorilla.png", true);
+    resourceManager->GetResourceTexture("media/hudDragon.png", true);
+    resourceManager->GetResourceTexture("media/hudOctopus.png", true);
     resourceManager->GetResourceTexture("media/marcador.png", true);
     resourceManager->GetResourceTexture("media/Minimapa240.png", true);
     //Events hud

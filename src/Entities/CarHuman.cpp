@@ -54,7 +54,7 @@ CarHuman::CarHuman(int pj) {
             _pj = mainCharacter::TIGER; 
             weight = 40.0;
             acceleration = 1.75;
-            mesh = "kart_physics.obj";
+            mesh = "kart_baxter.obj";
             break;
         case 2: 
             _pj = mainCharacter::SHARK; 
