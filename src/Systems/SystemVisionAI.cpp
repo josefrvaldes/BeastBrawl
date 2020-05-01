@@ -10,13 +10,15 @@
 
 #include "../Entities/Entity.h"
 #include "../Entities/CarAI.h"
-// #include "../Entities/Car.h"
-// #include "../Entities/CarHuman.h"
+#include "../Entities/Car.h"
+#include "../Entities/CarHuman.h"
 
 #include "../Managers/ManCar.h"
 #include "../Managers/ManBoxPowerUp.h"
 #include "../Managers/ManTotem.h"
 #include "../Managers/ManBoundingOBB.h"
+#include "../Managers/ManBoundingGround.h"
+#include "../Managers/ManBoundingWall.h"
 
 
 SystemVisionAI::SystemVisionAI(){
@@ -34,9 +36,12 @@ void SystemVisionAI::update(CarAI* actualCar){
 
     cBrainAI->CleanVisionRange();
 
-    systemVision->SaveCarInVision(actualCar, cBrainAI, static_cast<ManCar*>(managers[0]), static_cast<ManBoundingOBB*>(managers[7]));
-    systemVision->SaveBoxPowerUpInVision(actualCar, cBrainAI, static_cast<ManBoxPowerUp*>(managers[2]), static_cast<ManBoundingOBB*>(managers[7]));
-    systemVision->SaveTotemInVision(actualCar, cBrainAI, static_cast<ManTotem*>(managers[3]), static_cast<ManBoundingOBB*>(managers[7]));
+    systemVision->SaveCarInVision(actualCar, cBrainAI, static_cast<ManCar*>(managers[0]), static_cast<ManBoundingWall*>(managers[6]), 
+                                                static_cast<ManBoundingOBB*>(managers[7]), static_cast<ManBoundingGround*>(managers[8]));
+    systemVision->SaveBoxPowerUpInVision(actualCar, cBrainAI, static_cast<ManBoxPowerUp*>(managers[2]), static_cast<ManBoundingWall*>(managers[6]), 
+                                                static_cast<ManBoundingOBB*>(managers[7]), static_cast<ManBoundingGround*>(managers[8]));
+    systemVision->SaveTotemInVision(actualCar, cBrainAI, static_cast<ManTotem*>(managers[3]), static_cast<ManBoundingWall*>(managers[6]), 
+                                                static_cast<ManBoundingOBB*>(managers[7]), static_cast<ManBoundingGround*>(managers[8]));
 
     // cout << "NumCars: " << cBrainAI->carInVision.size() << "\n";
     // cout << "NumBox: " << cBrainAI->boxInVision.size() << "\n";

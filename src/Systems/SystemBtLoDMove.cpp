@@ -106,7 +106,7 @@ struct UsingNitro_LoDMove : public behaviourTree {
 
 // CONDICION --> objetivo a distancia cercana?
 struct NearDestination_LoDMove : public behaviourTree {
-    float distanceToObjective = 300.0;
+    float distanceToObjective = 200.0;
 
     virtual bool run(Blackboard* blackboard) override {
         auto cTransformable = static_cast<CTransformable*>(blackboard->actualCar->GetComponent(CompType::TransformableComp).get());
@@ -166,7 +166,7 @@ struct TargetCarInVision_LoDMove : public behaviourTree {
 struct OutofVisionRange_LoDMove : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
         auto cTransCar = static_cast<CTransformable*>(blackboard->actualCar->GetComponent(CompType::TransformableComp).get());
-        if(blackboard->manCars->systemVision->EntityInVisionHuman(cTransCar->position) == false){
+        if(blackboard->manCars->systemDataVision->EntityInVisionHumanSD(cTransCar->position) == false){
             return true;
         }
         return false;
@@ -372,7 +372,7 @@ SystemBtLoDMove::SystemBtLoDMove(){
             sequence41->addChild(a_SBArrive);
         selector41->addChild(selector42);
             selector42->addChild(sequence42);
-                sequence42->addChild(c_NearDestination);
+                sequence42->addChild(c_InDistanceRange);
                 sequence42->addChild(a_FuzzyLogic);
             selector41->addChild(a_SBArrive);
 

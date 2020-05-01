@@ -239,6 +239,7 @@ void StateInGameSingle::InitVision(){
     systemVisionAI->AddManager(*manNavMesh.get());
     systemVisionAI->AddManager(*manBoundingWall.get());
     systemVisionAI->AddManager(*manBoundingOBB.get());
+    systemVisionAI->AddManager(*manBoundingGround.get());
 
     systemVisionAI->setMaxProcessTime(0.00025);
 }
