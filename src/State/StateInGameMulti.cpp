@@ -64,13 +64,8 @@ StateInGameMulti::StateInGameMulti(uint16_t IdOnline, const vector<uint16_t> IdP
         //Sonidos de los coches
         auto idComp = static_cast<CId *>(car->GetComponent(CompType::IdComp).get());
         auto posComp = static_cast<CTransformable *>(car->GetComponent(CompType::TransformableComp).get());
-        string nameEvent = "Coche/motores";
+        string nameEvent = "Coche/motor";
         SoundFacadeManager::GetInstance()->GetSoundFacade()->CreateSoundDinamic3D(idComp->id, posComp->position, nameEvent, 1, 0);
-        nameEvent = "Coche/motores" + std::to_string(idComp->id);
-        SoundFacadeManager::GetInstance()->GetSoundFacade()->SetParameter(nameEvent, "main_ia", 1);
-        if (mainCarId && mainCarId->id == idComp->id) {
-            SoundFacadeManager::GetInstance()->GetSoundFacade()->SetParameter(nameEvent, "main_ia", 0);
-        }
         nameEvent = "PowerUp/escudo";
         SoundFacadeManager::GetInstance()->GetSoundFacade()->CreateSoundDinamic3D(idComp->id, posComp->position, nameEvent, 0, 0);
         nameEvent = "PowerUp/escudo_roto";
