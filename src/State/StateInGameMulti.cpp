@@ -50,6 +50,8 @@ StateInGameMulti::StateInGameMulti(uint16_t IdOnline, const vector<uint16_t> IdP
     //CAMBIARCosasNavMesh(*manCars.get(), *manNavMesh.get());
     // while(true){sleep(500);}; // esto solo sirve para depurar
 
+    auto mainCarId = static_cast<CId *>(manCars->GetCar()->GetComponent(CompType::IdComp).get());
+
     for (const auto &car : manCars->GetEntities()) {
         const auto cTransformable = static_cast<CTransformable *>(manCars->GetCar()->GetComponent(CompType::TransformableComp).get());
 
@@ -62,8 +64,13 @@ StateInGameMulti::StateInGameMulti(uint16_t IdOnline, const vector<uint16_t> IdP
         //Sonidos de los coches
         auto idComp = static_cast<CId *>(car->GetComponent(CompType::IdComp).get());
         auto posComp = static_cast<CTransformable *>(car->GetComponent(CompType::TransformableComp).get());
-        string nameEvent = "Coche/motor";
+        string nameEvent = "Coche/motores";
         SoundFacadeManager::GetInstance()->GetSoundFacade()->CreateSoundDinamic3D(idComp->id, posComp->position, nameEvent, 1, 0);
+        nameEvent = "Coche/motores" + std::to_string(idComp->id);
+        SoundFacadeManager::GetInstance()->GetSoundFacade()->SetParameter(nameEvent, "main_ia", 1);
+        if (mainCarId && mainCarId->id == idComp->id) {
+            SoundFacadeManager::GetInstance()->GetSoundFacade()->SetParameter(nameEvent, "main_ia", 0);
+        }
         nameEvent = "PowerUp/escudo";
         SoundFacadeManager::GetInstance()->GetSoundFacade()->CreateSoundDinamic3D(idComp->id, posComp->position, nameEvent, 0, 0);
         nameEvent = "PowerUp/escudo_roto";

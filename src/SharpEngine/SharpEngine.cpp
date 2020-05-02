@@ -171,6 +171,7 @@ void SharpEngine::LoadSoundEvent(const string& nameEvent, const bool type, const
             }
         }
     }
+    //cout << "***** Cargado el evento: " << nameEvent << endl;
 }
 
 /**

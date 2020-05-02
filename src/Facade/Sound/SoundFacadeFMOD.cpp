@@ -501,7 +501,7 @@ void SoundFacadeFMOD::UpdateCars(const vector<shared_ptr<Entity> > &e) {
         auto cPos = static_cast<CTransformable*>(car->GetComponent(CompType::TransformableComp).get());
         auto cCar = static_cast<CCar*>(car->GetComponent(CompType::CarComp).get());
         if(cPos && cId && cCar) {
-            string name = "Coche/motor" + to_string(cId->id);
+            string name = "Coche/motores" + to_string(cId->id);
             SetEventPositionDinamic3D(name, cPos->position, cCar->speed);
             SetParameter(name, "velocidad", cCar->speed);
             name = "PowerUp/escudo" + to_string(cId->id);

@@ -109,6 +109,7 @@ class SoundFacadeFMOD : public SoundFacade {
             { "InGame3DD",
                             {
                                 "Coche/motor",
+                                "Coche/motores",
                                 "Partida/totem",
                                 "PowerUp/escudo",
                                 "PowerUp/melonmolon",
