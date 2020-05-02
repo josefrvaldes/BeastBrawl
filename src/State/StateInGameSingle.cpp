@@ -48,6 +48,7 @@ void StateInGameSingle::UpdateAnimationEnd() {
 void StateInGameSingle::UpdateGame() {
     // si estamos yendo a pausa, paramos los temporizadores
     if (goingToPause) {
+        timeStartPause = Utils::getMillisSinceEpoch();
         goingToPause = false;
         comingBackFromPause = true;
         cout << "Vamos a ir a pausa, teóricamente paramos los temporizadores" << endl;
@@ -55,7 +56,7 @@ void StateInGameSingle::UpdateGame() {
         // si volvemos de pausa, reiniciamos los temporizadores
     } else if (comingBackFromPause) {
         cout << "Volvemos de pausa, reiniciamos los temporizadores" << endl;
-        manGameRules->RestartAllTimers(manCars->GetEntities());
+        manGameRules->RestartAllTimers(manCars->GetEntities(), timeStartPause);
         comingBackFromPause = false;
     }
 

@@ -33,8 +33,8 @@ bool ManGameRules::Update(){
     return systemGameRules->UpdateGameRules( *(globalClock.get()) );
 }
 
-void ManGameRules::RestartAllTimers(vector<shared_ptr<Entity>> entities) {
-    systemGameRules->RestartAllTimers(entities, *(globalClock.get()));
+void ManGameRules::RestartAllTimers(vector<shared_ptr<Entity>> entities, int64_t timeStartPause) {
+    systemGameRules->RestartAllTimers(entities, *(globalClock.get()), timeStartPause);
 }
 
 void ManGameRules::SubscribeToEvents() {

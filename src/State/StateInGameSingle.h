@@ -48,4 +48,6 @@ class StateInGameSingle : public StateInGame {
 
     bool goingToPause {false};
     bool comingBackFromPause {false};
+
+    int64_t timeStartPause;
 };
