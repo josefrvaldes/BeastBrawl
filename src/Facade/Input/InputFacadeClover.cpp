@@ -145,7 +145,7 @@ void InputFacadeClover::CheckInputMenu(int& input, int maxInput){
     glfwGetGamepadState(GLFW_JOYSTICK_1, &state);
 
     //ATRAS
-    if(IsKeyOrGamepadPress(GLFW_KEY_BACKSPACE, GLFW_GAMEPAD_BUTTON_B, false, 0, 0, false) && HasDelayPassed() && !IsInputPressed(BUTTON_B)) {
+    /*if(IsKeyOrGamepadPress(GLFW_KEY_BACKSPACE, GLFW_GAMEPAD_BUTTON_B, false, 0, 0, false) && HasDelayPassed() && !IsInputPressed(BUTTON_B)) {
 
         timeStart = system_clock::now();
         SetValueInput(BUTTON_B, true);
@@ -155,7 +155,7 @@ void InputFacadeClover::CheckInputMenu(int& input, int maxInput){
 
     } else if(!IsKeyOrGamepadPress(GLFW_KEY_BACKSPACE, GLFW_GAMEPAD_BUTTON_B, false, 0, 0, false)) {
         SetValueInput(BUTTON_B, false);
-    }
+    }*/
 
     //SUBIR
     if ( IsKeyOrGamepadPress(GLFW_KEY_UP, GLFW_GAMEPAD_AXIS_LEFT_Y, true, -0.5, GLFW_GAMEPAD_BUTTON_DPAD_UP, true) && ( (IsInputPressed(BUTTON_STICK_UP) && HasDelayPassed() ) || !IsInputPressed(BUTTON_STICK_UP) ) ) {
