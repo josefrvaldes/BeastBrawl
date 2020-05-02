@@ -297,8 +297,8 @@ void StateInGameSingle::CAMBIARInicializarCarAIS(ManCar &manCars, ManWayPoint &m
 
 
     auto posCar1 = glm::vec3(290.0f, 15.0f, -300.0f);
-    //auto posCar2 = glm::vec3(-202.0f, 15.0f, -145.0f);
-    //auto posCar3 = glm::vec3(209.0f, 15.0f, -145.0f);
+    auto posCar2 = glm::vec3(-202.0f, 15.0f, -145.0f);
+    auto posCar3 = glm::vec3(209.0f, 15.0f, -145.0f);
 
     //Para asegurarse por si petara, que no debe
     if (!iaPjs.empty()) {
@@ -308,14 +308,14 @@ void StateInGameSingle::CAMBIARInicializarCarAIS(ManCar &manCars, ManWayPoint &m
 
         //Cambiar
         manCars.CreateCarAI(iaPjs[0], posCar1);
-        //manCars.CreateCarAI(iaPjs[1], posCar2);
-        //manCars.CreateCarAI(iaPjs[2], posCar3);
+        manCars.CreateCarAI(iaPjs[1], posCar2);
+        manCars.CreateCarAI(iaPjs[2], posCar3);
 
     } else {
         cout << "++++++++++ Algo no va bien asique ahora todos son pinguinos.";
         manCars.CreateCarAI(0, posCar1);
-        //manCars.CreateCarAI(0, posCar2);
-        //manCars.CreateCarAI(0, posCar3);
+        manCars.CreateCarAI(0, posCar2);
+        manCars.CreateCarAI(0, posCar3);
     }
 
     //int i = -1;

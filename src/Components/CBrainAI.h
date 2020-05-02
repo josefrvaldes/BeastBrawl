@@ -63,5 +63,7 @@ public:
 
     // Pensamiento de la IA = mirar minimapa, mirar marcadores, etc, durante ese tiempo no actua
     bool thinking {false};
+    uint32_t totalTried {3};
+    uint32_t numTried {2}; // empezamos ya en el ultimo intento porque la primera vez no queremos
 
 };

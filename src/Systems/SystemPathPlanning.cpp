@@ -182,7 +182,7 @@ void SystemPathPlanning::ChangePosDestination(DataMap* data){
     }
     // siempre que se cambia el destino el target va fuera
     cBrainAI->targetNavMesh = -1;
-    CleanBrainAI(carAI);
+    //CleanBrainAI(carAI);
 }
 
 void SystemPathPlanning::update(CarAI* carAI){

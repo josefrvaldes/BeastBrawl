@@ -19,18 +19,16 @@ void SystemBtDecisionMove::AddManager(Manager &m) {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 ///// DECORATORS //////
 struct Facil2times_dm : public Decorator {
-    uint32_t totalTried = 3;
-    uint32_t numTried = 0;
     virtual bool run(Blackboard* blackboard) override {
         auto cBrainAI = static_cast<CBrainAI*>(blackboard->actualCar->GetComponent(CompType::BrainAIComp).get());
-        if(numTried >= totalTried && cBrainAI->stackPath.empty()){
-            numTried = 0;
+        if(cBrainAI->numTried >= cBrainAI->totalTried && cBrainAI->stackPath.empty()){
+            cBrainAI->numTried = 0;
         }
-        if (numTried < totalTried){
+        if (cBrainAI->numTried < cBrainAI->totalTried){
 
-            numTried++;
-            if(numTried == totalTried){
-                cout << "INTENTO NUMERO: " << numTried << " YA NO ESTAMOS PENSANDO 1" << endl;
+            cBrainAI->numTried += 1;
+            if(cBrainAI->numTried == cBrainAI->totalTried){
+                cout << "INTENTO NUMERO: " << cBrainAI->numTried << " YA NO ESTAMOS PENSANDO 1" << endl;
                 return getChild()->run(blackboard);
             }else{
                 cout << "LA IA ESTA PENSANDO... " << endl;
@@ -40,7 +38,7 @@ struct Facil2times_dm : public Decorator {
         }
         //numTried = totalTried;
 
-        cout << "INTENTO NUMERO: " << numTried << " YA NO ESTAMOS PENSANDO 2" << endl;
+        cout << "INTENTO NUMERO: " << cBrainAI->numTried << " YA NO ESTAMOS PENSANDO 2" << endl;
         //numTried 
         return getChild()->run(blackboard);
     }
