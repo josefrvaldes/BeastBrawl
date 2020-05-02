@@ -2,14 +2,16 @@
 #include "../Entities/Clock.h"
 #include "../Components/CClock.h"
 #include "../Systems/SystemGameRules.h"
+#include <GameValues.h>
 #include <iostream>
 
 
-ManGameRules::ManGameRules( const uint32_t durationTime_) {
+ManGameRules::ManGameRules() {
     // creamos el reloj global
     systemGameRules = make_unique<SystemGameRules>();
     // CreateGlobalClock(5);
-    CreateGlobalClock(durationTime_);
+    
+    CreateGlobalClock(GameValues::GetInstance()->GetGameTime());
 
 }
 void ManGameRules::CreateGlobalClock( const uint32_t durationTime_) {

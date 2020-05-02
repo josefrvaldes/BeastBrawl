@@ -10,7 +10,16 @@
 
 StateInGameMulti::StateInGameMulti(uint16_t IdOnline, const vector<uint16_t> IdPlayersOnline) : StateInGame() {
     InitState();
-    InitVirtualMethods();
+    InitializeManagers();
+    InitializeSystems(*manCars.get(), *manBoundingWall.get(), *manBoundingOBB.get(), *manBoundingGround.get(), *manPowerUps.get(), *manNavMesh.get(), *manBoxPowerUps.get(), *manTotems.get());
+    InitializeFacades();
+
+    AddElementsToRender();
+
+    // TODO: esto semánticamente no debería ir aquí, no es un método virtual, es algo que quiero que se cargue
+    // después de los virtual methods pero semánticamente debería ir en un método aparte o en una llamada aparte
+    sysAnimStart->ResetTimer();
+
     // a este le llegan los coches
     //std::cout << "POR FIIIIIIIIIIIIIIIIIIIIIIIN: " << std::endl;
     vector<uint16_t> arrayIdEnemies = IdPlayersOnline;
@@ -46,9 +55,6 @@ StateInGameMulti::StateInGameMulti(uint16_t IdOnline, const vector<uint16_t> IdP
     }
     vector<Constants::InputTypes> inputs;
     sysOnline->SendInputs(inputs);  // enviamos un vector vacío la primera vez para que el servidor sepa que estamos vivos
-
-    //CAMBIARCosasNavMesh(*manCars.get(), *manNavMesh.get());
-    // while(true){sleep(500);}; // esto solo sirve para depurar
 
     for (const auto &car : manCars->GetEntities()) {
         const auto cTransformable = static_cast<CTransformable *>(manCars->GetCar()->GetComponent(CompType::TransformableComp).get());
@@ -166,8 +172,8 @@ void StateInGameMulti::InitializeCLPhysics(ManCar &manCars, ManBoundingWall &man
     StateInGame::InitializeCLPhysics(manCars, manWall, manOBB, manGround, manPowerUp, manNavMesh, manBoxPowerUp, manTotem);
 }
 
-void StateInGameMulti::InitializeManagers(const uint32_t timeGame) {
-    StateInGame::InitializeManagers(timeGame);
+void StateInGameMulti::InitializeManagers() {
+    StateInGame::InitializeManagers();
 }
 
 void StateInGameMulti::InitializeSystems(ManCar &manCars, ManBoundingWall &manWall, ManBoundingOBB &manOBB, ManBoundingGround &manGround, ManPowerUp &manPowerUp, ManNavMesh &manNavMesh, ManBoxPowerUp &manBoxPowerUp, ManTotem &manTotem) {
@@ -181,30 +187,3 @@ void StateInGameMulti::InitializeFacades() {
 void StateInGameMulti::AddElementsToRender() {
     StateInGame::AddElementsToRender();
 }
-
-/*
-void StateInGameMulti::CAMBIARCosasDeTotemUpdate() {
-    bool todosFalse = true;
-    auto cTransformTotem = static_cast<CTransformable *>(totemOnCar.get()->GetComponent(CompType::TransformableComp).get());
-    cTransformTotem->rotation.y += 0.1;
-    for (auto currentCar : manCars->GetEntities()) {  // actualizamos los coche IA
-        // comprobamos el componente totem y si lo tienen se lo ponemos justo encima para que se sepa quien lo lleva
-        auto cTotem = static_cast<CTotem *>(currentCar.get()->GetComponent(CompType::TotemComp).get());
-        if (cTotem->active) {
-            todosFalse = false;
-            auto cTransformCar = static_cast<CTransformable *>(currentCar.get()->GetComponent(CompType::TransformableComp).get());
-            cTransformTotem->position.x = cTransformCar->position.x;
-            cTransformTotem->position.z = cTransformCar->position.z;
-            cTransformTotem->position.y = 32.0f;
-            // supuestamente esta el drawAll que te lo hace no?????????????????
-            // si esta cambiando pero no se esta redibujando
-            break;  // cuando encontramos a alguien que ya lleva el totem, nos salimos del for, no seguimos comprobando a los demás
-        }
-    }
-    if (todosFalse) {
-        cTransformTotem->position.y = -100.0f;
-    }
-
-    renderEngine->UpdateTransformable(totemOnCar.get());
-}
-*/
