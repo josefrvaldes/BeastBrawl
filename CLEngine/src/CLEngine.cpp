@@ -766,6 +766,17 @@ CLNode* CLEngine::GetNodeByIDAux(unsigned int id, CLNode* node, CLNode* root){
 }
 
 
+// devolver datos de la camara
+float CLEngine::GetFovActualCamera(){
+    return static_cast<CLCamera*>(GetActiveCamera())->GetCameraFov();
+}
+glm::vec3 CLEngine::GetTargetActualCamera(){
+    return static_cast<CLCamera*>(GetActiveCamera())->GetCameraTarget();
+}
+glm::vec3 CLEngine::GetPositionActualCamera(){
+    return GetActiveCameraNode()->GetGlobalTranslation();
+}
+
 float CLEngine::GetBoundingSizeById(unsigned int id){
     CLNode* node = GetNodeByID(id);
     return node->CalculateBoundingBox();

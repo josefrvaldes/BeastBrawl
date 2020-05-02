@@ -57,9 +57,6 @@ bool SystemGameRules::UpdateRulesCarPowerUps(Entity& car_, Entity& totem_) const
             cTransformTotem->position.y = cTransformCar->position.y + 10.0f;
     }
 
-
-
-
     if(cTotem->accumulatedTime/1000.0 > cTotem->DURATION_TIME/1000.0){
         cout << "Has ganado \n";
         //Game::GetInstance()->SetState(State::ENDRACE);

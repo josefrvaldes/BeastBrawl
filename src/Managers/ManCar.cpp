@@ -16,7 +16,7 @@
 #include <Entities/CarAI.h>
 #include <Entities/CarHuman.h>
 #include <Systems/Physics.h>
-#include <Systems/PhysicsAI.h>
+//#include <Systems/PhysicsAI.h>
 #include <functional>
 #include <iostream>
 
@@ -538,34 +538,6 @@ void ManCar::CollisionCarPowerUp(DataMap* d) {
 
 }
 
-
-// se calcula el coche mas cercano en el rango de vision, en caso de no haber se devuelve un nullptr
-Car* ManCar::calculateCloserCar(Entity* actualCar) {
-    // Primero metemos al jugador por lo que no hace falta calcularlo luego
-    Car* closestCar = nullptr;
-    auto cTransActualCar = static_cast<CTransformable*>(actualCar->GetComponent(CompType::TransformableComp).get());
-    float distanceMimum = 9999999999.0;
-    float distanceNext;
-    float vectorXNext;
-    float vectorZNext;
-
-    // Para todos los coches
-    for (const shared_ptr<Entity>& car : entities) {
-        if (actualCar != car.get() && carInVisionRange(actualCar, car.get(), 60) == true) {
-            auto cTransNextCar = static_cast<CTransformable*>(car.get()->GetComponent(CompType::TransformableComp).get());
-            vectorXNext = cTransNextCar->position.x - cTransActualCar->position.x;
-            vectorZNext = cTransNextCar->position.z - cTransActualCar->position.z;
-            distanceNext = sqrt((vectorXNext * vectorXNext) + (vectorZNext * vectorZNext));
-
-            if (distanceMimum > distanceNext) {
-                distanceMimum = distanceNext;
-                closestCar = static_cast<Car*>(car.get());
-            }
-        }
-    }
-    return closestCar;
-}
-
 void ManCar::ThrowPowerUpCar(DataMap* d) {
     ThrowPowerUp( static_cast<Car *>(car.get()) );
 }
@@ -615,7 +587,7 @@ void ManCar::ThrowPowerUp(Car* car_) {
                 break;
             case (typeCPowerUp::TeleBanana): {
                 if(CheckIfPUWillBeFired(car_)) {
-                    Car* objectiveCar = calculateCloserCar(car_);
+                    Car* objectiveCar = systemDataVision->CalculateCenteredCar(car_, 55);
                     if(objectiveCar != nullptr) {
                         (*data)[CAR_FOLLOW] = objectiveCar;
                     }
@@ -824,7 +796,7 @@ void ManCar::CatchPowerUpAI(DataMap* d) {
     //cout << "EL VALOR QUE SALE ES: " << indx << " - CORRESPONDIENTE AL PU: " << (int)type << endl;
 
     //type = typeCPowerUp::SuperMegaNitro;
-    // type = typeCPowerUp::SuperMegaNitro;
+     //type = typeCPowerUp::MelonMolon;
     auto cPowerUpCar = static_cast<CPowerUp*>(actualCar->GetComponent(CompType::PowerUpComp).get());
     if (cPowerUpCar->typePowerUp == typeCPowerUp::None) {
         cPowerUpCar->typePowerUp = type;
@@ -842,61 +814,6 @@ void ManCar::CatchPowerUpAI(DataMap* d) {
     }
 }
 
-// calcula si el otro coche se encuentra en el rango de vision del coche actual
-bool ManCar::carInVisionRange(Entity* actualCar, Entity* otherCar, uint32_t rangeVision) {
-    float seeCar = false;
-    // calcular un desplazamiento para ser en tercera persona
-    auto cTransformableActual = static_cast<CTransformable*>(actualCar->GetComponent(CompType::TransformableComp).get());
-    float posXActualCar = cTransformableActual->position.x + 40 * cos((cTransformableActual->rotation.y * PI) / 180.0);
-    float posZActualCar = cTransformableActual->position.z - 40 * sin((cTransformableActual->rotation.y * PI) / 180.0);
-
-    // vector between actualCar and otherCar
-    auto cTransformableOther = static_cast<CTransformable*>(otherCar->GetComponent(CompType::TransformableComp).get());
-    float vetorWaypointX = (cTransformableOther->position.x - posXActualCar);
-    float vetorWaypointZ = (cTransformableOther->position.z - posZActualCar);
-
-    // calculate position rotated of otherCar atan2
-    float valueAtan2 = atan2(vetorWaypointZ, vetorWaypointX) * 180 / PI;
-    valueAtan2 = 180.0 - valueAtan2;  // se le restan ya que el eje empieza en el lado contrario
-    if (valueAtan2 < 0)
-        valueAtan2 += 360;
-
-    //compare with actualCar actualRotation
-    if (cTransformableActual->rotation.y - rangeVision >= 0 && cTransformableActual->rotation.y + rangeVision < 360) {
-        if (cTransformableActual->rotation.y - rangeVision < valueAtan2 && cTransformableActual->rotation.y + rangeVision > valueAtan2) {
-            seeCar = true;
-        }
-    } else {  // coge el angulo 0 de por medio
-        float rotMin = cTransformableActual->rotation.y - rangeVision;
-        float rotMax = cTransformableActual->rotation.y + rangeVision;
-        if (cTransformableActual->rotation.y - rangeVision < 0)
-            rotMin += 360;
-        if (cTransformableActual->rotation.y + rangeVision >= 360)
-            rotMax -= 360;
-        if (rotMin < valueAtan2 || rotMax > valueAtan2) {
-            seeCar = true;
-        }
-    }
-    return seeCar;
-}
-
-// comprobamos si tenemos algun coche en el rango de vision
-bool ManCar::anyCarInVisionRange(Entity* actualCar, uint32_t rangeVision) {
-    bool seeCar = false;
-    for (shared_ptr<Entity> cars : entities) {
-        if (actualCar != cars.get() && carInVisionRange(actualCar, cars.get(), rangeVision) == true) {
-            seeCar = true;
-        }
-    }
-    return seeCar;
-}
-
-// comprobamos si el coche indicado en nuestro rango de vision // el rango de vision sera 60
-bool ManCar::CarTotemInVisionRange(Entity* actualCar, Entity* desCar, uint32_t rangeVision) {
-    if (carInVisionRange(actualCar, desCar, rangeVision) == true)
-        return true;
-    return false;
-}
 
 void ManCar::TurnLeftCar(DataMap* d) {
     // cout << "Han llamado izquierda" << endl;
@@ -947,8 +864,25 @@ void ManCar::Integrate(float delta) {
     //physics->update(GetCar().get(), cam.get());
 }
 
+
+Entity* ManCar::GetCurrentWinner() {
+    int64_t max = 0;
+    size_t maxIndex = 0;
+    for(size_t i = 0; i < entities.size(); i++) {
+        auto car = entities[i];
+        auto cTotem = static_cast<CTotem*>(car->GetComponent(CompType::TotemComp).get());
+        if(cTotem->accumulatedTime > max) {
+            max = cTotem->accumulatedTime;
+            maxIndex = i;
+        }
+    }
+    return entities[maxIndex].get();
+}
+
+
+
 // devuelve la entidad a por la que quiere ir el coche
-Entity* ManCar::GetDesirableTarget(Entity* actualCar) {
+/*Entity* ManCar::GetDesirableTarget(Entity* actualCar) {
     // va a tratar de disparar al que lleve el totem
     for (const auto& carAI : GetEntities()) {
         if (carAI.get() != actualCar) {
@@ -1010,18 +944,4 @@ Entity* ManCar::GetDesirableTarget(Entity* actualCar) {
         }
     }
     return closestCarEntity;
-}
-
-Entity* ManCar::GetCurrentWinner() {
-    int64_t max = 0;
-    size_t maxIndex = 0;
-    for(size_t i = 0; i < entities.size(); i++) {
-        auto car = entities[i];
-        auto cTotem = static_cast<CTotem*>(car->GetComponent(CompType::TotemComp).get());
-        if(cTotem->accumulatedTime > max) {
-            max = cTotem->accumulatedTime;
-            maxIndex = i;
-        }
-    }
-    return entities[maxIndex].get();
-}
+}*/

@@ -17,11 +17,12 @@ public:
     CBrainAI();
     ~CBrainAI(){};
 
+    void CleanVisionRange();
 
 
 
     // CTargetNavMesh
-    int targetNavMesh = -1;  //NavMesh actual del coche/entidad     //ponemos -1 por defecto ya que haremos el calculo al empezar la partida
+    int targetNavMesh {-1};  //NavMesh actual del coche/entidad     //ponemos -1 por defecto ya que haremos el calculo al empezar la partida
 
 
     // CPath
@@ -29,7 +30,7 @@ public:
 
 
     // CMovementType
-    std::string movementType = "Empty";     // Para el debug de la IA decirte que decision estas tomando
+    std::string movementType {"Empty"};     // Para el debug de la IA decirte que decision estas tomando
 
 
     // CPosDestinatation
@@ -50,13 +51,19 @@ public:
 
 
     // elementos en el rango de vision
-    struct elementInVision{
-        std::vector<Car> carsVec;
-        std::vector<BoxPowerUp> boxsVec;
-        Totem* totemVec = nullptr;
-    };
-
+    int fov = 50;
+    float distanceVision {600};
+    std::vector<Entity*> carInVision;
+    std::vector<Entity*> boxInVision;
+    Entity* totemInVision {nullptr};
+    
     // objetivo
-    Car* targetCar = nullptr;
+    Car* targetCar {nullptr};
+    BoxPowerUp* targetBoxPowerUp {nullptr};
+
+    // Pensamiento de la IA = mirar minimapa, mirar marcadores, etc, durante ese tiempo no actua
+    bool thinking {false};
+    uint32_t totalTried {3};
+    uint32_t numTried {2}; // empezamos ya en el ultimo intento porque la primera vez no queremos
 
 };

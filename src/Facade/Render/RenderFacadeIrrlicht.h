@@ -99,6 +99,10 @@ class RenderFacadeIrrlicht : public RenderFacade {
     bool FacadeOctreeInCamera(float size, const glm::vec3& pos) override {return true;};
     void FacadeSetOctreeVisibleById(unsigned int id, bool v) override {};
 
+    float FacadeGetFovActualCamera() override {return 0;};
+    glm::vec3 FacadeGetTargetActualCamera() override {return glm::vec3(0.0);};
+    glm::vec3 FacadeGetPositionActualCamera() override {return glm::vec3(0.0);};
+
     //DEBUG
     void Draw3DLine(vec3& pos1, vec3& pos2, uint16_t r, uint16_t g, uint16_t b) const override;
     void Draw3DLine(vec3& pos1, vec3& pos2) const override;

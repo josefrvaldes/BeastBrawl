@@ -41,4 +41,6 @@ public:
     const int64_t durationTime = 100;       // 0,2 segundos ---> Podra variar dependiendo de cada powerUp
     float speed = 510.0;
     float deceleration = -25;
+
+    float rotExtraTelebanana = 0.0;
 };
