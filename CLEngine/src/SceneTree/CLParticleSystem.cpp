@@ -136,11 +136,11 @@ CLParticleSystem::CLParticle::CLParticle(CLParticleSystem* emitter){
     velocity       = particleSystem->GetSpeedDirection();
     timeStart      = system_clock::now();
 
-    int indxTexture = 1;
+    int indxTexture = 0;
     if(particleSystem->GetTextures().size() > 1){
-        indxTexture = Utils::getRandomInt(1,particleSystem->GetTextures().size()+1);
+        indxTexture = Utils::getRandomInt(0,particleSystem->GetTextures().size()-1);
     }
-    texture = particleSystem->GetTextures().at(indxTexture-1);
+    texture = particleSystem->GetTextures().at(indxTexture);
     //Comprobamos si el flag del effecto esta activado
     CalculateVelocity();
 

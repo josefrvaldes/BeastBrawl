@@ -24,7 +24,7 @@ public:
 
     void AddManager(Manager &e);
 
-    void UpdateDijkstra(CarAI* carAI, ManWayPoint* graph, ManNavMesh* manNavMesh) const;
+    void UpdateDijkstra(CarAI* carAI, ManWayPoint* graph, ManNavMesh* manNavMesh);
     stack<int> Dijkstra(ManWayPoint* graph, const uint16_t start, const uint16_t end);
 
     int getFrecuency(){ return frec; };
@@ -35,6 +35,7 @@ public:
     void ChangePosDestination(DataMap* d);
     void MoveRandomPowerUp(DataMap* d);
     void InitMapGraph(ManWayPoint* _graph);
+    void CleanBrainAI(CarAI* carAI);
     float** graph;
     int graphSize = 0;
     bool graphCreated = false;

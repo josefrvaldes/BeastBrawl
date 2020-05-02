@@ -146,11 +146,11 @@ class Utils {
 
 
     static float getRandomFloat(float LO, float HI) {
-        return LO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(HI-LO)));
+        return LO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/((HI+1)-LO)));
     }
 
-    static float getRandomInt(int LO, int HI) {
-        return LO + rand() /(RAND_MAX/(HI-LO));
+    static int getRandomInt(int LO, int HI) {
+        return LO + rand() /(RAND_MAX/((HI+1)-LO));
     }
 
 };
