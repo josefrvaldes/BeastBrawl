@@ -172,13 +172,19 @@ void CLNode::DFSTree(glm::mat4 mA, CLCamera* cam) {
     //Voy a comentar de momento el frustrum ya que para el particle system puede dar problemas
     if(entity && visible /*&& (frusVisibility == CLE::CLFrustum::Visibility::Completly || !ignoreFrustrum)*/) { 
 
-        glUseProgram(shaderProgramID);
+        glUseProgram(shaderProgramID); 
 
         glUniformMatrix4fv(glGetUniformLocation(shaderProgramID, "model"), 1, GL_FALSE, glm::value_ptr(transformationMat));
 
         glm::vec3 pos    = GetGlobalTranslation();
         glUniform3fv(glGetUniformLocation(shaderProgramID, "position"), 1, glm::value_ptr(pos));
-        entity->Draw(shaderProgramID);
+
+        auto particleEntity = dynamic_cast<CLParticleSystem*>(entity.get());
+
+        if((particleEntity && particlesActivated) || !particleEntity){
+            
+            entity->Draw(shaderProgramID);
+        }
 
     }
 
@@ -206,6 +212,8 @@ void CLNode::DFSTree(glm::mat4 mA, GLuint shaderID) {
     if(entity && visible /*&& frusVisibility == CLE::CLFrustum::Visibility::Completly*/) { 
         
         glUniformMatrix4fv(glGetUniformLocation(shaderID, "model"), 1, GL_FALSE, glm::value_ptr(transformationMat));
+
+        
         entity->DrawDepthMap(shaderID);
 
     }

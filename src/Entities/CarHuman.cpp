@@ -38,6 +38,8 @@ CarHuman::CarHuman(int pj) {
 
 
     mainCharacter _pj;
+    string mesh;
+    string texture = "";
     float weight = 50;
     float maxSpeed = 200.0;
     float acceleration = 1.5;
@@ -47,30 +49,36 @@ CarHuman::CarHuman(int pj) {
             _pj = mainCharacter::PENGUIN;
             weight = 30.0;
             maxSpeed = 220.0;
+            mesh = "kart_penguin.obj";
             break;
         case 1: 
             _pj = mainCharacter::TIGER; 
             weight = 40.0;
             acceleration = 1.75;
+            mesh = "kart_baxter.obj";
             break;
         case 2: 
             _pj = mainCharacter::SHARK; 
             weight = 30.0;
             maxSpeed = 220.0;
             acceleration = 2.0;
+            mesh = "kart_sharky.obj";
             break;
         case 3: 
             _pj = mainCharacter::GORILLA; 
             weight = 70.0;
             maxSpeed = 220.0;
             acceleration = 1.25;
+            mesh = "kart_kong.obj";
             break;
         case 4: 
             _pj = mainCharacter::DRAGON; 
             acceleration = 2.0;
+            mesh = "kart_physics.obj";
             break;
         case 5: 
             _pj = mainCharacter::OCTOPUS; 
+            mesh = "kart_physics.obj";
             break;
         default: break;
     }
@@ -82,15 +90,8 @@ CarHuman::CarHuman(int pj) {
     glm::vec3 rot = glm::vec3(0.0f, 90.0f, 0.0f);
     glm::vec3 scale = glm::vec3(6.0f, 6.0f, 6.0f);
 
-    string texture = "";
-
-    string mesh;
-    if(Constants::RENDER_ENGINE == Constants::RenderEngine::CLOVER){
-        //mesh    = "kart_physics.fbx";
-        mesh    =   "kart_physics.obj";
-        
-    }else if(Constants::RENDER_ENGINE == Constants::RenderEngine::IRRLICHT){
-        mesh    =   "kart_physics.obj";
+    if(Constants::RENDER_ENGINE == Constants::RenderEngine::IRRLICHT){
+        mesh = "kart_physics.obj";
     }
 
     float friction = 1.0, slowDown = 2.5;

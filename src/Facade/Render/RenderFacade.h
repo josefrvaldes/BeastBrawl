@@ -8,9 +8,11 @@
 #include <EventManager/EventManager.h>
 #include <Managers/ManWayPoint.h>
 #include <Managers/ManCar.h>
+#include <Managers/ManHUDEvent.h>
 #include <Components/CPowerUp.h>
 #include <Managers/Manager.h>
 #include "../../Constants.h"
+
 
 using namespace chrono;
 
@@ -38,6 +40,7 @@ class RenderFacade {
     virtual void FacadeDeviceDrop() = 0;
     virtual void DeleteEntity(Entity*) = 0;
     virtual void FacadeSetVisibleEntity(Entity*,bool) = 0;
+    virtual void FacadeSetWindowSize(DataMap* d) = 0;
 
     virtual void FacadeDraw() const = 0;
     virtual void FacadeDrawIntro() = 0;
@@ -77,8 +80,9 @@ class RenderFacade {
 
     virtual void FacadeUpdatePowerUpHUD(DataMap* d) = 0;
     virtual void FacadeInitResources() = 0;
-    virtual void FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* globalClock) = 0;
+    virtual void FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* globalClock, ManHUDEvent*) = 0;
     virtual void FacadeSuscribeEvents() = 0;
+    virtual void FacadeSuscribeEventsSettings() = 0;
     virtual void FacadeAddPlates(Manager* manNamePlates) = 0;
     virtual void FacadeUpdatePlates(Manager* manNamePlates) = 0;
     virtual void FacadeUpdateMeshesLoD(vector<shared_ptr<Entity>> entities) = 0;
@@ -90,10 +94,16 @@ class RenderFacade {
     virtual void CleanScene() = 0;
     virtual void FacadeUpdateViewport() = 0;
 
-    virtual void FacadeInitParticleSystem(DataMap* d) = 0;
+    virtual void FacadeInitParticleSystem(DataMap* d) const = 0;
+    virtual void FacadeSetParticlesVisibility(DataMap* d) const = 0;
+    virtual void FacadeSetGrassActivate(DataMap* d) const = 0;
     virtual void FacadeUpdateVisibility(DataMap* d) = 0;
     virtual bool FacadeOctreeInCamera(float size, const glm::vec3& pos) = 0;
     virtual void FacadeSetOctreeVisibleById(unsigned int id, bool v) = 0;
+
+    virtual float FacadeGetFovActualCamera() = 0;
+    virtual glm::vec3 FacadeGetTargetActualCamera() = 0;
+    virtual glm::vec3 FacadeGetPositionActualCamera() = 0;
     //DEBUG
     virtual void Draw3DLine(vec3 &pos1, vec3 &pos2, uint16_t r, uint16_t g, uint16_t b) const = 0;
     virtual void Draw3DLine(vec3 &pos1, vec3 &pos2) const = 0;

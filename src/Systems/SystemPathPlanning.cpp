@@ -47,7 +47,7 @@ void SystemPathPlanning::SubscribeToEvents() {
         "ChangePosDestination"));
 
     EventManager::GetInstance().SubscribeMulti(Listener(
-        EventType::MOVE_TO_POWERUP,
+        EventType::MOVE_RANDOM_POWERUP,
         bind(&SystemPathPlanning::MoveRandomPowerUp, this, placeholders::_1),
         "MoveRandomPowerUp"));
 
@@ -56,8 +56,8 @@ void SystemPathPlanning::SubscribeToEvents() {
 void SystemPathPlanning::MoveRandomPowerUp(DataMap* data){
     //std::cout << " -entramoooos o que beibeeeeeeee ???????????????????????\n";
     auto carAI = any_cast<CarAI*>((*data)[ACTUAL_CAR]);
-    auto manNavMesh = any_cast<ManNavMesh*>((*data)[MAN_NAVMESH]);
-    auto graph = any_cast<ManWayPoint*>((*data)[MAN_WAYPOINTS]);
+    auto graph = static_cast<ManWayPoint*>(managers[4]);
+    auto manNavMesh = static_cast<ManNavMesh*>(managers[5]);
     
     auto cCurrentNavMesh = static_cast<CCurrentNavMesh*>(carAI->GetComponent(CompType::CurrentNavMeshComp).get());
     auto cBrainAI = static_cast<CBrainAI*>(carAI->GetComponent(CompType::BrainAIComp).get());
@@ -92,11 +92,11 @@ void SystemPathPlanning::MoveRandomPowerUp(DataMap* data){
         auto path = Dijkstra(graph,wayPointReference,wayPointDestination);
         carAI->SetPath(path);
 
-        auto path2 = path;
-        while(!path2.empty()){
-            //std::cout << "nodo del path x= " << path2.top() << std::endl;
-            path2.pop();
-        }
+        //auto path2 = path;
+        //while(!path2.empty()){
+        //    //std::cout << "nodo del path x= " << path2.top() << std::endl;
+        //    path2.pop();
+        //}
 
         auto cWayPoint = static_cast<CWayPoint*>(graph->GetEntities()[path.top()]->GetComponent(CompType::WayPointComp).get());
         carAI->SetWayPoint(cWayPoint);
@@ -108,25 +108,10 @@ void SystemPathPlanning::MoveRandomPowerUp(DataMap* data){
     }       
 }
 
-
-void SystemPathPlanning::ChangePosDestination(DataMap* data){
-    auto carAI = any_cast<CarAI*>((*data)[ACTUAL_CAR]); 
-    auto cPosDestination = static_cast<CPosDestination*>(carAI->GetComponent(CompType::PosDestination).get());
-    cPosDestination->position = any_cast<glm::vec3>((*data)[POS_DESTINATION]);
-    cPosDestination->radious = 1.0f;
-    carAI->SetDestination(cPosDestination);
-
-    // ya que ponemos posicion fija, limpiamos el path
-    auto cBrainAI = static_cast<CBrainAI*>(carAI->GetComponent(CompType::BrainAIComp).get());
-    while(!cBrainAI->stackPath.empty()){
-        cBrainAI->stackPath.pop();
-    }
-}
-
-
 void SystemPathPlanning::CalculatePathToNavMesh(DataMap* data){
-    auto manNavMesh = any_cast<ManNavMesh*>((*data)[MAN_NAVMESH]);
-    auto graph = any_cast<ManWayPoint*>((*data)[MAN_WAYPOINTS]);
+    //static_cast<ManWayPoint*>(managers[4]), static_cast<ManNavMesh*>(managers[5])
+    auto graph = static_cast<ManWayPoint*>(managers[4]);
+    auto manNavMesh = static_cast<ManNavMesh*>(managers[5]);
     auto carAI = any_cast<CarAI*>((*data)[ACTUAL_CAR]);
     auto targetNavMesh = any_cast<int>((*data)[ID_DESTINATION]);
     auto cBrainAI = static_cast<CBrainAI*>(carAI->GetComponent(CompType::BrainAIComp).get());
@@ -183,13 +168,28 @@ void SystemPathPlanning::CalculatePathToNavMesh(DataMap* data){
     carAI->SetDestination(cPosDestination);
 }
 
+void SystemPathPlanning::ChangePosDestination(DataMap* data){
+    auto carAI = any_cast<CarAI*>((*data)[ACTUAL_CAR]); 
+    auto cPosDestination = static_cast<CPosDestination*>(carAI->GetComponent(CompType::PosDestination).get());
+    cPosDestination->position = any_cast<glm::vec3>((*data)[POS_DESTINATION]);
+    cPosDestination->radious = 1.0f;
+    carAI->SetDestination(cPosDestination);
 
+    // ya que ponemos posicion fija, limpiamos el path
+    auto cBrainAI = static_cast<CBrainAI*>(carAI->GetComponent(CompType::BrainAIComp).get());
+    while(!cBrainAI->stackPath.empty()){
+        cBrainAI->stackPath.pop();
+    }
+    // siempre que se cambia el destino el target va fuera
+    cBrainAI->targetNavMesh = -1;
+    //CleanBrainAI(carAI);
+}
 
 void SystemPathPlanning::update(CarAI* carAI){
     UpdateDijkstra(carAI, static_cast<ManWayPoint*>(managers[4]), static_cast<ManNavMesh*>(managers[5]));    
 }
 
-void SystemPathPlanning::UpdateDijkstra(CarAI* carAI, ManWayPoint* graph, ManNavMesh* manNavMesh) const{
+void SystemPathPlanning::UpdateDijkstra(CarAI* carAI, ManWayPoint* graph, ManNavMesh* manNavMesh){
     //Guardamos en varAIbles los componentes
 	auto cTransformable = static_cast<CTransformable*>(carAI->GetComponent(CompType::TransformableComp).get());
     auto cPosDestination     = static_cast<CPosDestination*>(carAI->GetComponent(CompType::PosDestination).get());
@@ -200,7 +200,7 @@ void SystemPathPlanning::UpdateDijkstra(CarAI* carAI, ManWayPoint* graph, ManNav
     //Vamos a comprobar si esta en el rango del waypoint
     if((cPosDestination->position.z - radious) < cTransformable->position.z && (cPosDestination->position.z + radious) >= cTransformable->position.z 
         && (cPosDestination->position.x - radious) < cTransformable->position.x && (cPosDestination->position.x + radious) >= cTransformable->position.x
-        && (cPosDestination->position.y - radious) < cTransformable->position.y && (cPosDestination->position.y + radious) >= cTransformable->position.y){
+        && (cPosDestination->position.y - radious - 10.0) < cTransformable->position.y && (cPosDestination->position.y + radious + 10.0) >= cTransformable->position.y){
         //Tenemos que comprobar si le quedan mas nodos que visitar en el path
         auto cBrainAI = static_cast<CBrainAI*>(carAI->GetComponent(CompType::BrainAIComp).get());
 
@@ -211,9 +211,19 @@ void SystemPathPlanning::UpdateDijkstra(CarAI* carAI, ManWayPoint* graph, ManNav
                 auto cWayPoint = static_cast<CWayPoint*>(graph->GetEntities()[cBrainAI->stackPath.top()]->GetComponent(CompType::WayPointComp).get());
                 cPosDestination->position = cWayPoint->position;
                 carAI->SetDestination(cPosDestination);
+            }else{
+                this->CleanBrainAI(carAI);
             }
+        }else{
+            this->CleanBrainAI(carAI);
         }
     }
+}
+
+void SystemPathPlanning::CleanBrainAI(CarAI* carAI){
+    auto cBrainAI = static_cast<CBrainAI*>(carAI->GetComponent(CompType::BrainAIComp).get());
+    cBrainAI->targetCar = nullptr;
+    cBrainAI->targetBoxPowerUp = nullptr;
 }
 
 

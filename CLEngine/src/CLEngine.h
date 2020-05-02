@@ -91,6 +91,7 @@ class CLEngine {
         //! @param file Ruta a la imagen
         //! @param bool Flip vertical
         void DrawImage2D(float _x, float _y, float _width, float _height, float _depth, string file, bool);
+        void DrawImage2D(float _x, float _y, float scale, float _depth, string file, bool);
         //! Dibuja texto 2D
         //! @param text Texto para dibujar
         //! @param x Posicion en X
@@ -117,6 +118,12 @@ class CLEngine {
         //! Devuelve la altura de la pantalla
         //! @returns height Altura de la pantalla
         int GetScreenHeight() { return height; };
+        //! Cambia el valor de la anchura de la pantalla
+        //! @param w Anchura de la pantalla
+        void SetScreenWidth(int w) { width = w; };
+        //! Cambia el valor de la altura de la pantalla
+        //! @param h Altura de la pantalla
+        void SetScreenHeight(int h) { height = h; };
 
 
 
@@ -363,6 +370,15 @@ class CLEngine {
         //! Devuelve el objeto shader del shadowMapping
         //! @returns depthShdder Objeto CLE::CLResourceShader
         CLResourceShader* GetDepthShader()      {return depthShadder;};
+        //! Devuelve el FOV de la camara
+        //! @returns FOV Rango de vision de la camara
+        float GetFovActualCamera();
+        //! Devuelve la posicion a la que mira la camara
+        //! @returns target Posicion a la que mira la camara
+        glm::vec3 GetTargetActualCamera();
+        //! Devuelve la posicion de la camara
+        //! @returns target Posicion de la camara
+        glm::vec3 GetPositionActualCamera();
 
 
         //! Dibuja una linea primitiva en 3D
@@ -391,6 +407,12 @@ class CLEngine {
         CLNode* GetRootNode() const { return smgr.get(); };
         //! Asigna si el nodo es visible en el octree
         void SetOctreeVisibleById(unsigned int id, bool v);
+        //! Activa o desactiva las particulas
+        //! @param mode Booleano para cambiar el modo
+        void SetParticlesVisibility(bool mode);
+        //! Activa o desactiva las vegetación
+        //! @param mode Booleano para cambiar el modo
+        void SetGrassActivate(bool mode) { grassActivate = mode; };
 
 
         
@@ -420,7 +442,7 @@ class CLEngine {
         GLuint VAOText, VBOText;
         std::map<GLchar, Character> characters;
 
-
+        bool grassActivate { true };
 
         inline static glm::mat4 projection;             // matriz proyeccion del modelo
         inline static glm::mat4 view;                   // matriz view del modelo

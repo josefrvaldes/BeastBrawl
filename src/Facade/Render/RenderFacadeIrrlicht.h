@@ -42,6 +42,7 @@ class RenderFacadeIrrlicht : public RenderFacade {
     void FacadeDraw() const override;
     void DeleteEntity(Entity*) override;
     void FacadeSetVisibleEntity(Entity*,bool) override {};
+    void FacadeSetWindowSize(DataMap* d) override {};
 
 
     void FacadeDrawIntro() override;
@@ -81,8 +82,9 @@ class RenderFacadeIrrlicht : public RenderFacade {
     void FacadeCheckInputSettings() override;
 
     void FacadeUpdatePowerUpHUD(DataMap* d) override;
-    void FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* globalClock) override;
+    void FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* globalClock, ManHUDEvent* manHud) override;
     void FacadeSuscribeEvents() override;
+    void FacadeSuscribeEventsSettings() override;
     void FacadeAddPlates(Manager* manNamePlates) override;
     void FacadeUpdatePlates(Manager* manNamePlates) override;
     void FacadeUpdateMeshesLoD(vector<shared_ptr<Entity>> entities) override;
@@ -94,10 +96,16 @@ class RenderFacadeIrrlicht : public RenderFacade {
     void CleanScene() override;
     void FacadeUpdateViewport() override;
     
-    void FacadeInitParticleSystem(DataMap* d) override {};
+    void FacadeInitParticleSystem(DataMap* d) const override {};
+    void FacadeSetParticlesVisibility(DataMap* d) const {};
+    void FacadeSetGrassActivate(DataMap* d) const {};
     void FacadeUpdateVisibility(DataMap* d) override {};
     bool FacadeOctreeInCamera(float size, const glm::vec3& pos) override {return true;};
     void FacadeSetOctreeVisibleById(unsigned int id, bool v) override {};
+
+    float FacadeGetFovActualCamera() override {return 0;};
+    glm::vec3 FacadeGetTargetActualCamera() override {return glm::vec3(0.0);};
+    glm::vec3 FacadeGetPositionActualCamera() override {return glm::vec3(0.0);};
 
     //DEBUG
     void Draw3DLine(vec3& pos1, vec3& pos2, uint16_t r, uint16_t g, uint16_t b) const override;

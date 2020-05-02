@@ -44,6 +44,7 @@
 #include <Managers/ManShield.h>
 #include <Managers/ManCamera.h>
 #include "../Managers/ManGameRules.h"
+#include <Managers/ManHUDEvent.h>
 #include <Systems/Collisions.h>
 #include <Systems/Physics.h>
 #include <Systems/PhysicsPowerUp.h>
@@ -54,6 +55,8 @@
 #include <Systems/SystemRanking.h>
 #include <Systems/SystemHurt.h>
 #include <Systems/Utils.h>
+#include <Systems/SystemData.h>
+#include <Systems/SysHud.h>
 #include <behaviourTree/behaviourTree.h>
 #include <behaviourTree/decorator.h>
 #include <behaviourTree/selector.h>
@@ -111,12 +114,15 @@ class StateInGame : public State {
     shared_ptr<ManBoundingGround> manBoundingGround;
     shared_ptr<ManLight> manLight;
     unique_ptr<ManGameRules> manGameRules;
+    unique_ptr<ManHUDEvent> manHudEvent;
     unique_ptr<ManParticleSystem> manParticleSystem;
     unique_ptr<ManShield> manShield;
     unique_ptr<SystemLoD> sysLoD;
     unique_ptr<SystemAnimationStart> sysAnimStart;
     unique_ptr<SystemAnimationEnd> sysAnimEnd;
+    unique_ptr<SystemData> systemDataVision;
     unique_ptr<SystemHurt> sysHurt;
+    unique_ptr<SysHud> sysHud;
 
     std::vector<shared_ptr<Manager>> managersEntities;
     std::unique_ptr<Octree> octreeScene;
@@ -154,6 +160,7 @@ class StateInGame : public State {
     void GoToEndAnimation();
     void GoToStateEndrace();
     void GoToCountdownAnimation();
+    void InitializeSystemData();
     //virtual void CAMBIARCosasDeTotemUpdate(){};
 
     //void CAMBIARCosasDeTotem(ManTotem &);

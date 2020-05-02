@@ -1,5 +1,6 @@
 #include "PhysicsPowerUp.h"
 #include "../Constants.h"
+#include "Utils.h"
 
 
 PhysicsPowerUp::PhysicsPowerUp(){
@@ -48,9 +49,9 @@ void PhysicsPowerUp::updateTeleBanana(Entity* pu){
             cPuActual->calculate = true;
       }
       // Movimiento
-      float angleRotation = (cTransformable->rotation.y * PI) / 180.0;
-      cTransformable->position.x -= cos(angleRotation) * cPuActual->speed * Constants::DELTA_TIME;
-      cTransformable->position.z += sin(angleRotation) * cPuActual->speed * Constants::DELTA_TIME;
+      float angleRotation = Utils::GetAdjustedDegrees(cTransformable->rotation.y - cPuActual->rotExtraTelebanana);
+      cTransformable->position.x -= cos(glm::radians(angleRotation)) * cPuActual->speed * Constants::DELTA_TIME;
+      cTransformable->position.z += sin(glm::radians(angleRotation)) * cPuActual->speed * Constants::DELTA_TIME;
 
    }else if(static_cast<CTargetEntity*>(pu->GetComponent(CompType::TargetEntityComp).get())->cTransTarget != nullptr){
       // Vector
@@ -64,12 +65,12 @@ void PhysicsPowerUp::updateTeleBanana(Entity* pu){
       cTransformable->position.z += (vectorZ/divisorUnitario) * cPuActual->speed * Constants::DELTA_TIME;
    }else{
       // Movimiento como melon molon
-      float angleRotation = (cTransformable->rotation.y * PI) / 180.0;
-      cTransformable->position.x -= cos(angleRotation) * cPuActual->speed * Constants::DELTA_TIME;
-      cTransformable->position.z += sin(angleRotation) * cPuActual->speed * Constants::DELTA_TIME;
+      float angleRotation = Utils::GetAdjustedDegrees(cTransformable->rotation.y - cPuActual->rotExtraTelebanana);
+      cTransformable->position.x -= cos(glm::radians(angleRotation)) * cPuActual->speed * Constants::DELTA_TIME;
+      cTransformable->position.z += sin(glm::radians(angleRotation)) * cPuActual->speed * Constants::DELTA_TIME;
    }
-
-   cTransformable->rotation.y += 400 * Constants::DELTA_TIME;
+   cPuActual->rotExtraTelebanana = Utils::GetAdjustedDegrees(cPuActual->rotExtraTelebanana + 800 * Constants::DELTA_TIME);
+   cTransformable->rotation.y = Utils::GetAdjustedDegrees(cTransformable->rotation.y + 800 * Constants::DELTA_TIME);
 }
 
 
@@ -84,5 +85,5 @@ void PhysicsPowerUp::updateMelonMolon(Entity* pu){
    cTransformable->position.x -= cos(angleRotation) * cPuActual->speed * Constants::DELTA_TIME;
    cTransformable->position.z += sin(angleRotation) * cPuActual->speed * Constants::DELTA_TIME;
 
-   cTransformable->rotation.z += 400 * Constants::DELTA_TIME;
+   cTransformable->rotation.z += 600 * Constants::DELTA_TIME;
 }

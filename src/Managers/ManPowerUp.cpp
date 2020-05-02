@@ -149,11 +149,15 @@ void ManPowerUp::MaterializePowerUp(shared_ptr<PowerUp> powerUp) {
             case int(typeCPowerUp::MelonMolon): {
                 string nameEvent = "PowerUp/melonmolon";
                 SoundFacadeManager::GetInstance()->GetSoundFacade()->CreateSoundDinamic3D(cId->id, cTransformable->position, nameEvent, 1, 1);
+                nameEvent = "PowerUp/choque_powerup";
+                SoundFacadeManager::GetInstance()->GetSoundFacade()->CreateSoundDinamic3D(cId->id, cTransformable->position, nameEvent, 0, 0);
                 break;
             }
             case int(typeCPowerUp::TeleBanana): {
                 string nameEvent = "PowerUp/telebanana";
                 SoundFacadeManager::GetInstance()->GetSoundFacade()->CreateSoundDinamic3D(cId->id, cTransformable->position, nameEvent, 1, 1);
+                nameEvent = "PowerUp/choque_powerup";
+                SoundFacadeManager::GetInstance()->GetSoundFacade()->CreateSoundDinamic3D(cId->id, cTransformable->position, nameEvent, 0, 0);
                 break;
             }
             default:
