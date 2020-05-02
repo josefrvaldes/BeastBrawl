@@ -16,6 +16,7 @@ enum CompType {
     PosDestination,
     RemovableObjectComp,
     CarComp,
+    HurtComp,
     PowerUpComp,
     BoxPowerUpComp,
     BufferOnline,

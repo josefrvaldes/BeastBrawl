@@ -9,6 +9,7 @@
 #include "../Components/CExternalForce.h"
 #include "../Components/CIDOnline.h"
 #include "../Components/COnline.h"
+#include "../Components/CHurt.h"
 #include "../Entities/BoundingOBB.h"
 #include "../Entities/PowerUp.h"
 #include "../EventManager/Event.h"
@@ -1351,8 +1352,8 @@ void CLPhysics::HandleCollisionPUWithCar(PowerUp *powerUp, Entity *car) {
     // comprobamos si el coche tenia escudo y el totem.. ya que debe de soltarlo
     auto cShield = static_cast<CShield *>(car->GetComponent(CompType::ShieldComp).get());
     if (cShield->activePowerUp == false) {  // TRUE
-        auto cCar = static_cast<CCar *>(car->GetComponent(CompType::CarComp).get());
-        if(!cCar->hurt) {
+        auto cHurt = static_cast<CHurt *>(car->GetComponent(CompType::HurtComp).get());
+        if(!cHurt->hurt) {
             // debemos hacer danyo al jugador
             shared_ptr<DataMap> dataCollisonCarPowerUp = make_shared<DataMap>();
             (*dataCollisonCarPowerUp)[ACTUAL_CAR] = car;  // nos guardamos el puntero al coche

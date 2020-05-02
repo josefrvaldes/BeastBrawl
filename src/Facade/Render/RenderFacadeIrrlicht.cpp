@@ -359,6 +359,8 @@ const uint16_t RenderFacadeIrrlicht::FacadeAddObject(Entity* entity) {
             break;
 
         case ModelType::ParticleSystem:
+            break;
+        case ModelType::Shield:
 
             break;
     }

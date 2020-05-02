@@ -9,6 +9,7 @@
 #include <Components/CCar.h>
 #include <Components/CDimensions.h>
 #include <Components/CNitro.h>
+#include <Components/CHurt.h>
 #include <Components/CShield.h>
 #include <Components/CTotem.h>
 //#include <Entities/Camera.h>
@@ -508,13 +509,14 @@ void ManCar::CollisionCarPowerUp(DataMap* d) {
     auto car = any_cast<Entity*>((*d)[ACTUAL_CAR]);
     
     // Reducimos la velocidad -- TODO --> no solo reducir la velocidad a 0
+    auto cTransf = static_cast<CTransformable*>(car->GetComponent(CompType::TransformableComp).get());
     auto cCar = static_cast<CCar*>(car->GetComponent(CompType::CarComp).get());
     cCar->speed = 0.0f;  // To-Do: no funciona en la IA por que la logica difusa no la hace acelerar
-    // cCar->hurt = true;
+    auto cHurt = static_cast<CHurt*>(car->GetComponent(CompType::HurtComp).get());
+    cHurt->Hurt(cCar, cTransf);
         
     // Sonido choque con powerup
     shared_ptr<DataMap> dataSound = make_shared<DataMap>();
-    auto cTransf = static_cast<CTransformable*>(car->GetComponent(CompType::TransformableComp).get());
     auto cId = static_cast<CId*>(car->GetComponent(CompType::IdComp).get());
     auto cIdMainCar = static_cast<CId*>(GetCar()->GetComponent(CompType::IdComp).get());
     (*dataSound)[VEC3_POS] = cTransf->position;
@@ -790,6 +792,7 @@ void ManCar::CatchPowerUpAI(DataMap* d) {
         type = typeCPowerUp::MelonMolon;
     }
 
+    // type = typeCPowerUp::PudinDeFrambuesa;
     //cout << "EL VALOR QUE SALE ES: " << indx << " - CORRESPONDIENTE AL PU: " << (int)type << endl;
 
     //type = typeCPowerUp::SuperMegaNitro;
