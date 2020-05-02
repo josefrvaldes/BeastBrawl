@@ -280,6 +280,7 @@ void StateInGameSingle::InitCarAIS(ManCar &manCars, ManWayPoint &manWayPoint) {
         manCars.CreateCarAI(0, posCar3);
     }
 
+    auto mainCarId = static_cast<CId *>(manCars.GetCar()->GetComponent(CompType::IdComp).get());
     //int i = -1;
     //TODO: Cambiar de sitio
     for (auto e : manCars.GetEntities()) {
@@ -287,10 +288,13 @@ void StateInGameSingle::InitCarAIS(ManCar &manCars, ManWayPoint &manWayPoint) {
         //if (i != 0) {
         auto idComp = static_cast<CId *>(e->GetComponent(CompType::IdComp).get());
         auto posComp = static_cast<CTransformable *>(e->GetComponent(CompType::TransformableComp).get());
-        string nameEvent = "Coche/motor";
+        string nameEvent = "Coche/motores";
         SoundFacadeManager::GetInstance()->GetSoundFacade()->CreateSoundDinamic3D(idComp->id, posComp->position, nameEvent, 1, 0);
-        nameEvent = "Coche/motor" + idComp->id;
-        SoundFacadeManager::GetInstance()->GetSoundFacade()->SetParameter(nameEvent, "personaje", 6);
+        nameEvent = "Coche/motores" + std::to_string(idComp->id);
+        SoundFacadeManager::GetInstance()->GetSoundFacade()->SetParameter(nameEvent, "main_ia", 1);
+        if (mainCarId && mainCarId->id == idComp->id) {
+            SoundFacadeManager::GetInstance()->GetSoundFacade()->SetParameter(nameEvent, "main_ia", 0);
+        }
         nameEvent = "PowerUp/escudo";
         SoundFacadeManager::GetInstance()->GetSoundFacade()->CreateSoundDinamic3D(idComp->id, posComp->position, nameEvent, 0, 0);
         nameEvent = "PowerUp/escudo_roto";
