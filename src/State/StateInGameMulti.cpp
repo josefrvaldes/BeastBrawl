@@ -8,28 +8,36 @@
 #include "../Systems/SystemOnline.h"
 #include "../Systems/Utils.h"
 
-StateInGameMulti::StateInGameMulti(uint16_t IdOnline, const vector<uint16_t> IdPlayersOnline) : StateInGame() {
+StateInGameMulti::StateInGameMulti(uint16_t idOnline_, const vector<uint16_t> idsEnemies_) : StateInGame() {
     InitState();
     InitializeManagers();
+    InitCarHumans(idOnline_, idsEnemies_);
     InitializeSystems(*manCars.get(), *manBoundingWall.get(), *manBoundingOBB.get(), *manBoundingGround.get(), *manPowerUps.get(), *manNavMesh.get(), *manBoxPowerUps.get(), *manTotems.get());
-    InitializeFacades();
-
-    AddElementsToRender();
-
-    // TODO: esto semánticamente no debería ir aquí, no es un método virtual, es algo que quiero que se cargue
-    // después de los virtual methods pero semánticamente debería ir en un método aparte o en una llamada aparte
-    sysAnimStart->ResetTimer();
-
-    // a este le llegan los coches
-    //std::cout << "POR FIIIIIIIIIIIIIIIIIIIIIIIN: " << std::endl;
-    vector<uint16_t> arrayIdEnemies = IdPlayersOnline;
-
-    sysOnline = make_unique<SystemOnline>(*manCars, IdOnline);
+    sysOnline = make_unique<SystemOnline>(*manCars.get(), idOnline_);
     manCars->SetSystemOnline(sysOnline.get());
     manTotems->SetSystemOnline(sysOnline.get());
     manPowerUps->SetSystemOnline(sysOnline.get());
     clPhysics->SetSystemOnline(sysOnline.get());
+    InitializeFacades();
 
+    AddElementsToRender();
+    
+    vector<Constants::InputTypes> inputs;
+    sysOnline->SendInputs(inputs);  // enviamos un vector vacío la primera vez para que el servidor sepa que estamos vivos
+    sysAnimStart->ResetTimer();
+}
+
+StateInGameMulti::~StateInGameMulti() {
+}
+
+void StateInGameMulti::InitState() {
+    StateInGame::InitState();
+}
+
+void StateInGameMulti::InitCarHumans(uint16_t idOnline_, vector<uint16_t> arrayIdEnemies) {
+    // a este le llegan los coches
+    //std::cout << "POR FIIIIIIIIIIIIIIIIIIIIIIIN: " << std::endl;
+    //vector<uint16_t> arrayIdEnemies = IdPlayersOnline;
     vec3 posIniciales[] = {
         vec3(120.0f, 10.0f, -300.0f),
         vec3(20.0f, 10.0f, -300.0f),
@@ -39,56 +47,44 @@ StateInGameMulti::StateInGameMulti(uint16_t IdOnline, const vector<uint16_t> IdP
         vec3(0.0f, 10.0f, 0.0f)};
 
     auto cTransformable = static_cast<CTransformable *>(manCars->GetCar()->GetComponent(CompType::TransformableComp).get());
-    cTransformable->position = posIniciales[IdOnline - 1];
+    cTransformable->position = posIniciales[idOnline_ - 1];
     COnline *cOnline = static_cast<COnline *>(manCars->GetCar()->GetComponent(CompType::OnlineComp).get());
-    cOnline->idClient = IdOnline;
+    cOnline->idClient = idOnline_;
 
-    for (auto idEnemy : IdPlayersOnline) {
+    for (auto idEnemy : arrayIdEnemies) {
         vec3 pos = posIniciales[idEnemy - 1];
+        
         //Le paso el PERSONAJE: ahora mismo a piñon
         manCars->CreateHumanCar(0, pos);
         shared_ptr<Entity> car = manCars->GetEntities()[manCars->GetEntities().size() - 1];
         COnline *cOnline = static_cast<COnline *>(car->GetComponent(CompType::OnlineComp).get());
         cOnline->idClient = idEnemy;
-        renderEngine->FacadeAddObject(car.get());
-        // cout << "El coche con id online " << idEnemy << " está en la pos " << pos.x << "," << pos.y << "," << pos.z << endl;
-    }
-    vector<Constants::InputTypes> inputs;
-    sysOnline->SendInputs(inputs);  // enviamos un vector vacío la primera vez para que el servidor sepa que estamos vivos
-
-    for (const auto &car : manCars->GetEntities()) {
-        const auto cTransformable = static_cast<CTransformable *>(manCars->GetCar()->GetComponent(CompType::TransformableComp).get());
-
-        shared_ptr<CBufferOnline> buffer = make_shared<CBufferOnline>();
-        BuffElement elem(inputs, cTransformable->position, cTransformable->rotation);
-        buffer->elems.push_back(elem);
-
-        car->AddComponent(buffer);
-
-        //Sonidos de los coches
+        
         auto idComp = static_cast<CId *>(car->GetComponent(CompType::IdComp).get());
-        auto posComp = static_cast<CTransformable *>(car->GetComponent(CompType::TransformableComp).get());
         string nameEvent = "Coche/motor";
-        SoundFacadeManager::GetInstance()->GetSoundFacade()->CreateSoundDinamic3D(idComp->id, posComp->position, nameEvent, 1, 0);
+        SoundFacadeManager::GetInstance()->GetSoundFacade()->CreateSoundDinamic3D(idComp->id, pos, nameEvent, 1, 0);
+        nameEvent = "Coche/motor" + idComp->id;
+        SoundFacadeManager::GetInstance()->GetSoundFacade()->SetParameter(nameEvent, "personaje", 6);
         nameEvent = "PowerUp/escudo";
-        SoundFacadeManager::GetInstance()->GetSoundFacade()->CreateSoundDinamic3D(idComp->id, posComp->position, nameEvent, 0, 0);
+        SoundFacadeManager::GetInstance()->GetSoundFacade()->CreateSoundDinamic3D(idComp->id, pos, nameEvent, 0, 0);
         nameEvent = "PowerUp/escudo_roto";
-        SoundFacadeManager::GetInstance()->GetSoundFacade()->CreateSoundEstatic3D(idComp->id, posComp->position, nameEvent, 0);
+        SoundFacadeManager::GetInstance()->GetSoundFacade()->CreateSoundEstatic3D(idComp->id, pos, nameEvent, 0);
         nameEvent = "PowerUp/choque_powerup";
-        SoundFacadeManager::GetInstance()->GetSoundFacade()->CreateSoundEstatic3D(idComp->id, posComp->position, nameEvent, 0);
+        SoundFacadeManager::GetInstance()->GetSoundFacade()->CreateSoundEstatic3D(idComp->id, pos, nameEvent, 0);
         nameEvent = "Coche/choque";
-        SoundFacadeManager::GetInstance()->GetSoundFacade()->CreateSoundEstatic3D(idComp->id, posComp->position, nameEvent, 0);
-
+        SoundFacadeManager::GetInstance()->GetSoundFacade()->CreateSoundEstatic3D(idComp->id, pos, nameEvent, 0);
+        
+        
         manShield->CreateShield(idComp->id,glm::vec3(0.0f),glm::vec3(0.0f),glm::vec3(1.5f));
 
+        // esto era de cuando íbamos a hacer el buffer circular que al final se descartó
+        /*shared_ptr<CBufferOnline> buffer = make_shared<CBufferOnline>();
+        BuffElement elem(inputs, cTransformable->position, cTransformable->rotation);
+        buffer->elems.push_back(elem);
+        car->AddComponent(buffer);*/
+
+        // cout << "El coche con id online " << idEnemy << " está en la pos " << pos.x << "," << pos.y << "," << pos.z << endl;
     }
-}
-
-StateInGameMulti::~StateInGameMulti() {
-}
-
-void StateInGameMulti::InitState() {
-    StateInGame::InitState();
 }
 
 void StateInGameMulti::Input() {
