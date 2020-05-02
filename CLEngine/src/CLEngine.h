@@ -363,6 +363,15 @@ class CLEngine {
         //! Devuelve el objeto shader del shadowMapping
         //! @returns depthShdder Objeto CLE::CLResourceShader
         CLResourceShader* GetDepthShader()      {return depthShadder;};
+        //! Devuelve el FOV de la camara
+        //! @returns FOV Rango de vision de la camara
+        float GetFovActualCamera();
+        //! Devuelve la posicion a la que mira la camara
+        //! @returns target Posicion a la que mira la camara
+        glm::vec3 GetTargetActualCamera();
+        //! Devuelve la posicion de la camara
+        //! @returns target Posicion de la camara
+        glm::vec3 GetPositionActualCamera();
 
 
         //! Dibuja una linea primitiva en 3D

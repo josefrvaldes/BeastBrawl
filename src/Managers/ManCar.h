@@ -13,6 +13,7 @@
 
 #include <Systems/SystemPathPlanning.h>
 #include "../Systems/SystemOnline.h"
+#include "../Systems/SystemData.h"
 
 #include <cstdlib> /* srand, rand */
 #include <iostream>
@@ -29,7 +30,7 @@ struct Data;
 struct Physics;
 //struct Camera;
 struct ManTotem;
-struct PhysicsAI;
+//struct PhysicsAI;
 struct SystemBtPowerUp;
 struct SystemBtMoveTo;
 struct SystemBtLoDMove;
@@ -44,7 +45,7 @@ class ManCar : public Manager {
 
     void CreateMainCar(int pj);
     void CreateHumanCar(int pj, glm::vec3 _position);
-
+    void AddSystemDataVision(SystemData* sd) {systemDataVision = sd;};
 
     /**
      * @return true o false dependiendo si la partida debe terminar o no
@@ -60,16 +61,11 @@ class ManCar : public Manager {
     void CreateCarAI(int pj);
     void CreateCarAI(int pj, glm::vec3 _position);
     void CreateCarAI(int pj, glm::vec3 _position, CWayPoint* _waypoint);
-    Car* calculateCloserCar(Entity* actualCar);
-    bool carInVisionRange(Entity* actualCar, Entity* otherCar, uint32_t rangeVision);
-    bool anyCarInVisionRange(Entity* actualCar, uint32_t rangeVision);
-    bool CarTotemInVisionRange(Entity *currentCar, Entity* desCar, uint32_t rangeVision);
     void Integrate(float) override;
-    Entity* GetDesirableTarget(Entity* actualCar);
     void SetSystemOnline(SystemOnline* systOn){ systemOnline = systOn; };
     Entity* GetCurrentWinner();
     
-
+    SystemData* systemDataVision = nullptr; 
    private:
     //Physics *physics;
     //Camera *cam;

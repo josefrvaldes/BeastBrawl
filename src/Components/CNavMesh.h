@@ -19,6 +19,7 @@ public:
 
     uint16_t id; //Id del navmesh
     vector<int> waypoints; // Waypoints que tiene el navmesh
+    bool centralNavMESH {false}; //indica si es el navMehs central
 
 private:
     static uint16_t numIdsNavMesh;  //Lleva la cuenta del id de navMesh
