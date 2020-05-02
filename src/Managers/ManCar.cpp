@@ -449,16 +449,36 @@ void ManCar::ChangeTotemCar(DataMap* d) {
             systemOnline->SendNitro(cOnlineCarWithTotem->idClient, cOnlineCarWithoutTotem->idClient);
         }
     }
+
+        //--------------- Evento del HUD
+    shared_ptr<DataMap> dataHud = make_shared<DataMap>();
+    auto cCarWithoutT = static_cast<CCar*>(carWithoutTotem->GetComponent(CompType::CarComp).get());
+    if (cCarWithoutT) {
+        (*dataHud)[NUM] = (uint16_t)cCarWithoutT->character;
+        (*dataHud)[TYPE] = 1;  //Stole
+        EventManager::GetInstance().AddEventMulti(Event{EventType::SET_EVENT_HUD, dataHud});
+    }
 }
 
 
 
 void ManCar::CatchTotemCar(DataMap* d) {    
+    auto car = any_cast<Entity*>((*d)[ACTUAL_CAR]);
+
     if(Game::GetInstance()->GetState()->GetState() == State::States::INGAME_SINGLE){ // estamos en solo
-        ObtainTotem(any_cast<Entity*>((*d)[ACTUAL_CAR]));
+        ObtainTotem(car);
     }else if(Game::GetInstance()->GetState()->GetState() == State::States::INGAME_MULTI){
-        auto cOnline = static_cast<COnline*>(any_cast<Entity*>((*d)[ACTUAL_CAR])->GetComponent(CompType::OnlineComp).get());
+        auto cOnline = static_cast<COnline*>(car->GetComponent(CompType::OnlineComp).get());
         systemOnline->SendCatchTotem(cOnline->idClient);
+    }
+
+    //Evento hud
+    shared_ptr<DataMap> dataHud = make_shared<DataMap>();
+    auto cCarWithoutT = static_cast<CCar*>(car->GetComponent(CompType::CarComp).get());
+    if (cCarWithoutT) {
+        (*dataHud)[NUM] = (uint16_t)cCarWithoutT->character;
+        (*dataHud)[TYPE] = 2;  //Catch
+        EventManager::GetInstance().AddEventMulti(Event{EventType::SET_EVENT_HUD, dataHud});
     }
 }
 
@@ -470,10 +490,12 @@ void ManCar::ObtainTotem(Entity* carWinTotem) {
 
     auto cTransformable = static_cast<CTransformable*>(carWinTotem->GetComponent(CompType::TransformableComp).get());
 
-    // Sonido coger totem
-    shared_ptr<DataMap> data = make_shared<DataMap>();
-    (*data)[VEC3_POS] = cTransformable->position;
-    EventManager::GetInstance().AddEventMulti(Event{EventType::CATCH_TOTEM, data});
+    if ( cTransformable) {
+        // Sonido coger totem
+        shared_ptr<DataMap> data = make_shared<DataMap>();
+        (*data)[VEC3_POS] = cTransformable->position;
+        EventManager::GetInstance().AddEventMulti(Event{EventType::CATCH_TOTEM, data});
+    }
 }
 
 void ManCar::ThrowTotem(Entity* carLoseTotem) {
@@ -559,19 +581,28 @@ void ManCar::ThrowPowerUp(Car* car_) {
     auto cShield = static_cast<CShield*>(car_->GetComponent(CompType::ShieldComp).get());
     auto cNitro = static_cast<CNitro*>(car_->GetComponent(CompType::NitroComp).get());
     auto cTransf = static_cast<CTransformable*>(car_->GetComponent(CompType::TransformableComp).get());
+    auto cCar = static_cast<CCar*>(car_->GetComponent(CompType::CarComp).get());
     bool robado = false; 
     
     if(cPowerUpCar->typePowerUp != typeCPowerUp::None){
         shared_ptr<DataMap> data = make_shared<DataMap>();
+        shared_ptr<DataMap> dataHud = make_shared<DataMap>();
 
         
         switch (cPowerUpCar->typePowerUp) {
             case (typeCPowerUp::RoboJorobo):
                 robado = useRoboJorobo(car_);
-                if (!robado)
+                if (!robado) {
                     std::cout << "La has cagado, el Totem no lo tenia nadie..." << std::endl;
+                } else {
+                    //--------------- Evento del HUD
+                    (*dataHud)[NUM] = (uint16_t)cCar->character;
+                    (*dataHud)[TYPE] = 1;  //Stole
+                    EventManager::GetInstance().AddEventMulti(Event{EventType::SET_EVENT_HUD, dataHud});
+                }
                 //Sonido robojorobo de coger totem
                 (*dataSound)[STOLE] = robado;
+
                 break;
 
             case (typeCPowerUp::EscudoMerluzo):

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "SoundFacade.h"
-#include <SoundEngine/SoundEngine.h>
+#include <SharpEngine/SharpEngine.h>
 
 #include <unordered_map>
 #include <iostream>
@@ -48,17 +48,20 @@ class SoundFacadeFMOD : public SoundFacade {
 
         void LoadSoundByState(const uint8_t) override;
         void LoadSoundBank(const string&, const bool) override;
-        void LoadSoundEvent(const string&, const bool) override;
+        void LoadSoundEvent(const string&, const bool, const bool) override;
 
         void StartGame();
+        void StopMusicInGame();
 
         void SubscribeToGameEvents(const uint8_t) override;
 
         // -------------------------------- Eventos: Ajustes
         void SetCharacter(DataMap*);
         void SetGlobalVolume(DataMap*);
+        void SetMusicVolume(DataMap*);
 
         // -------------------------------- Eventos del juego: IN GAME
+        void StartMusicInGame(DataMap*);
         void SoundClaxon(DataMap*);
         void SoundThrowPowerup(DataMap*);
         void SoundHurt(DataMap*);
@@ -82,12 +85,12 @@ class SoundFacadeFMOD : public SoundFacade {
         void SoundMenuBack(DataMap*);
 
         void SoundVictoryVoice();
-        void SoundVictory(DataMap*);
-        void SoundDefeat(DataMap*);
+        //void SoundVictory(DataMap*);
+        //void SoundDefeat(DataMap*);
 
         float character { 0 } ;
         enum TipoVoz { ChoqueEnemigo, ChoquePowerup, Derrape, Powerup, Random, Nitro, Seleccion };
-        CLSE::SoundEngine* soundEngine { nullptr };
+        CLSE::SharpEngine* soundEngine { nullptr };
 
         shared_ptr<EventManager> eventManager;
 
@@ -99,8 +102,8 @@ class SoundFacadeFMOD : public SoundFacade {
                                 "Personajes/voces",
                                 "Partida/cuenta_atras",
                                 "PowerUp/robojorobo",
-                                "Musica/in_game_1",
-                                "Partida/reloj"
+                                "Partida/reloj",
+                                "Partida/pitido_final"
                                 } 
             },
             { "InGame3DD",
@@ -118,7 +121,7 @@ class SoundFacadeFMOD : public SoundFacade {
                             {
                                 "PowerUp/escudo_roto",
                                 "Partida/coger_totem",
-                                "Coche/choque_powerup",
+                                "PowerUp/choque_powerup",
                                 "Coche/choque",
                                 "Partida/coger_caja"
                                 }
@@ -126,16 +129,20 @@ class SoundFacadeFMOD : public SoundFacade {
             },
             { "EndRace",
                                 {
-                                "Musica/fin_partida",
                                 "Personajes/derrota",
                                 "Personajes/victoria"
                                 }
             },
             { "Menu",
-                            {
+                                {
                                 "Menu/atras",
                                 "Menu/aceptar",
-                                "Menu/cambio_opcion",
+                                "Menu/cambio_opcion"
+                                }
+            },
+            { "Musica",         {
+                                "Musica/fin_partida",
+                                "Musica/in_game_1",
                                 "Musica/menu"
                                 }
             }

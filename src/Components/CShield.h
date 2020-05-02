@@ -19,7 +19,7 @@ public:
     void deactivePowerUp();
 
     time_point<system_clock> timeStart;
-    const int64_t durationTime = 10000;       // 10 segundos
+    const int64_t durationTime = 5000;       // 10 segundos
     
     bool activePowerUp = false;
 };

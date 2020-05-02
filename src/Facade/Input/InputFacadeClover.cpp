@@ -335,6 +335,8 @@ void InputFacadeClover::CheckInputSelectCharacter(int &input, int maxInput) {
             RenderFacadeManager::GetInstance()->GetRenderFacade()->CleanScene();
             EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_LOBBYMULTI});
         } else{
+            RenderFacadeManager::GetInstance()->GetRenderFacade()->CleanScene();
+
             shared_ptr<DataMap> data = make_shared<DataMap>();
             int num = input;
             (*data)[NUM] = num;
@@ -748,6 +750,7 @@ vector<Constants::InputTypes> InputFacadeClover::CheckInputMulti(){
 void InputFacadeClover::CheckInputPause(int& input, int maxInput){
 
     // esto es una cutrez que se hace porque si no al volver del menú no se oye el sonido de "salir" del menú. Que conste que yo no quería, Judith me obligó :(
+    // No es cierto y tengo pruebas. Le dije que si era una cutrez no hacia falta :'c
     if (WeHaveToGoToMenu) {
         uint64_t now = Utils::getMillisSinceEpoch();
         uint64_t interval = now - timerGoToMenu;
@@ -979,18 +982,7 @@ void InputFacadeClover::CheckInputSettings(std::vector<int> &inputs, int *maxInp
         SetValueInput(BUTTON_STICK_R, true);
         EventManager::GetInstance().AddEventMulti(Event{EventType::MENU_OPTION});
 
-        shared_ptr<DataMap> d = make_shared<DataMap>();
-        float value;
-        switch (option) {
-            case 0:
-                value = inputs[option]*0.33f;
-                (*d)[NUM] = value;
-                EventManager::GetInstance().AddEventMulti(Event{EventType::SET_GLOBAL_VOLUME, d});
-                break;
-            default:
-                cout << "Esta opcion de ajustes no me gusta" << endl;
-                break;
-        }
+        ChangeSettings(option, inputs[option]);
 
     } else if ( !IsKeyOrGamepadPress(GLFW_KEY_RIGHT, GLFW_GAMEPAD_AXIS_LEFT_X, true, 0.5, GLFW_GAMEPAD_BUTTON_DPAD_RIGHT, true) ) {
         SetValueInput(BUTTON_STICK_R, false);
@@ -1008,18 +1000,8 @@ void InputFacadeClover::CheckInputSettings(std::vector<int> &inputs, int *maxInp
         SetValueInput(BUTTON_STICK_L, true);
         EventManager::GetInstance().AddEventMulti(Event{EventType::MENU_OPTION});
 
-        shared_ptr<DataMap> d = make_shared<DataMap>();
-        float value;
-        switch (option) {
-            case 0: // SONIDO
-                value = inputs[option]*0.33f;
-                (*d)[NUM] = value;
-                EventManager::GetInstance().AddEventMulti(Event{EventType::SET_GLOBAL_VOLUME, d});
-                break;
-            default:
-                cout << "Esta opcion de ajustes no me gusta" << endl;
-                break;
-        }
+        ChangeSettings(option, inputs[option]);
+
     } else if ( !IsKeyOrGamepadPress(GLFW_KEY_LEFT, GLFW_GAMEPAD_AXIS_LEFT_X, true, -0.5, GLFW_GAMEPAD_BUTTON_DPAD_LEFT, true) ) {
         SetValueInput(BUTTON_STICK_L, false);
     }
@@ -1031,12 +1013,12 @@ void InputFacadeClover::CheckInputSettings(std::vector<int> &inputs, int *maxInp
         timeStart = system_clock::now();
         --option;
         if(option < 0) {
-            option = inputs.size()-1;
+            option = inputs.size();
         }
         SetValueInput(BUTTON_STICK_UP, true);
         EventManager::GetInstance().AddEventMulti(Event{EventType::MENU_OPTION});
     } else if ( !IsKeyOrGamepadPress(GLFW_KEY_UP, GLFW_GAMEPAD_AXIS_LEFT_Y, true, -0.5, GLFW_GAMEPAD_BUTTON_DPAD_UP, true) ) {
-        SetValueInput(BUTTON_STICK_UP, true);
+        SetValueInput(BUTTON_STICK_UP, false);
     }
 
     //BAJAR
@@ -1045,13 +1027,13 @@ void InputFacadeClover::CheckInputSettings(std::vector<int> &inputs, int *maxInp
 
         timeStart = system_clock::now();
         ++option;
-        if(option > (static_cast<int>(inputs.size())-1)) {
+        if(option > (static_cast<int>(inputs.size()))) {
             option = 0;
         }
         SetValueInput(BUTTON_STICK_DOWN, true);
         EventManager::GetInstance().AddEventMulti(Event{EventType::MENU_OPTION});
     } else if( !IsKeyOrGamepadPress(GLFW_KEY_DOWN, GLFW_GAMEPAD_AXIS_LEFT_Y, true, 0.5, GLFW_GAMEPAD_BUTTON_DPAD_DOWN, true) ) {
-        SetValueInput(BUTTON_STICK_DOWN, true);
+        SetValueInput(BUTTON_STICK_DOWN, false);
     }
 
 }
@@ -1074,5 +1056,52 @@ void InputFacadeClover::ChangeGameOptions(int option, int value) {
             if (value == 2) GameValues::GetInstance()->SetTimeTotem(60);
     
         default: break;
+    }
+}
+
+void InputFacadeClover::ChangeSettings(int option, int value) {
+    shared_ptr<DataMap> d = make_shared<DataMap>();
+    float valueMusic;
+    switch (option) {
+        case 0:
+            valueMusic = value*0.33f;
+            (*d)[NUM] = valueMusic;
+            EventManager::GetInstance().AddEventMulti(Event{EventType::SET_GLOBAL_VOLUME, d});
+            break;
+        case 1:
+            valueMusic = value*0.33f;
+            (*d)[NUM] = valueMusic;
+            EventManager::GetInstance().AddEventMulti(Event{EventType::SET_MUSIC_VOLUME, d});
+            //cout << "TOY CAMBIANDO EL VOLUMEN DE LA MUSICA (No ta hecho)\n";
+            break;
+        case 2:
+            int sh, sw;
+            if (value == 0) { sh = 576; sw = 1024; }
+            else if (value == 1) { sh = 720; sw = 1280; }
+            else { sh = 1080; sw = 1920; }
+            (*d)[SCREEN_HEIGHT] = sh;
+            (*d)[SCREEN_WIDTH] = sw;
+            EventManager::GetInstance().AddEventMulti(Event{EventType::SET_RESOLUTION, d});
+            //cout << "TOY CAMBIANDO LA RESOLUNION DE LA PANTALLA\n";
+            break;
+        case 3:
+            (*d)[TRUEFALSE] = value;
+            cout << value << endl;
+            EventManager::GetInstance().AddEventMulti(Event{EventType::ENABLE_PARTICLES, d});
+            //cout << "TOY PONIENDO O QUITANDO PARTICULAS\n";
+            break;
+        case 4:
+            (*d)[TRUEFALSE] = value;
+            EventManager::GetInstance().AddEventMulti(Event{EventType::ENABLE_VEGETATION, d});
+            //cout << "TOY PONIENDO O QUITANDO VEGETACION\n";
+            break;
+        case 5:
+            (*d)[TRUEFALSE] = value;
+            EventManager::GetInstance().AddEventMulti(Event{EventType::ENABLE_SHADERS, d});
+            //cout << "TOY PONIENDO O QUITANDO SOMBRAS\n";
+            break;
+        default:
+            cout << "Esta opcion de ajustes no me gusta" << endl;
+            break;
     }
 }

@@ -164,6 +164,7 @@ void StateInGame::InitializeSystems(ManCar &manCars, ManBoundingWall &manWall, M
     sysBoxPowerUp = make_shared<SystemBoxPowerUp>();
     sysLoD = make_unique<SystemLoD>();
     sysRanking = make_unique<SystemRanking>();
+    sysHud = make_unique<SysHud>();
 
     Car *mainCar = static_cast<Car *>(manCars.GetCar().get());
     Car *car = static_cast<Car *>(manCars.GetEntities()[Utils::getRandomInt(1, manCars.GetEntities().size() - 1)].get());
@@ -189,6 +190,7 @@ void StateInGame::InitializeManagers(const uint32_t timeGame) {
     manNamePlates = make_shared<ManNamePlate>(manCars.get());
     manLight = make_shared<ManLight>();
     manGameRules = make_unique<ManGameRules>(timeGame);
+    manHudEvent = make_unique<ManHUDEvent>();
     manParticleSystem = make_unique<ManParticleSystem>();
     manShield = make_unique<ManShield>();
 
@@ -275,6 +277,7 @@ void StateInGame::UpdateAnimationCountdown() {
         if (currentCountdown == 0) {
             currentUpdateState = UpdateState::GAME;
             manGameRules->ResetClock();
+            EventManager::GetInstance().AddEventMulti(Event{EventType::START_MINGAME});
         }
     }
 }
@@ -309,8 +312,9 @@ void StateInGame::UpdateGame() {
 
     // ACTUALIZACION DE LOS MANAGERS DE LOS COCHES
     bool gameFinished = manCars->UpdateCarPlayer(*(manTotems.get()));
-    if (gameFinished)
+    if (gameFinished) {
         GoToEndAnimation();
+    }
 
     // ACTUALIZACION DE LAS FISICAS DE LOS COCHES
     //physics->update(manCars->GetCar().get());
@@ -360,10 +364,13 @@ void StateInGame::UpdateGame() {
 
     renderEngine->FacadeAnimate(manBoxPowerUps->GetEntities());
 
+    //Actualiza el ranking y los eventos de hud
     sysRanking->Update(manCars.get());
+    sysHud->UpdateEventHud(manHudEvent.get());
     gameFinished = manGameRules->Update();
-    if (gameFinished)
+    if (gameFinished) {
         GoToEndAnimation();
+    }
 
     if (Constants::CLIPPING_OCTREE) {
         octreeScene = make_unique<Octree>(glm::vec3(0.0, 500.0, 0.0), 700.0, managersEntities);
@@ -381,6 +388,7 @@ void StateInGame::Update() {
             break;
         case UpdateState::GAME:
             UpdateGame();
+            EventManager::GetInstance().AddEventMulti(Event{EventType::START_MINGAME});
             break;
 
         default:
@@ -397,7 +405,7 @@ void StateInGame::Render() {
     if (Constants::CLIPPING_OCTREE && octreeScene.get())
         octreeScene->Draw(renderEngine);
 
-    renderEngine->FacadeDrawHUD(manCars->GetCar().get(), manCars.get(), manGameRules->GetGlobalClock().get());
+    renderEngine->FacadeDrawHUD(manCars->GetCar().get(), manCars.get(), manGameRules->GetGlobalClock().get(), manHudEvent.get());
     renderEngine->FacadeDrawGraphEdges(manWayPoint.get());
     if (currentUpdateState == UpdateState::COUNTDOWN) {
         // todo: esto de meter el width y el height aquí a piñón y los filenames.. es una kk
@@ -431,11 +439,13 @@ void StateInGame::Render() {
 }
 
 void StateInGame::GoToEndAnimation() {
+    soundEngine->SetState(11);
     currentUpdateState = UpdateState::END;
     timerEnd = Utils::getMillisSinceEpoch();
 }
 
 void StateInGame::GoToCountdownAnimation() {
+    soundEngine->SetState(12);
     // ponemos como próximo state el countdown
     currentUpdateState = UpdateState::COUNTDOWN;
     cout << "Cambiamos a UpdateCountdown" << endl;

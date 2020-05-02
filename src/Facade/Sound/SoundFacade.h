@@ -40,7 +40,7 @@ class SoundFacade {
     private:
         virtual void LoadSoundByState(const uint8_t) = 0;
         virtual void LoadSoundBank(const string&, const bool) = 0;
-        virtual void LoadSoundEvent(const string&, const bool) = 0;
+        virtual void LoadSoundEvent(const string&, const bool, const bool) = 0;
         
         virtual void SubscribeToGameEvents(const uint8_t) = 0;
     

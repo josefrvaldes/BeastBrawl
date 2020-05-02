@@ -33,6 +33,7 @@ CLEngine::CLEngine (const unsigned int w, const unsigned int h, const string& ti
     shaders.emplace_back(resourceManager->GetResourceShader("CLEngine/src/Shaders/shadowMappingShader.vert", "CLEngine/src/Shaders/shadowMappingShader.frag")->GetProgramID());
     shaders.emplace_back(resourceManager->GetResourceShader("CLEngine/src/Shaders/cartoonShader.vert", "CLEngine/src/Shaders/cartoonShader.frag")->GetProgramID());
     shaders.emplace_back(resourceManager->GetResourceShader("CLEngine/src/Shaders/lightMapping.vert", "CLEngine/src/Shaders/lightMapping.frag")->GetProgramID());
+    shaders.emplace_back(resourceManager->GetResourceShader("CLEngine/src/Shaders/basicShader.vert", "CLEngine/src/Shaders/basicShader.frag")->GetProgramID());
 
 }
 
@@ -221,13 +222,16 @@ void CLEngine::DrawDepthMap(){
 
 
 void CLEngine::DrawObjects(){
-    DrawDepthMap();
+    if(shadowMapping)
+        DrawDepthMap();
 
     DrawSkybox();
     CalculateViewProjMatrix();
     CalculateLights();
     smgr->DFSTree(glm::mat4(1.0f),GetActiveCamera());
-    DrawGrass();
+
+    if(grassActivate)
+        DrawGrass();
 }
 
 
@@ -276,6 +280,77 @@ void CLEngine::DrawImage2D(float _x, float _y, float _width, float _height, floa
 
     unsigned int texture;
     auto resourceTexture = CLResourceManager::GetResourceManager()->GetResourceTexture(file, vertically);
+    if(!resourceTexture){
+        glDeleteVertexArrays(1, &VAO);
+        glDeleteBuffers(1, &VBO);
+        return;
+    }
+    texture = static_cast<CLResourceTexture*>(resourceTexture)->GetTextureID();
+
+    glBindTexture(GL_TEXTURE_2D, texture);
+
+    glUseProgram(hudShader);
+    glBindVertexArray(VAO);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+    glDeleteVertexArrays(1, &VAO);
+    glDeleteBuffers(1, &VBO);
+    glDeleteBuffers(1, &EBO);
+}
+
+
+
+void CLEngine::DrawImage2D(float _x, float _y, float scale, float _depth, string file, bool vertically){
+    if(!hudShader){
+        auto resourceShader = CLResourceManager::GetResourceManager()->GetResourceShader("CLEngine/src/Shaders/spriteShader.vert", "CLEngine/src/Shaders/spriteShader.frag");
+        hudShader = resourceShader->GetProgramID();
+        shaders.push_back(hudShader);
+    }
+    auto resourceTexture = CLResourceManager::GetResourceManager()->GetResourceTexture(file, vertically);
+    if(!resourceTexture) {
+        return;
+    }
+
+    float w = resourceTexture->GetWidth()*scale;
+    float h = resourceTexture->GetHeight()*scale;
+
+    float nXLeft    =     (2.0f * _x)/width - 1.0f;
+    float nYUp      =     -1.0f * (((2.0f * _y)/height) - 1.0f);
+    float nXRight   =     ((2.0f * w) / width) + nXLeft;
+    float nYDown    =     -1.0f * (((2.0f * h) / height)) + nYUp;
+
+    float vertices[] = {                    // TEXT CORDS
+        nXRight,    nYUp,       _depth,       1.0f, 1.0f,         // top right
+        nXRight,    nYDown,     _depth,       1.0f, 0.0f,         // bottom right
+        nXLeft,     nYDown,     _depth,       0.0f, 0.0f,         // bottom left
+        nXLeft,     nYUp,       _depth,       0.0f, 1.0f          // top left
+    };
+
+    unsigned int indices[] = {
+            0, 3, 1,
+            3, 2, 1
+    };
+
+    unsigned int VBO, VAO, EBO;
+    glGenVertexArrays(1, &VAO);
+    glGenBuffers(1, &VBO);
+    glGenBuffers(1, &EBO);
+
+    glBindVertexArray(VAO);
+
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3* sizeof(float)));
+    glEnableVertexAttribArray(1);
+
+    unsigned int texture;
     if(!resourceTexture){
         glDeleteVertexArrays(1, &VAO);
         glDeleteBuffers(1, &VBO);
@@ -385,7 +460,8 @@ void CLEngine::DisableCursor(){
  * Mira si se han actualizado los valores de anchura y altura de la ventana y actualiza el viewport.
  */
 void CLEngine::UpdateViewport(){
-    glfwGetFramebufferSize(window, &width, &height);
+    //glfwGetFramebufferSize(window, &width, &height);
+    glfwSetWindowSize(window, width, height);
     glViewport(0, 0, width, height);
 }
 
@@ -782,6 +858,10 @@ float CLEngine::GetBoundingSizeById(unsigned int id){
     return node->CalculateBoundingBox();
 }
 
+void CLEngine::SetParticlesVisibility(bool mode){
+    smgr->SetParticlesActivated(mode);
+}
+
 
 // Comprueba si el cubo del octree se ve en la camara del jugador
 bool CLEngine::OctreeIncamera(float size, const glm::vec3& pos){
@@ -1027,6 +1107,8 @@ void CLEngine::CalculateLights(){
 void CLEngine::RemoveLightsAndCameras() {
     cameras.clear();
     pointLights.clear();
+    shadowMapping = nullptr;
+    skybox = nullptr;
 }
 
 
