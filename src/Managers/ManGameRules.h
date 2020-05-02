@@ -10,7 +10,7 @@ struct SystemGameRules;
 
 class ManGameRules{
    public:
-    ManGameRules( const uint32_t durationTime_);
+    ManGameRules();
     ~ManGameRules();
 
     void SubscribeToEvents();
