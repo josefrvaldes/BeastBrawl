@@ -197,18 +197,18 @@ Car* SystemVision::CalculateCentredCar(Entity* actualCar, int visionRange, ManCa
     Entity* objectiveCar = nullptr;
     float minDegrees = visionRange+1.0;
     float degreesFromCenter;
-    cout << "Corre platano\n";
+    //cout << "Corre platano\n";
     for(const auto& car : manCar->GetEntities()){
         if(car.get()!=actualCar){
             degreesFromCenter = DegreesFromCenter(actualCar, car.get());
-            cout << degreesFromCenter << "\n";
+            //cout << degreesFromCenter << "\n";
             if(minDegrees>degreesFromCenter){
                 auto cTransTarget = static_cast<CTransformable*>(car->GetComponent(CompType::TransformableComp).get());
                 if(!CollideWithWall(actualCar,cTransTarget->position,manBoundingWall) && !CollideWithOBB(actualCar,cTransTarget->position,manBoundingOBB) 
                 && !CollideWithGround(actualCar,cTransTarget->position,manBoundingGround)){
                     minDegrees = degreesFromCenter;
                     objectiveCar = car.get();
-                    cout << "Objetivo encontrado\n";
+                    //cout << "Objetivo encontrado\n";
 
                 }
             }

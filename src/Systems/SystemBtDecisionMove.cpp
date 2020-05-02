@@ -28,17 +28,17 @@ struct Facil2times_dm : public Decorator {
 
             cBrainAI->numTried += 1;
             if(cBrainAI->numTried == cBrainAI->totalTried){
-                cout << "INTENTO NUMERO: " << cBrainAI->numTried << " YA NO ESTAMOS PENSANDO 1" << endl;
+                //cout << "INTENTO NUMERO: " << cBrainAI->numTried << " YA NO ESTAMOS PENSANDO 1" << endl;
                 return getChild()->run(blackboard);
             }else{
-                cout << "LA IA ESTA PENSANDO... " << endl;
+                //cout << "LA IA ESTA PENSANDO... " << endl;
                 return false;
             }
 
         }
         //numTried = totalTried;
 
-        cout << "INTENTO NUMERO: " << cBrainAI->numTried << " YA NO ESTAMOS PENSANDO 2" << endl;
+        //cout << "INTENTO NUMERO: " << cBrainAI->numTried << " YA NO ESTAMOS PENSANDO 2" << endl;
         //numTried 
         return getChild()->run(blackboard);
     }
@@ -56,10 +56,10 @@ struct HavePowerUp_dm : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
         auto cPowerUp = static_cast<CPowerUp*>(blackboard->actualCar->GetComponent(CompType::PowerUpComp).get());
         if(cPowerUp->typePowerUp != typeCPowerUp::None){
-            cout << "TENEMOS POWER UP " << endl;
+            //cout << "TENEMOS POWER UP " << endl;
             return true;
         }
-        cout << "NO TENEMOS POWER UP " << endl;
+        //cout << "NO TENEMOS POWER UP " << endl;
         return false;
     }
 };
@@ -68,9 +68,9 @@ struct TotemAlone_dm : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
         auto cTotem = static_cast<CTotem*>(blackboard->manTotems->GetEntities()[0]->GetComponent(CompType::TotemComp).get());
         if(cTotem->active){
-            cout << "EL TOTEM ESTA EN EL SUELO" << endl;
+            //cout << "EL TOTEM ESTA EN EL SUELO" << endl;
         }else{
-            cout << "EL TOTEM NO ESTA EN EL SUELO" << endl;
+            //cout << "EL TOTEM NO ESTA EN EL SUELO" << endl;
         }
         return cTotem->active;
     }
@@ -82,12 +82,12 @@ struct TotemOtherCar_dm : public behaviourTree {
             if(actualAI.get() != blackboard->actualCar){
                 auto cTotemAI = static_cast<CTotem*>(actualAI->GetComponent(CompType::TotemComp).get());
                 if(cTotemAI->active == true){
-                    cout << "EL TOTEM LO TIENE OTRO COCHE " << endl;
+                    //cout << "EL TOTEM LO TIENE OTRO COCHE " << endl;
                     return true;
                 }
             }
         }
-        cout << " EL TOTEM NOOOOOOOO LO TIENE OTRO COCHE " << endl;
+        //cout << " EL TOTEM NOOOOOOOO LO TIENE OTRO COCHE " << endl;
         return false;  
     }
 };
@@ -98,13 +98,13 @@ struct HavePowerUpAttack_dm : public behaviourTree {
         if( cPowerUp->typePowerUp == typeCPowerUp::MelonMolon || 
             cPowerUp->typePowerUp == typeCPowerUp::TeleBanana ||
             cPowerUp->typePowerUp == typeCPowerUp::SuperMegaNitro  ){
-            std::cout << "TENEMOS POWERUP DE ATAQUE ";
-            if(cPowerUp->typePowerUp == typeCPowerUp::MelonMolon)  cout << "MELON " <<endl;
-            if(cPowerUp->typePowerUp == typeCPowerUp::TeleBanana)  cout << "BANANA " <<endl;
-            if(cPowerUp->typePowerUp == typeCPowerUp::SuperMegaNitro)  cout << "SUPERMEGANITRO " <<endl;
+            //std:://cout << "TENEMOS POWERUP DE ATAQUE ";
+            //if(cPowerUp->typePowerUp == typeCPowerUp::MelonMolon)  ////cout << "MELON " <<endl;
+            //if(cPowerUp->typePowerUp == typeCPowerUp::TeleBanana)  ////cout << "BANANA " <<endl;
+            //if(cPowerUp->typePowerUp == typeCPowerUp::SuperMegaNitro)  ////cout << "SUPERMEGANITRO " <<endl;
             return true;
         }
-        cout << "NOOOOOO TENEMOS POWERUP DE ATAQUE " <<endl;
+        //cout << "NOOOOOO TENEMOS POWERUP DE ATAQUE " <<endl;
         return false;
     }
 };
@@ -127,10 +127,10 @@ struct SeeTotem_dm : public behaviourTree {
         auto actualCar = blackboard->actualCar;
         auto cBrain = static_cast<CBrainAI*>(actualCar->GetComponent(CompType::BrainAIComp).get());
         if(cBrain->totemInVision){
-            cout << "VEO EL TOTEM" << endl;
+            //cout << "VEO EL TOTEM" << endl;
             return true;
         }
-        cout << "NO VEO EL TOTEM" << endl;
+        //cout << "NO VEO EL TOTEM" << endl;
         return false;
     }
 };
@@ -141,10 +141,10 @@ struct SeePowerUp_dm : public behaviourTree {
         auto actualCar = blackboard->actualCar;
         auto cBrain = static_cast<CBrainAI*>(actualCar->GetComponent(CompType::BrainAIComp).get());
         if(cBrain->boxInVision.size() > 0){
-            cout << "VEMOS AL MENOS 1 POWERUP" << endl;
+            //cout << "VEMOS AL MENOS 1 POWERUP" << endl;
             return true;
         }
-        cout << "NO VEMOS NINGUN POWERUP" << endl;
+        //cout << "NO VEMOS NINGUN POWERUP" << endl;
         return false;
     }
 };
@@ -155,7 +155,7 @@ struct Think_dm : public behaviourTree {
         auto actualCar = blackboard->actualCar;
         auto cBrain = static_cast<CBrainAI*>(actualCar->GetComponent(CompType::BrainAIComp).get());
         cBrain->thinking = true;
-        cout << "PONEMOS EL CBRAIN A TRUE, YA QUE ESTAMOS PENSANDO" <<endl;
+        //cout << "PONEMOS EL CBRAIN A TRUE, YA QUE ESTAMOS PENSANDO" <<endl;
         return true;
     }
 };
@@ -166,7 +166,7 @@ struct NoThink_dm : public behaviourTree {
         auto actualCar = blackboard->actualCar;
         auto cBrain = static_cast<CBrainAI*>(actualCar->GetComponent(CompType::BrainAIComp).get());
         cBrain->thinking = false;
-        cout << "PONEMOS EN CBRAIN->THINKING A FALSE, YA NO DEBEMOS DE PENSAR MAAAAS" <<endl;
+        //cout << "PONEMOS EN CBRAIN->THINKING A FALSE, YA NO DEBEMOS DE PENSAR MAAAAS" <<endl;
         return true;
     }
 };
@@ -180,12 +180,12 @@ struct NoCriticalTime_dm : public behaviourTree {
                 auto cTotemAI = static_cast<CTotem*>(actualAI->GetComponent(CompType::TotemComp).get());
                 if(cTotemAI->active && (cTotemAI->accumulatedTime/1000.0 + 10.0 < cTotemAI->DURATION_TIME/1000.0) ){
                     // si el tiempo actual + el critco es menor al total = no estamos en tiempo critico
-                    cout << "EL TIEMPO QUE QUEDA NO ES CRITICOOOO" <<endl;
+                    //cout << "EL TIEMPO QUE QUEDA NO ES CRITICOOOO" <<endl;
                     return true;
                 }
             }
         }
-        cout << "EL TIEMPO QUE QUEDA ES CRITICO " <<endl;
+        //cout << "EL TIEMPO QUE QUEDA ES CRITICO " <<endl;
         return false;
     }
 };
@@ -197,11 +197,11 @@ struct SameNavMeshCT_dm : public behaviourTree {
         auto cCurrentNavMeshTotem = static_cast<CCurrentNavMesh*>(blackboard->manTotems->GetEntities()[0].get()->GetComponent(CompType::CurrentNavMeshComp).get());
         if(cCurrendNavMeshCar->currentNavMesh == cCurrentNavMeshTotem->currentNavMesh){
             // estamos en el mismo navmesh que el totem
-            cout << "ESTAMOS EN EL MISMO NAVMESH QUE EL TOTEM" << endl;
+            //cout << "ESTAMOS EN EL MISMO NAVMESH QUE EL TOTEM" << endl;
             return true;
         }else{
             // no estamos en el mismo navmesh
-            cout << "NO ESTAMOS EN EL MISMO NAVMEHS QUE EL TOTEM" << endl;
+            //cout << "NO ESTAMOS EN EL MISMO NAVMEHS QUE EL TOTEM" << endl;
             return false; 
         }
     }
@@ -220,13 +220,13 @@ struct SameNavMeshCCT_dm : public behaviourTree {
                     auto cCurrendNavMeshCarAI = static_cast<CCurrentNavMesh*>(actualAI->GetComponent(CompType::CurrentNavMeshComp).get());
                     if(cCurrendNavMeshCar->currentNavMesh == cCurrendNavMeshCarAI->currentNavMesh){
                         // estamos en el mismo navmesh que el totem
-                        cout << "ESTAMOS EN EL MISMO NAVMESH QUE EL COCHE QUUE TIENE ELTOTEM" << endl;
+                        //cout << "ESTAMOS EN EL MISMO NAVMESH QUE EL COCHE QUUE TIENE ELTOTEM" << endl;
                         return true;
                     }
                 }
             }
         }
-        cout << "NO ESTAMOS EN EL MISMO NAVMESH QUE EL COCHE QUE TIENE EL TOTEM " <<endl;
+        //cout << "NO ESTAMOS EN EL MISMO NAVMESH QUE EL COCHE QUE TIENE EL TOTEM " <<endl;
         return false;
     }
 };
@@ -239,10 +239,10 @@ struct SeeCar_dm : public behaviourTree {
         auto actualCar = blackboard->actualCar;
         auto cBrain = static_cast<CBrainAI*>(actualCar->GetComponent(CompType::BrainAIComp).get());
         if(cBrain->carInVision.size() > 0){
-            cout << "VEO POR LO MENOS A UN COCHE"<<endl;
+            //cout << "VEO POR LO MENOS A UN COCHE"<<endl;
             return true;
         }
-        cout << "NO VEO NINGUN COCHE"<<endl;
+        //cout << "NO VEO NINGUN COCHE"<<endl;
         return false;
     }
 };
@@ -257,13 +257,13 @@ struct SeeCarTotem_dm : public behaviourTree {
                 if(currentCar != blackboard->actualCar){
                     auto cTotemCar = static_cast<CTotem*>(currentCar->GetComponent(CompType::TotemComp).get());
                     if(cTotemCar->active == true){
-                        cout << "DE LOS COCHES QUE ESTOY VIENDO, UNO TIENE EL TOTEM " << endl;
+                        //cout << "DE LOS COCHES QUE ESTOY VIENDO, UNO TIENE EL TOTEM " << endl;
                         return true;
                     }
                 }
             }
         }
-        cout << "NINGUN COCHE QUE ESTOY VIENDO TIENE EL TOTEM " << endl;
+        //cout << "NINGUN COCHE QUE ESTOY VIENDO TIENE EL TOTEM " << endl;
         return false;
     }
 };
@@ -278,7 +278,7 @@ struct MoveToTotem_dm : public behaviourTree {
         (*dataTotem)[ACTUAL_CAR] = blackboard->actualCar;              
         (*dataTotem)[POS_DESTINATION] = cTransTotem->position;                                        
         EventManager::GetInstance().AddEventMulti(Event{EventType::CHANGE_DESTINATION, dataTotem}); 
-        cout << "ACCION: VAMOS A POR EL TOTEM" << endl;
+        //cout << "ACCION: VAMOS A POR EL TOTEM" << endl;
         return true;
     }
 };
@@ -300,14 +300,14 @@ struct MovNavMeshTotem_dm : public behaviourTree {
         }else{
             cBrainAI->targetNavMesh =-1;
         }  
-        cout << "NOS MOVEREMOS AL NAVMESH QUE DONDE ESTA EL TOTEEEEEEM " << endl;
+        //cout << "NOS MOVEREMOS AL NAVMESH QUE DONDE ESTA EL TOTEEEEEEM " << endl;
         return true;
     }
 };
 // TODO: IMPLEMENTADO PARCIAL -> QUEDA LA OTRA PARTE
 struct MoveRandom_dm : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
-        std::cout << "Vamos a movernos por los powerUps UUUEEEEPAA" << std::endl;    
+        //std:://cout << "Vamos a movernos por los powerUps UUUEEEEPAA" << std::endl;    
         shared_ptr<DataMap> dataPowerUp = make_shared<DataMap>();
         (*dataPowerUp)[ACTUAL_CAR] = blackboard->actualCar;     
         (*dataPowerUp)[MAN_WAYPOINTS] = blackboard->manWayPoint;  
@@ -344,7 +344,7 @@ struct MovCarView_dm : public behaviourTree {
         (*dataFollow)[ACTUAL_CAR] = blackboard->actualCar;     
         (*dataFollow)[POS_DESTINATION] = cTransCarFollow->position;                                        
         EventManager::GetInstance().AddEventMulti(Event{EventType::CHANGE_DESTINATION, dataFollow}); 
-        cout << "NOS MOVEMOS AL COCHE QUE ESTAMOS VIENDO (AL PRIMERO, QUE ES EL MAS CENTRADO) " << endl;
+        //cout << "NOS MOVEMOS AL COCHE QUE ESTAMOS VIENDO (AL PRIMERO, QUE ES EL MAS CENTRADO) " << endl;
         return true;
     }
 };
@@ -366,7 +366,7 @@ struct MovCarViewTotem_dm : public behaviourTree {
                     (*dataFollow)[ACTUAL_CAR] = blackboard->actualCar;     
                     (*dataFollow)[POS_DESTINATION] = cTransCarFollow->position;                                        
                     EventManager::GetInstance().AddEventMulti(Event{EventType::CHANGE_DESTINATION, dataFollow}); 
-                    cout << "NOS MOVEMOS AL COCHE QUE TIENE EL TOTEM Y ESTAMOS VIENDO " << endl;
+                    //cout << "NOS MOVEMOS AL COCHE QUE TIENE EL TOTEM Y ESTAMOS VIENDO " << endl;
                     return true;
                 }
             }
@@ -388,10 +388,10 @@ struct MovViewPowerUp_dm : public behaviourTree {
             (*dataBoxPU)[ACTUAL_CAR] = blackboard->actualCar;     
             (*dataBoxPU)[POS_DESTINATION] = cTransBoxPU->position;                                        
             EventManager::GetInstance().AddEventMulti(Event{EventType::CHANGE_DESTINATION, dataBoxPU}); 
-            cout << "ACCION: NOS MOVEMOS AL POWERUP: " << randBox << " DENTRO DE LA LISTA DE LO QUE VEO" << endl;
+            //cout << "ACCION: NOS MOVEMOS AL POWERUP: " << randBox << " DENTRO DE LA LISTA DE LO QUE VEO" << endl;
             return true;
         }
-        cout << "YA TENEMOS LOCALIZADO EL POWERUP, POR LO QUE NO VOLVEMOS A CALCULAR CPOSDESTINATION" <<endl;
+        //cout << "YA TENEMOS LOCALIZADO EL POWERUP, POR LO QUE NO VOLVEMOS A CALCULAR CPOSDESTINATION" <<endl;
         return true;
     }
 };
@@ -415,7 +415,7 @@ struct MoveToCarTotem_dm : public behaviourTree {
                     (*dataCarTotem)[POS_DESTINATION] = cTransCarTotem->position;                                        
                     EventManager::GetInstance().AddEventMulti(Event{EventType::CHANGE_DESTINATION, dataCarTotem});
 
-                    cout << "MISMO NAVMESH QUE EL COCHE CON TOTEM -> A POR EL!! "<< endl;
+                    //cout << "MISMO NAVMESH QUE EL COCHE CON TOTEM -> A POR EL!! "<< endl;
                     return true;
                 }
             }
@@ -446,7 +446,7 @@ struct MoveToNavMeshCarTotem_dm : public behaviourTree {
                     }else{
                         cBrainAI->targetNavMesh = -1;
                     }
-                    cout << "NOS MOVEMOS AL NAVMHES DONDE ESTA EL COCHE CON EL TOTEM LOCOOOOO "<< endl;
+                    //cout << "NOS MOVEMOS AL NAVMHES DONDE ESTA EL COCHE CON EL TOTEM LOCOOOOO "<< endl;
                     return true;
                 }
             }
@@ -664,5 +664,5 @@ void SystemBtDecisionMove::update(CarAI* actualCar){
     
 
     selectorBehaviourTree->run(blackboard.get());
-    cout << "PASAMOS 1 CICLO ---------------------------------------------------------------------------------------------------------------------------- " << endl;
+    //cout << "PASAMOS 1 CICLO ---------------------------------------------------------------------------------------------------------------------------- " << endl;
 }
