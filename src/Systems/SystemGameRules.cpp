@@ -6,6 +6,7 @@
 #include <Components/CNitro.h>
 #include <Components/CClock.h>
 #include <Components/CId.h>
+#include <Systems/Utils.h>
 
 #include <Facade/Render/RenderFacadeManager.h>
 
@@ -56,9 +57,6 @@ bool SystemGameRules::UpdateRulesCarPowerUps(Entity& car_, Entity& totem_) const
             cTransformTotem->position.y = cTransformCar->position.y + 10.0f;
     }
 
-
-
-
     if(cTotem->accumulatedTime/1000.0 > cTotem->DURATION_TIME/1000.0){
         cout << "Has ganado \n";
         //Game::GetInstance()->SetState(State::ENDRACE);
@@ -86,7 +84,7 @@ bool SystemGameRules::UpdateRulesCarPowerUps(Entity& car_, Entity& totem_) const
 }
 
 
-void SystemGameRules::RestartAllTimers(vector<shared_ptr<Entity>> entities, Entity &globalClock_) {
+void SystemGameRules::RestartAllTimers(vector<shared_ptr<Entity>> entities, Entity &globalClock_, int64_t timeStartPause) {
     cout << "Estamos reseteando los timers" << endl;
     auto cClock = static_cast<CClock*>(globalClock_.GetComponent(CompType::ClockComp).get());
     if(cClock->active) 
@@ -100,15 +98,21 @@ void SystemGameRules::RestartAllTimers(vector<shared_ptr<Entity>> entities, Enti
         bool hasNitro = e->HasComponent(CompType::NitroComp);
         if(hasNitro) {
             auto cNitro = static_cast<CNitro*>(e->GetComponent(CompType::NitroComp).get());
-            if(cNitro->activePowerUp)
-                cNitro->timeStart = system_clock::now();
+            if(cNitro->activePowerUp) {
+                int64_t now = Utils::getMillisSinceEpoch();
+                int64_t interval = now-timeStartPause;
+                cNitro->timeStart += std::chrono::milliseconds(interval);
+            }
         }
 
         bool hasShield = e->HasComponent(CompType::NitroComp);
         if(hasShield) {
             auto cShield = static_cast<CShield*>(e->GetComponent(CompType::ShieldComp).get());
-            if(cShield->activePowerUp)
-                cShield->timeStart = system_clock::now();
+            if(cShield->activePowerUp) {
+                int64_t now = Utils::getMillisSinceEpoch();
+                int64_t interval = now-timeStartPause;
+                cShield->timeStart += std::chrono::milliseconds(interval);
+            }
         }
     }
 }

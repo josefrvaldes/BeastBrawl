@@ -173,7 +173,7 @@ struct EscapeWithTotem_mt : public behaviourTree {
         (*dataPowerUp)[ACTUAL_CAR] = blackboard->actualCar;     
         (*dataPowerUp)[MAN_WAYPOINTS] = blackboard->manWayPoint;  
         (*dataPowerUp)[MAN_NAVMESH] = blackboard->manNavMesh;                                                                                                      
-        EventManager::GetInstance().AddEventMulti(Event{EventType::MOVE_TO_POWERUP, dataPowerUp}); 
+        EventManager::GetInstance().AddEventMulti(Event{EventType::MOVE_RANDOM_POWERUP, dataPowerUp}); 
         return true;
     }
 };
@@ -186,7 +186,7 @@ struct MoveToPowerUp_mt : public behaviourTree {
         (*dataPowerUp)[ACTUAL_CAR] = blackboard->actualCar;     
         (*dataPowerUp)[MAN_WAYPOINTS] = blackboard->manWayPoint;  
         (*dataPowerUp)[MAN_NAVMESH] = blackboard->manNavMesh;                                                                                                      
-        EventManager::GetInstance().AddEventMulti(Event{EventType::MOVE_TO_POWERUP, dataPowerUp}); 
+        EventManager::GetInstance().AddEventMulti(Event{EventType::MOVE_RANDOM_POWERUP, dataPowerUp}); 
         return true;
     }
 };

@@ -48,6 +48,7 @@ void StateInGameSingle::UpdateAnimationEnd() {
 void StateInGameSingle::UpdateGame() {
     // si estamos yendo a pausa, paramos los temporizadores
     if (goingToPause) {
+        timeStartPause = Utils::getMillisSinceEpoch();
         goingToPause = false;
         comingBackFromPause = true;
         cout << "Vamos a ir a pausa, teóricamente paramos los temporizadores" << endl;
@@ -55,7 +56,7 @@ void StateInGameSingle::UpdateGame() {
         // si volvemos de pausa, reiniciamos los temporizadores
     } else if (comingBackFromPause) {
         cout << "Volvemos de pausa, reiniciamos los temporizadores" << endl;
-        manGameRules->RestartAllTimers(manCars->GetEntities());
+        manGameRules->RestartAllTimers(manCars->GetEntities(), timeStartPause);
         comingBackFromPause = false;
     }
 
@@ -150,20 +151,24 @@ void StateInGameSingle::createSystemAI() {
     manAI = make_unique<ManAI>();
 
     // iniciamos los sistemas
+    InitVision();
     InitBtMoveTo();
     InitPathPlanning();
     InitBtLoDMove();
     InitBtPowerUp();
+    InitBtDecisionMove();
 
     //creamos comportamientos IA
     uint32_t i = 0;
-    for (auto actualAI : manCars->GetEntities()) {
-        if (static_cast<Car *>(actualAI.get())->GetTypeCar() == TypeCar::CarAI) {
-            manAI->addBehavior(static_cast<CarAI *>(actualAI.get()), systemBtMoveTo.get(), systemBtMoveTo->getFrecuency(), i, systemBtMoveTo.get()->getMaxProcessTime());
-            manAI->addBehavior(static_cast<CarAI *>(actualAI.get()), systemPathPlanning.get(), systemPathPlanning->getFrecuency(), i, systemPathPlanning.get()->getMaxProcessTime());
-            manAI->addBehavior(static_cast<CarAI *>(actualAI.get()), systemBtLoDMove.get(), systemBtLoDMove->getFrecuency(), i, systemBtLoDMove.get()->getMaxProcessTime());
-            manAI->addBehavior(static_cast<CarAI *>(actualAI.get()), systemBtPowerUp.get(), systemBtPowerUp->getFrecuency(), i, systemBtPowerUp.get()->getMaxProcessTime());
-
+    for(auto actualAI : manCars->GetEntities()){
+        if (static_cast<Car*>(actualAI.get())->GetTypeCar() == TypeCar::CarAI){
+            manAI->addBehavior(static_cast<CarAI*>(actualAI.get()), systemVisionAI.get(),       systemVisionAI->getFrecuency(),         i, systemVisionAI.get()->getMaxProcessTime() );
+            manAI->addBehavior(static_cast<CarAI*>(actualAI.get()), systemBtDecisionMove.get(), systemBtDecisionMove->getFrecuency(),   i, systemBtDecisionMove.get()->getMaxProcessTime() );
+            //manAI->addBehavior(static_cast<CarAI*>(actualAI.get()), systemBtMoveTo.get(),     systemBtMoveTo->getFrecuency(),         i, systemBtMoveTo.get()->getMaxProcessTime() );
+            manAI->addBehavior(static_cast<CarAI*>(actualAI.get()), systemPathPlanning.get(),   systemPathPlanning->getFrecuency(),     i, systemPathPlanning.get()->getMaxProcessTime() );
+            manAI->addBehavior(static_cast<CarAI*>(actualAI.get()), systemBtLoDMove.get(),      systemBtLoDMove->getFrecuency(),        i, systemBtLoDMove.get()->getMaxProcessTime() );
+            manAI->addBehavior(static_cast<CarAI*>(actualAI.get()), systemBtPowerUp.get(),      systemBtPowerUp->getFrecuency(),        i, systemBtPowerUp.get()->getMaxProcessTime() );
+            
             i++;
         }
     }
@@ -226,6 +231,39 @@ void StateInGameSingle::InitPathPlanning() {
     systemPathPlanning->setMaxProcessTime(0.00025);
 }
 
+void StateInGameSingle::InitVision(){
+    systemVisionAI = make_unique<SystemVisionAI>();
+
+    systemVisionAI->AddManager(*manCars.get());
+    systemVisionAI->AddManager(*manPowerUps.get());
+    systemVisionAI->AddManager(*manBoxPowerUps.get());
+    systemVisionAI->AddManager(*manTotems.get());
+    systemVisionAI->AddManager(*manWayPoint.get());
+    systemVisionAI->AddManager(*manNavMesh.get());
+    systemVisionAI->AddManager(*manBoundingWall.get());
+    systemVisionAI->AddManager(*manBoundingOBB.get());
+    systemVisionAI->AddManager(*manBoundingGround.get());
+
+    systemVisionAI->setMaxProcessTime(0.00025);
+}
+
+void StateInGameSingle::InitBtDecisionMove(){
+    systemBtDecisionMove = make_unique<SystemBtDecisionMove>();
+
+    systemBtDecisionMove->AddManager(*manCars.get());
+    systemBtDecisionMove->AddManager(*manPowerUps.get());
+    systemBtDecisionMove->AddManager(*manBoxPowerUps.get());
+    systemBtDecisionMove->AddManager(*manTotems.get());
+    systemBtDecisionMove->AddManager(*manWayPoint.get());
+    systemBtDecisionMove->AddManager(*manNavMesh.get());
+    systemBtDecisionMove->AddManager(*manBoundingWall.get());
+    systemBtDecisionMove->AddManager(*manBoundingOBB.get());
+
+    systemBtDecisionMove->setMaxProcessTime(0.00050);
+}
+
+
+
 void StateInGameSingle::CAMBIARInicializarCarAIS(ManCar &manCars, ManWayPoint &manWayPoint) {
     /*    
     auto cWayPoint = static_cast<CWayPoint *>(manWayPoint.GetEntities()[0]->GetComponent(CompType::WayPointComp).get());
@@ -258,7 +296,8 @@ void StateInGameSingle::CAMBIARInicializarCarAIS(ManCar &manCars, ManWayPoint &m
 
     auto iaPjs = GameValues::GetInstance()->GetIACharacters();
 
-    auto posCar1 = glm::vec3(0.0f, 15.0f, -200.0f);
+
+    auto posCar1 = glm::vec3(290.0f, 15.0f, -300.0f);
     auto posCar2 = glm::vec3(-202.0f, 15.0f, -145.0f);
     auto posCar3 = glm::vec3(209.0f, 15.0f, -145.0f);
 

@@ -117,7 +117,7 @@ ManNavMesh::ManNavMesh() {
     SubscribeToEvents();
 
 
-
+    // NAVMESH HERMANOS
     bool next= false;
     for( auto currentNavMesh : this->GetEntities()){
         auto cNavMesh = static_cast<CNavMesh*>(currentNavMesh.get()->GetComponent(CompType::NavMeshComp).get());
@@ -139,6 +139,21 @@ ManNavMesh::ManNavMesh() {
         }
     }
     // cuando hemos acabado de crear los NavMesh vamos a ver cque NavMesh son los que estan conectados con ellos
+
+    // DECIDIMOS EL NAVMESH CENTRAAAAAAAAAL
+    float maxArea = 0.0;
+    Entity* maxNavMesh = nullptr;
+    if(this->GetEntities().size() > 0) maxNavMesh = this->GetEntities()[0].get();
+    // SELECCIONAR NAVMHES CENTRAL
+    for( auto currentNavMesh : this->GetEntities()){
+        auto cDimNav = static_cast<CDimensions*>(currentNavMesh.get()->GetComponent(CompType::DimensionsComp).get());
+        if(maxArea < (cDimNav->width*cDimNav->depth)){
+            maxArea = cDimNav->width*cDimNav->depth;
+            maxNavMesh = currentNavMesh.get();
+        }
+    }
+    auto cMaxNavMesh = static_cast<CNavMesh*>(maxNavMesh->GetComponent(CompType::NavMeshComp).get());
+    cMaxNavMesh->centralNavMESH = true;
 }
 
 void ManNavMesh::Update(ManCar &manCar_) {

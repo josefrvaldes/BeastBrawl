@@ -10,7 +10,6 @@
 
 using namespace std;
 
-class ManCar;
 class Entity;
 class CTransformable;
 class CNitro;
@@ -32,14 +31,17 @@ public:
     void UpdateSeek(Entity* actualCar);
     void UpdateArrive(Entity* actualCar);
     float UpdatePursuePowerUp(Entity* actualCar, Entity* targetCar);
-    bool UpdateObstacleAvoidance(Entity* actualCar,  ManCar* manCar) const;
+    bool UpdateCarAvoidance(Entity* actualCar) const;
     bool UpdateWallAvoidance(Entity* actualCar,  ManBoundingWall* manBoundingWall, ManBoundingOBB* manBoundingOBB) const;
+    void UpdateThink(Entity* actualCar);
 
+
+private:
     glm::vec2 Seek(Entity* originCar, const glm::vec3& posTargetCar, const glm::vec2& velocityVector) const;
     glm::vec2 Arrive(Entity* originCar, const glm::vec3& posTargetCar, const glm::vec2& velocityVector) const;
     glm::vec2 Pursue(Entity* originCar, Entity* targetCar, const glm::vec2& velocityVector) const;
     glm::vec2 PursuePowerUp(Entity* originCar, Entity* targetCar, const glm::vec2& velocityVector) const;
-    glm::vec2 ObstacleAvoidance(Entity* actualCar, ManCar* manCar, const glm::vec2& velocityVector) const;
+    glm::vec2 CarAvoidance(Entity* actualCar, const glm::vec2& velocityVector) const;
     glm::vec2 WallAvoidance(Entity* actualCar, ManBoundingWall* manBoundingWall, ManBoundingOBB* manBoundingOBB, const glm::vec2& velocityVector) const;
 
     void UpdateAngleRotation(CCar* cCar, float angle) const;
@@ -56,9 +58,7 @@ public:
     void AvoidVibration(Entity* actualCar, Entity *actualObstacle, const glm::vec2& velocityVector, glm::vec2& vectorForce) const;
     void AvoidTrapCorner(Entity* actualCar, Entity *actualObstacle, const glm::vec2& velocityVector, const glm::vec3& target, glm::vec2& vectorForce) const;
 
-protected:
-private:
+
     unique_ptr<CLPhysics> clPhysics;
     glm::vec2 ApplyExternalForce(CCar *cCar, CExternalForce *externalForce, const glm::vec2& carForce) const;
-
 };

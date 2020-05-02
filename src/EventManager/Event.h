@@ -54,7 +54,7 @@ enum EventType {
     THROW_POWERUP,
     THROW_POWERUP_AI,
     THROW_POWERUP_HUMAN,
-    MOVE_TO_POWERUP,
+    MOVE_RANDOM_POWERUP,
     CHANGE_DESTINATION,
     PRESS_P,                    // Sonido pito
     UPDATE_POWERUP_HUD,         // Actualiza el hud de powerup

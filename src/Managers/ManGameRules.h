@@ -14,7 +14,7 @@ class ManGameRules{
     ~ManGameRules();
 
     void SubscribeToEvents();
-    void RestartAllTimers(vector<shared_ptr<Entity>> entities);
+    void RestartAllTimers(vector<shared_ptr<Entity>> entities, int64_t timeStartPause);
     void ResetClock();
 
     /**

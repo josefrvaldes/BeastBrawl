@@ -108,6 +108,10 @@ class RenderFacadeClover : public RenderFacade {
       bool FacadeOctreeInCamera(float size, const glm::vec3& pos) override {return device->OctreeIncamera(size, pos);};
       void FacadeSetOctreeVisibleById(unsigned int id, bool v) override {device->SetOctreeVisibleById(id, v);};
 
+      float FacadeGetFovActualCamera() override { return device->GetFovActualCamera(); };
+      glm::vec3 FacadeGetTargetActualCamera() override { return device->GetTargetActualCamera(); };
+      glm::vec3 FacadeGetPositionActualCamera() override { return device->GetPositionActualCamera(); };
+
       //DEBUG
       void Draw3DLine(vec3& pos1, vec3& pos2, uint16_t r, uint16_t g, uint16_t b) const override;
       void Draw3DLine(vec3& pos1, vec3& pos2) const override;

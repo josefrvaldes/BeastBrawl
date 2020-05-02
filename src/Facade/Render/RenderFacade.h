@@ -100,6 +100,10 @@ class RenderFacade {
     virtual void FacadeUpdateVisibility(DataMap* d) = 0;
     virtual bool FacadeOctreeInCamera(float size, const glm::vec3& pos) = 0;
     virtual void FacadeSetOctreeVisibleById(unsigned int id, bool v) = 0;
+
+    virtual float FacadeGetFovActualCamera() = 0;
+    virtual glm::vec3 FacadeGetTargetActualCamera() = 0;
+    virtual glm::vec3 FacadeGetPositionActualCamera() = 0;
     //DEBUG
     virtual void Draw3DLine(vec3 &pos1, vec3 &pos2, uint16_t r, uint16_t g, uint16_t b) const = 0;
     virtual void Draw3DLine(vec3 &pos1, vec3 &pos2) const = 0;
