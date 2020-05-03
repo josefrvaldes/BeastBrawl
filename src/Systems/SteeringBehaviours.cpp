@@ -507,7 +507,7 @@ glm::vec2 SteeringBehaviours::WallAvoidance(Entity* actualCar, ManBoundingWall* 
 
 // calcula el vector resultante para evadir un OBB en caso de colisionar
 glm::vec2 SteeringBehaviours::ObstacleAvoidance(Entity* actualCar, ManBoundingOBB* manBoundingOBB, const std::vector<glm::vec2>& vectorRay) const{
-    auto cCar = static_cast<CCar*>(actualCar->GetComponent(CompType::CarComp).get());
+    //auto cCar = static_cast<CCar*>(actualCar->GetComponent(CompType::CarComp).get());
     auto cRay = static_cast<CBoundingRay*>(actualCar->GetComponent(CompType::CompBoundingRay).get());
     glm::vec2 vectorForce = glm::vec2(0.0, 0.0);
     glm::vec3 target = glm::vec3(0.0, 0.0, 0.0);
