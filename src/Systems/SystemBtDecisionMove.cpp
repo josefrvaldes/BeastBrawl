@@ -22,6 +22,7 @@ struct Facil2times_dm : public Decorator {
     virtual bool run(Blackboard* blackboard) override {
         auto cBrainAI = static_cast<CBrainAI*>(blackboard->actualCar->GetComponent(CompType::BrainAIComp).get());
         if(cBrainAI->numTried >= cBrainAI->totalTried && cBrainAI->stackPath.empty()){
+            //cout << "SE HACE UN RESET DEL PENSAR" << endl;
             cBrainAI->numTried = 0;
         }
         if (cBrainAI->numTried < cBrainAI->totalTried){
@@ -121,7 +122,7 @@ struct HaveTotem_dm : public behaviourTree {
     }
 };
 
-// TODO: IMPLEMENTADO - No probado 
+// IMPLEMENTADO 
 struct SeeTotem_dm : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
         auto actualCar = blackboard->actualCar;
@@ -135,7 +136,7 @@ struct SeeTotem_dm : public behaviourTree {
     }
 };
 
-// TODO: IMPLEMENTADO - No probado
+// IMPLEMENTADO o
 struct SeePowerUp_dm : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
         auto actualCar = blackboard->actualCar;
@@ -149,7 +150,7 @@ struct SeePowerUp_dm : public behaviourTree {
     }
 };
 
-// TODO: IMPLEMENTADO -> No probado
+// IMPLEMENTADO 
 struct Think_dm : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
         auto actualCar = blackboard->actualCar;
@@ -160,7 +161,7 @@ struct Think_dm : public behaviourTree {
     }
 };
 
-// TODO: IMPLEMENTADO -> No probado
+// IMPLEMENTADO 
 struct NoThink_dm : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
         auto actualCar = blackboard->actualCar;
@@ -171,7 +172,7 @@ struct NoThink_dm : public behaviourTree {
     }
 };
 
-// TODO: IMPLEMENTADO - No probado
+// IMPLEMENTADO 
 struct NoCriticalTime_dm : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
         // cogemos el tiempo que llevamos el totem y vemos si supera el tiempo critico
@@ -233,7 +234,7 @@ struct SameNavMeshCCT_dm : public behaviourTree {
 
 
 
-// TODO: IMPLEMENTADO  -> No probado -> es si tenemos un coche en ranfo de vision, es decir, coger el ocmponenre brain y comprobarlo
+//IMPLEMENTADO  -> es si tenemos un coche en ranfo de vision, es decir, coger el ocmponenre brain y comprobarlo
 struct SeeCar_dm : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
         auto actualCar = blackboard->actualCar;
@@ -247,7 +248,7 @@ struct SeeCar_dm : public behaviourTree {
     }
 };
 
-// TODO: IMPLEMENTADO  -> No probado -> es si tenemos un coche en ranfo de vision y tiene el totem 
+// IMPLEMENTADO  -> es si tenemos un coche en ranfo de vision y tiene el totem 
 struct SeeCarTotem_dm : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
         auto actualCar = blackboard->actualCar;
@@ -283,7 +284,7 @@ struct MoveToTotem_dm : public behaviourTree {
     }
 };
 
-// TODO: Con la nueva estructura el manager de pahtplanning yan tiene los managers no hay que pasarselos.
+//Con la nueva estructura el manager de pahtplanning yan tiene los managers no hay que pasarselos.
 struct MovNavMeshTotem_dm : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
         //auto cCurrendNavMeshCar = static_cast<CCurrentNavMesh*>(blackboard->actualCar->GetComponent(CompType::CurrentNavMeshComp).get());
@@ -304,7 +305,7 @@ struct MovNavMeshTotem_dm : public behaviourTree {
         return true;
     }
 };
-// TODO: IMPLEMENTADO PARCIAL -> QUEDA LA OTRA PARTE
+// IMPLEMENTADO  -> QUEDA LA OTRA PARTE
 struct MoveRandom_dm : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
         //std:://cout << "Vamos a movernos por los powerUps UUUEEEEPAA" << std::endl;    
@@ -316,7 +317,7 @@ struct MoveRandom_dm : public behaviourTree {
         return true;
     }
 };
-// TODO: NO IMPLEMENTADO COMPLETO -> indicar, con otro evento, que debe ser un powerUp del NavMesh central locoooo
+//  IMPLEMENTADO COMPLETO -> indicar, con otro evento, que debe ser un powerUp del NavMesh central locoooo
 struct MoveRandomCentral_dm : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {  
         shared_ptr<DataMap> dataPowerUp = make_shared<DataMap>();
@@ -328,7 +329,7 @@ struct MoveRandomCentral_dm : public behaviourTree {
     }
 };
 
-// TODO: NO IMPLEMENTADO  -> movernos al coche que estamos viendo delante nuestra
+//  IMPLEMENTADO  -> movernos al coche que estamos viendo delante nuestra
 // accedemos aqui cuando el tiempo no es critico, y tenemos coches en el rango de vision
 // importante recordar que vienen ordenados por el FOV y por tanto debo coger el primero
 struct MovCarView_dm : public behaviourTree {
@@ -349,7 +350,7 @@ struct MovCarView_dm : public behaviourTree {
     }
 };
 
-// TODO: IMPLEMENTADO  - No probado -> movernos al coche que estamos viendo delante y tiene el totem
+//IMPLEMENTADO  -> movernos al coche que estamos viendo delante y tiene el totem
 struct MovCarViewTotem_dm : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override { 
         auto actualCar = blackboard->actualCar;
@@ -375,7 +376,7 @@ struct MovCarViewTotem_dm : public behaviourTree {
     }
 };
 
-// TODO: IMPLEMENTADO  -> No probado
+
 struct MovViewPowerUp_dm : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override { 
         auto cBrainAI = static_cast<CBrainAI*>(blackboard->actualCar->GetComponent(CompType::BrainAIComp).get());
@@ -397,7 +398,6 @@ struct MovViewPowerUp_dm : public behaviourTree {
 };
 
 
-// TODO: IMPLEMENTADO  -> No probado
 struct MoveToCarTotem_dm : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override { 
         auto actualCar = blackboard->actualCar;
@@ -447,11 +447,10 @@ struct MoveToNavMeshCarTotem_dm : public behaviourTree {
                         cBrainAI->targetNavMesh = -1;
                     }
                     //cout << "NOS MOVEMOS AL NAVMHES DONDE ESTA EL COCHE CON EL TOTEM LOCOOOOO "<< endl;
-                    return true;
                 }
             }
         }
-        return false;     
+        return true;     
     }
 };
 // NOTA: recordar que tenemos el otro Behaviour tree de tirar powerUp y por tanto lo seguiremos
@@ -459,85 +458,80 @@ struct MoveToNavMeshCarTotem_dm : public behaviourTree {
 
 
 
-//    None,               // 0
-//    RoboJorobo,         // 1
-//    SuperMegaNitro,     // 2
-//    PudinDeFrambuesa,   // 3
-//    EscudoMerluzo,      // 4
-//    TeleBanana,         // 5
-//    MelonMolon          // 6
+
 SystemBtDecisionMove::SystemBtDecisionMove(){
 
     //   CREACION DEL ARBOL DE DECISIONES
-
     selectorBehaviourTree = make_unique<selector>();
 
-    shared_ptr<selector> selector1                                                  = make_unique<selector>();
-    // selector TOTEM EN EL SUELO
-        shared_ptr<sequence> sequence1_1                                            = make_unique<sequence>();
-            shared_ptr<TotemAlone_dm> c_TotemAlone                                  = make_unique<TotemAlone_dm>();
-            shared_ptr<selector> selector11                                         = make_unique<selector>();
-                shared_ptr<sequence> sequence11_1                                   = make_unique<sequence>();
-                    shared_ptr<SeeTotem_dm> c_SeeTotem                              = make_unique<SeeTotem_dm>();
-                    shared_ptr<MoveToTotem_dm> a_MoveToTotem                        = make_unique<MoveToTotem_dm>();
-                shared_ptr<sequence> sequence11_2                                   = make_unique<sequence>();
-                    shared_ptr<SameNavMeshCT_dm> c_SameNavMeshCT                    = make_unique<SameNavMeshCT_dm>();
-                    //shared_ptr<MoveToTotem_dm> a_MoveToTotem                      = make_unique<MoveToTotem_dm>(); --> no vamos a crear dos acciones iguales
-                shared_ptr<selector> selector111                                    = make_unique<selector>();
-                    shared_ptr<sequence> sequence111_1                              = make_unique<sequence>(); 
-                        shared_ptr<SeePowerUp_dm> c_SeePowerUp                      = make_unique<SeePowerUp_dm>();
-                        shared_ptr<MovViewPowerUp_dm> a_MovViewPowerUp              = make_unique<MovViewPowerUp_dm>();
-                    shared_ptr<selector> selector1111                               = make_unique<selector>(); 
-                        shared_ptr<Facil2times_dm> d_Facil2TimesMT                  = make_unique<Facil2times_dm>();
-                            shared_ptr<sequence> sequence1111_1                     = make_unique<sequence>();
-                                shared_ptr<NoThink_dm> a_NoThinck                   = make_unique<NoThink_dm>(); 
-                                shared_ptr<MovNavMeshTotem_dm> a_MoveToNavMeshTotem = make_unique<MovNavMeshTotem_dm>();
-                        shared_ptr<Think_dm> a_Thinck                               = make_unique<Think_dm>(); 
-    // selector TOTEM ALGUIEN
-        shared_ptr<sequence> sequence1_2                                            = make_unique<sequence>();
-            shared_ptr<TotemOtherCar_dm> c_TotemOtherCar                            = make_unique<TotemOtherCar_dm>();
-            shared_ptr<selector> selector12                                         = make_unique<selector>();
-                shared_ptr<sequence> sequence12_1                                   = make_unique<sequence>();
-                    shared_ptr<HavePowerUpAttack_dm> c_PowerUpAttack                = make_unique<HavePowerUpAttack_dm>();
-                    shared_ptr<selector> selector121                                = make_unique<selector>();
-                        shared_ptr<sequence> sequence121_1                          = make_unique<sequence>();
-                            shared_ptr<SeeCar_dm> c_SeeCar                          = make_unique<SeeCar_dm>();
-                            shared_ptr<selector> selector122                        = make_unique<selector>();
-                                shared_ptr<sequence> sequence122_1                  = make_unique<sequence>();
-                                    shared_ptr<NoCriticalTime_dm> c_NoCriticalTime  = make_unique<NoCriticalTime_dm>();
-                                    shared_ptr<MovCarView_dm> a_MovCarView          = make_unique<MovCarView_dm>();
-                                shared_ptr<sequence> sequence122_2                  = make_unique<sequence>();
-                                    shared_ptr<SeeCarTotem_dm> c_SeeCarTotem        = make_unique<SeeCarTotem_dm>();
-                                    shared_ptr<MovCarViewTotem_dm> a_MovCarViewTotem= make_unique<MovCarViewTotem_dm>();
-                        shared_ptr<selector> selector1211                           = make_unique<selector>();
-                                shared_ptr<sequence> sequence1211_1                 = make_unique<sequence>();
-                                    shared_ptr<SameNavMeshCCT_dm> c_SameNavMeshCCT  = make_unique<SameNavMeshCCT_dm>();
-                                    shared_ptr<MoveToCarTotem_dm> a_MoveToCarTotem  = make_unique<MoveToCarTotem_dm>();
-                                shared_ptr<Facil2times_dm> d_Facil2TimesMC          = make_unique<Facil2times_dm>();
-                                    shared_ptr<sequence> sequence1211_2             = make_unique<sequence>();  
-                                        //shared_ptr<NoThink_dm> a_NoThinck         = make_unique<NoThink_dm>();                   
-                                        shared_ptr<MoveToNavMeshCarTotem_dm> a_MoveToNavMeshCarTotem      = make_unique<MoveToNavMeshCarTotem_dm>();   
-                                //shared_ptr<Think_dm> a_Thinck                     = make_unique<Think_dm>();
-                shared_ptr<selector> selector123                                    = make_unique<selector>();
-                    shared_ptr<sequence> sequence123_2                              = make_unique<sequence>();
-                        shared_ptr<Inverter_dm> m_Inverter1                         = make_unique<Inverter_dm>();
-                            shared_ptr<HavePowerUp_dm> c_HavePowerUp                = make_unique<HavePowerUp_dm>(); 
-                        shared_ptr<selector> selector1234                           = make_unique<selector>();
-                            shared_ptr<sequence> sequence1234_1                     = make_unique<sequence>();
-                                //shared_ptr<SeePowerUp_dm> c_SeePowerUp            = make_unique<SeePowerUp_dm>();
-                                //shared_ptr<MovViewPowerUp_dm> a_MovViewPowerUp    = make_unique<MovViewPowerUp_dm>();
-                            shared_ptr<MoveRandom_dm> a_MoveRandom                  = make_unique<MoveRandom_dm>();
-                  //shared_ptr<MoveRandom_dm> a_MoveRandom                          = make_unique<MoveRandom_dm>();
-    // selector YO TOTEM
-    shared_ptr<selector> selector2                                                  = make_unique<selector>();
-        shared_ptr<sequence> sequence2_1                                            = make_unique<sequence>();
-            //shared_ptr<NoCriticalTime_dm> c_NoCriticalTime                            = make_unique<NoCriticalTime_dm>();
-            //shared_ptr<MoveRandom_dm> a_MoveRandom                                = make_unique<MoveRandom_dm>();
-        shared_ptr<MoveRandomCentral_dm> a_MoveRandomCentral                        = make_unique<MoveRandomCentral_dm>();
+    // SELECTORES
+    shared_ptr<selector> selector1              = make_unique<selector>();
+    shared_ptr<selector> selector11             = make_unique<selector>();
+    shared_ptr<selector> selector111            = make_unique<selector>();
+    shared_ptr<selector> selector1111           = make_unique<selector>(); 
+    shared_ptr<selector> selector12             = make_unique<selector>();
+    shared_ptr<selector> selector121            = make_unique<selector>();
+    shared_ptr<selector> selector122            = make_unique<selector>();
+    shared_ptr<selector> selector1211           = make_unique<selector>();
+    shared_ptr<selector> selector123            = make_unique<selector>();
+    shared_ptr<selector> selector1234           = make_unique<selector>();
+    shared_ptr<selector> selector2              = make_unique<selector>();
+
+    // SECUENCIAS
+    shared_ptr<sequence> sequence1_1            = make_unique<sequence>();
+    shared_ptr<sequence> sequence11_1           = make_unique<sequence>();
+    shared_ptr<sequence> sequence11_2           = make_unique<sequence>();
+    shared_ptr<sequence> sequence111_1          = make_unique<sequence>(); 
+    shared_ptr<sequence> sequence1111_1         = make_unique<sequence>();
+    shared_ptr<sequence> sequence1_2            = make_unique<sequence>();
+    shared_ptr<sequence> sequence12_1           = make_unique<sequence>();
+    shared_ptr<sequence> sequence121_1          = make_unique<sequence>();
+    shared_ptr<sequence> sequence122_1          = make_unique<sequence>();
+    shared_ptr<sequence> sequence122_2          = make_unique<sequence>();
+    shared_ptr<sequence> sequence1211_1         = make_unique<sequence>();
+    shared_ptr<sequence> sequence1211_2         = make_unique<sequence>();  
+    shared_ptr<sequence> sequence123_2          = make_unique<sequence>();
+    shared_ptr<sequence> sequence1234_1         = make_unique<sequence>();
+    shared_ptr<sequence> sequence2_1            = make_unique<sequence>();
+
+    // CONDICIONES
+    shared_ptr<TotemAlone_dm> c_TotemAlone              = make_unique<TotemAlone_dm>();
+    shared_ptr<SeeTotem_dm> c_SeeTotem                  = make_unique<SeeTotem_dm>();
+    shared_ptr<SameNavMeshCT_dm> c_SameNavMeshCT        = make_unique<SameNavMeshCT_dm>();
+    shared_ptr<SeePowerUp_dm> c_SeePowerUp              = make_unique<SeePowerUp_dm>();
+    shared_ptr<TotemOtherCar_dm> c_TotemOtherCar        = make_unique<TotemOtherCar_dm>();
+    shared_ptr<HavePowerUpAttack_dm> c_PowerUpAttack    = make_unique<HavePowerUpAttack_dm>();
+    shared_ptr<SeeCar_dm> c_SeeCar                      = make_unique<SeeCar_dm>();
+    shared_ptr<NoCriticalTime_dm> c_NoCriticalTime      = make_unique<NoCriticalTime_dm>();
+    shared_ptr<SeeCarTotem_dm> c_SeeCarTotem            = make_unique<SeeCarTotem_dm>();
+    shared_ptr<SameNavMeshCCT_dm> c_SameNavMeshCCT      = make_unique<SameNavMeshCCT_dm>();
+    shared_ptr<HavePowerUp_dm> c_HavePowerUp            = make_unique<HavePowerUp_dm>(); 
+
+    // ACCIONES
+    shared_ptr<MoveToTotem_dm> a_MoveToTotem                        = make_unique<MoveToTotem_dm>();
+    shared_ptr<MovViewPowerUp_dm> a_MovViewPowerUp                  = make_unique<MovViewPowerUp_dm>();
+    shared_ptr<NoThink_dm> a_NoThinck                               = make_unique<NoThink_dm>(); 
+    shared_ptr<MovNavMeshTotem_dm> a_MoveToNavMeshTotem             = make_unique<MovNavMeshTotem_dm>();
+    shared_ptr<Think_dm> a_Thinck                                   = make_unique<Think_dm>(); 
+    shared_ptr<MovCarView_dm> a_MovCarView                          = make_unique<MovCarView_dm>();
+    shared_ptr<MovCarViewTotem_dm> a_MovCarViewTotem                = make_unique<MovCarViewTotem_dm>();
+    shared_ptr<MoveToCarTotem_dm> a_MoveToCarTotem                  = make_unique<MoveToCarTotem_dm>();
+    shared_ptr<MoveToNavMeshCarTotem_dm> a_MoveToNavMeshCarTotem    = make_unique<MoveToNavMeshCarTotem_dm>();   
+    shared_ptr<MoveRandom_dm> a_MoveRandom                          = make_unique<MoveRandom_dm>();
+    shared_ptr<MoveRandomCentral_dm> a_MoveRandomCentral            = make_unique<MoveRandomCentral_dm>();
+
+    // DECORADORES
+    shared_ptr<Facil2times_dm> d_Facil2TimesMT      = make_unique<Facil2times_dm>();
+    shared_ptr<Facil2times_dm> d_Facil2TimesMC      = make_unique<Facil2times_dm>();
+    shared_ptr<Inverter_dm> m_Inverter0             = make_unique<Inverter_dm>();
+    shared_ptr<Inverter_dm> m_Inverter1             = make_unique<Inverter_dm>();
+    shared_ptr<Inverter_dm> m_Inverter2             = make_unique<Inverter_dm>();
+
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     // CONSTRUCCION DEL ARBOL
-
+    selectorBehaviourTree->addChild(m_Inverter0);
+        m_Inverter0->addChild(a_NoThinck);
     selectorBehaviourTree->addChild(selector1);//hecho
         selector1->addChild(sequence1_1);//hecho
             sequence1_1->addChild(c_TotemAlone);//hecho
@@ -586,8 +580,8 @@ SystemBtDecisionMove::SystemBtDecisionMove(){
                             selector1211->addChild(a_Thinck);//hecho
                 selector12->addChild(selector123);//hecho
                     selector123->addChild(sequence123_2);//hecho
-                        sequence123_2->addChild(m_Inverter1);//hecho
-                            m_Inverter1->addChild(c_HavePowerUp);//hecho
+                        sequence123_2->addChild(m_Inverter2);//hecho
+                            m_Inverter2->addChild(c_HavePowerUp);//hecho
                         sequence123_2->addChild(selector1234);//hecho
                             selector1234->addChild(sequence1234_1);//hecho
                                 sequence1234_1->addChild(c_SeePowerUp);//hecho
@@ -596,62 +590,10 @@ SystemBtDecisionMove::SystemBtDecisionMove(){
                     selector123->addChild(a_MoveRandom);//hecho
     selectorBehaviourTree->addChild(selector2);//hecho
         selector2->addChild(sequence2_1);//hecho
-            sequence2_1->addChild(c_NoCriticalTime);
-            sequence2_1->addChild(a_MoveRandom);
+            sequence2_1->addChild(c_NoCriticalTime);//hecho
+            sequence2_1->addChild(a_MoveRandom);//hecho
         selector2->addChild(a_MoveRandomCentral);//por decidir--> de momento igual que un random normal
 
-
-
-
-
-
-
-
-
-
-
-    //shared_ptr<sequence> sequence1 = make_shared<sequence>();
-    //    shared_ptr<TotemAlone_dm> c_totemAlone =   make_shared<TotemAlone_dm>();
-    //    shared_ptr<MoveToTotem_dm> a_moveToTotem = make_shared<MoveToTotem_dm>();
-    //shared_ptr<sequence> sequence2 = make_shared<sequence>();
-    //    shared_ptr<HaveTotem_dm> c_haveTotem =   make_shared<HaveTotem_dm>();
-    //    shared_ptr<EscapeWithTotem_dm> a_escapeWithTotem = make_shared<EscapeWithTotem_dm>();s
-    //shared_ptr<sequence> sequence3 =    make_shared<sequence>();
-    //    shared_ptr<Inverter_dm> m_inverter1 =  make_shared<Inverter_dm>();
-    //        shared_ptr<HavePowerUp_dm> c_havePowerUp = make_shared<HavePowerUp_dm>(); 
-    //    shared_ptr<MoveToPowerUp_dm> a_moveToPowerUp = make_shared<MoveToPowerUp_dm>(); 
-    //shared_ptr<sequence> sequence4  = make_shared<sequence>();
-    //    shared_ptr<HavePowerUpAttack_dm> c_havePowerUpAttack = make_shared<HavePowerUpAttack_dm>();
-    //    shared_ptr<MoveToCarTotem_dm> a_moveToCarTotem =       make_shared<MoveToCarTotem_dm>();
-//
-//
-    //std::cout << "------------------------ Behaviour Move To --------------------------------" << std::endl;
-    //// ASIGNACION DEL ARBOL DE DECISIONES
-//
-    //// el totem esta en el suelo?
-    //selectorBehaviourTree->addChild(sequence1);
-    //// tengo yo el totem?
-    //selectorBehaviourTree->addChild(sequence2);
-    //// vamos a coger PowerUps si no tenemos
-    //selectorBehaviourTree->addChild(sequence3);
-    //// si el powerUp es de ataque voy a por el que tiene el totem
-    //selectorBehaviourTree->addChild(sequence4);
-    //// TODO somos una IA que tiene el powerUp y obvimanete no nos vamos a perseguir a nosotros mismos
-    ////selectorBehaviourTree->addChild(a_moveToPowerUp);
-//
-    //sequence1->addChild(c_totemAlone);
-    //sequence1->addChild(a_moveToTotem);
-//
-    //sequence2->addChild(c_haveTotem);
-    //sequence2->addChild(a_escapeWithTotem);
-//
-    //sequence3->addChild(m_inverter1);
-    //    m_inverter1->addChild(c_havePowerUp);
-    //sequence3->addChild(a_moveToPowerUp);
-//
-    //sequence4->addChild(c_havePowerUpAttack);
-    //sequence4->addChild(a_moveToCarTotem);
-    
 }
 
 
