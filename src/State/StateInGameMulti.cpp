@@ -8,19 +8,36 @@
 #include "../Systems/SystemOnline.h"
 #include "../Systems/Utils.h"
 
-StateInGameMulti::StateInGameMulti(uint16_t IdOnline, const vector<uint16_t> IdPlayersOnline) : StateInGame() {
+StateInGameMulti::StateInGameMulti(uint16_t idOnline_, const vector<uint16_t> idsEnemies_) : StateInGame() {
     InitState();
-    InitVirtualMethods();
-    // a este le llegan los coches
-    //std::cout << "POR FIIIIIIIIIIIIIIIIIIIIIIIN: " << std::endl;
-    vector<uint16_t> arrayIdEnemies = IdPlayersOnline;
-
-    sysOnline = make_unique<SystemOnline>(*manCars, IdOnline);
+    InitializeManagers();
+    InitCarHumans(idOnline_, idsEnemies_);
+    InitializeSystems(*manCars.get(), *manBoundingWall.get(), *manBoundingOBB.get(), *manBoundingGround.get(), *manPowerUps.get(), *manNavMesh.get(), *manBoxPowerUps.get(), *manTotems.get());
+    sysOnline = make_unique<SystemOnline>(*manCars.get(), idOnline_);
     manCars->SetSystemOnline(sysOnline.get());
     manTotems->SetSystemOnline(sysOnline.get());
     manPowerUps->SetSystemOnline(sysOnline.get());
     clPhysics->SetSystemOnline(sysOnline.get());
+    InitializeFacades();
 
+    AddElementsToRender();
+    
+    vector<Constants::InputTypes> inputs;
+    sysOnline->SendInputs(inputs);  // enviamos un vector vacío la primera vez para que el servidor sepa que estamos vivos
+    sysAnimStart->ResetTimer();
+}
+
+StateInGameMulti::~StateInGameMulti() {
+}
+
+void StateInGameMulti::InitState() {
+    StateInGame::InitState();
+}
+
+void StateInGameMulti::InitCarHumans(uint16_t idOnline_, vector<uint16_t> arrayIdEnemies) {
+    // a este le llegan los coches
+    //std::cout << "POR FIIIIIIIIIIIIIIIIIIIIIIIN: " << std::endl;
+    //vector<uint16_t> arrayIdEnemies = IdPlayersOnline;
     vec3 posIniciales[] = {
         vec3(120.0f, 10.0f, -300.0f),
         vec3(20.0f, 10.0f, -300.0f),
@@ -30,59 +47,44 @@ StateInGameMulti::StateInGameMulti(uint16_t IdOnline, const vector<uint16_t> IdP
         vec3(0.0f, 10.0f, 0.0f)};
 
     auto cTransformable = static_cast<CTransformable *>(manCars->GetCar()->GetComponent(CompType::TransformableComp).get());
-    cTransformable->position = posIniciales[IdOnline - 1];
+    cTransformable->position = posIniciales[idOnline_ - 1];
     COnline *cOnline = static_cast<COnline *>(manCars->GetCar()->GetComponent(CompType::OnlineComp).get());
-    cOnline->idClient = IdOnline;
+    cOnline->idClient = idOnline_;
 
-    for (auto idEnemy : IdPlayersOnline) {
+    for (auto idEnemy : arrayIdEnemies) {
         vec3 pos = posIniciales[idEnemy - 1];
+        
         //Le paso el PERSONAJE: ahora mismo a piñon
         manCars->CreateHumanCar(0, pos);
         shared_ptr<Entity> car = manCars->GetEntities()[manCars->GetEntities().size() - 1];
         COnline *cOnline = static_cast<COnline *>(car->GetComponent(CompType::OnlineComp).get());
         cOnline->idClient = idEnemy;
-        renderEngine->FacadeAddObject(car.get());
-        // cout << "El coche con id online " << idEnemy << " está en la pos " << pos.x << "," << pos.y << "," << pos.z << endl;
-    }
-    vector<Constants::InputTypes> inputs;
-    sysOnline->SendInputs(inputs);  // enviamos un vector vacío la primera vez para que el servidor sepa que estamos vivos
-
-    //CAMBIARCosasNavMesh(*manCars.get(), *manNavMesh.get());
-    // while(true){sleep(500);}; // esto solo sirve para depurar
-
-    for (const auto &car : manCars->GetEntities()) {
-        const auto cTransformable = static_cast<CTransformable *>(manCars->GetCar()->GetComponent(CompType::TransformableComp).get());
-
-        shared_ptr<CBufferOnline> buffer = make_shared<CBufferOnline>();
-        BuffElement elem(inputs, cTransformable->position, cTransformable->rotation);
-        buffer->elems.push_back(elem);
-
-        car->AddComponent(buffer);
-
-        //Sonidos de los coches
+        
         auto idComp = static_cast<CId *>(car->GetComponent(CompType::IdComp).get());
-        auto posComp = static_cast<CTransformable *>(car->GetComponent(CompType::TransformableComp).get());
         string nameEvent = "Coche/motor";
-        SoundFacadeManager::GetInstance()->GetSoundFacade()->CreateSoundDinamic3D(idComp->id, posComp->position, nameEvent, 1, 0);
+        SoundFacadeManager::GetInstance()->GetSoundFacade()->CreateSoundDinamic3D(idComp->id, pos, nameEvent, 1, 0);
+        nameEvent = "Coche/motor" + idComp->id;
+        SoundFacadeManager::GetInstance()->GetSoundFacade()->SetParameter(nameEvent, "personaje", 6);
         nameEvent = "PowerUp/escudo";
-        SoundFacadeManager::GetInstance()->GetSoundFacade()->CreateSoundDinamic3D(idComp->id, posComp->position, nameEvent, 0, 0);
+        SoundFacadeManager::GetInstance()->GetSoundFacade()->CreateSoundDinamic3D(idComp->id, pos, nameEvent, 0, 0);
         nameEvent = "PowerUp/escudo_roto";
-        SoundFacadeManager::GetInstance()->GetSoundFacade()->CreateSoundEstatic3D(idComp->id, posComp->position, nameEvent, 0);
-        nameEvent = "Coche/choque_powerup";
-        SoundFacadeManager::GetInstance()->GetSoundFacade()->CreateSoundEstatic3D(idComp->id, posComp->position, nameEvent, 0);
+        SoundFacadeManager::GetInstance()->GetSoundFacade()->CreateSoundEstatic3D(idComp->id, pos, nameEvent, 0);
+        nameEvent = "PowerUp/choque_powerup";
+        SoundFacadeManager::GetInstance()->GetSoundFacade()->CreateSoundEstatic3D(idComp->id, pos, nameEvent, 0);
         nameEvent = "Coche/choque";
-        SoundFacadeManager::GetInstance()->GetSoundFacade()->CreateSoundEstatic3D(idComp->id, posComp->position, nameEvent, 0);
-
+        SoundFacadeManager::GetInstance()->GetSoundFacade()->CreateSoundEstatic3D(idComp->id, pos, nameEvent, 0);
+        
+        
         manShield->CreateShield(idComp->id,glm::vec3(0.0f),glm::vec3(0.0f),glm::vec3(1.5f));
 
+        // esto era de cuando íbamos a hacer el buffer circular que al final se descartó
+        /*shared_ptr<CBufferOnline> buffer = make_shared<CBufferOnline>();
+        BuffElement elem(inputs, cTransformable->position, cTransformable->rotation);
+        buffer->elems.push_back(elem);
+        car->AddComponent(buffer);*/
+
+        // cout << "El coche con id online " << idEnemy << " está en la pos " << pos.x << "," << pos.y << "," << pos.z << endl;
     }
-}
-
-StateInGameMulti::~StateInGameMulti() {
-}
-
-void StateInGameMulti::InitState() {
-    StateInGame::InitState();
 }
 
 void StateInGameMulti::Input() {
@@ -166,8 +168,8 @@ void StateInGameMulti::InitializeCLPhysics(ManCar &manCars, ManBoundingWall &man
     StateInGame::InitializeCLPhysics(manCars, manWall, manOBB, manGround, manPowerUp, manNavMesh, manBoxPowerUp, manTotem);
 }
 
-void StateInGameMulti::InitializeManagers(const uint32_t timeGame) {
-    StateInGame::InitializeManagers(timeGame);
+void StateInGameMulti::InitializeManagers() {
+    StateInGame::InitializeManagers();
 }
 
 void StateInGameMulti::InitializeSystems(ManCar &manCars, ManBoundingWall &manWall, ManBoundingOBB &manOBB, ManBoundingGround &manGround, ManPowerUp &manPowerUp, ManNavMesh &manNavMesh, ManBoxPowerUp &manBoxPowerUp, ManTotem &manTotem) {
@@ -181,30 +183,3 @@ void StateInGameMulti::InitializeFacades() {
 void StateInGameMulti::AddElementsToRender() {
     StateInGame::AddElementsToRender();
 }
-
-/*
-void StateInGameMulti::CAMBIARCosasDeTotemUpdate() {
-    bool todosFalse = true;
-    auto cTransformTotem = static_cast<CTransformable *>(totemOnCar.get()->GetComponent(CompType::TransformableComp).get());
-    cTransformTotem->rotation.y += 0.1;
-    for (auto currentCar : manCars->GetEntities()) {  // actualizamos los coche IA
-        // comprobamos el componente totem y si lo tienen se lo ponemos justo encima para que se sepa quien lo lleva
-        auto cTotem = static_cast<CTotem *>(currentCar.get()->GetComponent(CompType::TotemComp).get());
-        if (cTotem->active) {
-            todosFalse = false;
-            auto cTransformCar = static_cast<CTransformable *>(currentCar.get()->GetComponent(CompType::TransformableComp).get());
-            cTransformTotem->position.x = cTransformCar->position.x;
-            cTransformTotem->position.z = cTransformCar->position.z;
-            cTransformTotem->position.y = 32.0f;
-            // supuestamente esta el drawAll que te lo hace no?????????????????
-            // si esta cambiando pero no se esta redibujando
-            break;  // cuando encontramos a alguien que ya lleva el totem, nos salimos del for, no seguimos comprobando a los demás
-        }
-    }
-    if (todosFalse) {
-        cTransformTotem->position.y = -100.0f;
-    }
-
-    renderEngine->UpdateTransformable(totemOnCar.get());
-}
-*/

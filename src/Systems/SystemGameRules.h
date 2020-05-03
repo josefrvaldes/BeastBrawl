@@ -32,6 +32,6 @@ public:
      */
     bool UpdateGameRules(Entity& globalClock_) const;
     
-    void RestartAllTimers(vector<shared_ptr<Entity>> entities, Entity &globalClock);
+    void RestartAllTimers(vector<shared_ptr<Entity>> entities, Entity &globalClock, int64_t timeStartPause);
 
 };

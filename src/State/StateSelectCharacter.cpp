@@ -6,7 +6,7 @@ using namespace std;
 
 StateSelectCharacter::StateSelectCharacter(){
 
-    std::cout << "> SELECT CHARECTER constructor" << std::endl;
+    //std::cout << "> SELECT CHARECTER constructor" << std::endl;
     renderEngine = RenderFacadeManager::GetInstance()->GetRenderFacade();
     renderEngine->FacadeInitSelectCharacter();
 
@@ -26,6 +26,7 @@ void StateSelectCharacter::InitState() {
 void StateSelectCharacter::Render(){
     renderEngine->FacadeBeginScene();
     renderEngine->FacadeDrawSelectCharacter();
+    renderEngine->FacadeDrawAll();
     renderEngine->FacadeEndScene();
 }
 

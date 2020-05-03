@@ -45,6 +45,7 @@ class RenderFacadeClover : public RenderFacade {
       void FacadeDeviceDrop() override;
       void DeleteEntity(Entity*) override;
       void FacadeSetVisibleEntity(Entity*,bool) override;
+      void FacadeSetWindowSize(DataMap* d) override;
 
 
       void FacadeDraw() const override;
@@ -85,8 +86,9 @@ class RenderFacadeClover : public RenderFacade {
       void FacadeCheckInputSettings() override;
 
       void FacadeUpdatePowerUpHUD(DataMap* d) override;
-      void FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* globalClock) override;
+      void FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* globalClock, ManHUDEvent* manHud) override;
       void FacadeSuscribeEvents() override;
+      void FacadeSuscribeEventsSettings() override;
       void FacadeAddPlates(Manager* manNamePlates) override;
       void FacadeUpdatePlates(Manager* manNamePlates) override;
       void FacadeUpdateMeshesLoD(vector<shared_ptr<Entity>> entities) override;
@@ -98,7 +100,10 @@ class RenderFacadeClover : public RenderFacade {
       void CleanScene() override;
       void FacadeUpdateViewport() override;
 
-      void FacadeInitParticleSystem(DataMap* d) override;
+      void FacadeInitParticleSystem(DataMap* d) const override;
+      void FacadeSetParticlesVisibility(DataMap* d) const override;
+      void FacadeSetGrassActivate(DataMap* d) const override;
+
       void FacadeUpdateVisibility(DataMap* d) override;
       bool FacadeOctreeInCamera(float size, const glm::vec3& pos) override {return device->OctreeIncamera(size, pos);};
       void FacadeSetOctreeVisibleById(unsigned int id, bool v) override {device->SetOctreeVisibleById(id, v);};
@@ -168,8 +173,8 @@ class RenderFacadeClover : public RenderFacade {
         int maxInputGO[3] {3, 2, 0};
         //Ajustes
         int optionSettings { 0 };
-        std::vector<int> inputSettings {1,0,0};
-        int maxInputSettings[4] {3, 1, 2};
+        std::vector<int> inputSettings {1,3,1,1,1,1};     //Sonido, musica, resolucion, vegetacion, sombras, particulas
+        int maxInputSettings[6] {3,3,2,1,1,1};
 
       CLEngine* device {nullptr};
       CLNode* smgr {nullptr};

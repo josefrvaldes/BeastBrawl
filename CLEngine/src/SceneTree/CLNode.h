@@ -81,6 +81,9 @@ class CLNode{
         //! Devuelve el escalado global del nodo
         //! @returns scalation Escalado global del nodo
         glm::vec3 GetGlobalScalation() const;
+        //! Devuelve si estan activadas las particulas 
+        //! @returns particlesActivated
+        bool static GetParticlesActivated() { return particlesActivated; };
 
         
 
@@ -105,6 +108,9 @@ class CLNode{
         //! @param id El id del nodo
         //! @param v Si es visible o no
         void SetOctreeVisibleById(unsigned int id, bool v);
+        //! Activa o desactiva las particulas
+        //! @param particlesActivated
+        void SetParticlesActivated(bool a) { particlesActivated = a; };
 
         void SetShaderProgramID(GLuint id)              { shaderProgramID = id; }
         
@@ -152,7 +158,7 @@ class CLNode{
         bool visible { true };
         bool octreeVisible { true };
         bool ignoreFrustrum { false }; //Si esta a true no le afecta el frustrum culling
-
+        inline static bool particlesActivated { true }; //Si esta a true se dibujan las particulas
         shared_ptr<CLEntity> entity {nullptr};
         CLNode* father {nullptr};
         vector<shared_ptr<CLNode>> childs;

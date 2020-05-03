@@ -10,11 +10,11 @@ struct SystemGameRules;
 
 class ManGameRules{
    public:
-    ManGameRules( const uint32_t durationTime_);
+    ManGameRules();
     ~ManGameRules();
 
     void SubscribeToEvents();
-    void RestartAllTimers(vector<shared_ptr<Entity>> entities);
+    void RestartAllTimers(vector<shared_ptr<Entity>> entities, int64_t timeStartPause);
     void ResetClock();
 
     /**

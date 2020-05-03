@@ -44,6 +44,7 @@
 #include <Managers/ManShield.h>
 #include <Managers/ManCamera.h>
 #include "../Managers/ManGameRules.h"
+#include <Managers/ManHUDEvent.h>
 #include <Systems/Collisions.h>
 #include <Systems/Physics.h>
 #include <Systems/PhysicsPowerUp.h>
@@ -55,6 +56,7 @@
 #include <Systems/SystemHurt.h>
 #include <Systems/Utils.h>
 #include <Systems/SystemData.h>
+#include <Systems/SysHud.h>
 #include <behaviourTree/behaviourTree.h>
 #include <behaviourTree/decorator.h>
 #include <behaviourTree/selector.h>
@@ -84,7 +86,7 @@ class StateInGame : public State {
    public:
     StateInGame();
     ~StateInGame();
-    void InitVirtualMethods();
+    
     void InitState() override;
     virtual void Input() = 0;
     void Update() override;
@@ -112,6 +114,7 @@ class StateInGame : public State {
     shared_ptr<ManBoundingGround> manBoundingGround;
     shared_ptr<ManLight> manLight;
     unique_ptr<ManGameRules> manGameRules;
+    unique_ptr<ManHUDEvent> manHudEvent;
     unique_ptr<ManParticleSystem> manParticleSystem;
     unique_ptr<ManShield> manShield;
     unique_ptr<SystemLoD> sysLoD;
@@ -119,6 +122,7 @@ class StateInGame : public State {
     unique_ptr<SystemAnimationEnd> sysAnimEnd;
     unique_ptr<SystemData> systemDataVision;
     unique_ptr<SystemHurt> sysHurt;
+    unique_ptr<SysHud> sysHud;
 
     std::vector<shared_ptr<Manager>> managersEntities;
     std::unique_ptr<Octree> octreeScene;
@@ -149,7 +153,7 @@ class StateInGame : public State {
     //float CalculateDelta(float);
 
     virtual void InitializeCLPhysics(ManCar&, ManBoundingWall&, ManBoundingOBB&, ManBoundingGround&, ManPowerUp&, ManNavMesh&, ManBoxPowerUp&, ManTotem &);
-    virtual void InitializeManagers(const uint32_t timeGame);
+    virtual void InitializeManagers();
     virtual void InitializeSystems(ManCar&, ManBoundingWall&, ManBoundingOBB&, ManBoundingGround&, ManPowerUp&, ManNavMesh&, ManBoxPowerUp&, ManTotem &);
     virtual void InitializeFacades();
     virtual void AddElementsToRender();

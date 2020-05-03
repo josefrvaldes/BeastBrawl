@@ -26,12 +26,12 @@ class StateInGameSingle : public StateInGame {
 
    private:
     void InitializeCLPhysics(ManCar &manCars, ManBoundingWall &, ManBoundingOBB &, ManBoundingGround &, ManPowerUp &, ManNavMesh&, ManBoxPowerUp&, ManTotem &) override;
-    void InitializeManagers(const uint32_t timeGame) override;
+    void InitializeManagers() override;
     void InitializeSystems(ManCar &manCars, ManBoundingWall &, ManBoundingOBB &, ManBoundingGround &, ManPowerUp &, ManNavMesh&, ManBoxPowerUp&, ManTotem &) override;
     void InitializeFacades() override;
     void AddElementsToRender() override;
 
-    void CAMBIARInicializarCarAIS(ManCar &, ManWayPoint &);
+    void InitCarAIS(ManCar &, ManWayPoint &);
     //void CAMBIARCosasNavMesh(ManCar &, ManNavMesh &);
     //void CAMBIARCosasDeTotemUpdate() override;
 
@@ -53,4 +53,6 @@ class StateInGameSingle : public StateInGame {
 
     bool goingToPause {false};
     bool comingBackFromPause {false};
+
+    int64_t timeStartPause;
 };
