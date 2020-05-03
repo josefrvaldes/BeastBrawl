@@ -82,8 +82,6 @@ void StateInGameMulti::InitCarHumans(uint16_t idOnline_, vector<uint16_t> arrayI
         BuffElement elem(inputs, cTransformable->position, cTransformable->rotation);
         buffer->elems.push_back(elem);
         car->AddComponent(buffer);*/
-
-        // cout << "El coche con id online " << idEnemy << " está en la pos " << pos.x << "," << pos.y << "," << pos.z << endl;
     }
 }
 

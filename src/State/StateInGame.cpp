@@ -98,6 +98,7 @@ void StateInGame::AddElementsToRender() {
 }
 
 void StateInGame::InitializeCLPhysics(ManCar &manCars, ManBoundingWall &manWall, ManBoundingOBB &manOBB, ManBoundingGround &manGround, ManPowerUp &manPowerUp, ManNavMesh &manNavMesh, ManBoxPowerUp &manBoxPowerUp, ManTotem &manTotem) {
+    cout << "Estamos inicializando el clPhysics" << endl;
     // NO ALTERAR EL ORDEN DEL ADD, QUE USO EL ORDEN PARA DISTINGUIR ENTRE MANAGERS!!!
     clPhysics = make_unique<CLPhysics>();
     clPhysics->AddManager(manCars);
@@ -111,7 +112,7 @@ void StateInGame::InitializeCLPhysics(ManCar &manCars, ManBoundingWall &manWall,
 }
 
 void StateInGame::InitializeSystemData(){
-    systemDataVision = make_unique<SystemData>();
+    systemDataVision = make_unique<SystemData>(clPhysics.get());
 
     systemDataVision->AddManager(*manCars.get());
     systemDataVision->AddManager(*manPowerUps.get());

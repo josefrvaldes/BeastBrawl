@@ -222,7 +222,7 @@ void StateInGameSingle::InitPathPlanning() {
 }
 
 void StateInGameSingle::InitVision(){
-    systemVisionAI = make_unique<SystemVisionAI>();
+    systemVisionAI = make_unique<SystemVisionAI>(clPhysics.get());
 
     systemVisionAI->AddManager(*manCars.get());
     systemVisionAI->AddManager(*manPowerUps.get());

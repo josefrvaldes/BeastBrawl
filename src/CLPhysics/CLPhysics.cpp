@@ -76,6 +76,7 @@ void CLPhysics::Update(float delta) {
 }
 
 void CLPhysics::SubscribeToEvents() {
+    cout << "Vamos a suscribir a los eventos al clPhysics" << endl;
     EventManager::GetInstance().SubscribeMulti(Listener(
         EventType::NEW_CRASH_PU_CAR_RECEIVED,
         bind(&CLPhysics::NewCrashPUCarReceived, this, placeholders::_1),
@@ -114,6 +115,8 @@ void CLPhysics::NewCrashPUCarReceived(DataMap *d) {
             break;
         }
     }
+    if(carFound == nullptr)
+        return;
 
     PowerUp *puFound = nullptr;
     for (const auto &currentPU : manPowerUps->GetEntities()) {
@@ -123,10 +126,10 @@ void CLPhysics::NewCrashPUCarReceived(DataMap *d) {
             break;
         }
     }
+    if (puFound==nullptr)
+        return;
 
-    if (puFound != nullptr && carFound != nullptr) {
-        HandleCollisionPUWithCar(puFound, carFound);
-    }
+    HandleCollisionPUWithCar(puFound, carFound);
 }
 
 void CLPhysics::CentralSystemGravity() {
