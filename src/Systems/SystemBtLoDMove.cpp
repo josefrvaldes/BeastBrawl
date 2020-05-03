@@ -206,7 +206,7 @@ struct ObstacleAvoidance_LoDMove : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
         bool result = blackboard->steeringBehaviours->UpdateObstacleAvoidance(blackboard->actualCar, blackboard->manBoundingOBB);
         if(result){
-            cout << "Evasion de obstaculo\n";
+            //cout << "Evasion de obstaculo\n";
             auto cBrainAI = static_cast<CBrainAI*>(blackboard->actualCar->GetComponent(CompType::BrainAIComp).get());
             cBrainAI->movementType = "Evasion de obstaculo";
             return true;
