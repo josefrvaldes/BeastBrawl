@@ -137,6 +137,7 @@ void CLPhysics::CentralSystemGravity() {
     LimitRotationCarY();
 }
 
+
 void CLPhysics::ConstGravity() {
     ManCar *manCar = static_cast<ManCar *>(managers[0]);
     for (const auto &car : manCar->GetEntities()) {
