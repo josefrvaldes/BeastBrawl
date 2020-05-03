@@ -63,8 +63,6 @@ void StateInGameMulti::InitCarHumans(uint16_t idOnline_, vector<uint16_t> arrayI
         auto idComp = static_cast<CId *>(car->GetComponent(CompType::IdComp).get());
         string nameEvent = "Coche/motor";
         SoundFacadeManager::GetInstance()->GetSoundFacade()->CreateSoundDinamic3D(idComp->id, pos, nameEvent, 1, 0);
-        nameEvent = "Coche/motor" + idComp->id;
-        SoundFacadeManager::GetInstance()->GetSoundFacade()->SetParameter(nameEvent, "personaje", 6);
         nameEvent = "PowerUp/escudo";
         SoundFacadeManager::GetInstance()->GetSoundFacade()->CreateSoundDinamic3D(idComp->id, pos, nameEvent, 0, 0);
         nameEvent = "PowerUp/escudo_roto";
