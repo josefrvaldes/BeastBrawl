@@ -3,7 +3,10 @@
 #include <Components/CBufferOnline.h>
 #include <Components/CTotem.h>
 
+
 #include "../CLPhysics/CLPhysics.h"
+#include "../EventManager/EventManager.h"
+#include "../EventManager/Event.h"
 #include "../Components/COnline.h"
 #include "../Systems/SystemOnline.h"
 #include "../Systems/Utils.h"
@@ -21,6 +24,8 @@ StateInGameMulti::StateInGameMulti(uint16_t idOnline_, const vector<uint16_t> id
     InitializeFacades();
 
     AddElementsToRender();
+
+    SubscribeToEvents();
     
     vector<Constants::InputTypes> inputs;
     sysOnline->SendInputs(inputs);  // enviamos un vector vacío la primera vez para que el servidor sepa que estamos vivos
@@ -183,4 +188,27 @@ void StateInGameMulti::InitializeFacades() {
 
 void StateInGameMulti::AddElementsToRender() {
     StateInGame::AddElementsToRender();
+}
+
+void StateInGameMulti::SubscribeToEvents() {
+    EventManager::GetInstance().SubscribeMulti(Listener(
+        EventType::NEW_LAUNCH_ANIMATION_END_RECEIVED,
+        bind(&StateInGameMulti::GoToEndAnimationFromMulti, this, std::placeholders::_1),
+        "Received end animation"));
+}   
+
+
+void StateInGameMulti::GoToEndAnimationFromMulti(DataMap *dataMap) {
+    if(currentUpdateState != UpdateState::END) {
+        uint16_t idWinner = any_cast<uint16_t>((*dataMap)[DataType::ID_WINNER]);
+        for(auto entity: manCars->GetEntities()) {
+            auto cOnline = static_cast<COnline*>(entity->GetComponent(CompType::OnlineComp).get());
+            if(cOnline->idClient == idWinner) {
+                Car *winner = static_cast<Car*>(entity.get());
+                sysAnimEnd->SetWinner(winner);
+                currentUpdateState = UpdateState::END;
+                return;
+            }
+        }
+    }
 }

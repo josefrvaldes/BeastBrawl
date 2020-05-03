@@ -50,6 +50,7 @@ class UDPClient {
     void SendThrowTelebanana(const uint16_t idOnline, const int64_t time, const uint16_t idPUOnline, const glm::vec3& position, const glm::vec3& rotation, const int8_t typePU, const uint16_t idToPursue);
     void SendEndgame(uint16_t idPlayer);
     void SendDateTime();
+    void SendLaunchAnimationEnd(uint16_t idOnline, uint16_t idOnlineWinner);
     uint32_t idMainCar;
 
    private:
@@ -68,6 +69,7 @@ class UDPClient {
     void HandleReceivedThrowTelebanana(unsigned char* recevBuff, size_t bytesTransferred);
     void HandleReceivedCrashPUCar(unsigned char* recevBuff, size_t bytesTransferred);
     void HandleReceivedCrashPUWall(unsigned char* recevBuff, size_t bytesTransferred);
+    void HandleReceivedLaunchEndAnimation(uint16_t idPlayer, uint16_t idWinner) const;
 
     void HandleSentInputs(const boost::system::error_code& errorCode, std::size_t bytes_transferred);
     void HandleSentSync(const boost::system::error_code& errorCode, std::size_t bytes_transferred);
@@ -80,6 +82,7 @@ class UDPClient {
     void HandleSentThrowPU(const boost::system::error_code& errorCode, std::size_t bytes_transferred);
     void HandleSentCrashPUCar(const boost::system::error_code& errorCode, std::size_t bytes_transferred);
     void HandleSentCrashPUWall(const boost::system::error_code& errorCode, std::size_t bytes_transferred);
+    void HandleSentLaunchAnimationEnd(const boost::system::error_code& errorCode, std::size_t bytes_transferred);
 
     void HandleSentDateTime(const std::shared_ptr<std::string> message,
                             const boost::system::error_code& errorCode,
@@ -102,4 +105,5 @@ class UDPClient {
     unordered_map<uint16_t, int64_t> lastTimeThrowTelebananaReceived;
     unordered_map<uint16_t, int64_t> lastTimeCrashPUCarReceived;
     unordered_map<uint16_t, int64_t> lastTimeCrashPUWallReceived;
+    unordered_map<uint16_t, int64_t> lastTimeLaunchEndGameReceived;
 };

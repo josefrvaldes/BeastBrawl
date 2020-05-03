@@ -34,6 +34,7 @@ class SystemOnline {
    private:
     void SubscribeToEvents();
     void EventEndgame(DataMap *);
+    void EventLaunchAnimationEnd(DataMap *);
 
     ManCar &manCar;
     unique_ptr<UDPClient> udpClient;

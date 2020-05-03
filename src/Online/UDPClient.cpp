@@ -143,6 +143,14 @@ void UDPClient::HandleReceived(std::shared_ptr<unsigned char[]> recevBuff, const
                 }
                 break;
 
+            case Constants::PetitionTypes::LAUNCH_ANIMATION_END:
+                if (time > lastTimeLaunchEndGameReceived[idPlayer]) {
+                    lastTimeLaunchEndGameReceived[idPlayer] = time;
+                    uint16_t idWinner = Serialization::Deserialize<uint16_t>(recevBuff.get(), currentIndex);
+                    HandleReceivedLaunchEndAnimation(idPlayer, idWinner);
+                }
+                break;
+
             case Constants::PetitionTypes::ENDGAME:
                 EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_ENDRACE});
                 break;
@@ -169,6 +177,13 @@ void UDPClient::HandleReceivedInputs(const vector<Constants::InputTypes> inputs,
     //     cout << inputs[i] << " ";
     // }
     // cout << endl;
+}
+
+void UDPClient::HandleReceivedLaunchEndAnimation(uint16_t idPlayer, uint16_t idWinner) const {
+    std::shared_ptr<DataMap> data = make_shared<DataMap>();
+    (*data)[DataType::ID] = idPlayer;
+    (*data)[DataType::ID_WINNER] = idWinner;
+    EventManager::GetInstance().AddEventMulti(Event{EventType::NEW_LAUNCH_ANIMATION_END_RECEIVED, data});
 }
 
 // buffer circular
@@ -704,14 +719,42 @@ void UDPClient::SendEndgame(uint16_t idPlayer) {
             boost::asio::placeholders::bytes_transferred));
 }
 
+void UDPClient::SendLaunchAnimationEnd(uint16_t idPlayer, uint16_t idPlayerWinner) {
+    unsigned char requestBuff[Constants::ONLINE_BUFFER_SIZE];
+    size_t currentBuffSize = 0;
+    uint8_t callType = Constants::PetitionTypes::LAUNCH_ANIMATION_END;
+    int64_t time = Utils::getMillisSinceEpoch();
+
+    Serialization::Serialize(requestBuff, &callType, currentBuffSize);
+    Serialization::Serialize(requestBuff, &time, currentBuffSize);
+    Serialization::Serialize(requestBuff, &idPlayer, currentBuffSize);
+    Serialization::Serialize(requestBuff, &idPlayerWinner, currentBuffSize);
+
+    socket.async_send_to(
+        boost::asio::buffer(requestBuff, currentBuffSize),
+        serverEndpoint,
+        boost::bind(
+            &UDPClient::HandleSentLaunchAnimationEnd,
+            this,
+            boost::asio::placeholders::error,
+            boost::asio::placeholders::bytes_transferred));
+}
+
 void UDPClient::HandleSentInputs(const boost::system::error_code& errorCode, std::size_t bytes_transferred) {
     if (errorCode)
         cout << "Hubo un error enviando los inputs[" << errorCode << "]"
              << "\n";
 }
+
 void UDPClient::HandleSentEndgame(const boost::system::error_code& errorCode, std::size_t bytes_transferred) {
     if (errorCode)
         cout << "Hubo un error enviando el endgame [" << errorCode << "]"
+             << "\n";
+}
+
+void UDPClient::HandleSentLaunchAnimationEnd(const boost::system::error_code& errorCode, std::size_t bytes_transferred) {
+    if (errorCode)
+        cout << "Hubo un error enviando el launch animation end [" << errorCode << "]"
              << "\n";
 }
 

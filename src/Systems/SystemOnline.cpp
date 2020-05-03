@@ -24,7 +24,7 @@
 using namespace boost::asio;
 
 SystemOnline::SystemOnline(ManCar &manCar_, uint16_t idOnlineMainCar_) : idOnlineMainCar{idOnlineMainCar_}, manCar{manCar_}, udpClient{make_unique<UDPClient>(Constants::SERVER_HOST, SERVER_PORT_UDP)} {
-    shared_ptr<CarHuman> car = manCar.GetCar();
+    shared_ptr<CarHuman> car = manCar.GetCar(); // esto sirve para algo? se podrá borrar, no?
     SubscribeToEvents();
 }
 
@@ -33,10 +33,22 @@ void SystemOnline::SubscribeToEvents() {
         EventType::STATE_ENDRACE,
         bind(&SystemOnline::EventEndgame, this, std::placeholders::_1),
         "Endgame"));
+
+    EventManager::GetInstance().SubscribeMulti(Listener(
+        EventType::LAUNCH_ANIMATION_END_MULTI,
+        bind(&SystemOnline::EventLaunchAnimationEnd, this, std::placeholders::_1),
+        "Launch end animation"));
 }
 
 void SystemOnline::EventEndgame(DataMap *dataMap) {
     udpClient->SendEndgame(idOnlineMainCar);
+}
+
+void SystemOnline::EventLaunchAnimationEnd(DataMap *dataMap) {
+    auto car = manCar.GetCurrentWinner();
+    auto cOnline = static_cast<COnline *>(car->GetComponent(CompType::OnlineComp).get());
+    uint16_t idOnlineWinner = cOnline->idClient;
+    udpClient->SendLaunchAnimationEnd(idOnlineMainCar, idOnlineWinner);
 }
 
 void SystemOnline::SendInputs(const vector<Constants::InputTypes> &inputs) const {

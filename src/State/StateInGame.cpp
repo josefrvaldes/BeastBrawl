@@ -408,6 +408,7 @@ void StateInGame::GoToEndAnimation() {
     soundEngine->SetState(11);
     currentUpdateState = UpdateState::END;
     timerEnd = Utils::getMillisSinceEpoch();
+    EventManager::GetInstance().AddEventMulti(Event{EventType::LAUNCH_ANIMATION_END_MULTI});
 }
 
 void StateInGame::GoToCountdownAnimation() {

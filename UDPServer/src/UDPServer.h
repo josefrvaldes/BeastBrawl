@@ -34,6 +34,7 @@ class UDPServer : public std::enable_shared_from_this<UDPServer> {
     void HandleReceivedThrowPU(const uint16_t id, const uint16_t idPUOnline, unsigned char buffer[], const size_t currentBufferSize, const udp::endpoint& remoteClient);
     void HandleReceivedCrashPUCar(const uint16_t id, const uint16_t idPUOnline, const uint16_t idCar, unsigned char buffer[], const size_t currentBufferSize, const udp::endpoint& remoteClient);
     void HandleReceivedCrashPUWall(const uint16_t id, const uint16_t idPUOnline, unsigned char buffer[], const size_t currentBufferSize, const udp::endpoint& remoteClient);
+    void HandleReceivedLaunchAnimationEnd(const uint16_t id, const uint16_t idWinner, unsigned char buffer[], const size_t currentBufferSize, const udp::endpoint& remoteClient);
     
     void ResendBytesToOthers(const uint16_t id, const unsigned char resendBytes[], const size_t currentBufferSize, const udp::endpoint& remoteClient);
     void SendBytes(const unsigned char resendBytes[], const size_t currentBufferSize, const Player& player);
@@ -87,4 +88,5 @@ class UDPServer : public std::enable_shared_from_this<UDPServer> {
     uint16_t playerWithTotem = Constants::ANY_PLAYER;
 
     const uint8_t NUM_REINTENTOS = 3;
+    bool animationEndRaceLaunched {false};
 };
