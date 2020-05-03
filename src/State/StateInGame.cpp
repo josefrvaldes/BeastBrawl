@@ -28,7 +28,7 @@ StateInGame::StateInGame() {
     //physics = make_unique<Physics>(Constants::DELTA_TIME);
 
     //cam = make_shared<Camera>(glm::vec3(100.0f, 0.0f, 30.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f));
-    ground = make_shared<GameObject>(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), "", "training_ground.obj");
+    ground = make_shared<GameObject>(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), "", "mayan_map.obj");
 }
 
 StateInGame::~StateInGame() {
@@ -375,7 +375,7 @@ void StateInGame::Render() {
     if (currentUpdateState == UpdateState::COUNTDOWN) {
         // todo: esto de meter el width y el height aquí a piñón y los filenames.. es una kk
         const int fileWIDTH = 300;
-        const int fileHEIGHT = 200;
+        const int fileHEIGHT = 300;
         string fileName = "media/" + std::to_string(currentCountdown) + ".png";
         tuple<int, int> screenSize = renderEngine->GetScreenSize();
         int width = std::get<0>(screenSize);

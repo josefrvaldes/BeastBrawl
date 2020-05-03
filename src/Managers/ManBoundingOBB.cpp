@@ -81,10 +81,11 @@ ManBoundingOBB::ManBoundingOBB() {
             vertex4Y = vertex4["y"].get<double>();
             vertex4Z = vertex4["z"].get<double>();
 
+			verticesOBB.push_back(glm::vec3(vertex2X, vertex2Y, vertex2Z));
             verticesOBB.push_back(glm::vec3(vertex1X, vertex1Y, vertex1Z));
-            verticesOBB.push_back(glm::vec3(vertex2X, vertex2Y, vertex2Z));
+			verticesOBB.push_back(glm::vec3(vertex3X, vertex3Y, vertex3Z));
             verticesOBB.push_back(glm::vec3(vertex4X, vertex4Y, vertex4Z));
-            verticesOBB.push_back(glm::vec3(vertex3X, vertex3Y, vertex3Z));
+
 
             //cogemos el plano1
             if(k==1){
