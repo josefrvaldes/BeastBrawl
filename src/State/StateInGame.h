@@ -86,7 +86,7 @@ class StateInGame : public State {
    public:
     StateInGame();
     ~StateInGame();
-    void InitVirtualMethods();
+    
     void InitState() override;
     virtual void Input() = 0;
     void Update() override;
@@ -153,7 +153,7 @@ class StateInGame : public State {
     //float CalculateDelta(float);
 
     virtual void InitializeCLPhysics(ManCar&, ManBoundingWall&, ManBoundingOBB&, ManBoundingGround&, ManPowerUp&, ManNavMesh&, ManBoxPowerUp&, ManTotem &);
-    virtual void InitializeManagers(const uint32_t timeGame);
+    virtual void InitializeManagers();
     virtual void InitializeSystems(ManCar&, ManBoundingWall&, ManBoundingOBB&, ManBoundingGround&, ManPowerUp&, ManNavMesh&, ManBoxPowerUp&, ManTotem &);
     virtual void InitializeFacades();
     virtual void AddElementsToRender();

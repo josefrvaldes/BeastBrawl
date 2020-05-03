@@ -35,35 +35,6 @@ StateInGame::~StateInGame() {
     // destructor
 }
 
-/**
- * IMPORTANTE LEER ESTO!!
- * Debido a las características de c++, estos métodos no se pueden llamar desde el constructor
- *  porque son virtuales y en la ejecución del constructor padre (este), el hijo todavía
- *  no está construido. Eso significa que cuando estos métodos se llaman desde el constructor,
- *  no se están llamando a los métodos de los hijos, sino al nuestro (padre).
- *  Como estos métodos son virtuales, nuestros hijos los están sobreescribiendo
- *  y por tanto, necesitamos que se ejecuten con sus cambios de cada uno de sus hijos.
- *  EN RESUMEN: NO se deben llamar a métodos virtuales desde el constructor de la clase que los declara virtuales.
- *  Y ES OBLIGATORIO llamar a este método desde el constructor de los hijos
- */
-void StateInGame::InitVirtualMethods() {
-    auto gameTime = GameValues::GetInstance()->GetGameTime();
-    InitializeManagers(gameTime);
-    InitializeSystems(*manCars.get(), *manBoundingWall.get(), *manBoundingOBB.get(), *manBoundingGround.get(), *manPowerUps.get(), *manNavMesh.get(), *manBoxPowerUps.get(), *manTotems.get());
-    InitializeFacades();
-
-    //CAMBIARCosasDeTotem(*manTotems.get());
-    //CAMBIARCosasDeBoxPU(*manWayPoint.get(), *manBoxPowerUps.get());
-    //CAMBIARCosasNavMesh(*manNavMesh.get());
-
-    // esta llamada lo ideal es que sea la última porque hace uso de todo
-    // lo anterior y debe de estar todo inicializado
-    AddElementsToRender();
-
-    // TODO: esto semánticamente no debería ir aquí, no es un método virtual, es algo que quiero que se cargue
-    // después de los virtual methods pero semánticamente debería ir en un método aparte o en una llamada aparte
-    sysAnimStart->ResetTimer();
-}
 
 void StateInGame::InitializeFacades() {
     // Inicializamos las facadas
@@ -174,7 +145,7 @@ void StateInGame::InitializeSystems(ManCar &manCars, ManBoundingWall &manWall, M
     sysHurt = make_unique<SystemHurt>();
 }
 
-void StateInGame::InitializeManagers(const uint32_t timeGame) {
+void StateInGame::InitializeManagers() {
     // inicializa el man PU, no hace falta más código para esto
     manCars = make_shared<ManCar>();
     StateInGame::CreateMainCar();
@@ -189,7 +160,7 @@ void StateInGame::InitializeManagers(const uint32_t timeGame) {
     manTotems = make_shared<ManTotem>(manNavMesh.get());
     manNamePlates = make_shared<ManNamePlate>(manCars.get());
     manLight = make_shared<ManLight>();
-    manGameRules = make_unique<ManGameRules>(timeGame);
+    manGameRules = make_unique<ManGameRules>();
     manHudEvent = make_unique<ManHUDEvent>();
     manParticleSystem = make_unique<ManParticleSystem>();
     manShield = make_unique<ManShield>();
@@ -219,12 +190,6 @@ void StateInGame::InitializeManagers(const uint32_t timeGame) {
         auto cId = static_cast<CId *>(totem->GetComponent(CompType::IdComp).get());
         manParticleSystem->CreateParticleSystem(cId->id, glm::vec3(0.0f, 0.0f, 0.0f), 100, glm::vec3(0.0f, 50.0f, 0.0f), totemParticles, 5, 15, 100, 2, 5000, glm::vec3(30.0f, 0.0f, 30.0f), glm::vec3(0.0f, 0.0f, 0.0f), 0, 0x4, true, true);
     }
-
-    // //Voy a añadir los escudos a los coches
-    // for(auto car : manCars->GetEntities()){
-    //     auto cId = static_cast<CId *>(car->GetComponent(CompType::IdComp).get());
-    //     manShield->CreateShield(cId->id,glm::vec3(0.0),glm::vec3(0.0),glm::vec3(1.5));
-    // }
 }
 
 //Carga los bancos de sonido InGame.
