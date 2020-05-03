@@ -46,10 +46,13 @@ void StateInGameMulti::InitCarHumans(uint16_t idOnline_, vector<uint16_t> arrayI
         vec3(50.0f, 10.0f, -200.0f),
         vec3(0.0f, 10.0f, 0.0f)};
 
+    auto idComp = static_cast<CId *>(manCars->GetCar()->GetComponent(CompType::IdComp).get());
     auto cTransformable = static_cast<CTransformable *>(manCars->GetCar()->GetComponent(CompType::TransformableComp).get());
     cTransformable->position = posIniciales[idOnline_ - 1];
     COnline *cOnline = static_cast<COnline *>(manCars->GetCar()->GetComponent(CompType::OnlineComp).get());
     cOnline->idClient = idOnline_;
+    manShield->CreateShield(idComp->id,glm::vec3(0.0f),glm::vec3(0.0f),glm::vec3(1.5f));
+
 
     for (auto idEnemy : arrayIdEnemies) {
         vec3 pos = posIniciales[idEnemy - 1];
@@ -61,9 +64,9 @@ void StateInGameMulti::InitCarHumans(uint16_t idOnline_, vector<uint16_t> arrayI
         cOnline->idClient = idEnemy;
         
         auto idComp = static_cast<CId *>(car->GetComponent(CompType::IdComp).get());
-        string nameEvent = "Coche/motor";
+        string nameEvent = "Coche/motores";
         SoundFacadeManager::GetInstance()->GetSoundFacade()->CreateSoundDinamic3D(idComp->id, pos, nameEvent, 1, 0);
-        nameEvent = "Coche/motor" + idComp->id;
+        nameEvent = "Coche/motores" + idComp->id;
         SoundFacadeManager::GetInstance()->GetSoundFacade()->SetParameter(nameEvent, "personaje", 6);
         nameEvent = "PowerUp/escudo";
         SoundFacadeManager::GetInstance()->GetSoundFacade()->CreateSoundDinamic3D(idComp->id, pos, nameEvent, 0, 0);
