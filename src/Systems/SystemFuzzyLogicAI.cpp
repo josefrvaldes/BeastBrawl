@@ -266,8 +266,8 @@ glm::vec2 SystemFuzzyLogicAI::ApplyExternalForce(CCar *cCar, CExternalForce *ext
     glm::vec2 finalForce(carForce);
     if(externalForce->force > 0){
         glm::vec2 collisionForce(externalForce->dirExternalForce.x*externalForce->force, externalForce->dirExternalForce.z*externalForce->force);
-        float angleForces = glm::degrees(atan2(collisionForce.y, collisionForce.x)) - glm::degrees(atan2(carForce.y, carForce.x));
-        angleForces = Utils::GetAdjustedDegrees(angleForces);
+        //float angleForces = glm::degrees(atan2(collisionForce.y, collisionForce.x)) - glm::degrees(atan2(carForce.y, carForce.x));
+        //angleForces = Utils::GetAdjustedDegrees(angleForces);
         finalForce.x = carForce.x + collisionForce.x;
         finalForce.y = carForce.y + collisionForce.y;
         externalForce->force -= externalForce->friction;
