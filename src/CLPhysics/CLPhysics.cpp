@@ -1209,8 +1209,8 @@ IntersectData CLPhysics::HandleCollisionsRayWithPlane(CTransformable &trRayOrigi
 
 IntersectData CLPhysics::HandleCollisionsRayWithOBB(CTransformable &trRayOrigin, glm::vec3 &rayNormalNormalized, CBoundingOBB &OBBObject) {
     glm::vec3 positionRayOrigin(trRayOrigin.position.x, trRayOrigin.position.y, trRayOrigin.position.z);
-    for(long unsigned int i=0; i<OBBObject.planes.size(); i++){
-        IntersectData intersData = OBBObject.planes[i].get()->IntersectRay(positionRayOrigin, rayNormalNormalized);
+    for(const auto& plane : OBBObject.planes){
+        IntersectData intersData = plane.get()->IntersectRay(positionRayOrigin, rayNormalNormalized);
         if (intersData.intersects) {
             return intersData;
         }

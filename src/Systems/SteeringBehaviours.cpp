@@ -158,6 +158,28 @@ bool SteeringBehaviours::UpdateWallAvoidance(Entity* actualCar,  ManBoundingWall
     return false;
 }
 
+
+bool SteeringBehaviours::UpdateObstacleAvoidance(Entity* actualCar, ManBoundingOBB* manBoundingOBB) const{
+    // se calcula el vector al siguiente punto al que avanzara el coche
+    auto cTransformable = static_cast<CTransformable*>(actualCar->GetComponent(CompType::TransformableComp).get());
+    auto cCar = static_cast<CCar*>(actualCar->GetComponent(CompType::CarComp).get());
+    auto cNitro = static_cast<CNitro *>(actualCar->GetComponent(CompType::NitroComp).get());
+    auto cExternalForce = static_cast<CExternalForce*>(actualCar->GetComponent(CompType::CompExternalForce).get());
+    std::vector<glm::vec2> vectorRay = CalculateRayVector(*cCar, *cTransformable);
+
+    // Obstacle avoidance
+    glm::vec2 vectorForceAvoid = ObstacleAvoidance(actualCar, manBoundingOBB, vectorRay);
+    if(vectorForceAvoid.x != 0.0 || vectorForceAvoid.y != 0.0 ){
+        float angle = CalculateAngle(vectorRay[0], vectorForceAvoid, cTransformable->rotation.y);
+        UpdateAngleRotation(cCar, angle);
+        UpdateSpeedAvoidance(cCar, cNitro);
+        UpdatePosition(cCar, cTransformable, cExternalForce);
+        return true;
+    }
+    return false;
+}
+
+
 // el coche esta pensando por lo que no realiza ninguna accion
 void SteeringBehaviours::UpdateThink(Entity* actualCar){
     auto cTransformable = static_cast<CTransformable*>(actualCar->GetComponent(CompType::TransformableComp).get());
@@ -193,17 +215,18 @@ void SteeringBehaviours::UpdateThink(Entity* actualCar){
 
 // Actualiza el angulo de rotacion
 void SteeringBehaviours::UpdateAngleRotation(CCar* cCar, float angle) const{
-    // To-Do: Modificar estos angulos
-    if(angle > cCar->maxWheelRotation*0.20) 
-        cCar->wheelRotation = cCar->maxWheelRotation;
-    else if(angle < -cCar->maxWheelRotation*0.20)
-        cCar->wheelRotation = -cCar->maxWheelRotation;
-    else if(angle>0.1)
-        cCar->wheelRotation = angle/0.40;
+    if(angle>0.1)
+        cCar->wheelRotation += 4*cCar->incrementWheelRotation;
     else if(angle<-0.1)
-        cCar->wheelRotation = angle/0.40;
+        cCar->wheelRotation -= 4*cCar->incrementWheelRotation;
     else
         cCar->wheelRotation = 0;
+
+    if(cCar->wheelRotation > cCar->maxWheelRotation*1.5) 
+        cCar->wheelRotation = cCar->maxWheelRotation*1.5;
+    else if(cCar->wheelRotation < -cCar->maxWheelRotation*1.5)
+        cCar->wheelRotation = -cCar->maxWheelRotation*1.5;
+
 }
 // Actualiza la velocidad
 void SteeringBehaviours::UpdateSpeed(CCar* cCar, CNitro* cNitro) const{
@@ -446,8 +469,8 @@ glm::vec2 SteeringBehaviours::WallAvoidance(Entity* actualCar, ManBoundingWall* 
     auto cRay = static_cast<CBoundingRay*>(actualCar->GetComponent(CompType::CompBoundingRay).get());
     glm::vec2 vectorForce = glm::vec2(0.0, 0.0);
     glm::vec3 target = glm::vec3(0.0, 0.0, 0.0);
-    float distance = 999999999.0;
-    float finalDistance = 99999998.0;
+    float distance = 99999.0;
+    float finalDistance = 9998.0;
     glm::vec2 vectorForceAvoid;
     Entity* actualObstacle = nullptr;
 
@@ -481,6 +504,39 @@ glm::vec2 SteeringBehaviours::WallAvoidance(Entity* actualCar, ManBoundingWall* 
     return vectorForce;
 }
 
+
+// calcula el vector resultante para evadir un OBB en caso de colisionar
+glm::vec2 SteeringBehaviours::ObstacleAvoidance(Entity* actualCar, ManBoundingOBB* manBoundingOBB, const std::vector<glm::vec2>& vectorRay) const{
+    auto cCar = static_cast<CCar*>(actualCar->GetComponent(CompType::CarComp).get());
+    auto cRay = static_cast<CBoundingRay*>(actualCar->GetComponent(CompType::CompBoundingRay).get());
+    glm::vec2 vectorForce = glm::vec2(0.0, 0.0);
+    glm::vec3 target = glm::vec3(0.0, 0.0, 0.0);
+    float distance = 99999.0;
+    float finalDistance = 9998.0;
+    glm::vec2 vectorForceAvoid;
+
+    // colisiones con OBB
+    for(const auto& obstacleOBB : manBoundingOBB->GetEntities()){
+        if(CollisionRayPlane(actualCar, obstacleOBB.get(), vectorRay[0], distance, vectorForceAvoid, target)){
+            if(distance < finalDistance && distance < cRay->baseDistanceOBB && distance > 0){
+                finalDistance = distance;
+                vectorForce = vectorForceAvoid;
+            }
+        }else if(CollisionRayPlane(actualCar, obstacleOBB.get(), vectorRay[1], distance, vectorForceAvoid, target)){
+            if(distance < finalDistance && distance < cRay->baseDistanceOBB && distance > 0){
+                finalDistance = distance;
+                vectorForce = vectorForceAvoid;
+            }
+        }else if(CollisionRayPlane(actualCar, obstacleOBB.get(), vectorRay[2], distance, vectorForceAvoid, target)){
+            if(distance < finalDistance && distance < cRay->baseDistanceOBB && distance > 0){
+                finalDistance = distance;
+                vectorForce = vectorForceAvoid;
+            }
+        }
+    }
+
+    return vectorForce;
+}
 
 
 // comprueba si se colisiona frontalmente con una esfera
@@ -644,6 +700,21 @@ glm::vec2 SteeringBehaviours::CalculateVectorVelocity(CCar &cCar, CTransformable
     return glm::vec2(posXSiguiente - transformableCar.position.x , posZSiguiente - transformableCar.position.z );
 }
 
+std::vector<glm::vec2> SteeringBehaviours::CalculateRayVector(CCar &cCar, CTransformable &transformableCar) const{
+    std::vector<glm::vec2> rays;
+    if(cCar.speed==0) cCar.speed=0.1;
+    float posXSiguienteRay1 = transformableCar.position.x - cos( glm::radians(transformableCar.rotation.y) ) * cCar.speed;
+    float posZSiguienteRay1 = transformableCar.position.z + sin( glm::radians(transformableCar.rotation.y) ) * cCar.speed;
+    float posXSiguienteRay2 = transformableCar.position.x - cos( glm::radians(Utils::GetAdjustedDegrees(transformableCar.rotation.y+40)) ) * cCar.speed;
+    float posZSiguienteRay2 = transformableCar.position.z + sin( glm::radians(Utils::GetAdjustedDegrees(transformableCar.rotation.y+40)) ) * cCar.speed;
+    float posXSiguienteRay3 = transformableCar.position.x - cos( glm::radians(Utils::GetAdjustedDegrees(transformableCar.rotation.y-40)) ) * cCar.speed;
+    float posZSiguienteRay3 = transformableCar.position.z + sin( glm::radians(Utils::GetAdjustedDegrees(transformableCar.rotation.y-40)) ) * cCar.speed;
+
+    rays.emplace_back(glm::vec2(posXSiguienteRay1 - transformableCar.position.x , posZSiguienteRay1 - transformableCar.position.z ));
+    rays.emplace_back(glm::vec2(posXSiguienteRay2 - transformableCar.position.x , posZSiguienteRay2 - transformableCar.position.z ));
+    rays.emplace_back(glm::vec2(posXSiguienteRay3 - transformableCar.position.x , posZSiguienteRay3 - transformableCar.position.z ));
+    return rays;
+}
 
 
 // devuelve un angulo entre -180 y 180 para saber el sentido de giro

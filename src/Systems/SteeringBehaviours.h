@@ -33,6 +33,7 @@ public:
     float UpdatePursuePowerUp(Entity* actualCar, Entity* targetCar);
     bool UpdateCarAvoidance(Entity* actualCar) const;
     bool UpdateWallAvoidance(Entity* actualCar,  ManBoundingWall* manBoundingWall, ManBoundingOBB* manBoundingOBB) const;
+    bool UpdateObstacleAvoidance(Entity* actualCar, ManBoundingOBB* manBoundingOBB) const;
     void UpdateThink(Entity* actualCar);
 
 
@@ -43,6 +44,7 @@ private:
     glm::vec2 PursuePowerUp(Entity* originCar, Entity* targetCar, const glm::vec2& velocityVector) const;
     glm::vec2 CarAvoidance(Entity* actualCar, const glm::vec2& velocityVector) const;
     glm::vec2 WallAvoidance(Entity* actualCar, ManBoundingWall* manBoundingWall, ManBoundingOBB* manBoundingOBB, const glm::vec2& velocityVector) const;
+    glm::vec2 ObstacleAvoidance(Entity* actualCar, ManBoundingOBB* manBoundingOBB, const std::vector<glm::vec2>& vectorRay) const;
 
     void UpdateAngleRotation(CCar* cCar, float angle) const;
     void UpdateSpeed(CCar* cCar, CNitro* cNitro) const;
@@ -50,6 +52,7 @@ private:
     void UpdatePosition(CCar* cCar, CTransformable* cTransformableCar, CExternalForce* cExternalForce) const;
 
     glm::vec2 CalculateVectorVelocity(CCar &cCar, CTransformable &transformableCar) const;
+    std::vector<glm::vec2> CalculateRayVector(CCar &cCar, CTransformable &transformableCar) const;
     float CalculateAngle(const glm::vec2& originVec, const glm::vec2& destinyVec, float rotationY) const;
     bool CollisionRaySphere(Entity* actualCar, Entity* object, const glm::vec2& velocityVector, float& distance, glm::vec2& vectorForceAvoid) const;
     bool CollisionRayPlane(Entity* actualCar, Entity* object, const glm::vec2& velocityVector, float& distance, glm::vec2& vectorForceAvoid, glm::vec3& target) const;
