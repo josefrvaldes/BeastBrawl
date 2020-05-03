@@ -145,14 +145,31 @@ class Utils {
     }
 
 
+
     static float getRandomFloat(float LO, float HI) {
-        return LO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/((HI+1)-LO)));
+        if(LO > HI)
+            std::swap(LO, HI);
+        int divisor = HI - LO;
+        if(divisor != 0)
+            return LO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(divisor)));
+        else {
+            cout << "OJO el random ha dado divisor cero, devolvemos LO" << endl;
+            return LO;        
+        }
     }
+
 
     static int getRandomInt(int LO, int HI) {
-        return LO + rand() /(RAND_MAX/((HI+1)-LO));
+        if(LO > HI)
+            std::swap(LO, HI);
+        int divisor = (HI+1)-LO;
+        if(divisor != 0)
+            return LO + rand() /(RAND_MAX/divisor);
+        else {
+            cout << "OJO el random ha dado divisor cero, devolvemos LO" << endl;
+            return LO;        
+        }
     }
-
 };
 
     

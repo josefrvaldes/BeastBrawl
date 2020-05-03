@@ -460,9 +460,10 @@ void CLEngine::DisableCursor(){
  * Mira si se han actualizado los valores de anchura y altura de la ventana y actualiza el viewport.
  */
 void CLEngine::UpdateViewport(){
-    //glfwGetFramebufferSize(window, &width, &height);
-    glfwSetWindowSize(window, width, height);
+    glfwGetFramebufferSize(window, &width, &height);
+    // glfwSetWindowSize(window, width, height);
     glViewport(0, 0, width, height);
+    // cout << "width["<<width<<"] height["<<height<<"]" << endl;
 }
 
 

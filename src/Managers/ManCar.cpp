@@ -282,7 +282,7 @@ void ManCar::NewInputsReceived(DataMap* d) {
     // cout << Utils::getISOCurrentTimestampMillis() << " Hemos recibido un input del id " << idRecieved << endl;
     auto inputs = any_cast<vector<Constants::InputTypes>>((*d)[DataType::INPUTS]);
     for (const auto& car : GetEntities()) {
-        if (car->HasComponent(CompType::OnlineComp) && car->HasComponent(CompType::BufferOnline)) {
+        if (car->HasComponent(CompType::OnlineComp)) {
             COnline* compOnline = static_cast<COnline*>(car->GetComponent(CompType::OnlineComp).get());
             uint16_t currentIDOnline = compOnline->idClient;
             if (currentIDOnline == idRecieved) {
