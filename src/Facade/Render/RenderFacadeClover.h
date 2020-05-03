@@ -168,9 +168,9 @@ class RenderFacadeClover : public RenderFacade {
         int inputER { 0 };
         int maxInputER { 2 };
         //Opciones de partida (Hay que contar el 0)
-        int option { 2 };
-        std::vector<int> inputGO {1,1,0};
-        int maxInputGO[3] {3, 2, 0};
+        int option { 0 };
+        std::vector<int> inputGO {1,1/*,0*/};
+        int maxInputGO[2] {3, 2/*, 0*/};
         //Ajustes
         int optionSettings { 0 };
         std::vector<int> inputSettings {1,3,1,1,1,1};     //Sonido, musica, resolucion, vegetacion, sombras, particulas

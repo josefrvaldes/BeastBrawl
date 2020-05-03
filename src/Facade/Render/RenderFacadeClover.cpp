@@ -830,10 +830,9 @@ void RenderFacadeClover::ResetInputCharacter() {
 
 //TODO: Deberia ser un evento
 void RenderFacadeClover::ResetInputGameOptions() {
-    option = 2;
+    option = 0;
     inputGO[0] = 1;
     inputGO[1] = 1;
-    inputGO[2] = 0;
 }
 
 
@@ -1035,63 +1034,28 @@ void RenderFacadeClover::FacadeDrawMenu() {
  }
 
 void RenderFacadeClover::FacadeDrawGameOptions() {
-    std::string file = "media/gameoptions.png";
-    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
 
-    //¿TRABAJAR A NIVEL DE BIT?
-    //TODO: Faltan cosas. ¿Como hago esto tio?
-    glm::vec3 colorB = glm::vec3(255.0f, 0.0f, 0.0f);
-    glm::vec3 colorTitle = glm::vec3(255.0f, 255.0f, 0.0f);
+    std::string name = "";
 
-    glm::vec3 colorOp1[4] = {
-            glm::vec3(0.0f, 0.0f, 255.0f),
-            glm::vec3(0.0f, 0.0f, 255.0f),
-            glm::vec3(0.0f, 0.0f, 255.0f),
-            glm::vec3(0.0f, 0.0f, 255.0f)
+    std::string file = "media/menu/settings_match_bg.png";
+    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.9f, file, true);
+    
+    std::string files[2] = {
+        "media/menu/duration_match_",
+        "media/menu/duration_totem_"
     };
-    colorOp1[inputGO[0]] = glm::vec3(0.0f, 255.0f, 0.0f);
-    std::string name = "Duracion de partida";
-    device->RenderText2D(name, 450.0f, 600.0f, 0.05f, 0.75f, colorTitle);
-    name = "2 min";
-    device->RenderText2D(name, 300.0f, 500.0f, 0.05f, 0.75f, colorOp1[0]);
-    name = "3 min";
-    device->RenderText2D(name, 500.0f, 500.0f, 0.05f, 0.75f, colorOp1[1]);
-    name = "4 min";
-    device->RenderText2D(name, 700.0f, 500.0f, 0.05f, 0.75f, colorOp1[2]);
-    name = "5 min";
-    device->RenderText2D(name, 900.0f, 500.0f, 0.05f, 0.75f, colorOp1[3]);
 
-    glm::vec3 colorOp2[3] = {
-            glm::vec3(0.0f, 0.0f, 255.0f),
-            glm::vec3(0.0f, 0.0f, 255.0f),
-            glm::vec3(0.0f, 0.0f, 255.0f)
-    };
-    colorOp2[inputGO[1]] = glm::vec3(0.0f, 255.0f, 0.0f);
-    name = "Tiempo de posesion";
-    device->RenderText2D(name, 450.0f, 350.0f, 0.05f, 0.75f, colorTitle);
-    name = "30s";
-    device->RenderText2D(name, 500.0f, 250.0f, 0.05f, 0.75f, colorOp2[0]);
-    name = "45s";
-    device->RenderText2D(name, 600.0f, 250.0f, 0.05f, 0.75f, colorOp2[1]);
-    name = "1 min";
-    device->RenderText2D(name, 700.0f, 250.0f, 0.05f, 0.75f, colorOp2[2]);
+    std::string op1[4] = {"2min", "3min", "4min", "5min" };
+    std::string op2[3] = {"30s", "45s", "1min"};
 
-    glm::vec3 colorOp3;
-    if (inputGO[2] == 0) {
-        colorOp3 = glm::vec3(0.0f, 255.0f, 0.0f);
-    } else {
-        colorOp3 = glm::vec3(0.0f, 0.0f, 255.0f);
-    }
-    name = "Empezar";
-    device->RenderText2D(name, 500.0f, 150.0f, 0.05f, 1.25f, colorOp3);
-
-    name = "---->";
-    float sel[3] = { 500.0f, 250.0f, 150.0f };
-    device->RenderText2D(name, 100.0f, sel[option], 0.05f, 1.0f, colorB);
-
-
-    name = "<- (B)";
-    device->RenderText2D(name, 50.0f, 50.0f, 0.05f, 0.5f, colorB);
+    file = files[0] + op1[inputGO[0]];
+    if (option == 0) { file += "_hover"; }
+    file += ".png";
+    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.8f, file, true);
+    file = files[1] + op2[inputGO[1]];
+    if (option == 1) { file += "_hover"; }
+    file += ".png";
+    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.7f, file, true);
 
 }
 

@@ -309,7 +309,7 @@ void StateInGame::UpdateGame() {
     //Updates de los eventos de sonido
     soundEngine->UpdateCars(manCars->GetEntities());
     soundEngine->UpdatePowerUps(manPowerUps->GetEntities());
-    soundEngine->UpdateTotem(manTotems->GetEntities());
+    soundEngine->UpdateTotem(manCars->GetCar(), manTotems->GetEntities());
     soundEngine->UpdateListener(manCars->GetCar());
 
     // al final de la ejecucion eliminamos todos los powerUps que se deben eliminar
