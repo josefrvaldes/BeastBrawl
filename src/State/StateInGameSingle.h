@@ -58,7 +58,8 @@ class StateInGameSingle : public StateInGame {
 
 
     std::chrono::time_point<std::chrono::system_clock> timeStart;        // reloj que contabiliza el tiempo
-    int64_t accumulatedTimeUPDATE {0};
-    int64_t accumulatedTimeRENDER {0};
+    std::chrono::time_point<std::chrono::system_clock> timeStartSeccion;        // reloj que contabiliza el tiempo
+    double accumulatedTimeUPDATE {0.0};
+    double accumulatedTimeRENDER {0.0};
 
 };

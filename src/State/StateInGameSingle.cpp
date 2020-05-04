@@ -68,7 +68,9 @@ void StateInGameSingle::Update() {
 }
 
 void StateInGameSingle::UpdateGame() {
+    std::cout.precision(10);
     timeStart =  std::chrono::system_clock::now();
+
 
     // si estamos yendo a pausa, paramos los temporizadores
     if (goingToPause) {
@@ -83,8 +85,29 @@ void StateInGameSingle::UpdateGame() {
         manGameRules->RestartAllTimers(manCars->GetEntities(), timeStartPause);
         comingBackFromPause = false;
     }
+
+    timeStartSeccion = std::chrono::system_clock::now();
+
+
     StateInGame::UpdateGame();
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    auto end = std::chrono::system_clock::now();
+    double elapsed_millisecons = std::chrono::duration_cast<std::chrono::nanoseconds>
+                             (end-timeStartSeccion).count();
+    cout << "TIEMO ACTUAL ULDATE  (COSAS DEL STATE IN GAME (mecanicas, colisiones, etc)):  " << elapsed_millisecons/1000000 << endl;
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    timeStartSeccion = std::chrono::system_clock::now();
+
     manAI->Update();
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    end = std::chrono::system_clock::now();
+    elapsed_millisecons = std::chrono::duration_cast<std::chrono::nanoseconds>
+                             (end-timeStartSeccion).count();
+    cout << "TIEMO ACTUAL ULDATE  (LA IA):  " << elapsed_millisecons/1000000 << endl;
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    timeStartSeccion = std::chrono::system_clock::now();
+
     for (auto actualAI : manCars->GetEntities()) {  // CUIDADO!!! -> el static cast que solo se use en el single player, si no peta
         if (static_cast<Car *>(actualAI.get())->GetTypeCar() == TypeCar::CarAI) {
             bool gameFinished = manCars->UpdateCarAI(static_cast<CarAI *>(actualAI.get()), manTotems.get());
@@ -98,18 +121,26 @@ void StateInGameSingle::UpdateGame() {
         }
     }
 
-    auto end = std::chrono::system_clock::now();
-    int elapsed_millisecons = std::chrono::duration_cast<std::chrono::milliseconds>
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    end = std::chrono::system_clock::now();
+    elapsed_millisecons = std::chrono::duration_cast<std::chrono::nanoseconds>
+                             (end-timeStartSeccion).count();
+    cout << "TIEMO ACTUAL ULDATE  (GoToAnimation+UpdateTrnasformation):  " << elapsed_millisecons/1000000 << endl;
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    end = std::chrono::system_clock::now();
+    elapsed_millisecons = std::chrono::duration_cast<std::chrono::nanoseconds>
                              (end-timeStart).count();
-    cout << "TIEMO ACTUAL ULDATE:  " << elapsed_millisecons << endl;
+    cout << "TIEMO ACTUAL ULDATE:  " << elapsed_millisecons/1000000 << endl;
     if(accumulatedTimeUPDATE < elapsed_millisecons){
         accumulatedTimeUPDATE = elapsed_millisecons;
     }
-    cout << "TIEMO MAXIMO UPDATE:  " << accumulatedTimeUPDATE << endl;
+    cout << "TIEMO MAXIMO UPDATE:  " << accumulatedTimeUPDATE/1000000 << endl;
 
 }
 
 void StateInGameSingle::Render() {
+    std::cout.precision(10);
     timeStart =  std::chrono::system_clock::now();
     //auto carPrincial = manCars->GetCar().get();
     //bool isColliding = collisions->Intersects(manCars.get()->GetCar().get(), carPrincial);
@@ -122,13 +153,13 @@ void StateInGameSingle::Render() {
     StateInGame::Render();
 
     auto end = std::chrono::system_clock::now();
-    int elapsed_millisecons = std::chrono::duration_cast<std::chrono::milliseconds>
+    int elapsed_millisecons = std::chrono::duration_cast<std::chrono::nanoseconds>
                              (end-timeStart).count();
-    cout << "TIEMO ACTUAL RENDER:  " << elapsed_millisecons << endl;
+    cout << "TIEMO ACTUAL RENDER:  " << elapsed_millisecons/1000000 << endl;
     if(accumulatedTimeRENDER < elapsed_millisecons){
         accumulatedTimeRENDER = elapsed_millisecons;
     }
-    cout << "TIEMO MAXIMO RENDER:  " << accumulatedTimeRENDER << endl;
+    cout << "TIEMO MAXIMO RENDER:  " << accumulatedTimeRENDER/1000000 << endl;
 }
 
 void StateInGameSingle::InitializeCLPhysics(ManCar &manCars, ManBoundingWall &manWall, ManBoundingOBB &manOBB, ManBoundingGround &manGround, ManPowerUp &manPowerUp, ManNavMesh &manNavMesh, ManBoxPowerUp &manBoxPowerUp, ManTotem &manTotem) {
