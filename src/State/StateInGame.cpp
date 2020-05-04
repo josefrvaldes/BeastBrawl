@@ -238,7 +238,7 @@ void StateInGame::UpdateAnimationCountdown() {
     int64_t interval = now - timerCountdown;
     if (interval > 1000 && timerCountdown > 0) {
         currentCountdown--;
-        cout << "Current countdown " << unsigned(currentCountdown) << endl;
+        // cout << "Current countdown " << unsigned(currentCountdown) << endl;
         timerCountdown = Utils::getMillisSinceEpoch();
         if (currentCountdown == 0) {
             currentUpdateState = UpdateState::GAME;
@@ -422,10 +422,11 @@ void StateInGame::GoToCountdownAnimation() {
 
     // iniciamos el timer de countdown
     timerCountdown = Utils::getMillisSinceEpoch();
-    cout << "Current countdown " << unsigned(currentCountdown) << endl;
+    // cout << "Current countdown " << unsigned(currentCountdown) << endl;
 }
 
 void StateInGame::GoToStateEndrace() {
+    cout << "Vamos a lanzar un evento de STATE_ENDRACE desde StateInGame" << endl;
     EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_ENDRACE});
     EventManager::GetInstance().Update();
 }

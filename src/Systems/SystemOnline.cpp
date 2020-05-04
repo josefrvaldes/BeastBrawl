@@ -1,6 +1,12 @@
 #include "SystemOnline.h"
 
 #include "../../include/glm/vec3.hpp"
+#include "../Components/CIDOnline.h"
+#include "../Components/COnline.h"
+#include "../Components/CPowerUp.h"
+#include "../Components/CTargetEntity.h"
+#include "../Components/CTotem.h"
+#include "../Components/CTransformable.h"
 #include "../Constants.h"
 #include "../Entities/CarHuman.h"
 #include "../Entities/PowerUp.h"
@@ -10,22 +16,17 @@
 #include "../Managers/ManCar.h"
 #include "../Managers/ManTotem.h"
 #include "../Online/UDPClient.h"
-
-#include "../Components/CIDOnline.h"
-#include "../Components/COnline.h"
-#include "../Components/CPowerUp.h"
-#include "../Components/CTargetEntity.h"
-#include "../Components/CTotem.h"
-#include "../Components/CTransformable.h"
-#include "../EventManager/Event.h"
-#include "../EventManager/EventManager.h"
 #include "../Systems/Utils.h"
 
 using namespace boost::asio;
 
 SystemOnline::SystemOnline(ManCar &manCar_, uint16_t idOnlineMainCar_) : idOnlineMainCar{idOnlineMainCar_}, manCar{manCar_}, udpClient{make_unique<UDPClient>(Constants::SERVER_HOST, SERVER_PORT_UDP)} {
-    shared_ptr<CarHuman> car = manCar.GetCar(); // esto sirve para algo? se podrá borrar, no?
+    shared_ptr<CarHuman> car = manCar.GetCar();  // esto sirve para algo? se podrá borrar, no?
     SubscribeToEvents();
+}
+
+SystemOnline::~SystemOnline() {
+    cout << "Llamando al destructor de SystemOnline" << endl;
 }
 
 void SystemOnline::SubscribeToEvents() {

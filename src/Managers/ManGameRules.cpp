@@ -9,9 +9,9 @@
 ManGameRules::ManGameRules() {
     // creamos el reloj global
     systemGameRules = make_unique<SystemGameRules>();
-    // CreateGlobalClock(5);
+    CreateGlobalClock(15);
     
-    CreateGlobalClock(GameValues::GetInstance()->GetGameTime());
+    // CreateGlobalClock(GameValues::GetInstance()->GetGameTime());
 
 }
 void ManGameRules::CreateGlobalClock( const uint32_t durationTime_) {
