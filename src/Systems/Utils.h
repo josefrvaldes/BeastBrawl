@@ -153,7 +153,7 @@ class Utils {
         if(divisor != 0)
             return LO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(divisor)));
         else {
-            cout << "OJO el random ha dado divisor cero, devolvemos LO" << endl;
+            //cout << "OJO el random ha dado divisor cero, devolvemos LO" << endl;
             return LO;        
         }
     }

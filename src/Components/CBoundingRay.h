@@ -16,6 +16,7 @@ class CBoundingRay : public Component {
 
     // para evitar atraparse en la esquina de los planos
     const float baseDistancePlane = 10.0;                           // lo largo base que es el rayo
+    const float baseDistanceOBB = 30.0;                           // lo largo base que es el rayo
     uint32_t iteratorSamePlane;                                     // iterador para cambiar del plano de colision
     const uint32_t maxItSamePlane = 30 /* * deltaTime */;           // ciclos que tarda en cambiar de plano
     const uint32_t maxItDistinctPlane = 180 /* * deltaTime */;      // ciclos que tarda en cambiar de plano
