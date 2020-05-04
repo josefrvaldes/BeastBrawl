@@ -240,15 +240,15 @@ const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
 
         case ModelType::StaticMesh: {
             auto cAnimation = static_cast<CAnimation*>(entity->GetComponent(CompType::AnimationComp).get());
-            std::string path = cAnimation->GetActiveAnimation().path;
+            std::string path = cAnimation->activeAnimation->path;
             std::string animationPath = "media/" + path;
-            vector<CLResourceMesh*> clAnimations = resourceManager->GetResourceAnimation(animationPath, cAnimation->GetActiveAnimation().numKeyFrames, false);
+            vector<CLResourceMesh*> clAnimations = resourceManager->GetResourceAnimation(animationPath, cAnimation->activeAnimation->numKeyFrames, false);
             mat = resourceManager->GetResourceMaterial(animationPath);
             //node = father->AddMesh(cId->id); 
             node = device->AddMesh(father,cId->id);
 
-            if (cAnimation->GetActiveAnimation().IsInterpolated()) {
-                static_cast<CLMesh*>(node->GetEntity())->SetAnimationInterpolated(clAnimations, cAnimation->GetActiveAnimation().GetDistances());
+            if (cAnimation->activeAnimation->IsInterpolated()) {
+                static_cast<CLMesh*>(node->GetEntity())->SetAnimationInterpolated(clAnimations, cAnimation->activeAnimation->GetDistances());
             } else {
                 static_cast<CLMesh*>(node->GetEntity())->SetAnimation(clAnimations);
             }
@@ -536,13 +536,19 @@ void RenderFacadeClover::FacadeAddCamera(Entity* camera) {
 
 void RenderFacadeClover::FacadeUpdateMeshesLoD(vector<shared_ptr<Entity>> entities) {
     for (const auto& entity : entities) {
-        CId *cid = static_cast<CId*>(entity->GetComponent(CompType::IdComp).get());
-        auto node = device->GetNodeByID(cid->id);
-        if(node) {
-            CMesh *cMesh = static_cast<CMesh*>(entity->GetComponent(CompType::MeshComp).get());
-            std::string currentMesh = cMesh->activeMesh;
-            std::string meshPath = "media/" + currentMesh;
-            static_cast<CLMesh*>(node->GetEntity())->SetMesh(resourceManager->GetResourceMesh(meshPath, false));
+        CMesh *cMesh = static_cast<CMesh*>(entity->GetComponent(CompType::MeshComp).get());
+        if(cMesh->activeMesh != cMesh->previousMesh) {
+            CId *cid = static_cast<CId*>(entity->GetComponent(CompType::IdComp).get());
+            auto node = device->GetNodeByID(cid->id);
+            if(node) {
+                std::string meshPath = "media/" + cMesh->activeMesh;
+                // string nameCurrentMesh = static_cast<CLMesh*>(node->GetEntity())->GetMesh()->GetName();
+                // cout << "meshPash[" << meshPath << "]  nameCurrentMesh[" << nameCurrentMesh << "]" << endl;
+                // if (nameCurrentMesh != meshPath) {
+                    cout << "Vamos a cambiar la malla" << endl;
+                    static_cast<CLMesh*>(node->GetEntity())->SetMesh(resourceManager->GetResourceMesh(meshPath, false));
+                // }
+            }
         }
     }
 }
@@ -550,17 +556,20 @@ void RenderFacadeClover::FacadeUpdateMeshesLoD(vector<shared_ptr<Entity>> entiti
 
 void RenderFacadeClover::FacadeUpdateAnimationsLoD(vector<shared_ptr<Entity>> entities) {
     for (const auto& entity : entities) {
-        CId *cid = static_cast<CId*>(entity->GetComponent(CompType::IdComp).get());
-        auto node = device->GetNodeByID(cid->id);
-        if(node) {
-            auto cAnimation = static_cast<CAnimation*>(entity->GetComponent(CompType::AnimationComp).get());
-            std::string path = cAnimation->GetActiveAnimation().path;
-            std::string animationPath = "media/" + path;
-            vector<CLResourceMesh*> clAnimations = resourceManager->GetResourceAnimation(animationPath, cAnimation->GetActiveAnimation().numKeyFrames, false);
-            if (cAnimation->GetActiveAnimation().IsInterpolated()) {
-                static_cast<CLMesh*>(node->GetEntity())->SetAnimationInterpolated(clAnimations, cAnimation->GetActiveAnimation().GetDistances());
-            } else {
-                static_cast<CLMesh*>(node->GetEntity())->SetAnimation(clAnimations);
+        auto cAnimation = static_cast<CAnimation*>(entity->GetComponent(CompType::AnimationComp).get());
+        if(cAnimation->activeAnimation.get() != cAnimation->previousAnimation) {
+            cout << "Cambiamos animación por el LoD" << endl;
+            CId *cid = static_cast<CId*>(entity->GetComponent(CompType::IdComp).get());
+            auto node = device->GetNodeByID(cid->id);
+            if(node) {
+                std::string path = cAnimation->activeAnimation->path;
+                std::string animationPath = "media/" + path;
+                vector<CLResourceMesh*> clAnimations = resourceManager->GetResourceAnimation(animationPath, cAnimation->activeAnimation->numKeyFrames, false);
+                if (cAnimation->activeAnimation->IsInterpolated()) {
+                    static_cast<CLMesh*>(node->GetEntity())->SetAnimationInterpolated(clAnimations, cAnimation->activeAnimation->GetDistances());
+                } else {
+                    static_cast<CLMesh*>(node->GetEntity())->SetAnimation(clAnimations);
+                }
             }
         }
     }
@@ -574,7 +583,7 @@ void RenderFacadeClover::FacadeAnimate(vector<shared_ptr<Entity>> entities) {
         auto node = device->GetNodeByID(cid->id);
         if(node) {
             auto cAnimation = static_cast<CAnimation*>(entity->GetComponent(CompType::AnimationComp).get());
-            if (cAnimation->GetActiveAnimation().IsInterpolated()) {
+            if (cAnimation->activeAnimation->IsInterpolated()) {
                 static_cast<CLMesh*>(node->GetEntity())->AnimateInterpolated();
             } else {
                 static_cast<CLMesh*>(node->GetEntity())->Animate();

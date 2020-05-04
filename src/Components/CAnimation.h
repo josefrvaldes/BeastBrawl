@@ -2,6 +2,7 @@
 
 #include <array>
 #include <iostream>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -42,14 +43,15 @@ class CAnimation : public Component {
 
     //float distanceNear{250};
     //float distanceMedium{400};
-    std::vector<Animation> GetAnimations() { return animations; };
-    Animation GetActiveAnimation() { return activeAnimation; };
+    std::vector<std::shared_ptr<Animation>> GetAnimations() { return animations; };
+    // Animation GetActiveAnimation() { return activeAnimation; };
 
     float distanceNear{5000};
     float distanceMedium{10000};
+    std::shared_ptr<Animation> activeAnimation;
+    Animation *previousAnimation;
 
    private:
 
-    std::vector<Animation> animations;
-    Animation activeAnimation;
+    std::vector<std::shared_ptr<Animation>> animations;
 };

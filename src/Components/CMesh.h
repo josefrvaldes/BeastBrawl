@@ -14,7 +14,8 @@ class CMesh : public Component {
     ~CMesh(){};
 
     std::vector<std::string> mesh;
-    std::string activeMesh;
+    std::string activeMesh {""};
+    std::string previousMesh {""};
 
     //float distanceNear{250};
     //float distanceMedium{400};
@@ -22,3 +23,4 @@ class CMesh : public Component {
     float distanceNear{5000};
     float distanceMedium{10000};
 };
+ 

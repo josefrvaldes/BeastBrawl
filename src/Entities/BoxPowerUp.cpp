@@ -44,7 +44,7 @@ BoxPowerUp::BoxPowerUp(){
     uint8_t numFrames = 4;
     vector<uint8_t> distances {60,60,60,60};
     shared_ptr<CType> cType = make_shared<CType>(ModelType::StaticMesh);
-    Animation anim{animationPath, numFrames, distances};
+    Animation anim{animationPath, numFrames};//, distances};
     shared_ptr<CAnimation> cMesh = make_shared<CAnimation>(anim);
 
     shared_ptr<CBoxPowerUp> cBoxPowerUp   = make_shared<CBoxPowerUp>();
