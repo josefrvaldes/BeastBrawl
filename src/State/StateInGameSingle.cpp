@@ -280,6 +280,13 @@ void StateInGameSingle::InitCarAIS(ManCar &manCars, ManWayPoint &manWayPoint) {
         manCars.CreateCarAI(0, posCar3);
     }
 
+    //Añadimos las nameplates
+    for(auto car : manCars.GetEntities()){
+        if(manCars.GetCar().get() != car.get()){
+            manNamePlates->CreateNamePlate(car.get());
+        }
+    }
+
     auto mainCarId = static_cast<CId *>(manCars.GetCar()->GetComponent(CompType::IdComp).get());
     //int i = -1;
     //TODO: Cambiar de sitio

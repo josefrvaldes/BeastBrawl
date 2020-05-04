@@ -172,6 +172,13 @@ void RenderFacadeClover::FacadeSetGrassActivate(DataMap* d) const{
  * @param {manager de nameplates}
  */
 void RenderFacadeClover::FacadeAddPlates(Manager* manNamePlates) {
+    for(auto nameplate : manNamePlates->GetEntities()){
+        auto cId = static_cast<CId*>(nameplate->GetComponent(CompType::IdComp).get());
+        auto nameplateComp = static_cast<CNamePlate*>(nameplate->GetComponent(CompType::NamePlateComp).get());
+        auto father = device->GetNodeByID(nameplateComp->idCarAsociated);
+        auto node = device->AddBillBoard(father,cId->id,nameplateComp->billboardPath,false,20,10);
+        node->SetTranslation(glm::vec3(0.0f,10.0f,0.0f));
+    }
 }
 
 /**
