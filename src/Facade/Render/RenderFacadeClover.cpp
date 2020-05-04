@@ -578,20 +578,35 @@ void RenderFacadeClover::FacadeUpdateAnimationsLoD(vector<shared_ptr<Entity>> en
 
 
 void RenderFacadeClover::FacadeAnimate(vector<shared_ptr<Entity>> entities) {
+    auto cameraEntity = static_cast<CLCamera*>(camera1->GetEntity());
+    vec3 pointTarget = cameraEntity->GetCameraTarget();
+    pointTarget.z = -pointTarget.z;
+    vec3 posCamara = camera1->GetTranslation();
+    posCamara.z = -posCamara.z;
+    vec3 normalCamara = posCamara - pointTarget;
+    
+    // cout << "la rotación de la cámara es x["<<normalCamara.x<<"] y["<<normalCamara.y<<"] z["<<normalCamara.z<<"]" << endl;
+    // cout << "Hay "<< entities.size() <<" cosas para animar" << endl;
     for (const auto& entity : entities) {
-        CId *cid = static_cast<CId*>(entity->GetComponent(CompType::IdComp).get());
-        auto node = device->GetNodeByID(cid->id);
-        if(node) {
-            auto cAnimation = static_cast<CAnimation*>(entity->GetComponent(CompType::AnimationComp).get());
-            if (cAnimation->activeAnimation->IsInterpolated()) {
-                static_cast<CLMesh*>(node->GetEntity())->AnimateInterpolated();
-            } else {
-                static_cast<CLMesh*>(node->GetEntity())->Animate();
+        CTransformable *cTrans = static_cast<CTransformable*>(entity->GetComponent(CompType::TransformableComp).get());
+
+        float mDot = glm::dot(normalCamara, (cTrans->position - posCamara));
+        if (mDot < 0) {
+            // cout << "Estamos animando algo" << endl;
+            CId *cid = static_cast<CId*>(entity->GetComponent(CompType::IdComp).get());
+            auto node = device->GetNodeByID(cid->id);
+            if(node) {
+                auto cAnimation = static_cast<CAnimation*>(entity->GetComponent(CompType::AnimationComp).get());
+                if (cAnimation->activeAnimation->IsInterpolated()) {
+                    static_cast<CLMesh*>(node->GetEntity())->AnimateInterpolated();
+                } else {
+                    static_cast<CLMesh*>(node->GetEntity())->Animate();
+                }
             }
         }
     }
 }
-
+ 
 /**
  * @return - ¿El juego sigue abierto?
  */
