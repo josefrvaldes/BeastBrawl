@@ -46,43 +46,6 @@ void StateInGameSingle::UpdateAnimationEnd() {
     StateInGame::UpdateAnimationEnd();
 }
 
-
-
-void StateInGameSingle::UpdateGame() {
-    // si estamos yendo a pausa, paramos los temporizadores
-    if (goingToPause) {
-        timeStartPause = Utils::getMillisSinceEpoch();
-        goingToPause = false;
-        comingBackFromPause = true;
-        cout << "Vamos a ir a pausa, teóricamente paramos los temporizadores" << endl;
-
-        // si volvemos de pausa, reiniciamos los temporizadores
-    } else if (comingBackFromPause) {
-        cout << "Volvemos de pausa, reiniciamos los temporizadores" << endl;
-        manGameRules->RestartAllTimers(manCars->GetEntities(), timeStartPause);
-        comingBackFromPause = false;
-    }
-
-    StateInGame::UpdateGame();
-
-    manAI->Update();
-
-    for (auto actualAI : manCars->GetEntities()) {  // CUIDADO!!! -> el static cast que solo se use en el single player, si no peta
-        if (static_cast<Car *>(actualAI.get())->GetTypeCar() == TypeCar::CarAI) {
-            bool gameFinished = manCars->UpdateCarAI(static_cast<CarAI *>(actualAI.get()), manTotems.get());
-            if(gameFinished) 
-                GoToEndAnimation();
-        }
-    }
-
-    // Actualizamos posicion en la fachada de render
-    for (auto actualAI : manCars->GetEntities()) {  // CUIDADO!!! -> el static cast que solo se use en el single player, si no peta
-        if (static_cast<Car *>(actualAI.get())->GetTypeCar() == TypeCar::CarAI) {
-            physicsEngine->UpdateTransformable(actualAI.get());
-        }
-    }
-}
-
 void StateInGameSingle::Update() {
     switch (currentUpdateState) {
         case UpdateState::START:
@@ -104,7 +67,50 @@ void StateInGameSingle::Update() {
     }
 }
 
+void StateInGameSingle::UpdateGame() {
+    timeStart =  std::chrono::system_clock::now();
+
+    // si estamos yendo a pausa, paramos los temporizadores
+    if (goingToPause) {
+        timeStartPause = Utils::getMillisSinceEpoch();
+        goingToPause = false;
+        comingBackFromPause = true;
+        cout << "Vamos a ir a pausa, teóricamente paramos los temporizadores" << endl;
+
+        // si volvemos de pausa, reiniciamos los temporizadores
+    } else if (comingBackFromPause) {
+        cout << "Volvemos de pausa, reiniciamos los temporizadores" << endl;
+        manGameRules->RestartAllTimers(manCars->GetEntities(), timeStartPause);
+        comingBackFromPause = false;
+    }
+    StateInGame::UpdateGame();
+    manAI->Update();
+    for (auto actualAI : manCars->GetEntities()) {  // CUIDADO!!! -> el static cast que solo se use en el single player, si no peta
+        if (static_cast<Car *>(actualAI.get())->GetTypeCar() == TypeCar::CarAI) {
+            bool gameFinished = manCars->UpdateCarAI(static_cast<CarAI *>(actualAI.get()), manTotems.get());
+            if(gameFinished) 
+                GoToEndAnimation();
+        }
+    }
+    for (auto actualAI : manCars->GetEntities()) {  // CUIDADO!!! -> el static cast que solo se use en el single player, si no peta
+        if (static_cast<Car *>(actualAI.get())->GetTypeCar() == TypeCar::CarAI) {
+            physicsEngine->UpdateTransformable(actualAI.get());
+        }
+    }
+
+    auto end = std::chrono::system_clock::now();
+    int elapsed_millisecons = std::chrono::duration_cast<std::chrono::milliseconds>
+                             (end-timeStart).count();
+    cout << "TIEMO ACTUAL ULDATE:  " << elapsed_millisecons << endl;
+    if(accumulatedTimeUPDATE < elapsed_millisecons){
+        accumulatedTimeUPDATE = elapsed_millisecons;
+    }
+    cout << "TIEMO MAXIMO UPDATE:  " << accumulatedTimeUPDATE << endl;
+
+}
+
 void StateInGameSingle::Render() {
+    timeStart =  std::chrono::system_clock::now();
     //auto carPrincial = manCars->GetCar().get();
     //bool isColliding = collisions->Intersects(manCars.get()->GetCar().get(), carPrincial);
     //renderEngine->FacadeDrawBoundingBox(manCars.get()->GetCar().get(), isColliding);
@@ -114,6 +120,15 @@ void StateInGameSingle::Render() {
     }
     //renderEngine->FacadeDrawBoundingBox(carPrincial, isColliding);
     StateInGame::Render();
+
+    auto end = std::chrono::system_clock::now();
+    int elapsed_millisecons = std::chrono::duration_cast<std::chrono::milliseconds>
+                             (end-timeStart).count();
+    cout << "TIEMO ACTUAL RENDER:  " << elapsed_millisecons << endl;
+    if(accumulatedTimeRENDER < elapsed_millisecons){
+        accumulatedTimeRENDER = elapsed_millisecons;
+    }
+    cout << "TIEMO MAXIMO RENDER:  " << accumulatedTimeRENDER << endl;
 }
 
 void StateInGameSingle::InitializeCLPhysics(ManCar &manCars, ManBoundingWall &manWall, ManBoundingOBB &manOBB, ManBoundingGround &manGround, ManPowerUp &manPowerUp, ManNavMesh &manNavMesh, ManBoxPowerUp &manBoxPowerUp, ManTotem &manTotem) {
