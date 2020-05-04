@@ -177,7 +177,7 @@ void RenderFacadeClover::FacadeAddPlates(Manager* manNamePlates) {
         auto cId = static_cast<CId*>(nameplate->GetComponent(CompType::IdComp).get());
         auto nameplateComp = static_cast<CNamePlate*>(nameplate->GetComponent(CompType::NamePlateComp).get());
         auto father = device->GetNodeByID(nameplateComp->idCarAsociated);
-        auto node = device->AddBillBoard(father,cId->id,nameplateComp->billboardPath,false,20,10);
+        auto node = device->AddBillBoard(father,cId->id,nameplateComp->billboardPath,false,30,10);
         node->SetTranslation(glm::vec3(0.0f,10.0f,0.0f));
     }
 }
@@ -388,10 +388,10 @@ const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
         wheel3->SetTranslation(glm::vec3(0.0f,5.0f,0.0f));
         wheel4->SetTranslation(glm::vec3(0.0f,5.0f,10.0f));
 
-        wheel1->SetScalation(glm::vec3(10.0f));
-        wheel2->SetScalation(glm::vec3(10.0f));
-        wheel3->SetScalation(glm::vec3(10.0f));
-        wheel4->SetScalation(glm::vec3(10.0f));
+        wheel1->SetScalation(glm::vec3(3.0f));
+        wheel2->SetScalation(glm::vec3(3.0f));
+        wheel3->SetScalation(glm::vec3(3.0f));
+        wheel4->SetScalation(glm::vec3(3.0f));
 
         wheel1->SetShaderProgramID(shader->GetProgramID());
         wheel2->SetShaderProgramID(shader->GetProgramID());
