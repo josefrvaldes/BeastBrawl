@@ -63,7 +63,6 @@ void ManTotem::Update(){
 
 }
 
-
 void ManTotem::CreateTotem() {
     if(entities.size() == 0){
         shared_ptr<Totem> totem = make_shared<Totem>();
