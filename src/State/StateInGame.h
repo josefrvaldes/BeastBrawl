@@ -170,4 +170,13 @@ class StateInGame : public State {
     int64_t timerCountdown;
     uint8_t currentCountdown{3};
     int64_t timerEnd {0};
+
+
+
+    std::chrono::time_point<std::chrono::system_clock> timeStart;        // reloj que contabiliza el tiempo
+    std::chrono::time_point<std::chrono::system_clock> timeStartSeccion;        // reloj que contabiliza el tiempo
+    double accumulatedTimeUPDATE {0.0};
+
+
+
 };
