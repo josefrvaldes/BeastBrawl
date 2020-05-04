@@ -203,6 +203,8 @@ void StateInGameSingle::InitBtLoDMove() {
     systemBtLoDMove->AddManager(*manNavMesh.get());
     systemBtLoDMove->AddManager(*manBoundingWall.get());
     systemBtLoDMove->AddManager(*manBoundingOBB.get());
+    
+    systemBtLoDMove->AddCLPhysicsSB(clPhysics.get());
 
     systemBtLoDMove->setMaxProcessTime(0.00053);
 }
