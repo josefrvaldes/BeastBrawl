@@ -857,19 +857,19 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
     auto xtext = 640.0f;
     auto ytext = 610.0f;
     float scale = 1.0f;
-    //if (w == 1024) scale = 0.75;
-    //else if (w == 1920) scale = 1.25;
+    if (w <= 1024) scale = 0.75;
+    else if (w >= 1920) scale = 1.25;
 
 
     //MINIMAPA
-    auto xLeftMap = -472;                   auto xRightMap = 488;
-    auto yUpMap = -493;                     auto yDownMap = 770;
-    auto widthMap =  xRightMap - xLeftMap;  auto heightMap = yDownMap - yUpMap;
-    auto widthMM = 20*widthMap/100;         auto heightMM = 20*heightMap/100;
-    auto posXMap = (w - (widthMM+50));      auto posYMap = (h - (heightMM+50));
+    auto xLeftMap = -472;                       auto xRightMap = 488;
+    auto yUpMap = -493;                         auto yDownMap = 770;
+    auto widthMap =  xRightMap - xLeftMap;      auto heightMap = yDownMap - yUpMap;
+    auto widthMM = 20*widthMap/100;             auto heightMM = 20*heightMap/100;
+    auto posXMap = (w - (widthMM+50)*scale);    auto posYMap = (h - (heightMM+50)*scale);
 
     cadena = "media/Minimapa240.png";
-    device->DrawImage2D((posXMap*scale), (posYMap*scale), widthMM, heightMM, 0.9f, cadena, true);
+    device->DrawImage2D((posXMap), (posYMap), widthMM*scale, heightMM*scale, 0.9f, cadena, true);
 
     //CURRENT POWERUP
     device->DrawImage2D(25.0f*scale, 25.0f*scale, 150.0f*scale, 150.0f*scale, 0.1f ,powerUps[currentPowerUp], true);
@@ -933,7 +933,7 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
                 if (scale == 0.75) { xtext=650.0f; ytext=620.0f; } 
                 else if (scale == 1.25) { xtext=650.0f; ytext=630.0f; }
                 device->RenderText2D(cadena, xtext, ytext, 0.05f, 0.75f, color);
-                break;
+                //break;
             }
 
             // MINIMAPA
@@ -943,9 +943,14 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
                 //cout << "MI POSICION ES: " << cTrans->position.x << " - " << cTrans->position.z << endl;
                 //cout << "MI POSICION EN COORDENADAS POSITIVAS ES: " << cTrans->position.x - xLeftMap << " - " << cTrans->position.z - yUpMap << endl;
 
-                device->DrawImage2D(((posXMap + posXPjMM - 12)*scale), ((posYMap + posYPjMM - 12)*scale), 25.0f*scale, 25.0f*scale, 0.1f*i, sprite, true);
+                device->DrawImage2D((posXMap + (posXPjMM - 12)*scale), (posYMap + (posYPjMM - 12)*scale), 25.0f*scale, 25.0f*scale, 0.1f*i, sprite, true);
             }
             --i;
+
+            // COLUMNA DE POSICIONES
+            /*if (cTotem) {
+
+            }*/
         }  
 
     }
@@ -981,6 +986,7 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
         
     }*/
 
+    
     
 
     //EVENTS
