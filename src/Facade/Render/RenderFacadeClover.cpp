@@ -13,6 +13,7 @@
 #include <Components/CParentNode.h>
 #include <Components/CDimensions.h>
 #include <Components/CId.h>
+#include <Components/CWheel.h>
 #include <Components/CMesh.h>
 #include <Components/CParticleSystem.h>
 #include <Components/CNamePlate.h>
@@ -370,7 +371,33 @@ const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
             nodeSphere2->SetScalation(glm::vec3(radiousSph2));
             nodeSphere2->SetVisible(false);
         }
-        
+    
+
+    //Si tiene ruedas porque es un coche se las añadimos
+    if(entity->HasComponent(CompType::WheelComp)){
+        //Importante el padre sera el propio node que acabamos de crear que es el coche
+        auto cWheel = static_cast<CWheel*>(entity->GetComponent(CompType::WheelComp).get());
+        auto wheel1 = device->AddMesh(node,cWheel->IdWheelBottomLeft,"media/"+cWheel->meshBottomLeft);
+        auto wheel2 = device->AddMesh(node,cWheel->IdWheelBottomRight,"media/"+cWheel->meshBottomRight);
+        auto wheel3 = device->AddMesh(node,cWheel->IdWheelTopLeft,"media/"+cWheel->meshTopLeft);
+        auto wheel4 = device->AddMesh(node,cWheel->IdWheelTopRight,"media/"+cWheel->meshTopRight);
+
+
+        wheel1->SetTranslation(glm::vec3(10.0f,5.0f,0.0f));
+        wheel2->SetTranslation(glm::vec3(10.0f,5.0f,10.0f));
+        wheel3->SetTranslation(glm::vec3(0.0f,5.0f,0.0f));
+        wheel4->SetTranslation(glm::vec3(0.0f,5.0f,10.0f));
+
+        wheel1->SetScalation(glm::vec3(10.0f));
+        wheel2->SetScalation(glm::vec3(10.0f));
+        wheel3->SetScalation(glm::vec3(10.0f));
+        wheel4->SetScalation(glm::vec3(10.0f));
+
+        wheel1->SetShaderProgramID(shader->GetProgramID());
+        wheel2->SetShaderProgramID(shader->GetProgramID());
+        wheel3->SetShaderProgramID(shader->GetProgramID());
+        wheel4->SetShaderProgramID(shader->GetProgramID());
+    }
 
     return cId->id;
 }

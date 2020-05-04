@@ -61,7 +61,7 @@ int main() {
         auto resourceShaderSkybox = resourceManager->GetResourceShader("CLEngine/src/Shaders/skybox.vert", "CLEngine/src/Shaders/skybox.frag");
         auto resourceMeshGround = resourceManager->GetResourceMesh("media/training_ground.obj", true);
         auto resourceMeshTotem = resourceManager->GetResourceMesh("media/totem.obj", true);
-        auto resourceMesh = resourceManager->GetResourceMesh("media/sphera.obj", true);
+        auto resourceMesh = resourceManager->GetResourceMesh("media/sharky_wheel2.obj", true);
         auto resourceMeshBox = resourceManager->GetResourceMesh("media/TEST_BOX.obj", true);
         // auto animationKong = resourceManager->GetResourceAnimation("media/animations/kong/001kong.obj", 75, true);
         // auto animationCube = resourceManager->GetResourceAnimation("media/animations/cube/001cube.obj", 4, true);

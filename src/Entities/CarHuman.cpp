@@ -10,6 +10,7 @@
 #include <Components/CRoboJorobo.h>
 #include <Components/CShield.h>
 #include <Components/CTexture.h>
+#include <Components/CWheel.h>
 #include <Components/CTotem.h>
 #include <Components/CTransformable.h>
 #include <Components/CType.h>
@@ -132,6 +133,7 @@ CarHuman::CarHuman(int pj) {
     shared_ptr<CGravity> cGravity = make_shared<CGravity>();
     shared_ptr<CHurt> cHurt = make_shared<CHurt>();
 
+    shared_ptr<CWheel> cWheel = make_shared<CWheel>();
 
     AddComponent(cId);
     AddComponent(cType);
@@ -155,6 +157,7 @@ CarHuman::CarHuman(int pj) {
     AddComponent(cGravity);
     AddComponent(cShader);
     AddComponent(cHurt);
+    AddComponent(cWheel);
     //cout << "Acabamos de llamar al constructor default de car, su transformable es " << cTransformable << endl;
 }
 

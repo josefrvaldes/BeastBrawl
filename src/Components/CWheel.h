@@ -24,8 +24,12 @@ public:
     float offsetX = 0.0;
     float offsetZ = 0.0;
     float rotY = 0.0;
-    string texture = "wall.bmp";
-    string mesh    = "kart.obj";
+
+    string meshTopLeft = "sharky_wheel1.obj";
+    string meshTopRight = "sharky_wheel1.obj";
+    string meshBottomLeft = "sharky_wheel1.obj";
+    string meshBottomRight = "sharky_wheel1.obj";
+
     uint32_t IdWheelTopLeft;
     uint32_t IdWheelTopRight;
     uint32_t IdWheelBottomLeft;

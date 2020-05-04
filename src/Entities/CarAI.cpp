@@ -10,6 +10,7 @@
 #include <Components/CCar.h>
 #include <Components/CShield.h>
 #include <Components/CTotem.h>
+#include <Components/CWheel.h>
 #include <Components/CRoboJorobo.h>
 #include <Components/CNitro.h>
 #include <Components/CBoundingSphere.h>
@@ -131,6 +132,8 @@ CarAI::CarAI(int pj){
     shared_ptr<CBrainAI> cBrainAI = make_shared<CBrainAI>();
     
     shared_ptr<CHurt> cHurt = make_shared<CHurt>();
+    shared_ptr<CWheel> cWheel = make_shared<CWheel>();
+
 
     AddComponent(cId);
     AddComponent(cType);
@@ -164,6 +167,7 @@ CarAI::CarAI(int pj){
     AddComponent(cShader);
     AddComponent(cBrainAI);
     AddComponent(cHurt);
+    AddComponent(cWheel);
 }
 
 CarAI::CarAI(int pj, glm::vec3 pos, glm::vec3 rot, glm::vec3 scale,string texture, string mesh, float maxSpeed, float acceleration , float carFriction, float carSlowDown, std::string vertexShader, std::string fragmentShader)
