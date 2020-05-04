@@ -377,21 +377,26 @@ const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
     if(entity->HasComponent(CompType::WheelComp)){
         //Importante el padre sera el propio node que acabamos de crear que es el coche
         auto cWheel = static_cast<CWheel*>(entity->GetComponent(CompType::WheelComp).get());
-        auto wheel1 = device->AddMesh(node,cWheel->IdWheelBottomLeft,"media/"+cWheel->meshBottomLeft);
-        auto wheel2 = device->AddMesh(node,cWheel->IdWheelBottomRight,"media/"+cWheel->meshBottomRight);
-        auto wheel3 = device->AddMesh(node,cWheel->IdWheelTopLeft,"media/"+cWheel->meshTopLeft);
-        auto wheel4 = device->AddMesh(node,cWheel->IdWheelTopRight,"media/"+cWheel->meshTopRight);
+        auto wheel1 = device->AddMesh(node,cWheel->IdWheelTopLeft,"media/"+cWheel->meshTopLeft);
+        auto wheel2 = device->AddMesh(node,cWheel->IdWheelTopRight,"media/"+cWheel->meshTopRight);
+        auto wheel3 = device->AddMesh(node,cWheel->IdWheelBottomLeft,"media/"+cWheel->meshBottomLeft);
+        auto wheel4 = device->AddMesh(node,cWheel->IdWheelBottomRight,"media/"+cWheel->meshBottomRight);
 
 
-        wheel1->SetTranslation(glm::vec3(10.0f,5.0f,0.0f));
-        wheel2->SetTranslation(glm::vec3(10.0f,5.0f,10.0f));
-        wheel3->SetTranslation(glm::vec3(0.0f,5.0f,0.0f));
-        wheel4->SetTranslation(glm::vec3(0.0f,5.0f,10.0f));
+        wheel1->SetTranslation(cWheel->offsetTopLeft);
+        wheel2->SetTranslation(cWheel->offsetTopRight);
+        wheel3->SetTranslation(cWheel->offsetBottomLeft);
+        wheel4->SetTranslation(cWheel->offsetBottomRight);
 
-        wheel1->SetScalation(glm::vec3(3.0f));
-        wheel2->SetScalation(glm::vec3(3.0f));
-        wheel3->SetScalation(glm::vec3(3.0f));
-        wheel4->SetScalation(glm::vec3(3.0f));
+        wheel1->SetRotation(cWheel->rotationTopLeft);
+        wheel2->SetRotation(cWheel->rotationTopRight);
+        wheel3->SetRotation(cWheel->rotationBottomLeft);
+        wheel4->SetRotation(cWheel->rotationBottomRight);
+
+        wheel1->SetScalation(cWheel->scaleTopLeft);
+        wheel2->SetScalation(cWheel->scaleTopRight);
+        wheel3->SetScalation(cWheel->scaleBottomLeft);
+        wheel4->SetScalation(cWheel->scaleBottomRight);
 
         wheel1->SetShaderProgramID(shader->GetProgramID());
         wheel2->SetShaderProgramID(shader->GetProgramID());
