@@ -8,7 +8,7 @@ class Position;
 using namespace std;
 
 
-NamePlate::NamePlate(int _id)
+NamePlate::NamePlate(int parentNode,string billboardPath)
 {
 
     //string vertexShader = "CLEngine/src/Shaders/lightMapping.vert";
@@ -19,7 +19,7 @@ NamePlate::NamePlate(int _id)
 
     shared_ptr<Component> cId   = make_shared<CId>();
     shared_ptr<Component> cType   = make_shared<CType>(ModelType::Text);
-    shared_ptr<Component> cNamePlate = make_shared<CNamePlate>(_id);
+    shared_ptr<Component> cNamePlate = make_shared<CNamePlate>(parentNode,billboardPath);
     shared_ptr<CShader> cShader = make_shared<CShader>(vertexShader,fragmentShader);
 
     AddComponent(cId);

@@ -83,6 +83,12 @@ void StateInGameMulti::InitCarHumans(uint16_t idOnline_, vector<uint16_t> arrayI
 
         // cout << "El coche con id online " << idEnemy << " está en la pos " << pos.x << "," << pos.y << "," << pos.z << endl;
     }
+
+    for(auto car : manCars->GetEntities()){
+        if(manCars->GetCar().get() != car.get()){
+            manNamePlates->CreateNamePlate(car.get());
+        }
+    }
 }
 
 void StateInGameMulti::Input() {

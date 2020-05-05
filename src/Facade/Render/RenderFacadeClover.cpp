@@ -118,6 +118,11 @@ void RenderFacadeClover::FacadeSuscribeEventsSettings() {
         EventType::ENABLE_VEGETATION,
         bind( &RenderFacadeClover::FacadeSetGrassActivate, this, placeholders::_1 ),
         "FacadeSetGrassActivate"});
+    
+    EventManager::GetInstance().Subscribe(Listener{
+        EventType::ENABLE_SHADOWS,
+        bind( &RenderFacadeClover::FacadeSetShadowsActivate, this, placeholders::_1 ),
+        "FacadeSetShadowsActivate"});
 }
 
 
@@ -167,11 +172,25 @@ void RenderFacadeClover::FacadeSetGrassActivate(DataMap* d) const{
     device->SetGrassActivate(mode);
 }
 
+
+void RenderFacadeClover::FacadeSetShadowsActivate(DataMap* d) const{
+    auto mode = any_cast<int>((*d)[TRUEFALSE]);
+
+    device->SetShadowsActivate(mode);
+}
+
 /**
  * Se llama una vez para añadir las NamePlates
  * @param {manager de nameplates}
  */
 void RenderFacadeClover::FacadeAddPlates(Manager* manNamePlates) {
+    for(auto nameplate : manNamePlates->GetEntities()){
+        auto cId = static_cast<CId*>(nameplate->GetComponent(CompType::IdComp).get());
+        auto nameplateComp = static_cast<CNamePlate*>(nameplate->GetComponent(CompType::NamePlateComp).get());
+        auto father = device->GetNodeByID(nameplateComp->idCarAsociated);
+        auto node = device->AddBillBoard(father,cId->id,nameplateComp->billboardPath,false,20,10);
+        node->SetTranslation(glm::vec3(0.0f,10.0f,0.0f));
+    }
 }
 
 /**

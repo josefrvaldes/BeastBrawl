@@ -48,8 +48,7 @@ void StateInGame::InitializeFacades() {
 }
 
 void StateInGame::AddElementsToRender() {
-    // Añadimos cosas a la fachada de render
-    renderEngine->FacadeAddPlates(manNamePlates.get());
+    
 
     // Entidades iniciales
     renderEngine->FacadeAddObjectCar(manCars.get()->GetCar().get());  //Anyadimos el coche
@@ -95,6 +94,9 @@ void StateInGame::AddElementsToRender() {
     for(auto shield : manShield->GetEntities()){
         renderEngine->FacadeAddObject(shield.get());
     }
+
+    // Añadimos cosas a la fachada de render
+    renderEngine->FacadeAddPlates(manNamePlates.get());
 }
 
 void StateInGame::InitializeCLPhysics(ManCar &manCars, ManBoundingWall &manWall, ManBoundingOBB &manOBB, ManBoundingGround &manGround, ManPowerUp &manPowerUp, ManNavMesh &manNavMesh, ManBoxPowerUp &manBoxPowerUp, ManTotem &manTotem) {
@@ -209,6 +211,7 @@ void StateInGame::CreateMainCar() {
     if (manCars) {
         auto pj = GameValues::GetInstance()->GetCharacter();
         manCars->CreateMainCar(pj);
+        //manNamePlates->CreateNamePlate(manCars->GetCar().get());
         /*auto cCar = static_cast<CCar*>(manCars->GetCar()->GetComponent(CompType::CarComp).get());
         if (cCar){
             cout << "PESO: " << cCar->weight << " - VELMAX: " << cCar->maxSpeed << " - ACELETARION: " << cCar->acceleration << "\n";

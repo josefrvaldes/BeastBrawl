@@ -9,6 +9,7 @@ uniform vec3 viewPos;     //Posición de la camara
 
 uniform samplerCube depthMap;
 uniform float far_plane;
+uniform bool activeShadows;
 
 struct Material {
     vec3 ambient;
@@ -179,7 +180,7 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir, i
 
     //PARA DESACTIVAR EL CARTOON DESCOMENTAR ESTA LINEA
     edgeDetection = 1.0;
-    if(i == id_luz_shadowMapping)
+    if(activeShadows && i == id_luz_shadowMapping)
         shadow = ShadowCalculation(FragPos, light.position);
 
     return edgeDetection * (ambient + (1.0 - shadow) * (diffuse /*+ specular*specMask*/));

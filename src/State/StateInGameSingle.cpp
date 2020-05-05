@@ -203,6 +203,8 @@ void StateInGameSingle::InitBtLoDMove() {
     systemBtLoDMove->AddManager(*manNavMesh.get());
     systemBtLoDMove->AddManager(*manBoundingWall.get());
     systemBtLoDMove->AddManager(*manBoundingOBB.get());
+    
+    systemBtLoDMove->AddCLPhysicsSB(clPhysics.get());
 
     systemBtLoDMove->setMaxProcessTime(0.00053);
 }
@@ -278,6 +280,13 @@ void StateInGameSingle::InitCarAIS(ManCar &manCars, ManWayPoint &manWayPoint) {
         manCars.CreateCarAI(0, posCar1);
         manCars.CreateCarAI(0, posCar2);
         manCars.CreateCarAI(0, posCar3);
+    }
+
+    //Añadimos las nameplates
+    for(auto car : manCars.GetEntities()){
+        if(manCars.GetCar().get() != car.get()){
+            manNamePlates->CreateNamePlate(car.get());
+        }
     }
 
     auto mainCarId = static_cast<CId *>(manCars.GetCar()->GetComponent(CompType::IdComp).get());

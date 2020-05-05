@@ -15,6 +15,7 @@ struct CarAI;
 struct Manager;
 struct SystemFuzzyLogicAI;
 struct SteeringBehaviours;
+struct CLPhysics;
 
 class SystemBtLoDMove : public SystemAI{
    public:
@@ -25,6 +26,7 @@ class SystemBtLoDMove : public SystemAI{
       void update(CarAI* actualCar) override;
 
       void AddManager(Manager &);
+      void AddCLPhysicsSB(CLPhysics* clPhysics);
 
       int getFrecuency(){ return frec; };
 

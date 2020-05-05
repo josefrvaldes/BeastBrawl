@@ -36,6 +36,8 @@ public:
     bool UpdateObstacleAvoidance(Entity* actualCar, ManBoundingOBB* manBoundingOBB) const;
     void UpdateThink(Entity* actualCar);
 
+    void SetCLPhysics(CLPhysics* _clPhysics){ clPhysics=_clPhysics; };
+
 
 private:
     glm::vec2 Seek(Entity* originCar, const glm::vec3& posTargetCar, const glm::vec2& velocityVector) const;
@@ -62,6 +64,6 @@ private:
     void AvoidTrapCorner(Entity* actualCar, Entity *actualObstacle, const glm::vec2& velocityVector, const glm::vec3& target, glm::vec2& vectorForce) const;
 
 
-    unique_ptr<CLPhysics> clPhysics;
+    CLPhysics* clPhysics = nullptr;
     glm::vec2 ApplyExternalForce(CCar *cCar, CExternalForce *externalForce, const glm::vec2& carForce) const;
 };
