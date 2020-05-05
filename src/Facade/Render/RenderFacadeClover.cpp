@@ -374,6 +374,7 @@ const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
             nodeSphere1->SetTranslation(glm::vec3(centerSph1.x, centerSph1.y, -centerSph1.z));
             nodeSphere1->SetScalation(glm::vec3(radiousSph1));
             nodeSphere1->SetVisible(false);
+            nodeSphere1->SetShaderProgramID(shader->GetProgramID());
             // segunda esfera
             auto radiousSph2 = cChassis->sphereFront->radius;
             auto centerSph2 = cChassis->sphereFront->center;
@@ -382,6 +383,7 @@ const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
             nodeSphere2->SetTranslation(glm::vec3(centerSph2.x, centerSph2.y, -centerSph2.z));
             nodeSphere2->SetScalation(glm::vec3(radiousSph2));
             nodeSphere2->SetVisible(false);
+            nodeSphere2->SetShaderProgramID(shader->GetProgramID());
         }
     
 
