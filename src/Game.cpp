@@ -125,12 +125,7 @@ void Game::SetState(State::States stateType) {
             EventManager::GetInstance().ClearEvents();
             EventManager::GetInstance().ClearListeners();
             currentState = make_shared<StateEndRace>();
-            if (gameMarkedToDelete) {
-                gameState.reset();
-                gameMarkedToDelete = false;
-            } else
-                gameMarkedToDelete = true;
-
+            gameState.reset();
             SuscribeEvents();
             gameStarted = false;
             break;
@@ -214,7 +209,7 @@ void Game::SuscribeEvents() {
     EventManager::GetInstance().SubscribeMulti(Listener(
         EventType::STATE_ENDRACE,
         bind(&Game::SetStateEndRace, this, placeholders::_1),
-        "StateEndRace"));
+        "StateEndRace in Game.cpp"));
 
     EventManager::GetInstance().SubscribeMulti(Listener(
         EventType::STATE_LOBBYMULTI,

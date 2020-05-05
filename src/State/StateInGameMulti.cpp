@@ -32,6 +32,7 @@ StateInGameMulti::StateInGameMulti(uint16_t idOnline_, const vector<uint16_t> id
 }
 
 StateInGameMulti::~StateInGameMulti() {
+    cout << "Llamamos al destructor de StateInGameMulti" << endl;
 }
 
 void StateInGameMulti::InitState() {

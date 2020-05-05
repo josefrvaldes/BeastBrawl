@@ -30,10 +30,12 @@ SystemOnline::~SystemOnline() {
 }
 
 void SystemOnline::SubscribeToEvents() {
-    EventManager::GetInstance().SubscribeMulti(Listener(
-        EventType::STATE_ENDRACE,
-        bind(&SystemOnline::EventEndgame, this, std::placeholders::_1),
-        "Endgame"));
+    // ya no vamos a enviar la petición de fin de juego, el juego se acabará automáticamente al acabar la animationEnd
+    // la animationEnd sí se envía específicamente como veis en la suscripción de debajo
+    // EventManager::GetInstance().SubscribeMulti(Listener(
+    //     EventType::STATE_ENDRACE,
+    //     bind(&SystemOnline::EventEndgame, this, std::placeholders::_1),
+    //     "Endgame in SystemOnline"));
 
     EventManager::GetInstance().SubscribeMulti(Listener(
         EventType::LAUNCH_ANIMATION_END_MULTI,

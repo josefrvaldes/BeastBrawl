@@ -32,7 +32,7 @@ StateInGame::StateInGame() {
 }
 
 StateInGame::~StateInGame() {
-    // destructor
+    cout << "Llamamos al destructor de StateInGame" << endl;
 }
 
 

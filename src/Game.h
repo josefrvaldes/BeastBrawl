@@ -47,6 +47,5 @@ class Game{
         shared_ptr<State> lastState;
 
         bool gameStarted = false;
-        bool gameMarkedToDelete {false};
 };
 

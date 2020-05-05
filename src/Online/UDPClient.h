@@ -107,4 +107,5 @@ class UDPClient {
     unordered_map<uint16_t, int64_t> lastTimeCrashPUWallReceived;
     unordered_map<uint16_t, int64_t> lastTimeLaunchEndGameReceived;
     bool stateAnimationEnd {false};
+    int64_t timeGameStarted;
 };
