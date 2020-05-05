@@ -241,11 +241,15 @@ void StateInGame::UpdateAnimationCountdown() {
         // cout << "Current countdown " << unsigned(currentCountdown) << endl;
         timerCountdown = Utils::getMillisSinceEpoch();
         if (currentCountdown == 0) {
-            currentUpdateState = UpdateState::GAME;
-            manGameRules->ResetClock();
-            EventManager::GetInstance().AddEventMulti(Event{EventType::START_MINGAME});
+            GoToUpdateGame();
         }
     }
+}
+
+void StateInGame::GoToUpdateGame() {
+    currentUpdateState = UpdateState::GAME;
+    manGameRules->ResetClock();
+    EventManager::GetInstance().AddEventMulti(Event{EventType::START_MINGAME});
 }
 
 void StateInGame::UpdateAnimationEnd() {

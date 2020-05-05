@@ -26,8 +26,6 @@ StateInGameMulti::StateInGameMulti(uint16_t idOnline_, const vector<uint16_t> id
 
     SubscribeToEvents();
 
-    vector<Constants::InputTypes> inputs;
-    sysOnline->SendInputs(inputs);  // enviamos un vector vacío la primera vez para que el servidor sepa que estamos vivos
     sysAnimStart->ResetTimer();
 }
 
@@ -114,6 +112,12 @@ void StateInGameMulti::Input() {
             sysOnline->SendSync(manCars.get(), manTotems.get());
         }
     }
+}
+
+void StateInGameMulti::GoToUpdateGame() {
+    StateInGame::GoToUpdateGame();
+    const vector<Constants::InputTypes> inputs;
+    sysOnline->SendInputs(inputs);
 }
 
 void StateInGameMulti::UpdateAnimationEnd() {

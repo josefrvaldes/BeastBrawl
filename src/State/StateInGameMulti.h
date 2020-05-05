@@ -26,6 +26,7 @@ class StateInGameMulti : public StateInGame {
    private:
     void SubscribeToEvents();
     void GoToEndAnimationFromMulti(DataMap *);
+    void GoToUpdateGame() override;
     void InitializeCLPhysics(ManCar &manCars, ManBoundingWall &, ManBoundingOBB &, ManBoundingGround &, ManPowerUp &, ManNavMesh&, ManBoxPowerUp&, ManTotem &) override;
     void InitializeManagers() override;
     void InitializeSystems(ManCar &manCars, ManBoundingWall &, ManBoundingOBB &, ManBoundingGround &, ManPowerUp &, ManNavMesh&, ManBoxPowerUp&, ManTotem &) override;
