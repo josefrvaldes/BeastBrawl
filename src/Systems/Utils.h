@@ -166,7 +166,7 @@ class Utils {
         if(divisor != 0)
             return LO + rand() /(RAND_MAX/divisor);
         else {
-            cout << "OJO el random ha dado divisor cero, devolvemos LO" << endl;
+            //cout << "OJO el random ha dado divisor cero, devolvemos LO" << endl;
             return LO;        
         }
     }

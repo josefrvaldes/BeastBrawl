@@ -32,7 +32,7 @@ class SoundFacadeFMOD : public SoundFacade {
 
         void UpdateCars(const vector<shared_ptr<Entity>>&)              override;
         void UpdatePowerUps(const vector<shared_ptr<Entity>>&)          override;
-        void UpdateTotem(const vector<shared_ptr<Entity>>&)             override;
+        void UpdateTotem(const shared_ptr<CarHuman>&, const vector<shared_ptr<Entity>>&)             override;
         void UpdateListener(const shared_ptr<CarHuman>&)                override;
         void Update()                                                   override;
 

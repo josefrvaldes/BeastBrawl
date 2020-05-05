@@ -9,7 +9,7 @@
 ManGameRules::ManGameRules() {
     // creamos el reloj global
     systemGameRules = make_unique<SystemGameRules>();
-    // CreateGlobalClock(5);
+    // CreateGlobalClock(15);
     
     CreateGlobalClock(GameValues::GetInstance()->GetGameTime());
 
@@ -31,7 +31,9 @@ void ManGameRules::ResetClock() {
 ManGameRules::~ManGameRules() {
 }
 
-bool ManGameRules::Update(){
+bool ManGameRules::Update(const vector<shared_ptr<Entity>> &cars, const vector<shared_ptr<Entity>> &totems){
+    //cout << "HOLAAAA" << endl;
+    systemGameRules->UpdatePositionsMiniMap(cars, totems, positionsPlane, positionTotemPlane);
     return systemGameRules->UpdateGameRules( *(globalClock.get()) );
 }
 

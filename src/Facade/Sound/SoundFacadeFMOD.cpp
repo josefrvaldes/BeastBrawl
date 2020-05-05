@@ -6,6 +6,7 @@
 #include <Components/CId.h>
 #include <Components/CTransformable.h>
 #include <Components/CCar.h>
+#include <Components/CTotem.h>
 #include <GameValues.h>
 
 using namespace std;
@@ -546,14 +547,21 @@ void SoundFacadeFMOD::UpdateCars(const vector<shared_ptr<Entity> > &e) {
  /**
   *
   */
-  void SoundFacadeFMOD::UpdateTotem(const vector<shared_ptr<Entity> > &totems) {
+  void SoundFacadeFMOD::UpdateTotem(const shared_ptr<CarHuman> &car, const vector<shared_ptr<Entity> > &totems) {
+      auto cTotemCar = static_cast<CTotem*>(car->GetComponent(CompType::TotemComp).get());
+      auto cPosCar = static_cast<CTransformable*>(car->GetComponent(CompType::TransformableComp).get());
      for(auto t : totems) {
          auto cId = static_cast<CId*>(t->GetComponent(CompType::IdComp).get());
          auto cPos = static_cast<CTransformable*>(t->GetComponent(CompType::TransformableComp).get());
-         if(cPos && cId) {
+         auto cTotem = static_cast<CTotem*>(t->GetComponent(CompType::TotemComp).get());
+         if(cPos && cId && cTotem) {
              string name = "Partida/totem" + to_string(cId->id);
-             soundEngine->Set3DAttributes(name, cPos->position, 0.0);
-             //cout << "ACTUALIZO POS TOTEM A: " << cPos->position.x << " - " << cPos->position.z << endl;
+             if (cTotemCar->active) {
+                soundEngine->Set3DAttributes(name, cPosCar->position, 0.0);
+             } else {
+                soundEngine->Set3DAttributes(name, cPos->position, 0.0);
+             }
+             //cout << "ACTUALIZO POS TOTEM A: " << cPos->position.x*0.1 << " - " << cPos->position.z*0.1 << endl;
          }
      }
   }
@@ -567,6 +575,7 @@ void SoundFacadeFMOD::UpdateCars(const vector<shared_ptr<Entity> > &e) {
     auto cId = static_cast<CId*>(mainCar->GetComponent(CompType::IdComp).get());
     if(cTrans && cId) {
         soundEngine->SetListenerPosition(cTrans->position, cTrans->rotation);
+        //cout << "POS DEL LISTENER: " << cTrans->position.x*0.1 << " - " << cTrans->position.z*0.1 << endl;
     }
  }
 

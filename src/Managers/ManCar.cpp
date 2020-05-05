@@ -610,7 +610,6 @@ void ManCar::ThrowPowerUp(Car* car_) {
                 (*data)[ID] = cIdCar->id;
                 (*data)[TRUEFALSE] = true;
                 EventManager::GetInstance().AddEventMulti(Event{EventType::UPDATE_SHIELD_VISIBILITY, data});
-
                 break;
 
             case (typeCPowerUp::SuperMegaNitro):
@@ -826,8 +825,8 @@ void ManCar::CatchPowerUpAI(DataMap* d) {
     // type = typeCPowerUp::PudinDeFrambuesa;
     //cout << "EL VALOR QUE SALE ES: " << indx << " - CORRESPONDIENTE AL PU: " << (int)type << endl;
 
-    type = typeCPowerUp::PudinDeFrambuesa;
-     //type = typeCPowerUp::MelonMolon;
+    //type = typeCPowerUp::SuperMegaNitro;
+    // type = typeCPowerUp::EscudoMerluzo;
     auto cPowerUpCar = static_cast<CPowerUp*>(actualCar->GetComponent(CompType::PowerUpComp).get());
     if (cPowerUpCar->typePowerUp == typeCPowerUp::None) {
         cPowerUpCar->typePowerUp = type;

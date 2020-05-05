@@ -32,7 +32,7 @@ StateInGame::StateInGame() {
 }
 
 StateInGame::~StateInGame() {
-    // destructor
+    cout << "Llamamos al destructor de StateInGame" << endl;
 }
 
 
@@ -100,6 +100,7 @@ void StateInGame::AddElementsToRender() {
 }
 
 void StateInGame::InitializeCLPhysics(ManCar &manCars, ManBoundingWall &manWall, ManBoundingOBB &manOBB, ManBoundingGround &manGround, ManPowerUp &manPowerUp, ManNavMesh &manNavMesh, ManBoxPowerUp &manBoxPowerUp, ManTotem &manTotem) {
+    cout << "Estamos inicializando el clPhysics" << endl;
     // NO ALTERAR EL ORDEN DEL ADD, QUE USO EL ORDEN PARA DISTINGUIR ENTRE MANAGERS!!!
     clPhysics = make_unique<CLPhysics>();
     clPhysics->AddManager(manCars);
@@ -113,7 +114,7 @@ void StateInGame::InitializeCLPhysics(ManCar &manCars, ManBoundingWall &manWall,
 }
 
 void StateInGame::InitializeSystemData(){
-    systemDataVision = make_unique<SystemData>();
+    systemDataVision = make_unique<SystemData>(clPhysics.get());
 
     systemDataVision->AddManager(*manCars.get());
     systemDataVision->AddManager(*manPowerUps.get());
@@ -239,14 +240,18 @@ void StateInGame::UpdateAnimationCountdown() {
     int64_t interval = now - timerCountdown;
     if (interval > 1000 && timerCountdown > 0) {
         currentCountdown--;
-        cout << "Current countdown " << unsigned(currentCountdown) << endl;
+        // cout << "Current countdown " << unsigned(currentCountdown) << endl;
         timerCountdown = Utils::getMillisSinceEpoch();
         if (currentCountdown == 0) {
-            currentUpdateState = UpdateState::GAME;
-            manGameRules->ResetClock();
-            EventManager::GetInstance().AddEventMulti(Event{EventType::START_MINGAME});
+            GoToUpdateGame();
         }
     }
+}
+
+void StateInGame::GoToUpdateGame() {
+    currentUpdateState = UpdateState::GAME;
+    manGameRules->ResetClock();
+    EventManager::GetInstance().AddEventMulti(Event{EventType::START_MINGAME});
 }
 
 void StateInGame::UpdateAnimationEnd() {
@@ -306,31 +311,35 @@ void StateInGame::UpdateGame() {
     //Updates de los eventos de sonido
     soundEngine->UpdateCars(manCars->GetEntities());
     soundEngine->UpdatePowerUps(manPowerUps->GetEntities());
-    soundEngine->UpdateTotem(manTotems->GetEntities());
+    soundEngine->UpdateTotem(manCars->GetCar(), manTotems->GetEntities());
     soundEngine->UpdateListener(manCars->GetCar());
 
     manTotems->Update();
     // al final de la ejecucion eliminamos todos los powerUps que se deben eliminar
     manPowerUps->Update();
 
+    // Inicio LoD
     sysLoD->UpdateMeshes(manCars->GetEntities(), manCamera.get()->getCamera());
     sysLoD->UpdateMeshes(manPowerUps->GetEntities(), manCamera.get()->getCamera());
     sysLoD->UpdateMeshes(manTotems->GetEntities(), manCamera.get()->getCamera());
-    sysLoD->UpdateAnimations(manBoxPowerUps->GetEntities(), manCamera.get()->getCamera());
-    
-    sysHurt->Update(manCars->GetEntities());
-
     renderEngine->FacadeUpdateMeshesLoD(manCars->GetEntities());
     renderEngine->FacadeUpdateMeshesLoD(manPowerUps->GetEntities());
     renderEngine->FacadeUpdateMeshesLoD(manTotems->GetEntities());
-    renderEngine->FacadeUpdateAnimationsLoD(manBoxPowerUps->GetEntities());
+    // Fin LoD
 
-    renderEngine->FacadeAnimate(manBoxPowerUps->GetEntities());
+
+    sysHurt->Update(manCars->GetEntities());
+
+    // Inicio Animaciones
+    // sysLoD->UpdateAnimations(manBoxPowerUps->GetEntities(), manCamera.get()->getCamera());
+    // renderEngine->FacadeUpdateAnimationsLoD(manBoxPowerUps->GetEntities());
+    // renderEngine->FacadeAnimate(manBoxPowerUps->GetEntities());
+    // Fin Animaciones
 
     //Actualiza el ranking y los eventos de hud
     sysRanking->Update(manCars.get());
     sysHud->UpdateEventHud(manHudEvent.get());
-    gameFinished = manGameRules->Update();
+    gameFinished = manGameRules->Update(manCars->GetEntities(), manTotems->GetEntities());
     if (gameFinished) {
         GoToEndAnimation();
     }
@@ -376,7 +385,7 @@ void StateInGame::Render() {
     if (Constants::CLIPPING_OCTREE && octreeScene.get())
         octreeScene->Draw(renderEngine);
 
-    renderEngine->FacadeDrawHUD(manCars->GetCar().get(), manCars.get(), manGameRules->GetGlobalClock().get(), manHudEvent.get());
+    renderEngine->FacadeDrawHUD(manCars->GetCar().get(), manCars.get(), manGameRules->GetGlobalClock().get(), manHudEvent.get(), manGameRules.get());
     renderEngine->FacadeDrawGraphEdges(manWayPoint.get());
     if (currentUpdateState == UpdateState::COUNTDOWN) {
         // todo: esto de meter el width y el height aquí a piñón y los filenames.. es una kk
@@ -413,6 +422,7 @@ void StateInGame::GoToEndAnimation() {
     soundEngine->SetState(11);
     currentUpdateState = UpdateState::END;
     timerEnd = Utils::getMillisSinceEpoch();
+    EventManager::GetInstance().AddEventMulti(Event{EventType::LAUNCH_ANIMATION_END_MULTI});
 }
 
 void StateInGame::GoToCountdownAnimation() {
@@ -426,10 +436,11 @@ void StateInGame::GoToCountdownAnimation() {
 
     // iniciamos el timer de countdown
     timerCountdown = Utils::getMillisSinceEpoch();
-    cout << "Current countdown " << unsigned(currentCountdown) << endl;
+    // cout << "Current countdown " << unsigned(currentCountdown) << endl;
 }
 
 void StateInGame::GoToStateEndrace() {
+    cout << "Vamos a lanzar un evento de STATE_ENDRACE desde StateInGame" << endl;
     EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_ENDRACE});
     EventManager::GetInstance().Update();
 }

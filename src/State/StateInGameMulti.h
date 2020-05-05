@@ -2,6 +2,8 @@
 
 #include <chrono>
 #include "StateInGame.h"
+#include "../Aliases.h"
+
 
 using namespace std::chrono;
 
@@ -22,6 +24,9 @@ class StateInGameMulti : public StateInGame {
     States GetState() override { return State::States::INGAME_MULTI; };
 
    private:
+    void SubscribeToEvents();
+    void GoToEndAnimationFromMulti(DataMap *);
+    void GoToUpdateGame() override;
     void InitializeCLPhysics(ManCar &manCars, ManBoundingWall &, ManBoundingOBB &, ManBoundingGround &, ManPowerUp &, ManNavMesh&, ManBoxPowerUp&, ManTotem &) override;
     void InitializeManagers() override;
     void InitializeSystems(ManCar &manCars, ManBoundingWall &, ManBoundingOBB &, ManBoundingGround &, ManPowerUp &, ManNavMesh&, ManBoxPowerUp&, ManTotem &) override;

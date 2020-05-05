@@ -24,7 +24,7 @@ struct RenderFacade;
 
 class SystemVision{
 public:
-    SystemVision();
+    SystemVision(CLPhysics *);
     ~SystemVision(){};
 
     // For AI
@@ -55,6 +55,6 @@ private:
     bool CollideWithOBB(Entity* actualCar, const glm::vec3& posTarget, ManBoundingOBB* manBoundingOBB) const;
     bool CollideWithGround(Entity* actualCar, const glm::vec3& posTarget, ManBoundingGround* manBoundingGround) const;
 
-    unique_ptr<CLPhysics> clPhysics;
+    CLPhysics *clPhysics;
     RenderFacade* renderEngine;
 };
