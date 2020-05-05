@@ -174,7 +174,7 @@ class RenderFacadeClover : public RenderFacade {
         int maxInputGO[2] {3, 2/*, 0*/};
         //Ajustes
         int optionSettings { 0 };
-        std::vector<int> inputSettings {1,3,1,1,1,1};     //Sonido, musica, resolucion, vegetacion, sombras, particulas
+        std::vector<int> inputSettings {1,3,1,1,1,0};     //Sonido, musica, resolucion, particulas, vegetacion, sombras
         int maxInputSettings[6] {3,3,2,1,1,1};
 
       CLEngine* device {nullptr};
