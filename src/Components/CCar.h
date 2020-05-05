@@ -20,8 +20,8 @@ class CCar : public Component
 {
 public:
     CCar(mainCharacter);
-    CCar(mainCharacter, float weight, float maxSpeed,float acceleration, float carFriction, float carSlowDown);
-    CCar(mainCharacter, float weight, float maxSpeed,float acceleration, float carFriction, float carSlowDown, float maxWheelRot);
+    CCar(mainCharacter, float weight, float maxSpeed,float acceleration);
+    CCar(mainCharacter, float weight, float maxSpeed,float acceleration, float maxWheelRot);
     ~CCar(){};
 
     friend ostream &operator<<(ostream &out, CCar &c)
@@ -38,13 +38,13 @@ public:
     float maxSpeed;
     float acceleration = 0.0;
 
-    float reverseMaxSpeed = -60.0;
+    float reverseMaxSpeed = -85.0;
     float wheelRotation = 0.0;
     float incrementWheelRotation = 0.5;  // velocidad por iteracion que se gira la rueda
     float decrementWheelRotation = 0.75;  // velocidad por iteracion que se recupera la rueda
     float maxWheelRotation = 6.3;
-    float friction;
-    float slowDown;
+    float friction = 1.0;
+    float slowDown = 3.5;   // para todos igual
 
 
     // Derrape
@@ -55,7 +55,7 @@ public:
     float skidRotation = 0.0;                     
 
 
-    float skidAcc = 60 * Constants::DELTA_TIME;        // To-Do: multiplicar por el deltaTime los periodos para ajustarlos al framerate
+    float skidAcc = 60 * Constants::DELTA_TIME;
     float skidRecoverAcc = 120 * Constants::DELTA_TIME;
     float skidDeg;              // giro en el derrape
     float skidDegL = -35.0;  

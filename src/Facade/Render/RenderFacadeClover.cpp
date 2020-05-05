@@ -688,7 +688,7 @@ void RenderFacadeClover::FacadeInitResources(){
     std::string file = "media/loading_screen.png";
     device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
 
-    int indx = Utils::getRandomInt(0,tipsTexts.size());
+    int indx = Utils::getRandomInt(0,tipsTexts.size()-1);
     device->RenderText2D(tipsTexts.at(indx),100,100,0.5,0.8,glm::vec3(1.0,1.0,1.0));
     FacadeEndScene();
 
