@@ -133,7 +133,6 @@ void StateInGame::InitializeSystems(ManCar &manCars, ManBoundingWall &manWall, M
     InitializeCLPhysics(manCars, manWall, manOBB, manGround, manPowerUp, manNavMesh, manBoxPowerUp, manTotem);
     InitializeSystemData();
     // incializa el system physics PU, no hace falta más código para esto
-    phisicsPowerUp = make_shared<PhysicsPowerUp>();  // Creamos sistemas
     collisions = make_shared<Collisions>();
     sysBoxPowerUp = make_shared<SystemBoxPowerUp>();
     sysLoD = make_unique<SystemLoD>();
@@ -294,15 +293,10 @@ void StateInGame::UpdateGame() {
     manCamera->Update();
 
     sysBoxPowerUp->update(manBoxPowerUps.get());
-    for (auto &actualPowerUp : manPowerUps->GetEntities()) {  // actualizamos las fisicas de los powerUps
-        phisicsPowerUp->update(actualPowerUp.get());
-    }
 
     clPhysics->Update(0.1666f);
-    clPhysics->IntersectsCarsPowerUps(*manCars.get(), *manPowerUps.get(), manNavMesh.get());
-    clPhysics->IntersectCarsBoxPowerUp(*manCars.get(), *manBoxPowerUps.get());
-    clPhysics->IntersectCarsTotem(*manCars.get(), *manTotems.get());
-    clPhysics->IntersectPowerUpWalls(*manPowerUps.get(), *manBoundingWall.get(), *manBoundingOBB.get());
+    IntersectsCLPhysics();
+
 
     // Actualizaciones en Irrlich
     renderEngine->UpdateCamera(manCamera.get()->getCamera(), manCars.get());
@@ -320,6 +314,7 @@ void StateInGame::UpdateGame() {
     soundEngine->UpdateTotem(manCars->GetCar(), manTotems->GetEntities());
     soundEngine->UpdateListener(manCars->GetCar());
 
+    manTotems->Update();
     // al final de la ejecucion eliminamos todos los powerUps que se deben eliminar
     manPowerUps->Update();
 
@@ -353,6 +348,14 @@ void StateInGame::UpdateGame() {
         octreeScene = make_unique<Octree>(glm::vec3(0.0, 500.0, 0.0), 700.0, managersEntities);
         octreeScene->UpdateVisibleObjects(renderEngine);
     }
+}
+
+void StateInGame::IntersectsCLPhysics(){
+    clPhysics->IntersectsCarsPowerUps(*manCars.get(), *manPowerUps.get(), manNavMesh.get());
+    clPhysics->IntersectCarsBoxPowerUp(*manCars.get(), *manBoxPowerUps.get());
+    clPhysics->IntersectCarsTotem(*manCars.get(), *manTotems.get());
+    clPhysics->IntersectPowerUpWalls(*manPowerUps.get(), *manBoundingWall.get(), *manBoundingOBB.get());
+    clPhysics->IntersectTotemWalls(*manTotems.get(), *manBoundingWall.get(), *manBoundingOBB.get());
 }
 
 void StateInGame::Update() {
