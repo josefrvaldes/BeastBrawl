@@ -1097,7 +1097,7 @@ void InputFacadeClover::ChangeSettings(int option, int value) {
             break;
         case 5:
             (*d)[TRUEFALSE] = value;
-            EventManager::GetInstance().AddEventMulti(Event{EventType::ENABLE_SHADERS, d});
+            EventManager::GetInstance().AddEventMulti(Event{EventType::ENABLE_SHADOWS, d});
             //cout << "TOY PONIENDO O QUITANDO SOMBRAS\n";
             break;
         default:

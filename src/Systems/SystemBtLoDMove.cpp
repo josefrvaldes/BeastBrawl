@@ -380,7 +380,9 @@ SystemBtLoDMove::SystemBtLoDMove(){
 }
 
 
-
+void SystemBtLoDMove::AddCLPhysicsSB(CLPhysics* clPhysics){
+    steeringBehaviours->SetCLPhysics(clPhysics);
+}
 
 void SystemBtLoDMove::update(CarAI* actualCar){
     if(entradoFL==false){

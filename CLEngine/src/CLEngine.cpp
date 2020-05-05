@@ -222,7 +222,7 @@ void CLEngine::DrawDepthMap(){
 
 
 void CLEngine::DrawObjects(){
-    if(shadowMapping)
+    if(shadowMapping && shadowsActivate)
         DrawDepthMap();
 
     DrawSkybox();
@@ -1030,7 +1030,7 @@ const void CLEngine::Draw3DLine(float x1, float y1, float z1, float x2, float y2
     glDeleteVertexArrays(1, &VAOLine);
     glDeleteBuffers(1, &VBOLine);
 
-}
+} 
 
 // Mi idea ahora es pasarle todas las luces a todos los shaders que las vayan a usar
 void CLEngine::CalculateLights(){
@@ -1131,7 +1131,7 @@ void CLEngine::CalculateViewProjMatrix(){
         glUniformMatrix4fv(glGetUniformLocation(shader, "view"), 1, GL_FALSE, glm::value_ptr(view));
         glUniformMatrix4fv(glGetUniformLocation(shader, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
         glUniform3fv(glGetUniformLocation(shader, "cameraPosition"), 1, glm::value_ptr(camPos));
-        glUniform1i(glGetUniformLocation(shader, "shadows"), true); 
+        glUniform1i(glGetUniformLocation(shader, "activeShadows"), shadowsActivate); 
         glUniform1f(glGetUniformLocation(shader, "far_plane"), Constants::FAR_PLANE);
     }
 

@@ -413,6 +413,7 @@ class CLEngine {
         //! Activa o desactiva las vegetación
         //! @param mode Booleano para cambiar el modo
         void SetGrassActivate(bool mode) { grassActivate = mode; };
+        void SetShadowsActivate(bool mode) { shadowsActivate = mode; };
 
 
         
@@ -443,6 +444,7 @@ class CLEngine {
         std::map<GLchar, Character> characters;
 
         bool grassActivate { true };
+        bool shadowsActivate { false };
 
         inline static glm::mat4 projection;             // matriz proyeccion del modelo
         inline static glm::mat4 view;                   // matriz view del modelo

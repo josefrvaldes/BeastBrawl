@@ -64,7 +64,7 @@ enum EventType {
     SET_RESOLUTION,
     ENABLE_PARTICLES,
     ENABLE_VEGETATION,
-    ENABLE_SHADERS,
+    ENABLE_SHADOWS,
     START_MINGAME,
     STOP_MINGAME,
     HURT,                       // Sonido danyo

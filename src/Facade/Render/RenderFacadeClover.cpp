@@ -118,6 +118,11 @@ void RenderFacadeClover::FacadeSuscribeEventsSettings() {
         EventType::ENABLE_VEGETATION,
         bind( &RenderFacadeClover::FacadeSetGrassActivate, this, placeholders::_1 ),
         "FacadeSetGrassActivate"});
+    
+    EventManager::GetInstance().Subscribe(Listener{
+        EventType::ENABLE_SHADOWS,
+        bind( &RenderFacadeClover::FacadeSetShadowsActivate, this, placeholders::_1 ),
+        "FacadeSetShadowsActivate"});
 }
 
 
@@ -165,6 +170,13 @@ void RenderFacadeClover::FacadeSetGrassActivate(DataMap* d) const{
     auto mode = any_cast<int>((*d)[TRUEFALSE]);
 
     device->SetGrassActivate(mode);
+}
+
+
+void RenderFacadeClover::FacadeSetShadowsActivate(DataMap* d) const{
+    auto mode = any_cast<int>((*d)[TRUEFALSE]);
+
+    device->SetShadowsActivate(mode);
 }
 
 /**
