@@ -1452,3 +1452,33 @@ void CLPhysics::IntersectPowerUpWalls(ManPowerUp &manPowerUp, ManBoundingWall &m
         }
     }
 }
+
+
+
+void CLPhysics::IntersectTotemWalls(ManTotem &manTotem, ManBoundingWall &manWalls, ManBoundingOBB &manOBB) {
+        const auto &totem = manTotem.GetEntities()[0];
+        CBoundingSphere *cBSTotem = static_cast<CBoundingSphere *>(totem->GetComponent(CompType::CompBoundingSphere).get());
+        auto cTotem = static_cast<CTotem*>(totem->GetComponent(CompType::TotemComp).get());
+        bool collision = false;
+        // COMPROBAMOS LOS PLANOS NORMALES
+        for (long unsigned int i = 0; i < manWalls.GetEntities().size() && !collision; i++) {
+            const auto &currentWall = manWalls.GetEntities()[i];
+            CBoundingPlane *plane = static_cast<CBoundingPlane *>(currentWall->GetComponent(CompType::CompBoundingPlane).get());
+            IntersectData intersect = plane->IntersectSphere(*cBSTotem);
+            if (intersect.intersects) {
+                // COLISION CON WALL -> speed a 0, beibe
+                collision = true;
+                cTotem->speed = cTotem->MaxSpeed;
+            }
+        }
+        // COMPROBAMOS LOS OBB
+        for (long unsigned int i = 0; i < manOBB.GetEntities().size() && !collision; i++) {
+            const auto &currentOBB = manOBB.GetEntities()[i];
+            CBoundingOBB *cOBBactual = static_cast<CBoundingOBB *>(currentOBB->GetComponent(CompType::CompBoundingOBB).get());
+            IntersectData intersect = cOBBactual->IntersectSphere(*cBSTotem);
+            if (intersect.intersects) {
+                collision = true;
+                //COLISION CON OBB -> speed a 0 beibe
+            }
+        }
+}

@@ -826,7 +826,7 @@ void ManCar::CatchPowerUpAI(DataMap* d) {
     // type = typeCPowerUp::PudinDeFrambuesa;
     //cout << "EL VALOR QUE SALE ES: " << indx << " - CORRESPONDIENTE AL PU: " << (int)type << endl;
 
-    //type = typeCPowerUp::SuperMegaNitro;
+    type = typeCPowerUp::PudinDeFrambuesa;
      //type = typeCPowerUp::MelonMolon;
     auto cPowerUpCar = static_cast<CPowerUp*>(actualCar->GetComponent(CompType::PowerUpComp).get());
     if (cPowerUpCar->typePowerUp == typeCPowerUp::None) {

@@ -50,6 +50,7 @@ class CLPhysics {
     void IntersectCarsTotem(ManCar &, ManTotem &);
     void IntersectCarsBoxPowerUp(ManCar &, ManBoxPowerUp &);
     void IntersectPowerUpWalls(ManPowerUp &, ManBoundingWall &, ManBoundingOBB &);
+    void IntersectTotemWalls(ManTotem &, ManBoundingWall &, ManBoundingOBB &);
     void SetSystemOnline(SystemOnline *systemOnline_) {
         systemOnline = systemOnline_;
     };
