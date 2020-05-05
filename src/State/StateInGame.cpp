@@ -323,19 +323,23 @@ void StateInGame::UpdateGame() {
     // al final de la ejecucion eliminamos todos los powerUps que se deben eliminar
     manPowerUps->Update();
 
+    // Inicio LoD
     sysLoD->UpdateMeshes(manCars->GetEntities(), manCamera.get()->getCamera());
     sysLoD->UpdateMeshes(manPowerUps->GetEntities(), manCamera.get()->getCamera());
     sysLoD->UpdateMeshes(manTotems->GetEntities(), manCamera.get()->getCamera());
-    sysLoD->UpdateAnimations(manBoxPowerUps->GetEntities(), manCamera.get()->getCamera());
-    
-    sysHurt->Update(manCars->GetEntities());
-
     renderEngine->FacadeUpdateMeshesLoD(manCars->GetEntities());
     renderEngine->FacadeUpdateMeshesLoD(manPowerUps->GetEntities());
     renderEngine->FacadeUpdateMeshesLoD(manTotems->GetEntities());
-    renderEngine->FacadeUpdateAnimationsLoD(manBoxPowerUps->GetEntities());
+    // Fin LoD
 
-    renderEngine->FacadeAnimate(manBoxPowerUps->GetEntities());
+
+    sysHurt->Update(manCars->GetEntities());
+
+    // Inicio Animaciones
+    // sysLoD->UpdateAnimations(manBoxPowerUps->GetEntities(), manCamera.get()->getCamera());
+    // renderEngine->FacadeUpdateAnimationsLoD(manBoxPowerUps->GetEntities());
+    // renderEngine->FacadeAnimate(manBoxPowerUps->GetEntities());
+    // Fin Animaciones
 
     //Actualiza el ranking y los eventos de hud
     sysRanking->Update(manCars.get());
