@@ -32,7 +32,7 @@ class SoundFacadeFMOD : public SoundFacade {
 
         void UpdateCars(const vector<shared_ptr<Entity>>&)              override;
         void UpdatePowerUps(const vector<shared_ptr<Entity>>&)          override;
-        void UpdateTotem(const vector<shared_ptr<Entity>>&)             override;
+        void UpdateTotem(const shared_ptr<CarHuman>&, const vector<shared_ptr<Entity>>&)             override;
         void UpdateListener(const shared_ptr<CarHuman>&)                override;
         void Update()                                                   override;
 
@@ -109,7 +109,6 @@ class SoundFacadeFMOD : public SoundFacade {
             { "InGame3DD",
                             {
                                 "Coche/motor",
-                                "Coche/motores",
                                 "Partida/totem",
                                 "PowerUp/escudo",
                                 "PowerUp/melonmolon",

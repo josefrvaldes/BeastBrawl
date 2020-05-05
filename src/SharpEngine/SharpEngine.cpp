@@ -525,9 +525,9 @@ void SharpEngine::SetListenerPosition(const glm::vec3 &pos, const glm::vec3 &rot
 
     //float rad = glm::radians(rot.y);
     FMOD_VECTOR vec;
-    vec.x = pos.x*0.1;
-    vec.y = pos.y*0.1;
-    vec.z = pos.z*0.1;
+    vec.x = pos.x*0.05;
+    vec.y = pos.y*0.05;
+    vec.z = pos.z*0.05;
 
     FMOD_3D_ATTRIBUTES atr;
     atr.position = {vec};
@@ -548,9 +548,9 @@ void SharpEngine::SetListenerPosition(const glm::vec3 &pos, const glm::vec3 &rot
 void SharpEngine::SetEventPosition3D(FMOD_STUDIO_EVENTINSTANCE * i, const glm::vec3& pos, const float vel) {
     if (i) {
         FMOD_VECTOR vec;
-        vec.x = pos.x*0.1;
-        vec.y = pos.y*0.1;
-        vec.z = pos.z*0.1;
+        vec.x = pos.x*0.05;
+        vec.y = pos.y*0.05;
+        vec.z = pos.z*0.05;
 
         FMOD_3D_ATTRIBUTES atr;
         atr.position = vec;
