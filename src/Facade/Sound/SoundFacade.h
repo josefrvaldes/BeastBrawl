@@ -28,7 +28,7 @@ class SoundFacade {
 
         virtual void UpdateCars(const vector<shared_ptr<Entity>>&) = 0;
         virtual void UpdatePowerUps(const vector<shared_ptr<Entity>>&) = 0;
-        virtual void UpdateTotem(const vector<shared_ptr<Entity>>&) = 0;
+        virtual void UpdateTotem(const shared_ptr<CarHuman>&, const vector<shared_ptr<Entity>>&) = 0;
         virtual void UpdateListener(const shared_ptr<CarHuman>&) = 0;
         virtual void Update() = 0;
 
