@@ -845,7 +845,7 @@ void RenderFacadeClover::FacadeDraw() const{
 
 }
 
-void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* globalClock, ManHUDEvent* manHud) {
+void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* globalClock, ManHUDEvent* manHud, ManGameRules* manGR) {
 
     std::string cadena;
     std::string sprite;
@@ -862,14 +862,18 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
 
 
     //MINIMAPA
-    auto xLeftMap = -472;                       auto xRightMap = 488;
-    auto yUpMap = -493;                         auto yDownMap = 770;
-    auto widthMap =  xRightMap - xLeftMap;      auto heightMap = yDownMap - yUpMap;
-    auto widthMM = 20*widthMap/100;             auto heightMM = 20*heightMap/100;
-    auto posXMap = (w - (widthMM+50)*scale);    auto posYMap = (h - (heightMM+50)*scale);
+    auto widthMM = 0;           auto heightMM = 0;
+    auto posXMiniMap = 0;       auto posYMiniMap = 0;
 
     cadena = "media/Minimapa240.png";
-    device->DrawImage2D((posXMap), (posYMap), widthMM*scale, heightMM*scale, 0.9f, cadena, true);
+    auto minimapTexture = resourceManager->GetResourceTexture(cadena);
+    if(minimapTexture) {
+        widthMM = minimapTexture->GetWidth();
+        heightMM = minimapTexture->GetHeight();
+        posXMiniMap = (w - (widthMM+50)*scale);    
+        posYMiniMap = (h - (heightMM+50)*scale);
+    }
+    device->DrawImage2D(posXMiniMap, posYMiniMap, widthMM*scale, heightMM*scale, 0.9f, cadena, true);
 
     //CURRENT POWERUP
     device->DrawImage2D(25.0f*scale, 25.0f*scale, 150.0f*scale, 150.0f*scale, 0.1f ,powerUps[currentPowerUp], true);
@@ -901,6 +905,7 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
         cTotem = static_cast<CTotem*>(cars->GetComponent(CompType::TotemComp).get());
         cCar = static_cast<CCar*>(cars->GetComponent(CompType::CarComp).get());
         cTrans = static_cast<CTransformable*>(cars->GetComponent(CompType::TransformableComp).get());
+        auto cId = static_cast<CId*>(cars->GetComponent(CompType::IdComp).get());
 
         if (cCar) {
             switch (cCar->character) {
@@ -937,22 +942,31 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
             }
 
             // MINIMAPA
-            if (cTrans) {
-                auto posXPjMM = (cTrans->position.x - xLeftMap) * widthMM / widthMap;
-                auto posYPjMM = (cTrans->position.z - yUpMap)   * heightMM / heightMap;
-                //cout << "MI POSICION ES: " << cTrans->position.x << " - " << cTrans->position.z << endl;
-                //cout << "MI POSICION EN COORDENADAS POSITIVAS ES: " << cTrans->position.x - xLeftMap << " - " << cTrans->position.z - yUpMap << endl;
+            if (manGR && cTrans) {
+                
+                auto positions = manGR->GetPositionsPlane();
+                auto it = positions.find(cId->id);
+                if (it != positions.end()) {
+                    auto posXPjMM = it->second.x * widthMM;
+                    auto posYPjMM = it->second.y * heightMM;
 
-                device->DrawImage2D((posXMap + (posXPjMM - 12)*scale), (posYMap + (posYPjMM - 12)*scale), 25.0f*scale, 25.0f*scale, 0.1f*i, sprite, true);
+                    device->DrawImage2D((posXMiniMap + (posXPjMM - 12)*scale), (posYMiniMap + (posYPjMM - 12)*scale), 25.0f*scale, 25.0f*scale, 0.1f*i, sprite, true);
+                } /*else { cout << "NO TENGO VALORES" << endl; }*/
+                //cout << "CAR " << cId->id << " CON POS: " << posXPjMM << " - " << posYPjMM << endl;
+
             }
             --i;
-
-            // COLUMNA DE POSICIONES
-            /*if (cTotem) {
-
-            }*/
         }  
 
+    }
+
+    //MINIMAPA TOTEM
+    auto positionTotem = manGR->GetPositionTotemPlane();
+    if(positionTotem.x > 0 && positionTotem.y > 0) {
+        auto posXTMM = positionTotem.x * widthMM;
+        auto posYTMM = positionTotem.y * heightMM;
+        sprite = "media/hudTotem.png";
+        device->DrawImage2D((posXMiniMap + (posXTMM - 12)*scale), (posYMiniMap + (posYTMM - 12)*scale), 25.0f*scale, 25.0f*scale, 0.1f, sprite, true);
     }
 
 
@@ -979,14 +993,7 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
         else if (scale == 1.25) { xtext=1095.0f; ytext=630.0f; }
         device->RenderText2D(cadena, xtext, ytext, 0.05f, 0.75f, color);
     }
-
-
-    /*for(const auto& car : manCars->GetEntities()) {
-        cCar = static_cast<CCar*>(car->GetComponent(CompType::CarComp).get());
-        
-    }*/
-
-    
+   
     
 
     //EVENTS

@@ -8,6 +8,7 @@
 #include <EventManager/EventManager.h>
 #include <Managers/ManWayPoint.h>
 #include <Managers/ManCar.h>
+#include <Managers/ManGameRules.h>
 #include <Managers/ManHUDEvent.h>
 #include <Components/CPowerUp.h>
 #include <Managers/Manager.h>
@@ -80,7 +81,7 @@ class RenderFacade {
 
     virtual void FacadeUpdatePowerUpHUD(DataMap* d) = 0;
     virtual void FacadeInitResources() = 0;
-    virtual void FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* globalClock, ManHUDEvent*) = 0;
+    virtual void FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* globalClock, ManHUDEvent*, ManGameRules*) = 0;
     virtual void FacadeSuscribeEvents() = 0;
     virtual void FacadeSuscribeEventsSettings() = 0;
     virtual void FacadeAddPlates(Manager* manNamePlates) = 0;

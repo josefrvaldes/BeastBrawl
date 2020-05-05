@@ -11,9 +11,23 @@
 #include <Facade/Render/RenderFacadeManager.h>
 
 
-
+// Temporal
 SystemGameRules::SystemGameRules(){
+    xLeftMap = -472;      xRightMap = 488;
+    yUpMap = -493;        yDownMap = 770;
 
+    widthMap = xRightMap - xLeftMap;
+    heightMap = yDownMap - yUpMap;
+}
+
+SystemGameRules::SystemGameRules(float xl, float xr, float yu, float yd) {
+    //xLeftMap = xl;      xRightMap = xr;
+    //yUpMap = yu;        yDownMap = yd;
+    xLeftMap = -472;      xRightMap = 488;
+    yUpMap = -493;        yDownMap = 770;
+
+    widthMap = xRightMap - xLeftMap;
+    heightMap = yDownMap - yUpMap;
 }
 
 bool SystemGameRules::UpdateGameRules(Entity& globalClock_) const{
@@ -83,6 +97,40 @@ bool SystemGameRules::UpdateRulesCarPowerUps(Entity& car_, Entity& totem_) const
     return false;
 }
 
+/**
+ * Pone las posiciones de los coches relativas al plano del suelo
+ */
+void SystemGameRules::UpdatePositionsMiniMap(const vector<shared_ptr<Entity>> &cars, const vector<shared_ptr<Entity>> &totems, unordered_map<uint16_t, glm::vec2> &positions, glm::vec2 &positionTotem){
+
+    positions.clear();
+
+    for(const auto& car : cars) {
+        //cTotem = static_cast<CTotem*>(cars->GetComponent(CompType::TotemComp).get());
+        auto cId = static_cast<CId*>(car->GetComponent(CompType::IdComp).get());
+        auto cTrans = static_cast<CTransformable*>(car->GetComponent(CompType::TransformableComp).get());
+
+        // MINIMAPA
+        if (cTrans && cId) {
+            auto posXPjMM = (cTrans->position.x - xLeftMap) / widthMap;
+            auto posYPjMM = (cTrans->position.z - yUpMap) / heightMap;
+
+            positions[cId->id] = glm::vec2(posXPjMM, posYPjMM);
+
+            //cout << "CAR " << positions.find(cId->id)->first << " CON POS: " << positions.find(cId->id)->second.x << " - " << positions.find(cId->id)->second.y << endl;
+        }
+    }  
+
+    for(const auto& totem : totems) {
+        auto cTrans = static_cast<CTransformable*>(totem->GetComponent(CompType::TransformableComp).get());
+        if (cTrans) {
+            auto posXTMM = (cTrans->position.x - xLeftMap) / widthMap;
+            auto posYTMM = (cTrans->position.z - yUpMap) / heightMap;
+
+            positionTotem = glm::vec2(posXTMM, posYTMM);
+        }
+    }
+
+}
 
 void SystemGameRules::RestartAllTimers(vector<shared_ptr<Entity>> entities, Entity &globalClock_, int64_t timeStartPause) {
     cout << "Estamos reseteando los timers" << endl;
