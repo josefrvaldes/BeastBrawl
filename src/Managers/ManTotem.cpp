@@ -138,8 +138,8 @@ void ManTotem::ResetTotem(DataMap* d){
         // ANGULO DEL COCHE INVERSO
         float angleCarInv = transfActualCar->rotation.y+180.0; if(angleCarInv > 360)    angleCarInv -=360;
         // RANGOS
-        int minValue = (int(angleCarInv) - 60); //if(minValue < 0 )    minValue += 360;
-        int maxValue = (int(angleCarInv) + 60); //if(maxValue > 360)   maxValue -= 360;
+        int minValue = (int(angleCarInv) - 65); //if(minValue < 0 )    minValue += 360;
+        int maxValue = (int(angleCarInv) + 65); //if(maxValue > 360)   maxValue -= 360;
 
         //cout  << "EL VALOR MINIMO ES: " << minValue << " Y EL MAXIMO ES: " << maxValue << endl;
 
