@@ -383,15 +383,15 @@ const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
         auto wheel4 = device->AddMesh(node,cWheel->IdWheelBottomRight,"media/"+cWheel->meshBottomRight);
 
 
-        wheel1->SetTranslation(cWheel->offsetTopLeft);
-        wheel2->SetTranslation(cWheel->offsetTopRight);
-        wheel3->SetTranslation(cWheel->offsetBottomLeft);
-        wheel4->SetTranslation(cWheel->offsetBottomRight);
+        wheel1->SetTranslation(glm::vec3(cWheel->offsetTopLeft.x,cWheel->offsetTopLeft.y,-cWheel->offsetTopLeft.z));
+        wheel2->SetTranslation(glm::vec3(cWheel->offsetTopRight.x,cWheel->offsetTopRight.y,-cWheel->offsetTopRight.z));
+        wheel3->SetTranslation(glm::vec3(cWheel->offsetBottomLeft.x,cWheel->offsetBottomLeft.y,-cWheel->offsetBottomLeft.z));
+        wheel4->SetTranslation(glm::vec3(cWheel->offsetBottomRight.x,cWheel->offsetBottomRight.y,-cWheel->offsetBottomRight.z));
 
-        wheel1->SetRotation(cWheel->rotationTopLeft);
-        wheel2->SetRotation(cWheel->rotationTopRight);
-        wheel3->SetRotation(cWheel->rotationBottomLeft);
-        wheel4->SetRotation(cWheel->rotationBottomRight);
+        wheel1->SetRotation(glm::vec3(cWheel->rotationTopLeft.x,Utils::IrrlichtAngleToOpenGL(cWheel->rotationTopLeft.y),cWheel->rotationTopLeft.z));
+        wheel2->SetRotation(glm::vec3(cWheel->rotationTopRight.x,Utils::IrrlichtAngleToOpenGL(cWheel->rotationTopRight.y),cWheel->rotationTopRight.z));
+        wheel3->SetRotation(glm::vec3(cWheel->rotationBottomLeft.x,Utils::IrrlichtAngleToOpenGL(cWheel->rotationBottomLeft.y),cWheel->rotationBottomLeft.z));
+        wheel4->SetRotation(glm::vec3(cWheel->rotationBottomRight.x,Utils::IrrlichtAngleToOpenGL(cWheel->rotationBottomRight.y),cWheel->rotationBottomRight.z));
 
         wheel1->SetScalation(cWheel->scaleTopLeft);
         wheel2->SetScalation(cWheel->scaleTopRight);

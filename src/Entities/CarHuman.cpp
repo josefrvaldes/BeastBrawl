@@ -78,10 +78,10 @@ CarHuman::CarHuman(int pj) {
             pathBottomLeft = "sharky_wheel3.obj";
             pathBottomRight = "sharky_wheel4.obj";
 
-            offsetTopLeft = glm::vec3(0.0f,5.0f,0.0f);
-            offsetTopRight = glm::vec3(5.0f,5.0f,0.0f);
-            offsetBottomLeft = glm::vec3(0.0f,5.0f,5.0f);
-            offsetBottomRight = glm::vec3(5.0f,5.0f,5.0f);
+            offsetTopLeft = glm::vec3(0.0,5.5f,0.0);
+            offsetTopRight = glm::vec3(0.0,3.5f,0.0);
+            offsetBottomLeft = glm::vec3(0.0,3.5f,0.0);
+            offsetBottomRight = glm::vec3(0.0,3.5f,0.0);
 
             rotationTopLeft = glm::vec3(0.0f);
             rotationTopRight = glm::vec3(0.0f);
@@ -103,10 +103,10 @@ CarHuman::CarHuman(int pj) {
             pathBottomLeft = "sharky_wheel3.obj";
             pathBottomRight = "sharky_wheel4.obj";
 
-            offsetTopLeft = glm::vec3(0.0f,5.0f,0.0f);
-            offsetTopRight = glm::vec3(5.0f,5.0f,0.0f);
-            offsetBottomLeft = glm::vec3(0.0f,5.0f,5.0f);
-            offsetBottomRight = glm::vec3(5.0f,5.0f,5.0f);
+            offsetTopLeft = glm::vec3(2.0f,2.0f,2.0f);
+            offsetTopRight = glm::vec3(-2.0f,2.0f,2.0f);
+            offsetBottomLeft = glm::vec3(2.0f,2.0f,-2.0f);
+            offsetBottomRight = glm::vec3(-2.0f,2.0f,-2.0f);
 
             rotationTopLeft = glm::vec3(0.0f);
             rotationTopRight = glm::vec3(0.0f);
@@ -129,10 +129,10 @@ CarHuman::CarHuman(int pj) {
             pathBottomLeft = "sharky_wheel3.obj";
             pathBottomRight = "sharky_wheel4.obj";
 
-            offsetTopLeft = glm::vec3(0.0f,5.0f,0.0f);
-            offsetTopRight = glm::vec3(5.0f,5.0f,0.0f);
-            offsetBottomLeft = glm::vec3(0.0f,5.0f,5.0f);
-            offsetBottomRight = glm::vec3(5.0f,5.0f,5.0f);
+            offsetTopLeft = glm::vec3(2.0f,2.0f,2.0f);
+            offsetTopRight = glm::vec3(-2.0f,2.0f,2.0f);
+            offsetBottomLeft = glm::vec3(2.0f,2.0f,-2.0f);
+            offsetBottomRight = glm::vec3(-2.0f,2.0f,-2.0f);
 
             rotationTopLeft = glm::vec3(0.0f);
             rotationTopRight = glm::vec3(0.0f);
@@ -155,10 +155,10 @@ CarHuman::CarHuman(int pj) {
             pathBottomLeft = "sharky_wheel3.obj";
             pathBottomRight = "sharky_wheel4.obj";
 
-            offsetTopLeft = glm::vec3(0.0f,5.0f,0.0f);
-            offsetTopRight = glm::vec3(5.0f,5.0f,0.0f);
-            offsetBottomLeft = glm::vec3(0.0f,5.0f,5.0f);
-            offsetBottomRight = glm::vec3(5.0f,5.0f,5.0f);
+            offsetTopLeft = glm::vec3(2.0f,2.0f,2.0f);
+            offsetTopRight = glm::vec3(-2.0f,2.0f,2.0f);
+            offsetBottomLeft = glm::vec3(2.0f,2.0f,-2.0f);
+            offsetBottomRight = glm::vec3(-2.0f,2.0f,-2.0f);
 
             rotationTopLeft = glm::vec3(0.0f);
             rotationTopRight = glm::vec3(0.0f);
@@ -179,10 +179,10 @@ CarHuman::CarHuman(int pj) {
             pathBottomLeft = "sharky_wheel3.obj";
             pathBottomRight = "sharky_wheel4.obj";
 
-            offsetTopLeft = glm::vec3(0.0f,5.0f,0.0f);
-            offsetTopRight = glm::vec3(5.0f,5.0f,0.0f);
-            offsetBottomLeft = glm::vec3(0.0f,5.0f,5.0f);
-            offsetBottomRight = glm::vec3(5.0f,5.0f,5.0f);
+            offsetTopLeft = glm::vec3(2.0f,2.0f,2.0f);
+            offsetTopRight = glm::vec3(-2.0f,2.0f,2.0f);
+            offsetBottomLeft = glm::vec3(2.0f,2.0f,-2.0f);
+            offsetBottomRight = glm::vec3(-2.0f,2.0f,-2.0f);
 
             rotationTopLeft = glm::vec3(0.0f);
             rotationTopRight = glm::vec3(0.0f);
@@ -202,10 +202,10 @@ CarHuman::CarHuman(int pj) {
             pathBottomLeft = "sharky_wheel3.obj";
             pathBottomRight = "sharky_wheel4.obj";
 
-            offsetTopLeft = glm::vec3(0.0f,5.0f,0.0f);
-            offsetTopRight = glm::vec3(5.0f,5.0f,0.0f);
-            offsetBottomLeft = glm::vec3(0.0f,5.0f,5.0f);
-            offsetBottomRight = glm::vec3(5.0f,5.0f,5.0f);
+            offsetTopLeft = glm::vec3(2.0f,2.0f,2.0f);
+            offsetTopRight = glm::vec3(-2.0f,2.0f,2.0f);
+            offsetBottomLeft = glm::vec3(2.0f,2.0f,-2.0f);
+            offsetBottomRight = glm::vec3(-2.0f,2.0f,-2.0f);
 
             rotationTopLeft = glm::vec3(0.0f);
             rotationTopRight = glm::vec3(0.0f);

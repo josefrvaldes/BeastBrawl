@@ -146,7 +146,7 @@ int main() {
         // static_cast<CLMesh*>(nodeCubeAnim->GetEntity())->SetAnimationInterpolated(animationCube, distances);
         // static_cast<CLMesh*>(mesh7->GetEntity())->SetMesh(resourceMeshCochesito);
 
-        camera->SetTranslation(glm::vec3(430.0f, 230.42f, -60.9f));
+        camera->SetTranslation(glm::vec3(-8.0f, 90.42f, -40.9f));
         light1->SetTranslation(glm::vec3(75.9f, 1000.2f, 15.08f));
         light2->SetTranslation(glm::vec3(295.9f, 300.2f, 15.08f));
 
@@ -155,7 +155,7 @@ int main() {
         mesh1->SetTranslation(glm::vec3(50.0f, 50.0f, 50.0f));
 
         mesh2->SetScalation(glm::vec3(10.5f, 10.5f, 10.5f));
-        mesh2->SetRotation(glm::vec3(-90.0f, 0.0f, 0.0f));
+        mesh2->SetRotation(glm::vec3(0.0f, 0.0f, 0.0f));
         mesh2->SetTranslation(glm::vec3(50.0f, 80.0f, -50.0f));
 
         nodeKongAnim->SetScalation(glm::vec3(1.0f, 1.0f, 1.0f));
@@ -231,6 +231,8 @@ int main() {
                 static_cast<CLParticleSystem*>(ps2->GetEntity())->StartOneIteration();
                 // cout << "Realizamos una iteracion\n";
             }
+
+            mesh2->SetRotation(glm::vec3(mesh2->GetRotation().x,mesh2->GetRotation().y,mesh2->GetRotation().z + 10));
 
             // Measure speed
             double currentTime = glfwGetTime();
