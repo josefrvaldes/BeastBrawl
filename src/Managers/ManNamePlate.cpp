@@ -25,19 +25,19 @@ void ManNamePlate::CreateNamePlate(Entity* car){
 
     string billboardPath;
     if(cCharacter->character == mainCharacter::DRAGON){
-        billboardPath = "media/mrPinguin.png";
+        billboardPath = "media/BDragon.png";
     }else if(cCharacter->character == mainCharacter::GORILLA){
-        billboardPath = "media/mrPinguin.png";
+        billboardPath = "media/BGorila.png";
     }else if(cCharacter->character == mainCharacter::OCTOPUS){
-        billboardPath = "media/mrPinguin.png";        
+        billboardPath = "media/BOctopus.png";        
     }else if(cCharacter->character == mainCharacter::PENGUIN){
-        billboardPath = "media/mrPinguin.png";        
+        billboardPath = "media/BPinguino.png";        
     }else if(cCharacter->character == mainCharacter::SHARK){
-        billboardPath = "media/mrPinguin.png";        
+        billboardPath = "media/BTiburon.png";        
     }else if(cCharacter->character == mainCharacter::TIGER){
-        billboardPath = "media/mrPinguin.png";        
+        billboardPath = "media/BTigre.png";        
     }else{
-        billboardPath = "media/mrPinguin.png";
+        billboardPath = "media/BPinguino.png";
     }
     auto namePlate = make_shared<NamePlate>(cIdCar->id,billboardPath);
     entities.push_back(namePlate);
