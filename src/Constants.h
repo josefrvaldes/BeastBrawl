@@ -46,6 +46,7 @@ class Constants {
                         TCP_START_GAME,
                         TCP_FULL_GAME,
                         ENDGAME,
+                        LAUNCH_ANIMATION_END,
                         SEND_INPUTS,
                         SEND_SYNC,
                         CATCH_PU,

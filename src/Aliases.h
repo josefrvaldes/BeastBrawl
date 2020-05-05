@@ -32,6 +32,7 @@ enum DataType{
     DATA_SERVER,
     ID,
     ID_CAR,
+    ID_WINNER,
     ID_PU,
     ID_DESTINATION,
     INPUTS,
