@@ -751,6 +751,17 @@ void RenderFacadeClover::FacadeInitSelectCharacter() {
     auto shader1 = resourceManager->GetResourceShader("CLEngine/src/Shaders/basicShader.vert","CLEngine/src/Shaders/basicShader.frag");
 
     mesh1->SetShaderProgramID(shader1->GetProgramID());
+
+
+    //IMGs
+    resourceManager->GetResourceTexture("media/menu/character_selector.png", true);
+    resourceManager->GetResourceTexture("media/menu/kong_selected.png", true);
+    resourceManager->GetResourceTexture("media/menu/sharky_selected.png", true);
+    resourceManager->GetResourceTexture("media/menu/penguin_selected.png", true);
+    resourceManager->GetResourceTexture("media/menu/baxter_selected.png", true);
+    resourceManager->GetResourceTexture("media/menu/deacon_selected.png", true);
+    resourceManager->GetResourceTexture("media/menu/octopus_selected.png", true);
+
 }
 
 void RenderFacadeClover::FacadeInitGameOptions() {
@@ -1071,7 +1082,7 @@ void RenderFacadeClover::FacadeDrawMenu() {
 }
 
  void RenderFacadeClover::FacadeDrawSelectCharacter() {
-    glm::vec3 color[6] = {
+    /*glm::vec3 color[6] = {
             glm::vec3(0.0f, 0.0f, 255.0f),
             glm::vec3(0.0f, 0.0f, 255.0f),
             glm::vec3(0.0f, 0.0f, 255.0f),
@@ -1096,7 +1107,21 @@ void RenderFacadeClover::FacadeDrawMenu() {
     name = "Cyberoctopus";
     device->RenderText2D(name, 900.0f, 300.0f, 0.05f, 0.75f, color[5]);
     name = "(A) Aceptar";
-    device->RenderText2D(name, 950.0f, 50.0f, 0.05f, 0.5f, colorB);
+    device->RenderText2D(name, 950.0f, 50.0f, 0.05f, 0.5f, colorB);*/
+
+    std::string file = "media/menu/character_selector.png";
+    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.9f, file, true);
+
+    std::string files[6] = {
+        "media/menu/penguin_selected.png",
+        "media/menu/baxter_selected.png",
+        "media/menu/sharky_selected.png",
+        "media/menu/kong_selected.png",
+        "media/menu/deacon_selected.png",
+        "media/menu/octopus_selected.png"
+    };
+    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.8f, files[inputSC], true);
+
  }
 
 void RenderFacadeClover::FacadeDrawGameOptions() {
