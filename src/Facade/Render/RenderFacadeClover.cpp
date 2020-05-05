@@ -1019,8 +1019,8 @@ void RenderFacadeClover::FacadeDrawIntro() {
     
 
     //resourceManager->DeleteResourceTexture(introAnimation->GetCurrentPath());
-    introAnimation->Update();
-    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, introAnimation->GetCurrentPath(), true);
+    // introAnimation->Update();
+    // device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, introAnimation->GetCurrentPath(), true);
 }
 
 void RenderFacadeClover::FacadeDrawMenu() {

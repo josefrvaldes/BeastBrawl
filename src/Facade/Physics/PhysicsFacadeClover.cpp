@@ -66,10 +66,13 @@ void PhysicsFacadeClover::UpdateCar(Entity* car, Entity* cam) {
         cWheel->rotationBottomLeft.z += cCar->speed * Constants::DELTA_TIME;
         cWheel->rotationBottomRight.z += cCar->speed * Constants::DELTA_TIME;
 
-        // wheel1->SetRotation(glm::vec3(cWheel->rotationTopLeft.x, Utils::IrrlichtAngleToOpenGL(cWheel->rotationTopLeft.y),cWheel->rotationTopLeft.z));
-        // wheel2->SetRotation(glm::vec3(cWheel->rotationTopRight.x, Utils::IrrlichtAngleToOpenGL(cWheel->rotationTopRight.y),cWheel->rotationTopRight.z));
-        // wheel3->SetRotation(glm::vec3(cWheel->rotationBottomLeft.x, Utils::IrrlichtAngleToOpenGL(cWheel->rotationBottomLeft.y),cWheel->rotationBottomLeft.z));
-        // wheel4->SetRotation(glm::vec3(cWheel->rotationBottomRight.x, Utils::IrrlichtAngleToOpenGL(cWheel->rotationBottomRight.y),cWheel->rotationBottomRight.z));
+        cWheel->rotationTopLeft.y = cCar->wheelRotation * 2;
+        cWheel->rotationTopRight.y = cCar->wheelRotation * 2;
+
+        wheel1->SetRotation(glm::vec3(cWheel->rotationTopLeft.x, Utils::IrrlichtAngleToOpenGL(cWheel->rotationTopLeft.y),cWheel->rotationTopLeft.z));
+        wheel2->SetRotation(glm::vec3(cWheel->rotationTopRight.x, Utils::IrrlichtAngleToOpenGL(cWheel->rotationTopRight.y),cWheel->rotationTopRight.z));
+        wheel3->SetRotation(glm::vec3(cWheel->rotationBottomLeft.x, Utils::IrrlichtAngleToOpenGL(cWheel->rotationBottomLeft.y),cWheel->rotationBottomLeft.z));
+        wheel4->SetRotation(glm::vec3(cWheel->rotationBottomRight.x, Utils::IrrlichtAngleToOpenGL(cWheel->rotationBottomRight.y),cWheel->rotationBottomRight.z));
     }
 }
 
@@ -127,6 +130,28 @@ void PhysicsFacadeClover::UpdateTransformable(Entity* entity) {
         nodeSphere2->SetTranslation(glm::vec3(cSphere2->center.x, cSphere2->center.y, -cSphere2->center.z));
         nodeSphere2->SetVisible(RenderFacadeClover::showDebug);
 
+    }
+
+    if(entity->HasComponent(CompType::WheelComp) && entity->HasComponent(CompType::CarComp)){
+        auto cWheel = static_cast<CWheel*>(entity->GetComponent(CompType::WheelComp).get());
+        auto cCar = static_cast<CCar*>(entity->GetComponent(CompType::CarComp).get());
+        auto wheel1 = device->GetNodeByID(cWheel->IdWheelTopLeft);
+        auto wheel2 = device->GetNodeByID(cWheel->IdWheelTopRight);
+        auto wheel3 = device->GetNodeByID(cWheel->IdWheelBottomLeft);
+        auto wheel4 = device->GetNodeByID(cWheel->IdWheelBottomRight);
+
+        cWheel->rotationTopLeft.z += cCar->speed * Constants::DELTA_TIME;
+        cWheel->rotationTopRight.z += cCar->speed * Constants::DELTA_TIME;
+        cWheel->rotationBottomLeft.z += cCar->speed * Constants::DELTA_TIME;
+        cWheel->rotationBottomRight.z += cCar->speed * Constants::DELTA_TIME;
+
+        cWheel->rotationTopLeft.y = cCar->wheelRotation * 2;
+        cWheel->rotationTopRight.y = cCar->wheelRotation * 2;
+
+        wheel1->SetRotation(glm::vec3(cWheel->rotationTopLeft.x, Utils::IrrlichtAngleToOpenGL(cWheel->rotationTopLeft.y),cWheel->rotationTopLeft.z));
+        wheel2->SetRotation(glm::vec3(cWheel->rotationTopRight.x, Utils::IrrlichtAngleToOpenGL(cWheel->rotationTopRight.y),cWheel->rotationTopRight.z));
+        wheel3->SetRotation(glm::vec3(cWheel->rotationBottomLeft.x, Utils::IrrlichtAngleToOpenGL(cWheel->rotationBottomLeft.y),cWheel->rotationBottomLeft.z));
+        wheel4->SetRotation(glm::vec3(cWheel->rotationBottomRight.x, Utils::IrrlichtAngleToOpenGL(cWheel->rotationBottomRight.y),cWheel->rotationBottomRight.z));
     }
 
 }
