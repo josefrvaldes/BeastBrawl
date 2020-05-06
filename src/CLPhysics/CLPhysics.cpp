@@ -103,6 +103,7 @@ void CLPhysics::NewCrashPUWallReceived(DataMap *d) {
 }
 
 void CLPhysics::NewCrashPUCarReceived(DataMap *d) {
+    cout << "Hemos recibido un NewCrashPUCarReceived" << endl;
     uint16_t idCar = any_cast<uint16_t>((*d)[DataType::ID_CAR]);
     uint16_t idPU = any_cast<uint16_t>((*d)[DataType::ID_PU]);
     const auto &manCars = managers[0];
@@ -115,8 +116,10 @@ void CLPhysics::NewCrashPUCarReceived(DataMap *d) {
             break;
         }
     }
-    if(carFound == nullptr)
+    if(carFound == nullptr) {
+        cout << "Nos salimos del NewCrashPUCarReceived porque no encontramos el coche" << endl;
         return;
+    }
 
     PowerUp *puFound = nullptr;
     for (const auto &currentPU : manPowerUps->GetEntities()) {
@@ -126,9 +129,10 @@ void CLPhysics::NewCrashPUCarReceived(DataMap *d) {
             break;
         }
     }
-    if (puFound==nullptr)
+    if (puFound==nullptr) {
+        cout << "Nos salimos del NewCrashPUCarReceived porque no encontramos el PU" << endl;
         return;
-
+    }
     HandleCollisionPUWithCar(puFound, carFound);
 }
 

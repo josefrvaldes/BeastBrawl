@@ -80,7 +80,7 @@ class ManCar : public Manager {
     void NotSkid(DataMap* d);
     void CollisionCarPowerUp(DataMap* d);
     void CatchTotemCar(DataMap* d);
-    void ObtainTotem(Entity* carWinTotem);
+    void ObtainTotem(Entity* carWinTotem, bool stolen);
     void ChangeTotemCar(DataMap* d);
     void NewInputsReceived(DataMap* d);
     void NewSyncReceived(DataMap* d);
