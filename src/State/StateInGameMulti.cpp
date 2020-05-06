@@ -213,6 +213,8 @@ void StateInGameMulti::GoToEndAnimationFromMulti(DataMap *dataMap) {
             if (cOnline->idClient == idWinner) {
                 Car *winner = static_cast<Car *>(entity.get());
                 sysAnimEnd->SetWinner(winner);
+                timerEnd = Utils::getMillisSinceEpoch();
+                soundEngine->SetState(11);
                 currentUpdateState = UpdateState::END;
                 return;
             }

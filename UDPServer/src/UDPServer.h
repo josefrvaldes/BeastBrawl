@@ -44,6 +44,7 @@ class UDPServer : public std::enable_shared_from_this<UDPServer> {
 
     void ReceiveNewCar();
     void SendEndgame(const Player &p);
+    void SendLaunchAnimationEnd(const Player &player, const uint16_t idPlayer, const uint16_t idWinner);
 
     void RequestId();
     void Exit();

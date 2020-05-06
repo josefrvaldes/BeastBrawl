@@ -437,8 +437,9 @@ void UDPClient::HandleReceivedThrowMelonOPudin(unsigned char* recevBuff, size_t 
 
 // recibes la desconexion de otro jugador
 void UDPClient::HandleReceivedDisconnection(unsigned char* recevBuff, size_t bytesTransferred) {
-    size_t currentIndex = 0;
-    Serialization::Deserialize<uint8_t>(recevBuff, currentIndex);  // petition tipe
+    cout << "Un usuario se ha desconectado" << endl;
+    // size_t currentIndex = 0;
+    // Serialization::Deserialize<uint8_t>(recevBuff, currentIndex);  // petition tipe
     // uint16_t idCarOnline = Serialization::Deserialize<uint16_t>(recevBuff, currentIndex);
 
     /*std::shared_ptr<DataMap> data = make_shared<DataMap>();

@@ -486,7 +486,11 @@ void UDPServer::DetectUsersDisconnected() {
     if ((beforeDelete == 1 && afterDelete == 0) || (beforeDelete > 1 && afterDelete <= 1)) {
         // avisamos a quien quede que la partida se ha acabado...
         for (const auto& player : players) {
-            SendEndgame(player);
+            // pondremos como idWinner el único jugador que queda, que será el único que haya en este for
+            // el idPlayer se supone que representa a la persona que enviaba esta petición, pero como ha sido por una desconexión,
+            // simplemente enviaremos el mismo idPlayer que el winner
+            uint16_t idWinner = player.id;
+            SendLaunchAnimationEnd(player, idWinner, idWinner);
         }
 
         // y salimos
@@ -494,6 +498,20 @@ void UDPServer::DetectUsersDisconnected() {
         Exit();
     }
     CheckDisconnectionsAfterSeconds();
+}
+
+void UDPServer::SendLaunchAnimationEnd(const Player &p, const uint16_t idPlayer, const uint16_t idWinner) {
+    unsigned char requestBuff[Constants::ONLINE_BUFFER_SIZE];
+    size_t currentBuffSize = 0;
+    uint8_t callType = Constants::PetitionTypes::LAUNCH_ANIMATION_END;
+    int64_t time = Utils::getMillisSinceEpoch();
+
+    Serialization::Serialize(requestBuff, &callType, currentBuffSize);
+    Serialization::Serialize(requestBuff, &time, currentBuffSize);
+    Serialization::Serialize(requestBuff, &idPlayer, currentBuffSize);
+    Serialization::Serialize(requestBuff, &idWinner, currentBuffSize);
+
+    SendBytes(requestBuff, currentBuffSize, p);
 }
 
 void UDPServer::CheckDisconnectionsAfterSeconds() {
