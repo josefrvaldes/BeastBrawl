@@ -17,6 +17,7 @@ using namespace std;
 class Totem;
 class Data;
 class ManNavMesh;
+class PhysicsTotem;
 
 class ManTotem : public Manager{
    public:
@@ -42,6 +43,9 @@ class ManTotem : public Manager{
     void RecievedLostTotem(DataMap* d);
     void SubscribeToEvents();
 
+    void UpdatePhysics();
+
     ManNavMesh* manNavMesh;
     SystemOnline* systemOnline = nullptr; // en caso de que sea Single va a ser un nullptr
+    unique_ptr<PhysicsTotem> physicsTotem;
 };

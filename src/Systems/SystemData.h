@@ -14,7 +14,7 @@ struct Entity;
 
 class SystemData{
 public:
-    SystemData();
+    SystemData(CLPhysics *);
     ~SystemData(){};
 
     void AddManager(Manager &e);

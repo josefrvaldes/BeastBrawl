@@ -21,9 +21,8 @@
 #include "../Managers/ManBoundingWall.h"
 
 
-SystemVisionAI::SystemVisionAI(){
-    clPhysics = make_unique<CLPhysics>();
-    systemVision = make_unique<SystemVision>();
+SystemVisionAI::SystemVisionAI(CLPhysics *clPhysics_) : systemVision{make_unique<SystemVision>(clPhysics_)} {
+    // systemVision = make_unique<SystemVision>(clPhysics);
 }
 
 void SystemVisionAI::AddManager(Manager &m) {

@@ -15,7 +15,7 @@ struct CarAI;
 
 class SystemVisionAI : public SystemAI {
 public:
-    SystemVisionAI();
+    SystemVisionAI(CLPhysics *);
     ~SystemVisionAI(){};
 
     void update(CarAI* actualCar) override;
@@ -27,6 +27,5 @@ private:
     vector<Manager *> managers;
     int frec {1};
 
-    unique_ptr<CLPhysics> clPhysics;
     unique_ptr<SystemVision> systemVision;
 };

@@ -1,7 +1,9 @@
 #include "UDPClient.h"
+
 #include <boost/asio/placeholders.hpp>
 #include <boost/bind.hpp>
 #include <deque>
+
 #include "../src/Entities/PowerUp.h"
 #include "../src/EventManager/Event.h"
 #include "../src/EventManager/EventManager.h"
@@ -28,7 +30,7 @@ UDPClient::UDPClient(string host_, uint16_t port_)
     // cout << "Local endpoint is " << socket.local_endpoint().address() << ":" << socket.local_endpoint().port() << endl;
 
     // EventManager::GetInstance().AddStrand(strand);
-
+    timeGameStarted = Utils::getMillisSinceEpoch();
     StartReceiving();
 }
 
@@ -36,6 +38,7 @@ UDPClient::~UDPClient() {
     context.stop();
     socket.close();
     butler.join();
+    cout << "Llamamos al destructor de UDPClient" << endl;
 }
 
 void UDPClient::StartReceiving() {
@@ -53,107 +56,134 @@ void UDPClient::StartReceiving() {
 }
 
 void UDPClient::HandleReceived(std::shared_ptr<unsigned char[]> recevBuff, const boost::system::error_code& errorCode, std::size_t bytesTransferred) {
-    if (!errorCode) {
+    if(errorCode) {
+        cout << "¡¡HUBO UN ERROR AL RECIBIR DATOS EN EL CLIENTE!! errorcode:" << errorCode << endl;
+    } else {
         size_t currentIndex = 0;
         uint8_t petitionType = Serialization::Deserialize<uint8_t>(recevBuff.get(), currentIndex);
         int64_t time = Serialization::Deserialize<int64_t>(recevBuff.get(), currentIndex);
-        uint16_t idPlayer = Serialization::Deserialize<uint16_t>(recevBuff.get(), currentIndex);
+        if(time < timeGameStarted) {
+            cout << "Desechamos un paquete de una partida anterior anterior\n";
+        } else {
+            uint16_t idPlayer = Serialization::Deserialize<uint16_t>(recevBuff.get(), currentIndex);
 
-        Constants::PetitionTypes callType = static_cast<Constants::PetitionTypes>(petitionType);
-        switch (callType) {
-            case Constants::PetitionTypes::SEND_INPUTS: {
-                if (time > lastTimeInputReceived[idPlayer]) {
-                    const vector<Constants::InputTypes> inputs = Serialization::DeserializeInputs(recevBuff.get(), currentIndex);
-                    lastTimeInputReceived[idPlayer] = time;
-                    HandleReceivedInputs(inputs, idPlayer);
-                }
-            } break;
+            Constants::PetitionTypes callType = static_cast<Constants::PetitionTypes>(petitionType);
+            switch (callType) {
+                case Constants::PetitionTypes::SEND_INPUTS: {
+                    if (time > lastTimeInputReceived[idPlayer] && !stateAnimationEnd) {
+                        // cout << "Hemos recibido una petición de tipo SEND_INPUT" << endl;
+                        const vector<Constants::InputTypes> inputs = Serialization::DeserializeInputs(recevBuff.get(), currentIndex);
+                        lastTimeInputReceived[idPlayer] = time;
+                        HandleReceivedInputs(inputs, idPlayer);
+                    }
+                } break;
 
-            case Constants::PetitionTypes::SEND_SYNC:
-                if (time > lastTimeSyncReceived[idPlayer]) {
-                    lastTimeSyncReceived[idPlayer] = time;
-                    HandleReceivedSync(recevBuff.get(), bytesTransferred);
-                }
-                break;
+                case Constants::PetitionTypes::SEND_SYNC:
+                    if (time > lastTimeSyncReceived[idPlayer] && !stateAnimationEnd) {
+                        // cout << "Hemos recibido una petición de tipo SEND_SYNC" << endl;
+                        lastTimeSyncReceived[idPlayer] = time;
+                        HandleReceivedSync(recevBuff.get(), bytesTransferred);
+                    }
+                    break;
 
-            case Constants::PetitionTypes::CATCH_PU:
-                if (time > lastTimeCatchPUReceived[idPlayer]) {
-                    lastTimeCatchPUReceived[idPlayer] = time;
-                    HandleReceivedCatchPU(recevBuff.get(), bytesTransferred);
-                }
-                break;
+                case Constants::PetitionTypes::CATCH_PU:
+                    if (time > lastTimeCatchPUReceived[idPlayer]) {
+                        cout << "Hemos recibido una petición de tipo CATCH_PU" << endl;
+                        lastTimeCatchPUReceived[idPlayer] = time;
+                        HandleReceivedCatchPU(recevBuff.get(), bytesTransferred);
+                    }
+                    break;
 
-            case Constants::PetitionTypes::CATCH_TOTEM:
-                if (time > lastTimeCatchTotemReceived[idPlayer]) {
-                    lastTimeCatchTotemReceived[idPlayer] = time;
-                    HandleReceivedCatchTotem(recevBuff.get(), bytesTransferred);
-                }
-                break;
+                case Constants::PetitionTypes::CATCH_TOTEM:
+                    if (time > lastTimeCatchTotemReceived[idPlayer]) {
+                        cout << "Hemos recibido una petición de tipo CATCH_TOTEM" << endl;
+                        lastTimeCatchTotemReceived[idPlayer] = time;
+                        HandleReceivedCatchTotem(recevBuff.get(), bytesTransferred);
+                    }
+                    break;
 
-            case Constants::PetitionTypes::LOST_TOTEM:
-                if (time > lastTimeLostTotemReceived[idPlayer]) {
-                    lastTimeLostTotemReceived[idPlayer] = time;
-                    HandleReceivedLostTotem(recevBuff.get(), bytesTransferred);
-                }
-                break;
+                case Constants::PetitionTypes::LOST_TOTEM:
+                    if (time > lastTimeLostTotemReceived[idPlayer]) {
+                        cout << "Hemos recibido una petición de tipo LOST_TOTEM" << endl;
+                        lastTimeLostTotemReceived[idPlayer] = time;
+                        HandleReceivedLostTotem(recevBuff.get(), bytesTransferred);
+                    }
+                    break;
 
-            case Constants::PetitionTypes::USED_ROBOJOROBO:
-                if (time > lastTimeUsedRoboJoroboReceived[idPlayer]) {
-                    lastTimeUsedRoboJoroboReceived[idPlayer] = time;
-                    HandleReceivedUsedRoboJorobo(recevBuff.get(), bytesTransferred);
-                }
-                break;
+                case Constants::PetitionTypes::USED_ROBOJOROBO:
+                    if (time > lastTimeUsedRoboJoroboReceived[idPlayer]) {
+                        cout << "Hemos recibido una petición de tipo USED_ROBOJOROBO" << endl;
+                        lastTimeUsedRoboJoroboReceived[idPlayer] = time;
+                        HandleReceivedUsedRoboJorobo(recevBuff.get(), bytesTransferred);
+                    }
+                    break;
 
-            case Constants::PetitionTypes::COLLIDE_NITRO:
-                if (time > lastTimeCollideNitroReceived[idPlayer]) {
-                    lastTimeCollideNitroReceived[idPlayer] = time;
-                    HandleReceivedCollideNitro(recevBuff.get(), bytesTransferred);
-                }
-                break;
+                case Constants::PetitionTypes::COLLIDE_NITRO:
+                    if (time > lastTimeCollideNitroReceived[idPlayer]) {
+                        cout << "Hemos recibido una petición de tipo COLLIDE_NITRO" << endl;
+                        lastTimeCollideNitroReceived[idPlayer] = time;
+                        HandleReceivedCollideNitro(recevBuff.get(), bytesTransferred);
+                    }
+                    break;
 
-            case Constants::PetitionTypes::SEND_DISCONNECTION:
-                HandleReceivedDisconnection(recevBuff.get(), bytesTransferred);
-                break;
+                case Constants::PetitionTypes::SEND_DISCONNECTION:
+                    cout << "Hemos recibido una petición de tipo SEND_DISCONNECTION" << endl;
+                    HandleReceivedDisconnection(recevBuff.get(), bytesTransferred);
+                    break;
 
-            case Constants::PetitionTypes::SEND_THROW_MELON_O_PUDIN:
-                if (time > lastTimeThrowMelonOPudinReceived[idPlayer]) {
-                    lastTimeThrowMelonOPudinReceived[idPlayer] = time;
-                    HandleReceivedThrowMelonOPudin(recevBuff.get(), bytesTransferred);
-                }
-                break;
+                case Constants::PetitionTypes::SEND_THROW_MELON_O_PUDIN:
+                    if (time > lastTimeThrowMelonOPudinReceived[idPlayer]) {
+                        cout << "Hemos recibido una petición de tipo SEND_THROW_MELON_O_PUDIN" << endl;
+                        lastTimeThrowMelonOPudinReceived[idPlayer] = time;
+                        HandleReceivedThrowMelonOPudin(recevBuff.get(), bytesTransferred);
+                    }
+                    break;
 
-            case Constants::PetitionTypes::SEND_THROW_TELEBANANA:
-                if (time > lastTimeThrowTelebananaReceived[idPlayer]) {
-                    lastTimeThrowTelebananaReceived[idPlayer] = time;
-                    HandleReceivedThrowTelebanana(recevBuff.get(), bytesTransferred);
-                }
-                break;
+                case Constants::PetitionTypes::SEND_THROW_TELEBANANA:
+                    if (time > lastTimeThrowTelebananaReceived[idPlayer]) {
+                        cout << "Hemos recibido una petición de tipo SEND_THROW_TELEBANANA" << endl;
+                        lastTimeThrowTelebananaReceived[idPlayer] = time;
+                        HandleReceivedThrowTelebanana(recevBuff.get(), bytesTransferred);
+                    }
+                    break;
 
-            case Constants::PetitionTypes::SEND_CRASH_PU_CAR:
-                if (time > lastTimeCrashPUCarReceived[idPlayer]) {
-                    lastTimeCrashPUCarReceived[idPlayer] = time;
-                    HandleReceivedCrashPUCar(recevBuff.get(), bytesTransferred);
-                }
-                break;
+                case Constants::PetitionTypes::SEND_CRASH_PU_CAR:
+                    if (time > lastTimeCrashPUCarReceived[idPlayer]) {
+                        cout << "Hemos recibido una petición de tipo SEND_CRASH_PU_CAR" << endl;
+                        lastTimeCrashPUCarReceived[idPlayer] = time;
+                        HandleReceivedCrashPUCar(recevBuff.get(), bytesTransferred);
+                    }
+                    break;
 
-            case Constants::PetitionTypes::SEND_CRASH_PU_WALL:
-                if (time > lastTimeCrashPUWallReceived[idPlayer]) {
-                    lastTimeCrashPUWallReceived[idPlayer] = time;
-                    HandleReceivedCrashPUWall(recevBuff.get(), bytesTransferred);
-                }
-                break;
+                case Constants::PetitionTypes::SEND_CRASH_PU_WALL:
+                    if (time > lastTimeCrashPUWallReceived[idPlayer]) {
+                        cout << "Hemos recibido una petición de tipo SEND_CRASH_PU_WALL" << endl;
+                        lastTimeCrashPUWallReceived[idPlayer] = time;
+                        HandleReceivedCrashPUWall(recevBuff.get(), bytesTransferred);
+                    }
+                    break;
 
-            case Constants::PetitionTypes::ENDGAME:
-                EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_ENDRACE});
-                break;
+                case Constants::PetitionTypes::LAUNCH_ANIMATION_END:
+                    if (time > lastTimeLaunchEndGameReceived[idPlayer]) {
+                        cout << "Hemos recibido una petición de tipo LAUNCH_ANIMATION_END" << endl;
+                        lastTimeLaunchEndGameReceived[idPlayer] = time;
+                        stateAnimationEnd = true;
+                        uint16_t idWinner = Serialization::Deserialize<uint16_t>(recevBuff.get(), currentIndex);
+                        HandleReceivedLaunchEndAnimation(idPlayer, idWinner);
+                    }
+                    break;
 
-            default:
-                cout << "Tipo de petición no contemplada" << endl;
-                break;
+                case Constants::PetitionTypes::ENDGAME:
+                    cout << "Hemos recibido una petición de tipo ENDGAME" << endl;
+                    EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_ENDRACE});
+                    break;
+
+                default:
+                    cout << "Tipo de petición no contemplada" << endl;
+                    break;
+            }
         }
-    } else {
-        cout << "¡¡HUBO UN ERROR AL RECIBIR DATOS EN EL CLIENTE!! errorcode:" << errorCode << endl;
-    }
+    } 
     StartReceiving();
 }
 
@@ -169,6 +199,14 @@ void UDPClient::HandleReceivedInputs(const vector<Constants::InputTypes> inputs,
     //     cout << inputs[i] << " ";
     // }
     // cout << endl;
+}
+
+void UDPClient::HandleReceivedLaunchEndAnimation(uint16_t idPlayer, uint16_t idWinner) const {
+    cout << "Hemos recibido un sendLaunchAnimationEnd con idPlayer[" << idPlayer << "] e idWinner[" << idWinner << "]" << endl;
+    std::shared_ptr<DataMap> data = make_shared<DataMap>();
+    (*data)[DataType::ID] = idPlayer;
+    (*data)[DataType::ID_WINNER] = idWinner;
+    EventManager::GetInstance().AddEventMulti(Event{EventType::NEW_LAUNCH_ANIMATION_END_RECEIVED, data});
 }
 
 // buffer circular
@@ -331,7 +369,7 @@ void UDPClient::HandleReceivedCrashPUCar(unsigned char* recevBuff, size_t bytesT
 
     uint16_t idPUOnline = Serialization::Deserialize<uint16_t>(recevBuff, currentIndex);
     uint16_t idCarCrashed = Serialization::Deserialize<uint16_t>(recevBuff, currentIndex);
-    
+
     cout << "Hemos recibido un CrasPUCar con pu[" << idPUOnline << "] y car[" << idCarCrashed << "]" << endl;
     std::shared_ptr<DataMap> data = make_shared<DataMap>();
     (*data)[DataType::ID_PU] = idPUOnline;
@@ -346,7 +384,7 @@ void UDPClient::HandleReceivedCrashPUWall(unsigned char* recevBuff, size_t bytes
     Serialization::Deserialize<uint16_t>(recevBuff, currentIndex);  // idOnline del que lo envio
 
     uint16_t idPUOnline = Serialization::Deserialize<uint16_t>(recevBuff, currentIndex);
-    
+
     cout << "Hemos recibido un CrasPUWall con pu[" << idPUOnline << "]" << endl;
     std::shared_ptr<DataMap> data = make_shared<DataMap>();
     (*data)[DataType::ID_PU] = idPUOnline;
@@ -685,6 +723,7 @@ void UDPClient::SendCollideNitro(uint16_t idOnline, uint16_t idWithTotem, uint16
 }
 
 void UDPClient::SendEndgame(uint16_t idPlayer) {
+    cout << "Vamos a enviar un sendEndgame" << endl;
     unsigned char requestBuff[Constants::ONLINE_BUFFER_SIZE];
     size_t currentBuffSize = 0;
     uint8_t callType = Constants::PetitionTypes::ENDGAME;
@@ -704,14 +743,43 @@ void UDPClient::SendEndgame(uint16_t idPlayer) {
             boost::asio::placeholders::bytes_transferred));
 }
 
+void UDPClient::SendLaunchAnimationEnd(uint16_t idPlayer, uint16_t idPlayerWinner) {
+    cout << "Vamos a enviar un sendLaunchAnimationEnd con idPlayer[" << idPlayer << "] e idWinner[" << idPlayerWinner << "]" << endl;
+    unsigned char requestBuff[Constants::ONLINE_BUFFER_SIZE];
+    size_t currentBuffSize = 0;
+    uint8_t callType = Constants::PetitionTypes::LAUNCH_ANIMATION_END;
+    int64_t time = Utils::getMillisSinceEpoch();
+
+    Serialization::Serialize(requestBuff, &callType, currentBuffSize);
+    Serialization::Serialize(requestBuff, &time, currentBuffSize);
+    Serialization::Serialize(requestBuff, &idPlayer, currentBuffSize);
+    Serialization::Serialize(requestBuff, &idPlayerWinner, currentBuffSize);
+
+    socket.async_send_to(
+        boost::asio::buffer(requestBuff, currentBuffSize),
+        serverEndpoint,
+        boost::bind(
+            &UDPClient::HandleSentLaunchAnimationEnd,
+            this,
+            boost::asio::placeholders::error,
+            boost::asio::placeholders::bytes_transferred));
+}
+
 void UDPClient::HandleSentInputs(const boost::system::error_code& errorCode, std::size_t bytes_transferred) {
     if (errorCode)
         cout << "Hubo un error enviando los inputs[" << errorCode << "]"
              << "\n";
 }
+
 void UDPClient::HandleSentEndgame(const boost::system::error_code& errorCode, std::size_t bytes_transferred) {
     if (errorCode)
         cout << "Hubo un error enviando el endgame [" << errorCode << "]"
+             << "\n";
+}
+
+void UDPClient::HandleSentLaunchAnimationEnd(const boost::system::error_code& errorCode, std::size_t bytes_transferred) {
+    if (errorCode)
+        cout << "Hubo un error enviando el launch animation end [" << errorCode << "]"
              << "\n";
 }
 

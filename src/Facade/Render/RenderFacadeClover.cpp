@@ -374,6 +374,7 @@ const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
             nodeSphere1->SetTranslation(glm::vec3(centerSph1.x, centerSph1.y, -centerSph1.z));
             nodeSphere1->SetScalation(glm::vec3(radiousSph1));
             nodeSphere1->SetVisible(false);
+            nodeSphere1->SetShaderProgramID(shader->GetProgramID());
             // segunda esfera
             auto radiousSph2 = cChassis->sphereFront->radius;
             auto centerSph2 = cChassis->sphereFront->center;
@@ -382,6 +383,7 @@ const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
             nodeSphere2->SetTranslation(glm::vec3(centerSph2.x, centerSph2.y, -centerSph2.z));
             nodeSphere2->SetScalation(glm::vec3(radiousSph2));
             nodeSphere2->SetVisible(false);
+            nodeSphere2->SetShaderProgramID(shader->GetProgramID());
         }
     
 
@@ -688,7 +690,7 @@ void RenderFacadeClover::FacadeInitResources(){
     std::string file = "media/loading_screen.png";
     device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
 
-    int indx = Utils::getRandomInt(0,tipsTexts.size());
+    int indx = Utils::getRandomInt(0,tipsTexts.size()-1);
     device->RenderText2D(tipsTexts.at(indx),100,100,0.5,0.8,glm::vec3(1.0,1.0,1.0));
     FacadeEndScene();
 
