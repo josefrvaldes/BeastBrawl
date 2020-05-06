@@ -13,6 +13,7 @@
 #include <Components/CParentNode.h>
 #include <Components/CDimensions.h>
 #include <Components/CId.h>
+#include <Components/CWheel.h>
 #include <Components/CMesh.h>
 #include <Components/CParticleSystem.h>
 #include <Components/CNamePlate.h>
@@ -188,7 +189,7 @@ void RenderFacadeClover::FacadeAddPlates(Manager* manNamePlates) {
         auto cId = static_cast<CId*>(nameplate->GetComponent(CompType::IdComp).get());
         auto nameplateComp = static_cast<CNamePlate*>(nameplate->GetComponent(CompType::NamePlateComp).get());
         auto father = device->GetNodeByID(nameplateComp->idCarAsociated);
-        auto node = device->AddBillBoard(father,cId->id,nameplateComp->billboardPath,false,20,10);
+        auto node = device->AddBillBoard(father,cId->id,nameplateComp->billboardPath,false,30,10);
         node->SetTranslation(glm::vec3(0.0f,10.0f,0.0f));
     }
 }
@@ -373,6 +374,7 @@ const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
             nodeSphere1->SetTranslation(glm::vec3(centerSph1.x, centerSph1.y, -centerSph1.z));
             nodeSphere1->SetScalation(glm::vec3(radiousSph1));
             nodeSphere1->SetVisible(false);
+            nodeSphere1->SetShaderProgramID(shader->GetProgramID());
             // segunda esfera
             auto radiousSph2 = cChassis->sphereFront->radius;
             auto centerSph2 = cChassis->sphereFront->center;
@@ -381,8 +383,40 @@ const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
             nodeSphere2->SetTranslation(glm::vec3(centerSph2.x, centerSph2.y, -centerSph2.z));
             nodeSphere2->SetScalation(glm::vec3(radiousSph2));
             nodeSphere2->SetVisible(false);
+            nodeSphere2->SetShaderProgramID(shader->GetProgramID());
         }
-        
+    
+
+    //Si tiene ruedas porque es un coche se las añadimos
+    if(entity->HasComponent(CompType::WheelComp)){
+        //Importante el padre sera el propio node que acabamos de crear que es el coche
+        auto cWheel = static_cast<CWheel*>(entity->GetComponent(CompType::WheelComp).get());
+        auto wheel1 = device->AddMesh(node,cWheel->IdWheelTopLeft,"media/"+cWheel->meshTopLeft);
+        auto wheel2 = device->AddMesh(node,cWheel->IdWheelTopRight,"media/"+cWheel->meshTopRight);
+        auto wheel3 = device->AddMesh(node,cWheel->IdWheelBottomLeft,"media/"+cWheel->meshBottomLeft);
+        auto wheel4 = device->AddMesh(node,cWheel->IdWheelBottomRight,"media/"+cWheel->meshBottomRight);
+
+
+        wheel1->SetTranslation(glm::vec3(cWheel->offsetTopLeft.x,cWheel->offsetTopLeft.y,-cWheel->offsetTopLeft.z));
+        wheel2->SetTranslation(glm::vec3(cWheel->offsetTopRight.x,cWheel->offsetTopRight.y,-cWheel->offsetTopRight.z));
+        wheel3->SetTranslation(glm::vec3(cWheel->offsetBottomLeft.x,cWheel->offsetBottomLeft.y,-cWheel->offsetBottomLeft.z));
+        wheel4->SetTranslation(glm::vec3(cWheel->offsetBottomRight.x,cWheel->offsetBottomRight.y,-cWheel->offsetBottomRight.z));
+
+        wheel1->SetRotation(glm::vec3(cWheel->rotationTopLeft.x,Utils::IrrlichtAngleToOpenGL(cWheel->rotationTopLeft.y),cWheel->rotationTopLeft.z));
+        wheel2->SetRotation(glm::vec3(cWheel->rotationTopRight.x,Utils::IrrlichtAngleToOpenGL(cWheel->rotationTopRight.y),cWheel->rotationTopRight.z));
+        wheel3->SetRotation(glm::vec3(cWheel->rotationBottomLeft.x,Utils::IrrlichtAngleToOpenGL(cWheel->rotationBottomLeft.y),cWheel->rotationBottomLeft.z));
+        wheel4->SetRotation(glm::vec3(cWheel->rotationBottomRight.x,Utils::IrrlichtAngleToOpenGL(cWheel->rotationBottomRight.y),cWheel->rotationBottomRight.z));
+
+        wheel1->SetScalation(cWheel->scaleTopLeft);
+        wheel2->SetScalation(cWheel->scaleTopRight);
+        wheel3->SetScalation(cWheel->scaleBottomLeft);
+        wheel4->SetScalation(cWheel->scaleBottomRight);
+
+        wheel1->SetShaderProgramID(shader->GetProgramID());
+        wheel2->SetShaderProgramID(shader->GetProgramID());
+        wheel3->SetShaderProgramID(shader->GetProgramID());
+        wheel4->SetShaderProgramID(shader->GetProgramID());
+    }
 
     return cId->id;
 }
@@ -655,6 +689,9 @@ void RenderFacadeClover::FacadeInitResources(){
     FacadeBeginScene();
     std::string file = "media/loading_screen.png";
     device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
+
+    int indx = Utils::getRandomInt(0,tipsTexts.size()-1);
+    device->RenderText2D(tipsTexts.at(indx),100,100,0.5,0.8,glm::vec3(1.0,1.0,1.0));
     FacadeEndScene();
 
     //Cargamos todas las mallas
@@ -1056,8 +1093,10 @@ void RenderFacadeClover::FacadeDrawIntro() {
     
 
     //resourceManager->DeleteResourceTexture(introAnimation->GetCurrentPath());
-    introAnimation->Update();
-    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, introAnimation->GetCurrentPath(), true);
+    // introAnimation->Update();
+    // device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, introAnimation->GetCurrentPath(), true);
+    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, "media/introAnimation/Beast Brawl355.jpg", true);
+
 }
 
 void RenderFacadeClover::FacadeDrawMenu() {

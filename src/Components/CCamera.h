@@ -6,6 +6,7 @@
 #include <string>
 #include <iostream>
 #include <glm/vec3.hpp>
+#include "../Constants.h"
 
 using namespace std;
 using namespace glm;
@@ -47,7 +48,20 @@ class CCamera : public Component
         float reverseMaxSpeed;
 
         glm::vec3 target;
-//cTransformable->position.x
+
+
+        // cosas jose
+        const float perfectDistance {40.0};
+        const float minDistance {38.0};
+        const float maxDistance {45.0};
+        const float perfectUpDistance {20.0};
+
+        float actualDistance {40.0};            // esto es la posicion de la camara actual en los ejes x-z
+        float upDistance {20.0};                // en caso de querer modificar el alto de alguna forma en un futuro
+        float collisionDistance {0.0};          // en caso de colisionar contra una pared ajustarla restandole esto
+
+        const float camAceleration {12.0 * Constants::DELTA_TIME};
+        const float camDeceleration {6.0 * Constants::DELTA_TIME};
     private:
 
 };

@@ -136,7 +136,6 @@ class StateInGame : public State {
     //shared_ptr<float> deltaTime;
     
     shared_ptr<SystemRanking> sysRanking;
-    shared_ptr<PhysicsPowerUp> phisicsPowerUp;
     shared_ptr<SystemBoxPowerUp> sysBoxPowerUp;
     shared_ptr<Collisions> collisions;
     shared_ptr<Totem> totem;
@@ -159,10 +158,13 @@ class StateInGame : public State {
     virtual void AddElementsToRender();
     void GoToEndAnimation();
     void GoToStateEndrace();
+    virtual void GoToUpdateGame();
     void GoToCountdownAnimation();
     void InitializeSystemData();
     //virtual void CAMBIARCosasDeTotemUpdate(){};
 
+    void IntersectsCLPhysics();
+    
     //void CAMBIARCosasDeTotem(ManTotem &);
     //void CAMBIARCosasNavMesh(ManCar &, ManNavMesh &);
     //void CAMBIARPositionTotemAboveCar();

@@ -26,13 +26,53 @@ void PhysicsCamera::update(Car *car, Camera *cam) {
     // actualizar posiciones
     auto cTransformable = static_cast<CTransformable *>(car->GetComponent(CompType::TransformableComp).get());
     auto cCar = static_cast<CCar *>(car->GetComponent(CompType::CarComp).get());
+    auto cNitro = static_cast<CNitro *>(car->GetComponent(CompType::NitroComp).get());
     auto cCamera = static_cast<CCamera *>(cam->GetComponent(CompType::CameraComp).get());
     auto cSpeedCam = static_cast<CSpeed *>(cam->GetComponent(CompType::SpeedComp).get());
     auto cTransformableCam = static_cast<CTransformable *>(cam->GetComponent(CompType::TransformableComp).get());
     auto cHurt = static_cast<CHurt *>(car->GetComponent(CompType::HurtComp).get());
 
+    CalculateOffsetCamera(*cCar, *cNitro, cCamera);
     CalculatePositionCamera(cCar, cTransformable, cTransformableCam, cCamera, cSpeedCam, cHurt);
 }
+
+
+void PhysicsCamera::CalculateOffsetCamera(const CCar &cCar, const CNitro &cNitro, CCamera *cCamera) const{
+    if(!cNitro.activePowerUp){
+        if(cCamera->actualDistance > cCamera->perfectDistance){         // recuperacion en caso de haber acabado la aceleracion con el nitro -> acercar
+            cCamera->actualDistance -= cCamera->camDeceleration;
+            if(cCamera->actualDistance < cCamera->perfectDistance)
+                cCamera->actualDistance = cCamera->perfectDistance;
+        }else if(cCar.speed < cCar.maxSpeed*0.3){                       // en caso de ir lento o chocarse con una pared -> acercar
+            float distanceNow = CalculateCameraDistance(cCar, *cCamera);
+            cCamera->actualDistance = distanceNow;
+        }else if(cCamera->actualDistance<cCamera->perfectDistance){     // recuperar cuando aceleras -> alejar
+            cCamera->actualDistance += cCamera->camAceleration;
+            if(cCamera->actualDistance > cCamera->maxDistance)
+                cCamera->actualDistance = cCamera->maxDistance;  
+        }                         
+    }else{                                                              // aceleracion con el nitro -> alejar
+        cCamera->actualDistance += cCamera->camAceleration;
+        if(cCamera->actualDistance > cCamera->maxDistance)
+            cCamera->actualDistance = cCamera->maxDistance;
+    }
+}
+
+// se calcula el valor de proximidad de la camara
+float PhysicsCamera::CalculateCameraDistance(const CCar &cCar, const CCamera &cCamera) const{
+    float distance = cCamera.perfectDistance - cCamera.minDistance;
+    if(cCar.speed>0){
+        distance = distance * (cCar.speed/(cCar.maxSpeed*0.3)) + cCamera.minDistance;
+        if(distance>cCamera.perfectDistance)
+            distance = cCamera.perfectDistance;
+    }else{
+        distance = cCamera.minDistance;
+    }
+    
+    return distance;
+}
+
+
 
 //Calcula la posicion de la camara (duda con las formulas preguntar a Jose)
 void PhysicsCamera::CalculatePositionCamera(CCar *cCar, CTransformable *cTransformableCar, CTransformable *cTransCam, CCamera *cCamera, CSpeed *cSpeedCam, CHurt *cHurt) {
@@ -40,9 +80,9 @@ void PhysicsCamera::CalculatePositionCamera(CCar *cCar, CTransformable *cTransfo
     rotationFinal = Utils::GetAdjustedDegrees(rotationFinal);
     
 
-    cTransCam->position.y = cTransformableCar->position.y + 20;
-    cTransCam->position.z = (cTransformableCar->position.z - 40 * sin(((rotationFinal) * PI) / 180.0));
-    cTransCam->position.x = (cTransformableCar->position.x + 40 * cos(((rotationFinal) * PI) / 180.0));
+    cTransCam->position.y = cTransformableCar->position.y + cCamera->perfectUpDistance;
+    cTransCam->position.z = cTransformableCar->position.z - (cCamera->actualDistance-cCamera->collisionDistance) * sin(glm::radians(rotationFinal));
+    cTransCam->position.x = cTransformableCar->position.x + (cCamera->actualDistance-cCamera->collisionDistance) * cos(glm::radians(rotationFinal));
 
     //float rotFinal = cTransformableCar->rotation.y - cCar->skidRotation - cCamera->rotExtraY;
     //auto carPos =  cTransformableCar->position;

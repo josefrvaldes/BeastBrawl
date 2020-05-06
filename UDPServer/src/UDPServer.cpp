@@ -52,7 +52,7 @@ void UDPServer::HandleReceive(std::shared_ptr<unsigned char[]> recevBuff, std::s
         // de una ejecución anterior del juego
         if (time > timeServerStartedReceiving) {
             uint16_t idPlayer = Serialization::Deserialize<uint16_t>(recevBuff.get(), currentIndex);
-            cout << Utils::getISOCurrentTimestampMillis() << " hemos recibido una petición de type[" << unsigned(petitionType) << "] del jugador[" << idPlayer << "] con ip["<<remoteClient->address().to_string() << ":" << to_string(remoteClient->port()) << "]" << endl;
+            // cout << Utils::getISOCurrentTimestampMillis() << " hemos recibido una petición de type[" << unsigned(petitionType) << "] del jugador[" << idPlayer << "] con ip["<<remoteClient->address().to_string() << ":" << to_string(remoteClient->port()) << "]" << endl;
             //cout << Utils::getISOCurrentTimestampMillis() << " Hemos recibido en el server la llamada " << time << " de tipo " << unsigned(petitionType) << " del user " << idPlayer << endl;
             // TODO: esto creo que podría evitarse
             unsigned char buffRecieved[Constants::ONLINE_BUFFER_SIZE];
@@ -156,6 +156,13 @@ void UDPServer::HandleReceive(std::shared_ptr<unsigned char[]> recevBuff, std::s
                             HandleReceivedCrashPUWall(idPlayer, idPowerUp, buffRecieved, bytesTransferred, *remoteClient.get());
                         }
                         break;
+                    case Constants::PetitionTypes::LAUNCH_ANIMATION_END:
+                        if (p.lastLaunchAnimationEndReceived < time && animationEndRaceLaunched == false) {
+                            p.lastLaunchAnimationEndReceived = time;
+                            uint16_t idWinner = Serialization::Deserialize<uint16_t>(recevBuff.get(), currentIndex);
+                            HandleReceivedLaunchAnimationEnd(idPlayer, idWinner, buffRecieved, bytesTransferred, *remoteClient.get());
+                        }
+                        break;
                     default:
                         cout << "Petición incorrecta" << endl;
                         break;
@@ -242,8 +249,18 @@ void UDPServer::HandleReceivedCrashPUCar(const uint16_t idPlayer, const uint16_t
     }
 }
 
+void UDPServer::HandleReceivedLaunchAnimationEnd(const uint16_t idPlayer, const uint16_t idWinner, unsigned char bufferToReSend[], const size_t currentBufferSize, const udp::endpoint& originalClient) {
+    cout << Utils::getISOCurrentTimestampMillis() << "El coche " << idPlayer << " dice que hemos acabado la carrera y que ha ganado [" << idWinner << "]" << endl;
+
+    for (uint8_t i = 0; i < NUM_REINTENTOS; ++i)
+        for (Player& currentPlayer : players)
+            SendBytes(bufferToReSend, currentBufferSize, currentPlayer);
+ 
+    animationEndRaceLaunched = true;
+}
+
 void UDPServer::HandleReceivedCatchTotem(const uint16_t id, unsigned char buffer[], const size_t currentBufferSize, const udp::endpoint& remoteClient) {
-    if (playerWithTotem == Constants::ANY_PLAYER) {  // en caso de que nadie tubiese el totem
+    if (playerWithTotem == Constants::ANY_PLAYER) {  // en caso de que nadie tuviese el totem
         size_t currentIndex = 0;
         Serialization::Deserialize<uint8_t>(buffer, currentIndex);  // petitionType
         /*int64_t time = */ Serialization::Deserialize<int64_t>(buffer, currentIndex);

@@ -15,7 +15,7 @@ class PowerUp;
 class SystemOnline {
    public:
     SystemOnline(ManCar &manCar_, uint16_t idOnlineMainCar_);
-    ~SystemOnline(){};
+    ~SystemOnline();
 
     void Update();
     void SendInputs(const vector<Constants::InputTypes> &d) const;
@@ -34,6 +34,7 @@ class SystemOnline {
    private:
     void SubscribeToEvents();
     void EventEndgame(DataMap *);
+    void EventLaunchAnimationEnd(DataMap *);
 
     ManCar &manCar;
     unique_ptr<UDPClient> udpClient;

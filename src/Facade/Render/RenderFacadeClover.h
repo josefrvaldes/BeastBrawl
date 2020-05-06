@@ -155,6 +155,10 @@ class RenderFacadeClover : public RenderFacade {
 
       std::string powerUps[7];
 
+      vector<std::string> tipsTexts = { "Si te encuentras perdido, utiliza la camara del totem para localizarlo!" , 
+                                   "Utiliza el Robo Jorobo para conseguir el totem de inmediato!",
+                                   "El Escudo Merluzo te ayudara a que no te roben el totem!"};
+
         //Menu
         int inputMenu { 0 };
         int maxInputMenu { 5 };
