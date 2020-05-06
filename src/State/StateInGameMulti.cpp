@@ -11,6 +11,8 @@
 #include "../Systems/Utils.h"
 
 StateInGameMulti::StateInGameMulti(uint16_t idOnline_, const vector<uint16_t> idsEnemies_) : StateInGame() {
+    GameValues::GetInstance()->SetGameTime(180);
+    GameValues::GetInstance()->SetTimeTotem(30);
     InitState();
     InitializeManagers();
     InitCarHumans(idOnline_, idsEnemies_);
