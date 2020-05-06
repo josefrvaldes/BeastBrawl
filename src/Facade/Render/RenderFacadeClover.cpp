@@ -524,7 +524,7 @@ void RenderFacadeClover::UpdateCamera(Entity* cam, ManCar* manCars) {
 
         //Calculamos el angulo hasta el totem
         float vectorX = (cTransformableCar->position.x - targetPosition.x );
-        float vectorZ = (cTransformableCar->position.z - targetPosition.z );
+        float vectorZ = (-cTransformableCar->position.z - targetPosition.z );
 
         float valueAtan2 = atan2(vectorZ,vectorX);
 
