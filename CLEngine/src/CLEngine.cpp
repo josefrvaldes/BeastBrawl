@@ -380,7 +380,9 @@ void CLEngine::DrawImage2D(float _x, float _y, float scale, float _depth, string
  */
 void CLEngine::RenderText2D(std::string text, GLfloat x, GLfloat y, GLfloat depth, GLfloat scale, glm::vec3 color) {
 
+    glm::mat4 projection = glm::ortho(0.0f, (float)width, 0.0f, (float)height);
     glUseProgram(textShader);
+    glUniformMatrix4fv(glGetUniformLocation(textShader, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
     glUniform3f(glGetUniformLocation(textShader, "textColor"), color.x, color.y, color.z);
     glActiveTexture(GL_TEXTURE0);
     glBindVertexArray(VAOText);
