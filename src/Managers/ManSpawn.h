@@ -11,7 +11,7 @@ class ManSpawn{
     ManSpawn();
     ~ManSpawn();
 
-    auto GetPosSpawn() { return posSpawn; };
+    auto GetPositionsSpawn() { return posSpawn; };
 
    private:
     vector<glm::vec3> posSpawn;

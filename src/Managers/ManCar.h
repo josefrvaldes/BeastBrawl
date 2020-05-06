@@ -107,6 +107,8 @@ class ManCar : public Manager {
     void CatchPowerUp(DataMap* d);
     bool CheckIfPUWillBeFired(Car* car_);
     void CatchPowerUpAI(DataMap* d);
+
+
     shared_ptr<CarHuman> car;
     //unique_ptr<PhysicsAI> physicsAI;
     unique_ptr<SystemGameRules> systemGameRules;
@@ -115,6 +117,7 @@ class ManCar : public Manager {
     SystemOnline* systemOnline = nullptr; // en caso de que sea Single va a ser un nullptr
 
     std::vector<glm::vec3> positionsSpawn;
+    float GetAngleToTotem(glm::vec3 posCar);
 
     double maxTimeAccumulated {0};
 };

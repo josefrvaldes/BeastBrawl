@@ -151,8 +151,10 @@ void StateInGame::InitializeSystems(ManCar &manCars, ManBoundingWall &manWall, M
 
 void StateInGame::InitializeManagers() {
     // inicializa el man PU, no hace falta más código para esto
+    manNavMesh = make_shared<ManNavMesh>();
+    manTotems = make_shared<ManTotem>(manNavMesh.get());
     manSpawn = make_unique<ManSpawn>();
-    manCars = make_shared<ManCar>(manSpawn->GetPosSpawn());
+    manCars = make_shared<ManCar>(manSpawn->GetPositionsSpawn());
     StateInGame::CreateMainCar();
     manCamera = make_unique<ManCamera>(manCars->GetCar().get(), Constants::DELTA_TIME);
     manWayPoint = make_shared<ManWayPoint>();  //Se crean todos los waypoints y edges
@@ -161,8 +163,6 @@ void StateInGame::InitializeManagers() {
     manBoundingWall = make_shared<ManBoundingWall>();
     manBoundingOBB = make_shared<ManBoundingOBB>();
     manBoundingGround = make_shared<ManBoundingGround>();
-    manNavMesh = make_shared<ManNavMesh>();
-    manTotems = make_shared<ManTotem>(manNavMesh.get());
     manNamePlates = make_shared<ManNamePlate>(manCars.get());
     manLight = make_shared<ManLight>();
     manGameRules = make_unique<ManGameRules>();

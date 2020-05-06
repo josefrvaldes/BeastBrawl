@@ -290,7 +290,7 @@ void StateInGameSingle::InitCarAIS(ManCar &manCars, ManWayPoint &manWayPoint) {
         }
     }
 
-    auto mainCarId = static_cast<CId *>(manCars.GetCar()->GetComponent(CompType::IdComp).get());
+    //auto mainCarId = static_cast<CId *>(manCars.GetCar()->GetComponent(CompType::IdComp).get());
     //int i = -1;
     //TODO: Cambiar de sitio
     for (auto e : manCars.GetEntities()) {

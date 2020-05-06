@@ -22,6 +22,7 @@
 
 #include "../Components/COnline.h"
 
+#include <include_json/include_json.hpp>
 #include "../Facade/Render/RenderFacadeManager.h"
 #include "../Game.h"
 #include "../Managers/ManBoundingWall.h"
@@ -41,7 +42,7 @@
 
 class Position;
 using namespace std;
-
+using json = nlohmann::json;
 
 #include <limits>
 typedef std::numeric_limits< double > dbl;
@@ -81,6 +82,19 @@ glm::vec3 ManCar::GetPosSpawn(){
     }
 }
 
+float ManCar::GetAngleToTotem(glm::vec3 posCar){
+    // CREAMOS EL TOTEM
+    ifstream i("data.json");
+    json j = json::parse(i);
+    auto posTotem = glm::vec3(j["TOTEM"]["x"].get<double>(), j["TOTEM"]["y"].get<double>(), j["TOTEM"]["z"].get<double>());
+    glm::vec3 vecToTotem = vec3((posTotem.x-posCar.x),0,(posTotem.z-posCar.z));
+    float valueAtan2 = glm::degrees( atan2(vecToTotem.z, vecToTotem.x) );
+    valueAtan2 = 180.0 - valueAtan2;  // se le restan ya que el eje empieza en el lado contrario
+    if (valueAtan2 < 0)
+        valueAtan2 += 360;
+    return valueAtan2;
+}
+
 // comprueba si has superado el tiempo necesario para ganar
 bool ManCar::UpdateCarPlayer(ManTotem &manTotem_) {
     auto totem = manTotem_.GetEntities()[0].get();
@@ -110,23 +124,27 @@ bool ManCar::UpdateGeneralCar(Entity& car_, Entity& totem_){
 void ManCar::CreateMainCar(int pj) {
     car = make_shared<CarHuman>(pj); 
     entities.push_back(car);
+    //despues de crearlo, lo vamos a rotar para que mire al totem
 }
 
 void ManCar::CreateMainCar(int pj, glm::vec3 _position) {
     car = make_shared<CarHuman>(pj, _position); 
     entities.push_back(car);
+    car->SetRotation(glm::vec3(0,GetAngleToTotem(_position),0));
 }
 
 //Cambiar PJ
 void ManCar::CreateHumanCar(int pj, glm::vec3 _position) {
     shared_ptr<CarHuman> p = make_shared<CarHuman>(pj, _position);
     entities.push_back(p);
+    p->SetRotation(glm::vec3(0,GetAngleToTotem(_position),0));
 }
 
 //Cambiar PJ
 void ManCar::CreateCarAI(int pj, glm::vec3 _position) {
     shared_ptr<CarAI> p = make_shared<CarAI>(pj, _position);
     entities.push_back(p);
+    p->SetRotation(glm::vec3(0,GetAngleToTotem(_position),0));
 }
 
 //Cambiar PJ
