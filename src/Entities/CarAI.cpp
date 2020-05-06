@@ -124,10 +124,10 @@ CarAI::CarAI(int pj){
             pathBottomLeft = "sharky_wheel3.obj";
             pathBottomRight = "sharky_wheel1.obj";
 
-            offsetTopLeft = glm::vec3(0.6,0.3f,1.0);
-            offsetTopRight = glm::vec3(0.6,0.3f,-1.0);
-            offsetBottomLeft = glm::vec3(-0.4,0.3f,1.0);
-            offsetBottomRight = glm::vec3(-0.4,0.3f,-1.0);
+            offsetTopLeft = glm::vec3(0.5,0.3f,0.8);
+            offsetTopRight = glm::vec3(0.5,0.3f,-0.8);
+            offsetBottomLeft = glm::vec3(-0.4,0.3f,0.8);
+            offsetBottomRight = glm::vec3(-0.4,0.3f,-0.8);
 
             rotationTopLeft = glm::vec3(0.0f,0.0f,0.0f);
             rotationTopRight = glm::vec3(0.0f,0.0f,0.0f);
@@ -168,16 +168,16 @@ CarAI::CarAI(int pj){
         case 4: 
             _pj = mainCharacter::DRAGON; 
             acceleration = 2.0;
-            mesh = "kart_physics.obj";
-            pathTopLeft = "sharky_wheel4.obj";
-            pathTopRight = "sharky_wheel2.obj";
-            pathBottomLeft = "sharky_wheel3.obj";
-            pathBottomRight = "sharky_wheel1.obj";
+            mesh = "kart_deacon.obj";
+            pathTopLeft = "deacon_wheel2.obj";
+            pathTopRight = "deacon_wheel4.obj";
+            pathBottomLeft = "deacon_wheel3.obj";
+            pathBottomRight = "deacon_wheel1.obj";
 
-            offsetTopLeft = glm::vec3(0.6,0.3f,1.0);
-            offsetTopRight = glm::vec3(0.6,0.3f,-1.0);
-            offsetBottomLeft = glm::vec3(-0.4,0.3f,1.0);
-            offsetBottomRight = glm::vec3(-0.4,0.3f,-1.0);
+            offsetTopLeft = glm::vec3(0.65,0.4f,0.8);
+            offsetTopRight = glm::vec3(0.65,0.4f,-0.9);
+            offsetBottomLeft = glm::vec3(-0.65,0.4f,0.8);
+            offsetBottomRight = glm::vec3(-0.65,0.4f,-0.9);
 
             rotationTopLeft = glm::vec3(0.0f,0.0f,0.0f);
             rotationTopRight = glm::vec3(0.0f,0.0f,0.0f);
