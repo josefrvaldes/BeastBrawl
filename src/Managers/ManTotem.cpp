@@ -207,6 +207,7 @@ void ManTotem::SubscribeToEvents() {
 
 
 void ManTotem::RecievedCatchTotem(DataMap* d){
+    cout << "ManTotem::RecievedCatchTotem" << endl;
     auto cTotem = static_cast<CTotem*>(entities[0]->GetComponent(CompType::TotemComp).get());
     cTotem->active = false;
 }

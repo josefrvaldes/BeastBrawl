@@ -360,7 +360,7 @@ void ManCar::NewLostTotemReceived(DataMap* d) {
         if (car->HasComponent(CompType::OnlineComp)) {
             COnline* compOnline = static_cast<COnline*>(car->GetComponent(CompType::OnlineComp).get());
             if (compOnline->idClient == idCarLosted) {
-                ThrowTotem(car.get());
+                ThrowTotem(car.get(), false);
             }
         }
     }
@@ -376,7 +376,7 @@ void ManCar::NewUsedRoboJoroboReceived(DataMap* d) {
             if (compOnline->idClient == idCarObtained) {
                 ObtainTotem(car.get(), true);
             }else if(cTotem->active == true){
-                ThrowTotem(car.get());
+                ThrowTotem(car.get(), true);
             }
         }
     }
@@ -392,7 +392,7 @@ void ManCar::NewCollideNitroReceived(DataMap* d) {
             if (compOnline->idClient == idCarObtainedTotem) {
                 ObtainTotem(car.get(), true);
             }else if(cTotem->active == true){
-                ThrowTotem(car.get());
+                ThrowTotem(car.get(), true);
             }
         }
     }
@@ -439,7 +439,7 @@ void ManCar::ChangeTotemCar(DataMap* d) {
     auto carWithTotem = any_cast<Entity*>((*d)[CAR_WITH_TOTEM]);
     auto carWithoutTotem = any_cast<Entity*>((*d)[CAR_WITHOUT_TOTEM]);
     if(Game::GetInstance()->GetState()->GetState() == State::States::INGAME_SINGLE){
-        ThrowTotem(carWithTotem);
+        ThrowTotem(carWithTotem, true);
         // activamos el totem al coche que ahora lo tiene
         ObtainTotem(carWithoutTotem, true);
     }else if(Game::GetInstance()->GetState()->GetState() == State::States::INGAME_MULTI){
@@ -501,11 +501,25 @@ void ManCar::ObtainTotem(Entity* carWinTotem, bool stolen) {
     }
 }
 
-void ManCar::ThrowTotem(Entity* carLoseTotem) {
+void ManCar::ThrowTotem(Entity* carLoseTotem, bool stolen) {
+    cout << "Se ha llamado al throwTotem" << endl;
     auto cTotem = static_cast<CTotem*>(carLoseTotem->GetComponent(CompType::TotemComp).get());
     cTotem->active = false;
     cTotem->accumulatedTime += duration_cast<milliseconds>(system_clock::now() - cTotem->timeStart).count();
     //std::cout << "El tiempo acumulado del totem hasta ahora del jugador es de:  " << cTotem->accumulatedTime/1000.0 << std::endl;
+
+
+    if(! stolen) {
+        //EVENTO HUD
+        shared_ptr<DataMap> dataHud = make_shared<DataMap>();
+        auto cCar = static_cast<CCar*>(carLoseTotem->GetComponent(CompType::CarComp).get());
+        if (cCar) {
+            cout << "Le han dañado y SÍ tenían ccar" << endl;
+            (*dataHud)[NUM] = (uint16_t)cCar->character;
+            (*dataHud)[TYPE] = 3;  //Lose
+            EventManager::GetInstance().AddEventMulti(Event{EventType::SET_EVENT_HUD, dataHud});
+        }
+    }
 }
 
 bool ManCar::useRoboJorobo(Entity* newCarWithTotem) {
@@ -515,7 +529,7 @@ bool ManCar::useRoboJorobo(Entity* newCarWithTotem) {
             auto cTotem = static_cast<CTotem*>(cars->GetComponent(CompType::TotemComp).get());
             // Si algun coche tenia el totem .... lo pierde, comprobamos que no sea el mmismo coche con las ID
             if (cTotem->active == true && newCarWithTotem != cars.get()) {
-                ThrowTotem(cars.get());
+                ThrowTotem(cars.get(), true);
                 //al perderlo se lo asignamos al que ha usado el robo jorobo
                 ObtainTotem(newCarWithTotem, true);
                 return true;  // para salirnos y no hacer mas calculos
@@ -556,7 +570,7 @@ void ManCar::CollisionCarPowerUp(DataMap* d) {
     if(Game::GetInstance()->GetState()->GetState() == State::States::INGAME_SINGLE){
         auto cTotem = static_cast<CTotem*>(any_cast<Entity*>((*d)[ACTUAL_CAR])->GetComponent(CompType::TotemComp).get());
         if (cTotem->active == true) {
-            ThrowTotem(car);
+            ThrowTotem(car, false);
         }
     }
 
@@ -829,13 +843,10 @@ void ManCar::CatchPowerUpAI(DataMap* d) {
     //cout << "EL VALOR QUE SALE ES: " << indx << " - CORRESPONDIENTE AL PU: " << (int)type << endl;
 
     int64_t time = Utils::getMillisSinceEpoch();
-    if(time % 3 == 0)
+    if (time % 2 == 0)
         type = typeCPowerUp::TeleBanana;
-    else if (time % 3 == 1)
-        type = typeCPowerUp::RoboJorobo;
     else
-        type = typeCPowerUp::SuperMegaNitro;
-
+        type = typeCPowerUp::RoboJorobo;
     auto cPowerUpCar = static_cast<CPowerUp*>(actualCar->GetComponent(CompType::PowerUpComp).get());
     if (cPowerUpCar->typePowerUp == typeCPowerUp::None) {
         cPowerUpCar->typePowerUp = type;

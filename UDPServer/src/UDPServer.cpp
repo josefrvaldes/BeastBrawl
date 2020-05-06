@@ -544,8 +544,8 @@ void UDPServer::DetectUsersDisconnected() {
             cout << "Se han caído todos los jugadores y solo queda uno o ninguno. Reiniciamos el server" << endl;
             Exit();
         }
-        CheckDisconnectionsAfterSeconds();
     }
+    CheckDisconnectionsAfterSeconds();
 }
 
 void UDPServer::SendLaunchAnimationEnd(const Player& p, const uint16_t idPlayer, const uint16_t idWinner) {

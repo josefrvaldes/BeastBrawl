@@ -92,7 +92,7 @@ class ManCar : public Manager {
     void DeletePlayer(DataMap* d);
     //void ChangePosDestination(DataMap* d);
     //void MoveToPowerUp(DataMap* d);
-    void ThrowTotem(Entity* carLoseTotem);
+    void ThrowTotem(Entity* carLoseTotem, bool stolen);
     bool useRoboJorobo(Entity* newCarWithTotem);
 
     void ThrowPowerUp(Car* car);
