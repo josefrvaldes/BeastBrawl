@@ -10,5 +10,7 @@ class CarHuman : public Car {
     CarHuman(int pj);
     CarHuman(int pj, glm::vec3 pos);
     ~CarHuman();
+
+    void SetRotation(glm::vec3 rot_);
     
 };
