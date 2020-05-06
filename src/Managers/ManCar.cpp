@@ -46,7 +46,7 @@ using namespace std;
 #include <limits>
 typedef std::numeric_limits< double > dbl;
 
-ManCar::ManCar() {
+ManCar::ManCar(std::vector<glm::vec3> spawns) {
     SubscribeToEvents();
     //CreateMainCar();
 
@@ -54,6 +54,7 @@ ManCar::ManCar() {
     //physicsAI = make_unique<PhysicsAI>();
     systemGameRules = make_unique<SystemGameRules>();
     physics         = make_unique<Physics>(Constants::DELTA_TIME);
+    positionsSpawn = spawns;
 
     cout << "Hemos creado un powerup, ahora tenemos " << entities.size() << " powerups" << endl;
 }
@@ -63,11 +64,22 @@ ManCar::~ManCar() {
     entities.shrink_to_fit();
 }
 
-// TO-DO: este paso de physics es kk, hay que revisarlo de enviarlo como referencia o algo pero me da error
-//ManCar::ManCar(Physics* _physics) : ManCar() {
-//    //this->physics = _physics;
-//    //this->cam = _cam;
-//}
+glm::vec3 ManCar::GetPosSpawn(){
+    // de las psiciones disponibles -> cogemos una random y la asignamos
+
+    if(positionsSpawn.size() > 0){
+        int64_t time = Utils::getMillisSinceEpoch();
+        auto newIndex = time % (positionsSpawn.size());
+
+        //auto newIndex = rand() % positionsSpawn.size();
+        auto newPos = positionsSpawn[newIndex];
+        positionsSpawn.erase(positionsSpawn.begin() + newIndex);
+        return newPos;
+    }else{
+        cout << "HAY + COCHES QUE PUNTOS DE SPAWN, TRANQUIII BRO, QUITA COCHES ANDA..." << endl;
+        return glm::vec3(0.0,0.0,0.0);
+    }
+}
 
 // comprueba si has superado el tiempo necesario para ganar
 bool ManCar::UpdateCarPlayer(ManTotem &manTotem_) {
@@ -97,6 +109,11 @@ bool ManCar::UpdateGeneralCar(Entity& car_, Entity& totem_){
 
 void ManCar::CreateMainCar(int pj) {
     car = make_shared<CarHuman>(pj); 
+    entities.push_back(car);
+}
+
+void ManCar::CreateMainCar(int pj, glm::vec3 _position) {
+    car = make_shared<CarHuman>(pj, _position); 
     entities.push_back(car);
 }
 

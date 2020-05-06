@@ -149,7 +149,8 @@ void StateInGame::InitializeSystems(ManCar &manCars, ManBoundingWall &manWall, M
 
 void StateInGame::InitializeManagers() {
     // inicializa el man PU, no hace falta más código para esto
-    manCars = make_shared<ManCar>();
+    manSpawn = make_unique<ManSpawn>();
+    manCars = make_shared<ManCar>(manSpawn->GetPosSpawn());
     StateInGame::CreateMainCar();
     manCamera = make_unique<ManCamera>(manCars->GetCar().get(), Constants::DELTA_TIME);
     manWayPoint = make_shared<ManWayPoint>();  //Se crean todos los waypoints y edges
@@ -210,7 +211,7 @@ void StateInGame::InitState() {
 void StateInGame::CreateMainCar() {
     if (manCars) {
         auto pj = GameValues::GetInstance()->GetCharacter();
-        manCars->CreateMainCar(pj);
+        manCars->CreateMainCar(pj, manCars->GetPosSpawn());
         //manNamePlates->CreateNamePlate(manCars->GetCar().get());
         /*auto cCar = static_cast<CCar*>(manCars->GetCar()->GetComponent(CompType::CarComp).get());
         if (cCar){
@@ -277,6 +278,7 @@ void StateInGame::UpdateAnimationEnd() {
 }
 
 void StateInGame::UpdateGame() {
+
     EventManager &em = EventManager::GetInstance();
     em.Update();
 
@@ -289,13 +291,16 @@ void StateInGame::UpdateGame() {
     }
 
     // ACTUALIZACION DE LAS FISICAS DE LOS COCHES
-    //physics->update(manCars->GetCar().get());
     manCamera->Update();
 
     sysBoxPowerUp->update(manBoxPowerUps.get());
 
+    //auto posCar = static_cast<CTransformable *>(manCars->GetCar()->GetComponent(CompType::TransformableComp).get())->position;
+    //cout <<" MI POSICON 1 ES : (" << posCar.x<< " , " << posCar.y<< " , " << posCar.z<< " )" << endl;
+
     clPhysics->Update(0.1666f);
     IntersectsCLPhysics();
+
 
 
     // Actualizaciones en Irrlich
@@ -326,7 +331,6 @@ void StateInGame::UpdateGame() {
     renderEngine->FacadeUpdateMeshesLoD(manPowerUps->GetEntities());
     renderEngine->FacadeUpdateMeshesLoD(manTotems->GetEntities());
     // Fin LoD
-
 
     sysHurt->Update(manCars->GetEntities());
 

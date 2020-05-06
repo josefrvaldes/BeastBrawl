@@ -298,10 +298,18 @@ CarHuman::CarHuman(int pj) {
 CarHuman::CarHuman(int pj, glm::vec3 _position)
     : CarHuman(pj) {
     CTransformable *cTransformable = (CTransformable *)m_components[CompType::TransformableComp].get();
-    cTransformable->position.x = _position.x;
-    cTransformable->position.y = _position.y;
-    cTransformable->position.z = _position.z;
+    cTransformable->position = _position;
+
+    CBoundingChassis *cChassis = (CBoundingChassis *)m_components[CompType::CompBoundingChassis].get();
+    cChassis->sphereBehind->center = cTransformable->position;
+    cChassis->sphereFront->center = cTransformable->position;
 }
 
 CarHuman::~CarHuman() {
+}
+
+void CarHuman::SetRotation(glm::vec3 rot_){
+
+    CTransformable *cTransformable = (CTransformable *)m_components[CompType::TransformableComp].get();
+    cTransformable->rotation = rot_;
 }
