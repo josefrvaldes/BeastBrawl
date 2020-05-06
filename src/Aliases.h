@@ -28,6 +28,8 @@ enum DataType{
     CAR_TRANSFORMABLE,
     MAN_NAVMESH,
     MAN_WAYPOINTS,
+    ROTATION,
+    SPEED,
     POS_DESTINATION,
     DATA_SERVER,
     ID,

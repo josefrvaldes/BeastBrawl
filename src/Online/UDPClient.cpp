@@ -324,11 +324,15 @@ void UDPClient::HandleReceivedLostTotem(unsigned char* recevBuff, size_t bytesTr
     Serialization::Deserialize<uint16_t>(recevBuff, currentIndex);  // idOnline del que lo envio
     uint16_t idCarOnlineCatched = Serialization::Deserialize<uint16_t>(recevBuff, currentIndex);
     glm::vec3 position = Serialization::DeserializeVec3(recevBuff, currentIndex);
+    float speed = Serialization::Deserialize<float>(recevBuff, currentIndex);
+    uint16_t rotationTotemY = Serialization::Deserialize<uint16_t>(recevBuff, currentIndex);
     int numNavMesh = Serialization::Deserialize<int>(recevBuff, currentIndex);
 
     std::shared_ptr<DataMap> data = make_shared<DataMap>();
     (*data)[DataType::ID_ONLINE] = idCarOnlineCatched;
     (*data)[DataType::VEC3_POS] = position;
+    (*data)[DataType::ROTATION] = rotationTotemY;
+    (*data)[DataType::SPEED] = speed;
     (*data)[DataType::ID] = numNavMesh;
     EventManager::GetInstance().AddEventMulti(Event{EventType::NEW_LOST_TOTEM_RECEIVED, data});
 }
@@ -561,7 +565,7 @@ void UDPClient::SendCatchTotem(uint16_t idOnline, uint16_t idPlayerCatched) {
             boost::asio::placeholders::bytes_transferred));
 }
 
-void UDPClient::SendLostTotem(uint16_t idOnline, uint16_t idPlayerLosted, const glm::vec3& pos, int numNavMesh) {
+void UDPClient::SendLostTotem(uint16_t idOnline, uint16_t idPlayerLosted, const glm::vec3& pos, float speed, uint16_t rotationTotemY, int numNavMesh) {
     unsigned char requestBuff[Constants::ONLINE_BUFFER_SIZE];
     size_t currentBuffSize = 0;
     uint8_t callType = Constants::PetitionTypes::LOST_TOTEM;
@@ -572,6 +576,8 @@ void UDPClient::SendLostTotem(uint16_t idOnline, uint16_t idPlayerLosted, const 
     Serialization::Serialize(requestBuff, &idOnline, currentBuffSize);
     Serialization::Serialize(requestBuff, &idPlayerLosted, currentBuffSize);
     Serialization::SerializeVec3(requestBuff, pos, currentBuffSize);
+    Serialization::Serialize(requestBuff, &speed, currentBuffSize);
+    Serialization::Serialize(requestBuff, &rotationTotemY, currentBuffSize);
     Serialization::Serialize(requestBuff, &numNavMesh, currentBuffSize);
 
     socket.async_send_to(

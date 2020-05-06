@@ -43,7 +43,7 @@ class UDPClient {
     void SendCatchTotem(uint16_t idOnline, uint16_t idPlayerCatched);
     void SendCrashPUCar(const uint16_t idOnline, const uint16_t idPowerUp, const uint16_t idCar);
     void SendCrashPUWall(const uint16_t idOnline, const uint16_t idPowerUp);
-    void SendLostTotem(uint16_t idOnline, uint16_t idPlayerLosted, const glm::vec3& pos, int numNavMesh);
+    void SendLostTotem(uint16_t idOnline, uint16_t idPlayerLosted, const glm::vec3& pos, float speed, uint16_t rotationTotemY, int numNavMesh);
     void SendRoboJorobo(uint16_t idOnline);
     void SendCollideNitro(uint16_t idOnline, uint16_t idWithTotem, uint16_t idWithNitro);
     void SendThrowMelonOPudin(const uint16_t idOnline, const int64_t time, const uint16_t idPUOnline, const glm::vec3& position, const glm::vec3& rotation, const int8_t typePU);
