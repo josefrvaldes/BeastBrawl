@@ -924,8 +924,8 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
     auto xtext = 640.0f;
     auto ytext = 610.0f;
     float scale = 1.0f;
-    if (w <= 1024) scale = 0.75;
-    else if (w >= 1920) scale = 1.25;
+    //if (w <= 1024) scale = 0.75;
+    //else if (w >= 1920) scale = 1.25;
 
 
     //MINIMAPA
