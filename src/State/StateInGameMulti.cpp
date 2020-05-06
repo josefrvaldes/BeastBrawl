@@ -31,6 +31,7 @@ StateInGameMulti::StateInGameMulti(uint16_t idOnline_, const vector<uint16_t> id
     const vector<Constants::InputTypes> inputs;
     sysOnline->SendInputs(inputs);
     sysAnimStart->ResetTimer();
+    sysRanking->Update(manCars.get());
 }
 
 StateInGameMulti::~StateInGameMulti() {
