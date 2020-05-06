@@ -13,6 +13,7 @@ StateInGameSingle::StateInGameSingle() : StateInGame() {
 
     createSystemAI();
     sysAnimStart->ResetTimer();
+    sysRanking->Update(manCars.get());
 }
 
 StateInGameSingle::~StateInGameSingle() {}
