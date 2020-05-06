@@ -37,6 +37,9 @@ class PhysicsCamera {
    private:
     float deltaTime;
     void CalculatePositionCamera(CCar *cCar, CTransformable *cTransformableCar, CTransformable *cTransformableCamera, CCamera *cCamera, CSpeed *cSpeed, CHurt *cHurt);
+    void CalculateOffsetCamera(const CCar &cCar, const CNitro &cNitro, CCamera *cCamera) const;
+    float CalculateCameraDistance(const CCar &cCar, const CCamera &cCamera) const;
+
     void Accelerate(CCar *cCar, CCamera *cCamera);
     void Decelerate(CCar *cCar, CCamera *cCamera);
     void Accelerate_X(CCar *cCar, CCamera *cCamera, CSpeed *cSpeedCam);

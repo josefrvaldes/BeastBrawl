@@ -231,8 +231,6 @@ CarHuman::CarHuman(int pj) {
         mesh = "kart_physics.obj";
     }
 
-    float friction = 1.0, slowDown = 2.5;
-
     string vertexShader = "CLEngine/src/Shaders/cartoonShader.vert";
     string fragmentShader = "CLEngine/src/Shaders/cartoonShader.frag";
     
@@ -241,7 +239,7 @@ CarHuman::CarHuman(int pj) {
     shared_ptr<CTransformable> cTransformable = make_shared<CTransformable>(pos, rot, scale);
     shared_ptr<CTexture> cTexture = make_shared<CTexture>(texture);
     shared_ptr<CMesh> cMesh = make_shared<CMesh>(mesh);
-    shared_ptr<CCar> cCar = make_shared<CCar>(_pj, weight, maxSpeed, acceleration, friction, slowDown);
+    shared_ptr<CCar> cCar = make_shared<CCar>(_pj, weight, maxSpeed, acceleration);
     shared_ptr<CSpeed> cSpeed = make_shared<CSpeed>();
     shared_ptr<CPowerUp> cPowerUp = make_shared<CPowerUp>();
     shared_ptr<CShield> cShield = make_shared<CShield>();
