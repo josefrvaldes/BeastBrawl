@@ -47,6 +47,7 @@ class Constants {
                         TCP_FULL_GAME,
                         ENDGAME,
                         LAUNCH_ANIMATION_END,
+                        LAUNCH_ANIMATION_COUNTDOWN,
                         SEND_INPUTS,
                         SEND_SYNC,
                         CATCH_PU,
@@ -56,6 +57,7 @@ class Constants {
                         CATCH_TOTEM,
                         LOST_TOTEM,
                         USED_ROBOJOROBO,
+                        WAITING_FOR_COUNTDOWN,
                         COLLIDE_NITRO,
                         SEND_THROW_MELON_O_PUDIN,
                         SEND_THROW_TELEBANANA };

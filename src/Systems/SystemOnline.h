@@ -28,6 +28,7 @@ class SystemOnline {
     void SendCatchTotem(uint16_t idCarCatched) const;
     void SendLostTotem(uint16_t idCarCatched, const glm::vec3 &position, float speedTotem, int rotationTotemY, int numNavMesh) const;
     void SendRoboJorobo() const;
+    void SendWaitingForCountdown() const;
     void SendNitro(uint16_t idCarWithTotem, uint16_t idCarWithNitro) const;
     uint16_t idOnlineMainCar;
 

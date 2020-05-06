@@ -148,3 +148,7 @@ void SystemOnline::SendNitro(uint16_t idCarWithTotem, uint16_t idCarWithNitro) c
     for (uint8_t i = 0; i < TIMES_RESEND; ++i)
         udpClient->SendCollideNitro(idOnlineMainCar, idCarWithTotem, idCarWithNitro);
 }
+
+void SystemOnline::SendWaitingForCountdown() const {
+    udpClient->SendWaitingForCountdown(idOnlineMainCar);
+}
