@@ -73,15 +73,15 @@ CarHuman::CarHuman(int pj) {
             maxSpeed = 220.0;
             mesh = "kart_penguin.obj";
 
-            pathTopLeft = "sharky_wheel4.obj";
-            pathTopRight = "sharky_wheel2.obj";
-            pathBottomLeft = "sharky_wheel3.obj";
-            pathBottomRight = "sharky_wheel1.obj";
+            pathTopLeft = "penguin_wheel1.obj";
+            pathTopRight = "penguin_wheel2.obj";
+            pathBottomLeft = "penguin_wheel3.obj";
+            pathBottomRight = "penguin_wheel4.obj";
 
-            offsetTopLeft = glm::vec3(0.6,0.3f,1.0);
-            offsetTopRight = glm::vec3(0.6,0.3f,-1.0);
-            offsetBottomLeft = glm::vec3(-0.4,0.3f,1.0);
-            offsetBottomRight = glm::vec3(-0.4,0.3f,-1.0);
+            offsetTopLeft = glm::vec3(0.92,0.3f,0.8);
+            offsetTopRight = glm::vec3(0.92,0.3f,-0.8);
+            offsetBottomLeft = glm::vec3(-0.2,0.3f,0.9);
+            offsetBottomRight = glm::vec3(-0.2,0.3f,-0.9);
 
             rotationTopLeft = glm::vec3(0.0f,0.0f,0.0f);
             rotationTopRight = glm::vec3(0.0f,0.0f,0.0f);
