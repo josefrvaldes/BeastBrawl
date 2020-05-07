@@ -10,12 +10,12 @@
 #include "../Systems/SystemOnline.h"
 #include "../Systems/Utils.h"
 
-StateInGameMulti::StateInGameMulti(uint16_t idOnline_, const vector<uint16_t> idsEnemies_) : StateInGame() {
+StateInGameMulti::StateInGameMulti(uint16_t idOnline_, const vector<uint16_t> idsEnemies_, const vector<uint8_t> characters_) : StateInGame() {
     GameValues::GetInstance()->SetGameTime(180);
     GameValues::GetInstance()->SetTimeTotem(30);
     InitState();
     InitializeManagers();
-    InitCarHumans(idOnline_, idsEnemies_);
+    InitCarHumans(idOnline_, idsEnemies_, characters_);
     InitializeSystems(*manCars.get(), *manBoundingWall.get(), *manBoundingOBB.get(), *manBoundingGround.get(), *manPowerUps.get(), *manNavMesh.get(), *manBoxPowerUps.get(), *manTotems.get());
     sysOnline = make_unique<SystemOnline>(*manCars.get(), idOnline_);
     manCars->SetSystemOnline(sysOnline.get());
@@ -42,7 +42,7 @@ void StateInGameMulti::InitState() {
     StateInGame::InitState();
 }
 
-void StateInGameMulti::InitCarHumans(uint16_t idOnline_, vector<uint16_t> arrayIdEnemies) {
+void StateInGameMulti::InitCarHumans(const uint16_t idOnline_, const vector<uint16_t> arrayIdEnemies, const vector<uint8_t> characters) {
     // a este le llegan los coches
     //std::cout << "POR FIIIIIIIIIIIIIIIIIIIIIIIN: " << std::endl;
     //vector<uint16_t> arrayIdEnemies = IdPlayersOnline;
@@ -61,11 +61,14 @@ void StateInGameMulti::InitCarHumans(uint16_t idOnline_, vector<uint16_t> arrayI
     cOnline->idClient = idOnline_;
     manShield->CreateShield(idComp->id, glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.5f));
 
-    for (auto idEnemy : arrayIdEnemies) {
+    // for (auto idEnemy : arrayIdEnemies) {
+    for (size_t i = 0; i < arrayIdEnemies.size(); i++) {
+        uint16_t idEnemy = arrayIdEnemies[i];
+        uint8_t currentCharacter = characters[i];
         vec3 pos = posIniciales[idEnemy - 1];
 
         //Le paso el PERSONAJE: ahora mismo a piñon
-        manCars->CreateHumanCar(0, pos);
+        manCars->CreateHumanCar(currentCharacter, pos);
         shared_ptr<Entity> car = manCars->GetEntities()[manCars->GetEntities().size() - 1];
         COnline *cOnline = static_cast<COnline *>(car->GetComponent(CompType::OnlineComp).get());
         cOnline->idClient = idEnemy;

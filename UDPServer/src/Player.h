@@ -14,6 +14,7 @@ struct Player {
     void setId(uint16_t _id);
 
     uint16_t id{nextId++};
+    uint8_t character{0};
     udp::endpoint endpoint;
     tcp::endpoint endpointTCP;
     //TCPConnection::pointer connectionPointer;

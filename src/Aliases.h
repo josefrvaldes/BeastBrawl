@@ -41,6 +41,7 @@ enum DataType{
     ID_ONLINE,
     ID_PURSUE,
     VECTOR_ID_ONLINE,
+    CHARACTERS_ONLINE,
     VEC3_POS,
     VEC3_ROT,
     TIME_TOTEM,
