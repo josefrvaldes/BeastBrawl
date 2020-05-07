@@ -79,8 +79,8 @@ class CLEngine {
         void DisableCursor();
         void CloseWindow();
         void PollEvents();
-        void DrawDepthMap();
-        void RenderDepthMap(CLShadowMapping& shadowMap, CLResourceShader* depthShader, glm::vec3 posLight);
+        void DrawDepthMap(const glm::mat4& lightSpaceMatrix);
+        void RenderDepthMap(CLShadowMapping& shadowMap, CLResourceShader* depthShader, const glm::mat4& lightSpaceMatrix);
         void Clear();
 
         //! Carga una fuente
@@ -429,7 +429,7 @@ class CLEngine {
         void ImGuiInit();
         void TerminateImGui();
         //! Calcula las matriecs view y projection
-        void CalculateViewProjMatrix();
+        void CalculateViewProjMatrix(const glm::mat4& lightSpaceMatrix);
         //! Calcula las luces de la escena
         void CalculateLights();
 

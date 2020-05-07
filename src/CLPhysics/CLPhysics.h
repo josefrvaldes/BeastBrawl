@@ -22,6 +22,7 @@ class ManTotem;
 class ManBoxPowerUp;
 class ManBoundingOBB;
 class ManBoundingWall;
+class Camera;
 class IntersectData;
 class CCar;
 class PowerUp;
@@ -51,6 +52,7 @@ class CLPhysics {
     void IntersectCarsBoxPowerUp(ManCar &, ManBoxPowerUp &);
     void IntersectPowerUpWalls(ManPowerUp &, ManBoundingWall &, ManBoundingOBB &);
     void IntersectTotemWalls(ManTotem &, ManBoundingWall &, ManBoundingOBB &);
+    void IntersectCameraWalls(Camera *cam, Car* car, ManBoundingWall &sd, ManBoundingOBB &sdww);
     void SetSystemOnline(SystemOnline *systemOnline_) {
         systemOnline = systemOnline_;
     };

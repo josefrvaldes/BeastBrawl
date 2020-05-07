@@ -151,7 +151,7 @@ glm::mat4 CLNode::CalculateTransformationMatrix() {
 
 
 
-void CLNode::DFSTree(glm::mat4 mA, CLCamera* cam) {
+void CLNode::DFSTree(glm::mat4 mA, CLCamera* cam, const glm::mat4& VPmatrix) {
     // > Flag
     // > > Calcular matriz
     // > Dibujar
@@ -174,7 +174,9 @@ void CLNode::DFSTree(glm::mat4 mA, CLCamera* cam) {
 
         glUseProgram(shaderProgramID); 
 
+        glm::mat4 MVP = VPmatrix * transformationMat;
         glUniformMatrix4fv(glGetUniformLocation(shaderProgramID, "model"), 1, GL_FALSE, glm::value_ptr(transformationMat));
+        glUniformMatrix4fv(glGetUniformLocation(shaderProgramID, "MVP"), 1, GL_FALSE, glm::value_ptr(MVP));
 
         glm::vec3 pos    = GetGlobalTranslation();
         glUniform3fv(glGetUniformLocation(shaderProgramID, "position"), 1, glm::value_ptr(pos));
@@ -189,7 +191,7 @@ void CLNode::DFSTree(glm::mat4 mA, CLCamera* cam) {
     }
 
     for (auto node : childs) {
-        node->DFSTree(transformationMat, cam);
+        node->DFSTree(transformationMat, cam, VPmatrix);
     }
 }
 
@@ -197,7 +199,7 @@ void CLNode::DFSTree(glm::mat4 mA, CLCamera* cam) {
 
 
 
-void CLNode::DFSTree(glm::mat4 mA, GLuint shaderID) {
+void CLNode::DFSTree(glm::mat4 mA, GLuint shaderID, const glm::mat4& lightSpaceMatrix) {
     if(Constants::CLIPPING_OCTREE && !octreeVisible)
         return;
 
@@ -210,8 +212,8 @@ void CLNode::DFSTree(glm::mat4 mA, GLuint shaderID) {
     //CLE::CLFrustum::Visibility frusVisibility = frustum_m.IsInside(translation, dimensionsBoundingBox);
 
     if(entity && visible /*&& frusVisibility == CLE::CLFrustum::Visibility::Completly*/) { 
-        
-        glUniformMatrix4fv(glGetUniformLocation(shaderID, "model"), 1, GL_FALSE, glm::value_ptr(transformationMat));
+        glm::mat4 lightSpaceModel = lightSpaceMatrix * transformationMat;
+        glUniformMatrix4fv(glGetUniformLocation(shaderID, "lightSpaceModel"), 1, GL_FALSE, glm::value_ptr(lightSpaceModel));
 
         
         entity->DrawDepthMap(shaderID);
@@ -219,7 +221,7 @@ void CLNode::DFSTree(glm::mat4 mA, GLuint shaderID) {
     }
 
     for (auto node : childs) {
-        node->DFSTree(transformationMat, shaderID);
+        node->DFSTree(transformationMat, shaderID, lightSpaceMatrix);
     }
 }
 
