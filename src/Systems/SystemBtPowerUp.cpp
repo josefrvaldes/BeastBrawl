@@ -9,6 +9,7 @@
 #include <behaviourTree/Blackboard.h>
 #include <Components/CTotem.h>
 #include <Components/CBrainAI.h>
+#include <Components/CHurt.h>
 
 
 
@@ -68,11 +69,20 @@ struct Inverter : public Decorator {  // Decorator Inverter
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // ----------------------------------------     Condiciones   ------------------------------------------- //
+//Condicion -> Estamos heridos?
+struct IsHurt_pu : public behaviourTree {
+    virtual bool run(Blackboard* blackboard) override {
+        auto cHurt = static_cast<CHurt*>(blackboard->actualCar->GetComponent(CompType::HurtComp).get());
+        if(cHurt->hurt)
+            return true;
+        return false;
+    }
+};
+
 
 //Condicion -> Tenemos algun powerUp?
 struct HaveSomePowerUp_pu : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
-        //return true;
         auto cPowerUp = static_cast<CPowerUp*>(blackboard->actualCar->GetComponent(CompType::PowerUpComp).get());
         //cout << "Tipo de PU: " << int(cPowerUp->typePowerUp) << "\n";
         if(cPowerUp->typePowerUp == typeCPowerUp::None)
@@ -253,6 +263,7 @@ SystemBtPowerUp::SystemBtPowerUp(){
     shared_ptr<ThrowPowerUp_pu> a_throwPowerUp = make_shared<ThrowPowerUp_pu>();
     shared_ptr<SavePowerUp_pu> a_savePowerUp = make_shared<SavePowerUp_pu>();
     // Condiciones
+    shared_ptr<IsHurt_pu> c_isHurt = make_shared<IsHurt_pu>();
     shared_ptr<HaveSomePowerUp_pu> c_haveSomePowerUp = make_shared<HaveSomePowerUp_pu>();           // Condicion -->    ¿Tengo un PowerUp?
     shared_ptr<HaveThisPowerUp_pu<t_PU, t_PU::MelonMolon>> c_haveThisPowerUp_MM = make_shared<HaveThisPowerUp_pu<t_PU, t_PU::MelonMolon>>();
     shared_ptr<HaveThisPowerUp_pu<t_PU, t_PU::TeleBanana>> c_haveThisPowerUp_TB = make_shared<HaveThisPowerUp_pu<t_PU, t_PU::TeleBanana>>();
@@ -305,6 +316,10 @@ SystemBtPowerUp::SystemBtPowerUp(){
     std::cout << "------------------------ Behaviour Tree Power Up --------------------------------" << std::endl;
     // ASIGNACION DEL ARBOL DE DECISIONES
 
+    // estoy herido
+    selectorBehaviourTree->addChild(c_isHurt);
+
+    // tengo power up
     selectorBehaviourTree->addChild(m_inverter);
         m_inverter->addChild(c_haveSomePowerUp);
 
