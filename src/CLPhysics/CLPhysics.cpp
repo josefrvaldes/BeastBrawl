@@ -106,6 +106,7 @@ void CLPhysics::NewCrashPUWallReceived(DataMap *d) {
 }
 
 void CLPhysics::NewCrashPUCarReceived(DataMap *d) {
+    cout << "Hemos recibido un NewCrashPUCarReceived 2" << endl;
     uint16_t idCar = any_cast<uint16_t>((*d)[DataType::ID_CAR]);
     uint16_t idPU = any_cast<uint16_t>((*d)[DataType::ID_PU]);
     const auto &manCars = managers[0];
@@ -118,8 +119,10 @@ void CLPhysics::NewCrashPUCarReceived(DataMap *d) {
             break;
         }
     }
-    if(carFound == nullptr)
+    if(carFound == nullptr) {
+        cout << "Nos salimos del NewCrashPUCarReceived porque no encontramos el coche" << endl;
         return;
+    }
 
     PowerUp *puFound = nullptr;
     for (const auto &currentPU : manPowerUps->GetEntities()) {
@@ -129,9 +132,10 @@ void CLPhysics::NewCrashPUCarReceived(DataMap *d) {
             break;
         }
     }
-    if (puFound==nullptr)
+    if (puFound==nullptr) {
+        cout << "Nos salimos del NewCrashPUCarReceived porque no encontramos el PU" << endl;
         return;
-
+    }
     HandleCollisionPUWithCar(puFound, carFound);
 }
 
@@ -1358,28 +1362,22 @@ void CLPhysics::HandleCollisionPUWithCar(PowerUp *powerUp, Entity *car) {
     // comprobamos si el coche tenia escudo y el totem.. ya que debe de soltarlo
     auto cShield = static_cast<CShield *>(car->GetComponent(CompType::ShieldComp).get());
     if (cShield->activePowerUp == false) {  // TRUE
+        cout << "Le han dañado y NO tiene escudo" << endl;
         auto cHurt = static_cast<CHurt *>(car->GetComponent(CompType::HurtComp).get());
         if(!cHurt->hurt) {
+            cout << "Le han dañado y NO estaba dañado" << endl;
             // debemos hacer danyo al jugador
             shared_ptr<DataMap> dataCollisonCarPowerUp = make_shared<DataMap>();
             (*dataCollisonCarPowerUp)[ACTUAL_CAR] = car;  // nos guardamos el puntero al coche
             EventManager::GetInstance().AddEventMulti(Event{EventType::COLLISION_CAR_POWERUP, dataCollisonCarPowerUp});
 
             if (static_cast<CTotem *>(car->GetComponent(CompType::TotemComp).get())->active) {
+                cout << "Le han dañado y SÍ tenían totem" << endl;
                 auto dataTransformableCar = static_cast<CTransformable *>(car->GetComponent(CompType::TransformableComp).get());
                 shared_ptr<DataMap> dataTransfCar = make_shared<DataMap>();
                 (*dataTransfCar)[CAR_TRANSFORMABLE] = dataTransformableCar;
                 (*dataTransfCar)[ACTUAL_CAR] = car;
                 EventManager::GetInstance().AddEventMulti(Event{EventType::DROP_TOTEM, dataTransfCar});
-
-                //EVENTO HUD
-                shared_ptr<DataMap> dataHud = make_shared<DataMap>();
-                auto cCar = static_cast<CCar*>(car->GetComponent(CompType::CarComp).get());
-                if (cCar) {
-                    (*dataHud)[NUM] = (uint16_t)cCar->character;
-                    (*dataHud)[TYPE] = 3;  //Lose
-                    EventManager::GetInstance().AddEventMulti(Event{EventType::SET_EVENT_HUD, dataHud});
-                }
             }
         }
     } else {

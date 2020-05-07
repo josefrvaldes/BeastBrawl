@@ -173,6 +173,14 @@ void UDPClient::HandleReceived(std::shared_ptr<unsigned char[]> recevBuff, const
                     }
                     break;
 
+                case Constants::PetitionTypes::LAUNCH_ANIMATION_COUNTDOWN:
+                    if (time > lastTimeLaunchCountdownReceived[idPlayer]) {
+                        cout << "Hemos recibido una petición de tipo LAUNCH_ANIMATION_COUNTDOWN" << endl;
+                        lastTimeLaunchCountdownReceived[idPlayer] = time;
+                        HandleReceivedLaunchCountdownAnimation();
+                    }
+                    break;
+
                 case Constants::PetitionTypes::ENDGAME:
                     cout << "Hemos recibido una petición de tipo ENDGAME" << endl;
                     EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_ENDRACE});
@@ -207,6 +215,12 @@ void UDPClient::HandleReceivedLaunchEndAnimation(uint16_t idPlayer, uint16_t idW
     (*data)[DataType::ID] = idPlayer;
     (*data)[DataType::ID_WINNER] = idWinner;
     EventManager::GetInstance().AddEventMulti(Event{EventType::NEW_LAUNCH_ANIMATION_END_RECEIVED, data});
+}
+
+void UDPClient::HandleReceivedLaunchCountdownAnimation() const {
+    cout << "Hemos recibido un sendLaunch Countdown animation\n";
+    std::shared_ptr<DataMap> data = make_shared<DataMap>();
+    EventManager::GetInstance().AddEventMulti(Event{EventType::NEW_LAUNCH_COUNTDOWN_ANIMATION_RECEIVED, data});
 }
 
 // buffer circular
@@ -324,11 +338,15 @@ void UDPClient::HandleReceivedLostTotem(unsigned char* recevBuff, size_t bytesTr
     Serialization::Deserialize<uint16_t>(recevBuff, currentIndex);  // idOnline del que lo envio
     uint16_t idCarOnlineCatched = Serialization::Deserialize<uint16_t>(recevBuff, currentIndex);
     glm::vec3 position = Serialization::DeserializeVec3(recevBuff, currentIndex);
+    float speed = Serialization::Deserialize<float>(recevBuff, currentIndex);
+    uint16_t rotationTotemY = Serialization::Deserialize<uint16_t>(recevBuff, currentIndex);
     int numNavMesh = Serialization::Deserialize<int>(recevBuff, currentIndex);
 
     std::shared_ptr<DataMap> data = make_shared<DataMap>();
     (*data)[DataType::ID_ONLINE] = idCarOnlineCatched;
     (*data)[DataType::VEC3_POS] = position;
+    (*data)[DataType::ROTATION] = rotationTotemY;
+    (*data)[DataType::SPEED] = speed;
     (*data)[DataType::ID] = numNavMesh;
     EventManager::GetInstance().AddEventMulti(Event{EventType::NEW_LOST_TOTEM_RECEIVED, data});
 }
@@ -437,8 +455,9 @@ void UDPClient::HandleReceivedThrowMelonOPudin(unsigned char* recevBuff, size_t 
 
 // recibes la desconexion de otro jugador
 void UDPClient::HandleReceivedDisconnection(unsigned char* recevBuff, size_t bytesTransferred) {
-    size_t currentIndex = 0;
-    Serialization::Deserialize<uint8_t>(recevBuff, currentIndex);  // petition tipe
+    cout << "Un usuario se ha desconectado" << endl;
+    // size_t currentIndex = 0;
+    // Serialization::Deserialize<uint8_t>(recevBuff, currentIndex);  // petition tipe
     // uint16_t idCarOnline = Serialization::Deserialize<uint16_t>(recevBuff, currentIndex);
 
     /*std::shared_ptr<DataMap> data = make_shared<DataMap>();
@@ -560,7 +579,7 @@ void UDPClient::SendCatchTotem(uint16_t idOnline, uint16_t idPlayerCatched) {
             boost::asio::placeholders::bytes_transferred));
 }
 
-void UDPClient::SendLostTotem(uint16_t idOnline, uint16_t idPlayerLosted, const glm::vec3& pos, int numNavMesh) {
+void UDPClient::SendLostTotem(uint16_t idOnline, uint16_t idPlayerLosted, const glm::vec3& pos, float speed, uint16_t rotationTotemY, int numNavMesh) {
     unsigned char requestBuff[Constants::ONLINE_BUFFER_SIZE];
     size_t currentBuffSize = 0;
     uint8_t callType = Constants::PetitionTypes::LOST_TOTEM;
@@ -571,6 +590,8 @@ void UDPClient::SendLostTotem(uint16_t idOnline, uint16_t idPlayerLosted, const 
     Serialization::Serialize(requestBuff, &idOnline, currentBuffSize);
     Serialization::Serialize(requestBuff, &idPlayerLosted, currentBuffSize);
     Serialization::SerializeVec3(requestBuff, pos, currentBuffSize);
+    Serialization::Serialize(requestBuff, &speed, currentBuffSize);
+    Serialization::Serialize(requestBuff, &rotationTotemY, currentBuffSize);
     Serialization::Serialize(requestBuff, &numNavMesh, currentBuffSize);
 
     socket.async_send_to(
@@ -765,6 +786,27 @@ void UDPClient::SendLaunchAnimationEnd(uint16_t idPlayer, uint16_t idPlayerWinne
             boost::asio::placeholders::bytes_transferred));
 }
 
+void UDPClient::SendWaitingForCountdown(const uint16_t idPlayer) {
+    cout << "Vamos a enviar un sendWaitingForCountdown con idPlayer[" << idPlayer << "]\n";
+    unsigned char requestBuff[Constants::ONLINE_BUFFER_SIZE];
+    size_t currentBuffSize = 0;
+    uint8_t callType = Constants::PetitionTypes::WAITING_FOR_COUNTDOWN;
+    int64_t time = Utils::getMillisSinceEpoch();
+
+    Serialization::Serialize(requestBuff, &callType, currentBuffSize);
+    Serialization::Serialize(requestBuff, &time, currentBuffSize);
+    Serialization::Serialize(requestBuff, &idPlayer, currentBuffSize);
+
+    socket.async_send_to(
+        boost::asio::buffer(requestBuff, currentBuffSize),
+        serverEndpoint,
+        boost::bind(
+            &UDPClient::HandleSentLaunchAnimationEnd,
+            this,
+            boost::asio::placeholders::error,
+            boost::asio::placeholders::bytes_transferred));
+}
+
 void UDPClient::HandleSentInputs(const boost::system::error_code& errorCode, std::size_t bytes_transferred) {
     if (errorCode)
         cout << "Hubo un error enviando los inputs[" << errorCode << "]"
@@ -780,6 +822,12 @@ void UDPClient::HandleSentEndgame(const boost::system::error_code& errorCode, st
 void UDPClient::HandleSentLaunchAnimationEnd(const boost::system::error_code& errorCode, std::size_t bytes_transferred) {
     if (errorCode)
         cout << "Hubo un error enviando el launch animation end [" << errorCode << "]"
+             << "\n";
+}
+
+void UDPClient::HandleSentWaitingForCountdown(const boost::system::error_code& errorCode, std::size_t bytes_transferred) {
+    if (errorCode)
+        cout << "Hubo un error enviando el waiting for countdown [" << errorCode << "]"
              << "\n";
 }
 

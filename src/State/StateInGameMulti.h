@@ -16,9 +16,10 @@ class StateInGameMulti : public StateInGame {
     void InitState() override;
     void Input() override;
     void Update() override;
-    void UpdateAnimationStart() override;
+    bool UpdateAnimationStart() override;
     void UpdateAnimationCountdown() override;
     void UpdateAnimationEnd() override;
+    void UpdateWaitingForCountdown();
     void UpdateGame() override;
     void Render() override;
     States GetState() override { return State::States::INGAME_MULTI; };
@@ -26,6 +27,7 @@ class StateInGameMulti : public StateInGame {
    private:
     void SubscribeToEvents();
     void GoToEndAnimationFromMulti(DataMap *);
+    void GoToCountdownAnimationFromMulti(DataMap *);
     void GoToUpdateGame() override;
     void InitializeCLPhysics(ManCar &manCars, ManBoundingWall &, ManBoundingOBB &, ManBoundingGround &, ManPowerUp &, ManNavMesh&, ManBoxPowerUp&, ManTotem &) override;
     void InitializeManagers() override;
@@ -40,4 +42,5 @@ class StateInGameMulti : public StateInGame {
     time_point<system_clock> lastTimeSentInputs;
     time_point<system_clock> lastTimeSentSync;
     vector<Constants::InputTypes> previousInputs;
+    bool readyToCountdown{false};
 };
