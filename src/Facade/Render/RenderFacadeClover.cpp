@@ -1240,7 +1240,8 @@ void RenderFacadeClover::FacadeDrawEndRace() {
 
         auto it2 = secondsRank.find(it->first);
         if (it2 != secondsRank.end()){
-            file = std::to_string(it2->second);
+            if (it2->second < 10) { file = "0" + std::to_string(it2->second); }
+            else { file = std::to_string(it2->second); }
             device->RenderText2D(file, posX + 950.0f*scale, posYText - (i*100.0f)*scale, 0.4f, 1.25*scale, glm::vec3(255.0f,255.0f,255.0f));
         }
         ++i;
