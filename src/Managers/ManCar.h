@@ -39,11 +39,12 @@ struct SystemGameRules;
 
 class ManCar : public Manager {
    public:
-    ManCar();
+    ManCar(std::vector<glm::vec3>);
     //ManCar();
     ~ManCar();
 
     void CreateMainCar(int pj);
+    void CreateMainCar(int pj, glm::vec3 _position);
     void CreateHumanCar(int pj, glm::vec3 _position);
     void AddSystemDataVision(SystemData* sd) {systemDataVision = sd;};
 
@@ -66,6 +67,10 @@ class ManCar : public Manager {
     Entity* GetCurrentWinner();
     
     SystemData* systemDataVision = nullptr; 
+
+
+    glm::vec3 GetPosSpawn();
+
    private:
     //Physics *physics;
     //Camera *cam;
@@ -102,12 +107,17 @@ class ManCar : public Manager {
     void CatchPowerUp(DataMap* d);
     bool CheckIfPUWillBeFired(Car* car_);
     void CatchPowerUpAI(DataMap* d);
+
+
     shared_ptr<CarHuman> car;
     //unique_ptr<PhysicsAI> physicsAI;
     unique_ptr<SystemGameRules> systemGameRules;
     unique_ptr<Physics> physics;
 
     SystemOnline* systemOnline = nullptr; // en caso de que sea Single va a ser un nullptr
+
+    std::vector<glm::vec3> positionsSpawn;
+    float GetAngleToTotem(glm::vec3 posCar);
 
     double maxTimeAccumulated {0};
 };

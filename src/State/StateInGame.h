@@ -43,6 +43,7 @@
 #include <Managers/ManParticleSystem.h>
 #include <Managers/ManShield.h>
 #include <Managers/ManCamera.h>
+#include <Managers/ManSpawn.h>
 #include "../Managers/ManGameRules.h"
 #include <Managers/ManHUDEvent.h>
 #include <Systems/Collisions.h>
@@ -118,6 +119,8 @@ class StateInGame : public State {
     unique_ptr<ManHUDEvent> manHudEvent;
     unique_ptr<ManParticleSystem> manParticleSystem;
     unique_ptr<ManShield> manShield;
+    unique_ptr<ManSpawn> manSpawn;
+
     unique_ptr<SystemLoD> sysLoD;
     unique_ptr<SystemAnimationStart> sysAnimStart;
     unique_ptr<SystemAnimationEnd> sysAnimEnd;

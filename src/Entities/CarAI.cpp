@@ -345,6 +345,14 @@ CarAI::CarAI(int pj, glm::vec3 _position)
 {
     CTransformable *cTransformable = (CTransformable *)m_components[CompType::TransformableComp].get();
     cTransformable->position = _position;
+
+
+    CBoundingChassis *cChassis = (CBoundingChassis *)m_components[CompType::CompBoundingChassis].get();
+    cChassis->sphereBehind->center = cTransformable->position;
+    cChassis->sphereFront->center = cTransformable->position;
+
+
+
 }
 
 
@@ -373,3 +381,9 @@ void CarAI::SetPath(stack<int> path){
 
 }
 
+
+void CarAI::SetRotation(glm::vec3 rot_){
+    
+    CTransformable *cTransformable = (CTransformable *)m_components[CompType::TransformableComp].get();
+    cTransformable->rotation = rot_;
+}

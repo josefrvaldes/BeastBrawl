@@ -23,6 +23,8 @@ class InputFacadeClover : public InputFacade{
 
         void CheckInputSelectCharacter(int&, int) override;
         void CheckInputGameOptions(std::vector<int>&, int[], int&) override;
+
+        bool ShowTable(bool) override;
         bool CheckInputSingle()  override;
         void CheckInputLobbyMulti() override;
         vector<Constants::InputTypes> CheckInputMulti()override;

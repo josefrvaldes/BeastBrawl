@@ -446,7 +446,7 @@ void InputFacadeClover::CheckInputGameOptions(std::vector<int> &input, int maxIn
         SetValueInput(BUTTON_STICK_UP, true);
         EventManager::GetInstance().AddEventMulti(Event{EventType::MENU_OPTION});
     } else if ( !IsKeyOrGamepadPress(GLFW_KEY_UP, GLFW_GAMEPAD_AXIS_LEFT_Y, true, -0.5, GLFW_GAMEPAD_BUTTON_DPAD_UP, true) ) {
-        SetValueInput(BUTTON_STICK_UP, true);
+        SetValueInput(BUTTON_STICK_UP, false);
     }
 
     //BAJAR
@@ -461,14 +461,14 @@ void InputFacadeClover::CheckInputGameOptions(std::vector<int> &input, int maxIn
         SetValueInput(BUTTON_STICK_DOWN, true);
         EventManager::GetInstance().AddEventMulti(Event{EventType::MENU_OPTION});
     } else if( !IsKeyOrGamepadPress(GLFW_KEY_DOWN, GLFW_GAMEPAD_AXIS_LEFT_Y, true, 0.5, GLFW_GAMEPAD_BUTTON_DPAD_DOWN, true) ) {
-        SetValueInput(BUTTON_STICK_DOWN, true);
+        SetValueInput(BUTTON_STICK_DOWN, false);
     }
 
-    if(pos != 2) {
+    /*if(pos != 2) {
         input[2] = 1;
     } else {
         input[2] = 0;
-    }
+    }*/
 
 }
 
@@ -485,6 +485,19 @@ bool InputFacadeClover::CheckInputAnimationsStartEnd() {
 };
 
 
+
+bool InputFacadeClover::ShowTable(bool inputTable) {
+
+    if( IsKeyOrGamepadPress(GLFW_KEY_R, GLFW_GAMEPAD_BUTTON_B, false, 0, 0, false) &&  !IsInputPressed(BUTTON_B) ) {
+        inputTable = !inputTable;
+        SetValueInput(BUTTON_B, true);
+
+    } else if( !IsKeyOrGamepadPress(GLFW_KEY_R, GLFW_GAMEPAD_BUTTON_B, false, 0, 0, false)  ) {
+        SetValueInput(BUTTON_B, false);
+    }
+
+    return inputTable;
+}
 
 
 /**

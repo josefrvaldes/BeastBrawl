@@ -65,11 +65,14 @@ void CLPhysics::AddManager(Manager &m) {
 * [5] manNavMesh
 * [6] manTotem
 */
+//const auto &manCars = managers[0];
 void CLPhysics::Update(float delta) {
     Simulate(delta);
+
     // Aplicamos las fisicas de gravedad
     RepositionBounding();
     CentralSystemGravity();
+
     // Aplicamos las fisicas de colision
     RepositionBounding();
     CentralSystemCollisions();
