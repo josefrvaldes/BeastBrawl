@@ -61,10 +61,10 @@ void PhysicsFacadeClover::UpdateCar(Entity* car, Entity* cam) {
         auto wheel3 = device->GetNodeByID(cWheel->IdWheelBottomLeft);
         auto wheel4 = device->GetNodeByID(cWheel->IdWheelBottomRight);
 
-        cWheel->rotationTopLeft.z += cCar->speed * Constants::DELTA_TIME;
-        cWheel->rotationTopRight.z += cCar->speed * Constants::DELTA_TIME;
-        cWheel->rotationBottomLeft.z += cCar->speed * Constants::DELTA_TIME;
-        cWheel->rotationBottomRight.z += cCar->speed * Constants::DELTA_TIME;
+        cWheel->rotationTopLeft.z += cCar->speed * Constants::DELTA_TIME  * 3;
+        cWheel->rotationTopRight.z += cCar->speed * Constants::DELTA_TIME * 3;
+        cWheel->rotationBottomLeft.z += cCar->speed * Constants::DELTA_TIME * 3;
+        cWheel->rotationBottomRight.z += cCar->speed * Constants::DELTA_TIME * 3;
 
         cWheel->rotationTopLeft.y = cCar->wheelRotation * 2;
         cWheel->rotationTopRight.y = cCar->wheelRotation * 2;
@@ -140,10 +140,10 @@ void PhysicsFacadeClover::UpdateTransformable(Entity* entity) {
         auto wheel3 = device->GetNodeByID(cWheel->IdWheelBottomLeft);
         auto wheel4 = device->GetNodeByID(cWheel->IdWheelBottomRight);
 
-        cWheel->rotationTopLeft.z += cCar->speed * Constants::DELTA_TIME;
-        cWheel->rotationTopRight.z += cCar->speed * Constants::DELTA_TIME;
-        cWheel->rotationBottomLeft.z += cCar->speed * Constants::DELTA_TIME;
-        cWheel->rotationBottomRight.z += cCar->speed * Constants::DELTA_TIME;
+        cWheel->rotationTopLeft.z += cCar->speed * Constants::DELTA_TIME * 3;
+        cWheel->rotationTopRight.z += cCar->speed * Constants::DELTA_TIME * 3;
+        cWheel->rotationBottomLeft.z += cCar->speed * Constants::DELTA_TIME * 3;
+        cWheel->rotationBottomRight.z += cCar->speed * Constants::DELTA_TIME * 3;
 
         cWheel->rotationTopLeft.y = cCar->wheelRotation * 2;
         cWheel->rotationTopRight.y = cCar->wheelRotation * 2;

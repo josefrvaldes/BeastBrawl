@@ -4,9 +4,11 @@
 #include <Managers/ManPowerUp.h>
 #include <Managers/ManBoundingWall.h>
 #include <Managers/ManBoundingOBB.h>
+#include <Managers/ManNavMesh.h>
 #include <Entities/Car.h>
 #include <Entities/CarHuman.h>
 #include <Entities/CarAI.h>
+#include <Entities/NavMesh.h>
 #include <Components/CNitro.h>
 #include <Components/CCar.h>
 #include <Components/CBrainAI.h>
@@ -15,6 +17,7 @@
 #include <Components/CBoundingPlane.h>
 #include <Components/CBoundingOBB.h>
 #include <Components/CBoundingRay.h>
+#include <Components/CCurrentNavMesh.h>
 #include "../Constants.h"
 #include "../Systems/Utils.h"
 #include <math.h>
@@ -179,32 +182,33 @@ bool SteeringBehaviours::UpdateObstacleAvoidance(Entity* actualCar, ManBoundingO
 
 
 // el coche esta pensando por lo que no realiza ninguna accion
-void SteeringBehaviours::UpdateThink(Entity* actualCar){
+void SteeringBehaviours::UpdateThink(Entity* actualCar, ManNavMesh* manNavMesh){
     auto cTransformable = static_cast<CTransformable*>(actualCar->GetComponent(CompType::TransformableComp).get());
     auto cCar = static_cast<CCar*>(actualCar->GetComponent(CompType::CarComp).get());
     auto cNitro = static_cast<CNitro *>(actualCar->GetComponent(CompType::NitroComp).get());
     auto cExternalForce = static_cast<CExternalForce*>(actualCar->GetComponent(CompType::CompExternalForce).get());
 
-    if(cNitro->activePowerUp == false){
-        cCar->speed -= cCar->friction;
+    glm::vec3 posToThink = CalculateCenterNavMesh(actualCar, manNavMesh);
+
+    if(!cNitro->activePowerUp){
+        cCar->speed -= (cCar->friction+cCar->friction);
         if (cCar->speed <= 0) {
             cCar->speed = 0;
         }
     }else{
-        cCar->speed += cNitro->nitroAcceleration - cCar->friction;
+        cCar->speed += cNitro->nitroAcceleration - (cCar->friction+cCar->friction);
         if(cCar->speed > cNitro->nitroMaxSpeed){
             cCar->speed = cNitro->nitroMaxSpeed;
         }
     }
 
-    if (cCar->wheelRotation >= cCar->decrementWheelRotation) {
-        cCar->wheelRotation -= cCar->decrementWheelRotation;
-    } else if (cCar->wheelRotation <= -cCar->decrementWheelRotation) {
-        cCar->wheelRotation += cCar->decrementWheelRotation;
-    } else {
-        cCar->wheelRotation = 0;
-    }
+    glm::vec2 vectorVelocity = CalculateVectorVelocity(*cCar, *cTransformable);
+    glm::vec2 vectorTarget = glm::vec2(posToThink.x-cTransformable->position.x, posToThink.z-cTransformable->position.z);
+    float angle = CalculateAngle(vectorVelocity, vectorTarget, cTransformable->rotation.y);
+    if(angle<20 && angle>-20)
+        angle = 0;
 
+    UpdateAngleRotation(cCar, angle);
     UpdatePosition(cCar, cTransformable, cExternalForce);
 }
 
@@ -756,7 +760,26 @@ float SteeringBehaviours::CalculateAngle(const glm::vec2& originVec, const glm::
 }
 
 
+// devuelve la posicion central del navmesh
+glm::vec3 SteeringBehaviours::CalculateCenterNavMesh(Entity* actualCar, ManNavMesh* manNavMesh) const{
+    auto cCurrNavMesh = static_cast<CCurrentNavMesh*>(actualCar->GetComponent(CompType::CurrentNavMeshComp).get());
+    Entity* navMesh = nullptr;
+    uint16_t i = 0;
+    for(const auto& actualNM : manNavMesh->GetEntities()){
+        if(cCurrNavMesh->currentNavMesh == i){
+            navMesh = actualNM.get();
+            break;
+        }
+        i++;
+    }
 
+    if(navMesh){
+        auto cTransNM = static_cast<CTransformable*>(navMesh->GetComponent(CompType::TransformableComp).get());
+        return cTransNM->position;
+    }else{
+        return glm::vec3(0.0);
+    }
+}
 
 
 
