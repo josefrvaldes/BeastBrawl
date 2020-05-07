@@ -17,7 +17,7 @@ namespace CLE {
             // variables
             //GLuint lightId = 0;
             unsigned int depthMapFBO;
-            static inline unsigned int depthCubemap;
+            static inline unsigned int depthMap;
             const unsigned int SHADOW_WIDTH = 1024;
             const unsigned int SHADOW_HEIGHT = 1024;
                   

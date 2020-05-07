@@ -9,6 +9,7 @@ layout (location = 4) in vec3 animationOffsetNormal;
 out vec2 TexCoords;
 out vec3 Normal;
 out vec3 FragPos;
+out vec4 FragPosLightSpace;
 
 uniform mat4 transform;
 
@@ -16,6 +17,7 @@ uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
 uniform mat4 MVP;
+uniform mat4 lightSpaceMatrix;
 
 
 // A = (0,0) kf1
@@ -32,8 +34,9 @@ void main()
     //gl_Position = projection * view * model * vec4(aPos, 1.0);
     vec3 newPos = aPos + animationOffsetPos;
     vec3 newNormal = aNormal + animationOffsetNormal;
-    gl_Position = projection*view*model * vec4(newPos,1.0);
+    gl_Position = MVP * vec4(newPos,1.0);
     FragPos = vec3(model * vec4(newPos,1.0));
+    FragPosLightSpace = lightSpaceMatrix * vec4(FragPos, 1.0);
 
     // Hacemos esto para ajustar las normales en caso de escalar las mallas
     //Source: http://www.lighthouse3d.com/tutorials/glsl-12-tutorial/the-normal-matrix/
