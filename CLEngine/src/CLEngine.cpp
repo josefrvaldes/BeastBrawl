@@ -92,6 +92,15 @@ void CLEngine::CreateGlfwWindow (const unsigned int w, const unsigned int h, con
     
 }
 
+/**
+ * Activa o desactiva el test de profundidad
+ */
+void CLEngine::SetEnableDepthTest(bool b) {
+    if (b)
+        glEnable(GL_DEPTH_TEST);
+    else
+        glDisable(GL_DEPTH_TEST);
+}
 
 /**
  *

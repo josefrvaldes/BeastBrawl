@@ -1137,34 +1137,10 @@ void RenderFacadeClover::FacadeDrawMenu() {
 }
 
  void RenderFacadeClover::FacadeDrawSelectCharacter() {
-    glm::vec3 color[6] = {
-            glm::vec3(0.0f, 0.0f, 255.0f),
-            glm::vec3(0.0f, 0.0f, 255.0f),
-            glm::vec3(0.0f, 0.0f, 255.0f),
-            glm::vec3(0.0f, 0.0f, 255.0f),
-            glm::vec3(0.0f, 0.0f, 255.0f),
-            glm::vec3(0.0f, 0.0f, 255.0f)
-    };
-    glm::vec3 colorB = glm::vec3(255.0f, 0.0f, 0.0f);
-    color[inputSC] = glm::vec3(0.0f, 255.0f, 0.0f);
-    std::string name = "<- (B)";
-    device->RenderText2D(name, 50.0f, 50.0f, 0.05f, 0.5f, colorB);
-    name = "Mr Penguin";
-    device->RenderText2D(name, 300.0f, 600.0f, 0.05f, 0.75f, color[0]);
-    name = "Sharky";
-    device->RenderText2D(name, 600.0f, 600.0f, 0.05f, 0.75f, color[2]);
-    name = "Deacon";
-    device->RenderText2D(name, 900.0f, 600.0f, 0.05f, 0.75f, color[4]);
-    name = "Mrs Baxter";
-    device->RenderText2D(name, 300.0f, 400.0f, 0.05f, 0.75f, color[1]);
-    name = "Kaiser Kong";
-    device->RenderText2D(name, 600.0f, 400.0f, 0.05f, 0.75f, color[3]);
-    name = "Cyberoctopus";
-    device->RenderText2D(name, 900.0f, 400.0f, 0.05f, 0.75f, color[5]);
-    name = "(A) Aceptar";
-    device->RenderText2D(name, 950.0f, 50.0f, 0.05f, 0.5f, colorB);
 
-    /*std::string file = "media/menu/character_selector.png";
+    device->SetEnableDepthTest(false);
+
+    std::string file = "media/menu/character_selector.png";
     device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.9f, file, true);
 
     std::string files[6] = {
@@ -1175,7 +1151,9 @@ void RenderFacadeClover::FacadeDrawMenu() {
         "media/menu/deacon_selected.png",
         "media/menu/octopus_selected.png"
     };
-    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.8f, files[inputSC], true);*/
+    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.8f, files[inputSC], true);
+        
+    device->SetEnableDepthTest(true);
 
  }
 

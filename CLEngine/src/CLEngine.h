@@ -45,6 +45,10 @@ class CLEngine {
         CLEngine(const unsigned int, const unsigned int, const string&);
         ~CLEngine();
 
+        //! Activa o desactiva el test de profundidad.
+        //! @param e Segun el bool lo activa o desactiva.
+        void SetEnableDepthTest( bool e);
+
         //! Devuelve la ventana 
         //! @returns window La ventana de la aplicación
         GLFWwindow* GetWindow() const { return window; }
