@@ -877,11 +877,11 @@ void ManCar::CatchPowerUpAI(DataMap* d) {
     // type = typeCPowerUp::PudinDeFrambuesa;
     //cout << "EL VALOR QUE SALE ES: " << indx << " - CORRESPONDIENTE AL PU: " << (int)type << endl;
 
-    int64_t time = Utils::getMillisSinceEpoch();
-    if (time % 2 == 0)
-        type = typeCPowerUp::TeleBanana;
-    else
-        type = typeCPowerUp::RoboJorobo;
+    // int64_t time = Utils::getMillisSinceEpoch();
+    // if (time % 2 == 0)
+    //     type = typeCPowerUp::TeleBanana;
+    // else
+    //     type = typeCPowerUp::RoboJorobo;
     auto cPowerUpCar = static_cast<CPowerUp*>(actualCar->GetComponent(CompType::PowerUpComp).get());
     if (cPowerUpCar->typePowerUp == typeCPowerUp::None) {
         cPowerUpCar->typePowerUp = type;
