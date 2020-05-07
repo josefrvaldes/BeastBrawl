@@ -3,6 +3,7 @@
 #include <Components/CCamera.h>
 #include <Components/CShader.h>
 #include <Components/CSpeed.h>
+#include <Components/CBoundingSphere.h>
 
 class Position;
 using namespace std;
@@ -20,12 +21,14 @@ Camera::Camera()
     shared_ptr<Component> cCamera = make_shared<CCamera>(0.0,17.0,0.0,0.0);
     shared_ptr<Component> cShader = make_shared<CShader>(vertexShader,fragmentShader);
     shared_ptr<CSpeed> cSpeed = make_shared<CSpeed>();
+    shared_ptr<CBoundingSphere> cBoundSphere = make_shared<CBoundingSphere>(glm::vec3(0.0,0.0,0.0), 15);
 
     AddComponent(cId);
     AddComponent(cTransformable);
     AddComponent(cCamera);
     AddComponent(cSpeed);
     AddComponent(cShader);
+    AddComponent(cBoundSphere);
 
     SuscribeEvents();
 }

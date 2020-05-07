@@ -31,6 +31,7 @@ class CBoundingOBB : public Component {
     IntersectData IntersectPlane(const CBoundingPlane &other) const;
 
     IntersectData IntersectRay(const glm::vec3 &posRayOrigin, const glm::vec3 &rayNormalNormalized) const;
+    IntersectData IntersectRay2(const glm::vec3 &posRayOrigin, const glm::vec3 &rayNormalNormalized) const;
 
     vector<shared_ptr<CBoundingPlane>> planes;
     vector<glm::vec3> centersMass;
