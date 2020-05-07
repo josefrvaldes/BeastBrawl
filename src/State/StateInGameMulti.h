@@ -11,7 +11,7 @@ class SystemOnline;
 
 class StateInGameMulti : public StateInGame {
    public:
-    StateInGameMulti(uint16_t idOnline_, const vector<uint16_t> idsEnemies_);
+    StateInGameMulti(uint16_t idOnline_, const vector<uint16_t> idsEnemies_, const vector<uint8_t> characters_);
     ~StateInGameMulti();
     void InitState() override;
     void Input() override;
@@ -34,7 +34,7 @@ class StateInGameMulti : public StateInGame {
     void InitializeSystems(ManCar &manCars, ManBoundingWall &, ManBoundingOBB &, ManBoundingGround &, ManPowerUp &, ManNavMesh&, ManBoxPowerUp&, ManTotem &) override;
     void InitializeFacades() override;
     void AddElementsToRender() override;
-    void InitCarHumans(uint16_t idOnline_, vector<uint16_t> idsEnemies_);
+    void InitCarHumans(const uint16_t idOnline_, const vector<uint16_t> idsEnemies_, const vector<uint8_t> characters_);
     //void CAMBIARCosasDeTotemUpdate() override;
 
     unique_ptr<SystemOnline> sysOnline;

@@ -12,21 +12,24 @@ using namespace boost;
 using namespace std;
 using namespace std::chrono;
 
+class TCPServer;
+
 class TCPConnection : public std::enable_shared_from_this<TCPConnection> {
     public:
     ~TCPConnection();
     typedef std::shared_ptr<TCPConnection> pointer;
-    static pointer Create(boost::asio::io_context& io_context, std::vector<Player> &p, std::vector<TCPConnection::pointer>& connect){ return pointer(new TCPConnection(io_context, p, connect)); }
+    static pointer Create(TCPServer *tcpServer_, boost::asio::io_context& io_context, std::vector<Player> &p, std::vector<uint8_t> &c, std::vector<TCPConnection::pointer>& connect){ return pointer(new TCPConnection(tcpServer_, io_context, p, c, connect)); }
     tcp::socket& socket(){ return socket_;}
     void Start();
     void Close();
     void SendStartMessage(string datos);
     void SendStartMessage(unsigned char *buff, size_t buffSize);
     void SendFullGame();
+    // Player *currentPlayer;
 
 
    private:
-    TCPConnection(asio::io_context& io_context, std::vector<Player> &p, std::vector<TCPConnection::pointer>& connect);
+    TCPConnection(TCPServer *tcpServer_, asio::io_context& io_context, std::vector<Player> &p, std::vector<uint8_t> &c, std::vector<TCPConnection::pointer>& connect);
     void HandleRead(std::shared_ptr<unsigned char[]> recevBuff, const boost::system::error_code& error, size_t bytes_transferred);
     void HandleWrite(const boost::system::error_code& error, size_t bytes_transferred);
     void DeleteMe();
@@ -39,9 +42,11 @@ class TCPConnection : public std::enable_shared_from_this<TCPConnection> {
         return salida;
     }
 
+    TCPServer *tcpServer;
     tcp::socket socket_;
 
     std::vector<Player> &players;
+    std::vector<uint8_t> &characters;
     std::vector<TCPConnection::pointer>& connections;
 
     //uint16_t sendBuff;
