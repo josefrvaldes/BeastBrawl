@@ -838,15 +838,14 @@ void RenderFacadeClover::FacadeInitSettings() {
 //  CHECK INPUTS    //
 //////////////////////
 
-// TODO: ¿Poner los input que el render no necesita info fuera del render?
-// TODO: introducir multi input
 
 void RenderFacadeClover::FacadeCheckInputSingle() {
-
- }
+    inputShowTable = InputFacadeManager::GetInstance()->GetInputFacade()->ShowTable(inputShowTable);
+}
 
 vector<Constants::InputTypes> RenderFacadeClover::FacadeCheckInputMulti() {
     vector<Constants::InputTypes> inputs;
+    inputShowTable = InputFacadeManager::GetInstance()->GetInputFacade()->ShowTable(inputShowTable);
     return inputs;
 }
 
@@ -963,11 +962,14 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
         i++;
     }*/
 
-
-    for(size_t k = 0; k < manCars->GetEntities().size(); ++k) {
-        cadena = "media/cuadrado.png";
-        device->DrawImage2D(w - 200.0f, /*h/2 - posFondoTiempos + 45.0*j*/ 150.0f + k*45.0f, 1.0, 0.9f, cadena, true);
+    // FONDO TABLA TIEMPOS
+    if (inputShowTable) {
+        for(size_t k = 0; k < manCars->GetEntities().size(); ++k) {
+            cadena = "media/cuadrado.png";
+            device->DrawImage2D(w - 200.0f, /*h/2 - posFondoTiempos + 45.0*j*/ 150.0f + k*45.0f, 1.0, 0.9f, cadena, true);
+        }
     }
+
 
     auto i = 8;
     auto j = 0;
@@ -1013,7 +1015,7 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
             }
 
             //TABLA DE TIEMPOS
-            if(cTotem) {
+            if(inputShowTable && cTotem) {
                 cadena = std::to_string(j+1) + ".";
                 device->RenderText2D(cadena, w - 190.0f, h - 180.0f - 45.0f*j, 0.1f*j+0.1f, 0.5, glm::vec3(255.0f,255.0f,255.0f));
                 auto posRanking = cTotem->positionRanking - 1;

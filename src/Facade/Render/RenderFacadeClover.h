@@ -159,6 +159,9 @@ class RenderFacadeClover : public RenderFacade {
                                    "Utiliza el Robo Jorobo para conseguir el totem de inmediato!",
                                    "El Escudo Merluzo te ayudara a que no te roben el totem!"};
 
+        // En juego
+        bool inputShowTable { true };
+
         //Menu
         int inputMenu { 0 };
         int maxInputMenu { 5 };
@@ -172,7 +175,7 @@ class RenderFacadeClover : public RenderFacade {
         bool menuER { false };
         int inputER { 0 };
         int maxInputER { 2 };
-        //Opciones de partida (Hay que contar el 0)
+        //Opciones de partida
         int option { 0 };
         std::vector<int> inputGO {1,1/*,0*/};
         int maxInputGO[2] {3, 2/*, 0*/};
