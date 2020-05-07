@@ -22,6 +22,7 @@
 
 #include "../Components/COnline.h"
 
+#include <include_json/include_json.hpp>
 #include "../Facade/Render/RenderFacadeManager.h"
 #include "../Game.h"
 #include "../Managers/ManBoundingWall.h"
@@ -41,12 +42,12 @@
 
 class Position;
 using namespace std;
-
+using json = nlohmann::json;
 
 #include <limits>
 typedef std::numeric_limits< double > dbl;
 
-ManCar::ManCar() {
+ManCar::ManCar(std::vector<glm::vec3> spawns) {
     SubscribeToEvents();
     //CreateMainCar();
 
@@ -54,6 +55,7 @@ ManCar::ManCar() {
     //physicsAI = make_unique<PhysicsAI>();
     systemGameRules = make_unique<SystemGameRules>();
     physics         = make_unique<Physics>(Constants::DELTA_TIME);
+    positionsSpawn = spawns;
 
     cout << "Hemos creado un powerup, ahora tenemos " << entities.size() << " powerups" << endl;
 }
@@ -63,11 +65,35 @@ ManCar::~ManCar() {
     entities.shrink_to_fit();
 }
 
-// TO-DO: este paso de physics es kk, hay que revisarlo de enviarlo como referencia o algo pero me da error
-//ManCar::ManCar(Physics* _physics) : ManCar() {
-//    //this->physics = _physics;
-//    //this->cam = _cam;
-//}
+glm::vec3 ManCar::GetPosSpawn(){
+    // de las psiciones disponibles -> cogemos una random y la asignamos
+
+    if(positionsSpawn.size() > 0){
+        int64_t time = Utils::getMillisSinceEpoch();
+        auto newIndex = time % (positionsSpawn.size());
+
+        //auto newIndex = rand() % positionsSpawn.size();
+        auto newPos = positionsSpawn[newIndex];
+        positionsSpawn.erase(positionsSpawn.begin() + newIndex);
+        return newPos;
+    }else{
+        cout << "HAY + COCHES QUE PUNTOS DE SPAWN, TRANQUIII BRO, QUITA COCHES ANDA..." << endl;
+        return glm::vec3(0.0,0.0,0.0);
+    }
+}
+
+float ManCar::GetAngleToTotem(glm::vec3 posCar){
+    // CREAMOS EL TOTEM
+    ifstream i("data.json");
+    json j = json::parse(i);
+    auto posTotem = glm::vec3(j["TOTEM"]["x"].get<double>(), j["TOTEM"]["y"].get<double>(), j["TOTEM"]["z"].get<double>());
+    glm::vec3 vecToTotem = vec3((posTotem.x-posCar.x),0,(posTotem.z-posCar.z));
+    float valueAtan2 = glm::degrees( atan2(vecToTotem.z, vecToTotem.x) );
+    valueAtan2 = 180.0 - valueAtan2;  // se le restan ya que el eje empieza en el lado contrario
+    if (valueAtan2 < 0)
+        valueAtan2 += 360;
+    return valueAtan2;
+}
 
 // comprueba si has superado el tiempo necesario para ganar
 bool ManCar::UpdateCarPlayer(ManTotem &manTotem_) {
@@ -98,18 +124,27 @@ bool ManCar::UpdateGeneralCar(Entity& car_, Entity& totem_){
 void ManCar::CreateMainCar(int pj) {
     car = make_shared<CarHuman>(pj); 
     entities.push_back(car);
+    //despues de crearlo, lo vamos a rotar para que mire al totem
+}
+
+void ManCar::CreateMainCar(int pj, glm::vec3 _position) {
+    car = make_shared<CarHuman>(pj, _position); 
+    entities.push_back(car);
+    car->SetRotation(glm::vec3(0,GetAngleToTotem(_position),0));
 }
 
 //Cambiar PJ
 void ManCar::CreateHumanCar(int pj, glm::vec3 _position) {
     shared_ptr<CarHuman> p = make_shared<CarHuman>(pj, _position);
     entities.push_back(p);
+    p->SetRotation(glm::vec3(0,GetAngleToTotem(_position),0));
 }
 
 //Cambiar PJ
 void ManCar::CreateCarAI(int pj, glm::vec3 _position) {
     shared_ptr<CarAI> p = make_shared<CarAI>(pj, _position);
     entities.push_back(p);
+    p->SetRotation(glm::vec3(0,GetAngleToTotem(_position),0));
 }
 
 //Cambiar PJ

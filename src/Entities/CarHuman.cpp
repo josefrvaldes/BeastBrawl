@@ -73,15 +73,15 @@ CarHuman::CarHuman(int pj) {
             maxSpeed = 220.0;
             mesh = "kart_penguin.obj";
 
-            pathTopLeft = "sharky_wheel4.obj";
-            pathTopRight = "sharky_wheel2.obj";
-            pathBottomLeft = "sharky_wheel3.obj";
-            pathBottomRight = "sharky_wheel1.obj";
+            pathTopLeft = "penguin_wheel1.obj";
+            pathTopRight = "penguin_wheel2.obj";
+            pathBottomLeft = "penguin_wheel3.obj";
+            pathBottomRight = "penguin_wheel4.obj";
 
-            offsetTopLeft = glm::vec3(0.6,0.3f,1.0);
-            offsetTopRight = glm::vec3(0.6,0.3f,-1.0);
-            offsetBottomLeft = glm::vec3(-0.4,0.3f,1.0);
-            offsetBottomRight = glm::vec3(-0.4,0.3f,-1.0);
+            offsetTopLeft = glm::vec3(0.92,0.3f,0.8);
+            offsetTopRight = glm::vec3(0.92,0.3f,-0.8);
+            offsetBottomLeft = glm::vec3(-0.2,0.3f,0.9);
+            offsetBottomRight = glm::vec3(-0.2,0.3f,-0.9);
 
             rotationTopLeft = glm::vec3(0.0f,0.0f,0.0f);
             rotationTopRight = glm::vec3(0.0f,0.0f,0.0f);
@@ -129,10 +129,10 @@ CarHuman::CarHuman(int pj) {
             pathBottomLeft = "sharky_wheel3.obj";
             pathBottomRight = "sharky_wheel1.obj";
 
-            offsetTopLeft = glm::vec3(0.6,0.3f,1.0);
-            offsetTopRight = glm::vec3(0.6,0.3f,-1.0);
-            offsetBottomLeft = glm::vec3(-0.4,0.3f,1.0);
-            offsetBottomRight = glm::vec3(-0.4,0.3f,-1.0);
+            offsetTopLeft = glm::vec3(0.5,0.3f,0.8);
+            offsetTopRight = glm::vec3(0.5,0.3f,-0.8);
+            offsetBottomLeft = glm::vec3(-0.4,0.3f,0.8);
+            offsetBottomRight = glm::vec3(-0.4,0.3f,-0.8);
 
             rotationTopLeft = glm::vec3(0.0f,0.0f,0.0f);
             rotationTopRight = glm::vec3(0.0f,0.0f,0.0f);
@@ -173,16 +173,16 @@ CarHuman::CarHuman(int pj) {
         case 4: 
             _pj = mainCharacter::DRAGON; 
             acceleration = 2.0;
-            mesh = "kart_physics.obj";
-            pathTopLeft = "sharky_wheel4.obj";
-            pathTopRight = "sharky_wheel2.obj";
-            pathBottomLeft = "sharky_wheel3.obj";
-            pathBottomRight = "sharky_wheel1.obj";
+            mesh = "kart_deacon.obj";
+            pathTopLeft = "deacon_wheel2.obj";
+            pathTopRight = "deacon_wheel4.obj";
+            pathBottomLeft = "deacon_wheel3.obj";
+            pathBottomRight = "deacon_wheel1.obj";
 
-            offsetTopLeft = glm::vec3(0.6,0.3f,1.0);
-            offsetTopRight = glm::vec3(0.6,0.3f,-1.0);
-            offsetBottomLeft = glm::vec3(-0.4,0.3f,1.0);
-            offsetBottomRight = glm::vec3(-0.4,0.3f,-1.0);
+            offsetTopLeft = glm::vec3(0.65,0.4f,0.8);
+            offsetTopRight = glm::vec3(0.65,0.4f,-0.9);
+            offsetBottomLeft = glm::vec3(-0.65,0.4f,0.8);
+            offsetBottomRight = glm::vec3(-0.65,0.4f,-0.9);
 
             rotationTopLeft = glm::vec3(0.0f,0.0f,0.0f);
             rotationTopRight = glm::vec3(0.0f,0.0f,0.0f);
@@ -298,10 +298,18 @@ CarHuman::CarHuman(int pj) {
 CarHuman::CarHuman(int pj, glm::vec3 _position)
     : CarHuman(pj) {
     CTransformable *cTransformable = (CTransformable *)m_components[CompType::TransformableComp].get();
-    cTransformable->position.x = _position.x;
-    cTransformable->position.y = _position.y;
-    cTransformable->position.z = _position.z;
+    cTransformable->position = _position;
+
+    CBoundingChassis *cChassis = (CBoundingChassis *)m_components[CompType::CompBoundingChassis].get();
+    cChassis->sphereBehind->center = cTransformable->position;
+    cChassis->sphereFront->center = cTransformable->position;
 }
 
 CarHuman::~CarHuman() {
+}
+
+void CarHuman::SetRotation(glm::vec3 rot_){
+
+    CTransformable *cTransformable = (CTransformable *)m_components[CompType::TransformableComp].get();
+    cTransformable->rotation = rot_;
 }
