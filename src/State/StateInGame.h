@@ -80,6 +80,7 @@ enum UpdateState {
     START,
     COUNTDOWN,
     GAME,
+    WAITING_FOR_COUNTDOWN,
     END
 };
 
@@ -91,7 +92,7 @@ class StateInGame : public State {
     void InitState() override;
     virtual void Input() = 0;
     void Update() override;
-    virtual void UpdateAnimationStart();
+    virtual bool UpdateAnimationStart();
     virtual void UpdateAnimationCountdown();
     virtual void UpdateAnimationEnd();
     virtual void UpdateGame();

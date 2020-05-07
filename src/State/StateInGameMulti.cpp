@@ -11,6 +11,8 @@
 #include "../Systems/Utils.h"
 
 StateInGameMulti::StateInGameMulti(uint16_t idOnline_, const vector<uint16_t> idsEnemies_) : StateInGame() {
+    GameValues::GetInstance()->SetGameTime(180);
+    GameValues::GetInstance()->SetTimeTotem(30);
     InitState();
     InitializeManagers();
     InitCarHumans(idOnline_, idsEnemies_);
@@ -26,6 +28,8 @@ StateInGameMulti::StateInGameMulti(uint16_t idOnline_, const vector<uint16_t> id
 
     SubscribeToEvents();
 
+    const vector<Constants::InputTypes> inputs;
+    sysOnline->SendInputs(inputs);
     sysAnimStart->ResetTimer();
     sysRanking->Update(manCars.get());
 }
@@ -121,16 +125,28 @@ void StateInGameMulti::Input() {
 
 void StateInGameMulti::GoToUpdateGame() {
     StateInGame::GoToUpdateGame();
-    const vector<Constants::InputTypes> inputs;
-    sysOnline->SendInputs(inputs);
 }
 
 void StateInGameMulti::UpdateAnimationEnd() {
     StateInGame::UpdateAnimationEnd();
 }
 
-void StateInGameMulti::UpdateAnimationStart() {
-    StateInGame::UpdateAnimationStart();
+bool StateInGameMulti::UpdateAnimationStart() {
+    bool animationFinished = StateInGame::UpdateAnimationStart();
+    if(animationFinished)
+        currentUpdateState = UpdateState::WAITING_FOR_COUNTDOWN;
+    return animationFinished;
+}
+
+void StateInGameMulti::UpdateWaitingForCountdown() {
+    if(!readyToCountdown) {
+        manCamera->Update();
+        renderEngine->UpdateCamera(manCamera.get()->getCamera(), manCars.get());
+        cout << "Enviamos mensaje de waiting for countdown\n";
+        readyToCountdown = true;
+        sysOnline->SendWaitingForCountdown();
+    }
+    EventManager::GetInstance().Update();
 }
 
 void StateInGameMulti::UpdateAnimationCountdown() {
@@ -160,6 +176,9 @@ void StateInGameMulti::Update() {
             break;
         case UpdateState::COUNTDOWN:
             UpdateAnimationCountdown();
+            break;
+        case UpdateState::WAITING_FOR_COUNTDOWN:
+            UpdateWaitingForCountdown();
             break;
         case UpdateState::END:
             UpdateAnimationEnd();
@@ -204,6 +223,11 @@ void StateInGameMulti::SubscribeToEvents() {
         EventType::NEW_LAUNCH_ANIMATION_END_RECEIVED,
         bind(&StateInGameMulti::GoToEndAnimationFromMulti, this, std::placeholders::_1),
         "Received end animation"));
+
+    EventManager::GetInstance().SubscribeMulti(Listener(
+        EventType::NEW_LAUNCH_COUNTDOWN_ANIMATION_RECEIVED,
+        bind(&StateInGameMulti::GoToCountdownAnimationFromMulti, this, std::placeholders::_1),
+        "Received end animation"));
 }
 
 void StateInGameMulti::GoToEndAnimationFromMulti(DataMap *dataMap) {
@@ -214,9 +238,17 @@ void StateInGameMulti::GoToEndAnimationFromMulti(DataMap *dataMap) {
             if (cOnline->idClient == idWinner) {
                 Car *winner = static_cast<Car *>(entity.get());
                 sysAnimEnd->SetWinner(winner);
+                timerEnd = Utils::getMillisSinceEpoch();
+                soundEngine->SetState(11);
                 currentUpdateState = UpdateState::END;
                 return;
             }
         }
+    }
+}
+
+void StateInGameMulti::GoToCountdownAnimationFromMulti(DataMap *dataMap) {
+    if (currentUpdateState != UpdateState::COUNTDOWN) {
+        GoToCountdownAnimation();
     }
 }

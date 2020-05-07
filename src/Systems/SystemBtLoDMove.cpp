@@ -195,7 +195,9 @@ struct InDistanceRange_LoDMove : public behaviourTree {
 //ACCION --> aplicamos la accion de pensar
 struct SBThink_LoDMove : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
-        blackboard->steeringBehaviours->UpdateThink(blackboard->actualCar);
+        auto cBrainAI = static_cast<CBrainAI*>(blackboard->actualCar->GetComponent(CompType::BrainAIComp).get());
+        cBrainAI->movementType = "Pensandoooooo";
+        blackboard->steeringBehaviours->UpdateThink(blackboard->actualCar, blackboard->manNavMesh);
         return true;
     } 
 };

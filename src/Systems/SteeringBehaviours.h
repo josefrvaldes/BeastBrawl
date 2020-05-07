@@ -18,6 +18,7 @@ class CExternalForce;
 class ManPowerUp;
 class ManBoundingWall;
 class ManBoundingOBB;
+class ManNavMesh;
 
 
 class SteeringBehaviours{
@@ -34,7 +35,7 @@ public:
     bool UpdateCarAvoidance(Entity* actualCar) const;
     bool UpdateWallAvoidance(Entity* actualCar,  ManBoundingWall* manBoundingWall, ManBoundingOBB* manBoundingOBB) const;
     bool UpdateObstacleAvoidance(Entity* actualCar, ManBoundingOBB* manBoundingOBB) const;
-    void UpdateThink(Entity* actualCar);
+    void UpdateThink(Entity* actualCar, ManNavMesh* manNavMesh);
 
     void SetCLPhysics(CLPhysics* _clPhysics){ clPhysics=_clPhysics; };
 
@@ -63,6 +64,7 @@ private:
     void AvoidVibration(Entity* actualCar, Entity *actualObstacle, const glm::vec2& velocityVector, glm::vec2& vectorForce) const;
     void AvoidTrapCorner(Entity* actualCar, Entity *actualObstacle, const glm::vec2& velocityVector, const glm::vec3& target, glm::vec2& vectorForce) const;
 
+    glm::vec3 CalculateCenterNavMesh(Entity* actualCar, ManNavMesh* manNavMesh) const;
 
     CLPhysics* clPhysics = nullptr;
     glm::vec2 ApplyExternalForce(CCar *cCar, CExternalForce *externalForce, const glm::vec2& carForce) const;

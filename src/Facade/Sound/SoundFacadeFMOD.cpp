@@ -339,7 +339,6 @@ void SoundFacadeFMOD::LoadSoundByState(const uint8_t numState) {
             StartGame();
             break;
         case 5:         // ENDRACE
-            StopAllEvents();
             LoadSoundBank("EndRace", 0);
             //PlayEvent("Musica/fin_partida");
             SoundVictoryVoice();
@@ -598,7 +597,7 @@ void SoundFacadeFMOD::StartGame() {
 }
 
 void SoundFacadeFMOD::StopMusicInGame() {
-    soundEngine->StopEvent("Musica/in_game_1");
+    StopAllEvents();
     PlayEvent("Partida/pitido_final");
     PlayEvent("Musica/fin_partida");
 }

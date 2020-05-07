@@ -43,14 +43,15 @@ class UDPClient {
     void SendCatchTotem(uint16_t idOnline, uint16_t idPlayerCatched);
     void SendCrashPUCar(const uint16_t idOnline, const uint16_t idPowerUp, const uint16_t idCar);
     void SendCrashPUWall(const uint16_t idOnline, const uint16_t idPowerUp);
-    void SendLostTotem(uint16_t idOnline, uint16_t idPlayerLosted, const glm::vec3& pos, int numNavMesh);
+    void SendLostTotem(uint16_t idOnline, uint16_t idPlayerLosted, const glm::vec3& pos, float speed, uint16_t rotationTotemY, int numNavMesh);
     void SendRoboJorobo(uint16_t idOnline);
     void SendCollideNitro(uint16_t idOnline, uint16_t idWithTotem, uint16_t idWithNitro);
     void SendThrowMelonOPudin(const uint16_t idOnline, const int64_t time, const uint16_t idPUOnline, const glm::vec3& position, const glm::vec3& rotation, const int8_t typePU);
     void SendThrowTelebanana(const uint16_t idOnline, const int64_t time, const uint16_t idPUOnline, const glm::vec3& position, const glm::vec3& rotation, const int8_t typePU, const uint16_t idToPursue);
     void SendEndgame(uint16_t idPlayer);
     void SendDateTime();
-    void SendLaunchAnimationEnd(uint16_t idOnline, uint16_t idOnlineWinner);
+    void SendLaunchAnimationEnd(const uint16_t idOnline, const uint16_t idOnlineWinner);
+    void SendWaitingForCountdown(const uint16_t idOnline);
     uint32_t idMainCar;
 
    private:
@@ -70,6 +71,7 @@ class UDPClient {
     void HandleReceivedCrashPUCar(unsigned char* recevBuff, size_t bytesTransferred);
     void HandleReceivedCrashPUWall(unsigned char* recevBuff, size_t bytesTransferred);
     void HandleReceivedLaunchEndAnimation(uint16_t idPlayer, uint16_t idWinner) const;
+    void HandleReceivedLaunchCountdownAnimation() const;
 
     void HandleSentInputs(const boost::system::error_code& errorCode, std::size_t bytes_transferred);
     void HandleSentSync(const boost::system::error_code& errorCode, std::size_t bytes_transferred);
@@ -83,6 +85,7 @@ class UDPClient {
     void HandleSentCrashPUCar(const boost::system::error_code& errorCode, std::size_t bytes_transferred);
     void HandleSentCrashPUWall(const boost::system::error_code& errorCode, std::size_t bytes_transferred);
     void HandleSentLaunchAnimationEnd(const boost::system::error_code& errorCode, std::size_t bytes_transferred);
+    void HandleSentWaitingForCountdown(const boost::system::error_code& errorCode, std::size_t bytes_transferred);
 
     void HandleSentDateTime(const std::shared_ptr<std::string> message,
                             const boost::system::error_code& errorCode,
@@ -106,6 +109,7 @@ class UDPClient {
     unordered_map<uint16_t, int64_t> lastTimeCrashPUCarReceived;
     unordered_map<uint16_t, int64_t> lastTimeCrashPUWallReceived;
     unordered_map<uint16_t, int64_t> lastTimeLaunchEndGameReceived;
+    unordered_map<uint16_t, int64_t> lastTimeLaunchCountdownReceived;
     bool stateAnimationEnd {false};
     int64_t timeGameStarted;
 };

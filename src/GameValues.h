@@ -16,6 +16,7 @@ class GameValues {
         void SetGameTime(int gt)                        { gameTime = gt; };
 
         void SetRanking(std::map<uint16_t, uint16_t> r) { ranking = r; };
+        void SetSeconds(std::map<uint16_t, uint16_t> s) { seconds = s; };
 
         void SetMainCPoints(int p)                      { mainCPoints = p; };
         void SetIAPoints(std::vector<int> p)            { iaPoints = p; };
@@ -29,6 +30,7 @@ class GameValues {
         const int GetGameTime()                         { return gameTime; };
 
         const std::map<uint16_t, uint16_t>& GetRanking(){ return ranking; };
+        const std::map<uint16_t, uint16_t>& GetSeconds(){ return seconds; };
 
         const int GetMainCPoints()                      { return mainCPoints; };
         const std::vector<int> GetIAPoints()            { return iaPoints; };
@@ -46,6 +48,7 @@ class GameValues {
         // Ranking: posicion | personaje
         bool win { false };
         std::map<uint16_t, uint16_t> ranking { {1,0}, {1,0}, {1,0}, {1,0}, {1,0}, {1,0} };
+        std::map<uint16_t, uint16_t> seconds { {1,0}, {1,0}, {1,0}, {1,0}, {1,0}, {1,0} };
 
         // Para el modo torneo. Modificar como tenga que ser.
         int mainCPoints { 0 };

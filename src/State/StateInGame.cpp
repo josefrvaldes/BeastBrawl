@@ -227,16 +227,16 @@ void StateInGame::CreateMainCar() {
 
 ///////////////////////
 
-void StateInGame::UpdateAnimationStart() {
+bool StateInGame::UpdateAnimationStart() {
     bool animationFinished = sysAnimStart->Animate();
     renderEngine->UpdateCamera(manCamera.get()->getCamera(), manCars.get());
     auto cCam = static_cast<CCamera *>(manCamera.get()->getCamera()->GetComponent(CompType::CameraComp).get());
     renderEngine->SetCamTarget(cCam->target);
-
+    return animationFinished;
     // si hemos acabado la animación de inicio...
-    if (animationFinished) {
-        GoToCountdownAnimation();
-    }
+    // if (animationFinished) {
+    //     GoToCountdownAnimation();
+    // }
 }
 
 void StateInGame::UpdateAnimationCountdown() {
