@@ -1528,7 +1528,7 @@ void CLPhysics::IntersectCameraWalls(Camera *cam, Car* car, ManBoundingWall &man
             // COLISION CON WALL -> speed a 0, beibe
             collision = true;
             if(int(intersData.distance) < cCamera->actualDistance){
-                cCamera->collisionDistance = cCamera->actualDistance - int(intersData.distance);
+                cCamera->collisionDistance = cCamera->actualDistance - intersData.distance;
             }
         }
     }
