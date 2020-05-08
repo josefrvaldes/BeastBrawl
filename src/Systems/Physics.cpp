@@ -58,6 +58,7 @@ void Physics::CalculatePosition(CCar *cCar, CTransformable *cTransformable, CSpe
     //cSpeed->speed.y = 0.f;                 // TODO, esto lo cacharreará el CLPhysics
     cTransformable->position.x += finalForce.x * deltaTime;
     cTransformable->position.z += finalForce.y * deltaTime;
+    cout << "se ha aplicado una speed real de (" << finalForce.x * deltaTime << ",0," << finalForce.y * deltaTime << ")" << endl; 
 
     // Rotacion del coche
     if(cCar->skidRotation != 0){
@@ -172,6 +173,7 @@ void Physics::Accelerate(Car *car) {
             if (cCar->speed < cCar->maxSpeed)
                 cCar->speed = cCar->maxSpeed;
         }
+        // cout << "La current speed es " << cCar->speed << endl;
     } else {
         cCar->speed += cNitro->nitroAcceleration;
         if (cCar->speed > cNitro->nitroMaxSpeed) {
@@ -405,16 +407,20 @@ void Physics::NewInputsReceivedOnline(Car *car, CBufferOnline *buffer) {
     auto cNitro = static_cast<CNitro *>(car->GetComponent(CompType::NitroComp).get());
     auto cOnline = static_cast<COnline *>(car->GetComponent(CompType::OnlineComp).get());
     auto cExternalForce = static_cast<CExternalForce *>(car->GetComponent(CompType::CompExternalForce).get());
-
+    
     size_t veces = buffer->elems.size();
     if(veces > 1) {
+        cout << "Hacemos corrección por input received: el coche estaba en:   " << *cTransformable << endl;
         BuffElement elemRecienRecibido = buffer->elems.front();
         buffer->elems.pop_front();
         BuffElement elemSiguiente = buffer->elems.front();
         cTransformable->position = elemSiguiente.pos;
         cTransformable->rotation = elemSiguiente.rot;
-        for(size_t i = 0; i < veces; i++)
+        for(size_t i = 0; i < veces; i++) {
+            cout << "corregimos " << i << " veces" << endl;
             MoveCarHumanByInput(car, cCar, cOnline, cTransformable, cSpeed, cNitro, cExternalForce);
+        }
+        cout << "Al acabar la corrección por input received el coche está en: " << *cTransformable << endl;
     }
 }
 
@@ -428,14 +434,17 @@ void Physics::NewSyncReceivedOnline(Car *car, int64_t time) {
     auto cExternalForce = static_cast<CExternalForce *>(car->GetComponent(CompType::CompExternalForce).get());
     auto cBufferOnline = static_cast<CBufferOnline *>(car->GetComponent(CompType::BufferOnline).get());
 
-    
+    cout << "Hemos recibido una sync a las " << Utils::getISOCurrentTimestampMillis(time) << endl;
     auto elems = cBufferOnline->elems;
     std::list<BuffElement>::iterator it;
+    cout << "Hacemos corrección por sync received: el coche estaba en:    " << *cTransformable << endl;
     for(it = elems.begin(); it != elems.end(); ++it)  {
         if((it->receivedForReal == false && it->time > time) || (it->receivedForReal && it->timeSent > time)) {
+            cout << "corregimos" << endl;
             MoveCarHumanByInput(car, cCar, cOnline, cTransformable, cSpeed, cNitro, cExternalForce);
         }
     }
+    cout << "Al acabar la corrección por sync received: el coche está en: " << *cTransformable << endl;
 }
 
 void Physics::MoveCarHumanByInput(Car *car, CCar *cCar, COnline *cOnline, CTransformable *cTransformable, CSpeed *cSpeed, CNitro *cNitro, CExternalForce *cExternalForce) {
@@ -496,7 +505,7 @@ void Physics::UpdateHuman(Car *car) {
     // añadimos que se ha calculado una nueva posición por predicción
     cout << "Hemos calculado una nueva pos" << endl;
     auto cBufferOnline = static_cast<CBufferOnline *>(car->GetComponent(CompType::BufferOnline).get());
-    cBufferOnline->InsertNewCalculated(cTransformable->position, cTransformable->rotation);
+    cBufferOnline->InsertNewCalculated(cTransformable->position, cTransformable->rotation, cCar->speed);
     cout << *cBufferOnline;
 }
 
@@ -513,6 +522,7 @@ void Physics::AccelerateHuman(CCar &cCar, CNitro &cNitro) const{
             if (cCar.speed < cCar.maxSpeed)
                 cCar.speed = cCar.maxSpeed;
         }
+        // cout << "La current speed es " << cCar.speed << endl;
     } else {
         cCar.speed += cNitro.nitroAcceleration;
         if (cCar.speed > cNitro.nitroMaxSpeed) {

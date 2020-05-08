@@ -6,6 +6,7 @@
 #include "../Components/CPowerUp.h"
 #include "../Components/CTargetEntity.h"
 #include "../Components/CTotem.h"
+#include "../Components/CCar.h"
 #include "../Components/CTransformable.h"
 #include "../Constants.h"
 #include "../Entities/CarHuman.h"
@@ -54,9 +55,9 @@ void SystemOnline::EventLaunchAnimationEnd(DataMap *dataMap) {
     udpClient->SendLaunchAnimationEnd(idOnlineMainCar, idOnlineWinner);
 }
 
-void SystemOnline::SendInputs(const vector<Constants::InputTypes> &inputs) const {
+void SystemOnline::SendInputs(const vector<Constants::InputTypes> &inputs, float speed) const {
     // cout << Utils::getISOCurrentTimestampMillis() << "id[" << idOnlineMainCar << "] Enviamos los inputs" << endl;
-    udpClient->SendInputs(inputs, idOnlineMainCar);
+    udpClient->SendInputs(inputs, idOnlineMainCar, speed);
 }
 
 /*void SystemOnline::SendEndgame() const {
@@ -68,6 +69,7 @@ void SystemOnline::SendSync(ManCar *manCars, ManTotem *manTotem) const {
     auto cTransCar = static_cast<CTransformable *>(manCars->GetCar()->GetComponent(CompType::TransformableComp).get());
     auto cTotem = static_cast<CTotem *>(manCars->GetCar()->GetComponent(CompType::TotemComp).get());
     auto cPowerUp = static_cast<CPowerUp *>(manCars->GetCar()->GetComponent(CompType::PowerUpComp).get());
+    auto cCar = static_cast<CCar *>(manCars->GetCar()->GetComponent(CompType::CarComp).get());
     bool totemInGround = true;
     glm::vec3 posTotem(0.0, 0.0, 0.0);
 
@@ -92,7 +94,7 @@ void SystemOnline::SendSync(ManCar *manCars, ManTotem *manTotem) const {
     //std::cout << "Totem en suelo: " << totemInGround << std::endl;
     //std::cout << "Pos totem: " << posTotem.x << " , " << posTotem.z << std::endl;
     //std::cout << "---------------------------------------" << std::endl;
-    udpClient->SendSync(idOnlineMainCar, cTransCar->position, cTransCar->rotation, cPowerUp->typePowerUp, cTotem->active, cTotem->accumulatedTime, totemInGround, posTotem);
+    udpClient->SendSync(idOnlineMainCar, cTransCar->position, cTransCar->rotation, cCar->speed, cPowerUp->typePowerUp, cTotem->active, cTotem->accumulatedTime, totemInGround, posTotem);
 }
 
 void SystemOnline::SendCatchPU(CPowerUp &cPowerUp) const {

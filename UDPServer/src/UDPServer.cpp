@@ -391,6 +391,7 @@ void UDPServer::HandleReceivedSync(const uint16_t id, unsigned char recevBuff[],
     /*uint16_t idCarOnline = */ Serialization::Deserialize<uint16_t>(recevBuff, currentIndex);
     /*glm::vec3 posCar = */ Serialization::DeserializeVec3(recevBuff, currentIndex);
     /*glm::vec3 rotCar = */ Serialization::DeserializeVec3(recevBuff, currentIndex);
+    /*float speed = */ Serialization::Deserialize<float>(recevBuff, currentIndex);
 
     glm::vec3 posTotem(0.0, 0.0, 0.0);
     bool haveTotem;

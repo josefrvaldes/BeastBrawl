@@ -29,7 +29,7 @@ StateInGameMulti::StateInGameMulti(uint16_t idOnline_, const vector<uint16_t> id
     SubscribeToEvents();
 
     const vector<Constants::InputTypes> inputs;
-    sysOnline->SendInputs(inputs);
+    sysOnline->SendInputs(inputs, 0.f);
     sysAnimStart->ResetTimer();
     sysRanking->Update(manCars.get());
 }
@@ -105,17 +105,13 @@ void StateInGameMulti::Input() {
     if (currentUpdateState == UpdateState::GAME) {
         // const vector<Constants::InputTypes> &inputs = renderEngine->FacadeCheckInputMulti();
         const vector<Constants::InputTypes> &inputs = inputEngine->CheckInputMulti();
-        if (previousInputs != inputs) {
-            //cout << Utils::getISOCurrentTimestampMillis() << " [" << sysOnline->idOnlineMainCar << "] Enviamos los inputs porque han cambiado con respecto a la iteración anterior" << endl;
-            sysOnline->SendInputs(inputs);
-            previousInputs = inputs;
-        }
-
         time_point<system_clock> now = system_clock::now();
         auto millisSinceLastInputSent = duration_cast<milliseconds>(now - lastTimeSentInputs).count();
-        if (millisSinceLastInputSent > 66) {  // 100 = 10fps; 66 = 15fps   1000 = 60fps
+        if (millisSinceLastInputSent > 66 || previousInputs != inputs) {  // 100 = 10fps; 66 = 15fps   1000 = 60fps
+            CCar* cCar = static_cast<CCar*>(manCars->GetCar()->GetComponent(CompType::CarComp).get());
             lastTimeSentInputs = now;
-            sysOnline->SendInputs(inputs);
+            previousInputs = inputs;
+            sysOnline->SendInputs(inputs, cCar->speed);
         }
 
         auto millisSinceLastSyncSent = duration_cast<milliseconds>(now - lastTimeSentSync).count();
