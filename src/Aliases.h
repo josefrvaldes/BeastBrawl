@@ -38,6 +38,7 @@ enum DataType{
     ID_PU,
     ID_DESTINATION,
     INPUTS,
+    TIME,
     ID_ONLINE,
     ID_PURSUE,
     VECTOR_ID_ONLINE,

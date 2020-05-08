@@ -74,7 +74,7 @@ void UDPClient::HandleReceived(std::shared_ptr<unsigned char[]> recevBuff, const
                         // cout << "Hemos recibido una petición de tipo SEND_INPUT" << endl;
                         const vector<Constants::InputTypes> inputs = Serialization::DeserializeInputs(recevBuff.get(), currentIndex);
                         lastTimeInputReceived[idPlayer] = time;
-                        HandleReceivedInputs(inputs, idPlayer);
+                        HandleReceivedInputs(time, inputs, idPlayer);
                     }
                 } break;
 
@@ -195,12 +195,13 @@ void UDPClient::HandleReceived(std::shared_ptr<unsigned char[]> recevBuff, const
     StartReceiving();
 }
 
-void UDPClient::HandleReceivedInputs(const vector<Constants::InputTypes> inputs, const uint16_t idRival) const {
+void UDPClient::HandleReceivedInputs(const int64_t time, const vector<Constants::InputTypes> inputs, const uint16_t idRival) const {
     //cout << "Hemos recibido los inputs " << recvdJSON.dump() << endl;
     //vector<Constants::InputTypes> inputs = recvdJSON["inputs"];
     std::shared_ptr<DataMap> data = make_shared<DataMap>();
     (*data)[DataType::ID] = idRival;
     (*data)[DataType::INPUTS] = inputs;
+    (*data)[DataType::TIME] = time;
     EventManager::GetInstance().AddEventMulti(Event{EventType::NEW_INPUTS_RECEIVED, data});
     // cout << "Hemos recibido los inputs ";
     // for (size_t i = 0; i < inputs.size(); i++) {

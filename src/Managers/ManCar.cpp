@@ -315,14 +315,16 @@ void ManCar::NewInputsReceived(DataMap* d) {
     // cout << "Se ha lanzado el evento NewInputsReceived" << endl;
     auto idRecieved = any_cast<uint16_t>((*d)[DataType::ID]);
     // cout << Utils::getISOCurrentTimestampMillis() << " Hemos recibido un input del id " << idRecieved << endl;
-    auto inputs = any_cast<vector<Constants::InputTypes>>((*d)[DataType::INPUTS]);
     for (const auto& car : GetEntities()) {
         if (car->HasComponent(CompType::OnlineComp)) {
             COnline* compOnline = static_cast<COnline*>(car->GetComponent(CompType::OnlineComp).get());
             uint16_t currentIDOnline = compOnline->idClient;
             if (currentIDOnline == idRecieved) {
-
+                auto inputs = any_cast<vector<Constants::InputTypes>>((*d)[DataType::INPUTS]);
+                auto time = any_cast<int64_t>((*d)[DataType::TIME]);
+                CBufferOnline* buffOnline = static_cast<CBufferOnline*>(car->GetComponent(CompType::BufferOnline).get());
                 compOnline->inputs = inputs;
+                buffOnline->InsertNewReceivedOnline(time, inputs);
                 break;
             }
         }

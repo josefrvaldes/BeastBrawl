@@ -88,10 +88,10 @@ void StateInGameMulti::InitCarHumans(const uint16_t idOnline_, const vector<uint
         manShield->CreateShield(idComp->id, glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.5f));
 
         // esto era de cuando íbamos a hacer el buffer circular que al final se descartó
-        /*shared_ptr<CBufferOnline> buffer = make_shared<CBufferOnline>();
-        BuffElement elem(inputs, cTransformable->position, cTransformable->rotation);
-        buffer->elems.push_back(elem);
-        car->AddComponent(buffer);*/
+        shared_ptr<CBufferOnline> buffer = make_shared<CBufferOnline>();
+        // BuffElement elem(cTransformable->position, cTransformable->rotation);
+        // buffer->elems.push_back(elem);
+        car->AddComponent(buffer);
     }
 
     for(auto car : manCars->GetEntities()){

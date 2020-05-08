@@ -2,6 +2,7 @@
 #include <Components/CCar.h>
 #include <Components/CNitro.h>
 #include <Components/CSpeed.h>
+#include <Components/CBufferOnline.h>
 #include <Entities/Car.h>
 #include "../Entities/CarHuman.h"
 #include "../Components/COnline.h"
@@ -449,6 +450,10 @@ void Physics::UpdateHuman(Car *car) {
         CalculatePosition(cCar, cTransformable, cSpeed, cExternalForce, deltaTime);
     else
         CalculatePositionReverse(cCar, cTransformable, cExternalForce, deltaTime);
+
+    // añadimos que se ha calculado una nueva posición por predicción
+    auto cBufferOnline = static_cast<CBufferOnline *>(car->GetComponent(CompType::BufferOnline).get());
+    cBufferOnline->InsertNewCalculated(cTransformable->position, cTransformable->rotation);
 }
 
 

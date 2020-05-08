@@ -57,7 +57,7 @@ class UDPClient {
    private:
     void StartReceiving();
     void HandleReceived(std::shared_ptr<unsigned char[]> recevBuff, const boost::system::error_code& error, size_t bytesTransferred);
-    void HandleReceivedInputs(const vector<Constants::InputTypes> inputs, const uint16_t idRival) const;
+    void HandleReceivedInputs(int64_t time, const vector<Constants::InputTypes> inputs, const uint16_t idRival) const;
     void HandleReceivedSync(unsigned char* recevBuff, size_t bytesTransferred);
     void HandleReceivedCatchPU(unsigned char* recevBuff, size_t bytesTransferred);
     void HandleReceivedCatchTotem(unsigned char* recevBuff, size_t bytesTransferred);
