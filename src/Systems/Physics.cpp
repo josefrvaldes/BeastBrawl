@@ -398,9 +398,7 @@ void Physics::RecoverSkid(CCar &cCar, CTransformable &cTrans) const{
 }
 
 
-
-
-void Physics::UpdateHuman(Car *car) {
+void Physics::NewInputsReceivedOnline(Car *car, CBufferOnline *buffer) {
     auto cTransformable = static_cast<CTransformable *>(car->GetComponent(CompType::TransformableComp).get());
     auto cCar = static_cast<CCar *>(car->GetComponent(CompType::CarComp).get());
     auto cSpeed = static_cast<CSpeed *>(car->GetComponent(CompType::SpeedComp).get());
@@ -408,6 +406,19 @@ void Physics::UpdateHuman(Car *car) {
     auto cOnline = static_cast<COnline *>(car->GetComponent(CompType::OnlineComp).get());
     auto cExternalForce = static_cast<CExternalForce *>(car->GetComponent(CompType::CompExternalForce).get());
 
+    size_t veces = buffer->elems.size();
+    if(veces > 1) {
+        BuffElement elemRecienRecibido = buffer->elems.front();
+        buffer->elems.pop_front();
+        BuffElement elemSiguiente = buffer->elems.front();
+        cTransformable->position = elemSiguiente.pos;
+        cTransformable->rotation = elemSiguiente.rot;
+        for(size_t i = 0; i < veces; i++)
+            MoveCarHumanByInput(car, cCar, cOnline, cTransformable, cSpeed, cNitro, cExternalForce);
+    }
+}
+
+void Physics::MoveCarHumanByInput(Car *car, CCar *cCar, COnline *cOnline, CTransformable *cTransformable, CSpeed *cSpeed, CNitro *cNitro, CExternalForce *cExternalForce) {
     bool accDec = false;
     bool turning = false;
     bool skidding = false;
@@ -450,6 +461,17 @@ void Physics::UpdateHuman(Car *car) {
         CalculatePosition(cCar, cTransformable, cSpeed, cExternalForce, deltaTime);
     else
         CalculatePositionReverse(cCar, cTransformable, cExternalForce, deltaTime);
+}
+
+void Physics::UpdateHuman(Car *car) {
+    auto cTransformable = static_cast<CTransformable *>(car->GetComponent(CompType::TransformableComp).get());
+    auto cCar = static_cast<CCar *>(car->GetComponent(CompType::CarComp).get());
+    auto cSpeed = static_cast<CSpeed *>(car->GetComponent(CompType::SpeedComp).get());
+    auto cNitro = static_cast<CNitro *>(car->GetComponent(CompType::NitroComp).get());
+    auto cOnline = static_cast<COnline *>(car->GetComponent(CompType::OnlineComp).get());
+    auto cExternalForce = static_cast<CExternalForce *>(car->GetComponent(CompType::CompExternalForce).get());
+
+    MoveCarHumanByInput(car, cCar, cOnline, cTransformable, cSpeed, cNitro, cExternalForce);
 
     // añadimos que se ha calculado una nueva posición por predicción
     auto cBufferOnline = static_cast<CBufferOnline *>(car->GetComponent(CompType::BufferOnline).get());

@@ -325,6 +325,7 @@ void ManCar::NewInputsReceived(DataMap* d) {
                 CBufferOnline* buffOnline = static_cast<CBufferOnline*>(car->GetComponent(CompType::BufferOnline).get());
                 compOnline->inputs = inputs;
                 buffOnline->InsertNewReceivedOnline(time, inputs);
+                physics->NewInputsReceivedOnline(static_cast<Car*>(car.get()), buffOnline);
                 break;
             }
         }

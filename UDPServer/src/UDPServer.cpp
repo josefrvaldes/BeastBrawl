@@ -545,7 +545,7 @@ void UDPServer::DetectUsersDisconnected() {
             Exit();
         }
     }
-    CheckDisconnectionsAfterSeconds();
+    //  CheckDisconnectionsAfterSeconds(); // TODO: este es el que tenemos que descomentar para que vuelva a funcionar la desconexión
 }
 
 void UDPServer::SendLaunchAnimationEnd(const Player& p, const uint16_t idPlayer, const uint16_t idWinner) {
