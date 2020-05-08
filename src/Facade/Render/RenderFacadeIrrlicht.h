@@ -49,6 +49,7 @@ class RenderFacadeIrrlicht : public RenderFacade {
     void FacadeDrawMenu() override;
     void FacadeDrawSelectCharacter() override;
     void FacadeDrawGameOptions() override;
+    void FacadeDrawTournamentOptions() override {};
     void FacadeInitResources() override;
     void FacadeDrawPause() override;
     void FacadeDrawEndRace() override;
@@ -62,6 +63,7 @@ class RenderFacadeIrrlicht : public RenderFacade {
     void FacadeInitMenu() override;
     void FacadeInitSelectCharacter() override;
     void FacadeInitGameOptions() override;
+    void FacadeInitTournamentOptions() override {};
     void FacadeInitPause() override;
     void FacadeInitEndRace() override;
     void FacadeInitLobbyMulti() override;
@@ -74,6 +76,7 @@ class RenderFacadeIrrlicht : public RenderFacade {
     void FacadeCheckInputMenu() override;
     void FacadeCheckInputSelectCharacter() override;
     void FacadeCheckInputGameOptions() override;
+    void FacadeCheckInputTournamentOptions() override {};
     void FacadeCheckInputPause() override;
     void FacadeCheckInputEndRace() override;
     void FacadeCheckInputLobbyMulti() override;
@@ -131,6 +134,7 @@ class RenderFacadeIrrlicht : public RenderFacade {
     std::tuple<int, int> GetScreenSize() override;
 
     void ResetInputGameOptions() override;
+    void ResetInputTournamentOptions() override {};
     void ResetInputCharacter() override;
 
     void SetMenuEndRace(bool b) override { menuER = b; };

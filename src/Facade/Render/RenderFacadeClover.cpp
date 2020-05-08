@@ -805,6 +805,10 @@ void RenderFacadeClover::FacadeInitGameOptions() {
 
 }
 
+void RenderFacadeClover::FacadeInitTournamentOptions() {
+
+}
+
 void RenderFacadeClover::FacadeInitControler() {
 
 }
@@ -865,6 +869,10 @@ void RenderFacadeClover::FacadeCheckInputGameOptions() {
     InputFacadeManager::GetInstance()->GetInputFacade()->CheckInputGameOptions(inputGO, maxInputGO, option);
 }
 
+void RenderFacadeClover::FacadeCheckInputTournamentOptions() {
+    InputFacadeManager::GetInstance()->GetInputFacade()->CheckInputTournamentOptions(inputTO, maxInputTO, optionTO);
+}
+
 void RenderFacadeClover::FacadeCheckInputControler() {
     InputFacadeManager::GetInstance()->GetInputFacade()->CheckInputController();
 }
@@ -899,6 +907,12 @@ void RenderFacadeClover::ResetInputGameOptions() {
     option = 0;
     inputGO[0] = 1;
     inputGO[1] = 1;
+}
+void RenderFacadeClover::ResetInputTournamentOptions() {
+    optionTO = 0;
+    inputTO[0] = 1;
+    inputTO[1] = 1;
+    inputTO[2] = 1;
 }
 
 
@@ -1126,8 +1140,9 @@ void RenderFacadeClover::FacadeDrawMenu() {
     file = "media/menu/elements_menu.png";
     device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.8f, file, true);
 
-    std::string files[6] = {
+    std::string files[7] = {
         "media/menu/unjugador_hover.png",
+        "media/menu/torneo_hover.png",
         "media/menu/multijugador_hover.png",
         "media/menu/controles_hover.png",
         "media/menu/creditos_hover.png",
@@ -1183,7 +1198,42 @@ void RenderFacadeClover::FacadeDrawGameOptions() {
     if (option == 1) { file += "_hover"; }
     file += ".png";
     device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.7f, file, true);
+}
 
+void RenderFacadeClover::FacadeDrawTournamentOptions() {
+    std::string name = "";
+
+    std::string file = "media/menu/settings_match_bg.png";
+    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.9f, file, true);
+    
+    std::string files[3] = {
+        "media/menu/numBattles_",
+        "media/menu/duration_match_",
+        "media/menu/duration_totem_"
+    };
+
+    std::string op1[3] = {"3", "4", "5"};
+    std::string op2[4] = {"2min", "3min", "4min", "5min" };
+    std::string op3[3] = {"30s", "45s", "1min"};
+
+    file = files[0] + op1[inputTO[0]];
+    if (optionTO == 0) { file += "_hover"; }
+    file += ".png";
+    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.8f, file, true);
+    file = files[1] + op2[inputTO[1]];
+    if (optionTO == 1) { file += "_hover"; }
+    file += ".png";
+    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.7f, file, true);
+    file = files[2] + op3[inputTO[2]];
+    if (optionTO == 2) { file += "_hover"; }
+    file += ".png";
+    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.7f, file, true);
+
+
+    //file = files[0] + op1[inputTO[0]];
+    //if (optionTO == 0) { file += "_hover"; }
+    //file += ".png";
+    //device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.8f, file, true);
 }
 
 void RenderFacadeClover::FacadeDrawControler() {

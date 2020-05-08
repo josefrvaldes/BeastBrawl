@@ -53,6 +53,7 @@ class RenderFacadeClover : public RenderFacade {
       void FacadeDrawMenu() override;
       void FacadeDrawSelectCharacter() override;
       void FacadeDrawGameOptions() override;
+      void FacadeDrawTournamentOptions() override;
       void FacadeInitResources() override;
       void FacadeDrawPause() override;
       void FacadeDrawEndRace() override;
@@ -66,6 +67,7 @@ class RenderFacadeClover : public RenderFacade {
       void FacadeInitMenu() override;
       void FacadeInitSelectCharacter() override;
       void FacadeInitGameOptions() override;
+      void FacadeInitTournamentOptions() override;
       void FacadeInitPause() override;
       void FacadeInitEndRace() override;
       void FacadeInitLobbyMulti() override;
@@ -78,6 +80,7 @@ class RenderFacadeClover : public RenderFacade {
       void FacadeCheckInputMenu() override;
       void FacadeCheckInputSelectCharacter() override;
       void FacadeCheckInputGameOptions() override;
+      void FacadeCheckInputTournamentOptions() override;
       void FacadeCheckInputPause() override;
       void FacadeCheckInputEndRace() override;
       void FacadeCheckInputLobbyMulti() override;
@@ -139,6 +142,7 @@ class RenderFacadeClover : public RenderFacade {
       bool GetMenuEndRace() override { return menuER; };
 
       void ResetInputGameOptions() override;
+      void ResetInputTournamentOptions() override;
       void ResetInputCharacter() override;
 
       //Metodos exclusivos de RenderClover
@@ -164,7 +168,7 @@ class RenderFacadeClover : public RenderFacade {
 
         //Menu
         int inputMenu { 0 };
-        int maxInputMenu { 5 };
+        int maxInputMenu { 6 };
         //Pause
         int inputPause { 0 };
         int maxInputPause { 1 };
@@ -179,6 +183,10 @@ class RenderFacadeClover : public RenderFacade {
         int option { 0 };
         std::vector<int> inputGO {1,1/*,0*/};
         int maxInputGO[2] {3, 2/*, 0*/};
+        //Opciones de partida torneo
+        int optionTO { 0 };
+        std::vector<int> inputTO {1, 1, 1};
+        int maxInputTO[3] {2, 3, 2};
         //Ajustes
         int optionSettings { 0 };
         std::vector<int> inputSettings {1,3,1,1,1,0};     //Sonido, musica, resolucion, particulas, vegetacion, sombras

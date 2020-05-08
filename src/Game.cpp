@@ -5,6 +5,7 @@
 #include "State/StateInit.h"
 #include "State/StateSelectCharacter.h"
 #include "State/StateGameOptions.h"
+#include "State/StateTournamentOptions.h"
 #include "State/StateEndRace.h"
 #include "State/StateInGameMulti.h"
 #include "State/StateInGameSingle.h"
@@ -62,6 +63,14 @@ void Game::SetState(State::States stateType) {
             EventManager::GetInstance().ClearEvents();
             EventManager::GetInstance().ClearListeners();
             currentState = make_shared<StateGameOptions>();
+            gameState.reset();
+            SuscribeEvents();
+            gameStarted = false;
+            break;
+        case State::TOURNAMENT_OPTIONS:
+            EventManager::GetInstance().ClearEvents();
+            EventManager::GetInstance().ClearListeners();
+            currentState = make_shared<StateTournamentOptions>();
             gameState.reset();
             SuscribeEvents();
             gameStarted = false;
@@ -190,6 +199,11 @@ void Game::SuscribeEvents() {
             EventType::STATE_GAME_OPTIONS,
             bind(&Game::SetStateGameOptions, this, placeholders::_1),
             "StateGameOptions"));
+        
+    EventManager::GetInstance().SubscribeMulti(Listener(
+            EventType::STATE_TOURNAMENT_OPTIONS,
+            bind(&Game::SetStateTournamentOptions, this, placeholders::_1),
+            "StateTournamentOptions"));
 
     EventManager::GetInstance().SubscribeMulti(Listener(
         EventType::STATE_PAUSE,
@@ -301,6 +315,10 @@ void Game::SetStateSelectCharacter(DataMap* d) {
 
 void Game::SetStateGameOptions(DataMap* d) {
     SetState(State::GAME_OPTIONS);
+}
+
+void Game::SetStateTournamentOptions(DataMap* d) {
+    SetState(State::TOURNAMENT_OPTIONS);
 }
 
 void Game::SetStatePause(DataMap* d) {

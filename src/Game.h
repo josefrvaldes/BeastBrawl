@@ -27,6 +27,7 @@ class Game{
         void SetStateMenu(DataMap* d);
         void SetStateSelectCharacter(DataMap* d);
         void SetStateGameOptions(DataMap* d);
+        void SetStateTournamentOptions(DataMap* d);
         void SetStatePause(DataMap* d);
         void SetStateInGameSingle(DataMap* d);
         void SetStateInGameMulti(DataMap* d);

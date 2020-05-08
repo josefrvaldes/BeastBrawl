@@ -23,6 +23,7 @@ class InputFacadeClover : public InputFacade{
 
         void CheckInputSelectCharacter(int&, int) override;
         void CheckInputGameOptions(std::vector<int>&, int[], int&) override;
+        void CheckInputTournamentOptions(std::vector<int>&, int[], int&) override;
 
         bool ShowTable(bool) override;
         bool CheckInputSingle()  override;
@@ -39,6 +40,11 @@ class InputFacadeClover : public InputFacade{
         void SetWindowContext(CLEngine* d) {device = d;}
 
     private:
+        void CheckInputUp(std::vector<int>&, int&);
+        void CheckInputDown(std::vector<int>&, int&);
+        void CheckInputLeft(std::vector<int>&, int[], int&);
+        void CheckInputRight(std::vector<int>&, int[], int&);
+        void CheckInputBack();
 
         CLEngine* device;
 
@@ -46,6 +52,7 @@ class InputFacadeClover : public InputFacade{
         std::unordered_map<InputXBox, bool> inputsPressed;
         core::array<SJoystickInfo> joystickInfo;
         bool multiplayer { false };
+        bool tournamentMode { false };
 
         bool IsInputPressed(InputXBox input);
         void SetValueInput(InputXBox input, bool valuePressed);
@@ -56,5 +63,6 @@ class InputFacadeClover : public InputFacade{
         uint64_t timerGoToMenu {0};
 
         void ChangeGameOptions(int, int);
+        void ChangeTournamentOptions(int, int, int);
         void ChangeSettings(int, int);
 };

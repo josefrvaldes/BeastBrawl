@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <map>
+#include <unordered_map>
 
 class GameValues {
     public:
@@ -18,8 +19,10 @@ class GameValues {
         void SetRanking(std::map<uint16_t, uint16_t> r) { ranking = r; };
         void SetSeconds(std::map<uint16_t, uint16_t> s) { seconds = s; };
 
-        void SetMainCPoints(int p)                      { mainCPoints = p; };
-        void SetIAPoints(std::vector<int> p)            { iaPoints = p; };
+        //void SetMainCPoints(int p)                      { mainCPoints = p; };
+        //void SetIAPoints(std::vector<int> p)            { iaPoints = p; };
+        void SetNumBattles(uint8_t num)                 { numBattles = num; };
+        void IncrementBattle()                          { actualBattle++; };
 
         // GETTERS
         const int GetCharacter()                        { return mainCharacter; };
@@ -32,8 +35,9 @@ class GameValues {
         const std::map<uint16_t, uint16_t>& GetRanking(){ return ranking; };
         const std::map<uint16_t, uint16_t>& GetSeconds(){ return seconds; };
 
-        const int GetMainCPoints()                      { return mainCPoints; };
-        const std::vector<int> GetIAPoints()            { return iaPoints; };
+        //const int GetMainCPoints()                      { return mainCPoints; };
+        //const std::vector<int> GetIAPoints()            { return iaPoints; };
+        uint8_t GetNumBattles()                         { return numBattles; };
 
     private:
         GameValues() = default;;
@@ -50,9 +54,15 @@ class GameValues {
         std::map<uint16_t, uint16_t> ranking { {1,0}, {1,0}, {1,0}, {1,0}, {1,0}, {1,0} };
         std::map<uint16_t, uint16_t> seconds { {1,0}, {1,0}, {1,0}, {1,0}, {1,0}, {1,0} };
 
-        // Para el modo torneo. Modificar como tenga que ser.
-        int mainCPoints { 0 };
-        std::vector<int> iaPoints = { 0, 0, 0, 0, 0};  
+
+        // Para el modo torneo
+        uint8_t numBattles {4};
+        uint8_t actualBattle {1};
+
+        std::unordered_map<uint8_t, uint16_t> actualPoints;
+        std::unordered_map<uint8_t, uint16_t> totalPoints;
+        const uint16_t posPoints[6] {12, 8, 5, 3, 1, 0}; // tener estos puntos independiente del numJugadores
+
 
 };
 
