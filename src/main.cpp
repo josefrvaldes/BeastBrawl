@@ -13,6 +13,7 @@ int main(int argc, char *argv[]) {
     // CBufferOnline buff;
     // int64_t timeSent = Utils::getMillisSinceEpoch(); std::this_thread::sleep_for(std::chrono::milliseconds(50));
     // buff.InsertNewCalculated(vec3(0,0,0), vec3(0,0,0)); std::this_thread::sleep_for(std::chrono::milliseconds(50));
+    // cout << buff;
     // buff.InsertNewCalculated(vec3(0,0,0), vec3(0,0,0)); std::this_thread::sleep_for(std::chrono::milliseconds(50));
     // buff.InsertNewCalculated(vec3(0,0,0), vec3(0,0,0)); std::this_thread::sleep_for(std::chrono::milliseconds(50));
     // buff.InsertNewReceivedOnline(timeSent, vector<Constants::InputTypes>()); std::this_thread::sleep_for(std::chrono::milliseconds(50));

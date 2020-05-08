@@ -255,7 +255,7 @@ void UDPClient::HandleReceivedSync(unsigned char* recevBuff, size_t bytesTransfe
     size_t currentIndex = 0;
 
     Serialization::Deserialize<uint8_t>(recevBuff, currentIndex);  // petition tipe
-    /*int64_t time = */ Serialization::Deserialize<int64_t>(recevBuff, currentIndex);
+    int64_t time = Serialization::Deserialize<int64_t>(recevBuff, currentIndex);
     uint16_t idCarOnline = Serialization::Deserialize<uint16_t>(recevBuff, currentIndex);
 
     glm::vec3 posCar = Serialization::DeserializeVec3(recevBuff, currentIndex);
@@ -270,6 +270,7 @@ void UDPClient::HandleReceivedSync(unsigned char* recevBuff, size_t bytesTransfe
 
     // realizar llamadas al event Manager de manCar
     std::shared_ptr<DataMap> data = make_shared<DataMap>();
+    (*data)[DataType::TIME] = time;
     (*data)[DataType::ID_ONLINE] = idCarOnline;
     (*data)[DataType::VEC3_POS] = posCar;
     (*data)[DataType::VEC3_ROT] = rotCar;

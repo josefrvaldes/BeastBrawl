@@ -418,6 +418,26 @@ void Physics::NewInputsReceivedOnline(Car *car, CBufferOnline *buffer) {
     }
 }
 
+
+void Physics::NewSyncReceivedOnline(Car *car, int64_t time) {
+    auto cTransformable = static_cast<CTransformable *>(car->GetComponent(CompType::TransformableComp).get());
+    auto cCar = static_cast<CCar *>(car->GetComponent(CompType::CarComp).get());
+    auto cSpeed = static_cast<CSpeed *>(car->GetComponent(CompType::SpeedComp).get());
+    auto cNitro = static_cast<CNitro *>(car->GetComponent(CompType::NitroComp).get());
+    auto cOnline = static_cast<COnline *>(car->GetComponent(CompType::OnlineComp).get());
+    auto cExternalForce = static_cast<CExternalForce *>(car->GetComponent(CompType::CompExternalForce).get());
+    auto cBufferOnline = static_cast<CBufferOnline *>(car->GetComponent(CompType::BufferOnline).get());
+
+    
+    auto elems = cBufferOnline->elems;
+    std::list<BuffElement>::iterator it;
+    for(it = elems.begin(); it != elems.end(); ++it)  {
+        if((it->receivedForReal == false && it->time > time) || (it->receivedForReal && it->timeSent > time)) {
+            MoveCarHumanByInput(car, cCar, cOnline, cTransformable, cSpeed, cNitro, cExternalForce);
+        }
+    }
+}
+
 void Physics::MoveCarHumanByInput(Car *car, CCar *cCar, COnline *cOnline, CTransformable *cTransformable, CSpeed *cSpeed, CNitro *cNitro, CExternalForce *cExternalForce) {
     bool accDec = false;
     bool turning = false;
@@ -474,8 +494,10 @@ void Physics::UpdateHuman(Car *car) {
     MoveCarHumanByInput(car, cCar, cOnline, cTransformable, cSpeed, cNitro, cExternalForce);
 
     // añadimos que se ha calculado una nueva posición por predicción
+    cout << "Hemos calculado una nueva pos" << endl;
     auto cBufferOnline = static_cast<CBufferOnline *>(car->GetComponent(CompType::BufferOnline).get());
     cBufferOnline->InsertNewCalculated(cTransformable->position, cTransformable->rotation);
+    cout << *cBufferOnline;
 }
 
 

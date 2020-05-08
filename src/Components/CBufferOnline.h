@@ -13,7 +13,6 @@
 using namespace std;
 
 struct BuffElement {
-    
    private:
     BuffElement() = delete;
     // cada vez que recibamos un paquete online de un jugador, se llamará a este constructor.
@@ -43,6 +42,21 @@ class CBufferOnline : public Component {
     ~CBufferOnline();
     void InsertNewReceivedOnline(int64_t time, vector<Constants::InputTypes> inputs);
     void InsertNewCalculated(glm::vec3 pos_, glm::vec3 rot_);
+
+    friend ostream &operator<<(ostream &out, CBufferOnline &c) {
+        // const std::list<BuffElement>::iterator it;
+        out << "Mostramos el estado del CBufferOnline" << endl;
+        for (std::list<BuffElement>::iterator it = c.elems.begin(); it != c.elems.end(); ++it) {
+            if (it->receivedForReal) {
+                out << "\treceived_for_real timeSent[" << Utils::getISOCurrentTimestampMillis(it->timeSent) << "] time[" << Utils::getISOCurrentTimestampMillis(it->time) << "]" << endl;
+            } else {
+                out << "\t     not_for_real     time[" << Utils::getISOCurrentTimestampMillis(it->time) << "] pos[" << it->pos.x << "," << it->pos.y << "," << it->pos.z << "] rot[" << it->rot.x << "," << it->rot.y << "," << it->rot.z << "]" << endl;
+            }
+        }
+
+        return out << endl
+                   << endl;
+    }
 
     bool newInputReceived{false};
     list<BuffElement> elems;

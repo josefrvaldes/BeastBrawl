@@ -324,7 +324,9 @@ void ManCar::NewInputsReceived(DataMap* d) {
                 auto time = any_cast<int64_t>((*d)[DataType::TIME]);
                 CBufferOnline* buffOnline = static_cast<CBufferOnline*>(car->GetComponent(CompType::BufferOnline).get());
                 compOnline->inputs = inputs;
+                cout << "Hemos recibido un NewInputsReceivedOnline" << endl;
                 buffOnline->InsertNewReceivedOnline(time, inputs);
+                cout << *buffOnline; 
                 physics->NewInputsReceivedOnline(static_cast<Car*>(car.get()), buffOnline);
                 break;
             }
@@ -350,7 +352,8 @@ void ManCar::NewSyncReceived(DataMap* d) {
                 cPowerUp->typePowerUp = any_cast<typeCPowerUp>((*d)[DataType::TYPE_POWER_UP]);
                 // cTotem->active = any_cast<bool>((*d)[DataType::CAR_WITH_TOTEM]);
                 cTotem->accumulatedTime = any_cast<int64_t>((*d)[DataType::TIME_TOTEM]);
-
+                int64_t time = any_cast<int64_t>((*d)[DataType::TIME]);
+                physics->NewSyncReceivedOnline(static_cast<Car*>(car.get()), time);
                 break;
             }
         }
@@ -636,7 +639,7 @@ void ManCar::ThrowPowerUp(Car* car_) {
     auto cShield = static_cast<CShield*>(car_->GetComponent(CompType::ShieldComp).get());
     auto cNitro = static_cast<CNitro*>(car_->GetComponent(CompType::NitroComp).get());
     auto cTransf = static_cast<CTransformable*>(car_->GetComponent(CompType::TransformableComp).get());
-    auto cCar = static_cast<CCar*>(car_->GetComponent(CompType::CarComp).get());
+    // auto cCar = static_cast<CCar*>(car_->GetComponent(CompType::CarComp).get());
     bool robado = false; 
     
     if(cPowerUpCar->typePowerUp != typeCPowerUp::None){
