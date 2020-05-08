@@ -308,6 +308,37 @@ IntersectData CBoundingPlane::IntersectRay(const vec3 &posRayOrigin, const vec3 
     return IntersectData(false, vec3(0,0,0)); 
 }
 
+IntersectData CBoundingPlane::IntersectRay2(const vec3 &posRayOrigin, const vec3 &rayNormalNormalized) const{
+
+
+    auto d_ = - dot(normalizedNormal, a);
+    float denom = dot(normalizedNormal, rayNormalNormalized);
+    // Prevent divide by zero:
+    if (abs(denom) <= 1e-4f)
+        return IntersectData(false, vec3(0,0,0));
+    if (-denom <= 1e-4f)
+        return IntersectData(false, vec3(0,0,0));
+    float t = -(dot(normalizedNormal, posRayOrigin) + d_) / dot(normalizedNormal, rayNormalNormalized);
+    if (t <= 1e-4)
+        return IntersectData(false, vec3(0,0,0));
+
+
+    glm::vec3 puntoEnPlano = posRayOrigin + t * rayNormalNormalized;
+    // Comprobamos si ese punto se encuentra dentro del plano definido
+    if(!membershipPoint(puntoEnPlano)){
+        return IntersectData(false, vec3(0,0,0));
+    }
+
+    glm::vec3 vectorDistance(puntoEnPlano-posRayOrigin);
+    float distance = sqrt(vectorDistance.x*vectorDistance.x + vectorDistance.y*vectorDistance.y + vectorDistance.z*vectorDistance.z);
+    float avoidDistance = 100.0;
+    glm::vec3 target(puntoEnPlano + normalizedNormal * avoidDistance);        // target para evitar el muro
+        
+    return IntersectData(true, target, distance);                            // devolvemos en un vec3 el punto en el que colisiona
+}
+
+
+
 vec3 CBoundingPlane::CalculateVecDirCar(const CTransformable &cTransformable) const{
 
    float angleRotation = (cTransformable.rotation.y * M_PI) / 180.0;

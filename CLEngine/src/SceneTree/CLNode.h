@@ -138,8 +138,8 @@ class CLNode{
 
 
         //! Dibuja la escena
-        void DFSTree(glm::mat4,CLCamera* cam);
-        void DFSTree(glm::mat4 mA, GLuint shaderID);
+        void DFSTree(glm::mat4,CLCamera* cam, const glm::mat4& VPmatrix);
+        void DFSTree(glm::mat4 mA, GLuint shaderID, const glm::mat4& lightSpaceMatrix);
 
 
         void SetIgnoreFrustrum(bool f) { ignoreFrustrum = f;};

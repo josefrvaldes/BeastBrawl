@@ -35,8 +35,11 @@ void StateInGameSingle::Input() {
     }
 }
 
-void StateInGameSingle::UpdateAnimationStart() {
-    StateInGame::UpdateAnimationStart();
+bool StateInGameSingle::UpdateAnimationStart() {
+    bool animationFinished = StateInGame::UpdateAnimationStart();
+    if(animationFinished)
+        GoToCountdownAnimation();
+    return animationFinished;
 }
 
 void StateInGameSingle::UpdateAnimationCountdown() {

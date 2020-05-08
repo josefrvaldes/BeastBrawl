@@ -28,6 +28,7 @@
 #include <Entities/Car.h>
 #include <Entities/CarAI.h>
 #include <Entities/CarHuman.h>
+#include <Entities/Camera.h>
 #include <EventManager/Event.h>
 #include <EventManager/EventManager.h>
 #include <Managers/ManBoundingGround.h>
@@ -37,11 +38,13 @@
 #include <Managers/ManNavMesh.h>
 #include <Managers/ManPowerUp.h>
 #include <Managers/ManTotem.h>
+#include <Managers/ManCamera.h>
 #include <Managers/Manager.h>
 #include <Systems/Utils.h>
 #include "../Components/CGravity.h"
 #include "../Components/CRemovableObject.h"
 #include "../Components/CShield.h"
+#include "../Components/CCamera.h"
 #include "../Facade/Render/RenderFacadeIrrlicht.h"
 #include "../Facade/Render/RenderFacadeManager.h"
 
@@ -106,6 +109,7 @@ void CLPhysics::NewCrashPUWallReceived(DataMap *d) {
 }
 
 void CLPhysics::NewCrashPUCarReceived(DataMap *d) {
+    cout << "Hemos recibido un NewCrashPUCarReceived 2" << endl;
     uint16_t idCar = any_cast<uint16_t>((*d)[DataType::ID_CAR]);
     uint16_t idPU = any_cast<uint16_t>((*d)[DataType::ID_PU]);
     const auto &manCars = managers[0];
@@ -118,8 +122,10 @@ void CLPhysics::NewCrashPUCarReceived(DataMap *d) {
             break;
         }
     }
-    if(carFound == nullptr)
+    if(carFound == nullptr) {
+        cout << "Nos salimos del NewCrashPUCarReceived porque no encontramos el coche" << endl;
         return;
+    }
 
     PowerUp *puFound = nullptr;
     for (const auto &currentPU : manPowerUps->GetEntities()) {
@@ -129,9 +135,10 @@ void CLPhysics::NewCrashPUCarReceived(DataMap *d) {
             break;
         }
     }
-    if (puFound==nullptr)
+    if (puFound==nullptr) {
+        cout << "Nos salimos del NewCrashPUCarReceived porque no encontramos el PU" << endl;
         return;
-
+    }
     HandleCollisionPUWithCar(puFound, carFound);
 }
 
@@ -486,6 +493,8 @@ void CLPhysics::HandleCollisionsWithPlanes() {
             //HandleCollisions(*trcar, *spcar, *ccarcar, false, *plane);
             auto cspeed = ccarcar->speed;
             if ( CollisionsSpherePlane(*trcar, *chaCar, *ccarcar, false, *plane) ) {
+                // TODO: JUDITH -> NO PONGAS VALORES FIJOS ---> AREEGLAR ESTA PARTE
+                //  cspeed >= ccarcar->maxSpeed/2       es eso lo que quieres? en vez de poner 100, osea es la mitad?
                 if (cspeed >= 100) {
                     // Sonido choque
                     shared_ptr<DataMap> dataSound = make_shared<DataMap>();
@@ -1358,28 +1367,22 @@ void CLPhysics::HandleCollisionPUWithCar(PowerUp *powerUp, Entity *car) {
     // comprobamos si el coche tenia escudo y el totem.. ya que debe de soltarlo
     auto cShield = static_cast<CShield *>(car->GetComponent(CompType::ShieldComp).get());
     if (cShield->activePowerUp == false) {  // TRUE
+        cout << "Le han dañado y NO tiene escudo" << endl;
         auto cHurt = static_cast<CHurt *>(car->GetComponent(CompType::HurtComp).get());
         if(!cHurt->hurt) {
+            cout << "Le han dañado y NO estaba dañado" << endl;
             // debemos hacer danyo al jugador
             shared_ptr<DataMap> dataCollisonCarPowerUp = make_shared<DataMap>();
             (*dataCollisonCarPowerUp)[ACTUAL_CAR] = car;  // nos guardamos el puntero al coche
             EventManager::GetInstance().AddEventMulti(Event{EventType::COLLISION_CAR_POWERUP, dataCollisonCarPowerUp});
 
             if (static_cast<CTotem *>(car->GetComponent(CompType::TotemComp).get())->active) {
+                cout << "Le han dañado y SÍ tenían totem" << endl;
                 auto dataTransformableCar = static_cast<CTransformable *>(car->GetComponent(CompType::TransformableComp).get());
                 shared_ptr<DataMap> dataTransfCar = make_shared<DataMap>();
                 (*dataTransfCar)[CAR_TRANSFORMABLE] = dataTransformableCar;
                 (*dataTransfCar)[ACTUAL_CAR] = car;
                 EventManager::GetInstance().AddEventMulti(Event{EventType::DROP_TOTEM, dataTransfCar});
-
-                //EVENTO HUD
-                shared_ptr<DataMap> dataHud = make_shared<DataMap>();
-                auto cCar = static_cast<CCar*>(car->GetComponent(CompType::CarComp).get());
-                if (cCar) {
-                    (*dataHud)[NUM] = (uint16_t)cCar->character;
-                    (*dataHud)[TYPE] = 3;  //Lose
-                    EventManager::GetInstance().AddEventMulti(Event{EventType::SET_EVENT_HUD, dataHud});
-                }
             }
         }
     } else {
@@ -1462,29 +1465,72 @@ void CLPhysics::IntersectPowerUpWalls(ManPowerUp &manPowerUp, ManBoundingWall &m
 
 
 void CLPhysics::IntersectTotemWalls(ManTotem &manTotem, ManBoundingWall &manWalls, ManBoundingOBB &manOBB) {
-        const auto &totem = manTotem.GetEntities()[0];
-        CBoundingSphere *cBSTotem = static_cast<CBoundingSphere *>(totem->GetComponent(CompType::CompBoundingSphere).get());
-        auto cTotem = static_cast<CTotem*>(totem->GetComponent(CompType::TotemComp).get());
-        bool collision = false;
-        // COMPROBAMOS LOS PLANOS NORMALES
-        for (long unsigned int i = 0; i < manWalls.GetEntities().size() && !collision; i++) {
-            const auto &currentWall = manWalls.GetEntities()[i];
-            CBoundingPlane *plane = static_cast<CBoundingPlane *>(currentWall->GetComponent(CompType::CompBoundingPlane).get());
-            IntersectData intersect = plane->IntersectSphere(*cBSTotem);
-            if (intersect.intersects) {
-                // COLISION CON WALL -> speed a 0, beibe
-                collision = true;
-                cTotem->speed = cTotem->MaxSpeed;
+    const auto &totem = manTotem.GetEntities()[0];
+    CBoundingSphere *cBSTotem = static_cast<CBoundingSphere *>(totem->GetComponent(CompType::CompBoundingSphere).get());
+    auto cTotem = static_cast<CTotem*>(totem->GetComponent(CompType::TotemComp).get());
+    bool collision = false;
+    // COMPROBAMOS LOS PLANOS NORMALES
+    for (long unsigned int i = 0; i < manWalls.GetEntities().size() && !collision; i++) {
+        const auto &currentWall = manWalls.GetEntities()[i];
+        CBoundingPlane *plane = static_cast<CBoundingPlane *>(currentWall->GetComponent(CompType::CompBoundingPlane).get());
+        IntersectData intersect = plane->IntersectSphere(*cBSTotem);
+        if (intersect.intersects) {
+            // COLISION CON WALL -> speed a 0, beibe
+            collision = true;
+            cTotem->speed = cTotem->MaxSpeed;
+        }
+    }
+    // COMPROBAMOS LOS OBB
+    for (long unsigned int i = 0; i < manOBB.GetEntities().size() && !collision; i++) {
+        const auto &currentOBB = manOBB.GetEntities()[i];
+        CBoundingOBB *cOBBactual = static_cast<CBoundingOBB *>(currentOBB->GetComponent(CompType::CompBoundingOBB).get());
+        IntersectData intersect = cOBBactual->IntersectSphere(*cBSTotem);
+        if (intersect.intersects) {
+            collision = true;
+            cTotem->speed = cTotem->MaxSpeed;
+        }
+    }
+}
+
+void CLPhysics::IntersectCameraWalls(Camera *cam, Car* car, ManBoundingWall &manWalls, ManBoundingOBB &manOBB){
+    //auto cam = manCam.getCamera();
+    auto cTransfCar = static_cast<CTransformable*>(car->GetComponent(CompType::TransformableComp).get());
+    auto cTransfCam = static_cast<CTransformable*>(cam->GetComponent(CompType::TransformableComp).get());
+    CBoundingSphere *cBSCam = static_cast<CBoundingSphere *>(cam->GetComponent(CompType::CompBoundingSphere).get());
+
+    cBSCam->center = cTransfCam->position;
+    auto cCamera = static_cast<CCamera*>(cam->GetComponent(CompType::CameraComp).get());
+    bool collision = false;
+    // COMPROBAMOS LOS PLANOS NORMALES
+    for (long unsigned int i = 0; i < manWalls.GetEntities().size() && !collision; i++) {
+        const auto &currentWall = manWalls.GetEntities()[i];
+        CBoundingPlane *plane = static_cast<CBoundingPlane *>(currentWall->GetComponent(CompType::CompBoundingPlane).get());
+        auto vecNCam = glm::normalize(cTransfCam->position - cTransfCar->position);
+        IntersectData intersData = plane->IntersectRay2(cTransfCar->position, vecNCam);
+        if (intersData.intersects) {
+            // COLISION CON WALL -> speed a 0, beibe
+            collision = true;
+            if(intersData.distance < cCamera->actualDistance){
+                cCamera->collisionDistance = cCamera->actualDistance - intersData.distance;
             }
         }
-        // COMPROBAMOS LOS OBB
-        for (long unsigned int i = 0; i < manOBB.GetEntities().size() && !collision; i++) {
-            const auto &currentOBB = manOBB.GetEntities()[i];
-            CBoundingOBB *cOBBactual = static_cast<CBoundingOBB *>(currentOBB->GetComponent(CompType::CompBoundingOBB).get());
-            IntersectData intersect = cOBBactual->IntersectSphere(*cBSTotem);
-            if (intersect.intersects) {
-                collision = true;
-                //COLISION CON OBB -> speed a 0 beibe
+    }
+    // COMPROBAMOS LOS OBB
+    for (long unsigned int i = 0; i < manOBB.GetEntities().size() && !collision; i++) {
+        const auto &currentOBB = manOBB.GetEntities()[i];
+        CBoundingOBB *cOBBcurrent = static_cast<CBoundingOBB *>(currentOBB->GetComponent(CompType::CompBoundingOBB).get());
+
+        auto vecNCam = glm::normalize(vec3((cTransfCam->position.x-cTransfCar->position.x),0,(cTransfCam->position.z-cTransfCar->position.z)));
+        IntersectData intersData = cOBBcurrent->IntersectRay2(cTransfCar->position, vecNCam);
+        if (intersData.intersects) {
+            // COLISION CON WALL -> speed a 0, beibe
+            collision = true;
+            if(int(intersData.distance) < cCamera->actualDistance){
+                cCamera->collisionDistance = cCamera->actualDistance - intersData.distance;
             }
         }
+    }
+    if(!collision){
+        cCamera->collisionDistance = 0.0;   
+    }
 }

@@ -35,6 +35,7 @@ class UDPServer : public std::enable_shared_from_this<UDPServer> {
     void HandleReceivedCrashPUCar(const uint16_t id, const uint16_t idPUOnline, const uint16_t idCar, unsigned char buffer[], const size_t currentBufferSize, const udp::endpoint& remoteClient);
     void HandleReceivedCrashPUWall(const uint16_t id, const uint16_t idPUOnline, unsigned char buffer[], const size_t currentBufferSize, const udp::endpoint& remoteClient);
     void HandleReceivedLaunchAnimationEnd(const uint16_t id, const uint16_t idWinner, unsigned char buffer[], const size_t currentBufferSize, const udp::endpoint& remoteClient);
+    void HandleReceivedWaitingForCountdown(Player &player, unsigned char buffer[], const size_t currentBufferSize, const udp::endpoint& remoteClient);
     
     void ResendBytesToOthers(const uint16_t id, const unsigned char resendBytes[], const size_t currentBufferSize, const udp::endpoint& remoteClient);
     void SendBytes(const unsigned char resendBytes[], const size_t currentBufferSize, const Player& player);
@@ -44,6 +45,8 @@ class UDPServer : public std::enable_shared_from_this<UDPServer> {
 
     void ReceiveNewCar();
     void SendEndgame(const Player &p);
+    void SendLaunchAnimationEnd(const Player &player, const uint16_t idPlayer, const uint16_t idWinner);
+    void SendLaunchAnimationCountdown(const Player &player);
 
     void RequestId();
     void Exit();
@@ -80,7 +83,7 @@ class UDPServer : public std::enable_shared_from_this<UDPServer> {
 
     const uint16_t SEGUNDOS = 1000;
     const uint32_t TIEMPO_DESCONEXION = 5 * SEGUNDOS;
-    const uint8_t TIME_BETWEEN_DISCONNECTION_CHECKS = 2;
+    const uint8_t TIME_BETWEEN_DISCONNECTION_CHECKS = 4;
 
     std::unique_ptr<boost::asio::steady_timer> timer;
     int64_t timeServerStartedReceiving;
@@ -89,4 +92,5 @@ class UDPServer : public std::enable_shared_from_this<UDPServer> {
 
     const uint8_t NUM_REINTENTOS = 3;
     bool animationEndRaceLaunched {false};
+    bool animationCountdownLaunched {false};
 };

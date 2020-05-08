@@ -119,6 +119,7 @@ void ManTotem::ResetTotem(DataMap* d){
     auto cTotem = static_cast<CTotem*>(entities[0]->GetComponent(CompType::TotemComp).get());
     // recorremos todos los NavMesh para saber si el totem ha caido en un sitio correcto
     //ManNavMesh manNavMesh;
+    int rotTotem_Y = 0;
     auto currentNavMesh = manNavMesh->CalculateNavMesh(posNewTotem);
     if( currentNavMesh == -1 ){     // significa que la posicion es invalida
         // de momento lo reseteamos en el unico punto de Spawn
@@ -145,7 +146,7 @@ void ManTotem::ResetTotem(DataMap* d){
 
         //Número aleatorios entre minValue y maxValue: --> ROTACION DEL TOTEM
         //if(minValue > maxValue) std::swap(minValue, maxValue);
-        int rotTotem_Y = minValue+rand()%((maxValue+1)-minValue);
+        rotTotem_Y = minValue+rand()%((maxValue+1)-minValue);
         if(rotTotem_Y < 0)      rotTotem_Y += 360; 
         if(rotTotem_Y > 360)    rotTotem_Y -= 360;
 
@@ -156,14 +157,14 @@ void ManTotem::ResetTotem(DataMap* d){
 
         // FINALMENTE, SOLO NOS QUEDA PONERLE LA VELOCIDAD A 0
         cTotem->speed = 0.0; // listo para salir para atras, y sin que se tenga que modificar nada del online :)
-
     }
+    cout << "Hemos perdido el totem con una rotation[" << rotTotem_Y << "] y un speed[" << cTotem->speed << "]" << endl;
 
     if(Game::GetInstance()->GetState()->GetState() == State::States::INGAME_SINGLE){
         ActivateTotem(posNewTotem, currentNavMesh);
     }else if(Game::GetInstance()->GetState()->GetState() == State::States::INGAME_MULTI){
         auto cOnline = static_cast<COnline*>(any_cast<Entity*>((*d)[ACTUAL_CAR])->GetComponent(CompType::OnlineComp).get());
-        systemOnline->SendLostTotem(cOnline->idClient, posNewTotem, currentNavMesh);
+        systemOnline->SendLostTotem(cOnline->idClient, posNewTotem, cTotem->speed, rotTotem_Y, currentNavMesh);
     }
 }
 
@@ -206,12 +207,20 @@ void ManTotem::SubscribeToEvents() {
 
 
 void ManTotem::RecievedCatchTotem(DataMap* d){
+    cout << "ManTotem::RecievedCatchTotem" << endl;
     auto cTotem = static_cast<CTotem*>(entities[0]->GetComponent(CompType::TotemComp).get());
     cTotem->active = false;
 }
 
 
 void ManTotem::RecievedLostTotem(DataMap* d){
+    float speed = any_cast<float>((*d)[DataType::SPEED]);
+    uint16_t rotationTotemY = any_cast<uint16_t>((*d)[DataType::ROTATION]);
+    auto cTransformable = static_cast<CTransformable*>(entities[0]->GetComponent(CompType::TransformableComp).get());
+    cTransformable->rotation.y = rotationTotemY;
+    auto cTotem = static_cast<CTotem*>(entities[0]->GetComponent(CompType::TotemComp).get());
+    cTotem->speed = speed;
+    cout << "Hemos recibido un lost totem con una rotation[" << rotationTotemY << "] y un speed[" << speed << "]" << endl;
     ActivateTotem(any_cast<glm::vec3>((*d)[DataType::VEC3_POS]), any_cast<int>((*d)[DataType::ID]));
 }
 

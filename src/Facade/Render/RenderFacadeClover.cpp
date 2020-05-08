@@ -838,15 +838,14 @@ void RenderFacadeClover::FacadeInitSettings() {
 //  CHECK INPUTS    //
 //////////////////////
 
-// TODO: ¿Poner los input que el render no necesita info fuera del render?
-// TODO: introducir multi input
 
 void RenderFacadeClover::FacadeCheckInputSingle() {
-
- }
+    inputShowTable = InputFacadeManager::GetInstance()->GetInputFacade()->ShowTable(inputShowTable);
+}
 
 vector<Constants::InputTypes> RenderFacadeClover::FacadeCheckInputMulti() {
     vector<Constants::InputTypes> inputs;
+    inputShowTable = InputFacadeManager::GetInstance()->GetInputFacade()->ShowTable(inputShowTable);
     return inputs;
 }
 
@@ -963,14 +962,14 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
         i++;
     }*/
 
-
-    auto k = 0;
-
-    for([[maybe_unused]]const auto& cars : manCars->GetEntities()) {
-        cadena = "media/cuadrado.png";
-        device->DrawImage2D(w - 200.0f, /*h/2 - posFondoTiempos + 45.0*j*/ 150.0f + k*45.0f, 1.0, 0.9f, cadena, true);
-        k++;
+    // FONDO TABLA TIEMPOS
+    if (inputShowTable) {
+        for(size_t k = 0; k < manCars->GetEntities().size(); ++k) {
+            cadena = "media/cuadrado.png";
+            device->DrawImage2D(w - 200.0f, /*h/2 - posFondoTiempos + 45.0*j*/ 150.0f + k*45.0f, 1.0, 0.9f, cadena, true);
+        }
     }
+
 
     auto i = 8;
     auto j = 0;
@@ -1016,7 +1015,7 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
             }
 
             //TABLA DE TIEMPOS
-            if(cTotem) {
+            if(inputShowTable && cTotem) {
                 cadena = std::to_string(j+1) + ".";
                 device->RenderText2D(cadena, w - 190.0f, h - 180.0f - 45.0f*j, 0.1f*j+0.1f, 0.5, glm::vec3(255.0f,255.0f,255.0f));
                 auto posRanking = cTotem->positionRanking - 1;
@@ -1086,13 +1085,13 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
         auto cEventHUD = static_cast<CEventHUD*>(eventhud.get()->GetComponent(CompType::EventHudComp).get());
         if (cEventHUD) {
             switch(cEventHUD->characterEventHUD) {
-                case 0: cadena = "media/hudPenguin.png";    break;
-                case 1: cadena = "media/hudTiger.png";      break;
-                case 2: cadena = "media/hudShark.png";      break;
-                case 3: cadena = "media/hudGorilla.png";    break;
-                case 4: cadena = "media/hudDragon.png";     break;
-                case 5: cadena = "media/hudOctopus.png";    break;
-                default: cout << "+++++++ No entiendo este personaje para el evento" << endl; break;
+                case (uint16_t)mainCharacter::PENGUIN:  cadena = "media/hudPenguin.png";        break;
+                case (uint16_t)mainCharacter::TIGER:    cadena = "media/hudTiger.png";          break;
+                case (uint16_t)mainCharacter::SHARK:    cadena = "media/hudShark.png";          break;
+                case (uint16_t)mainCharacter::GORILLA:  cadena = "media/hudGorilla.png";        break;
+                case (uint16_t)mainCharacter::DRAGON:   cadena = "media/hudDragon.png";         break;
+                case (uint16_t)mainCharacter::OCTOPUS:  cadena = "media/hudOctopus.png";        break;
+                default: cout << "+++++++ No entiendo este personaje para el evento" << endl;   break;
             }
             device->DrawImage2D(50.0f, h - 100.0f, 0.7, 0.1f, cadena, true);
             cadena = cEventHUD->spriteTypeEvent;
@@ -1141,34 +1140,10 @@ void RenderFacadeClover::FacadeDrawMenu() {
 }
 
  void RenderFacadeClover::FacadeDrawSelectCharacter() {
-    glm::vec3 color[6] = {
-            glm::vec3(0.0f, 0.0f, 255.0f),
-            glm::vec3(0.0f, 0.0f, 255.0f),
-            glm::vec3(0.0f, 0.0f, 255.0f),
-            glm::vec3(0.0f, 0.0f, 255.0f),
-            glm::vec3(0.0f, 0.0f, 255.0f),
-            glm::vec3(0.0f, 0.0f, 255.0f)
-    };
-    glm::vec3 colorB = glm::vec3(255.0f, 0.0f, 0.0f);
-    color[inputSC] = glm::vec3(0.0f, 255.0f, 0.0f);
-    std::string name = "<- (B)";
-    device->RenderText2D(name, 50.0f, 50.0f, 0.05f, 0.5f, colorB);
-    name = "Mr Penguin";
-    device->RenderText2D(name, 300.0f, 600.0f, 0.05f, 0.75f, color[0]);
-    name = "Sharky";
-    device->RenderText2D(name, 600.0f, 600.0f, 0.05f, 0.75f, color[2]);
-    name = "Deacon";
-    device->RenderText2D(name, 900.0f, 600.0f, 0.05f, 0.75f, color[4]);
-    name = "Mrs Baxter";
-    device->RenderText2D(name, 300.0f, 400.0f, 0.05f, 0.75f, color[1]);
-    name = "Kaiser Kong";
-    device->RenderText2D(name, 600.0f, 400.0f, 0.05f, 0.75f, color[3]);
-    name = "Cyberoctopus";
-    device->RenderText2D(name, 900.0f, 400.0f, 0.05f, 0.75f, color[5]);
-    name = "(A) Aceptar";
-    device->RenderText2D(name, 950.0f, 50.0f, 0.05f, 0.5f, colorB);
 
-    /*std::string file = "media/menu/character_selector.png";
+    device->SetEnableDepthTest(false);
+
+    std::string file = "media/menu/character_selector.png";
     device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.9f, file, true);
 
     std::string files[6] = {
@@ -1179,7 +1154,9 @@ void RenderFacadeClover::FacadeDrawMenu() {
         "media/menu/deacon_selected.png",
         "media/menu/octopus_selected.png"
     };
-    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.8f, files[inputSC], true);*/
+    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.8f, files[inputSC], true);
+        
+    device->SetEnableDepthTest(true);
 
  }
 
@@ -1231,43 +1208,51 @@ void RenderFacadeClover::FacadeDrawPause() {
 }
 
 void RenderFacadeClover::FacadeDrawEndRace() {
-    std::string file = "media/endrace.png";
-    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
 
-    glm::vec3 colorranking = glm::vec3(0.0f, 0.0f, 0.0f);
+    auto w = device->GetScreenWidth();
+    auto h = device->GetScreenHeight();
+
+    auto scale = 0.75f;
+    if (h > 1000) { scale = 1.0f; }
+    else if (h < 475 ) { scale = 0.25; }
+    else if (h < 675) { scale = 0.5; }
+
+    std::string file = "media/menu/finish_menu_bg.png";
+    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.9f, file, true);
+
     auto rank = GameValues::GetInstance()->GetRanking();
-    if (!rank.empty()) {
-        for ( auto it = rank.begin(); it != rank.end(); ++it) {
-            file = std::to_string(it->first);
-            switch (it->second) {
-            case (uint16_t)mainCharacter::PENGUIN:
-                file += ". Pinguino";
-                break;
-            case (uint16_t)mainCharacter::TIGER:
-                file += ". Tigre";
-                break;
-            case (uint16_t)mainCharacter::SHARK:
-                file += + ". Tiburon";
-                break;
-            case (uint16_t)mainCharacter::GORILLA:
-                file += ". Gorila";
-                break;
-            case (uint16_t)mainCharacter::DRAGON:
-                file += ". Dragon";
-                break;
-            case (uint16_t)mainCharacter::OCTOPUS:
-                file += ". Octopus";
-                break;
-            default:
-                break;
-            }
-            device->RenderText2D(file, 200.0, device->GetScreenHeight() - 100.0f - (100.0*it->first), 0.75f, 0.75f, colorranking);
+    auto secondsRank = GameValues::GetInstance()->GetSeconds();
+    uint8_t i = 1;
+    auto posX = w/2 - 541*scale;
+    auto posY = h/2 - 50.0f*scale - rank.size()*50.0f*scale;
+    auto posYText = h/2 + rank.size()*50.0f*scale - 15.0f*scale;
+    for(auto it = rank.begin(); it != rank.end(); ++it) {
+        file = "media/menu/position";
+        file += std::to_string(i) + ".png";
+        device->DrawImage2D(posX, posY + (i*100.0f)*scale, 1.0*scale, 0.8f, file, true);
+        switch (it->second) {
+            case (uint16_t)mainCharacter::PENGUIN:  file = "media/hudPenguin.png";        break;
+            case (uint16_t)mainCharacter::TIGER:    file = "media/hudTiger.png";          break;
+            case (uint16_t)mainCharacter::SHARK:    file = "media/hudShark.png";          break;
+            case (uint16_t)mainCharacter::GORILLA:  file = "media/hudGorilla.png";        break;
+            case (uint16_t)mainCharacter::DRAGON:   file = "media/hudDragon.png";         break;
+            case (uint16_t)mainCharacter::OCTOPUS:  file = "media/hudOctopus.png";        break;
+            default: cout << "+++++++ No entiendo este personaje para el evento" << endl;   break;
         }
+        device->DrawImage2D(posX + 275.0f*scale, posY + (i*100.0f)*scale + 5.0f*scale, 0.75f*scale, 0.5f, file, true);
+
+        auto it2 = secondsRank.find(it->first);
+        if (it2 != secondsRank.end()){
+            if (it2->second < 10) { file = "0" + std::to_string(it2->second); }
+            else { file = std::to_string(it2->second); }
+            device->RenderText2D(file, posX + 950.0f*scale, posYText - (i*100.0f)*scale, 0.4f, 1.25*scale, glm::vec3(255.0f,255.0f,255.0f));
+        }
+        ++i;
     }
 
     if (menuER) {
         file = "media/endraceMenu.png";
-        device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.08f, file, true);
+        device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.3f, file, true);
 
         glm::vec3 color[3] = {
                 glm::vec3(0.0f, 0.0f, 255.0f),
@@ -1276,11 +1261,11 @@ void RenderFacadeClover::FacadeDrawEndRace() {
         };
         color[inputER] = glm::vec3(0.0f, 255.0f, 0.0f);
         file = "Volver a jugar";
-        device->RenderText2D(file, 500.0f, 400.0f, 0.05f, 1.0f, color[0]);
+        device->RenderText2D(file, 500.0f, 400.0f, 0.2f, 1.0f, color[0]);
         file = "Cambiar de personaje";
-        device->RenderText2D(file, 500.0f, 300.0f, 0.05f, 1.0f, color[1]);
+        device->RenderText2D(file, 500.0f, 300.0f, 0.2f, 1.0f, color[1]);
         file = "Salir al menu";
-        device->RenderText2D(file, 500.0f, 200.0f, 0.05f, 1.0f, color[2]);
+        device->RenderText2D(file, 500.0f, 200.0f, 0.2f, 1.0f, color[2]);
     }
 }
 

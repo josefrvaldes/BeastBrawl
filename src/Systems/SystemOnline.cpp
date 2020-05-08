@@ -105,9 +105,9 @@ void SystemOnline::SendCatchTotem(uint16_t idCarCatched) const {
         udpClient->SendCatchTotem(idOnlineMainCar, idCarCatched);
 }
 
-void SystemOnline::SendLostTotem(uint16_t idCarCatched, const glm::vec3 &position, int numNavMesh) const {
+void SystemOnline::SendLostTotem(uint16_t idCarCatched, const glm::vec3 &position, float speed, int rotationTotemY, int numNavMesh) const {
     for (uint8_t i = 0; i < TIMES_RESEND; ++i)
-        udpClient->SendLostTotem(idOnlineMainCar, idCarCatched, position, numNavMesh);
+        udpClient->SendLostTotem(idOnlineMainCar, idCarCatched, position, speed, rotationTotemY, numNavMesh);
 }
 
 void SystemOnline::SendCrashPUCar(const uint16_t idPowerUp, const uint16_t idCar) const {
@@ -147,4 +147,8 @@ void SystemOnline::SendRoboJorobo() const {
 void SystemOnline::SendNitro(uint16_t idCarWithTotem, uint16_t idCarWithNitro) const {
     for (uint8_t i = 0; i < TIMES_RESEND; ++i)
         udpClient->SendCollideNitro(idOnlineMainCar, idCarWithTotem, idCarWithNitro);
+}
+
+void SystemOnline::SendWaitingForCountdown() const {
+    udpClient->SendWaitingForCountdown(idOnlineMainCar);
 }
