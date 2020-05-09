@@ -17,13 +17,13 @@ struct BuffElement {
     BuffElement() = delete;
     // cada vez que recibamos un paquete online de un jugador, se llamará a este constructor.
     // como veis, recibiremos la hora a la que se envió y los inputs. La pos y rot se calcularán con los datos anteriores en el Physics.cpp
-    BuffElement(int64_t timeSent_, vector<Constants::InputTypes> inputs_, float speed_)
-        : time{Utils::getMillisSinceEpoch()}, timeSent{timeSent_}, receivedForReal{true}, inputs{inputs_}, pos{}, rot{}, speed{speed_} {};
+    BuffElement(int64_t timeSent_, vector<Constants::InputTypes> inputs_, float speed_, float wheelRotation_, float skidDeg_, float skidRotation_)
+        : time{Utils::getMillisSinceEpoch()}, timeSent{timeSent_}, receivedForReal{true}, inputs{inputs_}, pos{}, rot{}, speed{speed_}, wheelRotation{wheelRotation_}, skidDeg{skidDeg_}, skidRotation{skidRotation_} {};
 
     // cada vez que se ejecuta un update y NO hemos recibido un paquete de un cliente, llamaremos a este constructor.
     // solo recibe la pos actual y la rotación actual. Nos servirá para hacer correcciones cuando llegue un paquete de verdad.
-    BuffElement(glm::vec3 pos_, glm::vec3 rot_, float speed_)
-        : time{Utils::getMillisSinceEpoch()}, timeSent{0}, receivedForReal{false}, inputs{}, pos{pos_}, rot{rot_}, speed{speed_} {};
+    BuffElement(glm::vec3 pos_, glm::vec3 rot_, float speed_, float wheelRotation_, float skidDeg_, float skidRotation_)
+        : time{Utils::getMillisSinceEpoch()}, timeSent{0}, receivedForReal{false}, inputs{}, pos{pos_}, rot{rot_}, speed{speed_}, wheelRotation{wheelRotation_}, skidDeg{skidDeg_}, skidRotation{skidRotation_} {};
 
    public:
     int64_t time;
@@ -33,6 +33,9 @@ struct BuffElement {
     glm::vec3 pos;
     glm::vec3 rot;
     float speed;
+    float wheelRotation;
+    float skidDeg;
+    float skidRotation;
 
     friend class CBufferOnline;
 };
@@ -41,8 +44,8 @@ class CBufferOnline : public Component {
    public:
     CBufferOnline();
     ~CBufferOnline();
-    void InsertNewReceivedOnline(int64_t time, vector<Constants::InputTypes> inputs, float speed);
-    void InsertNewCalculated(glm::vec3 pos_, glm::vec3 rot_, float speed);
+    void InsertNewReceivedOnline(int64_t time, vector<Constants::InputTypes> inputs, float speed, float wheelRotation, float skidDeg, float skidRotation);
+    void InsertNewCalculated(glm::vec3 pos_, glm::vec3 rot_, float speed, float wheelRotation, float skidDeg, float skidRotation);
 
     friend ostream &operator<<(ostream &out, CBufferOnline &c) {
         // const std::list<BuffElement>::iterator it;

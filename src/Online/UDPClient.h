@@ -36,8 +36,8 @@ class UDPClient {
     UDPClient(string host, uint16_t port_);
     ~UDPClient();
 
-    void SendInputs(const vector<Constants::InputTypes>& inputs, uint16_t id, float speed);
-    void SendSync(uint16_t idOnline, const glm::vec3& posCar, const glm::vec3& rotCar, float speed, typeCPowerUp typePU, bool haveTotem, int64_t totemTime,
+    void SendInputs(const vector<Constants::InputTypes>& inputs, uint16_t id, float speed, float wheelRotation, float skidDeg, float skidRotation);
+    void SendSync(uint16_t idOnline, const glm::vec3& posCar, const glm::vec3& rotCar, float speed, float wheelRotation, float skidDeg, float skidRotation, typeCPowerUp typePU, bool haveTotem, int64_t totemTime,
                   bool totemInGround, const glm::vec3& posTotem);
     void SendCatchPU(uint16_t idOnline, typeCPowerUp typePU);
     void SendCatchTotem(uint16_t idOnline, uint16_t idPlayerCatched);
@@ -57,7 +57,7 @@ class UDPClient {
    private:
     void StartReceiving();
     void HandleReceived(std::shared_ptr<unsigned char[]> recevBuff, const boost::system::error_code& error, size_t bytesTransferred);
-    void HandleReceivedInputs(int64_t time, const vector<Constants::InputTypes> inputs, const uint16_t idRival, const float speed) const;
+    void HandleReceivedInputs(int64_t time, const vector<Constants::InputTypes> inputs, const uint16_t idRival, const float speed, const float wheelRotation, const float skidDeg, const float skidRotation) const;
     void HandleReceivedSync(unsigned char* recevBuff, size_t bytesTransferred);
     void HandleReceivedCatchPU(unsigned char* recevBuff, size_t bytesTransferred);
     void HandleReceivedCatchTotem(unsigned char* recevBuff, size_t bytesTransferred);

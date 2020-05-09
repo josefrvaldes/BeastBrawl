@@ -10,8 +10,8 @@ CBufferOnline::~CBufferOnline() {
 /**
  * Esta función recibe un elemento nuevo y lo inserta donde corresponda manteniendo el orden por tiempo. Además, elimina todos los anteriores que hubiera por tiempo.
  */
-void CBufferOnline::InsertNewReceivedOnline(int64_t time, vector<Constants::InputTypes> inputs, float speed_) {
-    BuffElement buffElem(time, inputs, speed_);
+void CBufferOnline::InsertNewReceivedOnline(int64_t time, vector<Constants::InputTypes> inputs, float speed_, float wheelRotation_, float skidDeg_, float skidRotation_) {
+    BuffElement buffElem(time, inputs, speed_, wheelRotation_, skidDeg_, skidRotation_);
     if(elems.empty()) {
         elems.push_back(buffElem);
         return;
@@ -41,8 +41,8 @@ void CBufferOnline::InsertNewReceivedOnline(int64_t time, vector<Constants::Inpu
 /**
  * Esta función recibe un elemento nuevo y lo inserta donde corresponda manteniendo el orden por tiempo. Además, elimina todos los anteriores que hubiera por tiempo.
  */
-void CBufferOnline::InsertNewCalculated(vec3 pos_, vec3 rot_, float speed_) {
-    BuffElement buffElem(pos_, rot_, speed_);
+void CBufferOnline::InsertNewCalculated(vec3 pos_, vec3 rot_, float speed_, float wheelRotation_, float skidDeg_, float skidRotation_) {
+    BuffElement buffElem(pos_, rot_, speed_, wheelRotation_, skidDeg_, skidRotation_);
     elems.push_back(buffElem);
 
     // si hay demasiados elementos porque por ejemplo se puede haber perdido un paquete, guardamos el último al final pero eliminamos el primero

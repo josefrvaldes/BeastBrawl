@@ -74,8 +74,11 @@ void UDPClient::HandleReceived(std::shared_ptr<unsigned char[]> recevBuff, const
                         // cout << "Hemos recibido una petición de tipo SEND_INPUT" << endl;
                         const vector<Constants::InputTypes> inputs = Serialization::DeserializeInputs(recevBuff.get(), currentIndex);
                         const float speed = Serialization::Deserialize<float>(recevBuff.get(), currentIndex);
+                        const float wheelRotation = Serialization::Deserialize<float>(recevBuff.get(), currentIndex);
+                        const float skidDeg = Serialization::Deserialize<float>(recevBuff.get(), currentIndex);
+                        const float skidRotation = Serialization::Deserialize<float>(recevBuff.get(), currentIndex);
                         lastTimeInputReceived[idPlayer] = time;
-                        HandleReceivedInputs(time, inputs, idPlayer, speed);
+                        HandleReceivedInputs(time, inputs, idPlayer, speed, wheelRotation, skidDeg, skidRotation);
                     }
                 } break;
 
@@ -196,7 +199,7 @@ void UDPClient::HandleReceived(std::shared_ptr<unsigned char[]> recevBuff, const
     StartReceiving();
 }
 
-void UDPClient::HandleReceivedInputs(const int64_t time, const vector<Constants::InputTypes> inputs, const uint16_t idRival, const float speed) const {
+void UDPClient::HandleReceivedInputs(const int64_t time, const vector<Constants::InputTypes> inputs, const uint16_t idRival, const float speed, const float wheelRotation, const float skidDeg, const float skidRotation) const {
     //cout << "Hemos recibido los inputs " << recvdJSON.dump() << endl;
     //vector<Constants::InputTypes> inputs = recvdJSON["inputs"];
     std::shared_ptr<DataMap> data = make_shared<DataMap>();
@@ -204,6 +207,9 @@ void UDPClient::HandleReceivedInputs(const int64_t time, const vector<Constants:
     (*data)[DataType::INPUTS] = inputs;
     (*data)[DataType::TIME] = time;
     (*data)[DataType::SPEED] = speed;
+    (*data)[DataType::WHEEL_ROTATION] = wheelRotation;
+    (*data)[DataType::SKID_DEG] = skidDeg;
+    (*data)[DataType::SKID_ROTATION] = skidRotation;
     EventManager::GetInstance().AddEventMulti(Event{EventType::NEW_INPUTS_RECEIVED, data});
     // cout << "Hemos recibido los inputs ";
     // for (size_t i = 0; i < inputs.size(); i++) {
@@ -238,6 +244,9 @@ void UDPClient::HandleReceivedSync(unsigned char* recevBuff, size_t bytesTransfe
     glm::vec3 posCar = Serialization::DeserializeVec3(recevBuff, currentIndex);
     glm::vec3 rotCar = Serialization::DeserializeVec3(recevBuff, currentIndex);
     float speed = Serialization::Deserialize<float>(recevBuff, currentIndex);
+    float wheelRotation = Serialization::Deserialize<float>(recevBuff, currentIndex);
+    float skidDeg = Serialization::Deserialize<float>(recevBuff, currentIndex);
+    float skidRotation = Serialization::Deserialize<float>(recevBuff, currentIndex);
 
     typeCPowerUp typePU;
     bool haveTotem;
@@ -256,6 +265,9 @@ void UDPClient::HandleReceivedSync(unsigned char* recevBuff, size_t bytesTransfe
     (*data)[DataType::CAR_WITH_TOTEM] = haveTotem;
     (*data)[DataType::TIME_TOTEM] = totemTime;
     (*data)[DataType::SPEED] = speed;
+    (*data)[DataType::WHEEL_ROTATION] = wheelRotation;
+    (*data)[DataType::SKID_DEG] = skidDeg;
+    (*data)[DataType::SKID_ROTATION] = skidRotation;
     EventManager::GetInstance().AddEventMulti(Event{EventType::NEW_SYNC_RECEIVED_CAR, data});
 
     glm::vec3 posTotem(0.0, 0.0, 0.0);
@@ -463,7 +475,7 @@ void UDPClient::SendDateTime() {
             boost::asio::placeholders::bytes_transferred));
 }
 
-void UDPClient::SendInputs(const vector<Constants::InputTypes>& inputs, uint16_t idPlayer, float speed) {
+void UDPClient::SendInputs(const vector<Constants::InputTypes>& inputs, uint16_t idPlayer, float speed, float wheelRotation, float skidDeg, float skidRotation) {
     unsigned char requestBuff[Constants::ONLINE_BUFFER_SIZE];
     size_t currentBuffSize = 0;
     uint8_t callType = Constants::PetitionTypes::SEND_INPUTS;
@@ -473,6 +485,9 @@ void UDPClient::SendInputs(const vector<Constants::InputTypes>& inputs, uint16_t
     Serialization::Serialize(requestBuff, &idPlayer, currentBuffSize);
     Serialization::SerializeInputs(requestBuff, inputs, currentBuffSize);
     Serialization::Serialize(requestBuff, &speed, currentBuffSize);
+    Serialization::Serialize(requestBuff, &wheelRotation, currentBuffSize);
+    Serialization::Serialize(requestBuff, &skidDeg, currentBuffSize);
+    Serialization::Serialize(requestBuff, &skidRotation, currentBuffSize);
 
     socket.async_send_to(
         boost::asio::buffer(requestBuff, currentBuffSize),
@@ -484,7 +499,7 @@ void UDPClient::SendInputs(const vector<Constants::InputTypes>& inputs, uint16_t
             boost::asio::placeholders::bytes_transferred));
 }
 
-void UDPClient::SendSync(uint16_t idOnline, const glm::vec3& posCar, const glm::vec3& rotCar, float speed, typeCPowerUp typePU, bool haveTotem,
+void UDPClient::SendSync(uint16_t idOnline, const glm::vec3& posCar, const glm::vec3& rotCar, float speed, float wheelRotation, float skidDeg, float skidRotation, typeCPowerUp typePU, bool haveTotem,
                          int64_t totemTime, bool totemInGround, const glm::vec3& posTotem) {
     unsigned char requestBuff[Constants::ONLINE_BUFFER_SIZE];
     size_t currentBuffSize = 0;
@@ -497,6 +512,9 @@ void UDPClient::SendSync(uint16_t idOnline, const glm::vec3& posCar, const glm::
     Serialization::SerializeVec3(requestBuff, posCar, currentBuffSize);
     Serialization::SerializeVec3(requestBuff, rotCar, currentBuffSize);
     Serialization::Serialize(requestBuff, &speed, currentBuffSize);
+    Serialization::Serialize(requestBuff, &wheelRotation, currentBuffSize);
+    Serialization::Serialize(requestBuff, &skidDeg, currentBuffSize);
+    Serialization::Serialize(requestBuff, &skidRotation, currentBuffSize);
 
     Serialization::SerializePowerUpTotem(requestBuff, typePU, haveTotem, totemInGround, currentBuffSize);
     Serialization::Serialize(requestBuff, &totemTime, currentBuffSize);

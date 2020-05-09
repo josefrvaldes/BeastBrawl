@@ -331,12 +331,15 @@ void ManCar::NewInputsReceived(DataMap* d) {
                 auto inputs = any_cast<vector<Constants::InputTypes>>((*d)[DataType::INPUTS]);
                 auto time = any_cast<int64_t>((*d)[DataType::TIME]);
                 float speed = any_cast<float>((*d)[DataType::SPEED]);
+                float wheelRotation = any_cast<float>((*d)[DataType::WHEEL_ROTATION]);
+                float skidDeg = any_cast<float>((*d)[DataType::SKID_DEG]);
+                float skidRotation = any_cast<float>((*d)[DataType::SKID_ROTATION]);
                 CBufferOnline* buffOnline = static_cast<CBufferOnline*>(car->GetComponent(CompType::BufferOnline).get());
                 compOnline->inputs = inputs;
                 cout << "Hemos recibido un NewInputsReceivedOnline" << endl;
-                buffOnline->InsertNewReceivedOnline(time, inputs, speed);
+                buffOnline->InsertNewReceivedOnline(time, inputs, speed, wheelRotation, skidDeg, skidRotation);
                 cout << *buffOnline; 
-                physics->NewInputsReceivedOnline(static_cast<Car*>(car.get()), speed, buffOnline);
+                physics->NewInputsReceivedOnline(static_cast<Car*>(car.get()), speed, wheelRotation, skidDeg, skidRotation, buffOnline);
                 break;
             }
         }
@@ -365,6 +368,9 @@ void ManCar::NewSyncReceived(DataMap* d) {
                 cTotem->accumulatedTime = any_cast<int64_t>((*d)[DataType::TIME_TOTEM]);
                 int64_t time = any_cast<int64_t>((*d)[DataType::TIME]);
                 cCar->speed = any_cast<float>((*d)[DataType::SPEED]);
+                cCar->wheelRotation = any_cast<float>((*d)[DataType::WHEEL_ROTATION]);
+                cCar->skidDeg = any_cast<float>((*d)[DataType::SKID_DEG]);
+                cCar->skidRotation = any_cast<float>((*d)[DataType::SKID_ROTATION]);
                 physics->NewSyncReceivedOnline(static_cast<Car*>(car.get()), time);
                 break;
             }

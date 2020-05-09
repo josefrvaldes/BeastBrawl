@@ -29,7 +29,7 @@ StateInGameMulti::StateInGameMulti(uint16_t idOnline_, const vector<uint16_t> id
     SubscribeToEvents();
 
     const vector<Constants::InputTypes> inputs;
-    sysOnline->SendInputs(inputs, 0.f);
+    sysOnline->SendInputs(inputs, 0.f, 0.f, 0.f, 0.f);
     sysAnimStart->ResetTimer();
     sysRanking->Update(manCars.get());
 }
@@ -111,7 +111,7 @@ void StateInGameMulti::Input() {
             CCar* cCar = static_cast<CCar*>(manCars->GetCar()->GetComponent(CompType::CarComp).get());
             lastTimeSentInputs = now;
             previousInputs = inputs;
-            sysOnline->SendInputs(inputs, cCar->speed);
+            sysOnline->SendInputs(inputs, cCar->speed, cCar->wheelRotation, cCar->skidDeg, cCar->skidRotation);
         }
 
         auto millisSinceLastSyncSent = duration_cast<milliseconds>(now - lastTimeSentSync).count();

@@ -400,7 +400,7 @@ void Physics::RecoverSkid(CCar &cCar, CTransformable &cTrans) const{
 }
 
 
-void Physics::NewInputsReceivedOnline(Car *car, float speed, CBufferOnline *buffer) {
+void Physics::NewInputsReceivedOnline(Car *car, float speed, float wheelRotation, float skidDeg, float skidRotation, CBufferOnline *buffer) {
     auto cTransformable = static_cast<CTransformable *>(car->GetComponent(CompType::TransformableComp).get());
     auto cCar = static_cast<CCar *>(car->GetComponent(CompType::CarComp).get());
     auto cSpeed = static_cast<CSpeed *>(car->GetComponent(CompType::SpeedComp).get());
@@ -408,6 +408,10 @@ void Physics::NewInputsReceivedOnline(Car *car, float speed, CBufferOnline *buff
     auto cOnline = static_cast<COnline *>(car->GetComponent(CompType::OnlineComp).get());
     auto cExternalForce = static_cast<CExternalForce *>(car->GetComponent(CompType::CompExternalForce).get());
     cCar->speed = speed;
+    cCar->wheelRotation = wheelRotation;
+    cCar->skidDeg = skidDeg;
+    cCar->skidRotation = skidRotation;
+    cout << "Hemos recibido un speed["<<speed<<"] wheelRotation["<<wheelRotation<<"] skidDeg["<<skidDeg<<"] y skidRotation["<<skidRotation<<"]" << endl;
     if(buffer->elems.size() > 1) {
         cout << "Hacemos corrección por input received: el coche estaba en:   " << *cTransformable << endl;
         BuffElement elemRecienRecibido = buffer->elems.front();
@@ -416,12 +420,13 @@ void Physics::NewInputsReceivedOnline(Car *car, float speed, CBufferOnline *buff
         cTransformable->position = elemSiguiente.pos;
         cTransformable->rotation = elemSiguiente.rot;
         cout << "\tCogemos la pos donde estaba en el momento del timeReceived:  " << *cTransformable << endl;
-        // TODO: posible corrección de desfase. Parece que el online va siempre 1 frame por delante, así que para ajustar, haremos aquí
-        // una corrección menos:
         float deltaAux = Constants::DELTA_TIME_MILLIS;
         int32_t intervalo = elemRecienRecibido.time - elemRecienRecibido.timeSent;
         float veces = (intervalo) / deltaAux;
         int16_t auxVeces = veces;
+
+        // TODO: posible corrección de desfase. Parece que el online va siempre 1 frame por delante, así que para ajustar, haremos aquí
+        // una corrección menos:
         for(int16_t i = 0; i < auxVeces - 1; i++) {
             cout << "corregimos " << i << " veces" << endl;
             MoveCarHumanByInput(car, cCar, cOnline, cTransformable, cSpeed, cNitro, cExternalForce);
@@ -521,7 +526,7 @@ void Physics::UpdateHuman(Car *car) {
     // añadimos que se ha calculado una nueva posición por predicción
     cout << "Hemos calculado una nueva pos" << endl;
     auto cBufferOnline = static_cast<CBufferOnline *>(car->GetComponent(CompType::BufferOnline).get());
-    cBufferOnline->InsertNewCalculated(cTransformable->position, cTransformable->rotation, cCar->speed);
+    cBufferOnline->InsertNewCalculated(cTransformable->position, cTransformable->rotation, cCar->speed, cCar->wheelRotation, cCar->skidDeg, cCar->skidRotation);
     cout << *cBufferOnline;
 }
 
