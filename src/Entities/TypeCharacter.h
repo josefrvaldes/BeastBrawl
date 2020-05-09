@@ -7,15 +7,15 @@ enum MAX_VELOCITY {
     V_MEDIUM  = 210,
     V_HIGH    = 240
 };
-enum ACCELERATION { // NOTA: la aceleracion, para los valores altuales del juego, dividir por 100 (en un enum no se pueden poner floats)
+enum ACCELERATION { // acceleration/100
     A_LOW     = 125,
     A_MEDIUM  = 150,
     A_HIGH    = 200
 };
 enum WEIGHT {
-    W_LOW     = 20,
-    W_MEDIUM  = 40,
-    W_HIGH    = 60
+    W_LOW     = -50,
+    W_MEDIUM  = 0,
+    W_HIGH    = 50
 };
 
 enum TypeAnimal {PENGUIN, TIGER, SHARK, GORILLA, DRAGON, OCTOPUS};

@@ -905,7 +905,7 @@ void CLPhysics::ReciveExternalForce(CExternalForce &cExtForc1, CTransformable &t
     if (ccarOther.speed > ccarOther.maxSpeed * 0.1) {
         cExtForc1.dirExternalForce = vecDirCar2;
         //cout << "HOLAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA: " << ccarOther.speed << endl;
-        cExtForc1.force = ccarOther.speed;
+        cExtForc1.force = ccarOther.speed  + ccarOther.weight;
     }
 
 }
