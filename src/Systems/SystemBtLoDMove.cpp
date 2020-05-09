@@ -285,8 +285,9 @@ struct SBArrive_LoDMove : public behaviourTree {
 //ACCION --> aplicamos logica difusa
 struct ApplyFuzzyLogic_LoDMove : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
-        blackboard->systemFuzzyLogicAI->Update(blackboard->actualCar, Constants::DELTA_TIME);
         auto cBrainAI = static_cast<CBrainAI*>(blackboard->actualCar->GetComponent(CompType::BrainAIComp).get());
+        cBrainAI->fuzzyLogic->Update(blackboard->actualCar, Constants::DELTA_TIME);
+        //blackboard->systemFuzzyLogicAI->Update(blackboard->actualCar, Constants::DELTA_TIME);
         cBrainAI->movementType = "Logica difusa";
         //std::cout << "Aplico FL" << std::endl;    
         return true;
@@ -312,10 +313,10 @@ struct ApplyFuzzyLogic_LoDMove : public behaviourTree {
 
 SystemBtLoDMove::SystemBtLoDMove(){
     // Sistemas de movimiento
-    fuzzyLogic = make_shared<SystemFuzzyLogicAI>();
+    //fuzzyLogic = make_shared<SystemFuzzyLogicAI>();
+    //entradoFL=false;
     steeringBehaviours = make_shared<SteeringBehaviours>();
-    entradoFL=false;
-    
+
     //Construir el Arblol
     selectorBehaviourTree = make_shared<selector>();
 
@@ -381,20 +382,29 @@ SystemBtLoDMove::SystemBtLoDMove(){
 
 }
 
+void SystemBtLoDMove::InitFuzzyLogic(ManCar &manCars){
+    for(const auto& currentCar : manCars.GetEntities()){
+        if(static_cast<Car*>(currentCar.get())->GetTypeCar() == TypeCar::CarAI){
+            auto cBrain = static_cast<CBrainAI*>(currentCar.get()->GetComponent(CompType::BrainAIComp).get());
+            cBrain->fuzzyLogic->InitSystemFuzzyLogicAI(static_cast<CarAI*>(currentCar.get()));
+        }
+    }
+}
+
 
 void SystemBtLoDMove::AddCLPhysicsSB(CLPhysics* clPhysics){
     steeringBehaviours->SetCLPhysics(clPhysics);
 }
 
 void SystemBtLoDMove::update(CarAI* actualCar){
-    if(entradoFL==false){
-        fuzzyLogic->InitSystemFuzzyLogicAI(actualCar);  // To-Do: arreglar esta llamada para solo hacerla una vez
-        entradoFL=true;
-    }
+    //if(entradoFL==false){
+    //    fuzzyLogic->InitSystemFuzzyLogicAI(actualCar);  // To-Do: arreglar esta llamada para solo hacerla una vez
+    //    entradoFL=true;
+    //}
 
     unique_ptr<Blackboard> blackboard = make_unique<Blackboard>(actualCar, static_cast<ManCar*>(managers[0]), static_cast<ManPowerUp*>(managers[1]), 
-            static_cast<ManBoxPowerUp*>(managers[2]), static_cast<ManTotem*>(managers[3]), static_cast<ManWayPoint*>(managers[4]), fuzzyLogic.get(), 
-            steeringBehaviours.get(), static_cast<ManNavMesh*>(managers[5]), static_cast<ManBoundingWall*>(managers[6]), static_cast<ManBoundingOBB*>(managers[7]));
+            static_cast<ManBoxPowerUp*>(managers[2]), static_cast<ManTotem*>(managers[3]), static_cast<ManWayPoint*>(managers[4]), steeringBehaviours.get(), 
+            static_cast<ManNavMesh*>(managers[5]), static_cast<ManBoundingWall*>(managers[6]), static_cast<ManBoundingOBB*>(managers[7]));
 
     selectorBehaviourTree->run(blackboard.get());
 }

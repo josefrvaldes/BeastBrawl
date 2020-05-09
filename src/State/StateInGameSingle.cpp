@@ -209,6 +209,7 @@ void StateInGameSingle::InitBtLoDMove() {
     systemBtLoDMove->AddManager(*manBoundingOBB.get());
     
     systemBtLoDMove->AddCLPhysicsSB(clPhysics.get());
+    systemBtLoDMove->InitFuzzyLogic(*manCars.get());
 
     systemBtLoDMove->setMaxProcessTime(0.00053);
 }

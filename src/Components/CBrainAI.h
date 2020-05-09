@@ -6,9 +6,11 @@
 #include <string>
 #include <stack>
 #include <vector>
+#include <memory>
 #include "../Entities/Car.h"
 #include "../Entities/Totem.h"
 #include "../Entities/BoxPowerUp.h"
+#include "../Systems/SystemFuzzyLogicAI.h"
 
 
 
@@ -65,5 +67,9 @@ public:
     bool thinking {false};
     uint32_t totalTried {3};
     uint32_t numTried {2}; // empezamos ya en el ultimo intento porque la primera vez no queremos
+
+
+    // LOGICA DIFUSA
+    shared_ptr<SystemFuzzyLogicAI> fuzzyLogic;
 
 };

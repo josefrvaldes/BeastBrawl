@@ -651,7 +651,7 @@ void ManCar::ThrowPowerUp(Car* car_) {
     auto cShield = static_cast<CShield*>(car_->GetComponent(CompType::ShieldComp).get());
     auto cNitro = static_cast<CNitro*>(car_->GetComponent(CompType::NitroComp).get());
     auto cTransf = static_cast<CTransformable*>(car_->GetComponent(CompType::TransformableComp).get());
-    // auto cCar = static_cast<CCar*>(car_->GetComponent(CompType::CarComp).get());
+    //auto cCar = static_cast<CCar*>(car_->GetComponent(CompType::CarComp).get());
     bool robado = false; 
     
     if(cPowerUpCar->typePowerUp != typeCPowerUp::None){

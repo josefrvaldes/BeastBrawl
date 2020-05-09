@@ -202,6 +202,8 @@ class RenderFacadeClover : public RenderFacade {
             void Restart();
 
             string GetCurrentPath() const { return currentPath + extension; }
+            float GetTime() const { return time; }
+            float GetTimeBetweenFrames() const { return timeBetweenFrames; }
 
          private:
             string path;

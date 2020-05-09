@@ -1103,15 +1103,18 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
 
 void RenderFacadeClover::FacadeDrawIntro() {
     if(!introAnimation){
-        introAnimation = make_unique<Animation2D>("media/introAnimation/Beast Brawl.jpg",356,24);
+        introAnimation = make_unique<Animation2D>("media/introAnimation/Beast Brawl.jpg",812,60);
         introAnimation->Start();
     }
     
+    //No podemos hacer animaciones a otra cosa que no sea 60 porque el vsync tiene que estar activado
 
-    //resourceManager->DeleteResourceTexture(introAnimation->GetCurrentPath());
-    // introAnimation->Update();
-    // device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, introAnimation->GetCurrentPath(), true);
-    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, "media/introAnimation/Beast Brawl355.jpg", true);
+
+    resourceManager->DeleteResourceTexture(introAnimation->GetCurrentPath());
+    
+    introAnimation->Update();
+    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, introAnimation->GetCurrentPath(), true);
+    //device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, "media/introAnimation/Beast Brawl355.jpg", true);
 
 }
 
@@ -1788,8 +1791,10 @@ void RenderFacadeClover::Animation2D::Update(){
     string newPath = path;
 
     //Cambiamos de frame
-    if(time >= timeBetweenFrames){
+    if(time >= timeBetweenFrames*100){
         //Borramos el frame anterior
+
+        //cout << "Nuevo Frame\n";
         
         if(actualFrame >= numFrames){
             finished = true;
@@ -1810,6 +1815,9 @@ void RenderFacadeClover::Animation2D::Update(){
 
         timeStart = system_clock::now();
         actualFrame++;
+
+    }else{
+        //cout << "MISMO Frame\n";
 
     }
 
