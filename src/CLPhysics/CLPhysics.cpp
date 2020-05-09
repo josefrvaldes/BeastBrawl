@@ -669,7 +669,7 @@ void CLPhysics::SeparateSpheres(CTransformable &trCar1, CBoundingSphere &spCar1,
     vec3 nuevaDirectionCar1 = -normalize(direction);
     vec3 nuevaDirectionCar2 = normalize(direction);
 
-    auto totalSpeed = ccarCar1.speed + ccarCar2.speed;
+    //auto totalSpeed = ccarCar1.speed + ccarCar2.speed;
 
 //    if(totalSpeed != 0){
 //        auto percCar1 = (100*ccarCar1.speed) / totalSpeed;
@@ -698,7 +698,7 @@ void CLPhysics::SeparateCilindreSphere(CTransformable &trCar1, glm::vec3 &cenCar
     vec3 nuevaDirectionCar1 = -normalize(direction);
     vec3 nuevaDirectionCar2 = normalize(direction);
 
-    auto totalSpeed = ccarCar1.speed + ccarCar2.speed;
+    //auto totalSpeed = ccarCar1.speed + ccarCar2.speed;
 
 //    if(totalSpeed != 0){
 //        auto percCar1 = (100*ccarCar1.speed) / totalSpeed;
