@@ -58,7 +58,7 @@ void StateInGame::AddElementsToRender() {
             renderEngine->FacadeAddObject(cars.get());
     }
 
-    renderEngine->FacadeAddObject(ground.get());  //Anyadimos el suelo
+    //renderEngine->FacadeAddObject(ground.get());  //Anyadimos el suelo
 
     //Añadimos todos los power ups
     for (auto bpu : manBoxPowerUps->GetEntities())
@@ -275,9 +275,9 @@ void StateInGame::UpdateGame() {
                     EventManager &em = EventManager::GetInstance();
                     em.Update();
 // ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    auto end = std::chrono::system_clock::now();
-    double elapsed_millisecons = std::chrono::duration_cast<std::chrono::nanoseconds>
-                             (end-timeStartSeccion).count();
+//    auto end = std::chrono::system_clock::now();
+//    double elapsed_millisecons = std::chrono::duration_cast<std::chrono::nanoseconds>
+//                             (end-timeStartSeccion).count();
 //     cout << "TIEMO ACTUAL ULDATE  (EVENT MANAGER):  " << elapsed_millisecons/1000000 << endl;
 // ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //     timeStartSeccion = std::chrono::system_clock::now();
@@ -409,16 +409,16 @@ void StateInGame::UpdateGame() {
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    timeStartSeccion = std::chrono::system_clock::now();
+//    timeStartSeccion = std::chrono::system_clock::now();
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                     sysLoD->UpdateAnimations(manBoxPowerUps->GetEntities(), manCamera.get()->getCamera());
                     renderEngine->FacadeUpdateAnimationsLoD(manBoxPowerUps->GetEntities());
                     renderEngine->FacadeAnimate(manBoxPowerUps->GetEntities());
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-     end = std::chrono::system_clock::now();
-     elapsed_millisecons = std::chrono::duration_cast<std::chrono::nanoseconds>
-                             (end-timeStartSeccion).count();
-    cout << "TIEMO ACTUAL ULDATE  (Animation):  " << elapsed_millisecons/1000000 << endl;
+//     end = std::chrono::system_clock::now();
+//     elapsed_millisecons = std::chrono::duration_cast<std::chrono::nanoseconds>
+//                             (end-timeStartSeccion).count();
+//    cout << "TIEMO ACTUAL ULDATE  (Animation):  " << elapsed_millisecons/1000000 << endl;
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
