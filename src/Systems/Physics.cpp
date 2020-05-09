@@ -38,6 +38,9 @@ void Physics::update(Car *car) {
 //Calcula la posicion del coche (duda con las formulas preguntar a Jose)
 void Physics::CalculatePosition(CCar *cCar, CTransformable *cTransformable, CSpeed *cSpeed, CExternalForce *cExternalForce, float deltaTime) {
 
+    //cout << "LA FUERZA EXTERNA:  " << cExternalForce->force << endl;
+
+
     // debemos de tener encuenta la fuerza externa, asi como la direccion final que tomaremos (el angulo final)
     if(cExternalForce->force > 0){
         // Este paso es una tonteria porque ya lo devolvemos normalizado
@@ -144,8 +147,8 @@ glm::vec2 Physics::ApplyExternalForce(CCar *cCar, CExternalForce *externalForce,
     glm::vec2 finalForce(carForce);
     if(externalForce->force > 0){
         glm::vec2 collisionForce(externalForce->dirExternalForce.x*externalForce->force, externalForce->dirExternalForce.z*externalForce->force);
-        float angleForces = glm::degrees(atan2(collisionForce.y, collisionForce.x)) - glm::degrees(atan2(carForce.y, carForce.x));
-        angleForces = Utils::GetAdjustedDegrees(angleForces);
+        //float angleForces = glm::degrees(atan2(collisionForce.y, collisionForce.x)) - glm::degrees(atan2(carForce.y, carForce.x));
+        //angleForces = Utils::GetAdjustedDegrees(angleForces);
         finalForce.x = carForce.x + collisionForce.x;
         finalForce.y = carForce.y + collisionForce.y;
         externalForce->force -= externalForce->friction;

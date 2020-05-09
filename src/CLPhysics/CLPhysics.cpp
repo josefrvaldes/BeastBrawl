@@ -151,6 +151,7 @@ void CLPhysics::CentralSystemGravity() {
     LimitRotationCarY();
 }
 
+
 void CLPhysics::ConstGravity() {
     ManCar *manCar = static_cast<ManCar *>(managers[0]);
     for (const auto &car : manCar->GetEntities()) {
@@ -291,8 +292,6 @@ void CLPhysics::LimitRotationCarY() const {
         RePositionCarY(*trcar, *chaCar->sphereBehind, *chaCar->sphereFront);
     }
 }
-
-// TODO: Los calculos de aqui deben depender del delta
 
 void CLPhysics::RotateCarXZ(CTransformable &trcar, CBoundingChassis &chaCar, CBoundingPlane *pl1Car, CBoundingPlane *pl2Car) const{
 
@@ -518,7 +517,7 @@ void CLPhysics::HandleCollisions() {
             // En nuestra forma de CAPSULA tenemos 1 cilindro y 2 esferas, primero comprobamos las colisiones con el cilindro y luego con las esferas
             // CILINDRO
             bool intersect = false;
-            intersect = CollisionsCilindreSphere(*trcar1, *ccarcar1, *chacar1, *trcar2, *ccarcar1, *chacar2, *cExternalForce1, *cExternalForce2);
+            intersect = CollisionsCilindreSphere(*trcar1, *ccarcar1, *chacar1, *trcar2, *ccarcar2, *chacar2, *cExternalForce1, *cExternalForce2);
             if (!intersect) {
                 // ESFERAS
                 intersect = CollisionsSphereSphere(*trcar1, *chacar1, *ccarcar1, false, *trcar2, *chacar2, *ccarcar2, *cExternalForce1, *cExternalForce2);
@@ -621,6 +620,7 @@ bool CLPhysics::CollisionsCilindreSphere(CTransformable &trCar1, CCar &ccar1, CB
     if (inters2.intersects) {
         // CORREGIMOS LA POSICION
         SeparateCilindreSphere(trCar1, inters2.virtualCenter, inters2.virtualRadius, ccar1, trCar2, cChaCar2.sphereFront->center, cChaCar2.sphereFront->radius, ccar2);
+        
         ReciveExternalForce(cExtForc1, trCar2, ccar2);
         return true;
     }
@@ -628,6 +628,8 @@ bool CLPhysics::CollisionsCilindreSphere(CTransformable &trCar1, CCar &ccar1, CB
     if (inters3.intersects) {
         // CORREGIMOS LA POSICION
         SeparateCilindreSphere(trCar2, inters3.virtualCenter, inters3.virtualRadius, ccar2, trCar1, cChaCar1.sphereBehind->center, cChaCar1.sphereBehind->radius, ccar1);
+        
+        
         ReciveExternalForce(cExtForc2, trCar1, ccar1);
         return true;
     }
@@ -635,6 +637,7 @@ bool CLPhysics::CollisionsCilindreSphere(CTransformable &trCar1, CCar &ccar1, CB
     if (inters4.intersects) {
         // CORREGIMOS LA POSICION
         SeparateCilindreSphere(trCar2, inters4.virtualCenter, inters4.virtualRadius, ccar2, trCar1, cChaCar1.sphereFront->center, cChaCar1.sphereFront->radius, ccar1);
+
         ReciveExternalForce(cExtForc2, trCar1, ccar1);
         return true;
     }
@@ -666,10 +669,25 @@ void CLPhysics::SeparateSpheres(CTransformable &trCar1, CBoundingSphere &spCar1,
     vec3 nuevaDirectionCar1 = -normalize(direction);
     vec3 nuevaDirectionCar2 = normalize(direction);
 
-    trCar1.position.x += nuevaDirectionCar1.x * (distanceCollided / 2);
-    trCar1.position.z += nuevaDirectionCar1.z * (distanceCollided / 2);
-    trCar2.position.x += nuevaDirectionCar2.x * (distanceCollided / 2);
-    trCar2.position.z += nuevaDirectionCar2.z * (distanceCollided / 2);
+    auto totalSpeed = ccarCar1.speed + ccarCar2.speed;
+
+//    if(totalSpeed != 0){
+//        auto percCar1 = (100*ccarCar1.speed) / totalSpeed;
+//        auto disCorrectCar1 = (distanceCollided*percCar1) / 100;
+//        trCar1.position.x += nuevaDirectionCar1.x * (disCorrectCar1 / 2);
+//        trCar1.position.z += nuevaDirectionCar1.z * (disCorrectCar1 / 2);
+//
+//        auto percCar2 = (100*ccarCar2.speed) / totalSpeed;
+//        auto disCorrectCar2 = (distanceCollided*percCar2) / 100;
+//        trCar2.position.x += nuevaDirectionCar2.x * (disCorrectCar2 / 2);
+//        trCar2.position.z += nuevaDirectionCar2.z * (disCorrectCar2 / 2);
+//    }else{
+        trCar1.position.x += nuevaDirectionCar1.x * (distanceCollided / 2);
+        trCar1.position.z += nuevaDirectionCar1.z * (distanceCollided / 2);
+        trCar2.position.x += nuevaDirectionCar2.x * (distanceCollided / 2);
+        trCar2.position.z += nuevaDirectionCar2.z * (distanceCollided / 2);
+//    }
+
 }
 
 void CLPhysics::SeparateCilindreSphere(CTransformable &trCar1, glm::vec3 &cenCar1, const float &radCar1, CCar &ccarCar1, CTransformable &trCar2, glm::vec3 &cenCar2, const float &radCar2, CCar &ccarCar2) const {
@@ -680,10 +698,24 @@ void CLPhysics::SeparateCilindreSphere(CTransformable &trCar1, glm::vec3 &cenCar
     vec3 nuevaDirectionCar1 = -normalize(direction);
     vec3 nuevaDirectionCar2 = normalize(direction);
 
-    trCar1.position.x += nuevaDirectionCar1.x * (distanceCollided / 2);
-    trCar1.position.z += nuevaDirectionCar1.z * (distanceCollided / 2);
-    trCar2.position.x += nuevaDirectionCar2.x * (distanceCollided / 2);
-    trCar2.position.z += nuevaDirectionCar2.z * (distanceCollided / 2);
+    auto totalSpeed = ccarCar1.speed + ccarCar2.speed;
+
+//    if(totalSpeed != 0){
+//        auto percCar1 = (100*ccarCar1.speed) / totalSpeed;
+//        auto disCorrectCar1 = (distanceCollided*percCar1) / 100;
+//        trCar1.position.x += nuevaDirectionCar1.x * (disCorrectCar1 / 2);
+//        trCar1.position.z += nuevaDirectionCar1.z * (disCorrectCar1 / 2);
+//
+//        auto percCar2 = (100*ccarCar2.speed) / totalSpeed;
+//        auto disCorrectCar2 = (distanceCollided*percCar2) / 100;
+//        trCar2.position.x += nuevaDirectionCar2.x * (disCorrectCar2 / 2);
+//        trCar2.position.z += nuevaDirectionCar2.z * (disCorrectCar2 / 2);
+//    }else{
+        trCar1.position.x += nuevaDirectionCar1.x * (distanceCollided / 2);
+        trCar1.position.z += nuevaDirectionCar1.z * (distanceCollided / 2);
+        trCar2.position.x += nuevaDirectionCar2.x * (distanceCollided / 2);
+        trCar2.position.z += nuevaDirectionCar2.z * (distanceCollided / 2);
+//    }
 }
 
 // HandleCollisions entre ESFERA de un COCHE y un PLANO
@@ -806,8 +838,10 @@ bool CLPhysics::CollisionsSphereSphere(CTransformable &trCar1, CBoundingChassis 
 }
 
 bool CLPhysics::CollisionsBehindBehind(CTransformable &trCar1, CBoundingSphere &spCar1, CCar &ccarCar1, bool mainCar, CTransformable &trCar2, CBoundingSphere &spCar2, CCar &ccarCar2, CExternalForce &cExtForc1, CExternalForce &cExtForc2) {
+
     IntersectData intersData = spCar1.IntersectSphere(spCar2);
     if (intersData.intersects) {
+        //SonarChoque(mainCar);
         SeparateSpheres(trCar1, spCar1, ccarCar1, trCar2, spCar2, ccarCar2);
 
         impactCarCar(ccarCar1, ccarCar2);
@@ -818,10 +852,11 @@ bool CLPhysics::CollisionsBehindBehind(CTransformable &trCar1, CBoundingSphere &
 }
 
 bool CLPhysics::CollisionsBehindFront(CTransformable &trCar1, CBoundingSphere &spCar1, CCar &ccarCar1, bool mainCar, CTransformable &trCar2, CBoundingSphere &spCar2, CCar &ccarCar2, CExternalForce &cExtForc1, CExternalForce &cExtForc2) {
-    // posicionamos la esfera en la misma posición que el coche pero teniendo en cuenta el offset
+
     IntersectData intersData = spCar1.IntersectSphere(spCar2);
     if (intersData.intersects) {
         SeparateSpheres(trCar1, spCar1, ccarCar1, trCar2, spCar2, ccarCar2);
+
 
         ReciveExternalForce(cExtForc1, trCar2, ccarCar2);
         impactCarCar(ccarCar1, ccarCar2);
@@ -832,10 +867,11 @@ bool CLPhysics::CollisionsBehindFront(CTransformable &trCar1, CBoundingSphere &s
 }
 
 bool CLPhysics::CollisionsFrontBehind(CTransformable &trCar1, CBoundingSphere &spCar1, CCar &ccarCar1, bool mainCar, CTransformable &trCar2, CBoundingSphere &spCar2, CCar &ccarCar2, CExternalForce &cExtForc1, CExternalForce &cExtForc2) {
-    // posicionamos la esfera en la misma posición que el coche pero teniendo en cuenta el offset
+
     IntersectData intersData = spCar1.IntersectSphere(spCar2);
     if (intersData.intersects) {
         SeparateSpheres(trCar1, spCar1, ccarCar1, trCar2, spCar2, ccarCar2);
+
 
         ReciveExternalForce(cExtForc2, trCar1, ccarCar1);
         impactCarCar(ccarCar1, ccarCar2);
@@ -846,22 +882,34 @@ bool CLPhysics::CollisionsFrontBehind(CTransformable &trCar1, CBoundingSphere &s
 }
 
 bool CLPhysics::CollisionsFrontFront(CTransformable &trCar1, CBoundingSphere &spCar1, CCar &ccarCar1, bool mainCar, CTransformable &trCar2, CBoundingSphere &spCar2, CCar &ccarCar2, CExternalForce &cExtForc1, CExternalForce &cExtForc2) {
-    // posicionamos la esfera en la misma posición que el coche pero teniendo en cuenta el offset
     IntersectData intersData = spCar1.IntersectSphere(spCar2);
     if (intersData.intersects) {
         //SonarChoque(mainCar);
         SeparateSpheres(trCar1, spCar1, ccarCar1, trCar2, spCar2, ccarCar2);
-        //PositionSphFrontIntoTransf(trCar1, spCar1);
-        //PositionSphFrontIntoTransf(trCar2, spCar2);
+
+        //cout << "EL COCHE 1 speed: " << ccarCar1.speed << endl;
+        //cout << "EL COCHE 2 speed: " << ccarCar2.speed << endl; 
 
         ReciveExternalForce(cExtForc1, trCar2, ccarCar2);
         ReciveExternalForce(cExtForc2, trCar1, ccarCar1);
+        //cout << "cExtForcee del PLAYEEEER: " << cExtForc1.force << endl;
+        //cout << "cExtForcee del OTROOO: " << cExtForc2.force << endl;
         impactCarCar(ccarCar1, ccarCar2);
 
         return true;  // los coches han colisionado -- lo utilizamos para robar el totem si llevamos el nitro
     }
     return false;  // los coches no han colisionado
 }
+void CLPhysics::ReciveExternalForce(CExternalForce &cExtForc1, CTransformable &trCarOther, CCar &ccarOther) {
+    glm::vec3 vecDirCar2 = CalculateVecDirCar(trCarOther);
+    if (ccarOther.speed > ccarOther.maxSpeed * 0.1) {
+        cExtForc1.dirExternalForce = vecDirCar2;
+        //cout << "HOLAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA: " << ccarOther.speed << endl;
+        cExtForc1.force = ccarOther.speed;
+    }
+
+}
+
 
 void CLPhysics::impactCarCar(CCar &ccar1, CCar &ccar2) const {
     if (ccar1.speed >= ccar1.maxSpeed * 0.5) {
@@ -872,13 +920,7 @@ void CLPhysics::impactCarCar(CCar &ccar1, CCar &ccar2) const {
     }
 }
 
-void CLPhysics::ReciveExternalForce(CExternalForce &cExtForc1, CTransformable &trCar2, CCar &ccar2) {
-    glm::vec3 vecDirCar2 = CalculateVecDirCar(trCar2);
-    if (ccar2.speed > ccar2.maxSpeed * 0.1) {
-        cExtForc1.dirExternalForce = vecDirCar2;
-        cExtForc1.force = ccar2.speed;
-    }
-}
+
 
 IntersectData CLPhysics::HandleCollisionsRayWithSpheres(CTransformable &trCar1, CTransformable &trCar2, CBoundingSphere &spCar2, const glm::vec3 &normalRay) {
     PositionSphereIntoTransformable(trCar2, spCar2);
