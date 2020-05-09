@@ -61,7 +61,7 @@ void StateInGame::AddElementsToRender() {
             renderEngine->FacadeAddObject(cars.get());
     }
 
-    //renderEngine->FacadeAddObject(ground.get());  //Anyadimos el suelo
+    renderEngine->FacadeAddObject(ground.get());  //Anyadimos el suelo
 
     //Añadimos todos los power ups
     for (auto bpu : manBoxPowerUps->GetEntities())
@@ -288,6 +288,14 @@ void StateInGame::UpdateGame() {
 
 
 
+// ACTUALIZACION DE LOS MANAGERS DE LOS COCHES
+    bool gameFinished = manCars->UpdateCarPlayer(*(manTotems.get()));
+    if (gameFinished) {
+        GoToEndAnimation();
+    }
+
+
+
     sysBoxPowerUp->update(manBoxPowerUps.get());
 
     //auto posCar = static_cast<CTransformable *>(manCars->GetCar()->GetComponent(CompType::TransformableComp).get())->position;
@@ -352,16 +360,6 @@ void StateInGame::UpdateGame() {
         GoToEndAnimation();
     }
 
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//     timeStartSeccion = std::chrono::system_clock::now();
-// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                    sysRanking->Update(manCars.get());
-                    sysHud->UpdateEventHud(manHudEvent.get());
-                    gameFinished = manGameRules->Update();
-                    if (gameFinished) {
-                        GoToEndAnimation();
-                    }
 // ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //      end = std::chrono::system_clock::now();
 //      elapsed_millisecons = std::chrono::duration_cast<std::chrono::nanoseconds>
