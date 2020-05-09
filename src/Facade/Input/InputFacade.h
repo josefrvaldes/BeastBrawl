@@ -27,11 +27,14 @@ class InputFacade {
         virtual void CheckInputPause(int&, int)   = 0;
         virtual void CheckInputIntro() = 0;
         virtual void CheckInputEndRace(int&, int, bool) = 0;
+        virtual void CheckInputEndTournament(int&, int, uint8_t) = 0;
         virtual void CheckInputLobbyMulti() = 0;
         virtual void CheckInputController() = 0;
         virtual void CheckInputCredits() = 0;
         virtual void CheckInputSettings(std::vector<int> &inputs, int maxInputs[], int& option) = 0;
         virtual bool CheckInputAnimationsStartEnd() = 0;
+
+        virtual bool InTournament() = 0;
 
 
     protected:

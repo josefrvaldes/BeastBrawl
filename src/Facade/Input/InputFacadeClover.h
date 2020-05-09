@@ -32,11 +32,13 @@ class InputFacadeClover : public InputFacade{
 
         void CheckInputPause(int&, int)   override;
         void CheckInputEndRace(int&, int, bool) override;
+        void CheckInputEndTournament(int&, int, uint8_t) override;
         void CheckInputController() override;
         void CheckInputCredits() override;
         void CheckInputSettings(std::vector<int> &inputs, int maxInputs[], int& option) override;
         bool CheckInputAnimationsStartEnd() override;
 
+        bool InTournament() override {return tournamentMode;};
         void SetWindowContext(CLEngine* d) {device = d;}
 
     private:

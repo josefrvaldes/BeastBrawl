@@ -57,6 +57,7 @@ class RenderFacadeClover : public RenderFacade {
       void FacadeInitResources() override;
       void FacadeDrawPause() override;
       void FacadeDrawEndRace() override;
+      void FacadeDrawEndTournament() override;
       void FacadeDrawLobbyMulti() override;
       void FacadeDrawLobbyMultiExit() override;
       void FacadeDrawControler() override;
@@ -70,6 +71,7 @@ class RenderFacadeClover : public RenderFacade {
       void FacadeInitTournamentOptions() override;
       void FacadeInitPause() override;
       void FacadeInitEndRace() override;
+      void FacadeInitEndTournament() override;
       void FacadeInitLobbyMulti() override;
       void FacadeInitControler() override;
       void FacadeInitHUD() override;
@@ -83,6 +85,7 @@ class RenderFacadeClover : public RenderFacade {
       void FacadeCheckInputTournamentOptions() override;
       void FacadeCheckInputPause() override;
       void FacadeCheckInputEndRace() override;
+      void FacadeCheckInputEndTournament() override;
       void FacadeCheckInputLobbyMulti() override;
       void FacadeCheckInputControler() override;
       void FacadeCheckInputCredits() override;
@@ -140,6 +143,8 @@ class RenderFacadeClover : public RenderFacade {
 
       void SetMenuEndRace(bool b) override { menuER = b; };
       bool GetMenuEndRace() override { return menuER; };
+      void SetMenuEndTournament(uint8_t num) override { menuET = num; };
+      uint8_t GetMenuEndTournament() override { return menuET; };
 
       void ResetInputGameOptions() override;
       void ResetInputTournamentOptions() override;
@@ -179,6 +184,10 @@ class RenderFacadeClover : public RenderFacade {
         bool menuER { false };
         int inputER { 0 };
         int maxInputER { 2 };
+        //End Tournament
+        uint8_t menuET { 0 };
+        int inputET { 0 };
+        int maxInputET { 2 };
         //Opciones de partida
         int option { 0 };
         std::vector<int> inputGO {1,1/*,0*/};
@@ -186,7 +195,7 @@ class RenderFacadeClover : public RenderFacade {
         //Opciones de partida torneo
         int optionTO { 0 };
         std::vector<int> inputTO {1, 1, 1};
-        int maxInputTO[3] {2, 3, 2};
+        int maxInputTO[3] {3, 2, 2};
         //Ajustes
         int optionSettings { 0 };
         std::vector<int> inputSettings {1,3,1,1,1,0};     //Sonido, musica, resolucion, particulas, vegetacion, sombras

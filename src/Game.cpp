@@ -7,6 +7,7 @@
 #include "State/StateGameOptions.h"
 #include "State/StateTournamentOptions.h"
 #include "State/StateEndRace.h"
+#include "State/StateEndTournament.h"
 #include "State/StateInGameMulti.h"
 #include "State/StateInGameSingle.h"
 #include "State/StateLobbyMulti.h"
@@ -138,6 +139,14 @@ void Game::SetState(State::States stateType) {
             SuscribeEvents();
             gameStarted = false;
             break;
+        case State::ENDTOURNAMENT:
+            EventManager::GetInstance().ClearEvents();
+            EventManager::GetInstance().ClearListeners();
+            currentState = make_shared<StateEndTournament>();
+            gameState.reset();
+            SuscribeEvents();
+            gameStarted = false;
+            break;
         case State::LOBBY_MULTI:
             currentState = make_shared<StateLobbyMulti>();
             break;
@@ -224,6 +233,11 @@ void Game::SuscribeEvents() {
         EventType::STATE_ENDRACE,
         bind(&Game::SetStateEndRace, this, placeholders::_1),
         "StateEndRace in Game.cpp"));
+
+    EventManager::GetInstance().SubscribeMulti(Listener(
+        EventType::STATE_ENDTOURNAMENT,
+        bind(&Game::SetStateEndTournament, this, placeholders::_1),
+        "StateEndTournament in Game.cpp"));
 
     EventManager::GetInstance().SubscribeMulti(Listener(
         EventType::STATE_LOBBYMULTI,
@@ -354,6 +368,10 @@ void Game::SetStateInGameMulti(DataMap* d) {
 
 void Game::SetStateEndRace(DataMap* d) {
     SetState(State::ENDRACE);
+}
+
+void Game::SetStateEndTournament(DataMap* d) {
+    SetState(State::ENDTOURNAMENT);
 }
 
 void Game::SetStateLobbyMulti(DataMap* d) {

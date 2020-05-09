@@ -49,6 +49,7 @@ class RenderFacade {
     virtual void FacadeDrawSelectCharacter() = 0;
     virtual void FacadeDrawPause() = 0;
     virtual void FacadeDrawEndRace() = 0;
+    virtual void FacadeDrawEndTournament() = 0;
     virtual void FacadeDrawLobbyMulti() = 0;
     virtual void FacadeDrawLobbyMultiExit() = 0;
     virtual void FacadeDrawControler() = 0;
@@ -62,6 +63,7 @@ class RenderFacade {
     virtual void FacadeInitSelectCharacter() = 0;
     virtual void FacadeInitPause() = 0;
     virtual void FacadeInitEndRace() = 0;
+    virtual void FacadeInitEndTournament() = 0;
     virtual void FacadeInitLobbyMulti() = 0;
     virtual void FacadeInitControler() = 0;
     virtual void FacadeInitHUD() = 0;
@@ -75,6 +77,7 @@ class RenderFacade {
     virtual void FacadeCheckInputSelectCharacter() = 0;
     virtual void FacadeCheckInputPause() = 0;
     virtual void FacadeCheckInputEndRace() = 0;
+    virtual void FacadeCheckInputEndTournament() = 0;
     virtual void FacadeCheckInputLobbyMulti() = 0;
     virtual void FacadeCheckInputControler() = 0;
     virtual void FacadeCheckInputCredits() = 0;
@@ -137,6 +140,8 @@ class RenderFacade {
     virtual void ResetInputCharacter() = 0;
     virtual void SetMenuEndRace(bool) = 0;
     virtual bool GetMenuEndRace() = 0;
+    virtual void SetMenuEndTournament(uint8_t) = 0;
+    virtual uint8_t GetMenuEndTournament() = 0;
 
     int GetNumEnemyCars() { return numEnemyCars; };
     void SetNumEnemyCars(int n) { numEnemyCars = n; };
