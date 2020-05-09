@@ -805,6 +805,10 @@ void RenderFacadeClover::FacadeInitGameOptions() {
 
 }
 
+void RenderFacadeClover::FacadeInitTournamentOptions() {
+
+}
+
 void RenderFacadeClover::FacadeInitControler() {
 
 }
@@ -818,6 +822,58 @@ void RenderFacadeClover::FacadeInitPause() {
 
 void RenderFacadeClover::FacadeInitEndRace() {
 
+}
+
+void RenderFacadeClover::FacadeInitEndTournament() {
+    timeAnimationET = system_clock::now();
+    numShowPanel = 0;
+    // calculate tournament points
+    //GameValues::GetInstance()->GetTotalPoints()[0] = GameValues::GetInstance()->GetRanking().find()
+    auto rank = GameValues::GetInstance()->GetRanking();
+    auto idPlayer = GameValues::GetInstance()->GetCharacter();
+    auto idOther = GameValues::GetInstance()->GetIACharacters();
+    auto pointsTotal = GameValues::GetInstance()->GetTotalPoints();
+    auto pointsRank = GameValues::GetInstance()->GetPosPoints();
+
+    for(auto it = rank.begin(); it != rank.end(); ++it) {
+        if(it->second == idPlayer){
+            pointsTotal[0] += pointsRank[it->first-1];
+        }else{
+            for(size_t i = 0; i<idOther.size(); i++){
+                if(it->second == idOther[i]){
+                    pointsTotal[i+1] += pointsRank[it->first-1];
+                }
+            }
+        }
+    }
+
+    //for(auto it = rank.begin(); it != rank.end(); ++it){
+    //    cout << "Pos: " << it->first << "  Jugador: " << it->second << "\n";
+    //}
+
+    //for(auto p : pointsTotal){
+    //    cout << "Puntos: " << p << "\n";
+    //}
+
+    std::multimap<uint16_t, uint16_t, std::greater<uint16_t>> rankPoints;
+    uint8_t playersSaved = 0;
+    for(auto point : pointsTotal){
+        if(playersSaved>=GameValues::GetInstance()->GetNumPlayers())
+            break;
+
+        if(playersSaved==0)
+            rankPoints.insert(std::pair<uint16_t,uint16_t>(point,idPlayer));
+        else
+            rankPoints.insert(std::pair<uint16_t,uint16_t>(point,idOther[playersSaved-1]));
+        playersSaved++;
+    }
+    
+    //for(auto it = rankPoints.begin(); it != rankPoints.end(); ++it){
+    //    cout << "Puntos: " << it->first << "  Jugador: " << it->second << "\n";
+    //}
+
+    GameValues::GetInstance()->SetTotalPoints(pointsTotal);
+    GameValues::GetInstance()->SetRankingPoints(rankPoints);
 }
 
 void RenderFacadeClover::FacadeInitLobbyMulti() {
@@ -865,6 +921,10 @@ void RenderFacadeClover::FacadeCheckInputGameOptions() {
     InputFacadeManager::GetInstance()->GetInputFacade()->CheckInputGameOptions(inputGO, maxInputGO, option);
 }
 
+void RenderFacadeClover::FacadeCheckInputTournamentOptions() {
+    InputFacadeManager::GetInstance()->GetInputFacade()->CheckInputTournamentOptions(inputTO, maxInputTO, optionTO);
+}
+
 void RenderFacadeClover::FacadeCheckInputControler() {
     InputFacadeManager::GetInstance()->GetInputFacade()->CheckInputController();
 }
@@ -879,6 +939,10 @@ void RenderFacadeClover::FacadeCheckInputPause() {
 
 void RenderFacadeClover::FacadeCheckInputEndRace() {
     InputFacadeManager::GetInstance()->GetInputFacade()->CheckInputEndRace(inputER, maxInputER, menuER);
+}
+
+void RenderFacadeClover::FacadeCheckInputEndTournament() {
+    InputFacadeManager::GetInstance()->GetInputFacade()->CheckInputEndTournament(inputET, maxInputET, menuET);
 }
 
 void RenderFacadeClover::FacadeCheckInputLobbyMulti() {
@@ -899,6 +963,12 @@ void RenderFacadeClover::ResetInputGameOptions() {
     option = 0;
     inputGO[0] = 1;
     inputGO[1] = 1;
+}
+void RenderFacadeClover::ResetInputTournamentOptions() {
+    optionTO = 0;
+    inputTO[0] = 1;
+    inputTO[1] = 1;
+    inputTO[2] = 1;
 }
 
 
@@ -1126,8 +1196,9 @@ void RenderFacadeClover::FacadeDrawMenu() {
     file = "media/menu/elements_menu.png";
     device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.8f, file, true);
 
-    std::string files[6] = {
+    std::string files[7] = {
         "media/menu/unjugador_hover.png",
+        "media/menu/torneo_hover.png",
         "media/menu/multijugador_hover.png",
         "media/menu/controles_hover.png",
         "media/menu/creditos_hover.png",
@@ -1183,7 +1254,42 @@ void RenderFacadeClover::FacadeDrawGameOptions() {
     if (option == 1) { file += "_hover"; }
     file += ".png";
     device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.7f, file, true);
+}
 
+void RenderFacadeClover::FacadeDrawTournamentOptions() {
+    std::string name = "";
+
+    std::string file = "media/menu/settings_match_bg.png";
+    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.9f, file, true);
+    
+    std::string files[3] = {
+        "media/menu/duration_match_",
+        "media/menu/duration_totem_",
+        "media/menu/numBattles_"
+    };
+
+    std::string op1[4] = {"2min", "3min", "4min", "5min" };
+    std::string op2[3] = {"30s", "45s", "1min"};
+    std::string op3[3] = {"3", "4", "5"};
+
+    file = files[0] + op1[inputTO[0]];
+    if (optionTO == 0) { file += "_hover"; }
+    file += ".png";
+    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.8f, file, true);
+    file = files[1] + op2[inputTO[1]];
+    if (optionTO == 1) { file += "_hover"; }
+    file += ".png";
+    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.7f, file, true);
+    file = files[2] + op3[inputTO[2]];
+    if (optionTO == 2) { file += "_hover"; }
+    file += ".png";
+    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.6f, file, true);
+
+
+    //file = files[0] + op1[inputTO[0]];
+    //if (optionTO == 0) { file += "_hover"; }
+    //file += ".png";
+    //device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.8f, file, true);
 }
 
 void RenderFacadeClover::FacadeDrawControler() {
@@ -1265,6 +1371,128 @@ void RenderFacadeClover::FacadeDrawEndRace() {
         file = "Cambiar de personaje";
         device->RenderText2D(file, 500.0f, 300.0f, 0.2f, 1.0f, color[1]);
         file = "Salir al menu";
+        device->RenderText2D(file, 500.0f, 200.0f, 0.2f, 1.0f, color[2]);
+    }
+}
+
+void RenderFacadeClover::FacadeDrawEndTournament() {
+
+    auto w = device->GetScreenWidth();
+    auto h = device->GetScreenHeight();
+
+    auto scale = 0.75f;
+    if (h > 1000) { scale = 1.0f; }
+    else if (h < 475 ) { scale = 0.25; }
+    else if (h < 675) { scale = 0.5; }
+
+    std::string file = "media/menu/finish_menu_bg.png";
+    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.9f, file, true);
+
+    auto rank = GameValues::GetInstance()->GetRanking();
+    auto secondsRank = GameValues::GetInstance()->GetSeconds();
+    auto posPoints = GameValues::GetInstance()->GetPosPoints();
+    uint8_t i = 1;
+    auto posX = w/2 - 541*scale;
+    auto posY = h/2 - 50.0f*scale - rank.size()*50.0f*scale;
+    auto posYText = h/2 + rank.size()*50.0f*scale - 15.0f*scale;
+
+    if(menuET == 0){
+        // numCarreras
+        file = std::to_string(GameValues::GetInstance()->GetActualBattle()) + "/" + std::to_string(GameValues::GetInstance()->GetNumBattles());
+        device->RenderText2D(file, posX + 950.0f*scale, posYText - (-100)*scale, 0.6f, 1.25*scale, glm::vec3(0.0f,0.0f,0.0f));
+
+        for(auto it = rank.begin(); it != rank.end(); ++it) {
+            if(i>inputET) { break; }
+
+            file = "media/menu/position";
+            file += std::to_string(i) + ".png";
+            device->DrawImage2D(posX, posY + (i*100.0f)*scale, 1.0*scale, 0.8f, file, true);
+            switch (it->second) {
+                case (uint16_t)mainCharacter::PENGUIN:  file = "media/hudPenguin.png";        break;
+                case (uint16_t)mainCharacter::TIGER:    file = "media/hudTiger.png";          break;
+                case (uint16_t)mainCharacter::SHARK:    file = "media/hudShark.png";          break;
+                case (uint16_t)mainCharacter::GORILLA:  file = "media/hudGorilla.png";        break;
+                case (uint16_t)mainCharacter::DRAGON:   file = "media/hudDragon.png";         break;
+                case (uint16_t)mainCharacter::OCTOPUS:  file = "media/hudOctopus.png";        break;
+                default: cout << "+++++++ No entiendo este personaje para el evento" << endl;   break;
+            }
+            device->DrawImage2D(posX + 275.0f*scale, posY + (i*100.0f)*scale + 5.0f*scale, 0.75f*scale, 0.5f, file, true);
+
+            // puntos
+            int points = posPoints[it->first-1];
+            if (points < 10) { file = "+0" + std::to_string(points); }
+            else { file = "+" + std::to_string(points); }
+            device->RenderText2D(file, posX + 750.0f*scale, posYText - (i*100.0f)*scale, 0.5f, 1.25*scale, glm::vec3(255.0f,255.0f,255.0f));
+
+            // tiempo
+            auto it2 = secondsRank.find(it->first);
+            if (it2 != secondsRank.end()){
+                if (it2->second < 10) { file = "0" + std::to_string(it2->second); }
+                else { file = std::to_string(it2->second); }
+                device->RenderText2D(file, posX + 950.0f*scale, posYText - (i*100.0f)*scale, 0.3f, 1.25*scale, glm::vec3(255.0f,255.0f,255.0f));
+            }
+            ++i;
+        }
+        if(duration_cast<milliseconds>(system_clock::now() - timeStart).count() > msChange && inputET<=GameValues::GetInstance()->GetNumPlayers()){
+            timeStart = system_clock::now();
+            inputET++;
+        }
+    }else if(menuET==1){
+        // numCarreras
+        file = std::to_string(GameValues::GetInstance()->GetActualBattle()) + "/" + std::to_string(GameValues::GetInstance()->GetNumBattles());
+        device->RenderText2D(file, posX + 950.0f*scale, posYText - (-100)*scale, 0.6f, 1.25*scale, glm::vec3(0.0f,0.0f,0.0f));
+
+        // Puntos totales
+        auto rankPoints = GameValues::GetInstance()->GetRankingPoints();
+        std::string file = "media/menu/finish_menu_bg.png";
+        device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.9f, file, true);
+        for(auto it = rankPoints.begin(); it != rankPoints.end(); ++it) {
+            if(i>inputET) { break; }
+
+            file = "media/menu/position";
+            file += std::to_string(i) + ".png";
+            device->DrawImage2D(posX, posY + (i*100.0f)*scale, 1.0*scale, 0.8f, file, true);
+            switch (it->second) {
+                case (uint16_t)mainCharacter::PENGUIN:  file = "media/hudPenguin.png";        break;
+                case (uint16_t)mainCharacter::TIGER:    file = "media/hudTiger.png";          break;
+                case (uint16_t)mainCharacter::SHARK:    file = "media/hudShark.png";          break;
+                case (uint16_t)mainCharacter::GORILLA:  file = "media/hudGorilla.png";        break;
+                case (uint16_t)mainCharacter::DRAGON:   file = "media/hudDragon.png";         break;
+                case (uint16_t)mainCharacter::OCTOPUS:  file = "media/hudOctopus.png";        break;
+                default: cout << "+++++++ No entiendo este personaje para el evento" << endl;   break;
+            }
+            device->DrawImage2D(posX + 275.0f*scale, posY + (i*100.0f)*scale + 5.0f*scale, 0.75f*scale, 0.5f, file, true);
+
+            // puntos
+            if (it->first < 10) { file = "0" + std::to_string(it->first); }
+            else { file = std::to_string(it->first); }
+            device->RenderText2D(file, posX + 950.0f*scale, posYText - (i*100.0f)*scale, 0.3f, 1.25*scale, glm::vec3(255.0f,255.0f,255.0f));
+            ++i;
+        }
+        if(duration_cast<milliseconds>(system_clock::now() - timeStart).count() > msChange && inputET<=GameValues::GetInstance()->GetNumPlayers()){
+            timeStart = system_clock::now();
+            inputET++;
+        }
+
+    }else if(menuET == 2){
+        file = "media/endraceMenu.png";
+        device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.3f, file, true);
+
+        glm::vec3 color[3] = {
+                glm::vec3(0.0f, 0.0f, 255.0f),
+                glm::vec3(0.0f, 0.0f, 255.0f),
+                glm::vec3(0.0f, 0.0f, 255.0f)
+        };
+        color[inputET] = glm::vec3(0.0f, 255.0f, 0.0f);
+        if(GameValues::GetInstance()->GetActualBattle() != GameValues::GetInstance()->GetNumBattles())
+            file = "Siguiente carrera";
+        else
+            file = "Jugar de nuevo";
+            
+        device->RenderText2D(file, 500.0f, 400.0f, 0.2f, 1.0f, color[0]);
+        file = "Seleccion de personaje";
+        device->RenderText2D(file, 500.0f, 300.0f, 0.2f, 1.0f, color[1]);
+        file = "Salir al menu principal";
         device->RenderText2D(file, 500.0f, 200.0f, 0.2f, 1.0f, color[2]);
     }
 }
