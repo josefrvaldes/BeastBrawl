@@ -89,7 +89,7 @@ class CLPhysics {
     bool CollisionsSpherePlane(CTransformable &trCar1, CBoundingChassis &chaCar, CCar &ccar1, bool mainCar, CBoundingPlane &plane);
     void CollisionsSphereOBB(CTransformable &trCar, CBoundingChassis &chaCar, CCar &ccarCar, bool mainCar, CBoundingOBB &obb);
     void PositionSphereIntoTransformable(CTransformable &tr, CBoundingSphere &sp) const;
-    //void PositionSPhereIntoTransformableCenter(CTransformable &tr, CBoundingSphere &sp) const;
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     void PositionSphBehindIntoTransf(CTransformable &tr, CBoundingSphere &sp) const;
     void PositionSphFrontIntoTransf(CTransformable &tr, CBoundingSphere &sp) const;
     void PositionCilindreIntoSpheres(CBoundingChassis &chassis) const;
