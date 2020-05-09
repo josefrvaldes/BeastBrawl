@@ -7,7 +7,7 @@ enum MAX_VELOCITY {
     V_MEDIUM  = 210,
     V_HIGH    = 240
 };
-enum ACCELERATION { // NOTA: la aceleracion, pra los valores altuales del juego, dividir por 100
+enum ACCELERATION { // NOTA: la aceleracion, para los valores altuales del juego, dividir por 100 (en un enum no se pueden poner floats)
     A_LOW     = 125,
     A_MEDIUM  = 150,
     A_HIGH    = 200
