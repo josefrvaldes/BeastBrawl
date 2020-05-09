@@ -13,6 +13,7 @@
 #include <Components/CParentNode.h>
 #include <Components/CDimensions.h>
 #include <Components/CId.h>
+#include <Components/CWheel.h>
 #include <Components/CMesh.h>
 #include <Components/CParticleSystem.h>
 #include <Components/CNamePlate.h>
@@ -118,6 +119,11 @@ void RenderFacadeClover::FacadeSuscribeEventsSettings() {
         EventType::ENABLE_VEGETATION,
         bind( &RenderFacadeClover::FacadeSetGrassActivate, this, placeholders::_1 ),
         "FacadeSetGrassActivate"});
+    
+    EventManager::GetInstance().Subscribe(Listener{
+        EventType::ENABLE_SHADOWS,
+        bind( &RenderFacadeClover::FacadeSetShadowsActivate, this, placeholders::_1 ),
+        "FacadeSetShadowsActivate"});
 }
 
 
@@ -167,11 +173,25 @@ void RenderFacadeClover::FacadeSetGrassActivate(DataMap* d) const{
     device->SetGrassActivate(mode);
 }
 
+
+void RenderFacadeClover::FacadeSetShadowsActivate(DataMap* d) const{
+    auto mode = any_cast<int>((*d)[TRUEFALSE]);
+
+    device->SetShadowsActivate(mode);
+}
+
 /**
  * Se llama una vez para añadir las NamePlates
  * @param {manager de nameplates}
  */
 void RenderFacadeClover::FacadeAddPlates(Manager* manNamePlates) {
+    for(auto nameplate : manNamePlates->GetEntities()){
+        auto cId = static_cast<CId*>(nameplate->GetComponent(CompType::IdComp).get());
+        auto nameplateComp = static_cast<CNamePlate*>(nameplate->GetComponent(CompType::NamePlateComp).get());
+        auto father = device->GetNodeByID(nameplateComp->idCarAsociated);
+        auto node = device->AddBillBoard(father,cId->id,nameplateComp->billboardPath,false,30,10);
+        node->SetTranslation(glm::vec3(0.0f,10.0f,0.0f));
+    }
 }
 
 /**
@@ -354,6 +374,7 @@ const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
             nodeSphere1->SetTranslation(glm::vec3(centerSph1.x, centerSph1.y, -centerSph1.z));
             nodeSphere1->SetScalation(glm::vec3(radiousSph1));
             nodeSphere1->SetVisible(false);
+            nodeSphere1->SetShaderProgramID(shader->GetProgramID());
             // segunda esfera
             auto radiousSph2 = cChassis->sphereFront->radius;
             auto centerSph2 = cChassis->sphereFront->center;
@@ -362,8 +383,40 @@ const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
             nodeSphere2->SetTranslation(glm::vec3(centerSph2.x, centerSph2.y, -centerSph2.z));
             nodeSphere2->SetScalation(glm::vec3(radiousSph2));
             nodeSphere2->SetVisible(false);
+            nodeSphere2->SetShaderProgramID(shader->GetProgramID());
         }
-        
+    
+
+    //Si tiene ruedas porque es un coche se las añadimos
+    if(entity->HasComponent(CompType::WheelComp)){
+        //Importante el padre sera el propio node que acabamos de crear que es el coche
+        auto cWheel = static_cast<CWheel*>(entity->GetComponent(CompType::WheelComp).get());
+        auto wheel1 = device->AddMesh(node,cWheel->IdWheelTopLeft,"media/"+cWheel->meshTopLeft);
+        auto wheel2 = device->AddMesh(node,cWheel->IdWheelTopRight,"media/"+cWheel->meshTopRight);
+        auto wheel3 = device->AddMesh(node,cWheel->IdWheelBottomLeft,"media/"+cWheel->meshBottomLeft);
+        auto wheel4 = device->AddMesh(node,cWheel->IdWheelBottomRight,"media/"+cWheel->meshBottomRight);
+
+
+        wheel1->SetTranslation(glm::vec3(cWheel->offsetTopLeft.x,cWheel->offsetTopLeft.y,-cWheel->offsetTopLeft.z));
+        wheel2->SetTranslation(glm::vec3(cWheel->offsetTopRight.x,cWheel->offsetTopRight.y,-cWheel->offsetTopRight.z));
+        wheel3->SetTranslation(glm::vec3(cWheel->offsetBottomLeft.x,cWheel->offsetBottomLeft.y,-cWheel->offsetBottomLeft.z));
+        wheel4->SetTranslation(glm::vec3(cWheel->offsetBottomRight.x,cWheel->offsetBottomRight.y,-cWheel->offsetBottomRight.z));
+
+        wheel1->SetRotation(glm::vec3(cWheel->rotationTopLeft.x,Utils::IrrlichtAngleToOpenGL(cWheel->rotationTopLeft.y),cWheel->rotationTopLeft.z));
+        wheel2->SetRotation(glm::vec3(cWheel->rotationTopRight.x,Utils::IrrlichtAngleToOpenGL(cWheel->rotationTopRight.y),cWheel->rotationTopRight.z));
+        wheel3->SetRotation(glm::vec3(cWheel->rotationBottomLeft.x,Utils::IrrlichtAngleToOpenGL(cWheel->rotationBottomLeft.y),cWheel->rotationBottomLeft.z));
+        wheel4->SetRotation(glm::vec3(cWheel->rotationBottomRight.x,Utils::IrrlichtAngleToOpenGL(cWheel->rotationBottomRight.y),cWheel->rotationBottomRight.z));
+
+        wheel1->SetScalation(cWheel->scaleTopLeft);
+        wheel2->SetScalation(cWheel->scaleTopRight);
+        wheel3->SetScalation(cWheel->scaleBottomLeft);
+        wheel4->SetScalation(cWheel->scaleBottomRight);
+
+        wheel1->SetShaderProgramID(shader->GetProgramID());
+        wheel2->SetShaderProgramID(shader->GetProgramID());
+        wheel3->SetShaderProgramID(shader->GetProgramID());
+        wheel4->SetShaderProgramID(shader->GetProgramID());
+    }
 
     return cId->id;
 }
@@ -473,7 +526,7 @@ void RenderFacadeClover::UpdateCamera(Entity* cam, ManCar* manCars) {
 
         //Calculamos el angulo hasta el totem
         float vectorX = (cTransformableCar->position.x - targetPosition.x );
-        float vectorZ = (cTransformableCar->position.z - targetPosition.z );
+        float vectorZ = (-cTransformableCar->position.z - targetPosition.z );
 
         float valueAtan2 = atan2(vectorZ,vectorX);
 
@@ -636,6 +689,9 @@ void RenderFacadeClover::FacadeInitResources(){
     FacadeBeginScene();
     std::string file = "media/loading_screen.png";
     device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
+
+    int indx = Utils::getRandomInt(0,tipsTexts.size()-1);
+    device->RenderText2D(tipsTexts.at(indx),100,100,0.5,0.8,glm::vec3(1.0,1.0,1.0));
     FacadeEndScene();
 
     //Cargamos todas las mallas
@@ -675,7 +731,7 @@ void RenderFacadeClover::FacadeInitResources(){
     resourceManager->GetResourceTexture("media/hudDragon.png", true);
     resourceManager->GetResourceTexture("media/hudOctopus.png", true);
     resourceManager->GetResourceTexture("media/marcador.png", true);
-    resourceManager->GetResourceTexture("media/Minimapa240.png", true);
+    resourceManager->GetResourceTexture("media/Minimapa240v2.png", true);
     //Events hud
     resourceManager->GetResourceTexture("media/stoleHUD.png", true);
     resourceManager->GetResourceTexture("media/loseHUD.png", true);
@@ -732,6 +788,17 @@ void RenderFacadeClover::FacadeInitSelectCharacter() {
     auto shader1 = resourceManager->GetResourceShader("CLEngine/src/Shaders/basicShader.vert","CLEngine/src/Shaders/basicShader.frag");
 
     mesh1->SetShaderProgramID(shader1->GetProgramID());
+
+
+    //IMGs
+    resourceManager->GetResourceTexture("media/menu/character_selector.png", true);
+    resourceManager->GetResourceTexture("media/menu/kong_selected.png", true);
+    resourceManager->GetResourceTexture("media/menu/sharky_selected.png", true);
+    resourceManager->GetResourceTexture("media/menu/penguin_selected.png", true);
+    resourceManager->GetResourceTexture("media/menu/baxter_selected.png", true);
+    resourceManager->GetResourceTexture("media/menu/deacon_selected.png", true);
+    resourceManager->GetResourceTexture("media/menu/octopus_selected.png", true);
+
 }
 
 void RenderFacadeClover::FacadeInitGameOptions() {
@@ -771,15 +838,14 @@ void RenderFacadeClover::FacadeInitSettings() {
 //  CHECK INPUTS    //
 //////////////////////
 
-// TODO: ¿Poner los input que el render no necesita info fuera del render?
-// TODO: introducir multi input
 
 void RenderFacadeClover::FacadeCheckInputSingle() {
-
- }
+    inputShowTable = InputFacadeManager::GetInstance()->GetInputFacade()->ShowTable(inputShowTable);
+}
 
 vector<Constants::InputTypes> RenderFacadeClover::FacadeCheckInputMulti() {
     vector<Constants::InputTypes> inputs;
+    inputShowTable = InputFacadeManager::GetInstance()->GetInputFacade()->ShowTable(inputShowTable);
     return inputs;
 }
 
@@ -830,10 +896,9 @@ void RenderFacadeClover::ResetInputCharacter() {
 
 //TODO: Deberia ser un evento
 void RenderFacadeClover::ResetInputGameOptions() {
-    option = 2;
+    option = 0;
     inputGO[0] = 1;
     inputGO[1] = 1;
-    inputGO[2] = 0;
 }
 
 
@@ -846,21 +911,34 @@ void RenderFacadeClover::FacadeDraw() const{
 
 }
 
-void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* globalClock, ManHUDEvent* manHud) {
+void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* globalClock, ManHUDEvent* manHud, ManGameRules* manGR) {
 
     std::string cadena;
+    std::string sprite;
     CTotem* cTotem;
     CCar* cCar;
+    CTransformable* cTrans;
     auto w = device->GetScreenWidth();
     auto h = device->GetScreenHeight();
-    auto xtext = 640.0f;
-    auto ytext = 610.0f;
-    float scale = 1.0f;
-    if (w == 1024) scale = 0.75;
-    else if (w == 1920) scale = 1.25;
+
+
+    //MINIMAPA
+    auto widthMM = 0;           auto heightMM = 0;
+    auto posXMiniMap = 0;       auto posYMiniMap = 0;
+
+    cadena = "media/Minimapa240v2.png";
+    auto minimapTexture = resourceManager->GetResourceTexture(cadena);
+    if(minimapTexture) {
+        widthMM = minimapTexture->GetWidth();
+        heightMM = minimapTexture->GetHeight();
+        posXMiniMap = w - (widthMM+50);    
+        posYMiniMap = h - (heightMM+50);
+    }
+    device->DrawImage2D(posXMiniMap, posYMiniMap, widthMM, heightMM, 0.9f, cadena, true);
 
     //CURRENT POWERUP
-    device->DrawImage2D(25.0f*scale, 25.0f*scale, 150.0f*scale, 150.0f*scale, 0.1f ,powerUps[currentPowerUp], true);
+    device->DrawImage2D(25.0f, 25.0f, 150.0f, 150.0f, 0.1f ,powerUps[currentPowerUp], true);
+
 
     //RANKING
     //TODO: Dejar como debug
@@ -884,44 +962,104 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
         i++;
     }*/
 
-    //MARCADOR DE TIEMPO
-    for(const auto& cars : manCars->GetEntities()) {
-        cTotem = static_cast<CTotem*>(cars->GetComponent(CompType::TotemComp).get());
-        cCar = static_cast<CCar*>(cars->GetComponent(CompType::CarComp).get());
-        if (cTotem && cCar && cTotem->active) {
-            cadena = "media/marcador.png";
-            device->DrawImage2D(w/2 - 112.0f*scale, 50.0f*scale , scale, 0.2f, cadena, true);
-
-            switch (cCar->character) {
-                case mainCharacter::PENGUIN:    cadena = "media/hudPenguin.png";    break;
-                case mainCharacter::TIGER:      cadena = "media/hudTiger.png";      break;
-                case mainCharacter::SHARK:      cadena = "media/hudShark.png";      break;
-                case mainCharacter::GORILLA:    cadena = "media/hudGorilla.png";    break;
-                case mainCharacter::DRAGON:     cadena = "media/hudDragon.png";     break;
-                case mainCharacter::OCTOPUS:    cadena = "media/hudOctopus.png";    break;
-                default:                                                    break;
-            }
-            device->DrawImage2D(w/2 - 80.0f*scale, 70.0f*scale, scale/2, 0.05f, cadena, true);
-
-            int time = cTotem->SEGUNDOS - cTotem->accumulatedTime/1000;
-            cadena = std::to_string(time);
-            glm::vec3 color = glm::vec3(0.0f, 0.0f, 0.0f);
-
-            if(time <= 5) {
-                color = glm::vec3(255.0f, 0.0f, 0.0f);
-            }
-
-
-            if (scale == 0.75) { xtext=650.0f; ytext=620.0f; } 
-            else if (scale == 1.25) { xtext=650.0f; ytext=630.0f; }
-            device->RenderText2D(cadena, xtext, ytext, 0.05f, 0.75f, color);
-            break;
+    // FONDO TABLA TIEMPOS
+    if (inputShowTable) {
+        for(size_t k = 0; k < manCars->GetEntities().size(); ++k) {
+            cadena = "media/cuadrado.png";
+            device->DrawImage2D(w - 200.0f, /*h/2 - posFondoTiempos + 45.0*j*/ 150.0f + k*45.0f, 1.0, 0.9f, cadena, true);
         }
     }
 
+
+    auto i = 8;
+    auto j = 0;
+    //auto posFondoTiempos = manCars->GetEntities().size()*45.0f/2;
+    for(const auto& cars : manCars->GetEntities()) {
+        cTotem = static_cast<CTotem*>(cars->GetComponent(CompType::TotemComp).get());
+        cCar = static_cast<CCar*>(cars->GetComponent(CompType::CarComp).get());
+        cTrans = static_cast<CTransformable*>(cars->GetComponent(CompType::TransformableComp).get());
+        auto cId = static_cast<CId*>(cars->GetComponent(CompType::IdComp).get());
+
+        if (cCar) {
+            switch (cCar->character) {
+                case mainCharacter::PENGUIN:    sprite = "media/hudPenguin.png";    break;
+                case mainCharacter::TIGER:      sprite = "media/hudTiger.png";      break;
+                case mainCharacter::SHARK:      sprite = "media/hudShark.png";      break;
+                case mainCharacter::GORILLA:    sprite = "media/hudGorilla.png";    break;
+                case mainCharacter::DRAGON:     sprite = "media/hudDragon.png";     break;
+                case mainCharacter::OCTOPUS:    sprite = "media/hudOctopus.png";    break;
+                default:                                                    break;
+            }
+
+
+            //MARCADOR DE TIEMPO
+            if (cTotem && cTotem->active) {
+                cadena = "media/marcador.png";
+                auto posMarcadorX = w/2 - 112.0f;
+                auto posMarcadorY = 50.0f;
+                device->DrawImage2D(posMarcadorX, posMarcadorY , 1.0, 0.2f, cadena, true);
+
+                device->DrawImage2D(posMarcadorX + 50.0f, posMarcadorY + 20.0f, 50.0f, 50.0f, 0.05f, sprite, true);
+
+                int time = cTotem->SEGUNDOS - cTotem->accumulatedTime/1000;
+                cadena = std::to_string(time);
+                glm::vec3 color = glm::vec3(0.0f, 0.0f, 0.0f);
+
+                if(time <= 5) {
+                    color = glm::vec3(255.0f, 0.0f, 0.0f);
+                }
+
+                device->RenderText2D(cadena, (posMarcadorX + 125.0f), (h - 110.0f), 0.05f, 0.75f, color);
+                //break;
+            
+            }
+
+            //TABLA DE TIEMPOS
+            if(inputShowTable && cTotem) {
+                cadena = std::to_string(j+1) + ".";
+                device->RenderText2D(cadena, w - 190.0f, h - 180.0f - 45.0f*j, 0.1f*j+0.1f, 0.5, glm::vec3(255.0f,255.0f,255.0f));
+                auto posRanking = cTotem->positionRanking - 1;
+                device->DrawImage2D(w - 160.0f, 155.0f + posRanking*45.0f, 0.3, 0.1f*j+0.1f, sprite, true);
+                auto time = std::to_string( cTotem->SEGUNDOS - cTotem->accumulatedTime/1000 );
+                glm::vec3 color = glm::vec3(255.0f,255.0f,255.0f);
+                if (cTotem->active) { color = glm::vec3(255.0f,0.0f,0.0f); };
+                device->RenderText2D(time, w - 110.0f, h - 180.0f - 45.0f*posRanking, 0.1f*j+0.1f, 0.5, color);
+            }
+            ++j;
+
+            // MINIMAPA
+            if (manGR && cTrans) {
+                
+                auto positions = manGR->GetPositionsPlane();
+                auto it = positions.find(cId->id);
+                if (it != positions.end()) {
+                    auto posXPjMM = it->second.x * widthMM;
+                    auto posYPjMM = it->second.y * heightMM;
+
+                    device->DrawImage2D(posXMiniMap + (posXPjMM - 12), posYMiniMap + (posYPjMM - 12), 25.0f, 25.0f, 0.1f*i, sprite, true);
+                } /*else { cout << "NO TENGO VALORES" << endl; }*/
+                //cout << "CAR " << cId->id << " CON POS: " << posXPjMM << " - " << posYPjMM << endl;
+
+            }
+            --i;
+        }  
+
+    }
+
+    //MINIMAPA TOTEM
+    auto positionTotem = manGR->GetPositionTotemPlane();
+    if(positionTotem.x > 0 && positionTotem.y > 0) {
+        auto posXTMM = positionTotem.x * widthMM;
+        auto posYTMM = positionTotem.y * heightMM;
+        sprite = "media/hudTotem.png";
+        device->DrawImage2D(posXMiniMap + (posXTMM - 12), posYMiniMap + (posYTMM - 12), 25.0f, 25.0f, 0.1f, sprite, true);
+    }
+
+
+    // MARCADOR GLOBAL
     if (globalClock) {
         cadena = "media/marcador.png";
-        device->DrawImage2D(w-275.0f*scale, 50.0f*scale ,scale, 0.2f, cadena, true);
+        device->DrawImage2D(w-275.0f, 50.0f ,1.0, 0.2f, cadena, true);
         
         auto cGClock = static_cast<CClock*>(globalClock->GetComponent(CompType::ClockComp).get());
         int time = cGClock->DURATION_TIME/1000 - cGClock->accumulatedTime/1000;
@@ -929,26 +1067,17 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
         int seg = time - min*60;
         
         cadena = std::to_string(min) + ":" + std::to_string(seg);
-        if (seg < 10) {
-            cadena = std::to_string(min) + ":0" + std::to_string(seg);
-        }
-        if (min < 10) {
-            cadena = "0" + cadena;
-        }
+        if (seg < 10) { cadena = std::to_string(min) + ":0" + std::to_string(seg); }
+        if (min < 10) { cadena = "0" + cadena; }
 
         glm::vec3 color = glm::vec3(0.0f, 0.0f, 0.0f);
         if(min == 0 && seg <= 30) {
             color = glm::vec3(255.0f, 0.0f, 0.0f);
         }
-        xtext = 1075.0f;
-        if (scale == 0.75) { xtext=1085.0f; ytext=620.0f; } 
-        else if (scale == 1.25) { xtext=1095.0f; ytext=630.0f; }
-        device->RenderText2D(cadena, xtext, ytext, 0.05f, 0.75f, color);
+        device->RenderText2D(cadena, (w - 210.0f), (h - 110.0f), 0.05f, 0.75f, color);
     }
-
-    //MINIMAPA
-    cadena = "media/Minimapa240.png";
-    device->DrawImage2D((w - 290.0f*scale), (h - 220.0f*scale), scale, 0.1f, cadena, true);
+   
+    
 
     //EVENTS
     if (manHud && manHud->IsEventHUDActive()) {
@@ -956,17 +1085,17 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
         auto cEventHUD = static_cast<CEventHUD*>(eventhud.get()->GetComponent(CompType::EventHudComp).get());
         if (cEventHUD) {
             switch(cEventHUD->characterEventHUD) {
-                case 0: cadena = "media/hudPenguin.png";    break;
-                case 1: cadena = "media/hudTiger.png";      break;
-                case 2: cadena = "media/hudShark.png";      break;
-                case 3: cadena = "media/hudGorilla.png";    break;
-                case 4: cadena = "media/hudDragon.png";     break;
-                case 5: cadena = "media/hudOctopus.png";    break;
-                default: cout << "+++++++ No entiendo este personaje para el evento" << endl; break;
+                case (uint16_t)mainCharacter::PENGUIN:  cadena = "media/hudPenguin.png";        break;
+                case (uint16_t)mainCharacter::TIGER:    cadena = "media/hudTiger.png";          break;
+                case (uint16_t)mainCharacter::SHARK:    cadena = "media/hudShark.png";          break;
+                case (uint16_t)mainCharacter::GORILLA:  cadena = "media/hudGorilla.png";        break;
+                case (uint16_t)mainCharacter::DRAGON:   cadena = "media/hudDragon.png";         break;
+                case (uint16_t)mainCharacter::OCTOPUS:  cadena = "media/hudOctopus.png";        break;
+                default: cout << "+++++++ No entiendo este personaje para el evento" << endl;   break;
             }
-            device->DrawImage2D(50.0f*scale, h - 100.0f*scale, scale*0.7, 0.1f, cadena, true);
+            device->DrawImage2D(50.0f, h - 100.0f, 0.7, 0.1f, cadena, true);
             cadena = cEventHUD->spriteTypeEvent;
-            device->DrawImage2D(150.0f*scale, h - 100.0f*scale, scale*0.7, 0.1f, cadena, true);
+            device->DrawImage2D(150.0f, h - 100.0f, 0.7, 0.1f, cadena, true);
         }
     }
 
@@ -974,14 +1103,19 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
 
 void RenderFacadeClover::FacadeDrawIntro() {
     if(!introAnimation){
-        introAnimation = make_unique<Animation2D>("media/introAnimation/Beast Brawl.jpg",356,24);
+        introAnimation = make_unique<Animation2D>("media/introAnimation/Beast Brawl.jpg",812,60);
         introAnimation->Start();
     }
     
+    //No podemos hacer animaciones a otra cosa que no sea 60 porque el vsync tiene que estar activado
 
-    //resourceManager->DeleteResourceTexture(introAnimation->GetCurrentPath());
+
+    resourceManager->DeleteResourceTexture(introAnimation->GetCurrentPath());
+    
     introAnimation->Update();
     device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, introAnimation->GetCurrentPath(), true);
+    //device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, "media/introAnimation/Beast Brawl355.jpg", true);
+
 }
 
 void RenderFacadeClover::FacadeDrawMenu() {
@@ -1006,92 +1140,49 @@ void RenderFacadeClover::FacadeDrawMenu() {
 }
 
  void RenderFacadeClover::FacadeDrawSelectCharacter() {
-    glm::vec3 color[6] = {
-            glm::vec3(0.0f, 0.0f, 255.0f),
-            glm::vec3(0.0f, 0.0f, 255.0f),
-            glm::vec3(0.0f, 0.0f, 255.0f),
-            glm::vec3(0.0f, 0.0f, 255.0f),
-            glm::vec3(0.0f, 0.0f, 255.0f),
-            glm::vec3(0.0f, 0.0f, 255.0f)
+
+    device->SetEnableDepthTest(false);
+
+    std::string file = "media/menu/character_selector.png";
+    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.9f, file, true);
+
+    std::string files[6] = {
+        "media/menu/penguin_selected.png",
+        "media/menu/baxter_selected.png",
+        "media/menu/sharky_selected.png",
+        "media/menu/kong_selected.png",
+        "media/menu/deacon_selected.png",
+        "media/menu/octopus_selected.png"
     };
-    glm::vec3 colorB = glm::vec3(255.0f, 0.0f, 0.0f);
-    color[inputSC] = glm::vec3(0.0f, 255.0f, 0.0f);
-    std::string name = "<- (B)";
-    device->RenderText2D(name, 50.0f, 50.0f, 0.05f, 0.5f, colorB);
-    name = "Mr Penguin";
-    device->RenderText2D(name, 600.0f, 550.0f, 0.05f, 0.75f, color[0]);
-    name = "Sharky";
-    device->RenderText2D(name, 600.0f, 425.0f, 0.05f, 0.75f, color[2]);
-    name = "Deacon";
-    device->RenderText2D(name, 600.0f, 300.0f, 0.05f, 0.75f, color[4]);
-    name = "Mrs Baxter";
-    device->RenderText2D(name, 900.0f, 550.0f, 0.05f, 0.75f, color[1]);
-    name = "Kaiser Kong";
-    device->RenderText2D(name, 900.0f, 425.0f, 0.05f, 0.75f, color[3]);
-    name = "Cyberoctopus";
-    device->RenderText2D(name, 900.0f, 300.0f, 0.05f, 0.75f, color[5]);
-    name = "(A) Aceptar";
-    device->RenderText2D(name, 950.0f, 50.0f, 0.05f, 0.5f, colorB);
+    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.8f, files[inputSC], true);
+        
+    device->SetEnableDepthTest(true);
+
  }
 
 void RenderFacadeClover::FacadeDrawGameOptions() {
-    std::string file = "media/gameoptions.png";
-    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
 
-    //¿TRABAJAR A NIVEL DE BIT?
-    //TODO: Faltan cosas. ¿Como hago esto tio?
-    glm::vec3 colorB = glm::vec3(255.0f, 0.0f, 0.0f);
-    glm::vec3 colorTitle = glm::vec3(255.0f, 255.0f, 0.0f);
+    std::string name = "";
 
-    glm::vec3 colorOp1[4] = {
-            glm::vec3(0.0f, 0.0f, 255.0f),
-            glm::vec3(0.0f, 0.0f, 255.0f),
-            glm::vec3(0.0f, 0.0f, 255.0f),
-            glm::vec3(0.0f, 0.0f, 255.0f)
+    std::string file = "media/menu/settings_match_bg.png";
+    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.9f, file, true);
+    
+    std::string files[2] = {
+        "media/menu/duration_match_",
+        "media/menu/duration_totem_"
     };
-    colorOp1[inputGO[0]] = glm::vec3(0.0f, 255.0f, 0.0f);
-    std::string name = "Duracion de partida";
-    device->RenderText2D(name, 450.0f, 600.0f, 0.05f, 0.75f, colorTitle);
-    name = "2 min";
-    device->RenderText2D(name, 300.0f, 500.0f, 0.05f, 0.75f, colorOp1[0]);
-    name = "3 min";
-    device->RenderText2D(name, 500.0f, 500.0f, 0.05f, 0.75f, colorOp1[1]);
-    name = "4 min";
-    device->RenderText2D(name, 700.0f, 500.0f, 0.05f, 0.75f, colorOp1[2]);
-    name = "5 min";
-    device->RenderText2D(name, 900.0f, 500.0f, 0.05f, 0.75f, colorOp1[3]);
 
-    glm::vec3 colorOp2[3] = {
-            glm::vec3(0.0f, 0.0f, 255.0f),
-            glm::vec3(0.0f, 0.0f, 255.0f),
-            glm::vec3(0.0f, 0.0f, 255.0f)
-    };
-    colorOp2[inputGO[1]] = glm::vec3(0.0f, 255.0f, 0.0f);
-    name = "Tiempo de posesion";
-    device->RenderText2D(name, 450.0f, 350.0f, 0.05f, 0.75f, colorTitle);
-    name = "30s";
-    device->RenderText2D(name, 500.0f, 250.0f, 0.05f, 0.75f, colorOp2[0]);
-    name = "45s";
-    device->RenderText2D(name, 600.0f, 250.0f, 0.05f, 0.75f, colorOp2[1]);
-    name = "1 min";
-    device->RenderText2D(name, 700.0f, 250.0f, 0.05f, 0.75f, colorOp2[2]);
+    std::string op1[4] = {"2min", "3min", "4min", "5min" };
+    std::string op2[3] = {"30s", "45s", "1min"};
 
-    glm::vec3 colorOp3;
-    if (inputGO[2] == 0) {
-        colorOp3 = glm::vec3(0.0f, 255.0f, 0.0f);
-    } else {
-        colorOp3 = glm::vec3(0.0f, 0.0f, 255.0f);
-    }
-    name = "Empezar";
-    device->RenderText2D(name, 500.0f, 150.0f, 0.05f, 1.25f, colorOp3);
-
-    name = "---->";
-    float sel[3] = { 500.0f, 250.0f, 150.0f };
-    device->RenderText2D(name, 100.0f, sel[option], 0.05f, 1.0f, colorB);
-
-
-    name = "<- (B)";
-    device->RenderText2D(name, 50.0f, 50.0f, 0.05f, 0.5f, colorB);
+    file = files[0] + op1[inputGO[0]];
+    if (option == 0) { file += "_hover"; }
+    file += ".png";
+    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.8f, file, true);
+    file = files[1] + op2[inputGO[1]];
+    if (option == 1) { file += "_hover"; }
+    file += ".png";
+    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.7f, file, true);
 
 }
 
@@ -1117,43 +1208,51 @@ void RenderFacadeClover::FacadeDrawPause() {
 }
 
 void RenderFacadeClover::FacadeDrawEndRace() {
-    std::string file = "media/endrace.png";
-    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
 
-    glm::vec3 colorranking = glm::vec3(0.0f, 0.0f, 0.0f);
+    auto w = device->GetScreenWidth();
+    auto h = device->GetScreenHeight();
+
+    auto scale = 0.75f;
+    if (h > 1000) { scale = 1.0f; }
+    else if (h < 475 ) { scale = 0.25; }
+    else if (h < 675) { scale = 0.5; }
+
+    std::string file = "media/menu/finish_menu_bg.png";
+    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.9f, file, true);
+
     auto rank = GameValues::GetInstance()->GetRanking();
-    if (!rank.empty()) {
-        for ( auto it = rank.begin(); it != rank.end(); ++it) {
-            file = std::to_string(it->first);
-            switch (it->second) {
-            case (uint16_t)mainCharacter::PENGUIN:
-                file += ". Pinguino";
-                break;
-            case (uint16_t)mainCharacter::TIGER:
-                file += ". Tigre";
-                break;
-            case (uint16_t)mainCharacter::SHARK:
-                file += + ". Tiburon";
-                break;
-            case (uint16_t)mainCharacter::GORILLA:
-                file += ". Gorila";
-                break;
-            case (uint16_t)mainCharacter::DRAGON:
-                file += ". Dragon";
-                break;
-            case (uint16_t)mainCharacter::OCTOPUS:
-                file += ". Octopus";
-                break;
-            default:
-                break;
-            }
-            device->RenderText2D(file, 200.0, device->GetScreenHeight() - 100.0f - (100.0*it->first), 0.75f, 0.75f, colorranking);
+    auto secondsRank = GameValues::GetInstance()->GetSeconds();
+    uint8_t i = 1;
+    auto posX = w/2 - 541*scale;
+    auto posY = h/2 - 50.0f*scale - rank.size()*50.0f*scale;
+    auto posYText = h/2 + rank.size()*50.0f*scale - 15.0f*scale;
+    for(auto it = rank.begin(); it != rank.end(); ++it) {
+        file = "media/menu/position";
+        file += std::to_string(i) + ".png";
+        device->DrawImage2D(posX, posY + (i*100.0f)*scale, 1.0*scale, 0.8f, file, true);
+        switch (it->second) {
+            case (uint16_t)mainCharacter::PENGUIN:  file = "media/hudPenguin.png";        break;
+            case (uint16_t)mainCharacter::TIGER:    file = "media/hudTiger.png";          break;
+            case (uint16_t)mainCharacter::SHARK:    file = "media/hudShark.png";          break;
+            case (uint16_t)mainCharacter::GORILLA:  file = "media/hudGorilla.png";        break;
+            case (uint16_t)mainCharacter::DRAGON:   file = "media/hudDragon.png";         break;
+            case (uint16_t)mainCharacter::OCTOPUS:  file = "media/hudOctopus.png";        break;
+            default: cout << "+++++++ No entiendo este personaje para el evento" << endl;   break;
         }
+        device->DrawImage2D(posX + 275.0f*scale, posY + (i*100.0f)*scale + 5.0f*scale, 0.75f*scale, 0.5f, file, true);
+
+        auto it2 = secondsRank.find(it->first);
+        if (it2 != secondsRank.end()){
+            if (it2->second < 10) { file = "0" + std::to_string(it2->second); }
+            else { file = std::to_string(it2->second); }
+            device->RenderText2D(file, posX + 950.0f*scale, posYText - (i*100.0f)*scale, 0.4f, 1.25*scale, glm::vec3(255.0f,255.0f,255.0f));
+        }
+        ++i;
     }
 
     if (menuER) {
         file = "media/endraceMenu.png";
-        device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.08f, file, true);
+        device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.3f, file, true);
 
         glm::vec3 color[3] = {
                 glm::vec3(0.0f, 0.0f, 255.0f),
@@ -1162,11 +1261,11 @@ void RenderFacadeClover::FacadeDrawEndRace() {
         };
         color[inputER] = glm::vec3(0.0f, 255.0f, 0.0f);
         file = "Volver a jugar";
-        device->RenderText2D(file, 500.0f, 400.0f, 0.05f, 1.0f, color[0]);
+        device->RenderText2D(file, 500.0f, 400.0f, 0.2f, 1.0f, color[0]);
         file = "Cambiar de personaje";
-        device->RenderText2D(file, 500.0f, 300.0f, 0.05f, 1.0f, color[1]);
+        device->RenderText2D(file, 500.0f, 300.0f, 0.2f, 1.0f, color[1]);
         file = "Salir al menu";
-        device->RenderText2D(file, 500.0f, 200.0f, 0.05f, 1.0f, color[2]);
+        device->RenderText2D(file, 500.0f, 200.0f, 0.2f, 1.0f, color[2]);
     }
 }
 
@@ -1692,8 +1791,10 @@ void RenderFacadeClover::Animation2D::Update(){
     string newPath = path;
 
     //Cambiamos de frame
-    if(time >= timeBetweenFrames){
+    if(time >= timeBetweenFrames*100){
         //Borramos el frame anterior
+
+        //cout << "Nuevo Frame\n";
         
         if(actualFrame >= numFrames){
             finished = true;
@@ -1714,6 +1815,9 @@ void RenderFacadeClover::Animation2D::Update(){
 
         timeStart = system_clock::now();
         actualFrame++;
+
+    }else{
+        //cout << "MISMO Frame\n";
 
     }
 

@@ -25,6 +25,7 @@ class CarAI : public Car{
     void SetWayPoint(CWayPoint* _waypoint);
     void SetDestination(CPosDestination* posDestination);
     void SetPath(stack<int> path);
+    void SetRotation(glm::vec3 rot_);
 
 };
 

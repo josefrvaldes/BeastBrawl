@@ -43,6 +43,7 @@
 #include <Managers/ManParticleSystem.h>
 #include <Managers/ManShield.h>
 #include <Managers/ManCamera.h>
+#include <Managers/ManSpawn.h>
 #include "../Managers/ManGameRules.h"
 #include <Managers/ManHUDEvent.h>
 #include <Systems/Collisions.h>
@@ -79,6 +80,7 @@ enum UpdateState {
     START,
     COUNTDOWN,
     GAME,
+    WAITING_FOR_COUNTDOWN,
     END
 };
 
@@ -90,7 +92,7 @@ class StateInGame : public State {
     void InitState() override;
     virtual void Input() = 0;
     void Update() override;
-    virtual void UpdateAnimationStart();
+    virtual bool UpdateAnimationStart();
     virtual void UpdateAnimationCountdown();
     virtual void UpdateAnimationEnd();
     virtual void UpdateGame();
@@ -117,6 +119,8 @@ class StateInGame : public State {
     unique_ptr<ManHUDEvent> manHudEvent;
     unique_ptr<ManParticleSystem> manParticleSystem;
     unique_ptr<ManShield> manShield;
+    unique_ptr<ManSpawn> manSpawn;
+
     unique_ptr<SystemLoD> sysLoD;
     unique_ptr<SystemAnimationStart> sysAnimStart;
     unique_ptr<SystemAnimationEnd> sysAnimEnd;
@@ -136,7 +140,6 @@ class StateInGame : public State {
     //shared_ptr<float> deltaTime;
     
     shared_ptr<SystemRanking> sysRanking;
-    shared_ptr<PhysicsPowerUp> phisicsPowerUp;
     shared_ptr<SystemBoxPowerUp> sysBoxPowerUp;
     shared_ptr<Collisions> collisions;
     shared_ptr<Totem> totem;
@@ -159,10 +162,13 @@ class StateInGame : public State {
     virtual void AddElementsToRender();
     void GoToEndAnimation();
     void GoToStateEndrace();
+    virtual void GoToUpdateGame();
     void GoToCountdownAnimation();
     void InitializeSystemData();
     //virtual void CAMBIARCosasDeTotemUpdate(){};
 
+    void IntersectsCLPhysics();
+    
     //void CAMBIARCosasDeTotem(ManTotem &);
     //void CAMBIARCosasNavMesh(ManCar &, ManNavMesh &);
     //void CAMBIARPositionTotemAboveCar();

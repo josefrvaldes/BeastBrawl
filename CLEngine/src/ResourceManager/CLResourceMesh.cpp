@@ -298,9 +298,12 @@ void CLResourceMesh::Draw(GLuint shaderID) {
             // and finally bind the texture
             glBindTexture(GL_TEXTURE_2D, mesh.textures[i].id);
         }
+        //glActiveTexture(GL_TEXTURE1);
+        //glUniform1i(glGetUniformLocation(shaderID, "depthMap"), 1);
+        //glBindTexture(GL_TEXTURE_CUBE_MAP, CLShadowMapping::depthCubemap);
         glActiveTexture(GL_TEXTURE1);
         glUniform1i(glGetUniformLocation(shaderID, "depthMap"), 1);
-        glBindTexture(GL_TEXTURE_CUBE_MAP, CLShadowMapping::depthCubemap);
+        glBindTexture(GL_TEXTURE_2D, CLShadowMapping::depthMap);
 
         glBindVertexArray(mesh.VAO);
         glDrawElements(GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT, 0);

@@ -6,6 +6,7 @@
 #include "../EventManager/EventManager.h"
 #include "../Systems/Utils.h"
 #include "../Systems/Serialization.h"
+#include "../GameValues.h"
 
 
 using boost::asio::ip::tcp;
@@ -149,11 +150,14 @@ void TCPClient::HandleReceivedStartGame(std::shared_ptr<unsigned char[]> recevBu
     uint16_t idPlayer = Serialization::Deserialize<uint16_t>(recevBuff.get(), currentIndex);
     uint8_t enemiesSize = Serialization::Deserialize<uint8_t>(recevBuff.get(), currentIndex);
     vector<uint16_t> idEnemies = Serialization::DeserializeVector<uint16_t>(enemiesSize, recevBuff.get(), currentIndex);
+    uint8_t charactersSize = Serialization::Deserialize<uint8_t>(recevBuff.get(), currentIndex);
+    vector<uint8_t> characters = Serialization::DeserializeVector<uint8_t>(charactersSize, recevBuff.get(), currentIndex);
     cout << Utils::getISOCurrentTimestampMillis() << " hemos recibido un startGame y voy a ser el id " << idPlayer << endl;
     
     std::shared_ptr<DataMap> data = make_shared<DataMap>();
     (*data)[DataType::ID_ONLINE] = idPlayer;
     (*data)[DataType::VECTOR_ID_ONLINE] = idEnemies;
+    (*data)[DataType::CHARACTERS_ONLINE] = characters;
     EventManager::GetInstance().AddEventMulti(Event{EventType::NEW_TCP_START_MULTI, data});
 }
 
@@ -173,7 +177,9 @@ void TCPClient::SendConnectionRequest() {
     unsigned char request[Constants::ONLINE_BUFFER_SIZE];
     size_t currentBuffSize = 0;
     uint8_t petitionType = Constants::CONNECTION_REQUEST;
+    uint8_t character = GameValues::GetInstance()->GetCharacter();
     Serialization::Serialize(request, &petitionType, currentBuffSize);
+    Serialization::Serialize(request, &character, currentBuffSize);
 
     socket.async_send(
         boost::asio::buffer(request, currentBuffSize),

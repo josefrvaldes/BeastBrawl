@@ -33,7 +33,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/UDPServer/Server",
-            "args": [],
+            "args": [3],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "externalConsole": false,

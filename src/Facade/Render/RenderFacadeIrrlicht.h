@@ -82,7 +82,7 @@ class RenderFacadeIrrlicht : public RenderFacade {
     void FacadeCheckInputSettings() override;
 
     void FacadeUpdatePowerUpHUD(DataMap* d) override;
-    void FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* globalClock, ManHUDEvent* manHud) override;
+    void FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* globalClock, ManHUDEvent* manHud, ManGameRules* manGR) override;
     void FacadeSuscribeEvents() override;
     void FacadeSuscribeEventsSettings() override;
     void FacadeAddPlates(Manager* manNamePlates) override;
@@ -99,6 +99,7 @@ class RenderFacadeIrrlicht : public RenderFacade {
     void FacadeInitParticleSystem(DataMap* d) const override {};
     void FacadeSetParticlesVisibility(DataMap* d) const {};
     void FacadeSetGrassActivate(DataMap* d) const {};
+    void FacadeSetShadowsActivate(DataMap* d) const {};
     void FacadeUpdateVisibility(DataMap* d) override {};
     bool FacadeOctreeInCamera(float size, const glm::vec3& pos) override {return true;};
     void FacadeSetOctreeVisibleById(unsigned int id, bool v) override {};

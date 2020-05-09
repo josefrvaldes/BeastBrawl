@@ -86,7 +86,7 @@ class RenderFacadeClover : public RenderFacade {
       void FacadeCheckInputSettings() override;
 
       void FacadeUpdatePowerUpHUD(DataMap* d) override;
-      void FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* globalClock, ManHUDEvent* manHud) override;
+      void FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* globalClock, ManHUDEvent* manHud, ManGameRules* manGR) override;
       void FacadeSuscribeEvents() override;
       void FacadeSuscribeEventsSettings() override;
       void FacadeAddPlates(Manager* manNamePlates) override;
@@ -103,6 +103,7 @@ class RenderFacadeClover : public RenderFacade {
       void FacadeInitParticleSystem(DataMap* d) const override;
       void FacadeSetParticlesVisibility(DataMap* d) const override;
       void FacadeSetGrassActivate(DataMap* d) const override;
+      void FacadeSetShadowsActivate(DataMap* d) const override;
 
       void FacadeUpdateVisibility(DataMap* d) override;
       bool FacadeOctreeInCamera(float size, const glm::vec3& pos) override {return device->OctreeIncamera(size, pos);};
@@ -154,6 +155,13 @@ class RenderFacadeClover : public RenderFacade {
 
       std::string powerUps[7];
 
+      vector<std::string> tipsTexts = { "Si te encuentras perdido, utiliza la camara del totem para localizarlo!" , 
+                                   "Utiliza el Robo Jorobo para conseguir el totem de inmediato!",
+                                   "El Escudo Merluzo te ayudara a que no te roben el totem!"};
+
+        // En juego
+        bool inputShowTable { true };
+
         //Menu
         int inputMenu { 0 };
         int maxInputMenu { 5 };
@@ -167,13 +175,13 @@ class RenderFacadeClover : public RenderFacade {
         bool menuER { false };
         int inputER { 0 };
         int maxInputER { 2 };
-        //Opciones de partida (Hay que contar el 0)
-        int option { 2 };
-        std::vector<int> inputGO {1,1,0};
-        int maxInputGO[3] {3, 2, 0};
+        //Opciones de partida
+        int option { 0 };
+        std::vector<int> inputGO {1,1/*,0*/};
+        int maxInputGO[2] {3, 2/*, 0*/};
         //Ajustes
         int optionSettings { 0 };
-        std::vector<int> inputSettings {1,3,1,1,1,1};     //Sonido, musica, resolucion, vegetacion, sombras, particulas
+        std::vector<int> inputSettings {1,3,1,1,1,0};     //Sonido, musica, resolucion, particulas, vegetacion, sombras
         int maxInputSettings[6] {3,3,2,1,1,1};
 
       CLEngine* device {nullptr};
@@ -194,6 +202,8 @@ class RenderFacadeClover : public RenderFacade {
             void Restart();
 
             string GetCurrentPath() const { return currentPath + extension; }
+            float GetTime() const { return time; }
+            float GetTimeBetweenFrames() const { return timeBetweenFrames; }
 
          private:
             string path;

@@ -8,6 +8,7 @@
 #include <EventManager/EventManager.h>
 #include <Managers/ManWayPoint.h>
 #include <Managers/ManCar.h>
+#include <Managers/ManGameRules.h>
 #include <Managers/ManHUDEvent.h>
 #include <Components/CPowerUp.h>
 #include <Managers/Manager.h>
@@ -80,7 +81,7 @@ class RenderFacade {
 
     virtual void FacadeUpdatePowerUpHUD(DataMap* d) = 0;
     virtual void FacadeInitResources() = 0;
-    virtual void FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* globalClock, ManHUDEvent*) = 0;
+    virtual void FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* globalClock, ManHUDEvent*, ManGameRules*) = 0;
     virtual void FacadeSuscribeEvents() = 0;
     virtual void FacadeSuscribeEventsSettings() = 0;
     virtual void FacadeAddPlates(Manager* manNamePlates) = 0;
@@ -97,6 +98,7 @@ class RenderFacade {
     virtual void FacadeInitParticleSystem(DataMap* d) const = 0;
     virtual void FacadeSetParticlesVisibility(DataMap* d) const = 0;
     virtual void FacadeSetGrassActivate(DataMap* d) const = 0;
+    virtual void FacadeSetShadowsActivate(DataMap* d) const = 0;
     virtual void FacadeUpdateVisibility(DataMap* d) = 0;
     virtual bool FacadeOctreeInCamera(float size, const glm::vec3& pos) = 0;
     virtual void FacadeSetOctreeVisibleById(unsigned int id, bool v) = 0;

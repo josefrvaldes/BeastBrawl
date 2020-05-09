@@ -125,12 +125,7 @@ void Game::SetState(State::States stateType) {
             EventManager::GetInstance().ClearEvents();
             EventManager::GetInstance().ClearListeners();
             currentState = make_shared<StateEndRace>();
-            if (gameMarkedToDelete) {
-                gameState.reset();
-                gameMarkedToDelete = false;
-            } else
-                gameMarkedToDelete = true;
-
+            gameState.reset();
             SuscribeEvents();
             gameStarted = false;
             break;
@@ -214,7 +209,7 @@ void Game::SuscribeEvents() {
     EventManager::GetInstance().SubscribeMulti(Listener(
         EventType::STATE_ENDRACE,
         bind(&Game::SetStateEndRace, this, placeholders::_1),
-        "StateEndRace"));
+        "StateEndRace in Game.cpp"));
 
     EventManager::GetInstance().SubscribeMulti(Listener(
         EventType::STATE_LOBBYMULTI,
@@ -325,9 +320,10 @@ void Game::SetStateInGameMulti(DataMap* d) {
     //SetState(State::INGAME_MULTI);
     uint16_t IdOnline = any_cast<uint16_t>((*d)[DataType::ID_ONLINE]);
     vector<uint16_t> vectorIdOnline = any_cast<vector<uint16_t>>((*d)[DataType::VECTOR_ID_ONLINE]);
+    vector<uint8_t> charactersOnline = any_cast<vector<uint8_t>>((*d)[DataType::CHARACTERS_ONLINE]);
     if (!gameStarted) {
         shared_ptr<State> newState;
-        newState = make_shared<StateInGameMulti>(IdOnline, vectorIdOnline);
+        newState = make_shared<StateInGameMulti>(IdOnline, vectorIdOnline, charactersOnline);
         currentState = newState;
         gameState = currentState;
         gameStarted = true;

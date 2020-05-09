@@ -57,6 +57,7 @@ void SystemRanking::Update(ManCar* manCars){
 
         // Actualizar ranking de GameValues
         std::map<uint16_t, uint16_t> order;
+        std::map<uint16_t, uint16_t> orderSeconds;
         auto mCar = static_cast<CId*>(manCars->GetCar()->GetComponent(CompType::IdComp).get());
 
         for (auto& car : manCars->GetEntities() ) {
@@ -64,9 +65,11 @@ void SystemRanking::Update(ManCar* manCars){
             cTotem = static_cast<CTotem*>(car->GetComponent(CompType::TotemComp).get());
             cId = static_cast<CId*>(car->GetComponent(CompType::IdComp).get());
             if (cCar) {
+                uint16_t seconds = cTotem->SEGUNDOS - cTotem->accumulatedTime/1000;
                 uint16_t position = cTotem->positionRanking;
                 uint16_t pj = (uint16_t)cCar->character;
                 order.insert(std::pair<uint16_t,uint16_t>(position,pj));
+                orderSeconds.insert(std::pair<uint16_t, uint16_t>(position, seconds));
 
                 if (cId && mCar && mCar->id == cId->id) {
                     if (cTotem->positionRanking == 1) {
@@ -79,6 +82,7 @@ void SystemRanking::Update(ManCar* manCars){
         }
 
         GameValues::GetInstance()->SetRanking(order);
+        GameValues::GetInstance()->SetSeconds(orderSeconds);
         
         //cout << "+++++++++++++++++++++++++++++++++++++++++++++++++++++ ORDEN\n";
         //for (auto it = order.begin(); it != order.end(); ++it)

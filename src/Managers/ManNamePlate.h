@@ -14,6 +14,7 @@ using namespace std;
 class ManNamePlate : public Manager{
 public:
     ManNamePlate(ManCar* cars); 
+    void CreateNamePlate(Entity* car);
     ~ManNamePlate();
 
 

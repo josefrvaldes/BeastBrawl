@@ -70,6 +70,7 @@ void StateLobbyMulti::StartGameMulti(DataMap* d) {
     uint16_t idOnline = any_cast<uint16_t>((*d)[DataType::ID_ONLINE]);
     cout << "Yo soy el coche con idOnline " << idOnline  << endl;
     vector<uint16_t> vectorIdOnline = any_cast<vector<uint16_t>>((*d)[DataType::VECTOR_ID_ONLINE]);
+    vector<uint8_t> vectorCharacters = any_cast<vector<uint8_t>>((*d)[DataType::CHARACTERS_ONLINE]);
     // renderEngine->ThrowEventChangeToMulti(idOnline, vectorIdOnline);
 
     //  numEnemyCars = 0;
@@ -83,6 +84,7 @@ void StateLobbyMulti::StartGameMulti(DataMap* d) {
     //(*data)[DataType::DATA_SERVER] = dataServer;
     (*data)[DataType::ID_ONLINE] = idOnline;
     (*data)[DataType::VECTOR_ID_ONLINE] = vectorIdOnline;
+    (*data)[DataType::CHARACTERS_ONLINE] = vectorCharacters;
     EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_INGAMEMULTI, data});
 }
 

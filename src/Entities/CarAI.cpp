@@ -10,6 +10,7 @@
 #include <Components/CCar.h>
 #include <Components/CShield.h>
 #include <Components/CTotem.h>
+#include <Components/CWheel.h>
 #include <Components/CRoboJorobo.h>
 #include <Components/CNitro.h>
 #include <Components/CBoundingSphere.h>
@@ -26,144 +27,23 @@
 #include "GameValues.h"
 
 
+
 class Position;
 using namespace std;
 
-CarAI::CarAI(int pj){
-
+CarAI::CarAI(int pj) : Car(pj){
     typeCar = TypeCar::CarAI;
 
-    mainCharacter _pj;
-    string mesh;
-    float weight = 50;
-    float maxSpeed = 200.0;
-    float acceleration = 1.5;
-    
-    switch (pj) {
-        case 0: 
-            _pj = mainCharacter::PENGUIN;
-            weight = 30.0;
-            maxSpeed = 220.0;
-            mesh = "kart_penguin.obj";
-            break;
-        case 1: 
-            _pj = mainCharacter::TIGER; 
-            weight = 40.0;
-            acceleration = 1.75;
-            mesh = "kart_baxter.obj";
-            break;
-        case 2: 
-            _pj = mainCharacter::SHARK; 
-            weight = 30.0;
-            maxSpeed = 220.0;
-            acceleration = 2.0;
-            mesh = "kart_sharky.obj";
-            break;
-        case 3: 
-            _pj = mainCharacter::GORILLA; 
-            weight = 70.0;
-            maxSpeed = 220.0;
-            acceleration = 1.25;
-            mesh = "kart_kong.obj";
-            break;
-        case 4: 
-            _pj = mainCharacter::DRAGON; 
-            acceleration = 2.0;
-            mesh = "kart_physics.obj";
-            break;
-        case 5: 
-            _pj = mainCharacter::OCTOPUS; 
-            mesh = "kart_physics.obj";
-            break;
-        default: break;
-    }
-
-
-    // default values
-    glm::vec3 pos   = glm::vec3(10.0f, 20.0f, 30.0f);
-    glm::vec3 rot   = glm::vec3(0.0f, 90.0f, 0.0f);
-    glm::vec3 scale = glm::vec3(6.0f, 6.0f, 6.0f);
-
-     if(Constants::RENDER_ENGINE == Constants::RenderEngine::IRRLICHT){
-        mesh    =   "kart_physics.obj";
-    }
-    
-    
-    string texture = "";
-
-    string vertexShader = "CLEngine/src/Shaders/cartoonShader.vert";
-    string fragmentShader = "CLEngine/src/Shaders/cartoonShader.frag";
-
-    float friction = 1.0, slowDown = 2.5;
-    
-    shared_ptr<CId> cId   = make_shared<CId>();
-    shared_ptr<CType> cType = make_shared<CType>(ModelType::AnimatedMesh);
-    shared_ptr<CTransformable> cTransformable = make_shared<CTransformable>(pos, rot, scale); 
-    shared_ptr<CTexture> cTexture = make_shared<CTexture>(texture);
-    shared_ptr<CMesh> cMesh   = make_shared<CMesh>(mesh);
-    shared_ptr<CCar> cCar = make_shared<CCar>(_pj, weight, maxSpeed, acceleration, friction, slowDown, 10.0);
 
     shared_ptr<CWayPoint> cWayPoint = make_shared<CWayPoint>();
     shared_ptr<CPosDestination> cPosDestination = make_shared<CPosDestination>();
-
-    shared_ptr<CPowerUp> cPowerUp = make_shared<CPowerUp>();
-    shared_ptr<CShield> cShield = make_shared<CShield>();
-    shared_ptr<CNitro> cNitro = make_shared<CNitro>();
-    shared_ptr<CRoboJorobo> cRoboJorobo = make_shared<CRoboJorobo>();
-    shared_ptr<CTotem> cTotem = make_shared<CTotem>();
-    shared_ptr<CSpeed> cSpeed = make_shared<CSpeed>();
-    shared_ptr<CCurrentNavMesh> cCurrentNavMesh = make_shared<CCurrentNavMesh>(-1);  //  ponemos -1 por defecto ya que haremos el calculo al empezar la partida
-
-
-    shared_ptr<CColliding> cColliding = make_shared<CColliding>(false);
-    shared_ptr<CBoundingSphere> cBoundSphere = make_shared<CBoundingSphere>(pos);
-    shared_ptr<CBoundingRay> cBoundRay = make_shared<CBoundingRay>();
-
-    shared_ptr<CExternalForce> cExternalForce = make_shared<CExternalForce>();
-
-    glm::vec3 pSphBehind = pos;
-    glm::vec3 pSphFront = pos;
-    shared_ptr<CBoundingChassis> cBoundingChassis = make_shared<CBoundingChassis>(pSphBehind, 7.0, 5.0, pSphFront, 7.0, 5.0);
-
-    shared_ptr<CGravity> cGravity = make_shared<CGravity>();
-
-    shared_ptr<CShader> cShader = make_shared<CShader>(vertexShader,fragmentShader);
     shared_ptr<CBrainAI> cBrainAI = make_shared<CBrainAI>();
-    
-    shared_ptr<CHurt> cHurt = make_shared<CHurt>();
 
-    AddComponent(cId);
-    AddComponent(cType);
-    AddComponent(cTransformable);
-    AddComponent(cTexture);
-    AddComponent(cMesh);
-    AddComponent(cCar);
 
-    // TODO quitar el compoentne cWayPoint del coche ya que al coche solo le hace falta su siguiente destino.
+    // TODO: RUBEN quitar el compoentne cWayPoint del coche ya que al coche solo le hace falta su siguiente destino.
     AddComponent(cWayPoint);
     AddComponent(cPosDestination);
-
-    AddComponent(cPowerUp);
-    AddComponent(cShield);
-    AddComponent(cNitro);
-    AddComponent(cRoboJorobo);
-    AddComponent(cTotem);
-    AddComponent(cBoundSphere);
-    AddComponent(cBoundRay);
-    AddComponent(cColliding);
-    AddComponent(cSpeed);
-
-    AddComponent(cCurrentNavMesh);
-
-    AddComponent(cExternalForce);
-
-    AddComponent(cBoundingChassis);
-
-    AddComponent(cGravity);
-
-    AddComponent(cShader);
     AddComponent(cBrainAI);
-    AddComponent(cHurt);
 }
 
 CarAI::CarAI(int pj, glm::vec3 pos, glm::vec3 rot, glm::vec3 scale,string texture, string mesh, float maxSpeed, float acceleration , float carFriction, float carSlowDown, std::string vertexShader, std::string fragmentShader)
@@ -207,6 +87,14 @@ CarAI::CarAI(int pj, glm::vec3 _position)
 {
     CTransformable *cTransformable = (CTransformable *)m_components[CompType::TransformableComp].get();
     cTransformable->position = _position;
+
+
+    CBoundingChassis *cChassis = (CBoundingChassis *)m_components[CompType::CompBoundingChassis].get();
+    cChassis->sphereBehind->center = cTransformable->position;
+    cChassis->sphereFront->center = cTransformable->position;
+
+
+
 }
 
 
@@ -235,3 +123,9 @@ void CarAI::SetPath(stack<int> path){
 
 }
 
+
+void CarAI::SetRotation(glm::vec3 rot_){
+    
+    CTransformable *cTransformable = (CTransformable *)m_components[CompType::TransformableComp].get();
+    cTransformable->rotation = rot_;
+}

@@ -13,6 +13,7 @@ StateInGameSingle::StateInGameSingle() : StateInGame() {
 
     createSystemAI();
     sysAnimStart->ResetTimer();
+    sysRanking->Update(manCars.get());
 }
 
 StateInGameSingle::~StateInGameSingle() {}
@@ -34,8 +35,11 @@ void StateInGameSingle::Input() {
     }
 }
 
-void StateInGameSingle::UpdateAnimationStart() {
-    StateInGame::UpdateAnimationStart();
+bool StateInGameSingle::UpdateAnimationStart() {
+    bool animationFinished = StateInGame::UpdateAnimationStart();
+    if(animationFinished)
+        GoToCountdownAnimation();
+    return animationFinished;
 }
 
 void StateInGameSingle::UpdateAnimationCountdown() {
@@ -65,7 +69,7 @@ void StateInGameSingle::UpdateGame() {
 
     StateInGame::UpdateGame();
 
-    manAI->Update();
+    //manAI->Update();
 
     for (auto actualAI : manCars->GetEntities()) {  // CUIDADO!!! -> el static cast que solo se use en el single player, si no peta
         if (static_cast<Car *>(actualAI.get())->GetTypeCar() == TypeCar::CarAI) {
@@ -203,6 +207,9 @@ void StateInGameSingle::InitBtLoDMove() {
     systemBtLoDMove->AddManager(*manNavMesh.get());
     systemBtLoDMove->AddManager(*manBoundingWall.get());
     systemBtLoDMove->AddManager(*manBoundingOBB.get());
+    
+    systemBtLoDMove->AddCLPhysicsSB(clPhysics.get());
+    systemBtLoDMove->InitFuzzyLogic(*manCars.get());
 
     systemBtLoDMove->setMaxProcessTime(0.00053);
 }
@@ -222,7 +229,7 @@ void StateInGameSingle::InitPathPlanning() {
 }
 
 void StateInGameSingle::InitVision(){
-    systemVisionAI = make_unique<SystemVisionAI>();
+    systemVisionAI = make_unique<SystemVisionAI>(clPhysics.get());
 
     systemVisionAI->AddManager(*manCars.get());
     systemVisionAI->AddManager(*manPowerUps.get());
@@ -258,9 +265,9 @@ void StateInGameSingle::InitCarAIS(ManCar &manCars, ManWayPoint &manWayPoint) {
     auto iaPjs = GameValues::GetInstance()->GetIACharacters();
 
 
-    auto posCar1 = glm::vec3(290.0f, 15.0f, -300.0f);
-    auto posCar2 = glm::vec3(-202.0f, 15.0f, -145.0f);
-    auto posCar3 = glm::vec3(209.0f, 15.0f, -145.0f);
+    //auto posCar1 = glm::vec3(290.0f, 15.0f, -300.0f);
+    //auto posCar2 = glm::vec3(-202.0f, 15.0f, -145.0f);
+    //auto posCar3 = glm::vec3(209.0f, 15.0f, -145.0f);
 
     //Para asegurarse por si petara, que no debe
     if (!iaPjs.empty()) {
@@ -269,18 +276,25 @@ void StateInGameSingle::InitCarAIS(ManCar &manCars, ManWayPoint &manWayPoint) {
         }
 
         //Cambiar
-        manCars.CreateCarAI(iaPjs[0], posCar1);
-        manCars.CreateCarAI(iaPjs[1], posCar2);
-        manCars.CreateCarAI(iaPjs[2], posCar3);
+        manCars.CreateCarAI(iaPjs[0], manCars.GetPosSpawn());
+        manCars.CreateCarAI(iaPjs[1], manCars.GetPosSpawn());
+        manCars.CreateCarAI(iaPjs[2], manCars.GetPosSpawn());
 
     } else {
         cout << "++++++++++ Algo no va bien asique ahora todos son pinguinos.";
-        manCars.CreateCarAI(0, posCar1);
-        manCars.CreateCarAI(0, posCar2);
-        manCars.CreateCarAI(0, posCar3);
+        manCars.CreateCarAI(0, manCars.GetPosSpawn());
+        manCars.CreateCarAI(0, manCars.GetPosSpawn());
+        manCars.CreateCarAI(0, manCars.GetPosSpawn());
     }
 
-    auto mainCarId = static_cast<CId *>(manCars.GetCar()->GetComponent(CompType::IdComp).get());
+    //Añadimos las nameplates
+    for(auto car : manCars.GetEntities()){
+        if(manCars.GetCar().get() != car.get()){
+            manNamePlates->CreateNamePlate(car.get());
+        }
+    }
+
+    //auto mainCarId = static_cast<CId *>(manCars.GetCar()->GetComponent(CompType::IdComp).get());
     //int i = -1;
     //TODO: Cambiar de sitio
     for (auto e : manCars.GetEntities()) {

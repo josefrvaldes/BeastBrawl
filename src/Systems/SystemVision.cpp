@@ -25,8 +25,7 @@
 
 
 
-SystemVision::SystemVision(){
-    clPhysics = make_unique<CLPhysics>();
+SystemVision::SystemVision(CLPhysics *clPhysics_) : clPhysics{clPhysics_} {
     renderEngine = RenderFacadeManager::GetInstance()->GetRenderFacade();
 }
 

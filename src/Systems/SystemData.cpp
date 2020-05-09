@@ -9,8 +9,8 @@
 #include "../Managers/ManBoundingGround.h"
 
 
-SystemData::SystemData(){
-    systemVision = make_unique<SystemVision>();
+SystemData::SystemData(CLPhysics * clPhysics) : systemVision{make_unique<SystemVision>(clPhysics)} {
+    // systemVision = make_unique<SystemVision>(clPhysics);
 }
 
 void SystemData::AddManager(Manager &m) {

@@ -15,6 +15,7 @@
 #include "../Components/COnline.h"
 #include "../Components/CRemovableObject.h"
 #include "../Components/CType.h"
+#include "../Systems/PhysicsPowerUp.h"
 
 class Position;
 using namespace std;
@@ -22,6 +23,7 @@ using namespace std;
 // TODO: No es un to-do, pero quiero indicar que los powerUps tienen una reserva de 50
 ManPowerUp::ManPowerUp(shared_ptr<ManCar> manCars_) : manCars{manCars_} {
     entities.reserve(50);
+    physicsPowerUp = unique_ptr<PhysicsPowerUp>();  // Creamos sistemas
     SubscribeToEvents();
 }
 
@@ -107,13 +109,8 @@ void ManPowerUp::CreatePowerUp(DataMap *d) {
         }
         MaterializePowerUp(powerUp);
 
-    } else {
-        cout << "el type powerUp es: " << int(type) << endl;
-        cout << "ESTO NO DEBERIA DE PASAR NUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUNCA JODER" << endl;
-        cout << "SIIIIIIIIIIII TE PASA ESTOOOOOOOOOOOOOOOOOOOOOO HABLAAAAAAAAAAAAAAAR CON CARLOOOOOOOOOOOOOOOOOOOOOSSSSSSS" << endl;
     }
 }
-    
 
 
 void ManPowerUp::MaterializePowerUp(shared_ptr<PowerUp> powerUp) {
@@ -166,20 +163,23 @@ void ManPowerUp::MaterializePowerUp(shared_ptr<PowerUp> powerUp) {
     }
 }
 
-// TO-DO ELIMINARLO TODO AL MISMO TIEMPO ANTES DE RENDERIZAR
-//void ManPowerUp::DeletePowerUp(DataMap* d){
-//    auto renderFacadeManager = RenderFacadeManager::GetInstance();
-//    auto renderEngine = renderFacadeManager->GetRenderFacade();
-//
-//    for(long unsigned int i=0; i< entities.size(); ++i){
-//        if(entities[i].get() == any_cast<Entity*>((*d)[POWER_UP])){
-//            renderEngine->DeleteEntity(entities[i].get());
-//            entities.erase(entities.begin()+i);
-//        }
-//    }
-//}
 
 void ManPowerUp::Update() {
+
+    // Update de las fisicas de los PU (melon molon, telebanana, superMegaNitro)
+    UpdatePhysics();
+    // recorremos todos los PU, y borramos los correspondientes
+    DeletePowerUps();
+
+}
+
+void ManPowerUp::UpdatePhysics(){
+    for (auto &actualPowerUp : this->GetEntities()) {  // actualizamos las fisicas de los powerUps
+        physicsPowerUp->update(actualPowerUp.get());
+    }
+}
+
+void ManPowerUp::DeletePowerUps(){
     auto renderFacadeManager = RenderFacadeManager::GetInstance();
     auto renderEngine = renderFacadeManager->GetRenderFacade();
     for (long unsigned int i = 0; i < entities.size(); ++i) {
@@ -214,7 +214,6 @@ void ManPowerUp::Update() {
 
         }
     }
-
 }
 
 // TO-DO : tener una variable de control para eliminar todas las cosas de los arrays a la vez CUIDADO CON ESOOOO
@@ -230,10 +229,4 @@ void ManPowerUp::SubscribeToEvents() {
         bind(&ManPowerUp::NewPowerUpReceivedFromServer, this, placeholders::_1),
         "CreatePowerUp"));
 
-    
-
-    //EventManager::GetInstance().SubscribeMulti(Listener(
-    //    EventType::DELETE_POWERUP,
-    //    bind(&ManPowerUp::DeletePowerUp, this, placeholders::_1),
-    //    "DeletePowerUp"));
 }

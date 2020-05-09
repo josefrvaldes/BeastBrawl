@@ -7,6 +7,7 @@
 #include "../Components/CCar.h"
 #include "../Components/CBrainAI.h"
 #include "../Components/CTotem.h"
+#include "../Components/CHurt.h"
 
 #include "../Entities/Entity.h"
 #include "../Entities/CarAI.h"
@@ -21,9 +22,8 @@
 #include "../Managers/ManBoundingWall.h"
 
 
-SystemVisionAI::SystemVisionAI(){
-    clPhysics = make_unique<CLPhysics>();
-    systemVision = make_unique<SystemVision>();
+SystemVisionAI::SystemVisionAI(CLPhysics *clPhysics_) : systemVision{make_unique<SystemVision>(clPhysics_)} {
+    // systemVision = make_unique<SystemVision>(clPhysics);
 }
 
 void SystemVisionAI::AddManager(Manager &m) {
@@ -33,8 +33,12 @@ void SystemVisionAI::AddManager(Manager &m) {
 
 void SystemVisionAI::update(CarAI* actualCar){
     auto cBrainAI = static_cast<CBrainAI*>(actualCar->GetComponent(CompType::BrainAIComp).get());
+    auto cHurt = static_cast<CHurt*>(actualCar->GetComponent(CompType::HurtComp).get());
 
     cBrainAI->CleanVisionRange();
+    
+    if(cHurt->hurt)  // si está herido no calcula lo que tiene en su rango de vision
+        return;
 
     systemVision->SaveCarInVision(actualCar, cBrainAI, static_cast<ManCar*>(managers[0]), static_cast<ManBoundingWall*>(managers[6]), 
                                                 static_cast<ManBoundingOBB*>(managers[7]), static_cast<ManBoundingGround*>(managers[8]));

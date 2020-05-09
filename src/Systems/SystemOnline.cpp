@@ -1,6 +1,12 @@
 #include "SystemOnline.h"
 
 #include "../../include/glm/vec3.hpp"
+#include "../Components/CIDOnline.h"
+#include "../Components/COnline.h"
+#include "../Components/CPowerUp.h"
+#include "../Components/CTargetEntity.h"
+#include "../Components/CTotem.h"
+#include "../Components/CTransformable.h"
 #include "../Constants.h"
 #include "../Entities/CarHuman.h"
 #include "../Entities/PowerUp.h"
@@ -10,33 +16,42 @@
 #include "../Managers/ManCar.h"
 #include "../Managers/ManTotem.h"
 #include "../Online/UDPClient.h"
-
-#include "../Components/CIDOnline.h"
-#include "../Components/COnline.h"
-#include "../Components/CPowerUp.h"
-#include "../Components/CTargetEntity.h"
-#include "../Components/CTotem.h"
-#include "../Components/CTransformable.h"
-#include "../EventManager/Event.h"
-#include "../EventManager/EventManager.h"
 #include "../Systems/Utils.h"
 
 using namespace boost::asio;
 
 SystemOnline::SystemOnline(ManCar &manCar_, uint16_t idOnlineMainCar_) : idOnlineMainCar{idOnlineMainCar_}, manCar{manCar_}, udpClient{make_unique<UDPClient>(Constants::SERVER_HOST, SERVER_PORT_UDP)} {
-    shared_ptr<CarHuman> car = manCar.GetCar();
+    shared_ptr<CarHuman> car = manCar.GetCar();  // esto sirve para algo? se podrá borrar, no?
     SubscribeToEvents();
 }
 
+SystemOnline::~SystemOnline() {
+    cout << "Llamando al destructor de SystemOnline" << endl;
+}
+
 void SystemOnline::SubscribeToEvents() {
+    // ya no vamos a enviar la petición de fin de juego, el juego se acabará automáticamente al acabar la animationEnd
+    // la animationEnd sí se envía específicamente como veis en la suscripción de debajo
+    // EventManager::GetInstance().SubscribeMulti(Listener(
+    //     EventType::STATE_ENDRACE,
+    //     bind(&SystemOnline::EventEndgame, this, std::placeholders::_1),
+    //     "Endgame in SystemOnline"));
+
     EventManager::GetInstance().SubscribeMulti(Listener(
-        EventType::STATE_ENDRACE,
-        bind(&SystemOnline::EventEndgame, this, std::placeholders::_1),
-        "Endgame"));
+        EventType::LAUNCH_ANIMATION_END_MULTI,
+        bind(&SystemOnline::EventLaunchAnimationEnd, this, std::placeholders::_1),
+        "Launch end animation"));
 }
 
 void SystemOnline::EventEndgame(DataMap *dataMap) {
     udpClient->SendEndgame(idOnlineMainCar);
+}
+
+void SystemOnline::EventLaunchAnimationEnd(DataMap *dataMap) {
+    auto car = manCar.GetCurrentWinner();
+    auto cOnline = static_cast<COnline *>(car->GetComponent(CompType::OnlineComp).get());
+    uint16_t idOnlineWinner = cOnline->idClient;
+    udpClient->SendLaunchAnimationEnd(idOnlineMainCar, idOnlineWinner);
 }
 
 void SystemOnline::SendInputs(const vector<Constants::InputTypes> &inputs) const {
@@ -90,9 +105,9 @@ void SystemOnline::SendCatchTotem(uint16_t idCarCatched) const {
         udpClient->SendCatchTotem(idOnlineMainCar, idCarCatched);
 }
 
-void SystemOnline::SendLostTotem(uint16_t idCarCatched, const glm::vec3 &position, int numNavMesh) const {
+void SystemOnline::SendLostTotem(uint16_t idCarCatched, const glm::vec3 &position, float speed, int rotationTotemY, int numNavMesh) const {
     for (uint8_t i = 0; i < TIMES_RESEND; ++i)
-        udpClient->SendLostTotem(idOnlineMainCar, idCarCatched, position, numNavMesh);
+        udpClient->SendLostTotem(idOnlineMainCar, idCarCatched, position, speed, rotationTotemY, numNavMesh);
 }
 
 void SystemOnline::SendCrashPUCar(const uint16_t idPowerUp, const uint16_t idCar) const {
@@ -132,4 +147,8 @@ void SystemOnline::SendRoboJorobo() const {
 void SystemOnline::SendNitro(uint16_t idCarWithTotem, uint16_t idCarWithNitro) const {
     for (uint8_t i = 0; i < TIMES_RESEND; ++i)
         udpClient->SendCollideNitro(idOnlineMainCar, idCarWithTotem, idCarWithNitro);
+}
+
+void SystemOnline::SendWaitingForCountdown() const {
+    udpClient->SendWaitingForCountdown(idOnlineMainCar);
 }
