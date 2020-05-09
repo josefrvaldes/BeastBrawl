@@ -53,9 +53,11 @@ class RenderFacadeClover : public RenderFacade {
       void FacadeDrawMenu() override;
       void FacadeDrawSelectCharacter() override;
       void FacadeDrawGameOptions() override;
+      void FacadeDrawTournamentOptions() override;
       void FacadeInitResources() override;
       void FacadeDrawPause() override;
       void FacadeDrawEndRace() override;
+      void FacadeDrawEndTournament() override;
       void FacadeDrawLobbyMulti() override;
       void FacadeDrawLobbyMultiExit() override;
       void FacadeDrawControler() override;
@@ -66,8 +68,10 @@ class RenderFacadeClover : public RenderFacade {
       void FacadeInitMenu() override;
       void FacadeInitSelectCharacter() override;
       void FacadeInitGameOptions() override;
+      void FacadeInitTournamentOptions() override;
       void FacadeInitPause() override;
       void FacadeInitEndRace() override;
+      void FacadeInitEndTournament() override;
       void FacadeInitLobbyMulti() override;
       void FacadeInitControler() override;
       void FacadeInitHUD() override;
@@ -78,15 +82,17 @@ class RenderFacadeClover : public RenderFacade {
       void FacadeCheckInputMenu() override;
       void FacadeCheckInputSelectCharacter() override;
       void FacadeCheckInputGameOptions() override;
+      void FacadeCheckInputTournamentOptions() override;
       void FacadeCheckInputPause() override;
       void FacadeCheckInputEndRace() override;
+      void FacadeCheckInputEndTournament() override;
       void FacadeCheckInputLobbyMulti() override;
       void FacadeCheckInputControler() override;
       void FacadeCheckInputCredits() override;
       void FacadeCheckInputSettings() override;
 
       void FacadeUpdatePowerUpHUD(DataMap* d) override;
-      void FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* globalClock, ManHUDEvent* manHud) override;
+      void FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* globalClock, ManHUDEvent* manHud, ManGameRules* manGR) override;
       void FacadeSuscribeEvents() override;
       void FacadeSuscribeEventsSettings() override;
       void FacadeAddPlates(Manager* manNamePlates) override;
@@ -103,6 +109,7 @@ class RenderFacadeClover : public RenderFacade {
       void FacadeInitParticleSystem(DataMap* d) const override;
       void FacadeSetParticlesVisibility(DataMap* d) const override;
       void FacadeSetGrassActivate(DataMap* d) const override;
+      void FacadeSetShadowsActivate(DataMap* d) const override;
 
       void FacadeUpdateVisibility(DataMap* d) override;
       bool FacadeOctreeInCamera(float size, const glm::vec3& pos) override {return device->OctreeIncamera(size, pos);};
@@ -136,8 +143,11 @@ class RenderFacadeClover : public RenderFacade {
 
       void SetMenuEndRace(bool b) override { menuER = b; };
       bool GetMenuEndRace() override { return menuER; };
+      void SetMenuEndTournament(uint8_t num) override { menuET = num; timeStart=system_clock::now(); inputET=0;};
+      uint8_t GetMenuEndTournament() override { return menuET; };
 
       void ResetInputGameOptions() override;
+      void ResetInputTournamentOptions() override;
       void ResetInputCharacter() override;
 
       //Metodos exclusivos de RenderClover
@@ -154,9 +164,16 @@ class RenderFacadeClover : public RenderFacade {
 
       std::string powerUps[7];
 
+      vector<std::string> tipsTexts = { "Si te encuentras perdido, utiliza la camara del totem para localizarlo!" , 
+                                   "Utiliza el Robo Jorobo para conseguir el totem de inmediato!",
+                                   "El Escudo Merluzo te ayudara a que no te roben el totem!"};
+
+        // En juego
+        bool inputShowTable { true };
+
         //Menu
         int inputMenu { 0 };
-        int maxInputMenu { 5 };
+        int maxInputMenu { 6 };
         //Pause
         int inputPause { 0 };
         int maxInputPause { 1 };
@@ -167,13 +184,24 @@ class RenderFacadeClover : public RenderFacade {
         bool menuER { false };
         int inputER { 0 };
         int maxInputER { 2 };
-        //Opciones de partida (Hay que contar el 0)
-        int option { 2 };
-        std::vector<int> inputGO {1,1,0};
-        int maxInputGO[3] {3, 2, 0};
+        //End Tournament
+      	time_point<system_clock> timeAnimationET;
+		int msChange {400};
+        uint8_t menuET { 0 };
+		uint8_t numShowPanel {0};
+        int inputET { 0 };
+        int maxInputET { 2 };
+        //Opciones de partida
+        int option { 0 };
+        std::vector<int> inputGO {1,1/*,0*/};
+        int maxInputGO[2] {3, 2/*, 0*/};
+        //Opciones de partida torneo
+        int optionTO { 0 };
+        std::vector<int> inputTO {1, 1, 1};
+        int maxInputTO[3] {3, 2, 2};
         //Ajustes
         int optionSettings { 0 };
-        std::vector<int> inputSettings {1,3,1,1,1,1};     //Sonido, musica, resolucion, vegetacion, sombras, particulas
+        std::vector<int> inputSettings {1,3,1,1,1,0};     //Sonido, musica, resolucion, particulas, vegetacion, sombras
         int maxInputSettings[6] {3,3,2,1,1,1};
 
       CLEngine* device {nullptr};
@@ -194,6 +222,8 @@ class RenderFacadeClover : public RenderFacade {
             void Restart();
 
             string GetCurrentPath() const { return currentPath + extension; }
+            float GetTime() const { return time; }
+            float GetTimeBetweenFrames() const { return timeBetweenFrames; }
 
          private:
             string path;

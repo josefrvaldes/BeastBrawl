@@ -53,18 +53,22 @@ class InputFacadeIrrlicht : public InputFacade{
         InputFacadeIrrlicht();
         ~InputFacadeIrrlicht() override = default;
         vector<Constants::InputTypes> CheckInputMulti() override;
+        bool ShowTable(bool inputTable) override { return inputTable;};
         bool CheckInputSingle() override;
         void CheckInputMenu(int&, int) override;
         void CheckInputSelectCharacter(int&, int) override;
         void CheckInputGameOptions(std::vector<int>&, int[], int&) override;
+        void CheckInputTournamentOptions(std::vector<int>&, int[], int&) override {};
         void CheckInputPause(int&, int) override;
         void CheckInputIntro() override;
         void CheckInputEndRace(int&, int, bool) override;
+        void CheckInputEndTournament(int&, int, uint8_t) override {};
         void CheckInputLobbyMulti() override;
         void CheckInputController() override;
         void CheckInputCredits() override;
         void CheckInputSettings(std::vector<int> &inputs, int maxInputs[], int& option) override;
         bool CheckInputAnimationsStartEnd() override;
+        bool InTournament() override {return false;};
 
     private:
         MyEventReceiver receiver;

@@ -45,6 +45,10 @@ class CLEngine {
         CLEngine(const unsigned int, const unsigned int, const string&);
         ~CLEngine();
 
+        //! Activa o desactiva el test de profundidad.
+        //! @param e Segun el bool lo activa o desactiva.
+        void SetEnableDepthTest( bool e);
+
         //! Devuelve la ventana 
         //! @returns window La ventana de la aplicación
         GLFWwindow* GetWindow() const { return window; }
@@ -75,8 +79,8 @@ class CLEngine {
         void DisableCursor();
         void CloseWindow();
         void PollEvents();
-        void DrawDepthMap();
-        void RenderDepthMap(CLShadowMapping& shadowMap, CLResourceShader* depthShader, glm::vec3 posLight);
+        void DrawDepthMap(const glm::mat4& lightSpaceMatrix);
+        void RenderDepthMap(CLShadowMapping& shadowMap, CLResourceShader* depthShader, const glm::mat4& lightSpaceMatrix);
         void Clear();
 
         //! Carga una fuente
@@ -413,6 +417,7 @@ class CLEngine {
         //! Activa o desactiva las vegetación
         //! @param mode Booleano para cambiar el modo
         void SetGrassActivate(bool mode) { grassActivate = mode; };
+        void SetShadowsActivate(bool mode) { shadowsActivate = mode; };
 
 
         
@@ -424,7 +429,7 @@ class CLEngine {
         void ImGuiInit();
         void TerminateImGui();
         //! Calcula las matriecs view y projection
-        void CalculateViewProjMatrix();
+        void CalculateViewProjMatrix(const glm::mat4& lightSpaceMatrix);
         //! Calcula las luces de la escena
         void CalculateLights();
 
@@ -443,6 +448,7 @@ class CLEngine {
         std::map<GLchar, Character> characters;
 
         bool grassActivate { true };
+        bool shadowsActivate { false };
 
         inline static glm::mat4 projection;             // matriz proyeccion del modelo
         inline static glm::mat4 view;                   // matriz view del modelo

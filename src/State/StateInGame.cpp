@@ -12,7 +12,9 @@
 #include "../Components/CBoundingSphere.h"
 #include "../Components/CShader.h"
 #include "../Components/CTotem.h"
+#include "../Entities/Camera.h"
 #include "../Constants.h"
+#include "../GameValues.h"
 
 using namespace std;
 using namespace chrono;
@@ -28,11 +30,13 @@ StateInGame::StateInGame() {
     //physics = make_unique<Physics>(Constants::DELTA_TIME);
 
     //cam = make_shared<Camera>(glm::vec3(100.0f, 0.0f, 30.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f));
-    ground = make_shared<GameObject>(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), "", "mayan_map.obj");
+    ground = make_shared<GameObject>(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), "", "training_ground.obj");
+
+    // Ordena las posiciones del ranking 1 vez antes de empezar la partida
 }
 
 StateInGame::~StateInGame() {
-    // destructor
+    cout << "Llamamos al destructor de StateInGame" << endl;
 }
 
 
@@ -48,8 +52,7 @@ void StateInGame::InitializeFacades() {
 }
 
 void StateInGame::AddElementsToRender() {
-    // Añadimos cosas a la fachada de render
-    renderEngine->FacadeAddPlates(manNamePlates.get());
+    
 
     // Entidades iniciales
     renderEngine->FacadeAddObjectCar(manCars.get()->GetCar().get());  //Anyadimos el coche
@@ -95,9 +98,13 @@ void StateInGame::AddElementsToRender() {
     for(auto shield : manShield->GetEntities()){
         renderEngine->FacadeAddObject(shield.get());
     }
+
+    // Añadimos cosas a la fachada de render
+    renderEngine->FacadeAddPlates(manNamePlates.get());
 }
 
 void StateInGame::InitializeCLPhysics(ManCar &manCars, ManBoundingWall &manWall, ManBoundingOBB &manOBB, ManBoundingGround &manGround, ManPowerUp &manPowerUp, ManNavMesh &manNavMesh, ManBoxPowerUp &manBoxPowerUp, ManTotem &manTotem) {
+    cout << "Estamos inicializando el clPhysics" << endl;
     // NO ALTERAR EL ORDEN DEL ADD, QUE USO EL ORDEN PARA DISTINGUIR ENTRE MANAGERS!!!
     clPhysics = make_unique<CLPhysics>();
     clPhysics->AddManager(manCars);
@@ -111,7 +118,7 @@ void StateInGame::InitializeCLPhysics(ManCar &manCars, ManBoundingWall &manWall,
 }
 
 void StateInGame::InitializeSystemData(){
-    systemDataVision = make_unique<SystemData>();
+    systemDataVision = make_unique<SystemData>(clPhysics.get());
 
     systemDataVision->AddManager(*manCars.get());
     systemDataVision->AddManager(*manPowerUps.get());
@@ -130,7 +137,6 @@ void StateInGame::InitializeSystems(ManCar &manCars, ManBoundingWall &manWall, M
     InitializeCLPhysics(manCars, manWall, manOBB, manGround, manPowerUp, manNavMesh, manBoxPowerUp, manTotem);
     InitializeSystemData();
     // incializa el system physics PU, no hace falta más código para esto
-    phisicsPowerUp = make_shared<PhysicsPowerUp>();  // Creamos sistemas
     collisions = make_shared<Collisions>();
     sysBoxPowerUp = make_shared<SystemBoxPowerUp>();
     sysLoD = make_unique<SystemLoD>();
@@ -147,7 +153,10 @@ void StateInGame::InitializeSystems(ManCar &manCars, ManBoundingWall &manWall, M
 
 void StateInGame::InitializeManagers() {
     // inicializa el man PU, no hace falta más código para esto
-    manCars = make_shared<ManCar>();
+    manNavMesh = make_shared<ManNavMesh>();
+    manTotems = make_shared<ManTotem>(manNavMesh.get());
+    manSpawn = make_unique<ManSpawn>();
+    manCars = make_shared<ManCar>(manSpawn->GetPositionsSpawn());
     StateInGame::CreateMainCar();
     manCamera = make_unique<ManCamera>(manCars->GetCar().get(), Constants::DELTA_TIME);
     manWayPoint = make_shared<ManWayPoint>();  //Se crean todos los waypoints y edges
@@ -156,8 +165,6 @@ void StateInGame::InitializeManagers() {
     manBoundingWall = make_shared<ManBoundingWall>();
     manBoundingOBB = make_shared<ManBoundingOBB>();
     manBoundingGround = make_shared<ManBoundingGround>();
-    manNavMesh = make_shared<ManNavMesh>();
-    manTotems = make_shared<ManTotem>(manNavMesh.get());
     manNamePlates = make_shared<ManNamePlate>(manCars.get());
     manLight = make_shared<ManLight>();
     manGameRules = make_unique<ManGameRules>();
@@ -208,7 +215,8 @@ void StateInGame::InitState() {
 void StateInGame::CreateMainCar() {
     if (manCars) {
         auto pj = GameValues::GetInstance()->GetCharacter();
-        manCars->CreateMainCar(pj);
+        manCars->CreateMainCar(pj, manCars->GetPosSpawn());
+        //manNamePlates->CreateNamePlate(manCars->GetCar().get());
         /*auto cCar = static_cast<CCar*>(manCars->GetCar()->GetComponent(CompType::CarComp).get());
         if (cCar){
             cout << "PESO: " << cCar->weight << " - VELMAX: " << cCar->maxSpeed << " - ACELETARION: " << cCar->acceleration << "\n";
@@ -220,16 +228,16 @@ void StateInGame::CreateMainCar() {
 
 ///////////////////////
 
-void StateInGame::UpdateAnimationStart() {
+bool StateInGame::UpdateAnimationStart() {
     bool animationFinished = sysAnimStart->Animate();
     renderEngine->UpdateCamera(manCamera.get()->getCamera(), manCars.get());
     auto cCam = static_cast<CCamera *>(manCamera.get()->getCamera()->GetComponent(CompType::CameraComp).get());
     renderEngine->SetCamTarget(cCam->target);
-
+    return animationFinished;
     // si hemos acabado la animación de inicio...
-    if (animationFinished) {
-        GoToCountdownAnimation();
-    }
+    // if (animationFinished) {
+    //     GoToCountdownAnimation();
+    // }
 }
 
 void StateInGame::UpdateAnimationCountdown() {
@@ -237,14 +245,18 @@ void StateInGame::UpdateAnimationCountdown() {
     int64_t interval = now - timerCountdown;
     if (interval > 1000 && timerCountdown > 0) {
         currentCountdown--;
-        cout << "Current countdown " << unsigned(currentCountdown) << endl;
+        // cout << "Current countdown " << unsigned(currentCountdown) << endl;
         timerCountdown = Utils::getMillisSinceEpoch();
         if (currentCountdown == 0) {
-            currentUpdateState = UpdateState::GAME;
-            manGameRules->ResetClock();
-            EventManager::GetInstance().AddEventMulti(Event{EventType::START_MINGAME});
+            GoToUpdateGame();
         }
     }
+}
+
+void StateInGame::GoToUpdateGame() {
+    currentUpdateState = UpdateState::GAME;
+    manGameRules->ResetClock();
+    EventManager::GetInstance().AddEventMulti(Event{EventType::START_MINGAME});
 }
 
 void StateInGame::UpdateAnimationEnd() {
@@ -270,128 +282,28 @@ void StateInGame::UpdateAnimationEnd() {
 }
 
 void StateInGame::UpdateGame() {
-    // timeStartSeccion = std::chrono::system_clock::now();
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                    EventManager &em = EventManager::GetInstance();
-                    em.Update();
-// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//    auto end = std::chrono::system_clock::now();
-//    double elapsed_millisecons = std::chrono::duration_cast<std::chrono::nanoseconds>
-//                             (end-timeStartSeccion).count();
-//     cout << "TIEMO ACTUAL ULDATE  (EVENT MANAGER):  " << elapsed_millisecons/1000000 << endl;
-// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//     timeStartSeccion = std::chrono::system_clock::now();
-// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                    manNavMesh->Update(*(manCars.get()));
-// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//      end = std::chrono::system_clock::now();
-//      elapsed_millisecons = std::chrono::duration_cast<std::chrono::nanoseconds>
-//                              (end-timeStartSeccion).count();
-//     cout << "TIEMO ACTUAL ULDATE  (NavMesh MANAGER):  " << elapsed_millisecons/1000000 << endl;
-// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//     timeStartSeccion = std::chrono::system_clock::now();
-// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                    bool gameFinished = manCars->UpdateCarPlayer(*(manTotems.get()));
-                    if (gameFinished) {
-                        GoToEndAnimation();
-                    }
-// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//      end = std::chrono::system_clock::now();
-//      elapsed_millisecons = std::chrono::duration_cast<std::chrono::nanoseconds>
-//                              (end-timeStartSeccion).count();
-//     cout << "TIEMO ACTUAL ULDATE  (gameFinished):  " << elapsed_millisecons/1000000 << endl;
-// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//     timeStartSeccion = std::chrono::system_clock::now();
-// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                    manCamera->Update();
-// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//      end = std::chrono::system_clock::now();
-//      elapsed_millisecons = std::chrono::duration_cast<std::chrono::nanoseconds>
-//                              (end-timeStartSeccion).count();
-//     cout << "TIEMO ACTUAL ULDATE  (CAMARA):  " << elapsed_millisecons/1000000 << endl;
-// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//     timeStartSeccion = std::chrono::system_clock::now();
-// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                    sysBoxPowerUp->update(manBoxPowerUps.get());
-                    for (auto &actualPowerUp : manPowerUps->GetEntities()) {  // actualizamos las fisicas de los powerUps
-                        phisicsPowerUp->update(actualPowerUp.get());
-                    }
-// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//      end = std::chrono::system_clock::now();
-//      elapsed_millisecons = std::chrono::duration_cast<std::chrono::nanoseconds>
-//                              (end-timeStartSeccion).count();
-//     cout << "TIEMO ACTUAL ULDATE  (POWERUPS):  " << elapsed_millisecons/1000000 << endl;
-// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//     timeStartSeccion = std::chrono::system_clock::now();
-// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                    clPhysics->Update(0.1666f);
-                    clPhysics->IntersectsCarsPowerUps(*manCars.get(), *manPowerUps.get(), manNavMesh.get());
-                    clPhysics->IntersectCarsBoxPowerUp(*manCars.get(), *manBoxPowerUps.get());
-                    clPhysics->IntersectCarsTotem(*manCars.get(), *manTotems.get());
-                    clPhysics->IntersectPowerUpWalls(*manPowerUps.get(), *manBoundingWall.get(), *manBoundingOBB.get());
-// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//      end = std::chrono::system_clock::now();
-//      elapsed_millisecons = std::chrono::duration_cast<std::chrono::nanoseconds>
-//                              (end-timeStartSeccion).count();
-//     cout << "TIEMO ACTUAL ULDATE  (FISICAS):  " << elapsed_millisecons/1000000 << endl;
-// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//     timeStartSeccion = std::chrono::system_clock::now();
-// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                    renderEngine->UpdateCamera(manCamera.get()->getCamera(), manCars.get());
-                    physicsEngine->UpdateCar(manCars.get()->GetCar().get(), manCamera.get()->getCamera());
-                    for (auto actualPowerUp : manPowerUps->GetEntities())  // actualizamos los powerUp en irrlich
-                        physicsEngine->UpdatePowerUps(actualPowerUp.get());
-                    renderEngine->FacadeUpdatePlates(manNamePlates.get());
-                    physicsEngine->UpdateTransformable(manTotems->GetEntities()[0].get());
-// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//      end = std::chrono::system_clock::now();
-//      elapsed_millisecons = std::chrono::duration_cast<std::chrono::nanoseconds>
-//                              (end-timeStartSeccion).count();
-//     cout << "TIEMO ACTUAL ULDATE  (UPDATE ENGINE COCHES-PU):  " << elapsed_millisecons/1000000 << endl;
-// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//     timeStartSeccion = std::chrono::system_clock::now();
-// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                    //Updates de los eventos de sonido
-                    soundEngine->UpdateCars(manCars->GetEntities());
-                    soundEngine->UpdatePowerUps(manPowerUps->GetEntities());
-                    soundEngine->UpdateTotem(manTotems->GetEntities());
-                    soundEngine->UpdateListener(manCars->GetCar());
-// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//      end = std::chrono::system_clock::now();
-//      elapsed_millisecons = std::chrono::duration_cast<std::chrono::nanoseconds>
-//                              (end-timeStartSeccion).count();
-//     cout << "TIEMO ACTUAL ULDATE  (EVENTOS SONIDO):  " << elapsed_millisecons/1000000 << endl;
-// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//     timeStartSeccion = std::chrono::system_clock::now();
-// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                    manPowerUps->Update();
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    EventManager &em = EventManager::GetInstance();
+    em.Update();
 
 
 
+    sysBoxPowerUp->update(manBoxPowerUps.get());
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//      end = std::chrono::system_clock::now();
-//      elapsed_millisecons = std::chrono::duration_cast<std::chrono::nanoseconds>
-//                              (end-timeStartSeccion).count();
-//     cout << "TIEMO ACTUAL ULDATE  (MAN POWERUP):  " << elapsed_millisecons/1000000 << endl;
-// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//     timeStartSeccion = std::chrono::system_clock::now();
-// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                    sysLoD->UpdateMeshes(manCars->GetEntities(), manCamera.get()->getCamera());
-                    sysLoD->UpdateMeshes(manPowerUps->GetEntities(), manCamera.get()->getCamera());
-                    sysLoD->UpdateMeshes(manTotems->GetEntities(), manCamera.get()->getCamera());
-                    renderEngine->FacadeUpdateMeshesLoD(manCars->GetEntities());
-                    renderEngine->FacadeUpdateMeshesLoD(manPowerUps->GetEntities());
-                    renderEngine->FacadeUpdateMeshesLoD(manTotems->GetEntities());
-// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//      end = std::chrono::system_clock::now();
-//      elapsed_millisecons = std::chrono::duration_cast<std::chrono::nanoseconds>
-//                              (end-timeStartSeccion).count();
-//     cout << "TIEMO ACTUAL ULDATE  (LoD):  " << elapsed_millisecons/1000000 << endl;
-// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //auto posCar = static_cast<CTransformable *>(manCars->GetCar()->GetComponent(CompType::TransformableComp).get())->position;
+    //cout <<" MI POSICON 1 ES : (" << posCar.x<< " , " << posCar.y<< " , " << posCar.z<< " )" << endl;
+
+    clPhysics->Update(0.1666f);
+    IntersectsCLPhysics();
 
 
+    // ACTUALIZACION DE LAS FISICAS DE LOS COCHES
+    manCamera->Update();
+
+
+    // Actualizaciones en Irrlich
+    renderEngine->UpdateCamera(manCamera.get()->getCamera(), manCars.get());
+    physicsEngine->UpdateCar(manCars.get()->GetCar().get(), manCamera.get()->getCamera());
 
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -405,23 +317,40 @@ void StateInGame::UpdateGame() {
 //     cout << "TIEMO ACTUAL ULDATE  (Hurt):  " << elapsed_millisecons/1000000 << endl;
 // ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    //Updates de los eventos de sonido
+    soundEngine->UpdateCars(manCars->GetEntities());
+    soundEngine->UpdatePowerUps(manPowerUps->GetEntities());
+    soundEngine->UpdateTotem(manCars->GetCar(), manTotems->GetEntities());
+    soundEngine->UpdateListener(manCars->GetCar());
 
+    manTotems->Update();
+    // al final de la ejecucion eliminamos todos los powerUps que se deben eliminar
+    manPowerUps->Update();
 
+    // Inicio LoD
+    sysLoD->UpdateMeshes(manCars->GetEntities(), manCamera.get()->getCamera());
+    sysLoD->UpdateMeshes(manPowerUps->GetEntities(), manCamera.get()->getCamera());
+    sysLoD->UpdateMeshes(manTotems->GetEntities(), manCamera.get()->getCamera());
+    renderEngine->FacadeUpdateMeshesLoD(manCars->GetEntities());
+    renderEngine->FacadeUpdateMeshesLoD(manPowerUps->GetEntities());
+    renderEngine->FacadeUpdateMeshesLoD(manTotems->GetEntities());
+    // Fin LoD
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//    timeStartSeccion = std::chrono::system_clock::now();
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                    sysLoD->UpdateAnimations(manBoxPowerUps->GetEntities(), manCamera.get()->getCamera());
-                    renderEngine->FacadeUpdateAnimationsLoD(manBoxPowerUps->GetEntities());
-                    renderEngine->FacadeAnimate(manBoxPowerUps->GetEntities());
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//     end = std::chrono::system_clock::now();
-//     elapsed_millisecons = std::chrono::duration_cast<std::chrono::nanoseconds>
-//                             (end-timeStartSeccion).count();
-//    cout << "TIEMO ACTUAL ULDATE  (Animation):  " << elapsed_millisecons/1000000 << endl;
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    sysHurt->Update(manCars->GetEntities());
 
+    // Inicio Animaciones
+    // sysLoD->UpdateAnimations(manBoxPowerUps->GetEntities(), manCamera.get()->getCamera());
+    // renderEngine->FacadeUpdateAnimationsLoD(manBoxPowerUps->GetEntities());
+    // renderEngine->FacadeAnimate(manBoxPowerUps->GetEntities());
+    // Fin Animaciones
 
+    //Actualiza el ranking y los eventos de hud
+    sysRanking->Update(manCars.get());
+    sysHud->UpdateEventHud(manHudEvent.get());
+    gameFinished = manGameRules->Update(manCars->GetEntities(), manTotems->GetEntities());
+    if (gameFinished) {
+        GoToEndAnimation();
+    }
 
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -453,6 +382,15 @@ void StateInGame::UpdateGame() {
 // ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
 
+void StateInGame::IntersectsCLPhysics(){
+    clPhysics->IntersectsCarsPowerUps(*manCars.get(), *manPowerUps.get(), manNavMesh.get());
+    clPhysics->IntersectCarsBoxPowerUp(*manCars.get(), *manBoxPowerUps.get());
+    clPhysics->IntersectCarsTotem(*manCars.get(), *manTotems.get());
+    clPhysics->IntersectPowerUpWalls(*manPowerUps.get(), *manBoundingWall.get(), *manBoundingOBB.get());
+    clPhysics->IntersectTotemWalls(*manTotems.get(), *manBoundingWall.get(), *manBoundingOBB.get());
+    clPhysics->IntersectCameraWalls(manCamera->getCamera(), manCamera->getPlayerFollow(), *manBoundingWall.get(), *manBoundingOBB.get());
+}
+
 void StateInGame::Update() {
     switch (currentUpdateState) {
         case UpdateState::START:
@@ -480,7 +418,7 @@ void StateInGame::Render() {
     if (Constants::CLIPPING_OCTREE && octreeScene.get())
         octreeScene->Draw(renderEngine);
 
-    renderEngine->FacadeDrawHUD(manCars->GetCar().get(), manCars.get(), manGameRules->GetGlobalClock().get(), manHudEvent.get());
+    renderEngine->FacadeDrawHUD(manCars->GetCar().get(), manCars.get(), manGameRules->GetGlobalClock().get(), manHudEvent.get(), manGameRules.get());
     renderEngine->FacadeDrawGraphEdges(manWayPoint.get());
     if (currentUpdateState == UpdateState::COUNTDOWN) {
         // todo: esto de meter el width y el height aquí a piñón y los filenames.. es una kk
@@ -517,6 +455,7 @@ void StateInGame::GoToEndAnimation() {
     soundEngine->SetState(11);
     currentUpdateState = UpdateState::END;
     timerEnd = Utils::getMillisSinceEpoch();
+    EventManager::GetInstance().AddEventMulti(Event{EventType::LAUNCH_ANIMATION_END_MULTI});
 }
 
 void StateInGame::GoToCountdownAnimation() {
@@ -530,10 +469,17 @@ void StateInGame::GoToCountdownAnimation() {
 
     // iniciamos el timer de countdown
     timerCountdown = Utils::getMillisSinceEpoch();
-    cout << "Current countdown " << unsigned(currentCountdown) << endl;
+    // cout << "Current countdown " << unsigned(currentCountdown) << endl;
 }
 
 void StateInGame::GoToStateEndrace() {
-    EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_ENDRACE});
+    if(!inputEngine->InTournament()){
+        cout << "Vamos a lanzar un evento de STATE_ENDRACE desde StateInGame" << endl;
+        EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_ENDRACE});
+    }else{
+        cout << "Vamos a lanzar un evento de STATE_ENDTOURNAMENT desde StateInGame" << endl;
+        EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_ENDTOURNAMENT});
+    }
+
     EventManager::GetInstance().Update();
 }

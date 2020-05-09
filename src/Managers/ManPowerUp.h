@@ -10,6 +10,7 @@
 #include <glm/vec3.hpp>
 
 class PowerUp;
+class PhysicsPowerUp;
 class Data;
 class SystemOnline;
 class ManCar;
@@ -30,13 +31,15 @@ class ManPowerUp : public Manager{
     void Update();
 
    private:
-	//vector<shared_ptr<PowerUp>> PowerUps;
     void SubscribeToEvents();
     void CreatePowerUp(DataMap* d);
     void NewPowerUpReceivedFromServer(DataMap* d);
     void MaterializePowerUp(shared_ptr<PowerUp> powerUp);
-    void DeletePowerUp(DataMap* d);
+
+    void DeletePowerUps();
+    void UpdatePhysics();
 
     SystemOnline *systemOnline {nullptr};
+    unique_ptr<PhysicsPowerUp> physicsPowerUp;
     shared_ptr<ManCar> manCars;
 };

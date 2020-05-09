@@ -7,8 +7,12 @@ in vec3 Normal;    //La normal ya reajustada con escalado
 in vec3 FragPos;   //Posicion
 uniform vec3 viewPos;     //Posición de la camara
 
-uniform samplerCube depthMap;
-uniform float far_plane;
+//uniform samplerCube depthMap;
+//uniform float far_plane;
+uniform bool activeShadows;
+uniform vec3 lightShadowDir;
+uniform sampler2D depthMap;
+in vec4 FragPosLightSpace;
 
 struct Material {
     vec3 ambient;
@@ -77,19 +81,45 @@ uniform int cartoonParts = 8;
 
 uniform int id_luz_shadowMapping; //El numero en el array  de luces puntuales para aplicar shadowmapping
 
-float ShadowCalculation(vec3 fragPos, vec3 posLight)
-{
+float ShadowCalculation(){
+    // perform perspective divide
+    vec3 projCoords = FragPosLightSpace.xyz / FragPosLightSpace.w;
+    // transform to [0,1] range
+    projCoords = projCoords * 0.5 + 0.5;
+    // get closest depth value from light's perspective (using [0,1] range fragPosLight as coords)
+    //float closestDepth = texture(depthMap, projCoords.xy).r; 
+    // get depth of current fragment from light's perspective
+    float currentDepth = projCoords.z;
+    // check whether current frag pos is in shadow
+    float bias = max(0.01 * (1.0 - dot(Normal, lightShadowDir)), 0.001); 
+    //float bias = 0.01; 
+    //float shadow = currentDepth - bias > closestDepth  ? 1.0 : 0.0;  
+
+    float shadow = 0.0;
+    vec2 texelSize = 1.0 / textureSize(depthMap, 0);
+    for(int x = -1; x <= 1; ++x){
+        for(int y = -1; y <= 1; ++y){
+            float pcfDepth = texture(depthMap, projCoords.xy + vec2(x, y) * texelSize).r; 
+            shadow += currentDepth - bias > pcfDepth ? 1.0 : 0.0;        
+        }    
+    }
+    shadow /= 7.0;
+
+    if(projCoords.z > 1.0)
+        shadow = 0.0;
+
+    return shadow;
      // get vector between fragment position and light position
-    vec3 fragToLight = fragPos - posLight;
-    // use the light to fragment vector to sample from the depth map    
-    float closestDepth = texture(depthMap, fragToLight).r;
-    // it is currently in linear range between [0,1]. Re-transform back to original value
-    closestDepth *= far_plane;
-    // now get current linear depth as the length between the fragment and light position
-    float currentDepth = length(fragToLight);
-    // now test for shadows
-    float bias = 20.0; 
-    float shadow = currentDepth -  bias > closestDepth ? 1.0 : 0.0;
+    //vec3 fragToLight = fragPos - posLight;
+    //// use the light to fragment vector to sample from the depth map    
+    //float closestDepth = texture(depthMap, fragToLight).r;
+    //// it is currently in linear range between [0,1]. Re-transform back to original value
+    //closestDepth *= far_plane;
+    //// now get current linear depth as the length between the fragment and light position
+    //float currentDepth = length(fragToLight);
+    //// now test for shadows
+    //float bias = 20.0; 
+    //float shadow = currentDepth -  bias > closestDepth ? 1.0 : 0.0;
 
     /*vec3 sampleOffsetDirections[20] = vec3[](
         vec3( 1,  1,  1), vec3( 1, -1,  1), vec3(-1, -1,  1), vec3(-1,  1,  1), 
@@ -113,7 +143,7 @@ float ShadowCalculation(vec3 fragPos, vec3 posLight)
     }
     shadow /= float(samples);*/
 
-    return shadow;
+    //return 0;
 }
 
 // calculates the color when using a directional light.
@@ -175,12 +205,12 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir, i
     diffuse *= attenuation;
     specular*= attenuation;
     
-    float shadow = 0.0;
 
     //PARA DESACTIVAR EL CARTOON DESCOMENTAR ESTA LINEA
     edgeDetection = 1.0;
-    if(i == id_luz_shadowMapping)
-        shadow = ShadowCalculation(FragPos, light.position);
+    float shadow = 0.0;
+    if(activeShadows && i == id_luz_shadowMapping)
+        shadow = ShadowCalculation();
 
     return edgeDetection * (ambient + (1.0 - shadow) * (diffuse /*+ specular*specMask*/));
     //return edgeDetection * (ambient + diffuse /*+ specular*specMask*/);

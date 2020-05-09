@@ -9,7 +9,7 @@ class NamePlate : public Entity
 {
 
 public:
-    NamePlate(int _id);
+    NamePlate(int parentNode, string billboardPath);
     ~NamePlate();
 };
 

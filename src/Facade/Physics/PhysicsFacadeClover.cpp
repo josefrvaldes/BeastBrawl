@@ -1,9 +1,12 @@
 #include "PhysicsFacadeClover.h"
 
 #include <Components/CId.h>
+#include <Components/CWheel.h>
+#include <Components/CCar.h>
 #include <Components/CBoundingChassis.h>
 #include <Components/CBoundingSphere.h>
 #include <Systems/Utils.h>
+#include <Constants.h>
 
 PhysicsFacadeClover::PhysicsFacadeClover() {
     
@@ -20,9 +23,6 @@ void PhysicsFacadeClover::UpdateCar(Entity* car, Entity* cam) {
     auto cTransformable = static_cast<CTransformable*>(car->GetComponent(CompType::TransformableComp).get());
     auto cId = static_cast<CId*>(car->GetComponent(CompType::IdComp).get());
 
-    //auto irrAngle = cTransformable->rotation.y;
-    //auto openglAngle = Utils::IrrlichtAngleToOpenGL(130.0);
-    //Actualizamos el valor en la estructura de irrlicht
     // Cogemos el nodo de irrlicht con el ID igual al que le hemos pasado
     auto node = device->GetNodeByID(cId->id); 
 
@@ -49,10 +49,30 @@ void PhysicsFacadeClover::UpdateCar(Entity* car, Entity* cam) {
         auto nodeSphere2 = device->GetNodeByID(cId->id + Component::ID_DIFFERENCE + Component::ID_DIFFERENCE);
         nodeSphere2->SetTranslation(glm::vec3(cSphere2->center.x, cSphere2->center.y, -cSphere2->center.z));
 
-        // cout << "Primera esfera: " << cSphere1->center.x << " | " << cSphere1->center.y << " | " << cSphere1->center.z << endl;
-        // cout << "Segunda esfera: " << cSphere2->center.x << " | " << cSphere2->center.y << " | " << cSphere2->center.z << endl;
         nodeSphere2->SetVisible(RenderFacadeClover::showDebug);
 
+    }
+
+    if(car->HasComponent(CompType::WheelComp) && car->HasComponent(CompType::CarComp)){
+        auto cWheel = static_cast<CWheel*>(car->GetComponent(CompType::WheelComp).get());
+        auto cCar = static_cast<CCar*>(car->GetComponent(CompType::CarComp).get());
+        auto wheel1 = device->GetNodeByID(cWheel->IdWheelTopLeft);
+        auto wheel2 = device->GetNodeByID(cWheel->IdWheelTopRight);
+        auto wheel3 = device->GetNodeByID(cWheel->IdWheelBottomLeft);
+        auto wheel4 = device->GetNodeByID(cWheel->IdWheelBottomRight);
+
+        cWheel->rotationTopLeft.z += cCar->speed * Constants::DELTA_TIME  * 3;
+        cWheel->rotationTopRight.z += cCar->speed * Constants::DELTA_TIME * 3;
+        cWheel->rotationBottomLeft.z += cCar->speed * Constants::DELTA_TIME * 3;
+        cWheel->rotationBottomRight.z += cCar->speed * Constants::DELTA_TIME * 3;
+
+        cWheel->rotationTopLeft.y = cCar->wheelRotation * 2;
+        cWheel->rotationTopRight.y = cCar->wheelRotation * 2;
+
+        wheel1->SetRotation(glm::vec3(cWheel->rotationTopLeft.x, Utils::IrrlichtAngleToOpenGL(cWheel->rotationTopLeft.y),cWheel->rotationTopLeft.z));
+        wheel2->SetRotation(glm::vec3(cWheel->rotationTopRight.x, Utils::IrrlichtAngleToOpenGL(cWheel->rotationTopRight.y),cWheel->rotationTopRight.z));
+        wheel3->SetRotation(glm::vec3(cWheel->rotationBottomLeft.x, Utils::IrrlichtAngleToOpenGL(cWheel->rotationBottomLeft.y),cWheel->rotationBottomLeft.z));
+        wheel4->SetRotation(glm::vec3(cWheel->rotationBottomRight.x, Utils::IrrlichtAngleToOpenGL(cWheel->rotationBottomRight.y),cWheel->rotationBottomRight.z));
     }
 }
 
@@ -94,17 +114,7 @@ void PhysicsFacadeClover::UpdateTransformable(Entity* entity) {
     //Actualiza el escalado del objeto de irrlicht
     node->SetScalation(glm::vec3(cTransformable->scale.x, cTransformable->scale.y, cTransformable->scale.z));
 
-    
-    // bool hasSphere = entity->HasComponent(CompType::CompBoundingSphere);
-    // if (hasSphere && Constants::DEBUG_SHOW_SPHERES) {
-    //     auto cSphere = static_cast<CBoundingSphere*>(entity->GetComponent(CompType::CompBoundingSphere).get());
-    //     auto nodeSphere = device->GetNodeByID(cId->id + Component::ID_DIFFERENCE);
-    //     nodeSphere->SetTranslation(glm::vec3(cSphere->center.x, cSphere->center.y, cSphere->center.z));
-    //     nodeSphere->SetVisible(RenderFacadeIrrlicht::showDebug);
-    //     //nodeSphere->setRotation(glm::vec3(cTransformable->rotation.x, cTransformable->rotation.y, cTransformable->rotation.z));
-    //     //nodeSphere->setScale(glm::vec3(cTransformable->scale.x, cTransformable->scale.y, cTransformable->scale.z));
-    // }
-    
+   
    
     
     // vamos a ver si tiene CBoundingChassis
@@ -120,6 +130,28 @@ void PhysicsFacadeClover::UpdateTransformable(Entity* entity) {
         nodeSphere2->SetTranslation(glm::vec3(cSphere2->center.x, cSphere2->center.y, -cSphere2->center.z));
         nodeSphere2->SetVisible(RenderFacadeClover::showDebug);
 
+    }
+
+    if(entity->HasComponent(CompType::WheelComp) && entity->HasComponent(CompType::CarComp)){
+        auto cWheel = static_cast<CWheel*>(entity->GetComponent(CompType::WheelComp).get());
+        auto cCar = static_cast<CCar*>(entity->GetComponent(CompType::CarComp).get());
+        auto wheel1 = device->GetNodeByID(cWheel->IdWheelTopLeft);
+        auto wheel2 = device->GetNodeByID(cWheel->IdWheelTopRight);
+        auto wheel3 = device->GetNodeByID(cWheel->IdWheelBottomLeft);
+        auto wheel4 = device->GetNodeByID(cWheel->IdWheelBottomRight);
+
+        cWheel->rotationTopLeft.z += cCar->speed * Constants::DELTA_TIME * 3;
+        cWheel->rotationTopRight.z += cCar->speed * Constants::DELTA_TIME * 3;
+        cWheel->rotationBottomLeft.z += cCar->speed * Constants::DELTA_TIME * 3;
+        cWheel->rotationBottomRight.z += cCar->speed * Constants::DELTA_TIME * 3;
+
+        cWheel->rotationTopLeft.y = cCar->wheelRotation * 2;
+        cWheel->rotationTopRight.y = cCar->wheelRotation * 2;
+
+        wheel1->SetRotation(glm::vec3(cWheel->rotationTopLeft.x, Utils::IrrlichtAngleToOpenGL(cWheel->rotationTopLeft.y),cWheel->rotationTopLeft.z));
+        wheel2->SetRotation(glm::vec3(cWheel->rotationTopRight.x, Utils::IrrlichtAngleToOpenGL(cWheel->rotationTopRight.y),cWheel->rotationTopRight.z));
+        wheel3->SetRotation(glm::vec3(cWheel->rotationBottomLeft.x, Utils::IrrlichtAngleToOpenGL(cWheel->rotationBottomLeft.y),cWheel->rotationBottomLeft.z));
+        wheel4->SetRotation(glm::vec3(cWheel->rotationBottomRight.x, Utils::IrrlichtAngleToOpenGL(cWheel->rotationBottomRight.y),cWheel->rotationBottomRight.z));
     }
 
 }

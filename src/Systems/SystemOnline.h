@@ -15,7 +15,7 @@ class PowerUp;
 class SystemOnline {
    public:
     SystemOnline(ManCar &manCar_, uint16_t idOnlineMainCar_);
-    ~SystemOnline(){};
+    ~SystemOnline();
 
     void Update();
     void SendInputs(const vector<Constants::InputTypes> &d) const;
@@ -26,14 +26,16 @@ class SystemOnline {
     void SendCrashPUCar(const uint16_t idPowerUp, const uint16_t idCar) const;
     void SendCrashPUWall(const uint16_t idPowerUp) const;
     void SendCatchTotem(uint16_t idCarCatched) const;
-    void SendLostTotem(uint16_t idCarCatched, const glm::vec3 &position, int numNavMesh) const;
+    void SendLostTotem(uint16_t idCarCatched, const glm::vec3 &position, float speedTotem, int rotationTotemY, int numNavMesh) const;
     void SendRoboJorobo() const;
+    void SendWaitingForCountdown() const;
     void SendNitro(uint16_t idCarWithTotem, uint16_t idCarWithNitro) const;
     uint16_t idOnlineMainCar;
 
    private:
     void SubscribeToEvents();
     void EventEndgame(DataMap *);
+    void EventLaunchAnimationEnd(DataMap *);
 
     ManCar &manCar;
     unique_ptr<UDPClient> udpClient;

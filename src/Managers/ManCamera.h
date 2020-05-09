@@ -26,6 +26,7 @@ class ManCamera{
 
 
     Camera* getCamera(){ return camera.get(); };
+    Car*    getPlayerFollow() { return playerFollow; };
 
    private:
     unique_ptr<Camera> camera;

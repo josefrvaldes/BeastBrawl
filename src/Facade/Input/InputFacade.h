@@ -18,18 +18,23 @@ class InputFacade {
     public:
         virtual ~InputFacade() = default;
         virtual vector<Constants::InputTypes> CheckInputMulti()  = 0;
+        virtual bool ShowTable(bool) = 0;
         virtual bool CheckInputSingle()  = 0;
         virtual void CheckInputMenu(int&, int)    = 0;
         virtual void CheckInputSelectCharacter(int&, int) = 0;
         virtual void CheckInputGameOptions(std::vector<int>&, int[], int&) = 0;
+        virtual void CheckInputTournamentOptions(std::vector<int>&, int[], int&) = 0;
         virtual void CheckInputPause(int&, int)   = 0;
         virtual void CheckInputIntro() = 0;
         virtual void CheckInputEndRace(int&, int, bool) = 0;
+        virtual void CheckInputEndTournament(int&, int, uint8_t) = 0;
         virtual void CheckInputLobbyMulti() = 0;
         virtual void CheckInputController() = 0;
         virtual void CheckInputCredits() = 0;
         virtual void CheckInputSettings(std::vector<int> &inputs, int maxInputs[], int& option) = 0;
         virtual bool CheckInputAnimationsStartEnd() = 0;
+
+        virtual bool InTournament() = 0;
 
 
     protected:

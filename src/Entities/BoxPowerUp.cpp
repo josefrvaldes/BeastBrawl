@@ -4,6 +4,7 @@
 #include <Components/CType.h>
 #include <Components/CTexture.h>
 #include <Components/CAnimation.h>
+#include <Components/CMesh.h>
 #include <Components/CTransformable.h>
 #include <Components/CBoxPowerUp.h>
 #include "../Components/CBoundingSphere.h"
@@ -40,12 +41,16 @@ BoxPowerUp::BoxPowerUp(){
     shared_ptr<CTexture> cTexture = make_shared<CTexture>(texture);
 
     // animaciones
-    string animationPath = "animations/cube/001cube.obj";
+    /*string animationPath = "animations/cube/001cube.obj";
     uint8_t numFrames = 4;
     vector<uint8_t> distances {60,60,60,60};
     shared_ptr<CType> cType = make_shared<CType>(ModelType::StaticMesh);
-    Animation anim{animationPath, numFrames};//, distances};
-    shared_ptr<CAnimation> cMesh = make_shared<CAnimation>(anim);
+    Animation anim{animationPath, numFrames, distances};
+    shared_ptr<CAnimation> cMesh = make_shared<CAnimation>(anim);*/
+
+    shared_ptr<CType> cType = make_shared<CType>(ModelType::AnimatedMesh);
+    shared_ptr<CMesh> cMesh = make_shared<CMesh>(mesh);
+
 
     shared_ptr<CBoxPowerUp> cBoxPowerUp   = make_shared<CBoxPowerUp>();
     shared_ptr<CShader> cShader = make_shared<CShader>(vertexShader,fragmentShader);
