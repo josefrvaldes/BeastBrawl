@@ -102,6 +102,11 @@ bool ManCar::UpdateCarPlayer(ManTotem &manTotem_) {
     bool gameFinished = UpdateGeneralCar(*carPlayer, *totem);
 
     physics->update(this->GetCar().get());
+    CCar * ccar = static_cast<CCar*>(carPlayer->GetComponent(CompType::CarComp).get());
+    if(ccar->speed > 0) {
+        CTransformable * cTransfor = static_cast<CTransformable*>(carPlayer->GetComponent(CompType::TransformableComp).get());
+        cout << Utils::getISOCurrentTimestampMillis() << " El mainCar se ha movido, sus datos son: speed["<<ccar->speed<<"]  transfor["<<*cTransfor<<"]" << endl;
+    }
     return gameFinished;
 }
 
@@ -331,7 +336,7 @@ void ManCar::NewInputsReceived(DataMap* d) {
                 cout << "Hemos recibido un NewInputsReceivedOnline" << endl;
                 buffOnline->InsertNewReceivedOnline(time, inputs, speed);
                 cout << *buffOnline; 
-                physics->NewInputsReceivedOnline(static_cast<Car*>(car.get()), buffOnline);
+                physics->NewInputsReceivedOnline(static_cast<Car*>(car.get()), speed, buffOnline);
                 break;
             }
         }

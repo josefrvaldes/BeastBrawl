@@ -224,7 +224,7 @@ CarHuman::CarHuman(int pj) {
 
     // default values
     glm::vec3 pos = glm::vec3(-20.0f, 15.0f, -300.0f);
-    glm::vec3 rot = glm::vec3(0.0f, 0.0f, 0.0f);
+    glm::vec3 rot = glm::vec3(0.0f, 90.0f, 0.0f);
     glm::vec3 scale = glm::vec3(6.0f, 6.0f, 6.0f);
 
     if(Constants::RENDER_ENGINE == Constants::RenderEngine::IRRLICHT){

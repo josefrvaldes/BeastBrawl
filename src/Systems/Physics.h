@@ -48,7 +48,7 @@ class Physics {
     void NotTurningHuman(CCar &cCar) const;
     void SkidHuman(CCar &cCar, CTransformable &cTrans) const;
     void NotSkiddingHuman(CCar &cCar, CTransformable &cTrans) const;
-    void NewInputsReceivedOnline(Car *car, CBufferOnline *buffer);
+    void NewInputsReceivedOnline(Car *car, float speed, CBufferOnline *buffer);
     void NewSyncReceivedOnline(Car *car, int64_t time);
 
    protected:

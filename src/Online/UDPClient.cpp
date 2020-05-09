@@ -226,32 +226,7 @@ void UDPClient::HandleReceivedLaunchCountdownAnimation() const {
     EventManager::GetInstance().AddEventMulti(Event{EventType::NEW_LAUNCH_COUNTDOWN_ANIMATION_RECEIVED, data});
 }
 
-// buffer circular
-// void UDPClient::HandleReceivedSync(nuevoPaquete) {
-//     // sabemos ya que es del coche 2
-//     // tenemos que obtener el coche 2
-//     Car car2 = getCar(2);
 
-//     // comprobamos en qué pos del array va este paquete nuevo y eliminamos
-//     // los anteriores
-//     arrayPaquetesCoche2[2] = nuevoPaquete;
-//     arrayPaquetesCoche2[1] = null; // son viejos
-//     arrayPaquetesCoche2[0] = null; // son viejos
-
-//     coche2.pos = nuevoPaquete.pos;
-//     // los 4 paquetes que hay válidos son:
-//     // izq izq abajo dch
-//     for(Paquete p : arrayPaquetesCoche2) {
-//         if(p.arriba)
-//             car.accelerate();
-//         else if(p.derecha)
-//             car.derecha();  // 4.- vamos dch
-//         else if(p.izquierda)
-//             car.izquierda(); // 1.- vamos izq 2.- vamos izq
-//         else if(p.abajo)
-//             car.abajo(); // 3.- vamos abajo
-//     }
-// }
 
 void UDPClient::HandleReceivedSync(unsigned char* recevBuff, size_t bytesTransferred) {
     size_t currentIndex = 0;

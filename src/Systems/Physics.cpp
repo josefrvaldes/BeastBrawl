@@ -400,16 +400,15 @@ void Physics::RecoverSkid(CCar &cCar, CTransformable &cTrans) const{
 }
 
 
-void Physics::NewInputsReceivedOnline(Car *car, CBufferOnline *buffer) {
+void Physics::NewInputsReceivedOnline(Car *car, float speed, CBufferOnline *buffer) {
     auto cTransformable = static_cast<CTransformable *>(car->GetComponent(CompType::TransformableComp).get());
     auto cCar = static_cast<CCar *>(car->GetComponent(CompType::CarComp).get());
     auto cSpeed = static_cast<CSpeed *>(car->GetComponent(CompType::SpeedComp).get());
     auto cNitro = static_cast<CNitro *>(car->GetComponent(CompType::NitroComp).get());
     auto cOnline = static_cast<COnline *>(car->GetComponent(CompType::OnlineComp).get());
     auto cExternalForce = static_cast<CExternalForce *>(car->GetComponent(CompType::CompExternalForce).get());
-    
-    size_t veces = buffer->elems.size();
-    if(veces > 1) {
+    cCar->speed = speed;
+    if(buffer->elems.size() > 1) {
         cout << "Hacemos corrección por input received: el coche estaba en:   " << *cTransformable << endl;
         BuffElement elemRecienRecibido = buffer->elems.front();
         buffer->elems.pop_front();
@@ -417,12 +416,18 @@ void Physics::NewInputsReceivedOnline(Car *car, CBufferOnline *buffer) {
         cTransformable->position = elemSiguiente.pos;
         cTransformable->rotation = elemSiguiente.rot;
         cout << "\tCogemos la pos donde estaba en el momento del timeReceived:  " << *cTransformable << endl;
-        for(size_t i = 0; i < veces; i++) {
+        // TODO: posible corrección de desfase. Parece que el online va siempre 1 frame por delante, así que para ajustar, haremos aquí
+        // una corrección menos:
+        float deltaAux = Constants::DELTA_TIME_MILLIS;
+        int32_t intervalo = elemRecienRecibido.time - elemRecienRecibido.timeSent;
+        float veces = (intervalo) / deltaAux;
+        int16_t auxVeces = veces;
+        for(int16_t i = 0; i < auxVeces - 1; i++) {
             cout << "corregimos " << i << " veces" << endl;
             MoveCarHumanByInput(car, cCar, cOnline, cTransformable, cSpeed, cNitro, cExternalForce);
             cout << "\t Tras esta corrección estamos en:  " << *cTransformable << endl;
         }
-        cout << "Al acabar todas las correcciones por input received, el coche está en: " << *cTransformable << endl;
+        cout << Utils::getISOCurrentTimestampMillis() << " Al acabar todas las correcciones por input received, el coche está en: " << *cTransformable << endl;
     }
 }
 
@@ -436,17 +441,26 @@ void Physics::NewSyncReceivedOnline(Car *car, int64_t time) {
     auto cExternalForce = static_cast<CExternalForce *>(car->GetComponent(CompType::CompExternalForce).get());
     auto cBufferOnline = static_cast<CBufferOnline *>(car->GetComponent(CompType::BufferOnline).get());
 
-    cout << "Hemos recibido una sync a las " << Utils::getISOCurrentTimestampMillis(time) << endl;
+    cout << "Hemos recibido una sync que se envió a las " << Utils::getISOCurrentTimestampMillis(time) << endl;
     auto elems = cBufferOnline->elems;
     std::list<BuffElement>::iterator it;
-    cout << "Hacemos corrección por sync received: el coche estaba en:    " << *cTransformable << endl;
-    for(it = elems.begin(); it != elems.end(); ++it)  {
-        if((it->receivedForReal == false && it->time > time) || (it->receivedForReal && it->timeSent > time)) {
-            cout << "corregimos" << endl;
-            MoveCarHumanByInput(car, cCar, cOnline, cTransformable, cSpeed, cNitro, cExternalForce);
-        }
+    cout << "Hacemos corrección por sync received: el coche estaba en:    " << *cTransformable << " con una speed[" << cCar->speed << "]" << endl;
+    size_t veces = (Utils::getMillisSinceEpoch() - time) / (Constants::DELTA_TIME_MILLIS);
+    for(size_t i = 0; i < veces; i++) {
+        cout << "corregimos" << endl;
+        MoveCarHumanByInput(car, cCar, cOnline, cTransformable, cSpeed, cNitro, cExternalForce);
+        cout << "\ttras la corrección estamos en " << cTransformable << " y speed [" << cCar->speed << "]" << endl;
     }
-    cout << "Al acabar la corrección por sync received: el coche está en: " << *cTransformable << endl;
+
+
+    // for(it = elems.begin(); it != elems.end(); ++it)  {
+    //     if((it->receivedForReal == false && it->time > time) || (it->receivedForReal && it->timeSent > time)) {
+    //         cout << "corregimos" << endl;
+    //         MoveCarHumanByInput(car, cCar, cOnline, cTransformable, cSpeed, cNitro, cExternalForce);
+    //         cout << "\ttras la corrección estamos en " << cTransformable << " y speed [" << cCar->speed << "]" << endl;
+    //     }
+    // }
+    cout << "Al acabar la corrección por sync received: el coche está en: " << *cTransformable << endl << endl << endl;
 }
 
 void Physics::MoveCarHumanByInput(Car *car, CCar *cCar, COnline *cOnline, CTransformable *cTransformable, CSpeed *cSpeed, CNitro *cNitro, CExternalForce *cExternalForce) {

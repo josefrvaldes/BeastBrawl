@@ -25,6 +25,7 @@ class Constants {
     inline static const bool DEBUG_SHOW_SPHERES{true};
     inline static const size_t ONLINE_BUFFER_SIZE{512};
     inline static const float DELTA_TIME{1.0 / FRAME_RATE};
+    inline static const float DELTA_TIME_MILLIS{DELTA_TIME * 1000};
 
     inline static const uint16_t ANY_PLAYER = 255;
 
