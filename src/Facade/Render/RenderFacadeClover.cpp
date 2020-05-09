@@ -825,6 +825,8 @@ void RenderFacadeClover::FacadeInitEndRace() {
 }
 
 void RenderFacadeClover::FacadeInitEndTournament() {
+    timeAnimationET = system_clock::now();
+    numShowPanel = 0;
     // calculate tournament points
     //GameValues::GetInstance()->GetTotalPoints()[0] = GameValues::GetInstance()->GetRanking().find()
     auto rank = GameValues::GetInstance()->GetRanking();
@@ -1395,7 +1397,13 @@ void RenderFacadeClover::FacadeDrawEndTournament() {
     auto posYText = h/2 + rank.size()*50.0f*scale - 15.0f*scale;
 
     if(menuET == 0){
+        // numCarreras
+        file = std::to_string(GameValues::GetInstance()->GetActualBattle()) + "/" + std::to_string(GameValues::GetInstance()->GetNumBattles());
+        device->RenderText2D(file, posX + 950.0f*scale, posYText - (-100)*scale, 0.6f, 1.25*scale, glm::vec3(0.0f,0.0f,0.0f));
+
         for(auto it = rank.begin(); it != rank.end(); ++it) {
+            if(i>inputET) { break; }
+
             file = "media/menu/position";
             file += std::to_string(i) + ".png";
             device->DrawImage2D(posX, posY + (i*100.0f)*scale, 1.0*scale, 0.8f, file, true);
@@ -1425,12 +1433,22 @@ void RenderFacadeClover::FacadeDrawEndTournament() {
             }
             ++i;
         }
+        if(duration_cast<milliseconds>(system_clock::now() - timeStart).count() > msChange && inputET<=GameValues::GetInstance()->GetNumPlayers()){
+            timeStart = system_clock::now();
+            inputET++;
+        }
     }else if(menuET==1){
+        // numCarreras
+        file = std::to_string(GameValues::GetInstance()->GetActualBattle()) + "/" + std::to_string(GameValues::GetInstance()->GetNumBattles());
+        device->RenderText2D(file, posX + 950.0f*scale, posYText - (-100)*scale, 0.6f, 1.25*scale, glm::vec3(0.0f,0.0f,0.0f));
+
         // Puntos totales
         auto rankPoints = GameValues::GetInstance()->GetRankingPoints();
         std::string file = "media/menu/finish_menu_bg.png";
         device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.9f, file, true);
         for(auto it = rankPoints.begin(); it != rankPoints.end(); ++it) {
+            if(i>inputET) { break; }
+
             file = "media/menu/position";
             file += std::to_string(i) + ".png";
             device->DrawImage2D(posX, posY + (i*100.0f)*scale, 1.0*scale, 0.8f, file, true);
@@ -1450,7 +1468,11 @@ void RenderFacadeClover::FacadeDrawEndTournament() {
             else { file = std::to_string(it->first); }
             device->RenderText2D(file, posX + 950.0f*scale, posYText - (i*100.0f)*scale, 0.3f, 1.25*scale, glm::vec3(255.0f,255.0f,255.0f));
             ++i;
-        }   
+        }
+        if(duration_cast<milliseconds>(system_clock::now() - timeStart).count() > msChange && inputET<=GameValues::GetInstance()->GetNumPlayers()){
+            timeStart = system_clock::now();
+            inputET++;
+        }
 
     }else if(menuET == 2){
         file = "media/endraceMenu.png";
