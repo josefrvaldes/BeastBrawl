@@ -42,7 +42,7 @@ class Constants {
                     CLAXON,
                     DRIFT };
 
-    enum PetitionTypes { CONNECTION_REQUEST,
+    enum PetitionTypes { CONNECTION_REQUEST = 2,
                         TCP_START_GAME,
                         TCP_FULL_GAME,
                         ENDGAME,

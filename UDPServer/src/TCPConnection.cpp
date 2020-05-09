@@ -38,6 +38,7 @@ void TCPConnection::HandleRead(std::shared_ptr<unsigned char[]> recevBuff, const
     if (!error && bytes_transferred != 0) {
         size_t currentIndex = 0;
         uint8_t petitionType = Serialization::Deserialize<uint8_t>(recevBuff.get(), currentIndex);    // numero
+        cout << "Hemos leido " << bytes_transferred << " bytes y el petitionType es " << unsigned(petitionType) << endl;
 
         Constants::PetitionTypes callType = static_cast<Constants::PetitionTypes>(petitionType);
         switch (callType) {

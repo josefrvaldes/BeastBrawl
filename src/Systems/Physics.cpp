@@ -416,11 +416,13 @@ void Physics::NewInputsReceivedOnline(Car *car, CBufferOnline *buffer) {
         BuffElement elemSiguiente = buffer->elems.front();
         cTransformable->position = elemSiguiente.pos;
         cTransformable->rotation = elemSiguiente.rot;
+        cout << "\tCogemos la pos donde estaba en el momento del timeReceived:  " << *cTransformable << endl;
         for(size_t i = 0; i < veces; i++) {
             cout << "corregimos " << i << " veces" << endl;
             MoveCarHumanByInput(car, cCar, cOnline, cTransformable, cSpeed, cNitro, cExternalForce);
+            cout << "\t Tras esta corrección estamos en:  " << *cTransformable << endl;
         }
-        cout << "Al acabar la corrección por input received el coche está en: " << *cTransformable << endl;
+        cout << "Al acabar todas las correcciones por input received, el coche está en: " << *cTransformable << endl;
     }
 }
 

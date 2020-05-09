@@ -174,30 +174,35 @@ void TCPClient::SendConnectionRequest() {
         return;
     }
 
-    unsigned char request[Constants::ONLINE_BUFFER_SIZE];
+    std::shared_ptr<unsigned char[]> request(new unsigned char[Constants::ONLINE_BUFFER_SIZE]);
     size_t currentBuffSize = 0;
     uint8_t petitionType = Constants::CONNECTION_REQUEST;
     uint8_t character = GameValues::GetInstance()->GetCharacter();
-    Serialization::Serialize(request, &petitionType, currentBuffSize);
-    Serialization::Serialize(request, &character, currentBuffSize);
+    Serialization::Serialize(request.get(), &petitionType, currentBuffSize);
+    Serialization::Serialize(request.get(), &character, currentBuffSize);
 
     socket.async_send(
-        boost::asio::buffer(request, currentBuffSize),
+        boost::asio::buffer(request.get(), currentBuffSize),
         boost::bind(
             &TCPClient::HandleSentConnectionRequest,
             this,
+            request,
             boost::asio::placeholders::error,
             boost::asio::placeholders::bytes_transferred));
 }
 
-void TCPClient::HandleSentConnectionRequest(const boost::system::error_code& errorCode, std::size_t bytes_transferred) {
+void TCPClient::HandleSentConnectionRequest(std::shared_ptr<unsigned char[]> request, const boost::system::error_code& errorCode, std::size_t bytes_transferred) {
     if (stopped) {
         cout << "Hemos intentado HandleSentConnectionRequest pero el cliente tcp estaba parado" << endl;
         return;
     }
 
     if (!errorCode) {
-        cout << "Mensaje de conexion enviado cliente TCP" << endl;
+        size_t currentBuffSize = 0;
+        uint8_t petitionType = Serialization::Deserialize<uint8_t>(request.get(), currentBuffSize);
+        uint8_t personaje = Serialization::Deserialize<uint8_t>(request.get(), currentBuffSize);
+        
+        cout << "Mensaje de conexion enviado cliente TCP con petitionType " << unsigned(petitionType) << " y personaje " << unsigned(personaje) << endl;
     } else {
         cout << "Hubo un error enviando el mensaje de conexion: " << errorCode.message() << endl;
     }

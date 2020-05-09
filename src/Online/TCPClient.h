@@ -44,7 +44,7 @@ class TCPClient {
     void HandleReceivedStartGame(std::shared_ptr<unsigned char[]> recevBuff, size_t bytesTransferred);
     void HandleReceivedFullGame();
 
-    void HandleSentConnectionRequest(const boost::system::error_code& errorCode, std::size_t bytes_transferred);
+    void HandleSentConnectionRequest(std::shared_ptr<unsigned char[]> request, const boost::system::error_code& errorCode, std::size_t bytes_transferred);
     void Stop();
 
     boost::asio::io_context context;
