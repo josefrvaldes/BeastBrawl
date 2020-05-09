@@ -47,166 +47,166 @@ Car::Car(int pj){
     
     switch (pj) {
         case 0: 
-            _pj = mainCharacter::PENGUIN;
-            weight = WEIGHT::W_LOW;
-            maxSpeed = MAX_VELOCITY::V_HIGH;
-            acceleration = ACCELERATION::A_HIGH/100;
-            mesh = meshCar(PENGUIN);
+            _pj =                   mainCharacter::PENGUIN;
+            weight =                WEIGHT::W_LOW;
+            maxSpeed =              MAX_VELOCITY::V_HIGH;
+            acceleration =          ACCELERATION::A_HIGH/100;
+            mesh =                  meshCar(PENGUIN);
 
-            pathTopLeft = "penguin_wheel1.obj";
-            pathTopRight = "penguin_wheel2.obj";
-            pathBottomLeft = "penguin_wheel3.obj";
-            pathBottomRight = "penguin_wheel4.obj";
+            pathTopLeft =           "penguin_wheel1.obj";
+            pathTopRight =          "penguin_wheel2.obj";
+            pathBottomLeft =        "penguin_wheel3.obj";
+            pathBottomRight =       "penguin_wheel4.obj";
 
-            offsetTopLeft = glm::vec3(0.92,0.3f,0.8);
-            offsetTopRight = glm::vec3(0.92,0.3f,-0.8);
-            offsetBottomLeft = glm::vec3(-0.2,0.3f,0.9);
-            offsetBottomRight = glm::vec3(-0.2,0.3f,-0.9);
+            offsetTopLeft =         glm::vec3(0.92,0.3f,0.8);
+            offsetTopRight =        glm::vec3(0.92,0.3f,-0.8);
+            offsetBottomLeft =      glm::vec3(-0.2,0.3f,0.9);
+            offsetBottomRight =     glm::vec3(-0.2,0.3f,-0.9);
 
-            rotationTopLeft = glm::vec3(0.0f,0.0f,0.0f);
-            rotationTopRight = glm::vec3(0.0f,0.0f,0.0f);
-            rotationBottomLeft = glm::vec3(0.0f,0.0f,0.0f);
-            rotationBottomRight = glm::vec3(0.0f,0.0f,0.0f);
+            rotationTopLeft =       glm::vec3(0.0f,0.0f,0.0f);
+            rotationTopRight =      glm::vec3(0.0f,0.0f,0.0f);
+            rotationBottomLeft =    glm::vec3(0.0f,0.0f,0.0f);
+            rotationBottomRight =   glm::vec3(0.0f,0.0f,0.0f);
 
-            scaleTopLeft = glm::vec3(1.0f);
-            scaleTopRight = glm::vec3(1.0f);
-            scaleBottomLeft = glm::vec3(1.0f);
-            scaleBottomRight = glm::vec3(1.0f);
+            scaleTopLeft =          glm::vec3(1.0f);
+            scaleTopRight =         glm::vec3(1.0f);
+            scaleBottomLeft =       glm::vec3(1.0f);
+            scaleBottomRight =      glm::vec3(1.0f);
             break;
         case 1: 
-            _pj = mainCharacter::TIGER; 
-            weight = WEIGHT::W_MEDIUM;
-            maxSpeed = MAX_VELOCITY::V_MEDIUM;
-            acceleration = ACCELERATION::A_MEDIUM/100;
-            mesh = meshCar(TIGER);
+            _pj =                   mainCharacter::TIGER; 
+            weight =                WEIGHT::W_MEDIUM;
+            maxSpeed =              MAX_VELOCITY::V_MEDIUM;
+            acceleration =          ACCELERATION::A_MEDIUM/100;
+            mesh =                  meshCar(TIGER);
 
-            pathTopLeft = "sharky_wheel4.obj";
-            pathTopRight = "sharky_wheel2.obj";
-            pathBottomLeft = "sharky_wheel3.obj";
-            pathBottomRight = "sharky_wheel1.obj";
+            pathTopLeft =           "sharky_wheel4.obj";
+            pathTopRight =          "sharky_wheel2.obj";
+            pathBottomLeft =        "sharky_wheel3.obj";
+            pathBottomRight =       "sharky_wheel1.obj";
 
-            offsetTopLeft = glm::vec3(0.6,0.3f,1.0);
-            offsetTopRight = glm::vec3(0.6,0.3f,-1.0);
-            offsetBottomLeft = glm::vec3(-0.4,0.3f,1.0);
-            offsetBottomRight = glm::vec3(-0.4,0.3f,-1.0);
+            offsetTopLeft =         glm::vec3(0.6,0.3f,1.0);
+            offsetTopRight =        glm::vec3(0.6,0.3f,-1.0);
+            offsetBottomLeft =      glm::vec3(-0.4,0.3f,1.0);
+            offsetBottomRight =     glm::vec3(-0.4,0.3f,-1.0);
 
-            rotationTopLeft = glm::vec3(0.0f,0.0f,0.0f);
-            rotationTopRight = glm::vec3(0.0f,0.0f,0.0f);
-            rotationBottomLeft = glm::vec3(0.0f,0.0f,0.0f);
-            rotationBottomRight = glm::vec3(0.0f,0.0f,0.0f);
+            rotationTopLeft =       glm::vec3(0.0f,0.0f,0.0f);
+            rotationTopRight =      glm::vec3(0.0f,0.0f,0.0f);
+            rotationBottomLeft =    glm::vec3(0.0f,0.0f,0.0f);
+            rotationBottomRight =   glm::vec3(0.0f,0.0f,0.0f);
 
-            scaleTopLeft = glm::vec3(1.0f);
-            scaleTopRight = glm::vec3(1.0f);
-            scaleBottomLeft = glm::vec3(1.0f);
-            scaleBottomRight = glm::vec3(1.0f);
+            scaleTopLeft =          glm::vec3(1.0f);
+            scaleTopRight =         glm::vec3(1.0f);
+            scaleBottomLeft =       glm::vec3(1.0f);
+            scaleBottomRight =      glm::vec3(1.0f);
             break;
         case 2: 
-            _pj = mainCharacter::SHARK; 
-            weight = WEIGHT::W_MEDIUM;
-            maxSpeed = MAX_VELOCITY::V_MEDIUM;
-            acceleration = ACCELERATION::A_HIGH/100;
-            mesh = meshCar(SHARK);
+            _pj =                   mainCharacter::SHARK; 
+            weight =                WEIGHT::W_MEDIUM;
+            maxSpeed =              MAX_VELOCITY::V_MEDIUM;
+            acceleration =          ACCELERATION::A_HIGH/100;
+            mesh =                  meshCar(SHARK);
 
-            pathTopLeft = "sharky_wheel4.obj";
-            pathTopRight = "sharky_wheel2.obj";
-            pathBottomLeft = "sharky_wheel3.obj";
-            pathBottomRight = "sharky_wheel1.obj";
+            pathTopLeft =           "sharky_wheel4.obj";
+            pathTopRight =          "sharky_wheel2.obj";
+            pathBottomLeft =        "sharky_wheel3.obj";
+            pathBottomRight =       "sharky_wheel1.obj";
 
-            offsetTopLeft = glm::vec3(0.5,0.3f,0.8);
-            offsetTopRight = glm::vec3(0.5,0.3f,-0.8);
-            offsetBottomLeft = glm::vec3(-0.4,0.3f,0.8);
-            offsetBottomRight = glm::vec3(-0.4,0.3f,-0.8);
+            offsetTopLeft =         glm::vec3(0.5,0.3f,0.8);
+            offsetTopRight =        glm::vec3(0.5,0.3f,-0.8);
+            offsetBottomLeft =      glm::vec3(-0.4,0.3f,0.8);
+            offsetBottomRight =     glm::vec3(-0.4,0.3f,-0.8);
 
-            rotationTopLeft = glm::vec3(0.0f,0.0f,0.0f);
-            rotationTopRight = glm::vec3(0.0f,0.0f,0.0f);
-            rotationBottomLeft = glm::vec3(0.0f,0.0f,0.0f);
-            rotationBottomRight = glm::vec3(0.0f,0.0f,0.0f);
+            rotationTopLeft =       glm::vec3(0.0f,0.0f,0.0f);
+            rotationTopRight =      glm::vec3(0.0f,0.0f,0.0f);
+            rotationBottomLeft =    glm::vec3(0.0f,0.0f,0.0f);
+            rotationBottomRight =   glm::vec3(0.0f,0.0f,0.0f);
 
-            scaleTopLeft = glm::vec3(1.0f);
-            scaleTopRight = glm::vec3(1.0f);
-            scaleBottomLeft = glm::vec3(1.0f);
-            scaleBottomRight = glm::vec3(1.0f);
+            scaleTopLeft =          glm::vec3(1.0f);
+            scaleTopRight =         glm::vec3(1.0f);
+            scaleBottomLeft =       glm::vec3(1.0f);
+            scaleBottomRight =      glm::vec3(1.0f);
             break;
         case 3: 
-            _pj = mainCharacter::GORILLA; 
-            weight = WEIGHT::W_HIGH;
-            maxSpeed = MAX_VELOCITY::V_MEDIUM;
-            acceleration = ACCELERATION::A_LOW/100;
-            mesh = meshCar(GORILLA);
+            _pj =                   mainCharacter::GORILLA; 
+            weight =                WEIGHT::W_HIGH;
+            maxSpeed =              MAX_VELOCITY::V_MEDIUM;
+            acceleration =          ACCELERATION::A_LOW/100;
+            mesh =                  meshCar(GORILLA);
 
-            pathTopLeft = "sharky_wheel4.obj";
-            pathTopRight = "sharky_wheel2.obj";
-            pathBottomLeft = "sharky_wheel3.obj";
-            pathBottomRight = "sharky_wheel1.obj";
+            pathTopLeft =           "sharky_wheel4.obj";
+            pathTopRight =          "sharky_wheel2.obj";
+            pathBottomLeft =        "sharky_wheel3.obj";
+            pathBottomRight =       "sharky_wheel1.obj";
 
-            offsetTopLeft = glm::vec3(0.6,0.3f,1.0);
-            offsetTopRight = glm::vec3(0.6,0.3f,-1.0);
-            offsetBottomLeft = glm::vec3(-0.4,0.3f,1.0);
-            offsetBottomRight = glm::vec3(-0.4,0.3f,-1.0);
+            offsetTopLeft =         glm::vec3(0.6,0.3f,1.0);
+            offsetTopRight =        glm::vec3(0.6,0.3f,-1.0);
+            offsetBottomLeft =      glm::vec3(-0.4,0.3f,1.0);
+            offsetBottomRight =     glm::vec3(-0.4,0.3f,-1.0);
 
-            rotationTopLeft = glm::vec3(0.0f,0.0f,0.0f);
-            rotationTopRight = glm::vec3(0.0f,0.0f,0.0f);
-            rotationBottomLeft = glm::vec3(0.0f,0.0f,0.0f);
-            rotationBottomRight = glm::vec3(0.0f,0.0f,0.0f);
+            rotationTopLeft =       glm::vec3(0.0f,0.0f,0.0f);
+            rotationTopRight =      glm::vec3(0.0f,0.0f,0.0f);
+            rotationBottomLeft =    glm::vec3(0.0f,0.0f,0.0f);
+            rotationBottomRight =   glm::vec3(0.0f,0.0f,0.0f);
 
-            scaleTopLeft = glm::vec3(1.0f);
-            scaleTopRight = glm::vec3(1.0f);
-            scaleBottomLeft = glm::vec3(1.0f);
-            scaleBottomRight = glm::vec3(1.0f);
+            scaleTopLeft =          glm::vec3(1.0f);
+            scaleTopRight =         glm::vec3(1.0f);
+            scaleBottomLeft =       glm::vec3(1.0f);
+            scaleBottomRight =      glm::vec3(1.0f);
             break;
         case 4: 
-            _pj = mainCharacter::DRAGON; 
-            weight = WEIGHT::W_LOW;
-            maxSpeed = MAX_VELOCITY::V_MEDIUM;
-            acceleration = ACCELERATION::A_HIGH/100;
-            mesh = meshCar(DRAGON);
+            _pj =                   mainCharacter::DRAGON; 
+            weight =                WEIGHT::W_LOW;
+            maxSpeed =              MAX_VELOCITY::V_MEDIUM;
+            acceleration =          ACCELERATION::A_HIGH/100;
+            mesh =                  meshCar(DRAGON);
 
-            pathTopLeft = "deacon_wheel2.obj";
-            pathTopRight = "deacon_wheel4.obj";
-            pathBottomLeft = "deacon_wheel3.obj";
-            pathBottomRight = "deacon_wheel1.obj";
+            pathTopLeft =           "deacon_wheel2.obj";
+            pathTopRight =          "deacon_wheel4.obj";
+            pathBottomLeft =        "deacon_wheel3.obj";
+            pathBottomRight =       "deacon_wheel1.obj";
 
-            offsetTopLeft = glm::vec3(0.65,0.4f,0.8);
-            offsetTopRight = glm::vec3(0.65,0.4f,-0.9);
-            offsetBottomLeft = glm::vec3(-0.65,0.4f,0.8);
-            offsetBottomRight = glm::vec3(-0.65,0.4f,-0.9);
+            offsetTopLeft =         glm::vec3(0.65,0.4f,0.8);
+            offsetTopRight =        glm::vec3(0.65,0.4f,-0.9);
+            offsetBottomLeft =      glm::vec3(-0.65,0.4f,0.8);
+            offsetBottomRight =     glm::vec3(-0.65,0.4f,-0.9);
 
-            rotationTopLeft = glm::vec3(0.0f,0.0f,0.0f);
-            rotationTopRight = glm::vec3(0.0f,0.0f,0.0f);
-            rotationBottomLeft = glm::vec3(0.0f,0.0f,0.0f);
-            rotationBottomRight = glm::vec3(0.0f,0.0f,0.0f);
+            rotationTopLeft =       glm::vec3(0.0f,0.0f,0.0f);
+            rotationTopRight =      glm::vec3(0.0f,0.0f,0.0f);
+            rotationBottomLeft =    glm::vec3(0.0f,0.0f,0.0f);
+            rotationBottomRight =   glm::vec3(0.0f,0.0f,0.0f);
 
-            scaleTopLeft = glm::vec3(1.0f);
-            scaleTopRight = glm::vec3(1.0f);
-            scaleBottomLeft = glm::vec3(1.0f);
-            scaleBottomRight = glm::vec3(1.0f);
+            scaleTopLeft =          glm::vec3(1.0f);
+            scaleTopRight =         glm::vec3(1.0f);
+            scaleBottomLeft =       glm::vec3(1.0f);
+            scaleBottomRight =      glm::vec3(1.0f);
             break;
         case 5: 
-            _pj = mainCharacter::OCTOPUS; 
-            weight = WEIGHT::W_HIGH;
-            maxSpeed = MAX_VELOCITY::V_HIGH;
-            acceleration = ACCELERATION::A_MEDIUM/100;
-            mesh = meshCar(OCTOPUS);
+            _pj =                   mainCharacter::OCTOPUS; 
+            weight =                WEIGHT::W_HIGH;
+            maxSpeed =              MAX_VELOCITY::V_HIGH;
+            acceleration =          ACCELERATION::A_MEDIUM/100;
+            mesh =                  meshCar(OCTOPUS);
 
-            pathTopLeft = "sharky_wheel4.obj";
-            pathTopRight = "sharky_wheel2.obj";
-            pathBottomLeft = "sharky_wheel3.obj";
-            pathBottomRight = "sharky_wheel1.obj";
+            pathTopLeft =           "sharky_wheel4.obj";
+            pathTopRight =          "sharky_wheel2.obj";
+            pathBottomLeft =        "sharky_wheel3.obj";
+            pathBottomRight =       "sharky_wheel1.obj";
 
-            offsetTopLeft = glm::vec3(0.6,0.3f,1.0);
-            offsetTopRight = glm::vec3(0.6,0.3f,-1.0);
-            offsetBottomLeft = glm::vec3(-0.4,0.3f,1.0);
-            offsetBottomRight = glm::vec3(-0.4,0.3f,-1.0);
+            offsetTopLeft =         glm::vec3(0.6,0.3f,1.0);
+            offsetTopRight =        glm::vec3(0.6,0.3f,-1.0);
+            offsetBottomLeft =      glm::vec3(-0.4,0.3f,1.0);
+            offsetBottomRight =     glm::vec3(-0.4,0.3f,-1.0);
 
-            rotationTopLeft = glm::vec3(0.0f,0.0f,0.0f);
-            rotationTopRight = glm::vec3(0.0f,0.0f,0.0f);
-            rotationBottomLeft = glm::vec3(0.0f,0.0f,0.0f);
-            rotationBottomRight = glm::vec3(0.0f,0.0f,0.0f);
+            rotationTopLeft =       glm::vec3(0.0f,0.0f,0.0f);
+            rotationTopRight =      glm::vec3(0.0f,0.0f,0.0f);
+            rotationBottomLeft =    glm::vec3(0.0f,0.0f,0.0f);
+            rotationBottomRight =   glm::vec3(0.0f,0.0f,0.0f);
 
-            scaleTopLeft = glm::vec3(1.0f);
-            scaleTopRight = glm::vec3(1.0f);
-            scaleBottomLeft = glm::vec3(1.0f);
-            scaleBottomRight = glm::vec3(1.0f);
+            scaleTopLeft =          glm::vec3(1.0f);
+            scaleTopRight =         glm::vec3(1.0f);
+            scaleBottomLeft =       glm::vec3(1.0f);
+            scaleBottomRight =      glm::vec3(1.0f);
             break;
         default: break;
     }
