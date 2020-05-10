@@ -167,10 +167,10 @@ void CLNode::DFSTree(glm::mat4 mA, CLCamera* cam, const glm::mat4& VPmatrix) {
     }
     auto& frustrum_m = cam->GetFrustum();
     // CLE::CLFrustum::Visibility frusVisibility = frustum_m.IsInside(translation);
-    // CLE::CLFrustum::Visibility frusVisibility = frustrum_m.IsInside(translation, dimensionsBoundingBox);
+     CLE::CLFrustum::Visibility frusVisibility = frustrum_m.IsInside(translation, dimensionsBoundingBox);
 
     //Voy a comentar de momento el frustrum ya que para el particle system puede dar problemas
-    if(entity && visible /*&& (frusVisibility == CLE::CLFrustum::Visibility::Completly || !ignoreFrustrum)*/) { 
+    if(entity && visible && (frusVisibility == CLE::CLFrustum::Visibility::Completly || !ignoreFrustrum)) { 
 
         glUseProgram(shaderProgramID); 
 
@@ -207,6 +207,7 @@ void CLNode::DFSTree(glm::mat4 mA, GLuint shaderID, const glm::mat4& lightSpaceM
         transformationMat = mA*CalculateTransformationMatrix();
         changed = false;
     }
+
 
     //auto& frustum_m = device->GetActiveCamera()->GetFrustum();
     //CLE::CLFrustum::Visibility frusVisibility = frustum_m.IsInside(translation, dimensionsBoundingBox);

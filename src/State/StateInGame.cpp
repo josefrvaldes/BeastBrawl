@@ -61,7 +61,10 @@ void StateInGame::AddElementsToRender() {
             renderEngine->FacadeAddObject(cars.get());
     }
 
-    renderEngine->FacadeAddObject(ground.get());  //Anyadimos el suelo
+    //renderEngine->FacadeAddObject(ground.get());  //Anyadimos el suelo
+    for(const auto& currentPartGround : manGameRules->GetGrounds()){
+        renderEngine->FacadeAddObject(currentPartGround.get());
+    }
 
     //Añadimos todos los power ups
     for (auto bpu : manBoxPowerUps->GetEntities())

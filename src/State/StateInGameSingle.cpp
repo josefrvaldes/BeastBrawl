@@ -138,6 +138,7 @@ void StateInGameSingle::UpdateGame() {
 void StateInGameSingle::Render() {
     std::cout.precision(10);
     timeStart =  std::chrono::system_clock::now();
+    
     auto carPrincial = manCars->GetCar().get();
     bool isColliding = collisions->Intersects(manCars.get()->GetCar().get(), carPrincial);
     renderEngine->FacadeDrawBoundingBox(manCars.get()->GetCar().get(), isColliding);

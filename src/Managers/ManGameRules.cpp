@@ -72,22 +72,22 @@ void ManGameRules::CreateMayanMap(){
     auto default0 = glm::vec3(0.0f, 0.0f, 0.0f);
     auto default1 = glm::vec3(1.0f, 1.0f, 1.0f);
 
-    shared_ptr<GameObject> bridge_north         = make_shared<GameObject>(default0,default0,default1, "", "maps/maya/bridge_north.obj");
+    shared_ptr<GameObject> bridge_north         = make_shared<GameObject>(default0,default0,default1, "", "maps/mayan/bridge_north.obj");
         ground.push_back(bridge_north);
-    shared_ptr<GameObject> bridge_south         = make_shared<GameObject>(default0,default0,default1, "", "maps/maya/bridge_south.obj");
+    shared_ptr<GameObject> bridge_south         = make_shared<GameObject>(default0,default0,default1, "", "maps/mayan/bridge_south.obj");
         ground.push_back(bridge_south);
-    shared_ptr<GameObject> central_plaza        = make_shared<GameObject>(default0,default0,default1, "", "maps/maya/central_plaza.obj");
+    shared_ptr<GameObject> central_plaza        = make_shared<GameObject>(default0,default0,default1, "", "maps/mayan/central_plaza.obj");
         ground.push_back(central_plaza);
-    shared_ptr<GameObject> grounds_assets       = make_shared<GameObject>(default0,default0,default1, "", "maps/maya/grounds+assets.obj");
+    shared_ptr<GameObject> grounds_assets       = make_shared<GameObject>(default0,default0,default1, "", "maps/mayan/grounds+assets.obj");
         ground.push_back(grounds_assets);
-    shared_ptr<GameObject> joke_heads           = make_shared<GameObject>(default0,default0,default1, "", "maps/maya/joke_heads.obj");
+    shared_ptr<GameObject> joke_heads           = make_shared<GameObject>(default0,default0,default1, "", "maps/mayan/joke_heads.obj");
         ground.push_back(joke_heads);
-    shared_ptr<GameObject> ramps                = make_shared<GameObject>(default0,default0,default1, "", "maps/maya/ramps.obj");
+    shared_ptr<GameObject> ramps                = make_shared<GameObject>(default0,default0,default1, "", "maps/mayan/ramps.obj");
         ground.push_back(ramps);
-    shared_ptr<GameObject> snake_heads          = make_shared<GameObject>(default0,default0,default1, "", "maps/maya/snake_heads.obj");
+    shared_ptr<GameObject> snake_heads          = make_shared<GameObject>(default0,default0,default1, "", "maps/mayan/snake_heads.obj");
         ground.push_back(snake_heads);
-    shared_ptr<GameObject> wall_east_west       = make_shared<GameObject>(default0,default0,default1, "", "maps/maya/wall_east_west.obj");
+    shared_ptr<GameObject> wall_east_west       = make_shared<GameObject>(default0,default0,default1, "", "maps/mayan/wall_east_west.obj");
         ground.push_back(wall_east_west);
-    shared_ptr<GameObject> wall_north_south     = make_shared<GameObject>(default0,default0,default1, "", "maps/maya/wall_north_south.obj");
+    shared_ptr<GameObject> wall_north_south     = make_shared<GameObject>(default0,default0,default1, "", "maps/mayan/wall_north_south.obj");
         ground.push_back(wall_north_south);
 }
