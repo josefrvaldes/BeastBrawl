@@ -29,17 +29,17 @@ class GameValues {
         void SetNumPlayers(uint8_t p)                   { numPlayers = p; };
 
         // GETTERS
-        const int GetCharacter()                        { return mainCharacter; };
-        const std::vector<int>& GetIACharacters()       { return iaCharacter; };
-        const int GetMap()                              { return mapGame; };
-        const bool GetWin()                             { return win; };
-        const int GetTimeTotem()                        { return timeTotem; };
-        const int GetGameTime()                         { return gameTime; };
+        const int GetCharacter()                                                            { return mainCharacter; };
+        const std::vector<int>& GetIACharacters()                                           { return iaCharacter; };
+        const int GetMap()                                                                  { return mapGame; };
+        const bool GetWin()                                                                 { return win; };
+        const int GetTimeTotem()                                                            { return timeTotem; };
+        const int GetGameTime()                                                             { return gameTime; };
 
-        const std::map<uint16_t, uint16_t>& GetRanking(){ return ranking; };
-        const std::map<uint16_t, uint16_t>& GetSeconds(){ return seconds; };
-        const std::multimap<uint16_t, uint16_t, std::greater<uint16_t>>& GetRankingPoints()  { return rankingPoints; };
-        const uint8_t GetNumPlayers()                   { return numPlayers; };
+        const std::map<uint16_t, uint16_t>& GetRanking()                                    { return ranking; };
+        const std::map<uint16_t, uint16_t>& GetSeconds()                                    { return seconds; };
+        const std::multimap<uint16_t, uint16_t, std::greater<uint16_t>>& GetRankingPoints() { return rankingPoints; };
+        const uint8_t GetNumPlayers()                                                       { return numPlayers; };
 
         //const int GetMainCPoints()                      { return mainCPoints; };
         //const std::vector<int> GetIAPoints()            { return iaPoints; };

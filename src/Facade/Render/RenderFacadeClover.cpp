@@ -830,20 +830,36 @@ void RenderFacadeClover::FacadeInitEndTournament() {
     // calculate tournament points
     //GameValues::GetInstance()->GetTotalPoints()[0] = GameValues::GetInstance()->GetRanking().find()
     auto rank = GameValues::GetInstance()->GetRanking();
+    auto seconds = GameValues::GetInstance()->GetSeconds();
     auto idPlayer = GameValues::GetInstance()->GetCharacter();
     auto idOther = GameValues::GetInstance()->GetIACharacters();
     auto pointsTotal = GameValues::GetInstance()->GetTotalPoints();
     auto pointsRank = GameValues::GetInstance()->GetPosPoints();
 
+    auto antTime = -1;
+    auto posPoints = 0;
     for(auto it = rank.begin(); it != rank.end(); ++it) {
-        if(it->second == idPlayer){
-            pointsTotal[0] += pointsRank[it->first-1];
-        }else{
-            for(size_t i = 0; i<idOther.size(); i++){
-                if(it->second == idOther[i]){
-                    pointsTotal[i+1] += pointsRank[it->first-1];
+
+        auto it2 = seconds.find(it->first);
+        if ( it2 != seconds.end()) {
+            auto actualTime = it2->second;
+            //cout << "TIEMPO ANTERIOR: " << antTime << endl;
+            //cout << "TIEMPO ACTUAL: " << actualTime << endl;
+            if (antTime != -1 && antTime != actualTime) { posPoints++; }
+            //cout << "POSICION DE PUNTOS: " << posPoints << endl;
+            antTime = actualTime;
+
+            if(it->second == idPlayer){
+                pointsTotal[0] += pointsRank[posPoints/*it->first-1*/];
+            }else{
+                for(size_t i = 0; i<idOther.size(); i++){
+                    if(it->second == idOther[i]){
+                        pointsTotal[i+1] += pointsRank[posPoints/*it->first-1*/];
+                    }
                 }
             }
+            //cout << "PONGO " << pointsRank[posPoints] << " PUNTOS" << endl;
+            //cout << "------------------------" << endl;
         }
     }
 
@@ -1009,41 +1025,55 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
     //CURRENT POWERUP
     device->DrawImage2D(25.0f, 25.0f, 150.0f, 150.0f, 0.1f ,powerUps[currentPowerUp], true);
 
-
-    //RANKING
-    //TODO: Dejar como debug
-    /*int i = 0;
-    //core::stringw textIA = core::stringw("Car ");
-    for (const auto& cars : manCars->GetEntities()) {
-
-        cTotem = static_cast<CTotem*>(cars->GetComponent(CompType::TotemComp).get());
-
-        int time = cTotem->accumulatedTime / 100.0;
-        float time2 = time / 10.0;
-        glm::vec3 color = glm::vec3(0.0f,0.0f,255.0f);
-        if(cTotem->active){
-            //Si tiene el totem voy a dibujarlo rojo por ejemplo
-            color = glm::vec3(255.0f, 0.0f, 0.0f);
-        }
-        cadena = std::to_string(cTotem->positionRanking) + ". Car " + std::to_string(i) + " - " + std::to_string(time2);
-        float altura = (device->GetScreenHeight() - 125.0f) + ((cTotem->positionRanking-1.0f)*18.0f);
-        device->RenderText2D(cadena, 200.0f, altura, 0.1f, 0.35f, color);
-
-        i++;
-    }*/
-
     // FONDO TABLA TIEMPOS
     if (inputShowTable) {
-        for(size_t k = 0; k < manCars->GetEntities().size(); ++k) {
+        device->SetEnableDepthTest(false);
+
+        auto j = 0;
+        auto ranking = GameValues::GetInstance()->GetRanking();
+        auto seconds = GameValues::GetInstance()->GetSeconds();
+        uint8_t positionR = 1;
+        int64_t antTime = -1;
+
+        for (auto it = ranking.begin(); it != ranking.end(); ++it) {    
+
+            switch (it->second) {
+                case static_cast<uint16_t>(mainCharacter::PENGUIN):    sprite = "media/hudPenguin.png";    break;
+                case static_cast<uint16_t>(mainCharacter::TIGER):      sprite = "media/hudTiger.png";      break;
+                case static_cast<uint16_t>(mainCharacter::SHARK):      sprite = "media/hudShark.png";      break;
+                case static_cast<uint16_t>(mainCharacter::GORILLA):    sprite = "media/hudGorilla.png";    break;
+                case static_cast<uint16_t>(mainCharacter::DRAGON):     sprite = "media/hudDragon.png";     break;
+                case static_cast<uint16_t>(mainCharacter::OCTOPUS):    sprite = "media/hudOctopus.png";    break;
+                default:                                                                                   break;
+            }
+
             cadena = "media/cuadrado.png";
-            device->DrawImage2D(w - 200.0f, /*h/2 - posFondoTiempos + 45.0*j*/ 150.0f + k*45.0f, 1.0, 0.9f, cadena, true);
+            device->DrawImage2D(w - 200.0f, 150.0f + j*45.0f, 1.0, 0.9f, cadena, true);
+            
+            
+            device->DrawImage2D(w - 160.0f, 155.0f + j*45.0f, 0.3, 0.1f*j+0.1f, sprite, true);
+
+            auto it2 = seconds.find(it->first);
+            if (it2 != seconds.end()) {
+                glm::vec3 color = glm::vec3(255.0f,255.0f,255.0f);
+                if (antTime != -1 && antTime != it2->second) {
+                    ++positionR;
+                }
+                cadena = std::to_string(positionR) + ".";
+                device->RenderText2D(cadena, w - 190.0f, h - 180.0f - 45.0f*j, 0.1f*j+0.1f, 0.5, glm::vec3(255.0f,255.0f,255.0f));
+
+                antTime = it2->second;
+                cadena = std::to_string(antTime);
+                device->RenderText2D(cadena, w - 110.0f, h - 180.0f - 45.0f*j, 0.1f*j+0.1f, 0.5, color);
+            }
+            ++j;
         }
+
+        device->SetEnableDepthTest(true);
     }
 
 
     auto i = 8;
-    auto j = 0;
-    //auto posFondoTiempos = manCars->GetEntities().size()*45.0f/2;
     for(const auto& cars : manCars->GetEntities()) {
         cTotem = static_cast<CTotem*>(cars->GetComponent(CompType::TotemComp).get());
         cCar = static_cast<CCar*>(cars->GetComponent(CompType::CarComp).get());
@@ -1085,17 +1115,26 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
             }
 
             //TABLA DE TIEMPOS
-            if(inputShowTable && cTotem) {
-                cadena = std::to_string(j+1) + ".";
+            /*if(inputShowTable && cTotem) {
+                cadena = std::to_string(positionR) + ".";
                 device->RenderText2D(cadena, w - 190.0f, h - 180.0f - 45.0f*j, 0.1f*j+0.1f, 0.5, glm::vec3(255.0f,255.0f,255.0f));
+
                 auto posRanking = cTotem->positionRanking - 1;
                 device->DrawImage2D(w - 160.0f, 155.0f + posRanking*45.0f, 0.3, 0.1f*j+0.1f, sprite, true);
-                auto time = std::to_string( cTotem->SEGUNDOS - cTotem->accumulatedTime/1000 );
+
+                int64_t actualTime = cTotem->SEGUNDOS - cTotem->accumulatedTime/1000;
+                auto time = std::to_string( actualTime );
                 glm::vec3 color = glm::vec3(255.0f,255.0f,255.0f);
                 if (cTotem->active) { color = glm::vec3(255.0f,0.0f,0.0f); };
                 device->RenderText2D(time, w - 110.0f, h - 180.0f - 45.0f*posRanking, 0.1f*j+0.1f, 0.5, color);
+
+                if (antTime != -1 && antTime != actualTime) {
+                    ++positionR;
+                }
+                antTime = actualTime;
+
             }
-            ++j;
+            ++j;*/
 
             // MINIMAPA
             if (manGR && cTrans) {
@@ -1331,9 +1370,19 @@ void RenderFacadeClover::FacadeDrawEndRace() {
     auto posX = w/2 - 541*scale;
     auto posY = h/2 - 50.0f*scale - rank.size()*50.0f*scale;
     auto posYText = h/2 + rank.size()*50.0f*scale - 15.0f*scale;
+    auto antTime = -1;
+    auto positionPoints = 0;
     for(auto it = rank.begin(); it != rank.end(); ++it) {
+
+        auto itS = secondsRank.find(it->first);
+        if ( itS != secondsRank.end()) {
+            auto actualTime = itS->second;
+            if (antTime != -1 && antTime != actualTime) { positionPoints++; }
+            antTime = actualTime;
+        }
+
         file = "media/menu/position";
-        file += std::to_string(i) + ".png";
+        file += std::to_string(positionPoints+1) + ".png";
         device->DrawImage2D(posX, posY + (i*100.0f)*scale, 1.0*scale, 0.8f, file, true);
         switch (it->second) {
             case (uint16_t)mainCharacter::PENGUIN:  file = "media/hudPenguin.png";        break;
@@ -1397,11 +1446,21 @@ void RenderFacadeClover::FacadeDrawEndTournament() {
         file = std::to_string(GameValues::GetInstance()->GetActualBattle()) + "/" + std::to_string(GameValues::GetInstance()->GetNumBattles());
         device->RenderText2D(file, posX + 950.0f*scale, posYText - (-100)*scale, 0.6f, 1.25*scale, glm::vec3(0.0f,0.0f,0.0f));
 
+        auto antTime = -1;
+        auto positionPoints = 0;
         for(auto it = rank.begin(); it != rank.end(); ++it) {
+
             if(i>inputET) { break; }
 
+            auto itS = secondsRank.find(it->first);
+            if ( itS != secondsRank.end()) {
+                auto actualTime = itS->second;
+                if (antTime != -1 && antTime != actualTime) { positionPoints++; }
+                antTime = actualTime;
+            }
+
             file = "media/menu/position";
-            file += std::to_string(i) + ".png";
+            file += std::to_string(positionPoints+1) + ".png";
             device->DrawImage2D(posX, posY + (i*100.0f)*scale, 1.0*scale, 0.8f, file, true);
             switch (it->second) {
                 case (uint16_t)mainCharacter::PENGUIN:  file = "media/hudPenguin.png";        break;
@@ -1415,7 +1474,8 @@ void RenderFacadeClover::FacadeDrawEndTournament() {
             device->DrawImage2D(posX + 275.0f*scale, posY + (i*100.0f)*scale + 5.0f*scale, 0.75f*scale, 0.5f, file, true);
 
             // puntos
-            int points = posPoints[it->first-1];
+
+            int points = posPoints[/*it->first-1*/positionPoints];
             if (points < 10) { file = "+0" + std::to_string(points); }
             else { file = "+" + std::to_string(points); }
             device->RenderText2D(file, posX + 750.0f*scale, posYText - (i*100.0f)*scale, 0.5f, 1.25*scale, glm::vec3(255.0f,255.0f,255.0f));
@@ -1438,15 +1498,27 @@ void RenderFacadeClover::FacadeDrawEndTournament() {
         file = std::to_string(GameValues::GetInstance()->GetActualBattle()) + "/" + std::to_string(GameValues::GetInstance()->GetNumBattles());
         device->RenderText2D(file, posX + 950.0f*scale, posYText - (-100)*scale, 0.6f, 1.25*scale, glm::vec3(0.0f,0.0f,0.0f));
 
+
         // Puntos totales
         auto rankPoints = GameValues::GetInstance()->GetRankingPoints();
         std::string file = "media/menu/finish_menu_bg.png";
         device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.9f, file, true);
+
+        auto antPoints = -1;
+        auto positionPoints = 0;
+        //cout << "-----------------------" << endl;
         for(auto it = rankPoints.begin(); it != rankPoints.end(); ++it) {
             if(i>inputET) { break; }
 
+            //cout << "ANTPOINT: " << antPoints << endl;
+            auto actualPoints = it->first;
+            //cout << "ACTUAL POINTS: " << actualPoints << endl;
+            if (antPoints != -1 && antPoints != actualPoints) { positionPoints++; }
+            antPoints = actualPoints;
+            //cout << "POSICION: " << positionPoints+1 << endl;
+            
             file = "media/menu/position";
-            file += std::to_string(i) + ".png";
+            file += std::to_string(positionPoints+1) + ".png";
             device->DrawImage2D(posX, posY + (i*100.0f)*scale, 1.0*scale, 0.8f, file, true);
             switch (it->second) {
                 case (uint16_t)mainCharacter::PENGUIN:  file = "media/hudPenguin.png";        break;
