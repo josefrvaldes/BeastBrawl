@@ -1,5 +1,5 @@
 # Blender MTL File: 'mayan_mapv2.blend'
-# Material Count: 27
+# Material Count: 54
 
 newmtl brick.001
 Ns 0.000000
@@ -35,6 +35,17 @@ illum 1
 map_Kd clv_brick_Graph_basecolor.tga
 
 newmtl brick1
+Ns 323.999994
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd clv_brick_low_Material_BaseColor.tga
+
+newmtl brick1.001
 Ns 323.999994
 Ka 1.000000 1.000000 1.000000
 Kd 0.800000 0.800000 0.800000
@@ -90,6 +101,105 @@ illum 3
 map_Kd clv_brick3_low_Cube1_2.001_BaseColor.tga
 
 newmtl brick3.003
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.500000 0.500000 0.500000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 3
+map_Kd clv_brick3_low_Cube1_2.001_BaseColor.tga
+
+newmtl brick3.004
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.500000 0.500000 0.500000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 3
+map_Kd clv_brick3_low_Cube1_2.001_BaseColor.tga
+
+newmtl brick3.005
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.500000 0.500000 0.500000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 3
+map_Kd clv_brick3_low_Cube1_2.001_BaseColor.tga
+
+newmtl brick3.006
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.500000 0.500000 0.500000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 3
+map_Kd clv_brick3_low_Cube1_2.001_BaseColor.tga
+
+newmtl brick3.007
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.500000 0.500000 0.500000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 3
+map_Kd clv_brick3_low_Cube1_2.001_BaseColor.tga
+
+newmtl brick3.008
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.500000 0.500000 0.500000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 3
+map_Kd clv_brick3_low_Cube1_2.001_BaseColor.tga
+
+newmtl brick3.009
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.500000 0.500000 0.500000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 3
+map_Kd clv_brick3_low_Cube1_2.001_BaseColor.tga
+
+newmtl brick3.011
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.500000 0.500000 0.500000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 3
+map_Kd clv_brick3_low_Cube1_2.001_BaseColor.tga
+
+newmtl brick3.012
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.500000 0.500000 0.500000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 3
+map_Kd clv_brick3_low_Cube1_2.001_BaseColor.tga
+
+newmtl brick3.013
 Ns 0.000000
 Ka 1.000000 1.000000 1.000000
 Kd 0.500000 0.500000 0.500000
@@ -189,7 +299,195 @@ illum 1
 map_Kd clv_plant1_basecolor.png
 map_d clv_plant1_basecolor.png
 
+newmtl plant1.001
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 1
+map_Kd clv_plant1_basecolor.png
+map_d clv_plant1_basecolor.png
+
+newmtl plant1.002
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 1
+map_Kd clv_plant1_basecolor.png
+map_d clv_plant1_basecolor.png
+
+newmtl plant1.003
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 1
+map_Kd clv_plant1_basecolor.png
+map_d clv_plant1_basecolor.png
+
+newmtl plant1.004
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 1
+map_Kd clv_plant1_basecolor.png
+map_d clv_plant1_basecolor.png
+
+newmtl plant1.005
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 1
+map_Kd clv_plant1_basecolor.png
+map_d clv_plant1_basecolor.png
+
+newmtl plant1.006
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 1
+map_Kd clv_plant1_basecolor.png
+map_d clv_plant1_basecolor.png
+
+newmtl plant1.007
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 1
+map_Kd clv_plant1_basecolor.png
+map_d clv_plant1_basecolor.png
+
+newmtl plant1.008
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 1
+map_Kd clv_plant1_basecolor.png
+map_d clv_plant1_basecolor.png
+
+newmtl plant1.009
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 1
+map_Kd clv_plant1_basecolor.png
+map_d clv_plant1_basecolor.png
+
+newmtl plant1.010
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 1
+map_Kd clv_plant1_basecolor.png
+map_d clv_plant1_basecolor.png
+
+newmtl plant1.011
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 1
+map_Kd clv_plant1_basecolor.png
+map_d clv_plant1_basecolor.png
+
+newmtl plant1.012
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 1
+map_Kd clv_plant1_basecolor.png
+map_d clv_plant1_basecolor.png
+
 newmtl pot
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd clv_pot_low_DefaultMaterial_BaseColor.tga
+
+newmtl pot.002
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd clv_pot_low_DefaultMaterial_BaseColor.tga
+
+newmtl pot.003
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd clv_pot_low_DefaultMaterial_BaseColor.tga
+
+newmtl pot.004
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd clv_pot_low_DefaultMaterial_BaseColor.tga
+
+newmtl pot.005
 Ns 225.000000
 Ka 1.000000 1.000000 1.000000
 Kd 0.800000 0.800000 0.800000
@@ -289,6 +587,17 @@ map_Kd clv_vines_albedo.png
 map_d clv_vines_albedo.png
 
 newmtl wood1
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.500000 0.500000 0.500000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 1
+map_Kd clv_wood1_low_Cube1_BaseColor.tga
+
+newmtl wood1.001
 Ns 0.000000
 Ka 1.000000 1.000000 1.000000
 Kd 0.500000 0.500000 0.500000
