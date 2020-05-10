@@ -14,6 +14,7 @@ struct Player {
     void setId(uint16_t _id);
 
     uint16_t id{nextId++};
+    uint8_t character{0};
     udp::endpoint endpoint;
     tcp::endpoint endpointTCP;
     //TCPConnection::pointer connectionPointer;
@@ -28,10 +29,12 @@ struct Player {
     int64_t lastCrashPUCarReceived{0};
     int64_t lastCrashPUWallReceived{0};
     int64_t lastLaunchAnimationEndReceived{0};
+    int64_t lastWaitingForCountdownReceived{0};
 
     bool hasTotem {false};
     bool disconnected {false};
     bool readyToDelete {false};
+    bool waitingForCountdown {false};
 
 
     static uint16_t nextId;

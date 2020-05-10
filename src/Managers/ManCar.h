@@ -85,7 +85,7 @@ class ManCar : public Manager {
     void NotSkid(DataMap* d);
     void CollisionCarPowerUp(DataMap* d);
     void CatchTotemCar(DataMap* d);
-    void ObtainTotem(Entity* carWinTotem);
+    void ObtainTotem(Entity* carWinTotem, bool stolen);
     void ChangeTotemCar(DataMap* d);
     void NewInputsReceived(DataMap* d);
     void NewSyncReceived(DataMap* d);
@@ -97,7 +97,7 @@ class ManCar : public Manager {
     void DeletePlayer(DataMap* d);
     //void ChangePosDestination(DataMap* d);
     //void MoveToPowerUp(DataMap* d);
-    void ThrowTotem(Entity* carLoseTotem);
+    void ThrowTotem(Entity* carLoseTotem, bool stolen);
     bool useRoboJorobo(Entity* newCarWithTotem);
 
     void ThrowPowerUp(Car* car);

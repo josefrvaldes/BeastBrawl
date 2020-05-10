@@ -24,7 +24,8 @@ class CBoundingPlane : public Component {
     IntersectData IntersectPlane(const CBoundingPlane &other) const;
 
     IntersectData IntersectRay(const glm::vec3 &posRayOrigin, const glm::vec3 &rayNormalNormalized) const;
-
+    IntersectData IntersectRay2(const glm::vec3 &posRayOrigin, const glm::vec3 &rayNormalNormalized) const;
+    
     void intersectLineSphere(const vec3 &vecLine,const vec3 &point, const float &radius, vec3 *retrunM, vec3 *returnN) const;
 
     // calculo de la proyeccion de un punto sobre el plano

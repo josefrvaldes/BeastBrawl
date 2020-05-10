@@ -12,7 +12,9 @@
 #include "../Components/CBoundingSphere.h"
 #include "../Components/CShader.h"
 #include "../Components/CTotem.h"
+#include "../Entities/Camera.h"
 #include "../Constants.h"
+#include "../GameValues.h"
 
 using namespace std;
 using namespace chrono;
@@ -226,16 +228,16 @@ void StateInGame::CreateMainCar() {
 
 ///////////////////////
 
-void StateInGame::UpdateAnimationStart() {
+bool StateInGame::UpdateAnimationStart() {
     bool animationFinished = sysAnimStart->Animate();
     renderEngine->UpdateCamera(manCamera.get()->getCamera(), manCars.get());
     auto cCam = static_cast<CCamera *>(manCamera.get()->getCamera()->GetComponent(CompType::CameraComp).get());
     renderEngine->SetCamTarget(cCam->target);
-
+    return animationFinished;
     // si hemos acabado la animación de inicio...
-    if (animationFinished) {
-        GoToCountdownAnimation();
-    }
+    // if (animationFinished) {
+    //     GoToCountdownAnimation();
+    // }
 }
 
 void StateInGame::UpdateAnimationCountdown() {
@@ -292,9 +294,6 @@ void StateInGame::UpdateGame() {
         GoToEndAnimation();
     }
 
-    // ACTUALIZACION DE LAS FISICAS DE LOS COCHES
-    manCamera->Update();
-
     sysBoxPowerUp->update(manBoxPowerUps.get());
 
     //auto posCar = static_cast<CTransformable *>(manCars->GetCar()->GetComponent(CompType::TransformableComp).get())->position;
@@ -303,6 +302,9 @@ void StateInGame::UpdateGame() {
     clPhysics->Update(0.1666f);
     IntersectsCLPhysics();
 
+
+    // ACTUALIZACION DE LAS FISICAS DE LOS COCHES
+    manCamera->Update();
 
 
     // Actualizaciones en Irrlich
@@ -362,6 +364,7 @@ void StateInGame::IntersectsCLPhysics(){
     clPhysics->IntersectCarsTotem(*manCars.get(), *manTotems.get());
     clPhysics->IntersectPowerUpWalls(*manPowerUps.get(), *manBoundingWall.get(), *manBoundingOBB.get());
     clPhysics->IntersectTotemWalls(*manTotems.get(), *manBoundingWall.get(), *manBoundingOBB.get());
+    clPhysics->IntersectCameraWalls(manCamera->getCamera(), manCamera->getPlayerFollow(), *manBoundingWall.get(), *manBoundingOBB.get());
 }
 
 void StateInGame::Update() {
@@ -446,7 +449,13 @@ void StateInGame::GoToCountdownAnimation() {
 }
 
 void StateInGame::GoToStateEndrace() {
-    cout << "Vamos a lanzar un evento de STATE_ENDRACE desde StateInGame" << endl;
-    EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_ENDRACE});
+    if(!inputEngine->InTournament()){
+        cout << "Vamos a lanzar un evento de STATE_ENDRACE desde StateInGame" << endl;
+        EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_ENDRACE});
+    }else{
+        cout << "Vamos a lanzar un evento de STATE_ENDTOURNAMENT desde StateInGame" << endl;
+        EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_ENDTOURNAMENT});
+    }
+
     EventManager::GetInstance().Update();
 }

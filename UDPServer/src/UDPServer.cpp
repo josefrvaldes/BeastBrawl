@@ -1,7 +1,9 @@
 #include "UDPServer.h"
+
 #include <algorithm>
 #include <boost/asio/placeholders.hpp>
 #include <boost/bind.hpp>
+
 #include "../../src/Constants.h"
 #include "../../src/Systems/Serialization.h"
 #include "../../src/Systems/Utils.h"
@@ -163,6 +165,12 @@ void UDPServer::HandleReceive(std::shared_ptr<unsigned char[]> recevBuff, std::s
                             HandleReceivedLaunchAnimationEnd(idPlayer, idWinner, buffRecieved, bytesTransferred, *remoteClient.get());
                         }
                         break;
+                    case Constants::PetitionTypes::WAITING_FOR_COUNTDOWN:
+                        if (p.lastWaitingForCountdownReceived < time) {
+                            p.lastWaitingForCountdownReceived = time;
+                            HandleReceivedWaitingForCountdown(p, buffRecieved, bytesTransferred, *remoteClient.get());
+                        }
+                        break;
                     default:
                         cout << "Petición incorrecta" << endl;
                         break;
@@ -255,8 +263,46 @@ void UDPServer::HandleReceivedLaunchAnimationEnd(const uint16_t idPlayer, const 
     for (uint8_t i = 0; i < NUM_REINTENTOS; ++i)
         for (Player& currentPlayer : players)
             SendBytes(bufferToReSend, currentBufferSize, currentPlayer);
- 
+
     animationEndRaceLaunched = true;
+}
+
+void UDPServer::HandleReceivedWaitingForCountdown(Player& p, unsigned char bufferToReSend[], const size_t currentBufferSize, const udp::endpoint& originalClient) {
+    if (!animationCountdownLaunched) {
+        cout << Utils::getISOCurrentTimestampMillis() << "El coche " << p.id << " dice que está waiting for countdown\n";
+        // marcamos que este coche ya está listo para la cuenta atrás
+        p.waitingForCountdown = true;
+
+        // buscamos si todos los coches están listos, si alguno todavía no está listo, abortamos misión
+        bool launchCountdown = true;
+        for (Player& currentPlayer : players) {
+            if (!currentPlayer.waitingForCountdown) {
+                launchCountdown = false;
+                break;
+            }
+        }
+
+        // si todos estaban ya listos y esperando para comenzar la cuenta atrás, efectivamente, les enviamos que empiecen la cuenta atrás
+        if (launchCountdown) {
+            animationCountdownLaunched = true;
+            for (uint8_t i = 0; i < NUM_REINTENTOS; ++i)
+                for (Player& currentPlayer : players) {
+                    SendLaunchAnimationCountdown(currentPlayer);
+                }
+        }
+    }
+}
+
+void UDPServer::SendLaunchAnimationCountdown(const Player& player) {
+    unsigned char requestBuff[Constants::ONLINE_BUFFER_SIZE];
+    size_t currentBuffSize = 0;
+    uint8_t callType = Constants::PetitionTypes::LAUNCH_ANIMATION_COUNTDOWN;
+    int64_t time = Utils::getMillisSinceEpoch();
+
+    Serialization::Serialize(requestBuff, &callType, currentBuffSize);
+    Serialization::Serialize(requestBuff, &time, currentBuffSize);
+    Serialization::Serialize(requestBuff, &player.id, currentBuffSize);
+    SendBytes(requestBuff, currentBuffSize, player);
 }
 
 void UDPServer::HandleReceivedCatchTotem(const uint16_t id, unsigned char buffer[], const size_t currentBufferSize, const udp::endpoint& remoteClient) {
@@ -432,68 +478,88 @@ Player* UDPServer::GetPlayerById(uint16_t idPlayer) {
 
 // se comprueba que el ultimo input mandado no supere el tiempo de desconexion
 void UDPServer::DetectUsersDisconnected() {
-    // Recorremos el array de jugadores
-    for (Player& currentPlayer : players) {
-        // si su última petición llegó hace más tiempo del tiempo de desconexión...
-        if (Utils::getMillisSinceEpoch() - currentPlayer.lastInputTimeReceived > TIEMPO_DESCONEXION) {
-            cout << "Se ha desconectado el jugador: " << currentPlayer.id << "\n";
+    if (animationCountdownLaunched) {
+        // Recorremos el array de jugadores
+        for (Player& currentPlayer : players) {
+            // si su última petición llegó hace más tiempo del tiempo de desconexión...
+            if (Utils::getMillisSinceEpoch() - currentPlayer.lastInputTimeReceived > TIEMPO_DESCONEXION) {
+                cout << "Se ha desconectado el jugador: " << currentPlayer.id << "\n";
 
-            // hacemos esto para no volver a repetir esto cada iteración. Por tanto
-            // si un jugador está desconectado, esta llamada solo se repetirá cada 10 segundos
-            // y no todo el rato.
-            currentPlayer.lastInputTimeReceived = Utils::getMillisSinceEpoch();
-            if (currentPlayer.disconnected == false) {
-                cout << "\tlo marcamos como desconectado" << endl;
-                currentPlayer.disconnected = true;
-            } else {
-                cout << "\tlo marcamos como readyToDelete" << endl;
-                currentPlayer.readyToDelete = true;
+                // hacemos esto para no volver a repetir esto cada iteración. Por tanto
+                // si un jugador está desconectado, esta llamada solo se repetirá cada 10 segundos
+                // y no todo el rato.
+                currentPlayer.lastInputTimeReceived = Utils::getMillisSinceEpoch();
+                if (currentPlayer.disconnected == false) {
+                    cout << "\tlo marcamos como desconectado" << endl;
+                    currentPlayer.disconnected = true;
+                } else {
+                    cout << "\tlo marcamos como readyToDelete" << endl;
+                    currentPlayer.readyToDelete = true;
+                }
+
+                // creamos un buffer para avisar al resto de jugadores de que éste jugador se ha desconectado
+                unsigned char sendBuff[Constants::ONLINE_BUFFER_SIZE];
+                size_t currentBuffSize = 0;
+                uint8_t callType = Constants::PetitionTypes::SEND_DISCONNECTION;
+
+                Serialization::Serialize(sendBuff, &callType, currentBuffSize);
+                Serialization::Serialize(sendBuff, &currentPlayer.id, currentBuffSize);
+
+                // recorremos el resto de jugadores, y les avisamos
+                for (Player& currentPlayerToReSend : players) {
+                    if (currentPlayerToReSend.id != currentPlayer.id && currentPlayerToReSend.disconnected == false)
+                        SendBytes(sendBuff, currentBuffSize, currentPlayerToReSend);
+                }
+
+                // To-Do: eliminarlo del array de players
+                // To-Do: respuesta en el cliente
             }
-
-            // creamos un buffer para avisar al resto de jugadores de que éste jugador se ha desconectado
-            unsigned char sendBuff[Constants::ONLINE_BUFFER_SIZE];
-            size_t currentBuffSize = 0;
-            uint8_t callType = Constants::PetitionTypes::SEND_DISCONNECTION;
-
-            Serialization::Serialize(sendBuff, &callType, currentBuffSize);
-            Serialization::Serialize(sendBuff, &currentPlayer.id, currentBuffSize);
-
-            // recorremos el resto de jugadores, y les avisamos
-            for (Player& currentPlayerToReSend : players) {
-                if (currentPlayerToReSend.id != currentPlayer.id && currentPlayerToReSend.disconnected == false)
-                    SendBytes(sendBuff, currentBuffSize, currentPlayerToReSend);
-            }
-
-            // To-Do: eliminarlo del array de players
-            // To-Do: respuesta en el cliente
-        }
-    }
-
-    size_t beforeDelete = players.size();
-
-    // borramos los players que ya estén ready to delete
-    players.erase(
-        std::remove_if(
-            players.begin(),
-            players.end(),
-            [](Player& p) { return p.readyToDelete; }),
-        players.end());
-
-    size_t afterDelete = players.size();
-    // cout << "Ahora tenemos " << afterDelete << " jugadores" << endl;
-    // si antes había 1 y ahora hay 0, salimos
-    // si antes había 2 y ahora hay 1, salimos
-    if ((beforeDelete == 1 && afterDelete == 0) || (beforeDelete > 1 && afterDelete <= 1)) {
-        // avisamos a quien quede que la partida se ha acabado...
-        for (const auto& player : players) {
-            SendEndgame(player);
         }
 
-        // y salimos
-        cout << "Se han caído todos los jugadores y solo queda uno o ninguno. Reiniciamos el server" << endl;
-        Exit();
+        size_t beforeDelete = players.size();
+
+        // borramos los players que ya estén ready to delete
+        players.erase(
+            std::remove_if(
+                players.begin(),
+                players.end(),
+                [](Player& p) { return p.readyToDelete; }),
+            players.end());
+
+        size_t afterDelete = players.size();
+        // cout << "Ahora tenemos " << afterDelete << " jugadores" << endl;
+        // si antes había 1 y ahora hay 0, salimos
+        // si antes había 2 y ahora hay 1, salimos
+        if ((beforeDelete == 1 && afterDelete == 0) || (beforeDelete > 1 && afterDelete <= 1)) {
+            // avisamos a quien quede que la partida se ha acabado...
+            for (const auto& player : players) {
+                // pondremos como idWinner el único jugador que queda, que será el único que haya en este for
+                // el idPlayer se supone que representa a la persona que enviaba esta petición, pero como ha sido por una desconexión,
+                // simplemente enviaremos el mismo idPlayer que el winner
+                uint16_t idWinner = player.id;
+                SendLaunchAnimationEnd(player, idWinner, idWinner);
+            }
+
+            // y salimos
+            cout << "Se han caído todos los jugadores y solo queda uno o ninguno. Reiniciamos el server" << endl;
+            Exit();
+        }
     }
     CheckDisconnectionsAfterSeconds();
+}
+
+void UDPServer::SendLaunchAnimationEnd(const Player& p, const uint16_t idPlayer, const uint16_t idWinner) {
+    unsigned char requestBuff[Constants::ONLINE_BUFFER_SIZE];
+    size_t currentBuffSize = 0;
+    uint8_t callType = Constants::PetitionTypes::LAUNCH_ANIMATION_END;
+    int64_t time = Utils::getMillisSinceEpoch();
+
+    Serialization::Serialize(requestBuff, &callType, currentBuffSize);
+    Serialization::Serialize(requestBuff, &time, currentBuffSize);
+    Serialization::Serialize(requestBuff, &idPlayer, currentBuffSize);
+    Serialization::Serialize(requestBuff, &idWinner, currentBuffSize);
+
+    SendBytes(requestBuff, currentBuffSize, p);
 }
 
 void UDPServer::CheckDisconnectionsAfterSeconds() {

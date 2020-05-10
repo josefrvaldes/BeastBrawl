@@ -5,7 +5,9 @@
 #include "State/StateInit.h"
 #include "State/StateSelectCharacter.h"
 #include "State/StateGameOptions.h"
+#include "State/StateTournamentOptions.h"
 #include "State/StateEndRace.h"
+#include "State/StateEndTournament.h"
 #include "State/StateInGameMulti.h"
 #include "State/StateInGameSingle.h"
 #include "State/StateLobbyMulti.h"
@@ -62,6 +64,14 @@ void Game::SetState(State::States stateType) {
             EventManager::GetInstance().ClearEvents();
             EventManager::GetInstance().ClearListeners();
             currentState = make_shared<StateGameOptions>();
+            gameState.reset();
+            SuscribeEvents();
+            gameStarted = false;
+            break;
+        case State::TOURNAMENT_OPTIONS:
+            EventManager::GetInstance().ClearEvents();
+            EventManager::GetInstance().ClearListeners();
+            currentState = make_shared<StateTournamentOptions>();
             gameState.reset();
             SuscribeEvents();
             gameStarted = false;
@@ -129,6 +139,14 @@ void Game::SetState(State::States stateType) {
             SuscribeEvents();
             gameStarted = false;
             break;
+        case State::ENDTOURNAMENT:
+            EventManager::GetInstance().ClearEvents();
+            EventManager::GetInstance().ClearListeners();
+            currentState = make_shared<StateEndTournament>();
+            gameState.reset();
+            SuscribeEvents();
+            gameStarted = false;
+            break;
         case State::LOBBY_MULTI:
             currentState = make_shared<StateLobbyMulti>();
             break;
@@ -190,6 +208,11 @@ void Game::SuscribeEvents() {
             EventType::STATE_GAME_OPTIONS,
             bind(&Game::SetStateGameOptions, this, placeholders::_1),
             "StateGameOptions"));
+        
+    EventManager::GetInstance().SubscribeMulti(Listener(
+            EventType::STATE_TOURNAMENT_OPTIONS,
+            bind(&Game::SetStateTournamentOptions, this, placeholders::_1),
+            "StateTournamentOptions"));
 
     EventManager::GetInstance().SubscribeMulti(Listener(
         EventType::STATE_PAUSE,
@@ -210,6 +233,11 @@ void Game::SuscribeEvents() {
         EventType::STATE_ENDRACE,
         bind(&Game::SetStateEndRace, this, placeholders::_1),
         "StateEndRace in Game.cpp"));
+
+    EventManager::GetInstance().SubscribeMulti(Listener(
+        EventType::STATE_ENDTOURNAMENT,
+        bind(&Game::SetStateEndTournament, this, placeholders::_1),
+        "StateEndTournament in Game.cpp"));
 
     EventManager::GetInstance().SubscribeMulti(Listener(
         EventType::STATE_LOBBYMULTI,
@@ -303,6 +331,10 @@ void Game::SetStateGameOptions(DataMap* d) {
     SetState(State::GAME_OPTIONS);
 }
 
+void Game::SetStateTournamentOptions(DataMap* d) {
+    SetState(State::TOURNAMENT_OPTIONS);
+}
+
 void Game::SetStatePause(DataMap* d) {
     SetState(State::PAUSE);
 }
@@ -320,9 +352,10 @@ void Game::SetStateInGameMulti(DataMap* d) {
     //SetState(State::INGAME_MULTI);
     uint16_t IdOnline = any_cast<uint16_t>((*d)[DataType::ID_ONLINE]);
     vector<uint16_t> vectorIdOnline = any_cast<vector<uint16_t>>((*d)[DataType::VECTOR_ID_ONLINE]);
+    vector<uint8_t> charactersOnline = any_cast<vector<uint8_t>>((*d)[DataType::CHARACTERS_ONLINE]);
     if (!gameStarted) {
         shared_ptr<State> newState;
-        newState = make_shared<StateInGameMulti>(IdOnline, vectorIdOnline);
+        newState = make_shared<StateInGameMulti>(IdOnline, vectorIdOnline, charactersOnline);
         currentState = newState;
         gameState = currentState;
         gameStarted = true;
@@ -335,6 +368,10 @@ void Game::SetStateInGameMulti(DataMap* d) {
 
 void Game::SetStateEndRace(DataMap* d) {
     SetState(State::ENDRACE);
+}
+
+void Game::SetStateEndTournament(DataMap* d) {
+    SetState(State::ENDTOURNAMENT);
 }
 
 void Game::SetStateLobbyMulti(DataMap* d) {

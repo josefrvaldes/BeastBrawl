@@ -22,6 +22,7 @@ class ManTotem;
 class ManBoxPowerUp;
 class ManBoundingOBB;
 class ManBoundingWall;
+class Camera;
 class IntersectData;
 class CCar;
 class PowerUp;
@@ -51,6 +52,7 @@ class CLPhysics {
     void IntersectCarsBoxPowerUp(ManCar &, ManBoxPowerUp &);
     void IntersectPowerUpWalls(ManPowerUp &, ManBoundingWall &, ManBoundingOBB &);
     void IntersectTotemWalls(ManTotem &, ManBoundingWall &, ManBoundingOBB &);
+    void IntersectCameraWalls(Camera *cam, Car* car, ManBoundingWall &sd, ManBoundingOBB &sdww);
     void SetSystemOnline(SystemOnline *systemOnline_) {
         systemOnline = systemOnline_;
     };
@@ -87,7 +89,7 @@ class CLPhysics {
     bool CollisionsSpherePlane(CTransformable &trCar1, CBoundingChassis &chaCar, CCar &ccar1, bool mainCar, CBoundingPlane &plane);
     void CollisionsSphereOBB(CTransformable &trCar, CBoundingChassis &chaCar, CCar &ccarCar, bool mainCar, CBoundingOBB &obb);
     void PositionSphereIntoTransformable(CTransformable &tr, CBoundingSphere &sp) const;
-    //void PositionSPhereIntoTransformableCenter(CTransformable &tr, CBoundingSphere &sp) const;
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     void PositionSphBehindIntoTransf(CTransformable &tr, CBoundingSphere &sp) const;
     void PositionSphFrontIntoTransf(CTransformable &tr, CBoundingSphere &sp) const;
     void PositionCilindreIntoSpheres(CBoundingChassis &chassis) const;

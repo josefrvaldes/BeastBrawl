@@ -35,8 +35,11 @@ void StateInGameSingle::Input() {
     }
 }
 
-void StateInGameSingle::UpdateAnimationStart() {
-    StateInGame::UpdateAnimationStart();
+bool StateInGameSingle::UpdateAnimationStart() {
+    bool animationFinished = StateInGame::UpdateAnimationStart();
+    if(animationFinished)
+        GoToCountdownAnimation();
+    return animationFinished;
 }
 
 void StateInGameSingle::UpdateAnimationCountdown() {
@@ -206,6 +209,7 @@ void StateInGameSingle::InitBtLoDMove() {
     systemBtLoDMove->AddManager(*manBoundingOBB.get());
     
     systemBtLoDMove->AddCLPhysicsSB(clPhysics.get());
+    systemBtLoDMove->InitFuzzyLogic(*manCars.get());
 
     systemBtLoDMove->setMaxProcessTime(0.00053);
 }

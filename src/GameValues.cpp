@@ -11,7 +11,7 @@ GameValues* GameValues::GetInstance() {
     }
     return instance;
 }
-
+ 
 void GameValues::SetCharacter(int c) {
 
     mainCharacter = c;

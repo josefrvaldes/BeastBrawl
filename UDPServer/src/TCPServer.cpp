@@ -30,7 +30,7 @@ void TCPServer::Close() {
 }
 
 void TCPServer::StartReceiving() {
-    TCPConnection::pointer new_connection = TCPConnection::Create(context, players, connections);
+    TCPConnection::pointer new_connection = TCPConnection::Create(this, context, players, characters, connections);
     acceptor_.async_accept(
         new_connection->socket(),
         boost::bind(&TCPServer::HandleAccept,
@@ -44,19 +44,14 @@ void TCPServer::HandleAccept(TCPConnection::pointer new_connection, const boost:
         //std::cout << "Recibi un mensaje" << std::endl;
         if(Server::GAME_STARTED == false){
             new_connection->Start();
-
+            
             // Comprobaciones para ver si existe el player
             if (PlayerExists(new_connection) == false) {
                 connections.push_back(new_connection);
                 Player p;
                 p.endpointTCP = new_connection->socket().remote_endpoint();
+                // new_connection->currentPlayer = &p;
                 players.push_back(p);
-            }
-            if (connections.size() >= Constants::MIN_NUM_PLAYERS) {
-                // cout << "Ya hemos llegado al núm de conexiones para enviar partida, vamos a visar a los clientes" << endl;
-                Server::GAME_STARTED = true;
-                SendStartGame();
-                // justo despues vaciar el tcp para otra conexion
             }
         }else{
             // no dejar entrar a la sala
@@ -89,11 +84,13 @@ void TCPServer::SendStartGame() {
         uint8_t posVector = 0;
         uint16_t idPlayer = 0;
         vector<uint16_t> idsEnemies;
+        vector<uint8_t> charactersToSend;
         for (auto currentPlayerSub : connections) {
             if (currentPlayer == currentPlayerSub) {
                 idPlayer = players[posVector].id + 1;
             } else {
                 idsEnemies.push_back(players[posVector].id + 1);
+                charactersToSend.push_back(characters[posVector]);
             }
             posVector++;
         }
@@ -102,11 +99,14 @@ void TCPServer::SendStartGame() {
         size_t currentBuffSize = 0;
         uint8_t callType = Constants::PetitionTypes::TCP_START_GAME;
         uint8_t enemiesSize = idsEnemies.size();
+        uint8_t charactersSize = charactersToSend.size();
     
         Serialization::Serialize(buff.get(), &callType, currentBuffSize);
         Serialization::Serialize(buff.get(), &idPlayer, currentBuffSize);
         Serialization::Serialize(buff.get(), &enemiesSize, currentBuffSize);
         Serialization::SerializeVector(buff.get(), idsEnemies, currentBuffSize);
+        Serialization::Serialize(buff.get(), &charactersSize, currentBuffSize);
+        Serialization::SerializeVector(buff.get(), charactersToSend, currentBuffSize);
 
         currentPlayer->SendStartMessage(buff.get(), currentBuffSize);
     }
