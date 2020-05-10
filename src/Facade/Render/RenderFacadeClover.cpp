@@ -1184,8 +1184,6 @@ void RenderFacadeClover::FacadeDrawIntro() {
     
     introAnimation->Update();
     device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, introAnimation->GetCurrentPath(), true);
-    //device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, "media/introAnimation/Beast Brawl355.jpg", true);
-
 }
 
 void RenderFacadeClover::FacadeDrawMenu() {
@@ -1293,27 +1291,28 @@ void RenderFacadeClover::FacadeDrawTournamentOptions() {
 }
 
 void RenderFacadeClover::FacadeDrawControler() {
-    std::string file = "media/controller_scheme.png";
+    std::string file = "media/menu/controller_scheme.png";
     device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
 }
 
 void RenderFacadeClover::FacadeDrawPause() {
-    std::string file = "media/pause_screen.png";
-    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
+    std::string file = "media/menu/pause_menu.png";
+    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.9f, file, true);
 
-    std::string text;
-    glm::vec3 color[2] = {
-            glm::vec3(0.0f, 0.0f, 255.0f),
-            glm::vec3(0.0f, 0.0f, 255.0f)
+    file = "media/menu/pause_elements.png";
+    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.8f, file, true);
+
+    std::string files[2] = {
+        "media/menu/pause_continue_hover.png",
+        "media/menu/pause_exit_hover.png"
     };
-    color[inputPause] = glm::vec3(0.0f, 255.0f, 0.0f);
-    text = "Continuar";
-    device->RenderText2D(text, 500.0f, 400.0f, 0.05f, 1.0f, color[0]);
-    text = "Salir";
-    device->RenderText2D(text, 500.0f, 300.0f, 0.05f, 1.0f, color[1]);
+
+    Draw2DImage(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.7f, files[inputPause], true);
 }
 
 void RenderFacadeClover::FacadeDrawEndRace() {
+
+    device->SetEnableDepthTest(false);
 
     auto w = device->GetScreenWidth();
     auto h = device->GetScreenHeight();
@@ -1345,34 +1344,31 @@ void RenderFacadeClover::FacadeDrawEndRace() {
             case (uint16_t)mainCharacter::OCTOPUS:  file = "media/hudOctopus.png";        break;
             default: cout << "+++++++ No entiendo este personaje para el evento" << endl;   break;
         }
-        device->DrawImage2D(posX + 275.0f*scale, posY + (i*100.0f)*scale + 5.0f*scale, 0.75f*scale, 0.5f, file, true);
+        device->DrawImage2D(posX + 275.0f*scale, posY + (i*100.0f)*scale + 5.0f*scale, 0.75f*scale, 0.7f, file, true);
 
         auto it2 = secondsRank.find(it->first);
         if (it2 != secondsRank.end()){
             if (it2->second < 10) { file = "0" + std::to_string(it2->second); }
             else { file = std::to_string(it2->second); }
-            device->RenderText2D(file, posX + 950.0f*scale, posYText - (i*100.0f)*scale, 0.4f, 1.25*scale, glm::vec3(255.0f,255.0f,255.0f));
+            device->RenderText2D(file, posX + 950.0f*scale, posYText - (i*100.0f)*scale, 0.6f, 1.25*scale, glm::vec3(255.0f,255.0f,255.0f));
         }
         ++i;
     }
 
     if (menuER) {
-        file = "media/endraceMenu.png";
-        device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.3f, file, true);
+        file = "media/menu/finish_menu_options_bg.png";
+        Draw2DImage(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.5f, file, true);
+        file = "media/menu/finish_menu_options_elements.png";
+        Draw2DImage(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.4f, file, true);
 
-        glm::vec3 color[3] = {
-                glm::vec3(0.0f, 0.0f, 255.0f),
-                glm::vec3(0.0f, 0.0f, 255.0f),
-                glm::vec3(0.0f, 0.0f, 255.0f)
+        std::string files[3] = {
+            "media/menu/finish_option1_hover.png",
+            "media/menu/finish_option2_hover.png",
+            "media/menu/finish_option3_hover.png"
         };
-        color[inputER] = glm::vec3(0.0f, 255.0f, 0.0f);
-        file = "Volver a jugar";
-        device->RenderText2D(file, 500.0f, 400.0f, 0.2f, 1.0f, color[0]);
-        file = "Cambiar de personaje";
-        device->RenderText2D(file, 500.0f, 300.0f, 0.2f, 1.0f, color[1]);
-        file = "Salir al menu";
-        device->RenderText2D(file, 500.0f, 200.0f, 0.2f, 1.0f, color[2]);
+        Draw2DImage(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.3f, files[inputER], true);
     }
+    device->SetEnableDepthTest(true);
 }
 
 void RenderFacadeClover::FacadeDrawEndTournament() {
@@ -1528,7 +1524,7 @@ void RenderFacadeClover::FacadeDrawSettings() {
         "media/menu/shadows_"
     };
 
-    std::string op1[4] = { "low", "med", "high", "high" };      //caso 4 temporal
+    std::string op1[4] = { "low", "med2", "med1", "high" };
     std::string op2[2] = { "desactivated", "activated" };
 
     file = files[0] + op1[inputSettings[0]];

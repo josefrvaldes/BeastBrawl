@@ -1182,7 +1182,7 @@ void InputFacadeClover::CheckInputSettings(std::vector<int> &inputs, int *maxInp
         EventManager::GetInstance().AddEventMulti(Event{EventType::MENU_OPTION});
         if (inputs[option] == 0) { inputs[option] = 1; }
         else { inputs[option] = 0; }        
-
+        ChangeSettings(option, inputs[option]);
     } else if( !IsKeyOrGamepadPress(GLFW_KEY_SPACE, GLFW_GAMEPAD_BUTTON_A, false, 0, 0, false) ) {
         SetValueInput(BUTTON_A, false);
     }
@@ -1292,31 +1292,21 @@ void InputFacadeClover::ChangeSettings(int option, int value) {
             EventManager::GetInstance().AddEventMulti(Event{EventType::SET_MUSIC_VOLUME, d});
             //cout << "TOY CAMBIANDO EL VOLUMEN DE LA MUSICA (No ta hecho)\n";
             break;
-        /*case 2:
-            int sh, sw;
-            if (value == 0) { sh = 576; sw = 1024; }
-            else if (value == 1) { sh = 720; sw = 1280; }
-            else { sh = 1080; sw = 1920; }
-            (*d)[SCREEN_HEIGHT] = sh;
-            (*d)[SCREEN_WIDTH] = sw;
-            EventManager::GetInstance().AddEventMulti(Event{EventType::SET_RESOLUTION, d});
-            //cout << "TOY CAMBIANDO LA RESOLUNION DE LA PANTALLA\n";
-            break;*/
-        case /*3*/2:
+        case 2:
             (*d)[TRUEFALSE] = value;
             cout << value << endl;
             EventManager::GetInstance().AddEventMulti(Event{EventType::ENABLE_PARTICLES, d});
-            //cout << "TOY PONIENDO O QUITANDO PARTICULAS\n";
+            //cout << "TOY PONIENDO O QUITANDO PARTICULAS: " << value << "\n";
             break;
-        case /*4*/3:
+        case 3:
             (*d)[TRUEFALSE] = value;
             EventManager::GetInstance().AddEventMulti(Event{EventType::ENABLE_VEGETATION, d});
-            //cout << "TOY PONIENDO O QUITANDO VEGETACION\n";
+            //cout << "TOY PONIENDO O QUITANDO VEGETACION: " << value << "\n";
             break;
-        case /*5*/4:
+        case 4:
             (*d)[TRUEFALSE] = value;
             EventManager::GetInstance().AddEventMulti(Event{EventType::ENABLE_SHADOWS, d});
-            //cout << "TOY PONIENDO O QUITANDO SOMBRAS\n";
+            //cout << "TOY PONIENDO O QUITANDO SOMBRAS: " << value << "\n";
             break;
         default:
             cout << "Esta opcion de ajustes no me gusta" << endl;
