@@ -105,7 +105,7 @@ bool ManCar::UpdateCarPlayer(ManTotem &manTotem_) {
     CCar * ccar = static_cast<CCar*>(carPlayer->GetComponent(CompType::CarComp).get());
     if(ccar->speed > 0) {
         CTransformable * cTransfor = static_cast<CTransformable*>(carPlayer->GetComponent(CompType::TransformableComp).get());
-        cout << Utils::getISOCurrentTimestampMillis() << " El mainCar se ha movido, sus datos son: speed["<<ccar->speed<<"]  transfor["<<*cTransfor<<"]" << endl;
+        cout << "JUG1" << Utils::getISOCurrentTimestampMillis() << " El mainCar se ha movido, sus datos son: speed["<<ccar->speed<<"]  transfor["<<*cTransfor<<"]" << endl;
     }
     return gameFinished;
 }

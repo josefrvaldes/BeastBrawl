@@ -49,12 +49,12 @@ class CBufferOnline : public Component {
 
     friend ostream &operator<<(ostream &out, CBufferOnline &c) {
         // const std::list<BuffElement>::iterator it;
-        out << "Mostramos el estado del CBufferOnline" << endl;
+        out << "JUG2Mostramos el estado del CBufferOnline" << endl;
         for (std::list<BuffElement>::iterator it = c.elems.begin(); it != c.elems.end(); ++it) {
             if (it->receivedForReal) {
-                out << "\treceived_for_real timeSent[" << Utils::getISOCurrentTimestampMillis(it->timeSent) << "] time[" << Utils::getISOCurrentTimestampMillis(it->time) << "] y speed[" << it->speed << "]" << endl;
+                out << "JUG2\treceived_for_real timeSent[" << Utils::getISOCurrentTimestampMillis(it->timeSent) << "] time[" << Utils::getISOCurrentTimestampMillis(it->time) << "] y speed[" << it->speed << "]" << endl;
             } else {
-                out << "\t     not_for_real     time[" << Utils::getISOCurrentTimestampMillis(it->time) << "] pos[" << it->pos.x << "," << it->pos.y << "," << it->pos.z << "] rot[" << it->rot.x << "," << it->rot.y << "," << it->rot.z << "] y speed[" << it->speed << "]" << endl;
+                out << "JUG2\t     not_for_real     time[" << Utils::getISOCurrentTimestampMillis(it->time) << "] pos[" << it->pos.x << "," << it->pos.y << "," << it->pos.z << "] rot[" << it->rot.x << "," << it->rot.y << "," << it->rot.z << "] y speed[" << it->speed << "]" << endl;
             }
         }
 
