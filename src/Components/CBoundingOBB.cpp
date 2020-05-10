@@ -100,13 +100,13 @@ IntersectData CBoundingOBB::IntersectRay(const glm::vec3 &posRayOrigin, const gl
 }
 IntersectData CBoundingOBB::IntersectRay2(const glm::vec3 &posRayOrigin, const glm::vec3 &rayNormalNormalized) const{
     //return IntersectData(false,vec3(0.0,0.0,0.0));
-    auto interDataReturn = IntersectData(false, glm::vec3(0.0,0.0,0.0), 1000);
+    auto interDataReturn = IntersectData(false, glm::vec3(0.0,0.0,0.0), 10000);
     for(long unsigned int i=0; i<planes.size(); i++){
         IntersectData intersData = planes[i].get()->IntersectRay2(posRayOrigin, rayNormalNormalized);
         if (intersData.intersects) {
             interDataReturn.intersects = true;
-            interDataReturn.direction = intersData.direction;
             if(intersData.distance < interDataReturn.distance){
+                interDataReturn.direction = intersData.direction;
                 interDataReturn.distance = intersData.distance;
             }
         }
