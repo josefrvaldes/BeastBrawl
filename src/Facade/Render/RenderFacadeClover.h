@@ -201,8 +201,8 @@ class RenderFacadeClover : public RenderFacade {
         int maxInputTO[3] {3, 2, 2};
         //Ajustes
         int optionSettings { 0 };
-        std::vector<int> inputSettings {1,3,1,1,1,0};     //Sonido, musica, resolucion, particulas, vegetacion, sombras
-        int maxInputSettings[6] {3,3,2,1,1,1};
+        std::vector<int> inputSettings {1,3,1,1,0};     //Sonido, musica, particulas, vegetacion, sombras
+        int maxInputSettings[5] {3,3,1,1,1};
 
       CLEngine* device {nullptr};
       CLNode* smgr {nullptr};

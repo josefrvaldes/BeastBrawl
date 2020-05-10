@@ -1174,9 +1174,22 @@ void InputFacadeClover::CheckInputSettings(std::vector<int> &inputs, int *maxInp
         SetValueInput(BUTTON_B, false);
     }
 
+    //ESPACIO
+    if( (option != 0 || option != 1) && IsKeyOrGamepadPress(GLFW_KEY_SPACE, GLFW_GAMEPAD_BUTTON_A, false, 0, 0, false) && HasDelayPassed() && !IsInputPressed(BUTTON_A) ) {
+
+        timeStart = system_clock::now();
+        SetValueInput(BUTTON_A, true);
+        EventManager::GetInstance().AddEventMulti(Event{EventType::MENU_OPTION});
+        if (inputs[option] == 0) { inputs[option] = 1; }
+        else { inputs[option] = 0; }        
+
+    } else if( !IsKeyOrGamepadPress(GLFW_KEY_SPACE, GLFW_GAMEPAD_BUTTON_A, false, 0, 0, false) ) {
+        SetValueInput(BUTTON_A, false);
+    }
+
 
     //DERECHA
-    if (IsKeyOrGamepadPress(GLFW_KEY_RIGHT, GLFW_GAMEPAD_AXIS_LEFT_X, true, 0.5, GLFW_GAMEPAD_BUTTON_DPAD_RIGHT, true)
+    if ((option == 0 || option == 1) && IsKeyOrGamepadPress(GLFW_KEY_RIGHT, GLFW_GAMEPAD_AXIS_LEFT_X, true, 0.5, GLFW_GAMEPAD_BUTTON_DPAD_RIGHT, true)
         && ( (IsInputPressed(BUTTON_STICK_R) && HasDelayPassed() ) || !IsInputPressed(BUTTON_STICK_R) )) {
 
         timeStart = system_clock::now();
@@ -1194,7 +1207,7 @@ void InputFacadeClover::CheckInputSettings(std::vector<int> &inputs, int *maxInp
     }
 
     //IZQUIERDA
-    if ( IsKeyOrGamepadPress(GLFW_KEY_LEFT, GLFW_GAMEPAD_AXIS_LEFT_X, true, -0.5, GLFW_GAMEPAD_BUTTON_DPAD_LEFT, true)
+    if ( (option == 0 || option == 1) && IsKeyOrGamepadPress(GLFW_KEY_LEFT, GLFW_GAMEPAD_AXIS_LEFT_X, true, -0.5, GLFW_GAMEPAD_BUTTON_DPAD_LEFT, true)
          && ( (IsInputPressed(BUTTON_STICK_L) && HasDelayPassed() ) || !IsInputPressed(BUTTON_STICK_L) )) {
 
         timeStart = system_clock::now();
@@ -1218,7 +1231,7 @@ void InputFacadeClover::CheckInputSettings(std::vector<int> &inputs, int *maxInp
         timeStart = system_clock::now();
         --option;
         if(option < 0) {
-            option = inputs.size();
+            option = inputs.size() - 1;
         }
         SetValueInput(BUTTON_STICK_UP, true);
         EventManager::GetInstance().AddEventMulti(Event{EventType::MENU_OPTION});
@@ -1232,7 +1245,7 @@ void InputFacadeClover::CheckInputSettings(std::vector<int> &inputs, int *maxInp
 
         timeStart = system_clock::now();
         ++option;
-        if(option > (static_cast<int>(inputs.size()))) {
+        if(option > (static_cast<int>(inputs.size()) - 1)) {
             option = 0;
         }
         SetValueInput(BUTTON_STICK_DOWN, true);
@@ -1279,7 +1292,7 @@ void InputFacadeClover::ChangeSettings(int option, int value) {
             EventManager::GetInstance().AddEventMulti(Event{EventType::SET_MUSIC_VOLUME, d});
             //cout << "TOY CAMBIANDO EL VOLUMEN DE LA MUSICA (No ta hecho)\n";
             break;
-        case 2:
+        /*case 2:
             int sh, sw;
             if (value == 0) { sh = 576; sw = 1024; }
             else if (value == 1) { sh = 720; sw = 1280; }
@@ -1288,19 +1301,19 @@ void InputFacadeClover::ChangeSettings(int option, int value) {
             (*d)[SCREEN_WIDTH] = sw;
             EventManager::GetInstance().AddEventMulti(Event{EventType::SET_RESOLUTION, d});
             //cout << "TOY CAMBIANDO LA RESOLUNION DE LA PANTALLA\n";
-            break;
-        case 3:
+            break;*/
+        case /*3*/2:
             (*d)[TRUEFALSE] = value;
             cout << value << endl;
             EventManager::GetInstance().AddEventMulti(Event{EventType::ENABLE_PARTICLES, d});
             //cout << "TOY PONIENDO O QUITANDO PARTICULAS\n";
             break;
-        case 4:
+        case /*4*/3:
             (*d)[TRUEFALSE] = value;
             EventManager::GetInstance().AddEventMulti(Event{EventType::ENABLE_VEGETATION, d});
             //cout << "TOY PONIENDO O QUITANDO VEGETACION\n";
             break;
-        case 5:
+        case /*5*/4:
             (*d)[TRUEFALSE] = value;
             EventManager::GetInstance().AddEventMulti(Event{EventType::ENABLE_SHADOWS, d});
             //cout << "TOY PONIENDO O QUITANDO SOMBRAS\n";

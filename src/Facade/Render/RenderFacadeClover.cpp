@@ -761,7 +761,7 @@ void RenderFacadeClover::FacadeInitMenu() {
 
     resourceManager->GetResourceTexture("media/menu/main_menu.png", true);
     resourceManager->GetResourceTexture("media/menu/elements_menu.png", true);
-    resourceManager->GetResourceTexture("media/menu/unjugador_hover.png", true);
+    resourceManager->GetResourceTexture("media/menu/partidarapida_hover.png", true);
     resourceManager->GetResourceTexture("media/menu/multijugador_hover.png", true);
     resourceManager->GetResourceTexture("media/menu/controles_hover.png", true);
     resourceManager->GetResourceTexture("media/menu/creditos_hover.png", true);
@@ -1197,7 +1197,7 @@ void RenderFacadeClover::FacadeDrawMenu() {
     device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.8f, file, true);
 
     std::string files[7] = {
-        "media/menu/unjugador_hover.png",
+        "media/menu/partidarapida_hover.png",
         "media/menu/torneo_hover.png",
         "media/menu/multijugador_hover.png",
         "media/menu/controles_hover.png",
@@ -1513,107 +1513,51 @@ void RenderFacadeClover::FacadeDrawLobbyMultiExit() {
 }
 
 void RenderFacadeClover::FacadeDrawSettings() {
-    std::string file = "media/settings.png";
-    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
 
-    glm::vec3 colorBase = glm::vec3(255.0f, 0.0f, 0.0f);
-    glm::vec3 colorTitle = glm::vec3(255.0f, 255.0f, 0.0f);
 
-    glm::vec3 colorOp1[4] = {
-            glm::vec3(0.0f, 0.0f, 255.0f),
-            glm::vec3(0.0f, 0.0f, 255.0f),
-            glm::vec3(0.0f, 0.0f, 255.0f),
-            glm::vec3(0.0f, 0.0f, 255.0f)
+    device->SetEnableDepthTest(false);
+
+    std::string file = "media/menu/settings_bg.png";
+    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.9f, file, true);
+
+    std::string files[5] = {
+        "media/menu/game_sfx_",
+        "media/menu/game_music_",
+        "media/menu/particles_",
+        "media/menu/vegetation_",
+        "media/menu/shadows_"
     };
-    colorOp1[inputSettings[0]] = glm::vec3(0.0f, 255.0f, 0.0f);
-    std::string name = "Sonido General";
-    device->RenderText2D(name, 600.0f, 650.0f, 0.05f, 0.5f, colorTitle);
-    name = "No";
-    device->RenderText2D(name, 300.0f, 600.0f, 0.05f, 0.5f, colorOp1[0]);
-    name = "Bajo";
-    device->RenderText2D(name, 500.0f, 600.0f, 0.05f, 0.5f, colorOp1[1]);
-    name = "Medio";
-    device->RenderText2D(name, 700.0f, 600.0f, 0.05f, 0.5f, colorOp1[2]);
-    name = "Alto";
-    device->RenderText2D(name, 900.0f, 600.0f, 0.05f, 0.5f, colorOp1[3]);
 
-    glm::vec3 colorOp2[4] = {
-            glm::vec3(0.0f, 0.0f, 255.0f),
-            glm::vec3(0.0f, 0.0f, 255.0f),
-            glm::vec3(0.0f, 0.0f, 255.0f),
-            glm::vec3(0.0f, 0.0f, 255.0f)
-    };
-    colorOp2[inputSettings[1]] = glm::vec3(0.0f, 255.0f, 0.0f);
-    name = "Musica";
-    device->RenderText2D(name, 600.0f, 550.0f, 0.05f, 0.5f, colorTitle);
-    name = "No";
-    device->RenderText2D(name, 300.0f, 500.0f, 0.05f, 0.5f, colorOp2[0]);
-    name = "Baja";
-    device->RenderText2D(name, 500.0f, 500.0f, 0.05f, 0.5f, colorOp2[1]);
-    name = "Media";
-    device->RenderText2D(name, 700.0f, 500.0f, 0.05f, 0.5f, colorOp2[2]);
-    name = "Alta";
-    device->RenderText2D(name, 900.0f, 500.0f, 0.05f, 0.5f, colorOp2[3]);
+    std::string op1[4] = { "low", "med", "high", "high" };      //caso 4 temporal
+    std::string op2[2] = { "desactivated", "activated" };
 
-    glm::vec3 colorOp3[3] = {
-            glm::vec3(0.0f, 0.0f, 255.0f),
-            glm::vec3(0.0f, 0.0f, 255.0f),
-            glm::vec3(0.0f, 0.0f, 255.0f)
-    };
-    colorOp3[inputSettings[2]] = glm::vec3(0.0f, 255.0f, 0.0f);
-    name = "Resolucion";
-    device->RenderText2D(name, 600.0f, 450.0f, 0.05f, 0.5f, colorTitle);
-    name = "1024x576";
-    device->RenderText2D(name, 250.0f, 400.0f, 0.05f, 0.5f, colorOp3[0]);
-    name = "1280x720";
-    device->RenderText2D(name, 500.0f, 400.0f, 0.05f, 0.5f, colorOp3[1]);
-    name = "1920x1080";
-    device->RenderText2D(name, 750.0f, 400.0f, 0.05f, 0.5f, colorOp3[2]);
+    file = files[0] + op1[inputSettings[0]];
+    if (optionSettings == 0) { file += "_hover"; };
+    file += ".png";
+    Draw2DImage(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.9f, file, true);
 
-    glm::vec3 colorOp4[2] = {
-            glm::vec3(0.0f, 0.0f, 255.0f),
-            glm::vec3(0.0f, 0.0f, 255.0f)
-    };
-    colorOp4[inputSettings[3]] = glm::vec3(0.0f, 255.0f, 0.0f);
-    name = "Particulas";
-    device->RenderText2D(name, 600.0f, 350.0f, 0.05f, 0.5f, colorTitle);
-    name = "No";
-    device->RenderText2D(name, 400.0f, 300.0f, 0.05f, 0.5f, colorOp4[0]);
-    name = "Si";
-    device->RenderText2D(name, 700.0f, 300.0f, 0.05f, 0.5f, colorOp4[1]);
+    file = files[1] + op1[inputSettings[1]];
+    if (optionSettings == 1) { file += "_hover"; };
+    file += ".png";
+    Draw2DImage(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.9f, file, true);
 
-    glm::vec3 colorOp5[2] = {
-        glm::vec3(0.0f, 0.0f, 255.0f),
-        glm::vec3(0.0f, 0.0f, 255.0f)
-    };
-    colorOp5[inputSettings[4]] = glm::vec3(0.0f, 255.0f, 0.0f);
-    name = "Vegetacion";
-    device->RenderText2D(name, 600.0f, 250.0f, 0.05f, 0.5f, colorTitle);
-    name = "No";
-    device->RenderText2D(name, 400.0f, 200.0f, 0.05f, 0.5f, colorOp5[0]);
-    name = "Si";
-    device->RenderText2D(name, 700.0f, 200.0f, 0.05f, 0.5f, colorOp5[1]);
+    file = files[2] + op2[inputSettings[2]];
+    if (optionSettings == 2) { file += "_hover"; };
+    file += ".png";
+    Draw2DImage(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.9f, file, true);
 
-    glm::vec3 colorOp6[2] = {
-        glm::vec3(0.0f, 0.0f, 255.0f),
-        glm::vec3(0.0f, 0.0f, 255.0f)
-    };
-    colorOp6[inputSettings[5]] = glm::vec3(0.0f, 255.0f, 0.0f);
-    name = "Sombras";
-    device->RenderText2D(name, 600.0f, 150.0f, 0.05f, 0.5f, colorTitle);
-    name = "No";
-    device->RenderText2D(name, 400.0f, 100.0f, 0.05f, 0.5f, colorOp6[0]);
-    name = "Si";
-    device->RenderText2D(name, 700.0f, 100.0f, 0.05f, 0.5f, colorOp6[1]);
+    file = files[3] + op2[inputSettings[3]];
+    if (optionSettings == 3) { file += "_hover"; };
+    file += ".png";
+    Draw2DImage(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.9f, file, true);
 
+    file = files[4] + op2[inputSettings[4]];
+    if (optionSettings == 4) { file += "_hover"; };
+    file += ".png";
+    Draw2DImage(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.9f, file, true);
 
-    name = "---->";
-    float sel[6] = { 600.0f, 500.0f, 400.0f, 300.0f, 200.0f, 100.0f };
-    device->RenderText2D(name, 100.0f, sel[optionSettings], 0.05f, 1.0f, colorBase);
+    device->SetEnableDepthTest(true);
 
-
-    name = "<- (B)";
-    device->RenderText2D(name, 50.0f, 50.0f, 0.05f, 0.5f, colorBase);
 }
 
 
