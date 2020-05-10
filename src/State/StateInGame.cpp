@@ -14,6 +14,7 @@
 #include "../Components/CTotem.h"
 #include "../Entities/Camera.h"
 #include "../Constants.h"
+#include "../GameValues.h"
 
 using namespace std;
 using namespace chrono;
@@ -448,7 +449,13 @@ void StateInGame::GoToCountdownAnimation() {
 }
 
 void StateInGame::GoToStateEndrace() {
-    cout << "Vamos a lanzar un evento de STATE_ENDRACE desde StateInGame" << endl;
-    EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_ENDRACE});
+    if(!inputEngine->InTournament()){
+        cout << "Vamos a lanzar un evento de STATE_ENDRACE desde StateInGame" << endl;
+        EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_ENDRACE});
+    }else{
+        cout << "Vamos a lanzar un evento de STATE_ENDTOURNAMENT desde StateInGame" << endl;
+        EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_ENDTOURNAMENT});
+    }
+
     EventManager::GetInstance().Update();
 }

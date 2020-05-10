@@ -46,7 +46,7 @@ CarAI::CarAI(int pj) : Car(pj){
     AddComponent(cBrainAI);
 }
 
-CarAI::CarAI(int pj, glm::vec3 pos, glm::vec3 rot, glm::vec3 scale,string texture, string mesh, float maxSpeed, float acceleration , float carFriction, float carSlowDown, std::string vertexShader, std::string fragmentShader)
+CarAI::CarAI(int pj, glm::vec3 pos, glm::vec3 rot, glm::vec3 scale,string texture, string mesh, std::string vertexShader, std::string fragmentShader)
     : CarAI(pj){
 
     CTransformable *cTransformable = (CTransformable *)m_components[CompType::TransformableComp].get();
@@ -56,12 +56,9 @@ CarAI::CarAI(int pj, glm::vec3 pos, glm::vec3 rot, glm::vec3 scale,string textur
 
     if(Constants::RENDER_ENGINE == Constants::RenderEngine::CLOVER){
         cTransformable->rotation.x += 90.0;
-    }else if(Constants::RENDER_ENGINE == Constants::RenderEngine::IRRLICHT){
+    }/*else if(Constants::RENDER_ENGINE == Constants::RenderEngine::IRRLICHT){
 
-    } 
-
-    
-
+    } */
     CTexture *cTexture = (CTexture *)m_components[CompType::TextureComp].get();
     cTexture->texture = texture;
 
@@ -69,11 +66,6 @@ CarAI::CarAI(int pj, glm::vec3 pos, glm::vec3 rot, glm::vec3 scale,string textur
     CMesh *cMesh = (CMesh *)m_components[CompType::MeshComp].get();  
     cMesh->mesh.push_back( mesh );
 
-    CCar *cCar = (CCar *)m_components[CompType::CarComp].get();
-    cCar->maxSpeed = maxSpeed;
-    cCar->acceleration = acceleration;
-    cCar->friction = carFriction;
-    cCar->slowDown = carSlowDown;
 
     shared_ptr<CShader> cShader = make_shared<CShader>(vertexShader,fragmentShader);
     AddComponent(cShader);

@@ -49,11 +49,13 @@ class RenderFacade {
     virtual void FacadeDrawSelectCharacter() = 0;
     virtual void FacadeDrawPause() = 0;
     virtual void FacadeDrawEndRace() = 0;
+    virtual void FacadeDrawEndTournament() = 0;
     virtual void FacadeDrawLobbyMulti() = 0;
     virtual void FacadeDrawLobbyMultiExit() = 0;
     virtual void FacadeDrawControler() = 0;
     virtual void FacadeDrawCredits() = 0;
     virtual void FacadeDrawGameOptions() = 0;
+    virtual void FacadeDrawTournamentOptions() = 0;
     virtual void FacadeDrawSettings() = 0;
 
     virtual void FacadeInitIntro() = 0;
@@ -61,11 +63,13 @@ class RenderFacade {
     virtual void FacadeInitSelectCharacter() = 0;
     virtual void FacadeInitPause() = 0;
     virtual void FacadeInitEndRace() = 0;
+    virtual void FacadeInitEndTournament() = 0;
     virtual void FacadeInitLobbyMulti() = 0;
     virtual void FacadeInitControler() = 0;
     virtual void FacadeInitHUD() = 0;
     virtual void FacadeInitCredits() = 0;
     virtual void FacadeInitGameOptions() = 0;
+    virtual void FacadeInitTournamentOptions() = 0;
     virtual void FacadeInitSettings() = 0;
 
     virtual void FacadeCheckInputIntro() = 0;
@@ -73,10 +77,12 @@ class RenderFacade {
     virtual void FacadeCheckInputSelectCharacter() = 0;
     virtual void FacadeCheckInputPause() = 0;
     virtual void FacadeCheckInputEndRace() = 0;
+    virtual void FacadeCheckInputEndTournament() = 0;
     virtual void FacadeCheckInputLobbyMulti() = 0;
     virtual void FacadeCheckInputControler() = 0;
     virtual void FacadeCheckInputCredits() = 0;
     virtual void FacadeCheckInputGameOptions() = 0;
+    virtual void FacadeCheckInputTournamentOptions() = 0;
     virtual void FacadeCheckInputSettings() = 0;
 
     virtual void FacadeUpdatePowerUpHUD(DataMap* d) = 0;
@@ -130,9 +136,12 @@ class RenderFacade {
     virtual std::tuple<int, int> GetScreenSize() = 0;
 
     virtual void ResetInputGameOptions() = 0;
+    virtual void ResetInputTournamentOptions() = 0;
     virtual void ResetInputCharacter() = 0;
     virtual void SetMenuEndRace(bool) = 0;
     virtual bool GetMenuEndRace() = 0;
+    virtual void SetMenuEndTournament(uint8_t) = 0;
+    virtual uint8_t GetMenuEndTournament() = 0;
 
     int GetNumEnemyCars() { return numEnemyCars; };
     void SetNumEnemyCars(int n) { numEnemyCars = n; };

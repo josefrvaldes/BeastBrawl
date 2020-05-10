@@ -49,9 +49,11 @@ class RenderFacadeIrrlicht : public RenderFacade {
     void FacadeDrawMenu() override;
     void FacadeDrawSelectCharacter() override;
     void FacadeDrawGameOptions() override;
+    void FacadeDrawTournamentOptions() override {};
     void FacadeInitResources() override;
     void FacadeDrawPause() override;
     void FacadeDrawEndRace() override;
+    void FacadeDrawEndTournament() override {};
     void FacadeDrawLobbyMulti() override;
     void FacadeDrawLobbyMultiExit() override;
     void FacadeDrawControler() override;
@@ -62,8 +64,10 @@ class RenderFacadeIrrlicht : public RenderFacade {
     void FacadeInitMenu() override;
     void FacadeInitSelectCharacter() override;
     void FacadeInitGameOptions() override;
+    void FacadeInitTournamentOptions() override {};
     void FacadeInitPause() override;
     void FacadeInitEndRace() override;
+    void FacadeInitEndTournament() override {};
     void FacadeInitLobbyMulti() override;
     void FacadeInitControler() override;
     void FacadeInitHUD() override;
@@ -74,8 +78,10 @@ class RenderFacadeIrrlicht : public RenderFacade {
     void FacadeCheckInputMenu() override;
     void FacadeCheckInputSelectCharacter() override;
     void FacadeCheckInputGameOptions() override;
+    void FacadeCheckInputTournamentOptions() override {};
     void FacadeCheckInputPause() override;
     void FacadeCheckInputEndRace() override;
+    void FacadeCheckInputEndTournament() override {};
     void FacadeCheckInputLobbyMulti() override;
     void FacadeCheckInputControler() override;
     void FacadeCheckInputCredits() override;
@@ -131,10 +137,13 @@ class RenderFacadeIrrlicht : public RenderFacade {
     std::tuple<int, int> GetScreenSize() override;
 
     void ResetInputGameOptions() override;
+    void ResetInputTournamentOptions() override {};
     void ResetInputCharacter() override;
 
     void SetMenuEndRace(bool b) override { menuER = b; };
     bool GetMenuEndRace() override { return menuER; };
+    void SetMenuEndTournament(uint8_t b) override { menuET = b; };
+    uint8_t GetMenuEndTournament() override { return menuET; };
 
 
     scene::ISceneManager* GetSceneManager() { return smgr; };
@@ -160,6 +169,7 @@ class RenderFacadeIrrlicht : public RenderFacade {
     gui::IGUIFont* font;
 
     bool menuER { false };
+    uint8_t menuET { 0 };
 
 
     enum InputXBox{BUTTON_A, BUTTON_B, BUTTON_X, BUTTON_Y, BUTTON_LB, BUTTON_RB, BUTTON_BACK, BUTTON_START, BUTTON_XBOX, BUTTON_STICK_L, BUTTON_STICK_R, END};
