@@ -1,5 +1,5 @@
 # Blender MTL File: 'mayan_mapv2.blend'
-# Material Count: 25
+# Material Count: 27
 
 newmtl brick.001
 Ns 0.000000
@@ -57,6 +57,39 @@ illum 3
 map_Kd clv_brick2_low_Cube.003_BaseColor.tga
 
 newmtl brick3
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.500000 0.500000 0.500000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 3
+map_Kd clv_brick3_low_Cube1_2.001_BaseColor.tga
+
+newmtl brick3.001
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.500000 0.500000 0.500000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 3
+map_Kd clv_brick3_low_Cube1_2.001_BaseColor.tga
+
+newmtl brick3.002
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.500000 0.500000 0.500000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 3
+map_Kd clv_brick3_low_Cube1_2.001_BaseColor.tga
+
+newmtl brick3.003
 Ns 0.000000
 Ka 1.000000 1.000000 1.000000
 Kd 0.500000 0.500000 0.500000
@@ -155,17 +188,6 @@ d 1.000000
 illum 1
 map_Kd clv_plant1_basecolor.png
 map_d clv_plant1_basecolor.png
-
-newmtl plaza
-Ns 0.000000
-Ka 1.000000 1.000000 1.000000
-Kd 0.800000 0.800000 0.800000
-Ks 0.000000 0.000000 0.000000
-Ke 0.000000 0.000000 0.000000
-Ni 1.450000
-d 1.000000
-illum 1
-map_Kd clv_central_plaza_low_DefaultMaterial_BaseColor.tga
 
 newmtl pot
 Ns 225.000000
