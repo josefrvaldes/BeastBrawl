@@ -69,6 +69,11 @@ void TCPClient::HandleConnect(const boost::system::error_code& error) {
     } else {
         std::cout << "Connectado a servidor, empezamos a recibir" << endl;
         StartReceiving();
+
+        
+
+        cout << "Enviamos SendConnectionRequest al server" << endl;
+        SendConnectionRequest();
     }
 }
 void TCPClient::HandleConnect(const boost::system::error_code& error, tcp::resolver::results_type::iterator endpoint_iter) {

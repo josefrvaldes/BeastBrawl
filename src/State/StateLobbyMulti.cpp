@@ -17,9 +17,6 @@ StateLobbyMulti::StateLobbyMulti() : tcpClient{make_shared<TCPClient>(Constants:
     renderEngine->FacadeInitLobbyMulti();
 
     SubscribeToEvents();
-
-    cout << "Enviamos SendConnectionRequest al server" << endl;
-    tcpClient->SendConnectionRequest();
 }
 
 // Cargamos los bancos de sonido Menu.
