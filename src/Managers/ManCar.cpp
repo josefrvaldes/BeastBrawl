@@ -898,7 +898,7 @@ void ManCar::CatchPowerUpAI(DataMap* d) {
         type = typeCPowerUp::MelonMolon;
     }
 
-    //type = typeCPowerUp::EscudoMerluzo;
+    // type = typeCPowerUp::PudinDeFrambuesa;
     //cout << "EL VALOR QUE SALE ES: " << indx << " - CORRESPONDIENTE AL PU: " << (int)type << endl;
 
     // int64_t time = Utils::getMillisSinceEpoch();
