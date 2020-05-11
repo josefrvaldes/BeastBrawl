@@ -206,7 +206,7 @@ void InputFacadeClover::CheckInputMenu(int& input, int maxInput){
             }
             case 2: {
                 RenderFacadeManager::GetInstance()->GetRenderFacade()->CleanScene();
-                EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_SELECT_CHARACTER});
+                EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_LOBBYMULTI});
                 multiplayer = true;
                 tournamentMode = false;
                 break;
@@ -235,6 +235,114 @@ void InputFacadeClover::CheckInputMenu(int& input, int maxInput){
     }
 }
 
+
+void InputFacadeClover::CheckInputSelCharUpDown(int &input) {
+    if ( ( IsKeyOrGamepadPress(GLFW_KEY_DOWN, GLFW_GAMEPAD_AXIS_LEFT_Y, true, 0.5, GLFW_GAMEPAD_BUTTON_DPAD_DOWN, true) 
+        || IsKeyOrGamepadPress(GLFW_KEY_UP, GLFW_GAMEPAD_AXIS_LEFT_Y, true, -0.5, GLFW_GAMEPAD_BUTTON_DPAD_UP, true) )
+        && ( (IsInputPressed(BUTTON_STICK_UP) && HasDelayPassed() ) || !IsInputPressed(BUTTON_STICK_UP) )
+        && ( (IsInputPressed(BUTTON_STICK_DOWN) && HasDelayPassed() ) || !IsInputPressed(BUTTON_STICK_DOWN) )  ) {
+
+        timeStart = system_clock::now();
+        if (input%2 == 0) {
+            ++input;
+        } else {
+            --input;
+        }
+        SetValueInput(BUTTON_STICK_UP, true);
+        SetValueInput(BUTTON_STICK_DOWN, true);
+        shared_ptr<DataMap> data = make_shared<DataMap>();
+        int num = input;
+        (*data)[NUM] = num;
+        EventManager::GetInstance().AddEventMulti(Event{EventType::VRANDOM, data});
+        EventManager::GetInstance().AddEventMulti(Event{EventType::MENU_OPTION});
+    } else if ( !( IsKeyOrGamepadPress(GLFW_KEY_DOWN, GLFW_GAMEPAD_AXIS_LEFT_Y, true, 0.5, GLFW_GAMEPAD_BUTTON_DPAD_DOWN, true)
+                   || IsKeyOrGamepadPress(GLFW_KEY_UP, GLFW_GAMEPAD_AXIS_LEFT_Y, true, -0.5, GLFW_GAMEPAD_BUTTON_DPAD_UP, true) ) ) {
+        SetValueInput(BUTTON_STICK_UP, false);
+        SetValueInput(BUTTON_STICK_DOWN, false);
+    }
+}
+
+void InputFacadeClover::CheckInputSelCharLeft(int &input, int maxInput) {
+    if( IsKeyOrGamepadPress(GLFW_KEY_LEFT, GLFW_GAMEPAD_AXIS_LEFT_X, true, -0.5, GLFW_GAMEPAD_BUTTON_DPAD_LEFT, true)
+    && ( (IsInputPressed(BUTTON_STICK_L) && HasDelayPassed() ) || !IsInputPressed(BUTTON_STICK_L) )) {
+
+        timeStart = system_clock::now();
+        input -= 2;
+        if(input < 0) {
+            if (input%2 == 0) {
+                input = maxInput-1;
+            } else {
+                input = maxInput;
+            }
+        }
+        SetValueInput(BUTTON_STICK_L, true);
+        shared_ptr<DataMap> data = make_shared<DataMap>();
+        int num = input;
+        (*data)[NUM] = num;
+        EventManager::GetInstance().AddEventMulti(Event{EventType::VRANDOM, data});
+        EventManager::GetInstance().AddEventMulti(Event{EventType::MENU_OPTION});
+    } else if ( !IsKeyOrGamepadPress(GLFW_KEY_LEFT, GLFW_GAMEPAD_AXIS_LEFT_X, true, -0.5, GLFW_GAMEPAD_BUTTON_DPAD_LEFT, true) ) {
+        SetValueInput(BUTTON_STICK_L, false);
+    }
+}
+
+void InputFacadeClover::CheckInputSelCharRight(int &input, int maxInput) {
+    if( IsKeyOrGamepadPress(GLFW_KEY_RIGHT, GLFW_GAMEPAD_AXIS_LEFT_X, true, 0.5, GLFW_GAMEPAD_BUTTON_DPAD_RIGHT, true) 
+    && ( (IsInputPressed(BUTTON_STICK_R) && HasDelayPassed() ) || !IsInputPressed(BUTTON_STICK_R) )) {
+
+        timeStart = system_clock::now();
+        input += 2;
+        if(input > maxInput) {
+            if (input%2 == 0) {
+                input = 0;
+            } else {
+                input = 1;
+            }
+        }
+        SetValueInput(BUTTON_STICK_R, true);
+        shared_ptr<DataMap> data = make_shared<DataMap>();
+        int num = input;
+        (*data)[NUM] = num;
+        EventManager::GetInstance().AddEventMulti(Event{EventType::VRANDOM, data});
+        EventManager::GetInstance().AddEventMulti(Event{EventType::MENU_OPTION});
+    } else if ( !IsKeyOrGamepadPress(GLFW_KEY_RIGHT, GLFW_GAMEPAD_AXIS_LEFT_X, true, 0.5, GLFW_GAMEPAD_BUTTON_DPAD_RIGHT, true)  ) {
+        SetValueInput(BUTTON_STICK_R, false);
+    }
+}
+
+void InputFacadeClover::CheckInputSelCharIntro(int &input) {
+    if ( IsKeyOrGamepadPress(GLFW_KEY_SPACE, GLFW_GAMEPAD_BUTTON_A, false, 0, 0, false) && HasDelayPassed() && !IsInputPressed(BUTTON_A) ) {
+
+        timeStart = system_clock::now();
+        SetValueInput(BUTTON_A, true);
+        EventManager::GetInstance().AddEventMulti(Event{EventType::MENU_OK});
+
+        //Actualiza la vez del personaje a usar
+        shared_ptr<DataMap> data = make_shared<DataMap>();
+        int num = input;
+        (*data)[NUM] = num;
+        EventManager::GetInstance().AddEventMulti(Event{EventType::UPDATE_SOUNDCHARACTER, data});
+        
+        //Registra el personaje a usar
+        GameValues::GetInstance()->SetCharacter(input);
+
+        //TODO: Ahora mismo, SELECCIONAR PERSONAJE y VOLVER A JUGAR del EndRace, hacen lo mismo. Falta la gestion online.
+        if ( multiplayer ) {
+            EventManager::GetInstance().AddEventMulti(Event{EventType::TCP_CHAR_REQUEST});
+        } else{
+            if(!tournamentMode)
+                EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_GAME_OPTIONS});
+            else
+                EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_TOURNAMENT_OPTIONS});
+            //Change caracter
+            GameValues::GetInstance()->SetCharacter(input);
+        }
+
+    } else if (!IsKeyOrGamepadPress(GLFW_KEY_SPACE, GLFW_GAMEPAD_BUTTON_A, false, 0, 0, false) ) {
+        SetValueInput(BUTTON_A, false);
+    }
+}
+
 /**
  * Input de la pantalla de seleccion de personaje.
  * @param input - Seleccion.
@@ -255,115 +363,16 @@ void InputFacadeClover::CheckInputSelectCharacter(int &input, int maxInput) {
     }
 
     // SUBIR BAJAR
-    if ( ( IsKeyOrGamepadPress(GLFW_KEY_DOWN, GLFW_GAMEPAD_AXIS_LEFT_Y, true, 0.5, GLFW_GAMEPAD_BUTTON_DPAD_DOWN, true) 
-         || IsKeyOrGamepadPress(GLFW_KEY_UP, GLFW_GAMEPAD_AXIS_LEFT_Y, true, -0.5, GLFW_GAMEPAD_BUTTON_DPAD_UP, true) )
-         && ( (IsInputPressed(BUTTON_STICK_UP) && HasDelayPassed() ) || !IsInputPressed(BUTTON_STICK_UP) )
-         && ( (IsInputPressed(BUTTON_STICK_DOWN) && HasDelayPassed() ) || !IsInputPressed(BUTTON_STICK_DOWN) )  ) {
-
-        timeStart = system_clock::now();
-        if (input%2 == 0) {
-            ++input;
-        } else {
-            --input;
-        }
-        SetValueInput(BUTTON_STICK_UP, true);
-        SetValueInput(BUTTON_STICK_DOWN, true);
-        shared_ptr<DataMap> data = make_shared<DataMap>();
-        int num = input;
-        (*data)[NUM] = num;
-        EventManager::GetInstance().AddEventMulti(Event{EventType::VRANDOM, data});
-        EventManager::GetInstance().AddEventMulti(Event{EventType::MENU_OPTION});
-    } else if ( !( IsKeyOrGamepadPress(GLFW_KEY_DOWN, GLFW_GAMEPAD_AXIS_LEFT_Y, true, 0.5, GLFW_GAMEPAD_BUTTON_DPAD_DOWN, true)
-                   || IsKeyOrGamepadPress(GLFW_KEY_UP, GLFW_GAMEPAD_AXIS_LEFT_Y, true, -0.5, GLFW_GAMEPAD_BUTTON_DPAD_UP, true) ) ) {
-        SetValueInput(BUTTON_STICK_UP, false);
-        SetValueInput(BUTTON_STICK_DOWN, false);
-    }
+    CheckInputSelCharUpDown(input);
 
     // DERECHA
-    if( IsKeyOrGamepadPress(GLFW_KEY_RIGHT, GLFW_GAMEPAD_AXIS_LEFT_X, true, 0.5, GLFW_GAMEPAD_BUTTON_DPAD_RIGHT, true) 
-        && ( (IsInputPressed(BUTTON_STICK_R) && HasDelayPassed() ) || !IsInputPressed(BUTTON_STICK_R) )) {
-
-        timeStart = system_clock::now();
-        input += 2;
-        if(input > maxInput) {
-            if (input%2 == 0) {
-                input = 0;
-            } else {
-                input = 1;
-            }
-        }
-        SetValueInput(BUTTON_STICK_R, true);
-        shared_ptr<DataMap> data = make_shared<DataMap>();
-        int num = input;
-        (*data)[NUM] = num;
-        EventManager::GetInstance().AddEventMulti(Event{EventType::VRANDOM, data});
-        EventManager::GetInstance().AddEventMulti(Event{EventType::MENU_OPTION});
-    } else if ( !IsKeyOrGamepadPress(GLFW_KEY_RIGHT, GLFW_GAMEPAD_AXIS_LEFT_X, true, 0.5, GLFW_GAMEPAD_BUTTON_DPAD_RIGHT, true)  ) {
-        SetValueInput(BUTTON_STICK_R, false);
-    }
+    CheckInputSelCharRight(input, maxInput);
 
     // IZQUIERDA
-    if( IsKeyOrGamepadPress(GLFW_KEY_LEFT, GLFW_GAMEPAD_AXIS_LEFT_X, true, -0.5, GLFW_GAMEPAD_BUTTON_DPAD_LEFT, true)
-        && ( (IsInputPressed(BUTTON_STICK_L) && HasDelayPassed() ) || !IsInputPressed(BUTTON_STICK_L) )) {
-
-        timeStart = system_clock::now();
-        input -= 2;
-        if(input < 0) {
-            if (input%2 == 0) {
-                input = maxInput-1;
-            } else {
-                input = maxInput;
-            }
-        }
-        SetValueInput(BUTTON_STICK_L, true);
-        shared_ptr<DataMap> data = make_shared<DataMap>();
-        int num = input;
-        (*data)[NUM] = num;
-        EventManager::GetInstance().AddEventMulti(Event{EventType::VRANDOM, data});
-        EventManager::GetInstance().AddEventMulti(Event{EventType::MENU_OPTION});
-    } else if ( !IsKeyOrGamepadPress(GLFW_KEY_LEFT, GLFW_GAMEPAD_AXIS_LEFT_X, true, -0.5, GLFW_GAMEPAD_BUTTON_DPAD_LEFT, true) ) {
-        SetValueInput(BUTTON_STICK_L, false);
-    }
+    CheckInputSelCharLeft(input, maxInput);
 
     //ACEPTAR - ESPACIO
-    if ( IsKeyOrGamepadPress(GLFW_KEY_SPACE, GLFW_GAMEPAD_BUTTON_A, false, 0, 0, false) && HasDelayPassed() && !IsInputPressed(BUTTON_A) ) {
-
-        timeStart = system_clock::now();
-        SetValueInput(BUTTON_A, true);
-        EventManager::GetInstance().AddEventMulti(Event{EventType::MENU_OK});
-
-        //Actualiza la vez del personaje a usar
-        shared_ptr<DataMap> data = make_shared<DataMap>();
-        int num = input;
-        (*data)[NUM] = num;
-        EventManager::GetInstance().AddEventMulti(Event{EventType::UPDATE_SOUNDCHARACTER, data});
-        
-        //Registra el personaje a usar
-        GameValues::GetInstance()->SetCharacter(input);
-
-        //TODO: Ahora mismo, SELECCIONAR PERSONAJE y VOLVER A JUGAR del EndRace, hacen lo mismo. Falta la gestion online.
-        if ( multiplayer ) {
-            RenderFacadeManager::GetInstance()->GetRenderFacade()->CleanScene();
-            EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_LOBBYMULTI});
-        } else{
-            RenderFacadeManager::GetInstance()->GetRenderFacade()->CleanScene();
-
-            shared_ptr<DataMap> data = make_shared<DataMap>();
-            int num = input;
-            (*data)[NUM] = num;
-            EventManager::GetInstance().AddEventMulti(Event{EventType::UPDATE_SOUNDCHARACTER, data});
-            
-            if(!tournamentMode)
-                EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_GAME_OPTIONS});
-            else
-                EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_TOURNAMENT_OPTIONS});
-            //Change caracter
-            GameValues::GetInstance()->SetCharacter(input);
-        }
-
-    } else if (!IsKeyOrGamepadPress(GLFW_KEY_SPACE, GLFW_GAMEPAD_BUTTON_A, false, 0, 0, false) ) {
-        SetValueInput(BUTTON_A, false);
-    }
+    CheckInputSelCharIntro(input);
 
 }
 
@@ -1132,15 +1141,48 @@ void InputFacadeClover::CheckInputEndTournament(int& input, int maxInput, uint8_
     }
 }
 
-void InputFacadeClover::CheckInputLobbyMulti() {
-
+void InputFacadeClover::CheckInputLobbyMultiConnecting() {
     if ( IsKeyOrGamepadPress(GLFW_KEY_BACKSPACE, GLFW_GAMEPAD_BUTTON_B, false, 0, 0, false) && !IsInputPressed(BUTTON_B)) {
         SetValueInput(InputXBox::BUTTON_B, true);
         EventManager::GetInstance().AddEventMulti(Event{EventType::MENU_BACK});
-        EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_SELECT_CHARACTER});
+        EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_MENU});
     } else if ( !IsKeyOrGamepadPress(GLFW_KEY_BACKSPACE, GLFW_GAMEPAD_BUTTON_B, false, 0 , 0, false) ) {
         SetValueInput(InputXBox::BUTTON_B, false);
     }
+}
+
+void InputFacadeClover::CheckInputLobbyMultiWait() {
+    if ( IsKeyOrGamepadPress(GLFW_KEY_BACKSPACE, GLFW_GAMEPAD_BUTTON_B, false, 0, 0, false) && !IsInputPressed(BUTTON_B)) {
+        SetValueInput(InputXBox::BUTTON_B, true);
+        EventManager::GetInstance().AddEventMulti(Event{EventType::MENU_BACK});
+        //EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_SELECT_CHARACTER});
+        // enviar evento para volver a la seleccion de personaje
+        // enviar evento al online para decir que dejas de seleccionarlo
+    } else if ( !IsKeyOrGamepadPress(GLFW_KEY_BACKSPACE, GLFW_GAMEPAD_BUTTON_B, false, 0 , 0, false) ) {
+        SetValueInput(InputXBox::BUTTON_B, false);
+    }
+}
+
+void InputFacadeClover::CheckInputLobbyMultiExit() {
+    // solo esperas a desconectarte
+}
+
+void InputFacadeClover::CheckInputLobbyMultiSelChar(int &input, int maxInput) {
+    // atras
+    if ( IsKeyOrGamepadPress(GLFW_KEY_BACKSPACE, GLFW_GAMEPAD_BUTTON_B, false, 0, 0, false) && !IsInputPressed(BUTTON_B)) {
+        SetValueInput(InputXBox::BUTTON_B, true);
+        EventManager::GetInstance().AddEventMulti(Event{EventType::MENU_BACK});
+        EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_MENU});
+    } else if ( !IsKeyOrGamepadPress(GLFW_KEY_BACKSPACE, GLFW_GAMEPAD_BUTTON_B, false, 0 , 0, false) ) {
+        SetValueInput(InputXBox::BUTTON_B, false);
+    }
+
+    CheckInputSelCharUpDown(input);
+    CheckInputSelCharLeft(input, maxInput);
+    CheckInputSelCharRight(input, maxInput);
+
+    // intro
+    CheckInputSelCharIntro(input);
 
 }
 

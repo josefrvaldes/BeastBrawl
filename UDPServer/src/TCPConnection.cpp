@@ -12,7 +12,7 @@
 using boost::asio::ip::tcp;
 using namespace std::chrono;
 
-TCPConnection::TCPConnection(TCPServer *tcpServer_, asio::io_context& io_context, std::vector<Player>& p, std::vector<uint8_t> &c, std::vector<TCPConnection::pointer>& connect) : tcpServer{tcpServer_}, socket_(io_context), players(p), characters(c), connections(connect) {
+TCPConnection::TCPConnection(TCPServer *tcpServer_, asio::io_context& io_context, std::vector<Player>& p, std::vector<TCPConnection::pointer>& connect) : tcpServer{tcpServer_}, socket_(io_context), players(p), connections(connect) {
 }
 
 TCPConnection::~TCPConnection() {
@@ -40,19 +40,14 @@ void TCPConnection::HandleRead(std::shared_ptr<unsigned char[]> recevBuff, const
         uint8_t petitionType = Serialization::Deserialize<uint8_t>(recevBuff.get(), currentIndex);    // numero
         cout << "Hemos leido " << bytes_transferred << " bytes y el petitionType es " << unsigned(petitionType) << endl;
 
+
         Constants::PetitionTypes callType = static_cast<Constants::PetitionTypes>(petitionType);
         switch (callType) {
             case Constants::PetitionTypes::CONNECTION_REQUEST: {
-                uint8_t characterRecvd = Serialization::Deserialize<uint8_t>(recevBuff.get(), currentIndex);  // personaje
-                characters.push_back(characterRecvd);
-
-                if (players.size() >= Constants::MIN_NUM_PLAYERS) {
-                    // cout << "Ya hemos llegado al núm de conexiones para enviar partida, vamos a visar a los clientes" << endl;
-                    Server::GAME_STARTED = true;
-                    tcpServer->SendStartGame();
-                    // justo despues vaciar el tcp para otra conexion
-                }
-                cout << "Se ha conectado un usuario con personaje " << unsigned(characterRecvd) << "\n";
+                SendOpenGame(); // reenviar que se ha conectado correctamente
+            } break;
+            case Constants::PetitionTypes::CHARACTER_REQUEST: {
+                HandleReceivedCatchChar(recevBuff, bytes_transferred);
             } break;
             default:
                 break;
@@ -127,6 +122,23 @@ void TCPConnection::SendFullGame() {
             boost::asio::placeholders::bytes_transferred));
 }
 
+
+void TCPConnection::SendOpenGame() {
+    unsigned char request[Constants::ONLINE_BUFFER_SIZE];
+    size_t currentBuffSize = 0;
+    uint8_t petitionType = Constants::TCP_OPEN_GAME;
+    Serialization::Serialize(request, &petitionType, currentBuffSize);
+
+    socket_.async_send(
+        boost::asio::buffer(request, currentBuffSize),
+        boost::bind(
+            &TCPConnection::HandleWrite,
+            this,
+            boost::asio::placeholders::error,
+            boost::asio::placeholders::bytes_transferred));
+}
+
+
 void TCPConnection::HandleWrite(const boost::system::error_code& error, size_t bytes_transferred) {
     if (!error) {
         std::cout << "Mensaje enviado del servidor TCP"
@@ -134,4 +146,60 @@ void TCPConnection::HandleWrite(const boost::system::error_code& error, size_t b
     } else {
         std::cout << "Error al escribir: " << error.message() << "\n";
     }
+}
+
+
+
+
+void TCPConnection::HandleReceivedCatchChar(std::shared_ptr<unsigned char[]> recevBuff, const size_t currentBufferSize){
+    size_t currentIndex = 0;
+    Serialization::Deserialize<uint8_t>(recevBuff.get(), currentIndex);
+    uint8_t characterRecvd = Serialization::Deserialize<uint8_t>(recevBuff.get(), currentIndex);  // personaje
+    bool alreadySelected = false;
+    bool allSelected = true;
+
+    for(const auto& p : players){
+        if(p.character == characterRecvd){
+            alreadySelected = true;
+            break;
+        }
+    }
+
+    // enviar mensaje si se ha podido seleccionar, en caso afirmativo a todos, en caso negativo a ti solo
+    SendRequestSelChar(alreadySelected);
+
+    // adjuntamos el personaje al usuario y comprobamos si todos ya han seleccionado
+    if(!alreadySelected){
+        for(auto& p : players){
+            if(p.endpointTCP == socket_.remote_endpoint())
+                p.character = characterRecvd;
+            if(p.character==Constants::ANY_CHARACTER)
+                allSelected = false;
+        }
+        
+        if(allSelected && players.size() >= Constants::MIN_NUM_PLAYERS){
+            // cout << "Ya hemos llegado al núm de conexiones para enviar partida, vamos a visar a los clientes" << endl;
+            Server::GAME_STARTED = true;
+            tcpServer->SendStartGame();
+            // justo despues vaciar el tcp para otra conexion
+        }
+        //++ cout << "Se ha conectado un usuario con personaje " << unsigned(characterRecvd) << "\n";
+    }
+}
+
+
+void TCPConnection::SendRequestSelChar(bool selected){
+    unsigned char request[Constants::ONLINE_BUFFER_SIZE];
+    size_t currentBuffSize = 0;
+    uint8_t petitionType = Constants::CHARACTER_REQUEST;
+    Serialization::Serialize(request, &petitionType, currentBuffSize);
+    Serialization::Serialize(request, &selected, currentBuffSize);
+
+    socket_.async_send(
+        boost::asio::buffer(request, currentBuffSize),
+        boost::bind(
+            &TCPConnection::HandleWrite,
+            this,
+            boost::asio::placeholders::error,
+            boost::asio::placeholders::bytes_transferred));
 }

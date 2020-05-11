@@ -30,7 +30,7 @@ void TCPServer::Close() {
 }
 
 void TCPServer::StartReceiving() {
-    TCPConnection::pointer new_connection = TCPConnection::Create(this, context, players, characters, connections);
+    TCPConnection::pointer new_connection = TCPConnection::Create(this, context, players, connections);
     acceptor_.async_accept(
         new_connection->socket(),
         boost::bind(&TCPServer::HandleAccept,
@@ -42,7 +42,7 @@ void TCPServer::StartReceiving() {
 void TCPServer::HandleAccept(TCPConnection::pointer new_connection, const boost::system::error_code& error) {
     if (!error) {
         //std::cout << "Recibi un mensaje" << std::endl;
-        if(Server::GAME_STARTED == false){
+        if(Server::GAME_STARTED == false && players.size()<Constants::MIN_NUM_PLAYERS){
             new_connection->Start();
             
             // Comprobaciones para ver si existe el player
@@ -50,6 +50,7 @@ void TCPServer::HandleAccept(TCPConnection::pointer new_connection, const boost:
                 connections.push_back(new_connection);
                 Player p;
                 p.endpointTCP = new_connection->socket().remote_endpoint();
+                p.character = Constants::ANY_CHARACTER;
                 // new_connection->currentPlayer = &p;
                 players.push_back(p);
             }
@@ -90,7 +91,7 @@ void TCPServer::SendStartGame() {
                 idPlayer = players[posVector].id + 1;
             } else {
                 idsEnemies.push_back(players[posVector].id + 1);
-                charactersToSend.push_back(characters[posVector]);
+                charactersToSend.push_back(players[posVector].character);
             }
             posVector++;
         }

@@ -945,8 +945,20 @@ void RenderFacadeClover::FacadeCheckInputEndTournament() {
     InputFacadeManager::GetInstance()->GetInputFacade()->CheckInputEndTournament(inputET, maxInputET, menuET);
 }
 
-void RenderFacadeClover::FacadeCheckInputLobbyMulti() {
-    InputFacadeManager::GetInstance()->GetInputFacade()->CheckInputLobbyMulti();
+void RenderFacadeClover::FacadeCheckInputLobbyMultiConnecting() {
+    InputFacadeManager::GetInstance()->GetInputFacade()->CheckInputLobbyMultiConnecting();
+}
+
+void RenderFacadeClover::FacadeCheckInputLobbyMultiWait() {
+    InputFacadeManager::GetInstance()->GetInputFacade()->CheckInputLobbyMultiWait();
+}
+
+void RenderFacadeClover::FacadeCheckInputLobbyMultiExit() {
+    InputFacadeManager::GetInstance()->GetInputFacade()->CheckInputLobbyMultiExit();
+}
+
+void RenderFacadeClover::FacadeCheckInputLobbyMultiSelChar() {
+    InputFacadeManager::GetInstance()->GetInputFacade()->CheckInputLobbyMultiSelChar(inputSC, maxInputSC);
 }
 
 void RenderFacadeClover::FacadeCheckInputSettings() {
@@ -1502,13 +1514,23 @@ void RenderFacadeClover::FacadeDrawCredits() {
     device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
 }
 
-void RenderFacadeClover::FacadeDrawLobbyMulti() {
-    std::string file = "media/LobbyMulti.png";
+void RenderFacadeClover::FacadeDrawLobbyMultiConnecting() {
+    std::string file = "media/LobbyOnline/LobbyMulti.png";
     device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
 }
 
+void RenderFacadeClover::FacadeDrawLobbyMultiWait() {
+    FacadeDrawSelectCharacter();
+    std::string file = "media/LobbyOnline/Waiting.png";
+    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
+}
+
+void RenderFacadeClover::FacadeDrawLobbyMultiSelChar() {
+    FacadeDrawSelectCharacter();
+}
+
 void RenderFacadeClover::FacadeDrawLobbyMultiExit() {
-    std::string file = "media/LobbyMultiFull.png";
+    std::string file = "media/LobbyOnline/LobbyMultiFull.png";
     device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
 }
 

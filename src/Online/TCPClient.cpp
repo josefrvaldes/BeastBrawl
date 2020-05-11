@@ -128,6 +128,12 @@ void TCPClient::HandleReceived(std::shared_ptr<unsigned char[]> recevBuff, const
             case Constants::PetitionTypes::TCP_FULL_GAME :{
                 HandleReceivedFullGame();
             }break;
+            case Constants::PetitionTypes::TCP_OPEN_GAME :{
+                HandleReceivedOpenGame();
+            }break;
+            case Constants::PetitionTypes::CHARACTER_REQUEST :{
+                HandleReceivedCharReq(recevBuff, bytesTransferred);
+            }break;
             default:
                 break;
         }
@@ -167,6 +173,24 @@ void TCPClient::HandleReceivedFullGame(){
     EventManager::GetInstance().AddEventMulti(Event{EventType::PREPARE_TO_DISCONNECT});
 }
 
+void TCPClient::HandleReceivedOpenGame(){
+    EventManager::GetInstance().AddEventMulti(Event{EventType::PREPARE_TO_SELECT_CHAR});
+}
+
+
+void TCPClient::HandleReceivedCharReq(std::shared_ptr<unsigned char[]> recevBuff, size_t bytesTransferred){
+    size_t currentIndex = 0;
+    Serialization::Deserialize<uint8_t>(recevBuff.get(), currentIndex);
+    bool alreadySelected = Serialization::Deserialize<bool>(recevBuff.get(), currentIndex);
+
+    if(!alreadySelected){ // cambiamos a la espera
+        EventManager::GetInstance().AddEventMulti(Event{EventType::TCP_WAIT_OTHERS});
+    }else{  // ya se encuentra seleccionado por lo que no haremos nada o notificaremos al usuario con sonido de error
+        EventManager::GetInstance().AddEventMulti(Event{EventType::TCP_SEL_CHAR});
+    }
+}
+
+
 
 void TCPClient::SendConnectionRequest() {
     if (stopped) {
@@ -179,12 +203,34 @@ void TCPClient::SendConnectionRequest() {
     uint8_t petitionType = Constants::CONNECTION_REQUEST;
     uint8_t character = GameValues::GetInstance()->GetCharacter();
     Serialization::Serialize(request.get(), &petitionType, currentBuffSize);
-    Serialization::Serialize(request.get(), &character, currentBuffSize);
 
     socket.async_send(
         boost::asio::buffer(request.get(), currentBuffSize),
         boost::bind(
             &TCPClient::HandleSentConnectionRequest,
+            this,
+            request,
+            boost::asio::placeholders::error,
+            boost::asio::placeholders::bytes_transferred));
+}
+
+void TCPClient::SendSelCharacterRequest() {
+    if (stopped) {
+        cout << "Hemos intentado SendCharacterRequest pero el cliente tcp estaba parado" << endl;
+        return;
+    }
+
+    std::shared_ptr<unsigned char[]> request(new unsigned char[Constants::ONLINE_BUFFER_SIZE]);
+    size_t currentBuffSize = 0;
+    uint8_t petitionType = Constants::CHARACTER_REQUEST;
+    uint8_t character = GameValues::GetInstance()->GetCharacter();
+    Serialization::Serialize(request.get(), &petitionType, currentBuffSize);
+    Serialization::Serialize(request.get(), &character, currentBuffSize);
+
+    socket.async_send(
+        boost::asio::buffer(request.get(), currentBuffSize),
+        boost::bind(
+            &TCPClient::HandleSentCharacterRequest,
             this,
             request,
             boost::asio::placeholders::error,
@@ -200,8 +246,23 @@ void TCPClient::HandleSentConnectionRequest(std::shared_ptr<unsigned char[]> req
     if (!errorCode) {
         size_t currentBuffSize = 0;
         uint8_t petitionType = Serialization::Deserialize<uint8_t>(request.get(), currentBuffSize);
+        cout << "Mensaje de conexion enviado cliente TCP con petitionType " << unsigned(petitionType) << endl;
+    } else {
+        cout << "Hubo un error enviando el mensaje de conexion: " << errorCode.message() << endl;
+    }
+}
+
+
+void TCPClient::HandleSentCharacterRequest(std::shared_ptr<unsigned char[]> request, const boost::system::error_code& errorCode, std::size_t bytes_transferred) {
+    if (stopped) {
+        cout << "Hemos intentado HandleSentCahrRequest pero el cliente tcp estaba parado" << endl;
+        return;
+    }
+
+    if (!errorCode) {
+        size_t currentBuffSize = 0;
+        uint8_t petitionType = Serialization::Deserialize<uint8_t>(request.get(), currentBuffSize);
         uint8_t personaje = Serialization::Deserialize<uint8_t>(request.get(), currentBuffSize);
-        
         cout << "Mensaje de conexion enviado cliente TCP con petitionType " << unsigned(petitionType) << " y personaje " << unsigned(personaje) << endl;
     } else {
         cout << "Hubo un error enviando el mensaje de conexion: " << errorCode.message() << endl;

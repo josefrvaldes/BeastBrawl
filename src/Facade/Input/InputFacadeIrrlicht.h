@@ -63,7 +63,10 @@ class InputFacadeIrrlicht : public InputFacade{
         void CheckInputIntro() override;
         void CheckInputEndRace(int&, int, bool) override;
         void CheckInputEndTournament(int&, int, uint8_t) override {};
-        void CheckInputLobbyMulti() override;
+        void CheckInputLobbyMultiConnecting() override;
+        void CheckInputLobbyMultiWait() override {};
+        void CheckInputLobbyMultiExit() override {};
+        void CheckInputLobbyMultiSelChar(int &, int) override {};
         void CheckInputController() override;
         void CheckInputCredits() override;
         void CheckInputSettings(std::vector<int> &inputs, int maxInputs[], int& option) override;

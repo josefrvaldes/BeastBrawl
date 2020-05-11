@@ -28,6 +28,7 @@ class Constants {
     inline static const float DELTA_TIME_MILLIS{DELTA_TIME * 1000};
 
     inline static const uint16_t ANY_PLAYER = 255;
+    inline static const uint16_t ANY_CHARACTER = 25;
 
     inline static const float MELON_MOLON_SPEED = 510.0;
 
@@ -44,7 +45,9 @@ class Constants {
                     DRIFT };
 
     enum PetitionTypes { CONNECTION_REQUEST = 2,
+                        CHARACTER_REQUEST,
                         TCP_START_GAME,
+                        TCP_OPEN_GAME,
                         TCP_FULL_GAME,
                         ENDGAME,
                         LAUNCH_ANIMATION_END,
@@ -62,6 +65,8 @@ class Constants {
                         COLLIDE_NITRO,
                         SEND_THROW_MELON_O_PUDIN,
                         SEND_THROW_TELEBANANA };
+
+
 
     enum RenderEngine { IRRLICHT,
                         CLOVER};
