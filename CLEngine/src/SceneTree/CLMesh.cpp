@@ -10,6 +10,7 @@ void CLMesh::Draw(GLuint shaderID) {
         material->Draw(shaderID);
     }
     if (mesh) {
+        
         mesh->Draw(shaderID);
     }
 }
