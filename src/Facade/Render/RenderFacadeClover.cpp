@@ -1025,7 +1025,7 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
     //CURRENT POWERUP
     device->DrawImage2D(25.0f, 25.0f, 150.0f, 150.0f, 0.1f ,powerUps[currentPowerUp], true);
 
-    // FONDO TABLA TIEMPOS
+    // TABLA TIEMPOS
     if (inputShowTable) {
         device->SetEnableDepthTest(false);
 
@@ -1051,7 +1051,7 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
             device->DrawImage2D(w - 200.0f, 150.0f + j*45.0f, 1.0, 0.9f, cadena, true);
             
             
-            device->DrawImage2D(w - 160.0f, 155.0f + j*45.0f, 0.3, 0.1f*j+0.1f, sprite, true);
+            device->DrawImage2D(w - 160.0f, 155.0f + j*45.0f, 0.4f, 0.1f*j+0.1f, sprite, true);  //CARITA
 
             auto it2 = seconds.find(it->first);
             if (it2 != seconds.end()) {
@@ -1099,7 +1099,7 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
                 auto posMarcadorY = 50.0f;
                 device->DrawImage2D(posMarcadorX, posMarcadorY , 1.0, 0.2f, cadena, true);
 
-                device->DrawImage2D(posMarcadorX + 50.0f, posMarcadorY + 20.0f, 50.0f, 50.0f, 0.05f, sprite, true);
+                device->DrawImage2D(posMarcadorX + 50.0f, posMarcadorY + 20.0f, 0.6f, 0.05f, sprite, true);     //CARITA
 
                 int time = cTotem->SEGUNDOS - cTotem->accumulatedTime/1000;
                 cadena = std::to_string(time);
@@ -1109,7 +1109,7 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
                     color = glm::vec3(255.0f, 0.0f, 0.0f);
                 }
 
-                device->RenderText2D(cadena, (posMarcadorX + 125.0f), (h - 110.0f), 0.05f, 1.0f, color);
+                device->RenderText2D(cadena, (posMarcadorX + 125.0f), (h - 110.0f), 0.05f, 0.8f, color);
                 //break;
             
             }
@@ -1145,7 +1145,7 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
                     auto posXPjMM = it->second.x * widthMM;
                     auto posYPjMM = it->second.y * heightMM;
 
-                    device->DrawImage2D(posXMiniMap + (posXPjMM - 12), posYMiniMap + (posYPjMM - 12), 25.0f, 25.0f, 0.1f*i, sprite, true);
+                    device->DrawImage2D(posXMiniMap + (posXPjMM - 12), posYMiniMap + (posYPjMM - 12), 0.3f, 0.1f*i, sprite, true);  //CARITA
                 } /*else { cout << "NO TENGO VALORES" << endl; }*/
                 //cout << "CAR " << cId->id << " CON POS: " << posXPjMM << " - " << posYPjMM << endl;
 
@@ -1161,7 +1161,7 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
         auto posXTMM = positionTotem.x * widthMM;
         auto posYTMM = positionTotem.y * heightMM;
         sprite = "media/hudTotem.png";
-        device->DrawImage2D(posXMiniMap + (posXTMM - 12), posYMiniMap + (posYTMM - 12), 25.0f, 25.0f, 0.1f, sprite, true);
+        device->DrawImage2D(posXMiniMap + (posXTMM - 12), posYMiniMap + (posYTMM - 12), 1.0f, 0.1f, sprite, true);
     }
 
 
@@ -1183,7 +1183,7 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
         if(min == 0 && seg <= 30) {
             color = glm::vec3(255.0f, 0.0f, 0.0f);
         }
-        device->RenderText2D(cadena, (w - 210.0f), (h - 110.0f), 0.05f, 1.0f, color);
+        device->RenderText2D(cadena, (w - 225.0f), (h - 110.0f), 0.05f, 0.8f, color);
     }
    
     
@@ -1204,7 +1204,7 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
             }
             device->DrawImage2D(50.0f, h - 100.0f, 0.7, 0.1f, cadena, true);
             cadena = cEventHUD->spriteTypeEvent;
-            device->DrawImage2D(150.0f, h - 100.0f, 0.7, 0.1f, cadena, true);
+            device->DrawImage2D(125.0f, h - 100.0f, 0.7, 0.1f, cadena, true);
         }
     }
 
@@ -1393,7 +1393,7 @@ void RenderFacadeClover::FacadeDrawEndRace() {
             case (uint16_t)mainCharacter::OCTOPUS:  file = "media/hudOctopus.png";        break;
             default: cout << "+++++++ No entiendo este personaje para el evento" << endl;   break;
         }
-        device->DrawImage2D(posX + 275.0f*scale, posY + (i*100.0f)*scale + 5.0f*scale, 0.75f*scale, 0.7f, file, true);
+        device->DrawImage2D(posX + 275.0f*scale, posY + (i*100.0f)*scale + 5.0f*scale, 1.0f*scale, 0.7f, file, true);  //CARITA
 
         auto it2 = secondsRank.find(it->first);
         if (it2 != secondsRank.end()){
@@ -1471,7 +1471,7 @@ void RenderFacadeClover::FacadeDrawEndTournament() {
                 case (uint16_t)mainCharacter::OCTOPUS:  file = "media/hudOctopus.png";        break;
                 default: cout << "+++++++ No entiendo este personaje para el evento" << endl;   break;
             }
-            device->DrawImage2D(posX + 275.0f*scale, posY + (i*100.0f)*scale + 5.0f*scale, 0.75f*scale, 0.5f, file, true);
+            device->DrawImage2D(posX + 275.0f*scale, posY + (i*100.0f)*scale + 5.0f*scale, 1.0f*scale, 0.5f, file, true);  //CARITA
 
             // puntos
 
@@ -1529,7 +1529,7 @@ void RenderFacadeClover::FacadeDrawEndTournament() {
                 case (uint16_t)mainCharacter::OCTOPUS:  file = "media/hudOctopus.png";        break;
                 default: cout << "+++++++ No entiendo este personaje para el evento" << endl;   break;
             }
-            device->DrawImage2D(posX + 275.0f*scale, posY + (i*100.0f)*scale + 5.0f*scale, 0.75f*scale, 0.5f, file, true);
+            device->DrawImage2D(posX + 275.0f*scale, posY + (i*100.0f)*scale + 5.0f*scale, 1.0f*scale, 0.5f, file, true);  //CARITA
 
             // puntos
             if (it->first < 10) { file = "0" + std::to_string(it->first); }

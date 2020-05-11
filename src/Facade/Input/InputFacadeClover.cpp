@@ -76,6 +76,35 @@ bool InputFacadeClover::IsKeyOrGamepadPress(int key, int button1, bool axes, flo
 }
 
 /**
+ * Comprueba si se ha pulsado una tecla 
+ * @param key - Input 
+ */
+bool InputFacadeClover::IsKeyPress(int key) {
+    return ( glfwGetKey(device->GetWindow(), key)) ;
+}
+
+/**
+ * Comprueba si se ha pulsado un boton del mando
+ * @param key - Input 
+ */
+bool InputFacadeClover::IsGamepadPress(int key) {
+    GLFWgamepadstate state;
+    glfwGetGamepadState(GLFW_JOYSTICK_1, &state);
+    return (state.buttons[key]) ;
+}
+
+/**
+ * Comprueba si se ha pulsado un joystick
+ * @param key - Input 
+ */
+bool InputFacadeClover::IsGamepadAxisPress(int key, float axes) {
+    GLFWgamepadstate state;
+    glfwGetGamepadState(GLFW_JOYSTICK_1, &state);
+    return ( state.axes[key] > axes ) ;
+}
+
+
+/**
  * Comprueba si se ha pasado el tiempo de delay desde la ultima vez que se pulso el boton.
  */
 bool InputFacadeClover::HasDelayPassed() {
@@ -104,14 +133,14 @@ void InputFacadeClover::CheckInputIntro(){
     }
 
     //ENTRAR
-    if ( IsKeyOrGamepadPress(GLFW_KEY_SPACE, GLFW_GAMEPAD_BUTTON_A, false, 0, 0, false) && HasDelayPassed() && !IsInputPressed(BUTTON_A) ) {
+    if ( (IsKeyPress(GLFW_KEY_ENTER) || IsKeyPress(GLFW_KEY_SPACE) || IsGamepadPress(GLFW_GAMEPAD_BUTTON_A)) && HasDelayPassed() && !IsInputPressed(BUTTON_A) ) {
 
         timeStart = system_clock::now();
         SetValueInput(BUTTON_A, true);
         EventManager::GetInstance().AddEventMulti(Event{EventType::MENU_OK});
         EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_MENU});
 
-    } else if ( !IsKeyOrGamepadPress(GLFW_KEY_SPACE, GLFW_GAMEPAD_BUTTON_A, false, 0, 0, false) ) {
+    } else if ( ! (IsKeyPress(GLFW_KEY_ENTER) || IsKeyPress(GLFW_KEY_SPACE) || IsGamepadPress(GLFW_GAMEPAD_BUTTON_A)) ) {
         SetValueInput(BUTTON_A, false);
     }
 }
@@ -185,7 +214,7 @@ void InputFacadeClover::CheckInputMenu(int& input, int maxInput){
     }
 
     //ESPACIO
-    if (IsKeyOrGamepadPress(GLFW_KEY_SPACE, GLFW_GAMEPAD_BUTTON_A, false, 0, 0, false) && HasDelayPassed() && !IsInputPressed(BUTTON_A)) {
+    if ((IsKeyPress(GLFW_KEY_ENTER) || IsKeyPress(GLFW_KEY_SPACE) || IsGamepadPress(GLFW_GAMEPAD_BUTTON_A)) && HasDelayPassed() && !IsInputPressed(BUTTON_A)) {
 
         timeStart = system_clock::now();
         SetValueInput(BUTTON_A, true);
@@ -230,7 +259,7 @@ void InputFacadeClover::CheckInputMenu(int& input, int maxInput){
             default : cout << "ESTE CODIGO DE INPUT NO EXISTE\n";
         }
 
-    } else if (!IsKeyOrGamepadPress(GLFW_KEY_SPACE, GLFW_GAMEPAD_BUTTON_A, false, 0, 0, false) ) {
+    } else if (!(IsKeyPress(GLFW_KEY_ENTER) || IsKeyPress(GLFW_KEY_SPACE) || IsGamepadPress(GLFW_GAMEPAD_BUTTON_A)) ) {
         SetValueInput(BUTTON_A, false);
     }
 }
@@ -326,7 +355,7 @@ void InputFacadeClover::CheckInputSelectCharacter(int &input, int maxInput) {
     }
 
     //ACEPTAR - ESPACIO
-    if ( IsKeyOrGamepadPress(GLFW_KEY_SPACE, GLFW_GAMEPAD_BUTTON_A, false, 0, 0, false) && HasDelayPassed() && !IsInputPressed(BUTTON_A) ) {
+    if ( (IsKeyPress(GLFW_KEY_ENTER) || IsKeyPress(GLFW_KEY_SPACE) || IsGamepadPress(GLFW_GAMEPAD_BUTTON_A)) && HasDelayPassed() && !IsInputPressed(BUTTON_A) ) {
 
         timeStart = system_clock::now();
         SetValueInput(BUTTON_A, true);
@@ -361,7 +390,7 @@ void InputFacadeClover::CheckInputSelectCharacter(int &input, int maxInput) {
             GameValues::GetInstance()->SetCharacter(input);
         }
 
-    } else if (!IsKeyOrGamepadPress(GLFW_KEY_SPACE, GLFW_GAMEPAD_BUTTON_A, false, 0, 0, false) ) {
+    } else if (!(IsKeyPress(GLFW_KEY_ENTER) || IsKeyPress(GLFW_KEY_SPACE) || IsGamepadPress(GLFW_GAMEPAD_BUTTON_A)) ) {
         SetValueInput(BUTTON_A, false);
     }
 
@@ -433,6 +462,7 @@ void InputFacadeClover::CheckInputRight(std::vector<int> &input, int maxInput[],
     }
 }
 
+//Para volver a la seleccion de personajes
 void InputFacadeClover::CheckInputBack(){
     if( IsKeyOrGamepadPress(GLFW_KEY_BACKSPACE, GLFW_GAMEPAD_BUTTON_B, false, 0, 0, false) && HasDelayPassed() && !IsInputPressed(BUTTON_B)) {
         timeStart = system_clock::now();

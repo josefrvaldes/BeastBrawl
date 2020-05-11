@@ -22,7 +22,7 @@ CLEngine::CLEngine (const unsigned int w, const unsigned int h, const string& ti
     CreateGlfwWindow(w, h, title);
     glewInit();
     ImGuiInit();
-    const std::string f = "fonts/digital-7-mono.ttf";
+    const std::string f = "fonts/Plump.ttf";
     LoadFont(f);
 
     smgr = make_unique<CLNode>();
