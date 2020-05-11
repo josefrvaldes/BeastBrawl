@@ -1,5 +1,5 @@
 # Blender MTL File: 'mayan_mapv2.blend'
-# Material Count: 12
+# Material Count: 13
 
 newmtl brick1
 Ns 323.999994
@@ -16,11 +16,11 @@ newmtl circle
 Ns 225.000000
 Ka 1.000000 1.000000 1.000000
 Kd 0.800000 0.800000 0.800000
-Ks 0.500000 0.500000 0.500000
+Ks 0.000000 0.000000 0.000000
 Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
-illum 2
+illum 1
 map_Kd clv_circle1_low_Material.001_BaseColor.tga
 
 newmtl column1
@@ -121,6 +121,18 @@ Ni 1.450000
 d 1.000000
 illum 1
 map_Kd clv_floorNew_Graph_basecolor.tga
+
+newmtl vine
+Ns 114.257624
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 1
+map_Kd clv_vines_albedo.png
+map_d clv_vines_albedo.png
 
 newmtl wood1
 Ns 0.000000
