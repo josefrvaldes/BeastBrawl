@@ -1,7 +1,7 @@
 # Blender v2.81 (sub 16) OBJ File: 'mayan_mapv2.blend'
 # www.blender.org
 mtllib joke_heads.mtl
-o joke_head
+o joke_head_teeth_low
 v -21.405663 188.049973 -1157.377197
 v -28.802944 180.299957 -1160.103516
 v -23.051098 178.028351 -1159.827759
