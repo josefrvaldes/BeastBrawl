@@ -577,12 +577,12 @@ void RenderFacadeClover::FacadeAddCamera(Entity* camera) {
 
     //float dimAABB = node->CalculateBoundingBox();
     //Sacamos sus dimensiones
-    float height = 10.0;
-    float width = 10.0;
-    float depth = 10.0;
-    shared_ptr<CDimensions> cDimensions = make_shared<CDimensions>(width, height, depth);
-    //cDimensions->boundingBoxMesh = GetBoundingByMesh(cId->id);
-    camera->AddComponent(cDimensions);  //Le añadimos el componente CDimensions al Entity que sea
+    //float height = 10.0;
+    //float width = 10.0;
+    //float depth = 10.0;
+    //shared_ptr<CDimensions> cDimensions = make_shared<CDimensions>(width, height, depth);
+    ////cDimensions->boundingBoxMesh = GetBoundingByMesh(cId->id);
+    //camera->AddComponent(cDimensions);  //Le añadimos el componente CDimensions al Entity que sea
 
 }
 
