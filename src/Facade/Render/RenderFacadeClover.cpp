@@ -804,11 +804,12 @@ void RenderFacadeClover::FacadeInitSelectCharacter() {
     cameraEntity->SetCameraTarget(glm::vec3(0.0f));
     cam->SetTranslation(glm::vec3(40.0f,0.0f,0.0f));
     cam->SetRotation(glm::vec3(0.0f));
+	cameraEntity->SetFOV(60.0f);
 
-
-    auto mesh1 = device->AddMesh(smgr,2,"media/kart_penguin.obj");
-    mesh1->SetScalation(glm::vec3(5.0f));
-    mesh1->SetTranslation(glm::vec3(0.0f,0.0f,30.0f));
+    auto mesh1 = device->AddMesh(smgr,2,"media/cyberoctopus_selection.obj");
+    mesh1->SetScalation(glm::vec3(10.0f));
+	mesh1->SetRotation(glm::vec3(0.0f, -40.0f, 0.0f));
+    mesh1->SetTranslation(glm::vec3(-55.0f,-25.0f,-35.0f));
     auto shader1 = resourceManager->GetResourceShader("CLEngine/src/Shaders/basicShader.vert","CLEngine/src/Shaders/basicShader.frag");
 
     mesh1->SetShaderProgramID(shader1->GetProgramID());

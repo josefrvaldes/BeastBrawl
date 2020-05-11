@@ -518,7 +518,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 1
-map_Kd clv_rock1_low_rock1_BaseColor.tga
+map_Kd clv_rock1_2D_View.tga
 
 newmtl snake_head
 Ns 0.000000
