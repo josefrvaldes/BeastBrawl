@@ -1060,11 +1060,11 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
                     ++positionR;
                 }
                 cadena = std::to_string(positionR) + ".";
-                device->RenderText2D(cadena, w - 190.0f, h - 180.0f - 45.0f*j, 0.1f*j+0.1f, 0.5, glm::vec3(255.0f,255.0f,255.0f));
+                device->RenderText2D(cadena, w - 190.0f, h - 180.0f - 45.0f*j, 0.1f*j+0.1f, 0.6f, glm::vec3(255.0f,255.0f,255.0f));
 
                 antTime = it2->second;
                 cadena = std::to_string(antTime);
-                device->RenderText2D(cadena, w - 110.0f, h - 180.0f - 45.0f*j, 0.1f*j+0.1f, 0.5, color);
+                device->RenderText2D(cadena, w - 110.0f, h - 180.0f - 45.0f*j, 0.1f*j+0.1f, 0.6f, color);
             }
             ++j;
         }
@@ -1109,7 +1109,7 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
                     color = glm::vec3(255.0f, 0.0f, 0.0f);
                 }
 
-                device->RenderText2D(cadena, (posMarcadorX + 125.0f), (h - 110.0f), 0.05f, 0.75f, color);
+                device->RenderText2D(cadena, (posMarcadorX + 125.0f), (h - 110.0f), 0.05f, 1.0f, color);
                 //break;
             
             }
@@ -1183,7 +1183,7 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
         if(min == 0 && seg <= 30) {
             color = glm::vec3(255.0f, 0.0f, 0.0f);
         }
-        device->RenderText2D(cadena, (w - 210.0f), (h - 110.0f), 0.05f, 0.75f, color);
+        device->RenderText2D(cadena, (w - 210.0f), (h - 110.0f), 0.05f, 1.0f, color);
     }
    
     
