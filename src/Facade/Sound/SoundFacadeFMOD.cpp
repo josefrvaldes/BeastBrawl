@@ -308,6 +308,7 @@ void SoundFacadeFMOD::LoadSoundByState(const uint8_t numState) {
             //StopEvent("Musica/menu");
             LoadSoundBank("Menu", 0);
             LoadSoundBank("Musica", 0);
+            PlayEvent("Musica/intro");
             /*if (!soundEngine->IsPlaying2D("Musica/menu")) {
                 PlayEvent("Musica/menu");
             }*/
