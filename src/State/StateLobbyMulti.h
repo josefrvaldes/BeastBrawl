@@ -35,6 +35,7 @@ class StateLobbyMulti : public State{
     void SendCharacterRequest(DataMap* d);
     void ChangeToWait(DataMap* d);
     void ChangeToSelChar(DataMap* d);
+    void ReturnToSelChar(DataMap* d);
     void Timer();
     RenderFacade* renderEngine = { nullptr };
     SoundFacade* soundEngine = { nullptr };

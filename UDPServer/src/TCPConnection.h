@@ -37,6 +37,7 @@ class TCPConnection : public std::enable_shared_from_this<TCPConnection> {
 
     void HandleReceivedCatchChar(std::shared_ptr<unsigned char[]> recevBuff, const size_t currentBufferSize);
     void SendRequestSelChar(bool selected);
+    void CancelChar();
 
     string GetTime() {
         auto time_point = system_clock::now();

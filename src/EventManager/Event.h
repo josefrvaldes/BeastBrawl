@@ -120,7 +120,8 @@ enum EventType {
     DISCONNECTED_PLAYER,
     TCP_CHAR_REQUEST,
     TCP_WAIT_OTHERS,
-    TCP_SEL_CHAR
+    TCP_SEL_CHAR,
+    RETURN_TO_SELCHAR
 };
 
 // enum DataType{

@@ -33,6 +33,7 @@ class TCPClient {
     void SendConnectionRequest();
     void SendDisconnectionRequest();
     void SendSelCharacterRequest();
+    void SendCancelChar();
     
    private:
     void StartConnect(tcp::resolver::results_type::iterator endpoint_iter);

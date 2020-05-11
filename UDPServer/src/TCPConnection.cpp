@@ -49,6 +49,9 @@ void TCPConnection::HandleRead(std::shared_ptr<unsigned char[]> recevBuff, const
             case Constants::PetitionTypes::CHARACTER_REQUEST: {
                 HandleReceivedCatchChar(recevBuff, bytes_transferred);
             } break;
+            case Constants::PetitionTypes::TCP_CANCEL_CHARACTER: {
+                CancelChar();
+            } break;
             default:
                 break;
         }
@@ -149,6 +152,12 @@ void TCPConnection::HandleWrite(const boost::system::error_code& error, size_t b
 }
 
 
+void TCPConnection::CancelChar(){
+    for(auto& p : players){
+        if(p.endpointTCP == socket_.remote_endpoint())
+            p.character = Constants::ANY_CHARACTER;
+    }
+}
 
 
 void TCPConnection::HandleReceivedCatchChar(std::shared_ptr<unsigned char[]> recevBuff, const size_t currentBufferSize){

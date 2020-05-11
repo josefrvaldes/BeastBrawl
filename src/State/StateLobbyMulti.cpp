@@ -95,6 +95,11 @@ void StateLobbyMulti::SubscribeToEvents() {
         EventType::TCP_SEL_CHAR,
         bind(&StateLobbyMulti::ChangeToSelChar, this, placeholders::_1),
         "ChangeToSelChar"));
+    
+    EventManager::GetInstance().SubscribeMulti(Listener(
+        EventType::RETURN_TO_SELCHAR,
+        bind(&StateLobbyMulti::ReturnToSelChar, this, placeholders::_1),
+        "ReturnToSelChar"));
 }
 
 void StateLobbyMulti::StartGameMulti(DataMap* d) {
@@ -139,6 +144,11 @@ void StateLobbyMulti::ChangeToWait(DataMap* d){
 }
 
 void StateLobbyMulti::ChangeToSelChar(DataMap* d){
+    actualState = StatesLobbyMulti::SELECTING_CHARACTER;
+}
+
+void StateLobbyMulti::ReturnToSelChar(DataMap* d){
+    tcpClient->SendCancelChar();
     actualState = StatesLobbyMulti::SELECTING_CHARACTER;
 }
 

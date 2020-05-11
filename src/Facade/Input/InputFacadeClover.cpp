@@ -1155,9 +1155,7 @@ void InputFacadeClover::CheckInputLobbyMultiWait() {
     if ( IsKeyOrGamepadPress(GLFW_KEY_BACKSPACE, GLFW_GAMEPAD_BUTTON_B, false, 0, 0, false) && !IsInputPressed(BUTTON_B)) {
         SetValueInput(InputXBox::BUTTON_B, true);
         EventManager::GetInstance().AddEventMulti(Event{EventType::MENU_BACK});
-        //EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_SELECT_CHARACTER});
-        // enviar evento para volver a la seleccion de personaje
-        // enviar evento al online para decir que dejas de seleccionarlo
+        EventManager::GetInstance().AddEventMulti(Event{EventType::RETURN_TO_SELCHAR});
     } else if ( !IsKeyOrGamepadPress(GLFW_KEY_BACKSPACE, GLFW_GAMEPAD_BUTTON_B, false, 0 , 0, false) ) {
         SetValueInput(InputXBox::BUTTON_B, false);
     }

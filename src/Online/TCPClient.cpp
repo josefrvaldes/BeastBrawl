@@ -242,6 +242,29 @@ void TCPClient::SendSelCharacterRequest() {
             boost::asio::placeholders::bytes_transferred));
 }
 
+void TCPClient::SendCancelChar(){
+    if (stopped) {
+        cout << "Hemos intentado SendCancelChar pero el cliente tcp estaba parado" << endl;
+        return;
+    }
+
+    std::shared_ptr<unsigned char[]> request(new unsigned char[Constants::ONLINE_BUFFER_SIZE]);
+    size_t currentBuffSize = 0;
+    uint8_t petitionType = Constants::TCP_CANCEL_CHARACTER;
+    uint8_t character = GameValues::GetInstance()->GetCharacter();
+    Serialization::Serialize(request.get(), &petitionType, currentBuffSize);
+
+    socket.async_send(
+        boost::asio::buffer(request.get(), currentBuffSize),
+        boost::bind(
+            &TCPClient::HandleSentCharacterRequest,
+            this,
+            request,
+            boost::asio::placeholders::error,
+            boost::asio::placeholders::bytes_transferred));
+}
+
+
 void TCPClient::HandleSentConnectionRequest(std::shared_ptr<unsigned char[]> request, const boost::system::error_code& errorCode, std::size_t bytes_transferred) {
     if (stopped) {
         cout << "Hemos intentado HandleSentConnectionRequest pero el cliente tcp estaba parado" << endl;

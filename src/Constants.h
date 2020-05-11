@@ -46,6 +46,7 @@ class Constants {
 
     enum PetitionTypes { CONNECTION_REQUEST = 2,
                         CHARACTER_REQUEST,
+                        TCP_CANCEL_CHARACTER,
                         TCP_START_GAME,
                         TCP_OPEN_GAME,
                         TCP_FULL_GAME,
