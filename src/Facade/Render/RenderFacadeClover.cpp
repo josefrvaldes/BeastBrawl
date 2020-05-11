@@ -1173,7 +1173,7 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
 
 void RenderFacadeClover::FacadeDrawIntro() {
     if(!introAnimation){
-        introAnimation = make_unique<Animation2D>("media/introAnimation/Beast Brawl.jpg",812,60);
+        introAnimation = make_unique<Animation2D>("media/introAnimation/Beast Brawl.jpg",915,60);
         introAnimation->Start();
     }
     
