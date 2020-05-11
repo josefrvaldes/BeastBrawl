@@ -246,6 +246,8 @@ void CLEngine::DrawObjects(){
     CalculateViewProjMatrix(lightSpaceMatrix);
     CalculateLights();
     glm::mat4 VPmatrix = projection*view;
+
+    
     smgr->DFSTree(glm::mat4(1.0f),GetActiveCamera(), VPmatrix);
 
     if(grassActivate)
