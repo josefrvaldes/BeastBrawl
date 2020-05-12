@@ -171,6 +171,13 @@ void UDPServer::HandleReceive(std::shared_ptr<unsigned char[]> recevBuff, std::s
                             HandleReceivedWaitingForCountdown(p, buffRecieved, bytesTransferred, *remoteClient.get());
                         }
                         break;
+                    case Constants::PetitionTypes::SEND_CLOCK_SYNC:
+                        if (p.lastClockSyncReceived < time) {
+                            p.lastClockSyncReceived = time;
+                            uint16_t idOnline2 = Serialization::Deserialize<uint16_t>(recevBuff.get(), currentIndex);
+                            HandleReceivedClockSync(p, idOnline2, buffRecieved, bytesTransferred, *remoteClient.get());
+                        }
+                        break;
                     default:
                         cout << "Petición incorrecta" << endl;
                         break;
@@ -291,6 +298,12 @@ void UDPServer::HandleReceivedWaitingForCountdown(Player& p, unsigned char buffe
                 }
         }
     }
+}
+
+void UDPServer::HandleReceivedClockSync(Player& p, uint16_t idOnline2, unsigned char bufferToReSend[], const size_t currentBufferSize, const udp::endpoint& originalClient) {
+    Player *p2 = GetPlayerById(idOnline2);
+    for (uint8_t i = 0; i < NUM_REINTENTOS; ++i)
+        SendBytes(bufferToReSend, currentBufferSize, *p2);       
 }
 
 void UDPServer::SendLaunchAnimationCountdown(const Player& player) {

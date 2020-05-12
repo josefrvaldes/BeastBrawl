@@ -832,6 +832,12 @@ void UDPClient::HandleSentWaitingForCountdown(const boost::system::error_code& e
              << "\n";
 }
 
+void UDPClient::HandleSentClockSync(const boost::system::error_code& errorCode, std::size_t bytes_transferred) {
+    if (errorCode)
+        cout << "Hubo un error enviando el clockSync, HAY QUE REPETIR [" << errorCode << "]"
+             << "\n";
+}
+
 void UDPClient::HandleSentThrowPU(const boost::system::error_code& errorCode, std::size_t bytes_transferred) {
     if (errorCode) {
         cout << "Hubo un error enviando el throwPU [" << errorCode << "]" << endl;
@@ -889,4 +895,30 @@ void UDPClient::HandleSentDateTime(const std::shared_ptr<std::string> message,
     } else {
         cout << "Hubo un error enviando el mensaje, madafaka" << endl;
     }
+}
+
+
+
+void UDPClient::SendClockSync(uint16_t idOnline1, uint16_t idOnline2, int64_t time, float turnOut, uint8_t numMeasurements) {
+    unsigned char requestBuff[Constants::ONLINE_BUFFER_SIZE];
+    size_t currentBuffSize = 0;
+    uint8_t callType = Constants::PetitionTypes::SEND_CLOCK_SYNC;
+    Serialization::Serialize(requestBuff, &callType, currentBuffSize);
+    Serialization::Serialize(requestBuff, &idOnline1, currentBuffSize);
+    Serialization::Serialize(requestBuff, &idOnline2, currentBuffSize);
+    Serialization::Serialize(requestBuff, &time, currentBuffSize);
+    Serialization::Serialize(requestBuff, &turnOut, currentBuffSize);
+    Serialization::Serialize(requestBuff, &numMeasurements, currentBuffSize);
+
+    cout << "Soy el " << idOnline1 << ", estamos enviando un ClockSync con los datos idOnline2[" << idOnline2 << "] time[" << time << "]" 
+         << "turnOut[" << turnOut << "] numMeasurements["<<numMeasurements<<"]"
+         << endl;
+    socket.async_send_to(
+        boost::asio::buffer(requestBuff, currentBuffSize),
+        serverEndpoint,
+        boost::bind(
+            &UDPClient::HandleSentClockSync,
+            this,
+            boost::asio::placeholders::error,
+            boost::asio::placeholders::bytes_transferred));
 }

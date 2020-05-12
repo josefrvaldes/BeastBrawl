@@ -11,6 +11,7 @@
 #include "../Systems/Utils.h"
 
 StateInGameMulti::StateInGameMulti(uint16_t idOnline_, const vector<uint16_t> idsEnemies_, const vector<uint8_t> characters_) : StateInGame() {
+    RenderFacadeManager::GetInstance()->GetRenderFacade()->CleanScene();
     GameValues::GetInstance()->SetGameTime(180);
     GameValues::GetInstance()->SetTimeTotem(30);
     InitState();

@@ -1,12 +1,12 @@
 #include "SystemOnline.h"
 
 #include "../../include/glm/vec3.hpp"
+#include "../Components/CCar.h"
 #include "../Components/CIDOnline.h"
 #include "../Components/COnline.h"
 #include "../Components/CPowerUp.h"
 #include "../Components/CTargetEntity.h"
 #include "../Components/CTotem.h"
-#include "../Components/CCar.h"
 #include "../Components/CTransformable.h"
 #include "../Constants.h"
 #include "../Entities/CarHuman.h"
@@ -21,7 +21,7 @@
 
 using namespace boost::asio;
 
-SystemOnline::SystemOnline(ManCar &manCar_, uint16_t idOnlineMainCar_) : idOnlineMainCar{idOnlineMainCar_}, manCar{manCar_}, udpClient{make_unique<UDPClient>(Constants::SERVER_HOST, SERVER_PORT_UDP)} {
+SystemOnline::SystemOnline(ManCar &manCar_, uint16_t idOnlineMainCar_) : idOnlineMainCar{idOnlineMainCar_}, timeStartClock{Utils::getMillisSinceEpoch()}, manCar{manCar_}, udpClient{make_unique<UDPClient>(Constants::SERVER_HOST, SERVER_PORT_UDP)} {
     shared_ptr<CarHuman> car = manCar.GetCar();  // esto sirve para algo? se podrá borrar, no?
     SubscribeToEvents();
 }
@@ -153,4 +153,29 @@ void SystemOnline::SendNitro(uint16_t idCarWithTotem, uint16_t idCarWithNitro) c
 
 void SystemOnline::SendWaitingForCountdown() const {
     udpClient->SendWaitingForCountdown(idOnlineMainCar);
+}
+
+void SystemOnline::SyncClocks() {
+    auto car = manCar.GetCar();
+    COnline *cOnlineMainCar = static_cast<COnline *>(car->GetComponent(CompType::OnlineComp).get());
+    if (cOnlineMainCar->idClient == 1) {
+        // ordenamos las entities dentro del vector por idOnline
+        auto entities = manCar.GetEntities();
+        std::sort(entities.begin(), entities.end(), []( std::shared_ptr<Entity> &a, std::shared_ptr<Entity> &b) -> bool {
+            COnline* cOnlineA = static_cast<COnline *>(a->GetComponent(CompType::OnlineComp).get());
+            COnline* cOnlineB = static_cast<COnline *>(b->GetComponent(CompType::OnlineComp).get());
+            return cOnlineA->idClient > cOnlineB->idClient;
+        });
+        
+        for (size_t indexCar = 1; indexCar < manCar.GetEntities().size(); indexCar++) {
+            auto currentCar = entities[indexCar];
+            COnline* cOnline = static_cast<COnline *>(currentCar->GetComponent(CompType::OnlineComp).get());
+            for (uint8_t i = 0; i < TIMES_RESEND; ++i) // ojo con el reenvío aquí, la podemos liar madafaka
+                udpClient->SendClockSync(cOnlineMainCar->idClient, cOnline->idClient, GetGameTime(), 0, 0);
+        }
+    }
+}
+
+int64_t SystemOnline::GetGameTime() const {
+    return Utils::getMillisSinceEpoch() - timeStartClock;
 }

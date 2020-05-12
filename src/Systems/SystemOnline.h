@@ -30,7 +30,11 @@ class SystemOnline {
     void SendRoboJorobo() const;
     void SendWaitingForCountdown() const;
     void SendNitro(uint16_t idCarWithTotem, uint16_t idCarWithNitro) const;
+    int64_t GetGameTime() const ;
     uint16_t idOnlineMainCar;
+    void SyncClocks();
+    int64_t timeStartClock;
+    float turnout;
 
    private:
     void SubscribeToEvents();

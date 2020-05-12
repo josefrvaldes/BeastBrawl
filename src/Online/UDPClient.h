@@ -40,6 +40,7 @@ class UDPClient {
     void SendSync(uint16_t idOnline, const glm::vec3& posCar, const glm::vec3& rotCar, float speed, float wheelRotation, float skidDeg, float skidRotation, typeCPowerUp typePU, bool haveTotem, int64_t totemTime,
                   bool totemInGround, const glm::vec3& posTotem);
     void SendCatchPU(uint16_t idOnline, typeCPowerUp typePU);
+    void SendClockSync(uint16_t idOnline1, uint16_t idOnline2, int64_t time, float turnOut, uint8_t numMeasurements);
     void SendCatchTotem(uint16_t idOnline, uint16_t idPlayerCatched);
     void SendCrashPUCar(const uint16_t idOnline, const uint16_t idPowerUp, const uint16_t idCar);
     void SendCrashPUWall(const uint16_t idOnline, const uint16_t idPowerUp);
@@ -86,6 +87,7 @@ class UDPClient {
     void HandleSentCrashPUWall(const boost::system::error_code& errorCode, std::size_t bytes_transferred);
     void HandleSentLaunchAnimationEnd(const boost::system::error_code& errorCode, std::size_t bytes_transferred);
     void HandleSentWaitingForCountdown(const boost::system::error_code& errorCode, std::size_t bytes_transferred);
+    void HandleSentClockSync(const boost::system::error_code& errorCode, std::size_t bytes_transferred);
 
     void HandleSentDateTime(const std::shared_ptr<std::string> message,
                             const boost::system::error_code& errorCode,
