@@ -355,12 +355,11 @@ void InputFacadeClover::CheckInputSelCharIntro(int &input) {
         //Registra el personaje a usar
         GameValues::GetInstance()->SetCharacter(input);
 
-        RenderFacadeManager::GetInstance()->GetRenderFacade()->CleanScene();
-
         //TODO: Ahora mismo, SELECCIONAR PERSONAJE y VOLVER A JUGAR del EndRace, hacen lo mismo. Falta la gestion online.
         if ( multiplayer ) {
             EventManager::GetInstance().AddEventMulti(Event{EventType::TCP_CHAR_REQUEST});
         } else{
+            RenderFacadeManager::GetInstance()->GetRenderFacade()->CleanScene();
             if(!tournamentMode)
                 EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_GAME_OPTIONS});
             else
@@ -1059,7 +1058,7 @@ void InputFacadeClover::CheckInputEndTournament(int& input, int maxInput, uint8_
         if(interval > 250) {
             EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_MENU});
             //TODO: ¿Deberia resetear al volver al comenzar o al volver al menú?
-            RenderFacadeManager::GetInstance()->GetRenderFacade()->ResetInputGameOptions();
+            RenderFacadeManager::GetInstance()->GetRenderFacade()->ResetInputTournamentOptions();
             RenderFacadeManager::GetInstance()->GetRenderFacade()->ResetInputCharacter();
             WeHaveToGoToMenu = false;
         }
@@ -1111,7 +1110,7 @@ void InputFacadeClover::CheckInputEndTournament(int& input, int maxInput, uint8_
                     case 2: {
                         WeHaveToGoToMenu = true;
                         timerGoToMenu = Utils::getMillisSinceEpoch();
-                        RenderFacadeManager::GetInstance()->GetRenderFacade()->ResetInputGameOptions();
+                        RenderFacadeManager::GetInstance()->GetRenderFacade()->ResetInputTournamentOptions();
                         RenderFacadeManager::GetInstance()->GetRenderFacade()->ResetInputCharacter();
                         break;
                     }
