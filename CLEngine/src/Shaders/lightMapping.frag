@@ -247,8 +247,12 @@ void main(){
 //        k++;
 //    }
 //
-//    FragColor = vec4(result,1.0);
+//  FragColor = vec4(result,1.0);
     //FragColor = floor(FragColor * cartoonParts) / cartoonParts;  // estaba mal aplicado, era en la luz difusa solo
+
+	vec4 texColor = texture(material.diffuse, TexCoords);
+    if(texColor.a < 0.5)                            // Para eliminar la transparencia, valor normal 0.1
+        discard;
 
     //Si comentas esta linea se ve con luces
     FragColor = texture(material.diffuse,TexCoords);
