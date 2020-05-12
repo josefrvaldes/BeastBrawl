@@ -58,8 +58,10 @@ class RenderFacadeClover : public RenderFacade {
       void FacadeDrawPause() override;
       void FacadeDrawEndRace() override;
       void FacadeDrawEndTournament() override;
-      void FacadeDrawLobbyMulti() override;
+      void FacadeDrawLobbyMultiConnecting() override;
       void FacadeDrawLobbyMultiExit() override;
+      void FacadeDrawLobbyMultiSelChar() override;
+      void FacadeDrawLobbyMultiWait() override;
       void FacadeDrawControler() override;
       void FacadeDrawCredits() override;
       void FacadeDrawSettings() override;
@@ -86,7 +88,10 @@ class RenderFacadeClover : public RenderFacade {
       void FacadeCheckInputPause() override;
       void FacadeCheckInputEndRace() override;
       void FacadeCheckInputEndTournament() override;
-      void FacadeCheckInputLobbyMulti() override;
+      void FacadeCheckInputLobbyMultiConnecting() override;
+      void FacadeCheckInputLobbyMultiExit() override;
+      void FacadeCheckInputLobbyMultiSelChar() override;
+      void FacadeCheckInputLobbyMultiWait() override;
       void FacadeCheckInputControler() override;
       void FacadeCheckInputCredits() override;
       void FacadeCheckInputSettings() override;

@@ -21,30 +21,5 @@ void SystemBoxPowerUp::update(ManBoxPowerUp* manBoxPowerUp){
                 manBoxPowerUp->resetBox(actualBox.get());
             }
         }
-        // ROTACION
-        auto cTransformable = static_cast<CTransformable*>(actualBox.get()->GetComponent(CompType::TransformableComp).get());
-        cTransformable->rotation.y += 100 * Constants::DELTA_TIME;
-
-        // ESCALADO
-        if (cTransformable->scale.y > 2.0 + offsetScale){
-            increase = false;
-        }
-        if(cTransformable->scale.y < 2.0 - offsetScale){
-            increase = true;
-        }
-
-        if(increase){
-            cTransformable->scale.x += 0.7 * Constants::DELTA_TIME;
-            cTransformable->scale.y += 0.7 * Constants::DELTA_TIME;
-            cTransformable->scale.z += 0.7 * Constants::DELTA_TIME;
-        }    
-        else{
-            cTransformable->scale.x -= 0.7 * Constants::DELTA_TIME;
-            cTransformable->scale.y -= 0.7 * Constants::DELTA_TIME;
-            cTransformable->scale.z -= 0.7 * Constants::DELTA_TIME;
-        }                    
-        
-
-
     }
 }

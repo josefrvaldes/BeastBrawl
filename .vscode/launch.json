@@ -9,7 +9,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/Beast_Brawl",
-            "args": [],
+            "args": ["josevaldes.es"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [

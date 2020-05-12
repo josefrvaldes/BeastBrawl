@@ -986,7 +986,7 @@ void RenderFacadeIrrlicht::FacadeCheckInputEndRace() {
     }
 }
 
-void RenderFacadeIrrlicht::FacadeCheckInputLobbyMulti() {
+void RenderFacadeIrrlicht::FacadeCheckInputLobbyMultiConnecting() {
     //Cambiamos a ingame
     if (receiver.IsKeyDown(KEY_DELETE)) {
         device->closeDevice();
@@ -1121,7 +1121,7 @@ void RenderFacadeIrrlicht::FacadeDrawEndRace() {
     driver->endScene();
 }
 
-void RenderFacadeIrrlicht::FacadeDrawLobbyMulti() {
+void RenderFacadeIrrlicht::FacadeDrawLobbyMultiConnecting() {
     driver->beginScene(true, true, video::SColor(255, 113, 113, 133));
     //smgr->drawAll();  // draw the 3d scene
     driver->draw2DImage(lobbyMultBG, core::position2d<s32>(0, 0),

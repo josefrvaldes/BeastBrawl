@@ -32,6 +32,8 @@ class TCPClient {
     ~TCPClient();
     void SendConnectionRequest();
     void SendDisconnectionRequest();
+    void SendSelCharacterRequest();
+    void SendCancelChar();
     
    private:
     void StartConnect(tcp::resolver::results_type::iterator endpoint_iter);
@@ -43,8 +45,12 @@ class TCPClient {
     void HandleReceived(std::shared_ptr<unsigned char[]> recevBuff, const boost::system::error_code& error, size_t bytesTransferred);
     void HandleReceivedStartGame(std::shared_ptr<unsigned char[]> recevBuff, size_t bytesTransferred);
     void HandleReceivedFullGame();
+    void HandleReceivedOpenGame();
+    void HandleReceivedCharReq(std::shared_ptr<unsigned char[]> recevBuff, size_t bytesTransferred);
 
-    void HandleSentConnectionRequest(const boost::system::error_code& errorCode, std::size_t bytes_transferred);
+
+    void HandleSentConnectionRequest(std::shared_ptr<unsigned char[]> request, const boost::system::error_code& errorCode, std::size_t bytes_transferred);
+    void HandleSentCharacterRequest(std::shared_ptr<unsigned char[]> request, const boost::system::error_code& errorCode, std::size_t bytes_transferred);
     void Stop();
 
     boost::asio::io_context context;

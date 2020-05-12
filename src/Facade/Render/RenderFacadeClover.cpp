@@ -587,12 +587,12 @@ void RenderFacadeClover::FacadeAddCamera(Entity* camera) {
 
     //float dimAABB = node->CalculateBoundingBox();
     //Sacamos sus dimensiones
-    //float height = 10.0;
-    //float width = 10.0;
-    //float depth = 10.0;
-    //shared_ptr<CDimensions> cDimensions = make_shared<CDimensions>(width, height, depth);
-    ////cDimensions->boundingBoxMesh = GetBoundingByMesh(cId->id);
-    //camera->AddComponent(cDimensions);  //Le añadimos el componente CDimensions al Entity que sea
+    float height = 10.0;
+    float width = 10.0;
+    float depth = 10.0;
+    shared_ptr<CDimensions> cDimensions = make_shared<CDimensions>(width, height, depth);
+    //cDimensions->boundingBoxMesh = GetBoundingByMesh(cId->id);
+    camera->AddComponent(cDimensions);  //Le añadimos el componente CDimensions al Entity que sea
 
 }
 
@@ -903,7 +903,7 @@ void RenderFacadeClover::FacadeInitEndTournament() {
 }
 
 void RenderFacadeClover::FacadeInitLobbyMulti() {
-
+    FacadeInitSelectCharacter();
 }
 
 //TODO: No se usa
@@ -971,8 +971,20 @@ void RenderFacadeClover::FacadeCheckInputEndTournament() {
     InputFacadeManager::GetInstance()->GetInputFacade()->CheckInputEndTournament(inputET, maxInputET, menuET);
 }
 
-void RenderFacadeClover::FacadeCheckInputLobbyMulti() {
-    InputFacadeManager::GetInstance()->GetInputFacade()->CheckInputLobbyMulti();
+void RenderFacadeClover::FacadeCheckInputLobbyMultiConnecting() {
+    InputFacadeManager::GetInstance()->GetInputFacade()->CheckInputLobbyMultiConnecting();
+}
+
+void RenderFacadeClover::FacadeCheckInputLobbyMultiWait() {
+    InputFacadeManager::GetInstance()->GetInputFacade()->CheckInputLobbyMultiWait();
+}
+
+void RenderFacadeClover::FacadeCheckInputLobbyMultiExit() {
+    InputFacadeManager::GetInstance()->GetInputFacade()->CheckInputLobbyMultiExit();
+}
+
+void RenderFacadeClover::FacadeCheckInputLobbyMultiSelChar() {
+    InputFacadeManager::GetInstance()->GetInputFacade()->CheckInputLobbyMultiSelChar(inputSC, maxInputSC);
 }
 
 void RenderFacadeClover::FacadeCheckInputSettings() {
@@ -1225,7 +1237,7 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
 
 void RenderFacadeClover::FacadeDrawIntro() {
     if(!introAnimation){
-        introAnimation = make_unique<Animation2D>("media/introAnimation/Beast Brawl.jpg",915,60);
+        introAnimation = make_unique<Animation2D>("media/introAnimation/Beast Brawl.jpg",812,60);
         introAnimation->Start();
     }
     
@@ -1589,13 +1601,22 @@ void RenderFacadeClover::FacadeDrawCredits() {
     device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
 }
 
-void RenderFacadeClover::FacadeDrawLobbyMulti() {
-    std::string file = "media/LobbyMulti.png";
+void RenderFacadeClover::FacadeDrawLobbyMultiConnecting() {
+    std::string file = "media/LobbyOnline/LobbyMulti.png";
     device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
 }
 
+void RenderFacadeClover::FacadeDrawLobbyMultiWait() {
+    std::string file = "media/LobbyOnline/Waiting.png";
+    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
+}
+
+void RenderFacadeClover::FacadeDrawLobbyMultiSelChar() {
+    FacadeDrawSelectCharacter();
+}
+
 void RenderFacadeClover::FacadeDrawLobbyMultiExit() {
-    std::string file = "media/LobbyMultiFull.png";
+    std::string file = "media/LobbyOnline/LobbyMultiFull.png";
     device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
 }
 

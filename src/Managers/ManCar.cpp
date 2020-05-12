@@ -103,6 +103,11 @@ bool ManCar::UpdateCarPlayer(ManTotem &manTotem_) {
     bool gameFinished = UpdateGeneralCar(*carPlayer, *totem);
 
     physics->update(this->GetCar().get());
+    CCar * ccar = static_cast<CCar*>(carPlayer->GetComponent(CompType::CarComp).get());
+    if(ccar->speed > 0) {
+        CTransformable * cTransfor = static_cast<CTransformable*>(carPlayer->GetComponent(CompType::TransformableComp).get());
+        // cout << "JUG1" << Utils::getISOCurrentTimestampMillis() << " El mainCar se ha movido, sus datos son: speed["<<ccar->speed<<"]  transfor["<<*cTransfor<<"]" << endl;
+    }
     return gameFinished;
 }
 
@@ -132,6 +137,7 @@ void ManCar::CreateMainCar(int pj, glm::vec3 _position) {
     car = make_shared<CarHuman>(pj, _position); 
     entities.push_back(car);
     car->SetRotation(glm::vec3(0,GetAngleToTotem(_position),0));
+    //car->SetRotation(glm::vec3(0,90,0));
 }
 
 //Cambiar PJ
@@ -139,6 +145,7 @@ void ManCar::CreateHumanCar(int pj, glm::vec3 _position) {
     shared_ptr<CarHuman> p = make_shared<CarHuman>(pj, _position);
     entities.push_back(p);
     p->SetRotation(glm::vec3(0,GetAngleToTotem(_position),0));
+    //car->SetRotation(glm::vec3(0,90,0));
 }
 
 //Cambiar PJ
@@ -146,6 +153,7 @@ void ManCar::CreateCarAI(int pj, glm::vec3 _position) {
     shared_ptr<CarAI> p = make_shared<CarAI>(pj, _position);
     entities.push_back(p);
     p->SetRotation(glm::vec3(0,GetAngleToTotem(_position),0));
+    //car->SetRotation(glm::vec3(0,90,0));
 }
 
 //Cambiar PJ
@@ -316,14 +324,23 @@ void ManCar::NewInputsReceived(DataMap* d) {
     // cout << "Se ha lanzado el evento NewInputsReceived" << endl;
     auto idRecieved = any_cast<uint16_t>((*d)[DataType::ID]);
     // cout << Utils::getISOCurrentTimestampMillis() << " Hemos recibido un input del id " << idRecieved << endl;
-    auto inputs = any_cast<vector<Constants::InputTypes>>((*d)[DataType::INPUTS]);
     for (const auto& car : GetEntities()) {
         if (car->HasComponent(CompType::OnlineComp)) {
             COnline* compOnline = static_cast<COnline*>(car->GetComponent(CompType::OnlineComp).get());
             uint16_t currentIDOnline = compOnline->idClient;
             if (currentIDOnline == idRecieved) {
-
+                auto inputs = any_cast<vector<Constants::InputTypes>>((*d)[DataType::INPUTS]);
+                auto time = any_cast<int64_t>((*d)[DataType::TIME]);
+                float speed = any_cast<float>((*d)[DataType::SPEED]);
+                float wheelRotation = any_cast<float>((*d)[DataType::WHEEL_ROTATION]);
+                float skidDeg = any_cast<float>((*d)[DataType::SKID_DEG]);
+                float skidRotation = any_cast<float>((*d)[DataType::SKID_ROTATION]);
+                CBufferOnline* buffOnline = static_cast<CBufferOnline*>(car->GetComponent(CompType::BufferOnline).get());
                 compOnline->inputs = inputs;
+                cout << "Hemos recibido un NewInputsReceivedOnline" << endl;
+                buffOnline->InsertNewReceivedOnline(time, inputs, speed, wheelRotation, skidDeg, skidRotation);
+                cout << *buffOnline; 
+                physics->NewInputsReceivedOnline(static_cast<Car*>(car.get()), speed, wheelRotation, skidDeg, skidRotation, buffOnline);
                 break;
             }
         }
@@ -343,12 +360,19 @@ void ManCar::NewSyncReceived(DataMap* d) {
                 auto cTran = static_cast<CTransformable*>(car->GetComponent(CompType::TransformableComp).get());
                 auto cPowerUp = static_cast<CPowerUp*>(car->GetComponent(CompType::PowerUpComp).get());
                 auto cTotem = static_cast<CTotem*>(car->GetComponent(CompType::TotemComp).get());
+                auto cCar = static_cast<CCar*>(car->GetComponent(CompType::CarComp).get());
                 cTran->position = any_cast<glm::vec3>((*d)[DataType::VEC3_POS]);
                 cTran->rotation = any_cast<glm::vec3>((*d)[DataType::VEC3_ROT]);
                 cPowerUp->typePowerUp = any_cast<typeCPowerUp>((*d)[DataType::TYPE_POWER_UP]);
                 // cTotem->active = any_cast<bool>((*d)[DataType::CAR_WITH_TOTEM]);
                 cTotem->accumulatedTime = any_cast<int64_t>((*d)[DataType::TIME_TOTEM]);
-
+                cTotem->accumulatedTime = any_cast<int64_t>((*d)[DataType::TIME_TOTEM]);
+                int64_t time = any_cast<int64_t>((*d)[DataType::TIME]);
+                cCar->speed = any_cast<float>((*d)[DataType::SPEED]);
+                cCar->wheelRotation = any_cast<float>((*d)[DataType::WHEEL_ROTATION]);
+                cCar->skidDeg = any_cast<float>((*d)[DataType::SKID_DEG]);
+                cCar->skidRotation = any_cast<float>((*d)[DataType::SKID_ROTATION]);
+                physics->NewSyncReceivedOnline(static_cast<Car*>(car.get()), time);
                 break;
             }
         }
@@ -875,7 +899,7 @@ void ManCar::CatchPowerUpAI(DataMap* d) {
         type = typeCPowerUp::MelonMolon;
     }
 
-    //type = typeCPowerUp::EscudoMerluzo;
+    // type = typeCPowerUp::PudinDeFrambuesa;
     //cout << "EL VALOR QUE SALE ES: " << indx << " - CORRESPONDIENTE AL PU: " << (int)type << endl;
 
     // int64_t time = Utils::getMillisSinceEpoch();
