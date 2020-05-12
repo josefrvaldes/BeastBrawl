@@ -216,6 +216,7 @@ class RenderFacadeClover : public RenderFacade {
 
       //Animaciones
       unique_ptr<Animation2D> introAnimation {nullptr};
+      unique_ptr<Animation2D> powerUpAnimation {nullptr};
 
       class Animation2D{
          public:
@@ -227,8 +228,9 @@ class RenderFacadeClover : public RenderFacade {
             void Restart();
 
             string GetCurrentPath() const { return currentPath + extension; }
-            float GetTime() const { return time; }
-            float GetTimeBetweenFrames() const { return timeBetweenFrames; }
+            float  GetTime() const { return time; }
+            float  GetTimeBetweenFrames() const { return timeBetweenFrames; }
+            bool   GetFinished() const {return finished; }
 
          private:
             string path;
