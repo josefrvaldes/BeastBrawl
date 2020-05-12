@@ -787,8 +787,8 @@ void RenderFacadeClover::FacadeInitSelectCharacter() {
     auto shaderCam = resourceManager->GetResourceShader("CLEngine/src/Shaders/cartoonShader.vert","CLEngine/src/Shaders/cartoonShader.frag");
     cam->SetShaderProgramID(shaderCam->GetProgramID());
     auto cameraEntity = static_cast<CLCamera*>(cam->GetEntity());
-    cameraEntity->SetCameraTarget(glm::vec3(0.0f));
-    cam->SetTranslation(glm::vec3(40.0f,0.0f,0.0f));
+    cameraEntity->SetCameraTarget(glm::vec3(0.0f, 0.0, 0.0));
+    cam->SetTranslation(glm::vec3(40.0f,20.0f,0.0f));
     cam->SetRotation(glm::vec3(0.0f));
 
     CLNode* mesh = nullptr;
