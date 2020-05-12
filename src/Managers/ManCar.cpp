@@ -105,7 +105,7 @@ bool ManCar::UpdateCarPlayer(ManTotem &manTotem_) {
     CCar * ccar = static_cast<CCar*>(carPlayer->GetComponent(CompType::CarComp).get());
     if(ccar->speed > 0) {
         CTransformable * cTransfor = static_cast<CTransformable*>(carPlayer->GetComponent(CompType::TransformableComp).get());
-        cout << "JUG1" << Utils::getISOCurrentTimestampMillis() << " El mainCar se ha movido, sus datos son: speed["<<ccar->speed<<"]  transfor["<<*cTransfor<<"]" << endl;
+        // cout << "JUG1" << Utils::getISOCurrentTimestampMillis() << " El mainCar se ha movido, sus datos son: speed["<<ccar->speed<<"]  transfor["<<*cTransfor<<"]" << endl;
     }
     return gameFinished;
 }
@@ -135,24 +135,24 @@ void ManCar::CreateMainCar(int pj) {
 void ManCar::CreateMainCar(int pj, glm::vec3 _position) {
     car = make_shared<CarHuman>(pj, _position); 
     entities.push_back(car);
-    // car->SetRotation(glm::vec3(0,GetAngleToTotem(_position),0));
-    car->SetRotation(glm::vec3(0,90,0));
+    car->SetRotation(glm::vec3(0,GetAngleToTotem(_position),0));
+    //car->SetRotation(glm::vec3(0,90,0));
 }
 
 //Cambiar PJ
 void ManCar::CreateHumanCar(int pj, glm::vec3 _position) {
     shared_ptr<CarHuman> p = make_shared<CarHuman>(pj, _position);
     entities.push_back(p);
-    // p->SetRotation(glm::vec3(0,GetAngleToTotem(_position),0));
-    car->SetRotation(glm::vec3(0,90,0));
+    p->SetRotation(glm::vec3(0,GetAngleToTotem(_position),0));
+    //car->SetRotation(glm::vec3(0,90,0));
 }
 
 //Cambiar PJ
 void ManCar::CreateCarAI(int pj, glm::vec3 _position) {
     shared_ptr<CarAI> p = make_shared<CarAI>(pj, _position);
     entities.push_back(p);
-    // p->SetRotation(glm::vec3(0,GetAngleToTotem(_position),0));
-    car->SetRotation(glm::vec3(0,90,0));
+    p->SetRotation(glm::vec3(0,GetAngleToTotem(_position),0));
+    //car->SetRotation(glm::vec3(0,90,0));
 }
 
 //Cambiar PJ
