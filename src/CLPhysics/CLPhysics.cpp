@@ -1076,7 +1076,7 @@ void CLPhysics::HandleCollisionPUWithCar(PowerUp *powerUp, Entity *car) {
         //cout << "Le han danyado y NO tiene escudo" << endl;
         auto cHurt = static_cast<CHurt *>(car->GetComponent(CompType::HurtComp).get());
         if(!cHurt->hurt) {
-            cout << "Le han danyado y NO estaba dañado" << endl;
+            cout << "Le han danyado y NO estaba danyado" << endl;
             // debemos hacer danyo al jugador
             shared_ptr<DataMap> dataCollisonCarPowerUp = make_shared<DataMap>();
             (*dataCollisonCarPowerUp)[ACTUAL_CAR] = car;  // nos guardamos el puntero al coche

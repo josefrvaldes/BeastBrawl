@@ -193,12 +193,12 @@ class RenderFacadeClover : public RenderFacade {
       int maxInputET { 2 };
       //Opciones de partida
       int option { 0 };
-      std::vector<int> inputGO {1,1/*,0*/};
-      int maxInputGO[2] {3, 2/*, 0*/};
+      std::vector<int> inputGO {1,1,1,1};
+      int maxInputGO[4] {3, 2, 3, 2};
       //Opciones de partida torneo
       int optionTO { 0 };
-      std::vector<int> inputTO {1, 1, 1};
-      int maxInputTO[3] {3, 2, 2};
+      std::vector<int> inputTO {1, 1, 1, 1, 1};
+      int maxInputTO[5] {3, 2, 3, 2, 2};
       //Ajustes
       int optionSettings { 0 };
       std::vector<int> inputSettings {1,3,1,1,0};     //Sonido, musica, particulas, vegetacion, sombras

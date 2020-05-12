@@ -454,6 +454,7 @@ void InputFacadeClover::CheckInputRight(std::vector<int> &input, int maxInput[],
         if(input[pos] > maxInput[pos]) {
             input[pos] = 0;
         }
+        //cout << "El maximo valor es: " << maxInput[pos] << " y el valor que le doy es: " << input[pos] << endl;
         SetValueInput(BUTTON_STICK_R, true);
 
         ChangeGameOptions(pos, input[pos]);
@@ -553,7 +554,7 @@ void InputFacadeClover::CheckInputTournamentOptions(std::vector<int> &input, int
         // GameValues
         GameValues::GetInstance()->ResetCountBattles();
         GameValues::GetInstance()->ResetPoints();
-        GameValues::GetInstance()->SetNumBattles(input[2]+3);  // la base es 0 que son 3 partidas
+        GameValues::GetInstance()->SetNumBattles(input[4]+3);  // la base es 0 que son 3 partidas
 
     } else if ( !(IsKeyPress(GLFW_KEY_ENTER) || IsKeyPress(GLFW_KEY_SPACE) || IsGamepadPress(GLFW_GAMEPAD_BUTTON_START)) ) {
         SetValueInput(BUTTON_START, false);
@@ -1287,7 +1288,17 @@ void InputFacadeClover::ChangeGameOptions(int option, int value) {
             if (value == 0) GameValues::GetInstance()->SetTimeTotem(30);
             if (value == 1) GameValues::GetInstance()->SetTimeTotem(45);
             if (value == 2) GameValues::GetInstance()->SetTimeTotem(60);
-    
+            break;
+        case 2:
+            if (value == 0) GameValues::GetInstance()->SetNumPlayers(3);
+            if (value == 1) GameValues::GetInstance()->SetNumPlayers(4);
+            if (value == 2) GameValues::GetInstance()->SetNumPlayers(5);
+            if (value == 3) GameValues::GetInstance()->SetNumPlayers(6);
+            //cout << "HE CAMBIADO EL NUMERO DE PERSONAJES WEY" << endl;
+            break;
+        case 3:
+
+            break;
         default: break;
     }
 }

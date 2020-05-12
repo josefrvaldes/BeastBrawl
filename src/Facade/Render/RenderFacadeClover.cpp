@@ -978,13 +978,26 @@ void RenderFacadeClover::ResetInputCharacter() {
 void RenderFacadeClover::ResetInputGameOptions() {
     option = 0;
     inputGO[0] = 1;
+    GameValues::GetInstance()->SetGameTime(180);
     inputGO[1] = 1;
+    GameValues::GetInstance()->SetTimeTotem(45);
+    inputGO[2] = 1;
+    GameValues::GetInstance()->SetNumPlayers(4);
+    inputGO[3] = 1;
+    //GameValues::GetInstance()->SetTimeTotem(45);
 }
 void RenderFacadeClover::ResetInputTournamentOptions() {
     optionTO = 0;
     inputTO[0] = 1;
+    GameValues::GetInstance()->SetGameTime(180);
     inputTO[1] = 1;
-    inputTO[2] = 1;
+    GameValues::GetInstance()->SetTimeTotem(45);
+    inputGO[2] = 1;
+    GameValues::GetInstance()->SetNumPlayers(4);
+    inputGO[3] = 1;
+    GameValues::GetInstance()->SetNumBattles(4);
+    inputTO[4] = 1;
+    //GameValues::GetInstance()->SetTimeTotem(45);
 }
 
 
@@ -1012,6 +1025,8 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
     auto widthMM = 0;           auto heightMM = 0;
     auto posXMiniMap = 0;       auto posYMiniMap = 0;
 
+    device->SetEnableDepthTest(false);
+
     cadena = "media/Minimapa240v2.png";
     auto minimapTexture = resourceManager->GetResourceTexture(cadena);
     if(minimapTexture) {
@@ -1027,7 +1042,6 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
 
     // TABLA TIEMPOS
     if (inputShowTable) {
-        device->SetEnableDepthTest(false);
 
         auto j = 0;
         auto ranking = GameValues::GetInstance()->GetRanking();
@@ -1068,8 +1082,6 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
             }
             ++j;
         }
-
-        device->SetEnableDepthTest(true);
     }
 
 
@@ -1187,7 +1199,6 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
     }
    
     
-
     //EVENTS
     if (manHud && manHud->IsEventHUDActive()) {
         auto& eventhud = manHud->GetEventShow();
@@ -1207,6 +1218,8 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
             device->DrawImage2D(125.0f, h - 100.0f, 0.7, 0.1f, cadena, true);
         }
     }
+
+    device->SetEnableDepthTest(true);
 
 }
 
@@ -1291,6 +1304,20 @@ void RenderFacadeClover::FacadeDrawGameOptions() {
     if (option == 1) { file += "_hover"; }
     file += ".png";
     device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.7f, file, true);
+
+    std::string op3[4] = { "media/3j", "media/4j", "media/5j", "media/6j"};
+    std::string op4[3] = { "media/dFacil", "media/dNormal", "media/dDificil" };
+
+    file = op3[inputGO[2]];
+    if (option == 2 ) { file += "_hover"; }
+    file += ".png";
+    device->DrawImage2D(300.0f, device->GetScreenHeight() - 100.0f, 1.0f, 0.6f, file, true );
+
+    file = op4[inputGO[3]];
+    if (option == 3 ) { file += "_hover"; }
+    file += ".png";
+    device->DrawImage2D(600.0f, device->GetScreenHeight() - 100.0f, 1.0f, 0.6f, file, true );
+
 }
 
 void RenderFacadeClover::FacadeDrawTournamentOptions() {
@@ -1307,26 +1334,41 @@ void RenderFacadeClover::FacadeDrawTournamentOptions() {
 
     std::string op1[4] = {"2min", "3min", "4min", "5min" };
     std::string op2[3] = {"30s", "45s", "1min"};
-    std::string op3[3] = {"3", "4", "5"};
+    std::string op3[4] = { "media/3j", "media/4j", "media/5j", "media/6j"};
+    std::string op4[3] = { "media/dFacil", "media/dNormal", "media/dDificil" };
+    std::string op5[3] = {"3", "4", "5"};
 
     file = files[0] + op1[inputTO[0]];
     if (optionTO == 0) { file += "_hover"; }
     file += ".png";
     device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.8f, file, true);
+
     file = files[1] + op2[inputTO[1]];
     if (optionTO == 1) { file += "_hover"; }
     file += ".png";
     device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.7f, file, true);
-    file = files[2] + op3[inputTO[2]];
-    if (optionTO == 2) { file += "_hover"; }
+
+    file = op3[inputTO[2]];
+    if (optionTO == 2 ) { file += "_hover"; }
     file += ".png";
-    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.6f, file, true);
+    device->DrawImage2D(300.0f, device->GetScreenHeight() - 100.0f, 1.0f, 0.6f, file, true );
+    
+    file = op4[inputTO[3]];
+    if (optionTO == 3 ) { file += "_hover"; }
+    file += ".png";
+    device->DrawImage2D(600.0f, device->GetScreenHeight() - 100.0f, 1.0f, 0.5f, file, true );
+
+    file = files[2] + op5[inputTO[4]];
+    if (optionTO == 4) { file += "_hover"; }
+    file += ".png";
+    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.4f, file, true);
 
 
     //file = files[0] + op1[inputTO[0]];
     //if (optionTO == 0) { file += "_hover"; }
     //file += ".png";
     //device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.8f, file, true);
+    
 }
 
 void RenderFacadeClover::FacadeDrawControler() {

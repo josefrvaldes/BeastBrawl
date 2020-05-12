@@ -396,7 +396,6 @@ void StateInGame::Render() {
     if (Constants::CLIPPING_OCTREE && octreeScene.get())
         octreeScene->Draw(renderEngine);
 
-    renderEngine->FacadeDrawHUD(manCars->GetCar().get(), manCars.get(), manGameRules->GetGlobalClock().get(), manHudEvent.get(), manGameRules.get());
     renderEngine->FacadeDrawGraphEdges(manWayPoint.get());
     if (currentUpdateState == UpdateState::COUNTDOWN) {
         // todo: esto de meter el width y el height aquí a piñón y los filenames.. es una kk
@@ -426,6 +425,7 @@ void StateInGame::Render() {
     }
 
     renderEngine->FacadeDrawAIDebug(manCars.get(), manNavMesh.get(), manWayPoint.get());
+    renderEngine->FacadeDrawHUD(manCars->GetCar().get(), manCars.get(), manGameRules->GetGlobalClock().get(), manHudEvent.get(), manGameRules.get());
     renderEngine->FacadeEndScene();
 }
 

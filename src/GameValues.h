@@ -57,6 +57,7 @@ class GameValues {
         int mapGame { 0 };
         int timeTotem { 45 };
         int gameTime { 180 };
+        uint8_t numPlayers{ 4 };
         
         // Ranking: posicion | personaje
         bool win { false };
@@ -65,7 +66,6 @@ class GameValues {
 
 
         // Para el modo torneo
-        uint8_t numPlayers{4};
         uint8_t numBattles {4};
         uint8_t actualBattle {1};
 
