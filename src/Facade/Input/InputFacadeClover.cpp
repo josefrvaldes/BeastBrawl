@@ -1339,7 +1339,10 @@ void InputFacadeClover::ChangeGameOptions(int option, int value) {
             //cout << "HE CAMBIADO EL NUMERO DE PERSONAJES WEY" << endl;
             break;
         case 3:
-
+            if (value == 0) GameValues::GetInstance()->SetDifficultAI(DifficultyAI::EASY);
+            if (value == 1) GameValues::GetInstance()->SetDifficultAI(DifficultyAI::NORMAL);
+            if (value == 2) GameValues::GetInstance()->SetDifficultAI(DifficultyAI::DIFFICULT);
+            //cout << "Ahora la dificultad es: " << static_cast<int>(GameValues::GetInstance()->GetDifficultAI()) << endl;
             break;
         default: break;
     }

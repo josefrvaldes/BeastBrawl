@@ -149,23 +149,23 @@ void ManCar::CreateHumanCar(int pj, glm::vec3 _position) {
 }
 
 //Cambiar PJ
-void ManCar::CreateCarAI(int pj, glm::vec3 _position) {
-    shared_ptr<CarAI> p = make_shared<CarAI>(pj, _position);
+void ManCar::CreateCarAI(int pj, int difficult, glm::vec3 _position) {
+    shared_ptr<CarAI> p = make_shared<CarAI>(pj, difficult, _position);
     entities.push_back(p);
     p->SetRotation(glm::vec3(0,GetAngleToTotem(_position),0));
     //car->SetRotation(glm::vec3(0,90,0));
 }
 
 //Cambiar PJ
-void ManCar::CreateCarAI(int pj, glm::vec3 _position, CWayPoint* _waypoint) {
-    shared_ptr<CarAI> p = make_shared<CarAI>(pj, _position);
+void ManCar::CreateCarAI(int pj, int difficult, glm::vec3 _position, CWayPoint* _waypoint) {
+    shared_ptr<CarAI> p = make_shared<CarAI>(pj, difficult, _position);
     entities.push_back(p);
     p->SetWayPoint(_waypoint);
 }
 
 //Cambiar PJ
-void ManCar::CreateCarAI(int pj) {
-    shared_ptr<CarAI> p = make_shared<CarAI>(pj);
+void ManCar::CreateCarAI(int pj, int difficult) {
+    shared_ptr<CarAI> p = make_shared<CarAI>(pj, difficult);
     entities.push_back(p);
 }
 

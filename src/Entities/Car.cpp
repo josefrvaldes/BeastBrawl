@@ -27,7 +27,6 @@
 
 
 
-#include "GameValues.h"
 //LOS DATOS DEL TIPO DEL COCHE -> QUE SE PONGAN SOLO 1 VEZ EN CODIGO
 #include "TypeCharacter.h"
 
