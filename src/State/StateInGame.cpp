@@ -313,6 +313,8 @@ void StateInGame::UpdateGame() {
 
     for (auto actualPowerUp : manPowerUps->GetEntities())  // actualizamos los powerUp en irrlich
         physicsEngine->UpdatePowerUps(actualPowerUp.get());
+    for (auto actualBoxPowerUp : manBoxPowerUps->GetEntities())  // actualizamos los powerUp en irrlich
+        physicsEngine->UpdatePowerUps(actualBoxPowerUp.get());
 
     renderEngine->FacadeUpdatePlates(manNamePlates.get());
     physicsEngine->UpdateTransformable(manTotems->GetEntities()[0].get());

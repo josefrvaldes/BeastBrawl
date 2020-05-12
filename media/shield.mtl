@@ -1,0 +1,26 @@
+# Blender MTL File: 'shield.blend'
+# Material Count: 2
+
+newmtl Material.001
+Ns 741.324402
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.346212 0.346212 0.346212
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd clv_shield_basecolor.png
+map_d clv_shield_basecolor.png
+
+newmtl Material.002
+Ns 741.324402
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.346212 0.346212 0.346212
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd clv_shield_logo.png
+map_d clv_shield_logo.png

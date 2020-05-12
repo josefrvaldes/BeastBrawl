@@ -62,7 +62,7 @@ void StateInGameMulti::InitCarHumans(const uint16_t idOnline_, const vector<uint
     cTransformable->position = posIniciales[idOnline_ - 1];
     COnline *cOnline = static_cast<COnline *>(manCars->GetCar()->GetComponent(CompType::OnlineComp).get());
     cOnline->idClient = idOnline_;
-    manShield->CreateShield(idComp->id, glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.5f));
+    manShield->CreateShield(idComp->id, glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f));
 
     // for (auto idEnemy : arrayIdEnemies) {
     for (size_t i = 0; i < arrayIdEnemies.size(); i++) {
@@ -88,7 +88,7 @@ void StateInGameMulti::InitCarHumans(const uint16_t idOnline_, const vector<uint
         nameEvent = "Coche/choque";
         SoundFacadeManager::GetInstance()->GetSoundFacade()->CreateSoundEstatic3D(idComp->id, pos, nameEvent, 0);
 
-        manShield->CreateShield(idComp->id, glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.5f));
+        manShield->CreateShield(idComp->id, glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f));
 
         // esto era de cuando íbamos a hacer el buffer circular que al final se descartó
         /*shared_ptr<CBufferOnline> buffer = make_shared<CBufferOnline>();

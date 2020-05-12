@@ -249,7 +249,8 @@ void main(){
 
     vec3 norm = normalize(Normal);
     vec3 viewDir = normalize(viewPos - FragPos); //Vector entre nosotros y el punto del objeto
-
+    
+    
     // Luces direccionales
     int j = 0;
     while(j<num_Direct_Lights){
@@ -273,6 +274,7 @@ void main(){
 
     FragColor = vec4(result,1.0);
     //FragColor = floor(FragColor * cartoonParts) / cartoonParts;  // estaba mal aplicado, era en la luz difusa solo
+
 
     //Si comentas esta linea se ve con luces
     //FragColor = texture(material.diffuse,TexCoords);
