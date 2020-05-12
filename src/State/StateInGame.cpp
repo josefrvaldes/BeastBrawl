@@ -313,6 +313,8 @@ void StateInGame::UpdateGame() {
 
     for (auto actualPowerUp : manPowerUps->GetEntities())  // actualizamos los powerUp en irrlich
         physicsEngine->UpdatePowerUps(actualPowerUp.get());
+    for (auto actualBoxPowerUp : manBoxPowerUps->GetEntities())  // actualizamos los powerUp en irrlich
+        physicsEngine->UpdatePowerUps(actualBoxPowerUp.get());
 
     renderEngine->FacadeUpdatePlates(manNamePlates.get());
     physicsEngine->UpdateTransformable(manTotems->GetEntities()[0].get());
@@ -345,9 +347,9 @@ void StateInGame::UpdateGame() {
     // Fin Animaciones
 
     //Actualiza el ranking y los eventos de hud
-    sysRanking->Update(manCars.get());
     sysHud->UpdateEventHud(manHudEvent.get());
     gameFinished = manGameRules->Update(manCars->GetEntities(), manTotems->GetEntities());
+    sysRanking->Update(manCars.get());
     if (gameFinished) {
         GoToEndAnimation();
     }
@@ -429,6 +431,7 @@ void StateInGame::Render() {
 
 void StateInGame::GoToEndAnimation() {
     soundEngine->SetState(11);
+    sysRanking->Update(manCars.get());
     currentUpdateState = UpdateState::END;
     timerEnd = Utils::getMillisSinceEpoch();
     EventManager::GetInstance().AddEventMulti(Event{EventType::LAUNCH_ANIMATION_END_MULTI});

@@ -1073,17 +1073,17 @@ void CLPhysics::HandleCollisionPUWithCar(PowerUp *powerUp, Entity *car) {
     // comprobamos si el coche tenia escudo y el totem.. ya que debe de soltarlo
     auto cShield = static_cast<CShield *>(car->GetComponent(CompType::ShieldComp).get());
     if (cShield->activePowerUp == false) {  // TRUE
-        cout << "Le han dañado y NO tiene escudo" << endl;
+        //cout << "Le han danyado y NO tiene escudo" << endl;
         auto cHurt = static_cast<CHurt *>(car->GetComponent(CompType::HurtComp).get());
         if(!cHurt->hurt) {
-            cout << "Le han dañado y NO estaba dañado" << endl;
+            cout << "Le han danyado y NO estaba dañado" << endl;
             // debemos hacer danyo al jugador
             shared_ptr<DataMap> dataCollisonCarPowerUp = make_shared<DataMap>();
             (*dataCollisonCarPowerUp)[ACTUAL_CAR] = car;  // nos guardamos el puntero al coche
             EventManager::GetInstance().AddEventMulti(Event{EventType::COLLISION_CAR_POWERUP, dataCollisonCarPowerUp});
 
             if (static_cast<CTotem *>(car->GetComponent(CompType::TotemComp).get())->active) {
-                cout << "Le han dañado y SÍ tenían totem" << endl;
+                cout << "Le han danyado y SÍ tenían totem" << endl;
                 auto dataTransformableCar = static_cast<CTransformable *>(car->GetComponent(CompType::TransformableComp).get());
                 shared_ptr<DataMap> dataTransfCar = make_shared<DataMap>();
                 (*dataTransfCar)[CAR_TRANSFORMABLE] = dataTransformableCar;

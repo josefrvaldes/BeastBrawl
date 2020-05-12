@@ -12,6 +12,7 @@
 #include <Components/CHurt.h>
 #include <Components/CShield.h>
 #include <Components/CTotem.h>
+#include <Components/CEventHUD.h>
 //#include <Entities/Camera.h>
 #include <Entities/CarAI.h>
 #include <Entities/CarHuman.h>
@@ -490,7 +491,7 @@ void ManCar::ChangeTotemCar(DataMap* d) {
     auto cCarWithoutT = static_cast<CCar*>(carWithoutTotem->GetComponent(CompType::CarComp).get());
     if (cCarWithoutT) {
         (*dataHud)[NUM] = (uint16_t)cCarWithoutT->character;
-        (*dataHud)[TYPE] = 1;  //Stole
+        (*dataHud)[TYPE] = static_cast<int>(eventHUDType::STOLE);  //Stole
         EventManager::GetInstance().AddEventMulti(Event{EventType::SET_EVENT_HUD, dataHud});
     }
 }
@@ -529,9 +530,9 @@ void ManCar::ObtainTotem(Entity* carWinTotem, bool stolen) {
     if (cCarWinTotem) {
         (*dataHud)[NUM] = (uint16_t)cCarWinTotem->character;
         if(stolen)
-            (*dataHud)[TYPE] = 1;  //stolen
+            (*dataHud)[TYPE] = static_cast<int>(eventHUDType::STOLE);  //stolen
         else
-            (*dataHud)[TYPE] = 2;  //catch
+            (*dataHud)[TYPE] = static_cast<int>(eventHUDType::CATCH);  //catch
         EventManager::GetInstance().AddEventMulti(Event{EventType::SET_EVENT_HUD, dataHud});
     }
 }
@@ -551,7 +552,7 @@ void ManCar::ThrowTotem(Entity* carLoseTotem, bool stolen) {
         if (cCar) {
             cout << "Le han dañado y SÍ tenían ccar" << endl;
             (*dataHud)[NUM] = (uint16_t)cCar->character;
-            (*dataHud)[TYPE] = 3;  //Lose
+            (*dataHud)[TYPE] = static_cast<int>(eventHUDType::LOSE) ;  //Lose
             EventManager::GetInstance().AddEventMulti(Event{EventType::SET_EVENT_HUD, dataHud});
         }
     }

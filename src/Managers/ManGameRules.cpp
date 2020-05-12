@@ -45,3 +45,8 @@ void ManGameRules::RestartAllTimers(vector<shared_ptr<Entity>> entities, int64_t
 void ManGameRules::SubscribeToEvents() {
 
 }
+
+
+void ManGameRules::InitializeMiniMap(const vector<shared_ptr<Entity>> &cars, const vector<shared_ptr<Entity>> &totems) {
+    systemGameRules->UpdatePositionsMiniMap(cars, totems, positionsPlane, positionTotemPlane);
+}
