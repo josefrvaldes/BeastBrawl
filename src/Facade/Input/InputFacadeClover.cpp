@@ -396,6 +396,8 @@ void InputFacadeClover::CheckInputSelectCharacter(int &input, int maxInput) {
 
 }
 
+
+
 void InputFacadeClover::CheckInputUp(std::vector<int> &input, int& pos){
     if( IsKeyOrGamepadPress(GLFW_KEY_UP, GLFW_GAMEPAD_AXIS_LEFT_Y, true, -0.5, GLFW_GAMEPAD_BUTTON_DPAD_UP, true)
     && ( (IsInputPressed(BUTTON_STICK_UP) && HasDelayPassed() ) || !IsInputPressed(BUTTON_STICK_UP) )) {
@@ -489,10 +491,10 @@ void InputFacadeClover::CheckInputGameOptions(std::vector<int> &input, int maxIn
     CheckInputBack();
 
     //ACEPTAR - ESPACIO
-    if ( /*pos == 2 &&*/ IsKeyOrGamepadPress(GLFW_KEY_SPACE, GLFW_GAMEPAD_BUTTON_START, false, 0, 0, false) && HasDelayPassed() && !IsInputPressed(BUTTON_START)) {
+    if ( (IsKeyPress(GLFW_KEY_ENTER) || IsKeyPress(GLFW_KEY_SPACE) || IsGamepadPress(GLFW_GAMEPAD_BUTTON_START)) && HasDelayPassed() && !IsInputPressed(BUTTON_START) && !IsInputPressed(BUTTON_A)) {
 
         timeStart = system_clock::now();
-        SetValueInput(BUTTON_A, true);
+        SetValueInput(BUTTON_START, true);
         EventManager::GetInstance().AddEventMulti(Event{EventType::MENU_OK});
 
         //Manera un poco cutre de resetear el CId al empezar el juego
@@ -504,27 +506,20 @@ void InputFacadeClover::CheckInputGameOptions(std::vector<int> &input, int maxIn
         cNavMesh->ResetNumIds();
         EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_INGAMESINGLE});
 
-    } else if ( !IsKeyOrGamepadPress(GLFW_KEY_SPACE, GLFW_GAMEPAD_BUTTON_START, false, 0, 0, false) ) {
+    } else if ( !(IsKeyPress(GLFW_KEY_ENTER) || IsKeyPress(GLFW_KEY_SPACE) || IsGamepadPress(GLFW_GAMEPAD_BUTTON_START)) ) {
         SetValueInput(BUTTON_START, false);
+        SetValueInput(BUTTON_A, false);
     }
 
     //DERECHA
     CheckInputRight(input, maxInput, pos);
-
     //IZQUIERDA
     CheckInputLeft(input, maxInput, pos);
-
     //ARRIBA
     CheckInputUp(input, pos);
-
     //BAJAR
     CheckInputDown(input, pos);
 
-    /*if(pos != 2) {
-        input[2] = 1;
-    } else {
-        input[2] = 0;
-    }*/
 }
 
 /**
@@ -540,10 +535,10 @@ void InputFacadeClover::CheckInputTournamentOptions(std::vector<int> &input, int
     CheckInputBack();
 
     //ACEPTAR - ESPACIO
-    if ( /*pos == 2 &&*/ IsKeyOrGamepadPress(GLFW_KEY_SPACE, GLFW_GAMEPAD_BUTTON_START, false, 0, 0, false) && HasDelayPassed() && !IsInputPressed(BUTTON_START)) {
+    if ( (IsKeyPress(GLFW_KEY_ENTER) || IsKeyPress(GLFW_KEY_SPACE) || IsGamepadPress(GLFW_GAMEPAD_BUTTON_START)) && HasDelayPassed() && !IsInputPressed(BUTTON_START) && !IsInputPressed(BUTTON_A)) {
 
         timeStart = system_clock::now();
-        SetValueInput(BUTTON_A, true);
+        SetValueInput(BUTTON_START, true);
         EventManager::GetInstance().AddEventMulti(Event{EventType::MENU_OK});
 
         //Manera un poco cutre de resetear el CId al empezar el juego
@@ -560,38 +555,29 @@ void InputFacadeClover::CheckInputTournamentOptions(std::vector<int> &input, int
         GameValues::GetInstance()->ResetPoints();
         GameValues::GetInstance()->SetNumBattles(input[2]+3);  // la base es 0 que son 3 partidas
 
-    } else if ( !IsKeyOrGamepadPress(GLFW_KEY_SPACE, GLFW_GAMEPAD_BUTTON_START, false, 0, 0, false) ) {
+    } else if ( !(IsKeyPress(GLFW_KEY_ENTER) || IsKeyPress(GLFW_KEY_SPACE) || IsGamepadPress(GLFW_GAMEPAD_BUTTON_START)) ) {
         SetValueInput(BUTTON_START, false);
+        SetValueInput(BUTTON_A, false);
     }
 
     //DERECHA
     CheckInputRight(input, maxInput, pos);
-
     //IZQUIERDA
     CheckInputLeft(input, maxInput, pos);
-
     //ARRIBA
     CheckInputUp(input, pos);
-
     //BAJAR
     CheckInputDown(input, pos);
 
-    /*if(pos != 2) {
-        input[2] = 1;
-    } else {
-        input[2] = 0;
-    }*/
 }
 
 
 
 
 bool InputFacadeClover::CheckInputAnimationsStartEnd() {
-    GLFWgamepadstate state;
-    glfwGetGamepadState(GLFW_JOYSTICK_1, &state);
 
-    // si están pulsando espacio o A(xbox)
-    if ( glfwGetKey(device->GetWindow(), GLFW_KEY_SPACE) || state.buttons[GLFW_GAMEPAD_BUTTON_A] ) {
+    // si están pulsando espacio, enter o A(xbox)
+    if (  IsKeyPress(GLFW_KEY_ENTER) || IsKeyPress(GLFW_KEY_SPACE) || IsGamepadPress(GLFW_GAMEPAD_BUTTON_A) ) {
         return true;
     }
     return false;
@@ -874,8 +860,6 @@ vector<Constants::InputTypes> InputFacadeClover::CheckInputMulti(){
 
 
 
-
-
 void InputFacadeClover::CheckInputPause(int& input, int maxInput){
 
     // esto es una cutrez que se hace porque si no al volver del menú no se oye el sonido de "salir" del menú. Que conste que yo no quería, Judith me obligó :(
@@ -931,8 +915,8 @@ void InputFacadeClover::CheckInputPause(int& input, int maxInput){
             SetValueInput(InputXBox::BUTTON_START, false);
         }
 
-        //IN GAME
-        if ( IsKeyOrGamepadPress(GLFW_KEY_SPACE, GLFW_GAMEPAD_BUTTON_A, false, 0, 0, false) && HasDelayPassed() && !IsInputPressed(BUTTON_A)) {
+        //IN GAME o exit
+        if ( (IsKeyPress(GLFW_KEY_ENTER) || IsKeyPress(GLFW_KEY_SPACE) || IsGamepadPress(GLFW_GAMEPAD_BUTTON_A)) && HasDelayPassed() && !IsInputPressed(BUTTON_A)) {
 
             timeStart = system_clock::now();
             SetValueInput(BUTTON_A, true);
@@ -954,7 +938,7 @@ void InputFacadeClover::CheckInputPause(int& input, int maxInput){
                 }
             }
 
-        } else if ( !IsKeyOrGamepadPress(GLFW_KEY_SPACE, GLFW_GAMEPAD_BUTTON_A, false, 0, 0, false) ) {
+        } else if ( !(IsKeyPress(GLFW_KEY_ENTER) || IsKeyPress(GLFW_KEY_SPACE) || IsGamepadPress(GLFW_GAMEPAD_BUTTON_A)) ) {
             SetValueInput(BUTTON_A, false);
         }
     }
@@ -975,7 +959,7 @@ void InputFacadeClover::CheckInputEndRace(int& input, int maxInput, bool menu){
     } else {
 
         //ESPACIO
-        if ( IsKeyOrGamepadPress(GLFW_KEY_SPACE, GLFW_GAMEPAD_BUTTON_A, false, 0, 0, false) && HasDelayPassed() && !IsInputPressed(BUTTON_A)) {
+        if ( (IsKeyPress(GLFW_KEY_ENTER) || IsKeyPress(GLFW_KEY_SPACE) || IsGamepadPress(GLFW_GAMEPAD_BUTTON_A)) && HasDelayPassed() && !IsInputPressed(BUTTON_A)) {
 
             timeStart = system_clock::now();
             SetValueInput(BUTTON_A, true);
@@ -1019,7 +1003,7 @@ void InputFacadeClover::CheckInputEndRace(int& input, int maxInput, bool menu){
                 RenderFacadeManager::GetInstance()->GetRenderFacade()->SetMenuEndRace(false);
             }
 
-        } else if( !IsKeyOrGamepadPress(GLFW_KEY_SPACE, GLFW_GAMEPAD_BUTTON_A, false, 0, 0, false) ) {
+        } else if( !(IsKeyPress(GLFW_KEY_ENTER) || IsKeyPress(GLFW_KEY_SPACE) || IsGamepadPress(GLFW_GAMEPAD_BUTTON_A)) ) {
             SetValueInput(BUTTON_A, false);
         }
 
@@ -1071,7 +1055,7 @@ void InputFacadeClover::CheckInputEndTournament(int& input, int maxInput, uint8_
     } else {
 
         //ESPACIO
-        if ( IsKeyOrGamepadPress(GLFW_KEY_SPACE, GLFW_GAMEPAD_BUTTON_A, false, 0, 0, false) && HasDelayPassed() && !IsInputPressed(BUTTON_A)) {
+        if ( (IsKeyPress(GLFW_KEY_ENTER) || IsKeyPress(GLFW_KEY_SPACE) || IsGamepadPress(GLFW_GAMEPAD_BUTTON_A)) && HasDelayPassed() && !IsInputPressed(BUTTON_A)) {
 
             timeStart = system_clock::now();
             SetValueInput(BUTTON_A, true);
@@ -1125,7 +1109,7 @@ void InputFacadeClover::CheckInputEndTournament(int& input, int maxInput, uint8_
                 RenderFacadeManager::GetInstance()->GetRenderFacade()->SetMenuEndTournament(0);
             }
 
-        } else if( !IsKeyOrGamepadPress(GLFW_KEY_SPACE, GLFW_GAMEPAD_BUTTON_A, false, 0, 0, false) ) {
+        } else if( !(IsKeyPress(GLFW_KEY_ENTER) || IsKeyPress(GLFW_KEY_SPACE) || IsGamepadPress(GLFW_GAMEPAD_BUTTON_A)) ) {
             SetValueInput(BUTTON_A, false);
         }
 
@@ -1205,7 +1189,7 @@ void InputFacadeClover::CheckInputSettings(std::vector<int> &inputs, int *maxInp
     }
 
     //ESPACIO
-    if( (option != 0 || option != 1) && IsKeyOrGamepadPress(GLFW_KEY_SPACE, GLFW_GAMEPAD_BUTTON_A, false, 0, 0, false) && HasDelayPassed() && !IsInputPressed(BUTTON_A) ) {
+    if( (option != 0 || option != 1) && (IsKeyPress(GLFW_KEY_ENTER) || IsKeyPress(GLFW_KEY_SPACE) || IsGamepadPress(GLFW_GAMEPAD_BUTTON_A)) && HasDelayPassed() && !IsInputPressed(BUTTON_A) ) {
 
         timeStart = system_clock::now();
         SetValueInput(BUTTON_A, true);
@@ -1287,8 +1271,9 @@ void InputFacadeClover::CheckInputSettings(std::vector<int> &inputs, int *maxInp
 }
 
 
-
-// --------- CHANGES
+///////////////////////
+//      CHANGES
+///////////////////////
 
 void InputFacadeClover::ChangeGameOptions(int option, int value) {
     switch (option) {

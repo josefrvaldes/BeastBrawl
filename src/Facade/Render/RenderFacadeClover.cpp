@@ -1330,7 +1330,7 @@ void RenderFacadeClover::FacadeDrawTournamentOptions() {
 }
 
 void RenderFacadeClover::FacadeDrawControler() {
-    std::string file = "media/menu/controller_scheme.png";
+    std::string file = "media/controller_scheme.png";
     device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
 }
 

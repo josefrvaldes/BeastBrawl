@@ -168,41 +168,41 @@ class RenderFacadeClover : public RenderFacade {
                                    "Utiliza el Robo Jorobo para conseguir el totem de inmediato!",
                                    "El Escudo Merluzo te ayudara a que no te roben el totem!"};
 
-        // En juego
-        bool inputShowTable { true };
+      // En juego
+      bool inputShowTable { true };
 
-        //Menu
-        int inputMenu { 0 };
-        int maxInputMenu { 6 };
-        //Pause
-        int inputPause { 0 };
-        int maxInputPause { 1 };
-        //Seleccion de personaje
-        int inputSC { 0 };
-        int maxInputSC { 5 };
-        //End Race
-        bool menuER { false };
-        int inputER { 0 };
-        int maxInputER { 2 };
-        //End Tournament
-      	time_point<system_clock> timeAnimationET;
-		int msChange {400};
-        uint8_t menuET { 0 };
-		uint8_t numShowPanel {0};
-        int inputET { 0 };
-        int maxInputET { 2 };
-        //Opciones de partida
-        int option { 0 };
-        std::vector<int> inputGO {1,1/*,0*/};
-        int maxInputGO[2] {3, 2/*, 0*/};
-        //Opciones de partida torneo
-        int optionTO { 0 };
-        std::vector<int> inputTO {1, 1, 1};
-        int maxInputTO[3] {3, 2, 2};
-        //Ajustes
-        int optionSettings { 0 };
-        std::vector<int> inputSettings {1,3,1,1,0};     //Sonido, musica, particulas, vegetacion, sombras
-        int maxInputSettings[5] {3,3,1,1,1};
+      //Menu
+      int inputMenu { 0 };
+      int maxInputMenu { 6 };
+      //Pause
+      int inputPause { 0 };
+      int maxInputPause { 1 };
+      //Seleccion de personaje
+      int inputSC { 0 };
+      int maxInputSC { 5 };
+      //End Race
+      bool menuER { false };
+      int inputER { 0 };
+      int maxInputER { 2 };
+      //End Tournament
+      time_point<system_clock> timeAnimationET;
+      int msChange {400};
+      uint8_t menuET { 0 };
+      uint8_t numShowPanel {0};
+      int inputET { 0 };
+      int maxInputET { 2 };
+      //Opciones de partida
+      int option { 0 };
+      std::vector<int> inputGO {1,1/*,0*/};
+      int maxInputGO[2] {3, 2/*, 0*/};
+      //Opciones de partida torneo
+      int optionTO { 0 };
+      std::vector<int> inputTO {1, 1, 1};
+      int maxInputTO[3] {3, 2, 2};
+      //Ajustes
+      int optionSettings { 0 };
+      std::vector<int> inputSettings {1,3,1,1,0};     //Sonido, musica, particulas, vegetacion, sombras
+      int maxInputSettings[5] {3,3,1,1,1};
 
       CLEngine* device {nullptr};
       CLNode* smgr {nullptr};
