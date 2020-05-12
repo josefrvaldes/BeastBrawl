@@ -135,6 +135,16 @@ void RenderFacadeClover::FacadeSuscribeEventsSettings() {
 void RenderFacadeClover::FacadeUpdatePowerUpHUD(DataMap* d) {
     auto type = any_cast<typeCPowerUp>((*d)[TYPE_POWER_UP]);
     currentPowerUp = int(type);
+
+    //Si es la primera vez que se coge un powerup se crea la animacion
+    if(!powerUpAnimation){
+        powerUpAnimation = make_unique<Animation2D>("media/animacionPowerUp/animacionPU.png",143,60);
+        powerUpAnimation->Start();
+    }else if(powerUpAnimation && type != typeCPowerUp::None){
+        powerUpAnimation->Restart();
+        powerUpAnimation->Start();
+
+    }
 }
 
 void RenderFacadeClover::FacadeInitParticleSystem(DataMap* d) const{
@@ -1007,7 +1017,14 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
     device->DrawImage2D(posXMiniMap, posYMiniMap, widthMM, heightMM, 0.9f, cadena, true);
 
     //CURRENT POWERUP
-    device->DrawImage2D(25.0f, 25.0f, 150.0f, 150.0f, 0.1f ,powerUps[currentPowerUp], true);
+    if(!powerUpAnimation->GetFinished() && currentPowerUp != 0){
+        //resourceManager->DeleteResourceTexture(powerUpAnimation->GetCurrentPath());
+        powerUpAnimation->Update();
+        device->DrawImage2D(25.0f, 25.0f, 150.0f, 150.0f, 0.1f, powerUpAnimation->GetCurrentPath(), true);
+    }else{
+        device->DrawImage2D(25.0f, 25.0f, 150.0f, 150.0f, 0.1f ,powerUps[currentPowerUp], true);
+
+    }
 
 
     //RANKING
@@ -1177,13 +1194,17 @@ void RenderFacadeClover::FacadeDrawIntro() {
         introAnimation->Start();
     }
     
-    //No podemos hacer animaciones a otra cosa que no sea 60 porque el vsync tiene que estar activado
-
+    
 
     resourceManager->DeleteResourceTexture(introAnimation->GetCurrentPath());
     
     introAnimation->Update();
     device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, introAnimation->GetCurrentPath(), true);
+    
+    //No podemos hacer animaciones a otra cosa que no sea 60 porque el vsync tiene que estar activado
+    if(introAnimation->GetFinished()){
+        EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_MENU});
+    }
     //device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, "media/introAnimation/Beast Brawl355.jpg", true);
 
 }
@@ -2055,6 +2076,7 @@ void RenderFacadeClover::Animation2D::Update(){
 void RenderFacadeClover::Animation2D::Start(){
     timeStart = system_clock::now();
     started = true;
+    finished = false;
 }
 
 void RenderFacadeClover::Animation2D::Restart(){
