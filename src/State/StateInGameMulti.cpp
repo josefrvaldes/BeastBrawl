@@ -11,6 +11,19 @@
 #include "../Systems/Utils.h"
 
 StateInGameMulti::StateInGameMulti(uint16_t idOnline_, const vector<uint16_t> idsEnemies_, const vector<uint8_t> characters_) : StateInGame() {
+    
+    // Jose va a cambiar esto de momento esta asi para que vaya el juego
+    RenderFacadeManager::GetInstance()->GetRenderFacade()->CleanScene();
+    RenderFacadeManager::GetInstance()->GetRenderFacade()->SetNumEnemyCars(0);
+    auto cId = make_shared<CId>();
+    cId->ResetNumIds();
+    auto cNavMesh = make_shared<CNavMesh>();
+    cNavMesh->ResetNumIds();
+    shared_ptr<DataMap> data = make_shared<DataMap>();
+    (*data)[TYPE_POWER_UP] = typeCPowerUp::None;
+    RenderFacadeManager::GetInstance()->GetRenderFacade()->FacadeUpdatePowerUpHUD(data.get());
+
+
     GameValues::GetInstance()->SetGameTime(180);
     GameValues::GetInstance()->SetTimeTotem(30);
     InitState();

@@ -364,8 +364,6 @@ void InputFacadeClover::CheckInputSelCharIntro(int &input) {
                 EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_GAME_OPTIONS});
             else
                 EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_TOURNAMENT_OPTIONS});
-            //Change caracter
-            GameValues::GetInstance()->SetCharacter(input);
         }
 
     } else if (!(IsKeyPress(GLFW_KEY_ENTER) || IsKeyPress(GLFW_KEY_SPACE) || IsGamepadPress(GLFW_GAMEPAD_BUTTON_A)) ) {
