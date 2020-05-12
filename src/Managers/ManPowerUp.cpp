@@ -165,11 +165,13 @@ void ManPowerUp::MaterializePowerUp(shared_ptr<PowerUp> powerUp) {
 
 
 void ManPowerUp::Update() {
-
+    //cout << "- ACTUALIZO LOS PU" << endl;
     // Update de las fisicas de los PU (melon molon, telebanana, superMegaNitro)
     UpdatePhysics();
+    //cout << "- - - HE ACTUALIZADO LAS FISICAS DE LOS PU" << endl;
     // recorremos todos los PU, y borramos los correspondientes
     DeletePowerUps();
+    //cout << "- - - HE BORRADO LOS PU QUE HAY QUE BORRAR" << endl;
 
 }
 

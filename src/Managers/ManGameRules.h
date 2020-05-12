@@ -18,6 +18,8 @@ class ManGameRules{
     const unordered_map<uint16_t, glm::vec2>& GetPositionsPlane()   { return positionsPlane; };
     const glm::vec2& GetPositionTotemPlane()                         { return positionTotemPlane; };
 
+    void InitializeMiniMap(const vector<shared_ptr<Entity>> &cars, const vector<shared_ptr<Entity>> &totems);
+
     void SubscribeToEvents();
     void RestartAllTimers(vector<shared_ptr<Entity>> entities, int64_t timeStartPause);
     void ResetClock();

@@ -143,6 +143,7 @@ class SoundFacadeFMOD : public SoundFacade {
             { "Musica",         {
                                 "Musica/fin_partida",
                                 "Musica/in_game_1",
+                                "Musica/intro",
                                 "Musica/menu"
                                 }
             }
