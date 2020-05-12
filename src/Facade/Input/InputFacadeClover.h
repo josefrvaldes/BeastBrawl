@@ -27,7 +27,10 @@ class InputFacadeClover : public InputFacade{
 
         bool ShowTable(bool) override;
         bool CheckInputSingle()  override;
-        void CheckInputLobbyMulti() override;
+        void CheckInputLobbyMultiConnecting() override;
+        void CheckInputLobbyMultiWait() override;
+        void CheckInputLobbyMultiExit() override;
+        void CheckInputLobbyMultiSelChar(int &, int) override;
         vector<Constants::InputTypes> CheckInputMulti()override;
 
         void CheckInputPause(int&, int)   override;
@@ -47,6 +50,11 @@ class InputFacadeClover : public InputFacade{
         void CheckInputLeft(std::vector<int>&, int[], int&);
         void CheckInputRight(std::vector<int>&, int[], int&);
         void CheckInputBack();
+
+        void CheckInputSelCharUpDown(int&);
+        void CheckInputSelCharLeft(int&, int);
+        void CheckInputSelCharRight(int&, int);
+        void CheckInputSelCharIntro(int&);
 
         CLEngine* device;
 

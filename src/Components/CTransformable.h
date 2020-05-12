@@ -17,7 +17,7 @@ public:
 
     friend ostream &operator<<(ostream &out, CTransformable &c)
     {
-        out << "(" << c.position.x << " | " << c.position.y << " | " << c.position.z << ")";
+        out << "(" << c.position.x << "," << c.position.y << "," << c.position.z << ")";
         return out;
     }
 

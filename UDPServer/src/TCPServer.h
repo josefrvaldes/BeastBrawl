@@ -33,5 +33,4 @@ class TCPServer{
 
     vector<TCPConnection::pointer> connections;
     std::vector<Player> players;
-    std::vector<uint8_t> characters;
 };

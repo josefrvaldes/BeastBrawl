@@ -58,8 +58,10 @@ class RenderFacadeClover : public RenderFacade {
       void FacadeDrawPause() override;
       void FacadeDrawEndRace() override;
       void FacadeDrawEndTournament() override;
-      void FacadeDrawLobbyMulti() override;
+      void FacadeDrawLobbyMultiConnecting() override;
       void FacadeDrawLobbyMultiExit() override;
+      void FacadeDrawLobbyMultiSelChar() override;
+      void FacadeDrawLobbyMultiWait() override;
       void FacadeDrawControler() override;
       void FacadeDrawCredits() override;
       void FacadeDrawSettings() override;
@@ -86,7 +88,10 @@ class RenderFacadeClover : public RenderFacade {
       void FacadeCheckInputPause() override;
       void FacadeCheckInputEndRace() override;
       void FacadeCheckInputEndTournament() override;
-      void FacadeCheckInputLobbyMulti() override;
+      void FacadeCheckInputLobbyMultiConnecting() override;
+      void FacadeCheckInputLobbyMultiExit() override;
+      void FacadeCheckInputLobbyMultiSelChar() override;
+      void FacadeCheckInputLobbyMultiWait() override;
       void FacadeCheckInputControler() override;
       void FacadeCheckInputCredits() override;
       void FacadeCheckInputSettings() override;
@@ -211,6 +216,7 @@ class RenderFacadeClover : public RenderFacade {
 
       //Animaciones
       unique_ptr<Animation2D> introAnimation {nullptr};
+      unique_ptr<Animation2D> powerUpAnimation {nullptr};
 
       class Animation2D{
          public:
@@ -222,8 +228,9 @@ class RenderFacadeClover : public RenderFacade {
             void Restart();
 
             string GetCurrentPath() const { return currentPath + extension; }
-            float GetTime() const { return time; }
-            float GetTimeBetweenFrames() const { return timeBetweenFrames; }
+            float  GetTime() const { return time; }
+            float  GetTimeBetweenFrames() const { return timeBetweenFrames; }
+            bool   GetFinished() const {return finished; }
 
          private:
             string path;

@@ -18,21 +18,26 @@ class TCPConnection : public std::enable_shared_from_this<TCPConnection> {
     public:
     ~TCPConnection();
     typedef std::shared_ptr<TCPConnection> pointer;
-    static pointer Create(TCPServer *tcpServer_, boost::asio::io_context& io_context, std::vector<Player> &p, std::vector<uint8_t> &c, std::vector<TCPConnection::pointer>& connect){ return pointer(new TCPConnection(tcpServer_, io_context, p, c, connect)); }
+    static pointer Create(TCPServer *tcpServer_, boost::asio::io_context& io_context, std::vector<Player> &p, std::vector<TCPConnection::pointer>& connect){ return pointer(new TCPConnection(tcpServer_, io_context, p, connect)); }
     tcp::socket& socket(){ return socket_;}
     void Start();
     void Close();
     void SendStartMessage(string datos);
     void SendStartMessage(unsigned char *buff, size_t buffSize);
     void SendFullGame();
+    void SendOpenGame();
     // Player *currentPlayer;
 
 
    private:
-    TCPConnection(TCPServer *tcpServer_, asio::io_context& io_context, std::vector<Player> &p, std::vector<uint8_t> &c, std::vector<TCPConnection::pointer>& connect);
+    TCPConnection(TCPServer *tcpServer_, asio::io_context& io_context, std::vector<Player> &p, std::vector<TCPConnection::pointer>& connect);
     void HandleRead(std::shared_ptr<unsigned char[]> recevBuff, const boost::system::error_code& error, size_t bytes_transferred);
     void HandleWrite(const boost::system::error_code& error, size_t bytes_transferred);
     void DeleteMe();
+
+    void HandleReceivedCatchChar(std::shared_ptr<unsigned char[]> recevBuff, const size_t currentBufferSize);
+    void SendRequestSelChar(bool selected);
+    void CancelChar();
 
     string GetTime() {
         auto time_point = system_clock::now();
@@ -46,7 +51,6 @@ class TCPConnection : public std::enable_shared_from_this<TCPConnection> {
     tcp::socket socket_;
 
     std::vector<Player> &players;
-    std::vector<uint8_t> &characters;
     std::vector<TCPConnection::pointer>& connections;
 
     //uint16_t sendBuff;

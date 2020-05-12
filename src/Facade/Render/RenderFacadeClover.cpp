@@ -135,6 +135,16 @@ void RenderFacadeClover::FacadeSuscribeEventsSettings() {
 void RenderFacadeClover::FacadeUpdatePowerUpHUD(DataMap* d) {
     auto type = any_cast<typeCPowerUp>((*d)[TYPE_POWER_UP]);
     currentPowerUp = int(type);
+
+    //Si es la primera vez que se coge un powerup se crea la animacion
+    if(!powerUpAnimation){
+        powerUpAnimation = make_unique<Animation2D>("media/animacionPowerUp/animacionPU.png",143,60);
+        powerUpAnimation->Start();
+    }else if(powerUpAnimation && type != typeCPowerUp::None){
+        powerUpAnimation->Restart();
+        powerUpAnimation->Start();
+
+    }
 }
 
 void RenderFacadeClover::FacadeInitParticleSystem(DataMap* d) const{
@@ -577,12 +587,12 @@ void RenderFacadeClover::FacadeAddCamera(Entity* camera) {
 
     //float dimAABB = node->CalculateBoundingBox();
     //Sacamos sus dimensiones
-    //float height = 10.0;
-    //float width = 10.0;
-    //float depth = 10.0;
-    //shared_ptr<CDimensions> cDimensions = make_shared<CDimensions>(width, height, depth);
-    ////cDimensions->boundingBoxMesh = GetBoundingByMesh(cId->id);
-    //camera->AddComponent(cDimensions);  //Le añadimos el componente CDimensions al Entity que sea
+    float height = 10.0;
+    float width = 10.0;
+    float depth = 10.0;
+    shared_ptr<CDimensions> cDimensions = make_shared<CDimensions>(width, height, depth);
+    //cDimensions->boundingBoxMesh = GetBoundingByMesh(cId->id);
+    camera->AddComponent(cDimensions);  //Le añadimos el componente CDimensions al Entity que sea
 
 }
 
@@ -893,7 +903,7 @@ void RenderFacadeClover::FacadeInitEndTournament() {
 }
 
 void RenderFacadeClover::FacadeInitLobbyMulti() {
-
+    FacadeInitSelectCharacter();
 }
 
 //TODO: No se usa
@@ -961,8 +971,20 @@ void RenderFacadeClover::FacadeCheckInputEndTournament() {
     InputFacadeManager::GetInstance()->GetInputFacade()->CheckInputEndTournament(inputET, maxInputET, menuET);
 }
 
-void RenderFacadeClover::FacadeCheckInputLobbyMulti() {
-    InputFacadeManager::GetInstance()->GetInputFacade()->CheckInputLobbyMulti();
+void RenderFacadeClover::FacadeCheckInputLobbyMultiConnecting() {
+    InputFacadeManager::GetInstance()->GetInputFacade()->CheckInputLobbyMultiConnecting();
+}
+
+void RenderFacadeClover::FacadeCheckInputLobbyMultiWait() {
+    InputFacadeManager::GetInstance()->GetInputFacade()->CheckInputLobbyMultiWait();
+}
+
+void RenderFacadeClover::FacadeCheckInputLobbyMultiExit() {
+    InputFacadeManager::GetInstance()->GetInputFacade()->CheckInputLobbyMultiExit();
+}
+
+void RenderFacadeClover::FacadeCheckInputLobbyMultiSelChar() {
+    InputFacadeManager::GetInstance()->GetInputFacade()->CheckInputLobbyMultiSelChar(inputSC, maxInputSC);
 }
 
 void RenderFacadeClover::FacadeCheckInputSettings() {
@@ -1038,7 +1060,12 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
     device->DrawImage2D(posXMiniMap, posYMiniMap, widthMM, heightMM, 0.9f, cadena, true);
 
     //CURRENT POWERUP
-    device->DrawImage2D(25.0f, 25.0f, 150.0f, 150.0f, 0.1f ,powerUps[currentPowerUp], true);
+    if(!powerUpAnimation->GetFinished() && currentPowerUp != 0){
+        //resourceManager->DeleteResourceTexture(powerUpAnimation->GetCurrentPath());
+        powerUpAnimation->Update();
+        device->DrawImage2D(25.0f, 25.0f, 150.0f, 150.0f, 0.1f, powerUpAnimation->GetCurrentPath(), true);
+    }else{
+        device->DrawImage2D(25.0f, 25.0f, 150.0f, 150.0f, 0.1f ,powerUps[currentPowerUp], true);
 
     // TABLA TIEMPOS
     if (inputShowTable) {
@@ -1225,17 +1252,23 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
 
 void RenderFacadeClover::FacadeDrawIntro() {
     if(!introAnimation){
-        introAnimation = make_unique<Animation2D>("media/introAnimation/Beast Brawl.jpg",915,60);
+        introAnimation = make_unique<Animation2D>("media/introAnimation/Beast Brawl.jpg",812,60);
         introAnimation->Start();
     }
     
-    //No podemos hacer animaciones a otra cosa que no sea 60 porque el vsync tiene que estar activado
-
+    
 
     resourceManager->DeleteResourceTexture(introAnimation->GetCurrentPath());
     
     introAnimation->Update();
     device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, introAnimation->GetCurrentPath(), true);
+    
+    //No podemos hacer animaciones a otra cosa que no sea 60 porque el vsync tiene que estar activado
+    if(introAnimation->GetFinished()){
+        EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_MENU});
+    }
+    //device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, "media/introAnimation/Beast Brawl355.jpg", true);
+
 }
 
 void RenderFacadeClover::FacadeDrawMenu() {
@@ -1612,13 +1645,22 @@ void RenderFacadeClover::FacadeDrawCredits() {
     device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
 }
 
-void RenderFacadeClover::FacadeDrawLobbyMulti() {
-    std::string file = "media/LobbyMulti.png";
+void RenderFacadeClover::FacadeDrawLobbyMultiConnecting() {
+    std::string file = "media/LobbyOnline/LobbyMulti.png";
     device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
 }
 
+void RenderFacadeClover::FacadeDrawLobbyMultiWait() {
+    std::string file = "media/LobbyOnline/Waiting.png";
+    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
+}
+
+void RenderFacadeClover::FacadeDrawLobbyMultiSelChar() {
+    FacadeDrawSelectCharacter();
+}
+
 void RenderFacadeClover::FacadeDrawLobbyMultiExit() {
-    std::string file = "media/LobbyMultiFull.png";
+    std::string file = "media/LobbyOnline/LobbyMultiFull.png";
     device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
 }
 
@@ -2109,6 +2151,7 @@ void RenderFacadeClover::Animation2D::Update(){
 void RenderFacadeClover::Animation2D::Start(){
     timeStart = system_clock::now();
     started = true;
+    finished = false;
 }
 
 void RenderFacadeClover::Animation2D::Restart(){
