@@ -13,7 +13,10 @@ StateInGameSingle::StateInGameSingle() : StateInGame() {
 
     createSystemAI();
     sysAnimStart->ResetTimer();
+    
+    //Inicializa el ranking y el minimapa
     sysRanking->Update(manCars.get());
+    manGameRules->InitializeMiniMap(manCars->GetEntities(), manTotems->GetEntities());
 }
 
 StateInGameSingle::~StateInGameSingle() {}

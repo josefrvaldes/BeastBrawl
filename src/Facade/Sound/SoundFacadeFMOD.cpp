@@ -308,6 +308,7 @@ void SoundFacadeFMOD::LoadSoundByState(const uint8_t numState) {
             //StopEvent("Musica/menu");
             LoadSoundBank("Menu", 0);
             LoadSoundBank("Musica", 0);
+            PlayEvent("Musica/intro");
             /*if (!soundEngine->IsPlaying2D("Musica/menu")) {
                 PlayEvent("Musica/menu");
             }*/
@@ -649,11 +650,15 @@ void SoundFacadeFMOD::SoundHurt(DataMap* d) {
     auto mainCharacter = any_cast<bool>((*d)[MAIN_CAR]);
     auto position = any_cast<glm::vec3>((*d)[VEC3_POS]);
     auto id = any_cast<uint16_t>((*d)[ID]);
-
-    if (mainCharacter) {
+    
+    srand (time(NULL));
+    // Del 1 al 3
+    auto num = rand() % 3 + 1;
+    if (mainCharacter && num == 3) {
         SetParameter("Personajes/voces", "Tipo", TipoVoz::ChoquePowerup);
         PlayEvent("Personajes/voces");
     }
+
     string nameEvent = "PowerUp/choque_powerup" + to_string(id);
     SetEventPositionEstatic3D(nameEvent, position);
     PlayEvent(nameEvent);
@@ -670,11 +675,15 @@ void SoundFacadeFMOD::SoundCrash(DataMap* d) {
     bool mainCharacter = any_cast<bool>((*d)[MAIN_CAR]);
     auto id = any_cast<uint16_t>((*d)[ID]);
     auto pos = any_cast<glm::vec3>((*d)[VEC3_POS]);
-
-    if (mainCharacter) {
+    
+    srand (time(NULL));
+    // Del 1 al 3
+    auto num = rand() % 3 + 1;
+    if (mainCharacter && num == 3) {
         SetParameter("Personajes/voces", "Tipo", TipoVoz::ChoqueEnemigo);
         PlayEvent("Personajes/voces");
     }
+
     string mapID = "Coche/choque" + to_string(id);
     if (!soundEngine->IsPlayingEstatic3D(mapID)) {
         SetEventPositionEstatic3D(mapID, pos);
@@ -729,6 +738,10 @@ void SoundFacadeFMOD::SoundThrowPowerup(DataMap* d) {
 
     string name;
 
+    srand (time(NULL));
+    // Del 1 al 3
+    auto num = rand() % 3 + 1;
+
     switch (typepw) {
         case typeCPowerUp::RoboJorobo: {
             if( any_cast<bool>((*d)[STOLE]) ) {
@@ -745,7 +758,7 @@ void SoundFacadeFMOD::SoundThrowPowerup(DataMap* d) {
             break;
         }
         case typeCPowerUp::SuperMegaNitro: {
-            if (mainCar) {
+            if (mainCar && num != 3) {          // Le pongo probabilidad de 66% porque joe
                 SetParameter("Personajes/voces", "Tipo", TipoVoz::Nitro);
                 PlayEvent("Personajes/voces");
             }
@@ -757,21 +770,21 @@ void SoundFacadeFMOD::SoundThrowPowerup(DataMap* d) {
             break;
         }
         case typeCPowerUp::MelonMolon: {
-            if (mainCar) {
+            if (mainCar && num == 3) {
                 SetParameter("Personajes/voces", "Tipo", TipoVoz::Powerup);
                 PlayEvent("Personajes/voces");
             }
             break;
         }
         case typeCPowerUp::TeleBanana: {
-            if (mainCar) {
+            if (mainCar && num == 3) {
                 SetParameter("Personajes/voces", "Tipo", TipoVoz::Powerup);
                 PlayEvent("Personajes/voces");
             }
             break;
         }
         case typeCPowerUp::PudinDeFrambuesa: {
-            if (mainCar) {
+            if (mainCar && num == 3) {
                 SetParameter("Personajes/voces", "Tipo", TipoVoz::Powerup);
                 PlayEvent("Personajes/voces");
             }

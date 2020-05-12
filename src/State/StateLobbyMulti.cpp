@@ -31,16 +31,21 @@ void StateLobbyMulti::InitState() {
 void StateLobbyMulti::Render() {
     renderEngine->FacadeBeginScene();
 
-    if(actualState == StatesLobbyMulti::SELECTING_CHARACTER)
+    if(actualState == StatesLobbyMulti::SELECTING_CHARACTER){
         renderEngine->FacadeDrawLobbyMultiSelChar();
-    else if(actualState == StatesLobbyMulti::WAITING_OTHER)
+        //renderEngine->FacadeDrawAll();
+    }else if(actualState == StatesLobbyMulti::WAITING_OTHER){
+        renderEngine->FacadeDrawLobbyMultiSelChar();
+        //renderEngine->FacadeDrawAll();
         renderEngine->FacadeDrawLobbyMultiWait();
-    else if(actualState == StatesLobbyMulti::SERVER_FULL)
+    }else if(actualState == StatesLobbyMulti::SERVER_FULL)
         renderEngine->FacadeDrawLobbyMultiExit();
     else if(actualState == StatesLobbyMulti::CONNECTING)
         renderEngine->FacadeDrawLobbyMultiConnecting();
-    else if(actualState == StatesLobbyMulti::WAIT_CHARACTER_RESPONSE)
+    else if(actualState == StatesLobbyMulti::WAIT_CHARACTER_RESPONSE){
         renderEngine->FacadeDrawLobbyMultiSelChar();                    // mientras esperamos dibujamos lo mismo de antes
+        //renderEngine->FacadeDrawAll();
+    }
         
     renderEngine->FacadeEndScene(); 
 }
