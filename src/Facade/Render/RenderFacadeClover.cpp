@@ -831,11 +831,12 @@ void RenderFacadeClover::FacadeInitPause() {
 }
 
 void RenderFacadeClover::FacadeInitEndRace() {
-
+    timeAnimationEnd = system_clock::now();
+    numShowPanel = 0;
 }
 
 void RenderFacadeClover::FacadeInitEndTournament() {
-    timeAnimationET = system_clock::now();
+    timeAnimationEnd = system_clock::now();
     numShowPanel = 0;
     // calculate tournament points
     //GameValues::GetInstance()->GetTotalPoints()[0] = GameValues::GetInstance()->GetRanking().find()
@@ -1008,7 +1009,7 @@ void RenderFacadeClover::ResetInputTournamentOptions() {
     inputTO[1] = 1;
     inputTO[2] = 1;
 }
-
+ 
 
 //////////////
 //  DRAW    //
@@ -1405,6 +1406,8 @@ void RenderFacadeClover::FacadeDrawEndRace() {
     auto positionPoints = 0;
     for(auto it = rank.begin(); it != rank.end(); ++it) {
 
+        if(i>numShowPanel) { break; }
+
         auto itS = secondsRank.find(it->first);
         if ( itS != secondsRank.end()) {
             auto actualTime = itS->second;
@@ -1433,6 +1436,10 @@ void RenderFacadeClover::FacadeDrawEndRace() {
             device->RenderText2D(file, posX + 950.0f*scale, posYText - (i*100.0f)*scale, 0.6f, 1.25*scale, glm::vec3(255.0f,255.0f,255.0f));
         }
         ++i;
+    }
+    if(duration_cast<milliseconds>(system_clock::now() - timeAnimationEnd).count() > msChange && numShowPanel<=GameValues::GetInstance()->GetNumPlayers()){
+        timeAnimationEnd = system_clock::now();
+        numShowPanel++;
     }
 
     if (menuER) {
@@ -1481,7 +1488,7 @@ void RenderFacadeClover::FacadeDrawEndTournament() {
         auto positionPoints = 0;
         for(auto it = rank.begin(); it != rank.end(); ++it) {
 
-            if(i>inputET) { break; }
+            if(i>numShowPanel) { break; }
 
             auto itS = secondsRank.find(it->first);
             if ( itS != secondsRank.end()) {
@@ -1520,9 +1527,9 @@ void RenderFacadeClover::FacadeDrawEndTournament() {
             }
             ++i;
         }
-        if(duration_cast<milliseconds>(system_clock::now() - timeStart).count() > msChange && inputET<=GameValues::GetInstance()->GetNumPlayers()){
-            timeStart = system_clock::now();
-            inputET++;
+        if(duration_cast<milliseconds>(system_clock::now() - timeAnimationEnd).count() > msChange && numShowPanel<=GameValues::GetInstance()->GetNumPlayers()){
+            timeAnimationEnd = system_clock::now();
+            numShowPanel++;
         }
     }else if(menuET==1){
         // numCarreras
@@ -1539,7 +1546,7 @@ void RenderFacadeClover::FacadeDrawEndTournament() {
         auto positionPoints = 0;
         //cout << "-----------------------" << endl;
         for(auto it = rankPoints.begin(); it != rankPoints.end(); ++it) {
-            if(i>inputET) { break; }
+            if(i>numShowPanel) { break; }
 
             //cout << "ANTPOINT: " << antPoints << endl;
             auto actualPoints = it->first;
@@ -1568,9 +1575,9 @@ void RenderFacadeClover::FacadeDrawEndTournament() {
             device->RenderText2D(file, posX + 950.0f*scale, posYText - (i*100.0f)*scale, 0.3f, 1.25*scale, glm::vec3(255.0f,255.0f,255.0f));
             ++i;
         }
-        if(duration_cast<milliseconds>(system_clock::now() - timeStart).count() > msChange && inputET<=GameValues::GetInstance()->GetNumPlayers()){
-            timeStart = system_clock::now();
-            inputET++;
+        if(duration_cast<milliseconds>(system_clock::now() - timeAnimationEnd).count() > msChange && numShowPanel<=GameValues::GetInstance()->GetNumPlayers()){
+            timeAnimationEnd = system_clock::now();
+            numShowPanel++;
         }
 
     }else if(menuET == 2){
