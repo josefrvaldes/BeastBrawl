@@ -206,7 +206,6 @@ void TCPClient::SendConnectionRequest() {
     std::shared_ptr<unsigned char[]> request(new unsigned char[Constants::ONLINE_BUFFER_SIZE]);
     size_t currentBuffSize = 0;
     uint8_t petitionType = Constants::CONNECTION_REQUEST;
-    uint8_t character = GameValues::GetInstance()->GetCharacter();
     Serialization::Serialize(request.get(), &petitionType, currentBuffSize);
 
     socket.async_send(
@@ -251,7 +250,6 @@ void TCPClient::SendCancelChar(){
     std::shared_ptr<unsigned char[]> request(new unsigned char[Constants::ONLINE_BUFFER_SIZE]);
     size_t currentBuffSize = 0;
     uint8_t petitionType = Constants::TCP_CANCEL_CHARACTER;
-    uint8_t character = GameValues::GetInstance()->GetCharacter();
     Serialization::Serialize(request.get(), &petitionType, currentBuffSize);
 
     socket.async_send(

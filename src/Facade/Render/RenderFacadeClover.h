@@ -148,7 +148,7 @@ class RenderFacadeClover : public RenderFacade {
 
       void SetMenuEndRace(bool b) override { menuER = b; };
       bool GetMenuEndRace() override { return menuER; };
-      void SetMenuEndTournament(uint8_t num) override { menuET = num; timeStart=system_clock::now(); inputET=0;};
+      void SetMenuEndTournament(uint8_t num) override { menuET = num; timeAnimationEnd=system_clock::now(); numShowPanel=0;};
       uint8_t GetMenuEndTournament() override { return menuET; };
 
       void ResetInputGameOptions() override;
@@ -190,10 +190,10 @@ class RenderFacadeClover : public RenderFacade {
       int inputER { 0 };
       int maxInputER { 2 };
       //End Tournament
-      time_point<system_clock> timeAnimationET;
+      time_point<system_clock> timeAnimationEnd;
+      uint8_t numShowPanel {0};
       int msChange {400};
       uint8_t menuET { 0 };
-      uint8_t numShowPanel {0};
       int inputET { 0 };
       int maxInputET { 2 };
       //Opciones de partida

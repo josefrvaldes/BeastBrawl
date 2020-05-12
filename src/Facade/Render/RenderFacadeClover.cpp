@@ -783,21 +783,58 @@ void RenderFacadeClover::FacadeInitMenu() {
 void RenderFacadeClover::FacadeInitSelectCharacter() {
 
     //Creamos la camara apuntando al (0,0,0)
-    auto cam = device->AddCamera(device->GetRootNode(),1);
-    auto shader = resourceManager->GetResourceShader("CLEngine/src/Shaders/cartoonShader.vert","CLEngine/src/Shaders/cartoonShader.frag");
-    cam->SetShaderProgramID(shader->GetProgramID());
+    auto cam = device->AddCamera(device->GetRootNode(),0);
+    auto shaderCam = resourceManager->GetResourceShader("CLEngine/src/Shaders/cartoonShader.vert","CLEngine/src/Shaders/cartoonShader.frag");
+    cam->SetShaderProgramID(shaderCam->GetProgramID());
     auto cameraEntity = static_cast<CLCamera*>(cam->GetEntity());
     cameraEntity->SetCameraTarget(glm::vec3(0.0f));
     cam->SetTranslation(glm::vec3(40.0f,0.0f,0.0f));
     cam->SetRotation(glm::vec3(0.0f));
 
+    CLNode* mesh = nullptr;
+    auto shader = resourceManager->GetResourceShader("CLEngine/src/Shaders/basicShader.vert","CLEngine/src/Shaders/basicShader.frag");
 
-    auto mesh1 = device->AddMesh(smgr,2,"media/kart_penguin.obj");
-    mesh1->SetScalation(glm::vec3(5.0f));
-    mesh1->SetTranslation(glm::vec3(0.0f,0.0f,30.0f));
-    auto shader1 = resourceManager->GetResourceShader("CLEngine/src/Shaders/basicShader.vert","CLEngine/src/Shaders/basicShader.frag");
+    //Penguin
+    mesh = device->AddMesh(smgr,1,"media/thepenguin_selection.obj");
+    mesh->SetScalation(glm::vec3(2.0f));
+    mesh->SetTranslation(glm::vec3(0.0f,0.0f,-20.0f));
+    mesh->SetRotation(glm::vec3(0.0f,-40.0f,0.0f));
+    mesh->SetShaderProgramID(shader->GetProgramID());
 
-    mesh1->SetShaderProgramID(shader1->GetProgramID());
+    //Tiger
+    mesh = device->AddMesh(smgr,2,"media/mrsbaxter_selection.obj");
+    mesh->SetScalation(glm::vec3(2.0f));
+    mesh->SetTranslation(glm::vec3(0.0f,0.0f,-20.0f));
+    mesh->SetRotation(glm::vec3(0.0f,-40.0f,0.0f));
+    mesh->SetShaderProgramID(shader->GetProgramID());
+
+    //Shark
+    mesh = device->AddMesh(smgr,3,"media/captainsharky_selection.obj");
+    mesh->SetScalation(glm::vec3(2.0f));
+    mesh->SetTranslation(glm::vec3(0.0f,0.0f,-20.0f));
+    mesh->SetRotation(glm::vec3(0.0f,-40.0f,0.0f));
+    mesh->SetShaderProgramID(shader->GetProgramID());
+
+    //Gorila
+    mesh = device->AddMesh(smgr,4,"media/kaiserkong_selection.obj");
+    mesh->SetScalation(glm::vec3(2.0f));
+    mesh->SetTranslation(glm::vec3(0.0f,0.0f,-20.0f));
+    mesh->SetRotation(glm::vec3(0.0f,-40.0f,0.0f));
+    mesh->SetShaderProgramID(shader->GetProgramID());
+
+    //Dragon
+    mesh = device->AddMesh(smgr,5,"media/deacondragon_selection.obj");
+    mesh->SetScalation(glm::vec3(2.0f));
+    mesh->SetTranslation(glm::vec3(0.0f,0.0f,-20.0f));
+    mesh->SetRotation(glm::vec3(0.0f,-40.0f,0.0f));
+    mesh->SetShaderProgramID(shader->GetProgramID());
+
+    //Octopus
+    mesh = device->AddMesh(smgr,6,"media/cyberoctopus_selection.obj");
+    mesh->SetScalation(glm::vec3(2.0f));
+    mesh->SetTranslation(glm::vec3(0.0f,0.0f,-20.0f));
+    mesh->SetRotation(glm::vec3(0.0f,-40.0f,0.0f));
+    mesh->SetShaderProgramID(shader->GetProgramID());
 
 
     //IMGs
@@ -831,11 +868,12 @@ void RenderFacadeClover::FacadeInitPause() {
 }
 
 void RenderFacadeClover::FacadeInitEndRace() {
-
+    timeAnimationEnd = system_clock::now();
+    numShowPanel = 0;
 }
 
 void RenderFacadeClover::FacadeInitEndTournament() {
-    timeAnimationET = system_clock::now();
+    timeAnimationEnd = system_clock::now();
     numShowPanel = 0;
     // calculate tournament points
     //GameValues::GetInstance()->GetTotalPoints()[0] = GameValues::GetInstance()->GetRanking().find()
@@ -1021,7 +1059,7 @@ void RenderFacadeClover::ResetInputTournamentOptions() {
     inputTO[4] = 1;
     //GameValues::GetInstance()->SetTimeTotem(45);
 }
-
+ 
 
 //////////////
 //  DRAW    //
@@ -1294,7 +1332,15 @@ void RenderFacadeClover::FacadeDrawMenu() {
 
 }
 
- void RenderFacadeClover::FacadeDrawSelectCharacter() {
+void RenderFacadeClover::FacadeDrawSelectCharacter() {
+
+    //Ponemos visible solamente el que esta seleccionado
+    for(uint8_t i=1; i<maxInputSC+2 ; i++){
+        auto node = device->GetNodeByID(i);
+        node->SetVisible(false);
+    }
+    auto nodeSelected = device->GetNodeByID(inputSC+1);
+    nodeSelected->SetVisible(true);
 
     device->SetEnableDepthTest(false);
 
@@ -1313,7 +1359,7 @@ void RenderFacadeClover::FacadeDrawMenu() {
         
     device->SetEnableDepthTest(true);
 
- }
+}
 
 void RenderFacadeClover::FacadeDrawGameOptions() {
 
@@ -1450,6 +1496,8 @@ void RenderFacadeClover::FacadeDrawEndRace() {
     auto positionPoints = 0;
     for(auto it = rank.begin(); it != rank.end(); ++it) {
 
+        if(i>numShowPanel) { break; }
+
         auto itS = secondsRank.find(it->first);
         if ( itS != secondsRank.end()) {
             auto actualTime = itS->second;
@@ -1478,6 +1526,10 @@ void RenderFacadeClover::FacadeDrawEndRace() {
             device->RenderText2D(file, posX + 950.0f*scale, posYText - (i*100.0f)*scale, 0.6f, 1.25*scale, glm::vec3(255.0f,255.0f,255.0f));
         }
         ++i;
+    }
+    if(duration_cast<milliseconds>(system_clock::now() - timeAnimationEnd).count() > msChange && numShowPanel<=GameValues::GetInstance()->GetNumPlayers()){
+        timeAnimationEnd = system_clock::now();
+        numShowPanel++;
     }
 
     if (menuER) {
@@ -1526,7 +1578,7 @@ void RenderFacadeClover::FacadeDrawEndTournament() {
         auto positionPoints = 0;
         for(auto it = rank.begin(); it != rank.end(); ++it) {
 
-            if(i>inputET) { break; }
+            if(i>numShowPanel) { break; }
 
             auto itS = secondsRank.find(it->first);
             if ( itS != secondsRank.end()) {
@@ -1565,9 +1617,9 @@ void RenderFacadeClover::FacadeDrawEndTournament() {
             }
             ++i;
         }
-        if(duration_cast<milliseconds>(system_clock::now() - timeStart).count() > msChange && inputET<=GameValues::GetInstance()->GetNumPlayers()){
-            timeStart = system_clock::now();
-            inputET++;
+        if(duration_cast<milliseconds>(system_clock::now() - timeAnimationEnd).count() > msChange && numShowPanel<=GameValues::GetInstance()->GetNumPlayers()){
+            timeAnimationEnd = system_clock::now();
+            numShowPanel++;
         }
     }else if(menuET==1){
         // numCarreras
@@ -1584,7 +1636,7 @@ void RenderFacadeClover::FacadeDrawEndTournament() {
         auto positionPoints = 0;
         //cout << "-----------------------" << endl;
         for(auto it = rankPoints.begin(); it != rankPoints.end(); ++it) {
-            if(i>inputET) { break; }
+            if(i>numShowPanel) { break; }
 
             //cout << "ANTPOINT: " << antPoints << endl;
             auto actualPoints = it->first;
@@ -1613,9 +1665,9 @@ void RenderFacadeClover::FacadeDrawEndTournament() {
             device->RenderText2D(file, posX + 950.0f*scale, posYText - (i*100.0f)*scale, 0.3f, 1.25*scale, glm::vec3(255.0f,255.0f,255.0f));
             ++i;
         }
-        if(duration_cast<milliseconds>(system_clock::now() - timeStart).count() > msChange && inputET<=GameValues::GetInstance()->GetNumPlayers()){
-            timeStart = system_clock::now();
-            inputET++;
+        if(duration_cast<milliseconds>(system_clock::now() - timeAnimationEnd).count() > msChange && numShowPanel<=GameValues::GetInstance()->GetNumPlayers()){
+            timeAnimationEnd = system_clock::now();
+            numShowPanel++;
         }
 
     }else if(menuET == 2){

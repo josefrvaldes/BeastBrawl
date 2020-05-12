@@ -1060,7 +1060,7 @@ void InputFacadeClover::CheckInputEndTournament(int& input, int maxInput, uint8_
         if(interval > 250) {
             EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_MENU});
             //TODO: ¿Deberia resetear al volver al comenzar o al volver al menú?
-            RenderFacadeManager::GetInstance()->GetRenderFacade()->ResetInputGameOptions();
+            RenderFacadeManager::GetInstance()->GetRenderFacade()->ResetInputTournamentOptions();
             RenderFacadeManager::GetInstance()->GetRenderFacade()->ResetInputCharacter();
             WeHaveToGoToMenu = false;
         }
@@ -1112,7 +1112,7 @@ void InputFacadeClover::CheckInputEndTournament(int& input, int maxInput, uint8_
                     case 2: {
                         WeHaveToGoToMenu = true;
                         timerGoToMenu = Utils::getMillisSinceEpoch();
-                        RenderFacadeManager::GetInstance()->GetRenderFacade()->ResetInputGameOptions();
+                        RenderFacadeManager::GetInstance()->GetRenderFacade()->ResetInputTournamentOptions();
                         RenderFacadeManager::GetInstance()->GetRenderFacade()->ResetInputCharacter();
                         break;
                     }
