@@ -776,7 +776,7 @@ void RenderFacadeClover::FacadeInitMenu() {
 void RenderFacadeClover::FacadeInitSelectCharacter() {
 
     //Creamos la camara apuntando al (0,0,0)
-    auto cam = device->AddCamera(device->GetRootNode(),0);
+    auto cam = device->AddCamera(device->GetRootNode(),10);
     auto shaderCam = resourceManager->GetResourceShader("CLEngine/src/Shaders/cartoonShader.vert","CLEngine/src/Shaders/cartoonShader.frag");
     cam->SetShaderProgramID(shaderCam->GetProgramID());
     auto cameraEntity = static_cast<CLCamera*>(cam->GetEntity());
@@ -788,42 +788,42 @@ void RenderFacadeClover::FacadeInitSelectCharacter() {
     auto shader = resourceManager->GetResourceShader("CLEngine/src/Shaders/basicShader.vert","CLEngine/src/Shaders/basicShader.frag");
 
     //Penguin
-    mesh = device->AddMesh(smgr,1,"media/thepenguin_selection.obj");
+    mesh = device->AddMesh(smgr,0,"media/thepenguin_selection.obj");
     mesh->SetScalation(glm::vec3(2.0f));
     mesh->SetTranslation(glm::vec3(0.0f,0.0f,-20.0f));
     mesh->SetRotation(glm::vec3(0.0f,-40.0f,0.0f));
     mesh->SetShaderProgramID(shader->GetProgramID());
 
     //Tiger
-    mesh = device->AddMesh(smgr,2,"media/mrsbaxter_selection.obj");
+    mesh = device->AddMesh(smgr,1,"media/mrsbaxter_selection.obj");
     mesh->SetScalation(glm::vec3(2.0f));
     mesh->SetTranslation(glm::vec3(0.0f,0.0f,-20.0f));
     mesh->SetRotation(glm::vec3(0.0f,-40.0f,0.0f));
     mesh->SetShaderProgramID(shader->GetProgramID());
 
     //Shark
-    mesh = device->AddMesh(smgr,3,"media/captainsharky_selection.obj");
+    mesh = device->AddMesh(smgr,2,"media/captainsharky_selection.obj");
     mesh->SetScalation(glm::vec3(2.0f));
     mesh->SetTranslation(glm::vec3(0.0f,0.0f,-20.0f));
     mesh->SetRotation(glm::vec3(0.0f,-40.0f,0.0f));
     mesh->SetShaderProgramID(shader->GetProgramID());
 
     //Gorila
-    mesh = device->AddMesh(smgr,4,"media/kaiserkong_selection.obj");
+    mesh = device->AddMesh(smgr,3,"media/kaiserkong_selection.obj");
     mesh->SetScalation(glm::vec3(2.0f));
     mesh->SetTranslation(glm::vec3(0.0f,0.0f,-20.0f));
     mesh->SetRotation(glm::vec3(0.0f,-40.0f,0.0f));
     mesh->SetShaderProgramID(shader->GetProgramID());
 
     //Dragon
-    mesh = device->AddMesh(smgr,5,"media/deacondragon_selection.obj");
+    mesh = device->AddMesh(smgr,4,"media/deacondragon_selection.obj");
     mesh->SetScalation(glm::vec3(2.0f));
     mesh->SetTranslation(glm::vec3(0.0f,0.0f,-20.0f));
     mesh->SetRotation(glm::vec3(0.0f,-40.0f,0.0f));
     mesh->SetShaderProgramID(shader->GetProgramID());
 
     //Octopus
-    mesh = device->AddMesh(smgr,6,"media/cyberoctopus_selection.obj");
+    mesh = device->AddMesh(smgr,5,"media/cyberoctopus_selection.obj");
     mesh->SetScalation(glm::vec3(2.0f));
     mesh->SetTranslation(glm::vec3(0.0f,0.0f,-20.0f));
     mesh->SetRotation(glm::vec3(0.0f,-40.0f,0.0f));
@@ -1344,11 +1344,11 @@ void RenderFacadeClover::FacadeDrawMenu() {
 void RenderFacadeClover::FacadeDrawSelectCharacter() {
 
     //Ponemos visible solamente el que esta seleccionado
-    for(uint8_t i=1; i<maxInputSC+2 ; i++){
+    for(uint8_t i=0; i<=maxInputSC ; i++){
         auto node = device->GetNodeByID(i);
         node->SetVisible(false);
     }
-    auto nodeSelected = device->GetNodeByID(inputSC+1);
+    auto nodeSelected = device->GetNodeByID(inputSC);
     nodeSelected->SetVisible(true);
 
     device->SetEnableDepthTest(false);
