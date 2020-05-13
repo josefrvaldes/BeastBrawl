@@ -39,10 +39,10 @@ CarAI::CarAI(int pj, int difficult) : Car(pj){
 
     BrainAIDifficult dif;
     switch (difficult) {
-        case static_cast<int>(BrainAIDifficult::EASY):        dif = BrainAIDifficult::EASY;       break;
-        case static_cast<int>(BrainAIDifficult::NORMAL):      dif = BrainAIDifficult::NORMAL;     break;
-        case static_cast<int>(BrainAIDifficult::DIFFICULT):   dif = BrainAIDifficult::DIFFICULT;  break;
-        default:    dif = BrainAIDifficult::DIFFICULT; break;
+        case static_cast<int>(BrainAIDifficult::EASY):        dif = BrainAIDifficult::EASY;         break;
+        case static_cast<int>(BrainAIDifficult::NORMAL):      dif = BrainAIDifficult::NORMAL;       break;
+        case static_cast<int>(BrainAIDifficult::DIFFICULT):   dif = BrainAIDifficult::DIFFICULT;    break;
+        default:                                              dif = BrainAIDifficult::NORMAL;       break;
     }
     shared_ptr<CBrainAI> cBrainAI = make_shared<CBrainAI>(dif);
 

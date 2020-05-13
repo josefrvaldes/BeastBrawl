@@ -697,11 +697,11 @@ void RenderFacadeClover::FacadeSetWindowSize(DataMap* d) {
  */
 void RenderFacadeClover::FacadeInitResources(){
     FacadeBeginScene();
-    std::string file = "media/loading_screen.png";
+    std::string file = "media/menu/loading_screen.png";
     device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
 
     int indx = Utils::getRandomInt(0,tipsTexts.size()-1);
-    device->RenderText2D(tipsTexts.at(indx),100,100,0.5,0.8,glm::vec3(1.0,1.0,1.0));
+    device->RenderText2D(tipsTexts.at(indx), device->GetScreenWidth()/2 - 100.0f, device->GetScreenHeight()/2,0.5f,0.5f,glm::vec3(1.0f,1.0f,1.0f));
     FacadeEndScene();
 
     //Cargamos todas las mallas
@@ -1077,6 +1077,7 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
     CTotem* cTotem;
     CCar* cCar;
     CTransformable* cTrans;
+    bool totemCatch = false;
     auto w = device->GetScreenWidth();
     auto h = device->GetScreenHeight();
 
@@ -1172,6 +1173,7 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
 
             //MARCADOR DE TIEMPO
             if (cTotem && cTotem->active) {
+                totemCatch = true;
                 cadena = "media/marcador.png";
                 auto posMarcadorX = w/2 - 112.0f;
                 auto posMarcadorY = 50.0f;
@@ -1238,9 +1240,16 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
     if(positionTotem.x > 0 && positionTotem.y > 0) {
         auto posXTMM = positionTotem.x * widthMM;
         auto posYTMM = positionTotem.y * heightMM;
-        sprite = "media/hudTotem.png";
-        device->DrawImage2D(posXMiniMap + (posXTMM - 12), posYMiniMap + (posYTMM - 12), 1.0f, 0.1f, sprite, true);
+        sprite = "media/totem";
+        if (totemCatch) {
+            sprite += "Cogido.png";
+            device->DrawImage2D(posXMiniMap + (posXTMM - 17), posYMiniMap + (posYTMM - 30), 1.0f, 0.1f, sprite, true);
+        } else {
+            sprite += "Suelo.png";
+            device->DrawImage2D(posXMiniMap + (posXTMM - 15), posYMiniMap + (posYTMM - 15), 1.0f, 0.1f, sprite, true);
+        }
     }
+    totemCatch = false;
 
 
     // MARCADOR GLOBAL
@@ -1477,6 +1486,7 @@ void RenderFacadeClover::FacadeDrawEndRace() {
 
     auto w = device->GetScreenWidth();
     auto h = device->GetScreenHeight();
+    std::string name = "Mr Penguin";
 
     auto scale = 0.75f;
     if (h > 1000) { scale = 1.0f; }
@@ -1509,15 +1519,22 @@ void RenderFacadeClover::FacadeDrawEndRace() {
         file += std::to_string(positionPoints+1) + ".png";
         device->DrawImage2D(posX, posY + (i*100.0f)*scale, 1.0*scale, 0.8f, file, true);
         switch (it->second) {
-            case (uint16_t)mainCharacter::PENGUIN:  file = "media/hudPenguin.png";        break;
-            case (uint16_t)mainCharacter::TIGER:    file = "media/hudTiger.png";          break;
-            case (uint16_t)mainCharacter::SHARK:    file = "media/hudShark.png";          break;
-            case (uint16_t)mainCharacter::GORILLA:  file = "media/hudGorilla.png";        break;
-            case (uint16_t)mainCharacter::DRAGON:   file = "media/hudDragon.png";         break;
-            case (uint16_t)mainCharacter::OCTOPUS:  file = "media/hudOctopus.png";        break;
+            case (uint16_t)mainCharacter::PENGUIN:  file = "media/hudPenguin.png";      name = "Mr Penguin";            break;
+            case (uint16_t)mainCharacter::TIGER:    file = "media/hudTiger.png";        name = "Mrs Baxter";            break;
+            case (uint16_t)mainCharacter::SHARK:    file = "media/hudShark.png";        name = "Captain Sharky";        break;
+            case (uint16_t)mainCharacter::GORILLA:  file = "media/hudGorilla.png";      name = "Kaiser Kong";           break;
+            case (uint16_t)mainCharacter::DRAGON:   file = "media/hudDragon.png";       name = "Deacon Dragon";         break;
+            case (uint16_t)mainCharacter::OCTOPUS:  file = "media/hudOctopus.png";      name = "Ciber Octopus";         break;
             default: cout << "+++++++ No entiendo este personaje para el evento" << endl;   break;
         }
-        device->DrawImage2D(posX + 275.0f*scale, posY + (i*100.0f)*scale + 5.0f*scale, 1.0f*scale, 0.7f, file, true);  //CARITA
+        device->DrawImage2D(posX + 240.0f*scale, posY + (i*100.0f)*scale + 5.0f*scale, 1.0f*scale, 0.7f, file, true);  //CARITA
+        device->RenderText2D(name, posX + 325.0f*scale, posYText - (i*100.0f)*scale, 0.65f, 1.0*scale, glm::vec3(255.0f, 255.0f, 255.0f));
+
+        
+        if((positionPoints+1) == 1) {
+            file = "media/menu/crown.png";
+                device->DrawImage2D(posX - 50.0f*scale, posY + (i*100.0f)*scale - 75.0f*scale, 1.0*scale, 0.8f, file, true);
+        }
 
         auto it2 = secondsRank.find(it->first);
         if (it2 != secondsRank.end()){
@@ -1525,6 +1542,7 @@ void RenderFacadeClover::FacadeDrawEndRace() {
             else { file = std::to_string(it2->second); }
             device->RenderText2D(file, posX + 950.0f*scale, posYText - (i*100.0f)*scale, 0.6f, 1.25*scale, glm::vec3(255.0f,255.0f,255.0f));
         }
+
         ++i;
     }
     if(duration_cast<milliseconds>(system_clock::now() - timeAnimationEnd).count() > msChange && numShowPanel<=GameValues::GetInstance()->GetNumPlayers()){
@@ -1534,16 +1552,16 @@ void RenderFacadeClover::FacadeDrawEndRace() {
 
     if (menuER) {
         file = "media/menu/finish_menu_options_bg.png";
-        Draw2DImage(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.5f, file, true);
-        file = "media/menu/finish_menu_options_elements.png";
         Draw2DImage(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.4f, file, true);
+        file = "media/menu/finish_menu_options_elements.png";
+        Draw2DImage(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.5f, file, true);
 
         std::string files[3] = {
             "media/menu/finish_option1_hover.png",
             "media/menu/finish_option2_hover.png",
             "media/menu/finish_option3_hover.png"
         };
-        Draw2DImage(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.3f, files[inputER], true);
+        Draw2DImage(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.2f, files[inputER], true);
     }
     device->SetEnableDepthTest(true);
 }
@@ -1559,6 +1577,7 @@ void RenderFacadeClover::FacadeDrawEndTournament() {
     else if (h < 675) { scale = 0.5; }
 
     std::string file = "media/menu/finish_menu_bg.png";
+    std::string name = "Mr Penguin";
     device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.9f, file, true);
 
     auto rank = GameValues::GetInstance()->GetRanking();
@@ -1591,15 +1610,16 @@ void RenderFacadeClover::FacadeDrawEndTournament() {
             file += std::to_string(positionPoints+1) + ".png";
             device->DrawImage2D(posX, posY + (i*100.0f)*scale, 1.0*scale, 0.8f, file, true);
             switch (it->second) {
-                case (uint16_t)mainCharacter::PENGUIN:  file = "media/hudPenguin.png";        break;
-                case (uint16_t)mainCharacter::TIGER:    file = "media/hudTiger.png";          break;
-                case (uint16_t)mainCharacter::SHARK:    file = "media/hudShark.png";          break;
-                case (uint16_t)mainCharacter::GORILLA:  file = "media/hudGorilla.png";        break;
-                case (uint16_t)mainCharacter::DRAGON:   file = "media/hudDragon.png";         break;
-                case (uint16_t)mainCharacter::OCTOPUS:  file = "media/hudOctopus.png";        break;
+                case (uint16_t)mainCharacter::PENGUIN:  file = "media/hudPenguin.png";      name = "Mr Penguin";            break;
+                case (uint16_t)mainCharacter::TIGER:    file = "media/hudTiger.png";        name = "Mrs Baxter";            break;
+                case (uint16_t)mainCharacter::SHARK:    file = "media/hudShark.png";        name = "Captain Sharky";        break;
+                case (uint16_t)mainCharacter::GORILLA:  file = "media/hudGorilla.png";      name = "Kaiser Kong";           break;
+                case (uint16_t)mainCharacter::DRAGON:   file = "media/hudDragon.png";       name = "Deacon Dragon";         break;
+                case (uint16_t)mainCharacter::OCTOPUS:  file = "media/hudOctopus.png";      name = "Ciber Octopus";         break;
                 default: cout << "+++++++ No entiendo este personaje para el evento" << endl;   break;
             }
-            device->DrawImage2D(posX + 275.0f*scale, posY + (i*100.0f)*scale + 5.0f*scale, 1.0f*scale, 0.5f, file, true);  //CARITA
+            device->DrawImage2D(posX + 240.0f*scale, posY + (i*100.0f)*scale + 5.0f*scale, 1.0f*scale, 0.7f, file, true);  //CARITA
+            device->RenderText2D(name, posX + 325.0f*scale, posYText - (i*100.0f)*scale, 0.65f, 1.0*scale, glm::vec3(255.0f, 255.0f, 255.0f));
 
             // puntos
 
@@ -1649,15 +1669,21 @@ void RenderFacadeClover::FacadeDrawEndTournament() {
             file += std::to_string(positionPoints+1) + ".png";
             device->DrawImage2D(posX, posY + (i*100.0f)*scale, 1.0*scale, 0.8f, file, true);
             switch (it->second) {
-                case (uint16_t)mainCharacter::PENGUIN:  file = "media/hudPenguin.png";        break;
-                case (uint16_t)mainCharacter::TIGER:    file = "media/hudTiger.png";          break;
-                case (uint16_t)mainCharacter::SHARK:    file = "media/hudShark.png";          break;
-                case (uint16_t)mainCharacter::GORILLA:  file = "media/hudGorilla.png";        break;
-                case (uint16_t)mainCharacter::DRAGON:   file = "media/hudDragon.png";         break;
-                case (uint16_t)mainCharacter::OCTOPUS:  file = "media/hudOctopus.png";        break;
+                case (uint16_t)mainCharacter::PENGUIN:  file = "media/hudPenguin.png";      name = "Mr Penguin";            break;
+                case (uint16_t)mainCharacter::TIGER:    file = "media/hudTiger.png";        name = "Mrs Baxter";            break;
+                case (uint16_t)mainCharacter::SHARK:    file = "media/hudShark.png";        name = "Captain Sharky";        break;
+                case (uint16_t)mainCharacter::GORILLA:  file = "media/hudGorilla.png";      name = "Kaiser Kong";           break;
+                case (uint16_t)mainCharacter::DRAGON:   file = "media/hudDragon.png";       name = "Deacon Dragon";         break;
+                case (uint16_t)mainCharacter::OCTOPUS:  file = "media/hudOctopus.png";      name = "Ciber Octopus";         break;
                 default: cout << "+++++++ No entiendo este personaje para el evento" << endl;   break;
             }
-            device->DrawImage2D(posX + 275.0f*scale, posY + (i*100.0f)*scale + 5.0f*scale, 1.0f*scale, 0.5f, file, true);  //CARITA
+            device->DrawImage2D(posX + 240.0f*scale, posY + (i*100.0f)*scale + 5.0f*scale, 1.0f*scale, 0.7f, file, true);  //CARITA
+            device->RenderText2D(name, posX + 325.0f*scale, posYText - (i*100.0f)*scale, 0.65f, 1.0*scale, glm::vec3(255.0f, 255.0f, 255.0f));
+
+            if((positionPoints+1) == 1) {
+                file = "media/menu/crown.png";
+                device->DrawImage2D(posX - 50.0f*scale, posY + (i*100.0f)*scale - 75.0f*scale, 1.0*scale, 0.6f, file, true);
+            }
 
             // puntos
             if (it->first < 10) { file = "0" + std::to_string(it->first); }
