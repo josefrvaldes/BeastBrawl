@@ -925,9 +925,9 @@ void RenderFacadeClover::FacadeInitEndTournament() {
         playersSaved++;
     }
     
-    //for(auto it = rankPoints.begin(); it != rankPoints.end(); ++it){
-    //    cout << "Puntos: " << it->first << "  Jugador: " << it->second << "\n";
-    //}
+    /*for(auto it = rankPoints.begin(); it != rankPoints.end(); ++it){
+        cout << "Puntos: " << it->first << "  Jugador: " << it->second << "\n";
+    }*/
 
     GameValues::GetInstance()->SetTotalPoints(pointsTotal);
     GameValues::GetInstance()->SetRankingPoints(rankPoints);
@@ -1533,7 +1533,7 @@ void RenderFacadeClover::FacadeDrawEndRace() {
         
         if((positionPoints+1) == 1) {
             file = "media/menu/crown.png";
-                device->DrawImage2D(posX - 50.0f*scale, posY + (i*100.0f)*scale - 75.0f*scale, 1.0*scale, 0.8f, file, true);
+            device->DrawImage2D(posX - 50.0f*scale, posY + (i*100.0f)*scale - 65.0f*scale, 0.9*scale, 0.6f, file, true);
         }
 
         auto it2 = secondsRank.find(it->first);
@@ -1682,7 +1682,7 @@ void RenderFacadeClover::FacadeDrawEndTournament() {
 
             if((positionPoints+1) == 1) {
                 file = "media/menu/crown.png";
-                device->DrawImage2D(posX - 50.0f*scale, posY + (i*100.0f)*scale - 75.0f*scale, 1.0*scale, 0.6f, file, true);
+                device->DrawImage2D(posX - 50.0f*scale, posY + (i*100.0f)*scale - 65.0f*scale, 0.9*scale, 0.6f, file, true);
             }
 
             // puntos
