@@ -11,6 +11,7 @@ class ManCar;
 class CPowerUp;
 class ManTotem;
 class PowerUp;
+class COnline;
 
 class SystemOnline {
    public:
@@ -36,6 +37,7 @@ class SystemOnline {
     int64_t timeStartClock{-1};
     float turnout;
     bool ClocksStartedSincing() {return clocksStartedSyncing;};
+    bool CheckIfSyncFinished(COnline *cOnlineMainCar, const uint8_t numMeasurementsToCompare) const;
 
    private:
     void SubscribeToEvents();

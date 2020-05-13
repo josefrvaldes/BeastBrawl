@@ -262,6 +262,13 @@ void SystemOnline::NewClockSyncReceived(DataMap *d) {
             if(idOnlineMainCar == 1 && cOnlineMainCar->numMeasurements[idSender] >= MAX_NUM_MEASUREMENTS) {
                 cout << "Soy el líder supremo y he terminado con  los datos ";
                 cout << "T["<<cOnlineMainCar->timeSyncClock[idSender]<<"] TO["<<cOnlineMainCar->currentTurnout[idSender]<<"] N["<<unsigned(cOnlineMainCar->numMeasurements[idSender])<<"]" << endl<< endl<< endl;
+                bool syncFinished = CheckIfSyncFinished(cOnlineMainCar, cOnlineMainCar->numMeasurements[idSender]);
+                if(syncFinished) {
+                    cout << "Hemos terminado el cálculo de lag con todos los players, ahora vamos a mandarle ya definitivamente la petición de sincronización de reloj" << endl;
+                } else {
+                    cout << "Hemos terminado el cálculo de lag con un player pero no con todos" << endl;
+                }
+
 
                 // si todavía no hemos acabado de medir, reenvío de nuevo
             } else if(cOnlineMainCar->numMeasurements[idSender] <= MAX_NUM_MEASUREMENTS) {
@@ -275,3 +282,26 @@ void SystemOnline::NewClockSyncReceived(DataMap *d) {
     }
     
 }
+
+
+/**
+ * Recibimos el numMeasurementsToCompare en vez de usar la constante MAX_NUM_MEASUREMENTS porque como el numMeasurement es intercalado (1 yo, 2 el otro, 3 yo, 4 el otro...)
+ * No podemos usar esa variable exacta porque igual nos pasamos exactos, porque justo coincide que yo hago el incremento que finalmente llega a ese valor
+ * o igual me paso por 1 porque es el otro el que supera el valor
+ */
+bool SystemOnline::CheckIfSyncFinished(COnline *cOnlineMainCar, const uint8_t numMeasurementsToCompare) const {
+    cout << "Vamos a comprobar si el sync está finalizado" << endl;
+    for  (auto currentCar: manCar.GetEntities()) {
+        COnline* cOnline = static_cast<COnline*>(currentCar->GetComponent(CompType::OnlineComp).get());
+        if(cOnline->idClient != 1) {
+            auto currentMeasurements = cOnlineMainCar->numMeasurements[cOnline->idClient];
+            cout << "El cliente id["<<cOnline->idClient<<"] tiene medidas["<<currentMeasurements<<"]" << endl;
+            if(currentMeasurements < numMeasurementsToCompare) {
+                cout << "es false que hemos terminado la sync" << endl;
+                return false;
+            }
+        }
+    }
+    cout << "es true que hemos terminado la sync" << endl;
+    return true;
+};
