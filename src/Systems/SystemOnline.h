@@ -33,7 +33,7 @@ class SystemOnline {
     int64_t GetGameTime() const ;
     uint16_t idOnlineMainCar;
     void SyncClocks();
-    int64_t timeStartClock;
+    int64_t timeStartClock{-1};
     float turnout;
     bool ClocksStartedSincing() {return clocksStartedSyncing;};
 

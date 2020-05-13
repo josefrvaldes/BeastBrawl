@@ -168,6 +168,7 @@ void StateInGameMulti::UpdateAnimationCountdown() {
     StateInGame::UpdateAnimationCountdown();
     if(!sysOnline->ClocksStartedSincing())
         sysOnline->SyncClocks();
+    EventManager::GetInstance().Update();
 }
 
 void StateInGameMulti::UpdateGame() {
