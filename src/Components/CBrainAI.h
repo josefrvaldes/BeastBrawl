@@ -13,10 +13,12 @@
 #include "../Systems/SystemFuzzyLogicAI.h"
 
 
+enum class BrainAIDifficult { EASY, NORMAL, DIFFICULT };
 
 class CBrainAI : public Component{
 public:
     CBrainAI();
+    CBrainAI(BrainAIDifficult dif);
     ~CBrainAI(){};
 
     void CleanVisionRange();
@@ -51,6 +53,8 @@ public:
     // int id_WayPoint;
     // float radious_WayPoint = 30.0f;
 
+    //Dificultad
+    BrainAIDifficult difficult { BrainAIDifficult::NORMAL };
 
     // elementos en el rango de vision
     int fov = 50;

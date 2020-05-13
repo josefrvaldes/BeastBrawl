@@ -169,12 +169,16 @@ class RenderFacadeClover : public RenderFacade {
 
       std::string powerUps[7];
 
-      vector<std::string> tipsTexts = { "Si te encuentras perdido, utiliza la camara del totem para localizarlo!" , 
-                                   "Utiliza el Robo Jorobo para conseguir el totem de inmediato!",
-                                   "El Escudo Merluzo te ayudara a que no te roben el totem!"};
+      vector<std::string> tipsTexts = {   "Usa la camara de totem para ver donde está!" , 
+                                          "Utiliza el Robo Jorobo para robar el totem!",
+                                          "Utiliza el Escudo Merluzo para protegerte!",
+                                          "Lanza el Pudin para que otro coche resbale!",
+                                          "Busca el totem, cogelo y escapa de los demas!"};
 
       // En juego
       bool inputShowTable { true };
+      Constants::ShowTableMinimap showTableMinimap { Constants::ShowTableMinimap::BOTH };
+      uint8_t maxShowTM { 3 };
 
       //Menu
       int inputMenu { 0 };
@@ -198,12 +202,12 @@ class RenderFacadeClover : public RenderFacade {
       int maxInputET { 2 };
       //Opciones de partida
       int option { 0 };
-      std::vector<int> inputGO {1,1/*,0*/};
-      int maxInputGO[2] {3, 2/*, 0*/};
+      std::vector<int> inputGO {1,1,1,1};
+      int maxInputGO[4] {3, 2, 3, 2};
       //Opciones de partida torneo
       int optionTO { 0 };
-      std::vector<int> inputTO {1, 1, 1};
-      int maxInputTO[3] {3, 2, 2};
+      std::vector<int> inputTO {1, 1, 1, 1, 1};
+      int maxInputTO[5] {3, 2, 3, 2, 2};
       //Ajustes
       int optionSettings { 0 };
       std::vector<int> inputSettings {1,3,1,1,0};     //Sonido, musica, particulas, vegetacion, sombras

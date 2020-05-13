@@ -1,6 +1,7 @@
 #include "StateInGameSingle.h"
 
 #include "../Managers/ManAI.h"
+#include <Components/CBrainAI.h>
 
 StateInGameSingle::StateInGameSingle() : StateInGame() {
     InitState();
@@ -266,7 +267,8 @@ void StateInGameSingle::InitBtDecisionMove(){
 
 void StateInGameSingle::InitCarAIS(ManCar &manCars, ManWayPoint &manWayPoint) {
     auto iaPjs = GameValues::GetInstance()->GetIACharacters();
-
+    auto numPlayers = GameValues::GetInstance()->GetNumPlayers();
+    int iaDifficult = GameValues::GetInstance()->GetDifficultAI();
 
     //auto posCar1 = glm::vec3(290.0f, 15.0f, -300.0f);
     //auto posCar2 = glm::vec3(-202.0f, 15.0f, -145.0f);
@@ -275,19 +277,21 @@ void StateInGameSingle::InitCarAIS(ManCar &manCars, ManWayPoint &manWayPoint) {
     //Para asegurarse por si petara, que no debe
     if (!iaPjs.empty()) {
         if (iaPjs.size() < 5) {
-            cout << "++++++++++ El vector de IA no tiene el tamanyo que debe tener. Si peta despues de esto, buscame.";
+            cout << "++++++++++ El vector de IA en GameValues no tiene el tamanyo que debe tener. Si peta despues de esto, buscame.";
         }
 
         //Cambiar
-        manCars.CreateCarAI(iaPjs[0], manCars.GetPosSpawn());
-        manCars.CreateCarAI(iaPjs[1], manCars.GetPosSpawn());
-        manCars.CreateCarAI(iaPjs[2], manCars.GetPosSpawn());
+        for (uint8_t i = 0; i < (numPlayers - 1); ++i) {
+            manCars.CreateCarAI(iaPjs[i], iaDifficult, manCars.GetPosSpawn());
+        }
+        //manCars.CreateCarAI(iaPjs[0], manCars.GetPosSpawn());
+        //manCars.CreateCarAI(iaPjs[1], manCars.GetPosSpawn());
 
     } else {
         cout << "++++++++++ Algo no va bien asique ahora todos son pinguinos.";
-        manCars.CreateCarAI(0, manCars.GetPosSpawn());
-        manCars.CreateCarAI(0, manCars.GetPosSpawn());
-        manCars.CreateCarAI(0, manCars.GetPosSpawn());
+        for (uint8_t i = 0; i < (numPlayers - 1); ++i) {
+            manCars.CreateCarAI(0, iaDifficult, manCars.GetPosSpawn());
+        }
     }
 
     //Añadimos las nameplates

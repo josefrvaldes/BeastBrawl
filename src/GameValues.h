@@ -3,6 +3,9 @@
 #include <vector>
 #include <map>
 
+
+enum DifficultyAI { EASY, NORMAL, DIFFICULT };
+
 class GameValues {
     public:
         virtual ~GameValues(){};
@@ -27,6 +30,7 @@ class GameValues {
         void SetRankingPoints(std::multimap<uint16_t, uint16_t, std::greater<uint16_t>> p){ rankingPoints = p; };
         void SetTotalPoints( std::vector<uint16_t> tp)  { totalPoints = tp; };
         void SetNumPlayers(uint8_t p)                   { numPlayers = p; };
+        void SetDifficultAI(DifficultyAI d)   { difficultAI = d; };
 
         // GETTERS
         const int GetCharacter()                                                            { return mainCharacter; };
@@ -35,6 +39,7 @@ class GameValues {
         const bool GetWin()                                                                 { return win; };
         const int GetTimeTotem()                                                            { return timeTotem; };
         const int GetGameTime()                                                             { return gameTime; };
+        const DifficultyAI GetDifficultAI()                                      { return difficultAI; };
 
         const std::map<uint16_t, uint16_t>& GetRanking()                                    { return ranking; };
         const std::map<uint16_t, uint16_t>& GetSeconds()                                    { return seconds; };
@@ -57,6 +62,8 @@ class GameValues {
         int mapGame { 0 };
         int timeTotem { 45 };
         int gameTime { 180 };
+        uint8_t numPlayers{ 4 };
+        DifficultyAI difficultAI { DifficultyAI::NORMAL };
         
         // Ranking: posicion | personaje
         bool win { false };
@@ -65,7 +72,6 @@ class GameValues {
 
 
         // Para el modo torneo
-        uint8_t numPlayers{4};
         uint8_t numBattles {4};
         uint8_t actualBattle {1};
 

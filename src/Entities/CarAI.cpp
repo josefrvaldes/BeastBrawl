@@ -24,20 +24,27 @@
 #include "../Components/CGravity.h"
 #include "../Components/CBrainAI.h"
 #include "../Constants.h"
-#include "GameValues.h"
 
 
 
 class Position;
 using namespace std;
 
-CarAI::CarAI(int pj) : Car(pj){
+CarAI::CarAI(int pj, int difficult) : Car(pj){
     typeCar = TypeCar::CarAI;
 
 
     shared_ptr<CWayPoint> cWayPoint = make_shared<CWayPoint>();
     shared_ptr<CPosDestination> cPosDestination = make_shared<CPosDestination>();
-    shared_ptr<CBrainAI> cBrainAI = make_shared<CBrainAI>();
+
+    BrainAIDifficult dif;
+    switch (difficult) {
+        case static_cast<int>(BrainAIDifficult::EASY):        dif = BrainAIDifficult::EASY;         break;
+        case static_cast<int>(BrainAIDifficult::NORMAL):      dif = BrainAIDifficult::NORMAL;       break;
+        case static_cast<int>(BrainAIDifficult::DIFFICULT):   dif = BrainAIDifficult::DIFFICULT;    break;
+        default:                                              dif = BrainAIDifficult::NORMAL;       break;
+    }
+    shared_ptr<CBrainAI> cBrainAI = make_shared<CBrainAI>(dif);
 
 
     // TODO: RUBEN quitar el compoentne cWayPoint del coche ya que al coche solo le hace falta su siguiente destino.
@@ -46,8 +53,8 @@ CarAI::CarAI(int pj) : Car(pj){
     AddComponent(cBrainAI);
 }
 
-CarAI::CarAI(int pj, glm::vec3 pos, glm::vec3 rot, glm::vec3 scale,string texture, string mesh, std::string vertexShader, std::string fragmentShader)
-    : CarAI(pj){
+CarAI::CarAI(int pj, int difficult, glm::vec3 pos, glm::vec3 rot, glm::vec3 scale,string texture, string mesh, std::string vertexShader, std::string fragmentShader)
+    : CarAI(pj, difficult){
 
     CTransformable *cTransformable = (CTransformable *)m_components[CompType::TransformableComp].get();
     cTransformable->position = pos;
@@ -74,8 +81,8 @@ CarAI::CarAI(int pj, glm::vec3 pos, glm::vec3 rot, glm::vec3 scale,string textur
 
 
 
-CarAI::CarAI(int pj, glm::vec3 _position) 
-    : CarAI(pj)
+CarAI::CarAI(int pj, int difficult, glm::vec3 _position) 
+    : CarAI(pj, difficult)
 {
     CTransformable *cTransformable = (CTransformable *)m_components[CompType::TransformableComp].get();
     cTransformable->position = _position;

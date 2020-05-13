@@ -26,6 +26,7 @@ class InputFacadeClover : public InputFacade{
         void CheckInputTournamentOptions(std::vector<int>&, int[], int&) override;
 
         bool ShowTable(bool) override;
+        void ShowTable(Constants::ShowTableMinimap&) override;
         bool CheckInputSingle()  override;
         void CheckInputLobbyMultiConnecting() override;
         void CheckInputLobbyMultiWait() override;

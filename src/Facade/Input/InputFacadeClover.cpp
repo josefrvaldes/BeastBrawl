@@ -464,6 +464,7 @@ void InputFacadeClover::CheckInputRight(std::vector<int> &input, int maxInput[],
         if(input[pos] > maxInput[pos]) {
             input[pos] = 0;
         }
+        //cout << "El maximo valor es: " << maxInput[pos] << " y el valor que le doy es: " << input[pos] << endl;
         SetValueInput(BUTTON_STICK_R, true);
 
         ChangeGameOptions(pos, input[pos]);
@@ -563,7 +564,7 @@ void InputFacadeClover::CheckInputTournamentOptions(std::vector<int> &input, int
         // GameValues
         GameValues::GetInstance()->ResetCountBattles();
         GameValues::GetInstance()->ResetPoints();
-        GameValues::GetInstance()->SetNumBattles(input[2]+3);  // la base es 0 que son 3 partidas
+        GameValues::GetInstance()->SetNumBattles(input[4]+3);  // la base es 0 que son 3 partidas
 
     } else if ( !(IsKeyPress(GLFW_KEY_ENTER) || IsKeyPress(GLFW_KEY_SPACE) || IsGamepadPress(GLFW_GAMEPAD_BUTTON_START)) ) {
         SetValueInput(BUTTON_START, false);
@@ -607,6 +608,22 @@ bool InputFacadeClover::ShowTable(bool inputTable) {
 
     return inputTable;
 }
+
+void InputFacadeClover::ShowTable(Constants::ShowTableMinimap &mode) {
+    if ( (IsKeyPress(GLFW_KEY_R) || IsGamepadPress(GLFW_GAMEPAD_BUTTON_B)) && !IsInputPressed(BUTTON_B) ) {
+        switch (mode) {
+            case Constants::ShowTableMinimap::NONE:         mode = Constants::ShowTableMinimap::BOTH;       break;
+            case Constants::ShowTableMinimap::ONLYMAP:      mode = Constants::ShowTableMinimap::ONLYTABLE;  break;
+            case Constants::ShowTableMinimap::ONLYTABLE:    mode = Constants::ShowTableMinimap::NONE;       break;
+            case Constants::ShowTableMinimap::BOTH:         mode = Constants::ShowTableMinimap::ONLYMAP;    break;
+            default:                                        mode = Constants::ShowTableMinimap::BOTH;       break;
+        }
+        SetValueInput(BUTTON_B, true);
+    } else if ( !(IsKeyPress(GLFW_KEY_R) || IsGamepadPress(GLFW_GAMEPAD_BUTTON_B)) ) {
+        SetValueInput(BUTTON_B, false);
+    }
+}
+
 
 
 /**
@@ -1328,7 +1345,20 @@ void InputFacadeClover::ChangeGameOptions(int option, int value) {
             if (value == 0) GameValues::GetInstance()->SetTimeTotem(30);
             if (value == 1) GameValues::GetInstance()->SetTimeTotem(45);
             if (value == 2) GameValues::GetInstance()->SetTimeTotem(60);
-    
+            break;
+        case 2:
+            if (value == 0) GameValues::GetInstance()->SetNumPlayers(3);
+            if (value == 1) GameValues::GetInstance()->SetNumPlayers(4);
+            if (value == 2) GameValues::GetInstance()->SetNumPlayers(5);
+            if (value == 3) GameValues::GetInstance()->SetNumPlayers(6);
+            //cout << "HE CAMBIADO EL NUMERO DE PERSONAJES WEY" << endl;
+            break;
+        case 3:
+            if (value == 0) GameValues::GetInstance()->SetDifficultAI(DifficultyAI::EASY);
+            if (value == 1) GameValues::GetInstance()->SetDifficultAI(DifficultyAI::NORMAL);
+            if (value == 2) GameValues::GetInstance()->SetDifficultAI(DifficultyAI::DIFFICULT);
+            //cout << "Ahora la dificultad es: " << static_cast<int>(GameValues::GetInstance()->GetDifficultAI()) << endl;
+            break;
         default: break;
     }
 }
