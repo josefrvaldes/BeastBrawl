@@ -1,0 +1,1280 @@
+bash symlinks.sh
+La ip del servidor será localhost
+************************************
+(づ｡◕‿‿◕｡)づ   
+Se inicia el motor grafico de Clover
+(づ｡◕‿‿◕｡)づ   
+************************************
+>>>>> GLFW ON
+    > Ventana creada
+Creo el shader: CLEngine/src/Shaders/textShader.vert
+Creo el shader: CLEngine/src/Shaders/shadowMappingShader.vert
+Creo el shader: CLEngine/src/Shaders/cartoonShader.vert
+Creo el shader: CLEngine/src/Shaders/lightMapping.vert
+Creo el shader: CLEngine/src/Shaders/basicShader.vert
+Creado el input de Clover
+***** Sound engine ON
+> INIT constructor
+Creo el shader: CLEngine/src/Shaders/spriteShader.vert
+Texture failed to load at path: media/introAnimation/Beast Brawl.jpg
+> MENU constructor
+> LOBBY constructor
+Connectado a servidor, empezamos a recibir
+Estamos en StartReceiving
+Enviamos SendConnectionRequest al server
+Mensaje de conexion enviado cliente TCP con petitionType 2
+Estamos en HandleReceived
+El cliente TCP recibe cosas
+Estamos en StartReceiving
+Leida la malla: media/thepenguin_selection.obj
+Leida la malla: media/mrsbaxter_selection.obj
+Leida la malla: media/captainsharky_selection.obj
+Leida la malla: media/kaiserkong_selection.obj
+Leida la malla: media/deacondragon_selection.obj
+Leida la malla: media/cyberoctopus_selection.obj
+Mensaje de conexion enviado cliente TCP con petitionType 3 y personaje 2
+Estamos en HandleReceived
+El cliente TCP recibe cosas
+Estamos en StartReceiving
+Estamos en HandleReceived
+2020-05-13T11:12:16.332Z hemos recibido un startGame y voy a ser el id 2
+El cliente TCP recibe cosas
+Estamos en StartReceiving
+Hemos llegado a StateLobbyMulti::StartGameMulti
+Yo soy el coche con idOnline 2
+> INGAME constructor
+------------------------------------------------------------------
+delta vale0.0166667
+------------------------------------------------------------------
+EL NUMERO DE SPAWNS de coches es: 4
+Hemos creado un powerup, ahora tenemos 0 powerups
+Hemos creado el manager de powerup, ahora tenemos 6 powerups
+EL NUMERO DE Bounding Planes EN EL JSON ES: 4
+EL NUMERO DE OBBs EN EL JSON ES: 3
+entramos al 0-2
+entramos al 0-2
+entramos al 0-2
+EL NUMERO DE BOUNDING GROUNDS EN EL JSON ES: 3
+Estamos inicializando el clPhysics
+Vamos a suscribir a los eventos al clPhysics
+Server endpoint is 127.0.0.1:1234
+Leida la malla: media/kart_physics.obj
+Leida la malla: media/melon.obj
+Leida la malla: media/totem.obj
+Leida la malla: media/TEST_BOX.obj
+Leida la malla: media/pudin.obj
+Leida la malla: media/telebanana.obj
+Leida la malla: media/training_ground.obj
+Leida la malla: media/kart_sharky.obj
+Leida el material: media/kart_sharky.obj
+Leida la malla: media/sphera.obj
+Leida la malla: media/sharky_wheel4.obj
+Leida la malla: media/sharky_wheel2.obj
+Leida la malla: media/sharky_wheel3.obj
+Leida la malla: media/sharky_wheel1.obj
+Leida la malla: media/kart_baxter.obj
+Leida el material: media/kart_baxter.obj
+Leida la malla: media/kart_deacon.obj
+Leida el material: media/kart_deacon.obj
+Leida la malla: media/deacon_wheel2.obj
+Leida la malla: media/deacon_wheel4.obj
+Leida la malla: media/deacon_wheel3.obj
+Leida la malla: media/deacon_wheel1.obj
+Leida el material: media/training_ground.obj
+Leida el material: media/TEST_BOX.obj
+Leida el material: media/totem.obj
+Creo el shader: CLEngine/src/Shaders/skybox.vert
+Creo el shader: CLEngine/src/Shaders/simpleDepthShader.vert
+Creo el shader: CLEngine/src/Shaders/particleSystem.vert
+Leida el material: media/sphera.obj
+Creo el shader: CLEngine/src/Shaders/billboard.vert
+///////////////////////// SALIMOS DEL CONTEXT!!! ///////////////////////////////
+Enviamos mensaje de waiting for countdown
+Vamos a enviar un sendWaitingForCountdown con idPlayer[2]
+Hemos recibido una petición de tipo LAUNCH_ANIMATION_COUNTDOWN
+Hemos recibido un sendLaunch Countdown animation
+EL EVENTO Partida/cuenta_atras NO ESTA
+Cambiamos a UpdateCountdown
+Hemos recibido un SyncClock de[1] con idReceiver[2] time[0] turnout[0] y numMedidas[0]
+Hemos recibido un SyncClock de[1] con idReceiver[2] time[1] turnout[0] y numMedidas[0]
+Hemos recibido un NewInputsReceivedOnline
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+NO soy el líder, voy a iniciar por primera vez mi sync
+T[0] TO[0] N[0]
+
+
+Soy el 2, estamos enviando un ClockSync con los datos idOnline2[1] time[1]turnOut[0] numMeasurements[0]
+Soy el 2, estamos enviando un ClockSync con los datos idOnline2[1] time[1]turnOut[0] numMeasurements[0]
+Soy el 2, estamos enviando un ClockSync con los datos idOnline2[1] time[1]turnOut[0] numMeasurements[0]
+NO soy el líder, voy a iniciar por primera vez mi sync
+T[0] TO[0] N[0]
+
+
+Soy el 2, estamos enviando un ClockSync con los datos idOnline2[1] time[0]turnOut[0] numMeasurements[0]
+Soy el 2, estamos enviando un ClockSync con los datos idOnline2[1] time[0]turnOut[0] numMeasurements[0]
+Soy el 2, estamos enviando un ClockSync con los datos idOnline2[1] time[0]turnOut[0] numMeasurements[0]
+
+
+
+
+Hemos recibido un SyncClock de[1] con idReceiver[2] time[3019] turnout[3019] y numMedidas[1]
+Se envia el PU mensaje 2
+Soy el cliente y envio PU: 6
+NO soy el líder, voy a iniciar por primera vez mi sync
+T[0] TO[0] N[0]
+
+
+Soy el 2, estamos enviando un ClockSync con los datos idOnline2[1] time[0]turnOut[0] numMeasurements[0]
+Soy el 2, estamos enviando un ClockSync con los datos idOnline2[1] time[0]turnOut[0] numMeasurements[0]
+Soy el 2, estamos enviando un ClockSync con los datos idOnline2[1] time[0]turnOut[0] numMeasurements[0]
+
+
+
+
+Hemos recibido un SyncClock de[1] con idReceiver[2] time[3037] turnout[9] y numMedidas[2]
+NO soy el líder, voy a iniciar por primera vez mi sync
+T[0] TO[0] N[0]
+
+
+Soy el 2, estamos enviando un ClockSync con los datos idOnline2[1] time[0]turnOut[0] numMeasurements[0]
+Soy el 2, estamos enviando un ClockSync con los datos idOnline2[1] time[0]turnOut[0] numMeasurements[0]
+Soy el 2, estamos enviando un ClockSync con los datos idOnline2[1] time[0]turnOut[0] numMeasurements[0]
+
+
+
+
+Hemos recibido un SyncClock de[1] con idReceiver[2] time[3064] turnout[13.5] y numMedidas[3]
+Hemos recibido un NewInputsReceivedOnline
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+NO soy el líder, voy a iniciar por primera vez mi sync
+T[0] TO[0] N[0]
+
+
+Soy el 2, estamos enviando un ClockSync con los datos idOnline2[1] time[0]turnOut[0] numMeasurements[0]
+Soy el 2, estamos enviando un ClockSync con los datos idOnline2[1] time[0]turnOut[0] numMeasurements[0]
+Soy el 2, estamos enviando un ClockSync con los datos idOnline2[1] time[1]turnOut[0] numMeasurements[0]
+
+
+
+
+Hemos recibido un SyncClock de[1] con idReceiver[2] time[3081] turnout[8.5] y numMedidas[4]
+Hemos recibido un SyncClock de[1] con idReceiver[2] time[3082] turnout[0] y numMedidas[5]
+NO soy el líder, voy a iniciar por primera vez mi sync
+T[0] TO[0] N[0]
+
+
+Soy el 2, estamos enviando un ClockSync con los datos idOnline2[1] time[0]turnOut[0] numMeasurements[0]
+Soy el 2, estamos enviando un ClockSync con los datos idOnline2[1] time[1]turnOut[0] numMeasurements[0]
+Soy el 2, estamos enviando un ClockSync con los datos idOnline2[1] time[1]turnOut[0] numMeasurements[0]
+NO soy el líder, voy a iniciar por primera vez mi sync
+T[0] TO[0] N[0]
+
+
+Soy el 2, estamos enviando un ClockSync con los datos idOnline2[1] time[0]turnOut[0] numMeasurements[0]
+Soy el 2, estamos enviando un ClockSync con los datos idOnline2[1] time[0]turnOut[0] numMeasurements[0]
+Soy el 2, estamos enviando un ClockSync con los datos idOnline2[1] time[0]turnOut[0] numMeasurements[0]
+
+
+
+
+Hemos recibido un SyncClock de[1] con idReceiver[2] time[3102] turnout[10.5] y numMedidas[6]
+NO soy el líder, voy a iniciar por primera vez mi sync
+T[0] TO[0] N[0]
+
+
+Soy el 2, estamos enviando un ClockSync con los datos idOnline2[1] time[0]turnOut[0] numMeasurements[0]
+Soy el 2, estamos enviando un ClockSync con los datos idOnline2[1] time[0]turnOut[0] numMeasurements[0]
+Soy el 2, estamos enviando un ClockSync con los datos idOnline2[1] time[0]turnOut[0] numMeasurements[0]
+
+
+
+
+Hemos recibido un SyncClock de[1] con idReceiver[2] time[3123] turnout[10.5] y numMedidas[8]
+Hemos recibido un NewInputsReceivedOnline
+
+
+NO soy el líder, voy a iniciar por primera vez mi sync
+T[0] TO[0] N[0]
+
+
+Soy el 2, estamos enviando un ClockSync con los datos idOnline2[1] time[0]turnOut[0] numMeasurements[0]
+Soy el 2, estamos enviando un ClockSync con los datos idOnline2[1] time[0]turnOut[0] numMeasurements[0]
+Soy el 2, estamos enviando un ClockSync con los datos idOnline2[1] time[1]turnOut[0] numMeasurements[0]
+
+
+
+
+Hemos recibido un SyncClock de[1] con idReceiver[2] time[3158] turnout[17.5] y numMedidas[9]
+Hemos recibido un NewInputsReceivedOnline
+
+
+NO soy el líder, voy a iniciar por primera vez mi sync
+T[0] TO[0] N[0]
+
+
+Soy el 2, estamos enviando un ClockSync con los datos idOnline2[1] time[0]turnOut[0] numMeasurements[0]
+Soy el 2, estamos enviando un ClockSync con los datos idOnline2[1] time[0]turnOut[0] numMeasurements[0]
+Soy el 2, estamos enviando un ClockSync con los datos idOnline2[1] time[0]turnOut[0] numMeasurements[0]
+
+
+
+
+
+
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+
+
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+
+
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+
+
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+
+
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+
+
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+
+
+
+
+
+
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+
+
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+
+
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+
+
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+
+
+
+
+
+
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+
+
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+
+
+
+
+
+
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+
+
+
+
+
+
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+
+
+
+
+
+
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+
+
+
+
+
+
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+
+
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+
+
+
+
+
+
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+
+
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+
+
+
+
+
+
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+
+
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+
+
+
+
+
+
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+
+
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+
+
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+
+
+
+
+
+
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+
+
+
+
+
+
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+
+
+
+
+
+
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+
+
+
+
+
+
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+
+
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+
+
+
+
+
+
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+
+
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+
+
+
+
+
+
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+
+
+
+
+
+
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+
+
+
+
+
+
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+
+
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+
+
+
+
+
+
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+
+
+
+
+
+
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+
+
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+
+
+
+
+
+
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Hemos recibido un NewInputsReceivedOnline
+
+
+
+
+
+

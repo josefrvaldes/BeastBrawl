@@ -35,14 +35,19 @@ class SystemOnline {
     void SyncClocks();
     int64_t timeStartClock;
     float turnout;
+    bool ClocksStartedSincing() {return clocksStartedSyncing;};
 
    private:
     void SubscribeToEvents();
     void EventEndgame(DataMap *);
     void EventLaunchAnimationEnd(DataMap *);
+    void NewClockSyncReceived(DataMap *);
 
+    bool clocksStartedSyncing{false};
     ManCar &manCar;
     unique_ptr<UDPClient> udpClient;
 
     const uint8_t TIMES_RESEND = 3;
+
+    const uint8_t MAX_NUM_MEASUREMENTS = 10;
 };

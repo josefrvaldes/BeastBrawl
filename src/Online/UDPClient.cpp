@@ -90,6 +90,14 @@ void UDPClient::HandleReceived(std::shared_ptr<unsigned char[]> recevBuff, const
                     }
                     break;
 
+                case Constants::PetitionTypes::SEND_CLOCK_SYNC:
+                    if (time > lastTimeClockSyncReceived[idPlayer]) {
+                        // cout << "Hemos recibido una petición de tipo SEND_SYNC" << endl;
+                        lastTimeClockSyncReceived[idPlayer] = time;
+                        HandleReceivedClockSync(recevBuff.get(), bytesTransferred);
+                    }
+                    break;
+
                 case Constants::PetitionTypes::CATCH_PU:
                     if (time > lastTimeCatchPUReceived[idPlayer]) {
                         cout << "Hemos recibido una petición de tipo CATCH_PU" << endl;
@@ -903,7 +911,10 @@ void UDPClient::SendClockSync(uint16_t idOnline1, uint16_t idOnline2, int64_t ti
     unsigned char requestBuff[Constants::ONLINE_BUFFER_SIZE];
     size_t currentBuffSize = 0;
     uint8_t callType = Constants::PetitionTypes::SEND_CLOCK_SYNC;
+    int64_t now = Utils::getMillisSinceEpoch();
+
     Serialization::Serialize(requestBuff, &callType, currentBuffSize);
+    Serialization::Serialize(requestBuff, &now, currentBuffSize);
     Serialization::Serialize(requestBuff, &idOnline1, currentBuffSize);
     Serialization::Serialize(requestBuff, &idOnline2, currentBuffSize);
     Serialization::Serialize(requestBuff, &time, currentBuffSize);
@@ -911,7 +922,7 @@ void UDPClient::SendClockSync(uint16_t idOnline1, uint16_t idOnline2, int64_t ti
     Serialization::Serialize(requestBuff, &numMeasurements, currentBuffSize);
 
     cout << "Soy el " << idOnline1 << ", estamos enviando un ClockSync con los datos idOnline2[" << idOnline2 << "] time[" << time << "]" 
-         << "turnOut[" << turnOut << "] numMeasurements["<<numMeasurements<<"]"
+         << "turnOut[" << turnOut << "] numMeasurements["<<unsigned(numMeasurements)<<"]"
          << endl;
     socket.async_send_to(
         boost::asio::buffer(requestBuff, currentBuffSize),
@@ -921,4 +932,26 @@ void UDPClient::SendClockSync(uint16_t idOnline1, uint16_t idOnline2, int64_t ti
             this,
             boost::asio::placeholders::error,
             boost::asio::placeholders::bytes_transferred));
+}
+
+
+
+void UDPClient::HandleReceivedClockSync(unsigned char* recevBuff, size_t bytesTransferred) {
+    size_t currentIndex = 0;
+    Serialization::Deserialize<uint8_t>(recevBuff, currentIndex);   // petition tipe
+    Serialization::Deserialize<int64_t>(recevBuff, currentIndex);   // tiempo
+    uint16_t idSender = Serialization::Deserialize<uint16_t>(recevBuff, currentIndex);  // idOnline del que lo envio
+    uint16_t idReceiver = Serialization::Deserialize<uint16_t>(recevBuff, currentIndex);  // idOnline destino (si este coincide con el jugador de este juego, proceso la petición, DEBE de coincidir, vaya)
+    int64_t time = Serialization::Deserialize<int64_t>(recevBuff, currentIndex);  // tiempo de sync
+    float turnout = Serialization::Deserialize<float>(recevBuff, currentIndex);  // turnout actual
+    int8_t numMedidas = Serialization::Deserialize<int8_t>(recevBuff, currentIndex);  // num medidas
+
+    cout << "Hemos recibido un SyncClock de[" << idSender << "] con idReceiver["<<idReceiver<<"] time["<<time<<"] turnout["<<turnout<<"] y numMedidas["<<unsigned(numMedidas)<<"]" << endl;
+    std::shared_ptr<DataMap> data = make_shared<DataMap>();
+    (*data)[DataType::ID] = idSender;
+    (*data)[DataType::ID_DESTINATION] = idReceiver;
+    (*data)[DataType::TIME] = time;
+    (*data)[DataType::TURNOUT] = turnout;
+    (*data)[DataType::NUM] = numMedidas;
+    EventManager::GetInstance().AddEventMulti(Event{EventType::NEW_CLOCK_SYNC_RECEIVED, data});
 }

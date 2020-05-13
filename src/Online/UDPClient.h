@@ -73,6 +73,7 @@ class UDPClient {
     void HandleReceivedCrashPUWall(unsigned char* recevBuff, size_t bytesTransferred);
     void HandleReceivedLaunchEndAnimation(uint16_t idPlayer, uint16_t idWinner) const;
     void HandleReceivedLaunchCountdownAnimation() const;
+    void HandleReceivedClockSync(unsigned char* recevBuff, size_t bytesTransferred);
 
     void HandleSentInputs(const boost::system::error_code& errorCode, std::size_t bytes_transferred);
     void HandleSentSync(const boost::system::error_code& errorCode, std::size_t bytes_transferred);
@@ -102,6 +103,7 @@ class UDPClient {
     unordered_map<uint16_t, int64_t> lastTimeInputReceived;
     unordered_map<uint16_t, int64_t> lastTimeSyncReceived;
     unordered_map<uint16_t, int64_t> lastTimeCatchPUReceived;
+    unordered_map<uint16_t, int64_t> lastTimeClockSyncReceived;
     unordered_map<uint16_t, int64_t> lastTimeCatchTotemReceived;
     unordered_map<uint16_t, int64_t> lastTimeLostTotemReceived;
     unordered_map<uint16_t, int64_t> lastTimeUsedRoboJoroboReceived;

@@ -166,6 +166,8 @@ void StateInGameMulti::UpdateWaitingForCountdown() {
 
 void StateInGameMulti::UpdateAnimationCountdown() {
     StateInGame::UpdateAnimationCountdown();
+    if(!sysOnline->ClocksStartedSincing())
+        sysOnline->SyncClocks();
 }
 
 void StateInGameMulti::UpdateGame() {

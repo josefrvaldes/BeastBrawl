@@ -291,6 +291,7 @@ void UDPServer::HandleReceivedWaitingForCountdown(Player& p, unsigned char buffe
 
         // si todos estaban ya listos y esperando para comenzar la cuenta atrás, efectivamente, les enviamos que empiecen la cuenta atrás
         if (launchCountdown) {
+            cout << "Vamos a decirle a los clientes que empiecen el countdown" << endl;
             animationCountdownLaunched = true;
             for (uint8_t i = 0; i < NUM_REINTENTOS; ++i)
                 for (Player& currentPlayer : players) {
