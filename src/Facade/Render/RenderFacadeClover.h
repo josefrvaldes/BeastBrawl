@@ -24,6 +24,17 @@ using namespace CLE;
 
 class RenderFacadeClover : public RenderFacade {
    public:
+
+
+
+   void suputamadre(Entity*);
+
+
+
+
+
+
+
       RenderFacadeClover();
       ~RenderFacadeClover() override;
       const uint16_t FacadeAddObject(Entity*) override;

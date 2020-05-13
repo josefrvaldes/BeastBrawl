@@ -165,29 +165,29 @@ void CLNode::DFSTree(glm::mat4 mA, CLCamera* cam, const glm::mat4& VPmatrix) {
         transformationMat = mA*CalculateTransformationMatrix();
         changed = false;
     }
+    glm::vec3 pos    = GetGlobalTranslation();
     auto& frustrum_m = cam->GetFrustum();
     // CLE::CLFrustum::Visibility frusVisibility = frustum_m.IsInside(translation);
-     CLE::CLFrustum::Visibility frusVisibility = frustrum_m.IsInside(translation, dimensionsBoundingBox);
+     CLE::CLFrustum::Visibility frusVisibility = frustrum_m.IsInside(pos, dimensionsBoundingBox);
 
     //Voy a comentar de momento el frustrum ya que para el particle system puede dar problemas
-    if(entity && visible && (frusVisibility == CLE::CLFrustum::Visibility::Completly || !ignoreFrustrum)) { 
+    if(!ignoreFrustrum){
+        if(entity && visible && frusVisibility == CLE::CLFrustum::Visibility::Completly ) { 
+            glUseProgram(shaderProgramID); 
 
-        glUseProgram(shaderProgramID); 
+            glm::mat4 MVP = VPmatrix * transformationMat;
+            glUniformMatrix4fv(glGetUniformLocation(shaderProgramID, "model"), 1, GL_FALSE, glm::value_ptr(transformationMat));
+            glUniformMatrix4fv(glGetUniformLocation(shaderProgramID, "MVP"), 1, GL_FALSE, glm::value_ptr(MVP));
 
-        glm::mat4 MVP = VPmatrix * transformationMat;
-        glUniformMatrix4fv(glGetUniformLocation(shaderProgramID, "model"), 1, GL_FALSE, glm::value_ptr(transformationMat));
-        glUniformMatrix4fv(glGetUniformLocation(shaderProgramID, "MVP"), 1, GL_FALSE, glm::value_ptr(MVP));
+            glUniform3fv(glGetUniformLocation(shaderProgramID, "position"), 1, glm::value_ptr(pos));
 
-        glm::vec3 pos    = GetGlobalTranslation();
-        glUniform3fv(glGetUniformLocation(shaderProgramID, "position"), 1, glm::value_ptr(pos));
+            auto particleEntity = dynamic_cast<CLParticleSystem*>(entity.get());
 
-        auto particleEntity = dynamic_cast<CLParticleSystem*>(entity.get());
+            if((particleEntity && particlesActivated) || !particleEntity){
 
-        if((particleEntity && particlesActivated) || !particleEntity){
-            
-            entity->Draw(shaderProgramID);
+                entity->Draw(shaderProgramID);
+            }
         }
-
     }
 
     for (auto node : childs) {
@@ -301,7 +301,7 @@ float CLNode::CalculateBoundingBox(){
     if(dimensionsBoundingBox < glm::distance(extremeMaxMesh.z, extremeMinMesh.z))
         dimensionsBoundingBox = glm::distance(extremeMaxMesh.z, extremeMinMesh.z);
 
-    dimensionsBoundingBox = dimensionsBoundingBox * GetGlobalScalation().x;
+    dimensionsBoundingBox = dimensionsBoundingBox * GetScalation().x;
 
     return dimensionsBoundingBox;
 

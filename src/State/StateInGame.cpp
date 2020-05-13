@@ -64,6 +64,7 @@ void StateInGame::AddElementsToRender() {
     //renderEngine->FacadeAddObject(ground.get());  //Anyadimos el suelo
     for(const auto& currentPartGround : manGameRules->GetGrounds()){
         renderEngine->FacadeAddObject(currentPartGround.get());
+
     }
 
     //Añadimos todos los power ups
@@ -415,6 +416,10 @@ void StateInGame::Render() {
     renderEngine->FacadeBeginScene();
     // renderEngine->FacadeDraw();  //Para dibujar primitivas debe ir entre el drawAll y el endScene
     renderEngine->FacadeDrawAll();
+
+
+    renderEngine->suputamadre(manCars->GetCar().get());
+    //renderEngine->suputamadre(manGameRules->GetGrounds()[0].get());
 
     if (Constants::CLIPPING_OCTREE && octreeScene.get())
         octreeScene->Draw(renderEngine);
