@@ -31,6 +31,7 @@ struct Player {
     int64_t lastLaunchAnimationEndReceived{0};
     int64_t lastWaitingForCountdownReceived{0};
     int64_t lastClockSyncReceived{0};
+    int64_t lastFinalClockSyncReceived{0};
 
     bool hasTotem {false};
     bool disconnected {false};

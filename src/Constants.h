@@ -48,6 +48,7 @@ class Constants {
                         TCP_CHARACTER_REQUEST,
                         TCP_CANCEL_CHARACTER,
                         SEND_CLOCK_SYNC,
+                        SEND_FINAL_CLOCK_SYNC,
                         TCP_START_GAME,
                         TCP_OPEN_GAME,
                         TCP_FULL_GAME,

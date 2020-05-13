@@ -181,6 +181,16 @@ void UDPServer::HandleReceive(std::shared_ptr<unsigned char[]> recevBuff, std::s
                             cout << "Hemos descartado un sendClockSync del sender["<<idPlayer<<"]" << endl;
                         }
                         break;
+                    case Constants::PetitionTypes::SEND_FINAL_CLOCK_SYNC:
+                        if (p.lastFinalClockSyncReceived < time) {
+                            p.lastFinalClockSyncReceived = time;
+                            uint16_t idOnline2 = Serialization::Deserialize<uint16_t>(recevBuff.get(), currentIndex);
+                            cout << "Hemos recibido un sendClockSync del sender["<<idPlayer<<"] y receiver["<<idOnline2<<"]" << endl;
+                            HandleReceivedFinalClockSync(p, idOnline2, buffRecieved, bytesTransferred, *remoteClient.get());
+                        } else {
+                            cout << "Hemos descartado un sendClockSync del sender["<<idPlayer<<"]" << endl;
+                        }
+                        break;
                     default:
                         cout << "Petición incorrecta" << endl;
                         break;
@@ -305,6 +315,16 @@ void UDPServer::HandleReceivedWaitingForCountdown(Player& p, unsigned char buffe
 }
 
 void UDPServer::HandleReceivedClockSync(Player& p, uint16_t idOnline2, unsigned char bufferToReSend[], const size_t currentBufferSize, const udp::endpoint& originalClient) {
+    Player *p2 = GetPlayerById(idOnline2);
+    if(p2 != nullptr) {
+        for (uint8_t i = 0; i < NUM_REINTENTOS; ++i)
+            SendBytes(bufferToReSend, currentBufferSize, *p2);       
+    } else {
+        cout << "No hemos encontrado el jugador con idSender[" << idOnline2 << "] al que hay que reenviarle un SyncClock" << endl;
+    }
+}
+
+void UDPServer::HandleReceivedFinalClockSync(Player& p, uint16_t idOnline2, unsigned char bufferToReSend[], const size_t currentBufferSize, const udp::endpoint& originalClient) {
     Player *p2 = GetPlayerById(idOnline2);
     if(p2 != nullptr) {
         for (uint8_t i = 0; i < NUM_REINTENTOS; ++i)

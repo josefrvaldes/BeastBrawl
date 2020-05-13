@@ -41,6 +41,7 @@ class UDPClient {
                   bool totemInGround, const glm::vec3& posTotem);
     void SendCatchPU(uint16_t idOnline, typeCPowerUp typePU);
     void SendClockSync(uint16_t idOnline1, uint16_t idOnline2, int64_t time, float turnOut, uint8_t numMeasurements);
+    void SendFinalClockSync(uint16_t idOnlineSender, uint16_t idOnlineReceiver, float turnout, int64_t timeToWaitForSyncing);
     void SendCatchTotem(uint16_t idOnline, uint16_t idPlayerCatched);
     void SendCrashPUCar(const uint16_t idOnline, const uint16_t idPowerUp, const uint16_t idCar);
     void SendCrashPUWall(const uint16_t idOnline, const uint16_t idPowerUp);
@@ -74,6 +75,7 @@ class UDPClient {
     void HandleReceivedLaunchEndAnimation(uint16_t idPlayer, uint16_t idWinner) const;
     void HandleReceivedLaunchCountdownAnimation() const;
     void HandleReceivedClockSync(unsigned char* recevBuff, size_t bytesTransferred);
+    void HandleReceivedFinalClockSync(unsigned char* recevBuff, size_t bytesTransferred);
 
     void HandleSentInputs(const boost::system::error_code& errorCode, std::size_t bytes_transferred);
     void HandleSentSync(const boost::system::error_code& errorCode, std::size_t bytes_transferred);
@@ -89,6 +91,7 @@ class UDPClient {
     void HandleSentLaunchAnimationEnd(const boost::system::error_code& errorCode, std::size_t bytes_transferred);
     void HandleSentWaitingForCountdown(const boost::system::error_code& errorCode, std::size_t bytes_transferred);
     void HandleSentClockSync(const boost::system::error_code& errorCode, std::size_t bytes_transferred);
+    void HandleSentFinalClockSync(const boost::system::error_code& errorCode, std::size_t bytes_transferred);
 
     void HandleSentDateTime(const std::shared_ptr<std::string> message,
                             const boost::system::error_code& errorCode,
@@ -104,6 +107,7 @@ class UDPClient {
     unordered_map<uint16_t, int64_t> lastTimeSyncReceived;
     unordered_map<uint16_t, int64_t> lastTimeCatchPUReceived;
     unordered_map<uint16_t, int64_t> lastTimeClockSyncReceived;
+    unordered_map<uint16_t, int64_t> lastTimeFinalClockSyncReceived;
     unordered_map<uint16_t, int64_t> lastTimeCatchTotemReceived;
     unordered_map<uint16_t, int64_t> lastTimeLostTotemReceived;
     unordered_map<uint16_t, int64_t> lastTimeUsedRoboJoroboReceived;

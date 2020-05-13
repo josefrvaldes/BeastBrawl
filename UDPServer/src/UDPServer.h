@@ -37,6 +37,7 @@ class UDPServer : public std::enable_shared_from_this<UDPServer> {
     void HandleReceivedLaunchAnimationEnd(const uint16_t id, const uint16_t idWinner, unsigned char buffer[], const size_t currentBufferSize, const udp::endpoint& remoteClient);
     void HandleReceivedWaitingForCountdown(Player &player, unsigned char buffer[], const size_t currentBufferSize, const udp::endpoint& remoteClient);
     void HandleReceivedClockSync(Player &player, uint16_t idOnline2, unsigned char buffer[], const size_t currentBufferSize, const udp::endpoint& remoteClient);
+    void HandleReceivedFinalClockSync(Player &player, uint16_t idOnline2, unsigned char buffer[], const size_t currentBufferSize, const udp::endpoint& remoteClient);
     
     void ResendBytesToOthers(const uint16_t id, const unsigned char resendBytes[], const size_t currentBufferSize, const udp::endpoint& remoteClient);
     void SendBytes(const unsigned char resendBytes[], const size_t currentBufferSize, const Player& player);

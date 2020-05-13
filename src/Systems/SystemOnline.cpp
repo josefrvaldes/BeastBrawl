@@ -47,6 +47,11 @@ void SystemOnline::SubscribeToEvents() {
         EventType::NEW_CLOCK_SYNC_RECEIVED,
         bind(&SystemOnline::NewClockSyncReceived, this, std::placeholders::_1),
         "New clock sync received"));
+
+    EventManager::GetInstance().SubscribeMulti(Listener(
+        EventType::NEW_FINAL_CLOCK_SYNC_RECEIVED,
+        bind(&SystemOnline::NewFinalClockSyncReceived, this, std::placeholders::_1),
+        "New clock sync received"));
 }
 
 void SystemOnline::EventEndgame(DataMap *dataMap) {
@@ -265,6 +270,7 @@ void SystemOnline::NewClockSyncReceived(DataMap *d) {
                 bool syncFinished = CheckIfSyncFinished(cOnlineMainCar, cOnlineMainCar->numMeasurements[idSender]);
                 if(syncFinished) {
                     cout << "Hemos terminado el cálculo de lag con todos los players, ahora vamos a mandarle ya definitivamente la petición de sincronización de reloj" << endl;
+                    SendFinalClockSync(cOnlineMainCar);
                 } else {
                     cout << "Hemos terminado el cálculo de lag con un player pero no con todos" << endl;
                 }
@@ -305,3 +311,44 @@ bool SystemOnline::CheckIfSyncFinished(COnline *cOnlineMainCar, const uint8_t nu
     cout << "es true que hemos terminado la sync" << endl;
     return true;
 };
+
+
+void SystemOnline::SyncNOW() {
+    timeStartClock = Utils::getMillisSinceEpoch();
+    cout << Utils::getISOCurrentTimestampMillis() << " Hemos acabado de sincronizar!!" << endl;
+}
+
+
+void SystemOnline::SendFinalClockSync(COnline *cOnlineMainCar) {
+    int64_t msSync = TIME_TO_WAIT_FOR_SYNC;
+    for  (auto currentCar: manCar.GetEntities()) {
+        COnline* cOnline = static_cast<COnline*>(currentCar->GetComponent(CompType::OnlineComp).get());
+        if(cOnline->idClient != 1) {
+            udpClient->SendFinalClockSync(cOnlineMainCar->idClient, cOnline->idClient, cOnline->currentTurnout[cOnline->idClient], msSync);
+        }
+    }
+    
+    cout << Utils::getISOCurrentTimestampMillis() << " Vamos a lanzar el timer" << endl;
+    timer = make_unique<steady_timer>(context, boost::asio::chrono::milliseconds(msSync));
+    timer->async_wait(std::bind(
+        &SystemOnline::SyncNOW,
+        this));
+    context.run();
+    cout << "Hemos acabado de sincronizar" << endl;
+}
+
+
+
+void SystemOnline::NewFinalClockSyncReceived(DataMap *d) {
+    int64_t time = any_cast<int64_t>((*d)[DataType::TIME]);
+    float turnout = any_cast<float>((*d)[DataType::TURNOUT]);
+    int64_t msSync = time - round(turnout / 2.0);
+    
+    cout << Utils::getISOCurrentTimestampMillis() << " Vamos a lanzar el timer" << endl;
+    timer = make_unique<steady_timer>(context, boost::asio::chrono::milliseconds(msSync));
+    timer->async_wait(std::bind(
+        &SystemOnline::SyncNOW,
+        this));
+    context.run();
+    cout << "Hemos acabado de sincronizar" << endl;
+}

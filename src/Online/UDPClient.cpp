@@ -98,6 +98,14 @@ void UDPClient::HandleReceived(std::shared_ptr<unsigned char[]> recevBuff, const
                     }
                     break;
 
+                case Constants::PetitionTypes::SEND_FINAL_CLOCK_SYNC:
+                    if (time > lastTimeFinalClockSyncReceived[idPlayer]) {
+                        // cout << "Hemos recibido una petición de tipo SEND_SYNC" << endl;
+                        lastTimeFinalClockSyncReceived[idPlayer] = time;
+                        HandleReceivedFinalClockSync(recevBuff.get(), bytesTransferred);
+                    }
+                    break;
+
                 case Constants::PetitionTypes::CATCH_PU:
                     if (time > lastTimeCatchPUReceived[idPlayer]) {
                         cout << "Hemos recibido una petición de tipo CATCH_PU" << endl;
@@ -846,6 +854,12 @@ void UDPClient::HandleSentClockSync(const boost::system::error_code& errorCode, 
              << "\n";
 }
 
+void UDPClient::HandleSentFinalClockSync(const boost::system::error_code& errorCode, std::size_t bytes_transferred) {
+    if (errorCode)
+        cout << "Hubo un error enviando el finalClockSync, HAY QUE REPETIR [" << errorCode << "]"
+             << "\n";
+}
+
 void UDPClient::HandleSentThrowPU(const boost::system::error_code& errorCode, std::size_t bytes_transferred) {
     if (errorCode) {
         cout << "Hubo un error enviando el throwPU [" << errorCode << "]" << endl;
@@ -935,6 +949,33 @@ void UDPClient::SendClockSync(uint16_t idOnline1, uint16_t idOnline2, int64_t ti
 }
 
 
+void UDPClient::SendFinalClockSync(uint16_t idOnlineSender, uint16_t idOnlineReceiver, float turnout, int64_t timeToWaitForSyncing) {
+    unsigned char requestBuff[Constants::ONLINE_BUFFER_SIZE];
+    size_t currentBuffSize = 0;
+    uint8_t callType = Constants::PetitionTypes::SEND_FINAL_CLOCK_SYNC;
+    int64_t now = Utils::getMicrosSinceEpoch();
+
+    Serialization::Serialize(requestBuff, &callType, currentBuffSize);
+    Serialization::Serialize(requestBuff, &now, currentBuffSize);
+    Serialization::Serialize(requestBuff, &idOnlineSender, currentBuffSize);
+    Serialization::Serialize(requestBuff, &idOnlineReceiver, currentBuffSize);
+    Serialization::Serialize(requestBuff, &turnout, currentBuffSize);
+    Serialization::Serialize(requestBuff, &timeToWaitForSyncing, currentBuffSize);
+
+    cout << "Soy el " << idOnlineSender << ", estamos enviando un ClockSync con los datos idOnline2[" << idOnlineReceiver << "] to[" << turnout << "]" 
+         << "timeToWaitForSyncing[" << timeToWaitForSyncing << "]"
+         << endl;
+    socket.async_send_to(
+        boost::asio::buffer(requestBuff, currentBuffSize),
+        serverEndpoint,
+        boost::bind(
+            &UDPClient::HandleSentFinalClockSync,
+            this,
+            boost::asio::placeholders::error,
+            boost::asio::placeholders::bytes_transferred));
+}
+
+
 
 void UDPClient::HandleReceivedClockSync(unsigned char* recevBuff, size_t bytesTransferred) {
     size_t currentIndex = 0;
@@ -954,4 +995,22 @@ void UDPClient::HandleReceivedClockSync(unsigned char* recevBuff, size_t bytesTr
     (*data)[DataType::TURNOUT] = turnout;
     (*data)[DataType::NUM] = numMedidas;
     EventManager::GetInstance().AddEventMulti(Event{EventType::NEW_CLOCK_SYNC_RECEIVED, data});
+}
+
+
+void UDPClient::HandleReceivedFinalClockSync(unsigned char* recevBuff, size_t bytesTransferred) {
+    size_t currentIndex = 0;
+    Serialization::Deserialize<uint8_t>(recevBuff, currentIndex);   // petition tipe
+    Serialization::Deserialize<int64_t>(recevBuff, currentIndex);   // tiempo
+    uint16_t idSender = Serialization::Deserialize<uint16_t>(recevBuff, currentIndex);  // idOnline del que lo envio
+    uint16_t idReceiver = Serialization::Deserialize<uint16_t>(recevBuff, currentIndex);  // idOnline destino (si este coincide con el jugador de este juego, proceso la petición, DEBE de coincidir, vaya)
+    float turnout = Serialization::Deserialize<float>(recevBuff, currentIndex);  // turnout real
+    int64_t timeToWaitToSync = Serialization::Deserialize<int64_t>(recevBuff, currentIndex);  // tiempo de espera para sincronizar
+
+
+    cout << "Hemos recibido un FinalSyncClock de[" << idSender << "] con idReceiver["<<idReceiver<<"] turnout["<<turnout<<"] y timeToWait["<<timeToWaitToSync<<"]" << endl;
+    std::shared_ptr<DataMap> data = make_shared<DataMap>();
+    (*data)[DataType::TIME] = timeToWaitToSync;
+    (*data)[DataType::TURNOUT] = turnout;
+    EventManager::GetInstance().AddEventMulti(Event{EventType::NEW_FINAL_CLOCK_SYNC_RECEIVED, data});
 }
