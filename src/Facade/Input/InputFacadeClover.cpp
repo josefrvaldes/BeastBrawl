@@ -355,12 +355,11 @@ void InputFacadeClover::CheckInputSelCharIntro(int &input) {
         //Registra el personaje a usar
         GameValues::GetInstance()->SetCharacter(input);
 
-        RenderFacadeManager::GetInstance()->GetRenderFacade()->CleanScene();
-
         //TODO: Ahora mismo, SELECCIONAR PERSONAJE y VOLVER A JUGAR del EndRace, hacen lo mismo. Falta la gestion online.
         if ( multiplayer ) {
             EventManager::GetInstance().AddEventMulti(Event{EventType::TCP_CHAR_REQUEST});
         } else{
+            RenderFacadeManager::GetInstance()->GetRenderFacade()->CleanScene();
             if(!tournamentMode)
                 EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_GAME_OPTIONS});
             else
