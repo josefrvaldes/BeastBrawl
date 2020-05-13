@@ -1162,8 +1162,8 @@ void CLEngine::CalculateViewProjMatrix(const glm::mat4& lightSpaceMatrix){
 
     
 
-    auto modelView = cam->GetTransformationMat() * view;
-    entityCamera->CalculateFrustum(projection,modelView);
+    //auto modelView = /*cam->GetTransformationMat() **/ view;
+    entityCamera->CalculateFrustum(projection,view);
 }
 
 

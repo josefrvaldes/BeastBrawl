@@ -430,39 +430,39 @@ void RenderFacadeClover::suputamadre(Entity* pepe){
     auto dim = node->GetBoundingBox();
     auto pos = node->GetGlobalTranslation();
 
-//    auto pos1 = glm::vec3(pos.x-dim,pos.y-dim,(-pos.z)-dim);
-//    auto pos2 = glm::vec3(pos.x+dim,pos.y-dim,(-pos.z)-dim);
-//    Draw3DLine(pos1, pos2, 0.0,0.0,255.0);
-//    auto pos3 = glm::vec3(pos.x-dim,pos.y+dim,(-pos.z)-dim);
-//    Draw3DLine(pos1, pos3, 0.0,0.0,255.0);
-//    auto pos4 = glm::vec3(pos.x-dim,pos.y-dim,(-pos.z)+dim);
-//    Draw3DLine(pos1, pos4, 0.0,0.0,255.0);
-
-//    auto pos5 = glm::vec3(pos.x+dim,pos.y+dim,(-pos.z)+dim);
-//    auto pos6 = glm::vec3(pos.x+dim,pos.y+dim,(-pos.z)-dim);
-//    Draw3DLine(pos5, pos6, 0.0,0.0,255.0);
-//    auto pos7 = glm::vec3(pos.x+dim,pos.y-dim,(-pos.z)+dim);
-//    Draw3DLine(pos5, pos7, 0.0,0.0,255.0);
-//    auto pos8 = glm::vec3(pos.x-dim,pos.y+dim,(-pos.z)+dim);
-//    Draw3DLine(pos5, pos8, 0.0,0.0,255.0);
-
-
-
-    auto pos1 = glm::vec3(pos.x-dim,pos.y-dim,pos.z-dim);
-    auto pos2 = glm::vec3(pos.x+dim,pos.y-dim,pos.z-dim);
+    auto pos1 = glm::vec3(pos.x-dim,pos.y-dim,(-pos.z)-dim);
+    auto pos2 = glm::vec3(pos.x+dim,pos.y-dim,(-pos.z)-dim);
     Draw3DLine(pos1, pos2, 0.0,0.0,255.0);
-    auto pos3 = glm::vec3(pos.x-dim,pos.y+dim,pos.z-dim);
+    auto pos3 = glm::vec3(pos.x-dim,pos.y+dim,(-pos.z)-dim);
     Draw3DLine(pos1, pos3, 0.0,0.0,255.0);
-    auto pos4 = glm::vec3(pos.x-dim,pos.y-dim,pos.z+dim);
+    auto pos4 = glm::vec3(pos.x-dim,pos.y-dim,(-pos.z)+dim);
     Draw3DLine(pos1, pos4, 0.0,0.0,255.0);
 
-    auto pos5 = glm::vec3(pos.x+dim,pos.y+dim,pos.z+dim);
-    auto pos6 = glm::vec3(pos.x+dim,pos.y+dim,pos.z-dim);
+    auto pos5 = glm::vec3(pos.x+dim,pos.y+dim,(-pos.z)+dim);
+    auto pos6 = glm::vec3(pos.x+dim,pos.y+dim,(-pos.z)-dim);
     Draw3DLine(pos5, pos6, 0.0,0.0,255.0);
-    auto pos7 = glm::vec3(pos.x+dim,pos.y-dim,pos.z+dim);
+    auto pos7 = glm::vec3(pos.x+dim,pos.y-dim,(-pos.z)+dim);
     Draw3DLine(pos5, pos7, 0.0,0.0,255.0);
-    auto pos8 = glm::vec3(pos.x-dim,pos.y+dim,pos.z+dim);
+    auto pos8 = glm::vec3(pos.x-dim,pos.y+dim,(-pos.z)+dim);
     Draw3DLine(pos5, pos8, 0.0,0.0,255.0);
+
+
+
+//    auto pos1 = glm::vec3(pos.x-dim,pos.y-dim,pos.z-dim);
+//    auto pos2 = glm::vec3(pos.x+dim,pos.y-dim,pos.z-dim);
+//    Draw3DLine(pos1, pos2, 0.0,0.0,255.0);
+//    auto pos3 = glm::vec3(pos.x-dim,pos.y+dim,pos.z-dim);
+//    Draw3DLine(pos1, pos3, 0.0,0.0,255.0);
+//    auto pos4 = glm::vec3(pos.x-dim,pos.y-dim,pos.z+dim);
+//    Draw3DLine(pos1, pos4, 0.0,0.0,255.0);
+
+//    auto pos5 = glm::vec3(pos.x+dim,pos.y+dim,pos.z+dim);
+//    auto pos6 = glm::vec3(pos.x+dim,pos.y+dim,pos.z-dim);
+//    Draw3DLine(pos5, pos6, 0.0,0.0,255.0);
+//    auto pos7 = glm::vec3(pos.x+dim,pos.y-dim,pos.z+dim);
+//    Draw3DLine(pos5, pos7, 0.0,0.0,255.0);
+//    auto pos8 = glm::vec3(pos.x-dim,pos.y+dim,pos.z+dim);
+//    Draw3DLine(pos5, pos8, 0.0,0.0,255.0);
 
     Draw3DLine(pos4, pos7, 0.0,0.0,255.0);
     Draw3DLine(pos4, pos8, 0.0,0.0,255.0);

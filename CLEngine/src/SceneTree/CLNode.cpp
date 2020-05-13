@@ -168,25 +168,18 @@ void CLNode::DFSTree(glm::mat4 mA, CLCamera* cam, const glm::mat4& VPmatrix) {
     glm::vec3 pos    = GetGlobalTranslation();
     auto& frustrum_m = cam->GetFrustum();
     // CLE::CLFrustum::Visibility frusVisibility = frustum_m.IsInside(translation);
-     CLE::CLFrustum::Visibility frusVisibility = frustrum_m.IsInside(pos, dimensionsBoundingBox);
+     CLE::CLFrustum::Visibility frusVisibility = frustrum_m.IsInside(vec3(pos.x,pos.y,pos.z), dimensionsBoundingBox);
 
     //Voy a comentar de momento el frustrum ya que para el particle system puede dar problemas
-    if(!ignoreFrustrum){
-        if(entity && visible && frusVisibility == CLE::CLFrustum::Visibility::Completly ) { 
-            glUseProgram(shaderProgramID); 
-
-            glm::mat4 MVP = VPmatrix * transformationMat;
-            glUniformMatrix4fv(glGetUniformLocation(shaderProgramID, "model"), 1, GL_FALSE, glm::value_ptr(transformationMat));
-            glUniformMatrix4fv(glGetUniformLocation(shaderProgramID, "MVP"), 1, GL_FALSE, glm::value_ptr(MVP));
-
-            glUniform3fv(glGetUniformLocation(shaderProgramID, "position"), 1, glm::value_ptr(pos));
-
-            auto particleEntity = dynamic_cast<CLParticleSystem*>(entity.get());
-
-            if((particleEntity && particlesActivated) || !particleEntity){
-
-                entity->Draw(shaderProgramID);
-            }
+    if( /*(entity && visible && frusVisibility == CLE::CLFrustum::Visibility::Completly) ||*/ (entity && visible && !ignoreFrustrum) ){ 
+        glUseProgram(shaderProgramID); 
+        glm::mat4 MVP = VPmatrix * transformationMat;
+        glUniformMatrix4fv(glGetUniformLocation(shaderProgramID, "model"), 1, GL_FALSE, glm::value_ptr(transformationMat));
+        glUniformMatrix4fv(glGetUniformLocation(shaderProgramID, "MVP"), 1, GL_FALSE, glm::value_ptr(MVP));
+        glUniform3fv(glGetUniformLocation(shaderProgramID, "position"), 1, glm::value_ptr(pos));
+        auto particleEntity = dynamic_cast<CLParticleSystem*>(entity.get());
+        if((particleEntity && particlesActivated) || !particleEntity){
+            entity->Draw(shaderProgramID);
         }
     }
 
