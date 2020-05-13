@@ -324,7 +324,7 @@ void SystemOnline::SendFinalClockSync(COnline *cOnlineMainCar) {
     for  (auto currentCar: manCar.GetEntities()) {
         COnline* cOnline = static_cast<COnline*>(currentCar->GetComponent(CompType::OnlineComp).get());
         if(cOnline->idClient != 1) {
-            udpClient->SendFinalClockSync(cOnlineMainCar->idClient, cOnline->idClient, cOnline->currentTurnout[cOnline->idClient], msSync);
+            udpClient->SendFinalClockSync(cOnlineMainCar->idClient, cOnline->idClient, cOnlineMainCar->currentTurnout[cOnline->idClient], msSync);
         }
     }
     
