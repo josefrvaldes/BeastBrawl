@@ -10,7 +10,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd E:\\Assets\\Modular\\clv_brick_low_Material_BaseColor.tga
+map_Kd clv_brick_low_Material_BaseColor.tga
 
 newmtl brick1.001
 Ns 323.999994
@@ -21,7 +21,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd E:\\Assets\\Modular\\clv_brick_low_Material_BaseColor.tga
+map_Kd clv_brick_low_Material_BaseColor.tga
 
 newmtl brick2
 Ns 0.000000
@@ -32,7 +32,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 3
-map_Kd E:\\Assets\\Modular\\clv_brick2_low_Cube.003_BaseColor.tga
+map_Kd clv_brick2_low_Cube.003_BaseColor.tga
 
 newmtl brick3
 Ns 0.000000
@@ -43,7 +43,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 3
-map_Kd E:\\Assets\\Modular\\clv_brick3_low_Cube1_2.001_BaseColor.tga
+map_Kd clv_brick3_low_Cube1_2.001_BaseColor.tga
 
 newmtl brick3.009
 Ns 0.000000
@@ -54,7 +54,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 3
-map_Kd E:\\Assets\\Modular\\clv_brick3_low_Cube1_2.001_BaseColor.tga
+map_Kd clv_brick3_low_Cube1_2.001_BaseColor.tga
 
 newmtl brick3.011
 Ns 0.000000
@@ -65,7 +65,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 3
-map_Kd E:\\Assets\\Modular\\clv_brick3_low_Cube1_2.001_BaseColor.tga
+map_Kd clv_brick3_low_Cube1_2.001_BaseColor.tga
 
 newmtl brick3.012
 Ns 0.000000
@@ -76,7 +76,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 3
-map_Kd E:\\Assets\\Modular\\clv_brick3_low_Cube1_2.001_BaseColor.tga
+map_Kd clv_brick3_low_Cube1_2.001_BaseColor.tga
 
 newmtl brick3.014
 Ns 0.000000
@@ -87,7 +87,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 3
-map_Kd E:\\Assets\\Modular\\clv_brick3_low_Cube1_2.001_BaseColor.tga
+map_Kd clv_brick3_low_Cube1_2.001_BaseColor.tga
 
 newmtl plant1
 Ns 0.000000
@@ -98,8 +98,8 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 1
-map_Kd E:\\Assets\\Generic\\clv_plant1_basecolor.png
-map_d E:\\Assets\\Generic\\clv_plant1_basecolor.png
+map_Kd clv_plant1_basecolor.png
+map_d clv_plant1_basecolor.png
 
 newmtl plant1.004
 Ns 0.000000
@@ -110,8 +110,8 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 1
-map_Kd E:\\Assets\\Generic\\clv_plant1_basecolor.png
-map_d E:\\Assets\\Generic\\clv_plant1_basecolor.png
+map_Kd clv_plant1_basecolor.png
+map_d clv_plant1_basecolor.png
 
 newmtl plant1.009
 Ns 0.000000
@@ -122,8 +122,8 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 1
-map_Kd E:\\Assets\\Generic\\clv_plant1_basecolor.png
-map_d E:\\Assets\\Generic\\clv_plant1_basecolor.png
+map_Kd clv_plant1_basecolor.png
+map_d clv_plant1_basecolor.png
 
 newmtl plant1.010
 Ns 0.000000
@@ -134,8 +134,8 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 1
-map_Kd E:\\Assets\\Generic\\clv_plant1_basecolor.png
-map_d E:\\Assets\\Generic\\clv_plant1_basecolor.png
+map_Kd clv_plant1_basecolor.png
+map_d clv_plant1_basecolor.png
 
 newmtl pot.004
 Ns 225.000000
@@ -146,7 +146,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd E:\\Assets\\Modular\\clv_pot_low_DefaultMaterial_BaseColor.tga
+map_Kd clv_pot_low_DefaultMaterial_BaseColor.tga
 
 newmtl wood1
 Ns 0.000000
@@ -157,4 +157,4 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 1
-map_Kd E:\\Assets\\Generic\\clv_wood1_low_Cube1_BaseColor.tga
+map_Kd clv_wood1_low_Cube1_BaseColor.tga

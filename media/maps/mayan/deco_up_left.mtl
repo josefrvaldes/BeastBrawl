@@ -10,7 +10,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd E:\\Assets\\Modular\\clv_brick_low_Material_BaseColor.tga
+map_Kd clv_brick_low_Material_BaseColor.tga
 
 newmtl brick2
 Ns 0.000000
@@ -21,7 +21,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 3
-map_Kd E:\\Assets\\Modular\\clv_brick2_low_Cube.003_BaseColor.tga
+map_Kd clv_brick2_low_Cube.003_BaseColor.tga
 
 newmtl brick3
 Ns 0.000000
@@ -32,7 +32,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 3
-map_Kd E:\\Assets\\Modular\\clv_brick3_low_Cube1_2.001_BaseColor.tga
+map_Kd clv_brick3_low_Cube1_2.001_BaseColor.tga
 
 newmtl brick3.004
 Ns 0.000000
@@ -43,7 +43,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 3
-map_Kd E:\\Assets\\Modular\\clv_brick3_low_Cube1_2.001_BaseColor.tga
+map_Kd clv_brick3_low_Cube1_2.001_BaseColor.tga
 
 newmtl brick3.005
 Ns 0.000000
@@ -54,7 +54,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 3
-map_Kd E:\\Assets\\Modular\\clv_brick3_low_Cube1_2.001_BaseColor.tga
+map_Kd clv_brick3_low_Cube1_2.001_BaseColor.tga
 
 newmtl column3
 Ns 225.000000
@@ -65,7 +65,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd E:\\Assets\\Modular\\clv_column3_low_Material.008_BaseColor.tga
+map_Kd clv_column3_low_Material.008_BaseColor.tga
 
 newmtl plant1
 Ns 0.000000
@@ -76,8 +76,8 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 1
-map_Kd E:\\Assets\\Generic\\clv_plant1_basecolor.png
-map_d E:\\Assets\\Generic\\clv_plant1_basecolor.png
+map_Kd clv_plant1_basecolor.png
+map_d clv_plant1_basecolor.png
 
 newmtl plant1.013
 Ns 0.000000
@@ -88,8 +88,8 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 1
-map_Kd E:\\Assets\\Generic\\clv_plant1_basecolor.png
-map_d E:\\Assets\\Generic\\clv_plant1_basecolor.png
+map_Kd clv_plant1_basecolor.png
+map_d clv_plant1_basecolor.png
 
 newmtl statue1
 Ns 0.000000
@@ -100,7 +100,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 3
-map_Kd E:\\Assets\\Modular\\clv_statue_LOW_statue_BaseColor.tga
+map_Kd clv_statue_LOW_statue_BaseColor.tga
 
 newmtl stem
 Ns 194.023398
@@ -111,7 +111,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 1
-map_Kd E:\\Assets\\Generic\\clv_stem_low_lambert1_BaseColor.tga
+map_Kd clv_stem_low_lambert1_BaseColor.tga
 
 newmtl vine
 Ns 114.257624
@@ -122,8 +122,8 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 1
-map_Kd E:\\Assets\\Generic\\clv_vines_albedo.png
-map_d E:\\Assets\\Generic\\clv_vines_albedo.png
+map_Kd clv_vines_albedo.png
+map_d clv_vines_albedo.png
 
 newmtl wood1
 Ns 0.000000
@@ -134,4 +134,4 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 1
-map_Kd E:\\Assets\\Generic\\clv_wood1_low_Cube1_BaseColor.tga
+map_Kd clv_wood1_low_Cube1_BaseColor.tga
