@@ -259,12 +259,12 @@ void SystemOnline::NewClockSyncReceived(DataMap *d) {
 
 
             // significa que ya hemos terminado, por tanto NO volvemos a reenviar ya, pasamos a fase dos. Por ahora solamente imprimimos los valores por pantalla para depurar
-            if(idOnlineMainCar == 1 && cOnlineMainCar->numMeasurements[idSender] == MAX_NUM_MEASUREMENTS) {
+            if(idOnlineMainCar == 1 && cOnlineMainCar->numMeasurements[idSender] >= MAX_NUM_MEASUREMENTS) {
                 cout << "Soy el líder supremo y he terminado con  los datos ";
                 cout << "T["<<cOnlineMainCar->timeSyncClock[idSender]<<"] TO["<<cOnlineMainCar->currentTurnout[idSender]<<"] N["<<unsigned(cOnlineMainCar->numMeasurements[idSender])<<"]" << endl<< endl<< endl;
 
                 // si todavía no hemos acabado de medir, reenvío de nuevo
-            } else if(cOnlineMainCar->numMeasurements[idSender] < MAX_NUM_MEASUREMENTS) {
+            } else if(cOnlineMainCar->numMeasurements[idSender] <= MAX_NUM_MEASUREMENTS) {
                 cout << "Voy a reenviar los datos a ["<<idSender<<"]" << endl<< endl<< endl;
                 // reenvío el paquete de nuevo a la persona que me lo envió
                 for(uint8_t i = 0; i < TIMES_RESEND; i++) {

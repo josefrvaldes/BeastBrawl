@@ -175,7 +175,10 @@ void UDPServer::HandleReceive(std::shared_ptr<unsigned char[]> recevBuff, std::s
                         if (p.lastClockSyncReceived < time) {
                             p.lastClockSyncReceived = time;
                             uint16_t idOnline2 = Serialization::Deserialize<uint16_t>(recevBuff.get(), currentIndex);
+                            cout << "Hemos recibido un sendClockSync del sender["<<idPlayer<<"] y receiver["<<idOnline2<<"]" << endl;
                             HandleReceivedClockSync(p, idOnline2, buffRecieved, bytesTransferred, *remoteClient.get());
+                        } else {
+                            cout << "Hemos descartado un sendClockSync del sender["<<idPlayer<<"]" << endl;
                         }
                         break;
                     default:
@@ -303,8 +306,12 @@ void UDPServer::HandleReceivedWaitingForCountdown(Player& p, unsigned char buffe
 
 void UDPServer::HandleReceivedClockSync(Player& p, uint16_t idOnline2, unsigned char bufferToReSend[], const size_t currentBufferSize, const udp::endpoint& originalClient) {
     Player *p2 = GetPlayerById(idOnline2);
-    for (uint8_t i = 0; i < NUM_REINTENTOS; ++i)
-        SendBytes(bufferToReSend, currentBufferSize, *p2);       
+    if(p2 != nullptr) {
+        for (uint8_t i = 0; i < NUM_REINTENTOS; ++i)
+            SendBytes(bufferToReSend, currentBufferSize, *p2);       
+    } else {
+        cout << "No hemos encontrado el jugador con idSender[" << idOnline2 << "] al que hay que reenviarle un SyncClock" << endl;
+    }
 }
 
 void UDPServer::SendLaunchAnimationCountdown(const Player& player) {

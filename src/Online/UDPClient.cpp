@@ -911,7 +911,7 @@ void UDPClient::SendClockSync(uint16_t idOnline1, uint16_t idOnline2, int64_t ti
     unsigned char requestBuff[Constants::ONLINE_BUFFER_SIZE];
     size_t currentBuffSize = 0;
     uint8_t callType = Constants::PetitionTypes::SEND_CLOCK_SYNC;
-    int64_t now = Utils::getMillisSinceEpoch();
+    int64_t now = Utils::getMicrosSinceEpoch();
 
     Serialization::Serialize(requestBuff, &callType, currentBuffSize);
     Serialization::Serialize(requestBuff, &now, currentBuffSize);
