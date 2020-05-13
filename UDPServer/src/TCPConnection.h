@@ -23,9 +23,10 @@ class TCPConnection : public std::enable_shared_from_this<TCPConnection> {
     void Start();
     void Close();
     void SendStartMessage(string datos);
-    void SendStartMessage(unsigned char *buff, size_t buffSize);
+    void SendStartMessage(std::shared_ptr<unsigned char[]> buff, size_t buffSize);
     void SendFullGame();
     void SendOpenGame();
+    void SendCharsSel(std::shared_ptr<unsigned char[]> buff, size_t buffSize);
     // Player *currentPlayer;
 
 
@@ -38,6 +39,7 @@ class TCPConnection : public std::enable_shared_from_this<TCPConnection> {
     void HandleReceivedCatchChar(std::shared_ptr<unsigned char[]> recevBuff, const size_t currentBufferSize);
     void SendRequestSelChar(bool selected);
     void CancelChar();
+    void HandleSendOpenGame(const boost::system::error_code& error, size_t bytes_transferred);
 
     string GetTime() {
         auto time_point = system_clock::now();

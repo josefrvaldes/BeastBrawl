@@ -109,7 +109,30 @@ void TCPServer::SendStartGame() {
         Serialization::Serialize(buff.get(), &charactersSize, currentBuffSize);
         Serialization::SerializeVector(buff.get(), charactersToSend, currentBuffSize);
 
-        currentPlayer->SendStartMessage(buff.get(), currentBuffSize);
+        currentPlayer->SendStartMessage(buff, currentBuffSize);
     }
     Server::ACCEPTING_ENDGAME = true; 
+}
+
+
+// enviar los personajes ya seleccionados
+void TCPServer::SendCharsSelected() {
+    vector<uint8_t> charsSelected;
+    for (const auto& currentPlayer : players) {
+        if(currentPlayer.character != Constants::ANY_CHARACTER)
+            charsSelected.emplace_back(currentPlayer.character);
+    }
+
+    std::shared_ptr<unsigned char[]> buff(new unsigned char[Constants::ONLINE_BUFFER_SIZE]);
+    size_t currentBuffSize = 0;
+    uint8_t petitionType = Constants::PetitionTypes::TCP_CHARACTERS_SELECTED;
+    uint8_t charSelSize = charsSelected.size();
+
+    Serialization::Serialize(buff.get(), &petitionType, currentBuffSize);
+    Serialization::Serialize(buff.get(), &charSelSize, currentBuffSize);
+    Serialization::SerializeVector(buff.get(), charsSelected, currentBuffSize);
+
+    for (const auto& currentPlayer : connections) {
+        currentPlayer->SendCharsSel(buff, currentBuffSize);
+    }
 }
