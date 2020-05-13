@@ -609,6 +609,22 @@ bool InputFacadeClover::ShowTable(bool inputTable) {
     return inputTable;
 }
 
+void InputFacadeClover::ShowTable(Constants::ShowTableMinimap &mode) {
+    if ( (IsKeyPress(GLFW_KEY_R) || IsGamepadPress(GLFW_GAMEPAD_BUTTON_B)) && !IsInputPressed(BUTTON_B) ) {
+        switch (mode) {
+            case Constants::ShowTableMinimap::NONE:         mode = Constants::ShowTableMinimap::BOTH;       break;
+            case Constants::ShowTableMinimap::ONLYMAP:      mode = Constants::ShowTableMinimap::ONLYTABLE;  break;
+            case Constants::ShowTableMinimap::ONLYTABLE:    mode = Constants::ShowTableMinimap::NONE;       break;
+            case Constants::ShowTableMinimap::BOTH:         mode = Constants::ShowTableMinimap::ONLYMAP;    break;
+            default:                                        mode = Constants::ShowTableMinimap::BOTH;       break;
+        }
+        SetValueInput(BUTTON_B, true);
+    } else if ( !(IsKeyPress(GLFW_KEY_R) || IsGamepadPress(GLFW_GAMEPAD_BUTTON_B)) ) {
+        SetValueInput(BUTTON_B, false);
+    }
+}
+
+
 
 /**
  * Input de la partida un jugador.

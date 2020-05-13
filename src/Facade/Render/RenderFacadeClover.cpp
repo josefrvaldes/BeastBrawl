@@ -750,19 +750,12 @@ void RenderFacadeClover::FacadeInitResources(){
     //Shaders
     resourceManager->GetResourceShader("CLEngine/src/Shaders/cartoonShader.vert", "CLEngine/src/Shaders/cartoonShader.frag");
 
+    //Reseteo el showTableMinimap
+    showTableMinimap = Constants::ShowTableMinimap::BOTH;
+
 }
 
 void RenderFacadeClover::FacadeInitIntro() {
-    // resourceManager->GetResourceTexture("media/pauseMenu.png", true);
-    // resourceManager->GetResourceTexture("media/menu/main_menu.png", true);
-    // resourceManager->GetResourceTexture("media/menu/elements_menu.png", true);
-
-    // resourceManager->DeleteResourceTexture("media/menu/main_menu.png");
-
-    // resourceManager->GetResourceTexture("media/menu/creditos_hover.png", true);
-
-    // resourceManager->GetResourceTexture("media/menu/main_menu.png", true);
-
 
 
 }
@@ -960,12 +953,15 @@ void RenderFacadeClover::FacadeInitSettings() {
 
 
 void RenderFacadeClover::FacadeCheckInputSingle() {
-    inputShowTable = InputFacadeManager::GetInstance()->GetInputFacade()->ShowTable(inputShowTable);
+    //inputShowTable = InputFacadeManager::GetInstance()->GetInputFacade()->ShowTable(inputShowTable);
+    InputFacadeManager::GetInstance()->GetInputFacade()->ShowTable(showTableMinimap);
 }
 
 vector<Constants::InputTypes> RenderFacadeClover::FacadeCheckInputMulti() {
     vector<Constants::InputTypes> inputs;
-    inputShowTable = InputFacadeManager::GetInstance()->GetInputFacade()->ShowTable(inputShowTable);
+    //inputShowTable = InputFacadeManager::GetInstance()->GetInputFacade()->ShowTable(inputShowTable);
+    InputFacadeManager::GetInstance()->GetInputFacade()->ShowTable(showTableMinimap);
+
     return inputs;
 }
 
@@ -1072,6 +1068,8 @@ void RenderFacadeClover::FacadeDraw() const{
 
 void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* globalClock, ManHUDEvent* manHud, ManGameRules* manGR) {
 
+    device->SetEnableDepthTest(false);
+    
     std::string cadena;
     std::string sprite;
     CTotem* cTotem;
@@ -1086,17 +1084,19 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
     auto widthMM = 0;           auto heightMM = 0;
     auto posXMiniMap = 0;       auto posYMiniMap = 0;
 
-    device->SetEnableDepthTest(false);
 
-    cadena = "media/Minimapa240v2.png";
-    auto minimapTexture = resourceManager->GetResourceTexture(cadena);
-    if(minimapTexture) {
-        widthMM = minimapTexture->GetWidth();
-        heightMM = minimapTexture->GetHeight();
-        posXMiniMap = w - (widthMM+50);    
-        posYMiniMap = h - (heightMM+50);
+    if ((showTableMinimap == Constants::ShowTableMinimap::BOTH || showTableMinimap == Constants::ShowTableMinimap::ONLYMAP)) {
+        cadena = "media/Minimapa240v2.png";
+        auto minimapTexture = resourceManager->GetResourceTexture(cadena);
+        if(minimapTexture) {
+            widthMM = minimapTexture->GetWidth();
+            heightMM = minimapTexture->GetHeight();
+            posXMiniMap = w - (widthMM+50);    
+            posYMiniMap = h - (heightMM+50);
+        }
+        device->DrawImage2D(posXMiniMap, posYMiniMap, widthMM, heightMM, 0.9f, cadena, true);
     }
-    device->DrawImage2D(posXMiniMap, posYMiniMap, widthMM, heightMM, 0.9f, cadena, true);
+
 
     //CURRENT POWERUP
     if(!powerUpAnimation->GetFinished() && currentPowerUp != 0){
@@ -1108,7 +1108,7 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
     }
 
     // TABLA TIEMPOS
-    if (inputShowTable) {
+    if (showTableMinimap == Constants::ShowTableMinimap::BOTH || showTableMinimap == Constants::ShowTableMinimap::ONLYTABLE) {
 
         auto j = 0;
         auto ranking = GameValues::GetInstance()->GetRanking();
@@ -1217,7 +1217,7 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
             ++j;*/
 
             // MINIMAPA
-            if (manGR && cTrans) {
+            if ( (showTableMinimap == Constants::ShowTableMinimap::BOTH || showTableMinimap == Constants::ShowTableMinimap::ONLYMAP) && manGR && cTrans) {
                 
                 auto positions = manGR->GetPositionsPlane();
                 auto it = positions.find(cId->id);
@@ -1237,7 +1237,7 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
 
     //MINIMAPA TOTEM
     auto positionTotem = manGR->GetPositionTotemPlane();
-    if(positionTotem.x > 0 && positionTotem.y > 0) {
+    if((showTableMinimap == Constants::ShowTableMinimap::BOTH || showTableMinimap == Constants::ShowTableMinimap::ONLYMAP)) {
         auto posXTMM = positionTotem.x * widthMM;
         auto posYTMM = positionTotem.y * heightMM;
         sprite = "media/totem";
@@ -1527,8 +1527,8 @@ void RenderFacadeClover::FacadeDrawEndRace() {
             case (uint16_t)mainCharacter::OCTOPUS:  file = "media/hudOctopus.png";      name = "Ciber Octopus";         break;
             default: cout << "+++++++ No entiendo este personaje para el evento" << endl;   break;
         }
-        device->DrawImage2D(posX + 240.0f*scale, posY + (i*100.0f)*scale + 5.0f*scale, 1.0f*scale, 0.7f, file, true);  //CARITA
-        device->RenderText2D(name, posX + 325.0f*scale, posYText - (i*100.0f)*scale, 0.65f, 1.0*scale, glm::vec3(255.0f, 255.0f, 255.0f));
+        device->DrawImage2D(posX + 190.0f*scale, posY + (i*100.0f)*scale + 5.0f*scale, 1.0f*scale, 0.7f, file, true);  //CARITA
+        device->RenderText2D(name, posX + 275.0f*scale, posYText - (i*100.0f)*scale, 0.65f, 1.0*scale, glm::vec3(255.0f, 255.0f, 255.0f));
 
         
         if((positionPoints+1) == 1) {
@@ -1618,8 +1618,8 @@ void RenderFacadeClover::FacadeDrawEndTournament() {
                 case (uint16_t)mainCharacter::OCTOPUS:  file = "media/hudOctopus.png";      name = "Ciber Octopus";         break;
                 default: cout << "+++++++ No entiendo este personaje para el evento" << endl;   break;
             }
-            device->DrawImage2D(posX + 240.0f*scale, posY + (i*100.0f)*scale + 5.0f*scale, 1.0f*scale, 0.7f, file, true);  //CARITA
-            device->RenderText2D(name, posX + 325.0f*scale, posYText - (i*100.0f)*scale, 0.65f, 1.0*scale, glm::vec3(255.0f, 255.0f, 255.0f));
+            device->DrawImage2D(posX + 190.0f*scale, posY + (i*100.0f)*scale + 5.0f*scale, 1.0f*scale, 0.7f, file, true);  //CARITA
+            device->RenderText2D(name, posX + 275.0f*scale, posYText - (i*100.0f)*scale, 0.65f, 1.0*scale, glm::vec3(255.0f, 255.0f, 255.0f));
 
             // puntos
 
@@ -1677,8 +1677,8 @@ void RenderFacadeClover::FacadeDrawEndTournament() {
                 case (uint16_t)mainCharacter::OCTOPUS:  file = "media/hudOctopus.png";      name = "Ciber Octopus";         break;
                 default: cout << "+++++++ No entiendo este personaje para el evento" << endl;   break;
             }
-            device->DrawImage2D(posX + 240.0f*scale, posY + (i*100.0f)*scale + 5.0f*scale, 1.0f*scale, 0.7f, file, true);  //CARITA
-            device->RenderText2D(name, posX + 325.0f*scale, posYText - (i*100.0f)*scale, 0.65f, 1.0*scale, glm::vec3(255.0f, 255.0f, 255.0f));
+            device->DrawImage2D(posX + 190.0f*scale, posY + (i*100.0f)*scale + 5.0f*scale, 1.0f*scale, 0.7f, file, true);  //CARITA
+            device->RenderText2D(name, posX + 275.0f*scale, posYText - (i*100.0f)*scale, 0.65f, 1.0*scale, glm::vec3(255.0f, 255.0f, 255.0f));
 
             if((positionPoints+1) == 1) {
                 file = "media/menu/crown.png";

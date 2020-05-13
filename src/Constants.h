@@ -72,4 +72,7 @@ class Constants {
     enum RenderEngine { IRRLICHT,
                         CLOVER};
     inline static const RenderEngine RENDER_ENGINE = RenderEngine::CLOVER;
+
+    
+    enum ShowTableMinimap { NONE, ONLYTABLE, ONLYMAP, BOTH};
 };

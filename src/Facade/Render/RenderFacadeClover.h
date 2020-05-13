@@ -177,6 +177,8 @@ class RenderFacadeClover : public RenderFacade {
 
       // En juego
       bool inputShowTable { true };
+      Constants::ShowTableMinimap showTableMinimap { Constants::ShowTableMinimap::BOTH };
+      uint8_t maxShowTM { 3 };
 
       //Menu
       int inputMenu { 0 };
