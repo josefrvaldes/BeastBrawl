@@ -122,7 +122,7 @@ d 1.000000
 illum 1
 map_Kd clv_floorNew_Graph_basecolor.tga
 
-newmtl vine
+newmtl vine.001
 Ns 114.257624
 Ka 1.000000 1.000000 1.000000
 Kd 1.000000 1.000000 1.000000
