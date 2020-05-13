@@ -21,6 +21,7 @@ class TCPServer{
     void StartReceiving();
     void Close();
     void SendStartGame();
+    void SendCharsSelected();
 
    private:
     
