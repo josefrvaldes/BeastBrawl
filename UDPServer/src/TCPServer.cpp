@@ -42,19 +42,20 @@ void TCPServer::StartReceiving() {
 void TCPServer::HandleAccept(TCPConnection::pointer new_connection, const boost::system::error_code& error) {
     if (!error) {
         //std::cout << "Recibi un mensaje" << std::endl;
-        if(Server::GAME_STARTED == false && players.size()<Constants::MIN_NUM_PLAYERS){
+        if(Server::GAME_STARTED == false && players.size()<Constants::MIN_NUM_PLAYERS && PlayerExists(new_connection) == false){
             new_connection->Start();
-            
+        
             // Comprobaciones para ver si existe el player
-            if (PlayerExists(new_connection) == false) {
-                connections.push_back(new_connection);
-                Player p;
-                p.endpointTCP = new_connection->socket().remote_endpoint();
-                p.character = Constants::ANY_CHARACTER;
-                // new_connection->currentPlayer = &p;
-                players.push_back(p);
-            }
+            connections.push_back(new_connection);
+            Player p;
+            p.endpointTCP = new_connection->socket().remote_endpoint();
+            p.character = Constants::ANY_CHARACTER;
+            // new_connection->currentPlayer = &p;
+            players.push_back(p);
+
         }else{
+            std::cout << "Juego empezado: " << Server::GAME_STARTED  << std::endl;
+            std::cout << "Num Jugadores: " << players.size()  << std::endl;
             // no dejar entrar a la sala
             new_connection->SendFullGame();
         }
@@ -134,5 +135,29 @@ void TCPServer::SendCharsSelected() {
 
     for (const auto& currentPlayer : connections) {
         currentPlayer->SendCharsSel(buff, currentBuffSize);
+    }
+}
+
+
+
+void TCPServer::SendCharsSelectedToOther(tcp::endpoint _endpoint){
+    vector<uint8_t> charsSelected;
+    for (const auto& currentPlayer : players) {
+        if(currentPlayer.character != Constants::ANY_CHARACTER)
+            charsSelected.emplace_back(currentPlayer.character);
+    }
+
+    std::shared_ptr<unsigned char[]> buff(new unsigned char[Constants::ONLINE_BUFFER_SIZE]);
+    size_t currentBuffSize = 0;
+    uint8_t petitionType = Constants::PetitionTypes::TCP_CHARACTERS_SELECTED;
+    uint8_t charSelSize = charsSelected.size();
+
+    Serialization::Serialize(buff.get(), &petitionType, currentBuffSize);
+    Serialization::Serialize(buff.get(), &charSelSize, currentBuffSize);
+    Serialization::SerializeVector(buff.get(), charsSelected, currentBuffSize);
+
+    for (const auto& currentPlayer : connections) {
+        if(_endpoint != currentPlayer->socket().remote_endpoint())
+            currentPlayer->SendCharsSel(buff, currentBuffSize);
     }
 }

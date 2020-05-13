@@ -22,6 +22,7 @@ class TCPServer{
     void Close();
     void SendStartGame();
     void SendCharsSelected();
+    void SendCharsSelectedToOther(tcp::endpoint _endpoint);
 
    private:
     

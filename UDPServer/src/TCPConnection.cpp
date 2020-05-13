@@ -57,8 +57,13 @@ void TCPConnection::HandleRead(std::shared_ptr<unsigned char[]> recevBuff, const
         }
     } else if ((boost::asio::error::eof == error) || (boost::asio::error::connection_reset == error)) {
         std::cout << "Se desconecta un usuario: " << error.message() << std::endl;
+        for(auto& p : players){
+            if(p.endpointTCP == socket_.remote_endpoint())
+                p.character = Constants::ANY_CHARACTER;
+        }
+        tcpServer->SendCharsSelectedToOther(socket_.remote_endpoint());
         DeleteMe();
-        tcpServer->SendCharsSelected(); // Testear
+        //tcpServer->SendCharsSelected(); // Testear
     } else if (error) {
         std::cout << "Error al leer: " << error.message() << std::endl;
     }
