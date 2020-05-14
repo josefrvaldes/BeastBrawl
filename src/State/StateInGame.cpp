@@ -291,6 +291,7 @@ void StateInGame::UpdateGame() {
     em.Update();
 
 
+    manNavMesh->Update(*(manCars.get()));
 
 // ACTUALIZACION DE LOS MANAGERS DE LOS COCHES
     bool gameFinished = manCars->UpdateCarPlayer(*(manTotems.get()));
