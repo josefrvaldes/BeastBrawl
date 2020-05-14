@@ -169,7 +169,7 @@ class RenderFacadeClover : public RenderFacade {
 
       std::string powerUps[7];
 
-      vector<std::string> tipsTexts = {   "Usa la camara de totem para ver donde está!" , 
+      vector<std::string> tipsTexts = {   "Usa la camara de totem para ver donde esta!" , 
                                           "Utiliza el Robo Jorobo para robar el totem!",
                                           "Utiliza el Escudo Merluzo para protegerte!",
                                           "Lanza el Pudin para que otro coche resbale!",
