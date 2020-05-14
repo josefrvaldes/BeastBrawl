@@ -506,6 +506,10 @@ void RenderFacadeClover::UpdateCamera(Entity* cam, ManCar* manCars) {
 
         //Si somos nosotros quien tenemos el totem ponemos camara normal
         if(cTotemCar->active){
+            cameraEntity->SetCameraTarget(glm::vec3(targetPosition.x,targetPosition.y,targetPosition.z));
+            cameraEntity->SetFOV(70);
+            camera1->SetTranslation(glm::vec3(cTransformable->position.x, cTransformable->position.y, -cTransformable->position.z));
+
             cCamera->camType = CamType::NORMAL_CAM;
             return;
 
