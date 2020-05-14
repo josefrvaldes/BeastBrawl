@@ -69,23 +69,22 @@ void UDPServer::HandleReceive(std::shared_ptr<unsigned char[]> recevBuff, std::s
                 switch (callType) {
                     case Constants::PetitionTypes::SEND_INPUTS: {
                         //std::cout << "Recibidos inputs: " << bytesTransferred << std::endl;
+                        // int64_t gameTime = Serialization::Deserialize<uint16_t>(recevBuff.get(), currentIndex);
                         if (p.lastInputTimeReceived < time) {
-                            //cout << Utils::getISOCurrentTimestampMillis() << "Se ha recibido y reenviado un paquete de input del player " << idPlayer << endl;
+                            // cout << Utils::getISOCurrentTimestampMillis() << "Se ha recibido y reenviado un paquete de input del player " << idPlayer << " con time["<<time<<"] " << endl;
                             p.lastInputTimeReceived = time;
                             HandleReceivedInputs(idPlayer, buffRecieved, bytesTransferred, *remoteClient.get());
-                        } else {
-                            //cout << Utils::getISOCurrentTimestampMillis() << "Se ha ignorado un paquete de input porque era antiguo" << endl;
-                        }
+                        } 
                     } break;
                     case Constants::PetitionTypes::SEND_SYNC: {
+                        // int64_t gameTime = Serialization::Deserialize<uint16_t>(recevBuff.get(), currentIndex);
+                        
                         //std::cout << "Recibida sincronizacion: " << bytesTransferred << std::endl;
                         if (p.lastSyncTimeReceived < time) {
                             //cout << Utils::getISOCurrentTimestampMillis() << "Se ha recibido y reenviado un paquete de sync del player " << idPlayer << endl;
                             p.lastSyncTimeReceived = time;
                             HandleReceivedSync(idPlayer, buffRecieved, bytesTransferred, *remoteClient.get());
-                        } else {
-                            //cout << Utils::getISOCurrentTimestampMillis() << "Se ha ignorado un paquete de sync porque era antiguo" << endl;
-                        }
+                        } 
                     } break;
                     case Constants::PetitionTypes::CATCH_PU: {
                         if (p.lastCatchPUTimeReceived < time) {
@@ -184,6 +183,8 @@ void UDPServer::HandleReceive(std::shared_ptr<unsigned char[]> recevBuff, std::s
                     case Constants::PetitionTypes::SEND_FINAL_CLOCK_SYNC:
                         if (p.lastFinalClockSyncReceived < time) {
                             p.lastFinalClockSyncReceived = time;
+                            p.lastInputTimeReceived = -1;
+                            p.lastSyncTimeReceived = -1;
                             uint16_t idOnline2 = Serialization::Deserialize<uint16_t>(recevBuff.get(), currentIndex);
                             cout << "Hemos recibido un sendClockSync del sender["<<idPlayer<<"] y receiver["<<idOnline2<<"]" << endl;
                             HandleReceivedFinalClockSync(p, idOnline2, buffRecieved, bytesTransferred, *remoteClient.get());
@@ -327,6 +328,8 @@ void UDPServer::HandleReceivedClockSync(Player& p, uint16_t idOnline2, unsigned 
 void UDPServer::HandleReceivedFinalClockSync(Player& p, uint16_t idOnline2, unsigned char bufferToReSend[], const size_t currentBufferSize, const udp::endpoint& originalClient) {
     Player *p2 = GetPlayerById(idOnline2);
     if(p2 != nullptr) {
+        p2->lastInputTimeReceived = -1;
+        p2->lastSyncTimeReceived = -1;
         for (uint8_t i = 0; i < NUM_REINTENTOS; ++i)
             SendBytes(bufferToReSend, currentBufferSize, *p2);       
     } else {

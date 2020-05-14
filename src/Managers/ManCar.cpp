@@ -106,14 +106,14 @@ bool ManCar::UpdateCarPlayer(ManTotem &manTotem_) {
     CCar * ccar = static_cast<CCar*>(carPlayer->GetComponent(CompType::CarComp).get());
     if(ccar->speed > 0) {
         CTransformable * cTransfor = static_cast<CTransformable*>(carPlayer->GetComponent(CompType::TransformableComp).get());
-        // cout << "JUG1" << Utils::getISOCurrentTimestampMillis() << " El mainCar se ha movido, sus datos son: speed["<<ccar->speed<<"]  transfor["<<*cTransfor<<"]" << endl;
+        cout << "JUG1" << Utils::getISOCurrentTimestampMillis() << " El mainCar se ha movido, sus datos son: speed["<<ccar->speed<<"]  transfor["<<*cTransfor<<"]" << endl;
     }
     return gameFinished;
 }
 
 bool ManCar::UpdateCarHuman(Entity* CarHuman, ManTotem* m_manTotem) {
     bool gameFinished = UpdateGeneralCar(*CarHuman, *(m_manTotem->GetEntities()[0].get()));
-    physics->UpdateHuman(static_cast<Car *>(CarHuman));
+    physics->UpdateHuman(static_cast<Car *>(CarHuman), systemOnline->GetGameTime());
     return gameFinished;
 }
 
@@ -338,7 +338,7 @@ void ManCar::NewInputsReceived(DataMap* d) {
                 CBufferOnline* buffOnline = static_cast<CBufferOnline*>(car->GetComponent(CompType::BufferOnline).get());
                 compOnline->inputs = inputs;
                 cout << "Hemos recibido un NewInputsReceivedOnline" << endl;
-                buffOnline->InsertNewReceivedOnline(time, inputs, speed, wheelRotation, skidDeg, skidRotation);
+                buffOnline->InsertNewReceivedOnline(systemOnline->GetGameTime(), time, inputs, speed, wheelRotation, skidDeg, skidRotation);
                 cout << *buffOnline; 
                 physics->NewInputsReceivedOnline(static_cast<Car*>(car.get()), speed, wheelRotation, skidDeg, skidRotation, buffOnline);
                 break;
@@ -372,7 +372,7 @@ void ManCar::NewSyncReceived(DataMap* d) {
                 cCar->wheelRotation = any_cast<float>((*d)[DataType::WHEEL_ROTATION]);
                 cCar->skidDeg = any_cast<float>((*d)[DataType::SKID_DEG]);
                 cCar->skidRotation = any_cast<float>((*d)[DataType::SKID_ROTATION]);
-                physics->NewSyncReceivedOnline(static_cast<Car*>(car.get()), time);
+                physics->NewSyncReceivedOnline(static_cast<Car*>(car.get()), time, systemOnline->GetGameTime());
                 break;
             }
         }

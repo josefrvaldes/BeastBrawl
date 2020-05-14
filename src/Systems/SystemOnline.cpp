@@ -67,7 +67,7 @@ void SystemOnline::EventLaunchAnimationEnd(DataMap *dataMap) {
 
 void SystemOnline::SendInputs(const vector<Constants::InputTypes> &inputs, float speed, float wheelRotation, float skidDeg, float skidRotation) const {
     // cout << Utils::getISOCurrentTimestampMillis() << "id[" << idOnlineMainCar << "] Enviamos los inputs" << endl;
-    udpClient->SendInputs(inputs, idOnlineMainCar, speed, wheelRotation, skidDeg, skidRotation);
+    udpClient->SendInputs(GetGameTime(), inputs, idOnlineMainCar, speed, wheelRotation, skidDeg, skidRotation);
 }
 
 /*void SystemOnline::SendEndgame() const {
@@ -104,7 +104,7 @@ void SystemOnline::SendSync(ManCar *manCars, ManTotem *manTotem) const {
     //std::cout << "Totem en suelo: " << totemInGround << std::endl;
     //std::cout << "Pos totem: " << posTotem.x << " , " << posTotem.z << std::endl;
     //std::cout << "---------------------------------------" << std::endl;
-    udpClient->SendSync(idOnlineMainCar, cTransCar->position, cTransCar->rotation, cCar->speed, cCar->wheelRotation, cCar->skidDeg, cCar->skidRotation, cPowerUp->typePowerUp, cTotem->active, cTotem->accumulatedTime, totemInGround, posTotem);
+    udpClient->SendSync(GetGameTime(), idOnlineMainCar, cTransCar->position, cTransCar->rotation, cCar->speed, cCar->wheelRotation, cCar->skidDeg, cCar->skidRotation, cPowerUp->typePowerUp, cTotem->active, cTotem->accumulatedTime, totemInGround, posTotem);
 }
 
 void SystemOnline::SendCatchPU(CPowerUp &cPowerUp) const {

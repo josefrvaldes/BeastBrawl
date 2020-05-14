@@ -36,8 +36,8 @@ class UDPClient {
     UDPClient(string host, uint16_t port_);
     ~UDPClient();
 
-    void SendInputs(const vector<Constants::InputTypes>& inputs, uint16_t id, float speed, float wheelRotation, float skidDeg, float skidRotation);
-    void SendSync(uint16_t idOnline, const glm::vec3& posCar, const glm::vec3& rotCar, float speed, float wheelRotation, float skidDeg, float skidRotation, typeCPowerUp typePU, bool haveTotem, int64_t totemTime,
+    void SendInputs(const int64_t gameTime, const vector<Constants::InputTypes>& inputs, uint16_t id, float speed, float wheelRotation, float skidDeg, float skidRotation);
+    void SendSync(const int64_t gameTime, uint16_t idOnline, const glm::vec3& posCar, const glm::vec3& rotCar, float speed, float wheelRotation, float skidDeg, float skidRotation, typeCPowerUp typePU, bool haveTotem, int64_t totemTime,
                   bool totemInGround, const glm::vec3& posTotem);
     void SendCatchPU(uint16_t idOnline, typeCPowerUp typePU);
     void SendClockSync(uint16_t idOnline1, uint16_t idOnline2, int64_t time, float turnOut, uint8_t numMeasurements);
