@@ -424,12 +424,14 @@ const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
 
 
 const uint16_t RenderFacadeClover::FacadeAddStaticObject(Entity* entity) {
+
     //Comprobamos si el objeto debe añadirse a la raiz o a algun nodo padre
     CLNode* father = smgr;
     if(entity->HasComponent(CompType::ParentNodeComp)){
         auto cParentNode = static_cast<CParentNode*>(entity->GetComponent(CompType::ParentNodeComp).get());
         father = device->GetNodeByID(cParentNode->idParentNode);
     } 
+
     auto cTransformable = static_cast<CTransformable*>(entity->GetComponent(CompType::TransformableComp).get());
     auto cId = static_cast<CId*>(entity->GetComponent(CompType::IdComp).get());
     auto cType = static_cast<CType*>(entity->GetComponent(CompType::TypeComp).get());
@@ -444,6 +446,8 @@ const uint16_t RenderFacadeClover::FacadeAddStaticObject(Entity* entity) {
         mesh = resourceManager->GetResourceMesh(meshPath, false);
         mat = resourceManager->GetResourceMaterial(meshPath);
     } 
+
+
     CLNode* node = nullptr;
     // añadimos el node al sceneManager dependiendo del tipo de node que sea
     switch (cType->type) {
@@ -565,28 +569,28 @@ const uint16_t RenderFacadeClover::FacadeAddStaticObject(Entity* entity) {
 
 void RenderFacadeClover::suputamadre(Entity* pepe){
 
-//    auto cId = static_cast<CId*>(pepe->GetComponent(CompType::IdComp).get());
-//    auto node = device->GetNodeByID(cId->id);
-//    auto dim = node->GetBoundingBoxOBB();
-//    auto min = node->GetMinBoxOBB();
-//    auto max = node->GetMaxBoxOBB();
-//    auto pos = node->GetGlobalTranslation();
+    auto cId = static_cast<CId*>(pepe->GetComponent(CompType::IdComp).get());
+    auto node = device->GetNodeByID(cId->id);
+    auto dim = node->GetBoundingBoxOBB();
+    auto min = node->GetMinBoxOBB();
+    auto max = node->GetMaxBoxOBB();
+    auto pos = node->GetGlobalTranslation();
 
-//    auto pos1 = glm::vec3(min.x,min.y,min.z);
-//    auto pos2 = glm::vec3(max.x,min.y,min.z);
-//    Draw3DLine(pos1, pos2, 0.0,0.0,255.0);
-//    auto pos3 = glm::vec3(min.x,max.y,min.z);
-//    Draw3DLine(pos1, pos3, 0.0,0.0,255.0);
-//    auto pos4 = glm::vec3(min.x,min.y,max.z);
-//    Draw3DLine(pos1, pos4, 0.0,0.0,255.0);
+    auto pos1 = glm::vec3(min.x,min.y,min.z);
+    auto pos2 = glm::vec3(max.x,min.y,min.z);
+    Draw3DLine(pos1, pos2, 0.0,0.0,255.0);
+    auto pos3 = glm::vec3(min.x,max.y,min.z);
+    Draw3DLine(pos1, pos3, 0.0,0.0,255.0);
+    auto pos4 = glm::vec3(min.x,min.y,max.z);
+    Draw3DLine(pos1, pos4, 0.0,0.0,255.0);
 
-//    auto pos5 = glm::vec3(max.x,max.y,max.z);
-//    auto pos6 = glm::vec3(min.x,max.y,max.z);
-//    Draw3DLine(pos5, pos6, 0.0,0.0,255.0);
-//    auto pos7 = glm::vec3(max.x,min.y,max.z);
-//    Draw3DLine(pos5, pos7, 0.0,0.0,255.0);
-//    auto pos8 = glm::vec3(max.x,max.y,min.z);
-//    Draw3DLine(pos5, pos8, 0.0,0.0,255.0);
+    auto pos5 = glm::vec3(max.x,max.y,max.z);
+    auto pos6 = glm::vec3(min.x,max.y,max.z);
+    Draw3DLine(pos5, pos6, 0.0,0.0,255.0);
+    auto pos7 = glm::vec3(max.x,min.y,max.z);
+    Draw3DLine(pos5, pos7, 0.0,0.0,255.0);
+    auto pos8 = glm::vec3(max.x,max.y,min.z);
+    Draw3DLine(pos5, pos8, 0.0,0.0,255.0);
 
 
 
@@ -624,12 +628,12 @@ void RenderFacadeClover::suputamadre(Entity* pepe){
 //    auto pos8 = glm::vec3(pos.x-dim,pos.y+dim,pos.z+dim);
 //    Draw3DLine(pos5, pos8, 0.0,0.0,255.0);
 
-//    Draw3DLine(pos3, pos8, 0.0,0.0,255.0);
-//    Draw3DLine(pos4, pos7, 0.0,0.0,255.0);
-//    Draw3DLine(pos2, pos7, 0.0,0.0,255.0);
-//    Draw3DLine(pos6, pos3, 0.0,0.0,255.0);
-//    Draw3DLine(pos6, pos4, 0.0,0.0,255.0);
-//    Draw3DLine(pos2, pos8, 0.0,0.0,255.0);
+    Draw3DLine(pos3, pos8, 0.0,0.0,255.0);
+    Draw3DLine(pos4, pos7, 0.0,0.0,255.0);
+    Draw3DLine(pos2, pos7, 0.0,0.0,255.0);
+    Draw3DLine(pos6, pos3, 0.0,0.0,255.0);
+    Draw3DLine(pos6, pos4, 0.0,0.0,255.0);
+    Draw3DLine(pos2, pos8, 0.0,0.0,255.0);
 }
 
 

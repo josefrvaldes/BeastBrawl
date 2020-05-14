@@ -70,9 +70,18 @@ class CLNode{
         //! Devuelve el ID del shader utilizando
         //! @returns shaderProgramID ID de OpenGL para el shader
         GLuint GetShaderProgramID() const      { return shaderProgramID;}
+        //! Devuelve la bounding box del nodo AABB
+        //! @returns dimensionsBoundingBox.x Dimensiones del objeto
+        float GetBoundingBoxAABB() const           { return dimensionsBoundingBox.x;}
         //! Devuelve la bounding box del nodo OBB
         //! @returns dimensionsBoundingBox Dimensiones del objeto
         glm::vec3 GetBoundingBoxOBB() const           { return dimensionsBoundingBox;}
+        //! Devuelve la bounding box del nodo OBB
+        //! @returns dimensionsBoundingBox Dimensiones del objeto
+        glm::vec3 GetMinBoxOBB() const           { return extremeMinMesh;}
+        //! Devuelve la bounding box del nodo OBB
+        //! @returns dimensionsBoundingBox Dimensiones del objeto
+        glm::vec3 GetMaxBoxOBB() const           { return extremeMaxMesh;}
         //! Devuelve la traslacion global del nodo
         //! @returns traslation Traslacion global del nodo
         glm::vec3 GetGlobalTranslation() const;

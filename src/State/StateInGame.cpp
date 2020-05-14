@@ -61,10 +61,10 @@ void StateInGame::AddElementsToRender() {
             renderEngine->FacadeAddObject(cars.get());
     }
 
+    // TODO: LOS SUELOS CON FRUSTUM
     //renderEngine->FacadeAddObject(ground.get());  //Anyadimos el suelo
     for(const auto& currentPartGround : manGameRules->GetGrounds()){
-        renderEngine->FacadeAddObject(currentPartGround.get());
-
+        renderEngine->FacadeAddStaticObject(currentPartGround.get());
     }
 
     //Añadimos todos los power ups
@@ -420,7 +420,7 @@ void StateInGame::Render() {
 
 
     //renderEngine->suputamadre(manCars->GetCar().get());
-    //renderEngine->suputamadre(manGameRules->GetGrounds()[0].get());
+    renderEngine->suputamadre(manGameRules->GetGrounds()[0].get());
 
     if (Constants::CLIPPING_OCTREE && octreeScene.get())
         octreeScene->Draw(renderEngine);
