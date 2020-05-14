@@ -207,6 +207,7 @@ void ManPowerUp::DeletePowerUps(){
             //VEC3_POS
             shared_ptr<DataMap> data = make_shared<DataMap>();
             (*data)[VEC3_POS] = cTransformable->position;
+            (*data)[TYPE] = cTypePU->typePowerUp;
             EventManager::GetInstance().AddEventMulti(Event{EventType::CREATE_PARTICLES_COLLISION_POWERUP, data});
 
 

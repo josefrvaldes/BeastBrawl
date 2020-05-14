@@ -1,6 +1,7 @@
 #include "ManParticleSystem.h"
 
 #include <Components/CParentNode.h>
+#include <Components/CPowerUp.h>
 #include <Components/CId.h>
 #include <Facade/Render/RenderFacadeManager.h>
 #include <iostream>
@@ -53,11 +54,29 @@ void ManParticleSystem::CreateParticlePowerUpCollision(DataMap* data){
     auto renderEngine = RenderFacadeManager::GetInstance()->GetRenderFacade();
 
     auto position = any_cast<glm::vec3>((*data)[VEC3_POS]);
+    auto typePU = any_cast<typeCPowerUp>((*data)[TYPE]);
     vector<string> texturePs2;
-    texturePs2.push_back("media/particleRedStar.png");
-    texturePs2.push_back("media/particleYellowStar.png");
-    texturePs2.push_back("media/particleRedTriangle.png");
-    texturePs2.push_back("media/particleYellowTriangle.png");
+    switch (typePU) {
+        case typeCPowerUp::MelonMolon:
+            texturePs2.push_back("media/particleTriangleBlack.png");
+            texturePs2.push_back("media/particleTriangleGreen.png");
+            texturePs2.push_back("media/particleStarBlack.png");
+            texturePs2.push_back("media/particleStarGreen.png");
+            break;
+        case typeCPowerUp::TeleBanana:
+            texturePs2.push_back("media/particleYellowTriangle.png");
+            texturePs2.push_back("media/particleRedStar.png");
+            texturePs2.push_back("media/particleTriangleGrey.png");
+            break;
+        
+        case typeCPowerUp::PudinDeFrambuesa:
+            texturePs2.push_back("media/particleStarMarron.png");
+            texturePs2.push_back("media/particleYellowStar.png");
+            texturePs2.push_back("media/particleRedTriangle.png");
+            texturePs2.push_back("media/particleYellowTriangle.png");
+            break;
+    }
+
     CreateParticleSystem(-1,position,15,glm::vec3(400.0f,400.0f,400.0f),texturePs2,10,10,100,15,180,glm::vec3(0.0f,0.0f,0.0f),glm::vec3(0.0f,0.0f,0.0f),5, 0x1,false,true);
 
     renderEngine->FacadeAddObject(entities[entities.size()-1].get());
