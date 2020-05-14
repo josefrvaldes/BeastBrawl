@@ -12,7 +12,7 @@
 
 StateInGameMulti::StateInGameMulti(uint16_t idOnline_, const vector<uint16_t> idsEnemies_, const vector<uint8_t> characters_) : StateInGame() {
     
-    // Jose va a cambiar esto de momento esta asi para que vaya el juego
+    // Reinicializar elementos
     RenderFacadeManager::GetInstance()->GetRenderFacade()->CleanScene();
     RenderFacadeManager::GetInstance()->GetRenderFacade()->SetNumEnemyCars(0);
     auto cId = make_shared<CId>();

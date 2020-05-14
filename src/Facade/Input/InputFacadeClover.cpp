@@ -995,7 +995,10 @@ void InputFacadeClover::CheckInputEndRace(int& input, int maxInput, bool menu){
                         }
                     }
                     case 1: {
-                        EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_SELECT_CHARACTER});
+                        if (multiplayer) 
+                            EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_LOBBYMULTI});
+                        else
+                            EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_SELECT_CHARACTER});
                         //TODO: ¿Deberia resetear al volver al comenzar o al volver al menú?
                         break;
                     }
