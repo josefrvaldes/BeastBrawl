@@ -696,12 +696,19 @@ void RenderFacadeClover::FacadeSetWindowSize(DataMap* d) {
  * Cargamos lo necesario para la partida.
  */
 void RenderFacadeClover::FacadeInitResources(){
+    
     FacadeBeginScene();
+
+    auto w = device->GetScreenWidth();
+    auto scale = 0.5f;
+    if ( w > 1600 ) { scale = 0.75f; }
+    else if (w < 600 ) { scale = 0.25f; }
+
     std::string file = "media/menu/loading_screen.png";
     device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
 
     int indx = Utils::getRandomInt(0,tipsTexts.size()-1);
-    device->RenderText2D(tipsTexts.at(indx), device->GetScreenWidth()/2 - 100.0f, device->GetScreenHeight()/2,0.5f,0.5f,glm::vec3(1.0f,1.0f,1.0f));
+    device->RenderText2D(tipsTexts.at(indx), device->GetScreenWidth()/2 - 100.0f*scale, device->GetScreenHeight()/2,0.5f, scale,glm::vec3(1.0f,1.0f,1.0f));
     FacadeEndScene();
 
     //Cargamos todas las mallas
@@ -1084,7 +1091,6 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
     auto widthMM = 0;           auto heightMM = 0;
     auto posXMiniMap = 0;       auto posYMiniMap = 0;
 
-
     if ((showTableMinimap == Constants::ShowTableMinimap::BOTH || showTableMinimap == Constants::ShowTableMinimap::ONLYMAP)) {
         cadena = "media/Minimapa240v2.png";
         auto minimapTexture = resourceManager->GetResourceTexture(cadena);
@@ -1102,9 +1108,9 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
     if(!powerUpAnimation->GetFinished() && currentPowerUp != 0){
         //resourceManager->DeleteResourceTexture(powerUpAnimation->GetCurrentPath());
         powerUpAnimation->Update();
-        device->DrawImage2D(25.0f, 25.0f, 150.0f, 150.0f, 0.1f, powerUpAnimation->GetCurrentPath(), true);
+        device->DrawImage2D(50.0f, 50.0f, 150.0f, 150.0f, 0.1f, powerUpAnimation->GetCurrentPath(), true);
     }else{
-        device->DrawImage2D(25.0f, 25.0f, 150.0f, 150.0f, 0.1f ,powerUps[currentPowerUp], true);
+        device->DrawImage2D(50.0f, 50.0f, 150.0f, 150.0f, 0.1f ,powerUps[currentPowerUp], true);
     }
 
     // TABLA TIEMPOS
@@ -1115,6 +1121,7 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
         auto seconds = GameValues::GetInstance()->GetSeconds();
         uint8_t positionR = 1;
         int64_t antTime = -1;
+        auto rankingSize = (ranking.size() - 1) * 45.0f;
 
         for (auto it = ranking.begin(); it != ranking.end(); ++it) {    
 
@@ -1129,10 +1136,11 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
             }
 
             cadena = "media/cuadrado.png";
-            device->DrawImage2D(w - 200.0f, 150.0f + j*45.0f, 1.0, 0.9f, cadena, true);
+            //device->DrawImage2D(w - 200.0f, 150.0f + j*45.0f, 1.0, 0.9f, cadena, true);
+            device->DrawImage2D(50.0f, h - 85.0f - rankingSize + j*45.0f, 1.0, 0.9f, cadena, true);
             
-            
-            device->DrawImage2D(w - 160.0f, 155.0f + j*45.0f, 0.4f, 0.1f*j+0.1f, sprite, true);  //CARITA
+            //device->DrawImage2D(w - 160.0f, 155.0f + j*45.0f, 0.4f, 0.1f*j+0.1f, sprite, true);  //CARITA
+            device->DrawImage2D(95.0f, h - 80.0f - rankingSize + j*45.0f, 0.4f, 0.7f, sprite, true);  //CARITA
 
             auto it2 = seconds.find(it->first);
             if (it2 != seconds.end()) {
@@ -1141,11 +1149,13 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
                     ++positionR;
                 }
                 cadena = std::to_string(positionR) + ".";
-                device->RenderText2D(cadena, w - 190.0f, h - 180.0f - 45.0f*j, 0.1f*j+0.1f, 0.6f, glm::vec3(255.0f,255.0f,255.0f));
+                //device->RenderText2D(cadena, w - 190.0f, h - 180.0f - 45.0f*j, 0.1f*j+0.1f, 0.6f, glm::vec3(255.0f,255.0f,255.0f));
+                device->RenderText2D(cadena, 60.0f, 55.0f + rankingSize - j*45.0f, 0.5f, 0.6f, glm::vec3(255.0f,255.0f,255.0f));
 
                 antTime = it2->second;
                 cadena = std::to_string(antTime);
-                device->RenderText2D(cadena, w - 110.0f, h - 180.0f - 45.0f*j, 0.1f*j+0.1f, 0.6f, color);
+                //device->RenderText2D(cadena, w - 110.0f, h - 180.0f - 45.0f*j, 0.1f*j+0.1f, 0.6f, color);
+                device->RenderText2D(cadena, 145.0f, 55.0f + rankingSize - j*45.0f, 0.5f, 0.6f, color);
             }
             ++j;
         }
@@ -1193,28 +1203,6 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
                 //break;
             
             }
-
-            //TABLA DE TIEMPOS
-            /*if(inputShowTable && cTotem) {
-                cadena = std::to_string(positionR) + ".";
-                device->RenderText2D(cadena, w - 190.0f, h - 180.0f - 45.0f*j, 0.1f*j+0.1f, 0.5, glm::vec3(255.0f,255.0f,255.0f));
-
-                auto posRanking = cTotem->positionRanking - 1;
-                device->DrawImage2D(w - 160.0f, 155.0f + posRanking*45.0f, 0.3, 0.1f*j+0.1f, sprite, true);
-
-                int64_t actualTime = cTotem->SEGUNDOS - cTotem->accumulatedTime/1000;
-                auto time = std::to_string( actualTime );
-                glm::vec3 color = glm::vec3(255.0f,255.0f,255.0f);
-                if (cTotem->active) { color = glm::vec3(255.0f,0.0f,0.0f); };
-                device->RenderText2D(time, w - 110.0f, h - 180.0f - 45.0f*posRanking, 0.1f*j+0.1f, 0.5, color);
-
-                if (antTime != -1 && antTime != actualTime) {
-                    ++positionR;
-                }
-                antTime = actualTime;
-
-            }
-            ++j;*/
 
             // MINIMAPA
             if ( (showTableMinimap == Constants::ShowTableMinimap::BOTH || showTableMinimap == Constants::ShowTableMinimap::ONLYMAP) && manGR && cTrans) {
@@ -1288,9 +1276,9 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
                 case (uint16_t)mainCharacter::OCTOPUS:  cadena = "media/hudOctopus.png";        break;
                 default: cout << "+++++++ No entiendo este personaje para el evento" << endl;   break;
             }
-            device->DrawImage2D(50.0f, h - 100.0f, 0.7, 0.1f, cadena, true);
+            device->DrawImage2D(w/2 - 175.0f, 170.0f, 0.7f, 0.1f, cadena, true);
             cadena = cEventHUD->spriteTypeEvent;
-            device->DrawImage2D(125.0f, h - 100.0f, 0.7, 0.1f, cadena, true);
+            device->DrawImage2D(w/2 - 100.0f, 170.0f, 0.7f, 0.1f, cadena, true);
         }
     }
 
@@ -1373,13 +1361,17 @@ void RenderFacadeClover::FacadeDrawSelectCharacter() {
 void RenderFacadeClover::FacadeDrawGameOptions() {
 
     std::string name = "";
+    auto w = device->GetScreenWidth();
+    auto h = device->GetScreenHeight();
 
     std::string file = "media/menu/settings_match_bg.png";
-    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.9f, file, true);
+    device->DrawImage2D(0.0f, 0.0f, w, h, 0.9f, file, true);
     
-    std::string files[2] = {
+    std::string files[4] = {
         "media/menu/duration_match_",
-        "media/menu/duration_totem_"
+        "media/menu/duration_totem_",
+        "media/menu/players_",
+        "media/menu/difficulty_"
     };
 
     std::string op1[4] = {"2min", "3min", "4min", "5min" };
@@ -1388,69 +1380,74 @@ void RenderFacadeClover::FacadeDrawGameOptions() {
     file = files[0] + op1[inputGO[0]];
     if (option == 0) { file += "_hover"; }
     file += ".png";
-    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.8f, file, true);
+    device->DrawImage2D(0.0f, 0.0f, w, h, 0.8f, file, true);
     file = files[1] + op2[inputGO[1]];
     if (option == 1) { file += "_hover"; }
     file += ".png";
-    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.7f, file, true);
+    device->DrawImage2D(0.0f, 0.0f, w, h, 0.7f, file, true);
 
-    std::string op3[4] = { "media/3j", "media/4j", "media/5j", "media/6j"};
-    std::string op4[3] = { "media/dFacil", "media/dNormal", "media/dDificil" };
+    std::string op3[4] = { "3", "4", "5", "6"};
+    std::string op4[3] = { "easy", "normal", "hard" };
 
-    file = op3[inputGO[2]];
+    file = files[2] + op3[inputGO[2]];
     if (option == 2 ) { file += "_hover"; }
     file += ".png";
-    device->DrawImage2D(300.0f, device->GetScreenHeight() - 100.0f, 1.0f, 0.6f, file, true );
+    device->DrawImage2D(0.0f, 0.0f, w, h, 0.6f, file, true );
 
-    file = op4[inputGO[3]];
+    file = files[3] + op4[inputGO[3]];
     if (option == 3 ) { file += "_hover"; }
     file += ".png";
-    device->DrawImage2D(600.0f, device->GetScreenHeight() - 100.0f, 1.0f, 0.6f, file, true );
+    device->DrawImage2D(0.0f, 0.0f, w, h, 0.5f, file, true );
 
 }
 
 void RenderFacadeClover::FacadeDrawTournamentOptions() {
+    
     std::string name = "";
+    auto w = device->GetScreenWidth();
+    auto h = device->GetScreenHeight();
 
     std::string file = "media/menu/settings_match_bg.png";
-    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.9f, file, true);
+    device->DrawImage2D(0.0f, 0.0f, w, h, 0.9f, file, true);
     
-    std::string files[3] = {
-        "media/menu/duration_match_",
-        "media/menu/duration_totem_",
-        "media/menu/numBattles_"
+    std::string files[5] = {
+        "media/menu/tournament/t_duration_match_",
+        "media/menu/tournament/t_duration_totem_",
+        "media/menu/tournament/t_players_",
+        "media/menu/tournament/t_difficulty_",
+        "media/menu/tournament/t_matches_"
     };
 
     std::string op1[4] = {"2min", "3min", "4min", "5min" };
     std::string op2[3] = {"30s", "45s", "1min"};
-    std::string op3[4] = { "media/3j", "media/4j", "media/5j", "media/6j"};
-    std::string op4[3] = { "media/dFacil", "media/dNormal", "media/dDificil" };
+    std::string op3[4] = { "3", "4", "5", "6"};
+    std::string op4[3] = { "easy", "normal", "hard" };
     std::string op5[3] = {"3", "4", "5"};
 
     file = files[0] + op1[inputTO[0]];
     if (optionTO == 0) { file += "_hover"; }
     file += ".png";
-    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.8f, file, true);
+    device->DrawImage2D(0.0f, 0.0f, w, h, 0.8f, file, true);
 
     file = files[1] + op2[inputTO[1]];
     if (optionTO == 1) { file += "_hover"; }
     file += ".png";
-    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.7f, file, true);
+    device->DrawImage2D(0.0f, 0.0f, w, h, 0.7f, file, true);
 
-    file = op3[inputTO[2]];
+    file = files[2] + op3[inputTO[2]];
     if (optionTO == 2 ) { file += "_hover"; }
     file += ".png";
-    device->DrawImage2D(300.0f, device->GetScreenHeight() - 100.0f, 1.0f, 0.6f, file, true );
+    device->DrawImage2D(0.0f, 0.0f, w, h, 0.6f, file, true );
     
-    file = op4[inputTO[3]];
+    file = files[3] + op4[inputTO[3]];
     if (optionTO == 3 ) { file += "_hover"; }
     file += ".png";
-    device->DrawImage2D(600.0f, device->GetScreenHeight() - 100.0f, 1.0f, 0.5f, file, true );
+    device->DrawImage2D(0.0f, 0.0f, w, h, 0.5f, file, true );
 
-    file = files[2] + op5[inputTO[4]];
+    file = files[4] + op5[inputTO[4]];
     if (optionTO == 4) { file += "_hover"; }
     file += ".png";
-    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.4f, file, true);
+    device->DrawImage2D(0.0f, 0.0f, w, h, 0.4f, file, true);
 
 
     //file = files[0] + op1[inputTO[0]];
@@ -1500,8 +1497,8 @@ void RenderFacadeClover::FacadeDrawEndRace() {
     auto secondsRank = GameValues::GetInstance()->GetSeconds();
     uint8_t i = 1;
     auto posX = w/2 - 541*scale;
-    auto posY = h/2 - 50.0f*scale - rank.size()*50.0f*scale;
-    auto posYText = h/2 + rank.size()*50.0f*scale - 15.0f*scale;
+    auto posY = h/2 - rank.size()*50.0f*scale;
+    auto posYText = h/2 + rank.size()*50.0f*scale - 65.0f*scale;
     auto antTime = -1;
     auto positionPoints = 0;
     for(auto it = rank.begin(); it != rank.end(); ++it) {
@@ -1585,8 +1582,8 @@ void RenderFacadeClover::FacadeDrawEndTournament() {
     auto posPoints = GameValues::GetInstance()->GetPosPoints();
     uint8_t i = 1;
     auto posX = w/2 - 541*scale;
-    auto posY = h/2 - 50.0f*scale - rank.size()*50.0f*scale;
-    auto posYText = h/2 + rank.size()*50.0f*scale - 15.0f*scale;
+    auto posY = h/2 - rank.size()*50.0f*scale;
+    auto posYText = h/2 + rank.size()*50.0f*scale - 65.0f*scale;
 
     if(menuET == 0){
         // numCarreras
