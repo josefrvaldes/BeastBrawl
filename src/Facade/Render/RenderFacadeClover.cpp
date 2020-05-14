@@ -1501,6 +1501,10 @@ void RenderFacadeClover::FacadeDrawEndRace() {
     auto posYText = h/2 + rank.size()*50.0f*scale - 65.0f*scale;
     auto antTime = -1;
     auto positionPoints = 0;
+
+    file = "media/menu/finish_menu_time.png";
+    device->DrawImage2D(w/2 + 415.0f*scale, posY, 0.7f*scale, 0.8f, file, true);
+    
     for(auto it = rank.begin(); it != rank.end(); ++it) {
 
         if(i>numShowPanel) { break; }
@@ -1514,7 +1518,7 @@ void RenderFacadeClover::FacadeDrawEndRace() {
 
         file = "media/menu/position";
         file += std::to_string(positionPoints+1) + ".png";
-        device->DrawImage2D(posX, posY + (i*100.0f)*scale, 1.0*scale, 0.8f, file, true);
+        device->DrawImage2D(posX, posY + (i*100.0f)*scale, 1.0*scale, 0.7f, file, true);
         switch (it->second) {
             case (uint16_t)mainCharacter::PENGUIN:  file = "media/hudPenguin.png";      name = "Mr Penguin";            break;
             case (uint16_t)mainCharacter::TIGER:    file = "media/hudTiger.png";        name = "Mrs Baxter";            break;
@@ -1524,8 +1528,8 @@ void RenderFacadeClover::FacadeDrawEndRace() {
             case (uint16_t)mainCharacter::OCTOPUS:  file = "media/hudOctopus.png";      name = "Ciber Octopus";         break;
             default: cout << "+++++++ No entiendo este personaje para el evento" << endl;   break;
         }
-        device->DrawImage2D(posX + 190.0f*scale, posY + (i*100.0f)*scale + 5.0f*scale, 1.0f*scale, 0.7f, file, true);  //CARITA
-        device->RenderText2D(name, posX + 275.0f*scale, posYText - (i*100.0f)*scale, 0.65f, 1.0*scale, glm::vec3(255.0f, 255.0f, 255.0f));
+        device->DrawImage2D(posX + 190.0f*scale, posY + (i*100.0f)*scale + 5.0f*scale, 1.0f*scale, 0.6f, file, true);  //CARITA
+        device->RenderText2D(name, posX + 275.0f*scale, posYText - (i*100.0f)*scale, 0.5f, 1.0*scale, glm::vec3(255.0f, 255.0f, 255.0f));
 
         
         if((positionPoints+1) == 1) {
@@ -1537,7 +1541,7 @@ void RenderFacadeClover::FacadeDrawEndRace() {
         if (it2 != secondsRank.end()){
             if (it2->second < 10) { file = "0" + std::to_string(it2->second); }
             else { file = std::to_string(it2->second); }
-            device->RenderText2D(file, posX + 950.0f*scale, posYText - (i*100.0f)*scale, 0.6f, 1.25*scale, glm::vec3(255.0f,255.0f,255.0f));
+            device->RenderText2D(file, posX + 950.0f*scale, posYText - (i*100.0f)*scale, 0.4f, 1.25*scale, glm::vec3(255.0f,255.0f,255.0f));
         }
 
         ++i;
@@ -1588,7 +1592,11 @@ void RenderFacadeClover::FacadeDrawEndTournament() {
     if(menuET == 0){
         // numCarreras
         file = std::to_string(GameValues::GetInstance()->GetActualBattle()) + "/" + std::to_string(GameValues::GetInstance()->GetNumBattles());
-        device->RenderText2D(file, posX + 950.0f*scale, posYText - (-100)*scale, 0.6f, 1.25*scale, glm::vec3(0.0f,0.0f,0.0f));
+        device->RenderText2D(file, posX + 950.0f*scale, posYText - (-100)*scale, 0.8f, 1.25*scale, glm::vec3(0.0f,0.0f,0.0f));
+
+
+        file = "media/menu/finish_menu_time.png";
+        device->DrawImage2D(w/2 + 415.0f*scale, posY, 0.7f*scale, 0.7f, file, true);
 
         auto antTime = -1;
         auto positionPoints = 0;
