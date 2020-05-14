@@ -38,6 +38,7 @@ class RenderFacadeClover : public RenderFacade {
       RenderFacadeClover();
       ~RenderFacadeClover() override;
       const uint16_t FacadeAddObject(Entity*) override;
+      const uint16_t FacadeAddStaticObject(Entity*) override;
       void FacadeAddSphereOnObject(Entity* entity) override;
       const uint16_t FacadeAddObjectCar(Entity*) override;
       const uint16_t FacadeAddObjectTotem(Entity* entity) override;

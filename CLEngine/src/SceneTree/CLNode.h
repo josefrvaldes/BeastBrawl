@@ -32,6 +32,7 @@
 using namespace std;
 
 namespace CLE{
+    enum typeFrustum{ OBB = 0, AABB = 1};
 //! Clase Nodo de la escena
 //! En la escena gestionaremos todo mediante nodos de manera recursiva
 //! aqui puedes crear nodos y asignarles cualquier tipo de entidad disponible
@@ -69,9 +70,9 @@ class CLNode{
         //! Devuelve el ID del shader utilizando
         //! @returns shaderProgramID ID de OpenGL para el shader
         GLuint GetShaderProgramID() const      { return shaderProgramID;}
-        //! Devuelve la bounding box del nodo
+        //! Devuelve la bounding box del nodo OBB
         //! @returns dimensionsBoundingBox Dimensiones del objeto
-        float GetBoundingBox() const           { return dimensionsBoundingBox;}
+        glm::vec3 GetBoundingBoxOBB() const           { return dimensionsBoundingBox;}
         //! Devuelve la traslacion global del nodo
         //! @returns traslation Traslacion global del nodo
         glm::vec3 GetGlobalTranslation() const;
@@ -135,6 +136,7 @@ class CLNode{
         glm::mat4 CalculateTransformationMatrix();
         //! Calcula la bounding box del objeto
         float CalculateBoundingBox();
+        void CalculateBoundingBoxOBB();
 
 
         //! Dibuja la escena
@@ -173,9 +175,13 @@ class CLNode{
 
 
         // BOUNDING BOX
-        //glm::vec3 extremeMinMesh    {glm::vec3(0.0,0.0,0.0)}; // definimos el vertice mayor de la malla para el BoundingBpx
-        //glm::vec3 extremeMaxMesh    {glm::vec3(0.0,0.0,0.0)}; // definimos el vertice menos de la malla para el BoundingBox
-        float dimensionsBoundingBox {0.0}; // width , height, depht
+        glm::vec3 extremeMinMesh    {glm::vec3(0.0,0.0,0.0)}; // definimos el vertice mayor de la malla para el BoundingBpx
+        glm::vec3 extremeMaxMesh    {glm::vec3(0.0,0.0,0.0)}; // definimos el vertice menos de la malla para el BoundingBox
+        int frustum_ { typeFrustum::AABB }; // AABB por defecto
+        glm::vec3 dimensionsBoundingBox { glm::vec3(0.0,0.0,0.0) };
+        //float dimensionsBoundingBox {0.0}; // width , height, depht
+
+
         glm::vec3 RotatePointAroundCenter(const glm::vec3& point_ , const glm::vec3& center, const glm::vec3& rot) const;
         glm::vec3 TranslatePointAroundCenter(const glm::vec3& point_ , const glm::vec3& center, const glm::vec3& trans) const;
 

@@ -30,6 +30,7 @@ class CLFrustum{
 		Visibility IsInside(const glm::vec3& point) const;
 		//Visibility IsInside(const Box3D& box) const;
         Visibility IsInside(const glm::vec3& point, const float size ) const;
+        Visibility IsInside(const glm::vec3& minPoint, const glm::vec3& maxpoint ) const;
 
         glm::vec4 GetPlane(Plane_enum plane) const {
         	return glm::vec4(m_data[plane][A], m_data[plane][B], m_data[plane][C], m_data[plane][D]);

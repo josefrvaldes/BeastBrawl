@@ -97,9 +97,7 @@ CLFrustum::Visibility CLFrustum::IsInside(const glm::vec3& point) const
 
 
 
-CLFrustum::Visibility CLFrustum::IsInside( const glm::vec3& point, const float size ) const
-{
-
+CLFrustum::Visibility CLFrustum::IsInside( const glm::vec3& point, const float size ) const{
 	for(int i = 0; i < 6; i++ )
 	{
 		if(m_data[i][A] * (point.x - size) + m_data[i][B] * (point.y - size) + m_data[i][C] * (point.z - size) + m_data[i][D] > 0)
@@ -122,12 +120,35 @@ CLFrustum::Visibility CLFrustum::IsInside( const glm::vec3& point, const float s
 		// If we get here, it isn't in the frustum
 		return Invisible;
 	}
-
 	return Completly;
 }
 
 
+CLFrustum::Visibility CLFrustum::IsInside( const glm::vec3& minPoint, const glm::vec3& maxPoint ) const{
+	for(int i = 0; i < 6; i++ )
+	{
+		if(m_data[i][A] * minPoint.x + m_data[i][B] * minPoint.y + m_data[i][C] * -minPoint.z + m_data[i][D] > 0)
+		   continue;
+		if(m_data[i][A] * maxPoint.x + m_data[i][B] * minPoint.y + m_data[i][C] * -minPoint.z + m_data[i][D] > 0)
+		   continue;
+		if(m_data[i][A] * minPoint.x + m_data[i][B] * maxPoint.y + m_data[i][C] * -minPoint.z + m_data[i][D] > 0)
+		   continue;
+		if(m_data[i][A] * maxPoint.x + m_data[i][B] * maxPoint.y + m_data[i][C] * -minPoint.z + m_data[i][D] > 0)
+		   continue;
+		if(m_data[i][A] * minPoint.x + m_data[i][B] * minPoint.y + m_data[i][C] * -maxPoint.z + m_data[i][D] > 0)
+		   continue;
+		if(m_data[i][A] * maxPoint.x + m_data[i][B] * minPoint.y + m_data[i][C] * -maxPoint.z + m_data[i][D] > 0)
+		   continue;
+		if(m_data[i][A] * minPoint.x + m_data[i][B] * maxPoint.y + m_data[i][C] * -maxPoint.z + m_data[i][D] > 0)
+		   continue;
+		if(m_data[i][A] * maxPoint.x + m_data[i][B] * maxPoint.y + m_data[i][C] * -maxPoint.z + m_data[i][D] > 0)
+		   continue;
 
+		// If we get here, it isn't in the frustum
+		return Invisible;
+	}
+	return Completly;
+}
 
 
 

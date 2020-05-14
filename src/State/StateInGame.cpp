@@ -419,7 +419,7 @@ void StateInGame::Render() {
     renderEngine->FacadeDrawAll();
 
 
-    renderEngine->suputamadre(manCars->GetCar().get());
+    //renderEngine->suputamadre(manCars->GetCar().get());
     //renderEngine->suputamadre(manGameRules->GetGrounds()[0].get());
 
     if (Constants::CLIPPING_OCTREE && octreeScene.get())
