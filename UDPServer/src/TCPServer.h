@@ -22,7 +22,7 @@ class TCPServer{
     void Close();
     void SendStartGame();
     void SendCharsSelected();
-    void SendCharsSelectedToOther(tcp::endpoint _endpoint);
+    void SendCharsSelectedToOther(uint16_t idConnection);
 
    private:
     
@@ -34,5 +34,5 @@ class TCPServer{
     UDPServer &udpServer;
 
     vector<TCPConnection::pointer> connections;
-    std::vector<Player> players;
+    std::vector<std::shared_ptr<Player>> players;
 };

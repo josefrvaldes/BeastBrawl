@@ -11,7 +11,7 @@ struct Player {
    public:
     Player() = default;
     ~Player() = default;
-    void setId(uint16_t _id);
+    
 
     uint16_t id{nextId++};
     uint8_t character{0};
@@ -39,6 +39,6 @@ struct Player {
     bool waitingForCountdown {false};
 
 
-    static uint16_t nextId;
+    inline static uint16_t nextId{0};
    private:
 };

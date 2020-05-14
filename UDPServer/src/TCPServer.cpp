@@ -2,6 +2,7 @@
 
 #include <boost/asio/placeholders.hpp>
 #include <boost/bind.hpp>
+#include <memory>
 #include "../../src/Constants.h"
 #include "../src/Systems/Utils.h"
 #include "Server.h"
@@ -47,11 +48,13 @@ void TCPServer::HandleAccept(TCPConnection::pointer new_connection, const boost:
         
             // Comprobaciones para ver si existe el player
             connections.push_back(new_connection);
-            Player p;
-            p.endpointTCP = new_connection->socket().remote_endpoint();
-            p.character = Constants::ANY_CHARACTER;
+            std::shared_ptr<Player> p = make_shared<Player>();
+            p->endpointTCP = new_connection->socket().remote_endpoint();
+            p->character = Constants::ANY_CHARACTER;
             // new_connection->currentPlayer = &p;
             players.push_back(p);
+            new_connection->player = p;
+            cout << "Se ha conectado un nuevo jugador, ahora son " << players.size() << endl;
 
         }else{
             std::cout << "Juego empezado: " << Server::GAME_STARTED  << std::endl;
@@ -89,10 +92,10 @@ void TCPServer::SendStartGame() {
         vector<uint8_t> charactersToSend;
         for (auto currentPlayerSub : connections) {
             if (currentPlayer == currentPlayerSub) {
-                idPlayer = players[posVector].id + 1;
+                idPlayer = players[posVector]->id + 1;
             } else {
-                idsEnemies.push_back(players[posVector].id + 1);
-                charactersToSend.push_back(players[posVector].character);
+                idsEnemies.push_back(players[posVector]->id + 1);
+                charactersToSend.push_back(players[posVector]->character);
             }
             posVector++;
         }
@@ -120,8 +123,8 @@ void TCPServer::SendStartGame() {
 void TCPServer::SendCharsSelected() {
     vector<uint8_t> charsSelected;
     for (const auto& currentPlayer : players) {
-        if(currentPlayer.character != Constants::ANY_CHARACTER)
-            charsSelected.emplace_back(currentPlayer.character);
+        if(currentPlayer->character != Constants::ANY_CHARACTER)
+            charsSelected.emplace_back(currentPlayer->character);
     }
 
     std::shared_ptr<unsigned char[]> buff(new unsigned char[Constants::ONLINE_BUFFER_SIZE]);
@@ -140,11 +143,11 @@ void TCPServer::SendCharsSelected() {
 
 
 
-void TCPServer::SendCharsSelectedToOther(tcp::endpoint _endpoint){
+void TCPServer::SendCharsSelectedToOther(uint16_t idConnection){
     vector<uint8_t> charsSelected;
     for (const auto& currentPlayer : players) {
-        if(currentPlayer.character != Constants::ANY_CHARACTER)
-            charsSelected.emplace_back(currentPlayer.character);
+        if(currentPlayer->character != Constants::ANY_CHARACTER)
+            charsSelected.emplace_back(currentPlayer->character);
     }
 
     std::shared_ptr<unsigned char[]> buff(new unsigned char[Constants::ONLINE_BUFFER_SIZE]);
@@ -157,7 +160,7 @@ void TCPServer::SendCharsSelectedToOther(tcp::endpoint _endpoint){
     Serialization::SerializeVector(buff.get(), charsSelected, currentBuffSize);
 
     for (const auto& currentPlayer : connections) {
-        if(_endpoint != currentPlayer->socket().remote_endpoint())
+        if(idConnection != currentPlayer->ID)
             currentPlayer->SendCharsSel(buff, currentBuffSize);
     }
 }
