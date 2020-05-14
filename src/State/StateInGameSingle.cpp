@@ -152,11 +152,11 @@ void StateInGameSingle::Render() {
     auto end = std::chrono::system_clock::now();
     int elapsed_millisecons = std::chrono::duration_cast<std::chrono::nanoseconds>
                              (end-timeStart).count();
-    cout << "TIEMO ACTUAL RENDER:  " << elapsed_millisecons/1000000 << endl;
+    //cout << "TIEMO ACTUAL RENDER:  " << elapsed_millisecons/1000000 << endl;
     if(accumulatedTimeRENDER < elapsed_millisecons && elapsed_millisecons/1000000 < 30.0){
         accumulatedTimeRENDER = elapsed_millisecons;
     }
-    cout << "TIEMO MAXIMO RENDER:  " << accumulatedTimeRENDER/1000000 << endl;
+    //cout << "TIEMO MAXIMO RENDER:  " << accumulatedTimeRENDER/1000000 << endl;
 }
 
 void StateInGameSingle::InitializeCLPhysics(ManCar &manCars, ManBoundingWall &manWall, ManBoundingOBB &manOBB, ManBoundingGround &manGround, ManPowerUp &manPowerUp, ManNavMesh &manNavMesh, ManBoxPowerUp &manBoxPowerUp, ManTotem &manTotem) {
@@ -316,14 +316,14 @@ void StateInGameSingle::InitCarAIS(ManCar &manCars, ManWayPoint &manWayPoint) {
 
         //Cambiar
         manCars.CreateCarAI(iaPjs[0], manCars.GetPosSpawn());
-        manCars.CreateCarAI(iaPjs[1], manCars.GetPosSpawn());
-        manCars.CreateCarAI(iaPjs[2], manCars.GetPosSpawn());
+        //manCars.CreateCarAI(iaPjs[1], manCars.GetPosSpawn());
+        //manCars.CreateCarAI(iaPjs[2], manCars.GetPosSpawn());
 
     } else {
         cout << "++++++++++ Algo no va bien asique ahora todos son pinguinos.";
         manCars.CreateCarAI(0, manCars.GetPosSpawn());
-        manCars.CreateCarAI(0, manCars.GetPosSpawn());
-        manCars.CreateCarAI(0, manCars.GetPosSpawn());
+        //manCars.CreateCarAI(0, manCars.GetPosSpawn());
+        //manCars.CreateCarAI(0, manCars.GetPosSpawn());
     }
 
     //Añadimos las nameplates

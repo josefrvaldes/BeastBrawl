@@ -1757,18 +1757,22 @@ void RenderFacadeClover::FacadeDrawGraphEdges(ManWayPoint* manWayPoints) const{
             lastPoint = newPoint;
         }
         //Recorremos el componente CWayPointEdges->edges para ir arista a arista
-        for (Edge e : cWayPointEdge->edges) {
-            //Cogemos la posicion de la arista que apunta e->to
-            auto cWayPoint2 = static_cast<CWayPoint*>(manWayPoints->GetEntities()[e.to]->GetComponent(CompType::WayPointComp).get());
+        if(cWayPointEdge){
+            for (Edge e : cWayPointEdge->edges) {
+                //Cogemos la posicion de la arista que apunta e->to
+                auto cWayPoint2 = static_cast<CWayPoint*>(manWayPoints->GetEntities()[e.to]->GetComponent(CompType::WayPointComp).get());
 
-            //Usamos un color u otro en funcion de la distancia
-            if (e.cost < 300) {
-                Draw3DLine(cWayPoint->position, cWayPoint2->position, 0.0,0.0,255.0);
-            } else if (e.cost >= 300 && e.cost < 500) {
-                Draw3DLine(cWayPoint->position, cWayPoint2->position,0.0,255.0,0.0);
-            } else if (e.cost >= 500) {
-                Draw3DLine(cWayPoint->position, cWayPoint2->position, 255.0,0.0,0.0);
+                //Usamos un color u otro en funcion de la distancia
+                if (e.cost < 300) {
+                    Draw3DLine(cWayPoint->position, cWayPoint2->position, 0.0,0.0,255.0);
+                } else if (e.cost >= 300 && e.cost < 500) {
+                    Draw3DLine(cWayPoint->position, cWayPoint2->position,0.0,255.0,0.0);
+                } else if (e.cost >= 500) {
+                    Draw3DLine(cWayPoint->position, cWayPoint2->position, 255.0,0.0,0.0);
+                }
             }
+        }else{
+            cout << "1111111111111111111111111111111111111111111111111:  " << cWayPoint->id << endl; 
         }
     }
 }
