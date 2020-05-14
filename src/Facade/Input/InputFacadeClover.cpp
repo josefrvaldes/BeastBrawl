@@ -595,7 +595,7 @@ bool InputFacadeClover::CheckInputAnimationsStartEnd() {
 };
 
 
-
+// QUITAR
 bool InputFacadeClover::ShowTable(bool inputTable) {
 
     if( IsKeyOrGamepadPress(GLFW_KEY_R, GLFW_GAMEPAD_BUTTON_B, false, 0, 0, false) &&  !IsInputPressed(BUTTON_B) ) {
@@ -1118,6 +1118,13 @@ void InputFacadeClover::CheckInputEndTournament(int& input, int maxInput, uint8_
                         break;
                     }
                     case 1: {
+                        if (GameValues::GetInstance()->GetNumBattles() != GameValues::GetInstance()->GetActualBattle()) {
+                            WeHaveToGoToMenu = true;
+                            timerGoToMenu = Utils::getMillisSinceEpoch();
+                            RenderFacadeManager::GetInstance()->GetRenderFacade()->ResetInputTournamentOptions();
+                            RenderFacadeManager::GetInstance()->GetRenderFacade()->ResetInputCharacter();
+                            break;
+                        }
                         EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_SELECT_CHARACTER});
                         tournamentMode = true;
                         multiplayer = false;
@@ -1149,6 +1156,9 @@ void InputFacadeClover::CheckInputEndTournament(int& input, int maxInput, uint8_
                 input--;
                 if (input < 0) {
                     input = maxInput;
+                } 
+                if (input == 2 && GameValues::GetInstance()->GetActualBattle() != GameValues::GetInstance()->GetNumBattles()) {
+                    input--;
                 }
                 SetValueInput(BUTTON_STICK_UP, true);
                 EventManager::GetInstance().AddEventMulti(Event{EventType::MENU_OPTION});
@@ -1162,6 +1172,9 @@ void InputFacadeClover::CheckInputEndTournament(int& input, int maxInput, uint8_
                 timeStart = system_clock::now();
                 input++;
                 if(input > maxInput) {
+                    input = 0;
+                }
+                if (input == 2 && GameValues::GetInstance()->GetActualBattle() != GameValues::GetInstance()->GetNumBattles()) {
                     input = 0;
                 }
                 SetValueInput(BUTTON_STICK_DOWN, true);

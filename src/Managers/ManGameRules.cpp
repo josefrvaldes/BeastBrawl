@@ -11,8 +11,8 @@ ManGameRules::ManGameRules() {
     systemGameRules = make_unique<SystemGameRules>();
     // CreateGlobalClock(15);
     
-    CreateGlobalClock(GameValues::GetInstance()->GetGameTime());
-    //CreateGlobalClock(5);
+    //CreateGlobalClock(GameValues::GetInstance()->GetGameTime());
+    CreateGlobalClock(5);
 
 }
 void ManGameRules::CreateGlobalClock( const uint32_t durationTime_) {
