@@ -930,18 +930,18 @@ IntersectData CLPhysics::HandleCollisionsRayWithSpheres(CTransformable &trCar1, 
 
 IntersectData CLPhysics::HandleCollisionsRayWithPlane(CTransformable &trRayOrigin, glm::vec3 &rayNormalNormalized, CBoundingPlane &planeObject) {
     glm::vec3 positionRayOrigin(trRayOrigin.position.x, trRayOrigin.position.y, trRayOrigin.position.z);
-    IntersectData intersData = planeObject.IntersectRay(positionRayOrigin, rayNormalNormalized);
+    IntersectData intersData = planeObject.IntersectRay2(positionRayOrigin, rayNormalNormalized);
     return intersData;
 }
 
 IntersectData CLPhysics::HandleCollisionsRayWithOBB(CTransformable &trRayOrigin, glm::vec3 &rayNormalNormalized, CBoundingOBB &OBBObject) {
     glm::vec3 positionRayOrigin(trRayOrigin.position.x, trRayOrigin.position.y, trRayOrigin.position.z);
-    for(const auto& plane : OBBObject.planes){
-        IntersectData intersData = plane.get()->IntersectRay(positionRayOrigin, rayNormalNormalized);
-        if (intersData.intersects) {
-            return intersData;
-        }
+    
+    IntersectData intersData = OBBObject.IntersectRay2(positionRayOrigin, rayNormalNormalized);
+    if (intersData.intersects) {
+        return intersData;
     }
+
     return IntersectData(false, vec3(0,0,0));
 }
 

@@ -506,6 +506,10 @@ void RenderFacadeClover::UpdateCamera(Entity* cam, ManCar* manCars) {
 
         //Si somos nosotros quien tenemos el totem ponemos camara normal
         if(cTotemCar->active){
+            cameraEntity->SetCameraTarget(glm::vec3(targetPosition.x,targetPosition.y,targetPosition.z));
+            cameraEntity->SetFOV(70);
+            camera1->SetTranslation(glm::vec3(cTransformable->position.x, cTransformable->position.y, -cTransformable->position.z));
+
             cCamera->camType = CamType::NORMAL_CAM;
             return;
 
@@ -783,7 +787,7 @@ void RenderFacadeClover::FacadeInitMenu() {
 void RenderFacadeClover::FacadeInitSelectCharacter() {
 
     //Creamos la camara apuntando al (0,0,0)
-    auto cam = device->AddCamera(device->GetRootNode(),0);
+    auto cam = device->AddCamera(device->GetRootNode(),10);
     auto shaderCam = resourceManager->GetResourceShader("CLEngine/src/Shaders/cartoonShader.vert","CLEngine/src/Shaders/cartoonShader.frag");
     cam->SetShaderProgramID(shaderCam->GetProgramID());
     auto cameraEntity = static_cast<CLCamera*>(cam->GetEntity());
@@ -795,42 +799,42 @@ void RenderFacadeClover::FacadeInitSelectCharacter() {
     auto shader = resourceManager->GetResourceShader("CLEngine/src/Shaders/basicShader.vert","CLEngine/src/Shaders/basicShader.frag");
 
     //Penguin
-    mesh = device->AddMesh(smgr,1,"media/thepenguin_selection.obj");
+    mesh = device->AddMesh(smgr,0,"media/thepenguin_selection.obj");
     mesh->SetScalation(glm::vec3(2.0f));
     mesh->SetTranslation(glm::vec3(0.0f,-14.0f,-20.0f));
     mesh->SetRotation(glm::vec3(10.0f,-50.0f, 5.0f));
     mesh->SetShaderProgramID(shader->GetProgramID());
 
     //Tiger
-    mesh = device->AddMesh(smgr,2,"media/mrsbaxter_selection.obj");
+    mesh = device->AddMesh(smgr,1,"media/mrsbaxter_selection.obj");
     mesh->SetScalation(glm::vec3(2.0f));
     mesh->SetTranslation(glm::vec3(0.0f,-14.0f,-20.0f));
     mesh->SetRotation(glm::vec3(10.0f,-50.0f, 5.0f));
     mesh->SetShaderProgramID(shader->GetProgramID());
 
     //Shark
-    mesh = device->AddMesh(smgr,3,"media/captainsharky_selection.obj");
+    mesh = device->AddMesh(smgr,2,"media/captainsharky_selection.obj");
     mesh->SetScalation(glm::vec3(2.0f));
     mesh->SetTranslation(glm::vec3(0.0f,-14.0f,-20.0f));
     mesh->SetRotation(glm::vec3(10.0f,-50.0f, 5.0f));
     mesh->SetShaderProgramID(shader->GetProgramID());
 
     //Gorila
-    mesh = device->AddMesh(smgr,4,"media/kaiserkong_selection.obj");
+    mesh = device->AddMesh(smgr,3,"media/kaiserkong_selection.obj");
     mesh->SetScalation(glm::vec3(2.0f));
     mesh->SetTranslation(glm::vec3(0.0f,-14.0f,-20.0f));
     mesh->SetRotation(glm::vec3(10.0f,-50.0f, 5.0f));
     mesh->SetShaderProgramID(shader->GetProgramID());
 
     //Dragon
-    mesh = device->AddMesh(smgr,5,"media/deacondragon_selection.obj");
+    mesh = device->AddMesh(smgr,4,"media/deacondragon_selection.obj");
     mesh->SetScalation(glm::vec3(2.0f));
     mesh->SetTranslation(glm::vec3(0.0f,-14.0f,-20.0f));
     mesh->SetRotation(glm::vec3(10.0f,-50.0f, 5.0f));
     mesh->SetShaderProgramID(shader->GetProgramID());
 
     //Octopus
-    mesh = device->AddMesh(smgr,6,"media/cyberoctopus_selection.obj");
+    mesh = device->AddMesh(smgr,5,"media/cyberoctopus_selection.obj");
     mesh->SetScalation(glm::vec3(2.0f));
     mesh->SetTranslation(glm::vec3(0.0f,-14.0f,-20.0f));
     mesh->SetRotation(glm::vec3(10.0f,-50.0f, 5.0f));
@@ -932,9 +936,9 @@ void RenderFacadeClover::FacadeInitEndTournament() {
         playersSaved++;
     }
     
-    //for(auto it = rankPoints.begin(); it != rankPoints.end(); ++it){
-    //    cout << "Puntos: " << it->first << "  Jugador: " << it->second << "\n";
-    //}
+    /*for(auto it = rankPoints.begin(); it != rankPoints.end(); ++it){
+        cout << "Puntos: " << it->first << "  Jugador: " << it->second << "\n";
+    }*/
 
     GameValues::GetInstance()->SetTotalPoints(pointsTotal);
     GameValues::GetInstance()->SetRankingPoints(rankPoints);
@@ -1332,11 +1336,11 @@ void RenderFacadeClover::FacadeDrawMenu() {
 void RenderFacadeClover::FacadeDrawSelectCharacter() {
 
     //Ponemos visible solamente el que esta seleccionado
-    for(uint8_t i=1; i<maxInputSC+2 ; i++){
+    for(uint8_t i=0; i<=maxInputSC ; i++){
         auto node = device->GetNodeByID(i);
         node->SetVisible(false);
     }
-    auto nodeSelected = device->GetNodeByID(inputSC+1);
+    auto nodeSelected = device->GetNodeByID(inputSC);
     nodeSelected->SetVisible(true);
 
     device->SetEnableDepthTest(false);
@@ -1534,7 +1538,7 @@ void RenderFacadeClover::FacadeDrawEndRace() {
         
         if((positionPoints+1) == 1) {
             file = "media/menu/crown.png";
-                device->DrawImage2D(posX - 50.0f*scale, posY + (i*100.0f)*scale - 75.0f*scale, 1.0*scale, 0.8f, file, true);
+            device->DrawImage2D(posX - 50.0f*scale, posY + (i*100.0f)*scale - 65.0f*scale, 0.9*scale, 0.6f, file, true);
         }
 
         auto it2 = secondsRank.find(it->first);
@@ -1687,7 +1691,7 @@ void RenderFacadeClover::FacadeDrawEndTournament() {
 
             if((positionPoints+1) == 1) {
                 file = "media/menu/crown.png";
-                device->DrawImage2D(posX - 50.0f*scale, posY + (i*100.0f)*scale - 75.0f*scale, 1.0*scale, 0.6f, file, true);
+                device->DrawImage2D(posX - 50.0f*scale, posY + (i*100.0f)*scale - 65.0f*scale, 0.9*scale, 0.6f, file, true);
             }
 
             // puntos
