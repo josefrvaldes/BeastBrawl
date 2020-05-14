@@ -80,7 +80,7 @@ void CLEngine::CreateGlfwWindow (const unsigned int w, const unsigned int h, con
     glfwMakeContextCurrent(window);
 
     // Por defecto esta a 0, pero parece que eso despercicia ciclos de CPU y GPU. Se recomienda ponerlo a 1.
-    glfwSwapInterval(0);
+    glfwSwapInterval(1);
 
     // Activa el buffer de profundidad o ZBuffer, para que se diferencie que pixel se debe pintar.
     glEnable(GL_DEPTH_TEST);
