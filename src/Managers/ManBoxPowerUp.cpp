@@ -17,27 +17,27 @@ ManBoxPowerUp::ManBoxPowerUp() {
     //Leemos y añadimos los WayPoints
     float x=0,y=0,z=0; //Vec3
 
-  //  std::ifstream i("data.json");
-  //  std::stringstream buffer;
-  //  buffer << i.rdbuf();
-  //  string jsonString = buffer.str();
-  //  json j = json::parse(jsonString);
-  //  i.close();
-//
-  //  int waypointsCount = j["WAYPOINTS"].size();
-  //  //std::cout << "EL NUMERO DE WAYPOINTS EN EL JSON ES: " << waypointsCount << std::endl;
-  //  //Leemos el array de waypoints
-  //  for(int i = 0; i< waypointsCount; ++i){
-  //      string idWayPoint = to_string(i);  //El primer elemento es "0" como string
-  //      auto capaActual = j["WAYPOINTS"][idWayPoint];
-  //      if( capaActual["type"].get<int>() == 1){
-  //          x    = capaActual["x"].get<float>();
-  //          y    = capaActual["y"].get<float>();    // INTERCAMBIAMOS REALMENTE LA "Y" POR LA "Z"
-  //          z    = capaActual["z"].get<float>();
-  //          glm::vec3 position = glm::vec3(x,y,z);
-  //          CreateBoxPowerUp(position);
-  //      }
-  //  }
+    std::ifstream i("data.json");
+    std::stringstream buffer;
+    buffer << i.rdbuf();
+    string jsonString = buffer.str();
+    json j = json::parse(jsonString);
+    i.close();
+
+    int waypointsCount = j["WAYPOINTS"].size();
+    //std::cout << "EL NUMERO DE WAYPOINTS EN EL JSON ES: " << waypointsCount << std::endl;
+    //Leemos el array de waypoints
+    for(int i = 0; i< waypointsCount; ++i){
+        string idWayPoint = to_string(i);  //El primer elemento es "0" como string
+        auto capaActual = j["WAYPOINTS"][idWayPoint];
+        if( capaActual["type"].get<int>() == 1){
+            x    = capaActual["x"].get<float>();
+            y    = capaActual["y"].get<float>();    // INTERCAMBIAMOS REALMENTE LA "Y" POR LA "Z"
+            z    = capaActual["z"].get<float>();
+            glm::vec3 position = glm::vec3(x,y,z);
+            CreateBoxPowerUp(position);
+        }
+    }
 
     //CreateBoxPowerUp(vec3(-450.f, -600.f, 700.f));
     
