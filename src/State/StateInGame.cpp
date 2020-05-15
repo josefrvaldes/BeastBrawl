@@ -427,7 +427,6 @@ void StateInGame::Render() {
     // renderEngine->FacadeDraw();  //Para dibujar primitivas debe ir entre el drawAll y el endScene
     renderEngine->FacadeDrawAll();
 
-
     //renderEngine->suputamadre(manCars->GetCar().get());
     //renderEngine->suputamadre(manGameRules->GetGrounds()[0].get());
 
