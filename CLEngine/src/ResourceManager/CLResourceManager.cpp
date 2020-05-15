@@ -68,28 +68,33 @@ vector<CLResourceMesh*> CLResourceManager::LoadResourceAnimation(const std::stri
         // añade ceros al principio para que el fichero no sea 1ojete.obj, sino que sea 001ojete.obj
         string auxIndex = std::string(6 - stringIndex.length(), '0') + stringIndex; 
         string totalPath = folder + fileNameWithoutNumericPart + "_" + auxIndex + ".obj";
-        // shared_ptr<boost::thread> t = make_shared<boost::thread>([&, totalPath](){
-        //     boost::asio::post(context,[&, totalPath](){
-        //         CLResourceMesh *resource = GetResourceMesh(totalPath, flipUV);
-        //         keyFrames.push_back(resource);
-        //     });
-        // });
-        // threads.push_back(t);
+        shared_ptr<std::thread> t = make_shared<std::thread>([&, totalPath](){
+            boost::asio::post(context,[&, totalPath](){
+                CLResourceMesh *resource = GetResourceMesh(totalPath, flipUV);
+                my_mutex.lock();
+                keyFrames.push_back(resource);
+                my_mutex.unlock();
+            });
+            context.run();
+        });
+        threads.push_back(t);
         // boost::asio::post(context, [&, totalPath](){
         //     CLResourceMesh *resource = GetResourceMesh(totalPath, flipUV);
         //     keyFrames.push_back(resource);
         // });
 
-        boost::asio::post(tp2, [&, totalPath](){
+        /*boost::asio::post(tp2, [&, totalPath](){
             CLResourceMesh *resource = GetResourceMesh(totalPath, flipUV);
             my_mutex.lock();
             keyFrames.push_back(resource);
             std::cout << "Dentro del lambda keyFrames tiene " << keyFrames.size() << " frames" << endl;
             my_mutex.unlock();
-        });
+        });*/
     }
     std::cout << "Antes del join keyFrames tiene " << keyFrames.size() << " frames" << endl;
-    tp2.join();
+    //tp2.join();
+    for (auto thread : threads)
+        thread->join();
     std::cout << "Después del join keyFrames tiene " << keyFrames.size() << " frames" << endl;
     std::cout << "Ahora vamos a devolver el array de keyframes" << endl;
     return keyFrames;

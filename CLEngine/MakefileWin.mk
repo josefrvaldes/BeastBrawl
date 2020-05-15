@@ -16,6 +16,7 @@ LIBS 	    	+= -L./lib/windows/glfw -lglfw3 -lglfw3dll -lopengl32 -lgdi32 -luser3
 LIBS 	    	+= -L./lib/windows/glew -lglew32 -Wl,-rpath=lib/windows/glew
 LIBS 	    	+= -L./lib/windows/assimp -lassimp -Wl,-rpath=lib/windows/assimp
 LIBS			+= -L./lib/windows/freeType2 -lfreetype -Wl,-rpath=lib/windows/freeType2
+LIBS 			+=  -lws2_32 -lwsock32
 
 INCLUDE     	:= -I./include -I../include -I./include/freeType2
 
@@ -27,7 +28,7 @@ OBJ_PATH    := ../obj/CLEngine
 SRC_PATH	:= src
 
 NAME_EXE	:= CLEngine.exe
-CXXFLAGS 	+= -Wall -Wno-unknown-pragmas -std=gnu++1z # el no-unknown-pragmas es para que no salga el warning de los pragma region
+CXXFLAGS 	+= -Wall -Wno-unknown-pragmas -std=gnu++1z -pthread # el no-unknown-pragmas es para que no salga el warning de los pragma region
 																										 # el -fuse-ld=gold es para el ccache
 																										 # si pongo -std=c++17 falla M_PI, poniendo -std=gnu++17 funciona bien en windows
 			# -static-libstdc++ -static-libgcc -static -pthread 
@@ -45,7 +46,7 @@ $(NAME_EXE): $(OBJSUBDIRS) $(ALLCPPSOBJ)
 	$(COMPILING_TEXT_OK)
 	$(JUMP_LINE)
 	$(LINKING_TEXT)
-	$(CC) -o $(NAME_EXE) $(ALLCPPSOBJ) $(INCLUDE) $(LIBS) -static-libstdc++
+	$(CC) -o $(NAME_EXE) $(ALLCPPSOBJ) $(INCLUDE) $(LIBS) $(CXXFLAGS) -static-libstdc++ -static-libgcc
 	$(LINKING_TEXT_OK)
 	$(JUMP_LINE) 
 	

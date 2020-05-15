@@ -16,7 +16,7 @@
 #include <boost/asio/placeholders.hpp>
 #include <boost/asio.hpp>
 #include <boost/bind.hpp>
-#include <boost/thread.hpp>
+#include <thread>
 
 using namespace std;
 namespace CLE {
@@ -103,13 +103,8 @@ namespace CLE {
             vector<shared_ptr<CLResourceMaterial>> materials;
             vector<shared_ptr<CLResourceShader>> shaders;
             boost::asio::io_context context;
-            std::vector<shared_ptr<boost::thread>> threads;
-            boost::thread_group tg;
-            // boost::asio::thread_pool tp{4};
+            std::vector<std::shared_ptr<std::thread>> threads;
             std::mutex my_mutex;
-            
-
-
     };
 
 }
