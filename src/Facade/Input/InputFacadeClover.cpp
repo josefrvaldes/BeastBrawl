@@ -133,7 +133,7 @@ void InputFacadeClover::CheckInputIntro(){
     }
 
     //ENTRAR
-    if ( (IsKeyPress(GLFW_KEY_ENTER) || IsKeyPress(GLFW_KEY_SPACE) || IsGamepadPress(GLFW_GAMEPAD_BUTTON_A)) && HasDelayPassed() && !IsInputPressed(BUTTON_A) ) {
+    if ( (IsKeyPress(GLFW_KEY_ENTER) || IsKeyPress(GLFW_KEY_SPACE) || CheckAnyKey() || IsGamepadPress(GLFW_GAMEPAD_BUTTON_A)) && HasDelayPassed() && !IsInputPressed(BUTTON_A) ) {
 
         timeStart = system_clock::now();
         SetValueInput(BUTTON_A, true);
@@ -1411,5 +1411,14 @@ void InputFacadeClover::ChangeSettings(int option, int value) {
         default:
             cout << "Esta opcion de ajustes no me gusta" << endl;
             break;
+    }
+}
+
+
+bool InputFacadeClover::CheckAnyKey(){
+    if(IsKeyPress(GLFW_KEY_Q) || IsKeyPress(GLFW_KEY_W) || IsKeyPress(GLFW_KEY_E) || IsKeyPress(GLFW_KEY_R) || IsKeyPress(GLFW_KEY_T) || IsKeyPress(GLFW_KEY_Y) || IsKeyPress(GLFW_KEY_U) || IsKeyPress(GLFW_KEY_I) || IsKeyPress(GLFW_KEY_O) || IsKeyPress(GLFW_KEY_P) || IsKeyPress(GLFW_KEY_A) || IsKeyPress(GLFW_KEY_S) || IsKeyPress(GLFW_KEY_D) || IsKeyPress(GLFW_KEY_F) || IsKeyPress(GLFW_KEY_G) || IsKeyPress(GLFW_KEY_H) || IsKeyPress(GLFW_KEY_J) || IsKeyPress(GLFW_KEY_K) || IsKeyPress(GLFW_KEY_L) || IsKeyPress(GLFW_KEY_Z) || IsKeyPress(GLFW_KEY_X) || IsKeyPress(GLFW_KEY_C) || IsKeyPress(GLFW_KEY_V) || IsKeyPress(GLFW_KEY_B) || IsKeyPress(GLFW_KEY_N) || IsKeyPress(GLFW_KEY_M) || IsKeyPress(GLFW_KEY_1) || IsKeyPress(GLFW_KEY_2) || IsKeyPress(GLFW_KEY_3) || IsKeyPress(GLFW_KEY_4) || IsKeyPress(GLFW_KEY_5) || IsKeyPress(GLFW_KEY_6) || IsKeyPress(GLFW_KEY_7) || IsKeyPress(GLFW_KEY_8) || IsKeyPress(GLFW_KEY_9) || IsKeyPress(GLFW_KEY_0)){
+        return true;
+    }else{
+        return false;
     }
 }

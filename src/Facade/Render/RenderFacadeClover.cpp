@@ -711,8 +711,9 @@ void RenderFacadeClover::FacadeInitResources(){
     std::string file = "media/menu/loading_screen.png";
     device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
 
-    int indx = Utils::getRandomInt(0,tipsTexts.size()-1);
-    device->RenderText2D(tipsTexts.at(indx), device->GetScreenWidth()/2 - 100.0f*scale, device->GetScreenHeight()/2,0.5f, scale,glm::vec3(1.0f,1.0f,1.0f));
+    int indx = (int)(Utils::getRandomFloat(0,tipsTexts.size()-1));
+
+    device->RenderText2D(tipsTexts.at(indx), device->GetScreenWidth()/2 - 125.0f*scale, device->GetScreenHeight()/2,0.5f, scale,glm::vec3(1.0f,1.0f,1.0f));
     FacadeEndScene();
 
     //Cargamos todas las mallas
