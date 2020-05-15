@@ -314,9 +314,18 @@ void StateInGame::UpdateGame() {
     manCamera->Update();
 
 
-    // Actualizaciones en Irrlich
+    // Actualizaciones en la fachada
     renderEngine->UpdateCamera(manCamera.get()->getCamera(), manCars.get());
     physicsEngine->UpdateCar(manCars.get()->GetCar().get(), manCamera.get()->getCamera());
+
+    for (auto actualPowerUp : manPowerUps->GetEntities())  // actualizamos los powerUp en la fachada
+        physicsEngine->UpdatePowerUps(actualPowerUp.get());
+
+    for (auto actualBoxPowerUp : manBoxPowerUps->GetEntities())  // actualizamos los powerUp en la fachada
+        physicsEngine->UpdatePowerUps(actualBoxPowerUp.get());
+
+    renderEngine->FacadeUpdatePlates(manNamePlates.get());
+    physicsEngine->UpdateTransformable(manTotems->GetEntities()[0].get());
 
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
