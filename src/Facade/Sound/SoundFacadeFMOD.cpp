@@ -524,16 +524,16 @@ void SoundFacadeFMOD::UpdateCars(const vector<shared_ptr<Entity> > &e) {
         auto cType = static_cast<CPowerUp*>(pu->GetComponent(CompType::PowerUpComp).get());
         if(cPos && cId && cType) {
             //cout << "Actualizo el PU: " << cId->id << endl;
-            if (int(cType->typePowerUp) == 3) {
+            if (cType->typePowerUp == typeCPowerUp::PudinDeFrambuesa) {
                 name = "PowerUp/pudin" + to_string(cId->id);
                 soundEngine->Set3DAttributes(name, cPos->position, 0.0);
-            } else if (int(cType->typePowerUp) == 5) {
+            } else if (cType->typePowerUp == typeCPowerUp::TeleBanana) {
                 name = "PowerUp/telebanana" + to_string(cId->id);
                 soundEngine->Set3DAttributes(name, cPos->position, 0.0);
                 //cout << "TELEBANANA A: " << cPos->position.x << " - " << cPos->position.z << endl;
                 name = "PowerUp/choque_powerup" + to_string(cId->id);
                 soundEngine->Set3DAttributes(name, cPos->position, 0.0);
-            } else if (int(cType->typePowerUp) == 6) {
+            } else if (cType->typePowerUp == typeCPowerUp::MelonMolon) {
                 name = "PowerUp/melonmolon" + to_string(cId->id);
                 soundEngine->Set3DAttributes(name, cPos->position, 0.0);
                 //cout << "MELON A: " << cPos->position.x << " - " << cPos->position.z << endl;
