@@ -73,7 +73,6 @@ void TCPConnection::HandleRead(std::shared_ptr<unsigned char[]> recevBuff, const
 
 void TCPConnection::DeleteMe() {
     // eliminar del array de jugadores
-    uint16_t idPlayerFromThisConnection = player->id;
     players.erase(
         std::remove_if(
             players.begin(),

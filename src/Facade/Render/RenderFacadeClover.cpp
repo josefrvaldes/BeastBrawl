@@ -727,6 +727,10 @@ void RenderFacadeClover::FacadeInitResources(){
     resourceManager->GetResourceMesh("media/telebanana.obj");
     resourceManager->GetResourceMesh("media/training_ground.obj");
 
+    // resourceManager->LoadResourceAnimation("media/animations/cyberoctopus/damage/damageoctopus_000001.obj", 35, false);
+
+
+
     //HUD
     currentPowerUp = 0;
 
@@ -805,42 +809,54 @@ void RenderFacadeClover::FacadeInitSelectCharacter() {
     auto shader = resourceManager->GetResourceShader("CLEngine/src/Shaders/basicShader.vert","CLEngine/src/Shaders/basicShader.frag");
 
     //Penguin
-    mesh = device->AddMesh(smgr,0,"media/thepenguin_selection.obj");
+    auto animationPen = resourceManager->GetResourceAnimation("media/animations/penguin/selection/selectionpenguin_000001.obj", 30, false);
+    mesh = device->AddMesh(smgr,0);
+    static_cast<CLMesh*>(mesh->GetEntity())->SetAnimation(animationPen);
     mesh->SetScalation(glm::vec3(2.0f));
     mesh->SetTranslation(glm::vec3(0.0f,-14.0f,-20.0f));
     mesh->SetRotation(glm::vec3(10.0f,-50.0f, 5.0f));
     mesh->SetShaderProgramID(shader->GetProgramID());
 
     //Tiger
-    mesh = device->AddMesh(smgr,1,"media/mrsbaxter_selection.obj");
+    auto animationTig = resourceManager->GetResourceAnimation("media/animations/penguin/selection/selectionpenguin_000001.obj", 30, false);
+    mesh = device->AddMesh(smgr,1);
+    static_cast<CLMesh*>(mesh->GetEntity())->SetAnimation(animationTig);
     mesh->SetScalation(glm::vec3(2.0f));
     mesh->SetTranslation(glm::vec3(0.0f,-14.0f,-20.0f));
     mesh->SetRotation(glm::vec3(10.0f,-50.0f, 5.0f));
     mesh->SetShaderProgramID(shader->GetProgramID());
 
     //Shark
-    mesh = device->AddMesh(smgr,2,"media/captainsharky_selection.obj");
+    auto animationSha = resourceManager->GetResourceAnimation("media/animations/dragon/selection/selectiondragon_000001.obj", 30, false);
+    mesh = device->AddMesh(smgr,2);
+    static_cast<CLMesh*>(mesh->GetEntity())->SetAnimation(animationSha);
     mesh->SetScalation(glm::vec3(2.0f));
     mesh->SetTranslation(glm::vec3(0.0f,-14.0f,-20.0f));
     mesh->SetRotation(glm::vec3(10.0f,-50.0f, 5.0f));
     mesh->SetShaderProgramID(shader->GetProgramID());
 
     //Gorila
-    mesh = device->AddMesh(smgr,3,"media/kaiserkong_selection.obj");
+    auto animationKong = resourceManager->GetResourceAnimation("media/animations/kong/selection/selectionkong_000001.obj", 30, false);
+    mesh = device->AddMesh(smgr,3);
+    static_cast<CLMesh*>(mesh->GetEntity())->SetAnimation(animationKong);
     mesh->SetScalation(glm::vec3(2.0f));
     mesh->SetTranslation(glm::vec3(0.0f,-14.0f,-20.0f));
     mesh->SetRotation(glm::vec3(10.0f,-50.0f, 5.0f));
     mesh->SetShaderProgramID(shader->GetProgramID());
 
     //Dragon
-    mesh = device->AddMesh(smgr,4,"media/deacondragon_selection.obj");
+    auto animationDra = resourceManager->GetResourceAnimation("media/animations/dragon/selection/selectiondragon_000001.obj", 30, false);
+    mesh = device->AddMesh(smgr,4);
+    static_cast<CLMesh*>(mesh->GetEntity())->SetAnimation(animationDra);
     mesh->SetScalation(glm::vec3(2.0f));
     mesh->SetTranslation(glm::vec3(0.0f,-14.0f,-20.0f));
     mesh->SetRotation(glm::vec3(10.0f,-50.0f, 5.0f));
     mesh->SetShaderProgramID(shader->GetProgramID());
 
     //Octopus
-    mesh = device->AddMesh(smgr,5,"media/cyberoctopus_selection.obj");
+    auto animationCyb = resourceManager->GetResourceAnimation("media/animations/cyberoctopus/selection/selectionoctopus_000001.obj", 31, false);
+    mesh = device->AddMesh(smgr,5);
+    static_cast<CLMesh*>(mesh->GetEntity())->SetAnimation(animationCyb);
     mesh->SetScalation(glm::vec3(2.0f));
     mesh->SetTranslation(glm::vec3(0.0f,-14.0f,-20.0f));
     mesh->SetRotation(glm::vec3(10.0f,-50.0f, 5.0f));
@@ -1360,6 +1376,7 @@ void RenderFacadeClover::FacadeDrawSelectCharacter() {
     }
     auto nodeSelected = device->GetNodeByID(inputSC);
     nodeSelected->SetVisible(true);
+    static_cast<CLMesh*>(nodeSelected->GetEntity())->Animate();
 
     device->SetEnableDepthTest(false);
 
