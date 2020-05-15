@@ -364,8 +364,6 @@ void InputFacadeClover::CheckInputSelCharIntro(int &input) {
                 EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_GAME_OPTIONS});
             else
                 EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_TOURNAMENT_OPTIONS});
-            //Change caracter
-            GameValues::GetInstance()->SetCharacter(input);
         }
 
     } else if (!(IsKeyPress(GLFW_KEY_ENTER) || IsKeyPress(GLFW_KEY_SPACE) || IsGamepadPress(GLFW_GAMEPAD_BUTTON_A)) ) {
@@ -1014,7 +1012,10 @@ void InputFacadeClover::CheckInputEndRace(int& input, int maxInput, bool menu){
                         }
                     }
                     case 1: {
-                        EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_SELECT_CHARACTER});
+                        if (multiplayer) 
+                            EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_LOBBYMULTI});
+                        else
+                            EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_SELECT_CHARACTER});
                         //TODO: ¿Deberia resetear al volver al comenzar o al volver al menú?
                         break;
                     }

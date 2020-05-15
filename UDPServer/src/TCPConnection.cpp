@@ -12,7 +12,7 @@
 using boost::asio::ip::tcp;
 using namespace std::chrono;
 
-TCPConnection::TCPConnection(TCPServer *tcpServer_, asio::io_context& io_context, std::vector<Player>& p, std::vector<TCPConnection::pointer>& connect) : tcpServer{tcpServer_}, socket_(io_context), players(p), connections(connect) {
+TCPConnection::TCPConnection(TCPServer *tcpServer_, asio::io_context& io_context, std::vector<std::shared_ptr<Player>>& p, std::vector<TCPConnection::pointer>& connect) : tcpServer{tcpServer_}, socket_(io_context), players(p), connections(connect) {
 }
 
 TCPConnection::~TCPConnection() {
@@ -46,7 +46,7 @@ void TCPConnection::HandleRead(std::shared_ptr<unsigned char[]> recevBuff, const
             case Constants::PetitionTypes::CONNECTION_REQUEST: {
                 SendOpenGame(); // reenviar que se ha conectado correctamente
             } break;
-            case Constants::PetitionTypes::CHARACTER_REQUEST: {
+            case Constants::PetitionTypes::TCP_CHARACTER_REQUEST: {
                 HandleReceivedCatchChar(recevBuff, bytes_transferred);
             } break;
             case Constants::PetitionTypes::TCP_CANCEL_CHARACTER: {
@@ -57,7 +57,14 @@ void TCPConnection::HandleRead(std::shared_ptr<unsigned char[]> recevBuff, const
         }
     } else if ((boost::asio::error::eof == error) || (boost::asio::error::connection_reset == error)) {
         std::cout << "Se desconecta un usuario: " << error.message() << std::endl;
+        for(auto& p : players){
+            if(p->id == player->id)
+                p->character = Constants::ANY_CHARACTER;
+        }
+        tcpServer->SendCharsSelectedToOther(ID);
         DeleteMe();
+        //tcpServer->SendCharsSelected(); // Testear
+        cout << "Se ha desconectado un nuevo jugador, ahora son " << players.size() << endl;
     } else if (error) {
         std::cout << "Error al leer: " << error.message() << std::endl;
     }
@@ -66,27 +73,29 @@ void TCPConnection::HandleRead(std::shared_ptr<unsigned char[]> recevBuff, const
 
 void TCPConnection::DeleteMe() {
     // eliminar del array de jugadores
+    uint16_t idPlayerFromThisConnection = player->id;
     players.erase(
         std::remove_if(
             players.begin(),
             players.end(),
-            [&](Player& p) { return (p.endpointTCP == socket_.remote_endpoint()); }),
+            [&](std::shared_ptr<Player>& p) { return p->id == player->id; }),
         players.end());
 
     // actualizamos las IDs
-    uint16_t idPlayer = 0;
+    uint16_t idPlayer_ = 0;
     for (auto& actualPlayer : players) {
-        actualPlayer.id = idPlayer;
-        idPlayer++;
+        actualPlayer->id = idPlayer_;
+        idPlayer_++;
     }
-    Player::nextId = idPlayer;
+    Player::nextId = idPlayer_;
 
     // eliminar del array de conexiones
     connections.erase(
         std::remove_if(
             connections.begin(),
             connections.end(),
-            [&](TCPConnection::pointer& c) { return (c->socket().remote_endpoint() == socket_.remote_endpoint()); }),
+            // [&](TCPConnection::pointer& c) { return (c->socket().remote_endpoint() == socket_.remote_endpoint()); }),
+            [&](TCPConnection::pointer& c) { return (c->ID == ID); }),
         connections.end());
 }
 
@@ -100,9 +109,9 @@ void TCPConnection::DeleteMe() {
 //             boost::asio::placeholders::bytes_transferred));
 // }
 
-void TCPConnection::SendStartMessage(unsigned char* buff, size_t buffSize) {
+void TCPConnection::SendStartMessage(std::shared_ptr<unsigned char[]> buff, size_t buffSize) {
     socket_.async_send(
-        boost::asio::buffer(buff, buffSize),
+        boost::asio::buffer(buff.get(), buffSize),
         boost::bind(
             &TCPConnection::HandleWrite,
             this,
@@ -126,20 +135,44 @@ void TCPConnection::SendFullGame() {
 }
 
 
+
 void TCPConnection::SendOpenGame() {
-    unsigned char request[Constants::ONLINE_BUFFER_SIZE];
+    std::shared_ptr<unsigned char[]> request(new unsigned char[Constants::ONLINE_BUFFER_SIZE]);
+    vector<uint8_t> charsSelected;
     size_t currentBuffSize = 0;
     uint8_t petitionType = Constants::TCP_OPEN_GAME;
-    Serialization::Serialize(request, &petitionType, currentBuffSize);
+
+    for (const auto& currentPlayer : players) {
+        if(currentPlayer->character != Constants::ANY_CHARACTER)
+            charsSelected.emplace_back(currentPlayer->character);
+    }
+
+    uint8_t charSelSize = charsSelected.size();
+    Serialization::Serialize(request.get(), &petitionType, currentBuffSize);
+    Serialization::Serialize(request.get(), &charSelSize, currentBuffSize);
+    Serialization::SerializeVector(request.get(), charsSelected, currentBuffSize);
 
     socket_.async_send(
-        boost::asio::buffer(request, currentBuffSize),
+        boost::asio::buffer(request.get(), currentBuffSize),
+        boost::bind(
+            &TCPConnection::HandleSendOpenGame,
+            this,
+            boost::asio::placeholders::error,
+            boost::asio::placeholders::bytes_transferred));
+}
+
+
+
+void TCPConnection::SendCharsSel(std::shared_ptr<unsigned char[]> buff, size_t buffSize) {
+    socket_.async_send(
+        boost::asio::buffer(buff.get(), buffSize),
         boost::bind(
             &TCPConnection::HandleWrite,
             this,
             boost::asio::placeholders::error,
             boost::asio::placeholders::bytes_transferred));
 }
+
 
 
 void TCPConnection::HandleWrite(const boost::system::error_code& error, size_t bytes_transferred) {
@@ -151,12 +184,22 @@ void TCPConnection::HandleWrite(const boost::system::error_code& error, size_t b
     }
 }
 
+void TCPConnection::HandleSendOpenGame(const boost::system::error_code& error, size_t bytes_transferred) {
+    if (!error) {
+        std::cout << "Mensaje enviado del servidor TCP open game\n";
+    } else {
+        std::cout << "Error al escribir: " << error.message() << "\n";
+    }
+}
+
 
 void TCPConnection::CancelChar(){
     for(auto& p : players){
-        if(p.endpointTCP == socket_.remote_endpoint())
-            p.character = Constants::ANY_CHARACTER;
+        if(p->endpointTCP == socket_.remote_endpoint())
+            p->character = Constants::ANY_CHARACTER;
     }
+
+    tcpServer->SendCharsSelected();
 }
 
 
@@ -168,7 +211,7 @@ void TCPConnection::HandleReceivedCatchChar(std::shared_ptr<unsigned char[]> rec
     bool allSelected = true;
 
     for(const auto& p : players){
-        if(p.character == characterRecvd){
+        if(p->character == characterRecvd){
             alreadySelected = true;
             break;
         }
@@ -180,9 +223,9 @@ void TCPConnection::HandleReceivedCatchChar(std::shared_ptr<unsigned char[]> rec
     // adjuntamos el personaje al usuario y comprobamos si todos ya han seleccionado
     if(!alreadySelected){
         for(auto& p : players){
-            if(p.endpointTCP == socket_.remote_endpoint())
-                p.character = characterRecvd;
-            if(p.character==Constants::ANY_CHARACTER)
+            if(p->endpointTCP == socket_.remote_endpoint())
+                p->character = characterRecvd;
+            if(p->character==Constants::ANY_CHARACTER)
                 allSelected = false;
         }
         
@@ -191,8 +234,9 @@ void TCPConnection::HandleReceivedCatchChar(std::shared_ptr<unsigned char[]> rec
             Server::GAME_STARTED = true;
             tcpServer->SendStartGame();
             // justo despues vaciar el tcp para otra conexion
+        }else{
+            tcpServer->SendCharsSelected();
         }
-        //++ cout << "Se ha conectado un usuario con personaje " << unsigned(characterRecvd) << "\n";
     }
 }
 
@@ -200,7 +244,7 @@ void TCPConnection::HandleReceivedCatchChar(std::shared_ptr<unsigned char[]> rec
 void TCPConnection::SendRequestSelChar(bool selected){
     unsigned char request[Constants::ONLINE_BUFFER_SIZE];
     size_t currentBuffSize = 0;
-    uint8_t petitionType = Constants::CHARACTER_REQUEST;
+    uint8_t petitionType = Constants::PetitionTypes::TCP_CHARACTER_REQUEST;
     Serialization::Serialize(request, &petitionType, currentBuffSize);
     Serialization::Serialize(request, &selected, currentBuffSize);
 

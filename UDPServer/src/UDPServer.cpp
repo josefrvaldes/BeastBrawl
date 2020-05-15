@@ -69,23 +69,22 @@ void UDPServer::HandleReceive(std::shared_ptr<unsigned char[]> recevBuff, std::s
                 switch (callType) {
                     case Constants::PetitionTypes::SEND_INPUTS: {
                         //std::cout << "Recibidos inputs: " << bytesTransferred << std::endl;
+                        // int64_t gameTime = Serialization::Deserialize<uint16_t>(recevBuff.get(), currentIndex);
                         if (p.lastInputTimeReceived < time) {
-                            //cout << Utils::getISOCurrentTimestampMillis() << "Se ha recibido y reenviado un paquete de input del player " << idPlayer << endl;
+                            // cout << Utils::getISOCurrentTimestampMillis() << "Se ha recibido y reenviado un paquete de input del player " << idPlayer << " con time["<<time<<"] " << endl;
                             p.lastInputTimeReceived = time;
                             HandleReceivedInputs(idPlayer, buffRecieved, bytesTransferred, *remoteClient.get());
-                        } else {
-                            //cout << Utils::getISOCurrentTimestampMillis() << "Se ha ignorado un paquete de input porque era antiguo" << endl;
-                        }
+                        } 
                     } break;
                     case Constants::PetitionTypes::SEND_SYNC: {
+                        // int64_t gameTime = Serialization::Deserialize<uint16_t>(recevBuff.get(), currentIndex);
+                        
                         //std::cout << "Recibida sincronizacion: " << bytesTransferred << std::endl;
                         if (p.lastSyncTimeReceived < time) {
                             //cout << Utils::getISOCurrentTimestampMillis() << "Se ha recibido y reenviado un paquete de sync del player " << idPlayer << endl;
                             p.lastSyncTimeReceived = time;
                             HandleReceivedSync(idPlayer, buffRecieved, bytesTransferred, *remoteClient.get());
-                        } else {
-                            //cout << Utils::getISOCurrentTimestampMillis() << "Se ha ignorado un paquete de sync porque era antiguo" << endl;
-                        }
+                        } 
                     } break;
                     case Constants::PetitionTypes::CATCH_PU: {
                         if (p.lastCatchPUTimeReceived < time) {
@@ -169,6 +168,28 @@ void UDPServer::HandleReceive(std::shared_ptr<unsigned char[]> recevBuff, std::s
                         if (p.lastWaitingForCountdownReceived < time) {
                             p.lastWaitingForCountdownReceived = time;
                             HandleReceivedWaitingForCountdown(p, buffRecieved, bytesTransferred, *remoteClient.get());
+                        }
+                        break;
+                    case Constants::PetitionTypes::SEND_CLOCK_SYNC:
+                        if (p.lastClockSyncReceived < time) {
+                            p.lastClockSyncReceived = time;
+                            uint16_t idOnline2 = Serialization::Deserialize<uint16_t>(recevBuff.get(), currentIndex);
+                            cout << "Hemos recibido un sendClockSync del sender["<<idPlayer<<"] y receiver["<<idOnline2<<"]" << endl;
+                            HandleReceivedClockSync(p, idOnline2, buffRecieved, bytesTransferred, *remoteClient.get());
+                        } else {
+                            cout << "Hemos descartado un sendClockSync del sender["<<idPlayer<<"]" << endl;
+                        }
+                        break;
+                    case Constants::PetitionTypes::SEND_FINAL_CLOCK_SYNC:
+                        if (p.lastFinalClockSyncReceived < time) {
+                            p.lastFinalClockSyncReceived = time;
+                            p.lastInputTimeReceived = -1;
+                            p.lastSyncTimeReceived = -1;
+                            uint16_t idOnline2 = Serialization::Deserialize<uint16_t>(recevBuff.get(), currentIndex);
+                            cout << "Hemos recibido un sendClockSync del sender["<<idPlayer<<"] y receiver["<<idOnline2<<"]" << endl;
+                            HandleReceivedFinalClockSync(p, idOnline2, buffRecieved, bytesTransferred, *remoteClient.get());
+                        } else {
+                            cout << "Hemos descartado un sendClockSync del sender["<<idPlayer<<"]" << endl;
                         }
                         break;
                     default:
@@ -284,12 +305,35 @@ void UDPServer::HandleReceivedWaitingForCountdown(Player& p, unsigned char buffe
 
         // si todos estaban ya listos y esperando para comenzar la cuenta atrás, efectivamente, les enviamos que empiecen la cuenta atrás
         if (launchCountdown) {
+            cout << "Vamos a decirle a los clientes que empiecen el countdown" << endl;
             animationCountdownLaunched = true;
             for (uint8_t i = 0; i < NUM_REINTENTOS; ++i)
                 for (Player& currentPlayer : players) {
                     SendLaunchAnimationCountdown(currentPlayer);
                 }
         }
+    }
+}
+
+void UDPServer::HandleReceivedClockSync(Player& p, uint16_t idOnline2, unsigned char bufferToReSend[], const size_t currentBufferSize, const udp::endpoint& originalClient) {
+    Player *p2 = GetPlayerById(idOnline2);
+    if(p2 != nullptr) {
+        for (uint8_t i = 0; i < NUM_REINTENTOS; ++i)
+            SendBytes(bufferToReSend, currentBufferSize, *p2);       
+    } else {
+        cout << "No hemos encontrado el jugador con idSender[" << idOnline2 << "] al que hay que reenviarle un SyncClock" << endl;
+    }
+}
+
+void UDPServer::HandleReceivedFinalClockSync(Player& p, uint16_t idOnline2, unsigned char bufferToReSend[], const size_t currentBufferSize, const udp::endpoint& originalClient) {
+    Player *p2 = GetPlayerById(idOnline2);
+    if(p2 != nullptr) {
+        p2->lastInputTimeReceived = -1;
+        p2->lastSyncTimeReceived = -1;
+        for (uint8_t i = 0; i < NUM_REINTENTOS; ++i)
+            SendBytes(bufferToReSend, currentBufferSize, *p2);       
+    } else {
+        cout << "No hemos encontrado el jugador con idSender[" << idOnline2 << "] al que hay que reenviarle un SyncClock" << endl;
     }
 }
 

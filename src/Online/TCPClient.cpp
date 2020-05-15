@@ -134,10 +134,13 @@ void TCPClient::HandleReceived(std::shared_ptr<unsigned char[]> recevBuff, const
                 HandleReceivedFullGame();
             }break;
             case Constants::PetitionTypes::TCP_OPEN_GAME :{
-                HandleReceivedOpenGame();
+                HandleReceivedOpenGame(recevBuff, bytesTransferred);
             }break;
-            case Constants::PetitionTypes::CHARACTER_REQUEST :{
+            case Constants::PetitionTypes::TCP_CHARACTER_REQUEST :{
                 HandleReceivedCharReq(recevBuff, bytesTransferred);
+            }break;
+                case Constants::PetitionTypes::TCP_CHARACTERS_SELECTED :{
+                HandleReceivedCharSel(recevBuff, bytesTransferred);
             }break;
             default:
                 break;
@@ -178,8 +181,16 @@ void TCPClient::HandleReceivedFullGame(){
     EventManager::GetInstance().AddEventMulti(Event{EventType::PREPARE_TO_DISCONNECT});
 }
 
-void TCPClient::HandleReceivedOpenGame(){
+// recibe los jugadores seleccionados
+void TCPClient::HandleReceivedOpenGame(std::shared_ptr<unsigned char[]> recevBuff, size_t bytesTransferred){
     EventManager::GetInstance().AddEventMulti(Event{EventType::PREPARE_TO_SELECT_CHAR});
+
+    size_t currentIndex = 0;
+    Serialization::Deserialize<uint8_t>(recevBuff.get(), currentIndex);
+    uint8_t charSize = Serialization::Deserialize<uint8_t>(recevBuff.get(), currentIndex);
+    vector<uint8_t> charSelected = Serialization::DeserializeVector<uint8_t>(charSize, recevBuff.get(), currentIndex);
+
+    GameValues::GetInstance()->SetCharacterSel(charSelected);
 }
 
 
@@ -193,6 +204,22 @@ void TCPClient::HandleReceivedCharReq(std::shared_ptr<unsigned char[]> recevBuff
     }else{  // ya se encuentra seleccionado por lo que no haremos nada o notificaremos al usuario con sonido de error
         EventManager::GetInstance().AddEventMulti(Event{EventType::TCP_SEL_CHAR});
     }
+}
+
+
+// pone los jugadores seleccionados
+void TCPClient::HandleReceivedCharSel(std::shared_ptr<unsigned char[]> recevBuff, size_t bytesTransferred){
+    size_t currentIndex = 0;
+    Serialization::Deserialize<uint8_t>(recevBuff.get(), currentIndex);
+    uint8_t charSize = Serialization::Deserialize<uint8_t>(recevBuff.get(), currentIndex);
+    vector<uint8_t> charSelected = Serialization::DeserializeVector<uint8_t>(charSize, recevBuff.get(), currentIndex);
+
+    cout << " - Character: "; 
+    for(uint8_t cs : charSelected)
+        cout << int(cs) << ", ";
+    cout << "\n"; 
+
+    GameValues::GetInstance()->SetCharacterSel(charSelected);
 }
 
 
@@ -226,7 +253,7 @@ void TCPClient::SendSelCharacterRequest() {
 
     std::shared_ptr<unsigned char[]> request(new unsigned char[Constants::ONLINE_BUFFER_SIZE]);
     size_t currentBuffSize = 0;
-    uint8_t petitionType = Constants::CHARACTER_REQUEST;
+    uint8_t petitionType = Constants::PetitionTypes::TCP_CHARACTER_REQUEST;
     uint8_t character = GameValues::GetInstance()->GetCharacter();
     Serialization::Serialize(request.get(), &petitionType, currentBuffSize);
     Serialization::Serialize(request.get(), &character, currentBuffSize);

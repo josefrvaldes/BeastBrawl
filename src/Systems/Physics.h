@@ -39,7 +39,7 @@ class Physics {
     void Skid(Car *);
     void NotSkidding(Car *);
 
-    void UpdateHuman(Car* car);
+    void UpdateHuman(Car* car, int64_t gameTime);
     void AccelerateHuman(CCar &cCar, CNitro &cNitro) const;
     void TurnLeftHuman(CCar &cCar) const;
     void TurnRightHuman(CCar &cCar) const;
@@ -49,7 +49,7 @@ class Physics {
     void SkidHuman(CCar &cCar, CTransformable &cTrans) const;
     void NotSkiddingHuman(CCar &cCar, CTransformable &cTrans) const;
     void NewInputsReceivedOnline(Car *car, float speed, float wheelRotation, float skidDeg, float skidRotation, CBufferOnline *buffer);
-    void NewSyncReceivedOnline(Car *car, int64_t time);
+    void NewSyncReceivedOnline(Car *car, int64_t timeSent, int64_t gameTime);
 
    protected:
    private:

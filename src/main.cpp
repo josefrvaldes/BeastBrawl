@@ -40,7 +40,7 @@ int main(int argc, char *argv[]) {
     game->InitGame();
 
     if(Constants::RENDER_ENGINE == Constants::RenderEngine::CLOVER){
-        game->SetState(State::States::INTRO);
+        game->SetState(State::States::MENU);
         
     }else if(Constants::RENDER_ENGINE == Constants::RenderEngine::IRRLICHT){
         game->SetState(State::States::MENU);
