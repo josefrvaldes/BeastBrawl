@@ -66,6 +66,9 @@ class CLMesh : public CLEntity {
     uint8_t currentKeyFrameIndex{0};
     uint8_t nextKeyFrameIndex{1};
     bool isInterpolated{false};
+    int64_t lastTimeFrameChanged{0};
+    const uint8_t ANIMATION_FPS {25};
+    const float DELTA_ANIMATION {1.0f/ANIMATION_FPS*1000.f};
 
     // vector que indica las distancias entre los distintos keyframes
     vector<uint8_t> distanceBetweenKeyFrames;
@@ -76,5 +79,6 @@ class CLMesh : public CLEntity {
     CLResourceTexture* texture = nullptr;
 
     void GoToNextKeyFrames();
+    bool ItsTimeToAnimate();
 };
 }  // namespace CLE

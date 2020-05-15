@@ -808,7 +808,7 @@ void RenderFacadeClover::FacadeInitSelectCharacter() {
     auto shader = resourceManager->GetResourceShader("CLEngine/src/Shaders/basicShader.vert","CLEngine/src/Shaders/basicShader.frag");
 
     //Penguin
-    auto animation = resourceManager->GetResourceAnimation("media/animations/cyberoctopus/damage/damageoctopus_000001.obj", 35, false);
+    auto animation = resourceManager->GetResourceAnimation("media/animations/cyberoctopus/selection/selectionoctopus_000001.obj", 31, false);
     mesh = device->AddMesh(smgr,0,"media/thepenguin_selection.obj");
     static_cast<CLMesh*>(mesh->GetEntity())->SetAnimation(animation);
     mesh->SetScalation(glm::vec3(2.0f));
