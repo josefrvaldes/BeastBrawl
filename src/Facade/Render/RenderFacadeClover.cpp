@@ -726,6 +726,8 @@ void RenderFacadeClover::FacadeInitResources(){
     resourceManager->GetResourceMesh("media/telebanana.obj");
     resourceManager->GetResourceMesh("media/training_ground.obj");
 
+
+
     //HUD
     currentPowerUp = 0;
 

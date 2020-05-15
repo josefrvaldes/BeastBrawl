@@ -340,9 +340,9 @@ void StateInGame::UpdateGame() {
     sysHurt->Update(manCars->GetEntities());
 
     // Inicio Animaciones
-    // sysLoD->UpdateAnimations(manBoxPowerUps->GetEntities(), manCamera.get()->getCamera());
-    // renderEngine->FacadeUpdateAnimationsLoD(manBoxPowerUps->GetEntities());
-    // renderEngine->FacadeAnimate(manBoxPowerUps->GetEntities());
+    sysLoD->UpdateAnimations(manBoxPowerUps->GetEntities(), manCamera.get()->getCamera());
+    renderEngine->FacadeUpdateAnimationsLoD(manBoxPowerUps->GetEntities());
+    renderEngine->FacadeAnimate(manBoxPowerUps->GetEntities());
     // Fin Animaciones
 
     //Actualiza el ranking y los eventos de hud
