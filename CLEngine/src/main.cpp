@@ -65,7 +65,7 @@ int main() {
         auto resourceMeshBox = resourceManager->GetResourceMesh("media/TEST_BOX.obj", true);
         // auto animationKong = resourceManager->GetResourceAnimation("media/animations/kong/001kong.obj", 75, true);
         // auto animationCube = resourceManager->GetResourceAnimation("media/animations/cube/001cube.obj", 4, true);
-        // auto animationOctopus = resourceManager->LoadResourceAnimation("media/animations/cyberoctopus/damage/damageoctopus_000001.obj", 35, false);
+        auto animationOctopus = resourceManager->LoadResourceAnimation("media/animations/cyberoctopus/damage/damageoctopus_000001.obj", 35, false);
         // auto animationOctopus2 = resourceManager->GetResourceAnimation("media/animations/cyberoctopus/damage2/damageoctopus_000001.obj", 35, false);
 
 
@@ -145,7 +145,7 @@ int main() {
         // for (uint8_t i = 0; i < 75; i++)
         //     distanceBetweenFrames[i] = 1;
         // cout << "Mi vector tiene size " << distanceBetweenFrames.size() << endl;
-        // static_cast<CLMesh*>(nodeOctopusAnim->GetEntity())->SetAnimation(animationOctopus);
+        static_cast<CLMesh*>(nodeOctopusAnim->GetEntity())->SetAnimation(animationOctopus);
         // std::vector<uint8_t> distances{60, 60, 60, 60};
         // static_cast<CLMesh*>(nodeCubeAnim->GetEntity())->SetAnimationInterpolated(animationCube, distances);
         // static_cast<CLMesh*>(mesh7->GetEntity())->SetMesh(resourceMeshCochesito);
@@ -262,7 +262,7 @@ int main() {
             device->RenderText2D(cadena, 25.0f, 25.0f, 0.05f, 1.0f, vect3);
 
             // animaciones
-            // static_cast<CLMesh*>(nodeOctopusAnim->GetEntity())->Animate();
+            static_cast<CLMesh*>(nodeOctopusAnim->GetEntity())->Animate();
             // static_cast<CLMesh*>(nodeCubeAnim->GetEntity())->AnimateInterpolated();
 
             device->PollEvents();
