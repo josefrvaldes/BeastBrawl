@@ -65,6 +65,7 @@ void SystemPathPlanning::MoveRandomPowerUp(DataMap* data){
 
     // Finalmente cogemos un camino de un nodo a otro cualquiera del mapa
     if(cBrainAI->stackPath.empty()){
+        cout << "PATH ALEATORIO: "; 
         // cogemos el primer nodo (nodo de referencia de nuestro NavMesh)
         auto navMesh = manNavMesh->GetEntities()[cCurrentNavMesh->currentNavMesh]; //NavMesh en el que esta el coche
         auto cNavMesh = static_cast<CNavMesh*>(navMesh->GetComponent(CompType::NavMeshComp).get());
@@ -76,6 +77,7 @@ void SystemPathPlanning::MoveRandomPowerUp(DataMap* data){
                 wayPointReference = waypointID;
             }
         }
+        cout << " referencia es: " << wayPointReference;
 
         int wayPointDestination = -1;
         do{
@@ -86,6 +88,8 @@ void SystemPathPlanning::MoveRandomPowerUp(DataMap* data){
                 //std::cout << "El indice nuevo es:  " << wayPointDestination << std::endl;
             }  
         }while(wayPointDestination == -1);
+
+        cout << " destino es: " << wayPointDestination << endl;
 
 
         //COMPROBAMOS DIJKSTRA
@@ -124,6 +128,8 @@ void SystemPathPlanning::CalculatePathToNavMesh(DataMap* data){
         cBrainAI->stackPath.pop();
     }
 
+    cout << "PATH TO NAVMESH: ";
+
     //Buscamos el waypoint de referencia == 2
     auto navMesh = manNavMesh->GetEntities()[cCurrentNavMesh->currentNavMesh]; //NavMesh en el que esta el coche
     auto cNavMesh = static_cast<CNavMesh*>(navMesh->GetComponent(CompType::NavMeshComp).get());
@@ -136,6 +142,7 @@ void SystemPathPlanning::CalculatePathToNavMesh(DataMap* data){
             wayPointReference = waypointID;
         }
     }
+    cout << " referencia es: " << wayPointReference;
 
     auto cNavMeshTarget = static_cast<CNavMesh*>(manNavMesh->GetEntities()[targetNavMesh]->GetComponent(CompType::NavMeshComp).get()); //Cogemos el componente NavMesh del TargetNavMesh
     // recorremos todos los waypoints del NavMesh al que vamos
@@ -148,6 +155,7 @@ void SystemPathPlanning::CalculatePathToNavMesh(DataMap* data){
             wayPointDestination = waypointID;
         }  
     }
+    cout << " destino es: " << wayPointDestination << endl;
     //int waypointTargetNavMesh = cNavMeshTarget->waypoints.at(wayPointDestination);
     //COMPROBAMOS DIJKSTRA
     auto path = Dijkstra(graph,wayPointReference,wayPointDestination);
@@ -333,8 +341,10 @@ std::stack<int> SystemPathPlanning::Dijkstra(ManWayPoint* _graph, const uint16_t
 
 // DOBLE FREE OR CORRUPTION
 SystemPathPlanning::~SystemPathPlanning(){
-    for(int i = 0; i<graphSize; ++i){
-        delete[] graph[i];
+    if(graph){
+        for(int i = 0; i<graphSize; ++i){
+            delete[] graph[i];
+        }
+        delete[] graph;
     }
-    delete[] graph;
 }
