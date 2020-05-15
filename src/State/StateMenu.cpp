@@ -38,3 +38,7 @@ void StateMenu::Input(){
 void StateMenu::Update(){
     EventManager::GetInstance().Update();
 }
+
+StateMenu::~StateMenu(){
+    renderEngine->FacadeReleaseMenu();
+}

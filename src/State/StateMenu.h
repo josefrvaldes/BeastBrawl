@@ -13,7 +13,7 @@
 class StateMenu : public State{
     public:
         StateMenu();
-        ~StateMenu() override = default;
+        ~StateMenu() override;
         void Input() override;
         void InitState() override;
         void Update() override;

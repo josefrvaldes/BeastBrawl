@@ -24,9 +24,7 @@ StateInGame::StateInGame() {
 
     // aunque physics es un sistema, no se llama desde InitializeSystems
     // porque tiene que estar inicializado antes de llamar a InitializeManagers
-    cout << "------------------------------------------------------------------" << endl;
-    cout << "delta vale" << Constants::DELTA_TIME << endl;
-    cout << "------------------------------------------------------------------" << endl;
+
     //physics = make_unique<Physics>(Constants::DELTA_TIME);
 
     //cam = make_shared<Camera>(glm::vec3(100.0f, 0.0f, 30.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f));
@@ -36,7 +34,7 @@ StateInGame::StateInGame() {
 }
 
 StateInGame::~StateInGame() {
-    cout << "Llamamos al destructor de StateInGame" << endl;
+    renderEngine->FacadeReleaseStateInGame();
 }
 
 
