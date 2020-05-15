@@ -808,44 +808,54 @@ void RenderFacadeClover::FacadeInitSelectCharacter() {
     auto shader = resourceManager->GetResourceShader("CLEngine/src/Shaders/basicShader.vert","CLEngine/src/Shaders/basicShader.frag");
 
     //Penguin
-    auto animation = resourceManager->GetResourceAnimation("media/animations/cyberoctopus/selection/selectionoctopus_000001.obj", 31, false);
+    auto animationPen = resourceManager->GetResourceAnimation("media/animations/penguin/selection/selectionpenguin_000001.obj", 30, false);
     mesh = device->AddMesh(smgr,0,"media/thepenguin_selection.obj");
-    static_cast<CLMesh*>(mesh->GetEntity())->SetAnimation(animation);
+    static_cast<CLMesh*>(mesh->GetEntity())->SetAnimation(animationPen);
     mesh->SetScalation(glm::vec3(2.0f));
     mesh->SetTranslation(glm::vec3(0.0f,-14.0f,-20.0f));
     mesh->SetRotation(glm::vec3(10.0f,-50.0f, 5.0f));
     mesh->SetShaderProgramID(shader->GetProgramID());
 
     //Tiger
+    auto animationTig = resourceManager->GetResourceAnimation("media/animations/penguin/selection/selectionpenguin_000001.obj", 30, false);
     mesh = device->AddMesh(smgr,1,"media/mrsbaxter_selection.obj");
+    static_cast<CLMesh*>(mesh->GetEntity())->SetAnimation(animationTig);
     mesh->SetScalation(glm::vec3(2.0f));
     mesh->SetTranslation(glm::vec3(0.0f,-14.0f,-20.0f));
     mesh->SetRotation(glm::vec3(10.0f,-50.0f, 5.0f));
     mesh->SetShaderProgramID(shader->GetProgramID());
 
     //Shark
+    auto animationSha = resourceManager->GetResourceAnimation("media/animations/dragon/selection/selectiondragon_000001.obj", 30, false);
     mesh = device->AddMesh(smgr,2,"media/captainsharky_selection.obj");
+    static_cast<CLMesh*>(mesh->GetEntity())->SetAnimation(animationSha);
     mesh->SetScalation(glm::vec3(2.0f));
     mesh->SetTranslation(glm::vec3(0.0f,-14.0f,-20.0f));
     mesh->SetRotation(glm::vec3(10.0f,-50.0f, 5.0f));
     mesh->SetShaderProgramID(shader->GetProgramID());
 
     //Gorila
+    auto animationKong = resourceManager->GetResourceAnimation("media/animations/kong/selection/selectionkong_000001.obj", 30, false);
     mesh = device->AddMesh(smgr,3,"media/kaiserkong_selection.obj");
+    static_cast<CLMesh*>(mesh->GetEntity())->SetAnimation(animationKong);
     mesh->SetScalation(glm::vec3(2.0f));
     mesh->SetTranslation(glm::vec3(0.0f,-14.0f,-20.0f));
     mesh->SetRotation(glm::vec3(10.0f,-50.0f, 5.0f));
     mesh->SetShaderProgramID(shader->GetProgramID());
 
     //Dragon
+    auto animationDra = resourceManager->GetResourceAnimation("media/animations/dragon/selection/selectiondragon_000001.obj", 30, false);
     mesh = device->AddMesh(smgr,4,"media/deacondragon_selection.obj");
+    static_cast<CLMesh*>(mesh->GetEntity())->SetAnimation(animationDra);
     mesh->SetScalation(glm::vec3(2.0f));
     mesh->SetTranslation(glm::vec3(0.0f,-14.0f,-20.0f));
     mesh->SetRotation(glm::vec3(10.0f,-50.0f, 5.0f));
     mesh->SetShaderProgramID(shader->GetProgramID());
 
     //Octopus
+    auto animationCyb = resourceManager->GetResourceAnimation("media/animations/cyberoctopus/selection/selectionoctopus_000001.obj", 31, false);
     mesh = device->AddMesh(smgr,5,"media/cyberoctopus_selection.obj");
+    static_cast<CLMesh*>(mesh->GetEntity())->SetAnimation(animationCyb);
     mesh->SetScalation(glm::vec3(2.0f));
     mesh->SetTranslation(glm::vec3(0.0f,-14.0f,-20.0f));
     mesh->SetRotation(glm::vec3(10.0f,-50.0f, 5.0f));
