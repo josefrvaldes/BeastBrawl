@@ -11,7 +11,7 @@ struct Player {
    public:
     Player() = default;
     ~Player() = default;
-    void setId(uint16_t _id);
+    
 
     uint16_t id{nextId++};
     uint8_t character{0};
@@ -30,6 +30,8 @@ struct Player {
     int64_t lastCrashPUWallReceived{0};
     int64_t lastLaunchAnimationEndReceived{0};
     int64_t lastWaitingForCountdownReceived{0};
+    int64_t lastClockSyncReceived{0};
+    int64_t lastFinalClockSyncReceived{0};
 
     bool hasTotem {false};
     bool disconnected {false};
@@ -37,6 +39,6 @@ struct Player {
     bool waitingForCountdown {false};
 
 
-    static uint16_t nextId;
+    inline static uint16_t nextId{0};
    private:
 };

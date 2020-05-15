@@ -4,6 +4,7 @@
 #include <memory>
 
 #include <chrono>
+#include <memory>
 #include <iostream>
 #include "Player.h"
 
@@ -18,19 +19,23 @@ class TCPConnection : public std::enable_shared_from_this<TCPConnection> {
     public:
     ~TCPConnection();
     typedef std::shared_ptr<TCPConnection> pointer;
-    static pointer Create(TCPServer *tcpServer_, boost::asio::io_context& io_context, std::vector<Player> &p, std::vector<TCPConnection::pointer>& connect){ return pointer(new TCPConnection(tcpServer_, io_context, p, connect)); }
+    static pointer Create(TCPServer *tcpServer_, boost::asio::io_context& io_context, std::vector<std::shared_ptr<Player>> &p, std::vector<TCPConnection::pointer>& connect){ return pointer(new TCPConnection(tcpServer_, io_context, p, connect)); }
     tcp::socket& socket(){ return socket_;}
     void Start();
     void Close();
     void SendStartMessage(string datos);
-    void SendStartMessage(unsigned char *buff, size_t buffSize);
+    void SendStartMessage(std::shared_ptr<unsigned char[]> buff, size_t buffSize);
     void SendFullGame();
     void SendOpenGame();
+    void SendCharsSel(std::shared_ptr<unsigned char[]> buff, size_t buffSize);
     // Player *currentPlayer;
+
+    uint16_t ID {nextID++};
+    std::shared_ptr<Player> player;
 
 
    private:
-    TCPConnection(TCPServer *tcpServer_, asio::io_context& io_context, std::vector<Player> &p, std::vector<TCPConnection::pointer>& connect);
+    TCPConnection(TCPServer *tcpServer_, asio::io_context& io_context, std::vector<std::shared_ptr<Player>> &p, std::vector<TCPConnection::pointer>& connect);
     void HandleRead(std::shared_ptr<unsigned char[]> recevBuff, const boost::system::error_code& error, size_t bytes_transferred);
     void HandleWrite(const boost::system::error_code& error, size_t bytes_transferred);
     void DeleteMe();
@@ -38,7 +43,10 @@ class TCPConnection : public std::enable_shared_from_this<TCPConnection> {
     void HandleReceivedCatchChar(std::shared_ptr<unsigned char[]> recevBuff, const size_t currentBufferSize);
     void SendRequestSelChar(bool selected);
     void CancelChar();
+    void HandleSendOpenGame(const boost::system::error_code& error, size_t bytes_transferred);
 
+    inline static uint16_t nextID{0};
+    
     string GetTime() {
         auto time_point = system_clock::now();
         time_t now_c = system_clock::to_time_t(time_point);
@@ -47,10 +55,11 @@ class TCPConnection : public std::enable_shared_from_this<TCPConnection> {
         return salida;
     }
 
+
     TCPServer *tcpServer;
     tcp::socket socket_;
 
-    std::vector<Player> &players;
+    std::vector<std::shared_ptr<Player>> &players;
     std::vector<TCPConnection::pointer>& connections;
 
     //uint16_t sendBuff;
