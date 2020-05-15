@@ -315,12 +315,14 @@ void CLPhysics::RotateCarXZ(CTransformable &trcar, CBoundingChassis &chaCar, CBo
     auto resultante_Z = newR_Z * 100 / total;
     auto rotationX_exeZ = angleRotate * (resultante_Z / 100);
 
+    auto velRot = 130.0 * Constants::DELTA_TIME;
+
     auto rotationFinalX = rotationX_exeX + rotationX_exeZ;
-    if(abs(trcar.rotation.x - rotationFinalX) > 30.0 * Constants::DELTA_TIME ){  // deberia de multiplicarse por el delta
+    if(abs(trcar.rotation.x - rotationFinalX) > velRot ){  // deberia de multiplicarse por el delta
         if( trcar.rotation.x < rotationFinalX)
-            trcar.rotation.x += 30.0 * Constants::DELTA_TIME;
+            trcar.rotation.x += velRot;
         else
-            trcar.rotation.x -= 30.0 * Constants::DELTA_TIME;
+            trcar.rotation.x -= velRot;
     }else{
         trcar.rotation.x = rotationFinalX;
     }
@@ -336,11 +338,11 @@ void CLPhysics::RotateCarXZ(CTransformable &trcar, CBoundingChassis &chaCar, CBo
 
 
     auto rotationFinalZ = rotationZ_exeX + rotationZ_exeZ;
-    if(abs(trcar.rotation.z - rotationFinalZ) > 30.0 * Constants::DELTA_TIME ){  // deberia de multiplicarse por el delta
+    if(abs(trcar.rotation.z - rotationFinalZ) > velRot ){  // deberia de multiplicarse por el delta
         if( trcar.rotation.z < rotationFinalZ)
-            trcar.rotation.z += 30.0 * Constants::DELTA_TIME;
+            trcar.rotation.z += velRot;
         else
-            trcar.rotation.z-= 30.0 * Constants::DELTA_TIME;
+            trcar.rotation.z-= velRot;
     }else{
         trcar.rotation.z = rotationFinalZ;
     }
@@ -348,7 +350,7 @@ void CLPhysics::RotateCarXZ(CTransformable &trcar, CBoundingChassis &chaCar, CBo
 
 
 void CLPhysics::RePositionCarY(CTransformable &trCar, CBoundingSphere &sp1Car, CBoundingSphere &sp2Car) const {
-    trCar.position.y = ((sp1Car.center.y + sp2Car.center.y) / 2) /*- sp1Car.radiusFloor*/;
+    trCar.position.y = ((sp1Car.center.y + sp2Car.center.y) / 2) - sp1Car.radiusFloor-2.0;
 }
 
 void CLPhysics::RePositionEntityY(CTransformable &trEntity, CBoundingSphere &sphere) const {
