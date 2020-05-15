@@ -303,7 +303,7 @@ void Game::MainLoop() {
 
     renderFacadeMan->GetRenderFacade()->FacadeDeviceDrop();
 
-    cout << "Game Main Loop" << endl;
+    //cout << "Game Main Loop" << endl;
 }
 
 void Game::TerminateGame() {

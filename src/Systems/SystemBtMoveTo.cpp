@@ -270,7 +270,7 @@ SystemBtMoveTo::SystemBtMoveTo(){
         shared_ptr<MoveToCarTotem_mt> a_moveToCarTotem =       make_shared<MoveToCarTotem_mt>();
 
 
-    std::cout << "------------------------ Behaviour Move To --------------------------------" << std::endl;
+    //std::cout << "------------------------ Behaviour Move To --------------------------------" << std::endl;
     // ASIGNACION DEL ARBOL DE DECISIONES
 
     // el totem esta en el suelo?

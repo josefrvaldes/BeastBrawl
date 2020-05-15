@@ -31,6 +31,11 @@ void ManParticleSystem::SubscribeToEvents(){
                 EventType::CREATE_PARTICLES_COLLISION_POWERUP,
                 bind(&ManParticleSystem::CreateParticlePowerUpCollision, this, placeholders::_1),
                 "CreateParticlePowerUpCollision"});
+
+    EventManager::GetInstance().SubscribeMulti(Listener{
+                EventType::CREATE_PARTICLES_ROBOJOROBO,
+                bind(&ManParticleSystem::CreateParticleRobojorobo, this, placeholders::_1),
+                "CreateParticleRobojorobo"});
 }
 
 void ManParticleSystem::ActivateParticlesBoxPowerUp(DataMap* data){
@@ -86,4 +91,20 @@ void ManParticleSystem::CreateParticlePowerUpCollision(DataMap* data){
     CreateParticleSystem(-1,position,15,glm::vec3(400.0f,400.0f,400.0f),texturePs2,10,10,100,15,180,glm::vec3(0.0f,0.0f,0.0f),glm::vec3(0.0f,0.0f,0.0f),5, 0x1,false,true);
 
     renderEngine->FacadeAddObject(entities[entities.size()-1].get());
+}
+
+void ManParticleSystem::CreateParticleRobojorobo(DataMap* data){
+    auto renderEngine = RenderFacadeManager::GetInstance()->GetRenderFacade();
+
+    vector<string> texturePs;
+    texturePs.push_back("media/robojoroboParticle.png");
+
+
+    auto transformable = any_cast<CTransformable*>((*data)[CAR_TRANSFORMABLE]);
+
+    CreateParticleSystem(-1, glm::vec3(transformable->position.x,transformable->position.y +8, transformable->position.z), 50, glm::vec3(0.0f, 100.0f, 0.0f), texturePs, 5, 5, 50, 10, 200, glm::vec3(10.0f, 0.0f, 10.0f), glm::vec3(0.0f, 0.0f, 0.0f), 0, 0x4, false, true);
+
+    renderEngine->FacadeAddObject(entities[entities.size()-1].get());
+
+
 }

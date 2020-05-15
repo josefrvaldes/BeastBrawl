@@ -437,7 +437,13 @@ void ManCar::NewUsedRoboJoroboReceived(DataMap* d) {
                 ObtainTotem(car.get(), true);
             }else if(cTotem->active == true){
                 ThrowTotem(car.get(), true);
+
+                shared_ptr<DataMap> data = make_shared<DataMap>();
+                (*data)[DataType::CAR_TRANSFORMABLE] = static_cast<CTransformable*>(car->GetComponent(CompType::TransformableComp).get());
+                EventManager::GetInstance().AddEventMulti(Event{EventType::CREATE_PARTICLES_ROBOJOROBO, data});
             }
+
+            
         }
     }
 }
@@ -562,7 +568,7 @@ void ManCar::ObtainTotem(Entity* carWinTotem, bool stolen) {
 }
 
 void ManCar::ThrowTotem(Entity* carLoseTotem, bool stolen) {
-    cout << "Se ha llamado al throwTotem" << endl;
+    //cout << "Se ha llamado al throwTotem" << endl;
     auto cTotem = static_cast<CTotem*>(carLoseTotem->GetComponent(CompType::TotemComp).get());
     cTotem->active = false;
     cTotem->accumulatedTime += duration_cast<milliseconds>(system_clock::now() - cTotem->timeStart).count();
@@ -590,6 +596,11 @@ bool ManCar::useRoboJorobo(Entity* newCarWithTotem) {
             // Si algun coche tenia el totem .... lo pierde, comprobamos que no sea el mmismo coche con las ID
             if (cTotem->active == true && newCarWithTotem != cars.get()) {
                 ThrowTotem(cars.get(), true);
+
+                shared_ptr<DataMap> data = make_shared<DataMap>();
+                (*data)[DataType::CAR_TRANSFORMABLE] = static_cast<CTransformable*>(cars->GetComponent(CompType::TransformableComp).get());
+                EventManager::GetInstance().AddEventMulti(Event{EventType::CREATE_PARTICLES_ROBOJOROBO, data});
+
                 //al perderlo se lo asignamos al que ha usado el robo jorobo
                 ObtainTotem(newCarWithTotem, true);
                 return true;  // para salirnos y no hacer mas calculos
@@ -899,7 +910,7 @@ void ManCar::CatchPowerUpAI(DataMap* d) {
         type = typeCPowerUp::MelonMolon;
     }
 
-    // type = typeCPowerUp::PudinDeFrambuesa;
+    //type = typeCPowerUp::RoboJorobo;
     //cout << "EL VALOR QUE SALE ES: " << indx << " - CORRESPONDIENTE AL PU: " << (int)type << endl;
 
     // int64_t time = Utils::getMillisSinceEpoch();

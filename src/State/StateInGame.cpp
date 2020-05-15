@@ -438,7 +438,7 @@ void StateInGame::GoToCountdownAnimation() {
     soundEngine->SetState(12);
     // ponemos como próximo state el countdown
     currentUpdateState = UpdateState::COUNTDOWN;
-    cout << "Cambiamos a UpdateCountdown" << endl;
+    //cout << "Cambiamos a UpdateCountdown" << endl;
     // actualizamos la pos de la cámara para que se ponga detrás del coche principal
     manCamera->Update();
     renderEngine->UpdateCamera(manCamera.get()->getCamera(), manCars.get());

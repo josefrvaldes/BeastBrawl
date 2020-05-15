@@ -24,6 +24,7 @@ class ManParticleSystem : public Manager{
 
     void ActivateParticlesBoxPowerUp(DataMap* data);
     void CreateParticlePowerUpCollision(DataMap* data);
+    void CreateParticleRobojorobo(DataMap* data);
 
 
    private:
