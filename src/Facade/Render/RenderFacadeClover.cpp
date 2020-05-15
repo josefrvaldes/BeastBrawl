@@ -751,8 +751,12 @@ void RenderFacadeClover::FacadeInitResources(){
     resourceManager->GetResourceTexture("media/hudGorilla.png", true);
     resourceManager->GetResourceTexture("media/hudDragon.png", true);
     resourceManager->GetResourceTexture("media/hudOctopus.png", true);
+
+    resourceManager->GetResourceTexture("media/totemCogido.png", true);
+    resourceManager->GetResourceTexture("media/totemSuelo.png", true);
     resourceManager->GetResourceTexture("media/marcador.png", true);
     resourceManager->GetResourceTexture("media/Minimapa240v2.png", true);
+
     //Events hud
     resourceManager->GetResourceTexture("media/stoleHUD.png", true);
     resourceManager->GetResourceTexture("media/loseHUD.png", true);
@@ -1342,6 +1346,7 @@ void RenderFacadeClover::FacadeDrawMenu() {
 
 void RenderFacadeClover::FacadeDrawSelectCharacter() {
 
+
     //Ponemos visible solamente el que esta seleccionado
     for(uint8_t i=0; i<=maxInputSC ; i++){
         auto node = device->GetNodeByID(i);
@@ -1365,6 +1370,21 @@ void RenderFacadeClover::FacadeDrawSelectCharacter() {
         "media/menu/character/octopus_selected.png"
     };
     device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.8f, files[inputSC], true);
+
+
+    vector<uint8_t> catched = GameValues::GetInstance()->GetCharacterSel();
+    for (uint8_t c : catched ) {
+        switch (c) {
+            case static_cast<uint8_t>(mainCharacter::PENGUIN):  file = "media/LobbyOnline/penguin_catched.png";    break;
+            case static_cast<uint8_t>(mainCharacter::TIGER):    file = "media/LobbyOnline/tiger_catched.png";      break;
+            case static_cast<uint8_t>(mainCharacter::SHARK):    file = "media/LobbyOnline/sharky_catched.png";    break;
+            case static_cast<uint8_t>(mainCharacter::GORILLA):  file = "media/LobbyOnline/gorila_catched.png";    break;
+            case static_cast<uint8_t>(mainCharacter::DRAGON):   file = "media/LobbyOnline/dragon_catched.png";    break;
+            case static_cast<uint8_t>(mainCharacter::OCTOPUS):  file = "media/LobbyOnline/octopus_catched.png";    break;
+            default: file = "media/LobbyOnline/penguin_catched.png"; break;
+        }
+        device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.7f, file, true);
+    }
         
     device->SetEnableDepthTest(true);
 
@@ -1507,6 +1527,7 @@ void RenderFacadeClover::FacadeDrawEndRace() {
     else if (h < 675) { scale = 0.5; }
 
     std::string file = "media/menu/endrace/finish_menu_bg.png";
+    if ( !gamepadConnected ) { file = "media/menu/endrace/finish_menu_bg_keyboard.png"; }
     device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.9f, file, true);
 
     file = "media/menu/endrace/finish_title.png";
@@ -1597,8 +1618,9 @@ void RenderFacadeClover::FacadeDrawEndTournament() {
     else if (h < 475 ) { scale = 0.25; }
     else if (h < 675) { scale = 0.5; }
 
-    std::string file = "media/menu/endrace/finish_menu_bg.png";
     std::string name = "Mr Penguin";
+    std::string file = "media/menu/endrace/finish_menu_bg.png";
+    if ( !gamepadConnected ) { file = "media/menu/endrace/finish_menu_bg_keyboard.png"; }
     device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.9f, file, true);
 
     auto rank = GameValues::GetInstance()->GetRanking();
@@ -1611,8 +1633,10 @@ void RenderFacadeClover::FacadeDrawEndTournament() {
 
     if(menuET == 0){
         // numCarreras
+        file = "media/menu/endrace/tournament/t_ncarrers.png";
+        device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.85f, file, true);
         file = std::to_string(GameValues::GetInstance()->GetActualBattle()) + "/" + std::to_string(GameValues::GetInstance()->GetNumBattles());
-        device->RenderText2D(file, posX + 950.0f*scale, posYText - (-100)*scale, 0.8f, 1.25*scale, glm::vec3(0.0f,0.0f,0.0f));
+        device->RenderText2D(file, w - 225.0f*scale, h - 125.0f*scale, 0.8f, 1.25*scale, glm::vec3(0.0f,0.0f,0.0f));
 
         file = "media/menu/endrace/finish_menu_time.png";
         device->DrawImage2D(w/2 + 415.0f*scale, posY, 0.7f*scale, 0.7f, file, true);
@@ -1670,8 +1694,10 @@ void RenderFacadeClover::FacadeDrawEndTournament() {
     } else if(menuET==1) {
 
         // numCarreras
+        file = "media/menu/endrace/tournament/t_ncarrers.png";
+        device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.85f, file, true);
         file = std::to_string(GameValues::GetInstance()->GetActualBattle()) + "/" + std::to_string(GameValues::GetInstance()->GetNumBattles());
-        device->RenderText2D(file, posX + 950.0f*scale, posYText - (-100)*scale, 0.6f, 1.25*scale, glm::vec3(0.0f,0.0f,0.0f));
+        device->RenderText2D(file, w - 225.0f*scale, h - 125.0f*scale, 0.8f, 1.25*scale, glm::vec3(0.0f,0.0f,0.0f));
 
         file = "media/menu/endrace/tournament/pts_total.png";
         device->DrawImage2D(w/2 + 395.0f*scale, posY + 30.0f*scale, 0.7f*scale, 0.7f, file, true);
