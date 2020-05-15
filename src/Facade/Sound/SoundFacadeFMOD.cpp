@@ -195,9 +195,9 @@ void SoundFacadeFMOD::SubscribeToGameEvents(const uint8_t numState) {
                     "SoundBreakBox"});
 
             EventManager::GetInstance().SubscribeMulti(Listener{
-                    EventType::DRIFT,
-                    bind(&SoundFacadeFMOD::SoundBreakBox, this, placeholders::_1),
-                    "SoundBreakBox"});
+                    EventType::DRIFTS,
+                    bind(&SoundFacadeFMOD::SoundDrift, this, placeholders::_1),
+                    "SoundDrift"});
 
 
             // --- STOP
@@ -206,11 +206,6 @@ void SoundFacadeFMOD::SubscribeToGameEvents(const uint8_t numState) {
                     EventType::NO_SHIELD,
                     bind(&SoundFacadeFMOD::StopShield, this, placeholders::_1),
                     "StopShield"});
-
-            EventManager::GetInstance().SubscribeMulti(Listener{
-                    EventType::NO_DRIFT,
-                    bind(&SoundFacadeFMOD::StopDrift, this, placeholders::_1),
-                    "StopDrift"});
 
             EventManager::GetInstance().SubscribeMulti(Listener{
                     EventType::NOT_CLOCK,
@@ -239,16 +234,6 @@ void SoundFacadeFMOD::SubscribeToGameEvents(const uint8_t numState) {
                     EventType::MENU_OK,
                     bind(&SoundFacadeFMOD::SoundMenuOk, this, placeholders::_1),
                     "SoundMenuOk"});
-
-            /*EventManager::GetInstance().SubscribeMulti(Listener{
-                    EventType::VICTORY,
-                    bind(&SoundFacadeFMOD::SoundVictory, this, placeholders::_1),
-                    "SoundVictory"});
-
-            EventManager::GetInstance().SubscribeMulti(Listener{
-                    EventType::DEFEAT,
-                    bind(&SoundFacadeFMOD::SoundDefeat, this, placeholders::_1),
-                    "SoundDefeat"});*/
             break;
         case 6:         // LOBBY
             EventManager::GetInstance().SubscribeMulti(Listener{
@@ -355,8 +340,10 @@ void SoundFacadeFMOD::LoadSoundByState(const uint8_t numState) {
         case 8:       // SETTINGS
             cout << "Estado de ajustes" << endl; 
             break;
-        /*case 9:       // CREDITS
-            break;*/
+        case 9:       // CREDITS
+            StopEvent("Musica/menu");
+            PlayEvent("Musica/credits");
+            break;
         /*case 10:      // CONTROLS
             break;*/
         case 11:        // Extra: ANIMATION END
@@ -502,11 +489,14 @@ void SoundFacadeFMOD::UpdateCars(const vector<shared_ptr<Entity> > &e) {
         auto cPos = static_cast<CTransformable*>(car->GetComponent(CompType::TransformableComp).get());
         auto cCar = static_cast<CCar*>(car->GetComponent(CompType::CarComp).get());
         if(cPos && cId && cCar) {
+            //cout << "*************** ACTUALIZANDO COCHE: " << cId->id << endl;
             string name = "Coche/motor" + to_string(cId->id);
             SetEventPositionDinamic3D(name, cPos->position, cCar->speed);
+            //cout << "******** El sonido del motor del coche ha cambiado a la posicion: " << cPos->position.x << " - " << cPos->position.y << " - " << cPos->position.z << endl;
             SetParameter(name, "velocidad", cCar->speed);
             name = "PowerUp/escudo" + to_string(cId->id);
             SetEventPositionDinamic3D(name, cPos->position, cCar->speed);
+            //cout << "******** El sonido del escudo ha cambiado a la posicion: " << cPos->position.x << " - " << cPos->position.y << " - " << cPos->position.z << endl;
             //name = "Coche/derrape" + to_string(cId->id);
 
         }
@@ -524,16 +514,16 @@ void SoundFacadeFMOD::UpdateCars(const vector<shared_ptr<Entity> > &e) {
         auto cType = static_cast<CPowerUp*>(pu->GetComponent(CompType::PowerUpComp).get());
         if(cPos && cId && cType) {
             //cout << "Actualizo el PU: " << cId->id << endl;
-            if (int(cType->typePowerUp) == 3) {
+            if (cType->typePowerUp == typeCPowerUp::PudinDeFrambuesa) {
                 name = "PowerUp/pudin" + to_string(cId->id);
                 soundEngine->Set3DAttributes(name, cPos->position, 0.0);
-            } else if (int(cType->typePowerUp) == 5) {
+            } else if (cType->typePowerUp == typeCPowerUp::TeleBanana) {
                 name = "PowerUp/telebanana" + to_string(cId->id);
                 soundEngine->Set3DAttributes(name, cPos->position, 0.0);
                 //cout << "TELEBANANA A: " << cPos->position.x << " - " << cPos->position.z << endl;
                 name = "PowerUp/choque_powerup" + to_string(cId->id);
                 soundEngine->Set3DAttributes(name, cPos->position, 0.0);
-            } else if (int(cType->typePowerUp) == 6) {
+            } else if (cType->typePowerUp == typeCPowerUp::MelonMolon) {
                 name = "PowerUp/melonmolon" + to_string(cId->id);
                 soundEngine->Set3DAttributes(name, cPos->position, 0.0);
                 //cout << "MELON A: " << cPos->position.x << " - " << cPos->position.z << endl;
@@ -653,8 +643,8 @@ void SoundFacadeFMOD::SoundHurt(DataMap* d) {
     
     srand (time(NULL));
     // Del 1 al 3
-    auto num = rand() % 3 + 1;
-    if (mainCharacter && num == 3) {
+    auto num = rand() % 2 + 1;
+    if (mainCharacter && num == 2) {
         SetParameter("Personajes/voces", "Tipo", TipoVoz::ChoquePowerup);
         PlayEvent("Personajes/voces");
     }
@@ -678,8 +668,8 @@ void SoundFacadeFMOD::SoundCrash(DataMap* d) {
     
     srand (time(NULL));
     // Del 1 al 3
-    auto num = rand() % 3 + 1;
-    if (mainCharacter && num == 3) {
+    auto num = rand() % 2 + 1;
+    if (mainCharacter && num == 2) {
         SetParameter("Personajes/voces", "Tipo", TipoVoz::ChoqueEnemigo);
         PlayEvent("Personajes/voces");
     }
@@ -710,9 +700,13 @@ void SoundFacadeFMOD::SoundBreakBox(DataMap* d) {
 }                    
 
 void SoundFacadeFMOD::SoundDrift(DataMap* d) {
-    /*eventInstances3DD["Coche/derrape"] = CreateInstance("Coche/derrape");
-    //SetParameter("Personajes/voces", "Tipo", TipoVoz::Derrape);
-    PlayEvent("Coche/derrape");*/
+    //eventInstances3DD["Coche/derrape"] = CreateInstance("Coche/derrape");
+    srand (time(NULL));
+    auto num = rand() % 6 + 1;
+    if (num == 6) {
+        SetParameter("Personajes/voces", "Tipo", TipoVoz::Derrape);
+        PlayEvent("Personajes/voces");
+    }
 }
 
 
@@ -740,7 +734,7 @@ void SoundFacadeFMOD::SoundThrowPowerup(DataMap* d) {
 
     srand (time(NULL));
     // Del 1 al 3
-    auto num = rand() % 3 + 1;
+    auto num = rand() % 2 + 1;
 
     switch (typepw) {
         case typeCPowerUp::RoboJorobo: {
@@ -758,7 +752,7 @@ void SoundFacadeFMOD::SoundThrowPowerup(DataMap* d) {
             break;
         }
         case typeCPowerUp::SuperMegaNitro: {
-            if (mainCar && num != 3) {          // Le pongo probabilidad de 66% porque joe
+            if (mainCar && num == 2) {         
                 SetParameter("Personajes/voces", "Tipo", TipoVoz::Nitro);
                 PlayEvent("Personajes/voces");
             }
@@ -770,21 +764,21 @@ void SoundFacadeFMOD::SoundThrowPowerup(DataMap* d) {
             break;
         }
         case typeCPowerUp::MelonMolon: {
-            if (mainCar && num == 3) {
+            if (mainCar && num == 2) {
                 SetParameter("Personajes/voces", "Tipo", TipoVoz::Powerup);
                 PlayEvent("Personajes/voces");
             }
             break;
         }
         case typeCPowerUp::TeleBanana: {
-            if (mainCar && num == 3) {
+            if (mainCar && num == 2) {
                 SetParameter("Personajes/voces", "Tipo", TipoVoz::Powerup);
                 PlayEvent("Personajes/voces");
             }
             break;
         }
         case typeCPowerUp::PudinDeFrambuesa: {
-            if (mainCar && num == 3) {
+            if (mainCar && num == 2) {
                 SetParameter("Personajes/voces", "Tipo", TipoVoz::Powerup);
                 PlayEvent("Personajes/voces");
             }

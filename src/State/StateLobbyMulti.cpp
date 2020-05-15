@@ -17,15 +17,16 @@ StateLobbyMulti::StateLobbyMulti() : tcpClient{make_shared<TCPClient>(Constants:
     renderEngine->FacadeInitLobbyMulti();
 
     SubscribeToEvents();
+    InitState();
 }
 
 // Cargamos los bancos de sonido Menu.
 void StateLobbyMulti::InitState() {
-    // if (!soundEngine){
-    //     soundEngine = SoundFacadeManager::GetInstance()->GetSoundFacade();
-    // }
-    // Estado a 6, no hace nada de sonido
-    // soundEngine->SetState(6);
+    if (!soundEngine){
+        soundEngine = SoundFacadeManager::GetInstance()->GetSoundFacade();
+    }
+    // Usa el mismo que selec character
+    soundEngine->SetState(2);
 }
 
 void StateLobbyMulti::Render() {

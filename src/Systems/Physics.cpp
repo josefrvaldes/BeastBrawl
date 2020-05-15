@@ -322,6 +322,7 @@ void Physics::Skid(Car *car){
     if(cCar->skidState == SkidState::DISABLED ){ // Reiniciamos el reloj y comenzamos, en caso de pulsar una de las dos direcciones dentro de un tiempo comenzara el giro del derrape
         cCar->skidStart = system_clock::now();
         cCar->skidState = SkidState::SKID_START;
+        EventManager::GetInstance().AddEventMulti(Event{EventType::DRIFTS});
     }/*else if(cCar->skidState == SkidState::SKID_START && duration_cast<milliseconds>(system_clock::now() - cCar->skidStart).count() > cCar->skidAnimationTime){
         cCar->skidState = SkidState::DISABLED;
     }*/
