@@ -1,5 +1,9 @@
 #include "CLResourceManager.h"
 
+
+#include <mutex>
+#include "../../../src/Constants.h"
+
 using namespace CLE;
 
 CLResourceManager::CLResourceManager() {
@@ -26,7 +30,9 @@ CLResourceMesh* CLResourceManager::GetResourceMesh(const std::string file, bool 
         resource = make_shared<CLResourceMesh>();
         resource->SetName(file);
         if (resource->LoadFile(file, flipUV)) {
+            my_mutex.lock();
             meshes.push_back(resource);
+            my_mutex.unlock();
         }
     }
 
@@ -34,15 +40,84 @@ CLResourceMesh* CLResourceManager::GetResourceMesh(const std::string file, bool 
 }
 
 
-vector<CLResourceMesh*> CLResourceManager::GetResourceAnimation(const std::string path, uint8_t numKeyFrames, bool flipUV) {
+vector<CLResourceMesh*> CLResourceManager::LoadResourceAnimation(const std::string path, uint8_t numKeyFrames, bool flipUV) {
     string folder = path.substr(0, path.find_last_of("/") + 1);
-    string fileName = path.substr(path.find_last_of("/") + 1).substr(3);
+    // string fileName = path.substr(path.find_last_of("/") + 1).substr(3);
+    const uint8_t NUMERIC_PART_OF_THE_FILENAME = 11;
+    string completeFileName = path.substr(path.find_last_of("/") + 1);
+    string fileNameWithoutNumericPart = completeFileName.substr(0, completeFileName.length() - NUMERIC_PART_OF_THE_FILENAME);
     vector<CLResourceMesh*> keyFrames;
-    for(uint8_t i = 1; i <= numKeyFrames; i++) {
+
+
+
+    string stringIndex = std::to_string(1);
+    // añade ceros al principio para que el fichero no sea 1ojete.obj, sino que sea 001ojete.obj
+    string auxIndex = std::string(6 - stringIndex.length(), '0') + stringIndex; 
+    string totalPath = folder + fileNameWithoutNumericPart + "_" + auxIndex + ".obj";
+
+    CLResourceMesh *resource = GetResourceMesh(totalPath, flipUV);
+    keyFrames.push_back(resource);
+    // for (unsigned i = 0; i < thread::hardware_concurrency(); ++i)
+    //     tg.create_thread(boost::bind(&boost::asio::io_context::run, &context));
+
+    // ...
+    //
+    boost::asio::thread_pool tp2{4};
+    for(uint8_t i = 2; i <= numKeyFrames; i++) {
         string stringIndex = std::to_string(i);
         // añade ceros al principio para que el fichero no sea 1ojete.obj, sino que sea 001ojete.obj
-        string auxIndex = std::string(3 - stringIndex.length(), '0') + stringIndex; 
-        string totalPath = folder + auxIndex + fileName;
+        string auxIndex = std::string(6 - stringIndex.length(), '0') + stringIndex; 
+        string totalPath = folder + fileNameWithoutNumericPart + "_" + auxIndex + ".obj";
+        // shared_ptr<boost::thread> t = make_shared<boost::thread>([&, totalPath](){
+        //     boost::asio::post(context,[&, totalPath](){
+        //         CLResourceMesh *resource = GetResourceMesh(totalPath, flipUV);
+        //         keyFrames.push_back(resource);
+        //     });
+        // });
+        // threads.push_back(t);
+        // boost::asio::post(context, [&, totalPath](){
+        //     CLResourceMesh *resource = GetResourceMesh(totalPath, flipUV);
+        //     keyFrames.push_back(resource);
+        // });
+
+        boost::asio::post(tp2, [&, totalPath](){
+            CLResourceMesh *resource = GetResourceMesh(totalPath, flipUV);
+            my_mutex.lock();
+            keyFrames.push_back(resource);
+            std::cout << "Dentro del lambda keyFrames tiene " << keyFrames.size() << " frames" << endl;
+            my_mutex.unlock();
+        });
+    }
+    std::cout << "Antes del join keyFrames tiene " << keyFrames.size() << " frames" << endl;
+    tp2.join();
+    std::cout << "Después del join keyFrames tiene " << keyFrames.size() << " frames" << endl;
+    std::cout << "Ahora vamos a devolver el array de keyframes" << endl;
+    return keyFrames;
+}
+
+
+vector<CLResourceMesh*> CLResourceManager::GetResourceAnimation(const std::string path, uint8_t numKeyFrames, bool flipUV) {
+    string folder = path.substr(0, path.find_last_of("/") + 1);
+    // string fileName = path.substr(path.find_last_of("/") + 1).substr(3);
+    const uint8_t NUMERIC_PART_OF_THE_FILENAME = 11;
+    string completeFileName = path.substr(path.find_last_of("/") + 1);
+    string fileNameWithoutNumericPart = completeFileName.substr(0, completeFileName.length() - NUMERIC_PART_OF_THE_FILENAME);
+    vector<CLResourceMesh*> keyFrames;
+
+    // for (unsigned i = 0; i < thread::hardware_concurrency(); ++i)
+    //     tg.create_thread(boost::bind(&boost::asio::io_context::run, &context));
+
+    // ...
+    //
+    
+    uint8_t realKeyFrames = numKeyFrames;
+    if(Constants::ANIM_ACTIVATED == 0)
+        realKeyFrames = 1;
+    for(uint8_t i = 1; i <= realKeyFrames; i++) {
+        string stringIndex = std::to_string(i);
+        // añade ceros al principio para que el fichero no sea 1ojete.obj, sino que sea 001ojete.obj
+        string auxIndex = std::string(6 - stringIndex.length(), '0') + stringIndex; 
+        string totalPath = folder + fileNameWithoutNumericPart + "_" + auxIndex + ".obj";
         CLResourceMesh *resource = GetResourceMesh(totalPath, flipUV);
         keyFrames.push_back(resource);
     }
