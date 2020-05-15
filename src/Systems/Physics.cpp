@@ -61,7 +61,7 @@ void Physics::CalculatePosition(CCar *cCar, CTransformable *cTransformable, CSpe
     //cSpeed->speed.y = 0.f;                 // TODO, esto lo cacharreará el CLPhysics
     cTransformable->position.x += finalForce.x * deltaTime;
     cTransformable->position.z += finalForce.y * deltaTime;
-    cout << "JUG2se ha aplicado una speed real de (" << finalForce.x * deltaTime << ",0," << finalForce.y * deltaTime << ")" << endl; 
+    // cout << "JUG2se ha aplicado una speed real de (" << finalForce.x * deltaTime << ",0," << finalForce.y * deltaTime << ")" << endl; 
 
     // Rotacion del coche
     if(cCar->skidRotation != 0){
