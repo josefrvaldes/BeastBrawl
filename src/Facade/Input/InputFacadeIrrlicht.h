@@ -54,6 +54,7 @@ class InputFacadeIrrlicht : public InputFacade{
         ~InputFacadeIrrlicht() override = default;
         vector<Constants::InputTypes> CheckInputMulti() override;
         bool ShowTable(bool inputTable) override { return inputTable;};
+        void ShowTable(Constants::ShowTableMinimap&) override {};
         bool CheckInputSingle() override;
         void CheckInputMenu(int&, int) override;
         void CheckInputSelectCharacter(int&, int) override;
@@ -63,7 +64,10 @@ class InputFacadeIrrlicht : public InputFacade{
         void CheckInputIntro() override;
         void CheckInputEndRace(int&, int, bool) override;
         void CheckInputEndTournament(int&, int, uint8_t) override {};
-        void CheckInputLobbyMulti() override;
+        void CheckInputLobbyMultiConnecting() override;
+        void CheckInputLobbyMultiWait() override {};
+        void CheckInputLobbyMultiExit() override {};
+        void CheckInputLobbyMultiSelChar(int &, int) override {};
         void CheckInputController() override;
         void CheckInputCredits() override;
         void CheckInputSettings(std::vector<int> &inputs, int maxInputs[], int& option) override;

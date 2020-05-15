@@ -26,8 +26,12 @@ class InputFacadeClover : public InputFacade{
         void CheckInputTournamentOptions(std::vector<int>&, int[], int&) override;
 
         bool ShowTable(bool) override;
+        void ShowTable(Constants::ShowTableMinimap&) override;
         bool CheckInputSingle()  override;
-        void CheckInputLobbyMulti() override;
+        void CheckInputLobbyMultiConnecting() override;
+        void CheckInputLobbyMultiWait() override;
+        void CheckInputLobbyMultiExit() override;
+        void CheckInputLobbyMultiSelChar(int &, int) override;
         vector<Constants::InputTypes> CheckInputMulti()override;
 
         void CheckInputPause(int&, int)   override;
@@ -48,6 +52,11 @@ class InputFacadeClover : public InputFacade{
         void CheckInputRight(std::vector<int>&, int[], int&);
         void CheckInputBack();
 
+        void CheckInputSelCharUpDown(int&);
+        void CheckInputSelCharLeft(int&, int);
+        void CheckInputSelCharRight(int&, int);
+        void CheckInputSelCharIntro(int&);
+
         CLEngine* device;
 
         enum InputXBox{BUTTON_A, BUTTON_B, BUTTON_X, BUTTON_Y, BUTTON_LB, BUTTON_RB, BUTTON_BACK, BUTTON_START, BUTTON_XBOX, BUTTON_STICK_UP, BUTTON_STICK_DOWN, BUTTON_STICK_L, BUTTON_STICK_R, END};
@@ -59,6 +68,9 @@ class InputFacadeClover : public InputFacade{
         bool IsInputPressed(InputXBox input);
         void SetValueInput(InputXBox input, bool valuePressed);
         bool IsKeyOrGamepadPress(int key, int button1, bool axes, float axe, int button2, bool doubleGamepad);
+        bool IsKeyPress(int key);
+        bool IsGamepadPress(int key);
+        bool IsGamepadAxisPress(int button1, float axes);
         bool HasDelayPassed();
 
         bool WeHaveToGoToMenu {false}; // esto sirve para que se oiga el sonidito de pasar desde pausa ingame hasta menú, es una chapuza pero no quiero perder más tiempo en esa chorrada

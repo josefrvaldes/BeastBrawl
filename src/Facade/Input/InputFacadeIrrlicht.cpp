@@ -28,7 +28,7 @@ void InputFacadeIrrlicht::CheckInputIntro() {
 
 }
 
-void InputFacadeIrrlicht::CheckInputLobbyMulti() {
+void InputFacadeIrrlicht::CheckInputLobbyMultiConnecting() {
 
 }
 

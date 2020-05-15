@@ -354,7 +354,7 @@ void CLNode::CalculateBoundingBoxOBB(){
 
     frustum_ = typeFrustum::OBB;
 
-    cout << "Los extremos son: " << endl;
-    cout << "minimo: ( " << extremeMinMesh.x<< " , " << extremeMinMesh.y<< " , " <<extremeMinMesh.z<< 
-    " ) , maximo: " << extremeMaxMesh.x<< " , " << extremeMaxMesh.y<< " , " << extremeMaxMesh.z<< " )"<< endl;
+    //cout << "Los extremos son: " << endl;
+    //cout << "minimo: ( " << extremeMinMesh.x<< " , " << extremeMinMesh.y<< " , " <<extremeMinMesh.z<< 
+    //" ) , maximo: " << extremeMaxMesh.x<< " , " << extremeMaxMesh.y<< " , " << extremeMaxMesh.z<< " )"<< endl;
 }

@@ -20,6 +20,8 @@ class ManGameRules{
     const unordered_map<uint16_t, glm::vec2>& GetPositionsPlane()   { return positionsPlane; };
     const glm::vec2& GetPositionTotemPlane()                         { return positionTotemPlane; };
 
+    void InitializeMiniMap(const vector<shared_ptr<Entity>> &cars, const vector<shared_ptr<Entity>> &totems);
+
     void SubscribeToEvents();
     void RestartAllTimers(vector<shared_ptr<Entity>> entities, int64_t timeStartPause);
     void ResetClock();
@@ -32,11 +34,16 @@ class ManGameRules{
     bool Update(const vector<shared_ptr<Entity>> &cars, const vector<shared_ptr<Entity>> &totems);
     unique_ptr<Entity>& GetGlobalClock() { return globalClock; };
 
+    glm::vec3 GetPosTotem(){return posTotem; }; 
+    bool GetActiveTotem(){return activeTotem; }; 
+
    private:
     void CreateMayanMap();
     void CreateGlobalClock( const uint32_t durationTime_ );
     unique_ptr<Entity> globalClock;
     unique_ptr<SystemGameRules> systemGameRules;
+    glm::vec3 posTotem;
+    bool activeTotem;
 
     unordered_map<uint16_t, glm::vec2> positionsPlane;
     glm::vec2 positionTotemPlane { glm::vec2(-1, -1) };

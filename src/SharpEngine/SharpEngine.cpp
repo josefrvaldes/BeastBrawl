@@ -568,6 +568,7 @@ void SharpEngine::SetEventPosition3D(FMOD_STUDIO_EVENTINSTANCE * i, const glm::v
  * @param pos - Posicion a la que hay que poner el sonido.
  */
 void SharpEngine::Set3DAttributes(const string &nameEvent, const glm::vec3 &pos, const float vel) {
+    //cout << "QUIERO CAMBIARLE LOS PARAMETROS 3D A " << nameEvent << " - POS: " << pos.x << " - " << pos.y << " - " << pos.z << " - VEL: " << vel << endl;
     auto it = eventInstancesEstatic3D.find(nameEvent);
     if (it != eventInstancesEstatic3D.end()) {
         SetEventPosition3D(it->second->GetInstance(), pos, vel);

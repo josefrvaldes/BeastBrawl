@@ -32,7 +32,7 @@ std::string meshCar(TypeAnimal type) {
       case DRAGON:
          return "kart_deacon.obj";
       case OCTOPUS:
-         return "kart_physics.obj";
+         return "cyberoctopus.obj";
       default:
          return "kart_physics.obj";
    }
