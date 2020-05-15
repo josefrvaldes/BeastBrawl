@@ -803,7 +803,9 @@ void RenderFacadeClover::FacadeInitSelectCharacter() {
     auto shader = resourceManager->GetResourceShader("CLEngine/src/Shaders/basicShader.vert","CLEngine/src/Shaders/basicShader.frag");
 
     //Penguin
+    auto animation = resourceManager->GetResourceAnimation("media/animations/cyberoctopus/damage/damageoctopus_000001.obj", 35, false);
     mesh = device->AddMesh(smgr,0,"media/thepenguin_selection.obj");
+    static_cast<CLMesh*>(mesh->GetEntity())->SetAnimation(animation);
     mesh->SetScalation(glm::vec3(2.0f));
     mesh->SetTranslation(glm::vec3(0.0f,-14.0f,-20.0f));
     mesh->SetRotation(glm::vec3(10.0f,-50.0f, 5.0f));
@@ -1346,6 +1348,7 @@ void RenderFacadeClover::FacadeDrawSelectCharacter() {
     }
     auto nodeSelected = device->GetNodeByID(inputSC);
     nodeSelected->SetVisible(true);
+    static_cast<CLMesh*>(nodeSelected->GetEntity())->Animate();
 
     device->SetEnableDepthTest(false);
 

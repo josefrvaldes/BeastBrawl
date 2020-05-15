@@ -93,6 +93,7 @@ namespace CLE {
             //! @returns bool
             bool DeleteResourceMaterial(const std::string file);
             
+            vector<shared_ptr<CLResourceMesh>> GetMeshes() {return meshes;}
 
         private:
             CLResourceManager();

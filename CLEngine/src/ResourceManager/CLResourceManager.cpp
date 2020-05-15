@@ -47,13 +47,22 @@ vector<CLResourceMesh*> CLResourceManager::LoadResourceAnimation(const std::stri
     string fileNameWithoutNumericPart = completeFileName.substr(0, completeFileName.length() - NUMERIC_PART_OF_THE_FILENAME);
     vector<CLResourceMesh*> keyFrames;
 
+
+
+    string stringIndex = std::to_string(1);
+    // añade ceros al principio para que el fichero no sea 1ojete.obj, sino que sea 001ojete.obj
+    string auxIndex = std::string(6 - stringIndex.length(), '0') + stringIndex; 
+    string totalPath = folder + fileNameWithoutNumericPart + "_" + auxIndex + ".obj";
+
+    CLResourceMesh *resource = GetResourceMesh(totalPath, flipUV);
+    keyFrames.push_back(resource);
     // for (unsigned i = 0; i < thread::hardware_concurrency(); ++i)
     //     tg.create_thread(boost::bind(&boost::asio::io_context::run, &context));
 
     // ...
     //
     boost::asio::thread_pool tp2{4};
-    for(uint8_t i = 1; i <= numKeyFrames; i++) {
+    for(uint8_t i = 2; i <= numKeyFrames; i++) {
         string stringIndex = std::to_string(i);
         // añade ceros al principio para que el fichero no sea 1ojete.obj, sino que sea 001ojete.obj
         string auxIndex = std::string(6 - stringIndex.length(), '0') + stringIndex; 
