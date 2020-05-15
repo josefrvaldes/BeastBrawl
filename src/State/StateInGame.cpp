@@ -329,19 +329,19 @@ void StateInGame::UpdateGame() {
     manPowerUps->Update();
 
     // Inicio LoD
-    sysLoD->UpdateMeshes(manCars->GetEntities(), manCamera.get()->getCamera());
-    sysLoD->UpdateMeshes(manPowerUps->GetEntities(), manCamera.get()->getCamera());
-    sysLoD->UpdateMeshes(manTotems->GetEntities(), manCamera.get()->getCamera());
-    renderEngine->FacadeUpdateMeshesLoD(manCars->GetEntities());
-    renderEngine->FacadeUpdateMeshesLoD(manPowerUps->GetEntities());
-    renderEngine->FacadeUpdateMeshesLoD(manTotems->GetEntities());
+    // sysLoD->UpdateMeshes(manCars->GetEntities(), manCamera.get()->getCamera());
+    // sysLoD->UpdateMeshes(manPowerUps->GetEntities(), manCamera.get()->getCamera());
+    // sysLoD->UpdateMeshes(manTotems->GetEntities(), manCamera.get()->getCamera());
+    // renderEngine->FacadeUpdateMeshesLoD(manCars->GetEntities());
+    // renderEngine->FacadeUpdateMeshesLoD(manPowerUps->GetEntities());
+    // renderEngine->FacadeUpdateMeshesLoD(manTotems->GetEntities());
     // Fin LoD
 
     sysHurt->Update(manCars->GetEntities());
 
     // Inicio Animaciones
-    sysLoD->UpdateAnimations(manBoxPowerUps->GetEntities(), manCamera.get()->getCamera());
-    renderEngine->FacadeUpdateAnimationsLoD(manBoxPowerUps->GetEntities());
+    // sysLoD->UpdateAnimations(manBoxPowerUps->GetEntities(), manCamera.get()->getCamera());
+    // renderEngine->FacadeUpdateAnimationsLoD(manBoxPowerUps->GetEntities());
     renderEngine->FacadeAnimate(manBoxPowerUps->GetEntities());
     // Fin Animaciones
 

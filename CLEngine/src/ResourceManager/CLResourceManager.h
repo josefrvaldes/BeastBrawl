@@ -12,6 +12,12 @@
 #include "CLResourceTexture.h"
 #include "CLResourceMaterial.h"
 
+
+#include <boost/asio/placeholders.hpp>
+#include <boost/asio.hpp>
+#include <boost/bind.hpp>
+#include <boost/thread.hpp>
+
 using namespace std;
 namespace CLE {
 
@@ -34,6 +40,7 @@ namespace CLE {
             //! @param flipUV Bool para invertir los UV's al leer la textura
             //! @returns Puntero a un CLE::CLResource::CLResourceMesh
             vector<CLResourceMesh*> GetResourceAnimation(const std::string file, uint8_t numKeyFrames, bool flipUV);
+            vector<CLResourceMesh*> LoadResourceAnimation(const std::string file, uint8_t numKeyFrames, bool flipUV);
             //! Metodo para leer mallas
             //! @param file Ruta al fichero
             //! @param flipUV Bool para invertir los UV's al leer la textura
@@ -94,6 +101,13 @@ namespace CLE {
             vector<shared_ptr<CLResourceTexture>> textures;
             vector<shared_ptr<CLResourceMaterial>> materials;
             vector<shared_ptr<CLResourceShader>> shaders;
+            boost::asio::io_context context;
+            std::vector<shared_ptr<boost::thread>> threads;
+            boost::thread_group tg;
+            // boost::asio::thread_pool tp{4};
+            std::mutex my_mutex;
+            
+
 
     };
 

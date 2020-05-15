@@ -13,7 +13,7 @@ JUMP_LINE		   := @echo
 SOURCES  	:= $(wildcard *.cpp)
 
 NAME_EXE	:= Beast_Brawl
-CXXFLAGS 	+= -Wall -Wno-unknown-pragmas -std=c++17 -pthread # el no-unknown-pragmas es para que no salga el warning de los pragma region
+CXXFLAGS 	+= -Wall -Wno-unknown-pragmas -std=c++17 -pthread -lboost_thread # el no-unknown-pragmas es para que no salga el warning de los pragma region
 																					# -pthread es para la librería asio
 																					# -ltbb es para la librería tbb
 																					# -fuse-ld=gold es para ccache # el no-unknown-pragmas es para que no salga el warning de los pragma region

@@ -726,6 +726,8 @@ void RenderFacadeClover::FacadeInitResources(){
     resourceManager->GetResourceMesh("media/telebanana.obj");
     resourceManager->GetResourceMesh("media/training_ground.obj");
 
+    // resourceManager->LoadResourceAnimation("media/animations/cyberoctopus/damage/damageoctopus_000001.obj", 35, false);
+
 
 
     //HUD
