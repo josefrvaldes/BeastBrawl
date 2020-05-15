@@ -516,25 +516,36 @@ glm::vec2 SteeringBehaviours::ObstacleAvoidance(Entity* actualCar, ManBoundingOB
     float finalDistance = 9998.0;
     glm::vec2 vectorForceAvoid;
 
+    Entity* actualObstacle = nullptr;
+    glm::vec2 vectorAvoid = vectorRay[0];
+
     // colisiones con OBB
     for(const auto& obstacleOBB : manBoundingOBB->GetEntities()){
         if(CollisionRayPlane(actualCar, obstacleOBB.get(), vectorRay[0], distance, vectorForceAvoid, target)){
             if(distance < finalDistance && distance < cRay->baseDistanceOBB && distance > 0){
                 finalDistance = distance;
                 vectorForce = vectorForceAvoid;
+                actualObstacle = obstacleOBB.get();
             }
         }else if(CollisionRayPlane(actualCar, obstacleOBB.get(), vectorRay[1], distance, vectorForceAvoid, target)){
             if(distance < finalDistance && distance < cRay->baseDistanceOBB && distance > 0){
                 finalDistance = distance;
                 vectorForce = vectorForceAvoid;
+                actualObstacle = obstacleOBB.get();
+                vectorAvoid = vectorRay[1];
             }
         }else if(CollisionRayPlane(actualCar, obstacleOBB.get(), vectorRay[2], distance, vectorForceAvoid, target)){
             if(distance < finalDistance && distance < cRay->baseDistanceOBB && distance > 0){
                 finalDistance = distance;
                 vectorForce = vectorForceAvoid;
+                actualObstacle = obstacleOBB.get();
+                vectorAvoid = vectorRay[2];
             }
         }
     }
+
+    // Evitar quedarse atrapado
+    AvoidTrapCorner(actualCar, actualObstacle, vectorAvoid, target, vectorForce);
 
     return vectorForce;
 }
