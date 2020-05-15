@@ -540,7 +540,7 @@ void SharpEngine::SetListenerPosition(const glm::vec3 &pos, const glm::vec3 &rot
         ERRFMODCHECK(FMOD_Studio_System_SetListenerAttributes(system, 0, &atr));
     } else if ( std::isnan(pos.x) || std::isnan(pos.y) || std::isnan(pos.z) || std::isnan(rot.y)) {
         cout << "******* LA POSICION O ROTACION DEL LISTENER HA RECIBIDO UN NaN: [Posicion] " << pos.x << " - " << pos.y << " - " << pos.z << " [Rotacion] " << rot.y << endl;
-        terminate();
+        //terminate();
     }
 }
 
@@ -566,7 +566,7 @@ void SharpEngine::SetEventPosition3D(const string &nameEvent, FMOD_STUDIO_EVENTI
         ERRFMODCHECK( FMOD_Studio_EventInstance_Set3DAttributes(i, &atr));
     } else if ( std::isnan(pos.x) || std::isnan(pos.y) || std::isnan(pos.z) || std::isnan(vel)) {
         cout << "******* ME HA LLEGADO UN VALOR NaN EN EL EVENTO " << nameEvent << ": [Posicion] " << pos.x << " - " << pos.y << " - " << pos.z << " [Velocidad] " << vel << endl;
-        terminate();
+        //terminate();
     }
 }
 
