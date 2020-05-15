@@ -18,6 +18,8 @@ class InputFacadeClover : public InputFacade{
         InputFacadeClover();
         ~InputFacadeClover() override = default;
 
+        bool IsConectedGamepad() override;
+
         void CheckInputIntro() override;
         void CheckInputMenu(int&, int)    override;
 

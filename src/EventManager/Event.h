@@ -80,6 +80,7 @@ enum EventType {
     CRASH_WALL,                 // Sonido golpe con pared
     BREAK_BOX,                  // Sonido romper caja
     DRIFT,
+    DRIFTS,
     NO_DRIFT,
     VRANDOM,                    // Que el personaje hable en la seleccion
     UPDATE_SOUNDCHARACTER,      // Updatear el personaje que habla

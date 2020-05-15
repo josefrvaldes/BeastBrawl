@@ -65,7 +65,11 @@ int main() {
         auto resourceMeshBox = resourceManager->GetResourceMesh("media/TEST_BOX.obj", true);
         // auto animationKong = resourceManager->GetResourceAnimation("media/animations/kong/001kong.obj", 75, true);
         // auto animationCube = resourceManager->GetResourceAnimation("media/animations/cube/001cube.obj", 4, true);
+        // auto animationOctopus = resourceManager->LoadResourceAnimation("media/animations/cyberoctopus/damage/damageoctopus_000001.obj", 35, false);
+        // auto animationOctopus2 = resourceManager->GetResourceAnimation("media/animations/cyberoctopus/damage2/damageoctopus_000001.obj", 35, false);
 
+
+        auto meshes = resourceManager->GetMeshes();
         // auto resourceMeshOBJ = resourceManager->GetResourceMesh("media/kart.obj", true);
         // auto resourceMaterial = resourceManager->GetResourceMaterial("media/kart.obj", true);
 
@@ -95,8 +99,8 @@ int main() {
         auto mesh2 = device->AddMesh(device->GetRootNode(),5);
         mesh2->SetShaderProgramID(resourceShaderBasic->GetProgramID());
 
-        auto nodeKongAnim = device->AddMesh(device->GetRootNode(),6);
-        nodeKongAnim->SetShaderProgramID(resourceShaderBasic->GetProgramID());
+        auto nodeOctopusAnim = device->AddMesh(device->GetRootNode(),6);
+        nodeOctopusAnim->SetShaderProgramID(resourceShaderBasic->GetProgramID());
 
         auto nodeCubeAnim = device->AddMesh(device->GetRootNode(),7);
         nodeCubeAnim->SetShaderProgramID(resourceShaderBasic->GetProgramID());
@@ -141,7 +145,7 @@ int main() {
         // for (uint8_t i = 0; i < 75; i++)
         //     distanceBetweenFrames[i] = 1;
         // cout << "Mi vector tiene size " << distanceBetweenFrames.size() << endl;
-        // static_cast<CLMesh*>(nodeKongAnim->GetEntity())->SetAnimation(animationKong);
+        // static_cast<CLMesh*>(nodeOctopusAnim->GetEntity())->SetAnimation(animationOctopus);
         // std::vector<uint8_t> distances{60, 60, 60, 60};
         // static_cast<CLMesh*>(nodeCubeAnim->GetEntity())->SetAnimationInterpolated(animationCube, distances);
         // static_cast<CLMesh*>(mesh7->GetEntity())->SetMesh(resourceMeshCochesito);
@@ -158,9 +162,9 @@ int main() {
         mesh2->SetRotation(glm::vec3(0.0f, 0.0f, 0.0f));
         mesh2->SetTranslation(glm::vec3(50.0f, 80.0f, -50.0f));
 
-        nodeKongAnim->SetScalation(glm::vec3(1.0f, 1.0f, 1.0f));
-        nodeKongAnim->SetRotation(glm::vec3(0.0f, 0.0f, 0.0f));
-        nodeKongAnim->SetTranslation(glm::vec3(150.0f, 80.0f, -50.0f));
+        nodeOctopusAnim->SetScalation(glm::vec3(1.0f, 1.0f, 1.0f));
+        nodeOctopusAnim->SetRotation(glm::vec3(0.0f, 0.0f, 0.0f));
+        nodeOctopusAnim->SetTranslation(glm::vec3(150.0f, 80.0f, -50.0f));
 
         nodeCubeAnim->SetScalation(glm::vec3(1.0f, 1.0f, 1.0f));
         nodeCubeAnim->SetRotation(glm::vec3(0.0f, 0.0f, 0.0f));
@@ -214,7 +218,7 @@ int main() {
             light1->SetTranslation(lightPos);
             light2->SetTranslation(lightPos2);
 
-            static_cast<CLCamera*>(camera->GetEntity())->SetCameraTarget(nodeKongAnim->GetGlobalTranslation());
+            static_cast<CLCamera*>(camera->GetEntity())->SetCameraTarget(nodeOctopusAnim->GetGlobalTranslation());
             if (glfwGetKey(device->GetWindow(), GLFW_KEY_E)) {
                 static_cast<CLParticleSystem*>(ps2->GetEntity())->SetLoop(true);
             }
@@ -258,7 +262,7 @@ int main() {
             device->RenderText2D(cadena, 25.0f, 25.0f, 0.05f, 1.0f, vect3);
 
             // animaciones
-            // static_cast<CLMesh*>(nodeKongAnim->GetEntity())->Animate();
+            // static_cast<CLMesh*>(nodeOctopusAnim->GetEntity())->Animate();
             // static_cast<CLMesh*>(nodeCubeAnim->GetEntity())->AnimateInterpolated();
 
             device->PollEvents();

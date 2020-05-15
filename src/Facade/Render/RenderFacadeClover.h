@@ -186,15 +186,18 @@ class RenderFacadeClover : public RenderFacade {
                                           "Lanza el Pudin para que otro coche resbale!",
                                           "Busca el totem, cogelo y escapa de los demas!",
                                           "Cada personaje tiene diferentes propiedades!",
-                                          "Con el Supermeganitro puedes robar el totem al impactar!",
-                                          "Recuerda utilizar el derrape para coger mas cajas!",
+                                          "Impacta con el Supermeganitro y roba el totem!",
+                                          "Recuerda usar el derrape para moverte mejor!",
                                           "Perderas el Robo Jorobo si ya tienes el totem!",
-                                          "Recuerda mirar mucho el minimapa, puede serte util!",
-                                          "Puedes ocultar partes del HUD para mayor inmersion!",
-                                          "Tienes hasta 6 power-ups diferentes disponibles",
+                                          "Recuerda mirar el minimapa, puede serte util!",
+                                          "Oculta partes del HUD para mayor inmersion!",
+                                          "Hay hasta 6 power-ups diferentes disponibles",
                                           "La Telebanana es un proyectil teledirigido!",
                                           "Recuerda que lo mas importante es divertirse!",
                                           };
+
+      // Gamepad
+      bool gamepadConnected { false };
 
       // En juego
       bool inputShowTable { true };
