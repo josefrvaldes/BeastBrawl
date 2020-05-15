@@ -25,8 +25,10 @@ class Constants {
     inline static const bool DEBUG_SHOW_SPHERES{true};
     inline static const size_t ONLINE_BUFFER_SIZE{512};
     inline static const float DELTA_TIME{1.0 / FRAME_RATE};
+    inline static const float DELTA_TIME_MILLIS{DELTA_TIME * 1000};
 
     inline static const uint16_t ANY_PLAYER = 255;
+    inline static const uint16_t ANY_CHARACTER = 25;
 
     inline static const float MELON_MOLON_SPEED = 510.0;
 
@@ -42,9 +44,15 @@ class Constants {
                     CLAXON,
                     DRIFT };
 
-    enum PetitionTypes { CONNECTION_REQUEST,
+    enum PetitionTypes { CONNECTION_REQUEST = 2,
+                        TCP_CHARACTER_REQUEST,
+                        TCP_CANCEL_CHARACTER,
+                        SEND_CLOCK_SYNC,
+                        SEND_FINAL_CLOCK_SYNC,
                         TCP_START_GAME,
+                        TCP_OPEN_GAME,
                         TCP_FULL_GAME,
+                        TCP_CHARACTERS_SELECTED,
                         ENDGAME,
                         LAUNCH_ANIMATION_END,
                         LAUNCH_ANIMATION_COUNTDOWN,
@@ -62,7 +70,12 @@ class Constants {
                         SEND_THROW_MELON_O_PUDIN,
                         SEND_THROW_TELEBANANA };
 
+
+
     enum RenderEngine { IRRLICHT,
                         CLOVER};
     inline static const RenderEngine RENDER_ENGINE = RenderEngine::CLOVER;
+
+    
+    enum ShowTableMinimap { NONE, ONLYTABLE, ONLYMAP, BOTH};
 };

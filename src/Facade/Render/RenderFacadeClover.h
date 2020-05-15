@@ -70,8 +70,10 @@ class RenderFacadeClover : public RenderFacade {
       void FacadeDrawPause() override;
       void FacadeDrawEndRace() override;
       void FacadeDrawEndTournament() override;
-      void FacadeDrawLobbyMulti() override;
+      void FacadeDrawLobbyMultiConnecting() override;
       void FacadeDrawLobbyMultiExit() override;
+      void FacadeDrawLobbyMultiSelChar() override;
+      void FacadeDrawLobbyMultiWait() override;
       void FacadeDrawControler() override;
       void FacadeDrawCredits() override;
       void FacadeDrawSettings() override;
@@ -98,7 +100,10 @@ class RenderFacadeClover : public RenderFacade {
       void FacadeCheckInputPause() override;
       void FacadeCheckInputEndRace() override;
       void FacadeCheckInputEndTournament() override;
-      void FacadeCheckInputLobbyMulti() override;
+      void FacadeCheckInputLobbyMultiConnecting() override;
+      void FacadeCheckInputLobbyMultiExit() override;
+      void FacadeCheckInputLobbyMultiSelChar() override;
+      void FacadeCheckInputLobbyMultiWait() override;
       void FacadeCheckInputControler() override;
       void FacadeCheckInputCredits() override;
       void FacadeCheckInputSettings() override;
@@ -155,7 +160,7 @@ class RenderFacadeClover : public RenderFacade {
 
       void SetMenuEndRace(bool b) override { menuER = b; };
       bool GetMenuEndRace() override { return menuER; };
-      void SetMenuEndTournament(uint8_t num) override { menuET = num; timeStart=system_clock::now(); inputET=0;};
+      void SetMenuEndTournament(uint8_t num) override { menuET = num; timeAnimationEnd=system_clock::now(); numShowPanel=0;};
       uint8_t GetMenuEndTournament() override { return menuET; };
 
       void ResetInputGameOptions() override;
@@ -176,45 +181,49 @@ class RenderFacadeClover : public RenderFacade {
 
       std::string powerUps[7];
 
-      vector<std::string> tipsTexts = { "Si te encuentras perdido, utiliza la camara del totem para localizarlo!" , 
-                                   "Utiliza el Robo Jorobo para conseguir el totem de inmediato!",
-                                   "El Escudo Merluzo te ayudara a que no te roben el totem!"};
+      vector<std::string> tipsTexts = {   "Usa la camara de totem para ver donde esta!" , 
+                                          "Utiliza el Robo Jorobo para robar el totem!",
+                                          "Utiliza el Escudo Merluzo para protegerte!",
+                                          "Lanza el Pudin para que otro coche resbale!",
+                                          "Busca el totem, cogelo y escapa de los demas!"};
 
-        // En juego
-        bool inputShowTable { true };
+      // En juego
+      bool inputShowTable { true };
+      Constants::ShowTableMinimap showTableMinimap { Constants::ShowTableMinimap::BOTH };
+      uint8_t maxShowTM { 3 };
 
-        //Menu
-        int inputMenu { 0 };
-        int maxInputMenu { 6 };
-        //Pause
-        int inputPause { 0 };
-        int maxInputPause { 1 };
-        //Seleccion de personaje
-        int inputSC { 0 };
-        int maxInputSC { 5 };
-        //End Race
-        bool menuER { false };
-        int inputER { 0 };
-        int maxInputER { 2 };
-        //End Tournament
-      	time_point<system_clock> timeAnimationET;
-		int msChange {400};
-        uint8_t menuET { 0 };
-		uint8_t numShowPanel {0};
-        int inputET { 0 };
-        int maxInputET { 2 };
-        //Opciones de partida
-        int option { 0 };
-        std::vector<int> inputGO {1,1/*,0*/};
-        int maxInputGO[2] {3, 2/*, 0*/};
-        //Opciones de partida torneo
-        int optionTO { 0 };
-        std::vector<int> inputTO {1, 1, 1};
-        int maxInputTO[3] {3, 2, 2};
-        //Ajustes
-        int optionSettings { 0 };
-        std::vector<int> inputSettings {1,3,1,1,1,0};     //Sonido, musica, resolucion, particulas, vegetacion, sombras
-        int maxInputSettings[6] {3,3,2,1,1,1};
+      //Menu
+      int inputMenu { 0 };
+      int maxInputMenu { 6 };
+      //Pause
+      int inputPause { 0 };
+      int maxInputPause { 1 };
+      //Seleccion de personaje
+      int inputSC { 0 };
+      int maxInputSC { 5 };
+      //End Race
+      bool menuER { false };
+      int inputER { 0 };
+      int maxInputER { 2 };
+      //End Tournament
+      time_point<system_clock> timeAnimationEnd;
+      uint8_t numShowPanel {0};
+      int msChange {400};
+      uint8_t menuET { 0 };
+      int inputET { 0 };
+      int maxInputET { 2 };
+      //Opciones de partida
+      int option { 0 };
+      std::vector<int> inputGO {1,1,1,1};
+      int maxInputGO[4] {3, 2, 3, 2};
+      //Opciones de partida torneo
+      int optionTO { 0 };
+      std::vector<int> inputTO {1, 1, 1, 1, 1};
+      int maxInputTO[5] {3, 2, 3, 2, 2};
+      //Ajustes
+      int optionSettings { 0 };
+      std::vector<int> inputSettings {1,3,1,1,0};     //Sonido, musica, particulas, vegetacion, sombras
+      int maxInputSettings[5] {3,3,1,1,1};
 
       CLEngine* device {nullptr};
       CLNode* smgr {nullptr};
@@ -223,6 +232,8 @@ class RenderFacadeClover : public RenderFacade {
 
       //Animaciones
       unique_ptr<Animation2D> introAnimation {nullptr};
+      unique_ptr<Animation2D> powerUpAnimation {nullptr};
+      unique_ptr<Animation2D> creditsAnimation {nullptr};
 
       class Animation2D{
          public:
@@ -234,8 +245,9 @@ class RenderFacadeClover : public RenderFacade {
             void Restart();
 
             string GetCurrentPath() const { return currentPath + extension; }
-            float GetTime() const { return time; }
-            float GetTimeBetweenFrames() const { return timeBetweenFrames; }
+            float  GetTime() const { return time; }
+            float  GetTimeBetweenFrames() const { return timeBetweenFrames; }
+            bool   GetFinished() const {return finished; }
 
          private:
             string path;

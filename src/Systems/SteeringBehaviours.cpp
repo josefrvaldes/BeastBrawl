@@ -35,8 +35,7 @@ bool SteeringBehaviours::IsTargeteable(Entity* actualCar, Entity* targetCar, Man
     glm::vec3 vectorToCar(cTransCar2->position.x - cTransCar1->position.x , cTransCar2->position.y - cTransCar1->position.y, cTransCar2->position.z - cTransCar1->position.z );
 
     // Normalizar vector
-    float vectorDistance = sqrt(vectorToCar.x*vectorToCar.x + vectorToCar.y*vectorToCar.y + vectorToCar.z*vectorToCar.z);
-    glm::vec3 vectorToCarNormalized = glm::vec3( vectorToCar.x*(1/vectorDistance) , vectorToCar.y*(1/vectorDistance) ,vectorToCar.z*(1/vectorDistance)) ;
+    glm::vec3 vectorToCarNormalized = glm::normalize(vectorToCar);
 
     for(const auto& obstacle : manBoundingWall->GetEntities()){
         auto cBoundPlaneObject = static_cast<CBoundingPlane*>(obstacle->GetComponent(CompType::CompBoundingPlane).get());
@@ -549,8 +548,7 @@ bool SteeringBehaviours::CollisionRaySphere(Entity* actualCar, Entity* object, c
     auto cSphereObject = static_cast<CBoundingSphere*>(object->GetComponent(CompType::CompBoundingSphere).get());
 
     // Normalizar vector velocidad del coche
-    float vectorDistance = sqrt(velocityVector.x*velocityVector.x + velocityVector.y*velocityVector.y);
-    glm::vec3 vectorVelocityN = glm::vec3( velocityVector.x*(1/vectorDistance) , 0.0 ,velocityVector.y*(1/vectorDistance));
+    glm::vec3 vectorVelocityN = glm::normalize(glm::vec3(velocityVector.x, 0.0, velocityVector.y));
 
     IntersectData intersData = clPhysics->HandleCollisionsRayWithSpheres(*cTransformableCar, *cTransformableObject, *cSphereObject, vectorVelocityN);
     if(intersData.intersects == false) return false;
@@ -567,8 +565,7 @@ bool SteeringBehaviours::CollisionRaySphere(Entity* actualCar, Entity* object, c
 bool SteeringBehaviours::CollisionRayPlane(Entity* actualCar, Entity* object, const glm::vec2& velocityVector, float& distance, glm::vec2& vectorForceAvoid, glm::vec3& target) const{
     auto cTransformableCar = static_cast<CTransformable*>(actualCar->GetComponent(CompType::TransformableComp).get());
     // Normalizar vector velocidad del coche
-    float vectorDistance = sqrt(velocityVector.x*velocityVector.x + velocityVector.y*velocityVector.y);
-    glm::vec3 vectorVelocityN = glm::vec3( velocityVector.x*(1/vectorDistance) , 0.0 ,velocityVector.y*(1/vectorDistance)) ;
+    glm::vec3 vectorVelocityN = glm::normalize(glm::vec3(velocityVector.x, 0.0, velocityVector.y));
     IntersectData intersData{0, glm::vec3(0,0,0)};
 
     if(object->HasComponent(CompType::CompBoundingPlane) && !object->HasComponent(CompType::CompBoundingOBB)){
@@ -780,137 +777,3 @@ glm::vec3 SteeringBehaviours::CalculateCenterNavMesh(Entity* actualCar, ManNavMe
         return glm::vec3(0.0);
     }
 }
-
-
-
-
-/*
-// http://www.opengl-tutorial.org/miscellaneous/clicking-on-objects/picking-with-custom-ray-obb-function/
-    glm::vec3 ray_origin(cTransformableCar->position.x, cTransformableCar->position.y, cTransformableCar->position.z);
-    glm::vec3 ray_direction = vectorVelocityN;
-    float intersection_distance = -1; // Output of TestRayOBBIntersection()
-	glm::vec3 aabb_min(-1, -1, -1);
-	glm::vec3 aabb_max( 1, 1, 1);
-
-    glm::quat orientations = glm::quat(glm::vec3(cTransformableObject->rotation.x, cTransformableObject->rotation.y, cTransformableObject->rotation.z));
-
-    glm::mat4 RotationMatrix = glm::toMat4(orientations);
-	glm::mat4 TranslationMatrix = glm::translate(glm::mat4(), glm::vec3(cTransformableObject->position.x, cTransformableObject->position.y, cTransformableObject->position.z));
-	glm::mat4 ModelMatrix = TranslationMatrix * RotationMatrix;
-
-    if ( TestRayOBBIntersection( ray_origin, ray_direction, aabb_min, aabb_max, ModelMatrix, intersection_distance) ){
-        std::cout << "HAY COLISION: " << intersection_distance << std::endl;
-		//std::ostringstream oss;
-		//oss << "mesh " << i;
-		//message = oss.str();
-		//break;
-	}else{
-        std::cout << "No HAY: " << std::endl;
-    }
-bool  SteeringBehaviours::TestRayOBBIntersection(glm::vec3 ray_origin, glm::vec3 ray_direction, glm::vec3 aabb_min, glm::vec3 aabb_max, glm::mat4 ModelMatrix, float& intersection_distance) const{
-	// Intersection method from Real-Time Rendering and Essential Mathematics for Games
-	
-	float tMin = 0.0f;
-	float tMax = 100000.0f;
-
-	glm::vec3 OBBposition_worldspace(ModelMatrix[3].x, ModelMatrix[3].y, ModelMatrix[3].z);
-
-	glm::vec3 delta = OBBposition_worldspace - ray_origin;
-
-	// Test intersection with the 2 planes perpendicular to the OBB's X axis
-	{
-		glm::vec3 xaxis(ModelMatrix[0].x, ModelMatrix[0].y, ModelMatrix[0].z);
-		float e = glm::dot(xaxis, delta);
-		float f = glm::dot(ray_direction, xaxis);
-
-		if ( fabs(f) > 0.001f ){ // Standard case
-
-			float t1 = (e+aabb_min.x)/f; // Intersection with the "left" plane
-			float t2 = (e+aabb_max.x)/f; // Intersection with the "right" plane
-			// t1 and t2 now contain distances betwen ray origin and ray-plane intersections
-
-			// We want t1 to represent the nearest intersection, 
-			// so if it's not the case, invert t1 and t2
-			if (t1>t2){
-				float w=t1;t1=t2;t2=w; // swap t1 and t2
-			}
-
-			// tMax is the nearest "far" intersection (amongst the X,Y and Z planes pairs)
-			if ( t2 < tMax )
-				tMax = t2;
-			// tMin is the farthest "near" intersection (amongst the X,Y and Z planes pairs)
-			if ( t1 > tMin )
-				tMin = t1;
-
-			// And here's the trick :
-			// If "far" is closer than "near", then there is NO intersection.
-			// See the images in the tutorials for the visual explanation.
-			if (tMax < tMin )
-				return false;
-
-		}else{ // Rare case : the ray is almost parallel to the planes, so they don't have any "intersection"
-			if(-e+aabb_min.x > 0.0f || -e+aabb_max.x < 0.0f)
-				return false;
-		}
-	}
-
-
-	// Test intersection with the 2 planes perpendicular to the OBB's Y axis
-	// Exactly the same thing than above.
-	{
-		glm::vec3 yaxis(ModelMatrix[1].x, ModelMatrix[1].y, ModelMatrix[1].z);
-		float e = glm::dot(yaxis, delta);
-		float f = glm::dot(ray_direction, yaxis);
-
-		if ( fabs(f) > 0.001f ){
-
-			float t1 = (e+aabb_min.y)/f;
-			float t2 = (e+aabb_max.y)/f;
-
-			if (t1>t2){float w=t1;t1=t2;t2=w;}
-
-			if ( t2 < tMax )
-				tMax = t2;
-			if ( t1 > tMin )
-				tMin = t1;
-			if (tMin > tMax)
-				return false;
-
-		}else{
-			if(-e+aabb_min.y > 0.0f || -e+aabb_max.y < 0.0f)
-				return false;
-		}
-	}
-
-
-	// Test intersection with the 2 planes perpendicular to the OBB's Z axis
-	// Exactly the same thing than above.
-	{
-		glm::vec3 zaxis(ModelMatrix[2].x, ModelMatrix[2].y, ModelMatrix[2].z);
-		float e = glm::dot(zaxis, delta);
-		float f = glm::dot(ray_direction, zaxis);
-
-		if ( fabs(f) > 0.001f ){
-
-			float t1 = (e+aabb_min.z)/f;
-			float t2 = (e+aabb_max.z)/f;
-
-			if (t1>t2){float w=t1;t1=t2;t2=w;}
-
-			if ( t2 < tMax )
-				tMax = t2;
-			if ( t1 > tMin )
-				tMin = t1;
-			if (tMin > tMax)
-				return false;
-
-		}else{
-			if(-e+aabb_min.z > 0.0f || -e+aabb_max.z < 0.0f)
-				return false;
-		}
-	}
-
-	intersection_distance = tMin;
-	return true;
-}
-*/

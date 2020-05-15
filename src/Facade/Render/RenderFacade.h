@@ -65,8 +65,10 @@ class RenderFacade {
     virtual void FacadeDrawPause() = 0;
     virtual void FacadeDrawEndRace() = 0;
     virtual void FacadeDrawEndTournament() = 0;
-    virtual void FacadeDrawLobbyMulti() = 0;
+    virtual void FacadeDrawLobbyMultiConnecting() = 0;
     virtual void FacadeDrawLobbyMultiExit() = 0;
+    virtual void FacadeDrawLobbyMultiSelChar() = 0;
+    virtual void FacadeDrawLobbyMultiWait() = 0;
     virtual void FacadeDrawControler() = 0;
     virtual void FacadeDrawCredits() = 0;
     virtual void FacadeDrawGameOptions() = 0;
@@ -93,7 +95,10 @@ class RenderFacade {
     virtual void FacadeCheckInputPause() = 0;
     virtual void FacadeCheckInputEndRace() = 0;
     virtual void FacadeCheckInputEndTournament() = 0;
-    virtual void FacadeCheckInputLobbyMulti() = 0;
+    virtual void FacadeCheckInputLobbyMultiConnecting() = 0;
+    virtual void FacadeCheckInputLobbyMultiExit() = 0;
+    virtual void FacadeCheckInputLobbyMultiSelChar() = 0;
+    virtual void FacadeCheckInputLobbyMultiWait() = 0;
     virtual void FacadeCheckInputControler() = 0;
     virtual void FacadeCheckInputCredits() = 0;
     virtual void FacadeCheckInputGameOptions() = 0;

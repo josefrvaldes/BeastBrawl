@@ -76,6 +76,21 @@ class Utils {
         return date::format("%FT%TZ", date::floor<Precision>(now));
     }
 
+    template <class Precision>
+    static string getISOCurrentTimestamp(int64_t millisOrMicros) {
+        milliseconds dur(millisOrMicros);
+        time_point<system_clock> dt(dur);
+        return date::format("%FT%TZ", date::floor<Precision>(dt));
+    }
+
+    static string getISOCurrentTimestampMillis(int64_t millis) {
+        return getISOCurrentTimestamp<std::chrono::milliseconds>(millis);
+    }
+
+    static string getISOCurrentTimestampMicros(int64_t micros) {
+        return getISOCurrentTimestamp<std::chrono::microseconds>(micros);
+    }
+
     static string getISOCurrentTimestampMillis() {
         return getISOCurrentTimestamp<std::chrono::milliseconds>();
     }

@@ -11,6 +11,19 @@
 #include "../Systems/Utils.h"
 
 StateInGameMulti::StateInGameMulti(uint16_t idOnline_, const vector<uint16_t> idsEnemies_, const vector<uint8_t> characters_) : StateInGame() {
+    
+    // Reinicializar elementos
+    RenderFacadeManager::GetInstance()->GetRenderFacade()->CleanScene();
+    RenderFacadeManager::GetInstance()->GetRenderFacade()->SetNumEnemyCars(0);
+    auto cId = make_shared<CId>();
+    cId->ResetNumIds();
+    auto cNavMesh = make_shared<CNavMesh>();
+    cNavMesh->ResetNumIds();
+    shared_ptr<DataMap> data = make_shared<DataMap>();
+    (*data)[TYPE_POWER_UP] = typeCPowerUp::None;
+    RenderFacadeManager::GetInstance()->GetRenderFacade()->FacadeUpdatePowerUpHUD(data.get());
+
+
     GameValues::GetInstance()->SetGameTime(180);
     GameValues::GetInstance()->SetTimeTotem(30);
     InitState();
@@ -29,9 +42,12 @@ StateInGameMulti::StateInGameMulti(uint16_t idOnline_, const vector<uint16_t> id
     SubscribeToEvents();
 
     const vector<Constants::InputTypes> inputs;
-    sysOnline->SendInputs(inputs);
+    sysOnline->SendInputs(inputs, 0.f, 0.f, 0.f, 0.f);
     sysAnimStart->ResetTimer();
+
+    //Inicializa el ranking y el minimapa
     sysRanking->Update(manCars.get());
+    manGameRules->InitializeMiniMap(manCars->GetEntities(), manTotems->GetEntities());
 }
 
 StateInGameMulti::~StateInGameMulti() {
@@ -88,10 +104,10 @@ void StateInGameMulti::InitCarHumans(const uint16_t idOnline_, const vector<uint
         manShield->CreateShield(idComp->id, glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.5f));
 
         // esto era de cuando íbamos a hacer el buffer circular que al final se descartó
-        /*shared_ptr<CBufferOnline> buffer = make_shared<CBufferOnline>();
-        BuffElement elem(inputs, cTransformable->position, cTransformable->rotation);
-        buffer->elems.push_back(elem);
-        car->AddComponent(buffer);*/
+        shared_ptr<CBufferOnline> buffer = make_shared<CBufferOnline>();
+        // BuffElement elem(cTransformable->position, cTransformable->rotation);
+        // buffer->elems.push_back(elem);
+        car->AddComponent(buffer);
     }
 
     for(auto car : manCars->GetEntities()){
@@ -105,17 +121,13 @@ void StateInGameMulti::Input() {
     if (currentUpdateState == UpdateState::GAME) {
         // const vector<Constants::InputTypes> &inputs = renderEngine->FacadeCheckInputMulti();
         const vector<Constants::InputTypes> &inputs = inputEngine->CheckInputMulti();
-        if (previousInputs != inputs) {
-            //cout << Utils::getISOCurrentTimestampMillis() << " [" << sysOnline->idOnlineMainCar << "] Enviamos los inputs porque han cambiado con respecto a la iteración anterior" << endl;
-            sysOnline->SendInputs(inputs);
-            previousInputs = inputs;
-        }
-
         time_point<system_clock> now = system_clock::now();
         auto millisSinceLastInputSent = duration_cast<milliseconds>(now - lastTimeSentInputs).count();
-        if (millisSinceLastInputSent > 66) {  // 100 = 10fps; 66 = 15fps   1000 = 60fps
+        if (millisSinceLastInputSent > 66 || previousInputs != inputs) {  // 100 = 10fps; 66 = 15fps   1000 = 60fps
+            CCar* cCar = static_cast<CCar*>(manCars->GetCar()->GetComponent(CompType::CarComp).get());
             lastTimeSentInputs = now;
-            sysOnline->SendInputs(inputs);
+            previousInputs = inputs;
+            sysOnline->SendInputs(inputs, cCar->speed, cCar->wheelRotation, cCar->skidDeg, cCar->skidRotation);
         }
 
         auto millisSinceLastSyncSent = duration_cast<milliseconds>(now - lastTimeSentSync).count();
@@ -154,6 +166,9 @@ void StateInGameMulti::UpdateWaitingForCountdown() {
 
 void StateInGameMulti::UpdateAnimationCountdown() {
     StateInGame::UpdateAnimationCountdown();
+    if(!sysOnline->ClocksStartedSincing())
+        sysOnline->SyncClocks();
+    EventManager::GetInstance().Update();
 }
 
 void StateInGameMulti::UpdateGame() {

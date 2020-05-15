@@ -7,6 +7,7 @@
 #include <Components/CWayPoint.h>
 #include <Components/CTransformable.h>
 #include <Components/CSpeed.h>
+#include <Components/CBrainAI.h>
 
 #include <Entities/Entity.h>
 #include <Entities/WayPoint.h>
@@ -59,9 +60,9 @@ class ManCar : public Manager {
 
     shared_ptr<CarHuman>& GetCar() { return car; };
 
-    void CreateCarAI(int pj);
-    void CreateCarAI(int pj, glm::vec3 _position);
-    void CreateCarAI(int pj, glm::vec3 _position, CWayPoint* _waypoint);
+    void CreateCarAI(int pj, int difficult);
+    void CreateCarAI(int pj, int difficult, glm::vec3 _position);
+    void CreateCarAI(int pj, int difficult, glm::vec3 _position, CWayPoint* _waypoint);
     void Integrate(float) override;
     void SetSystemOnline(SystemOnline* systOn){ systemOnline = systOn; };
     Entity* GetCurrentWinner();

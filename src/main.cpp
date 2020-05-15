@@ -1,11 +1,33 @@
 #include <Systems/Utils.h>
+#include <Components/CBufferOnline.h>
 #include <iostream>
 #include "Game.h"
 #include "Constants.h"
+#include <chrono>
+#include <thread>
 
 using namespace std;
 
 int main(int argc, char *argv[]) {
+
+    // CBufferOnline buff;
+    // int64_t timeSent = Utils::getMillisSinceEpoch(); std::this_thread::sleep_for(std::chrono::milliseconds(50));
+    // buff.InsertNewCalculated(vec3(0,0,0), vec3(0,0,0)); std::this_thread::sleep_for(std::chrono::milliseconds(50));
+    // cout << buff;
+    // buff.InsertNewCalculated(vec3(0,0,0), vec3(0,0,0)); std::this_thread::sleep_for(std::chrono::milliseconds(50));
+    // buff.InsertNewCalculated(vec3(0,0,0), vec3(0,0,0)); std::this_thread::sleep_for(std::chrono::milliseconds(50));
+    // buff.InsertNewReceivedOnline(timeSent, vector<Constants::InputTypes>()); std::this_thread::sleep_for(std::chrono::milliseconds(50));
+    // timeSent = Utils::getMillisSinceEpoch(); std::this_thread::sleep_for(std::chrono::milliseconds(50));
+    // buff.InsertNewCalculated(vec3(0,0,0), vec3(0,0,0)); std::this_thread::sleep_for(std::chrono::milliseconds(50));
+    // buff.InsertNewCalculated(vec3(0,0,0), vec3(0,0,0)); std::this_thread::sleep_for(std::chrono::milliseconds(50));
+    // buff.InsertNewCalculated(vec3(0,0,0), vec3(0,0,0)); std::this_thread::sleep_for(std::chrono::milliseconds(50));
+    // buff.InsertNewCalculated(vec3(0,0,0), vec3(0,0,0)); std::this_thread::sleep_for(std::chrono::milliseconds(50));
+    // buff.InsertNewCalculated(vec3(0,0,0), vec3(0,0,0)); std::this_thread::sleep_for(std::chrono::milliseconds(50));
+    // buff.InsertNewReceivedOnline(timeSent, vector<Constants::InputTypes>()); std::this_thread::sleep_for(std::chrono::milliseconds(50));
+    // timeSent = Utils::getMillisSinceEpoch(); std::this_thread::sleep_for(std::chrono::milliseconds(50));
+    // buff.InsertNewCalculated(vec3(0,0,0), vec3(0,0,0)); std::this_thread::sleep_for(std::chrono::milliseconds(50));
+    // buff.InsertNewCalculated(vec3(0,0,0), vec3(0,0,0)); std::this_thread::sleep_for(std::chrono::milliseconds(50));
+    // buff.InsertNewReceivedOnline(timeSent, vector<Constants::InputTypes>()); std::this_thread::sleep_for(std::chrono::milliseconds(50));
 
     if(argc == 2) {
         Constants::SERVER_HOST = argv[1];

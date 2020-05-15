@@ -66,6 +66,11 @@ void ManGameRules::SubscribeToEvents() {
 }
 
 
+void ManGameRules::InitializeMiniMap(const vector<shared_ptr<Entity>> &cars, const vector<shared_ptr<Entity>> &totems) {
+    systemGameRules->UpdatePositionsMiniMap(cars, totems, positionsPlane, positionTotemPlane);
+}
+
+
 
 
 void ManGameRules::CreateMayanMap(){

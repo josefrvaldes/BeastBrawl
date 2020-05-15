@@ -165,11 +165,13 @@ void ManPowerUp::MaterializePowerUp(shared_ptr<PowerUp> powerUp) {
 
 
 void ManPowerUp::Update() {
-
+    //cout << "- ACTUALIZO LOS PU" << endl;
     // Update de las fisicas de los PU (melon molon, telebanana, superMegaNitro)
     UpdatePhysics();
+    //cout << "- - - HE ACTUALIZADO LAS FISICAS DE LOS PU" << endl;
     // recorremos todos los PU, y borramos los correspondientes
     DeletePowerUps();
+    //cout << "- - - HE BORRADO LOS PU QUE HAY QUE BORRAR" << endl;
 
 }
 
@@ -205,6 +207,7 @@ void ManPowerUp::DeletePowerUps(){
             //VEC3_POS
             shared_ptr<DataMap> data = make_shared<DataMap>();
             (*data)[VEC3_POS] = cTransformable->position;
+            (*data)[TYPE] = cTypePU->typePowerUp;
             EventManager::GetInstance().AddEventMulti(Event{EventType::CREATE_PARTICLES_COLLISION_POWERUP, data});
 
 

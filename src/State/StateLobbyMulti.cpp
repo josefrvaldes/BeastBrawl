@@ -17,9 +17,6 @@ StateLobbyMulti::StateLobbyMulti() : tcpClient{make_shared<TCPClient>(Constants:
     renderEngine->FacadeInitLobbyMulti();
 
     SubscribeToEvents();
-
-    cout << "Enviamos SendConnectionRequest al server" << endl;
-    tcpClient->SendConnectionRequest();
 }
 
 // Cargamos los bancos de sonido Menu.
@@ -33,22 +30,42 @@ void StateLobbyMulti::InitState() {
 
 void StateLobbyMulti::Render() {
     renderEngine->FacadeBeginScene();
-    if(!timerEnabled)
-        renderEngine->FacadeDrawLobbyMulti();
-    else
+
+    if(actualState == StatesLobbyMulti::SELECTING_CHARACTER){
+        renderEngine->FacadeDrawLobbyMultiSelChar();
+        renderEngine->FacadeDrawAll();
+    }else if(actualState == StatesLobbyMulti::WAITING_OTHER){
+        renderEngine->FacadeDrawLobbyMultiSelChar();
+        renderEngine->FacadeDrawAll();
+        renderEngine->FacadeDrawLobbyMultiWait();
+    }else if(actualState == StatesLobbyMulti::SERVER_FULL){
         renderEngine->FacadeDrawLobbyMultiExit();
+    }else if(actualState == StatesLobbyMulti::CONNECTING){
+        renderEngine->FacadeDrawLobbyMultiConnecting();
+    }else if(actualState == StatesLobbyMulti::WAIT_CHARACTER_RESPONSE){
+        renderEngine->FacadeDrawLobbyMultiSelChar();                    // mientras esperamos dibujamos lo mismo de antes
+        renderEngine->FacadeDrawAll();
+    }
+        
     renderEngine->FacadeEndScene(); 
 }
 
 void StateLobbyMulti::Input() {
-    renderEngine->FacadeCheckInputLobbyMulti();
+    if(actualState == StatesLobbyMulti::SELECTING_CHARACTER)
+        renderEngine->FacadeCheckInputLobbyMultiSelChar();
+    else if(actualState == StatesLobbyMulti::WAITING_OTHER)
+        renderEngine->FacadeCheckInputLobbyMultiWait();
+    else if(actualState == StatesLobbyMulti::SERVER_FULL)
+        renderEngine->FacadeCheckInputLobbyMultiExit();
+    else if(actualState == StatesLobbyMulti::CONNECTING)
+        renderEngine->FacadeCheckInputLobbyMultiConnecting();
 }
 
 void StateLobbyMulti::Update() {
     EventManager::GetInstance().Update();
     //std::cout << "hola" << std::endl;
 
-    if(timerEnabled)
+    if(actualState == StatesLobbyMulti::SERVER_FULL)
         Timer();
 }
 
@@ -63,6 +80,31 @@ void StateLobbyMulti::SubscribeToEvents() {
         EventType::PREPARE_TO_DISCONNECT,
         bind(&StateLobbyMulti::ShowDisconnection, this, placeholders::_1),
         "ShowDisconnection"));
+    
+    EventManager::GetInstance().SubscribeMulti(Listener(
+        EventType::PREPARE_TO_SELECT_CHAR,
+        bind(&StateLobbyMulti::ShowSelectCharacter, this, placeholders::_1),
+        "ShowSelectCharacter"));
+
+    EventManager::GetInstance().SubscribeMulti(Listener(
+        EventType::TCP_CHAR_REQUEST,
+        bind(&StateLobbyMulti::SendCharacterRequest, this, placeholders::_1),
+        "SendCharacterRequest"));
+    
+    EventManager::GetInstance().SubscribeMulti(Listener(
+        EventType::TCP_WAIT_OTHERS,
+        bind(&StateLobbyMulti::ChangeToWait, this, placeholders::_1),
+        "ChangeToWait"));
+
+    EventManager::GetInstance().SubscribeMulti(Listener(
+        EventType::TCP_SEL_CHAR,
+        bind(&StateLobbyMulti::ChangeToSelChar, this, placeholders::_1),
+        "ChangeToSelChar"));
+    
+    EventManager::GetInstance().SubscribeMulti(Listener(
+        EventType::RETURN_TO_SELCHAR,
+        bind(&StateLobbyMulti::ReturnToSelChar, this, placeholders::_1),
+        "ReturnToSelChar"));
 }
 
 void StateLobbyMulti::StartGameMulti(DataMap* d) {
@@ -90,8 +132,31 @@ void StateLobbyMulti::StartGameMulti(DataMap* d) {
 
 
 void StateLobbyMulti::ShowDisconnection(DataMap* d) {
-    timerEnabled = true;
+    actualState = StatesLobbyMulti::SERVER_FULL;
 }
+
+void StateLobbyMulti::ShowSelectCharacter(DataMap* d) {
+    actualState = StatesLobbyMulti::SELECTING_CHARACTER;
+}
+
+void StateLobbyMulti::SendCharacterRequest(DataMap* d) {
+    actualState = StatesLobbyMulti::WAIT_CHARACTER_RESPONSE;
+    tcpClient->SendSelCharacterRequest();
+}
+
+void StateLobbyMulti::ChangeToWait(DataMap* d){
+    actualState = StatesLobbyMulti::WAITING_OTHER;
+}
+
+void StateLobbyMulti::ChangeToSelChar(DataMap* d){
+    actualState = StatesLobbyMulti::SELECTING_CHARACTER;
+}
+
+void StateLobbyMulti::ReturnToSelChar(DataMap* d){
+    tcpClient->SendCancelChar();
+    actualState = StatesLobbyMulti::SELECTING_CHARACTER;
+}
+
 
 
 void StateLobbyMulti::Timer(){

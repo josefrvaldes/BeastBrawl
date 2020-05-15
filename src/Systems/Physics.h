@@ -19,6 +19,8 @@ class Camera;
 class CCar;
 class CTransformable;
 class CExternalForce;
+class CBufferOnline;
+class COnline;
 class CCamera;
 class CSpeed;
 class CNitro;
@@ -37,7 +39,7 @@ class Physics {
     void Skid(Car *);
     void NotSkidding(Car *);
 
-    void UpdateHuman(Car* car);
+    void UpdateHuman(Car* car, int64_t gameTime);
     void AccelerateHuman(CCar &cCar, CNitro &cNitro) const;
     void TurnLeftHuman(CCar &cCar) const;
     void TurnRightHuman(CCar &cCar) const;
@@ -46,9 +48,12 @@ class Physics {
     void NotTurningHuman(CCar &cCar) const;
     void SkidHuman(CCar &cCar, CTransformable &cTrans) const;
     void NotSkiddingHuman(CCar &cCar, CTransformable &cTrans) const;
+    void NewInputsReceivedOnline(Car *car, float speed, float wheelRotation, float skidDeg, float skidRotation, CBufferOnline *buffer);
+    void NewSyncReceivedOnline(Car *car, int64_t timeSent, int64_t gameTime);
 
    protected:
    private:
+    void MoveCarHumanByInput(Car *car, CCar *cCar, COnline *cOnline, CTransformable *cTransformable, CSpeed *cSpeed, CNitro *cNitro, CExternalForce *cExternalForce);
     void CalculatePosition(CCar *cCar, CTransformable *cTransformable, CSpeed *cSpeed, CExternalForce *cExternalForce, float deltaTime);
     void CalculatePositionReverse(CCar *cCar, CTransformable *cTransformable, CExternalForce *cExternalForce, float deltaTime);
     //void CalculatePositionCamera(CCar *cCar, CTransformable *cTransformableCar, CTransformable *cTransformableCamera, CCamera *cCamera);

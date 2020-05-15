@@ -26,7 +26,6 @@
 #include "../Components/CGravity.h"
 #include "../Components/CShader.h"
 #include "../Constants.h"
-#include "GameValues.h"
 
 class Position;
 

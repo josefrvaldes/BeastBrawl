@@ -27,7 +27,6 @@
 
 
 
-#include "GameValues.h"
 //LOS DATOS DEL TIPO DEL COCHE -> QUE SE PONGAN SOLO 1 VEZ EN CODIGO
 #include "TypeCharacter.h"
 
@@ -188,15 +187,15 @@ Car::Car(int pj){
             acceleration =          ACCELERATION::A_MEDIUM/100;
             mesh =                  meshCar(OCTOPUS);
 
-            pathTopLeft =           "sharky_wheel4.obj";
-            pathTopRight =          "sharky_wheel2.obj";
-            pathBottomLeft =        "sharky_wheel3.obj";
-            pathBottomRight =       "sharky_wheel1.obj";
+            pathTopLeft =           "cyberoctopus_wheel1.obj";
+            pathTopRight =          "cyberoctopus_wheel2.obj";
+            pathBottomLeft =        "cyberoctopus_wheel3.obj";
+            pathBottomRight =       "cyberoctopus_wheel4.obj";
 
-            offsetTopLeft =         glm::vec3(0.6,0.3f,1.0);
-            offsetTopRight =        glm::vec3(0.6,0.3f,-1.0);
-            offsetBottomLeft =      glm::vec3(-0.4,0.3f,1.0);
-            offsetBottomRight =     glm::vec3(-0.4,0.3f,-1.0);
+            offsetTopLeft =         glm::vec3(1.0,0.3f,1.3);
+            offsetTopRight =        glm::vec3(1.0,0.3f,-1.3);
+            offsetBottomLeft =      glm::vec3(-1.2,0.3f,0.5);
+            offsetBottomRight =     glm::vec3(-1.2,0.3f,-0.5);
 
             rotationTopLeft =       glm::vec3(0.0f,0.0f,0.0f);
             rotationTopRight =      glm::vec3(0.0f,0.0f,0.0f);

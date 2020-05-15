@@ -184,11 +184,9 @@ void StateInGame::InitializeManagers() {
     // Es raro pero diria que aqui tengo que ir añadiendo sistemas de particulas
     // Añadimos las particulas a todas las cajas
     vector<string> puParticles;
-    puParticles.push_back("media/particleRedStar.png");
-    puParticles.push_back("media/particleYellowStar.png");
-    puParticles.push_back("media/particleRedTriangle.png");
-    puParticles.push_back("media/particleYellowTriangle.png");
-    puParticles.push_back("media/particle_test.png");
+    puParticles.push_back("media/estrellaRoja.png");
+    //puParticles.push_back("media/particleYellowStar.png");
+    puParticles.push_back("media/trianguloRojo.png");
     for (auto boxPowerUp : manBoxPowerUps->GetEntities()) {
         auto cId = static_cast<CId *>(boxPowerUp->GetComponent(CompType::IdComp).get());
         manParticleSystem->CreateParticleSystem(cId->id, glm::vec3(0.0f, 0.0f, 0.0f), 30, glm::vec3(200.0f, 400.0f, 200.0f), puParticles, 5, 5, 100, 30, 150, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), 0, 0x1 | 0x4, false, false);
@@ -196,10 +194,10 @@ void StateInGame::InitializeManagers() {
 
     // Añadimos sistema de particulas a los (el) totem
     vector<string> totemParticles;
-    totemParticles.push_back("media/particle_test.png");
+    totemParticles.push_back("media/totemShiny.png");
     for (auto totem : manTotems->GetEntities()) {
         auto cId = static_cast<CId *>(totem->GetComponent(CompType::IdComp).get());
-        manParticleSystem->CreateParticleSystem(cId->id, glm::vec3(0.0f, 0.0f, 0.0f), 100, glm::vec3(0.0f, 50.0f, 0.0f), totemParticles, 5, 15, 100, 2, 5000, glm::vec3(30.0f, 0.0f, 30.0f), glm::vec3(0.0f, 0.0f, 0.0f), 0, 0x4, true, true);
+        manParticleSystem->CreateParticleSystem(cId->id, glm::vec3(0.0f, 0.0f, 0.0f), 100, glm::vec3(0.0f, 300.0f, 0.0f), totemParticles, 5, 5, 100, 2, 2000, glm::vec3(10.0f, 0.0f, 10.0f), glm::vec3(0.0f, 0.0f, 0.0f), 0, 0x4, true, true);
     }
 }
 
@@ -367,9 +365,9 @@ void StateInGame::UpdateGame() {
     // Fin Animaciones
 
     //Actualiza el ranking y los eventos de hud
-    sysRanking->Update(manCars.get());
     sysHud->UpdateEventHud(manHudEvent.get());
     gameFinished = manGameRules->Update(manCars->GetEntities(), manTotems->GetEntities());
+    sysRanking->Update(manCars.get());
     if (gameFinished) {
         GoToEndAnimation();
     }
@@ -433,7 +431,6 @@ void StateInGame::Render() {
     if (Constants::CLIPPING_OCTREE && octreeScene.get())
         octreeScene->Draw(renderEngine);
 
-    renderEngine->FacadeDrawHUD(manCars->GetCar().get(), manCars.get(), manGameRules->GetGlobalClock().get(), manHudEvent.get(), manGameRules.get());
     renderEngine->FacadeDrawGraphEdges(manWayPoint.get());
     if (currentUpdateState == UpdateState::COUNTDOWN) {
         // todo: esto de meter el width y el height aquí a piñón y los filenames.. es una kk
@@ -463,11 +460,13 @@ void StateInGame::Render() {
     }
 
     renderEngine->FacadeDrawAIDebug(manCars.get(), manNavMesh.get(), manWayPoint.get());
+    renderEngine->FacadeDrawHUD(manCars->GetCar().get(), manCars.get(), manGameRules->GetGlobalClock().get(), manHudEvent.get(), manGameRules.get());
     renderEngine->FacadeEndScene();
 }
 
 void StateInGame::GoToEndAnimation() {
     soundEngine->SetState(11);
+    sysRanking->Update(manCars.get());
     currentUpdateState = UpdateState::END;
     timerEnd = Utils::getMillisSinceEpoch();
     EventManager::GetInstance().AddEventMulti(Event{EventType::LAUNCH_ANIMATION_END_MULTI});
