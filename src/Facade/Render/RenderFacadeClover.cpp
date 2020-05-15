@@ -791,6 +791,11 @@ void RenderFacadeClover::FacadeInitMenu() {
 void RenderFacadeClover::FacadeInitSelectCharacter() {
 
     //Creamos la camara apuntando al (0,0,0)
+
+    if(device->GetNodeByID(0)){
+        return;
+    }
+
     auto cam = device->AddCamera(device->GetRootNode(),10);
     auto shaderCam = resourceManager->GetResourceShader("CLEngine/src/Shaders/cartoonShader.vert","CLEngine/src/Shaders/cartoonShader.frag");
     cam->SetShaderProgramID(shaderCam->GetProgramID());
@@ -871,6 +876,18 @@ void RenderFacadeClover::FacadeInitControler() {
 }
 
 void RenderFacadeClover::FacadeInitCredits() {
+    if(!creditsAnimation){
+        creditsAnimation = make_unique<Animation2D>("media/animacionCreditos/creditos.jpg",961,60);
+        creditsAnimation->Start();
+        creditsAnimation->Restart();
+    }else{
+        creditsAnimation->Start();
+        creditsAnimation->Restart();
+    }
+    
+    
+
+    
 
 }
 
@@ -1739,8 +1756,18 @@ void RenderFacadeClover::FacadeDrawEndTournament() {
 }
 
 void RenderFacadeClover::FacadeDrawCredits() {
-    std::string file = "media/creditos.png";
-    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
+    // std::string file = "media/creditos.png";
+    // device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
+
+    resourceManager->DeleteResourceTexture(creditsAnimation->GetCurrentPath());
+    
+    creditsAnimation->Update();
+    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, creditsAnimation->GetCurrentPath(), true);
+    
+    //No podemos hacer animaciones a otra cosa que no sea 60 porque el vsync tiene que estar activado
+    if(creditsAnimation->GetFinished()){
+        EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_MENU});
+    }
 }
 
 void RenderFacadeClover::FacadeDrawLobbyMultiConnecting() {

@@ -221,6 +221,7 @@ class RenderFacadeClover : public RenderFacade {
       //Animaciones
       unique_ptr<Animation2D> introAnimation {nullptr};
       unique_ptr<Animation2D> powerUpAnimation {nullptr};
+      unique_ptr<Animation2D> creditsAnimation {nullptr};
 
       class Animation2D{
          public:
