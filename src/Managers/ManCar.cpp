@@ -650,8 +650,12 @@ void ManCar::ThrowPowerUpHuman(DataMap* d) {
 }
 
 void ManCar::ThrowPowerUp(Car* car_) {
+    // comprobar si esta herido
+    auto cHurt = static_cast<CHurt*>(car_->GetComponent(CompType::HurtComp).get());
+    if(cHurt->hurt)
+        return;
+
     shared_ptr<DataMap> dataSound = make_shared<DataMap>();
-    
     auto cIdCar = static_cast<CId*>(car_->GetComponent(CompType::IdComp).get());
     auto cPowerUpCar = static_cast<CPowerUp*>(car_->GetComponent(CompType::PowerUpComp).get());
     //auto cRoboJorobo = static_cast<CRoboJorobo*>(any_cast<CarAI*>(d[ACTUAL_CAR])->GetComponent(CompType::RoboJoroboComp).get());
