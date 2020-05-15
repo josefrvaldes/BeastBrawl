@@ -150,10 +150,39 @@ CLFrustum::Visibility CLFrustum::IsInside( const glm::vec3& minPoint, const glm:
 	return Completly;
 }
 
+// Lo utilizaremos para los indicadores del totem en el hud
+bool CLFrustum::IsOutRight(const glm::vec3& point) const
+{
+	if (m_data[Right][A] * point.x +
+		m_data[Right][B] * point.y +
+		m_data[Right][C] * (-point.z) +
+		m_data[Right][D] <= 0) {
+		return true;
+	}
+	return false;
+}
 
+bool CLFrustum::IsOutLeft(const glm::vec3& point) const
+{
+	if (m_data[Left][A] * point.x +
+		m_data[Left][B] * point.y +
+		m_data[Left][C] * (-point.z) +
+		m_data[Left][D] <= 0) {
+		return true;
+	}
+	return false;
+}
 
-
-
+bool CLFrustum::IsOutBack(const glm::vec3& point) const
+{
+	if (m_data[Back][A] * point.x +
+		m_data[Back][B] * point.y +
+		m_data[Back][C] * (-point.z) +
+		m_data[Back][D] <= 0) {
+		return true;
+	}
+	return false;
+}
 
 
 

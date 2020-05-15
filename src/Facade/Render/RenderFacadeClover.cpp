@@ -1366,6 +1366,30 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
     }
 
 
+    // POSITION TOTEM HUD
+    ////////////////////////////
+    //                        //
+    //                        //
+    // *                    * //
+    //                        //
+    // *         *          * //
+    ////////////////////////////
+    auto anchoSpriteTotem = 45.0;
+    auto altoSpriteTotem = 45.0;
+    auto posRefY = h/2 - (altoSpriteTotem/2);
+    auto frustum_ = device->GetActiveCamera()->GetFrustum();
+
+    cout  << "EL TOTEM EN X ESTA EN:  " << manGR->GetPosTotem().x << endl;
+ 
+    if(frustum_.IsOutBack(manGR->GetPosTotem()) && manGR->GetActiveTotem())
+     device->DrawImage2D(w/2 - (anchoSpriteTotem/2) , h - 50 - altoSpriteTotem, 1.f, 0.1f, "media/hudTotemBack.png", true); 
+    else{
+        if(frustum_.IsOutLeft(manGR->GetPosTotem()) && manGR->GetActiveTotem())
+            device->DrawImage2D(50, posRefY, 1.f, 0.1f, "media/hudTotemLeft.png", true);
+        if(frustum_.IsOutRight(manGR->GetPosTotem()) && manGR->GetActiveTotem())
+            device->DrawImage2D( (w-50.0f) - anchoSpriteTotem, posRefY , 1.f, 0.1f, "media/hudTotemRight.png", true);
+    }
+
     //CURRENT POWERUP
     if(!powerUpAnimation->GetFinished() && currentPowerUp != 0){
         //resourceManager->DeleteResourceTexture(powerUpAnimation->GetCurrentPath());

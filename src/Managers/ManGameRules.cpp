@@ -1,5 +1,7 @@
 #include "ManGameRules.h"
 #include "../Entities/Clock.h"
+#include "../Components/CTransformable.h"
+#include "../Components/CTotem.h"
 #include "../Components/CClock.h"
 #include "../Systems/SystemGameRules.h"
 #include <iostream>
@@ -52,6 +54,9 @@ ManGameRules::~ManGameRules() {
 }
 
 bool ManGameRules::Update(const vector<shared_ptr<Entity>> &cars, const vector<shared_ptr<Entity>> &totems){
+
+    posTotem = static_cast<CTransformable*>(totems[0]->GetComponent(CompType::TransformableComp).get())->position;
+    activeTotem = static_cast<CTotem*>(totems[0]->GetComponent(CompType::TotemComp).get())->active;
     //cout << "HOLAAAA" << endl;
     systemGameRules->UpdatePositionsMiniMap(cars, totems, positionsPlane, positionTotemPlane);
     return systemGameRules->UpdateGameRules( *(globalClock.get()) );
