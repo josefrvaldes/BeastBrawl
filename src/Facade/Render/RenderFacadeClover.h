@@ -175,6 +175,9 @@ class RenderFacadeClover : public RenderFacade {
                                           "Lanza el Pudin para que otro coche resbale!",
                                           "Busca el totem, cogelo y escapa de los demas!"};
 
+      // Gamepad
+      bool gamepadConnected { false };
+
       // En juego
       bool inputShowTable { true };
       Constants::ShowTableMinimap showTableMinimap { Constants::ShowTableMinimap::BOTH };

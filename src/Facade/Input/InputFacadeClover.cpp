@@ -35,6 +35,17 @@ InputFacadeClover::InputFacadeClover(){
 
 
 /**
+ * Comprueba si hay un mando conectado
+ */
+bool InputFacadeClover::IsConectedGamepad() {
+    if (glfwJoystickPresent(GLFW_JOYSTICK_1) && glfwJoystickIsGamepad(GLFW_JOYSTICK_1)) {
+        return true;
+    }
+    return false;
+}
+
+
+/**
  * Comprueba si el input que le pasamos estaba pulsado
  * @param input - Input a comprobar.
  */

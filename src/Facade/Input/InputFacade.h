@@ -17,6 +17,7 @@ using namespace chrono;
 class InputFacade {
     public:
         virtual ~InputFacade() = default;
+        virtual bool IsConectedGamepad() = 0;
         virtual vector<Constants::InputTypes> CheckInputMulti()  = 0;
         virtual bool ShowTable(bool) = 0;
         virtual void ShowTable(Constants::ShowTableMinimap&) = 0;
