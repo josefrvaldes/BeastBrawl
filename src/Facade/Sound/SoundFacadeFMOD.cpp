@@ -489,14 +489,14 @@ void SoundFacadeFMOD::UpdateCars(const vector<shared_ptr<Entity> > &e) {
         auto cPos = static_cast<CTransformable*>(car->GetComponent(CompType::TransformableComp).get());
         auto cCar = static_cast<CCar*>(car->GetComponent(CompType::CarComp).get());
         if(cPos && cId && cCar) {
-            cout << "*************** ACTUALIZANDO COCHE: " << cId->id << endl;
+            //cout << "*************** ACTUALIZANDO COCHE: " << cId->id << endl;
             string name = "Coche/motor" + to_string(cId->id);
             SetEventPositionDinamic3D(name, cPos->position, cCar->speed);
-            cout << "******** El sonido del motor del coche ha cambiado a la posicion: " << cPos->position.x << " - " << cPos->position.y << " - " << cPos->position.z << endl;
+            //cout << "******** El sonido del motor del coche ha cambiado a la posicion: " << cPos->position.x << " - " << cPos->position.y << " - " << cPos->position.z << endl;
             SetParameter(name, "velocidad", cCar->speed);
             name = "PowerUp/escudo" + to_string(cId->id);
             SetEventPositionDinamic3D(name, cPos->position, cCar->speed);
-            cout << "******** El sonido del escudo ha cambiado a la posicion: " << cPos->position.x << " - " << cPos->position.y << " - " << cPos->position.z << endl;
+            //cout << "******** El sonido del escudo ha cambiado a la posicion: " << cPos->position.x << " - " << cPos->position.y << " - " << cPos->position.z << endl;
             //name = "Coche/derrape" + to_string(cId->id);
 
         }
@@ -643,8 +643,8 @@ void SoundFacadeFMOD::SoundHurt(DataMap* d) {
     
     srand (time(NULL));
     // Del 1 al 3
-    auto num = rand() % 5 + 1;
-    if (mainCharacter && num == 5) {
+    auto num = rand() % 2 + 1;
+    if (mainCharacter && num == 2) {
         SetParameter("Personajes/voces", "Tipo", TipoVoz::ChoquePowerup);
         PlayEvent("Personajes/voces");
     }
