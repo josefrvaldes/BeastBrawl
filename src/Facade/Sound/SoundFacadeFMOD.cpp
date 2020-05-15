@@ -355,8 +355,10 @@ void SoundFacadeFMOD::LoadSoundByState(const uint8_t numState) {
         case 8:       // SETTINGS
             cout << "Estado de ajustes" << endl; 
             break;
-        /*case 9:       // CREDITS
-            break;*/
+        case 9:       // CREDITS
+            StopEvent("Musica/menu");
+            PlayEvent("Musica/credits");
+            break;
         /*case 10:      // CONTROLS
             break;*/
         case 11:        // Extra: ANIMATION END
