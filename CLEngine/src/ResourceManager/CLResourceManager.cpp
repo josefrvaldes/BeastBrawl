@@ -2,6 +2,7 @@
 
 
 #include <mutex>
+#include "../../../src/Constants.h"
 
 using namespace CLE;
 
@@ -109,7 +110,10 @@ vector<CLResourceMesh*> CLResourceManager::GetResourceAnimation(const std::strin
     // ...
     //
     
-    for(uint8_t i = 1; i <= numKeyFrames; i++) {
+    uint8_t realKeyFrames = numKeyFrames;
+    if(Constants::ANIM_ACTIVATED == 0)
+        realKeyFrames = 1;
+    for(uint8_t i = 1; i <= realKeyFrames; i++) {
         string stringIndex = std::to_string(i);
         // añade ceros al principio para que el fichero no sea 1ojete.obj, sino que sea 001ojete.obj
         string auxIndex = std::string(6 - stringIndex.length(), '0') + stringIndex; 
