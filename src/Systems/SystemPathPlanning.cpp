@@ -333,8 +333,11 @@ std::stack<int> SystemPathPlanning::Dijkstra(ManWayPoint* _graph, const uint16_t
 
 // DOBLE FREE OR CORRUPTION
 SystemPathPlanning::~SystemPathPlanning(){
-    for(int i = 0; i<graphSize; ++i){
-        delete[] graph[i];
+    if(graph){
+        for(int i = 0; i<graphSize; ++i){
+            delete[] graph[i];
+        }
+        delete[] graph;
     }
-    delete[] graph;
+    
 }

@@ -57,6 +57,8 @@ class InputFacadeClover : public InputFacade{
         void CheckInputSelCharRight(int&, int);
         void CheckInputSelCharIntro(int&);
 
+        bool CheckAnyKey();
+
         CLEngine* device;
 
         enum InputXBox{BUTTON_A, BUTTON_B, BUTTON_X, BUTTON_Y, BUTTON_LB, BUTTON_RB, BUTTON_BACK, BUTTON_START, BUTTON_XBOX, BUTTON_STICK_UP, BUTTON_STICK_DOWN, BUTTON_STICK_L, BUTTON_STICK_R, END};

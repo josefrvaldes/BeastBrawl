@@ -36,7 +36,7 @@ public:
     void MoveRandomPowerUp(DataMap* d);
     void InitMapGraph(ManWayPoint* _graph);
     void CleanBrainAI(CarAI* carAI);
-    float** graph;
+    float** graph = nullptr;
     int graphSize = 0;
     bool graphCreated = false;
 
