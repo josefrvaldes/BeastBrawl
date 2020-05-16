@@ -1,9 +1,3 @@
-/**
- * MENSAJE DE JUDITH: Yo soy la responsable de que toda esta logica este aqui.
- * En algun momento pense que esto estaba bien y lo continue. No es asi. Pero ya ha estalado demasiado
- * y no queda tiempo. Si esto baja la nota, que sea solo a mi y bien merecido.
- */
-
 #include "InputFacadeClover.h"
 
 #include <Components/CId.h>
@@ -1015,10 +1009,7 @@ void InputFacadeClover::CheckInputEndRace(int& input, int maxInput, bool menu){
                 switch(input) {
                     case 0: {
                         if (multiplayer) {
-                            WeHaveToGoToMenu = true;
-                            timerGoToMenu = Utils::getMillisSinceEpoch();
-                            RenderFacadeManager::GetInstance()->GetRenderFacade()->ResetInputGameOptions();
-                            RenderFacadeManager::GetInstance()->GetRenderFacade()->ResetInputCharacter();
+                            EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_LOBBYMULTI});
                             vector<uint8_t> vacio;
                             GameValues::GetInstance()->SetCharacterSel(vacio);
                         } else {
@@ -1033,17 +1024,22 @@ void InputFacadeClover::CheckInputEndRace(int& input, int maxInput, bool menu){
                         }
                         break;
                     }
-                    case 1: {
-                        EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_SELECT_CHARACTER});
+                    case 1: {                        
+                        if (multiplayer) {
+                            WeHaveToGoToMenu = true;
+                            timerGoToMenu = Utils::getMillisSinceEpoch();
+                            vector<uint8_t> vacio;
+                            GameValues::GetInstance()->SetCharacterSel(vacio);
+                        } else {
+                            EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_SELECT_CHARACTER});
+                        }
                         break;
                     }
                     case 2: {
                         WeHaveToGoToMenu = true;
                         timerGoToMenu = Utils::getMillisSinceEpoch();
-                        RenderFacadeManager::GetInstance()->GetRenderFacade()->ResetInputGameOptions();
-                        RenderFacadeManager::GetInstance()->GetRenderFacade()->ResetInputCharacter();
-                        vector<uint8_t> vacio;
-                        GameValues::GetInstance()->SetCharacterSel(vacio);
+                        //RenderFacadeManager::GetInstance()->GetRenderFacade()->ResetInputGameOptions();
+                        //RenderFacadeManager::GetInstance()->GetRenderFacade()->ResetInputCharacter();
                         break;
                     }
                 }
@@ -1065,11 +1061,11 @@ void InputFacadeClover::CheckInputEndRace(int& input, int maxInput, bool menu){
                 if (input < 0) {
                     input = maxInput;
                 }
-                if (multiplayer) { input = 0; }
-                else {
-                    SetValueInput(BUTTON_STICK_UP, true);
-                    EventManager::GetInstance().AddEventMulti(Event{EventType::MENU_OPTION});
+                if (multiplayer && input == 2) { 
+                    input--; 
                 }
+                SetValueInput(BUTTON_STICK_UP, true);
+                EventManager::GetInstance().AddEventMulti(Event{EventType::MENU_OPTION});
             } else if ( !IsKeyOrGamepadPress(GLFW_KEY_UP, GLFW_GAMEPAD_AXIS_LEFT_Y, true, -0.5, GLFW_GAMEPAD_BUTTON_DPAD_UP, true) ){
                 SetValueInput(BUTTON_STICK_UP, false);
             }
@@ -1082,16 +1078,17 @@ void InputFacadeClover::CheckInputEndRace(int& input, int maxInput, bool menu){
                 if(input > maxInput) {
                     input = 0;
                 }
-                if (multiplayer) { input = 0; }
-                else {
-                    SetValueInput(BUTTON_STICK_DOWN, true);
-                    EventManager::GetInstance().AddEventMulti(Event{EventType::MENU_OPTION});
+                if (multiplayer && input == 2) { 
+                    input = 0; 
                 }
+                SetValueInput(BUTTON_STICK_DOWN, true);
+                EventManager::GetInstance().AddEventMulti(Event{EventType::MENU_OPTION});
             } else if ( !IsKeyOrGamepadPress(GLFW_KEY_DOWN, GLFW_GAMEPAD_AXIS_LEFT_Y, true, 0.5, GLFW_GAMEPAD_BUTTON_DPAD_DOWN, true) ){
                 SetValueInput(BUTTON_STICK_DOWN, false);
             }
         }
     }
+    //cout << "ESTOY EN EL INPUT DE ENDRACE NORMAL: " << input << endl;
 }
 
 void InputFacadeClover::CheckInputEndTournament(int& input, int maxInput, uint8_t menu){

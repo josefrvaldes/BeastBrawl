@@ -886,7 +886,7 @@ void RenderFacadeClover::FacadeInitResources(){
     device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
 
     int64_t time = Utils::getMicrosSinceEpoch();
-    int indx = time % tipsTexts.size()-1;
+    int indx = time % (tipsTexts.size()-1);
 
     device->RenderText2D(tipsTexts.at(indx), device->GetScreenWidth()/2 - 125.0f*scale, device->GetScreenHeight()/2,0.5f, scale,glm::vec3(1.0f,1.0f,1.0f));
     FacadeEndScene();
@@ -934,7 +934,9 @@ void RenderFacadeClover::FacadeInitResources(){
 
     resourceManager->GetResourceTexture("media/totemCogido.png", true);
     resourceManager->GetResourceTexture("media/totemSuelo.png", true);
-    resourceManager->GetResourceTexture("media/marcador.png", true);
+    resourceManager->GetResourceTexture("media/indicator_tiempo.png", true);
+    resourceManager->GetResourceTexture("media/indicator_totem.png", true);
+    resourceManager->GetResourceTexture("media/ranking.png", true);
     resourceManager->GetResourceTexture("media/Minimapa240v2.png", true);
 
     //Events hud
@@ -1199,11 +1201,13 @@ void RenderFacadeClover::FacadeCheckInputSelectCharacter() {
 void RenderFacadeClover::FacadeCheckInputGameOptions() {
     InputFacadeManager::GetInstance()->GetInputFacade()->CheckInputGameOptions(inputGO, maxInputGO, option);
     gamepadConnected = InputFacadeManager::GetInstance()->GetInputFacade()->IsConectedGamepad();
+    multiplayer = false;
 }
 
 void RenderFacadeClover::FacadeCheckInputTournamentOptions() {
     InputFacadeManager::GetInstance()->GetInputFacade()->CheckInputTournamentOptions(inputTO, maxInputTO, optionTO);
     gamepadConnected = InputFacadeManager::GetInstance()->GetInputFacade()->IsConectedGamepad();
+    multiplayer = false;
 }
 
 void RenderFacadeClover::FacadeCheckInputControler() {
@@ -1248,6 +1252,7 @@ void RenderFacadeClover::FacadeCheckInputLobbyMultiExit() {
 void RenderFacadeClover::FacadeCheckInputLobbyMultiSelChar() {
     InputFacadeManager::GetInstance()->GetInputFacade()->CheckInputLobbyMultiSelChar(inputSC, maxInputSC);
     gamepadConnected = InputFacadeManager::GetInstance()->GetInputFacade()->IsConectedGamepad();
+    multiplayer = true;
 }
 
 void RenderFacadeClover::FacadeCheckInputSettings() {
@@ -1368,7 +1373,7 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
         powerUpAnimation->Update();
         device->DrawImage2D(50.0f, 50.0f, 150.0f, 150.0f, 0.1f, powerUpAnimation->GetCurrentPath(), true);
     }else{
-        device->DrawImage2D(50.0f, 50.0f, 150.0f, 150.0f, 0.1f ,powerUps[currentPowerUp], true);
+        device->DrawImage2D(50.0f, 25.0f, 150.0f, 150.0f, 0.1f ,powerUps[currentPowerUp], true);
     }
 
     // TABLA TIEMPOS
@@ -1380,6 +1385,7 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
         uint8_t positionR = 1;
         int64_t antTime = -1;
         auto rankingSize = (ranking.size() - 1) * 45.0f;
+        auto widthRanking = 400.0f;
 
         for (auto it = ranking.begin(); it != ranking.end(); ++it) {    
 
@@ -1393,12 +1399,12 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
                 default:                                                                                   break;
             }
 
-            cadena = "media/cuadrado.png";
+            cadena = "media/ranking.png";
             //device->DrawImage2D(w - 200.0f, 150.0f + j*45.0f, 1.0, 0.9f, cadena, true);
-            device->DrawImage2D(50.0f, h - 85.0f - rankingSize + j*45.0f, 1.0, 0.9f, cadena, true);
+            device->DrawImage2D(50.0f, h - 85.0f - rankingSize + j*45.0f, widthRanking*0.4f, 43.0f, 0.9f, cadena, true);
             
             //device->DrawImage2D(w - 160.0f, 155.0f + j*45.0f, 0.4f, 0.1f*j+0.1f, sprite, true);  //CARITA
-            device->DrawImage2D(95.0f, h - 80.0f - rankingSize + j*45.0f, 0.4f, 0.7f, sprite, true);  //CARITA
+            device->DrawImage2D(100.0f, h - 80.0f - rankingSize + j*45.0f, 0.4f, 0.7f, sprite, true);  //CARITA
 
             auto it2 = seconds.find(it->first);
             if (it2 != seconds.end()) {
@@ -1408,12 +1414,12 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
                 }
                 cadena = std::to_string(positionR) + ".";
                 //device->RenderText2D(cadena, w - 190.0f, h - 180.0f - 45.0f*j, 0.1f*j+0.1f, 0.6f, glm::vec3(255.0f,255.0f,255.0f));
-                device->RenderText2D(cadena, 60.0f, 55.0f + rankingSize - j*45.0f, 0.5f, 0.6f, glm::vec3(255.0f,255.0f,255.0f));
+                device->RenderText2D(cadena, 65.0f, 55.0f + rankingSize - j*45.0f, 0.5f, 0.6f, glm::vec3(255.0f,255.0f,255.0f));
 
                 antTime = it2->second;
                 cadena = std::to_string(antTime);
                 //device->RenderText2D(cadena, w - 110.0f, h - 180.0f - 45.0f*j, 0.1f*j+0.1f, 0.6f, color);
-                device->RenderText2D(cadena, 145.0f, 55.0f + rankingSize - j*45.0f, 0.5f, 0.6f, color);
+                device->RenderText2D(cadena, 148.0f, 55.0f + rankingSize - j*45.0f, 0.5f, 0.6f, color);
             }
             ++j;
         }
@@ -1440,14 +1446,15 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
 
 
             //MARCADOR DE TIEMPO
+            auto widthMTotem = 470.0f;
             if (cTotem && cTotem->active) {
                 totemCatch = true;
-                cadena = "media/marcador.png";
-                auto posMarcadorX = w/2 - 112.0f;
-                auto posMarcadorY = 50.0f;
-                device->DrawImage2D(posMarcadorX, posMarcadorY , 1.0, 0.2f, cadena, true);
+                cadena = "media/indicator_totem.png";
+                auto posMarcadorX = w/2 - widthMTotem*0.25f;
+                auto posMarcadorY = 32.0f;
+                device->DrawImage2D(posMarcadorX, posMarcadorY , 0.5f, 0.2f, cadena, true);
 
-                device->DrawImage2D(posMarcadorX + 50.0f, posMarcadorY + 20.0f, 0.6f, 0.05f, sprite, true);     //CARITA
+                device->DrawImage2D(posMarcadorX + 160.0f, posMarcadorY + 32.0f, 0.6f, 0.05f, sprite, true);     //CARITA
 
                 int time = cTotem->SEGUNDOS - cTotem->accumulatedTime/1000;
                 cadena = std::to_string(time);
@@ -1457,7 +1464,7 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
                     color = glm::vec3(255.0f, 0.0f, 0.0f);
                 }
 
-                device->RenderText2D(cadena, (posMarcadorX + 125.0f), (h - 110.0f), 0.05f, 0.8f, color);
+                device->RenderText2D(cadena, (posMarcadorX + 105.0f), (h - 98.0f), 0.05f, 0.6f, color);
                 //break;
             
             }
@@ -1497,11 +1504,11 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
     }
     totemCatch = false;
 
-
+    auto widthMTime = 385.0f;
     // MARCADOR GLOBAL
     if (globalClock) {
-        cadena = "media/marcador.png";
-        device->DrawImage2D(w-275.0f, 50.0f ,1.0, 0.2f, cadena, true);
+        cadena = "media/indicator_tiempo.png";
+        device->DrawImage2D(w-(widthMTime*0.5f)-50.0f, 50.0f ,0.5f , 0.2f, cadena, true);
         
         auto cGClock = static_cast<CClock*>(globalClock->GetComponent(CompType::ClockComp).get());
         int time = cGClock->DURATION_TIME/1000 - cGClock->accumulatedTime/1000;
@@ -1516,7 +1523,7 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
         if(min == 0 && seg <= 30) {
             color = glm::vec3(255.0f, 0.0f, 0.0f);
         }
-        device->RenderText2D(cadena, (w - 225.0f), (h - 110.0f), 0.05f, 0.8f, color);
+        device->RenderText2D(cadena, (w - 165.0f), (h - 100.0f), 0.05f, 0.6f, color);
     }
    
     
@@ -1837,15 +1844,25 @@ void RenderFacadeClover::FacadeDrawEndRace() {
     if (menuER) {
         file = "media/menu/endrace/finish_menu_options_bg.png";
         Draw2DImage(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.4f, file, true);
-        file = "media/menu/endrace/finish_menu_options_elements.png";
-        Draw2DImage(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.5f, file, true);
-
-        std::string files[3] = {
-            "media/menu/endrace/finish_option1_hover.png",
-            "media/menu/endrace/finish_option2_hover.png",
-            "media/menu/endrace/finish_option3_hover.png"
-        };
-        Draw2DImage(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.2f, files[inputER], true);
+        
+        if ( !multiplayer ) {
+            file = "media/menu/endrace/finish_menu_options_elements.png";
+            Draw2DImage(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.5f, file, true);
+            std::string files[3] = {
+                "media/menu/endrace/finish_option1_hover.png",
+                "media/menu/endrace/finish_option2_hover.png",
+                "media/menu/endrace/finish_option3_hover.png"
+            };
+            Draw2DImage(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.2f, files[inputER], true);
+        } else {
+            file = "media/menu/endrace/online/o_finish_menu_options_elements.png";
+            Draw2DImage(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.5f, file, true);
+            std::string files[2] = {
+                "media/menu/endrace/online/o_finish_option1_hover.png",
+                "media/menu/endrace/online/o_finish_option2_hover.png"
+            };
+            Draw2DImage(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.2f, files[inputER], true);
+        }
     }
     device->SetEnableDepthTest(true);
 }
@@ -2040,12 +2057,15 @@ void RenderFacadeClover::FacadeDrawCredits() {
 }
 
 void RenderFacadeClover::FacadeDrawLobbyMultiConnecting() {
-    std::string file = "media/LobbyOnline/LobbyMulti.png";
+    //std::string file = "media/LobbyOnline/LobbyMulti.png";
+    std::string file = "media/LobbyOnline/online_main.png";
+    if ( !gamepadConnected ) { file = "media/LobbyOnline/online_main_keyboard.png"; }
     device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
 }
 
 void RenderFacadeClover::FacadeDrawLobbyMultiWait() {
-    std::string file = "media/LobbyOnline/Waiting.png";
+    //std::string file = "media/LobbyOnline/Waiting.png";
+    std::string file = "media/LobbyOnline/online_waiting.png";
     device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
 }
 
@@ -2054,7 +2074,8 @@ void RenderFacadeClover::FacadeDrawLobbyMultiSelChar() {
 }
 
 void RenderFacadeClover::FacadeDrawLobbyMultiExit() {
-    std::string file = "media/LobbyOnline/LobbyMultiFull.png";
+    std::string file = "media/LobbyOnline/online_disconect.png";
+    if ( !gamepadConnected ) { file = "media/LobbyOnline/online_disconect_keyboard.png"; }
     device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
 }
 
