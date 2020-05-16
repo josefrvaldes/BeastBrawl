@@ -1001,7 +1001,7 @@ void RenderFacadeClover::FacadeInitMenu() {
 
     //CARGAMOS COSAS
     resourceManager->GetResourceAnimation("media/animations/penguin/selection/selectionpenguin_000001.obj", 30, false);
-    resourceManager->GetResourceAnimation("media/animations/penguin/selection/selectionpenguin_000001.obj", 30, false);
+    resourceManager->GetResourceAnimation("media/animations/baxter/selection/selectionbaxter_000001.obj", 30, false);
 
     FacadeBeginScene();
 
@@ -1030,8 +1030,6 @@ void RenderFacadeClover::FacadeInitMenu() {
 
     resourceManager->GetResourceAnimation("media/animations/dragon/selection/selectiondragon_000001.obj", 30, false);
     resourceManager->GetResourceAnimation("media/animations/cyberoctopus/selection/selectionoctopus_000001.obj", 31, false);
-
-
 
     
 }
@@ -1065,7 +1063,7 @@ void RenderFacadeClover::FacadeInitSelectCharacter() {
     mesh->SetShaderProgramID(shader->GetProgramID());
 
     //Tiger
-    auto animationTig = resourceManager->GetResourceAnimation("media/animations/penguin/selection/selectionpenguin_000001.obj", 30, false);
+    auto animationTig = resourceManager->GetResourceAnimation("media/animations/baxter/selection/selectionbaxter_000001.obj", 30, false);
     mesh = device->AddMesh(smgr,1);
     static_cast<CLMesh*>(mesh->GetEntity())->SetAnimation(animationTig);
     mesh->SetScalation(glm::vec3(2.0f));
