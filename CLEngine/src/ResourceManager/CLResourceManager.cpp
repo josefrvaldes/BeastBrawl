@@ -112,6 +112,8 @@ vector<CLResourceMesh*> CLResourceManager::GetResourceExistingAnimation(const st
     size_t index = GetResourceMeshIndex(path);
     vector<CLResourceMesh*> outputMeshes;
     if(index >= 0) {
+        if(!Constants::ANIM_ACTIVATED)
+            numKeyFrames = 1;
         outputMeshes.reserve(numKeyFrames);
         for(size_t i = index; i < index + numKeyFrames; i++) {
             outputMeshes.push_back(meshes[i].get());
