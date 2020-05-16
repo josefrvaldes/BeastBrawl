@@ -20,7 +20,7 @@ public:
     // float linear        {0.0000036f};
     // float quadratic     {0.00000036f};
 
-    float linear        {0.0000032f};
-    float quadratic     {0.00000032f};
+    float linear        {0.0000030f};
+    float quadratic     {0.00000028f};
     
 };

@@ -22,20 +22,6 @@ class RenderFacadeIrrlicht : public RenderFacade {
    public:
 
 
-    void suputamadre(Entity*){};
-
-
-
-
-
-
-
-
-
-
-
-
-
     RenderFacadeIrrlicht();
     ~RenderFacadeIrrlicht() override;
     const uint16_t FacadeAddObject(Entity*) override;

@@ -105,7 +105,6 @@ ManBoundingOBB::ManBoundingOBB() {
 
 
         if( glm::distance(centerPlane1, centerMass) > glm::distance(centerPlane2, centerMass)){
-            cout << "entramos al 0-2" << endl;
             // el plano 1 por descarte es el pequeño
             auto aumentoZ = abs(verticesOBB[0].x - verticesOBB[2].x)/2;
             auto aumentoX = abs(verticesOBB[0].z - verticesOBB[2].z)/2;
@@ -124,7 +123,6 @@ ManBoundingOBB::ManBoundingOBB() {
             posZ = posZ2 = centerPlane1.z+aumentoZ;
 
         }else{
-            cout << "entramos al 4-6" << endl;
             // el plano 1 por descarte es el pequeño
             auto aumentoZ = abs(verticesOBB[4].x - verticesOBB[6].x)/2;
             auto aumentoX = abs(verticesOBB[4].z - verticesOBB[6].z)/2;

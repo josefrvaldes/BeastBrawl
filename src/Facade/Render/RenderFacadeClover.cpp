@@ -577,74 +577,6 @@ const uint16_t RenderFacadeClover::FacadeAddStaticObject(Entity* entity) {
 
 
 
-void RenderFacadeClover::suputamadre(Entity* pepe){
-
-    auto cId = static_cast<CId*>(pepe->GetComponent(CompType::IdComp).get());
-    auto node = device->GetNodeByID(cId->id);
-    auto dim = node->GetBoundingBoxOBB();
-    auto min = node->GetMinBoxOBB();
-    auto max = node->GetMaxBoxOBB();
-    auto pos = node->GetGlobalTranslation();
-
-    auto pos1 = glm::vec3(min.x,min.y,min.z);
-    auto pos2 = glm::vec3(max.x,min.y,min.z);
-    Draw3DLine(pos1, pos2, 0.0,0.0,255.0);
-    auto pos3 = glm::vec3(min.x,max.y,min.z);
-    Draw3DLine(pos1, pos3, 0.0,0.0,255.0);
-    auto pos4 = glm::vec3(min.x,min.y,max.z);
-    Draw3DLine(pos1, pos4, 0.0,0.0,255.0);
-
-    auto pos5 = glm::vec3(max.x,max.y,max.z);
-    auto pos6 = glm::vec3(min.x,max.y,max.z);
-    Draw3DLine(pos5, pos6, 0.0,0.0,255.0);
-    auto pos7 = glm::vec3(max.x,min.y,max.z);
-    Draw3DLine(pos5, pos7, 0.0,0.0,255.0);
-    auto pos8 = glm::vec3(max.x,max.y,min.z);
-    Draw3DLine(pos5, pos8, 0.0,0.0,255.0);
-
-
-
-
-
-//    auto pos1 = glm::vec3(pos.x-dim.x,pos.y-dim.y,(-pos.z)-dim.z);
-//    auto pos2 = glm::vec3(pos.x+dim.x,pos.y-dim.y,(-pos.z)-dim.z);
-//    Draw3DLine(pos1, pos2, 0.0,0.0,255.0);
-//    auto pos3 = glm::vec3(pos.x-dim.x,pos.y+dim.y,(-pos.z)-dim.z);
-//    Draw3DLine(pos1, pos3, 0.0,0.0,255.0);
-//    auto pos4 = glm::vec3(pos.x-dim.x,pos.y-dim.y,(-pos.z)+dim.z);
-//    Draw3DLine(pos1, pos4, 0.0,0.0,255.0);
-//
-//    auto pos5 = glm::vec3(pos.x+dim.x,pos.y+dim.y,(-pos.z)+dim.z);
-//    auto pos6 = glm::vec3(pos.x+dim.x,pos.y+dim.y,(-pos.z)-dim.z);
-//    Draw3DLine(pos5, pos6, 0.0,0.0,255.0);
-//    auto pos7 = glm::vec3(pos.x+dim.x,pos.y-dim.y,(-pos.z)+dim.z);
-//    Draw3DLine(pos5, pos7, 0.0,0.0,255.0);
-//    auto pos8 = glm::vec3(pos.x-dim.x,pos.y+dim.y,(-pos.z)+dim.z);
-//    Draw3DLine(pos5, pos8, 0.0,0.0,255.0);
-
-//    auto pos1 = glm::vec3(pos.x-dim,pos.y-dim,pos.z-dim);
-//    auto pos2 = glm::vec3(pos.x+dim,pos.y-dim,pos.z-dim);
-//    Draw3DLine(pos1, pos2, 0.0,0.0,255.0);
-//    auto pos3 = glm::vec3(pos.x-dim,pos.y+dim,pos.z-dim);
-//    Draw3DLine(pos1, pos3, 0.0,0.0,255.0);
-//    auto pos4 = glm::vec3(pos.x-dim,pos.y-dim,pos.z+dim);
-//    Draw3DLine(pos1, pos4, 0.0,0.0,255.0);
-
-//    auto pos5 = glm::vec3(pos.x+dim,pos.y+dim,pos.z+dim);
-//    auto pos6 = glm::vec3(pos.x+dim,pos.y+dim,pos.z-dim);
-//    Draw3DLine(pos5, pos6, 0.0,0.0,255.0);
-//    auto pos7 = glm::vec3(pos.x+dim,pos.y-dim,pos.z+dim);
-//    Draw3DLine(pos5, pos7, 0.0,0.0,255.0);
-//    auto pos8 = glm::vec3(pos.x-dim,pos.y+dim,pos.z+dim);
-//    Draw3DLine(pos5, pos8, 0.0,0.0,255.0);
-
-    Draw3DLine(pos3, pos8, 0.0,0.0,255.0);
-    Draw3DLine(pos4, pos7, 0.0,0.0,255.0);
-    Draw3DLine(pos2, pos7, 0.0,0.0,255.0);
-    Draw3DLine(pos6, pos3, 0.0,0.0,255.0);
-    Draw3DLine(pos6, pos4, 0.0,0.0,255.0);
-    Draw3DLine(pos2, pos8, 0.0,0.0,255.0);
-}
 
 
 
@@ -949,6 +881,7 @@ void RenderFacadeClover::FacadeInitResources(){
     if ( w > 1600 ) { scale = 0.75f; }
     else if (w < 600 ) { scale = 0.25f; }
 
+    //Esto es lo unico que se necesita para dibujar la pantalla de carga
     std::string file = "media/menu/loading_screen.png";
     device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
 

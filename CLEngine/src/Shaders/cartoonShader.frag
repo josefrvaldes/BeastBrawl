@@ -81,6 +81,8 @@ uniform int cartoonParts = 8;
 
 uniform int id_luz_shadowMapping; //El numero en el array  de luces puntuales para aplicar shadowmapping
 
+bool LUZ_ON = true;        //A 0 desactiva las luces
+
 float ShadowCalculation(){
     // perform perspective divide
     vec3 projCoords = FragPosLightSpace.xyz / FragPosLightSpace.w;
@@ -245,35 +247,38 @@ vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
 
 void main(){
 
-    vec3 result = vec3(0.0);
+    if(LUZ_ON){
+        vec3 result = vec3(0.0);
 
-    vec3 norm = normalize(Normal);
-    vec3 viewDir = normalize(viewPos - FragPos); //Vector entre nosotros y el punto del objeto
+        vec3 norm = normalize(Normal);
+        vec3 viewDir = normalize(viewPos - FragPos); //Vector entre nosotros y el punto del objeto
 
-    // Luces direccionales
-    int j = 0;
-    while(j<num_Direct_Lights){
-        result += CalcDirLight(directLights[j],norm,FragPos,viewDir);
-        j++;
+        // Luces direccionales
+        int j = 0;
+        while(j<num_Direct_Lights){
+            result += CalcDirLight(directLights[j],norm,FragPos,viewDir);
+            j++;
+        }
+
+        // Luces puntuales
+        int i = 0;
+        while(i<num_Point_Lights){
+            result += CalcPointLight(pointLights[i], norm, FragPos, viewDir, i); 
+            i++;
+        }
+
+        //Luces spot
+        int k = 0;
+        while(k<num_Spot_Lights){
+            result += CalcSpotLight(spotLights[k],norm, FragPos, viewDir);
+            k++;
+        }
+
+        FragColor = vec4(result,1.0);
+        //FragColor = floor(FragColor * cartoonParts) / cartoonParts;  // estaba mal aplicado, era en la luz difusa solo
+        
+    }else{
+        //Si comentas esta linea se ve con luces
+        FragColor = texture(material.diffuse,TexCoords);
     }
-
-    // Luces puntuales
-    int i = 0;
-    while(i<num_Point_Lights){
-        result += CalcPointLight(pointLights[i], norm, FragPos, viewDir, i); 
-        i++;
-    }
-
-    //Luces spot
-    int k = 0;
-    while(k<num_Spot_Lights){
-        result += CalcSpotLight(spotLights[k],norm, FragPos, viewDir);
-        k++;
-    }
-
-    FragColor = vec4(result,1.0);
-    //FragColor = floor(FragColor * cartoonParts) / cartoonParts;  // estaba mal aplicado, era en la luz difusa solo
-
-    //Si comentas esta linea se ve con luces
-    //FragColor = texture(material.diffuse,TexCoords);
 }
