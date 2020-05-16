@@ -57,7 +57,7 @@ ManBoundingWall::ManBoundingWall() {
         vertex4Z = vertex4["z"].get<double>();
         vec3 v_vertex4 = vec3(vertex4X, vertex4Y, vertex4Z);
 
-        CreateBoundingWall(v_vertex1, v_vertex2, v_vertex4, v_vertex3);
+        CreateBoundingWall(v_vertex2, v_vertex1, v_vertex3, v_vertex4);
     }
 
     //CreateBoundingWall(vec3(-500.f, 20.f, -460.f),vec3(550.f, 20.f, -460.f),vec3(550.f, 120.f, -460.f),vec3(-500.f, 120.f, -460.f));

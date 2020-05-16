@@ -9,6 +9,7 @@
 
 
 void SetMeshAccordingToDistance(float distanceToCam, CMesh *cMesh) {
+    cMesh->previousMesh = cMesh->activeMesh;
     if (distanceToCam < cMesh->distanceNear) {
         cMesh->activeMesh = cMesh->mesh[0];
     } else if(cMesh->mesh.size() >= 2 && distanceToCam < cMesh->distanceMedium) {
@@ -20,13 +21,14 @@ void SetMeshAccordingToDistance(float distanceToCam, CMesh *cMesh) {
 }
 
 void SetMeshAccordingToDistance(float distanceToCam, CAnimation *cAnimation) {
+    cAnimation->previousAnimation = cAnimation->activeAnimation.get();
     if (distanceToCam < cAnimation->distanceNear) {
-        cAnimation->GetActiveAnimation() = cAnimation->GetAnimations()[0];
+        cAnimation->activeAnimation = cAnimation->GetAnimations()[0];
     } else if(cAnimation->GetAnimations().size() >= 2 && distanceToCam < cAnimation->distanceMedium) {
-        cAnimation->GetActiveAnimation() = cAnimation->GetAnimations()[1];
+        cAnimation->activeAnimation = cAnimation->GetAnimations()[1];
         // cout << "Hemos puesto un mesh medium porque la distancia era " << distanceToCam << endl;
     } else if(cAnimation->GetAnimations().size() >= 3 && distanceToCam > cAnimation->distanceMedium) {
-        cAnimation->GetActiveAnimation() = cAnimation->GetAnimations()[2];
+        cAnimation->activeAnimation = cAnimation->GetAnimations()[2];
     }
 }
 

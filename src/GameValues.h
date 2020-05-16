@@ -4,6 +4,12 @@
 #include <map>
 
 
+enum MAP {
+    MAYAN
+};
+
+
+
 enum DifficultyAI { EASY, NORMAL, DIFFICULT };
 
 class GameValues {
@@ -13,7 +19,7 @@ class GameValues {
 
         // SETTERS
         void SetCharacter(int c);
-        void SetMap(int m)                              { mapGame = m; };
+        void SetMap(MAP m)                              { mapGame = m; };
         void SetWin(bool w)                             { win = w; };
         void SetTimeTotem(int tt)                       { timeTotem = tt; };
         void SetGameTime(int gt)                        { gameTime = gt; };
@@ -34,12 +40,12 @@ class GameValues {
         void SetDifficultAI(DifficultyAI d)   { difficultAI = d; };
 
         // GETTERS
-        const int GetCharacter()                                                            { return mainCharacter; };
-        const std::vector<int>& GetIACharacters()                                           { return iaCharacter; };
-        const int GetMap()                                                                  { return mapGame; };
-        const bool GetWin()                                                                 { return win; };
-        const int GetTimeTotem()                                                            { return timeTotem; };
-        const int GetGameTime()                                                             { return gameTime; };
+        const int GetCharacter()                        { return mainCharacter; };
+        const std::vector<int>& GetIACharacters()       { return iaCharacter; };
+        const MAP GetMap()                              { return mapGame; };
+        const bool GetWin()                             { return win; };
+        const int GetTimeTotem()                        { return timeTotem; };
+        const int GetGameTime()                         { return gameTime; };
         const DifficultyAI GetDifficultAI()                                      { return difficultAI; };
 
         const std::map<uint16_t, uint16_t>& GetRanking()                                    { return ranking; };
@@ -61,7 +67,7 @@ class GameValues {
 
         int mainCharacter { 0 };
         std::vector<int> iaCharacter = { 1, 2, 3, 4, 5};  // Por defecto  
-        int mapGame { 0 };
+        MAP mapGame { MAP::MAYAN };
         int timeTotem { 45 };
         int gameTime { 180 };
         uint8_t numPlayers{ 4 };

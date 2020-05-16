@@ -33,6 +33,8 @@ class CBoundingOBB : public Component {
     IntersectData IntersectRay(const glm::vec3 &posRayOrigin, const glm::vec3 &rayNormalNormalized) const;
     IntersectData IntersectRay2(const glm::vec3 &posRayOrigin, const glm::vec3 &rayNormalNormalized) const;
 
+    vector<shared_ptr<CBoundingPlane>> GetPlanesOBB(){ return planes; };
+
     vector<shared_ptr<CBoundingPlane>> planes;
     vector<glm::vec3> centersMass;
     // Recordatorio, un plano tiene 4 vec3 (sus 4 vertices), su normal, su ecuacion general, y una distancia.

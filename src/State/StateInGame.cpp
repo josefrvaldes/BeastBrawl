@@ -28,7 +28,7 @@ StateInGame::StateInGame() {
     //physics = make_unique<Physics>(Constants::DELTA_TIME);
 
     //cam = make_shared<Camera>(glm::vec3(100.0f, 0.0f, 30.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f));
-    ground = make_shared<GameObject>(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), "", "training_ground.obj");
+    ground = make_shared<GameObject>(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), "", "mayan_map.obj");
 
     // Ordena las posiciones del ranking 1 vez antes de empezar la partida
 }
@@ -59,7 +59,11 @@ void StateInGame::AddElementsToRender() {
             renderEngine->FacadeAddObject(cars.get());
     }
 
-    renderEngine->FacadeAddObject(ground.get());  //Anyadimos el suelo
+    // TODO: LOS SUELOS CON FRUSTUM
+    //renderEngine->FacadeAddObject(ground.get());  //Anyadimos el suelo
+    for(const auto& currentPartGround : manGameRules->GetGrounds()){
+        renderEngine->FacadeAddStaticObject(currentPartGround.get());
+    }
 
     //Añadimos todos los power ups
     for (auto bpu : manBoxPowerUps->GetEntities())
@@ -282,13 +286,16 @@ void StateInGame::UpdateGame() {
     EventManager &em = EventManager::GetInstance();
     em.Update();
 
+
     manNavMesh->Update(*(manCars.get()));
 
-    // ACTUALIZACION DE LOS MANAGERS DE LOS COCHES
+// ACTUALIZACION DE LOS MANAGERS DE LOS COCHES
     bool gameFinished = manCars->UpdateCarPlayer(*(manTotems.get()));
     if (gameFinished) {
         GoToEndAnimation();
     }
+
+
 
     sysBoxPowerUp->update(manBoxPowerUps.get());
 
@@ -303,18 +310,30 @@ void StateInGame::UpdateGame() {
     manCamera->Update();
 
 
-    // Actualizaciones en Irrlich
+    // Actualizaciones en la fachada
     renderEngine->UpdateCamera(manCamera.get()->getCamera(), manCars.get());
     physicsEngine->UpdateCar(manCars.get()->GetCar().get(), manCamera.get()->getCamera());
 
-    for (auto actualPowerUp : manPowerUps->GetEntities())  // actualizamos los powerUp en irrlich
+    for (auto actualPowerUp : manPowerUps->GetEntities())  // actualizamos los powerUp en la fachada
         physicsEngine->UpdatePowerUps(actualPowerUp.get());
 
-    for (auto actualBoxPowerUp : manBoxPowerUps->GetEntities())  // actualizamos los powerUp en irrlich
+    for (auto actualBoxPowerUp : manBoxPowerUps->GetEntities())  // actualizamos los powerUp en la fachada
         physicsEngine->UpdatePowerUps(actualBoxPowerUp.get());
 
     renderEngine->FacadeUpdatePlates(manNamePlates.get());
     physicsEngine->UpdateTransformable(manTotems->GetEntities()[0].get());
+
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//     timeStartSeccion = std::chrono::system_clock::now();
+// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                    sysHurt->Update(manCars->GetEntities());
+// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//      end = std::chrono::system_clock::now();
+//      elapsed_millisecons = std::chrono::duration_cast<std::chrono::nanoseconds>
+//                              (end-timeStartSeccion).count();
+//     cout << "TIEMO ACTUAL ULDATE  (Hurt):  " << elapsed_millisecons/1000000 << endl;
+// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     //Updates de los eventos de sonido
     soundEngine->UpdateCars(manCars->GetEntities());
@@ -351,10 +370,24 @@ void StateInGame::UpdateGame() {
         GoToEndAnimation();
     }
 
-    if (Constants::CLIPPING_OCTREE) {
-        octreeScene = make_unique<Octree>(glm::vec3(0.0, 500.0, 0.0), 700.0, managersEntities);
-        octreeScene->UpdateVisibleObjects(renderEngine);
-    }
+// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//      end = std::chrono::system_clock::now();
+//      elapsed_millisecons = std::chrono::duration_cast<std::chrono::nanoseconds>
+//                              (end-timeStartSeccion).count();
+//     cout << "TIEMO ACTUAL ULDATE  (RANKING):  " << elapsed_millisecons/1000000 << endl;
+// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//     timeStartSeccion = std::chrono::system_clock::now();
+// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                    if (Constants::CLIPPING_OCTREE) {
+                        octreeScene = make_unique<Octree>(glm::vec3(0.0, 500.0, 0.0), 700.0, managersEntities);
+                        octreeScene->UpdateVisibleObjects(renderEngine);
+                    }
+// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//      end = std::chrono::system_clock::now();
+//      elapsed_millisecons = std::chrono::duration_cast<std::chrono::nanoseconds>
+//                              (end-timeStartSeccion).count();
+//     cout << "TIEMO ACTUAL ULDATE  (CLIPPING_OCTREE):  " << elapsed_millisecons/1000000 << endl;
+// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
 
 void StateInGame::IntersectsCLPhysics(){
@@ -390,6 +423,9 @@ void StateInGame::Render() {
     // renderEngine->FacadeDraw();  //Para dibujar primitivas debe ir entre el drawAll y el endScene
     renderEngine->FacadeDrawAll();
 
+    //renderEngine->suputamadre(manCars->GetCar().get());
+    //renderEngine->suputamadre(manGameRules->GetGrounds()[0].get());
+
     if (Constants::CLIPPING_OCTREE && octreeScene.get())
         octreeScene->Draw(renderEngine);
 
@@ -397,7 +433,7 @@ void StateInGame::Render() {
     if (currentUpdateState == UpdateState::COUNTDOWN) {
         // todo: esto de meter el width y el height aquí a piñón y los filenames.. es una kk
         const int fileWIDTH = 300;
-        const int fileHEIGHT = 200;
+        const int fileHEIGHT = 300;
         string fileName = "media/" + std::to_string(currentCountdown) + ".png";
         tuple<int, int> screenSize = renderEngine->GetScreenSize();
         int width = std::get<0>(screenSize);

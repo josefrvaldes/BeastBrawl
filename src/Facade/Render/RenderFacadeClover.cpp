@@ -258,7 +258,7 @@ const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
             //node = father->AddMesh(cId->id);
             node = device->AddMesh(father,cId->id);
             static_cast<CLMesh*>(node->GetEntity())->SetMesh(mesh);
-            static_cast<CLMesh*>(node->GetEntity())->SetMaterial(mat);
+            //static_cast<CLMesh*>(node->GetEntity())->SetMaterial(mat);
 
             break;
 
@@ -270,19 +270,19 @@ const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
 
         case ModelType::StaticMesh: {
             auto cAnimation = static_cast<CAnimation*>(entity->GetComponent(CompType::AnimationComp).get());
-            std::string path = cAnimation->GetActiveAnimation().path;
+            std::string path = cAnimation->activeAnimation->path;
             std::string animationPath = "media/" + path;
-            vector<CLResourceMesh*> clAnimations = resourceManager->GetResourceAnimation(animationPath, cAnimation->GetActiveAnimation().numKeyFrames, false);
+            vector<CLResourceMesh*> clAnimations = resourceManager->GetResourceAnimation(animationPath, cAnimation->activeAnimation->numKeyFrames, false);
             mat = resourceManager->GetResourceMaterial(animationPath);
             //node = father->AddMesh(cId->id); 
             node = device->AddMesh(father,cId->id);
 
-            if (cAnimation->GetActiveAnimation().IsInterpolated()) {
-                static_cast<CLMesh*>(node->GetEntity())->SetAnimationInterpolated(clAnimations, cAnimation->GetActiveAnimation().GetDistances());
+            if (cAnimation->activeAnimation->IsInterpolated()) {
+                static_cast<CLMesh*>(node->GetEntity())->SetAnimationInterpolated(clAnimations, cAnimation->activeAnimation->GetDistances());
             } else {
                 static_cast<CLMesh*>(node->GetEntity())->SetAnimation(clAnimations);
             }
-            static_cast<CLMesh*>(node->GetEntity())->SetMaterial(mat);
+            //static_cast<CLMesh*>(node->GetEntity())->SetMaterial(mat);
         }   break;
 
         case ModelType::AnimatedMesh:
@@ -290,14 +290,14 @@ const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
             node = device->AddMesh(father,cId->id);
 
             static_cast<CLMesh*>(node->GetEntity())->SetMesh(mesh);
-            static_cast<CLMesh*>(node->GetEntity())->SetMaterial(mat);
+            //static_cast<CLMesh*>(node->GetEntity())->SetMaterial(mat);
 
             break;
 
         case ModelType::Shield:
             node = device->AddMesh(father,cId->id);
             static_cast<CLMesh*>(node->GetEntity())->SetMesh(mesh);
-            static_cast<CLMesh*>(node->GetEntity())->SetMaterial(mat);
+            //static_cast<CLMesh*>(node->GetEntity())->SetMaterial(mat);
             node->SetVisible(false);
             break;
 
@@ -367,7 +367,7 @@ const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
     if(cType->type != ModelType::PointLight){
         float dimAABB = node->CalculateBoundingBox();
         // TODO: el CDimensions solo para NavMesh y para la creacion de PowerUps, no en los coches (o ya veremos)
-        shared_ptr<CDimensions> cDimensions = make_shared<CDimensions>(dimAABB, dimAABB, dimAABB);
+        shared_ptr<CDimensions> cDimensions = make_shared<CDimensions>(dimAABB*2, dimAABB*2, dimAABB*2);
         cDimensions->boundingBoxMesh = GetBoundingByMesh(cId->id); 
         entity->AddComponent(cDimensions);  //Le añadimos el componente CDimensions al Entity que sea
     }
@@ -430,6 +430,223 @@ const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
 
     return cId->id;
 }
+
+
+
+const uint16_t RenderFacadeClover::FacadeAddStaticObject(Entity* entity) {
+
+    //Comprobamos si el objeto debe añadirse a la raiz o a algun nodo padre
+    CLNode* father = smgr;
+    if(entity->HasComponent(CompType::ParentNodeComp)){
+        auto cParentNode = static_cast<CParentNode*>(entity->GetComponent(CompType::ParentNodeComp).get());
+        father = device->GetNodeByID(cParentNode->idParentNode);
+    } 
+
+    auto cTransformable = static_cast<CTransformable*>(entity->GetComponent(CompType::TransformableComp).get());
+    auto cId = static_cast<CId*>(entity->GetComponent(CompType::IdComp).get());
+    auto cType = static_cast<CType*>(entity->GetComponent(CompType::TypeComp).get());
+    auto cShader = static_cast<CShader*>(entity->GetComponent(CompType::ShaderComp).get());
+
+    CLResourceMesh* mesh = nullptr;
+    CLResourceMaterial* mat = nullptr;
+    if(entity->HasComponent(CompType::MeshComp)){
+        auto cMesh = static_cast<CMesh*>(entity->GetComponent(CompType::MeshComp).get());
+        std::string currentMesh = cMesh->activeMesh;
+        std::string meshPath = "media/" + currentMesh;
+        mesh = resourceManager->GetResourceMesh(meshPath, false);
+        mat = resourceManager->GetResourceMaterial(meshPath);
+    } 
+
+
+    CLNode* node = nullptr;
+    // añadimos el node al sceneManager dependiendo del tipo de node que sea
+    switch (cType->type) {
+        case ModelType::Sphere:
+            //node = father->AddMesh(cId->id);
+            node = device->AddMesh(father,cId->id);
+            static_cast<CLMesh*>(node->GetEntity())->SetMesh(mesh);
+            //static_cast<CLMesh*>(node->GetEntity())->SetMaterial(mat);
+            break;
+        case ModelType::Cube:
+            //node = father->AddMesh(cId->id);
+            node = device->AddMesh(father,cId->id);
+            static_cast<CLMesh*>(node->GetEntity())->SetMesh(mesh);
+            break;
+        case ModelType::StaticMesh: {
+            auto cAnimation = static_cast<CAnimation*>(entity->GetComponent(CompType::AnimationComp).get());
+            std::string path = cAnimation->activeAnimation->path;
+            std::string animationPath = "media/" + path;
+            vector<CLResourceMesh*> clAnimations = resourceManager->GetResourceAnimation(animationPath, cAnimation->activeAnimation->numKeyFrames, false);
+            mat = resourceManager->GetResourceMaterial(animationPath);
+            //node = father->AddMesh(cId->id); 
+            node = device->AddMesh(father,cId->id);
+
+            if (cAnimation->activeAnimation->IsInterpolated()) {
+                static_cast<CLMesh*>(node->GetEntity())->SetAnimationInterpolated(clAnimations, cAnimation->activeAnimation->GetDistances());
+            } else {
+                static_cast<CLMesh*>(node->GetEntity())->SetAnimation(clAnimations);
+            }
+            //static_cast<CLMesh*>(node->GetEntity())->SetMaterial(mat);
+        }   break;
+        case ModelType::AnimatedMesh:
+            //node = father->AddMesh(cId->id);
+            node = device->AddMesh(father,cId->id);
+            static_cast<CLMesh*>(node->GetEntity())->SetMesh(mesh);
+            //static_cast<CLMesh*>(node->GetEntity())->SetMaterial(mat);
+            break;
+        case ModelType::Shield:
+            node = device->AddMesh(father,cId->id);
+            static_cast<CLMesh*>(node->GetEntity())->SetMesh(mesh);
+            //static_cast<CLMesh*>(node->GetEntity())->SetMaterial(mat);
+            node->SetVisible(false);
+            break;
+        case ModelType::Text:
+            //node = father->AddMesh(cId->id);
+            node = device->AddMesh(father,cId->id);
+
+            break;
+        case ModelType::PointLight:{
+            auto cLight = static_cast<CLight*>(entity->GetComponent(CompType::LightComp).get());
+            //node = father->AddPointLight(cId->id,cLight->intensity,cLight->ambient,cLight->diffuse,cLight->specular,cLight->constant,cLight->linear,cLight->quadratic);
+            node = device->AddPointLight(father,cId->id,cLight->intensity,cLight->ambient,cLight->diffuse,cLight->specular,cLight->constant,cLight->linear,cLight->quadratic);
+            
+            break;
+        }
+        case ModelType::ParticleSystem:{
+            auto cParticleSystem = static_cast<CParticleSystem*>(entity->GetComponent(CompType::ParticleSystemComp).get());
+ 
+            if(cParticleSystem->radious != 0){  
+                //Es circulo o esfera
+                if(cParticleSystem->orientation == glm::vec3(0.0f,0.0f,0.0f)){
+                    //Es esfera
+                    //node = father->AddParticleSystem(cId->id,cParticleSystem->nParticles,cParticleSystem->velocity,cParticleSystem->textures,cParticleSystem->width,cParticleSystem->height,cParticleSystem->spawnDelay,cParticleSystem->particlesToSpawn,cParticleSystem->lifeSpan,cParticleSystem->radious,cParticleSystem->flags);
+                    node = device->AddParticleSystem(father,cId->id,cParticleSystem->nParticles,cParticleSystem->velocity,cParticleSystem->textures,cParticleSystem->width,cParticleSystem->height,cParticleSystem->spawnDelay,cParticleSystem->particlesToSpawn,cParticleSystem->lifeSpan,cParticleSystem->radious,cParticleSystem->flags);
+                }else{
+                    //Es circulo
+                    //node = father->AddParticleSystem(cId->id,cParticleSystem->nParticles,cParticleSystem->velocity,cParticleSystem->textures,cParticleSystem->width,cParticleSystem->height,cParticleSystem->spawnDelay,cParticleSystem->particlesToSpawn,cParticleSystem->lifeSpan,cParticleSystem->radious,cParticleSystem->orientation,cParticleSystem->flags);
+                    node = device->AddParticleSystem(father,cId->id,cParticleSystem->nParticles,cParticleSystem->velocity,cParticleSystem->textures,cParticleSystem->width,cParticleSystem->height,cParticleSystem->spawnDelay,cParticleSystem->particlesToSpawn,cParticleSystem->lifeSpan,cParticleSystem->radious,cParticleSystem->orientation,cParticleSystem->flags);
+                }
+            }else{
+                //Es punto, linea, cuadrado o cubo
+                node = device->AddParticleSystem(father,cId->id,cParticleSystem->nParticles,cParticleSystem->velocity,cParticleSystem->textures,cParticleSystem->width,cParticleSystem->height,cParticleSystem->spawnDelay,cParticleSystem->particlesToSpawn,cParticleSystem->lifeSpan,cParticleSystem->offset,cParticleSystem->orientation,cParticleSystem->flags);
+            }
+            static_cast<CLParticleSystem*>(node->GetEntity())->SetLoop(cParticleSystem->loop);
+
+            if(cParticleSystem->started){
+                static_cast<CLParticleSystem*>(node->GetEntity())->Start();
+            }
+            node->SetTranslation(glm::vec3(cTransformable->position.x,cTransformable->position.y,-cTransformable->position.z));
+            node->SetRotation(glm::vec3(cTransformable->rotation.x,Utils::IrrlichtAngleToOpenGL(cTransformable->rotation.y),cTransformable->rotation.z));
+            node->SetScalation(cTransformable->scale);
+
+            return cId->id;
+            break;
+        }
+            
+    } 
+
+    auto shader = resourceManager->GetResourceShader(cShader->vertexShader,cShader->fragmentShader);
+    node->SetShaderProgramID(shader->GetProgramID());
+
+    //Seteamos valores
+    node->SetTranslation(glm::vec3(cTransformable->position.x,cTransformable->position.y,-cTransformable->position.z));
+    node->SetRotation(glm::vec3(cTransformable->rotation.x,Utils::IrrlichtAngleToOpenGL(cTransformable->rotation.y),cTransformable->rotation.z));
+    node->SetScalation(cTransformable->scale);
+
+    //auto pos = cTransformable->position;
+    //cout << " la posicion donde esta la entidad es ( " << pos.x<< " , " << pos.y<< " , " <<-pos.z<< " )" << endl;
+    // BOUNDING BOX
+    if(cType->type != ModelType::PointLight){
+        float dimAABB = node->CalculateBoundingBox();
+        // TODO: el CDimensions solo para NavMesh y para la creacion de PowerUps, no en los coches (o ya veremos)
+        shared_ptr<CDimensions> cDimensions = make_shared<CDimensions>(dimAABB*2, dimAABB*2, dimAABB*2);
+        cDimensions->boundingBoxMesh = GetBoundingByMesh(cId->id); 
+        entity->AddComponent(cDimensions);  //Le añadimos el componente CDimensions al Entity que sea
+
+        // y creamos el frustun OBB
+        node->CalculateBoundingBoxOBB();
+
+    }
+    return cId->id;
+}
+
+
+
+
+
+
+
+
+void RenderFacadeClover::suputamadre(Entity* pepe){
+
+    auto cId = static_cast<CId*>(pepe->GetComponent(CompType::IdComp).get());
+    auto node = device->GetNodeByID(cId->id);
+    auto dim = node->GetBoundingBoxOBB();
+    auto min = node->GetMinBoxOBB();
+    auto max = node->GetMaxBoxOBB();
+    auto pos = node->GetGlobalTranslation();
+
+    auto pos1 = glm::vec3(min.x,min.y,min.z);
+    auto pos2 = glm::vec3(max.x,min.y,min.z);
+    Draw3DLine(pos1, pos2, 0.0,0.0,255.0);
+    auto pos3 = glm::vec3(min.x,max.y,min.z);
+    Draw3DLine(pos1, pos3, 0.0,0.0,255.0);
+    auto pos4 = glm::vec3(min.x,min.y,max.z);
+    Draw3DLine(pos1, pos4, 0.0,0.0,255.0);
+
+    auto pos5 = glm::vec3(max.x,max.y,max.z);
+    auto pos6 = glm::vec3(min.x,max.y,max.z);
+    Draw3DLine(pos5, pos6, 0.0,0.0,255.0);
+    auto pos7 = glm::vec3(max.x,min.y,max.z);
+    Draw3DLine(pos5, pos7, 0.0,0.0,255.0);
+    auto pos8 = glm::vec3(max.x,max.y,min.z);
+    Draw3DLine(pos5, pos8, 0.0,0.0,255.0);
+
+
+
+
+
+//    auto pos1 = glm::vec3(pos.x-dim.x,pos.y-dim.y,(-pos.z)-dim.z);
+//    auto pos2 = glm::vec3(pos.x+dim.x,pos.y-dim.y,(-pos.z)-dim.z);
+//    Draw3DLine(pos1, pos2, 0.0,0.0,255.0);
+//    auto pos3 = glm::vec3(pos.x-dim.x,pos.y+dim.y,(-pos.z)-dim.z);
+//    Draw3DLine(pos1, pos3, 0.0,0.0,255.0);
+//    auto pos4 = glm::vec3(pos.x-dim.x,pos.y-dim.y,(-pos.z)+dim.z);
+//    Draw3DLine(pos1, pos4, 0.0,0.0,255.0);
+//
+//    auto pos5 = glm::vec3(pos.x+dim.x,pos.y+dim.y,(-pos.z)+dim.z);
+//    auto pos6 = glm::vec3(pos.x+dim.x,pos.y+dim.y,(-pos.z)-dim.z);
+//    Draw3DLine(pos5, pos6, 0.0,0.0,255.0);
+//    auto pos7 = glm::vec3(pos.x+dim.x,pos.y-dim.y,(-pos.z)+dim.z);
+//    Draw3DLine(pos5, pos7, 0.0,0.0,255.0);
+//    auto pos8 = glm::vec3(pos.x-dim.x,pos.y+dim.y,(-pos.z)+dim.z);
+//    Draw3DLine(pos5, pos8, 0.0,0.0,255.0);
+
+//    auto pos1 = glm::vec3(pos.x-dim,pos.y-dim,pos.z-dim);
+//    auto pos2 = glm::vec3(pos.x+dim,pos.y-dim,pos.z-dim);
+//    Draw3DLine(pos1, pos2, 0.0,0.0,255.0);
+//    auto pos3 = glm::vec3(pos.x-dim,pos.y+dim,pos.z-dim);
+//    Draw3DLine(pos1, pos3, 0.0,0.0,255.0);
+//    auto pos4 = glm::vec3(pos.x-dim,pos.y-dim,pos.z+dim);
+//    Draw3DLine(pos1, pos4, 0.0,0.0,255.0);
+
+//    auto pos5 = glm::vec3(pos.x+dim,pos.y+dim,pos.z+dim);
+//    auto pos6 = glm::vec3(pos.x+dim,pos.y+dim,pos.z-dim);
+//    Draw3DLine(pos5, pos6, 0.0,0.0,255.0);
+//    auto pos7 = glm::vec3(pos.x+dim,pos.y-dim,pos.z+dim);
+//    Draw3DLine(pos5, pos7, 0.0,0.0,255.0);
+//    auto pos8 = glm::vec3(pos.x-dim,pos.y+dim,pos.z+dim);
+//    Draw3DLine(pos5, pos8, 0.0,0.0,255.0);
+
+    Draw3DLine(pos3, pos8, 0.0,0.0,255.0);
+    Draw3DLine(pos4, pos7, 0.0,0.0,255.0);
+    Draw3DLine(pos2, pos7, 0.0,0.0,255.0);
+    Draw3DLine(pos6, pos3, 0.0,0.0,255.0);
+    Draw3DLine(pos6, pos4, 0.0,0.0,255.0);
+    Draw3DLine(pos2, pos8, 0.0,0.0,255.0);
+}
+
+
 
 /**
  * Añade el coche principal
@@ -603,13 +820,19 @@ void RenderFacadeClover::FacadeAddCamera(Entity* camera) {
 
 void RenderFacadeClover::FacadeUpdateMeshesLoD(vector<shared_ptr<Entity>> entities) {
     for (const auto& entity : entities) {
-        CId *cid = static_cast<CId*>(entity->GetComponent(CompType::IdComp).get());
-        auto node = device->GetNodeByID(cid->id);
-        if(node) {
-            CMesh *cMesh = static_cast<CMesh*>(entity->GetComponent(CompType::MeshComp).get());
-            std::string currentMesh = cMesh->activeMesh;
-            std::string meshPath = "media/" + currentMesh;
-            static_cast<CLMesh*>(node->GetEntity())->SetMesh(resourceManager->GetResourceMesh(meshPath, false));
+        CMesh *cMesh = static_cast<CMesh*>(entity->GetComponent(CompType::MeshComp).get());
+        if(cMesh->activeMesh != cMesh->previousMesh) {
+            CId *cid = static_cast<CId*>(entity->GetComponent(CompType::IdComp).get());
+            auto node = device->GetNodeByID(cid->id);
+            if(node) {
+                std::string meshPath = "media/" + cMesh->activeMesh;
+                // string nameCurrentMesh = static_cast<CLMesh*>(node->GetEntity())->GetMesh()->GetName();
+                // cout << "meshPash[" << meshPath << "]  nameCurrentMesh[" << nameCurrentMesh << "]" << endl;
+                // if (nameCurrentMesh != meshPath) {
+                    cout << "Vamos a cambiar la malla" << endl;
+                    static_cast<CLMesh*>(node->GetEntity())->SetMesh(resourceManager->GetResourceMesh(meshPath, false));
+                // }
+            }
         }
     }
 }
@@ -617,17 +840,20 @@ void RenderFacadeClover::FacadeUpdateMeshesLoD(vector<shared_ptr<Entity>> entiti
 
 void RenderFacadeClover::FacadeUpdateAnimationsLoD(vector<shared_ptr<Entity>> entities) {
     for (const auto& entity : entities) {
-        CId *cid = static_cast<CId*>(entity->GetComponent(CompType::IdComp).get());
-        auto node = device->GetNodeByID(cid->id);
-        if(node) {
-            auto cAnimation = static_cast<CAnimation*>(entity->GetComponent(CompType::AnimationComp).get());
-            std::string path = cAnimation->GetActiveAnimation().path;
-            std::string animationPath = "media/" + path;
-            vector<CLResourceMesh*> clAnimations = resourceManager->GetResourceAnimation(animationPath, cAnimation->GetActiveAnimation().numKeyFrames, false);
-            if (cAnimation->GetActiveAnimation().IsInterpolated()) {
-                static_cast<CLMesh*>(node->GetEntity())->SetAnimationInterpolated(clAnimations, cAnimation->GetActiveAnimation().GetDistances());
-            } else {
-                static_cast<CLMesh*>(node->GetEntity())->SetAnimation(clAnimations);
+        auto cAnimation = static_cast<CAnimation*>(entity->GetComponent(CompType::AnimationComp).get());
+        if(cAnimation->activeAnimation.get() != cAnimation->previousAnimation) {
+            cout << "Cambiamos animación por el LoD" << endl;
+            CId *cid = static_cast<CId*>(entity->GetComponent(CompType::IdComp).get());
+            auto node = device->GetNodeByID(cid->id);
+            if(node) {
+                std::string path = cAnimation->activeAnimation->path;
+                std::string animationPath = "media/" + path;
+                vector<CLResourceMesh*> clAnimations = resourceManager->GetResourceAnimation(animationPath, cAnimation->activeAnimation->numKeyFrames, false);
+                if (cAnimation->activeAnimation->IsInterpolated()) {
+                    static_cast<CLMesh*>(node->GetEntity())->SetAnimationInterpolated(clAnimations, cAnimation->activeAnimation->GetDistances());
+                } else {
+                    static_cast<CLMesh*>(node->GetEntity())->SetAnimation(clAnimations);
+                }
             }
         }
     }
@@ -636,20 +862,35 @@ void RenderFacadeClover::FacadeUpdateAnimationsLoD(vector<shared_ptr<Entity>> en
 
 
 void RenderFacadeClover::FacadeAnimate(vector<shared_ptr<Entity>> entities) {
+    auto cameraEntity = static_cast<CLCamera*>(camera1->GetEntity());
+    vec3 pointTarget = cameraEntity->GetCameraTarget();
+    pointTarget.z = -pointTarget.z;
+    vec3 posCamara = camera1->GetTranslation();
+    posCamara.z = -posCamara.z;
+    vec3 normalCamara = posCamara - pointTarget;
+    
+    // cout << "la rotación de la cámara es x["<<normalCamara.x<<"] y["<<normalCamara.y<<"] z["<<normalCamara.z<<"]" << endl;
+    // cout << "Hay "<< entities.size() <<" cosas para animar" << endl;
     for (const auto& entity : entities) {
-        CId *cid = static_cast<CId*>(entity->GetComponent(CompType::IdComp).get());
-        auto node = device->GetNodeByID(cid->id);
-        if(node) {
-            auto cAnimation = static_cast<CAnimation*>(entity->GetComponent(CompType::AnimationComp).get());
-            if (cAnimation->GetActiveAnimation().IsInterpolated()) {
-                static_cast<CLMesh*>(node->GetEntity())->AnimateInterpolated();
-            } else {
-                static_cast<CLMesh*>(node->GetEntity())->Animate();
+        CTransformable *cTrans = static_cast<CTransformable*>(entity->GetComponent(CompType::TransformableComp).get());
+
+        float mDot = glm::dot(normalCamara, (cTrans->position - posCamara));
+        if (mDot < 0) {
+            // cout << "Estamos animando algo" << endl;
+            CId *cid = static_cast<CId*>(entity->GetComponent(CompType::IdComp).get());
+            auto node = device->GetNodeByID(cid->id);
+            if(node) {
+                auto cAnimation = static_cast<CAnimation*>(entity->GetComponent(CompType::AnimationComp).get());
+                if (cAnimation->activeAnimation->IsInterpolated()) {
+                    static_cast<CLMesh*>(node->GetEntity())->AnimateInterpolated();
+                } else {
+                    static_cast<CLMesh*>(node->GetEntity())->Animate();
+                }
             }
         }
     }
 }
-
+ 
 /**
  * @return - ¿El juego sigue abierto?
  */
@@ -1155,6 +1396,38 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
         device->DrawImage2D(posXMiniMap, posYMiniMap, widthMM, heightMM, 0.9f, cadena, true);
     }
 
+
+    // POSITION TOTEM HUD
+    ////////////////////////////
+    //                        //
+    //                        //
+    // *                    * //
+    //                        //
+    // *         *          * //
+    ////////////////////////////
+    auto anchoSpriteTotem = 45.0;
+    auto altoSpriteTotem = 45.0;
+    auto posRefY = h/2 - (altoSpriteTotem/2);
+    auto frustum_ = device->GetActiveCamera()->GetFrustum();
+    bool backTotem  = frustum_.IsOutBack(manGR->GetPosTotem());
+    bool leftTotem  = frustum_.IsOutLeft(manGR->GetPosTotem());
+    bool rightTotem = frustum_.IsOutRight(manGR->GetPosTotem());
+
+    if(manGR->GetActiveTotem()){
+        if(backTotem){
+            if(leftTotem && !rightTotem)
+                device->DrawImage2D(50, posRefY, 1.f, 0.1f, "media/hudTotemLeft.png", true);
+            else if(rightTotem && !leftTotem)
+                device->DrawImage2D( (w-50.0f) - anchoSpriteTotem, posRefY , 1.f, 0.1f, "media/hudTotemRight.png", true);
+            else
+                device->DrawImage2D(w/2 - (anchoSpriteTotem/2) , h - 50 - altoSpriteTotem, 1.f, 0.1f, "media/hudTotemBack.png", true);
+        }else{
+            if(leftTotem)
+                device->DrawImage2D(50, posRefY, 1.f, 0.1f, "media/hudTotemLeft.png", true);
+            else if(rightTotem)
+                device->DrawImage2D( (w-50.0f) - anchoSpriteTotem, posRefY , 1.f, 0.1f, "media/hudTotemRight.png", true);
+        }
+    }
 
     //CURRENT POWERUP
     if(!powerUpAnimation->GetFinished() && currentPowerUp != 0){
@@ -1964,18 +2237,22 @@ void RenderFacadeClover::FacadeDrawGraphEdges(ManWayPoint* manWayPoints) const{
             lastPoint = newPoint;
         }
         //Recorremos el componente CWayPointEdges->edges para ir arista a arista
-        for (Edge e : cWayPointEdge->edges) {
-            //Cogemos la posicion de la arista que apunta e->to
-            auto cWayPoint2 = static_cast<CWayPoint*>(manWayPoints->GetEntities()[e.to]->GetComponent(CompType::WayPointComp).get());
+        if(cWayPointEdge){
+            for (Edge e : cWayPointEdge->edges) {
+                //Cogemos la posicion de la arista que apunta e->to
+                auto cWayPoint2 = static_cast<CWayPoint*>(manWayPoints->GetEntities()[e.to]->GetComponent(CompType::WayPointComp).get());
 
-            //Usamos un color u otro en funcion de la distancia
-            if (e.cost < 300) {
-                Draw3DLine(cWayPoint->position, cWayPoint2->position, 0.0,0.0,255.0);
-            } else if (e.cost >= 300 && e.cost < 500) {
-                Draw3DLine(cWayPoint->position, cWayPoint2->position,0.0,255.0,0.0);
-            } else if (e.cost >= 500) {
-                Draw3DLine(cWayPoint->position, cWayPoint2->position, 255.0,0.0,0.0);
+                //Usamos un color u otro en funcion de la distancia
+                if (e.cost < 300) {
+                    Draw3DLine(cWayPoint->position, cWayPoint2->position, 0.0,0.0,255.0);
+                } else if (e.cost >= 300 && e.cost < 500) {
+                    Draw3DLine(cWayPoint->position, cWayPoint2->position,0.0,255.0,0.0);
+                } else if (e.cost >= 500) {
+                    Draw3DLine(cWayPoint->position, cWayPoint2->position, 255.0,0.0,0.0);
+                }
             }
+        }else{
+            cout << "1111111111111111111111111111111111111111111111111:  " << cWayPoint->id << endl; 
         }
     }
 }

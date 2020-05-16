@@ -55,4 +55,11 @@ class StateInGameSingle : public StateInGame {
     bool comingBackFromPause {false};
 
     int64_t timeStartPause;
+
+
+    std::chrono::time_point<std::chrono::system_clock> timeStart;        // reloj que contabiliza el tiempo
+    std::chrono::time_point<std::chrono::system_clock> timeStartSeccion;        // reloj que contabiliza el tiempo
+    double accumulatedTimeUPDATE {0.0};
+    double accumulatedTimeRENDER {0.0};
+
 };

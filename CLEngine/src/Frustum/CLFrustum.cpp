@@ -97,9 +97,7 @@ CLFrustum::Visibility CLFrustum::IsInside(const glm::vec3& point) const
 
 
 
-CLFrustum::Visibility CLFrustum::IsInside( const glm::vec3& point, const float size ) const
-{
-
+CLFrustum::Visibility CLFrustum::IsInside( const glm::vec3& point, const float size ) const{
 	for(int i = 0; i < 6; i++ )
 	{
 		if(m_data[i][A] * (point.x - size) + m_data[i][B] * (point.y - size) + m_data[i][C] * (point.z - size) + m_data[i][D] > 0)
@@ -122,17 +120,69 @@ CLFrustum::Visibility CLFrustum::IsInside( const glm::vec3& point, const float s
 		// If we get here, it isn't in the frustum
 		return Invisible;
 	}
-
 	return Completly;
 }
 
 
+CLFrustum::Visibility CLFrustum::IsInside( const glm::vec3& minPoint, const glm::vec3& maxPoint ) const{
+	for(int i = 0; i < 6; i++ )
+	{
+		if(m_data[i][A] * minPoint.x + m_data[i][B] * minPoint.y + m_data[i][C] * -minPoint.z + m_data[i][D] > 0)
+		   continue;
+		if(m_data[i][A] * maxPoint.x + m_data[i][B] * minPoint.y + m_data[i][C] * -minPoint.z + m_data[i][D] > 0)
+		   continue;
+		if(m_data[i][A] * minPoint.x + m_data[i][B] * maxPoint.y + m_data[i][C] * -minPoint.z + m_data[i][D] > 0)
+		   continue;
+		if(m_data[i][A] * maxPoint.x + m_data[i][B] * maxPoint.y + m_data[i][C] * -minPoint.z + m_data[i][D] > 0)
+		   continue;
+		if(m_data[i][A] * minPoint.x + m_data[i][B] * minPoint.y + m_data[i][C] * -maxPoint.z + m_data[i][D] > 0)
+		   continue;
+		if(m_data[i][A] * maxPoint.x + m_data[i][B] * minPoint.y + m_data[i][C] * -maxPoint.z + m_data[i][D] > 0)
+		   continue;
+		if(m_data[i][A] * minPoint.x + m_data[i][B] * maxPoint.y + m_data[i][C] * -maxPoint.z + m_data[i][D] > 0)
+		   continue;
+		if(m_data[i][A] * maxPoint.x + m_data[i][B] * maxPoint.y + m_data[i][C] * -maxPoint.z + m_data[i][D] > 0)
+		   continue;
 
+		// If we get here, it isn't in the frustum
+		return Invisible;
+	}
+	return Completly;
+}
 
+// Lo utilizaremos para los indicadores del totem en el hud
+bool CLFrustum::IsOutRight(const glm::vec3& point) const
+{
+	if (m_data[Right][A] * point.x +
+		m_data[Right][B] * point.y +
+		m_data[Right][C] * (-point.z) +
+		m_data[Right][D] <= 0) {
+		return true;
+	}
+	return false;
+}
 
+bool CLFrustum::IsOutLeft(const glm::vec3& point) const
+{
+	if (m_data[Left][A] * point.x +
+		m_data[Left][B] * point.y +
+		m_data[Left][C] * (-point.z) +
+		m_data[Left][D] <= 0) {
+		return true;
+	}
+	return false;
+}
 
-
-
+bool CLFrustum::IsOutBack(const glm::vec3& point) const
+{
+	if (m_data[Back][A] * point.x +
+		m_data[Back][B] * point.y +
+		m_data[Back][C] * (-point.z) +
+		m_data[Back][D] <= 0) {
+		return true;
+	}
+	return false;
+}
 
 
 

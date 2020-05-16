@@ -13,8 +13,8 @@
 
 // Temporal
 SystemGameRules::SystemGameRules(){
-    xLeftMap = -472;      xRightMap = 488;
-    yUpMap = -493;        yDownMap = 770;
+    xLeftMap = -1008;      xRightMap = 1008;
+    yUpMap = -1204;        yDownMap = 1204;
 
     widthMap = xRightMap - xLeftMap;
     heightMap = yDownMap - yUpMap;
@@ -23,8 +23,8 @@ SystemGameRules::SystemGameRules(){
 SystemGameRules::SystemGameRules(float xl, float xr, float yu, float yd) {
     //xLeftMap = xl;      xRightMap = xr;
     //yUpMap = yu;        yDownMap = yd;
-    xLeftMap = -472;      xRightMap = 488;
-    yUpMap = -493;        yDownMap = 770;
+    xLeftMap = -1008;      xRightMap = 1008;
+    yUpMap = -1204;        yDownMap = 1204;
 
     widthMap = xRightMap - xLeftMap;
     heightMap = yDownMap - yUpMap;

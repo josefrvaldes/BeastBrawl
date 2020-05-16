@@ -121,6 +121,11 @@ vec3 CalcDirLight(DirectLight light, vec3 normal,vec3 fragPos, vec3 viewDir)
     vec3 reflectDir = reflect(-lightDir, normal);
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
     // combine results
+
+	    vec4 texColor = texture(material.diffuse, TexCoords);
+    if(texColor.a < 0.5)                            // Para eliminar la transparencia, valor normal 0.1
+        discard;
+
     vec3 ambient = light.ambient * vec3(texture(material.diffuse, TexCoords));
     vec3 diffuse = light.diffuse * diff * vec3(texture(material.diffuse, TexCoords));
     vec3 specular = light.specular * spec * vec3(texture(material.specular, TexCoords));
@@ -144,6 +149,9 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir, i
     // diffuse
     vec3 lightDir = normalize(light.position - fragPos);
     float diff = max(dot(normal,lightDir), 0.0);
+		    vec4 texColor = texture(material.diffuse, TexCoords);
+    if(texColor.a < 0.5)                            // Para eliminar la transparencia, valor normal 0.1
+        discard;
     vec3 diffuse = light.diffuse * diff * texture(material.diffuse, TexCoords).rgb; 
     /*diffuse  = light.diffuse * texture(material.diffuse, TexCoords).rgb * floor(diff * cartoonParts) /  cartoonParts;*/
     vec3 H = normalize(lightDir + viewDir);
@@ -199,6 +207,9 @@ vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
     float epsilon = light.cutOff - light.outerCutOff;
     float intensity = clamp((theta - light.outerCutOff) / epsilon, 0.0, 1.0);
     // combine results
+		    vec4 texColor = texture(material.diffuse, TexCoords);
+    if(texColor.a < 0.5)                            // Para eliminar la transparencia, valor normal 0.1
+        discard;
     vec3 ambient = light.ambient * vec3(texture(material.diffuse, TexCoords));
     vec3 diffuse = light.diffuse * diff * vec3(texture(material.diffuse, TexCoords));
     vec3 specular = light.specular * spec * vec3(texture(material.specular, TexCoords));
@@ -237,7 +248,11 @@ void main(){
     }
 
     FragColor = vec4(result,1.0);
-    //FragColor = floor(FragColor * cartoonParts) / cartoonParts;  // estaba mal aplicado, era en la luz difusa solo
+        //FragColor = floor(FragColor * cartoonParts) / cartoonParts;  // estaba mal aplicado, era en la luz difusa solo
+
+	vec4 texColor = texture(material.diffuse, TexCoords);
+    if(texColor.a < 0.5)                            // Para eliminar la transparencia, valor normal 0.1
+        discard;
 
     //Si comentas esta linea se ve con luces
     //FragColor = texture(material.diffuse,TexCoords);
