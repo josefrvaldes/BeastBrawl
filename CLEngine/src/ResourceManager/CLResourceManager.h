@@ -40,12 +40,14 @@ namespace CLE {
             //! @param flipUV Bool para invertir los UV's al leer la textura
             //! @returns Puntero a un CLE::CLResource::CLResourceMesh
             vector<CLResourceMesh*> GetResourceAnimation(const std::string file, uint8_t numKeyFrames, bool flipUV);
+            vector<CLResourceMesh*> GetResourceExistingAnimation(const std::string file, uint8_t numKeyFrames, bool flipUV);
             vector<CLResourceMesh*> LoadResourceAnimation(const std::string file, uint8_t numKeyFrames, bool flipUV);
             //! Metodo para leer mallas
             //! @param file Ruta al fichero
             //! @param flipUV Bool para invertir los UV's al leer la textura
             //! @returns Puntero a un CLE::CLResource::CLResourceMesh
             CLResourceMesh* GetResourceMesh(const std::string file, bool flipUV);
+            size_t GetResourceMeshIndex(const std::string file);
             //! Metodo para leer mallas
             //! @param file Ruta al fichero
             //! @returns Puntero a un CLE::CLResource::CLResourceMesh

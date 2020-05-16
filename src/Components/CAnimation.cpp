@@ -1,8 +1,12 @@
 #include "CAnimation.h"
 #include <memory>
 
+CAnimation::CAnimation()
+{
+    m_compType = CompType::AnimationComp;
+}
 
-CAnimation::CAnimation(Animation animClose_)
+/*CAnimation::CAnimation(Animation animClose_)
 : activeAnimation{std::make_shared<Animation>(animClose_)} ,animations{std::make_shared<Animation>(animClose_)}
 {
     m_compType = CompType::AnimationComp;
@@ -13,4 +17,4 @@ CAnimation::CAnimation(Animation animClose_, Animation animMedium_, Animation an
 {
     m_compType = CompType::AnimationComp;
 }
-
+*/

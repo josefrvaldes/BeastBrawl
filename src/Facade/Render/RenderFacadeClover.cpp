@@ -282,7 +282,6 @@ const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
             } else {
                 static_cast<CLMesh*>(node->GetEntity())->SetAnimation(clAnimations);
             }
-            //static_cast<CLMesh*>(node->GetEntity())->SetMaterial(mat);
         }   break;
 
         case ModelType::AnimatedMesh:
@@ -772,20 +771,24 @@ void RenderFacadeClover::FacadeUpdateMeshesLoD(vector<shared_ptr<Entity>> entiti
 
 void RenderFacadeClover::FacadeUpdateAnimationsLoD(vector<shared_ptr<Entity>> entities) {
     for (const auto& entity : entities) {
-        auto cAnimation = static_cast<CAnimation*>(entity->GetComponent(CompType::AnimationComp).get());
-        if(cAnimation->activeAnimation.get() != cAnimation->previousAnimation) {
-            cout << "Cambiamos animación por el LoD" << endl;
-            CId *cid = static_cast<CId*>(entity->GetComponent(CompType::IdComp).get());
-            auto node = device->GetNodeByID(cid->id);
-            if(node) {
-                std::string path = cAnimation->activeAnimation->path;
-                std::string animationPath = "media/" + path;
-                vector<CLResourceMesh*> clAnimations = resourceManager->GetResourceAnimation(animationPath, cAnimation->activeAnimation->numKeyFrames, false);
-                if (cAnimation->activeAnimation->IsInterpolated()) {
-                    static_cast<CLMesh*>(node->GetEntity())->SetAnimationInterpolated(clAnimations, cAnimation->activeAnimation->GetDistances());
-                } else {
-                    static_cast<CLMesh*>(node->GetEntity())->SetAnimation(clAnimations);
+        if(entity->HasComponent(CompType::AnimationComp)) {
+            auto cAnimation = static_cast<CAnimation*>(entity->GetComponent(CompType::AnimationComp).get());
+            if(cAnimation->animationChanged) {
+                cout << "Cambiamos animación por el LoD" << endl;
+                CId *cid = static_cast<CId*>(entity->GetComponent(CompType::IdComp).get());
+                auto node = device->GetNodeByID(cid->id);
+                if(node) {
+                    std::string path = cAnimation->activeAnimation->path;
+                    std::string animationPath = "media/" + path;
+                    // vector<CLResourceMesh*> clAnimations = resourceManager->GetResourceAnimation(animationPath, cAnimation->activeAnimation->numKeyFrames, false);
+                    vector<CLResourceMesh*> clAnimations = resourceManager->GetResourceExistingAnimation(animationPath, cAnimation->activeAnimation->numKeyFrames, false);
+                    if (cAnimation->activeAnimation->IsInterpolated()) {
+                        static_cast<CLMesh*>(node->GetEntity())->SetAnimationInterpolated(clAnimations, cAnimation->activeAnimation->GetDistances());
+                    } else {
+                        static_cast<CLMesh*>(node->GetEntity())->SetAnimation(clAnimations);
+                    }
                 }
+                cAnimation->animationChanged = false;
             }
         }
     }
@@ -804,19 +807,22 @@ void RenderFacadeClover::FacadeAnimate(vector<shared_ptr<Entity>> entities) {
     // cout << "la rotación de la cámara es x["<<normalCamara.x<<"] y["<<normalCamara.y<<"] z["<<normalCamara.z<<"]" << endl;
     // cout << "Hay "<< entities.size() <<" cosas para animar" << endl;
     for (const auto& entity : entities) {
-        CTransformable *cTrans = static_cast<CTransformable*>(entity->GetComponent(CompType::TransformableComp).get());
+        if(entity->HasComponent(CompType::AnimationComp)) {
+            CTransformable *cTrans = static_cast<CTransformable*>(entity->GetComponent(CompType::TransformableComp).get());
 
-        float mDot = glm::dot(normalCamara, (cTrans->position - posCamara));
-        if (mDot < 0) {
-            // cout << "Estamos animando algo" << endl;
-            CId *cid = static_cast<CId*>(entity->GetComponent(CompType::IdComp).get());
-            auto node = device->GetNodeByID(cid->id);
-            if(node) {
-                auto cAnimation = static_cast<CAnimation*>(entity->GetComponent(CompType::AnimationComp).get());
-                if (cAnimation->activeAnimation->IsInterpolated()) {
-                    static_cast<CLMesh*>(node->GetEntity())->AnimateInterpolated();
-                } else {
-                    static_cast<CLMesh*>(node->GetEntity())->Animate();
+            // esto sirve para hacer backclipping. Solo se anima lo que está frente a la cámara
+            float mDot = glm::dot(normalCamara, (cTrans->position - posCamara));
+            if (mDot < 0) {
+                // cout << "Estamos animando algo" << endl;
+                CId *cid = static_cast<CId*>(entity->GetComponent(CompType::IdComp).get());
+                auto node = device->GetNodeByID(cid->id);
+                if(node) {
+                    auto cAnimation = static_cast<CAnimation*>(entity->GetComponent(CompType::AnimationComp).get());
+                    if (cAnimation->activeAnimation->IsInterpolated()) {
+                        static_cast<CLMesh*>(node->GetEntity())->AnimateInterpolated();
+                    } else {
+                        static_cast<CLMesh*>(node->GetEntity())->Animate();
+                    }
                 }
             }
         }
