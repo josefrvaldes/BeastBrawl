@@ -27,7 +27,10 @@ bool CLMesh::ItsTimeToAnimate() {
 }
 
 void CLMesh::GoToNextKeyFrames() {
-    currentKeyFrameIndex++;
+    // if(loop || (!loop && currentKeyFrameIndex < keyframes.size()) - 2)
+    if(loop || currentKeyFrameIndex < keyframes.size() - 2)
+        currentKeyFrameIndex++;
+
     if (currentKeyFrameIndex > keyframes.size() - 1)
         currentKeyFrameIndex = 0;
 

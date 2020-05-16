@@ -20,22 +20,24 @@ class CLMesh : public CLEntity {
 
     //! Asigna una animación
     //! @param m Objecto CLResourceMesh donde tiene la malla
-    void SetAnimation(vector<CLResourceMesh*> keyframes_) {
+    void SetAnimation(vector<CLResourceMesh*> keyframes_, bool loop_) {
         keyframes = keyframes_;
         mesh = keyframes[0];
         nextMesh = keyframes[1];
         isInterpolated = false;
+        loop = loop_;
     }
 
     //! Asigna una animación
     //! @param m Objecto CLResourceMesh donde tiene la malla
-    void SetAnimationInterpolated(vector<CLResourceMesh*> keyframes_, vector<uint8_t> framesBetweenKeyFrames_) {
+    void SetAnimationInterpolated(vector<CLResourceMesh*> keyframes_, vector<uint8_t> framesBetweenKeyFrames_, bool loop_) {
         if (keyframes != keyframes_) {
             keyframes = keyframes_;
             mesh = keyframes[0];
             nextMesh = keyframes[1];
             distanceBetweenKeyFrames = framesBetweenKeyFrames_;
             isInterpolated = true;
+            loop = loop_;
         }
     }
 
@@ -66,6 +68,7 @@ class CLMesh : public CLEntity {
     uint8_t currentKeyFrameIndex{0};
     uint8_t nextKeyFrameIndex{1};
     bool isInterpolated{false};
+    bool loop{true};
     int64_t lastTimeFrameChanged{0};
     const uint8_t ANIMATION_FPS {25};
     const float DELTA_ANIMATION {1.0f/ANIMATION_FPS*1000.f};
