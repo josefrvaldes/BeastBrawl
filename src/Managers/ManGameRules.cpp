@@ -55,8 +55,15 @@ ManGameRules::~ManGameRules() {
 
 bool ManGameRules::Update(const vector<shared_ptr<Entity>> &cars, const vector<shared_ptr<Entity>> &totems){
 
-    posTotem = static_cast<CTransformable*>(totems[0]->GetComponent(CompType::TransformableComp).get())->position;
-    activeTotem = static_cast<CTotem*>(totems[0]->GetComponent(CompType::TotemComp).get())->active;
+    if(static_cast<CTotem*>(totems[0]->GetComponent(CompType::TotemComp).get())->active){
+        posTotem = static_cast<CTransformable*>(totems[0]->GetComponent(CompType::TransformableComp).get())->position;
+    }else{
+        for(unsigned long int i=0; i< cars.size(); i++){
+            if(static_cast<CTotem*>(cars[i]->GetComponent(CompType::TotemComp).get())->active){
+                posTotem = static_cast<CTransformable*>(cars[i]->GetComponent(CompType::TransformableComp).get())->position;
+            }
+        }
+    }
     //cout << "HOLAAAA" << endl;
     systemGameRules->UpdatePositionsMiniMap(cars, totems, positionsPlane, positionTotemPlane);
     return systemGameRules->UpdateGameRules( *(globalClock.get()) );

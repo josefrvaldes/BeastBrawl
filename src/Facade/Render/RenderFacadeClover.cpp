@@ -138,7 +138,7 @@ void RenderFacadeClover::FacadeUpdatePowerUpHUD(DataMap* d) {
 
     //Si es la primera vez que se coge un powerup se crea la animacion
     if(!powerUpAnimation){
-        powerUpAnimation = make_unique<Animation2D>("media/animacionPowerUp/animacionPU.png",143,60);
+        powerUpAnimation = make_unique<Animation2D>("media/animacionPowerUp/animacionPU.png",71,60);
         powerUpAnimation->Start();
     }else if(powerUpAnimation && type != typeCPowerUp::None){
         powerUpAnimation->Restart();
@@ -960,6 +960,58 @@ void RenderFacadeClover::FacadeInitIntro() {
 void RenderFacadeClover::FacadeInitMenu() {
 
     //Que se cargen poco a poco cuando se van usando o tarda mucho
+    FacadeBeginScene();
+
+    auto w = device->GetScreenWidth();
+    auto scale = 0.5f;
+    if ( w > 1600 ) { scale = 0.75f; }
+    else if (w < 600 ) { scale = 0.25f; }
+
+    //Esto es lo unico que se necesita para dibujar la pantalla de carga
+    std::string file = "media/menu/loading_screen.png";
+    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
+
+    int64_t time = Utils::getMicrosSinceEpoch();
+    int indx = time % (tipsTexts.size()-1);
+
+    device->RenderText2D(tipsTexts.at(indx), device->GetScreenWidth()/2 - 125.0f*scale, device->GetScreenHeight()/2,0.5f, scale,glm::vec3(1.0f,1.0f,1.0f));
+    FacadeEndScene();
+
+
+    //CARGAMOS COSAS
+    resourceManager->GetResourceAnimation("media/animations/penguin/selection/selectionpenguin_000001.obj", 30, false);
+    resourceManager->GetResourceAnimation("media/animations/penguin/selection/selectionpenguin_000001.obj", 30, false);
+
+    FacadeBeginScene();
+
+    //Esto es lo unico que se necesita para dibujar la pantalla de carga
+    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
+
+    time = Utils::getMicrosSinceEpoch();
+    indx = time % (tipsTexts.size()-1);
+
+    device->RenderText2D(tipsTexts.at(indx), device->GetScreenWidth()/2 - 125.0f*scale, device->GetScreenHeight()/2,0.5f, scale,glm::vec3(1.0f,1.0f,1.0f));
+    FacadeEndScene();
+
+    resourceManager->GetResourceAnimation("media/animations/dragon/selection/selectiondragon_000001.obj", 30, false);
+    resourceManager->GetResourceAnimation("media/animations/kong/selection/selectionkong_000001.obj", 30, false);
+
+    FacadeBeginScene();
+
+    //Esto es lo unico que se necesita para dibujar la pantalla de carga
+    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
+
+    time = Utils::getMicrosSinceEpoch();
+    indx = time % (tipsTexts.size()-1);
+
+    device->RenderText2D(tipsTexts.at(indx), device->GetScreenWidth()/2 - 125.0f*scale, device->GetScreenHeight()/2,0.5f, scale,glm::vec3(1.0f,1.0f,1.0f));
+    FacadeEndScene();
+
+    resourceManager->GetResourceAnimation("media/animations/dragon/selection/selectiondragon_000001.obj", 30, false);
+    resourceManager->GetResourceAnimation("media/animations/cyberoctopus/selection/selectionoctopus_000001.obj", 31, false);
+
+
+
     
 }
 
