@@ -278,9 +278,9 @@ const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
             node = device->AddMesh(father,cId->id);
 
             if (cAnimation->activeAnimation->IsInterpolated()) {
-                static_cast<CLMesh*>(node->GetEntity())->SetAnimationInterpolated(clAnimations, cAnimation->activeAnimation->GetDistances());
+                static_cast<CLMesh*>(node->GetEntity())->SetAnimationInterpolated(clAnimations, cAnimation->activeAnimation->GetDistances(), cAnimation->activeAnimation->loop);
             } else {
-                static_cast<CLMesh*>(node->GetEntity())->SetAnimation(clAnimations);
+                static_cast<CLMesh*>(node->GetEntity())->SetAnimation(clAnimations, cAnimation->activeAnimation->loop);
             }
         }   break;
 
@@ -481,9 +481,9 @@ const uint16_t RenderFacadeClover::FacadeAddStaticObject(Entity* entity) {
             node = device->AddMesh(father,cId->id);
 
             if (cAnimation->activeAnimation->IsInterpolated()) {
-                static_cast<CLMesh*>(node->GetEntity())->SetAnimationInterpolated(clAnimations, cAnimation->activeAnimation->GetDistances());
+                static_cast<CLMesh*>(node->GetEntity())->SetAnimationInterpolated(clAnimations, cAnimation->activeAnimation->GetDistances(), cAnimation->activeAnimation->loop);
             } else {
-                static_cast<CLMesh*>(node->GetEntity())->SetAnimation(clAnimations);
+                static_cast<CLMesh*>(node->GetEntity())->SetAnimation(clAnimations, cAnimation->activeAnimation->loop);
             }
             //static_cast<CLMesh*>(node->GetEntity())->SetMaterial(mat);
         }   break;
@@ -783,9 +783,9 @@ void RenderFacadeClover::FacadeUpdateAnimationsLoD(vector<shared_ptr<Entity>> en
                     // vector<CLResourceMesh*> clAnimations = resourceManager->GetResourceAnimation(animationPath, cAnimation->activeAnimation->numKeyFrames, false);
                     vector<CLResourceMesh*> clAnimations = resourceManager->GetResourceExistingAnimation(animationPath, cAnimation->activeAnimation->numKeyFrames, false);
                     if (cAnimation->activeAnimation->IsInterpolated()) {
-                        static_cast<CLMesh*>(node->GetEntity())->SetAnimationInterpolated(clAnimations, cAnimation->activeAnimation->GetDistances());
+                        static_cast<CLMesh*>(node->GetEntity())->SetAnimationInterpolated(clAnimations, cAnimation->activeAnimation->GetDistances(), cAnimation->activeAnimation->loop);
                     } else {
-                        static_cast<CLMesh*>(node->GetEntity())->SetAnimation(clAnimations);
+                        static_cast<CLMesh*>(node->GetEntity())->SetAnimation(clAnimations, cAnimation->activeAnimation->loop);
                     }
                 }
                 cAnimation->animationChanged = false;
@@ -1041,7 +1041,7 @@ void RenderFacadeClover::FacadeInitSelectCharacter() {
     //Penguin
     auto animationPen = resourceManager->GetResourceAnimation("media/animations/penguin/selection/selectionpenguin_000001.obj", 30, false);
     mesh = device->AddMesh(smgr,0);
-    static_cast<CLMesh*>(mesh->GetEntity())->SetAnimation(animationPen);
+    static_cast<CLMesh*>(mesh->GetEntity())->SetAnimation(animationPen, true);
     mesh->SetScalation(glm::vec3(2.0f));
     mesh->SetTranslation(glm::vec3(0.0f,-14.0f,-20.0f));
     mesh->SetRotation(glm::vec3(10.0f,-50.0f, 5.0f));
@@ -1050,7 +1050,7 @@ void RenderFacadeClover::FacadeInitSelectCharacter() {
     //Tiger
     auto animationTig = resourceManager->GetResourceAnimation("media/animations/baxter/selection/selectionbaxter_000001.obj", 30, false);
     mesh = device->AddMesh(smgr,1);
-    static_cast<CLMesh*>(mesh->GetEntity())->SetAnimation(animationTig);
+    static_cast<CLMesh*>(mesh->GetEntity())->SetAnimation(animationTig, true);
     mesh->SetScalation(glm::vec3(2.0f));
     mesh->SetTranslation(glm::vec3(0.0f,-14.0f,-20.0f));
     mesh->SetRotation(glm::vec3(10.0f,-50.0f, 5.0f));
@@ -1059,7 +1059,7 @@ void RenderFacadeClover::FacadeInitSelectCharacter() {
     //Shark
     auto animationSha = resourceManager->GetResourceAnimation("media/animations/dragon/selection/selectiondragon_000001.obj", 30, false);
     mesh = device->AddMesh(smgr,2);
-    static_cast<CLMesh*>(mesh->GetEntity())->SetAnimation(animationSha);
+    static_cast<CLMesh*>(mesh->GetEntity())->SetAnimation(animationSha, true);
     mesh->SetScalation(glm::vec3(2.0f));
     mesh->SetTranslation(glm::vec3(0.0f,-14.0f,-20.0f));
     mesh->SetRotation(glm::vec3(10.0f,-50.0f, 5.0f));
@@ -1068,7 +1068,7 @@ void RenderFacadeClover::FacadeInitSelectCharacter() {
     //Gorila
     auto animationKong = resourceManager->GetResourceAnimation("media/animations/kong/selection/selectionkong_000001.obj", 30, false);
     mesh = device->AddMesh(smgr,3);
-    static_cast<CLMesh*>(mesh->GetEntity())->SetAnimation(animationKong);
+    static_cast<CLMesh*>(mesh->GetEntity())->SetAnimation(animationKong, true);
     mesh->SetScalation(glm::vec3(2.0f));
     mesh->SetTranslation(glm::vec3(0.0f,-14.0f,-20.0f));
     mesh->SetRotation(glm::vec3(10.0f,-50.0f, 5.0f));
@@ -1077,7 +1077,7 @@ void RenderFacadeClover::FacadeInitSelectCharacter() {
     //Dragon
     auto animationDra = resourceManager->GetResourceAnimation("media/animations/dragon/selection/selectiondragon_000001.obj", 30, false);
     mesh = device->AddMesh(smgr,4);
-    static_cast<CLMesh*>(mesh->GetEntity())->SetAnimation(animationDra);
+    static_cast<CLMesh*>(mesh->GetEntity())->SetAnimation(animationDra, true);
     mesh->SetScalation(glm::vec3(2.0f));
     mesh->SetTranslation(glm::vec3(0.0f,-14.0f,-20.0f));
     mesh->SetRotation(glm::vec3(10.0f,-50.0f, 5.0f));
@@ -1086,7 +1086,7 @@ void RenderFacadeClover::FacadeInitSelectCharacter() {
     //Octopus
     auto animationCyb = resourceManager->GetResourceAnimation("media/animations/cyberoctopus/selection/selectionoctopus_000001.obj", 31, false);
     mesh = device->AddMesh(smgr,5);
-    static_cast<CLMesh*>(mesh->GetEntity())->SetAnimation(animationCyb);
+    static_cast<CLMesh*>(mesh->GetEntity())->SetAnimation(animationCyb, true);
     mesh->SetScalation(glm::vec3(2.0f));
     mesh->SetTranslation(glm::vec3(0.0f,-14.0f,-20.0f));
     mesh->SetRotation(glm::vec3(10.0f,-50.0f, 5.0f));
