@@ -196,8 +196,9 @@ class RenderFacadeClover : public RenderFacade {
                                           "Recuerda que lo mas importante es divertirse!",
                                           };
 
-      // Gamepad
+      // Bool
       bool gamepadConnected { false };
+      bool multiplayer { false };
 
       // En juego
       bool inputShowTable { true };

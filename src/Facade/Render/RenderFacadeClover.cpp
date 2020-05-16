@@ -1027,11 +1027,13 @@ void RenderFacadeClover::FacadeCheckInputSelectCharacter() {
 void RenderFacadeClover::FacadeCheckInputGameOptions() {
     InputFacadeManager::GetInstance()->GetInputFacade()->CheckInputGameOptions(inputGO, maxInputGO, option);
     gamepadConnected = InputFacadeManager::GetInstance()->GetInputFacade()->IsConectedGamepad();
+    multiplayer = false;
 }
 
 void RenderFacadeClover::FacadeCheckInputTournamentOptions() {
     InputFacadeManager::GetInstance()->GetInputFacade()->CheckInputTournamentOptions(inputTO, maxInputTO, optionTO);
     gamepadConnected = InputFacadeManager::GetInstance()->GetInputFacade()->IsConectedGamepad();
+    multiplayer = false;
 }
 
 void RenderFacadeClover::FacadeCheckInputControler() {
@@ -1076,6 +1078,7 @@ void RenderFacadeClover::FacadeCheckInputLobbyMultiExit() {
 void RenderFacadeClover::FacadeCheckInputLobbyMultiSelChar() {
     InputFacadeManager::GetInstance()->GetInputFacade()->CheckInputLobbyMultiSelChar(inputSC, maxInputSC);
     gamepadConnected = InputFacadeManager::GetInstance()->GetInputFacade()->IsConectedGamepad();
+    multiplayer = true;
 }
 
 void RenderFacadeClover::FacadeCheckInputSettings() {
@@ -1635,15 +1638,25 @@ void RenderFacadeClover::FacadeDrawEndRace() {
     if (menuER) {
         file = "media/menu/endrace/finish_menu_options_bg.png";
         Draw2DImage(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.4f, file, true);
-        file = "media/menu/endrace/finish_menu_options_elements.png";
-        Draw2DImage(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.5f, file, true);
-
-        std::string files[3] = {
-            "media/menu/endrace/finish_option1_hover.png",
-            "media/menu/endrace/finish_option2_hover.png",
-            "media/menu/endrace/finish_option3_hover.png"
-        };
-        Draw2DImage(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.2f, files[inputER], true);
+        
+        if ( !multiplayer ) {
+            file = "media/menu/endrace/finish_menu_options_elements.png";
+            Draw2DImage(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.5f, file, true);
+            std::string files[3] = {
+                "media/menu/endrace/finish_option1_hover.png",
+                "media/menu/endrace/finish_option2_hover.png",
+                "media/menu/endrace/finish_option3_hover.png"
+            };
+            Draw2DImage(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.2f, files[inputER], true);
+        } else {
+            file = "media/menu/endrace/online/o_finish_menu_options_elements.png";
+            Draw2DImage(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.5f, file, true);
+            std::string files[2] = {
+                "media/menu/endrace/online/o_finish_option1_hover.png",
+                "media/menu/endrace/online/o_finish_option2_hover.png"
+            };
+            Draw2DImage(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.2f, files[inputER], true);
+        }
     }
     device->SetEnableDepthTest(true);
 }
