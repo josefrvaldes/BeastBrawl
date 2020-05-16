@@ -138,7 +138,7 @@ void RenderFacadeClover::FacadeUpdatePowerUpHUD(DataMap* d) {
 
     //Si es la primera vez que se coge un powerup se crea la animacion
     if(!powerUpAnimation){
-        powerUpAnimation = make_unique<Animation2D>("media/animacionPowerUp/animacionPU.png",143,60);
+        powerUpAnimation = make_unique<Animation2D>("media/animacionPowerUp/animacionPU.png",71,60);
         powerUpAnimation->Start();
     }else if(powerUpAnimation && type != typeCPowerUp::None){
         powerUpAnimation->Restart();
