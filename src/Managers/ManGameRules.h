@@ -4,6 +4,8 @@
 #include <vector>
 #include <unordered_map>
 #include <glm/glm.hpp>
+#include <Entities/GameObject.h>
+#include <GameValues.h>
 
 using namespace std;
 
@@ -24,17 +26,29 @@ class ManGameRules{
     void RestartAllTimers(vector<shared_ptr<Entity>> entities, int64_t timeStartPause);
     void ResetClock();
 
+    void CreateCurrentMap(MAP type);
+    vector<shared_ptr<GameObject>> GetGrounds(){ return ground; }; 
     /**
      * @return true o false dependiendo si la partida debe terminar o no
      */
     bool Update(const vector<shared_ptr<Entity>> &cars, const vector<shared_ptr<Entity>> &totems);
     unique_ptr<Entity>& GetGlobalClock() { return globalClock; };
 
+    glm::vec3 GetPosTotem(){return posTotem; }; 
+    bool GetActiveTotem(){return activeTotem; }; 
+
    private:
+    void CreateMayanMap();
     void CreateGlobalClock( const uint32_t durationTime_ );
     unique_ptr<Entity> globalClock;
     unique_ptr<SystemGameRules> systemGameRules;
+    glm::vec3 posTotem;
+    bool activeTotem;
 
     unordered_map<uint16_t, glm::vec2> positionsPlane;
     glm::vec2 positionTotemPlane { glm::vec2(-1, -1) };
+
+
+    vector<shared_ptr<GameObject>> ground;
+
 };

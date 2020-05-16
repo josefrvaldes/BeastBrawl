@@ -20,9 +20,26 @@ using namespace std;
 using namespace irr;
 class RenderFacadeIrrlicht : public RenderFacade {
    public:
+
+
+    void suputamadre(Entity*){};
+
+
+
+
+
+
+
+
+
+
+
+
+
     RenderFacadeIrrlicht();
     ~RenderFacadeIrrlicht() override;
     const uint16_t FacadeAddObject(Entity*) override;
+    const uint16_t FacadeAddStaticObject(Entity*) override { return 1; };
     void FacadeAddSphereOnObject(Entity* entity) override;
     const uint16_t FacadeAddObjectCar(Entity*) override;
     const uint16_t FacadeAddObjectTotem(Entity* entity) override;

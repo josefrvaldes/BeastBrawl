@@ -315,12 +315,14 @@ void CLPhysics::RotateCarXZ(CTransformable &trcar, CBoundingChassis &chaCar, CBo
     auto resultante_Z = newR_Z * 100 / total;
     auto rotationX_exeZ = angleRotate * (resultante_Z / 100);
 
+    auto velRot = 130.0 * Constants::DELTA_TIME;
+
     auto rotationFinalX = rotationX_exeX + rotationX_exeZ;
-    if(abs(trcar.rotation.x - rotationFinalX) > 30.0 * Constants::DELTA_TIME ){  // deberia de multiplicarse por el delta
+    if(abs(trcar.rotation.x - rotationFinalX) > velRot ){  // deberia de multiplicarse por el delta
         if( trcar.rotation.x < rotationFinalX)
-            trcar.rotation.x += 30.0 * Constants::DELTA_TIME;
+            trcar.rotation.x += velRot;
         else
-            trcar.rotation.x -= 30.0 * Constants::DELTA_TIME;
+            trcar.rotation.x -= velRot;
     }else{
         trcar.rotation.x = rotationFinalX;
     }
@@ -336,11 +338,11 @@ void CLPhysics::RotateCarXZ(CTransformable &trcar, CBoundingChassis &chaCar, CBo
 
 
     auto rotationFinalZ = rotationZ_exeX + rotationZ_exeZ;
-    if(abs(trcar.rotation.z - rotationFinalZ) > 30.0 * Constants::DELTA_TIME ){  // deberia de multiplicarse por el delta
+    if(abs(trcar.rotation.z - rotationFinalZ) > velRot ){  // deberia de multiplicarse por el delta
         if( trcar.rotation.z < rotationFinalZ)
-            trcar.rotation.z += 30.0 * Constants::DELTA_TIME;
+            trcar.rotation.z += velRot;
         else
-            trcar.rotation.z-= 30.0 * Constants::DELTA_TIME;
+            trcar.rotation.z-= velRot;
     }else{
         trcar.rotation.z = rotationFinalZ;
     }
@@ -348,7 +350,7 @@ void CLPhysics::RotateCarXZ(CTransformable &trcar, CBoundingChassis &chaCar, CBo
 
 
 void CLPhysics::RePositionCarY(CTransformable &trCar, CBoundingSphere &sp1Car, CBoundingSphere &sp2Car) const {
-    trCar.position.y = ((sp1Car.center.y + sp2Car.center.y) / 2) /*- sp1Car.radiusFloor*/;
+    trCar.position.y = ((sp1Car.center.y + sp2Car.center.y) / 2) - sp1Car.radiusFloor-2.0;
 }
 
 void CLPhysics::RePositionEntityY(CTransformable &trEntity, CBoundingSphere &sphere) const {
@@ -1203,16 +1205,15 @@ void CLPhysics::IntersectCameraWalls(Camera *cam, Car* car, ManBoundingWall &man
     cBSCam->center = cTransfCam->position;
     auto cCamera = static_cast<CCamera*>(cam->GetComponent(CompType::CameraComp).get());
     bool collision = false;
+        auto vecNCam = glm::normalize(cTransfCam->position - cTransfCar->position);
     // COMPROBAMOS LOS PLANOS NORMALES
     for (long unsigned int i = 0; i < manWalls.GetEntities().size() && !collision; i++) {
         const auto &currentWall = manWalls.GetEntities()[i];
         CBoundingPlane *plane = static_cast<CBoundingPlane *>(currentWall->GetComponent(CompType::CompBoundingPlane).get());
-        auto vecNCam = glm::normalize(cTransfCam->position - cTransfCar->position);
         IntersectData intersData = plane->IntersectRay2(cTransfCar->position, vecNCam);
         if (intersData.intersects) {
-            // COLISION CON WALL -> speed a 0, beibe
-            collision = true;
             if(intersData.distance < cCamera->actualDistance){
+                collision = true;
                 cCamera->collisionDistance = cCamera->actualDistance - intersData.distance;
             }
         }
@@ -1221,14 +1222,16 @@ void CLPhysics::IntersectCameraWalls(Camera *cam, Car* car, ManBoundingWall &man
     for (long unsigned int i = 0; i < manOBB.GetEntities().size() && !collision; i++) {
         const auto &currentOBB = manOBB.GetEntities()[i];
         CBoundingOBB *cOBBcurrent = static_cast<CBoundingOBB *>(currentOBB->GetComponent(CompType::CompBoundingOBB).get());
-
-        auto vecNCam = glm::normalize(vec3((cTransfCam->position.x-cTransfCar->position.x),0,(cTransfCam->position.z-cTransfCar->position.z)));
-        IntersectData intersData = cOBBcurrent->IntersectRay2(cTransfCar->position, vecNCam);
-        if (intersData.intersects) {
-            // COLISION CON WALL -> speed a 0, beibe
-            collision = true;
-            if(int(intersData.distance) < cCamera->actualDistance){
-                cCamera->collisionDistance = cCamera->actualDistance - intersData.distance;
+        auto planesOBB = cOBBcurrent->GetPlanesOBB();
+        for( long unsigned int i = 0; i < planesOBB.size() && !collision; i++){
+            const auto &currentPlaneOBB = planesOBB[i];
+            IntersectData intersData = currentPlaneOBB.get()->IntersectRay2(cTransfCar->position, vecNCam);
+            if (intersData.intersects) {
+                if(intersData.distance < cCamera->actualDistance){
+                    collision = true;
+                    if(intersData.distance < 3) intersData.distance = 3;
+                    cCamera->collisionDistance = cCamera->actualDistance - intersData.distance;
+                }
             }
         }
     }
