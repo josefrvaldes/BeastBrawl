@@ -22,18 +22,6 @@ class RenderFacade {
    public:
 
 
-
-
-    virtual void suputamadre(Entity*) = 0;
-
-
-
-
-
-
-
-
-
     //RenderFacade() = default;
     virtual ~RenderFacade() = default;
     virtual const uint16_t FacadeAddObject(Entity*) = 0;
