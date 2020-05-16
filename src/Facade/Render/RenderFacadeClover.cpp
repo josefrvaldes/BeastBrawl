@@ -258,7 +258,7 @@ const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
             //node = father->AddMesh(cId->id);
             node = device->AddMesh(father,cId->id);
             static_cast<CLMesh*>(node->GetEntity())->SetMesh(mesh);
-            static_cast<CLMesh*>(node->GetEntity())->SetMaterial(mat);
+            //static_cast<CLMesh*>(node->GetEntity())->SetMaterial(mat);
 
             break;
 
@@ -282,7 +282,7 @@ const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
             } else {
                 static_cast<CLMesh*>(node->GetEntity())->SetAnimation(clAnimations);
             }
-            static_cast<CLMesh*>(node->GetEntity())->SetMaterial(mat);
+            //static_cast<CLMesh*>(node->GetEntity())->SetMaterial(mat);
         }   break;
 
         case ModelType::AnimatedMesh:
@@ -290,14 +290,14 @@ const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
             node = device->AddMesh(father,cId->id);
 
             static_cast<CLMesh*>(node->GetEntity())->SetMesh(mesh);
-            static_cast<CLMesh*>(node->GetEntity())->SetMaterial(mat);
+            //static_cast<CLMesh*>(node->GetEntity())->SetMaterial(mat);
 
             break;
 
         case ModelType::Shield:
             node = device->AddMesh(father,cId->id);
             static_cast<CLMesh*>(node->GetEntity())->SetMesh(mesh);
-            static_cast<CLMesh*>(node->GetEntity())->SetMaterial(mat);
+            //static_cast<CLMesh*>(node->GetEntity())->SetMaterial(mat);
             node->SetVisible(false);
             break;
 
@@ -465,7 +465,7 @@ const uint16_t RenderFacadeClover::FacadeAddStaticObject(Entity* entity) {
             //node = father->AddMesh(cId->id);
             node = device->AddMesh(father,cId->id);
             static_cast<CLMesh*>(node->GetEntity())->SetMesh(mesh);
-            static_cast<CLMesh*>(node->GetEntity())->SetMaterial(mat);
+            //static_cast<CLMesh*>(node->GetEntity())->SetMaterial(mat);
             break;
         case ModelType::Cube:
             //node = father->AddMesh(cId->id);
@@ -486,18 +486,18 @@ const uint16_t RenderFacadeClover::FacadeAddStaticObject(Entity* entity) {
             } else {
                 static_cast<CLMesh*>(node->GetEntity())->SetAnimation(clAnimations);
             }
-            static_cast<CLMesh*>(node->GetEntity())->SetMaterial(mat);
+            //static_cast<CLMesh*>(node->GetEntity())->SetMaterial(mat);
         }   break;
         case ModelType::AnimatedMesh:
             //node = father->AddMesh(cId->id);
             node = device->AddMesh(father,cId->id);
             static_cast<CLMesh*>(node->GetEntity())->SetMesh(mesh);
-            static_cast<CLMesh*>(node->GetEntity())->SetMaterial(mat);
+            //static_cast<CLMesh*>(node->GetEntity())->SetMaterial(mat);
             break;
         case ModelType::Shield:
             node = device->AddMesh(father,cId->id);
             static_cast<CLMesh*>(node->GetEntity())->SetMesh(mesh);
-            static_cast<CLMesh*>(node->GetEntity())->SetMaterial(mat);
+            //static_cast<CLMesh*>(node->GetEntity())->SetMaterial(mat);
             node->SetVisible(false);
             break;
         case ModelType::Text:
@@ -1379,7 +1379,7 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
     auto posRefY = h/2 - (altoSpriteTotem/2);
     auto frustum_ = device->GetActiveCamera()->GetFrustum();
 
-    cout  << "EL TOTEM EN X ESTA EN:  " << manGR->GetPosTotem().x << endl;
+    //cout  << "EL TOTEM EN X ESTA EN:  " << manGR->GetPosTotem().x << endl;
  
     if(frustum_.IsOutBack(manGR->GetPosTotem()) && manGR->GetActiveTotem())
      device->DrawImage2D(w/2 - (anchoSpriteTotem/2) , h - 50 - altoSpriteTotem, 1.f, 0.1f, "media/hudTotemBack.png", true); 
