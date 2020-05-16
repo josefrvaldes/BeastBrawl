@@ -8,8 +8,8 @@ var class_c_l_e_1_1_c_l_mesh =
     [ "Draw", "class_c_l_e_1_1_c_l_mesh.html#aef55674f28382981b264bf74ccee7042", null ],
     [ "DrawDepthMap", "class_c_l_e_1_1_c_l_mesh.html#ad68ca0ffe8f88ec964ab7a9d1f49a882", null ],
     [ "GetMesh", "class_c_l_e_1_1_c_l_mesh.html#a79fd3a66888e4348d1a6d161d1cd79ba", null ],
-    [ "SetAnimation", "class_c_l_e_1_1_c_l_mesh.html#a194e0af0e2a19139e21554cc9210f64d", null ],
-    [ "SetAnimationInterpolated", "class_c_l_e_1_1_c_l_mesh.html#a46fd7ef96ffebd985a13da988bf23b83", null ],
+    [ "SetAnimation", "class_c_l_e_1_1_c_l_mesh.html#a513f36e0393a7471398c27ae82e6d156", null ],
+    [ "SetAnimationInterpolated", "class_c_l_e_1_1_c_l_mesh.html#adf7ced59eb1dd1812c8f2fa5c3eabd2f", null ],
     [ "SetMaterial", "class_c_l_e_1_1_c_l_mesh.html#afe53ffc0447cc0c0296e33bb9961f659", null ],
     [ "SetMesh", "class_c_l_e_1_1_c_l_mesh.html#a14975ce1ea3b34ac93697df97123846a", null ]
 ];

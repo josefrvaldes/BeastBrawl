@@ -20,8 +20,12 @@ var class_c_l_e_1_1_c_l_frustum =
     [ "CLFrustum", "class_c_l_e_1_1_c_l_frustum.html#a665b92a0103710376c2a8f4a4b2903e2", null ],
     [ "~CLFrustum", "class_c_l_e_1_1_c_l_frustum.html#a6c108c92a2160452981e9d298e7a4a52", null ],
     [ "GetPlane", "class_c_l_e_1_1_c_l_frustum.html#a134666da99909cc7e903624c670dcc3e", null ],
+    [ "IsInside", "class_c_l_e_1_1_c_l_frustum.html#a30881ed4869fda135d8781fe482eb1d5", null ],
     [ "IsInside", "class_c_l_e_1_1_c_l_frustum.html#a9fe087f9b633dffbbfb52141f8cc4795", null ],
     [ "IsInside", "class_c_l_e_1_1_c_l_frustum.html#a16e8bcca5a6c4d33579411b591302f36", null ],
+    [ "IsOutBack", "class_c_l_e_1_1_c_l_frustum.html#a0c59cd0f67e3a9bab557f8d53e2bc125", null ],
+    [ "IsOutLeft", "class_c_l_e_1_1_c_l_frustum.html#ac03da0d1bb9383a318cfd7ae98a855c5", null ],
+    [ "IsOutRight", "class_c_l_e_1_1_c_l_frustum.html#a25456490dd83c0ea1dc6ab625ce13761", null ],
     [ "Normalize", "class_c_l_e_1_1_c_l_frustum.html#a9e3a9715d0d321db20f699d13984dec3", null ],
     [ "Transform", "class_c_l_e_1_1_c_l_frustum.html#adb7ee7b58e3600993b0a86a2c352fc1a", null ]
 ];

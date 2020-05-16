@@ -136,8 +136,16 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a9fe087f9b633dffbbfb52141f8cc4795"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a16e8bcca5a6c4d33579411b591302f36"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_c_l_e_1_1_c_l_frustum.html#ae59c5b0093dfa9564459f5be3bb62734">Visibility</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_frustum.html#a16e8bcca5a6c4d33579411b591302f36">IsInside</a> (const glm::vec3 &amp;point, const float size) const</td></tr>
 <tr class="separator:a16e8bcca5a6c4d33579411b591302f36"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a30881ed4869fda135d8781fe482eb1d5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_c_l_e_1_1_c_l_frustum.html#ae59c5b0093dfa9564459f5be3bb62734">Visibility</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_frustum.html#a30881ed4869fda135d8781fe482eb1d5">IsInside</a> (const glm::vec3 &amp;minPoint, const glm::vec3 &amp;maxpoint) const</td></tr>
+<tr class="separator:a30881ed4869fda135d8781fe482eb1d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a134666da99909cc7e903624c670dcc3e"><td class="memItemLeft" align="right" valign="top">glm::vec4&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_frustum.html#a134666da99909cc7e903624c670dcc3e">GetPlane</a> (<a class="el" href="class_c_l_e_1_1_c_l_frustum.html#a166d93073d486188eb585b8ff7d5a2a4">Plane_enum</a> plane) const</td></tr>
 <tr class="separator:a134666da99909cc7e903624c670dcc3e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac03da0d1bb9383a318cfd7ae98a855c5"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_frustum.html#ac03da0d1bb9383a318cfd7ae98a855c5">IsOutLeft</a> (const glm::vec3 &amp;point) const</td></tr>
+<tr class="separator:ac03da0d1bb9383a318cfd7ae98a855c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a25456490dd83c0ea1dc6ab625ce13761"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_frustum.html#a25456490dd83c0ea1dc6ab625ce13761">IsOutRight</a> (const glm::vec3 &amp;point) const</td></tr>
+<tr class="separator:a25456490dd83c0ea1dc6ab625ce13761"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0c59cd0f67e3a9bab557f8d53e2bc125"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_frustum.html#a0c59cd0f67e3a9bab557f8d53e2bc125">IsOutBack</a> (const glm::vec3 &amp;point) const</td></tr>
+<tr class="separator:a0c59cd0f67e3a9bab557f8d53e2bc125"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Clase para el frustrum Esta clase es utilizada para saber cuando le objeto se encuentra dentro o fuera del campo de visión de la camara. </p>
@@ -282,8 +290,36 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="a30881ed4869fda135d8781fe482eb1d5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a30881ed4869fda135d8781fe482eb1d5">&#9670;&nbsp;</a></span>IsInside() <span class="overload">[1/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_c_l_e_1_1_c_l_frustum.html#ae59c5b0093dfa9564459f5be3bb62734">CLFrustum::Visibility</a> CLFrustum::IsInside </td>
+          <td>(</td>
+          <td class="paramtype">const glm::vec3 &amp;&#160;</td>
+          <td class="paramname"><em>minPoint</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const glm::vec3 &amp;&#160;</td>
+          <td class="paramname"><em>maxpoint</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a9fe087f9b633dffbbfb52141f8cc4795"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9fe087f9b633dffbbfb52141f8cc4795">&#9670;&nbsp;</a></span>IsInside() <span class="overload">[1/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a9fe087f9b633dffbbfb52141f8cc4795">&#9670;&nbsp;</a></span>IsInside() <span class="overload">[2/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -301,7 +337,7 @@ Public Member Functions</h2></td></tr>
 </div>
 </div>
 <a id="a16e8bcca5a6c4d33579411b591302f36"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a16e8bcca5a6c4d33579411b591302f36">&#9670;&nbsp;</a></span>IsInside() <span class="overload">[2/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a16e8bcca5a6c4d33579411b591302f36">&#9670;&nbsp;</a></span>IsInside() <span class="overload">[3/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -322,6 +358,60 @@ Public Member Functions</h2></td></tr>
           <td></td>
           <td>)</td>
           <td></td><td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a0c59cd0f67e3a9bab557f8d53e2bc125"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0c59cd0f67e3a9bab557f8d53e2bc125">&#9670;&nbsp;</a></span>IsOutBack()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool CLFrustum::IsOutBack </td>
+          <td>(</td>
+          <td class="paramtype">const glm::vec3 &amp;&#160;</td>
+          <td class="paramname"><em>point</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ac03da0d1bb9383a318cfd7ae98a855c5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac03da0d1bb9383a318cfd7ae98a855c5">&#9670;&nbsp;</a></span>IsOutLeft()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool CLFrustum::IsOutLeft </td>
+          <td>(</td>
+          <td class="paramtype">const glm::vec3 &amp;&#160;</td>
+          <td class="paramname"><em>point</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a25456490dd83c0ea1dc6ab625ce13761"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a25456490dd83c0ea1dc6ab625ce13761">&#9670;&nbsp;</a></span>IsOutRight()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool CLFrustum::IsOutRight </td>
+          <td>(</td>
+          <td class="paramtype">const glm::vec3 &amp;&#160;</td>
+          <td class="paramname"><em>point</em></td><td>)</td>
+          <td> const</td>
         </tr>
       </table>
 </div><div class="memdoc">

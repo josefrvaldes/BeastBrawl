@@ -24,7 +24,12 @@ var NAVTREE =
 [
   [ "CLEngine", "index.html", [
     [ "Namespaces", "namespaces.html", [
-      [ "Namespace List", "namespaces.html", "namespaces_dup" ]
+      [ "Namespace List", "namespaces.html", "namespaces_dup" ],
+      [ "Namespace Members", "namespacemembers.html", [
+        [ "All", "namespacemembers.html", null ],
+        [ "Enumerations", "namespacemembers_enum.html", null ],
+        [ "Enumerator", "namespacemembers_eval.html", null ]
+      ] ]
     ] ],
     [ "Classes", "annotated.html", [
       [ "Class List", "annotated.html", "annotated_dup" ],
@@ -55,8 +60,8 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "_c_l_billboard_8cpp.html",
-"class_c_l_e_1_1_c_l_grass_system.html#ad190d08154f52b02e598f7311100874f",
-"functions_i.html"
+"class_c_l_e_1_1_c_l_frustum.html#ac03da0d1bb9383a318cfd7ae98a855c5",
+"functions_d.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

@@ -109,8 +109,11 @@ $(document).ready(function(){initNavTree('functions_g.html',''); initResizable()
 <li>GetBlueNormalized()
 : <a class="el" href="class_c_l_e_1_1_c_l_color.html#a6097636798de71682b55cba0152a618b">CLE::CLColor</a>
 </li>
-<li>GetBoundingBox()
-: <a class="el" href="class_c_l_e_1_1_c_l_node.html#adbeb677aee6e6a98bec6f42ac22c5369">CLE::CLNode</a>
+<li>GetBoundingBoxAABB()
+: <a class="el" href="class_c_l_e_1_1_c_l_node.html#a1b68934121d97565aa10853f0250a483">CLE::CLNode</a>
+</li>
+<li>GetBoundingBoxOBB()
+: <a class="el" href="class_c_l_e_1_1_c_l_node.html#aa7413be6d8af61ab3048a22e9e892eb6">CLE::CLNode</a>
 </li>
 <li>GetBoundingSizeById()
 : <a class="el" href="class_c_l_e_1_1_c_l_engine.html#a6bf6007b720c76843eaf266b142a1b65">CLE::CLEngine</a>
@@ -166,6 +169,9 @@ $(document).ready(function(){initNavTree('functions_g.html',''); initResizable()
 <li>GetFlags()
 : <a class="el" href="class_c_l_e_1_1_c_l_particle_system.html#a4899976297dcfb057407ac946d3f2789">CLE::CLParticleSystem</a>
 </li>
+<li>GetFovActualCamera()
+: <a class="el" href="class_c_l_e_1_1_c_l_engine.html#a94c560f486861fadff47d93bc5932c3f">CLE::CLEngine</a>
+</li>
 <li>GetFrustum()
 : <a class="el" href="class_c_l_e_1_1_c_l_camera.html#adecdc65f235d5a52d02f32bceac30ca2">CLE::CLCamera</a>
 </li>
@@ -210,8 +216,17 @@ $(document).ready(function(){initNavTree('functions_g.html',''); initResizable()
 <li>GetMaterials()
 : <a class="el" href="class_c_l_e_1_1_c_l_resource_material.html#ab64f8c37bdc899678c9f4e8df5fd2e31">CLE::CLResourceMaterial</a>
 </li>
+<li>GetMaxBoxOBB()
+: <a class="el" href="class_c_l_e_1_1_c_l_node.html#ab4de761a0e5f3d8fcb6d3d79d1445203">CLE::CLNode</a>
+</li>
 <li>GetMesh()
 : <a class="el" href="class_c_l_e_1_1_c_l_mesh.html#a79fd3a66888e4348d1a6d161d1cd79ba">CLE::CLMesh</a>
+</li>
+<li>GetMeshes()
+: <a class="el" href="class_c_l_e_1_1_c_l_resource_manager.html#ab4d4b2b1dcbe9b4866c42de3ce5b1e5d">CLE::CLResourceManager</a>
+</li>
+<li>GetMinBoxOBB()
+: <a class="el" href="class_c_l_e_1_1_c_l_node.html#a148aad88a9b62d2c958bcfa6fefced49">CLE::CLNode</a>
 </li>
 <li>GetName()
 : <a class="el" href="class_c_l_e_1_1_c_l_resource.html#aa4a843a8f20d28902c1ea648bb1ec91f">CLE::CLResource</a>
@@ -237,11 +252,17 @@ $(document).ready(function(){initNavTree('functions_g.html',''); initResizable()
 <li>GetOuterCutOff()
 : <a class="el" href="class_c_l_e_1_1_c_l_spot_light.html#a610873cdf604e2cc77b5ff99858334fa">CLE::CLSpotLight</a>
 </li>
+<li>GetParticlesActivated()
+: <a class="el" href="class_c_l_e_1_1_c_l_node.html#a9fd54cd53f9d73bf57d7816841e9c989">CLE::CLNode</a>
+</li>
 <li>GetPlane()
 : <a class="el" href="class_c_l_e_1_1_c_l_frustum.html#a134666da99909cc7e903624c670dcc3e">CLE::CLFrustum</a>
 </li>
 <li>GetPointLights()
 : <a class="el" href="class_c_l_e_1_1_c_l_engine.html#a921ac130900fbc7f3fae13e214ba4b0f">CLE::CLEngine</a>
+</li>
+<li>GetPositionActualCamera()
+: <a class="el" href="class_c_l_e_1_1_c_l_engine.html#ab3bc95fc7e0598ec845fde2b5227d567">CLE::CLEngine</a>
 </li>
 <li>GetProgramID()
 : <a class="el" href="class_c_l_e_1_1_c_l_resource_shader.html#a3c292da860158c19cab95ba9151ae40d">CLE::CLResourceShader</a>
@@ -266,6 +287,9 @@ $(document).ready(function(){initNavTree('functions_g.html',''); initResizable()
 <li>GetResourceAnimation()
 : <a class="el" href="class_c_l_e_1_1_c_l_resource_manager.html#a83937c491dc50742b34ba15880cc1ca5">CLE::CLResourceManager</a>
 </li>
+<li>GetResourceExistingAnimation()
+: <a class="el" href="class_c_l_e_1_1_c_l_resource_manager.html#ad7e67110678fc07a336af925eeea99e5">CLE::CLResourceManager</a>
+</li>
 <li>GetResourceManager()
 : <a class="el" href="class_c_l_e_1_1_c_l_engine.html#ab2c2ca0d33a481fb21943af3333ac551">CLE::CLEngine</a>
 , <a class="el" href="class_c_l_e_1_1_c_l_resource_manager.html#a1ffb06eaf347e7bbf5f54cd972dc8b84">CLE::CLResourceManager</a>
@@ -276,11 +300,14 @@ $(document).ready(function(){initNavTree('functions_g.html',''); initResizable()
 <li>GetResourceMesh()
 : <a class="el" href="class_c_l_e_1_1_c_l_resource_manager.html#afe4d2fe29dfcd75c56618360fc394ea3">CLE::CLResourceManager</a>
 </li>
+<li>GetResourceMeshIndex()
+: <a class="el" href="class_c_l_e_1_1_c_l_resource_manager.html#a7fbaabd4260f0ec0d8bdf8cf225500cb">CLE::CLResourceManager</a>
+</li>
 <li>GetResourceShader()
 : <a class="el" href="class_c_l_e_1_1_c_l_resource_manager.html#a624d9ffa0e605c976e65b6a2444c37d4">CLE::CLResourceManager</a>
 </li>
 <li>GetResourceTexture()
-: <a class="el" href="class_c_l_e_1_1_c_l_resource_manager.html#a2549aa8d65d6d4a6694f1439de959692">CLE::CLResourceManager</a>
+: <a class="el" href="class_c_l_e_1_1_c_l_resource_manager.html#a2a4b549578f540fd06e9e3babeb77d83">CLE::CLResourceManager</a>
 </li>
 <li>GetRootNode()
 : <a class="el" href="class_c_l_e_1_1_c_l_engine.html#ab38ea34a1c184d9ab0e7b5fb5ab95ab1">CLE::CLEngine</a>
@@ -326,6 +353,9 @@ $(document).ready(function(){initNavTree('functions_g.html',''); initResizable()
 <li>GetStarted()
 : <a class="el" href="class_c_l_e_1_1_c_l_particle_system.html#add1a745a833976a178859bbc98f68437">CLE::CLParticleSystem</a>
 </li>
+<li>GetTargetActualCamera()
+: <a class="el" href="class_c_l_e_1_1_c_l_engine.html#a534eb7b95fc7a2e8eca62d0414c4b093">CLE::CLEngine</a>
+</li>
 <li>getTexture()
 : <a class="el" href="class_c_l_e_1_1_c_l_billboard.html#a90dc89637459dd19b1373848f9620696">CLE::CLBillboard</a>
 </li>
@@ -333,7 +363,7 @@ $(document).ready(function(){initNavTree('functions_g.html',''); initResizable()
 : <a class="el" href="class_c_l_e_1_1_c_l_resource_texture.html#a71d74f91c7c55d06e66fb53ab1dacda0">CLE::CLResourceTexture</a>
 </li>
 <li>GetTextures()
-: <a class="el" href="class_c_l_e_1_1_c_l_particle_system.html#a072fefe8262bc901350060ca0c5a390a">CLE::CLParticleSystem</a>
+: <a class="el" href="class_c_l_e_1_1_c_l_particle_system.html#a108e8f73cc33599aa72307da8c4488c3">CLE::CLParticleSystem</a>
 </li>
 <li>GetTime()
 : <a class="el" href="class_c_l_e_1_1_c_l_engine.html#a87cfb4aed54efc1fe5dabd19238480cc">CLE::CLEngine</a>
