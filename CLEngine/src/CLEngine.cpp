@@ -236,7 +236,7 @@ void CLEngine::DrawObjects(){
         auto light = GetNodeByID(GetShadowMapping()->GetID());
         glm::mat4 lightProjection, lightView;
         float near_plane = 1.0f, far_plane = Constants::FAR_PLANE;
-        lightProjection = glm::ortho(-float(width), float(width),  -float(height), float(height), near_plane, far_plane);
+        lightProjection = glm::ortho(-float(1500), float(1500),  -float(1500), float(1500), near_plane, far_plane);
         lightView = glm::lookAt(light->GetGlobalTranslation(), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0, 1.0, 0.0));
         lightSpaceMatrix = lightProjection * lightView;
         DrawDepthMap(lightSpaceMatrix);
@@ -569,7 +569,7 @@ void CLEngine::RenderDepthMap(CLShadowMapping& shadowMap, CLResourceShader* dept
     //glUniform3fv(glGetUniformLocation(depthShader->GetProgramID(), "lightPos"), 1, &posLight[0]); 
     
     
-    smgr->DFSTree(glm::mat4(1.0f), depthShader->GetProgramID(), lightSpaceMatrix);
+    smgr->DFSTree(glm::mat4(1.0f), GetActiveCamera(), depthShader->GetProgramID(), lightSpaceMatrix);
         //shadowMap.Draw(simpleDepthShader);
         //RenderScene(simpleDepthShader);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);

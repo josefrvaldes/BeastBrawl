@@ -195,7 +195,8 @@ void CLNode::DFSTree(glm::mat4 mA, CLCamera* cam, const glm::mat4& VPmatrix) {
 
 
 
-void CLNode::DFSTree(glm::mat4 mA, GLuint shaderID, const glm::mat4& lightSpaceMatrix) {
+void CLNode::DFSTree(glm::mat4 mA,  CLCamera* cam, GLuint shaderID, const glm::mat4& lightSpaceMatrix) {
+
     if(Constants::CLIPPING_OCTREE && !octreeVisible)
         return;
 
@@ -203,12 +204,19 @@ void CLNode::DFSTree(glm::mat4 mA, GLuint shaderID, const glm::mat4& lightSpaceM
         transformationMat = mA*CalculateTransformationMatrix();
         changed = false;
     }
+    glm::vec3 pos    = GetGlobalTranslation();
+    CLE::CLFrustum::Visibility frusVisibility = CLE::CLFrustum::Visibility::Invisible;
+    if(!ignoreFrustrum){
+        auto& frustrum_m = cam->GetFrustum();
+        if(frustum_ == typeFrustum::AABB)   frusVisibility = frustrum_m.IsInside(pos, dimensionsBoundingBox.x);
+        else                                frusVisibility = frustrum_m.IsInside(extremeMinMesh, extremeMaxMesh);
+    }
 
 
     //auto& frustum_m = device->GetActiveCamera()->GetFrustum();
     //CLE::CLFrustum::Visibility frusVisibility = frustum_m.IsInside(translation, dimensionsBoundingBox);
 
-    if(entity && visible /*&& frusVisibility == CLE::CLFrustum::Visibility::Completly*/) { 
+    if( (entity && visible && frusVisibility == CLE::CLFrustum::Visibility::Completly) || (entity && visible && ignoreFrustrum) ){ 
         glm::mat4 lightSpaceModel = lightSpaceMatrix * transformationMat;
         glUniformMatrix4fv(glGetUniformLocation(shaderID, "lightSpaceModel"), 1, GL_FALSE, glm::value_ptr(lightSpaceModel));
 
@@ -218,7 +226,7 @@ void CLNode::DFSTree(glm::mat4 mA, GLuint shaderID, const glm::mat4& lightSpaceM
     }
 
     for (auto node : childs) {
-        node->DFSTree(transformationMat, shaderID, lightSpaceMatrix);
+        node->DFSTree(transformationMat, cam, shaderID, lightSpaceMatrix);
     }
 }
 
