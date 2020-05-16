@@ -711,7 +711,8 @@ void RenderFacadeClover::FacadeInitResources(){
     std::string file = "media/menu/loading_screen.png";
     device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
 
-    int indx = (int)(Utils::getRandomFloat(0,tipsTexts.size()-1));
+    int64_t time = Utils::getMicrosSinceEpoch();
+    int indx = time % tipsTexts.size()-1;
 
     device->RenderText2D(tipsTexts.at(indx), device->GetScreenWidth()/2 - 125.0f*scale, device->GetScreenHeight()/2,0.5f, scale,glm::vec3(1.0f,1.0f,1.0f));
     FacadeEndScene();
@@ -881,7 +882,7 @@ void RenderFacadeClover::FacadeInitControler() {
 
 void RenderFacadeClover::FacadeInitCredits() {
     if(!creditsAnimation){
-        creditsAnimation = make_unique<Animation2D>("media/animacionCreditos/creditos.jpg",961,60);
+        creditsAnimation = make_unique<Animation2D>("media/animacionCreditos/creditos.jpg",1927,60);
         creditsAnimation->Start();
         creditsAnimation->Restart();
     }else{
@@ -2265,6 +2266,195 @@ void RenderFacadeClover::FacadeUpdateViewport(){
     device->UpdateViewport();
 }
 
+
+
+void RenderFacadeClover::FacadeReleaseSelectCharacter(){
+
+    resourceManager->DeleteResourceTexture("media/menu/character_selector.png");
+    resourceManager->DeleteResourceTexture("media/menu/kong_selected.png");
+    resourceManager->DeleteResourceTexture("media/menu/sharky_selected.png");
+    resourceManager->DeleteResourceTexture("media/menu/penguin_selected.png");
+    resourceManager->DeleteResourceTexture("media/menu/baxter_selected.png");
+    resourceManager->DeleteResourceTexture("media/menu/deacon_selected.png");
+    resourceManager->DeleteResourceTexture("media/menu/octopus_selected.png");    
+
+}
+
+void RenderFacadeClover::FacadeReleaseOptions(){
+
+    
+
+    resourceManager->DeleteResourceTexture("media/menu/settings_match_bg.png");
+    resourceManager->DeleteResourceTexture("media/menu/duration_match_2min_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/duration_match_3min_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/duration_match_4min_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/duration_match_5min_hover.png");
+
+    resourceManager->DeleteResourceTexture("media/menu/duration_match_2min.png");
+    resourceManager->DeleteResourceTexture("media/menu/duration_match_3min.png");
+    resourceManager->DeleteResourceTexture("media/menu/duration_match_4min.png");
+    resourceManager->DeleteResourceTexture("media/menu/duration_match_5min.png");
+
+    resourceManager->DeleteResourceTexture("media/menu/duration_totem_1min_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/duration_totem_30s_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/duration_totem_45s_hover.png");
+    
+    resourceManager->DeleteResourceTexture("media/menu/duration_totem_1min.png");
+    resourceManager->DeleteResourceTexture("media/menu/duration_totem_30s.png");
+    resourceManager->DeleteResourceTexture("media/menu/duration_totem_45s.png");
+
+    resourceManager->DeleteResourceTexture("media/menu/players_3_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/players_3.png");
+    resourceManager->DeleteResourceTexture("media/menu/players_4_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/players_4.png");
+    resourceManager->DeleteResourceTexture("media/menu/players_5_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/players_5.png");
+    resourceManager->DeleteResourceTexture("media/menu/players_6_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/players_6.png");
+
+    resourceManager->DeleteResourceTexture("media/menu/difficulty_easy_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/difficulty_easy.png");
+    resourceManager->DeleteResourceTexture("media/menu/difficulty_hard_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/difficulty_hard.png");
+    resourceManager->DeleteResourceTexture("media/menu/difficulty_normal_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/difficulty_normal.png");
+
+}
+
+void RenderFacadeClover::FacadeReleaseSettings(){
+    resourceManager->DeleteResourceTexture("media/menu/settings_bg.png");
+
+    resourceManager->DeleteResourceTexture("media/menu/game_music_high_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/game_music_low_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/game_music_med_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/game_music_med1_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/game_music_med2_hover.png");
+
+    resourceManager->DeleteResourceTexture("media/menu/game_music_high.png");
+    resourceManager->DeleteResourceTexture("media/menu/game_music_low.png");
+    resourceManager->DeleteResourceTexture("media/menu/game_music_med.png");
+    resourceManager->DeleteResourceTexture("media/menu/game_music_med1.png");
+    resourceManager->DeleteResourceTexture("media/menu/game_music_med2.png");
+
+    resourceManager->DeleteResourceTexture("media/menu/game_sfx_high_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/game_sfx_low_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/game_sfx_med_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/game_sfx_med1_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/game_sfx_med2_hover.png");
+
+    resourceManager->DeleteResourceTexture("media/menu/game_sfx_high.png");
+    resourceManager->DeleteResourceTexture("media/menu/game_sfx_low.png");
+    resourceManager->DeleteResourceTexture("media/menu/game_sfx_med.png");
+    resourceManager->DeleteResourceTexture("media/menu/game_sfx_med1.png");
+    resourceManager->DeleteResourceTexture("media/menu/game_sfx_med2.png");
+
+    resourceManager->DeleteResourceTexture("media/menu/particles_activated_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/particles_activated.png");
+    resourceManager->DeleteResourceTexture("media/menu/particles_desactivated_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/particles_desactivated.png");
+
+    resourceManager->DeleteResourceTexture("media/menu/vegetation_activated_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/vegetation_activated.png");
+    resourceManager->DeleteResourceTexture("media/menu/vegetation_desactivated_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/vegetation_desactivated.png");
+
+    resourceManager->DeleteResourceTexture("media/menu/shadow_activated_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/shadow_activated.png");
+    resourceManager->DeleteResourceTexture("media/menu/shadow_desactivated_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/shadow_desactivated.png");
+
+}
+
+void RenderFacadeClover::FacadeReleaseStateInGame(){
+    resourceManager->DeleteResourceTexture("media/Minimapa240v2.png");
+    resourceManager->DeleteResourceTexture("media/hudPenguin.png");
+    resourceManager->DeleteResourceTexture("media/hudTiger.png");
+    resourceManager->DeleteResourceTexture("media/hudShark.png");
+    resourceManager->DeleteResourceTexture("media/hudGorilla.png");
+    resourceManager->DeleteResourceTexture("media/hudDragon.png");
+    resourceManager->DeleteResourceTexture("media/hudOctopus.png");
+    resourceManager->DeleteResourceTexture("media/hudTotem.png");
+    resourceManager->DeleteResourceTexture("media/hudTotem2.png");
+    resourceManager->DeleteResourceTexture("media/1.png");
+    resourceManager->DeleteResourceTexture("media/2.png");
+    resourceManager->DeleteResourceTexture("media/3.png");
+    resourceManager->DeleteResourceTexture("media/BOctopus.png");
+    resourceManager->DeleteResourceTexture("media/BDragon.png");
+    resourceManager->DeleteResourceTexture("media/BGorilla.png");
+    resourceManager->DeleteResourceTexture("media/BPinguino.png");
+    resourceManager->DeleteResourceTexture("media/BTiburon.png");
+    resourceManager->DeleteResourceTexture("media/BTigre.png");
+    resourceManager->DeleteResourceTexture("media/stoleHUD.png");
+    resourceManager->DeleteResourceTexture("media/loseHUD.png");
+    resourceManager->DeleteResourceTexture("media/catchHUD.png");
+    resourceManager->DeleteResourceTexture("media/nonepowerup.png");
+    resourceManager->DeleteResourceTexture("media/robojorobo.png");
+    resourceManager->DeleteResourceTexture("media/nitro.png");
+    resourceManager->DeleteResourceTexture("media/pudin.png");
+    resourceManager->DeleteResourceTexture("media/escudomerluzo.png");
+    resourceManager->DeleteResourceTexture("media/telebanana.png");
+    resourceManager->DeleteResourceTexture("media/melonmolon.png");
+
+}
+
+void RenderFacadeClover::FacadeReleaseMenu(){
+    resourceManager->DeleteResourceTexture("media/menu/main_menu.png");
+    resourceManager->DeleteResourceTexture("media/menu/elements_menu.png");
+    resourceManager->DeleteResourceTexture("media/menu/partidarapida_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/multijugador_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/controles_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/creditos_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/ajustes_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/salir_hover.png");
+
+}
+
+void RenderFacadeClover::FacadeReleaseTournament(){
+    resourceManager->DeleteResourceTexture("media/menu/tournament/t_difficulty_easy_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/tournament/t_difficulty_easy.png");
+    resourceManager->DeleteResourceTexture("media/menu/tournament/t_difficulty_hard_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/tournament/t_difficulty_hard.png");
+    resourceManager->DeleteResourceTexture("media/menu/tournament/t_difficulty_normal_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/tournament/t_difficulty_normal.png");
+
+    resourceManager->DeleteResourceTexture("media/menu/tournament/t_duration_match_2min_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/tournament/t_duration_match_2min.png");
+    resourceManager->DeleteResourceTexture("media/menu/tournament/t_duration_match_3min_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/tournament/t_duration_match_3min.png");
+    resourceManager->DeleteResourceTexture("media/menu/tournament/t_duration_match_4min_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/tournament/t_duration_match_4min.png");
+    resourceManager->DeleteResourceTexture("media/menu/tournament/t_duration_match_5min_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/tournament/t_duration_match_5min.png");
+
+    resourceManager->DeleteResourceTexture("media/menu/tournament/t_duration_totem_1min_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/tournament/t_duration_totem_1min.png");
+    resourceManager->DeleteResourceTexture("media/menu/tournament/t_duration_totem_30s_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/tournament/t_duration_totem_30s.png");
+    resourceManager->DeleteResourceTexture("media/menu/tournament/t_duration_totem_45s_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/tournament/t_duration_totem_45s.png");
+
+    resourceManager->DeleteResourceTexture("media/menu/tournament/t_matches_3_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/tournament/t_matches_3.png");
+    resourceManager->DeleteResourceTexture("media/menu/tournament/t_matches_4_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/tournament/t_matches_4.png");
+    resourceManager->DeleteResourceTexture("media/menu/tournament/t_matches_5_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/tournament/t_matches_5.png");
+
+    resourceManager->DeleteResourceTexture("media/menu/tournament/t_players_3_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/tournament/t_players_3.png");
+    resourceManager->DeleteResourceTexture("media/menu/tournament/t_players_4_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/tournament/t_players_4.png");
+    resourceManager->DeleteResourceTexture("media/menu/tournament/t_players_5_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/tournament/t_players_5.png");
+    resourceManager->DeleteResourceTexture("media/menu/tournament/t_players_6_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/tournament/t_players_6.png");
+
+
+
+
+
+
+}
 
 ////////////////////////////////////////////////////////////////////////////
 ////////////////////////////  CLASE ANIMATION2D  ///////////////////////////

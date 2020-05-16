@@ -11,7 +11,7 @@
 class StateGameOptions : public State {
     public:
         StateGameOptions();
-        ~StateGameOptions() override = default;
+        ~StateGameOptions() override;
         void Input() override;
         void InitState() override;
         void Update() override;

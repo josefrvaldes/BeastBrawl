@@ -13,7 +13,7 @@
 class StateSelectCharacter : public State {
     public:
         StateSelectCharacter();
-        ~StateSelectCharacter() override = default;
+        ~StateSelectCharacter() override;
         void Input() override;
         void InitState() override;
         void Update() override;

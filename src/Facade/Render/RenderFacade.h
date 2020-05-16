@@ -114,6 +114,15 @@ class RenderFacade {
     virtual bool FacadeOctreeInCamera(float size, const glm::vec3& pos) = 0;
     virtual void FacadeSetOctreeVisibleById(unsigned int id, bool v) = 0;
 
+
+
+    virtual void FacadeReleaseSelectCharacter() = 0;
+    virtual void FacadeReleaseOptions() = 0;
+    virtual void FacadeReleaseSettings() = 0;
+    virtual void FacadeReleaseStateInGame() = 0;
+    virtual void FacadeReleaseMenu() = 0;
+    virtual void FacadeReleaseTournament() = 0;
+
     virtual float FacadeGetFovActualCamera() = 0;
     virtual glm::vec3 FacadeGetTargetActualCamera() = 0;
     virtual glm::vec3 FacadeGetPositionActualCamera() = 0;

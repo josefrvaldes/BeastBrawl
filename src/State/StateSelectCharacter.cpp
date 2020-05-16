@@ -39,3 +39,9 @@ void StateSelectCharacter::Input(){
 void StateSelectCharacter::Update(){
     EventManager::GetInstance().Update();
 }
+
+StateSelectCharacter::~StateSelectCharacter(){
+
+    renderEngine->FacadeReleaseSelectCharacter();
+
+}

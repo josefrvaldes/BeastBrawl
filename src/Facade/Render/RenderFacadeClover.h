@@ -120,6 +120,17 @@ class RenderFacadeClover : public RenderFacade {
       bool FacadeOctreeInCamera(float size, const glm::vec3& pos) override {return device->OctreeIncamera(size, pos);};
       void FacadeSetOctreeVisibleById(unsigned int id, bool v) override {device->SetOctreeVisibleById(id, v);};
 
+
+
+      void FacadeReleaseSelectCharacter() override;
+      void FacadeReleaseOptions() override;
+      void FacadeReleaseSettings() override;
+      void FacadeReleaseStateInGame() override;
+      void FacadeReleaseMenu() override;
+      void FacadeReleaseTournament() override;
+
+
+
       float FacadeGetFovActualCamera() override { return device->GetFovActualCamera(); };
       glm::vec3 FacadeGetTargetActualCamera() override { return device->GetTargetActualCamera(); };
       glm::vec3 FacadeGetPositionActualCamera() override { return device->GetPositionActualCamera(); };
