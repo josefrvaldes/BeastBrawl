@@ -79,15 +79,15 @@ Car::Car(int pj){
             acceleration =          ACCELERATION::A_MEDIUM/100;
             mesh =                  meshCar(TIGER);
 
-            pathTopLeft =           "sharky_wheel4.obj";
-            pathTopRight =          "sharky_wheel2.obj";
-            pathBottomLeft =        "sharky_wheel3.obj";
-            pathBottomRight =       "sharky_wheel1.obj";
+            pathTopLeft =           "mrsbaxter_wheel3.obj";
+            pathTopRight =          "mrsbaxter_wheel2.obj";
+            pathBottomLeft =        "mrsbaxter_wheel1.obj";
+            pathBottomRight =       "mrsbaxter_wheel4.obj";
 
-            offsetTopLeft =         glm::vec3(0.6,0.3f,1.0);
-            offsetTopRight =        glm::vec3(0.6,0.3f,-1.0);
-            offsetBottomLeft =      glm::vec3(-0.4,0.3f,1.0);
-            offsetBottomRight =     glm::vec3(-0.4,0.3f,-1.0);
+            offsetTopLeft =         glm::vec3(1.6,0.1f,1.5);
+            offsetTopRight =        glm::vec3(1.6,0.1f,-1.5);
+            offsetBottomLeft =      glm::vec3(-1.4,0.1f,1.5);
+            offsetBottomRight =     glm::vec3(-1.4,0.1f,-1.5);
 
             rotationTopLeft =       glm::vec3(0.0f,0.0f,0.0f);
             rotationTopRight =      glm::vec3(0.0f,0.0f,0.0f);
@@ -133,10 +133,10 @@ Car::Car(int pj){
             acceleration =          ACCELERATION::A_LOW/100;
             mesh =                  meshCar(GORILLA);
 
-            pathTopLeft =           "sharky_wheel4.obj";
-            pathTopRight =          "sharky_wheel2.obj";
-            pathBottomLeft =        "sharky_wheel3.obj";
-            pathBottomRight =       "sharky_wheel1.obj";
+            pathTopLeft =           "kaiserkong_wheel4.obj";
+            pathTopRight =          "kaiserkong_wheel2.obj";
+            pathBottomLeft =        "kaiserkong_wheel3.obj";
+            pathBottomRight =       "kaiserkong_wheel1.obj";
 
             offsetTopLeft =         glm::vec3(0.6,0.3f,1.0);
             offsetTopRight =        glm::vec3(0.6,0.3f,-1.0);
