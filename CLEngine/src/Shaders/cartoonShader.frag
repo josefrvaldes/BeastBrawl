@@ -81,7 +81,7 @@ uniform int cartoonParts = 8;
 
 uniform int id_luz_shadowMapping; //El numero en el array  de luces puntuales para aplicar shadowmapping
 
-bool LUZ_ON = false;        //A 0 desactiva las luces
+bool LUZ_ON = true;        //A 0 desactiva las luces
 
 float ShadowCalculation(){
     // perform perspective divide

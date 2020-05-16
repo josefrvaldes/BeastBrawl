@@ -45,7 +45,7 @@ OBJSUBDIRS_CLE  := $(patsubst $(SRC_CLE_PATH)%,$(OBJ_CLE_PATH)%,$(SUBDIRS_CLE))	
 ifdef DEBUG
 	CXXFLAGS += -g
 else
-	CXXFLAGS += -O3
+	CXXFLAGS += -O4
 endif
 
 LIBS 	    += -L./lib/linux/irrlicht -lIrrlicht -Wl,-rpath=lib/linux/irrlicht
