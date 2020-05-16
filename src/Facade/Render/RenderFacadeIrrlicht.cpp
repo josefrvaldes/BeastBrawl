@@ -258,7 +258,7 @@ void RenderFacadeIrrlicht::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* g
     //            core::rect<s32>(200, 55, 300, 200),
     //            video::SColor(255, 0, 0, 0));
     //Dibujamos powerUp
-    driver->draw2DImage(powerUps[currentPowerUp], core::position2d<s32>(50, 50),
+    driver->draw2DImage(powerUps[currentPowerUp], core::position2d<s32>(50, 25),
                         core::rect<s32>(0, 0, 125, 125), 0,
                         video::SColor(255, 255, 255, 255), true);
 
