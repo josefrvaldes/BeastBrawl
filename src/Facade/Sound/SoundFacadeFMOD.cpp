@@ -289,26 +289,27 @@ void SoundFacadeFMOD::SubscribeToGameEvents(const uint8_t numState) {
 void SoundFacadeFMOD::LoadSoundByState(const uint8_t numState) {
     switch (numState) {
         case 0:         // INTRO
-            //soundEngine->UnloadAllBanks();
-            //StopEvent("Musica/menu");
             LoadSoundBank("Menu", 0);
             LoadSoundBank("Musica", 0);
             PlayEvent("Musica/intro");
-            /*if (!soundEngine->IsPlaying2D("Musica/menu")) {
-                PlayEvent("Musica/menu");
-            }*/
             break;
         case 1:         // MENU
             StopEvent("Musica/fin_partida");
             if(!soundEngine->IsPlaying2D("Musica/menu")) {
-                ResumeAllEvent();
-                StopAllEvents();            //Esto me esta jodiendo el aceptar del PAUSE y ENDRACE. Se arreglaria dandole un tiempecito al volver.
+                //ResumeAllEvent();
+                //StopAllEvents();            //Esto me esta jodiendo el aceptar del PAUSE y ENDRACE. Se arreglaria dandole un tiempecito al volver.
+                soundEngine->UnloadAllBanks();
+                LoadSoundBank("Menu", 0);
+                LoadSoundBank("Musica", 0);
                 PlayEvent("Musica/menu");
             }
             break;
         case 2:         // SELECCION PERSONAJE
             StopEvent("Musica/fin_partida");
             if(!soundEngine->IsPlaying2D("Musica/menu")) {
+                soundEngine->UnloadAllBanks();
+                LoadSoundBank("Menu", 0);
+                LoadSoundBank("Musica", 0);
                 PlayEvent("Musica/menu");
             }
             LoadSoundBank("InGame2D", 0);
@@ -326,7 +327,6 @@ void SoundFacadeFMOD::LoadSoundByState(const uint8_t numState) {
             break;
         case 5:         // ENDRACE
             LoadSoundBank("EndRace", 0);
-            //PlayEvent("Musica/fin_partida");
             SoundVictoryVoice();
             break;
         /*case 6:       // LOBBY
