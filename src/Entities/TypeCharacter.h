@@ -24,11 +24,11 @@ std::string meshCar(TypeAnimal type) {
       case PENGUIN:
          return "kart_penguin.obj";
       case TIGER:
-         return "kart_baxter.obj";
+         return "mrsbaxter.obj";
       case SHARK:
          return "kart_sharky.obj";
       case GORILLA:
-         return "kart_kong.obj";
+         return "kaiserkong.obj";
       case DRAGON:
          return "kart_deacon.obj";
       case OCTOPUS:

@@ -255,7 +255,6 @@ bool CLResourceManager::DeleteResourceTexture(const std::string file){
         }
     }
 
-    
     return false;
 }
 
