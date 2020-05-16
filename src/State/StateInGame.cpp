@@ -182,9 +182,9 @@ void StateInGame::InitializeManagers() {
     // Es raro pero diria que aqui tengo que ir añadiendo sistemas de particulas
     // Añadimos las particulas a todas las cajas
     vector<string> puParticles;
-    puParticles.push_back("media/estrellaRoja.png");
-    //puParticles.push_back("media/particleYellowStar.png");
-    puParticles.push_back("media/trianguloRojo.png");
+    puParticles.push_back("media/particleTriangleBrown.png");
+    puParticles.push_back("media/particleStarMarron.png");
+    puParticles.push_back("media/particleYellowStar.png");
     for (auto boxPowerUp : manBoxPowerUps->GetEntities()) {
         auto cId = static_cast<CId *>(boxPowerUp->GetComponent(CompType::IdComp).get());
         manParticleSystem->CreateParticleSystem(cId->id, glm::vec3(0.0f, 0.0f, 0.0f), 30, glm::vec3(200.0f, 400.0f, 200.0f), puParticles, 5, 5, 100, 30, 150, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), 0, 0x1 | 0x4, false, false);
@@ -195,7 +195,7 @@ void StateInGame::InitializeManagers() {
     totemParticles.push_back("media/totemShiny.png");
     for (auto totem : manTotems->GetEntities()) {
         auto cId = static_cast<CId *>(totem->GetComponent(CompType::IdComp).get());
-        manParticleSystem->CreateParticleSystem(cId->id, glm::vec3(0.0f, 0.0f, 0.0f), 100, glm::vec3(0.0f, 300.0f, 0.0f), totemParticles, 5, 5, 100, 2, 2000, glm::vec3(10.0f, 0.0f, 10.0f), glm::vec3(0.0f, 0.0f, 0.0f), 0, 0x4, true, true);
+        manParticleSystem->CreateParticleSystem(cId->id, glm::vec3(0.0f, 0.0f, 0.0f), 100, glm::vec3(0.0f, 300.0f, 0.0f), totemParticles, 6, 6, 100, 2, 2000, glm::vec3(10.0f, 0.0f, 10.0f), glm::vec3(0.0f, 0.0f, 0.0f), 0, 0x4, true, true);
     }
 }
 

@@ -128,6 +128,11 @@ void SharpEngine::UnloadAllBanks() {
     }
     banks.clear();
     std::cout << "***** Bancos y sonidos liberados" << endl;
+    //std::cout << "   ** EventInstances2D: " << eventInstances2D.size() << endl;
+    //std::cout << "   ** EventInstances3DE: " << eventInstancesEstatic3D.size() << endl;
+    //std::cout << "   ** EventInstances3DD: " << eventInstancesDinamic3D.size() << endl;
+    //std::cout << "   ** Descriptions: " << soundDescriptions.size() << endl;
+    //std::cout << "   ** Banks: " << banks.size() << endl;
 }
 
 /**

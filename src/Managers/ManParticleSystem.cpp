@@ -70,12 +70,13 @@ void ManParticleSystem::CreateParticlePowerUpCollision(DataMap* data){
             break;
         case typeCPowerUp::TeleBanana:
             texturePs2.push_back("media/particleYellowTriangle.png");
-            texturePs2.push_back("media/particleRedStar.png");
+            texturePs2.push_back("media/particleYellowStar.png");
             texturePs2.push_back("media/particleTriangleGrey.png");
             break;
         
         case typeCPowerUp::PudinDeFrambuesa:
             texturePs2.push_back("media/particleStarMarron.png");
+            texturePs2.push_back("media/particleTriangleBrown.png");
             texturePs2.push_back("media/particleYellowStar.png");
             texturePs2.push_back("media/particleRedTriangle.png");
             texturePs2.push_back("media/particleYellowTriangle.png");
