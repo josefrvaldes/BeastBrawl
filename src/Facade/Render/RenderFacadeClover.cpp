@@ -882,7 +882,7 @@ void RenderFacadeClover::FacadeInitControler() {
 
 void RenderFacadeClover::FacadeInitCredits() {
     if(!creditsAnimation){
-        creditsAnimation = make_unique<Animation2D>("media/animacionCreditos/creditos.jpg",961,60);
+        creditsAnimation = make_unique<Animation2D>("media/animacionCreditos/creditos.jpg",1927,60);
         creditsAnimation->Start();
         creditsAnimation->Restart();
     }else{
