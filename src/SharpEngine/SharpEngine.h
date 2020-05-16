@@ -45,7 +45,7 @@ namespace CLSE {
             void SetParameter(const string&, const string&, const float);
             void SetListenerPosition(const glm::vec3&, const glm::vec3&);
             void Set3DAttributes(const string&, const glm::vec3&, const float);
-            void SetEventPosition3D(FMOD_STUDIO_EVENTINSTANCE*, const glm::vec3&, const float);
+            void SetEventPosition3D( const string&, FMOD_STUDIO_EVENTINSTANCE*, const glm::vec3&, const float);
             void SetMusicVolume(float mv);
             void SetGlobalVolume(float gv);
             void SetVolume(FMOD_STUDIO_EVENTINSTANCE*, float);

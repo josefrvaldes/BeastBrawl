@@ -132,6 +132,17 @@ class RenderFacadeClover : public RenderFacade {
       bool FacadeOctreeInCamera(float size, const glm::vec3& pos) override {return device->OctreeIncamera(size, pos);};
       void FacadeSetOctreeVisibleById(unsigned int id, bool v) override {device->SetOctreeVisibleById(id, v);};
 
+
+
+      void FacadeReleaseSelectCharacter() override;
+      void FacadeReleaseOptions() override;
+      void FacadeReleaseSettings() override;
+      void FacadeReleaseStateInGame() override;
+      void FacadeReleaseMenu() override;
+      void FacadeReleaseTournament() override;
+
+
+
       float FacadeGetFovActualCamera() override { return device->GetFovActualCamera(); };
       glm::vec3 FacadeGetTargetActualCamera() override { return device->GetTargetActualCamera(); };
       glm::vec3 FacadeGetPositionActualCamera() override { return device->GetPositionActualCamera(); };
@@ -185,7 +196,20 @@ class RenderFacadeClover : public RenderFacade {
                                           "Utiliza el Robo Jorobo para robar el totem!",
                                           "Utiliza el Escudo Merluzo para protegerte!",
                                           "Lanza el Pudin para que otro coche resbale!",
-                                          "Busca el totem, cogelo y escapa de los demas!"};
+                                          "Busca el totem, cogelo y escapa de los demas!",
+                                          "Cada personaje tiene diferentes propiedades!",
+                                          "Impacta con el Supermeganitro y roba el totem!",
+                                          "Recuerda usar el derrape para moverte mejor!",
+                                          "Perderas el Robo Jorobo si ya tienes el totem!",
+                                          "Recuerda mirar el minimapa, puede serte util!",
+                                          "Oculta partes del HUD para mayor inmersion!",
+                                          "Hay hasta 6 power-ups diferentes disponibles",
+                                          "La Telebanana es un proyectil teledirigido!",
+                                          "Recuerda que lo mas importante es divertirse!",
+                                          };
+
+      // Gamepad
+      bool gamepadConnected { false };
 
       // En juego
       bool inputShowTable { true };

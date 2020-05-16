@@ -18,6 +18,8 @@ class InputFacadeClover : public InputFacade{
         InputFacadeClover();
         ~InputFacadeClover() override = default;
 
+        bool IsConectedGamepad() override;
+
         void CheckInputIntro() override;
         void CheckInputMenu(int&, int)    override;
 
@@ -56,6 +58,8 @@ class InputFacadeClover : public InputFacade{
         void CheckInputSelCharLeft(int&, int);
         void CheckInputSelCharRight(int&, int);
         void CheckInputSelCharIntro(int&);
+
+        bool CheckAnyKey();
 
         CLEngine* device;
 

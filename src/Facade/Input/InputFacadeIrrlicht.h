@@ -52,6 +52,7 @@ class InputFacadeIrrlicht : public InputFacade{
     public:
         InputFacadeIrrlicht();
         ~InputFacadeIrrlicht() override = default;
+        bool IsConectedGamepad() override { return false; };
         vector<Constants::InputTypes> CheckInputMulti() override;
         bool ShowTable(bool inputTable) override { return inputTable;};
         void ShowTable(Constants::ShowTableMinimap&) override {};

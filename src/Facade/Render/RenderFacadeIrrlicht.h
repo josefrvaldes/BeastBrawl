@@ -133,6 +133,15 @@ class RenderFacadeIrrlicht : public RenderFacade {
     bool FacadeOctreeInCamera(float size, const glm::vec3& pos) override {return true;};
     void FacadeSetOctreeVisibleById(unsigned int id, bool v) override {};
 
+
+    void FacadeReleaseSelectCharacter() override {};
+    void FacadeReleaseOptions() override {};
+    void FacadeReleaseSettings() override {};
+    void FacadeReleaseStateInGame() override {};
+    void FacadeReleaseMenu() override {};
+    void FacadeReleaseTournament() override {};
+
+
     float FacadeGetFovActualCamera() override {return 0;};
     glm::vec3 FacadeGetTargetActualCamera() override {return glm::vec3(0.0);};
     glm::vec3 FacadeGetPositionActualCamera() override {return glm::vec3(0.0);};

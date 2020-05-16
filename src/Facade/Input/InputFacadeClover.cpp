@@ -1,3 +1,9 @@
+/**
+ * MENSAJE DE JUDITH: Yo soy la responsable de que toda esta logica este aqui.
+ * En algun momento pense que esto estaba bien y lo continue. No es asi. Pero ya ha estalado demasiado
+ * y no queda tiempo. Si esto baja la nota, que sea solo a mi y bien merecido.
+ */
+
 #include "InputFacadeClover.h"
 
 #include <Components/CId.h>
@@ -31,6 +37,17 @@ InputFacadeClover::InputFacadeClover(){
         inputsPressed.emplace(static_cast<InputXBox>(i), false);
     }
 
+}
+
+
+/**
+ * Comprueba si hay un mando conectado
+ */
+bool InputFacadeClover::IsConectedGamepad() {
+    if (glfwJoystickPresent(GLFW_JOYSTICK_1) && glfwJoystickIsGamepad(GLFW_JOYSTICK_1)) {
+        return true;
+    }
+    return false;
 }
 
 
@@ -133,7 +150,7 @@ void InputFacadeClover::CheckInputIntro(){
     }
 
     //ENTRAR
-    if ( (IsKeyPress(GLFW_KEY_ENTER) || IsKeyPress(GLFW_KEY_SPACE) || IsGamepadPress(GLFW_GAMEPAD_BUTTON_A)) && HasDelayPassed() && !IsInputPressed(BUTTON_A) ) {
+    if ( (IsKeyPress(GLFW_KEY_ENTER) || IsKeyPress(GLFW_KEY_SPACE) || CheckAnyKey() || IsGamepadPress(GLFW_GAMEPAD_BUTTON_A)) && HasDelayPassed() && !IsInputPressed(BUTTON_A) ) {
 
         timeStart = system_clock::now();
         SetValueInput(BUTTON_A, true);
@@ -998,7 +1015,12 @@ void InputFacadeClover::CheckInputEndRace(int& input, int maxInput, bool menu){
                 switch(input) {
                     case 0: {
                         if (multiplayer) {
-                            EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_LOBBYMULTI});
+                            WeHaveToGoToMenu = true;
+                            timerGoToMenu = Utils::getMillisSinceEpoch();
+                            RenderFacadeManager::GetInstance()->GetRenderFacade()->ResetInputGameOptions();
+                            RenderFacadeManager::GetInstance()->GetRenderFacade()->ResetInputCharacter();
+                            vector<uint8_t> vacio;
+                            GameValues::GetInstance()->SetCharacterSel(vacio);
                         } else {
                             //Manera un poco cutre de resetear el CId al empezar el juego
                             RenderFacadeManager::GetInstance()->GetRenderFacade()->SetNumEnemyCars(0);
@@ -1008,15 +1030,11 @@ void InputFacadeClover::CheckInputEndRace(int& input, int maxInput, bool menu){
                             auto cNavMesh = make_shared<CNavMesh>();
                             cNavMesh->ResetNumIds();
                             EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_INGAMESINGLE});
-                            break;
                         }
+                        break;
                     }
                     case 1: {
-                        if (multiplayer) 
-                            EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_LOBBYMULTI});
-                        else
-                            EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_SELECT_CHARACTER});
-                        //TODO: ¿Deberia resetear al volver al comenzar o al volver al menú?
+                        EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_SELECT_CHARACTER});
                         break;
                     }
                     case 2: {
@@ -1024,6 +1042,8 @@ void InputFacadeClover::CheckInputEndRace(int& input, int maxInput, bool menu){
                         timerGoToMenu = Utils::getMillisSinceEpoch();
                         RenderFacadeManager::GetInstance()->GetRenderFacade()->ResetInputGameOptions();
                         RenderFacadeManager::GetInstance()->GetRenderFacade()->ResetInputCharacter();
+                        vector<uint8_t> vacio;
+                        GameValues::GetInstance()->SetCharacterSel(vacio);
                         break;
                     }
                 }
@@ -1045,8 +1065,11 @@ void InputFacadeClover::CheckInputEndRace(int& input, int maxInput, bool menu){
                 if (input < 0) {
                     input = maxInput;
                 }
-                SetValueInput(BUTTON_STICK_UP, true);
-                EventManager::GetInstance().AddEventMulti(Event{EventType::MENU_OPTION});
+                if (multiplayer) { input = 0; }
+                else {
+                    SetValueInput(BUTTON_STICK_UP, true);
+                    EventManager::GetInstance().AddEventMulti(Event{EventType::MENU_OPTION});
+                }
             } else if ( !IsKeyOrGamepadPress(GLFW_KEY_UP, GLFW_GAMEPAD_AXIS_LEFT_Y, true, -0.5, GLFW_GAMEPAD_BUTTON_DPAD_UP, true) ){
                 SetValueInput(BUTTON_STICK_UP, false);
             }
@@ -1059,8 +1082,11 @@ void InputFacadeClover::CheckInputEndRace(int& input, int maxInput, bool menu){
                 if(input > maxInput) {
                     input = 0;
                 }
-                SetValueInput(BUTTON_STICK_DOWN, true);
-                EventManager::GetInstance().AddEventMulti(Event{EventType::MENU_OPTION});
+                if (multiplayer) { input = 0; }
+                else {
+                    SetValueInput(BUTTON_STICK_DOWN, true);
+                    EventManager::GetInstance().AddEventMulti(Event{EventType::MENU_OPTION});
+                }
             } else if ( !IsKeyOrGamepadPress(GLFW_KEY_DOWN, GLFW_GAMEPAD_AXIS_LEFT_Y, true, 0.5, GLFW_GAMEPAD_BUTTON_DPAD_DOWN, true) ){
                 SetValueInput(BUTTON_STICK_DOWN, false);
             }
@@ -1411,5 +1437,14 @@ void InputFacadeClover::ChangeSettings(int option, int value) {
         default:
             cout << "Esta opcion de ajustes no me gusta" << endl;
             break;
+    }
+}
+
+
+bool InputFacadeClover::CheckAnyKey(){
+    if(IsKeyPress(GLFW_KEY_Q) || IsKeyPress(GLFW_KEY_W) || IsKeyPress(GLFW_KEY_E) || IsKeyPress(GLFW_KEY_R) || IsKeyPress(GLFW_KEY_T) || IsKeyPress(GLFW_KEY_Y) || IsKeyPress(GLFW_KEY_U) || IsKeyPress(GLFW_KEY_I) || IsKeyPress(GLFW_KEY_O) || IsKeyPress(GLFW_KEY_P) || IsKeyPress(GLFW_KEY_A) || IsKeyPress(GLFW_KEY_S) || IsKeyPress(GLFW_KEY_D) || IsKeyPress(GLFW_KEY_F) || IsKeyPress(GLFW_KEY_G) || IsKeyPress(GLFW_KEY_H) || IsKeyPress(GLFW_KEY_J) || IsKeyPress(GLFW_KEY_K) || IsKeyPress(GLFW_KEY_L) || IsKeyPress(GLFW_KEY_Z) || IsKeyPress(GLFW_KEY_X) || IsKeyPress(GLFW_KEY_C) || IsKeyPress(GLFW_KEY_V) || IsKeyPress(GLFW_KEY_B) || IsKeyPress(GLFW_KEY_N) || IsKeyPress(GLFW_KEY_M) || IsKeyPress(GLFW_KEY_1) || IsKeyPress(GLFW_KEY_2) || IsKeyPress(GLFW_KEY_3) || IsKeyPress(GLFW_KEY_4) || IsKeyPress(GLFW_KEY_5) || IsKeyPress(GLFW_KEY_6) || IsKeyPress(GLFW_KEY_7) || IsKeyPress(GLFW_KEY_8) || IsKeyPress(GLFW_KEY_9) || IsKeyPress(GLFW_KEY_0)){
+        return true;
+    }else{
+        return false;
     }
 }

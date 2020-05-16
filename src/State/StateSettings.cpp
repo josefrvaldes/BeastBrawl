@@ -36,3 +36,7 @@ void StateSettings::Input(){
 void StateSettings::Update(){
     EventManager::GetInstance().Update();
 }
+
+StateSettings::~StateSettings(){
+    renderEngine->FacadeReleaseSettings();
+}

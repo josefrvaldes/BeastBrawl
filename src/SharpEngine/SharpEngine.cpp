@@ -523,20 +523,25 @@ void SharpEngine::SetParameter(const string& nameID, const string& nameParameter
  */
 void SharpEngine::SetListenerPosition(const glm::vec3 &pos, const glm::vec3 &rot) {
 
-    //float rad = glm::radians(rot.y);
-    FMOD_VECTOR vec;
-    vec.x = pos.x*0.05;
-    vec.y = pos.y*0.05;
-    vec.z = pos.z*0.05;
+    if (!std::isnan(pos.x) && !std::isnan(pos.y) && !std::isnan(pos.z) && !std::isnan(rot.y)) {
+        //float rad = glm::radians(rot.y);
+        FMOD_VECTOR vec;
+        vec.x = pos.x*0.05;
+        vec.y = pos.y*0.05;
+        vec.z = pos.z*0.05;
 
-    FMOD_3D_ATTRIBUTES atr;
-    atr.position = {vec};
-    //TODO: Hay que cambiar la direccion boys y poniento la rotación tal cual no funsiona, seguramente porque habrá que cambiar también el UP
-    atr.forward = {glm::cos(glm::radians(rot.y)), 0.0, -glm::sin(glm::radians(rot.y))};
-    atr.up = {0.0, 1.0, 0.0};
-    atr.velocity = {0.0, 0.0, 0.0}; // Para el senior efecto Doppler
-    //std::cout << "El forward es: " << glm::cos(glm::radians(rot.y)) << " - " << glm::sin(glm::radians(rot.y)) << std::endl;
-    ERRFMODCHECK(FMOD_Studio_System_SetListenerAttributes(system, 0, &atr));
+        FMOD_3D_ATTRIBUTES atr;
+        atr.position = {vec};
+        //TODO: Hay que cambiar la direccion boys y poniento la rotación tal cual no funsiona, seguramente porque habrá que cambiar también el UP
+        atr.forward = {glm::cos(glm::radians(rot.y)), 0.0, -glm::sin(glm::radians(rot.y))};
+        atr.up = {0.0, 1.0, 0.0};
+        atr.velocity = {0.0, 0.0, 0.0}; // Para el senior efecto Doppler
+        //std::cout << "El forward es: " << glm::cos(glm::radians(rot.y)) << " - " << glm::sin(glm::radians(rot.y)) << std::endl;
+        ERRFMODCHECK(FMOD_Studio_System_SetListenerAttributes(system, 0, &atr));
+    } else if ( std::isnan(pos.x) || std::isnan(pos.y) || std::isnan(pos.z) || std::isnan(rot.y)) {
+        cout << "******* LA POSICION O ROTACION DEL LISTENER HA RECIBIDO UN NaN: [Posicion] " << pos.x << " - " << pos.y << " - " << pos.z << " [Rotacion] " << rot.y << endl;
+        //terminate();
+    }
 }
 
 
@@ -545,8 +550,8 @@ void SharpEngine::SetListenerPosition(const glm::vec3 &pos, const glm::vec3 &rot
  * Se cambia la posicion desde donde se escucha un sonido.
  * TODO: Aqui solo se cambia la posicion, para el efecto Doppler hace falta la velocidad. Creo que hay mas cosas a parte.
  */
-void SharpEngine::SetEventPosition3D(FMOD_STUDIO_EVENTINSTANCE * i, const glm::vec3& pos, const float vel) {
-    if (i) {
+void SharpEngine::SetEventPosition3D(const string &nameEvent, FMOD_STUDIO_EVENTINSTANCE * i, const glm::vec3& pos, const float vel) {
+    if (!std::isnan(pos.x) && !std::isnan(pos.y) && !std::isnan(pos.z) && !std::isnan(vel) && i) {
         FMOD_VECTOR vec;
         vec.x = pos.x*0.05;
         vec.y = pos.y*0.05;
@@ -559,6 +564,9 @@ void SharpEngine::SetEventPosition3D(FMOD_STUDIO_EVENTINSTANCE * i, const glm::v
         atr.velocity = {vel*0.1f, vel*0.1f, vel*0.1f}; // Para el senior efecto Doppler
 
         ERRFMODCHECK( FMOD_Studio_EventInstance_Set3DAttributes(i, &atr));
+    } else if ( std::isnan(pos.x) || std::isnan(pos.y) || std::isnan(pos.z) || std::isnan(vel)) {
+        cout << "******* ME HA LLEGADO UN VALOR NaN EN EL EVENTO " << nameEvent << ": [Posicion] " << pos.x << " - " << pos.y << " - " << pos.z << " [Velocidad] " << vel << endl;
+        //terminate();
     }
 }
 
@@ -568,14 +576,14 @@ void SharpEngine::SetEventPosition3D(FMOD_STUDIO_EVENTINSTANCE * i, const glm::v
  * @param pos - Posicion a la que hay que poner el sonido.
  */
 void SharpEngine::Set3DAttributes(const string &nameEvent, const glm::vec3 &pos, const float vel) {
-    //cout << "QUIERO CAMBIARLE LOS PARAMETROS 3D A " << nameEvent << " - POS: " << pos.x << " - " << pos.y << " - " << pos.z << " - VEL: " << vel << endl;
+    //cout << "QUIERO CAMBIARLE LOS PARAMETROS 3D A " << nameEvent << " - POS: [" << &pos << "] " << pos.x << " - " << pos.y << " - " << pos.z << " - VEL: " << vel << endl;
     auto it = eventInstancesEstatic3D.find(nameEvent);
     if (it != eventInstancesEstatic3D.end()) {
-        SetEventPosition3D(it->second->GetInstance(), pos, vel);
+        SetEventPosition3D(nameEvent, it->second->GetInstance(), pos, vel);
     } else {
         it = eventInstancesDinamic3D.find(nameEvent);
         if (it != eventInstancesDinamic3D.end()) {
-            SetEventPosition3D(it->second->GetInstance(), pos, vel);
+            SetEventPosition3D(nameEvent, it->second->GetInstance(), pos, vel);
         }
     }
 }
@@ -609,7 +617,7 @@ void SharpEngine::CreateSoundNodeEstatic3D(uint16_t idE, glm::vec3& p, string& n
         ERRFMODCHECK( FMOD_Studio_EventDescription_CreateInstance(description->second, &instance));
         snode->SetInstance(*instance);
         eventInstancesEstatic3D[name] = move(snode);
-        SetEventPosition3D(eventInstancesEstatic3D[name].get()->GetInstance(), p, 0.0);
+        SetEventPosition3D(name, eventInstancesEstatic3D[name].get()->GetInstance(), p, 0.0);
         if (play) {
             PlayEvent(name);
         }

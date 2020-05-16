@@ -44,6 +44,7 @@ enum EventType {
     INIT_PARTICLES_BOX,
     CHANGE_PARTICLES_VISIBILITY,
     CREATE_PARTICLES_COLLISION_POWERUP,
+    CREATE_PARTICLES_ROBOJOROBO,
     COLLISION_PLAYER_TOTEM,
     COLLISION_AI_TOTEM,
     PowerUp_Create,
@@ -80,6 +81,7 @@ enum EventType {
     CRASH_WALL,                 // Sonido golpe con pared
     BREAK_BOX,                  // Sonido romper caja
     DRIFT,
+    DRIFTS,
     NO_DRIFT,
     VRANDOM,                    // Que el personaje hable en la seleccion
     UPDATE_SOUNDCHARACTER,      // Updatear el personaje que habla

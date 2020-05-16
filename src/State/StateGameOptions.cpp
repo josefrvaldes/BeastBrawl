@@ -37,3 +37,7 @@ void StateGameOptions::Input(){
 void StateGameOptions::Update(){
     EventManager::GetInstance().Update();
 }
+
+StateGameOptions::~StateGameOptions(){
+    renderEngine->FacadeReleaseOptions();
+}

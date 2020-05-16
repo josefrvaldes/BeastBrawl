@@ -37,3 +37,7 @@ void StateTournamentOptions::Input(){
 void StateTournamentOptions::Update(){
     EventManager::GetInstance().Update();
 }
+
+StateTournamentOptions::~StateTournamentOptions(){
+    renderEngine->FacadeReleaseTournament();
+}

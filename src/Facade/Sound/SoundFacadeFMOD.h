@@ -144,7 +144,8 @@ class SoundFacadeFMOD : public SoundFacade {
                                 "Musica/fin_partida",
                                 "Musica/in_game_1",
                                 "Musica/intro",
-                                "Musica/menu"
+                                "Musica/menu",
+                                "Musica/credits"
                                 }
             }
         };

@@ -11,7 +11,7 @@
 class StateTournamentOptions : public State {
     public:
         StateTournamentOptions();
-        ~StateTournamentOptions() override = default;
+        ~StateTournamentOptions();
         void Input() override;
         void InitState() override;
         void Update() override;

@@ -9,7 +9,7 @@
 class StateSettings : public State {
 public:
     StateSettings();
-    ~StateSettings() override = default;
+    ~StateSettings() override;
     void Input() override;
     void InitState() override;
     void Update() override;

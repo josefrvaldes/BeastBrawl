@@ -952,8 +952,10 @@ void RenderFacadeClover::FacadeInitResources(){
     std::string file = "media/menu/loading_screen.png";
     device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
 
-    int indx = Utils::getRandomInt(0,tipsTexts.size()-1);
-    device->RenderText2D(tipsTexts.at(indx), device->GetScreenWidth()/2 - 100.0f*scale, device->GetScreenHeight()/2,0.5f, scale,glm::vec3(1.0f,1.0f,1.0f));
+    int64_t time = Utils::getMicrosSinceEpoch();
+    int indx = time % tipsTexts.size()-1;
+
+    device->RenderText2D(tipsTexts.at(indx), device->GetScreenWidth()/2 - 125.0f*scale, device->GetScreenHeight()/2,0.5f, scale,glm::vec3(1.0f,1.0f,1.0f));
     FacadeEndScene();
 
     //Cargamos todas las mallas
@@ -966,6 +968,10 @@ void RenderFacadeClover::FacadeInitResources(){
     resourceManager->GetResourceMesh("media/pudin.obj");
     resourceManager->GetResourceMesh("media/telebanana.obj");
     resourceManager->GetResourceMesh("media/training_ground.obj");
+
+    // resourceManager->LoadResourceAnimation("media/animations/cyberoctopus/damage/damageoctopus_000001.obj", 35, false);
+
+
 
     //HUD
     currentPowerUp = 0;
@@ -992,8 +998,12 @@ void RenderFacadeClover::FacadeInitResources(){
     resourceManager->GetResourceTexture("media/hudGorilla.png", true);
     resourceManager->GetResourceTexture("media/hudDragon.png", true);
     resourceManager->GetResourceTexture("media/hudOctopus.png", true);
+
+    resourceManager->GetResourceTexture("media/totemCogido.png", true);
+    resourceManager->GetResourceTexture("media/totemSuelo.png", true);
     resourceManager->GetResourceTexture("media/marcador.png", true);
     resourceManager->GetResourceTexture("media/Minimapa240v2.png", true);
+
     //Events hud
     resourceManager->GetResourceTexture("media/stoleHUD.png", true);
     resourceManager->GetResourceTexture("media/loseHUD.png", true);
@@ -1014,14 +1024,7 @@ void RenderFacadeClover::FacadeInitIntro() {
 
 void RenderFacadeClover::FacadeInitMenu() {
 
-    resourceManager->GetResourceTexture("media/menu/main_menu.png", true);
-    resourceManager->GetResourceTexture("media/menu/elements_menu.png", true);
-    resourceManager->GetResourceTexture("media/menu/partidarapida_hover.png", true);
-    resourceManager->GetResourceTexture("media/menu/multijugador_hover.png", true);
-    resourceManager->GetResourceTexture("media/menu/controles_hover.png", true);
-    resourceManager->GetResourceTexture("media/menu/creditos_hover.png", true);
-    resourceManager->GetResourceTexture("media/menu/ajustes_hover.png", true);
-    resourceManager->GetResourceTexture("media/menu/salir_hover.png", true);
+    //Que se cargen poco a poco cuando se van usando o tarda mucho
     
 }
 
@@ -1045,42 +1048,54 @@ void RenderFacadeClover::FacadeInitSelectCharacter() {
     auto shader = resourceManager->GetResourceShader("CLEngine/src/Shaders/basicShader.vert","CLEngine/src/Shaders/basicShader.frag");
 
     //Penguin
-    mesh = device->AddMesh(smgr,0,"media/thepenguin_selection.obj");
+    auto animationPen = resourceManager->GetResourceAnimation("media/animations/penguin/selection/selectionpenguin_000001.obj", 30, false);
+    mesh = device->AddMesh(smgr,0);
+    static_cast<CLMesh*>(mesh->GetEntity())->SetAnimation(animationPen);
     mesh->SetScalation(glm::vec3(2.0f));
     mesh->SetTranslation(glm::vec3(0.0f,-14.0f,-20.0f));
     mesh->SetRotation(glm::vec3(10.0f,-50.0f, 5.0f));
     mesh->SetShaderProgramID(shader->GetProgramID());
 
     //Tiger
-    mesh = device->AddMesh(smgr,1,"media/mrsbaxter_selection.obj");
+    auto animationTig = resourceManager->GetResourceAnimation("media/animations/penguin/selection/selectionpenguin_000001.obj", 30, false);
+    mesh = device->AddMesh(smgr,1);
+    static_cast<CLMesh*>(mesh->GetEntity())->SetAnimation(animationTig);
     mesh->SetScalation(glm::vec3(2.0f));
     mesh->SetTranslation(glm::vec3(0.0f,-14.0f,-20.0f));
     mesh->SetRotation(glm::vec3(10.0f,-50.0f, 5.0f));
     mesh->SetShaderProgramID(shader->GetProgramID());
 
     //Shark
-    mesh = device->AddMesh(smgr,2,"media/captainsharky_selection.obj");
+    auto animationSha = resourceManager->GetResourceAnimation("media/animations/dragon/selection/selectiondragon_000001.obj", 30, false);
+    mesh = device->AddMesh(smgr,2);
+    static_cast<CLMesh*>(mesh->GetEntity())->SetAnimation(animationSha);
     mesh->SetScalation(glm::vec3(2.0f));
     mesh->SetTranslation(glm::vec3(0.0f,-14.0f,-20.0f));
     mesh->SetRotation(glm::vec3(10.0f,-50.0f, 5.0f));
     mesh->SetShaderProgramID(shader->GetProgramID());
 
     //Gorila
-    mesh = device->AddMesh(smgr,3,"media/kaiserkong_selection.obj");
+    auto animationKong = resourceManager->GetResourceAnimation("media/animations/kong/selection/selectionkong_000001.obj", 30, false);
+    mesh = device->AddMesh(smgr,3);
+    static_cast<CLMesh*>(mesh->GetEntity())->SetAnimation(animationKong);
     mesh->SetScalation(glm::vec3(2.0f));
     mesh->SetTranslation(glm::vec3(0.0f,-14.0f,-20.0f));
     mesh->SetRotation(glm::vec3(10.0f,-50.0f, 5.0f));
     mesh->SetShaderProgramID(shader->GetProgramID());
 
     //Dragon
-    mesh = device->AddMesh(smgr,4,"media/deacondragon_selection.obj");
+    auto animationDra = resourceManager->GetResourceAnimation("media/animations/dragon/selection/selectiondragon_000001.obj", 30, false);
+    mesh = device->AddMesh(smgr,4);
+    static_cast<CLMesh*>(mesh->GetEntity())->SetAnimation(animationDra);
     mesh->SetScalation(glm::vec3(2.0f));
     mesh->SetTranslation(glm::vec3(0.0f,-14.0f,-20.0f));
     mesh->SetRotation(glm::vec3(10.0f,-50.0f, 5.0f));
     mesh->SetShaderProgramID(shader->GetProgramID());
 
     //Octopus
-    mesh = device->AddMesh(smgr,5,"media/cyberoctopus_selection.obj");
+    auto animationCyb = resourceManager->GetResourceAnimation("media/animations/cyberoctopus/selection/selectionoctopus_000001.obj", 31, false);
+    mesh = device->AddMesh(smgr,5);
+    static_cast<CLMesh*>(mesh->GetEntity())->SetAnimation(animationCyb);
     mesh->SetScalation(glm::vec3(2.0f));
     mesh->SetTranslation(glm::vec3(0.0f,-14.0f,-20.0f));
     mesh->SetRotation(glm::vec3(10.0f,-50.0f, 5.0f));
@@ -1088,31 +1103,27 @@ void RenderFacadeClover::FacadeInitSelectCharacter() {
 
 
     //IMGs
-    resourceManager->GetResourceTexture("media/menu/character_selector.png", true);
-    resourceManager->GetResourceTexture("media/menu/kong_selected.png", true);
-    resourceManager->GetResourceTexture("media/menu/sharky_selected.png", true);
-    resourceManager->GetResourceTexture("media/menu/penguin_selected.png", true);
-    resourceManager->GetResourceTexture("media/menu/baxter_selected.png", true);
-    resourceManager->GetResourceTexture("media/menu/deacon_selected.png", true);
-    resourceManager->GetResourceTexture("media/menu/octopus_selected.png", true);
+    //Que se cargen poco a poco cuando se van usando o tarda mucho
 
 }
 
 void RenderFacadeClover::FacadeInitGameOptions() {
 
+    //Que se cargen poco a poco cuando se van usando o tarda mucho
+    
 }
 
 void RenderFacadeClover::FacadeInitTournamentOptions() {
-
+    //Que se cargen poco a poco cuando se van usando o tarda mucho
 }
 
 void RenderFacadeClover::FacadeInitControler() {
-
+    //Que se cargen poco a poco cuando se van usando o tarda mucho
 }
 
 void RenderFacadeClover::FacadeInitCredits() {
     if(!creditsAnimation){
-        creditsAnimation = make_unique<Animation2D>("media/animacionCreditos/creditos.jpg",961,60);
+        creditsAnimation = make_unique<Animation2D>("media/animacionCreditos/creditos.jpg",1927,60);
         creditsAnimation->Start();
         creditsAnimation->Restart();
     }else{
@@ -1127,6 +1138,8 @@ void RenderFacadeClover::FacadeInitCredits() {
 }
 
 void RenderFacadeClover::FacadeInitPause() {
+    
+    //Que se cargen poco a poco cuando se van usando o tarda mucho
 }
 
 void RenderFacadeClover::FacadeInitEndRace() {
@@ -1212,7 +1225,9 @@ void RenderFacadeClover::FacadeInitHUD() {
 }
 
 void RenderFacadeClover::FacadeInitSettings() {
-    resourceManager->GetResourceTexture("media/settings.png", true);
+    
+    //Que se cargen poco a poco cuando se van usando o tarda mucho
+
 }
 
 
@@ -1240,22 +1255,27 @@ void RenderFacadeClover::FacadeCheckInputIntro() {
 
 void RenderFacadeClover::FacadeCheckInputMenu() {
     InputFacadeManager::GetInstance()->GetInputFacade()->CheckInputMenu(inputMenu, maxInputMenu);
+    gamepadConnected = InputFacadeManager::GetInstance()->GetInputFacade()->IsConectedGamepad();
 }
 
 void RenderFacadeClover::FacadeCheckInputSelectCharacter() {
     InputFacadeManager::GetInstance()->GetInputFacade()->CheckInputSelectCharacter(inputSC, maxInputSC);
+    gamepadConnected = InputFacadeManager::GetInstance()->GetInputFacade()->IsConectedGamepad();
 }
 
 void RenderFacadeClover::FacadeCheckInputGameOptions() {
     InputFacadeManager::GetInstance()->GetInputFacade()->CheckInputGameOptions(inputGO, maxInputGO, option);
+    gamepadConnected = InputFacadeManager::GetInstance()->GetInputFacade()->IsConectedGamepad();
 }
 
 void RenderFacadeClover::FacadeCheckInputTournamentOptions() {
     InputFacadeManager::GetInstance()->GetInputFacade()->CheckInputTournamentOptions(inputTO, maxInputTO, optionTO);
+    gamepadConnected = InputFacadeManager::GetInstance()->GetInputFacade()->IsConectedGamepad();
 }
 
 void RenderFacadeClover::FacadeCheckInputControler() {
     InputFacadeManager::GetInstance()->GetInputFacade()->CheckInputController();
+    gamepadConnected = InputFacadeManager::GetInstance()->GetInputFacade()->IsConectedGamepad();
 }
 
 void RenderFacadeClover::FacadeCheckInputCredits() {
@@ -1264,39 +1284,48 @@ void RenderFacadeClover::FacadeCheckInputCredits() {
 
 void RenderFacadeClover::FacadeCheckInputPause() {
     InputFacadeManager::GetInstance()->GetInputFacade()->CheckInputPause(inputPause, maxInputPause);
+    gamepadConnected = InputFacadeManager::GetInstance()->GetInputFacade()->IsConectedGamepad();
 }
 
 void RenderFacadeClover::FacadeCheckInputEndRace() {
     InputFacadeManager::GetInstance()->GetInputFacade()->CheckInputEndRace(inputER, maxInputER, menuER);
+    gamepadConnected = InputFacadeManager::GetInstance()->GetInputFacade()->IsConectedGamepad();
 }
 
 void RenderFacadeClover::FacadeCheckInputEndTournament() {
     InputFacadeManager::GetInstance()->GetInputFacade()->CheckInputEndTournament(inputET, maxInputET, menuET);
+    gamepadConnected = InputFacadeManager::GetInstance()->GetInputFacade()->IsConectedGamepad();
 }
 
 void RenderFacadeClover::FacadeCheckInputLobbyMultiConnecting() {
     InputFacadeManager::GetInstance()->GetInputFacade()->CheckInputLobbyMultiConnecting();
+    gamepadConnected = InputFacadeManager::GetInstance()->GetInputFacade()->IsConectedGamepad();
 }
 
 void RenderFacadeClover::FacadeCheckInputLobbyMultiWait() {
     InputFacadeManager::GetInstance()->GetInputFacade()->CheckInputLobbyMultiWait();
+    gamepadConnected = InputFacadeManager::GetInstance()->GetInputFacade()->IsConectedGamepad();
 }
 
 void RenderFacadeClover::FacadeCheckInputLobbyMultiExit() {
     InputFacadeManager::GetInstance()->GetInputFacade()->CheckInputLobbyMultiExit();
+    gamepadConnected = InputFacadeManager::GetInstance()->GetInputFacade()->IsConectedGamepad();
 }
 
 void RenderFacadeClover::FacadeCheckInputLobbyMultiSelChar() {
     InputFacadeManager::GetInstance()->GetInputFacade()->CheckInputLobbyMultiSelChar(inputSC, maxInputSC);
+    gamepadConnected = InputFacadeManager::GetInstance()->GetInputFacade()->IsConectedGamepad();
 }
 
 void RenderFacadeClover::FacadeCheckInputSettings() {
     InputFacadeManager::GetInstance()->GetInputFacade()->CheckInputSettings(inputSettings, maxInputSettings, optionSettings);
+    gamepadConnected = InputFacadeManager::GetInstance()->GetInputFacade()->IsConectedGamepad();
 }
 
 //TODO: Deberia ser un evento
 void RenderFacadeClover::ResetInputCharacter() {
     inputSC = 0;
+    GameValues::GetInstance()->SetCharacter(0);
 }
 
 //TODO: Deberia ser un evento
@@ -1309,6 +1338,7 @@ void RenderFacadeClover::ResetInputGameOptions() {
     inputGO[2] = 1;
     GameValues::GetInstance()->SetNumPlayers(4);
     inputGO[3] = 1;
+    GameValues::GetInstance()->SetDifficultAI(DifficultyAI::NORMAL);
     //GameValues::GetInstance()->SetTimeTotem(45);
 }
 void RenderFacadeClover::ResetInputTournamentOptions() {
@@ -1320,8 +1350,9 @@ void RenderFacadeClover::ResetInputTournamentOptions() {
     inputGO[2] = 1;
     GameValues::GetInstance()->SetNumPlayers(4);
     inputGO[3] = 1;
-    GameValues::GetInstance()->SetNumBattles(4);
+    GameValues::GetInstance()->SetDifficultAI(DifficultyAI::NORMAL);
     inputTO[4] = 1;
+    GameValues::GetInstance()->SetNumBattles(4);
     //GameValues::GetInstance()->SetTimeTotem(45);
 }
  
@@ -1586,8 +1617,6 @@ void RenderFacadeClover::FacadeDrawIntro() {
         introAnimation->Start();
     }
     
-    
-
     resourceManager->DeleteResourceTexture(introAnimation->GetCurrentPath());
     
     introAnimation->Update();
@@ -1603,20 +1632,20 @@ void RenderFacadeClover::FacadeDrawIntro() {
 
 void RenderFacadeClover::FacadeDrawMenu() {
 
-    std::string file = "media/menu/main_menu.png";
+    std::string file = "media/menu/mainmenu/main_menu.png";
     device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.9f, file, true);
 
-    file = "media/menu/elements_menu.png";
+    file = "media/menu/mainmenu/elements_menu.png";
     device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.8f, file, true);
 
     std::string files[7] = {
-        "media/menu/partidarapida_hover.png",
-        "media/menu/torneo_hover.png",
-        "media/menu/multijugador_hover.png",
-        "media/menu/controles_hover.png",
-        "media/menu/creditos_hover.png",
-        "media/menu/ajustes_hover.png",
-        "media/menu/salir_hover.png"
+        "media/menu/mainmenu/partidarapida_hover.png",
+        "media/menu/mainmenu/torneo_hover.png",
+        "media/menu/mainmenu/multijugador_hover.png",
+        "media/menu/mainmenu/controles_hover.png",
+        "media/menu/mainmenu/creditos_hover.png",
+        "media/menu/mainmenu/ajustes_hover.png",
+        "media/menu/mainmenu/salir_hover.png"
     };
 
     device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.7f, files[inputMenu], true);
@@ -1625,6 +1654,7 @@ void RenderFacadeClover::FacadeDrawMenu() {
 
 void RenderFacadeClover::FacadeDrawSelectCharacter() {
 
+
     //Ponemos visible solamente el que esta seleccionado
     for(uint8_t i=0; i<=maxInputSC ; i++){
         auto node = device->GetNodeByID(i);
@@ -1632,21 +1662,38 @@ void RenderFacadeClover::FacadeDrawSelectCharacter() {
     }
     auto nodeSelected = device->GetNodeByID(inputSC);
     nodeSelected->SetVisible(true);
+    static_cast<CLMesh*>(nodeSelected->GetEntity())->Animate();
 
     device->SetEnableDepthTest(false);
 
-    std::string file = "media/menu/character_selector.png";
+    std::string file = "media/menu/character/character_selector.png";
+    if (!gamepadConnected) { file = "media/menu/character/character_selector_keyboard.png"; }
     device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.9f, file, true);
 
     std::string files[6] = {
-        "media/menu/penguin_selected.png",
-        "media/menu/baxter_selected.png",
-        "media/menu/sharky_selected.png",
-        "media/menu/kong_selected.png",
-        "media/menu/deacon_selected.png",
-        "media/menu/octopus_selected.png"
+        "media/menu/character/penguin_selected.png",
+        "media/menu/character/baxter_selected.png",
+        "media/menu/character/sharky_selected.png",
+        "media/menu/character/kong_selected.png",
+        "media/menu/character/deacon_selected.png",
+        "media/menu/character/octopus_selected.png"
     };
     device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.8f, files[inputSC], true);
+
+
+    vector<uint8_t> catched = GameValues::GetInstance()->GetCharacterSel();
+    for (uint8_t c : catched ) {
+        switch (c) {
+            case static_cast<uint8_t>(mainCharacter::PENGUIN):  file = "media/LobbyOnline/penguin_catched.png";    break;
+            case static_cast<uint8_t>(mainCharacter::TIGER):    file = "media/LobbyOnline/tiger_catched.png";      break;
+            case static_cast<uint8_t>(mainCharacter::SHARK):    file = "media/LobbyOnline/sharky_catched.png";    break;
+            case static_cast<uint8_t>(mainCharacter::GORILLA):  file = "media/LobbyOnline/gorila_catched.png";    break;
+            case static_cast<uint8_t>(mainCharacter::DRAGON):   file = "media/LobbyOnline/dragon_catched.png";    break;
+            case static_cast<uint8_t>(mainCharacter::OCTOPUS):  file = "media/LobbyOnline/octopus_catched.png";    break;
+            default: file = "media/LobbyOnline/penguin_catched.png"; break;
+        }
+        device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.7f, file, true);
+    }
         
     device->SetEnableDepthTest(true);
 
@@ -1658,14 +1705,15 @@ void RenderFacadeClover::FacadeDrawGameOptions() {
     auto w = device->GetScreenWidth();
     auto h = device->GetScreenHeight();
 
-    std::string file = "media/menu/settings_match_bg.png";
+    std::string file = "media/menu/gameoptions/settings_match_bg.png";
+    if (!gamepadConnected) { file = "media/menu/gameoptions/settings_match_bg_keyboard.png"; }
     device->DrawImage2D(0.0f, 0.0f, w, h, 0.9f, file, true);
     
     std::string files[4] = {
-        "media/menu/duration_match_",
-        "media/menu/duration_totem_",
-        "media/menu/players_",
-        "media/menu/difficulty_"
+        "media/menu/gameoptions/duration_match_",
+        "media/menu/gameoptions/duration_totem_",
+        "media/menu/gameoptions/players_",
+        "media/menu/gameoptions/difficulty_"
     };
 
     std::string op1[4] = {"2min", "3min", "4min", "5min" };
@@ -1701,15 +1749,16 @@ void RenderFacadeClover::FacadeDrawTournamentOptions() {
     auto w = device->GetScreenWidth();
     auto h = device->GetScreenHeight();
 
-    std::string file = "media/menu/settings_match_bg.png";
+    std::string file = "media/menu/gameoptions/settings_match_bg.png";
+    if (!gamepadConnected) { file = "media/menu/gameoptions/settings_match_bg_keyboard.png"; }
     device->DrawImage2D(0.0f, 0.0f, w, h, 0.9f, file, true);
     
     std::string files[5] = {
-        "media/menu/tournament/t_duration_match_",
-        "media/menu/tournament/t_duration_totem_",
-        "media/menu/tournament/t_players_",
-        "media/menu/tournament/t_difficulty_",
-        "media/menu/tournament/t_matches_"
+        "media/menu/gameoptions/tournament/t_duration_match_",
+        "media/menu/gameoptions/tournament/t_duration_totem_",
+        "media/menu/gameoptions/tournament/t_players_",
+        "media/menu/gameoptions/tournament/t_difficulty_",
+        "media/menu/gameoptions/tournament/t_matches_"
     };
 
     std::string op1[4] = {"2min", "3min", "4min", "5min" };
@@ -1752,20 +1801,22 @@ void RenderFacadeClover::FacadeDrawTournamentOptions() {
 }
 
 void RenderFacadeClover::FacadeDrawControler() {
-    std::string file = "media/controller_scheme.png";
+    std::string file = "media/menu/controls/controls_xbox.png";
+    if ( !gamepadConnected ) { file = "media/menu/controls/controls_pc.png"; }
     device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
 }
 
 void RenderFacadeClover::FacadeDrawPause() {
-    std::string file = "media/menu/pause_menu.png";
+    std::string file = "media/menu/pause/pause_menu.png";
+    if (!gamepadConnected) { file = "media/menu/pause/pause_menu_keyboard.png"; }
     device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.9f, file, true);
 
-    file = "media/menu/pause_elements.png";
+    file = "media/menu/pause/pause_elements.png";
     device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.8f, file, true);
 
     std::string files[2] = {
-        "media/menu/pause_continue_hover.png",
-        "media/menu/pause_exit_hover.png"
+        "media/menu/pause/pause_continue_hover.png",
+        "media/menu/pause/pause_exit_hover.png"
     };
 
     Draw2DImage(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.7f, files[inputPause], true);
@@ -1784,8 +1835,13 @@ void RenderFacadeClover::FacadeDrawEndRace() {
     else if (h < 475 ) { scale = 0.25; }
     else if (h < 675) { scale = 0.5; }
 
-    std::string file = "media/menu/finish_menu_bg.png";
+    std::string file = "media/menu/endrace/finish_menu_bg.png";
+    if ( !gamepadConnected ) { file = "media/menu/endrace/finish_menu_bg_keyboard.png"; }
     device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.9f, file, true);
+
+    file = "media/menu/endrace/finish_title.png";
+    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.85f, file, true);
+
 
     auto rank = GameValues::GetInstance()->GetRanking();
     auto secondsRank = GameValues::GetInstance()->GetSeconds();
@@ -1796,7 +1852,7 @@ void RenderFacadeClover::FacadeDrawEndRace() {
     auto antTime = -1;
     auto positionPoints = 0;
 
-    file = "media/menu/finish_menu_time.png";
+    file = "media/menu/endrace/finish_menu_time.png";
     device->DrawImage2D(w/2 + 415.0f*scale, posY, 0.7f*scale, 0.8f, file, true);
     
     for(auto it = rank.begin(); it != rank.end(); ++it) {
@@ -1810,7 +1866,7 @@ void RenderFacadeClover::FacadeDrawEndRace() {
             antTime = actualTime;
         }
 
-        file = "media/menu/position";
+        file = "media/menu/endrace/position";
         file += std::to_string(positionPoints+1) + ".png";
         device->DrawImage2D(posX, posY + (i*100.0f)*scale, 1.0*scale, 0.7f, file, true);
         switch (it->second) {
@@ -1827,7 +1883,7 @@ void RenderFacadeClover::FacadeDrawEndRace() {
 
         
         if((positionPoints+1) == 1) {
-            file = "media/menu/crown.png";
+            file = "media/menu/endrace/crown.png";
             device->DrawImage2D(posX - 50.0f*scale, posY + (i*100.0f)*scale - 65.0f*scale, 0.9*scale, 0.6f, file, true);
         }
 
@@ -1846,15 +1902,15 @@ void RenderFacadeClover::FacadeDrawEndRace() {
     }
 
     if (menuER) {
-        file = "media/menu/finish_menu_options_bg.png";
+        file = "media/menu/endrace/finish_menu_options_bg.png";
         Draw2DImage(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.4f, file, true);
-        file = "media/menu/finish_menu_options_elements.png";
+        file = "media/menu/endrace/finish_menu_options_elements.png";
         Draw2DImage(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.5f, file, true);
 
         std::string files[3] = {
-            "media/menu/finish_option1_hover.png",
-            "media/menu/finish_option2_hover.png",
-            "media/menu/finish_option3_hover.png"
+            "media/menu/endrace/finish_option1_hover.png",
+            "media/menu/endrace/finish_option2_hover.png",
+            "media/menu/endrace/finish_option3_hover.png"
         };
         Draw2DImage(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.2f, files[inputER], true);
     }
@@ -1871,8 +1927,9 @@ void RenderFacadeClover::FacadeDrawEndTournament() {
     else if (h < 475 ) { scale = 0.25; }
     else if (h < 675) { scale = 0.5; }
 
-    std::string file = "media/menu/finish_menu_bg.png";
     std::string name = "Mr Penguin";
+    std::string file = "media/menu/endrace/finish_menu_bg.png";
+    if ( !gamepadConnected ) { file = "media/menu/endrace/finish_menu_bg_keyboard.png"; }
     device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.9f, file, true);
 
     auto rank = GameValues::GetInstance()->GetRanking();
@@ -1885,12 +1942,15 @@ void RenderFacadeClover::FacadeDrawEndTournament() {
 
     if(menuET == 0){
         // numCarreras
+        file = "media/menu/endrace/tournament/t_ncarrers.png";
+        device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.85f, file, true);
         file = std::to_string(GameValues::GetInstance()->GetActualBattle()) + "/" + std::to_string(GameValues::GetInstance()->GetNumBattles());
-        device->RenderText2D(file, posX + 950.0f*scale, posYText - (-100)*scale, 0.8f, 1.25*scale, glm::vec3(0.0f,0.0f,0.0f));
+        device->RenderText2D(file, w - 225.0f*scale, h - 125.0f*scale, 0.8f, 1.25*scale, glm::vec3(0.0f,0.0f,0.0f));
 
-
-        file = "media/menu/finish_menu_time.png";
+        file = "media/menu/endrace/finish_menu_time.png";
         device->DrawImage2D(w/2 + 415.0f*scale, posY, 0.7f*scale, 0.7f, file, true);
+        file = "media/menu/endrace/tournament/pts.png";
+        device->DrawImage2D(w/2 + 225.0f*scale, posY + 20.0f*scale, 1.0f*scale, 0.65f, file, true);
 
         auto antTime = -1;
         auto positionPoints = 0;
@@ -1905,7 +1965,7 @@ void RenderFacadeClover::FacadeDrawEndTournament() {
                 antTime = actualTime;
             }
 
-            file = "media/menu/position";
+            file = "media/menu/endrace/position";
             file += std::to_string(positionPoints+1) + ".png";
             device->DrawImage2D(posX, posY + (i*100.0f)*scale, 1.0*scale, 0.8f, file, true);
             switch (it->second) {
@@ -1943,13 +2003,23 @@ void RenderFacadeClover::FacadeDrawEndTournament() {
     } else if(menuET==1) {
 
         // numCarreras
+        file = "media/menu/endrace/tournament/t_ncarrers.png";
+        device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.85f, file, true);
         file = std::to_string(GameValues::GetInstance()->GetActualBattle()) + "/" + std::to_string(GameValues::GetInstance()->GetNumBattles());
-        device->RenderText2D(file, posX + 950.0f*scale, posYText - (-100)*scale, 0.6f, 1.25*scale, glm::vec3(0.0f,0.0f,0.0f));
+        device->RenderText2D(file, w - 225.0f*scale, h - 125.0f*scale, 0.8f, 1.25*scale, glm::vec3(0.0f,0.0f,0.0f));
+
+        file = "media/menu/endrace/tournament/pts_total.png";
+        device->DrawImage2D(w/2 + 395.0f*scale, posY + 30.0f*scale, 0.7f*scale, 0.7f, file, true);
 
         // Puntos totales
         auto rankPoints = GameValues::GetInstance()->GetRankingPoints();
-        std::string file = "media/menu/finish_menu_bg.png";
+        std::string file = "media/menu/endrace/finish_menu_bg.png";
         device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.9f, file, true);
+
+        if( GameValues::GetInstance()->GetNumBattles() == GameValues::GetInstance()->GetActualBattle() ) {
+            file = "media/menu/endrace/finish_title.png";
+            device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.85f, file, true);
+        }
 
         auto antPoints = -1;
         auto positionPoints = 0;
@@ -1964,7 +2034,7 @@ void RenderFacadeClover::FacadeDrawEndTournament() {
             antPoints = actualPoints;
             //cout << "POSICION: " << positionPoints+1 << endl;
             
-            file = "media/menu/position";
+            file = "media/menu/endrace/position";
             file += std::to_string(positionPoints+1) + ".png";
             device->DrawImage2D(posX, posY + (i*100.0f)*scale, 1.0*scale, 0.8f, file, true);
             switch (it->second) {
@@ -1980,7 +2050,7 @@ void RenderFacadeClover::FacadeDrawEndTournament() {
             device->RenderText2D(name, posX + 275.0f*scale, posYText - (i*100.0f)*scale, 0.65f, 1.0*scale, glm::vec3(255.0f, 255.0f, 255.0f));
 
             if((positionPoints+1) == 1) {
-                file = "media/menu/crown.png";
+                file = "media/menu/endrace/crown.png";
                 device->DrawImage2D(posX - 50.0f*scale, posY + (i*100.0f)*scale - 65.0f*scale, 0.9*scale, 0.6f, file, true);
             }
 
@@ -1996,25 +2066,25 @@ void RenderFacadeClover::FacadeDrawEndTournament() {
         }
 
     }else if(menuET == 2){
-        file = "media/menu/finish_menu_options_bg.png";
+        file = "media/menu/endrace/finish_menu_options_bg.png";
         device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.3f, file, true);
 
         if( GameValues::GetInstance()->GetNumBattles() != GameValues::GetInstance()->GetActualBattle() ) {
-            file = "media/menu/tournament/t_finish_menu_options_elements.png";
+            file = "media/menu/endrace/tournament/t_finish_menu_options_elements.png";
             device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.2f, file, true);
             
             std::string files[2] = {
-                "media/menu/tournament/t_finish_option1_hover.png",
-                "media/menu/tournament/t_finish_option2_hover.png"
+                "media/menu/endrace/tournament/t_finish_option1_hover.png",
+                "media/menu/endrace/tournament/t_finish_option2_hover.png"
             };
             device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, files[inputET], true);
         } else {
-            file = "media/menu/finish_menu_options_elements.png";
+            file = "media/menu/endrace/finish_menu_options_elements.png";
             device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.2f, file, true);
             std::string files[3] = {
-                "media/menu/finish_option1_hover.png",
-                "media/menu/finish_option2_hover.png",
-                "media/menu/finish_option3_hover.png"
+                "media/menu/endrace/finish_option1_hover.png",
+                "media/menu/endrace/finish_option2_hover.png",
+                "media/menu/endrace/finish_option3_hover.png"
             };
             device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, files[inputET], true);
         }
@@ -2057,18 +2127,18 @@ void RenderFacadeClover::FacadeDrawLobbyMultiExit() {
 
 void RenderFacadeClover::FacadeDrawSettings() {
 
-
     device->SetEnableDepthTest(false);
 
-    std::string file = "media/menu/settings_bg.png";
+    std::string file = "media/menu/settings/settings_bg.png";
+    if ( !gamepadConnected ) { file = "media/menu/settings/settings_bg_keyboard.png";}
     device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.9f, file, true);
 
     std::string files[5] = {
-        "media/menu/game_sfx_",
-        "media/menu/game_music_",
-        "media/menu/particles_",
-        "media/menu/vegetation_",
-        "media/menu/shadows_"
+        "media/menu/settings/game_sfx_",
+        "media/menu/settings/game_music_",
+        "media/menu/settings/particles_",
+        "media/menu/settings/vegetation_",
+        "media/menu/settings/shadows_"
     };
 
     std::string op1[4] = { "low", "med2", "med1", "high" };
@@ -2473,6 +2543,195 @@ void RenderFacadeClover::FacadeUpdateViewport(){
     device->UpdateViewport();
 }
 
+
+
+void RenderFacadeClover::FacadeReleaseSelectCharacter(){
+
+    resourceManager->DeleteResourceTexture("media/menu/character_selector.png");
+    resourceManager->DeleteResourceTexture("media/menu/kong_selected.png");
+    resourceManager->DeleteResourceTexture("media/menu/sharky_selected.png");
+    resourceManager->DeleteResourceTexture("media/menu/penguin_selected.png");
+    resourceManager->DeleteResourceTexture("media/menu/baxter_selected.png");
+    resourceManager->DeleteResourceTexture("media/menu/deacon_selected.png");
+    resourceManager->DeleteResourceTexture("media/menu/octopus_selected.png");    
+
+}
+
+void RenderFacadeClover::FacadeReleaseOptions(){
+
+    
+
+    resourceManager->DeleteResourceTexture("media/menu/settings_match_bg.png");
+    resourceManager->DeleteResourceTexture("media/menu/duration_match_2min_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/duration_match_3min_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/duration_match_4min_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/duration_match_5min_hover.png");
+
+    resourceManager->DeleteResourceTexture("media/menu/duration_match_2min.png");
+    resourceManager->DeleteResourceTexture("media/menu/duration_match_3min.png");
+    resourceManager->DeleteResourceTexture("media/menu/duration_match_4min.png");
+    resourceManager->DeleteResourceTexture("media/menu/duration_match_5min.png");
+
+    resourceManager->DeleteResourceTexture("media/menu/duration_totem_1min_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/duration_totem_30s_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/duration_totem_45s_hover.png");
+    
+    resourceManager->DeleteResourceTexture("media/menu/duration_totem_1min.png");
+    resourceManager->DeleteResourceTexture("media/menu/duration_totem_30s.png");
+    resourceManager->DeleteResourceTexture("media/menu/duration_totem_45s.png");
+
+    resourceManager->DeleteResourceTexture("media/menu/players_3_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/players_3.png");
+    resourceManager->DeleteResourceTexture("media/menu/players_4_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/players_4.png");
+    resourceManager->DeleteResourceTexture("media/menu/players_5_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/players_5.png");
+    resourceManager->DeleteResourceTexture("media/menu/players_6_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/players_6.png");
+
+    resourceManager->DeleteResourceTexture("media/menu/difficulty_easy_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/difficulty_easy.png");
+    resourceManager->DeleteResourceTexture("media/menu/difficulty_hard_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/difficulty_hard.png");
+    resourceManager->DeleteResourceTexture("media/menu/difficulty_normal_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/difficulty_normal.png");
+
+}
+
+void RenderFacadeClover::FacadeReleaseSettings(){
+    resourceManager->DeleteResourceTexture("media/menu/settings_bg.png");
+
+    resourceManager->DeleteResourceTexture("media/menu/game_music_high_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/game_music_low_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/game_music_med_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/game_music_med1_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/game_music_med2_hover.png");
+
+    resourceManager->DeleteResourceTexture("media/menu/game_music_high.png");
+    resourceManager->DeleteResourceTexture("media/menu/game_music_low.png");
+    resourceManager->DeleteResourceTexture("media/menu/game_music_med.png");
+    resourceManager->DeleteResourceTexture("media/menu/game_music_med1.png");
+    resourceManager->DeleteResourceTexture("media/menu/game_music_med2.png");
+
+    resourceManager->DeleteResourceTexture("media/menu/game_sfx_high_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/game_sfx_low_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/game_sfx_med_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/game_sfx_med1_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/game_sfx_med2_hover.png");
+
+    resourceManager->DeleteResourceTexture("media/menu/game_sfx_high.png");
+    resourceManager->DeleteResourceTexture("media/menu/game_sfx_low.png");
+    resourceManager->DeleteResourceTexture("media/menu/game_sfx_med.png");
+    resourceManager->DeleteResourceTexture("media/menu/game_sfx_med1.png");
+    resourceManager->DeleteResourceTexture("media/menu/game_sfx_med2.png");
+
+    resourceManager->DeleteResourceTexture("media/menu/particles_activated_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/particles_activated.png");
+    resourceManager->DeleteResourceTexture("media/menu/particles_desactivated_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/particles_desactivated.png");
+
+    resourceManager->DeleteResourceTexture("media/menu/vegetation_activated_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/vegetation_activated.png");
+    resourceManager->DeleteResourceTexture("media/menu/vegetation_desactivated_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/vegetation_desactivated.png");
+
+    resourceManager->DeleteResourceTexture("media/menu/shadow_activated_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/shadow_activated.png");
+    resourceManager->DeleteResourceTexture("media/menu/shadow_desactivated_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/shadow_desactivated.png");
+
+}
+
+void RenderFacadeClover::FacadeReleaseStateInGame(){
+    resourceManager->DeleteResourceTexture("media/Minimapa240v2.png");
+    resourceManager->DeleteResourceTexture("media/hudPenguin.png");
+    resourceManager->DeleteResourceTexture("media/hudTiger.png");
+    resourceManager->DeleteResourceTexture("media/hudShark.png");
+    resourceManager->DeleteResourceTexture("media/hudGorilla.png");
+    resourceManager->DeleteResourceTexture("media/hudDragon.png");
+    resourceManager->DeleteResourceTexture("media/hudOctopus.png");
+    resourceManager->DeleteResourceTexture("media/hudTotem.png");
+    resourceManager->DeleteResourceTexture("media/hudTotem2.png");
+    resourceManager->DeleteResourceTexture("media/1.png");
+    resourceManager->DeleteResourceTexture("media/2.png");
+    resourceManager->DeleteResourceTexture("media/3.png");
+    resourceManager->DeleteResourceTexture("media/BOctopus.png");
+    resourceManager->DeleteResourceTexture("media/BDragon.png");
+    resourceManager->DeleteResourceTexture("media/BGorilla.png");
+    resourceManager->DeleteResourceTexture("media/BPinguino.png");
+    resourceManager->DeleteResourceTexture("media/BTiburon.png");
+    resourceManager->DeleteResourceTexture("media/BTigre.png");
+    resourceManager->DeleteResourceTexture("media/stoleHUD.png");
+    resourceManager->DeleteResourceTexture("media/loseHUD.png");
+    resourceManager->DeleteResourceTexture("media/catchHUD.png");
+    resourceManager->DeleteResourceTexture("media/nonepowerup.png");
+    resourceManager->DeleteResourceTexture("media/robojorobo.png");
+    resourceManager->DeleteResourceTexture("media/nitro.png");
+    resourceManager->DeleteResourceTexture("media/pudin.png");
+    resourceManager->DeleteResourceTexture("media/escudomerluzo.png");
+    resourceManager->DeleteResourceTexture("media/telebanana.png");
+    resourceManager->DeleteResourceTexture("media/melonmolon.png");
+
+}
+
+void RenderFacadeClover::FacadeReleaseMenu(){
+    resourceManager->DeleteResourceTexture("media/menu/main_menu.png");
+    resourceManager->DeleteResourceTexture("media/menu/elements_menu.png");
+    resourceManager->DeleteResourceTexture("media/menu/partidarapida_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/multijugador_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/controles_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/creditos_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/ajustes_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/salir_hover.png");
+
+}
+
+void RenderFacadeClover::FacadeReleaseTournament(){
+    resourceManager->DeleteResourceTexture("media/menu/tournament/t_difficulty_easy_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/tournament/t_difficulty_easy.png");
+    resourceManager->DeleteResourceTexture("media/menu/tournament/t_difficulty_hard_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/tournament/t_difficulty_hard.png");
+    resourceManager->DeleteResourceTexture("media/menu/tournament/t_difficulty_normal_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/tournament/t_difficulty_normal.png");
+
+    resourceManager->DeleteResourceTexture("media/menu/tournament/t_duration_match_2min_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/tournament/t_duration_match_2min.png");
+    resourceManager->DeleteResourceTexture("media/menu/tournament/t_duration_match_3min_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/tournament/t_duration_match_3min.png");
+    resourceManager->DeleteResourceTexture("media/menu/tournament/t_duration_match_4min_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/tournament/t_duration_match_4min.png");
+    resourceManager->DeleteResourceTexture("media/menu/tournament/t_duration_match_5min_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/tournament/t_duration_match_5min.png");
+
+    resourceManager->DeleteResourceTexture("media/menu/tournament/t_duration_totem_1min_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/tournament/t_duration_totem_1min.png");
+    resourceManager->DeleteResourceTexture("media/menu/tournament/t_duration_totem_30s_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/tournament/t_duration_totem_30s.png");
+    resourceManager->DeleteResourceTexture("media/menu/tournament/t_duration_totem_45s_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/tournament/t_duration_totem_45s.png");
+
+    resourceManager->DeleteResourceTexture("media/menu/tournament/t_matches_3_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/tournament/t_matches_3.png");
+    resourceManager->DeleteResourceTexture("media/menu/tournament/t_matches_4_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/tournament/t_matches_4.png");
+    resourceManager->DeleteResourceTexture("media/menu/tournament/t_matches_5_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/tournament/t_matches_5.png");
+
+    resourceManager->DeleteResourceTexture("media/menu/tournament/t_players_3_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/tournament/t_players_3.png");
+    resourceManager->DeleteResourceTexture("media/menu/tournament/t_players_4_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/tournament/t_players_4.png");
+    resourceManager->DeleteResourceTexture("media/menu/tournament/t_players_5_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/tournament/t_players_5.png");
+    resourceManager->DeleteResourceTexture("media/menu/tournament/t_players_6_hover.png");
+    resourceManager->DeleteResourceTexture("media/menu/tournament/t_players_6.png");
+
+
+
+
+
+
+}
 
 ////////////////////////////////////////////////////////////////////////////
 ////////////////////////////  CLASE ANIMATION2D  ///////////////////////////

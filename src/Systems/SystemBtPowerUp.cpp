@@ -313,7 +313,7 @@ SystemBtPowerUp::SystemBtPowerUp(){
 
 
 
-    std::cout << "------------------------ Behaviour Tree Power Up --------------------------------" << std::endl;
+    //std::cout << "------------------------ Behaviour Tree Power Up --------------------------------" << std::endl;
     // ASIGNACION DEL ARBOL DE DECISIONES
 
     // estoy herido
