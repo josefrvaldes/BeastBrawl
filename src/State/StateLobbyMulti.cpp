@@ -14,10 +14,10 @@ StateLobbyMulti::StateLobbyMulti() : tcpClient{make_shared<TCPClient>(Constants:
     std::cout << "> LOBBY constructor" << std::endl;
 
     renderEngine = RenderFacadeManager::GetInstance()->GetRenderFacade();
+    InitState();
     renderEngine->FacadeInitLobbyMulti();
 
     SubscribeToEvents();
-    InitState();
 }
 
 // Cargamos los bancos de sonido Menu.

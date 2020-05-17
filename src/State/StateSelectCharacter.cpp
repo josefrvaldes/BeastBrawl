@@ -8,10 +8,8 @@ StateSelectCharacter::StateSelectCharacter(){
 
     //std::cout << "> SELECT CHARECTER constructor" << std::endl;
     renderEngine = RenderFacadeManager::GetInstance()->GetRenderFacade();
-    renderEngine->FacadeInitSelectCharacter();
-
     InitState();
-
+    renderEngine->FacadeInitSelectCharacter();
 }
 
 void StateSelectCharacter::InitState() {
