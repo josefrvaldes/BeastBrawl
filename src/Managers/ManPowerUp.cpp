@@ -31,7 +31,6 @@ ManPowerUp::~ManPowerUp() {
     entities.clear();
     entities.shrink_to_fit();
 }
-
 // Lugar en el que se crean los power ups
 
 void ManPowerUp::NewPowerUpReceivedFromServer(DataMap *d) {
@@ -56,7 +55,7 @@ void ManPowerUp::NewPowerUpReceivedFromServer(DataMap *d) {
     shared_ptr<PowerUp> powerUp = make_shared<PowerUp>(position, rotation, typePU, transforPerse);
     shared_ptr<CIDOnline> cidOnline = make_shared<CIDOnline>(idPUOnline, true);
     powerUp->AddComponent(cidOnline); 
-    MaterializePowerUp(powerUp);
+    MaterializePowerUp(powerUp, typePU);
 }
 
 void ManPowerUp::CreatePowerUp(DataMap *d) {
@@ -107,13 +106,13 @@ void ManPowerUp::CreatePowerUp(DataMap *d) {
             // enviamos al server que ese PU se ha lanzado
             systemOnline->SendThrowPU(powerUp, idToPursue);
         }
-        MaterializePowerUp(powerUp);
+        MaterializePowerUp(powerUp, type);
 
     }
 }
 
 
-void ManPowerUp::MaterializePowerUp(shared_ptr<PowerUp> powerUp) {
+void ManPowerUp::MaterializePowerUp(shared_ptr<PowerUp> powerUp , typeCPowerUp type) {
     entities.push_back(powerUp);
 
     auto cTransformable = static_cast<CTransformable *>(powerUp->GetComponent(CompType::TransformableComp).get());
@@ -124,7 +123,14 @@ void ManPowerUp::MaterializePowerUp(shared_ptr<PowerUp> powerUp) {
 
     auto cDimensions = static_cast<CDimensions *>(powerUp->GetComponent(CompType::DimensionsComp).get());
     auto radioSphere = ((cDimensions->width / 2) + (cDimensions->depth / 2)) / 2;
-    shared_ptr<CBoundingSphere> cBoundingSphere = make_shared<CBoundingSphere>(cTransformable->position, radioSphere);
+    //cout <<"EL RADIO DE CREACION ES DEEEEEEEEEEEEEEEEE: " << radioSphere << endl;
+    shared_ptr<CBoundingSphere> cBoundingSphere;
+    if (type == typeCPowerUp::PudinDeFrambuesa) {
+        cBoundingSphere = make_shared<CBoundingSphere>(cTransformable->position, 7.5, 6.0);
+    }else{
+        cBoundingSphere = make_shared<CBoundingSphere>(cTransformable->position, 7.5, 0.0);
+    }
+
     powerUp->AddComponent(cBoundingSphere);
 
     //renderEngine->FacadeAddSphereOnObject(powerUp.get());

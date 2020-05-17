@@ -39,7 +39,7 @@ PowerUp::PowerUp()
     
     shared_ptr<CId> cId   = make_shared<CId>();
     shared_ptr<CType> cType = make_shared<CType>(ModelType::AnimatedMesh);
-    shared_ptr<CTransformable> cTransformable = make_shared<CTransformable>(glm::vec3(0.0f,0.0f,0.0f), glm::vec3(0.0f,0.0f,0.0f), glm::vec3(1.0f,1.0f,1.0f)); 
+    shared_ptr<CTransformable> cTransformable = make_shared<CTransformable>(glm::vec3(0.0f,0.0f,0.0f), glm::vec3(0.0f,0.0f,0.0f), glm::vec3(1.6f,1.6f,1.6f)); 
     shared_ptr<CTexture> cTexture = make_shared<CTexture>(texture);
     shared_ptr<CMesh> cMesh   = make_shared<CMesh>(mesh);
     shared_ptr<CPowerUp> cPowerUp = make_shared<CPowerUp>(typePowerUp);
@@ -103,17 +103,20 @@ PowerUp::PowerUp(glm::vec3 _position, glm::vec3 _rotation, typeCPowerUp _typePow
         cTexture->texture = "";
         cMesh->mesh.push_back("melon.obj");
         cPowerUp->speed = 510.0;
+        cTransformable->scale = glm::vec3(1.6f,1.6f,1.6f);
         // cTransformable->scale = glm::vec3(4,4,4);
     }else if(_typePowerUp == typeCPowerUp::PudinDeFrambuesa){   // Pudin Frambuesa
         cTexture->texture = "";
         cMesh->mesh.push_back("pudin.obj");
         cMesh->mesh.push_back("pudin.obj");
         cPowerUp->speed = -510.0;
+        cTransformable->scale = glm::vec3(1.4f,1.4f,1.4f);
         // cTransformable->scale = glm::vec3(4,4,4);
     }else{                                                      // Telebanana
         cTexture->texture = "";
         cMesh->mesh.push_back("telebanana.obj");
         cPowerUp->speed = 375.0;
+        cTransformable->scale = glm::vec3(1.3f,1.3f,1.3f);
         // cTransformable->scale = glm::vec3(2,2,2);
     }
     cMesh->activeMesh = cMesh->mesh[0];
