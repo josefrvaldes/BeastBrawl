@@ -103,7 +103,8 @@ class SoundFacadeFMOD : public SoundFacade {
                                 "Partida/cuenta_atras",
                                 "PowerUp/robojorobo",
                                 "Partida/reloj",
-                                "Partida/pitido_final"
+                                "Partida/pitido_final",
+                                "Partida/cinematica"
                                 } 
             },
             { "InGame3DD",

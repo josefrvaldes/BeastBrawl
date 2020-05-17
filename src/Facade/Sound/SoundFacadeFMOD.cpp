@@ -351,6 +351,7 @@ void SoundFacadeFMOD::LoadSoundByState(const uint8_t numState) {
             StopMusicInGame();
             break;
         case 12:        //Extra: COUNTDOWN
+            StopEvent("Partida/cinematica");
             PlayEvent("Partida/cuenta_atras");
             break;
         default:
@@ -585,6 +586,8 @@ void SoundFacadeFMOD::Update() {
 void SoundFacadeFMOD::StartGame() {
     SetParameter("Personajes/voces", "personaje", character);
     SetParameter("Coche/claxon", "personaje", character);
+    PlayEvent("Ambiente/ambiente");
+    PlayEvent("Partida/cinematica");
 }
 
 void SoundFacadeFMOD::StopMusicInGame() {
