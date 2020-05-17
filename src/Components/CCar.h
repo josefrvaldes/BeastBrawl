@@ -11,7 +11,7 @@
 
 using namespace std;
 using namespace glm;
-using namespace chrono;
+using namespace std::chrono;
 
 enum class SkidState{DISABLED, SKID_START, SKID_TO_LEFT, SKID_TO_RIGHT, SKID_LEFT, SKID_RIGHT, SKID_RECOVER_RIGHT, SKID_RECOVER_LEFT};
 enum class mainCharacter {PENGUIN, TIGER, SHARK, GORILLA, DRAGON, OCTOPUS};
@@ -24,12 +24,7 @@ public:
     CCar(mainCharacter, float weight, float maxSpeed,float acceleration, float maxWheelRot);
     ~CCar(){};
 
-    friend ostream &operator<<(ostream &out, CCar &c)
-    {
-        //out << "(" << c.GetX() << "," << c.GetY() << "," << c.GetZ() << ")";
-        return out;
-    }
-
+    
     //PERSONAJE
     mainCharacter character { mainCharacter::PENGUIN };
     

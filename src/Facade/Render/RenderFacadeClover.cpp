@@ -238,13 +238,13 @@ const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
     auto cShader = static_cast<CShader*>(entity->GetComponent(CompType::ShaderComp).get());
 
     CLResourceMesh* mesh = nullptr;
-    CLResourceMaterial* mat = nullptr;
+    // CLResourceMaterial* mat = nullptr;
     if(entity->HasComponent(CompType::MeshComp)){
         auto cMesh = static_cast<CMesh*>(entity->GetComponent(CompType::MeshComp).get());
         std::string currentMesh = cMesh->activeMesh;
         std::string meshPath = "media/" + currentMesh;
         mesh = resourceManager->GetResourceMesh(meshPath, false);
-        mat = resourceManager->GetResourceMaterial(meshPath);
+        // mat = resourceManager->GetResourceMaterial(meshPath);
     } 
 
     
@@ -273,7 +273,7 @@ const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
             std::string path = cAnimation->activeAnimation->path;
             std::string animationPath = "media/" + path;
             vector<CLResourceMesh*> clAnimations = resourceManager->GetResourceAnimation(animationPath, cAnimation->activeAnimation->numKeyFrames, false);
-            mat = resourceManager->GetResourceMaterial(animationPath);
+            // mat = resourceManager->GetResourceMaterial(animationPath);
             //node = father->AddMesh(cId->id); 
             node = device->AddMesh(father,cId->id);
 
@@ -447,13 +447,13 @@ const uint16_t RenderFacadeClover::FacadeAddStaticObject(Entity* entity) {
     auto cShader = static_cast<CShader*>(entity->GetComponent(CompType::ShaderComp).get());
 
     CLResourceMesh* mesh = nullptr;
-    CLResourceMaterial* mat = nullptr;
+    // CLResourceMaterial* mat = nullptr;
     if(entity->HasComponent(CompType::MeshComp)){
         auto cMesh = static_cast<CMesh*>(entity->GetComponent(CompType::MeshComp).get());
         std::string currentMesh = cMesh->activeMesh;
         std::string meshPath = "media/" + currentMesh;
         mesh = resourceManager->GetResourceMesh(meshPath, false);
-        mat = resourceManager->GetResourceMaterial(meshPath);
+        // mat = resourceManager->GetResourceMaterial(meshPath);
     } 
 
 
@@ -476,7 +476,7 @@ const uint16_t RenderFacadeClover::FacadeAddStaticObject(Entity* entity) {
             std::string path = cAnimation->activeAnimation->path;
             std::string animationPath = "media/" + path;
             vector<CLResourceMesh*> clAnimations = resourceManager->GetResourceAnimation(animationPath, cAnimation->activeAnimation->numKeyFrames, false);
-            mat = resourceManager->GetResourceMaterial(animationPath);
+            // mat = resourceManager->GetResourceMaterial(animationPath);
             //node = father->AddMesh(cId->id); 
             node = device->AddMesh(father,cId->id);
 
@@ -774,7 +774,7 @@ void RenderFacadeClover::FacadeUpdateAnimationsLoD(vector<shared_ptr<Entity>> en
         if(entity->HasComponent(CompType::AnimationComp)) {
             auto cAnimation = static_cast<CAnimation*>(entity->GetComponent(CompType::AnimationComp).get());
             if(cAnimation->animationChanged) {
-                cout << "Cambiamos animación por el LoD" << endl;
+                // cout << "Cambiamos animación por el LoD" << endl;
                 CId *cid = static_cast<CId*>(entity->GetComponent(CompType::IdComp).get());
                 auto node = device->GetNodeByID(cid->id);
                 if(node) {
