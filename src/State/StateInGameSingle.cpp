@@ -137,6 +137,9 @@ void StateInGameSingle::UpdateGame() {
         }
     }
 
+    //ACTUALIZAR ESCUDOS
+    physicsEngine->UpdateShields(manCars->GetEntities(), manShield->GetEntities());
+
 //    end = std::chrono::system_clock::now();
 //    elapsed_millisecons = std::chrono::duration_cast<std::chrono::nanoseconds>
 //                             (end-timeStart).count();
@@ -369,6 +372,6 @@ void StateInGameSingle::InitCarAIS(ManCar &manCars, ManWayPoint &manWayPoint) {
         SoundFacadeManager::GetInstance()->GetSoundFacade()->CreateSoundEstatic3D(idComp->id, posComp->position, nameEvent, 0);
 
         //Lo meto aqui aunque pone cambiar de sitio porque no queda otra
-        manShield->CreateShield(idComp->id,glm::vec3(0.0f),glm::vec3(0.0f),glm::vec3(1.5f));
+        manShield->CreateShield(idComp->id,glm::vec3(0.0f),glm::vec3(0.0f),glm::vec3(3.0f));
     }
 }

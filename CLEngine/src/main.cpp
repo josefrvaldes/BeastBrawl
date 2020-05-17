@@ -51,7 +51,7 @@ int main() {
         CLResourceManager* resourceManager = CLResourceManager::GetResourceManager();
 
         // auto resourceShader = resourceManager->GetResourceShader("CLEngine/src/Shaders/shadowMappingShader.vert", "CLEngine/src/Shaders/shadowMappingShader.frag");
-        // auto resourceShaderCartoon = resourceManager->GetResourceShader("CLEngine/src/Shaders/cartoonShader.vert", "CLEngine/src/Shaders/cartoonShader.frag");
+        auto resourceShaderCartoon = resourceManager->GetResourceShader("CLEngine/src/Shaders/cartoonShader.vert", "CLEngine/src/Shaders/cartoonShader.frag");
         // auto resourceShaderLightMapping = resourceManager->GetResourceShader("CLEngine/src/Shaders/lightMapping.vert", "CLEngine/src/Shaders/lightMapping.frag");
         // auto resourceShaderHud = resourceManager->GetResourceShader("CLEngine/src/Shaders/spriteShader.vert", "CLEngine/src/Shaders/spriteShader.frag");
         auto resourceShaderBasic = resourceManager->GetResourceShader("CLEngine/src/Shaders/basicShader.vert", "CLEngine/src/Shaders/basicShader.frag");
@@ -62,6 +62,7 @@ int main() {
         auto resourceMeshGround = resourceManager->GetResourceMesh("media/training_ground.obj", true);
         // auto resourceMeshTotem = resourceManager->GetResourceMesh("media/totem.obj", true);
         auto resourceMesh = resourceManager->GetResourceMesh("media/sharky_wheel2.obj", true);
+        auto resourceMeshShield = resourceManager->GetResourceMesh("media/shield.obj", true);
         // auto resourceMeshBox = resourceManager->GetResourceMesh("media/TEST_BOX.obj", true);
         // auto animationKong = resourceManager->GetResourceAnimation("media/animations/kong/001kong.obj", 75, true);
         // auto animationCube = resourceManager->GetResourceAnimation("media/animations/cube/001cube.obj", 4, true);
@@ -82,28 +83,35 @@ int main() {
         //shared_ptr<CLNode> smgr = make_shared<CLNode>(entity1.get());
         // CLNode* smgr = device->GetRootNode();
         auto light1 = device->AddPointLight(device->GetRootNode(),1);
-        light1->SetShaderProgramID(resourceShaderBasic->GetProgramID());
+        light1->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
         static_cast<CLPointLight*>(light1->GetEntity())->SetLightAttributes(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.7f, 0.7f, 0.7f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.1f, 0.1, 0.1f), 1.0f, 0.00005f, 0.0000014f);
 
         auto light2 = device->AddPointLight(device->GetRootNode(),2);
-        light2->SetShaderProgramID(resourceShaderBasic->GetProgramID());
+        light2->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
         static_cast<CLPointLight*>(light2->GetEntity())->SetLightAttributes(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.2f, 0.2f, 0.2f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.1f, 0.1, 0.1f), 1.0f, 0.00007f, 0.00008f);
 
 
+
         auto mesh1 = device->AddMesh(device->GetRootNode(),3);
-        mesh1->SetShaderProgramID(resourceShaderBasic->GetProgramID());
+        mesh1->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
 
         auto camera = device->AddCamera(device->GetRootNode(),4);
-        camera->SetShaderProgramID(resourceShaderBasic->GetProgramID());
+        camera->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
+
+
 
         auto mesh2 = device->AddMesh(device->GetRootNode(),5);
-        mesh2->SetShaderProgramID(resourceShaderBasic->GetProgramID());
+        mesh2->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
 
         auto nodeOctopusAnim = device->AddMesh(device->GetRootNode(),6);
-        nodeOctopusAnim->SetShaderProgramID(resourceShaderBasic->GetProgramID());
+        nodeOctopusAnim->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
 
         auto nodeCubeAnim = device->AddMesh(device->GetRootNode(),7);
-        nodeCubeAnim->SetShaderProgramID(resourceShaderBasic->GetProgramID());
+        nodeCubeAnim->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
+
+        auto mesh3 = device->AddMesh(device->GetRootNode(),8);
+        mesh3->SetShaderProgramID(resourceShaderBasic->GetProgramID());
+
 
         
         /////////////////////////////////////////////////////
@@ -141,6 +149,7 @@ int main() {
 
         static_cast<CLMesh*>(mesh1->GetEntity())->SetMesh(resourceMeshGround);
         static_cast<CLMesh*>(mesh2->GetEntity())->SetMesh(resourceMesh);
+        static_cast<CLMesh*>(mesh3->GetEntity())->SetMesh(resourceMeshShield);
         // vector<uint8_t> distanceBetweenFrames(75);
         // for (uint8_t i = 0; i < 75; i++)
         //     distanceBetweenFrames[i] = 1;
@@ -161,6 +170,11 @@ int main() {
         mesh2->SetScalation(glm::vec3(10.5f, 10.5f, 10.5f));
         mesh2->SetRotation(glm::vec3(0.0f, 0.0f, 0.0f));
         mesh2->SetTranslation(glm::vec3(50.0f, 80.0f, -50.0f));
+
+
+        mesh3->SetScalation(glm::vec3(5.f, 5.f, 5.f));
+        mesh3->SetRotation(glm::vec3(0.0f, 0.0f, 0.0f));
+        mesh3->SetTranslation(glm::vec3(50.0f, 80.0f, -50.0f));
 
         nodeOctopusAnim->SetScalation(glm::vec3(1.0f, 1.0f, 1.0f));
         nodeOctopusAnim->SetRotation(glm::vec3(0.0f, 0.0f, 0.0f));
@@ -253,6 +267,8 @@ int main() {
 
             device->DrawObjects();
 
+            device->SetEnableDepthTest(false);
+            
             string file = "media/logo_clover.png";
             device->DrawImage2D(10.0f, 10.0f, 200.0f, 200.0f, 0.2f, file, true);
 
@@ -261,6 +277,7 @@ int main() {
             glm::vec3 vect3 = glm::vec3(1.0f, 0.8f, 0.2f);
             device->RenderText2D(cadena, 25.0f, 25.0f, 0.05f, 1.0f, vect3);
 
+            device->SetEnableDepthTest(true);
             // animaciones
             // static_cast<CLMesh*>(nodeOctopusAnim->GetEntity())->Animate();
             // static_cast<CLMesh*>(nodeCubeAnim->GetEntity())->AnimateInterpolated();

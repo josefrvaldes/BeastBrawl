@@ -68,7 +68,7 @@ void StateInGameMulti::InitCarHumans(const uint16_t idOnline_, const vector<uint
 
     COnline *cOnline = static_cast<COnline *>(manCars->GetCar()->GetComponent(CompType::OnlineComp).get());
     cOnline->idClient = idOnline_;
-    manShield->CreateShield(idComp->id, glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.5f));
+    manShield->CreateShield(idComp->id, glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(3.0f));
 
     for (size_t i = 0; i < arrayIdEnemies.size(); i++) {
         uint16_t idEnemy = arrayIdEnemies[i];
@@ -92,7 +92,7 @@ void StateInGameMulti::InitCarHumans(const uint16_t idOnline_, const vector<uint
         nameEvent = "Coche/choque";
         SoundFacadeManager::GetInstance()->GetSoundFacade()->CreateSoundEstatic3D(idComp->id, pos, nameEvent, 0);
 
-        manShield->CreateShield(idComp->id, glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.5f));
+        manShield->CreateShield(idComp->id, glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(3.0f));
 
         shared_ptr<CBufferOnline> buffer = make_shared<CBufferOnline>();
         car->AddComponent(buffer);
@@ -172,6 +172,10 @@ void StateInGameMulti::UpdateGame() {
             physicsEngine->UpdateTransformable(actualCar.get());
         }
     }
+
+    //ACTUALIZAR ESCUDOS
+    physicsEngine->UpdateShields(manCars->GetEntities(), manShield->GetEntities());
+
 }
 
 void StateInGameMulti::Update() {
