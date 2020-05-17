@@ -55,7 +55,7 @@ BoxPowerUp::BoxPowerUp(){
     shared_ptr<CBoxPowerUp> cBoxPowerUp   = make_shared<CBoxPowerUp>();
     shared_ptr<CShader> cShader = make_shared<CShader>(vertexShader,fragmentShader);
     //shared_ptr<CRemovableObject> cRemovableObject = make_shared<CRemovableObject>();
-    shared_ptr<CBoundingSphere> cBoundingSphere = make_shared<CBoundingSphere>(vec3(0.0,0.0,0.0), 6.5);
+    shared_ptr<CBoundingSphere> cBoundingSphere = make_shared<CBoundingSphere>(vec3(0.0,0.0,0.0), 16.0);
 
     AddComponent(cId);
     AddComponent(cType);

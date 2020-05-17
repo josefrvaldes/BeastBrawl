@@ -1082,7 +1082,7 @@ void RenderFacadeIrrlicht::FacadeDrawMenu() {
     driver->endScene();
 }
 
-void RenderFacadeIrrlicht::FacadeInitResources(){
+void RenderFacadeIrrlicht::FacadeInitResources(mainCharacter character){
 
 }
 

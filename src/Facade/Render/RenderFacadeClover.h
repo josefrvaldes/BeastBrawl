@@ -57,7 +57,7 @@ class RenderFacadeClover : public RenderFacade {
       void FacadeDrawSelectCharacter() override;
       void FacadeDrawGameOptions() override;
       void FacadeDrawTournamentOptions() override;
-      void FacadeInitResources() override;
+      void FacadeInitResources(mainCharacter character) override;
       void FacadeDrawPause() override;
       void FacadeDrawEndRace() override;
       void FacadeDrawEndTournament() override;

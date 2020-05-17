@@ -45,6 +45,7 @@ Car::Car(int pj){
     glm::vec3 offsetTopLeft,offsetTopRight,offsetBottomLeft,offsetBottomRight;
     glm::vec3 rotationTopLeft,rotationTopRight,rotationBottomLeft,rotationBottomRight;
     glm::vec3 scaleTopLeft,scaleTopRight,scaleBottomLeft,scaleBottomRight;
+    float radiusSPhere, distanceSphere, distanceFloor;
     shared_ptr<CType> cType = make_shared<CType>(ModelType::AnimatedMesh);
     
     switch (pj) {
@@ -69,16 +70,18 @@ Car::Car(int pj){
             offsetTopRight =        glm::vec3(0.92,0.3f,-0.8);
             offsetBottomLeft =      glm::vec3(-0.2,0.3f,0.9);
             offsetBottomRight =     glm::vec3(-0.2,0.3f,-0.9);
-
             rotationTopLeft =       glm::vec3(0.0f,0.0f,0.0f);
             rotationTopRight =      glm::vec3(0.0f,0.0f,0.0f);
             rotationBottomLeft =    glm::vec3(0.0f,0.0f,0.0f);
             rotationBottomRight =   glm::vec3(0.0f,0.0f,0.0f);
-
             scaleTopLeft =          glm::vec3(1.0f);
             scaleTopRight =         glm::vec3(1.0f);
             scaleBottomLeft =       glm::vec3(1.0f);
             scaleBottomRight =      glm::vec3(1.0f);
+
+            radiusSPhere =          7.0;
+            distanceSphere =        2.0;
+            distanceFloor =         10.0;
         }
             break;
         case 1: 
@@ -97,16 +100,18 @@ Car::Car(int pj){
             offsetTopRight =        glm::vec3(1.6,0.1f,-1.5);
             offsetBottomLeft =      glm::vec3(-1.4,0.1f,1.5);
             offsetBottomRight =     glm::vec3(-1.4,0.1f,-1.5);
-
             rotationTopLeft =       glm::vec3(0.0f,0.0f,0.0f);
             rotationTopRight =      glm::vec3(0.0f,0.0f,0.0f);
             rotationBottomLeft =    glm::vec3(0.0f,0.0f,0.0f);
             rotationBottomRight =   glm::vec3(0.0f,0.0f,0.0f);
-
             scaleTopLeft =          glm::vec3(1.0f);
             scaleTopRight =         glm::vec3(1.0f);
             scaleBottomLeft =       glm::vec3(1.0f);
             scaleBottomRight =      glm::vec3(1.0f);
+
+            radiusSPhere =          7.0;
+            distanceSphere =        5.0;
+            distanceFloor =         8.0;
             break;
         case 2: 
             _pj =                   mainCharacter::SHARK; 
@@ -114,6 +119,8 @@ Car::Car(int pj){
             maxSpeed =              MAX_VELOCITY::V_MEDIUM;
             acceleration =          ACCELERATION::A_HIGH/100;
             mesh =                  meshCar(SHARK);
+            anim =                  animCar(SHARK);  AddComponent(anim);
+            cType = make_shared<CType>(ModelType::StaticMesh);
 
             pathTopLeft =           "sharky_wheel4.obj";
             pathTopRight =          "sharky_wheel2.obj";
@@ -124,16 +131,18 @@ Car::Car(int pj){
             offsetTopRight =        glm::vec3(0.5,0.3f,-0.8);
             offsetBottomLeft =      glm::vec3(-0.4,0.3f,0.8);
             offsetBottomRight =     glm::vec3(-0.4,0.3f,-0.8);
-
             rotationTopLeft =       glm::vec3(0.0f,0.0f,0.0f);
             rotationTopRight =      glm::vec3(0.0f,0.0f,0.0f);
             rotationBottomLeft =    glm::vec3(0.0f,0.0f,0.0f);
             rotationBottomRight =   glm::vec3(0.0f,0.0f,0.0f);
-
             scaleTopLeft =          glm::vec3(1.0f);
             scaleTopRight =         glm::vec3(1.0f);
             scaleBottomLeft =       glm::vec3(1.0f);
             scaleBottomRight =      glm::vec3(1.0f);
+
+            radiusSPhere =          7.0;
+            distanceSphere =        5.0;
+            distanceFloor =         7.0;
             break;
         case 3: 
             _pj =                   mainCharacter::GORILLA; 
@@ -141,6 +150,8 @@ Car::Car(int pj){
             maxSpeed =              MAX_VELOCITY::V_MEDIUM;
             acceleration =          ACCELERATION::A_LOW/100;
             mesh =                  meshCar(GORILLA);
+            anim =                  animCar(GORILLA);  AddComponent(anim);
+            cType = make_shared<CType>(ModelType::StaticMesh);
 
             pathTopLeft =           "kaiserkong_wheel1.obj";
             pathTopRight =          "kaiserkong_wheel2.obj";
@@ -151,16 +162,18 @@ Car::Car(int pj){
             offsetTopRight =        glm::vec3(1.5,0.3f,-1.5);
             offsetBottomLeft =      glm::vec3(-1.0,0.3f,1.7);
             offsetBottomRight =     glm::vec3(-1.0,0.3f,-1.7);
-
             rotationTopLeft =       glm::vec3(0.0f,0.0f,0.0f);
             rotationTopRight =      glm::vec3(0.0f,0.0f,0.0f);
             rotationBottomLeft =    glm::vec3(0.0f,0.0f,0.0f);
             rotationBottomRight =   glm::vec3(0.0f,0.0f,0.0f);
-
             scaleTopLeft =          glm::vec3(1.0f);
             scaleTopRight =         glm::vec3(1.0f);
             scaleBottomLeft =       glm::vec3(1.0f);
             scaleBottomRight =      glm::vec3(1.0f);
+
+            radiusSPhere =          7.0;
+            distanceSphere =        5.0;
+            distanceFloor =         7.0;
             break;
         case 4: 
             _pj =                   mainCharacter::DRAGON; 
@@ -168,6 +181,8 @@ Car::Car(int pj){
             maxSpeed =              MAX_VELOCITY::V_MEDIUM;
             acceleration =          ACCELERATION::A_HIGH/100;
             mesh =                  meshCar(DRAGON);
+            anim =                  animCar(DRAGON);  AddComponent(anim);
+            cType = make_shared<CType>(ModelType::StaticMesh);
 
             pathTopLeft =           "deacon_wheel2.obj";
             pathTopRight =          "deacon_wheel4.obj";
@@ -178,16 +193,18 @@ Car::Car(int pj){
             offsetTopRight =        glm::vec3(0.65,0.4f,-0.9);
             offsetBottomLeft =      glm::vec3(-0.65,0.4f,0.8);
             offsetBottomRight =     glm::vec3(-0.65,0.4f,-0.9);
-
             rotationTopLeft =       glm::vec3(0.0f,0.0f,0.0f);
             rotationTopRight =      glm::vec3(0.0f,0.0f,0.0f);
             rotationBottomLeft =    glm::vec3(0.0f,0.0f,0.0f);
             rotationBottomRight =   glm::vec3(0.0f,0.0f,0.0f);
-
             scaleTopLeft =          glm::vec3(1.0f);
             scaleTopRight =         glm::vec3(1.0f);
             scaleBottomLeft =       glm::vec3(1.0f);
             scaleBottomRight =      glm::vec3(1.0f);
+
+            radiusSPhere =          7.0;
+            distanceSphere =        5.0;
+            distanceFloor =         7.0;
             break;
         case 5: 
             _pj =                   mainCharacter::OCTOPUS; 
@@ -195,6 +212,8 @@ Car::Car(int pj){
             maxSpeed =              MAX_VELOCITY::V_HIGH;
             acceleration =          ACCELERATION::A_MEDIUM/100;
             mesh =                  meshCar(OCTOPUS);
+            anim =                  animCar(OCTOPUS);  AddComponent(anim);
+            cType = make_shared<CType>(ModelType::StaticMesh);
 
             pathTopLeft =           "cyberoctopus_wheel1.obj";
             pathTopRight =          "cyberoctopus_wheel2.obj";
@@ -205,16 +224,18 @@ Car::Car(int pj){
             offsetTopRight =        glm::vec3(1.0,0.3f,-1.3);
             offsetBottomLeft =      glm::vec3(-1.2,0.3f,0.5);
             offsetBottomRight =     glm::vec3(-1.2,0.3f,-0.5);
-
             rotationTopLeft =       glm::vec3(0.0f,0.0f,0.0f);
             rotationTopRight =      glm::vec3(0.0f,0.0f,0.0f);
             rotationBottomLeft =    glm::vec3(0.0f,0.0f,0.0f);
             rotationBottomRight =   glm::vec3(0.0f,0.0f,0.0f);
-
             scaleTopLeft =          glm::vec3(1.0f);
             scaleTopRight =         glm::vec3(1.0f);
             scaleBottomLeft =       glm::vec3(1.0f);
             scaleBottomRight =      glm::vec3(1.0f);
+
+            radiusSPhere =          7.0;
+            distanceSphere =        5.0;
+            distanceFloor =         7.0;
             break;
         default: break;
     }
@@ -252,7 +273,7 @@ Car::Car(int pj){
 
     glm::vec3 pSphBehind = pos;
     glm::vec3 pSphFront = pos;
-    shared_ptr<CBoundingChassis> cBoundingChassis = make_shared<CBoundingChassis>(pSphBehind, 7.0, 5.0, pSphFront, 7.0, 5.0);
+    shared_ptr<CBoundingChassis> cBoundingChassis = make_shared<CBoundingChassis>(pSphBehind, pSphFront, radiusSPhere, distanceFloor, distanceSphere);
 
     shared_ptr<CGravity> cGravity = make_shared<CGravity>();
 

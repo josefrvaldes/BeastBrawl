@@ -879,7 +879,7 @@ void RenderFacadeClover::FacadeSetWindowSize(DataMap* d) {
 /**
  * Cargamos lo necesario para la partida.
  */
-void RenderFacadeClover::FacadeInitResources(){
+void RenderFacadeClover::FacadeInitResources(mainCharacter character){
     
     FacadeBeginScene();
 
@@ -909,7 +909,33 @@ void RenderFacadeClover::FacadeInitResources(){
     resourceManager->GetResourceMesh("media/telebanana.obj");
     resourceManager->GetResourceMesh("media/training_ground.obj");
 
-    // resourceManager->LoadResourceAnimation("media/animations/cyberoctopus/damage/damageoctopus_000001.obj", 35, false);
+    // cargamos TODAS las animaciones de win, porque cualquiera puede ganar
+    // resourceManager->GetResourceAnimation("media/animations/cyberoctopus/win/victoryoctopus_000001.obj", 26, true);
+    // resourceManager->GetResourceAnimation("media/animations/dragon/win/victorydragon_000001.obj", 31, true);
+
+    // cargamos el resto de animaciones del personaje principal
+    switch(character) {
+        case mainCharacter::PENGUIN:
+            break;
+        case mainCharacter::TIGER:
+            break;
+        case mainCharacter::GORILLA:
+            resourceManager->GetResourceAnimation("media/animations/kong/right/turnrightkong_000001.obj", 10, false);
+            resourceManager->GetResourceAnimation("media/animations/kong/left/turnleftkong_000001.obj", 10, false);
+            break;
+        case mainCharacter::SHARK:
+            resourceManager->GetResourceAnimation("media/animations/sharky/right/turnrightsharky_000001.obj", 10, false);
+            resourceManager->GetResourceAnimation("media/animations/sharky/left/turnleftsharky_000001.obj", 10, false);
+            break;
+        case mainCharacter::DRAGON:
+            resourceManager->GetResourceAnimation("media/animations/dragon/right/turnrightdragon_000001.obj", 10, false);
+            resourceManager->GetResourceAnimation("media/animations/dragon/left/turnleftdragon_000001.obj", 10, false);
+            break;
+        case mainCharacter::OCTOPUS:
+            resourceManager->GetResourceAnimation("media/animations/cyberoctopus/right/turnrightoctopus_000001.obj", 10, false);
+            resourceManager->GetResourceAnimation("media/animations/cyberoctopus/left/turnleftoctopus_000001.obj", 10, false);
+            break;
+    }
 
     //Shaders
     resourceManager->GetResourceShader("CLEngine/src/Shaders/cartoonShader.vert", "CLEngine/src/Shaders/cartoonShader.frag");
@@ -971,7 +997,7 @@ void RenderFacadeClover::FacadeInitMenu() {
     FacadeEndScene();
 
     // -------- CARGAMOS ANIMACIONES
-    resourceManager->GetResourceAnimation("media/animations/dragon/selection/selectiondragon_000001.obj", 30, false);
+    resourceManager->GetResourceAnimation("media/animations/sharky/selection/selectionsharky_000001.obj", 30, false);
     resourceManager->GetResourceAnimation("media/animations/cyberoctopus/selection/selectionoctopus_000001.obj", 31, false);
 
 
@@ -1093,7 +1119,7 @@ void RenderFacadeClover::FacadeInitSelectCharacter() {
     mesh->SetShaderProgramID(shader->GetProgramID());
 
     //Shark
-    auto animationSha = resourceManager->GetResourceAnimation("media/animations/dragon/selection/selectiondragon_000001.obj", 30, false);
+    auto animationSha = resourceManager->GetResourceAnimation("media/animations/sharky/selection/selectionsharky_000001.obj", 30, false);
     mesh = device->AddMesh(smgr,2);
     static_cast<CLMesh*>(mesh->GetEntity())->SetAnimation(animationSha, true);
     mesh->SetScalation(glm::vec3(2.0f));

@@ -46,7 +46,8 @@ void StateInGame::InitializeFacades() {
     renderEngine->FacadeSuscribeEvents();
 
     //Pantalla de carga
-    renderEngine->FacadeInitResources();
+    auto cCar = static_cast<CCar*>(manCars->GetCar()->GetComponent(CompType::CarComp).get());
+    renderEngine->FacadeInitResources(cCar->character);
 }
 
 void StateInGame::AddElementsToRender() {

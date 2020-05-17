@@ -72,19 +72,19 @@ void ManPowerUp::CreatePowerUp(DataMap *d) {
         transforPerse = nullptr;
 
     // calculamos la posicion en la que debe salir el powerUp:
-    int medidaPowerUp = 25;
+    int medidaPowerUp = 15;
     float posX = 0, posZ = 0;
-
+    vec3 positionPowerUp;
     float angleRotation = (transforSalida->rotation.y * glm::pi<float>() / 180.0);
     if (type == typeCPowerUp::PudinDeFrambuesa) {
         posX = transforSalida->position.x - cos(angleRotation) * (-1 * ((dimensionsCarSalida->width / 2) + medidaPowerUp));
         posZ = transforSalida->position.z + sin(angleRotation) * (-1 * ((dimensionsCarSalida->depth / 2) + medidaPowerUp));
+        positionPowerUp = vec3(posX, transforSalida->position.y + 10, posZ);
     } else {
         posX = transforSalida->position.x - cos(angleRotation) * ((dimensionsCarSalida->width / 2) + medidaPowerUp);
         posZ = transforSalida->position.z + sin(angleRotation) * ((dimensionsCarSalida->depth / 2) + medidaPowerUp);
+        positionPowerUp = vec3(posX, transforSalida->position.y + 10, posZ);
     }
-
-    vec3 positionPowerUp = vec3(posX, transforSalida->position.y + 10, posZ);
 
     shared_ptr<PowerUp> powerUp = make_shared<PowerUp>(positionPowerUp, transforSalida->rotation, type, transforPerse);
     
@@ -121,8 +121,8 @@ void ManPowerUp::MaterializePowerUp(shared_ptr<PowerUp> powerUp , typeCPowerUp t
     auto renderEngine = renderFacadeManager->GetRenderFacade();
     renderEngine->FacadeAddObject(powerUp.get());
 
-    auto cDimensions = static_cast<CDimensions *>(powerUp->GetComponent(CompType::DimensionsComp).get());
-    auto radioSphere = ((cDimensions->width / 2) + (cDimensions->depth / 2)) / 2;
+    //auto cDimensions = static_cast<CDimensions *>(powerUp->GetComponent(CompType::DimensionsComp).get());
+    //auto radioSphere = ((cDimensions->width / 2) + (cDimensions->depth / 2)) / 2;
     //cout <<"EL RADIO DE CREACION ES DEEEEEEEEEEEEEEEEE: " << radioSphere << endl;
     shared_ptr<CBoundingSphere> cBoundingSphere;
     if (type == typeCPowerUp::PudinDeFrambuesa) {
