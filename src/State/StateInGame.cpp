@@ -11,6 +11,7 @@
 #include "../Components/CBoundingCilindre.h"
 #include "../Components/CBoundingSphere.h"
 #include "../Components/CShader.h"
+#include "../Components/CAnimation.h"
 #include "../Components/CTotem.h"
 #include "../Entities/Camera.h"
 #include "../Constants.h"
@@ -273,10 +274,16 @@ void StateInGame::UpdateAnimationEnd() {
         // si todavía no habíamos asignado un winner, es decir, es el primer frame, buscamos winner y se lo asignamos
         if(sysAnimEnd->GetWinner() == nullptr) {
             Car *winner = static_cast<Car*>(manCars->GetCurrentWinner());
+            if(winner->HasComponent(CompType::AnimationComp)) {
+                auto cAnimation = static_cast<CAnimation*>(winner->GetComponent(CompType::AnimationComp).get());
+                cAnimation->ActivateAnimationWin();
+                renderEngine->FacadeUpdateAnimationsLoD(manCars->GetEntities());
+            }
             sysAnimEnd->SetWinner(winner);
         }
         // y ya animamos y demás
         sysAnimEnd->Animate();
+        renderEngine->FacadeAnimate(manCars->GetEntities());
         renderEngine->UpdateCamera(manCamera.get()->getCamera(), manCars.get());
         auto cCam = static_cast<CCamera *>(manCamera.get()->getCamera()->GetComponent(CompType::CameraComp).get());
         renderEngine->SetCamTarget(cCam->target);
