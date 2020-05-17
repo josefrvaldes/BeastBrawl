@@ -106,6 +106,8 @@ class RenderFacade {
     virtual void ThrowEventChangeToMulti(uint16_t IdOnline, const vector<uint16_t> IdPlayersOnline) = 0;
     virtual void FacadeAddSkybox(string right,string left,string top,string bottom,string front,string back) = 0;
     virtual void FacadeAddShadowMapping(unsigned int lightId) = 0;
+    virtual void FacadeAddGrass(float _width, float _height, const glm::vec3& _position, const glm::vec3& _scale, bool realistGrass) = 0;
+    virtual void FacadeAddGrass(float radious, const glm::vec3& _position, const glm::vec3& _scale, bool realistGrass) = 0;
     virtual void CleanScene() = 0;
     virtual void FacadeUpdateViewport() = 0;
 

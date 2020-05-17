@@ -300,7 +300,7 @@ class CLEngine {
         //! @returns CLE::CLNode()
         //! @see CLE::CLBillboard()
         CLNode* AddBillBoard(CLNode* parent,unsigned int id,string& file, bool vertically, float width_, float height_);
-        //! Crea un modulo de hierba
+        //! Crea un modulo de hierba cuadrado
         //! @param _width Anchura de la celda de hierba
         //! @param _height Altura de la celda de hierba
         //! @param _position Posicion central de la celda de hierba
@@ -308,6 +308,13 @@ class CLEngine {
         //! @param realistGrass True, hierba aleatoria. False, cuadrado de hierba.
         //! @see CLE::CLGrassSystem()
         void AddGrass(float _width, float _height, const glm::vec3& _position, const glm::vec3& _scale, bool realistGrass);
+        //! Crea un modulo de hierba circular
+        //! @param radious radio de la celda de hierba
+        //! @param _position Posicion central de la celda de hierba
+        //! @param _scale Escala de cada planta
+        //! @param realistGrass True, hierba aleatoria. False, cuadrado de hierba.
+        //! @see CLE::CLGrassSystem()
+        void AddGrass(float radious, const glm::vec3& _position, const glm::vec3& _scale, bool realistGrass);
         //! Elimina un hijo de ese nodo
         //! @param child Puntero al hijo para eliminar
         //! @returns bool Si ha sido finalizado con exito o no

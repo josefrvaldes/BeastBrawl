@@ -11,14 +11,22 @@ namespace CLE {
 
     class CLGrassSystem{
         public:
-            CLGrassSystem(float width, float height, const glm::vec3& position, const glm::vec3& scale, bool realistGrass);
+            CLGrassSystem(float width, float height, const glm::vec3& position, const glm::vec3& scale, bool realistGrass); // cuadrado
+            CLGrassSystem(float radious, const glm::vec3& position, const glm::vec3& scale, bool realistGrass);     // circular
             ~CLGrassSystem() {};
 
             void CalculateNumBushes();
             void CreateGrass();
             void CreateRealistGrass();
+
+            void CreateGrassCircle();
+            void CreateRealistGrassCircle();
+
             void ConfigureBuffers();
             void Draw(GLuint shaderID, const glm::mat4& projection, const glm::mat4& view);
+
+            glm::vec3 GetPosition() { return position; };
+            float GetSize();
 
         private:
             void AddLeafs(const glm::vec3& posLeaf, const glm::vec3& scaleLeaf);
@@ -38,7 +46,7 @@ namespace CLE {
             std::vector<glm::mat4> modelLeafVector;
             std::vector<glm::vec3> posLeafVector;
 
-            int extraScaleRealistic = 20;
+            int extraScaleRealistic;
             int extraPositionRealistic = 20;
             float wingTimer = 0.0;
 

@@ -91,6 +91,9 @@ void StateInGame::AddElementsToRender() {
         renderEngine->FacadeAddShadowMapping(cId->id);
     }
 
+    //renderEngine->FacadeAddGrass(200.0, glm::vec3(400.0f, 0.0f, 0.0f), glm::vec3(15.0, 15.0, 15.0), false);
+    //renderEngine->FacadeAddGrass(200.0, 200.0, glm::vec3(400.0f, 0.0f, 0.0f), glm::vec3(7.0, 7.0, 7.0), true);
+
     //Añadimos las particulas al arbol
     for (auto particleSystem : manParticleSystem->GetEntities()) {
         renderEngine->FacadeAddObject(particleSystem.get());

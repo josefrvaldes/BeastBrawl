@@ -2250,6 +2250,16 @@ void RenderFacadeClover::FacadeAddShadowMapping(unsigned int lightId){
     device->AddShadowMapping(lightId);
 }
 
+void RenderFacadeClover::FacadeAddGrass(float _width, float _height, const glm::vec3& _position, const glm::vec3& _scale, bool realistGrass){
+    device->AddGrass(_width, _height, _position, _scale, realistGrass);
+}
+
+
+void RenderFacadeClover::FacadeAddGrass(float radious, const glm::vec3& _position, const glm::vec3& _scale, bool realistGrass){
+    device->AddGrass(radious, _position, _scale, realistGrass);  
+}
+
+
 
 //DEBUG dibuja las aristas entre los nodos del grafo
 void RenderFacadeClover::FacadeDrawGraphEdges(ManWayPoint* manWayPoints) const{

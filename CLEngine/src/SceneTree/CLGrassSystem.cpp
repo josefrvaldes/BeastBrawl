@@ -14,10 +14,12 @@ CLGrassSystem::CLGrassSystem(float _width, float _height, const glm::vec3& _posi
     auto rm = CLResourceManager::GetResourceManager();
     grassTexture = rm->GetResourceTexture(fileGrass, false);
 
-    if(realistGrass)
-        sizeGrass = (scale.x + extraScaleRealistic) * 0.5;
-    else
+    if(realistGrass){
+        extraScaleRealistic = scale.x - scale.x*0.20;        // cual va a ser la cadencia de la hierva
+        sizeGrass = (scale.x + extraScaleRealistic) * 0.5;  // se elige el punto intermedio
+    }else{
         sizeGrass = scale.x * 0.3;
+    }
     extraSize = sizeGrass + sizeGrass*0.2;
 
 
@@ -30,6 +32,14 @@ CLGrassSystem::CLGrassSystem(float _width, float _height, const glm::vec3& _posi
 
     ConfigureBuffers();
     // cout << "Num Text plantas: " << modelLeafVector.size() << "\n";
+}
+
+
+float CLGrassSystem::GetSize(){
+    if(width > height)
+        return width;
+    else
+        return height;
 }
 
 
@@ -183,7 +193,76 @@ void CLGrassSystem::Draw(GLuint shaderID, const glm::mat4& projection, const glm
 
 
 
+// en caso de circulos
+CLGrassSystem::CLGrassSystem(float radious, const glm::vec3& _position, const glm::vec3& _scale, bool realistGrass) : width(radious), height(radious), position(_position), scale(_scale){
+    auto rm = CLResourceManager::GetResourceManager();
+    grassTexture = rm->GetResourceTexture(fileGrass, false);
 
+    if(realistGrass){
+        extraScaleRealistic = scale.x - scale.x*0.20;        // cual va a ser la cadencia de la hierva
+        sizeGrass = (scale.x + extraScaleRealistic) * 0.5;  // se elige el punto intermedio
+    }else{
+        sizeGrass = scale.x * 0.3;
+    }
+    extraSize = sizeGrass + sizeGrass*0.2;
+
+
+    CalculateNumBushes();
+
+    if(realistGrass)
+        CreateRealistGrassCircle();
+    else
+        CreateGrassCircle();
+
+    ConfigureBuffers();
+    // cout << "Num Text plantas: " << modelLeafVector.size() << "\n";
+}
+
+
+// Crea las posiciones de la hierva de forma uniforme con un CIRCULO, con el mismo tamanyo
+void CLGrassSystem::CreateGrassCircle(){ 
+    glm::vec3 posActual = glm::vec3(position.x - numBushesRows*0.5*extraSize , position.y, position.z - numBushesFiles*0.5*extraSize);
+    while(posActual.x < (position.x+numBushesRows*0.5*extraSize)){
+        while(posActual.z < (position.z+numBushesFiles*0.5*extraSize)){
+            if(glm::distance(posActual, position) < width*0.5)
+                AddLeafs(posActual, scale);
+            posActual.z = posActual.z + extraSize;
+        }
+        posActual.z = position.z - numBushesFiles*0.5*extraSize;
+        posActual.x = posActual.x + extraSize; 
+    }
+}
+
+
+// Trata de crear hierva realista con aleatorios CIRCULO
+void CLGrassSystem::CreateRealistGrassCircle(){
+    float extraScale;
+    float extraPosX;
+    float extraPosZ;
+    glm::vec3 posActual = glm::vec3(position.x - numBushesRows*0.5*extraSize , position.y, position.z - numBushesFiles*0.5*extraSize);
+    glm::vec3 auxScale(scale);
+    glm::vec3 auxPosition(posActual);
+    srand(chrono::high_resolution_clock::now().time_since_epoch().count());
+
+    while(posActual.x < (position.x+numBushesRows*0.5*extraSize)){
+        while(posActual.z < (position.z+numBushesFiles*0.5*extraSize)){
+            auxScale = scale;
+            // Obtener numeros aleatorios
+            extraScale = Utils::getRandomFloat(0, extraScaleRealistic);
+            extraPosX = Utils::getRandomFloat(0, extraPositionRealistic);
+            extraPosZ = Utils::getRandomFloat(0, extraPositionRealistic);
+            auxScale += extraScale;
+            auxPosition.x = posActual.x + extraPosX;
+            auxPosition.z = posActual.z + extraPosZ;
+            // generar las hojas
+            if(glm::distance(auxPosition, position) < width*0.5)
+                AddLeafs(auxPosition, auxScale);
+            posActual.z = posActual.z + extraSize;
+        }
+        posActual.z = position.z - numBushesFiles*0.5*extraSize;
+        posActual.x = posActual.x + extraSize;
+    }
+}
 
 
 /*
