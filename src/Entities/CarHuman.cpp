@@ -60,3 +60,14 @@ void CarHuman::SetRotation(glm::vec3 rot_){
     CTransformable *cTransformable = (CTransformable *)m_components[CompType::TransformableComp].get();
     cTransformable->rotation = rot_;
 }
+
+void CarHuman::SetPosition(glm::vec3 pos_){
+
+    CTransformable *cTransformable = (CTransformable *)m_components[CompType::TransformableComp].get();
+    cTransformable->position = pos_;
+
+
+    CBoundingChassis *cChassis = (CBoundingChassis *)m_components[CompType::CompBoundingChassis].get();
+    cChassis->sphereBehind->center = cTransformable->position;
+    cChassis->sphereFront->center = cTransformable->position;
+}

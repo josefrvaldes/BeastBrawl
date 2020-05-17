@@ -71,6 +71,8 @@ class ManCar : public Manager {
 
 
     glm::vec3 GetPosSpawn();
+    glm::vec3 GetPosSpawn(size_t index);
+    float GetAngleToTotem(glm::vec3 posCar);
 
    private:
     //Physics *physics;
@@ -118,7 +120,6 @@ class ManCar : public Manager {
     SystemOnline* systemOnline = nullptr; // en caso de que sea Single va a ser un nullptr
 
     std::vector<glm::vec3> positionsSpawn;
-    float GetAngleToTotem(glm::vec3 posCar);
 
     double maxTimeAccumulated {0};
 };

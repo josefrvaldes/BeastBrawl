@@ -7,6 +7,15 @@ StateInGameSingle::StateInGameSingle() : StateInGame() {
     InitState();
     InitializeManagers();
     InitCarAIS(*manCars, *manWayPoint);
+
+    
+    // posicionamos el mainCar. Antes estaba en StateInGame pero esto rompía el online por el random
+    vec3 newPos = manCars->GetPosSpawn();
+    manCars->GetCar()->SetPosition(newPos);
+    // y lo ponemos mirando al totem, que antes no estaba
+    manCars->GetCar()->SetRotation(glm::vec3(0, manCars->GetAngleToTotem(newPos),0));
+    
+
     InitializeSystems(*manCars.get(), *manBoundingWall.get(), *manBoundingOBB.get(), *manBoundingGround.get(), *manPowerUps.get(), *manNavMesh.get(), *manBoxPowerUps.get(), *manTotems.get());
     InitializeFacades();
 
