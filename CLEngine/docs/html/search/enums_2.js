@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['visibility_676',['Visibility',['../class_c_l_e_1_1_c_l_frustum.html#ae59c5b0093dfa9564459f5be3bb62734',1,'CLE::CLFrustum']]]
+  ['typefrustum_723',['typeFrustum',['../namespace_c_l_e.html#ab9425410b4ee2d36831fb007d6284083',1,'CLE']]]
 ];

@@ -21,7 +21,7 @@ void SetMeshAccordingToDistance(float distanceToCam, CMesh *cMesh) {
 }
 
 void SetMeshAccordingToDistance(float distanceToCam, CAnimation *cAnimation) {
-    cAnimation->previousAnimation = cAnimation->activeAnimation.get();
+    // cAnimation->previousAnimation = cAnimation->activeAnimation.get();
     if (distanceToCam < cAnimation->distanceNear) {
         cAnimation->activeAnimation = cAnimation->GetAnimations()[0];
     } else if(cAnimation->GetAnimations().size() >= 2 && distanceToCam < cAnimation->distanceMedium) {

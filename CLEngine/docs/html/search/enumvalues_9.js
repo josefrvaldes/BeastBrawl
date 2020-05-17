@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['spherespawn_693',['SphereSpawn',['../_c_l_particle_system_8h.html#a2955cca9df1e3f8faa105a79669676dca5f7909ab461255470e589196b38b3ff5',1,'CLParticleSystem.h']]],
-  ['squarespawn_694',['SquareSpawn',['../_c_l_particle_system_8h.html#a2955cca9df1e3f8faa105a79669676dca2ffbf00024091da3a6c5d205ae0c848d',1,'CLParticleSystem.h']]]
+  ['right_742',['Right',['../class_c_l_e_1_1_c_l_frustum.html#a166d93073d486188eb585b8ff7d5a2a4ac942551763df470987867b9e9ad8fa80',1,'CLE::CLFrustum']]]
 ];

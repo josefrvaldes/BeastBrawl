@@ -8,6 +8,7 @@
 #include <Components/CBufferOnline.h>
 #include <Components/CCar.h>
 #include <Components/CDimensions.h>
+#include <Components/CAnimation.h>
 #include <Components/CNitro.h>
 #include <Components/CHurt.h>
 #include <Components/CShield.h>
@@ -942,10 +943,18 @@ void ManCar::CatchPowerUpAI(DataMap* d) {
 
 void ManCar::TurnLeftCar(DataMap* d) {
     // cout << "Han llamado izquierda" << endl;
+    if(car->HasComponent(CompType::AnimationComp)) {
+        CAnimation * anim = static_cast<CAnimation *>(car->GetComponent(CompType::AnimationComp).get());
+        anim->ActivateAnimationLeft();
+    }
     physics->TurnLeft(car.get());
 }
 
 void ManCar::NotTurning(DataMap* d) {
+    if(car->HasComponent(CompType::AnimationComp)) {
+        CAnimation * anim = static_cast<CAnimation *>(car->GetComponent(CompType::AnimationComp).get());
+        anim->ActivateAnimationIdle();
+    }
     // cout << "Han llamado not turning" << endl;
     physics->NotTurning(car.get());
 }
@@ -961,6 +970,10 @@ void ManCar::NotAcceleratingOrDecelerating(DataMap* d) {
 }
 
 void ManCar::TurnRightCar(DataMap* d) {
+    if(car->HasComponent(CompType::AnimationComp)) {
+        CAnimation * anim = static_cast<CAnimation *>(car->GetComponent(CompType::AnimationComp).get());
+        anim->ActivateAnimationRight();
+    }
     // cout << "Han llamado derecha" << endl;
     physics->TurnRight(car.get());
 }

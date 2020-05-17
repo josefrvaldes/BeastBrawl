@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['top_695',['Top',['../class_c_l_e_1_1_c_l_frustum.html#a166d93073d486188eb585b8ff7d5a2a4a723f9fd65d7dd8fbd50a7a48d90888d1',1,'CLE::CLFrustum']]]
+  ['spherespawn_743',['SphereSpawn',['../_c_l_particle_system_8h.html#a2955cca9df1e3f8faa105a79669676dca5f7909ab461255470e589196b38b3ff5',1,'CLParticleSystem.h']]],
+  ['squarespawn_744',['SquareSpawn',['../_c_l_particle_system_8h.html#a2955cca9df1e3f8faa105a79669676dca2ffbf00024091da3a6c5d205ae0c848d',1,'CLParticleSystem.h']]]
 ];

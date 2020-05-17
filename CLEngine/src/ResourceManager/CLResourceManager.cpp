@@ -39,6 +39,14 @@ CLResourceMesh* CLResourceManager::GetResourceMesh(const std::string file, bool 
     return resource.get();
 }
 
+size_t CLResourceManager::GetResourceMeshIndex(const std::string file) {
+    for(size_t i = 0; i < meshes.size(); i++) {
+        if (meshes[i]->GetName() == file)
+            return i;
+    }
+    return -1;
+}
+
 
 vector<CLResourceMesh*> CLResourceManager::LoadResourceAnimation(const std::string path, uint8_t numKeyFrames, bool flipUV) {
     string folder = path.substr(0, path.find_last_of("/") + 1);
@@ -100,6 +108,19 @@ vector<CLResourceMesh*> CLResourceManager::LoadResourceAnimation(const std::stri
     return keyFrames;
 }
 
+vector<CLResourceMesh*> CLResourceManager::GetResourceExistingAnimation(const std::string path, uint8_t numKeyFrames, bool flipUV) {
+    size_t index = GetResourceMeshIndex(path);
+    vector<CLResourceMesh*> outputMeshes;
+    if(index >= 0) {
+        if(!Constants::ANIM_ACTIVATED)
+            numKeyFrames = 1;
+        outputMeshes.reserve(numKeyFrames);
+        for(size_t i = index; i < index + numKeyFrames; i++) {
+            outputMeshes.push_back(meshes[i].get());
+        }
+    }
+    return outputMeshes;
+}
 
 vector<CLResourceMesh*> CLResourceManager::GetResourceAnimation(const std::string path, uint8_t numKeyFrames, bool flipUV) {
     string folder = path.substr(0, path.find_last_of("/") + 1);
