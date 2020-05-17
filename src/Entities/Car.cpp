@@ -215,6 +215,7 @@ Car::Car(int pj){
             anim =                  animCar(OCTOPUS);  AddComponent(anim);
             cType = make_shared<CType>(ModelType::StaticMesh);
 
+
             pathTopLeft =           "cyberoctopus_wheel1.obj";
             pathTopRight =          "cyberoctopus_wheel2.obj";
             pathBottomLeft =        "cyberoctopus_wheel3.obj";
