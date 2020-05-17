@@ -5,6 +5,7 @@
 #include <Components/CCar.h>
 #include <Components/CBoundingChassis.h>
 #include <Components/CBoundingSphere.h>
+#include <Components/CParentNode.h>
 #include <Systems/Utils.h>
 #include <Constants.h>
 
@@ -176,6 +177,39 @@ void PhysicsFacadeClover::UpdatePowerUps(Entity* powerUp) {
     node->SetScalation(glm::vec3(cTransformable->scale.x, cTransformable->scale.y, cTransformable->scale.z));
 }
 
+
+void PhysicsFacadeClover::UpdateShields(const vector<shared_ptr<Entity>> &cars, const vector<shared_ptr<Entity>> &shields) {
+    //cout << "------------------- ACTUALIZANDO ESCUDOS" << endl;
+    for (const auto &car : cars) {
+        auto cTransformable = static_cast<CTransformable*>(car->GetComponent(CompType::TransformableComp).get());
+        auto cId = static_cast<CId*>(car->GetComponent(CompType::IdComp).get());
+
+        if (cTransformable && cId) {
+
+            // Busco cual es mi coche
+            for (auto& shield: shields) {
+                auto cParentNode = static_cast<CParentNode*>(shield->GetComponent(CompType::ParentNodeComp).get());
+                    auto cTransformableShield = static_cast<CTransformable*>(shield->GetComponent(CompType::TransformableComp).get());
+                    auto cIdShield = static_cast<CId*>(shield->GetComponent(CompType::IdComp).get());
+
+                if (cTransformableShield && cIdShield && cParentNode && cParentNode->idParentNode == cId->id) {
+                    //cout << "ESTE ES MI ESCUDO: [Coche] " << cId->id << " [Padre escudo] " << cParentNode->idParentNode << " [Escudo] " << cIdShield->id << endl;  
+               
+                    cTransformableShield->position = cTransformable->position;
+                    cTransformableShield->rotation = cTransformable->rotation;
+
+                    auto node = device->GetNodeByID(cIdShield->id);
+                    node->SetTranslation(glm::vec3(cTransformableShield->position.x, cTransformableShield->position.y, -cTransformableShield->position.z));
+                    node->SetRotation(glm::vec3(cTransformableShield->rotation.x, Utils::IrrlichtAngleToOpenGL(cTransformableShield->rotation.y), cTransformableShield->rotation.z));
+               
+                }
+
+            }
+        }
+
+    }
+
+}
 
 PhysicsFacadeClover::~PhysicsFacadeClover() {
 }

@@ -96,13 +96,16 @@ void StateInGame::AddElementsToRender() {
         renderEngine->FacadeAddObject(particleSystem.get());
     }
 
+
+    // Añadimos cosas a la fachada de render
+    renderEngine->FacadeAddPlates(manNamePlates.get());
+
+
+    // LOS ESCUDOS SIEMPRE AL FINAL POR SER TRANSPARENTES
     //Añadimos los escudos al arbol
     for(auto shield : manShield->GetEntities()){
         renderEngine->FacadeAddObject(shield.get());
     }
-
-    // Añadimos cosas a la fachada de render
-    renderEngine->FacadeAddPlates(manNamePlates.get());
 }
 
 void StateInGame::InitializeCLPhysics(ManCar &manCars, ManBoundingWall &manWall, ManBoundingOBB &manOBB, ManBoundingGround &manGround, ManPowerUp &manPowerUp, ManNavMesh &manNavMesh, ManBoxPowerUp &manBoxPowerUp, ManTotem &manTotem) {

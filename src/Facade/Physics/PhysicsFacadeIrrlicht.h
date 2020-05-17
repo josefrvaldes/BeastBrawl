@@ -16,6 +16,7 @@ class PhysicsFacadeIrrlicht : public PhysicsFacade {
     void UpdateCar(Entity*, Entity*) override;
     void UpdateTransformable(Entity*) override;
     void UpdatePowerUps(Entity*) override;
+    void UpdateShields(const vector<shared_ptr<Entity>>&, const vector<shared_ptr<Entity>>&) override {};
 
    private:
     void UpdateCam(Entity*);
