@@ -51,7 +51,7 @@ int main() {
         CLResourceManager* resourceManager = CLResourceManager::GetResourceManager();
 
         // auto resourceShader = resourceManager->GetResourceShader("CLEngine/src/Shaders/shadowMappingShader.vert", "CLEngine/src/Shaders/shadowMappingShader.frag");
-        // auto resourceShaderCartoon = resourceManager->GetResourceShader("CLEngine/src/Shaders/cartoonShader.vert", "CLEngine/src/Shaders/cartoonShader.frag");
+        auto resourceShaderCartoon = resourceManager->GetResourceShader("CLEngine/src/Shaders/cartoonShader.vert", "CLEngine/src/Shaders/cartoonShader.frag");
         // auto resourceShaderLightMapping = resourceManager->GetResourceShader("CLEngine/src/Shaders/lightMapping.vert", "CLEngine/src/Shaders/lightMapping.frag");
         // auto resourceShaderHud = resourceManager->GetResourceShader("CLEngine/src/Shaders/spriteShader.vert", "CLEngine/src/Shaders/spriteShader.frag");
         auto resourceShaderBasic = resourceManager->GetResourceShader("CLEngine/src/Shaders/basicShader.vert", "CLEngine/src/Shaders/basicShader.frag");
@@ -62,6 +62,7 @@ int main() {
         auto resourceMeshGround = resourceManager->GetResourceMesh("media/training_ground.obj", true);
         // auto resourceMeshTotem = resourceManager->GetResourceMesh("media/totem.obj", true);
         auto resourceMesh = resourceManager->GetResourceMesh("media/sharky_wheel2.obj", true);
+        auto resourceMeshShield = resourceManager->GetResourceMesh("media/shield.obj", true);
         // auto resourceMeshBox = resourceManager->GetResourceMesh("media/TEST_BOX.obj", true);
         // auto animationKong = resourceManager->GetResourceAnimation("media/animations/kong/001kong.obj", 75, true);
         // auto animationCube = resourceManager->GetResourceAnimation("media/animations/cube/001cube.obj", 4, true);
@@ -267,6 +268,7 @@ int main() {
             device->DrawObjects();
 
             device->SetEnableDepthTest(false);
+            
             string file = "media/logo_clover.png";
             device->DrawImage2D(10.0f, 10.0f, 200.0f, 200.0f, 0.2f, file, true);
 
