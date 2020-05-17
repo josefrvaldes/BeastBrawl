@@ -141,6 +141,8 @@ Car::Car(int pj){
             maxSpeed =              MAX_VELOCITY::V_MEDIUM;
             acceleration =          ACCELERATION::A_LOW/100;
             mesh =                  meshCar(GORILLA);
+            anim =                  animCar(GORILLA);  AddComponent(anim);
+            cType = make_shared<CType>(ModelType::StaticMesh);
 
             pathTopLeft =           "kaiserkong_wheel1.obj";
             pathTopRight =          "kaiserkong_wheel2.obj";

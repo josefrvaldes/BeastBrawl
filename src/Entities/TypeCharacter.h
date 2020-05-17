@@ -58,11 +58,16 @@ shared_ptr<CAnimation> animCar(TypeAnimal type) {
          anim->AddAnimationLeft(Animation("animations/dragon/left/turnleftdragon_000001.obj", 10, false));
          anim->AddAnimationRight(Animation("animations/dragon/right/turnrightdragon_000001.obj", 10, false));
          anim->AddAnimationIdle(Animation("animations/dragon/idle/kart_deacon_000001.obj", 1, true));
-         anim->AddAnimationWin(Animation("animations/dragon/win/victorydragon_000001.obj", 26, true));
+         anim->AddAnimationWin(Animation("animations/dragon/win/victorydragon_000001.obj", 31, true));
+      } break;
+      case GORILLA:{
+         anim->AddAnimationLeft(Animation("animations/kong/left/turnleftkong_000001.obj", 10, false));
+         anim->AddAnimationRight(Animation("animations/kong/right/turnrightkong_000001.obj", 10, false));
+         anim->AddAnimationIdle(Animation("animations/kong/idle/kaiserkong_000001.obj", 1, true));
+         anim->AddAnimationWin(Animation("animations/kong/win/victorykong_000001.obj", 31, true));
       } break;
       case TIGER:
       case SHARK:
-      case GORILLA:
       default:
        break;
    }

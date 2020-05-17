@@ -920,6 +920,8 @@ void RenderFacadeClover::FacadeInitResources(mainCharacter character){
         case mainCharacter::TIGER:
             break;
         case mainCharacter::GORILLA:
+            resourceManager->GetResourceAnimation("media/animations/kong/right/turnrightkong_000001.obj", 10, false);
+            resourceManager->GetResourceAnimation("media/animations/kong/left/turnleftkong_000001.obj", 10, false);
             break;
         case mainCharacter::SHARK:
             break;
