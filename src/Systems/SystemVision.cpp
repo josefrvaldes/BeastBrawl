@@ -226,8 +226,7 @@ bool SystemVision::CollideWithWall(Entity* actualCar, const glm::vec3& posTarget
 
     // genera el vector normal de movimiento
     glm::vec3 targetVector = posTarget - cTransCar->position;
-    float vectorDistance = sqrt(targetVector.x*targetVector.x + targetVector.y*targetVector.y + targetVector.z*targetVector.z);
-    glm::vec3 vectorVelocityN = glm::vec3( targetVector.x*(1/vectorDistance) , targetVector.y*(1/vectorDistance) ,targetVector.z*(1/vectorDistance));
+    glm::vec3 vectorVelocityN = glm::normalize(targetVector);
 
     // comprueba las colisiones
     for(const auto& obstacle : manBoundingWall->GetEntities()){
@@ -250,8 +249,7 @@ bool SystemVision::CollideWithOBB(Entity* actualCar, const glm::vec3& posTarget,
 
     // genera el vector normal de movimiento
     glm::vec3 targetVector = posTarget - cTransCar->position;
-    float vectorDistance = sqrt(targetVector.x*targetVector.x + targetVector.y*targetVector.y + targetVector.z*targetVector.z);
-    glm::vec3 vectorVelocityN = glm::vec3( targetVector.x*(1/vectorDistance) , targetVector.y*(1/vectorDistance) ,targetVector.z*(1/vectorDistance));
+    glm::vec3 vectorVelocityN = glm::normalize(targetVector);
 
     // comprueba las colisiones
     for(const auto& obstacle : manBoundingOBB->GetEntities()){
@@ -276,10 +274,15 @@ bool SystemVision::CollideWithGround(Entity* actualCar, const glm::vec3& posTarg
     float distanceToTarget = glm::distance(cTransCar2.position, posTarget2);
     IntersectData intersData{0, glm::vec3(0,0,0)};
 
+    if(cTransCar2.position.y+30 < posTarget2.y){    // se comprueba para ser en la direccion correcta
+        glm::vec3 aux = cTransCar2.position;
+        cTransCar2.position = posTarget2;
+        posTarget2 = aux;
+    }
+
     // genera el vector normal de movimiento
     glm::vec3 targetVector = posTarget2 - cTransCar2.position;
-    float vectorDistance = sqrt(targetVector.x*targetVector.x + targetVector.y*targetVector.y + targetVector.z*targetVector.z);
-    glm::vec3 vectorVelocityN = glm::vec3( targetVector.x*(1/vectorDistance) , targetVector.y*(1/vectorDistance) ,targetVector.z*(1/vectorDistance));
+    glm::vec3 vectorVelocityN = glm::normalize(targetVector);
 
     // comprueba las colisiones
     for(const auto& obstacle : manBoundingGround->GetEntities()){
