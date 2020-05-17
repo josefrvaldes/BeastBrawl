@@ -350,7 +350,7 @@ void CLPhysics::RotateCarXZ(CTransformable &trcar, CBoundingChassis &chaCar, CBo
 
 
 void CLPhysics::RePositionCarY(CTransformable &trCar, CBoundingSphere &sp1Car, CBoundingSphere &sp2Car) const {
-    trCar.position.y = ((sp1Car.center.y + sp2Car.center.y) / 2) - sp1Car.radiusFloor-2.0;
+    trCar.position.y = ((sp1Car.center.y + sp2Car.center.y) / 2) - sp1Car.radiusFloor;
 }
 void CLPhysics::RePositionEntityY(CTransformable &trEntity, CBoundingSphere &sphere) const {
     trEntity.position.y = sphere.center.y;
@@ -589,8 +589,8 @@ void CLPhysics::PositionSphereIntoTransformable(CTransformable &tr, CBoundingSph
 void CLPhysics::PositionSphBehindIntoTransf(CTransformable &tr, CBoundingSphere &sp) const {
     sp.center.x = tr.position.x;
     sp.center.z = tr.position.z;
-    float x = -cos(Utils::DegToRad(tr.rotation.y)) * (-5);
-    float z = sin(Utils::DegToRad(tr.rotation.y)) * (-5);
+    float x = -cos(Utils::DegToRad(tr.rotation.y)) * (-sp.disCenter);
+    float z = sin(Utils::DegToRad(tr.rotation.y)) * (-sp.disCenter);
     sp.center.x += x;
     sp.center.z += z;
     // Necesitamos tambien actualizar el CILINDRO
@@ -599,8 +599,8 @@ void CLPhysics::PositionSphBehindIntoTransf(CTransformable &tr, CBoundingSphere 
 void CLPhysics::PositionSphFrontIntoTransf(CTransformable &tr, CBoundingSphere &sp) const {
     sp.center.x = tr.position.x;
     sp.center.z = tr.position.z;
-    float x = -cos(Utils::DegToRad(tr.rotation.y)) * (5);
-    float z = sin(Utils::DegToRad(tr.rotation.y)) * (5);
+    float x = -cos(Utils::DegToRad(tr.rotation.y)) * (sp.disCenter);
+    float z = sin(Utils::DegToRad(tr.rotation.y)) * (sp.disCenter);
     sp.center.x += x;
     sp.center.z += z;
     // Necesitamos tambien actualizar el cilindro

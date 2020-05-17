@@ -15,7 +15,12 @@ CBoundingSphere::CBoundingSphere(const vec3 &center_, float radius_)
     //equationSphere = equationSphereCenterRadius(_center, _radius);
 }
 CBoundingSphere::CBoundingSphere(const vec3 &center_, float radius_, float radisuFloor_)
-    : center{center_}, radius{radius_}, radiusFloor{radisuFloor_} {
+    : center{center_}, radius{radius_}, radiusFloor{radisuFloor_}{
+    m_compType = CompType::CompBoundingSphere;
+    //equationSphere = equationSphereCenterRadius(_center, _radius);
+}
+CBoundingSphere::CBoundingSphere(const vec3 &center_, float radius_, float radisuFloor_, float distanceCenter_)
+    : center{center_}, radius{radius_}, radiusFloor{radisuFloor_}, disCenter{distanceCenter_} {
     m_compType = CompType::CompBoundingSphere;
     //equationSphere = equationSphereCenterRadius(_center, _radius);
 }
