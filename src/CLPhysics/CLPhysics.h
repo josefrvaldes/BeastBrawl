@@ -70,6 +70,7 @@ class CLPhysics {
     void SeparateSphereGround(IntersectData &intersData, CTransformable &trCar, CBoundingSphere &spCar, CBoundingPlane &plane) const;
     void RePositionCarY(CTransformable &trCar, CBoundingSphere &sp1Car, CBoundingSphere &sp2Car) const;
     void RePositionEntityY(CTransformable &trEntity, CBoundingSphere &sphere) const;
+    void RePositionPUY(CTransformable &trEntity, CBoundingSphere &sphere) const;
     void RotateCarXZ(CTransformable &trCar, CBoundingChassis &chaCar, CBoundingPlane *pl1Car, CBoundingPlane *pl2Car) const;
     void LimitRotationCarY() const;
     // collisions

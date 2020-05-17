@@ -251,7 +251,7 @@ void CLPhysics::HandleCollisionsWithGround() {
             BoundingWall *ground = static_cast<BoundingWall *>(grounds[currentGround].get());
             CBoundingPlane *plane = static_cast<CBoundingPlane *>(ground->GetComponent(CompType::CompBoundingPlane).get());
             CollisionsSphereGround(*trEntity, *cSphere, *plane);
-            RePositionEntityY(*trEntity, *cSphere);
+            RePositionPUY(*trEntity, *cSphere);
         }
     }
 
@@ -352,9 +352,11 @@ void CLPhysics::RotateCarXZ(CTransformable &trcar, CBoundingChassis &chaCar, CBo
 void CLPhysics::RePositionCarY(CTransformable &trCar, CBoundingSphere &sp1Car, CBoundingSphere &sp2Car) const {
     trCar.position.y = ((sp1Car.center.y + sp2Car.center.y) / 2) - sp1Car.radiusFloor-2.0;
 }
-
 void CLPhysics::RePositionEntityY(CTransformable &trEntity, CBoundingSphere &sphere) const {
     trEntity.position.y = sphere.center.y;
+}
+void CLPhysics::RePositionPUY(CTransformable &trEntity, CBoundingSphere &sphere) const {
+    trEntity.position.y = sphere.center.y - sphere.radiusFloor;
 }
 
 bool CLPhysics::CollisionsSphereGround(CTransformable &trCar, CBoundingSphere &spCar, CBoundingPlane &plane) {
