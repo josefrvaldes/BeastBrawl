@@ -59,31 +59,22 @@ void StateInGameMulti::InitState() {
 }
 
 void StateInGameMulti::InitCarHumans(const uint16_t idOnline_, const vector<uint16_t> arrayIdEnemies, const vector<uint8_t> characters) {
-    // a este le llegan los coches
-    //std::cout << "POR FIIIIIIIIIIIIIIIIIIIIIIIN: " << std::endl;
-    //vector<uint16_t> arrayIdEnemies = IdPlayersOnline;
-    vec3 posIniciales[] = {
-        vec3(120.0f, 10.0f, -300.0f),
-        vec3(20.0f, 10.0f, -300.0f),
-        vec3(40.0f, 10.0f, -150.0f),
-        vec3(-50.0f, 10.0f, -50.0f),
-        vec3(50.0f, 10.0f, -200.0f),
-        vec3(0.0f, 10.0f, 0.0f)};
-
+    cout << "El idOnline del mainCar en esta partida es " << idOnline_ << endl;
     auto idComp = static_cast<CId *>(manCars->GetCar()->GetComponent(CompType::IdComp).get());
-    auto cTransformable = static_cast<CTransformable *>(manCars->GetCar()->GetComponent(CompType::TransformableComp).get());
-    cTransformable->position = posIniciales[idOnline_ - 1];
+    
+    vec3 newPos = manCars->GetPosSpawn(idOnline_ - 1);
+    manCars->GetCar()->SetPosition(newPos);
+    manCars->GetCar()->SetRotation(glm::vec3(0, manCars->GetAngleToTotem(newPos),0));
+
     COnline *cOnline = static_cast<COnline *>(manCars->GetCar()->GetComponent(CompType::OnlineComp).get());
     cOnline->idClient = idOnline_;
     manShield->CreateShield(idComp->id, glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.5f));
 
-    // for (auto idEnemy : arrayIdEnemies) {
     for (size_t i = 0; i < arrayIdEnemies.size(); i++) {
         uint16_t idEnemy = arrayIdEnemies[i];
         uint8_t currentCharacter = characters[i];
-        vec3 pos = posIniciales[idEnemy - 1];
+        vec3 pos = manCars->GetPosSpawn(idEnemy - 1);//posIniciales[idEnemy - 1];
 
-        //Le paso el PERSONAJE: ahora mismo a piñon
         manCars->CreateHumanCar(currentCharacter, pos);
         shared_ptr<Entity> car = manCars->GetEntities()[manCars->GetEntities().size() - 1];
         COnline *cOnline = static_cast<COnline *>(car->GetComponent(CompType::OnlineComp).get());
@@ -103,10 +94,7 @@ void StateInGameMulti::InitCarHumans(const uint16_t idOnline_, const vector<uint
 
         manShield->CreateShield(idComp->id, glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.5f));
 
-        // esto era de cuando íbamos a hacer el buffer circular que al final se descartó
         shared_ptr<CBufferOnline> buffer = make_shared<CBufferOnline>();
-        // BuffElement elem(cTransformable->position, cTransformable->rotation);
-        // buffer->elems.push_back(elem);
         car->AddComponent(buffer);
     }
 
@@ -119,7 +107,6 @@ void StateInGameMulti::InitCarHumans(const uint16_t idOnline_, const vector<uint
 
 void StateInGameMulti::Input() {
     if (currentUpdateState == UpdateState::GAME) {
-        // const vector<Constants::InputTypes> &inputs = renderEngine->FacadeCheckInputMulti();
         const vector<Constants::InputTypes> &inputs = inputEngine->CheckInputMulti();
         time_point<system_clock> now = system_clock::now();
         auto millisSinceLastInputSent = duration_cast<milliseconds>(now - lastTimeSentInputs).count();

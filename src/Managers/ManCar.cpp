@@ -67,17 +67,23 @@ ManCar::~ManCar() {
     entities.shrink_to_fit();
 }
 
-glm::vec3 ManCar::GetPosSpawn(){
+glm::vec3 ManCar::GetPosSpawn() {
     // de las psiciones disponibles -> cogemos una random y la asignamos
-
     if(positionsSpawn.size() > 0){
         int64_t time = Utils::getMillisSinceEpoch();
         auto newIndex = time % (positionsSpawn.size());
-
-        //auto newIndex = rand() % positionsSpawn.size();
         auto newPos = positionsSpawn[newIndex];
         positionsSpawn.erase(positionsSpawn.begin() + newIndex);
         return newPos;
+    } else {
+        cout << "HAY + COCHES QUE PUNTOS DE SPAWN, TRANQUIII BRO, QUITA COCHES ANDA..." << endl;
+        return glm::vec3(0.0,0.0,0.0);
+    }
+}
+
+glm::vec3 ManCar::GetPosSpawn(size_t index) {
+    if(positionsSpawn.size() > 0){
+        return positionsSpawn[index];
     }else{
         cout << "HAY + COCHES QUE PUNTOS DE SPAWN, TRANQUIII BRO, QUITA COCHES ANDA..." << endl;
         return glm::vec3(0.0,0.0,0.0);
@@ -111,7 +117,7 @@ bool ManCar::UpdateCarPlayer(ManTotem &manTotem_) {
         // CTransformable * cTransfor = static_cast<CTransformable*>(carPlayer->GetComponent(CompType::TransformableComp).get());
         // cout << "JUG1" << Utils::getISOCurrentTimestampMillis() << " El mainCar se ha movido, sus datos son: speed["<<ccar->speed<<"]  transfor["<<*cTransfor<<"]" << endl;
     // }
-    
+
     return gameFinished;
 }
 
@@ -135,12 +141,14 @@ void ManCar::CreateMainCar(int pj) {
     car = make_shared<CarHuman>(pj); 
     entities.push_back(car);
     //despues de crearlo, lo vamos a rotar para que mire al totem
+    
+
 }
 
 void ManCar::CreateMainCar(int pj, glm::vec3 _position) {
     car = make_shared<CarHuman>(pj, _position); 
     entities.push_back(car);
-    car->SetRotation(glm::vec3(0,GetAngleToTotem(_position),0));
+    car->SetRotation(glm::vec3(0, GetAngleToTotem(_position),0));
     //car->SetRotation(glm::vec3(0,90,0));
 }
 
@@ -148,7 +156,7 @@ void ManCar::CreateMainCar(int pj, glm::vec3 _position) {
 void ManCar::CreateHumanCar(int pj, glm::vec3 _position) {
     shared_ptr<CarHuman> p = make_shared<CarHuman>(pj, _position);
     entities.push_back(p);
-    p->SetRotation(glm::vec3(0,GetAngleToTotem(_position),0));
+    p->SetRotation(glm::vec3(0, GetAngleToTotem(_position),0));
     //car->SetRotation(glm::vec3(0,90,0));
 }
 
@@ -156,8 +164,7 @@ void ManCar::CreateHumanCar(int pj, glm::vec3 _position) {
 void ManCar::CreateCarAI(int pj, int difficult, glm::vec3 _position) {
     shared_ptr<CarAI> p = make_shared<CarAI>(pj, difficult, _position);
     entities.push_back(p);
-    p->SetRotation(glm::vec3(0,GetAngleToTotem(_position),0));
-    //car->SetRotation(glm::vec3(0,90,0));
+    p->SetRotation(glm::vec3(0, GetAngleToTotem(_position),0));
 }
 
 //Cambiar PJ
