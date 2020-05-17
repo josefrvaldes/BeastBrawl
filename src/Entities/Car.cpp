@@ -168,6 +168,8 @@ Car::Car(int pj){
             maxSpeed =              MAX_VELOCITY::V_MEDIUM;
             acceleration =          ACCELERATION::A_HIGH/100;
             mesh =                  meshCar(DRAGON);
+            anim =                  animCar(DRAGON);  AddComponent(anim);
+            cType = make_shared<CType>(ModelType::StaticMesh);
 
             pathTopLeft =           "deacon_wheel2.obj";
             pathTopRight =          "deacon_wheel4.obj";
@@ -195,6 +197,8 @@ Car::Car(int pj){
             maxSpeed =              MAX_VELOCITY::V_HIGH;
             acceleration =          ACCELERATION::A_MEDIUM/100;
             mesh =                  meshCar(OCTOPUS);
+            anim =                  animCar(OCTOPUS);  AddComponent(anim);
+            cType = make_shared<CType>(ModelType::StaticMesh);
 
             pathTopLeft =           "cyberoctopus_wheel1.obj";
             pathTopRight =          "cyberoctopus_wheel2.obj";

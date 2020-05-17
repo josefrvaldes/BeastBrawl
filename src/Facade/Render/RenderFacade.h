@@ -11,6 +11,7 @@
 #include <Managers/ManGameRules.h>
 #include <Managers/ManHUDEvent.h>
 #include <Components/CPowerUp.h>
+#include <Components/CCar.h>
 #include <Managers/Manager.h>
 #include "../../Constants.h"
 
@@ -94,7 +95,7 @@ class RenderFacade {
     virtual void FacadeCheckInputSettings() = 0;
 
     virtual void FacadeUpdatePowerUpHUD(DataMap* d) = 0;
-    virtual void FacadeInitResources() = 0;
+    virtual void FacadeInitResources(mainCharacter character) = 0;
     virtual void FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* globalClock, ManHUDEvent*, ManGameRules*) = 0;
     virtual void FacadeSuscribeEvents() = 0;
     virtual void FacadeSuscribeEventsSettings() = 0;

@@ -48,11 +48,21 @@ shared_ptr<CAnimation> animCar(TypeAnimal type) {
          anim->AddAnimationIdle(Animation("animations/penguin/idle/kart_penguin_000001.obj", 1, true));
          anim->AddAnimationWin(Animation("animations/penguin/selection/selectionpenguin_000001.obj", 30, true));
       } break;
+      case OCTOPUS: {
+         anim->AddAnimationRight(Animation("animations/cyberoctopus/right/turnrightoctopus_000001.obj", 10, false));
+         anim->AddAnimationLeft(Animation("animations/cyberoctopus/left/turnleftoctopus_000001.obj", 10, false));
+         anim->AddAnimationIdle(Animation("animations/cyberoctopus/idle/cyberoctopus_000001.obj", 1, true));
+         anim->AddAnimationWin(Animation("animations/cyberoctopus/win/victoryoctopus_000001.obj", 26, true));
+      } break;
+      case DRAGON:{
+         anim->AddAnimationLeft(Animation("animations/dragon/left/turnleftdragon_000001.obj", 10, false));
+         anim->AddAnimationRight(Animation("animations/dragon/right/turnrightdragon_000001.obj", 10, false));
+         anim->AddAnimationIdle(Animation("animations/dragon/idle/kart_deacon_000001.obj", 1, true));
+         anim->AddAnimationWin(Animation("animations/dragon/win/victorydragon_000001.obj", 26, true));
+      } break;
       case TIGER:
       case SHARK:
       case GORILLA:
-      case DRAGON:
-      case OCTOPUS:
       default:
        break;
    }

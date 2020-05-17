@@ -878,7 +878,7 @@ void RenderFacadeClover::FacadeSetWindowSize(DataMap* d) {
 /**
  * Cargamos lo necesario para la partida.
  */
-void RenderFacadeClover::FacadeInitResources(){
+void RenderFacadeClover::FacadeInitResources(mainCharacter character){
     
     FacadeBeginScene();
 
@@ -908,7 +908,29 @@ void RenderFacadeClover::FacadeInitResources(){
     resourceManager->GetResourceMesh("media/telebanana.obj");
     resourceManager->GetResourceMesh("media/training_ground.obj");
 
-    // resourceManager->LoadResourceAnimation("media/animations/cyberoctopus/damage/damageoctopus_000001.obj", 35, false);
+    // cargamos TODAS las animaciones de win, porque cualquiera puede ganar
+    // resourceManager->GetResourceAnimation("media/animations/cyberoctopus/win/victoryoctopus_000001.obj", 26, true);
+    // resourceManager->GetResourceAnimation("media/animations/dragon/win/victorydragon_000001.obj", 31, true);
+
+    // cargamos el resto de animaciones del personaje principal
+    switch(character) {
+        case mainCharacter::PENGUIN:
+            break;
+        case mainCharacter::TIGER:
+            break;
+        case mainCharacter::GORILLA:
+            break;
+        case mainCharacter::SHARK:
+            break;
+        case mainCharacter::DRAGON:
+            resourceManager->GetResourceAnimation("media/animations/dragon/right/turnrightdragon_000001.obj", 10, false);
+            resourceManager->GetResourceAnimation("media/animations/dragon/left/turnleftdragon_000001.obj", 10, false);
+            break;
+        case mainCharacter::OCTOPUS:
+            resourceManager->GetResourceAnimation("media/animations/cyberoctopus/right/turnrightoctopus_000001.obj", 10, false);
+            resourceManager->GetResourceAnimation("media/animations/cyberoctopus/left/turnleftoctopus_000001.obj", 10, false);
+            break;
+    }
 
     //Shaders
     resourceManager->GetResourceShader("CLEngine/src/Shaders/cartoonShader.vert", "CLEngine/src/Shaders/cartoonShader.frag");
