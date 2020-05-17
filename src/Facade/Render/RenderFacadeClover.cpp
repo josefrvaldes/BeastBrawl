@@ -910,8 +910,10 @@ void RenderFacadeClover::FacadeInitResources(mainCharacter character){
     resourceManager->GetResourceMesh("media/training_ground.obj");
 
     // cargamos TODAS las animaciones de win, porque cualquiera puede ganar
-    // resourceManager->GetResourceAnimation("media/animations/cyberoctopus/win/victoryoctopus_000001.obj", 26, true);
-    // resourceManager->GetResourceAnimation("media/animations/dragon/win/victorydragon_000001.obj", 31, true);
+    resourceManager->GetResourceAnimation("media/animations/sharky/win/victorysharky_000001.obj", 31, true);
+    resourceManager->GetResourceAnimation("media/animations/kong/win/victorykong_000001.obj", 31, true);
+    resourceManager->GetResourceAnimation("media/animations/cyberoctopus/win/victoryoctopus_000001.obj", 26, true);
+    resourceManager->GetResourceAnimation("media/animations/dragon/win/victorydragon_000001.obj", 31, true);
 
     // cargamos el resto de animaciones del personaje principal
     switch(character) {
