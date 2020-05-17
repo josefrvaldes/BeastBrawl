@@ -294,6 +294,7 @@ const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
             break;
 
         case ModelType::Shield:
+            father = smgr;
             node = device->AddMesh(father,cId->id);
             static_cast<CLMesh*>(node->GetEntity())->SetMesh(mesh);
             //static_cast<CLMesh*>(node->GetEntity())->SetMaterial(mat);

@@ -14,6 +14,7 @@ class PhysicsPowerUp;
 class Data;
 class SystemOnline;
 class ManCar;
+enum class typeCPowerUp;
 
 using namespace std;
 
@@ -34,7 +35,7 @@ class ManPowerUp : public Manager{
     void SubscribeToEvents();
     void CreatePowerUp(DataMap* d);
     void NewPowerUpReceivedFromServer(DataMap* d);
-    void MaterializePowerUp(shared_ptr<PowerUp> powerUp);
+    void MaterializePowerUp(shared_ptr<PowerUp> powerUp, typeCPowerUp type);
 
     void DeletePowerUps();
     void UpdatePhysics();

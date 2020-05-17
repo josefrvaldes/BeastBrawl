@@ -20,11 +20,11 @@ Shield::Shield(uint16_t parentId, glm::vec3 position, glm::vec3 rotation, glm::v
         AddComponent(cParentNode);
 
     }
-    shared_ptr<CMesh> cMesh = make_shared<CMesh>("sphera.obj");
+    shared_ptr<CMesh> cMesh = make_shared<CMesh>("shield.obj");
     shared_ptr<CId> cId   = make_shared<CId>();
     shared_ptr<CTransformable> cTransformable = make_shared<CTransformable>(position,rotation,scale);
     shared_ptr<CType> cType   = make_shared<CType>(ModelType::Shield);
-    shared_ptr<CShader> cShader = make_shared<CShader>("CLEngine/src/Shaders/cartoonShader.vert","CLEngine/src/Shaders/cartoonShader.frag");
+    shared_ptr<CShader> cShader = make_shared<CShader>("CLEngine/src/Shaders/basicShader.vert","CLEngine/src/Shaders/basicShader.frag");
 
     AddComponent(cShader);
     AddComponent(cId);

@@ -1,50 +1,25 @@
-# Blender MTL File: 'pudin.blend'
-# Material Count: 5
+# Blender MTL File: 'pudin2.blend'
+# Material Count: 2
 
-newmtl Frambuesa
-Ns 217.562507
+newmtl leaf
+Ns 225.000000
 Ka 1.000000 1.000000 1.000000
-Kd 0.559600 0.034924 0.038213
-Ks 0.225000 0.225000 0.225000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
 Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
+map_Kd clv_plant1_basecolor.png
+map_d clv_plant1_basecolor.png
 
-newmtl Hoja_Frambuesa
-Ns 95.062493
+newmtl pudin
+Ns 225.000000
 Ka 1.000000 1.000000 1.000000
-Kd 0.032846 0.486897 0.051793
-Ks 0.316667 0.316667 0.316667
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
 Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-
-newmtl Material.002
-Ns 540.562508
-Ka 1.000000 1.000000 1.000000
-Kd 1.000000 0.800157 0.444738
-Ks 0.575000 0.575000 0.575000
-Ke 0.000000 0.000000 0.000000
-Ni 1.450000
-d 1.000000
-illum 2
-
-newmtl Material.003
-Ns 430.562495
-Ka 1.000000 1.000000 1.000000
-Kd 0.063721 0.016272 0.003038
-Ks 0.750000 0.750000 0.750000
-Ke 0.000000 0.000000 0.000000
-Ni 1.450000
-d 1.000000
-illum 2
-
-newmtl None
-Ns 500
-Ka 0.8 0.8 0.8
-Kd 0.8 0.8 0.8
-Ks 0.8 0.8 0.8
-d 1
-illum 2
+map_Kd clv_pudin_texture.tga
