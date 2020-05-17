@@ -17,6 +17,7 @@
 #include <Components/CCurrentNavMesh.h>
 #include <Components/CBoundingRay.h>
 #include <Components/CHurt.h>
+#include <Components/CAnimation.h>
 #include "../Components/CExternalForce.h"
 #include "../Components/CBoundingChassis.h"
 #include "../Components/CShader.h"
@@ -33,7 +34,8 @@
 Car::Car(int pj){
 
     mainCharacter _pj;
-    string mesh;
+    string mesh, meshWin, meshRight, meshLeft;
+    shared_ptr<CAnimation> anim;
     string texture = "";
     float weight = WEIGHT::W_MEDIUM, maxSpeed = MAX_VELOCITY::V_MEDIUM, acceleration = ACCELERATION::A_MEDIUM/100;
     
@@ -43,14 +45,20 @@ Car::Car(int pj){
     glm::vec3 offsetTopLeft,offsetTopRight,offsetBottomLeft,offsetBottomRight;
     glm::vec3 rotationTopLeft,rotationTopRight,rotationBottomLeft,rotationBottomRight;
     glm::vec3 scaleTopLeft,scaleTopRight,scaleBottomLeft,scaleBottomRight;
+    shared_ptr<CType> cType = make_shared<CType>(ModelType::AnimatedMesh);
     
     switch (pj) {
-        case 0: 
+        case 0: {
             _pj =                   mainCharacter::PENGUIN;
             weight =                WEIGHT::W_LOW;
             maxSpeed =              MAX_VELOCITY::V_HIGH;
             acceleration =          ACCELERATION::A_HIGH/100;
             mesh =                  meshCar(PENGUIN);
+            anim =                  animCar(PENGUIN);  AddComponent(anim);
+            cType = make_shared<CType>(ModelType::StaticMesh);
+            meshWin = "";
+            meshRight = "";
+            meshLeft = "";
 
             pathTopLeft =           "penguin_wheel1.obj";
             pathTopRight =          "penguin_wheel2.obj";
@@ -71,6 +79,7 @@ Car::Car(int pj){
             scaleTopRight =         glm::vec3(1.0f);
             scaleBottomLeft =       glm::vec3(1.0f);
             scaleBottomRight =      glm::vec3(1.0f);
+        }
             break;
         case 1: 
             _pj =                   mainCharacter::TIGER; 
@@ -79,15 +88,15 @@ Car::Car(int pj){
             acceleration =          ACCELERATION::A_MEDIUM/100;
             mesh =                  meshCar(TIGER);
 
-            pathTopLeft =           "sharky_wheel4.obj";
-            pathTopRight =          "sharky_wheel2.obj";
-            pathBottomLeft =        "sharky_wheel3.obj";
-            pathBottomRight =       "sharky_wheel1.obj";
+            pathTopLeft =           "mrsbaxter_wheel3.obj";
+            pathTopRight =          "mrsbaxter_wheel2.obj";
+            pathBottomLeft =        "mrsbaxter_wheel1.obj";
+            pathBottomRight =       "mrsbaxter_wheel4.obj";
 
-            offsetTopLeft =         glm::vec3(0.6,0.3f,1.0);
-            offsetTopRight =        glm::vec3(0.6,0.3f,-1.0);
-            offsetBottomLeft =      glm::vec3(-0.4,0.3f,1.0);
-            offsetBottomRight =     glm::vec3(-0.4,0.3f,-1.0);
+            offsetTopLeft =         glm::vec3(1.6,0.1f,1.5);
+            offsetTopRight =        glm::vec3(1.6,0.1f,-1.5);
+            offsetBottomLeft =      glm::vec3(-1.4,0.1f,1.5);
+            offsetBottomRight =     glm::vec3(-1.4,0.1f,-1.5);
 
             rotationTopLeft =       glm::vec3(0.0f,0.0f,0.0f);
             rotationTopRight =      glm::vec3(0.0f,0.0f,0.0f);
@@ -133,15 +142,15 @@ Car::Car(int pj){
             acceleration =          ACCELERATION::A_LOW/100;
             mesh =                  meshCar(GORILLA);
 
-            pathTopLeft =           "sharky_wheel4.obj";
-            pathTopRight =          "sharky_wheel2.obj";
-            pathBottomLeft =        "sharky_wheel3.obj";
-            pathBottomRight =       "sharky_wheel1.obj";
+            pathTopLeft =           "kaiserkong_wheel1.obj";
+            pathTopRight =          "kaiserkong_wheel2.obj";
+            pathBottomLeft =        "kaiserkong_wheel3.obj";
+            pathBottomRight =       "kaiserkong_wheel4.obj";
 
-            offsetTopLeft =         glm::vec3(0.6,0.3f,1.0);
-            offsetTopRight =        glm::vec3(0.6,0.3f,-1.0);
-            offsetBottomLeft =      glm::vec3(-0.4,0.3f,1.0);
-            offsetBottomRight =     glm::vec3(-0.4,0.3f,-1.0);
+            offsetTopLeft =         glm::vec3(1.5,0.3f,1.5);
+            offsetTopRight =        glm::vec3(1.5,0.3f,-1.5);
+            offsetBottomLeft =      glm::vec3(-1.0,0.3f,1.7);
+            offsetBottomRight =     glm::vec3(-1.0,0.3f,-1.7);
 
             rotationTopLeft =       glm::vec3(0.0f,0.0f,0.0f);
             rotationTopRight =      glm::vec3(0.0f,0.0f,0.0f);
@@ -224,7 +233,6 @@ Car::Car(int pj){
     string fragmentShader = "CLEngine/src/Shaders/cartoonShader.frag";
 
     shared_ptr<CId> cId   = make_shared<CId>();
-    shared_ptr<CType> cType = make_shared<CType>(ModelType::AnimatedMesh);
     shared_ptr<CTransformable> cTransformable = make_shared<CTransformable>(pos, rot, scale); 
     shared_ptr<CTexture> cTexture = make_shared<CTexture>(texture);
     shared_ptr<CMesh> cMesh   = make_shared<CMesh>(mesh);

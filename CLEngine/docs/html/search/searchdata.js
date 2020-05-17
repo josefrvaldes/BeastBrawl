@@ -6,8 +6,8 @@ var indexSectionsWithContent =
   3: "cmp",
   4: "abcdeghilmnoprstu~",
   5: "abdefinpstv",
-  6: "psv",
-  7: "abcdfilprst",
+  6: "pstv",
+  7: "abcdfiloprst",
   8: "cs"
 };
 

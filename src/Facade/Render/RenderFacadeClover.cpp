@@ -278,11 +278,10 @@ const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
             node = device->AddMesh(father,cId->id);
 
             if (cAnimation->activeAnimation->IsInterpolated()) {
-                static_cast<CLMesh*>(node->GetEntity())->SetAnimationInterpolated(clAnimations, cAnimation->activeAnimation->GetDistances());
+                static_cast<CLMesh*>(node->GetEntity())->SetAnimationInterpolated(clAnimations, cAnimation->activeAnimation->GetDistances(), cAnimation->activeAnimation->loop);
             } else {
-                static_cast<CLMesh*>(node->GetEntity())->SetAnimation(clAnimations);
+                static_cast<CLMesh*>(node->GetEntity())->SetAnimation(clAnimations, cAnimation->activeAnimation->loop);
             }
-            //static_cast<CLMesh*>(node->GetEntity())->SetMaterial(mat);
         }   break;
 
         case ModelType::AnimatedMesh:
@@ -482,9 +481,9 @@ const uint16_t RenderFacadeClover::FacadeAddStaticObject(Entity* entity) {
             node = device->AddMesh(father,cId->id);
 
             if (cAnimation->activeAnimation->IsInterpolated()) {
-                static_cast<CLMesh*>(node->GetEntity())->SetAnimationInterpolated(clAnimations, cAnimation->activeAnimation->GetDistances());
+                static_cast<CLMesh*>(node->GetEntity())->SetAnimationInterpolated(clAnimations, cAnimation->activeAnimation->GetDistances(), cAnimation->activeAnimation->loop);
             } else {
-                static_cast<CLMesh*>(node->GetEntity())->SetAnimation(clAnimations);
+                static_cast<CLMesh*>(node->GetEntity())->SetAnimation(clAnimations, cAnimation->activeAnimation->loop);
             }
             //static_cast<CLMesh*>(node->GetEntity())->SetMaterial(mat);
         }   break;
@@ -772,20 +771,24 @@ void RenderFacadeClover::FacadeUpdateMeshesLoD(vector<shared_ptr<Entity>> entiti
 
 void RenderFacadeClover::FacadeUpdateAnimationsLoD(vector<shared_ptr<Entity>> entities) {
     for (const auto& entity : entities) {
-        auto cAnimation = static_cast<CAnimation*>(entity->GetComponent(CompType::AnimationComp).get());
-        if(cAnimation->activeAnimation.get() != cAnimation->previousAnimation) {
-            cout << "Cambiamos animación por el LoD" << endl;
-            CId *cid = static_cast<CId*>(entity->GetComponent(CompType::IdComp).get());
-            auto node = device->GetNodeByID(cid->id);
-            if(node) {
-                std::string path = cAnimation->activeAnimation->path;
-                std::string animationPath = "media/" + path;
-                vector<CLResourceMesh*> clAnimations = resourceManager->GetResourceAnimation(animationPath, cAnimation->activeAnimation->numKeyFrames, false);
-                if (cAnimation->activeAnimation->IsInterpolated()) {
-                    static_cast<CLMesh*>(node->GetEntity())->SetAnimationInterpolated(clAnimations, cAnimation->activeAnimation->GetDistances());
-                } else {
-                    static_cast<CLMesh*>(node->GetEntity())->SetAnimation(clAnimations);
+        if(entity->HasComponent(CompType::AnimationComp)) {
+            auto cAnimation = static_cast<CAnimation*>(entity->GetComponent(CompType::AnimationComp).get());
+            if(cAnimation->animationChanged) {
+                cout << "Cambiamos animación por el LoD" << endl;
+                CId *cid = static_cast<CId*>(entity->GetComponent(CompType::IdComp).get());
+                auto node = device->GetNodeByID(cid->id);
+                if(node) {
+                    std::string path = cAnimation->activeAnimation->path;
+                    std::string animationPath = "media/" + path;
+                    // vector<CLResourceMesh*> clAnimations = resourceManager->GetResourceAnimation(animationPath, cAnimation->activeAnimation->numKeyFrames, false);
+                    vector<CLResourceMesh*> clAnimations = resourceManager->GetResourceExistingAnimation(animationPath, cAnimation->activeAnimation->numKeyFrames, false);
+                    if (cAnimation->activeAnimation->IsInterpolated()) {
+                        static_cast<CLMesh*>(node->GetEntity())->SetAnimationInterpolated(clAnimations, cAnimation->activeAnimation->GetDistances(), cAnimation->activeAnimation->loop);
+                    } else {
+                        static_cast<CLMesh*>(node->GetEntity())->SetAnimation(clAnimations, cAnimation->activeAnimation->loop);
+                    }
                 }
+                cAnimation->animationChanged = false;
             }
         }
     }
@@ -804,19 +807,22 @@ void RenderFacadeClover::FacadeAnimate(vector<shared_ptr<Entity>> entities) {
     // cout << "la rotación de la cámara es x["<<normalCamara.x<<"] y["<<normalCamara.y<<"] z["<<normalCamara.z<<"]" << endl;
     // cout << "Hay "<< entities.size() <<" cosas para animar" << endl;
     for (const auto& entity : entities) {
-        CTransformable *cTrans = static_cast<CTransformable*>(entity->GetComponent(CompType::TransformableComp).get());
+        if(entity->HasComponent(CompType::AnimationComp)) {
+            CTransformable *cTrans = static_cast<CTransformable*>(entity->GetComponent(CompType::TransformableComp).get());
 
-        float mDot = glm::dot(normalCamara, (cTrans->position - posCamara));
-        if (mDot < 0) {
-            // cout << "Estamos animando algo" << endl;
-            CId *cid = static_cast<CId*>(entity->GetComponent(CompType::IdComp).get());
-            auto node = device->GetNodeByID(cid->id);
-            if(node) {
-                auto cAnimation = static_cast<CAnimation*>(entity->GetComponent(CompType::AnimationComp).get());
-                if (cAnimation->activeAnimation->IsInterpolated()) {
-                    static_cast<CLMesh*>(node->GetEntity())->AnimateInterpolated();
-                } else {
-                    static_cast<CLMesh*>(node->GetEntity())->Animate();
+            // esto sirve para hacer backclipping. Solo se anima lo que está frente a la cámara
+            float mDot = glm::dot(normalCamara, (cTrans->position - posCamara));
+            if (mDot < 0) {
+                // cout << "Estamos animando algo" << endl;
+                CId *cid = static_cast<CId*>(entity->GetComponent(CompType::IdComp).get());
+                auto node = device->GetNodeByID(cid->id);
+                if(node) {
+                    auto cAnimation = static_cast<CAnimation*>(entity->GetComponent(CompType::AnimationComp).get());
+                    if (cAnimation->activeAnimation->IsInterpolated()) {
+                        static_cast<CLMesh*>(node->GetEntity())->AnimateInterpolated();
+                    } else {
+                        static_cast<CLMesh*>(node->GetEntity())->Animate();
+                    }
                 }
             }
         }
@@ -904,69 +910,8 @@ void RenderFacadeClover::FacadeInitResources(){
 
     // resourceManager->LoadResourceAnimation("media/animations/cyberoctopus/damage/damageoctopus_000001.obj", 35, false);
 
-    //HUD
-    currentPowerUp = 0;
-
-    powerUps[0] = "media/nonepowerup.png";
-    powerUps[1] = "media/robojorobo.png";
-    powerUps[2] = "media/nitro.png";
-    powerUps[3] = "media/pudin.png";
-    powerUps[4] = "media/escudomerluzo.png";
-    powerUps[5] = "media/telebanana.png";
-    powerUps[6] = "media/melonmolon.png";
-
-    device->GetResourceManager()->GetResourceTexture(powerUps[0], true);
-    device->GetResourceManager()->GetResourceTexture(powerUps[1], true);
-    device->GetResourceManager()->GetResourceTexture(powerUps[2], true);
-    device->GetResourceManager()->GetResourceTexture(powerUps[3], true);
-    device->GetResourceManager()->GetResourceTexture(powerUps[4], true);
-    device->GetResourceManager()->GetResourceTexture(powerUps[5], true);
-    device->GetResourceManager()->GetResourceTexture(powerUps[6], true);
-
-    // HUD
-    resourceManager->GetResourceTexture("media/1.png", true);
-    resourceManager->GetResourceTexture("media/2.png", true);
-    resourceManager->GetResourceTexture("media/3.png", true);
-    resourceManager->GetResourceTexture("media/hudPenguin.png", true);
-    resourceManager->GetResourceTexture("media/hudTiger.png", true);
-    resourceManager->GetResourceTexture("media/hudShark.png", true);
-    resourceManager->GetResourceTexture("media/hudGorilla.png", true);
-    resourceManager->GetResourceTexture("media/hudDragon.png", true);
-    resourceManager->GetResourceTexture("media/hudOctopus.png", true);
-    resourceManager->GetResourceTexture("media/totemCogido.png", true);
-    resourceManager->GetResourceTexture("media/totemSuelo.png", true);
-    resourceManager->GetResourceTexture("media/indicator_tiempo.png", true);
-    resourceManager->GetResourceTexture("media/indicator_totem.png", true);
-    resourceManager->GetResourceTexture("media/ranking.png", true);
-    resourceManager->GetResourceTexture("media/Minimapa240v2.png", true);
-    resourceManager->GetResourceTexture("media/stoleHUD.png", true);
-    resourceManager->GetResourceTexture("media/loseHUD.png", true);
-    resourceManager->GetResourceTexture("media/catchHUD.png", true);
-    resourceManager->GetResourceTexture("media/BOctopus.png", false);
-    resourceManager->GetResourceTexture("media/BDragon.png", false);
-    resourceManager->GetResourceTexture("media/BGorilla.png", false);
-    resourceManager->GetResourceTexture("media/BPinguino.png", false);
-    resourceManager->GetResourceTexture("media/BTiburon.png", false);
-    resourceManager->GetResourceTexture("media/hudTotemBack.png", true);
-    resourceManager->GetResourceTexture("media/hudTotemLeft.png", true);
-    resourceManager->GetResourceTexture("media/hudTotemRight.png", true);
-    resourceManager->GetResourceTexture("media/hudTotem.png", true);
-
     //Shaders
     resourceManager->GetResourceShader("CLEngine/src/Shaders/cartoonShader.vert", "CLEngine/src/Shaders/cartoonShader.frag");
-
-    // Particulas
-    resourceManager->GetResourceTexture("media/particleTriangleBlack.png", true);
-    resourceManager->GetResourceTexture("media/particleTriangleGreen.png", true);
-    resourceManager->GetResourceTexture("media/particleStarBlack.png", true);
-    resourceManager->GetResourceTexture("media/particleStarGreen.png", true);
-    resourceManager->GetResourceTexture("media/particleYellowTriangle.png", true);
-    resourceManager->GetResourceTexture("media/particleYellowStar.png", true);
-    resourceManager->GetResourceTexture("media/particleTriangleGrey.png", true);
-    resourceManager->GetResourceTexture("media/particleStarMarron.png", true);
-    resourceManager->GetResourceTexture("media/particleTriangleBrown.png", true);
-    resourceManager->GetResourceTexture("media/particleRedTriangle.png", true);
-    resourceManager->GetResourceTexture("media/particleRedStar.png", true);
 
     //Reseteo el showTableMinimap
     showTableMinimap = Constants::ShowTableMinimap::BOTH;
@@ -979,59 +924,134 @@ void RenderFacadeClover::FacadeInitIntro() {
 }
 
 void RenderFacadeClover::FacadeInitMenu() {
-
-    //Que se cargen poco a poco cuando se van usando o tarda mucho
-    FacadeBeginScene();
-
+    
+    std::string file = "media/menu/loading_screen.png";
     auto w = device->GetScreenWidth();
     auto scale = 0.5f;
     if ( w > 1600 ) { scale = 0.75f; }
     else if (w < 600 ) { scale = 0.25f; }
 
-    //Esto es lo unico que se necesita para dibujar la pantalla de carga
-    std::string file = "media/menu/loading_screen.png";
+    // --- Pantalla de carga
+    //Que se cargen poco a poco cuando se van usando o tarda mucho
+    FacadeBeginScene();
     device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
-
+    //Frase
     int64_t time = Utils::getMicrosSinceEpoch();
     int indx = time % (tipsTexts.size()-1);
-
     device->RenderText2D(tipsTexts.at(indx), device->GetScreenWidth()/2 - 125.0f*scale, device->GetScreenHeight()/2,0.5f, scale,glm::vec3(1.0f,1.0f,1.0f));
     FacadeEndScene();
 
-
-    //CARGAMOS COSAS
+    // -------- CARGAMOS ANIMACIONES
     resourceManager->GetResourceAnimation("media/animations/penguin/selection/selectionpenguin_000001.obj", 30, false);
     resourceManager->GetResourceAnimation("media/animations/baxter/selection/selectionbaxter_000001.obj", 30, false);
 
+
+    // --- Pantalla de carga
     FacadeBeginScene();
-
-    //Esto es lo unico que se necesita para dibujar la pantalla de carga
     device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
-
+    //Frase
     time = Utils::getMicrosSinceEpoch();
     indx = time % (tipsTexts.size()-1);
-
     device->RenderText2D(tipsTexts.at(indx), device->GetScreenWidth()/2 - 125.0f*scale, device->GetScreenHeight()/2,0.5f, scale,glm::vec3(1.0f,1.0f,1.0f));
     FacadeEndScene();
 
+    // -------- CARGAMOS ANIMACIONES
     resourceManager->GetResourceAnimation("media/animations/dragon/selection/selectiondragon_000001.obj", 30, false);
     resourceManager->GetResourceAnimation("media/animations/kong/selection/selectionkong_000001.obj", 30, false);
 
+
+    // --- Pantalla de carga
     FacadeBeginScene();
-
-    //Esto es lo unico que se necesita para dibujar la pantalla de carga
     device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
-
+    //Frase
     time = Utils::getMicrosSinceEpoch();
     indx = time % (tipsTexts.size()-1);
-
     device->RenderText2D(tipsTexts.at(indx), device->GetScreenWidth()/2 - 125.0f*scale, device->GetScreenHeight()/2,0.5f, scale,glm::vec3(1.0f,1.0f,1.0f));
     FacadeEndScene();
 
+    // -------- CARGAMOS ANIMACIONES
     resourceManager->GetResourceAnimation("media/animations/dragon/selection/selectiondragon_000001.obj", 30, false);
     resourceManager->GetResourceAnimation("media/animations/cyberoctopus/selection/selectionoctopus_000001.obj", 31, false);
 
-    
+
+    // --- Pantalla de carga
+    FacadeBeginScene(); 
+    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);  
+    // Frase 
+    time = Utils::getMicrosSinceEpoch();
+    indx = time % (tipsTexts.size()-1);
+    device->RenderText2D(tipsTexts.at(indx), device->GetScreenWidth()/2 - 125.0f*scale, device->GetScreenHeight()/2,0.5f, scale,glm::vec3(1.0f,1.0f,1.0f));
+    FacadeEndScene();
+
+    // -------- CARGAMOS TEXTURAS
+
+        // HUD - POWERUPS
+        currentPowerUp = 0;
+        powerUps[0] = "media/nonepowerup.png";
+        powerUps[1] = "media/robojorobo.png";
+        powerUps[2] = "media/nitro.png";
+        powerUps[3] = "media/pudin.png";
+        powerUps[4] = "media/escudomerluzo.png";
+        powerUps[5] = "media/telebanana.png";
+        powerUps[6] = "media/melonmolon.png";
+        device->GetResourceManager()->GetResourceTexture(powerUps[0], true);
+        device->GetResourceManager()->GetResourceTexture(powerUps[1], true);
+        device->GetResourceManager()->GetResourceTexture(powerUps[2], true);
+        device->GetResourceManager()->GetResourceTexture(powerUps[3], true);
+        device->GetResourceManager()->GetResourceTexture(powerUps[4], true);
+        device->GetResourceManager()->GetResourceTexture(powerUps[5], true);
+        device->GetResourceManager()->GetResourceTexture(powerUps[6], true);
+
+        // HUD - Countdown
+        resourceManager->GetResourceTexture("media/1.png", true);
+        resourceManager->GetResourceTexture("media/2.png", true);
+        resourceManager->GetResourceTexture("media/3.png", true);
+
+        // HUD - Caritas y minimapa
+        resourceManager->GetResourceTexture("media/hudPenguin.png", true);
+        resourceManager->GetResourceTexture("media/hudTiger.png", true);
+        resourceManager->GetResourceTexture("media/hudShark.png", true);
+        resourceManager->GetResourceTexture("media/hudGorilla.png", true);
+        resourceManager->GetResourceTexture("media/hudDragon.png", true);
+        resourceManager->GetResourceTexture("media/hudOctopus.png", true);
+        resourceManager->GetResourceTexture("media/totemCogido.png", true);
+        resourceManager->GetResourceTexture("media/totemSuelo.png", true);
+        resourceManager->GetResourceTexture("media/Minimapa240v2.png", true);
+
+        // HUD - Marcadores
+        resourceManager->GetResourceTexture("media/indicator_tiempo.png", true);
+        resourceManager->GetResourceTexture("media/indicator_totem.png", true);
+        resourceManager->GetResourceTexture("media/ranking.png", true);
+
+        // HUD - Avisos
+        resourceManager->GetResourceTexture("media/stoleHUD.png", true);
+        resourceManager->GetResourceTexture("media/loseHUD.png", true);
+        resourceManager->GetResourceTexture("media/catchHUD.png", true);
+
+        // HUD - Nameplates
+        resourceManager->GetResourceTexture("media/BOctopus.png", false);
+        resourceManager->GetResourceTexture("media/BDragon.png", false);
+        resourceManager->GetResourceTexture("media/BGorila.png", false);
+        resourceManager->GetResourceTexture("media/BPinguino.png", false);
+        resourceManager->GetResourceTexture("media/BTiburon.png", false);
+        resourceManager->GetResourceTexture("media/hudTotemBack.png", true);
+        resourceManager->GetResourceTexture("media/hudTotemLeft.png", true);
+        resourceManager->GetResourceTexture("media/hudTotemRight.png", true);
+        resourceManager->GetResourceTexture("media/hudTotem.png", true);
+
+        // Particulas
+        resourceManager->GetResourceTexture("media/particleTriangleBlack.png", true);
+        resourceManager->GetResourceTexture("media/particleTriangleGreen.png", true);
+        resourceManager->GetResourceTexture("media/particleStarBlack.png", true);
+        resourceManager->GetResourceTexture("media/particleStarGreen.png", true);
+        resourceManager->GetResourceTexture("media/particleYellowTriangle.png", true);
+        resourceManager->GetResourceTexture("media/particleYellowStar.png", true);
+        resourceManager->GetResourceTexture("media/particleTriangleGrey.png", true);
+        resourceManager->GetResourceTexture("media/particleStarMarron.png", true);
+        resourceManager->GetResourceTexture("media/particleTriangleBrown.png", true);
+        resourceManager->GetResourceTexture("media/particleRedTriangle.png", true);
+        resourceManager->GetResourceTexture("media/particleRedStar.png", true);
+
 }
 
 void RenderFacadeClover::FacadeInitSelectCharacter() {
@@ -1056,7 +1076,7 @@ void RenderFacadeClover::FacadeInitSelectCharacter() {
     //Penguin
     auto animationPen = resourceManager->GetResourceAnimation("media/animations/penguin/selection/selectionpenguin_000001.obj", 30, false);
     mesh = device->AddMesh(smgr,0);
-    static_cast<CLMesh*>(mesh->GetEntity())->SetAnimation(animationPen);
+    static_cast<CLMesh*>(mesh->GetEntity())->SetAnimation(animationPen, true);
     mesh->SetScalation(glm::vec3(2.0f));
     mesh->SetTranslation(glm::vec3(0.0f,-14.0f,-20.0f));
     mesh->SetRotation(glm::vec3(10.0f,-50.0f, 5.0f));
@@ -1065,7 +1085,7 @@ void RenderFacadeClover::FacadeInitSelectCharacter() {
     //Tiger
     auto animationTig = resourceManager->GetResourceAnimation("media/animations/baxter/selection/selectionbaxter_000001.obj", 30, false);
     mesh = device->AddMesh(smgr,1);
-    static_cast<CLMesh*>(mesh->GetEntity())->SetAnimation(animationTig);
+    static_cast<CLMesh*>(mesh->GetEntity())->SetAnimation(animationTig, true);
     mesh->SetScalation(glm::vec3(2.0f));
     mesh->SetTranslation(glm::vec3(0.0f,-14.0f,-20.0f));
     mesh->SetRotation(glm::vec3(10.0f,-50.0f, 5.0f));
@@ -1074,7 +1094,7 @@ void RenderFacadeClover::FacadeInitSelectCharacter() {
     //Shark
     auto animationSha = resourceManager->GetResourceAnimation("media/animations/dragon/selection/selectiondragon_000001.obj", 30, false);
     mesh = device->AddMesh(smgr,2);
-    static_cast<CLMesh*>(mesh->GetEntity())->SetAnimation(animationSha);
+    static_cast<CLMesh*>(mesh->GetEntity())->SetAnimation(animationSha, true);
     mesh->SetScalation(glm::vec3(2.0f));
     mesh->SetTranslation(glm::vec3(0.0f,-14.0f,-20.0f));
     mesh->SetRotation(glm::vec3(10.0f,-50.0f, 5.0f));
@@ -1083,7 +1103,7 @@ void RenderFacadeClover::FacadeInitSelectCharacter() {
     //Gorila
     auto animationKong = resourceManager->GetResourceAnimation("media/animations/kong/selection/selectionkong_000001.obj", 30, false);
     mesh = device->AddMesh(smgr,3);
-    static_cast<CLMesh*>(mesh->GetEntity())->SetAnimation(animationKong);
+    static_cast<CLMesh*>(mesh->GetEntity())->SetAnimation(animationKong, true);
     mesh->SetScalation(glm::vec3(2.0f));
     mesh->SetTranslation(glm::vec3(0.0f,-14.0f,-20.0f));
     mesh->SetRotation(glm::vec3(10.0f,-50.0f, 5.0f));
@@ -1092,7 +1112,7 @@ void RenderFacadeClover::FacadeInitSelectCharacter() {
     //Dragon
     auto animationDra = resourceManager->GetResourceAnimation("media/animations/dragon/selection/selectiondragon_000001.obj", 30, false);
     mesh = device->AddMesh(smgr,4);
-    static_cast<CLMesh*>(mesh->GetEntity())->SetAnimation(animationDra);
+    static_cast<CLMesh*>(mesh->GetEntity())->SetAnimation(animationDra, true);
     mesh->SetScalation(glm::vec3(2.0f));
     mesh->SetTranslation(glm::vec3(0.0f,-14.0f,-20.0f));
     mesh->SetRotation(glm::vec3(10.0f,-50.0f, 5.0f));
@@ -1101,7 +1121,7 @@ void RenderFacadeClover::FacadeInitSelectCharacter() {
     //Octopus
     auto animationCyb = resourceManager->GetResourceAnimation("media/animations/cyberoctopus/selection/selectionoctopus_000001.obj", 31, false);
     mesh = device->AddMesh(smgr,5);
-    static_cast<CLMesh*>(mesh->GetEntity())->SetAnimation(animationCyb);
+    static_cast<CLMesh*>(mesh->GetEntity())->SetAnimation(animationCyb, true);
     mesh->SetScalation(glm::vec3(2.0f));
     mesh->SetTranslation(glm::vec3(0.0f,-14.0f,-20.0f));
     mesh->SetRotation(glm::vec3(10.0f,-50.0f, 5.0f));

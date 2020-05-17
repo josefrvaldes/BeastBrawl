@@ -24,6 +24,33 @@ std::string meshCar(TypeAnimal type) {
       case PENGUIN:
          return "kart_penguin.obj";
       case TIGER:
+         return "mrsbaxter.obj";
+      case SHARK:
+         return "kart_sharky.obj";
+      case GORILLA:
+         return "kaiserkong.obj";
+      case DRAGON:
+         return "kart_deacon.obj";
+      case OCTOPUS:
+         return "cyberoctopus.obj";
+      default:
+         return "kart_physics.obj";
+   }
+};
+
+
+shared_ptr<CAnimation> animCar(TypeAnimal type) {
+   switch(type) {
+      case PENGUIN: {
+         shared_ptr<CAnimation> anim = make_shared<CAnimation>();
+         anim->AddAnimationRight(Animation("animations/baxter/selection/selectionbaxter_000001.obj", 30, false));
+         anim->AddAnimationLeft(Animation("animations/dragon/selection/selectiondragon_000001.obj", 30, false));
+         anim->AddAnimationIdle(Animation("animations/penguin/idle/kart_penguin_000001.obj", 1, true));
+         anim->AddAnimationWin(Animation("animations/penguin/selection/selectionpenguin_000001.obj", 30, true));
+         anim->ActivateAnimationIdle();
+         return anim;
+      }
+      /*case TIGER:
          return "kart_baxter.obj";
       case SHARK:
          return "kart_sharky.obj";
@@ -34,7 +61,7 @@ std::string meshCar(TypeAnimal type) {
       case OCTOPUS:
          return "cyberoctopus.obj";
       default:
-         return "kart_physics.obj";
+         return "kart_physics.obj";*/
    }
 };
 
