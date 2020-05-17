@@ -40,28 +40,23 @@ std::string meshCar(TypeAnimal type) {
 
 
 shared_ptr<CAnimation> animCar(TypeAnimal type) {
+   shared_ptr<CAnimation> anim = make_shared<CAnimation>();
    switch(type) {
       case PENGUIN: {
-         shared_ptr<CAnimation> anim = make_shared<CAnimation>();
          anim->AddAnimationRight(Animation("animations/baxter/selection/selectionbaxter_000001.obj", 30, false));
          anim->AddAnimationLeft(Animation("animations/dragon/selection/selectiondragon_000001.obj", 30, false));
          anim->AddAnimationIdle(Animation("animations/penguin/idle/kart_penguin_000001.obj", 1, true));
          anim->AddAnimationWin(Animation("animations/penguin/selection/selectionpenguin_000001.obj", 30, true));
-         anim->ActivateAnimationIdle();
-         return anim;
-      }
-      /*case TIGER:
-         return "kart_baxter.obj";
+      } break;
+      case TIGER:
       case SHARK:
-         return "kart_sharky.obj";
       case GORILLA:
-         return "kart_kong.obj";
       case DRAGON:
-         return "kart_deacon.obj";
       case OCTOPUS:
-         return "cyberoctopus.obj";
       default:
-         return "kart_physics.obj";*/
+       break;
    }
+   anim->ActivateAnimationIdle();
+   return anim;
 };
 

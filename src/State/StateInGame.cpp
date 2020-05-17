@@ -91,6 +91,9 @@ void StateInGame::AddElementsToRender() {
         renderEngine->FacadeAddShadowMapping(cId->id);
     }
 
+    //renderEngine->FacadeAddGrass(200.0, glm::vec3(400.0f, 0.0f, 0.0f), glm::vec3(15.0, 15.0, 15.0), false);
+    //renderEngine->FacadeAddGrass(200.0, 200.0, glm::vec3(400.0f, 0.0f, 0.0f), glm::vec3(7.0, 7.0, 7.0), true);
+
     //Añadimos las particulas al arbol
     for (auto particleSystem : manParticleSystem->GetEntities()) {
         renderEngine->FacadeAddObject(particleSystem.get());
@@ -218,12 +221,7 @@ void StateInGame::InitState() {
 void StateInGame::CreateMainCar() {
     if (manCars) {
         auto pj = GameValues::GetInstance()->GetCharacter();
-        manCars->CreateMainCar(pj, manCars->GetPosSpawn());
-        //manNamePlates->CreateNamePlate(manCars->GetCar().get());
-        /*auto cCar = static_cast<CCar*>(manCars->GetCar()->GetComponent(CompType::CarComp).get());
-        if (cCar){
-            cout << "PESO: " << cCar->weight << " - VELMAX: " << cCar->maxSpeed << " - ACELETARION: " << cCar->acceleration << "\n";
-        }*/
+        manCars->CreateMainCar(pj);
     }
 }
 

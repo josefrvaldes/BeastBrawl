@@ -820,9 +820,18 @@ void CLEngine::AddGrass(float _width, float _height, const glm::vec3& _position,
         auto resourceShader = rm->GetResourceShader("CLEngine/src/Shaders/grassShader.vert", "CLEngine/src/Shaders/grassShader.frag", "CLEngine/src/Shaders/grassShader.geom");
         grassShader = resourceShader->GetProgramID();
         shaders.push_back(grassShader);
-
     }
     sysGrassVector.emplace_back(make_unique<CLGrassSystem>(_width, _height, _position, _scale, realistGrass));
+}
+
+void CLEngine::AddGrass(float radious, const glm::vec3& _position, const glm::vec3& _scale, bool realistGrass){
+    if(!grassShader){
+        auto rm = CLResourceManager::GetResourceManager();
+        auto resourceShader = rm->GetResourceShader("CLEngine/src/Shaders/grassShader.vert", "CLEngine/src/Shaders/grassShader.frag", "CLEngine/src/Shaders/grassShader.geom");
+        grassShader = resourceShader->GetProgramID();
+        shaders.push_back(grassShader);
+    }
+    sysGrassVector.emplace_back(make_unique<CLGrassSystem>(radious, _position, _scale, realistGrass));
 }
 
 bool CLEngine::RemoveChild(CLNode* child){
@@ -975,7 +984,13 @@ void CLEngine::DrawSkybox(){
 
 void CLEngine::DrawGrass(){
     for(const auto& sysGrass : sysGrassVector){
-        sysGrass->Draw(grassShader, projection, view);
+        // frustum
+        CLE::CLFrustum::Visibility frusVisibility = CLE::CLFrustum::Visibility::Invisible;
+        auto& frustrum_m = GetActiveCamera()->GetFrustum();
+        frusVisibility = frustrum_m.IsInside(sysGrass->GetPosition(), sysGrass->GetSize());
+
+        if(frusVisibility == CLE::CLFrustum::Visibility::Completly)
+            sysGrass->Draw(grassShader, projection, view);
     }
 }
 

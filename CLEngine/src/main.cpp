@@ -50,20 +50,19 @@ int main() {
         //-------------------Resource manager-------------------
         CLResourceManager* resourceManager = CLResourceManager::GetResourceManager();
 
-        auto resourceShader = resourceManager->GetResourceShader("CLEngine/src/Shaders/shadowMappingShader.vert", "CLEngine/src/Shaders/shadowMappingShader.frag");
-        auto resourceShaderCartoon = resourceManager->GetResourceShader("CLEngine/src/Shaders/cartoonShader.vert", "CLEngine/src/Shaders/cartoonShader.frag");
-        auto resourceShaderLightMapping = resourceManager->GetResourceShader("CLEngine/src/Shaders/lightMapping.vert", "CLEngine/src/Shaders/lightMapping.frag");
-        auto resourceShaderHud = resourceManager->GetResourceShader("CLEngine/src/Shaders/spriteShader.vert", "CLEngine/src/Shaders/spriteShader.frag");
+        // auto resourceShader = resourceManager->GetResourceShader("CLEngine/src/Shaders/shadowMappingShader.vert", "CLEngine/src/Shaders/shadowMappingShader.frag");
+        // auto resourceShaderCartoon = resourceManager->GetResourceShader("CLEngine/src/Shaders/cartoonShader.vert", "CLEngine/src/Shaders/cartoonShader.frag");
+        // auto resourceShaderLightMapping = resourceManager->GetResourceShader("CLEngine/src/Shaders/lightMapping.vert", "CLEngine/src/Shaders/lightMapping.frag");
+        // auto resourceShaderHud = resourceManager->GetResourceShader("CLEngine/src/Shaders/spriteShader.vert", "CLEngine/src/Shaders/spriteShader.frag");
         auto resourceShaderBasic = resourceManager->GetResourceShader("CLEngine/src/Shaders/basicShader.vert", "CLEngine/src/Shaders/basicShader.frag");
 
-        auto resourceShaderMaterial = resourceManager->GetResourceShader("CLEngine/src/Shaders/materialShader.vert", "CLEngine/src/Shaders/materialShader.frag");
-        auto resourceShader3 = resourceManager->GetResourceShader("CLEngine/src/Shaders/debugShader.vert", "CLEngine/src/Shaders/debugShader.frag");
-        auto resourceShaderSkybox = resourceManager->GetResourceShader("CLEngine/src/Shaders/skybox.vert", "CLEngine/src/Shaders/skybox.frag");
+        // auto resourceShaderMaterial = resourceManager->GetResourceShader("CLEngine/src/Shaders/materialShader.vert", "CLEngine/src/Shaders/materialShader.frag");
+        // auto resourceShader3 = resourceManager->GetResourceShader("CLEngine/src/Shaders/debugShader.vert", "CLEngine/src/Shaders/debugShader.frag");
+        // auto resourceShaderSkybox = resourceManager->GetResourceShader("CLEngine/src/Shaders/skybox.vert", "CLEngine/src/Shaders/skybox.frag");
         auto resourceMeshGround = resourceManager->GetResourceMesh("media/training_ground.obj", true);
-        auto resourceMeshTotem = resourceManager->GetResourceMesh("media/totem.obj", true);
+        // auto resourceMeshTotem = resourceManager->GetResourceMesh("media/totem.obj", true);
         auto resourceMesh = resourceManager->GetResourceMesh("media/sharky_wheel2.obj", true);
-        auto resourceMeshBox = resourceManager->GetResourceMesh("media/TEST_BOX.obj", true);
-        auto resourceMeshShield = resourceManager->GetResourceMesh("media/shield.obj", true);
+        // auto resourceMeshBox = resourceManager->GetResourceMesh("media/TEST_BOX.obj", true);
         // auto animationKong = resourceManager->GetResourceAnimation("media/animations/kong/001kong.obj", 75, true);
         // auto animationCube = resourceManager->GetResourceAnimation("media/animations/cube/001cube.obj", 4, true);
         // auto animationOctopus = resourceManager->LoadResourceAnimation("media/animations/cyberoctopus/damage/damageoctopus_000001.obj", 35, false);
@@ -81,7 +80,7 @@ int main() {
 
         //Nodo raiz
         //shared_ptr<CLNode> smgr = make_shared<CLNode>(entity1.get());
-        CLNode* smgr = device->GetRootNode();
+        // CLNode* smgr = device->GetRootNode();
         auto light1 = device->AddPointLight(device->GetRootNode(),1);
         light1->SetShaderProgramID(resourceShaderCartoon->GetProgramID());
         static_cast<CLPointLight*>(light1->GetEntity())->SetLightAttributes(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.7f, 0.7f, 0.7f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.1f, 0.1, 0.1f), 1.0f, 0.00005f, 0.0000014f);
@@ -195,7 +194,7 @@ int main() {
 
         //LUCES Y COLORES
         float auxCameraPos[3] = {camera->GetTranslation().x, camera->GetTranslation().y, camera->GetTranslation().z};
-        float auxLightPos[3] = {light1->GetTranslation().x, light1->GetTranslation().y, light1->GetTranslation().z};
+        float auxLightPos[3]  = {light1->GetTranslation().x, light1->GetTranslation().y, light1->GetTranslation().z};
         float auxLightPos2[3] = {light2->GetTranslation().x, light2->GetTranslation().y, light2->GetTranslation().z};
 
         float index = 0.01;
@@ -203,11 +202,11 @@ int main() {
         double previousTime = glfwGetTime();
         int frameCount = 0;
 
-        const uint64_t ANIMATION_DURATION = 5000;
-        auto start = Utils::getMillisSinceEpoch();
+        // const uint64_t ANIMATION_DURATION = 5000;
+        // auto start = Utils::getMillisSinceEpoch();
 
 
-        CLNode* light3 = nullptr;
+        // CLNode* light3 = nullptr;
         while (device->Run()) {
             //Apartir de aqui hacemos cosas, de momento en el main para testear
             device->UpdateViewport();  //Por si reescalamos la ventana

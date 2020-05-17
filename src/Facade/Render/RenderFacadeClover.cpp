@@ -238,13 +238,13 @@ const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
     auto cShader = static_cast<CShader*>(entity->GetComponent(CompType::ShaderComp).get());
 
     CLResourceMesh* mesh = nullptr;
-    CLResourceMaterial* mat = nullptr;
+    // CLResourceMaterial* mat = nullptr;
     if(entity->HasComponent(CompType::MeshComp)){
         auto cMesh = static_cast<CMesh*>(entity->GetComponent(CompType::MeshComp).get());
         std::string currentMesh = cMesh->activeMesh;
         std::string meshPath = "media/" + currentMesh;
         mesh = resourceManager->GetResourceMesh(meshPath, false);
-        mat = resourceManager->GetResourceMaterial(meshPath);
+        // mat = resourceManager->GetResourceMaterial(meshPath);
     } 
 
     
@@ -273,7 +273,7 @@ const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
             std::string path = cAnimation->activeAnimation->path;
             std::string animationPath = "media/" + path;
             vector<CLResourceMesh*> clAnimations = resourceManager->GetResourceAnimation(animationPath, cAnimation->activeAnimation->numKeyFrames, false);
-            mat = resourceManager->GetResourceMaterial(animationPath);
+            // mat = resourceManager->GetResourceMaterial(animationPath);
             //node = father->AddMesh(cId->id); 
             node = device->AddMesh(father,cId->id);
 
@@ -448,13 +448,13 @@ const uint16_t RenderFacadeClover::FacadeAddStaticObject(Entity* entity) {
     auto cShader = static_cast<CShader*>(entity->GetComponent(CompType::ShaderComp).get());
 
     CLResourceMesh* mesh = nullptr;
-    CLResourceMaterial* mat = nullptr;
+    // CLResourceMaterial* mat = nullptr;
     if(entity->HasComponent(CompType::MeshComp)){
         auto cMesh = static_cast<CMesh*>(entity->GetComponent(CompType::MeshComp).get());
         std::string currentMesh = cMesh->activeMesh;
         std::string meshPath = "media/" + currentMesh;
         mesh = resourceManager->GetResourceMesh(meshPath, false);
-        mat = resourceManager->GetResourceMaterial(meshPath);
+        // mat = resourceManager->GetResourceMaterial(meshPath);
     } 
 
 
@@ -477,7 +477,7 @@ const uint16_t RenderFacadeClover::FacadeAddStaticObject(Entity* entity) {
             std::string path = cAnimation->activeAnimation->path;
             std::string animationPath = "media/" + path;
             vector<CLResourceMesh*> clAnimations = resourceManager->GetResourceAnimation(animationPath, cAnimation->activeAnimation->numKeyFrames, false);
-            mat = resourceManager->GetResourceMaterial(animationPath);
+            // mat = resourceManager->GetResourceMaterial(animationPath);
             //node = father->AddMesh(cId->id); 
             node = device->AddMesh(father,cId->id);
 
@@ -775,7 +775,7 @@ void RenderFacadeClover::FacadeUpdateAnimationsLoD(vector<shared_ptr<Entity>> en
         if(entity->HasComponent(CompType::AnimationComp)) {
             auto cAnimation = static_cast<CAnimation*>(entity->GetComponent(CompType::AnimationComp).get());
             if(cAnimation->animationChanged) {
-                cout << "Cambiamos animación por el LoD" << endl;
+                // cout << "Cambiamos animación por el LoD" << endl;
                 CId *cid = static_cast<CId*>(entity->GetComponent(CompType::IdComp).get());
                 auto node = device->GetNodeByID(cid->id);
                 if(node) {
@@ -2250,6 +2250,16 @@ void RenderFacadeClover::FacadeAddSkybox(string right,string left,string top,str
 void RenderFacadeClover::FacadeAddShadowMapping(unsigned int lightId){
     device->AddShadowMapping(lightId);
 }
+
+void RenderFacadeClover::FacadeAddGrass(float _width, float _height, const glm::vec3& _position, const glm::vec3& _scale, bool realistGrass){
+    device->AddGrass(_width, _height, _position, _scale, realistGrass);
+}
+
+
+void RenderFacadeClover::FacadeAddGrass(float radious, const glm::vec3& _position, const glm::vec3& _scale, bool realistGrass){
+    device->AddGrass(radious, _position, _scale, realistGrass);  
+}
+
 
 
 //DEBUG dibuja las aristas entre los nodos del grafo

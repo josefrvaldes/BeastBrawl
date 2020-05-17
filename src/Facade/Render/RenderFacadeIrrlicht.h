@@ -108,6 +108,8 @@ class RenderFacadeIrrlicht : public RenderFacade {
     void ThrowEventChangeToMulti(uint16_t IdOnline, const vector<uint16_t> IdPlayersOnline) override;
     void FacadeAddSkybox(string right,string left,string top,string bottom,string front,string back) override;
     void FacadeAddShadowMapping(unsigned int lightId) override;
+    void FacadeAddGrass(float _width, float _height, const glm::vec3& _position, const glm::vec3& _scale, bool realistGrass) override {};
+    void FacadeAddGrass(float radious, const glm::vec3& _position, const glm::vec3& _scale, bool realistGrass) override {};
     void CleanScene() override;
     void FacadeUpdateViewport() override;
     
