@@ -924,6 +924,8 @@ void RenderFacadeClover::FacadeInitResources(mainCharacter character){
             resourceManager->GetResourceAnimation("media/animations/kong/left/turnleftkong_000001.obj", 10, false);
             break;
         case mainCharacter::SHARK:
+            resourceManager->GetResourceAnimation("media/animations/sharky/right/turnrightsharky_000001.obj", 10, false);
+            resourceManager->GetResourceAnimation("media/animations/sharky/left/turnleftsharky_000001.obj", 10, false);
             break;
         case mainCharacter::DRAGON:
             resourceManager->GetResourceAnimation("media/animations/dragon/right/turnrightdragon_000001.obj", 10, false);
@@ -995,7 +997,7 @@ void RenderFacadeClover::FacadeInitMenu() {
     FacadeEndScene();
 
     // -------- CARGAMOS ANIMACIONES
-    resourceManager->GetResourceAnimation("media/animations/dragon/selection/selectiondragon_000001.obj", 30, false);
+    resourceManager->GetResourceAnimation("media/animations/sharky/selection/selectionsharky_000001.obj", 30, false);
     resourceManager->GetResourceAnimation("media/animations/cyberoctopus/selection/selectionoctopus_000001.obj", 31, false);
 
 
@@ -1117,7 +1119,7 @@ void RenderFacadeClover::FacadeInitSelectCharacter() {
     mesh->SetShaderProgramID(shader->GetProgramID());
 
     //Shark
-    auto animationSha = resourceManager->GetResourceAnimation("media/animations/dragon/selection/selectiondragon_000001.obj", 30, false);
+    auto animationSha = resourceManager->GetResourceAnimation("media/animations/sharky/selection/selectionsharky_000001.obj", 30, false);
     mesh = device->AddMesh(smgr,2);
     static_cast<CLMesh*>(mesh->GetEntity())->SetAnimation(animationSha, true);
     mesh->SetScalation(glm::vec3(2.0f));

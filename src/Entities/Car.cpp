@@ -114,6 +114,8 @@ Car::Car(int pj){
             maxSpeed =              MAX_VELOCITY::V_MEDIUM;
             acceleration =          ACCELERATION::A_HIGH/100;
             mesh =                  meshCar(SHARK);
+            anim =                  animCar(SHARK);  AddComponent(anim);
+            cType = make_shared<CType>(ModelType::StaticMesh);
 
             pathTopLeft =           "sharky_wheel4.obj";
             pathTopRight =          "sharky_wheel2.obj";
