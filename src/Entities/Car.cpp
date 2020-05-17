@@ -133,15 +133,15 @@ Car::Car(int pj){
             acceleration =          ACCELERATION::A_LOW/100;
             mesh =                  meshCar(GORILLA);
 
-            pathTopLeft =           "kaiserkong_wheel4.obj";
+            pathTopLeft =           "kaiserkong_wheel1.obj";
             pathTopRight =          "kaiserkong_wheel2.obj";
             pathBottomLeft =        "kaiserkong_wheel3.obj";
-            pathBottomRight =       "kaiserkong_wheel1.obj";
+            pathBottomRight =       "kaiserkong_wheel4.obj";
 
-            offsetTopLeft =         glm::vec3(0.6,0.3f,1.0);
-            offsetTopRight =        glm::vec3(0.6,0.3f,-1.0);
-            offsetBottomLeft =      glm::vec3(-0.4,0.3f,1.0);
-            offsetBottomRight =     glm::vec3(-0.4,0.3f,-1.0);
+            offsetTopLeft =         glm::vec3(1.5,0.3f,1.5);
+            offsetTopRight =        glm::vec3(1.5,0.3f,-1.5);
+            offsetBottomLeft =      glm::vec3(-1.0,0.3f,1.7);
+            offsetBottomRight =     glm::vec3(-1.0,0.3f,-1.7);
 
             rotationTopLeft =       glm::vec3(0.0f,0.0f,0.0f);
             rotationTopRight =      glm::vec3(0.0f,0.0f,0.0f);
