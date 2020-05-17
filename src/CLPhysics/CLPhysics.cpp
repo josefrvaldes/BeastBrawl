@@ -170,9 +170,14 @@ void CLPhysics::ConstGravity() {
     }
     ManTotem *manTotem = static_cast<ManTotem *>(managers[7]);
     const auto &totem = manTotem->GetEntities()[0];
+    auto cTotem = static_cast<CTotem*>(totem->GetComponent(CompType::TotemComp).get());
     CBoundingSphere *spTotem = static_cast<CBoundingSphere *>(totem->GetComponent(CompType::CompBoundingSphere).get());
     CTransformable *trTotem = static_cast<CTransformable *>(totem->GetComponent(CompType::TransformableComp).get());
-    spTotem->center.y += gravityPU;
+    if(cTotem->speed < cTotem->MaxSpeed*0.3){
+        spTotem->center.y -= gravityPU;   
+    }else{
+        spTotem->center.y += gravityPU;
+    }
     RePositionEntityY(*trTotem, *spTotem);
 }
 

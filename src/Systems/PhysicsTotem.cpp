@@ -14,8 +14,8 @@ void PhysicsTotem::update(Entity* totem){
       if(cTotem->speed < cTotem->MaxSpeed){
         // Movimiento
         float angleRotation = (cTransformable->rotation.y * M_PI) / 180.0;
-        cTransformable->position.x -= cos(angleRotation) * cTotem->speed * Constants::DELTA_TIME;
-        cTransformable->position.z += sin(angleRotation) * cTotem->speed * Constants::DELTA_TIME;
+        cTransformable->position.x -= cos(angleRotation) * 100 * Constants::DELTA_TIME;
+        cTransformable->position.z += sin(angleRotation) * 100 * Constants::DELTA_TIME;
         cTotem->speed += cTotem->aceleration;
       }else{
         if(cTotem->active){

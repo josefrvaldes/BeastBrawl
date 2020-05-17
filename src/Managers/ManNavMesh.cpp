@@ -82,9 +82,9 @@ ManNavMesh::ManNavMesh() {
         double centroNavMeshX = (vertex1X+vertex2X+vertex3X+vertex4X + vertex5X+vertex6X+vertex7X+vertex8X)/8;
         double centroNavMeshY = (vertex1Y+vertex2Y+vertex3Y+vertex4Y + vertex5Y+vertex6Y+vertex7Y+vertex8Y)/8;
         double centroNavMeshZ = (vertex1Z+vertex2Z+vertex3Z+vertex4Z + vertex5Z+vertex6Z+vertex7Z+vertex8Z)/8;
-        vec3 centroNavMesh = vec3(centroNavMeshX,centroNavMeshY,centroNavMeshZ); 
+        vec3 centroNavMesh = vec3(centroNavMeshX,centroNavMeshY+30,centroNavMeshZ); 
         double dimensionX = (abs(centroNavMeshX - vertex1X))*2;    
-        double dimensionY = (abs(centroNavMeshY - vertex1Y))*2; 
+        double dimensionY = ((abs(centroNavMeshY - vertex1Y))*2)+60; 
         double dimensionZ = (abs(centroNavMeshZ - vertex1Z))*2; 
         // cogemos el array de wayPoints
         auto wayPointsIdCount = navMeshActual["waypoints"].size();
@@ -117,43 +117,43 @@ ManNavMesh::ManNavMesh() {
     SubscribeToEvents();
 
 
-    // NAVMESH HERMANOS
-    bool next= false;
-    for( auto currentNavMesh : this->GetEntities()){
-        auto cNavMesh = static_cast<CNavMesh*>(currentNavMesh.get()->GetComponent(CompType::NavMeshComp).get());
-        for(long unsigned int i=0; i<this->GetEntities().size(); i++){
-            next = false;
-            auto cOtherNavMesh = static_cast<CNavMesh*>(this->GetEntities()[i].get()->GetComponent(CompType::NavMeshComp).get());
-            for(auto curretWayPoint : cNavMesh->waypoints){
-                for(auto otherWayPoint : cOtherNavMesh->waypoints){
-                    if(otherWayPoint == curretWayPoint && !next){
-                    // Son WayPoints Hermanos
-                        static_cast<NavMesh*>(currentNavMesh.get())->AddNavMeshBro(this->GetEntities()[i].get());
-                        //auto cId = static_cast<CId*>(currentNavMesh.get()->GetComponent(CompType::IdComp).get());
-                        //auto cId2 = static_cast<CId*>(this->GetEntities()[i].get()->GetComponent(CompType::IdComp).get());
-                        //cout << "En el Navmesh: " << cId->id << " hacemos hermano al navmesh: " << cId2->id << endl;
-                        next = true;
-                    }
-                }
-            }
-        }
-    }
-    // cuando hemos acabado de crear los NavMesh vamos a ver cque NavMesh son los que estan conectados con ellos
-
-    // DECIDIMOS EL NAVMESH CENTRAAAAAAAAAL
-    float maxArea = 0.0;
-    Entity* maxNavMesh = nullptr;
-    if(this->GetEntities().size() > 0) maxNavMesh = this->GetEntities()[0].get();
-    // SELECCIONAR NAVMHES CENTRAL
-    for( auto currentNavMesh : this->GetEntities()){
-        auto cDimNav = static_cast<CDimensions*>(currentNavMesh.get()->GetComponent(CompType::DimensionsComp).get());
-        if(maxArea < (cDimNav->width*cDimNav->depth)){
-            maxArea = cDimNav->width*cDimNav->depth;
-            maxNavMesh = currentNavMesh.get();
-        }
-    }
-    auto cMaxNavMesh = static_cast<CNavMesh*>(maxNavMesh->GetComponent(CompType::NavMeshComp).get());
-    cMaxNavMesh->centralNavMESH = true;
+//    // NAVMESH HERMANOS
+//    bool next= false;
+//    for( auto currentNavMesh : this->GetEntities()){
+//        auto cNavMesh = static_cast<CNavMesh*>(currentNavMesh.get()->GetComponent(CompType::NavMeshComp).get());
+//        for(long unsigned int i=0; i<this->GetEntities().size(); i++){
+//            next = false;
+//            auto cOtherNavMesh = static_cast<CNavMesh*>(this->GetEntities()[i].get()->GetComponent(CompType::NavMeshComp).get());
+//            for(auto curretWayPoint : cNavMesh->waypoints){
+//                for(auto otherWayPoint : cOtherNavMesh->waypoints){
+//                    if(otherWayPoint == curretWayPoint && !next){
+//                    // Son WayPoints Hermanos
+//                        static_cast<NavMesh*>(currentNavMesh.get())->AddNavMeshBro(this->GetEntities()[i].get());
+//                        //auto cId = static_cast<CId*>(currentNavMesh.get()->GetComponent(CompType::IdComp).get());
+//                        //auto cId2 = static_cast<CId*>(this->GetEntities()[i].get()->GetComponent(CompType::IdComp).get());
+//                        //cout << "En el Navmesh: " << cId->id << " hacemos hermano al navmesh: " << cId2->id << endl;
+//                        next = true;
+//                    }
+//                }
+//            }
+//        }
+//    }
+//    // cuando hemos acabado de crear los NavMesh vamos a ver cque NavMesh son los que estan conectados con ellos
+//
+//    // DECIDIMOS EL NAVMESH CENTRAAAAAAAAAL
+//    float maxArea = 0.0;
+//    Entity* maxNavMesh = nullptr;
+//    if(this->GetEntities().size() > 0) maxNavMesh = this->GetEntities()[0].get();
+//    // SELECCIONAR NAVMHES CENTRAL
+//    for( auto currentNavMesh : this->GetEntities()){
+//        auto cDimNav = static_cast<CDimensions*>(currentNavMesh.get()->GetComponent(CompType::DimensionsComp).get());
+//        if(maxArea < (cDimNav->width*cDimNav->depth)){
+//            maxArea = cDimNav->width*cDimNav->depth;
+//            maxNavMesh = currentNavMesh.get();
+//        }
+//    }
+//    auto cMaxNavMesh = static_cast<CNavMesh*>(maxNavMesh->GetComponent(CompType::NavMeshComp).get());
+//    cMaxNavMesh->centralNavMESH = true;
 }
 
 void ManNavMesh::Update(ManCar &manCar_) {
@@ -214,10 +214,12 @@ int ManNavMesh::CalculateNavMesh(glm::vec3 &position_) const{
             ( (position_.y >= (cTranNav->position.y-(cDim->height/2))) && 
             (position_.y <= (cTranNav->position.y+(cDim->height/2))) ) ){
                 auto cNavMesh = static_cast<CNavMesh*>(navmesh.get()->GetComponent(CompType::NavMeshComp).get());
-                //std::cout << " El cochecito lereee pertenece al naveMesh: " << cNavMesh->id << std::endl;
+                std::cout << " El totem pertenece al navmesh " << cNavMesh->id << std::endl;
                 return cNavMesh->id;
             }       
     }
+    cout << "no pertenecemos a ningun navmesh y la pos es (" << position_.x<< " , " << position_.y<< " , " << position_.z<< " )" << endl;
+    
     return -1;
 }
 
