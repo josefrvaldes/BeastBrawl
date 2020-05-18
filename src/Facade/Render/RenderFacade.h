@@ -97,7 +97,7 @@ class RenderFacade {
 
     virtual void FacadeUpdatePowerUpHUD(DataMap* d) = 0;
     virtual void FacadeInitResources(mainCharacter character) = 0;
-    virtual void FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* globalClock, ManHUDEvent*, ManGameRules*) = 0;
+    virtual void FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* globalClock, ManHUDEvent*, ManGameRules*, bool ingame) = 0;
     virtual void FacadeSuscribeEvents() = 0;
     virtual void FacadeSuscribeEventsSettings() = 0;
     virtual void FacadeAddPlates(Manager* manNamePlates) = 0;

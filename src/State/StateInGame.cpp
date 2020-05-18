@@ -468,7 +468,12 @@ void StateInGame::Render() {
     
     auto showHUD = renderEngine->FacadeCheckShowHUD();
     if (showHUD) {
-        renderEngine->FacadeDrawHUD(manCars->GetCar().get(), manCars.get(), manGameRules->GetGlobalClock().get(), manHudEvent.get(), manGameRules.get());   
+        if(currentUpdateState == UpdateState::GAME)
+            renderEngine->FacadeDrawHUD(manCars->GetCar().get(), manCars.get(), manGameRules->GetGlobalClock().get(), manHudEvent.get(), manGameRules.get(), true); 
+        else
+            renderEngine->FacadeDrawHUD(manCars->GetCar().get(), manCars.get(), manGameRules->GetGlobalClock().get(), manHudEvent.get(), manGameRules.get(), false); 
+        
+  
     }
     renderEngine->FacadeEndScene();
 }

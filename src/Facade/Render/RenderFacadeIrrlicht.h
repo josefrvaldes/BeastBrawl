@@ -98,7 +98,7 @@ class RenderFacadeIrrlicht : public RenderFacade {
     bool FacadeCheckShowHUD() override { return true; };
 
     void FacadeUpdatePowerUpHUD(DataMap* d) override;
-    void FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* globalClock, ManHUDEvent* manHud, ManGameRules* manGR) override;
+    void FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* globalClock, ManHUDEvent* manHud, ManGameRules* manGR, bool ingame) override;
     void FacadeSuscribeEvents() override;
     void FacadeSuscribeEventsSettings() override;
     void FacadeAddPlates(Manager* manNamePlates) override;
