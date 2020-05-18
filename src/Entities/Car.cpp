@@ -93,7 +93,10 @@ Car::Car(int pj){
             weight =                WEIGHT::W_MEDIUM;
             maxSpeed =              MAX_VELOCITY::V_MEDIUM;
             acceleration =          ACCELERATION::A_MEDIUM/100;
-            mesh =                  meshCar(TIGER);
+
+            anim =                  animCar(TIGER);  AddComponent(anim);
+            cType = make_shared<CType>(ModelType::StaticMesh);
+
 
             pathTopLeft =           "mrsbaxter_wheel3.obj";
             pathTopRight =          "mrsbaxter_wheel2.obj";
