@@ -913,15 +913,19 @@ void RenderFacadeClover::FacadeInitResources(mainCharacter character){
     // resourceManager->GetResourceAnimation("media/animations/kong/win/victorykong_000001.obj", 31, false);
     // resourceManager->GetResourceAnimation("media/animations/cyberoctopus/win/victoryoctopus_000001.obj", 26, false);
     // resourceManager->GetResourceAnimation("media/animations/dragon/win/victorydragon_000001.obj", 31, false);
+    // resourceManager->GetResourceAnimation("media/animations/penguin/win/victorypenguin_000001.obj", 31, false);
 
     resourceManager->GetResourceAnimation("media/animations/sharky/win/victorysharky_000001.obj", 18, false);
     resourceManager->GetResourceAnimation("media/animations/kong/win/victorykong_000001.obj", 18, false);
     resourceManager->GetResourceAnimation("media/animations/cyberoctopus/win/victoryoctopus_000001.obj", 18, false);
     resourceManager->GetResourceAnimation("media/animations/dragon/win/victorydragon_000001.obj", 18, false);
+    resourceManager->GetResourceAnimation("media/animations/penguin/win/victorypenguin_000001.obj", 18, false);
 
     // cargamos el resto de animaciones del personaje principal
     switch(character) {
         case mainCharacter::PENGUIN:
+            resourceManager->GetResourceAnimation("media/animations/penguin/right/turnrightpenguin_000001.obj", 10, false);
+            resourceManager->GetResourceAnimation("media/animations/penguin/left/turnleftpenguin_000001.obj", 10, false);
             break;
         case mainCharacter::TIGER:
             break;

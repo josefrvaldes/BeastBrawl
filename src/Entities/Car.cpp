@@ -62,7 +62,7 @@ Car::Car(int pj){
             meshWin = "";
             meshRight = "";
             meshLeft = "";
-
+ 
             pathTopLeft =           "penguin_wheel1.obj";
             pathTopRight =          "penguin_wheel2.obj";
             pathBottomLeft =        "penguin_wheel3.obj";
