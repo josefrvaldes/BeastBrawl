@@ -1,7 +1,7 @@
 # Blender MTL File: 'None'
 # Material Count: 2
 
-newmtl Material.002
+newmtl Material.001
 Ns 225.000000
 Ka 1.000000 1.000000 1.000000
 Kd 0.800000 0.800000 0.800000
@@ -12,7 +12,7 @@ d 1.000000
 illum 1
 map_Kd clv_cyberoctopus_kart_texture.tga
 
-newmtl Material.003
+newmtl Material.004
 Ns 225.000000
 Ka 1.000000 1.000000 1.000000
 Kd 0.800000 0.800000 0.800000

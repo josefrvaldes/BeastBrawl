@@ -223,16 +223,18 @@ Car::Car(int pj){
 
             offsetTopLeft =         glm::vec3(1.0,0.3f,1.3);
             offsetTopRight =        glm::vec3(1.0,0.3f,-1.3);
-            offsetBottomLeft =      glm::vec3(-1.2,0.3f,0.5);
-            offsetBottomRight =     glm::vec3(-1.2,0.3f,-0.5);
+            offsetBottomLeft =      glm::vec3(-1.2,0.3f,0.62);
+            offsetBottomRight =     glm::vec3(-1.2,0.3f,-0.62);
+
             rotationTopLeft =       glm::vec3(0.0f,0.0f,0.0f);
             rotationTopRight =      glm::vec3(0.0f,0.0f,0.0f);
             rotationBottomLeft =    glm::vec3(0.0f,0.0f,0.0f);
             rotationBottomRight =   glm::vec3(0.0f,0.0f,0.0f);
+
             scaleTopLeft =          glm::vec3(1.0f);
             scaleTopRight =         glm::vec3(1.0f);
-            scaleBottomLeft =       glm::vec3(1.0f);
-            scaleBottomRight =      glm::vec3(1.0f);
+            scaleBottomLeft =       glm::vec3(0.8f);
+            scaleBottomRight =      glm::vec3(0.8f);
 
             radiusSPhere =          7.0;
             distanceSphere =        5.0;
