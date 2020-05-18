@@ -49,6 +49,10 @@ void CLMesh::Animate() {
     }
 }
 
+void CLMesh::ResetAnimation() {
+    currentKeyFrameIndex = 0;
+}
+
 void CLMesh::AnimateInterpolated() {
     if(ItsTimeToAnimate()) {
             // si tenemos que cambiar ya de keyFrame...

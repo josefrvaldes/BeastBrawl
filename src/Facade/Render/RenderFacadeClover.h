@@ -217,6 +217,7 @@ class RenderFacadeClover : public RenderFacade {
       int inputPause { 0 };
       int maxInputPause { 1 };
       //Seleccion de personaje
+      int previousInputSC{-1};
       int inputSC { 0 };
       int maxInputSC { 5 };
       //End Race

@@ -910,15 +910,15 @@ void RenderFacadeClover::FacadeInitResources(mainCharacter character){
     resourceManager->GetResourceMesh("media/training_ground.obj");
 
     // cargamos TODAS las animaciones de win, porque cualquiera puede ganar
-    // resourceManager->GetResourceAnimation("media/animations/sharky/win/victorysharky_000001.obj", 31, true);
-    // resourceManager->GetResourceAnimation("media/animations/kong/win/victorykong_000001.obj", 31, true);
-    // resourceManager->GetResourceAnimation("media/animations/cyberoctopus/win/victoryoctopus_000001.obj", 26, true);
-    // resourceManager->GetResourceAnimation("media/animations/dragon/win/victorydragon_000001.obj", 31, true);
+    // resourceManager->GetResourceAnimation("media/animations/sharky/win/victorysharky_000001.obj", 31, false);
+    // resourceManager->GetResourceAnimation("media/animations/kong/win/victorykong_000001.obj", 31, false);
+    // resourceManager->GetResourceAnimation("media/animations/cyberoctopus/win/victoryoctopus_000001.obj", 26, false);
+    // resourceManager->GetResourceAnimation("media/animations/dragon/win/victorydragon_000001.obj", 31, false);
 
-    resourceManager->GetResourceAnimation("media/animations/sharky/win/victorysharky_000001.obj", 18, true);
-    resourceManager->GetResourceAnimation("media/animations/kong/win/victorykong_000001.obj", 18, true);
-    resourceManager->GetResourceAnimation("media/animations/cyberoctopus/win/victoryoctopus_000001.obj", 18, true);
-    resourceManager->GetResourceAnimation("media/animations/dragon/win/victorydragon_000001.obj", 18, true);
+    resourceManager->GetResourceAnimation("media/animations/sharky/win/victorysharky_000001.obj", 18, false);
+    resourceManager->GetResourceAnimation("media/animations/kong/win/victorykong_000001.obj", 18, false);
+    resourceManager->GetResourceAnimation("media/animations/cyberoctopus/win/victoryoctopus_000001.obj", 18, false);
+    resourceManager->GetResourceAnimation("media/animations/dragon/win/victorydragon_000001.obj", 18, false);
 
     // cargamos el resto de animaciones del personaje principal
     switch(character) {
@@ -974,6 +974,7 @@ void RenderFacadeClover::FacadeInitMenu() {
     int indx = time % (tipsTexts.size()-1);
     device->RenderText2D(tipsTexts.at(indx), device->GetScreenWidth()/2 - 125.0f*scale, device->GetScreenHeight()/2,0.5f, scale,glm::vec3(1.0f,1.0f,1.0f));
     FacadeEndScene();
+
 
     // -------- CARGAMOS ANIMACIONES
     resourceManager->GetResourceAnimation("media/animations/penguin/selection/selectionpenguin_000001.obj", 15, false);
@@ -1110,7 +1111,7 @@ void RenderFacadeClover::FacadeInitSelectCharacter() {
     //Penguin
     auto animationPen = resourceManager->GetResourceAnimation("media/animations/penguin/selection/selectionpenguin_000001.obj", 15, false);
     mesh = device->AddMesh(smgr,0);
-    static_cast<CLMesh*>(mesh->GetEntity())->SetAnimation(animationPen, true);
+    static_cast<CLMesh*>(mesh->GetEntity())->SetAnimation(animationPen, false);
     mesh->SetScalation(glm::vec3(2.0f));
     mesh->SetTranslation(glm::vec3(0.0f,-14.0f,-20.0f));
     mesh->SetRotation(glm::vec3(10.0f,-50.0f, 5.0f));
@@ -1119,7 +1120,7 @@ void RenderFacadeClover::FacadeInitSelectCharacter() {
     //Tiger
     auto animationTig = resourceManager->GetResourceAnimation("media/animations/baxter/selection/selectionbaxter_000001.obj", 15, false);
     mesh = device->AddMesh(smgr,1);
-    static_cast<CLMesh*>(mesh->GetEntity())->SetAnimation(animationTig, true);
+    static_cast<CLMesh*>(mesh->GetEntity())->SetAnimation(animationTig, false);
     mesh->SetScalation(glm::vec3(2.0f));
     mesh->SetTranslation(glm::vec3(0.0f,-14.0f,-20.0f));
     mesh->SetRotation(glm::vec3(10.0f,-50.0f, 5.0f));
@@ -1128,7 +1129,7 @@ void RenderFacadeClover::FacadeInitSelectCharacter() {
     //Shark
     auto animationSha = resourceManager->GetResourceAnimation("media/animations/sharky/selection/selectionsharky_000001.obj", 15, false);
     mesh = device->AddMesh(smgr,2);
-    static_cast<CLMesh*>(mesh->GetEntity())->SetAnimation(animationSha, true);
+    static_cast<CLMesh*>(mesh->GetEntity())->SetAnimation(animationSha, false);
     mesh->SetScalation(glm::vec3(2.0f));
     mesh->SetTranslation(glm::vec3(0.0f,-14.0f,-20.0f));
     mesh->SetRotation(glm::vec3(10.0f,-50.0f, 5.0f));
@@ -1137,7 +1138,7 @@ void RenderFacadeClover::FacadeInitSelectCharacter() {
     //Gorila
     auto animationKong = resourceManager->GetResourceAnimation("media/animations/kong/selection/selectionkong_000001.obj", 15, false);
     mesh = device->AddMesh(smgr,3);
-    static_cast<CLMesh*>(mesh->GetEntity())->SetAnimation(animationKong, true);
+    static_cast<CLMesh*>(mesh->GetEntity())->SetAnimation(animationKong, false);
     mesh->SetScalation(glm::vec3(2.0f));
     mesh->SetTranslation(glm::vec3(0.0f,-14.0f,-20.0f));
     mesh->SetRotation(glm::vec3(10.0f,-50.0f, 5.0f));
@@ -1146,16 +1147,17 @@ void RenderFacadeClover::FacadeInitSelectCharacter() {
     //Dragon
     auto animationDra = resourceManager->GetResourceAnimation("media/animations/dragon/selection/selectiondragon_000001.obj", 15, false);
     mesh = device->AddMesh(smgr,4);
-    static_cast<CLMesh*>(mesh->GetEntity())->SetAnimation(animationDra, true);
+    static_cast<CLMesh*>(mesh->GetEntity())->SetAnimation(animationDra, false);
     mesh->SetScalation(glm::vec3(2.0f));
     mesh->SetTranslation(glm::vec3(0.0f,-14.0f,-20.0f));
     mesh->SetRotation(glm::vec3(10.0f,-50.0f, 5.0f));
     mesh->SetShaderProgramID(shader->GetProgramID());
 
+
     //Octopus
     auto animationCyb = resourceManager->GetResourceAnimation("media/animations/cyberoctopus/selection/selectionoctopus_000001.obj", 15, false);
     mesh = device->AddMesh(smgr,5);
-    static_cast<CLMesh*>(mesh->GetEntity())->SetAnimation(animationCyb, true);
+    static_cast<CLMesh*>(mesh->GetEntity())->SetAnimation(animationCyb, false);
     mesh->SetScalation(glm::vec3(2.0f));
     mesh->SetTranslation(glm::vec3(0.0f,-14.0f,-20.0f));
     mesh->SetRotation(glm::vec3(10.0f,-50.0f, 5.0f));
@@ -1718,14 +1720,18 @@ void RenderFacadeClover::FacadeDrawMenu() {
 }
 
 void RenderFacadeClover::FacadeDrawSelectCharacter() {
-
-
-    //Ponemos visible solamente el que esta seleccionado
-    for(uint8_t i=0; i<=maxInputSC ; i++){
-        auto node = device->GetNodeByID(i);
-        node->SetVisible(false);
-    }
     auto nodeSelected = device->GetNodeByID(inputSC);
+
+    if(previousInputSC != inputSC) {
+        previousInputSC = inputSC;
+        //Ponemos visible solamente el que esta seleccionado
+        for(uint8_t i=0; i<=maxInputSC ; i++){
+            auto node = device->GetNodeByID(i);
+            node->SetVisible(false);
+        }
+        static_cast<CLMesh*>(nodeSelected->GetEntity())->ResetAnimation();
+    }
+
     nodeSelected->SetVisible(true);
     static_cast<CLMesh*>(nodeSelected->GetEntity())->Animate();
 

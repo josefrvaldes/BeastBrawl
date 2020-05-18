@@ -53,6 +53,7 @@ class CLMesh : public CLEntity {
     void Draw(GLuint shaderID);
     void Animate();
     void AnimateInterpolated();
+    void ResetAnimation();
     void DrawDepthMap(GLuint shaderID);
 
    private:
