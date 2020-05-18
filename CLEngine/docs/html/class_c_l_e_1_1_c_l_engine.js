@@ -8,6 +8,7 @@ var class_c_l_e_1_1_c_l_engine =
     [ "AddDirectLight", "class_c_l_e_1_1_c_l_engine.html#a51a6a83d5a40888f67ad6f425fba0096", null ],
     [ "AddDirectLight", "class_c_l_e_1_1_c_l_engine.html#a7866e629ccc6ea7520be37d4be2d99e5", null ],
     [ "AddGrass", "class_c_l_e_1_1_c_l_engine.html#a4533f63cc9099ebb7ef3caca96724af6", null ],
+    [ "AddGrass", "class_c_l_e_1_1_c_l_engine.html#afbacbf2ef8df511aa22b99e9662cd328", null ],
     [ "AddGroup", "class_c_l_e_1_1_c_l_engine.html#aa17d27b1f9a224743905a8c3bde5aa10", null ],
     [ "AddMesh", "class_c_l_e_1_1_c_l_engine.html#a3b00f06afe30ca486cccb2f1bd2946eb", null ],
     [ "AddMesh", "class_c_l_e_1_1_c_l_engine.html#ad7ca49be03c300f8449d8ab7d742953e", null ],

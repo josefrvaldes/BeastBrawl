@@ -242,8 +242,11 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:a5f53444e729b21a252d79b2d9c2a972d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Añade un billboard.  <a href="class_c_l_e_1_1_c_l_engine.html#a5f53444e729b21a252d79b2d9c2a972d">More...</a><br /></td></tr>
 <tr class="separator:a5f53444e729b21a252d79b2d9c2a972d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4533f63cc9099ebb7ef3caca96724af6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_engine.html#a4533f63cc9099ebb7ef3caca96724af6">AddGrass</a> (float _width, float _height, const glm::vec3 &amp;_position, const glm::vec3 &amp;_scale, bool realistGrass)</td></tr>
-<tr class="memdesc:a4533f63cc9099ebb7ef3caca96724af6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Crea un modulo de hierba.  <a href="class_c_l_e_1_1_c_l_engine.html#a4533f63cc9099ebb7ef3caca96724af6">More...</a><br /></td></tr>
+<tr class="memdesc:a4533f63cc9099ebb7ef3caca96724af6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Crea un modulo de hierba cuadrado.  <a href="class_c_l_e_1_1_c_l_engine.html#a4533f63cc9099ebb7ef3caca96724af6">More...</a><br /></td></tr>
 <tr class="separator:a4533f63cc9099ebb7ef3caca96724af6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afbacbf2ef8df511aa22b99e9662cd328"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_engine.html#afbacbf2ef8df511aa22b99e9662cd328">AddGrass</a> (float radious, const glm::vec3 &amp;_position, const glm::vec3 &amp;_scale, bool realistGrass)</td></tr>
+<tr class="memdesc:afbacbf2ef8df511aa22b99e9662cd328"><td class="mdescLeft">&#160;</td><td class="mdescRight">Crea un modulo de hierba circular.  <a href="class_c_l_e_1_1_c_l_engine.html#afbacbf2ef8df511aa22b99e9662cd328">More...</a><br /></td></tr>
+<tr class="separator:afbacbf2ef8df511aa22b99e9662cd328"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa883f125ee84ee2c0a4e2755a5ba6ad5"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_l_e_1_1_c_l_engine.html#aa883f125ee84ee2c0a4e2755a5ba6ad5">RemoveChild</a> (<a class="el" href="class_c_l_e_1_1_c_l_node.html">CLNode</a> *child)</td></tr>
 <tr class="memdesc:aa883f125ee84ee2c0a4e2755a5ba6ad5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Elimina un hijo de ese nodo.  <a href="class_c_l_e_1_1_c_l_engine.html#aa883f125ee84ee2c0a4e2755a5ba6ad5">More...</a><br /></td></tr>
 <tr class="separator:aa883f125ee84ee2c0a4e2755a5ba6ad5"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -665,7 +668,7 @@ Static Public Member Functions</h2></td></tr>
 </div>
 </div>
 <a id="a4533f63cc9099ebb7ef3caca96724af6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4533f63cc9099ebb7ef3caca96724af6">&#9670;&nbsp;</a></span>AddGrass()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a4533f63cc9099ebb7ef3caca96724af6">&#9670;&nbsp;</a></span>AddGrass() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -708,11 +711,63 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Crea un modulo de hierba. </p>
+<p>Crea un modulo de hierba cuadrado. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">_width</td><td>Anchura de la celda de hierba </td></tr>
     <tr><td class="paramname">_height</td><td>Altura de la celda de hierba </td></tr>
+    <tr><td class="paramname">_position</td><td>Posicion central de la celda de hierba </td></tr>
+    <tr><td class="paramname">_scale</td><td>Escala de cada planta </td></tr>
+    <tr><td class="paramname">realistGrass</td><td>True, hierba aleatoria. False, cuadrado de hierba. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="class_c_l_e_1_1_c_l_grass_system.html">CLE::CLGrassSystem()</a> </dd></dl>
+
+</div>
+</div>
+<a id="afbacbf2ef8df511aa22b99e9662cd328"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afbacbf2ef8df511aa22b99e9662cd328">&#9670;&nbsp;</a></span>AddGrass() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void CLEngine::AddGrass </td>
+          <td>(</td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>radious</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const glm::vec3 &amp;&#160;</td>
+          <td class="paramname"><em>_position</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const glm::vec3 &amp;&#160;</td>
+          <td class="paramname"><em>_scale</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>realistGrass</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Crea un modulo de hierba circular. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">radious</td><td>radio de la celda de hierba </td></tr>
     <tr><td class="paramname">_position</td><td>Posicion central de la celda de hierba </td></tr>
     <tr><td class="paramname">_scale</td><td>Escala de cada planta </td></tr>
     <tr><td class="paramname">realistGrass</td><td>True, hierba aleatoria. False, cuadrado de hierba. </td></tr>

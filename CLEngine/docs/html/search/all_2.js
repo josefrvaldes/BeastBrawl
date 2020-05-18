@@ -33,7 +33,7 @@ var searchData=
   ['clfrustum_57',['CLFrustum',['../class_c_l_e_1_1_c_l_frustum.html',1,'CLE::CLFrustum'],['../class_c_l_e_1_1_c_l_frustum.html#a665b92a0103710376c2a8f4a4b2903e2',1,'CLE::CLFrustum::CLFrustum()']]],
   ['clfrustum_2ecpp_58',['CLFrustum.cpp',['../_c_l_frustum_8cpp.html',1,'']]],
   ['clfrustum_2eh_59',['CLFrustum.h',['../_c_l_frustum_8h.html',1,'']]],
-  ['clgrasssystem_60',['CLGrassSystem',['../class_c_l_e_1_1_c_l_grass_system.html',1,'CLE::CLGrassSystem'],['../class_c_l_e_1_1_c_l_grass_system.html#a3b3320c392e794a93c985f89dcd1f4c2',1,'CLE::CLGrassSystem::CLGrassSystem()']]],
+  ['clgrasssystem_60',['CLGrassSystem',['../class_c_l_e_1_1_c_l_grass_system.html',1,'CLE::CLGrassSystem'],['../class_c_l_e_1_1_c_l_grass_system.html#a3b3320c392e794a93c985f89dcd1f4c2',1,'CLE::CLGrassSystem::CLGrassSystem(float width, float height, const glm::vec3 &amp;position, const glm::vec3 &amp;scale, bool realistGrass)'],['../class_c_l_e_1_1_c_l_grass_system.html#aebfb9af85446dd739e74ae6f59c2cdf4',1,'CLE::CLGrassSystem::CLGrassSystem(float radious, const glm::vec3 &amp;position, const glm::vec3 &amp;scale, bool realistGrass)']]],
   ['clgrasssystem_2ecpp_61',['CLGrassSystem.cpp',['../_c_l_grass_system_8cpp.html',1,'']]],
   ['clgrasssystem_2eh_62',['CLGrassSystem.h',['../_c_l_grass_system_8h.html',1,'']]],
   ['clmesh_63',['CLMesh',['../class_c_l_e_1_1_c_l_mesh.html',1,'CLE::CLMesh'],['../class_c_l_e_1_1_c_l_mesh.html#ae609bb83d8384061e7507f21b98ba6a1',1,'CLE::CLMesh::CLMesh()'],['../class_c_l_e_1_1_c_l_mesh.html#ae5899ac8e6369288f8baf30948ddfd19',1,'CLE::CLMesh::CLMesh(unsigned int idEntity)']]],
@@ -80,6 +80,8 @@ var searchData=
   ['completly_104',['Completly',['../class_c_l_e_1_1_c_l_frustum.html#ae59c5b0093dfa9564459f5be3bb62734a8d074c190284223bb86fc6ab15611ddf',1,'CLE::CLFrustum']]],
   ['configurebuffers_105',['ConfigureBuffers',['../class_c_l_e_1_1_c_l_grass_system.html#ac3bdd9010fe488be9d52955266df1fdc',1,'CLE::CLGrassSystem']]],
   ['creategrass_106',['CreateGrass',['../class_c_l_e_1_1_c_l_grass_system.html#ad15963007635c2cb2a5ab21eb0f68587',1,'CLE::CLGrassSystem']]],
-  ['createrealistgrass_107',['CreateRealistGrass',['../class_c_l_e_1_1_c_l_grass_system.html#a99da6d2f29af91b3455d80fa99df7d3b',1,'CLE::CLGrassSystem']]],
-  ['cubespawn_108',['CubeSpawn',['../_c_l_particle_system_8h.html#a2955cca9df1e3f8faa105a79669676dca4eaf4dab3b51d55716a570bc98ada71c',1,'CLParticleSystem.h']]]
+  ['creategrasscircle_107',['CreateGrassCircle',['../class_c_l_e_1_1_c_l_grass_system.html#a979af415d9d772a2a11ee19d99b945cc',1,'CLE::CLGrassSystem']]],
+  ['createrealistgrass_108',['CreateRealistGrass',['../class_c_l_e_1_1_c_l_grass_system.html#a99da6d2f29af91b3455d80fa99df7d3b',1,'CLE::CLGrassSystem']]],
+  ['createrealistgrasscircle_109',['CreateRealistGrassCircle',['../class_c_l_e_1_1_c_l_grass_system.html#a8a1bcfde06521a2362cd5c4d70a847fb',1,'CLE::CLGrassSystem']]],
+  ['cubespawn_110',['CubeSpawn',['../_c_l_particle_system_8h.html#a2955cca9df1e3f8faa105a79669676dca4eaf4dab3b51d55716a570bc98ada71c',1,'CLParticleSystem.h']]]
 ];
