@@ -1,3 +1,5 @@
+//Made with FMOD Studio by Firelight Technologies Pty Ltd.
+
 #pragma once
 
 #include <iostream>

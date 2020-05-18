@@ -1,3 +1,5 @@
+//Made with FMOD Studio by Firelight Technologies Pty Ltd.
+
 #include "SharpEngine.h"
 
 #include <fmod_studio.h>

@@ -1,3 +1,5 @@
+//Made with FMOD Studio by Firelight Technologies Pty Ltd.
+
 #include "SharpNode.h"
 
 using namespace CLSE;
