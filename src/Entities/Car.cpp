@@ -39,6 +39,8 @@ Car::Car(int pj){
     string texture = "";
     float weight = WEIGHT::W_MEDIUM, maxSpeed = MAX_VELOCITY::V_MEDIUM, acceleration = ACCELERATION::A_MEDIUM/100;
     
+    //escala de los coches
+    glm::vec3 scale = glm::vec3(6.0f, 6.0f, 6.0f);
     //Movidas de ruedas
     string pathTopLeft,pathTopRight,pathBottomLeft,pathBottomRight;
 
@@ -79,9 +81,11 @@ Car::Car(int pj){
             scaleBottomLeft =       glm::vec3(1.0f);
             scaleBottomRight =      glm::vec3(1.0f);
 
-            radiusSPhere =          7.0;
+            radiusSPhere =          6.0;
             distanceSphere =        2.0;
             distanceFloor =         10.0;
+
+            scale = glm::vec3(6.0f, 6.0f, 6.0f);
         }
             break;
         case 1: 
@@ -112,6 +116,8 @@ Car::Car(int pj){
             radiusSPhere =          7.0;
             distanceSphere =        5.0;
             distanceFloor =         8.0;
+
+            scale = glm::vec3(5.0f, 5.0f, 5.0f);
             break;
         case 2: 
             _pj =                   mainCharacter::SHARK; 
@@ -140,9 +146,11 @@ Car::Car(int pj){
             scaleBottomLeft =       glm::vec3(1.0f);
             scaleBottomRight =      glm::vec3(1.0f);
 
-            radiusSPhere =          7.0;
-            distanceSphere =        5.0;
-            distanceFloor =         7.0;
+            radiusSPhere =          6.0;
+            distanceSphere =        2.0;
+            distanceFloor =         9.5;
+
+            scale = glm::vec3(7.0f, 7.0f, 7.0f);
             break;
         case 3: 
             _pj =                   mainCharacter::GORILLA; 
@@ -173,7 +181,9 @@ Car::Car(int pj){
 
             radiusSPhere =          7.0;
             distanceSphere =        5.0;
-            distanceFloor =         7.0;
+            distanceFloor =         9.0;
+
+            scale = glm::vec3(5.0f, 5.0f, 5.0f);
             break;
         case 4: 
             _pj =                   mainCharacter::DRAGON; 
@@ -202,9 +212,10 @@ Car::Car(int pj){
             scaleBottomLeft =       glm::vec3(1.0f);
             scaleBottomRight =      glm::vec3(1.0f);
 
-            radiusSPhere =          7.0;
-            distanceSphere =        5.0;
-            distanceFloor =         7.0;
+            radiusSPhere =          6.0;
+            distanceSphere =        2.5;
+            distanceFloor =         10.0;
+
             break;
         case 5: 
             _pj =                   mainCharacter::OCTOPUS; 
@@ -236,9 +247,11 @@ Car::Car(int pj){
             scaleBottomLeft =       glm::vec3(0.8f);
             scaleBottomRight =      glm::vec3(0.8f);
 
-            radiusSPhere =          7.0;
-            distanceSphere =        5.0;
-            distanceFloor =         7.0;
+            radiusSPhere =          6.5;
+            distanceSphere =        2.0;
+            distanceFloor =         9.0;
+    
+            scale = glm::vec3(5.2f, 5.2f, 5.2f);
             break;
         default: break;
     }
@@ -247,7 +260,6 @@ Car::Car(int pj){
     // default values
     glm::vec3 pos   = glm::vec3(10.0f, 20.0f, 30.0f);
     glm::vec3 rot   = glm::vec3(0.0f, 90.0f, 0.0f);
-    glm::vec3 scale = glm::vec3(6.0f, 6.0f, 6.0f);
 
     if(Constants::RENDER_ENGINE == Constants::RenderEngine::IRRLICHT){
         mesh    =   "kart_physics.obj";
