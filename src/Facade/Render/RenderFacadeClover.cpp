@@ -1481,20 +1481,18 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
     bool leftTotem  = frustum_.IsOutLeft(manGR->GetPosTotem());
     bool rightTotem = frustum_.IsOutRight(manGR->GetPosTotem());
 
-    if(manGR->GetActiveTotem()){
-        if(backTotem){
-            if(leftTotem && !rightTotem)
-                device->DrawImage2D(50, posRefY, 1.f, 0.1f, "media/hudTotemLeft.png", true);
-            else if(rightTotem && !leftTotem)
-                device->DrawImage2D( (w-50.0f) - anchoSpriteTotem, posRefY , 1.f, 0.1f, "media/hudTotemRight.png", true);
-            else
-                device->DrawImage2D(w/2 - (anchoSpriteTotem/2) , h - 50 - altoSpriteTotem, 1.f, 0.1f, "media/hudTotemBack.png", true);
-        }else{
-            if(leftTotem)
-                device->DrawImage2D(50, posRefY, 1.f, 0.1f, "media/hudTotemLeft.png", true);
-            else if(rightTotem)
-                device->DrawImage2D( (w-50.0f) - anchoSpriteTotem, posRefY , 1.f, 0.1f, "media/hudTotemRight.png", true);
-        }
+    if(backTotem){
+        if(leftTotem && !rightTotem)
+            device->DrawImage2D(50, posRefY, 1.f, 0.1f, "media/hudTotemLeft.png", true);
+        else if(rightTotem && !leftTotem)
+            device->DrawImage2D( (w-50.0f) - anchoSpriteTotem, posRefY , 1.f, 0.1f, "media/hudTotemRight.png", true);
+        else
+            device->DrawImage2D(w/2 - (anchoSpriteTotem/2) , h - 50 - altoSpriteTotem, 1.f, 0.1f, "media/hudTotemBack.png", true);
+    }else{
+        if(leftTotem)
+            device->DrawImage2D(50, posRefY, 1.f, 0.1f, "media/hudTotemLeft.png", true);
+        else if(rightTotem)
+            device->DrawImage2D( (w-50.0f) - anchoSpriteTotem, posRefY , 1.f, 0.1f, "media/hudTotemRight.png", true);
     }
 
     //CURRENT POWERUP
