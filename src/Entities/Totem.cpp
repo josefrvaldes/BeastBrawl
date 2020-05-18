@@ -18,7 +18,7 @@ Totem::Totem()
       // default values
     glm::vec3 pos   = glm::vec3(40.0f, 20.0f, 30.0f);
     glm::vec3 rot   = glm::vec3(0.0f, 90.0f, 0.0f);
-    glm::vec3 scale = glm::vec3(0.4f, 0.4f, 0.4f);
+    glm::vec3 scale = glm::vec3(0.9f, 0.9f, 0.9f);
 
     string mesh;
     if(Constants::RENDER_ENGINE == Constants::RenderEngine::CLOVER){
@@ -52,7 +52,7 @@ Totem::Totem()
     shared_ptr<CCurrentNavMesh> cCurrentNavMesh   = make_shared<CCurrentNavMesh>(-1);
     shared_ptr<CShader> cShader = make_shared<CShader>(vertexShader,fragmentShader);
 
-    shared_ptr<CBoundingSphere> cBoundingSphere = make_shared<CBoundingSphere>(vec3(0.0,0.0,0.0), 4.5);
+    shared_ptr<CBoundingSphere> cBoundingSphere = make_shared<CBoundingSphere>(vec3(0.0,0.0,0.0), 7.0);
     shared_ptr<CTotem> cTotem = make_shared<CTotem>();
     AddComponent(cId);
     AddComponent(cType);
