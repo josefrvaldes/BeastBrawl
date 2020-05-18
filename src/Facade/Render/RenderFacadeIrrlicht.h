@@ -95,6 +95,7 @@ class RenderFacadeIrrlicht : public RenderFacade {
     void FacadeCheckInputControler() override;
     void FacadeCheckInputCredits() override;
     void FacadeCheckInputSettings() override;
+    bool FacadeCheckShowHUD() override { return true; };
 
     void FacadeUpdatePowerUpHUD(DataMap* d) override;
     void FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* globalClock, ManHUDEvent* manHud, ManGameRules* manGR) override;

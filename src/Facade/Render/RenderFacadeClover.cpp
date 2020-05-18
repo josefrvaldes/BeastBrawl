@@ -1303,7 +1303,6 @@ void RenderFacadeClover::FacadeCheckInputSingle() {
 
 vector<Constants::InputTypes> RenderFacadeClover::FacadeCheckInputMulti() {
     vector<Constants::InputTypes> inputs;
-    //inputShowTable = InputFacadeManager::GetInstance()->GetInputFacade()->ShowTable(inputShowTable);
     InputFacadeManager::GetInstance()->GetInputFacade()->ShowTable(showTableMinimap);
 
     return inputs;
@@ -1385,6 +1384,11 @@ void RenderFacadeClover::FacadeCheckInputSettings() {
     gamepadConnected = InputFacadeManager::GetInstance()->GetInputFacade()->IsConectedGamepad();
 }
 
+bool RenderFacadeClover::FacadeCheckShowHUD() {
+    inputShowHUD = InputFacadeManager::GetInstance()->GetInputFacade()->ShowHud(inputShowHUD);
+    return inputShowHUD;
+}
+
 //TODO: Deberia ser un evento
 void RenderFacadeClover::ResetInputCharacter() {
     inputSC = 0;
@@ -1431,6 +1435,8 @@ void RenderFacadeClover::FacadeDraw() const{
 
 void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* globalClock, ManHUDEvent* manHud, ManGameRules* manGR) {
 
+    if (!inputShowHUD) { return; }
+
     device->SetEnableDepthTest(false);
     
     std::string cadena;
@@ -1468,8 +1474,8 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
     //                        //
     // *         *          * //
     ////////////////////////////
-    auto anchoSpriteTotem = 45.0;
-    auto altoSpriteTotem = 45.0;
+    auto anchoSpriteTotem = 100.0;
+    auto altoSpriteTotem = 100.0;
     auto posRefY = h/2 - (altoSpriteTotem/2);
     auto frustum_ = device->GetActiveCamera()->GetFrustum();
     bool backTotem  = frustum_.IsOutBack(manGR->GetPosTotem());

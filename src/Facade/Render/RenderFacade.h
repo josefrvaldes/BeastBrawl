@@ -93,6 +93,7 @@ class RenderFacade {
     virtual void FacadeCheckInputGameOptions() = 0;
     virtual void FacadeCheckInputTournamentOptions() = 0;
     virtual void FacadeCheckInputSettings() = 0;
+    virtual bool FacadeCheckShowHUD() = 0;
 
     virtual void FacadeUpdatePowerUpHUD(DataMap* d) = 0;
     virtual void FacadeInitResources(mainCharacter character) = 0;

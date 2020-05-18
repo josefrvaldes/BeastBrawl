@@ -605,14 +605,14 @@ bool InputFacadeClover::CheckInputAnimationsStartEnd() {
 
 
 // QUITAR
-bool InputFacadeClover::ShowTable(bool inputTable) {
+bool InputFacadeClover::ShowHud(bool inputTable) {
 
-    if( IsKeyOrGamepadPress(GLFW_KEY_R, GLFW_GAMEPAD_BUTTON_B, false, 0, 0, false) &&  !IsInputPressed(BUTTON_B) ) {
+    if( IsKeyPress(GLFW_KEY_F1) &&  !pressF1 ) {
         inputTable = !inputTable;
-        SetValueInput(BUTTON_B, true);
+        pressF1 = true;
 
-    } else if( !IsKeyOrGamepadPress(GLFW_KEY_R, GLFW_GAMEPAD_BUTTON_B, false, 0, 0, false)  ) {
-        SetValueInput(BUTTON_B, false);
+    } else if( !IsKeyPress(GLFW_KEY_F1)  ) {
+        pressF1 = false;
     }
 
     return inputTable;

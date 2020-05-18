@@ -27,7 +27,7 @@ class InputFacadeClover : public InputFacade{
         void CheckInputGameOptions(std::vector<int>&, int[], int&) override;
         void CheckInputTournamentOptions(std::vector<int>&, int[], int&) override;
 
-        bool ShowTable(bool) override;
+        bool ShowHud(bool) override;
         void ShowTable(Constants::ShowTableMinimap&) override;
         bool CheckInputSingle()  override;
         void CheckInputLobbyMultiConnecting() override;
@@ -64,6 +64,7 @@ class InputFacadeClover : public InputFacade{
         CLEngine* device;
 
         enum InputXBox{BUTTON_A, BUTTON_B, BUTTON_X, BUTTON_Y, BUTTON_LB, BUTTON_RB, BUTTON_BACK, BUTTON_START, BUTTON_XBOX, BUTTON_STICK_UP, BUTTON_STICK_DOWN, BUTTON_STICK_L, BUTTON_STICK_R, END};
+        bool pressF1 { false };
         std::unordered_map<InputXBox, bool> inputsPressed;
         core::array<SJoystickInfo> joystickInfo;
         bool multiplayer { false };
