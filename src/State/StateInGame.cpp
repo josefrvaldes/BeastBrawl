@@ -396,8 +396,8 @@ void StateInGame::UpdateGame() {
 //                              (end-timeStartSeccion).count();
 //     cout << "TIEMO ACTUAL ULDATE  (CLIPPING_OCTREE):  " << elapsed_millisecons/1000000 << endl;
 // ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // auto cTransCar = static_cast<CTransformable*>(manCars->GetCar()->GetComponent(CompType::TransformableComp).get());
-    // cout << "Pos X: " << cTransCar->position.x << "   Pos Y: " << cTransCar->position.y << "     Pos Z: " << cTransCar->position.z << "  \n";
+    auto cTransCar = static_cast<CTransformable*>(manCars->GetCar()->GetComponent(CompType::TransformableComp).get());
+    cout << "Pos X: " << cTransCar->position.x << "   Pos Y: " << cTransCar->position.y << "     Pos Z: " << cTransCar->position.z << "  \n";
 
 
 }
@@ -546,4 +546,19 @@ void StateInGame::CreateVegetation(){
     renderEngine->FacadeAddGrass(690.0, 70.0, glm::vec3(-10.0f, 0.0f, 1158.0f), glm::vec3(5.0, 5.0, 5.0), true);
     renderEngine->FacadeAddGrass(100.0, glm::vec3(69.0f, 0.0f, 213.0f), glm::vec3(5.0, 5.0, 5.0), true);
     renderEngine->FacadeAddGrass(100.0, glm::vec3(1.0f, 0.0f, 312.0f), glm::vec3(5.0, 5.0, 5.0), true);
+
+
+    // Arriba 1
+    renderEngine->FacadeAddGrass(220.0, 110.0, glm::vec3(-530.0f, 100.0f, 700.0f), glm::vec3(5.0, 5.0, 5.0), true);
+
+    // Arriba 2
+    renderEngine->FacadeAddGrass(180.0, glm::vec3(655.0f, 100.0f, 1124.0f), glm::vec3(6.0, 6.0, 6.0), true);
+    renderEngine->FacadeAddGrass(20.0, 560.0, glm::vec3(941.0f, 100.0f, 887.0f), glm::vec3(5.0, 5.0, 5.0), true);
+
+    // Arriba 3
+    renderEngine->FacadeAddGrass(520.0, 180.0, glm::vec3(-695.0f, 100.0f, -1117.0f), glm::vec3(5.0, 5.0, 5.0), true);
+
+    // Arriba 4
+    renderEngine->FacadeAddGrass(50.0, 45.0, glm::vec3(410.0f, 100.0f, -775.0f), glm::vec3(10.0, 10.0, 10.0), true);
+    renderEngine->FacadeAddGrass(50.0, 45.0, glm::vec3(410.0f, 100.0f, -1015.0f), glm::vec3(10.0, 10.0, 10.0), true);
 }
