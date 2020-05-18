@@ -617,8 +617,7 @@ void RenderFacadeClover::UpdateCamera(Entity* cam, ManCar* manCars) {
 
 
     auto cameraEntity = static_cast<CLCamera*>(camera1->GetEntity());
-
-    targetPosition.y += 12;
+    targetPosition.y += cCamera->upTargetDistance;
 
     if(cCamera->camType == CamType::INVERTED_CAM){
         targetPosition.y += 0;
