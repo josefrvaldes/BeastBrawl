@@ -5,9 +5,6 @@ CCamera::CCamera(float _tarx, float _tary, float _tarz, float _rotExtraY)
 {
     m_compType = CompType::CameraComp;
     this->ApplyPhysics(0.0,0.0,0.0, 0.0);
-
-    upTargetDistance = 16;
-    perfectUpDistance = 22;
 }  
  
 

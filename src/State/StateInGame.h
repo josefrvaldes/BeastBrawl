@@ -168,6 +168,8 @@ class StateInGame : public State {
     //virtual void CAMBIARCosasDeTotemUpdate(){};
 
     void IntersectsCLPhysics();
+
+    void CreateVegetation();
     
     //void CAMBIARCosasDeTotem(ManTotem &);
     //void CAMBIARCosasNavMesh(ManCar &, ManNavMesh &);

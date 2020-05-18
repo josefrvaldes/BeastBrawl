@@ -169,8 +169,8 @@ float SystemVision::DegreesFromCenter(Entity* actualCar, Entity* targetCar) cons
     float vetorTargetZ = (cTransTargetCar->position.z - cTransCar->position.z);
     
     // calcular un desplazamiento para ser en tercera persona
-    float posXCar = cTransCar->position.x + 40 * cos(glm::radians(cTransCar->rotation.y));
-    float posZCar = cTransCar->position.z - 40 * sin(glm::radians(cTransCar->rotation.y));
+    float posXCar = cTransCar->position.x + 34 * cos(glm::radians(cTransCar->rotation.y));
+    float posZCar = cTransCar->position.z - 34 * sin(glm::radians(cTransCar->rotation.y));
     // se calcula el vector entre el siguiente punto y y el punto actual del coche
     float xCoche = (posXCar - cTransCar->position.x );
     float zCoche = (posZCar - cTransCar->position.z);

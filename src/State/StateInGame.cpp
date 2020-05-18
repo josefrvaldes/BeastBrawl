@@ -93,8 +93,7 @@ void StateInGame::AddElementsToRender() {
         renderEngine->FacadeAddShadowMapping(cId->id);
     }
 
-    //renderEngine->FacadeAddGrass(200.0, glm::vec3(400.0f, 0.0f, 0.0f), glm::vec3(15.0, 15.0, 15.0), false);
-    //renderEngine->FacadeAddGrass(200.0, 200.0, glm::vec3(400.0f, 0.0f, 0.0f), glm::vec3(7.0, 7.0, 7.0), true);
+    CreateVegetation();
 
     //Añadimos las particulas al arbol
     for (auto particleSystem : manParticleSystem->GetEntities()) {
@@ -397,6 +396,10 @@ void StateInGame::UpdateGame() {
 //                              (end-timeStartSeccion).count();
 //     cout << "TIEMO ACTUAL ULDATE  (CLIPPING_OCTREE):  " << elapsed_millisecons/1000000 << endl;
 // ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // auto cTransCar = static_cast<CTransformable*>(manCars->GetCar()->GetComponent(CompType::TransformableComp).get());
+    // cout << "Pos X: " << cTransCar->position.x << "   Pos Y: " << cTransCar->position.y << "     Pos Z: " << cTransCar->position.z << "  \n";
+
+
 }
 
 void StateInGame::IntersectsCLPhysics(){
@@ -510,4 +513,37 @@ void StateInGame::GoToStateEndrace() {
     }
 
     EventManager::GetInstance().Update();
+}
+
+
+// genera la vegetacion  ToDo: pasar a cargador de mapas
+void StateInGame::CreateVegetation(){
+    //renderEngine->FacadeAddGrass(200.0, glm::vec3(400.0f, 0.0f, 0.0f), glm::vec3(15.0, 15.0, 15.0), false);
+    
+    // Lateral 1 Abajo 
+    renderEngine->FacadeAddGrass(250.0, 200.0, glm::vec3(530.0f, 0.0f, -504.0f), glm::vec3(15.0, 15.0, 15.0), true);
+    renderEngine->FacadeAddGrass(50.0, 200.0, glm::vec3(374.0f, 0.0f, -510.0f), glm::vec3(5.0, 5.0, 5.0), true);
+
+    // Lateral 2 Abajo
+    renderEngine->FacadeAddGrass(300.0, 120.0, glm::vec3(500.0f, 0.0f, 501.0f), glm::vec3(20.0, 20.0, 20.0), true);
+    renderEngine->FacadeAddGrass(300.0, 40.0, glm::vec3(500.0f, 0.0f, 420.0f), glm::vec3(5.0, 5.0, 5.0), true);
+    renderEngine->FacadeAddGrass(20.0, 160.0, glm::vec3(340.0f, 0.0f, 481.0f), glm::vec3(5.0, 5.0, 5.0), true);
+
+    // Lateral 3 Abajo
+    renderEngine->FacadeAddGrass(60.0, 160.0, glm::vec3(-405.0f, 0.0f, -504.0f), glm::vec3(5.0, 5.0, 5.0), true);
+    renderEngine->FacadeAddGrass(80.0, glm::vec3(-616.0f, 0.0f, -429.0f), glm::vec3(10.0, 10.0, 10.0), true);
+
+    // Lateral 4 Abajo
+    renderEngine->FacadeAddGrass(60.0, 160.0, glm::vec3(-405.0f, 0.0f, 504.0f), glm::vec3(5.0, 5.0, 5.0), true);
+    renderEngine->FacadeAddGrass(220.0, 60.0, glm::vec3(-550.0f, 0.0f, 441.0f), glm::vec3(5.0, 5.0, 5.0), true);
+
+    // Circulo 1 Abajo / 2 rayas
+    renderEngine->FacadeAddGrass(250.0, glm::vec3(0.0f, 0.0f, -531.0f), glm::vec3(5.0, 5.0, 5.0), true);
+    renderEngine->FacadeAddGrass(40.0, 610.0, glm::vec3(320.0f, 0.0f, -890.0f), glm::vec3(5.0, 5.0, 5.0), true);
+    renderEngine->FacadeAddGrass(40.0, 610.0, glm::vec3(-340.0f, 0.0f, -890.0f), glm::vec3(5.0, 5.0, 5.0), true);
+
+    // Debajo puente / 2 circulos abajo
+    renderEngine->FacadeAddGrass(690.0, 70.0, glm::vec3(-10.0f, 0.0f, 1158.0f), glm::vec3(5.0, 5.0, 5.0), true);
+    renderEngine->FacadeAddGrass(100.0, glm::vec3(69.0f, 0.0f, 213.0f), glm::vec3(5.0, 5.0, 5.0), true);
+    renderEngine->FacadeAddGrass(100.0, glm::vec3(1.0f, 0.0f, 312.0f), glm::vec3(5.0, 5.0, 5.0), true);
 }
