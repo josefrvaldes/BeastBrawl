@@ -113,11 +113,11 @@ Car::Car(int pj){
             scaleBottomLeft =       glm::vec3(1.0f);
             scaleBottomRight =      glm::vec3(1.0f);
 
-            radiusSPhere =          7.0;
-            distanceSphere =        5.0;
-            distanceFloor =         8.0;
+            radiusSPhere =          6.5;
+            distanceSphere =        4.0;
+            distanceFloor =         8.5;
 
-            scale = glm::vec3(5.0f, 5.0f, 5.0f);
+            scale = glm::vec3(4.0f, 4.0f, 4.0f);
             break;
         case 2: 
             _pj =                   mainCharacter::SHARK; 
@@ -179,11 +179,11 @@ Car::Car(int pj){
             scaleBottomLeft =       glm::vec3(1.0f);
             scaleBottomRight =      glm::vec3(1.0f);
 
-            radiusSPhere =          7.0;
-            distanceSphere =        5.0;
+            radiusSPhere =          6.5;
+            distanceSphere =        4.0;
             distanceFloor =         9.0;
 
-            scale = glm::vec3(5.0f, 5.0f, 5.0f);
+            scale = glm::vec3(4.0f, 4.0f, 4.0f);
             break;
         case 4: 
             _pj =                   mainCharacter::DRAGON; 
