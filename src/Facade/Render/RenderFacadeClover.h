@@ -98,6 +98,7 @@ class RenderFacadeClover : public RenderFacade {
       void FacadeCheckInputControler() override;
       void FacadeCheckInputCredits() override;
       void FacadeCheckInputSettings() override;
+      bool FacadeCheckShowHUD() override;
 
       void FacadeUpdatePowerUpHUD(DataMap* d) override;
       void FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* globalClock, ManHUDEvent* manHud, ManGameRules* manGR) override;
@@ -206,7 +207,7 @@ class RenderFacadeClover : public RenderFacade {
       bool multiplayer { false };
 
       // En juego
-      bool inputShowTable { true };
+      bool inputShowHUD { true };
       Constants::ShowTableMinimap showTableMinimap { Constants::ShowTableMinimap::BOTH };
       uint8_t maxShowTM { 3 };
 

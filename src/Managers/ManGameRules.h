@@ -35,7 +35,6 @@ class ManGameRules{
     unique_ptr<Entity>& GetGlobalClock() { return globalClock; };
 
     glm::vec3 GetPosTotem(){return posTotem; }; 
-    bool GetActiveTotem(){return activeTotem; }; 
 
    private:
     void CreateMayanMap();
@@ -43,7 +42,6 @@ class ManGameRules{
     unique_ptr<Entity> globalClock;
     unique_ptr<SystemGameRules> systemGameRules;
     glm::vec3 posTotem;
-    bool activeTotem;
 
     unordered_map<uint16_t, glm::vec2> positionsPlane;
     glm::vec2 positionTotemPlane { glm::vec2(-1, -1) };

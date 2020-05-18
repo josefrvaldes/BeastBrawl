@@ -85,5 +85,5 @@ void PhysicsPowerUp::updateMelonMolon(Entity* pu){
    cTransformable->position.x -= cos(angleRotation) * cPuActual->speed * Constants::DELTA_TIME;
    cTransformable->position.z += sin(angleRotation) * cPuActual->speed * Constants::DELTA_TIME;
 
-   cTransformable->rotation.z += 600 * Constants::DELTA_TIME;
+   cTransformable->rotation.z = Utils::GetAdjustedDegrees(cTransformable->rotation.z - 750 * Constants::DELTA_TIME);
 }
