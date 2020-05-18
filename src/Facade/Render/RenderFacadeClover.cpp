@@ -199,8 +199,8 @@ void RenderFacadeClover::FacadeAddPlates(Manager* manNamePlates) {
         auto cId = static_cast<CId*>(nameplate->GetComponent(CompType::IdComp).get());
         auto nameplateComp = static_cast<CNamePlate*>(nameplate->GetComponent(CompType::NamePlateComp).get());
         auto father = device->GetNodeByID(nameplateComp->idCarAsociated);
-        auto node = device->AddBillBoard(father,cId->id,nameplateComp->billboardPath,false,30,10);
-        node->SetTranslation(glm::vec3(0.0f,10.0f,0.0f));
+        auto node = device->AddBillBoard(father,cId->id,nameplateComp->billboardPath,false,80,30);
+        node->SetTranslation(glm::vec3(0.0f,28.0f,0.0f));
     }
 }
 
