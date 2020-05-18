@@ -138,7 +138,7 @@ void RenderFacadeClover::FacadeUpdatePowerUpHUD(DataMap* d) {
 
     //Si es la primera vez que se coge un powerup se crea la animacion
     if(!powerUpAnimation){
-        powerUpAnimation = make_unique<Animation2D>("media/animacionPowerUp/animacionPU.png",71,60);
+        powerUpAnimation = make_unique<Animation2D>("media/animacionPowerUp/animacionPU.png",55,60);
         powerUpAnimation->Start();
     }else if(powerUpAnimation && type != typeCPowerUp::None){
         powerUpAnimation->Restart();
@@ -1101,7 +1101,7 @@ void RenderFacadeClover::FacadeInitSelectCharacter() {
     cam->SetShaderProgramID(shaderCam->GetProgramID());
     auto cameraEntity = static_cast<CLCamera*>(cam->GetEntity());
     cameraEntity->SetCameraTarget(glm::vec3(0.0f, 0.0, 0.0));
-    cam->SetTranslation(glm::vec3(40.0f,0.0f,0.0f));
+    cam->SetTranslation(glm::vec3(40.0f,12.0f,0.0f));
     cam->SetRotation(glm::vec3(0.0f));
 
     CLNode* mesh = nullptr;
