@@ -81,11 +81,11 @@ Car::Car(int pj){
             scaleBottomLeft =       glm::vec3(1.0f);
             scaleBottomRight =      glm::vec3(1.0f);
 
-            radiusSPhere =          6.0;
+            radiusSPhere =          7.0;
             distanceSphere =        2.0;
-            distanceFloor =         10.0;
+            distanceFloor =         10.5;
 
-            scale = glm::vec3(6.0f, 6.0f, 6.0f);
+            scale = glm::vec3(7.0f, 7.0f, 7.0f);
         }
             break;
         case 1: 
@@ -116,11 +116,11 @@ Car::Car(int pj){
             scaleBottomLeft =       glm::vec3(1.0f);
             scaleBottomRight =      glm::vec3(1.0f);
 
-            radiusSPhere =          6.5;
+            radiusSPhere =          7.5;
             distanceSphere =        4.0;
-            distanceFloor =         8.5;
+            distanceFloor =         9.4;
 
-            scale = glm::vec3(4.0f, 4.0f, 4.0f);
+            scale = glm::vec3(5.0f, 5.0f, 5.0f);
             break;
         case 2: 
             _pj =                   mainCharacter::SHARK; 
@@ -149,11 +149,11 @@ Car::Car(int pj){
             scaleBottomLeft =       glm::vec3(1.0f);
             scaleBottomRight =      glm::vec3(1.0f);
 
-            radiusSPhere =          6.0;
+            radiusSPhere =          7.0;
             distanceSphere =        2.0;
-            distanceFloor =         9.5;
+            distanceFloor =         10.3;
 
-            scale = glm::vec3(7.0f, 7.0f, 7.0f);
+            scale = glm::vec3(8.2f, 8.2f, 8.2f);
             break;
         case 3: 
             _pj =                   mainCharacter::GORILLA; 
@@ -182,11 +182,11 @@ Car::Car(int pj){
             scaleBottomLeft =       glm::vec3(1.0f);
             scaleBottomRight =      glm::vec3(1.0f);
 
-            radiusSPhere =          6.5;
+            radiusSPhere =          8.2;
             distanceSphere =        4.0;
-            distanceFloor =         9.0;
+            distanceFloor =         10.5;
 
-            scale = glm::vec3(4.0f, 4.0f, 4.0f);
+            scale = glm::vec3(5.0f, 5.0f, 5.0f);
             break;
         case 4: 
             _pj =                   mainCharacter::DRAGON; 
@@ -215,10 +215,11 @@ Car::Car(int pj){
             scaleBottomLeft =       glm::vec3(1.0f);
             scaleBottomRight =      glm::vec3(1.0f);
 
-            radiusSPhere =          6.0;
-            distanceSphere =        2.5;
-            distanceFloor =         10.0;
+            radiusSPhere =          7.0;
+            distanceSphere =        2.2;
+            distanceFloor =         10.5;
 
+            scale = glm::vec3(7.0f, 7.0f, 7.0f);
             break;
         case 5: 
             _pj =                   mainCharacter::OCTOPUS; 
@@ -250,11 +251,11 @@ Car::Car(int pj){
             scaleBottomLeft =       glm::vec3(0.8f);
             scaleBottomRight =      glm::vec3(0.8f);
 
-            radiusSPhere =          6.5;
+            radiusSPhere =          7.5;
             distanceSphere =        2.0;
-            distanceFloor =         9.0;
+            distanceFloor =         10.0;
     
-            scale = glm::vec3(5.2f, 5.2f, 5.2f);
+            scale = glm::vec3(6.3f, 6.3f, 6.3f);
             break;
         default: break;
     }
@@ -286,7 +287,7 @@ Car::Car(int pj){
     shared_ptr<CCurrentNavMesh> cCurrentNavMesh = make_shared<CCurrentNavMesh>(-1);  //  ponemos -1 por defecto ya que haremos el calculo al empezar la partida
 
     shared_ptr<CColliding> cColliding = make_shared<CColliding>(false);
-    shared_ptr<CBoundingSphere> cBoundSphere = make_shared<CBoundingSphere>(pos);
+    shared_ptr<CBoundingSphere> cBoundSphere = make_shared<CBoundingSphere>(pos, radiusSPhere);
     shared_ptr<CBoundingRay> cBoundRay = make_shared<CBoundingRay>();
 
     glm::vec3 pSphBehind = pos;
