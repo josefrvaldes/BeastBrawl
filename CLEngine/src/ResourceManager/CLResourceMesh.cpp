@@ -35,12 +35,6 @@ Mesh::Mesh(vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture
     // vertex texture coords
     glEnableVertexAttribArray(2);
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, texCoords));
-    // vertex tangent
-    // glEnableVertexAttribArray(2);
-    // glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, tangent));
-    // // vertex bitangent
-    // glEnableVertexAttribArray(3);
-    // glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, bitangent));
 
     glBindVertexArray(0);
 }
@@ -57,7 +51,7 @@ bool CLResourceMesh::LoadFile(std::string file, bool flipUV) {
     if (flipUV)
         assimpFlags |= aiProcess_FlipUVs;
     // Importamos el fichero.
-    scene = importer.ReadFile(file, assimpFlags);
+    const aiScene* scene = importer.ReadFile(file, assimpFlags);
 
     // Error de carga
     if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
@@ -112,18 +106,6 @@ Mesh CLResourceMesh::processMesh(aiMesh *mesh, const aiScene *scene) {
         } else
             vertex.texCoords = glm::vec2(0.0f, 0.0f);
 
-        //tangent
-        if (mesh->HasTangentsAndBitangents()) {
-            vecAux.x = mesh->mTangents[i].x;
-            vecAux.y = mesh->mTangents[i].y;
-            vecAux.z = mesh->mTangents[i].z;
-            vertex.tangent = vecAux;
-            //bitangent
-            vecAux.x = mesh->mBitangents[i].x;
-            vecAux.y = mesh->mBitangents[i].y;
-            vecAux.z = mesh->mBitangents[i].z;
-            vertex.bitangent = vecAux;
-        }
 
         //Texture coords
         if (mesh->mTextureCoords[0]) {
@@ -148,15 +130,7 @@ Mesh CLResourceMesh::processMesh(aiMesh *mesh, const aiScene *scene) {
     if (mesh->mMaterialIndex >= 0) {
         // // process materials
         aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
-        // Material m = loadMaterial(material);
-        // materials.push_back(m);
 
-        // we assume a convention for sampler names in the shaders. Each diffuse texture should be named
-        // as 'texture_diffuseN' where N is a sequential number ranging from 1 to MAX_SAMPLER_NUMBER.
-        // Same applies to other texture as the following list summarizes:
-        // diffuse: texture_diffuseN
-        // specular: texture_specularN
-        // normal: texture_normalN
 
         // 1. diffuse maps
         vector<Texture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
@@ -261,13 +235,6 @@ void CLResourceMesh::Draw(GLuint shaderID) {
         glBindVertexArray(mesh.VAO);
         glBindBuffer(GL_ARRAY_BUFFER, mesh.VBO);
         glBufferData(GL_ARRAY_BUFFER, mesh.vertices.size() * sizeof(Vertex), &mesh.vertices[0], GL_STATIC_DRAW);
-        // glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void *)0);
-        
-        // glEnableVertexAttribArray(0);
-        // glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)0);
-        // // vertex normals
-        // glEnableVertexAttribArray(1);
-        // glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, normal));
 
         // estas líneas son necesarias para las animaciones
         // vertex animationOffsetPos

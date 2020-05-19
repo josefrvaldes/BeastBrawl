@@ -18,10 +18,6 @@ struct Vertex {
     glm::vec3 normal {0.f,0.f,0.f};
     // texCoords
     glm::vec2 texCoords {0.f,0.f};
-    // tangent
-    glm::vec3 tangent {0.f,0.f,0.f};
-    // bitangent
-    glm::vec3 bitangent {0.f,0.f,0.f};
     // offset
     glm::vec3 animationOffsetPos {0.f,0.f,0.f};
     // offset
@@ -81,7 +77,7 @@ namespace CLE {
             vector<Texture> textures_loaded;
             string directory;
             bool gammaCorrection;
-            const aiScene *scene;
+            //const aiScene *scene;
 
             
     };
