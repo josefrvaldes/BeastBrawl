@@ -10,6 +10,8 @@ CLResourceManager::CLResourceManager() {
     //TO-DO: Reservar un minimo de espacio
     //meshes = new std::vector<CLResourceMesh*>();
     //shaders = new std::vector<CLResourceShader*>();
+    meshes.reserve(300);
+    textures.reserve(300);
 }
 
 CLResourceMesh* CLResourceManager::GetResourceMesh(const std::string file){
@@ -259,13 +261,15 @@ bool CLResourceManager::DeleteResourceTexture(const std::string file){
 }
 
 bool CLResourceManager::DeleteResourceMesh(const std::string file){
+    cout << meshes.size() << endl;
     for (unsigned int i=0; i<meshes.size(); ++ i) {
         if (!file.compare(meshes[i]->GetName())) {
             meshes.erase(meshes.begin()+i);
+            cout << meshes.size() << endl;
+
             return true;
         }
     }
-
     return false;
 }
 

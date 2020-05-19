@@ -55,7 +55,14 @@ namespace CLE {
     class CLResourceMesh : public CLResource {
         public:
             CLResourceMesh(){};
-            ~CLResourceMesh(){};
+            ~CLResourceMesh(){
+                for(auto mesh : vecMesh){
+                    glDeleteTextures(1,&mesh.textures.at(0).id);
+                    glDeleteBuffers(1,&mesh.VBO);
+                    glDeleteBuffers(1,&mesh.EBO);
+                    glDeleteVertexArrays(1,&mesh.VAO);
+                }
+            };
 
             void Draw(GLuint shaderID) override;
             bool LoadFile(std::string, bool) override;

@@ -67,7 +67,7 @@ void CLResourceMesh::processNode(aiNode *node, const aiScene *scene) {
     // process all the node's meshes (if any)
     for (unsigned int i = 0; i < node->mNumMeshes; i++) {
         aiMesh *mesh = scene->mMeshes[node->mMeshes[i]];
-        vecMesh.push_back(processMesh(mesh, scene));
+        vecMesh.push_back(processMesh(mesh, scene)); 
     }
     // then do the same for each of its children
     for (unsigned int i = 0; i < node->mNumChildren; i++) {
@@ -263,7 +263,7 @@ void CLResourceMesh::Draw(GLuint shaderID) {
 
             // now set the sampler to the correct texture unit
             // and finally bind the texture
-            glBindTexture(GL_TEXTURE_2D, mesh.textures[i].id);
+            glBindTexture(GL_TEXTURE_2D, mesh.textures[i].id); 
         }
         //glActiveTexture(GL_TEXTURE1);
         //glUniform1i(glGetUniformLocation(shaderID, "depthMap"), 1);
