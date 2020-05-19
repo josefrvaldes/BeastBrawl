@@ -499,6 +499,7 @@ void CLEngine::Clear(){
         }
         RemoveLightsAndCameras();
     }
+    sysGrassVector.clear();
 }
 
 
