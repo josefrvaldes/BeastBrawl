@@ -72,7 +72,10 @@ void ManPowerUp::CreatePowerUp(DataMap *d) {
         transforPerse = nullptr;
 
     // calculamos la posicion en la que debe salir el powerUp:
+    bool isOnline = any_cast<bool>((*d)[IS_ONLINE]);
     int medidaPowerUp = 15;
+    if(isOnline)
+        medidaPowerUp = 45;
     float posX = 0, posZ = 0;
     vec3 positionPowerUp;
     float angleRotation = (transforSalida->rotation.y * glm::pi<float>() / 180.0);
