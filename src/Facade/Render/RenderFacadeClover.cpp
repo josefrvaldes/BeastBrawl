@@ -1124,6 +1124,8 @@ void RenderFacadeClover::FacadeInitSelectCharacter() {
 
     FacadeReleaseMeshesInGame();
     
+    if(device->GetNodeByID(0))
+        return;
 
     auto cam = device->AddCamera(device->GetRootNode(),10);
     auto shaderCam = resourceManager->GetResourceShader("CLEngine/src/Shaders/cartoonShader.vert","CLEngine/src/Shaders/cartoonShader.frag");
@@ -2722,7 +2724,7 @@ void RenderFacadeClover::FacadeUpdateViewport(){
 void RenderFacadeClover::FacadeReleaseSelectCharacter(){
     cout << "Liberadas las mallas selection" << endl;
 
-    CleanScene();
+    // CleanScene();
     resourceManager->DeleteResourceTexture("media/menu/character/character_selector.png");
     resourceManager->DeleteResourceTexture("media/menu/character/character_selector_keyboard.png");
     resourceManager->DeleteResourceTexture("media/menu/character/kong_selected.png");

@@ -348,9 +348,9 @@ void ManCar::NewInputsReceived(DataMap* d) {
                 float skidRotation = any_cast<float>((*d)[DataType::SKID_ROTATION]);
                 CBufferOnline* buffOnline = static_cast<CBufferOnline*>(car->GetComponent(CompType::BufferOnline).get());
                 compOnline->inputs = inputs;
-                cout << "Hemos recibido un NewInputsReceivedOnline" << endl;
+                // cout << "Hemos recibido un NewInputsReceivedOnline" << endl;
                 buffOnline->InsertNewReceivedOnline(systemOnline->GetGameTime(), time, inputs, speed, wheelRotation, skidDeg, skidRotation);
-                cout << *buffOnline; 
+                // cout << *buffOnline; 
                 physics->NewInputsReceivedOnline(static_cast<Car*>(car.get()), speed, wheelRotation, skidDeg, skidRotation, buffOnline);
                 break;
             }

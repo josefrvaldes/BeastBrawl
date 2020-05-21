@@ -415,30 +415,30 @@ void Physics::NewInputsReceivedOnline(Car *car, float speed, float wheelRotation
     cCar->wheelRotation = wheelRotation;
     cCar->skidDeg = skidDeg;
     cCar->skidRotation = skidRotation;
-    cout << "JUG2Hemos recibido un speed["<<speed<<"] wheelRotation["<<wheelRotation<<"] skidDeg["<<skidDeg<<"] y skidRotation["<<skidRotation<<"]" << endl;
+    // cout << "JUG2Hemos recibido un speed["<<speed<<"] wheelRotation["<<wheelRotation<<"] skidDeg["<<skidDeg<<"] y skidRotation["<<skidRotation<<"]" << endl;
     if(buffer->elems.size() > 1) {
-        cout << "JUG2Hacemos corrección por input received: el coche estaba en:   " << *cTransformable << endl;
+        // cout << "JUG2Hacemos corrección por input received: el coche estaba en:   " << *cTransformable << endl;
         BuffElement elemRecienRecibido = buffer->elems.front();
         buffer->elems.pop_front();
         BuffElement elemSiguiente = buffer->elems.front();
         cTransformable->position = elemSiguiente.pos;
         cTransformable->rotation = elemSiguiente.rot;
-        cout << "JUG2\tCogemos la pos donde estaba en el momento del timeReceived:  " << *cTransformable << endl;
+        // cout << "JUG2\tCogemos la pos donde estaba en el momento del timeReceived:  " << *cTransformable << endl;
         // float deltaAux = Constants::DELTA_TIME_MILLIS;
         int32_t intervalo = elemRecienRecibido.time - elemRecienRecibido.timeSent;
 
         float veces = intervalo / Constants::DELTA_TIME_MILLIS;
         int16_t auxVeces = round(veces);
-        cout << "JUG2\tHa habido un intervalo de " << intervalo << " ms, por tanto corregiremos " << auxVeces << " veces" << endl;
+        // cout << "JUG2\tHa habido un intervalo de " << intervalo << " ms, por tanto corregiremos " << auxVeces << " veces" << endl;
 
         // TODO: posible corrección de desfase. Parece que el online va siempre 1 frame por delante, así que para ajustar, haremos aquí
         // una corrección menos:
         for(int16_t i = 0; i < auxVeces - 1; i++) {
-            cout << "JUG2corregimos " << i << " veces" << endl;
+            // cout << "JUG2corregimos " << i << " veces" << endl;
             MoveCarHumanByInput(car, cCar, cOnline, cTransformable, cSpeed, cNitro, cExternalForce);
-            cout << "JUG2\t Tras esta corrección estamos en:  " << *cTransformable << endl;
+            // cout << "JUG2\t Tras esta corrección estamos en:  " << *cTransformable << endl;
         }
-        cout << "JUG2" << Utils::getISOCurrentTimestampMillis() << " Al acabar todas las correcciones por input received, el coche está en: " << *cTransformable << endl;
+        // cout << "JUG2" << Utils::getISOCurrentTimestampMillis() << " Al acabar todas las correcciones por input received, el coche está en: " << *cTransformable << endl;
     }
 }
 
@@ -452,16 +452,16 @@ void Physics::NewSyncReceivedOnline(Car *car, int64_t timeSent, int64_t gameTime
     auto cExternalForce = static_cast<CExternalForce *>(car->GetComponent(CompType::CompExternalForce).get());
     auto cBufferOnline = static_cast<CBufferOnline *>(car->GetComponent(CompType::BufferOnline).get());
 
-    cout << "JUG2Hemos recibido una sync que se envió a las " << Utils::getISOCurrentTimestampMillis(timeSent) << endl;
+    // cout << "JUG2Hemos recibido una sync que se envió a las " << Utils::getISOCurrentTimestampMillis(timeSent) << endl;
     auto elems = cBufferOnline->elems;
     std::list<BuffElement>::iterator it;
-    cout << "JUG2Hacemos corrección por sync received: el coche estaba en:    " << *cTransformable << " con una speed[" << cCar->speed << "]" << endl;
+    // cout << "JUG2Hacemos corrección por sync received: el coche estaba en:    " << *cTransformable << " con una speed[" << cCar->speed << "]" << endl;
     uint16_t veces = round(gameTime - timeSent) / (Constants::DELTA_TIME_MILLIS) + 1;   // este 1 es porque nosotros enviamos el sync en el input del frame actual, pero el 
                                                                                                         // input es lo primero que se hace del frame, osea que realmente estamos enviando la pos que se calculó el frame anterior
     for(uint16_t i = 0; i < veces; i++) {
-        cout << "JUG2corregimos" << endl;
+        // cout << "JUG2corregimos" << endl;
         MoveCarHumanByInput(car, cCar, cOnline, cTransformable, cSpeed, cNitro, cExternalForce);
-        cout << "JUG2\ttras la corrección estamos en " << *cTransformable << " y speed [" << cCar->speed << "]" << endl;
+        // cout << "JUG2\ttras la corrección estamos en " << *cTransformable << " y speed [" << cCar->speed << "]" << endl;
     }
 
 
@@ -531,10 +531,10 @@ void Physics::UpdateHuman(Car *car, int64_t gameTime) {
     MoveCarHumanByInput(car, cCar, cOnline, cTransformable, cSpeed, cNitro, cExternalForce);
 
     // añadimos que se ha calculado una nueva posición por predicción
-    cout << "JUG2Hemos calculado una nueva pos" << endl;
+    // cout << "JUG2Hemos calculado una nueva pos" << endl;
     auto cBufferOnline = static_cast<CBufferOnline *>(car->GetComponent(CompType::BufferOnline).get());
     cBufferOnline->InsertNewCalculated(gameTime, cTransformable->position, cTransformable->rotation, cCar->speed, cCar->wheelRotation, cCar->skidDeg, cCar->skidRotation);
-    cout << *cBufferOnline;
+    // cout << "JUG2" << *cBufferOnline;
 }
 
 
