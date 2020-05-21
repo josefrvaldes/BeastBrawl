@@ -202,8 +202,8 @@ struct DestinationInAngle_pu : public behaviourTree {
         auto cTransCar = static_cast<CTransformable*>(blackboard->actualCar->GetComponent(CompType::TransformableComp).get());
 
         // calcular un desplazamiento para ser en tercera persona
-        float posXActualCar = cTransCar->position.x + 34 * cos(glm::radians(cTransCar->rotation.y));
-        float posZActualCar = cTransCar->position.z - 34 * sin(glm::radians(cTransCar->rotation.y));
+        float posXActualCar = cTransCar->position.x + 38.9 * cos(glm::radians(cTransCar->rotation.y));
+        float posZActualCar = cTransCar->position.z - 38.9 * sin(glm::radians(cTransCar->rotation.y));
 
         // vector between actualCar and otherCar
         float vetorToEntityX = (cPosDestination->position.x - posXActualCar);
