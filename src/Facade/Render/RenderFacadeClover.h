@@ -183,6 +183,9 @@ class RenderFacadeClover : public RenderFacade {
 
 
    private:
+      void FacadeReleaseMeshesInGame();
+
+
       class Animation2D;
 
       std::string powerUps[7];

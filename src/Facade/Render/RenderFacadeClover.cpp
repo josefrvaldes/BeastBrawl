@@ -920,20 +920,18 @@ void RenderFacadeClover::FacadeSetWindowSize(DataMap* d) {
  */
 void RenderFacadeClover::FacadeInitResources(mainCharacter character){
     
-    FacadeBeginScene();
-
     auto w = device->GetScreenWidth();
     auto scale = 0.5f;
     if ( w > 1600 ) { scale = 0.75f; }
     else if (w < 600 ) { scale = 0.25f; }
-
-    //Esto es lo unico que se necesita para dibujar la pantalla de carga
     std::string file = "media/menu/loading_screen.png";
-    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
 
+
+    FacadeBeginScene();
+    //Esto es lo unico que se necesita para dibujar la pantalla de carga
+    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
     int64_t time = Utils::getMicrosSinceEpoch();
     int indx = time % (tipsTexts.size()-1);
-
     device->RenderText2D(tipsTexts.at(indx), device->GetScreenWidth()/2 - 125.0f*scale, device->GetScreenHeight()/2,0.5f, scale,glm::vec3(1.0f,1.0f,1.0f));
     FacadeEndScene();
 
@@ -958,10 +956,42 @@ void RenderFacadeClover::FacadeInitResources(mainCharacter character){
 
     resourceManager->GetResourceAnimation("media/animations/sharky/win/victorysharky_000001.obj", 18, false);
     resourceManager->GetResourceAnimation("media/animations/kong/win/victorykong_000001.obj", 18, false);
+
+    FacadeBeginScene();
+    //Esto es lo unico que se necesita para dibujar la pantalla de carga
+    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
+    time = Utils::getMicrosSinceEpoch();
+    indx = time % (tipsTexts.size()-1);
+    device->RenderText2D(tipsTexts.at(indx), device->GetScreenWidth()/2 - 125.0f*scale, device->GetScreenHeight()/2,0.5f, scale,glm::vec3(1.0f,1.0f,1.0f));
+    FacadeEndScene();
+
+
     resourceManager->GetResourceAnimation("media/animations/cyberoctopus/win/victoryoctopus_000001.obj", 18, false);
     resourceManager->GetResourceAnimation("media/animations/dragon/win/victorydragon_000001.obj", 18, false);
+    
+    
+    FacadeBeginScene();
+    //Esto es lo unico que se necesita para dibujar la pantalla de carga
+    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
+    time = Utils::getMicrosSinceEpoch();
+    indx = time % (tipsTexts.size()-1);
+    device->RenderText2D(tipsTexts.at(indx), device->GetScreenWidth()/2 - 125.0f*scale, device->GetScreenHeight()/2,0.5f, scale,glm::vec3(1.0f,1.0f,1.0f));
+    FacadeEndScene();
+
+
     resourceManager->GetResourceAnimation("media/animations/penguin/win/victorypenguin_000001.obj", 18, false);
     resourceManager->GetResourceAnimation("media/animations/baxter/win/victorybaxter_000001.obj", 18, false);
+
+
+    FacadeBeginScene();
+    //Esto es lo unico que se necesita para dibujar la pantalla de carga
+    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
+    time = Utils::getMicrosSinceEpoch();
+    indx = time % (tipsTexts.size()-1);
+    device->RenderText2D(tipsTexts.at(indx), device->GetScreenWidth()/2 - 125.0f*scale, device->GetScreenHeight()/2,0.5f, scale,glm::vec3(1.0f,1.0f,1.0f));
+    FacadeEndScene();
+
+
 
     // cargamos el resto de animaciones del personaje principal
     switch(character) {
@@ -1005,7 +1035,77 @@ void RenderFacadeClover::FacadeInitIntro() {
 }
 
 void RenderFacadeClover::FacadeInitMenu() {
-    
+    // -------- CARGAMOS TEXTURAS
+
+    // HUD - POWERUPS
+    currentPowerUp = 0;
+    powerUps[0] = "media/nonepowerup.png";
+    powerUps[1] = "media/robojorobo.png";
+    powerUps[2] = "media/nitro.png";
+    powerUps[3] = "media/pudin.png";
+    powerUps[4] = "media/escudomerluzo.png";
+    powerUps[5] = "media/telebanana.png";
+    powerUps[6] = "media/melonmolon.png";
+    device->GetResourceManager()->GetResourceTexture(powerUps[0], true);
+    device->GetResourceManager()->GetResourceTexture(powerUps[1], true);
+    device->GetResourceManager()->GetResourceTexture(powerUps[2], true);
+    device->GetResourceManager()->GetResourceTexture(powerUps[3], true);
+    device->GetResourceManager()->GetResourceTexture(powerUps[4], true);
+    device->GetResourceManager()->GetResourceTexture(powerUps[5], true);
+    device->GetResourceManager()->GetResourceTexture(powerUps[6], true);
+
+    // HUD - Countdown
+    resourceManager->GetResourceTexture("media/1.png", true);
+    resourceManager->GetResourceTexture("media/2.png", true);
+    resourceManager->GetResourceTexture("media/3.png", true);
+
+    // HUD - Caritas y minimapa
+    resourceManager->GetResourceTexture("media/hudPenguin.png", true);
+    resourceManager->GetResourceTexture("media/hudTiger.png", true);
+    resourceManager->GetResourceTexture("media/hudShark.png", true);
+    resourceManager->GetResourceTexture("media/hudGorilla.png", true);
+    resourceManager->GetResourceTexture("media/hudDragon.png", true);
+    resourceManager->GetResourceTexture("media/hudOctopus.png", true);
+    resourceManager->GetResourceTexture("media/totemCogido.png", true);
+    resourceManager->GetResourceTexture("media/totemSuelo.png", true);
+    resourceManager->GetResourceTexture("media/Minimapa240v2.png", true);
+
+    // HUD - Marcadores
+    resourceManager->GetResourceTexture("media/indicator_tiempo.png", true);
+    resourceManager->GetResourceTexture("media/indicator_totem.png", true);
+    resourceManager->GetResourceTexture("media/ranking.png", true);
+
+    // HUD - Avisos
+    resourceManager->GetResourceTexture("media/stoleHUD.png", true);
+    resourceManager->GetResourceTexture("media/loseHUD.png", true);
+    resourceManager->GetResourceTexture("media/catchHUD.png", true);
+
+    // HUD - Nameplates
+    resourceManager->GetResourceTexture("media/BOctopus.png", false);
+    resourceManager->GetResourceTexture("media/BDragon.png", false);
+    resourceManager->GetResourceTexture("media/BGorila.png", false);
+    resourceManager->GetResourceTexture("media/BPinguino.png", false);
+    resourceManager->GetResourceTexture("media/BTiburon.png", false);
+    resourceManager->GetResourceTexture("media/hudTotemBack.png", true);
+    resourceManager->GetResourceTexture("media/hudTotemLeft.png", true);
+    resourceManager->GetResourceTexture("media/hudTotemRight.png", true);
+    resourceManager->GetResourceTexture("media/hudTotem.png", true);
+
+    // Particulas
+    resourceManager->GetResourceTexture("media/particleTriangleBlack.png", true);
+    resourceManager->GetResourceTexture("media/particleTriangleGreen.png", true);
+    resourceManager->GetResourceTexture("media/particleStarBlack.png", true);
+    resourceManager->GetResourceTexture("media/particleStarGreen.png", true);
+    resourceManager->GetResourceTexture("media/particleYellowTriangle.png", true);
+    resourceManager->GetResourceTexture("media/particleYellowStar.png", true);
+    resourceManager->GetResourceTexture("media/particleTriangleGrey.png", true);
+    resourceManager->GetResourceTexture("media/particleStarMarron.png", true);
+    resourceManager->GetResourceTexture("media/particleTriangleBrown.png", true);
+    resourceManager->GetResourceTexture("media/particleRedTriangle.png", true);
+    resourceManager->GetResourceTexture("media/particleRedStar.png", true);
+}
+
+void RenderFacadeClover::FacadeInitSelectCharacter() {
     std::string file = "media/menu/loading_screen.png";
     auto w = device->GetScreenWidth();
     auto scale = 0.5f;
@@ -1022,123 +1122,9 @@ void RenderFacadeClover::FacadeInitMenu() {
     device->RenderText2D(tipsTexts.at(indx), device->GetScreenWidth()/2 - 125.0f*scale, device->GetScreenHeight()/2,0.5f, scale,glm::vec3(1.0f,1.0f,1.0f));
     FacadeEndScene();
 
+    FacadeReleaseMeshesInGame();
+    
 
-    // -------- CARGAMOS ANIMACIONES
-    resourceManager->GetResourceAnimation("media/animations/penguin/selection/selectionpenguin_000001.obj", 15, false);
-    resourceManager->GetResourceAnimation("media/animations/baxter/selection/selectionbaxter_000001.obj", 15, false);
-
-
-    // --- Pantalla de carga
-    FacadeBeginScene();
-    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
-    //Frase
-    time = Utils::getMicrosSinceEpoch();
-    indx = time % (tipsTexts.size()-1);
-    device->RenderText2D(tipsTexts.at(indx), device->GetScreenWidth()/2 - 125.0f*scale, device->GetScreenHeight()/2,0.5f, scale,glm::vec3(1.0f,1.0f,1.0f));
-    FacadeEndScene();
-
-    // -------- CARGAMOS ANIMACIONES
-    resourceManager->GetResourceAnimation("media/animations/dragon/selection/selectiondragon_000001.obj", 15, false);
-    resourceManager->GetResourceAnimation("media/animations/kong/selection/selectionkong_000001.obj", 15, false);
-
-
-    // --- Pantalla de carga
-    FacadeBeginScene();
-    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
-    //Frase
-    time = Utils::getMicrosSinceEpoch();
-    indx = time % (tipsTexts.size()-1);
-    device->RenderText2D(tipsTexts.at(indx), device->GetScreenWidth()/2 - 125.0f*scale, device->GetScreenHeight()/2,0.5f, scale,glm::vec3(1.0f,1.0f,1.0f));
-    FacadeEndScene();
-
-    // -------- CARGAMOS ANIMACIONES
-    resourceManager->GetResourceAnimation("media/animations/sharky/selection/selectionsharky_000001.obj", 15, false);
-    resourceManager->GetResourceAnimation("media/animations/cyberoctopus/selection/selectionoctopus_000001.obj", 15, false);
-
-
-    // --- Pantalla de carga
-    FacadeBeginScene(); 
-    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);  
-    // Frase 
-    time = Utils::getMicrosSinceEpoch();
-    indx = time % (tipsTexts.size()-1);
-    device->RenderText2D(tipsTexts.at(indx), device->GetScreenWidth()/2 - 125.0f*scale, device->GetScreenHeight()/2,0.5f, scale,glm::vec3(1.0f,1.0f,1.0f));
-    FacadeEndScene();
-
-    // -------- CARGAMOS TEXTURAS
-
-        // HUD - POWERUPS
-        currentPowerUp = 0;
-        powerUps[0] = "media/nonepowerup.png";
-        powerUps[1] = "media/robojorobo.png";
-        powerUps[2] = "media/nitro.png";
-        powerUps[3] = "media/pudin.png";
-        powerUps[4] = "media/escudomerluzo.png";
-        powerUps[5] = "media/telebanana.png";
-        powerUps[6] = "media/melonmolon.png";
-        device->GetResourceManager()->GetResourceTexture(powerUps[0], true);
-        device->GetResourceManager()->GetResourceTexture(powerUps[1], true);
-        device->GetResourceManager()->GetResourceTexture(powerUps[2], true);
-        device->GetResourceManager()->GetResourceTexture(powerUps[3], true);
-        device->GetResourceManager()->GetResourceTexture(powerUps[4], true);
-        device->GetResourceManager()->GetResourceTexture(powerUps[5], true);
-        device->GetResourceManager()->GetResourceTexture(powerUps[6], true);
-
-        // HUD - Countdown
-        resourceManager->GetResourceTexture("media/1.png", true);
-        resourceManager->GetResourceTexture("media/2.png", true);
-        resourceManager->GetResourceTexture("media/3.png", true);
-
-        // HUD - Caritas y minimapa
-        resourceManager->GetResourceTexture("media/hudPenguin.png", true);
-        resourceManager->GetResourceTexture("media/hudTiger.png", true);
-        resourceManager->GetResourceTexture("media/hudShark.png", true);
-        resourceManager->GetResourceTexture("media/hudGorilla.png", true);
-        resourceManager->GetResourceTexture("media/hudDragon.png", true);
-        resourceManager->GetResourceTexture("media/hudOctopus.png", true);
-        resourceManager->GetResourceTexture("media/totemCogido.png", true);
-        resourceManager->GetResourceTexture("media/totemSuelo.png", true);
-        resourceManager->GetResourceTexture("media/Minimapa240v2.png", true);
-
-        // HUD - Marcadores
-        resourceManager->GetResourceTexture("media/indicator_tiempo.png", true);
-        resourceManager->GetResourceTexture("media/indicator_totem.png", true);
-        resourceManager->GetResourceTexture("media/ranking.png", true);
-
-        // HUD - Avisos
-        resourceManager->GetResourceTexture("media/stoleHUD.png", true);
-        resourceManager->GetResourceTexture("media/loseHUD.png", true);
-        resourceManager->GetResourceTexture("media/catchHUD.png", true);
-
-        // HUD - Nameplates
-        resourceManager->GetResourceTexture("media/BOctopus.png", false);
-        resourceManager->GetResourceTexture("media/BDragon.png", false);
-        resourceManager->GetResourceTexture("media/BGorila.png", false);
-        resourceManager->GetResourceTexture("media/BPinguino.png", false);
-        resourceManager->GetResourceTexture("media/BTiburon.png", false);
-        resourceManager->GetResourceTexture("media/hudTotemBack.png", true);
-        resourceManager->GetResourceTexture("media/hudTotemLeft.png", true);
-        resourceManager->GetResourceTexture("media/hudTotemRight.png", true);
-        resourceManager->GetResourceTexture("media/hudTotem.png", true);
-
-        // Particulas
-        resourceManager->GetResourceTexture("media/particleTriangleBlack.png", true);
-        resourceManager->GetResourceTexture("media/particleTriangleGreen.png", true);
-        resourceManager->GetResourceTexture("media/particleStarBlack.png", true);
-        resourceManager->GetResourceTexture("media/particleStarGreen.png", true);
-        resourceManager->GetResourceTexture("media/particleYellowTriangle.png", true);
-        resourceManager->GetResourceTexture("media/particleYellowStar.png", true);
-        resourceManager->GetResourceTexture("media/particleTriangleGrey.png", true);
-        resourceManager->GetResourceTexture("media/particleStarMarron.png", true);
-        resourceManager->GetResourceTexture("media/particleTriangleBrown.png", true);
-        resourceManager->GetResourceTexture("media/particleRedTriangle.png", true);
-        resourceManager->GetResourceTexture("media/particleRedStar.png", true);
-
-}
-
-void RenderFacadeClover::FacadeInitSelectCharacter() {
-
-    //Creamos la camara apuntando al (0,0,0)
 
     if(device->GetNodeByID(0)){
         return;
@@ -1183,6 +1169,15 @@ void RenderFacadeClover::FacadeInitSelectCharacter() {
     mesh->SetRotation(glm::vec3(10.0f,-50.0f, 5.0f));
     mesh->SetShaderProgramID(shader->GetProgramID());
 
+
+    FacadeBeginScene();
+    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
+    //Frase
+    time = Utils::getMicrosSinceEpoch();
+    indx = time % (tipsTexts.size()-1);
+    device->RenderText2D(tipsTexts.at(indx), device->GetScreenWidth()/2 - 125.0f*scale, device->GetScreenHeight()/2,0.5f, scale,glm::vec3(1.0f,1.0f,1.0f));
+    FacadeEndScene();
+
     //Shark
     auto animationSha = resourceManager->GetResourceAnimation("media/animations/sharky/selection/selectionsharky_000001.obj", 15, false);
     mesh = device->AddMesh(smgr,2);
@@ -1208,6 +1203,15 @@ void RenderFacadeClover::FacadeInitSelectCharacter() {
     mesh->SetTranslation(glm::vec3(0.0f,-14.0f,-20.0f));
     mesh->SetRotation(glm::vec3(10.0f,-50.0f, 5.0f));
     mesh->SetShaderProgramID(shader->GetProgramID());
+
+
+    FacadeBeginScene();
+    device->DrawImage2D(0.0f, 0.0f, device->GetScreenWidth(), device->GetScreenHeight(), 0.1f, file, true);
+    //Frase
+    time = Utils::getMicrosSinceEpoch();
+    indx = time % (tipsTexts.size()-1);
+    device->RenderText2D(tipsTexts.at(indx), device->GetScreenWidth()/2 - 125.0f*scale, device->GetScreenHeight()/2,0.5f, scale,glm::vec3(1.0f,1.0f,1.0f));
+    FacadeEndScene();
 
     //Dragon
     auto animationDra = resourceManager->GetResourceAnimation("media/animations/dragon/selection/selectiondragon_000001.obj", 15, false);
@@ -2730,6 +2734,33 @@ void RenderFacadeClover::FacadeReleaseSelectCharacter(){
     resourceManager->DeleteResourceTexture("media/menu/character/deacon_selected.png");
     resourceManager->DeleteResourceTexture("media/menu/character/octopus_selected.png");    
 
+    resourceManager->DeleteResourceAnimation("media/animations/penguin/selection/selectionpenguin_000001.obj", 15);
+    resourceManager->DeleteResourceAnimation("media/animations/baxter/selection/selectionbaxter_000001.obj", 15);
+    resourceManager->DeleteResourceAnimation("media/animations/sharky/selection/selectionsharky_000001.obj", 15);
+    resourceManager->DeleteResourceAnimation("media/animations/kong/selection/selectionkong_000001.obj", 15);
+    resourceManager->DeleteResourceAnimation("media/animations/dragon/selection/selectiondragon_000001.obj", 15);
+    resourceManager->DeleteResourceAnimation("media/animations/cyberoctopus/selection/selectionoctopus_000001.obj", 15);
+}
+
+void RenderFacadeClover::FacadeReleaseMeshesInGame(){
+    resourceManager->DeleteResourceAnimation("media/animations/sharky/win/victorysharky_000001.obj", 18);
+    resourceManager->DeleteResourceAnimation("media/animations/kong/win/victorykong_000001.obj", 18);
+    resourceManager->DeleteResourceAnimation("media/animations/cyberoctopus/win/victoryoctopus_000001.obj", 18);
+    resourceManager->DeleteResourceAnimation("media/animations/dragon/win/victorydragon_000001.obj", 18);
+    resourceManager->DeleteResourceAnimation("media/animations/penguin/win/victorypenguin_000001.obj", 18);
+    resourceManager->DeleteResourceAnimation("media/animations/baxter/win/victorybaxter_000001.obj", 18);
+    resourceManager->DeleteResourceAnimation("media/animations/penguin/right/turnrightpenguin_000001.obj", 10);
+    resourceManager->DeleteResourceAnimation("media/animations/penguin/left/turnleftpenguin_000001.obj", 10);
+    resourceManager->DeleteResourceAnimation("media/animations/baxter/right/turnrightbaxter_000001.obj", 10);
+    resourceManager->DeleteResourceAnimation("media/animations/baxter/left/turnleftbaxter_000001.obj", 10);
+    resourceManager->DeleteResourceAnimation("media/animations/kong/right/turnrightkong_000001.obj", 10);
+    resourceManager->DeleteResourceAnimation("media/animations/kong/left/turnleftkong_000001.obj", 10);
+    resourceManager->DeleteResourceAnimation("media/animations/sharky/right/turnrightsharky_000001.obj", 10);
+    resourceManager->DeleteResourceAnimation("media/animations/sharky/left/turnleftsharky_000001.obj", 10);
+    resourceManager->DeleteResourceAnimation("media/animations/dragon/right/turnrightdragon_000001.obj", 10);
+    resourceManager->DeleteResourceAnimation("media/animations/dragon/left/turnleftdragon_000001.obj", 10);
+    resourceManager->DeleteResourceAnimation("media/animations/cyberoctopus/right/turnrightoctopus_000001.obj", 10);
+    resourceManager->DeleteResourceAnimation("media/animations/cyberoctopus/left/turnleftoctopus_000001.obj", 10);
 }
 
 void RenderFacadeClover::FacadeReleaseOptions(){
