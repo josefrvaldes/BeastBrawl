@@ -2720,9 +2720,9 @@ void RenderFacadeClover::FacadeUpdateViewport(){
 //////////////////////////
 
 void RenderFacadeClover::FacadeReleaseSelectCharacter(){
+    cout << "Liberadas las mallas selection" << endl;
 
     CleanScene();
-
     resourceManager->DeleteResourceTexture("media/menu/character/character_selector.png");
     resourceManager->DeleteResourceTexture("media/menu/character/character_selector_keyboard.png");
     resourceManager->DeleteResourceTexture("media/menu/character/kong_selected.png");
@@ -2741,6 +2741,7 @@ void RenderFacadeClover::FacadeReleaseSelectCharacter(){
 }
 
 void RenderFacadeClover::FacadeReleaseMeshesInGame(){
+    cout << "Liberadas las mallas ingame" << endl;
     resourceManager->DeleteResourceAnimation("media/animations/sharky/win/victorysharky_000001.obj", 18);
     resourceManager->DeleteResourceAnimation("media/animations/kong/win/victorykong_000001.obj", 18);
     resourceManager->DeleteResourceAnimation("media/animations/cyberoctopus/win/victoryoctopus_000001.obj", 18);
