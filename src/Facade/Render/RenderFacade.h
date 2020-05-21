@@ -102,7 +102,7 @@ class RenderFacade {
     virtual void FacadeSuscribeEvents() = 0;
     virtual void FacadeSuscribeEventsSettings() = 0;
     virtual void FacadeAddPlates(Manager* manNamePlates) = 0;
-    virtual void FacadeUpdatePlates(Manager* manNamePlates) = 0;
+    virtual void FacadeUpdatePlates(Manager* manNamePlates, Manager* manCars) = 0;
     virtual void FacadeUpdateMeshesLoD(vector<shared_ptr<Entity>> entities) = 0;
     virtual void FacadeUpdateAnimationsLoD(vector<shared_ptr<Entity>> entities) = 0;
     virtual void FacadeAnimate(vector<shared_ptr<Entity>> entities) = 0;

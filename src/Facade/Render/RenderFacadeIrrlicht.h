@@ -103,7 +103,7 @@ class RenderFacadeIrrlicht : public RenderFacade {
     void FacadeSuscribeEvents() override;
     void FacadeSuscribeEventsSettings() override;
     void FacadeAddPlates(Manager* manNamePlates) override;
-    void FacadeUpdatePlates(Manager* manNamePlates) override;
+    void FacadeUpdatePlates(Manager* manNamePlates, Manager* manCars) override;
     void FacadeUpdateMeshesLoD(vector<shared_ptr<Entity>> entities) override;
     void FacadeAnimate(vector<shared_ptr<Entity>> entities) override;
     void FacadeUpdateAnimationsLoD(vector<shared_ptr<Entity>> entities) override;
