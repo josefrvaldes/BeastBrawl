@@ -180,12 +180,13 @@ struct TotemInSomeCar_pu : public behaviourTree {
 
 //Condicion -> Coche con totem con BASTANTE tiempo restante?
 struct HighTimeToEndCar_pu : public behaviourTree {
-    int timeMin = 10000; // 10 segundos
+    //int timeMin = 10000; // 10 segundos
 
     virtual bool run(Blackboard* blackboard) override {
         for(const auto& car : blackboard->manCars->GetEntities()){
             auto cTotem = static_cast<CTotem*>(car->GetComponent(CompType::TotemComp).get());
-            if(cTotem->active && car.get()!=blackboard->actualCar && (cTotem->SEGUNDOS*1000 - cTotem->accumulatedTime) > timeMin)
+            auto cBrainAI = static_cast<CBrainAI*>(car->GetComponent(CompType::BrainAIComp).get());
+            if(cTotem->active && car.get()!=blackboard->actualCar && (cTotem->SEGUNDOS*1000 - cTotem->accumulatedTime) > cBrainAI->timeFollowDirect)
                 return true;
         }
         return false;
