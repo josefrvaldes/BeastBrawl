@@ -51,15 +51,15 @@ class CCamera : public Component
 
 
         // cosas jose
-        const float perfectDistance {34.0};
-        const float minDistance {32.0};
-        const float maxDistance {39.0};
-        float perfectUpDistance {22.0};
-        float upTargetDistance {16.0};          // se le suma a la posicion del jugador para establecer el target
+        const float perfectDistance {38.9};
+        const float minDistance {36.9};
+        const float maxDistance {43.9};
+        float perfectUpDistance {25.1};
+        float upTargetDistance {18.3};              // se le suma a la posicion del jugador para establecer el target
 
-        float actualDistance {34.0};            // esto es la posicion de la camara actual en los ejes x-z
-        float upDistance {20.0};                // en caso de querer modificar el alto de alguna forma en un futuro
-        float collisionDistance {0.0};          // en caso de colisionar contra una pared ajustarla restandole esto
+        float actualDistance {perfectDistance};     // esto es la posicion de la camara actual en los ejes x-z
+        float upDistance {perfectUpDistance};       // en caso de querer modificar el alto de alguna forma en un futuro
+        float collisionDistance {0.0};              // en caso de colisionar contra una pared ajustarla restandole esto
 
         const float camAceleration {12.0 * Constants::DELTA_TIME};
         const float camDeceleration {6.0 * Constants::DELTA_TIME};

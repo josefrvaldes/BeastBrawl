@@ -20,7 +20,7 @@ enum StatesLobbyMulti { CONNECTING,
 class StateLobbyMulti : public State{
    public:
     StateLobbyMulti();
-    ~StateLobbyMulti() override = default;;
+    ~StateLobbyMulti();
     void Input() override;
     void InitState() override;
     void Update() override;

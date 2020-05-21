@@ -68,7 +68,7 @@ bool SystemGameRules::UpdateRulesCarPowerUps(Entity& car_, Entity& totem_) const
         auto cTransformTotem = static_cast<CTransformable *>(totem_.GetComponent(CompType::TransformableComp).get());
             cTransformTotem->position.x = cTransformCar->position.x;
             cTransformTotem->position.z = cTransformCar->position.z;
-            cTransformTotem->position.y = cTransformCar->position.y + 40.0f;
+            cTransformTotem->position.y = cTransformCar->position.y + 46.0f;
     }
 
     if(cTotem->accumulatedTime/1000.0 > cTotem->DURATION_TIME/1000.0){

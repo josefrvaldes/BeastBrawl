@@ -5,6 +5,7 @@
 #include "../ResourceManager/CLResourceTexture.h"
 #include "CLEntity.h"
 #include <memory>
+#include <unordered_map>
 
 namespace CLE {
 

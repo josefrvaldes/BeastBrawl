@@ -94,6 +94,11 @@ namespace CLE {
             //! @param file
             //! @returns bool
             bool DeleteResourceMaterial(const std::string file);
+            //! Libera la memoria de una animación
+            //! @param file
+            //! @returns bool
+            bool DeleteResourceAnimation(const std::string path, uint8_t numKeyFrames);
+
             
             vector<shared_ptr<CLResourceMesh>> GetMeshes() {return meshes;}
 

@@ -20,6 +20,10 @@ StateLobbyMulti::StateLobbyMulti() : tcpClient{make_shared<TCPClient>(Constants:
     SubscribeToEvents();
 }
 
+StateLobbyMulti::~StateLobbyMulti() {
+    renderEngine->FacadeReleaseSelectCharacter();
+}
+
 // Cargamos los bancos de sonido Menu.
 void StateLobbyMulti::InitState() {
     if (!soundEngine){

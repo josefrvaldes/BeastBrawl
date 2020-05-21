@@ -124,6 +124,29 @@ vector<CLResourceMesh*> CLResourceManager::GetResourceExistingAnimation(const st
     return outputMeshes;
 }
 
+bool CLResourceManager::DeleteResourceAnimation(const std::string path, uint8_t numKeyFrames) {
+    string folder = path.substr(0, path.find_last_of("/") + 1);
+    // string fileName = path.substr(path.find_last_of("/") + 1).substr(3);
+    const uint8_t NUMERIC_PART_OF_THE_FILENAME = 11;
+    string completeFileName = path.substr(path.find_last_of("/") + 1);
+    string fileNameWithoutNumericPart = completeFileName.substr(0, completeFileName.length() - NUMERIC_PART_OF_THE_FILENAME);
+    
+    uint8_t realKeyFrames = numKeyFrames;
+    if(Constants::ANIM_ACTIVATED == 0)
+        realKeyFrames = 1;
+    
+    
+    for(uint8_t i = 1; i <= realKeyFrames; i++) {
+        string stringIndex = std::to_string(i);
+        // añade ceros al principio para que el fichero no sea 1ojete.obj, sino que sea 001ojete.obj
+        string auxIndex = std::string(6 - stringIndex.length(), '0') + stringIndex; 
+        string totalPath = folder + fileNameWithoutNumericPart + "_" + auxIndex + ".obj";
+        DeleteResourceMesh(totalPath);
+    }
+    return true;
+}
+
+
 vector<CLResourceMesh*> CLResourceManager::GetResourceAnimation(const std::string path, uint8_t numKeyFrames, bool flipUV) {
     string folder = path.substr(0, path.find_last_of("/") + 1);
     // string fileName = path.substr(path.find_last_of("/") + 1).substr(3);
@@ -261,11 +284,11 @@ bool CLResourceManager::DeleteResourceTexture(const std::string file){
 }
 
 bool CLResourceManager::DeleteResourceMesh(const std::string file){
-    cout << meshes.size() << endl;
+    // cout << meshes.size() << endl;
     for (unsigned int i=0; i<meshes.size(); ++ i) {
         if (!file.compare(meshes[i]->GetName())) {
             meshes.erase(meshes.begin()+i);
-            cout << meshes.size() << endl;
+            // cout << meshes.size() << endl;
 
             return true;
         }
