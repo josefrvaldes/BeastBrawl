@@ -185,7 +185,7 @@ struct HighTimeToEndCar_pu : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
         for(const auto& car : blackboard->manCars->GetEntities()){
             auto cTotem = static_cast<CTotem*>(car->GetComponent(CompType::TotemComp).get());
-            auto cBrainAI = static_cast<CBrainAI*>(car->GetComponent(CompType::BrainAIComp).get());
+            auto cBrainAI = static_cast<CBrainAI*>(blackboard->actualCar->GetComponent(CompType::BrainAIComp).get());
             if(cTotem->active && car.get()!=blackboard->actualCar && (cTotem->SEGUNDOS*1000 - cTotem->accumulatedTime) > cBrainAI->timeFollowDirect)
                 return true;
         }
