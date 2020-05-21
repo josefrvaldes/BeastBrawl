@@ -938,13 +938,11 @@ void RenderFacadeClover::FacadeInitResources(mainCharacter character){
     //Cargamos todas las mallas
     //Mallas
     resourceManager->GetResourceMesh("media/kart_physics.obj");
-    //resourceManager->GetResourceMesh("media/kart_ia.obj");
     resourceManager->GetResourceMesh("media/melon.obj");
     resourceManager->GetResourceMesh("media/totem.obj");
     resourceManager->GetResourceMesh("media/TEST_BOX.obj");
     resourceManager->GetResourceMesh("media/pudin.obj");
     resourceManager->GetResourceMesh("media/telebanana.obj");
-    resourceManager->GetResourceMesh("media/training_ground.obj");
 
     // cargamos TODAS las animaciones de win, porque cualquiera puede ganar
     // resourceManager->GetResourceAnimation("media/animations/sharky/win/victorysharky_000001.obj", 31, false);
@@ -954,7 +952,7 @@ void RenderFacadeClover::FacadeInitResources(mainCharacter character){
     // resourceManager->GetResourceAnimation("media/animations/penguin/win/victorypenguin_000001.obj", 31, false);
     // resourceManager->GetResourceAnimation("media/animations/baxter/win/victorybaxter_000001.obj", 31, false);
 
-    resourceManager->GetResourceAnimation("media/animations/sharky/win/victorysharky_000001.obj", 10, false);
+    /*resourceManager->GetResourceAnimation("media/animations/sharky/win/victorysharky_000001.obj", 10, false);
     resourceManager->GetResourceAnimation("media/animations/kong/win/victorykong_000001.obj", 10, false);
 
     FacadeBeginScene();
@@ -980,7 +978,7 @@ void RenderFacadeClover::FacadeInitResources(mainCharacter character){
 
 
     resourceManager->GetResourceAnimation("media/animations/penguin/win/victorypenguin_000001.obj", 10, false);
-    resourceManager->GetResourceAnimation("media/animations/baxter/win/victorybaxter_000001.obj", 10, false);
+    resourceManager->GetResourceAnimation("media/animations/baxter/win/victorybaxter_000001.obj", 10, false);*/
 
 
     FacadeBeginScene();
@@ -1124,11 +1122,8 @@ void RenderFacadeClover::FacadeInitSelectCharacter() {
 
     FacadeReleaseMeshesInGame();
     
-
-
-    if(device->GetNodeByID(0)){
+    if(device->GetNodeByID(0))
         return;
-    }
 
     auto cam = device->AddCamera(device->GetRootNode(),10);
     auto shaderCam = resourceManager->GetResourceShader("CLEngine/src/Shaders/cartoonShader.vert","CLEngine/src/Shaders/cartoonShader.frag");
@@ -1809,12 +1804,13 @@ void RenderFacadeClover::FacadeDrawSelectCharacter() {
 
     if(previousInputSC != inputSC) {
         previousInputSC = inputSC;
-        //Ponemos visible solamente el que esta seleccionado
-        for(uint8_t i=0; i<=maxInputSC ; i++){
-            auto node = device->GetNodeByID(i);
-            node->SetVisible(false);
-        }
         static_cast<CLMesh*>(nodeSelected->GetEntity())->ResetAnimation();
+    }
+
+    //Ponemos visible solamente el que esta seleccionado
+    for(uint8_t i=0; i<=maxInputSC ; i++){
+        auto node = device->GetNodeByID(i);
+        node->SetVisible(false);
     }
 
     nodeSelected->SetVisible(true);
@@ -2724,6 +2720,9 @@ void RenderFacadeClover::FacadeUpdateViewport(){
 //////////////////////////
 
 void RenderFacadeClover::FacadeReleaseSelectCharacter(){
+    
+
+    CleanScene();
 
     resourceManager->DeleteResourceTexture("media/menu/character/character_selector.png");
     resourceManager->DeleteResourceTexture("media/menu/character/character_selector_keyboard.png");
@@ -2743,6 +2742,7 @@ void RenderFacadeClover::FacadeReleaseSelectCharacter(){
 }
 
 void RenderFacadeClover::FacadeReleaseMeshesInGame(){
+    cout << "Liberadas las mallas ingame" << endl;
     resourceManager->DeleteResourceAnimation("media/animations/sharky/win/victorysharky_000001.obj", 18);
     resourceManager->DeleteResourceAnimation("media/animations/kong/win/victorykong_000001.obj", 18);
     resourceManager->DeleteResourceAnimation("media/animations/cyberoctopus/win/victoryoctopus_000001.obj", 18);

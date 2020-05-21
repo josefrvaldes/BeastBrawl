@@ -73,7 +73,7 @@ void UDPClient::HandleReceived(std::shared_ptr<unsigned char[]> recevBuff, const
                 case Constants::PetitionTypes::SEND_INPUTS: {
                     int64_t gameTime = Serialization::Deserialize<int64_t>(recevBuff.get(), currentIndex);
                     if (gameTime > lastTimeInputReceived[idPlayer] && !stateAnimationEnd) {
-                        cout << "Hemos recibido una petición de tipo SEND_INPUT" << endl;
+                        // cout << "Hemos recibido una petición de tipo SEND_INPUT" << endl;
                         const vector<Constants::InputTypes> inputs = Serialization::DeserializeInputs(recevBuff.get(), currentIndex);
                         const float speed = Serialization::Deserialize<float>(recevBuff.get(), currentIndex);
                         const float wheelRotation = Serialization::Deserialize<float>(recevBuff.get(), currentIndex);
@@ -513,7 +513,7 @@ void UDPClient::SendInputs(const int64_t gameTime, const vector<Constants::Input
     Serialization::Serialize(requestBuff, &skidRotation, currentBuffSize);
     
 
-    cout << "Vamos a enviar inputs" << endl;
+    // cout << "Vamos a enviar inputs" << endl;
     socket.async_send_to(
         boost::asio::buffer(requestBuff, currentBuffSize),
         serverEndpoint,

@@ -10,7 +10,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/Beast_Brawl",
-            "args": [],
+            "args": ["0 localhost"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [
