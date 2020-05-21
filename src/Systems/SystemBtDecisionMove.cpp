@@ -298,9 +298,9 @@ struct MovNavMeshTotem_dm : public behaviourTree {
             (*dataPowerUp)[MAN_NAVMESH] = blackboard->manNavMesh;  
             (*dataPowerUp)[ID_DESTINATION] = cCurrentNavMeshTotem->currentNavMesh;                                                                                                   
             EventManager::GetInstance().AddEventMulti(Event{EventType::CALCULATE_PATH_TO_NAVMESH, dataPowerUp}); 
-        }else{
-            cBrainAI->targetNavMesh =-1;
-        }  
+        }//else{
+            //cBrainAI->targetNavMesh =-1;
+        //}  
         //cout << "NOS MOVEREMOS AL NAVMESH QUE DONDE ESTA EL TOTEEEEEEM " << endl;
         return true;
     }
@@ -443,9 +443,9 @@ struct MoveToNavMeshCarTotem_dm : public behaviourTree {
                         (*dataNavCar)[MAN_NAVMESH] = blackboard->manNavMesh;  
                         (*dataNavCar)[ID_DESTINATION] = cCurrendNavMeshCarAI->currentNavMesh;                                                                                                   
                         EventManager::GetInstance().AddEventMulti(Event{EventType::CALCULATE_PATH_TO_NAVMESH, dataNavCar}); 
-                    }else{
-                        cBrainAI->targetNavMesh = -1;
-                    }
+                    }//else{
+                        //cBrainAI->targetNavMesh = -1;
+                    //}
                     //cout << "NOS MOVEMOS AL NAVMHES DONDE ESTA EL COCHE CON EL TOTEM LOCOOOOO "<< endl;
                 }
             }
