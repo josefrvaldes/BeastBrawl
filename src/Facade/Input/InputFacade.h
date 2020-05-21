@@ -40,6 +40,7 @@ class InputFacade {
         virtual bool CheckInputAnimationsStartEnd() = 0;
 
         virtual bool InTournament() = 0;
+        virtual void PressedA() = 0;
 
 
     protected:

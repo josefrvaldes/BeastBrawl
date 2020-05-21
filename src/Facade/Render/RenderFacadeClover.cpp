@@ -1300,6 +1300,7 @@ void RenderFacadeClover::FacadeInitEndRace() {
 }
 
 void RenderFacadeClover::FacadeInitEndTournament() {
+    InputFacadeManager::GetInstance()->GetInputFacade()->PressedA();
     timeAnimationEnd = system_clock::now();
     numShowPanel = 0;
     // calculate tournament points
