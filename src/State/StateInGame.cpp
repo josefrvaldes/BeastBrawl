@@ -328,7 +328,7 @@ void StateInGame::UpdateGame() {
     for (auto actualBoxPowerUp : manBoxPowerUps->GetEntities())  // actualizamos los powerUp en la fachada
         physicsEngine->UpdatePowerUps(actualBoxPowerUp.get());
 
-    renderEngine->FacadeUpdatePlates(manNamePlates.get());
+    renderEngine->FacadeUpdatePlates(manNamePlates.get(), manCars.get());
     physicsEngine->UpdateTransformable(manTotems->GetEntities()[0].get());
 
 

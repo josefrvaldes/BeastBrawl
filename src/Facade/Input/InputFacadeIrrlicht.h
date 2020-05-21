@@ -74,6 +74,7 @@ class InputFacadeIrrlicht : public InputFacade{
         void CheckInputSettings(std::vector<int> &inputs, int maxInputs[], int& option) override;
         bool CheckInputAnimationsStartEnd() override;
         bool InTournament() override {return false;};
+        void PressedA() override {};
 
     private:
         MyEventReceiver receiver;

@@ -299,7 +299,7 @@ void RenderFacadeIrrlicht::FacadeAddPlates(Manager* manNamePlates) {
 }
 
 //Actualiza las posiciones de las plates
-void RenderFacadeIrrlicht::FacadeUpdatePlates(Manager* manNamePlates) {
+void RenderFacadeIrrlicht::FacadeUpdatePlates(Manager* manNamePlates, Manager* manCars) {
     for (const auto& plate : manNamePlates->GetEntities()) {
         auto cNamePlate = static_cast<CNamePlate*>(plate->GetComponent(CompType::NamePlateComp).get());
         auto cId = static_cast<CId*>(plate->GetComponent(CompType::IdComp).get());

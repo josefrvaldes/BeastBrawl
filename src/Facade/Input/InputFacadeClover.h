@@ -46,6 +46,7 @@ class InputFacadeClover : public InputFacade{
 
         bool InTournament() override {return tournamentMode;};
         void SetWindowContext(CLEngine* d) {device = d;}
+        void PressedA() override {SetValueInput(BUTTON_A, true);}
 
     private:
         void CheckInputUp(std::vector<int>&, int&);

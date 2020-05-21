@@ -195,7 +195,7 @@ void RenderFacadeClover::FacadeSetShadowsActivate(DataMap* d) const{
  * @param {manager de nameplates}
  */
 void RenderFacadeClover::FacadeAddPlates(Manager* manNamePlates) {
-    for(auto nameplate : manNamePlates->GetEntities()){
+    for(const auto& nameplate : manNamePlates->GetEntities()){
         auto cId = static_cast<CId*>(nameplate->GetComponent(CompType::IdComp).get());
         auto nameplateComp = static_cast<CNamePlate*>(nameplate->GetComponent(CompType::NamePlateComp).get());
         auto father = device->GetNodeByID(nameplateComp->idCarAsociated);
@@ -207,7 +207,25 @@ void RenderFacadeClover::FacadeAddPlates(Manager* manNamePlates) {
 /**
  * Actualiza las posiciones de las nameplates
  */
-void RenderFacadeClover::FacadeUpdatePlates(Manager* manNamePlates) {
+void RenderFacadeClover::FacadeUpdatePlates(Manager* manNamePlates, Manager* manCars) {
+    bool haveTotem;
+    for(const auto& nameplate : manNamePlates->GetEntities()){
+        auto cId = static_cast<CId*>(nameplate->GetComponent(CompType::IdComp).get());
+        auto nameplateComp = static_cast<CNamePlate*>(nameplate->GetComponent(CompType::NamePlateComp).get());
+        haveTotem = false;
+        for(const auto& car : manCars->GetEntities()){
+            auto cIdCar = static_cast<CId*>(car->GetComponent(CompType::IdComp).get());
+            if(cIdCar->id == nameplateComp->idCarAsociated){
+                auto cTotem = static_cast<CTotem*>(car->GetComponent(CompType::TotemComp).get());
+                if(cTotem->active) haveTotem = true;
+            }
+        }
+
+        if(!haveTotem)
+            device->GetNodeByID(cId->id)->SetTranslation(glm::vec3(0.0f,28.0f,0.0f));
+        else
+            device->GetNodeByID(cId->id)->SetTranslation(glm::vec3(0.0f,58.0f,0.0f));
+    }
 }
 
 /**
@@ -1282,6 +1300,7 @@ void RenderFacadeClover::FacadeInitEndRace() {
 }
 
 void RenderFacadeClover::FacadeInitEndTournament() {
+    InputFacadeManager::GetInstance()->GetInputFacade()->PressedA();
     timeAnimationEnd = system_clock::now();
     numShowPanel = 0;
     // calculate tournament points
