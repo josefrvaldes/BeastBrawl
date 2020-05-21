@@ -96,6 +96,12 @@ class CAnimation : public Component {
         }
     }
 
+    std::shared_ptr<Animation> GetAnimWin() {return animWin;};
+    std::shared_ptr<Animation> GetAnimIdle() {return animIdle;};
+    std::shared_ptr<Animation> GetAnimRight() {return animRight;};
+    std::shared_ptr<Animation> GetAnimLeft() {return animLeft;};
+    std::shared_ptr<Animation> GetAnimDamage() {return animDamage;};
+
     //float distanceNear{250};
     //float distanceMedium{400};
     std::vector<std::shared_ptr<Animation>> GetAnimations() { return animations; };

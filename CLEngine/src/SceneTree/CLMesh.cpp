@@ -28,18 +28,18 @@ bool CLMesh::ItsTimeToAnimate() {
 
 void CLMesh::GoToNextKeyFrames() {
     // if(loop || (!loop && currentKeyFrameIndex < keyframes.size()) - 2)
-    if(loop || currentKeyFrameIndex < keyframes.size() - 2)
+    if(currentAnimation->loop || currentKeyFrameIndex < currentAnimation->keyframes.size() - 2)
         currentKeyFrameIndex++;
 
-    if (currentKeyFrameIndex > keyframes.size() - 1)
+    if (currentKeyFrameIndex > currentAnimation->keyframes.size() - 1)
         currentKeyFrameIndex = 0;
 
     nextKeyFrameIndex = currentKeyFrameIndex + 1;
-    if (nextKeyFrameIndex > keyframes.size() - 1)
+    if (nextKeyFrameIndex > currentAnimation->keyframes.size() - 1)
         nextKeyFrameIndex = 0;
 
-    mesh = keyframes[currentKeyFrameIndex];
-    nextMesh = keyframes[nextKeyFrameIndex];
+    mesh = currentAnimation->keyframes[currentKeyFrameIndex];
+    nextMesh = currentAnimation->keyframes[nextKeyFrameIndex];
 }
 
 void CLMesh::Animate() {

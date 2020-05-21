@@ -320,6 +320,10 @@ const void RenderFacadeIrrlicht::FacadeAddObjects(vector<Entity*> entities) {
 //INPUTS : Una entidad GameObject
 //RETURNS: El Id del objeto añadido
 //TODO: Llevar cuidado con las rutas de las texturas si luego se mueven las carpetas
+const uint16_t RenderFacadeIrrlicht::FacadeAddObject(Entity* entity, bool maincar_) {
+    return FacadeAddObject(entity, false);
+}
+
 const uint16_t RenderFacadeIrrlicht::FacadeAddObject(Entity* entity) {
     //Fuente: https://stackoverflow.com/questions/11855018/c-inheritance-downcasting
     //Como convertir un Component en cualquier tipo de sus subclases para poder usar los metodos propios
