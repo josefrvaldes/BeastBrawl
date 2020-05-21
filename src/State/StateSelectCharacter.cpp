@@ -39,6 +39,4 @@ void StateSelectCharacter::Update(){
 
 StateSelectCharacter::~StateSelectCharacter(){
     std::cout << "> SELECT CHARECTER destructor" << std::endl;
-    renderEngine->FacadeReleaseSelectCharacter();
-
 }

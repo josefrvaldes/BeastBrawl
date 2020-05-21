@@ -22,7 +22,6 @@ StateLobbyMulti::StateLobbyMulti() : tcpClient{make_shared<TCPClient>(Constants:
 
 StateLobbyMulti::~StateLobbyMulti() {
     std::cout << "> LOBBY destructor" << std::endl;
-    renderEngine->FacadeReleaseSelectCharacter();
 }
 
 // Cargamos los bancos de sonido Menu.

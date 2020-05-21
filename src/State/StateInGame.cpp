@@ -22,16 +22,7 @@ using namespace chrono;
 
 StateInGame::StateInGame() {
     std::cout << "> INGAME constructor" << std::endl;
-
-    // aunque physics es un sistema, no se llama desde InitializeSystems
-    // porque tiene que estar inicializado antes de llamar a InitializeManagers
-
-    //physics = make_unique<Physics>(Constants::DELTA_TIME);
-
-    //cam = make_shared<Camera>(glm::vec3(100.0f, 0.0f, 30.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f));
-    ground = make_shared<GameObject>(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), "", "mayan_map.obj");
-
-    // Ordena las posiciones del ranking 1 vez antes de empezar la partida
+    RenderFacadeManager::GetInstance()->GetRenderFacade()->FacadeReleaseSelectCharacter();
 }
 
 StateInGame::~StateInGame() {
@@ -62,7 +53,6 @@ void StateInGame::AddElementsToRender() {
     }
 
     // TODO: LOS SUELOS CON FRUSTUM
-    //renderEngine->FacadeAddObject(ground.get());  //Anyadimos el suelo
     for(const auto& currentPartGround : manGameRules->GetGrounds()){
         renderEngine->FacadeAddStaticObject(currentPartGround.get());
     }
