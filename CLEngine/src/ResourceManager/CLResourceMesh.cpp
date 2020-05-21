@@ -231,18 +231,19 @@ void CLResourceMesh::Draw(GLuint shaderID) {
         // unsigned int normalNr   = 1;
         // unsigned int heightNr   = 1;
 
+        // TODO: SI QUIERES ANIMACIONES INTERPOLADAS DESCOMENTA ESTO
         // esto sirve para actualizar las posiciones de los vértices que modifican las animaciones
-        glBindVertexArray(mesh.VAO);
-        glBindBuffer(GL_ARRAY_BUFFER, mesh.VBO);
-        glBufferData(GL_ARRAY_BUFFER, mesh.vertices.size() * sizeof(Vertex), &mesh.vertices[0], GL_STATIC_DRAW);
+        // glBindVertexArray(mesh.VAO);
+        // glBindBuffer(GL_ARRAY_BUFFER, mesh.VBO);
+        // glBufferData(GL_ARRAY_BUFFER, mesh.vertices.size() * sizeof(Vertex), &mesh.vertices[0], GL_STATIC_DRAW);
 
-        // estas líneas son necesarias para las animaciones
-        // vertex animationOffsetPos
-        glEnableVertexAttribArray(3);
-        glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, animationOffsetPos));
-        // vertex animationOffsetNormal
-        glEnableVertexAttribArray(4);
-        glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, animationOffsetNormal));
+        // // estas líneas son necesarias para las animaciones
+        // // vertex animationOffsetPos
+        // glEnableVertexAttribArray(3);
+        // glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, animationOffsetPos));
+        // // vertex animationOffsetNormal
+        // glEnableVertexAttribArray(4);
+        // glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, animationOffsetNormal));
         
 
 

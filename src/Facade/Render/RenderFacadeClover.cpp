@@ -224,6 +224,10 @@ const void RenderFacadeClover::FacadeAddObjects(vector<Entity*> entities) {
  * @return {id del objeto que pasas}
  */
 const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
+    return FacadeAddObject(entity, false);
+}
+
+const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity, bool mainCar) {
 
     //Comprobamos si el objeto debe añadirse a la raiz o a algun nodo padre
     CLNode* father = smgr;
@@ -269,19 +273,62 @@ const uint16_t RenderFacadeClover::FacadeAddObject(Entity* entity) {
             break;
 
         case ModelType::StaticMesh: {
-            auto cAnimation = static_cast<CAnimation*>(entity->GetComponent(CompType::AnimationComp).get());
-            std::string path = cAnimation->activeAnimation->path;
-            std::string animationPath = "media/" + path;
-            vector<CLResourceMesh*> clAnimations = resourceManager->GetResourceAnimation(animationPath, cAnimation->activeAnimation->numKeyFrames, false);
-            // mat = resourceManager->GetResourceMaterial(animationPath);
-            //node = father->AddMesh(cId->id); 
             node = device->AddMesh(father,cId->id);
 
-            if (cAnimation->activeAnimation->IsInterpolated()) {
-                static_cast<CLMesh*>(node->GetEntity())->SetAnimationInterpolated(clAnimations, cAnimation->activeAnimation->GetDistances(), cAnimation->activeAnimation->loop);
-            } else {
-                static_cast<CLMesh*>(node->GetEntity())->SetAnimation(clAnimations, cAnimation->activeAnimation->loop);
+            // TODO: esto debería recorrer un vector de animaciones en vez de meterlas una a una. 2.0
+            // WIN
+            auto cAnimation = static_cast<CAnimation*>(entity->GetComponent(CompType::AnimationComp).get());
+            std::string path = cAnimation->GetAnimWin()->path;
+            std::string animationPath = "media/" + path;
+            vector<CLResourceMesh*> clAnimationsWin = resourceManager->GetResourceAnimation(animationPath, cAnimation->GetAnimWin()->numKeyFrames, false);
+
+            shared_ptr<CLAnimation> animWin;
+            if(cAnimation->GetAnimWin()->IsInterpolated())
+                animWin = make_shared<CLAnimation>(path, clAnimationsWin, cAnimation->GetAnimWin()->loop, cAnimation->GetAnimWin()->GetDistances());
+            else
+                animWin = make_shared<CLAnimation>(path, clAnimationsWin, cAnimation->GetAnimWin()->loop);
+            static_cast<CLMesh*>(node->GetEntity())->AddAnimation(cAnimation->GetAnimWin()->path, animWin);
+
+            if (mainCar) {
+                // LEFT
+                path = cAnimation->GetAnimLeft()->path;
+                animationPath = "media/" + path;
+                vector<CLResourceMesh*> clAnimationsLeft = resourceManager->GetResourceAnimation(animationPath, cAnimation->GetAnimLeft()->numKeyFrames, false);
+
+                shared_ptr<CLAnimation> animLeft;
+                if(cAnimation->GetAnimLeft()->IsInterpolated())
+                    animLeft = make_shared<CLAnimation>(path, clAnimationsLeft, cAnimation->GetAnimLeft()->loop, cAnimation->GetAnimLeft()->GetDistances());
+                else
+                    animLeft = make_shared<CLAnimation>(path, clAnimationsLeft, cAnimation->GetAnimLeft()->loop);
+                static_cast<CLMesh*>(node->GetEntity())->AddAnimation(cAnimation->GetAnimLeft()->path, animLeft);
+
+                // RIGHT
+                path = cAnimation->GetAnimRight()->path;
+                animationPath = "media/" + path;
+                vector<CLResourceMesh*> clAnimationsRight = resourceManager->GetResourceAnimation(animationPath, cAnimation->GetAnimRight()->numKeyFrames, false);
+
+                shared_ptr<CLAnimation> animRight;
+                if(cAnimation->GetAnimRight()->IsInterpolated())
+                    animRight = make_shared<CLAnimation>(path, clAnimationsRight, cAnimation->GetAnimRight()->loop, cAnimation->GetAnimRight()->GetDistances());
+                else
+                    animRight = make_shared<CLAnimation>(path, clAnimationsRight, cAnimation->GetAnimRight()->loop);
+                static_cast<CLMesh*>(node->GetEntity())->AddAnimation(cAnimation->GetAnimRight()->path, animRight);
             }
+
+            // IDLE
+            path = cAnimation->GetAnimIdle()->path;
+            animationPath = "media/" + path;
+            vector<CLResourceMesh*> clAnimationsIdle = resourceManager->GetResourceAnimation(animationPath, cAnimation->GetAnimIdle()->numKeyFrames, false);
+
+            shared_ptr<CLAnimation> animIdle;
+            if(cAnimation->GetAnimIdle()->IsInterpolated())
+                animIdle = make_shared<CLAnimation>(path, clAnimationsIdle, cAnimation->GetAnimIdle()->loop, cAnimation->GetAnimIdle()->GetDistances());
+            else
+                animIdle = make_shared<CLAnimation>(path, clAnimationsIdle, cAnimation->GetAnimIdle()->loop);
+            static_cast<CLMesh*>(node->GetEntity())->AddAnimation(cAnimation->GetAnimIdle()->path, animIdle);
+
+            // activamos por defecto la IDLE
+            static_cast<CLMesh*>(node->GetEntity())->ActivateAnimation(cAnimation->GetAnimIdle()->path);
         }   break;
 
         case ModelType::AnimatedMesh:
@@ -473,20 +520,20 @@ const uint16_t RenderFacadeClover::FacadeAddStaticObject(Entity* entity) {
             static_cast<CLMesh*>(node->GetEntity())->SetMesh(mesh);
             break;
         case ModelType::StaticMesh: {
-            auto cAnimation = static_cast<CAnimation*>(entity->GetComponent(CompType::AnimationComp).get());
-            std::string path = cAnimation->activeAnimation->path;
-            std::string animationPath = "media/" + path;
-            vector<CLResourceMesh*> clAnimations = resourceManager->GetResourceAnimation(animationPath, cAnimation->activeAnimation->numKeyFrames, false);
-            // mat = resourceManager->GetResourceMaterial(animationPath);
-            //node = father->AddMesh(cId->id); 
-            node = device->AddMesh(father,cId->id);
+            // auto cAnimation = static_cast<CAnimation*>(entity->GetComponent(CompType::AnimationComp).get());
+            // std::string path = cAnimation->activeAnimation->path;
+            // std::string animationPath = "media/" + path;
+            // vector<CLResourceMesh*> clAnimations = resourceManager->GetResourceAnimation(animationPath, cAnimation->activeAnimation->numKeyFrames, false);
+            // // mat = resourceManager->GetResourceMaterial(animationPath);
+            // //node = father->AddMesh(cId->id); 
+            // node = device->AddMesh(father,cId->id);
 
-            if (cAnimation->activeAnimation->IsInterpolated()) {
-                static_cast<CLMesh*>(node->GetEntity())->SetAnimationInterpolated(clAnimations, cAnimation->activeAnimation->GetDistances(), cAnimation->activeAnimation->loop);
-            } else {
-                static_cast<CLMesh*>(node->GetEntity())->SetAnimation(clAnimations, cAnimation->activeAnimation->loop);
-            }
-            //static_cast<CLMesh*>(node->GetEntity())->SetMaterial(mat);
+            // if (cAnimation->activeAnimation->IsInterpolated()) {
+            //     static_cast<CLMesh*>(node->GetEntity())->SetAnimationInterpolated(clAnimations, cAnimation->activeAnimation->GetDistances(), cAnimation->activeAnimation->loop);
+            // } else {
+            //     static_cast<CLMesh*>(node->GetEntity())->SetAnimation(clAnimations, cAnimation->activeAnimation->loop);
+            // }
+            // //static_cast<CLMesh*>(node->GetEntity())->SetMaterial(mat);
         }   break;
         case ModelType::AnimatedMesh:
             //node = father->AddMesh(cId->id);
@@ -584,7 +631,7 @@ const uint16_t RenderFacadeClover::FacadeAddStaticObject(Entity* entity) {
  * Añade el coche principal
  */
 const uint16_t RenderFacadeClover::FacadeAddObjectCar(Entity* entity) {
-    idCar = FacadeAddObject(entity);
+    idCar = FacadeAddObject(entity, true);
     return idCar;
 }
 
@@ -779,14 +826,7 @@ void RenderFacadeClover::FacadeUpdateAnimationsLoD(vector<shared_ptr<Entity>> en
                 auto node = device->GetNodeByID(cid->id);
                 if(node) {
                     std::string path = cAnimation->activeAnimation->path;
-                    std::string animationPath = "media/" + path;
-                    // vector<CLResourceMesh*> clAnimations = resourceManager->GetResourceAnimation(animationPath, cAnimation->activeAnimation->numKeyFrames, false);
-                    vector<CLResourceMesh*> clAnimations = resourceManager->GetResourceExistingAnimation(animationPath, cAnimation->activeAnimation->numKeyFrames, false);
-                    if (cAnimation->activeAnimation->IsInterpolated()) {
-                        static_cast<CLMesh*>(node->GetEntity())->SetAnimationInterpolated(clAnimations, cAnimation->activeAnimation->GetDistances(), cAnimation->activeAnimation->loop);
-                    } else {
-                        static_cast<CLMesh*>(node->GetEntity())->SetAnimation(clAnimations, cAnimation->activeAnimation->loop);
-                    }
+                    static_cast<CLMesh*>(node->GetEntity())->ActivateAnimation(path);                    
                 }
                 cAnimation->animationChanged = false;
             }
@@ -1116,9 +1156,15 @@ void RenderFacadeClover::FacadeInitSelectCharacter() {
     auto shader = resourceManager->GetResourceShader("CLEngine/src/Shaders/basicShader.vert","CLEngine/src/Shaders/basicShader.frag");
 
     //Penguin
+    // cargamos el recurso en memoria (o lo obtenemos si ya estaba cargado)
     auto animationPen = resourceManager->GetResourceAnimation("media/animations/penguin/selection/selectionpenguin_000001.obj", 15, false);
     mesh = device->AddMesh(smgr,0);
-    static_cast<CLMesh*>(mesh->GetEntity())->SetAnimation(animationPen, false);
+    // Creamos un objeto clanimation
+    shared_ptr<CLAnimation> animPen = make_shared<CLAnimation>("selecPen", animationPen, false);
+    // Se lo añadimos al nodo
+    static_cast<CLMesh*>(mesh->GetEntity())->AddAnimation(animPen->name, animPen);
+    // Se lo activamos al nodo
+    static_cast<CLMesh*>(mesh->GetEntity())->ActivateAnimation(animPen->name);
     mesh->SetScalation(glm::vec3(2.0f));
     mesh->SetTranslation(glm::vec3(0.0f,-14.0f,-20.0f));
     mesh->SetRotation(glm::vec3(10.0f,-50.0f, 5.0f));
@@ -1127,7 +1173,11 @@ void RenderFacadeClover::FacadeInitSelectCharacter() {
     //Tiger
     auto animationTig = resourceManager->GetResourceAnimation("media/animations/baxter/selection/selectionbaxter_000001.obj", 15, false);
     mesh = device->AddMesh(smgr,1);
-    static_cast<CLMesh*>(mesh->GetEntity())->SetAnimation(animationTig, false);
+    shared_ptr<CLAnimation> animTig = make_shared<CLAnimation>("selecTig", animationTig, false);
+    // Se lo añadimos al nodo
+    static_cast<CLMesh*>(mesh->GetEntity())->AddAnimation(animTig->name, animTig);
+    // Se lo activamos al nodo
+    static_cast<CLMesh*>(mesh->GetEntity())->ActivateAnimation(animTig->name);
     mesh->SetScalation(glm::vec3(2.0f));
     mesh->SetTranslation(glm::vec3(0.0f,-14.0f,-20.0f));
     mesh->SetRotation(glm::vec3(10.0f,-50.0f, 5.0f));
@@ -1136,7 +1186,11 @@ void RenderFacadeClover::FacadeInitSelectCharacter() {
     //Shark
     auto animationSha = resourceManager->GetResourceAnimation("media/animations/sharky/selection/selectionsharky_000001.obj", 15, false);
     mesh = device->AddMesh(smgr,2);
-    static_cast<CLMesh*>(mesh->GetEntity())->SetAnimation(animationSha, false);
+    shared_ptr<CLAnimation> animSha = make_shared<CLAnimation>("selecSha", animationSha, false);
+    // Se lo añadimos al nodo
+    static_cast<CLMesh*>(mesh->GetEntity())->AddAnimation(animSha->name, animSha);
+    // Se lo activamos al nodo
+    static_cast<CLMesh*>(mesh->GetEntity())->ActivateAnimation(animSha->name);
     mesh->SetScalation(glm::vec3(2.0f));
     mesh->SetTranslation(glm::vec3(0.0f,-14.0f,-20.0f));
     mesh->SetRotation(glm::vec3(10.0f,-50.0f, 5.0f));
@@ -1145,7 +1199,11 @@ void RenderFacadeClover::FacadeInitSelectCharacter() {
     //Gorila
     auto animationKong = resourceManager->GetResourceAnimation("media/animations/kong/selection/selectionkong_000001.obj", 15, false);
     mesh = device->AddMesh(smgr,3);
-    static_cast<CLMesh*>(mesh->GetEntity())->SetAnimation(animationKong, false);
+    shared_ptr<CLAnimation> animKon = make_shared<CLAnimation>("selecKon", animationKong, false);
+    // Se lo añadimos al nodo
+    static_cast<CLMesh*>(mesh->GetEntity())->AddAnimation(animKon->name, animKon);
+    // Se lo activamos al nodo
+    static_cast<CLMesh*>(mesh->GetEntity())->ActivateAnimation(animKon->name);
     mesh->SetScalation(glm::vec3(2.0f));
     mesh->SetTranslation(glm::vec3(0.0f,-14.0f,-20.0f));
     mesh->SetRotation(glm::vec3(10.0f,-50.0f, 5.0f));
@@ -1154,7 +1212,11 @@ void RenderFacadeClover::FacadeInitSelectCharacter() {
     //Dragon
     auto animationDra = resourceManager->GetResourceAnimation("media/animations/dragon/selection/selectiondragon_000001.obj", 15, false);
     mesh = device->AddMesh(smgr,4);
-    static_cast<CLMesh*>(mesh->GetEntity())->SetAnimation(animationDra, false);
+    shared_ptr<CLAnimation> animDra = make_shared<CLAnimation>("selecDra", animationDra, false);
+    // Se lo añadimos al nodo
+    static_cast<CLMesh*>(mesh->GetEntity())->AddAnimation(animDra->name, animDra);
+    // Se lo activamos al nodo
+    static_cast<CLMesh*>(mesh->GetEntity())->ActivateAnimation(animDra->name);
     mesh->SetScalation(glm::vec3(2.0f));
     mesh->SetTranslation(glm::vec3(0.0f,-14.0f,-20.0f));
     mesh->SetRotation(glm::vec3(10.0f,-50.0f, 5.0f));
@@ -1164,7 +1226,11 @@ void RenderFacadeClover::FacadeInitSelectCharacter() {
     //Octopus
     auto animationCyb = resourceManager->GetResourceAnimation("media/animations/cyberoctopus/selection/selectionoctopus_000001.obj", 15, false);
     mesh = device->AddMesh(smgr,5);
-    static_cast<CLMesh*>(mesh->GetEntity())->SetAnimation(animationCyb, false);
+    shared_ptr<CLAnimation> animOct = make_shared<CLAnimation>("selecOct", animationCyb, false);
+    // Se lo añadimos al nodo
+    static_cast<CLMesh*>(mesh->GetEntity())->AddAnimation(animOct->name, animOct);
+    // Se lo activamos al nodo
+    static_cast<CLMesh*>(mesh->GetEntity())->ActivateAnimation(animOct->name);
     mesh->SetScalation(glm::vec3(2.0f));
     mesh->SetTranslation(glm::vec3(0.0f,-14.0f,-20.0f));
     mesh->SetRotation(glm::vec3(10.0f,-50.0f, 5.0f));

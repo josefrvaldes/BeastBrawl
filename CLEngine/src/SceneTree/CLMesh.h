@@ -4,8 +4,25 @@
 #include "../ResourceManager/CLResourceMesh.h"
 #include "../ResourceManager/CLResourceTexture.h"
 #include "CLEntity.h"
+#include <memory>
 
 namespace CLE {
+
+
+class CLAnimation {
+    public:
+    CLAnimation() = delete;
+    CLAnimation(string name_, vector<CLResourceMesh *> keyframes_, bool loop_) : name{name_}, keyframes{keyframes_}, loop{loop_}, isInterpolated{false} {};
+    CLAnimation(string name_, vector<CLResourceMesh *> keyframes_, bool loop_, vector<uint8_t> framesBetweenKeyframes_) : name{name_}, keyframes{keyframes_}, loop{loop_}, framesBetweenKeyframes{framesBetweenKeyframes_}, isInterpolated{false} {};
+
+    string name;
+    vector<CLResourceMesh *> keyframes;
+    bool loop;
+    vector<uint8_t> framesBetweenKeyframes;
+    bool isInterpolated;
+};
+
+
 //! Clase para crear mallas
 //! Clase que permite crear mallas en nuestro motor gráfico
 class CLMesh : public CLEntity {
@@ -18,26 +35,20 @@ class CLMesh : public CLEntity {
     //! @param m Objecto CLResourceMesh donde tiene la malla
     void SetMesh(CLResourceMesh* m) { mesh = m; }
 
-    //! Asigna una animación
-    //! @param m Objecto CLResourceMesh donde tiene la malla
-    void SetAnimation(vector<CLResourceMesh*> keyframes_, bool loop_) {
-        keyframes = keyframes_;
-        mesh = keyframes[0];
-        nextMesh = keyframes[1];
-        isInterpolated = false;
-        loop = loop_;
+    void AddAnimation(string name, shared_ptr<CLAnimation> animation) {
+        animations[name] = animation;
     }
 
+
     //! Asigna una animación
-    //! @param m Objecto CLResourceMesh donde tiene la malla
-    void SetAnimationInterpolated(vector<CLResourceMesh*> keyframes_, vector<uint8_t> framesBetweenKeyFrames_, bool loop_) {
-        if (keyframes != keyframes_) {
-            keyframes = keyframes_;
-            mesh = keyframes[0];
-            nextMesh = keyframes[1];
-            distanceBetweenKeyFrames = framesBetweenKeyFrames_;
-            isInterpolated = true;
-            loop = loop_;
+    //! @param name String con el nombre de la animación
+    void ActivateAnimation(string name) {
+        if (currentAnimation == nullptr || currentAnimation->name != name) {
+            currentAnimation = animations[name];
+            mesh = currentAnimation->keyframes[0];
+            nextMesh = currentAnimation->keyframes[1];
+            if(currentAnimation->isInterpolated)
+                distanceBetweenKeyFrames = currentAnimation->framesBetweenKeyframes;
         }
     }
 
@@ -59,7 +70,9 @@ class CLMesh : public CLEntity {
    private:
     void Update();
     // las distintas mallas que corresponden con cada keyframe
-    vector<CLResourceMesh*> keyframes;
+    unordered_map<string, shared_ptr<CLAnimation>> animations;
+
+    shared_ptr<CLAnimation> currentAnimation;
 
     // indica el idx del keyframe interpolado. Por ejemplo, si entre
     // dos keyframes hay 8 frames, este número indicaría que ahora mismo vamos por el 3
@@ -68,8 +81,6 @@ class CLMesh : public CLEntity {
     // indica el keyframe que estamos procesando ahora
     uint8_t currentKeyFrameIndex{0};
     uint8_t nextKeyFrameIndex{1};
-    bool isInterpolated{false};
-    bool loop{true};
     int64_t lastTimeFrameChanged{0};
     const uint8_t ANIMATION_FPS {25};
     const float DELTA_ANIMATION {1.0f/ANIMATION_FPS*1000.f};

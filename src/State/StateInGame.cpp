@@ -397,7 +397,7 @@ void StateInGame::UpdateGame() {
 //     cout << "TIEMO ACTUAL ULDATE  (CLIPPING_OCTREE):  " << elapsed_millisecons/1000000 << endl;
 // ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     auto cTransCar = static_cast<CTransformable*>(manCars->GetCar()->GetComponent(CompType::TransformableComp).get());
-    cout << "Pos X: " << cTransCar->position.x << "   Pos Y: " << cTransCar->position.y << "     Pos Z: " << cTransCar->position.z << "  \n";
+    // cout << "Pos X: " << cTransCar->position.x << "   Pos Y: " << cTransCar->position.y << "     Pos Z: " << cTransCar->position.z << "  \n";
 
 
 }

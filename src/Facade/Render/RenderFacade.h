@@ -26,6 +26,7 @@ class RenderFacade {
     //RenderFacade() = default;
     virtual ~RenderFacade() = default;
     virtual const uint16_t FacadeAddObject(Entity*) = 0;
+    virtual const uint16_t FacadeAddObject(Entity*, bool mainCar_) = 0;
     virtual const uint16_t FacadeAddStaticObject(Entity*) = 0;
     virtual void FacadeAddSphereOnObject(Entity* entity) = 0;
     virtual const uint16_t FacadeAddObjectCar(Entity*) = 0;
