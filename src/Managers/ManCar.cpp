@@ -727,6 +727,11 @@ void ManCar::ThrowPowerUp(Car* car_) {
                     (*data)[TYPE_POWER_UP] = cPowerUpCar->typePowerUp;
                     (*data)[CAR_EXIT_POSITION] = cTransf;
                     (*data)[CAR_EXIT_DIMENSION] =  static_cast<CDimensions*>(car_->GetComponent(CompType::DimensionsComp).get());
+                    if(systemOnline == nullptr)
+                        (*data)[IS_ONLINE] = false;
+                    else
+                        (*data)[IS_ONLINE] = true;
+                    
                     EventManager::GetInstance().AddEventMulti(Event{EventType::PowerUp_Create, data});
                 }
             } break;
@@ -735,6 +740,10 @@ void ManCar::ThrowPowerUp(Car* car_) {
                     (*data)[TYPE_POWER_UP] = cPowerUpCar->typePowerUp;
                     (*data)[CAR_EXIT_POSITION] = cTransf;
                     (*data)[CAR_EXIT_DIMENSION] =  static_cast<CDimensions*>(car_->GetComponent(CompType::DimensionsComp).get());
+                    if(systemOnline == nullptr)
+                        (*data)[IS_ONLINE] = false;
+                    else
+                        (*data)[IS_ONLINE] = true;
                     EventManager::GetInstance().AddEventMulti(Event{EventType::PowerUp_Create, data});
                 }
                 break;
