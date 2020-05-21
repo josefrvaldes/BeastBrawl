@@ -245,7 +245,7 @@ void InputFacadeClover::CheckInputMenu(int& input, int maxInput){
                 break;
             }
             case 2: {
-                RenderFacadeManager::GetInstance()->GetRenderFacade()->CleanScene();
+                //RenderFacadeManager::GetInstance()->GetRenderFacade()->CleanScene();
                 EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_LOBBYMULTI});
                 multiplayer = true;
                 tournamentMode = false;

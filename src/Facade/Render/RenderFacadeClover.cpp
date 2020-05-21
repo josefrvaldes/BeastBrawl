@@ -938,13 +938,11 @@ void RenderFacadeClover::FacadeInitResources(mainCharacter character){
     //Cargamos todas las mallas
     //Mallas
     resourceManager->GetResourceMesh("media/kart_physics.obj");
-    //resourceManager->GetResourceMesh("media/kart_ia.obj");
     resourceManager->GetResourceMesh("media/melon.obj");
     resourceManager->GetResourceMesh("media/totem.obj");
     resourceManager->GetResourceMesh("media/TEST_BOX.obj");
     resourceManager->GetResourceMesh("media/pudin.obj");
     resourceManager->GetResourceMesh("media/telebanana.obj");
-    resourceManager->GetResourceMesh("media/training_ground.obj");
 
     // cargamos TODAS las animaciones de win, porque cualquiera puede ganar
     // resourceManager->GetResourceAnimation("media/animations/sharky/win/victorysharky_000001.obj", 31, false);
@@ -2722,9 +2720,10 @@ void RenderFacadeClover::FacadeUpdateViewport(){
 //////////////////////////
 
 void RenderFacadeClover::FacadeReleaseSelectCharacter(){
-    cout << "Liberadas las mallas selection" << endl;
+    
 
-    // CleanScene();
+    CleanScene();
+
     resourceManager->DeleteResourceTexture("media/menu/character/character_selector.png");
     resourceManager->DeleteResourceTexture("media/menu/character/character_selector_keyboard.png");
     resourceManager->DeleteResourceTexture("media/menu/character/kong_selected.png");
