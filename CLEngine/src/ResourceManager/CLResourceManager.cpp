@@ -284,11 +284,11 @@ bool CLResourceManager::DeleteResourceTexture(const std::string file){
 }
 
 bool CLResourceManager::DeleteResourceMesh(const std::string file){
-    cout << meshes.size() << endl;
+    // cout << meshes.size() << endl;
     for (unsigned int i=0; i<meshes.size(); ++ i) {
         if (!file.compare(meshes[i]->GetName())) {
             meshes.erase(meshes.begin()+i);
-            cout << meshes.size() << endl;
+            // cout << meshes.size() << endl;
 
             return true;
         }

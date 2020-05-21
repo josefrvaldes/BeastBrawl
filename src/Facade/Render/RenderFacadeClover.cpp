@@ -954,8 +954,8 @@ void RenderFacadeClover::FacadeInitResources(mainCharacter character){
     // resourceManager->GetResourceAnimation("media/animations/penguin/win/victorypenguin_000001.obj", 31, false);
     // resourceManager->GetResourceAnimation("media/animations/baxter/win/victorybaxter_000001.obj", 31, false);
 
-    resourceManager->GetResourceAnimation("media/animations/sharky/win/victorysharky_000001.obj", 18, false);
-    resourceManager->GetResourceAnimation("media/animations/kong/win/victorykong_000001.obj", 18, false);
+    resourceManager->GetResourceAnimation("media/animations/sharky/win/victorysharky_000001.obj", 10, false);
+    resourceManager->GetResourceAnimation("media/animations/kong/win/victorykong_000001.obj", 10, false);
 
     FacadeBeginScene();
     //Esto es lo unico que se necesita para dibujar la pantalla de carga
@@ -966,8 +966,8 @@ void RenderFacadeClover::FacadeInitResources(mainCharacter character){
     FacadeEndScene();
 
 
-    resourceManager->GetResourceAnimation("media/animations/cyberoctopus/win/victoryoctopus_000001.obj", 18, false);
-    resourceManager->GetResourceAnimation("media/animations/dragon/win/victorydragon_000001.obj", 18, false);
+    resourceManager->GetResourceAnimation("media/animations/cyberoctopus/win/victoryoctopus_000001.obj", 10, false);
+    resourceManager->GetResourceAnimation("media/animations/dragon/win/victorydragon_000001.obj", 10, false);
     
     
     FacadeBeginScene();
@@ -979,8 +979,8 @@ void RenderFacadeClover::FacadeInitResources(mainCharacter character){
     FacadeEndScene();
 
 
-    resourceManager->GetResourceAnimation("media/animations/penguin/win/victorypenguin_000001.obj", 18, false);
-    resourceManager->GetResourceAnimation("media/animations/baxter/win/victorybaxter_000001.obj", 18, false);
+    resourceManager->GetResourceAnimation("media/animations/penguin/win/victorypenguin_000001.obj", 10, false);
+    resourceManager->GetResourceAnimation("media/animations/baxter/win/victorybaxter_000001.obj", 10, false);
 
 
     FacadeBeginScene();
@@ -1143,7 +1143,7 @@ void RenderFacadeClover::FacadeInitSelectCharacter() {
 
     //Penguin
     // cargamos el recurso en memoria (o lo obtenemos si ya estaba cargado)
-    auto animationPen = resourceManager->GetResourceAnimation("media/animations/penguin/selection/selectionpenguin_000001.obj", 15, false);
+    auto animationPen = resourceManager->GetResourceAnimation("media/animations/penguin/selection/selectionpenguin_000001.obj", 10, false);
     mesh = device->AddMesh(smgr,0);
     // Creamos un objeto clanimation
     shared_ptr<CLAnimation> animPen = make_shared<CLAnimation>("selecPen", animationPen, false);
@@ -1157,7 +1157,7 @@ void RenderFacadeClover::FacadeInitSelectCharacter() {
     mesh->SetShaderProgramID(shader->GetProgramID());
 
     //Tiger
-    auto animationTig = resourceManager->GetResourceAnimation("media/animations/baxter/selection/selectionbaxter_000001.obj", 15, false);
+    auto animationTig = resourceManager->GetResourceAnimation("media/animations/baxter/selection/selectionbaxter_000001.obj", 10, false);
     mesh = device->AddMesh(smgr,1);
     shared_ptr<CLAnimation> animTig = make_shared<CLAnimation>("selecTig", animationTig, false);
     // Se lo añadimos al nodo
@@ -1179,7 +1179,7 @@ void RenderFacadeClover::FacadeInitSelectCharacter() {
     FacadeEndScene();
 
     //Shark
-    auto animationSha = resourceManager->GetResourceAnimation("media/animations/sharky/selection/selectionsharky_000001.obj", 15, false);
+    auto animationSha = resourceManager->GetResourceAnimation("media/animations/sharky/selection/selectionsharky_000001.obj", 10, false);
     mesh = device->AddMesh(smgr,2);
     shared_ptr<CLAnimation> animSha = make_shared<CLAnimation>("selecSha", animationSha, false);
     // Se lo añadimos al nodo
@@ -1192,7 +1192,7 @@ void RenderFacadeClover::FacadeInitSelectCharacter() {
     mesh->SetShaderProgramID(shader->GetProgramID());
 
     //Gorila
-    auto animationKong = resourceManager->GetResourceAnimation("media/animations/kong/selection/selectionkong_000001.obj", 15, false);
+    auto animationKong = resourceManager->GetResourceAnimation("media/animations/kong/selection/selectionkong_000001.obj", 10, false);
     mesh = device->AddMesh(smgr,3);
     shared_ptr<CLAnimation> animKon = make_shared<CLAnimation>("selecKon", animationKong, false);
     // Se lo añadimos al nodo
@@ -1214,7 +1214,7 @@ void RenderFacadeClover::FacadeInitSelectCharacter() {
     FacadeEndScene();
 
     //Dragon
-    auto animationDra = resourceManager->GetResourceAnimation("media/animations/dragon/selection/selectiondragon_000001.obj", 15, false);
+    auto animationDra = resourceManager->GetResourceAnimation("media/animations/dragon/selection/selectiondragon_000001.obj", 10, false);
     mesh = device->AddMesh(smgr,4);
     shared_ptr<CLAnimation> animDra = make_shared<CLAnimation>("selecDra", animationDra, false);
     // Se lo añadimos al nodo
@@ -1228,7 +1228,7 @@ void RenderFacadeClover::FacadeInitSelectCharacter() {
 
 
     //Octopus
-    auto animationCyb = resourceManager->GetResourceAnimation("media/animations/cyberoctopus/selection/selectionoctopus_000001.obj", 15, false);
+    auto animationCyb = resourceManager->GetResourceAnimation("media/animations/cyberoctopus/selection/selectionoctopus_000001.obj", 10, false);
     mesh = device->AddMesh(smgr,5);
     shared_ptr<CLAnimation> animOct = make_shared<CLAnimation>("selecOct", animationCyb, false);
     // Se lo añadimos al nodo
