@@ -247,7 +247,7 @@ vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
 
 void main(){
 
-    if(LUZ_ON){
+    if(activeShadows){
         vec3 result = vec3(0.0);
 
         vec3 norm = normalize(Normal);
