@@ -954,7 +954,7 @@ void RenderFacadeClover::FacadeInitResources(mainCharacter character){
     // resourceManager->GetResourceAnimation("media/animations/penguin/win/victorypenguin_000001.obj", 31, false);
     // resourceManager->GetResourceAnimation("media/animations/baxter/win/victorybaxter_000001.obj", 31, false);
 
-    resourceManager->GetResourceAnimation("media/animations/sharky/win/victorysharky_000001.obj", 10, false);
+    /*resourceManager->GetResourceAnimation("media/animations/sharky/win/victorysharky_000001.obj", 10, false);
     resourceManager->GetResourceAnimation("media/animations/kong/win/victorykong_000001.obj", 10, false);
 
     FacadeBeginScene();
@@ -980,7 +980,7 @@ void RenderFacadeClover::FacadeInitResources(mainCharacter character){
 
 
     resourceManager->GetResourceAnimation("media/animations/penguin/win/victorypenguin_000001.obj", 10, false);
-    resourceManager->GetResourceAnimation("media/animations/baxter/win/victorybaxter_000001.obj", 10, false);
+    resourceManager->GetResourceAnimation("media/animations/baxter/win/victorybaxter_000001.obj", 10, false);*/
 
 
     FacadeBeginScene();
@@ -1809,12 +1809,13 @@ void RenderFacadeClover::FacadeDrawSelectCharacter() {
 
     if(previousInputSC != inputSC) {
         previousInputSC = inputSC;
-        //Ponemos visible solamente el que esta seleccionado
-        for(uint8_t i=0; i<=maxInputSC ; i++){
-            auto node = device->GetNodeByID(i);
-            node->SetVisible(false);
-        }
         static_cast<CLMesh*>(nodeSelected->GetEntity())->ResetAnimation();
+    }
+
+    //Ponemos visible solamente el que esta seleccionado
+    for(uint8_t i=0; i<=maxInputSC ; i++){
+        auto node = device->GetNodeByID(i);
+        node->SetVisible(false);
     }
 
     nodeSelected->SetVisible(true);
