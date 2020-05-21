@@ -30,7 +30,7 @@
 class Position;
 using namespace std;
 
-CarAI::CarAI(int pj, int difficult) : Car(pj){
+CarAI::CarAI(int pj, int difficult, float timeTotem) : Car(pj){
     typeCar = TypeCar::CarAI;
 
 
@@ -44,7 +44,7 @@ CarAI::CarAI(int pj, int difficult) : Car(pj){
         case static_cast<int>(BrainAIDifficult::DIFFICULT):   dif = BrainAIDifficult::DIFFICULT;    break;
         default:                                              dif = BrainAIDifficult::NORMAL;       break;
     }
-    shared_ptr<CBrainAI> cBrainAI = make_shared<CBrainAI>(dif);
+    shared_ptr<CBrainAI> cBrainAI = make_shared<CBrainAI>(dif, timeTotem);
 
 
     // TODO: RUBEN quitar el compoentne cWayPoint del coche ya que al coche solo le hace falta su siguiente destino.
@@ -53,8 +53,8 @@ CarAI::CarAI(int pj, int difficult) : Car(pj){
     AddComponent(cBrainAI);
 }
 
-CarAI::CarAI(int pj, int difficult, glm::vec3 pos, glm::vec3 rot, glm::vec3 scale,string texture, string mesh, std::string vertexShader, std::string fragmentShader)
-    : CarAI(pj, difficult){
+CarAI::CarAI(int pj, int difficult, float timeTotem, glm::vec3 pos, glm::vec3 rot, glm::vec3 scale,string texture, string mesh, std::string vertexShader, std::string fragmentShader)
+    : CarAI(pj, difficult, timeTotem){
 
     CTransformable *cTransformable = (CTransformable *)m_components[CompType::TransformableComp].get();
     cTransformable->position = pos;
@@ -81,8 +81,8 @@ CarAI::CarAI(int pj, int difficult, glm::vec3 pos, glm::vec3 rot, glm::vec3 scal
 
 
 
-CarAI::CarAI(int pj, int difficult, glm::vec3 _position) 
-    : CarAI(pj, difficult)
+CarAI::CarAI(int pj, int difficult, float timeTotem, glm::vec3 _position) 
+    : CarAI(pj, difficult, timeTotem)
 {
     CTransformable *cTransformable = (CTransformable *)m_components[CompType::TransformableComp].get();
     cTransformable->position = _position;

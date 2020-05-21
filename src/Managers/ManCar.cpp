@@ -11,6 +11,7 @@
 #include <Components/CAnimation.h>
 #include <Components/CNitro.h>
 #include <Components/CHurt.h>
+#include <Components/CBrainAI.h>
 #include <Components/CShield.h>
 #include <Components/CTotem.h>
 #include <Components/CEventHUD.h>
@@ -161,22 +162,22 @@ void ManCar::CreateHumanCar(int pj, glm::vec3 _position) {
 }
 
 //Cambiar PJ
-void ManCar::CreateCarAI(int pj, int difficult, glm::vec3 _position) {
-    shared_ptr<CarAI> p = make_shared<CarAI>(pj, difficult, _position);
+void ManCar::CreateCarAI(int pj, int difficult, float timeTotem, glm::vec3 _position) {
+    shared_ptr<CarAI> p = make_shared<CarAI>(pj, difficult, timeTotem, _position);
     entities.push_back(p);
     p->SetRotation(glm::vec3(0, GetAngleToTotem(_position),0));
 }
 
 //Cambiar PJ
-void ManCar::CreateCarAI(int pj, int difficult, glm::vec3 _position, CWayPoint* _waypoint) {
-    shared_ptr<CarAI> p = make_shared<CarAI>(pj, difficult, _position);
+void ManCar::CreateCarAI(int pj, int difficult, float timeTotem, glm::vec3 _position, CWayPoint* _waypoint) {
+    shared_ptr<CarAI> p = make_shared<CarAI>(pj, difficult, timeTotem, _position);
     entities.push_back(p);
     p->SetWayPoint(_waypoint);
 }
 
 //Cambiar PJ
-void ManCar::CreateCarAI(int pj, int difficult) {
-    shared_ptr<CarAI> p = make_shared<CarAI>(pj, difficult);
+void ManCar::CreateCarAI(int pj, int difficult, float timeTotem) {
+    shared_ptr<CarAI> p = make_shared<CarAI>(pj, difficult, timeTotem);
     entities.push_back(p);
 }
 
@@ -837,14 +838,36 @@ void ManCar::CatchPowerUp(DataMap* d) {
 
 void ManCar::CatchPowerUpAI(DataMap* d) {
 
+    //BrainAIDifficult::DIFFICULT 
     int maxRobojorobo   = 50;
-    int maxNitro        = 150;
+    int maxNitro        = 100;
     int maxPudin        = 150;
     int maxEscudo       = 75;
-    int maxTelebanana   = 225;
-    //  mm              = 350
+    int maxTelebanana   = 250;
+    //  mm              = 375
 
     auto actualCar = any_cast<Entity*>((*d)[ACTUAL_CAR]);
+    if(actualCar != GetCar().get()){
+
+        auto cBrainAI = static_cast<CBrainAI*>(actualCar->GetComponent(CompType::BrainAIComp).get());
+        if(cBrainAI->difficult == BrainAIDifficult::NORMAL){
+            maxRobojorobo   = 0;
+            maxNitro        = 150;
+            maxPudin        = 150; 
+            maxEscudo       = 150; //+ 75
+            maxTelebanana   = 200; //-25
+            // mm           = 350
+        }else if(cBrainAI->difficult == BrainAIDifficult::EASY){
+            maxRobojorobo   = 0;
+            maxNitro        = 150;
+            maxPudin        = 200; // + 50
+            maxEscudo       = 150; //+ 75
+            maxTelebanana   = 100; //-125
+            // mm           = 400
+        }
+    }
+
+
     auto cTotem = static_cast<CTotem*>(actualCar->GetComponent(CompType::TotemComp).get());
 
     if (cTotem) {
@@ -860,7 +883,7 @@ void ManCar::CatchPowerUpAI(DataMap* d) {
                 
                 // Llevas el totem
                 if (cTotem->active) {          
-                    maxRobojorobo -= 50;    // 0
+                    maxRobojorobo -= 0;    // 0
                     maxNitro += 25;         // 175
                     maxPudin += 25;         // 125
                     maxEscudo += 50;        // 100
@@ -877,7 +900,7 @@ void ManCar::CatchPowerUpAI(DataMap* d) {
 
             // Has llevado el totem mas del 75% del tiempo requerido
             } else if ((myTime*100/time) > 75) {
-                maxRobojorobo -= 50;        // 0
+                maxRobojorobo -= 0;        // 0
                 maxPudin += 100;            // 250
                 maxEscudo += 25;            // 100
                 maxTelebanana -= 75;        // 150

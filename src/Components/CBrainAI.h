@@ -18,7 +18,7 @@ enum class BrainAIDifficult { EASY, NORMAL, DIFFICULT };
 class CBrainAI : public Component{
 public:
     CBrainAI();
-    CBrainAI(BrainAIDifficult dif);
+    CBrainAI(BrainAIDifficult dif, float timeTotem);
     ~CBrainAI(){};
 
     void CleanVisionRange();
@@ -28,13 +28,35 @@ public:
     // CTargetNavMesh
     int targetNavMesh {-1};  //NavMesh actual del coche/entidad     //ponemos -1 por defecto ya que haremos el calculo al empezar la partida
 
-
     // CPath
     std::stack<int> stackPath;
 
-
     // CMovementType
     std::string movementType {"Empty"};     // Para el debug de la IA decirte que decision estas tomando
+
+    // elementos en el rango de vision
+    int fov = 50;
+    float distanceVision {600};
+    std::vector<Entity*> carInVision;
+    std::vector<Entity*> boxInVision;
+    Entity* totemInVision {nullptr};
+    
+    // objetivo
+    Car* targetCar {nullptr};
+    BoxPowerUp* targetBoxPowerUp {nullptr};
+
+    // Pensamiento de la IA = mirar minimapa, mirar marcadores, etc, durante ese tiempo no actua
+    bool thinking {false};
+    uint32_t totalTried {3};
+    uint32_t numTried {2}; // empezamos ya en el ultimo intento porque la primera vez no queremos pensar (al inicio de la partida)
+    // Tiempo para ponerse seria, e ir a por el que tiene el totem
+    float timeFollowDirect { 15 };
+
+    //Dificultad
+    BrainAIDifficult difficult { BrainAIDifficult::NORMAL };
+
+    // LOGICA DIFUSA
+    shared_ptr<SystemFuzzyLogicAI> fuzzyLogic;
 
 
     // CPosDestinatation
@@ -53,27 +75,5 @@ public:
     // int id_WayPoint;
     // float radious_WayPoint = 30.0f;
 
-    //Dificultad
-    BrainAIDifficult difficult { BrainAIDifficult::NORMAL };
-
-    // elementos en el rango de vision
-    int fov = 50;
-    float distanceVision {600};
-    std::vector<Entity*> carInVision;
-    std::vector<Entity*> boxInVision;
-    Entity* totemInVision {nullptr};
-    
-    // objetivo
-    Car* targetCar {nullptr};
-    BoxPowerUp* targetBoxPowerUp {nullptr};
-
-    // Pensamiento de la IA = mirar minimapa, mirar marcadores, etc, durante ese tiempo no actua
-    bool thinking {false};
-    uint32_t totalTried {3};
-    uint32_t numTried {2}; // empezamos ya en el ultimo intento porque la primera vez no queremos
-
-
-    // LOGICA DIFUSA
-    shared_ptr<SystemFuzzyLogicAI> fuzzyLogic;
 
 };

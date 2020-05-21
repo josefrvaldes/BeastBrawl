@@ -179,7 +179,8 @@ struct NoCriticalTime_dm : public behaviourTree {
         for(const auto& actualAI : blackboard->manCars->GetEntities()){
             if(actualAI.get() != blackboard->actualCar){
                 auto cTotemAI = static_cast<CTotem*>(actualAI->GetComponent(CompType::TotemComp).get());
-                if(cTotemAI->active && (cTotemAI->accumulatedTime/1000.0 + 10.0 < cTotemAI->DURATION_TIME/1000.0) ){
+                auto cBrainAI = static_cast<CBrainAI*>(blackboard->actualCar->GetComponent(CompType::BrainAIComp).get());
+                if(cTotemAI->active && (cTotemAI->accumulatedTime/1000.0 + cBrainAI->timeFollowDirect < cTotemAI->DURATION_TIME/1000.0) ){
                     // si el tiempo actual + el critco es menor al total = no estamos en tiempo critico
                     //cout << "EL TIEMPO QUE QUEDA NO ES CRITICOOOO" <<endl;
                     return true;
