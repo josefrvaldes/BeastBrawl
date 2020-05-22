@@ -38,7 +38,7 @@ using namespace std;
 using namespace chrono;
 
 StateInGame::StateInGame() {
-    std::cout << "> INGAME constructor" << std::endl;
+    //std::cout << "> INGAME constructor" << std::endl;
     RenderFacadeManager::GetInstance()->GetRenderFacade()->FacadeReleaseSelectCharacter();
 }
 
@@ -120,7 +120,7 @@ void StateInGame::AddElementsToRender() {
 }
 
 void StateInGame::InitializeCLPhysics(ManCar &manCars, ManBoundingWall &manWall, ManBoundingOBB &manOBB, ManBoundingGround &manGround, ManPowerUp &manPowerUp, ManNavMesh &manNavMesh, ManBoxPowerUp &manBoxPowerUp, ManTotem &manTotem) {
-    cout << "Estamos inicializando el clPhysics" << endl;
+    //cout << "Estamos inicializando el clPhysics" << endl;
     // NO ALTERAR EL ORDEN DEL ADD, QUE USO EL ORDEN PARA DISTINGUIR ENTRE MANAGERS!!!
     clPhysics = make_unique<CLPhysics>();
     clPhysics->AddManager(manCars);
@@ -432,7 +432,7 @@ void StateInGame::Update() {
             break;
 
         default:
-            cout << "currentUpdateState inválido" << endl;
+            //cout << "currentUpdateState inválido" << endl;
             break;
     }
 }

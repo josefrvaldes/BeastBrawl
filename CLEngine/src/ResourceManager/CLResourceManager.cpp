@@ -118,12 +118,12 @@ vector<CLResourceMesh*> CLResourceManager::LoadResourceAnimation(const std::stri
             my_mutex.unlock();
         });*/
     }
-    std::cout << "Antes del join keyFrames tiene " << keyFrames.size() << " frames" << endl;
+    //std::cout << "Antes del join keyFrames tiene " << keyFrames.size() << " frames" << endl;
     //tp2.join();
     for (auto thread : threads)
         thread->join();
-    std::cout << "Después del join keyFrames tiene " << keyFrames.size() << " frames" << endl;
-    std::cout << "Ahora vamos a devolver el array de keyframes" << endl;
+    //std::cout << "Después del join keyFrames tiene " << keyFrames.size() << " frames" << endl;
+    //std::cout << "Ahora vamos a devolver el array de keyframes" << endl;
     return keyFrames;
 }
 
@@ -253,7 +253,7 @@ CLResourceShader* CLResourceManager::GetResourceShader(const std::string vertex,
         }
     }
     if (!resource) {
-        cout << "Creo el shader: " << vertex <<endl;
+        //cout << "Creo el shader: " << vertex <<endl;
         resource = make_shared<CLResourceShader>();
         resource->SetName(vertex);
         //resource->SetShaderType(type);
@@ -275,7 +275,7 @@ CLResourceShader* CLResourceManager::GetResourceShader(const std::string vertex,
         }
     }
     if (!resource) {
-        cout << "Creo el shader: " << vertex <<endl;
+        //cout << "Creo el shader: " << vertex <<endl;
         resource = make_shared<CLResourceShader>();
         resource->SetName(vertex);
         //resource->SetShaderType(type);

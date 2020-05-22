@@ -22,7 +22,7 @@ using namespace std;
 
 StateMenu::StateMenu(){
 
-    std::cout << "> MENU constructor" << std::endl;
+    //std::cout << "> MENU constructor" << std::endl;
     renderEngine = RenderFacadeManager::GetInstance()->GetRenderFacade();
     
     InitState();

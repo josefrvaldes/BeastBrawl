@@ -272,7 +272,7 @@ vec4 CBoundingPlane::equationPlane3Points(const vec3 &a, const vec3 &b, const ve
     return vec4(planeX,planeY,planeZ,planeD);
     */
     auto d_ = -glm::dot(a, normal);
-    std::cout << "LA ECUACION GENERAL DEL PLANTO ES: " << normal.x << "x " <<normal.y << "y " << normal.z << "z " << d_ << std::endl;
+    //std::cout << "LA ECUACION GENERAL DEL PLANTO ES: " << normal.x << "x " <<normal.y << "y " << normal.z << "z " << d_ << std::endl;
     return vec4(normal.x,normal.y,normal.z,d_);
 }
 

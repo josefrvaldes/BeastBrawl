@@ -60,7 +60,7 @@ ManBoxPowerUp::ManBoxPowerUp() {
     
 
     SubscribeToEvents();
-    cout << "Hemos creado el manager de powerup, ahora tenemos " << entities.size() << " powerups" << endl;
+    //cout << "Hemos creado el manager de powerup, ahora tenemos " << entities.size() << " powerups" << endl;
 }
 
 

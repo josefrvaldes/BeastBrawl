@@ -61,7 +61,7 @@ CLEngine::~CLEngine() {
     TerminateImGui();
     glfwDestroyWindow(window);
     glfwTerminate();
-    cout << ">>>>> GLFW OFF" << endl;
+    //cout << ">>>>> GLFW OFF" << endl;
 }
 
 /**
@@ -75,10 +75,10 @@ void CLEngine::CreateGlfwWindow (const unsigned int w, const unsigned int h, con
     glfwSetErrorCallback(error);
 
     if (!glfwInit()) {
-        cout << "- No se ha podido inicializar GLFW" << endl;
+        //cout << "- No se ha podido inicializar GLFW" << endl;
         exit(EXIT_FAILURE);
     }
-    cout << ">>>>> GLFW ON" << endl;
+    //cout << ">>>>> GLFW ON" << endl;
 
     // Minima version de OpenGL, si la maquina no puede correr minimo a la indicada, falla la creacion de la ventana.
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
@@ -87,11 +87,11 @@ void CLEngine::CreateGlfwWindow (const unsigned int w, const unsigned int h, con
 
     window = glfwCreateWindow( w, h, title.c_str(), nullptr, nullptr );
     if (!window) {
-        cout << "    > La ventana no se ha podido crear" << endl;
+        //cout << "    > La ventana no se ha podido crear" << endl;
         glfwTerminate();
         exit(EXIT_FAILURE);
     }
-    cout << "    > Ventana creada" << endl;
+    //cout << "    > Ventana creada" << endl;
 
 
     glfwMakeContextCurrent(window);
@@ -150,7 +150,7 @@ void CLEngine::SetEnableDepthTest(bool b) {
     {
         if (FT_Load_Char(face, c, FT_LOAD_RENDER))
         {
-            std::cout << "ERROR::FREETYTPE: No se ha podio cargar el glifo" << std::endl;
+            //std::cout << "ERROR::FREETYTPE: No se ha podio cargar el glifo" << std::endl;
             continue;
         }
 

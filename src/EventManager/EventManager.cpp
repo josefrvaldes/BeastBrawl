@@ -114,7 +114,7 @@ void EventManager::UnSubscribeMulti(EventType eType, const string& listenerName)
 
         for (uint32_t i = 0; i < listenerVector.size(); ++i) {
             if (listenerVector.at(i).name.compare(listenerName) == 0) {
-                cout << "Borramos el Listener de tipo: " << listenerVector.at(i).type << " con nombre " << listenerVector.at(i).name << endl;
+                //cout << "Borramos el Listener de tipo: " << listenerVector.at(i).type << " con nombre " << listenerVector.at(i).name << endl;
                 listenerVector.erase(listenerVector.begin() + i);
                 break;
             }
@@ -138,12 +138,12 @@ void EventManager::ClearListeners() {
 //DEBUG: Recorre y muestra todos los suscriptores
 //Fuente: https://stackoverflow.com/questions/26281979/c-loop-through-map
 void EventManager::ShowSuscribers() {
-    for (auto const& mapByType : listeners) {
-        std::cout << "Tipo de evento: " << mapByType.first << "\n";
-
-        for (auto const& listener : mapByType.second) {
-            cout << listener.name << " - ";
-        }
-        cout << "\n";
-    }
+//    for (auto const& mapByType : listeners) {
+//        std::cout << "Tipo de evento: " << mapByType.first << "\n";
+//
+//        for (auto const& listener : mapByType.second) {
+//            cout << listener.name << " - ";
+//        }
+//        cout << "\n";
+//    }
 }

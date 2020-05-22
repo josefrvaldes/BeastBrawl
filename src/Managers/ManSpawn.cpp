@@ -37,7 +37,7 @@ ManSpawn::ManSpawn() {
     i.close();
 
     long unsigned int spawnsCout = j["KART SPAWNS"].size();
-    std::cout << "EL NUMERO DE SPAWNS de coches es: " << spawnsCout << std::endl;
+    //std::cout << "EL NUMERO DE SPAWNS de coches es: " << spawnsCout << std::endl;
     //Leemos el array de NavMesh
     for(long unsigned int i = 0; i< spawnsCout; ++i){
         string idSpawn = to_string(i);  //El primer elemento es "NAVMESH 1"
@@ -51,5 +51,5 @@ ManSpawn::ManSpawn() {
 }
 
 ManSpawn::~ManSpawn(){
-    cout << "Destruimos el manager de spawn" << endl; 
+    //cout << "Destruimos el manager de spawn" << endl; 
 }

@@ -355,7 +355,7 @@ void SoundFacadeFMOD::LoadSoundByState(const uint8_t numState) {
             ResumeEvent("Menu/aceptar");
             break;
         case 8:       // SETTINGS
-            cout << "Estado de ajustes" << endl; 
+            //cout << "Estado de ajustes" << endl; 
             break;
         case 9:       // CREDITS
             StopEvent("Musica/menu");
@@ -372,7 +372,8 @@ void SoundFacadeFMOD::LoadSoundByState(const uint8_t numState) {
             PlayEvent("Partida/cuenta_atras");
             break;
         default:
-            std::cout << "***** Este estado no existe: " << numState << endl;
+            break;
+            //std::cout << "***** Este estado no existe: " << numState << endl;
     }
 }
 

@@ -22,7 +22,7 @@ using namespace std;
 
 StateEndTournament::StateEndTournament(){
 
-    std::cout << "> ENDTOURNAMENT constructor" << std::endl;
+    //std::cout << "> ENDTOURNAMENT constructor" << std::endl;
 
     // Inicializamos las facadas
     renderEngine = RenderFacadeManager::GetInstance()->GetRenderFacade();

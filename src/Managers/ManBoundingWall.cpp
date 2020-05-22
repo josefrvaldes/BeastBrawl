@@ -47,7 +47,7 @@ ManBoundingWall::ManBoundingWall() {
     i.close();
 
     long unsigned int navMeshCount = j["BOUNDING PLANES"].size();
-    std::cout << "EL NUMERO DE Bounding Planes EN EL JSON ES: " << navMeshCount << std::endl;
+    //std::cout << "EL NUMERO DE Bounding Planes EN EL JSON ES: " << navMeshCount << std::endl;
     //Leemos el array de NavMesh
     for(long unsigned int i = 0; i< navMeshCount; ++i){
         string idNavMesh = to_string(i);  //El primer elemento es "NAVMESH 1"

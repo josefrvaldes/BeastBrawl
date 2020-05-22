@@ -21,7 +21,7 @@
 
 StateTournamentOptions::StateTournamentOptions(){
 
-    std::cout << "> TOURNAMENT OPTIONS constructor" << std::endl;
+    //std::cout << "> TOURNAMENT OPTIONS constructor" << std::endl;
 
     renderEngine = RenderFacadeManager::GetInstance()->GetRenderFacade();
     renderEngine->FacadeInitTournamentOptions();

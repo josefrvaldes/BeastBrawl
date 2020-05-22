@@ -22,7 +22,7 @@ using namespace std;
 
 StateEndRace::StateEndRace(){
 
-    std::cout << "> ENDRACE constructor" << std::endl;
+    //std::cout << "> ENDRACE constructor" << std::endl;
 
     // Inicializamos las facadas
     renderEngine = RenderFacadeManager::GetInstance()->GetRenderFacade();

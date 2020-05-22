@@ -39,9 +39,9 @@ UDPClient::UDPClient(string host_, uint16_t port_)
       butler{[&]() {
           boost::asio::executor_work_guard<boost::asio::io_context::executor_type> work_guard(context.get_executor());
           context.run();
-          cout << "///////////////////////// SALIMOS DEL CONTEXT!!! ///////////////////////////////" << endl;
+          //cout << "///////////////////////// SALIMOS DEL CONTEXT!!! ///////////////////////////////" << endl;
       }} {
-    cout << "Server endpoint is " << serverEndpoint.address() << ":" << serverEndpoint.port() << endl;
+    //cout << "Server endpoint is " << serverEndpoint.address() << ":" << serverEndpoint.port() << endl;
     socket.open(udp::v4());
     // udp::endpoint localEndpoint = socket.local_endpoint();
     // cout << "Local endpoint is " << socket.local_endpoint().address() << ":" << socket.local_endpoint().port() << endl;
@@ -55,7 +55,7 @@ UDPClient::~UDPClient() {
     context.stop();
     socket.close();
     butler.join();
-    cout << "Llamamos al destructor de UDPClient" << endl;
+    //cout << "Llamamos al destructor de UDPClient" << endl;
 }
 
 void UDPClient::StartReceiving() {
@@ -74,13 +74,13 @@ void UDPClient::StartReceiving() {
 
 void UDPClient::HandleReceived(std::shared_ptr<unsigned char[]> recevBuff, const boost::system::error_code& errorCode, std::size_t bytesTransferred) {
     if(errorCode) {
-        cout << "¡¡HUBO UN ERROR AL RECIBIR DATOS EN EL CLIENTE!! errorcode:" << errorCode << endl;
+        //cout << "¡¡HUBO UN ERROR AL RECIBIR DATOS EN EL CLIENTE!! errorcode:" << errorCode << endl;
     } else {
         size_t currentIndex = 0;
         uint8_t petitionType = Serialization::Deserialize<uint8_t>(recevBuff.get(), currentIndex);
         int64_t time = Serialization::Deserialize<int64_t>(recevBuff.get(), currentIndex);
         if(time < timeGameStarted) {
-            cout << "Desechamos un paquete de una partida anterior anterior\n";
+            //cout << "Desechamos un paquete de una partida anterior anterior\n";
         } else {
             uint16_t idPlayer = Serialization::Deserialize<uint16_t>(recevBuff.get(), currentIndex);
             
@@ -98,9 +98,9 @@ void UDPClient::HandleReceived(std::shared_ptr<unsigned char[]> recevBuff, const
                         const float skidRotation = Serialization::Deserialize<float>(recevBuff.get(), currentIndex);
                         lastTimeInputReceived[idPlayer] = gameTime;
                         HandleReceivedInputs(gameTime, inputs, idPlayer, speed, wheelRotation, skidDeg, skidRotation);
-                    } else {
-                        cout << "Hemos recibido una petición de tipo SEND_INPUT pero la ignoramos por antigua lastTimeInputReceived["<<lastTimeInputReceived[idPlayer]<<"] time["<<time<<"]" << endl;
-                    }
+                    } //else {
+                        //cout << "Hemos recibido una petición de tipo SEND_INPUT pero la ignoramos por antigua lastTimeInputReceived["<<lastTimeInputReceived[idPlayer]<<"] time["<<time<<"]" << endl;
+                    //}
                 } break;
 
                 case Constants::PetitionTypes::SEND_SYNC:
@@ -129,7 +129,7 @@ void UDPClient::HandleReceived(std::shared_ptr<unsigned char[]> recevBuff, const
 
                 case Constants::PetitionTypes::CATCH_PU:
                     if (time > lastTimeCatchPUReceived[idPlayer]) {
-                        cout << "Hemos recibido una petición de tipo CATCH_PU" << endl;
+                        //cout << "Hemos recibido una petición de tipo CATCH_PU" << endl;
                         lastTimeCatchPUReceived[idPlayer] = time;
                         HandleReceivedCatchPU(recevBuff.get(), bytesTransferred);
                     }
@@ -137,7 +137,7 @@ void UDPClient::HandleReceived(std::shared_ptr<unsigned char[]> recevBuff, const
 
                 case Constants::PetitionTypes::CATCH_TOTEM:
                     if (time > lastTimeCatchTotemReceived[idPlayer]) {
-                        cout << "Hemos recibido una petición de tipo CATCH_TOTEM" << endl;
+                        //cout << "Hemos recibido una petición de tipo CATCH_TOTEM" << endl;
                         lastTimeCatchTotemReceived[idPlayer] = time;
                         HandleReceivedCatchTotem(recevBuff.get(), bytesTransferred);
                     }
@@ -145,7 +145,7 @@ void UDPClient::HandleReceived(std::shared_ptr<unsigned char[]> recevBuff, const
 
                 case Constants::PetitionTypes::LOST_TOTEM:
                     if (time > lastTimeLostTotemReceived[idPlayer]) {
-                        cout << "Hemos recibido una petición de tipo LOST_TOTEM" << endl;
+                        //cout << "Hemos recibido una petición de tipo LOST_TOTEM" << endl;
                         lastTimeLostTotemReceived[idPlayer] = time;
                         HandleReceivedLostTotem(recevBuff.get(), bytesTransferred);
                     }
@@ -153,7 +153,7 @@ void UDPClient::HandleReceived(std::shared_ptr<unsigned char[]> recevBuff, const
 
                 case Constants::PetitionTypes::USED_ROBOJOROBO:
                     if (time > lastTimeUsedRoboJoroboReceived[idPlayer]) {
-                        cout << "Hemos recibido una petición de tipo USED_ROBOJOROBO" << endl;
+                        //cout << "Hemos recibido una petición de tipo USED_ROBOJOROBO" << endl;
                         lastTimeUsedRoboJoroboReceived[idPlayer] = time;
                         HandleReceivedUsedRoboJorobo(recevBuff.get(), bytesTransferred);
                     }
@@ -161,20 +161,20 @@ void UDPClient::HandleReceived(std::shared_ptr<unsigned char[]> recevBuff, const
 
                 case Constants::PetitionTypes::COLLIDE_NITRO:
                     if (time > lastTimeCollideNitroReceived[idPlayer]) {
-                        cout << "Hemos recibido una petición de tipo COLLIDE_NITRO" << endl;
+                        //cout << "Hemos recibido una petición de tipo COLLIDE_NITRO" << endl;
                         lastTimeCollideNitroReceived[idPlayer] = time;
                         HandleReceivedCollideNitro(recevBuff.get(), bytesTransferred);
                     }
                     break;
 
                 case Constants::PetitionTypes::SEND_DISCONNECTION:
-                    cout << "Hemos recibido una petición de tipo SEND_DISCONNECTION" << endl;
+                    //cout << "Hemos recibido una petición de tipo SEND_DISCONNECTION" << endl;
                     HandleReceivedDisconnection(recevBuff.get(), bytesTransferred);
                     break;
 
                 case Constants::PetitionTypes::SEND_THROW_MELON_O_PUDIN:
                     if (time > lastTimeThrowMelonOPudinReceived[idPlayer]) {
-                        cout << "Hemos recibido una petición de tipo SEND_THROW_MELON_O_PUDIN" << endl;
+                        //cout << "Hemos recibido una petición de tipo SEND_THROW_MELON_O_PUDIN" << endl;
                         lastTimeThrowMelonOPudinReceived[idPlayer] = time;
                         HandleReceivedThrowMelonOPudin(recevBuff.get(), bytesTransferred);
                     }
@@ -182,7 +182,7 @@ void UDPClient::HandleReceived(std::shared_ptr<unsigned char[]> recevBuff, const
 
                 case Constants::PetitionTypes::SEND_THROW_TELEBANANA:
                     if (time > lastTimeThrowTelebananaReceived[idPlayer]) {
-                        cout << "Hemos recibido una petición de tipo SEND_THROW_TELEBANANA" << endl;
+                        //cout << "Hemos recibido una petición de tipo SEND_THROW_TELEBANANA" << endl;
                         lastTimeThrowTelebananaReceived[idPlayer] = time;
                         HandleReceivedThrowTelebanana(recevBuff.get(), bytesTransferred);
                     }
@@ -190,7 +190,7 @@ void UDPClient::HandleReceived(std::shared_ptr<unsigned char[]> recevBuff, const
 
                 case Constants::PetitionTypes::SEND_CRASH_PU_CAR:
                     if (time > lastTimeCrashPUCarReceived[idPlayer]) {
-                        cout << "Hemos recibido una petición de tipo SEND_CRASH_PU_CAR" << endl;
+                        //cout << "Hemos recibido una petición de tipo SEND_CRASH_PU_CAR" << endl;
                         lastTimeCrashPUCarReceived[idPlayer] = time;
                         HandleReceivedCrashPUCar(recevBuff.get(), bytesTransferred);
                     }
@@ -198,7 +198,7 @@ void UDPClient::HandleReceived(std::shared_ptr<unsigned char[]> recevBuff, const
 
                 case Constants::PetitionTypes::SEND_CRASH_PU_WALL:
                     if (time > lastTimeCrashPUWallReceived[idPlayer]) {
-                        cout << "Hemos recibido una petición de tipo SEND_CRASH_PU_WALL" << endl;
+                        //cout << "Hemos recibido una petición de tipo SEND_CRASH_PU_WALL" << endl;
                         lastTimeCrashPUWallReceived[idPlayer] = time;
                         HandleReceivedCrashPUWall(recevBuff.get(), bytesTransferred);
                     }
@@ -206,7 +206,7 @@ void UDPClient::HandleReceived(std::shared_ptr<unsigned char[]> recevBuff, const
 
                 case Constants::PetitionTypes::LAUNCH_ANIMATION_END:
                     if (time > lastTimeLaunchEndGameReceived[idPlayer]) {
-                        cout << "Hemos recibido una petición de tipo LAUNCH_ANIMATION_END" << endl;
+                        //cout << "Hemos recibido una petición de tipo LAUNCH_ANIMATION_END" << endl;
                         lastTimeLaunchEndGameReceived[idPlayer] = time;
                         stateAnimationEnd = true;
                         uint16_t idWinner = Serialization::Deserialize<uint16_t>(recevBuff.get(), currentIndex);
@@ -216,19 +216,19 @@ void UDPClient::HandleReceived(std::shared_ptr<unsigned char[]> recevBuff, const
 
                 case Constants::PetitionTypes::LAUNCH_ANIMATION_COUNTDOWN:
                     if (time > lastTimeLaunchCountdownReceived[idPlayer]) {
-                        cout << "Hemos recibido una petición de tipo LAUNCH_ANIMATION_COUNTDOWN" << endl;
+                        //cout << "Hemos recibido una petición de tipo LAUNCH_ANIMATION_COUNTDOWN" << endl;
                         lastTimeLaunchCountdownReceived[idPlayer] = time;
                         HandleReceivedLaunchCountdownAnimation();
                     }
                     break;
 
                 case Constants::PetitionTypes::ENDGAME:
-                    cout << "Hemos recibido una petición de tipo ENDGAME" << endl;
+                    //cout << "Hemos recibido una petición de tipo ENDGAME" << endl;
                     EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_ENDRACE});
                     break;
 
                 default:
-                    cout << "Tipo de petición no contemplada" << endl;
+                    //cout << "Tipo de petición no contemplada" << endl;
                     break;
             }
         }
@@ -256,7 +256,7 @@ void UDPClient::HandleReceivedInputs(const int64_t time, const vector<Constants:
 }
 
 void UDPClient::HandleReceivedLaunchEndAnimation(uint16_t idPlayer, uint16_t idWinner) const {
-    cout << "Hemos recibido un sendLaunchAnimationEnd con idPlayer[" << idPlayer << "] e idWinner[" << idWinner << "]" << endl;
+    //cout << "Hemos recibido un sendLaunchAnimationEnd con idPlayer[" << idPlayer << "] e idWinner[" << idWinner << "]" << endl;
     std::shared_ptr<DataMap> data = make_shared<DataMap>();
     (*data)[DataType::ID] = idPlayer;
     (*data)[DataType::ID_WINNER] = idWinner;
@@ -264,7 +264,7 @@ void UDPClient::HandleReceivedLaunchEndAnimation(uint16_t idPlayer, uint16_t idW
 }
 
 void UDPClient::HandleReceivedLaunchCountdownAnimation() const {
-    cout << "Hemos recibido un sendLaunch Countdown animation\n";
+    //cout << "Hemos recibido un sendLaunch Countdown animation\n";
     std::shared_ptr<DataMap> data = make_shared<DataMap>();
     EventManager::GetInstance().AddEventMulti(Event{EventType::NEW_LAUNCH_COUNTDOWN_ANIMATION_RECEIVED, data});
 }
@@ -419,7 +419,7 @@ void UDPClient::HandleReceivedCrashPUCar(unsigned char* recevBuff, size_t bytesT
     uint16_t idPUOnline = Serialization::Deserialize<uint16_t>(recevBuff, currentIndex);
     uint16_t idCarCrashed = Serialization::Deserialize<uint16_t>(recevBuff, currentIndex);
 
-    cout << "Hemos recibido un CrasPUCar con pu[" << idPUOnline << "] y car[" << idCarCrashed << "]" << endl;
+    //cout << "Hemos recibido un CrasPUCar con pu[" << idPUOnline << "] y car[" << idCarCrashed << "]" << endl;
     std::shared_ptr<DataMap> data = make_shared<DataMap>();
     (*data)[DataType::ID_PU] = idPUOnline;
     (*data)[DataType::ID_CAR] = idCarCrashed;
@@ -434,7 +434,7 @@ void UDPClient::HandleReceivedCrashPUWall(unsigned char* recevBuff, size_t bytes
 
     uint16_t idPUOnline = Serialization::Deserialize<uint16_t>(recevBuff, currentIndex);
 
-    cout << "Hemos recibido un CrasPUWall con pu[" << idPUOnline << "]" << endl;
+    //cout << "Hemos recibido un CrasPUWall con pu[" << idPUOnline << "]" << endl;
     std::shared_ptr<DataMap> data = make_shared<DataMap>();
     (*data)[DataType::ID_PU] = idPUOnline;
     EventManager::GetInstance().AddEventMulti(Event{EventType::NEW_CRASH_PU_WALL_RECEIVED, data});
@@ -451,9 +451,9 @@ void UDPClient::HandleReceivedThrowTelebanana(unsigned char* recevBuff, size_t b
     int8_t typePU = Serialization::Deserialize<int8_t>(recevBuff, currentIndex);
     vec3 position = Serialization::DeserializeVec3(recevBuff, currentIndex);
     vec3 rotation = Serialization::DeserializeVec3(recevBuff, currentIndex);
-    cout << "Hemos recibido un throw telebanana type[" << unsigned(typePU) << "] pos[" << position.x << "," << position.y << "," << position.z << "]" << endl
-         << "\trot[" << rotation.x << "," << rotation.y << "," << rotation.z << "]"
-         << endl;
+    //cout << "Hemos recibido un throw telebanana type[" << unsigned(typePU) << "] pos[" << position.x << "," << position.y << "," << position.z << "]" << endl
+    //     << "\trot[" << rotation.x << "," << rotation.y << "," << rotation.z << "]"
+    //     << endl;
     std::shared_ptr<DataMap> data = make_shared<DataMap>();
     (*data)[DataType::VEC3_POS] = position;
     (*data)[DataType::VEC3_ROT] = rotation;
@@ -473,9 +473,9 @@ void UDPClient::HandleReceivedThrowMelonOPudin(unsigned char* recevBuff, size_t 
     int8_t typePU = Serialization::Deserialize<int8_t>(recevBuff, currentIndex);
     vec3 position = Serialization::DeserializeVec3(recevBuff, currentIndex);
     vec3 rotation = Serialization::DeserializeVec3(recevBuff, currentIndex);
-    cout << "Hemos recibido un throw melon o pudin type[" << unsigned(typePU) << "] pos[" << position.x << "," << position.y << "," << position.z << "]" << endl
-         << "\trot[" << rotation.x << "," << rotation.y << "," << rotation.z << "]"
-         << endl;
+    //cout << "Hemos recibido un throw melon o pudin type[" << unsigned(typePU) << "] pos[" << position.x << "," << position.y << "," << position.z << "]" << endl
+    //     << "\trot[" << rotation.x << "," << rotation.y << "," << rotation.z << "]"
+    //     << endl;
     std::shared_ptr<DataMap> data = make_shared<DataMap>();
     (*data)[DataType::VEC3_POS] = position;
     (*data)[DataType::VEC3_ROT] = rotation;
@@ -486,7 +486,7 @@ void UDPClient::HandleReceivedThrowMelonOPudin(unsigned char* recevBuff, size_t 
 
 // recibes la desconexion de otro jugador
 void UDPClient::HandleReceivedDisconnection(unsigned char* recevBuff, size_t bytesTransferred) {
-    cout << "Un usuario se ha desconectado" << endl;
+    //cout << "Un usuario se ha desconectado" << endl;
     // size_t currentIndex = 0;
     // Serialization::Deserialize<uint8_t>(recevBuff, currentIndex);  // petition tipe
     // uint16_t idCarOnline = Serialization::Deserialize<uint16_t>(recevBuff, currentIndex);
@@ -590,7 +590,7 @@ void UDPClient::SendCatchPU(uint16_t idOnline, typeCPowerUp typePU) {
     Serialization::Serialize(requestBuff, &idOnline, currentBuffSize);
     Serialization::SerializePowerUpOnly(requestBuff, typePU, currentBuffSize);
 
-    cout << "Soy el cliente y envio PU: " << int(typePU) << endl;
+    //cout << "Soy el cliente y envio PU: " << int(typePU) << endl;
 
     socket.async_send_to(
         boost::asio::buffer(requestBuff, currentBuffSize),
@@ -661,9 +661,9 @@ void UDPClient::SendThrowMelonOPudin(const uint16_t idOnline, const int64_t time
     Serialization::SerializeVec3(requestBuff, position, currentBuffSize);
     Serialization::SerializeVec3(requestBuff, rotation, currentBuffSize);
 
-    cout << "Soy el " << idOnline << ", estamos enviando un PU con type[" << unsigned(typePU) << "] pos[" << position.x << "," << position.y << "," << position.z << "]" << endl
-         << "\trot[" << rotation.x << "," << rotation.y << "," << rotation.z << "]"
-         << endl;
+    //cout << "Soy el " << idOnline << ", estamos enviando un PU con type[" << unsigned(typePU) << "] pos[" << position.x << "," << position.y << "," << position.z << "]" << endl
+    //     << "\trot[" << rotation.x << "," << rotation.y << "," << rotation.z << "]"
+    //     << endl;
     socket.async_send_to(
         boost::asio::buffer(requestBuff, currentBuffSize),
         serverEndpoint,
@@ -688,9 +688,9 @@ void UDPClient::SendThrowTelebanana(const uint16_t idOnline, const int64_t time,
     Serialization::SerializeVec3(requestBuff, position, currentBuffSize);
     Serialization::SerializeVec3(requestBuff, rotation, currentBuffSize);
 
-    cout << "Soy el " << idOnline << ", estamos enviando un PU telebanana con type[" << unsigned(typePU) << "] pos[" << position.x << "," << position.y << "," << position.z << "]" << endl
-         << "\trot[" << rotation.x << "," << rotation.y << "," << rotation.z << "]"
-         << endl;
+    //cout << "Soy el " << idOnline << ", estamos enviando un PU telebanana con type[" << unsigned(typePU) << "] pos[" << position.x << "," << position.y << "," << position.z << "]" << endl
+    //     << "\trot[" << rotation.x << "," << rotation.y << "," << rotation.z << "]"
+    //     << endl;
     socket.async_send_to(
         boost::asio::buffer(requestBuff, currentBuffSize),
         serverEndpoint,
@@ -713,7 +713,7 @@ void UDPClient::SendCrashPUCar(const uint16_t idOnline, const uint16_t idPowerUp
     Serialization::Serialize(requestBuff, &idPowerUp, currentBuffSize);
     Serialization::Serialize(requestBuff, &idCar, currentBuffSize);
 
-    cout << "Soy el " << idOnline << ", estamos enviando un Crash PU-Car del PU con id[" << idPowerUp << "] y el car con id[" << idCar << "]" << endl;
+    //cout << "Soy el " << idOnline << ", estamos enviando un Crash PU-Car del PU con id[" << idPowerUp << "] y el car con id[" << idCar << "]" << endl;
     socket.async_send_to(
         boost::asio::buffer(requestBuff, currentBuffSize),
         serverEndpoint,
@@ -735,7 +735,7 @@ void UDPClient::SendCrashPUWall(const uint16_t idOnline, const uint16_t idPowerU
 
     Serialization::Serialize(requestBuff, &idPowerUp, currentBuffSize);
 
-    cout << "Soy el " << idOnline << ", estamos enviando un Crash PU-Wall del PU con id[" << idPowerUp << "]" << endl;
+    //cout << "Soy el " << idOnline << ", estamos enviando un Crash PU-Wall del PU con id[" << idPowerUp << "]" << endl;
     socket.async_send_to(
         boost::asio::buffer(requestBuff, currentBuffSize),
         serverEndpoint,
@@ -788,7 +788,7 @@ void UDPClient::SendCollideNitro(uint16_t idOnline, uint16_t idWithTotem, uint16
 }
 
 void UDPClient::SendEndgame(uint16_t idPlayer) {
-    cout << "Vamos a enviar un sendEndgame" << endl;
+    //cout << "Vamos a enviar un sendEndgame" << endl;
     unsigned char requestBuff[Constants::ONLINE_BUFFER_SIZE];
     size_t currentBuffSize = 0;
     uint8_t callType = Constants::PetitionTypes::ENDGAME;
@@ -809,7 +809,7 @@ void UDPClient::SendEndgame(uint16_t idPlayer) {
 }
 
 void UDPClient::SendLaunchAnimationEnd(uint16_t idPlayer, uint16_t idPlayerWinner) {
-    cout << "Vamos a enviar un sendLaunchAnimationEnd con idPlayer[" << idPlayer << "] e idWinner[" << idPlayerWinner << "]" << endl;
+    //cout << "Vamos a enviar un sendLaunchAnimationEnd con idPlayer[" << idPlayer << "] e idWinner[" << idPlayerWinner << "]" << endl;
     unsigned char requestBuff[Constants::ONLINE_BUFFER_SIZE];
     size_t currentBuffSize = 0;
     uint8_t callType = Constants::PetitionTypes::LAUNCH_ANIMATION_END;
@@ -831,7 +831,7 @@ void UDPClient::SendLaunchAnimationEnd(uint16_t idPlayer, uint16_t idPlayerWinne
 }
 
 void UDPClient::SendWaitingForCountdown(const uint16_t idPlayer) {
-    cout << "Vamos a enviar un sendWaitingForCountdown con idPlayer[" << idPlayer << "]\n";
+    //cout << "Vamos a enviar un sendWaitingForCountdown con idPlayer[" << idPlayer << "]\n";
     unsigned char requestBuff[Constants::ONLINE_BUFFER_SIZE];
     size_t currentBuffSize = 0;
     uint8_t callType = Constants::PetitionTypes::WAITING_FOR_COUNTDOWN;
@@ -852,98 +852,98 @@ void UDPClient::SendWaitingForCountdown(const uint16_t idPlayer) {
 }
 
 void UDPClient::HandleSentInputs(const boost::system::error_code& errorCode, std::size_t bytes_transferred) {
-    if (errorCode)
-        cout << "Hubo un error enviando los inputs[" << errorCode << "]"
-             << "\n";
+    //if (errorCode)
+    //    cout << "Hubo un error enviando los inputs[" << errorCode << "]"
+    //         << "\n";
 }
 
 void UDPClient::HandleSentEndgame(const boost::system::error_code& errorCode, std::size_t bytes_transferred) {
-    if (errorCode)
-        cout << "Hubo un error enviando el endgame [" << errorCode << "]"
-             << "\n";
+    //if (errorCode)
+    //    cout << "Hubo un error enviando el endgame [" << errorCode << "]"
+    //         << "\n";
 }
 
 void UDPClient::HandleSentLaunchAnimationEnd(const boost::system::error_code& errorCode, std::size_t bytes_transferred) {
-    if (errorCode)
-        cout << "Hubo un error enviando el launch animation end [" << errorCode << "]"
-             << "\n";
+    //if (errorCode)
+    //    cout << "Hubo un error enviando el launch animation end [" << errorCode << "]"
+    //         << "\n";
 }
 
 void UDPClient::HandleSentWaitingForCountdown(const boost::system::error_code& errorCode, std::size_t bytes_transferred) {
-    if (errorCode)
-        cout << "Hubo un error enviando el waiting for countdown [" << errorCode << "]"
-             << "\n";
+    //if (errorCode)
+    //    cout << "Hubo un error enviando el waiting for countdown [" << errorCode << "]"
+    //         << "\n";
 }
 
 void UDPClient::HandleSentClockSync(const boost::system::error_code& errorCode, std::size_t bytes_transferred) {
-    if (errorCode)
-        cout << "Hubo un error enviando el clockSync, HAY QUE REPETIR [" << errorCode << "]"
-             << "\n";
+    //if (errorCode)
+    //    cout << "Hubo un error enviando el clockSync, HAY QUE REPETIR [" << errorCode << "]"
+    //         << "\n";
 }
 
 void UDPClient::HandleSentFinalClockSync(const boost::system::error_code& errorCode, std::size_t bytes_transferred) {
-    if (errorCode)
-        cout << "Hubo un error enviando el finalClockSync, HAY QUE REPETIR [" << errorCode << "]"
-             << "\n";
+    //if (errorCode)
+    //    cout << "Hubo un error enviando el finalClockSync, HAY QUE REPETIR [" << errorCode << "]"
+    //         << "\n";
 }
 
 void UDPClient::HandleSentThrowPU(const boost::system::error_code& errorCode, std::size_t bytes_transferred) {
-    if (errorCode) {
-        cout << "Hubo un error enviando el throwPU [" << errorCode << "]" << endl;
-    }
+    //if (errorCode) {
+    //    cout << "Hubo un error enviando el throwPU [" << errorCode << "]" << endl;
+    //}
 }
 
 void UDPClient::HandleSentCrashPUCar(const boost::system::error_code& errorCode, std::size_t bytes_transferred) {
-    if (errorCode) {
-        cout << "Hubo un error enviando el Crash PU-Car [" << errorCode << "]" << endl;
-    }
+    //if (errorCode) {
+    //    cout << "Hubo un error enviando el Crash PU-Car [" << errorCode << "]" << endl;
+    //}
 }
 
 void UDPClient::HandleSentCrashPUWall(const boost::system::error_code& errorCode, std::size_t bytes_transferred) {
-    if (errorCode) {
-        cout << "Hubo un error enviando el Crash PU-Wall [" << errorCode << "]" << endl;
-    }
+    //if (errorCode) {
+    //    cout << "Hubo un error enviando el Crash PU-Wall [" << errorCode << "]" << endl;
+    //}
 }
 
 void UDPClient::HandleSentSync(const boost::system::error_code& errorCode, std::size_t bytes_transferred) {
-    if (errorCode)
-        cout << "Hubo un error enviando la sincronizacion[" << errorCode << "]"
-             << "\n";
+    //if (errorCode)
+    //    cout << "Hubo un error enviando la sincronizacion[" << errorCode << "]"
+    //         << "\n";
 }
 void UDPClient::HandleSentPU(const boost::system::error_code& errorCode, std::size_t bytes_transferred) {
-    if (errorCode)
-        cout << "Hubo un error enviando el tipo de power up[" << errorCode << "]"
-             << "\n";
+    //if (errorCode)
+    //    cout << "Hubo un error enviando el tipo de power up[" << errorCode << "]"
+    //         << "\n";
 }
 void UDPClient::HandleSentCatchTotem(const boost::system::error_code& errorCode, std::size_t bytes_transferred) {
-    if (errorCode)
-        cout << "Hubo un error enviando el jugador que ha cogido el totem[" << errorCode << "]"
-             << "\n";
+    //if (errorCode)
+    //    cout << "Hubo un error enviando el jugador que ha cogido el totem[" << errorCode << "]"
+    //         << "\n";
 }
 void UDPClient::HandleSentLostTotem(const boost::system::error_code& errorCode, std::size_t bytes_transferred) {
-    if (errorCode)
-        cout << "Hubo un error enviando el jugador que ha perdido el totem[" << errorCode << "]"
-             << "\n";
+    //if (errorCode)
+    //    cout << "Hubo un error enviando el jugador que ha perdido el totem[" << errorCode << "]"
+    //         << "\n";
 }
 void UDPClient::HandleSentRoboJorobo(const boost::system::error_code& errorCode, std::size_t bytes_transferred) {
-    if (errorCode)
-        cout << "Hubo un error enviando el jugador que ha utilizado RoboJorobo[" << errorCode << "]"
-             << "\n";
+    //if (errorCode)
+    //    cout << "Hubo un error enviando el jugador que ha utilizado RoboJorobo[" << errorCode << "]"
+    //         << "\n";
 }
 void UDPClient::HandleSentCollideNitro(const boost::system::error_code& errorCode, std::size_t bytes_transferred) {
-    if (errorCode)
-        cout << "Hubo un error enviando el jugador que ha utilizado SuperMegaNitro[" << errorCode << "]"
-             << "\n";
+    //if (errorCode)
+    //    cout << "Hubo un error enviando el jugador que ha utilizado SuperMegaNitro[" << errorCode << "]"
+    //         << "\n";
 }
 
 void UDPClient::HandleSentDateTime(const std::shared_ptr<std::string> message,
                                    const boost::system::error_code& errorCode,
                                    std::size_t bytes_transferred) {
-    if (!errorCode) {
-        cout << "Ya se ha enviado el mensaje, " << message << " madafaka" << endl;
-    } else {
-        cout << "Hubo un error enviando el mensaje, madafaka" << endl;
-    }
+    //if (!errorCode) {
+    //    cout << "Ya se ha enviado el mensaje, " << message << " madafaka" << endl;
+    //} else {
+    //    cout << "Hubo un error enviando el mensaje, madafaka" << endl;
+    //}
 }
 
 
@@ -962,9 +962,9 @@ void UDPClient::SendClockSync(uint16_t idOnline1, uint16_t idOnline2, int64_t ti
     Serialization::Serialize(requestBuff, &turnOut, currentBuffSize);
     Serialization::Serialize(requestBuff, &numMeasurements, currentBuffSize);
 
-    cout << "Soy el " << idOnline1 << ", estamos enviando un ClockSync con los datos idOnline2[" << idOnline2 << "] time[" << time << "]" 
-         << "turnOut[" << turnOut << "] numMeasurements["<<unsigned(numMeasurements)<<"]"
-         << endl;
+    //cout << "Soy el " << idOnline1 << ", estamos enviando un ClockSync con los datos idOnline2[" << idOnline2 << "] time[" << time << "]" 
+    //     << "turnOut[" << turnOut << "] numMeasurements["<<unsigned(numMeasurements)<<"]"
+    //     << endl;
     socket.async_send_to(
         boost::asio::buffer(requestBuff, currentBuffSize),
         serverEndpoint,
@@ -994,9 +994,9 @@ void UDPClient::SendFinalClockSync(uint16_t idOnlineSender, uint16_t idOnlineRec
     Serialization::Serialize(requestBuff, &turnout, currentBuffSize);
     Serialization::Serialize(requestBuff, &timeToWaitForSyncing, currentBuffSize);
 
-    cout << "Soy el " << idOnlineSender << ", estamos enviando un ClockSync con los datos idOnline2[" << idOnlineReceiver << "] to[" << turnout << "]" 
-         << "timeToWaitForSyncing[" << timeToWaitForSyncing << "]"
-         << endl;
+    //cout << "Soy el " << idOnlineSender << ", estamos enviando un ClockSync con los datos idOnline2[" << idOnlineReceiver << "] to[" << turnout << "]" 
+    //     << "timeToWaitForSyncing[" << timeToWaitForSyncing << "]"
+    //     << endl;
     socket.async_send_to(
         boost::asio::buffer(requestBuff, currentBuffSize),
         serverEndpoint,
@@ -1019,7 +1019,7 @@ void UDPClient::HandleReceivedClockSync(unsigned char* recevBuff, size_t bytesTr
     float turnout = Serialization::Deserialize<float>(recevBuff, currentIndex);  // turnout actual
     int8_t numMedidas = Serialization::Deserialize<int8_t>(recevBuff, currentIndex);  // num medidas
 
-    cout << "Hemos recibido un SyncClock de[" << idSender << "] con idReceiver["<<idReceiver<<"] time["<<time<<"] turnout["<<turnout<<"] y numMedidas["<<unsigned(numMedidas)<<"]" << endl;
+    //cout << "Hemos recibido un SyncClock de[" << idSender << "] con idReceiver["<<idReceiver<<"] time["<<time<<"] turnout["<<turnout<<"] y numMedidas["<<unsigned(numMedidas)<<"]" << endl;
     std::shared_ptr<DataMap> data = make_shared<DataMap>();
     (*data)[DataType::ID] = idSender;
     (*data)[DataType::ID_DESTINATION] = idReceiver;
@@ -1044,7 +1044,7 @@ void UDPClient::HandleReceivedFinalClockSync(unsigned char* recevBuff, size_t by
     int64_t timeToWaitToSync = Serialization::Deserialize<int64_t>(recevBuff, currentIndex);  // tiempo de espera para sincronizar
 
 
-    cout << "Hemos recibido un FinalSyncClock de[" << idSender << "] con idReceiver["<<idReceiver<<"] turnout["<<turnout<<"] y timeToWait["<<timeToWaitToSync<<"]" << endl;
+    //cout << "Hemos recibido un FinalSyncClock de[" << idSender << "] con idReceiver["<<idReceiver<<"] turnout["<<turnout<<"] y timeToWait["<<timeToWaitToSync<<"]" << endl;
     std::shared_ptr<DataMap> data = make_shared<DataMap>();
     (*data)[DataType::TIME] = timeToWaitToSync;
     (*data)[DataType::TURNOUT] = turnout;

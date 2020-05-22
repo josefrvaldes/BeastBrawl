@@ -35,7 +35,7 @@ int main(int argc, char *argv[]) {
         Constants::ANIM_ACTIVATED = std::stoi(argv[1]);
         Constants::SERVER_HOST = argv[2];
     }
-    cout << "La ip del servidor será " << Constants::SERVER_HOST << endl;
+    //cout << "La ip del servidor será " << Constants::SERVER_HOST << endl;
 
     //try {
     Game* game = Game::GetInstance();

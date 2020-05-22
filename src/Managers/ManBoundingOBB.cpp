@@ -61,7 +61,7 @@ ManBoundingOBB::ManBoundingOBB() {
     glm::vec3 centerMass    = glm::vec3(0.0,0.0,0.0); //     = glm::vec3( (100+150+100+150+100+100+150+150)/8, (100-100-100+100-100+100-100+100)/8, (50+50+150+150+50+150+50+150)/8);
     double posX, posX2, posZ, posZ2;
     long unsigned int obbCount = j["OBBS"].size();
-    std::cout << "EL NUMERO DE OBBs EN EL JSON ES: " << obbCount << std::endl;
+    //std::cout << "EL NUMERO DE OBBs EN EL JSON ES: " << obbCount << std::endl;
     //Leemos el array de NavMesh
     for(long unsigned int i = 0; i< obbCount; ++i){
         string idObb = to_string(i);  

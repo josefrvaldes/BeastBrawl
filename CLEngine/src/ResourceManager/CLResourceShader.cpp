@@ -75,7 +75,7 @@ bool CLResourceShader::LoadShader(string file, GLenum type){
         code = ss.str();
         stream.close();
     }else{
-        cout << "Pues no se han podido leer los archivos " << file << endl;
+        //cout << "Pues no se han podido leer los archivos " << file << endl;
         return false;
     }
 
@@ -92,7 +92,7 @@ bool CLResourceShader::LoadShader(string file, GLenum type){
     if(!success)
     {
         glGetShaderInfoLog(*shader, 512, NULL, infoLog);
-        std::cout << "ERROR::SHADER::"<<typeStr<<"::COMPILATION_FAILED\n" << infoLog << std::endl;
+        //std::cout << "ERROR::SHADER::"<<typeStr<<"::COMPILATION_FAILED\n" << infoLog << std::endl;
         return false;
     }
     return true;
@@ -112,7 +112,7 @@ bool CLResourceShader::LinkShaders(){
     glGetProgramiv(programID, GL_LINK_STATUS, &success);
     if(!success) {
         glGetProgramInfoLog(programID, 512, NULL, infoLog);
-        cout << "Ha petado el linkado de shaders de geometry:( --> " << infoLog << "\n";
+        //cout << "Ha petado el linkado de shaders de geometry:( --> " << infoLog << "\n";
         return false;
     }
 
@@ -137,7 +137,7 @@ bool CLResourceShader::LinkShadersGeometry(){
     glGetProgramiv(programID, GL_LINK_STATUS, &success);
     if(!success) {
         glGetProgramInfoLog(programID, 512, NULL, infoLog);
-        cout << "Ha petado el linkado de shaders de geometry:( --> " << infoLog << "\n";
+        //cout << "Ha petado el linkado de shaders de geometry:( --> " << infoLog << "\n";
         return false;
     }
 

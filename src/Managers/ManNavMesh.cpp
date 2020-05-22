@@ -231,11 +231,11 @@ int ManNavMesh::CalculateNavMesh(glm::vec3 &position_) const{
             ( (position_.y >= (cTranNav->position.y-(cDim->height/2))) && 
             (position_.y <= (cTranNav->position.y+(cDim->height/2))) ) ){
                 auto cNavMesh = static_cast<CNavMesh*>(navmesh.get()->GetComponent(CompType::NavMeshComp).get());
-                std::cout << " El totem pertenece al navmesh " << cNavMesh->id << std::endl;
+                //std::cout << " El totem pertenece al navmesh " << cNavMesh->id << std::endl;
                 return cNavMesh->id;
             }       
     }
-    cout << "no pertenecemos a ningun navmesh y la pos es (" << position_.x<< " , " << position_.y<< " , " << position_.z<< " )" << endl;
+    //cout << "no pertenecemos a ningun navmesh y la pos es (" << position_.x<< " , " << position_.y<< " , " << position_.z<< " )" << endl;
     
     return -1;
 }

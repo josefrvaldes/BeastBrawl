@@ -59,7 +59,7 @@ bool CLResourceTexture::LoadFile(string file, bool vertically){
     }
     else
     {
-        std::cout << "Texture failed to load at path: " << file << std::endl;
+        //std::cout << "Texture failed to load at path: " << file << std::endl;
         stbi_image_free(data);
         return false;
     }

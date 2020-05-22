@@ -90,7 +90,7 @@ struct Inverter_LoDMove : public Decorator {  // Decorator Inverter
 //Afirmacion No tenemos power up!
 struct DontHavePoweUp_LoDMove : public behaviourTree {
     virtual bool run(Blackboard* blackboard) override {
-        std::cout << "No power up baby" << std::endl;
+        //std::cout << "No power up baby" << std::endl;
         return true;
     }
 };

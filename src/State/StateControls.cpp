@@ -22,7 +22,7 @@ using namespace std;
 
 StateControls::StateControls(){
 
-    std::cout << "> CRONTROLS constructor" << std::endl;
+    //std::cout << "> CRONTROLS constructor" << std::endl;
 
     renderEngine = RenderFacadeManager::GetInstance()->GetRenderFacade();
     renderEngine->FacadeInitControler();

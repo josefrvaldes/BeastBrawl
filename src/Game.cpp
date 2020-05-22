@@ -168,7 +168,8 @@ void Game::SetState(State::States stateType) {
             currentState = make_shared<StateLobbyMulti>();
             break;
         default:
-            cout << "This state doesn't exist" << endl;
+            //cout << "This state doesn't exist" << endl;
+            break;
     }
 
     // Inicializa los bancos cada vez que se cambia de estado.
@@ -326,8 +327,8 @@ void Game::MainLoop() {
 void Game::TerminateGame() {
     //Libera los sonidos y bancos.
     SoundFacadeManager::GetInstance()->GetSoundFacade()->Terminate();
-    cout << "**********************************************" << endl;
-    cout << "Game Terminate" << endl;
+    //cout << "**********************************************" << endl;
+    //cout << "Game Terminate" << endl;
 }
 
 //Funciones del EventManager

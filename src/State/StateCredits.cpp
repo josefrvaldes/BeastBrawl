@@ -20,7 +20,7 @@
 
 StateCredits::StateCredits(){
 
-    std::cout << "> CREDITS constructor" << std::endl;
+    //std::cout << "> CREDITS constructor" << std::endl;
 
     renderEngine = RenderFacadeManager::GetInstance()->GetRenderFacade();
     renderEngine->FacadeInitCredits();

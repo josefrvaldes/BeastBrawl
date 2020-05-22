@@ -22,7 +22,7 @@ using namespace std;
 
 StatePause::StatePause(){
     // constructor
-    std::cout << "> PAUSE constructor" << std::endl;
+    //std::cout << "> PAUSE constructor" << std::endl;
     // Inicializamos las facadas
     renderEngine = RenderFacadeManager::GetInstance()->GetRenderFacade();
     //inputEngine = InputFacadeManager::GetInstance()->GetInputFacade();

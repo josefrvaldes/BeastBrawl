@@ -70,38 +70,38 @@ RenderFacadeIrrlicht::RenderFacadeIrrlicht() {
     //core::array<SJoystickInfo> joystickInfo;
     if(device->activateJoysticks(joystickInfo))
     {
-        std::cout << "Joystick support is enabled and " << joystickInfo.size() << " joystick(s) are present." << std::endl;
+        //std::cout << "Joystick support is enabled and " << joystickInfo.size() << " joystick(s) are present." << std::endl;
 
         for(u32 joystick = 0; joystick < joystickInfo.size(); ++joystick)
         {
-            std::cout << "Joystick " << joystick << ":" << std::endl;
-            std::cout << "\tName: '" << joystickInfo[joystick].Name.c_str() << "'" << std::endl;
-            std::cout << "\tAxes: " << joystickInfo[joystick].Axes << std::endl;
-            std::cout << "\tButtons: " << joystickInfo[joystick].Buttons << std::endl;
+            //std::cout << "Joystick " << joystick << ":" << std::endl;
+            //std::cout << "\tName: '" << joystickInfo[joystick].Name.c_str() << "'" << std::endl;
+            //std::cout << "\tAxes: " << joystickInfo[joystick].Axes << std::endl;
+            //std::cout << "\tButtons: " << joystickInfo[joystick].Buttons << std::endl;
 
-            std::cout << "\tHat is: ";
+            //std::cout << "\tHat is: ";
             
             switch(joystickInfo[joystick].PovHat)
             {
             case SJoystickInfo::POV_HAT_PRESENT:
-                std::cout << "present" << std::endl;
+                //std::cout << "present" << std::endl;
                 break;
 
             case SJoystickInfo::POV_HAT_ABSENT:
-                std::cout << "absent" << std::endl;
+                //std::cout << "absent" << std::endl;
                 break;
 
             case SJoystickInfo::POV_HAT_UNKNOWN:
             default:
-                std::cout << "unknown" << std::endl;
+                //std::cout << "unknown" << std::endl;
                 break;
             }
         }
     }
-    else
-    {
-        std::cout << "Joystick support is not enabled." << std::endl;
-    }
+    //else
+    //{
+    //    std::cout << "Joystick support is not enabled." << std::endl;
+    //}
     
     for(int i = 0; i != InputXBox::END; ++i){
         inputsPressed.emplace(static_cast<InputXBox>(i), false);
@@ -509,7 +509,7 @@ void RenderFacadeIrrlicht::FacadeAddSphereOnObject(Entity* entity) {
     if (hasSphere && Constants::DEBUG_SHOW_SPHERES) {
         auto cBoundingSphere = static_cast<CBoundingSphere *>(entity->GetComponent(CompType::CompBoundingSphere).get());
         //cout << "POS X: " << cTransformable->position.x << " POS Y: " << cTransformable->position.y << "POS Z:" << cTransformable->position.z << endl;
-        cout << "lo creamos aqui con el radio de: " << cBoundingSphere->radius << endl;
+        //cout << "lo creamos aqui con el radio de: " << cBoundingSphere->radius << endl;
         scene::ISceneNode* nodeSphere = smgr->addSphereSceneNode(cBoundingSphere->radius);
         nodeSphere->setID(cId->id + Component::ID_DIFFERENCE);
         nodeSphere->setPosition(core::vector3df(cBoundingSphere->center.x, cBoundingSphere->center.y, cBoundingSphere->center.z));
@@ -531,7 +531,7 @@ const uint16_t RenderFacadeIrrlicht::FacadeAddObjectCar(Entity* entity) {
 
 const uint16_t RenderFacadeIrrlicht::FacadeAddObjectTotem(Entity* entity) {
     idTotem = FacadeAddObject(entity);
-    cout << "El nuevo ID de totem es: " << idTotem << "\n";
+    //cout << "El nuevo ID de totem es: " << idTotem << "\n";
     return idTotem;
 }
 
@@ -678,9 +678,9 @@ bool RenderFacadeIrrlicht::IsInputPressed(InputXBox input){
     auto mapByType = inputsPressed.find(input);
     if (mapByType != inputsPressed.end()) {
         return mapByType->second;
-    }else{
-        cout << "no encuentra el boton" << "\n";
-    }
+    }//else{
+       // cout << "no encuentra el boton" << "\n";
+    //}
     return true; // en caso de que no exista
 }
 
@@ -948,7 +948,7 @@ void RenderFacadeIrrlicht::FacadeCheckInputControler() {
         //EventManager::GetInstance().ClearListeners();
         //EventManager::GetInstance().ClearEvents();
         //Game::GetInstance()->SetState(State::MENU);
-        cout << "ENTRAAAAAA pantalla\n";
+        //cout << "ENTRAAAAAA pantalla\n";
         EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_MENU});
     }else if(!(receiver.IsKeyDown(KEY_KEY_N) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_B))){
         SetValueInput(InputXBox::BUTTON_B, false);
@@ -996,7 +996,7 @@ void RenderFacadeIrrlicht::FacadeCheckInputEndRace() {
         //EventManager::GetInstance().ClearListeners();
         //EventManager::GetInstance().ClearEvents();
         //Game::GetInstance()->SetState(State::MENU);
-        cout << "ENTRAAAAAA ENDRACE\n";
+        //cout << "ENTRAAAAAA ENDRACE\n";
         EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_MENU});
     }else if(!(receiver.IsKeyDown(KEY_SPACE) || receiver.GetJoyStickState().IsButtonPressed(InputXBox::BUTTON_A))){
         SetValueInput(InputXBox::BUTTON_A, false);

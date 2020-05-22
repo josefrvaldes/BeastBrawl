@@ -67,7 +67,7 @@ StateInGameMulti::StateInGameMulti(uint16_t idOnline_, const vector<uint16_t> id
 }
 
 StateInGameMulti::~StateInGameMulti() {
-    cout << "Llamamos al destructor de StateInGameMulti" << endl;
+    //cout << "Llamamos al destructor de StateInGameMulti" << endl;
 }
 
 void StateInGameMulti::InitState() {
@@ -75,7 +75,7 @@ void StateInGameMulti::InitState() {
 }
 
 void StateInGameMulti::InitCarHumans(const uint16_t idOnline_, const vector<uint16_t> arrayIdEnemies, const vector<uint8_t> characters) {
-    cout << "El idOnline del mainCar en esta partida es " << idOnline_ << endl;
+    //cout << "El idOnline del mainCar en esta partida es " << idOnline_ << endl;
     auto idComp = static_cast<CId *>(manCars->GetCar()->GetComponent(CompType::IdComp).get());
     
     vec3 newPos = manCars->GetPosSpawn(idOnline_ - 1);
@@ -160,7 +160,7 @@ void StateInGameMulti::UpdateWaitingForCountdown() {
     if(!readyToCountdown) {
         manCamera->Update();
         renderEngine->UpdateCamera(manCamera.get()->getCamera(), manCars.get());
-        cout << "Enviamos mensaje de waiting for countdown\n";
+        //cout << "Enviamos mensaje de waiting for countdown\n";
         readyToCountdown = true;
         sysOnline->SendWaitingForCountdown();
     }
@@ -213,7 +213,7 @@ void StateInGameMulti::Update() {
             break;
 
         default:
-            cout << "currentUpdateState inválido" << endl;
+            //cout << "currentUpdateState inválido" << endl;
             break;
     }
 }

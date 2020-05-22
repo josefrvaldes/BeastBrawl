@@ -23,7 +23,7 @@ using namespace std;
 
 StateInit::StateInit(){
 
-    std::cout << "> INIT constructor" << std::endl;
+    //std::cout << "> INIT constructor" << std::endl;
 
     renderEngine = RenderFacadeManager::GetInstance()->GetRenderFacade();
     inputEngine = InputFacadeManager::GetInstance()->GetInputFacade();

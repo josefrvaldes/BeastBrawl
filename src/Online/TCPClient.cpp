@@ -41,7 +41,7 @@ TCPClient::TCPClient(string host_, uint16_t port_)
       butler{[&]() {
           boost::asio::executor_work_guard<boost::asio::io_context::executor_type> work_guard(context.get_executor());
           context.run();
-          cout << "///////////////////////// SALIMOS DEL CONTEXT!!! ///////////////////////////////" << endl;
+          //cout << "///////////////////////// SALIMOS DEL CONTEXT!!! ///////////////////////////////" << endl;
       }} {
     StartConnect(serverEndpoint);
 }
@@ -82,32 +82,32 @@ void TCPClient::StartConnect(tcp::resolver::results_type::iterator endpoint_iter
 void TCPClient::HandleConnect(const boost::system::error_code& error) {
     if (error) {
         socket.close();
-        cout << "No se pudo conectar con el" << endl;
+        //cout << "No se pudo conectar con el" << endl;
     } else {
-        std::cout << "Connectado a servidor, empezamos a recibir" << endl;
+        //std::cout << "Connectado a servidor, empezamos a recibir" << endl;
         StartReceiving();
 
         
 
-        cout << "Enviamos SendConnectionRequest al server" << endl;
+        //cout << "Enviamos SendConnectionRequest al server" << endl;
         SendConnectionRequest();
     }
 }
 void TCPClient::HandleConnect(const boost::system::error_code& error, tcp::resolver::results_type::iterator endpoint_iter) {
     if (stopped) {
-        cout << "Hemos intentado HandleConnect pero el cliente tcp estaba parado" << endl;
+        //cout << "Hemos intentado HandleConnect pero el cliente tcp estaba parado" << endl;
         return;
     }
 
     if (!socket.is_open()) {
-        std::cout << "El socket esta cerrado" << std::endl;
+        //std::cout << "El socket esta cerrado" << std::endl;
         StartConnect(++endpoint_iter);  // probamos el siguiente endpoint disponible
     } else if (error) {
-        std::cout << "Error al conectar: " << error.message() << std::endl;
+        //std::cout << "Error al conectar: " << error.message() << std::endl;
         socket.close();  // cerramos el socket
         StartConnect(++endpoint_iter);
     } else {
-        std::cout << "Connectado a " << endpoint_iter->endpoint() << "\n";
+        //std::cout << "Connectado a " << endpoint_iter->endpoint() << "\n";
         StartReceiving();
     }
 }
@@ -116,7 +116,7 @@ void TCPClient::StartReceiving() {
     // udp::endpoint senderEndpoint;
     //cout << "Esperamos recibir datos" << endl;
     //std::shared_ptr<string> recevBuff = make_shared<string>();
-    cout << "Estamos en StartReceiving" << endl;
+    //cout << "Estamos en StartReceiving" << endl;
 
     // std::shared_ptr<boost::array<char, Constants::ONLINE_BUFFER_SIZE>> recevBuff = make_shared<boost::array<char, Constants::ONLINE_BUFFER_SIZE>>();
     // unsigned char *buff[Constants::ONLINE_BUFFER_SIZE];
@@ -132,9 +132,9 @@ void TCPClient::StartReceiving() {
 }
 
 void TCPClient::HandleReceived(std::shared_ptr<unsigned char[]> recevBuff, const boost::system::error_code& errorCode, std::size_t bytesTransferred) {
-    cout << "Estamos en HandleReceived" << endl;
+    //cout << "Estamos en HandleReceived" << endl;
     if (stopped) {
-        cout << "Hemos intentado recibir pero el cliente tcp estaba parado" << endl;
+        //cout << "Hemos intentado recibir pero el cliente tcp estaba parado" << endl;
         return;
     }
 
@@ -163,12 +163,12 @@ void TCPClient::HandleReceived(std::shared_ptr<unsigned char[]> recevBuff, const
                 break;
         }
 
-        std::cout << "El cliente TCP recibe cosas" << std::endl;
-    } else if (errorCode) {
-        cout << "Hubo un error con código " << errorCode << endl;
-    } else {
-        cout << "No ha habido error pero bytesTransferred = 0" << endl;
-    }
+        //std::cout << "El cliente TCP recibe cosas" << std::endl;
+    } //else if (errorCode) {
+        //cout << "Hubo un error con código " << errorCode << endl;
+    //} else {
+      //  cout << "No ha habido error pero bytesTransferred = 0" << endl;
+    //}
     StartReceiving();
 }
 
@@ -183,7 +183,7 @@ void TCPClient::HandleReceivedStartGame(std::shared_ptr<unsigned char[]> recevBu
     vector<uint16_t> idEnemies = Serialization::DeserializeVector<uint16_t>(enemiesSize, recevBuff.get(), currentIndex);
     uint8_t charactersSize = Serialization::Deserialize<uint8_t>(recevBuff.get(), currentIndex);
     vector<uint8_t> characters = Serialization::DeserializeVector<uint8_t>(charactersSize, recevBuff.get(), currentIndex);
-    cout << Utils::getISOCurrentTimestampMillis() << " hemos recibido un startGame y voy a ser el id " << idPlayer << endl;
+    //cout << Utils::getISOCurrentTimestampMillis() << " hemos recibido un startGame y voy a ser el id " << idPlayer << endl;
     
     std::shared_ptr<DataMap> data = make_shared<DataMap>();
     (*data)[DataType::ID_ONLINE] = idPlayer;
@@ -194,7 +194,7 @@ void TCPClient::HandleReceivedStartGame(std::shared_ptr<unsigned char[]> recevBu
 
 
 void TCPClient::HandleReceivedFullGame(){
-    cout << "Se prepara a desconectarme" << "\n";
+    //cout << "Se prepara a desconectarme" << "\n";
     EventManager::GetInstance().AddEventMulti(Event{EventType::PREPARE_TO_DISCONNECT});
 }
 
@@ -231,10 +231,10 @@ void TCPClient::HandleReceivedCharSel(std::shared_ptr<unsigned char[]> recevBuff
     uint8_t charSize = Serialization::Deserialize<uint8_t>(recevBuff.get(), currentIndex);
     vector<uint8_t> charSelected = Serialization::DeserializeVector<uint8_t>(charSize, recevBuff.get(), currentIndex);
 
-    cout << " - Character: "; 
-    for(uint8_t cs : charSelected)
-        cout << int(cs) << ", ";
-    cout << "\n"; 
+    //cout << " - Character: "; 
+    //for(uint8_t cs : charSelected)
+    //    cout << int(cs) << ", ";
+    //cout << "\n"; 
 
     GameValues::GetInstance()->SetCharacterSel(charSelected);
 }
@@ -243,7 +243,7 @@ void TCPClient::HandleReceivedCharSel(std::shared_ptr<unsigned char[]> recevBuff
 
 void TCPClient::SendConnectionRequest() {
     if (stopped) {
-        cout << "Hemos intentado SendConnectionRequest pero el cliente tcp estaba parado" << endl;
+        //cout << "Hemos intentado SendConnectionRequest pero el cliente tcp estaba parado" << endl;
         return;
     }
 
@@ -264,7 +264,7 @@ void TCPClient::SendConnectionRequest() {
 
 void TCPClient::SendSelCharacterRequest() {
     if (stopped) {
-        cout << "Hemos intentado SendCharacterRequest pero el cliente tcp estaba parado" << endl;
+        //cout << "Hemos intentado SendCharacterRequest pero el cliente tcp estaba parado" << endl;
         return;
     }
 
@@ -287,7 +287,7 @@ void TCPClient::SendSelCharacterRequest() {
 
 void TCPClient::SendCancelChar(){
     if (stopped) {
-        cout << "Hemos intentado SendCancelChar pero el cliente tcp estaba parado" << endl;
+        //cout << "Hemos intentado SendCancelChar pero el cliente tcp estaba parado" << endl;
         return;
     }
 
@@ -309,23 +309,23 @@ void TCPClient::SendCancelChar(){
 
 void TCPClient::HandleSentConnectionRequest(std::shared_ptr<unsigned char[]> request, const boost::system::error_code& errorCode, std::size_t bytes_transferred) {
     if (stopped) {
-        cout << "Hemos intentado HandleSentConnectionRequest pero el cliente tcp estaba parado" << endl;
+        //cout << "Hemos intentado HandleSentConnectionRequest pero el cliente tcp estaba parado" << endl;
         return;
     }
 
     if (!errorCode) {
         size_t currentBuffSize = 0;
         uint8_t petitionType = Serialization::Deserialize<uint8_t>(request.get(), currentBuffSize);
-        cout << "Mensaje de conexion enviado cliente TCP con petitionType " << unsigned(petitionType) << endl;
-    } else {
-        cout << "Hubo un error enviando el mensaje de conexion: " << errorCode.message() << endl;
-    }
+        //cout << "Mensaje de conexion enviado cliente TCP con petitionType " << unsigned(petitionType) << endl;
+    } //else {
+        //cout << "Hubo un error enviando el mensaje de conexion: " << errorCode.message() << endl;
+    //}
 }
 
 
 void TCPClient::HandleSentCharacterRequest(std::shared_ptr<unsigned char[]> request, const boost::system::error_code& errorCode, std::size_t bytes_transferred) {
     if (stopped) {
-        cout << "Hemos intentado HandleSentCahrRequest pero el cliente tcp estaba parado" << endl;
+        //cout << "Hemos intentado HandleSentCahrRequest pero el cliente tcp estaba parado" << endl;
         return;
     }
 
@@ -334,9 +334,9 @@ void TCPClient::HandleSentCharacterRequest(std::shared_ptr<unsigned char[]> requ
         uint8_t petitionType = Serialization::Deserialize<uint8_t>(request.get(), currentBuffSize);
         uint8_t personaje = Serialization::Deserialize<uint8_t>(request.get(), currentBuffSize);
         cout << "Mensaje de conexion enviado cliente TCP con petitionType " << unsigned(petitionType) << " y personaje " << unsigned(personaje) << endl;
-    } else {
-        cout << "Hubo un error enviando el mensaje de conexion: " << errorCode.message() << endl;
-    }
+    } //else {
+        //cout << "Hubo un error enviando el mensaje de conexion: " << errorCode.message() << endl;
+    //}
 }
 
 

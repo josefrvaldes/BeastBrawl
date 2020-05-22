@@ -46,7 +46,7 @@ void ManGameRules::CreateCurrentMap(MAP type){
          CreateMayanMap();
         break;
       default:
-         cout << "CREO QUE TE HAS EQUIVOCADO DE MAPA AMIGOO \n";
+         //cout << "CREO QUE TE HAS EQUIVOCADO DE MAPA AMIGOO \n";
         break;
    }
 }

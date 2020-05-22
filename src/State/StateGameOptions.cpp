@@ -21,7 +21,7 @@
 
 StateGameOptions::StateGameOptions(){
 
-    std::cout << "> GAME OPTIONS constructor" << std::endl;
+    //std::cout << "> GAME OPTIONS constructor" << std::endl;
 
     renderEngine = RenderFacadeManager::GetInstance()->GetRenderFacade();
     renderEngine->FacadeInitGameOptions();

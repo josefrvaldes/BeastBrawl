@@ -49,7 +49,7 @@ CLSkybox::CLSkybox(string right, string left, string top, string bottom, string 
             );
             stbi_image_free(data);
         }else{
-            std::cout << "Cubemap texture failed to load at path: " << textures_faces[i] << std::endl;
+            //std::cout << "Cubemap texture failed to load at path: " << textures_faces[i] << std::endl;
             stbi_image_free(data);
         }
     }

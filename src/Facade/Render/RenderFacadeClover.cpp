@@ -72,11 +72,11 @@ RenderFacadeClover::~RenderFacadeClover() {
  * Inicializamos la fachada de clover e inicializamos el motor creando la ventana y pasandosela a las otras fachadas
  */
 RenderFacadeClover::RenderFacadeClover() {
-    cout << "************************************\n";
-    cout << "(づ｡◕‿‿◕｡)づ   \n";
-    cout << "Se inicia el motor grafico de Clover\n";
-    cout << "(づ｡◕‿‿◕｡)づ   \n";
-    cout << "************************************\n";
+    //cout << "************************************\n";
+    //cout << "(づ｡◕‿‿◕｡)づ   \n";
+    //cout << "Se inicia el motor grafico de Clover\n";
+    //cout << "(づ｡◕‿‿◕｡)づ   \n";
+    //cout << "************************************\n";
 
     string title = "BeastBrawl";
     device = new CLEngine(1280, 720, title);
@@ -842,7 +842,7 @@ void RenderFacadeClover::FacadeUpdateMeshesLoD(vector<shared_ptr<Entity>> entiti
                 // string nameCurrentMesh = static_cast<CLMesh*>(node->GetEntity())->GetMesh()->GetName();
                 // cout << "meshPash[" << meshPath << "]  nameCurrentMesh[" << nameCurrentMesh << "]" << endl;
                 // if (nameCurrentMesh != meshPath) {
-                    cout << "Vamos a cambiar la malla" << endl;
+                    //cout << "Vamos a cambiar la malla" << endl;
                     static_cast<CLMesh*>(node->GetEntity())->SetMesh(resourceManager->GetResourceMesh(meshPath, false));
                 // }
             }
@@ -1782,7 +1782,7 @@ void RenderFacadeClover::FacadeDrawHUD(Entity* car, ManCar* manCars, Entity* glo
                 case (uint16_t)mainCharacter::GORILLA:  cadena = "media/hudGorilla.png";        break;
                 case (uint16_t)mainCharacter::DRAGON:   cadena = "media/hudDragon.png";         break;
                 case (uint16_t)mainCharacter::OCTOPUS:  cadena = "media/hudOctopus.png";        break;
-                default: cout << "+++++++ No entiendo este personaje para el evento" << endl;   break;
+                default: /*cout << "+++++++ No entiendo este personaje para el evento" << endl;*/   break;
             }
             device->DrawImage2D(w/2 - 175.0f, 170.0f, 0.7f, 0.1f, cadena, true);
             cadena = cEventHUD->spriteTypeEvent;
@@ -2064,7 +2064,7 @@ void RenderFacadeClover::FacadeDrawEndRace() {
             case (uint16_t)mainCharacter::GORILLA:  file = "media/hudGorilla.png";      name = "Kaiser Kong";           break;
             case (uint16_t)mainCharacter::DRAGON:   file = "media/hudDragon.png";       name = "Deacon Dragon";         break;
             case (uint16_t)mainCharacter::OCTOPUS:  file = "media/hudOctopus.png";      name = "Ciber Octopus";         break;
-            default: cout << "+++++++ No entiendo este personaje para el evento" << endl;   break;
+            default: /*cout << "+++++++ No entiendo este personaje para el evento" << endl;*/   break;
         }
         device->DrawImage2D(posX + 190.0f*scale, posY + (i*100.0f)*scale + 5.0f*scale, 1.0f*scale, 0.6f, file, true);  //CARITA
         device->RenderText2D(name, posX + 275.0f*scale, posYText - (i*100.0f)*scale, 0.5f, 1.0*scale, glm::vec3(255.0f, 255.0f, 255.0f));
@@ -2173,7 +2173,7 @@ void RenderFacadeClover::FacadeDrawEndTournament() {
                 case (uint16_t)mainCharacter::GORILLA:  file = "media/hudGorilla.png";      name = "Kaiser Kong";           break;
                 case (uint16_t)mainCharacter::DRAGON:   file = "media/hudDragon.png";       name = "Deacon Dragon";         break;
                 case (uint16_t)mainCharacter::OCTOPUS:  file = "media/hudOctopus.png";      name = "Ciber Octopus";         break;
-                default: cout << "+++++++ No entiendo este personaje para el evento" << endl;   break;
+                default: /*cout << "+++++++ No entiendo este personaje para el evento" << endl;*/   break;
             }
             device->DrawImage2D(posX + 190.0f*scale, posY + (i*100.0f)*scale + 5.0f*scale, 1.0f*scale, 0.7f, file, true);  //CARITA
             device->RenderText2D(name, posX + 275.0f*scale, posYText - (i*100.0f)*scale, 0.65f, 1.0*scale, glm::vec3(255.0f, 255.0f, 255.0f));
@@ -2242,7 +2242,7 @@ void RenderFacadeClover::FacadeDrawEndTournament() {
                 case (uint16_t)mainCharacter::GORILLA:  file = "media/hudGorilla.png";      name = "Kaiser Kong";           break;
                 case (uint16_t)mainCharacter::DRAGON:   file = "media/hudDragon.png";       name = "Deacon Dragon";         break;
                 case (uint16_t)mainCharacter::OCTOPUS:  file = "media/hudOctopus.png";      name = "Ciber Octopus";         break;
-                default: cout << "+++++++ No entiendo este personaje para el evento" << endl;   break;
+                default: /*cout << "+++++++ No entiendo este personaje para el evento" << endl;*/   break;
             }
             device->DrawImage2D(posX + 190.0f*scale, posY + (i*100.0f)*scale + 5.0f*scale, 1.0f*scale, 0.7f, file, true);  //CARITA
             device->RenderText2D(name, posX + 275.0f*scale, posYText - (i*100.0f)*scale, 0.65f, 1.0*scale, glm::vec3(255.0f, 255.0f, 255.0f));
@@ -2458,9 +2458,9 @@ void RenderFacadeClover::FacadeDrawGraphEdges(ManWayPoint* manWayPoints) const{
                     Draw3DLine(cWayPoint->position, cWayPoint2->position, 255.0,0.0,0.0);
                 }
             }
-        }else{
-            cout << "1111111111111111111111111111111111111111111111111:  " << cWayPoint->id << endl; 
-        }
+        }//else{
+           // cout << "1111111111111111111111111111111111111111111111111:  " << cWayPoint->id << endl; 
+        //}
     }
 }
 
@@ -2778,7 +2778,7 @@ void RenderFacadeClover::FacadeReleaseSelectCharacter(){
 }
 
 void RenderFacadeClover::FacadeReleaseMeshesInGame(){
-    cout << "Liberadas las mallas ingame" << endl;
+    //cout << "Liberadas las mallas ingame" << endl;
     resourceManager->DeleteResourceAnimation("media/animations/sharky/win/victorysharky_000001.obj", 18);
     resourceManager->DeleteResourceAnimation("media/animations/kong/win/victorykong_000001.obj", 18);
     resourceManager->DeleteResourceAnimation("media/animations/cyberoctopus/win/victoryoctopus_000001.obj", 18);

@@ -31,7 +31,7 @@ ManCamera::ManCamera(Car* entityFollow, float deltaTime_){
 }
 
 ManCamera::~ManCamera(){
-    cout << "llamamos al destructor de ManCamera \n"; 
+    //cout << "llamamos al destructor de ManCamera \n"; 
 }
 
 

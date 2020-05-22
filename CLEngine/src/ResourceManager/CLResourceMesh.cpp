@@ -72,10 +72,10 @@ bool CLResourceMesh::LoadFile(std::string file, bool flipUV) {
 
     // Error de carga
     if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
-        cout << "ERROR::ASSIMP::" << importer.GetErrorString() << endl;
+        //cout << "ERROR::ASSIMP::" << importer.GetErrorString() << endl;
         return false;
     }
-    cout << "Leida la malla: " << file << endl;
+    //cout << "Leida la malla: " << file << endl;
     processNode(scene->mRootNode, scene);
     return true;
 }
@@ -233,7 +233,7 @@ unsigned int CLResourceMesh::TextureFromFile(const char *path, const string &dir
 
         stbi_image_free(data);
     } else {
-        std::cout << "Texture failed to load at path: " << filename << std::endl;
+        //std::cout << "Texture failed to load at path: " << filename << std::endl;
         stbi_image_free(data);
     }
 

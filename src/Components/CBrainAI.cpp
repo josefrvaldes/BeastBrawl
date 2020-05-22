@@ -45,9 +45,9 @@ CBrainAI::CBrainAI(BrainAIDifficult dif, float timeTotem) : CBrainAI() {
         // Tiempo para ponerse seria, e ir a por el que tiene el totem
         timeFollowDirect = timeTotem * 0.3;
         //cout  << "111111111111111111111111111111111111111 el tiempo del totem es de: " << timeFollowDirect << endl;
-    }else{
-        cout << "BROOOO, que dificultad quieres? te la has inventado " << endl;
-    }
+    }//else{
+        //cout << "BROOOO, que dificultad quieres? te la has inventado " << endl;
+    //}
     difficult = dif;
 }
  

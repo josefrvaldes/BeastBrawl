@@ -100,7 +100,7 @@ void CLPhysics::Update(float delta) {
 }
 
 void CLPhysics::SubscribeToEvents() {
-    cout << "Vamos a suscribir a los eventos al clPhysics" << endl;
+    //cout << "Vamos a suscribir a los eventos al clPhysics" << endl;
     EventManager::GetInstance().SubscribeMulti(Listener(
         EventType::NEW_CRASH_PU_CAR_RECEIVED,
         bind(&CLPhysics::NewCrashPUCarReceived, this, placeholders::_1),
@@ -127,7 +127,7 @@ void CLPhysics::NewCrashPUWallReceived(DataMap *d) {
 }
 
 void CLPhysics::NewCrashPUCarReceived(DataMap *d) {
-    cout << "Hemos recibido un NewCrashPUCarReceived 2" << endl;
+    //cout << "Hemos recibido un NewCrashPUCarReceived 2" << endl;
     uint16_t idCar = any_cast<uint16_t>((*d)[DataType::ID_CAR]);
     uint16_t idPU = any_cast<uint16_t>((*d)[DataType::ID_PU]);
     const auto &manCars = managers[0];
@@ -141,7 +141,7 @@ void CLPhysics::NewCrashPUCarReceived(DataMap *d) {
         }
     }
     if(carFound == nullptr) {
-        cout << "Nos salimos del NewCrashPUCarReceived porque no encontramos el coche" << endl;
+        //cout << "Nos salimos del NewCrashPUCarReceived porque no encontramos el coche" << endl;
         return;
     }
 
@@ -154,7 +154,7 @@ void CLPhysics::NewCrashPUCarReceived(DataMap *d) {
         }
     }
     if (puFound==nullptr) {
-        cout << "Nos salimos del NewCrashPUCarReceived porque no encontramos el PU" << endl;
+        //cout << "Nos salimos del NewCrashPUCarReceived porque no encontramos el PU" << endl;
         return;
     }
     HandleCollisionPUWithCar(puFound, carFound);
@@ -1079,7 +1079,7 @@ void CLPhysics::IntersectsCarsPowerUps(ManCar &manCars, ManPowerUp &manPowerUps,
                         // CTransformable *transforPU = static_cast<CTransformable *>(currentPU->GetComponent(CompType::TransformableComp).get());
                         // transforPU->position.y -= 500;  // esto igual se podría eliminar directamente el PU en vez de ocultarlo bajo el suelo
                         systemOnline->SendCrashPUCar(cidOnline->idOnline, carOnlineComp->idClient);
-                        cout << "Hemos chocado con el PU-Car con el pu[" << cidOnline->idOnline << "] car[" << carOnlineComp->idClient << "] y lo vamos a enviar al servidor" << endl;
+                        //cout << "Hemos chocado con el PU-Car con el pu[" << cidOnline->idOnline << "] car[" << carOnlineComp->idClient << "] y lo vamos a enviar al servidor" << endl;
                     }
 
                     // si estamos en el single, lanzamos directamente el choque
@@ -1102,14 +1102,14 @@ void CLPhysics::HandleCollisionPUWithCar(PowerUp *powerUp, Entity *car) {
         //cout << "Le han danyado y NO tiene escudo" << endl;
         auto cHurt = static_cast<CHurt *>(car->GetComponent(CompType::HurtComp).get());
         if(!cHurt->hurt) {
-            cout << "Le han danyado y NO estaba danyado" << endl;
+            //cout << "Le han danyado y NO estaba danyado" << endl;
             // debemos hacer danyo al jugador
             shared_ptr<DataMap> dataCollisonCarPowerUp = make_shared<DataMap>();
             (*dataCollisonCarPowerUp)[ACTUAL_CAR] = car;  // nos guardamos el puntero al coche
             EventManager::GetInstance().AddEventMulti(Event{EventType::COLLISION_CAR_POWERUP, dataCollisonCarPowerUp});
 
             if (static_cast<CTotem *>(car->GetComponent(CompType::TotemComp).get())->active) {
-                cout << "Le han danyado y SÍ tenían totem" << endl;
+                //cout << "Le han danyado y SÍ tenían totem" << endl;
                 auto dataTransformableCar = static_cast<CTransformable *>(car->GetComponent(CompType::TransformableComp).get());
                 shared_ptr<DataMap> dataTransfCar = make_shared<DataMap>();
                 (*dataTransfCar)[CAR_TRANSFORMABLE] = dataTransformableCar;
@@ -1288,10 +1288,10 @@ void CLPhysics::RunTests() {
 
     assert(sp1sp4.intersects == true);
     assert(sp1sp4.GetDistance() == -1);
-    cout << "sp1 intersects sp2: " << sp1sp2.intersects << ", Distance: " << sp1sp2.GetDistance() << endl;
-    cout << "sp1 intersects sp3: " << sp1sp3.intersects << ", Distance: " << sp1sp3.GetDistance() << endl;
-    cout << "sp1 intersects sp4: " << sp1sp4.intersects << ", Distance: " << sp1sp4.GetDistance() << endl
-         << endl;
+    //cout << "sp1 intersects sp2: " << sp1sp2.intersects << ", Distance: " << sp1sp2.GetDistance() << endl;
+    //cout << "sp1 intersects sp3: " << sp1sp3.intersects << ", Distance: " << sp1sp3.GetDistance() << endl;
+    //cout << "sp1 intersects sp4: " << sp1sp4.intersects << ", Distance: " << sp1sp4.GetDistance() << endl
+    //     << endl;
 
     CAABoundingBox aabb1(vec3(0.f, 0.f, 0.f), vec3(1.f, 1.f, 1.f));
     CAABoundingBox aabb2(vec3(1.f, 1.f, 1.f), vec3(2.f, 2.f, 2.f));
@@ -1316,11 +1316,11 @@ void CLPhysics::RunTests() {
     assert(aabb1IDinters5.intersects == true);
     assert(aabb1IDinters5.GetDistance() == -0.5);
 
-    cout << "AABB1 intersects AABB2: " << aabb1IDinters2.intersects << ", Distance: " << aabb1IDinters2.GetDistance() << endl;
-    cout << "AABB1 intersects AABB3: " << aabb1IDinters3.intersects << ", Distance: " << aabb1IDinters3.GetDistance() << endl;
-    cout << "AABB1 intersects AABB4: " << aabb1IDinters4.intersects << ", Distance: " << aabb1IDinters4.GetDistance() << endl;
-    cout << "AABB1 intersects AABB5: " << aabb1IDinters5.intersects << ", Distance: " << aabb1IDinters5.GetDistance() << endl
-         << endl;
+    //cout << "AABB1 intersects AABB2: " << aabb1IDinters2.intersects << ", Distance: " << aabb1IDinters2.GetDistance() << endl;
+    //cout << "AABB1 intersects AABB3: " << aabb1IDinters3.intersects << ", Distance: " << aabb1IDinters3.GetDistance() << endl;
+    //cout << "AABB1 intersects AABB4: " << aabb1IDinters4.intersects << ", Distance: " << aabb1IDinters4.GetDistance() << endl;
+    //cout << "AABB1 intersects AABB5: " << aabb1IDinters5.intersects << ", Distance: " << aabb1IDinters5.GetDistance() << endl
+    //     << endl;
 }
 
 void VersionRayoVectores() {

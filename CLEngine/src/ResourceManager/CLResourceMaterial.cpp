@@ -30,10 +30,10 @@ bool CLResourceMaterial::LoadFile(string file, bool vertically){
     // Error de carga 
     if(!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) 
     {
-        cout << "ERROR::ASSIMP::" << importer.GetErrorString() << endl;
+        //cout << "ERROR::ASSIMP::" << importer.GetErrorString() << endl;
         return false;
     }
-    cout << "Leida el material: " << file << endl;
+    //cout << "Leida el material: " << file << endl;
     processNode(scene->mRootNode, scene);
     return true;
 }

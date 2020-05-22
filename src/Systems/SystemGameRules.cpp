@@ -56,7 +56,7 @@ bool SystemGameRules::UpdateGameRules(Entity& globalClock_) const{
         cClock->timeStart = system_clock::now();
     }
     if(cClock->accumulatedTime/1000.0 > cClock->DURATION_TIME/1000.0){
-        cout << "Se acabo el tiempo, nadie gana!!! \n";
+        //cout << "Se acabo el tiempo, nadie gana!!! \n";
         //Game::GetInstance()->SetState(State::ENDRACE);
         return true;
         // EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_ENDRACE});
@@ -89,7 +89,7 @@ bool SystemGameRules::UpdateRulesCarPowerUps(Entity& car_, Entity& totem_) const
     }
 
     if(cTotem->accumulatedTime/1000.0 > cTotem->DURATION_TIME/1000.0){
-        cout << "Has ganado \n";
+        //cout << "Has ganado \n";
         //Game::GetInstance()->SetState(State::ENDRACE);
         return true;
         // EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_ENDRACE});
