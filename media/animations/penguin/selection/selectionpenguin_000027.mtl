@@ -1,0 +1,46 @@
+# Blender MTL File: 'thepenguin_blender.blend'
+# Material Count: 4
+
+newmtl Material.000
+Ns 240.249985
+Ka 0.633333 0.633333 0.633333
+Kd 0.800000 0.800000 0.800000
+Ks 0.650000 0.650000 0.650000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 3
+map_Kd clv_thepenguin_kartwheel_texture.tga
+
+newmtl Material.001
+Ns 182.249990
+Ka 0.516667 0.516667 0.516667
+Kd 0.800000 0.800000 0.800000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 3
+map_Kd clv_thepenguin_kart_texture.tga
+
+newmtl None.001
+Ns 500.000001
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.800000 0.800000 0.800000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd clv_platform_texture.tga
+
+newmtl UV
+Ns 240.249958
+Ka 1.000000 1.000000 1.000000
+Kd 0.500000 0.500000 0.500000
+Ks 0.866667 0.866667 0.866667
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd clv_thepenguin_character_texture.tga

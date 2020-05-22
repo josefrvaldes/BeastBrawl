@@ -8,7 +8,7 @@
 #include <chrono>
 
 using namespace std;
-using namespace chrono;
+using namespace std::chrono;
 //using namespace glm;
 
 class CTotem : public Component{
@@ -16,9 +16,19 @@ public:
     CTotem();
     ~CTotem();
 
+
     bool active = false;
-    time_point<system_clock> timeStart;        // reloj que contaviliza, cada vez que tenemos el totem, el tiempo
-    const int64_t durationTime = 3000000;       // 30 seg, debes mantenerlo en tu poder
-    int64_t accumulatedTime = 0;
+    time_point<system_clock> timeStart;        // reloj que contabiliza, cada vez que tenemos el totem, el tiempo
     
+    const int32_t SEGUNDOS;
+    const int32_t DURATION_TIME;       // X seg, debes mantenerlo en tu poder
+    
+    int64_t accumulatedTime = 0;
+    uint16_t positionRanking = 0;               //Posicion en la que vas de la carrera
+    
+    // son las fisicas de la entidad TOTEM (cuando el totem esta en el suelo)
+    float MaxSpeed {500.0};
+    float speed {500.0}; // lo inicializamos al valor del MaxSpeed para que cuando se cree no se mueva
+    float aceleration {20.0};
+
 };

@@ -10,23 +10,37 @@
 #include <glm/vec3.hpp>
 
 class PowerUp;
+class PhysicsPowerUp;
 class Data;
+class SystemOnline;
+class ManCar;
+enum class typeCPowerUp;
 
 using namespace std;
 
 class ManPowerUp : public Manager{  
    public:
-    ManPowerUp();
+    ManPowerUp(shared_ptr<ManCar> manCars_);
     ~ManPowerUp();
-
+    void SetSystemOnline(SystemOnline *sys) {
+        systemOnline = sys;
+    };
     
     //vector<shared_ptr<PowerUp>> GetEntities() const {
     //    return PowerUps;
     //};
+    void Update();
 
    private:
-	//vector<shared_ptr<PowerUp>> PowerUps;
     void SubscribeToEvents();
     void CreatePowerUp(DataMap* d);
-    void DeletePowerUp(DataMap* d);
+    void NewPowerUpReceivedFromServer(DataMap* d);
+    void MaterializePowerUp(shared_ptr<PowerUp> powerUp, typeCPowerUp type);
+
+    void DeletePowerUps();
+    void UpdatePhysics();
+
+    SystemOnline *systemOnline {nullptr};
+    unique_ptr<PhysicsPowerUp> physicsPowerUp;
+    shared_ptr<ManCar> manCars;
 };

@@ -7,9 +7,10 @@
 
 class CNamePlate : public Component{
 public:
-    CNamePlate(int _id);
+    CNamePlate(int _id,std::string _billboardPath);
     ~CNamePlate(){};
 
 
     int idCarAsociated;
+    std::string billboardPath;
 };

@@ -1,0 +1,27 @@
+var class_c_l_e_1_1_c_l_direct_light =
+[
+    [ "CLDirectLight", "class_c_l_e_1_1_c_l_direct_light.html#a779c04ee173fdde83010a400fcc21ff9", null ],
+    [ "CLDirectLight", "class_c_l_e_1_1_c_l_direct_light.html#ae2764342211cd6bc5b4e8560856a1e90", null ],
+    [ "~CLDirectLight", "class_c_l_e_1_1_c_l_direct_light.html#ae3e84552f742bd42369e1ecc152eac09", null ],
+    [ "Draw", "class_c_l_e_1_1_c_l_direct_light.html#a253d78509b33eebd4882bc819cb31401", null ],
+    [ "DrawDepthMap", "class_c_l_e_1_1_c_l_direct_light.html#a18c88662b3016445cd99334c46ce71ed", null ],
+    [ "GetAmbient", "class_c_l_e_1_1_c_l_direct_light.html#a0ea4dc6b1f23098f8742a2af560fdde1", null ],
+    [ "GetConstant", "class_c_l_e_1_1_c_l_direct_light.html#a0c88827b70bb5e63e5548c61334c2320", null ],
+    [ "GetDiffuse", "class_c_l_e_1_1_c_l_direct_light.html#a9a91c98f949d238657e86c7e22750c87", null ],
+    [ "GetDirection", "class_c_l_e_1_1_c_l_direct_light.html#a14a5c66d61471d904411ebef2cd51696", null ],
+    [ "GetIntensity", "class_c_l_e_1_1_c_l_direct_light.html#a18a765843cc048b0ec83762042211206", null ],
+    [ "GetLinear", "class_c_l_e_1_1_c_l_direct_light.html#a1d7e722c2680d092e8e47d37d24d5146", null ],
+    [ "GetQuadratic", "class_c_l_e_1_1_c_l_direct_light.html#a6a7221d6b568d4c162fb9f7304a48a1b", null ],
+    [ "GetSpecular", "class_c_l_e_1_1_c_l_direct_light.html#a582310b89dc04ceccd007e554154e43a", null ],
+    [ "IsActive", "class_c_l_e_1_1_c_l_direct_light.html#aaf1d1ba314c9c6b50bf8c36b78442574", null ],
+    [ "SetAmbient", "class_c_l_e_1_1_c_l_direct_light.html#ad1c6b30f316f3d7d7c6178fd92855969", null ],
+    [ "SetConstant", "class_c_l_e_1_1_c_l_direct_light.html#ab5e0f6a50ab54540f83e1be4fe8c9071", null ],
+    [ "SetDiffuse", "class_c_l_e_1_1_c_l_direct_light.html#a01147959e8fa385dbef8099775064511", null ],
+    [ "SetDirection", "class_c_l_e_1_1_c_l_direct_light.html#aed5a6b597e9af0f01caca0f2061676b2", null ],
+    [ "SetIntensity", "class_c_l_e_1_1_c_l_direct_light.html#a4702cc15006d8e83761b522da246304b", null ],
+    [ "SetLightAttributes", "class_c_l_e_1_1_c_l_direct_light.html#a9f1aec43525805b2d62d8dc58e8882b2", null ],
+    [ "SetLinear", "class_c_l_e_1_1_c_l_direct_light.html#a33f56ba99ef7f0caade6d5c6a8262b42", null ],
+    [ "SetOn", "class_c_l_e_1_1_c_l_direct_light.html#abde5ce6fab79f60a4a023ffa7d7e1cd8", null ],
+    [ "SetQuadratic", "class_c_l_e_1_1_c_l_direct_light.html#a7d0bb0824269807d4872291100c10fff", null ],
+    [ "SetSpecular", "class_c_l_e_1_1_c_l_direct_light.html#af8a1d67a09a46b93b1ad001da9911030", null ]
+];

@@ -1,4 +1,5 @@
 #include "EventManager.h"
+
 #include <iostream>
 #include <mutex>
 #include <thread>
@@ -22,7 +23,7 @@ EventManager& EventManager::GetInstance() {
 //Acceso: O(1)
 void EventManager::Update() {
     // std::lock_guard<std::mutex> lock(mutex_events);
-
+    // cout << "En este frame hay " << events.size() << " eventos" << endl;
     while (!events.empty()) {
         mutex_events.lock();
         Event e = events.front();  //Cojemos el primero en la lista
@@ -78,7 +79,7 @@ void EventManager::SubscribeMulti(const Listener& listener) {
     }
 
     iterator->second.push_back(listener);
-    std::cout << "Añadido el Listener: " << listener.name << "\n";
+    //std::cout << "Añadido el Listener: " << listener.name << "\n";
 }
 
 // Añade un listener al mapa

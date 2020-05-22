@@ -1,12 +1,12 @@
 #include "PhysicsAI.h"
 
-#include <Entities/CarAI.h>
-#include <Components/CShield.h>
-#include <Components/CTotem.h>
-#include <Components/CNitro.h>
-#include "../Entities/CarHuman.h"
-
-#include <Facade/Render/RenderFacadeManager.h>
+// #include <Entities/CarAI.h>
+// #include <Components/CShield.h>
+// #include <Components/CTotem.h>
+// #include <Components/CNitro.h>
+// #include "../Entities/CarHuman.h"
+// 
+// #include <Facade/Render/RenderFacadeManager.h>
 
 
 
@@ -15,7 +15,7 @@ PhysicsAI::PhysicsAI(){
 }
 
 
-
+/*
 void PhysicsAI::Update(CarAI* carAI, ManWayPoint* graph){
     UpdateCarPowerUps(carAI);
 }
@@ -29,7 +29,7 @@ void PhysicsAI::UpdateCarPowerUps(Entity* carAI){
     }
 
     if(cTotem->accumulatedTime/1000.0 > cTotem->durationTime/1000.0){
-        cout << "Has ganado\n";
+        cout << "Has ganado IA\n";
         //Game::GetInstance()->SetState(State::ENDRACE);
         EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_ENDRACE});
 
@@ -46,5 +46,5 @@ void PhysicsAI::UpdateCarPowerUps(Entity* carAI){
     if(cShield->activePowerUp==true && duration_cast<milliseconds>(system_clock::now() - cShield->timeStart).count() > cShield->durationTime){  // comprueba el tiempo desde que se lanzo
         cShield->deactivePowerUp();
     }
-}
+}*/
 

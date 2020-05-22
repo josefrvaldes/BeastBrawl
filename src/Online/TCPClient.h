@@ -1,6 +1,5 @@
 #pragma once
 
-#include <boost/array.hpp>
 #include <boost/asio.hpp>
 #include <boost/asio/buffer.hpp>
 #include <chrono>
@@ -32,6 +31,9 @@ class TCPClient {
     TCPClient(string host, uint16_t port_);
     ~TCPClient();
     void SendConnectionRequest();
+    void SendDisconnectionRequest();
+    void SendSelCharacterRequest();
+    void SendCancelChar();
     
    private:
     void StartConnect(tcp::resolver::results_type::iterator endpoint_iter);
@@ -39,8 +41,17 @@ class TCPClient {
     void HandleConnect(const boost::system::error_code& error, tcp::resolver::results_type::iterator endpoint_iter);
     void HandleConnect(const boost::system::error_code& error);
     void StartReceiving();
+
     void HandleReceived(std::shared_ptr<unsigned char[]> recevBuff, const boost::system::error_code& error, size_t bytesTransferred);
-    void HandleSentConnectionRequest(const boost::system::error_code& errorCode, std::size_t bytes_transferred);
+    void HandleReceivedStartGame(std::shared_ptr<unsigned char[]> recevBuff, size_t bytesTransferred);
+    void HandleReceivedFullGame();
+    void HandleReceivedOpenGame(std::shared_ptr<unsigned char[]> recevBuff, size_t bytesTransferred);
+    void HandleReceivedCharReq(std::shared_ptr<unsigned char[]> recevBuff, size_t bytesTransferred);
+    void HandleReceivedCharSel(std::shared_ptr<unsigned char[]> recevBuff, size_t bytesTransferred);
+
+
+    void HandleSentConnectionRequest(std::shared_ptr<unsigned char[]> request, const boost::system::error_code& errorCode, std::size_t bytes_transferred);
+    void HandleSentCharacterRequest(std::shared_ptr<unsigned char[]> request, const boost::system::error_code& errorCode, std::size_t bytes_transferred);
     void Stop();
 
     boost::asio::io_context context;

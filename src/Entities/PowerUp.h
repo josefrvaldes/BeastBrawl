@@ -18,4 +18,8 @@ public:
     PowerUp(glm::vec3 _position, glm::vec3 _rotation, typeCPowerUp typePowerUp, CTransformable* cTransformableTarget);
     ~PowerUp();
 
+
+private:
+    const string VERTEX_SHADER = "CLEngine/src/Shaders/vertex.glsl";
+    const string FRAGMENT_SHADER = "CLEngine/src/Shaders/fragment.glsl";
 };

@@ -6,7 +6,7 @@
 //     memcpy(buff + currentSize, &item, itemSize);
 //     currentSize += itemSize;
 //     for (size_t i = 0; i < currentSize; i++) {
-//         cout << "item " << i << " = " << unsigned(buff[i]) << endl;
+//cout << "item " << i << " = " << unsigned(buff[i]) << endl;
 //     }
 // }
 
@@ -16,6 +16,6 @@
 //     memcpy(&item, buff + currentIndex, itemSize);
 //     currentIndex += itemSize;
 //     // for(size_t i = 0; i < currentSize; i++) {
-//     //     cout << "item " << i << " = " << unsigned(buff[i]) << endl;
+//     //cout << "item " << i << " = " << unsigned(buff[i]) << endl;
 //     // }
 // }

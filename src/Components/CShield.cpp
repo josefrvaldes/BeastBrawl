@@ -1,5 +1,7 @@
 #include "CShield.h"
 
+
+
 CShield::CShield(){
     m_compType = CompType::ShieldComp;
     activePowerUp = false;

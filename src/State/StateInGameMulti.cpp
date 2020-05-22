@@ -1,104 +1,204 @@
 #include "StateInGameMulti.h"
+
+#include <Components/CBufferOnline.h>
 #include <Components/CTotem.h>
-#include "../Systems/SystemOnline.h"
+
+#include "../CLPhysics/CLPhysics.h"
 #include "../Components/COnline.h"
+#include "../EventManager/Event.h"
+#include "../EventManager/EventManager.h"
+#include "../Systems/SystemOnline.h"
+#include "../Systems/Utils.h"
 
-StateInGameMulti::StateInGameMulti() : StateInGame() {
-    InitVirtualMethods();
-    vec3 pos = vec3(120.0f, 20.0f, -300.0f);
-    manCars->CreateHumanCar(pos);
+StateInGameMulti::StateInGameMulti(uint16_t idOnline_, const vector<uint16_t> idsEnemies_, const vector<uint8_t> characters_) : StateInGame() {
+    
+    // Reinicializar elementos
+    RenderFacadeManager::GetInstance()->GetRenderFacade()->SetNumEnemyCars(0);
+    auto cId = make_shared<CId>();
+    cId->ResetNumIds();
+    auto cNavMesh = make_shared<CNavMesh>();
+    cNavMesh->ResetNumIds();
+    shared_ptr<DataMap> data = make_shared<DataMap>();
+    (*data)[TYPE_POWER_UP] = typeCPowerUp::None;
+    RenderFacadeManager::GetInstance()->GetRenderFacade()->FacadeUpdatePowerUpHUD(data.get());
 
-    shared_ptr<Entity> car1 = manCars->GetEntities()[0];
-    COnline *cOnline1 = static_cast<COnline *>(car1->GetComponent(CompType::OnlineComp).get());
-    cOnline1->idClient = 1;
 
-    shared_ptr<Entity> car2 = manCars->GetEntities()[1];
-    COnline *cOnline2 = static_cast<COnline *>(car2->GetComponent(CompType::OnlineComp).get());
-    cOnline2->idClient = 2;
+    GameValues::GetInstance()->SetGameTime(180);
+    GameValues::GetInstance()->SetTimeTotem(30);
+    InitState();
+    InitializeManagers();
+    InitCarHumans(idOnline_, idsEnemies_, characters_);
+    InitializeSystems(*manCars.get(), *manBoundingWall.get(), *manBoundingOBB.get(), *manBoundingGround.get(), *manPowerUps.get(), *manNavMesh.get(), *manBoxPowerUps.get(), *manTotems.get());
+    sysOnline = make_unique<SystemOnline>(*manCars.get(), idOnline_);
+    manCars->SetSystemOnline(sysOnline.get());
+    manTotems->SetSystemOnline(sysOnline.get());
+    manPowerUps->SetSystemOnline(sysOnline.get());
+    clPhysics->SetSystemOnline(sysOnline.get());
+    InitializeFacades();
 
-    renderEngine->FacadeAddObject(car2.get());
+    AddElementsToRender();
 
-    vector<Constants::InputTypes> inputs;
-    sysOnline->SendInputs(inputs);  // enviamos un vector vacío la primera vez para que el servidor sepa que estamos vivos
-}
+    SubscribeToEvents();
 
-StateInGameMulti::StateInGameMulti(uint16_t IdOnline, const vector<uint16_t> IdPlayersOnline) : StateInGame() {
-    InitVirtualMethods();
-    // a este le llegan los coches
-    //std::cout << "POR FIIIIIIIIIIIIIIIIIIIIIIIN: " << std::endl;
-    vector<uint16_t> arrayIdEnemies = IdPlayersOnline;
+    const vector<Constants::InputTypes> inputs;
+    sysOnline->SendInputs(inputs, 0.f, 0.f, 0.f, 0.f);
+    sysAnimStart->ResetTimer();
 
-    sysOnline = make_unique<SystemOnline>(*manCars, IdOnline);
-
-    vec3 posIniciales[] = {
-        vec3(120.0f, 10.0f, -300.0f),
-        vec3(20.0f, 10.0f, -300.0f),
-        vec3(40.0f, 10.0f, -150.0f),
-        vec3(-50.0f, 10.0f, -50.0f)};
-
-    auto cTransformable = static_cast<CTransformable *>(manCars->GetCar()->GetComponent(CompType::TransformableComp).get());
-    cTransformable->position = posIniciales[IdOnline - 1];
-    COnline *cOnline = static_cast<COnline *>(manCars->GetCar()->GetComponent(CompType::OnlineComp).get());
-    cOnline->idClient = IdOnline;
-
-    for (auto idEnemy : IdPlayersOnline) {
-        vec3 pos = posIniciales[idEnemy - 1];
-        manCars->CreateHumanCar(pos);
-        shared_ptr<Entity> car = manCars->GetEntities()[manCars->GetEntities().size() - 1];
-        COnline *cOnline = static_cast<COnline *>(car->GetComponent(CompType::OnlineComp).get());
-        cOnline->idClient = idEnemy;
-        renderEngine->FacadeAddObject(car.get());
-    }
-    vector<Constants::InputTypes> inputs;
-    sysOnline->SendInputs(inputs);  // enviamos un vector vacío la primera vez para que el servidor sepa que estamos vivos
+    //Inicializa el ranking y el minimapa
+    sysRanking->Update(manCars.get());
+    manGameRules->InitializeMiniMap(manCars->GetEntities(), manTotems->GetEntities());
 }
 
 StateInGameMulti::~StateInGameMulti() {
+    cout << "Llamamos al destructor de StateInGameMulti" << endl;
 }
 
 void StateInGameMulti::InitState() {
     StateInGame::InitState();
 }
 
-void StateInGameMulti::Input() {
-    vector<Constants::InputTypes> inputs = renderEngine->FacadeCheckInputMulti();
+void StateInGameMulti::InitCarHumans(const uint16_t idOnline_, const vector<uint16_t> arrayIdEnemies, const vector<uint8_t> characters) {
+    cout << "El idOnline del mainCar en esta partida es " << idOnline_ << endl;
+    auto idComp = static_cast<CId *>(manCars->GetCar()->GetComponent(CompType::IdComp).get());
+    
+    vec3 newPos = manCars->GetPosSpawn(idOnline_ - 1);
+    manCars->GetCar()->SetPosition(newPos);
+    manCars->GetCar()->SetRotation(glm::vec3(0, manCars->GetAngleToTotem(newPos),0));
 
-    time_point<system_clock> now = system_clock::now();
-    auto millisSinceLastInputSent = duration_cast<milliseconds>(now - lastTimeSentInputs).count();
-    if (millisSinceLastInputSent > 66) {  // 100 = 10fps; 66 = 15fps   1000 = 60fps
-        lastTimeSentInputs = now;
-        sysOnline->SendInputs(inputs);
+    COnline *cOnline = static_cast<COnline *>(manCars->GetCar()->GetComponent(CompType::OnlineComp).get());
+    cOnline->idClient = idOnline_;
+    manShield->CreateShield(idComp->id, glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(3.0f));
+
+    for (size_t i = 0; i < arrayIdEnemies.size(); i++) {
+        uint16_t idEnemy = arrayIdEnemies[i];
+        uint8_t currentCharacter = characters[i];
+        vec3 pos = manCars->GetPosSpawn(idEnemy - 1);//posIniciales[idEnemy - 1];
+
+        manCars->CreateHumanCar(currentCharacter, pos);
+        shared_ptr<Entity> car = manCars->GetEntities()[manCars->GetEntities().size() - 1];
+        COnline *cOnline = static_cast<COnline *>(car->GetComponent(CompType::OnlineComp).get());
+        cOnline->idClient = idEnemy;
+
+        auto idComp = static_cast<CId *>(car->GetComponent(CompType::IdComp).get());
+        string nameEvent = "Coche/motores";
+        SoundFacadeManager::GetInstance()->GetSoundFacade()->CreateSoundDinamic3D(idComp->id, pos, nameEvent, 1, 0);
+        nameEvent = "PowerUp/escudo";
+        SoundFacadeManager::GetInstance()->GetSoundFacade()->CreateSoundDinamic3D(idComp->id, pos, nameEvent, 0, 0);
+        nameEvent = "PowerUp/escudo_roto";
+        SoundFacadeManager::GetInstance()->GetSoundFacade()->CreateSoundEstatic3D(idComp->id, pos, nameEvent, 0);
+        nameEvent = "PowerUp/choque_powerup";
+        SoundFacadeManager::GetInstance()->GetSoundFacade()->CreateSoundEstatic3D(idComp->id, pos, nameEvent, 0);
+        nameEvent = "Coche/choque";
+        SoundFacadeManager::GetInstance()->GetSoundFacade()->CreateSoundEstatic3D(idComp->id, pos, nameEvent, 0);
+
+        manShield->CreateShield(idComp->id, glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(3.0f));
+
+        shared_ptr<CBufferOnline> buffer = make_shared<CBufferOnline>();
+        car->AddComponent(buffer);
     }
 
-
-    auto millisSinceLastSyncSent = duration_cast<milliseconds>(now - lastTimeSentSync).count();
-    if (millisSinceLastSyncSent > 250) {  // 1000ms = 1s = 60fps; 2s = 120frames
-        lastTimeSentSync = now;       
-        sysOnline->SendSync(manCars.get(), manTotems.get());
+    for(auto car : manCars->GetEntities()){
+        if(manCars->GetCar().get() != car.get()){
+            manNamePlates->CreateNamePlate(car.get());
+        }
     }
 }
 
-void StateInGameMulti::Update() {
-    StateInGame::Update();
+void StateInGameMulti::Input() {
+    if (currentUpdateState == UpdateState::GAME) {
+        const vector<Constants::InputTypes> &inputs = inputEngine->CheckInputMulti();
+        time_point<system_clock> now = system_clock::now();
+        auto millisSinceLastInputSent = duration_cast<milliseconds>(now - lastTimeSentInputs).count();
+        if (millisSinceLastInputSent > 66 || previousInputs != inputs) {  // 100 = 10fps; 66 = 15fps   1000 = 60fps
+            CCar* cCar = static_cast<CCar*>(manCars->GetCar()->GetComponent(CompType::CarComp).get());
+            lastTimeSentInputs = now;
+            previousInputs = inputs;
+            sysOnline->SendInputs(inputs, cCar->speed, cCar->wheelRotation, cCar->skidDeg, cCar->skidRotation);
+        }
 
-    
+        auto millisSinceLastSyncSent = duration_cast<milliseconds>(now - lastTimeSentSync).count();
+        if (millisSinceLastSyncSent > 200) {  // 1000ms = 1s = 60fps; 2s = 120frames
+            lastTimeSentSync = now;
+            sysOnline->SendSync(manCars.get(), manTotems.get());
+        }
+    }
+}
+
+void StateInGameMulti::GoToUpdateGame() {
+    StateInGame::GoToUpdateGame();
+}
+
+void StateInGameMulti::UpdateAnimationEnd() {
+    StateInGame::UpdateAnimationEnd();
+}
+
+bool StateInGameMulti::UpdateAnimationStart() {
+    bool animationFinished = StateInGame::UpdateAnimationStart();
+    if(animationFinished)
+        currentUpdateState = UpdateState::WAITING_FOR_COUNTDOWN;
+    return animationFinished;
+}
+
+void StateInGameMulti::UpdateWaitingForCountdown() {
+    if(!readyToCountdown) {
+        manCamera->Update();
+        renderEngine->UpdateCamera(manCamera.get()->getCamera(), manCars.get());
+        cout << "Enviamos mensaje de waiting for countdown\n";
+        readyToCountdown = true;
+        sysOnline->SendWaitingForCountdown();
+    }
+    EventManager::GetInstance().Update();
+}
+
+void StateInGameMulti::UpdateAnimationCountdown() {
+    StateInGame::UpdateAnimationCountdown();
+    if(!sysOnline->ClocksStartedSincing())
+        sysOnline->SyncClocks();
+    EventManager::GetInstance().Update();
+}
+
+void StateInGameMulti::UpdateGame() {
+    StateInGame::UpdateGame();
 
     for (auto actualCar : manCars->GetEntities()) {
         if (actualCar.get() != manCars->GetCar().get()) {
+            //manNavMesh->UpdateNavMeshHuman(actualCar.get());  // actualizamos el navemesh en el que se encuentra al human
             // funcion para recibir los inputs del servidor, otra para enviar los nuestros, crear componente de input
-            physics->UpdateHuman(static_cast<Car *>(actualCar.get()));
-            manCars->UpdateCarHuman(actualCar.get());
-            physicsEngine->UpdateCarAI(actualCar.get());
+            bool gameFinished = manCars->UpdateCarHuman(actualCar.get(), manTotems.get());
+            if (gameFinished)
+                GoToEndAnimation();
+
+            physicsEngine->UpdateTransformable(actualCar.get());
         }
     }
 
-    CAMBIARCosasDeTotemUpdate();
-    // COLISIONES entre powerUp y cocheHuman
-    collisions->IntersectsCarsPowerUps(manCars.get(), manPowerUps.get(), manNavMesh.get());
-    // COLISIONES entre BoxPowerUp y cocheHuman
-    collisions->IntersectCarsBoxPowerUp(manCars.get(), manBoxPowerUps.get());
-    // COLISIONES  entre la cocheHuman y el Totem
-    collisions->IntersectCarsTotem(manCars.get(), manTotems.get());
+    //ACTUALIZAR ESCUDOS
+    physicsEngine->UpdateShields(manCars->GetEntities(), manShield->GetEntities());
+
+}
+
+void StateInGameMulti::Update() {
+    switch (currentUpdateState) {
+        case UpdateState::START:
+            UpdateAnimationStart();
+            break;
+        case UpdateState::COUNTDOWN:
+            UpdateAnimationCountdown();
+            break;
+        case UpdateState::WAITING_FOR_COUNTDOWN:
+            UpdateWaitingForCountdown();
+            break;
+        case UpdateState::END:
+            UpdateAnimationEnd();
+            break;
+        case UpdateState::GAME:
+            UpdateGame();
+            break;
+
+        default:
+            cout << "currentUpdateState inválido" << endl;
+            break;
+    }
 }
 
 void StateInGameMulti::Render() {
@@ -106,16 +206,16 @@ void StateInGameMulti::Render() {
     StateInGame::Render();
 }
 
-void StateInGameMulti::InitializeCLPhysics(ManCar &manCars, ManBoundingWall &manBoundingWall) {
-    StateInGame::InitializeCLPhysics(manCars, manBoundingWall);
+void StateInGameMulti::InitializeCLPhysics(ManCar &manCars, ManBoundingWall &manWall, ManBoundingOBB &manOBB, ManBoundingGround &manGround, ManPowerUp &manPowerUp, ManNavMesh &manNavMesh, ManBoxPowerUp &manBoxPowerUp, ManTotem &manTotem) {
+    StateInGame::InitializeCLPhysics(manCars, manWall, manOBB, manGround, manPowerUp, manNavMesh, manBoxPowerUp, manTotem);
 }
 
-void StateInGameMulti::InitializeManagers(Physics *physics, Camera *cam) {
-    StateInGame::InitializeManagers(physics, cam);
+void StateInGameMulti::InitializeManagers() {
+    StateInGame::InitializeManagers();
 }
 
-void StateInGameMulti::InitializeSystems(ManCar &manCars, ManBoundingWall &manBoundingWall) {
-    StateInGame::InitializeSystems(manCars, manBoundingWall);
+void StateInGameMulti::InitializeSystems(ManCar &manCars, ManBoundingWall &manWall, ManBoundingOBB &manOBB, ManBoundingGround &manGround, ManPowerUp &manPowerUp, ManNavMesh &manNavMesh, ManBoxPowerUp &manBoxPowerUp, ManTotem &manTotem) {
+    StateInGame::InitializeSystems(manCars, manWall, manOBB, manGround, manPowerUp, manNavMesh, manBoxPowerUp, manTotem);
 }
 
 void StateInGameMulti::InitializeFacades() {
@@ -126,27 +226,37 @@ void StateInGameMulti::AddElementsToRender() {
     StateInGame::AddElementsToRender();
 }
 
-void StateInGameMulti::CAMBIARCosasDeTotemUpdate() {
-    bool todosFalse = true;
-    auto cTransformTotem = static_cast<CTransformable *>(totemOnCar.get()->GetComponent(CompType::TransformableComp).get());
-    cTransformTotem->rotation.y += 0.1;
-    for (auto currentCar : manCars->GetEntities()) {  // actualizamos los coche IA
-        // comprobamos el componente totem y si lo tienen se lo ponemos justo encima para que se sepa quien lo lleva
-        auto cTotem = static_cast<CTotem *>(currentCar.get()->GetComponent(CompType::TotemComp).get());
-        if (cTotem->active) {
-            todosFalse = false;
-            auto cTransformCar = static_cast<CTransformable *>(currentCar.get()->GetComponent(CompType::TransformableComp).get());
-            cTransformTotem->position.x = cTransformCar->position.x;
-            cTransformTotem->position.z = cTransformCar->position.z;
-            cTransformTotem->position.y = 32.0f;
-            // supuestamente esta el drawAll que te lo hace no?????????????????
-            // si esta cambiando pero no se esta redibujando
-            break;  // cuando encontramos a alguien que ya lleva el totem, nos salimos del for, no seguimos comprobando a los demás
+void StateInGameMulti::SubscribeToEvents() {
+    EventManager::GetInstance().SubscribeMulti(Listener(
+        EventType::NEW_LAUNCH_ANIMATION_END_RECEIVED,
+        bind(&StateInGameMulti::GoToEndAnimationFromMulti, this, std::placeholders::_1),
+        "Received end animation"));
+
+    EventManager::GetInstance().SubscribeMulti(Listener(
+        EventType::NEW_LAUNCH_COUNTDOWN_ANIMATION_RECEIVED,
+        bind(&StateInGameMulti::GoToCountdownAnimationFromMulti, this, std::placeholders::_1),
+        "Received end animation"));
+}
+
+void StateInGameMulti::GoToEndAnimationFromMulti(DataMap *dataMap) {
+    if (currentUpdateState != UpdateState::END) {
+        uint16_t idWinner = any_cast<uint16_t>((*dataMap)[DataType::ID_WINNER]);
+        for (auto entity : manCars->GetEntities()) {
+            auto cOnline = static_cast<COnline *>(entity->GetComponent(CompType::OnlineComp).get());
+            if (cOnline->idClient == idWinner) {
+                Car *winner = static_cast<Car *>(entity.get());
+                sysAnimEnd->SetWinner(winner);
+                timerEnd = Utils::getMillisSinceEpoch();
+                soundEngine->SetState(11);
+                currentUpdateState = UpdateState::END;
+                return;
+            }
         }
     }
-    if (todosFalse) {
-        cTransformTotem->position.y = -100.0f;
-    }
+}
 
-    renderEngine->UpdateTransformable(totemOnCar.get());
+void StateInGameMulti::GoToCountdownAnimationFromMulti(DataMap *dataMap) {
+    if (currentUpdateState != UpdateState::COUNTDOWN) {
+        GoToCountdownAnimation();
+    }
 }

@@ -1,6 +1,37 @@
 #include "CBoundingSphere.h"
 #include "CTransformable.h"
 
+
+#include <math.h>
+
+CBoundingSphere::CBoundingSphere(const vec3 &center_)
+    : center{center_}, radius{DEFAULT_SPHERE_RADIUS} {
+    m_compType = CompType::CompBoundingSphere;
+    //equationSphere = equationSphereCenterRadius(_center, DEFAULT_SPHERE_RADIUS);
+    }
+CBoundingSphere::CBoundingSphere(const vec3 &center_, float radius_)
+    : center{center_}, radius{radius_}, radiusFloor{radius_} {
+    m_compType = CompType::CompBoundingSphere;
+    //equationSphere = equationSphereCenterRadius(_center, _radius);
+}
+CBoundingSphere::CBoundingSphere(const vec3 &center_, float radius_, float radisuFloor_)
+    : center{center_}, radius{radius_}, radiusFloor{radisuFloor_}{
+    m_compType = CompType::CompBoundingSphere;
+    //equationSphere = equationSphereCenterRadius(_center, _radius);
+}
+CBoundingSphere::CBoundingSphere(const vec3 &center_, float radius_, float radisuFloor_, float distanceCenter_)
+    : center{center_}, radius{radius_}, radiusFloor{radisuFloor_}, disCenter{distanceCenter_} {
+    m_compType = CompType::CompBoundingSphere;
+    //equationSphere = equationSphereCenterRadius(_center, _radius);
+}
+
+
+/*
+vec4 CBoundingSphere::equationSphereCenterRadius(const vec3 &center, const float &radius) const{
+    return vec4( (-1*pow(center.x,2)) , (-1*pow(center.y,2)) , (-1*pow(center.z,2)) , pow(radius,2) );
+}
+*/
+
 // https://www.youtube.com/watch?v=1l-k8c7NpQM&list=PLEETnX-uPtBXm1KEr_2zQ6K_0hoGH6JJ0&index=3
 IntersectData CBoundingSphere::IntersectSphere(const CBoundingSphere &other) const {
     float radiusDistance = radius + other.radius;  // esto es la distancia máxima que tiene que haber entre los dos centros si se están tocando

@@ -22,23 +22,31 @@ enum EventType {
     PRESS_O,
     PRESS_A,
     PRESS_D,
+    PRESS_SKID,
     PRESS_SPACE,
     INVERT_CAMERA,
     TOTEM_CAMERA,
     NORMAL_CAMERA,
     COLLISION_ENTITY_POWERUP,
-    COLLISION_ENTITY_AI_POWERUP,
+    COLLISION_CAR_POWERUP,
+    DELETE_POWERUP,
     NO_I_O_PRESS,
     NO_A_D_PRESS,
+    //ACTUALIZE_NAVMESH_TOTEM,
+    //ACTUALIZE_NAVMESH_CARAI,
+    NOT_SKID_PRESS,
+    MENU_OPTION,
+    MENU_OK,
+    MENU_BACK,
     ACTUALIZE_NAVMESH_TOTEM,
     ACTUALIZE_NAVMESH_CARAI,
     CHANGE_TOTEM_CAR,
-    PRIORIDAD1,
-    PRIORIDAD2,
-    PRIORIDAD3,
+    INIT_PARTICLES_BOX,
+    CHANGE_PARTICLES_VISIBILITY,
+    CREATE_PARTICLES_COLLISION_POWERUP,
+    CREATE_PARTICLES_ROBOJOROBO,
     COLLISION_PLAYER_TOTEM,
     COLLISION_AI_TOTEM,
-    POWER_UP_COGIDO,
     PowerUp_Create,
     CATCH_BOX_POWERUP,
     CATCH_AI_BOX_POWERUP,
@@ -47,34 +55,77 @@ enum EventType {
     THROW_POWERUP,
     THROW_POWERUP_AI,
     THROW_POWERUP_HUMAN,
-    MOVE_TO_POWERUP,
+    MOVE_RANDOM_POWERUP,
     CHANGE_DESTINATION,
-    PRESS_P,
-    UPDATE_POWERUP_HUD,
-    PRESS_0,
-    HURT,
-    CATCH_TOTEM,
-    NO_SHIELD,
-    CRASH_ENEMY,
-    BREAK_BOX,
+    PRESS_P,                    // Sonido pito
+    UPDATE_POWERUP_HUD,         // Actualiza el hud de powerup
+    SET_EVENT_HUD,
+    SET_GLOBAL_VOLUME,          // Actualizar volumen global
+    SET_MUSIC_VOLUME,
+    SET_RESOLUTION,
+    ENABLE_PARTICLES,
+    ENABLE_VEGETATION,
+    ENABLE_SHADOWS,
+    START_MINGAME,
+    STOP_MINGAME,
+    HURT,                       // Sonido danyo
+    CATCH_TOTEM,                // Sonido coger totem
+    NO_SHIELD,                  // Sonido escudo roto
+    CRASH,
+    VICTORY,
+    DEFEAT,
+    CLOCK,                      // Poner reloj global a sonar
+    NOT_CLOCK,                  // Parar reloj global
+    STOP_SOUND_MM,              // Parar sonido melon molon
+    STOP_SOUND_TB,              // Parar sonido telebanana
+    CRASH_WALL,                 // Sonido golpe con pared
+    BREAK_BOX,                  // Sonido romper caja
     DRIFT,
+    DRIFTS,
     NO_DRIFT,
-    VRANDOM,
-    MENU_OPTION,
-    MENU_OK,
-    MENU_BACK,
-    START_GAME,
+    VRANDOM,                    // Que el personaje hable en la seleccion
+    UPDATE_SOUNDCHARACTER,      // Updatear el personaje que habla
+    STATE_INTRO,                //Cambiar al estado Intro
     STATE_MENU,
+    STATE_SELECT_CHARACTER,
     STATE_PAUSE,
     STATE_ENDRACE,
+    STATE_ENDTOURNAMENT,
     STATE_INGAMESINGLE,
     STATE_INGAMEMULTI,
     STATE_LOBBYMULTI,
+    STATE_CONTROLS,
+    STATE_CREDITS,
+    STATE_GAME_OPTIONS,
+    STATE_TOURNAMENT_OPTIONS,
+    STATE_SETTINGS,
+    LAUNCH_ANIMATION_END_MULTI,
     CALCULATE_PATH_TO_NAVMESH,
+    UPDATE_SHIELD_VISIBILITY,
+    UPDATE_FACADE_VISIBILITY,
+    PREPARE_TO_DISCONNECT,
+    PREPARE_TO_SELECT_CHAR,
     NEW_TCP_START_MULTI,
     NEW_INPUTS_RECEIVED,
     NEW_SYNC_RECEIVED_CAR,
-    NEW_SYNC_RECEIVED_TOTEM
+    NEW_SYNC_RECEIVED_TOTEM,
+    NEW_CATCH_PU_RECEIVED,
+    NEW_CATCH_TOTEM_RECEIVED,
+    NEW_LOST_TOTEM_RECEIVED,
+    NEW_ROBOJOROBO_RECEIVED,
+    NEW_NITRO_RECEIVED,
+    NEW_THROW_PU_RECEIVED,
+    NEW_CRASH_PU_CAR_RECEIVED,
+    NEW_CRASH_PU_WALL_RECEIVED,
+    NEW_LAUNCH_ANIMATION_END_RECEIVED,
+    NEW_LAUNCH_COUNTDOWN_ANIMATION_RECEIVED,
+    NEW_CLOCK_SYNC_RECEIVED,
+    NEW_FINAL_CLOCK_SYNC_RECEIVED,
+    DISCONNECTED_PLAYER,
+    TCP_CHAR_REQUEST,
+    TCP_WAIT_OTHERS,
+    TCP_SEL_CHAR,
+    RETURN_TO_SELCHAR
 };
 
 // enum DataType{
@@ -107,6 +158,8 @@ struct Data {
     CTransformable* posCochePerseguir;
     typeCPowerUp typePowerUp;
     bool mainCharacter;
+    bool stole;
+    int num;
 };
 
 struct Event {

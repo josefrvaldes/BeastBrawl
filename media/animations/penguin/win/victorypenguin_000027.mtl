@@ -1,0 +1,24 @@
+# Blender MTL File: 'thepenguin_gameplay.blend'
+# Material Count: 2
+
+newmtl Material.001
+Ns 182.249990
+Ka 0.516667 0.516667 0.516667
+Kd 0.800000 0.800000 0.800000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 3
+map_Kd clv_thepenguin_kart_texture.tga
+
+newmtl UV
+Ns 240.249958
+Ka 1.000000 1.000000 1.000000
+Kd 0.500000 0.500000 0.500000
+Ks 0.866667 0.866667 0.866667
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd clv_thepenguin_character_texture.tga

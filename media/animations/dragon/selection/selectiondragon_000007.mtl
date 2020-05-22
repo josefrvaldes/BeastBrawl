@@ -1,0 +1,46 @@
+# Blender MTL File: 'deacondragon_blender.blend'
+# Material Count: 4
+
+newmtl KART
+Ns 306.250042
+Ka 0.033333 0.033333 0.033333
+Kd 0.500000 0.500000 0.500000
+Ks 0.050000 0.050000 0.050000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 3
+map_Kd clv_deacondragon_kart_texture.tga
+
+newmtl Material
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.266667 0.266667 0.266667
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd clv_deacondragon_kartwheel_texture.tga
+
+newmtl None.001
+Ns 500.000001
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.800000 0.800000 0.800000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd clv_platform_texture.tga
+
+newmtl UV
+Ns 7.562505
+Ka 1.000000 1.000000 1.000000
+Kd 0.500000 0.500000 0.500000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 3
+map_Kd clv_deacondragon_character_texture.tga

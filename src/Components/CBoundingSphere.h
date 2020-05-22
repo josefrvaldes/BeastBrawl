@@ -12,14 +12,10 @@ struct CTransformable;
 
 class CBoundingSphere : public Component {
    public:
-    CBoundingSphere(const vec3 &_center)
-        : center{_center}, radius{DEFAULT_SPHERE_RADIUS} {
-        m_compType = CompType::CompBoundingSphere;
-    }
-    CBoundingSphere(const vec3 &_center, float _radius)
-        : center{_center}, radius{_radius} {
-        m_compType = CompType::CompBoundingSphere;
-    }
+    CBoundingSphere(const vec3 &center_);
+    CBoundingSphere(const vec3 &center_, float radius_);
+    CBoundingSphere(const vec3 &center_, float radius_, float radiusFloor_);
+    CBoundingSphere(const vec3 &center_, float radius_, float radiusFloor_, float distanCenter_);
 
     IntersectData IntersectSphere(const CBoundingSphere &other) const;
     IntersectData IntersectRay(const CTransformable &transCarRay, const vec3 &normalRay) const;
@@ -27,7 +23,14 @@ class CBoundingSphere : public Component {
         center = _center;
     }
     vec3 center;
+    float disCenter{0.0};
     const float radius{DEFAULT_SPHERE_RADIUS};
+    const float radiusFloor{DEFAULT_SPHERE_RADIUS};
+    //vec4 equationSphere;  // ecuacion general de la esfera
+    // ejemplo:  centro(1,0,-1) radio=3  -->     (x-1)² + y² + (z+1)² = 3²
 
     static constexpr float DEFAULT_SPHERE_RADIUS{10.f};
+
+    private:
+    //vec4 equationSphereCenterRadius(const vec3 &center, const float &radius) const;
 };

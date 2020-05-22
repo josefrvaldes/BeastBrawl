@@ -1,18 +1,26 @@
 #pragma once
 
-
-
 #include "Entity.h"
-using namespace std;
-enum class TypeCar { CarHuman, CarAI };
-class Car : public Entity {
-   public:
-    Car(){};
-    ~Car(){};
+#include <string>
+#include <iostream>
+#include <glm/vec3.hpp>
+#include <Components/CPosDestination.h>
+#include <Components/CWayPoint.h>
 
-    TypeCar GetTypeCar(){ return typeCar; };
+using namespace std;
+
+enum class TypeCar { CarHuman, CarAI };
+
+class Car : public Entity {
+    public:
+    
+        Car(int pj);
+        ~Car(){};
+
+        TypeCar GetTypeCar(){ return typeCar; };
 
     protected:
-    TypeCar typeCar;
+    
+        TypeCar typeCar;
     
 };

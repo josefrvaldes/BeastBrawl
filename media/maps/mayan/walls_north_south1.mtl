@@ -1,0 +1,35 @@
+# Blender MTL File: 'mayan_mapv2.blend'
+# Material Count: 3
+
+newmtl brick.004
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.147314 0.098324 0.009240
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 1
+map_Kd clv_brick_Graph_basecolor.tga
+
+newmtl brick3
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.500000 0.500000 0.500000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 3
+map_Kd clv_brick3_low_Cube1_2.001_BaseColor.tga
+
+newmtl brick3.001
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.500000 0.500000 0.500000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 3
+map_Kd clv_brick3_low_Cube1_2.001_BaseColor.tga

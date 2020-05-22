@@ -13,12 +13,12 @@
 class StateMenu : public State{
     public:
         StateMenu();
-        ~StateMenu() = default;
+        ~StateMenu() override;
         void Input() override;
         void InitState() override;
         void Update() override;
         void Render() override;
-        States GetState() { return State::States::MENU; };
+        States GetState() override { return State::States::MENU; };
 
 
     private:

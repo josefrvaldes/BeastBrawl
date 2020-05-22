@@ -1,19 +1,20 @@
 #pragma once
 
-#include <boost/array.hpp>
 #include <boost/asio.hpp>
 #include <boost/asio/buffer.hpp>
 #include <chrono>
 #include <iostream>
 #include <thread>
-#include "../Constants.h"
+#include <unordered_map>
 #include "../../include/glm/vec3.hpp"
 #include "../Components/CPowerUp.h"
+#include "../Constants.h"
 
 using boost::asio::ip::udp;
 using namespace std;
 using namespace std::chrono;
 
+class PowerUp;
 
 class UDPClient {
     // --- TCP --- (sala de espera)
@@ -35,21 +36,64 @@ class UDPClient {
     UDPClient(string host, uint16_t port_);
     ~UDPClient();
 
-    void SendInputs(vector<Constants::InputTypes>& inputs, uint16_t id);
-    void SendSync(uint16_t idOnline, const glm::vec3 &posCar, const glm::vec3 &rotCar, typeCPowerUp tipoPU, bool haveTotem, int64_t totemTime,  
-                    bool totemInGround, const glm::vec3 &posTotem);
+    void SendInputs(const int64_t gameTime, const vector<Constants::InputTypes>& inputs, uint16_t id, float speed, float wheelRotation, float skidDeg, float skidRotation);
+    void SendSync(const int64_t gameTime, uint16_t idOnline, const glm::vec3& posCar, const glm::vec3& rotCar, float speed, float wheelRotation, float skidDeg, float skidRotation, typeCPowerUp typePU, bool haveTotem, int64_t totemTime,
+                  bool totemInGround, const glm::vec3& posTotem);
+    void SendCatchPU(uint16_t idOnline, typeCPowerUp typePU);
+    void SendClockSync(uint16_t idOnline1, uint16_t idOnline2, int64_t time, float turnOut, uint8_t numMeasurements);
+    void SendFinalClockSync(uint16_t idOnlineSender, uint16_t idOnlineReceiver, float turnout, int64_t timeToWaitForSyncing);
+    void SendCatchTotem(uint16_t idOnline, uint16_t idPlayerCatched);
+    void SendCrashPUCar(const uint16_t idOnline, const uint16_t idPowerUp, const uint16_t idCar);
+    void SendCrashPUWall(const uint16_t idOnline, const uint16_t idPowerUp);
+    void SendLostTotem(uint16_t idOnline, uint16_t idPlayerLosted, const glm::vec3& pos, float speed, uint16_t rotationTotemY, int numNavMesh);
+    void SendRoboJorobo(uint16_t idOnline);
+    void SendCollideNitro(uint16_t idOnline, uint16_t idWithTotem, uint16_t idWithNitro);
+    void SendThrowMelonOPudin(const uint16_t idOnline, const int64_t time, const uint16_t idPUOnline, const glm::vec3& position, const glm::vec3& rotation, const int8_t typePU);
+    void SendThrowTelebanana(const uint16_t idOnline, const int64_t time, const uint16_t idPUOnline, const glm::vec3& position, const glm::vec3& rotation, const int8_t typePU, const uint16_t idToPursue);
+    void SendEndgame(uint16_t idPlayer);
     void SendDateTime();
+    void SendLaunchAnimationEnd(const uint16_t idOnline, const uint16_t idOnlineWinner);
+    void SendWaitingForCountdown(const uint16_t idOnline);
     uint32_t idMainCar;
 
    private:
     void StartReceiving();
     void HandleReceived(std::shared_ptr<unsigned char[]> recevBuff, const boost::system::error_code& error, size_t bytesTransferred);
-    void HandleReceivedInputs(const vector<Constants::InputTypes> inputs, const uint16_t idRival) const;
-    void HandleReceivedSync(unsigned char* recevBuff, size_t bytesTransferred) const;
+    void HandleReceivedInputs(int64_t time, const vector<Constants::InputTypes> inputs, const uint16_t idRival, const float speed, const float wheelRotation, const float skidDeg, const float skidRotation) const;
+    void HandleReceivedSync(unsigned char* recevBuff, size_t bytesTransferred);
+    void HandleReceivedCatchPU(unsigned char* recevBuff, size_t bytesTransferred);
+    void HandleReceivedCatchTotem(unsigned char* recevBuff, size_t bytesTransferred);
+    void HandleReceivedLostTotem(unsigned char* recevBuff, size_t bytesTransferred);
+    void HandleReceivedUsedRoboJorobo(unsigned char* recevBuff, size_t bytesTransferred);
+    void HandleReceivedCollideNitro(unsigned char* recevBuff, size_t bytesTransferred);
+    void HandleReceivedDisconnection(unsigned char* recevBuff, size_t bytesTransferred);
+    void HandleReceivedEndgame(unsigned char* recevBuff, size_t bytesTransferred);
+    void HandleReceivedThrowMelonOPudin(unsigned char* recevBuff, size_t bytesTransferred);
+    void HandleReceivedThrowTelebanana(unsigned char* recevBuff, size_t bytesTransferred);
+    void HandleReceivedCrashPUCar(unsigned char* recevBuff, size_t bytesTransferred);
+    void HandleReceivedCrashPUWall(unsigned char* recevBuff, size_t bytesTransferred);
+    void HandleReceivedLaunchEndAnimation(uint16_t idPlayer, uint16_t idWinner) const;
+    void HandleReceivedLaunchCountdownAnimation() const;
+    void HandleReceivedClockSync(unsigned char* recevBuff, size_t bytesTransferred);
+    void HandleReceivedFinalClockSync(unsigned char* recevBuff, size_t bytesTransferred);
+
     void HandleSentInputs(const boost::system::error_code& errorCode, std::size_t bytes_transferred);
     void HandleSentSync(const boost::system::error_code& errorCode, std::size_t bytes_transferred);
+    void HandleSentPU(const boost::system::error_code& errorCode, std::size_t bytes_transferred);
+    void HandleSentCatchTotem(const boost::system::error_code& errorCode, std::size_t bytes_transferred);
+    void HandleSentLostTotem(const boost::system::error_code& errorCode, std::size_t bytes_transferred);
+    void HandleSentRoboJorobo(const boost::system::error_code& errorCode, std::size_t bytes_transferred);
+    void HandleSentCollideNitro(const boost::system::error_code& errorCode, std::size_t bytes_transferred);
+    void HandleSentEndgame(const boost::system::error_code& errorCode, std::size_t bytes_transferred);
+    void HandleSentThrowPU(const boost::system::error_code& errorCode, std::size_t bytes_transferred);
+    void HandleSentCrashPUCar(const boost::system::error_code& errorCode, std::size_t bytes_transferred);
+    void HandleSentCrashPUWall(const boost::system::error_code& errorCode, std::size_t bytes_transferred);
+    void HandleSentLaunchAnimationEnd(const boost::system::error_code& errorCode, std::size_t bytes_transferred);
+    void HandleSentWaitingForCountdown(const boost::system::error_code& errorCode, std::size_t bytes_transferred);
+    void HandleSentClockSync(const boost::system::error_code& errorCode, std::size_t bytes_transferred);
+    void HandleSentFinalClockSync(const boost::system::error_code& errorCode, std::size_t bytes_transferred);
 
-    void HandleSentDateTime(const boost::shared_ptr<std::string> message,
+    void HandleSentDateTime(const std::shared_ptr<std::string> message,
                             const boost::system::error_code& errorCode,
                             std::size_t bytes_transferred);
 
@@ -58,4 +102,22 @@ class UDPClient {
     udp::socket socket;
     std::thread butler;
     // boost::asio::io_context::strand strand;
+
+    unordered_map<uint16_t, int64_t> lastTimeInputReceived;
+    unordered_map<uint16_t, int64_t> lastTimeSyncReceived;
+    unordered_map<uint16_t, int64_t> lastTimeCatchPUReceived;
+    unordered_map<uint16_t, int64_t> lastTimeClockSyncReceived;
+    unordered_map<uint16_t, int64_t> lastTimeFinalClockSyncReceived;
+    unordered_map<uint16_t, int64_t> lastTimeCatchTotemReceived;
+    unordered_map<uint16_t, int64_t> lastTimeLostTotemReceived;
+    unordered_map<uint16_t, int64_t> lastTimeUsedRoboJoroboReceived;
+    unordered_map<uint16_t, int64_t> lastTimeCollideNitroReceived;
+    unordered_map<uint16_t, int64_t> lastTimeThrowMelonOPudinReceived;
+    unordered_map<uint16_t, int64_t> lastTimeThrowTelebananaReceived;
+    unordered_map<uint16_t, int64_t> lastTimeCrashPUCarReceived;
+    unordered_map<uint16_t, int64_t> lastTimeCrashPUWallReceived;
+    unordered_map<uint16_t, int64_t> lastTimeLaunchEndGameReceived;
+    unordered_map<uint16_t, int64_t> lastTimeLaunchCountdownReceived;
+    bool stateAnimationEnd {false};
+    int64_t timeGameStarted;
 };

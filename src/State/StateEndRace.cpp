@@ -4,37 +4,38 @@
 using namespace std;
 
 StateEndRace::StateEndRace(){
-    // constructor
-    std::cout << "Estado EndRace Creado" << std::endl;
+
+    std::cout << "> ENDRACE constructor" << std::endl;
+
     // Inicializamos las facadas
     renderEngine = RenderFacadeManager::GetInstance()->GetRenderFacade();
+    inputEngine = InputFacadeManager::GetInstance()->GetInputFacade();
     //renderFacadeManager->InitializeIrrlicht();
 
     renderEngine->FacadeInitEndRace();
+    InitState();
 
 }
 
 void StateEndRace::InitState() {
 
-    cout << "~~~ ENTRO A ENDRACE" << endl;
-
     if (!soundEngine){
         soundEngine = SoundFacadeManager::GetInstance()->GetSoundFacade();
-        cout << "~~~ SoundEngine en ENDRACE es -> " << soundEngine << endl;
     }
     soundEngine->SetState(5);
-    soundEngine->PlayEvent("Musica/fin_partida");
 }
 
 
 void StateEndRace::Render(){
+    renderEngine->FacadeBeginScene();
     renderEngine->FacadeDrawEndRace();
+    renderEngine->FacadeEndScene();
 }
 
 
 void StateEndRace::Input(){
     renderEngine->FacadeCheckInputEndRace();
-    // InputFacadeManager::GetInstance()->GetInputFacade()->CheckInputEndRace();
+    //inputEngine->CheckInputEndRace();
 }
 
 

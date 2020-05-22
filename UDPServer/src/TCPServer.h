@@ -1,8 +1,7 @@
 #pragma once
 
-#include <boost/array.hpp>
-#include <boost/asio.hpp>
-#include <boost/enable_shared_from_this.hpp>
+#include "../../include/boost/array.hpp"
+#include "../../include/boost/asio.hpp"
 #include <chrono>
 #include <iostream>
 #include "TCPConnection.h"
@@ -13,21 +12,27 @@ using namespace boost;
 using namespace std;
 using namespace std::chrono;
 
+class UDPServer;
 
 class TCPServer{
    public:
-    TCPServer(boost::asio::io_context& context_, uint16_t port_);
+    TCPServer(boost::asio::io_context& context_, uint16_t port_, UDPServer &udpServer_);
+    ~TCPServer();
     void StartReceiving();
+    void Close();
+    void SendStartGame();
+    void SendCharsSelected();
+    void SendCharsSelectedToOther(uint16_t idConnection);
 
    private:
     
     void HandleAccept(TCPConnection::pointer new_connection, const boost::system::error_code& error);
     bool PlayerExists(TCPConnection::pointer new_connection);
-    void SendStartGame();
 
     boost::asio::io_context& context;
     tcp::acceptor acceptor_;
+    UDPServer &udpServer;
 
     vector<TCPConnection::pointer> connections;
-    std::vector<Player> players;
+    std::vector<std::shared_ptr<Player>> players;
 };

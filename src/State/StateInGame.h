@@ -20,9 +20,6 @@
 #include <Entities/Totem.h>
 #include <Entities/WayPoint.h>
 #include <Entities/NavMesh.h>
-#include <Managers/ManPowerUp.h>
-#include <Managers/ManWayPoint.h>
-#include <Managers/ManNavMesh.h>
 #include <EventManager/EventManager.h>
 #include <Facade/Input/InputFacadeManager.h>
 #include <Facade/Physics/PhysicsFacadeManager.h>
@@ -31,17 +28,36 @@
 #include <Facade/Sound/SoundFacadeManager.h>
 #include <Systems/SystemPathPlanning.h>
 #include <Game.h>
+#include <Managers/ManPowerUp.h>
+#include <Managers/ManWayPoint.h>
+#include <Managers/ManNavMesh.h>
 #include <Managers/ManBoundingWall.h>
+#include <Managers/ManBoundingGround.h>
 #include <Managers/ManBoxPowerUp.h>
 #include <Managers/ManCar.h>
 #include <Managers/ManNamePlate.h>
 #include <Managers/ManPowerUp.h>
 #include <Managers/ManTotem.h>
 #include <Managers/ManWayPoint.h>
+#include <Managers/ManLight.h>
+#include <Managers/ManParticleSystem.h>
+#include <Managers/ManShield.h>
+#include <Managers/ManCamera.h>
+#include <Managers/ManSpawn.h>
+#include "../Managers/ManGameRules.h"
+#include <Managers/ManHUDEvent.h>
 #include <Systems/Collisions.h>
 #include <Systems/Physics.h>
 #include <Systems/PhysicsPowerUp.h>
+#include <Systems/SystemLoD.h>
+#include <Systems/SystemAnimationStart.h>
+#include <Systems/SystemAnimationEnd.h>
 #include <Systems/SystemBoxPowerUp.h>
+#include <Systems/SystemRanking.h>
+#include <Systems/SystemHurt.h>
+#include <Systems/Utils.h>
+#include <Systems/SystemData.h>
+#include <Systems/SysHud.h>
 #include <behaviourTree/behaviourTree.h>
 #include <behaviourTree/decorator.h>
 #include <behaviourTree/selector.h>
@@ -49,6 +65,10 @@
 #include <fuzzyLogic/fuzzyLogic.h>
 #include <Components/CNavMesh.h>
 #include <Components/CCurrentNavMesh.h>
+#include "../Managers/ManBoundingOBB.h"
+#include "../Constants.h"
+#include "../Octree/Octree.h"
+
 
 
 using namespace std;
@@ -56,42 +76,72 @@ using namespace chrono;
 
 class CLPhysics;
 
+enum UpdateState {
+    START,
+    COUNTDOWN,
+    GAME,
+    WAITING_FOR_COUNTDOWN,
+    END
+};
+
 class StateInGame : public State {
    public:
     StateInGame();
     ~StateInGame();
-    void InitVirtualMethods();
+    
     void InitState() override;
     virtual void Input() = 0;
     void Update() override;
+    virtual bool UpdateAnimationStart();
+    virtual void UpdateAnimationCountdown();
+    virtual void UpdateAnimationEnd();
+    virtual void UpdateGame();
     void Render() override;
-    States GetState() { return State::States::INGAME_SINGLE; };
+    States GetState() override { return State::States::INGAME_SINGLE; };
+    void CreateMainCar();
 
     shared_ptr<ManCar> manCars;
 
    protected:
-    shared_ptr<GameObject> ground;
-    shared_ptr<Camera> cam;
+    unique_ptr<ManCamera> manCamera;
     shared_ptr<ManPowerUp> manPowerUps;
     shared_ptr<ManBoxPowerUp> manBoxPowerUps;
     shared_ptr<ManNavMesh> manNavMesh;
     shared_ptr<ManWayPoint> manWayPoint;
     shared_ptr<ManNamePlate> manNamePlates;
     shared_ptr<ManBoundingWall> manBoundingWall;
+    shared_ptr<ManBoundingOBB> manBoundingOBB;
+    shared_ptr<ManBoundingGround> manBoundingGround;
+    shared_ptr<ManLight> manLight;
+    unique_ptr<ManGameRules> manGameRules;
+    unique_ptr<ManHUDEvent> manHudEvent;
+    unique_ptr<ManParticleSystem> manParticleSystem;
+    unique_ptr<ManShield> manShield;
+    unique_ptr<ManSpawn> manSpawn;
+
+    unique_ptr<SystemLoD> sysLoD;
+    unique_ptr<SystemAnimationStart> sysAnimStart;
+    unique_ptr<SystemAnimationEnd> sysAnimEnd;
+    unique_ptr<SystemData> systemDataVision;
+    unique_ptr<SystemHurt> sysHurt;
+    unique_ptr<SysHud> sysHud;
+
+    std::vector<shared_ptr<Manager>> managersEntities;
+    std::unique_ptr<Octree> octreeScene;
 
     RenderFacade *renderEngine = {nullptr};
     InputFacade *inputEngine = {nullptr};
     PhysicsFacade *physicsEngine = {nullptr};
     SoundFacade *soundEngine = {nullptr};
 
-    shared_ptr<Physics> physics;
+    //shared_ptr<Physics> physics;
     //shared_ptr<float> deltaTime;
-    float deltaTime = 0.0166666;
-    shared_ptr<PhysicsPowerUp> phisicsPowerUp;
+    
+    shared_ptr<SystemRanking> sysRanking;
     shared_ptr<SystemBoxPowerUp> sysBoxPowerUp;
     shared_ptr<Collisions> collisions;
     shared_ptr<Totem> totem;
-    shared_ptr<Entity> totemOnCar;
+    //shared_ptr<Entity> totemOnCar;
 
     unique_ptr<CLPhysics> clPhysics;
     // unique_ptr<SystemPathPlanning> sysPathPlanning;
@@ -103,14 +153,36 @@ class StateInGame : public State {
     // vector<float> deltas;
     //float CalculateDelta(float);
 
-    virtual void InitializeCLPhysics(ManCar &manCars, ManBoundingWall &ManBoundingWall);
-    virtual void InitializeManagers(Physics *physics, Camera *cam);
-    virtual void InitializeSystems(ManCar &manCars, ManBoundingWall &manBoundingWall);
+    virtual void InitializeCLPhysics(ManCar&, ManBoundingWall&, ManBoundingOBB&, ManBoundingGround&, ManPowerUp&, ManNavMesh&, ManBoxPowerUp&, ManTotem &);
+    virtual void InitializeManagers();
+    virtual void InitializeSystems(ManCar&, ManBoundingWall&, ManBoundingOBB&, ManBoundingGround&, ManPowerUp&, ManNavMesh&, ManBoxPowerUp&, ManTotem &);
     virtual void InitializeFacades();
     virtual void AddElementsToRender();
-    virtual void CAMBIARCosasDeTotemUpdate(){};
+    void GoToEndAnimation();
+    void GoToStateEndrace();
+    virtual void GoToUpdateGame();
+    void GoToCountdownAnimation();
+    void InitializeSystemData();
+    //virtual void CAMBIARCosasDeTotemUpdate(){};
 
-    void CAMBIARCosasDeTotem(ManTotem &);
-    void CAMBIARCosasDeBoxPU(ManWayPoint &, ManBoxPowerUp &);
-    void CAMBIARCosasNavMesh(ManNavMesh &);
+    void IntersectsCLPhysics();
+
+    void CreateVegetation();
+    
+    //void CAMBIARCosasDeTotem(ManTotem &);
+    //void CAMBIARCosasNavMesh(ManCar &, ManNavMesh &);
+    //void CAMBIARPositionTotemAboveCar();
+    UpdateState currentUpdateState {UpdateState::START};
+    int64_t timerCountdown;
+    uint8_t currentCountdown{3};
+    int64_t timerEnd {0};
+
+
+
+    std::chrono::time_point<std::chrono::system_clock> timeStart;        // reloj que contabiliza el tiempo
+    std::chrono::time_point<std::chrono::system_clock> timeStartSeccion;        // reloj que contabiliza el tiempo
+    double accumulatedTimeUPDATE {0.0};
+
+
+
 };

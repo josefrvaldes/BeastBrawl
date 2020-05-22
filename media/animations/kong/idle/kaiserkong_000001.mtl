@@ -1,0 +1,24 @@
+# Blender MTL File: 'None'
+# Material Count: 2
+
+newmtl Material.002
+Ns 303.787011
+Ka 0.552778 0.552778 0.552778
+Kd 0.800000 0.800000 0.800000
+Ks 0.484615 0.484615 0.484615
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 3
+map_Kd clv_kaiserkong_kart_texture.tga
+
+newmtl UV.001
+Ns 27.562504
+Ka 0.408333 0.408333 0.408333
+Kd 0.500000 0.500000 0.500000
+Ks 0.416667 0.416667 0.416667
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 3
+map_Kd clv_kaiserkong_character_texture.tga

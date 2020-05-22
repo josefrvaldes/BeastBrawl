@@ -1,13 +1,10 @@
 #pragma once
 
 #include "SoundFacade.h"
+#include <SharpEngine/SharpEngine.h>
 
-#include <iostream>
 #include <unordered_map>
-
-#include <fmod_studio.hpp>
-#include <fmod.hpp>
-#include <fmod_errors.h>
+#include <iostream>
 
 #include <EventManager/EventManager.h>
 #include <EventManager/Event.h>
@@ -18,115 +15,139 @@ using namespace std;
 class SoundFacadeFMOD : public SoundFacade {
     public:
         explicit SoundFacadeFMOD() : SoundFacade() {};
-        ~SoundFacadeFMOD();
+        ~SoundFacadeFMOD() override;
 
-        // Funciones basicas del motor de audio.
-        void InitSoundEngine() override;
-        void TerminateSoundEngine() override;
-        void UnloadAllBanks();
+        void Initialize()               override;
+        void Terminate()                override;
+        void SetState(const uint8_t)    override;
 
-        // Cambio de banco de audio y subscripcion a eventos.
-        void SetState(const uint8_t) override;
-        void SetEventPosition(const string&, const glm::vec3&);
-        void SetParameter(const string, const string, const float) override;
-
-        void PlayEvent(const string) override;
-        void StopAllEvents() override;
-        void StopEvent(const string) override;
-        void PauseAllEvent() override;
-        void ResumeAllEvent() override;
+        void PlayEvent(const string&)   override;
+        void PlayEventWithSpecificVolume (const string&, float) override;
+        void StopAllEvents()            override;
+        void StopEvent(const string&)   override;
+        void PauseAllEvent()            override;
+        void ResumeAllEvent()           override;
         void PauseEvent(const string&);
-        void ResumeEvent(const string&);
-        
-        bool IsPlaying(FMOD::Studio::EventInstance*);
-        void Update() override;
+        void ResumeEvent(const string&) override;
 
-        //unordered_map<string, FMOD::Studio::EventDescription*> GetDescriptions() { return soundDescriptions;};
-        //unordered_map<string, FMOD::Studio::EventInstance*> GetInstances() { return eventInstances; }
+        void UpdateCars(const vector<shared_ptr<Entity>>&)              override;
+        void UpdatePowerUps(const vector<shared_ptr<Entity>>&)          override;
+        void UpdateTotem(const shared_ptr<CarHuman>&, const vector<shared_ptr<Entity>>&)             override;
+        void UpdateListener(const shared_ptr<CarHuman>&)                override;
+        void Update()                                                   override;
+
+        void SetEventPositionEstatic3D(const string&, const glm::vec3&);
+        void SetEventPositionDinamic3D(const string&, const glm::vec3&, const float);
+        void SetParameter(const string&, const string&, const float) override;
+
+        void CreateSound2D(const string&) override;
+        void CreateSoundEstatic3D(uint16_t, glm::vec3&, string&, bool) override;
+        void CreateSoundDinamic3D(uint16_t, glm::vec3&, string&, bool, bool) override;
 
     private:
-        // eventos del juego
-        void StartGame(DataMap*);
+
+        void LoadSoundByState(const uint8_t) override;
+        void LoadSoundBank(const string&, const bool) override;
+        void LoadSoundEvent(const string&, const bool, const bool) override;
+
+        void StartGame();
+        void StopMusicInGame();
+
+        void SubscribeToGameEvents(const uint8_t) override;
+
+        // -------------------------------- Eventos: Ajustes
+        void SetCharacter(DataMap*);
+        void SetGlobalVolume(DataMap*);
+        void SetMusicVolume(DataMap*);
+
+        // -------------------------------- Eventos del juego: IN GAME
+        void StartMusicInGame(DataMap*);
         void SoundClaxon(DataMap*);
         void SoundThrowPowerup(DataMap*);
         void SoundHurt(DataMap*);
         void SoundCatchTotem(DataMap*);
         void SoundCrash(DataMap*);
+        void SoundCrashWall(DataMap*);
         void SoundBreakBox(DataMap*);
         void SoundDrift(DataMap*);
         void SoundRandomSentence(DataMap*);
-        
-        void SoundMenuOption(DataMap*);
+        void SoundClock(DataMap*);
 
-        void StopPrueba(DataMap*);           // TO-DO: Quitar
-        void StopShield(DataMap*);           // TO-DO: Crear uno para todos los power-up
+        void StopShield(DataMap*);
         void StopDrift(DataMap*);
+        void StopClock(DataMap*);
+        void StopSoundMM(DataMap*);
+        void StopSoundTB(DataMap*);
 
+        // -------------------------------- Eventos del juego: MENU
+        void SoundMenuOption(DataMap*);
+        void SoundMenuOk(DataMap*);
+        void SoundMenuBack(DataMap*);
 
-
-        void LoadMasterBank();
-        void UnloadMasterBank();
-        FMOD::Studio::EventInstance* CreateInstance(const string&);
-        void LoadSoundByState(const uint8_t) override;
-        void LoadSoundBank(const string, const bool) override;
-        void LoadSoundEvent(const string, const bool) override;
-        
-        void SubscribeToGameEvents(const uint8_t) override;
-
-
-
-        FMOD::System* coreSystem = NULL;
-        FMOD::Studio::System* system = NULL;
-        FMOD::Studio::Bank* masterBank = NULL;
-        FMOD::Studio::Bank* stringsBank = NULL;
+        void SoundVictoryVoice();
+        //void SoundVictory(DataMap*);
+        //void SoundDefeat(DataMap*);
 
         float character { 0 } ;
+        enum TipoVoz { ChoqueEnemigo, ChoquePowerup, Derrape, Powerup, Random, Nitro, Seleccion };
+        CLSE::SharpEngine* soundEngine { nullptr };
 
-        unordered_map<string, FMOD::Studio::Bank*> banks;
-        unordered_map<string, FMOD::Studio::EventDescription*> soundDescriptions;
-        // TO-DO: Separar instancias
-        unordered_map<string, FMOD::Studio::EventInstance*> eventInstances;
-        
+        shared_ptr<EventManager> eventManager;
+
         unordered_map<string, vector<string>> events = {
-            { "InGame2D",       {
-                                "Ambiente/ambiente",            // Metido
-                                "Coche/claxon",                 // Metido
+            { "InGame2D",
+                                {
+                                "Ambiente/ambiente",
+                                "Coche/claxon",
                                 "Personajes/voces",
                                 "Partida/cuenta_atras",
-                                "Musica/in_game_1"              //Metido
+                                "PowerUp/robojorobo",
+                                "Partida/reloj",
+                                "Partida/pitido_final",
+                                "Partida/cinematica"
                                 } 
             },
-            { "InGame3D",       {
-                                "Coche/motor",                  // "Metido" en 2D
-                                "Partida/coger_totem",          // "Metido" en 2D
-                                "Partida/coger_caja",           // "Metido" en 2D
+            { "InGame3DD",
+                            {
+                                "Coche/motor",
                                 "Partida/totem",
-                                "PowerUp/escudo",               // "Metido" en 2D
-                                "PowerUp/escudo_roto",          // "Metido" en 2D
-                                "Coche/choque",                 // "Metido" en 2D
-                                "PowerUp/pudin",                // "Metido" en 2D
-                                "PowerUp/robojorobo",           // "Metido" en 2D
+                                "PowerUp/escudo",
+                                "PowerUp/melonmolon",
                                 "PowerUp/telebanana",
-                                "PowerUp/telebanana_prov",      // "Metido" como provisional
-                                "PowerUp/melonmolon",           // "Metido" como provisional
-                                "Coche/choque_powerup"          // "Metido" en 2D
+                                "PowerUp/pudin",
+                                "PowerUp/telebanana_prov"
                                 }
             },
-            { "EndRace",        {
-                                "Musica/fin_partida",           // Metido
+            { "InGame3DE",
+                            {
+                                "PowerUp/escudo_roto",
+                                "Partida/coger_totem",
+                                "PowerUp/choque_powerup",
+                                "Coche/choque",
+                                "Partida/coger_caja"
+                                }
+
+            },
+            { "EndRace",
+                                {
                                 "Personajes/derrota",
                                 "Personajes/victoria"
                                 }
             },
-            { "Menu",           {
+            { "Menu",
+                                {
                                 "Menu/atras",
                                 "Menu/aceptar",
-                                "Menu/cambio_opcion",           // "Metido" como provisional
-                                "Musica/menu"
+                                "Menu/cambio_opcion"
+                                }
+            },
+            { "Musica",         {
+                                "Musica/fin_partida",
+                                "Musica/in_game_1",
+                                "Musica/intro",
+                                "Musica/menu",
+                                "Musica/credits"
                                 }
             }
         };
-        enum TipoVoz { ChoqueEnemigo, ChoquePowerup, Derrape, Powerup, Random };
-
-        shared_ptr<EventManager> eventManager;
 };

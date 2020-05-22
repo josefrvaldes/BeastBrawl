@@ -4,6 +4,7 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+
         {
             "name": "Beast Brawl",
             "type": "cppdbg",
@@ -15,7 +16,7 @@
             "environment": [
                 {
                     "name": "LD_LIBRARY_PATH",
-                    "value": "./lib/linux/irrlicht:./lib/linux/fmod"
+                    "value": "./lib/linux/irrlicht:./lib/linux/fmod:./CLEngine/lib/linux/assimp"
                 }
             ],
             "externalConsole": false,
@@ -33,7 +34,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/UDPServer/Server",
-            "args": [],
+            "args": [3],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "externalConsole": false,
@@ -58,7 +59,7 @@
             "environment": [
                 {
                     "name": "LD_LIBRARY_PATH",
-                    "value": "./lib/linux/irrlicht:./lib/linux/fmod"
+                    "value": "./lib/linux/irrlicht:./lib/linux/fmod:./CLEngine/lib/linux/assimp"
                 }
             ],
             "externalConsole": false,

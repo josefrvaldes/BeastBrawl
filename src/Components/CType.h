@@ -12,7 +12,10 @@ enum ModelType{
     Cube,
     StaticMesh,
     AnimatedMesh,
-    Text
+    Text,
+    ParticleSystem,
+    PointLight,
+    Shield
 };
 
 class CType : public Component{
