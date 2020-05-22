@@ -1,22 +1,4 @@
-/**
- * Beast Brawl
- * Game created as a final project of the Multimedia Engineering Degree in the University of Alicante.
- * Made by Clover Games Studio, with members 
- * Carlos de la Fuente Torres delafuentetorresc@gmail.com,
- * Antonio Jose Martinez Garcia https://www.linkedin.com/in/antonio-jose-martinez-garcia/,
- * Jesús Mas Carretero jmasc03@gmail.com, 
- * Judith Mula Molina https://www.linkedin.com/in/judith-mm-18099215a/, 
- * Rubén Rubio Martínez https://www.linkedin.com/in/rub%C3%A9n-rubio-mart%C3%ADnez-938700131/, 
- * and Jose Valdés Sirvent https://www.linkedin.com/in/jose-f-valdés-sirvent-6058b5a5/ github -> josefrvaldes
- * 
- * 
- * @author Antonio Jose Martinez Garcia
- * @author Jose Valdés Sirvent
- * 
- */
- 
- 
- #include "UDPServer.h"
+#include "UDPServer.h"
 
 #include <algorithm>
 #include <boost/asio/placeholders.hpp>
@@ -72,6 +54,9 @@ void UDPServer::HandleReceive(std::shared_ptr<unsigned char[]> recevBuff, std::s
         // de una ejecución anterior del juego
         if (time > timeServerStartedReceiving) {
             uint16_t idPlayer = Serialization::Deserialize<uint16_t>(recevBuff.get(), currentIndex);
+            //cout << Utils::getISOCurrentTimestampMillis() << " hemos recibido una petición de type[" << unsigned(petitionType) << "] del jugador[" << idPlayer << "] con ip["<<remoteClient->address().to_string() << ":" << to_string(remoteClient->port()) << "]" << endl;
+            //cout << Utils::getISOCurrentTimestampMillis() << " Hemos recibido en el server la llamada " << time << " de tipo " << unsigned(petitionType) << " del user " << idPlayer << endl;
+            // TODO: esto creo que podría evitarse
             unsigned char buffRecieved[Constants::ONLINE_BUFFER_SIZE];
             memcpy(&buffRecieved[0], &recevBuff.get()[0], bytesTransferred);
 
@@ -212,10 +197,16 @@ void UDPServer::HandleReceive(std::shared_ptr<unsigned char[]> recevBuff, std::s
                         break;
                 }
 
-            } 
+                // metodo para detectar si algún paquete no ha llegado desde hace tiempo
+                //DetectUsersDisconnected();
+            } //else {
+                //cout << idPlayer << " - No se ha encontrado el player que corresponde con esta llamada. CATÁSTROFE" << endl;
+            //}
         }
 
-    }
+    } //else {
+        //cout << "¡¡HUBO UN ERROR AL RECIBIR DATOS EN EL SERVER!! errorcode:" << errorCode << endl;
+    //}
     StartReceiving();  // antes estaba dentro del if, pero entonces si hay un error ya se rompe tó ¿?
 }
 

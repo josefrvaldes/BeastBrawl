@@ -1,22 +1,4 @@
-/**
- * Beast Brawl
- * Game created as a final project of the Multimedia Engineering Degree in the University of Alicante.
- * Made by Clover Games Studio, with members 
- * Carlos de la Fuente Torres delafuentetorresc@gmail.com,
- * Antonio Jose Martinez Garcia https://www.linkedin.com/in/antonio-jose-martinez-garcia/,
- * Jesús Mas Carretero jmasc03@gmail.com, 
- * Judith Mula Molina https://www.linkedin.com/in/judith-mm-18099215a/, 
- * Rubén Rubio Martínez https://www.linkedin.com/in/rub%C3%A9n-rubio-mart%C3%ADnez-938700131/, 
- * and Jose Valdés Sirvent https://www.linkedin.com/in/jose-f-valdés-sirvent-6058b5a5/ github -> josefrvaldes
- * 
- * 
- * @author Antonio Jose Martinez Garcia
- * @author Jose Valdés Sirvent
- * 
- */
- 
- 
- #include "TCPConnection.h"
+#include "TCPConnection.h"
 
 #include <boost/asio/placeholders.hpp>
 #include <boost/bind.hpp>
@@ -56,7 +38,9 @@ void TCPConnection::HandleRead(std::shared_ptr<unsigned char[]> recevBuff, const
     if (!error && bytes_transferred != 0) {
         size_t currentIndex = 0;
         uint8_t petitionType = Serialization::Deserialize<uint8_t>(recevBuff.get(), currentIndex);    // numero
-        
+        //cout << "Hemos leido " << bytes_transferred << " bytes y el petitionType es " << unsigned(petitionType) << endl;
+
+
         Constants::PetitionTypes callType = static_cast<Constants::PetitionTypes>(petitionType);
         switch (callType) {
             case Constants::PetitionTypes::CONNECTION_REQUEST: {
@@ -79,7 +63,11 @@ void TCPConnection::HandleRead(std::shared_ptr<unsigned char[]> recevBuff, const
         }
         tcpServer->SendCharsSelectedToOther(ID);
         DeleteMe();
-    } 
+        //tcpServer->SendCharsSelected(); // Testear
+        //cout << "Se ha desconectado un nuevo jugador, ahora son " << players.size() << endl;
+    } //else if (error) {
+        //std::cout << "Error al leer: " << error.message() << std::endl;
+    //}
     Start();
 }
 
@@ -110,6 +98,15 @@ void TCPConnection::DeleteMe() {
         connections.end());
 }
 
+// void TCPConnection::SendStartMessage(string datos){
+//     socket_.async_send(
+//         boost::asio::buffer(datos, datos.size()),
+//         boost::bind(
+//             &TCPConnection::HandleWrite,
+//             this,
+//             boost::asio::placeholders::error,
+//             boost::asio::placeholders::bytes_transferred));
+// }
 
 void TCPConnection::SendStartMessage(std::shared_ptr<unsigned char[]> buff, size_t buffSize) {
     socket_.async_send(
