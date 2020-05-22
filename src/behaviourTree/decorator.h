@@ -10,7 +10,8 @@
  * and Jose Valdés Sirvent https://www.linkedin.com/in/jose-f-valdés-sirvent-6058b5a5/ github -> josefrvaldes
  * 
  * 
-  * @author Carlos de la Fuente Torres <delafuentetorresc@gmail.com>
+ * @author Carlos de la Fuente Torres <delafuentetorresc@gmail.com>
+ * @author Antonio Jose Martinez Garcia
  * 
  */
  
