@@ -1,4 +1,21 @@
-#include "Physics.h"
+/**
+ * Beast Brawl
+ * Game created as a final project of the Multimedia Engineering Degree in the University of Alicante.
+ * Made by Clover Games Studio, with members 
+ * Carlos de la Fuente Torres delafuentetorresc@gmail.com,
+ * Antonio Jose Martinez Garcia https://www.linkedin.com/in/antonio-jose-martinez-garcia/,
+ * Jesús Mas Carretero jmasc03@gmail.com, 
+ * Judith Mula Molina https://www.linkedin.com/in/judith-mm-18099215a/, 
+ * Rubén Rubio Martínez https://www.linkedin.com/in/rub%C3%A9n-rubio-mart%C3%ADnez-938700131/, 
+ * and Jose Valdés Sirvent https://www.linkedin.com/in/jose-f-valdés-sirvent-6058b5a5/ github -> josefrvaldes
+ * 
+ * 
+ * @author Antonio Jose Martinez Garcia
+ * 
+ */
+ 
+ 
+ #include "Physics.h"
 #include <Components/CCar.h>
 #include <Components/CNitro.h>
 #include <Components/CSpeed.h>
@@ -38,14 +55,9 @@ void Physics::update(Car *car) {
 
 //Calcula la posicion del coche (duda con las formulas preguntar a Jose)
 void Physics::CalculatePosition(CCar *cCar, CTransformable *cTransformable, CSpeed *cSpeed, CExternalForce *cExternalForce, float deltaTime) {
-
-    //cout << "LA FUERZA EXTERNA:  " << cExternalForce->force << endl;
-
-
     // debemos de tener encuenta la fuerza externa, asi como la direccion final que tomaremos (el angulo final)
     if(cExternalForce->force > 0){
         // Este paso es una tonteria porque ya lo devolvemos normalizado
-        //cout << " la fuerza exterman SIIII es mayor a 0, por lo que tenemos fuerza externa" << endl;
         cExternalForce->dirExternalForce = normalize(cExternalForce->dirExternalForce);
     }  
 
@@ -58,21 +70,18 @@ void Physics::CalculatePosition(CCar *cCar, CTransformable *cTransformable, CSpe
     glm::vec2 finalForce = ApplyExternalForce(cCar, cExternalForce, carForce);
 
     // Movimiento del coche
-    //cSpeed->speed.y = 0.f;                 // TODO, esto lo cacharreará el CLPhysics
     cTransformable->position.x += finalForce.x * deltaTime;
     cTransformable->position.z += finalForce.y * deltaTime;
-    // cout << "JUG2se ha aplicado una speed real de (" << finalForce.x * deltaTime << ",0," << finalForce.y * deltaTime << ")" << endl; 
 
     // Rotacion del coche
     if(cCar->skidRotation != 0){
-        //std::cout << "Incremento con skid: " << cCar->wheelRotation * 0.05 + 0.04 * cCar->skidRotation << "\n";
         cTransformable->rotation.y += cCar->wheelRotation * 0.05 + 0.03 * cCar->skidRotation;
     }else{
-        //std::cout << "Incremento no  skid: " << cCar->wheelRotation * 0.20 << "\n";
         cTransformable->rotation.y += cCar->wheelRotation * 0.20;
     }
     cTransformable->rotation.y = Utils::GetAdjustedDegrees(cTransformable->rotation.y);
 }
+
 
 vec3 Physics::CalculateVecDirCar(CTransformable *cTransformable) const{
    float angleRotation = (cTransformable->rotation.y * PI) / 180.0;
@@ -103,54 +112,11 @@ void Physics::CalculatePositionReverse(CCar *cCar, CTransformable *cTransformabl
 }
 
 
-//Calcula la posicion de la camara (duda con las formulas preguntar a Jose)
-//void Physics::CalculatePositionCamera(CCar *cCar, CTransformable *cTransformableCar, CTransformable *cTransformableCamera, CCamera *cCamera) {
-//    // comento la primera linea porque la pos de la cámara en altura (por ahora) es siempre la misma
-//    float rotationFinal = cTransformableCar->rotation.y - cCar->skidRotation - cCamera->rotExtraY;
-//    rotationFinal = Utils::GetAdjustedDegrees(rotationFinal);
-//
-//    ///float angleRotation = cTransformable->rotation.y - cCar->skidRotation;
-//    ///angleRotation = Utils::GetAdjustedDegrees(angleRotation);
-/////
-//    ///cSpeed->speed.x = cos(glm::radians(angleRotation));  // * cCar->speed;
-//    ///cSpeed->speed.z = sin(glm::radians(angleRotation));  // * cCar->speed;
-//
-//
-//    auto carPos_X = (cTransformableCar->position.x + 40 * cos(((rotationFinal) * PI) / 180.0));
-//    if(  cTransformableCamera->position.x  < (carPos_X - 0.10)   ){
-//        // debemos de aplicarle la aceleracion
-//        cTransformableCamera->position.x += 0.10;
-//    }
-//    if(  cTransformableCamera->position.x  > (carPos_X + 0.10)  ){
-//        // debemos de aplicarle la aceleracion
-//        cTransformableCamera->position.x -= 0.10;
-//    }
-//
-//    auto carPos_Z = (cTransformableCar->position.z - 40 * sin(((rotationFinal) * PI) / 180.0));
-//    if(  cTransformableCamera->position.z  < (carPos_Z - 0.10)  ){
-//        // debemos de aplicarle la aceleracion
-//        cTransformableCamera->position.z += 0.10;
-//    }
-//    if(  cTransformableCamera->position.z  > (carPos_Z + 0.10)  ){
-//        // debemos de aplicarle la aceleracion
-//        cTransformableCamera->position.z -= 0.10;
-//    }
-//
-//
-//
-//    cTransformableCamera->position.y = cTransformableCar->position.y + 20;
-//    //cTransformableCamera->position.x = (cTransformableCar->position.x + 40 * cos(((rotationFinal) * PI) / 180.0));
-//    //cTransformableCamera->position.z = (cTransformableCar->position.z - 40 * sin(((rotationFinal) * PI) / 180.0));
-//}
-
-
 // aplicamos al movimiento del coche el desplazamiento en caso de que alguien lo empuje
 glm::vec2 Physics::ApplyExternalForce(CCar *cCar, CExternalForce *externalForce, const glm::vec2& carForce) const{
     glm::vec2 finalForce(carForce);
     if(externalForce->force > 0){
         glm::vec2 collisionForce(externalForce->dirExternalForce.x*externalForce->force, externalForce->dirExternalForce.z*externalForce->force);
-        //float angleForces = glm::degrees(atan2(collisionForce.y, collisionForce.x)) - glm::degrees(atan2(carForce.y, carForce.x));
-        //angleForces = Utils::GetAdjustedDegrees(angleForces);
         finalForce.x = carForce.x + collisionForce.x;
         finalForce.y = carForce.y + collisionForce.y;
         externalForce->force -= externalForce->friction;
@@ -164,9 +130,7 @@ glm::vec2 Physics::ApplyExternalForce(CCar *cCar, CExternalForce *externalForce,
 
 //Entra cuando se presiona la I
 void Physics::Accelerate(Car *car) {
-    // versión anterior
     auto cCar = static_cast<CCar *>(car->GetComponent(CompType::CarComp).get());
-    //auto cSpeed = static_cast<CSpeed *>(car->GetComponent(CompType::SpeedComp).get());
     auto cNitro = static_cast<CNitro *>(car->GetComponent(CompType::NitroComp).get());
     //Aumentamos la velocidad
     if (cNitro->activePowerUp == false) {
@@ -228,16 +192,6 @@ void Physics::TurnLeft(Car *car) {
         }
     }
 
-    /*if(cCar->skidState == SkidState::SKID_LEFT){
-        auto cTrans = static_cast<CTransformable *>(car->GetComponent(CompType::TransformableComp).get());
-        cCar->skidRotation -= cCar->skidAcc;
-        cTrans->rotation.y -= cCar->skidAcc;
-        if(cCar->skidRotation < cCar->skidDeg){
-            cCar->skidRotation += cCar->skidAcc;
-            cTrans->rotation.y += cCar->skidAcc;
-        }
-        if(cTrans->rotation.y < 0) cTrans->rotation.y += 360.0; 
-    }*/
     if(cCar->skidState == SkidState::SKID_START && cCar->speed>cCar->maxSpeed*0.6 && duration_cast<milliseconds>(system_clock::now() - cCar->skidStart).count() < cCar->skidActivationTime){
         cCar->skidState = SkidState::SKID_TO_LEFT;
         cCar->skidDeg = cCar->skidDegL;
@@ -323,9 +277,7 @@ void Physics::Skid(Car *car){
         cCar->skidStart = system_clock::now();
         cCar->skidState = SkidState::SKID_START;
         EventManager::GetInstance().AddEventMulti(Event{EventType::DRIFTS});
-    }/*else if(cCar->skidState == SkidState::SKID_START && duration_cast<milliseconds>(system_clock::now() - cCar->skidStart).count() > cCar->skidAnimationTime){
-        cCar->skidState = SkidState::DISABLED;
-    }*/
+    }
 
     // Si se mantiene pulsado va a incrementar hasta que se alcance la posicion
     if(cCar->skidState == SkidState::SKID_TO_LEFT){
@@ -415,30 +367,23 @@ void Physics::NewInputsReceivedOnline(Car *car, float speed, float wheelRotation
     cCar->wheelRotation = wheelRotation;
     cCar->skidDeg = skidDeg;
     cCar->skidRotation = skidRotation;
-    // cout << "JUG2Hemos recibido un speed["<<speed<<"] wheelRotation["<<wheelRotation<<"] skidDeg["<<skidDeg<<"] y skidRotation["<<skidRotation<<"]" << endl;
+
     if(buffer->elems.size() > 1) {
-        // cout << "JUG2Hacemos corrección por input received: el coche estaba en:   " << *cTransformable << endl;
         BuffElement elemRecienRecibido = buffer->elems.front();
         buffer->elems.pop_front();
         BuffElement elemSiguiente = buffer->elems.front();
         cTransformable->position = elemSiguiente.pos;
         cTransformable->rotation = elemSiguiente.rot;
-        // cout << "JUG2\tCogemos la pos donde estaba en el momento del timeReceived:  " << *cTransformable << endl;
-        // float deltaAux = Constants::DELTA_TIME_MILLIS;
         int32_t intervalo = elemRecienRecibido.time - elemRecienRecibido.timeSent;
 
         float veces = intervalo / Constants::DELTA_TIME_MILLIS;
         int16_t auxVeces = round(veces);
-        // cout << "JUG2\tHa habido un intervalo de " << intervalo << " ms, por tanto corregiremos " << auxVeces << " veces" << endl;
 
         // TODO: posible corrección de desfase. Parece que el online va siempre 1 frame por delante, así que para ajustar, haremos aquí
         // una corrección menos:
         for(int16_t i = 0; i < auxVeces - 1; i++) {
-            // cout << "JUG2corregimos " << i << " veces" << endl;
             MoveCarHumanByInput(car, cCar, cOnline, cTransformable, cSpeed, cNitro, cExternalForce);
-            // cout << "JUG2\t Tras esta corrección estamos en:  " << *cTransformable << endl;
         }
-        // cout << "JUG2" << Utils::getISOCurrentTimestampMillis() << " Al acabar todas las correcciones por input received, el coche está en: " << *cTransformable << endl;
     }
 }
 
@@ -452,27 +397,13 @@ void Physics::NewSyncReceivedOnline(Car *car, int64_t timeSent, int64_t gameTime
     auto cExternalForce = static_cast<CExternalForce *>(car->GetComponent(CompType::CompExternalForce).get());
     auto cBufferOnline = static_cast<CBufferOnline *>(car->GetComponent(CompType::BufferOnline).get());
 
-    // cout << "JUG2Hemos recibido una sync que se envió a las " << Utils::getISOCurrentTimestampMillis(timeSent) << endl;
     auto elems = cBufferOnline->elems;
     std::list<BuffElement>::iterator it;
-    // cout << "JUG2Hacemos corrección por sync received: el coche estaba en:    " << *cTransformable << " con una speed[" << cCar->speed << "]" << endl;
     uint16_t veces = round(gameTime - timeSent) / (Constants::DELTA_TIME_MILLIS) + 1;   // este 1 es porque nosotros enviamos el sync en el input del frame actual, pero el 
                                                                                                         // input es lo primero que se hace del frame, osea que realmente estamos enviando la pos que se calculó el frame anterior
     for(uint16_t i = 0; i < veces; i++) {
-        // cout << "JUG2corregimos" << endl;
         MoveCarHumanByInput(car, cCar, cOnline, cTransformable, cSpeed, cNitro, cExternalForce);
-        // cout << "JUG2\ttras la corrección estamos en " << *cTransformable << " y speed [" << cCar->speed << "]" << endl;
     }
-
-
-    // for(it = elems.begin(); it != elems.end(); ++it)  {
-    //     if((it->receivedForReal == false && it->time > time) || (it->receivedForReal && it->timeSent > time)) {
-    //         cout << "corregimos" << endl;
-    //         MoveCarHumanByInput(car, cCar, cOnline, cTransformable, cSpeed, cNitro, cExternalForce);
-    //         cout << "\ttras la corrección estamos en " << *cTransformable << " y speed [" << cCar->speed << "]" << endl;
-    //     }
-    // }
-    //cout << "JUG2 " << Utils::getISOCurrentTimestampMillis() << "Al acabar la corrección por sync received: el coche está en: " << *cTransformable << endl << endl << endl;
 }
 
 void Physics::MoveCarHumanByInput(Car *car, CCar *cCar, COnline *cOnline, CTransformable *cTransformable, CSpeed *cSpeed, CNitro *cNitro, CExternalForce *cExternalForce) {
@@ -531,10 +462,8 @@ void Physics::UpdateHuman(Car *car, int64_t gameTime) {
     MoveCarHumanByInput(car, cCar, cOnline, cTransformable, cSpeed, cNitro, cExternalForce);
 
     // añadimos que se ha calculado una nueva posición por predicción
-    // cout << "JUG2Hemos calculado una nueva pos" << endl;
     auto cBufferOnline = static_cast<CBufferOnline *>(car->GetComponent(CompType::BufferOnline).get());
     cBufferOnline->InsertNewCalculated(gameTime, cTransformable->position, cTransformable->rotation, cCar->speed, cCar->wheelRotation, cCar->skidDeg, cCar->skidRotation);
-    // cout << "JUG2" << *cBufferOnline;
 }
 
 

@@ -1,4 +1,21 @@
-#include "StateInGame.h"
+/**
+ * Beast Brawl
+ * Game created as a final project of the Multimedia Engineering Degree in the University of Alicante.
+ * Made by Clover Games Studio, with members 
+ * Carlos de la Fuente Torres delafuentetorresc@gmail.com,
+ * Antonio Jose Martinez Garcia https://www.linkedin.com/in/antonio-jose-martinez-garcia/,
+ * Jesús Mas Carretero jmasc03@gmail.com, 
+ * Judith Mula Molina https://www.linkedin.com/in/judith-mm-18099215a/, 
+ * Rubén Rubio Martínez https://www.linkedin.com/in/rub%C3%A9n-rubio-mart%C3%ADnez-938700131/, 
+ * and Jose Valdés Sirvent https://www.linkedin.com/in/jose-f-valdés-sirvent-6058b5a5/ github -> josefrvaldes
+ * 
+ * 
+ * @author Clover Games Studio
+ * 
+ */
+ 
+ 
+ #include "StateInGame.h"
 
 #include <CLPhysics/CLPhysics.h>
 #include <Components/CMesh.h>
@@ -21,7 +38,7 @@ using namespace std;
 using namespace chrono;
 
 StateInGame::StateInGame() {
-    std::cout << "> INGAME constructor" << std::endl;
+    //std::cout << "> INGAME constructor" << std::endl;
     RenderFacadeManager::GetInstance()->GetRenderFacade()->FacadeReleaseSelectCharacter();
 }
 
@@ -103,7 +120,7 @@ void StateInGame::AddElementsToRender() {
 }
 
 void StateInGame::InitializeCLPhysics(ManCar &manCars, ManBoundingWall &manWall, ManBoundingOBB &manOBB, ManBoundingGround &manGround, ManPowerUp &manPowerUp, ManNavMesh &manNavMesh, ManBoxPowerUp &manBoxPowerUp, ManTotem &manTotem) {
-    cout << "Estamos inicializando el clPhysics" << endl;
+    //cout << "Estamos inicializando el clPhysics" << endl;
     // NO ALTERAR EL ORDEN DEL ADD, QUE USO EL ORDEN PARA DISTINGUIR ENTRE MANAGERS!!!
     clPhysics = make_unique<CLPhysics>();
     clPhysics->AddManager(manCars);
@@ -386,8 +403,6 @@ void StateInGame::UpdateGame() {
 //                              (end-timeStartSeccion).count();
 //     cout << "TIEMO ACTUAL ULDATE  (CLIPPING_OCTREE):  " << elapsed_millisecons/1000000 << endl;
 // ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    auto cTransCar = static_cast<CTransformable*>(manCars->GetCar()->GetComponent(CompType::TransformableComp).get());
-    // cout << "Pos X: " << cTransCar->position.x << "   Pos Y: " << cTransCar->position.y << "     Pos Z: " << cTransCar->position.z << "  \n";
 
 
 }
@@ -415,7 +430,7 @@ void StateInGame::Update() {
             break;
 
         default:
-            cout << "currentUpdateState inválido" << endl;
+            //cout << "currentUpdateState inválido" << endl;
             break;
     }
 }

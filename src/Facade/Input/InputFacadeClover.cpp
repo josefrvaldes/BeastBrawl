@@ -1,4 +1,21 @@
-#include "InputFacadeClover.h"
+/**
+ * Beast Brawl
+ * Game created as a final project of the Multimedia Engineering Degree in the University of Alicante.
+ * Made by Clover Games Studio, with members 
+ * Carlos de la Fuente Torres delafuentetorresc@gmail.com,
+ * Antonio Jose Martinez Garcia https://www.linkedin.com/in/antonio-jose-martinez-garcia/,
+ * Jesús Mas Carretero jmasc03@gmail.com, 
+ * Judith Mula Molina https://www.linkedin.com/in/judith-mm-18099215a/, 
+ * Rubén Rubio Martínez https://www.linkedin.com/in/rub%C3%A9n-rubio-mart%C3%ADnez-938700131/, 
+ * and Jose Valdés Sirvent https://www.linkedin.com/in/jose-f-valdés-sirvent-6058b5a5/ github -> josefrvaldes
+ * 
+ * 
+ * @author Clover Games Studio
+ * 
+ */
+ 
+ 
+ #include "InputFacadeClover.h"
 
 #include <Components/CId.h>
 #include <Components/CNavMesh.h>
@@ -11,7 +28,7 @@
 
 InputFacadeClover::InputFacadeClover(){
 
-    cout << "Creado el input de Clover\n"; 
+    //cout << "Creado el input de Clover\n"; 
     auto renderFacade = static_cast<RenderFacadeClover*>(RenderFacadeManager::GetInstance()->GetRenderFacade());
     device = renderFacade->GetDevice();
 
@@ -19,11 +36,11 @@ InputFacadeClover::InputFacadeClover(){
     
     if(glfwJoystickIsGamepad(GLFW_JOYSTICK_1)){
         string name = glfwGetGamepadName(GLFW_JOYSTICK_1);
-        cout << "Mando conectado: ";
-        cout << name << endl;
+        //cout << "Mando conectado: ";
+        //cout << name << endl;
         int count;
         glfwGetJoystickAxes(GLFW_JOYSTICK_1,&count);
-        cout << "Numero de AXES: " << count << endl;
+        //cout << "Numero de AXES: " << count << endl;
 
     }
 
@@ -53,9 +70,9 @@ bool InputFacadeClover::IsInputPressed(InputXBox input){
     auto mapByType = inputsPressed.find(input);
     if (mapByType != inputsPressed.end()) {
         return mapByType->second;
-    }else{
-        cout << "no encuentra el boton" << "\n";
-    }
+    }//else{
+       // cout << "no encuentra el boton" << "\n";
+    //}
     return true; // en caso de que no exista
 }
 
@@ -267,7 +284,8 @@ void InputFacadeClover::CheckInputMenu(int& input, int maxInput){
                 device->CloseWindow();
                 break;
             }
-            default : cout << "ESTE CODIGO DE INPUT NO EXISTE\n";
+            default : 
+                break;
         }
 
     } else if (!(IsKeyPress(GLFW_KEY_ENTER) || IsKeyPress(GLFW_KEY_SPACE) || IsGamepadPress(GLFW_GAMEPAD_BUTTON_A)) ) {
@@ -1125,9 +1143,9 @@ void InputFacadeClover::CheckInputEndTournament(int& input, int maxInput, uint8_
                         if(GameValues::GetInstance()->GetActualBattle() == GameValues::GetInstance()->GetNumBattles()){
                             GameValues::GetInstance()->ResetCountBattles();
                             GameValues::GetInstance()->ResetPoints();
-                            cout << "Reinicio numero de carreras\n";
+                            //cout << "Reinicio numero de carreras\n";
                         }else{
-                            cout << "Incremento numero de carreras\n";
+                            //cout << "Incremento numero de carreras\n";
                             GameValues::GetInstance()->IncrementBattle();
                         }
 
@@ -1417,7 +1435,7 @@ void InputFacadeClover::ChangeSettings(int option, int value) {
             break;
         case 2:
             (*d)[TRUEFALSE] = value;
-            cout << value << endl;
+            //cout << value << endl;
             EventManager::GetInstance().AddEventMulti(Event{EventType::ENABLE_PARTICLES, d});
             //cout << "TOY PONIENDO O QUITANDO PARTICULAS: " << value << "\n";
             break;
@@ -1432,7 +1450,7 @@ void InputFacadeClover::ChangeSettings(int option, int value) {
             //cout << "TOY PONIENDO O QUITANDO SOMBRAS: " << value << "\n";
             break;
         default:
-            cout << "Esta opcion de ajustes no me gusta" << endl;
+            //cout << "Esta opcion de ajustes no me gusta" << endl;
             break;
     }
 }

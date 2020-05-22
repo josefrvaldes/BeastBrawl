@@ -1,4 +1,21 @@
-#include "SystemGameRules.h"
+/**
+ * Beast Brawl
+ * Game created as a final project of the Multimedia Engineering Degree in the University of Alicante.
+ * Made by Clover Games Studio, with members 
+ * Carlos de la Fuente Torres delafuentetorresc@gmail.com,
+ * Antonio Jose Martinez Garcia https://www.linkedin.com/in/antonio-jose-martinez-garcia/,
+ * Jesús Mas Carretero jmasc03@gmail.com, 
+ * Judith Mula Molina https://www.linkedin.com/in/judith-mm-18099215a/, 
+ * Rubén Rubio Martínez https://www.linkedin.com/in/rub%C3%A9n-rubio-mart%C3%ADnez-938700131/, 
+ * and Jose Valdés Sirvent https://www.linkedin.com/in/jose-f-valdés-sirvent-6058b5a5/ github -> josefrvaldes
+ * 
+ * 
+ * @author Clover Games Studio
+ * 
+ */
+ 
+ 
+ #include "SystemGameRules.h"
 
 #include <Entities/CarAI.h>
 #include <Components/CShield.h>
@@ -39,7 +56,7 @@ bool SystemGameRules::UpdateGameRules(Entity& globalClock_) const{
         cClock->timeStart = system_clock::now();
     }
     if(cClock->accumulatedTime/1000.0 > cClock->DURATION_TIME/1000.0){
-        cout << "Se acabo el tiempo, nadie gana!!! \n";
+        //cout << "Se acabo el tiempo, nadie gana!!! \n";
         //Game::GetInstance()->SetState(State::ENDRACE);
         return true;
         // EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_ENDRACE});
@@ -72,7 +89,7 @@ bool SystemGameRules::UpdateRulesCarPowerUps(Entity& car_, Entity& totem_) const
     }
 
     if(cTotem->accumulatedTime/1000.0 > cTotem->DURATION_TIME/1000.0){
-        cout << "Has ganado \n";
+        //cout << "Has ganado \n";
         //Game::GetInstance()->SetState(State::ENDRACE);
         return true;
         // EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_ENDRACE});

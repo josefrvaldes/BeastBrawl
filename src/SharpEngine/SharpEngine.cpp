@@ -1,4 +1,22 @@
-//Made with FMOD Studio by Firelight Technologies Pty Ltd.
+/**
+ * Beast Brawl
+ * Game created as a final project of the Multimedia Engineering Degree in the University of Alicante.
+ * Made by Clover Games Studio, with members 
+ * Carlos de la Fuente Torres delafuentetorresc@gmail.com,
+ * Antonio Jose Martinez Garcia https://www.linkedin.com/in/antonio-jose-martinez-garcia/,
+ * Jesús Mas Carretero jmasc03@gmail.com, 
+ * Judith Mula Molina https://www.linkedin.com/in/judith-mm-18099215a/, 
+ * Rubén Rubio Martínez https://www.linkedin.com/in/rub%C3%A9n-rubio-mart%C3%ADnez-938700131/, 
+ * and Jose Valdés Sirvent https://www.linkedin.com/in/jose-f-valdés-sirvent-6058b5a5/ github -> josefrvaldes
+ * 
+ * 
+ * @author Clover Games Studio
+ * @author Judith Mula Molina https://www.linkedin.com/in/judith-mm-18099215a/
+ * 
+ */
+ 
+ 
+ //Made with FMOD Studio by Firelight Technologies Pty Ltd.
 
 #include "SharpEngine.h"
 
@@ -37,7 +55,7 @@ void ERRFMODCHECK_fn(FMOD_RESULT result, const char* file, int line) {
 SharpEngine::SharpEngine() {
     InitSharpEngine(true);
     LoadMasterBank();
-    std::cout << "***** Sound engine ON" << endl;
+    //std::cout << "***** Sound engine ON" << endl;
 }
 
 SharpEngine::~SharpEngine() {
@@ -79,7 +97,7 @@ void SharpEngine::TerminateSharpEngine() {
 
     //ERRFMODCHECK(system->release());
     ERRFMODCHECK(FMOD_Studio_System_Release(system));
-    std::cout << "***** Sound engine K.O." << endl;
+    //std::cout << "***** Sound engine K.O." << endl;
 }
 
 /**
@@ -98,7 +116,7 @@ void SharpEngine::UnloadMasterBank() {
     //ERRFMODCHECK(stringsBank->unload());
     ERRFMODCHECK(FMOD_Studio_Bank_Unload(stringsBank));
     ERRFMODCHECK(FMOD_Studio_Bank_Unload(masterBank));
-    std::cout << "***** Master bank a la shit" << endl;
+    //std::cout << "***** Master bank a la shit" << endl;
 }
 
 /**
@@ -129,7 +147,7 @@ void SharpEngine::UnloadAllBanks() {
         ERRFMODCHECK(FMOD_Studio_Bank_Unload(bank.second));
     }
     banks.clear();
-    std::cout << "***** Bancos y sonidos liberados" << endl;
+    //std::cout << "***** Bancos y sonidos liberados" << endl;
     //std::cout << "   ** EventInstances2D: " << eventInstances2D.size() << endl;
     //std::cout << "   ** EventInstances3DE: " << eventInstancesEstatic3D.size() << endl;
     //std::cout << "   ** EventInstances3DD: " << eventInstancesDinamic3D.size() << endl;
@@ -210,9 +228,9 @@ void SharpEngine::PlayEvent(const string& nameID) {
                 SetVolume(instance->second->GetInstance(), 1.0);
                 ERRFMODCHECK(FMOD_Studio_EventInstance_Start(instance->second->GetInstance()));
             }
-            else {
-                cout << "EL EVENTO " << nameID << " NO ESTA" << endl;
-            }
+            //else {
+                //cout << "EL EVENTO " << nameID << " NO ESTA" << endl;
+            //}
         }
     }
 }
@@ -244,9 +262,9 @@ void SharpEngine::PlayEventWithVolume(const string& nameID, float v) {
                 SetVolume(instance->second->GetInstance(), v);
                 ERRFMODCHECK(FMOD_Studio_EventInstance_Start(instance->second->GetInstance()));
             }
-            else {
-                cout << "EL EVENTO " << nameID << " NO ESTA" << endl;
-            }
+            //else {
+              //cout << "EL EVENTO " << nameID << " NO ESTA" << endl;
+            //}
         }
     }
 }
@@ -286,9 +304,9 @@ void SharpEngine::StopEvent(const string& nameID) {
             if (instance != eventInstancesDinamic3D.end()) {
                 ERRFMODCHECK(FMOD_Studio_EventInstance_Stop(instance->second->GetInstance(), FMOD_STUDIO_STOP_IMMEDIATE));
                 //cout << "++++ Sonido " << nameID << " ha sido parado con exito" << endl;
-            } else {
-                cout << "++++ Sonido " << nameID << " no se ha podido borrar, no esta" << endl;
-            }
+            } //else {
+                //cout << "++++ Sonido " << nameID << " no se ha podido borrar, no esta" << endl;
+            //}
         }
     }
 }
@@ -545,10 +563,10 @@ void SharpEngine::SetListenerPosition(const glm::vec3 &pos, const glm::vec3 &rot
         atr.velocity = {0.0, 0.0, 0.0}; // Para el senior efecto Doppler
         //std::cout << "El forward es: " << glm::cos(glm::radians(rot.y)) << " - " << glm::sin(glm::radians(rot.y)) << std::endl;
         ERRFMODCHECK(FMOD_Studio_System_SetListenerAttributes(system, 0, &atr));
-    } else if ( std::isnan(pos.x) || std::isnan(pos.y) || std::isnan(pos.z) || std::isnan(rot.y)) {
-        cout << "******* LA POSICION O ROTACION DEL LISTENER HA RECIBIDO UN NaN: [Posicion] " << pos.x << " - " << pos.y << " - " << pos.z << " [Rotacion] " << rot.y << endl;
+    } //else if ( std::isnan(pos.x) || std::isnan(pos.y) || std::isnan(pos.z) || std::isnan(rot.y)) {
+        //cout << "******* LA POSICION O ROTACION DEL LISTENER HA RECIBIDO UN NaN: [Posicion] " << pos.x << " - " << pos.y << " - " << pos.z << " [Rotacion] " << rot.y << endl;
         //terminate();
-    }
+    //}
 }
 
 
@@ -571,10 +589,10 @@ void SharpEngine::SetEventPosition3D(const string &nameEvent, FMOD_STUDIO_EVENTI
         atr.velocity = {vel*0.1f, vel*0.1f, vel*0.1f}; // Para el senior efecto Doppler
 
         ERRFMODCHECK( FMOD_Studio_EventInstance_Set3DAttributes(i, &atr));
-    } else if ( std::isnan(pos.x) || std::isnan(pos.y) || std::isnan(pos.z) || std::isnan(vel)) {
-        cout << "******* ME HA LLEGADO UN VALOR NaN EN EL EVENTO " << nameEvent << ": [Posicion] " << pos.x << " - " << pos.y << " - " << pos.z << " [Velocidad] " << vel << endl;
+    } //else if ( std::isnan(pos.x) || std::isnan(pos.y) || std::isnan(pos.z) || std::isnan(vel)) {
+        //cout << "******* ME HA LLEGADO UN VALOR NaN EN EL EVENTO " << nameEvent << ": [Posicion] " << pos.x << " - " << pos.y << " - " << pos.z << " [Velocidad] " << vel << endl;
         //terminate();
-    }
+    //}
 }
 
 /**

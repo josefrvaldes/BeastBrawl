@@ -1,4 +1,21 @@
-#include "StateInGameSingle.h"
+/**
+ * Beast Brawl
+ * Game created as a final project of the Multimedia Engineering Degree in the University of Alicante.
+ * Made by Clover Games Studio, with members 
+ * Carlos de la Fuente Torres delafuentetorresc@gmail.com,
+ * Antonio Jose Martinez Garcia https://www.linkedin.com/in/antonio-jose-martinez-garcia/,
+ * Jesús Mas Carretero jmasc03@gmail.com, 
+ * Judith Mula Molina https://www.linkedin.com/in/judith-mm-18099215a/, 
+ * Rubén Rubio Martínez https://www.linkedin.com/in/rub%C3%A9n-rubio-mart%C3%ADnez-938700131/, 
+ * and Jose Valdés Sirvent https://www.linkedin.com/in/jose-f-valdés-sirvent-6058b5a5/ github -> josefrvaldes
+ * 
+ * 
+ * @author Clover Games Studio
+ * 
+ */
+ 
+ 
+ #include "StateInGameSingle.h"
 
 #include "../Managers/ManAI.h"
 #include <Components/CBrainAI.h>
@@ -79,7 +96,7 @@ void StateInGameSingle::Update() {
             break;
 
         default:
-            cout << "currentUpdateState inválido" << endl;
+            //cout << "currentUpdateState inválido" << endl;
             break;
     }
 }
@@ -94,11 +111,11 @@ void StateInGameSingle::UpdateGame() {
         timeStartPause = Utils::getMillisSinceEpoch();
         goingToPause = false;
         comingBackFromPause = true;
-        cout << "Vamos a ir a pausa, teóricamente paramos los temporizadores" << endl;
+        //cout << "Vamos a ir a pausa, teóricamente paramos los temporizadores" << endl;
 
         // si volvemos de pausa, reiniciamos los temporizadores
     } else if (comingBackFromPause) {
-        cout << "Volvemos de pausa, reiniciamos los temporizadores" << endl;
+        //cout << "Volvemos de pausa, reiniciamos los temporizadores" << endl;
         manGameRules->RestartAllTimers(manCars->GetEntities(), timeStartPause);
         comingBackFromPause = false;
     }
@@ -329,7 +346,7 @@ void StateInGameSingle::InitCarAIS(ManCar &manCars, ManWayPoint &manWayPoint) {
     //Para asegurarse por si petara, que no debe
     if (!iaPjs.empty()) {
         if (iaPjs.size() < 5) {
-            cout << "++++++++++ El vector de IA en GameValues no tiene el tamanyo que debe tener. Si peta despues de esto, buscame.";
+            //cout << "++++++++++ El vector de IA en GameValues no tiene el tamanyo que debe tener. Si peta despues de esto, buscame.";
         }
 
         //Cambiar
@@ -340,7 +357,7 @@ void StateInGameSingle::InitCarAIS(ManCar &manCars, ManWayPoint &manWayPoint) {
         //manCars.CreateCarAI(iaPjs[1], manCars.GetPosSpawn());
 
     } else {
-        cout << "++++++++++ Algo no va bien asique ahora todos son pinguinos.";
+        //cout << "++++++++++ Algo no va bien asique ahora todos son pinguinos.";
         for (uint8_t i = 0; i < (numPlayers - 1); ++i) {
             manCars.CreateCarAI(0, iaDifficult, timeTotem, manCars.GetPosSpawn());
         }

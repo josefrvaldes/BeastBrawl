@@ -1,4 +1,22 @@
-#include "SystemOnline.h"
+/**
+ * Beast Brawl
+ * Game created as a final project of the Multimedia Engineering Degree in the University of Alicante.
+ * Made by Clover Games Studio, with members 
+ * Carlos de la Fuente Torres delafuentetorresc@gmail.com,
+ * Antonio Jose Martinez Garcia https://www.linkedin.com/in/antonio-jose-martinez-garcia/,
+ * Jesús Mas Carretero jmasc03@gmail.com, 
+ * Judith Mula Molina https://www.linkedin.com/in/judith-mm-18099215a/, 
+ * Rubén Rubio Martínez https://www.linkedin.com/in/rub%C3%A9n-rubio-mart%C3%ADnez-938700131/, 
+ * and Jose Valdés Sirvent https://www.linkedin.com/in/jose-f-valdés-sirvent-6058b5a5/ github -> josefrvaldes
+ * 
+ * 
+ * @author Antonio Jose Martinez Garcia
+ * @author Jose Valdés Sirvent
+ * 
+ */
+ 
+ 
+ #include "SystemOnline.h"
 
 #include "../../include/glm/vec3.hpp"
 #include "../Components/CCar.h"
@@ -27,7 +45,7 @@ SystemOnline::SystemOnline(ManCar &manCar_, uint16_t idOnlineMainCar_) : idOnlin
 }
 
 SystemOnline::~SystemOnline() {
-    cout << "Llamando al destructor de SystemOnline" << endl;
+    //cout << "Llamando al destructor de SystemOnline" << endl;
 }
 
 void SystemOnline::SubscribeToEvents() {
@@ -137,7 +155,7 @@ void SystemOnline::SendThrowPU(const shared_ptr<PowerUp> &powerUp, const uint16_
     // servirá luego para eliminar este PU concreto cuando choque
     shared_ptr<CIDOnline> cidOnline = make_shared<CIDOnline>(idOnlineMainCar);
     powerUp->AddComponent(cidOnline);
-    cout << "Hemos creado un cidOnline que es " << cidOnline->idOnline << endl;
+    //cout << "Hemos creado un cidOnline que es " << cidOnline->idOnline << endl;
     auto cTransformable = static_cast<CTransformable *>(powerUp->GetComponent(CompType::TransformableComp).get());
     auto cPowerUp = static_cast<CPowerUp *>(powerUp->GetComponent(CompType::PowerUpComp).get());
     int64_t time = Utils::getMillisSinceEpoch();
@@ -202,7 +220,7 @@ int64_t SystemOnline::GetGameTime() const {
 
 void SystemOnline::NewClockSyncReceived(DataMap *d) {
     uint16_t idSender = any_cast<uint16_t>((*d)[DataType::ID]);
-    uint16_t idReceiver = any_cast<uint16_t>((*d)[DataType::ID_DESTINATION]);
+    //uint16_t idReceiver = any_cast<uint16_t>((*d)[DataType::ID_DESTINATION]);
     float turnoutReceived = any_cast<float>((*d)[DataType::TURNOUT]);
     // int64_t time = any_cast<int64_t>((*d)[DataType::TIME]);
     int8_t numMeasurements = any_cast<int8_t>((*d)[DataType::NUM]);
@@ -213,7 +231,7 @@ void SystemOnline::NewClockSyncReceived(DataMap *d) {
     // si llevamos cero y NO somos el coche lider (id=1), entonces debemos iniciar nuestro propio sistema de sync, por tanto, iniciamos nuestro reloj por primera vez, el turnout, y el numMeasurements
     // la comprobación de timeStartClock < 0 la hacemos para que si recibimos un reenvío (cada petición se envía 3 veces), no entrar el resto de veces
     if(cOnlineMainCar->numMeasurements[idSender] == 0 && cOnlineMainCar->idClient != 1 && timeStartClock < 0) {
-        cout << "NO soy el líder, voy a iniciar por primera vez mi sync" << endl;
+        //cout << "NO soy el líder, voy a iniciar por primera vez mi sync" << endl;
 
         // iniciamos el reloj
         timeStartClock = Utils::getMillisSinceEpoch();
@@ -225,7 +243,7 @@ void SystemOnline::NewClockSyncReceived(DataMap *d) {
         // y decimos que ya tenemos una medida hecha
         cOnlineMainCar->numMeasurements[idSender] = 0;
 
-        cout << "T["<<cOnlineMainCar->timeSyncClock[idSender]<<"] TO["<<cOnlineMainCar->currentTurnout[idSender]<<"] N["<<unsigned(cOnlineMainCar->numMeasurements[idSender])<<"]" << endl<< endl<< endl;
+        //cout << "T["<<cOnlineMainCar->timeSyncClock[idSender]<<"] TO["<<cOnlineMainCar->currentTurnout[idSender]<<"] N["<<unsigned(cOnlineMainCar->numMeasurements[idSender])<<"]" << endl<< endl<< endl;
         for(uint8_t i = 0; i < TIMES_RESEND; i++) {
             udpClient->SendClockSync(cOnlineMainCar->idClient, idSender, GetGameTime(), 0.f, cOnlineMainCar->numMeasurements[idSender]);
         }
@@ -233,14 +251,14 @@ void SystemOnline::NewClockSyncReceived(DataMap *d) {
 
         // si somos el lider y recibimos un numMeasurements = 0, significa que este es nuestro primer rebote, por tanto, calculamos el primer turnout y tal
     } else if(cOnlineMainCar->numMeasurements[idSender] == 0 && cOnlineMainCar->idClient == 1) {
-        cout << "Soy el líder, he recibido el primer rebote de ["<<idSender<<"]. Voy a calcular el primer turnout" << endl;
+        //cout << "Soy el líder, he recibido el primer rebote de ["<<idSender<<"]. Voy a calcular el primer turnout" << endl;
 
         float calculatedTurnout = GetGameTime();
         cOnlineMainCar->currentTurnout[idSender] = calculatedTurnout;
         cOnlineMainCar->numMeasurements[idSender] += 1;
         cOnlineMainCar->timeSyncClock[idSender] = Utils::getMillisSinceEpoch();
 
-        cout << "T["<<cOnlineMainCar->timeSyncClock[idSender]<<"] TO["<<cOnlineMainCar->currentTurnout[idSender]<<"] N["<<unsigned(cOnlineMainCar->numMeasurements[idSender])<<"]" << endl<< endl<< endl;
+        //cout << "T["<<cOnlineMainCar->timeSyncClock[idSender]<<"] TO["<<cOnlineMainCar->currentTurnout[idSender]<<"] N["<<unsigned(cOnlineMainCar->numMeasurements[idSender])<<"]" << endl<< endl<< endl;
         for(uint8_t i = 0; i < TIMES_RESEND; i++) {
             udpClient->SendClockSync(cOnlineMainCar->idClient, idSender, GetGameTime(), calculatedTurnout, cOnlineMainCar->numMeasurements[idSender]);
         }
@@ -252,33 +270,33 @@ void SystemOnline::NewClockSyncReceived(DataMap *d) {
 
         // con esta comprobación nos evitamos recalcular si recibimos algún reenvío (cada petición se envía 3 veces, podríamso recibir dos veces seguidas un numMeasurements = 3 por ejemplo, pero solo analizamos una)
         if(cOnlineMainCar->numMeasurements[idSender] < numMeasurements) {
-            cout << "Soy ["<<idReceiver<<"], he recibido un rebote de ["<<idSender<<"] con los datos TO["<<turnoutReceived<<"] N["<<unsigned(numMeasurements)<<"] voy a hacer calculitos" << endl;
+            //cout << "Soy ["<<idReceiver<<"], he recibido un rebote de ["<<idSender<<"] con los datos TO["<<turnoutReceived<<"] N["<<unsigned(numMeasurements)<<"] voy a hacer calculitos" << endl;
 
             int64_t interval = Utils::getMillisSinceEpoch() - cOnlineMainCar->timeSyncClock[idSender]; // esto es el tiempo que ha tardado el último rebote/turnout
-            cout << "Este rebote concreto ha tardado " << interval << "ms" << endl;
+            //cout << "Este rebote concreto ha tardado " << interval << "ms" << endl;
             float calculatedTurnout = (turnoutReceived + interval) / 2.0f;
             cOnlineMainCar->currentTurnout[idSender] = calculatedTurnout;
             cOnlineMainCar->numMeasurements[idSender] = numMeasurements + 1;
             cOnlineMainCar->timeSyncClock[idSender] = Utils::getMillisSinceEpoch();
-            cout << "T["<<cOnlineMainCar->timeSyncClock[idSender]<<"] TO["<<cOnlineMainCar->currentTurnout[idSender]<<"] N["<<unsigned(cOnlineMainCar->numMeasurements[idSender])<<"]" << endl;
+            //cout << "T["<<cOnlineMainCar->timeSyncClock[idSender]<<"] TO["<<cOnlineMainCar->currentTurnout[idSender]<<"] N["<<unsigned(cOnlineMainCar->numMeasurements[idSender])<<"]" << endl;
 
 
             // significa que ya hemos terminado, por tanto NO volvemos a reenviar ya, pasamos a fase dos. Por ahora solamente imprimimos los valores por pantalla para depurar
             if(idOnlineMainCar == 1 && cOnlineMainCar->numMeasurements[idSender] >= MAX_NUM_MEASUREMENTS) {
-                cout << "Soy el líder supremo y he terminado con  los datos ";
-                cout << "T["<<cOnlineMainCar->timeSyncClock[idSender]<<"] TO["<<cOnlineMainCar->currentTurnout[idSender]<<"] N["<<unsigned(cOnlineMainCar->numMeasurements[idSender])<<"]" << endl<< endl<< endl;
+                //cout << "Soy el líder supremo y he terminado con  los datos ";
+                //cout << "T["<<cOnlineMainCar->timeSyncClock[idSender]<<"] TO["<<cOnlineMainCar->currentTurnout[idSender]<<"] N["<<unsigned(cOnlineMainCar->numMeasurements[idSender])<<"]" << endl<< endl<< endl;
                 bool syncFinished = CheckIfSyncFinished(cOnlineMainCar, cOnlineMainCar->numMeasurements[idSender]);
                 if(syncFinished) {
-                    cout << "Hemos terminado el cálculo de lag con todos los players, ahora vamos a mandarle ya definitivamente la petición de sincronización de reloj" << endl;
+                    //cout << "Hemos terminado el cálculo de lag con todos los players, ahora vamos a mandarle ya definitivamente la petición de sincronización de reloj" << endl;
                     SendFinalClockSync(cOnlineMainCar);
                 } else {
-                    cout << "Hemos terminado el cálculo de lag con un player pero no con todos" << endl;
+                    //cout << "Hemos terminado el cálculo de lag con un player pero no con todos" << endl;
                 }
 
 
                 // si todavía no hemos acabado de medir, reenvío de nuevo
             } else if(cOnlineMainCar->numMeasurements[idSender] <= MAX_NUM_MEASUREMENTS) {
-                cout << "Voy a reenviar los datos a ["<<idSender<<"]" << endl<< endl<< endl;
+                //cout << "Voy a reenviar los datos a ["<<idSender<<"]" << endl<< endl<< endl;
                 // reenvío el paquete de nuevo a la persona que me lo envió
                 for(uint8_t i = 0; i < TIMES_RESEND; i++) {
                     udpClient->SendClockSync(cOnlineMainCar->idClient, idSender, GetGameTime(), calculatedTurnout, cOnlineMainCar->numMeasurements[idSender]);
@@ -296,26 +314,26 @@ void SystemOnline::NewClockSyncReceived(DataMap *d) {
  * o igual me paso por 1 porque es el otro el que supera el valor
  */
 bool SystemOnline::CheckIfSyncFinished(COnline *cOnlineMainCar, const uint8_t numMeasurementsToCompare) const {
-    cout << "Vamos a comprobar si el sync está finalizado" << endl;
+    //cout << "Vamos a comprobar si el sync está finalizado" << endl;
     for  (auto currentCar: manCar.GetEntities()) {
         COnline* cOnline = static_cast<COnline*>(currentCar->GetComponent(CompType::OnlineComp).get());
         if(cOnline->idClient != 1) {
             auto currentMeasurements = cOnlineMainCar->numMeasurements[cOnline->idClient];
-            cout << "El cliente id["<<cOnline->idClient<<"] tiene medidas["<<currentMeasurements<<"]" << endl;
+            //cout << "El cliente id["<<cOnline->idClient<<"] tiene medidas["<<currentMeasurements<<"]" << endl;
             if(currentMeasurements < numMeasurementsToCompare) {
-                cout << "es false que hemos terminado la sync" << endl;
+                //cout << "es false que hemos terminado la sync" << endl;
                 return false;
             }
         }
     }
-    cout << "es true que hemos terminado la sync" << endl;
+    //cout << "es true que hemos terminado la sync" << endl;
     return true;
 };
 
 
 void SystemOnline::SyncNOW() {
     timeStartClock = Utils::getMillisSinceEpoch();
-    cout << Utils::getISOCurrentTimestampMillis() << " Hemos acabado de sincronizar!!" << endl;
+    //cout << Utils::getISOCurrentTimestampMillis() << " Hemos acabado de sincronizar!!" << endl;
 }
 
 
@@ -328,13 +346,13 @@ void SystemOnline::SendFinalClockSync(COnline *cOnlineMainCar) {
         }
     }
     
-    cout << Utils::getISOCurrentTimestampMillis() << " Vamos a lanzar el timer" << endl;
+    //cout << Utils::getISOCurrentTimestampMillis() << " Vamos a lanzar el timer" << endl;
     timer = make_unique<steady_timer>(context, boost::asio::chrono::milliseconds(msSync));
     timer->async_wait(std::bind(
         &SystemOnline::SyncNOW,
         this));
     context.run();
-    cout << "Hemos acabado de sincronizar" << endl;
+    //cout << "Hemos acabado de sincronizar" << endl;
 }
 
 
@@ -344,11 +362,11 @@ void SystemOnline::NewFinalClockSyncReceived(DataMap *d) {
     float turnout = any_cast<float>((*d)[DataType::TURNOUT]);
     int64_t msSync = time - round(turnout / 2.0);
     
-    cout << Utils::getISOCurrentTimestampMillis() << " Vamos a lanzar el timer" << endl;
+    //cout << Utils::getISOCurrentTimestampMillis() << " Vamos a lanzar el timer" << endl;
     timer = make_unique<steady_timer>(context, boost::asio::chrono::milliseconds(msSync));
     timer->async_wait(std::bind(
         &SystemOnline::SyncNOW,
         this));
     context.run();
-    cout << "Hemos acabado de sincronizar" << endl;
+    //cout << "Hemos acabado de sincronizar" << endl;
 }

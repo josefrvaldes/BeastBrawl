@@ -1,4 +1,21 @@
-#include "CLResourceMesh.h"
+/**
+ * Beast Brawl
+ * Game created as a final project of the Multimedia Engineering Degree in the University of Alicante.
+ * Made by Clover Games Studio, with members 
+ * Carlos de la Fuente Torres delafuentetorresc@gmail.com,
+ * Antonio Jose Martinez Garcia https://www.linkedin.com/in/antonio-jose-martinez-garcia/,
+ * Jesús Mas Carretero jmasc03@gmail.com, 
+ * Judith Mula Molina https://www.linkedin.com/in/judith-mm-18099215a/, 
+ * Rubén Rubio Martínez https://www.linkedin.com/in/rub%C3%A9n-rubio-mart%C3%ADnez-938700131/, 
+ * and Jose Valdés Sirvent https://www.linkedin.com/in/jose-f-valdés-sirvent-6058b5a5/ github -> josefrvaldes
+ * 
+ * 
+ * @author Clover Games Studio
+ * 
+ */
+ 
+ 
+ #include "CLResourceMesh.h"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
@@ -55,10 +72,10 @@ bool CLResourceMesh::LoadFile(std::string file, bool flipUV) {
 
     // Error de carga
     if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
-        cout << "ERROR::ASSIMP::" << importer.GetErrorString() << endl;
+        //cout << "ERROR::ASSIMP::" << importer.GetErrorString() << endl;
         return false;
     }
-    cout << "Leida la malla: " << file << endl;
+    //cout << "Leida la malla: " << file << endl;
     processNode(scene->mRootNode, scene);
     return true;
 }
@@ -216,7 +233,7 @@ unsigned int CLResourceMesh::TextureFromFile(const char *path, const string &dir
 
         stbi_image_free(data);
     } else {
-        std::cout << "Texture failed to load at path: " << filename << std::endl;
+        //std::cout << "Texture failed to load at path: " << filename << std::endl;
         stbi_image_free(data);
     }
 

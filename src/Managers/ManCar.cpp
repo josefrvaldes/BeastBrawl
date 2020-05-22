@@ -1,4 +1,21 @@
-#include "ManCar.h"
+/**
+ * Beast Brawl
+ * Game created as a final project of the Multimedia Engineering Degree in the University of Alicante.
+ * Made by Clover Games Studio, with members 
+ * Carlos de la Fuente Torres delafuentetorresc@gmail.com,
+ * Antonio Jose Martinez Garcia https://www.linkedin.com/in/antonio-jose-martinez-garcia/,
+ * Jesús Mas Carretero jmasc03@gmail.com, 
+ * Judith Mula Molina https://www.linkedin.com/in/judith-mm-18099215a/, 
+ * Rubén Rubio Martínez https://www.linkedin.com/in/rub%C3%A9n-rubio-mart%C3%ADnez-938700131/, 
+ * and Jose Valdés Sirvent https://www.linkedin.com/in/jose-f-valdés-sirvent-6058b5a5/ github -> josefrvaldes
+ * 
+ * 
+ * @author Clover Games Studio
+ * 
+ */
+ 
+ 
+ #include "ManCar.h"
 #include "ManBoundingWall.h"
 #include "ManBoxPowerUp.h"
 #include "ManNavMesh.h"
@@ -60,7 +77,7 @@ ManCar::ManCar(std::vector<glm::vec3> spawns) {
     physics         = make_unique<Physics>(Constants::DELTA_TIME);
     positionsSpawn = spawns;
 
-    cout << "Hemos creado un powerup, ahora tenemos " << entities.size() << " powerups" << endl;
+    //cout << "Hemos creado un powerup, ahora tenemos " << entities.size() << " powerups" << endl;
 }
 
 ManCar::~ManCar() {
@@ -77,7 +94,7 @@ glm::vec3 ManCar::GetPosSpawn() {
         positionsSpawn.erase(positionsSpawn.begin() + newIndex);
         return newPos;
     } else {
-        cout << "HAY + COCHES QUE PUNTOS DE SPAWN, TRANQUIII BRO, QUITA COCHES ANDA..." << endl;
+        //cout << "HAY + COCHES QUE PUNTOS DE SPAWN, TRANQUIII BRO, QUITA COCHES ANDA..." << endl;
         return glm::vec3(0.0,0.0,0.0);
     }
 }
@@ -86,7 +103,7 @@ glm::vec3 ManCar::GetPosSpawn(size_t index) {
     if(positionsSpawn.size() > 0){
         return positionsSpawn[index];
     }else{
-        cout << "HAY + COCHES QUE PUNTOS DE SPAWN, TRANQUIII BRO, QUITA COCHES ANDA..." << endl;
+        //cout << "HAY + COCHES QUE PUNTOS DE SPAWN, TRANQUIII BRO, QUITA COCHES ANDA..." << endl;
         return glm::vec3(0.0,0.0,0.0);
     }
 }
@@ -592,7 +609,7 @@ void ManCar::ThrowTotem(Entity* carLoseTotem, bool stolen) {
         shared_ptr<DataMap> dataHud = make_shared<DataMap>();
         auto cCar = static_cast<CCar*>(carLoseTotem->GetComponent(CompType::CarComp).get());
         if (cCar) {
-            cout << "Le han dañado y SÍ tenían ccar" << endl;
+            //cout << "Le han dañado y SÍ tenían ccar" << endl;
             (*dataHud)[NUM] = (uint16_t)cCar->character;
             (*dataHud)[TYPE] = static_cast<int>(eventHUDType::LOSE) ;  //Lose
             EventManager::GetInstance().AddEventMulti(Event{EventType::SET_EVENT_HUD, dataHud});
@@ -696,9 +713,9 @@ void ManCar::ThrowPowerUp(Car* car_) {
         switch (cPowerUpCar->typePowerUp) {
             case (typeCPowerUp::RoboJorobo):
                 robado = useRoboJorobo(car_);
-                if (!robado) {
-                    std::cout << "La has cagado, el Totem no lo tenia nadie..." << std::endl;
-                } /*else {
+                //if (!robado) {
+                //    std::cout << "La has cagado, el Totem no lo tenia nadie..." << std::endl;
+                /*} else {
                     //--------------- Evento del HUD
                     (*dataHud)[NUM] = (uint16_t)cCar->character;
                     (*dataHud)[TYPE] = 1;  //Stole
@@ -976,7 +993,7 @@ void ManCar::CatchPowerUpAI(DataMap* d) {
             EventManager::GetInstance().AddEventMulti(Event{EventType::UPDATE_POWERUP_HUD, data});
 
             if(Game::GetInstance()->GetState()->GetState() == State::States::INGAME_MULTI){
-                cout << "Se envia el PU mensaje 2" << "\n";
+                //cout << "Se envia el PU mensaje 2" << "\n";
                 systemOnline->SendCatchPU(*cPowerUpCar);
             }
         }

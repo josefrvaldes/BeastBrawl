@@ -1,4 +1,21 @@
-#include "CLResourceShader.h"
+/**
+ * Beast Brawl
+ * Game created as a final project of the Multimedia Engineering Degree in the University of Alicante.
+ * Made by Clover Games Studio, with members 
+ * Carlos de la Fuente Torres delafuentetorresc@gmail.com,
+ * Antonio Jose Martinez Garcia https://www.linkedin.com/in/antonio-jose-martinez-garcia/,
+ * Jesús Mas Carretero jmasc03@gmail.com, 
+ * Judith Mula Molina https://www.linkedin.com/in/judith-mm-18099215a/, 
+ * Rubén Rubio Martínez https://www.linkedin.com/in/rub%C3%A9n-rubio-mart%C3%ADnez-938700131/, 
+ * and Jose Valdés Sirvent https://www.linkedin.com/in/jose-f-valdés-sirvent-6058b5a5/ github -> josefrvaldes
+ * 
+ * 
+ * @author Clover Games Studio
+ * 
+ */
+ 
+ 
+ #include "CLResourceShader.h"
 
 using namespace CLE;
 
@@ -58,7 +75,7 @@ bool CLResourceShader::LoadShader(string file, GLenum type){
         code = ss.str();
         stream.close();
     }else{
-        cout << "Pues no se han podido leer los archivos " << file << endl;
+        //cout << "Pues no se han podido leer los archivos " << file << endl;
         return false;
     }
 
@@ -75,7 +92,7 @@ bool CLResourceShader::LoadShader(string file, GLenum type){
     if(!success)
     {
         glGetShaderInfoLog(*shader, 512, NULL, infoLog);
-        std::cout << "ERROR::SHADER::"<<typeStr<<"::COMPILATION_FAILED\n" << infoLog << std::endl;
+        //std::cout << "ERROR::SHADER::"<<typeStr<<"::COMPILATION_FAILED\n" << infoLog << std::endl;
         return false;
     }
     return true;
@@ -95,7 +112,7 @@ bool CLResourceShader::LinkShaders(){
     glGetProgramiv(programID, GL_LINK_STATUS, &success);
     if(!success) {
         glGetProgramInfoLog(programID, 512, NULL, infoLog);
-        cout << "Ha petado el linkado de shaders de geometry:( --> " << infoLog << "\n";
+        //cout << "Ha petado el linkado de shaders de geometry:( --> " << infoLog << "\n";
         return false;
     }
 
@@ -120,7 +137,7 @@ bool CLResourceShader::LinkShadersGeometry(){
     glGetProgramiv(programID, GL_LINK_STATUS, &success);
     if(!success) {
         glGetProgramInfoLog(programID, 512, NULL, infoLog);
-        cout << "Ha petado el linkado de shaders de geometry:( --> " << infoLog << "\n";
+        //cout << "Ha petado el linkado de shaders de geometry:( --> " << infoLog << "\n";
         return false;
     }
 

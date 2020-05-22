@@ -1,4 +1,21 @@
-#include "CLResourceManager.h"
+/**
+ * Beast Brawl
+ * Game created as a final project of the Multimedia Engineering Degree in the University of Alicante.
+ * Made by Clover Games Studio, with members 
+ * Carlos de la Fuente Torres delafuentetorresc@gmail.com,
+ * Antonio Jose Martinez Garcia https://www.linkedin.com/in/antonio-jose-martinez-garcia/,
+ * Jesús Mas Carretero jmasc03@gmail.com, 
+ * Judith Mula Molina https://www.linkedin.com/in/judith-mm-18099215a/, 
+ * Rubén Rubio Martínez https://www.linkedin.com/in/rub%C3%A9n-rubio-mart%C3%ADnez-938700131/, 
+ * and Jose Valdés Sirvent https://www.linkedin.com/in/jose-f-valdés-sirvent-6058b5a5/ github -> josefrvaldes
+ * 
+ * 
+ * @author Clover Games Studio
+ * 
+ */
+ 
+ 
+ #include "CLResourceManager.h"
 
 
 #include <mutex>
@@ -101,12 +118,12 @@ vector<CLResourceMesh*> CLResourceManager::LoadResourceAnimation(const std::stri
             my_mutex.unlock();
         });*/
     }
-    std::cout << "Antes del join keyFrames tiene " << keyFrames.size() << " frames" << endl;
+    //std::cout << "Antes del join keyFrames tiene " << keyFrames.size() << " frames" << endl;
     //tp2.join();
     for (auto thread : threads)
         thread->join();
-    std::cout << "Después del join keyFrames tiene " << keyFrames.size() << " frames" << endl;
-    std::cout << "Ahora vamos a devolver el array de keyframes" << endl;
+    //std::cout << "Después del join keyFrames tiene " << keyFrames.size() << " frames" << endl;
+    //std::cout << "Ahora vamos a devolver el array de keyframes" << endl;
     return keyFrames;
 }
 
@@ -236,7 +253,7 @@ CLResourceShader* CLResourceManager::GetResourceShader(const std::string vertex,
         }
     }
     if (!resource) {
-        cout << "Creo el shader: " << vertex <<endl;
+        //cout << "Creo el shader: " << vertex <<endl;
         resource = make_shared<CLResourceShader>();
         resource->SetName(vertex);
         //resource->SetShaderType(type);
@@ -258,7 +275,7 @@ CLResourceShader* CLResourceManager::GetResourceShader(const std::string vertex,
         }
     }
     if (!resource) {
-        cout << "Creo el shader: " << vertex <<endl;
+        //cout << "Creo el shader: " << vertex <<endl;
         resource = make_shared<CLResourceShader>();
         resource->SetName(vertex);
         //resource->SetShaderType(type);
