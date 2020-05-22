@@ -86,7 +86,7 @@ void SystemRanking::Update(ManCar* manCars){
         
         //cout << "+++++++++++++++++++++++++++++++++++++++++++++++++++++ ORDEN\n";
         //for (auto it = order.begin(); it != order.end(); ++it)
-        //    std::cout << it->first << " => " << it->second << '\n';
+        //std::cout << it->first << " => " << it->second << '\n';
         //cout << "+++++++++++++++++++++++++++++++++++++++++++++++++++++ ORDEN\n";
 
     }

@@ -112,8 +112,8 @@ class Utils {
     }
 
     static void Cout(string& txt) {
-        if (ACTIVATE_COUT)
-            cout << txt << endl;
+        //if (ACTIVATE_COUT)
+        //cout << txt << endl;
     }
 
     static float DegToRad(float deg) {

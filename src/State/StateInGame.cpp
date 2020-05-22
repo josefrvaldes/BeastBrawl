@@ -495,10 +495,10 @@ void StateInGame::GoToCountdownAnimation() {
 
 void StateInGame::GoToStateEndrace() {
     if(!inputEngine->InTournament()){
-        cout << "Vamos a lanzar un evento de STATE_ENDRACE desde StateInGame" << endl;
+        //cout << "Vamos a lanzar un evento de STATE_ENDRACE desde StateInGame" << endl;
         EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_ENDRACE});
     }else{
-        cout << "Vamos a lanzar un evento de STATE_ENDTOURNAMENT desde StateInGame" << endl;
+        //cout << "Vamos a lanzar un evento de STATE_ENDTOURNAMENT desde StateInGame" << endl;
         EventManager::GetInstance().AddEventMulti(Event{EventType::STATE_ENDTOURNAMENT});
     }
 

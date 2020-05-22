@@ -152,7 +152,7 @@ void StateInGameSingle::UpdateGame() {
 }
 
 void StateInGameSingle::Render() {
-    std::cout.precision(10);
+    //std::cout.precision(10);
     timeStart =  std::chrono::system_clock::now();
     
     auto carPrincial = manCars->GetCar().get();

@@ -17,7 +17,7 @@ UDPServer::UDPServer(boost::asio::io_context& context_, uint16_t port_)
 }
 
 UDPServer::~UDPServer() {
-    cout << "Se ha llamado al destructor de UDPServer" << endl;
+    //cout << "Se ha llamado al destructor de UDPServer" << endl;
 }
 
 void UDPServer::Close() {
@@ -54,7 +54,7 @@ void UDPServer::HandleReceive(std::shared_ptr<unsigned char[]> recevBuff, std::s
         // de una ejecución anterior del juego
         if (time > timeServerStartedReceiving) {
             uint16_t idPlayer = Serialization::Deserialize<uint16_t>(recevBuff.get(), currentIndex);
-            // cout << Utils::getISOCurrentTimestampMillis() << " hemos recibido una petición de type[" << unsigned(petitionType) << "] del jugador[" << idPlayer << "] con ip["<<remoteClient->address().to_string() << ":" << to_string(remoteClient->port()) << "]" << endl;
+            //cout << Utils::getISOCurrentTimestampMillis() << " hemos recibido una petición de type[" << unsigned(petitionType) << "] del jugador[" << idPlayer << "] con ip["<<remoteClient->address().to_string() << ":" << to_string(remoteClient->port()) << "]" << endl;
             //cout << Utils::getISOCurrentTimestampMillis() << " Hemos recibido en el server la llamada " << time << " de tipo " << unsigned(petitionType) << " del user " << idPlayer << endl;
             // TODO: esto creo que podría evitarse
             unsigned char buffRecieved[Constants::ONLINE_BUFFER_SIZE];
@@ -71,7 +71,7 @@ void UDPServer::HandleReceive(std::shared_ptr<unsigned char[]> recevBuff, std::s
                         //std::cout << "Recibidos inputs: " << bytesTransferred << std::endl;
                         // int64_t gameTime = Serialization::Deserialize<uint16_t>(recevBuff.get(), currentIndex);
                         if (p.lastInputTimeReceived < time) {
-                            // cout << Utils::getISOCurrentTimestampMillis() << "Se ha recibido y reenviado un paquete de input del player " << idPlayer << " con time["<<time<<"] " << endl;
+                            //cout << Utils::getISOCurrentTimestampMillis() << "Se ha recibido y reenviado un paquete de input del player " << idPlayer << " con time["<<time<<"] " << endl;
                             p.lastInputTimeReceived = time;
                             HandleReceivedInputs(idPlayer, buffRecieved, bytesTransferred, *remoteClient.get());
                         } 
@@ -98,9 +98,9 @@ void UDPServer::HandleReceive(std::shared_ptr<unsigned char[]> recevBuff, std::s
                         if (p.lastCatchTotemTimeReceived < time) {
                             p.lastCatchTotemTimeReceived = time;
                             HandleReceivedCatchTotem(idPlayer, buffRecieved, bytesTransferred, *remoteClient.get());
-                        } else {
-                            cout << Utils::getISOCurrentTimestampMillis() << "Se ha ignorado un paquete de CatchTotem porque era antiguo" << endl;
-                        }
+                        } //else {
+                            //cout << Utils::getISOCurrentTimestampMillis() << "Se ha ignorado un paquete de CatchTotem porque era antiguo" << endl;
+                        //}
                     } break;
                     case Constants::PetitionTypes::LOST_TOTEM: {
                         if (p.lastLostTotemTimeReceived < time) {
@@ -174,11 +174,11 @@ void UDPServer::HandleReceive(std::shared_ptr<unsigned char[]> recevBuff, std::s
                         if (p.lastClockSyncReceived < time) {
                             p.lastClockSyncReceived = time;
                             uint16_t idOnline2 = Serialization::Deserialize<uint16_t>(recevBuff.get(), currentIndex);
-                            cout << "Hemos recibido un sendClockSync del sender["<<idPlayer<<"] y receiver["<<idOnline2<<"]" << endl;
+                            //cout << "Hemos recibido un sendClockSync del sender["<<idPlayer<<"] y receiver["<<idOnline2<<"]" << endl;
                             HandleReceivedClockSync(p, idOnline2, buffRecieved, bytesTransferred, *remoteClient.get());
-                        } else {
-                            cout << "Hemos descartado un sendClockSync del sender["<<idPlayer<<"]" << endl;
-                        }
+                        } //else {
+                            //cout << "Hemos descartado un sendClockSync del sender["<<idPlayer<<"]" << endl;
+                        //}
                         break;
                     case Constants::PetitionTypes::SEND_FINAL_CLOCK_SYNC:
                         if (p.lastFinalClockSyncReceived < time) {
@@ -186,27 +186,27 @@ void UDPServer::HandleReceive(std::shared_ptr<unsigned char[]> recevBuff, std::s
                             p.lastInputTimeReceived = -1;
                             p.lastSyncTimeReceived = -1;
                             uint16_t idOnline2 = Serialization::Deserialize<uint16_t>(recevBuff.get(), currentIndex);
-                            cout << "Hemos recibido un sendClockSync del sender["<<idPlayer<<"] y receiver["<<idOnline2<<"]" << endl;
+                            //cout << "Hemos recibido un sendClockSync del sender["<<idPlayer<<"] y receiver["<<idOnline2<<"]" << endl;
                             HandleReceivedFinalClockSync(p, idOnline2, buffRecieved, bytesTransferred, *remoteClient.get());
-                        } else {
-                            cout << "Hemos descartado un sendClockSync del sender["<<idPlayer<<"]" << endl;
-                        }
+                        } //else {
+                            //cout << "Hemos descartado un sendClockSync del sender["<<idPlayer<<"]" << endl;
+                        //}
                         break;
                     default:
-                        cout << "Petición incorrecta" << endl;
+                        //cout << "Petición incorrecta" << endl;
                         break;
                 }
 
                 // metodo para detectar si algún paquete no ha llegado desde hace tiempo
                 //DetectUsersDisconnected();
-            } else {
-                cout << idPlayer << " - No se ha encontrado el player que corresponde con esta llamada. CATÁSTROFE" << endl;
-            }
+            } //else {
+                //cout << idPlayer << " - No se ha encontrado el player que corresponde con esta llamada. CATÁSTROFE" << endl;
+            //}
         }
 
-    } else {
-        cout << "¡¡HUBO UN ERROR AL RECIBIR DATOS EN EL SERVER!! errorcode:" << errorCode << endl;
-    }
+    } //else {
+        //cout << "¡¡HUBO UN ERROR AL RECIBIR DATOS EN EL SERVER!! errorcode:" << errorCode << endl;
+    //}
     StartReceiving();  // antes estaba dentro del if, pero entonces si hay un error ya se rompe tó ¿?
 }
 
@@ -221,7 +221,7 @@ void UDPServer::HandleReceivedCatchPU(const uint16_t id, unsigned char resendPU[
 void UDPServer::HandleReceivedThrowPU(const uint16_t id, const uint16_t idPUOnline, unsigned char resendPU[], const size_t currentBufferSize, const udp::endpoint& originalClient) {
     // el id del melón es el id del user concatenado con el id real
     idsPUs.push_back(idPUOnline);
-    std::cout << "Hemos creado un PU con id " << idPUOnline << ", y lo hemos guardado así que ahora tenemos " << idsPUs.size() << endl;
+    //std::cout << "Hemos creado un PU con id " << idPUOnline << ", y lo hemos guardado así que ahora tenemos " << idsPUs.size() << endl;
 
     for (uint8_t i = 0; i < NUM_REINTENTOS; i++)
         ResendBytesToOthers(id, resendPU, currentBufferSize, originalClient);
@@ -231,14 +231,14 @@ void UDPServer::HandleReceivedCrashPUWall(const uint16_t idPlayer, const uint16_
     // si tenemos en nuestro vector de PUs el pu que acaba de chocar, entonces
     // operamos con él, si no, significa que ya ha chocado antes y no operamos
     if (std::binary_search(idsPUs.begin(), idsPUs.end(), idPowerUp)) {
-        std::cout << "Hemos recibido un choque de PU-Wall idPowerUp " << idPowerUp << ". Antes teníamos " << idsPUs.size();
+        //std::cout << "Hemos recibido un choque de PU-Wall idPowerUp " << idPowerUp << ". Antes teníamos " << idsPUs.size();
         idsPUs.erase(
             std::remove_if(
                 idsPUs.begin(),
                 idsPUs.end(),
                 [idPowerUp](const uint16_t currentIdPU) { return currentIdPU == idPowerUp; }),
             idsPUs.end());
-        std::cout << " y ahora tenemos " << idsPUs.size() << endl;
+        //std::cout << " y ahora tenemos " << idsPUs.size() << endl;
 
         for (uint8_t i = 0; i < NUM_REINTENTOS; ++i)
             for (Player& currentPlayer : players)
@@ -249,8 +249,8 @@ void UDPServer::HandleReceivedCrashPUWall(const uint16_t idPlayer, const uint16_
 void UDPServer::HandleReceivedCrashPUCar(const uint16_t idPlayer, const uint16_t idPowerUp, const uint16_t idCarCrashed, unsigned char resendPU[], const size_t currentBufferSize, const udp::endpoint& originalClient) {
     // si tenemos en nuestro vector de PUs el pu que acaba de chocar, entonces
     // operamos con él, si no, significa que ya ha chocado antes y no operamos
-    cout << Utils::getISOCurrentTimestampMillis() << "El coche " << idPlayer << " dice que hemos chocado con el PU-Car con el pu[" << idPowerUp << "] car[" << idCarCrashed << "], vamos a ver si está en la lista" << endl;
-    cout << Utils::getISOCurrentTimestampMillis() << "Hemos chocado con el PU-Car con el pu[" << idPowerUp << "] car[" << idCarCrashed << "], vamos a ver si está en la lista" << endl;
+    //cout << Utils::getISOCurrentTimestampMillis() << "El coche " << idPlayer << " dice que hemos chocado con el PU-Car con el pu[" << idPowerUp << "] car[" << idCarCrashed << "], vamos a ver si está en la lista" << endl;
+    //cout << Utils::getISOCurrentTimestampMillis() << "Hemos chocado con el PU-Car con el pu[" << idPowerUp << "] car[" << idCarCrashed << "], vamos a ver si está en la lista" << endl;
 
     bool encontrado = false;
     for (size_t i = 0; i < idsPUs.size(); i++) {
@@ -261,25 +261,25 @@ void UDPServer::HandleReceivedCrashPUCar(const uint16_t idPlayer, const uint16_t
     }
 
     if (encontrado) {
-        cout << Utils::getISOCurrentTimestampMillis() << "Lo hemos encontrado, así que vamos a borrarlo" << idsPUs.size() << endl;
+        //cout << Utils::getISOCurrentTimestampMillis() << "Lo hemos encontrado, así que vamos a borrarlo" << idsPUs.size() << endl;
         idsPUs.erase(
             std::remove_if(
                 idsPUs.begin(),
                 idsPUs.end(),
                 [idPowerUp](const uint16_t currentIdPU) { return currentIdPU == idPowerUp; }),
             idsPUs.end());
-        std::cout << " y ahora tenemos " << idsPUs.size() << endl;
+        //std::cout << " y ahora tenemos " << idsPUs.size() << endl;
 
         for (uint8_t i = 0; i < NUM_REINTENTOS; ++i)
             for (Player& currentPlayer : players)
                 SendBytes(resendPU, currentBufferSize, currentPlayer);
-    } else {
-        cout << Utils::getISOCurrentTimestampMillis() << "NOOOO Lo hemos encontrado" << idsPUs.size() << endl;
-    }
+    } //else {
+        //cout << Utils::getISOCurrentTimestampMillis() << "NOOOO Lo hemos encontrado" << idsPUs.size() << endl;
+    //}
 }
 
 void UDPServer::HandleReceivedLaunchAnimationEnd(const uint16_t idPlayer, const uint16_t idWinner, unsigned char bufferToReSend[], const size_t currentBufferSize, const udp::endpoint& originalClient) {
-    cout << Utils::getISOCurrentTimestampMillis() << "El coche " << idPlayer << " dice que hemos acabado la carrera y que ha ganado [" << idWinner << "]" << endl;
+    //cout << Utils::getISOCurrentTimestampMillis() << "El coche " << idPlayer << " dice que hemos acabado la carrera y que ha ganado [" << idWinner << "]" << endl;
 
     for (uint8_t i = 0; i < NUM_REINTENTOS; ++i)
         for (Player& currentPlayer : players)
@@ -290,7 +290,7 @@ void UDPServer::HandleReceivedLaunchAnimationEnd(const uint16_t idPlayer, const 
 
 void UDPServer::HandleReceivedWaitingForCountdown(Player& p, unsigned char bufferToReSend[], const size_t currentBufferSize, const udp::endpoint& originalClient) {
     if (!animationCountdownLaunched) {
-        cout << Utils::getISOCurrentTimestampMillis() << "El coche " << p.id << " dice que está waiting for countdown\n";
+        //cout << Utils::getISOCurrentTimestampMillis() << "El coche " << p.id << " dice que está waiting for countdown\n";
         // marcamos que este coche ya está listo para la cuenta atrás
         p.waitingForCountdown = true;
 
@@ -305,7 +305,7 @@ void UDPServer::HandleReceivedWaitingForCountdown(Player& p, unsigned char buffe
 
         // si todos estaban ya listos y esperando para comenzar la cuenta atrás, efectivamente, les enviamos que empiecen la cuenta atrás
         if (launchCountdown) {
-            cout << "Vamos a decirle a los clientes que empiecen el countdown" << endl;
+            //cout << "Vamos a decirle a los clientes que empiecen el countdown" << endl;
             animationCountdownLaunched = true;
             for (uint8_t i = 0; i < NUM_REINTENTOS; ++i)
                 for (Player& currentPlayer : players) {
@@ -320,9 +320,9 @@ void UDPServer::HandleReceivedClockSync(Player& p, uint16_t idOnline2, unsigned 
     if(p2 != nullptr) {
         for (uint8_t i = 0; i < NUM_REINTENTOS; ++i)
             SendBytes(bufferToReSend, currentBufferSize, *p2);       
-    } else {
-        cout << "No hemos encontrado el jugador con idSender[" << idOnline2 << "] al que hay que reenviarle un SyncClock" << endl;
-    }
+    } //else {
+        //cout << "No hemos encontrado el jugador con idSender[" << idOnline2 << "] al que hay que reenviarle un SyncClock" << endl;
+    //}
 }
 
 void UDPServer::HandleReceivedFinalClockSync(Player& p, uint16_t idOnline2, unsigned char bufferToReSend[], const size_t currentBufferSize, const udp::endpoint& originalClient) {
@@ -332,9 +332,9 @@ void UDPServer::HandleReceivedFinalClockSync(Player& p, uint16_t idOnline2, unsi
         p2->lastSyncTimeReceived = -1;
         for (uint8_t i = 0; i < NUM_REINTENTOS; ++i)
             SendBytes(bufferToReSend, currentBufferSize, *p2);       
-    } else {
-        cout << "No hemos encontrado el jugador con idSender[" << idOnline2 << "] al que hay que reenviarle un SyncClock" << endl;
-    }
+    } //else {
+        //cout << "No hemos encontrado el jugador con idSender[" << idOnline2 << "] al que hay que reenviarle un SyncClock" << endl;
+    //}
 }
 
 void UDPServer::SendLaunchAnimationCountdown(const Player& player) {
@@ -472,7 +472,7 @@ void UDPServer::ResendBytesToOthers(const uint16_t id, const unsigned char resen
             // const auto& currentEndpoint = currentPlayer.endpoint;
             // const auto& currentAddress = currentEndpoint.address().to_string();
             // const auto& currentPort = currentEndpoint.port();
-            // cout << "Vamos a reenviar bytes del cliente [" << id << "] a [" << currentPlayer.id << "] " << currentAddress << ":" << currentPort << " a los demás" << endl;
+            //cout << "Vamos a reenviar bytes del cliente [" << id << "] a [" << currentPlayer.id << "] " << currentAddress << ":" << currentPort << " a los demás" << endl;
             SendBytes(resendBytes, currentBufferSize, currentPlayer);
         }
     }
@@ -492,7 +492,7 @@ void UDPServer::SendBytes(const unsigned char resendBytes[], const size_t curren
 
 void UDPServer::HandleSentBytes(const boost::system::error_code& errorCode, std::size_t bytesTransferred) const {
     if (errorCode) {
-        cout << "Hubo un error enviando Bytes. errorcode: " << errorCode << endl;
+        //cout << "Hubo un error enviando Bytes. errorcode: " << errorCode << endl;
         // Resend();
     }
 }
@@ -511,7 +511,7 @@ void UDPServer::SavePlayerIfNotExists(const uint16_t id, udp::endpoint& newClien
     p.id = id;
     p.endpoint = newClient;
     players.push_back(p);
-    cout << "Hemos guardado al cliente con id " << id << " y que tiene la dirección " << newAddress << ":" << newPort << " y ahora tenemos " << players.size() << " clientes" << endl;
+    //cout << "Hemos guardado al cliente con id " << id << " y que tiene la dirección " << newAddress << ":" << newPort << " y ahora tenemos " << players.size() << " clientes" << endl;
 }
 
 Player* UDPServer::GetPlayerById(uint16_t idPlayer) {
@@ -531,17 +531,17 @@ void UDPServer::DetectUsersDisconnected() {
         for (Player& currentPlayer : players) {
             // si su última petición llegó hace más tiempo del tiempo de desconexión...
             if (Utils::getMillisSinceEpoch() - currentPlayer.lastInputTimeReceived > TIEMPO_DESCONEXION) {
-                cout << "Se ha desconectado el jugador: " << currentPlayer.id << "\n";
+                //cout << "Se ha desconectado el jugador: " << currentPlayer.id << "\n";
 
                 // hacemos esto para no volver a repetir esto cada iteración. Por tanto
                 // si un jugador está desconectado, esta llamada solo se repetirá cada 10 segundos
                 // y no todo el rato.
                 currentPlayer.lastInputTimeReceived = Utils::getMillisSinceEpoch();
                 if (currentPlayer.disconnected == false) {
-                    cout << "\tlo marcamos como desconectado" << endl;
+                    //cout << "\tlo marcamos como desconectado" << endl;
                     currentPlayer.disconnected = true;
                 } else {
-                    cout << "\tlo marcamos como readyToDelete" << endl;
+                    //cout << "\tlo marcamos como readyToDelete" << endl;
                     currentPlayer.readyToDelete = true;
                 }
 
@@ -589,7 +589,7 @@ void UDPServer::DetectUsersDisconnected() {
             }
 
             // y salimos
-            cout << "Se han caído todos los jugadores y solo queda uno o ninguno. Reiniciamos el server" << endl;
+            //cout << "Se han caído todos los jugadores y solo queda uno o ninguno. Reiniciamos el server" << endl;
             Exit();
         }
     }

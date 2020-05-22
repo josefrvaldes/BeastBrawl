@@ -17,7 +17,7 @@ int main(int argc, char* argv[]) {
     if(argc == 2) {
         Constants::MIN_NUM_PLAYERS = std::stoi(argv[1]);
     }
-    cout << "El número de jugadores será " << unsigned(Constants::MIN_NUM_PLAYERS) << endl;
+    //cout << "El número de jugadores será " << unsigned(Constants::MIN_NUM_PLAYERS) << endl;
 
     Server s;
     s.Start();

@@ -133,7 +133,7 @@ void SystemGameRules::UpdatePositionsMiniMap(const vector<shared_ptr<Entity>> &c
 }
 
 void SystemGameRules::RestartAllTimers(vector<shared_ptr<Entity>> entities, Entity &globalClock_, int64_t timeStartPause) {
-    cout << "Estamos reseteando los timers" << endl;
+    //cout << "Estamos reseteando los timers" << endl;
     auto cClock = static_cast<CClock*>(globalClock_.GetComponent(CompType::ClockComp).get());
     if(cClock->active) 
         cClock->timeStart = system_clock::now();

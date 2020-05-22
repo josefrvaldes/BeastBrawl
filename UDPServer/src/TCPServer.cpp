@@ -20,7 +20,7 @@ TCPServer::TCPServer(boost::asio::io_context& context_, uint16_t port_, UDPServe
 }
 
 TCPServer::~TCPServer() {
-    cout << "Se ha llamado al destructor de TCPServer" << endl;
+    //cout << "Se ha llamado al destructor de TCPServer" << endl;
 }
 
 void TCPServer::Close() {
@@ -54,11 +54,11 @@ void TCPServer::HandleAccept(TCPConnection::pointer new_connection, const boost:
             // new_connection->currentPlayer = &p;
             players.push_back(p);
             new_connection->player = p;
-            cout << "Se ha conectado un nuevo jugador, ahora son " << players.size() << endl;
+            //cout << "Se ha conectado un nuevo jugador, ahora son " << players.size() << endl;
 
         }else{
-            std::cout << "Juego empezado: " << Server::GAME_STARTED  << std::endl;
-            std::cout << "Num Jugadores: " << players.size()  << std::endl;
+            //std::cout << "Juego empezado: " << Server::GAME_STARTED  << std::endl;
+            //std::cout << "Num Jugadores: " << players.size()  << std::endl;
             // no dejar entrar a la sala
             new_connection->SendFullGame();
         }

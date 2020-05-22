@@ -16,7 +16,7 @@ TCPConnection::TCPConnection(TCPServer *tcpServer_, asio::io_context& io_context
 }
 
 TCPConnection::~TCPConnection() {
-    cout << "Se ha llamado al destructor de TCPConnection" << endl;
+    //cout << "Se ha llamado al destructor de TCPConnection" << endl;
 }
 
 void TCPConnection::Close() {
@@ -38,7 +38,7 @@ void TCPConnection::HandleRead(std::shared_ptr<unsigned char[]> recevBuff, const
     if (!error && bytes_transferred != 0) {
         size_t currentIndex = 0;
         uint8_t petitionType = Serialization::Deserialize<uint8_t>(recevBuff.get(), currentIndex);    // numero
-        cout << "Hemos leido " << bytes_transferred << " bytes y el petitionType es " << unsigned(petitionType) << endl;
+        //cout << "Hemos leido " << bytes_transferred << " bytes y el petitionType es " << unsigned(petitionType) << endl;
 
 
         Constants::PetitionTypes callType = static_cast<Constants::PetitionTypes>(petitionType);
@@ -56,7 +56,7 @@ void TCPConnection::HandleRead(std::shared_ptr<unsigned char[]> recevBuff, const
                 break;
         }
     } else if ((boost::asio::error::eof == error) || (boost::asio::error::connection_reset == error)) {
-        std::cout << "Se desconecta un usuario: " << error.message() << std::endl;
+        //std::cout << "Se desconecta un usuario: " << error.message() << std::endl;
         for(auto& p : players){
             if(p->id == player->id)
                 p->character = Constants::ANY_CHARACTER;
@@ -64,10 +64,10 @@ void TCPConnection::HandleRead(std::shared_ptr<unsigned char[]> recevBuff, const
         tcpServer->SendCharsSelectedToOther(ID);
         DeleteMe();
         //tcpServer->SendCharsSelected(); // Testear
-        cout << "Se ha desconectado un nuevo jugador, ahora son " << players.size() << endl;
-    } else if (error) {
-        std::cout << "Error al leer: " << error.message() << std::endl;
-    }
+        //cout << "Se ha desconectado un nuevo jugador, ahora son " << players.size() << endl;
+    } //else if (error) {
+        //std::cout << "Error al leer: " << error.message() << std::endl;
+    //}
     Start();
 }
 
@@ -175,20 +175,20 @@ void TCPConnection::SendCharsSel(std::shared_ptr<unsigned char[]> buff, size_t b
 
 
 void TCPConnection::HandleWrite(const boost::system::error_code& error, size_t bytes_transferred) {
-    if (!error) {
-        std::cout << "Mensaje enviado del servidor TCP"
-                  << "\n";
-    } else {
-        std::cout << "Error al escribir: " << error.message() << "\n";
-    }
+    //if (!error) {
+    //    std::cout << "Mensaje enviado del servidor TCP"
+    //              << "\n";
+    //} else {
+    //    std::cout << "Error al escribir: " << error.message() << "\n";
+    //}
 }
 
 void TCPConnection::HandleSendOpenGame(const boost::system::error_code& error, size_t bytes_transferred) {
-    if (!error) {
-        std::cout << "Mensaje enviado del servidor TCP open game\n";
-    } else {
-        std::cout << "Error al escribir: " << error.message() << "\n";
-    }
+    //if (!error) {
+    //    std::cout << "Mensaje enviado del servidor TCP open game\n";
+    //} else {
+    //    std::cout << "Error al escribir: " << error.message() << "\n";
+    //}
 }
 
 

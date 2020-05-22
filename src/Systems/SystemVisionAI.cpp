@@ -47,8 +47,8 @@ void SystemVisionAI::update(CarAI* actualCar){
     systemVision->SaveTotemInVision(actualCar, cBrainAI, static_cast<ManTotem*>(managers[3]), static_cast<ManBoundingWall*>(managers[6]), 
                                                 static_cast<ManBoundingOBB*>(managers[7]), static_cast<ManBoundingGround*>(managers[8]));
 
-    // cout << "NumCars: " << cBrainAI->carInVision.size() << "\n";
-    // cout << "NumBox: " << cBrainAI->boxInVision.size() << "\n";
+    //cout << "NumCars: " << cBrainAI->carInVision.size() << "\n";
+    //cout << "NumBox: " << cBrainAI->boxInVision.size() << "\n";
     //if(cBrainAI->totemInVision!=nullptr)
-    //    cout << "Totem: 1\n";
+    //cout << "Totem: 1\n";
 }

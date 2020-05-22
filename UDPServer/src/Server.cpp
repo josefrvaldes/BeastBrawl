@@ -9,7 +9,7 @@ void Server::Start() {
         boost::asio::executor_work_guard<boost::asio::io_context::executor_type> work_guardUDP(context->get_executor());
         serverTCP->StartReceiving();
         // serverUDP->StartReceiving();
-        cout << "El servidor está en marcha otra vez!! #############################" << endl;
+        //cout << "El servidor está en marcha otra vez!! #############################" << endl;
         context->run();
         GAME_STARTED = false;
         ACCEPTING_ENDGAME = false;
