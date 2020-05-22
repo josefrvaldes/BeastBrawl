@@ -12,9 +12,22 @@ Beast Brawl es el nombre del juego que está siendo desarrollado por Clover Game
 Para compilar nuestro proyecto debes situarte en el directorio raíz (NO en el subdirectorio `src`). Ahí habrá un archivo Makefile para compilar en terminal. Según qué comandos utilices, se trabajará con el proyecto del juego, el motor gráfico o los dos.
 
 ### Juego
+#### Linux
 * `make` para compilar el código y crear el archivo ejecutable.
 * `make clean`para borrar los archivos compilados y el ejecutable.
-* `make exe` para ejecutar.
+* `make exe` para ejecutar la versión predeterminada.
+
+#### Windows
+* `make -f MakefileWin.mk` para compilar el código y crear el archivo ejecutable.
+* `make clean`para borrar los archivos compilados y el ejecutable.
+* `nombre del ejecutable` para ejecutar. Por ejemplo `./Beast_Brawl`
+
+#### En ambos casos
+* El ejecutable tiene dos parámetros para determinar si las animaciones se cargarán o no, y la url del servidor online.
+* `./Beast_Brawl [anim] [url]`, por ejemplo: `./Beast_Brawl 0 miservidor.com` sería para lanzar el juego sin animaciones y con el servidor en 'miservidor.com'
+* Por ejemplo: `./Beast_Brawl 1 localhost` sería para lanzar el juego con animaciones y con el servidor en 'localhost'
+* En ambos casos, si simplementa lanzas el ejecutable sin parámetros, los valores por defecto son animaciones activadas, y localhost.
+
 
 ### Motor gráfico
 * `make gl` para compilar el código y crear el archivo ejecutable.
