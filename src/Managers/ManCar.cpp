@@ -856,7 +856,7 @@ void ManCar::CatchPowerUpAI(DataMap* d) {
     //  mm              = 375
 
     auto actualCar = any_cast<Entity*>((*d)[ACTUAL_CAR]);
-    if(actualCar != GetCar().get()){
+    if(actualCar != GetCar().get() && Game::GetInstance()->GetState()->GetState()!=State::States::INGAME_MULTI){
 
         auto cBrainAI = static_cast<CBrainAI*>(actualCar->GetComponent(CompType::BrainAIComp).get());
         if(cBrainAI->difficult == BrainAIDifficult::NORMAL){
