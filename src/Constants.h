@@ -20,7 +20,7 @@
 class Constants {
   public:
     inline static std::string SERVER_HOST = "localhost";
-    inline static uint8_t ANIM_ACTIVATED = 0;
+    inline static uint8_t ANIM_ACTIVATED = 1;
     inline static uint8_t MIN_NUM_PLAYERS = 4;
     inline static const bool DEBUG_SHOW_CHASSIS{true};
     inline static const bool DEBUG_SHOW_SPHERES{true};
