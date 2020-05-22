@@ -29,11 +29,11 @@ BoxPowerUp::BoxPowerUp(){
     }else if(Constants::RENDER_ENGINE == Constants::RenderEngine::IRRLICHT){
         mesh    =   "box_powerup.obj";
     }
-    //string vertexShader = "CLEngine/src/Shaders/lightMapping.vert";
-    //string fragmentShader = "CLEngine/src/Shaders/lightMapping.frag";
+    string vertexShader = "CLEngine/src/Shaders/lightMapping.vert";
+    string fragmentShader = "CLEngine/src/Shaders/lightMapping.frag";
 
-    string vertexShader = "CLEngine/src/Shaders/cartoonShader.vert";
-    string fragmentShader = "CLEngine/src/Shaders/cartoonShader.frag";
+    //string vertexShader = "CLEngine/src/Shaders/cartoonShader.vert";
+    //string fragmentShader = "CLEngine/src/Shaders/cartoonShader.frag";
     //float maxSpeed = 20.0, acceleration = .15, friction = 0.1, slowDown = 0.25;
     
     shared_ptr<CId> cId   = make_shared<CId>();

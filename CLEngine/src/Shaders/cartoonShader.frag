@@ -275,7 +275,7 @@ void main(){
         }
 
         FragColor = vec4(result,1.0);
-        //FragColor = floor(FragColor * cartoonParts) / cartoonParts;  // estaba mal aplicado, era en la luz difusa solo
+        FragColor = floor(FragColor * cartoonParts) / cartoonParts; 
         
     }else{
         //Si comentas esta linea se ve con luces

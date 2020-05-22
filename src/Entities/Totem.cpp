@@ -34,11 +34,11 @@ Totem::Totem()
     //string mesh = "totem_tex.fbx";
     //string mesh    = "kart_ia.obj";
 
-    //string vertexShader = "CLEngine/src/Shaders/lightMapping.vert";
-    //string fragmentShader = "CLEngine/src/Shaders/lightMapping.frag";
+    string vertexShader = "CLEngine/src/Shaders/lightMapping.vert";
+    string fragmentShader = "CLEngine/src/Shaders/lightMapping.frag";
 
-    string vertexShader = "CLEngine/src/Shaders/cartoonShader.vert";
-    string fragmentShader = "CLEngine/src/Shaders/cartoonShader.frag";
+    //string vertexShader = "CLEngine/src/Shaders/cartoonShader.vert";
+    //string fragmentShader = "CLEngine/src/Shaders/cartoonShader.frag";
     
     shared_ptr<CId> cId   = make_shared<CId>();
     shared_ptr<CType> cType = make_shared<CType>(ModelType::AnimatedMesh);

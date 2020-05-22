@@ -27,8 +27,8 @@ public:
     uint16_t positionRanking = 0;               //Posicion en la que vas de la carrera
     
     // son las fisicas de la entidad TOTEM (cuando el totem esta en el suelo)
-    float MaxSpeed {350.0};
-    float speed {350.0}; // lo inicializamos al valor del MaxSpeed para que cuando se cree no se mueva
+    float MaxSpeed {500.0};
+    float speed {500.0}; // lo inicializamos al valor del MaxSpeed para que cuando se cree no se mueva
     float aceleration {20.0};
 
 };

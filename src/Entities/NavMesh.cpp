@@ -19,11 +19,11 @@ NavMesh::NavMesh(glm::vec3 pos, glm::vec3 rot, float width, float height, float 
     string texture = "spheremap.jpg";
     string meshCerca    = "kart.obj";
 
-    //string vertexShader = "CLEngine/src/Shaders/lightMapping.vert";
-    //string fragmentShader = "CLEngine/src/Shaders/lightMapping.frag";
+    string vertexShader = "CLEngine/src/Shaders/lightMapping.vert";
+    string fragmentShader = "CLEngine/src/Shaders/lightMapping.frag";
 
-    string vertexShader = "CLEngine/src/Shaders/cartoonShader.vert";
-    string fragmentShader = "CLEngine/src/Shaders/cartoonShader.frag";
+    //string vertexShader = "CLEngine/src/Shaders/cartoonShader.vert";
+    //string fragmentShader = "CLEngine/src/Shaders/cartoonShader.frag";
 
     //Dividimos entre 10 porque con scale 1 irrlicht cuenta como 10, de esta manera si le decimos que queremos 10 de altura lo tomara como 1 y en irrlicht sera 10
     glm::vec3 scale = glm::vec3(width/10.0,height/10.0,depth/10.0);

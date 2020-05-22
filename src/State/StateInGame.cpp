@@ -192,7 +192,7 @@ void StateInGame::InitializeManagers() {
     totemParticles.push_back("media/totemShiny.png");
     for (auto totem : manTotems->GetEntities()) {
         auto cId = static_cast<CId *>(totem->GetComponent(CompType::IdComp).get());
-        manParticleSystem->CreateParticleSystem(cId->id, glm::vec3(0.0f, 0.0f, 0.0f), 100, glm::vec3(0.0f, 300.0f, 0.0f), totemParticles, 6, 6, 100, 2, 2000, glm::vec3(10.0f, 0.0f, 10.0f), glm::vec3(0.0f, 0.0f, 0.0f), 0, 0x4, true, true);
+        manParticleSystem->CreateParticleSystem(cId->id, glm::vec3(0.0f, 0.0f, 0.0f), 100, glm::vec3(0.0f, 300.0f, 0.0f), totemParticles, 10, 12, 100, 2, 2000, glm::vec3(10.0f, 0.0f, 10.0f), glm::vec3(0.0f, 0.0f, 0.0f), 0, 0x4, true, true);
     }
 }
 

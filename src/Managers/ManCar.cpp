@@ -892,7 +892,7 @@ void ManCar::CatchPowerUpAI(DataMap* d) {
                 
                 // Llevas el totem
                 if (cTotem->active) {          
-                    maxRobojorobo -= 0;    // 0
+                    maxRobojorobo = 0;    // 0
                     maxNitro += 25;         // 175
                     maxPudin += 25;         // 125
                     maxEscudo += 50;        // 100
@@ -909,7 +909,7 @@ void ManCar::CatchPowerUpAI(DataMap* d) {
 
             // Has llevado el totem mas del 75% del tiempo requerido
             } else if ((myTime*100/time) > 75) {
-                maxRobojorobo -= 0;        // 0
+                maxRobojorobo = 0;        // 0
                 maxPudin += 100;            // 250
                 maxEscudo += 25;            // 100
                 maxTelebanana -= 75;        // 150

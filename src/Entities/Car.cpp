@@ -269,8 +269,11 @@ Car::Car(int pj){
         mesh    =   "kart_physics.obj";
     }
 
-    string vertexShader = "CLEngine/src/Shaders/cartoonShader.vert";
-    string fragmentShader = "CLEngine/src/Shaders/cartoonShader.frag";
+    string vertexShader = "CLEngine/src/Shaders/lightMapping.vert";
+    string fragmentShader = "CLEngine/src/Shaders/lightMapping.frag";
+
+    //string vertexShader = "CLEngine/src/Shaders/cartoonShader.vert";
+    //string fragmentShader = "CLEngine/src/Shaders/cartoonShader.frag";
 
     shared_ptr<CId> cId   = make_shared<CId>();
     shared_ptr<CTransformable> cTransformable = make_shared<CTransformable>(pos, rot, scale); 
