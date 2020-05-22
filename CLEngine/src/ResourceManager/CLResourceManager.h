@@ -10,7 +10,8 @@
  * and Jose Valdés Sirvent https://www.linkedin.com/in/jose-f-valdés-sirvent-6058b5a5/ github -> josefrvaldes
  * 
  * 
- * @author Clover Games Studio
+ * @author Judith Mula Molina <https://www.linkedin.com/in/judith-mm-18099215a/> 
+ * @author Rubén Rubio Martínez <https://www.linkedin.com/in/rub%C3%A9n-rubio-mart%C3%ADnez-938700131/> 
  * 
  */
  
