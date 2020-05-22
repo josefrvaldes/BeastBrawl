@@ -11,6 +11,8 @@
  * 
  * 
  * @author Clover Games Studio
+ * @author Rubén Rubio Martínez
+ * @author Jose Valdés Sirvent
  * 
  */
  
