@@ -283,10 +283,10 @@ void TCPClient::HandleSentConnectionRequest(std::shared_ptr<unsigned char[]> req
         return;
     }
 
-    if (!errorCode) {
-        size_t currentBuffSize = 0;
-        uint8_t petitionType = Serialization::Deserialize<uint8_t>(request.get(), currentBuffSize);  
-    } 
+    //if (!errorCode) {
+    //    size_t currentBuffSize = 0;
+    //    uint8_t petitionType = Serialization::Deserialize<uint8_t>(request.get(), currentBuffSize);  
+    //} 
 }
 
 

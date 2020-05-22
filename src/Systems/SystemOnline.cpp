@@ -220,7 +220,7 @@ int64_t SystemOnline::GetGameTime() const {
 
 void SystemOnline::NewClockSyncReceived(DataMap *d) {
     uint16_t idSender = any_cast<uint16_t>((*d)[DataType::ID]);
-    uint16_t idReceiver = any_cast<uint16_t>((*d)[DataType::ID_DESTINATION]);
+    //uint16_t idReceiver = any_cast<uint16_t>((*d)[DataType::ID_DESTINATION]);
     float turnoutReceived = any_cast<float>((*d)[DataType::TURNOUT]);
     // int64_t time = any_cast<int64_t>((*d)[DataType::TIME]);
     int8_t numMeasurements = any_cast<int8_t>((*d)[DataType::NUM]);

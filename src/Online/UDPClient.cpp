@@ -997,7 +997,7 @@ void UDPClient::HandleReceivedFinalClockSync(unsigned char* recevBuff, size_t by
     // como el time a partir de aquí cambiará, hay que reiniciar los tiempos estos para poder seguir recibiendo paquetes
     lastTimeInputReceived[idSender] = -1;
     lastTimeSyncReceived[idSender] = -1;
-    uint16_t idReceiver = Serialization::Deserialize<uint16_t>(recevBuff, currentIndex);  // idOnline destino (si este coincide con el jugador de este juego, proceso la petición, DEBE de coincidir, vaya)
+    //uint16_t idReceiver = Serialization::Deserialize<uint16_t>(recevBuff, currentIndex);  // idOnline destino (si este coincide con el jugador de este juego, proceso la petición, DEBE de coincidir, vaya)
     float turnout = Serialization::Deserialize<float>(recevBuff, currentIndex);  // turnout real
     int64_t timeToWaitToSync = Serialization::Deserialize<int64_t>(recevBuff, currentIndex);  // tiempo de espera para sincronizar
 
