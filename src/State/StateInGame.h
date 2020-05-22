@@ -103,8 +103,6 @@ class StateInGame : public State {
     shared_ptr<ManCar> manCars;
 
    protected:
-    shared_ptr<GameObject> ground;
-    //shared_ptr<Camera> cam;
     unique_ptr<ManCamera> manCamera;
     shared_ptr<ManPowerUp> manPowerUps;
     shared_ptr<ManBoxPowerUp> manBoxPowerUps;
