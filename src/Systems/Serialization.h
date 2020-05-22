@@ -10,7 +10,9 @@
  * and Jose Valdés Sirvent https://www.linkedin.com/in/jose-f-valdés-sirvent-6058b5a5/ github -> josefrvaldes
  * 
  * 
- * @author Clover Games Studio
+ * @author Antonio Jose Martinez Garcia
+ * @author Jose Valdés Sirvent
+ * 
  * 
  */
  

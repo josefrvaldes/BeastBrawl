@@ -10,7 +10,8 @@
  * and Jose Valdés Sirvent https://www.linkedin.com/in/jose-f-valdés-sirvent-6058b5a5/ github -> josefrvaldes
  * 
  * 
- * @author Clover Games Studio
+ * @author Antonio Jose Martinez Garcia
+ * @author Jose Valdés Sirvent
  * 
  */
  
@@ -72,11 +73,7 @@ void TCPServer::HandleAccept(TCPConnection::pointer new_connection, const boost:
             players.push_back(p);
             new_connection->player = p;
             //cout << "Se ha conectado un nuevo jugador, ahora son " << players.size() << endl;
-
         }else{
-            //std::cout << "Juego empezado: " << Server::GAME_STARTED  << std::endl;
-            //std::cout << "Num Jugadores: " << players.size()  << std::endl;
-            // no dejar entrar a la sala
             new_connection->SendFullGame();
         }
     }

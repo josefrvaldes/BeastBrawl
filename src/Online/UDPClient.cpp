@@ -10,7 +10,8 @@
  * and Jose Valdés Sirvent https://www.linkedin.com/in/jose-f-valdés-sirvent-6058b5a5/ github -> josefrvaldes
  * 
  * 
- * @author Clover Games Studio
+ * @author Antonio Jose Martinez Garcia
+ * @author Jose Valdés Sirvent
  * 
  */
  
@@ -43,10 +44,6 @@ UDPClient::UDPClient(string host_, uint16_t port_)
       }} {
     //cout << "Server endpoint is " << serverEndpoint.address() << ":" << serverEndpoint.port() << endl;
     socket.open(udp::v4());
-    // udp::endpoint localEndpoint = socket.local_endpoint();
-    // cout << "Local endpoint is " << socket.local_endpoint().address() << ":" << socket.local_endpoint().port() << endl;
-
-    // EventManager::GetInstance().AddStrand(strand);
     timeGameStarted = Utils::getMillisSinceEpoch();
     StartReceiving();
 }
@@ -98,9 +95,7 @@ void UDPClient::HandleReceived(std::shared_ptr<unsigned char[]> recevBuff, const
                         const float skidRotation = Serialization::Deserialize<float>(recevBuff.get(), currentIndex);
                         lastTimeInputReceived[idPlayer] = gameTime;
                         HandleReceivedInputs(gameTime, inputs, idPlayer, speed, wheelRotation, skidDeg, skidRotation);
-                    } //else {
-                        //cout << "Hemos recibido una petición de tipo SEND_INPUT pero la ignoramos por antigua lastTimeInputReceived["<<lastTimeInputReceived[idPlayer]<<"] time["<<time<<"]" << endl;
-                    //}
+                    }
                 } break;
 
                 case Constants::PetitionTypes::SEND_SYNC:
@@ -237,8 +232,6 @@ void UDPClient::HandleReceived(std::shared_ptr<unsigned char[]> recevBuff, const
 }
 
 void UDPClient::HandleReceivedInputs(const int64_t time, const vector<Constants::InputTypes> inputs, const uint16_t idRival, const float speed, const float wheelRotation, const float skidDeg, const float skidRotation) const {
-    //cout << "Hemos recibido los inputs " << recvdJSON.dump() << endl;
-    //vector<Constants::InputTypes> inputs = recvdJSON["inputs"];
     std::shared_ptr<DataMap> data = make_shared<DataMap>();
     (*data)[DataType::ID] = idRival;
     (*data)[DataType::INPUTS] = inputs;
@@ -248,11 +241,6 @@ void UDPClient::HandleReceivedInputs(const int64_t time, const vector<Constants:
     (*data)[DataType::SKID_DEG] = skidDeg;
     (*data)[DataType::SKID_ROTATION] = skidRotation;
     EventManager::GetInstance().AddEventMulti(Event{EventType::NEW_INPUTS_RECEIVED, data});
-    // cout << "Hemos recibido los inputs ";
-    // for (size_t i = 0; i < inputs.size(); i++) {
-    //     cout << inputs[i] << " ";
-    // }
-    // cout << endl;
 }
 
 void UDPClient::HandleReceivedLaunchEndAnimation(uint16_t idPlayer, uint16_t idWinner) const {
@@ -316,22 +304,6 @@ void UDPClient::HandleReceivedSync(unsigned char* recevBuff, size_t bytesTransfe
     (*data2)[DataType::CAR_WITHOUT_TOTEM] = totemInGround;
     (*data2)[DataType::VEC3_POS] = posTotem;
     EventManager::GetInstance().AddEventMulti(Event{EventType::NEW_SYNC_RECEIVED_TOTEM, data2});
-    //std::cout << "RECIBIDO -------------------------------" << std::endl;
-    //std::cout << "Id: " << idCarOnline << std::endl;
-    //std::cout << "Pos coche: " << posCar.x << " , " << posCar.z << std::endl;
-    //std::cout << "Tengo totem: " << haveTotem << std::endl;
-    //std::cout << "Tiempo Totem: " << totemTime << std::endl;
-    //std::cout << "Totem en suelo: " << totemInGround << std::endl;
-    //std::cout << "Pos totem: " << posTotem.x << " , " << posTotem.z << std::endl;
-    //std::cout << "----------------------------------------" << std::endl;
-    // std::cout << "Recibido sincronizacion: " << bytesTransferred << " bytes" << std::endl;
-
-    /*cout << Utils::getISOCurrentTimestampMillis() << "he recibido el sync " << time << " de [" << idCarOnline << "] y está en la pos("
-         << posCar.x << "," << posCar.y << "," << posCar.z << ") - rot("
-         << rotCar.x << "," << rotCar.y << "," << rotCar.z << ")." << endl
-         << "Lleva el PU " << (int)typePU << " y lleva el totem(" << haveTotem << ")." << endl
-         << "El totem está en el suelo(" << totemInGround << ") y su pos es (" << posTotem.x << "," << posTotem.y << "," << posTotem.z << ") "
-         << endl;*/
 }
 
 // recibes el tipo de power up que ha cogido otro jugador
@@ -486,14 +458,6 @@ void UDPClient::HandleReceivedThrowMelonOPudin(unsigned char* recevBuff, size_t 
 
 // recibes la desconexion de otro jugador
 void UDPClient::HandleReceivedDisconnection(unsigned char* recevBuff, size_t bytesTransferred) {
-    //cout << "Un usuario se ha desconectado" << endl;
-    // size_t currentIndex = 0;
-    // Serialization::Deserialize<uint8_t>(recevBuff, currentIndex);  // petition tipe
-    // uint16_t idCarOnline = Serialization::Deserialize<uint16_t>(recevBuff, currentIndex);
-
-    /*std::shared_ptr<DataMap> data = make_shared<DataMap>();
-    (*data)[DataType::ID_ONLINE] = idCarOnline;
-    EventManager::GetInstance().AddEventMulti(Event{EventType::DISCONNECTED_PLAYER, data});*/
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -563,12 +527,6 @@ void UDPClient::SendSync(int64_t gameTime, uint16_t idOnline, const glm::vec3& p
     Serialization::Serialize(requestBuff, &totemTime, currentBuffSize);
     if (totemInGround)
         Serialization::SerializeVec3(requestBuff, posTotem, currentBuffSize);  // la pos del totem no se envia siempre
-    /*cout << Utils::getISOCurrentTimestampMillis() << "soy el [" << idOnline << "] estoy enviando el sync " << time << " y estoy en la pos("
-         << posCar.x << "," << posCar.y << "," << posCar.z << ") - rot("
-         << rotCar.x << "," << rotCar.y << "," << rotCar.z << ")." << endl
-         << "Llevo el PU " << (int)typePU << " y llevo el totem(" << haveTotem << ")." << endl
-         << "El totem está en el suelo(" << totemInGround << ") y su pos es (" << posTotem.x << "," << posTotem.y << "," << posTotem.z << ") "
-         << endl;*/
     socket.async_send_to(
         boost::asio::buffer(requestBuff, currentBuffSize),
         serverEndpoint,
@@ -942,7 +900,7 @@ void UDPClient::HandleSentDateTime(const std::shared_ptr<std::string> message,
     //if (!errorCode) {
     //    cout << "Ya se ha enviado el mensaje, " << message << " madafaka" << endl;
     //} else {
-    //    cout << "Hubo un error enviando el mensaje, madafaka" << endl;
+    //    cout << "Hubo un error enviando el mensaje" << endl;
     //}
 }
 

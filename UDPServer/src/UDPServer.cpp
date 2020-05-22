@@ -10,7 +10,8 @@
  * and Jose Valdés Sirvent https://www.linkedin.com/in/jose-f-valdés-sirvent-6058b5a5/ github -> josefrvaldes
  * 
  * 
- * @author Clover Games Studio
+ * @author Antonio Jose Martinez Garcia
+ * @author Jose Valdés Sirvent
  * 
  */
  
@@ -71,9 +72,6 @@ void UDPServer::HandleReceive(std::shared_ptr<unsigned char[]> recevBuff, std::s
         // de una ejecución anterior del juego
         if (time > timeServerStartedReceiving) {
             uint16_t idPlayer = Serialization::Deserialize<uint16_t>(recevBuff.get(), currentIndex);
-            //cout << Utils::getISOCurrentTimestampMillis() << " hemos recibido una petición de type[" << unsigned(petitionType) << "] del jugador[" << idPlayer << "] con ip["<<remoteClient->address().to_string() << ":" << to_string(remoteClient->port()) << "]" << endl;
-            //cout << Utils::getISOCurrentTimestampMillis() << " Hemos recibido en el server la llamada " << time << " de tipo " << unsigned(petitionType) << " del user " << idPlayer << endl;
-            // TODO: esto creo que podría evitarse
             unsigned char buffRecieved[Constants::ONLINE_BUFFER_SIZE];
             memcpy(&buffRecieved[0], &recevBuff.get()[0], bytesTransferred);
 
@@ -214,16 +212,10 @@ void UDPServer::HandleReceive(std::shared_ptr<unsigned char[]> recevBuff, std::s
                         break;
                 }
 
-                // metodo para detectar si algún paquete no ha llegado desde hace tiempo
-                //DetectUsersDisconnected();
-            } //else {
-                //cout << idPlayer << " - No se ha encontrado el player que corresponde con esta llamada. CATÁSTROFE" << endl;
-            //}
+            } 
         }
 
-    } //else {
-        //cout << "¡¡HUBO UN ERROR AL RECIBIR DATOS EN EL SERVER!! errorcode:" << errorCode << endl;
-    //}
+    }
     StartReceiving();  // antes estaba dentro del if, pero entonces si hay un error ya se rompe tó ¿?
 }
 

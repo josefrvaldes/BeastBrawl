@@ -11,6 +11,7 @@
  * 
  * 
  * @author Carlos de la Fuente Torres <delafuentetorresc@gmail.com>
+ * @author Jose Valdés Sirvent
  * 
  */
  

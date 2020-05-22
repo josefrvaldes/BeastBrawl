@@ -10,12 +10,13 @@
  * and Jose Valdés Sirvent https://www.linkedin.com/in/jose-f-valdés-sirvent-6058b5a5/ github -> josefrvaldes
  * 
  * 
- * @author Clover Games Studio
+ * @author Antonio Jose Martinez Garcia
+ * @author Jose Valdés Sirvent
  * 
  */
  
  
- #include "TCPClient.h"
+#include "TCPClient.h"
 #include <boost/asio/placeholders.hpp>
 #include <boost/bind.hpp>
 #include <deque>
@@ -66,29 +67,14 @@ void TCPClient::StartConnect(tcp::endpoint serverEndpoint) {
 }
 
 void TCPClient::StartConnect(tcp::resolver::results_type::iterator endpoint_iter) {
-    // se trata de conectar el socket
-    // if (endpoint_iter != endpoints.end()) {
-    //     socket.async_connect(endpoint_iter->endpoint(),
-    //                          boost::bind(&TCPClient::HandleConnect,
-    //                                      this,
-    //                                      boost::asio::placeholders::error,
-    //                                      endpoint_iter));
-    // } else {
-    //     std::cout << "Se cierra el socket" << std::endl;
-    //     Stop();
-    // }
 }
 
 void TCPClient::HandleConnect(const boost::system::error_code& error) {
     if (error) {
         socket.close();
-        //cout << "No se pudo conectar con el" << endl;
     } else {
         //std::cout << "Connectado a servidor, empezamos a recibir" << endl;
         StartReceiving();
-
-        
-
         //cout << "Enviamos SendConnectionRequest al server" << endl;
         SendConnectionRequest();
     }
@@ -113,13 +99,6 @@ void TCPClient::HandleConnect(const boost::system::error_code& error, tcp::resol
 }
 
 void TCPClient::StartReceiving() {
-    // udp::endpoint senderEndpoint;
-    //cout << "Esperamos recibir datos" << endl;
-    //std::shared_ptr<string> recevBuff = make_shared<string>();
-    //cout << "Estamos en StartReceiving" << endl;
-
-    // std::shared_ptr<boost::array<char, Constants::ONLINE_BUFFER_SIZE>> recevBuff = make_shared<boost::array<char, Constants::ONLINE_BUFFER_SIZE>>();
-    // unsigned char *buff[Constants::ONLINE_BUFFER_SIZE];
     std::shared_ptr<unsigned char[]> buff ( new unsigned char[Constants::ONLINE_BUFFER_SIZE] );
     socket.async_receive(
         asio::buffer(buff.get(), Constants::ONLINE_BUFFER_SIZE),
@@ -164,11 +143,7 @@ void TCPClient::HandleReceived(std::shared_ptr<unsigned char[]> recevBuff, const
         }
 
         //std::cout << "El cliente TCP recibe cosas" << std::endl;
-    } //else if (errorCode) {
-        //cout << "Hubo un error con código " << errorCode << endl;
-    //} else {
-      //  cout << "No ha habido error pero bytesTransferred = 0" << endl;
-    //}
+    }
     StartReceiving();
 }
 
@@ -230,11 +205,6 @@ void TCPClient::HandleReceivedCharSel(std::shared_ptr<unsigned char[]> recevBuff
     Serialization::Deserialize<uint8_t>(recevBuff.get(), currentIndex);
     uint8_t charSize = Serialization::Deserialize<uint8_t>(recevBuff.get(), currentIndex);
     vector<uint8_t> charSelected = Serialization::DeserializeVector<uint8_t>(charSize, recevBuff.get(), currentIndex);
-
-    //cout << " - Character: "; 
-    //for(uint8_t cs : charSelected)
-    //    cout << int(cs) << ", ";
-    //cout << "\n"; 
 
     GameValues::GetInstance()->SetCharacterSel(charSelected);
 }
@@ -315,11 +285,8 @@ void TCPClient::HandleSentConnectionRequest(std::shared_ptr<unsigned char[]> req
 
     if (!errorCode) {
         size_t currentBuffSize = 0;
-        uint8_t petitionType = Serialization::Deserialize<uint8_t>(request.get(), currentBuffSize);
-        //cout << "Mensaje de conexion enviado cliente TCP con petitionType " << unsigned(petitionType) << endl;
-    } //else {
-        //cout << "Hubo un error enviando el mensaje de conexion: " << errorCode.message() << endl;
-    //}
+        uint8_t petitionType = Serialization::Deserialize<uint8_t>(request.get(), currentBuffSize);  
+    } 
 }
 
 
@@ -334,9 +301,7 @@ void TCPClient::HandleSentCharacterRequest(std::shared_ptr<unsigned char[]> requ
         uint8_t petitionType = Serialization::Deserialize<uint8_t>(request.get(), currentBuffSize);
         uint8_t personaje = Serialization::Deserialize<uint8_t>(request.get(), currentBuffSize);
         cout << "Mensaje de conexion enviado cliente TCP con petitionType " << unsigned(petitionType) << " y personaje " << unsigned(personaje) << endl;
-    } //else {
-        //cout << "Hubo un error enviando el mensaje de conexion: " << errorCode.message() << endl;
-    //}
+    }
 }
 
 
