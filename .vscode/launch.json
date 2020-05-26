@@ -30,11 +30,36 @@
             ]
         },
         {
+            "name": "Beast Brawl Win",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/Beast_Brawl.exe",
+            "args": ["0"],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [
+                {
+                    "name": "LD_LIBRARY_PATH",
+                    "value": "./lib/linux/irrlicht:./lib/linux/fmod:./CLEngine/lib/linux/assimp"
+                }
+            ],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "miDebuggerPath": "C:\\Users\\neikl\\Downloads\\mingw64\\bin\\gdb.exe",
+            "setupCommands": [
+                {
+                    "description": "Habilitar la impresión con sangría para gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        },
+        {
             "name": "(gdb) Server Iniciar",
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/UDPServer/Server",
-            "args": [3],
+            "args": ["3"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "externalConsole": false,
